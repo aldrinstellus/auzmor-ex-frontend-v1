@@ -1,29 +1,22 @@
-# README #
+## Auzmor Office Frontend
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Office Frontend Application that uses Typescript, TailwindCSS and PWA (Service Wroker).
 
-### What is this repository for? ###
+### Requirements
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+- Node v 18.15.0
+- Yarn v 1.22.19
 
-### How do I get set up? ###
+### How to run locally
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+- Clone this repository `git clone git@bitbucket.org:auzmorhcm/office_frontend.git`
+- Install yarn package manager `npm install -g yarn`
+- Install Dependencies by running this command `yarn install`
+- Start the server `yarn run start`
 
-### Contribution guidelines ###
+### Running Production
 
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+- Install yarn package manager `npm install -g yarn`
+- Install Dependencies by running this command `yarn install`
+- Build the Project `yarn run build`
+- Start the server `npx serve -s build` or `serve -s build` by installing `serve` package globally.
