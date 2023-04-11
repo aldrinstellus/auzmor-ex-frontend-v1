@@ -9,6 +9,8 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
+import { loader as homeLoader } from 'pages/Home';
+
 const RequireAuth = React.lazy(() => import('components/RequireAuth'));
 const ErrorBoundary = React.lazy(() => import('components/ErrorBoundary'));
 
@@ -49,10 +51,8 @@ const routers = createBrowserRouter(
         <Route
           path="/home"
           element={<Home />}
-          loader={async () => {
-            // ⬇️ loader fetch data as earlier as possible
-            return '';
-          }}
+          // ⬇️ loader fetch data as earlier as possible
+          loader={homeLoader(queryClient)}
         />
         <Route
           path="/users"
