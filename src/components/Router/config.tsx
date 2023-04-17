@@ -19,19 +19,20 @@ const Feed = React.lazy(() => import('pages/Feed'));
 const Home = React.lazy(() => import('pages/Home'));
 const Users = React.lazy(() => import('pages/Users'));
 const UserDetail = React.lazy(() => import('pages/UserDetail'));
+const Apps = React.lazy(() => import('pages/Apps'));
+const Discover = React.lazy(() => import('pages/Discover'));
+const Admin = React.lazy(() => import('pages/Admin'));
 const PageNotFound = React.lazy(() => import('pages/PageNotFound'));
 const ServerErrorPage = React.lazy(() => import('pages/ServerErrorPage'));
 
 const routers = createBrowserRouter(
   createRoutesFromElements(
     <Route ErrorBoundary={ErrorBoundary}>
-      // root router
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Registration />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route element={<RequireAuth />}>
-        // protected routers
         <Route
           path="/"
           element={<Home />}
@@ -63,6 +64,9 @@ const routers = createBrowserRouter(
           }}
         />
         <Route path="/feed" element={<Feed />} />
+        <Route path="/apps" element={<Apps />} />
+        <Route path="/discover" element={<Discover />} />
+        <Route path="/admin" element={<Admin />} />
       </Route>
       <Route
         path="/404"

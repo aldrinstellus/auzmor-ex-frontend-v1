@@ -58,6 +58,7 @@ const Home = (props: IHomeProps) => {
   const initialData = useLoaderData() as Awaited<
     ReturnType<ReturnType<typeof loader>>
   >;
+
   // ⬇️ use hook to get the data after router loads (useLoaderData)
   const { data: postList } = useQuery({
     ...homeDetailQuery(),
