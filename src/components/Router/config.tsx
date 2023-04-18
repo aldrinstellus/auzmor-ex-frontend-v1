@@ -7,10 +7,9 @@ import {
 } from 'react-router-dom';
 import queryClient from 'utils/queryClient';
 import { loader as homeLoader } from 'pages/Home';
+import RequireAuth from 'components/RequireAuth';
 
-const RequireAuth = React.lazy(() => import('components/RequireAuth'));
 const ErrorBoundary = React.lazy(() => import('components/ErrorBoundary'));
-
 const Login = React.lazy(() => import('pages/Login'));
 const Registration = React.lazy(() => import('pages/Registration'));
 const ForgotPassword = React.lazy(() => import('pages/ForgotPassword'));
