@@ -32,6 +32,7 @@ const Login: React.FC<ILoginProps> = () => {
     resolver: yupResolver(schema),
     mode: 'onBlur',
   });
+
   const fields = [
     {
       type: FieldType.Input,
@@ -59,11 +60,13 @@ const Login: React.FC<ILoginProps> = () => {
       onChange: (data: string, e: React.ChangeEvent) => {},
     },
   ];
+
   return (
-    <div className="flex h-[100vh] w-[100vw]">
-      <div className="bg-[url(images/welcomeToOffice.png)] w-[50%] h-full bg-no-repeat bg-cover"></div>
-      <div className="w-[50%] h-full flex pt-[80px] pl-[128px] pr-[188px]">
-        <div className="w-full">
+    <div className="flex h-screen w-screen">
+      <div className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover"></div>
+      <div className="w-1/2 h-full flex justify-center items-center relative">
+        <div></div>
+        <div className="w-full max-w-[440px]">
           <div className="font-manrope font-extrabold text-neutral-900 text-4xl">
             Signin
           </div>
