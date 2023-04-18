@@ -9,6 +9,7 @@ import {
   Variant as ButtonVariant,
 } from '@auzmorui/component-library.components.button';
 import { Divider } from '@auzmorui/component-library.components.divider';
+import Logo from 'components/Logo';
 
 interface ILoginProps {}
 
@@ -65,17 +66,15 @@ const Login: React.FC<ILoginProps> = () => {
     <div className="flex h-screen w-screen">
       <div className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover"></div>
       <div className="w-1/2 h-full flex justify-center items-center relative">
-        <div></div>
+        <div className="absolute top-8 right-8">
+          <Logo />
+        </div>
         <div className="w-full max-w-[440px]">
-          <div className="font-manrope font-extrabold text-neutral-900 text-4xl">
-            Signin
-          </div>
+          <div className="font-extrabold text-neutral-900 text-4xl">Signin</div>
           <form className="mt-16" onSubmit={handleSubmit(() => {})}>
             <Layout className="w-full" fields={fields} />
             <div className="flex flex-row-reverse mt-4">
-              <div className="font-bold text-sm font-manrope">
-                Forgot Password?
-              </div>
+              <div className="font-bold text-sm">Forgot Password?</div>
             </div>
             <Button label={'Sign In'} className="w-full mt-8" />
           </form>
