@@ -10,7 +10,8 @@ const AppShell: React.FC<IAppShellProps> = ({ children }) => {
     <div className="h-screen w-screen bg-neutral-100">
       <Navbar />
       <div className="pt-12 flex w-full justify-center">
-        <div className="max-w-[1600px]">{children}</div>
+        {children}
+        {/* <div className="max-w-[1600px]">{children}</div> */}
       </div>
     </div>
   );
