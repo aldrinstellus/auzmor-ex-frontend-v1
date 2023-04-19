@@ -5,6 +5,7 @@ import { Layout, FieldType } from '@auzmorui/component-library.components.form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from '@auzmorui/component-library.components.button';
+import Logo from 'components/Logo';
 
 interface IForm {
   email: string;
@@ -107,9 +108,12 @@ const Signup: React.FC<ISignupProps> = () => {
   ];
   return (
     <div className="flex h-[100vh] w-[100vw]">
-      <div className="bg-[url(images/welcomeToOffice.png)] w-[50%] h-full bg-no-repeat bg-cover"></div>
-      <div className="w-[50%] h-full flex pt-[80px] pl-[128px] pr-[188px]">
-        <div className="w-full">
+      <div className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover"></div>
+      <div className="w-1/2 flex justify-center items-center relative">
+        <div className="absolute top-8 right-8">
+          <Logo />
+        </div>
+        <div className="w-full max-w-[440px]">
           <div className="font-extrabold text-neutral-900 text-4xl">
             Sign Up
           </div>
