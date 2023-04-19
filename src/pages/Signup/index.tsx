@@ -110,7 +110,7 @@ const Signup: React.FC<ISignupProps> = () => {
       <div className="bg-[url(images/welcomeToOffice.png)] w-[50%] h-full bg-no-repeat bg-cover"></div>
       <div className="w-[50%] h-full flex pt-[80px] pl-[128px] pr-[188px]">
         <div className="w-full">
-          <div className="font-manrope font-extrabold text-neutral-900 text-4xl">
+          <div className="font-extrabold text-neutral-900 text-4xl">
             Sign Up
           </div>
           <form className="mt-16" onSubmit={handleSubmit(() => {})}>
