@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useState } from 'react';
+import React, { ReactNode, createContext, useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { removeAllItems } from 'utils/persist';
 
@@ -25,6 +25,13 @@ export const AuthContext = createContext<IAuthContext>({
 const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
   const queryClient = useQueryClient();
   const [user, setUser] = useState<IUser | null>(null);
+
+  useEffect(() => {
+    // read the token from url
+    // set/update to localstorage
+    // if token in LS, make /me api call and update setUser
+    // if not token, do nothing
+  }, []);
 
   const reset = () => {
     setUser(null); // set user
