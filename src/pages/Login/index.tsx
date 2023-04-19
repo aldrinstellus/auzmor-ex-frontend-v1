@@ -12,6 +12,7 @@ import {
 } from '@auzmorui/component-library.components.button';
 import { Divider } from '@auzmorui/component-library.components.divider';
 import Logo from 'components/Logo';
+import { Link } from 'react-router-dom';
 
 interface ILoginProps {}
 
@@ -83,7 +84,9 @@ const Login: React.FC<ILoginProps> = () => {
           <form className="mt-16" onSubmit={handleSubmit(() => {})}>
             <Layout className="w-full" fields={fields} />
             <div className="flex flex-row-reverse mt-4">
-              <div className="font-bold text-sm">Forgot Password?</div>
+              <Link to="/forgot-password">
+                <div className="font-bold text-sm">Forgot Password?</div>
+              </Link>
             </div>
             <Button label={'Sign In'} className="w-full mt-8" />
           </form>
