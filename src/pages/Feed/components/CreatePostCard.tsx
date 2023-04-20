@@ -13,7 +13,7 @@ import CreatePost from 'components/CreatePost';
 import { IFeed } from 'pages/Feed';
 import { EditorContentChanged } from 'components/RichTextEditor';
 
-type ArtDecoProps = {
+type CreatePostCardProps = {
   activityFeed: IFeed[];
   setActivityFeed: (feed: IFeed[]) => void;
 };
@@ -41,7 +41,10 @@ const postTypeMapIcons = [
   },
 ];
 
-const ArtDeco: React.FC<ArtDecoProps> = ({ activityFeed, setActivityFeed }) => {
+const CreatePostCard: React.FC<CreatePostCardProps> = ({
+  activityFeed,
+  setActivityFeed,
+}) => {
   const [open, setOpen] = useState(false);
   const [htmlValue, setHtmlValue] = useState<any>('');
 
@@ -131,4 +134,4 @@ const ArtDeco: React.FC<ArtDecoProps> = ({ activityFeed, setActivityFeed }) => {
   );
 };
 
-export default ArtDeco;
+export default CreatePostCard;

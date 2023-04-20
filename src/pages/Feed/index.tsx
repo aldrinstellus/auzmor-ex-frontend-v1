@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-import ArtDeco from 'components/ArtDeco';
 import { feeds } from 'mocks/feed';
 import ActivityFeed from 'components/ActivityFeed';
+import CreatePostCard from './components/CreatePostCard';
 
 interface IFeedProps {}
 
@@ -24,7 +24,10 @@ const Feed: React.FC<IFeedProps> = () => {
   const [activityFeed, setActivityFeed] = useState<IFeed[]>(feeds);
   return (
     <div className="flex flex-col">
-      <ArtDeco activityFeed={activityFeed} setActivityFeed={setActivityFeed} />
+      <CreatePostCard
+        activityFeed={activityFeed}
+        setActivityFeed={setActivityFeed}
+      />
       <ActivityFeed activityFeed={activityFeed} />
     </div>
   );
