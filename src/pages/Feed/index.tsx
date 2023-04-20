@@ -23,10 +23,10 @@ export interface IFeed {
 const Feed: React.FC<IFeedProps> = () => {
   const [activityFeed, setActivityFeed] = useState<IFeed[]>(feeds);
   return (
-    <>
+    <div className="flex flex-col">
       <ArtDeco activityFeed={activityFeed} setActivityFeed={setActivityFeed} />
       <ActivityFeed activityFeed={activityFeed} />
-    </>
+    </div>
   );
 };
 
