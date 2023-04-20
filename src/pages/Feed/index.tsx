@@ -1,25 +1,36 @@
 import React, { useState } from 'react';
-import RichTextEditor from 'components/RichTextEditor';
+
+import { feeds } from 'mocks/feed';
+import ActivityFeed from 'components/ActivityFeed';
+import CreatePostCard from './components/CreatePostCard';
+
 interface IFeedProps {}
 
-interface EditorContentChanged {
+interface IContent {
+  text: string;
   html: string;
-  markdown: string;
-  json: string;
+  editor: string;
+}
+export interface IFeed {
+  content: IContent;
+  uuid: string;
+  createdAt: string;
+  updatedAt: string;
+  type: string;
+  isAnnouncement: boolean;
 }
 
 const Feed: React.FC<IFeedProps> = () => {
-  const [editorHtmlValue, setEditorHtmlValue] = useState<string>('');
-  const [editorMarkdownValue, setEditorMarkdownValue] = useState<string>('');
-  const [editorJsonValue, setEditorJsonValue] = useState<string>('');
-
-  const onEditorContentChanged = (content: EditorContentChanged) => {
-    setEditorHtmlValue(content.html);
-    setEditorMarkdownValue(content.markdown);
-    setEditorJsonValue(content.json);
-  };
-
-  return <RichTextEditor value={''} onChange={onEditorContentChanged} />;
+  const [activityFeed, setActivityFeed] = useState<IFeed[]>(feeds);
+  return (
+    <div className="flex flex-col">
+      <CreatePostCard
+        activityFeed={activityFeed}
+        setActivityFeed={setActivityFeed}
+      />
+      <ActivityFeed activityFeed={activityFeed} />
+    </div>
+  );
 };
 
 export default Feed;

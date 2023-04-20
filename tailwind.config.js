@@ -126,7 +126,22 @@ module.exports = {
         '29xl': '4.907398700714111rem',
         full: '9999px',
       },
-      fontFamily: { manrope: 'Manrope' },
+      spacing: {
+        52: '3.25rem',
+      },
+      height: {
+        56: '56px',
+        11: '44px',
+        31.5: '126px',
+        54.75: '219px',
+      },
+      width: {
+        135.25: '541px',
+        90: '90px',
+      },
+      margin: {
+        8.5: '32px',
+      },
     },
     plugins: [],
   },
