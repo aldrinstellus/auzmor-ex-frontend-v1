@@ -1,11 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card } from '@auzmorui/component-library.components.card';
 import Like from 'images/like.svg';
+
 import Comments from 'images/comments.svg';
+
 import Actor from 'components/Actor';
 import { VIEW_POST } from 'components/Actor/constant';
+import Commentspage from 'components/Comments/index';
+import { Likes } from 'components/Likes';
 
 const Post = () => {
+  const [showComments, setShowComments] = useState(false);
+  const [name, setName] = useState<string>('Like');
+  const [likeIcon, setLikeIcon] = useState<string>(Like);
+  const [likeButtonColor, setLikeButtonColor] =
+    useState<string>('text-neutral-500');
+
   return (
     <Card className="bg-white rounded-xl mt-5">
       <Actor
@@ -21,22 +31,35 @@ const Post = () => {
         {/* Media Display */}
         {/* Reaction and comment repost */}
         <div className="flex justify-between pt-4 pb-6">
-          <div className="flex">
-            <button className="flex items-center">
-              <img src={Like} height={13.33} width={13.33} />
-              <div className="text-xs font-normal text-neutral-500 ml-1.5">
-                Like
-              </div>
-            </button>
+          <div className="flex ">
+            <Likes
+              name={name}
+              setName={setName}
+              setLikeIcon={setLikeIcon}
+              likeIcon={likeIcon}
+              setLikeButtonColor={setLikeButtonColor}
+              likeButtonColor={likeButtonColor}
+            />
+
             <button className="flex items-center ml-7">
               <img src={Comments} height={13.33} width={13.33} />
-              <div className="text-xs font-normal text-neutral-500 ml-1.5">
+              <div
+                className="text-xs font-normal text-neutral-500 ml-1.5"
+                onClick={() => {
+                  if (showComments) {
+                    setShowComments(false);
+                  } else {
+                    setShowComments(true);
+                  }
+                }}
+              >
                 Comment
               </div>
             </button>
           </div>
           <div></div>
         </div>
+        {showComments && <Commentspage />}
       </div>
     </Card>
   );
