@@ -1,0 +1,15 @@
+import { useQuery } from '@tanstack/react-query';
+import apiService from 'utils/apiService';
+
+const getAllUsers = async (q: Record<string, any>) => {
+  const { data } = await apiService.get('/users', q);
+  return data;
+};
+
+export const useUsers = (q: Record<string, any>) => {
+  return useQuery({
+    queryKey: ['users', q],
+    queryFn: () => getAllUsers(q),
+    staleTime: 15 * 60 * 1000,
+  });
+};

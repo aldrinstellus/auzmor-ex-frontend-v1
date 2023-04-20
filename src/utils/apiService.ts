@@ -12,14 +12,21 @@ class ApiService {
 
     this.instance.interceptors.request.use((config: any) => {
       let headers = {};
-      const token = getItem(process.env.SESSION_KEY || 'token');
+      const token = getItem(process.env.REACT_APP_SESSION_KEY || 'uat');
       if (token) {
         headers = {
           ...headers,
           authorization: `Bearer ${token}`,
         };
       }
-      return config;
+
+      return {
+        ...config,
+        headers: {
+          ...headers,
+          ...config.headers,
+        },
+      };
     });
   }
 

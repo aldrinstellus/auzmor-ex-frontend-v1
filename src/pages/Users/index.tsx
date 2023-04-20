@@ -3,6 +3,7 @@ import { Button, Variant } from '@auzmorui/component-library.components.button';
 import UserCard from '../../components/UserCard';
 import TabSwitch from '../../components/TabSwitch';
 import { userList } from '../../components/mockUtils';
+import { useUsers } from 'queries/users';
 
 interface IUsersProps {}
 
@@ -16,6 +17,14 @@ const tabs = [
 ];
 
 const Users: React.FC<IUsersProps> = () => {
+  const { data, isLoading } = useUsers({});
+
+  if (isLoading) {
+    return <div>Loader...</div>;
+  }
+
+  console.log(data?.results);
+
   return (
     <div className="bg-white px-8 py-9 rounded-9xl">
       <div className="flex justify-between">
