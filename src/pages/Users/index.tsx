@@ -4,6 +4,9 @@ import UserCard from '../../components/UserCard';
 import TabSwitch from '../../components/TabSwitch';
 import { userList } from '../../components/mockUtils';
 import { useUsers } from 'queries/users';
+import UserInvite from 'components/UserInvite';
+import Modal from 'components/Modal';
+import AddUsers from 'components/AddUsers';
 
 interface IUsersProps {}
 
@@ -16,8 +19,22 @@ const tabs = [
   },
 ];
 
+const footerMapButtons = [
+  {
+    id: 1,
+    label: 'Cancel',
+    disabled: false,
+  },
+  {
+    id: 2,
+    label: 'Send Invite',
+    disabled: true,
+  },
+];
+
 const Users: React.FC<IUsersProps> = () => {
   const { data, isLoading } = useUsers({});
+  const [open, setOpen] = useState(false);
 
   if (isLoading) {
     return <div>Loader...</div>;
@@ -30,15 +47,43 @@ const Users: React.FC<IUsersProps> = () => {
       <div className="flex justify-between">
         <span className="text-2xl font-bold">People Hub</span>
         <div className="flex">
+          <UserInvite />
           <Button
             className="flex mr-2"
             label="View Organization Chart"
             variant={Variant.Secondary}
             leftIcon="people"
           />
-          <Button className="flex" label="Add People" leftIcon="people" />
+          <Button
+            className="flex"
+            label="Add People"
+            leftIcon="people"
+            onClick={() => {
+              setOpen(true);
+            }}
+          />
         </div>
       </div>
+      <Modal
+        className="w-[50%]"
+        open={open}
+        setOpen={setOpen}
+        title="Invite new people to your organization"
+        body={<AddUsers />}
+        footer={
+          <div className="flex justify-end items-center h-16 p-6">
+            {footerMapButtons.map((type) => (
+              <div className="mr-4" key={type.id}>
+                <Button
+                  label={type.label}
+                  variant={Variant.Secondary}
+                  disabled={type.disabled}
+                />
+              </div>
+            ))}
+          </div>
+        }
+      />
       <div className="mt-6">
         <TabSwitch tabs={tabs} />
       </div>
