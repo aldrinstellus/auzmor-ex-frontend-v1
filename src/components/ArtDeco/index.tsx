@@ -10,6 +10,13 @@ import Events from 'images/events.svg';
 import Polls from 'images/polls.svg';
 import Modal from 'components/Modal';
 import CreatePost from 'components/CreatePost';
+import { IFeed } from 'pages/Feed';
+import { EditorContentChanged } from 'components/RichTextEditor';
+
+type ArtDecoProps = {
+  activityFeed: IFeed[];
+  setActivityFeed: (feed: IFeed[]) => void;
+};
 
 const postTypeMapIcons = [
   {
@@ -34,20 +41,30 @@ const postTypeMapIcons = [
   },
 ];
 
-const ArtDeco = () => {
+const ArtDeco: React.FC<ArtDecoProps> = ({ activityFeed, setActivityFeed }) => {
   const [open, setOpen] = useState(false);
+  const [htmlValue, setHtmlValue] = useState<any>('');
+
+  const onEditorContentChanged = (content: EditorContentChanged) => {
+    setHtmlValue(content);
+  };
+
+  console.log(htmlValue);
+
   return (
     <div>
-      <Card className="bg-white rounded-lg">
+      <Card className="bg-white rounded-9xl">
         <div className="flex items-center px-6 pt-6 pb-3">
           <Avatar
             size={32}
             image="https://png.pngtree.com/png-clipart/20210619/ourlarge/pngtree-instagram-lady-social-media-flat-style-avatar-png-image_3483977.jpg"
             name={''}
+            active={false}
           />
+          {/* replace with component library */}
           <input
             type="input"
-            className="w-135.25 h-11 border border-neutral-200 rounded-8 ml-3 px-5 py-3 text-sm font-medium outline-none"
+            className="w-135.25 h-11 border border-neutral-200 rounded-19xl ml-3 px-5 py-3 text-sm font-medium outline-none"
             readOnly
             onClick={() => {
               setOpen(true);
@@ -73,7 +90,7 @@ const ArtDeco = () => {
         open={open}
         setOpen={setOpen}
         title="Create a post"
-        body={<CreatePost />}
+        body={<CreatePost onChangeEditor={onEditorContentChanged} />}
         footer={
           <div className="flex justify-between items-center h-16 p-6">
             <div className="flex">
@@ -88,7 +105,24 @@ const ArtDeco = () => {
               <Button
                 label={'Post'}
                 className="bg-primary-500 rounded-3xl text-white w-20"
-                onClick={() => console.log('post')}
+                onClick={() => {
+                  const newFeed = {
+                    content: {
+                      text: 'Basic Plaint Text',
+                      html: htmlValue.html,
+                      editor: '',
+                    },
+                    uuid: `45ba1474-649e-4664-b5ca-b552ba509635${
+                      activityFeed.length + 1
+                    }`,
+                    createdAt: '2023-04-14T04:42:15.562Z',
+                    updatedAt: '2023-04-14T04:42:15.562Z',
+                    type: '',
+                    isAnnouncement: true,
+                  };
+                  setActivityFeed([newFeed, ...activityFeed]);
+                  setOpen(false);
+                }}
               />
             </div>
           </div>

@@ -24,7 +24,7 @@ const Actor: React.FC<ActorProps> = ({
     <div className={`flex justify-between items-center mx-6 mb-4 pt-7`}>
       <div className="flex items-center">
         <div>
-          <Avatar size={32} image={avatar} name={actorName} />
+          <Avatar size={32} image={avatar} name={actorName} active={false} />
         </div>
         <div className="ml-3">
           <div className="font-bold text-sm text-neutral-900">
@@ -48,7 +48,7 @@ const Actor: React.FC<ActorProps> = ({
       {/* post visibility - dropdown */}
       <div>
         {contentMode === CREATE_POST ? (
-          <div className="flex justify-between items-center border border-neutral-300 rounded-3xl py-1.5 px-3">
+          <div className="flex justify-between items-center border border-neutral-300 rounded-17xl py-1.5 px-3">
             <div>
               <img src={Earth} height={13.33} width={13.33} />
             </div>

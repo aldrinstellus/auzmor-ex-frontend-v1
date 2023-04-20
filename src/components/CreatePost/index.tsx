@@ -1,10 +1,22 @@
-import React from 'react';
-import RichTextEditor from 'components/RichTextEditor';
-import { Card } from '@auzmorui/component-library.components.card';
+import React, { useState } from 'react';
+import RichTextEditor, {
+  EditorContentChanged,
+} from 'components/RichTextEditor';
 import Actor from 'components/Actor';
 import { CREATE_POST } from 'components/Actor/constant';
 
-const CreatePost = () => {
+type CreatePostProps = {
+  onChangeEditor: (content: EditorContentChanged) => void;
+};
+
+const CreatePost: React.FC<CreatePostProps> = ({ onChangeEditor }) => {
+  const [htmlValue, setHtmlValue] = useState<any>('');
+
+  const onEditorContentChanged = (content: EditorContentChanged) => {
+    setHtmlValue(content);
+    onChangeEditor(content);
+  };
+
   return (
     <>
       <Actor
@@ -14,6 +26,7 @@ const CreatePost = () => {
         contentMode={CREATE_POST}
       />
       <RichTextEditor
+        onChangeEditor={onEditorContentChanged}
         placeholder="What’s on your mind?"
         className="h-28 ml-4"
       />

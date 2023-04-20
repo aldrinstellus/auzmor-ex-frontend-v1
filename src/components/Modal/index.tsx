@@ -29,7 +29,7 @@ const Modal: React.FC<ModalProps> = ({
             outline-none focus:outline-none w-full"
           >
             <div className="relative w-[38%] my-6 max-w-[1600]">
-              <div className="border-0 rounded-xl shadow-lg w-full bg-white outline-none focus:outline-none">
+              <div className="border-0 rounded-9xl shadow-lg w-full bg-white outline-none focus:outline-none">
                 <div className="flex items-center justify-between h-14 p-4 border-b border-solid">
                   <h3 className="text-lg text-black font-['manrope'] font-extrabold">
                     {title}
