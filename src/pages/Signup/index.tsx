@@ -5,7 +5,7 @@ import { Layout, FieldType } from '@auzmorui/component-library.components.form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from '@auzmorui/component-library.components.button';
-import Logo from 'components/Logo';
+import { Logo } from 'components/Logo';
 
 interface IForm {
   email: string;
@@ -32,7 +32,7 @@ const schema = yup.object({
   privacyPolicy: yup.boolean().required('Required field').oneOf([true]),
 });
 
-export interface ISignupProps {}
+export interface ISignupProps { }
 
 const Signup: React.FC<ISignupProps> = () => {
   const {
@@ -55,7 +55,7 @@ const Signup: React.FC<ISignupProps> = () => {
       error: errors.email?.message,
       control,
       getValues,
-      onChange: (data: string, e: React.ChangeEvent) => {},
+      onChange: (data: string, e: React.ChangeEvent) => { },
     },
     {
       type: FieldType.Input,
@@ -67,7 +67,7 @@ const Signup: React.FC<ISignupProps> = () => {
       error: errors.domain?.message,
       control,
       getValues,
-      onChange: (data: string, e: React.ChangeEvent) => {},
+      onChange: (data: string, e: React.ChangeEvent) => { },
     },
     {
       type: FieldType.Input,
@@ -80,7 +80,7 @@ const Signup: React.FC<ISignupProps> = () => {
       error: errors.password?.message,
       control,
       getValues,
-      onChange: (data: string, e: React.ChangeEvent) => {},
+      onChange: (data: string, e: React.ChangeEvent) => { },
     },
     {
       type: FieldType.Input,
@@ -93,7 +93,7 @@ const Signup: React.FC<ISignupProps> = () => {
       error: errors.confirmPassword?.message,
       control,
       getValues,
-      onChange: (data: string, e: React.ChangeEvent) => {},
+      onChange: (data: string, e: React.ChangeEvent) => { },
     },
     {
       type: FieldType.Checkbox,
@@ -103,7 +103,7 @@ const Signup: React.FC<ISignupProps> = () => {
       error: errors.privacyPolicy?.message,
       control,
       getValues,
-      onChange: (data: string, e: React.ChangeEvent) => {},
+      onChange: (data: string, e: React.ChangeEvent) => { },
     },
   ];
   return (
@@ -117,7 +117,7 @@ const Signup: React.FC<ISignupProps> = () => {
           <div className="font-extrabold text-neutral-900 text-4xl">
             Sign Up
           </div>
-          <form className="mt-16" onSubmit={handleSubmit(() => {})}>
+          <form className="mt-16" onSubmit={handleSubmit(() => { })}>
             <Layout className="w-full" fields={fields} />
             <Button
               label={'Sign Up'}

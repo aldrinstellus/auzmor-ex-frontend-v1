@@ -9,9 +9,9 @@ import {
   Variant as ButtonVariant,
 } from '@auzmorui/component-library.components.button';
 import { Divider } from '@auzmorui/component-library.components.divider';
-import Logo from 'components/Logo';
+import { Logo } from 'components/Logo';
 
-interface ILoginProps {}
+interface ILoginProps { }
 
 interface IForm {
   email: string;
@@ -45,7 +45,7 @@ const Login: React.FC<ILoginProps> = () => {
       error: errors.email?.message,
       control,
       getValues,
-      onChange: (data: string, e: React.ChangeEvent) => {},
+      onChange: (data: string, e: React.ChangeEvent) => { },
     },
     {
       type: FieldType.Input,
@@ -58,7 +58,7 @@ const Login: React.FC<ILoginProps> = () => {
       error: errors.password?.message,
       control,
       getValues,
-      onChange: (data: string, e: React.ChangeEvent) => {},
+      onChange: (data: string, e: React.ChangeEvent) => { },
     },
   ];
 
@@ -71,7 +71,7 @@ const Login: React.FC<ILoginProps> = () => {
         </div>
         <div className="w-full max-w-[440px]">
           <div className="font-extrabold text-neutral-900 text-4xl">Signin</div>
-          <form className="mt-16" onSubmit={handleSubmit(() => {})}>
+          <form className="mt-16" onSubmit={handleSubmit(() => { })}>
             <Layout className="w-full" fields={fields} />
             <div className="flex flex-row-reverse mt-4">
               <div className="font-bold text-sm">Forgot Password?</div>
