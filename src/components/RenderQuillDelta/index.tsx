@@ -69,7 +69,6 @@ function RenderDeltaOperation(deltaOperation: DeltaOperation): ReactElement {
       }
     });
 
-    // return <span style={styles}>{formatText(deltaOperation.insert)}</span>;
     return <span style={styles}>{formatText(deltaOperation.insert)}</span>;
   }
 }
