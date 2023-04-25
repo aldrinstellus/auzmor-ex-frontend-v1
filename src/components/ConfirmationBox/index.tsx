@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Modal } from 'components/Modal';
+import Modal from 'components/Modal';
 import Button from 'components/Button';
 
 export interface Discard {

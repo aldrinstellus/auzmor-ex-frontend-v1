@@ -36,8 +36,6 @@ export class MentionBlot extends Embed {
     const denotationChar = document.createElement('span');
     denotationChar.className = 'ql-mention-denotation-char';
 
-    // console.log("create data ->", data, node);
-
     // Make change over the node like based on requirement
     // Example -> InActive people show differently with style
 
@@ -100,5 +98,5 @@ export class MentionBlot extends Embed {
 }
 
 MentionBlot.blotName = 'mention';
-MentionBlot.tagName = 'div';
+MentionBlot.tagName = 'span'; // finally found the issue (main node of mention tag)
 MentionBlot.className = 'mention';

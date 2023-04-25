@@ -11,13 +11,13 @@ export type ModalProps = {
   footer?: ReactNode | null;
 };
 
-export function Modal({
+const Modal: React.FC<ModalProps> = ({
   open,
   closeModal,
   title = '',
   body,
   footer = null,
-}: ModalProps) {
+}) => {
   return (
     <>
       <Transition appear show={open} as={Fragment}>
@@ -77,4 +77,6 @@ export function Modal({
       </Transition>
     </>
   );
-}
+};
+
+export default Modal;

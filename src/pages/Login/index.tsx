@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { login } from 'queries/auth';
+import { login } from 'queries/account';
 import React from 'react';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
@@ -14,6 +14,7 @@ import Button, {
 import Divider from 'components/Divider';
 import { Logo } from 'components/Logo';
 import { redirectWithToken } from 'utils/misc';
+import { Link } from 'react-router-dom';
 
 interface ILoginProps {}
 
@@ -89,7 +90,9 @@ const Login: React.FC<ILoginProps> = () => {
           <form className="mt-16" onSubmit={handleSubmit(onSubmit)}>
             <Layout fields={fields} />
             <div className="flex justify-end mt-4">
-              <div className="font-bold text-sm">Forgot Password?</div>
+            <Link to="/forgot-password">
+                <div className="font-bold text-sm">Forgot Password?</div>
+              </Link>
             </div>
             <Button
               label={'Sign In'}

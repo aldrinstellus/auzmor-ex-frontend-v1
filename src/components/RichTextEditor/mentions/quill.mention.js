@@ -1,13 +1,13 @@
-import { Quill } from "react-quill";
-import Keys from "./constants";
+import { Quill } from 'react-quill';
+import Keys from './constants';
 import {
   attachDataValues,
   getMentionCharIndex,
   hasValidChars,
   hasValidMentionCharIndex,
-} from "./utils";
-import "./quill.mention.css";
-import "./blots/mentions";
+} from './utils';
+import './quill.mention.css';
+import './blots/mentions';
 
 class Mention {
   constructor(quill, options) {
@@ -36,7 +36,7 @@ class Mention {
       onSelect(item, insertItem) {
         insertItem(item);
       },
-      mentionDenotationChars: ["@"],
+      mentionDenotationChars: ['@'],
       showDenotationChar: true,
       allowedChars: /^[a-zA-Z0-9_]*$/,
       minChars: 0,
@@ -45,18 +45,18 @@ class Mention {
       offsetLeft: 0,
       isolateCharacter: false,
       fixMentionsToQuill: false,
-      positioningStrategy: "normal",
-      defaultMenuOrientation: "bottom",
-      blotName: "mention",
+      positioningStrategy: 'normal',
+      defaultMenuOrientation: 'bottom',
+      blotName: 'mention',
       dataAttributes: [
-        "id",
-        "value",
-        "denotationChar",
-        "link",
-        "target",
-        "disabled",
+        'id',
+        'value',
+        'denotationChar',
+        'link',
+        'target',
+        'disabled',
       ],
-      linkTarget: "_blank",
+      linkTarget: '_blank',
       onOpen() {
         return true;
       },
@@ -67,9 +67,9 @@ class Mention {
         return true;
       },
       // Style options
-      listItemClass: "ql-mention-list-item",
-      mentionContainerClass: "ql-mention-list-container",
-      mentionListClass: "ql-mention-list",
+      listItemClass: 'ql-mention-list-item',
+      mentionContainerClass: 'ql-mention-list-container',
+      mentionListClass: 'ql-mention-list',
       spaceAfterInsert: true,
       selectKeys: [Keys.ENTER],
     };
@@ -81,31 +81,31 @@ class Mention {
     });
 
     // create mention container
-    this.mentionContainer = document.createElement("div");
+    this.mentionContainer = document.createElement('div');
     this.mentionContainer.className = this.options.mentionContainerClass
       ? this.options.mentionContainerClass
-      : "";
-    this.mentionContainer.style.cssText = "display: none; position: absolute;";
+      : '';
+    this.mentionContainer.style.cssText = 'display: none; position: absolute;';
     this.mentionContainer.onmousemove = this.onContainerMouseMove.bind(this);
 
     if (this.options.fixMentionsToQuill) {
-      this.mentionContainer.style.width = "auto";
+      this.mentionContainer.style.width = 'auto';
     }
 
-    this.mentionList = document.createElement("ul");
-    this.mentionList.id = "quill-mention-list";
-    quill.root.setAttribute("aria-owns", "quill-mention-list");
+    this.mentionList = document.createElement('ul');
+    this.mentionList.id = 'quill-mention-list';
+    quill.root.setAttribute('aria-owns', 'quill-mention-list');
     this.mentionList.className = this.options.mentionListClass
       ? this.options.mentionListClass
-      : "";
+      : '';
     this.mentionContainer.appendChild(this.mentionList);
 
-    quill.on("text-change", this.onTextChange.bind(this));
-    quill.on("selection-change", this.onSelectionChange.bind(this));
+    quill.on('text-change', this.onTextChange.bind(this));
+    quill.on('selection-change', this.onSelectionChange.bind(this));
 
     // Pasting doesn't fire selection-change after the pasted text is
     // inserted, so here we manually trigger one
-    quill.container.addEventListener("paste", () => {
+    quill.container.addEventListener('paste', () => {
       setTimeout(() => {
         const range = quill.getSelection();
         this.onSelectionChange(range);
@@ -116,10 +116,10 @@ class Mention {
       {
         key: Keys.TAB,
       },
-      this.selectHandler.bind(this)
+      this.selectHandler.bind(this),
     );
     quill.keyboard.bindings[Keys.TAB].unshift(
-      quill.keyboard.bindings[Keys.TAB].pop()
+      quill.keyboard.bindings[Keys.TAB].pop(),
     );
 
     for (const selectKey of this.options.selectKeys) {
@@ -127,32 +127,32 @@ class Mention {
         {
           key: selectKey,
         },
-        this.selectHandler.bind(this)
+        this.selectHandler.bind(this),
       );
     }
     quill.keyboard.bindings[Keys.ENTER].unshift(
-      quill.keyboard.bindings[Keys.ENTER].pop()
+      quill.keyboard.bindings[Keys.ENTER].pop(),
     );
 
     quill.keyboard.addBinding(
       {
         key: Keys.ESCAPE,
       },
-      this.escapeHandler.bind(this)
+      this.escapeHandler.bind(this),
     );
 
     quill.keyboard.addBinding(
       {
         key: Keys.UP,
       },
-      this.upHandler.bind(this)
+      this.upHandler.bind(this),
     );
 
     quill.keyboard.addBinding(
       {
         key: Keys.DOWN,
       },
-      this.downHandler.bind(this)
+      this.downHandler.bind(this),
     );
   }
 
@@ -192,14 +192,14 @@ class Mention {
   }
 
   showMentionList() {
-    if (this.options.positioningStrategy === "fixed") {
+    if (this.options.positioningStrategy === 'fixed') {
       document.body.appendChild(this.mentionContainer);
     } else {
       this.quill.container.appendChild(this.mentionContainer);
     }
 
-    this.mentionContainer.style.visibility = "hidden";
-    this.mentionContainer.style.display = "";
+    this.mentionContainer.style.visibility = 'hidden';
+    this.mentionContainer.style.display = '';
     this.mentionContainer.scrollTop = 0;
     this.setMentionContainerPosition();
     this.setIsOpen(true);
@@ -207,28 +207,28 @@ class Mention {
 
   hideMentionList() {
     this.options.onBeforeClose();
-    this.mentionContainer.style.display = "none";
+    this.mentionContainer.style.display = 'none';
     this.mentionContainer.remove();
     this.setIsOpen(false);
-    this.quill.root.removeAttribute("aria-activedescendant");
+    this.quill.root.removeAttribute('aria-activedescendant');
   }
 
   highlightItem(scrollItemInView = true) {
     for (let i = 0; i < this.mentionList.childNodes.length; i += 1) {
-      this.mentionList.childNodes[i].classList.remove("selected");
+      this.mentionList.childNodes[i].classList.remove('selected');
     }
 
     if (
       this.itemIndex === -1 ||
-      this.mentionList.childNodes[this.itemIndex].dataset.disabled === "true"
+      this.mentionList.childNodes[this.itemIndex].dataset.disabled === 'true'
     ) {
       return;
     }
 
-    this.mentionList.childNodes[this.itemIndex].classList.add("selected");
+    this.mentionList.childNodes[this.itemIndex].classList.add('selected');
     this.quill.root.setAttribute(
-      "aria-activedescendant",
-      this.mentionList.childNodes[this.itemIndex].id
+      'aria-activedescendant',
+      this.mentionList.childNodes[this.itemIndex].id,
     );
 
     if (scrollItemInView) {
@@ -251,7 +251,7 @@ class Mention {
 
   getItemData() {
     const { link } = this.mentionList.childNodes[this.itemIndex].dataset;
-    const hasLinkValue = typeof link !== "undefined";
+    const hasLinkValue = typeof link !== 'undefined';
     const itemTarget =
       this.mentionList.childNodes[this.itemIndex].dataset.target;
     if (hasLinkValue) {
@@ -288,7 +288,7 @@ class Mention {
       return;
     }
     if (!this.options.showDenotationChar) {
-      render.denotationChar = "";
+      render.denotationChar = '';
     }
 
     let insertAtPos;
@@ -298,7 +298,7 @@ class Mention {
       this.quill.deleteText(
         this.mentionCharPos,
         this.cursorPos - this.mentionCharPos,
-        Quill.sources.USER
+        Quill.sources.USER,
       );
     } else {
       insertAtPos = this.cursorPos;
@@ -307,10 +307,10 @@ class Mention {
       insertAtPos,
       this.options.blotName,
       render,
-      Quill.sources.USER
+      Quill.sources.USER,
     );
     if (this.options.spaceAfterInsert) {
-      this.quill.insertText(insertAtPos + 1, " ", Quill.sources.USER);
+      this.quill.insertText(insertAtPos + 1, ' ', Quill.sources.USER);
       // setSelection here sets cursor position
       this.quill.setSelection(insertAtPos + 2, Quill.sources.USER);
     } else {
@@ -364,16 +364,16 @@ class Mention {
     }
 
     if (
-      this.mentionContainer.getElementsByClassName("ql-mention-loading")
+      this.mentionContainer.getElementsByClassName('ql-mention-loading')
         .length > 0
     ) {
       this.showMentionList();
       return;
     }
 
-    this.mentionList.innerHTML = "";
-    const loadingDiv = document.createElement("div");
-    loadingDiv.className = "ql-mention-loading";
+    this.mentionList.innerHTML = '';
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'ql-mention-loading';
     loadingDiv.innerHTML = this.options.renderLoading();
     this.mentionList.append(loadingDiv);
     this.showMentionList();
@@ -381,7 +381,7 @@ class Mention {
 
   removeLoading() {
     const loadingDiv =
-      this.mentionContainer.getElementsByClassName("ql-mention-loading");
+      this.mentionContainer.getElementsByClassName('ql-mention-loading');
     if (loadingDiv.length > 0) {
       loadingDiv[0].remove();
     }
@@ -392,19 +392,19 @@ class Mention {
       this.removeLoading();
 
       this.values = data;
-      this.mentionList.innerHTML = "";
+      this.mentionList.innerHTML = '';
 
       let initialSelection = -1;
 
       for (let i = 0; i < data.length; i += 1) {
-        const li = document.createElement("li");
+        const li = document.createElement('li');
         li.id = `quill-mention-item-${i}`;
         li.className = this.options.listItemClass
           ? this.options.listItemClass
-          : "";
+          : '';
         if (data[i].disabled) {
-          li.className += " disabled";
-          li.setAttribute("aria-hidden", "true");
+          li.className += ' disabled';
+          li.setAttribute('aria-hidden', 'true');
         } else if (initialSelection === -1) {
           initialSelection = i;
         }
@@ -420,7 +420,7 @@ class Mention {
         }
         li.dataset.denotationChar = mentionChar;
         this.mentionList.appendChild(
-          attachDataValues(li, data[i], this.options.dataAttributes)
+          attachDataValues(li, data[i], this.options.dataAttributes),
         );
       }
       this.itemIndex = initialSelection;
@@ -439,7 +439,7 @@ class Mention {
       increment++;
       newIndex = (this.itemIndex + increment) % this.values.length;
       var disabled =
-        this.mentionList.childNodes[newIndex].dataset.disabled === "true";
+        this.mentionList.childNodes[newIndex].dataset.disabled === 'true';
       if (increment === this.values.length + 1) {
         // we've wrapped around w/o finding an enabled item
         newIndex = -1;
@@ -461,7 +461,7 @@ class Mention {
       newIndex =
         (this.itemIndex + this.values.length - decrement) % this.values.length;
       var disabled =
-        this.mentionList.childNodes[newIndex].dataset.disabled === "true";
+        this.mentionList.childNodes[newIndex].dataset.disabled === 'true';
       if (decrement === this.values.length + 1) {
         // we've wrapped around w/o finding an enabled item
         newIndex = -1;
@@ -504,7 +504,7 @@ class Mention {
   }
 
   setMentionContainerPosition() {
-    if (this.options.positioningStrategy === "fixed") {
+    if (this.options.positioningStrategy === 'fixed') {
       this.setMentionContainerPosition_Fixed();
     } else {
       this.setMentionContainerPosition_Normal();
@@ -535,7 +535,7 @@ class Mention {
     }
 
     // handle vertical positioning
-    if (this.options.defaultMenuOrientation === "top") {
+    if (this.options.defaultMenuOrientation === 'top') {
       // Attempt to align the mention container with the top of the quill editor
       if (this.options.fixMentionsToQuill) {
         topPos = -1 * (containerHeight + this.options.offsetTop);
@@ -577,12 +577,12 @@ class Mention {
     }
 
     if (topPos >= 0) {
-      this.options.mentionContainerClass.split(" ").forEach((className) => {
+      this.options.mentionContainerClass.split(' ').forEach((className) => {
         this.mentionContainer.classList.add(`${className}-bottom`);
         this.mentionContainer.classList.remove(`${className}-top`);
       });
     } else {
-      this.options.mentionContainerClass.split(" ").forEach((className) => {
+      this.options.mentionContainerClass.split(' ').forEach((className) => {
         this.mentionContainer.classList.add(`${className}-top`);
         this.mentionContainer.classList.remove(`${className}-bottom`);
       });
@@ -590,11 +590,11 @@ class Mention {
 
     this.mentionContainer.style.top = `${topPos}px`;
     this.mentionContainer.style.left = `${leftPos}px`;
-    this.mentionContainer.style.visibility = "visible";
+    this.mentionContainer.style.visibility = 'visible';
   }
 
   setMentionContainerPosition_Fixed() {
-    this.mentionContainer.style.position = "fixed";
+    this.mentionContainer.style.position = 'fixed';
     this.mentionContainer.style.height = null;
 
     const containerPos = this.quill.container.getBoundingClientRect();
@@ -644,16 +644,16 @@ class Mention {
 
     let placement;
 
-    if (this.options.defaultMenuOrientation === "top" && fitsTop) {
-      placement = "top";
-    } else if (this.options.defaultMenuOrientation === "bottom" && fitsBottom) {
-      placement = "bottom";
+    if (this.options.defaultMenuOrientation === 'top' && fitsTop) {
+      placement = 'top';
+    } else if (this.options.defaultMenuOrientation === 'bottom' && fitsBottom) {
+      placement = 'bottom';
     } else {
       // it doesnt fit either so put it where there's the most space
-      placement = availableSpaceBottom > availableSpaceTop ? "bottom" : "top";
+      placement = availableSpaceBottom > availableSpaceTop ? 'bottom' : 'top';
     }
 
-    if (placement === "bottom") {
+    if (placement === 'bottom') {
       topPos = relativeToPos.top + relativeToPos.height;
       if (!fitsBottom) {
         // shrink it to fit
@@ -661,7 +661,7 @@ class Mention {
         this.mentionContainer.style.height = `${availableSpaceBottom - 3}px`;
       }
 
-      this.options.mentionContainerClass.split(" ").forEach((className) => {
+      this.options.mentionContainerClass.split(' ').forEach((className) => {
         this.mentionContainer.classList.add(`${className}-bottom`);
         this.mentionContainer.classList.remove(`${className}-top`);
       });
@@ -674,7 +674,7 @@ class Mention {
         topPos = 3;
       }
 
-      this.options.mentionContainerClass.split(" ").forEach((className) => {
+      this.options.mentionContainerClass.split(' ').forEach((className) => {
         this.mentionContainer.classList.add(`${className}-top`);
         this.mentionContainer.classList.remove(`${className}-bottom`);
       });
@@ -682,14 +682,14 @@ class Mention {
 
     this.mentionContainer.style.top = `${topPos}px`;
     this.mentionContainer.style.left = `${leftPos}px`;
-    this.mentionContainer.style.visibility = "visible";
+    this.mentionContainer.style.visibility = 'visible';
   }
 
   getTextBeforeCursor() {
     const startPos = Math.max(0, this.cursorPos - this.options.maxChars);
     const textBeforeCursorPos = this.quill.getText(
       startPos,
-      this.cursorPos - startPos
+      this.cursorPos - startPos,
     );
     return textBeforeCursorPos;
   }
@@ -702,21 +702,21 @@ class Mention {
     const textBeforeCursor = this.getTextBeforeCursor();
     const { mentionChar, mentionCharIndex } = getMentionCharIndex(
       textBeforeCursor,
-      this.options.mentionDenotationChars
+      this.options.mentionDenotationChars,
     );
 
     if (
       hasValidMentionCharIndex(
         mentionCharIndex,
         textBeforeCursor,
-        this.options.isolateCharacter
+        this.options.isolateCharacter,
       )
     ) {
       const mentionCharPos =
         this.cursorPos - (textBeforeCursor.length - mentionCharIndex);
       this.mentionCharPos = mentionCharPos;
       const textAfter = textBeforeCursor.substring(
-        mentionCharIndex + mentionChar.length
+        mentionCharIndex + mentionChar.length,
       );
       if (
         textAfter.length >= this.options.minChars &&
@@ -739,7 +739,7 @@ class Mention {
             this.existingSourceExecutionToken = null;
             this.renderList(mentionChar, data, searchTerm);
           },
-          mentionChar
+          mentionChar,
         );
       } else {
         if (this.existingSourceExecutionToken) {
@@ -763,7 +763,7 @@ class Mention {
   }
 
   onTextChange(delta, oldDelta, source) {
-    if (source === "user") {
+    if (source === 'user') {
       this.onSomethingChange();
     }
   }
@@ -784,6 +784,6 @@ class Mention {
   }
 }
 
-Quill.register("modules/mention", Mention);
+Quill.register('modules/mention', Mention);
 
 export default Mention;

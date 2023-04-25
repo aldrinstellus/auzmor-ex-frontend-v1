@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 
 import { getItem } from './persist';
 
@@ -8,20 +8,25 @@ class ApiService {
   constructor() {
     this.instance = axios.create({
       baseURL: process.env.REACT_APP_BACKEND_BASE_URL,
-      withCredentials: true,
     });
 
     this.instance.interceptors.request.use((config: any) => {
       let headers = {};
-      const token = getItem(process.env.SESSION_KEY || 'uat');
+      const token = getItem(process.env.REACT_APP_SESSION_KEY || 'uat');
       if (token) {
         headers = {
           ...headers,
           authorization: `Bearer ${token}`,
         };
       }
-      config.headers = headers;
-      return config;
+
+      return {
+        ...config,
+        headers: {
+          ...headers,
+          ...config.headers,
+        },
+      };
     });
   }
 
