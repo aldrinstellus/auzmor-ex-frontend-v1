@@ -1,6 +1,6 @@
 import React, { MouseEventHandler, useMemo } from 'react';
 import clsx from 'clsx';
-import { Icon } from '@auzmorui/component-library.components.icon';
+import Icon from 'components/Icon';
 
 export enum Variant {
   Primary = 'PRIMARY',
@@ -14,11 +14,18 @@ export enum Size {
   Small = 'SMALL',
 }
 
+export enum Type {
+  Button = 'BUTTON',
+  Reset = 'RESET',
+  Submit = 'SUBMIT',
+}
+
 export type ButtonProps = {
+  label: string;
   variant?: Variant;
   size?: Size;
+  type?: Type;
   disabled?: boolean;
-  label: string;
   onClick?: MouseEventHandler<Element>;
   leftIcon?: string;
   rightIcon?: string;
@@ -28,6 +35,7 @@ export type ButtonProps = {
 const Button = ({
   variant = Variant.Primary,
   size = Size.Medium,
+  type = Type.Button,
   disabled = false,
   label = 'Click Me!',
   leftIcon = '',
@@ -71,7 +79,7 @@ const Button = ({
 
   return (
     <button
-      type="button"
+      type={type.toLowerCase() as any}
       className={styles}
       disabled={disabled}
       onClick={onClick}

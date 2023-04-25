@@ -1,17 +1,15 @@
 import clsx from 'clsx';
-import React, { ReactNode } from 'react';
-import PeopleIcon from './components/People';
+import React from 'react';
+import { iconMap } from './iconMap/index';
 
 export type IconProps = {
   name: string;
   size?: number;
+  fill?: string;
+  stroke?: string;
   onClick?: (...param: any) => void | null;
   className?: string;
   hover?: boolean;
-};
-
-const iconMap: Record<string, any> = {
-  people: PeopleIcon,
 };
 
 const Icon: React.FC<IconProps> = ({

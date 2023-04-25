@@ -1,20 +1,17 @@
 import { useMutation } from '@tanstack/react-query';
 import { login } from 'queries/auth';
 import React, { useEffect } from 'react';
-import { Variant as InputVariant } from '@auzmorui/component-library.components.input';
+import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
-import { Layout, FieldType } from '@auzmorui/component-library.components.form';
+import Layout, { FieldType } from 'components/Form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  Button,
-  Variant as ButtonVariant,
-  Type as ButtonType,
-} from '@auzmorui/component-library.components.button';
-import { Divider } from '@auzmorui/component-library.components.divider';
+import Button, { Variant as ButtonVariant } from 'components/Button';
+import Divider from 'components/Divider';
 import { Logo } from 'components/Logo';
+import { redirectWithToken } from 'utils/misc';
 
-interface ILoginProps { }
+interface ILoginProps {}
 
 interface IForm {
   email: string;
@@ -33,25 +30,17 @@ const schema = yup.object({
 
 const Login: React.FC<ILoginProps> = () => {
   const loginMutation = useMutation((formData: any) => login(formData), {
-    onSuccess: (data) => {
-      if (process.env.NODE_ENV === 'development') {
-        window.location.replace(
-          `http://localhost:3000?accessToken=${data.result.data.uat}`,
-        );
-      } else {
-        window.location.replace(
-          `${data.result.data.redirectUrl}?accessToken=${data.result.data.uat}`,
-        );
-      }
+    onError: (err: any) => {
+      console.log('>>>>', err);
     },
+    onSuccess: (data) =>
+      redirectWithToken(data.result.data.redirectUrl, data.result.data.uat),
   });
 
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
-    getValues,
-    setValue,
   } = useForm<IForm>({
     resolver: yupResolver(schema),
     defaultValues: { domain: '' },
@@ -67,9 +56,8 @@ const Login: React.FC<ILoginProps> = () => {
       name: 'email',
       label: 'Work Email / Username',
       error: errors.email?.message,
+      dataTestId: 'login-email',
       control,
-      getValues,
-      onChange: (data: string, e: React.ChangeEvent) => { },
     },
     {
       type: FieldType.Input,
@@ -80,13 +68,13 @@ const Login: React.FC<ILoginProps> = () => {
       label: 'Password',
       rightIcon: 'people',
       error: errors.password?.message,
+      dataTestId: 'login-password',
       control,
-      getValues,
-      onChange: (data: string, e: React.ChangeEvent) => { },
     },
   ];
 
   const onSubmit = (formData: IForm) => {
+    console.log('HELLLO>>>', formData);
     loginMutation.mutate(formData);
   };
 
@@ -108,7 +96,6 @@ const Login: React.FC<ILoginProps> = () => {
               label={'Sign In'}
               className="w-full mt-8"
               disabled={!isValid}
-              type={ButtonType.Submit}
             />
           </form>
           <div className="flex items-center mt-8">

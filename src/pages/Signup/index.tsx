@@ -11,6 +11,7 @@ import {
 import { Logo } from 'components/Logo';
 import { useMutation } from '@tanstack/react-query';
 import { IOrganization, signup } from 'queries/organization';
+import { redirectWithToken } from 'utils/misc';
 
 interface IForm {
   workEmail: string;
@@ -37,25 +38,17 @@ const schema = yup.object({
   privacyPolicy: yup.boolean().required('Required field').oneOf([true]),
 });
 
-export interface ISignupProps { }
+export interface ISignupProps {}
 
 const Signup: React.FC<ISignupProps> = () => {
   const signupMutation = useMutation(
     (formData: IOrganization) => signup(formData),
     {
-      onSuccess: (data) => {
-        if (process.env.NODE_ENV === 'development') {
-          window.location.replace(
-            `http://localhost:3000?accessToken=${data.result.data.uat}`,
-          );
-        } else {
-          window.location.replace(
-            `${data.result.data.redirectUrl}?accessToken=${data.result.data.uat}`,
-          );
-        }
-      },
+      onSuccess: (data) =>
+        redirectWithToken(data.result.data.redirectUrl, data.result.data.uat),
     },
   );
+
   const {
     control,
     handleSubmit,
@@ -63,8 +56,9 @@ const Signup: React.FC<ISignupProps> = () => {
     formState: { errors, isValid },
   } = useForm<IForm>({
     resolver: yupResolver(schema),
-    mode: 'onBlur',
+    mode: 'onChange',
   });
+
   const fields = [
     {
       type: FieldType.Input,
@@ -76,7 +70,7 @@ const Signup: React.FC<ISignupProps> = () => {
       error: errors.workEmail?.message,
       control,
       getValues,
-      onChange: (data: string, e: React.ChangeEvent) => { },
+      onChange: (data: string, e: React.ChangeEvent) => {},
     },
     {
       type: FieldType.Input,
@@ -88,7 +82,7 @@ const Signup: React.FC<ISignupProps> = () => {
       error: errors.domain?.message,
       control,
       getValues,
-      onChange: (data: string, e: React.ChangeEvent) => { },
+      onChange: (data: string, e: React.ChangeEvent) => {},
     },
     {
       type: FieldType.Input,
@@ -101,7 +95,7 @@ const Signup: React.FC<ISignupProps> = () => {
       error: errors.password?.message,
       control,
       getValues,
-      onChange: (data: string, e: React.ChangeEvent) => { },
+      onChange: (data: string, e: React.ChangeEvent) => {},
     },
     {
       type: FieldType.Input,
@@ -114,7 +108,7 @@ const Signup: React.FC<ISignupProps> = () => {
       error: errors.confirmPassword?.message,
       control,
       getValues,
-      onChange: (data: string, e: React.ChangeEvent) => { },
+      onChange: (data: string, e: React.ChangeEvent) => {},
     },
     {
       type: FieldType.Checkbox,
@@ -124,7 +118,7 @@ const Signup: React.FC<ISignupProps> = () => {
       error: errors.privacyPolicy?.message,
       control,
       getValues,
-      onChange: (data: string, e: React.ChangeEvent) => { },
+      onChange: (data: string, e: React.ChangeEvent) => {},
     },
   ];
   return (
@@ -157,8 +151,8 @@ const Signup: React.FC<ISignupProps> = () => {
             />
           </form>
         </div>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 };
 
