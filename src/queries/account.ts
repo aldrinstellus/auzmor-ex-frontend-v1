@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 
 interface ILogin {
@@ -10,4 +11,17 @@ export const login = async (payload: ILogin) => {
   return data;
 };
 
-export const signup = async () => {};
+export interface IOrganization {
+  domain: string;
+  workEmail: string;
+  password: string;
+}
+
+export const signup = async (payload: IOrganization) => {
+  return await apiService.post('/organizations/signup', payload);
+};
+
+export const fetchMe = async () => {
+  const { data } = await apiService.get('/users/me');
+  return data;
+};

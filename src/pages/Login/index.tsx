@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { login } from 'queries/account';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
@@ -35,12 +35,7 @@ const schema = yup.object({
 });
 
 const Login: React.FC<ILoginProps> = () => {
-  const [err, setErr] = useState<boolean>(false);
-
-  const loginMutation = useMutation((formData: any) => login(formData), {
-    onError: () => {
-      setErr(true);
-    },
+  const loginMutation = useMutation((formData: IForm) => login(formData), {
     onSuccess: (data) =>
       redirectWithToken(data.result.data.redirectUrl, data.result.data.uat),
   });
@@ -57,7 +52,7 @@ const Login: React.FC<ILoginProps> = () => {
   });
 
   useEffect(() => {
-    setErr(false);
+    loginMutation.reset();
   }, [watch('email'), watch('password')]);
 
   const fields = [
@@ -68,7 +63,7 @@ const Login: React.FC<ILoginProps> = () => {
       placeholder: 'Enter your email address / username',
       name: 'email',
       label: 'Work Email / Username',
-      error: err || errors.email?.message,
+      error: loginMutation.isError || errors.email?.message,
       dataTestId: 'login-email',
       control,
     },
@@ -79,7 +74,7 @@ const Login: React.FC<ILoginProps> = () => {
       name: 'password',
       label: 'Password',
       rightIcon: 'people',
-      error: err || errors.password?.message,
+      error: loginMutation.isError || errors.password?.message,
       dataTestId: 'login-password',
       control,
     },
@@ -101,7 +96,7 @@ const Login: React.FC<ILoginProps> = () => {
         <div className="w-full max-w-[440px]">
           <div className="font-extrabold text-neutral-900 text-4xl">Signin</div>
           <form className="mt-16" onSubmit={handleSubmit(onSubmit)}>
-            {err && (
+            {!!loginMutation.isError && (
               <div className="mb-8">
                 <Banner
                   title="Email address or password is incorrect"
