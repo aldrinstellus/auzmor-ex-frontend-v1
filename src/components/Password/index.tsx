@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
-import { Control, UseFormGetValues, useController } from 'react-hook-form';
-import { Icon } from '@auzmorui/component-library.components.icon';
+import { Control, useController } from 'react-hook-form';
+import Icon from 'components/Icon';
 
 export enum Variant {
   Text = 'TEXT',
@@ -33,8 +33,6 @@ export type PasswordProps = {
   label?: string;
   onLeftIconClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   onRightIconClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-  getValues?: UseFormGetValues<any>;
-  onChange?: (data: string, e: React.ChangeEvent) => void;
 };
 
 const Password: React.FC<PasswordProps> = ({
@@ -56,8 +54,6 @@ const Password: React.FC<PasswordProps> = ({
   label,
   onLeftIconClick,
   onRightIconClick,
-  getValues,
-  onChange,
 }) => {
   const { field } = useController({
     name,
@@ -131,7 +127,7 @@ const Password: React.FC<PasswordProps> = ({
   );
 
   return (
-    <div className={`${className}`}>
+    <div className={`relative ${className}`}>
       <div className={labelStyle}>{label}</div>
       <label
         className={`flex justify-between flex-1 relative items-center my-1 w-full`}
@@ -153,10 +149,7 @@ const Password: React.FC<PasswordProps> = ({
             data-testid={dataTestId}
             defaultValue={defaultValue}
             ref={field.ref}
-            onChange={(e) => {
-              field.onChange(e);
-              onChange?.(getValues?.(field.name), e);
-            }}
+            onChange={field.onChange}
             onBlur={field.onBlur}
           />
         </div>
@@ -166,7 +159,9 @@ const Password: React.FC<PasswordProps> = ({
           </div>
         )}
       </label>
-      <div className={`text-sm truncate ${helpTextStyles}`}>
+      <div
+        className={`absolute -bottom-4 text-xs truncate leading-tight ${helpTextStyles}`}
+      >
         {error || helpText || ' '}
       </div>
     </div>

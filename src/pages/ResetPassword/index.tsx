@@ -1,9 +1,9 @@
 import React from 'react';
 import { Logo } from 'components/Logo';
 import { Success } from 'components/Logo';
-import { FieldType } from '@auzmorui/component-library.components.form';
-import { Button } from '@auzmorui/component-library.components.button';
-import { Variant as InputVariant } from '@auzmorui/component-library.components.input';
+import { FieldType } from 'components/Form';
+import Button from 'components/Button';
+import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';

@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
-import { Control, UseFormGetValues, useController } from 'react-hook-form';
-import { Icon } from '@auzmorui/component-library.components.icon';
+import { Control, useController } from 'react-hook-form';
+import Icon from 'components/Icon';
 
 export enum Variant {
   Text = 'TEXT',
@@ -127,7 +127,7 @@ const Input: React.FC<InputProps> = ({
   );
 
   return (
-    <div className={`${className}`}>
+    <div className={`relative ${className}`}>
       <div className={labelStyle}>{label}</div>
       <label
         className={`flex justify-between flex-1 relative items-center my-1 w-full`}
@@ -159,7 +159,9 @@ const Input: React.FC<InputProps> = ({
           </div>
         )}
       </label>
-      <div className={`text-sm truncate ${helpTextStyles}`}>
+      <div
+        className={`absolute -bottom-4 text-xs truncate leading-tight ${helpTextStyles}`}
+      >
         {error || helpText || ' '}
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHover } from '@auzmorui/component-library.hooks.use-hover';
+import useHover from 'hooks/useHover';
 import { default as ChartFilled } from './ChartFilled';
 import { default as ChartOutline } from './ChartOutline';
 

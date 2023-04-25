@@ -26,6 +26,7 @@ export type ButtonProps = {
   size?: Size;
   type?: Type;
   disabled?: boolean;
+  loading?: boolean;
   onClick?: MouseEventHandler<Element>;
   leftIcon?: string;
   rightIcon?: string;
@@ -37,6 +38,7 @@ const Button = ({
   size = Size.Medium,
   type = Type.Button,
   disabled = false,
+  loading = false,
   label = 'Click Me!',
   leftIcon = '',
   rightIcon = '',
@@ -59,13 +61,13 @@ const Button = ({
             variant === Variant.Tertiary,
         },
         {
-          'py-2 px-4 text-sm': size === Size.Small,
+          'py-1 px-4 text-sm': size === Size.Small,
         },
         {
           'py-2 px-4 text-base': size === Size.Medium,
         },
         {
-          'py-2 px-6 text-base': size === Size.Large,
+          'py-2.5 px-6 text-base': size === Size.Large,
         },
         {
           'font-manrope font-bold': true,
@@ -81,7 +83,7 @@ const Button = ({
     <button
       type={type.toLowerCase() as any}
       className={styles}
-      disabled={disabled}
+      disabled={disabled || loading}
       onClick={onClick}
     >
       {leftIcon && <Icon name={leftIcon} />}

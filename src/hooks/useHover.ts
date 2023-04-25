@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-export const useHover = () => {
+const useHover = () => {
   const [hovered, setHovered] = useState(false);
 
   const eventHandlers = useMemo<any>(
@@ -17,3 +17,5 @@ export const useHover = () => {
 
   return [hovered, eventHandlers];
 };
+
+export default useHover;

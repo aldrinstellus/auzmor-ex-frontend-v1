@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { MouseEventHandler, useMemo } from 'react';
-import { Icon } from '@auzmorui/component-library.components.icon';
+import Icon from 'components/Icon';
 
 export type ChipsProps = {
   label: string;

@@ -1,13 +1,10 @@
 import React from 'react';
-import { Variant as InputVariant } from '@auzmorui/component-library.components.input';
+import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
-import { Layout, FieldType } from '@auzmorui/component-library.components.form';
+import Layout, { FieldType } from 'components/Form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  Button,
-  Type as ButtonType,
-} from '@auzmorui/component-library.components.button';
+import Button, { Type as ButtonType } from 'components/Button';
 import { Logo } from 'components/Logo';
 import { useMutation } from '@tanstack/react-query';
 import { IOrganization, signup } from 'queries/organization';

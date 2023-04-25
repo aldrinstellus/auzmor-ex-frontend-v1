@@ -1,12 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
 import { login } from 'queries/auth';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import Button, { Variant as ButtonVariant } from 'components/Button';
+import Button, {
+  Variant as ButtonVariant,
+  Type as ButtonType,
+  Size,
+} from 'components/Button';
 import Divider from 'components/Divider';
 import { Logo } from 'components/Logo';
 import { redirectWithToken } from 'utils/misc';
@@ -30,9 +34,6 @@ const schema = yup.object({
 
 const Login: React.FC<ILoginProps> = () => {
   const loginMutation = useMutation((formData: any) => login(formData), {
-    onError: (err: any) => {
-      console.log('>>>>', err);
-    },
     onSuccess: (data) =>
       redirectWithToken(data.result.data.redirectUrl, data.result.data.uat),
   });
@@ -60,8 +61,7 @@ const Login: React.FC<ILoginProps> = () => {
       control,
     },
     {
-      type: FieldType.Input,
-      variant: InputVariant.Password,
+      type: FieldType.Password,
       className: 'w-full mt-8',
       placeholder: 'Enter password',
       name: 'password',
@@ -74,7 +74,6 @@ const Login: React.FC<ILoginProps> = () => {
   ];
 
   const onSubmit = (formData: IForm) => {
-    console.log('HELLLO>>>', formData);
     loginMutation.mutate(formData);
   };
 
@@ -96,6 +95,9 @@ const Login: React.FC<ILoginProps> = () => {
               label={'Sign In'}
               className="w-full mt-8"
               disabled={!isValid}
+              size={Size.Large}
+              type={ButtonType.Submit}
+              loading={loginMutation.isLoading}
             />
           </form>
           <div className="flex items-center mt-8">
@@ -108,7 +110,9 @@ const Login: React.FC<ILoginProps> = () => {
           <Button
             label={'Sign In via SSO'}
             variant={ButtonVariant.Secondary}
+            size={Size.Large}
             className="w-full mt-8"
+            loading={loginMutation.isLoading}
           />
         </div>
       </div>

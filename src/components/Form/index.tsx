@@ -1,6 +1,6 @@
 import React from 'react';
-import { Checkbox } from '@auzmorui/component-library.components.checkbox';
-import { Input } from '@auzmorui/component-library.components.input';
+import Checkbox from 'components/Checkbox';
+import Input from 'components/Input';
 import Password from 'components/Password';
 
 export enum FieldType {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHover } from '@auzmorui/component-library.hooks.use-hover';
+import useHover from 'hooks/useHover';
 import { default as PeopleFilled } from './PeopleFilled';
 import { default as PeopleOutline } from './PeopleOutline';
 
