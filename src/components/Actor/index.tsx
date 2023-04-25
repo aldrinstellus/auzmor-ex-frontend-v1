@@ -1,6 +1,5 @@
 import React from 'react';
-import { Avatar } from '@auzmorui/component-library.components.avatar';
-
+import Avatar from 'components/Avatar';
 import Earth from 'images/earth.svg';
 import Ellipsis from 'images/ellipsis.svg';
 import { CREATE_POST, VIEW_POST } from './constant';

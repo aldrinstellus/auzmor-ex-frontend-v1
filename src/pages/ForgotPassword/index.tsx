@@ -1,9 +1,90 @@
 import React from 'react';
+import { Logo } from 'components/Logo';
+import { Success } from 'components/Logo';
+import { FieldType } from 'components/Form';
+import Button from 'components/Button';
+import { Variant as InputVariant } from 'components/Input';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Link } from 'react-router-dom';
+// import PasswordComponent from 'components/PasswordComponent';
 
 interface IForgotPasswordProps {}
+interface IForm {
+  email: string;
+}
+
+const schema = yup.object({
+  email: yup.string().email('Please enter valid email address'),
+});
 
 const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
-  return <div>Forget Password Page</div>;
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+  } = useForm<IForm>({
+    resolver: yupResolver(schema),
+    mode: 'onBlur',
+  });
+
+  const fields = [
+    {
+      type: FieldType.Input,
+      variant: InputVariant.Text,
+      className: 'w-full',
+      placeholder: 'Enter your email address / username',
+      name: 'email',
+      label: 'Work Email / Username',
+      error: errors.email?.message,
+      control,
+      getValues,
+      onChange: (data: string, e: React.ChangeEvent) => {},
+    },
+  ];
+
+  return (
+    <div className="flex h-screen w-screen">
+      <div className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover" />
+      <div className="w-1/2 h-full flex justify-center items-center relative">
+        <div className="absolute top-8 right-8">
+          <Logo />
+        </div>
+        <div className="w-full max-w-[440px]">
+          {2 + 2 === 4 ? (
+            <>
+              <div className="font-extrabold text-neutral-900 text-4xl">
+                Forgot Password
+              </div>
+              <form className="mt-16" onSubmit={handleSubmit(() => {})}>
+                {/* <PasswordComponent fields={fields} /> */}
+                <Button
+                  label={'Reset Via Email'}
+                  disabled
+                  className="w-full mt-8"
+                />
+              </form>
+            </>
+          ) : (
+            <>
+              <div className="text-center flex justify-center items-center flex-col space-y-9">
+                <Success />
+                <div>
+                  Email has been sent to <b>kate.banks@office.com</b> with
+                  instructions on resetting your password.
+                </div>
+              </div>
+              <Link to="/login">
+                <Button label={'Back to Sign In'} className="w-full mt-8" />
+              </Link>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default ForgotPassword;

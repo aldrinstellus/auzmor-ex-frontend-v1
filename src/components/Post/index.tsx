@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from 'react';
-import { Card } from '@auzmorui/component-library.components.card';
 import Like from 'images/like.svg';
+import Card from 'components/Card';
 
 import Comments from 'images/comments.svg';
 

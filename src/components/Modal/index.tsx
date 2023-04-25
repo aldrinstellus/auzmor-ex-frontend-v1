@@ -1,63 +1,81 @@
-import React, { ReactNode } from 'react';
-import Close from 'images/close.svg';
+import React, { ReactNode, Fragment } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
 
-type ModalProps = {
+import IconButton, { Variant as IconVariant } from 'components/IconButton';
+
+export type ModalProps = {
   open: boolean;
-  setOpen: (show: boolean) => void;
-  title: string;
+  closeModal: () => void | null;
   body: ReactNode | null;
-  footer: ReactNode | null;
+  title?: string;
+  footer?: ReactNode | null;
 };
 
 const Modal: React.FC<ModalProps> = ({
   open,
-  setOpen,
-  title,
+  closeModal,
+  title = '',
   body,
-  footer,
+  footer = null,
 }) => {
   return (
-    <div>
-      {open ? (
-        <>
-          <div
-            className="justify-center mt-12 flex 
-            overflow-x-hidden 
-            overflow-y-auto 
-            fixed 
-            inset-5 z-50 
-            outline-none focus:outline-none w-full"
+    <>
+      <Transition appear show={open} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
           >
-            <div className="relative w-[38%] my-6 max-w-[1600]">
-              <div className="border-0 rounded-9xl shadow-lg w-full bg-white outline-none focus:outline-none">
-                <div className="flex items-center justify-between h-14 p-4 border-b border-solid">
-                  <h3 className="text-lg text-black font-['manrope'] font-extrabold">
-                    {title}
-                  </h3>
-                  <button
-                    className="p-1 ml-auto bg-transparent border-0 text-black opacity-1 float-right leading-none outline-none focus:outline-none"
-                    onClick={() => setOpen(false)}
-                  >
-                    <span className="bg-transparent text-black opacity-1 h-8 w-8 text-3xl block outline-none focus:outline-none">
-                      ×
-                    </span>
-                  </button>
-                </div>
-                <div className="relative">
-                  <div className="text-lg leading-relaxed">
+            <div className="fixed inset-0 bg-black bg-opacity-25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-white text-left align-middle shadow-xl transition-all">
+                  {!!title && (
+                    <div className="flex flex-wrap">
+                      <Dialog.Title
+                        as="h3"
+                        className="text-lg text-[#000000] p-4 font-bold flex-[50%]"
+                      >
+                        {title}
+                      </Dialog.Title>
+                      <IconButton
+                        onClick={closeModal}
+                        icon={'X'}
+                        className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"
+                        variant={IconVariant.Primary}
+                      />
+                    </div>
+                  )}
+                  <div className="p-6">
                     <p className="text-sm text-neutral-900">{body}</p>
                   </div>
-                </div>
-                <div className="border-t border-solid border-slate-200 rounded-b bg-blue-50">
-                  {footer}
-                </div>
-              </div>
+
+                  {!!footer && (
+                    <div className="mt-[16px] bg-blue-50">{footer}</div>
+                  )}
+                </Dialog.Panel>
+              </Transition.Child>
             </div>
           </div>
-          <div className="opacity-50 fixed inset-2 z-40 bg-black"></div>
-        </>
-      ) : null}
-    </div>
+        </Dialog>
+      </Transition>
+    </>
   );
 };
 
