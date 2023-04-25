@@ -41,6 +41,13 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
     // set/update to localstorage
     if (token) {
       setItem(process.env.SESSION_KEY || 'uat', token);
+      // const refresh =
+      //   window.location.protocol +
+      //   '//' +
+      //   window.location.host +
+      //   window.location.pathname +
+      //   '?arg=1';
+      // window.history.pushState({ path: refresh }, '', refresh);
     }
 
     // if token in LS, make /me api call and update setUser
