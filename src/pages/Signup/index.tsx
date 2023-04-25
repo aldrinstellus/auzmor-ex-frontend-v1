@@ -1,14 +1,17 @@
 import React from 'react';
-import { Variant as InputVariant } from '@auzmorui/component-library.components.input';
+import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
-import { Layout, FieldType } from '@auzmorui/component-library.components.form';
+import Layout, { FieldType } from 'components/Form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button } from '@auzmorui/component-library.components.button';
-import Logo from 'components/Logo';
+import Button, { Type as ButtonType } from 'components/Button';
+import { Logo } from 'components/Logo';
+import { useMutation } from '@tanstack/react-query';
+import { IOrganization, signup } from 'queries/organization';
+import { redirectWithToken } from 'utils/misc';
 
 interface IForm {
-  email: string;
+  workEmail: string;
   domain: string;
   password: string;
   confirmPassword: string;
@@ -16,7 +19,7 @@ interface IForm {
 }
 
 const schema = yup.object({
-  email: yup
+  workEmail: yup
     .string()
     .email('Please enter valid email address')
     .required('Required field'),
@@ -35,6 +38,14 @@ const schema = yup.object({
 export interface ISignupProps {}
 
 const Signup: React.FC<ISignupProps> = () => {
+  const signupMutation = useMutation(
+    (formData: IOrganization) => signup(formData),
+    {
+      onSuccess: (data) =>
+        redirectWithToken(data.result.data.redirectUrl, data.result.data.uat),
+    },
+  );
+
   const {
     control,
     handleSubmit,
@@ -42,17 +53,18 @@ const Signup: React.FC<ISignupProps> = () => {
     formState: { errors, isValid },
   } = useForm<IForm>({
     resolver: yupResolver(schema),
-    mode: 'onBlur',
+    mode: 'onChange',
   });
+
   const fields = [
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
       className: 'w-full',
       placeholder: 'Enter your email address',
-      name: 'email',
+      name: 'workEmail',
       label: 'Work Email*',
-      error: errors.email?.message,
+      error: errors.workEmail?.message,
       control,
       getValues,
       onChange: (data: string, e: React.ChangeEvent) => {},
@@ -117,12 +129,22 @@ const Signup: React.FC<ISignupProps> = () => {
           <div className="font-extrabold text-neutral-900 text-4xl">
             Sign Up
           </div>
-          <form className="mt-16" onSubmit={handleSubmit(() => {})}>
+          <form
+            className="mt-16"
+            onSubmit={handleSubmit((data) =>
+              signupMutation.mutate({
+                workEmail: data.workEmail,
+                password: data.password,
+                domain: data.domain,
+              }),
+            )}
+          >
             <Layout className="w-full" fields={fields} />
             <Button
               label={'Sign Up'}
               disabled={!isValid}
               className="w-full mt-8"
+              type={ButtonType.Submit}
             />
           </form>
         </div>

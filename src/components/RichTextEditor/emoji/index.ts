@@ -1,4 +1,3 @@
-/* Library - Quill-emoji */
 import Quill from 'quill';
 import Fuse from 'fuse.js';
 import { emojiList } from './emojiList';

@@ -1,8 +1,11 @@
 import React from 'react';
 import OfficeLogoSvg from './images/OfficeLogo.svg';
+import SuccessLogo from './images/Vector.svg'
 
-const Logo = () => {
-  return <img src={OfficeLogoSvg} />;
+export const Logo = () => {
+  return <img src={OfficeLogoSvg} alt="Office Lofo" />;
 };
 
-export default Logo;
+export const Success = () => {
+  return <img src={SuccessLogo} alt="Success Logo" />
+};

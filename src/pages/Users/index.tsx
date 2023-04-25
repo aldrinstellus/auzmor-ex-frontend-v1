@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Variant } from '@auzmorui/component-library.components.button';
+import Button, { Variant } from 'components/Button';
 import UserCard from '../../components/UserCard';
 import TabSwitch from '../../components/TabSwitch';
 import { userList } from '../../components/mockUtils';

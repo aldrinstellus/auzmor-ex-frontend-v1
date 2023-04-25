@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Card } from '@auzmorui/component-library.components.card';
-import { Avatar } from '@auzmorui/component-library.components.avatar';
-
-import { Button } from '@auzmorui/component-library.components.button';
+import Card from 'components/Card';
+import Avatar from 'components/Avatar';
+import Button from 'components/Button';
 
 import Media from 'images/media.svg';
 import Shoutout from 'images/shoutout.svg';
@@ -89,7 +88,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({
 
       <Modal
         open={open}
-        setOpen={setOpen}
+        closeModal={() => setOpen(false)}
         title="Create a post"
         body={<CreatePost onChangeEditor={onEditorContentChanged} />}
         footer={
