@@ -1,5 +1,6 @@
 import React, { memo, useRef, useState } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
+import { DeltaStatic } from 'quill';
 import 'react-quill/dist/quill.snow.css';
 import 'quill-emoji/dist/quill-emoji.css';
 import './mentions/quill.mention';
@@ -14,6 +15,7 @@ import EmojiToolbar from './emoji';
 
 export interface EditorContentChanged {
   html: string;
+  json: DeltaStatic;
 }
 
 export type QuillEditorProps = {
@@ -29,7 +31,7 @@ const RichTextEditor: React.FC<QuillEditorProps> = ({
 }) => {
   const [editorHtmlValue, setEditorHtmlValue] = useState<string>('');
   const [editorTextValue, setEditorTextValue] = useState<string>('');
-  const [editorJsonValue, setEditorJsonValue] = useState<string>('');
+  const [editorJsonValue, setEditorJsonValue] = useState<any>({});
   const reactQuillRef = useRef<ReactQuill>(null);
 
   Quill.register(
@@ -46,12 +48,11 @@ const RichTextEditor: React.FC<QuillEditorProps> = ({
   const onChangeEditorContent = (content: string) => {
     setEditorHtmlValue(content);
     setEditorTextValue(content.replace(/<[^>]+>/g, ''));
-    setEditorJsonValue(
-      JSON.stringify(reactQuillRef.current?.getEditor().getContents()),
-    );
+    setEditorJsonValue(reactQuillRef.current?.getEditor().getContents());
     if (onChangeEditor) {
       onChangeEditor({
         html: content,
+        json: reactQuillRef.current?.getEditor().getContents() as DeltaStatic,
       });
     }
   };

@@ -8,12 +8,14 @@ import Actor from 'components/Actor';
 import { VIEW_POST } from 'components/Actor/constant';
 import Commentspage from 'components/Comments/index';
 import { Likes } from 'components/Likes';
+import { RenderQuillDelta } from 'components/RenderQuillDelta';
+import { DeltaStatic } from 'quill';
 
 type PostProps = {
-  content: any;
+  data: DeltaStatic;
 };
 
-const Post: React.FC<PostProps> = ({ content }) => {
+const Post: React.FC<PostProps> = (props: PostProps) => {
   const [showComments, setShowComments] = useState(false);
   const [name, setName] = useState<string>('Like');
   const [likeIcon, setLikeIcon] = useState<string>(Like);
@@ -31,7 +33,7 @@ const Post: React.FC<PostProps> = ({ content }) => {
       />
       <div className="mx-6">
         {/* Post Content */}
-        <div dangerouslySetInnerHTML={{ __html: content }} />
+        <RenderQuillDelta delta={props?.data as DeltaStatic} />
         {/* Media Display */}
         <div></div>
         {/* Reaction and comment repost */}
