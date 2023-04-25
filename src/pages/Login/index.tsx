@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { login } from 'queries/account';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
@@ -15,6 +15,7 @@ import Divider from 'components/Divider';
 import { Logo } from 'components/Logo';
 import { redirectWithToken } from 'utils/misc';
 import { Link } from 'react-router-dom';
+import Banner, { Variant as BannerVariant } from 'components/Banner';
 
 interface ILoginProps {}
 
@@ -34,12 +35,18 @@ const schema = yup.object({
 });
 
 const Login: React.FC<ILoginProps> = () => {
+  const [err, setErr] = useState<boolean>(false);
+
   const loginMutation = useMutation((formData: any) => login(formData), {
+    onError: () => {
+      setErr(true);
+    },
     onSuccess: (data) =>
       redirectWithToken(data.result.data.redirectUrl, data.result.data.uat),
   });
 
   const {
+    watch,
     control,
     handleSubmit,
     formState: { errors, isValid },
@@ -49,6 +56,10 @@ const Login: React.FC<ILoginProps> = () => {
     mode: 'onChange',
   });
 
+  useEffect(() => {
+    setErr(false);
+  }, [watch('email'), watch('password')]);
+
   const fields = [
     {
       type: FieldType.Input,
@@ -57,7 +68,7 @@ const Login: React.FC<ILoginProps> = () => {
       placeholder: 'Enter your email address / username',
       name: 'email',
       label: 'Work Email / Username',
-      error: errors.email?.message,
+      error: err || errors.email?.message,
       dataTestId: 'login-email',
       control,
     },
@@ -68,11 +79,13 @@ const Login: React.FC<ILoginProps> = () => {
       name: 'password',
       label: 'Password',
       rightIcon: 'people',
-      error: errors.password?.message,
+      error: err || errors.password?.message,
       dataTestId: 'login-password',
       control,
     },
   ];
+
+  useEffect(() => {}, []);
 
   const onSubmit = (formData: IForm) => {
     loginMutation.mutate(formData);
@@ -88,9 +101,18 @@ const Login: React.FC<ILoginProps> = () => {
         <div className="w-full max-w-[440px]">
           <div className="font-extrabold text-neutral-900 text-4xl">Signin</div>
           <form className="mt-16" onSubmit={handleSubmit(onSubmit)}>
+            {err && (
+              <div className="mb-8">
+                <Banner
+                  title="Email address or password is incorrect"
+                  variant={BannerVariant.Error}
+                />
+              </div>
+            )}
+
             <Layout fields={fields} />
             <div className="flex justify-end mt-4">
-            <Link to="/forgot-password">
+              <Link to="/forgot-password">
                 <div className="font-bold text-sm">Forgot Password?</div>
               </Link>
             </div>
