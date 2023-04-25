@@ -45,6 +45,7 @@ const Login: React.FC<ILoginProps> = () => {
       }
     },
   });
+
   const {
     control,
     handleSubmit,
@@ -53,12 +54,9 @@ const Login: React.FC<ILoginProps> = () => {
     setValue,
   } = useForm<IForm>({
     resolver: yupResolver(schema),
-    mode: 'onBlur',
+    defaultValues: { domain: '' },
+    mode: 'onChange',
   });
-
-  useEffect(() => {
-    setValue('domain', '');
-  }, []);
 
   const fields = [
     {
@@ -88,6 +86,10 @@ const Login: React.FC<ILoginProps> = () => {
     },
   ];
 
+  const onSubmit = (formData: IForm) => {
+    loginMutation.mutate(formData);
+  };
+
   return (
     <div className="flex h-screen w-screen">
       <div className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover"></div>
@@ -97,14 +99,9 @@ const Login: React.FC<ILoginProps> = () => {
         </div>
         <div className="w-full max-w-[440px]">
           <div className="font-extrabold text-neutral-900 text-4xl">Signin</div>
-          <form
-            className="mt-16"
-            onSubmit={handleSubmit((data) => {
-              loginMutation.mutate(data);
-            })}
-          >
-            <Layout className="w-full" fields={fields} />
-            <div className="flex flex-row-reverse mt-4">
+          <form className="mt-16" onSubmit={handleSubmit(onSubmit)}>
+            <Layout fields={fields} />
+            <div className="flex justify-end mt-4">
               <div className="font-bold text-sm">Forgot Password?</div>
             </div>
             <Button

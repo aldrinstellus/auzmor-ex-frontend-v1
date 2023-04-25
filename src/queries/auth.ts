@@ -6,5 +6,6 @@ interface ILogin {
 }
 
 export const login = async (payload: ILogin) => {
-  return await apiService.post('/login', payload);
+  const data = await apiService.post('/login', payload);
+  return data;
 };
