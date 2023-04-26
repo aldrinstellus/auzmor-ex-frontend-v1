@@ -8,9 +8,7 @@ const UserInvite: React.FC<IUserInviteProps> = () => {
     <div>
       <Modal
         open={false}
-        setOpen={function (show: boolean): void {
-          throw new Error('Function not implemented.');
-        }}
+        closeModal={() => {}}
         title={''}
         body={undefined}
         footer={undefined}

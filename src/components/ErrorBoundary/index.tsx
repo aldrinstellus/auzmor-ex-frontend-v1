@@ -9,7 +9,6 @@ interface IErrorBoundaryProps {}
 
 const ErrorBoundary: React.FC<IErrorBoundaryProps> = () => {
   const error = useRouteError() as Error;
-  console.log('error->', error);
   if (isRouteErrorResponse(error)) {
     if (error.status === 403) {
       return (

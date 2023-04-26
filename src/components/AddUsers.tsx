@@ -130,9 +130,9 @@ const AddUsers: React.FC<IAddUsersProps> = ({
     <>
       <div className="model-scrollBar h-[490px]">
         <div className="mx-6">
-          <div className="flex flex-col justify-center items-center mb-3">
+          <div className="flex flex-col   mb-3">
             <form onSubmit={handleSubmit(onSubmit)}>
-              <Layout className="flex mt-6 space-x-8" fields={Fields} />
+              <Layout className="flex space-x-4" fields={Fields} />
             </form>
           </div>
 

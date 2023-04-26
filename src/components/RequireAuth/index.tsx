@@ -9,7 +9,7 @@ const RequireAuth: React.FC<IRequireAuthProps> = () => {
   // ⬇️ get authentication
   const { user } = useAuth();
 
-  return !user ? (
+  return user ? (
     <AppShell>
       <Outlet />
     </AppShell>

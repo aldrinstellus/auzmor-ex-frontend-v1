@@ -1,48 +1,59 @@
 import { useMutation } from '@tanstack/react-query';
 import { login } from 'queries/account';
-import React from 'react';
-import { Variant as InputVariant } from '@auzmorui/component-library.components.input';
+import React, { useEffect } from 'react';
+import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
-import { Layout, FieldType } from '@auzmorui/component-library.components.form';
+import Layout, { FieldType } from 'components/Form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  Button,
+import Button, {
   Variant as ButtonVariant,
-} from '@auzmorui/component-library.components.button';
-import { Divider } from '@auzmorui/component-library.components.divider';
-import Logo from 'components/Logo';
+  Type as ButtonType,
+  Size,
+} from 'components/Button';
+import Divider from 'components/Divider';
+import { Logo } from 'components/Logo';
+import { redirectWithToken } from 'utils/misc';
 import { Link } from 'react-router-dom';
+import Banner, { Variant as BannerVariant } from 'components/Banner';
 
 interface ILoginProps {}
 
 interface IForm {
   email: string;
   password: string;
+  domain?: string;
 }
 
 const schema = yup.object({
-  email: yup.string().email('Please enter valid email address'),
-  password: yup.string().min(6, 'At leaset 6 digits'),
+  email: yup
+    .string()
+    .email('Please enter valid email address')
+    .required('Required field'),
+  password: yup.string().required('Required field'),
+  domain: yup.string(),
 });
 
 const Login: React.FC<ILoginProps> = () => {
-  const loginMutation = useMutation((formData: any) => login(formData), {
-    onError: () => {},
-    onSuccess: (res: any) => {
-      // logic to redirect: window.location.href = res.redirectUrl
-    },
+  const loginMutation = useMutation((formData: IForm) => login(formData), {
+    onSuccess: (data) =>
+      redirectWithToken(data.result.data.redirectUrl, data.result.data.uat),
   });
 
   const {
+    watch,
     control,
     handleSubmit,
-    formState: { errors },
-    getValues,
+    formState: { errors, isValid },
   } = useForm<IForm>({
     resolver: yupResolver(schema),
-    mode: 'onBlur',
+    defaultValues: { domain: '' },
+    mode: 'onChange',
   });
+
+  useEffect(() => {
+    loginMutation.reset();
+  }, [watch('email'), watch('password')]);
 
   const fields = [
     {
@@ -52,25 +63,28 @@ const Login: React.FC<ILoginProps> = () => {
       placeholder: 'Enter your email address / username',
       name: 'email',
       label: 'Work Email / Username',
-      error: errors.email?.message,
+      error: loginMutation.isError || errors.email?.message,
+      dataTestId: 'login-email',
       control,
-      getValues,
-      onChange: (data: string, e: React.ChangeEvent) => {},
     },
     {
-      type: FieldType.Input,
-      InputVariant: InputVariant.Password,
+      type: FieldType.Password,
       className: 'w-full mt-8',
       placeholder: 'Enter password',
       name: 'password',
       label: 'Password',
       rightIcon: 'people',
-      error: errors.password?.message,
+      error: loginMutation.isError || errors.password?.message,
+      dataTestId: 'login-password',
       control,
-      getValues,
-      onChange: (data: string, e: React.ChangeEvent) => {},
     },
   ];
+
+  useEffect(() => {}, []);
+
+  const onSubmit = (formData: IForm) => {
+    loginMutation.mutate(formData);
+  };
 
   return (
     <div className="flex h-screen w-screen">
@@ -81,14 +95,30 @@ const Login: React.FC<ILoginProps> = () => {
         </div>
         <div className="w-full max-w-[440px]">
           <div className="font-extrabold text-neutral-900 text-4xl">Signin</div>
-          <form className="mt-16" onSubmit={handleSubmit(() => {})}>
-            <Layout className="w-full" fields={fields} />
-            <div className="flex flex-row-reverse mt-4">
+          <form className="mt-16" onSubmit={handleSubmit(onSubmit)}>
+            {!!loginMutation.isError && (
+              <div className="mb-8">
+                <Banner
+                  title="Email address or password is incorrect"
+                  variant={BannerVariant.Error}
+                />
+              </div>
+            )}
+
+            <Layout fields={fields} />
+            <div className="flex justify-end mt-4">
               <Link to="/forgot-password">
                 <div className="font-bold text-sm">Forgot Password?</div>
               </Link>
             </div>
-            <Button label={'Sign In'} className="w-full mt-8" />
+            <Button
+              label={'Sign In'}
+              className="w-full mt-8"
+              disabled={!isValid}
+              size={Size.Large}
+              type={ButtonType.Submit}
+              loading={loginMutation.isLoading}
+            />
           </form>
           <div className="flex items-center mt-8">
             <Divider />
@@ -100,7 +130,9 @@ const Login: React.FC<ILoginProps> = () => {
           <Button
             label={'Sign In via SSO'}
             variant={ButtonVariant.Secondary}
+            size={Size.Large}
             className="w-full mt-8"
+            loading={loginMutation.isLoading}
           />
         </div>
       </div>

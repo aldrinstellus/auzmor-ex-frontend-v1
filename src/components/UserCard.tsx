@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
-import { Avatar } from '@auzmorui/component-library.components.avatar';
-import { Card } from '@auzmorui/component-library.components.card';
-import { useHover } from '@auzmorui/component-library.hooks.use-hover';
-import { Button, Variant } from '@auzmorui/component-library.components.button';
+import Avatar from 'components/Avatar';
+import Card from 'components/Card';
+import useHover from 'hooks/useHover';
+import Button, { Variant } from 'components/Button';
 import clsx from 'clsx';
 
 export interface IUserCardProps {

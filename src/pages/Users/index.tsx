@@ -1,13 +1,11 @@
 import React, { useRef, useState } from 'react';
-import { Button, Variant } from '@auzmorui/component-library.components.button';
+import Button, { Variant } from 'components/Button';
 import UserCard from '../../components/UserCard';
 import TabSwitch from '../../components/TabSwitch';
 import { deleteUser, useUsers } from 'queries/users';
 import UserInvite from 'components/UserInvite';
 import Modal from 'components/Modal';
 import AddUsers from 'components/AddUsers';
-import Filter from '../../images/filter.svg';
-import ArrowSwap from '../../images/arrow-swap.svg';
 
 interface IUsersProps {}
 
@@ -96,19 +94,16 @@ const Users: React.FC<IUsersProps> = () => {
       disabled: false,
       className: '!py-2 !px-4 !bg-red-500 !text-white !rounded-[24px] border',
       onClick: () => {
-        console.log(id);
         if (id) {
           deleteUser(id).then((res: any) => {
-            if (res.result.data[0].status === 'Success') {
-              setShowDeleteModal(false);
-              setId(null);
-            } else {
-              setShowDeleteModal(false);
-              setId(null);
+            if (!(res.result.data[0].status === 'Success')) {
               alert("can't delete user");
             }
           });
         }
+
+        setShowDeleteModal(false);
+        setId(null);
       },
     },
   ];
@@ -139,9 +134,9 @@ const Users: React.FC<IUsersProps> = () => {
         </div>
       </div>
       <Modal
-        className="w-[50%]"
+        className="max-w-[50%]"
         open={showAddUserModal}
-        setOpen={setShowAddUserModal}
+        closeModal={() => setShowAddUserModal(false)}
         title="Invite new people to your organization"
         body={
           <AddUsers
@@ -168,9 +163,9 @@ const Users: React.FC<IUsersProps> = () => {
       />
 
       <Modal
-        className="max-w-[364px] max-h-[226x] flex items-center justify-center"
+        className="max-w-[364px] max-h-[226x] "
         open={showDeleteModal}
-        setOpen={setShowDeleteModal}
+        closeModal={() => setShowDeleteModal(false)}
         title="Delete User?"
         body={
           <div className="font-medium text-sm text-neutral-500 not-italic mx-6 my-6">
@@ -195,9 +190,9 @@ const Users: React.FC<IUsersProps> = () => {
       />
 
       <Modal
-        className=" max-h-[226x] flex items-center justify-center max-w-[364px]"
+        className=" max-h-[226x]  max-w-[364px]"
         open={openErrorModal}
-        setOpen={setOpenErrorModal}
+        closeModal={() => setOpenErrorModal(false)}
         title="Error!"
         body={
           <div className="font-medium text-sm text-neutral-500 not-italic mx-6 my-6">
