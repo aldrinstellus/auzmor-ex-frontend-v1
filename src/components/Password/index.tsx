@@ -23,6 +23,8 @@ export type PasswordProps = {
   dataTestId?: string;
   control?: Control<Record<string, any>>;
   label?: string;
+  onChange?: any;
+  onBlur?: any;
 };
 
 const Password: React.FC<PasswordProps> = ({
@@ -39,6 +41,8 @@ const Password: React.FC<PasswordProps> = ({
   helpText,
   control,
   label,
+  onChange,
+  onBlur,
 }) => {
   const [show, setShow] = useState(false);
 
@@ -119,8 +123,14 @@ const Password: React.FC<PasswordProps> = ({
             data-testid={dataTestId}
             defaultValue={defaultValue}
             ref={field.ref}
-            onChange={field.onChange}
-            onBlur={field.onBlur}
+            onChange={(e: any) => {
+              field.onChange(e);
+              onChange(e);
+            }}
+            // onBlur={(e: any) => {
+            //   field.onBlur;
+            //   onBlur(e);
+            // }}
           />
         </div>
         <div className="absolute right-5" onClick={() => setShow((t) => !t)}>

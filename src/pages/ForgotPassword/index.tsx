@@ -12,32 +12,33 @@ import { useMutation } from '@tanstack/react-query';
 import { redirectWithToken } from 'utils/misc';
 import { forgotPassword } from 'queries/account';
 
-interface IForgotPasswordProps { }
+interface IForgotPasswordProps {}
 interface IForm {
   email: string;
 }
 
 const schema = yup.object({
-  email: yup.string().email('Please enter valid email address'),
+  email: yup.string().required().email('Please enter valid email address'),
 });
 
 const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
-
   const [success, setSuccess] = useState(false);
 
-  const loginMutation = useMutation((formData: any) => forgotPassword(formData), {
-    onSuccess: () =>
-      setSuccess(true),
-  });
+  const loginMutation = useMutation(
+    (formData: any) => forgotPassword(formData),
+    {
+      onSuccess: () => setSuccess(true),
+    },
+  );
 
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     getValues,
   } = useForm<IForm>({
     resolver: yupResolver(schema),
-    mode: 'onBlur',
+    mode: 'onChange',
   });
 
   const fields = [
@@ -51,13 +52,12 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
       error: errors.email?.message,
       control,
       getValues,
-      onChange: (data: string, e: React.ChangeEvent) => { },
+      onChange: (data: string, e: React.ChangeEvent) => {},
     },
   ];
 
   const onSubmit = (formData: IForm) => {
     loginMutation.mutate(formData);
-    console.log(formData, "HERE")
   };
 
   return (
@@ -73,12 +73,14 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
               <div className="font-extrabold text-neutral-900 text-4xl">
                 Forgot Password
               </div>
-              <form className="mt-16" onSubmit={handleSubmit((onSubmit))}>
+              <form className="mt-16" onSubmit={handleSubmit(onSubmit)}>
                 <Layout fields={fields} />
-                <Button type={Type.Submit}
+                <Button
+                  type={Type.Submit}
                   label={'Reset Via Email'}
-                  disabled={Object.values(fields)[0].error !== undefined}
+                  loading={loginMutation.isLoading}
                   className="w-full mt-8"
+                  disabled={!isValid}
                 />
               </form>
             </>
@@ -87,7 +89,7 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
               <div className="text-center flex justify-center items-center flex-col space-y-9">
                 <Success />
                 <div>
-                  Email has been sent to <b>kate.banks@office.com</b> with
+                  Email has been sent to <b>{getValues().email}</b> with
                   instructions on resetting your password.
                 </div>
               </div>
