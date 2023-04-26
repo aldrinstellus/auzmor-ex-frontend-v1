@@ -12,7 +12,7 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({ activityFeed }) => {
       {activityFeed.length > 0 ? (
         activityFeed?.map((feed) => (
           <div key={feed.uuid}>
-            <Post content={feed.content.html} />
+            <Post data={feed?.content?.editor} />
           </div>
         ))
       ) : (

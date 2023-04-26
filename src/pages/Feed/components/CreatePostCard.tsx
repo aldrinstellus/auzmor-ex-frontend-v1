@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Card from 'components/Card';
 import Avatar from 'components/Avatar';
 import Button from 'components/Button';
+import { DeltaStatic } from 'quill';
+import Media from 'images/media.svg';
 import Shoutout from 'images/shoutout.svg';
 import Events from 'images/events.svg';
 import Polls from 'images/polls.svg';
@@ -45,9 +47,11 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [htmlValue, setHtmlValue] = useState<any>('');
+  const [jsonValue, setJsonValue] = useState<any>({} as DeltaStatic);
 
   const onEditorContentChanged = (content: EditorContentChanged) => {
-    setHtmlValue(content);
+    setHtmlValue(content.html);
+    setJsonValue(content.json);
   };
 
   return (
@@ -117,21 +121,21 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({
                   label={'Post'}
                   disabled={!htmlValue.html || htmlValue.html === '<p><br></p>'}
                   onClick={() => {
-                    const newFeed = {
-                      content: {
-                        text: 'Basic Plaint Text',
-                        html: htmlValue.html,
-                        editor: '',
-                      },
-                      uuid: `45ba1474-649e-4664-b5ca-b552ba509635${
-                        activityFeed.length + 1
-                      }`,
-                      createdAt: '2023-04-14T04:42:15.562Z',
-                      updatedAt: '2023-04-14T04:42:15.562Z',
-                      type: '',
-                      isAnnouncement: true,
-                    };
-                    setActivityFeed([newFeed, ...activityFeed]);
+                    // const newFeed = {
+                    //   content: {
+                    //     text: 'Basic Plaint Text',
+                    //     html: htmlValue.html,
+                    //     editor: '',
+                    //   },
+                    //   uuid: `45ba1474-649e-4664-b5ca-b552ba509635${
+                    //     activityFeed.length + 1
+                    //   }`,
+                    //   createdAt: '2023-04-14T04:42:15.562Z',
+                    //   updatedAt: '2023-04-14T04:42:15.562Z',
+                    //   type: '',
+                    //   isAnnouncement: true,
+                    // };
+                    // setActivityFeed([...activityFeed]);
                     setOpen(false);
                   }}
                 />
