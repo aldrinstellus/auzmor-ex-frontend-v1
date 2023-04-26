@@ -22,8 +22,8 @@ export const modules = {
 const Toolbar = () => {
   return (
     <div id="toolbar">
-      <div className="border-t-2">
-        <div className="flex justify-between items-center h-14 ml-5 mr-6 ">
+      <div className="border-t-1 mt-4">
+        <div className="flex justify-between items-center h-14 ml-5 mr-6">
           <div className="">
             <span className="ql-formats">
               <button className="ql-bold"></button>

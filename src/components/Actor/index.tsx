@@ -20,7 +20,7 @@ const Actor: React.FC<ActorProps> = ({
   createdTime,
 }) => {
   return (
-    <div className={`flex justify-between items-center mx-6 mb-4 pt-7`}>
+    <div className={`flex justify-between items-center mx-6 mt-6 mb-4`}>
       <div className="flex items-center">
         <div>
           <Avatar size={32} image={avatar} name={actorName} active={false} />

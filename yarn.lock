@@ -83,6 +83,15 @@
     clsx "1.2.1"
     core-js "^3.0.0"
 
+"@auzmorui/component-library.components.icon@^0.0.2":
+  version "0.0.2"
+  resolved "https://node.bit.cloud/@auzmorui/component-library.components.icon/-/@auzmorui-component-library.components.icon-0.0.2.tgz#cc7aeb930483c2aac390361d45093d023337af3f"
+  integrity sha1-zHrrkwSDwqrDkDYdRQk9AjM3rz8=
+  dependencies:
+    "@auzmorui/component-library.hooks.use-hover" "0.0.1"
+    clsx "1.2.1"
+    core-js "^3.0.0"
+
 "@auzmorui/component-library.components.input@0.0.2", "@auzmorui/component-library.components.input@^0.0.2":
   version "0.0.2"
   resolved "https://node.bit.cloud/@auzmorui/component-library.components.input/-/@auzmorui-component-library.components.input-0.0.2.tgz#4858af747e0bc001fcc3a1b85ea1b5db6d32cee0"

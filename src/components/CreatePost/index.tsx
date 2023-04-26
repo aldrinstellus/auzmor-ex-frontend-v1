@@ -25,7 +25,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ onChangeEditor }) => {
       <RichTextEditor
         onChangeEditor={onEditorContentChanged}
         placeholder="What’s on your mind?"
-        className="h-28 ml-4"
+        className="max-h-64 overflow-y-auto min-h-[128px]"
       />
     </>
   );
