@@ -97,7 +97,7 @@ const Users: React.FC<IUsersProps> = () => {
         if (id) {
           deleteUser(id).then((res: any) => {
             if (!(res.result.data[0].status === 'Success')) {
-              alert("can't delete user");
+              alert('error in deleting user');
             }
           });
         }
@@ -134,7 +134,7 @@ const Users: React.FC<IUsersProps> = () => {
         </div>
       </div>
       <Modal
-        className="max-w-[50%]"
+        className="max-w-[648px]"
         open={showAddUserModal}
         closeModal={() => setShowAddUserModal(false)}
         title="Invite new people to your organization"
