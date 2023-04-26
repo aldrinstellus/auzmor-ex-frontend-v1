@@ -134,7 +134,7 @@ const Users: React.FC<IUsersProps> = () => {
         </div>
       </div>
       <Modal
-        className="max-w-[648px]"
+        className="max-w-[648px] w-[648px]"
         open={showAddUserModal}
         closeModal={() => setShowAddUserModal(false)}
         title="Invite new people to your organization"
@@ -238,27 +238,23 @@ const Users: React.FC<IUsersProps> = () => {
       <div className="mt-6 text-neutral-500">Showing 200 results</div>
       <div className="flex flex-wrap mt-6">
         {usersData.length > 0 &&
-          usersData
-            .filter((user: any) => user.role !== 'SUPERADMIN')
-            .map((user: any, index: number) => (
-              <div key={user.id} className={index % 5 !== 0 ? 'ml-6' : ''}>
-                <UserCard
-                  key={user.id}
-                  userId={user.id}
-                  name={
-                    user.fullName ? user.fullName : user.workEmail.slice(0, 6)
-                  }
-                  image={'https://randomuser.me/api/portraits/med/women/42.jpg'}
-                  designation={'Customer Success Manager'}
-                  department={'Sales'}
-                  location={'New York, USA'}
-                  status={user.role}
-                  isActive={user.active}
-                  setOpen={setShowDeleteModal}
-                  setId={setId}
-                />
-              </div>
-            ))}
+          usersData.map((user: any, index: number) => (
+            <div key={user.id} className={index % 5 !== 0 ? 'ml-6' : ''}>
+              <UserCard
+                key={user.id}
+                userId={user.id}
+                name={user.fullName}
+                image={''}
+                designation={user.designation}
+                department={user.department}
+                location={user.location}
+                status={user.role}
+                isActive={user.active}
+                setOpen={setShowDeleteModal}
+                setId={setId}
+              />
+            </div>
+          ))}
       </div>
     </div>
   );

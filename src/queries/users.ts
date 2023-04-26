@@ -21,8 +21,8 @@ export const createUsers = async (q: Record<string, any>) => {
   });
 };
 
-export const deleteUser = async (q: string) => {
-  const data = await apiService.delete('/users', q);
+export const deleteUser = async (id: string) => {
+  const data = await apiService.delete(`/users/${id}`, {});
   return new Promise((res) => {
     res(data);
   });
