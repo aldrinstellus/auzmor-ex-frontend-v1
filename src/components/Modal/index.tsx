@@ -2,6 +2,7 @@ import React, { ReactNode, Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
+import { Divider } from '@auzmorui/component-library.components.divider';
 
 export type ModalProps = {
   open: boolean;
@@ -9,6 +10,7 @@ export type ModalProps = {
   body: ReactNode | null;
   title?: string;
   footer?: ReactNode | null;
+  className?: string;
 };
 
 const Modal: React.FC<ModalProps> = ({
@@ -17,11 +19,12 @@ const Modal: React.FC<ModalProps> = ({
   title = '',
   body,
   footer = null,
+  className,
 }) => {
   return (
     <>
       <Transition appear show={open} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Dialog as="div" className="relative z-10 " onClose={closeModal}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -45,24 +48,31 @@ const Modal: React.FC<ModalProps> = ({
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-white text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel
+                  className={`w-full rounded-9xl transform overflow-hidden  bg-white text-left align-middle shadow-xl transition-all ${className}`}
+                >
                   {!!title && (
-                    <div className="flex flex-wrap">
-                      <Dialog.Title
-                        as="h3"
-                        className="text-lg text-[#000000] p-4 font-bold flex-[50%]"
-                      >
-                        {title}
-                      </Dialog.Title>
-                      <IconButton
-                        onClick={closeModal}
-                        icon={'X'}
-                        className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"
-                        variant={IconVariant.Primary}
-                      />
+                    <div>
+                      <div className="flex flex-wrap">
+                        <Dialog.Title
+                          as="h3"
+                          className="text-lg text-[#000000] p-4 font-bold flex-[50%]"
+                        >
+                          {title}
+                        </Dialog.Title>
+                        <IconButton
+                          onClick={closeModal}
+                          icon={'X'}
+                          className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"
+                          variant={IconVariant.Primary}
+                        />
+                      </div>
+                      <div className="flex justify-center item-center mb-6">
+                        <Divider className="w-[95%]" />
+                      </div>
                     </div>
                   )}
-                  <div className="p-6">
+                  <div className="">
                     <p className="text-sm text-neutral-900">{body}</p>
                   </div>
 
