@@ -11,13 +11,10 @@ export type CheckboxProps = {
   dataTestId?: string;
   control?: any;
   defaultValue?: boolean;
-  onChange?: (data: UseFormGetValues<any>, e: React.ChangeEvent) => void;
-  getValues?: UseFormGetValues<any>;
 };
 
 const Checkbox: React.FC<CheckboxProps> = ({
   name,
-  onChange,
   className = '',
   dataTestId = '',
   loading = false,
@@ -25,7 +22,6 @@ const Checkbox: React.FC<CheckboxProps> = ({
   defaultValue = false,
   label = '',
   control,
-  getValues,
   ...rest
 }) => {
   const { field } = useController({ name, control });
@@ -38,13 +34,14 @@ const Checkbox: React.FC<CheckboxProps> = ({
         ref={field.ref}
         disabled={loading || disabled}
         defaultChecked={defaultValue}
-        onChange={(e) => {
-          field.onChange(e);
-          onChange?.(getValues?.(field.name), e);
-        }}
+        onChange={field.onChange}
         {...rest}
       />
-      {label && <div className="text-text-medium text-sm">{label}</div>}
+      {label && (
+        <div className="text-text-medium text-sm ml-1 relative bottom-[2px]">
+          {label}
+        </div>
+      )}
     </label>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { DeltaStatic } from 'quill';
 import { feeds } from 'mocks/feed';
 import ActivityFeed from 'components/ActivityFeed';
 import CreatePostCard from './components/CreatePostCard';
@@ -9,7 +9,7 @@ interface IFeedProps {}
 interface IContent {
   text: string;
   html: string;
-  editor: string;
+  editor: DeltaStatic;
 }
 export interface IFeed {
   content: IContent;
