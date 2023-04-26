@@ -18,6 +18,8 @@ const Icon: React.FC<IconProps> = ({
   onClick = null,
   className = '',
   hover = true,
+  fill,
+  stroke,
 }) => {
   const Component = iconMap[name] || null;
 
@@ -30,6 +32,8 @@ const Icon: React.FC<IconProps> = ({
       className={styles}
       hover={hover}
       onClick={onClick}
+      fill={fill}
+      stroke={stroke}
     />
   );
 };

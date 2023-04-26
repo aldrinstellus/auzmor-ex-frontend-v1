@@ -29,12 +29,10 @@ const Tooltip = ({
     () =>
       clsx(
         {
-          'bg-white text-black shadow-lg shadow-cyan-500/50':
-            variant === Variant.Light,
+          'bg-white text-black shadow-lg': variant === Variant.Light,
         },
         {
-          'bg-black text-white shadow-lg shadow-cyan-500/50':
-            variant === Variant.Dark,
+          'bg-black text-white shadow-lg': variant === Variant.Dark,
         },
         {
           [className]: true,
@@ -43,11 +41,7 @@ const Tooltip = ({
     [className, variant],
   );
   return (
-    <div
-      className={`text-center ${className}`}
-      style={{ margin: 200 }}
-      onClick={onClick}
-    >
+    <div className={`text-center ${className}`} onClick={onClick}>
       <ReactTooltip
         className={tooltipPlacement}
         id="my-tooltip"

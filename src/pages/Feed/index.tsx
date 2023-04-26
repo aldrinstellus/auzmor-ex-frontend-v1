@@ -21,14 +21,10 @@ export interface IFeed {
 }
 
 const Feed: React.FC<IFeedProps> = () => {
-  const [activityFeed, setActivityFeed] = useState<IFeed[]>(feeds);
   return (
     <div className="flex flex-col">
-      <CreatePostCard
-        activityFeed={activityFeed}
-        setActivityFeed={setActivityFeed}
-      />
-      <ActivityFeed activityFeed={activityFeed} />
+      <CreatePostCard />
+      <ActivityFeed activityFeed={[]} />
     </div>
   );
 };

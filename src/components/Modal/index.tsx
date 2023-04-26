@@ -20,7 +20,7 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   return (
     <>
-      <Transition appear show={open} as={Fragment}>
+      {/* <Transition appear show={open} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
           <Transition.Child
             as={Fragment}
@@ -74,7 +74,10 @@ const Modal: React.FC<ModalProps> = ({
             </div>
           </div>
         </Dialog>
-      </Transition>
+      </Transition> */}
+      <div className="w-screen h-screen fixed bg-neutral-900/60 z-50 top-0 left-0 justify-center flex">
+        <div className="w-1/3 mt-32">{body}</div>
+      </div>
     </>
   );
 };
