@@ -1,10 +1,22 @@
-import React, { ChangeEvent, useRef, useState } from 'react';
+import React, {
+  ChangeEvent,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import { Input, Variant } from '@auzmorui/component-library.components.input';
 import { Layout, FieldType } from '@auzmorui/component-library.components.form';
 import { Variant as InputVariant } from '@auzmorui/component-library.components.input';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { SubmitHandler, UseFormReturn, useForm } from 'react-hook-form';
+import {
+  Control,
+  SubmitHandler,
+  UseFormGetValues,
+  UseFormHandleSubmit,
+  UseFormReturn,
+  useForm,
+} from 'react-hook-form';
 import {
   Button,
   Variant as ButtonVariant,
@@ -13,25 +25,36 @@ import { Divider } from '@auzmorui/component-library.components.divider';
 import File from '../images/file.svg';
 import './add.css';
 
+export interface IAddUsersProps {
+  reference: React.MutableRefObject<undefined>;
+}
+
 export interface IForm {
   name: string;
   email: string;
   role: string;
 }
 
-export interface IAddUsersProps {}
-
-const schema = yup.object({
-  name: yup.string().required('Please enter name'),
-  email: yup.string().email('Please enter valid email address'),
-  role: yup.string().required('Please enter role'),
-});
-
-const AddUsers: React.FC<IAddUsersProps> = () => {
+const AddUsers: React.FC<IAddUsersProps> = ({ reference }) => {
+  useImperativeHandle(
+    reference,
+    () =>
+      ({
+        submitForm: () => {
+          handleSubmit(onSubmit)();
+        },
+      } as any),
+  );
   const [fileList, setFileList] = useState<FileList | null>(null);
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFileList(e.target.files);
   };
+
+  const schema = yup.object({
+    name: yup.string().required('Please enter name'),
+    email: yup.string().email('Please enter valid email address'),
+    role: yup.string().required('Please enter role'),
+  });
 
   const {
     control,

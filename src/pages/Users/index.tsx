@@ -14,6 +14,8 @@ import Modal from 'components/Modal';
 import AddUsers from 'components/AddUsers';
 import Filter from '../../images/filter.svg';
 import ArrowSwap from '../../images/arrow-swap.svg';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 interface IUsersProps {}
 
@@ -46,6 +48,7 @@ const Users: React.FC<IUsersProps> = () => {
   const { data, isLoading } = useUsers({});
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const formRef = useRef();
 
   const footerMapButtons = [
     {
@@ -62,7 +65,9 @@ const Users: React.FC<IUsersProps> = () => {
       disabled: false,
       className:
         '!py-2 !px-4 !bg-primary-500 !text-white !rounded-[24px] border',
-      onClick: () => {},
+      onClick: () => {
+        (formRef.current as any).submitForm();
+      },
     },
   ];
 
@@ -97,7 +102,7 @@ const Users: React.FC<IUsersProps> = () => {
         open={open}
         setOpen={setOpen}
         title="Invite new people to your organization"
-        body={<AddUsers />}
+        body={<AddUsers reference={formRef} />}
         footer={
           <div className="flex justify-end items-center h-16 p-6">
             {footerMapButtons.map((type) => (
@@ -107,7 +112,7 @@ const Users: React.FC<IUsersProps> = () => {
                   variant={Variant.Secondary}
                   disabled={type.disabled}
                   className={type.className}
-                  type={Type.Submit}
+                  onClick={type.onClick}
                 />
               </div>
             ))}
