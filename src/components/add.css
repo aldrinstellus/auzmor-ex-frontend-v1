@@ -1,0 +1,16 @@
+.model-scrollBar {
+  overflow-y: scroll;
+  margin-right: 4px;
+  margin-bottom: 8px;
+}
+
+.model-scrollBar::-webkit-scrollbar {
+  background: #e5e5e5;
+  width: 3px;
+}
+
+.model-scrollBar::-webkit-scrollbar-thumb {
+  background: #737373;
+  border-radius: 100px;
+  height: 60px;
+}

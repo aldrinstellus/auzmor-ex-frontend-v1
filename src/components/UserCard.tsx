@@ -13,6 +13,7 @@ export interface IUserCardProps {
   department?: string;
   location?: string;
   isActive?: boolean;
+  setOpen: (show: boolean) => void;
 }
 
 export enum Status {
@@ -35,6 +36,7 @@ const UserCard: React.FC<IUserCardProps> = ({
   location,
   status,
   isActive,
+  setOpen,
 }) => {
   const [isHovered, hoverEvents] = useHover();
 
@@ -42,11 +44,11 @@ const UserCard: React.FC<IUserCardProps> = ({
     () =>
       clsx(
         {
-          'w-[234px] border-solid border-1 border-neutral-200 flex flex-col items-center justify-center p-6 bg-white relative':
+          'w-[244px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white relative':
             true,
         },
         {
-          '-mb-6 z-10 shadow-xl': isHovered,
+          '-mb-6 z-10 shadow-xl ': isHovered,
         },
         {
           'mb-8 z-0': !isHovered,
@@ -66,7 +68,7 @@ const UserCard: React.FC<IUserCardProps> = ({
         </div>
         <div className="flex flex-col justify-center items-center">
           <Avatar size={80} name={name} image={image} active={isActive} />
-          <div className="mt-2 truncate text-neutral-900 text-base font-bold">
+          <div className="mt-0.5 truncate text-neutral-900 text-base font-bold">
             {name}
           </div>
           <div className="mt-1 truncate text-neutral-900 text-xs font-normal">
@@ -79,9 +81,20 @@ const UserCard: React.FC<IUserCardProps> = ({
             {location}
           </div>
           {isHovered && (
-            <div className="flex justify-between items-center mt-3 space-x-3">
-              <Button variant={Variant.Secondary} label={'O'} />
-              <Button variant={Variant.Secondary} label={'X'} />
+            <div className="flex justify-between items-center mt-4 space-x-3">
+              <Button
+                variant={Variant.Secondary}
+                label={'O'}
+                className="!p-2 !gap-2 !rounded-[8px] !border !border-neutral-200 !border-solid"
+              />
+              <Button
+                variant={Variant.Secondary}
+                label={'X'}
+                onClick={() => {
+                  setOpen(true);
+                }}
+                className="!p-2 !gap-2 !rounded-[8px] !border !border-neutral-200 !border-solid"
+              />
             </div>
           )}
         </div>

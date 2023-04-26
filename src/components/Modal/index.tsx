@@ -24,13 +24,13 @@ const Modal: React.FC<ModalProps> = ({
         <>
           <div
             className="justify-center mt-12 flex 
-            overflow-x-hidden 
-            overflow-y-auto 
             fixed 
             inset-5 z-50 
             outline-none focus:outline-none w-full"
           >
-            <div className={`relative w-[38%] my-6 max-w-[1600] ${className}`}>
+            <div
+              className={`relative w-[648px] my-6 max-w-[1600] ${className}`}
+            >
               <div className="border-0 rounded-9xl shadow-lg w-full bg-white outline-none focus:outline-none">
                 <div className="flex items-center justify-between h-14 p-4 border-b border-solid">
                   <h3 className="text-lg text-black font-['manrope'] font-extrabold">
@@ -50,7 +50,7 @@ const Modal: React.FC<ModalProps> = ({
                     <p className="text-sm text-neutral-900">{body}</p>
                   </div>
                 </div>
-                <div className="border-t border-solid border-slate-200 rounded-9xl bg-blue-50">
+                <div className="border-t border-solid border-slate-200  bg-blue-50 rounded-b-9xl">
                   {footer}
                 </div>
               </div>

@@ -1,23 +1,25 @@
-import React from 'react';
+import React, { ChangeEvent, useRef, useState } from 'react';
 import { Input, Variant } from '@auzmorui/component-library.components.input';
 import { Layout, FieldType } from '@auzmorui/component-library.components.form';
 import { Variant as InputVariant } from '@auzmorui/component-library.components.input';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, UseFormReturn, useForm } from 'react-hook-form';
 import {
   Button,
   Variant as ButtonVariant,
 } from '@auzmorui/component-library.components.button';
 import { Divider } from '@auzmorui/component-library.components.divider';
+import File from '../images/file.svg';
+import './add.css';
 
-export interface IAddUsersProps {}
-
-interface IForm {
+export interface IForm {
   name: string;
   email: string;
   role: string;
 }
+
+export interface IAddUsersProps {}
 
 const schema = yup.object({
   name: yup.string().required('Please enter name'),
@@ -26,6 +28,11 @@ const schema = yup.object({
 });
 
 const AddUsers: React.FC<IAddUsersProps> = () => {
+  const [fileList, setFileList] = useState<FileList | null>(null);
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFileList(e.target.files);
+  };
+
   const {
     control,
     handleSubmit,
@@ -36,11 +43,11 @@ const AddUsers: React.FC<IAddUsersProps> = () => {
     mode: 'onBlur',
   });
 
-  const entries = [
+  const Fields = [
     {
       type: FieldType.Input,
       InputVariant: InputVariant.Text,
-      className: 'w-1/3',
+      className: 'w-[37.5%]',
       placeholder: 'Enter name',
       name: 'name',
       label: 'Full Name',
@@ -52,7 +59,7 @@ const AddUsers: React.FC<IAddUsersProps> = () => {
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      className: 'w-1/3',
+      className: 'w-[37.5%]',
       placeholder: 'Add via email',
       name: 'email',
       label: 'Email Address',
@@ -64,32 +71,107 @@ const AddUsers: React.FC<IAddUsersProps> = () => {
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      className: 'w-1/3',
+      className: 'w-[25%]',
       placeholder: 'Select Role',
       name: 'role',
       label: 'Role',
-      error: errors.email?.message,
+      error: errors.role?.message,
       control,
       getValues,
       onChange: (data: string, e: React.ChangeEvent) => {},
     },
   ];
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleUploadClick = () => {
+    inputRef.current?.click();
+  };
+  const files = fileList ? [...fileList] : [];
+
+  const onSubmit = (data: any) => {
+    console.log(data);
+  };
+
   return (
     <>
-      <div className="overflow-y-auto">
-        <div className="flex flex-col justify-center items-center mb-3">
-          <Layout className="flex mt-6 space-x-8" fields={entries} />
-          <Layout className="flex mt-6 space-x-8" fields={entries} />
-        </div>
-        <Button
-          className="flex border-none mb-6 text-primary-500"
-          label="Add Another"
-          leftIcon="people"
-          variant={ButtonVariant.Secondary}
-        />
-        <div className="flex justify-center item-center mb-6">
-          <Divider className="w-[95%]" />
+      <div className="model-scrollBar h-[490px]">
+        <div className="mx-6">
+          <div className="flex flex-col justify-center items-center mb-3">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Layout className="flex mt-6 space-x-8" fields={Fields} />
+            </form>
+          </div>
+
+          <Button
+            className="flex border-none  text-primary-500 !px-0 mb-6"
+            label="Add Another"
+            leftIcon="people"
+            variant={ButtonVariant.Secondary}
+            onClick={() => {}}
+          />
+          <div className="flex justify-center item-center mb-6">
+            <Divider className="w-[95%]" />
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="flex items-center">
+              {' '}
+              <img width={56} height={56} src={File} />
+            </div>
+            <div className="flex flex-col justify-center items-center mt-2">
+              <div className="flex flex-row items-start gap-2 p-0">
+                <div className="font-normal text-sm text-neutral-900">
+                  To invite a list of people, add your csv,xls or xlsx file in
+                  the given format
+                </div>
+                <div>
+                  {' '}
+                  <Button
+                    className="!border-none !bg-inherit !p-0 !text-primary-600 !text-xs !pt-0.5"
+                    label="Download Format"
+                    variant={ButtonVariant.Secondary}
+                  />
+                </div>
+              </div>
+              <div className="text-neutral-900 text-xs font-normal mt-1">
+                File must be in csv, xls or xlsx format and must not exceed
+                100mb
+              </div>
+
+              <div></div>
+            </div>
+
+            <div className="flex flex-col justify-center items-center border-box mt-4 mb-4 py-6 px-2 border-2 rounded-[12px] border-primary-500 border-dashed w-[100%]">
+              <div className="text-base font-normal text-neutral-900">
+                Drop Files Here{' '}
+              </div>
+              <div className="p-2 my-4 bg-neutral-100 rounded-[50px]">Or</div>
+
+              <Button
+                className="flex mb-2 text-neutral-900 !py-2 !px-4 gap-2 !rounded-[24px]"
+                label=" Upload from existing documents"
+                leftIcon="people"
+                variant={ButtonVariant.Secondary}
+                onClick={handleUploadClick}
+              />
+
+              <ul className="">
+                {files.map((file, i) => (
+                  <li key={i}>
+                    {file.name} - {file.type}
+                  </li>
+                ))}
+              </ul>
+
+              <input
+                type="file"
+                ref={inputRef}
+                onChange={handleFileChange}
+                multiple
+                style={{ display: 'none' }}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </>
