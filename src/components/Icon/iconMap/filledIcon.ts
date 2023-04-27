@@ -5,7 +5,7 @@ import SvgEditFilled from '../components/Edit/EditFilled';
 import SvgImageFilled from '../components/Image/ImageFilled';
 import SvgMagicStarFilled from '../components/MagicStar/MagicStarFilled';
 import SvgMoreFilled from '../components/More/MoreFilled';
-import SvgPeopleFilled from '../components/People/PeopleFilled';
+import SvgPeopleFilled from '../components/Users/UsersFilled';
 import SvgDropdownArrowFilled from '../components/DropdownArrow/DropdownArrowFilled';
 import SvgClockFilled from '../components/Clock/ClockFilled';
 import SvgFilterFilled from '../components/Filter/FilterFilled';

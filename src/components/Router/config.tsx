@@ -24,6 +24,7 @@ const UserDetail = React.lazy(() => import('pages/UserDetail'));
 const Apps = React.lazy(() => import('pages/Apps'));
 const Discover = React.lazy(() => import('pages/Discover'));
 const Admin = React.lazy(() => import('pages/Admin'));
+const AcceptInvite = React.lazy(() => import('pages/AcceptInvite'));
 const PageNotFound = React.lazy(() => import('pages/PageNotFound'));
 const ServerErrorPage = React.lazy(() => import('pages/ServerErrorPage'));
 
@@ -39,6 +40,7 @@ const routers = createBrowserRouter(
         element={<ResetPassword expiryToken={''} />}
       />
       <Route path="/password/reset" element={<Expirymail />} />
+      <Route path="/accept-invite" element={<AcceptInvite />} />
       <Route element={<RequireAuth />}>
         <Route
           path="/"

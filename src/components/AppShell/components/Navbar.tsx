@@ -2,36 +2,42 @@ import React from 'react';
 
 import { Link, NavLink } from 'react-router-dom';
 import { Logo } from 'components/Logo';
+import Icon from 'components/Icon';
+import useAuth from 'hooks/useAuth';
+import Divider, { Variant } from 'components/Divider';
+import Avatar from 'components/Avatar';
 
 const navigations = [
   {
     label: 'Home',
-    icon: 1,
+    icon: 'home',
     linkTo: '/home',
   },
   {
     label: 'Feed',
-    icon: 2,
+    icon: 'feed',
     linkTo: '/feed',
   },
   {
     label: 'People',
-    icon: 3,
+    icon: 'people',
     linkTo: '/users',
   },
   {
     label: 'Apps',
-    icon: 4,
+    icon: 'launcher',
     linkTo: '/apps',
   },
   {
     label: 'Discover',
-    icon: 5,
+    icon: 'explore',
     linkTo: '/discover',
   },
 ];
 
 const Navbar = () => {
+  const { user } = useAuth();
+
   return (
     <header className="sticky top-0 z-40">
       {/* add media query classes - make it responsiveness */}
@@ -57,15 +63,14 @@ const Navbar = () => {
               }
             >
               <div className="flex flex-col items-center">
-                <span>{nav.icon}</span>
-                <div className="text-sm">{nav.label}</div>
+                <Icon name={nav.icon} />
+                <div className="text-sm mt-[2px]">{nav.label}</div>
               </div>
             </NavLink>
           ))}
         </div>
-        {/* replace with divider component library */}
-        <div className="mx-8">
-          <div>|</div>
+        <div className="mx-8 h-full py-2">
+          <Divider variant={Variant.Vertical} />
         </div>
         <div className="flex items-center space-x-8">
           <NavLink
@@ -75,14 +80,16 @@ const Navbar = () => {
             }
           >
             <div className="flex flex-col items-center">
-              <span>6</span>
+              <Icon name="admin" />
               <div className="text-sm">Admin</div>
             </div>
           </NavLink>
-          {/* replace with component library - Notification Icon */}
-          <div>N</div>
-          {/* replace with component library (dropdown) - avatar component */}
-          <div>Avatar</div>
+          <div>
+            <Icon name="notification" />
+          </div>
+          <div>
+            <Avatar name={user?.name || 'U'} size={32} />
+          </div>
         </div>
       </div>
     </header>

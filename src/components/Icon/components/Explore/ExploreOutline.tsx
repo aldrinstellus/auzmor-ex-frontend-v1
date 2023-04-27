@@ -6,15 +6,15 @@ interface IconProps {
   fill?: string;
 }
 
-const SvgHomeOutline = ({
+const SvgExploreOutline = ({
   size = 24,
   fill = '#737373',
   ...props
 }: SVGProps<SVGSVGElement> & IconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={22}
-    height={22}
+    width={size}
+    height={size}
     fill="none"
     {...props}
   >
@@ -23,9 +23,9 @@ const SvgHomeOutline = ({
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={1.5}
-      d="M11 17v-3M9.07 1.82 2.14 7.37c-.78.62-1.28 1.93-1.11 2.91l1.33 7.96c.24 1.42 1.6 2.57 3.04 2.57h11.2c1.43 0 2.8-1.16 3.04-2.57l1.33-7.96c.16-.98-.34-2.29-1.11-2.91l-6.93-5.54c-1.07-.86-2.8-.86-3.86-.01Z"
+      d="M18.816 13.58c2.292 2.138 3.546 4 3.092 4.9-.745 1.46-5.783-.259-11.255-3.838-5.47-3.579-9.304-7.664-8.56-9.123.464-.91 2.926-.444 5.803.805M19 12a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
     />
   </svg>
 );
 
-export default SvgHomeOutline;
+export default SvgExploreOutline;

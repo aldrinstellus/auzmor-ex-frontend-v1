@@ -8,7 +8,7 @@ type IconProps = {
   onClick?: () => void;
 };
 
-const PeopleIcon: React.FC<IconProps> = ({
+const InfoCircleIcon: React.FC<IconProps> = ({
   hover,
   onClick,
   className = '',
@@ -21,4 +21,4 @@ const PeopleIcon: React.FC<IconProps> = ({
   );
 };
 
-export default PeopleIcon;
+export default InfoCircleIcon;
