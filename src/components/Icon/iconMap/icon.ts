@@ -14,21 +14,27 @@ import CloseIcon from '../components/Close';
 import Add from '../components/Add';
 import AddCircle from '../components/AddCircle';
 import ConvertShape from '../components/ConvertShape';
+import EyeIcon from '../components/Eye';
+import InfoCircle from '../components/InfoCircle';
+import EyeSlashIcon from '../components/EyeSlash';
 
 export const icon = {
   calendarTwo: CalendarIconTwo,
   chart: ChartIcon,
+  clock: ClockIcon,
   close: CloseIcon,
+  dropdownArrow: DropdownArrowIcon,
   edit: EditIcon,
+  eye: EyeIcon,
+  eyeSlash: EyeSlashIcon,
   feed: FeedIcon,
+  filter: FilterIcon,
   home: HomeIcon,
   image: ImageIcon,
+  infoCircle: InfoCircle,
   magicStar: MagicStarIcon,
   more: MoreIcon,
   people: PeopleIcon,
-  dropdownArrow: DropdownArrowIcon,
-  clock: ClockIcon,
-  filter: FilterIcon,
   add: Add,
   addCircle: AddCircle,
   convertShape: ConvertShape,
