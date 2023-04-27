@@ -47,7 +47,10 @@ const AddUsers: React.FC<IAddUsersProps> = ({
   };
   const schema = yup.object({
     fullName: yup.string().required('Please enter name'),
-    workEmail: yup.string().email('Please enter valid email address'),
+    workEmail: yup
+      .string()
+      .email('Please enter valid email address')
+      .required('Please enter Email'),
     role: yup.string().required('Please enter role'),
   });
   const {

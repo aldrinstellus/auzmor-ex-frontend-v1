@@ -18,6 +18,7 @@ export interface IUserCardProps {
   department?: string;
   location?: string;
   active?: boolean;
+  workEmail?: string;
 }
 
 export enum Status {
@@ -41,6 +42,7 @@ const UserCard: React.FC<IUserCardProps> = ({
   department,
   location,
   active,
+  workEmail,
 }) => {
   const [isHovered, hoverEvents] = useHover();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -87,12 +89,12 @@ const UserCard: React.FC<IUserCardProps> = ({
           <Avatar size={80} name={fullName} image={image} active={active} />
           <div className="mt-0.5 truncate text-neutral-900 text-base font-bold">
             {_.truncate(fullName, {
-              length: 12,
+              length: 24,
               separator: ' ',
             })}
           </div>
           <div className="mt-1 truncate text-neutral-900 text-xs font-normal">
-            {designation}
+            {designation ? designation : workEmail}
           </div>
           <div className="mt-2 bg-orange-100 px-4 rounded-md truncate">
             {department}
