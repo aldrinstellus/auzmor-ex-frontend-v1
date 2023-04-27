@@ -3,6 +3,8 @@ import SvgChartOutline from '../components/Chart/ChartOutline';
 import SvgCloseOutline from '../components/Close/CloseOutline';
 import SvgDocumentOutline from '../components/Document/DocumentOutline';
 import SvgEditOutline from '../components/Edit/EditOutline';
+import SvgEyeOutline from '../components/Eye/EyeOutline';
+import SvgEyeSlashOutline from '../components/EyeSlash/EyeSlashOutline';
 import SvgImageOutline from '../components/Image/ImageOutline';
 import SvgInfoCircleOutline from '../components/InfoCircle/InfoCircleOutline';
 import SvgMagicStarOutline from '../components/MagicStar/MagicStarOutline';
@@ -16,6 +18,8 @@ export const outlineIcon = {
   closeOutline: SvgCloseOutline,
   documentOutline: SvgDocumentOutline,
   editOutline: SvgEditOutline,
+  eyeOutline: SvgEyeOutline,
+  eyeSlashOutline: SvgEyeSlashOutline,
   imageOutline: SvgImageOutline,
   infoCircleOutline: SvgInfoCircleOutline,
   magicStarOutline: SvgMagicStarOutline,

@@ -9,13 +9,23 @@ import SvgMagicStarFilled from '../components/MagicStar/MagicStarFilled';
 import SvgMoreFilled from '../components/More/MoreFilled';
 import SvgPeopleFilled from '../components/People/PeopleFilled';
 import SvgVideoFilled from '../components/video/VideoFilled';
+import SvgDropdownArrowFilled from '../components/DropdownArrow/DropdownArrowFilled';
+import SvgClockFilled from '../components/Clock/ClockFilled';
+import SvgFilterFilled from '../components/Filter/FilterFilled';
+import SvgEyeFilled from '../components/Eye/EyeFilled';
+import SvgEyeSlashFilled from '../components/EyeSlash/EyeSlashFilled';
 
 export const filledIcon = {
   calendarFilledTwo: SvgCalendarFilledTwo,
   chartFilled: SvgChartFilled,
+  clockFilled: SvgClockFilled,
   closeFilled: SvgCloseFilled,
   documentFilled: SvgDocumentFilled,
+  dropdownArrowFilled: SvgDropdownArrowFilled,
   editFilled: SvgEditFilled,
+  eyeFilled: SvgEyeFilled,
+  eyeSlashFilled: SvgEyeSlashFilled,
+  filterFilled: SvgFilterFilled,
   imageFilled: SvgImageFilled,
   infoCircleFilled: SvgInfoCircleFilled,
   magicStarFilled: SvgMagicStarFilled,

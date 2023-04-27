@@ -6,6 +6,7 @@ import Icon from 'components/Icon';
 import CreatePostModal from './components/CreatePostModal';
 import { IMenuItem } from 'components/PopupMenu';
 import { twConfig } from 'utils/misc';
+import { useLoaderData } from 'react-router-dom';
 
 interface IFeedProps {}
 
@@ -105,10 +106,24 @@ export const postTypeMapIcons: IPostTypeIcon[] = [
 
 const Feed: React.FC<IFeedProps> = () => {
   const [showModal, setShowModal] = useState(true);
+  const rawFeedData: any = useLoaderData();
+  const feed: IFeed[] = rawFeedData.data.map((data: any) => {
+    return {
+      content: {
+        ...data.content,
+        editor: JSON.parse(data.content.editor),
+      },
+      uuid: data.uuid,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+      type: data.type,
+      isAnnouncement: data.isAnnouncement,
+    } as IFeed;
+  });
   return (
     <div className="flex flex-col">
       <CreatePostCard setShowModal={setShowModal} />
-      <ActivityFeed activityFeed={[]} />
+      <ActivityFeed activityFeed={feed} />
       <CreatePostModal showModal={showModal} setShowModal={setShowModal} />
     </div>
   );

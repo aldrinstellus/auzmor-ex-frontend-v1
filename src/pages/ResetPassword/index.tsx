@@ -1,64 +1,159 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Logo } from 'components/Logo';
 import { Success } from 'components/Logo';
-import { FieldType } from 'components/Form';
-import Button from 'components/Button';
+import Layout, { FieldType } from 'components/Form';
+import Button, { Type } from 'components/Button';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Link } from 'react-router-dom';
-// import PasswordComponent from 'components/PasswordComponent';
+import PasswordPolicy from 'components/PasswordPolicy';
+import { useMutation } from '@tanstack/react-query';
+import { redirectWithToken } from 'utils/misc';
+import { resetPassword } from 'queries/account';
+import PasswordExpiry from 'components/PasswordExpiry';
 
-interface IResetPasswordProps {}
+interface IResetPasswordProps {
+  expiryToken: string;
+}
 
 interface IForm {
+  newPassword: string;
   password: string;
+  token: any;
 }
 
 const schema = yup.object({
-  password: yup.string().min(6, 'At least 6 digits'),
+  newPassword: yup.string().required(),
+  password: yup
+    .string()
+    .required()
+    .oneOf([yup.ref('newPassword')], 'Passwords do not match'),
 });
 
-const ResetPassword: React.FC<IResetPasswordProps> = () => {
+const ResetPassword: React.FC<IResetPasswordProps> = ({ expiryToken }) => {
+  const [success, setSuccess] = useState(false);
+
+  // const [expiry, setExpiry] = useState(false);
+
+  const [passwordRule, setPasswordRule] = useState({
+    length: false,
+    isUppercase: false,
+    isLowercase: false,
+    isNumber: false,
+  });
+
+  const resetPasswordMutation = useMutation(
+    (formData: any) => resetPassword(formData),
+    {
+      onSuccess: (data) => {
+        redirectWithToken(data.result.data.redirectUrl, data.result.data.uat);
+        setSuccess(true);
+      },
+    },
+  );
+
   const {
+    watch,
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     getValues,
   } = useForm<IForm>({
     resolver: yupResolver(schema),
-    mode: 'onBlur',
+    defaultValues: {
+      newPassword: '',
+      password: '',
+      token: { expiryToken },
+    },
+    mode: 'onChange',
   });
 
-  const fields = [
+  console.log(getValues().token, 'kkk');
+
+  useEffect(() => {
+    resetPasswordMutation.reset();
+  }, [watch('newPassword'), watch('password')]);
+
+  const passwordField = [
     {
-      type: FieldType.Input,
+      type: FieldType.Password,
       InputVariant: InputVariant.Password,
       className: 'w-full mt-8',
       placeholder: 'New password',
-      name: 'new-password',
+      name: 'newPassword',
       label: 'Enter New Password',
       rightIcon: 'people',
-      error: errors.password?.message,
+      error: errors.newPassword?.message,
       control,
       getValues,
-      onChange: (data: string, e: React.ChangeEvent) => {},
+      onChange: (e: any) => {
+        const value = e.target.value;
+        validatePassword(value);
+      },
+      dataTestId: 'new-password',
     },
+  ];
+
+  const confirmPasswordField = [
     {
-      type: FieldType.Input,
+      type: FieldType.Password,
       InputVariant: InputVariant.Password,
       className: 'w-full mt-8',
       placeholder: 'Re-enter Password',
-      name: 'confirm-password',
+      name: 'password',
       label: 'Confirm Password',
       rightIcon: 'people',
       error: errors.password?.message,
       control,
       getValues,
-      onChange: (data: string, e: React.ChangeEvent) => {},
+      onChange: () => {},
+      dataTestId: 'confirm-password',
     },
   ];
+
+  const onSubmit = (formData: IForm) => {
+    resetPasswordMutation.mutate(formData);
+  };
+
+  const validatePassword = (value: string) => {
+    const validationState = {
+      length: true,
+      isUppercase: true,
+      isLowercase: true,
+      isNumber: true,
+    };
+    let isValid = true;
+
+    // password length should be at least 6 characters
+    if (value.length < 6) {
+      isValid = false;
+      validationState.length = false;
+    }
+
+    // password should contain at least one uppercase letter
+    if (!/[A-Z]/.test(value)) {
+      isValid = false;
+      validationState.isUppercase = false;
+    }
+
+    // password should contain at least one lowercase letter
+    if (!/[a-z]/.test(value)) {
+      isValid = false;
+      validationState.isLowercase = false;
+    }
+
+    // password should contain at least one digit
+    if (!/\d/.test(value)) {
+      isValid = false;
+      validationState.isNumber = false;
+    }
+
+    setPasswordRule(validationState);
+    return isValid;
+  };
+
   return (
     <div className="flex h-screen w-screen">
       <div className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover" />
@@ -67,18 +162,39 @@ const ResetPassword: React.FC<IResetPasswordProps> = () => {
           <Logo />
         </div>
         <div className="w-full max-w-[440px]">
-          {2 + 2 !== 4 ? (
+          {!success ? (
             <>
               <div className="font-extrabold text-neutral-900 text-4xl">
                 Reset Password
               </div>
-              <form className="mt-16" onSubmit={handleSubmit(() => {})}>
-                {/* <PasswordComponent fields={fields} /> */}
-                <Button
-                  label={'Reset Password'}
-                  disabled
-                  className="w-full mt-8"
-                />
+              <form className="mt-16" onSubmit={handleSubmit(onSubmit)}>
+                <>
+                  <Layout fields={passwordField} className="mb-4" />
+                  <PasswordPolicy
+                    policyName="Must have atleast 6 characters"
+                    isChecked={passwordRule.length}
+                  />
+                  <PasswordPolicy
+                    policyName="Must have atleast 1 Lowercase letter"
+                    isChecked={passwordRule.isLowercase}
+                  />
+                  <PasswordPolicy
+                    policyName="Must have atleast 1 Uppercase letter"
+                    isChecked={passwordRule.isUppercase}
+                  />
+                  <PasswordPolicy
+                    policyName="Must have atleast 1 number"
+                    isChecked={passwordRule.isNumber}
+                  />
+                  <Layout fields={confirmPasswordField} />
+                  <Button
+                    type={Type.Submit}
+                    label={'Reset Password'}
+                    className="w-full mt-8"
+                    loading={resetPasswordMutation.isLoading}
+                    disabled={!isValid}
+                  />
+                </>
               </form>
             </>
           ) : (

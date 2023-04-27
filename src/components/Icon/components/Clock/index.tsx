@@ -1,7 +1,6 @@
 import React from 'react';
-import InfoCircleOutline from './InfoCircleOutline';
-import InfoCircleFilled from './InfoCircleFilled';
 import useHover from 'hooks/useHover';
+import { default as ClockFilled } from './ClockFilled';
 
 type IconProps = {
   size?: number;
@@ -10,7 +9,7 @@ type IconProps = {
   onClick?: () => void;
 };
 
-const InfoCircleIcon: React.FC<IconProps> = ({
+const ClockIcon: React.FC<IconProps> = ({
   hover,
   onClick,
   className = '',
@@ -20,13 +19,9 @@ const InfoCircleIcon: React.FC<IconProps> = ({
 
   return (
     <div onClick={onClick} className={className} {...eventHandlers}>
-      {hover && isHovered ? (
-        <InfoCircleFilled {...props} />
-      ) : (
-        <InfoCircleOutline {...props} />
-      )}
+      <ClockFilled {...props} />
     </div>
   );
 };
 
-export default InfoCircleIcon;
+export default ClockIcon;

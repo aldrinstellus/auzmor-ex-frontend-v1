@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Logo } from 'components/Logo';
 import { Success } from 'components/Logo';
-import { FieldType } from 'components/Form';
-import Button from 'components/Button';
+import Layout, { FieldType } from 'components/Form';
+import Button, { Type } from 'components/Button';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Link } from 'react-router-dom';
-// import PasswordComponent from 'components/PasswordComponent';
+import { useMutation } from '@tanstack/react-query';
+import { redirectWithToken } from 'utils/misc';
+import { forgotPassword } from 'queries/account';
 
 interface IForgotPasswordProps {}
 interface IForm {
@@ -16,18 +18,27 @@ interface IForm {
 }
 
 const schema = yup.object({
-  email: yup.string().email('Please enter valid email address'),
+  email: yup.string().required().email('Please enter valid email address'),
 });
 
 const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
+  const [success, setSuccess] = useState(false);
+
+  const loginMutation = useMutation(
+    (formData: any) => forgotPassword(formData),
+    {
+      onSuccess: () => setSuccess(true),
+    },
+  );
+
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     getValues,
   } = useForm<IForm>({
     resolver: yupResolver(schema),
-    mode: 'onBlur',
+    mode: 'onChange',
   });
 
   const fields = [
@@ -45,6 +56,10 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
     },
   ];
 
+  const onSubmit = (formData: IForm) => {
+    loginMutation.mutate(formData);
+  };
+
   return (
     <div className="flex h-screen w-screen">
       <div className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover" />
@@ -53,17 +68,19 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
           <Logo />
         </div>
         <div className="w-full max-w-[440px]">
-          {2 + 2 === 4 ? (
+          {!success ? (
             <>
               <div className="font-extrabold text-neutral-900 text-4xl">
                 Forgot Password
               </div>
-              <form className="mt-16" onSubmit={handleSubmit(() => {})}>
-                {/* <PasswordComponent fields={fields} /> */}
+              <form className="mt-16" onSubmit={handleSubmit(onSubmit)}>
+                <Layout fields={fields} />
                 <Button
+                  type={Type.Submit}
                   label={'Reset Via Email'}
-                  disabled
+                  loading={loginMutation.isLoading}
                   className="w-full mt-8"
+                  disabled={!isValid}
                 />
               </form>
             </>
@@ -72,7 +89,7 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
               <div className="text-center flex justify-center items-center flex-col space-y-9">
                 <Success />
                 <div>
-                  Email has been sent to <b>kate.banks@office.com</b> with
+                  Email has been sent to <b>{getValues().email}</b> with
                   instructions on resetting your password.
                 </div>
               </div>

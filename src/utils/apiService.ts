@@ -32,7 +32,7 @@ class ApiService {
   }
 
   async get(url: string, params = {}) {
-    return this.instance.get(url, { ...params });
+    return await this.instance.get(url, { ...params });
   }
 
   async put(url: string, data = {}) {

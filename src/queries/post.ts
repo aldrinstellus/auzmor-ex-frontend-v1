@@ -30,3 +30,8 @@ export const createPost = async (payload: ICreatePost) => {
   const data = await apiService.post('/posts', payload);
   return data;
 };
+
+export const getPosts = async () => {
+  const data = await apiService.get('/posts');
+  return data?.data?.result;
+};

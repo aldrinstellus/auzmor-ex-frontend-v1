@@ -1,7 +1,7 @@
 import React from 'react';
-import InfoCircleOutline from './InfoCircleOutline';
-import InfoCircleFilled from './InfoCircleFilled';
 import useHover from 'hooks/useHover';
+import { default as EyeFilled } from './EyeFilled';
+import { default as EyeOutline } from './EyeOutline';
 
 type IconProps = {
   size?: number;
@@ -10,8 +10,8 @@ type IconProps = {
   onClick?: () => void;
 };
 
-const InfoCircleIcon: React.FC<IconProps> = ({
-  hover,
+const EyeIcon: React.FC<IconProps> = ({
+  hover = true,
   onClick,
   className = '',
   ...props
@@ -21,12 +21,12 @@ const InfoCircleIcon: React.FC<IconProps> = ({
   return (
     <div onClick={onClick} className={className} {...eventHandlers}>
       {hover && isHovered ? (
-        <InfoCircleFilled {...props} />
+        <EyeFilled {...props} />
       ) : (
-        <InfoCircleOutline {...props} />
+        <EyeOutline {...props} />
       )}
     </div>
   );
 };
 
-export default InfoCircleIcon;
+export default EyeIcon;
