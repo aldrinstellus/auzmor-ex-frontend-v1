@@ -13,6 +13,10 @@ interface IReset {
   newPassword: string;
   confirmPassword: string;
 }
+interface IChange {
+  newPassword: string;
+  confirmPassword: string;
+}
 
 interface IMailExpiry {
   token: string;
@@ -30,6 +34,11 @@ export const forgotPassword = async (payload: IForgotPassword) => {
 
 export const resetPassword = async (payload: IReset) => {
   const { data } = await apiService.put('/password/reset', payload);
+  return data;
+};
+
+export const changePassword = async (payload: IChange) => {
+  const { data } = await apiService.put('/password', payload);
   return data;
 };
 
