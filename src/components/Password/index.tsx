@@ -128,8 +128,15 @@ const Password: React.FC<PasswordProps> = ({
             onBlur={field.onBlur}
           />
         </div>
-        <div className="absolute right-5" onClick={() => setShow((t) => !t)}>
-          <Icon name="people" size={16} className="cursor-pointer" />
+        <div
+          className="absolute right-5 cursor-pointer"
+          onClick={() => setShow((t) => !t)}
+        >
+          <Icon
+            name={show ? 'eyeSlash' : 'eye'}
+            size={16}
+            className="cursor-pointer"
+          />
         </div>
       </label>
       <div

@@ -25,7 +25,7 @@ export type LayoutProps = {
   className?: string;
 };
 
-const Layout: React.FC<LayoutProps> = ({ fields, className = '' }) => {
+const Layout: React.FC<LayoutProps> = ({ fields, className = 'space-y-8' }) => {
   return (
     <div className={className}>
       {fields.map((field, index) => {
