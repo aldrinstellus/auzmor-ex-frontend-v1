@@ -33,14 +33,14 @@ const navigations = [
 
 const Navbar = () => {
   return (
-    <header className="sticky top-0 z-50">
+    <header className="sticky top-0 z-40">
       {/* add media query classes - make it responsiveness */}
       <div className="bg-white shadow h-16 w-full flex items-center justify-center px-8">
         <Link to="/">
           <Logo />
         </Link>
         <div className="mx-8 w-[40%]">
-          <div className="w-full border px-4 border-1 border-solid py-2 rounded-full flex items-center justify-between">
+          <div className="w-full border px-4 border-solid py-2 rounded-full flex items-center justify-between">
             <span className="text-gray-300 text-sm">
               Search name, channel, page, document etc.,
             </span>

@@ -8,6 +8,7 @@ class ApiService {
   constructor() {
     this.instance = axios.create({
       baseURL: process.env.REACT_APP_BACKEND_BASE_URL,
+      withCredentials: true,
     });
 
     this.instance.interceptors.request.use((config: any) => {

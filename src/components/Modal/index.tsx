@@ -2,6 +2,7 @@ import React, { ReactNode, Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
+import { Divider } from '@auzmorui/component-library.components.divider';
 
 export type ModalProps = {
   open: boolean;
@@ -9,6 +10,7 @@ export type ModalProps = {
   body: ReactNode | null;
   title?: string;
   footer?: ReactNode | null;
+  className?: string;
 };
 
 const Modal: React.FC<ModalProps> = ({
@@ -17,11 +19,12 @@ const Modal: React.FC<ModalProps> = ({
   title = '',
   body,
   footer = null,
+  className,
 }) => {
   return (
     <>
       <Transition appear show={open} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Dialog as="div" className="relative z-10 " onClose={closeModal}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -45,30 +48,28 @@ const Modal: React.FC<ModalProps> = ({
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-white text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-full max-w-xl transform overflow-hidden bg-white text-left align-middle transition-all rounded-9xl shadow">
                   {!!title && (
-                    <div className="flex flex-wrap">
+                    <div className="flex flex-wrap border-b-1 border-neutral-200">
                       <Dialog.Title
                         as="h3"
-                        className="text-lg text-[#000000] p-4 font-bold flex-[50%]"
+                        className="text-lg text-black p-4 font-extrabold flex-[50%]"
                       >
                         {title}
                       </Dialog.Title>
                       <IconButton
                         onClick={closeModal}
-                        icon={'X'}
+                        icon={'close'}
                         className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"
                         variant={IconVariant.Primary}
                       />
                     </div>
                   )}
-                  <div className="p-6">
-                    <p className="text-sm text-neutral-900">{body}</p>
+                  <div>
+                    <div className="text-sm text-neutral-900">{body}</div>
                   </div>
 
-                  {!!footer && (
-                    <div className="mt-[16px] bg-blue-50">{footer}</div>
-                  )}
+                  {!!footer && <div className="bg-blue-50">{footer}</div>}
                 </Dialog.Panel>
               </Transition.Child>
             </div>

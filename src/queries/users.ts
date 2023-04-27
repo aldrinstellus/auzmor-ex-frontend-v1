@@ -13,3 +13,17 @@ export const useUsers = (q: Record<string, any>) => {
     staleTime: 15 * 60 * 1000,
   });
 };
+
+export const createUsers = async (q: Record<string, any>) => {
+  const data = await apiService.post('/users', q);
+  return new Promise((res) => {
+    res(data);
+  });
+};
+
+export const deleteUser = async (id: string) => {
+  const data = await apiService.delete(`/users/${id}`, {});
+  return new Promise((res) => {
+    res(data);
+  });
+};

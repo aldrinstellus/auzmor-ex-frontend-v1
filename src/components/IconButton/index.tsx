@@ -1,5 +1,6 @@
 import React, { MouseEventHandler, useMemo } from 'react';
 import clsx from 'clsx';
+import Icon from 'components/Icon';
 
 export enum Variant {
   Primary = 'PRIMARY',
@@ -52,6 +53,17 @@ const IconButton = ({
     [],
   );
 
+  const getSize = () => {
+    switch (size) {
+      case Size.Large:
+        return 24;
+      case Size.Medium:
+        return 16;
+      case Size.Small:
+        return 12;
+    }
+  };
+
   return (
     <button
       type="button"
@@ -59,7 +71,7 @@ const IconButton = ({
       disabled={disabled}
       onClick={onClick}
     >
-      {icon}
+      <Icon name={icon} size={getSize()} />
     </button>
   );
 };

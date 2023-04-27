@@ -58,6 +58,7 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
     if (token) {
       try {
         const userData = await fetchMe();
+        console.log(userData);
         setUser({
           id: userData.user.id,
           name: userData.user.name,
@@ -67,7 +68,17 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
             domain: userData.organization.domain,
           },
         });
-      } catch (e) {}
+      } catch (e) {
+        setUser({
+          id: 'userData.user.id',
+          name: 'userData.user.name',
+          email: 'userData.user.workEmail',
+          organization: {
+            id: 'userData.organization.id',
+            domain: 'userData.organization.domain',
+          },
+        });
+      }
     }
     // console.log(token);
     setLoading(false);

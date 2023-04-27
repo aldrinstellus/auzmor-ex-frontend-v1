@@ -19,7 +19,7 @@ const TabSwitcher: React.FC<TabSwitcherProps> = ({ tabs }) => {
   const styles = (active: boolean) =>
     clsx(
       {
-        'pl-3 pr-3 pt-1 pb-1 font-bold': true,
+        'pl-6 pr-6 pt-1 pb-1 font-bold gap-1': true,
       },
       {
         'bg-primary-500 rounded-6xl text-white': active,

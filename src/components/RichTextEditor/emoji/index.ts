@@ -188,6 +188,7 @@ function fn_showEmojiPalette(quill: {
   emojiType.map((singleEmojiType) => {
     // add tab bar
     const tabElement = document.createElement('li');
+    console.log(tabElement);
     tabElement.classList.add('emoji-tab');
     tabElement.classList.add(`filter-${singleEmojiType.name}`);
     tabElement.addEventListener('click', function () {

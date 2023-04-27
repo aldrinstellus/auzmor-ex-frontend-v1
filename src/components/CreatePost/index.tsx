@@ -5,15 +5,11 @@ import RichTextEditor, {
 import Actor from 'components/Actor';
 import { CREATE_POST } from 'components/Actor/constant';
 
-type CreatePostProps = {
+interface ICreatePostProps {
   onChangeEditor: (content: EditorContentChanged) => void;
-};
+}
 
-const CreatePost: React.FC<CreatePostProps> = ({ onChangeEditor }) => {
-  const onEditorContentChanged = (content: EditorContentChanged) => {
-    onChangeEditor(content);
-  };
-
+const CreatePost: React.FC<ICreatePostProps> = ({ onChangeEditor }) => {
   return (
     <>
       <Actor
@@ -23,9 +19,9 @@ const CreatePost: React.FC<CreatePostProps> = ({ onChangeEditor }) => {
         contentMode={CREATE_POST}
       />
       <RichTextEditor
-        onChangeEditor={onEditorContentChanged}
         placeholder="What’s on your mind?"
-        className="h-28 ml-4"
+        className="max-h-64 overflow-y-auto min-h-[128px]"
+        onChangeEditor={onChangeEditor}
       />
     </>
   );

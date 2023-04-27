@@ -126,6 +126,9 @@ module.exports = {
         '29xl': '4.907398700714111rem',
         full: '9999px',
       },
+      borderWidth: {
+        1: '1px',
+      },
       spacing: {
         52: '3.25rem',
       },

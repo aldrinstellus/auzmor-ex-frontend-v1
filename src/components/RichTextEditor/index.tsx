@@ -7,11 +7,12 @@ import './mentions/quill.mention';
 import './mentions/quill.mention.css';
 
 import { MentionBlot } from './mentions/blots/mentions';
-import Toolbar, { formats, modules } from './toolbar/index';
+import Toolbar from './toolbar/index';
 import { LinkBlot } from './blots/link';
 import AutoLinks from './autoLinks';
 import EmojiBlot from './blots/emoji';
 import EmojiToolbar from './emoji';
+import { mention } from './config';
 
 export interface EditorContentChanged {
   html: string;
@@ -21,7 +22,7 @@ export interface EditorContentChanged {
 export type QuillEditorProps = {
   className?: string;
   placeholder: string;
-  onChangeEditor: (content: EditorContentChanged) => void;
+  onChangeEditor?: (content: EditorContentChanged) => void;
 };
 
 const RichTextEditor: React.FC<QuillEditorProps> = ({
@@ -33,6 +34,17 @@ const RichTextEditor: React.FC<QuillEditorProps> = ({
   const [editorTextValue, setEditorTextValue] = useState<string>('');
   const [editorJsonValue, setEditorJsonValue] = useState<any>({});
   const reactQuillRef = useRef<ReactQuill>(null);
+
+  const formats = ['bold', 'italic', 'underline', 'mention', 'link', 'emoji'];
+
+  const modules = {
+    toolbar: {
+      container: '#toolbar',
+    },
+    mention: mention,
+    autoLinks: true,
+    'emoji-toolbar': true,
+  };
 
   Quill.register(
     {

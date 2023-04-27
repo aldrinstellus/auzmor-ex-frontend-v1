@@ -38,7 +38,6 @@ body {
 #toolbar {
   border: none;
   /* padding: 0px 24px 0px 28px; */
-  font-family: initial !important;
   background-color: white;
 }
 
@@ -67,6 +66,15 @@ body {
 /* emoji margin */
 .bem {
   margin: 6px !important;
+}
+
+.ql-editor {
+  padding-left: 24px !important;
+  padding-top: 0px !important;
+}
+
+.ql-editor.ql-blank::before {
+  padding-left: 12px !important;
 }
 
 body {
