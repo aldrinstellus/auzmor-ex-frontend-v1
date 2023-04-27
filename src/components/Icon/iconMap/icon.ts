@@ -15,15 +15,15 @@ import CloseIcon from '../components/Close';
 export const icon = {
   calendarTwo: CalendarIconTwo,
   chart: ChartIcon,
+  clock: ClockIcon,
   close: CloseIcon,
+  dropdownArrow: DropdownArrowIcon,
   edit: EditIcon,
   feed: FeedIcon,
+  filter: FilterIcon,
   home: HomeIcon,
   image: ImageIcon,
   magicStar: MagicStarIcon,
   more: MoreIcon,
   people: PeopleIcon,
-  dropdownArrow: DropdownArrowIcon,
-  clock: ClockIcon,
-  filter: FilterIcon,
 };

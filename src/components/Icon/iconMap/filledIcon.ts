@@ -13,13 +13,13 @@ import SvgFilterFilled from '../components/Filter/FilterFilled';
 export const filledIcon = {
   calendarFilledTwo: SvgCalendarFilledTwo,
   chartFilled: SvgChartFilled,
+  clockFilled: SvgClockFilled,
   closeFilled: SvgCloseFilled,
+  dropdownArrowFilled: SvgDropdownArrowFilled,
   editFilled: SvgEditFilled,
+  filterFilled: SvgFilterFilled,
   imageFilled: SvgImageFilled,
   magicStarFilled: SvgMagicStarFilled,
   moreFilled: SvgMoreFilled,
   peopleFilled: SvgPeopleFilled,
-  dropdownArrowFilled: SvgDropdownArrowFilled,
-  clockFilled: SvgClockFilled,
-  filterFilled: SvgFilterFilled,
 };
