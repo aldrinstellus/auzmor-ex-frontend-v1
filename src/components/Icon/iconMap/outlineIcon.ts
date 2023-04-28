@@ -12,12 +12,17 @@ import SvgMoreOutline from '../components/More/MoreOutline';
 import SvgPeopleOutline from '../components/People/PeopleOutline';
 import SvgVideoOutline from '../components/video/VideoOutline';
 import SvgUserOutline from '../components/Users/UsersOutline';
+import SvgSpeakerOutline from '../components/Speaker/SpeakerOutline';
+import SvgDraftOutline from '../components/Draft/DraftOutline';
+import SvgArrowLeftOutline from '../components/ArrowLeft/ArrowLeftOutline';
 
 export const outlineIcon = {
+  arrowLeftOutline: SvgArrowLeftOutline,
   calendarOutlineTwo: SvgCalendarOutlineTwo,
   chartOutline: SvgChartOutline,
   closeOutline: SvgCloseOutline,
   documentOutline: SvgDocumentOutline,
+  draftOutline: SvgDraftOutline,
   editOutline: SvgEditOutline,
   eyeOutline: SvgEyeOutline,
   eyeSlashOutline: SvgEyeSlashOutline,
@@ -26,6 +31,7 @@ export const outlineIcon = {
   magicStarOutline: SvgMagicStarOutline,
   moreOutline: SvgMoreOutline,
   peopleOutline: SvgPeopleOutline,
+  speakerOutline: SvgSpeakerOutline,
   userOutline: SvgUserOutline,
   videoOutline: SvgVideoOutline,
 };

@@ -4,12 +4,17 @@ import RichTextEditor, {
 } from 'components/RichTextEditor';
 import Actor from 'components/Actor';
 import { CREATE_POST } from 'components/Actor/constant';
+import { IAnnouncement } from 'pages/Feed/components/CreatePostModal';
 
 interface ICreatePostProps {
   onChangeEditor: (content: EditorContentChanged) => void;
+  announcement: IAnnouncement | null;
 }
 
-const CreatePost: React.FC<ICreatePostProps> = ({ onChangeEditor }) => {
+const CreatePost: React.FC<ICreatePostProps> = ({
+  onChangeEditor,
+  announcement,
+}) => {
   return (
     <div className="max-h-[75vh] overflow-y-auto">
       <Actor
@@ -22,6 +27,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({ onChangeEditor }) => {
         placeholder="What’s on your mind?"
         className="max-h-64 overflow-y-auto min-h-[128px]"
         onChangeEditor={onChangeEditor}
+        announcement={announcement}
       />
     </div>
   );
