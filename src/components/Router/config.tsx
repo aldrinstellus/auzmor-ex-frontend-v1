@@ -8,7 +8,6 @@ import {
 import queryClient from 'utils/queryClient';
 import { loader as homeLoader } from 'pages/Home';
 import RequireAuth from 'components/RequireAuth';
-import Expirymail from 'components/ExpiryMail';
 import { getPosts } from 'queries/post';
 
 const ErrorBoundary = React.lazy(() => import('components/ErrorBoundary'));
@@ -16,8 +15,8 @@ const Login = React.lazy(() => import('pages/Login'));
 const Signup = React.lazy(() => import('pages/Signup'));
 const Registration = React.lazy(() => import('pages/Registration'));
 const ForgotPassword = React.lazy(() => import('pages/ForgotPassword'));
-const ResetPassword = React.lazy(() => import('pages/ResetPassword'));
 const ChangePassword = React.lazy(() => import('pages/ChangePassword'));
+const ExpiryMail = React.lazy(() => import('pages/ExpiryMail'));
 const Feed = React.lazy(() => import('pages/Feed'));
 const Home = React.lazy(() => import('pages/Home'));
 const Users = React.lazy(() => import('pages/Users'));
@@ -25,6 +24,7 @@ const UserDetail = React.lazy(() => import('pages/UserDetail'));
 const Apps = React.lazy(() => import('pages/Apps'));
 const Discover = React.lazy(() => import('pages/Discover'));
 const Admin = React.lazy(() => import('pages/Admin'));
+const AcceptInvite = React.lazy(() => import('pages/AcceptInvite'));
 const PageNotFound = React.lazy(() => import('pages/PageNotFound'));
 const ServerErrorPage = React.lazy(() => import('pages/ServerErrorPage'));
 
@@ -35,11 +35,8 @@ const routers = createBrowserRouter(
       <Route path="/signup" element={<Signup />} />
       <Route path="/register" element={<Registration />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route
-        path="/reset-password"
-        element={<ResetPassword expiryToken={''} />}
-      />
-      <Route path="/password/reset" element={<Expirymail />} />
+      <Route path="/reset-password" element={<ExpiryMail />} />
+      <Route path="/accept-invite" element={<AcceptInvite />} />
       <Route element={<RequireAuth />}>
         <Route
           path="/"

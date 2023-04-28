@@ -11,7 +11,7 @@ type IconProps = {
 };
 
 const ImageIcon: React.FC<IconProps> = ({
-  hover,
+  hover = true,
   onClick,
   className = '',
   ...props

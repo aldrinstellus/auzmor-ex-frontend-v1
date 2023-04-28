@@ -11,7 +11,7 @@ interface ICreatePostProps {
 
 const CreatePost: React.FC<ICreatePostProps> = ({ onChangeEditor }) => {
   return (
-    <>
+    <div className="max-h-[75vh] overflow-y-auto">
       <Actor
         avatar="https://png.pngtree.com/png-clipart/20210619/ourlarge/pngtree-instagram-lady-social-media-flat-style-avatar-png-image_3483977.jpg"
         actorName="Sam Fields"
@@ -23,7 +23,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({ onChangeEditor }) => {
         className="max-h-64 overflow-y-auto min-h-[128px]"
         onChangeEditor={onChangeEditor}
       />
-    </>
+    </div>
   );
 };
 

@@ -16,6 +16,12 @@ body {
   color: #171717;
 }
 
+@layer utilities {
+  .center {
+    @apply flex justify-center items-center;
+  }
+}
+
 /* This will change the style of placeholder to our product*/
 .quill > .ql-container > .ql-editor.ql-blank::before {
   color: #737373;

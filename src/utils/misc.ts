@@ -1,3 +1,8 @@
+import resolveConfig from 'tailwindcss/resolveConfig';
+import tailwindConfig from 'components/../../tailwind.config.js';
+
+export const twConfig: any = resolveConfig(tailwindConfig);
+
 export const getInitials = (name: string) => {
   return name
     .match(/(^\S\S?|\s\S)?/g)!

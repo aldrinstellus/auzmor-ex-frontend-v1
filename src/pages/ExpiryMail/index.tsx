@@ -1,4 +1,4 @@
-import PasswordExpiry from 'components/PasswordExpiry';
+import PasswordExpiry from 'pages/PasswordExpiry';
 import ResetPassword from 'pages/ResetPassword';
 import React, { useEffect, useState } from 'react';
 
@@ -9,14 +9,12 @@ const Expirymail: React.FC<IExpirymailProps> = () => {
   useEffect(() => {
     const query = new URLSearchParams(window.location.search.substring(1));
     const newToken = query.get('token');
-    if (token) {
+    if (newToken) {
       setToken(newToken);
     }
   }, []);
 
-  return (
-    <>{!token ? <ResetPassword expiryToken={token} /> : <PasswordExpiry />}</>
-  );
+  return <>{token ? <ResetPassword token={token} /> : <PasswordExpiry />}</>;
 };
 
 export default Expirymail;

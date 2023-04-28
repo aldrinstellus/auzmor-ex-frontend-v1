@@ -4,6 +4,8 @@ import ActivityFeed from 'components/ActivityFeed';
 import CreatePostCard from './components/CreatePostCard';
 import Icon from 'components/Icon';
 import CreatePostModal from './components/CreatePostModal';
+import { IMenuItem } from 'components/PopupMenu';
+import { twConfig } from 'utils/misc';
 import { useLoaderData } from 'react-router-dom';
 
 interface IFeedProps {}
@@ -18,6 +20,7 @@ export interface IPostTypeIcon {
   id: number;
   label: string;
   icon: ReactNode;
+  menuItems: IMenuItem[];
 }
 export interface IFeed {
   content: IContent;
@@ -33,21 +36,71 @@ export const postTypeMapIcons: IPostTypeIcon[] = [
     id: 1,
     label: 'Media',
     icon: <Icon name="imageFilled" fill="#000000" size={14} />,
+    menuItems: [
+      {
+        renderNode: (
+          <div className="flex px-6 py-3 items-center hover:bg-primary-50">
+            <Icon
+              name="image"
+              size={16}
+              className="p-2 rounded-7xl border mr-2.5 bg-white"
+              fill={twConfig.theme.colors.primary['500']}
+            />
+            <div className="text-sm text-neutral-900 font-medium">
+              Upload a photo
+            </div>
+          </div>
+        ),
+      },
+      {
+        renderNode: (
+          <div className="flex px-6 py-3 items-center hover:bg-primary-50">
+            <Icon
+              name="video"
+              size={16}
+              className="p-2 rounded-7xl border mr-2.5 bg-white"
+              fill={twConfig.theme.colors.primary['500']}
+            />
+            <div className="text-sm text-neutral-900 font-medium">
+              Upload a video
+            </div>
+          </div>
+        ),
+      },
+      {
+        renderNode: (
+          <div className="flex px-6 py-3 items-center hover:bg-primary-50">
+            <Icon
+              name="document"
+              size={16}
+              className="p-2 rounded-7xl border mr-2.5 bg-white"
+              fill={twConfig.theme.colors.primary['500']}
+            />
+            <div className="text-sm text-neutral-900 font-medium">
+              Share a document
+            </div>
+          </div>
+        ),
+      },
+    ],
   },
   {
     id: 2,
     label: 'Shoutout',
     icon: <Icon name="magicStarFilled" fill="#000000" size={14} />,
+    menuItems: [],
   },
   {
     id: 3,
     label: 'Events',
     icon: <Icon name="calendarFilledTwo" fill="#000000" size={14} />,
+    menuItems: [],
   },
   {
     id: 4,
     label: 'Polls',
     icon: <Icon name="chartFilled" fill="#000000" size={14} />,
+    menuItems: [],
   },
 ];
 

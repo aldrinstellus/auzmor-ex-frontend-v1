@@ -56,3 +56,7 @@ export const fetchMe = async () => {
   const { data } = await apiService.get('/users/me');
   return data;
 };
+
+export const logout = async () => {
+  const data = await apiService.post('/logout');
+};

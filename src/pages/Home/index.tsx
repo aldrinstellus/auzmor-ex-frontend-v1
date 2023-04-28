@@ -1,9 +1,11 @@
-import { QueryClient, useQuery } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import React from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { removeAllItems } from 'utils/persist';
 import { useNavigate } from 'react-router-dom';
+import { logout } from 'queries/account';
+import Button from 'components/Button';
 
 interface IHomeProps {}
 
@@ -68,18 +70,22 @@ const Home = (props: IHomeProps) => {
     initialData,
   });
 
+  const logoutMutation = useMutation(logout, {
+    onSuccess: () => {
+      removeAllItems();
+      navigate('/login');
+    },
+  });
+
   return (
     <div className="flex flex-col items-center">
       <div className="text-lg font-bold">Home Page</div>
-      <div
-        className="p-5 border cursor-pointer rounded-lg m-4 bg-primary-500 text-white"
-        onClick={() => {
-          removeAllItems();
-          navigate('/login');
-        }}
-      >
-        Logout
-      </div>
+      <Button
+        label="Logout"
+        onClick={() => logoutMutation.mutate()}
+        loading={logoutMutation.isLoading}
+      />
+
       <div className="">
         {postList?.posts?.map((post: IPostODT) => (
           <div className="bg-red-400 m-4 p-4 rounded border-2" key={post.id}>

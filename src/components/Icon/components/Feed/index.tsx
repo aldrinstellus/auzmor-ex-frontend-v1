@@ -5,6 +5,7 @@ import { default as FeedOutline } from './FeedOutline';
 
 type IconProps = {
   size?: number;
+  fill?: string;
 };
 
 const FeedIcon: React.FC<IconProps> = (props) => {
@@ -12,7 +13,7 @@ const FeedIcon: React.FC<IconProps> = (props) => {
 
   return (
     <div {...eventHandlers}>
-      {isHovered ? <FeedOutline {...props} /> : <FeedOutline {...props} />}
+      {isHovered ? <FeedFilled {...props} /> : <FeedOutline {...props} />}
     </div>
   );
 };

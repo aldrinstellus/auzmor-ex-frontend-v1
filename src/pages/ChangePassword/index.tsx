@@ -11,6 +11,7 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { changePassword } from 'queries/account';
 import { Link } from 'react-router-dom';
+import PasswordPolicy from 'components/PasswordPolicy';
 
 export interface IChangePasswordProps {}
 
@@ -22,7 +23,13 @@ interface IForm {
 
 const schema = yup.object({
   currentPassword: yup.string().required(),
-  newPassword: yup.string().required(),
+  newPassword: yup
+    .string()
+    .required()
+    .notOneOf(
+      [yup.ref('currentPassword')],
+      'New password cannot be the same as current password',
+    ),
   confirmPassword: yup
     .string()
     .required()
@@ -31,10 +38,22 @@ const schema = yup.object({
 
 const ChangePassword: React.FC<IChangePasswordProps> = () => {
   const [success, setSuccess] = useState(false);
+  const [err, setErr] = useState(false);
+
+  const [passwordRule, setPasswordRule] = useState({
+    length: false,
+    isUppercase: false,
+    isLowercase: false,
+    isNumber: false,
+    isSymbol: false,
+  });
 
   const changePasswordMutation = useMutation(
     (formData: any) => changePassword(formData),
     {
+      onError: (data) => {
+        setErr(true);
+      },
       onSuccess: (data) => {
         setSuccess(true);
       },
@@ -59,28 +78,64 @@ const ChangePassword: React.FC<IChangePasswordProps> = () => {
 
   useEffect(() => {
     changePasswordMutation.reset();
+    setErr(false);
   }, [
     watch('currentPassword'),
     watch('newPassword'),
     watch('confirmPassword'),
   ]);
 
+  const validatePassword = (value: string) => {
+    const validationState = {
+      length: true,
+      isUppercase: true,
+      isLowercase: true,
+      isNumber: true,
+      isSymbol: true,
+    };
+    let isValid = true;
+    // password length should be at least 6 characters
+    if (value.length < 6) {
+      isValid = false;
+      validationState.length = false;
+    }
+    // password should contain at least one uppercase letter
+    if (!/[A-Z]/.test(value)) {
+      isValid = false;
+      validationState.isUppercase = false;
+    }
+    // password should contain at least one lowercase letter
+    if (!/[a-z]/.test(value)) {
+      isValid = false;
+      validationState.isLowercase = false;
+    }
+    // password should contain at least one digit
+    if (!/\d/.test(value)) {
+      isValid = false;
+      validationState.isNumber = false;
+    }
+    // password should contain at least one special character
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value)) {
+      isValid = false;
+      validationState.isSymbol = false;
+    }
+    setPasswordRule(validationState);
+    return isValid;
+  };
+
   const passwordField = [
     {
       type: FieldType.Password,
       InputVariant: InputVariant.Password,
-      className: 'w-1/3 mt-6',
+      className: 'w-1/3',
       placeholder: 'Current password',
       name: 'currentPassword',
       label: 'Current Password',
-      rightIcon: 'people',
-      error: errors.currentPassword?.message,
+      rightIcon: 'eye',
+      error: err || errors.currentPassword?.message,
       control,
       getValues,
-      onChange: (e: any) => {
-        const value = e.target.value;
-        // validatePassword(value);
-      },
+      onChange: () => {},
       dataTestId: 'new-password',
     },
     {
@@ -90,13 +145,13 @@ const ChangePassword: React.FC<IChangePasswordProps> = () => {
       placeholder: 'New password',
       name: 'newPassword',
       label: 'New Password',
-      rightIcon: 'people',
+      rightIcon: 'eye',
       error: errors.newPassword?.message,
       control,
       getValues,
       onChange: (e: any) => {
         const value = e.target.value;
-        // validatePassword(value);
+        validatePassword(value);
       },
       dataTestId: 'new-password',
     },
@@ -110,7 +165,7 @@ const ChangePassword: React.FC<IChangePasswordProps> = () => {
       placeholder: 'Re-enter Password',
       name: 'confirmPassword',
       label: 'Confirm Password',
-      rightIcon: 'people',
+      rightIcon: 'eye',
       error: errors.confirmPassword?.message,
       control,
       getValues,
@@ -136,32 +191,51 @@ const ChangePassword: React.FC<IChangePasswordProps> = () => {
     { label: 'Notifications' },
   ];
   //TODO: side bar navigation
-  //TODO: Policy check
 
   return (
     <div className="flex justify-between items-center w-full space-x-14">
-      <div className="bg-white px-8 py-9 rounded-9xl w-[30%] h-[100%]">
+      <div className="bg-white px-8 py-9 rounded-9xl w-[33%] h-[100%]">
         {sideNav.map((ele) => (
           <div className="mb-8 text-sm font-medium" key={ele.label}>
             {ele.label}
           </div>
         ))}
       </div>
-      <div className="bg-white px-8 py-9 rounded-9xl w-[70%] h-[100%]">
+      <div className="bg-white px-8 py-9 rounded-9xl w-[67%] h-[100%]">
         <div className="flex mb-4">
-          <Icon name={'people'} />
+          <Icon className="rotate-90" name={'dropdownArrow'} />
           Change Password
         </div>
         <Divider className="mb-10 w-full" />
-        <form className="mt-16" onSubmit={handleSubmit(onSubmit)}>
+        <form className="" onSubmit={handleSubmit(onSubmit)}>
           <>
             <Layout fields={passwordField} className="mb-4" />
+            <PasswordPolicy
+              policyName="Must have atleast 6 characters"
+              isChecked={passwordRule.length}
+            />
+            <PasswordPolicy
+              policyName="Must have atleast 1 Lowercase letter"
+              isChecked={passwordRule.isLowercase}
+            />
+            <PasswordPolicy
+              policyName="Must have atleast 1 Uppercase letter"
+              isChecked={passwordRule.isUppercase}
+            />
+            <PasswordPolicy
+              policyName="Must have atleast 1 number"
+              isChecked={passwordRule.isNumber}
+            />
+            <PasswordPolicy
+              policyName="Must have atleast 1 symbol"
+              isChecked={passwordRule.isSymbol}
+            />
             <Layout fields={confirmPasswordField} />
             <div className="flex justify-between items-center mt-28">
               <div className="text-primary-500 text-base font-bold">
-                <Link to="/forgot-password">Forgot Password?</Link>
+                <Link to="/forgot-password">Forgot Password</Link>
               </div>
-              <div className="w-1/4">
+              <div className="w-1/5">
                 <Button
                   type={Type.Submit}
                   label={'Change Password'}

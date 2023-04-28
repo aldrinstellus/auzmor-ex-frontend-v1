@@ -8,6 +8,7 @@ import Divider, { Variant as DividerVariant } from 'components/Divider';
 import { postTypeMapIcons } from '..';
 import { useMutation } from '@tanstack/react-query';
 import { createPost } from 'queries/post';
+import PopupMenu from 'components/PopupMenu';
 
 interface ICreatePostModal {
   showModal: boolean;
@@ -20,8 +21,9 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
 }) => {
   const [editorValue, setEditorValue] = useState<{
     html: string;
+    text: string;
     json: Record<string, any>;
-  }>({ html: '', json: {} });
+  }>({ html: '', json: {}, text: '' });
 
   const createPostMutation = useMutation({
     mutationKey: ['createPostMutation'],
@@ -70,15 +72,21 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
 
   const Footer: React.FC = () => (
     <div className="flex justify-between items-center h-16 p-6 bg-blue-50">
-      <div className="flex">
+      <div className="flex relative">
         {postTypeMapIcons.map((type) => (
-          <div className="mr-4" key={type.id}>
-            <Tooltip tooltipContent={type.label}>
-              <div className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl">
-                {type.icon}
+          <PopupMenu
+            triggerNode={
+              <div className="mr-4">
+                <Tooltip tooltipContent={type.label}>
+                  <div className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl">
+                    {type.icon}
+                  </div>
+                </Tooltip>
               </div>
-            </Tooltip>
-          </div>
+            }
+            menuItems={type.menuItems}
+            key={type.id}
+          />
         ))}
         <div className="flex justify-center items-center w-8 h-8 mr-2">
           <Icon name="moreOutline" stroke="#000000" />
@@ -102,10 +110,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         title="Create a post"
         body={
           <CreatePost
-            onChangeEditor={(content) => {
-              console.log(content);
-              setEditorValue({ html: content.html, json: content.json });
-            }}
+            onChangeEditor={(content) => setEditorValue({ ...content })}
           />
         }
         footer={<Footer />}
