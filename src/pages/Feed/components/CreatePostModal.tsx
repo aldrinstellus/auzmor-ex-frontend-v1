@@ -1,5 +1,5 @@
-import React, { ReactNode, useState } from 'react';
-import Button from 'components/Button';
+import React, { ReactNode, useRef, useState } from 'react';
+import Button, { Variant as ButtonVariant } from 'components/Button';
 import Modal from 'components/Modal';
 import CreatePost from 'components/CreatePost';
 import Icon from 'components/Icon';
@@ -9,10 +9,22 @@ import { postTypeMapIcons } from '..';
 import { useMutation } from '@tanstack/react-query';
 import { createPost } from 'queries/post';
 import PopupMenu from 'components/PopupMenu';
+import { twConfig } from 'utils/misc';
+import CreateAnnouncement from './CreateAnnouncement';
 
 interface ICreatePostModal {
   showModal: boolean;
   setShowModal: (flag: boolean) => void;
+}
+
+export interface IAnnouncement {
+  label: string;
+  value: string;
+}
+
+enum CreatePostFlow {
+  CreatePost = 'CREATE_POST',
+  CreateAnnouncement = 'CREATE_ANNOUNCEMENT',
 }
 
 const CreatePostModal: React.FC<ICreatePostModal> = ({
@@ -24,6 +36,10 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     text: string;
     json: Record<string, any>;
   }>({ html: '', json: {}, text: '' });
+
+  const [activeFlow, setActiveFlow] = useState(CreatePostFlow.CreatePost);
+  const [announcement, setAnnouncement] = useState<null | IAnnouncement>(null);
+  const announcementFormRef = useRef();
 
   const createPostMutation = useMutation({
     mutationKey: ['createPostMutation'],
@@ -54,22 +70,6 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     });
   };
 
-  const Header: React.FC = () => (
-    <div className="flex items-center justify-between h-14 p-4 border-b border-solid">
-      <h3 className="text-lg text-black font-['manrope'] font-extrabold">
-        Create a post
-      </h3>
-      <button
-        className="p-1 ml-auto bg-transparent border-0 text-black opacity-1 float-right leading-none outline-none focus:outline-none"
-        onClick={() => {}}
-      >
-        <span className="bg-transparent text-black opacity-1 h-8 w-8 text-3xl block outline-none focus:outline-none">
-          ×
-        </span>
-      </button>
-    </div>
-  );
-
   const Footer: React.FC = () => (
     <div className="flex justify-between items-center h-16 p-6 bg-blue-50">
       <div className="flex relative">
@@ -88,9 +88,51 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             key={type.id}
           />
         ))}
-        <div className="flex justify-center items-center w-8 h-8 mr-2">
-          <Icon name="moreOutline" stroke="#000000" />
-        </div>
+        <PopupMenu
+          triggerNode={
+            <div className="flex justify-center items-center w-8 h-8 mr-2">
+              <Icon name="moreOutline" stroke="#000000" />
+            </div>
+          }
+          menuItems={[
+            {
+              renderNode: (
+                <div
+                  className="flex px-6 py-3 items-center hover:bg-primary-50"
+                  onClick={() => {
+                    setActiveFlow(CreatePostFlow.CreateAnnouncement);
+                  }}
+                >
+                  <Icon
+                    name="speaker"
+                    size={16}
+                    className="p-2 rounded-7xl border mr-2.5 bg-white"
+                    fill={twConfig.theme.colors.primary['500']}
+                  />
+                  <div className="text-sm text-neutral-900 font-medium whitespace-nowrap">
+                    Share as an announcement
+                  </div>
+                </div>
+              ),
+            },
+            {
+              renderNode: (
+                <div className="flex px-6 py-3 items-center hover:bg-primary-50">
+                  <Icon
+                    name="draft"
+                    size={16}
+                    className="p-2 rounded-7xl border mr-2.5 bg-white"
+                    fill={twConfig.theme.colors.primary['500']}
+                  />
+                  <div className="text-sm text-neutral-900 font-medium whitespace-nowrap">
+                    Save as drafts
+                  </div>
+                </div>
+              ),
+            },
+          ]}
+        />
+
         <Divider variant={DividerVariant.Vertical} className="!h-8" />
       </div>
       <div className="flex items-center">
@@ -100,20 +142,64 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     </div>
   );
 
+  const AnnouncementFooter: React.FC = () => {
+    return (
+      <div className="flex justify-end items-center h-16 p-6 bg-blue-50">
+        <Button
+          variant={ButtonVariant.Secondary}
+          label="Back"
+          className="mr-3"
+          onClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
+        />
+        <Button
+          label={'Post'}
+          onClick={() => {
+            (announcementFormRef?.current as any).getAnnouncemntData();
+            setActiveFlow(CreatePostFlow.CreatePost);
+          }}
+        />
+      </div>
+    );
+  };
+
+  const createPostMap = {
+    [CreatePostFlow.CreatePost]: {
+      title: 'Create a post',
+      body: (
+        <CreatePost
+          onChangeEditor={(content) => setEditorValue({ ...content })}
+          announcement={announcement}
+        />
+      ),
+      footer: <Footer />,
+      showBackIcon: false,
+      onBackIconClick: () => {},
+    },
+    [CreatePostFlow.CreateAnnouncement]: {
+      title: 'Create an announcement',
+      body: (
+        <CreateAnnouncement
+          ref={announcementFormRef}
+          announcement={announcement}
+          setAnnouncement={setAnnouncement}
+        />
+      ),
+      footer: <AnnouncementFooter />,
+      showBackIcon: true,
+      onBackIconClick: () => setActiveFlow(CreatePostFlow.CreatePost),
+    },
+  };
+
   return (
     <div>
       <Modal
         open={showModal}
-        closeModal={() => {
-          setShowModal(false);
-        }}
-        title="Create a post"
-        body={
-          <CreatePost
-            onChangeEditor={(content) => setEditorValue({ ...content })}
-          />
-        }
-        footer={<Footer />}
+        closeModal={() => setShowModal(false)}
+        title={createPostMap[activeFlow].title}
+        body={createPostMap[activeFlow].body}
+        footer={createPostMap[activeFlow].footer}
+        showBackIcon={createPostMap[activeFlow].showBackIcon || false}
+        onBackIconClick={createPostMap[activeFlow].onBackIconClick}
       />
     </div>
   );

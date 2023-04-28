@@ -18,13 +18,18 @@ import SvgConvertShapeFilled from '../components/ConvertShape/ConvertShapeFilled
 import SvgEyeFilled from '../components/Eye/EyeFilled';
 import SvgEyeSlashFilled from '../components/EyeSlash/EyeSlashFilled';
 import SvgUsersFilled from '../components/Users/UsersFilled';
+import SvgSpeakerFilled from '../components/Speaker/SpeakerFilled';
+import SvgDraftFilled from '../components/Draft/DraftFilled';
+import SvgArrowLeftFilled from '../components/ArrowLeft/ArrowLeftFilled';
 
 export const filledIcon = {
+  arrowLeftFilled: SvgArrowLeftFilled,
   calendarFilledTwo: SvgCalendarFilledTwo,
   chartFilled: SvgChartFilled,
   clockFilled: SvgClockFilled,
   closeFilled: SvgCloseFilled,
   documentFilled: SvgDocumentFilled,
+  draftFilled: SvgDraftFilled,
   dropdownArrowFilled: SvgDropdownArrowFilled,
   editFilled: SvgEditFilled,
   eyeFilled: SvgEyeFilled,
@@ -35,6 +40,7 @@ export const filledIcon = {
   magicStarFilled: SvgMagicStarFilled,
   moreFilled: SvgMoreFilled,
   peopleFilled: SvgPeopleFilled,
+  speakerFilled: SvgSpeakerFilled,
   addFilled: SvgAddFilled,
   addCircleFilled: SvgAddCircleFilled,
   convertShapeFilled: SvgConvertShapeFilled,

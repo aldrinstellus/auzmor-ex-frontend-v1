@@ -89,7 +89,7 @@ const AddUsers: React.FC<IAddUsersProps> = ({
       onChange: (data: string, e: React.ChangeEvent) => {},
     },
     {
-      type: FieldType.Select,
+      type: FieldType.SingleSelect,
       name: 'role',
       control,
 

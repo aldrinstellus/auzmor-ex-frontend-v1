@@ -24,14 +24,19 @@ import LauncherIcon from '../components/Launcher';
 import ExploreIcon from '../components/Explore';
 import AdminIcon from '../components/Admin';
 import NotificationIcon from '../components/Notification';
+import SpeakerIcon from '../components/Speaker';
+import DraftIcon from '../components/Draft';
+import ArrowLeftIcon from '../components/ArrowLeft';
 
 export const icon = {
   admin: AdminIcon,
+  arrowLeft: ArrowLeftIcon,
   calendarTwo: CalendarIconTwo,
   chart: ChartIcon,
   clock: ClockIcon,
   close: CloseIcon,
   document: DocumentIcon,
+  draft: DraftIcon,
   dropdownArrow: DropdownArrowIcon,
   edit: EditIcon,
   explore: ExploreIcon,
@@ -47,6 +52,7 @@ export const icon = {
   more: MoreIcon,
   notification: NotificationIcon,
   people: PeopleIcon,
+  speaker: SpeakerIcon,
   add: Add,
   addCircle: AddCircle,
   convertShape: ConvertShape,
