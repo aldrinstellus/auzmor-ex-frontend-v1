@@ -52,13 +52,10 @@ export const icon = {
   more: MoreIcon,
   notification: NotificationIcon,
   people: PeopleIcon,
-<<<<<<< HEAD
   speaker: SpeakerIcon,
-=======
   add: Add,
   addCircle: AddCircle,
   convertShape: ConvertShape,
->>>>>>> develop
   user: UsersIcon,
   video: VideoIcon,
 };
