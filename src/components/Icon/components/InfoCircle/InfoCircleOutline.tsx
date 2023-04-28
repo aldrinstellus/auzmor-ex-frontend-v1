@@ -3,30 +3,44 @@ import { SVGProps } from 'react';
 
 type IconProps = {
   size?: number;
-  fill?: string;
+  stroke?: string;
 };
 
-const SvgInfoCircle = ({
-  size = 16,
-  fill = '#F05252',
+const SvgInfoCircleOutline = ({
+  size = 24,
+  stroke = '#737373',
   ...props
-}: SVGProps<SVGSVGElement> & IconProps) => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={size}
-      height={size}
-      fill="none"
-      {...props}
-    >
-      <path
-        stroke={fill}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M8.003 14.665c3.666 0 6.666-3 6.666-6.666 0-3.667-3-6.667-6.666-6.667-3.667 0-6.667 3-6.667 6.667 0 3.666 3 6.666 6.667 6.666ZM8 5.332v3.333M8 10.668h.006"
-      />
-    </svg>
-  );
-};
+}: SVGProps<SVGSVGElement> & IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    {...props}
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
+      stroke={stroke}
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M12 8V13"
+      stroke={stroke}
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M11.9946 16H12.0036"
+      stroke={stroke}
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
-export default SvgInfoCircle;
+export default SvgInfoCircleOutline;

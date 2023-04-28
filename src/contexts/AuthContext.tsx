@@ -56,31 +56,17 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
     // if token in LS, make /me api call and update setUser
     token = getItem(process.env.SESSION_KEY || 'uat');
     if (token) {
-      try {
-        const userData = await fetchMe();
-        console.log(userData);
-        setUser({
-          id: userData.user.id,
-          name: userData.user.name,
-          email: userData.user.workEmail,
-          organization: {
-            id: userData.organization.id,
-            domain: userData.organization.domain,
-          },
-        });
-      } catch (e) {
-        setUser({
-          id: 'userData.user.id',
-          name: 'userData.user.name',
-          email: 'userData.user.workEmail',
-          organization: {
-            id: 'userData.organization.id',
-            domain: 'userData.organization.domain',
-          },
-        });
-      }
+      const userData = await fetchMe();
+      setUser({
+        id: userData.user.id,
+        name: userData.user.fullName,
+        email: userData.user.workEmail,
+        organization: {
+          id: userData.organization.id,
+          domain: userData.organization.domain,
+        },
+      });
     }
-    // console.log(token);
     setLoading(false);
   };
 

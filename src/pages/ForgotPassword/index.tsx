@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Logo } from 'components/Logo';
 import { Success } from 'components/Logo';
 import Layout, { FieldType } from 'components/Form';
@@ -24,7 +24,7 @@ const schema = yup.object({
 const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
   const [success, setSuccess] = useState(false);
 
-  const loginMutation = useMutation(
+  const forgotPasswordMutation = useMutation(
     (formData: any) => forgotPassword(formData),
     {
       onSuccess: () => setSuccess(true),
@@ -32,6 +32,7 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
   );
 
   const {
+    watch,
     control,
     handleSubmit,
     formState: { errors, isValid },
@@ -40,6 +41,10 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
+
+  useEffect(() => {
+    forgotPasswordMutation.reset();
+  }, [watch('email')]);
 
   const fields = [
     {
@@ -57,7 +62,7 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
   ];
 
   const onSubmit = (formData: IForm) => {
-    loginMutation.mutate(formData);
+    forgotPasswordMutation.mutate(formData);
   };
 
   return (
@@ -78,7 +83,7 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
                 <Button
                   type={Type.Submit}
                   label={'Reset Via Email'}
-                  loading={loginMutation.isLoading}
+                  loading={forgotPasswordMutation.isLoading}
                   className="w-full mt-8"
                   disabled={!isValid}
                 />

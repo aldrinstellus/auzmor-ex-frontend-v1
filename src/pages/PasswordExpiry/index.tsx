@@ -1,7 +1,8 @@
 import { Info, Logo } from 'components/Logo';
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-export interface IPasswordExpiryProps { }
+export interface IPasswordExpiryProps {}
 
 const PasswordExpiry: React.FC<IPasswordExpiryProps> = () => {
   return (
@@ -25,21 +26,18 @@ const PasswordExpiry: React.FC<IPasswordExpiryProps> = () => {
             </div>
             <div className="mt-12 text-neutral-500 text-sm font-bold text-center">
               Need a new account activation link?{' '}
-              <a
-                href="localhost:3000/login"
+              <Link
+                to="/forgot-password"
                 className="text-primary-500 text-sm font-bold"
               >
                 Resend
-              </a>
+              </Link>
             </div>
             <div className="mt-60 text-neutral-900 text-sm font-bold text-center">
               Remeber Password?{' '}
-              <a
-                href="localhost:3000/login"
-                className="text-primary-500 text-sm font-bold"
-              >
+              <Link to="/login" className="text-primary-500 text-sm font-bold">
                 Sign In
-              </a>
+              </Link>
             </div>
           </>
         </div>

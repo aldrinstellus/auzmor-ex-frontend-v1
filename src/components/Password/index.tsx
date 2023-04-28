@@ -133,7 +133,7 @@ const Password: React.FC<PasswordProps> = ({
           onClick={() => setShow((t) => !t)}
         >
           <Icon
-            name={show ? 'eyeSlash' : 'eye'}
+            name={show ? 'eyeSlashOutline' : 'eyeOutline'}
             size={16}
             className="cursor-pointer"
           />

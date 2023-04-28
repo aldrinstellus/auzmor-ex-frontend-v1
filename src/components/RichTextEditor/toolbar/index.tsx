@@ -1,10 +1,33 @@
+import Icon from 'components/Icon';
 import React from 'react';
+import { twConfig } from 'utils/misc';
 
-const Toolbar = () => {
+interface IToolbarProps {
+  isCharLimit: boolean;
+}
+
+const Toolbar: React.FC<IToolbarProps> = ({ isCharLimit }) => {
   return (
-    <div id="toolbar">
-      <div className="flex justify-between items-center h-14 ml-5 mr-6 border-t-1 mt-4">
-        <div>
+    <div id="toolbar" className="relative">
+      {isCharLimit && (
+        <div className="bg-red-50 border-y-1 border-red-300 px-4 py-2 flex justify-between absolute w-full bottom-full items-center">
+          <div className="flex items-center">
+            <Icon
+              name="infoCircleOutline"
+              size={32}
+              stroke={twConfig.theme.colors.red['500']}
+              className="p-1.5 bg-red-100 rounded-7xl mr-2"
+            />
+            <div className="truncate text-red-500 text-sm">
+              You have reached maximum character limit.
+            </div>
+          </div>
+          <div className="text-sm font-bold text-red-500">3000+ characters</div>
+        </div>
+      )}
+
+      <div className="flex justify-between items-center h-14 pl-5 pr-6 border-t-1 py-4">
+        <div className="flex items-center">
           <span className="ql-formats">
             <button className="ql-bold" />
             <button className="ql-italic" />

@@ -41,7 +41,7 @@ const AddUsers: React.FC<IAddUsersProps> = ({
         },
       } as any),
   );
-  const [fileList, setFileList] = useState<FileList | null>(null);
+  const [fileList, setFileList] = useState<FileList | null | any>(null);
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFileList(e.target.files);
   };

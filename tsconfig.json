@@ -14,8 +14,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react",
-    "baseUrl": "src",
-    "downlevelIteration": true
+    "baseUrl": "src"
   },
   "include": ["src"]
 }
