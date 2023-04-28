@@ -2,21 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Logo } from 'components/Logo';
 import { Success } from 'components/Logo';
 import Layout, { FieldType } from 'components/Form';
-import Button, { Type } from 'components/Button';
+import Button, { Size, Type } from 'components/Button';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Link } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import PasswordPolicy from 'components/PasswordPolicy';
 import { useMutation } from '@tanstack/react-query';
-import { redirectWithToken } from 'utils/misc';
 import { resetPassword } from 'queries/account';
-import PasswordExpiry from 'pages/PasswordExpiry';
-
-interface IResetPasswordProps {
-  token: string;
-}
 
 interface IForm {
   newPassword: string;
@@ -33,8 +27,10 @@ const schema = yup.object({
   token: yup.string(),
 });
 
-const ResetPassword: React.FC<IResetPasswordProps> = ({ token }) => {
-  const [success, setSuccess] = useState(false);
+const ResetPassword = () => {
+  const navigate = useNavigate();
+  const [searchParams, _] = useSearchParams();
+  const token = searchParams.get('token');
 
   const [passwordRule, setPasswordRule] = useState({
     length: false,
@@ -44,13 +40,8 @@ const ResetPassword: React.FC<IResetPasswordProps> = ({ token }) => {
     isSymbol: false,
   });
 
-  const resetPasswordMutation = useMutation(
-    (formData: any) => resetPassword(formData),
-    {
-      onSuccess: (data) => {
-        setSuccess(true);
-      },
-    },
+  const resetPasswordMutation = useMutation((formData: any) =>
+    resetPassword(formData),
   );
 
   const {
@@ -58,7 +49,6 @@ const ResetPassword: React.FC<IResetPasswordProps> = ({ token }) => {
     control,
     handleSubmit,
     formState: { errors, isValid },
-    getValues,
   } = useForm<IForm>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -84,7 +74,6 @@ const ResetPassword: React.FC<IResetPasswordProps> = ({ token }) => {
       rightIcon: 'people',
       error: errors.newPassword?.message,
       control,
-      getValues,
       onChange: (e: any) => {
         const value = e.target.value;
         validatePassword(value);
@@ -104,8 +93,6 @@ const ResetPassword: React.FC<IResetPasswordProps> = ({ token }) => {
       rightIcon: 'people',
       error: errors.password?.message,
       control,
-      getValues,
-      onChange: () => {},
       dataTestId: 'confirm-password',
     },
   ];
@@ -165,12 +152,27 @@ const ResetPassword: React.FC<IResetPasswordProps> = ({ token }) => {
   return (
     <div className="flex h-screen w-screen">
       <div className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover" />
-      <div className="w-1/2 h-full flex justify-center items-center relative">
+      <div className="w-1/2 h-full flex justify-center items-center relative bg-white">
         <div className="absolute top-8 right-8">
           <Logo />
         </div>
         <div className="w-full max-w-[440px]">
-          {!success ? (
+          {resetPasswordMutation.isSuccess ? (
+            <>
+              <div className="text-center flex justify-center items-center flex-col space-y-9">
+                <Success />
+                <div className="text-neutral-900">
+                  Password has been successfully reset
+                </div>
+              </div>
+              <Button
+                label={'Sign In Now'}
+                className="w-full mt-8"
+                size={Size.Large}
+                onClick={() => navigate('/login')}
+              />
+            </>
+          ) : (
             <>
               <div className="font-extrabold text-neutral-900 text-4xl">
                 Reset Password
@@ -205,21 +207,10 @@ const ResetPassword: React.FC<IResetPasswordProps> = ({ token }) => {
                     className="w-full mt-8"
                     loading={resetPasswordMutation.isLoading}
                     disabled={!isValid}
+                    size={Size.Large}
                   />
                 </>
               </form>
-            </>
-          ) : (
-            <>
-              <div className="text-center flex justify-center items-center flex-col space-y-9">
-                <Success />
-                <div className="text-neutral-900">
-                  Password has been successfully reset
-                </div>
-              </div>
-              <Link to="/login">
-                <Button label={'Sign In Now'} className="w-full mt-8" />
-              </Link>
             </>
           )}
         </div>

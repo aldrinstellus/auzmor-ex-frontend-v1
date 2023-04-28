@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Logo } from 'components/Logo';
 import { Success } from 'components/Logo';
 import Layout, { FieldType } from 'components/Form';
-import Button, { Type } from 'components/Button';
+import Button, { Size, Type } from 'components/Button';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import { redirectWithToken } from 'utils/misc';
 import { forgotPassword } from 'queries/account';
 
 interface IForgotPasswordProps {}
+
 interface IForm {
   email: string;
 }
@@ -22,13 +22,10 @@ const schema = yup.object({
 });
 
 const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
-  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
 
-  const forgotPasswordMutation = useMutation(
-    (formData: any) => forgotPassword(formData),
-    {
-      onSuccess: () => setSuccess(true),
-    },
+  const forgotPasswordMutation = useMutation((formData: any) =>
+    forgotPassword(formData),
   );
 
   const {
@@ -68,12 +65,28 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
   return (
     <div className="flex h-screen w-screen">
       <div className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover" />
-      <div className="w-1/2 h-full flex justify-center items-center relative">
+      <div className="w-1/2 h-full flex justify-center items-center relative bg-white">
         <div className="absolute top-8 right-8">
           <Logo />
         </div>
         <div className="w-full max-w-[440px]">
-          {!success ? (
+          {forgotPasswordMutation.isSuccess ? (
+            <>
+              <div className="text-center flex justify-center items-center flex-col space-y-9">
+                <Success />
+                <div>
+                  Email has been sent to <b>{getValues().email}</b> with
+                  instructions on resetting your password.
+                </div>
+              </div>
+              <Button
+                label={'Back to Sign In'}
+                className="w-full mt-8"
+                onClick={() => navigate('/login')}
+                size={Size.Large}
+              />
+            </>
+          ) : (
             <>
               <div className="font-extrabold text-neutral-900 text-4xl">
                 Forgot Password
@@ -85,22 +98,10 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
                   label={'Reset Via Email'}
                   loading={forgotPasswordMutation.isLoading}
                   className="w-full mt-8"
+                  size={Size.Large}
                   disabled={!isValid}
                 />
               </form>
-            </>
-          ) : (
-            <>
-              <div className="text-center flex justify-center items-center flex-col space-y-9">
-                <Success />
-                <div>
-                  Email has been sent to <b>{getValues().email}</b> with
-                  instructions on resetting your password.
-                </div>
-              </div>
-              <Link to="/login">
-                <Button label={'Back to Sign In'} className="w-full mt-8" />
-              </Link>
             </>
           )}
         </div>
