@@ -9,11 +9,10 @@ export type AvatarProps = {
   className?: string;
   image?: string;
   round?: boolean;
+  showActiveIndicator?: boolean;
   active?: boolean;
-  editable?: boolean;
   size?: number;
   bgColor?: string;
-  style?: Record<string, any>;
 };
 
 const Avatar: React.FC<AvatarProps> = ({
@@ -21,12 +20,11 @@ const Avatar: React.FC<AvatarProps> = ({
   className = '',
   round = true,
   active = true,
-  editable = false,
   onClick = () => {},
   image = '',
   size = 48,
+  showActiveIndicator = false,
   bgColor = '#343434',
-  style = {},
 }) => {
   const containerStyles = useMemo(
     () =>
@@ -85,21 +83,24 @@ const Avatar: React.FC<AvatarProps> = ({
     );
   }, []);
 
-  const isDark = isDarkColor(`${bgColor}`);
+  const isBgDark = isDarkColor(bgColor);
+
+  const textStyles = clsx(
+    { 'text-white': isBgDark },
+    { 'text-neutral-800': !isBgDark },
+    { 'font-bold': true },
+  );
 
   return (
     <div className={containerStyles} style={divStyle} onClick={onClick}>
       {!!image ? (
         <img className={imgStyles} style={divStyle} src={image} alt={name} />
       ) : (
-        <span
-          className={isDark ? 'text-white' : `${bgColor}`}
-          style={{ fontSize: `${size * 0.4}px` }}
-        >
+        <span className={textStyles} style={{ fontSize: `${size * 0.45}px` }}>
           {name && getInitials(name)}
         </span>
       )}
-      {activeIndicator}
+      {showActiveIndicator && activeIndicator}
     </div>
   );
 };

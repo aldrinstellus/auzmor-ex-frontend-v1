@@ -8,7 +8,7 @@ import SvgImageOutline from '../components/Image/ImageOutline';
 import SvgInfoCircleOutline from '../components/InfoCircle';
 import SvgMagicStarOutline from '../components/MagicStar/MagicStarOutline';
 import SvgMoreOutline from '../components/More/MoreOutline';
-import SvgPeopleOutline from '../components/People/PeopleOutline';
+import SvgPeopleOutline from '../components/Users/UsersOutline';
 
 export const outlineIcon = {
   calendarOutlineTwo: SvgCalendarOutlineTwo,
