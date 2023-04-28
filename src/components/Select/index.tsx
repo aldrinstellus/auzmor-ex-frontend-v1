@@ -76,7 +76,15 @@ const SingleSelect: React.FC<SingleSelectProps> = ({
             required: true,
           }}
           render={() => (
-            <Select styles={colourStyles} options={options} {...field} />
+            <Select
+              placeholder={placeholder}
+              styles={colourStyles}
+              options={options}
+              components={{
+                IndicatorSeparator: () => null,
+              }}
+              {...field}
+            />
           )}
         />
       </div>

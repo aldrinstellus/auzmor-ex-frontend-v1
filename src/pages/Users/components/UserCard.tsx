@@ -9,6 +9,8 @@ import { deleteUser } from 'queries/users';
 import ConfirmationBox from 'components/ConfirmationBox';
 import _ from 'lodash';
 
+import queryClient from 'utils/queryClient';
+
 export interface IUserCardProps {
   id: string;
   status: string;
@@ -56,6 +58,8 @@ const UserCard: React.FC<IUserCardProps> = ({
     onSuccess: (data, variables, context) => {
       setShowDeleteModal(false);
       alert('Successfully Deleted');
+
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     },
   });
 

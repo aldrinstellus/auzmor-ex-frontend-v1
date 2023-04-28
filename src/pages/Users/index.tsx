@@ -27,6 +27,8 @@ const Users: React.FC<IUsersProps> = () => {
   const { data, isLoading } = useUsers({});
   const usersData = data?.result.data;
 
+  const [buttonState, setButtonState] = useState(true);
+
   const formRef = useRef();
 
   const footerMapButtons = [
@@ -43,9 +45,12 @@ const Users: React.FC<IUsersProps> = () => {
     {
       id: 2,
       label: 'Send Invite',
-      disabled: false,
-      className:
-        '!py-2 !px-4 !bg-primary-500 !text-white !rounded-[24px] border',
+      disabled: buttonState,
+      className: `!py-2 !px-4 !rounded-[24px] border ${
+        buttonState
+          ? 'bg-gray-200 !text-neutral-400'
+          : '!bg-primary-500 !text-white '
+      }`,
       onClick: () => {
         (formRef.current as any).submitForm();
       },
@@ -88,6 +93,7 @@ const Users: React.FC<IUsersProps> = () => {
             reference={formRef}
             setOpenError={setOpenErrorModal}
             setOpen={setShowAddUserModal}
+            setButtonState={setButtonState}
           />
         }
         footer={
@@ -110,7 +116,7 @@ const Users: React.FC<IUsersProps> = () => {
       <ConfirmationBox
         open={openErrorModal}
         onClose={() => setOpenErrorModal(false)}
-        title="Delete User?"
+        title="Error!"
         description={
           <span>
             Failed to add participant. Email not recognised.
