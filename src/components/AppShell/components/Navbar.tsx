@@ -3,9 +3,8 @@ import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Logo } from 'components/Logo';
 import Icon from 'components/Icon';
-import useAuth from 'hooks/useAuth';
 import Divider, { Variant } from 'components/Divider';
-import Avatar from 'components/Avatar';
+import AccountCard from './AccountCard';
 
 const navigations = [
   {
@@ -36,8 +35,6 @@ const navigations = [
 ];
 
 const Navbar = () => {
-  const { user } = useAuth();
-
   return (
     <header className="sticky top-0 z-40">
       {/* add media query classes - make it responsiveness */}
@@ -88,7 +85,7 @@ const Navbar = () => {
             <Icon name="notification" />
           </div>
           <div>
-            <Avatar name={user?.name || 'U'} size={32} />
+            <AccountCard />
           </div>
         </div>
       </div>
