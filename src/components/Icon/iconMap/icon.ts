@@ -11,6 +11,9 @@ import FilterIcon from '../components/Filter';
 import MoreIcon from '../components/More';
 import EditIcon from '../components/Edit';
 import CloseIcon from '../components/Close';
+import Add from '../components/Add';
+import AddCircle from '../components/AddCircle';
+import ConvertShape from '../components/ConvertShape';
 import VideoIcon from '../components/video';
 import DocumentIcon from '../components/Document';
 import InfoCircleIcon from '../components/InfoCircle';
@@ -44,6 +47,9 @@ export const icon = {
   more: MoreIcon,
   notification: NotificationIcon,
   people: PeopleIcon,
+  add: Add,
+  addCircle: AddCircle,
+  convertShape: ConvertShape,
   user: UsersIcon,
   video: VideoIcon,
 };

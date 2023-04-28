@@ -10,6 +10,9 @@ import SvgInfoCircleOutline from '../components/InfoCircle/InfoCircleOutline';
 import SvgMagicStarOutline from '../components/MagicStar/MagicStarOutline';
 import SvgMoreOutline from '../components/More/MoreOutline';
 import SvgPeopleOutline from '../components/People/PeopleOutline';
+import SvgAddCircleOutline from '../components/AddCircle/AddCircleOutline';
+import SvgAddOutline from '../components/Add/AddOutline';
+import SvgConvertShapeOutline from '../components/ConvertShape/ConvertShapeOutline';
 import SvgVideoOutline from '../components/video/VideoOutline';
 import SvgUserOutline from '../components/Users/UsersOutline';
 
@@ -26,6 +29,9 @@ export const outlineIcon = {
   magicStarOutline: SvgMagicStarOutline,
   moreOutline: SvgMoreOutline,
   peopleOutline: SvgPeopleOutline,
+  addOutline: SvgAddOutline,
+  addCircleOutline: SvgAddCircleOutline,
+  convertShapeOutline: SvgConvertShapeOutline,
   userOutline: SvgUserOutline,
   videoOutline: SvgVideoOutline,
 };

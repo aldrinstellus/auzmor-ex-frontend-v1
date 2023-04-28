@@ -17,7 +17,7 @@ export type ConfirmationBoxProps = {
   open: boolean;
   onClose: () => void | null;
   title: string;
-  description: string;
+  description: string | ReactNode;
   discard: Discard;
   success: Success;
 };
@@ -32,8 +32,13 @@ const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({
 }) => {
   return (
     <Modal
+      wMax="max-w-md"
       title={title}
-      body={<span>{description}</span>}
+      body={
+        <div className="font-medium text-sm text-neutral-500 not-italic px-6 py-6">
+          {description}
+        </div>
+      }
       footer={
         <div className="flex flex-row-reverse px-[24px] py-[16px]">
           <Button

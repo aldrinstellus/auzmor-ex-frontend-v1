@@ -3,6 +3,7 @@ import { Dialog, Transition } from '@headlessui/react';
 
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import { Divider } from '@auzmorui/component-library.components.divider';
+import clsx from 'clsx';
 
 export type ModalProps = {
   open: boolean;
@@ -11,6 +12,7 @@ export type ModalProps = {
   title?: string;
   footer?: ReactNode | null;
   className?: string;
+  wMax?: string;
 };
 
 const Modal: React.FC<ModalProps> = ({
@@ -19,8 +21,19 @@ const Modal: React.FC<ModalProps> = ({
   title = '',
   body,
   footer = null,
-  className,
+  className = '',
+  wMax = 'max-w-xl',
 }) => {
+  const panelStyle = clsx(
+    {
+      'w-full transform overflow-hidden bg-white text-left align-middle transition-all rounded-9xl shadow':
+        true,
+    },
+    {
+      [wMax]: true,
+    },
+  );
+
   return (
     <>
       <Transition appear show={open} as={Fragment}>
@@ -48,7 +61,7 @@ const Modal: React.FC<ModalProps> = ({
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-xl transform overflow-hidden bg-white text-left align-middle transition-all rounded-9xl shadow">
+                <Dialog.Panel className={panelStyle}>
                   {!!title && (
                     <div className="flex flex-wrap border-b-1 border-neutral-200">
                       <Dialog.Title

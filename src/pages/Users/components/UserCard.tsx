@@ -1,21 +1,24 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import useHover from 'hooks/useHover';
 import Button, { Variant } from 'components/Button';
 import clsx from 'clsx';
+import { useMutation } from '@tanstack/react-query';
+import { deleteUser } from 'queries/users';
+import ConfirmationBox from 'components/ConfirmationBox';
+import _ from 'lodash';
 
 export interface IUserCardProps {
-  userId: string;
+  id: string;
   status: string;
-  name?: string;
+  fullName: string;
   image?: string;
   designation?: string;
   department?: string;
   location?: string;
-  isActive?: boolean;
-  setOpen: (show: boolean) => void;
-  setId: (id: string) => void;
+  active?: boolean;
+  workEmail?: string;
 }
 
 export enum Status {
@@ -31,18 +34,30 @@ const statusColorMap: Record<string, string> = {
 };
 
 const UserCard: React.FC<IUserCardProps> = ({
-  userId,
-  name = '',
+  id,
+  status,
+  fullName,
   image,
   designation,
   department,
   location,
-  status,
-  isActive,
-  setOpen,
-  setId,
+  active,
+  workEmail,
 }) => {
   const [isHovered, hoverEvents] = useHover();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const deleteUserMutation = useMutation({
+    mutationKey: ['delete-user', id],
+    mutationFn: deleteUser,
+    onError: (error) => {
+      console.log(error);
+    },
+    onSuccess: (data, variables, context) => {
+      setShowDeleteModal(false);
+      alert('Successfully Deleted');
+    },
+  });
 
   const hoverStyle = useMemo(
     () =>
@@ -71,12 +86,15 @@ const UserCard: React.FC<IUserCardProps> = ({
           {status}
         </div>
         <div className="flex flex-col justify-center items-center">
-          <Avatar size={80} name={name} image={image} active={isActive} />
+          <Avatar size={80} name={fullName} image={image} active={active} />
           <div className="mt-0.5 truncate text-neutral-900 text-base font-bold">
-            {name}
+            {_.truncate(fullName, {
+              length: 24,
+              separator: ' ',
+            })}
           </div>
           <div className="mt-1 truncate text-neutral-900 text-xs font-normal">
-            {designation}
+            {designation ? designation : workEmail}
           </div>
           <div className="mt-2 bg-orange-100 px-4 rounded-md truncate">
             {department}
@@ -95,8 +113,7 @@ const UserCard: React.FC<IUserCardProps> = ({
                 variant={Variant.Secondary}
                 label={'X'}
                 onClick={() => {
-                  setOpen(true);
-                  setId(userId);
+                  setShowDeleteModal(true);
                 }}
                 className="!p-2 !gap-2 !rounded-[8px] !border !border-neutral-200 !border-solid"
               />
@@ -104,6 +121,32 @@ const UserCard: React.FC<IUserCardProps> = ({
           )}
         </div>
       </Card>
+
+      <ConfirmationBox
+        open={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        title="Delete User?"
+        description={
+          <span>
+            Are you sure you want to delete this member?
+            <br /> This cannot be undone.
+          </span>
+        }
+        success={{
+          label: 'Delete',
+          className: 'bg-red-500 text-white ',
+          onSubmit: () => {
+            deleteUserMutation.mutate(id);
+          },
+        }}
+        discard={{
+          label: 'cancel',
+          className: 'text-neutral-900 bg-white ',
+          onCancel: () => {
+            setShowDeleteModal(false);
+          },
+        }}
+      />
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import Checkbox from 'components/Checkbox';
 import Input from 'components/Input';
 import Password from 'components/Password';
+import SingleSelect from 'components/Select';
 
 export enum FieldType {
   Input = 'INPUT',
@@ -14,8 +15,8 @@ export enum FieldType {
 
 const fieldMap: Record<string, any> = {
   [FieldType.Input]: Input,
-  // [FieldType.Select]: SingleSelect,
-  // [FieldType.Radio]: RadioButtonGroup,
+  [FieldType.Select]: SingleSelect,
+  //  [FieldType.Radio]: RadioButtonGroup,
   [FieldType.Checkbox]: Checkbox,
   [FieldType.Password]: Password,
 };

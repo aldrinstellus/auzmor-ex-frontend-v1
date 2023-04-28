@@ -16,7 +16,7 @@ const Signup = React.lazy(() => import('pages/Signup'));
 const Registration = React.lazy(() => import('pages/Registration'));
 const ForgotPassword = React.lazy(() => import('pages/ForgotPassword'));
 const ChangePassword = React.lazy(() => import('pages/ChangePassword'));
-const ExpiryMail = React.lazy(() => import('pages/ExpiryMail'));
+const ResetPassword = React.lazy(() => import('pages/ResetPassword'));
 const Feed = React.lazy(() => import('pages/Feed'));
 const Home = React.lazy(() => import('pages/Home'));
 const Users = React.lazy(() => import('pages/Users'));
@@ -35,7 +35,7 @@ const routers = createBrowserRouter(
       <Route path="/signup" element={<Signup />} />
       <Route path="/register" element={<Registration />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password" element={<ExpiryMail />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/accept-invite" element={<AcceptInvite />} />
       <Route element={<RequireAuth />}>
         <Route

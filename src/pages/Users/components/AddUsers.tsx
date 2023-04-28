@@ -4,18 +4,16 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Layout, FieldType } from '@auzmorui/component-library.components.form';
-import { Variant as InputVariant } from '@auzmorui/component-library.components.input';
+import Layout, { FieldType } from 'components/Form';
+import { Variant as InputVariant } from 'components/Input';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
-import {
-  Button,
-  Variant as ButtonVariant,
-} from '@auzmorui/component-library.components.button';
-import { Divider } from '@auzmorui/component-library.components.divider';
-import File from '../../images/file.svg';
-import { createUsers } from 'queries/users';
+import { UseFormGetValues, useForm } from 'react-hook-form';
+import Button, { Variant } from 'components/Button';
+import Divider from 'components/Divider';
+import File from '../../../images/file.svg';
+import { inviteUsers } from 'queries/users';
+import { useMutation } from '@tanstack/react-query';
 
 export interface IAddUsersProps {
   reference: React.MutableRefObject<undefined>;
@@ -47,13 +45,14 @@ const AddUsers: React.FC<IAddUsersProps> = ({
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFileList(e.target.files);
   };
-
   const schema = yup.object({
     fullName: yup.string().required('Please enter name'),
-    workEmail: yup.string().email('Please enter valid email address'),
-    role: yup.string().required('Please enter role'),
+    workEmail: yup
+      .string()
+      .email('Please enter valid email address')
+      .required('Please enter Email'),
+    role: yup.object().required('please enter role'),
   });
-
   const {
     control,
     handleSubmit,
@@ -90,45 +89,65 @@ const AddUsers: React.FC<IAddUsersProps> = ({
       onChange: (data: string, e: React.ChangeEvent) => {},
     },
     {
-      type: FieldType.Input,
-      variant: InputVariant.Text,
-      className: 'w-[25%]',
-      placeholder: 'Select Role',
+      type: FieldType.Select,
       name: 'role',
-      label: 'Role',
-      error: errors.role?.message,
       control,
+
       getValues,
-      onChange: (data: string, e: React.ChangeEvent) => {},
+      label: 'Role',
+      placeholder: 'member',
+      error: errors.role?.message,
+      options: [
+        { value: ' MEMBER', label: 'Member' },
+        { value: 'ADMIN', label: 'Admin' },
+        { value: 'SUPERADMIN', label: 'SuperAdmin' },
+      ],
+      onChange: (data: UseFormGetValues<any>, e: React.ChangeEvent) => {
+        console.log(data);
+      },
     },
   ];
 
   const inputRef = useRef<HTMLInputElement | null>(null);
-
   const handleUploadClick = () => {
     inputRef.current?.click();
   };
-  // @ts-ignore
   const files = fileList ? [...fileList] : [];
 
-  const onSubmit = async (data1: any) => {
-    const users = [];
-    users.push(data1);
+  const inviteUsersMutation = useMutation({
+    mutationKey: ['inviteUsersMutation'],
+    mutationFn: inviteUsers,
+    onError: (error) => {
+      console.log(error);
+      setOpen(false);
+      setOpenError(true);
+    },
+    onSuccess: (data: any, variables, context) => {
+      data.result.data.map((user: any, index: number) => {
+        if (user.status === 'FAILED') {
+          setOpen(false);
+          setOpenError(true);
+        } else {
+          setOpen(false);
+          alert('Successfully added');
+        }
+      });
+    },
+  });
 
-    await createUsers({ users: users }).then((res: any) => {
-      if (res.result.data[0].status === 'FAILED') {
-        setOpen(false);
-        setOpenError(true);
-      } else {
-        setOpen(false);
-        alert('Successfully added');
-      }
+  const onSubmit = async (data: any) => {
+    const users = [];
+    data.role = data.role.value;
+    users.push(data);
+
+    inviteUsersMutation.mutate({
+      users: users,
     });
   };
 
   return (
-    <div className="h-[490px]">
-      <div className="mx-6">
+    <>
+      <div className="mx-6 mt-6 h-[490px]">
         <div className="flex flex-col mb-3">
           <form onSubmit={handleSubmit(onSubmit)}>
             <Layout className="flex space-x-4" fields={Fields} />
@@ -136,12 +155,13 @@ const AddUsers: React.FC<IAddUsersProps> = ({
         </div>
 
         <Button
-          className="flex border-none  text-primary-500 !px-0 mb-6"
+          className="flex border-none  text-primary-500 !px-0 mb-6 "
           label="Add Another"
-          leftIcon="people"
-          variant={ButtonVariant.Secondary}
+          leftIcon="addCircle"
+          variant={Variant.Secondary}
           onClick={() => {}}
         />
+
         <div className="flex justify-center item-center mb-6">
           <Divider className="w-[95%]" />
         </div>
@@ -161,7 +181,7 @@ const AddUsers: React.FC<IAddUsersProps> = ({
                 <Button
                   className="!border-none !bg-inherit !p-0 !text-primary-600 !text-xs !pt-0.5"
                   label="Download Format"
-                  variant={ButtonVariant.Secondary}
+                  variant={Variant.Secondary}
                 />
               </div>
             </div>
@@ -182,7 +202,7 @@ const AddUsers: React.FC<IAddUsersProps> = ({
               className="flex mb-2 text-neutral-900 !py-2 !px-4 gap-2 !rounded-[24px]"
               label=" Upload from existing documents"
               leftIcon="people"
-              variant={ButtonVariant.Secondary}
+              variant={Variant.Secondary}
               onClick={handleUploadClick}
             />
 
@@ -204,7 +224,7 @@ const AddUsers: React.FC<IAddUsersProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
