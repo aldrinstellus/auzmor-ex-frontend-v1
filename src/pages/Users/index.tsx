@@ -21,12 +21,9 @@ const tabs = [
 
 const Users: React.FC<IUsersProps> = () => {
   const [showAddUserModal, setShowAddUserModal] = useState(false);
-
   const [openErrorModal, setOpenErrorModal] = useState(false);
-
   const { data, isLoading } = useUsers({});
   const usersData = data?.result.data;
-
   const [buttonState, setButtonState] = useState(true);
 
   const formRef = useRef();
@@ -158,7 +155,9 @@ const Users: React.FC<IUsersProps> = () => {
         </div>
       </div>
 
-      <div className="mt-6 text-neutral-500">Showing 200 results</div>
+      <div className="mt-6 text-neutral-500">
+        Showing {usersData.length} results
+      </div>
       <div className="flex flex-wrap mt-6">
         {usersData.length > 0 &&
           usersData.map((user: any, index: number) => (
