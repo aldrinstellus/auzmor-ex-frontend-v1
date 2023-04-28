@@ -11,26 +11,31 @@ const navigations = [
     label: 'Home',
     icon: 'home',
     linkTo: '/home',
+    iconSize: 24,
   },
   {
     label: 'Feed',
     icon: 'feed',
     linkTo: '/feed',
+    iconSize: 24,
   },
   {
     label: 'People',
     icon: 'people',
     linkTo: '/users',
+    iconSize: 24,
   },
   {
     label: 'Apps',
     icon: 'launcher',
     linkTo: '/apps',
+    iconSize: 24,
   },
   {
     label: 'Discover',
     icon: 'explore',
     linkTo: '/discover',
+    iconSize: 26,
   },
 ];
 
@@ -60,8 +65,8 @@ const Navbar = () => {
               }
             >
               <div className="flex flex-col items-center">
-                <Icon name={nav.icon} />
-                <div className="text-sm mt-[2px]">{nav.label}</div>
+                <Icon name={nav.icon} size={nav.iconSize} />
+                <div className="text-sm">{nav.label}</div>
               </div>
             </NavLink>
           ))}
@@ -77,12 +82,12 @@ const Navbar = () => {
             }
           >
             <div className="flex flex-col items-center">
-              <Icon name="admin" />
-              <div className="text-sm">Admin</div>
+              <Icon name="admin" size={22} />
+              <div className="text-sm mt-[1px]">Admin</div>
             </div>
           </NavLink>
           <div>
-            <Icon name="notification" />
+            <Icon name="notification" size={26} />
           </div>
           <div>
             <AccountCard />
