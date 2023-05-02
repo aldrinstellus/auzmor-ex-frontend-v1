@@ -62,9 +62,10 @@ export const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
   const { outerRef, innerRef, items } = useVirtual({
     itemCount,
     onScroll: (event) => {
-      console.log('on scrollll');
-      if (event.visibleStopIndex === event.overscanStopIndex) {
-        console.log('hey!');
+      if (
+        event.visibleStopIndex === event.overscanStopIndex &&
+        !isFetchingNextPage
+      ) {
         loadMore();
       }
       onScroll(event);

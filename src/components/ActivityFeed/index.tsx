@@ -9,9 +9,13 @@ import { InfiniteScroll } from 'components/InfiniteScroll';
 
 type ActivityFeedProps = {
   activityFeed: IFeed[];
+  loadMore: any; // Change this type to something more appropriate for functions
 };
 
-const ActivityFeed: React.FC<ActivityFeedProps> = ({ activityFeed }) => {
+const ActivityFeed: React.FC<ActivityFeedProps> = ({
+  activityFeed,
+  loadMore,
+}) => {
   return (
     <div style={{ marginTop: 41.5 }}>
       <div className="flex flex-row items-center gap-x-2">
@@ -21,13 +25,16 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({ activityFeed }) => {
         <SortByDropdown />
       </div>
 
-      {activityFeed.length > 0 ? (
+      {activityFeed?.length > 0 ? (
         <InfiniteScroll
+          // innerHeight > outerHeight
+          // outerClassName="h-32 overflow-y-scroll"
+          // innerClassName="h-full"
           itemCount={activityFeed.length}
           itemRenderer={(index) => (
             <Post data={activityFeed[index]?.content?.editor} />
           )}
-          loadMore={() => {}}
+          loadMore={loadMore}
         />
       ) : (
         <div className="flex justify-center items-center mt-20">

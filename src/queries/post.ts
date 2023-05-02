@@ -31,7 +31,7 @@ export const createPost = async (payload: ICreatePost) => {
   return data;
 };
 
-export const getPosts = async () => {
-  const data = await apiService.get('/posts');
-  return data?.data?.result;
+export const fetchFeed = ({ pageParam = null }) => {
+  if (pageParam === null) return apiService.get('/posts');
+  else return apiService.get(pageParam);
 };

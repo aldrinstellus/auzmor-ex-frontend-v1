@@ -6,7 +6,8 @@ import Icon from 'components/Icon';
 import CreatePostModal from './components/CreatePostModal';
 import { IMenuItem } from 'components/PopupMenu';
 import { twConfig } from 'utils/misc';
-import { useLoaderData } from 'react-router-dom';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { fetchFeed } from 'queries/post';
 
 interface IFeedProps {}
 
@@ -106,12 +107,37 @@ export const postTypeMapIcons: IPostTypeIcon[] = [
 
 const Feed: React.FC<IFeedProps> = () => {
   const [showModal, setShowModal] = useState(true);
-  const activityFeed: any = useLoaderData();
+
+  const { isLoading, isError, error, data, fetchNextPage } = useInfiniteQuery(
+    ['feed'],
+    fetchFeed,
+    {
+      getNextPageParam: (lastPage: any) => {
+        return lastPage?.data?.result?.paging?.next;
+      },
+      getPreviousPageParam: (currentPage: any) => {
+        return currentPage?.data?.result?.paging?.next;
+      },
+    },
+  );
+
+  const feed = data?.pages.flatMap((page) => {
+    return page.data?.result?.data.map((post: any) => {
+      return {
+        ...post,
+        content: {
+          ...post.content,
+          editor: JSON.parse(post.content.editor),
+        },
+        uuid: post.id,
+      };
+    });
+  }) as IFeed[];
 
   return (
     <div className="flex flex-col">
       <CreatePostCard setShowModal={setShowModal} />
-      <ActivityFeed activityFeed={activityFeed} />
+      <ActivityFeed activityFeed={feed} loadMore={fetchNextPage} />
       <CreatePostModal showModal={showModal} setShowModal={setShowModal} />
     </div>
   );

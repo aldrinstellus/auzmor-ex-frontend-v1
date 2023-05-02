@@ -7,7 +7,6 @@ import {
 } from 'react-router-dom';
 import queryClient from 'utils/queryClient';
 import { loader as homeLoader } from 'pages/Home';
-import { loader as feedLoader } from 'pages/Feed/helpers';
 import RequireAuth from 'components/RequireAuth';
 
 const ErrorBoundary = React.lazy(() => import('components/ErrorBoundary'));
@@ -68,7 +67,7 @@ const routers = createBrowserRouter(
             return '';
           }}
         />
-        <Route path="/feed" element={<Feed />} loader={feedLoader()} />
+        <Route path="/feed" element={<Feed />} />
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/apps" element={<Apps />} />
         <Route path="/discover" element={<Discover />} />
