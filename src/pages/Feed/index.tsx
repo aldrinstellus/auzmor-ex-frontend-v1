@@ -105,7 +105,7 @@ export const postTypeMapIcons: IPostTypeIcon[] = [
 ];
 
 const Feed: React.FC<IFeedProps> = () => {
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const rawFeedData: any = useLoaderData();
   const feed: IFeed[] = rawFeedData.data.map((data: any) => {
     return {

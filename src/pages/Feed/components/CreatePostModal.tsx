@@ -7,7 +7,7 @@ import Tooltip from 'components/Tooltip';
 import Divider, { Variant as DividerVariant } from 'components/Divider';
 import { postTypeMapIcons } from '..';
 import { useMutation } from '@tanstack/react-query';
-import { createPost } from 'queries/post';
+import { createPost, editPost, deletePost } from 'queries/post';
 import PopupMenu from 'components/PopupMenu';
 import { twConfig } from 'utils/misc';
 import CreateAnnouncement from './CreateAnnouncement';
@@ -25,6 +25,7 @@ export interface IAnnouncement {
 enum CreatePostFlow {
   CreatePost = 'CREATE_POST',
   CreateAnnouncement = 'CREATE_ANNOUNCEMENT',
+  // EditPost = 'EDIT_POST',
 }
 
 const CreatePostModal: React.FC<ICreatePostModal> = ({
@@ -49,6 +50,24 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       console.log('data==>', data);
     },
   });
+
+  // const editPostMutation = useMutation({
+  //   mutationKey: ['editPostMutation'],
+  //   mutationFn: editPost,
+  //   onError: (error) => console.log(error),
+  //   onSuccess: (data, variables, context) => {
+  //     console.log('data==>', data);
+  //   },
+  // });
+
+  // const deletePostMutation = useMutation({
+  //   mutationKey: ['deletePostMutation'],
+  //   mutationFn: deletePost,
+  //   onError: (error) => console.log(error),
+  //   onSuccess: (data, variables, context) => {
+  //     console.log('data==>', data);
+  //   },
+  // });
 
   const handleSubmitPost = () => {
     createPostMutation.mutate({
@@ -175,6 +194,18 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       showBackIcon: false,
       onBackIconClick: () => {},
     },
+    // [CreatePostFlow.EditPost]: {
+    //   title: 'Edit post',
+    //   body: (
+    //     <CreatePost
+    //       onChangeEditor={(content) => setEditorValue({ ...content })}
+    //       announcement={announcement}
+    //     />
+    //   ),
+    //   footer: <Footer />,
+    //   showBackIcon: false,
+    //   onBackIconClick: () => {},
+    // },
     [CreatePostFlow.CreateAnnouncement]: {
       title: 'Create an announcement',
       body: (

@@ -27,6 +27,12 @@ import NotificationIcon from '../components/Notification';
 import SpeakerIcon from '../components/Speaker';
 import DraftIcon from '../components/Draft';
 import ArrowLeftIcon from '../components/ArrowLeft';
+import BookmarkOutline from '../components/Bookmark';
+import AnalyticsOutline from '../components/AnalyticsIcon';
+import CopyLink from '../components/CopyLinkIcon';
+import DeleteIcon from '../components/DeleteIcon';
+import MenuEditIcon from '../components/MenuEditIcon';
+import MenuNotificationIcon from '../components/MenuNotificationIcon';
 
 export const icon = {
   admin: AdminIcon,
@@ -58,4 +64,10 @@ export const icon = {
   convertShape: ConvertShape,
   user: UsersIcon,
   video: VideoIcon,
+  bookmarkOutline: BookmarkOutline,
+  analyticsIconOutline: AnalyticsOutline,
+  copyLink: CopyLink,
+  deleteIcon: DeleteIcon,
+  editIcon: MenuEditIcon,
+  notificationIcon: MenuNotificationIcon,
 };
