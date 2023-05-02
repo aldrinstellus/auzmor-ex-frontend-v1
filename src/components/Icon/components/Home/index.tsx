@@ -5,6 +5,7 @@ import { default as HomeOutline } from './HomeOutline';
 
 type IconProps = {
   size?: number;
+  fill?: string;
 };
 
 const HomeIcon: React.FC<IconProps> = (props) => {

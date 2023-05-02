@@ -47,7 +47,7 @@ const Banner: React.FC<BannerProps> = ({
             variant === Variant.Warning,
         },
         {
-          'flex items-center font-manrope text-sm shadow-sm': true,
+          'flex items-center text-sm shadow-sm p-2': true,
         },
         {
           [className]: true,
@@ -55,34 +55,12 @@ const Banner: React.FC<BannerProps> = ({
       ),
     [variant, className],
   );
-  const iconStyles = useMemo(
-    () =>
-      clsx(
-        {
-          '!bg-inherit !rounded !text-[#292D32]': variant === Variant.Success,
-        },
-        {
-          '!bg-red-200 !rounded-lg !text-red-500': variant === Variant.Error,
-        },
-        {
-          '!bg-blue-200 !rounded-lg !text-blue-500': variant === Variant.Info,
-        },
-        {
-          '!bg-orange-200 !rounded-lg !text-orange-500':
-            variant === Variant.Warning,
-        },
-        {
-          '!flex-none !mx-2 !py-1': true,
-        },
-      ),
-    [variant],
-  );
 
   const titleStyles = useMemo(
     () =>
       clsx(
         {
-          'text-[#333333]': variant === Variant.Success,
+          'text-green-500': variant === Variant.Success,
         },
         {
           'text-red-500': variant === Variant.Error,
@@ -92,9 +70,6 @@ const Banner: React.FC<BannerProps> = ({
         },
         {
           'text-orange-500': variant === Variant.Warning,
-        },
-        {
-          '!flex-auto !font-normal py-2.5': true,
         },
       ),
     [variant],
@@ -122,27 +97,32 @@ const Banner: React.FC<BannerProps> = ({
     [variant],
   );
 
+  const iconName = useMemo(() => {
+    if (variant === Variant.Error) {
+      return 'infoCircle';
+    }
+    return 'infoCircle';
+  }, [variant]);
+
   return (
     <div className={containerStyles}>
-      <IconButton
-        icon={icon}
-        className={iconStyles}
-        variant={IconVariant.Primary}
-      />
+      <Icon name={iconName} className="relative top-[2px]" />
 
       <div className={titleStyles}>{title}</div>
 
-      <div className="flex items-center">
-        <div className="pl-2">{action}</div>
-        {onClose && (
-          <IconButton
-            icon={'X'}
-            className={iconButtonStyles}
-            onClick={onClose}
-            variant={IconVariant.Primary}
-          />
-        )}
-      </div>
+      {!!action && (
+        <div className="flex items-center">
+          <div className="pl-2">{action}</div>
+          {onClose && (
+            <IconButton
+              icon={'X'}
+              className={iconButtonStyles}
+              onClick={onClose}
+              variant={IconVariant.Primary}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 };

@@ -68,7 +68,6 @@ const Signup: React.FC<ISignupProps> = () => {
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      className: 'w-full',
       placeholder: 'Enter your email address',
       name: 'workEmail',
       label: 'Work Email*',
@@ -79,7 +78,6 @@ const Signup: React.FC<ISignupProps> = () => {
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      className: 'w-full mt-8',
       placeholder: 'Enter domain',
       name: 'domain',
       label: 'Domain*',
@@ -89,7 +87,6 @@ const Signup: React.FC<ISignupProps> = () => {
     },
     {
       type: FieldType.Password,
-      className: 'w-full mt-8',
       placeholder: 'Enter password',
       name: 'password',
       label: 'Password*',
@@ -100,7 +97,6 @@ const Signup: React.FC<ISignupProps> = () => {
     },
     {
       type: FieldType.Password,
-      className: 'w-full mt-8',
       placeholder: 'Re-Enter password',
       name: 'confirmPassword',
       label: 'Confirm Password*',
@@ -111,7 +107,6 @@ const Signup: React.FC<ISignupProps> = () => {
     },
     {
       type: FieldType.Checkbox,
-      className: 'w-full mt-8 flex',
       label:
         'By Signing up you are agreeing to Auzmor Office’s Terms of Use and Privacy Policy',
       name: 'privacyPolicy',
@@ -128,7 +123,7 @@ const Signup: React.FC<ISignupProps> = () => {
   return (
     <div className="flex h-screen w-screen">
       <div className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover"></div>
-      <div className="w-1/2 flex justify-center items-center relative">
+      <div className="w-1/2 flex justify-center items-center relative bg-white">
         <div className="absolute top-8 right-8">
           <Logo />
         </div>
@@ -136,7 +131,7 @@ const Signup: React.FC<ISignupProps> = () => {
           <div className="font-extrabold text-neutral-900 text-4xl">
             Sign Up
           </div>
-          <form className="mt-16" onSubmit={handleSubmit(onSubmit)}>
+          <form className="mt-12" onSubmit={handleSubmit(onSubmit)}>
             {!!signupMutation.isError && (
               <div className="mb-8">
                 <Banner

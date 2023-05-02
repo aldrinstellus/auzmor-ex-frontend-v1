@@ -9,13 +9,13 @@ export const Logo = () => {
 };
 
 export const Success = () => {
-  return <img src={SuccessLogo} alt="Success Logo" />
+  return <img src={SuccessLogo} alt="Success Logo" />;
 };
 
 export const Info = () => {
-  return <img src={InfoLogo} alt="Info Logo" />
+  return <img src={InfoLogo} alt="Info Logo" />;
 };
 
 export const Check = () => {
-  return <img src={CheckboxImage} alt="Checkbox image" />
-}
+  return <img src={CheckboxImage} alt="Checkbox image" />;
+};

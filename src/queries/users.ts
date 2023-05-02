@@ -14,7 +14,7 @@ export const useUsers = (q: Record<string, any>) => {
   });
 };
 
-export const createUsers = async (q: Record<string, any>) => {
+export const inviteUsers = async (q: Record<string, any>) => {
   const data = await apiService.post('/users', q);
   return new Promise((res) => {
     res(data);

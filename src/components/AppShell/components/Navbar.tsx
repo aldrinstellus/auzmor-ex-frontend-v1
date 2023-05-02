@@ -2,39 +2,46 @@ import React from 'react';
 
 import { Link, NavLink } from 'react-router-dom';
 import { Logo } from 'components/Logo';
+import Icon from 'components/Icon';
+import Divider, { Variant } from 'components/Divider';
+import AccountCard from './AccountCard';
 
 const navigations = [
   {
     label: 'Home',
-    icon: 1,
+    icon: 'home',
     linkTo: '/home',
+    iconSize: 24,
   },
   {
     label: 'Feed',
-    icon: 2,
+    icon: 'feed',
     linkTo: '/feed',
+    iconSize: 24,
   },
   {
     label: 'People',
-    icon: 3,
+    icon: 'people',
     linkTo: '/users',
+    iconSize: 24,
   },
   {
     label: 'Apps',
-    icon: 4,
+    icon: 'launcher',
     linkTo: '/apps',
+    iconSize: 24,
   },
   {
     label: 'Discover',
-    icon: 5,
+    icon: 'explore',
     linkTo: '/discover',
+    iconSize: 26,
   },
 ];
 
 const Navbar = () => {
   return (
     <header className="sticky top-0 z-40">
-      {/* add media query classes - make it responsiveness */}
       <div className="bg-white shadow h-16 w-full flex items-center justify-center px-8">
         <Link to="/">
           <Logo />
@@ -57,15 +64,14 @@ const Navbar = () => {
               }
             >
               <div className="flex flex-col items-center">
-                <span>{nav.icon}</span>
+                <Icon name={nav.icon} size={nav.iconSize} />
                 <div className="text-sm">{nav.label}</div>
               </div>
             </NavLink>
           ))}
         </div>
-        {/* replace with divider component library */}
-        <div className="mx-8">
-          <div>|</div>
+        <div className="mx-8 h-full py-2">
+          <Divider variant={Variant.Vertical} />
         </div>
         <div className="flex items-center space-x-8">
           <NavLink
@@ -75,14 +81,16 @@ const Navbar = () => {
             }
           >
             <div className="flex flex-col items-center">
-              <span>6</span>
-              <div className="text-sm">Admin</div>
+              <Icon name="admin" size={22} />
+              <div className="text-sm mt-[1px]">Admin</div>
             </div>
           </NavLink>
-          {/* replace with component library - Notification Icon */}
-          <div>N</div>
-          {/* replace with component library (dropdown) - avatar component */}
-          <div>Avatar</div>
+          <div>
+            <Icon name="notification" size={26} />
+          </div>
+          <div>
+            <AccountCard />
+          </div>
         </div>
       </div>
     </header>

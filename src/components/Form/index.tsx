@@ -2,11 +2,12 @@ import React from 'react';
 import Checkbox from 'components/Checkbox';
 import Input from 'components/Input';
 import Password from 'components/Password';
+import SingleSelect from 'components/SingleSelect';
 
 export enum FieldType {
   Input = 'INPUT',
   Password = 'PASSWORD',
-  Select = 'SELECT',
+  SingleSelect = 'SELECT',
   MultiSelect = 'MULTISELECT',
   Checkbox = 'CHECKBOX',
   Radio = 'RADIO',
@@ -14,7 +15,7 @@ export enum FieldType {
 
 const fieldMap: Record<string, any> = {
   [FieldType.Input]: Input,
-  // [FieldType.Select]: SingleSelect,
+  [FieldType.SingleSelect]: SingleSelect,
   // [FieldType.Radio]: RadioButtonGroup,
   [FieldType.Checkbox]: Checkbox,
   [FieldType.Password]: Password,
@@ -25,7 +26,7 @@ export type LayoutProps = {
   className?: string;
 };
 
-const Layout: React.FC<LayoutProps> = ({ fields, className = '' }) => {
+const Layout: React.FC<LayoutProps> = ({ fields, className = 'space-y-8' }) => {
   return (
     <div className={className}>
       {fields.map((field, index) => {

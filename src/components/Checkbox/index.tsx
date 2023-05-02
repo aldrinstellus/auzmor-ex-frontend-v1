@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React from 'react';
 import { UseFormGetValues, useController } from 'react-hook-form';
 
@@ -25,8 +26,11 @@ const Checkbox: React.FC<CheckboxProps> = ({
   ...rest
 }) => {
   const { field } = useController({ name, control });
+
+  const styles = clsx({ 'flex space-x-2': true }, { [className]: true });
+
   return (
-    <label className={className} data-testid={dataTestId}>
+    <label className={styles} data-testid={dataTestId}>
       <input
         type="checkbox"
         className="h-4 w-4 rounded-xl cursor-pointer accent-primary-500"
@@ -38,7 +42,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
         {...rest}
       />
       {label && (
-        <div className="text-text-medium text-sm ml-1 relative bottom-[2px]">
+        <div className="text-text-medium text-sm ml-1 relative bottom-[2px] cursor-pointer">
           {label}
         </div>
       )}

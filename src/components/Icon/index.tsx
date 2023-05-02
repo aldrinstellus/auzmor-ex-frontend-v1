@@ -14,7 +14,7 @@ export type IconProps = {
 
 const Icon: React.FC<IconProps> = ({
   name,
-  size = 22,
+  size = 24,
   onClick = null,
   className = '',
   hover = true,
@@ -22,6 +22,9 @@ const Icon: React.FC<IconProps> = ({
   stroke,
 }) => {
   const Component = iconMap[name] || null;
+  if (!Component) {
+    return null;
+  }
 
   const styles = clsx({ 'cursor-pointer': !!onClick, [className]: true });
 

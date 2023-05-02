@@ -2,7 +2,9 @@ import React, { ReactNode, Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
-import { Divider } from '@auzmorui/component-library.components.divider';
+import Icon from 'components/Icon';
+import { twConfig } from 'utils/misc';
+import clsx from 'clsx';
 
 export type ModalProps = {
   open: boolean;
@@ -10,7 +12,10 @@ export type ModalProps = {
   body: ReactNode | null;
   title?: string;
   footer?: ReactNode | null;
+  onBackIconClick?: () => void;
+  showBackIcon?: boolean;
   className?: string;
+  wMax?: string;
 };
 
 const Modal: React.FC<ModalProps> = ({
@@ -19,8 +24,21 @@ const Modal: React.FC<ModalProps> = ({
   title = '',
   body,
   footer = null,
-  className,
+  showBackIcon = false,
+  onBackIconClick,
+  className = '',
+  wMax = 'max-w-xl',
 }) => {
+  const panelStyle = clsx(
+    {
+      'w-full transform overflow-hidden bg-white text-left align-middle transition-all rounded-9xl shadow':
+        true,
+    },
+    {
+      [wMax]: true,
+    },
+  );
+
   return (
     <>
       <Transition appear show={open} as={Fragment}>
@@ -48,9 +66,19 @@ const Modal: React.FC<ModalProps> = ({
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-xl transform overflow-hidden bg-white text-left align-middle transition-all rounded-9xl shadow">
+                <Dialog.Panel className={panelStyle}>
                   {!!title && (
-                    <div className="flex flex-wrap border-b-1 border-neutral-200">
+                    <div className="flex flex-wrap border-b-1 border-neutral-200 items-center">
+                      {showBackIcon && (
+                        <Icon
+                          name="arrowLeftOutline"
+                          stroke={twConfig.theme.colors.neutral['900']}
+                          className="ml-4"
+                          size={16}
+                          onClick={onBackIconClick}
+                        />
+                      )}
+
                       <Dialog.Title
                         as="h3"
                         className="text-lg text-black p-4 font-extrabold flex-[50%]"

@@ -59,7 +59,6 @@ const Login: React.FC<ILoginProps> = () => {
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      className: 'w-full',
       placeholder: 'Enter your email address / username',
       name: 'email',
       label: 'Work Email / Username',
@@ -69,7 +68,6 @@ const Login: React.FC<ILoginProps> = () => {
     },
     {
       type: FieldType.Password,
-      className: 'w-full mt-8',
       placeholder: 'Enter password',
       name: 'password',
       label: 'Password',
@@ -89,7 +87,7 @@ const Login: React.FC<ILoginProps> = () => {
   return (
     <div className="flex h-screen w-screen">
       <div className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover"></div>
-      <div className="w-1/2 h-full flex justify-center items-center relative">
+      <div className="w-1/2 h-full flex justify-center items-center relative bg-white">
         <div className="absolute top-8 right-8">
           <Logo />
         </div>
