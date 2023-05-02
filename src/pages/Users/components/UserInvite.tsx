@@ -6,13 +6,9 @@ export interface IUserInviteProps {}
 const UserInvite: React.FC<IUserInviteProps> = () => {
   return (
     <div>
-      <Modal
-        open={false}
-        closeModal={() => {}}
-        title={''}
-        body={undefined}
-        footer={undefined}
-      />
+      <Modal open={false} closeModal={() => {}}>
+        <></>
+      </Modal>
     </div>
   );
 };

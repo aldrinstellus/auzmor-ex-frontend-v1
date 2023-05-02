@@ -7,6 +7,7 @@ import CreatePostModal from './components/CreatePostModal';
 import { IMenuItem } from 'components/PopupMenu';
 import { twConfig } from 'utils/misc';
 import { useLoaderData } from 'react-router-dom';
+import CreatePostProvider from 'contexts/CreatePostContext';
 
 interface IFeedProps {}
 
@@ -124,7 +125,9 @@ const Feed: React.FC<IFeedProps> = () => {
     <div className="flex flex-col">
       <CreatePostCard setShowModal={setShowModal} />
       <ActivityFeed activityFeed={feed} />
-      <CreatePostModal showModal={showModal} setShowModal={setShowModal} />
+      <CreatePostProvider>
+        <CreatePostModal showModal={showModal} setShowModal={setShowModal} />
+      </CreatePostProvider>
     </div>
   );
 };

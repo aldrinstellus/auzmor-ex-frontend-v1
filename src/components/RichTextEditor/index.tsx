@@ -1,4 +1,4 @@
-import React, { memo, useRef, useState } from 'react';
+import React, { memo, useContext, useRef, useState } from 'react';
 import ReactQuill, { Quill, UnprivilegedEditor } from 'react-quill';
 import { DeltaStatic, Sources } from 'quill';
 import 'react-quill/dist/quill.snow.css';
@@ -14,8 +14,8 @@ import EmojiBlot from './blots/emoji';
 import EmojiToolbar from './emoji';
 import { mention } from './config';
 import Icon from 'components/Icon';
-import { IAnnouncement } from 'pages/Feed/components/CreatePostModal';
 import { twConfig } from 'utils/misc';
+import { CreatePostContext } from 'contexts/CreatePostContext';
 const Delta = Quill.import('delta');
 
 export interface EditorContentChanged {
@@ -28,7 +28,6 @@ export type QuillEditorProps = {
   className?: string;
   placeholder: string;
   charLimit?: number;
-  announcement?: IAnnouncement | null;
   onChangeEditor?: (content: EditorContentChanged) => void;
 };
 
@@ -36,9 +35,9 @@ const RichTextEditor: React.FC<QuillEditorProps> = ({
   className,
   placeholder,
   charLimit = 3000,
-  announcement,
   onChangeEditor,
 }) => {
+  const { announcement } = useContext(CreatePostContext);
   const reactQuillRef = useRef<ReactQuill>(null);
   const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
 
