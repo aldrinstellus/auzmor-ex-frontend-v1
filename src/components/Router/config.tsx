@@ -7,8 +7,8 @@ import {
 } from 'react-router-dom';
 import queryClient from 'utils/queryClient';
 import { loader as homeLoader } from 'pages/Home';
+import { loader as feedLoader } from 'pages/Feed/helpers';
 import RequireAuth from 'components/RequireAuth';
-import { getPosts } from 'queries/post';
 
 const ErrorBoundary = React.lazy(() => import('components/ErrorBoundary'));
 const Login = React.lazy(() => import('pages/Login'));
@@ -68,13 +68,7 @@ const routers = createBrowserRouter(
             return '';
           }}
         />
-        <Route
-          path="/feed"
-          element={<Feed />}
-          loader={async () => {
-            return await getPosts();
-          }}
-        />
+        <Route path="/feed" element={<Feed />} loader={feedLoader()} />
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/apps" element={<Apps />} />
         <Route path="/discover" element={<Discover />} />

@@ -5,6 +5,7 @@ import React from 'react';
 import SortByDropdown from './components/SortByDropdown';
 import ClockIcon from 'components/Icon/components/Clock';
 import FeedFilter from './components/FeedFilters';
+import { InfiniteScroll } from 'components/InfiniteScroll';
 
 type ActivityFeedProps = {
   activityFeed: IFeed[];
@@ -19,12 +20,15 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({ activityFeed }) => {
         <Divider />
         <SortByDropdown />
       </div>
+
       {activityFeed.length > 0 ? (
-        activityFeed?.map((feed) => (
-          <div key={feed.uuid}>
-            <Post data={feed?.content?.editor} />
-          </div>
-        ))
+        <InfiniteScroll
+          itemCount={activityFeed.length}
+          itemRenderer={(index) => (
+            <Post data={activityFeed[index]?.content?.editor} />
+          )}
+          loadMore={() => {}}
+        />
       ) : (
         <div className="flex justify-center items-center mt-20">
           Feed Not Found
