@@ -60,53 +60,11 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         <CreatePost
           onChangeEditor={(content) => setEditorValue({ ...content })}
         />
-<<<<<<< HEAD
       )}
       {activeFlow === CreatePostFlow.CreateAnnouncement && (
         <CreateAnnouncement ref={announcementFormRef} />
       )}
     </Modal>
-=======
-      ),
-      footer: <Footer />,
-      showBackIcon: false,
-      onBackIconClick: () => {},
-    },
-    [CreatePostFlow.CreateAnnouncement]: {
-      title: 'Create an announcement',
-      body: (
-        <CreateAnnouncement
-          ref={announcementFormRef}
-          announcement={announcement}
-          setAnnouncement={setAnnouncement}
-        />
-      ),
-      footer: <AnnouncementFooter />,
-      showBackIcon: true,
-      onBackIconClick: () => setActiveFlow(CreatePostFlow.CreatePost),
-    },
-  };
-
-  return (
-    <div>
-      <Modal open={showModal} closeModal={() => setShowModal(false)}>
-        <div>
-          {createPostMap[activeFlow].title}
-          {createPostMap[activeFlow].body}
-          {createPostMap[activeFlow].footer}
-        </div>
-      </Modal>
-      {/* <Modal
-        open={showModal}
-        closeModal={() => setShowModal(false)}
-        title={createPostMap[activeFlow].title}
-        body={createPostMap[activeFlow].body}
-        footer={createPostMap[activeFlow].footer}
-        showBackIcon={createPostMap[activeFlow].showBackIcon || false}
-        onBackIconClick={createPostMap[activeFlow].onBackIconClick}
-      /> */}
-    </div>
->>>>>>> develop
   );
 };
 
