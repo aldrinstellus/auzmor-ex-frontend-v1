@@ -1,5 +1,6 @@
 import React, {
   ChangeEvent,
+  useEffect,
   useImperativeHandle,
   useRef,
   useState,
@@ -14,11 +15,14 @@ import Divider from 'components/Divider';
 import File from '../../../images/file.svg';
 import { inviteUsers } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
+import _ from 'lodash';
+import queryClient from 'utils/queryClient';
 
 export interface IAddUsersProps {
   reference: React.MutableRefObject<undefined>;
   setOpen: (show: boolean) => void;
   setOpenError: (show: boolean) => void;
+  setButtonState: (show: boolean) => void;
 }
 
 export interface IForm {
@@ -31,6 +35,7 @@ const AddUsers: React.FC<IAddUsersProps> = ({
   reference,
   setOpen,
   setOpenError,
+  setButtonState,
 }) => {
   useImperativeHandle(
     reference,
@@ -56,12 +61,22 @@ const AddUsers: React.FC<IAddUsersProps> = ({
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     getValues,
   } = useForm<IForm>({
     resolver: yupResolver(schema),
     mode: 'onBlur',
   });
+
+  useEffect(() => {
+    setButtonState(!isValid);
+  }, [isValid]);
+
+  const roleOptions = [
+    { value: 'MEMBER', label: 'Member' },
+    { value: 'ADMIN', label: 'Admin' },
+    { value: 'SUPERADMIN', label: 'SuperAdmin' },
+  ];
 
   const Fields = [
     {
@@ -92,19 +107,13 @@ const AddUsers: React.FC<IAddUsersProps> = ({
       type: FieldType.SingleSelect,
       name: 'role',
       control,
-
       getValues,
       label: 'Role',
       placeholder: 'member',
+      className: 'w-[25%]',
       error: errors.role?.message,
-      options: [
-        { value: ' MEMBER', label: 'Member' },
-        { value: 'ADMIN', label: 'Admin' },
-        { value: 'SUPERADMIN', label: 'SuperAdmin' },
-      ],
-      onChange: (data: UseFormGetValues<any>, e: React.ChangeEvent) => {
-        console.log(data);
-      },
+      options: roleOptions,
+      onChange: (data: UseFormGetValues<any>, e: React.ChangeEvent) => {},
     },
   ];
 
@@ -130,6 +139,7 @@ const AddUsers: React.FC<IAddUsersProps> = ({
         } else {
           setOpen(false);
           alert('Successfully added');
+          queryClient.invalidateQueries({ queryKey: ['users'] });
         }
       });
     },

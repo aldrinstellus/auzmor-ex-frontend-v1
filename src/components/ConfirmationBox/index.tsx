@@ -31,31 +31,28 @@ const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({
   success,
 }) => {
   return (
-    <Modal
-      wMax="max-w-md"
-      title={title}
-      body={
-        <div className="font-medium text-sm text-neutral-500 not-italic px-6 py-6">
+    <Modal open={open} closeModal={onClose} className="max-w-md">
+      <div>
+        <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
+          {title}
+        </div>
+        <div className="font-medium text-sm text-neutral-500 not-italic px-4">
           {description}
         </div>
-      }
-      footer={
-        <div className="flex flex-row-reverse px-[24px] py-[16px]">
+        <div className="flex flex-row-reverse px-4 pt-6 pb-4">
           <Button
             onClick={success.onSubmit}
             label={success.label}
-            className={`!rounded-[24px] !px-[16px] !py-[8px] !${success.className}`}
+            className={`!rounded-6 !px-4 !py-2 !${success.className}`}
           />
           <Button
             onClick={discard.onCancel}
             label={discard.label}
-            className={`!rounded-[24px] !px-[16px] !py-[8px] !mr-[12px] !border-2 !border-neutral-200  !${discard.className}`}
+            className={`!rounded-17xl !px-4 !py-2 !mr-3 !border-2 !border-neutral-200  !${discard.className}`}
           />
         </div>
-      }
-      open={open}
-      closeModal={onClose}
-    />
+      </div>
+    </Modal>
   );
 };
 

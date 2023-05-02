@@ -14,7 +14,7 @@ export type IconProps = {
 
 const Icon: React.FC<IconProps> = ({
   name,
-  size = 22,
+  size = 24,
   onClick = null,
   className = '',
   hover = true,

@@ -21,11 +21,10 @@ const tabs = [
 
 const Users: React.FC<IUsersProps> = () => {
   const [showAddUserModal, setShowAddUserModal] = useState(false);
-
   const [openErrorModal, setOpenErrorModal] = useState(false);
-
   const { data, isLoading } = useUsers({});
   const usersData = data?.result.data;
+  const [buttonState, setButtonState] = useState(true);
 
   const formRef = useRef();
 
@@ -43,9 +42,12 @@ const Users: React.FC<IUsersProps> = () => {
     {
       id: 2,
       label: 'Send Invite',
-      disabled: false,
-      className:
-        '!py-2 !px-4 !bg-primary-500 !text-white !rounded-[24px] border',
+      disabled: buttonState,
+      className: `!py-2 !px-4 !rounded-[24px] border ${
+        buttonState
+          ? 'bg-gray-200 !text-neutral-400'
+          : '!bg-primary-500 !text-white '
+      }`,
       onClick: () => {
         (formRef.current as any).submitForm();
       },
@@ -79,18 +81,31 @@ const Users: React.FC<IUsersProps> = () => {
         </div>
       </div>
       <Modal
+<<<<<<< HEAD
         open={showAddUserModal}
         closeModal={() => setShowAddUserModal(false)}
       >
         {`Invite new people to your organization`}
         {
+=======
+        className="max-w-2xl"
+        open={showAddUserModal}
+        closeModal={() => setShowAddUserModal(false)}
+      >
+        <div>
+          <div>Invite new people to your organization</div>
+>>>>>>> develop
           <AddUsers
             reference={formRef}
             setOpenError={setOpenErrorModal}
             setOpen={setShowAddUserModal}
+            setButtonState={setButtonState}
           />
+<<<<<<< HEAD
         }
         {
+=======
+>>>>>>> develop
           <div className="flex justify-end items-center h-16 p-6">
             {footerMapButtons.map((type) => (
               <div className="mr-4" key={type.id}>
@@ -104,13 +119,17 @@ const Users: React.FC<IUsersProps> = () => {
               </div>
             ))}
           </div>
+<<<<<<< HEAD
         }
+=======
+        </div>
+>>>>>>> develop
       </Modal>
 
       <ConfirmationBox
         open={openErrorModal}
         onClose={() => setOpenErrorModal(false)}
-        title="Delete User?"
+        title="Error!"
         description={
           <span>
             Failed to add participant. Email not recognised.
@@ -152,7 +171,9 @@ const Users: React.FC<IUsersProps> = () => {
         </div>
       </div>
 
-      <div className="mt-6 text-neutral-500">Showing 200 results</div>
+      <div className="mt-6 text-neutral-500">
+        Showing {usersData.length} results
+      </div>
       <div className="flex flex-wrap mt-6">
         {usersData.length > 0 &&
           usersData.map((user: any, index: number) => (
