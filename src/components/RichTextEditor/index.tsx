@@ -12,10 +12,11 @@ import { LinkBlot } from './blots/link';
 import AutoLinks from './autoLinks';
 import EmojiBlot from './blots/emoji';
 import EmojiToolbar from './emoji';
-import { mention } from './config';
+import { mention, previewLinkRegex } from './config';
 import Icon from 'components/Icon';
 import { IAnnouncement } from 'pages/Feed/components/CreatePostModal';
 import { twConfig } from 'utils/misc';
+import PreviewLink from 'components/PreviewLink';
 const Delta = Quill.import('delta');
 
 export interface EditorContentChanged {
@@ -41,6 +42,7 @@ const RichTextEditor: React.FC<QuillEditorProps> = ({
 }) => {
   const reactQuillRef = useRef<ReactQuill>(null);
   const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
+  const [linkValues, setLinkValues] = useState<string[]>([]);
 
   const formats = ['bold', 'italic', 'underline', 'mention', 'link', 'emoji'];
 
@@ -79,12 +81,21 @@ const RichTextEditor: React.FC<QuillEditorProps> = ({
     } else {
       setIsCharLimit(false);
     }
+
     if (onChangeEditor) {
       onChangeEditor({
         text: editor.getText(),
         html: editor.getHTML(),
         json: editor.getContents(),
       });
+    }
+
+    const matches = editor.getText().match(previewLinkRegex);
+    if (matches) {
+      const uniqueMatches = [...new Set(matches)];
+      setLinkValues(uniqueMatches);
+    } else {
+      setLinkValues([]);
     }
   };
 
@@ -131,7 +142,7 @@ const RichTextEditor: React.FC<QuillEditorProps> = ({
           </div>
         </div>
       )}
-
+      <PreviewLink link={linkValues} />
       <Toolbar isCharLimit={isCharLimit} />
     </>
   );

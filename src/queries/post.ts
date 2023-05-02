@@ -1,4 +1,5 @@
 import apiService from 'utils/apiService';
+import { useQuery } from '@tanstack/react-query';
 
 interface ICreatePost {
   content: {
@@ -34,4 +35,17 @@ export const createPost = async (payload: ICreatePost) => {
 export const getPosts = async () => {
   const data = await apiService.get('/posts');
   return data?.data?.result;
+};
+
+export const getPreviewLink = async (previewUrl: string) => {
+  const data = await apiService.get(`links/unfurl?url=${previewUrl}`);
+  return data?.data;
+};
+
+export const usePreviewLink = (previewUrl: string) => {
+  return useQuery({
+    queryKey: ['preview-link', previewUrl],
+    queryFn: () => getPreviewLink(previewUrl),
+    staleTime: Infinity,
+  });
 };
