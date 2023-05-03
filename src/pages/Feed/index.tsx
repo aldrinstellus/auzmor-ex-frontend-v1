@@ -116,15 +116,8 @@ const Feed: React.FC<IFeedProps> = () => {
   const rawFeedData: any = useLoaderData();
   const feed: IFeed[] = rawFeedData.data.map((data: any) => {
     return {
-      content: {
-        ...data.content,
-        editor: JSON.parse(data.content.editor),
-      },
+      ...data,
       uuid: data.id,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt,
-      type: data.type,
-      isAnnouncement: data.isAnnouncement,
     } as IFeed;
   });
 
