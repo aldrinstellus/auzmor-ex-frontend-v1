@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext } from 'react';
 import Modal from 'components/Modal';
 import CreatePost from 'components/PostBuilder/components/CreatePost';
 import { useMutation } from '@tanstack/react-query';
@@ -38,8 +38,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       content: {
         text: content?.text || editorValue.text,
         html: content?.html || editorValue.html,
-        editor:
-          JSON.stringify(content?.json) || JSON.stringify(editorValue.json),
+        editor: content?.json || editorValue.json,
       },
       type: 'UPDATE',
       mentions: [],
