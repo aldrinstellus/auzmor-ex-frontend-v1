@@ -11,13 +11,14 @@ import { RenderQuillDelta } from 'components/RenderQuillDelta';
 import { DeltaStatic } from 'quill';
 import { getReactions } from 'queries/reaction';
 import { useMutation } from '@tanstack/react-query';
+import FeedPostMenu from './components/FeedPostMenu';
 
 type PostProps = {
-  data: DeltaStatic;
+  data: Record<string, any>;
   id: string;
 };
 
-const Post: React.FC<PostProps> = (props: PostProps) => {
+const Post: React.FC<PostProps> = ({ data, id }) => {
   const [showComments, setShowComments] = useState(false);
   const [reaction, setReaction] = useState<string>('Like');
 
@@ -39,7 +40,7 @@ const Post: React.FC<PostProps> = (props: PostProps) => {
 
   const setupReaction = async () => {
     const data = {
-      entityId: props?.id,
+      entityId: id,
       entityType: 'post',
     };
 
@@ -50,18 +51,23 @@ const Post: React.FC<PostProps> = (props: PostProps) => {
     setupReaction();
   }, []);
 
+  const content: DeltaStatic = data?.content?.editor;
+
   return (
-    <Card className="bg-white rounded-9xl mt-5">
-      <Actor
-        avatar="https://png.pngtree.com/png-clipart/20210619/ourlarge/pngtree-instagram-lady-social-media-flat-style-avatar-png-image_3483977.jpg"
-        actorName="Sam Fields"
-        visibility="Everyone"
-        contentMode={VIEW_POST}
-        createdTime="10 mins ago"
-      />
+    <Card className="mt-5">
+      <div className="flex justify-between items-center">
+        <Actor
+          visibility="Everyone"
+          contentMode={VIEW_POST}
+          createdTime="10 mins ago"
+        />
+        <div className="relative">
+          <FeedPostMenu data={data} />
+        </div>
+      </div>
       <div className="mx-6">
         {/* Post Content */}
-        <RenderQuillDelta delta={props?.data as DeltaStatic} />
+        <RenderQuillDelta delta={content} />
         {/* Media Display */}
         <div></div>
         {/* Reaction and comment repost */}
@@ -69,7 +75,7 @@ const Post: React.FC<PostProps> = (props: PostProps) => {
           <div className="flex ">
             <Likes
               reaction={reaction}
-              entityId={props?.id}
+              entityId={id}
               entityType="post"
               reactionId={reactionId}
             />
@@ -92,9 +98,7 @@ const Post: React.FC<PostProps> = (props: PostProps) => {
           </div>
           <div></div>
         </div>
-        {showComments && (
-          <Commentspage entityId={props?.id} commentsData={comments} />
-        )}
+        {showComments && <Commentspage entityId={id} commentsData={comments} />}
       </div>
     </Card>
   );

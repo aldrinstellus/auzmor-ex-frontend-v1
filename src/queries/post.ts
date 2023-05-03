@@ -1,6 +1,6 @@
 import apiService from 'utils/apiService';
 
-interface ICreatePost {
+interface IPost {
   content: {
     text: string;
     html: string;
@@ -20,13 +20,16 @@ interface ICreatePost {
   audience: {
     users: string[];
   };
-  isAnnouncement: true;
+  isAnnouncement: boolean;
   announcement: {
     end: string;
   };
 }
+interface IDeletePost {
+  id: string;
+}
 
-export const createPost = async (payload: ICreatePost) => {
+export const createPost = async (payload: IPost) => {
   const data = await apiService.post('/posts', payload);
   return data;
 };
@@ -34,4 +37,15 @@ export const createPost = async (payload: ICreatePost) => {
 export const getPosts = async () => {
   const data = await apiService.get('/posts');
   return data?.data?.result;
+};
+
+export const editPost = async (id: string, payload: IPost) => {
+  const data = await apiService.put(`/posts/${id}`, payload);
+  return data;
+};
+
+export const deletePost = async (id: string) => {
+  const data = await apiService.delete(`/posts/${id}`);
+  console.log(data, 'API');
+  return data;
 };

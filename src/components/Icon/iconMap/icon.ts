@@ -27,6 +27,12 @@ import NotificationIcon from '../components/Notification';
 import SpeakerIcon from '../components/Speaker';
 import DraftIcon from '../components/Draft';
 import ArrowLeftIcon from '../components/ArrowLeft';
+import BookmarkOutline from '../components/Bookmark';
+import AnalyticsOutline from '../components/AnalyticsIcon';
+import CopyLink from '../components/CopyLinkIcon';
+import DeleteIcon from '../components/DeleteIcon';
+import MenuEditIcon from '../components/MenuEditIcon';
+import MenuNotificationIcon from '../components/MenuNotificationIcon';
 import Send from '../components/Send';
 import IconLinear from '../components/IconLinear';
 import EmojiHappy from '../components/EmojiHappy';
@@ -78,4 +84,10 @@ export const icon = {
   like: Like,
   love: Love,
   support: Support,
+  bookmarkOutline: BookmarkOutline,
+  analyticsIconOutline: AnalyticsOutline,
+  copyLink: CopyLink,
+  deleteIcon: DeleteIcon,
+  editIcon: MenuEditIcon,
+  notificationIcon: MenuNotificationIcon,
 };

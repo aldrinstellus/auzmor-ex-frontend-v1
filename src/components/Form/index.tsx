@@ -3,6 +3,7 @@ import Checkbox from 'components/Checkbox';
 import Input from 'components/Input';
 import Password from 'components/Password';
 import SingleSelect from 'components/SingleSelect';
+import DatePickerInput from 'components/DatePicker';
 
 export enum FieldType {
   Input = 'INPUT',
@@ -11,6 +12,7 @@ export enum FieldType {
   MultiSelect = 'MULTISELECT',
   Checkbox = 'CHECKBOX',
   Radio = 'RADIO',
+  DatePicker = 'DATEPICKER',
 }
 
 const fieldMap: Record<string, any> = {
@@ -19,6 +21,7 @@ const fieldMap: Record<string, any> = {
   // [FieldType.Radio]: RadioButtonGroup,
   [FieldType.Checkbox]: Checkbox,
   [FieldType.Password]: Password,
+  [FieldType.DatePicker]: DatePickerInput,
 };
 
 export type LayoutProps = {

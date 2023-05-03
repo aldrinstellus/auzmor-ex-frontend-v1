@@ -1,12 +1,17 @@
 import React, { ElementType, ReactNode } from 'react';
 import { Menu } from '@headlessui/react';
+import { twConfig } from 'utils/misc';
+import Icon from 'components/Icon';
 
 export interface IMenuItem {
-  renderNode: ReactNode;
+  renderNode?: ReactNode;
   disabled?: boolean;
   as?: ElementType;
   isActive?: boolean;
   dataTestId?: string;
+  icon?: string;
+  label?: string;
+  onClick?: () => any;
 }
 
 export interface IPopupMenuProps {
@@ -33,7 +38,29 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
             data-test-id={menuItem.dataTestId}
             disabled={menuItem.disabled}
           >
-            {menuItem.renderNode}
+            {(() => {
+              if (menuItem.renderNode) {
+                return menuItem.renderNode;
+              }
+              return (
+                <div
+                  className="flex px-6 py-3 items-center hover:bg-primary-50 cursor-pointer space-x-3"
+                  onClick={menuItem.onClick}
+                >
+                  {menuItem.icon && (
+                    <Icon
+                      name={menuItem.icon}
+                      size={16}
+                      // className="p-2 rounded-7xl border mr-2.5 bg-white"
+                      fill={twConfig.theme.colors.primary['500']}
+                    />
+                  )}
+                  <div className="text-sm text-neutral-900 font-medium whitespace-nowrap">
+                    {menuItem.label}
+                  </div>
+                </div>
+              );
+            })()}
           </Menu.Item>
         ))}
       </Menu.Items>

@@ -1,33 +1,31 @@
 import React from 'react';
 import Avatar from 'components/Avatar';
 import Earth from 'images/earth.svg';
-import Ellipsis from 'images/ellipsis.svg';
 import { CREATE_POST, VIEW_POST } from './constant';
+import useAuth from 'hooks/useAuth';
 
 type ActorProps = {
-  avatar: string;
-  actorName: string;
   visibility: string;
   contentMode?: string;
   createdTime?: string;
 };
 
 const Actor: React.FC<ActorProps> = ({
-  avatar,
-  actorName,
   visibility,
   contentMode,
   createdTime,
 }) => {
+  const { user } = useAuth();
+
   return (
     <div className={`flex justify-between items-center mx-6 mt-6 mb-4`}>
       <div className="flex items-center">
         <div>
-          <Avatar size={32} image={avatar} name={actorName} active={false} />
+          <Avatar name={user?.name || 'U'} size={32} />
         </div>
         <div className="ml-3">
           <div className="font-bold text-sm text-neutral-900">
-            {actorName}
+            {user?.name}
             {contentMode === VIEW_POST ? (
               <span className="ml-1 text-sm font-normal text-neutral-900">
                 shared a post
@@ -46,7 +44,7 @@ const Actor: React.FC<ActorProps> = ({
       </div>
       {/* post visibility - dropdown */}
       <div>
-        {contentMode === CREATE_POST ? (
+        {contentMode === CREATE_POST && (
           <div className="flex justify-between items-center border border-neutral-300 rounded-17xl py-1.5 px-3">
             <div>
               <img src={Earth} height={13.33} width={13.33} />
@@ -54,10 +52,6 @@ const Actor: React.FC<ActorProps> = ({
             <div className="cursor-pointer text-xxs text-neutral-900 font-medium ml-1.5">
               {visibility}
             </div>
-          </div>
-        ) : (
-          <div>
-            <img src={Ellipsis} width={18} height={4} />
           </div>
         )}
       </div>
