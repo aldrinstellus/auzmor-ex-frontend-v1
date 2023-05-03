@@ -1,0 +1,10 @@
+.react-date-picker__wrapper {
+  border: none;
+}
+.react-date-picker__inputGroup__input:invalid {
+  background-color: transparent;
+}
+
+.react-date-picker__inputGroup__input {
+  outline: none;
+}

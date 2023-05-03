@@ -1,6 +1,6 @@
 import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import { twConfig } from 'utils/misc';
@@ -9,6 +9,7 @@ import Button, {
   Type as ButtonType,
 } from 'components/Button';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
+import { Value } from 'react-date-picker/dist/cjs/shared/types';
 import { afterXUnit } from 'utils/time';
 
 export interface ICreateAnnouncementProps {
@@ -23,10 +24,15 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors, isValid },
+    setValue,
+    getValues,
   } = useForm({
     mode: 'onChange',
   });
+
+  const selecetedExpiry = watch('expityOption');
 
   const onSubmit = (data: any) => {
     setAnnouncement({
@@ -102,12 +108,35 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
                       afterXUnit(1, 'months').toISOString().substring(0, 19) +
                       'Z',
                   },
-                  { label: 'Custom Date', value: '5Week' },
+                  { label: 'Custom Date', value: '' },
                 ],
                 defaultValue: announcement,
               },
             ]}
           />
+          {((selecetedExpiry && selecetedExpiry.label === 'Custom Date') ||
+            (announcement && announcement.label === 'Custom Date')) && (
+            <Layout
+              fields={[
+                {
+                  type: FieldType.DatePicker,
+                  name: 'date',
+                  control,
+                  minDate: new Date(),
+                  defaultValue: announcement?.value || '',
+                  onDateChange: (date: Value) =>
+                    setValue('expityOption', {
+                      label: 'Custom Date',
+                      value:
+                        new Date(date?.toLocaleString() || '')
+                          .toISOString()
+                          .substring(0, 19) + 'Z',
+                    }),
+                },
+              ]}
+              className="mt-6"
+            />
+          )}
         </div>
       </div>
       <div className="flex justify-end items-center h-16 p-6 bg-blue-50">
