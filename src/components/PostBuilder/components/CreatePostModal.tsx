@@ -1,10 +1,14 @@
 import React, { useContext, useRef, useState } from 'react';
 import Modal from 'components/Modal';
-import CreatePost from 'components/CreatePost';
+import CreatePost from 'components/PostBuilder/components/CreatePost';
 import { useMutation } from '@tanstack/react-query';
 import { createPost } from 'queries/post';
 import CreateAnnouncement from './CreateAnnouncement';
-import { CreatePostFlow, CreatePostContext } from 'contexts/CreatePostContext';
+import {
+  CreatePostFlow,
+  CreatePostContext,
+  IEditorValue,
+} from 'contexts/CreatePostContext';
 
 interface ICreatePostModal {
   showModal: boolean;
@@ -15,15 +19,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
   showModal,
   setShowModal,
 }) => {
-  const { activeFlow, announcement, setAnnouncement } =
+  const { activeFlow, announcement, editorValue } =
     useContext(CreatePostContext);
-  const [editorValue, setEditorValue] = useState<{
-    html: string;
-    text: string;
-    json: Record<string, any>;
-  }>({ html: '', json: {}, text: '' });
-
-  const announcementFormRef = useRef();
 
   const createPostMutation = useMutation({
     mutationKey: ['createPostMutation'],
@@ -34,12 +31,13 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     },
   });
 
-  const handleSubmitPost = () => {
+  const handleSubmitPost = (content?: IEditorValue) => {
     createPostMutation.mutate({
       content: {
-        text: editorValue.html,
-        html: editorValue.html,
-        editor: JSON.stringify(editorValue.json),
+        text: content?.text || editorValue.text,
+        html: content?.html || editorValue.html,
+        editor:
+          JSON.stringify(content?.json) || JSON.stringify(editorValue.json),
       },
       type: 'UPDATE',
       mentions: [],
@@ -47,9 +45,9 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       audience: {
         users: [],
       },
-      isAnnouncement: true,
+      isAnnouncement: !!announcement,
       announcement: {
-        end: '',
+        end: announcement?.value || '',
       },
     });
   };
@@ -58,11 +56,12 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     <Modal open={showModal} closeModal={() => setShowModal(false)}>
       {activeFlow === CreatePostFlow.CreatePost && (
         <CreatePost
-          onChangeEditor={(content) => setEditorValue({ ...content })}
+          closeModal={() => setShowModal(false)}
+          handleSubmitPost={handleSubmitPost}
         />
       )}
       {activeFlow === CreatePostFlow.CreateAnnouncement && (
-        <CreateAnnouncement ref={announcementFormRef} />
+        <CreateAnnouncement closeModal={() => setShowModal(false)} />
       )}
     </Modal>
   );

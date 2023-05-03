@@ -1,7 +1,5 @@
-import React, { useContext } from 'react';
-import RichTextEditor, {
-  EditorContentChanged,
-} from 'components/RichTextEditor';
+import React, { useContext, useRef } from 'react';
+import RichTextEditor from 'components/RichTextEditor';
 import Actor from 'components/Actor';
 import { CREATE_POST } from 'components/Actor/constant';
 import Icon from 'components/Icon';
@@ -12,21 +10,32 @@ import Tooltip from 'components/Tooltip';
 import Divider, { Variant as DividerVariant } from 'components/Divider';
 import Button from 'components/Button';
 import { postTypeMapIcons } from 'pages/Feed';
-import { CreatePostContext } from 'contexts/CreatePostContext';
+import { CreatePostContext, IEditorValue } from 'contexts/CreatePostContext';
+import { CreatePostFlow } from 'contexts/CreatePostContext';
+import ReactQuill from 'react-quill';
+import { DeltaStatic } from 'quill';
 
 interface ICreatePostProps {
-  onChangeEditor: (content: EditorContentChanged) => void;
+  closeModal: () => void;
+  handleSubmitPost: (content: IEditorValue) => void;
 }
 
-const CreatePost: React.FC<ICreatePostProps> = ({ onChangeEditor }) => {
-  const { announcement } = useContext(CreatePostContext);
+const CreatePost: React.FC<ICreatePostProps> = ({
+  closeModal,
+  handleSubmitPost,
+}) => {
+  const quillRef = useRef<ReactQuill>(null);
+  const { setActiveFlow, setEditorValue, editorValue } =
+    useContext(CreatePostContext);
   const Header: React.FC = () => (
     <div className="flex flex-wrap border-b-1 border-neutral-200 items-center">
       <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
         Create a post
       </div>
       <IconButton
-        onClick={() => {}}
+        onClick={() => {
+          closeModal && closeModal();
+        }}
         icon={'close'}
         className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"
         variant={IconVariant.Primary}
@@ -36,16 +45,12 @@ const CreatePost: React.FC<ICreatePostProps> = ({ onChangeEditor }) => {
   const Body: React.FC = () => (
     <div className="text-sm text-neutral-900">
       <div className="max-h-[75vh] overflow-y-auto">
-        <Actor
-          avatar="https://png.pngtree.com/png-clipart/20210619/ourlarge/pngtree-instagram-lady-social-media-flat-style-avatar-png-image_3483977.jpg"
-          actorName="Sam Fields"
-          visibility="Everyone"
-          contentMode={CREATE_POST}
-        />
+        <Actor visibility="Everyone" contentMode={CREATE_POST} />
         <RichTextEditor
           placeholder="What’s on your mind?"
           className="max-h-64 overflow-y-auto min-h-[128px]"
-          onChangeEditor={onChangeEditor}
+          defaultValue={editorValue.json as DeltaStatic}
+          ref={quillRef}
         />
       </div>
     </div>
@@ -79,7 +84,20 @@ const CreatePost: React.FC<ICreatePostProps> = ({ onChangeEditor }) => {
               renderNode: (
                 <div
                   className="flex px-6 py-3 items-center hover:bg-primary-50"
-                  onClick={() => {}}
+                  onClick={() => {
+                    setEditorValue({
+                      text: quillRef.current
+                        ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
+                        .getText(),
+                      html: quillRef.current
+                        ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
+                        .getHTML(),
+                      json: quillRef.current
+                        ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
+                        .getContents(),
+                    });
+                    setActiveFlow(CreatePostFlow.CreateAnnouncement);
+                  }}
                 >
                   <Icon
                     name="speaker"
@@ -115,7 +133,24 @@ const CreatePost: React.FC<ICreatePostProps> = ({ onChangeEditor }) => {
       </div>
       <div className="flex items-center">
         <div></div>
-        <Button label={'Post'} onClick={() => {}} />
+        <Button
+          label={'Post'}
+          onClick={() =>
+            handleSubmitPost({
+              text:
+                quillRef.current
+                  ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
+                  .getText() || '',
+              html:
+                quillRef.current
+                  ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
+                  .getHTML() || '',
+              json: quillRef.current
+                ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
+                .getContents() as DeltaStatic,
+            })
+          }
+        />
       </div>
     </div>
   );
