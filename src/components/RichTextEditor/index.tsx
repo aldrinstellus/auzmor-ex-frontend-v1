@@ -43,6 +43,7 @@ const RichTextEditor: React.FC<QuillEditorProps> = ({
   const reactQuillRef = useRef<ReactQuill>(null);
   const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
   const [linkValues, setLinkValues] = useState<string[]>([]);
+  const [showPreview, setShowPreview] = useState<boolean>(false);
 
   const formats = ['bold', 'italic', 'underline', 'mention', 'link', 'emoji'];
 
@@ -94,8 +95,10 @@ const RichTextEditor: React.FC<QuillEditorProps> = ({
     if (matches) {
       const uniqueMatches = [...new Set(matches)];
       setLinkValues(uniqueMatches);
+      setShowPreview(true);
     } else {
       setLinkValues([]);
+      setShowPreview(false);
     }
   };
 
@@ -142,7 +145,9 @@ const RichTextEditor: React.FC<QuillEditorProps> = ({
           </div>
         </div>
       )}
-      <PreviewLink link={linkValues} />
+      {showPreview ? (
+        <PreviewLink link={linkValues} setShowPreview={setShowPreview} />
+      ) : null}
       <Toolbar isCharLimit={isCharLimit} />
     </>
   );
