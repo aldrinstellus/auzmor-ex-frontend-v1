@@ -2,12 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Dispatch, SetStateAction } from 'react';
 import { DataType, activeCommentsDataType } from '.';
 import { CommentForm } from './CommentForm';
-import Like from 'images/like.svg';
 import Reply from 'images/reply.png';
 import Icon from 'images/icon.png';
 import Dots from 'images/dots.png';
-import { Likes, Reaction } from 'components/Likes';
-import { getReactions } from 'queries/reaction';
+import { Likes } from 'components/Reactions';
 
 interface CommentProps {
   replyInputBox: boolean;
@@ -42,23 +40,9 @@ export const Comment: React.FC<CommentProps> = ({
   const replyId = parentId ? parentId : comment.id;
   const createdAt = new Date(comment.createdAt).toLocaleDateString();
 
-  const [reaction, setReaction] = useState<Reaction>({
-    name: 'Like',
-  });
+  const [reaction, setReaction] = useState<string>('Like');
 
   const [reactionId, setReactionId] = useState('');
-
-  const setupReaction = async () => {
-    const userData = await getReactions(currentUserId, 'comment');
-    setReaction({
-      name: userData.data.length > 0 ? userData.data[0].reaction : 'Like',
-    });
-    setReactionId(userData.data.length > 0 ? userData.data[0].id : '');
-  };
-
-  useEffect(() => {
-    setupReaction();
-  }, []);
 
   return (
     <div key={comment.id}>
@@ -96,7 +80,6 @@ export const Comment: React.FC<CommentProps> = ({
           <div className="flex">
             <Likes
               reaction={reaction}
-              setReaction={setReaction}
               entityId=""
               entityType="comment"
               reactionId={reactionId}

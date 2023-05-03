@@ -21,6 +21,13 @@ import SvgArrowLeftOutline from '../components/ArrowLeft/ArrowLeftOutline';
 import SvgSendOutline from '../components/Send/SendOutline';
 import SvgIconLinearOutline from '../components/IconLinear/IconLinearOutline';
 import SvgEmojiHappyOutline from '../components/EmojiHappy/EmojiHappyOutline';
+import SvgBlueLikeOutline from '../components/BlueLike/BlueLikeOutline';
+import SvgCelebrateOutline from '../components/Celebrate/CelebrateOutline';
+import SvgInsightfulOutline from '../components/Insightful/InsightfulOutline';
+import SvgLaughOutline from '../components/Laugh/LaughOutline';
+import SvgLikeOutline from '../components/Like/LikeOutline';
+import SvgLoveOutline from '../components/Love/LoveOutline';
+import SvgSupportOutline from '../components/Support/SupportOutline';
 
 export const outlineIcon = {
   arrowLeftOutline: SvgArrowLeftOutline,
@@ -46,4 +53,11 @@ export const outlineIcon = {
   sendOutline: SvgSendOutline,
   iconLinearOutline: SvgIconLinearOutline,
   emojiHappyOutline: SvgEmojiHappyOutline,
+  blueLikeOutline: SvgBlueLikeOutline,
+  celebrateOutline: SvgCelebrateOutline,
+  insightfulOutline: SvgInsightfulOutline,
+  loveOutline: SvgLoveOutline,
+  likeOutline: SvgLikeOutline,
+  laughOutline: SvgLaughOutline,
+  supportOutline: SvgSupportOutline,
 };

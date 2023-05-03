@@ -3,44 +3,37 @@ import apiService from 'utils/apiService';
 interface IReactions {
   entityId: string;
   entityType: string;
-  type: string;
+  type?: string;
+}
+interface IDelete {
+  entityId: string;
+  entityType: string;
+  id: string;
 }
 
 export const createReaction = async (payload: IReactions) => {
   console.log(payload);
-  const data = await apiService.post('/reactions', payload);
-  return new Promise((res) => {
-    res(data);
-  });
+  const { data } = await apiService.post('/reactions', payload);
+  return data;
 };
 
-export const getReactions = async (entityId: string, entityType: string) => {
+export const getReactions = async (payload: IReactions) => {
+  const { entityId, entityType } = payload;
+
   const { data } = await apiService.get(
     `reactions?entityId=${entityId}&entityType=${entityType}`,
   );
   return data;
 };
 
-export const deleteReaction = async (
-  id: string,
-  entityId: string,
-  entityType: string,
-) => {
-  const data = await apiService.delete(
+export const deleteReaction = async (payload: IDelete) => {
+  const { entityId, entityType, id } = payload;
+
+  await apiService.delete(
     `/reactions/${id}?entityId=${entityId}&entityType=${entityType}`,
     {},
   );
-  return new Promise((res) => {
-    res(data);
-  });
 };
-
-// export const deleteReactions = async (id: string) => {
-//   const data = await apiService.delete(`/reactions/${id}`, {});
-//   return new Promise((res) => {
-//     res(data);
-//   });
-// };
 
 export const getComments = async (
   entityId: string,

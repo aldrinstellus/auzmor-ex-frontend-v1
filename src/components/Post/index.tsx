@@ -6,10 +6,11 @@ import Comments from 'images/comments.svg';
 import Actor from 'components/Actor';
 import { VIEW_POST } from 'components/Actor/constant';
 import Commentspage from 'components/Comments/index';
-import { Likes, Reaction } from 'components/Likes';
+import { Likes } from 'components/Reactions';
 import { RenderQuillDelta } from 'components/RenderQuillDelta';
 import { DeltaStatic } from 'quill';
 import { getReactions } from 'queries/reaction';
+import { useMutation } from '@tanstack/react-query';
 
 type PostProps = {
   data: DeltaStatic;
@@ -18,30 +19,35 @@ type PostProps = {
 
 const Post: React.FC<PostProps> = (props: PostProps) => {
   const [showComments, setShowComments] = useState(false);
-  const [reaction, setReaction] = useState<Reaction>({
-    name: 'Like',
-  });
+  const [reaction, setReaction] = useState<string>('Like');
 
-  const [comments, setComments] = useState();
+  const [comments, setComments] = useState({});
 
   const [reactionId, setReactionId] = useState('');
 
-  const setupReaction = async () => {
-    const Reactions = await getReactions(props?.id, 'post');
-    setReaction({
-      name: Reactions.data.length > 0 ? Reactions.data[0].reaction : 'Like',
-    });
-    setReactionId(Reactions.data.length > 0 ? Reactions.data[0].id : '');
-  };
+  const getReactionsMutation = useMutation({
+    mutationKey: ['get-reactions-mutation'],
+    mutationFn: getReactions,
+    onError: (error: any) => {
+      console.log(error);
+    },
+    onSuccess: (data: any, variables, context) => {
+      setReaction(data.data.length > 0 ? data.data[0].reaction : 'Like');
+      setReactionId(data.data.length > 0 ? data.data[0].id : '');
+    },
+  });
 
-  const setupComments = async () => {
-    const commentsData = await getReactions(props?.id, 'post');
-    setComments(commentsData.data);
+  const setupReaction = async () => {
+    const data = {
+      entityId: props?.id,
+      entityType: 'post',
+    };
+
+    getReactionsMutation.mutate(data);
   };
 
   useEffect(() => {
     setupReaction();
-    setupComments();
   }, []);
 
   return (
@@ -63,7 +69,6 @@ const Post: React.FC<PostProps> = (props: PostProps) => {
           <div className="flex ">
             <Likes
               reaction={reaction}
-              setReaction={setReaction}
               entityId={props?.id}
               entityType="post"
               reactionId={reactionId}

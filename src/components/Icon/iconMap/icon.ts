@@ -30,6 +30,13 @@ import ArrowLeftIcon from '../components/ArrowLeft';
 import Send from '../components/Send';
 import IconLinear from '../components/IconLinear';
 import EmojiHappy from '../components/EmojiHappy';
+import BlueLike from '../components/BlueLike';
+import Celebrate from '../components/Celebrate';
+import Insightful from '../components/Insightful';
+import Laugh from '../components/Laugh';
+import Like from '../components/Like';
+import Love from '../components/Love';
+import Support from '../components/Support';
 
 export const icon = {
   admin: AdminIcon,
@@ -64,4 +71,11 @@ export const icon = {
   send: Send,
   iconLinear: IconLinear,
   emojiHappy: EmojiHappy,
+  blueLike: BlueLike,
+  celebrate: Celebrate,
+  insightful: Insightful,
+  laugh: Laugh,
+  like: Like,
+  love: Love,
+  support: Support,
 };
