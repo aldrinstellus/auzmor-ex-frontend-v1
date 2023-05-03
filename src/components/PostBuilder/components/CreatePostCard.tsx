@@ -1,7 +1,7 @@
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import React from 'react';
-import { postTypeMapIcons } from '..';
+import { postTypeMapIcons } from '../../../pages/Feed';
 
 export interface ICreatePostCardProps {
   setShowModal: (flag: boolean) => void;

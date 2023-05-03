@@ -1,4 +1,4 @@
-import React, { memo, useRef, useState } from 'react';
+import React, { LegacyRef, memo, useContext, useState } from 'react';
 import ReactQuill, { Quill, UnprivilegedEditor } from 'react-quill';
 import { DeltaStatic, Sources } from 'quill';
 import 'react-quill/dist/quill.snow.css';
@@ -14,93 +14,100 @@ import EmojiBlot from './blots/emoji';
 import EmojiToolbar from './emoji';
 import { mention } from './config';
 import Icon from 'components/Icon';
-import { IAnnouncement } from 'pages/Feed/components/CreatePostModal';
 import { twConfig } from 'utils/misc';
-const Delta = Quill.import('delta');
+import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
+import moment from 'moment';
 
-export interface EditorContentChanged {
+export interface IEditorContentChanged {
   text: string;
   html: string;
   json: DeltaStatic;
 }
 
-export type QuillEditorProps = {
+export interface IQuillEditorProps {
   className?: string;
   placeholder: string;
   charLimit?: number;
-  announcement?: IAnnouncement | null;
-  onChangeEditor?: (content: EditorContentChanged) => void;
-};
+  defaultValue?: ReactQuill.Value;
+  onChangeEditor?: (content: IEditorContentChanged) => void;
+}
 
-const RichTextEditor: React.FC<QuillEditorProps> = ({
-  className,
-  placeholder,
-  charLimit = 3000,
-  announcement,
-  onChangeEditor,
-}) => {
-  const reactQuillRef = useRef<ReactQuill>(null);
-  const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
-
-  const formats = ['bold', 'italic', 'underline', 'mention', 'link', 'emoji'];
-
-  const modules = {
-    toolbar: {
-      container: '#toolbar',
-    },
-    mention: mention,
-    autoLinks: true,
-    'emoji-toolbar': true,
-  };
-
-  Quill.register(
+const RichTextEditor = React.forwardRef(
+  (
     {
-      'formats/mention': MentionBlot,
-      'formats/link': LinkBlot,
-      'formats/emoji': EmojiBlot,
-      'modules/autoLinks': AutoLinks,
-      'modules/emoji-toolbar': EmojiToolbar,
-    },
-    true,
-  );
-
-  const onChangeEditorContent = (
-    content: string,
-    delta: DeltaStatic,
-    source: Sources,
-    editor: UnprivilegedEditor,
+      className,
+      placeholder,
+      charLimit = 3000,
+      defaultValue,
+      onChangeEditor,
+    }: IQuillEditorProps,
+    ref,
   ) => {
-    if (editor.getLength() > charLimit) {
-      reactQuillRef.current?.editor?.deleteText(
-        charLimit,
-        editor.getLength() - charLimit,
-      );
-      setIsCharLimit(true);
-    } else {
-      setIsCharLimit(false);
-    }
-    if (onChangeEditor) {
-      onChangeEditor({
-        text: editor.getText(),
-        html: editor.getHTML(),
-        json: editor.getContents(),
-      });
-    }
-  };
+    const { announcement, setActiveFlow, setEditorValue } =
+      useContext(CreatePostContext);
+    const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
 
-  return (
-    <>
-      <ReactQuill
-        id="quill"
-        className={className}
-        modules={{ ...modules }}
-        placeholder={placeholder}
-        theme="snow"
-        ref={reactQuillRef}
-        formats={formats}
-        onChange={onChangeEditorContent}
-      />
-      {/* <MediaPreview
+    const formats = ['bold', 'italic', 'underline', 'mention', 'link', 'emoji'];
+
+    const modules = {
+      toolbar: {
+        container: '#toolbar',
+      },
+      mention: mention,
+      autoLinks: true,
+      'emoji-toolbar': true,
+    };
+
+    Quill.register(
+      {
+        'formats/mention': MentionBlot,
+        'formats/link': LinkBlot,
+        'formats/emoji': EmojiBlot,
+        'modules/autoLinks': AutoLinks,
+        'modules/emoji-toolbar': EmojiToolbar,
+      },
+      true,
+    );
+
+    const onChangeEditorContent = (
+      content: string,
+      delta: DeltaStatic,
+      source: Sources,
+      editor: UnprivilegedEditor,
+    ) => {
+      if (editor.getLength() > charLimit) {
+        (ref as any)?.current?.editor?.deleteText(
+          charLimit,
+          editor.getLength() - charLimit,
+        );
+        setIsCharLimit(true);
+        console.log('limit reached');
+      } else {
+        setIsCharLimit(false);
+      }
+      if (onChangeEditor) {
+        onChangeEditor({
+          text: editor.getText(),
+          html: editor.getHTML(),
+          json: editor.getContents(),
+        });
+      }
+    };
+
+    return (
+      <>
+        <ReactQuill
+          id="quill"
+          className={className}
+          modules={{ ...modules }}
+          placeholder={placeholder}
+          theme="snow"
+          ref={ref as LegacyRef<ReactQuill>}
+          formats={formats}
+          onChange={onChangeEditorContent}
+          defaultValue={defaultValue}
+        />
+        {/* <MediaPreview
         media={[
           {
             type: 'image',
@@ -109,32 +116,56 @@ const RichTextEditor: React.FC<QuillEditorProps> = ({
         ]}
         className="m-6"
       /> */}
-      {announcement && (
-        <div className="flex justify-between bg-primary-100 px-4 py-2 m-4">
-          <div className="flex items-center">
-            <Icon
-              name="calendarOutlineTwo"
-              size={16}
-              stroke={twConfig.theme.colors.neutral['900']}
-            />
-            <div className="ml-2.5">
-              Post will be scheduled for {announcement.label}
+        {announcement && (
+          <div className="flex justify-between bg-primary-100 px-4 py-2 m-4">
+            <div className="flex items-center">
+              <Icon
+                name="calendarOutlineTwo"
+                size={16}
+                stroke={twConfig.theme.colors.neutral['900']}
+              />
+              <div className="ml-2.5">
+                Post will be scheduled for{' '}
+                {moment(new Date(announcement.value)).format(
+                  'ddd, MMM DD [at] h:mm a',
+                )}
+              </div>
+            </div>
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={() => {
+                setEditorValue({
+                  text: (ref as any).current
+                    ?.makeUnprivilegedEditor((ref as any).current?.getEditor())
+                    .getText(),
+                  html: (ref as any).current
+                    ?.makeUnprivilegedEditor((ref as any).current?.getEditor())
+                    .getHTML(),
+                  json: (ref as any).current
+                    ?.makeUnprivilegedEditor((ref as any).current?.getEditor())
+                    .getContents(),
+                });
+                setActiveFlow(CreatePostFlow.CreateAnnouncement);
+              }}
+            >
+              <Icon
+                name="editOutline"
+                size={12}
+                stroke={twConfig.theme.colors.neutral['900']}
+              />
+              <div className="ml-1 text-xs font-bold text-neutral-900">
+                Edit
+              </div>
             </div>
           </div>
-          <div className="flex items-center">
-            <Icon
-              name="editOutline"
-              size={16}
-              stroke={twConfig.theme.colors.neutral['900']}
-            />
-            <div className="ml-2.5">Edit</div>
-          </div>
-        </div>
-      )}
+        )}
 
-      <Toolbar isCharLimit={isCharLimit} />
-    </>
-  );
-};
+        <Toolbar isCharLimit={isCharLimit} />
+      </>
+    );
+  },
+);
+
+RichTextEditor.displayName = 'RichTextEditor';
 
 export default memo(RichTextEditor);

@@ -3,31 +3,30 @@ import Avatar from 'components/Avatar';
 import Earth from 'images/earth.svg';
 import Ellipsis from 'images/ellipsis.svg';
 import { CREATE_POST, VIEW_POST } from './constant';
+import useAuth from 'hooks/useAuth';
 
 type ActorProps = {
-  avatar: string;
-  actorName: string;
   visibility: string;
   contentMode?: string;
   createdTime?: string;
 };
 
 const Actor: React.FC<ActorProps> = ({
-  avatar,
-  actorName,
   visibility,
   contentMode,
   createdTime,
 }) => {
+  const { user } = useAuth();
+
   return (
     <div className={`flex justify-between items-center mx-6 mt-6 mb-4`}>
       <div className="flex items-center">
         <div>
-          <Avatar size={32} image={avatar} name={actorName} active={false} />
+          <Avatar name={user?.name || 'U'} size={32} />
         </div>
         <div className="ml-3">
           <div className="font-bold text-sm text-neutral-900">
-            {actorName}
+            {user?.name}
             {contentMode === VIEW_POST ? (
               <span className="ml-1 text-sm font-normal text-neutral-900">
                 shared a post
