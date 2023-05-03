@@ -25,8 +25,6 @@ const Post: React.FC<PostProps> = (props: PostProps) => {
   return (
     <Card className="bg-white rounded-9xl mt-5">
       <Actor
-        avatar="https://png.pngtree.com/png-clipart/20210619/ourlarge/pngtree-instagram-lady-social-media-flat-style-avatar-png-image_3483977.jpg"
-        actorName="Sam Fields"
         visibility="Everyone"
         contentMode={VIEW_POST}
         createdTime="10 mins ago"
