@@ -21,7 +21,7 @@ interface ICreatePost {
   audience: {
     users: string[];
   };
-  isAnnouncement: true;
+  isAnnouncement: boolean;
   announcement: {
     end: string;
   };
