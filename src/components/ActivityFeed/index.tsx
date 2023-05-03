@@ -19,17 +19,19 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({ activityFeed }) => {
         <Divider />
         <SortByDropdown />
       </div>
-      {activityFeed.length > 0 ? (
-        activityFeed?.map((feed) => (
-          <div key={feed.uuid}>
-            <Post data={feed} />
+      <div className="mt-8">
+        {activityFeed.length > 0 ? (
+          activityFeed.map((feed) => (
+            <div key={feed.uuid} className="space-y-4">
+              <Post data={feed} />
+            </div>
+          ))
+        ) : (
+          <div className="flex justify-center items-center mt-20">
+            Feed Not Found
           </div>
-        ))
-      ) : (
-        <div className="flex justify-center items-center mt-20">
-          Feed Not Found
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

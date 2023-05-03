@@ -8,7 +8,7 @@ export type CardProps = {
 
 const Card: React.FC<CardProps> = ({ children, className = '' }) => {
   const cardStyle = clsx(
-    { 'bg-white rounded-9xl shadow': true },
+    { 'bg-white rounded-9xl shadow pt-1': true },
     { [className]: true },
   );
   return <div className={cardStyle}>{children}</div>;
