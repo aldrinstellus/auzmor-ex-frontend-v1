@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dispatch, SetStateAction } from 'react';
 import { DataType, activeCommentsDataType } from '.';
 import { CommentForm } from './CommentForm';
@@ -6,7 +6,8 @@ import Like from 'images/like.svg';
 import Reply from 'images/reply.png';
 import Icon from 'images/icon.png';
 import Dots from 'images/dots.png';
-import { Likes } from 'components/Likes';
+import { Likes, Reaction } from 'components/Likes';
+import { getReactions } from 'queries/reaction';
 
 interface CommentProps {
   replyInputBox: boolean;
@@ -41,10 +42,23 @@ export const Comment: React.FC<CommentProps> = ({
   const replyId = parentId ? parentId : comment.id;
   const createdAt = new Date(comment.createdAt).toLocaleDateString();
 
-  const [name, setName] = useState<string>('Like');
-  const [likeIcon, setLikeIcon] = useState<string>(Like);
-  const [likeButtonColor, setLikeButtonColor] =
-    useState<string>('text-neutral-500');
+  const [reaction, setReaction] = useState<Reaction>({
+    name: 'Like',
+  });
+
+  const [reactionId, setReactionId] = useState('');
+
+  const setupReaction = async () => {
+    const userData = await getReactions(currentUserId, 'comment');
+    setReaction({
+      name: userData.data.length > 0 ? userData.data[0].reaction : 'Like',
+    });
+    setReactionId(userData.data.length > 0 ? userData.data[0].id : '');
+  };
+
+  useEffect(() => {
+    setupReaction();
+  }, []);
 
   return (
     <div key={comment.id}>
@@ -81,12 +95,11 @@ export const Comment: React.FC<CommentProps> = ({
         <div className="flex justify-between pt-4 pb-6">
           <div className="flex">
             <Likes
-              name={name}
-              setName={setName}
-              setLikeIcon={setLikeIcon}
-              likeIcon={likeIcon}
-              setLikeButtonColor={setLikeButtonColor}
-              likeButtonColor={likeButtonColor}
+              reaction={reaction}
+              setReaction={setReaction}
+              entityId=""
+              entityType="comment"
+              reactionId={reactionId}
             />
             <button
               className="flex items-center ml-7"

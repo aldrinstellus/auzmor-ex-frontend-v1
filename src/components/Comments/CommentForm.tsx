@@ -1,7 +1,4 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
-import Image from 'images/Image.png';
-import Smily from 'images/smily.png';
-import Send from 'images/send.png';
 import IconButton, {
   Variant as IconVariant,
   Size as SizeVariant,

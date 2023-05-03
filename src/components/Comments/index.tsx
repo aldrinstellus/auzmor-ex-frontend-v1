@@ -6,7 +6,74 @@ import like from 'images/like.svg';
 import icon from 'images/icon.png';
 import { getCommentsApi } from 'mocks/comments';
 
-interface CommentsProps {}
+interface CommentsProps {
+  entityId: string;
+  commentsData: any;
+}
+
+interface IContent {
+  text: string;
+  html: string;
+  editor: string;
+}
+
+interface IImage {
+  blurHash: string;
+}
+
+interface ICreatedBy {
+  userId: string;
+  fullName: string;
+  status: string;
+  workLocation: string;
+  designation: string;
+  department: string;
+  profileImage: IImage;
+}
+
+// {
+//         "content": {
+//             "text": "This is a test comment .\n #tag1 #tag2 #tag3",
+//             "html": "<p>this is paragraph</p>",
+//             "editor": "{\"foo\":\"gghjjj\"}"
+//         },
+//         "mentions": [],
+//         "hashtags": [
+//             "tag3",
+//             "party",
+//             "tag1",
+//             "wow"
+//         ],
+//         "entityType": "post",
+//         "entityId": "6448cea1e26516273cd38390",
+//         "orgId": "6448b95178b97543ad8046e7",
+//         "createdBy": {
+//             "userId": "6448b95178b97543ad8046e9",
+//             "fullName": "abc@microsoft.com",
+//             "status": "ACTIVE",
+//             "workLocation": "",
+//             "designation": "",
+//             "department": "",
+//             "profileImage": {
+//                 "blurHash": ""
+//             }
+//         },
+//         "createdAt": "2023-04-26T07:14:43.378Z",
+//         "updatedAt": "2023-04-26T07:14:43.378Z"
+//     }
+
+export interface DataType2 {
+  content: IContent;
+  mentions: Array<string>;
+  hashtags: Array<string>;
+  entitype: string;
+  entityId: string;
+  orgId: string;
+  createdBy: ICreatedBy;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface DataType {
   id: string;
   body: string;
@@ -22,10 +89,13 @@ export interface activeCommentsDataType {
   type: string;
 }
 
-const Comments: React.FC<CommentsProps> = ({}) => {
+const Comments: React.FC<CommentsProps> = ({ entityId, commentsData }) => {
+  const [commentsD, setCommentsD] = useState<Array<DataType2>>(commentsData);
+
   const [comments, setComments] = useState<Array<DataType>>([]);
   const [activeComment, setActiveComment] =
     useState<activeCommentsDataType | null>(null);
+
   const rootComments = comments.filter((Comment) => Comment.parentId === null);
 
   const createCommentApi = async (text: any, parentId: any = null) => {

@@ -1,5 +1,4 @@
-import React, { ReactNode, useState } from 'react';
-import Like from 'images/like.svg';
+import React, { ReactNode, useEffect, useState } from 'react';
 import Card from 'components/Card';
 
 import Comments from 'images/comments.svg';
@@ -7,20 +6,43 @@ import Comments from 'images/comments.svg';
 import Actor from 'components/Actor';
 import { VIEW_POST } from 'components/Actor/constant';
 import Commentspage from 'components/Comments/index';
-import { Likes } from 'components/Likes';
+import { Likes, Reaction } from 'components/Likes';
 import { RenderQuillDelta } from 'components/RenderQuillDelta';
 import { DeltaStatic } from 'quill';
+import { getReactions } from 'queries/reaction';
 
 type PostProps = {
   data: DeltaStatic;
+  id: string;
 };
 
 const Post: React.FC<PostProps> = (props: PostProps) => {
   const [showComments, setShowComments] = useState(false);
-  const [name, setName] = useState<string>('Like');
-  const [likeIcon, setLikeIcon] = useState<string>(Like);
-  const [likeButtonColor, setLikeButtonColor] =
-    useState<string>('text-neutral-500');
+  const [reaction, setReaction] = useState<Reaction>({
+    name: 'Like',
+  });
+
+  const [comments, setComments] = useState();
+
+  const [reactionId, setReactionId] = useState('');
+
+  const setupReaction = async () => {
+    const Reactions = await getReactions(props?.id, 'post');
+    setReaction({
+      name: Reactions.data.length > 0 ? Reactions.data[0].reaction : 'Like',
+    });
+    setReactionId(Reactions.data.length > 0 ? Reactions.data[0].id : '');
+  };
+
+  const setupComments = async () => {
+    const commentsData = await getReactions(props?.id, 'post');
+    setComments(commentsData.data);
+  };
+
+  useEffect(() => {
+    setupReaction();
+    setupComments();
+  }, []);
 
   return (
     <Card className="bg-white rounded-9xl mt-5">
@@ -40,12 +62,11 @@ const Post: React.FC<PostProps> = (props: PostProps) => {
         <div className="flex justify-between pt-4 pb-6">
           <div className="flex ">
             <Likes
-              name={name}
-              setName={setName}
-              setLikeIcon={setLikeIcon}
-              likeIcon={likeIcon}
-              setLikeButtonColor={setLikeButtonColor}
-              likeButtonColor={likeButtonColor}
+              reaction={reaction}
+              setReaction={setReaction}
+              entityId={props?.id}
+              entityType="post"
+              reactionId={reactionId}
             />
 
             <button className="flex items-center ml-7">
@@ -66,7 +87,9 @@ const Post: React.FC<PostProps> = (props: PostProps) => {
           </div>
           <div></div>
         </div>
-        {showComments && <Commentspage />}
+        {showComments && (
+          <Commentspage entityId={props?.id} commentsData={comments} />
+        )}
       </div>
     </Card>
   );

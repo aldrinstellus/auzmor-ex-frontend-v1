@@ -17,7 +17,7 @@ interface IContent {
 }
 
 export interface IPostTypeIcon {
-  id: number;
+  id: string;
   label: string;
   icon: ReactNode;
   menuItems: IMenuItem[];
@@ -33,7 +33,7 @@ export interface IFeed {
 
 export const postTypeMapIcons: IPostTypeIcon[] = [
   {
-    id: 1,
+    id: '1',
     label: 'Media',
     icon: <Icon name="imageFilled" fill="#000000" size={14} />,
     menuItems: [
@@ -85,19 +85,19 @@ export const postTypeMapIcons: IPostTypeIcon[] = [
     ],
   },
   {
-    id: 2,
+    id: '2',
     label: 'Shoutout',
     icon: <Icon name="magicStarFilled" fill="#000000" size={14} />,
     menuItems: [],
   },
   {
-    id: 3,
+    id: '3',
     label: 'Events',
     icon: <Icon name="calendarFilledTwo" fill="#000000" size={14} />,
     menuItems: [],
   },
   {
-    id: 4,
+    id: '4',
     label: 'Polls',
     icon: <Icon name="chartFilled" fill="#000000" size={14} />,
     menuItems: [],
@@ -113,7 +113,7 @@ const Feed: React.FC<IFeedProps> = () => {
         ...data.content,
         editor: JSON.parse(data.content.editor),
       },
-      uuid: data.uuid,
+      uuid: data.id,
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
       type: data.type,
