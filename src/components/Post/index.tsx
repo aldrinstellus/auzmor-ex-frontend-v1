@@ -26,18 +26,11 @@ const Post: React.FC<PostProps> = (props: PostProps) => {
 
   return (
     <Card className="bg-white rounded-9xl mt-5">
-      <div className="flex justify-between items-center">
-        <Actor
-          avatar="https://png.pngtree.com/png-clipart/20210619/ourlarge/pngtree-instagram-lady-social-media-flat-style-avatar-png-image_3483977.jpg"
-          actorName="Sam Fields"
-          visibility="Everyone"
-          contentMode={VIEW_POST}
-          createdTime="10 mins ago"
-        />
-        <div className="relative">
-          <FeedPostMenu id={props?.id} />
-        </div>
-      </div>
+      <Actor
+        visibility="Everyone"
+        contentMode={VIEW_POST}
+        createdTime="10 mins ago"
+      />
       <div className="mx-6">
         {/* Post Content */}
         <RenderQuillDelta delta={props?.data as DeltaStatic} />

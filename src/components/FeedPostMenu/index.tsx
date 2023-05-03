@@ -3,9 +3,10 @@ import Icon from 'components/Icon';
 import PopupMenu, { IMenuItem } from 'components/PopupMenu';
 import { twConfig } from 'utils/misc';
 import { useMutation } from '@tanstack/react-query';
-import CreatePostModal from 'pages/Feed/components/CreatePostModal';
+import CreatePost from 'components/PostBuilder/components/CreatePost';
 import ConfirmationBox from 'components/ConfirmationBox';
 import { deletePost, editPost } from 'queries/post';
+import PostBuilder from 'components/PostBuilder';
 
 export interface IFeedPostMenuProps {
   id: string;
@@ -143,7 +144,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ id }) => {
         }
         menuItems={postOptions}
       />
-      <CreatePostModal
+      <PostBuilder
         showModal={showModal}
         setShowModal={() => setShowModal(false)}
       />

@@ -4,7 +4,13 @@ import Modal from '../../../components/Modal';
 export interface IUserInviteProps {}
 
 const UserInvite: React.FC<IUserInviteProps> = () => {
-  return <div></div>;
+  return (
+    <div>
+      <Modal open={false} closeModal={() => {}}>
+        <></>
+      </Modal>
+    </div>
+  );
 };
 
 export default UserInvite;

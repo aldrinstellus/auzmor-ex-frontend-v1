@@ -26,6 +26,7 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
   label = '',
   placeholder = '',
   options,
+  defaultValue,
 }) => {
   const { field } = useController({
     name,
@@ -80,6 +81,7 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
               styles={colourStyles}
               options={options}
               {...field}
+              defaultValue={defaultValue}
             />
           )}
         />
