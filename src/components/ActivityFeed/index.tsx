@@ -1,15 +1,16 @@
 import Divider from 'components/Divider';
 import Post from 'components/Post';
-import { IFeed } from 'pages/Feed';
 import React from 'react';
 import SortByDropdown from './components/SortByDropdown';
 import FeedFilter from './components/FeedFilters';
+import { IPost } from 'queries/post';
+
 import { InfiniteScroll } from 'components/InfiniteScroll';
 import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
 import Icon from 'components/Icon';
 
 type ActivityFeedProps = {
-  activityFeed: IFeed[];
+  activityFeed: IPost[];
   loadMore: any; // Change this type to something more appropriate for functions
   setShowModal: (flag: boolean) => void;
 };
@@ -29,11 +30,7 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
           itemCount={activityFeed.length}
           itemRenderer={(index) => (
             <div key={`post-${index}`}>
-              <Post
-                data={activityFeed[index]}
-                id={activityFeed[index]?.id}
-                reactionData={activityFeed[index]?.myReaction}
-              />
+              <Post data={activityFeed[index]} />
             </div>
           )}
           loadMore={loadMore}

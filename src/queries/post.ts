@@ -1,8 +1,9 @@
 import apiService from 'utils/apiService';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { DeltaStatic } from 'quill';
+import { IMyReactions } from 'pages/Feed';
 
-interface IPost {
+export interface IPost {
   content: {
     text: string;
     html: string;
@@ -26,7 +27,10 @@ interface IPost {
   announcement: {
     end: string;
   };
+  id?: string;
+  myReaction?: IMyReactions;
 }
+
 interface IDeletePost {
   id: string;
 }
@@ -54,9 +58,8 @@ export const usePreviewLink = (previewUrl: string) => {
   });
 };
 
-export const editPost = async (id: string, payload: IPost) => {
-  const data = await apiService.put(`/posts/${id}`, payload);
-  return data;
+export const updatePost = async (id: string, payload: IPost) => {
+  await apiService.put(`/posts/${id}`, payload);
 };
 
 export const deletePost = async (id: string) => {

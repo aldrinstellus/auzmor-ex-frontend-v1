@@ -51,10 +51,7 @@ export const deleteReaction = async (payload: IDelete) => {
 };
 
 export const getComments = async (payload: IComments) => {
-  const { entityId, entityType, limit, page } = payload;
-  const { data } = await apiService.get(
-    `comments?entityId=${entityId}&entityType=${entityType}&limit=${limit}&page=${page}`,
-  );
+  const { data } = await apiService.get(`comments`, payload);
   return data;
 };
 

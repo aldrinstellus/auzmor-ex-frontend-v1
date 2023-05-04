@@ -104,7 +104,7 @@ const Likes: React.FC<LikesProps> = ({
     };
 
     createReactionMutation.mutate(data);
-    queryClient.invalidateQueries({ queryKey: ['reactions'] });
+    queryClient.invalidateQueries({ queryKey: ['feed'] });
   };
 
   const handleDeleteReaction = () => {
@@ -114,7 +114,7 @@ const Likes: React.FC<LikesProps> = ({
       entityType: entityType,
     };
     deleteReactionMutation.mutate(data);
-    queryClient.invalidateQueries({ queryKey: ['reactions'] });
+    queryClient.invalidateQueries({ queryKey: ['feed'] });
   };
 
   const Reactions = ({ name, icon, type }: IReaction) => {

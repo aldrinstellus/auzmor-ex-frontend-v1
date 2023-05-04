@@ -8,19 +8,17 @@ import Likes from 'components/Reactions';
 import { RenderQuillDelta } from 'components/RenderQuillDelta';
 import { DeltaStatic } from 'quill';
 import FeedPostMenu from './components/FeedPostMenu';
-import { IMyReactions } from 'pages/Feed';
+import { IPost } from 'queries/post';
 
 type PostProps = {
-  data: Record<string, any>;
-  id: string;
-  reactionData: IMyReactions;
+  data: IPost;
 };
 
-const Post: React.FC<PostProps> = ({ data, id, reactionData }) => {
+const Post: React.FC<PostProps> = ({ data }) => {
   const [showComments, setShowComments] = useState(false);
 
-  const reaction = reactionData?.reaction;
-  const reactionId = reactionData?.id;
+  const reaction = data.myReaction?.reaction;
+  const reactionId = data.myReaction?.id;
 
   const content: DeltaStatic = data?.content?.editor;
 
@@ -45,10 +43,10 @@ const Post: React.FC<PostProps> = ({ data, id, reactionData }) => {
         <div className="flex justify-between pt-4 pb-6">
           <div className="flex ">
             <Likes
-              reaction={reaction}
-              entityId={id}
+              reaction={reaction || ''}
+              entityId={data?.id || ''}
               entityType="post"
-              reactionId={reactionId}
+              reactionId={reactionId || ''}
             />
 
             <button className="flex items-center ml-7">
@@ -69,7 +67,7 @@ const Post: React.FC<PostProps> = ({ data, id, reactionData }) => {
           </div>
           <div></div>
         </div>
-        {showComments && <CommentCard entityId={id} />}
+        {showComments && <CommentCard entityId="" />}
       </div>
     </Card>
   );
