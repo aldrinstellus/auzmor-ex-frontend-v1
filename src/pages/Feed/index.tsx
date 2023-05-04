@@ -121,28 +121,36 @@ const Feed: React.FC<IFeedProps> = () => {
       getPreviousPageParam: (currentPage: any) => {
         return currentPage?.data?.result?.paging?.next;
       },
+      onSuccess: (data) => console.log(data),
     },
   );
 
   const feed = data?.pages.flatMap((page) => {
     return page.data?.result?.data.map((post: any) => {
-      return {
-        ...post,
-        content: {
-          ...post.content,
-          editor: JSON.parse(post.content.editor),
-        },
-        uuid: post.id,
-      };
+      try {
+        return {
+          ...post,
+          content: {
+            ...post.content,
+            editor: JSON.parse(post.content.editor),
+          },
+          uuid: post.id,
+        };
+      } catch (e) {
+        console.log(post);
+      }
     });
   }) as IFeed[];
 
   return (
-    <div className="flex flex-col">
-      <CreatePostCard setShowModal={setShowModal} />
-      <ActivityFeed activityFeed={feed} loadMore={fetchNextPage} />
+    <>
+      <ActivityFeed
+        activityFeed={feed}
+        loadMore={() => {}}
+        setShowModal={setShowModal}
+      />
       <PostBuilder showModal={showModal} setShowModal={setShowModal} />
-    </div>
+    </>
   );
 };
 

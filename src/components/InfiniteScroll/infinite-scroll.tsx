@@ -32,6 +32,8 @@ export type InfiniteScrollProps = {
    */
   innerClassName?: string;
 
+  prependEle?: ReactNode;
+
   /**
    * A function that renders the item component
    */
@@ -55,6 +57,7 @@ export const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
   isFetchingNextPage = false,
   outerClassName,
   innerClassName,
+  prependEle,
   itemRenderer,
   loadMore = () => {},
   onScroll = () => {},
@@ -74,16 +77,19 @@ export const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
 
   return (
     <div ref={outerRef as LegacyRef<HTMLDivElement>} className={outerClassName}>
+      <div></div>
       <div
         ref={innerRef as LegacyRef<HTMLDivElement>}
         className={innerClassName}
       >
+        {prependEle}
         {isLoading
           ? loadingComponent || <div>Loading...</div>
           : items.map(({ index, measureRef }) => {
               return itemRenderer(index, measureRef);
             })}
       </div>
+      <div></div>
     </div>
   );
 };

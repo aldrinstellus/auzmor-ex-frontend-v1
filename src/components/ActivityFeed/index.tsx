@@ -6,42 +6,51 @@ import SortByDropdown from './components/SortByDropdown';
 import ClockIcon from 'components/Icon/components/Clock';
 import FeedFilter from './components/FeedFilters';
 import { InfiniteScroll } from 'components/InfiniteScroll';
+import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
 
 type ActivityFeedProps = {
   activityFeed: IFeed[];
   loadMore: any; // Change this type to something more appropriate for functions
+  setShowModal: (flag: boolean) => void;
 };
 
 const ActivityFeed: React.FC<ActivityFeedProps> = ({
   activityFeed,
   loadMore,
+  setShowModal,
 }) => {
   return (
-    <div style={{ marginTop: 41.5 }}>
-      <div className="flex flex-row items-center gap-x-2">
-        <FeedFilter name="Filters" />
-        <ClockIcon />
-        <Divider />
-        <SortByDropdown />
-      </div>
-
+    <>
       {activityFeed?.length > 0 ? (
         <InfiniteScroll
           // innerHeight > outerHeight
-          // outerClassName="h-32 overflow-y-scroll"
-          // innerClassName="h-full"
+          outerClassName="flex justify-between pt-16 px-32 h-[calc(100vh-64px)] overflow-y-scroll"
+          innerClassName="w-1/2 flex flex-col"
           itemCount={activityFeed.length}
           itemRenderer={(index) => (
-            <Post data={activityFeed[index]?.content?.editor} />
+            <div key={`post-${index}`}>
+              <Post data={activityFeed[index]?.content?.editor} />
+            </div>
           )}
           loadMore={loadMore}
+          prependEle={
+            <>
+              <CreatePostCard setShowModal={setShowModal} />
+              <div className="flex flex-row items-center gap-x-2">
+                <FeedFilter name="Filters" />
+                <ClockIcon />
+                <Divider />
+                <SortByDropdown />
+              </div>
+            </>
+          }
         />
       ) : (
         <div className="flex justify-center items-center mt-20">
           Feed Not Found
         </div>
       )}
-    </div>
+    </>
   );
 };
 
