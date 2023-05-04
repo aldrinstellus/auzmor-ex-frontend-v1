@@ -3,18 +3,39 @@ import { usePreviewLink } from 'queries/post';
 import ImagePreview from './components/ImagePreview';
 import IconPreview from './components/IconPreview';
 
+export type LinkMetadataProps = {
+  title?: string;
+  image?: string;
+  description?: string;
+  favicon?: string;
+  url?: string;
+  themeColor?: string;
+};
+
 export type PreviewLinkProps = {
-  previewUrl: string;
-  setPreviewUrl: (previewUrl: string) => void;
-  setIsPreviewRemove: (isPreviewRemove: boolean) => void;
+  previewUrl?: string;
+  setPreviewUrl?: (previewUrl: string) => void;
+  setIsPreviewRemove?: (isPreviewRemove: boolean) => void;
+  linkMetadata?: LinkMetadataProps;
 };
 
 const PreviewLink: React.FC<PreviewLinkProps> = ({
   previewUrl,
   setPreviewUrl,
   setIsPreviewRemove,
+  linkMetadata,
 }) => {
-  const { data, isLoading } = usePreviewLink(previewUrl);
+  let data: LinkMetadataProps,
+    isLoading = false;
+
+  if (linkMetadata !== null) {
+    data = linkMetadata as LinkMetadataProps;
+  } else {
+    const previewLinkData = usePreviewLink(previewUrl as string);
+    data = previewLinkData?.data as LinkMetadataProps;
+    isLoading = previewLinkData?.isLoading;
+  }
+
   const preview = useMemo(() => {
     if (data?.image) {
       return (
@@ -22,6 +43,7 @@ const PreviewLink: React.FC<PreviewLinkProps> = ({
           metaData={data}
           setPreviewUrl={setPreviewUrl}
           setIsPreviewRemove={setIsPreviewRemove}
+          showClose={linkMetadata === null}
         />
       );
     } else if (data?.favicon) {
@@ -30,6 +52,7 @@ const PreviewLink: React.FC<PreviewLinkProps> = ({
           metaData={data}
           setPreviewUrl={setPreviewUrl}
           setIsPreviewRemove={setIsPreviewRemove}
+          showClose={linkMetadata === null}
         />
       );
     } else if (isLoading) {
@@ -45,7 +68,11 @@ const PreviewLink: React.FC<PreviewLinkProps> = ({
     }
   }, [data, isLoading]);
 
-  return <div>{previewUrl ? <div>{preview}</div> : null}</div>;
+  return (
+    <div className="w-full">
+      {previewUrl || linkMetadata ? <div>{preview}</div> : null}
+    </div>
+  );
 };
 
 export default PreviewLink;

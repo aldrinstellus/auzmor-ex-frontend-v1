@@ -4,10 +4,22 @@ import { Mention } from './components/Mention';
 import { Hashtag } from './components/Hashtag';
 import { Emoji } from './components/Emoji';
 import { Text } from './components/Text';
+import PreviewLink, { LinkMetadataProps } from 'components/PreviewLink';
 
 type RenderQuillDeltaProps = {
   delta: Delta;
 };
+
+const linkMetadata = {
+  title: 'Testing',
+  image:
+    'https://img.freepik.com/free-vector/set-ten-clover-leaves-flat-style_1017-24189.jpg',
+  description: 'Some description',
+  favicon:
+    'https://static.vecteezy.com/system/resources/previews/003/171/355/large_2x/objective-lens-icon-with-six-rainbow-colors-vector.jpg',
+  url: 'https://auzmor.com',
+  themeColor: '#000000',
+} as LinkMetadataProps;
 
 export const RenderQuillDelta: React.FC<RenderQuillDeltaProps> = (
   props: RenderQuillDeltaProps,
@@ -31,5 +43,12 @@ export const RenderQuillDelta: React.FC<RenderQuillDeltaProps> = (
     }
   });
 
-  return <div>{content}</div>;
+  return (
+    <div>
+      {content}
+      <div className="mt-4 -mb-4">
+        <PreviewLink linkMetadata={linkMetadata} />
+      </div>
+    </div>
+  );
 };

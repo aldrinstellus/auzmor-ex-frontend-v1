@@ -5,14 +5,16 @@ import ClosePreview from './ClosePreview';
 
 type ImagePreviewProps = {
   metaData: Metadata;
-  setPreviewUrl: (previewUrl: string) => void;
-  setIsPreviewRemove: (isPreviewRemove: boolean) => void;
+  setPreviewUrl?: (previewUrl: string) => void;
+  setIsPreviewRemove?: (isPreviewRemove: boolean) => void;
+  showClose?: boolean;
 };
 
 const ImagePreview: React.FC<ImagePreviewProps> = ({
   metaData,
   setPreviewUrl,
   setIsPreviewRemove,
+  showClose = true,
 }) => {
   return (
     <Card className="mx-6 mb-9 cursor-pointer relative">
@@ -31,10 +33,12 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
           </div>
         </div>
       </a>
-      <ClosePreview
-        setPreviewUrl={setPreviewUrl}
-        setIsPreviewRemove={setIsPreviewRemove}
-      />
+      {showClose && (
+        <ClosePreview
+          setPreviewUrl={setPreviewUrl}
+          setIsPreviewRemove={setIsPreviewRemove}
+        />
+      )}
     </Card>
   );
 };

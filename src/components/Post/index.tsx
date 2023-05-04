@@ -73,6 +73,7 @@ const Post: React.FC<PostProps> = ({ data }) => {
           </div>
           <div></div>
         </div>
+        {/* Comments */}
         {showComments && <Commentspage />}
       </div>
     </Card>
