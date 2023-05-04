@@ -1,5 +1,5 @@
 import apiService from 'utils/apiService';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { DeltaStatic } from 'quill';
 
 export interface IPost {
@@ -26,7 +26,7 @@ export interface IPost {
   announcement: {
     end: string;
   };
-  uuid?: string;
+  id?: string;
 }
 interface IDeletePost {
   id: string;
@@ -37,9 +37,9 @@ export const createPost = async (payload: IPost) => {
   return data;
 };
 
-export const getPosts = async () => {
-  const data = await apiService.get('/posts');
-  return data?.data?.result;
+export const fetchFeed = ({ pageParam = null }) => {
+  if (pageParam === null) return apiService.get('/posts');
+  else return apiService.get(pageParam);
 };
 
 export const getPreviewLink = async (previewUrl: string) => {
@@ -63,4 +63,16 @@ export const deletePost = async (id: string) => {
   const data = await apiService.delete(`/posts/${id}`);
   console.log(data, 'API');
   return data;
+};
+
+export const useInfiniteFeed = (q?: Record<string, any>) => {
+  return useInfiniteQuery(['feed', q], fetchFeed, {
+    getNextPageParam: (lastPage: any) => {
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
+    onSuccess: (data) => console.log(data),
+  });
 };

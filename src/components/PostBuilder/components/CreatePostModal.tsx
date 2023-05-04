@@ -32,6 +32,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     setEditorValue,
   } = useContext(CreatePostContext);
 
+  console.log(data);
   useEffect(() => {
     if (data) {
       setEditorValue(data.content.editor);
@@ -53,7 +54,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
   const updatePostMutation = useMutation({
     mutationKey: ['updatePostMutation'],
     mutationFn: (payload: IPost) =>
-      updatePost(payload.uuid || '', payload as IPost),
+      updatePost(payload.id || '', payload as IPost),
   });
 
   const handleSubmitPost = (content?: IEditorValue) => {
@@ -92,7 +93,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         announcement: {
           end: announcement?.value || '',
         },
-        uuid: data?.uuid,
+        id: data?.id,
       });
     }
   };
