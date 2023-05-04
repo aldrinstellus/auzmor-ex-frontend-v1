@@ -112,23 +112,12 @@ export const postTypeMapIcons: IPostTypeIcon[] = [
 const Feed: React.FC<IFeedProps> = () => {
   const [showModal, setShowModal] = useState(false);
   const rawFeedData: any = useLoaderData();
-  const feed: IFeed[] = rawFeedData.data
-    .map((data: any) => {
-      try {
-        return {
-          content: {
-            ...data.content,
-            editor: JSON.parse(data.content.editor),
-          },
-          uuid: data.id,
-          createdAt: data.createdAt,
-          updatedAt: data.updatedAt,
-          type: data.type,
-          isAnnouncement: data.isAnnouncement,
-        } as IFeed;
-      } catch (e) {}
-    })
-    .filter((feed: IFeed) => feed !== undefined);
+  const feed: IFeed[] = rawFeedData.data.map((data: any) => {
+    return {
+      ...data,
+      uuid: data.id,
+    } as IFeed;
+  });
 
   return (
     <div className="flex flex-col">
