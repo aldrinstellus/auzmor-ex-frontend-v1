@@ -54,7 +54,7 @@ function createMentionsList(mentionsList) {
   const atValues = [];
   // eslint-disable-next-line array-callback-return
   mentionsList.map((mention) => {
-    const val = mention.name;
+    const val = mention.fullName;
     atValues.push({
       ...mention,
       name: val,
