@@ -8,6 +8,7 @@ import { twConfig } from 'utils/misc';
 import { useLoaderData } from 'react-router-dom';
 import Divider, { Variant } from 'components/Divider';
 import PostBuilder from 'components/PostBuilder';
+import { IPost } from 'queries/post';
 
 interface IFeedProps {}
 
@@ -23,14 +24,6 @@ export interface IPostTypeIcon {
   icon: ReactNode;
   menuItems: IMenuItem[];
   divider?: ReactNode;
-}
-export interface IFeed {
-  content: IContent;
-  uuid: string;
-  createdAt: string;
-  updatedAt: string;
-  type: string;
-  isAnnouncement: boolean;
 }
 
 export const postTypeMapIcons: IPostTypeIcon[] = [
@@ -112,11 +105,11 @@ export const postTypeMapIcons: IPostTypeIcon[] = [
 const Feed: React.FC<IFeedProps> = () => {
   const [showModal, setShowModal] = useState(false);
   const rawFeedData: any = useLoaderData();
-  const feed: IFeed[] = rawFeedData.data.map((data: any) => {
+  const feed: IPost[] = rawFeedData.data.map((data: any) => {
     return {
       ...data,
       uuid: data.id,
-    } as IFeed;
+    } as IPost;
   });
 
   return (

@@ -1,13 +1,13 @@
 import Divider from 'components/Divider';
 import Post from 'components/Post';
-import { IFeed } from 'pages/Feed';
 import React from 'react';
 import SortByDropdown from './components/SortByDropdown';
 import ClockIcon from 'components/Icon/components/Clock';
 import FeedFilter from './components/FeedFilters';
+import { IPost } from 'queries/post';
 
 type ActivityFeedProps = {
-  activityFeed: IFeed[];
+  activityFeed: IPost[];
 };
 
 const ActivityFeed: React.FC<ActivityFeedProps> = ({ activityFeed }) => {

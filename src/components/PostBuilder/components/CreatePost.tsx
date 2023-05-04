@@ -9,16 +9,17 @@ import PopupMenu from 'components/PopupMenu';
 import Tooltip from 'components/Tooltip';
 import Divider, { Variant as DividerVariant } from 'components/Divider';
 import Button from 'components/Button';
-import { IFeed, postTypeMapIcons } from 'pages/Feed';
+import { postTypeMapIcons } from 'pages/Feed';
 import { CreatePostContext, IEditorValue } from 'contexts/CreatePostContext';
 import { CreatePostFlow } from 'contexts/CreatePostContext';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
+import { IPost } from 'queries/post';
 
 interface ICreatePostProps {
   closeModal: () => void;
   handleSubmitPost: (content: IEditorValue) => void;
-  data?: IFeed;
+  data?: IPost;
 }
 
 const CreatePost: React.FC<ICreatePostProps> = ({

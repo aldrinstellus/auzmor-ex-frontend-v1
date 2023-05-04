@@ -3,13 +3,12 @@ import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
 import { useMutation } from '@tanstack/react-query';
 import ConfirmationBox from 'components/ConfirmationBox';
-import { deletePost, editPost } from 'queries/post';
-import PostBuilder from 'components/PostBuilder';
+import { IPost, deletePost } from 'queries/post';
+import PostBuilder, { PostBuilderMode } from 'components/PostBuilder';
 import useModal from 'hooks/useModal';
-import { IFeed } from 'pages/Feed';
 
 export interface IFeedPostMenuProps {
-  data: IFeed;
+  data: IPost;
 }
 
 const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
@@ -73,6 +72,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
         data={data}
         showModal={showModal}
         setShowModal={() => setShowModal(false)}
+        mode={PostBuilderMode.Edit}
       />
       <ConfirmationBox
         open={confirm}
@@ -88,7 +88,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
           label: 'Delete',
           className: 'bg-red-500 text-white ',
           onSubmit: () => {
-            deletePostMutation.mutate(data?.uuid);
+            deletePostMutation.mutate(data?.uuid || '');
           },
         }}
         discard={{
