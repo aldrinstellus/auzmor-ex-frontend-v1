@@ -12,9 +12,10 @@ import { RenderQuillDelta } from 'components/RenderQuillDelta';
 import { DeltaStatic } from 'quill';
 import FeedPostMenu from './components/FeedPostMenu';
 import clsx from 'clsx';
+import { IPost } from 'queries/post';
 
 type PostProps = {
-  data: Record<string, any>;
+  data: IPost;
 };
 
 const Post: React.FC<PostProps> = ({ data }) => {
@@ -39,11 +40,7 @@ const Post: React.FC<PostProps> = ({ data }) => {
   return (
     <Card className={cardBorder}>
       <div className="flex justify-between items-center">
-        <Actor
-          visibility="Everyone"
-          contentMode={VIEW_POST}
-          createdTime={data?.createdAt}
-        />
+        <Actor visibility="Everyone" contentMode={VIEW_POST} createdTime={''} />
         <div className="relative">
           <FeedPostMenu data={data} />
         </div>

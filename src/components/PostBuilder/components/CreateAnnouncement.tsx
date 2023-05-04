@@ -1,6 +1,6 @@
 import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import { twConfig } from 'utils/misc';

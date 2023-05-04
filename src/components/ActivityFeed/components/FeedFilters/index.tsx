@@ -1,8 +1,7 @@
 import Button, { Variant } from 'components/Button';
 import Card from 'components/Card';
-import Divider from 'components/Divider';
+import Icon from 'components/Icon';
 import CloseIcon from 'components/Icon/components/Close';
-import FilterIcon from 'components/Icon/components/Filter';
 import React, { ReactElement, useState } from 'react';
 
 export enum FeedFilterContentType {
@@ -131,7 +130,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
         }}
         data-testid={dataTestId}
       >
-        <FilterIcon />
+        <Icon name="filter" size={16} />
       </button>
 
       {showFeedFilter && (

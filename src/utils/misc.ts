@@ -15,8 +15,8 @@ export const getInitials = (name: string) => {
 
 export const redirectWithToken = (redirectUrl: string, token: string) => {
   if (process.env.NODE_ENV === 'development') {
-    window.location.replace(`http://localhost:3000?accessToken=${token}`);
+    window.location.replace(`http://localhost:3000/feed?accessToken=${token}`);
   } else {
-    window.location.replace(`${redirectUrl}?accessToken=${token}`);
+    window.location.replace(`${redirectUrl}/feed?accessToken=${token}`);
   }
 };

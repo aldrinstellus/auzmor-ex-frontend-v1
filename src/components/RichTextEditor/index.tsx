@@ -1,4 +1,4 @@
-import React, { LegacyRef, memo, useContext, useState } from 'react';
+import React, { LegacyRef, ReactNode, memo, useContext, useState } from 'react';
 import ReactQuill, { Quill, UnprivilegedEditor } from 'react-quill';
 import { DeltaStatic, Sources } from 'quill';
 import 'react-quill/dist/quill.snow.css';
@@ -12,7 +12,7 @@ import { LinkBlot } from './blots/link';
 import AutoLinks from './autoLinks';
 import EmojiBlot from './blots/emoji';
 import EmojiToolbar from './emoji';
-import { mention } from './config';
+import { mention, previewLinkRegex } from './config';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
@@ -29,6 +29,12 @@ export interface IQuillEditorProps {
   placeholder: string;
   charLimit?: number;
   defaultValue?: ReactQuill.Value;
+  toolbar?: (isCharLimit: boolean) => ReactNode;
+  previewLink?: (
+    previewUrl: string,
+    setPreviewUrl: (previewUrl: string) => void,
+    setIsPreviewRemove: (isPreviewRemove: boolean) => void,
+  ) => ReactNode;
   onChangeEditor?: (content: IEditorContentChanged) => void;
 }
 
@@ -39,20 +45,25 @@ const RichTextEditor = React.forwardRef(
       placeholder,
       charLimit = 3000,
       defaultValue,
+      toolbar,
+      previewLink,
       onChangeEditor,
     }: IQuillEditorProps,
     ref,
   ) => {
     const { announcement, setActiveFlow, setEditorValue } =
       useContext(CreatePostContext);
+
     const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
+    const [previewUrl, setPreviewUrl] = useState<string>('');
+    const [isPreviewRemove, setIsPreviewRemove] = useState<boolean>(false);
 
     const formats = ['bold', 'italic', 'underline', 'mention', 'link', 'emoji'];
 
     const modules = {
-      // toolbar: {
-      //   container: '#toolbar',
-      // },
+      toolbar: {
+        container: '#toolbar',
+      },
       mention: mention,
       autoLinks: true,
       'emoji-toolbar': true,
@@ -91,6 +102,13 @@ const RichTextEditor = React.forwardRef(
           html: editor.getHTML(),
           json: editor.getContents(),
         });
+      }
+      const matches = editor.getText().match(previewLinkRegex);
+      if (matches) {
+        setPreviewUrl(matches[0]);
+      } else {
+        setPreviewUrl('');
+        setIsPreviewRemove(false);
       }
     };
 
@@ -159,8 +177,10 @@ const RichTextEditor = React.forwardRef(
             </div>
           </div>
         )}
-
-        <Toolbar isCharLimit={isCharLimit} />
+        {!isPreviewRemove &&
+          previewLink &&
+          previewLink(previewUrl, setPreviewUrl, setIsPreviewRemove)}
+        {toolbar && toolbar(isCharLimit)}
       </>
     );
   },

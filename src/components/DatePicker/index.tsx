@@ -13,6 +13,7 @@ export interface IDatePickerInputProps {
   control?: Control<Record<string, any>>;
   minDate?: Date;
   defaultValue?: string;
+  portalContainer?: HTMLElement | null;
   onDateChange?: (date: DateValue) => void;
 }
 
@@ -21,6 +22,7 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
   name,
   minDate,
   defaultValue,
+  portalContainer = null,
   onDateChange,
 }) => {
   return (
@@ -48,6 +50,7 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
             yearPlaceholder="YYYY"
             clearIcon={null}
             minDate={minDate}
+            portalContainer={portalContainer}
           />
           {errors && errors[name] && errors[name]?.message === 'required' && (
             <span>your error message !</span>

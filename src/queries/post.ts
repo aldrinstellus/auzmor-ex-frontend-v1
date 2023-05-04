@@ -1,10 +1,12 @@
 import apiService from 'utils/apiService';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { DeltaStatic } from 'quill';
 
-interface IPost {
+export interface IPost {
   content: {
     text: string;
     html: string;
-    editor: string;
+    editor: DeltaStatic;
   };
   mentions: string[];
   hashtags:
@@ -24,6 +26,7 @@ interface IPost {
   announcement: {
     end: string;
   };
+  id?: string;
 }
 
 interface IReaction {}
@@ -37,14 +40,26 @@ export const createPost = async (payload: IPost) => {
   return data;
 };
 
-export const getPosts = async () => {
-  const data = await apiService.get('/posts');
-  return data?.data?.result;
+export const fetchFeed = ({ pageParam = null }) => {
+  if (pageParam === null) return apiService.get('/posts');
+  else return apiService.get(pageParam);
 };
 
-export const editPost = async (id: string, payload: IPost) => {
-  const data = await apiService.put(`/posts/${id}`, payload);
+export const getPreviewLink = async (previewUrl: string) => {
+  const { data } = await apiService.get(`/links/unfurl?url=${previewUrl}`);
   return data;
+};
+
+export const usePreviewLink = (previewUrl: string) => {
+  return useQuery({
+    queryKey: ['preview-link', previewUrl],
+    queryFn: () => getPreviewLink(previewUrl),
+    staleTime: Infinity,
+  });
+};
+
+export const updatePost = async (id: string, payload: IPost) => {
+  await apiService.put(`/posts/${id}`, payload);
 };
 
 export const deletePost = async (id: string) => {
@@ -62,4 +77,16 @@ export const announcementRead = async (
     payload,
   );
   return data;
+};
+
+export const useInfiniteFeed = (q?: Record<string, any>) => {
+  return useInfiniteQuery(['feed', q], fetchFeed, {
+    getNextPageParam: (lastPage: any) => {
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
+    onSuccess: (data) => console.log(data),
+  });
 };
