@@ -1,16 +1,14 @@
-import React, { ReactNode, useState } from 'react';
+import React, { useState } from 'react';
 import Icon from 'components/Icon';
-import PopupMenu, { IMenuItem } from 'components/PopupMenu';
-import { twConfig } from 'utils/misc';
+import PopupMenu from 'components/PopupMenu';
 import { useMutation } from '@tanstack/react-query';
-import CreatePost from 'components/PostBuilder/components/CreatePost';
 import ConfirmationBox from 'components/ConfirmationBox';
-import { deletePost, editPost } from 'queries/post';
-import PostBuilder from 'components/PostBuilder';
+import { IPost, deletePost } from 'queries/post';
+import PostBuilder, { PostBuilderMode } from 'components/PostBuilder';
 import useModal from 'hooks/useModal';
 
 export interface IFeedPostMenuProps {
-  data: Record<string, any>;
+  data: IPost;
 }
 
 const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
@@ -18,7 +16,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
   const [showModal, setShowModal] = useState(false);
 
   const deletePostMutation = useMutation({
-    mutationKey: ['deletePostMutation', data?.id],
+    mutationKey: ['deletePostMutation', data.id],
     mutationFn: deletePost,
     onError: (error) => console.log(error),
     onSuccess: (data, variables, context) => {
@@ -74,6 +72,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
         data={data}
         showModal={showModal}
         setShowModal={() => setShowModal(false)}
+        mode={PostBuilderMode.Edit}
       />
       <ConfirmationBox
         open={confirm}
@@ -89,7 +88,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
           label: 'Delete',
           className: 'bg-red-500 text-white ',
           onSubmit: () => {
-            deletePostMutation.mutate(data?.id);
+            deletePostMutation.mutate(data?.id || '');
           },
         }}
         discard={{

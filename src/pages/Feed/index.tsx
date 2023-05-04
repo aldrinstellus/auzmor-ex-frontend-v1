@@ -4,10 +4,9 @@ import ActivityFeed from 'components/ActivityFeed';
 import Icon from 'components/Icon';
 import { IMenuItem } from 'components/PopupMenu';
 import { twConfig } from 'utils/misc';
-import { useInfiniteFeed } from 'queries/post';
 import Divider, { Variant } from 'components/Divider';
 import PostBuilder from 'components/PostBuilder';
-import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
+import { IPost, useInfiniteFeed } from 'queries/post';
 
 interface IFeedProps {}
 
@@ -23,14 +22,6 @@ export interface IPostTypeIcon {
   icon: ReactNode;
   menuItems: IMenuItem[];
   divider?: ReactNode;
-}
-export interface IFeed {
-  content: IContent;
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  type: string;
-  isAnnouncement: boolean;
 }
 
 export const postTypeMapIcons: IPostTypeIcon[] = [
@@ -122,7 +113,7 @@ const Feed: React.FC<IFeedProps> = () => {
         console.log('Error', { post });
       }
     });
-  }) as IFeed[];
+  }) as IPost[];
 
   return (
     <div className="flex flex-col">

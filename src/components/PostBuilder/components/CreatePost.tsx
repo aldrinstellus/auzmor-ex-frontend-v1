@@ -14,11 +14,12 @@ import { CreatePostContext, IEditorValue } from 'contexts/CreatePostContext';
 import { CreatePostFlow } from 'contexts/CreatePostContext';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
+import { IPost } from 'queries/post';
 
 interface ICreatePostProps {
   closeModal: () => void;
   handleSubmitPost: (content: IEditorValue) => void;
-  data?: Record<string, any>;
+  data?: IPost;
 }
 
 const CreatePost: React.FC<ICreatePostProps> = ({
