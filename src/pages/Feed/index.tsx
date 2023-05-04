@@ -131,10 +131,6 @@ const Feed: React.FC<IFeedProps> = () => {
       try {
         return {
           ...post,
-          content: {
-            ...post.content,
-            editor: JSON.parse(post.content.editor),
-          },
           uuid: post.id,
         };
       } catch (e) {
@@ -147,7 +143,7 @@ const Feed: React.FC<IFeedProps> = () => {
     <>
       <ActivityFeed
         activityFeed={feed}
-        loadMore={() => {}}
+        loadMore={fetchNextPage}
         setShowModal={setShowModal}
       />
       <PostBuilder showModal={showModal} setShowModal={setShowModal} />
