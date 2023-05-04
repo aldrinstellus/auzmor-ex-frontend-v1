@@ -23,8 +23,6 @@ const Post: React.FC<PostProps> = ({ data }) => {
   const [likeButtonColor, setLikeButtonColor] =
     useState<string>('text-neutral-500');
 
-  const content: DeltaStatic = data?.content?.editor;
-
   return (
     <Card className="mt-5">
       <div className="flex justify-between items-center">
@@ -39,7 +37,7 @@ const Post: React.FC<PostProps> = ({ data }) => {
       </div>
       <div className="mx-6">
         {/* Post Content */}
-        <RenderQuillDelta delta={content} />
+        <RenderQuillDelta delta={data as DeltaStatic} />
         {/* Media Display */}
         <div></div>
         {/* Reaction and comment repost */}
