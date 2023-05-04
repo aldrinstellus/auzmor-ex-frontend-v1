@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 
 interface IReactions {
@@ -11,8 +12,14 @@ interface IDelete {
   id: string;
 }
 
+interface IComments {
+  entityId: string;
+  entityType: string;
+  limit: number;
+  page: number;
+}
+
 export const createReaction = async (payload: IReactions) => {
-  console.log(payload);
   const { data } = await apiService.post('/reactions', payload);
   return data;
 };
@@ -26,6 +33,14 @@ export const getReactions = async (payload: IReactions) => {
   return data;
 };
 
+export const useReactions = (q: IReactions) => {
+  return useQuery({
+    queryKey: ['reactions'],
+    queryFn: () => getReactions(q),
+    // staleTime: 15 * 60 * 1000,
+  });
+};
+
 export const deleteReaction = async (payload: IDelete) => {
   const { entityId, entityType, id } = payload;
 
@@ -35,12 +50,8 @@ export const deleteReaction = async (payload: IDelete) => {
   );
 };
 
-export const getComments = async (
-  entityId: string,
-  entityType: string,
-  limit: number,
-  page: number,
-) => {
+export const getComments = async (payload: IComments) => {
+  const { entityId, entityType, limit, page } = payload;
   const { data } = await apiService.get(
     `comments?entityId=${entityId}&entityType=${entityType}&limit=${limit}&page=${page}`,
   );
@@ -48,9 +59,6 @@ export const getComments = async (
 };
 
 export const createComments = async (payload: IReactions) => {
-  console.log(payload);
-  const data = await apiService.post('/comments', payload);
-  return new Promise((res) => {
-    res(data);
-  });
+  const { data } = await apiService.post('/comments', payload);
+  return data;
 };

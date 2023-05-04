@@ -71,9 +71,9 @@ const routers = createBrowserRouter(
         <Route
           path="/feed"
           element={<Feed />}
-          loader={async () => {
-            return await getPosts();
-          }}
+          // loader={async () => {
+          // //  return await getPosts({});
+          // }}
         />
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/apps" element={<Apps />} />

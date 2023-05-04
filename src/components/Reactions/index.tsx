@@ -13,15 +13,39 @@ interface LikesProps {
   entityId: string;
   entityType: string;
   reactionId: string;
-  setReaction: (reaction: string) => void;
 }
 
-export const Likes: React.FC<LikesProps> = ({
+export enum ReactionType {
+  Like = 'like',
+  Support = 'support',
+  Celebrate = 'celebrate',
+  Love = 'love',
+  Funny = 'funny',
+  Insightful = 'insightful',
+}
+
+const reactionIconMap: Record<string, string> = {
+  like: 'blueLike',
+  support: 'support',
+  celebrate: 'celebrate',
+  love: 'love',
+  funny: 'laugh',
+  insightful: 'insightful',
+};
+const reactionNameMap: Record<string, string> = {
+  support: 'Support',
+  celebrate: 'Celebrate',
+  love: 'Love',
+  funny: 'Funny',
+  insightful: 'Insightful',
+  Like: 'like',
+};
+
+const Likes: React.FC<LikesProps> = ({
   reaction,
   entityId,
   entityType,
   reactionId,
-  setReaction,
 }) => {
   const nameStyle = clsx(
     {
@@ -47,24 +71,6 @@ export const Likes: React.FC<LikesProps> = ({
     },
   );
 
-  const reactionIconMap: { [key: string]: any } = {
-    like: 'blueLike',
-    support: 'support',
-    celebrate: 'celebrate',
-    love: 'love',
-    funny: 'funny',
-    insightful: 'insightful',
-    Like: 'like',
-  };
-  const reactionNameMap: { [key: string]: any } = {
-    like: 'Like',
-    support: 'Support',
-    celebrate: 'Celebrate',
-    love: 'Love',
-    funny: 'Funny',
-    insightful: 'Insightful',
-    Like: 'like',
-  };
   const nameIcon = reactionIconMap[reaction];
 
   const name = reactionNameMap[reaction];
@@ -87,7 +93,7 @@ export const Likes: React.FC<LikesProps> = ({
     onSuccess: () => {},
   });
 
-  const submitReaction = (type: string) => {
+  const handleReaction = (type: string) => {
     const data = {
       entityId: entityId,
       entityType: entityType,
@@ -95,6 +101,7 @@ export const Likes: React.FC<LikesProps> = ({
     };
 
     createReactionMutation.mutate(data);
+    queryClient.invalidateQueries({ queryKey: ['get-reactions'] });
   };
 
   const handleDeleteReaction = () => {
@@ -104,41 +111,67 @@ export const Likes: React.FC<LikesProps> = ({
       entityType: entityType,
     };
     deleteReactionMutation.mutate(data);
-    setReaction('Like');
+    queryClient.invalidateQueries({ queryKey: ['get-reactions'] });
+  };
+
+  interface Idiv {
+    name: string;
+    icon: string;
+    type: string;
+  }
+
+  const ReactionDiv = ({ name, icon, type }: Idiv) => {
+    return (
+      <div className="mb-2 mt-1 space-x-4 [&_span]:hover:visible">
+        <span className="invisible rounded-[8px] bg-black text-white py-1 px-2 absolute z-1 mt-[-40px]">
+          {name}
+        </span>
+        <IconButton
+          icon={icon}
+          className="!mx-1.5 !bg-inherit hover:scale-150 !p-0"
+          onClick={() => {
+            handleReaction(type);
+          }}
+          variant={IconVariant.Primary}
+          size={SizeVariant.Large}
+        />
+      </div>
+    );
   };
 
   return (
     <>
-      <button className="flex items-center [&_div]:hover:visible">
+      <div className="flex items-center [&_div]:hover:visible">
         <div className="flex flex-row" onClick={handleDeleteReaction}>
           <IconButton
-            icon={nameIcon}
+            icon={nameIcon ? nameIcon : 'like'}
             className=" !bg-inherit  !p-0"
-            onClick={() => {}}
             variant={IconVariant.Primary}
             size={SizeVariant.Small}
           />
           <div className={`text-xs font-normal ml-1.5 ${nameStyle}`}>
-            {name}
+            {name ? name : 'Like'}
           </div>
         </div>
-        <div className=" bg-white h-8 rounded-[8px] invisible absolute z-1 mb-[50px] shadow-md ">
+        <div className=" bg-white h-8 rounded-[8px] invisible absolute z-1 mb-12 shadow-md ">
           <div className="flex flex-row items-center ">
-            <div className="mb-2 mt-1 space-x-4 [&_span]:hover:visible">
-              <span className="invisible rounded-[8px] bg-black text-white py-1 px-2 absolute z-1 mt-[-40px]">
+            {/* <div className="mb-2 mt-1 space-x-4 [&_span]:hover:visible">
+              <span className="invisible rounded-lg bg-black text-white py-1 px-2 absolute z-1 -mt-10">
                 Like
               </span>
               <IconButton
                 icon={'blueLike'}
                 className="!mx-1.5 !bg-inherit hover:scale-150 !p-0"
                 onClick={() => {
-                  submitReaction('like');
-                  setReaction('like');
+                  handleReaction(ReactionType.Like);
                 }}
                 variant={IconVariant.Primary}
                 size={SizeVariant.Large}
               />
-            </div>
+            </div> */}
+
+            <ReactionDiv name="Like" icon="blueLike" type={ReactionType.Like} />
+
             <div className="mb-2 mt-1 space-x-4 [&_span]:hover:visible">
               <span className="invisible rounded-[8px] bg-black text-white py-1 px-2 absolute z-1 mt-[-40px]">
                 Love
@@ -147,8 +180,7 @@ export const Likes: React.FC<LikesProps> = ({
                 icon={'love'}
                 className="!mx-1.5 !bg-inherit hover:scale-150 !p-0"
                 onClick={() => {
-                  submitReaction('love');
-                  setReaction('like');
+                  handleReaction(ReactionType.Love);
                 }}
                 variant={IconVariant.Primary}
                 size={SizeVariant.Large}
@@ -162,8 +194,7 @@ export const Likes: React.FC<LikesProps> = ({
                 icon={'celebrate'}
                 className="!mx-1.5 !bg-inherit hover:scale-150 !p-0"
                 onClick={() => {
-                  submitReaction('celebrate');
-                  setReaction('celebrate');
+                  handleReaction(ReactionType.Celebrate);
                 }}
                 variant={IconVariant.Primary}
                 size={SizeVariant.Large}
@@ -177,8 +208,7 @@ export const Likes: React.FC<LikesProps> = ({
                 icon={'support'}
                 className="!mx-1.5 !bg-inherit hover:scale-150 !p-0"
                 onClick={() => {
-                  submitReaction('support');
-                  setReaction('support');
+                  handleReaction(ReactionType.Support);
                 }}
                 variant={IconVariant.Primary}
                 size={SizeVariant.Large}
@@ -192,8 +222,7 @@ export const Likes: React.FC<LikesProps> = ({
                 icon={'laugh'}
                 className="!mx-1.5 !bg-inherit hover:scale-150 !p-0"
                 onClick={() => {
-                  submitReaction('funny');
-                  setReaction('funny');
+                  handleReaction(ReactionType.Funny);
                 }}
                 variant={IconVariant.Primary}
                 size={SizeVariant.Large}
@@ -207,8 +236,7 @@ export const Likes: React.FC<LikesProps> = ({
                 icon={'insightful'}
                 className="!mx-1.5 !bg-inherit hover:scale-150 !p-0"
                 onClick={() => {
-                  submitReaction('insightful');
-                  setReaction('insightful');
+                  handleReaction(ReactionType.Insightful);
                 }}
                 variant={IconVariant.Primary}
                 size={SizeVariant.Large}
@@ -216,7 +244,9 @@ export const Likes: React.FC<LikesProps> = ({
             </div>
           </div>
         </div>
-      </button>
+      </div>
     </>
   );
 };
+
+export default Likes;

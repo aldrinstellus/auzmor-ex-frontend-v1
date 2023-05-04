@@ -5,7 +5,7 @@ import { CommentForm } from './CommentForm';
 import Reply from 'images/reply.png';
 import Icon from 'images/icon.png';
 import Dots from 'images/dots.png';
-import { Likes } from 'components/Reactions';
+import Likes from 'components/Reactions';
 
 interface CommentProps {
   replyInputBox: boolean;
@@ -40,7 +40,7 @@ export const Comment: React.FC<CommentProps> = ({
   const replyId = parentId ? parentId : comment.id;
   const createdAt = new Date(comment.createdAt).toLocaleDateString();
 
-  const [reaction, setReaction] = useState<string>('Like');
+  const [reaction, setReaction] = useState<string>('');
 
   const [reactionId, setReactionId] = useState('');
 
@@ -79,7 +79,6 @@ export const Comment: React.FC<CommentProps> = ({
         <div className="flex justify-between pt-4 pb-6">
           <div className="flex">
             <Likes
-              setReaction={setReaction}
               reaction={reaction}
               entityId=""
               entityType="comment"

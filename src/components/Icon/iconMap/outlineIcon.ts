@@ -28,6 +28,8 @@ import SvgLaughOutline from '../components/Laugh/LaughOutline';
 import SvgLikeOutline from '../components/Like/LikeOutline';
 import SvgLoveOutline from '../components/Love/LoveOutline';
 import SvgSupportOutline from '../components/Support/SupportOutline';
+import SvgTrashOutline from '../components/Trash/TrashOutline';
+import SvgCrossCircleOutline from '../components/CrossCircle/CrossCircleOutline';
 
 export const outlineIcon = {
   arrowLeftOutline: SvgArrowLeftOutline,
@@ -60,4 +62,6 @@ export const outlineIcon = {
   likeOutline: SvgLikeOutline,
   laughOutline: SvgLaughOutline,
   supportOutline: SvgSupportOutline,
+  trashOutline: SvgTrashOutline,
+  crossCircleOutline: SvgCrossCircleOutline,
 };

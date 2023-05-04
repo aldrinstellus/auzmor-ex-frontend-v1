@@ -43,6 +43,8 @@ import Laugh from '../components/Laugh';
 import Like from '../components/Like';
 import Love from '../components/Love';
 import Support from '../components/Support';
+import Trash from '../components/Trash';
+import CrossCircle from '../components/CrossCircle';
 
 export const icon = {
   admin: AdminIcon,
@@ -90,4 +92,6 @@ export const icon = {
   deleteIcon: DeleteIcon,
   editIcon: MenuEditIcon,
   notificationIcon: MenuNotificationIcon,
+  trash: Trash,
+  crossCircle: CrossCircle,
 };

@@ -1,14 +1,12 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Card from 'components/Card';
 import Comments from 'images/comments.svg';
 import Actor from 'components/Actor';
 import { VIEW_POST } from 'components/Actor/constant';
-import Commentspage from 'components/Comments/index';
-import { Likes } from 'components/Reactions';
+import CommentCard from 'components/Comments/index';
+import Likes from 'components/Reactions';
 import { RenderQuillDelta } from 'components/RenderQuillDelta';
 import { DeltaStatic } from 'quill';
-import { getReactions } from 'queries/reaction';
-import { useMutation } from '@tanstack/react-query';
 import FeedPostMenu from './components/FeedPostMenu';
 
 type PostProps = {
@@ -18,36 +16,9 @@ type PostProps = {
 
 const Post: React.FC<PostProps> = ({ data, id }) => {
   const [showComments, setShowComments] = useState(false);
-  const [reaction, setReaction] = useState<string>('Like');
 
-  const [comments, setComments] = useState({});
-
+  const [reaction, setReaction] = useState<string>('');
   const [reactionId, setReactionId] = useState('');
-
-  const getReactionsMutation = useMutation({
-    mutationKey: ['get-reactions-mutation'],
-    mutationFn: getReactions,
-    onError: (error: any) => {
-      console.log(error);
-    },
-    onSuccess: (data: any, variables, context) => {
-      setReaction(data.data.length > 0 ? data.data[0].reaction : 'Like');
-      setReactionId(data.data.length > 0 ? data.data[0].id : '');
-    },
-  });
-
-  const setupReaction = async () => {
-    const data = {
-      entityId: id,
-      entityType: 'post',
-    };
-
-    getReactionsMutation.mutate(data);
-  };
-
-  useEffect(() => {
-    setupReaction();
-  }, []);
 
   const content: DeltaStatic = data?.content?.editor;
 
@@ -76,7 +47,6 @@ const Post: React.FC<PostProps> = ({ data, id }) => {
               entityId={id}
               entityType="post"
               reactionId={reactionId}
-              setReaction={setReaction}
             />
 
             <button className="flex items-center ml-7">
@@ -97,7 +67,7 @@ const Post: React.FC<PostProps> = ({ data, id }) => {
           </div>
           <div></div>
         </div>
-        {showComments && <Commentspage entityId={id} commentsData={comments} />}
+        {showComments && <CommentCard entityId={id} />}
       </div>
     </Card>
   );

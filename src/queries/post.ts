@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 
 interface IPost {
@@ -34,8 +35,8 @@ export const createPost = async (payload: IPost) => {
   return data;
 };
 
-export const getPosts = async () => {
-  const data = await apiService.get('/posts');
+export const getPosts = async (params: any) => {
+  const data = await apiService.get('/posts', params);
   return data?.data?.result;
 };
 
