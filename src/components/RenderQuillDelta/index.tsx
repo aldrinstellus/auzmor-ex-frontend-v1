@@ -26,22 +26,22 @@ const media = [
   {
     type: 'image',
     url: 'https://images.unsplash.com/photo-1683130565572-61af42023da6?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=640',
-    className: 'w-64 h-64',
+    className: 'object-cover w-48 h-48',
   },
   {
     type: 'image',
     url: 'https://media.tenor.com/o656qFKDzeUAAAAC/rick-astley-never-gonna-give-you-up.gif',
-    className: 'w-64 h-64',
+    className: 'object-cover w-48 h-48',
   },
   {
     type: 'image',
     url: 'https://media.tenor.com/O2RBK9klEMYAAAAC/homer-simpson-homer.gif',
-    className: 'w-64 h-64',
+    className: 'object-cover w-48 h-48',
   },
   {
     type: 'image',
     url: 'https://img.freepik.com/free-vector/set-ten-clover-leaves-flat-style_1017-24189.jpg',
-    className: 'w-64 h-64',
+    className: 'object-cover w-48 h-48',
   },
 ] as IMedia[];
 
