@@ -1,4 +1,5 @@
 import apiService from 'utils/apiService';
+import { useQuery } from '@tanstack/react-query';
 import { DeltaStatic } from 'quill';
 
 interface IPost {
@@ -38,6 +39,19 @@ export const createPost = async (payload: IPost) => {
 export const getPosts = async () => {
   const data = await apiService.get('/posts');
   return data?.data?.result;
+};
+
+export const getPreviewLink = async (previewUrl: string) => {
+  const { data } = await apiService.get(`/links/unfurl?url=${previewUrl}`);
+  return data;
+};
+
+export const usePreviewLink = (previewUrl: string) => {
+  return useQuery({
+    queryKey: ['preview-link', previewUrl],
+    queryFn: () => getPreviewLink(previewUrl),
+    staleTime: Infinity,
+  });
 };
 
 export const editPost = async (id: string, payload: IPost) => {
