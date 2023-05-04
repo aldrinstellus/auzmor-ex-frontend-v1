@@ -30,20 +30,21 @@ export enum ReactionType {
 }
 
 const reactionIconMap: Record<string, string> = {
-  like: 'blueLike',
-  support: 'support',
-  celebrate: 'celebrate',
-  love: 'love',
-  funny: 'laugh',
-  insightful: 'insightful',
+  [ReactionType.Like]: 'blueLike',
+  [ReactionType.Support]: 'support',
+  [ReactionType.Celebrate]: 'celebrate',
+  [ReactionType.Love]: 'love',
+  [ReactionType.Funny]: 'laugh',
+  [ReactionType.Insightful]: 'insightful',
 };
+
 const reactionNameMap: Record<string, string> = {
-  support: 'Support',
-  celebrate: 'Celebrate',
-  love: 'Love',
-  funny: 'Funny',
-  insightful: 'Insightful',
-  Like: 'like',
+  [ReactionType.Like]: 'Like',
+  [ReactionType.Support]: 'Support',
+  [ReactionType.Celebrate]: 'Celebrate',
+  [ReactionType.Love]: 'Love',
+  [ReactionType.Funny]: 'Laugh',
+  [ReactionType.Insightful]: 'Insightful',
 };
 
 const Likes: React.FC<LikesProps> = ({
