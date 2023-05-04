@@ -1,4 +1,4 @@
-import React, { LegacyRef, memo, useContext, useState } from 'react';
+import React, { LegacyRef, ReactNode, memo, useContext, useState } from 'react';
 import ReactQuill, { Quill, UnprivilegedEditor } from 'react-quill';
 import { DeltaStatic, Sources } from 'quill';
 import 'react-quill/dist/quill.snow.css';
@@ -17,7 +17,6 @@ import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import moment from 'moment';
-import PreviewLink from 'components/PreviewLink';
 
 export interface IEditorContentChanged {
   text: string;
@@ -30,6 +29,12 @@ export interface IQuillEditorProps {
   placeholder: string;
   charLimit?: number;
   defaultValue?: ReactQuill.Value;
+  toolbar?: (isCharLimit: boolean) => ReactNode;
+  previewLink?: (
+    previewUrl: string,
+    setPreviewUrl: (previewUrl: string) => void,
+    setIsPreviewRemove: (isPreviewRemove: boolean) => void,
+  ) => ReactNode;
   onChangeEditor?: (content: IEditorContentChanged) => void;
 }
 
@@ -40,14 +45,18 @@ const RichTextEditor = React.forwardRef(
       placeholder,
       charLimit = 3000,
       defaultValue,
+      toolbar,
+      previewLink,
       onChangeEditor,
     }: IQuillEditorProps,
     ref,
   ) => {
     const { announcement, setActiveFlow, setEditorValue } =
       useContext(CreatePostContext);
+
     const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
     const [previewUrl, setPreviewUrl] = useState<string>('');
+    const [isPreviewRemove, setIsPreviewRemove] = useState<boolean>(false);
 
     const formats = ['bold', 'italic', 'underline', 'mention', 'link', 'emoji'];
 
@@ -99,6 +108,7 @@ const RichTextEditor = React.forwardRef(
         setPreviewUrl(matches[0]);
       } else {
         setPreviewUrl('');
+        setIsPreviewRemove(false);
       }
     };
 
@@ -167,8 +177,10 @@ const RichTextEditor = React.forwardRef(
             </div>
           </div>
         )}
-        <PreviewLink previewUrl={previewUrl} setPreviewUrl={setPreviewUrl} />
-        <Toolbar isCharLimit={isCharLimit} />
+        {!isPreviewRemove &&
+          previewLink &&
+          previewLink(previewUrl, setPreviewUrl, setIsPreviewRemove)}
+        {toolbar && toolbar(isCharLimit)}
       </>
     );
   },
