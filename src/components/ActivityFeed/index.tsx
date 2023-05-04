@@ -29,7 +29,7 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
           itemCount={activityFeed.length}
           itemRenderer={(index) => (
             <div key={`post-${index}`}>
-              <Post data={activityFeed[index]?.content?.editor} />
+              <Post data={activityFeed[index]} />
             </div>
           )}
           loadMore={loadMore}

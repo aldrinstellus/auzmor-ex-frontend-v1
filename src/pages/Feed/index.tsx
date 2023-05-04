@@ -7,6 +7,7 @@ import { twConfig } from 'utils/misc';
 import { useInfiniteFeed } from 'queries/post';
 import Divider, { Variant } from 'components/Divider';
 import PostBuilder from 'components/PostBuilder';
+import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
 
 interface IFeedProps {}
 
@@ -124,14 +125,15 @@ const Feed: React.FC<IFeedProps> = () => {
   }) as IFeed[];
 
   return (
-    <>
+    <div className="flex flex-col">
+      <CreatePostCard setShowModal={setShowModal} />
       <ActivityFeed
         activityFeed={feed}
         loadMore={fetchNextPage}
         setShowModal={setShowModal}
       />
       <PostBuilder showModal={showModal} setShowModal={setShowModal} />
-    </>
+    </div>
   );
 };
 
