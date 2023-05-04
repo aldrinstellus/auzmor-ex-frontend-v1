@@ -4,8 +4,7 @@ import ActivityFeed from 'components/ActivityFeed';
 import Icon from 'components/Icon';
 import { IMenuItem } from 'components/PopupMenu';
 import { twConfig } from 'utils/misc';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { fetchFeed } from 'queries/post';
+import { useInfiniteFeed } from 'queries/post';
 import Divider, { Variant } from 'components/Divider';
 import PostBuilder from 'components/PostBuilder';
 
@@ -26,7 +25,7 @@ export interface IPostTypeIcon {
 }
 export interface IFeed {
   content: IContent;
-  uuid: string;
+  id: string;
   createdAt: string;
   updatedAt: string;
   type: string;
@@ -112,29 +111,14 @@ export const postTypeMapIcons: IPostTypeIcon[] = [
 const Feed: React.FC<IFeedProps> = () => {
   const [showModal, setShowModal] = useState(true);
 
-  const { isLoading, isError, error, data, fetchNextPage } = useInfiniteQuery(
-    ['feed'],
-    fetchFeed,
-    {
-      getNextPageParam: (lastPage: any) => {
-        return lastPage?.data?.result?.paging?.next;
-      },
-      getPreviousPageParam: (currentPage: any) => {
-        return currentPage?.data?.result?.paging?.next;
-      },
-      onSuccess: (data) => console.log(data),
-    },
-  );
+  const { isLoading, isError, error, data, fetchNextPage } = useInfiniteFeed();
 
   const feed = data?.pages.flatMap((page) => {
     return page.data?.result?.data.map((post: any) => {
       try {
-        return {
-          ...post,
-          uuid: post.id,
-        };
+        return post;
       } catch (e) {
-        console.log(post);
+        console.log('Error', { post });
       }
     });
   }) as IFeed[];

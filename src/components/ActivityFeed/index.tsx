@@ -3,10 +3,10 @@ import Post from 'components/Post';
 import { IFeed } from 'pages/Feed';
 import React from 'react';
 import SortByDropdown from './components/SortByDropdown';
-import ClockIcon from 'components/Icon/components/Clock';
 import FeedFilter from './components/FeedFilters';
 import { InfiniteScroll } from 'components/InfiniteScroll';
 import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
+import Icon from 'components/Icon';
 
 type ActivityFeedProps = {
   activityFeed: IFeed[];
@@ -33,12 +33,12 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
             </div>
           )}
           loadMore={loadMore}
-          prependEle={
+          prependElement={
             <>
               <CreatePostCard setShowModal={setShowModal} />
               <div className="flex flex-row items-center gap-x-2">
                 <FeedFilter name="Filters" />
-                <ClockIcon />
+                <Icon name="clock" size={16} />
                 <Divider />
                 <SortByDropdown />
               </div>

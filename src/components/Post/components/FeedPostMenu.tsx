@@ -18,7 +18,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
   const [showModal, setShowModal] = useState(false);
 
   const deletePostMutation = useMutation({
-    mutationKey: ['deletePostMutation', data?.uuid],
+    mutationKey: ['deletePostMutation', data?.id],
     mutationFn: deletePost,
     onError: (error) => console.log(error),
     onSuccess: (data, variables, context) => {
@@ -89,7 +89,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
           label: 'Delete',
           className: 'bg-red-500 text-white ',
           onSubmit: () => {
-            deletePostMutation.mutate(data?.uuid);
+            deletePostMutation.mutate(data?.id);
           },
         }}
         discard={{
