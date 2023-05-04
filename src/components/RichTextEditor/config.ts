@@ -7,6 +7,8 @@ interface IUserMentions {
   name: string;
 }
 
+export const previewLinkRegex = /(http|https):\/\/[^\s]+/gi;
+
 const mentionEntityFetch = (mentionChar: string, searchTerm: string) => {
   let list;
   if (mentionChar === '@') {

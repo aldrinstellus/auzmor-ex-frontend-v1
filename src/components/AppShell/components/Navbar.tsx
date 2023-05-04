@@ -47,7 +47,7 @@ const Navbar = () => {
           <Logo />
         </Link>
         <div className="mx-8 w-[40%]">
-          <div className="w-full border px-4 border-solid py-2 rounded-full flex items-center justify-between">
+          <div className="w-full border px-4 border-solid py-2 rounded-22xl flex items-center justify-between">
             <span className="text-gray-300 text-sm">
               Search name, channel, page, document etc.,
             </span>

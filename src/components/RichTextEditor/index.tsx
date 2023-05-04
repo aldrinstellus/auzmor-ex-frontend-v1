@@ -12,11 +12,12 @@ import { LinkBlot } from './blots/link';
 import AutoLinks from './autoLinks';
 import EmojiBlot from './blots/emoji';
 import EmojiToolbar from './emoji';
-import { mention } from './config';
+import { mention, previewLinkRegex } from './config';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import moment from 'moment';
+import PreviewLink from 'components/PreviewLink';
 
 export interface IEditorContentChanged {
   text: string;
@@ -46,13 +47,14 @@ const RichTextEditor = React.forwardRef(
     const { announcement, setActiveFlow, setEditorValue } =
       useContext(CreatePostContext);
     const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
+    const [previewUrl, setPreviewUrl] = useState<string>('');
 
     const formats = ['bold', 'italic', 'underline', 'mention', 'link', 'emoji'];
 
     const modules = {
-      // toolbar: {
-      //   container: '#toolbar',
-      // },
+      toolbar: {
+        container: '#toolbar',
+      },
       mention: mention,
       autoLinks: true,
       'emoji-toolbar': true,
@@ -91,6 +93,12 @@ const RichTextEditor = React.forwardRef(
           html: editor.getHTML(),
           json: editor.getContents(),
         });
+      }
+      const matches = editor.getText().match(previewLinkRegex);
+      if (matches) {
+        setPreviewUrl(matches[0]);
+      } else {
+        setPreviewUrl('');
       }
     };
 
@@ -159,7 +167,7 @@ const RichTextEditor = React.forwardRef(
             </div>
           </div>
         )}
-
+        <PreviewLink previewUrl={previewUrl} setPreviewUrl={setPreviewUrl} />
         <Toolbar isCharLimit={isCharLimit} />
       </>
     );
