@@ -24,12 +24,7 @@ export const Comment: React.FC<CommentProps> = ({ comment, className }) => {
   });
 
   const handleDeleteReaction = () => {
-    const data = {
-      id: comment.id,
-      entityId: comment.entityId,
-      entityType: comment.entityType,
-    };
-    deleteReactionMutation.mutate(data);
+    deleteReactionMutation.mutate(comment.id);
   };
 
   return (
