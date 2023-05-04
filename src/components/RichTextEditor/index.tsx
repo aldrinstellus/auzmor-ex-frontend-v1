@@ -1,4 +1,4 @@
-import React, { LegacyRef, memo, useContext, useState } from 'react';
+import React, { LegacyRef, ReactNode, memo, useContext, useState } from 'react';
 import ReactQuill, { Quill, UnprivilegedEditor } from 'react-quill';
 import { DeltaStatic, Sources } from 'quill';
 import 'react-quill/dist/quill.snow.css';
@@ -30,9 +30,12 @@ export interface IQuillEditorProps {
   placeholder: string;
   charLimit?: number;
   defaultValue?: ReactQuill.Value;
+  toolbar?: (isCharLimit: boolean) => ReactNode;
+  previewLink?: (
+    previewUrl: string,
+    setPreviewUrl: (previewUrl: string) => void,
+  ) => ReactNode;
   onChangeEditor?: (content: IEditorContentChanged) => void;
-  setIsCharLimit: (IsChartLimit: boolean) => void;
-  setPreviewUrl: (previewUrl: string) => void;
 }
 
 const RichTextEditor = React.forwardRef(
@@ -42,14 +45,17 @@ const RichTextEditor = React.forwardRef(
       placeholder,
       charLimit = 3000,
       defaultValue,
+      toolbar,
+      previewLink,
       onChangeEditor,
-      setIsCharLimit,
-      setPreviewUrl,
     }: IQuillEditorProps,
     ref,
   ) => {
     const { announcement, setActiveFlow, setEditorValue } =
       useContext(CreatePostContext);
+
+    const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
+    const [previewUrl, setPreviewUrl] = useState<string>('');
 
     const formats = ['bold', 'italic', 'underline', 'mention', 'link', 'emoji'];
 
@@ -169,6 +175,8 @@ const RichTextEditor = React.forwardRef(
             </div>
           </div>
         )}
+        {previewLink && previewLink(previewUrl, setPreviewUrl)}
+        {toolbar && toolbar(isCharLimit)}
       </>
     );
   },
