@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import IconButton, {
   Variant as IconVariant,
   Size as SizeVariant,
@@ -55,6 +55,15 @@ const Likes: React.FC<LikesProps> = ({
   reactionId,
   queryKey,
 }) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  const handleMouseEnter = () => {
+    setShowTooltip(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowTooltip(false);
+  };
   const nameStyle = clsx(
     {
       'text-[#173E90]': reaction === 'like',
@@ -119,13 +128,13 @@ const Likes: React.FC<LikesProps> = ({
       entityId: entityId,
       entityType: entityType,
     };
-    deleteReactionMutation.mutate(data);
+    if (nameIcon) deleteReactionMutation.mutate(data);
   };
 
   const Reactions = ({ name, icon, type }: IReaction) => {
     return (
-      <div className="mb-2 mt-1 space-x-4 [&_span]:hover:visible">
-        <span className="invisible rounded-lg bg-black text-white py-1 px-2 absolute z-1 -mt-10">
+      <div className=" space-x-4 relative [&_span]:hover:visible">
+        <span className="invisible absolute rounded-lg bg-black text-white py-1 px-2 -mt-10">
           {name}
         </span>
         <IconButton
@@ -142,7 +151,11 @@ const Likes: React.FC<LikesProps> = ({
   };
 
   return (
-    <div className="flex items-center [&_div]:hover:visible">
+    <div
+      className=" relative"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <div className="flex flex-row" onClick={handleDeleteReaction}>
         <IconButton
           icon={nameIcon ? nameIcon : 'likeIcon'}
@@ -158,27 +171,25 @@ const Likes: React.FC<LikesProps> = ({
           {name ? name : 'Like'}
         </div>
       </div>
-      <div className=" bg-white h-8 rounded-lg invisible absolute z-1 mb-12 shadow-md">
-        <div className="flex flex-row items-center  ">
-          <Reactions name="Like" icon="like" type={ReactionType.Like} />
-          <Reactions name="Love" icon="love" type={ReactionType.Love} />
-          <Reactions
-            name="Celebrate"
-            icon="celebrate"
-            type={ReactionType.Celebrate}
-          />
-          <Reactions
-            name="Support"
-            icon="support"
-            type={ReactionType.Support}
-          />
-          <Reactions name="Funny" icon="laugh" type={ReactionType.Funny} />
-          <Reactions
-            name="Insightful"
-            icon="insightful"
-            type={ReactionType.Insightful}
-          />
-        </div>
+      <div
+        className={`h-8 flex flex-row items-center bg-white rounded-lg shadow-md absolute bottom-1/2 transform -translate-y-1/2 whitespace-nowrap transition-opacity ${
+          showTooltip ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        <Reactions name="Like" icon="like" type={ReactionType.Like} />
+        <Reactions name="Love" icon="love" type={ReactionType.Love} />
+        <Reactions
+          name="Celebrate"
+          icon="celebrate"
+          type={ReactionType.Celebrate}
+        />
+        <Reactions name="Support" icon="support" type={ReactionType.Support} />
+        <Reactions name="Funny" icon="funny" type={ReactionType.Funny} />
+        <Reactions
+          name="Insightful"
+          icon="insightful"
+          type={ReactionType.Insightful}
+        />
       </div>
     </div>
   );

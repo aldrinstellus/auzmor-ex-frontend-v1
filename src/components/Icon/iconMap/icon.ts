@@ -39,6 +39,7 @@ import SlackIcon from '../components/Slack';
 import CarouselLeftIcon from '../components/CarouselLeft';
 import CarouselRightIcon from '../components/CarouselRight';
 import CarouselCloseIcon from '../components/CarouselClose';
+import FlashIcon from '../components/FlashIcon';
 import Send from '../components/Send';
 import IconLinear from '../components/IconLinear';
 import EmojiHappy from '../components/EmojiHappy';
@@ -104,6 +105,7 @@ export const icon = {
   carouselLeft: CarouselLeftIcon,
   carouselRight: CarouselRightIcon,
   carouselClose: CarouselCloseIcon,
+  flashIcon: FlashIcon,
   trash: Trash,
   crossCircle: CrossCircle,
   reply: Reply,
