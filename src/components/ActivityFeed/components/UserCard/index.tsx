@@ -7,8 +7,10 @@ export interface IUserCardProps {
   image?: string;
 }
 
-const UserCard: React.FC<IUserCardProps> = ({ image = '' }) => {
+const UserCard: React.FC<IUserCardProps> = () => {
   const { user } = useAuth();
+
+  console.log(user, 'USRE');
 
   return (
     <div>
@@ -17,9 +19,9 @@ const UserCard: React.FC<IUserCardProps> = ({ image = '' }) => {
           <div className="bg-blue-700 w-full h-20 absolute top-0 rounded-t-9xl"></div>
           <Avatar
             name={user?.name}
-            image={image}
-            className="border-4 border-white mt-8"
+            image={''}
             size={96}
+            className="border-4 border-white mt-8"
           />
           <div className="text-base font-bold mt-2">{user?.name}</div>
         </div>

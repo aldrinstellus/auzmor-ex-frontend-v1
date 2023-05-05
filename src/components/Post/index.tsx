@@ -12,6 +12,7 @@ import { RenderQuillDelta } from 'components/RenderQuillDelta';
 import { DeltaStatic } from 'quill';
 import FeedPostMenu from './components/FeedPostMenu';
 import { IPost } from 'queries/post';
+import clsx from 'clsx';
 
 type PostProps = {
   // data: Record<string, any>;
@@ -28,8 +29,10 @@ const Post: React.FC<PostProps> = ({ data, className = '' }) => {
 
   const content: DeltaStatic = data?.content?.editor;
 
+  const cardStyles = clsx({ 'mt-5': true }, { [className]: true });
+
   return (
-    <Card className={`${className} mt-5`}>
+    <Card className={cardStyles}>
       <div className="flex justify-between items-center">
         <Actor
           visibility="Everyone"

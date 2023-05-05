@@ -92,11 +92,7 @@ const Avatar: React.FC<AvatarProps> = ({
   );
 
   return (
-    <div
-      className={`${className} ${containerStyles}`}
-      style={divStyle}
-      onClick={onClick}
-    >
+    <div className={containerStyles} style={divStyle} onClick={onClick}>
       {!!image ? (
         <img className={imgStyles} style={divStyle} src={image} alt={name} />
       ) : (
