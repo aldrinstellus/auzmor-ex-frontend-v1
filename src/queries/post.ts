@@ -57,6 +57,8 @@ interface IDeletePost {
   id: string;
 }
 
+interface IAnnounce {}
+
 export const createPost = async (payload: IPost) => {
   const data = await apiService.post('/posts', payload);
   return data;
@@ -88,6 +90,19 @@ export const deletePost = async (id: string) => {
   const data = await apiService.delete(`/posts/${id}`);
   return data;
 };
+
+export const fetchAnnouncement = async (postType: string, limit: number) => {
+  const data = await apiService.get(
+    `/posts?postType=${postType}&limit=${limit}`,
+  );
+  return data;
+};
+
+export const useAnnouncements = () =>
+  useQuery({
+    queryKey: ['announcements-widget'],
+    queryFn: () => fetchAnnouncement('ANNOUNCEMENT', 1),
+  });
 
 export const announcementRead = async (payload: IReaction) => {
   const data = await apiService.post('/reactions', payload);

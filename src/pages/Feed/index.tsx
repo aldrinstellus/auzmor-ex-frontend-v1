@@ -121,7 +121,6 @@ const Feed: React.FC<IFeedProps> = () => {
     <div className="flex space-x-12">
       <div className="">
         <UserCard />
-        {/* <UserCard id={'1'} status={''} fullName={'ANISH '} /> */}
       </div>
       <div className="flex flex-col">
         <ActivityFeed
