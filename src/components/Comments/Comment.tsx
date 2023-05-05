@@ -114,29 +114,26 @@ export const Comment: React.FC<CommentProps> = ({ comment, className }) => {
         </div>
 
         <div className="flex flex-row justify-between my-3">
-          <div className={`flex flex-row ${keys > 1 ? 'relative' : ''}`}>
-            {keys > 0 &&
-              Object.keys(reactionCount)
-                .slice(0, 3)
-                .map((key, i) => (
-                  <IconButton
-                    icon={key}
-                    key={key}
-                    size={SizeVariant.Small}
-                    className={`!p-1 ${
-                      keys > 1 ? 'absolute' : 'mr-2'
-                    } rounded-17xl ml-${3 * i} z-${i * 5} ${iconsStyle(
-                      key,
-                    )} hover:${iconsStyle(key)}`}
-                    variant={IconVariant.Primary}
-                  />
-                ))}
+          <div className={`flex flex-row`}>
+            {keys > 0 && (
+              <div className="mr-1">
+                {Object.keys(reactionCount)
+                  .slice(0, 3)
+                  .map((key, i) => (
+                    <IconButton
+                      icon={key}
+                      size={SizeVariant.Small}
+                      key={key}
+                      className={`!p-1 rounded-17xl  ${iconsStyle(
+                        key,
+                      )} hover:${iconsStyle(key)} `}
+                      variant={IconVariant.Primary}
+                    />
+                  ))}
+              </div>
+            )}
 
-            <div
-              className={`flex text-sm font-normal text-neutral-500 mt-1 
-               ${keys > 1 ? 'ml-14' : ''} 
-               `}
-            >
+            <div className={`flex text-sm font-normal text-neutral-500 mt-1  `}>
               {totalCount} reacted
             </div>
           </div>
