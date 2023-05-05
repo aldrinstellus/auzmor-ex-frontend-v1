@@ -6,18 +6,32 @@ import IconPreview from './components/IconPreview';
 export type PreviewLinkProps = {
   previewUrl: string;
   setPreviewUrl: (previewUrl: string) => void;
+  setIsPreviewRemove: (isPreviewRemove: boolean) => void;
 };
 
 const PreviewLink: React.FC<PreviewLinkProps> = ({
   previewUrl,
   setPreviewUrl,
+  setIsPreviewRemove,
 }) => {
   const { data, isLoading } = usePreviewLink(previewUrl);
   const preview = useMemo(() => {
-    if (data?.open_graph?.images && data?.open_graph?.images.length > 0) {
-      return <ImagePreview metaData={data} setPreviewUrl={setPreviewUrl} />;
+    if (data?.image) {
+      return (
+        <ImagePreview
+          metaData={data}
+          setPreviewUrl={setPreviewUrl}
+          setIsPreviewRemove={setIsPreviewRemove}
+        />
+      );
     } else if (data?.favicon) {
-      return <IconPreview metaData={data} setPreviewUrl={setPreviewUrl} />;
+      return (
+        <IconPreview
+          metaData={data}
+          setPreviewUrl={setPreviewUrl}
+          setIsPreviewRemove={setIsPreviewRemove}
+        />
+      );
     } else if (isLoading) {
       return (
         <div className="flex justify-center items-center mb-14">
@@ -31,7 +45,7 @@ const PreviewLink: React.FC<PreviewLinkProps> = ({
     }
   }, [data, isLoading]);
 
-  return <div>{previewUrl.length > 0 ? <div>{preview}</div> : null}</div>;
+  return <div>{previewUrl ? <div>{preview}</div> : null}</div>;
 };
 
 export default PreviewLink;

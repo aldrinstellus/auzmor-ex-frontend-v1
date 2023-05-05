@@ -6,9 +6,13 @@ import IconButton, {
 
 type ClosePreviewProps = {
   setPreviewUrl: (previewUrl: string) => void;
+  setIsPreviewRemove: (isPreviewRemove: boolean) => void;
 };
 
-const ClosePreview: React.FC<ClosePreviewProps> = ({ setPreviewUrl }) => {
+const ClosePreview: React.FC<ClosePreviewProps> = ({
+  setPreviewUrl,
+  setIsPreviewRemove,
+}) => {
   return (
     <IconButton
       icon="closeOutline"
@@ -17,6 +21,8 @@ const ClosePreview: React.FC<ClosePreviewProps> = ({ setPreviewUrl }) => {
       size={Size.Small}
       onClick={() => {
         setPreviewUrl('');
+        setIsPreviewRemove(true);
+        // when user click on this will say 'false' to preview show
       }}
     />
   );

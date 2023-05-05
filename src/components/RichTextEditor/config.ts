@@ -1,62 +1,64 @@
-import { createMentionsList } from './mentions/utils';
-interface IUserMentions {
-  avatar?: string;
-  title?: string;
+import apiService from 'utils/apiService';
+import { createMentionsList, createHashtagsList } from './mentions/utils';
+
+interface IOrg {
   id: string;
-  value: string;
   name: string;
+}
+interface IFlags {
+  isDeactivated: string;
+  isReported: string;
+}
+interface IUserMentions {
+  id: string;
+  charDenotation: string;
+  fullName: string;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  primaryEmail: string;
+  org: IOrg;
+  workEmail: string;
+  role: string;
+  flags: IFlags;
+  createdAt: string;
+  status: string;
+}
+
+interface IHashtags {
+  id: string;
+  name: string;
+  charDenotation: string;
+  orgId: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export const previewLinkRegex = /(http|https):\/\/[^\s]+/gi;
 
-const mentionEntityFetch = (mentionChar: string, searchTerm: string) => {
+const mentionEntityFetch = async (character: string, searchTerm: string) => {
   let list;
-  if (mentionChar === '@') {
-    list = [
-      {
-        id: 1,
-        avatar: 'https://i.redd.it/8xy61k0ovfy51.png',
-        value: 'Umbrella Academy',
-        name: 'Umbrella Academy',
-        title: 'Star',
+  let hashtagsData;
+  const { data: mentions } = await apiService.get('/users', {
+    params: { q: searchTerm },
+  });
+  if (searchTerm) {
+    const { data: hashtags } = await apiService.get('/hashtags', {
+      params: {
+        q: searchTerm,
       },
-      {
-        id: 2,
-        avatar:
-          'https://cdn.vox-cdn.com/thumbor/LcWgMN2KXuIOiPN6CajkD-CWS24=/0x0:1280x960/1400x1400/filters:focal(0x0:1280x960):format(jpeg)/cdn.vox-cdn.com/uploads/chorus_image/image/44251740/peaky_s1_009_h.0.0.jpg',
-        value: 'Peaky Blinder',
-        name: 'Peaky Blinder',
-        title: 'Drama',
-      },
-      {
-        id: 3,
-        avatar:
-          'https://radarcirebon.id/wp-content/uploads/2023/02/baca-komik-lookism.png',
-        value: 'Lookism',
-        name: 'Lookism',
-        title: 'Anime',
-      },
-    ];
-  } else {
-    list = [
-      {
-        id: 1,
-        value: 'Office',
-        name: 'Office',
-      },
-      {
-        id: 2,
-        value: 'c2c',
-        name: 'c2c',
-      },
-      {
-        id: 3,
-        value: 'sharktank',
-        name: 'sharktank',
-      },
-    ];
+    });
+    hashtagsData = hashtags;
   }
-  return createMentionsList(list);
+  if (character === '@') {
+    list = mentions?.result?.data;
+    return createMentionsList(list, character);
+  } else if (character === '#') {
+    list = hashtagsData?.result;
+    return createHashtagsList(list, character);
+  } else {
+    return null;
+  }
 };
 
 export const mention = {
@@ -70,30 +72,35 @@ export const mention = {
     ) => void,
     mentionChar: string,
   ) => {
-    let values = [];
-    const mentionList = mentionEntityFetch(mentionChar, searchTerm);
-    values = mentionList;
-    if (searchTerm.length === 0) {
-      renderItem(values, searchTerm);
-    } else {
-      const matches = [];
-      for (let i = 0; i < values.length; i++)
-        if (~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase()))
-          matches.push(values[i]);
-      renderItem(matches, searchTerm);
-    }
+    mentionEntityFetch(mentionChar, searchTerm).then((listItem: any) => {
+      renderItem(listItem, searchTerm);
+    });
   },
   dataAttributes: ['id'],
   showDenotationChar: false,
   onOpen: () => {}, // Callback when mention dropdown is open.
   onclose: () => {}, // Callback when mention dropdown is closed.
   renderLoading: () => {},
-  renderItem: (item: IUserMentions, searchItem: any) => {
-    return `<div>
-              <div style="display:flex; padding:5px">
-                <img style="width:40px; height:40px; border-radius:50px" src="https://radarcirebon.id/wp-content/uploads/2023/02/baca-komik-lookism.png" alt="${item.id}"/>
-                <div style="margin-left:10px">${item.value}<div>
-              </div>
-            </div>`;
+  renderItem: (item: any, searchItem: any) => {
+    if (item?.charDenotation === '@') {
+      return `<div>
+      <div style="display:flex; padding:5px">
+        <div style="background-color:#F7F8FB; font-weight:bold; border-radius:50px; padding:0px; text-align:center; width:35px; height:35px; margin-button:10px">${
+          item?.firstName?.charAt(0) + item?.lastName?.charAt(0) ||
+          item?.fullName?.charAt(0).toUpperCase()
+        }</div>
+        <div style="margin-left:10px">${item.fullName}<div>
+      </div>
+    </div>`;
+    } else if (item.charDenotation === '#') {
+      return `<div>
+      <div style="display:flex; padding:5px">
+         <div>${item?.name}</div>
+      </div>
+      <div>`;
+    } else {
+      return null;
+    }
   },
+  positioningStrategy: 'fixed',
 };

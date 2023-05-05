@@ -6,3 +6,7 @@ export const afterXUnit = (
 ) => {
   return moment().add(x, unit);
 };
+
+export const getTime = (time: string) => {
+  return new Date(time).toLocaleDateString();
+};

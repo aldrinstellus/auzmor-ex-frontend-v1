@@ -1,28 +1,52 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Modal from 'components/Modal';
 import CreatePost from 'components/PostBuilder/components/CreatePost';
 import { useMutation } from '@tanstack/react-query';
-import { createPost } from 'queries/post';
+import { IPost, createPost, updatePost } from 'queries/post';
 import CreateAnnouncement from './CreateAnnouncement';
 import {
   CreatePostFlow,
   CreatePostContext,
   IEditorValue,
 } from 'contexts/CreatePostContext';
+import { PostBuilderMode } from '..';
 
 interface ICreatePostModal {
   showModal: boolean;
   setShowModal: (flag: boolean) => void;
-  data?: any;
+  data?: IPost;
+  mode: PostBuilderMode;
+}
+
+interface IUserMention {
+  denotationChar?: string;
+  id: string;
+  index?: number;
+  value: string;
 }
 
 const CreatePostModal: React.FC<ICreatePostModal> = ({
   showModal,
   setShowModal,
-  data = '',
+  data,
+  mode,
 }) => {
-  const { activeFlow, announcement, editorValue } =
-    useContext(CreatePostContext);
+  const {
+    activeFlow,
+    announcement,
+    editorValue,
+    setAnnouncement,
+    setEditorValue,
+  } = useContext(CreatePostContext);
+
+  useEffect(() => {
+    if (data) {
+      setEditorValue(data.content.editor);
+      if (data.isAnnouncement) {
+        setAnnouncement({ label: 'Custom Date', value: data.announcement.end });
+      }
+    }
+  }, []);
 
   const createPostMutation = useMutation({
     mutationKey: ['createPostMutation'],
@@ -33,24 +57,55 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     },
   });
 
+  const updatePostMutation = useMutation({
+    mutationKey: ['updatePostMutation'],
+    mutationFn: (payload: IPost) =>
+      updatePost(payload.id || '', payload as IPost),
+  });
+
   const handleSubmitPost = (content?: IEditorValue) => {
-    createPostMutation.mutate({
-      content: {
-        text: content?.text || editorValue.text,
-        html: content?.html || editorValue.html,
-        editor: content?.json || editorValue.json,
-      },
-      type: 'UPDATE',
-      mentions: [],
-      hashtags: [],
-      audience: {
-        users: [],
-      },
-      isAnnouncement: !!announcement,
-      announcement: {
-        end: announcement?.value || '',
-      },
-    });
+    const userMentionList = content?.json?.ops
+      ?.filter((op) => op.insert.mention)
+      .map((userItem) => userItem?.insert?.mention?.id);
+
+    if (mode === PostBuilderMode.Create) {
+      createPostMutation.mutate({
+        content: {
+          text: content?.text || editorValue.text,
+          html: content?.html || editorValue.html,
+          editor: content?.json || editorValue.json,
+        },
+        type: 'UPDATE',
+        mentions: userMentionList || [],
+        hashtags: [],
+        audience: {
+          users: [],
+        },
+        isAnnouncement: !!announcement,
+        announcement: {
+          end: announcement?.value || '',
+        },
+      });
+    } else if (PostBuilderMode.Edit) {
+      updatePostMutation.mutate({
+        content: {
+          text: content?.text || editorValue.text,
+          html: content?.html || editorValue.html,
+          editor: content?.json || editorValue.json,
+        },
+        type: 'UPDATE',
+        mentions: userMentionList || [],
+        hashtags: [],
+        audience: {
+          users: [],
+        },
+        isAnnouncement: !!announcement,
+        announcement: {
+          end: announcement?.value || '',
+        },
+        id: data?.id,
+      });
+    }
   };
 
   return (

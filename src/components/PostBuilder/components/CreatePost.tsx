@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import RichTextEditor from 'components/RichTextEditor';
 import Actor from 'components/Actor';
 import { CREATE_POST } from 'components/Actor/constant';
@@ -14,11 +14,14 @@ import { CreatePostContext, IEditorValue } from 'contexts/CreatePostContext';
 import { CreatePostFlow } from 'contexts/CreatePostContext';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
+import Toolbar from 'components/RichTextEditor/toolbar';
+import PreviewLink from 'components/PreviewLink';
+import { IPost } from 'queries/post';
 
 interface ICreatePostProps {
   closeModal: () => void;
   handleSubmitPost: (content: IEditorValue) => void;
-  data?: Record<string, any>;
+  data?: IPost;
 }
 
 const CreatePost: React.FC<ICreatePostProps> = ({
@@ -55,6 +58,20 @@ const CreatePost: React.FC<ICreatePostProps> = ({
             data?.content?.editor || (editorValue.json as DeltaStatic)
           }
           ref={quillRef}
+          toolbar={(isCharLimit: boolean) => (
+            <Toolbar isCharLimit={isCharLimit} />
+          )}
+          previewLink={(
+            previewUrl: string,
+            setPreviewUrl: (previewUrl: string) => void,
+            setIsPreviewRemove: (isPreviewRemove: boolean) => void,
+          ) => (
+            <PreviewLink
+              previewUrl={previewUrl}
+              setPreviewUrl={setPreviewUrl}
+              setIsPreviewRemove={setIsPreviewRemove}
+            />
+          )}
         />
       </div>
     </div>

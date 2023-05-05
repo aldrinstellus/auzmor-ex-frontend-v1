@@ -50,24 +50,40 @@ function hasValidMentionCharIndex(mentionCharIndex, text, isolateChar) {
 }
 
 // create user mention list with the require props
-function createMentionsList(mentionsList) {
+function createMentionsList(mentionsList, character) {
+  console.log('char', character);
   const atValues = [];
   // eslint-disable-next-line array-callback-return
-  mentionsList.map((mention) => {
-    const val = mention.name;
-    atValues.push({
-      ...mention,
-      name: val,
-      value: val,
-      avatar: null, // profile image
-      title: 'Anything', // Profile Designation
+  mentionsList &&
+    mentionsList.map((mention) => {
+      const val = mention.fullName;
+      atValues.push({
+        ...mention,
+        charDenotation: character,
+        name: val,
+        value: val,
+        avatar: null, // profile image
+        title: 'Anything', // Profile Designation
+      });
     });
-  });
   return atValues;
 }
 
 // create hashtag functionality
-function createHashtagsList(hashtagsList) {}
+function createHashtagsList(hashtagsList, character) {
+  const atValues = [];
+  hashtagsList &&
+    hashtagsList.map((hashtag) => {
+      const val = hashtag.name;
+      atValues.push({
+        ...hashtag,
+        charDenotation: character,
+        name: val,
+        value: val,
+      });
+    });
+  return atValues;
+}
 
 // parsing the mention
 function parseMentionData(delta, mentionsData) {
@@ -196,6 +212,7 @@ export {
   hasValidChars,
   hasValidMentionCharIndex,
   createMentionsList,
+  createHashtagsList,
   parseMentionData,
   generatePlainText,
 };
