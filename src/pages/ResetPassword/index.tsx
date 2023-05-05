@@ -98,7 +98,7 @@ const ResetPassword = () => {
   ];
 
   const onSubmit = (formData: IForm) => {
-    console.log(formData, 'DATA');
+    // console.log(formData, 'DATA');
     resetPasswordMutation.mutate({
       password: formData.password,
       token: formData.token,

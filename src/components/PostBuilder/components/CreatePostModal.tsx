@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import Modal from 'components/Modal';
 import CreatePost from 'components/PostBuilder/components/CreatePost';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { IPost, createPost, updatePost } from 'queries/post';
 import CreateAnnouncement from './CreateAnnouncement';
 import {
@@ -38,6 +38,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     setAnnouncement,
     setEditorValue,
   } = useContext(CreatePostContext);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (data) {
@@ -52,7 +53,9 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     mutationKey: ['createPostMutation'],
     mutationFn: createPost,
     onError: (error) => console.log(error),
-    onSuccess: (data, variables, context) => {
+    onSuccess: async (data, variables, context) => {
+      await queryClient.invalidateQueries(['feed']);
+      setShowModal(false);
       console.log('data==>', data);
     },
   });
@@ -61,6 +64,10 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     mutationKey: ['updatePostMutation'],
     mutationFn: (payload: IPost) =>
       updatePost(payload.id || '', payload as IPost),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['feed']);
+      setShowModal(false);
+    },
   });
 
   const handleSubmitPost = (content?: IEditorValue) => {
@@ -108,13 +115,23 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     }
   };
 
+  const loading = createPostMutation.isLoading || updatePostMutation.isLoading;
   return (
-    <Modal open={showModal} closeModal={() => setShowModal(false)}>
+    <Modal
+      open={showModal}
+      closeModal={() => {
+        if (loading) {
+          return null;
+        }
+        return setShowModal(false);
+      }}
+    >
       {activeFlow === CreatePostFlow.CreatePost && (
         <CreatePost
           data={data}
           closeModal={() => setShowModal(false)}
           handleSubmitPost={handleSubmitPost}
+          isLoading={loading}
         />
       )}
       {activeFlow === CreatePostFlow.CreateAnnouncement && (

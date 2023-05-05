@@ -33,6 +33,7 @@ import CopyLink from '../components/CopyLinkIcon';
 import DeleteIcon from '../components/DeleteIcon';
 import MenuEditIcon from '../components/MenuEditIcon';
 import MenuNotificationIcon from '../components/MenuNotificationIcon';
+import FlashIcon from '../components/FlashIcon';
 import Send from '../components/Send';
 import IconLinear from '../components/IconLinear';
 import EmojiHappy from '../components/EmojiHappy';
@@ -92,6 +93,7 @@ export const icon = {
   deleteIcon: DeleteIcon,
   editIcon: MenuEditIcon,
   notificationIcon: MenuNotificationIcon,
+  flashIcon: FlashIcon,
   trash: Trash,
   crossCircle: CrossCircle,
   reply: Reply,
