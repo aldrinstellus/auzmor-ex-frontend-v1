@@ -51,7 +51,6 @@ export interface IReaction {
   type: string;
   reaction: string;
 }
-
 interface IDeletePost {
   id: string;
 }

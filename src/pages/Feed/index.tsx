@@ -7,6 +7,8 @@ import { twConfig } from 'utils/misc';
 import Divider, { Variant } from 'components/Divider';
 import PostBuilder from 'components/PostBuilder';
 import { IPost, useInfiniteFeed } from 'queries/post';
+import UserCard from 'components/UserWidget';
+import AnnouncementCard from 'components/AnnouncementWidget';
 
 interface IFeedProps {}
 
@@ -116,13 +118,22 @@ const Feed: React.FC<IFeedProps> = () => {
   }) as IPost[];
 
   return (
-    <div className="flex flex-col">
-      <ActivityFeed
-        activityFeed={feed}
-        loadMore={fetchNextPage}
-        setShowModal={setShowModal}
-      />
-      <PostBuilder showModal={showModal} setShowModal={setShowModal} />
+    <div className="flex space-x-12">
+      <div className="">
+        <UserCard />
+        {/* <UserCard id={'1'} status={''} fullName={'ANISH '} /> */}
+      </div>
+      <div className="flex flex-col">
+        <ActivityFeed
+          activityFeed={feed}
+          loadMore={fetchNextPage}
+          setShowModal={setShowModal}
+        />
+        <PostBuilder showModal={showModal} setShowModal={setShowModal} />
+      </div>
+      <div>
+        <AnnouncementCard />
+      </div>
     </div>
   );
 };

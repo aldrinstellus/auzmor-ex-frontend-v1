@@ -18,10 +18,11 @@ import Button, { Size, Variant } from 'components/Button';
 import { useMutation } from '@tanstack/react-query';
 
 type PostProps = {
+  className?: string;
   data: IPost;
 };
 
-const Post: React.FC<PostProps> = ({ data }) => {
+const Post: React.FC<PostProps> = ({ data, className = '' }) => {
   const [showComments, setShowComments] = useState(false);
   const [name, setName] = useState<string>('Like');
   const [likeIcon, setLikeIcon] = useState<string>(Like);
