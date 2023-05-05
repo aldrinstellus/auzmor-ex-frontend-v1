@@ -97,6 +97,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
           className: 'text-neutral-900 bg-white ',
           onCancel: closeConfirm,
         }}
+        isLoading={deletePostMutation.isLoading}
       />
     </>
   );
