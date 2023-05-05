@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { usePreviewLink } from 'queries/post';
 import ImagePreview from './components/ImagePreview';
 import IconPreview from './components/IconPreview';
+import { useDebounce } from 'hooks/useDebounce';
 
 export type PreviewLinkProps = {
   previewUrl: string;
@@ -14,7 +15,8 @@ const PreviewLink: React.FC<PreviewLinkProps> = ({
   setPreviewUrl,
   setIsPreviewRemove,
 }) => {
-  const { data, isLoading } = usePreviewLink(previewUrl);
+  const debouncePreviewUrl = useDebounce(previewUrl, 1000);
+  const { data, isLoading, isError } = usePreviewLink(debouncePreviewUrl);
   const preview = useMemo(() => {
     if (data?.image) {
       return (
@@ -41,9 +43,17 @@ const PreviewLink: React.FC<PreviewLinkProps> = ({
         </div>
       );
     } else {
-      return <div></div>;
+      return (
+        <div>
+          {isError ? (
+            <div className="text-red-600 m-5">
+              Cannot display preview. try valid link
+            </div>
+          ) : null}
+        </div>
+      );
     }
-  }, [data, isLoading]);
+  }, [data, isLoading, isError]);
 
   return <div>{previewUrl ? <div>{preview}</div> : null}</div>;
 };

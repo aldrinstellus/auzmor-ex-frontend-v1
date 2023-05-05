@@ -1,6 +1,7 @@
 import apiService from 'utils/apiService';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { DeltaStatic } from 'quill';
+import { isValidUrl } from 'utils/misc';
 
 export interface IPost {
   content: {
@@ -52,6 +53,7 @@ export const usePreviewLink = (previewUrl: string) => {
     queryKey: ['preview-link', previewUrl],
     queryFn: () => getPreviewLink(previewUrl),
     staleTime: Infinity,
+    enabled: isValidUrl(previewUrl),
   });
 };
 
