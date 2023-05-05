@@ -29,6 +29,45 @@ export interface IPost {
   };
   id?: string;
   myReactions?: IMyReactions[];
+  reactionCount?: object;
+}
+
+export interface MyObjectType {
+  [key: string]: number;
+}
+
+export interface IGetPost {
+  content: {
+    text: string;
+    html: string;
+    editor: DeltaStatic;
+  };
+  mentions: string[];
+  hashtags:
+    | [
+        {
+          name: string;
+          id: string;
+        },
+      ]
+    | [];
+  files: string[];
+  type: string;
+  audience: {
+    users: string[];
+  };
+  isAnnouncement: boolean;
+  announcement: {
+    end: string;
+  };
+
+  id: string;
+  myReactions: IMyReactions[];
+  reactionsCount: MyObjectType;
+  turnOffComments: boolean;
+  commentsCount: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface IDeletePost {

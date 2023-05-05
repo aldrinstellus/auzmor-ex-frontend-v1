@@ -6,6 +6,7 @@ import { DeltaStatic } from 'quill';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import { ICreated, IMyReactions } from 'pages/Feed';
+import { MyObjectType } from 'queries/post';
 
 interface CommentsProps {
   entityId: string;
@@ -28,6 +29,7 @@ export interface IComment {
   createdBy: ICreated;
   id: string;
   myReaction: IMyReactions;
+  reactionsCount: MyObjectType;
 }
 
 const Comments: React.FC<CommentsProps> = ({ entityId }) => {
@@ -39,6 +41,8 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
     page: 1,
   });
 
+  const commentData = data?.result?.data;
+
   return (
     <div>
       <div className="flex flex-row items-center justify-between p-0">
@@ -49,9 +53,9 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
       </div>
       <div className="border-b border-neutral-200 my-4"></div>
 
-      {data?.length > 0 && (
+      {commentData && (
         <div>
-          {data.map((rootComment: IComment, i: any) => (
+          {commentData.map((rootComment: IComment, i: any) => (
             <Comment key={rootComment.id} comment={rootComment} className="" />
           ))}
         </div>

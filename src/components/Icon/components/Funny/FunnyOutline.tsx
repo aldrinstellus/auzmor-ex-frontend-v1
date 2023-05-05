@@ -6,7 +6,7 @@ type IconProps = {
   fill?: string;
 };
 
-const SvgLaughOutline = ({
+const SvgFunnyOutline = ({
   size = 16,
   fill = '#737373',
   ...props
@@ -54,4 +54,4 @@ const SvgLaughOutline = ({
   </svg>
 );
 
-export default SvgLaughOutline;
+export default SvgFunnyOutline;

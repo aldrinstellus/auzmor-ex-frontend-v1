@@ -1,7 +1,7 @@
 import React from 'react';
 import useHover from 'hooks/useHover';
-import { default as LaughFilled } from './LaughFilled';
-import { default as LaughOutline } from './LaughOutline';
+import { default as FunnyFilled } from './FunnyFilled';
+import { default as FunnyOutline } from './FunnyOutline';
 
 type IconProps = {
   size?: number;
@@ -10,7 +10,7 @@ type IconProps = {
   onClick?: () => void;
 };
 
-const Laugh: React.FC<IconProps> = ({
+const Funny: React.FC<IconProps> = ({
   hover = true,
   onClick,
   className = '',
@@ -21,12 +21,12 @@ const Laugh: React.FC<IconProps> = ({
   return (
     <div onClick={onClick} className={className} {...eventHandlers}>
       {hover && isHovered ? (
-        <LaughFilled {...props} />
+        <FunnyFilled {...props} />
       ) : (
-        <LaughOutline {...props} />
+        <FunnyOutline {...props} />
       )}
     </div>
   );
 };
 
-export default Laugh;
+export default Funny;

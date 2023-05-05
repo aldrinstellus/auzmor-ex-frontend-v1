@@ -31,11 +31,11 @@ export enum ReactionType {
 }
 
 const reactionIconMap: Record<string, string> = {
-  [ReactionType.Like]: 'blueLike',
+  [ReactionType.Like]: 'like',
   [ReactionType.Support]: 'support',
   [ReactionType.Celebrate]: 'celebrate',
   [ReactionType.Love]: 'love',
-  [ReactionType.Funny]: 'laugh',
+  [ReactionType.Funny]: 'funny',
   [ReactionType.Insightful]: 'insightful',
 };
 
@@ -145,7 +145,7 @@ const Likes: React.FC<LikesProps> = ({
     <div className="flex items-center [&_div]:hover:visible">
       <div className="flex flex-row" onClick={handleDeleteReaction}>
         <IconButton
-          icon={nameIcon ? nameIcon : 'like'}
+          icon={nameIcon ? nameIcon : 'likeIcon'}
           className=" !bg-inherit  !p-0"
           variant={IconVariant.Primary}
           size={SizeVariant.Small}
@@ -160,7 +160,7 @@ const Likes: React.FC<LikesProps> = ({
       </div>
       <div className=" bg-white h-8 rounded-lg invisible absolute z-1 mb-12 shadow-md">
         <div className="flex flex-row items-center  ">
-          <Reactions name="Like" icon="blueLike" type={ReactionType.Like} />
+          <Reactions name="Like" icon="like" type={ReactionType.Like} />
           <Reactions name="Love" icon="love" type={ReactionType.Love} />
           <Reactions
             name="Celebrate"

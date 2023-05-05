@@ -6,7 +6,7 @@ import { IMenuItem } from 'components/PopupMenu';
 import { twConfig } from 'utils/misc';
 import Divider, { Variant } from 'components/Divider';
 import PostBuilder from 'components/PostBuilder';
-import { IPost, useInfiniteFeed } from 'queries/post';
+import { IGetPost, useInfiniteFeed } from 'queries/post';
 
 interface IFeedProps {}
 
@@ -20,6 +20,7 @@ export interface IPostTypeIcon {
 
 export interface IProfileImage {
   blurHash: string;
+  url: string;
 }
 
 export interface ICreated {
@@ -127,7 +128,7 @@ const Feed: React.FC<IFeedProps> = () => {
         console.log('Error', { post });
       }
     });
-  }) as IPost[];
+  }) as IGetPost[];
 
   return (
     <div className="flex flex-col">

@@ -6,7 +6,7 @@ type IconProps = {
   fill?: string;
 };
 
-const SvgLaughFilled = ({
+const SvgFunnyFilled = ({
   size = 16,
   fill = '#737373',
   ...props
@@ -54,4 +54,4 @@ const SvgLaughFilled = ({
   </svg>
 );
 
-export default SvgLaughFilled;
+export default SvgFunnyFilled;

@@ -36,16 +36,16 @@ import MenuNotificationIcon from '../components/MenuNotificationIcon';
 import Send from '../components/Send';
 import IconLinear from '../components/IconLinear';
 import EmojiHappy from '../components/EmojiHappy';
-import BlueLike from '../components/BlueLike';
 import Celebrate from '../components/Celebrate';
 import Insightful from '../components/Insightful';
-import Laugh from '../components/Laugh';
+import Funny from '../components/Funny';
 import Like from '../components/Like';
 import Love from '../components/Love';
 import Support from '../components/Support';
 import Trash from '../components/Trash';
 import CrossCircle from '../components/CrossCircle';
 import Reply from '../components/Reply';
+import LikeIcon from '../components/LikeIcon';
 
 export const icon = {
   admin: AdminIcon,
@@ -80,10 +80,9 @@ export const icon = {
   send: Send,
   iconLinear: IconLinear,
   emojiHappy: EmojiHappy,
-  blueLike: BlueLike,
   celebrate: Celebrate,
   insightful: Insightful,
-  laugh: Laugh,
+  funny: Funny,
   like: Like,
   love: Love,
   support: Support,
@@ -96,4 +95,5 @@ export const icon = {
   trash: Trash,
   crossCircle: CrossCircle,
   reply: Reply,
+  likeIcon: LikeIcon,
 };
