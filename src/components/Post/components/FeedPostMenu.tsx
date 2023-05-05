@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import ConfirmationBox from 'components/ConfirmationBox';
 import { IPost, deletePost } from 'queries/post';
 import PostBuilder, { PostBuilderMode } from 'components/PostBuilder';
@@ -14,12 +14,14 @@ export interface IFeedPostMenuProps {
 const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
   const [confirm, showConfirm, closeConfirm] = useModal();
   const [showModal, setShowModal] = useState(false);
+  const queryClient = useQueryClient();
 
   const deletePostMutation = useMutation({
     mutationKey: ['deletePostMutation', data.id],
     mutationFn: deletePost,
     onError: (error) => console.log(error),
-    onSuccess: (data, variables, context) => {
+    onSuccess: async (data, variables, context) => {
+      await queryClient.invalidateQueries(['feed']);
       closeConfirm();
     },
   });
@@ -95,6 +97,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
           className: 'text-neutral-900 bg-white ',
           onCancel: closeConfirm,
         }}
+        isLoading={deletePostMutation.isLoading}
       />
     </>
   );
