@@ -18,6 +18,19 @@ import SvgUserOutline from '../components/Users/UsersOutline';
 import SvgSpeakerOutline from '../components/Speaker/SpeakerOutline';
 import SvgDraftOutline from '../components/Draft/DraftOutline';
 import SvgArrowLeftOutline from '../components/ArrowLeft/ArrowLeftOutline';
+import SvgSendOutline from '../components/Send/SendOutline';
+import SvgIconLinearOutline from '../components/IconLinear/IconLinearOutline';
+import SvgEmojiHappyOutline from '../components/EmojiHappy/EmojiHappyOutline';
+import SvgCelebrateOutline from '../components/Celebrate/CelebrateOutline';
+import SvgInsightfulOutline from '../components/Insightful/InsightfulOutline';
+import SvgFunnyOutline from '../components/Funny/FunnyOutline';
+import SvgLikeOutline from '../components/Like/LikeOutline';
+import SvgLoveOutline from '../components/Love/LoveOutline';
+import SvgSupportOutline from '../components/Support/SupportOutline';
+import SvgTrashOutline from '../components/Trash/TrashOutline';
+import SvgCrossCircleOutline from '../components/CrossCircle/CrossCircleOutline';
+import SvgReplyOutline from '../components/Reply/ReplyOutline';
+import SvgLikeIconOutline from '../components/LikeIcon/LikeIconOutline';
 
 export const outlineIcon = {
   arrowLeftOutline: SvgArrowLeftOutline,
@@ -40,4 +53,17 @@ export const outlineIcon = {
   convertShapeOutline: SvgConvertShapeOutline,
   userOutline: SvgUserOutline,
   videoOutline: SvgVideoOutline,
+  sendOutline: SvgSendOutline,
+  iconLinearOutline: SvgIconLinearOutline,
+  emojiHappyOutline: SvgEmojiHappyOutline,
+  celebrateOutline: SvgCelebrateOutline,
+  insightfulOutline: SvgInsightfulOutline,
+  loveOutline: SvgLoveOutline,
+  likeOutline: SvgLikeOutline,
+  funnyOutline: SvgFunnyOutline,
+  supportOutline: SvgSupportOutline,
+  trashOutline: SvgTrashOutline,
+  crossCircleOutline: SvgCrossCircleOutline,
+  replyOutline: SvgReplyOutline,
+  likeIconOutline: SvgLikeIconOutline,
 };

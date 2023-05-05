@@ -21,6 +21,19 @@ import SvgUsersFilled from '../components/Users/UsersFilled';
 import SvgSpeakerFilled from '../components/Speaker/SpeakerFilled';
 import SvgDraftFilled from '../components/Draft/DraftFilled';
 import SvgArrowLeftFilled from '../components/ArrowLeft/ArrowLeftFilled';
+import SvgSendFilled from '../components/Send/SendFilled';
+import SvgIconLinearFilled from '../components/IconLinear/IconLinearFilled';
+import SvgEmojiHappyFilled from '../components/EmojiHappy/EmojiHappyFilled';
+import SvgCelebrateFilled from '../components/Celebrate/CelebrateFilled';
+import SvgInsightfulFilled from '../components/Insightful/InsightfulFilled';
+import SvgFunnyFilled from '../components/Funny/FunnyFilled';
+import SvgLikeFilled from '../components/Like/LikeFilled';
+import SvgLoveFilled from '../components/Love/LoveFilled';
+import SvgSupportFilled from '../components/Support/SupportFilled';
+import SvgTrashFilled from '../components/Trash/TrashFilled';
+import SvgCrossCircleFilled from '../components/CrossCircle/CrossCircleFilled';
+import SvgReplyFilled from '../components/Reply/ReplyFilled';
+import SvgLikeIconFilled from '../components/LikeIcon/LikeIconFilled';
 
 export const filledIcon = {
   arrowLeftFilled: SvgArrowLeftFilled,
@@ -46,4 +59,17 @@ export const filledIcon = {
   convertShapeFilled: SvgConvertShapeFilled,
   userFilled: SvgUsersFilled,
   videoFilled: SvgVideoFilled,
+  sendFilled: SvgSendFilled,
+  iconLinearFilled: SvgIconLinearFilled,
+  emojiHappyFilled: SvgEmojiHappyFilled,
+  celebrateFilled: SvgCelebrateFilled,
+  insightfulFilled: SvgInsightfulFilled,
+  loveFilled: SvgLoveFilled,
+  likeFilled: SvgLikeFilled,
+  funnyFilled: SvgFunnyFilled,
+  supportFilled: SvgSupportFilled,
+  trashFilled: SvgTrashFilled,
+  crossCircleFilled: SvgCrossCircleFilled,
+  replyFilled: SvgReplyFilled,
+  likeIconFilled: SvgLikeIconFilled,
 };

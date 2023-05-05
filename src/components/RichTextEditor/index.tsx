@@ -44,7 +44,7 @@ const RichTextEditor = React.forwardRef(
       placeholder,
       charLimit = 3000,
       defaultValue,
-      renderToolbar,
+      renderToolbar = () => <div id="toolbar"></div>,
       renderPreviewLink,
       onChangeEditor,
     }: IQuillEditorProps,

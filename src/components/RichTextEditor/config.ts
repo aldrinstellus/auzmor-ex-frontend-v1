@@ -102,4 +102,5 @@ export const mention = {
       return null;
     }
   },
+  positioningStrategy: 'fixed',
 };

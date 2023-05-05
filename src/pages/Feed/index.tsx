@@ -1,32 +1,50 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { DeltaStatic } from 'quill';
-import ActivityFeed from 'components/ActivityFeed';
+// import ActivityFeed from 'components/ActivityFeed';
 import Icon from 'components/Icon';
 import { IMenuItem } from 'components/PopupMenu';
 import { twConfig } from 'utils/misc';
 import Divider, { Variant } from 'components/Divider';
 import PostBuilder from 'components/PostBuilder';
-import { IPost, useInfiniteFeed } from 'queries/post';
+import { IGetPost, useInfiniteFeed } from 'queries/post';
+import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
+import Post from 'components/Post';
+import { useInView } from 'react-intersection-observer';
 
 interface IFeedProps {}
 
-interface IContent {
-  text: string;
-  html: string;
-  editor: DeltaStatic;
-}
-
 export interface IPostTypeIcon {
-  id: number;
+  id: string;
   label: string;
   icon: ReactNode;
   menuItems: IMenuItem[];
   divider?: ReactNode;
 }
 
+export interface IProfileImage {
+  blurHash: string;
+  url: string;
+}
+
+export interface ICreated {
+  designation: string;
+  fullName: string;
+  userId: string;
+  workLocation: string;
+  status: string;
+  department: string;
+  profileImage: IProfileImage;
+}
+export interface IMyReactions {
+  id: string;
+  type: string;
+  reaction: string;
+  createdBy: ICreated;
+}
+
 export const postTypeMapIcons: IPostTypeIcon[] = [
   {
-    id: 1,
+    id: '1',
     label: 'Media',
     icon: <Icon name="imageFilled" fill="#000000" size={14} />,
     menuItems: [
@@ -79,21 +97,21 @@ export const postTypeMapIcons: IPostTypeIcon[] = [
     divider: <Divider variant={Variant.Vertical} />,
   },
   {
-    id: 2,
+    id: '2',
     label: 'Shoutout',
     icon: <Icon name="magicStarFilled" fill="#000000" size={14} />,
     menuItems: [],
     divider: <Divider variant={Variant.Vertical} />,
   },
   {
-    id: 3,
+    id: '3',
     label: 'Events',
     icon: <Icon name="calendarFilledTwo" fill="#000000" size={14} />,
     menuItems: [],
     divider: <Divider variant={Variant.Vertical} />,
   },
   {
-    id: 4,
+    id: '4',
     label: 'Polls',
     icon: <Icon name="chartFilled" fill="#000000" size={14} />,
     menuItems: [],
@@ -102,8 +120,16 @@ export const postTypeMapIcons: IPostTypeIcon[] = [
 
 const Feed: React.FC<IFeedProps> = () => {
   const [showModal, setShowModal] = useState(false);
+  const { ref, inView } = useInView();
 
-  const { isLoading, isError, error, data, fetchNextPage } = useInfiniteFeed();
+  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
+    useInfiniteFeed();
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
 
   const feed = data?.pages.flatMap((page) => {
     return page.data?.result?.data.map((post: any) => {
@@ -113,15 +139,38 @@ const Feed: React.FC<IFeedProps> = () => {
         console.log('Error', { post });
       }
     });
-  }) as IPost[];
+  }) as IGetPost[];
 
   return (
-    <div className="flex flex-col">
-      <ActivityFeed
+    <div className="mb-12 flex justify-center">
+      <div className="">User card here</div>
+      <div className="max-w-2xl">
+        <div className="">
+          <CreatePostCard setShowModal={setShowModal} />
+          {isLoading ? (
+            <div>loading...</div>
+          ) : (
+            <div>
+              {feed.map((post) => (
+                <Post data={post} key={post.id} />
+              ))}
+            </div>
+          )}
+
+          <div className="h-12 w-12">
+            {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+          </div>
+          {isFetchingNextPage && <div>Loading more...</div>}
+        </div>
+      </div>
+      <div className="">Announcmeent here</div>
+      {/* <ActivityFeed
         activityFeed={feed}
         loadMore={fetchNextPage}
         setShowModal={setShowModal}
-      />
+        isLoading={isLoading}
+        isFetchingNextPage={isFetchingNextPage}
+      /> */}
       <PostBuilder showModal={showModal} setShowModal={setShowModal} />
     </div>
   );

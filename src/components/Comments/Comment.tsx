@@ -1,139 +1,173 @@
-import React, { useState } from 'react';
-import { Dispatch, SetStateAction } from 'react';
-import { DataType, activeCommentsDataType } from '.';
-import { CommentForm } from './CommentForm';
-import Like from 'images/like.svg';
-import Reply from 'images/reply.png';
-import Icon from 'images/icon.png';
-import Dots from 'images/dots.png';
-import { Likes } from 'components/Likes';
+import React from 'react';
+import Likes from 'components/Reactions';
+import IconButton, {
+  Variant as IconVariant,
+  Size as SizeVariant,
+} from 'components/IconButton';
+import Avatar from 'components/Avatar';
+import { deleteComment } from 'queries/reaction';
+import { useMutation } from '@tanstack/react-query';
+import { IComment } from '.';
+import Popover from 'components/Popover';
+import clsx from 'clsx';
+import queryClient from 'utils/queryClient';
+import { getTime } from 'utils/time';
+import { iconsStyle } from 'components/Post';
+import { MyObjectType } from 'queries/post';
+import useAuth from 'hooks/useAuth';
 
 interface CommentProps {
-  replyInputBox: boolean;
-  setReplyInputBox: Dispatch<SetStateAction<boolean>>;
-  comment: DataType;
-  replies: DataType[];
-  setActiveComment: Dispatch<SetStateAction<activeCommentsDataType | null>>;
-  activeComment: activeCommentsDataType | null;
-  addComment: (text: any, parentId: string | null | undefined) => void;
-  parentId?: string | null;
-  currentUserId: string;
+  comment: IComment;
   className?: string;
 }
 
-export const Comment: React.FC<CommentProps> = ({
-  replyInputBox,
-  setReplyInputBox,
-  comment,
-  replies,
-  setActiveComment,
-  activeComment,
-  addComment,
-  parentId = null,
-  currentUserId,
-  className,
-}) => {
-  const isReplying =
-    activeComment &&
-    activeComment.id === comment.id &&
-    activeComment.type === 'replying';
+export const Comment: React.FC<CommentProps> = ({ comment, className }) => {
+  const { user } = useAuth();
+  const createdAt = getTime(comment.updatedAt);
 
-  const replyId = parentId ? parentId : comment.id;
-  const createdAt = new Date(comment.createdAt).toLocaleDateString();
+  const deleteReactionMutation = useMutation({
+    mutationKey: ['delete-comment-mutation'],
+    mutationFn: deleteComment,
+    onError: (error: any) => {
+      console.log(error);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['comments'] });
+    },
+  });
 
-  const [name, setName] = useState<string>('Like');
-  const [likeIcon, setLikeIcon] = useState<string>(Like);
-  const [likeButtonColor, setLikeButtonColor] =
-    useState<string>('text-neutral-500');
+  const handleDeleteReaction = () => {
+    deleteReactionMutation.mutate(comment.id);
+  };
+
+  const menuItemStyle = clsx({
+    ' flex flex-row items-center py-3 px-6 gap-2.5 border-b text-sm hover:bg-primary-50 cursor-pointer ':
+      true,
+  });
+
+  const reactionCount: MyObjectType = comment?.reactionsCount || {};
+
+  const keys = Object.keys(reactionCount).length;
+  const totalCount = Object.values(reactionCount).reduce(
+    (total, count) => total + count,
+    0,
+  );
 
   return (
     <div key={comment.id}>
-      <div className={`flex flex-col mt-[16px] ${className}`}>
+      <div className={`flex flex-col mt-4 ${className}`}>
         <div className="flex justify-between p-0">
           <div className="flex flex-row">
             <div className="mr-4">
-              <img width={32} height={32} src={Icon} />
+              <Avatar
+                name={comment?.createdBy?.fullName}
+                size={32}
+                image={comment?.createdBy?.profileImage?.url}
+              />
             </div>
             <div className="flex flex-col items-start p-0 w-64">
-              <div className="text-neutral-900 font-bold text-[14px] leading-[140%]">
-                {comment.username}
+              <div className="text-neutral-900 font-bold text-sm">
+                {comment?.createdBy?.fullName}
               </div>
-              <div className="font-normal text-neutral-500 text-[12px] leading-[150%]">
-                {comment.designation}
+              <div className="font-normal text-neutral-500 text-sm ">
+                {comment?.createdBy?.designation}
               </div>
             </div>
           </div>
           <div className="flex flex-row items-start">
-            <div className="text-neutral-500 font-normal leading-[150%] text-[12px]">
+            <div className="text-neutral-500 font-normal text-xs">
               {createdAt}
             </div>
-            <div className="ml-4 mt-1">
-              <img width={16} height={16} src={Dots} />
-            </div>
+            {user?.id === comment.createdBy.userId && (
+              <div className="ml-4">
+                <Popover
+                  triggerNode={
+                    <IconButton
+                      icon={'more'}
+                      className="!p-0 !bg-inherit"
+                      variant={IconVariant.Primary}
+                    />
+                  }
+                  className="left-0"
+                >
+                  <div className="rounded-10xl shadow-xl flex flex-col w-20">
+                    <div className={menuItemStyle} onClick={() => {}}>
+                      Edit{' '}
+                    </div>
+                    <div
+                      className={menuItemStyle}
+                      onClick={() => {
+                        handleDeleteReaction();
+                      }}
+                    >
+                      Delete
+                    </div>
+                  </div>
+                </Popover>
+              </div>
+            )}
           </div>
         </div>
-        {
-          <div className=" text-neutral-900 leading-[140%] font-normal text-[14px] mt-4">
-            {comment.body}
+
+        <div className=" text-neutral-900  font-normal text-sm mt-4">
+          {comment.content.text}
+        </div>
+
+        <div className="flex flex-row justify-between my-3">
+          <div className={`flex flex-row ${keys > 1 ? 'relative' : ''}`}>
+            {keys > 0 &&
+              Object.keys(reactionCount)
+                .slice(0, 3)
+                .map((key, i) => (
+                  <IconButton
+                    icon={key}
+                    key={key}
+                    size={SizeVariant.Small}
+                    className={`!p-1 ${
+                      keys > 1 ? 'absolute' : 'mr-2'
+                    } rounded-17xl ml-${3 * i} z-${i * 5} ${iconsStyle(
+                      key,
+                    )} hover:${iconsStyle(key)}`}
+                    variant={IconVariant.Primary}
+                  />
+                ))}
+
+            <div
+              className={`flex text-sm font-normal text-neutral-500 mt-1 
+               ${keys > 1 ? 'ml-14' : ''} 
+               `}
+            >
+              {totalCount} reacted
+            </div>
           </div>
-        }
+
+          <div className="flex flex-row text-sm font-normal text-neutral-500 space-x-7 items-center">
+            <div>0 replies</div>
+          </div>
+        </div>
 
         <div className="flex justify-between pt-4 pb-6">
           <div className="flex">
             <Likes
-              name={name}
-              setName={setName}
-              setLikeIcon={setLikeIcon}
-              likeIcon={likeIcon}
-              setLikeButtonColor={setLikeButtonColor}
-              likeButtonColor={likeButtonColor}
+              reaction={comment?.myReaction?.reaction || ''}
+              entityId={comment.id}
+              entityType="comment"
+              reactionId={comment?.myReaction?.id || ''}
+              queryKey="comments"
             />
-            <button
-              className="flex items-center ml-7"
-              onClick={() => {
-                if (replyInputBox) {
-                  setReplyInputBox(false);
-                } else {
-                  setReplyInputBox(true);
-                }
-
-                setActiveComment({ id: comment.id, type: 'replying' });
-              }}
-            >
-              <img src={Reply} height={13.33} width={13.33} />
+            <div className="flex items-center ml-7" onClick={() => {}}>
+              <IconButton
+                icon={'reply'}
+                className="!p-0 !bg-inherit"
+                variant={IconVariant.Primary}
+              />
               <div className="text-xs font-normal text-neutral-500 ml-1.5">
-                {replies.length} Reply
+                0 Reply
               </div>
-            </button>
+            </div>
           </div>
           <div></div>
         </div>
-
-        {isReplying && replyInputBox && (
-          <CommentForm
-            className="my-[8px]"
-            handleSubmit={(text: any) => addComment(text, replyId)}
-            setReplyInputBox={setReplyInputBox}
-          />
-        )}
-        {replies.length > 0 && (
-          <div className="ml-[32px]">
-            {replies.map((reply: any) => (
-              <Comment
-                comment={reply}
-                key={reply.id}
-                setActiveComment={setActiveComment}
-                activeComment={activeComment}
-                addComment={addComment}
-                parentId={comment.id}
-                replies={[]}
-                currentUserId={currentUserId}
-                replyInputBox={replyInputBox}
-                setReplyInputBox={setReplyInputBox}
-              />
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );

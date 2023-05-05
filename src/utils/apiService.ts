@@ -32,7 +32,7 @@ class ApiService {
   }
 
   async get(url: string, params = {}) {
-    return await this.instance.get(url, { ...params });
+    return await this.instance.get(url, { params });
   }
 
   async put(url: string, data = {}) {
@@ -54,7 +54,7 @@ class ApiService {
 
   async delete(url: string, params = {}) {
     try {
-      return this.instance.delete(url, { ...params });
+      return this.instance.delete(url, { params });
     } catch (e: any) {
       throw new Error(e.response.data.message);
     }

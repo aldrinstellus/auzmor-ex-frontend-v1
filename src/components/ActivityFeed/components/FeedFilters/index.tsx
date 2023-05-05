@@ -165,7 +165,13 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
                     className={
                       option?.type === FeedFilterContentType.Section
                         ? 'bg-blue-50 text-gray-600 font-medium text-sm px-4 py-2 rounded-md min-w-full'
-                        : 'bg-white font-medium text-sm px-4 py-2 rounded-md min-w-full overflow hover:bg-green-50 flex items-center'
+                        : `bg-white font-medium text-sm px-4 py-2 rounded-md min-w-full overflow ${
+                            feedFilters.find(
+                              (filter) => filter === option?.value,
+                            )
+                              ? 'bg-green-50'
+                              : ''
+                          } hover:bg-green-50 flex items-center`
                     }
                     value={option?.value}
                   >
