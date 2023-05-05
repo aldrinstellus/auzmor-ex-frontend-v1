@@ -7,51 +7,22 @@ import { Text } from './components/Text';
 import PreviewLink, { LinkMetadataProps } from 'components/PreviewLink';
 import MediaPreview, { IMedia, Mode } from 'components/MediaPreview';
 import { IGetPost } from 'queries/post';
-import { getMentionProps } from './utils';
+import { IFileToIMedia, getMentionProps } from './utils';
 
 type RenderPostProps = {
   data: IGetPost;
 };
-
-const linkMetadata = {
-  title: 'Testing',
-  image:
-    'https://img.freepik.com/free-vector/set-ten-clover-leaves-flat-style_1017-24189.jpg',
-  description: 'Some description',
-  favicon:
-    'https://static.vecteezy.com/system/resources/previews/003/171/355/large_2x/objective-lens-icon-with-six-rainbow-colors-vector.jpg',
-  url: 'https://auzmor.com',
-  themeColor: '#000000',
-} as LinkMetadataProps;
-
-const media = [
-  {
-    type: 'image',
-    url: 'https://images.unsplash.com/photo-1683130565572-61af42023da6?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=640',
-  },
-  {
-    type: 'image',
-    url: 'https://media.tenor.com/o656qFKDzeUAAAAC/rick-astley-never-gonna-give-you-up.gif',
-  },
-  {
-    type: 'image',
-    url: 'https://media.tenor.com/O2RBK9klEMYAAAAC/homer-simpson-homer.gif',
-  },
-  {
-    type: 'image',
-    url: 'https://img.freepik.com/free-vector/set-ten-clover-leaves-flat-style_1017-24189.jpg',
-  },
-  {
-    type: 'image',
-    url: 'https://img.freepik.com/free-vector/set-ten-clover-leaves-flat-style_1017-24189.jpg',
-  },
-] as IMedia[];
 
 export const RenderPost: React.FC<RenderPostProps> = (
   props: RenderPostProps,
 ): ReactElement => {
   const content = props?.data?.content?.editor;
   const mentions = props?.data?.mentions;
+  const link = props?.data?.link;
+  const media = props?.data?.files ? IFileToIMedia(props.data.files) : null;
+
+  console.log({ mentions, media });
+
   const postContent = content?.ops?.map((op: DeltaOperation) => {
     switch (true) {
       case op.insert.hasOwnProperty('mention'):
@@ -76,22 +47,19 @@ export const RenderPost: React.FC<RenderPostProps> = (
     }
   });
 
-  /*
-  gallery
-  mention user card hover
-  preview card
-  slideshow
-  */
-
   return (
     <div>
       {postContent}
-      {/* <div className="mt-4">
-        <PreviewLink linkMetadata={linkMetadata} />
-      </div> */}
-      {/* <div className="mt-4">
-        <MediaPreview media={media} mode={Mode.View} />
-      </div> */}
+      {link && (
+        <div className="mt-4">
+          <PreviewLink linkMetadata={link} />
+        </div>
+      )}
+      {media && (
+        <div className="mt-4">
+          <MediaPreview media={media} mode={Mode.View} />
+        </div>
+      )}
     </div>
   );
 };

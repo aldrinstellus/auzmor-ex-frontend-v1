@@ -1,4 +1,5 @@
-import { IMention } from 'queries/post';
+import { IMedia } from 'components/MediaPreview';
+import { IFile, IMention } from 'queries/post';
 import React from 'react';
 
 export const formatText = (text: string) => {
@@ -30,4 +31,12 @@ export const getMentionProps = (mentions: IMention[], mention: any) => {
     email: result?.email,
     image: result?.image,
   };
+};
+
+export const IFileToIMedia = (files: IFile[]): IMedia[] => {
+  return files.map((file) => ({
+    ...file,
+    url: file?.originalUrl,
+    type: (file?.type).toString().toLowerCase(),
+  })) as IMedia[];
 };

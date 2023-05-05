@@ -10,6 +10,28 @@ export interface IMention {
   image?: string;
   email?: string;
 }
+
+export interface ILinkMetadata {
+  url: string;
+  title?: string;
+  image?: string;
+  description?: string;
+  favicon?: string;
+}
+
+export interface IFile {
+  id: string;
+  name?: string;
+  type: string;
+  contentType: string;
+  size: string;
+  altText?: string;
+  originalUrl: string;
+  thumbnailUrl?: string;
+  blurhash?: string;
+  isDeleted: boolean;
+  isPublic: boolean;
+}
 export interface IPost {
   content: {
     text: string;
@@ -25,7 +47,7 @@ export interface IPost {
         },
       ]
     | [];
-  files?: string[];
+  files?: IFile[];
   type: string;
   audience: {
     users: string[];
@@ -100,7 +122,7 @@ export interface IGetPost {
         },
       ]
     | [];
-  files: string[];
+  files: IFile[];
   type: string;
   audience: {
     users: string[];
@@ -135,6 +157,7 @@ export interface IGetPost {
   commentsCount: number;
   createdAt: string;
   updatedAt: string;
+  link?: ILinkMetadata;
 }
 
 interface IDeletePost {
