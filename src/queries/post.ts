@@ -38,7 +38,7 @@ export interface IPost {
     html: string;
     editor: DeltaStatic;
   };
-  mentions: IMention[];
+  mentions?: IMention[];
   hashtags:
     | [
         {
@@ -113,7 +113,7 @@ export interface IGetPost {
     html: string;
     editor: DeltaStatic;
   };
-  mentions: IMention[];
+  mentions?: IMention[];
   hashtags:
     | [
         {
@@ -122,7 +122,7 @@ export interface IGetPost {
         },
       ]
     | [];
-  files: IFile[];
+  files?: IFile[];
   type: string;
   audience: {
     users: string[];

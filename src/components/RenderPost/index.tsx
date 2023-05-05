@@ -17,7 +17,7 @@ export const RenderPost: React.FC<RenderPostProps> = (
   props: RenderPostProps,
 ): ReactElement => {
   const content = props?.data?.content?.editor;
-  const mentions = props?.data?.mentions;
+  const mentions = props?.data?.mentions ? props.data.mentions : [];
   const link = props?.data?.link;
   const media = props?.data?.files ? IFileToIMedia(props.data.files) : null;
 
