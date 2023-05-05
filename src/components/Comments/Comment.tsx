@@ -5,6 +5,8 @@ import Avatar from 'components/Avatar';
 import { deleteComment } from 'queries/reaction';
 import { useMutation } from '@tanstack/react-query';
 import { IComment } from '.';
+import Popover from 'components/Popover';
+import clsx from 'clsx';
 
 interface CommentProps {
   comment: IComment;
@@ -26,6 +28,11 @@ export const Comment: React.FC<CommentProps> = ({ comment, className }) => {
   const handleDeleteReaction = () => {
     deleteReactionMutation.mutate(comment.id);
   };
+
+  const menuItemStyle = clsx({
+    ' flex flex-row items-center py-3 px-6 gap-2.5 border-b text-sm hover:bg-primary-50 cursor-pointer ':
+      true,
+  });
 
   return (
     <div key={comment.id}>
@@ -53,14 +60,30 @@ export const Comment: React.FC<CommentProps> = ({ comment, className }) => {
               {createdAt}
             </div>
             <div className="ml-4">
-              <IconButton
-                icon={'more'}
-                className="!p-0 !bg-inherit"
-                variant={IconVariant.Primary}
-                onClick={() => {
-                  handleDeleteReaction();
-                }}
-              />
+              <Popover
+                triggerNode={
+                  <IconButton
+                    icon={'more'}
+                    className="!p-0 !bg-inherit"
+                    variant={IconVariant.Primary}
+                  />
+                }
+                className="left-0"
+              >
+                <div className="rounded-[12px] shadow-xl flex flex-col w-20 flex-start">
+                  <div className={menuItemStyle} onClick={() => {}}>
+                    Edit{' '}
+                  </div>
+                  <div
+                    className={menuItemStyle}
+                    onClick={() => {
+                      handleDeleteReaction();
+                    }}
+                  >
+                    Delete
+                  </div>
+                </div>
+              </Popover>
             </div>
           </div>
         </div>
@@ -78,7 +101,7 @@ export const Comment: React.FC<CommentProps> = ({ comment, className }) => {
               entityType="comment"
               reactionId={comment?.myReaction?.id || ''}
             />
-            <button className="flex items-center ml-7" onClick={() => {}}>
+            <div className="flex items-center ml-7" onClick={() => {}}>
               <IconButton
                 icon={'reply'}
                 className="!p-0 !bg-inherit"
@@ -87,7 +110,7 @@ export const Comment: React.FC<CommentProps> = ({ comment, className }) => {
               <div className="text-xs font-normal text-neutral-500 ml-1.5">
                 0 Reply
               </div>
-            </button>
+            </div>
           </div>
           <div></div>
         </div>
