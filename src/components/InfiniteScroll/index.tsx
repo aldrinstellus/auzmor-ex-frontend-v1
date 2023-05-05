@@ -26,7 +26,7 @@ export const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
   loadMore = () => {},
   onScroll = () => {},
 }) => {
-  const { outerRef, innerRef, items } = useVirtual({
+  const { outerRef, innerRef, items } = useVirtual<any>({
     itemCount,
     onScroll: (event) => {
       if (
@@ -40,12 +40,8 @@ export const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
   });
 
   return (
-    <div ref={outerRef as LegacyRef<HTMLDivElement>} className={outerClassName}>
-      <div></div>
-      <div
-        ref={innerRef as LegacyRef<HTMLDivElement>}
-        className={innerClassName}
-      >
+    <div ref={outerRef} className={outerClassName}>
+      <div ref={innerRef} className={innerClassName}>
         {prependElement}
         {isLoading
           ? loadingComponent || <div>Loading...</div>
@@ -53,7 +49,6 @@ export const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
               return itemRenderer(index, measureRef);
             })}
       </div>
-      <div></div>
     </div>
   );
 };

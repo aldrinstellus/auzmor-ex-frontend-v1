@@ -14,12 +14,16 @@ type ActivityFeedProps = {
   activityFeed: IPost[];
   loadMore: any; // Change this type to something more appropriate for functions
   setShowModal: (flag: boolean) => void;
+  isLoading?: boolean;
+  isFetchingNextPage?: boolean;
 };
 
 const ActivityFeed: React.FC<ActivityFeedProps> = ({
   activityFeed,
   loadMore,
   setShowModal,
+  isLoading = false,
+  isFetchingNextPage = false,
 }) => {
   return (
     <>
@@ -34,6 +38,8 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
               <Post data={activityFeed[index]} />
             </div>
           )}
+          isFetchingNextPage={isFetchingNextPage}
+          isLoading={isLoading}
           loadMore={loadMore}
           prependElement={
             <>
@@ -51,9 +57,11 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
       ) : (
         <>
           <CreatePostCard setShowModal={setShowModal} />
-          <div className="flex justify-center items-center mt-20">
-            Feed Not Found
-          </div>
+          {!isLoading && (
+            <div className="flex justify-center items-center mt-20">
+              Feed Not Found
+            </div>
+          )}
         </>
       )}
     </>
