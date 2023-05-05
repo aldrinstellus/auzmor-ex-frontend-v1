@@ -35,10 +35,11 @@ export class MentionBlot extends Embed {
     const node = super.create();
     const denotationChar = document.createElement('span');
     denotationChar.className = 'ql-mention-denotation-char';
-
     // Make change over the node like based on requirement
     // Example -> InActive people show differently with style
-
+    if (data.status === 'DELETED') {
+      node.className += ' inactive-mention';
+    }
     // add on-click event listener to show the profile card
     // or else on-hover etc...
     node.addEventListener('mouseover', this.showUserProfileCard);
