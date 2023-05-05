@@ -27,22 +27,24 @@ export interface IPost {
     end: string;
   };
   id?: string;
-  myReactions?: {
-    // createdBy: {
-    //   department?: string;
-    //   designation?: string;
-    //   fullName?: string;
-    //   profileImage: {
-    //     blurHash?: string;
-    //   };
-    //   status?: string;
-    //   userId?: string;
-    //   workLocation?: string;
-    // };
-    reaction: string;
-    type: string;
-    id: string;
-  };
+  myReactions?: [
+    {
+      createdBy: {
+        department?: string;
+        designation?: string;
+        fullName?: string;
+        profileImage: {
+          blurHash?: string;
+        };
+        status?: string;
+        userId?: string;
+        workLocation?: string;
+      };
+      reaction: string;
+      type: string;
+      id: string;
+    },
+  ];
 }
 
 export interface IReaction {

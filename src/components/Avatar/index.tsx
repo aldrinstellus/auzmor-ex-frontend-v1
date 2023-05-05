@@ -4,7 +4,7 @@ import isDarkColor from 'is-dark-color';
 import { getInitials } from 'utils/misc';
 
 export type AvatarProps = {
-  name: any;
+  name: string;
   onClick?: MouseEventHandler<Element>;
   className?: string;
   image?: string;

@@ -42,39 +42,36 @@ const Post: React.FC<PostProps> = ({ data, className = '' }) => {
     },
   });
 
-  const cardBorder = clsx(
-    { 'rounded-9xl': !isAnnouncement },
-    { 'rounded-b-9xl': isAnnouncement },
-    { 'mt-5': true },
-  );
-
   return (
-    <Card className={cardBorder}>
+    <Card>
       <div>
-        {isAnnouncement && data?.myReactions?.reaction !== 'mark_read' && (
-          <div className="flex justify-between items-center bg-blue-700 -mb-4 p-2 rounded-t-9xl">
-            <div className="flex justify-center items-center text-white text-xs font-bold space-x-4">
-              <div>
-                <Icon name="flashIcon" />
+        {isAnnouncement &&
+          !data?.myReactions?.some(
+            (reaction) => reaction.reaction === 'mark_read',
+          ) && (
+            <div className="flex justify-between items-center bg-blue-700 -mb-4 p-2 rounded-t-9xl">
+              <div className="flex justify-center items-center text-white text-xs font-bold space-x-4">
+                <div>
+                  <Icon name="flashIcon" />
+                </div>
+                <div className="text-xs font-bold">Announcement</div>
               </div>
-              <div className="text-xs font-bold">Announcement</div>
+              <Button
+                className="text-sm font-bold"
+                label={'Mark as read'}
+                size={Size.Small}
+                variant={Variant.Tertiary}
+                onClick={() => {
+                  acknowledgeAnnouncement.mutate({
+                    entityId: data?.id,
+                    entityType: 'post',
+                    type: 'acknowledge',
+                    reaction: 'mark_read',
+                  });
+                }}
+              />
             </div>
-            <Button
-              className="text-sm font-bold"
-              label={'Mark as read'}
-              size={Size.Small}
-              variant={Variant.Tertiary}
-              onClick={() => {
-                acknowledgeAnnouncement.mutate({
-                  entityId: data?.id,
-                  entityType: 'post',
-                  type: 'acknowledge',
-                  reaction: 'mark_read',
-                });
-              }}
-            />
-          </div>
-        )}
+          )}
       </div>
       <div className="flex justify-between items-center">
         <Actor visibility="Everyone" contentMode={VIEW_POST} createdTime={''} />
