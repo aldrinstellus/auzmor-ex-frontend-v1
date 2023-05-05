@@ -113,7 +113,7 @@ export const Comment: React.FC<CommentProps> = ({ comment, className }) => {
           {comment.content.text}
         </div>
 
-        <div className="flex flex-row justify-between my-3">
+        <div className="flex flex-row justify-between mt-3">
           <div className={`flex flex-row`}>
             {keys > 0 && (
               <div className="mr-2">
@@ -143,7 +143,7 @@ export const Comment: React.FC<CommentProps> = ({ comment, className }) => {
           </div>
         </div>
 
-        <div className="flex justify-between pt-4 pb-6">
+        <div className="flex justify-between pt-3 pb-6">
           <div className="flex">
             <Likes
               reaction={comment?.myReaction?.reaction || ''}

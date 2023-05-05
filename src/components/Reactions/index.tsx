@@ -172,7 +172,7 @@ const Likes: React.FC<LikesProps> = ({
         </div>
       </div>
       <div
-        className={`h-6 flex flex-row items-center bg-white rounded-lg shadow-md absolute bottom-1/2 transform -translate-y-1/2 whitespace-nowrap transition-opacity ${
+        className={`h-8 flex flex-row items-center bg-white rounded-lg shadow-md absolute bottom-1/2 transform -translate-y-1/2 whitespace-nowrap transition-opacity ${
           showTooltip ? 'opacity-100' : 'opacity-0'
         }`}
       >
