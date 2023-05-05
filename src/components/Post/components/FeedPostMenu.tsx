@@ -20,7 +20,6 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
     mutationFn: deletePost,
     onError: (error) => console.log(error),
     onSuccess: (data, variables, context) => {
-      console.log('data==>', data);
       closeConfirm();
     },
   });

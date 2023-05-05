@@ -11,7 +11,6 @@ import { Likes } from 'components/Likes';
 import { RenderQuillDelta } from 'components/RenderQuillDelta';
 import { DeltaStatic } from 'quill';
 import FeedPostMenu from './components/FeedPostMenu';
-import clsx from 'clsx';
 import { announcementRead, IPost } from 'queries/post';
 import Icon from 'components/Icon';
 import Button, { Size, Variant } from 'components/Button';
@@ -86,7 +85,7 @@ const Post: React.FC<PostProps> = ({ data, className = '' }) => {
         <div></div>
         {/* Reaction and comment repost */}
         <div className="flex justify-between pt-4 pb-6">
-          <div className="flex ">
+          <div className="flex">
             <Likes
               name={name}
               setName={setName}

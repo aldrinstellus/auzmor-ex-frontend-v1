@@ -14,56 +14,56 @@ type ActivityFeedProps = {
   activityFeed: any;
   loadMore: any; // Change this type to something more appropriate for functions
   setShowModal: (flag: boolean) => void;
+  isLoading?: boolean;
+  isFetchingNextPage?: boolean;
 };
 
 const ActivityFeed: React.FC<ActivityFeedProps> = ({
   activityFeed,
   loadMore,
   setShowModal,
+  isLoading = false,
+  isFetchingNextPage = false,
 }) => {
   return (
-    <div>
-      {/* <div className="flex flex-row items-center gap-x-2">
-        <FeedFilter name="Filters" />
-        <ClockIcon />
-        <Divider />
-        <SortByDropdown />
-      </div> */}
-      <div>
-        {activityFeed?.length > 0 ? (
-          <InfiniteScroll
-            // innerHeight > outerHeight
-            outerClassName="flex justify-between h-[calc(100vh-64px)] overflow-y-scroll"
-            innerClassName="flex flex-col"
-            itemCount={activityFeed.length}
-            itemRenderer={(index) => (
-              <div key={`post-${index}`} className="mt-8">
-                <Post data={activityFeed[index]} />
+    <>
+      {activityFeed?.length > 0 ? (
+        <InfiniteScroll
+          // innerHeight > outerHeight
+          outerClassName="flex justify-between h-[calc(100vh-64px)] overflow-y-scroll"
+          innerClassName="flex flex-col"
+          itemCount={activityFeed.length}
+          itemRenderer={(index) => (
+            <div key={`post-${index}`}>
+              <Post data={activityFeed[index]} />
+            </div>
+          )}
+          isFetchingNextPage={isFetchingNextPage}
+          isLoading={isLoading}
+          loadMore={loadMore}
+          prependElement={
+            <>
+              <CreatePostCard setShowModal={setShowModal} />
+              <div className="flex flex-row items-center gap-x-2 mt-8">
+                <FeedFilter name="Filters" />
+                <Icon name="clock" size={16} />
+                <Divider />
+                <SortByDropdown />
               </div>
-            )}
-            loadMore={loadMore}
-            prependElement={
-              <>
-                <CreatePostCard setShowModal={setShowModal} />
-                <div className="flex flex-row items-center gap-x-2 mt-8">
-                  <FeedFilter name="Filters" />
-                  <Icon name="clock" size={16} />
-                  <Divider />
-                  <SortByDropdown />
-                </div>
-              </>
-            }
-          />
-        ) : (
-          <>
-            <CreatePostCard setShowModal={setShowModal} />
+            </>
+          }
+        />
+      ) : (
+        <>
+          <CreatePostCard setShowModal={setShowModal} />
+          {!isLoading && (
             <div className="flex justify-center items-center mt-20">
               Feed Not Found
             </div>
-          </>
-        )}
-      </div>
-    </div>
+          )}
+        </>
+      )}
+    </>
   );
 };
 
