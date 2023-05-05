@@ -35,7 +35,12 @@ const PreviewLink: React.FC<PreviewLinkProps> = ({
           setIsPreviewRemove(true);
         }}
       />
-      <PreviewCard metaData={data} isLoading={isLoading} isError={isError} />
+      <PreviewCard
+        metaData={data}
+        isLoading={isLoading}
+        isError={isError}
+        className="mx-6 mb-9"
+      />
     </div>
   );
 };

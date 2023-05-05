@@ -77,9 +77,8 @@ const Post: React.FC<PostProps> = ({ data }) => {
         <RenderQuillDelta delta={content} />
         {/* Media Display */}
         <div></div>
-        <PreviewCard metaData={data?.link as Metadata} />
+        <PreviewCard metaData={data?.link as Metadata} className="my-2" />
         {/* Reaction and comment repost */}
-
         <div className="border-b border-neutral-100 mt-4"></div>
         <div className="flex flex-row justify-between my-3">
           <div className={`flex flex-row ${keys > 1 ? 'relative' : ''}`}>

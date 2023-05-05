@@ -8,25 +8,21 @@ type IconPreviewProps = {
 
 const IconPreview: React.FC<IconPreviewProps> = ({ metaData }) => {
   return (
-    <Card className="bg-[#F7F8FB] h-[166px] mx-6 mb-11 rounded-7xl">
-      <a href={metaData?.url} target="_blank" rel="noreferrer">
-        <div className="flex p-8">
-          <img
-            src={metaData?.favicon}
-            alt={metaData?.title}
-            className="w-[100px] h-[80px] rounded-7xl"
-          />
-          <div className="flex flex-col ml-5 space-y-2 justify-center">
-            <div className="text-black text-sm font-bold">
-              {metaData?.title}
-            </div>
-            <div className="text-[#666666] font-normal text-xs">
-              {metaData?.url}
-            </div>
+    <a href={metaData?.url} target="_blank" rel="noreferrer">
+      <div className="flex p-8">
+        <img
+          src={metaData?.favicon}
+          alt={metaData?.title}
+          className="w-[100px] h-[80px] rounded-7xl"
+        />
+        <div className="flex flex-col ml-5 space-y-2 justify-center">
+          <div className="text-black text-sm font-bold">{metaData?.title}</div>
+          <div className="text-[#666666] font-normal text-xs">
+            {metaData?.url}
           </div>
         </div>
-      </a>
-    </Card>
+      </div>
+    </a>
   );
 };
 
