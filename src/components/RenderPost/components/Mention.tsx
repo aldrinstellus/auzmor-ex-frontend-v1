@@ -1,5 +1,5 @@
 import React, { ReactElement, useState } from 'react';
-import { MentionUserCard } from '../MentionUserCard';
+import MentionUserCard from './MentionUserCard';
 
 type MentionProps = {
   value: string;
@@ -9,18 +9,22 @@ type MentionProps = {
   email?: string;
 };
 
-export const Mention: React.FC<MentionProps> = (
-  props: MentionProps,
-): ReactElement => {
+const Mention: React.FC<MentionProps> = ({
+  value,
+  fullName,
+  image,
+  active,
+  email,
+}): ReactElement => {
   const [showUserCard, setShowUserCard] = useState<boolean>(false);
   return (
     <span className="relative">
       {showUserCard && (
         <MentionUserCard
-          fullName={props.fullName}
-          email={props?.email}
-          image={props?.image}
-          active={props?.active}
+          fullName={fullName}
+          email={email}
+          image={image}
+          active={active}
           className="absolute -top-[170px] z-10 shadow-lg transition-opacity duration-200 min-w-max"
         />
       )}
@@ -30,8 +34,10 @@ export const Mention: React.FC<MentionProps> = (
         className="cursor-pointer mention"
         contentEditable="false"
       >
-        {props?.value}
+        {value}
       </span>
     </span>
   );
 };
+
+export default Mention;

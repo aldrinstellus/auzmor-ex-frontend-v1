@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
 import { DeltaOperation } from 'quill';
-import { Mention } from './components/Mention';
-import { Hashtag } from './components/Hashtag';
-import { Emoji } from './components/Emoji';
+import Mention from './components/Mention';
+import Hashtag from './components/Hashtag';
+import Emoji from './components/Emoji';
 import { Text } from './components/Text';
 import PreviewLink from 'components/PreviewLink';
 import MediaPreview, { Mode } from 'components/MediaPreview';
@@ -13,15 +13,14 @@ type RenderPostProps = {
   data: IGetPost;
 };
 
-export const RenderPost: React.FC<RenderPostProps> = (
-  props: RenderPostProps,
-): ReactElement => {
-  const content = props?.data?.content?.editor;
-  const mentions = props?.data?.mentions ? props.data.mentions : [];
-  const link = props?.data?.link;
-  const media = props?.data?.files ? IFileToIMedia(props.data.files) : null;
-
-  console.log({ mentions, media });
+export const RenderPost: React.FC<RenderPostProps> = ({
+  data,
+}): ReactElement => {
+  // Get all necessary data from the response
+  const content = data?.content?.editor;
+  const mentions = data?.mentions ? data.mentions : [];
+  const link = data?.link;
+  const media = data?.files ? IFileToIMedia(data.files) : null;
 
   const postContent = content?.ops?.map((op: DeltaOperation) => {
     switch (true) {

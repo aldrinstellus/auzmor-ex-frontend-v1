@@ -1,7 +1,7 @@
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import React, { ReactElement } from 'react';
-import { CircularIcon } from '../CircularIcon';
+import CircularBorder from './CircularBorder';
 
 type MentionUserCardProps = {
   fullName: string;
@@ -11,34 +11,31 @@ type MentionUserCardProps = {
   className?: string;
 };
 
-export const MentionUserCard: React.FC<MentionUserCardProps> = (
-  props: MentionUserCardProps,
-): ReactElement => {
+const MentionUserCard: React.FC<MentionUserCardProps> = ({
+  fullName,
+  image,
+  active,
+  email,
+  className,
+}): ReactElement => {
   return (
-    <Card className={props?.className}>
+    <Card className={className}>
       <div className="flex m-5 items-center justify-between gap-x-3">
         <div>
           {/* Profile pic goes here */}
-          <Avatar
-            size={80}
-            name={props.fullName}
-            image={props.image}
-            active={props.active}
-          />
+          <Avatar size={80} name={fullName} image={image} active={active} />
         </div>
         <div className="flex items-start flex-col gap-y-2">
           {/* Rest of info goes here */}
           <span className="text-neutral-900 font-bold text-base">
-            {props.fullName}
+            {fullName}
           </span>
-          <span className="text-neutral-500 font-normal text-sm">
-            {props?.email}
-          </span>
+          <span className="text-neutral-500 font-normal text-sm">{email}</span>
           <div className="flex items-center justify-between gap-x-11">
             <span className="flex items-center gap-x-3">
-              <CircularIcon name="mail" className="m-2" />
-              <CircularIcon name="slack" className="m-2" />
-              <CircularIcon name="convertShape" className="m-2" />
+              <CircularBorder name="mail" className="m-2" />
+              <CircularBorder name="slack" className="m-2" />
+              <CircularBorder name="convertShape" className="m-2" />
             </span>
             <span className="text-neutral-900 font-bold text-sm">
               View Profile
@@ -49,3 +46,5 @@ export const MentionUserCard: React.FC<MentionUserCardProps> = (
     </Card>
   );
 };
+
+export default MentionUserCard;

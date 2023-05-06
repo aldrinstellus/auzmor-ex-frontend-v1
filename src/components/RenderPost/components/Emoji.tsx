@@ -5,14 +5,14 @@ type EmojiProps = {
   value: string;
 };
 
-export const Emoji: React.FC<EmojiProps> = (
-  props: EmojiProps,
-): ReactElement => {
+const Emoji: React.FC<EmojiProps> = ({ value }): ReactElement => {
   return (
     <span className="ql-emojiblot">
-      <span className={`ap ap-${props.value}`}>
-        {emojiList.find((emoji) => emoji.name === props.value)?.code_decimal}
+      <span className={`ap ap-${value}`}>
+        {emojiList.find((emoji) => emoji.name === value)?.code_decimal}
       </span>
     </span>
   );
 };
+
+export default Emoji;

@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  MouseEventHandler,
-  useEffect,
-  ReactElement,
-} from 'react';
+import React, { useState, MouseEventHandler, ReactElement } from 'react';
 
 import Image from 'components/Image';
 import Video from 'components/Video';
@@ -11,6 +6,8 @@ import Video from 'components/Video';
 import clsx from 'clsx';
 import Modal from 'components/Modal';
 import Icon from 'components/Icon';
+import useCarousel from 'hooks/useCarousel';
+import useModal from 'hooks/useModal';
 
 export interface IMedia {
   name?: string;
@@ -29,34 +26,24 @@ export type CarouselProps = {
   media: IMedia[];
   onClose?: MouseEventHandler<Element>;
   hashSize?: hashSize;
-  openCarousel: boolean;
-  setOpenCarousel: any;
   index: number;
+  open: boolean;
+  closeModal: any;
+  openModal?: any;
 };
 
 const Carousel: React.FC<CarouselProps> = ({
   media,
   hashSize = { width: 0, height: 0 },
-  openCarousel,
-  setOpenCarousel,
   index,
+  open,
+  closeModal,
+  openModal,
 }): ReactElement => {
-  const [currentIndex, setCurrentIndex] = useState<number>(index);
-  useEffect(() => setCurrentIndex(index), [index]);
-
-  const prevSlide = () => {
-    const isFirstSlide = currentIndex === 0;
-    const newIndex = isFirstSlide
-      ? Object.keys(media).length - 1
-      : currentIndex - 1;
-    setCurrentIndex(newIndex);
-  };
-
-  const nextSlide = () => {
-    const isLastSlide = currentIndex === Object.keys(media).length - 1;
-    const newIndex = isLastSlide ? 0 : currentIndex + 1;
-    setCurrentIndex(newIndex);
-  };
+  const [currentIndex, prevSlide, nextSlide] = useCarousel(
+    index,
+    Object.keys(media).length,
+  );
 
   const containerStyles = clsx({
     'm-auto w-full h-full relative group rounded-xl': true,
@@ -86,7 +73,7 @@ const Carousel: React.FC<CarouselProps> = ({
 
   if (media.length > 0) {
     return (
-      <Modal open={openCarousel}>
+      <Modal open={open}>
         <div className={containerStyles}>
           <div className={mediaDivStyles}>
             {media[currentIndex].type === 'image' ? (
@@ -113,7 +100,7 @@ const Carousel: React.FC<CarouselProps> = ({
           <Icon
             name="carouselClose"
             className={crossIconStyles}
-            onClick={() => setOpenCarousel(false)}
+            onClick={closeModal}
           />
         </div>
       </Modal>

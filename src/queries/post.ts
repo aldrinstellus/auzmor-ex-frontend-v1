@@ -13,14 +13,6 @@ export interface IMention {
   email?: string;
 }
 
-export interface ILinkMetadata {
-  url: string;
-  title?: string;
-  image?: string;
-  description?: string;
-  favicon?: string;
-}
-
 export interface IFile {
   id: string;
   name?: string;
@@ -160,7 +152,6 @@ export interface IGetPost {
   commentsCount: number;
   createdAt: string;
   updatedAt: string;
-  link?: ILinkMetadata;
 }
 
 interface IDeletePost {

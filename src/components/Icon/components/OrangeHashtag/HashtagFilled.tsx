@@ -3,10 +3,12 @@ import { SVGProps } from 'react';
 
 interface IconProps {
   size?: number;
+  fill?: string;
 }
 
 const SvgOrangeHashtagFilled = ({
   size = 60,
+  fill = '',
 }: SVGProps<SVGSVGElement> & IconProps) => (
   <svg
     width={size}

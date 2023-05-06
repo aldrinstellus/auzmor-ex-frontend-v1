@@ -3,9 +3,13 @@ import { SVGProps } from 'react';
 
 interface IconProps {
   size?: number;
+  fill?: string;
 }
 
-const SvgSlackFilled = ({ size = 60 }: SVGProps<SVGSVGElement> & IconProps) => (
+const SvgSlackFilled = ({
+  size = 60,
+  fill,
+}: SVGProps<SVGSVGElement> & IconProps) => (
   <svg
     width={size}
     height={size}

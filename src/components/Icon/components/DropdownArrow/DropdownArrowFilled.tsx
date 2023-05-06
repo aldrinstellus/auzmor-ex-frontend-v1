@@ -20,7 +20,7 @@ const SvgDropdownArrowFilled = ({
   >
     <path
       d="M12.2787 0.96875L7.93208 5.31542C7.41875 5.82875 6.57875 5.82875 6.06542 5.31542L1.71875 0.96875"
-      stroke="#171717"
+      stroke={fill}
       strokeWidth="1.5"
       strokeMiterlimit="10"
       strokeLinecap="round"
