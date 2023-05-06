@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useMemo } from 'react';
+import React, { MouseEventHandler, ReactElement, useMemo } from 'react';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 
@@ -28,8 +28,8 @@ export type ButtonProps = {
   disabled?: boolean;
   loading?: boolean;
   onClick?: MouseEventHandler<Element>;
-  leftIcon?: string;
-  rightIcon?: string;
+  leftIcon?: any; // should accept the react element
+  rightIcon?: any; // should accept the string and react element
   className?: string;
 };
 

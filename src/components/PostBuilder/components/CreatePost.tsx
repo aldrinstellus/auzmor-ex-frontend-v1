@@ -67,10 +67,10 @@ const CreatePost: React.FC<ICreatePostProps> = ({
             data?.content?.editor || (editorValue.json as DeltaStatic)
           }
           ref={quillRef}
-          toolbar={(isCharLimit: boolean) => (
+          renderToolbar={(isCharLimit: boolean) => (
             <Toolbar isCharLimit={isCharLimit} />
           )}
-          previewLink={(
+          renderPreviewLink={(
             previewUrl: string,
             setPreviewUrl: (previewUrl: string) => void,
             setIsPreviewRemove: (isPreviewRemove: boolean) => void,
