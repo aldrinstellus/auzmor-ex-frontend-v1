@@ -54,9 +54,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     mutationKey: ['createPostMutation'],
     mutationFn: createPost,
     onError: (error) => console.log(error),
-    onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: [''] });
-    },
+    onSuccess: (data, variables, context) => {},
   });
 
   const updatePostMutation = useMutation({
@@ -89,7 +87,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         announcement: {
           end: announcement?.value || '',
         },
-        link: previewUrl[0],
+        link: previewUrl && previewUrl[0],
       });
     } else if (PostBuilderMode.Edit) {
       updatePostMutation.mutate({
@@ -109,7 +107,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           end: announcement?.value || '',
         },
         id: data?.id,
-        link: previewUrl[0],
+        link: previewUrl && previewUrl[0],
       });
     }
   };

@@ -9,7 +9,6 @@ import PopupMenu from 'components/PopupMenu';
 import Tooltip from 'components/Tooltip';
 import Divider, { Variant as DividerVariant } from 'components/Divider';
 import Button from 'components/Button';
-import { postTypeMapIcons } from 'pages/Feed';
 import { CreatePostContext, IEditorValue } from 'contexts/CreatePostContext';
 import { CreatePostFlow } from 'contexts/CreatePostContext';
 import ReactQuill from 'react-quill';
@@ -17,17 +16,20 @@ import { DeltaStatic } from 'quill';
 import Toolbar from 'components/RichTextEditor/toolbar';
 import PreviewLink from 'components/PreviewLink';
 import { IPost } from 'queries/post';
+import { postTypeMapIcons } from './CreatePostCard';
 
 interface ICreatePostProps {
   closeModal: () => void;
   handleSubmitPost: (content: IEditorValue) => void;
   data?: IPost;
+  isLoading?: boolean;
 }
 
 const CreatePost: React.FC<ICreatePostProps> = ({
   data,
   closeModal,
   handleSubmitPost,
+  isLoading = false,
 }) => {
   const quillRef = useRef<ReactQuill>(null);
   const { setActiveFlow, setEditorValue, editorValue } =
@@ -38,14 +40,16 @@ const CreatePost: React.FC<ICreatePostProps> = ({
       <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
         Create a post
       </div>
-      <IconButton
-        onClick={() => {
-          closeModal && closeModal();
-        }}
-        icon={'close'}
-        className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"
-        variant={IconVariant.Primary}
-      />
+      {!isLoading && (
+        <IconButton
+          onClick={() => {
+            closeModal && closeModal();
+          }}
+          icon={'close'}
+          className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"
+          variant={IconVariant.Primary}
+        />
+      )}
     </div>
   );
   const Body: React.FC = () => (
@@ -157,6 +161,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
         <div></div>
         <Button
           label={'Post'}
+          loading={isLoading}
           onClick={() =>
             handleSubmitPost({
               text:

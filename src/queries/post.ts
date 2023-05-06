@@ -31,7 +31,49 @@ export interface IPost {
   };
   id?: string;
   link?: string;
-  myReactions?: IMyReactions[];
+  myReactions?: [
+    {
+      createdBy: {
+        department?: string;
+        designation?: string;
+        fullName?: string;
+        profileImage: {
+          blurHash?: string;
+        };
+        status?: string;
+        userId?: string;
+        workLocation?: string;
+      };
+      reaction: string;
+      type: string;
+      id: string;
+    },
+  ];
+}
+
+export interface IReaction {
+  entityId: any;
+  entityType: string;
+  type: string;
+  reaction: string;
+  myReactions?: [
+    {
+      createdBy: {
+        department?: string;
+        designation?: string;
+        fullName?: string;
+        profileImage: {
+          blurHash?: string;
+        };
+        status?: string;
+        userId?: string;
+        workLocation?: string;
+      };
+      reaction: string;
+      type: string;
+      id: string;
+    },
+  ];
   reactionCount?: object;
 }
 
@@ -65,7 +107,25 @@ export interface IGetPost {
   };
   link: Metadata;
   id: string;
-  myReactions: IMyReactions[];
+  // myReactions: IMyReactions[];
+  myReactions?: [
+    {
+      createdBy: {
+        department?: string;
+        designation?: string;
+        fullName?: string;
+        profileImage: {
+          blurHash?: string;
+        };
+        status?: string;
+        userId?: string;
+        workLocation?: string;
+      };
+      reaction: string;
+      type: string;
+      id: string;
+    },
+  ];
   reactionsCount: MyObjectType;
   turnOffComments: boolean;
   commentsCount: number;
@@ -76,6 +136,8 @@ export interface IGetPost {
 interface IDeletePost {
   id: string;
 }
+
+interface IAnnounce {}
 
 export const createPost = async (payload: IPost) => {
   const data = await apiService.post('/posts', payload);
@@ -105,7 +167,24 @@ export const updatePost = async (id: string, payload: IPost) => {
 
 export const deletePost = async (id: string) => {
   const data = await apiService.delete(`/posts/${id}`);
-  console.log(data, 'API');
+  return data;
+};
+
+export const fetchAnnouncement = async (postType: string, limit: number) => {
+  const data = await apiService.get(
+    `/posts?postType=${postType}&limit=${limit}`,
+  );
+  return data;
+};
+
+export const useAnnouncements = () =>
+  useQuery({
+    queryKey: ['announcements-widget'],
+    queryFn: () => fetchAnnouncement('ANNOUNCEMENT', 1),
+  });
+
+export const announcementRead = async (payload: IReaction) => {
+  const data = await apiService.post('/reactions', payload);
   return data;
 };
 
