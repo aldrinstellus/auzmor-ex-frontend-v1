@@ -54,13 +54,20 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     mutationKey: ['createPostMutation'],
     mutationFn: createPost,
     onError: (error) => console.log(error),
-    onSuccess: (data, variables, context) => {},
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['feed']);
+      setShowModal(false);
+    },
   });
 
   const updatePostMutation = useMutation({
     mutationKey: ['updatePostMutation'],
     mutationFn: (payload: IPost) =>
       updatePost(payload.id || '', payload as IPost),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['feed']);
+      setShowModal(false);
+    },
   });
 
   const handleSubmitPost = (content?: IEditorValue) => {
@@ -112,13 +119,20 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     }
   };
 
+  const loading = createPostMutation.isLoading || updatePostMutation.isLoading;
   return (
     <Modal open={showModal} closeModal={() => setShowModal(false)}>
       {activeFlow === CreatePostFlow.CreatePost && (
         <CreatePost
           data={data}
-          closeModal={() => setShowModal(false)}
+          closeModal={() => {
+            if (loading) {
+              return null;
+            }
+            return setShowModal(false);
+          }}
           handleSubmitPost={handleSubmitPost}
+          isLoading={loading}
         />
       )}
       {activeFlow === CreatePostFlow.CreateAnnouncement && (
