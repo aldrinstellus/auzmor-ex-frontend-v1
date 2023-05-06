@@ -18,6 +18,7 @@ import IconButton, {
   Size as SizeVariant,
 } from 'components/IconButton';
 import clsx from 'clsx';
+import { humanizeTime } from 'utils/time';
 
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
@@ -106,7 +107,12 @@ const Post: React.FC<PostProps> = ({ data }) => {
           )}
       </div>
       <div className="flex justify-between items-center">
-        <Actor visibility="Everyone" contentMode={VIEW_POST} createdTime={''} />
+        <Actor
+          visibility="Everyone"
+          contentMode={VIEW_POST}
+          createdTime={humanizeTime(data?.createdAt)}
+          createdBy={data?.createdBy?.fullName}
+        />
         <div className="relative">
           <FeedPostMenu data={data} />
         </div>
