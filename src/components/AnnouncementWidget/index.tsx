@@ -28,6 +28,8 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
 
   const { user } = useAuth();
 
+  // console.log(data?.data?.result, 'THERE');
+
   return (
     <div>
       <div className="flex justify-between items-center mt-4">
@@ -43,6 +45,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
           {/* <div className="flex justify-center items-center text-white text-xs font-bold space-x-4 py-3 bg-blue-700">
           </div> */}
           <div className="px-3 mt-5">
+            {data?.data?.result?.data.length === 0 && <></>}
             <div className="flex items-center space-x-3">
               <div>
                 <Avatar name={user?.name || ''} image="" size={40} />
@@ -53,7 +56,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
                   <span>Shared a post</span>
                 </div>
                 <div className="text-xs">
-                  {humanizeTime(data?.data?.result?.data[0].createdAt)}
+                  {humanizeTime(data?.data?.result?.data?.[0]?.createdAt)}
                 </div>
               </div>
             </div>

@@ -40,6 +40,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
   } = useContext(CreatePostContext);
   const queryClient = useQueryClient();
 
+  // console.log(data, 'DATA');
+
   useEffect(() => {
     if (data) {
       setEditorValue(data.content.editor);
