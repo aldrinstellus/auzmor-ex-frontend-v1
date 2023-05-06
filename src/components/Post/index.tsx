@@ -79,8 +79,6 @@ const Post: React.FC<PostProps> = ({ data }) => {
     },
   });
 
-  console.log(data, 'HERE');
-
   return (
     <Card>
       <div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Card from 'components/Card';
 import {
   announcementRead,
@@ -12,16 +12,20 @@ import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
 import { humanizeTime } from 'utils/time';
 import { divide } from 'lodash';
+import clsx from 'clsx';
 
 export interface IAnnouncementCardProps {}
 
 const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
+  const queryClient = useQueryClient();
+
   const acknowledgeAnnouncement = useMutation({
     mutationKey: ['acknowledgeAnnouncement'],
     mutationFn: announcementRead,
     onError: (error) => console.log(error),
-    onSuccess: (data, variables, context) => {
+    onSuccess: async (data, variables, context) => {
       console.log('data==>', data);
+      await queryClient.invalidateQueries(['acknowledgeAnnouncement']);
     },
   });
 
@@ -29,7 +33,11 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
 
   const { user } = useAuth();
 
-  // console.log(data?.data?.result, 'THERE');
+  const validAnnouncementLength = data?.data?.result?.data.length === 0;
+
+  const announcementStyles = clsx({
+    'flex justify-center items-center p-6': validAnnouncementLength,
+  });
 
   return (
     <div>
@@ -48,13 +56,22 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
               <div>Loading...</div>
             ) : (
               <>
-                {data?.data?.result?.data.length === 0 && (
-                  <div>No pending announcement</div>
-                )}
+                <div className={announcementStyles}>
+                  {validAnnouncementLength && (
+                    <div>No pending announcement</div>
+                  )}
+                </div>
                 <div className="px-3 mt-5">
                   <div className="flex items-center space-x-3">
                     <div>
-                      <Avatar name={user?.name || ''} image="" size={40} />
+                      <Avatar
+                        name={
+                          data?.data?.result?.data?.[0]?.createdBy?.fullName ||
+                          'U'
+                        }
+                        image=""
+                        size={40}
+                      />
                     </div>
                     <div>
                       <div className="space-x-1 text-sm">
@@ -72,8 +89,8 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
                 </div>
                 <Button
                   label="Mark as read"
-                  variant={Variant.Tertiary}
-                  className="border-2 border-neutral-200 mt-4"
+                  variant={Variant.Secondary}
+                  className="border-2 border-neutral-200 mt-4 w-[75%]"
                   onClick={() => {
                     acknowledgeAnnouncement.mutate({
                       entityId: data?.data?.result?.data[0].id,
