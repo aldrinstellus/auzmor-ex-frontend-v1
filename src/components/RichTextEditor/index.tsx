@@ -7,7 +7,6 @@ import './mentions/quill.mention';
 import './mentions/quill.mention.css';
 
 import { MentionBlot } from './mentions/blots/mentions';
-import Toolbar from './toolbar/index';
 import { LinkBlot } from './blots/link';
 import AutoLinks from './autoLinks';
 import EmojiBlot from './blots/emoji';
@@ -29,8 +28,8 @@ export interface IQuillEditorProps {
   placeholder: string;
   charLimit?: number;
   defaultValue?: ReactQuill.Value;
-  toolbar?: (isCharLimit: boolean) => ReactNode;
-  previewLink?: (
+  renderToolbar?: (isCharLimit: boolean) => ReactNode;
+  renderPreviewLink?: (
     previewUrl: string,
     setPreviewUrl: (previewUrl: string) => void,
     setIsPreviewRemove: (isPreviewRemove: boolean) => void,
@@ -45,8 +44,8 @@ const RichTextEditor = React.forwardRef(
       placeholder,
       charLimit = 3000,
       defaultValue,
-      toolbar = () => <div id="toolbar"></div>,
-      previewLink,
+      renderToolbar = () => <div id="toolbar"></div>,
+      renderPreviewLink,
       onChangeEditor,
     }: IQuillEditorProps,
     ref,
@@ -56,7 +55,7 @@ const RichTextEditor = React.forwardRef(
 
     const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
     const [previewUrl, setPreviewUrl] = useState<string>('');
-    const [isPreviewRemove, setIsPreviewRemove] = useState<boolean>(false);
+    const [isPreviewRemoved, setIsPreviewRemoved] = useState<boolean>(false);
 
     const formats = ['bold', 'italic', 'underline', 'mention', 'link', 'emoji'];
 
@@ -108,7 +107,7 @@ const RichTextEditor = React.forwardRef(
         setPreviewUrl(matches[0]);
       } else {
         setPreviewUrl('');
-        setIsPreviewRemove(false);
+        setIsPreviewRemoved(false);
       }
     };
 
@@ -177,10 +176,10 @@ const RichTextEditor = React.forwardRef(
             </div>
           </div>
         )}
-        {!isPreviewRemove &&
-          previewLink &&
-          previewLink(previewUrl, setPreviewUrl, setIsPreviewRemove)}
-        {toolbar && toolbar(isCharLimit)}
+        {!isPreviewRemoved &&
+          renderPreviewLink &&
+          renderPreviewLink(previewUrl, setPreviewUrl, setIsPreviewRemoved)}
+        {renderToolbar && renderToolbar(isCharLimit)}
       </>
     );
   },

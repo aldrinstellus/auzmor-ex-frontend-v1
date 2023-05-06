@@ -10,6 +10,7 @@ import {
   IEditorValue,
 } from 'contexts/CreatePostContext';
 import { PostBuilderMode } from '..';
+import { previewLinkRegex } from 'components/RichTextEditor/config';
 
 interface ICreatePostModal {
   showModal: boolean;
@@ -55,10 +56,9 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     mutationKey: ['createPostMutation'],
     mutationFn: createPost,
     onError: (error) => console.log(error),
-    onSuccess: async (data, variables, context) => {
+    onSuccess: async () => {
       await queryClient.invalidateQueries(['feed']);
       setShowModal(false);
-      console.log('data==>', data);
     },
   });
 
@@ -77,6 +77,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       ?.filter((op) => op.insert.mention)
       .map((userItem) => userItem?.insert?.mention?.id);
 
+    const previewUrl = content?.text.match(previewLinkRegex) as string[];
+
     if (mode === PostBuilderMode.Create) {
       createPostMutation.mutate({
         content: {
@@ -94,6 +96,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         announcement: {
           end: announcement?.value || '',
         },
+        link: previewUrl && previewUrl[0],
       });
     } else if (PostBuilderMode.Edit) {
       updatePostMutation.mutate({
@@ -113,25 +116,23 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           end: announcement?.value || '',
         },
         id: data?.id,
+        link: previewUrl && previewUrl[0],
       });
     }
   };
 
   const loading = createPostMutation.isLoading || updatePostMutation.isLoading;
   return (
-    <Modal
-      open={showModal}
-      closeModal={() => {
-        if (loading) {
-          return null;
-        }
-        return setShowModal(false);
-      }}
-    >
+    <Modal open={showModal} closeModal={() => setShowModal(false)}>
       {activeFlow === CreatePostFlow.CreatePost && (
         <CreatePost
           data={data}
-          closeModal={() => setShowModal(false)}
+          closeModal={() => {
+            if (loading) {
+              return null;
+            }
+            return setShowModal(false);
+          }}
           handleSubmitPost={handleSubmitPost}
           isLoading={loading}
         />

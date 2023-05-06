@@ -34,6 +34,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
   const quillRef = useRef<ReactQuill>(null);
   const { setActiveFlow, setEditorValue, editorValue } =
     useContext(CreatePostContext);
+
   const Header: React.FC = () => (
     <div className="flex flex-wrap border-b-1 border-neutral-200 items-center">
       <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
@@ -62,10 +63,10 @@ const CreatePost: React.FC<ICreatePostProps> = ({
             data?.content?.editor || (editorValue.json as DeltaStatic)
           }
           ref={quillRef}
-          toolbar={(isCharLimit: boolean) => (
+          renderToolbar={(isCharLimit: boolean) => (
             <Toolbar isCharLimit={isCharLimit} />
           )}
-          previewLink={(
+          renderPreviewLink={(
             previewUrl: string,
             setPreviewUrl: (previewUrl: string) => void,
             setIsPreviewRemove: (isPreviewRemove: boolean) => void,

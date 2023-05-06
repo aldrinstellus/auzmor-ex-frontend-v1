@@ -8,11 +8,12 @@ import Likes, { ReactionType } from 'components/Reactions';
 import { RenderQuillDelta } from 'components/RenderQuillDelta';
 import { DeltaStatic } from 'quill';
 import FeedPostMenu from './components/FeedPostMenu';
-import { announcementRead, IPost } from 'queries/post';
+import PreviewCard from 'components/PreviewCard';
+import { Metadata } from 'components/PreviewLink/types';
+import { announcementRead, IPost, IGetPost } from 'queries/post';
 import Icon from 'components/Icon';
 import Button, { Size, Variant } from 'components/Button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { IGetPost } from 'queries/post';
 import IconButton, {
   Variant as IconVariant,
   Size as SizeVariant,
@@ -117,7 +118,7 @@ const Post: React.FC<PostProps> = ({ data }) => {
           createdBy={data?.createdBy?.fullName}
         />
         <div className="relative">
-          <FeedPostMenu data={data} />
+          <FeedPostMenu data={data as unknown as IPost} /> {/* Temp fix */}
         </div>
       </div>
       <div className="mx-6">
@@ -125,8 +126,8 @@ const Post: React.FC<PostProps> = ({ data }) => {
         <RenderQuillDelta delta={content} />
         {/* Media Display */}
         <div></div>
+        <PreviewCard metaData={data?.link as Metadata} className="my-2" />
         {/* Reaction and comment repost */}
-
         <div className="border-b border-neutral-100 mt-4"></div>
         <div className="flex flex-row justify-between my-3">
           <div className={`flex flex-row`}>

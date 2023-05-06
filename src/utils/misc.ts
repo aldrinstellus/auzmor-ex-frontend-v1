@@ -13,6 +13,12 @@ export const getInitials = (name: string) => {
     .toLocaleUpperCase();
 };
 
+export const isValidUrl = (url: string) => {
+  const urlPattern =
+    /((https?|ftp):\/\/)?([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}|[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5})(:[0-9]{1,5})?(\/.*)?/gi;
+  return urlPattern.test(url);
+};
+
 export const redirectWithToken = (redirectUrl: string, token: string) => {
   if (process.env.NODE_ENV === 'development') {
     window.location.replace(`http://localhost:3000/feed?accessToken=${token}`);
