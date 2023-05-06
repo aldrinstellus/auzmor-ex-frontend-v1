@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import Modal from 'components/Modal';
 import CreatePost from 'components/PostBuilder/components/CreatePost';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { IPost, createPost, updatePost } from 'queries/post';
 import CreateAnnouncement from './CreateAnnouncement';
 import {
@@ -11,7 +11,6 @@ import {
 } from 'contexts/CreatePostContext';
 import { PostBuilderMode } from '..';
 import { previewLinkRegex } from 'components/RichTextEditor/config';
-import queryClient from 'utils/queryClient';
 
 interface ICreatePostModal {
   showModal: boolean;
@@ -40,6 +39,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     setAnnouncement,
     setEditorValue,
   } = useContext(CreatePostContext);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (data) {
