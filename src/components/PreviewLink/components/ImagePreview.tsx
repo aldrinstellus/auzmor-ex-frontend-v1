@@ -1,6 +1,5 @@
 import React from 'react';
 import { Metadata } from '../types';
-import Card from 'components/Card';
 
 type ImagePreviewProps = {
   metaData: Metadata;
