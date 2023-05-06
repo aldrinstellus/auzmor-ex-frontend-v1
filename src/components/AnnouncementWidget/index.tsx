@@ -11,6 +11,7 @@ import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
 import { humanizeTime } from 'utils/time';
+import { divide } from 'lodash';
 
 export interface IAnnouncementCardProps {}
 
@@ -42,41 +43,49 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
             <Icon name="flashIcon" />
             <div className="text-base font-bold">Announcement</div>
           </div>
-          {/* <div className="flex justify-center items-center text-white text-xs font-bold space-x-4 py-3 bg-blue-700">
-          </div> */}
-          <div className="px-3 mt-5">
-            {data?.data?.result?.data.length === 0 && <></>}
-            <div className="flex items-center space-x-3">
-              <div>
-                <Avatar name={user?.name || ''} image="" size={40} />
-              </div>
-              <div>
-                <div className="space-x-1 text-sm">
-                  <b>{user?.name}</b>
-                  <span>Shared a post</span>
+          <>
+            {isLoading ? (
+              <div>Loading...</div>
+            ) : (
+              <>
+                {data?.data?.result?.data.length === 0 && (
+                  <div>No pending announcement</div>
+                )}
+                <div className="px-3 mt-5">
+                  <div className="flex items-center space-x-3">
+                    <div>
+                      <Avatar name={user?.name || ''} image="" size={40} />
+                    </div>
+                    <div>
+                      <div className="space-x-1 text-sm">
+                        <b>{user?.name}</b>
+                        <span>Shared a post</span>
+                      </div>
+                      <div className="text-xs">
+                        {humanizeTime(data?.data?.result?.data?.[0]?.createdAt)}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-5 flex justify-center items-center">
+                    {data?.data?.result?.data[0]?.content?.text}
+                  </div>
                 </div>
-                <div className="text-xs">
-                  {humanizeTime(data?.data?.result?.data?.[0]?.createdAt)}
-                </div>
-              </div>
-            </div>
-            <div className="mt-5">
-              {data?.data?.result?.data[0]?.content?.text}
-            </div>
-          </div>
-          <Button
-            label="Mark as read"
-            variant={Variant.Tertiary}
-            className="border-2 border-neutral-200 mt-4"
-            onClick={() => {
-              acknowledgeAnnouncement.mutate({
-                entityId: data?.data?.result?.data[0].id,
-                entityType: 'post',
-                type: 'acknowledge',
-                reaction: 'mark_read',
-              });
-            }}
-          />
+                <Button
+                  label="Mark as read"
+                  variant={Variant.Tertiary}
+                  className="border-2 border-neutral-200 mt-4"
+                  onClick={() => {
+                    acknowledgeAnnouncement.mutate({
+                      entityId: data?.data?.result?.data[0].id,
+                      entityType: 'post',
+                      type: 'acknowledge',
+                      reaction: 'mark_read',
+                    });
+                  }}
+                />
+              </>
+            )}
+          </>
         </Card>
       </div>
     </div>

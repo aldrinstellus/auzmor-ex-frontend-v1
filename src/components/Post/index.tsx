@@ -11,7 +11,7 @@ import FeedPostMenu from './components/FeedPostMenu';
 import { announcementRead, IPost } from 'queries/post';
 import Icon from 'components/Icon';
 import Button, { Size, Variant } from 'components/Button';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { IGetPost } from 'queries/post';
 import IconButton, {
   Variant as IconVariant,
@@ -64,14 +64,17 @@ const Post: React.FC<PostProps> = ({ data }) => {
     0,
   );
 
+  const queryClient = useQueryClient();
+
   const isAnnouncement = data?.isAnnouncement;
 
   const acknowledgeAnnouncement = useMutation({
     mutationKey: ['acknowledgeAnnouncement'],
     mutationFn: announcementRead,
     onError: (error) => console.log(error),
-    onSuccess: (data, variables, context) => {
+    onSuccess: async (data, variables, context) => {
       console.log('data==>', data);
+      await queryClient.invalidateQueries(['acknowledgeAnnouncement']);
     },
   });
 
