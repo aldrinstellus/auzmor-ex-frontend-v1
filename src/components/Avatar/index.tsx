@@ -4,7 +4,7 @@ import isDarkColor from 'is-dark-color';
 import { getInitials } from 'utils/misc';
 
 export type AvatarProps = {
-  name: string;
+  name?: string;
   onClick?: MouseEventHandler<Element>;
   className?: string;
   image?: string;
@@ -16,7 +16,7 @@ export type AvatarProps = {
 };
 
 const Avatar: React.FC<AvatarProps> = ({
-  name,
+  name = 'U',
   className = '',
   round = true,
   active = true,

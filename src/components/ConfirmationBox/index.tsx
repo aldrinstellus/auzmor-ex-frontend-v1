@@ -20,6 +20,7 @@ export type ConfirmationBoxProps = {
   description: string | ReactNode;
   discard: Discard;
   success: Success;
+  isLoading?: boolean;
 };
 
 const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({
@@ -29,9 +30,14 @@ const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({
   description,
   discard,
   success,
+  isLoading = false,
 }) => {
   return (
-    <Modal open={open} closeModal={onClose} className="max-w-md">
+    <Modal
+      open={open}
+      closeModal={() => (isLoading ? null : onClose())}
+      className="max-w-md"
+    >
       <div>
         <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
           {title}
@@ -48,6 +54,7 @@ const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({
           <Button
             onClick={discard.onCancel}
             label={discard.label}
+            loading={isLoading}
             className={`!rounded-17xl !px-4 !py-2 !mr-3 !border-2 !border-neutral-200  !${discard.className}`}
           />
         </div>
