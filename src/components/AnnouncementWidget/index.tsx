@@ -1,7 +1,7 @@
 import React from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Card from 'components/Card';
-import { announcementRead, useFetchAnnouncements } from 'queries/post';
+import { announcementRead, useAnnouncementsWidget } from 'queries/post';
 import Button, { Variant } from 'components/Button';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
@@ -18,13 +18,12 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
     mutationFn: announcementRead,
     onError: (error) => console.log(error),
     onSuccess: async (data, variables, context) => {
-      console.log('data==>', data);
       await queryClient.invalidateQueries(['announcements-widget']);
       await queryClient.invalidateQueries(['feed']);
     },
   });
 
-  const { data, isLoading } = useFetchAnnouncements();
+  const { data, isLoading } = useAnnouncementsWidget();
 
   const { user } = useAuth();
 

@@ -260,7 +260,7 @@ export const fetchAnnouncement = async (postType: string, limit: number) => {
   return data;
 };
 
-export const useFetchAnnouncements = () =>
+export const useAnnouncementsWidget = () =>
   useQuery({
     queryKey: ['announcements-widget'],
     queryFn: () => fetchAnnouncement('ANNOUNCEMENT', 1),
