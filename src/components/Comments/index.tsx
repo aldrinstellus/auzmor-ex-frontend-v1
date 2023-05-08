@@ -7,6 +7,7 @@ import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import { ICreated, IMyReactions } from 'pages/Feed';
 import { MyObjectType } from 'queries/post';
+import Spinner from 'components/Spinner';
 
 interface CommentsProps {
   entityId: string;
@@ -64,8 +65,8 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
       <div className="border-b border-neutral-200 my-4"></div>
 
       {isLoading ? (
-        <div className="flex justify-center items-center py-5">
-          Loading ...{' '}
+        <div className="flex justify-center items-center py-10">
+          <Spinner color="#FFFFFF" />
         </div>
       ) : (
         commentData && (
