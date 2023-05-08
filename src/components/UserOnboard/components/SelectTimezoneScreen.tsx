@@ -1,10 +1,23 @@
 import React, { ReactElement } from 'react';
 import timezones from 'utils/timezones.json';
 import OnboardTimezone from 'images/onboard-timezone.png';
+import Layout, { FieldType } from 'components/Form';
+import { useForm } from 'react-hook-form';
+import Button, { Type } from 'components/Button';
 
 const SelectTimezoneScreen: React.FC = (): ReactElement => {
   // Note: The timezone selector dropdown has to be a form component here.
   // console.log(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors, isValid },
+    setValue,
+    getValues,
+  } = useForm({
+    mode: 'onChange',
+  });
   return (
     <div className="flex items-center flex-col justify-between gap-y-4 px-10">
       <img src={OnboardTimezone} />
@@ -14,18 +27,24 @@ const SelectTimezoneScreen: React.FC = (): ReactElement => {
       <p className="font-normal text-sm text-neutral-500">
         Please select your timezone from the options given below
       </p>
-      <select
-        name="Select your timezone"
-        className="p-2 rounded-full bg-white border border-neutral-200"
-        onChange={(e) => console.log(e.target.value)}
-      >
-        {timezones.map((timezone) => (
-          <option key={timezone.text} value={timezone.abbr}>
-            {timezone.text}
-          </option>
-        ))}
-      </select>
-      {/* <Dropdown/> */}
+      <form onSubmit={() => console.log('submitted')}>
+        <Layout
+          className="min-w-[450px] max-w-[450px]"
+          fields={[
+            {
+              type: FieldType.SingleSelect,
+              name: 'timezone',
+              control,
+              options: timezones.map((timezone) => ({
+                label: timezone.text,
+                value: timezone.abbr,
+              })),
+              // defaultValue: '(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi',
+              placeholder: 'Select your timezone',
+            },
+          ]}
+        />
+      </form>
     </div>
   );
 };
