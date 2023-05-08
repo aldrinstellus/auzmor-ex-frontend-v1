@@ -83,6 +83,22 @@ export interface IReaction {
   entityType: string;
   type: string;
   reaction: string;
+  myReactions?: {
+    createdBy: {
+      department?: string;
+      designation?: string;
+      fullName?: string;
+      profileImage: {
+        blurHash?: string;
+      };
+      status?: string;
+      userId?: string;
+      workLocation?: string;
+    };
+    reaction: string;
+    type: string;
+    id: string;
+  };
   myAcknowledgement?: {
     // createdBy: {
     //   department?: string;
@@ -99,25 +115,12 @@ export interface IReaction {
     type: string;
     id: string;
   };
-  myReactions?: [
-    {
-      createdBy: {
-        department?: string;
-        designation?: string;
-        fullName?: string;
-        profileImage: {
-          blurHash?: string;
-        };
-        status?: string;
-        userId?: string;
-        workLocation?: string;
-      };
-      reaction: string;
-      type: string;
-      id: string;
-    },
-  ];
+
   reactionCount?: object;
+  turnOffComments?: boolean;
+  commentsCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface MyObjectType {
@@ -161,9 +164,23 @@ export interface IGetPost {
   };
   link: Metadata;
   id: string;
-  entityType: string;
-  reaction: string;
-  // myReactions: IMyReactions[];
+  myReaction: {
+    createdBy: {
+      department?: string;
+      designation?: string;
+      fullName?: string;
+      profileImage: {
+        blurHash?: string;
+        url?: string;
+      };
+      status?: string;
+      userId?: string;
+      workLocation?: string;
+    };
+    reaction: string;
+    type: string;
+    id: string;
+  };
   myAcknowledgement?: {
     // createdBy: {
     //   department?: string;
@@ -180,24 +197,6 @@ export interface IGetPost {
     type: string;
     id: string;
   };
-  myReactions?: [
-    {
-      createdBy: {
-        department?: string;
-        designation?: string;
-        fullName?: string;
-        profileImage: {
-          blurHash?: string;
-        };
-        status?: string;
-        userId?: string;
-        workLocation?: string;
-      };
-      reaction: string;
-      type: string;
-      id: string;
-    },
-  ];
   reactionsCount: MyObjectType;
   turnOffComments: boolean;
   commentsCount: number;

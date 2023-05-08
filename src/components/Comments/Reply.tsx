@@ -15,38 +15,24 @@ import { iconsStyle } from 'components/Post';
 import { MyObjectType } from 'queries/post';
 import useAuth from 'hooks/useAuth';
 import { CommentForm } from './CommentForm';
-import { Reply } from './Reply';
 
-interface CommentProps {
+interface ReplyProps {
   comment: IComment;
   className?: string;
   activeComment: activeCommentsDataType | null;
   setActiveComment: (activeComment: activeCommentsDataType) => void;
-  replyInputBox: boolean;
-  setReplyInputBox: (inputBox: boolean) => void;
 }
 
-export const Comment: React.FC<CommentProps> = ({
+export const Reply: React.FC<ReplyProps> = ({
   comment,
   className,
   activeComment,
   setActiveComment,
-  replyInputBox,
-  setReplyInputBox,
 }) => {
   const queryClient = useQueryClient();
-  const { data, isLoading } = useComments({
-    entityId: comment.id,
-    entityType: 'comment',
-    limit: 30,
-    page: 1,
-  });
-
-  const replies = data?.result?.data;
+  const [replyInputBox, setReplyInputBox] = useState(false);
   const { user } = useAuth();
   const createdAt = getTime(comment.updatedAt);
-
-  const [showReplies, setShowReplies] = useState(false);
 
   const isReplying =
     activeComment &&
@@ -139,7 +125,7 @@ export const Comment: React.FC<CommentProps> = ({
         <div className=" text-neutral-900  font-normal text-sm mt-4">
           {comment.content.text}
         </div>
-        <div className="flex flex-row justify-between mt-4 cursor-pointer">
+        <div className="flex flex-row justify-between mt-3 cursor-pointer">
           <div className={`flex flex-row`}>
             {keys > 0 && (
               <div className="mr-2">
@@ -158,13 +144,12 @@ export const Comment: React.FC<CommentProps> = ({
                   ))}
               </div>
             )}
-
             <div className={`flex text-sm font-normal text-neutral-500 mt-0.5`}>
               {totalCount} reacted
             </div>
           </div>
         </div>
-        <div className="flex justify-between mt-4 pb-3 cursor-pointer">
+        <div className="flex justify-between pt-3 pb-3 cursor-pointer">
           <div className="flex">
             <Likes
               reaction={comment?.myReaction?.reaction || ''}
@@ -181,12 +166,6 @@ export const Comment: React.FC<CommentProps> = ({
                 } else {
                   setReplyInputBox(true);
                 }
-
-                if (showReplies) {
-                  setShowReplies(false);
-                } else {
-                  setShowReplies(true);
-                }
                 setActiveComment({ id: comment.id, type: 'replying' });
               }}
             >
@@ -196,44 +175,20 @@ export const Comment: React.FC<CommentProps> = ({
                 variant={IconVariant.Primary}
               />
               <div className="text-xs font-normal text-neutral-500 ml-1.5">
-                {comment?.repliesCount}
-                {comment.repliesCount > 0 ? ' Replies' : ' Reply'}
+                Comment
               </div>
             </div>
           </div>
           <div></div>
         </div>
 
-        {isReplying && replyInputBox && (
-          <div className="flex flex-row items-center justify-between p-0">
-            <div className="flex-none grow-0 order-none pr-2">
-              <Avatar name={user?.name || 'U'} size={32} />
-            </div>
-            <CommentForm
-              className="w-full my-1"
-              entityId={comment.id}
-              entityType="comment"
-            />
-          </div>
-        )}
-        {showReplies && isLoading ? (
-          <div className="flex justify-center items-center py-5">
-            Loading ...{' '}
-          </div>
-        ) : (
-          showReplies &&
-          replies?.length > 0 && (
-            <div className="ml-8">
-              {replies.map((reply: any) => (
-                <Reply
-                  comment={reply}
-                  key={reply.id}
-                  activeComment={activeComment}
-                  setActiveComment={setActiveComment}
-                />
-              ))}
-            </div>
-          )
+        {replyInputBox && (
+          <CommentForm
+            className="my-1"
+            entityId={comment.entityId}
+            entityType="comment"
+            setReplyInputBox={setReplyInputBox}
+          />
         )}
       </div>
     </div>

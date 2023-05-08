@@ -4,21 +4,25 @@ import IconButton, {
   Size as SizeVariant,
 } from 'components/IconButton';
 import RichTextEditor from 'components/RichTextEditor';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createComments } from 'queries/reaction';
-import queryClient from 'utils/queryClient';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
 
 interface CommentFormProps {
   className?: string;
-  entityId?: string;
+  entityId: string;
+  entityType: string;
+  setReplyInputBox?: (inputBox: boolean) => void;
 }
 
 export const CommentForm: React.FC<CommentFormProps> = ({
   className = '',
   entityId,
+  entityType,
+  setReplyInputBox,
 }) => {
+  const queryClient = useQueryClient();
   const quillRef = useRef<ReactQuill>(null);
 
   const createCommentMutation = useMutation({
@@ -28,6 +32,9 @@ export const CommentForm: React.FC<CommentFormProps> = ({
       console.log(error);
     },
     onSuccess: (data: any, variables, context) => {
+      if (setReplyInputBox) {
+        setReplyInputBox(false);
+      }
       quillRef.current?.setEditorContents(quillRef.current?.getEditor(), '');
       queryClient.invalidateQueries({ queryKey: ['comments'] });
     },
@@ -49,7 +56,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({
     };
     const data = {
       entityId: entityId || '',
-      entityType: 'post',
+      entityType: entityType,
       content: commentData,
       hashtags: [],
       mentions: [],
@@ -63,12 +70,12 @@ export const CommentForm: React.FC<CommentFormProps> = ({
       <div className="flex items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full">
         <RichTextEditor
           placeholder="Leave a Comment..."
-          className="max-h-6 overflow-y-auto w-full"
+          className="max-h-18 overflow-y-auto w-[70%] max-w-[70%]"
           ref={quillRef}
         />
       </div>
 
-      <div className="flex flex-row items-center z-10 -ml-40">
+      <div className="flex flex-row items-center z-10 -ml-32">
         <IconButton
           icon={'emojiHappy'}
           className="mx-2 !p-0 cursor-pointer !bg-inherit hover:bg-inherit"

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Comment } from './Comment';
 import { CommentForm } from './CommentForm';
 import { useComments } from 'queries/reaction';
@@ -10,6 +10,11 @@ import { MyObjectType } from 'queries/post';
 
 interface CommentsProps {
   entityId: string;
+}
+
+export interface activeCommentsDataType {
+  id: string;
+  type: string;
 }
 
 export interface IComment {
@@ -30,11 +35,12 @@ export interface IComment {
   id: string;
   myReaction: IMyReactions;
   reactionsCount: MyObjectType;
+  repliesCount: number;
 }
 
 const Comments: React.FC<CommentsProps> = ({ entityId }) => {
   const { user } = useAuth();
-  const { data } = useComments({
+  const { data, isLoading } = useComments({
     entityId: entityId,
     entityType: 'post',
     limit: 30,
@@ -43,22 +49,40 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
 
   const commentData = data?.result?.data;
 
+  const [activeComment, setActiveComment] =
+    useState<activeCommentsDataType | null>(null);
+  const [replyInputBox, setReplyInputBox] = useState(false);
+
   return (
     <div>
       <div className="flex flex-row items-center justify-between p-0">
         <div className="flex-none grow-0 order-none pr-2">
           <Avatar name={user?.name || 'U'} size={32} />
         </div>
-        <CommentForm className="w-full" entityId={entityId} />
+        <CommentForm className="w-full" entityId={entityId} entityType="post" />
       </div>
       <div className="border-b border-neutral-200 my-4"></div>
 
-      {commentData && (
-        <div>
-          {commentData.map((rootComment: IComment, i: any) => (
-            <Comment key={rootComment.id} comment={rootComment} className="" />
-          ))}
+      {isLoading ? (
+        <div className="flex justify-center items-center py-5">
+          Loading ...{' '}
         </div>
+      ) : (
+        commentData && (
+          <div>
+            {commentData.map((rootComment: IComment, i: any) => (
+              <Comment
+                key={rootComment.id}
+                comment={rootComment}
+                className=""
+                setActiveComment={setActiveComment}
+                activeComment={activeComment}
+                setReplyInputBox={setReplyInputBox}
+                replyInputBox={replyInputBox}
+              />
+            ))}
+          </div>
+        )
       )}
     </div>
   );

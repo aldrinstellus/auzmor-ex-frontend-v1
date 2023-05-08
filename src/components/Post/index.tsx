@@ -24,7 +24,7 @@ import { humanizeTime } from 'utils/time';
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
     {
-      'bg-blue-100': key === ReactionType.Like,
+      'bg-indigo-100': key === ReactionType.Like,
     },
 
     {
@@ -37,7 +37,7 @@ export const iconsStyle = (key: string) => {
       'bg-red-100': key === ReactionType.Love,
     },
     {
-      'bg-amber-100': key === ReactionType.Funny,
+      'bg-yellow-100': key === ReactionType.Funny,
     },
     {
       'bg-yellow-100': key === ReactionType.Insightful,
@@ -55,8 +55,8 @@ type PostProps = {
 const Post: React.FC<PostProps> = ({ data }) => {
   const [showComments, setShowComments] = useState(false);
 
-  const reaction = data?.myReactions?.[0]?.reaction;
-  const reactionId = data?.myReactions?.[0]?.id;
+  const reaction = data?.myReaction?.reaction;
+  const reactionId = data?.myReaction?.id;
 
   const content: DeltaStatic = data?.content?.editor;
   const keys = Object.keys(data.reactionsCount).length;
@@ -81,8 +81,11 @@ const Post: React.FC<PostProps> = ({ data }) => {
 
   return (
     <Card>
-      <div>
+      {/* <div>
         {isAnnouncement &&
+          !data?.myReaction?.some(
+            (reaction) => reaction.reaction === 'mark_read',
+          ) && (
           !(data?.myAcknowledgement?.reaction === 'mark_read') && (
             <div className="flex justify-between items-center bg-blue-700 -mb-4 p-2 rounded-t-9xl">
               <div className="flex justify-center items-center text-white text-xs font-bold space-x-4">
@@ -107,7 +110,7 @@ const Post: React.FC<PostProps> = ({ data }) => {
               />
             </div>
           )}
-      </div>
+      </div> */}
       <div className="flex justify-between items-center">
         <Actor
           visibility="Everyone"
@@ -126,6 +129,7 @@ const Post: React.FC<PostProps> = ({ data }) => {
         <div></div>
         <PreviewCard metaData={data?.link as Metadata} className="my-2" />
         {/* Reaction and comment repost */}
+
         <div className="border-b border-neutral-100 mt-4"></div>
         <div className="flex flex-row justify-between my-3">
           <div className={`flex flex-row`}>
@@ -138,16 +142,16 @@ const Post: React.FC<PostProps> = ({ data }) => {
                       icon={key}
                       size={SizeVariant.Small}
                       key={key}
-                      className={`!p-1 rounded-17xl  ${iconsStyle(
-                        key,
-                      )} hover:${iconsStyle(key)} `}
+                      className={`!p-1 rounded-17xl ${
+                        i > 0 ? '-ml-2 z-1' : ''
+                      } ${iconsStyle(key)} hover:${iconsStyle(key)} `}
                       variant={IconVariant.Primary}
                     />
                   ))}
               </div>
             )}
 
-            <div className={`flex text-sm font-normal text-neutral-500 mt-1  `}>
+            <div className={`flex text-sm font-normal text-neutral-500 mt-0.5`}>
               {totalCount} reacted
             </div>
           </div>
@@ -158,10 +162,10 @@ const Post: React.FC<PostProps> = ({ data }) => {
           </div>
         </div>
 
-        <div className="border-b border-neutral-100"></div>
+        <div className="border-b border-neutral-100 mt-3"></div>
 
         <div className="flex justify-between pt-4 pb-6">
-          <div className="flex">
+          <div className="flex ">
             <Likes
               reaction={reaction || ''}
               entityId={data?.id || ''}

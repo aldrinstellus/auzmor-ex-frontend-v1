@@ -1,19 +1,18 @@
+import React, { ReactNode } from 'react';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
-import Divider from 'components/Divider';
 import useAuth from 'hooks/useAuth';
-import React, { ReactNode } from 'react';
-import { IMenuItem } from 'components/PopupMenu';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import clsx from 'clsx';
+import { IMenuItem } from 'components/PopupMenu';
 
 export interface ICreatePostCardProps {
   setShowModal: (flag: boolean) => void;
 }
 
 export interface IPostTypeIcon {
-  id: string;
+  id: number;
   label: string;
   icon: ReactNode;
   menuItems: IMenuItem[];
@@ -22,7 +21,7 @@ export interface IPostTypeIcon {
 
 export const postTypeMapIcons: IPostTypeIcon[] = [
   {
-    id: '1',
+    id: 1,
     label: 'Media',
     icon: <Icon name="imageFilled" fill="#000000" size={14} />,
     menuItems: [
@@ -31,7 +30,7 @@ export const postTypeMapIcons: IPostTypeIcon[] = [
           <div className="flex px-6 py-3 items-center hover:bg-primary-50">
             <Icon
               name="image"
-              size={10}
+              size={16}
               className="p-2 rounded-7xl border mr-2.5 bg-white"
               fill={twConfig.theme.colors.primary['500']}
             />
@@ -75,21 +74,21 @@ export const postTypeMapIcons: IPostTypeIcon[] = [
     divider: true,
   },
   {
-    id: '2',
+    id: 2,
     label: 'Shoutout',
     icon: <Icon name="magicStarFilled" fill="#000000" size={14} />,
     menuItems: [],
     divider: true,
   },
   {
-    id: '3',
+    id: 3,
     label: 'Events',
     icon: <Icon name="calendarFilledTwo" fill="#000000" size={14} />,
     menuItems: [],
     divider: true,
   },
   {
-    id: '4',
+    id: 4,
     label: 'Polls',
     icon: <Icon name="chartFilled" fill="#000000" size={14} />,
     menuItems: [],
@@ -109,7 +108,6 @@ const CreatePostCard: React.FC<ICreatePostCardProps> = ({ setShowModal }) => {
     <Card className="bg-white px-2">
       <div className="flex items-center px-4 pt-6 pb-4">
         <Avatar size={32} name={user?.name} active={false} />
-        {/* replace with component library */}
         <input
           type="input"
           className="w-full h-11 border border-neutral-200 rounded-19xl ml-3 px-5 py-3 text-sm font-medium outline-none text-neutral-500"
