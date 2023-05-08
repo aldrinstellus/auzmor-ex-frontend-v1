@@ -1,11 +1,7 @@
 import React from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Card from 'components/Card';
-import {
-  announcementRead,
-  fetchAnnouncement,
-  useFetchAnnouncements,
-} from 'queries/post';
+import { announcementRead, useFetchAnnouncements } from 'queries/post';
 import Button, { Variant } from 'components/Button';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';

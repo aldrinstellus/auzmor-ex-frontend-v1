@@ -10,12 +10,7 @@ import { DeltaStatic } from 'quill';
 import FeedPostMenu from './components/FeedPostMenu';
 import PreviewCard from 'components/PreviewCard';
 import { Metadata } from 'components/PreviewLink/types';
-import {
-  announcementRead,
-  IPost,
-  IGetPost,
-  useFetchAnnouncements,
-} from 'queries/post';
+import { announcementRead, IPost, IGetPost } from 'queries/post';
 import Icon from 'components/Icon';
 import Button, { Size, Variant } from 'components/Button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -74,7 +69,7 @@ const Post: React.FC<PostProps> = ({ data }) => {
 
   const isAnnouncement = data?.isAnnouncement;
 
-  const acknowledgeAnnouncement = useMutation({
+  const acknowledgeMutation = useMutation({
     mutationKey: ['acknowledge-announcement'],
     mutationFn: announcementRead,
     onError: (error) => console.log(error),
@@ -102,9 +97,9 @@ const Post: React.FC<PostProps> = ({ data }) => {
                 label={'Mark as read'}
                 size={Size.Small}
                 variant={Variant.Tertiary}
-                loading={acknowledgeAnnouncement.isLoading}
+                loading={acknowledgeMutation.isLoading}
                 onClick={() => {
-                  acknowledgeAnnouncement.mutate({
+                  acknowledgeMutation.mutate({
                     entityId: data?.id,
                     entityType: 'post',
                     type: 'acknowledge',
