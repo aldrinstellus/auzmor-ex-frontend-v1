@@ -60,6 +60,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     onError: (error) => console.log(error),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['feed']);
+      await queryClient.invalidateQueries(['announcements-widget']);
       setShowModal(false);
     },
   });
@@ -70,6 +71,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       updatePost(payload.id || '', payload as IPost),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['feed']);
+      await queryClient.invalidateQueries(['announcements-widget']);
       setShowModal(false);
     },
   });

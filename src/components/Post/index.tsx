@@ -10,7 +10,12 @@ import { DeltaStatic } from 'quill';
 import FeedPostMenu from './components/FeedPostMenu';
 import PreviewCard from 'components/PreviewCard';
 import { Metadata } from 'components/PreviewLink/types';
-import { announcementRead, IPost, IGetPost } from 'queries/post';
+import {
+  announcementRead,
+  IPost,
+  IGetPost,
+  useFetchAnnouncements,
+} from 'queries/post';
 import Icon from 'components/Icon';
 import Button, { Size, Variant } from 'components/Button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -70,12 +75,13 @@ const Post: React.FC<PostProps> = ({ data }) => {
   const isAnnouncement = data?.isAnnouncement;
 
   const acknowledgeAnnouncement = useMutation({
-    mutationKey: ['acknowledgeAnnouncement'],
+    mutationKey: ['acknowledge-announcement'],
     mutationFn: announcementRead,
     onError: (error) => console.log(error),
     onSuccess: async (data, variables, context) => {
       console.log('data==>', data);
-      await queryClient.invalidateQueries(['acknowledgeAnnouncement']);
+      await queryClient.invalidateQueries(['feed']);
+      await queryClient.invalidateQueries(['announcements-widget']);
     },
   });
 
@@ -96,6 +102,7 @@ const Post: React.FC<PostProps> = ({ data }) => {
                 label={'Mark as read'}
                 size={Size.Small}
                 variant={Variant.Tertiary}
+                loading={acknowledgeAnnouncement.isLoading}
                 onClick={() => {
                   acknowledgeAnnouncement.mutate({
                     entityId: data?.id,
