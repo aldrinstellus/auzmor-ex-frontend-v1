@@ -41,6 +41,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     editorValue,
     setAnnouncement,
     setEditorValue,
+    setMedia,
   } = useContext(CreatePostContext);
   const queryClient = useQueryClient();
 
@@ -51,6 +52,9 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       setEditorValue(data.content.editor);
       if (data.isAnnouncement) {
         setAnnouncement({ label: 'Custom Date', value: data.announcement.end });
+      }
+      if (data?.files?.length) {
+        setMedia(data?.files);
       }
     }
   }, []);
