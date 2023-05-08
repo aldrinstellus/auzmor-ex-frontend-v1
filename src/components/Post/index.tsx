@@ -81,11 +81,8 @@ const Post: React.FC<PostProps> = ({ data }) => {
 
   return (
     <Card>
-      {/* <div>
+      <div>
         {isAnnouncement &&
-          !data?.myReaction?.some(
-            (reaction) => reaction.reaction === 'mark_read',
-          ) && (
           !(data?.myAcknowledgement?.reaction === 'mark_read') && (
             <div className="flex justify-between items-center bg-blue-700 -mb-4 p-2 rounded-t-9xl">
               <div className="flex justify-center items-center text-white text-xs font-bold space-x-4">
@@ -110,7 +107,7 @@ const Post: React.FC<PostProps> = ({ data }) => {
               />
             </div>
           )}
-      </div> */}
+      </div>
       <div className="flex justify-between items-center">
         <Actor
           visibility="Everyone"
