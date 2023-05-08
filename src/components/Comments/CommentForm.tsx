@@ -4,9 +4,8 @@ import IconButton, {
   Size as SizeVariant,
 } from 'components/IconButton';
 import RichTextEditor from 'components/RichTextEditor';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createComments } from 'queries/reaction';
-import queryClient from 'utils/queryClient';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
 
@@ -23,6 +22,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({
   entityType,
   setReplyInputBox,
 }) => {
+  const queryClient = useQueryClient();
   const quillRef = useRef<ReactQuill>(null);
 
   const createCommentMutation = useMutation({
