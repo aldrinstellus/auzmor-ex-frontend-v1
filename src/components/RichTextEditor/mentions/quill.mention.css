@@ -52,3 +52,14 @@
   color: #10b981;
   font-weight: 500;
 }
+
+.hashtag {
+  color: #10b981;
+  font-weight: 500;
+}
+
+.hashtag:hover {
+  color: #059669;
+  text-decoration: underline;
+  cursor: pointer;
+}

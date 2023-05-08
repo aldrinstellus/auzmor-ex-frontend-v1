@@ -1,4 +1,4 @@
-import { produce } from 'immer';
+import { IMention } from 'queries/post';
 import React from 'react';
 
 export const formatText = (text: string) => {
@@ -21,4 +21,13 @@ export const getStyles = (attributes: any) => {
     draft += 'underline-offset-auto	';
   }
   return draft;
+};
+
+export const getMentionProps = (mentions: IMention[], mention: any) => {
+  const result = mentions.find((item) => item?.entityId === mention.id);
+  return {
+    fullName: result?.name || mention.value,
+    email: result?.email,
+    image: result?.image,
+  };
 };

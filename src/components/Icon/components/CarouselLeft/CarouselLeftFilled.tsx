@@ -1,32 +1,32 @@
 import * as React from 'react';
 import { SVGProps } from 'react';
 
-type IconProps = {
+interface IconProps {
   size?: number;
   fill?: string;
-};
+}
 
-const SvgDropdownArrowFilled = ({
-  size = 14,
+const SvgCarouselLeftFilled = ({
+  size = 60,
   fill = '#171717',
-  ...props
 }: SVGProps<SVGSVGElement> & IconProps) => (
   <svg
     width={size}
     height={size}
-    viewBox="0 0 14 7"
+    viewBox="0 0 32 32"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
+    <rect x="0.5" y="0.5" width="31" height="31" rx="7.5" fill="white" />
     <path
-      d="M12.2787 0.96875L7.93208 5.31542C7.41875 5.82875 6.57875 5.82875 6.06542 5.31542L1.71875 0.96875"
+      d="M17.9973 21.2787L13.6506 16.9321C13.1373 16.4187 13.1373 15.5788 13.6506 15.0654L17.9973 10.7188"
       stroke={fill}
-      strokeWidth="1.5"
       strokeMiterlimit="10"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
+    <rect x="0.5" y="0.5" width="31" height="31" rx="7.5" stroke="#E5E5E5" />
   </svg>
 );
 
-export default SvgDropdownArrowFilled;
+export default SvgCarouselLeftFilled;

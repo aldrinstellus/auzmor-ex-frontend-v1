@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Carousel from 'components/Carousel';
 import MediaRender from './components/MediaRender';
 import Button, { Variant as ButtonVariant, Size } from 'components/Button';
 import { twConfig } from 'utils/misc';
 import Icon from 'components/Icon';
 import { IMedia } from 'contexts/CreatePostContext';
+import useModal from 'hooks/useModal';
 
 export enum Mode {
   View = 'VIEW',
@@ -33,11 +35,32 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
   onEditButtonClick = () => {},
   onClick = () => {},
 }) => {
+  const [mediaIndex, setMediaIndex] = useState<number>(-1);
+  const [open, openModal, closeModal] = useModal(true);
+
+  const setIndexAndOpenCarousel = (index: number) => {
+    setMediaIndex(index);
+    openModal();
+  };
+
+  const closeModalAndResetMediaIndex = () => {
+    closeModal();
+    setMediaIndex(-1);
+  };
   const getLayout = () => {
     if (media.length === 0) {
     } else if (media.length === 1) {
       return (
-        <MediaRender data={media[0]} onClick={(e) => onClick(e, 1, media[0])} />
+        <MediaRender
+          data={media[0]}
+          onClick={(e) => {
+            if (mode === Mode.View) {
+              setIndexAndOpenCarousel(0);
+            } else {
+              onClick(e, 1, media[0]);
+            }
+          }}
+        />
       );
     } else if (media.length === 2) {
       return (
@@ -45,11 +68,24 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
           <MediaRender
             data={media[0]}
             localClassName="mr-4"
-            onClick={(e) => onClick(e, 1, media[0])}
+            onClick={(e) => {
+              if (mode === Mode.View) {
+                setIndexAndOpenCarousel(0);
+              } else {
+                onClick(e, 1, media[0]);
+              }
+            }}
           />
+
           <MediaRender
             data={media[1]}
-            onClick={(e) => onClick(e, 2, media[1])}
+            onClick={(e) => {
+              if (mode === Mode.View) {
+                setIndexAndOpenCarousel(1);
+              } else {
+                onClick(e, 2, media[1]);
+              }
+            }}
           />
         </div>
       );
@@ -59,18 +95,36 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
           <div className="mr-4">
             <MediaRender
               data={media[0]}
-              onClick={(e) => onClick(e, 1, media[0])}
+              localClassName="mr-4"
+              onClick={(e) => {
+                if (mode === Mode.View) {
+                  setIndexAndOpenCarousel(0);
+                } else {
+                  onClick(e, 1, media[0]);
+                }
+              }}
             />
           </div>
           <div className="flex flex-col">
             <MediaRender
               data={media[1]}
-              localClassName="mb-4"
-              onClick={(e) => onClick(e, 2, media[1])}
+              onClick={(e) => {
+                if (mode === Mode.View) {
+                  setIndexAndOpenCarousel(1);
+                } else {
+                  onClick(e, 2, media[1]);
+                }
+              }}
             />
             <MediaRender
               data={media[2]}
-              onClick={(e) => onClick(e, 3, media[2])}
+              onClick={(e) => {
+                if (mode === Mode.View) {
+                  setIndexAndOpenCarousel(2);
+                } else {
+                  onClick(e, 3, media[2]);
+                }
+              }}
             />
           </div>
         </div>
@@ -82,22 +136,48 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
             <MediaRender
               data={media[0]}
               localClassName="mr-4"
-              onClick={(e) => onClick(e, 1, media[0])}
+              onClick={(e) => {
+                if (mode === Mode.View) {
+                  setIndexAndOpenCarousel(0);
+                } else {
+                  onClick(e, 1, media[0]);
+                }
+              }}
             />
             <MediaRender
               data={media[1]}
-              onClick={(e) => onClick(e, 2, media[1])}
+              localClassName="mr-4"
+              onClick={(e) => {
+                if (mode === Mode.View) {
+                  setIndexAndOpenCarousel(1);
+                } else {
+                  onClick(e, 2, media[1]);
+                }
+              }}
             />
           </div>
           <div className="flex">
             <MediaRender
               data={media[2]}
               localClassName="mr-4"
-              onClick={(e) => onClick(e, 3, media[2])}
+              onClick={(e) => {
+                if (mode === Mode.View) {
+                  setIndexAndOpenCarousel(2);
+                } else {
+                  onClick(e, 3, media[2]);
+                }
+              }}
             />
             <MediaRender
               data={media[3]}
-              onClick={(e) => onClick(e, 4, media[3])}
+              localClassName="mr-4"
+              onClick={(e) => {
+                if (mode === Mode.View) {
+                  setIndexAndOpenCarousel(3);
+                } else {
+                  onClick(e, 4, media[3]);
+                }
+              }}
             />
           </div>
         </div>
@@ -109,27 +189,59 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
             <MediaRender
               data={media[0]}
               localClassName="mr-4"
-              onClick={(e) => onClick(e, 1, media[0])}
+              onClick={(e) => {
+                if (mode === Mode.View) {
+                  setIndexAndOpenCarousel(0);
+                } else {
+                  onClick(e, 1, media[0]);
+                }
+              }}
             />
             <MediaRender
               data={media[1]}
-              onClick={(e) => onClick(e, 2, media[1])}
+              localClassName="mr-4"
+              onClick={(e) => {
+                if (mode === Mode.View) {
+                  setIndexAndOpenCarousel(1);
+                } else {
+                  onClick(e, 2, media[1]);
+                }
+              }}
             />
           </div>
           <div className="flex">
             <MediaRender
               data={media[2]}
               localClassName="mr-4"
-              onClick={(e) => onClick(e, 3, media[2])}
+              onClick={(e) => {
+                if (mode === Mode.View) {
+                  setIndexAndOpenCarousel(2);
+                } else {
+                  onClick(e, 3, media[2]);
+                }
+              }}
             />
             <MediaRender
               data={media[3]}
               localClassName="mr-4"
-              onClick={(e) => onClick(e, 4, media[3])}
+              onClick={(e) => {
+                if (mode === Mode.View) {
+                  setIndexAndOpenCarousel(3);
+                } else {
+                  onClick(e, 4, media[3]);
+                }
+              }}
             />
             <MediaRender
               data={media[4]}
-              onClick={(e) => onClick(e, 5, media[3])}
+              localClassName="mr-4"
+              onClick={(e) => {
+                if (mode === Mode.View) {
+                  setIndexAndOpenCarousel(4);
+                } else {
+                  onClick(e, 5, media[4]);
+                }
+              }}
             />
           </div>
         </div>
@@ -141,28 +253,60 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
             <MediaRender
               data={media[0]}
               localClassName="mr-4"
-              onClick={(e) => onClick(e, 1, media[0])}
+              onClick={(e) => {
+                if (mode === Mode.View) {
+                  setIndexAndOpenCarousel(0);
+                } else {
+                  onClick(e, 1, media[0]);
+                }
+              }}
             />
             <MediaRender
               data={media[1]}
-              onClick={(e) => onClick(e, 2, media[1])}
+              localClassName="mr-4"
+              onClick={(e) => {
+                if (mode === Mode.View) {
+                  setIndexAndOpenCarousel(1);
+                } else {
+                  onClick(e, 2, media[1]);
+                }
+              }}
             />
           </div>
           <div className="flex">
             <MediaRender
               data={media[2]}
               localClassName="mr-4"
-              onClick={(e) => onClick(e, 3, media[2])}
+              onClick={(e) => {
+                if (mode === Mode.View) {
+                  setIndexAndOpenCarousel(2);
+                } else {
+                  onClick(e, 3, media[2]);
+                }
+              }}
             />
             <MediaRender
               data={media[3]}
               localClassName="mr-4"
-              onClick={(e) => onClick(e, 4, media[3])}
+              onClick={(e) => {
+                if (mode === Mode.View) {
+                  setIndexAndOpenCarousel(3);
+                } else {
+                  onClick(e, 4, media[3]);
+                }
+              }}
             />
             <MediaRender
-              data={media[4]}
               overlayCount={media.length - 5}
-              onClick={(e) => onClick(e, 5, media[4])}
+              data={media[4]}
+              localClassName="mr-4"
+              onClick={(e) => {
+                if (mode === Mode.View) {
+                  setIndexAndOpenCarousel(4);
+                } else {
+                  onClick(e, 5, media[4]);
+                }
+              }}
             />
           </div>
         </div>
@@ -207,6 +351,14 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
             </div>
           </div>
         </div>
+      )}
+      {mode === Mode.View && mediaIndex >= 0 && (
+        <Carousel
+          media={media}
+          index={mediaIndex}
+          open={open}
+          closeModal={closeModalAndResetMediaIndex}
+        />
       )}
     </div>
   );

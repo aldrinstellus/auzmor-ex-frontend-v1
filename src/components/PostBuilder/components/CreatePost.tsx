@@ -24,6 +24,7 @@ import Toolbar from 'components/RichTextEditor/toolbar';
 import PreviewLink from 'components/PreviewLink';
 import { IPost } from 'queries/post';
 import { IPostTypeIcon } from 'pages/Feed';
+import Spinner from 'components/Spinner';
 interface ICreatePostProps {
   closeModal: () => void;
   handleSubmitPost: (content: IEditorValue, files: File[]) => void;
@@ -265,9 +266,10 @@ const CreatePost: React.FC<ICreatePostProps> = ({
           <Divider variant={DividerVariant.Vertical} className="!h-8" />
         </div>
         <div className="flex items-center">
-          <div></div>
           <Button
-            label={'Post'}
+            label={isLoading ? <Spinner color="#FFFFFF" /> : 'Post'}
+            className="w-24"
+            disabled={isLoading}
             onClick={() =>
               handleSubmitPost(
                 {

@@ -1,4 +1,9 @@
-import React, { MouseEventHandler, ReactNode, useMemo } from 'react';
+import React, {
+  MouseEventHandler,
+  ReactElement,
+  ReactNode,
+  useMemo,
+} from 'react';
 import clsx from 'clsx';
 import { PlacesType, Tooltip as ReactTooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
@@ -9,7 +14,7 @@ export enum Variant {
 }
 
 export type TooltipProps = {
-  tooltipContent: string;
+  tooltipContent: string | ReactNode;
   children: ReactNode;
   variant?: Variant;
   className?: string;
@@ -55,7 +60,9 @@ const Tooltip = ({
         href="#"
         className="my-anchor-element cursor-default mt-10"
         data-tooltip-id="my-tooltip"
-        data-tooltip-content={`${tooltipContent}`}
+        data-tooltip-content={`${
+          typeof tooltipContent === 'string' ? tooltipContent : ''
+        }`}
         data-tooltip-place={`${tooltipPosition}`}
       >
         <div className={`${className}`}>{children}</div>

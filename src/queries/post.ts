@@ -4,6 +4,15 @@ import { DeltaStatic } from 'quill';
 import { isValidUrl } from 'utils/misc';
 import { IMyReactions } from 'pages/Feed';
 import { Metadata } from 'components/PreviewLink/types';
+import { IMedia } from 'contexts/CreatePostContext';
+
+export interface IMention {
+  name: string;
+  entityId: string;
+  entityType: string;
+  image?: string;
+  email?: string;
+}
 
 export interface IPost {
   content: {
@@ -11,6 +20,7 @@ export interface IPost {
     html: string;
     editor: DeltaStatic;
   };
+  mentions?: IMention[];
   createdBy?: {
     department?: string;
     designation?: string;
@@ -22,7 +32,6 @@ export interface IPost {
     userId?: string;
     workLocation?: string;
   };
-  mentions: string[];
   hashtags:
     | [
         {
@@ -133,6 +142,7 @@ export interface IGetPost {
     html: string;
     editor: DeltaStatic;
   };
+  mentions?: IMention[];
   createdBy?: {
     department?: string;
     designation?: string;
@@ -144,7 +154,6 @@ export interface IGetPost {
     userId?: string;
     workLocation?: string;
   };
-  mentions: string[];
   hashtags:
     | [
         {
@@ -153,7 +162,7 @@ export interface IGetPost {
         },
       ]
     | [];
-  files: string[];
+  files?: IMedia[];
   type: string;
   audience: {
     users: string[];

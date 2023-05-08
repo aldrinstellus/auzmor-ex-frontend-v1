@@ -21,6 +21,11 @@ import SvgUsersFilled from '../components/Users/UsersFilled';
 import SvgSpeakerFilled from '../components/Speaker/SpeakerFilled';
 import SvgDraftFilled from '../components/Draft/DraftFilled';
 import SvgArrowLeftFilled from '../components/ArrowLeft/ArrowLeftFilled';
+import SvgOrangeHashtagFilled from '../components/OrangeHashtag/HashtagFilled';
+import SvgSlackFilled from '../components/Slack/SlackFilled';
+import SvgCarouselLeftFilled from '../components/CarouselLeft/CarouselLeftFilled';
+import SvgCarouselRightFilled from '../components/CarouselRight/CarouselRightFilled';
+import SvgCarouselCloseFilled from '../components/CarouselClose/CarouselCloseFilled';
 import SvgSendFilled from '../components/Send/SendFilled';
 import SvgIconLinearFilled from '../components/IconLinear/IconLinearFilled';
 import SvgEmojiHappyFilled from '../components/EmojiHappy/EmojiHappyFilled';
@@ -68,12 +73,17 @@ export const filledIcon = {
   magicStarFilled: SvgMagicStarFilled,
   moreFilled: SvgMoreFilled,
   peopleFilled: SvgPeopleFilled,
+  speakerFilled: SvgSpeakerFilled,
+  userFilled: SvgUsersFilled,
+  videoFilled: SvgVideoFilled,
+  hashtagFilled: SvgOrangeHashtagFilled,
+  slackFilled: SvgSlackFilled,
+  carouselLeftFilled: SvgCarouselLeftFilled,
+  carouselRightFilled: SvgCarouselRightFilled,
+  carouselCloseFilled: SvgCarouselCloseFilled,
   playFilled: SvgPlayFilled,
   replyFilled: SvgReplyFilled,
   sendFilled: SvgSendFilled,
-  speakerFilled: SvgSpeakerFilled,
   supportFilled: SvgSupportFilled,
   trashFilled: SvgTrashFilled,
-  userFilled: SvgUsersFilled,
-  videoFilled: SvgVideoFilled,
 };

@@ -18,6 +18,7 @@ import SvgUserOutline from '../components/Users/UsersOutline';
 import SvgSpeakerOutline from '../components/Speaker/SpeakerOutline';
 import SvgDraftOutline from '../components/Draft/DraftOutline';
 import SvgArrowLeftOutline from '../components/ArrowLeft/ArrowLeftOutline';
+import SvgMailOutline from '../components/Mail/MailOutline';
 import SvgSendOutline from '../components/Send/SendOutline';
 import SvgIconLinearOutline from '../components/IconLinear/IconLinearOutline';
 import SvgEmojiHappyOutline from '../components/EmojiHappy/EmojiHappyOutline';
@@ -62,12 +63,13 @@ export const outlineIcon = {
   magicStarOutline: SvgMagicStarOutline,
   moreOutline: SvgMoreOutline,
   peopleOutline: SvgPeopleOutline,
+  speakerOutline: SvgSpeakerOutline,
+  userOutline: SvgUserOutline,
+  videoOutline: SvgVideoOutline,
+  mailOutline: SvgMailOutline,
   playOutline: SvgPlayOutline,
   replyOutline: SvgReplyOutline,
   sendOutline: SvgSendOutline,
-  speakerOutline: SvgSpeakerOutline,
   supportOutline: SvgSupportOutline,
   trashOutline: SvgTrashOutline,
-  userOutline: SvgUserOutline,
-  videoOutline: SvgVideoOutline,
 };

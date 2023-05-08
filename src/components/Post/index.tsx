@@ -5,7 +5,7 @@ import Actor from 'components/Actor';
 import { VIEW_POST } from 'components/Actor/constant';
 import CommentCard from 'components/Comments/index';
 import Likes, { ReactionType } from 'components/Reactions';
-import { RenderQuillDelta } from 'components/RenderQuillDelta';
+import { RenderPost } from 'components/RenderPost';
 import { DeltaStatic } from 'quill';
 import FeedPostMenu from './components/FeedPostMenu';
 import PreviewCard from 'components/PreviewCard';
@@ -76,11 +76,8 @@ const Post: React.FC<PostProps> = ({ data }) => {
 
   return (
     <Card>
-      {/* <div>
+      <div>
         {isAnnouncement &&
-          !data?.myReaction?.some(
-            (reaction) => reaction.reaction === 'mark_read',
-          ) && (
           !(data?.myAcknowledgement?.reaction === 'mark_read') && (
             <div className="flex justify-between items-center bg-blue-700 -mb-4 p-2 rounded-t-9xl">
               <div className="flex justify-center items-center text-white text-xs font-bold space-x-4">
@@ -105,7 +102,7 @@ const Post: React.FC<PostProps> = ({ data }) => {
               />
             </div>
           )}
-      </div> */}
+      </div>
       <div className="flex justify-between items-center">
         <Actor
           visibility="Everyone"
@@ -119,7 +116,7 @@ const Post: React.FC<PostProps> = ({ data }) => {
       </div>
       <div className="mx-6">
         {/* Post Content */}
-        <RenderQuillDelta delta={content} />
+        <RenderPost data={data} />
         {/* Media Display */}
         <div></div>
         <PreviewCard metaData={data?.link as Metadata} className="my-2" />
@@ -199,6 +196,7 @@ const Post: React.FC<PostProps> = ({ data }) => {
           </div>
           <div></div>
         </div>
+        {/* Comments */}
         {showComments && <CommentCard entityId={data?.id || ''} />}
       </div>
     </Card>

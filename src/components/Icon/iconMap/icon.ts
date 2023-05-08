@@ -33,6 +33,12 @@ import CopyLink from '../components/CopyLinkIcon';
 import DeleteIcon from '../components/DeleteIcon';
 import MenuEditIcon from '../components/MenuEditIcon';
 import MenuNotificationIcon from '../components/MenuNotificationIcon';
+import OrangeHashtagIcon from '../components/OrangeHashtag';
+import MailIcon from '../components/Mail';
+import SlackIcon from '../components/Slack';
+import CarouselLeftIcon from '../components/CarouselLeft';
+import CarouselRightIcon from '../components/CarouselRight';
+import CarouselCloseIcon from '../components/CarouselClose';
 import FlashIcon from '../components/FlashIcon';
 import Send from '../components/Send';
 import IconLinear from '../components/IconLinear';
@@ -102,4 +108,10 @@ export const icon = {
   trash: Trash,
   user: UsersIcon,
   video: VideoIcon,
+  orangeHashtag: OrangeHashtagIcon,
+  mail: MailIcon,
+  slack: SlackIcon,
+  carouselLeft: CarouselLeftIcon,
+  carouselRight: CarouselRightIcon,
+  carouselClose: CarouselCloseIcon,
 };
