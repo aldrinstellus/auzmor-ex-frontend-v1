@@ -39,6 +39,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
     setActiveFlow,
     setEditorValue,
     editorValue,
+    setAnnouncement,
     inputImgRef,
     inputVideoRef,
     setUploads,
@@ -54,6 +55,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
         <IconButton
           onClick={() => {
             closeModal && closeModal();
+            setAnnouncement({});
           }}
           icon={'close'}
           className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"

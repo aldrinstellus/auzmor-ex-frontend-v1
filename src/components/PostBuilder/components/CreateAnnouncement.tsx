@@ -55,7 +55,11 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
         Create an announcement
       </div>
       <IconButton
-        onClick={() => closeModal()}
+        onClick={() => {
+          closeModal();
+          setAnnouncement({});
+          setActiveFlow(CreatePostFlow.CreatePost);
+        }}
         icon={'close'}
         className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"
         variant={IconVariant.Primary}
