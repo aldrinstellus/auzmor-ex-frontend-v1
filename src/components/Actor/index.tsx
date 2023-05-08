@@ -8,12 +8,14 @@ type ActorProps = {
   visibility: string;
   contentMode?: string;
   createdTime?: string;
+  createdBy?: string;
 };
 
 const Actor: React.FC<ActorProps> = ({
   visibility,
   contentMode,
   createdTime,
+  createdBy,
 }) => {
   const { user } = useAuth();
 

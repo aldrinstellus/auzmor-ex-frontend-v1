@@ -13,12 +13,13 @@ import { Metadata } from 'components/PreviewLink/types';
 import { announcementRead, IPost, IGetPost } from 'queries/post';
 import Icon from 'components/Icon';
 import Button, { Size, Variant } from 'components/Button';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import IconButton, {
   Variant as IconVariant,
   Size as SizeVariant,
 } from 'components/IconButton';
 import clsx from 'clsx';
+import { humanizeTime } from 'utils/time';
 
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
@@ -64,14 +65,17 @@ const Post: React.FC<PostProps> = ({ data }) => {
     0,
   );
 
+  const queryClient = useQueryClient();
+
   const isAnnouncement = data?.isAnnouncement;
 
   const acknowledgeAnnouncement = useMutation({
     mutationKey: ['acknowledgeAnnouncement'],
     mutationFn: announcementRead,
     onError: (error) => console.log(error),
-    onSuccess: (data, variables, context) => {
+    onSuccess: async (data, variables, context) => {
       console.log('data==>', data);
+      await queryClient.invalidateQueries(['acknowledgeAnnouncement']);
     },
   });
 
@@ -82,6 +86,7 @@ const Post: React.FC<PostProps> = ({ data }) => {
           !data?.myReaction?.some(
             (reaction) => reaction.reaction === 'mark_read',
           ) && (
+          !(data?.myAcknowledgement?.reaction === 'mark_read') && (
             <div className="flex justify-between items-center bg-blue-700 -mb-4 p-2 rounded-t-9xl">
               <div className="flex justify-center items-center text-white text-xs font-bold space-x-4">
                 <div>
@@ -107,7 +112,12 @@ const Post: React.FC<PostProps> = ({ data }) => {
           )}
       </div> */}
       <div className="flex justify-between items-center">
-        <Actor visibility="Everyone" contentMode={VIEW_POST} createdTime={''} />
+        <Actor
+          visibility="Everyone"
+          contentMode={VIEW_POST}
+          createdTime={humanizeTime(data?.createdAt)}
+          createdBy={data?.createdBy?.fullName}
+        />
         <div className="relative">
           <FeedPostMenu data={data as unknown as IPost} /> {/* Temp fix */}
         </div>
