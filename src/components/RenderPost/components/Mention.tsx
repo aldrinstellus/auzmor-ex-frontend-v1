@@ -1,5 +1,6 @@
 import React, { ReactElement, useState } from 'react';
 import MentionUserCard from './MentionUserCard';
+import useHover from 'hooks/useHover';
 
 type MentionProps = {
   value: string;
@@ -16,21 +17,20 @@ const Mention: React.FC<MentionProps> = ({
   active,
   email,
 }): ReactElement => {
-  const [showUserCard, setShowUserCard] = useState<boolean>(false);
+  const [isHovered, eventHandlers] = useHover();
   return (
     <span className="relative">
-      {showUserCard && (
+      {isHovered && (
         <MentionUserCard
           fullName={fullName}
           email={email}
           image={image}
           active={active}
-          className="absolute -top-[170px] z-10 shadow-lg transition-opacity duration-200 min-w-max"
+          className="absolute -top-[170px] z-10 shadow-lg transition-opacity duration-200 min-w-max border-transparent border-[12px]"
         />
       )}
       <span
-        onMouseEnter={() => setShowUserCard(true)}
-        onMouseLeave={() => setShowUserCard(false)}
+        {...eventHandlers}
         className="cursor-pointer mention"
         contentEditable="false"
       >
