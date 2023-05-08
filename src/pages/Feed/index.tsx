@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import PostBuilder from 'components/PostBuilder';
 import UserCard from 'components/UserWidget';
 import AnnouncementCard from 'components/AnnouncementWidget';
@@ -6,8 +6,17 @@ import { IGetPost, useInfiniteFeed } from 'queries/post';
 import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
 import Post from 'components/Post';
 import { useInView } from 'react-intersection-observer';
+import { IMenuItem } from 'components/PopupMenu';
 
 interface IFeedProps {}
+
+export interface IPostTypeIcon {
+  id: number;
+  label: string;
+  icon: ReactNode;
+  menuItems: IMenuItem[];
+  divider?: ReactNode;
+}
 
 export interface IProfileImage {
   blurHash: string;

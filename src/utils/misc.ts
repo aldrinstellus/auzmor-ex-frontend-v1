@@ -1,5 +1,7 @@
 import resolveConfig from 'tailwindcss/resolveConfig';
 import tailwindConfig from 'components/../../tailwind.config.js';
+import { IMedia } from 'contexts/CreatePostContext';
+import { validImageTypes } from 'queries/files';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -25,4 +27,31 @@ export const redirectWithToken = (redirectUrl: string, token: string) => {
   } else {
     window.location.replace(`${redirectUrl}/feed?accessToken=${token}`);
   }
+};
+
+export const getBlobUrl = (file: File) => {
+  return URL.createObjectURL(file);
+};
+
+export const getType = (type: string) => {
+  return validImageTypes.indexOf(type) > -1 ? 'IMAGE' : 'VIDEO';
+};
+
+export const getMediaObj = (files: File[]): IMedia[] => {
+  return files.map(
+    (file: File) =>
+      ({
+        altText: 'No image',
+        blurhash: '',
+        contentType: file.type,
+        id: '',
+        isDeleted: false,
+        isPublic: false,
+        name: file.name,
+        originalUrl: getBlobUrl(file),
+        size: file.size.toString(),
+        thumbnailUrl: '',
+        type: getType(file.type),
+      } as IMedia),
+  );
 };

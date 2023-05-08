@@ -59,6 +59,15 @@ class ApiService {
       throw new Error(e.response.data.message);
     }
   }
+
+  async patch(url: string, data = {}) {
+    try {
+      const { data: res } = await this.instance.patch(url, data);
+      return res;
+    } catch (e: any) {
+      throw new Error(e.response.data.message);
+    }
+  }
 }
 
 export default new ApiService();

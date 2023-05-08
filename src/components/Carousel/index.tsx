@@ -1,4 +1,4 @@
-import React, { useState, MouseEventHandler, ReactElement } from 'react';
+import React, { MouseEventHandler, ReactElement } from 'react';
 
 import Image from 'components/Image';
 import Video from 'components/Video';
@@ -7,15 +7,7 @@ import clsx from 'clsx';
 import Modal from 'components/Modal';
 import Icon from 'components/Icon';
 import useCarousel from 'hooks/useCarousel';
-import useModal from 'hooks/useModal';
-
-export interface IMedia {
-  name?: string;
-  url: string;
-  type: 'image' | 'video' | 'document';
-  hash?: string;
-  coverPage?: string;
-}
+import { IMedia } from 'contexts/CreatePostContext';
 
 export interface hashSize {
   width: number;
@@ -76,7 +68,7 @@ const Carousel: React.FC<CarouselProps> = ({
       <Modal open={open}>
         <div className={containerStyles}>
           <div className={mediaDivStyles}>
-            {media[currentIndex].type === 'image' ? (
+            {media[currentIndex].type === 'IMAGE' ? (
               <Image image={media[currentIndex]} hashSize={hashSize} />
             ) : (
               <Video video={media[currentIndex]} />
