@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement } from 'react';
 import MentionUserCard from './MentionUserCard';
 import useHover from 'hooks/useHover';
 
