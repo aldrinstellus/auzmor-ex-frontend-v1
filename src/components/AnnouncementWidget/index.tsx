@@ -1,18 +1,12 @@
 import React from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Card from 'components/Card';
-import {
-  announcementRead,
-  fetchAnnouncement,
-  useAnnouncements,
-} from 'queries/post';
+import { announcementRead, useAnnouncementsWidget } from 'queries/post';
 import Button, { Variant } from 'components/Button';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
 import { humanizeTime } from 'utils/time';
-import { divide } from 'lodash';
-import clsx from 'clsx';
 
 export interface IAnnouncementCardProps {}
 
@@ -24,20 +18,17 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
     mutationFn: announcementRead,
     onError: (error) => console.log(error),
     onSuccess: async (data, variables, context) => {
-      console.log('data==>', data);
       await queryClient.invalidateQueries(['announcements-widget']);
+      await queryClient.invalidateQueries(['feed']);
     },
   });
 
-  const { data, isLoading } = useAnnouncements();
+  const { data, isLoading } = useAnnouncementsWidget();
 
   const { user } = useAuth();
 
-  const validAnnouncementLength = data?.data?.result?.data.length === 0;
-
-  const announcementStyles = clsx({
-    'flex justify-center items-center p-6': validAnnouncementLength,
-  });
+  const isAcknowledged =
+    data?.data?.result?.data?.[0]?.myAcknowledgement?.reaction !== 'mark_read';
 
   return (
     <div>
@@ -51,58 +42,63 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
             <Icon name="flashIcon" />
             <div className="text-base font-bold">Announcement</div>
           </div>
-          <>
-            {isLoading ? (
-              <div>Loading...</div>
-            ) : (
-              <>
-                <div className={announcementStyles}>
-                  {validAnnouncementLength && (
-                    <div>No pending announcement</div>
-                  )}
-                </div>
-                <div className="px-3 mt-5">
-                  <div className="flex items-center space-x-3">
-                    <div>
-                      <Avatar
-                        name={
-                          data?.data?.result?.data?.[0]?.createdBy?.fullName ||
-                          'U'
-                        }
-                        image=""
-                        size={40}
-                      />
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : (
+            <div>
+              {isAcknowledged ? (
+                <div className="flex flex-col justify-center items-center">
+                  <div className="px-3 mt-5">
+                    <div className="flex items-center space-x-3">
+                      <div>
+                        <Avatar
+                          name={
+                            data?.data?.result?.data?.[0]?.createdBy
+                              ?.fullName || 'U'
+                          }
+                          image=""
+                          size={40}
+                        />
+                      </div>
+                      <div>
+                        <div className="space-x-1 text-sm">
+                          <b>{user?.name}</b>
+                          <span>Shared a post</span>
+                        </div>
+                        <div className="text-xs">
+                          {humanizeTime(
+                            data?.data?.result?.data?.[0]?.createdAt,
+                          )}
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="space-x-1 text-sm">
-                        <b>{user?.name}</b>
-                        <span>Shared a post</span>
-                      </div>
-                      <div className="text-xs">
-                        {humanizeTime(data?.data?.result?.data?.[0]?.createdAt)}
-                      </div>
+                    <div className="mt-5 flex justify-center items-center">
+                      {data?.data?.result?.data[0]?.content?.text}
                     </div>
                   </div>
-                  <div className="mt-5 flex justify-center items-center">
-                    {data?.data?.result?.data[0]?.content?.text}
-                  </div>
+                  <Button
+                    label="Mark as read"
+                    variant={Variant.Secondary}
+                    className="border-2 border-neutral-200 mt-4 w-[75%]"
+                    loading={acknowledgeAnnouncement.isLoading}
+                    onClick={() => {
+                      acknowledgeAnnouncement.mutate({
+                        entityId: data?.data?.result?.data[0].id,
+                        entityType: 'post',
+                        type: 'acknowledge',
+                        reaction: 'mark_read',
+                      });
+                    }}
+                  />
                 </div>
-                <Button
-                  label="Mark as read"
-                  variant={Variant.Secondary}
-                  className="border-2 border-neutral-200 mt-4 w-[75%]"
-                  onClick={() => {
-                    acknowledgeAnnouncement.mutate({
-                      entityId: data?.data?.result?.data[0].id,
-                      entityType: 'post',
-                      type: 'acknowledge',
-                      reaction: 'mark_read',
-                    });
-                  }}
-                />
-              </>
-            )}
-          </>
+              ) : (
+                <div className="flex justify-center items-center p-6">
+                  No pending announcements
+                </div>
+                // replace with empty widget
+              )}
+            </div>
+          )}
         </Card>
       </div>
     </div>

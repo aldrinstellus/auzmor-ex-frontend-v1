@@ -88,8 +88,10 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
         success={{
           label: 'Delete',
           className: 'bg-red-500 text-white ',
-          onSubmit: () => {
+          onSubmit: async () => {
             deletePostMutation.mutate(data?.id || '');
+            await queryClient.invalidateQueries(['feed']);
+            await queryClient.invalidateQueries(['announcements-widget']);
           },
         }}
         discard={{
