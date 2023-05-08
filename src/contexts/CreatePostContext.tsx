@@ -40,6 +40,7 @@ export interface ICreatePostContext {
   replaceMedia: (index: number, data: File) => void;
   removeMedia: (index: number, callback?: () => void) => void;
   clearPostContext: () => void;
+  removeAllMedia: () => void;
 }
 
 export interface IEditorValue {
@@ -79,6 +80,7 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   replaceMedia: () => {},
   removeMedia: () => {},
   clearPostContext: () => {},
+  removeAllMedia: () => {},
 });
 
 const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
@@ -128,6 +130,11 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     callback && callback();
   };
 
+  const removeAllMedia = () => {
+    setMedia([]);
+    setFiles([]);
+  };
+
   const clearPostContext = () => {
     setMedia([]);
     setAnnouncement(null);
@@ -158,6 +165,7 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         replaceMedia,
         removeMedia,
         clearPostContext,
+        removeAllMedia,
       }}
     >
       {children}
