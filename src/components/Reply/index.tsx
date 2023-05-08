@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useComments } from 'queries/reaction';
 import { DeltaStatic } from 'quill';
 import useAuth from 'hooks/useAuth';
@@ -7,6 +7,8 @@ import { ICreated, IMyReactions } from 'pages/Feed';
 import { MyObjectType } from 'queries/post';
 import { Reply } from 'components/Reply/Reply';
 import { CommentForm } from 'components/Comments/CommentForm';
+import Spinner from 'components/Spinner';
+import ReactQuill from 'react-quill';
 
 interface CommentsProps {
   entityId: string;
@@ -47,14 +49,21 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
     limit: 30,
     page: 1,
   });
+  const quillRef = useRef<HTMLDivElement>(null);
 
   const replies = data?.result?.data;
+
+  const handleClick = () => {
+    // quillRef.current?.animate({
+    //   scrollTop: 100,
+    // });
+  };
 
   return (
     <div>
       {isLoading ? (
         <div className="flex justify-center items-center py-5">
-          Loading ...{' '}
+          <Spinner color="#FFFFFF" />
         </div>
       ) : (
         <div className="ml-8">
@@ -66,13 +75,17 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
               className="w-full py-1"
               entityId={entityId}
               entityType="comment"
-              defaultValue={user?.name}
+              inputRef={quillRef}
             />
           </div>
           {replies?.length > 0 && (
             <div>
               {replies.map((reply: any) => (
-                <Reply comment={reply} key={reply.id} />
+                <Reply
+                  handleClick={handleClick}
+                  comment={reply}
+                  key={reply.id}
+                />
               ))}
             </div>
           )}

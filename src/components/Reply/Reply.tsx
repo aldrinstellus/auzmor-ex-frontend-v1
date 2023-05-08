@@ -1,13 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Likes from 'components/Reactions';
-import IconButton, {
-  Variant as IconVariant,
-  Size as SizeVariant,
-} from 'components/IconButton';
+import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import Avatar from 'components/Avatar';
-import { deleteComment, useComments } from 'queries/reaction';
+import { deleteComment } from 'queries/reaction';
 import { useMutation } from '@tanstack/react-query';
-import { IComment, activeCommentsDataType } from '../Comments';
+import { IComment } from '../Comments';
 import Popover from 'components/Popover';
 import clsx from 'clsx';
 import queryClient from 'utils/queryClient';
@@ -20,19 +17,16 @@ import Icon from 'components/Icon';
 interface ReplyProps {
   comment: IComment;
   className?: string;
+  handleClick: () => void;
 }
 
-export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
+export const Reply: React.FC<ReplyProps> = ({
+  comment,
+  className,
+  handleClick,
+}) => {
   const { user } = useAuth();
   const createdAt = getTime(comment.updatedAt);
-
-  const handleClick = () => {
-    console.log('con');
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  };
 
   const deleteReactionMutation = useMutation({
     mutationKey: ['delete-comment-mutation'],
@@ -153,7 +147,10 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
               reactionId={comment?.myReaction?.id || ''}
               queryKey="comments"
             />
-            <div className="flex items-center ml-7" onClick={handleClick}>
+            <div
+              className="flex items-center ml-7"
+              onClick={() => handleClick()}
+            >
               <IconButton
                 icon={'reply'}
                 className="!p-0 !bg-inherit"

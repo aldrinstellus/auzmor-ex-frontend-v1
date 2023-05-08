@@ -14,6 +14,7 @@ interface CommentFormProps {
   entityId: string;
   entityType: string;
   defaultValue?: string;
+  inputRef?: any;
 }
 
 export const CommentForm: React.FC<CommentFormProps> = ({
@@ -21,10 +22,11 @@ export const CommentForm: React.FC<CommentFormProps> = ({
   entityId,
   entityType,
   defaultValue,
+  inputRef,
 }) => {
   const queryClient = useQueryClient();
-  const quillRef = useRef<ReactQuill>(null);
 
+  const quillRef = useRef<ReactQuill>(null);
   const createCommentMutation = useMutation({
     mutationKey: ['create-comment-mutation'],
     mutationFn: createComments,
@@ -64,7 +66,10 @@ export const CommentForm: React.FC<CommentFormProps> = ({
 
   return (
     <div className={`flex flex-row ${className} `}>
-      <div className="flex items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full">
+      <div
+        ref={inputRef}
+        className="flex items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full"
+      >
         <RichTextEditor
           placeholder="Leave a Comment..."
           className="max-h-18 overflow-y-auto w-[70%] max-w-[70%]"
