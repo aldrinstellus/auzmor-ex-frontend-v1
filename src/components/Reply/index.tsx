@@ -49,11 +49,6 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
   });
 
   const replies = data?.result?.data;
-  const [replyInputBox, setReplyInputBox] = useState(false);
-
-  // const [activeComment, setActiveComment] =
-  //   useState<activeCommentsDataType | null>(null);
-  // const [replyInputBox, setReplyInputBox] = useState(false);
 
   return (
     <div>

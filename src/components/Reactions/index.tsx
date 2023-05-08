@@ -3,10 +3,9 @@ import IconButton, {
   Variant as IconVariant,
   Size as SizeVariant,
 } from 'components/IconButton';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createReaction, deleteReaction } from 'queries/reaction';
 import clsx from 'clsx';
-import queryClient from 'utils/queryClient';
 
 interface LikesProps {
   reaction: string;
@@ -56,6 +55,7 @@ const Likes: React.FC<LikesProps> = ({
   reactionId,
   queryKey,
 }) => {
+  const queryClient = useQueryClient();
   const [showTooltip, setShowTooltip] = useState(true);
 
   const tooltipRef = useRef<HTMLSpanElement>(null);

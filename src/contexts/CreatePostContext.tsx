@@ -1,5 +1,12 @@
-import React, { ReactNode, createContext, useRef, useState } from 'react';
+import React, {
+  LegacyRef,
+  ReactNode,
+  createContext,
+  useRef,
+  useState,
+} from 'react';
 import { DeltaStatic } from 'quill';
+import { getMediaObj } from 'utils/misc';
 
 export interface ICreatePostProviderProps {
   children?: ReactNode;
@@ -8,6 +15,7 @@ export interface ICreatePostProviderProps {
 export enum CreatePostFlow {
   CreatePost = 'CREATE_POST',
   CreateAnnouncement = 'CREATE_ANNOUNCEMENT',
+  EditPost = 'EDIT_POST',
 }
 
 export interface IAnnouncement {
@@ -22,12 +30,35 @@ export interface ICreatePostContext {
   setAnnouncement: any;
   editorValue: IEditorValue;
   setEditorValue: any;
+  media: IMedia[];
+  files: File[];
+  setFiles: (files: File[]) => void;
+  setMedia: any;
+  inputImgRef: React.RefObject<HTMLInputElement> | null;
+  inputVideoRef: React.RefObject<HTMLInputElement> | null;
+  setUploads: (uploads: File[]) => void;
+  replaceMedia: (index: number, data: File) => void;
+  removeMedia: (index: number) => void;
 }
 
 export interface IEditorValue {
   text: string;
   html: string;
   json: DeltaStatic;
+}
+
+export interface IMedia {
+  altText: string;
+  blurhash: string;
+  contentType: string; //'image/png'
+  id: string;
+  isDeleted: boolean;
+  isPublic: boolean;
+  name: string;
+  originalUrl: string;
+  size: string;
+  thumbnailUrl: string;
+  type: 'IMAGE' | 'VIDEO';
 }
 
 export const CreatePostContext = createContext<ICreatePostContext>({
@@ -37,6 +68,15 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setAnnouncement: () => {},
   editorValue: { html: '', json: {} as DeltaStatic, text: '' },
   setEditorValue: () => {},
+  media: [],
+  setMedia: () => {},
+  files: [],
+  setFiles: () => {},
+  inputImgRef: null,
+  inputVideoRef: null,
+  setUploads: () => {},
+  replaceMedia: () => {},
+  removeMedia: () => {},
 });
 
 const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
@@ -49,7 +89,37 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     json: {} as DeltaStatic,
     text: '',
   });
-  const quillRef = useRef(null);
+  const [media, setMedia] = useState<IMedia[]>([]);
+  const inputImgRef = useRef<HTMLInputElement>(null);
+  const inputVideoRef = useRef<HTMLInputElement>(null);
+  const [files, setFiles] = useState<File[]>([]);
+
+  const setUploads = (uploads: File[]) => {
+    setMedia([...media, ...getMediaObj(uploads)]);
+    setFiles([...files, ...uploads]);
+  };
+
+  const replaceMedia = (index: number, data: File) => {
+    // Replace Files
+    setFiles(
+      files.map((file: File) =>
+        file.name === media[index].name ? data : file,
+      ),
+    );
+
+    // Replace Media
+    setMedia(
+      media.map((eachMedia: IMedia, idx: number) =>
+        idx === index ? getMediaObj([data])[0] : eachMedia,
+      ),
+    );
+  };
+
+  const removeMedia = (index: number) => {
+    const fileName = media[index].name;
+    setMedia([...media.filter((file: IMedia) => file.name !== fileName)]);
+    setFiles([...files.filter((file: File) => file.name !== fileName)]);
+  };
   return (
     <CreatePostContext.Provider
       value={{
@@ -59,6 +129,15 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         setAnnouncement,
         editorValue,
         setEditorValue,
+        media,
+        setMedia,
+        files,
+        setFiles,
+        setUploads,
+        inputImgRef,
+        inputVideoRef,
+        replaceMedia,
+        removeMedia,
       }}
     >
       {children}

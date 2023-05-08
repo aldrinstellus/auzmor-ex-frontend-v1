@@ -3,11 +3,10 @@ import Likes from 'components/Reactions';
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import Avatar from 'components/Avatar';
 import { deleteComment, useComments } from 'queries/reaction';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { IComment, activeCommentsDataType } from '.';
 import Popover from 'components/Popover';
 import clsx from 'clsx';
-import queryClient from 'utils/queryClient';
 import { getTime } from 'utils/time';
 import { iconsStyle } from 'components/Post';
 import { MyObjectType } from 'queries/post';
@@ -32,16 +31,12 @@ export const Comment: React.FC<CommentProps> = ({
   replyInputBox,
   setReplyInputBox,
 }) => {
+  const queryClient = useQueryClient();
+
   const { user } = useAuth();
   const createdAt = getTime(comment.updatedAt);
 
   const [showReplies, setShowReplies] = useState(false);
-
-  const isReplying =
-    activeComment &&
-    activeComment.id === comment.id &&
-    activeComment.type === 'replying';
-
   const deleteReactionMutation = useMutation({
     mutationKey: ['delete-comment-mutation'],
     mutationFn: deleteComment,

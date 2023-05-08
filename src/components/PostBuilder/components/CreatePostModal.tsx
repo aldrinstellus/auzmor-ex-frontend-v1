@@ -10,7 +10,9 @@ import {
   IEditorValue,
 } from 'contexts/CreatePostContext';
 import { PostBuilderMode } from '..';
+import { EntityType, useUpload } from 'queries/files';
 import { previewLinkRegex } from 'components/RichTextEditor/config';
+import EditPost from './EditPost';
 
 interface ICreatePostModal {
   showModal: boolean;
@@ -41,6 +43,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
   } = useContext(CreatePostContext);
   const queryClient = useQueryClient();
 
+  const { uploadMedia } = useUpload();
+
   useEffect(() => {
     if (data) {
       setEditorValue(data.content.editor);
@@ -70,7 +74,11 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     },
   });
 
-  const handleSubmitPost = (content?: IEditorValue) => {
+  const handleSubmitPost = async (content?: IEditorValue, files?: File[]) => {
+    let fileIds: string[] = [];
+    if (files?.length) {
+      fileIds = await uploadMedia(files, EntityType.Post);
+    }
     const userMentionList = content?.json?.ops
       ?.filter((op) => op.insert.mention)
       .map((userItem) => userItem?.insert?.mention?.id);
@@ -78,44 +86,51 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     const previewUrl = content?.text.match(previewLinkRegex) as string[];
 
     if (mode === PostBuilderMode.Create) {
-      createPostMutation.mutate({
-        content: {
-          text: content?.text || editorValue.text,
-          html: content?.html || editorValue.html,
-          editor: content?.json || editorValue.json,
+      createPostMutation.mutate(
+        {
+          content: {
+            text: content?.text || editorValue.text,
+            html: content?.html || editorValue.html,
+            editor: content?.json || editorValue.json,
+          },
+          type: 'UPDATE',
+          files: fileIds,
+          mentions: userMentionList || [],
+          hashtags: [],
+          audience: {
+            users: [],
+          },
+          isAnnouncement: !!announcement,
+          announcement: {
+            end: announcement?.value || '',
+          },
+          link: previewUrl && previewUrl[0],
         },
-        type: 'UPDATE',
-        mentions: userMentionList || [],
-        hashtags: [],
-        audience: {
-          users: [],
-        },
-        isAnnouncement: !!announcement,
-        announcement: {
-          end: announcement?.value || '',
-        },
-        link: previewUrl && previewUrl[0],
-      });
+        { onSuccess: () => setShowModal(false) },
+      );
     } else if (PostBuilderMode.Edit) {
-      updatePostMutation.mutate({
-        content: {
-          text: content?.text || editorValue.text,
-          html: content?.html || editorValue.html,
-          editor: content?.json || editorValue.json,
+      updatePostMutation.mutate(
+        {
+          content: {
+            text: content?.text || editorValue.text,
+            html: content?.html || editorValue.html,
+            editor: content?.json || editorValue.json,
+          },
+          type: 'UPDATE',
+          mentions: userMentionList || [],
+          hashtags: [],
+          audience: {
+            users: [],
+          },
+          isAnnouncement: !!announcement,
+          announcement: {
+            end: announcement?.value || '',
+          },
+          id: data?.id,
+          link: previewUrl && previewUrl[0],
         },
-        type: 'UPDATE',
-        mentions: userMentionList || [],
-        hashtags: [],
-        audience: {
-          users: [],
-        },
-        isAnnouncement: !!announcement,
-        announcement: {
-          end: announcement?.value || '',
-        },
-        id: data?.id,
-        link: previewUrl && previewUrl[0],
-      });
+        { onSuccess: () => setShowModal(false) },
+      );
     }
   };
 
@@ -137,6 +152,9 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       )}
       {activeFlow === CreatePostFlow.CreateAnnouncement && (
         <CreateAnnouncement closeModal={() => setShowModal(false)} />
+      )}
+      {activeFlow === CreatePostFlow.EditPost && (
+        <EditPost closeModal={() => setShowModal(false)} />
       )}
     </Modal>
   );
