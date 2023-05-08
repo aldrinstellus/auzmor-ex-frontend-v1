@@ -65,7 +65,7 @@ const Carousel: React.FC<CarouselProps> = ({
 
   if (media.length > 0) {
     return (
-      <Modal open={open} className="w-[65vw] h-[80vh]">
+      <Modal open={open} className="!w-[65vw] !h-[80vh]">
         <div className={containerStyles}>
           <div className={mediaDivStyles}>
             {media[currentIndex].type === 'IMAGE' ? (

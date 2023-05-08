@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 // import { Blurhash } from 'react-blurhash';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { IMedia } from 'contexts/CreatePostContext';
+import Loader from './components/Loader';
 
 export interface hashSize {
   width: number;
@@ -38,9 +39,9 @@ const Image: React.FC<ImageProps> = ({
   };
 
   return (
-    <div className="w-full h-full relative">
+    <div className="w-[65vw] h-[80vh] relative">
       <LazyLoadImage
-        className="w-[65vw] h-[80vh] object-cover"
+        className="w-full h-full object-cover"
         key={image.name}
         alt={image.name}
         src={image.originalUrl}
@@ -48,7 +49,7 @@ const Image: React.FC<ImageProps> = ({
         onLoad={handleLoad}
         beforeLoad={handleLoadStarted}
         afterLoad={handleLoadEnd}
-        placeholderSrc="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif"
+        placeholder={<Loader />}
       />
     </div>
   );
