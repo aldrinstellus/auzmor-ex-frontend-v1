@@ -43,6 +43,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
     inputImgRef,
     inputVideoRef,
     setUploads,
+    setMedia,
     files,
   } = useContext(CreatePostContext);
 
@@ -56,6 +57,8 @@ const CreatePost: React.FC<ICreatePostProps> = ({
           onClick={() => {
             closeModal && closeModal();
             setAnnouncement({});
+            setEditorValue({});
+            setMedia([]);
           }}
           icon={'close'}
           className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"

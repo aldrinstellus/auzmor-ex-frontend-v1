@@ -101,11 +101,15 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
 
   const replaceMedia = (index: number, data: File) => {
     // Replace Files
-    setFiles(
-      files.map((file: File) =>
-        file.name === media[index].name ? data : file,
-      ),
-    );
+    if (files.findIndex((file: File) => file.name === media[index].name) > -1) {
+      setFiles(
+        files.map((file: File) =>
+          file.name === media[index].name ? data : file,
+        ),
+      );
+    } else {
+      setFiles([...files, data]);
+    }
 
     // Replace Media
     setMedia(
