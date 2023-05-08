@@ -8,8 +8,6 @@ import Likes, { ReactionType } from 'components/Reactions';
 import { RenderPost } from 'components/RenderPost';
 import { DeltaStatic } from 'quill';
 import FeedPostMenu from './components/FeedPostMenu';
-import PreviewCard from 'components/PreviewCard';
-import { Metadata } from 'components/PreviewLink/types';
 import { announcementRead, IPost, IGetPost } from 'queries/post';
 import Icon from 'components/Icon';
 import Button, { Size, Variant } from 'components/Button';
@@ -124,9 +122,7 @@ const Post: React.FC<PostProps> = ({ data }) => {
         <RenderPost data={data} />
         {/* Media Display */}
         <div></div>
-        <PreviewCard metaData={data?.link as Metadata} className="my-2" />
         {/* Reaction and comment repost */}
-
         <div className="border-b border-neutral-100 mt-4"></div>
         <div className="flex flex-row justify-between my-3">
           <div className={`flex flex-row`}>

@@ -20,6 +20,7 @@ import Toolbar from 'components/RichTextEditor/toolbar';
 import PreviewLink from 'components/PreviewLink';
 import { IPost } from 'queries/post';
 import { IPostTypeIcon } from 'pages/Feed';
+import Spinner from 'components/Spinner';
 interface ICreatePostProps {
   closeModal: () => void;
   handleSubmitPost: (content: IEditorValue, files: File[]) => void;
@@ -201,7 +202,10 @@ const CreatePost: React.FC<ICreatePostProps> = ({
             <PopupMenu
               triggerNode={
                 <div className="mr-4">
-                  <Tooltip tooltipContent={type.label}>
+                  <Tooltip
+                    tooltipContent={type.label}
+                    className="cursor-pointer"
+                  >
                     <div className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl">
                       {type.icon}
                     </div>
@@ -261,9 +265,10 @@ const CreatePost: React.FC<ICreatePostProps> = ({
           <Divider variant={DividerVariant.Vertical} className="!h-8" />
         </div>
         <div className="flex items-center">
-          <div></div>
           <Button
-            label={'Post'}
+            label={isLoading ? <Spinner color="#FFFFFF" /> : 'Post'}
+            className="w-24"
+            disabled={isLoading}
             onClick={() =>
               handleSubmitPost(
                 {

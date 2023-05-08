@@ -21,7 +21,7 @@ export enum Type {
 }
 
 export type ButtonProps = {
-  label: string;
+  label: string | ReactElement;
   variant?: Variant;
   size?: Size;
   type?: Type;

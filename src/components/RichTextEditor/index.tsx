@@ -145,7 +145,7 @@ const RichTextEditor = React.forwardRef(
           onChange={onChangeEditorContent}
           defaultValue={defaultValue}
         />
-        {media.length && (
+        {media.length > 0 && (
           <MediaPreview
             media={media}
             className="m-6"

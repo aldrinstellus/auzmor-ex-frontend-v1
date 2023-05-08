@@ -13,6 +13,7 @@ import { PostBuilderMode } from '..';
 import { EntityType, useUpload } from 'queries/files';
 import { previewLinkRegex } from 'components/RichTextEditor/config';
 import EditPost from './EditPost';
+import { UploadStatus } from 'queries/files';
 
 interface ICreatePostModal {
   showModal: boolean;
@@ -43,7 +44,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
   } = useContext(CreatePostContext);
   const queryClient = useQueryClient();
 
-  const { uploadMedia } = useUpload();
+  const { uploadMedia, uploadStatus } = useUpload();
 
   useEffect(() => {
     if (data) {
@@ -134,7 +135,11 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     }
   };
 
-  const loading = createPostMutation.isLoading || updatePostMutation.isLoading;
+  const loading =
+    createPostMutation.isLoading ||
+    updatePostMutation.isLoading ||
+    uploadStatus === UploadStatus.Uploading;
+
   return (
     <Modal open={showModal} closeModal={() => setShowModal(false)}>
       {activeFlow === CreatePostFlow.CreatePost && (

@@ -8,6 +8,8 @@ import PreviewLink from 'components/PreviewLink';
 import MediaPreview, { Mode } from 'components/MediaPreview';
 import { IGetPost } from 'queries/post';
 import { getMentionProps } from './utils';
+import PreviewCard from 'components/PreviewCard';
+import { Metadata } from 'components/PreviewLink/types';
 
 type RenderPostProps = {
   data: IGetPost;
@@ -51,7 +53,7 @@ export const RenderPost: React.FC<RenderPostProps> = ({
       {postContent}
       {link && (
         <div className="mt-4">
-          <PreviewLink linkMetadata={link} />
+          <PreviewCard metaData={data?.link} className="my-2" />
         </div>
       )}
       {media && (
