@@ -50,17 +50,17 @@ export interface IEditorValue {
 }
 
 export interface IMedia {
-  altText?: string;
-  blurhash?: string;
+  altText: string;
+  blurhash: string;
   contentType: string; //'image/png'
-  id?: string;
-  isDeleted?: boolean;
-  isPublic?: boolean;
+  id: string;
+  isDeleted: boolean;
+  isPublic: boolean;
   name: string;
   originalUrl: string;
-  size?: string;
-  thumbnailUrl?: string;
-  type?: 'IMAGE' | 'VIDEO';
+  size: string;
+  thumbnailUrl: string;
+  type: 'IMAGE' | 'VIDEO';
 }
 
 export const CreatePostContext = createContext<ICreatePostContext>({
