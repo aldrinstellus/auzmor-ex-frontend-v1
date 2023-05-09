@@ -39,14 +39,26 @@ const CreatePost: React.FC<ICreatePostProps> = ({
     setActiveFlow,
     setEditorValue,
     editorValue,
-    setAnnouncement,
     inputImgRef,
     inputVideoRef,
-    setUploads,
-    setMedia,
     files,
+    setUploads,
     clearPostContext,
   } = useContext(CreatePostContext);
+
+  const updateContext = () => {
+    setEditorValue({
+      text: quillRef.current
+        ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
+        .getText(),
+      html: quillRef.current
+        ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
+        .getHTML(),
+      json: quillRef.current
+        ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
+        .getContents(),
+    });
+  };
 
   const Header: React.FC = () => (
     <div className="flex flex-wrap border-b-1 border-neutral-200 items-center">
@@ -183,19 +195,6 @@ const CreatePost: React.FC<ICreatePostProps> = ({
     },
   ];
 
-  const updateContext = () => {
-    setEditorValue({
-      text: quillRef.current
-        ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
-        .getText(),
-      html: quillRef.current
-        ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
-        .getHTML(),
-      json: quillRef.current
-        ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
-        .getContents(),
-    });
-  };
   return (
     <>
       <Header />

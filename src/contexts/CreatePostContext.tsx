@@ -15,7 +15,7 @@ export interface ICreatePostProviderProps {
 export enum CreatePostFlow {
   CreatePost = 'CREATE_POST',
   CreateAnnouncement = 'CREATE_ANNOUNCEMENT',
-  EditPost = 'EDIT_POST',
+  EditMedia = 'EDIT_MEDIA',
 }
 
 export interface IAnnouncement {

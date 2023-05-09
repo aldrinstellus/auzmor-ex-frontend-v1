@@ -155,7 +155,7 @@ const RichTextEditor = React.forwardRef(
             onCloseButtonClick={removeAllMedia}
             onEditButtonClick={() => {
               updateContext();
-              setActiveFlow(CreatePostFlow.EditPost);
+              setActiveFlow(CreatePostFlow.EditMedia);
             }}
           />
         )}

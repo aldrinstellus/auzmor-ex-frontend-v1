@@ -14,11 +14,11 @@ import { validImageTypes } from 'queries/files';
 import useCarousel from 'hooks/useCarousel';
 import SwitchToggle from 'components/SwitchToggle';
 
-export interface IEditPostProps {
+export interface IEditMediaProps {
   closeModal: () => void;
 }
 
-const EditPost: React.FC<IEditPostProps> = ({ closeModal }) => {
+const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
   const { setActiveFlow, media, replaceMedia, removeMedia } =
     useContext(CreatePostContext);
   const changeInputImgRef = useRef<HTMLInputElement>(null);
@@ -127,4 +127,4 @@ const EditPost: React.FC<IEditPostProps> = ({ closeModal }) => {
   );
 };
 
-export default EditPost;
+export default EditMedia;

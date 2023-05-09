@@ -13,7 +13,7 @@ import {
 import { PostBuilderMode } from '..';
 import { EntityType, useUpload } from 'queries/files';
 import { previewLinkRegex } from 'components/RichTextEditor/config';
-import EditPost from './EditPost';
+import EditMedia from './EditMedia';
 import { UploadStatus } from 'queries/files';
 
 interface ICreatePostModal {
@@ -185,8 +185,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       {activeFlow === CreatePostFlow.CreateAnnouncement && (
         <CreateAnnouncement closeModal={() => setShowModal(false)} />
       )}
-      {activeFlow === CreatePostFlow.EditPost && (
-        <EditPost closeModal={() => setShowModal(false)} />
+      {activeFlow === CreatePostFlow.EditMedia && (
+        <EditMedia closeModal={() => setShowModal(false)} />
       )}
     </Modal>
   );
