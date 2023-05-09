@@ -1,12 +1,5 @@
 import React, { useRef } from 'react';
-
-export interface IMedia {
-  name: string;
-  src: string;
-  type: string;
-  hash?: string;
-  coverPage?: string;
-}
+import { IMedia } from 'contexts/CreatePostContext';
 
 export type VideoProps = {
   video: IMedia;
@@ -25,7 +18,7 @@ const Video = ({ video }: VideoProps) => {
       </div>
       <video
         className="w-full h-full"
-        src={video.src}
+        src={video.originalUrl}
         controls={true}
         ref={videoRef}
       />

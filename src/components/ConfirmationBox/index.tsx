@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
+import Spinner from 'components/Spinner';
 
 export interface Discard {
   label: string;
@@ -20,6 +21,7 @@ export type ConfirmationBoxProps = {
   description: string | ReactNode;
   discard: Discard;
   success: Success;
+  isLoading?: boolean;
 };
 
 const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({
@@ -29,9 +31,14 @@ const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({
   description,
   discard,
   success,
+  isLoading = false,
 }) => {
   return (
-    <Modal open={open} closeModal={onClose} className="max-w-md">
+    <Modal
+      open={open}
+      closeModal={() => (isLoading ? null : onClose())}
+      className="max-w-md"
+    >
       <div>
         <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
           {title}
@@ -42,13 +49,14 @@ const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({
         <div className="flex flex-row-reverse px-4 pt-6 pb-4">
           <Button
             onClick={success.onSubmit}
-            label={success.label}
+            label={!isLoading ? success.label : <Spinner color="#FFFFFF" />}
             className={`!rounded-6 !px-4 !py-2 !${success.className}`}
           />
           <Button
             onClick={discard.onCancel}
             label={discard.label}
-            className={`!rounded-17xl !px-4 !py-2 !mr-3 !border-2 !border-neutral-200  !${discard.className}`}
+            loading={isLoading}
+            className={`!rounded-17xl !px-4 !py-2 !mr-3 !border-2 !border-neutral-200 !${discard.className}`}
           />
         </div>
       </div>

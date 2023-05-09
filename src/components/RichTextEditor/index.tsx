@@ -7,7 +7,6 @@ import './mentions/quill.mention';
 import './mentions/quill.mention.css';
 
 import { MentionBlot } from './mentions/blots/mentions';
-import Toolbar from './toolbar/index';
 import { LinkBlot } from './blots/link';
 import AutoLinks from './autoLinks';
 import EmojiBlot from './blots/emoji';
@@ -17,6 +16,8 @@ import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import moment from 'moment';
+import MediaPreview, { Mode } from 'components/MediaPreview';
+import { useUpload } from 'queries/files';
 
 export interface IEditorContentChanged {
   text: string;
@@ -29,8 +30,8 @@ export interface IQuillEditorProps {
   placeholder: string;
   charLimit?: number;
   defaultValue?: ReactQuill.Value;
-  toolbar?: (isCharLimit: boolean) => ReactNode;
-  previewLink?: (
+  renderToolbar?: (isCharLimit: boolean) => ReactNode;
+  renderPreviewLink?: (
     previewUrl: string,
     setPreviewUrl: (previewUrl: string) => void,
     setIsPreviewRemove: (isPreviewRemove: boolean) => void,
@@ -45,18 +46,25 @@ const RichTextEditor = React.forwardRef(
       placeholder,
       charLimit = 3000,
       defaultValue,
-      toolbar = () => <div id="toolbar"></div>,
-      previewLink,
+      renderToolbar = () => <div id="toolbar"></div>,
+      renderPreviewLink,
       onChangeEditor,
     }: IQuillEditorProps,
     ref,
   ) => {
-    const { announcement, setActiveFlow, setEditorValue } =
-      useContext(CreatePostContext);
+    const {
+      announcement,
+      setActiveFlow,
+      setEditorValue,
+      media,
+      inputImgRef,
+      setMedia,
+      removeAllMedia,
+    } = useContext(CreatePostContext);
 
     const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
     const [previewUrl, setPreviewUrl] = useState<string>('');
-    const [isPreviewRemove, setIsPreviewRemove] = useState<boolean>(false);
+    const [isPreviewRemoved, setIsPreviewRemoved] = useState<boolean>(false);
 
     const formats = ['bold', 'italic', 'underline', 'mention', 'link', 'emoji'];
 
@@ -92,7 +100,6 @@ const RichTextEditor = React.forwardRef(
           editor.getLength() - charLimit,
         );
         setIsCharLimit(true);
-        console.log('limit reached');
       } else {
         setIsCharLimit(false);
       }
@@ -108,8 +115,22 @@ const RichTextEditor = React.forwardRef(
         setPreviewUrl(matches[0]);
       } else {
         setPreviewUrl('');
-        setIsPreviewRemove(false);
+        setIsPreviewRemoved(false);
       }
+    };
+
+    const updateContext = () => {
+      setEditorValue({
+        text: (ref as any).current
+          ?.makeUnprivilegedEditor((ref as any).current?.getEditor())
+          .getText(),
+        html: (ref as any).current
+          ?.makeUnprivilegedEditor((ref as any).current?.getEditor())
+          .getHTML(),
+        json: (ref as any).current
+          ?.makeUnprivilegedEditor((ref as any).current?.getEditor())
+          .getContents(),
+      });
     };
 
     return (
@@ -125,16 +146,20 @@ const RichTextEditor = React.forwardRef(
           onChange={onChangeEditorContent}
           defaultValue={defaultValue}
         />
-        {/* <MediaPreview
-        media={[
-          {
-            type: 'image',
-            url: 'https://cdn.pixabay.com/photo/2012/08/27/14/19/mountains-55067_1280.png',
-          },
-        ]}
-        className="m-6"
-      /> */}
-        {announcement && (
+        {media.length > 0 && (
+          <MediaPreview
+            media={media}
+            className="m-6"
+            mode={Mode.Edit}
+            onAddButtonClick={() => inputImgRef?.current?.click()}
+            onCloseButtonClick={removeAllMedia}
+            onEditButtonClick={() => {
+              updateContext();
+              setActiveFlow(CreatePostFlow.EditPost);
+            }}
+          />
+        )}
+        {announcement?.label && (
           <div className="flex justify-between bg-primary-100 px-4 py-2 m-4">
             <div className="flex items-center">
               <Icon
@@ -152,17 +177,7 @@ const RichTextEditor = React.forwardRef(
             <div
               className="flex items-center cursor-pointer"
               onClick={() => {
-                setEditorValue({
-                  text: (ref as any).current
-                    ?.makeUnprivilegedEditor((ref as any).current?.getEditor())
-                    .getText(),
-                  html: (ref as any).current
-                    ?.makeUnprivilegedEditor((ref as any).current?.getEditor())
-                    .getHTML(),
-                  json: (ref as any).current
-                    ?.makeUnprivilegedEditor((ref as any).current?.getEditor())
-                    .getContents(),
-                });
+                updateContext();
                 setActiveFlow(CreatePostFlow.CreateAnnouncement);
               }}
             >
@@ -177,10 +192,10 @@ const RichTextEditor = React.forwardRef(
             </div>
           </div>
         )}
-        {!isPreviewRemove &&
-          previewLink &&
-          previewLink(previewUrl, setPreviewUrl, setIsPreviewRemove)}
-        {toolbar && toolbar(isCharLimit)}
+        {!isPreviewRemoved &&
+          renderPreviewLink &&
+          renderPreviewLink(previewUrl, setPreviewUrl, setIsPreviewRemoved)}
+        {renderToolbar && renderToolbar(isCharLimit)}
       </>
     );
   },

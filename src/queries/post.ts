@@ -1,7 +1,18 @@
 import apiService from 'utils/apiService';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { DeltaStatic } from 'quill';
+import { isValidUrl } from 'utils/misc';
 import { IMyReactions } from 'pages/Feed';
+import { Metadata } from 'components/PreviewLink/types';
+import { IMedia } from 'contexts/CreatePostContext';
+
+export interface IMention {
+  name: string;
+  entityId: string;
+  entityType: string;
+  image?: string;
+  email?: string;
+}
 
 export interface IPost {
   content: {
@@ -9,7 +20,18 @@ export interface IPost {
     html: string;
     editor: DeltaStatic;
   };
-  mentions: string[];
+  mentions?: IMention[];
+  createdBy?: {
+    department?: string;
+    designation?: string;
+    fullName?: string;
+    profileImage: {
+      blurHash?: string;
+    };
+    status?: string;
+    userId?: string;
+    workLocation?: string;
+  };
   hashtags:
     | [
         {
@@ -28,8 +50,86 @@ export interface IPost {
     end: string;
   };
   id?: string;
-  myReactions?: IMyReactions[];
+  myAcknowledgement?: {
+    // createdBy: {
+    //   department?: string;
+    //   designation?: string;
+    //   fullName?: string;
+    //   profileImage: {
+    //     blurHash?: string;
+    //   };
+    //   status?: string;
+    //   userId?: string;
+    //   workLocation?: string;
+    // };
+    reaction: string;
+    type: string;
+    id: string;
+  };
+  link?: string;
+  myReactions?: [
+    {
+      createdBy: {
+        department?: string;
+        designation?: string;
+        fullName?: string;
+        profileImage: {
+          blurHash?: string;
+        };
+        status?: string;
+        userId?: string;
+        workLocation?: string;
+      };
+      reaction: string;
+      type: string;
+      id: string;
+    },
+  ];
+}
+
+export interface IReaction {
+  id: any;
+  entityType: string;
+  type: string;
+  reaction: string;
+  myReactions?: {
+    createdBy: {
+      department?: string;
+      designation?: string;
+      fullName?: string;
+      profileImage: {
+        blurHash?: string;
+      };
+      status?: string;
+      userId?: string;
+      workLocation?: string;
+    };
+    reaction: string;
+    type: string;
+    id: string;
+  };
+  myAcknowledgement?: {
+    // createdBy: {
+    //   department?: string;
+    //   designation?: string;
+    //   fullName?: string;
+    //   profileImage: {
+    //     blurHash?: string;
+    //   };
+    //   status?: string;
+    //   userId?: string;
+    //   workLocation?: string;
+    // };
+    reaction: string;
+    type: string;
+    id: string;
+  };
+
   reactionCount?: object;
+  turnOffComments?: boolean;
+  commentsCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface MyObjectType {
@@ -42,7 +142,18 @@ export interface IGetPost {
     html: string;
     editor: DeltaStatic;
   };
-  mentions: string[];
+  mentions?: IMention[];
+  createdBy?: {
+    department?: string;
+    designation?: string;
+    fullName?: string;
+    profileImage: {
+      blurHash?: string;
+    };
+    status?: string;
+    userId?: string;
+    workLocation?: string;
+  };
   hashtags:
     | [
         {
@@ -51,7 +162,7 @@ export interface IGetPost {
         },
       ]
     | [];
-  files: string[];
+  files?: IMedia[];
   type: string;
   audience: {
     users: string[];
@@ -60,9 +171,41 @@ export interface IGetPost {
   announcement: {
     end: string;
   };
-
+  link: Metadata;
   id: string;
-  myReactions: IMyReactions[];
+  myReaction: {
+    createdBy: {
+      department?: string;
+      designation?: string;
+      fullName?: string;
+      profileImage: {
+        blurHash?: string;
+        url?: string;
+      };
+      status?: string;
+      userId?: string;
+      workLocation?: string;
+    };
+    reaction: string;
+    type: string;
+    id: string;
+  };
+  myAcknowledgement?: {
+    // createdBy: {
+    //   department?: string;
+    //   designation?: string;
+    //   fullName?: string;
+    //   profileImage: {
+    //     blurHash?: string;
+    //   };
+    //   status?: string;
+    //   userId?: string;
+    //   workLocation?: string;
+    // };
+    reaction: string;
+    type: string;
+    id: string;
+  };
   reactionsCount: MyObjectType;
   turnOffComments: boolean;
   commentsCount: number;
@@ -74,12 +217,22 @@ interface IDeletePost {
   id: string;
 }
 
+interface IAnnounce {
+  entityId: string;
+  entityType: string;
+  type: string;
+  reaction: string;
+}
+
 export const createPost = async (payload: IPost) => {
   const data = await apiService.post('/posts', payload);
   return data;
 };
 
 export const getPreviewLink = async (previewUrl: string) => {
+  if (!previewUrl) {
+    return null;
+  }
   const { data } = await apiService.get(`/links/unfurl?url=${previewUrl}`);
   return data;
 };
@@ -89,6 +242,7 @@ export const usePreviewLink = (previewUrl: string) => {
     queryKey: ['preview-link', previewUrl],
     queryFn: () => getPreviewLink(previewUrl),
     staleTime: Infinity,
+    enabled: isValidUrl(previewUrl),
   });
 };
 
@@ -98,7 +252,23 @@ export const updatePost = async (id: string, payload: IPost) => {
 
 export const deletePost = async (id: string) => {
   const data = await apiService.delete(`/posts/${id}`);
-  console.log(data, 'API');
+  return data;
+};
+
+export const fetchAnnouncement = async (postType: string, limit: number) => {
+  const data = await apiService.get(`/posts?feed=${postType}&limit=${limit}`);
+  return data;
+};
+
+export const useAnnouncementsWidget = () =>
+  useQuery({
+    queryKey: ['announcements-widget'],
+    queryFn: () => fetchAnnouncement('ANNOUNCEMENT', 1),
+    staleTime: 15 * 60 * 1000,
+  });
+
+export const announcementRead = async (payload: IAnnounce) => {
+  const data = await apiService.post('/reactions', payload);
   return data;
 };
 

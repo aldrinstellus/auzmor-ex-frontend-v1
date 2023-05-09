@@ -1,26 +1,32 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import IconButton, {
   Variant as IconVariant,
   Size as SizeVariant,
 } from 'components/IconButton';
 import RichTextEditor from 'components/RichTextEditor';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createComments } from 'queries/reaction';
-import queryClient from 'utils/queryClient';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
 
 interface CommentFormProps {
   className?: string;
-  entityId?: string;
+  entityId: string;
+  entityType: string;
+  defaultValue?: string;
+  inputRef?: any;
 }
 
 export const CommentForm: React.FC<CommentFormProps> = ({
   className = '',
   entityId,
+  entityType,
+  defaultValue,
+  inputRef,
 }) => {
-  const quillRef = useRef<ReactQuill>(null);
+  const queryClient = useQueryClient();
 
+  const quillRef = useRef<ReactQuill>(null);
   const createCommentMutation = useMutation({
     mutationKey: ['create-comment-mutation'],
     mutationFn: createComments,
@@ -49,7 +55,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({
     };
     const data = {
       entityId: entityId || '',
-      entityType: 'post',
+      entityType: entityType,
       content: commentData,
       hashtags: [],
       mentions: [],
@@ -60,15 +66,19 @@ export const CommentForm: React.FC<CommentFormProps> = ({
 
   return (
     <div className={`flex flex-row ${className} `}>
-      <div className="flex items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full">
+      <div
+        ref={inputRef}
+        className="flex items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full"
+      >
         <RichTextEditor
           placeholder="Leave a Comment..."
-          className="max-h-6 overflow-y-auto w-full"
+          className="max-h-18 overflow-y-auto w-[70%] max-w-[70%]"
           ref={quillRef}
+          defaultValue={defaultValue}
         />
       </div>
 
-      <div className="flex flex-row items-center z-10 -ml-40">
+      <div className="flex flex-row items-center z-10 -ml-32">
         <IconButton
           icon={'emojiHappy'}
           className="mx-2 !p-0 cursor-pointer !bg-inherit hover:bg-inherit"

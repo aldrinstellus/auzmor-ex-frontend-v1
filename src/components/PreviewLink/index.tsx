@@ -1,51 +1,62 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { usePreviewLink } from 'queries/post';
-import ImagePreview from './components/ImagePreview';
-import IconPreview from './components/IconPreview';
+import { useDebounce } from 'hooks/useDebounce';
+import IconButton, {
+  Variant as IconVariant,
+  Size,
+} from 'components/IconButton';
+import PreviewCard from 'components/PreviewCard';
+import { Metadata } from './types';
+
+export type LinkMetadataProps = {
+  title?: string;
+  image?: string;
+  description?: string;
+  favicon?: string;
+  url?: string;
+  themeColor?: string;
+};
 
 export type PreviewLinkProps = {
-  previewUrl: string;
-  setPreviewUrl: (previewUrl: string) => void;
-  setIsPreviewRemove: (isPreviewRemove: boolean) => void;
+  previewUrl?: string;
+  setPreviewUrl?: (previewUrl: string) => void;
+  setIsPreviewRemove?: (isPreviewRemove: boolean) => void;
+  linkMetadata?: Metadata;
 };
 
 const PreviewLink: React.FC<PreviewLinkProps> = ({
-  previewUrl,
-  setPreviewUrl,
-  setIsPreviewRemove,
+  previewUrl = '',
+  setPreviewUrl = () => {},
+  setIsPreviewRemove = () => {},
+  linkMetadata,
 }) => {
-  const { data, isLoading } = usePreviewLink(previewUrl);
-  const preview = useMemo(() => {
-    if (data?.image) {
-      return (
-        <ImagePreview
-          metaData={data}
-          setPreviewUrl={setPreviewUrl}
-          setIsPreviewRemove={setIsPreviewRemove}
+  const debouncePreviewUrl = useDebounce(previewUrl, 1000);
+  const { data, isLoading, isError } = usePreviewLink(debouncePreviewUrl);
+  if (!previewUrl && !linkMetadata) {
+    return null;
+  }
+  return (
+    <div className="relative">
+      {linkMetadata === undefined && (
+        <IconButton
+          icon="closeOutline"
+          className="absolute bg-white top-0 right-0 border-1 border-neutral-200 border-solid rounded-7xl mx-8 my-4 p-2"
+          variant={IconVariant.Secondary}
+          size={Size.Small}
+          onClick={() => {
+            setPreviewUrl('');
+            setIsPreviewRemove(true);
+          }}
         />
-      );
-    } else if (data?.favicon) {
-      return (
-        <IconPreview
-          metaData={data}
-          setPreviewUrl={setPreviewUrl}
-          setIsPreviewRemove={setIsPreviewRemove}
-        />
-      );
-    } else if (isLoading) {
-      return (
-        <div className="flex justify-center items-center mb-14">
-          <div className="text-neutral-900 text-xs font-normal">
-            Loading Preview
-          </div>
-        </div>
-      );
-    } else {
-      return <div></div>;
-    }
-  }, [data, isLoading]);
-
-  return <div>{previewUrl ? <div>{preview}</div> : null}</div>;
+      )}
+      <PreviewCard
+        metaData={linkMetadata !== undefined ? linkMetadata : data}
+        isLoading={linkMetadata !== undefined ? undefined : isLoading}
+        isError={linkMetadata !== undefined ? undefined : isError}
+        className="mx-6 mb-9"
+      />
+    </div>
+  );
 };
 
 export default PreviewLink;

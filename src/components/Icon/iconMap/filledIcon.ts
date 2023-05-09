@@ -21,6 +21,11 @@ import SvgUsersFilled from '../components/Users/UsersFilled';
 import SvgSpeakerFilled from '../components/Speaker/SpeakerFilled';
 import SvgDraftFilled from '../components/Draft/DraftFilled';
 import SvgArrowLeftFilled from '../components/ArrowLeft/ArrowLeftFilled';
+import SvgOrangeHashtagFilled from '../components/OrangeHashtag/HashtagFilled';
+import SvgSlackFilled from '../components/Slack/SlackFilled';
+import SvgCarouselLeftFilled from '../components/CarouselLeft/CarouselLeftFilled';
+import SvgCarouselRightFilled from '../components/CarouselRight/CarouselRightFilled';
+import SvgCarouselCloseFilled from '../components/CarouselClose/CarouselCloseFilled';
 import SvgSendFilled from '../components/Send/SendFilled';
 import SvgIconLinearFilled from '../components/IconLinear/IconLinearFilled';
 import SvgEmojiHappyFilled from '../components/EmojiHappy/EmojiHappyFilled';
@@ -34,42 +39,51 @@ import SvgTrashFilled from '../components/Trash/TrashFilled';
 import SvgCrossCircleFilled from '../components/CrossCircle/CrossCircleFilled';
 import SvgReplyFilled from '../components/Reply/ReplyFilled';
 import SvgLikeIconFilled from '../components/LikeIcon/LikeIconFilled';
+import SvgArrowRightFilled from '../components/ArrowRight/ArrowRightFilled';
+import SvgPlayFilled from '../components/Play/PlayFilled';
 
 export const filledIcon = {
+  addCircleFilled: SvgAddCircleFilled,
+  addFilled: SvgAddFilled,
   arrowLeftFilled: SvgArrowLeftFilled,
+  arrowRightFilled: SvgArrowRightFilled,
   calendarFilledTwo: SvgCalendarFilledTwo,
+  celebrateFilled: SvgCelebrateFilled,
   chartFilled: SvgChartFilled,
   clockFilled: SvgClockFilled,
   closeFilled: SvgCloseFilled,
+  convertShapeFilled: SvgConvertShapeFilled,
+  crossCircleFilled: SvgCrossCircleFilled,
   documentFilled: SvgDocumentFilled,
   draftFilled: SvgDraftFilled,
   dropdownArrowFilled: SvgDropdownArrowFilled,
   editFilled: SvgEditFilled,
+  emojiHappyFilled: SvgEmojiHappyFilled,
   eyeFilled: SvgEyeFilled,
   eyeSlashFilled: SvgEyeSlashFilled,
   filterFilled: SvgFilterFilled,
+  funnyFilled: SvgFunnyFilled,
+  iconLinearFilled: SvgIconLinearFilled,
   imageFilled: SvgImageFilled,
   infoCircleFilled: SvgInfoCircleFilled,
+  insightfulFilled: SvgInsightfulFilled,
+  likeFilled: SvgLikeFilled,
+  likeIconFilled: SvgLikeIconFilled,
+  loveFilled: SvgLoveFilled,
   magicStarFilled: SvgMagicStarFilled,
   moreFilled: SvgMoreFilled,
   peopleFilled: SvgPeopleFilled,
   speakerFilled: SvgSpeakerFilled,
-  addFilled: SvgAddFilled,
-  addCircleFilled: SvgAddCircleFilled,
-  convertShapeFilled: SvgConvertShapeFilled,
   userFilled: SvgUsersFilled,
   videoFilled: SvgVideoFilled,
+  hashtagFilled: SvgOrangeHashtagFilled,
+  slackFilled: SvgSlackFilled,
+  carouselLeftFilled: SvgCarouselLeftFilled,
+  carouselRightFilled: SvgCarouselRightFilled,
+  carouselCloseFilled: SvgCarouselCloseFilled,
+  playFilled: SvgPlayFilled,
+  replyFilled: SvgReplyFilled,
   sendFilled: SvgSendFilled,
-  iconLinearFilled: SvgIconLinearFilled,
-  emojiHappyFilled: SvgEmojiHappyFilled,
-  celebrateFilled: SvgCelebrateFilled,
-  insightfulFilled: SvgInsightfulFilled,
-  loveFilled: SvgLoveFilled,
-  likeFilled: SvgLikeFilled,
-  funnyFilled: SvgFunnyFilled,
   supportFilled: SvgSupportFilled,
   trashFilled: SvgTrashFilled,
-  crossCircleFilled: SvgCrossCircleFilled,
-  replyFilled: SvgReplyFilled,
-  likeIconFilled: SvgLikeIconFilled,
 };

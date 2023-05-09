@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useMemo } from 'react';
+import React, { MouseEventHandler, ReactElement, useMemo } from 'react';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 
@@ -21,16 +21,20 @@ export enum Type {
 }
 
 export type ButtonProps = {
-  label: string;
+  label: string | ReactElement;
   variant?: Variant;
   size?: Size;
   type?: Type;
   disabled?: boolean;
   loading?: boolean;
   onClick?: MouseEventHandler<Element>;
-  leftIcon?: string;
-  rightIcon?: string;
+  leftIcon?: any; // should accept the react element
+  rightIcon?: any; // should accept the string and react element
   className?: string;
+  iconFill?: string;
+  iconStroke?: string;
+  leftIconClassName?: string;
+  rightIconClassName?: string;
 };
 
 const Button = ({
@@ -43,6 +47,10 @@ const Button = ({
   leftIcon = '',
   rightIcon = '',
   className = '',
+  iconFill,
+  iconStroke,
+  leftIconClassName,
+  rightIconClassName,
   onClick = () => {},
 }: ButtonProps) => {
   const styles = useMemo(
@@ -86,9 +94,25 @@ const Button = ({
       disabled={disabled || loading}
       onClick={onClick}
     >
-      {leftIcon && <Icon name={leftIcon} />}
+      {leftIcon && (
+        <Icon
+          name={leftIcon}
+          fill={iconFill}
+          stroke={iconStroke}
+          className={leftIconClassName}
+          size={size === Size.Small ? 16 : 24}
+        />
+      )}
       {label}
-      {rightIcon && <Icon name={rightIcon} />}
+      {rightIcon && (
+        <Icon
+          name={rightIcon}
+          fill={iconFill}
+          stroke={iconStroke}
+          className={rightIconClassName}
+          size={size === Size.Small ? 16 : 24}
+        />
+      )}
     </button>
   );
 };

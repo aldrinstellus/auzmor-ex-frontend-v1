@@ -65,7 +65,7 @@ const Modal: React.FC<ModalProps> = ({
     // </>
     open ? (
       <div
-        className="flex justify-center items-center fixed top-0 left-0 w-screen h-screen bg-black/60 z-[99999]"
+        className="flex justify-center items-center fixed top-0 left-0 right-0 w-screen h-screen bg-black/60 z-[99999]"
         onClick={closeModal}
       >
         <div onClick={(e) => e.stopPropagation()} className={panelStyle}>

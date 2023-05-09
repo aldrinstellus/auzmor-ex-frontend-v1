@@ -8,7 +8,7 @@ type IconProps = {
 
 const SvgFilterFilled = ({
   size = 16,
-  fill = '#171717',
+  fill = '#737373',
   ...props
 }: SVGProps<SVGSVGElement> & IconProps) => (
   <svg
@@ -20,7 +20,7 @@ const SvgFilterFilled = ({
   >
     <path
       d="M1 1.66406H13M3 4.9974H11M5.66667 8.33073H8.33333"
-      stroke="#737373"
+      stroke={fill}
       strokeWidth="1.5"
       strokeLinecap="round"
     />
