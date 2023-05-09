@@ -59,6 +59,7 @@ const RichTextEditor = React.forwardRef(
       media,
       inputImgRef,
       setMedia,
+      removeAllMedia,
     } = useContext(CreatePostContext);
 
     const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
@@ -151,7 +152,7 @@ const RichTextEditor = React.forwardRef(
             className="m-6"
             mode={Mode.Edit}
             onAddButtonClick={() => inputImgRef?.current?.click()}
-            onCloseButtonClick={() => setMedia([])}
+            onCloseButtonClick={removeAllMedia}
             onEditButtonClick={() => {
               updateContext();
               setActiveFlow(CreatePostFlow.EditPost);

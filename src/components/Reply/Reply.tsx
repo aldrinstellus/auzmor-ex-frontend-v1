@@ -8,7 +8,7 @@ import { IComment } from '../Comments';
 import Popover from 'components/Popover';
 import clsx from 'clsx';
 import queryClient from 'utils/queryClient';
-import { getTime } from 'utils/time';
+import { humanizeTime } from 'utils/time';
 import { iconsStyle } from 'components/Post';
 import { MyObjectType } from 'queries/post';
 import useAuth from 'hooks/useAuth';
@@ -26,7 +26,7 @@ export const Reply: React.FC<ReplyProps> = ({
   handleClick,
 }) => {
   const { user } = useAuth();
-  const createdAt = getTime(comment.updatedAt);
+  const createdAt = humanizeTime(comment.createdAt);
 
   const deleteReactionMutation = useMutation({
     mutationKey: ['delete-comment-mutation'],

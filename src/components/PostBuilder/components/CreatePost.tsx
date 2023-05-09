@@ -43,7 +43,9 @@ const CreatePost: React.FC<ICreatePostProps> = ({
     inputImgRef,
     inputVideoRef,
     setUploads,
+    setMedia,
     files,
+    clearPostContext,
   } = useContext(CreatePostContext);
 
   const Header: React.FC = () => (
@@ -54,8 +56,8 @@ const CreatePost: React.FC<ICreatePostProps> = ({
       {!isLoading && (
         <IconButton
           onClick={() => {
+            clearPostContext();
             closeModal && closeModal();
-            setAnnouncement({});
           }}
           icon={'close'}
           className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"

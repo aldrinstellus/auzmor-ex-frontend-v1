@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { IComment, activeCommentsDataType } from '.';
 import Popover from 'components/Popover';
 import clsx from 'clsx';
-import { getTime } from 'utils/time';
+import { humanizeTime } from 'utils/time';
 import { iconsStyle } from 'components/Post';
 import { MyObjectType } from 'queries/post';
 import useAuth from 'hooks/useAuth';
@@ -34,7 +34,7 @@ export const Comment: React.FC<CommentProps> = ({
   const queryClient = useQueryClient();
 
   const { user } = useAuth();
-  const createdAt = getTime(comment.updatedAt);
+  const createdAt = humanizeTime(comment.updatedAt);
 
   const [showReplies, setShowReplies] = useState(false);
   const deleteReactionMutation = useMutation({
@@ -188,7 +188,12 @@ export const Comment: React.FC<CommentProps> = ({
           <div></div>
         </div>
 
-        {showReplies && <Reply entityId={comment.id} className={''} />}
+        {showReplies && (
+          <Reply
+            entityId={comment.id}
+            className={`${comment.repliesCount > 0 ? '' : 'mb-5'}`}
+          />
+        )}
       </div>
     </div>
   );

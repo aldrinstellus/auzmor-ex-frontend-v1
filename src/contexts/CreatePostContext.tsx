@@ -39,6 +39,8 @@ export interface ICreatePostContext {
   setUploads: (uploads: File[]) => void;
   replaceMedia: (index: number, data: File) => void;
   removeMedia: (index: number, callback?: () => void) => void;
+  clearPostContext: () => void;
+  removeAllMedia: () => void;
 }
 
 export interface IEditorValue {
@@ -77,6 +79,8 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setUploads: () => {},
   replaceMedia: () => {},
   removeMedia: () => {},
+  clearPostContext: () => {},
+  removeAllMedia: () => {},
 });
 
 const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
@@ -101,11 +105,15 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
 
   const replaceMedia = (index: number, data: File) => {
     // Replace Files
-    setFiles(
-      files.map((file: File) =>
-        file.name === media[index].name ? data : file,
-      ),
-    );
+    if (files.findIndex((file: File) => file.name === media[index].name) > -1) {
+      setFiles(
+        files.map((file: File) =>
+          file.name === media[index].name ? data : file,
+        ),
+      );
+    } else {
+      setFiles([...files, data]);
+    }
 
     // Replace Media
     setMedia(
@@ -120,6 +128,23 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     setMedia([...media.filter((file: IMedia) => file.name !== fileName)]);
     setFiles([...files.filter((file: File) => file.name !== fileName)]);
     callback && callback();
+  };
+
+  const removeAllMedia = () => {
+    setMedia([]);
+    setFiles([]);
+  };
+
+  const clearPostContext = () => {
+    setMedia([]);
+    setAnnouncement(null);
+    setEditorValue({
+      html: '',
+      json: {} as DeltaStatic,
+      text: '',
+    });
+    setFiles([]);
+    setActiveFlow(CreatePostFlow.CreatePost);
   };
   return (
     <CreatePostContext.Provider
@@ -139,6 +164,8 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         inputVideoRef,
         replaceMedia,
         removeMedia,
+        clearPostContext,
+        removeAllMedia,
       }}
     >
       {children}

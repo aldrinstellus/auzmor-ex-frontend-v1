@@ -8,6 +8,7 @@ import {
   CreatePostFlow,
   CreatePostContext,
   IEditorValue,
+  IMedia,
 } from 'contexts/CreatePostContext';
 import { PostBuilderMode } from '..';
 import { EntityType, useUpload } from 'queries/files';
@@ -41,6 +42,9 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     editorValue,
     setAnnouncement,
     setEditorValue,
+    setMedia,
+    clearPostContext,
+    media,
   } = useContext(CreatePostContext);
   const queryClient = useQueryClient();
 
@@ -51,6 +55,9 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       setEditorValue(data.content.editor);
       if (data.isAnnouncement) {
         setAnnouncement({ label: 'Custom Date', value: data.announcement.end });
+      }
+      if (data?.files?.length) {
+        setMedia(data?.files);
       }
     }
   }, []);
@@ -80,6 +87,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
   const handleSubmitPost = async (content?: IEditorValue, files?: File[]) => {
     let fileIds: string[] = [];
     if (files?.length) {
+      console.log(files.length, '<=== length');
       fileIds = await uploadMedia(files, EntityType.Post);
     }
     const userMentionList = content?.json?.ops
@@ -109,7 +117,12 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           },
           link: previewUrl && previewUrl[0],
         },
-        { onSuccess: () => setShowModal(false) },
+        {
+          onSuccess: () => {
+            clearPostContext();
+            setShowModal(false);
+          },
+        },
       );
     } else if (PostBuilderMode.Edit) {
       updatePostMutation.mutate(
@@ -120,6 +133,12 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             editor: content?.json || editorValue.json,
           },
           type: 'UPDATE',
+          files: [
+            ...fileIds,
+            ...media
+              .filter((eachMedia: IMedia) => eachMedia.id !== '')
+              .map((eachMedia: IMedia) => eachMedia.id),
+          ],
           mentions: userMentionList || [],
           hashtags: [],
           audience: {
@@ -143,7 +162,13 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     uploadStatus === UploadStatus.Uploading;
 
   return (
-    <Modal open={showModal} closeModal={() => setShowModal(false)}>
+    <Modal
+      open={showModal}
+      closeModal={() => {
+        clearPostContext();
+        setShowModal(false);
+      }}
+    >
       {activeFlow === CreatePostFlow.CreatePost && (
         <CreatePost
           data={data}

@@ -60,7 +60,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
   };
 
   return (
-    <div>
+    <div className={className}>
       {isLoading ? (
         <div className="flex justify-center items-center py-10">
           <Spinner color="#FFFFFF" />
