@@ -26,7 +26,7 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
       {/* Contact Widget  */}
       <div className="max-w-2xl w-[638px]">
         {/* change to responsiveness */}
-        <TabSwitcher tabs={tabs} />
+        {/* <TabSwitcher tabs={tabs} /> */}
         <div>
           <ProfileInfo />
         </div>
