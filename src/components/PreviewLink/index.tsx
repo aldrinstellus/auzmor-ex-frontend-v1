@@ -37,7 +37,7 @@ const PreviewLink: React.FC<PreviewLinkProps> = ({
   }
   return (
     <div className="relative">
-      {linkMetadata === undefined && (
+      {linkMetadata === undefined && !isLoading && (
         <IconButton
           icon="closeOutline"
           className="absolute bg-white top-0 right-0 border-1 border-neutral-200 border-solid rounded-7xl mx-8 my-4 p-2"
