@@ -6,10 +6,23 @@ const getAllUsers = async (q: Record<string, any>) => {
   return data;
 };
 
+export const getUser = async (id: string) => {
+  const data = await apiService.get(`/users/${id}`, {});
+  return data;
+};
+
 export const useUsers = (q: Record<string, any>) => {
   return useQuery({
     queryKey: ['users', q],
     queryFn: () => getAllUsers(q),
+    staleTime: 15 * 60 * 1000,
+  });
+};
+
+export const useSingleUser = (userId: string) => {
+  return useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => getUser(userId),
     staleTime: 15 * 60 * 1000,
   });
 };

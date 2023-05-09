@@ -2,10 +2,16 @@ import Card from 'components/Card';
 import Divider from 'components/Divider';
 import React from 'react';
 
-export interface IProfessionalDetailsProps {}
+export interface IProfessionalDetailsProps {
+  dateOfJoin: string;
+  timezone: string;
+}
 
-const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = () => {
-  const joiningDate = new Date();
+const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
+  dateOfJoin,
+  timezone,
+}) => {
+  const joiningDate = new Date(dateOfJoin);
   return (
     <Card>
       <div className="text-neutral-900 font-bold text-base px-6 pt-6 pb-4">
@@ -29,7 +35,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = () => {
           <div className="flex space-x-3">
             <div>i</div>
             <div className="text-neutral-900 text-base font-medium ">
-              Joined on {joiningDate.getTimezoneOffset()}
+              Joined on {timezone?.toString()}
             </div>
           </div>
         </div>

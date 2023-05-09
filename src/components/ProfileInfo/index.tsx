@@ -3,15 +3,31 @@ import AboutMe from './components/AboutMe';
 import ProfessionalDetails from './components/ProfessionalDetails';
 import PersonalDetails from './components/PersonalDetails';
 
-export interface IProfileInfoProps {}
+export interface IProfileInfoProps {
+  profileDetails: any;
+}
 
-const ProfileInfo: React.FC<IProfileInfoProps> = () => {
+const ProfileInfo: React.FC<IProfileInfoProps> = ({ profileDetails }) => {
   return (
-    <div className="">
-      <AboutMe />
-      <ProfessionalDetails />
-      <PersonalDetails />
-    </div>
+    <>
+      <AboutMe aboutMe={profileDetails?.fullName} />
+      <ProfessionalDetails
+        dateOfJoin={profileDetails?.createdAt}
+        timezone={profileDetails?.createdAt}
+      />
+      <PersonalDetails
+        dateOfBirth={profileDetails?.createdAt}
+        gender="s'he"
+        address="4517 Washington Ave. Manchester, Kentucky 39495"
+        maritalStatus="Married"
+        skills={[
+          'Techinal Analysis',
+          'Fundamental Analysis',
+          'Blockchain',
+          'Painting',
+        ]}
+      />
+    </>
   );
 };
 

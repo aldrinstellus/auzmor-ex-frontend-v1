@@ -41,7 +41,7 @@ const AccountCard = () => {
             variant={Variant.Secondary}
             label="Go to my profile"
             onClick={() => {
-              navigate('/profile');
+              navigate('/profile', { state: { userId: user?.id } });
             }}
             size={Size.Small}
           />
