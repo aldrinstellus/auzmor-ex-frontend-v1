@@ -40,6 +40,9 @@ const AccountCard = () => {
           <Button
             variant={Variant.Secondary}
             label="Go to my profile"
+            onClick={() => {
+              navigate('/profile');
+            }}
             size={Size.Small}
           />
         </div>

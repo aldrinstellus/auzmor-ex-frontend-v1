@@ -67,6 +67,15 @@ const routers = createBrowserRouter(
             return '';
           }}
         />
+        <Route
+          path="/profile"
+          element={<UserDetail />}
+          loader={() => {
+            // ⬇️ loader fetch data as earlier as possible
+            // re use the react query API cache /users/me
+            return '';
+          }}
+        />
         <Route path="/feed" element={<Feed />} />
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/apps" element={<Apps />} />
