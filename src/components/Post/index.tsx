@@ -8,12 +8,11 @@ import Likes, { ReactionType } from 'components/Reactions';
 import { RenderPost } from 'components/RenderPost';
 import { DeltaStatic } from 'quill';
 import FeedPostMenu from './components/FeedPostMenu';
-import { announcementRead, IPost, IGetPost } from 'queries/post';
+import { IPost, IGetPost } from 'queries/post';
 import Icon from 'components/Icon';
-import Button, { Size, Variant } from 'components/Button';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { humanizeTime } from 'utils/time';
+import AcknowledgementBanner from './components/AcknowledgementBanner';
 
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
@@ -58,51 +57,9 @@ const Post: React.FC<PostProps> = ({ data }) => {
     0,
   );
 
-  const queryClient = useQueryClient();
-
-  const isAnnouncement = data?.isAnnouncement;
-
-  const acknowledgeMutation = useMutation({
-    mutationKey: ['acknowledge-announcement'],
-    mutationFn: announcementRead,
-    onError: (error) => console.log(error),
-    onSuccess: async (data, variables, context) => {
-      console.log('data==>', data);
-      await queryClient.invalidateQueries(['feed']);
-      await queryClient.invalidateQueries(['announcements-widget']);
-    },
-  });
-
   return (
-    <Card>
-      <div>
-        {isAnnouncement &&
-          !(data?.myAcknowledgement?.reaction === 'mark_read') && (
-            <div className="flex justify-between items-center bg-blue-700 -mb-4 p-2 rounded-t-9xl">
-              <div className="flex justify-center items-center text-white text-xs font-bold space-x-4">
-                <div>
-                  <Icon name="flashIcon" />
-                </div>
-                <div className="text-xs font-bold">Announcement</div>
-              </div>
-              <Button
-                className="text-sm font-bold"
-                label={'Mark as read'}
-                size={Size.Small}
-                variant={Variant.Tertiary}
-                loading={acknowledgeMutation.isLoading}
-                onClick={() => {
-                  acknowledgeMutation.mutate({
-                    entityId: data?.id,
-                    entityType: 'post',
-                    type: 'acknowledge',
-                    reaction: 'mark_read',
-                  });
-                }}
-              />
-            </div>
-          )}
-      </div>
+    <Card className="mb-4">
+      <AcknowledgementBanner data={data} />
       <div className="flex justify-between items-center">
         <Actor
           visibility="Everyone"
@@ -115,11 +72,7 @@ const Post: React.FC<PostProps> = ({ data }) => {
         </div>
       </div>
       <div className="mx-6">
-        {/* Post Content */}
         <RenderPost data={data} />
-        {/* Media Display */}
-        <div></div>
-        {/* Reaction and comment repost */}
         <div className="border-b border-neutral-100 mt-4"></div>
         <div className="flex flex-row justify-between my-3">
           <div className={`flex flex-row`}>

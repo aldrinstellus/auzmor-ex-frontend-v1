@@ -94,6 +94,7 @@ const ResetPassword = () => {
       error: errors.password?.message,
       control,
       dataTestId: 'confirm-password',
+      showChecks: false,
     },
   ];
 
@@ -180,26 +181,6 @@ const ResetPassword = () => {
               <form className="mt-16" onSubmit={handleSubmit(onSubmit)}>
                 <>
                   <Layout fields={passwordField} className="mb-4" />
-                  <PasswordPolicy
-                    policyName="Must have atleast 6 characters"
-                    isChecked={passwordRule.length}
-                  />
-                  <PasswordPolicy
-                    policyName="Must have atleast 1 Lowercase letter"
-                    isChecked={passwordRule.isLowercase}
-                  />
-                  <PasswordPolicy
-                    policyName="Must have atleast 1 Uppercase letter"
-                    isChecked={passwordRule.isUppercase}
-                  />
-                  <PasswordPolicy
-                    policyName="Must have atleast 1 number"
-                    isChecked={passwordRule.isNumber}
-                  />
-                  <PasswordPolicy
-                    policyName="Must have atleast 1 symbol"
-                    isChecked={passwordRule.isSymbol}
-                  />
                   <Layout fields={confirmPasswordField} />
                   <Button
                     type={Type.Submit}

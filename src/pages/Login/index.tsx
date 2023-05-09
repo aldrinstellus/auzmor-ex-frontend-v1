@@ -75,6 +75,7 @@ const Login: React.FC<ILoginProps> = () => {
       error: loginMutation.isError || errors.password?.message,
       dataTestId: 'login-password',
       control,
+      showChecks: false,
     },
   ];
 
@@ -130,7 +131,7 @@ const Login: React.FC<ILoginProps> = () => {
             variant={ButtonVariant.Secondary}
             size={Size.Large}
             className="w-full mt-8"
-            loading={loginMutation.isLoading}
+            disabled={loginMutation.isLoading}
           />
         </div>
       </div>

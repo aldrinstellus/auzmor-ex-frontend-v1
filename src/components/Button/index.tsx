@@ -1,6 +1,8 @@
 import React, { MouseEventHandler, ReactElement, useMemo } from 'react';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
+import Spinner from 'components/Spinner';
+import { PRIMARY_COLOR } from 'utils/constants';
 
 export enum Variant {
   Primary = 'PRIMARY',
@@ -113,6 +115,7 @@ const Button = ({
           size={size === Size.Small ? 16 : 24}
         />
       )}
+      {loading && <Spinner className="ml-2" color={PRIMARY_COLOR} />}
     </button>
   );
 };

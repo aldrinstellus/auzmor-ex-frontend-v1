@@ -7,6 +7,7 @@ import Icon from 'components/Icon';
 import { IMedia } from 'contexts/CreatePostContext';
 import useModal from 'hooks/useModal';
 import './index.css';
+import Modal from 'components/Modal';
 
 export enum Mode {
   View = 'VIEW',
@@ -357,12 +358,14 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
         </div>
       )}
       {mode === Mode.View && mediaIndex >= 0 && (
-        <Carousel
-          media={media}
-          index={mediaIndex}
-          open={open}
-          closeModal={closeModalAndResetMediaIndex}
-        />
+        <Modal open={open} className="!w-[65vw] !h-[80vh] p-6">
+          <Carousel
+            media={media}
+            index={mediaIndex}
+            open={open}
+            closeModal={closeModalAndResetMediaIndex}
+          />
+        </Modal>
       )}
     </div>
   );

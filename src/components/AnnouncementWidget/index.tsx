@@ -31,12 +31,12 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
     data?.data?.result?.data?.[0]?.myAcknowledgement?.reaction !== 'mark_read';
 
   return (
-    <div>
-      <div className="flex justify-between items-center mt-4">
+    <div className="min-w-[240px] sticky -top-4">
+      <div className="flex justify-between items-center ">
         <div className="text-base font-bold">Announcements</div>
         <div className="text-sm font-bold">View All</div>
       </div>
-      <div>
+      <div className="mt-2">
         <Card className="pb-6 flex flex-col items-center rounded-9xl">
           <div className="rounded-t-9xl bg-blue-700 text-white py-3 w-full flex justify-start space-x-1 px-3">
             <Icon name="flashIcon" />

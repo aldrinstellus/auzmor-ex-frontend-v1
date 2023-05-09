@@ -94,6 +94,7 @@ const Signup: React.FC<ISignupProps> = () => {
       error: errors.password?.message,
       dataTestId: 'signup-work-password',
       control,
+      showChecks: false,
     },
     {
       type: FieldType.Password,
@@ -104,6 +105,7 @@ const Signup: React.FC<ISignupProps> = () => {
       error: errors.confirmPassword?.message,
       dataTestId: 'signup-work-re-password',
       control,
+      showChecks: false,
     },
     {
       type: FieldType.Checkbox,
