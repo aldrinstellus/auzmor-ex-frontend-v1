@@ -9,7 +9,6 @@ import MediaPreview, { Mode } from 'components/MediaPreview';
 import { IGetPost } from 'queries/post';
 import { getMentionProps } from './utils';
 import PreviewCard from 'components/PreviewCard';
-import { Metadata } from 'components/PreviewLink/types';
 
 type RenderPostProps = {
   data: IGetPost;
@@ -18,7 +17,6 @@ type RenderPostProps = {
 export const RenderPost: React.FC<RenderPostProps> = ({
   data,
 }): ReactElement => {
-  // Get all necessary data from the response
   const content = data?.content?.editor;
   const mentions = data?.mentions ? data.mentions : [];
   const link = data?.link;

@@ -115,11 +115,7 @@ const Post: React.FC<PostProps> = ({ data }) => {
         </div>
       </div>
       <div className="mx-6">
-        {/* Post Content */}
         <RenderPost data={data} />
-        {/* Media Display */}
-        <div></div>
-        {/* Reaction and comment repost */}
         <div className="border-b border-neutral-100 mt-4"></div>
         <div className="flex flex-row justify-between my-3">
           <div className={`flex flex-row`}>
