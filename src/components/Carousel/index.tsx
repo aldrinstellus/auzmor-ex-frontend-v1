@@ -46,16 +46,16 @@ const Carousel: React.FC<CarouselProps> = ({
   });
 
   const currentIndexDivStyles = clsx({
-    'absolute top-[5%] text-neutral-900 rounded-full p-1 px-2 left-8 bg-white cursor-pointer':
+    'absolute top-[5%] text-neutral-900 font-bold rounded-full p-2 px-4 left-8 bg-white cursor-pointer':
       true,
   });
 
   const leftArrowIconStyles = clsx({
-    '!absolute !top-[50%] !left-8 !rounded-lg !cursor-pointer !p-1 !px-3': true,
+    '!absolute !top-[50%] !left-1 !rounded-lg !cursor-pointer !p-1 !px-3': true,
   });
 
   const rightArrowIconStyles = clsx({
-    '!absolute !top-[50%] !right-8 !rounded-lg !cursor-pointer !p-1 !px-3':
+    '!absolute !top-[50%] !right-1 !rounded-lg !cursor-pointer !p-1 !px-3':
       true,
   });
 
@@ -65,37 +65,37 @@ const Carousel: React.FC<CarouselProps> = ({
 
   if (media.length > 0) {
     return (
-      <Modal open={open} className="!w-[65vw] !h-[80vh]">
-        <div className={containerStyles}>
-          <div className={mediaDivStyles}>
-            {media[currentIndex].type === 'IMAGE' ? (
-              <Image image={media[currentIndex]} hashSize={hashSize} />
-            ) : (
-              <Video video={media[currentIndex]} />
-            )}
-          </div>
-
-          <div className={currentIndexDivStyles}>
-            {currentIndex + 1} of {Object.keys(media).length}
-          </div>
-
-          <Icon
-            name="carouselLeft"
-            onClick={prevSlide}
-            className={leftArrowIconStyles}
-          />
-          <Icon
-            name="carouselRight"
-            onClick={nextSlide}
-            className={rightArrowIconStyles}
-          />
-          <Icon
-            name="carouselClose"
-            className={crossIconStyles}
-            onClick={closeModal}
-          />
+      <div className={containerStyles}>
+        <div className={mediaDivStyles}>
+          {media[currentIndex].type === 'IMAGE' ? (
+            <Image image={media[currentIndex]} hashSize={hashSize} />
+          ) : (
+            <Video video={media[currentIndex]} />
+          )}
         </div>
-      </Modal>
+
+        <div className={currentIndexDivStyles}>
+          {currentIndex + 1} of {Object.keys(media).length}
+        </div>
+
+        <Icon
+          name="carouselLeft"
+          onClick={prevSlide}
+          className={leftArrowIconStyles}
+          size={36}
+        />
+        <Icon
+          name="carouselRight"
+          onClick={nextSlide}
+          className={rightArrowIconStyles}
+          size={36}
+        />
+        <Icon
+          name="carouselClose"
+          className={crossIconStyles}
+          onClick={closeModal}
+        />
+      </div>
     );
   } else return <></>;
 };
