@@ -19,7 +19,7 @@ export interface ICreateAnnouncementProps {
 const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
   closeModal,
 }) => {
-  const { setAnnouncement, setActiveFlow, announcement } =
+  const { setAnnouncement, setActiveFlow, announcement, clearPostContext } =
     useContext(CreatePostContext);
   const {
     control,
@@ -55,7 +55,10 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
         Create an announcement
       </div>
       <IconButton
-        onClick={() => closeModal()}
+        onClick={() => {
+          clearPostContext();
+          closeModal();
+        }}
         icon={'close'}
         className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"
         variant={IconVariant.Primary}
@@ -124,14 +127,16 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
                   control,
                   minDate: new Date(),
                   defaultValue: announcement?.value || '',
-                  onDateChange: (date: Value) =>
+                  onDateChange: (date: Value) => {
+                    const dateValue = date?.toString();
                     setValue('expityOption', {
                       label: 'Custom Date',
                       value:
-                        new Date(date?.toLocaleString() || '')
+                        new Date(dateValue || '')
                           .toISOString()
                           .substring(0, 19) + 'Z',
-                    }),
+                    });
+                  },
                 },
               ]}
               className="mt-6"

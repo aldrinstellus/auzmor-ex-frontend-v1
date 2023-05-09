@@ -8,13 +8,8 @@ import Likes, { ReactionType } from 'components/Reactions';
 import { RenderPost } from 'components/RenderPost';
 import { DeltaStatic } from 'quill';
 import FeedPostMenu from './components/FeedPostMenu';
-import PreviewCard from 'components/PreviewCard';
-import { Metadata } from 'components/PreviewLink/types';
 import { IPost, IGetPost } from 'queries/post';
-import IconButton, {
-  Variant as IconVariant,
-  Size as SizeVariant,
-} from 'components/IconButton';
+import Icon from 'components/Icon';
 import clsx from 'clsx';
 import { humanizeTime } from 'utils/time';
 import AcknowledgementBanner from './components/AcknowledgementBanner';
@@ -22,9 +17,8 @@ import AcknowledgementBanner from './components/AcknowledgementBanner';
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
     {
-      'bg-indigo-100': key === ReactionType.Like,
+      'bg-blue-300': key === ReactionType.Like,
     },
-
     {
       'bg-red-100': key === ReactionType.Support,
     },
@@ -82,37 +76,47 @@ const Post: React.FC<PostProps> = ({ data }) => {
         <RenderPost data={data} />
         {/* Media Display */}
         <div></div>
-        <PreviewCard metaData={data?.link as Metadata} className="my-2" />
         {/* Reaction and comment repost */}
-
         <div className="border-b border-neutral-100 mt-4"></div>
         <div className="flex flex-row justify-between my-3">
           <div className={`flex flex-row`}>
             {keys > 0 && (
-              <div className="mr-2">
+              <div className="flex flex-row mr-2">
                 {Object.keys(data.reactionsCount)
                   .slice(0, 3)
                   .map((key, i) => (
-                    <IconButton
-                      icon={key}
-                      size={SizeVariant.Small}
-                      key={key}
-                      className={`!p-1 rounded-17xl ${
-                        i > 0 ? '-ml-2 z-1' : ''
-                      } ${iconsStyle(key)} hover:${iconsStyle(key)} `}
-                      variant={IconVariant.Primary}
-                    />
+                    <div className={` ${i > 0 ? '-ml-2 z-1' : ''}  `} key={key}>
+                      <Icon
+                        name={key}
+                        size={12}
+                        className={`p-0.5 rounded-17xl cursor-pointer border-white border border-solid ${iconsStyle(
+                          key,
+                        )}`}
+                      />
+                    </div>
                   ))}
               </div>
             )}
 
-            <div className={`flex text-sm font-normal text-neutral-500 mt-0.5`}>
+            <div
+              className={`flex text-sm font-normal text-neutral-500 cursor-pointer`}
+            >
               {totalCount} reacted
             </div>
           </div>
 
-          <div className="flex flex-row text-sm font-normal text-neutral-500 space-x-7 items-center">
-            <div>{data.commentsCount || 0} Comments</div>
+          <div className="flex flex-row text-sm font-normal text-neutral-500 space-x-7 items-center cursor-pointer">
+            <div
+              onClick={() => {
+                if (showComments) {
+                  setShowComments(false);
+                } else {
+                  setShowComments(true);
+                }
+              }}
+            >
+              {data.commentsCount || 0} Comments
+            </div>
             <div>0 reposts</div>
           </div>
         </div>
@@ -129,18 +133,18 @@ const Post: React.FC<PostProps> = ({ data }) => {
               queryKey="feed"
             />
 
-            <button className="flex items-center ml-7">
+            <button
+              className="flex items-center ml-7"
+              onClick={() => {
+                if (showComments) {
+                  setShowComments(false);
+                } else {
+                  setShowComments(true);
+                }
+              }}
+            >
               <img src={Comments} height={13.33} width={13.33} />
-              <div
-                className="text-xs font-normal text-neutral-500 ml-1.5"
-                onClick={() => {
-                  if (showComments) {
-                    setShowComments(false);
-                  } else {
-                    setShowComments(true);
-                  }
-                }}
-              >
+              <div className="text-xs font-normal text-neutral-500 ml-1.5">
                 Comment
               </div>
             </button>

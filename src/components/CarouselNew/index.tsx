@@ -35,7 +35,14 @@ const Carousel: React.FC<ICarouselProps> = ({
   );
   return (
     <div className={style}>
-      <img src={media[currentIndex].originalUrl} />
+      {media[currentIndex].type === 'IMAGE' ? (
+        <img src={media[currentIndex].originalUrl} />
+      ) : (
+        <video>
+          <source src={media[currentIndex].originalUrl} />
+        </video>
+      )}
+
       <div className="top-0 absolute p-4 justify-between flex w-full">
         <div className="px-4 py-2 text-sm font-bold bg-white rounded-17xl">
           {currentIndex + 1} of {media.length}

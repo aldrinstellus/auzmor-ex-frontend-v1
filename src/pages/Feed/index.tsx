@@ -63,41 +63,43 @@ const Feed: React.FC<IFeedProps> = () => {
   }) as IGetPost[];
 
   return (
-    <div className="mb-12 flex space-x-8 relative">
-      <div>
-        <UserCard />
-      </div>
-      <div className="max-w-2xl">
-        <div className="max-">
-          <CreatePostCard setShowModal={setShowModal} />
-          {isLoading ? (
-            <div>loading...</div>
-          ) : (
-            <div>
-              {feed.map((post) => (
-                <Post data={post} key={post.id} />
-              ))}
-            </div>
-          )}
-
-          <div className="h-12 w-12">
-            {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
-          </div>
-          {isFetchingNextPage && <div>Loading more...</div>}
+    <>
+      <div className="mb-12 space-x-8 flex relative">
+        <div>
+          <UserCard />
         </div>
+        <div className="max-w-2xl">
+          <div className="max-">
+            <CreatePostCard setShowModal={setShowModal} />
+            {isLoading ? (
+              <div>loading...</div>
+            ) : (
+              <div>
+                {feed.map((post) => (
+                  <Post data={post} key={post.id} />
+                ))}
+              </div>
+            )}
+
+            <div className="h-12 w-12">
+              {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+            </div>
+            {isFetchingNextPage && <div>Loading more...</div>}
+          </div>
+        </div>
+        <div className="max-w-xs">
+          <AnnouncementCard />
+        </div>
+        {/* <ActivityFeed
+      activityFeed={feed}
+      loadMore={fetchNextPage}
+      setShowModal={setShowModal}
+      isLoading={isLoading}
+      isFetchingNextPage={isFetchingNextPage}
+    /> */}
       </div>
-      <div className="max-w-xs">
-        <AnnouncementCard />
-      </div>
-      {/* <ActivityFeed
-        activityFeed={feed}
-        loadMore={fetchNextPage}
-        setShowModal={setShowModal}
-        isLoading={isLoading}
-        isFetchingNextPage={isFetchingNextPage}
-      /> */}
       <PostBuilder showModal={showModal} setShowModal={setShowModal} />
-    </div>
+    </>
   );
 };
 

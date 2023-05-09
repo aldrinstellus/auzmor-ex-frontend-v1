@@ -1,7 +1,8 @@
 import clsx from 'clsx';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Control, useController } from 'react-hook-form';
 import Icon from 'components/Icon';
+import PasswordPolicy from 'components/PasswordPolicy';
 
 export enum Size {
   Small = 'SMALL',
@@ -24,6 +25,7 @@ export type PasswordProps = {
   control?: Control<Record<string, any>>;
   label?: string;
   onChange?: any;
+  showChecks?: boolean;
 };
 
 const Password: React.FC<PasswordProps> = ({
@@ -41,13 +43,70 @@ const Password: React.FC<PasswordProps> = ({
   control,
   label,
   onChange,
+  showChecks = true,
 }) => {
   const [show, setShow] = useState(false);
+  const [validationChecks, setValidationChecks] = useState({
+    length: false,
+    isUppercase: false,
+    isLowercase: false,
+    isNumber: false,
+    isSymbol: false,
+  });
 
   const { field } = useController({
     name,
     control,
   });
+
+  useEffect(() => {
+    showChecks && validatePassword(field?.value);
+  }, [field.value]);
+
+  const validatePassword = (value: string) => {
+    const validationState = {
+      length: true,
+      isUppercase: true,
+      isLowercase: true,
+      isNumber: true,
+      isSymbol: true,
+    };
+
+    let isValid = true;
+
+    // password length should be at least 6 characters
+    if (value.length < 6) {
+      isValid = false;
+      validationState.length = false;
+    }
+
+    // password should contain at least one uppercase letter
+    if (!/[A-Z]/.test(value)) {
+      isValid = false;
+      validationState.isUppercase = false;
+    }
+
+    // password should contain at least one lowercase letter
+    if (!/[a-z]/.test(value)) {
+      isValid = false;
+      validationState.isLowercase = false;
+    }
+
+    // password should contain at least one digit
+    if (!/\d/.test(value)) {
+      isValid = false;
+      validationState.isNumber = false;
+    }
+
+    // password should contain at least one special character
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value)) {
+      isValid = false;
+      validationState.isSymbol = false;
+    }
+
+    setValidationChecks(validationState);
+    return isValid;
+  };
 
   const inputStyles = useMemo(
     () =>
@@ -144,6 +203,30 @@ const Password: React.FC<PasswordProps> = ({
       >
         {error || helpText || ' '}
       </div>
+      {showChecks && (
+        <div>
+          <PasswordPolicy
+            policyName="Must have atleast 6 characters"
+            isChecked={validationChecks.length}
+          />
+          <PasswordPolicy
+            policyName="Must have atleast 1 Lowercase letter"
+            isChecked={validationChecks.isLowercase}
+          />
+          <PasswordPolicy
+            policyName="Must have atleast 1 Uppercase letter"
+            isChecked={validationChecks.isUppercase}
+          />
+          <PasswordPolicy
+            policyName="Must have atleast 1 number"
+            isChecked={validationChecks.isNumber}
+          />
+          <PasswordPolicy
+            policyName="Must have atleast 1 symbol"
+            isChecked={validationChecks.isSymbol}
+          />
+        </div>
+      )}
     </div>
   );
 };

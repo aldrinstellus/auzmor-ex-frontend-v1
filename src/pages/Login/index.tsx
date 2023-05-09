@@ -75,6 +75,7 @@ const Login: React.FC<ILoginProps> = () => {
       error: loginMutation.isError || errors.password?.message,
       dataTestId: 'login-password',
       control,
+      showChecks: false,
     },
   ];
 

@@ -2,6 +2,7 @@ import Button, {
   Variant as ButtonVariant,
   Type as ButtonType,
   Size as ButtonSize,
+  Size,
 } from 'components/Button';
 import Icon from 'components/Icon';
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
@@ -11,6 +12,7 @@ import { twConfig } from 'utils/misc';
 import Carousel from 'components/CarouselNew';
 import { validImageTypes } from 'queries/files';
 import useCarousel from 'hooks/useCarousel';
+import SwitchToggle from 'components/SwitchToggle';
 
 export interface IEditPostProps {
   closeModal: () => void;
@@ -59,7 +61,11 @@ const EditPost: React.FC<IEditPostProps> = ({ closeModal }) => {
         media={media}
         className="m-6"
         onClose={(e, data, index) => {
-          removeMedia(index);
+          removeMedia(index, () => {
+            if (media.length === 1) {
+              setActiveFlow(CreatePostFlow.CreatePost);
+            }
+          });
         }}
         currentIndex={currentIndex}
         prevSlide={prevSlide}
@@ -67,7 +73,7 @@ const EditPost: React.FC<IEditPostProps> = ({ closeModal }) => {
       />
 
       {/* {<> -------- Footer --------</>} */}
-      {isVideo(media[currentIndex].contentType) && (
+      {media[currentIndex].contentType && (
         <div className="flex justify-between w-full items-center px-6 py-2">
           <div className="flex items-center">
             <div className="text-xs font-bold mr-3">Cover image:</div>
@@ -80,13 +86,14 @@ const EditPost: React.FC<IEditPostProps> = ({ closeModal }) => {
           </div>
           <div className="flex items-center">
             <div className="text-xs font-bold mr-3">Sound:</div>
-            <input type="checkbox" />
+            <SwitchToggle color="bg-primary-500" />
           </div>
         </div>
       )}
       <div className="flex justify-end items-center h-16 p-6 bg-blue-50">
         <Button
           variant={ButtonVariant.Secondary}
+          size={Size.Small}
           label={
             isVideo(media[currentIndex].contentType)
               ? 'Change video'
@@ -97,6 +104,7 @@ const EditPost: React.FC<IEditPostProps> = ({ closeModal }) => {
         />
         <Button
           label={'Apply changes'}
+          size={Size.Small}
           type={ButtonType.Submit}
           onClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
         />

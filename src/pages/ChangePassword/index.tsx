@@ -127,7 +127,7 @@ const ChangePassword: React.FC<IChangePasswordProps> = () => {
     {
       type: FieldType.Password,
       InputVariant: InputVariant.Password,
-      className: 'w-1/3',
+      className: 'w-1/2',
       placeholder: 'Current password',
       name: 'currentPassword',
       label: 'Current Password',
@@ -137,11 +137,12 @@ const ChangePassword: React.FC<IChangePasswordProps> = () => {
       getValues,
       onChange: () => {},
       dataTestId: 'new-password',
+      showChecks: false,
     },
     {
       type: FieldType.Password,
       InputVariant: InputVariant.Password,
-      className: 'w-1/3 mt-6',
+      className: 'w-1/2 mt-6',
       placeholder: 'New password',
       name: 'newPassword',
       label: 'New Password',
@@ -149,10 +150,7 @@ const ChangePassword: React.FC<IChangePasswordProps> = () => {
       error: errors.newPassword?.message,
       control,
       getValues,
-      onChange: (e: any) => {
-        const value = e.target.value;
-        validatePassword(value);
-      },
+      onChange: () => {},
       dataTestId: 'new-password',
     },
   ];
@@ -161,7 +159,7 @@ const ChangePassword: React.FC<IChangePasswordProps> = () => {
     {
       type: FieldType.Password,
       InputVariant: InputVariant.Password,
-      className: 'w-1/3 mt-6',
+      className: 'w-1/2 mt-6',
       placeholder: 'Re-enter Password',
       name: 'confirmPassword',
       label: 'Confirm Password',
@@ -171,6 +169,7 @@ const ChangePassword: React.FC<IChangePasswordProps> = () => {
       getValues,
       onChange: () => {},
       dataTestId: 'confirm-password',
+      showChecks: false,
     },
   ];
 
@@ -210,26 +209,6 @@ const ChangePassword: React.FC<IChangePasswordProps> = () => {
         <form className="" onSubmit={handleSubmit(onSubmit)}>
           <>
             <Layout fields={passwordField} className="mb-4" />
-            <PasswordPolicy
-              policyName="Must have atleast 6 characters"
-              isChecked={passwordRule.length}
-            />
-            <PasswordPolicy
-              policyName="Must have atleast 1 Lowercase letter"
-              isChecked={passwordRule.isLowercase}
-            />
-            <PasswordPolicy
-              policyName="Must have atleast 1 Uppercase letter"
-              isChecked={passwordRule.isUppercase}
-            />
-            <PasswordPolicy
-              policyName="Must have atleast 1 number"
-              isChecked={passwordRule.isNumber}
-            />
-            <PasswordPolicy
-              policyName="Must have atleast 1 symbol"
-              isChecked={passwordRule.isSymbol}
-            />
             <Layout fields={confirmPasswordField} />
             <div className="flex justify-between items-center mt-28">
               <div className="text-primary-500 text-base font-bold">

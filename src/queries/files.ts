@@ -86,7 +86,7 @@ export const useUpload = () => {
       promises.push(
         axios.put(
           `${res.uploadUrl}?partNumber=${partnumber}&uploadId=${res.uploadId}`,
-          { data: getChunk(partnumber, file) },
+          getChunk(partnumber, file),
           { headers: { authorization: `Bearer ${res.accessToken}` } },
         ),
       );

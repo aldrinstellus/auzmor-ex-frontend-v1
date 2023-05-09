@@ -1,43 +1,32 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Likes from 'components/Reactions';
-import IconButton, {
-  Variant as IconVariant,
-  Size as SizeVariant,
-} from 'components/IconButton';
+import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import Avatar from 'components/Avatar';
-import { deleteComment, useComments } from 'queries/reaction';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { IComment, activeCommentsDataType } from '.';
+import { deleteComment } from 'queries/reaction';
+import { useMutation } from '@tanstack/react-query';
+import { IComment } from '../Comments';
 import Popover from 'components/Popover';
 import clsx from 'clsx';
-import { getTime } from 'utils/time';
+import queryClient from 'utils/queryClient';
+import { humanizeTime } from 'utils/time';
 import { iconsStyle } from 'components/Post';
 import { MyObjectType } from 'queries/post';
 import useAuth from 'hooks/useAuth';
-import { CommentForm } from './CommentForm';
+import Icon from 'components/Icon';
 
 interface ReplyProps {
   comment: IComment;
   className?: string;
-  activeComment: activeCommentsDataType | null;
-  setActiveComment: (activeComment: activeCommentsDataType) => void;
+  handleClick: () => void;
 }
 
 export const Reply: React.FC<ReplyProps> = ({
   comment,
   className,
-  activeComment,
-  setActiveComment,
+  handleClick,
 }) => {
-  const queryClient = useQueryClient();
-  const [replyInputBox, setReplyInputBox] = useState(false);
   const { user } = useAuth();
-  const createdAt = getTime(comment.updatedAt);
-
-  const isReplying =
-    activeComment &&
-    activeComment.id === comment.id &&
-    activeComment.type === 'replying';
+  const createdAt = humanizeTime(comment.createdAt);
 
   const deleteReactionMutation = useMutation({
     mutationKey: ['delete-comment-mutation'],
@@ -128,23 +117,23 @@ export const Reply: React.FC<ReplyProps> = ({
         <div className="flex flex-row justify-between mt-3 cursor-pointer">
           <div className={`flex flex-row`}>
             {keys > 0 && (
-              <div className="mr-2">
+              <div className="mr-2 flex flex-row">
                 {Object.keys(reactionCount)
                   .slice(0, 3)
                   .map((key, i) => (
-                    <IconButton
-                      icon={key}
-                      size={SizeVariant.Small}
-                      key={key}
-                      className={`!p-1 rounded-17xl ${
-                        i > 0 ? '-ml-2 z-1' : ''
-                      } ${iconsStyle(key)} hover:${iconsStyle(key)} `}
-                      variant={IconVariant.Primary}
-                    />
+                    <div className={` ${i > 0 ? '-ml-2 z-1' : ''}  `} key={key}>
+                      <Icon
+                        name={key}
+                        size={12}
+                        className={`p-0.5 rounded-17xl cursor-pointer border-white border border-solid ${iconsStyle(
+                          key,
+                        )}`}
+                      />
+                    </div>
                   ))}
               </div>
             )}
-            <div className={`flex text-sm font-normal text-neutral-500 mt-0.5`}>
+            <div className={`flex text-sm font-normal text-neutral-500`}>
               {totalCount} reacted
             </div>
           </div>
@@ -160,14 +149,7 @@ export const Reply: React.FC<ReplyProps> = ({
             />
             <div
               className="flex items-center ml-7"
-              onClick={() => {
-                if (replyInputBox) {
-                  setReplyInputBox(false);
-                } else {
-                  setReplyInputBox(true);
-                }
-                setActiveComment({ id: comment.id, type: 'replying' });
-              }}
+              onClick={() => handleClick()}
             >
               <IconButton
                 icon={'reply'}
@@ -181,15 +163,6 @@ export const Reply: React.FC<ReplyProps> = ({
           </div>
           <div></div>
         </div>
-
-        {replyInputBox && (
-          <CommentForm
-            className="my-1"
-            entityId={comment.entityId}
-            entityType="comment"
-            setReplyInputBox={setReplyInputBox}
-          />
-        )}
       </div>
     </div>
   );
