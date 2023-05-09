@@ -40,7 +40,7 @@ export interface IPost {
         },
       ]
     | [];
-  files?: string[];
+  files?: string[] | IMedia[];
   type: string;
   audience: {
     users: string[];

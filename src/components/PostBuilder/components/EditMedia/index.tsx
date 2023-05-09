@@ -8,11 +8,14 @@ import Icon from 'components/Icon';
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import React, { useContext, useRef, useState } from 'react';
-import { twConfig } from 'utils/misc';
+import { isVideo, twConfig } from 'utils/misc';
 import Carousel from 'components/CarouselNew';
 import { validImageTypes } from 'queries/files';
 import useCarousel from 'hooks/useCarousel';
 import SwitchToggle from 'components/SwitchToggle';
+import Header from '../Header';
+import Body from './Body';
+import Footer from './Footer';
 
 export interface IEditMediaProps {
   closeModal: () => void;
@@ -24,58 +27,26 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
   const changeInputImgRef = useRef<HTMLInputElement>(null);
   const [currentIndex, prevSlide, nextSlide] = useCarousel(0, media.length);
 
-  const isVideo = (type: string) => {
-    if (validImageTypes.indexOf(type) === -1) {
-      return true;
-    }
-    return false;
-  };
-
   return (
     <>
       {/* <>------ Header -------</> */}
-      <div className="flex flex-wrap border-b-1 border-neutral-200 items-center">
-        <Icon
-          name="arrowLeftOutline"
-          stroke={twConfig.theme.colors.neutral['900']}
-          className="ml-4"
-          size={16}
-          onClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
-        />
-
-        <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
-          {isVideo(media[currentIndex].contentType)
-            ? 'Edit video'
-            : 'Edit Photo'}
-        </div>
-        <IconButton
-          onClick={closeModal}
-          icon={'close'}
-          className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"
-          variant={IconVariant.Primary}
-        />
-      </div>
+      <Header
+        title={
+          isVideo(media[currentIndex].contentType) ? 'Edit video' : 'Edit Photo'
+        }
+        onBackIconClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
+        onClose={closeModal}
+      />
 
       {/* <>------ Body -------</> */}
-      <Carousel
-        media={media}
-        className="m-6"
-        onClose={(e, data, index) => {
-          removeMedia(index, () => {
-            if (media.length === 1) {
-              setActiveFlow(CreatePostFlow.CreatePost);
-            } else if (media.length - 1 === currentIndex) {
-              nextSlide();
-            }
-          });
-        }}
+      <Body
         currentIndex={currentIndex}
         prevSlide={prevSlide}
         nextSlide={nextSlide}
       />
 
       {/* {<> -------- Footer --------</>} */}
-      {media[currentIndex].contentType && (
+      {media[currentIndex].type === 'VIDEO' && (
         <div className="flex justify-between w-full items-center px-6 py-2">
           <div className="flex items-center">
             <div className="text-xs font-bold mr-3">Cover image:</div>
@@ -92,25 +63,11 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
           </div>
         </div>
       )}
-      <div className="flex justify-end items-center h-16 p-6 bg-blue-50">
-        <Button
-          variant={ButtonVariant.Secondary}
-          size={Size.Small}
-          label={
-            isVideo(media[currentIndex].contentType)
-              ? 'Change video'
-              : 'Change photo'
-          }
-          className="mr-3"
-          onClick={() => changeInputImgRef?.current?.click()}
-        />
-        <Button
-          label={'Apply changes'}
-          size={Size.Small}
-          type={ButtonType.Submit}
-          onClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
-        />
-      </div>
+      <Footer
+        currentIndex={currentIndex}
+        changeInputImgRef={changeInputImgRef}
+      />
+
       <input
         type="file"
         className="hidden"

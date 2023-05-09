@@ -5,21 +5,13 @@ import useAuth from 'hooks/useAuth';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import clsx from 'clsx';
-import { IMenuItem } from 'components/PopupMenu';
+import { IPostMenu } from './CreatePostModal';
 
 export interface ICreatePostCardProps {
   setShowModal: (flag: boolean) => void;
 }
 
-export interface IPostTypeIcon {
-  id: number;
-  label: string;
-  icon: ReactNode;
-  menuItems: IMenuItem[];
-  divider?: boolean;
-}
-
-export const postTypeMapIcons: IPostTypeIcon[] = [
+export const postTypeMapIcons: IPostMenu[] = [
   {
     id: 1,
     label: 'Media',

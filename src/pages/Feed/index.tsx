@@ -10,14 +10,6 @@ import { IMenuItem } from 'components/PopupMenu';
 
 interface IFeedProps {}
 
-export interface IPostTypeIcon {
-  id: number;
-  label: string;
-  icon: ReactNode;
-  menuItems: IMenuItem[];
-  divider?: ReactNode;
-}
-
 export interface IProfileImage {
   blurHash: string;
   url: string;
