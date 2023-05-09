@@ -64,17 +64,17 @@ const Feed: React.FC<IFeedProps> = () => {
 
   return (
     <>
-      <div className="mb-12 space-x-8 flex relative">
-        <div>
+      <div className="mb-12 space-x-8 flex">
+        <div className="sticky top-10 z-10">
           <UserCard />
         </div>
         <div className="max-w-2xl">
-          <div className="max-">
+          <div className="">
             <CreatePostCard setShowModal={setShowModal} />
             {isLoading ? (
-              <div>loading...</div>
+              <div className="mt-4">loading...</div>
             ) : (
-              <div>
+              <div className="mt-4">
                 {feed.map((post) => (
                   <Post data={post} key={post.id} />
                 ))}

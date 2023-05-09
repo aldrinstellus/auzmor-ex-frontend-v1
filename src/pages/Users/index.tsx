@@ -12,9 +12,11 @@ interface IUsersProps {}
 
 const tabs = [
   {
+    id: 1,
     label: 'People',
   },
   {
+    id: 2,
     label: 'Teams',
   },
 ];

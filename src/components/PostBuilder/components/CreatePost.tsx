@@ -66,6 +66,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
       )}
     </div>
   );
+
   const Body: React.FC = () => (
     <div className="text-sm text-neutral-900">
       <div className="max-h-[75vh] overflow-y-auto">
@@ -95,6 +96,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
       </div>
     </div>
   );
+
   const postTypeMapIcons: IPostTypeIcon[] = [
     {
       id: 1,
@@ -270,9 +272,9 @@ const CreatePost: React.FC<ICreatePostProps> = ({
         </div>
         <div className="flex items-center">
           <Button
-            label={isLoading ? <Spinner color="#FFFFFF" /> : 'Post'}
+            label="Post"
             className="w-24"
-            disabled={isLoading}
+            loading={isLoading}
             onClick={() =>
               handleSubmitPost(
                 {

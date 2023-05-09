@@ -1,7 +1,9 @@
 import clsx from 'clsx';
 import React, { useState } from 'react';
+import { Tab } from '@headlessui/react';
 
 interface Tab {
+  id: number;
   label: string;
 }
 
@@ -19,7 +21,7 @@ const TabSwitcher: React.FC<TabSwitcherProps> = ({ tabs }) => {
   const styles = (active: boolean) =>
     clsx(
       {
-        'pl-6 pr-6 pt-1 pb-1 font-bold gap-1': true,
+        'font-bold': true,
       },
       {
         'bg-primary-500 rounded-6xl text-white': active,
@@ -29,12 +31,15 @@ const TabSwitcher: React.FC<TabSwitcherProps> = ({ tabs }) => {
       },
     );
 
+  // whole tab component change...
+  // temp fix for width
+
   return (
-    <div className="p-1 bg-neutral-50 rounded-6xl border-solid border-2 border-neutral-200 flex max-w-min">
+    <div className="flex w-[377px] p-1 bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200">
       {tabs.map((tab, index) => (
         <div
           style={{ cursor: 'pointer' }}
-          key={tab.label}
+          key={tab?.id}
           onClick={() => handleTabClick(index)}
           className={styles(index === activeTabIndex)}
         >
@@ -42,6 +47,18 @@ const TabSwitcher: React.FC<TabSwitcherProps> = ({ tabs }) => {
         </div>
       ))}
     </div>
+
+    // <div className="p-1 bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200 flex max-w-md w-full px-2 py-16 sm:px-0">
+    //   <Tab.Group>
+    //     <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
+    //       {tabs.map((tab, index) => (
+    //         <Tab key={tab?.id} className={styles(index === activeTabIndex)}>
+    //           {children}
+    //         </Tab>
+    //       ))}
+    //     </Tab.List>
+    //   </Tab.Group>
+    // </div>
   );
 };
 
