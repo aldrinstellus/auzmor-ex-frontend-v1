@@ -90,7 +90,10 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
   const handleSubmitPost = async (content?: IEditorValue, files?: File[]) => {
     let fileIds: string[] = [];
     if (files?.length) {
-      fileIds = await uploadMedia(files, EntityType.Post);
+      fileIds = (await uploadMedia(files, EntityType.Post)).map(
+        (media: IMedia) => media.id,
+      );
+      console.log(fileIds, '<===fileIds');
     }
     const userMentionList = content?.json?.ops
       ?.filter((op) => op.insert.mention)
