@@ -2,30 +2,30 @@ import Avatar from 'components/Avatar';
 import React, { ReactElement, useEffect, useState } from 'react';
 import EditIcon from './components/EditIcon';
 import useAuth from 'hooks/useAuth';
-import { useUpload } from 'queries/files';
+import { UploadStatus, useUpload } from 'queries/files';
 import { EntityType } from 'queries/files';
-import { useMutation } from '@tanstack/react-query';
-import { IUserUpdate, updateUserOnboard } from 'queries/users';
 
-const UpdateProfileImage: React.FC = (): ReactElement => {
+type UpdateProfileImageProps = {
+  updateProfileImageMutation: any;
+  isLoading?: boolean;
+  isError?: boolean;
+  uploadMedia: any;
+  uploadStatus: UploadStatus;
+};
+
+const UpdateProfileImage: React.FC<UpdateProfileImageProps> = ({
+  updateProfileImageMutation,
+  isLoading,
+  isError,
+  uploadMedia,
+  uploadStatus,
+}): ReactElement => {
   const [profilePicture, setProfilePicture] = useState<File[]>();
-  const { user, set } = useAuth();
+  const { user, updateUser } = useAuth();
 
-  const { uploadMedia, uploadStatus } = useUpload();
-
-  const updateProfileImageMutation = useMutation({
-    mutationKey: ['update-profile-image-mutation'],
-    mutationFn: updateUserOnboard,
-    onError: (error: any) => {
-      console.log('API call resulted in error: ', error);
-    },
-    onSuccess: (response) => {
-      console.log('API call success', response);
-      set(response);
-    },
-  });
-
-  const { isLoading, isError } = updateProfileImageMutation;
+  useEffect(() => {
+    console.log({ uploadStatus });
+  }, [uploadStatus]);
 
   let files: any[] = [];
 

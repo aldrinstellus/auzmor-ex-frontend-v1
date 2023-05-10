@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 
 export interface IProfileImage {
@@ -38,8 +38,21 @@ export const deleteUser = async (id: string) => {
   });
 };
 
-export const updateUserOnboard = async (user: IUserUpdate) => {
+export const updateUser = async (user: IUserUpdate) => {
   const { id, ...rest } = user;
   const data = await apiService.patch(`/users/${user.id}`, { ...rest });
   return data;
+};
+
+export const updateUserMutation = (mutationKey: string, updateUser: any) => {
+  return useMutation(updateUser, {
+    mutationKey: [mutationKey],
+    onError: (error: any) => {
+      console.log('API call resulted in error: ', error);
+    },
+    onSuccess: (response) => {
+      console.log('API call success', response);
+      updateUser(response);
+    },
+  });
 };
