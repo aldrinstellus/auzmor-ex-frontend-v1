@@ -12,7 +12,7 @@ interface IUserDetailProps {}
 const UserDetail: React.FC<IUserDetailProps> = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const params = useParams(); // get from users list
-  const { state } = useLocation(); // get from user/me
+  const { state, pathname } = useLocation(); // get from user/me
 
   const {
     data: userProfileDetails,
@@ -49,6 +49,7 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
         profileCoverData={profileData}
         showModal={showModal}
         setShowModal={setShowModal}
+        canEdit={pathname === '/profile'}
       />
       <div className="mb-32 space-x-8 flex">
         <ContactCard

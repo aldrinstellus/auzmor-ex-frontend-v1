@@ -21,12 +21,14 @@ export interface IProfileCoverProps {
   profileCoverData: Record<string, any>;
   showModal: boolean;
   setShowModal: (flag: boolean) => void;
+  canEdit: boolean;
 }
 
 const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
   profileCoverData,
   showModal,
   setShowModal,
+  canEdit,
 }) => {
   const coverImageRef = useRef<HTMLInputElement>(null);
   return (
@@ -38,16 +40,17 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             className="object-cover w-full h-[179.56px] rounded-9xl"
             src="https://libg.s3.us-east-2.amazonaws.com/download/Blue-And-Red-Over-The-Mountains.jpg"
           />
-          {/* only show when you are in my profile */}
-          <IconButton
-            icon="edit"
-            className="bg-white m-4 absolute top-0 right-0 p-3 text-black"
-            variant={IconVariant.Secondary}
-            size={Size.Medium}
-            onClick={() => {
-              setShowModal(true);
-            }}
-          />
+          {canEdit && (
+            <IconButton
+              icon="edit"
+              className="bg-white m-4 absolute top-0 right-0 p-3 text-black"
+              variant={IconVariant.Secondary}
+              size={Size.Medium}
+              onClick={() => {
+                setShowModal(true);
+              }}
+            />
+          )}
         </div>
         <div className="flex">
           {/* Profile Picture */}
@@ -75,16 +78,28 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                     <div>{profileCoverData?.status}</div>
                   </div>
                 </div>
-                <Button
-                  className="flex"
-                  label="Edit Profile"
-                  leftIcon="edit"
-                  size={ButtonSize.Small}
-                  variant={ButtonVariant.Secondary}
-                  onClick={() => {
-                    setShowModal(true);
-                  }}
-                />
+                {canEdit ? (
+                  <Button
+                    className="flex"
+                    label="Edit Profile"
+                    leftIcon="edit"
+                    size={ButtonSize.Small}
+                    variant={ButtonVariant.Secondary}
+                    onClick={() => {
+                      setShowModal(true);
+                    }}
+                  />
+                ) : (
+                  <Button
+                    className="flex"
+                    label="Follow"
+                    size={ButtonSize.Small}
+                    variant={ButtonVariant.Secondary}
+                    onClick={() => {
+                      // follow/unfollow functionality
+                    }}
+                  />
+                )}
               </div>
             </div>
             <div className="flex space-x-4 items-center">
