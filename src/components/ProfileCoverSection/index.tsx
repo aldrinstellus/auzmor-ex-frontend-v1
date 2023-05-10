@@ -49,9 +49,9 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             }}
           />
         </div>
-        {/* Profile Picture */}
-        <div className="ml-8 mb-8 flex items-center">
-          <div className="-mt-28">
+        <div className="flex">
+          {/* Profile Picture */}
+          <div className="-mt-20 ml-8">
             <Avatar
               name={profileCoverData?.fullName || 'U'}
               image={
@@ -63,60 +63,52 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             />
           </div>
 
-          <div className="ml-4 mr-6 mt-2 flex justify-between w-full">
-            <div className="flex space-x-4">
-              <div className="text-2xl font-bold">
-                {profileCoverData?.userName || 'Megan Berry'}
-              </div>
-              <div className="bg-red-100 border-1 border-red-200 rounded-full px-3 flex justify-center items-center space-x-2">
-                <img src={OutOfOffice} alt="" width={24} height={24} />
-                <div>{profileCoverData?.status}</div>
+          <div className="ml-4 mb-7 flex flex-col space-y-5 w-full">
+            <div className="flex items-center">
+              <div className="mr-6 mt-2 flex justify-between w-full">
+                <div className="flex space-x-4">
+                  <div className="text-2xl font-bold">
+                    {profileCoverData?.userName || 'Megan Berry'}
+                  </div>
+                  <div className="bg-red-100 border-1 border-red-200 rounded-full px-3 flex justify-center items-center space-x-2">
+                    <img src={OutOfOffice} alt="" width={24} height={24} />
+                    <div>{profileCoverData?.status}</div>
+                  </div>
+                </div>
+                <Button
+                  className="flex"
+                  label="Edit Profile"
+                  leftIcon="edit"
+                  size={ButtonSize.Small}
+                  variant={ButtonVariant.Secondary}
+                  onClick={() => {
+                    setShowModal(true);
+                  }}
+                />
               </div>
             </div>
-            <Button
-              className="flex"
-              label="Edit Profile"
-              leftIcon="edit"
-              size={ButtonSize.Small}
-              variant={ButtonVariant.Secondary}
-              onClick={() => {
-                setShowModal(true);
-              }}
-            />
-          </div>
-        </div>
-        {/* rest.... */}
-        <div className="flex space-x-4">
-          <div className="text-xs font-normal flex justify-center items-center">
-            {profileCoverData?.designation}
-          </div>
-
-          <div className="bg-white">
-            <Divider variant={DividerVariant.Vertical} />
-          </div>
-
-          <div className="flex justify-center items-center space-x-4">
-            {/* <div className="">
-                <Icon name="briefcase" size={24} />
-              </div> */}
-            <img src={Briefcase} alt="" />
-
-            <div className="text-xs font-normal">
-              {profileCoverData?.department}
-            </div>
-          </div>
-
-          <div className="bg-white">
-            <Divider variant={DividerVariant.Vertical} />
-          </div>
-
-          <div className="flex justify-center items-center space-x-4">
-            {/* <div className="">
-                <Icon name="briefcase" size={24} />
-              </div> */}
-            <img src={Location} alt="" />
-            <div className="text-xs font-normal">
-              {profileCoverData?.location}
+            <div className="flex space-x-4 items-center">
+              <div className="text-xs font-normal text-neutral-900">
+                <div>{profileCoverData?.designation || 'Tech Lead'}</div>
+              </div>
+              <div className="bg-neutral-100">
+                <Divider variant={DividerVariant.Vertical} />
+              </div>
+              <div className="flex space-x-3 items-center">
+                <img src={Briefcase} alt="" />
+                <div className="text-xs font-normal text-neutral-900">
+                  {profileCoverData?.department || 'Engineering'}
+                </div>
+              </div>
+              <div className="bg-neutral-100">
+                <Divider variant={DividerVariant.Vertical} />
+              </div>
+              <div className="flex space-x-3 items-center">
+                <img src={Location} alt="" />
+                <div className="text-xs font-normal text-neutral-900">
+                  {profileCoverData?.location || 'Mumbai, India'}
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -51,7 +51,6 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
         setShowModal={setShowModal}
       />
       <div className="mb-32 space-x-8 flex">
-        {/* Contact Widget  */}
         <ContactCard
           email={profileData?.workEmail}
           contact={profileData?.workEmail}
