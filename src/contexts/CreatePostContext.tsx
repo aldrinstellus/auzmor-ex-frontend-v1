@@ -155,6 +155,8 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     });
     setFiles([]);
     setActiveFlow(CreatePostFlow.CreatePost);
+    setIsPreviewRemoved(false);
+    setIsCharLimit(false);
   };
   return (
     <CreatePostContext.Provider

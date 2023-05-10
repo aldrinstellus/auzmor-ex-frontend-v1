@@ -44,6 +44,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     editorValue,
     setAnnouncement,
     setEditorValue,
+    isPreviewRemoved,
     setMedia,
     media,
     clearPostContext,
@@ -95,7 +96,9 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       ?.filter((op) => op.insert.mention)
       .map((userItem) => userItem?.insert?.mention?.id);
 
-    const previewUrl = content?.text.match(previewLinkRegex) as string[];
+    const previewUrl = isPreviewRemoved
+      ? []
+      : (content?.text.match(previewLinkRegex) as string[]);
 
     if (mode === PostBuilderMode.Create) {
       createPostMutation.mutate(

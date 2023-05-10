@@ -35,7 +35,6 @@ export interface IQuillEditorProps {
     setPreviewUrl: (previewUrl: string) => void,
     setIsPreviewRemove: (isPreviewRemove: boolean) => void,
   ) => ReactNode;
-  onChangeEditor?: (content: IEditorContentChanged) => void;
 }
 
 const RichTextEditor = React.forwardRef(
@@ -47,7 +46,6 @@ const RichTextEditor = React.forwardRef(
       defaultValue,
       renderToolbar = () => <div id="toolbar"></div>,
       renderPreviewLink,
-      onChangeEditor,
     }: IQuillEditorProps,
     ref,
   ) => {
@@ -103,19 +101,14 @@ const RichTextEditor = React.forwardRef(
       } else {
         setIsCharLimit(false);
       }
-      if (onChangeEditor) {
-        onChangeEditor({
-          text: editor.getText(),
-          html: editor.getHTML(),
-          json: editor.getContents(),
-        });
-      }
-      const matches = editor.getText().match(previewLinkRegex);
-      if (matches) {
-        setPreviewUrl(matches[0]);
-      } else {
-        setPreviewUrl('');
-        setIsPreviewRemoved(false);
+
+      if (!isPreviewRemoved) {
+        const matches = editor.getText().match(previewLinkRegex);
+        if (matches) {
+          setPreviewUrl(matches[0]);
+        } else {
+          setPreviewUrl('');
+        }
       }
     };
 
