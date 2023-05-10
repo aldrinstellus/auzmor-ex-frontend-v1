@@ -1,17 +1,32 @@
 import React, { ReactElement } from 'react';
 import OnboardWelcome from 'images/onboard-welcome.png';
+import Button from 'components/Button';
 
-const WelcomeScreen: React.FC = (): ReactElement => {
+type WelcomeScreenProps = {
+  next?: any;
+};
+
+const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
+  next,
+}): ReactElement => {
   return (
-    <div className="flex items-center flex-col justify-between gap-y-4 px-10">
-      <img src={OnboardWelcome} />
-      <p className="font-bold text-neutral-900 text-2xl">
-        Welcome to Auzmor Office
-      </p>
-      <p className="font-normal text-sm text-neutral-500">
-        Let&rsquo;s get your profile setup so that you can jump right in and
-        start using Auzmor office.
-      </p>
+    <div className="flex flex-col min-h-full justify-between min-w-full">
+      <div className="flex items-center flex-col justify-between gap-y-4 px-10 mt-6">
+        <img src={OnboardWelcome} />
+        <p className="font-bold text-neutral-900 text-2xl">
+          Welcome to Auzmor Office
+        </p>
+        <p className="font-normal text-sm text-neutral-500">
+          Let&rsquo;s get your profile setup so that you can jump right in and
+          start using Auzmor office.
+        </p>
+      </div>
+      <div className="bg-blue-50">
+        <div className="p-4 flex items-center justify-between">
+          <div />
+          <Button className="font-bold" label={'Next'} onClick={next}></Button>
+        </div>
+      </div>
     </div>
   );
 };
