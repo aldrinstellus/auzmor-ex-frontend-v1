@@ -23,13 +23,13 @@ interface IUser {
 interface IAuthContext {
   user: IUser | null;
   reset: () => void;
-  set: (user: IUser) => void;
+  updateUser: (user: IUser) => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({
   user: null,
   reset: () => {},
-  set: () => {},
+  updateUser: () => {},
 });
 
 const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
@@ -85,13 +85,13 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
     removeAllItems();
   };
 
-  const set = (user: IUser) => setUser(user);
+  const updateUser = (user: IUser) => setUser((u) => ({ ...u, ...user }));
 
   if (loading) {
     return <>Loading...</>;
   }
   return (
-    <AuthContext.Provider value={{ user, reset, set }}>
+    <AuthContext.Provider value={{ user, reset, updateUser }}>
       {children}
     </AuthContext.Provider>
   );
