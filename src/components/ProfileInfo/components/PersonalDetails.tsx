@@ -1,10 +1,6 @@
 import Card from 'components/Card';
 import Divider from 'components/Divider';
 import React, { useMemo } from 'react';
-import Cake from 'images/cake.svg';
-import Female from 'images/female.svg';
-import Location from 'images/Location.svg';
-import Married from 'images/married.svg';
 import clsx from 'clsx';
 import useHover from 'hooks/useHover';
 import Icon from 'components/Icon';
@@ -48,13 +44,13 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
         <div className="py-6">
           <div className="pb-4 space-y-3">
             <div className="flex space-x-3">
-              <img src={Cake} alt="" />
+              <Icon name="cake" />
               <div className="text-neutral-900 text-base font-medium">
                 Born on {dateOfBirth}
               </div>
             </div>
             <div className="flex space-x-3">
-              <img src={Female} alt="" />
+              <Icon name="femaleicon" />
               <div className="text-neutral-900 text-base font-medium">
                 {gender}
               </div>
@@ -65,7 +61,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
               Permanent Address
             </div>
             <div className="flex space-x-3">
-              <img src={Location} alt="" />
+              <Icon name="location" />
               <div className="text-neutral-900 text-base font-medium">
                 {address}
               </div>
@@ -76,7 +72,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
               Marital Status
             </div>
             <div className="flex space-x-3">
-              <img src={Married} alt="" />
+              <Icon name="marriedIcon" />
               <div className="text-neutral-900 text-base font-medium">
                 {maritalStatus}
               </div>

@@ -8,14 +8,11 @@ import Button, {
 } from 'components/Button';
 import Icon from 'components/Icon';
 import OutOfOffice from 'images/out-of-office.svg';
-import Location from 'images/Location.svg';
-import Briefcase from 'images/Briefcase.svg';
 import IconButton, {
   Size,
   Variant as IconVariant,
 } from 'components/IconButton';
 import EditProfileModal from './components/EditProfileModal';
-import { CreatePostContext } from 'contexts/CreatePostContext';
 
 export interface IProfileCoverProps {
   profileCoverData: Record<string, any>;
@@ -110,7 +107,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                 <Divider variant={DividerVariant.Vertical} />
               </div>
               <div className="flex space-x-3 items-center">
-                <img src={Briefcase} alt="" />
+                <Icon name="briefcase" />
                 <div className="text-xs font-normal text-neutral-900">
                   {profileCoverData?.department || 'Engineering'}
                 </div>
@@ -119,7 +116,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                 <Divider variant={DividerVariant.Vertical} />
               </div>
               <div className="flex space-x-3 items-center">
-                <img src={Location} alt="" />
+                <Icon name="location" />
                 <div className="text-xs font-normal text-neutral-900">
                   {profileCoverData?.location || 'Mumbai, India'}
                 </div>
