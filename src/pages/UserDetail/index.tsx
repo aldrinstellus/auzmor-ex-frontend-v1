@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ContactCard from 'components/ContactCard';
 import ProfileCoverSection from 'components/ProfileCoverSection';
-import { useSingleUser } from 'queries/users';
+import { useCurrentUser, useSingleUser } from 'queries/users';
 import ProfileInfo from 'components/ProfileInfo';
 import Spinner from 'components/Spinner';
 import { useLocation, useParams } from 'react-router-dom';
@@ -14,18 +14,21 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
   const params = useParams(); // get from users list
   const { state, pathname } = useLocation(); // get from user/me
 
-  const {
-    data: userProfileDetails,
-    isError,
-    isLoading,
-  } = useSingleUser(params?.userId || state?.userId || '');
-  const profileData = userProfileDetails?.data?.result?.data;
+  let userData;
 
-  if (isLoading) {
+  if (pathname === '/profile') {
+    userData = useCurrentUser();
+  } else {
+    userData = useSingleUser(params?.userId || '');
+  }
+
+  const profileData = userData?.data?.data?.result?.data;
+
+  if (userData?.isLoading) {
     return <Spinner color="#000" />;
   }
 
-  if (isError) {
+  if (userData?.isError) {
     return <div></div>;
   }
 

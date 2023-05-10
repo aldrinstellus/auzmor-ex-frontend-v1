@@ -69,7 +69,7 @@ export const useSingleUser = (userId: string) => {
 // use react query to get current user
 export const useCurrentUser = () => {
   return useQuery({
-    queryKey: ['current-user'],
+    queryKey: ['current-user-me'],
     queryFn: () => getCurrentUser(),
     staleTime: 15 * 60 * 1000,
   });
