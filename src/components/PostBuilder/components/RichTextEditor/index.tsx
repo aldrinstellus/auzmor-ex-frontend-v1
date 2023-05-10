@@ -17,7 +17,6 @@ import { twConfig } from 'utils/misc';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import moment from 'moment';
 import MediaPreview, { Mode } from 'components/MediaPreview';
-import { useUpload } from 'queries/files';
 
 export interface IEditorContentChanged {
   text: string;
@@ -36,7 +35,6 @@ export interface IQuillEditorProps {
     setPreviewUrl: (previewUrl: string) => void,
     setIsPreviewRemove: (isPreviewRemove: boolean) => void,
   ) => ReactNode;
-  onChangeEditor?: (content: IEditorContentChanged) => void;
 }
 
 const RichTextEditor = React.forwardRef(
@@ -48,7 +46,6 @@ const RichTextEditor = React.forwardRef(
       defaultValue,
       renderToolbar = () => <div id="toolbar"></div>,
       renderPreviewLink,
-      onChangeEditor,
     }: IQuillEditorProps,
     ref,
   ) => {
@@ -58,13 +55,14 @@ const RichTextEditor = React.forwardRef(
       setEditorValue,
       media,
       inputImgRef,
-      setMedia,
+      isPreviewRemoved,
+      isCharLimit,
+      setIsCharLimit,
+      setIsPreviewRemoved,
       removeAllMedia,
     } = useContext(CreatePostContext);
 
-    const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
     const [previewUrl, setPreviewUrl] = useState<string>('');
-    const [isPreviewRemoved, setIsPreviewRemoved] = useState<boolean>(false);
 
     const formats = ['bold', 'italic', 'underline', 'mention', 'link', 'emoji'];
 
@@ -103,19 +101,14 @@ const RichTextEditor = React.forwardRef(
       } else {
         setIsCharLimit(false);
       }
-      if (onChangeEditor) {
-        onChangeEditor({
-          text: editor.getText(),
-          html: editor.getHTML(),
-          json: editor.getContents(),
-        });
-      }
-      const matches = editor.getText().match(previewLinkRegex);
-      if (matches) {
-        setPreviewUrl(matches[0]);
-      } else {
-        setPreviewUrl('');
-        setIsPreviewRemoved(false);
+
+      if (!isPreviewRemoved) {
+        const matches = editor.getText().match(previewLinkRegex);
+        if (matches) {
+          setPreviewUrl(matches[0]);
+        } else {
+          setPreviewUrl('');
+        }
       }
     };
 

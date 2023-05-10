@@ -55,3 +55,10 @@ export const getMediaObj = (files: File[]): IMedia[] => {
       } as IMedia),
   );
 };
+
+export const isVideo = (type: string) => {
+  if (validImageTypes.indexOf(type) === -1) {
+    return true;
+  }
+  return false;
+};

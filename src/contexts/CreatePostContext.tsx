@@ -15,7 +15,7 @@ export interface ICreatePostProviderProps {
 export enum CreatePostFlow {
   CreatePost = 'CREATE_POST',
   CreateAnnouncement = 'CREATE_ANNOUNCEMENT',
-  EditPost = 'EDIT_POST',
+  EditMedia = 'EDIT_MEDIA',
 }
 
 export interface IAnnouncement {
@@ -33,7 +33,7 @@ export interface ICreatePostContext {
   media: IMedia[];
   files: File[];
   setFiles: (files: File[]) => void;
-  setMedia: any;
+  setMedia: (media: IMedia[]) => void;
   inputImgRef: React.RefObject<HTMLInputElement> | null;
   inputVideoRef: React.RefObject<HTMLInputElement> | null;
   setUploads: (uploads: File[]) => void;
@@ -41,6 +41,10 @@ export interface ICreatePostContext {
   removeMedia: (index: number, callback?: () => void) => void;
   clearPostContext: () => void;
   removeAllMedia: () => void;
+  isPreviewRemoved: boolean;
+  setIsPreviewRemoved: (flag: boolean) => void;
+  isCharLimit: boolean;
+  setIsCharLimit: (flag: boolean) => void;
 }
 
 export interface IEditorValue {
@@ -81,6 +85,10 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   removeMedia: () => {},
   clearPostContext: () => {},
   removeAllMedia: () => {},
+  isPreviewRemoved: false,
+  setIsPreviewRemoved: () => {},
+  isCharLimit: false,
+  setIsCharLimit: () => {},
 });
 
 const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
@@ -97,6 +105,8 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
   const inputImgRef = useRef<HTMLInputElement>(null);
   const inputVideoRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<File[]>([]);
+  const [isPreviewRemoved, setIsPreviewRemoved] = useState<boolean>(false);
+  const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
 
   const setUploads = (uploads: File[]) => {
     setMedia([...media, ...getMediaObj(uploads)]);
@@ -145,6 +155,8 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     });
     setFiles([]);
     setActiveFlow(CreatePostFlow.CreatePost);
+    setIsPreviewRemoved(false);
+    setIsCharLimit(false);
   };
   return (
     <CreatePostContext.Provider
@@ -166,6 +178,10 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         removeMedia,
         clearPostContext,
         removeAllMedia,
+        isPreviewRemoved,
+        setIsPreviewRemoved,
+        isCharLimit,
+        setIsCharLimit,
       }}
     >
       {children}
