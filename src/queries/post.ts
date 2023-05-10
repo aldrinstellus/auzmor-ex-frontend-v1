@@ -277,6 +277,20 @@ export const fetchFeed = ({ pageParam = null }) => {
   else return apiService.get(pageParam);
 };
 
+export const useProfileFeed = (q?: Record<string, any>) => {
+  return useInfiniteQuery({
+    queryKey: ['feed', q],
+    queryFn: fetchFeed,
+    getNextPageParam: (lastPage: any) => {
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
 export const useInfiniteFeed = (q?: Record<string, any>) => {
   return useInfiniteQuery({
     queryKey: ['feed', q],

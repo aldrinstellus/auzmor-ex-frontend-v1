@@ -1,28 +1,13 @@
-import { useQueryClient } from '@tanstack/react-query';
 import ContactCard from 'components/ContactCard';
 import ProfileCover from 'components/ProfileCover';
 import { useSingleUser } from 'queries/users';
 import ProfileInfo from 'components/ProfileInfo';
 import Spinner from 'components/Spinner';
-// import TabSwitcher from 'pages/Users/components/TabSwitch';
 import React from 'react';
 import { useLoaderData, useLocation, useParams } from 'react-router-dom';
+import TabSwitcher from 'pages/Users/components/TabSwitch';
+import ProfileActivityFeed from './ProfileActivityFeed';
 interface IUserDetailProps {}
-
-// const tabs = [
-//   {
-//     id: 1,
-//     label: 'Profile',
-//   },
-//   {
-//     id: 2,
-//     label: 'Activity',
-//   },
-//   {
-//     id: 3,
-//     label: 'Recognitions',
-//   },
-// ];
 
 const UserDetail: React.FC<IUserDetailProps> = () => {
   const params = useParams(); // get from users list
@@ -32,6 +17,7 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
     isError,
     isLoading,
   } = useSingleUser(params?.userId || state?.userId || '');
+  const profileData = userProfileDetails?.data?.result?.data;
 
   if (isLoading) {
     return <Spinner color="#000" />;
@@ -41,7 +27,20 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
     return <div></div>;
   }
 
-  const profileData = userProfileDetails?.data?.result?.data;
+  const tabs = [
+    {
+      id: 1,
+      title: 'Profile',
+      content: <ProfileInfo profileDetails={profileData} />,
+    },
+    {
+      id: 2,
+      title: 'Activity',
+      content: <ProfileActivityFeed />,
+    },
+    { id: 3, title: 'Recognitions', content: <div>Content for Tab 3</div> },
+  ];
+
   return (
     <div className="flex flex-col space-y-9">
       <div className="">
@@ -60,9 +59,7 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
           contact={profileData?.workEmail}
         />
         <div className="max-w-2xl w-[638px]">
-          {/* change to responsiveness */}
-          {/* <TabSwitcher tabs={tabs} /> */}
-          <ProfileInfo profileDetails={profileData} />
+          <TabSwitcher tabs={tabs} />
         </div>
         {/* Other Widget */}
         <ContactCard

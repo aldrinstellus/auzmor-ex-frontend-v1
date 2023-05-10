@@ -11,14 +11,8 @@ import ConfirmationBox from 'components/ConfirmationBox';
 interface IUsersProps {}
 
 const tabs = [
-  {
-    id: 1,
-    label: 'People',
-  },
-  {
-    id: 2,
-    label: 'Teams',
-  },
+  { id: 1, title: 'People', content: <div>Content for Tab 1</div> },
+  { id: 2, title: 'Teams', content: <div>Content for Tab 2</div> },
 ];
 
 const Users: React.FC<IUsersProps> = () => {
