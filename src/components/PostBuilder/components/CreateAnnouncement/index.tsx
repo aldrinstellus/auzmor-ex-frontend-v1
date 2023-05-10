@@ -1,21 +1,9 @@
-import Layout, { FieldType } from 'components/Form';
-import Icon from 'components/Icon';
+import { FieldType } from 'components/Form';
 import React, { useContext } from 'react';
-import {
-  FieldValues,
-  SubmitErrorHandler,
-  SubmitHandler,
-  useForm,
-} from 'react-hook-form';
-import IconButton, { Variant as IconVariant } from 'components/IconButton';
-import { twConfig } from 'utils/misc';
-import Button, {
-  Variant as ButtonVariant,
-  Type as ButtonType,
-} from 'components/Button';
+import { useForm } from 'react-hook-form';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import { afterXUnit } from 'utils/time';
-import Header from '../Header';
+import Header from 'components/ModalHeader';
 import Footer from './Footer';
 import Body from './Body';
 

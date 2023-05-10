@@ -1,19 +1,13 @@
 import Button, {
   Variant as ButtonVariant,
-  Type as ButtonType,
   Size as ButtonSize,
-  Size,
 } from 'components/Button';
-import Icon from 'components/Icon';
-import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import React, { useContext, useRef, useState } from 'react';
-import { isVideo, twConfig } from 'utils/misc';
-import Carousel from 'components/CarouselNew';
-import { validImageTypes } from 'queries/files';
+import React, { useContext, useRef } from 'react';
+import { isVideo } from 'utils/misc';
 import useCarousel from 'hooks/useCarousel';
 import SwitchToggle from 'components/SwitchToggle';
-import Header from '../Header';
+import Header from 'components/ModalHeader';
 import Body from './Body';
 import Footer from './Footer';
 

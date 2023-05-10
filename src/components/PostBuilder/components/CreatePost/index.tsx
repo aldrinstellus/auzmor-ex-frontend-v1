@@ -2,7 +2,7 @@ import React, { useContext, useMemo, useRef } from 'react';
 import { CreatePostContext, IEditorValue } from 'contexts/CreatePostContext';
 import ReactQuill from 'react-quill';
 import { IPost } from 'queries/post';
-import Header from '../Header';
+import Header from 'components/ModalHeader';
 import Body from './Body';
 import Footer from './Footer';
 
