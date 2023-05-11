@@ -70,12 +70,14 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                   <div className="text-2xl font-bold">
                     {profileCoverData?.userName || 'Megan Berry'}
                   </div>
-                  <div className="bg-red-100 border-1 border-red-200 rounded-full px-3 flex justify-center items-center space-x-2">
-                    <img src={OutOfOffice} alt="" width={24} height={24} />
-                    <div className="text-xxs font-medium">
-                      {profileCoverData?.status}
+                  {!canEdit && (
+                    <div className="bg-red-100 border-1 border-red-200 rounded-full px-3 flex justify-center items-center space-x-2">
+                      <img src={OutOfOffice} alt="" width={24} height={24} />
+                      <div className="text-xxs font-medium">
+                        {profileCoverData?.status}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
                 {canEdit ? (
                   <Button
@@ -93,6 +95,8 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                   <Button
                     className="flex"
                     label="Follow"
+                    leftIconClassName="mr-2"
+                    leftIcon="addCircle"
                     size={ButtonSize.Small}
                     variant={ButtonVariant.Secondary}
                     onClick={() => {

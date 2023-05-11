@@ -19,7 +19,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
           <div>Contact Info</div>
         </div>
         <div className="space-y-4">
-          <div className="flex space-x-4">
+          <div className="flex justify-between items-center">
             <div className="flex space-x-2">
               <div>
                 <Icon name="email" />
@@ -27,7 +27,12 @@ const ContactWidget: React.FC<IContactCardProps> = ({
               <div>{contactCardData?.workEmail}</div>
             </div>
             <div>
-              <Icon name="copyIcon" />
+              <Icon
+                name="copyIcon"
+                onClick={() => {
+                  navigator.clipboard.writeText(contactCardData?.workEmail);
+                }}
+              />
             </div>
           </div>
           <div className="flex space-x-4">
