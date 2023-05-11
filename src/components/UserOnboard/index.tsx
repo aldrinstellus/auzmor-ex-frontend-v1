@@ -50,7 +50,7 @@ const UserOnboard: React.FC = (): ReactNode => {
           />
         </div>
         <Divider />
-        <span className="flex items-center justify-center h-[475px]">
+        <span className="flex items-center justify-center h-[500px]">
           {screens[currentScreen].screen}
         </span>
         <Divider />

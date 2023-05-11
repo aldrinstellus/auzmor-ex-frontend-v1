@@ -1,10 +1,7 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import Button from 'components/Button';
 import UpdateProfileImage from 'components/UpdateProfileImage';
-import useAuth from 'hooks/useAuth';
 import Banner, { Variant } from 'components/Banner';
-import { UploadStatus, useUpload } from 'queries/files';
-import { updateUserMutation } from 'queries/users';
 
 type EditProfileScreenProps = {
   next: any;
@@ -13,23 +10,13 @@ type EditProfileScreenProps = {
 const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   next,
 }): ReactElement => {
-  const { updateUser } = useAuth();
-  const updateProfileImageMutation = updateUserMutation(
-    'update-profile-image-mutation',
-    updateUser,
-  );
-  const { isLoading, isError } = updateProfileImageMutation;
-  const { uploadMedia, uploadStatus } = useUpload();
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
   return (
     <div className="flex flex-col min-h-full justify-between min-w-full">
       <div className="flex items-center flex-col justify-between gap-y-4 mt-6">
-        <UpdateProfileImage
-          updateProfileImageMutation={updateProfileImageMutation}
-          isLoading={isLoading}
-          isError={isError}
-          uploadMedia={uploadMedia}
-          uploadStatus={uploadStatus}
-        />
+        <UpdateProfileImage setError={setError} setLoading={setLoading} />
         <p className="font-bold text-neutral-900 text-2xl">
           Set your profile photo
         </p>
@@ -44,7 +31,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         </div>
       </div>
       <div className="mt-10">
-        {(true || isError || uploadStatus === UploadStatus.Error) && (
+        {error && !loading && (
           <Banner
             variant={Variant.Error}
             title="Failed to upload media. Please try again!"
@@ -61,8 +48,8 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
             <Button
               className="font-bold"
               label="Next"
-              loading={isLoading || uploadStatus === UploadStatus.Uploading}
-              disabled={isLoading || uploadStatus === UploadStatus.Uploading}
+              loading={loading}
+              disabled={loading}
               onClick={next}
             />
           </div>

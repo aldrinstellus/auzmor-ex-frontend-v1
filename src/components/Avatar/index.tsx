@@ -1,8 +1,9 @@
-import React, { MouseEventHandler, ReactNode, useMemo } from 'react';
+import React, { MouseEventHandler, ReactNode, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
 import isDarkColor from 'is-dark-color';
 import { getInitials } from 'utils/misc';
-import Icon from 'components/Icon';
+import Spinner from 'components/Spinner';
+import { PRIMARY_COLOR } from 'utils/constants';
 
 export type AvatarProps = {
   name?: string;
@@ -15,6 +16,7 @@ export type AvatarProps = {
   size?: number;
   bgColor?: string;
   indicatorIcon?: ReactNode;
+  loading?: boolean;
 };
 
 const Avatar: React.FC<AvatarProps> = ({
@@ -28,6 +30,7 @@ const Avatar: React.FC<AvatarProps> = ({
   showActiveIndicator = false,
   bgColor = '#343434',
   indicatorIcon = null,
+  loading = false,
 }) => {
   const containerStyles = useMemo(
     () =>
@@ -91,6 +94,7 @@ const Avatar: React.FC<AvatarProps> = ({
     { 'text-white': isBgDark },
     { 'text-neutral-800': !isBgDark },
     { 'font-bold': true },
+    { 'flex items-center': true },
   );
 
   return (
@@ -99,10 +103,13 @@ const Avatar: React.FC<AvatarProps> = ({
         <img className={imgStyles} style={divStyle} src={image} alt={name} />
       ) : (
         <span className={textStyles} style={{ fontSize: `${size * 0.45}px` }}>
-          {name && getInitials(name)}
+          {loading && <Spinner color={PRIMARY_COLOR} />}
+          {!loading && name && getInitials(name)}
         </span>
       )}
-      {!!indicatorIcon ? indicatorIcon : showActiveIndicator && activeIndicator}
+      {!!indicatorIcon && !loading
+        ? indicatorIcon
+        : showActiveIndicator && activeIndicator}
     </div>
   );
 };

@@ -4,30 +4,48 @@ import EditIcon from './components/EditIcon';
 import useAuth from 'hooks/useAuth';
 import { UploadStatus, useUpload } from 'queries/files';
 import { EntityType } from 'queries/files';
+import { useMutation } from '@tanstack/react-query';
+import { updateUserAPI } from 'queries/users';
+import { IMedia } from 'contexts/CreatePostContext';
 
 type UpdateProfileImageProps = {
-  updateProfileImageMutation: any;
-  isLoading?: boolean;
-  isError?: boolean;
-  uploadMedia: any;
-  uploadStatus: UploadStatus;
+  setLoading?: (loading: boolean) => void;
+  setError?: (error: boolean) => void;
 };
 
 const UpdateProfileImage: React.FC<UpdateProfileImageProps> = ({
-  updateProfileImageMutation,
-  isLoading,
-  isError,
-  uploadMedia,
-  uploadStatus,
+  setLoading,
+  setError,
 }): ReactElement => {
   const [profilePicture, setProfilePicture] = useState<File[]>();
   const { user, updateUser } = useAuth();
+  const { uploadMedia, uploadStatus } = useUpload();
+
+  const updateProfileImageMutation = useMutation({
+    mutationFn: updateUserAPI,
+    mutationKey: ['update-user-profile-image-mutation'],
+    onError: (error: any) => {
+      console.log('API call resulted in error: ', error);
+    },
+    onSuccess: (response: any) => {
+      console.log('API call success', response);
+      // updateUser(response);
+    },
+  });
+
+  const { isLoading, isError } = updateProfileImageMutation;
 
   useEffect(() => {
-    console.log({ uploadStatus });
-  }, [uploadStatus]);
+    if (setError) {
+      setError(isError || uploadStatus === UploadStatus.Error);
+    }
 
-  let files: any[] = [];
+    if (setLoading) {
+      setLoading(isLoading || uploadStatus === UploadStatus.Uploading);
+    }
+  }, [uploadStatus, isError, isLoading]);
+
+  let files: IMedia[] = [];
 
   const uploadAndSetProfilePicture = async () => {
     if (profilePicture) {
@@ -54,6 +72,7 @@ const UpdateProfileImage: React.FC<UpdateProfileImageProps> = ({
       name={user?.name}
       image={user?.profileImage || ''}
       bgColor="#DBEAFE"
+      loading={isLoading || uploadStatus === UploadStatus.Uploading}
     />
   );
 };

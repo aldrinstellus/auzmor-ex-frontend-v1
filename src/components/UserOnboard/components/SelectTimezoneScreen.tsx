@@ -1,52 +1,71 @@
-import React, { ReactElement, useRef } from 'react';
+import React, { ReactElement, useEffect, useRef } from 'react';
 import timezones from 'utils/timezones.json';
 import OnboardTimezone from 'images/onboard-timezone.png';
 import Layout, { FieldType } from 'components/Form';
 import { useForm } from 'react-hook-form';
 import Button, { Type } from 'components/Button';
 import useAuth from 'hooks/useAuth';
-import { updateUserMutation } from 'queries/users';
+import { updateUserAPI } from 'queries/users';
+import { useMutation } from '@tanstack/react-query';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { getDefaultTimezoneOption } from '../utils/';
+import { OptionType } from 'components/SingleSelect';
+import Banner, { Variant } from 'components/Banner';
 
 type SelectTimezoneScreenProps = {
   next: any;
 };
 
 interface IForm {
-  timezone: string;
+  timezone: OptionType;
 }
 
 const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
   next,
 }): ReactElement => {
   // Note: The timezone selector dropdown has to be a form component here.
-  // console.log(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  const defaultTimezone = getDefaultTimezoneOption();
+
+  const schema = yup.object({
+    timezone: yup.object(),
+  });
 
   const {
     control,
     handleSubmit,
-    watch,
     formState: { errors, isValid },
-    setValue,
     getValues,
   } = useForm<IForm>({
     mode: 'onChange',
+    resolver: yupResolver(schema),
   });
 
   const { user, updateUser } = useAuth();
-  const updateUserTimezoneMutation: any = updateUserMutation(
-    'update-user-timezone-mutation',
-    updateUser,
-  );
 
-  const onSubmit = (formData: IForm) => {
-    console.log(formData);
-    updateUserTimezoneMutation.mutate({
-      id: user?.id,
-      timezone: formData?.timezone,
+  const updateUserTimezoneMutation = useMutation({
+    mutationFn: updateUserAPI,
+    mutationKey: ['update-user-timezone-mutation'],
+    onError: (error: any) => {
+      console.log('API call resulted in error: ', error);
+    },
+    onSuccess: (response: any) => {
+      console.log('API call success', response);
+      // updateUser(response);
+    },
+  });
+
+  const onSubmit = async () => {
+    const selectedTimezone = getValues();
+    await updateUserTimezoneMutation.mutateAsync({
+      id: user?.id || '',
+      timezone: selectedTimezone.timezone.value,
     });
+    next();
   };
 
-  const selectTimezoneForm = useRef<HTMLFormElement>(null);
+  const { isLoading, isError } = updateUserTimezoneMutation;
+
   return (
     <div className="flex flex-col min-h-full justify-between min-w-full">
       <div className="flex items-center flex-col justify-between gap-y-4 px-10 mt-6">
@@ -57,38 +76,49 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
         <p className="font-normal text-sm text-neutral-500">
           Please select your timezone from the options given below
         </p>
-        <form onSubmit={handleSubmit(onSubmit)} ref={selectTimezoneForm}>
-          <Layout
-            className="min-w-[450px] max-w-[450px]"
-            fields={[
-              {
-                type: FieldType.SingleSelect,
-                name: 'timezone',
-                control,
-                options: timezones.map((timezone) => ({
-                  label: timezone.text,
-                  value: timezone.abbr,
-                  className: '!hover:bg-green-900',
-                })),
-                // defaultValue: '(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi',
-                placeholder: 'Select your timezone',
-                menuPlacement: 'top',
-              },
-            ]}
-          />
-        </form>
       </div>
-      <div className="bg-blue-50">
-        <div className="p-4 flex items-center justify-between">
-          <div />
-          <Button
-            className="font-bold"
-            label="Next"
-            type={Type.Submit}
-            onClick={() => selectTimezoneForm.current?.submit()}
-          ></Button>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-y-4 items-center"
+      >
+        <Layout
+          className="min-w-[450px] max-w-[450px] mb-3"
+          fields={[
+            {
+              type: FieldType.SingleSelect,
+              name: 'timezone',
+              control,
+              options: timezones.map((timezone) => ({
+                label: timezone.text,
+                value: timezone.abbr,
+              })),
+              defaultValue: defaultTimezone,
+              menuPlacement: 'top',
+            },
+          ]}
+        />
+        <div className="min-w-full flex flex-col items-center">
+          {isError && !isLoading && (
+            <Banner
+              variant={Variant.Error}
+              title="Failed to set timezone. Please try again!"
+              className="min-w-full"
+            />
+          )}
+          <div className="bg-blue-50 min-w-full">
+            <div className="p-4 flex items-center justify-between">
+              <div />
+              <Button
+                className="font-bold"
+                label="Next"
+                type={Type.Submit}
+                loading={isLoading}
+                disabled={isLoading}
+              ></Button>
+            </div>
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
