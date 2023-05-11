@@ -3,11 +3,6 @@ import clsx from 'clsx';
 import { Control, useController, Controller } from 'react-hook-form';
 import Select, { MenuPlacement } from 'react-select';
 
-export type OptionType = {
-  label: string;
-  value: string;
-};
-
 export interface ISingleSelectProps {
   name: string;
   defaultValue?: string;
@@ -18,7 +13,7 @@ export interface ISingleSelectProps {
   control?: Control<Record<string, any>>;
   label?: string;
   placeholder?: string;
-  options: OptionType[];
+  options: any;
   menuPlacement: MenuPlacement;
 }
 

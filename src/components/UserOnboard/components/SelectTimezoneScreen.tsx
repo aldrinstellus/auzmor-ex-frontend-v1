@@ -10,7 +10,6 @@ import { useMutation } from '@tanstack/react-query';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { getDefaultTimezoneOption } from '../utils/';
-import { OptionType } from 'components/SingleSelect';
 import Banner, { Variant } from 'components/Banner';
 
 type SelectTimezoneScreenProps = {
@@ -21,37 +20,37 @@ interface IForm {
   timezone: OptionType;
 }
 
+export type OptionType = {
+  label: string;
+  value: string[];
+};
+
 const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
   next,
 }): ReactElement => {
   // Note: The timezone selector dropdown has to be a form component here.
   const defaultTimezone = getDefaultTimezoneOption();
+  console.log({ defaultTimezone });
 
   const schema = yup.object({
     timezone: yup.object(),
   });
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors, isValid },
-    getValues,
-  } = useForm<IForm>({
+  const { control, handleSubmit, getValues } = useForm<IForm>({
     mode: 'onChange',
     resolver: yupResolver(schema),
   });
 
-  const { user, updateUser } = useAuth();
+  const { user } = useAuth();
 
   const updateUserTimezoneMutation = useMutation({
     mutationFn: updateUserAPI,
     mutationKey: ['update-user-timezone-mutation'],
     onError: (error: any) => {
-      console.log('API call resulted in error: ', error);
+      console.log('Error while updating timezone: ', error);
     },
     onSuccess: (response: any) => {
-      console.log('API call success', response);
-      // updateUser(response);
+      console.log('Updated timezone successfully', response);
     },
   });
 
@@ -59,7 +58,7 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
     const selectedTimezone = getValues();
     await updateUserTimezoneMutation.mutateAsync({
       id: user?.id || '',
-      timezone: selectedTimezone.timezone.value,
+      timezone: selectedTimezone.timezone.value[0],
     });
     next();
   };
@@ -89,8 +88,8 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
               name: 'timezone',
               control,
               options: timezones.map((timezone) => ({
-                label: timezone.text,
-                value: timezone.abbr,
+                label: timezone.timezoneName,
+                value: timezone.iana,
               })),
               defaultValue: defaultTimezone,
               menuPlacement: 'top',
