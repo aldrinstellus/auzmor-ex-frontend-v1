@@ -9,7 +9,7 @@ import AddUsers from 'pages/Users/components/AddUsers';
 import ConfirmationBox from 'components/ConfirmationBox';
 import Card from 'components/Card';
 // import Layout, { FieldType } from 'components/Form';
-import { useForm } from 'react-hook-form';
+// import { useForm } from 'react-hook-form';
 import Filter from 'images/filter.svg';
 import Spinner from 'components/Spinner';
 import TablePagination from 'components/TablePagination';
@@ -26,23 +26,19 @@ const tabs = [
 ];
 
 const Users: React.FC<IUsersProps> = () => {
-  const totalUser = 1000; // assuming the total users get from API
-
-  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [limitPerPage, setLimitPerPage] = useState<number>(10);
-  const [prevPage, setPrevPage] = useState(null);
-  const [nextPage, setNextpage] = useState(null);
-  // passing the new data here in the API query params limit, prev, next
-  // we need to provide the update values
-  const { data, isLoading, isError } = useUsers({});
+  const { data, isLoading, isError } = useUsers({
+    limit: 30,
+    // prev: currentPage - 1,
+    // next: currentPage + 1,
+  });
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [openErrorModal, setOpenErrorModal] = useState(false);
   const usersData = data?.result.data;
   const [buttonState, setButtonState] = useState(true);
 
   const formRef = useRef();
-
-  console.log(limitPerPage, prevPage, nextPage);
 
   // const {
   //   control,
@@ -52,7 +48,7 @@ const Users: React.FC<IUsersProps> = () => {
   // });
 
   const handlePageClick = (event: any) => {
-    setCurrentPage(event?.selected);
+    setCurrentPage(event?.selected + 1);
   };
 
   const footerMapButtons = [
@@ -81,10 +77,9 @@ const Users: React.FC<IUsersProps> = () => {
     },
   ];
 
+  // ! Re redering issue
   useEffect(() => {
     setLimitPerPage(data?.result?.paging?.limit);
-    setPrevPage(data?.result?.paging?.prev);
-    setNextpage(data?.result?.paging?.next);
   }, [data]);
 
   return (
@@ -184,7 +179,7 @@ const Users: React.FC<IUsersProps> = () => {
           </div>
           <TablePagination
             onPageChange={handlePageClick}
-            total={totalUser}
+            total={data?.result?.totalCount}
             limit={limitPerPage}
           />
         </div>

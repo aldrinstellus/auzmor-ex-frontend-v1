@@ -12,14 +12,11 @@ interface UserQueryParams {
 }
 
 const getAllUsers = async ({ limit, prev, next }: UserQueryParams) => {
-  const { data } = await apiService.get(
-    `/users`,
-    {
-      limit: limit,
-      prev: prev,
-      next: next,
-    }, // removed...
-  );
+  const { data } = await apiService.get(`/users`, {
+    limit: limit,
+    prev: prev,
+    next: next,
+  });
   return data;
 };
 
