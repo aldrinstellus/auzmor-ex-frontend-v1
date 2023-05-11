@@ -52,6 +52,10 @@ export const signup = async (payload: IOrganization) => {
   return await apiService.post('/organizations/signup', payload);
 };
 
+export const acceptInviteSetPassword = async (payload: any) => {
+  return await apiService.post('/organizations/sign', payload);
+};
+
 export const fetchMe = async () => {
   const { data } = await apiService.get('/users/me');
   return data;
