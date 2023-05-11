@@ -29,7 +29,7 @@ export const deleteUser = async (id: string) => {
 };
 
 export const verifyInviteLink = async (q: Record<string, any>) => {
-  const { data } = await apiService.get('/users/invite', q);
+  const { data } = await apiService.get('/users/invite/verify', q);
   return data;
 };
 

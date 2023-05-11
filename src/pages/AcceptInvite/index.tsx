@@ -20,10 +20,7 @@ interface IForm {
 }
 
 const schema = yup.object({
-  workEmail: yup
-    .string()
-    .email('Please enter valid email address')
-    .required('Required field'),
+  workEmail: yup.string(),
   password: yup
     .string()
     .min(6, 'At leaset 6 digits')
@@ -50,8 +47,11 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
   const acceptInviteMutation = useMutation({
     mutationFn: acceptInviteSetPassword,
     mutationKey: ['accept-invite-mutation'],
-    onSuccess: (data) =>
-      redirectWithToken(data.result.data.redirectUrl, data.result.data.uat),
+    onSuccess: (data) => {
+      console.log({ data });
+      // Not getting any data as a part of response here.
+      redirectWithToken(data.result.data.redirectUrl, data.result.data.uat);
+    },
     onError: () => {},
   });
 
@@ -60,7 +60,6 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
     control,
     handleSubmit,
     formState: { errors, isValid },
-    setValue,
   } = useForm<IForm>({
     resolver: yupResolver(schema),
     mode: 'onChange',
@@ -83,6 +82,7 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
       disabled: true,
       className:
         'text-neutral-400 disabled:border-none disabled:bg-neutral-200',
+      defaultValue: data?.result?.data?.email,
     },
     {
       type: FieldType.Password,
@@ -117,15 +117,8 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
     },
   ];
 
-  const onSubmit = (formData: IForm) => {
-    console.log({ formData });
-    acceptInviteMutation.mutate({ ...formData, token, orgId });
-  };
-
-  useEffect(() => {
-    setValue('workEmail', data.result.data.email);
-  }, [data]);
-
+  const onSubmit = (formData: IForm) =>
+    acceptInviteMutation.mutate({ password: formData.password, token, orgId });
   return isLoading ? (
     <div>Loading</div>
   ) : isError ? (
