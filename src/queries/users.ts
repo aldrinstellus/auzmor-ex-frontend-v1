@@ -1,15 +1,32 @@
 import { useQuery } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 
-const getAllUsers = async (q: Record<string, any>) => {
-  const { data } = await apiService.get('/users', q);
+interface UserQueryParams {
+  q?: string;
+  limit?: number;
+  prev?: number;
+  next?: number;
+  name?: string;
+  email?: string;
+  status?: string;
+}
+
+const getAllUsers = async ({ limit, prev, next }: UserQueryParams) => {
+  const { data } = await apiService.get(
+    `/users`,
+    {
+      limit: limit,
+      prev: prev,
+      next: next,
+    }, // removed...
+  );
   return data;
 };
 
-export const useUsers = (q: Record<string, any>) => {
+export const useUsers = ({ limit, prev, next }: UserQueryParams) => {
   return useQuery({
-    queryKey: ['users', q],
-    queryFn: () => getAllUsers(q),
+    queryKey: ['users', limit, prev, next],
+    queryFn: () => getAllUsers({ limit, prev, next }),
     staleTime: 15 * 60 * 1000,
   });
 };

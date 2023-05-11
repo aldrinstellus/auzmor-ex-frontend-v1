@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import Button, { Variant } from 'components/Button';
+import React, { useEffect, useRef, useState } from 'react';
+import Button, { Size, Variant } from 'components/Button';
 import UserCard from './components/UserCard';
 import TabSwitch from './components/TabSwitch';
 import { useUsers } from 'queries/users';
@@ -7,6 +7,12 @@ import UserInvite from 'pages/Users/components/UserInvite';
 import Modal from 'components/Modal';
 import AddUsers from 'pages/Users/components/AddUsers';
 import ConfirmationBox from 'components/ConfirmationBox';
+import Card from 'components/Card';
+// import Layout, { FieldType } from 'components/Form';
+import { useForm } from 'react-hook-form';
+import Filter from 'images/filter.svg';
+import Spinner from 'components/Spinner';
+import TablePagination from 'components/TablePagination';
 
 interface IUsersProps {}
 
@@ -20,13 +26,34 @@ const tabs = [
 ];
 
 const Users: React.FC<IUsersProps> = () => {
+  const totalUser = 1000; // assuming the total users get from API
+
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [limitPerPage, setLimitPerPage] = useState<number>(10);
+  const [prevPage, setPrevPage] = useState(null);
+  const [nextPage, setNextpage] = useState(null);
+  // passing the new data here in the API query params limit, prev, next
+  // we need to provide the update values
+  const { data, isLoading, isError } = useUsers({});
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [openErrorModal, setOpenErrorModal] = useState(false);
-  const { data, isLoading } = useUsers({});
   const usersData = data?.result.data;
   const [buttonState, setButtonState] = useState(true);
 
   const formRef = useRef();
+
+  console.log(limitPerPage, prevPage, nextPage);
+
+  // const {
+  //   control,
+  //   formState: { errors, isValid },
+  // } = useForm({
+  //   mode: 'onChange',
+  // });
+
+  const handlePageClick = (event: any) => {
+    setCurrentPage(event?.selected);
+  };
 
   const footerMapButtons = [
     {
@@ -54,32 +81,114 @@ const Users: React.FC<IUsersProps> = () => {
     },
   ];
 
-  if (isLoading) {
-    return <div>Loader...</div>;
-  }
+  useEffect(() => {
+    setLimitPerPage(data?.result?.paging?.limit);
+    setPrevPage(data?.result?.paging?.prev);
+    setNextpage(data?.result?.paging?.next);
+  }, [data]);
 
   return (
-    <div className="bg-white px-8 py-9 rounded-9xl w-[100%] h-[100%]">
-      <div className="flex justify-between">
-        <span className="text-2xl font-bold">People Hub</span>
-        <div className="flex">
-          <UserInvite />
-          <Button
-            className="flex mr-2"
-            label="View Organization Chart"
-            variant={Variant.Secondary}
-            leftIcon="convertShape"
-          />
-          <Button
-            className="flex"
-            label="Add People"
-            leftIcon="add"
-            onClick={() => {
-              setShowAddUserModal(true);
-            }}
+    <>
+      <Card className="px-8 py-9 w-full h-fit">
+        {/* Top People Directory Section */}
+        <div className="space-y-7">
+          <div className="flex justify-between">
+            <div className="text-2xl font-bold">People Hub</div>
+            <div className="flex space-x-2">
+              <UserInvite />
+              <Button
+                className="flex space-x-[6px]"
+                label="View Organization Chart"
+                variant={Variant.Secondary}
+                leftIcon="convertShape"
+              />
+              <Button
+                className="flex space-x-2"
+                label="Add People"
+                leftIcon="add"
+                onClick={() => {
+                  setShowAddUserModal(true);
+                }}
+              />
+            </div>
+          </div>
+          {/* Tab Switcher */}
+          <TabSwitch tabs={tabs} />
+
+          {/* People Directory Filter */}
+          <div className="flex justify-between items-center">
+            <div className="flex space-x-4">
+              <Button
+                label="My Teams"
+                size={Size.Small}
+                variant={Variant.Secondary}
+                disabled
+                className="cursor-not-allowed"
+              />
+              <Button
+                label="All Members"
+                size={Size.Small}
+                variant={Variant.Secondary}
+              />
+              {/* <Layout
+                fields={[
+                  {
+                    type: FieldType.SingleSelect,
+                    control,
+                    name: 'role',
+                    defaultValue: 'Role',
+                    options: [
+                      {
+                        id: 1,
+                        label: 'ADMIN',
+                      },
+                      {
+                        id: 2,
+                        label: 'SUPER ADMIN',
+                      },
+                    ],
+                  },
+                ]}
+              /> */}
+            </div>
+            <div className="flex space-x-2">
+              <div className="border border-solid border-neutral-200 p-[10px] rounded-17xl">
+                <img src={Filter} alt="filter" width={11.47} height={13.2} />
+              </div>
+              <div className="border border-solid border-neutral-200 p-[10px] rounded-17xl">
+                <img src={Filter} alt="filter" width={11.47} height={13.2} />
+              </div>
+              {/* <div>
+                <Layout
+                  fields={[
+                    {
+                      type: FieldType.Input,
+                      control,
+                      name: 'search',
+                      placeholder: 'Search members',
+                    },
+                  ]}
+                />
+              </div> */}
+            </div>
+          </div>
+          <div className=" text-neutral-500">
+            Showing {usersData?.length} results
+          </div>
+          <div className="flex flex-wrap gap-6">
+            {usersData?.length > 0 &&
+              usersData?.map((user: any) => (
+                <UserCard key={user.id} {...user} />
+              ))}
+            {isLoading && <Spinner />}
+          </div>
+          <TablePagination
+            onPageChange={handlePageClick}
+            total={totalUser}
+            limit={limitPerPage}
           />
         </div>
-      </div>
+      </Card>
       <Modal
         open={showAddUserModal}
         closeModal={() => setShowAddUserModal(false)}
@@ -109,7 +218,6 @@ const Users: React.FC<IUsersProps> = () => {
           </div>
         }
       </Modal>
-
       <ConfirmationBox
         open={openErrorModal}
         onClose={() => setOpenErrorModal(false)}
@@ -136,37 +244,7 @@ const Users: React.FC<IUsersProps> = () => {
           },
         }}
       />
-
-      <div className="mt-6">
-        <TabSwitch tabs={tabs} />
-      </div>
-      <div className="flex justify-between mt-6 ">
-        <div className="flex-none">
-          <Button
-            label="My Teams"
-            variant={Variant.Secondary}
-            className="mr-4"
-          />
-          <Button
-            label="All Members"
-            variant={Variant.Secondary}
-            className="mr-4"
-          />
-        </div>
-      </div>
-
-      <div className="mt-6 text-neutral-500">
-        Showing {usersData.length} results
-      </div>
-      <div className="flex flex-wrap mt-6">
-        {usersData.length > 0 &&
-          usersData.map((user: any, index: number) => (
-            <div key={user.id} className={index % 5 !== 0 ? 'ml-6' : ''}>
-              <UserCard key={user.id} {...user} />
-            </div>
-          ))}
-      </div>
-    </div>
+    </>
   );
 };
 

@@ -10,10 +10,11 @@ import ConfirmationBox from 'components/ConfirmationBox';
 import _ from 'lodash';
 
 import queryClient from 'utils/queryClient';
+import Icon from 'components/Icon';
 
 export interface IUserCardProps {
   id: string;
-  status: string;
+  role: string;
   fullName: string;
   image?: string;
   designation?: string;
@@ -24,20 +25,24 @@ export interface IUserCardProps {
 }
 
 export enum Status {
-  Admin = 'Admin',
-  Pending = 'Pending',
-  Owner = 'Owner',
+  ADMIN = 'ADMIN',
+  PENDING = 'PENDING',
+  OWNER = 'OWNER',
+  MEMBER = 'MEMBER',
+  SUPERADMIN = 'SUPERADMIN',
 }
 
 const statusColorMap: Record<string, string> = {
-  [Status.Admin]: '#3F83F8',
-  [Status.Pending]: '#EA580C',
-  [Status.Owner]: '#171717',
+  [Status.ADMIN]: '#3F83F8',
+  [Status.PENDING]: '#EA580C',
+  [Status.OWNER]: '#171717',
+  [Status.MEMBER]: '#c6cc8d',
+  [Status.SUPERADMIN]: '#10B981',
 };
 
 const UserCard: React.FC<IUserCardProps> = ({
   id,
-  status,
+  role,
   fullName,
   image,
   designation,
@@ -58,7 +63,6 @@ const UserCard: React.FC<IUserCardProps> = ({
     onSuccess: (data, variables, context) => {
       setShowDeleteModal(false);
       alert('Successfully Deleted');
-
       queryClient.invalidateQueries({ queryKey: ['users'] });
     },
   });
@@ -67,14 +71,14 @@ const UserCard: React.FC<IUserCardProps> = ({
     () =>
       clsx(
         {
-          'w-[244px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white relative':
+          'w-[234px] h-[234px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white relative':
             true,
         },
         {
-          '-mb-6 z-10 shadow-xl ': isHovered,
+          '-mb-6 transition-all duration-900 h-72 z-10 shadow-xl ': isHovered,
         },
         {
-          'mb-8 z-0': !isHovered,
+          'z-0': !isHovered,
         },
       ),
     [isHovered],
@@ -82,47 +86,50 @@ const UserCard: React.FC<IUserCardProps> = ({
 
   return (
     <div {...hoverEvents}>
-      <Card className={hoverStyle}>
+      <Card className={`${hoverStyle}`}>
         <div
-          style={{ backgroundColor: statusColorMap[status] }}
+          style={{ backgroundColor: statusColorMap[role] }}
           className="absolute top-0 left-0 text-white rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium"
         >
-          {status}
+          {role}
         </div>
-        <div className="flex flex-col justify-center items-center">
-          <Avatar size={80} name={fullName} image={image} active={active} />
-          <div className="mt-0.5 truncate text-neutral-900 text-base font-bold">
+        <div className="my-6 flex flex-col items-center">
+          <Avatar
+            size={80}
+            name={fullName}
+            image={
+              image ||
+              'https://preview.redd.it/shuntaro-chishiya-from-alice-in-borderland-made-by-me-v0-o9uf994qpaba1.jpg?width=640&crop=smart&auto=webp&s=5ba21f65920faeae15b7c53eb444d524f7a5b976'
+            }
+            active={active}
+          />
+          <div className="mt-1 truncate text-neutral-900 text-base font-bold">
             {_.truncate(fullName, {
               length: 24,
               separator: ' ',
             })}
           </div>
           <div className="mt-1 truncate text-neutral-900 text-xs font-normal">
-            {designation ? designation : workEmail}
+            {designation || role}
           </div>
-          <div className="mt-2 bg-orange-100 px-4 rounded-md truncate">
-            {department}
-          </div>
-          <div className="mt-3 text-neutral-500 text-xs font-normal truncate">
-            {location}
-          </div>
-          {isHovered && (
-            <div className="flex justify-between items-center mt-4 space-x-3">
-              <Button
-                variant={Variant.Secondary}
-                label={'O'}
-                className="!p-2 !gap-2 !rounded-[8px] !border !border-neutral-200 !border-solid"
-              />
-              <Button
-                variant={Variant.Secondary}
-                label={'X'}
-                onClick={() => {
-                  setShowDeleteModal(true);
-                }}
-                className="!p-2 !gap-2 !rounded-[8px] !border !border-neutral-200 !border-solid"
-              />
+          <div className="flex justify-center items-center px-3 py-1 mt-2 bg-orange-100 rounded-xl">
+            <div></div>
+            <div className="text-neutral-900 text-xxs font-medium truncate">
+              {department || 'Sales'}
             </div>
-          )}
+          </div>
+          <div className="flex space-x-[6px] mt-3">
+            <div></div>
+            <div className="text-neutral-500 text-xs font-normal truncate">
+              {location || 'Mumbai'}
+            </div>
+          </div>
+          {/* {isHovered && (
+            <div>
+              <div>I</div>
+              <div>O</div>
+            </div>
+          )} */}
         </div>
       </Card>
 
