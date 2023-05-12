@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import useHover from 'hooks/useHover';
 import Icon from 'components/Icon';
 import moment from 'moment';
-// import 'moment-timezone';
+import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 
 export interface IPersonalDetailsProps {
   personalDetails: any;
@@ -30,70 +30,148 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   const formattedDate = moment(timestamp).format('Do MMMM');
 
   return (
-    <div {...eventHandlers}>
-      <Card className={onHoverStyles}>
-        <div className="flex justify-between items-center">
-          <div className="text-neutral-900 font-bold text-base pt-6 pb-4">
-            Personal Details
+    <>
+      {canEdit ? (
+        <div {...eventHandlers}>
+          <Card className={onHoverStyles}>
+            <div className="flex justify-between items-center">
+              <div className="text-neutral-900 font-bold text-base pt-6 pb-4">
+                Personal Details
+              </div>
+              {isHovered && (
+                <IconWrapper type={Type.Square} className="cursor-pointer">
+                  <Icon name="edit" size={16} />
+                </IconWrapper>
+              )}
+            </div>
+            <Divider />
+            <div className="py-6">
+              <div className="pb-4 space-y-3">
+                <div className="flex space-x-3">
+                  <IconWrapper type={Type.Square} className="cursor-pointer">
+                    <Icon name="cake" size={16} />
+                  </IconWrapper>
+                  <div className="text-neutral-900 text-base font-medium">
+                    Born on {formattedDate}
+                  </div>
+                </div>
+                <div className="flex space-x-3">
+                  <IconWrapper type={Type.Square} className="cursor-pointer">
+                    <Icon name="femaleIcon" size={16} />
+                  </IconWrapper>
+                  <div className="text-neutral-900 text-base font-medium">
+                    {personalDetails?.personal?.gender || 'Female'}
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-2 mb-4">
+                <div className="text-neutral-500 text-sm font-bold">
+                  Permanent Address
+                </div>
+                <div className="flex space-x-3">
+                  <IconWrapper type={Type.Square} className="cursor-pointer">
+                    <Icon name="location" size={16} />
+                  </IconWrapper>
+                  <div className="text-neutral-900 text-base font-medium">
+                    {personalDetails?.personal?.permanentAddress ||
+                      '4517 Washington Ave. Manchester, Kentucky 39495'}
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-2 mb-4">
+                <div className="text-neutral-500 text-sm font-bold">
+                  Marital Status
+                </div>
+                <div className="flex space-x-3">
+                  <IconWrapper type={Type.Square} className="cursor-pointer">
+                    <Icon name="marriedIcon" size={16} />
+                  </IconWrapper>
+                  <div className="text-neutral-900 text-base font-medium">
+                    {personalDetails?.personal?.maritalStatus || 'Married'}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="text-neutral-500 text-sm font-bold">Skills</div>
+                <div className="text-neutral-900 text-base font-medium">
+                  {skills.map((skill, index) => (
+                    <ul key={index}>
+                      <li>{skill}</li>
+                    </ul>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      ) : (
+        <Card className={onHoverStyles}>
+          <div className="flex justify-between items-center">
+            <div className="text-neutral-900 font-bold text-base pt-6 pb-4">
+              Personal Details
+            </div>
           </div>
-          {canEdit && isHovered && (
+          <Divider />
+          <div className="py-6">
+            <div className="pb-4 space-y-3">
+              <div className="flex space-x-3">
+                <IconWrapper type={Type.Square} className="cursor-pointer">
+                  <Icon name="cake" size={16} />
+                </IconWrapper>
+                <div className="text-neutral-900 text-base font-medium">
+                  Born on {formattedDate}
+                </div>
+              </div>
+              <div className="flex space-x-3">
+                <IconWrapper type={Type.Square} className="cursor-pointer">
+                  <Icon name="femaleIcon" size={16} />
+                </IconWrapper>
+                <div className="text-neutral-900 text-base font-medium">
+                  {personalDetails?.personal?.gender || 'Female'}
+                </div>
+              </div>
+            </div>
+            <div className="space-y-2 mb-4">
+              <div className="text-neutral-500 text-sm font-bold">
+                Permanent Address
+              </div>
+              <div className="flex space-x-3">
+                <IconWrapper type={Type.Square} className="cursor-pointer">
+                  <Icon name="location" size={16} />
+                </IconWrapper>
+                <div className="text-neutral-900 text-base font-medium">
+                  {personalDetails?.personal?.permanentAddress ||
+                    '4517 Washington Ave. Manchester, Kentucky 39495'}
+                </div>
+              </div>
+            </div>
+            <div className="space-y-2 mb-4">
+              <div className="text-neutral-500 text-sm font-bold">
+                Marital Status
+              </div>
+              <div className="flex space-x-3">
+                <IconWrapper type={Type.Square} className="cursor-pointer">
+                  <Icon name="marriedIcon" size={16} />
+                </IconWrapper>
+                <div className="text-neutral-900 text-base font-medium">
+                  {personalDetails?.personal?.maritalStatus || 'Married'}
+                </div>
+              </div>
+            </div>
             <div>
-              <Icon name="edit" />
-            </div>
-          )}
-        </div>
-        <Divider />
-        <div className="py-6">
-          <div className="pb-4 space-y-3">
-            <div className="flex space-x-3">
-              <Icon name="cake" />
+              <div className="text-neutral-500 text-sm font-bold">Skills</div>
               <div className="text-neutral-900 text-base font-medium">
-                Born on {formattedDate}
-              </div>
-            </div>
-            <div className="flex space-x-3">
-              <Icon name="femaleicon" />
-              <div className="text-neutral-900 text-base font-medium">
-                {personalDetails?.personal?.gender || 'Female'}
+                {skills.map((skill, index) => (
+                  <ul key={index}>
+                    <li>{skill}</li>
+                  </ul>
+                ))}
               </div>
             </div>
           </div>
-          <div className="space-y-2 mb-4">
-            <div className="text-neutral-500 text-sm font-bold">
-              Permanent Address
-            </div>
-            <div className="flex space-x-3">
-              <Icon name="location" />
-              <div className="text-neutral-900 text-base font-medium">
-                {personalDetails?.personal?.permanentAddress ||
-                  '4517 Washington Ave. Manchester, Kentucky 39495'}
-              </div>
-            </div>
-          </div>
-          <div className="space-y-2 mb-4">
-            <div className="text-neutral-500 text-sm font-bold">
-              Marital Status
-            </div>
-            <div className="flex space-x-3">
-              <Icon name="marriedIcon" />
-              <div className="text-neutral-900 text-base font-medium">
-                {personalDetails?.personal?.maritalStatus || 'Married'}
-              </div>
-            </div>
-          </div>
-          <div>
-            <div className="text-neutral-500 text-sm font-bold">Skills</div>
-            <div className="text-neutral-900 text-base font-medium">
-              {skills.map((skill, index) => (
-                <ul key={index}>
-                  <li>{skill}</li>
-                </ul>
-              ))}
-            </div>
-          </div>
-        </div>
-      </Card>
-    </div>
+        </Card>
+      )}
+    </>
   );
 };
 

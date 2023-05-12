@@ -13,6 +13,7 @@ import IconButton, {
   Variant as IconVariant,
 } from 'components/IconButton';
 import EditProfileModal from './components/EditProfileModal';
+import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 
 export interface IProfileCoverProps {
   profileCoverData: Record<string, any>;
@@ -72,7 +73,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                   </div>
                   {!canEdit && (
                     <div className="bg-red-100 border-1 border-red-200 rounded-full px-3 flex justify-center items-center space-x-2">
-                      <img src={OutOfOffice} alt="" width={24} height={24} />
+                      <Icon name="outOfOfficeIcon" size={16} />
                       <div className="text-xxs font-medium">
                         {profileCoverData?.status}
                       </div>
@@ -114,7 +115,9 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                 <Divider variant={DividerVariant.Vertical} />
               </div>
               <div className="flex space-x-3 items-center">
-                <Icon name="briefcase" />
+                <IconWrapper type={Type.Square} className="cursor-pointer">
+                  <Icon name="briefcase" size={16} />
+                </IconWrapper>
                 <div className="text-xs font-normal text-neutral-900">
                   {profileCoverData?.department || 'Engineering'}
                 </div>
@@ -123,7 +126,9 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                 <Divider variant={DividerVariant.Vertical} />
               </div>
               <div className="flex space-x-3 items-center">
-                <Icon name="location" />
+                <IconWrapper type={Type.Square} className="cursor-pointer">
+                  <Icon name="location" size={16} />
+                </IconWrapper>
                 <div className="text-xs font-normal text-neutral-900">
                   {profileCoverData?.location || 'Mumbai, India'}
                 </div>

@@ -101,7 +101,7 @@ const ResetPassword = () => {
 
   const resetPasswordContainerStyles = clsx(
     { 'w-full': true },
-    { 'max-w-[440px]': data?.message === 'Link verified successfully' },
+    { 'max-w-[440px]': !!data },
   );
 
   return (
@@ -116,7 +116,7 @@ const ResetPassword = () => {
             <div className="flex justify-center items-center">Loading ...</div>
           ) : (
             <>
-              {data?.message === 'Link verified successfully' ? (
+              {!!data ? (
                 <>
                   {resetPasswordMutation.isSuccess ? (
                     <>

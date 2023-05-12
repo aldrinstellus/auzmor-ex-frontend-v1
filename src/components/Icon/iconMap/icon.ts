@@ -63,6 +63,7 @@ import CakeIcon from '../components/Cake';
 import FemaleIcon from '../components/Female';
 import MarriedIcon from '../components/Married';
 import CopyIcon from '../components/Copy';
+import OutOfOfficeIcon from '../components/OutOfOffice';
 
 export const icon = {
   add: Add,
@@ -127,7 +128,8 @@ export const icon = {
   email: EmailIcon,
   folderConnection: FolderConnectionIcon,
   cake: CakeIcon,
-  femaleicon: FemaleIcon,
+  femaleIcon: FemaleIcon,
   marriedIcon: MarriedIcon,
   copyIcon: CopyIcon,
+  outOfOfficeIcon: OutOfOfficeIcon,
 };
