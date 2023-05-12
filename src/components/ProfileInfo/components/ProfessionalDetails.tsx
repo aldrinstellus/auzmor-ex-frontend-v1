@@ -5,16 +5,16 @@ import Time from 'images/time.svg';
 import useHover from 'hooks/useHover';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
+import moment from 'moment';
+import 'moment-timezone';
 
 export interface IProfessionalDetailsProps {
-  dateOfJoin: string;
-  timezone: string;
+  professionalDetails: any;
   canEdit?: boolean;
 }
 
 const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
-  dateOfJoin,
-  timezone,
+  professionalDetails,
   canEdit,
 }) => {
   const [isHovered, eventHandlers] = useHover();
@@ -24,7 +24,15 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
     [isHovered],
   );
 
-  const joiningDate = new Date(dateOfJoin);
+  const timestamp = professionalDetails?.createdAt;
+
+  const formattedTime = moment
+    .utc(timestamp)
+    .tz('America/New_York')
+    .format('(UTC-05:00) z');
+
+  const formattedDate = moment(timestamp).format('Do MMMM YYYY');
+
   return (
     <div {...eventHandlers}>
       <Card className={onHoverStyles}>
@@ -47,7 +55,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
             <div className="flex space-x-3">
               <img src={Time} alt="" />
               <div className="text-neutral-900 text-base font-medium ">
-                Joined on {joiningDate.toDateString()}
+                Joined on {formattedDate}
               </div>
             </div>
           </div>
@@ -56,7 +64,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
             <div className="flex space-x-3">
               <img src={Time} alt="" />
               <div className="text-neutral-900 text-base font-medium ">
-                Joined on {timezone?.toString()}
+                {formattedTime}
               </div>
             </div>
           </div>
