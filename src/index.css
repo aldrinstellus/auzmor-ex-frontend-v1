@@ -93,3 +93,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.Toastify__toast-container {
+  width: auto !important;
+}
