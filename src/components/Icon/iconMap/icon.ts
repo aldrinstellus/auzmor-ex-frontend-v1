@@ -59,6 +59,7 @@ import PlayIcon from '../components/Play';
 import TickCircleIcon from '../components/TickCircle';
 import CloseCircleIcon from '../components/CloseCircle';
 import FilterLinear from '../components/FilterLinear';
+import ArrowSwap from '../components/ArrowSwap';
 
 export const icon = {
   add: Add,
@@ -67,6 +68,7 @@ export const icon = {
   analyticsIconOutline: AnalyticsOutline,
   arrowLeft: ArrowLeftIcon,
   arrowRight: ArrowRightIcon,
+  arrowSwap: ArrowSwap,
   bookmarkOutline: BookmarkOutline,
   calendarTwo: CalendarIconTwo,
   carouselClose: CarouselCloseIcon,

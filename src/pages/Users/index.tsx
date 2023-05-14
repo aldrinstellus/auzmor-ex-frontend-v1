@@ -111,14 +111,14 @@ const Users: React.FC<IUsersProps> = () => {
             <IconButton
               icon="filterLinear"
               variant={IconVariant.Secondary}
-              size={IconSize.Small}
+              size={IconSize.Medium}
               borderAround
               className="bg-white"
             />
             <IconButton
-              icon="filter"
+              icon="arrowSwap"
               variant={IconVariant.Secondary}
-              size={IconSize.Small}
+              size={IconSize.Medium}
               borderAround
               className="bg-white"
             />

@@ -17,6 +17,7 @@ import SvgVideoOutline from '../components/video/VideoOutline';
 import SvgUserOutline from '../components/Users/UsersOutline';
 import SvgSpeakerOutline from '../components/Speaker/SpeakerOutline';
 import SvgDraftOutline from '../components/Draft/DraftOutline';
+import SvgArrowSwapOutline from '../components/ArrowSwap/ArrowSwapOutline';
 import SvgArrowLeftOutline from '../components/ArrowLeft/ArrowLeftOutline';
 import SvgMailOutline from '../components/Mail/MailOutline';
 import SvgSearchOutline from '../components/Search/SearchOutline';
@@ -44,6 +45,7 @@ export const outlineIcon = {
   addOutline: SvgAddOutline,
   arrowLeftOutline: SvgArrowLeftOutline,
   arrowRightOutline: SvgArrowRightOutline,
+  arrowSwapOutline: SvgArrowSwapOutline,
   calendarOutlineTwo: SvgCalendarOutlineTwo,
   celebrateOutline: SvgCelebrateOutline,
   chartOutline: SvgChartOutline,

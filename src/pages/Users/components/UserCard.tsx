@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import _ from 'lodash';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import useHover from 'hooks/useHover';
@@ -7,11 +8,11 @@ import clsx from 'clsx';
 import { useMutation } from '@tanstack/react-query';
 import { deleteUser } from 'queries/users';
 import ConfirmationBox from 'components/ConfirmationBox';
-import _ from 'lodash';
-
 import queryClient from 'utils/queryClient';
-import Icon from 'components/Icon';
-
+import IconButton, {
+  Variant as IconVariant,
+  Size as IconSize,
+} from 'components/IconButton';
 export interface IUserCardProps {
   id: string;
   role: string;
@@ -71,14 +72,14 @@ const UserCard: React.FC<IUserCardProps> = ({
     () =>
       clsx(
         {
-          'w-[234px] h-[234px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white relative':
+          'relative w-[234px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white':
             true,
         },
         {
-          '-mb-6 transition-all duration-900 h-72 z-10 shadow-xl ': isHovered,
+          'z-10 shadow-xl visible': isHovered,
         },
         {
-          'z-0': !isHovered,
+          'mb-0 z-0': !isHovered,
         },
       ),
     [isHovered],
@@ -124,13 +125,28 @@ const UserCard: React.FC<IUserCardProps> = ({
               {location || 'Mumbai'}
             </div>
           </div>
-          {/* {isHovered && (
-            <div>
-              <div>I</div>
-              <div>O</div>
-            </div>
-          )} */}
         </div>
+        {isHovered && (
+          <div className="flex justify-between items-center mt-4 space-x-4">
+            <div className="rounded-7xl border border-solid border-neutral-200">
+              <IconButton
+                icon="draft"
+                variant={IconVariant.Secondary}
+                size={IconSize.Medium}
+                className="rounded-7xl"
+              />
+            </div>
+
+            <div className="rounded-7xl border border-solid border-neutral-200">
+              <IconButton
+                icon="slack"
+                variant={IconVariant.Secondary}
+                size={IconSize.Medium}
+                className="rounded-7xl"
+              />
+            </div>
+          </div>
+        )}
       </Card>
 
       <ConfirmationBox
