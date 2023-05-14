@@ -6,6 +6,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import queryClient from 'utils/queryClient';
+import Toast from 'components/Toast';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <ReactQueryDevtools initialIsOpen={false} />
         ) : null}
         <Router />
+        <Toast />
       </AuthProvider>
     </QueryClientProvider>
   );

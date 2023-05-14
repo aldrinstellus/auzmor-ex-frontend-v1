@@ -1,172 +1,171 @@
-import React, { useRef, useState } from 'react';
-import Button, { Variant } from 'components/Button';
+import React, { useState } from 'react';
+import Button, { Size, Variant } from 'components/Button';
 import UserCard from './components/UserCard';
 import TabSwitch from './components/TabSwitch';
-import { useUsers } from 'queries/users';
-import UserInvite from 'pages/Users/components/UserInvite';
-import Modal from 'components/Modal';
-import AddUsers from 'pages/Users/components/AddUsers';
-import ConfirmationBox from 'components/ConfirmationBox';
+import { IPostUsersResponse, useUsers } from 'queries/users';
+import InviteUserModal from './components/InviteUserModal';
+import TablePagination from 'components/TablePagination';
+import Card from 'components/Card';
+import Spinner from 'components/Spinner';
+import Layout, { FieldType } from 'components/Form';
+import { Size as InputSize } from 'components/Input';
+import { useForm } from 'react-hook-form';
+import IconButton, {
+  Variant as IconVariant,
+  Size as IconSize,
+} from 'components/IconButton';
 
 interface IUsersProps {}
 
 const tabs = [
-  {
-    label: 'People',
-  },
-  {
-    label: 'Teams',
-  },
+  { id: 1, title: 'People', content: <div>Content for Tab 1</div> },
+  { id: 2, title: 'Teams', content: <div>Content for Tab 2</div> },
 ];
 
 const Users: React.FC<IUsersProps> = () => {
+  const [page, setPage] = useState(1);
+  const { data: users, isLoading } = useUsers({ next: page });
   const [showAddUserModal, setShowAddUserModal] = useState(false);
-  const [openErrorModal, setOpenErrorModal] = useState(false);
-  const { data, isLoading } = useUsers({});
-  const usersData = data?.result.data;
-  const [buttonState, setButtonState] = useState(true);
 
-  const formRef = useRef();
-
-  const footerMapButtons = [
-    {
-      id: 1,
-      label: 'Cancel',
-      disabled: false,
-      className:
-        '!py-2 !px-4 !text-neutral-900 !bg-white !rounded-[24px] border',
-      onClick: () => {
-        setShowAddUserModal(false);
-      },
-    },
-    {
-      id: 2,
-      label: 'Send Invite',
-      disabled: buttonState,
-      className: `!py-2 !px-4 !rounded-[24px] border ${
-        buttonState
-          ? 'bg-gray-200 !text-neutral-400'
-          : '!bg-primary-500 !text-white '
-      }`,
-      onClick: () => {
-        (formRef.current as any).submitForm();
-      },
-    },
-  ];
-
-  if (isLoading) {
-    return <div>Loader...</div>;
-  }
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors, isValid },
+  } = useForm({
+    mode: 'onChange',
+  });
 
   return (
-    <div className="bg-white px-8 py-9 rounded-9xl w-[100%] h-[100%]">
-      <div className="flex justify-between">
-        <span className="text-2xl font-bold">People Hub</span>
-        <div className="flex">
-          <UserInvite />
-          <Button
-            className="flex mr-2"
-            label="View Organization Chart"
-            variant={Variant.Secondary}
-            leftIcon="convertShape"
-          />
-          <Button
-            className="flex"
-            label="Add People"
-            leftIcon="add"
-            onClick={() => {
-              setShowAddUserModal(true);
-            }}
-          />
-        </div>
-      </div>
-      <Modal
-        open={showAddUserModal}
-        closeModal={() => setShowAddUserModal(false)}
-      >
-        {`Invite new people to your organization`}
-        {
-          <AddUsers
-            reference={formRef}
-            setOpenError={setOpenErrorModal}
-            setOpen={setShowAddUserModal}
-            setButtonState={setButtonState}
-          />
-        }
-        {
-          <div className="flex justify-end items-center h-16 p-6">
-            {footerMapButtons.map((type) => (
-              <div className="mr-4" key={type.id}>
-                <Button
-                  label={type.label}
-                  variant={Variant.Secondary}
-                  disabled={type.disabled}
-                  className={type.className}
-                  onClick={type.onClick}
-                />
-              </div>
-            ))}
+    <Card className="px-8 pt-9 pb-8 w-full h-[1109px] space-y-6">
+      {/* Top People Directory Section */}
+      <div className="space-y-7 h-[25%]">
+        <div className="flex justify-between">
+          <div className="text-2xl font-bold">People Hub</div>
+          <div className="flex space-x-2">
+            <Button
+              className="flex space-x-[6px]"
+              label="View Organization Chart"
+              variant={Variant.Secondary}
+              leftIcon="convertShape"
+            />
+            <Button
+              className="flex space-x-2"
+              label="Add People"
+              leftIcon="add"
+              onClick={() => {
+                setShowAddUserModal(true);
+              }}
+            />
           </div>
-        }
-      </Modal>
+        </div>
 
-      <ConfirmationBox
-        open={openErrorModal}
-        onClose={() => setOpenErrorModal(false)}
-        title="Error!"
-        description={
-          <span>
-            Failed to add participant. Email not recognised.
-            <br /> Please enter valid details.
-          </span>
-        }
-        success={{
-          label: 'Try Again',
-          className: 'bg-primary-500 text-white ',
-          onSubmit: () => {
-            setOpenErrorModal(false);
-            setShowAddUserModal(true);
-          },
-        }}
-        discard={{
-          label: 'cancel',
-          className: 'text-neutral-900 bg-white ',
-          onCancel: () => {
-            setOpenErrorModal(false);
-          },
-        }}
-      />
-
-      <div className="mt-6">
+        {/* Tab Switcher */}
         <TabSwitch tabs={tabs} />
-      </div>
-      <div className="flex justify-between mt-6 ">
-        <div className="flex-none">
-          <Button
-            label="My Teams"
-            variant={Variant.Secondary}
-            className="mr-4"
-          />
-          <Button
-            label="All Members"
-            variant={Variant.Secondary}
-            className="mr-4"
-          />
+
+        {/* People Directory Filter */}
+        <div className="flex justify-between items-center">
+          <div className="flex space-x-4">
+            <Button
+              label="My Teams"
+              size={Size.Small}
+              variant={Variant.Secondary}
+              disabled
+              className="cursor-not-allowed h-9 grow-0"
+            />
+            <Button
+              label="All Members"
+              size={Size.Small}
+              variant={Variant.Secondary}
+              className="h-9 grow-0"
+            />
+            <Layout
+              fields={[
+                {
+                  type: FieldType.SingleSelect,
+                  control,
+                  className: 'h-9 w-44',
+                  name: 'role',
+                  placeholder: 'Role',
+                  size: InputSize.Small,
+                  defaultValue: 'ADMIN',
+                  options: [
+                    {
+                      id: 1,
+                      label: 'ADMIN',
+                    },
+                    {
+                      id: 2,
+                      label: 'SUPER ADMIN',
+                    },
+                  ],
+                },
+              ]}
+            />
+          </div>
+          <div className="flex space-x-2 justify-center items-center">
+            <IconButton
+              icon="filterLinear"
+              variant={IconVariant.Secondary}
+              size={IconSize.Small}
+              borderAround
+              className="bg-white"
+            />
+            <IconButton
+              icon="filter"
+              variant={IconVariant.Secondary}
+              size={IconSize.Small}
+              borderAround
+              className="bg-white"
+            />
+            <div>
+              <Layout
+                fields={[
+                  {
+                    type: FieldType.Input,
+                    size: InputSize.Small,
+                    leftIcon: 'search',
+                    control,
+                    name: 'search',
+                    placeholder: 'Search members',
+                  },
+                ]}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className=" text-neutral-500">
+          Showing {!isLoading && users.result.data.length} results
         </div>
       </div>
 
-      <div className="mt-6 text-neutral-500">
-        Showing {usersData.length} results
-      </div>
-      <div className="flex flex-wrap mt-6">
-        {usersData.length > 0 &&
-          usersData.map((user: any, index: number) => (
-            <div key={user.id} className={index % 5 !== 0 ? 'ml-6' : ''}>
+      <div className="overflow-y-auto h-[65%]">
+        <div className="flex flex-wrap gap-6">
+          {users?.result?.data?.length > 0 &&
+            users?.result?.data?.map((user: any) => (
               <UserCard key={user.id} {...user} />
-            </div>
-          ))}
+            ))}
+          {isLoading && <Spinner color="#000" />}
+        </div>
       </div>
-    </div>
+
+      <div className="float-right h-[10%]">
+        <TablePagination
+          total={users?.result?.totalCount}
+          page={page}
+          onPageChange={setPage}
+        />
+      </div>
+
+      {showAddUserModal && (
+        <InviteUserModal
+          showModal={showAddUserModal}
+          setShowAddUserModal={setShowAddUserModal}
+          closeModal={() => setShowAddUserModal(false)}
+        />
+      )}
+    </Card>
   );
 };
 
