@@ -1,25 +1,29 @@
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React, { ReactNode, useState } from 'react';
+import { Tab } from '@headlessui/react';
 
-interface Tab {
-  label: string;
+interface ITab {
+  id: number;
+  title: string;
+  content: ReactNode;
 }
 
 interface TabSwitcherProps {
-  tabs: Tab[];
+  tabs: ITab[];
+  canEdit?: boolean;
 }
 
-const TabSwitcher: React.FC<TabSwitcherProps> = ({ tabs }) => {
-  const [activeTabIndex, setActiveTabIndex] = useState(0);
+const TabSwitcher: React.FC<TabSwitcherProps> = ({ tabs, canEdit }) => {
+  const [activeTab, setActiveTab] = useState(1);
 
-  const handleTabClick = (index: number) => {
-    setActiveTabIndex(index);
+  const handleTabClick = (tabId: number) => {
+    setActiveTab(tabId);
   };
 
   const styles = (active: boolean) =>
     clsx(
       {
-        'pl-6 pr-6 pt-1 pb-1 font-bold gap-1': true,
+        'font-bold px-4': true,
       },
       {
         'bg-primary-500 rounded-6xl text-white': active,
@@ -29,18 +33,32 @@ const TabSwitcher: React.FC<TabSwitcherProps> = ({ tabs }) => {
       },
     );
 
+  const contentStyles = (active: boolean) => clsx('block', { hidden: !active });
+
+  // whole tab component change...
+  // temp fix for width
+
   return (
-    <div className="p-1 bg-neutral-50 rounded-6xl border-solid border-2 border-neutral-200 flex max-w-min">
-      {tabs.map((tab, index) => (
-        <div
-          style={{ cursor: 'pointer' }}
-          key={tab.label}
-          onClick={() => handleTabClick(index)}
-          className={styles(index === activeTabIndex)}
-        >
-          {tab.label}
-        </div>
-      ))}
+    <div className="space-y-8">
+      <div className="flex w-[320px] p-1 bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200">
+        {tabs.map((tab) => (
+          <div
+            style={{ cursor: 'pointer' }}
+            key={tab?.id}
+            onClick={() => handleTabClick(tab?.id)}
+            className={styles(tab?.id === activeTab)}
+          >
+            {tab?.title}
+          </div>
+        ))}
+      </div>
+      <div>
+        {tabs.map((tab) => (
+          <div key={tab?.id} className={contentStyles(activeTab === tab?.id)}>
+            {tab?.content}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

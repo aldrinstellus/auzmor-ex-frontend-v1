@@ -32,6 +32,17 @@ export const forgotPassword = async (payload: IForgotPassword) => {
   return data;
 };
 
+export const tokenValidation = async (token: string) => {
+  const { data } = await apiService.get(`/password/reset?token=${token}`);
+  return data;
+};
+
+export const useTokenValidation = (token: string) =>
+  useQuery({
+    queryKey: ['validation-token'],
+    queryFn: () => tokenValidation(token),
+  });
+
 export const resetPassword = async (payload: IReset) => {
   const { data } = await apiService.put('/password/reset', payload);
   return data;

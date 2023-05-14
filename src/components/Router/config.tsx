@@ -62,8 +62,15 @@ const routers = createBrowserRouter(
         <Route
           path="/users/:userId"
           element={<UserDetail />}
-          loader={() => {
+          loader={({ params }) => {
             // ⬇️ loader fetch data as earlier as possible
+            return '';
+          }}
+        />
+        <Route
+          path="/profile"
+          element={<UserDetail />}
+          loader={() => {
             return '';
           }}
         />

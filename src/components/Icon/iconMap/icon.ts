@@ -56,6 +56,15 @@ import Reply from '../components/Reply';
 import LikeIcon from '../components/LikeIcon';
 import ArrowRightIcon from '../components/ArrowRight';
 import PlayIcon from '../components/Play';
+import BriefcaseIcon from '../components/Briefcase';
+import LocationIcon from '../components/Location';
+import EmailIcon from '../components/Email';
+import FolderConnectionIcon from '../components/FolderConnection';
+import CakeIcon from '../components/Cake';
+import FemaleIcon from '../components/Female';
+import MarriedIcon from '../components/Married';
+import CopyIcon from '../components/Copy';
+import OutOfOfficeIcon from '../components/OutOfOffice';
 import TickCircleIcon from '../components/TickCircle';
 import CloseCircleIcon from '../components/CloseCircle';
 import FilterLinear from '../components/FilterLinear';
@@ -122,4 +131,13 @@ export const icon = {
   trash: Trash,
   user: UsersIcon,
   video: VideoIcon,
+  briefcase: BriefcaseIcon,
+  location: LocationIcon,
+  email: EmailIcon,
+  folderConnection: FolderConnectionIcon,
+  cake: CakeIcon,
+  femaleIcon: FemaleIcon,
+  marriedIcon: MarriedIcon,
+  copyIcon: CopyIcon,
+  outOfOfficeIcon: OutOfOfficeIcon,
 };

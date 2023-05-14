@@ -18,12 +18,8 @@ import IconButton, {
 interface IUsersProps {}
 
 const tabs = [
-  {
-    label: 'People',
-  },
-  {
-    label: 'Teams',
-  },
+  { id: 1, title: 'People', content: <div>Content for Tab 1</div> },
+  { id: 2, title: 'Teams', content: <div>Content for Tab 2</div> },
 ];
 
 const Users: React.FC<IUsersProps> = () => {

@@ -62,10 +62,53 @@ export const isUserExist = async (q: { email: string }) => {
   return data;
 };
 
+// get user by id -> users/:id
+export const getUser = async (id: string) => {
+  const data = await apiService.get(`/users/${id}`, {});
+  return data;
+};
+
+// get user/me -> users/me
+export const getCurrentUser = async () => {
+  const data = await apiService.get('/users/me');
+  return data;
+};
+
+// update current the user/me -> users/me
+export const updateCurrentUser = async (payload: Record<string, any>) => {
+  return await apiService.patch('/users/me', payload);
+};
+
+// update user by id -> users/:id
+export const updateUserById = async (
+  userId: string,
+  payload: Record<string, any>,
+) => {
+  return await apiService.patch(`users/${userId}`, payload);
+};
+
+// delete user by id -> users/:id
+export const deleteUser = async (id: string) => {
+  const data = await apiService.delete(`/users/${id}`, {});
+  return new Promise((res) => {
+    res(data);
+  });
+};
+
+// use react query to get all users
 export const useUsers = ({ limit, prev, next }: UserQueryParams) => {
   return useQuery({
     queryKey: ['users', limit, prev, next],
     queryFn: () => getAllUsers({ limit, prev, next }),
+    staleTime: 15 * 60 * 1000,
+  });
+};
+
+// use react query to get single user
+export const useSingleUser = (userId: string) => {
+  return useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => getUser(userId),
     staleTime: 15 * 60 * 1000,
   });
 };
@@ -77,9 +120,11 @@ export const inviteUsers = async (payload: IPostUsers) => {
   });
 };
 
-export const deleteUser = async (id: string) => {
-  const data = await apiService.delete(`/users/${id}`, {});
-  return new Promise((res) => {
-    res(data);
+// use react query to get current user
+export const useCurrentUser = () => {
+  return useQuery({
+    queryKey: ['current-user-me'],
+    queryFn: () => getCurrentUser(),
+    staleTime: 15 * 60 * 1000,
   });
 };

@@ -10,7 +10,8 @@ import ConfirmationBox from 'components/ConfirmationBox';
 import _ from 'lodash';
 
 import queryClient from 'utils/queryClient';
-import Icon from 'components/Icon';
+import { useNavigate } from 'react-router-dom';
+import useAuth from 'hooks/useAuth';
 
 export interface IUserCardProps {
   id: string;
@@ -51,6 +52,9 @@ const UserCard: React.FC<IUserCardProps> = ({
   active,
   workEmail,
 }) => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
   const [isHovered, hoverEvents] = useHover();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -116,12 +120,28 @@ const UserCard: React.FC<IUserCardProps> = ({
               {location || '-'}
             </div>
           </div>
-          {/* {isHovered && (
-            <div>
-              <div>I</div>
-              <div>O</div>
+          {isHovered && (
+            <div className="flex justify-between items-center mt-4 space-x-3">
+              <Button
+                variant={Variant.Secondary}
+                label={'O'}
+                onClick={() => {
+                  if (user?.id === id) {
+                    navigate('/profile', { state: { userId: id } });
+                  } else navigate(`/users/${id}`);
+                }}
+                className="!p-2 !gap-2 !rounded-[8px] !border !border-neutral-200 !border-solid"
+              />
+              <Button
+                variant={Variant.Secondary}
+                label={'X'}
+                onClick={() => {
+                  setShowDeleteModal(true);
+                }}
+                className="!p-2 !gap-2 !rounded-[8px] !border !border-neutral-200 !border-solid"
+              />
             </div>
-          )} */}
+          )}
         </div>
       </Card>
 
