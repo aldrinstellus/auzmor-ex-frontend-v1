@@ -7,11 +7,13 @@ import Spinner from 'components/Spinner';
 import { useLocation, useParams } from 'react-router-dom';
 import TabSwitcher from 'pages/Users/components/TabSwitch';
 import ProfileActivityFeed from './components/ProfileActivityFeed';
+import useAuth from 'hooks/useAuth';
 interface IUserDetailProps {}
 
 const UserDetail: React.FC<IUserDetailProps> = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showFeedModal, setShowFeedModal] = useState<boolean>(false);
+  const { user } = useAuth();
 
   const params = useParams(); // get from users list
   const { state, pathname } = useLocation(); // get from user/me
@@ -51,7 +53,7 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
       content: (
         <ProfileActivityFeed
           pathname={pathname}
-          userId={params?.userId || ''}
+          userId={params?.userId || user?.id || ''}
           showFeedModal={showFeedModal}
           setShowFeedModal={setShowFeedModal}
           data={profileData}

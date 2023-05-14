@@ -17,11 +17,6 @@ import IconButton, {
 
 interface IUsersProps {}
 
-const tabs = [
-  { id: 1, title: 'People' },
-  { id: 2, title: 'Teams' },
-];
-
 const Users: React.FC<IUsersProps> = () => {
   const [page, setPage] = useState(1);
   const { data: users, isLoading } = useUsers({ next: page });
@@ -36,34 +31,9 @@ const Users: React.FC<IUsersProps> = () => {
     mode: 'onChange',
   });
 
-  return (
-    <Card className="px-8 pt-9 pb-8 w-full h-[1109px] space-y-6">
-      {/* Top People Directory Section */}
-      <div className="space-y-7">
-        <div className="flex justify-between">
-          <div className="text-2xl font-bold">People Hub</div>
-          <div className="flex space-x-2">
-            <Button
-              className="flex space-x-[6px]"
-              label="View Organization Chart"
-              variant={Variant.Secondary}
-              leftIcon="convertShape"
-            />
-            <Button
-              className="flex space-x-2"
-              label="Add People"
-              leftIcon="add"
-              onClick={() => {
-                setShowAddUserModal(true);
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Tab Switcher */}
-        <TabSwitch tabs={tabs} />
-
-        {/* People Directory Filter */}
+  const peopleHubNode = (
+    <div className="relative">
+      <div>
         <div className="flex justify-between items-center">
           <div className="flex space-x-4">
             <Button
@@ -135,12 +105,12 @@ const Users: React.FC<IUsersProps> = () => {
           </div>
         </div>
 
-        <div className=" text-neutral-500">
+        <div className=" text-neutral-500 mt-6 mb-3">
           Showing {!isLoading && users.result.data.length} results
         </div>
       </div>
 
-      <div className="overflow-y-auto h-[65%]">
+      <div className="">
         <div className="flex flex-wrap gap-6">
           {users?.result?.data?.length > 0 &&
             users?.result?.data?.map((user: any) => (
@@ -150,14 +120,13 @@ const Users: React.FC<IUsersProps> = () => {
         </div>
       </div>
 
-      <div className="float-right h-[10%]">
+      <div className="absolute right-0">
         <TablePagination
           total={users?.result?.totalCount}
           page={page}
           onPageChange={setPage}
         />
       </div>
-
       {showAddUserModal && (
         <InviteUserModal
           showModal={showAddUserModal}
@@ -165,6 +134,42 @@ const Users: React.FC<IUsersProps> = () => {
           closeModal={() => setShowAddUserModal(false)}
         />
       )}
+    </div>
+  );
+
+  const tabs = [
+    { id: 1, title: 'People', content: peopleHubNode },
+    { id: 2, title: 'Teams', content: <div>Teams</div> },
+  ];
+
+  return (
+    <Card className="px-8 pt-9 pb-8 w-full space-y-6">
+      {/* Top People Directory Section */}
+      <div className="space-y-6">
+        <div className="flex justify-between">
+          <div className="text-2xl font-bold">People Hub</div>
+          <div className="flex space-x-2">
+            <Button
+              className="flex space-x-[6px]"
+              label="View Organization Chart"
+              variant={Variant.Secondary}
+              leftIcon="convertShape"
+              leftIconSize={20}
+            />
+            <Button
+              className="flex space-x-1"
+              label="Add People"
+              leftIcon="add"
+              onClick={() => {
+                setShowAddUserModal(true);
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Tab Switcher */}
+        <TabSwitch tabs={tabs} />
+      </div>
     </Card>
   );
 };

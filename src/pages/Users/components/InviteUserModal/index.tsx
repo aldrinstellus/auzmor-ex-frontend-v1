@@ -202,7 +202,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
 
   return (
     <>
-      <Modal open={showModal} closeModal={close}>
+      <Modal open={showModal} closeModal={close} className="max-w-3xl">
         {/*---------- {<>Header</>} ----------*/}
         <Header
           title={

@@ -40,13 +40,13 @@ const AddUsers: React.FC<IAddUsersProps> = ({
   const [isHovered, eventHandlers] = useHover();
   return (
     <form>
-      <div className="pl-6 pr-2 pt-6 max-h-[50vh] overflow-y-scroll">
-        <div className="flex flex-col mb-3">
+      <div className="pl-6 pr-2 pt-6 max-h-[50vh] w-full overflow-y-scroll">
+        <div className="flex flex-col mb-3 w-full">
           {fields.map((field, index) => (
             <div key={field.id}>
               <div className="flex w-full items-center">
                 <Layout
-                  className="flex mb-3"
+                  className="flex mb-3 w-full"
                   key={field.id}
                   fields={[
                     {

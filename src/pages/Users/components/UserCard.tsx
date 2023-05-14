@@ -92,7 +92,16 @@ const UserCard: React.FC<IUserCardProps> = ({
   );
 
   return (
-    <div {...hoverEvents}>
+    <div
+      {...hoverEvents}
+      className="cursor-pointer"
+      onClick={() => {
+        if (id === user?.id) {
+          return navigate('/profile');
+        }
+        return navigate(`/users/${id}`);
+      }}
+    >
       <Card className={`${hoverStyle}`}>
         <div
           style={{ backgroundColor: statusColorMap[role] }}
@@ -111,16 +120,16 @@ const UserCard: React.FC<IUserCardProps> = ({
           <div className="mt-1 truncate text-neutral-900 text-xs font-normal">
             {designation || role}
           </div>
-          <div className="flex justify-center items-center px-3 py-1 mt-2 bg-orange-100 rounded-xl">
+          <div className="flex justify-center items-center px-3 py-1 mt-2 rounded-xl">
             <div></div>
             <div className="text-neutral-900 text-xxs font-medium truncate">
-              {department || '-'}
+              {department}
             </div>
           </div>
           <div className="flex space-x-[6px] mt-3">
             <div></div>
             <div className="text-neutral-500 text-xs font-normal truncate">
-              {location || '-'}
+              {location}
             </div>
           </div>
         </div>

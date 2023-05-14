@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { ReactNode, useState } from 'react';
-import { Tab } from '@headlessui/react';
+import { find } from 'lodash';
 
 interface ITab {
   id: number;
@@ -10,11 +10,10 @@ interface ITab {
 
 interface TabSwitcherProps {
   tabs: ITab[];
-  canEdit?: boolean;
 }
 
-const TabSwitcher: React.FC<TabSwitcherProps> = ({ tabs, canEdit }) => {
-  const [activeTab, setActiveTab] = useState(1);
+const TabSwitcher: React.FC<TabSwitcherProps> = ({ tabs }) => {
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id);
 
   const handleTabClick = (tabId: number) => {
     setActiveTab(tabId);
@@ -23,7 +22,7 @@ const TabSwitcher: React.FC<TabSwitcherProps> = ({ tabs, canEdit }) => {
   const styles = (active: boolean) =>
     clsx(
       {
-        'font-bold px-4': true,
+        'font-bold px-4 cursor-pointer py-1': true,
       },
       {
         'bg-primary-500 rounded-6xl text-white': active,
@@ -33,17 +32,13 @@ const TabSwitcher: React.FC<TabSwitcherProps> = ({ tabs, canEdit }) => {
       },
     );
 
-  const contentStyles = (active: boolean) => clsx('block', { hidden: !active });
-
-  // whole tab component change...
-  // temp fix for width
+  const activeTabNode = find(tabs, { id: activeTab });
 
   return (
     <div className="space-y-8">
-      <div className="flex w-[320px] p-1 bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200">
+      <div className="flex max-w-min p-1 bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200">
         {tabs.map((tab) => (
           <div
-            style={{ cursor: 'pointer' }}
             key={tab?.id}
             onClick={() => handleTabClick(tab?.id)}
             className={styles(tab?.id === activeTab)}
@@ -52,13 +47,8 @@ const TabSwitcher: React.FC<TabSwitcherProps> = ({ tabs, canEdit }) => {
           </div>
         ))}
       </div>
-      <div>
-        {tabs.map((tab) => (
-          <div key={tab?.id} className={contentStyles(activeTab === tab?.id)}>
-            {tab?.content}
-          </div>
-        ))}
-      </div>
+
+      <div>{activeTabNode?.content}</div>
     </div>
   );
 };

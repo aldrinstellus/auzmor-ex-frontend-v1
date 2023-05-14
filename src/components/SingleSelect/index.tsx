@@ -62,7 +62,7 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
       backgroundColor: '#fff',
       border: '1px solid #E5E5E5',
       borderRadius: '32px',
-      padding: '0px 6px', // change style here because it breaking 2px
+      padding: '4px 6px', // change style here because it breaking 2px
     }),
   };
 

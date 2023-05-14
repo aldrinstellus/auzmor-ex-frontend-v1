@@ -30,6 +30,7 @@ export type ButtonProps = {
   disabled?: boolean;
   loading?: boolean;
   onClick?: MouseEventHandler<Element>;
+  leftIconSize?: number;
   leftIcon?: any; // should accept the react element
   rightIcon?: any; // should accept the string and react element
   className?: string;
@@ -51,6 +52,7 @@ const Button = ({
   className = '',
   iconFill,
   iconStroke,
+  leftIconSize,
   leftIconClassName,
   rightIconClassName,
   onClick = () => {},
@@ -103,7 +105,7 @@ const Button = ({
             fill={iconFill}
             stroke={iconStroke}
             className={leftIconClassName}
-            size={size === Size.Small ? 16 : 24}
+            size={leftIconSize || (size === Size.Small ? 16 : 24)}
           />
         )}
       </div>
