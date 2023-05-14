@@ -48,7 +48,7 @@ const Banner: React.FC<BannerProps> = ({
             variant === Variant.Warning,
         },
         {
-          'flex items-center text-sm shadow-sm p-2': true,
+          'flex items-center text-sm shadow-sm p-2 gap-x-3': true,
         },
         {
           [className]: true,
@@ -117,6 +117,19 @@ const Banner: React.FC<BannerProps> = ({
     }
     return 'infoCircle';
   }, [variant]);
+
+  const getStroke = (variant: Variant): string => {
+    switch (variant) {
+      case Variant.Success:
+        return '#171717';
+      case Variant.Error:
+        return '#ef4444';
+      case Variant.Info:
+        return '#3b82f6';
+      case Variant.Warning:
+        return '#f97316';
+    }
+  };
 
   return (
     <div className={containerStyles}>

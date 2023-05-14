@@ -35,12 +35,14 @@ export const AuthContext = createContext<IAuthContext>({
 const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const queryClient = useQueryClient();
-
+  const [showOnboard, setShowOnboard] = useState<boolean>(false);
   const [user, setUser] = useState<IUser | null>(null);
 
   const setupSession = async () => {
     const query = new URLSearchParams(window.location.search.substring(1));
     let token = query.get('accessToken');
+    const _showOnboard = query.get('showOnboard');
+    setShowOnboard(!!_showOnboard);
 
     if (token) {
       setItem(process.env.SESSION_KEY || 'uat', token);
@@ -93,6 +95,7 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
   return (
     <AuthContext.Provider value={{ user, reset, updateUser }}>
       {children}
+      {showOnboard && <></>}
     </AuthContext.Provider>
   );
 };

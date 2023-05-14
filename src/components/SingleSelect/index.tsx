@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import clsx from 'clsx';
 import { Control, useController, Controller } from 'react-hook-form';
-import Select from 'react-select';
+import Select, { MenuPlacement } from 'react-select';
 
 export interface ISingleSelectProps {
   name: string;
@@ -13,7 +13,8 @@ export interface ISingleSelectProps {
   control?: Control<Record<string, any>>;
   label?: string;
   placeholder?: string;
-  options: any[];
+  options: any;
+  menuPlacement: MenuPlacement;
 }
 
 const SingleSelect: React.FC<ISingleSelectProps> = ({
@@ -27,6 +28,7 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
   placeholder = '',
   options,
   defaultValue,
+  menuPlacement = 'bottom',
 }) => {
   const { field } = useController({
     name,
@@ -83,6 +85,7 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
               options={options}
               {...field}
               defaultValue={defaultValue}
+              menuPlacement={menuPlacement ? menuPlacement : undefined}
             />
           )}
         />

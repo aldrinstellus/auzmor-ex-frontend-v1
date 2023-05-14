@@ -64,6 +64,7 @@ export enum UploadStatus {
   YetToStart = 'YET_TO_START',
   Uploading = 'UPLOADING',
   Finished = 'FINISHED',
+  Error = 'ERROR',
 }
 
 export const useUpload = () => {
@@ -125,6 +126,7 @@ export const useUpload = () => {
   }
 
   const uploadMedia = async (fileList: File[], entityType: EntityType) => {
+    // TODO Add error state when upload fails.
     const uploadedFiles: IMedia[] = [];
     const createFilePromises: Promise<ICreateFileResponse>[] = [];
     const uploadToGCPPromises: Promise<IUploadToGcpResposne | undefined>[] = [];
@@ -168,6 +170,7 @@ export const useUpload = () => {
           } else {
             console.log(promiseRes);
             console.log('create file failed');
+            // setUploadStatus(UploadStatus.Error);
           }
         },
       );
@@ -194,7 +197,9 @@ export const useUpload = () => {
         },
       );
     } else {
-      setUploadStatus(UploadStatus.Finished);
+      if (uploadStatus !== UploadStatus.Error) {
+        setUploadStatus(UploadStatus.Finished);
+      }
       return uploadedFiles;
     }
 

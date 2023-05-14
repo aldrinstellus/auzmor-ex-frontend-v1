@@ -13,6 +13,9 @@ import IconButton, {
   Variant as IconVariant,
   Size as IconSize,
 } from 'components/IconButton';
+import { useNavigate } from 'react-router-dom';
+import useAuth from 'hooks/useAuth';
+
 export interface IUserCardProps {
   id: string;
   role: string;
@@ -52,6 +55,9 @@ const UserCard: React.FC<IUserCardProps> = ({
   active,
   workEmail,
 }) => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
   const [isHovered, hoverEvents] = useHover();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -126,9 +132,13 @@ const UserCard: React.FC<IUserCardProps> = ({
                 variant={IconVariant.Secondary}
                 size={IconSize.Medium}
                 className="rounded-7xl"
+                onClick={() => {
+                  if (user?.id === id) {
+                    navigate('/profile', { state: { userId: id } });
+                  } else navigate(`/users/${id}`);
+                }}
               />
             </div>
-
             <div className="rounded-7xl border border-solid border-neutral-200">
               <IconButton
                 icon="slack"

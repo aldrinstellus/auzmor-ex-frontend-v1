@@ -1,0 +1,758 @@
+[
+  {
+    "timezoneName": "(UTC-12:00) International Date Line West",
+    "iana": ["Etc/GMT+12"]
+  },
+  {
+    "timezoneName": "(UTC-11:00) Coordinated Universal Time-11",
+    "iana": [
+      "Etc/GMT+11",
+      "Pacific/Midway",
+      "Pacific/Niue",
+      "Pacific/Pago_Pago"
+    ]
+  },
+  {
+    "timezoneName": "(UTC-10:00) Hawaii",
+    "iana": [
+      "Etc/GMT+10",
+      "Pacific/Honolulu",
+      "Pacific/Johnston",
+      "Pacific/Rarotonga",
+      "Pacific/Tahiti"
+    ]
+  },
+  {
+    "timezoneName": "(UTC-09:00) Alaska",
+    "iana": [
+      "America/Anchorage",
+      "America/Juneau",
+      "America/Nome",
+      "America/Sitka",
+      "America/Yakutat"
+    ]
+  },
+  {
+    "timezoneName": "(UTC-08:00) Baja California",
+    "iana": ["America/Santa_Isabel"]
+  },
+  {
+    "timezoneName": "(UTC-07:00) Pacific Daylight Time (US & Canada)",
+    "iana": ["America/Los_Angeles", "America/Tijuana", "America/Vancouver"]
+  },
+  {
+    "timezoneName": "(UTC-08:00) Pacific Standard Time (US & Canada)",
+    "iana": [
+      "America/Los_Angeles",
+      "America/Tijuana",
+      "America/Vancouver",
+      "PST8PDT"
+    ]
+  },
+  {
+    "timezoneName": "(UTC-07:00) Arizona",
+    "iana": [
+      "America/Creston",
+      "America/Dawson",
+      "America/Dawson_Creek",
+      "America/Hermosillo",
+      "America/Phoenix",
+      "America/Whitehorse",
+      "Etc/GMT+7"
+    ]
+  },
+  {
+    "timezoneName": "(UTC-07:00) Chihuahua, La Paz, Mazatlan",
+    "iana": ["America/Chihuahua", "America/Mazatlan"]
+  },
+  {
+    "timezoneName": "(UTC-07:00) Mountain Time (US & Canada)",
+    "iana": [
+      "America/Boise",
+      "America/Cambridge_Bay",
+      "America/Denver",
+      "America/Edmonton",
+      "America/Inuvik",
+      "America/Ojinaga",
+      "America/Yellowknife",
+      "MST7MDT"
+    ]
+  },
+  {
+    "timezoneName": "(UTC-06:00) Central America",
+    "iana": [
+      "America/Belize",
+      "America/Costa_Rica",
+      "America/El_Salvador",
+      "America/Guatemala",
+      "America/Managua",
+      "America/Tegucigalpa",
+      "Etc/GMT+6",
+      "Pacific/Galapagos"
+    ]
+  },
+  {
+    "timezoneName": "(UTC-06:00) Central Time (US & Canada)",
+    "iana": [
+      "America/Chicago",
+      "America/Indiana/Knox",
+      "America/Indiana/Tell_City",
+      "America/Matamoros",
+      "America/Menominee",
+      "America/North_Dakota/Beulah",
+      "America/North_Dakota/Center",
+      "America/North_Dakota/New_Salem",
+      "America/Rainy_River",
+      "America/Rankin_Inlet",
+      "America/Resolute",
+      "America/Winnipeg",
+      "CST6CDT"
+    ]
+  },
+  {
+    "timezoneName": "(UTC-06:00) Guadalajara, Mexico City, Monterrey",
+    "iana": [
+      "America/Bahia_Banderas",
+      "America/Cancun",
+      "America/Merida",
+      "America/Mexico_City",
+      "America/Monterrey"
+    ]
+  },
+  {
+    "timezoneName": "(UTC-06:00) Saskatchewan",
+    "iana": ["America/Regina", "America/Swift_Current"]
+  },
+  {
+    "timezoneName": "(UTC-05:00) Bogota, Lima, Quito",
+    "iana": [
+      "America/Bogota",
+      "America/Cayman",
+      "America/Coral_Harbour",
+      "America/Eirunepe",
+      "America/Guayaquil",
+      "America/Jamaica",
+      "America/Lima",
+      "America/Panama",
+      "America/Rio_Branco",
+      "Etc/GMT+5"
+    ]
+  },
+  {
+    "timezoneName": "(UTC-05:00) Eastern Time (US & Canada)",
+    "iana": [
+      "America/Detroit",
+      "America/Havana",
+      "America/Indiana/Petersburg",
+      "America/Indiana/Vincennes",
+      "America/Indiana/Winamac",
+      "America/Iqaluit",
+      "America/Kentucky/Monticello",
+      "America/Louisville",
+      "America/Montreal",
+      "America/Nassau",
+      "America/New_York",
+      "America/Nipigon",
+      "America/Pangnirtung",
+      "America/Port-au-Prince",
+      "America/Thunder_Bay",
+      "America/Toronto"
+    ]
+  },
+  {
+    "timezoneName": "(UTC-04:00) Eastern Daylight Time (US & Canada)",
+    "iana": [
+      "America/Detroit",
+      "America/Havana",
+      "America/Indiana/Petersburg",
+      "America/Indiana/Vincennes",
+      "America/Indiana/Winamac",
+      "America/Iqaluit",
+      "America/Kentucky/Monticello",
+      "America/Louisville",
+      "America/Montreal",
+      "America/Nassau",
+      "America/New_York",
+      "America/Nipigon",
+      "America/Pangnirtung",
+      "America/Port-au-Prince",
+      "America/Thunder_Bay",
+      "America/Toronto"
+    ]
+  },
+  {
+    "timezoneName": "(UTC-05:00) Indiana (East)",
+    "iana": [
+      "America/Indiana/Marengo",
+      "America/Indiana/Vevay",
+      "America/Indianapolis"
+    ]
+  },
+  { "timezoneName": "(UTC-04:30) Caracas", "iana": ["America/Caracas"] },
+  { "timezoneName": "(UTC-04:00) Asuncion", "iana": ["America/Asuncion"] },
+  {
+    "timezoneName": "(UTC-04:00) Atlantic Time (Canada)",
+    "iana": [
+      "America/Glace_Bay",
+      "America/Goose_Bay",
+      "America/Halifax",
+      "America/Moncton",
+      "America/Thule",
+      "Atlantic/Bermuda"
+    ]
+  },
+  {
+    "timezoneName": "(UTC-04:00) Cuiaba",
+    "iana": ["America/Campo_Grande", "America/Cuiaba"]
+  },
+  {
+    "timezoneName": "(UTC-04:00) Georgetown, La Paz, Manaus, San Juan",
+    "iana": [
+      "America/Anguilla",
+      "America/Antigua",
+      "America/Aruba",
+      "America/Barbados",
+      "America/Blanc-Sablon",
+      "America/Boa_Vista",
+      "America/Curacao",
+      "America/Dominica",
+      "America/Grand_Turk",
+      "America/Grenada",
+      "America/Guadeloupe",
+      "America/Guyana",
+      "America/Kralendijk",
+      "America/La_Paz",
+      "America/Lower_Princes",
+      "America/Manaus",
+      "America/Marigot",
+      "America/Martinique",
+      "America/Montserrat",
+      "America/Port_of_Spain",
+      "America/Porto_Velho",
+      "America/Puerto_Rico",
+      "America/Santo_Domingo",
+      "America/St_Barthelemy",
+      "America/St_Kitts",
+      "America/St_Lucia",
+      "America/St_Thomas",
+      "America/St_Vincent",
+      "America/Tortola",
+      "Etc/GMT+4"
+    ]
+  },
+  {
+    "timezoneName": "(UTC-04:00) Santiago",
+    "iana": ["America/Santiago", "Antarctica/Palmer"]
+  },
+  { "timezoneName": "(UTC-03:30) Newfoundland", "iana": ["America/St_Johns"] },
+  { "timezoneName": "(UTC-03:00) Brasilia", "iana": ["America/Sao_Paulo"] },
+  {
+    "timezoneName": "(UTC-03:00) Buenos Aires",
+    "iana": [
+      "America/Argentina/Buenos_Aires",
+      "America/Argentina/Catamarca",
+      "America/Argentina/Cordoba",
+      "America/Argentina/Jujuy",
+      "America/Argentina/La_Rioja",
+      "America/Argentina/Mendoza",
+      "America/Argentina/Rio_Gallegos",
+      "America/Argentina/Salta",
+      "America/Argentina/San_Juan",
+      "America/Argentina/San_Luis",
+      "America/Argentina/Tucuman",
+      "America/Argentina/Ushuaia",
+      "America/Buenos_Aires",
+      "America/Catamarca",
+      "America/Cordoba",
+      "America/Jujuy",
+      "America/Mendoza"
+    ]
+  },
+  {
+    "timezoneName": "(UTC-03:00) Cayenne, Fortaleza",
+    "iana": [
+      "America/Araguaina",
+      "America/Belem",
+      "America/Cayenne",
+      "America/Fortaleza",
+      "America/Maceio",
+      "America/Paramaribo",
+      "America/Recife",
+      "America/Santarem",
+      "Antarctica/Rothera",
+      "Atlantic/Stanley",
+      "Etc/GMT+3"
+    ]
+  },
+  { "timezoneName": "(UTC-03:00) Greenland", "iana": ["America/Godthab"] },
+  { "timezoneName": "(UTC-03:00) Montevideo", "iana": ["America/Montevideo"] },
+  { "timezoneName": "(UTC-03:00) Salvador", "iana": ["America/Bahia"] },
+  {
+    "timezoneName": "(UTC-02:00) Coordinated Universal Time-02",
+    "iana": ["America/Noronha", "Atlantic/South_Georgia", "Etc/GMT+2"]
+  },
+  { "timezoneName": "(UTC-02:00) Mid-Atlantic - Old", "iana": [] },
+  {
+    "timezoneName": "(UTC-01:00) Azores",
+    "iana": ["America/Scoresbysund", "Atlantic/Azores"]
+  },
+  {
+    "timezoneName": "(UTC-01:00) Cape Verde Is.",
+    "iana": ["Atlantic/Cape_Verde", "Etc/GMT+1"]
+  },
+  {
+    "timezoneName": "(UTC) Casablanca",
+    "iana": ["Africa/Casablanca", "Africa/El_Aaiun"]
+  },
+  {
+    "timezoneName": "(UTC) Coordinated Universal Time",
+    "iana": ["America/Danmarkshavn", "Etc/GMT"]
+  },
+  {
+    "timezoneName": "(UTC) Edinburgh, London",
+    "iana": [
+      "Europe/Isle_of_Man",
+      "Europe/Guernsey",
+      "Europe/Jersey",
+      "Europe/London"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+01:00) Edinburgh, London",
+    "iana": [
+      "Europe/Isle_of_Man",
+      "Europe/Guernsey",
+      "Europe/Jersey",
+      "Europe/London"
+    ]
+  },
+  {
+    "timezoneName": "(UTC) Dublin, Lisbon",
+    "iana": [
+      "Atlantic/Canary",
+      "Atlantic/Faeroe",
+      "Atlantic/Madeira",
+      "Europe/Dublin",
+      "Europe/Lisbon"
+    ]
+  },
+  {
+    "timezoneName": "(UTC) Monrovia, Reykjavik",
+    "iana": [
+      "Africa/Abidjan",
+      "Africa/Accra",
+      "Africa/Bamako",
+      "Africa/Banjul",
+      "Africa/Bissau",
+      "Africa/Conakry",
+      "Africa/Dakar",
+      "Africa/Freetown",
+      "Africa/Lome",
+      "Africa/Monrovia",
+      "Africa/Nouakchott",
+      "Africa/Ouagadougou",
+      "Africa/Sao_Tome",
+      "Atlantic/Reykjavik",
+      "Atlantic/St_Helena"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna",
+    "iana": [
+      "Arctic/Longyearbyen",
+      "Europe/Amsterdam",
+      "Europe/Andorra",
+      "Europe/Berlin",
+      "Europe/Busingen",
+      "Europe/Gibraltar",
+      "Europe/Luxembourg",
+      "Europe/Malta",
+      "Europe/Monaco",
+      "Europe/Oslo",
+      "Europe/Rome",
+      "Europe/San_Marino",
+      "Europe/Stockholm",
+      "Europe/Vaduz",
+      "Europe/Vatican",
+      "Europe/Vienna",
+      "Europe/Zurich"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague",
+    "iana": [
+      "Europe/Belgrade",
+      "Europe/Bratislava",
+      "Europe/Budapest",
+      "Europe/Ljubljana",
+      "Europe/Podgorica",
+      "Europe/Prague",
+      "Europe/Tirane"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+01:00) Brussels, Copenhagen, Madrid, Paris",
+    "iana": [
+      "Africa/Ceuta",
+      "Europe/Brussels",
+      "Europe/Copenhagen",
+      "Europe/Madrid",
+      "Europe/Paris"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+01:00) Sarajevo, Skopje, Warsaw, Zagreb",
+    "iana": [
+      "Europe/Sarajevo",
+      "Europe/Skopje",
+      "Europe/Warsaw",
+      "Europe/Zagreb"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+01:00) West Central Africa",
+    "iana": [
+      "Africa/Algiers",
+      "Africa/Bangui",
+      "Africa/Brazzaville",
+      "Africa/Douala",
+      "Africa/Kinshasa",
+      "Africa/Lagos",
+      "Africa/Libreville",
+      "Africa/Luanda",
+      "Africa/Malabo",
+      "Africa/Ndjamena",
+      "Africa/Niamey",
+      "Africa/Porto-Novo",
+      "Africa/Tunis",
+      "Etc/GMT-1"
+    ]
+  },
+  { "timezoneName": "(UTC+01:00) Windhoek", "iana": ["Africa/Windhoek"] },
+  {
+    "timezoneName": "(UTC+02:00) Athens, Bucharest",
+    "iana": [
+      "Asia/Nicosia",
+      "Europe/Athens",
+      "Europe/Bucharest",
+      "Europe/Chisinau"
+    ]
+  },
+  { "timezoneName": "(UTC+02:00) Beirut", "iana": ["Asia/Beirut"] },
+  { "timezoneName": "(UTC+02:00) Cairo", "iana": ["Africa/Cairo"] },
+  { "timezoneName": "(UTC+02:00) Damascus", "iana": ["Asia/Damascus"] },
+  {
+    "timezoneName": "(UTC+02:00) E. Europe",
+    "iana": [
+      "Asia/Nicosia",
+      "Europe/Athens",
+      "Europe/Bucharest",
+      "Europe/Chisinau",
+      "Europe/Helsinki",
+      "Europe/Kiev",
+      "Europe/Mariehamn",
+      "Europe/Nicosia",
+      "Europe/Riga",
+      "Europe/Sofia",
+      "Europe/Tallinn",
+      "Europe/Uzhgorod",
+      "Europe/Vilnius",
+      "Europe/Zaporozhye"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+02:00) Harare, Pretoria",
+    "iana": [
+      "Africa/Blantyre",
+      "Africa/Bujumbura",
+      "Africa/Gaborone",
+      "Africa/Harare",
+      "Africa/Johannesburg",
+      "Africa/Kigali",
+      "Africa/Lubumbashi",
+      "Africa/Lusaka",
+      "Africa/Maputo",
+      "Africa/Maseru",
+      "Africa/Mbabane",
+      "Etc/GMT-2"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius",
+    "iana": [
+      "Europe/Helsinki",
+      "Europe/Kiev",
+      "Europe/Mariehamn",
+      "Europe/Riga",
+      "Europe/Sofia",
+      "Europe/Tallinn",
+      "Europe/Uzhgorod",
+      "Europe/Vilnius",
+      "Europe/Zaporozhye"
+    ]
+  },
+  { "timezoneName": "(UTC+03:00) Istanbul", "iana": ["Europe/Istanbul"] },
+  { "timezoneName": "(UTC+02:00) Jerusalem", "iana": ["Asia/Jerusalem"] },
+  { "timezoneName": "(UTC+02:00) Tripoli", "iana": ["Africa/Tripoli"] },
+  { "timezoneName": "(UTC+03:00) Amman", "iana": ["Asia/Amman"] },
+  { "timezoneName": "(UTC+03:00) Baghdad", "iana": ["Asia/Baghdad"] },
+  { "timezoneName": "(UTC+02:00) Kaliningrad", "iana": ["Europe/Kaliningrad"] },
+  {
+    "timezoneName": "(UTC+03:00) Kuwait, Riyadh",
+    "iana": [
+      "Asia/Aden",
+      "Asia/Bahrain",
+      "Asia/Kuwait",
+      "Asia/Qatar",
+      "Asia/Riyadh"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+03:00) Nairobi",
+    "iana": [
+      "Africa/Addis_Ababa",
+      "Africa/Asmera",
+      "Africa/Dar_es_Salaam",
+      "Africa/Djibouti",
+      "Africa/Juba",
+      "Africa/Kampala",
+      "Africa/Khartoum",
+      "Africa/Mogadishu",
+      "Africa/Nairobi",
+      "Antarctica/Syowa",
+      "Etc/GMT-3",
+      "Indian/Antananarivo",
+      "Indian/Comoro",
+      "Indian/Mayotte"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+03:00) Moscow, St. Petersburg, Volgograd, Minsk",
+    "iana": [
+      "Europe/Kirov",
+      "Europe/Moscow",
+      "Europe/Simferopol",
+      "Europe/Volgograd",
+      "Europe/Minsk"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+04:00) Samara, Ulyanovsk, Saratov",
+    "iana": ["Europe/Astrakhan", "Europe/Samara", "Europe/Ulyanovsk"]
+  },
+  { "timezoneName": "(UTC+03:30) Tehran", "iana": ["Asia/Tehran"] },
+  {
+    "timezoneName": "(UTC+04:00) Abu Dhabi, Muscat",
+    "iana": ["Asia/Dubai", "Asia/Muscat", "Etc/GMT-4"]
+  },
+  { "timezoneName": "(UTC+04:00) Baku", "iana": ["Asia/Baku"] },
+  {
+    "timezoneName": "(UTC+04:00) Port Louis",
+    "iana": ["Indian/Mahe", "Indian/Mauritius", "Indian/Reunion"]
+  },
+  { "timezoneName": "(UTC+04:00) Tbilisi", "iana": ["Asia/Tbilisi"] },
+  { "timezoneName": "(UTC+04:00) Yerevan", "iana": ["Asia/Yerevan"] },
+  { "timezoneName": "(UTC+04:30) Kabul", "iana": ["Asia/Kabul"] },
+  {
+    "timezoneName": "(UTC+05:00) Ashgabat, Tashkent",
+    "iana": [
+      "Antarctica/Mawson",
+      "Asia/Aqtau",
+      "Asia/Aqtobe",
+      "Asia/Ashgabat",
+      "Asia/Dushanbe",
+      "Asia/Oral",
+      "Asia/Samarkand",
+      "Asia/Tashkent",
+      "Etc/GMT-5",
+      "Indian/Kerguelen",
+      "Indian/Maldives"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+05:00) Yekaterinburg",
+    "iana": ["Asia/Yekaterinburg"]
+  },
+  {
+    "timezoneName": "(UTC+05:00) Islamabad, Karachi",
+    "iana": ["Asia/Karachi"]
+  },
+  {
+    "timezoneName": "(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi",
+    "iana": ["Asia/Kolkata", "Asia/Calcutta"]
+  },
+  {
+    "timezoneName": "(UTC+05:30) Sri Jayawardenepura",
+    "iana": ["Asia/Colombo"]
+  },
+  { "timezoneName": "(UTC+05:45) Kathmandu", "iana": ["Asia/Kathmandu"] },
+  {
+    "timezoneName": "(UTC+06:00) Nur-Sultan (Astana)",
+    "iana": [
+      "Antarctica/Vostok",
+      "Asia/Almaty",
+      "Asia/Bishkek",
+      "Asia/Qyzylorda",
+      "Asia/Urumqi",
+      "Etc/GMT-6",
+      "Indian/Chagos"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+06:00) Dhaka",
+    "iana": ["Asia/Dhaka", "Asia/Thimphu"]
+  },
+  {
+    "timezoneName": "(UTC+06:30) Yangon (Rangoon)",
+    "iana": ["Asia/Rangoon", "Indian/Cocos"]
+  },
+  {
+    "timezoneName": "(UTC+07:00) Bangkok, Hanoi, Jakarta",
+    "iana": [
+      "Antarctica/Davis",
+      "Asia/Bangkok",
+      "Asia/Hovd",
+      "Asia/Jakarta",
+      "Asia/Phnom_Penh",
+      "Asia/Pontianak",
+      "Asia/Saigon",
+      "Asia/Vientiane",
+      "Etc/GMT-7",
+      "Indian/Christmas"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+07:00) Novosibirsk",
+    "iana": ["Asia/Novokuznetsk", "Asia/Novosibirsk", "Asia/Omsk"]
+  },
+  {
+    "timezoneName": "(UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi",
+    "iana": ["Asia/Hong_Kong", "Asia/Macau", "Asia/Shanghai"]
+  },
+  { "timezoneName": "(UTC+08:00) Krasnoyarsk", "iana": ["Asia/Krasnoyarsk"] },
+  {
+    "timezoneName": "(UTC+08:00) Kuala Lumpur, Singapore",
+    "iana": [
+      "Asia/Brunei",
+      "Asia/Kuala_Lumpur",
+      "Asia/Kuching",
+      "Asia/Makassar",
+      "Asia/Manila",
+      "Asia/Singapore",
+      "Etc/GMT-8"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+08:00) Perth",
+    "iana": ["Antarctica/Casey", "Australia/Perth"]
+  },
+  { "timezoneName": "(UTC+08:00) Taipei", "iana": ["Asia/Taipei"] },
+  {
+    "timezoneName": "(UTC+08:00) Ulaanbaatar",
+    "iana": ["Asia/Choibalsan", "Asia/Ulaanbaatar"]
+  },
+  { "timezoneName": "(UTC+08:00) Irkutsk", "iana": ["Asia/Irkutsk"] },
+  {
+    "timezoneName": "(UTC+09:00) Osaka, Sapporo, Tokyo",
+    "iana": [
+      "Asia/Dili",
+      "Asia/Jayapura",
+      "Asia/Tokyo",
+      "Etc/GMT-9",
+      "Pacific/Palau"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+09:00) Seoul",
+    "iana": ["Asia/Pyongyang", "Asia/Seoul"]
+  },
+  {
+    "timezoneName": "(UTC+09:30) Adelaide",
+    "iana": ["Australia/Adelaide", "Australia/Broken_Hill"]
+  },
+  { "timezoneName": "(UTC+09:30) Darwin", "iana": ["Australia/Darwin"] },
+  {
+    "timezoneName": "(UTC+10:00) Brisbane",
+    "iana": ["Australia/Brisbane", "Australia/Lindeman"]
+  },
+  {
+    "timezoneName": "(UTC+10:00) Canberra, Melbourne, Sydney",
+    "iana": ["Australia/Melbourne", "Australia/Sydney"]
+  },
+  {
+    "timezoneName": "(UTC+10:00) Guam, Port Moresby",
+    "iana": [
+      "Antarctica/DumontDUrville",
+      "Etc/GMT-10",
+      "Pacific/Guam",
+      "Pacific/Port_Moresby",
+      "Pacific/Saipan",
+      "Pacific/Truk"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+10:00) Hobart",
+    "iana": ["Australia/Currie", "Australia/Hobart"]
+  },
+  {
+    "timezoneName": "(UTC+09:00) Yakutsk",
+    "iana": ["Asia/Chita", "Asia/Khandyga", "Asia/Yakutsk"]
+  },
+  {
+    "timezoneName": "(UTC+11:00) Solomon Is., New Caledonia",
+    "iana": [
+      "Antarctica/Macquarie",
+      "Etc/GMT-11",
+      "Pacific/Efate",
+      "Pacific/Guadalcanal",
+      "Pacific/Kosrae",
+      "Pacific/Noumea",
+      "Pacific/Ponape"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+11:00) Vladivostok",
+    "iana": ["Asia/Sakhalin", "Asia/Ust-Nera", "Asia/Vladivostok"]
+  },
+  {
+    "timezoneName": "(UTC+12:00) Auckland, Wellington",
+    "iana": ["Antarctica/McMurdo", "Pacific/Auckland"]
+  },
+  {
+    "timezoneName": "(UTC+12:00) Coordinated Universal Time+12",
+    "iana": [
+      "Etc/GMT-12",
+      "Pacific/Funafuti",
+      "Pacific/Kwajalein",
+      "Pacific/Majuro",
+      "Pacific/Nauru",
+      "Pacific/Tarawa",
+      "Pacific/Wake",
+      "Pacific/Wallis"
+    ]
+  },
+  { "timezoneName": "(UTC+12:00) Fiji", "iana": ["Pacific/Fiji"] },
+  {
+    "timezoneName": "(UTC+12:00) Magadan",
+    "iana": [
+      "Asia/Anadyr",
+      "Asia/Kamchatka",
+      "Asia/Magadan",
+      "Asia/Srednekolymsk"
+    ]
+  },
+  {
+    "timezoneName": "(UTC+12:00) Petropavlovsk-Kamchatsky - Old",
+    "iana": ["Asia/Kamchatka"]
+  },
+  {
+    "timezoneName": "(UTC+13:00) Nuku'alofa",
+    "iana": [
+      "Etc/GMT-13",
+      "Pacific/Enderbury",
+      "Pacific/Fakaofo",
+      "Pacific/Tongatapu"
+    ]
+  },
+  { "timezoneName": "(UTC+13:00) Samoa", "iana": ["Pacific/Apia"] }
+]
