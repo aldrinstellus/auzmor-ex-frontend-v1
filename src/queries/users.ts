@@ -120,6 +120,22 @@ export const inviteUsers = async (payload: IPostUsers) => {
   });
 };
 
+export const verifyInviteLink = async (q: Record<string, any>) => {
+  const { data } = await apiService.get('/users/invite/verify', q);
+  return data;
+};
+
+export const useVerifyInviteLink = (q: Record<string, any>) => {
+  return useQuery({
+    queryKey: ['users-invite', q],
+    queryFn: () => verifyInviteLink(q),
+  });
+};
+
+export const acceptInviteSetPassword = async (q: Record<string, any>) => {
+  return await apiService.put('/users/invite/reset-password', q);
+};
+
 // use react query to get current user
 export const useCurrentUser = () => {
   return useQuery({
