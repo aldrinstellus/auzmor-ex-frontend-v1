@@ -18,8 +18,8 @@ import IconButton, {
 interface IUsersProps {}
 
 const tabs = [
-  { id: 1, title: 'People', content: <div>Content for Tab 1</div> },
-  { id: 2, title: 'Teams', content: <div>Content for Tab 2</div> },
+  { id: 1, title: 'People' },
+  { id: 2, title: 'Teams' },
 ];
 
 const Users: React.FC<IUsersProps> = () => {
@@ -39,7 +39,7 @@ const Users: React.FC<IUsersProps> = () => {
   return (
     <Card className="px-8 pt-9 pb-8 w-full h-[1109px] space-y-6">
       {/* Top People Directory Section */}
-      <div className="space-y-7 h-[25%]">
+      <div className="space-y-7">
         <div className="flex justify-between">
           <div className="text-2xl font-bold">People Hub</div>
           <div className="flex space-x-2">

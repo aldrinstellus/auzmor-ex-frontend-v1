@@ -5,7 +5,7 @@ import { Tab } from '@headlessui/react';
 interface ITab {
   id: number;
   title: string;
-  content: ReactNode;
+  content?: ReactNode;
 }
 
 interface TabSwitcherProps {
