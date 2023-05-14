@@ -57,6 +57,11 @@ export interface IPostUsersResponse {
   workEmail: string;
 }
 
+export const isUserExist = async (q: { email: string }) => {
+  const { data } = await apiService.get('/users/exists', q);
+  return data;
+};
+
 export const useUsers = ({ limit, prev, next }: UserQueryParams) => {
   return useQuery({
     queryKey: ['users', limit, prev, next],

@@ -95,15 +95,7 @@ const UserCard: React.FC<IUserCardProps> = ({
           {role}
         </div>
         <div className="my-6 flex flex-col items-center">
-          <Avatar
-            size={80}
-            name={fullName}
-            image={
-              image ||
-              'https://preview.redd.it/shuntaro-chishiya-from-alice-in-borderland-made-by-me-v0-o9uf994qpaba1.jpg?width=640&crop=smart&auto=webp&s=5ba21f65920faeae15b7c53eb444d524f7a5b976'
-            }
-            active={active}
-          />
+          <Avatar size={80} name={fullName} image={image} active={active} />
           <div className="mt-1 truncate text-neutral-900 text-base font-bold">
             {_.truncate(fullName, {
               length: 24,
@@ -116,13 +108,13 @@ const UserCard: React.FC<IUserCardProps> = ({
           <div className="flex justify-center items-center px-3 py-1 mt-2 bg-orange-100 rounded-xl">
             <div></div>
             <div className="text-neutral-900 text-xxs font-medium truncate">
-              {department || 'Sales'}
+              {department || '-'}
             </div>
           </div>
           <div className="flex space-x-[6px] mt-3">
             <div></div>
             <div className="text-neutral-500 text-xs font-normal truncate">
-              {location || 'Mumbai'}
+              {location || '-'}
             </div>
           </div>
         </div>
