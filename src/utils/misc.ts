@@ -21,11 +21,19 @@ export const isValidUrl = (url: string) => {
   return urlPattern.test(url);
 };
 
-export const redirectWithToken = (redirectUrl: string, token: string) => {
+export const redirectWithToken = (
+  redirectUrl: string,
+  token: string,
+  showOnboard = false,
+) => {
+  let url = `/feed?accessToken=${token}`;
+  if (showOnboard) {
+    url += '&showOnboard=true';
+  }
   if (process.env.NODE_ENV === 'development') {
-    window.location.replace(`http://localhost:3000/feed?accessToken=${token}`);
+    window.location.replace(`http://localhost:3000${url}`);
   } else {
-    window.location.replace(`${redirectUrl}/feed?accessToken=${token}`);
+    window.location.replace(`${redirectUrl}${url}`);
   }
 };
 

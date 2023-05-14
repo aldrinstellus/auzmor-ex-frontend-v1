@@ -19,6 +19,8 @@ import SvgSpeakerOutline from '../components/Speaker/SpeakerOutline';
 import SvgDraftOutline from '../components/Draft/DraftOutline';
 import SvgArrowLeftOutline from '../components/ArrowLeft/ArrowLeftOutline';
 import SvgMailOutline from '../components/Mail/MailOutline';
+import SvgSearchOutline from '../components/Search/SearchOutline';
+import SvgFilterLinearOutline from '../components/FilterLinear/FilterLinearOutline';
 import SvgSendOutline from '../components/Send/SendOutline';
 import SvgIconLinearOutline from '../components/IconLinear/IconLinearOutline';
 import SvgEmojiHappyOutline from '../components/EmojiHappy/EmojiHappyOutline';
@@ -34,6 +36,8 @@ import SvgReplyOutline from '../components/Reply/ReplyOutline';
 import SvgLikeIconOutline from '../components/LikeIcon/LikeIconOutline';
 import SvgArrowRightOutline from '../components/ArrowRight/ArrowRightOutline';
 import SvgPlayOutline from '../components/Play/PlayOutline';
+import SvgTickCircleOutline from '../components/TickCircle/TickCircleOutline';
+import SvgCloseCircleOutline from '../components/CloseCircle/CloseCircleOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -43,6 +47,7 @@ export const outlineIcon = {
   calendarOutlineTwo: SvgCalendarOutlineTwo,
   celebrateOutline: SvgCelebrateOutline,
   chartOutline: SvgChartOutline,
+  closeCircleOutline: SvgCloseCircleOutline,
   closeOutline: SvgCloseOutline,
   convertShapeOutline: SvgConvertShapeOutline,
   crossCircleOutline: SvgCrossCircleOutline,
@@ -52,6 +57,7 @@ export const outlineIcon = {
   emojiHappyOutline: SvgEmojiHappyOutline,
   eyeOutline: SvgEyeOutline,
   eyeSlashOutline: SvgEyeSlashOutline,
+  filterLinearOutline: SvgFilterLinearOutline,
   funnyOutline: SvgFunnyOutline,
   iconLinearOutline: SvgIconLinearOutline,
   imageOutline: SvgImageOutline,
@@ -61,15 +67,17 @@ export const outlineIcon = {
   likeOutline: SvgLikeOutline,
   loveOutline: SvgLoveOutline,
   magicStarOutline: SvgMagicStarOutline,
+  mailOutline: SvgMailOutline,
   moreOutline: SvgMoreOutline,
   peopleOutline: SvgPeopleOutline,
-  speakerOutline: SvgSpeakerOutline,
-  userOutline: SvgUserOutline,
-  videoOutline: SvgVideoOutline,
-  mailOutline: SvgMailOutline,
   playOutline: SvgPlayOutline,
   replyOutline: SvgReplyOutline,
+  searchOutline: SvgSearchOutline,
   sendOutline: SvgSendOutline,
+  speakerOutline: SvgSpeakerOutline,
   supportOutline: SvgSupportOutline,
+  tickCircleOutline: SvgTickCircleOutline,
   trashOutline: SvgTrashOutline,
+  userOutline: SvgUserOutline,
+  videoOutline: SvgVideoOutline,
 };

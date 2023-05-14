@@ -41,7 +41,11 @@ export interface ISignupProps {}
 const Signup: React.FC<ISignupProps> = () => {
   const signupMutation = useMutation((formData: IForm) => signup(formData), {
     onSuccess: (data) =>
-      redirectWithToken(data.result.data.redirectUrl, data.result.data.uat),
+      redirectWithToken(
+        data.result.data.redirectUrl,
+        data.result.data.uat,
+        true,
+      ),
   });
 
   const {

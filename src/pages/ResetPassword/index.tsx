@@ -8,9 +8,10 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import PasswordPolicy from 'components/PasswordPolicy';
 import { useMutation } from '@tanstack/react-query';
-import { resetPassword } from 'queries/account';
+import { resetPassword, useTokenValidation } from 'queries/account';
+import PasswordExpiry from 'pages/PasswordExpiry';
+import clsx from 'clsx';
 
 interface IForm {
   newPassword: string;
@@ -32,13 +33,7 @@ const ResetPassword = () => {
   const [searchParams, _] = useSearchParams();
   const token = searchParams.get('token');
 
-  const [passwordRule, setPasswordRule] = useState({
-    length: false,
-    isUppercase: false,
-    isLowercase: false,
-    isNumber: false,
-    isSymbol: false,
-  });
+  const { data, isLoading } = useTokenValidation(token || '');
 
   const resetPasswordMutation = useMutation((formData: any) =>
     resetPassword(formData),
@@ -76,7 +71,6 @@ const ResetPassword = () => {
       control,
       onChange: (e: any) => {
         const value = e.target.value;
-        validatePassword(value);
       },
       dataTestId: 'new-password',
     },
@@ -99,56 +93,16 @@ const ResetPassword = () => {
   ];
 
   const onSubmit = (formData: IForm) => {
-    // console.log(formData, 'DATA');
     resetPasswordMutation.mutate({
       password: formData.password,
       token: formData.token,
     });
   };
 
-  const validatePassword = (value: string) => {
-    const validationState = {
-      length: true,
-      isUppercase: true,
-      isLowercase: true,
-      isNumber: true,
-      isSymbol: true,
-    };
-    let isValid = true;
-
-    // password length should be at least 6 characters
-    if (value.length < 6) {
-      isValid = false;
-      validationState.length = false;
-    }
-
-    // password should contain at least one uppercase letter
-    if (!/[A-Z]/.test(value)) {
-      isValid = false;
-      validationState.isUppercase = false;
-    }
-
-    // password should contain at least one lowercase letter
-    if (!/[a-z]/.test(value)) {
-      isValid = false;
-      validationState.isLowercase = false;
-    }
-
-    // password should contain at least one digit
-    if (!/\d/.test(value)) {
-      isValid = false;
-      validationState.isNumber = false;
-    }
-
-    // password should contain at least one special character
-    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value)) {
-      isValid = false;
-      validationState.isSymbol = false;
-    }
-
-    setPasswordRule(validationState);
-    return isValid;
-  };
+  const resetPasswordContainerStyles = clsx(
+    { 'w-full': true },
+    { 'max-w-[440px]': !!data },
+  );
 
   return (
     <div className="flex h-screen w-screen">
@@ -157,41 +111,53 @@ const ResetPassword = () => {
         <div className="absolute top-8 right-8">
           <Logo />
         </div>
-        <div className="w-full max-w-[440px]">
-          {resetPasswordMutation.isSuccess ? (
-            <>
-              <div className="text-center flex justify-center items-center flex-col space-y-9">
-                <Success />
-                <div className="text-neutral-900">
-                  Password has been successfully reset
-                </div>
-              </div>
-              <Button
-                label={'Sign In Now'}
-                className="w-full mt-8"
-                size={Size.Large}
-                onClick={() => navigate('/login')}
-              />
-            </>
+        <div className={resetPasswordContainerStyles}>
+          {isLoading ? (
+            <div className="flex justify-center items-center">Loading ...</div>
           ) : (
             <>
-              <div className="font-extrabold text-neutral-900 text-4xl">
-                Reset Password
-              </div>
-              <form className="mt-16" onSubmit={handleSubmit(onSubmit)}>
+              {!!data ? (
                 <>
-                  <Layout fields={passwordField} className="mb-4" />
-                  <Layout fields={confirmPasswordField} />
-                  <Button
-                    type={Type.Submit}
-                    label={'Reset Password'}
-                    className="w-full mt-8"
-                    loading={resetPasswordMutation.isLoading}
-                    disabled={!isValid}
-                    size={Size.Large}
-                  />
+                  {resetPasswordMutation.isSuccess ? (
+                    <>
+                      <div className="text-center flex justify-center items-center flex-col space-y-9">
+                        <Success />
+                        <div className="text-neutral-900">
+                          Password has been successfully reset
+                        </div>
+                      </div>
+                      <Button
+                        label={'Sign In Now'}
+                        className="w-full mt-8"
+                        size={Size.Large}
+                        onClick={() => navigate('/login')}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <div className="font-extrabold text-neutral-900 text-4xl">
+                        Reset Password
+                      </div>
+                      <form className="mt-16" onSubmit={handleSubmit(onSubmit)}>
+                        <>
+                          <Layout fields={passwordField} className="mb-4" />
+                          <Layout fields={confirmPasswordField} />
+                          <Button
+                            type={Type.Submit}
+                            label={'Reset Password'}
+                            className="w-full mt-8"
+                            loading={resetPasswordMutation.isLoading}
+                            disabled={!isValid}
+                            size={Size.Large}
+                          />
+                        </>
+                      </form>
+                    </>
+                  )}
                 </>
-              </form>
+              ) : (
+                <PasswordExpiry />
+              )}
             </>
           )}
         </div>

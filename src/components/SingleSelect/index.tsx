@@ -62,7 +62,7 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
       backgroundColor: '#fff',
       border: '1px solid #E5E5E5',
       borderRadius: '32px',
-      padding: '2px 6px',
+      padding: '0px 6px', // change style here because it breaking 2px
     }),
   };
 
@@ -70,7 +70,8 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
     <div className={`relative ${className}`}>
       <div className={labelStyle}>{label}</div>
 
-      <div className="mt-1">
+      <div>
+        {/* remove top margin provide it to parent div if required */}
         <Controller
           name={placeholder}
           control={control}

@@ -40,6 +40,7 @@ import CarouselLeftIcon from '../components/CarouselLeft';
 import CarouselRightIcon from '../components/CarouselRight';
 import CarouselCloseIcon from '../components/CarouselClose';
 import FlashIcon from '../components/FlashIcon';
+import Search from '../components/Search';
 import Send from '../components/Send';
 import IconLinear from '../components/IconLinear';
 import EmojiHappy from '../components/EmojiHappy';
@@ -55,6 +56,18 @@ import Reply from '../components/Reply';
 import LikeIcon from '../components/LikeIcon';
 import ArrowRightIcon from '../components/ArrowRight';
 import PlayIcon from '../components/Play';
+import BriefcaseIcon from '../components/Briefcase';
+import LocationIcon from '../components/Location';
+import EmailIcon from '../components/Email';
+import FolderConnectionIcon from '../components/FolderConnection';
+import CakeIcon from '../components/Cake';
+import FemaleIcon from '../components/Female';
+import MarriedIcon from '../components/Married';
+import CopyIcon from '../components/Copy';
+import OutOfOfficeIcon from '../components/OutOfOffice';
+import TickCircleIcon from '../components/TickCircle';
+import CloseCircleIcon from '../components/CloseCircle';
+import FilterLinear from '../components/FilterLinear';
 
 export const icon = {
   add: Add,
@@ -65,10 +78,14 @@ export const icon = {
   arrowRight: ArrowRightIcon,
   bookmarkOutline: BookmarkOutline,
   calendarTwo: CalendarIconTwo,
+  carouselClose: CarouselCloseIcon,
+  carouselLeft: CarouselLeftIcon,
+  carouselRight: CarouselRightIcon,
   celebrate: Celebrate,
   chart: ChartIcon,
   clock: ClockIcon,
   close: CloseIcon,
+  closeCircle: CloseCircleIcon,
   convertShape: ConvertShape,
   copyLink: CopyLink,
   crossCircle: CrossCircle,
@@ -83,6 +100,7 @@ export const icon = {
   eye: EyeIcon,
   eyeSlash: EyeSlashIcon,
   feed: FeedIcon,
+  filterLinear: FilterLinear,
   filter: FilterIcon,
   flashIcon: FlashIcon,
   funny: Funny,
@@ -96,22 +114,30 @@ export const icon = {
   likeIcon: LikeIcon,
   love: Love,
   magicStar: MagicStarIcon,
+  mail: MailIcon,
   more: MoreIcon,
   notification: NotificationIcon,
   notificationIcon: MenuNotificationIcon,
+  orangeHashtag: OrangeHashtagIcon,
   people: PeopleIcon,
   play: PlayIcon,
   reply: Reply,
   send: Send,
+  search: Search,
+  slack: SlackIcon,
   speaker: SpeakerIcon,
   support: Support,
+  tickCircle: TickCircleIcon,
   trash: Trash,
   user: UsersIcon,
   video: VideoIcon,
-  orangeHashtag: OrangeHashtagIcon,
-  mail: MailIcon,
-  slack: SlackIcon,
-  carouselLeft: CarouselLeftIcon,
-  carouselRight: CarouselRightIcon,
-  carouselClose: CarouselCloseIcon,
+  briefcase: BriefcaseIcon,
+  location: LocationIcon,
+  email: EmailIcon,
+  folderConnection: FolderConnectionIcon,
+  cake: CakeIcon,
+  femaleIcon: FemaleIcon,
+  marriedIcon: MarriedIcon,
+  copyIcon: CopyIcon,
+  outOfOfficeIcon: OutOfOfficeIcon,
 };

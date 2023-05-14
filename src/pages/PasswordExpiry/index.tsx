@@ -8,11 +8,8 @@ const PasswordExpiry: React.FC<IPasswordExpiryProps> = () => {
   return (
     <>
       <div className="bg-[url(images/welcomeToAuzmor.png)] w-1/2 h-full bg-no-repeat bg-cover" />
-      <div className="w-1/2 h-full flex justify-center items-center relative">
-        <div className="absolute top-8 right-8">
-          <Logo />
-        </div>
-        <div className="w-full max-w-[440px]">
+      <div className="h-full flex justify-center items-center relative">
+        <div className="w-full">
           <>
             <div className="text-center flex justify-center items-center flex-col">
               <Info />
