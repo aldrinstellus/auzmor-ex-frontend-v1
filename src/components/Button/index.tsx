@@ -96,25 +96,29 @@ const Button = ({
       disabled={disabled || loading}
       onClick={onClick}
     >
-      {leftIcon && (
-        <Icon
-          name={leftIcon}
-          fill={iconFill}
-          stroke={iconStroke}
-          className={leftIconClassName}
-          size={size === Size.Small ? 16 : 24}
-        />
-      )}
-      {label}
-      {rightIcon && (
-        <Icon
-          name={rightIcon}
-          fill={iconFill}
-          stroke={iconStroke}
-          className={rightIconClassName}
-          size={size === Size.Small ? 16 : 24}
-        />
-      )}
+      <div>
+        {leftIcon && (
+          <Icon
+            name={leftIcon}
+            fill={iconFill}
+            stroke={iconStroke}
+            className={leftIconClassName}
+            size={size === Size.Small ? 16 : 24}
+          />
+        )}
+      </div>
+      <div>{label}</div>
+      <div>
+        {rightIcon && (
+          <Icon
+            name={rightIcon}
+            fill={iconFill}
+            stroke={iconStroke}
+            className={rightIconClassName}
+            size={size === Size.Small ? 16 : 24}
+          />
+        )}
+      </div>
       {loading && <Spinner className="ml-2" color={PRIMARY_COLOR} />}
     </button>
   );

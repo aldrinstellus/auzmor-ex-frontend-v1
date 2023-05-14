@@ -12,12 +12,14 @@ import {
   IPostUsersResponse,
   UserStatus,
   inviteUsers,
+  isUserExist,
 } from 'queries/users';
 import ConfirmationBox from 'components/ConfirmationBox';
 import { toast } from 'react-toastify';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import InvitedUsersList from './InvitedUsersList';
+import { EMAIL_REGX } from 'utils/constants';
 
 export interface IInviteUserModalProps {
   showModal: boolean;
@@ -50,6 +52,34 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
   const [invitedUsersResponse, setInvitedUsersResponse] = useState<
     IPostUsersResponse[]
   >([]);
+  const getToastMessage = (users: IPostUsersResponse[]) => {
+    close();
+    if (users.length === 1) {
+      return (
+        <span>
+          <span className="font-bold">{users[0].fullName}</span> added to your
+          organization successfully
+        </span>
+      );
+    } else if (users.length === 2) {
+      return (
+        <span>
+          <span className="font-bold">{users[0].fullName}, </span>
+          <span className="font-bold">{users[1].fullName}</span> added to your
+          organization successfully
+        </span>
+      );
+    } else if (users.length > 2) {
+      return (
+        <span>
+          <span className="font-bold">{users[0].fullName}, </span>
+          <span className="font-bold">{users[1].fullName}, </span>{' '}
+          <span className="font-bold">+{users.length - 2} others</span> added to
+          your organization successfully
+        </span>
+      );
+    }
+  };
   const inviteUsersMutation = useMutation({
     mutationKey: ['inviteUsersMutation'],
     mutationFn: inviteUsers,
@@ -63,9 +93,10 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
         (eachMember: IPostUsersResponse) =>
           eachMember.status === UserStatus.Invited && ++invitedCount,
       );
+
       const toastString =
         invitedCount === data.result.data.length
-          ? `All ${invitedCount} users were invited successfully`
+          ? getToastMessage(data.result.data)
           : `${invitedCount} out of the ${data.result.data.length} users were invited successfully `;
       toast(
         <div className="flex justify-between items-center">
@@ -79,17 +110,19 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
             </div>
             <span className="text-primary-500 text-sm w-56">{toastString}</span>
           </div>
-          <div className="flex">
-            <Button
-              className="text-primary-500 ml-4 pr-1"
-              variant={ButtonVariant.Tertiary}
-              label="Show details"
-              onClick={() => {
-                setShowAddUserModal(true);
-                setShowInvitedMembers(true);
-              }}
-            />
-          </div>
+          {invitedCount !== data.result.data.length && (
+            <div className="flex">
+              <Button
+                className="text-primary-500 ml-4 pr-1"
+                variant={ButtonVariant.Tertiary}
+                label="Show details"
+                onClick={() => {
+                  setShowAddUserModal(true);
+                  setShowInvitedMembers(true);
+                }}
+              />
+            </div>
+          )}
         </div>,
         {
           closeButton: (
@@ -116,26 +149,37 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
         fullName: yup.string().required('Please enter name'),
         workEmail: yup
           .string()
-          .email('Please enter valid email address')
-          .required('Please enter Email'),
+          .required('Please enter Email')
+          .matches(new RegExp(EMAIL_REGX), 'Please enter valid email address')
+          .test(
+            'Email exist',
+            'User already belongs to the organization',
+            async (email, values) => {
+              if (new RegExp(EMAIL_REGX).test(email)) {
+                const data = await isUserExist({ email });
+                return !data.result.data.userExists;
+              } else {
+                return true;
+              }
+            },
+          ),
         role: yup.object().required('please enter role'),
       }),
     ),
   });
   const {
-    reset,
     control,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<IUserForm>({
     resolver: yupResolver(schema),
-    mode: 'onBlur',
+    mode: 'onSubmit',
     defaultValues: {
       members: [{ fullName: '', workEmail: '', role: roleOptions[0] }],
     },
   });
 
-  const { fields, append } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: 'members',
   });
@@ -150,7 +194,10 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
 
   const close = () => {
     closeModal();
-    reset();
+    setInvitedUsersResponse([]);
+    setShowInvitedMembers(false);
+    remove();
+    append({ fullName: '', workEmail: '', role: roleOptions[0] });
   };
 
   return (
@@ -175,6 +222,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
             appendMembers={append}
             control={control}
             errors={errors}
+            remove={remove}
           />
         )}
 
@@ -192,10 +240,27 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
               label="Retry"
               onClick={() => {
                 setShowInvitedMembers(false);
+                remove();
+                invitedUsersResponse
+                  .filter((user) => user.status === UserStatus.Failed)
+                  .forEach((user: IPostUsersResponse) => {
+                    append({
+                      fullName: user.fullName,
+                      workEmail: user.workEmail,
+                      role: roleOptions.find(
+                        (role) => user.role === role.value,
+                      )!,
+                    });
+                  });
               }}
             />
           ) : (
-            <Button label="Send Invite" onClick={handleSubmit(onSubmit)} />
+            <Button
+              label="Send Invite"
+              onClick={handleSubmit(onSubmit)}
+              disabled={inviteUsersMutation.isLoading}
+              loading={inviteUsersMutation.isLoading}
+            />
           )}
         </div>
       </Modal>
@@ -214,7 +279,6 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
           className: 'bg-primary-500 text-white ',
           onSubmit: () => {
             setShowConfirmationModal(false);
-            reset();
             setShowAddUserModal(true);
           },
         }}

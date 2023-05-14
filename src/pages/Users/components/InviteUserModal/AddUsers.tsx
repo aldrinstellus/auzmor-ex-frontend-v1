@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout, { FieldType } from 'components/Form';
 import Button, { Variant } from 'components/Button';
 import Divider from 'components/Divider';
@@ -8,90 +8,164 @@ import {
   FieldArrayWithId,
   FieldErrors,
   UseFieldArrayAppend,
+  UseFieldArrayRemove,
   UseFormGetValues,
 } from 'react-hook-form';
 import { IUserForm, roleOptions } from '.';
 import File from 'images/file.svg';
 import { Variant as InputVariant } from 'components/Input';
+import { twConfig } from 'utils/misc';
+import Icon from 'components/Icon';
+import useHover from 'hooks/useHover';
+import Banner, { Variant as BannerVariant } from 'components/Banner';
+import { useDebounce } from 'hooks/useDebounce';
 
 export interface IAddUsersProps {
   fields: FieldArrayWithId<IUserForm, 'members', 'id'>[];
   appendMembers: UseFieldArrayAppend<IUserForm, 'members'>;
   control: Control<IUserForm, any>;
   errors: FieldErrors<IUserForm>;
+  remove: UseFieldArrayRemove;
 }
+
+const FIELD_LIMIT = 20;
 
 const AddUsers: React.FC<IAddUsersProps> = ({
   fields,
   appendMembers,
   control,
   errors,
+  remove,
 }) => {
+  const [isHovered, eventHandlers] = useHover();
   return (
     <form>
-      <div className="px-6 pt-6 max-h-[50vh] overflow-y-scroll">
+      <div className="pl-6 pr-2 pt-6 max-h-[50vh] overflow-y-scroll">
         <div className="flex flex-col mb-3">
           {fields.map((field, index) => (
-            <Layout
-              className="flex mb-3"
-              key={field.id}
-              fields={[
-                {
-                  type: FieldType.Input,
-                  InputVariant: InputVariant.Text,
-                  className: 'w-[37.5%] mr-1.5',
-                  placeholder: 'Enter name',
-                  name: `members.${index}.fullName`,
-                  label: 'Full Name',
-                  error:
-                    errors.members && errors.members[index]?.fullName?.message,
-                  control,
-                  onChange: (data: string, e: React.ChangeEvent) => {},
-                },
-                {
-                  type: FieldType.Input,
-                  variant: InputVariant.Text,
-                  className: 'w-[37.5%] mx-1.5',
-                  placeholder: 'Add via email',
-                  name: `members.${index}.workEmail`,
-                  label: 'Email Address',
-                  error:
-                    errors.members && errors.members[index]?.workEmail?.message,
-                  control,
-                  onChange: (data: string, e: React.ChangeEvent) => {},
-                },
-                {
-                  type: FieldType.SingleSelect,
-                  name: `members.${index}.role`,
-                  control,
-                  label: 'Role',
-                  className: 'w-[25%] ml-1.5',
-                  error: errors.members && errors.members[index]?.role?.message,
-                  options: roleOptions,
-                  defautValue: 'MEMBER',
-                  onChange: (
-                    data: UseFormGetValues<any>,
-                    e: React.ChangeEvent,
-                  ) => {},
-                },
-              ]}
-            />
+            <div key={field.id}>
+              <div className="flex w-full items-center">
+                <Layout
+                  className="flex mb-3"
+                  key={field.id}
+                  fields={[
+                    {
+                      type: FieldType.Input,
+                      InputVariant: InputVariant.Text,
+                      className: 'w-[37.5%] mr-1.5',
+                      placeholder: 'Enter name',
+                      name: `members.${index}.fullName`,
+                      label: 'Full Name',
+                      defaultValue: field.fullName,
+                      control,
+                    },
+                    {
+                      type: FieldType.Input,
+                      variant: InputVariant.Text,
+                      className: 'w-[37.5%] mx-1.5',
+                      placeholder: 'Add via email',
+                      name: `members.${index}.workEmail`,
+                      label: 'Email Address',
+                      defaultValue: field.workEmail,
+                      control,
+                    },
+                    {
+                      type: FieldType.SingleSelect,
+                      name: `members.${index}.role`,
+                      control,
+                      label: 'Role',
+                      className: 'w-[25%] ml-1.5',
+                      options: roleOptions,
+                      defautValue: field.role,
+                    },
+                  ]}
+                />
+                {fields.length > 1 && (
+                  <div className="ml-3" onClick={() => remove(index)}>
+                    <Icon name="close" size={16} />
+                  </div>
+                )}
+              </div>
+              {errors.members && errors.members[index]?.fullName?.message && (
+                <Banner
+                  title={
+                    errors.members[index]?.fullName?.message || 'Require field'
+                  }
+                  variant={BannerVariant.Error}
+                  className="mb-3"
+                />
+              )}
+              {errors.members && errors.members[index]?.workEmail?.message && (
+                <Banner
+                  title={
+                    errors.members[index]?.workEmail?.message || 'Require field'
+                  }
+                  variant={BannerVariant.Error}
+                  className="mb-3"
+                />
+              )}
+              {errors.members && errors.members[index]?.role?.message && (
+                <Banner
+                  title={
+                    errors.members[index]?.role?.message || 'Require field'
+                  }
+                  variant={BannerVariant.Error}
+                  className="mb-3"
+                />
+              )}
+            </div>
           ))}
         </div>
+        {fields.length >= FIELD_LIMIT && (
+          <Banner
+            title={'You can not add more than 20 people at a time'}
+            variant={BannerVariant.Error}
+            className="mb-3"
+          />
+        )}
 
-        <Button
-          className="flex text-primary-500 border-none"
-          leftIconClassName="mr-1"
-          label="Add Another"
-          leftIcon="addCircle"
-          variant={Variant.Secondary}
-          onClick={() =>
-            appendMembers({ fullName: '', workEmail: '', role: roleOptions[0] })
-          }
-          disabled={fields.length >= 20}
-        />
+        <div
+          className={`flex items-center pb-5 w-max ${
+            fields.length < FIELD_LIMIT && 'cursor-pointer'
+          }`}
+          onClick={() => {
+            if (fields.length < FIELD_LIMIT) {
+              appendMembers({
+                fullName: '',
+                workEmail: '',
+                role: roleOptions[0],
+              });
+            }
+          }}
+          {...eventHandlers}
+        >
+          <div className="mr-1">
+            <Icon
+              name="addCircle"
+              size={16}
+              stroke={
+                fields.length >= FIELD_LIMIT
+                  ? twConfig.theme.colors.neutral['400']
+                  : isHovered
+                  ? twConfig.theme.colors.primary['700']
+                  : twConfig.theme.colors.primary['500']
+              }
+            />
+          </div>
+          <div
+            className={`text-sm font-bold ${
+              fields.length >= FIELD_LIMIT
+                ? 'text-neutral-400'
+                : isHovered
+                ? 'text-primary-700'
+                : 'text-primary-500'
+            }`}
+          >
+            Add another
+          </div>
+        </div>
 
-        <div className="flex justify-center item-center mb-6">
+        {/* <div className="flex justify-center item-center mb-6">
           <Divider className="w-[95%]" />
         </div>
         <div className="flex flex-col items-center">
@@ -135,7 +209,7 @@ const AddUsers: React.FC<IAddUsersProps> = ({
               onClick={() => {}}
             />
           </div>
-        </div>
+        </div> */}
       </div>
     </form>
   );

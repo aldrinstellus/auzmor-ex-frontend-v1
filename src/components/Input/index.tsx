@@ -109,7 +109,7 @@ const Input: React.FC<InputProps> = ({
           '!text-red-500': !!error,
         },
         {
-          'text-sm text-neutral-900 font-bold truncate pl-1': true,
+          'text-sm text-neutral-900 font-bold truncate': true,
         },
       ),
     [error],

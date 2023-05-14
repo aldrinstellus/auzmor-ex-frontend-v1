@@ -19,6 +19,8 @@ import SvgSpeakerOutline from '../components/Speaker/SpeakerOutline';
 import SvgDraftOutline from '../components/Draft/DraftOutline';
 import SvgArrowLeftOutline from '../components/ArrowLeft/ArrowLeftOutline';
 import SvgMailOutline from '../components/Mail/MailOutline';
+import SvgSearchOutline from '../components/Search/SearchOutline';
+import SvgFilterLinearOutline from '../components/FilterLinear/FilterLinearOutline';
 import SvgSendOutline from '../components/Send/SendOutline';
 import SvgIconLinearOutline from '../components/IconLinear/IconLinearOutline';
 import SvgEmojiHappyOutline from '../components/EmojiHappy/EmojiHappyOutline';
@@ -55,6 +57,7 @@ export const outlineIcon = {
   emojiHappyOutline: SvgEmojiHappyOutline,
   eyeOutline: SvgEyeOutline,
   eyeSlashOutline: SvgEyeSlashOutline,
+  filterLinearOutline: SvgFilterLinearOutline,
   funnyOutline: SvgFunnyOutline,
   iconLinearOutline: SvgIconLinearOutline,
   imageOutline: SvgImageOutline,
@@ -69,6 +72,7 @@ export const outlineIcon = {
   peopleOutline: SvgPeopleOutline,
   playOutline: SvgPlayOutline,
   replyOutline: SvgReplyOutline,
+  searchOutline: SvgSearchOutline,
   sendOutline: SvgSendOutline,
   speakerOutline: SvgSpeakerOutline,
   supportOutline: SvgSupportOutline,
