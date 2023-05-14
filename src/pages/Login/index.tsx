@@ -79,7 +79,7 @@ const Login: React.FC<ILoginProps> = () => {
     },
   ];
 
-  useEffect(() => {}, []);
+  useEffect(() => {}, []); // Is this needed?
 
   const onSubmit = (formData: IForm) => {
     loginMutation.mutate(formData);

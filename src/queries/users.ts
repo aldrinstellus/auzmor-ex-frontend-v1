@@ -1,5 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
+
+export interface IProfileImage {
+  fileId: string;
+  originalUrl: string;
+}
+export interface IUserUpdate {
+  id: string;
+  profileImage?: IProfileImage;
+  timezone?: string;
+}
 
 interface UserQueryParams {
   q?: string;
@@ -120,6 +130,11 @@ export const inviteUsers = async (payload: IPostUsers) => {
   });
 };
 
+export const updateUserAPI = async (user: IUserUpdate) => {
+  const { id, ...rest } = user;
+  const data = await apiService.patch(`/users/${user.id}`, { ...rest });
+  return data;
+};
 export const verifyInviteLink = async (q: Record<string, any>) => {
   const { data } = await apiService.get('/users/invite/verify', q);
   return data;
