@@ -12,10 +12,18 @@ import Button, {
 } from 'components/Button';
 import Avatar from 'components/Avatar';
 import { Variant as InputVariant } from 'components/Input';
-import { updateCurrentUser } from 'queries/users';
+import { updateCurrentUser, updateUserById } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
+import UpdateProfileImage from 'components/UpdateProfileImage';
 
-interface IForm {}
+export interface IUpdateProfileForm {
+  fullName: string;
+  designation: string;
+  department: string;
+  location: string;
+  profileImage: string;
+  coverImage: string;
+}
 
 interface IEditProfileModal {
   data: Record<string, any>;
@@ -31,23 +39,23 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
   coverImageRef,
 }) => {
   const {
-    watch,
     control,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<IForm>({});
-
-  const updateCurrentUserMutation = useMutation(
-    (userData: Record<string, any>) => updateCurrentUser(userData),
-    {
-      onSuccess: (data) => {
-        console.log('success', data);
-      },
+  } = useForm<IUpdateProfileForm>({
+    mode: 'onSubmit',
+    defaultValues: {
+      fullName: '',
+      designation: '',
+      department: '',
+      location: '',
+      profileImage: '',
+      coverImage: '',
     },
-  );
+  });
 
   const onSubmit = (userData: Record<string, any>) => {
-    updateCurrentUserMutation.mutate(userData);
+    console.log('called?', userData);
   };
 
   const Header: React.FC = () => (
@@ -80,10 +88,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         label={'Save Changes'}
         size={Size.Small}
         type={ButtonType.Submit}
-        onClick={() => {
-          //get the payload and update by passing all as key value pair
-          // handleSubmit(onSubmit);
-        }}
+        onClick={handleSubmit(onSubmit)}
       />
     </div>
   );
@@ -174,11 +179,8 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         <div className="-mt-20">
           <div className="relative">
             <Avatar
-              name={data?.fullName || 'U'}
-              image={
-                data?.profileImage?.original ||
-                'https://play-lh.googleusercontent.com/7Ac5TgaL15Ra4bvFVHJKCdJp4qvnL4djZj5bKc6RN-MZjzrvkeHbJytek0NPTSdZcp8'
-              }
+              name={data?.fullName}
+              image={data?.profileImage?.original}
               size={96}
               className="border-2 border-white mt-8"
             />
