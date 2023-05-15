@@ -60,7 +60,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                     <Icon name="femaleIcon" size={16} />
                   </IconWrapper>
                   <div className="text-neutral-900 text-base font-medium">
-                    {personalDetails?.personal?.gender || 'Female'}
+                    {personalDetails?.personal?.gender || 'N/A'}
                   </div>
                 </div>
               </div>
@@ -73,8 +73,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                     <Icon name="location" size={16} />
                   </IconWrapper>
                   <div className="text-neutral-900 text-base font-medium">
-                    {personalDetails?.personal?.permanentAddress ||
-                      '4517 Washington Ave. Manchester, Kentucky 39495'}
+                    {personalDetails?.personal?.permanentAddress || 'N/A'}
                   </div>
                 </div>
               </div>
@@ -87,7 +86,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                     <Icon name="marriedIcon" size={16} />
                   </IconWrapper>
                   <div className="text-neutral-900 text-base font-medium">
-                    {personalDetails?.personal?.maritalStatus || 'Married'}
+                    {personalDetails?.personal?.maritalStatus || 'N/A'}
                   </div>
                 </div>
               </div>
@@ -98,7 +97,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                     <ul key={index}>
                       <li>{skill}</li>
                     </ul>
-                  ))}
+                  )) || 'N/A'}
                 </div>
               </div>
             </div>
@@ -127,7 +126,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                   <Icon name="femaleIcon" size={16} />
                 </IconWrapper>
                 <div className="text-neutral-900 text-base font-medium">
-                  {personalDetails?.personal?.gender || 'Female'}
+                  {personalDetails?.personal?.gender || 'N/A'}
                 </div>
               </div>
             </div>
@@ -140,8 +139,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                   <Icon name="location" size={16} />
                 </IconWrapper>
                 <div className="text-neutral-900 text-base font-medium">
-                  {personalDetails?.personal?.permanentAddress ||
-                    '4517 Washington Ave. Manchester, Kentucky 39495'}
+                  {personalDetails?.personal?.permanentAddress || 'N/A'}
                 </div>
               </div>
             </div>
@@ -154,7 +152,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                   <Icon name="marriedIcon" size={16} />
                 </IconWrapper>
                 <div className="text-neutral-900 text-base font-medium">
-                  {personalDetails?.personal?.maritalStatus || 'Married'}
+                  {personalDetails?.personal?.maritalStatus || 'N/A'}
                 </div>
               </div>
             </div>
