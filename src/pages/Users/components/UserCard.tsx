@@ -81,7 +81,7 @@ const UserCard: React.FC<IUserCardProps> = ({
             true,
         },
         {
-          'z-10 shadow-xl visible': isHovered,
+          'z-20 shadow-xl': isHovered,
         },
         {
           'mb-0 z-0': !isHovered,
@@ -92,7 +92,22 @@ const UserCard: React.FC<IUserCardProps> = ({
 
   return (
     <div {...hoverEvents} className="cursor-pointer">
-      <Card className={`${hoverStyle}`}>
+      <Card className={hoverStyle}>
+        {isHovered && (
+          <PopupMenu
+            triggerNode={
+              <div className="cursor-pointer">
+                <Icon
+                  name="dotsVertical"
+                  stroke="#000"
+                  className="absolute top-2 right-2"
+                  hover={false}
+                />
+              </div>
+            }
+            menuItems={postOptions}
+          />
+        )}
         <div
           style={{ backgroundColor: statusColorMap[role] }}
           className="absolute top-0 left-0 text-white rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium"
@@ -132,37 +147,24 @@ const UserCard: React.FC<IUserCardProps> = ({
           </div>
         </div>
         {isHovered && (
-          <div className="flex justify-between items-center mt-4 space-x-4">
-            <div className="rounded-7xl border border-solid border-neutral-200">
-              <IconButton
-                icon="email"
-                variant={IconVariant.Secondary}
-                size={IconSize.Medium}
-              />
-            </div>
-            <div className="rounded-7xl border border-solid border-neutral-200">
-              <IconButton
-                icon="slack"
-                variant={IconVariant.Secondary}
-                size={IconSize.Medium}
-              />
-            </div>
-          </div>
-        )}
-        {isHovered && (
-          <PopupMenu
-            triggerNode={
-              <div className="cursor-pointer p-2">
-                <Icon
-                  name="dotsVertical"
-                  stroke="#000"
-                  className="absolute top-4 right-4"
-                  hover={false}
+          <div className="">
+            <div className="flex justify-between items-center mt-4 space-x-4">
+              <div className="rounded-7xl border border-solid border-neutral-200">
+                <IconButton
+                  icon="email"
+                  variant={IconVariant.Secondary}
+                  size={IconSize.Medium}
                 />
               </div>
-            }
-            menuItems={postOptions}
-          />
+              <div className="rounded-7xl border border-solid border-neutral-200">
+                <IconButton
+                  icon="slack"
+                  variant={IconVariant.Secondary}
+                  size={IconSize.Medium}
+                />
+              </div>
+            </div>
+          </div>
         )}
       </Card>
       <DeleteUserModal
