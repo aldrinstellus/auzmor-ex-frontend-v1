@@ -16,6 +16,7 @@ import DeleteUserModal from './DeleteUserModal';
 import { UserStatus, useResendInvitation } from 'queries/users';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { twConfig } from 'utils/misc';
 
 export interface IUserCardProps {
   id: string;
@@ -77,6 +78,21 @@ const UserCard: React.FC<IUserCardProps> = ({
                 actionLabel="Undo"
                 action={() => {}}
               />,
+              {
+                closeButton: (
+                  <Icon
+                    name="closeCircleOutline"
+                    stroke={twConfig.theme.colors.primary['500']}
+                    size={20}
+                  />
+                ),
+                style: {
+                  border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                },
+              },
             ),
         }),
     },
