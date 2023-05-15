@@ -27,7 +27,9 @@ const AccountCard = () => {
 
   return (
     <Popover
-      triggerNode={<Avatar name={user?.name || 'U'} size={32} />}
+      triggerNode={
+        <Avatar name={user?.name || 'U'} size={32} image={user?.profileImage} />
+      }
       className="-right-2 top-[52px] rounded-9xl"
     >
       <div className="rounded-9xl flex flex-col items-center w-64">

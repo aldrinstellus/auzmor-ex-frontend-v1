@@ -17,7 +17,7 @@ const UserCard: React.FC<IUserCardProps> = () => {
             name={user?.name || ''}
             image={user?.profileImage}
             size={96}
-            className="border-4 border-white mt-8"
+            className="border-4 border-white mt-8 overflow-hidden"
           />
           <div className="text-base font-bold mt-2">{user?.name}</div>
         </div>
