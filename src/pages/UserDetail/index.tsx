@@ -15,8 +15,8 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
   const [showFeedModal, setShowFeedModal] = useState<boolean>(false);
   const { user } = useAuth();
 
-  const params = useParams(); // get from users list
-  const { state, pathname } = useLocation(); // get from user/me
+  const params = useParams();
+  const { state, pathname } = useLocation();
 
   let userData;
 

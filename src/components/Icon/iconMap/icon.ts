@@ -69,6 +69,9 @@ import TickCircleIcon from '../components/TickCircle';
 import CloseCircleIcon from '../components/CloseCircle';
 import FilterLinear from '../components/FilterLinear';
 import ArrowSwap from '../components/ArrowSwap';
+import dotsVerticalIcon from '../components/DotsVertical';
+import Redo from '../components/Redo';
+import UserRemove from '../components/UserRemove';
 
 export const icon = {
   add: Add,
@@ -94,6 +97,7 @@ export const icon = {
   deleteIcon: DeleteIcon,
   document: DocumentIcon,
   draft: DraftIcon,
+  dotsVertical: dotsVerticalIcon,
   dropdownArrow: DropdownArrowIcon,
   edit: EditIcon,
   editIcon: MenuEditIcon,
@@ -123,7 +127,9 @@ export const icon = {
   orangeHashtag: OrangeHashtagIcon,
   people: PeopleIcon,
   play: PlayIcon,
+  userRemove: UserRemove,
   reply: Reply,
+  redo: Redo,
   send: Send,
   search: Search,
   slack: SlackIcon,

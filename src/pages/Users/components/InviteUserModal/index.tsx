@@ -80,6 +80,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
       );
     }
   };
+
   const inviteUsersMutation = useMutation({
     mutationKey: ['inviteUsersMutation'],
     mutationFn: inviteUsers,

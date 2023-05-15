@@ -1,5 +1,5 @@
 import Card from 'components/Card';
-import React, { useContext, useRef } from 'react';
+import React, { useRef } from 'react';
 import Avatar from 'components/Avatar';
 import Divider, { Variant as DividerVariant } from 'components/Divider';
 import Button, {
@@ -7,7 +7,6 @@ import Button, {
   Variant as ButtonVariant,
 } from 'components/Button';
 import Icon from 'components/Icon';
-import OutOfOffice from 'images/out-of-office.svg';
 import IconButton, {
   Size,
   Variant as IconVariant,
@@ -36,7 +35,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
         <div className="relative cursor-pointer">
           <img
             className="object-cover w-full h-[179.56px] rounded-9xl"
-            src="https://libg.s3.us-east-2.amazonaws.com/download/Blue-And-Red-Over-The-Mountains.jpg"
+            src={profileCoverData?.coverImage?.original}
           />
           {canEdit && (
             <IconButton
@@ -54,11 +53,8 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
           {/* Profile Picture */}
           <div className="-mt-20 ml-8">
             <Avatar
-              name={profileCoverData?.fullName || 'U'}
-              image={
-                profileCoverData?.profileImage?.originalUrl ||
-                'https://play-lh.googleusercontent.com/7Ac5TgaL15Ra4bvFVHJKCdJp4qvnL4djZj5bKc6RN-MZjzrvkeHbJytek0NPTSdZcp8'
-              }
+              name={profileCoverData?.fullName}
+              image={profileCoverData?.profileImage?.original}
               size={96}
               className="border-2 border-white mt-8"
             />
@@ -69,7 +65,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
               <div className="mr-6 mt-2 flex justify-between w-full">
                 <div className="flex space-x-4">
                   <div className="text-2xl font-bold">
-                    {profileCoverData?.userName || 'Megan Berry'}
+                    {profileCoverData?.fullName}
                   </div>
                   <div className="p-1">
                     {!canEdit && (
@@ -97,30 +93,34 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             </div>
             <div className="flex space-x-4 items-center">
               <div className="text-xs font-normal text-neutral-900">
-                <div>{profileCoverData?.designation || 'Tech Lead'}</div>
+                <div>{profileCoverData?.designation}</div>
               </div>
-              <div className="bg-neutral-100">
-                <Divider variant={DividerVariant.Vertical} />
-              </div>
-              <div className="flex space-x-3 items-center">
-                <IconWrapper type={Type.Square} className="cursor-pointer">
-                  <Icon name="briefcase" size={16} />
-                </IconWrapper>
-                <div className="text-xs font-normal text-neutral-900">
-                  {profileCoverData?.department || 'Engineering'}
-                </div>
-              </div>
-              <div className="bg-neutral-100">
-                <Divider variant={DividerVariant.Vertical} />
-              </div>
-              <div className="flex space-x-3 items-center">
-                <IconWrapper type={Type.Square} className="cursor-pointer">
-                  <Icon name="location" size={16} />
-                </IconWrapper>
-                <div className="text-xs font-normal text-neutral-900">
-                  {profileCoverData?.location || 'Mumbai, India'}
-                </div>
-              </div>
+              {profileCoverData?.department && (
+                <>
+                  <Divider variant={DividerVariant.Vertical} />
+                  <div className="flex space-x-3 items-center">
+                    <IconWrapper type={Type.Square} className="cursor-pointer">
+                      <Icon name="briefcase" size={16} />
+                    </IconWrapper>
+                    <div className="text-xs font-normal text-neutral-900">
+                      {profileCoverData?.department}
+                    </div>
+                  </div>
+                </>
+              )}
+              {profileCoverData?.location && (
+                <>
+                  <Divider variant={DividerVariant.Vertical} />
+                  <div className="flex space-x-3 items-center">
+                    <IconWrapper type={Type.Square} className="cursor-pointer">
+                      <Icon name="location" size={16} />
+                    </IconWrapper>
+                    <div className="text-xs font-normal text-neutral-900">
+                      {profileCoverData?.location}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -131,15 +131,6 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
           coverImageRef={coverImageRef}
         />
       </Card>
-      <input
-        type="file"
-        className="hidden"
-        ref={coverImageRef}
-        accept="image/*"
-        onChange={(e) => {
-          console.log('wwwww', e.target.files);
-        }}
-      />
     </>
   );
 };

@@ -121,7 +121,7 @@ const Button = ({
           />
         )}
       </div>
-      {loading && <Spinner className="ml-2" color={PRIMARY_COLOR} />}
+      <div>{loading && <Spinner className="ml-2" color={PRIMARY_COLOR} />}</div>
     </button>
   );
 };
