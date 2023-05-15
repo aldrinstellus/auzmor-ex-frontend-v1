@@ -57,11 +57,11 @@ const Feed: React.FC<IFeedProps> = () => {
 
   return (
     <>
-      <div className="mb-12 space-x-8 flex">
-        <div className="sticky top-10 z-10">
+      <div className="mb-12 space-x-8 flex w-full">
+        <div className="sticky top-10 z-10 w-1/4">
           <UserCard />
         </div>
-        <div className="max-w-2xl">
+        <div className="w-1/2">
           <div className="">
             <CreatePostCard setShowModal={setShowModal} />
             {isLoading ? (
@@ -80,7 +80,7 @@ const Feed: React.FC<IFeedProps> = () => {
             {isFetchingNextPage && <div>Loading more...</div>}
           </div>
         </div>
-        <div className="max-w-xs">
+        <div className="w-1/4">
           <AnnouncementCard />
         </div>
         {/* <ActivityFeed

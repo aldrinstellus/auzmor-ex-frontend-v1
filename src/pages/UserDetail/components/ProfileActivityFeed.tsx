@@ -84,7 +84,7 @@ const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
           />
           {isPeopleProfileFeedLoading && <div className="mt-4">loading...</div>}
           <div className="mt-4">
-            {myProfileFeed?.length === 0 ? (
+            {peopleProfileFeed?.length === 0 ? (
               <NoDataCard user={data?.fullName} />
             ) : (
               <>

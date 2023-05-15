@@ -71,40 +71,28 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                   <div className="text-2xl font-bold">
                     {profileCoverData?.userName || 'Megan Berry'}
                   </div>
-                  {!canEdit && (
-                    <div className="bg-red-100 border-1 border-red-200 rounded-full px-3 flex justify-center items-center space-x-2">
-                      <Icon name="outOfOfficeIcon" size={16} />
-                      <div className="text-xxs font-medium">
-                        {profileCoverData?.status}
+                  <div className="p-1">
+                    {!canEdit && (
+                      <div className="bg-red-100 border-1 border-red-200 rounded-full px-3 py-1 flex justify-center items-center space-x-2">
+                        <Icon name="outOfOfficeIcon" size={16} />
+                        <div className="text-xxs font-medium">
+                          {profileCoverData?.status}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
-                {canEdit ? (
-                  <Button
-                    className="flex"
-                    leftIconClassName="mr-2"
-                    label="Edit Profile"
-                    leftIcon="edit"
-                    size={ButtonSize.Small}
-                    variant={ButtonVariant.Secondary}
-                    onClick={() => {
-                      setShowModal(true);
-                    }}
-                  />
-                ) : (
-                  <Button
-                    className="flex"
-                    label="Follow"
-                    leftIconClassName="mr-2"
-                    leftIcon="addCircle"
-                    size={ButtonSize.Small}
-                    variant={ButtonVariant.Secondary}
-                    onClick={() => {
-                      // follow/unfollow functionality
-                    }}
-                  />
-                )}
+                <Button
+                  className="flex"
+                  leftIconClassName="mr-2"
+                  label={canEdit ? 'Edit Profile' : 'Follow'}
+                  leftIcon={canEdit ? 'edit' : 'addCircle'}
+                  size={ButtonSize.Small}
+                  variant={ButtonVariant.Secondary}
+                  onClick={() => {
+                    canEdit && setShowModal(true);
+                  }}
+                />
               </div>
             </div>
             <div className="flex space-x-4 items-center">

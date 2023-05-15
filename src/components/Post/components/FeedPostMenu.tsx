@@ -22,6 +22,9 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
     onError: (error) => console.log(error),
     onSuccess: async (data, variables, context) => {
       await queryClient.invalidateQueries(['feed']);
+      await queryClient.invalidateQueries(['announcements-widget']);
+      await queryClient.invalidateQueries(['my-profile-feed']);
+      await queryClient.invalidateQueries(['people-profile-feed']);
       closeConfirm();
     },
   });

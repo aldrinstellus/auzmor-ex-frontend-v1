@@ -20,7 +20,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
         </div>
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <div className="flex space-x-2">
+            <div className="flex space-x-2 truncate">
               <div>
                 <Icon name="email" />
               </div>
@@ -36,7 +36,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
             </div>
           </div>
           <div className="flex space-x-4">
-            <div className="flex space-x-2">
+            <div className="flex space-x-2 truncate">
               <div>
                 <Icon name="email" />
               </div>
