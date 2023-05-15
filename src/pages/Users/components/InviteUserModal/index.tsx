@@ -150,7 +150,6 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
         workEmail: yup
           .string()
           .required('Please enter Email')
-          // .email('Please enter valid email address'),
           .matches(new RegExp(EMAIL_REGX), 'Please enter valid email address')
           .test(
             'Email exist',
