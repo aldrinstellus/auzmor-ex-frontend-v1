@@ -13,6 +13,9 @@ import useAuth from 'hooks/useAuth';
 import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
 import DeleteUserModal from './DeleteUserModal';
+import { UserStatus, useResendInvitation } from 'queries/users';
+import { toast } from 'react-toastify';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
 
 export interface IUserCardProps {
   id: string;
@@ -24,6 +27,7 @@ export interface IUserCardProps {
   location?: string;
   active?: boolean;
   workEmail?: string;
+  status?: string;
 }
 
 export enum Status {
@@ -51,18 +55,30 @@ const UserCard: React.FC<IUserCardProps> = ({
   department,
   location,
   active,
+  status,
   workEmail,
 }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isHovered, hoverEvents] = useHover();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const resendInviteMutation = useResendInvitation();
 
   const postOptions = [
     {
       icon: 'redo',
       label: 'Resend Invite',
-      onClick: () => null,
+      onClick: () =>
+        resendInviteMutation.mutate(id, {
+          onSuccess: () =>
+            toast(
+              <SuccessToast
+                content="Invitation has been sent"
+                actionLabel="Undo"
+                action={() => {}}
+              />,
+            ),
+        }),
     },
     {
       icon: 'userRemove',
@@ -109,10 +125,13 @@ const UserCard: React.FC<IUserCardProps> = ({
           />
         )}
         <div
-          style={{ backgroundColor: statusColorMap[role] }}
+          style={{
+            backgroundColor:
+              status === UserStatus.Invited ? '#EA580C' : statusColorMap[role],
+          }}
           className="absolute top-0 left-0 text-white rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium"
         >
-          {role}
+          {status === UserStatus.Invited ? 'Pending' : role}
         </div>
         <div
           className="my-6 flex flex-col items-center"

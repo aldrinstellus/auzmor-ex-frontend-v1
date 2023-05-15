@@ -169,15 +169,14 @@ export const useCurrentUser = () => {
   });
 };
 
-export const useResendInvitation = (id: string) => {
+export const useResendInvitation = () => {
   const resendInvitation = async (id: string) => {
     const { data } = await apiService.put(`/users/${id}/resend-invitation`);
     return data;
   };
 
-  return useQuery({
-    queryKey: ['resend-invitation'],
-    queryFn: () => resendInvitation(id),
-    staleTime: 1000,
+  return useMutation({
+    mutationKey: ['resend-invitation'],
+    mutationFn: resendInvitation,
   });
 };

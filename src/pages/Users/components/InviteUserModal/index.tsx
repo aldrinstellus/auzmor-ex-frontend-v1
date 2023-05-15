@@ -20,6 +20,7 @@ import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import InvitedUsersList from './InvitedUsersList';
 import { EMAIL_REGX } from 'utils/constants';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
 
 export interface IInviteUserModalProps {
   showModal: boolean;
@@ -104,31 +105,16 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
           : `${invitedCount} out of the ${data.result.data.length} users were invited successfully `;
 
       toast(
-        <div className="flex justify-between items-center">
-          <div className="flex items-center">
-            <div>
-              <Icon
-                className="p-1.5 bg-primary-100 rounded-7xl mr-2.5"
-                name="tickCircleOutline"
-                stroke={twConfig.theme.colors.primary['500']}
-              />
-            </div>
-            <span className="text-primary-500 text-sm w-56">{toastString}</span>
-          </div>
-          {invitedCount !== data.result.data.length && (
-            <div className="flex">
-              <Button
-                className="text-primary-500 ml-4 pr-1"
-                variant={ButtonVariant.Tertiary}
-                label="Show details"
-                onClick={() => {
-                  setShowAddUserModal(true);
-                  setShowInvitedMembers(true);
-                }}
-              />
-            </div>
-          )}
-        </div>,
+        <SuccessToast
+          content={toastString}
+          actionLabel={
+            invitedCount !== data.result.data.length ? 'Show details' : ''
+          }
+          action={() => {
+            setShowAddUserModal(true);
+            setShowInvitedMembers(true);
+          }}
+        />,
         {
           closeButton: (
             <Icon
