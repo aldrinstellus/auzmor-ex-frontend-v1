@@ -28,7 +28,6 @@ const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
     const { data: myProfileFeed, isLoading: myProfileFeedLoading } =
       useInfiniteMyProfileFeed();
 
-    console.log(myProfileFeed?.pages?.[0].data?.result?.data, 'KKKKK');
     return (
       <div>
         <CreatePostCard setShowModal={setShowFeedModal} />
@@ -38,7 +37,7 @@ const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
         />
         {myProfileFeedLoading && <div className="mt-4">loading...</div>}
         <div className="mt-4">
-          {myProfileFeed?.pages?.[0].data?.result?.data ? (
+          {myProfileFeed?.pages?.[0].data?.result?.data.length === 0 ? (
             <NoDataCard user={data?.fullName} />
           ) : (
             <>
@@ -55,11 +54,12 @@ const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
   } else {
     const { data: peopleProfileFeed, isLoading: isPeopleProfileFeedLoading } =
       useInfinitePeopleProfileFeed(userId, {});
+
     return (
       <div>
         {isPeopleProfileFeedLoading && <div className="mt-4">loading...</div>}
         <div className="mt-4">
-          {!!peopleProfileFeed?.pages?.[0].data?.result?.data ? (
+          {peopleProfileFeed?.pages?.[0].data?.result?.data.length === 0 ? (
             <NoDataCard user={data?.fullName} />
           ) : (
             <>
