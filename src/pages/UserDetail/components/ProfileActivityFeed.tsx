@@ -24,80 +24,56 @@ const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
   showFeedModal,
   setShowFeedModal,
 }) => {
-  const {
-    data: myProfileActivityFeed,
-    isLoading: isMyProfileActivityFeedLoading,
-  } = useInfiniteMyProfileFeed();
-  const { data: peopleProfileFeedData, isLoading: isPeopleProfileFeedLoading } =
-    useInfinitePeopleProfileFeed(userId, {});
+  if (pathname === '/profile') {
+    const { data: myProfileFeed, isLoading: myProfileFeedLoading } =
+      useInfiniteMyProfileFeed();
 
-  const myProfileFeed = myProfileActivityFeed?.pages.flatMap((page) => {
-    return page.data?.result?.data.map((post: any) => {
-      try {
-        return post;
-      } catch (e) {
-        console.log('Error', { post });
-      }
-    });
-  }) as IGetPost[];
-
-  const peopleProfileFeed = peopleProfileFeedData?.pages.flatMap((page) => {
-    return page.data?.result?.data.map((post: any) => {
-      try {
-        return post;
-      } catch (e) {
-        console.log('Error', { post });
-      }
-    });
-  }) as IGetPost[];
-
-  return (
-    <>
-      {pathname === '/profile' ? (
-        <div>
-          <CreatePostCard setShowModal={setShowFeedModal} />
-          <PostBuilder
-            showModal={showFeedModal}
-            setShowModal={setShowFeedModal}
-          />
-          {isMyProfileActivityFeedLoading && (
-            <div className="mt-4">loading...</div>
+    console.log(myProfileFeed?.pages?.[0].data?.result?.data, 'KKKKK');
+    return (
+      <div>
+        <CreatePostCard setShowModal={setShowFeedModal} />
+        <PostBuilder
+          showModal={showFeedModal}
+          setShowModal={setShowFeedModal}
+        />
+        {myProfileFeedLoading && <div className="mt-4">loading...</div>}
+        <div className="mt-4">
+          {myProfileFeed?.pages?.[0].data?.result?.data ? (
+            <NoDataCard user={data?.fullName} />
+          ) : (
+            <>
+              {myProfileFeed?.pages?.[0].data?.result?.data?.map(
+                (post: any) => (
+                  <Post data={post} key={post.id} />
+                ),
+              )}
+            </>
           )}
-          <div className="mt-4">
-            {myProfileFeed?.length === 0 ? (
-              <NoDataCard user={data?.fullName} />
-            ) : (
-              <>
-                {myProfileFeed?.map((post) => (
-                  <Post data={post} key={post.id} />
-                ))}
-              </>
-            )}
-          </div>
         </div>
-      ) : (
-        <div>
-          <CreatePostCard setShowModal={setShowFeedModal} />
-          <PostBuilder
-            showModal={showFeedModal}
-            setShowModal={setShowFeedModal}
-          />
-          {isPeopleProfileFeedLoading && <div className="mt-4">loading...</div>}
-          <div className="mt-4">
-            {peopleProfileFeed?.length === 0 ? (
-              <NoDataCard user={data?.fullName} />
-            ) : (
-              <>
-                {peopleProfileFeed?.map((post) => (
+      </div>
+    );
+  } else {
+    const { data: peopleProfileFeed, isLoading: isPeopleProfileFeedLoading } =
+      useInfinitePeopleProfileFeed(userId, {});
+    return (
+      <div>
+        {isPeopleProfileFeedLoading && <div className="mt-4">loading...</div>}
+        <div className="mt-4">
+          {!!peopleProfileFeed?.pages?.[0].data?.result?.data ? (
+            <NoDataCard user={data?.fullName} />
+          ) : (
+            <>
+              {peopleProfileFeed?.pages?.[0].data?.result?.data?.map(
+                (post: any) => (
                   <Post data={post} key={post.id} />
-                ))}
-              </>
-            )}
-          </div>
+                ),
+              )}
+            </>
+          )}
         </div>
-      )}
-    </>
-  );
+      </div>
+    );
+  }
 };
 
 export default ProfileActivityFeed;

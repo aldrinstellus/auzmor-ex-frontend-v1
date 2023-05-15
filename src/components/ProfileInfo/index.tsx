@@ -22,12 +22,7 @@ const ProfileInfo: React.FC<IProfileInfoProps> = ({
       <PersonalDetails
         personalDetails={profileDetails}
         canEdit={canEdit}
-        skills={[
-          'Techinal Analysis',
-          'Fundamental Analysis',
-          'Blockchain',
-          'Painting',
-        ]}
+        skills={[]}
       />
     </>
   );

@@ -40,7 +40,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
               <div>
                 <Icon name="email" />
               </div>
-              <div>{contactCardData?.contact || '9999999999'}</div>
+              <div>{contactCardData?.contact || 'N/A'}</div>
             </div>
           </div>
         </div>

@@ -8,6 +8,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import TabSwitcher from 'pages/Users/components/TabSwitch';
 import ProfileActivityFeed from './components/ProfileActivityFeed';
 import useAuth from 'hooks/useAuth';
+import NoDataCard from './components/NoDataCard';
 interface IUserDetailProps {}
 
 const UserDetail: React.FC<IUserDetailProps> = () => {
@@ -60,7 +61,13 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
         />
       ),
     },
-    { id: 3, title: 'Recognitions', content: <div>Content for Tab 3</div> },
+    {
+      id: 3,
+      title: 'Recognitions',
+      content: (
+        <NoDataCard user={userData?.data?.data?.result?.data?.fullName} />
+      ),
+    },
   ];
 
   return (

@@ -72,8 +72,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     onSuccess: async () => {
       await queryClient.invalidateQueries(['feed']);
       await queryClient.invalidateQueries(['announcements-widget']);
-      await queryClient.invalidateQueries(['my-profile-feed']);
-      await queryClient.invalidateQueries(['people-profile-feed']);
+      // await queryClient.invalidateQueries(['my-profile-feed']);
+      // await queryClient.invalidateQueries(['people-profile-feed']);
       setShowModal(false);
     },
   });
@@ -85,8 +85,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     onSuccess: async () => {
       await queryClient.invalidateQueries(['feed']);
       await queryClient.invalidateQueries(['announcements-widget']);
-      await queryClient.invalidateQueries(['my-profile-feed']);
-      await queryClient.invalidateQueries(['people-profile-feed']);
+      // await queryClient.invalidateQueries(['my-profile-feed']);
+      // await queryClient.invalidateQueries(['people-profile-feed']);
       setShowModal(false);
     },
   });
