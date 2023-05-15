@@ -1,8 +1,105 @@
-import React from 'react';
+import Card from 'components/Card';
+import Divider from 'components/Divider';
+import Icon from 'components/Icon';
+import SSOSettings from 'components/SSOSettings';
+import React, { ReactNode, useState } from 'react';
 interface IAdminProps {}
 
 const Admin: React.FC<IAdminProps> = () => {
-  return <div>Admin Page</div>;
+  type setting = {
+    label: string;
+    icon: string;
+    key: string;
+    component: ReactNode;
+    disabled: boolean;
+    hidden: boolean;
+  };
+
+  const settings = [
+    {
+      label: 'General',
+      icon: '',
+      key: 'general-settings',
+      component: <div>General Settings Page</div>,
+      disabled: false,
+      hidden: false,
+    },
+    {
+      label: 'User Management',
+      icon: '',
+      key: 'user-management-settings',
+      component: <div>User Management Settings Page</div>,
+      disabled: false,
+      hidden: false,
+    },
+    {
+      label: 'Branding',
+      icon: '',
+      key: 'branding-settings',
+      component: <div>Branding Settings Page</div>,
+      disabled: false,
+      hidden: false,
+    },
+    {
+      label: 'Single Sign-on',
+      icon: '',
+      key: 'single-sign-on-settings',
+      component: <SSOSettings />,
+      disabled: false,
+      hidden: false,
+    },
+    {
+      label: 'Marketplace',
+      icon: '',
+      key: 'marketplace-settings',
+      component: <div>Marketplace Settings Page</div>,
+      disabled: false,
+      hidden: false,
+    },
+    {
+      label: 'Notifications',
+      icon: '',
+      key: 'notifications-settings',
+      component: <div>Notifications Settings Page</div>,
+      disabled: false,
+      hidden: false,
+    },
+  ];
+
+  const [activeSettingsPage, setActiveSettingsPage] = useState<setting>(
+    settings[0],
+  );
+  return (
+    <div className="flex justify-between w-full gap-x-14">
+      <Card className="min-w-[300px] max-h-[400px]">
+        <p className="text-neutral-900 text-base font-bold p-4">
+          Admin Settings
+        </p>
+        <Divider className="border-neutral-500" />
+        <div className="flex flex-col">
+          {settings.map((item, index) => (
+            <div
+              key={item.key}
+              className="hover:bg-green-50 cursor-pointer"
+              onClick={() => setActiveSettingsPage(item)}
+            >
+              <div className="text-neutral-500 text-sm font-medium p-4 flex items-center gap-x-3">
+                <Icon name="clock" hover={false} />
+                {item.label}
+              </div>
+              {index !== settings.length - 1 && <Divider />}
+            </div>
+          ))}
+        </div>
+      </Card>
+      <div className="flex flex-col w-full gap-y-4">
+        <Card className="max-h-14 text-neutral-900 text-base font-bold py-4 pl-6">
+          {activeSettingsPage.label}
+        </Card>
+        {activeSettingsPage.component}
+      </div>
+    </div>
+  );
 };
 
 export default Admin;

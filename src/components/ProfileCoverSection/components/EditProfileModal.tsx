@@ -12,11 +12,15 @@ import Button, {
 } from 'components/Button';
 import Avatar from 'components/Avatar';
 import { Variant as InputVariant } from 'components/Input';
-import { CreatePostContext } from 'contexts/CreatePostContext';
-import { updateCurrentUser } from 'queries/users';
-import { useMutation } from '@tanstack/react-query';
 
-interface IForm {}
+export interface IUpdateProfileForm {
+  fullName: string;
+  designation: string;
+  department: string;
+  location: string;
+  profileImage: string;
+  coverImage: string;
+}
 
 interface IEditProfileModal {
   data: Record<string, any>;
@@ -32,23 +36,23 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
   coverImageRef,
 }) => {
   const {
-    watch,
     control,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<IForm>({});
-
-  const updateCurrentUserMutation = useMutation(
-    (userData: Record<string, any>) => updateCurrentUser(userData),
-    {
-      onSuccess: (data) => {
-        console.log('success', data);
-      },
+  } = useForm<IUpdateProfileForm>({
+    mode: 'onSubmit',
+    defaultValues: {
+      fullName: '',
+      designation: '',
+      department: '',
+      location: '',
+      profileImage: '',
+      coverImage: '',
     },
-  );
+  });
 
   const onSubmit = (userData: Record<string, any>) => {
-    updateCurrentUserMutation.mutate(userData);
+    console.log('called?', userData);
   };
 
   const Header: React.FC = () => (
@@ -81,10 +85,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         label={'Save Changes'}
         size={Size.Small}
         type={ButtonType.Submit}
-        onClick={() => {
-          //get the payload and update by passing all as key value pair
-          // handleSubmit(onSubmit);
-        }}
+        onClick={handleSubmit(onSubmit)}
       />
     </div>
   );
@@ -93,7 +94,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      placeholder: 'Kate Banks', // existing user
+      placeholder: data?.userName,
       name: 'name',
       label: 'Name*',
       dataTestId: 'user-profile-name',
@@ -106,6 +107,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
     {
       type: FieldType.SingleSelect,
       name: 'position',
+      placeholder: 'Software Engineer',
       label: 'Position title',
       defaultValue: '',
       options: [
@@ -120,6 +122,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
     {
       type: FieldType.SingleSelect,
       name: 'department',
+      placeholder: 'Engineering',
       label: 'Department',
       defaultValue: '',
       options: [
@@ -135,6 +138,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
     {
       type: FieldType.SingleSelect,
       name: 'location',
+      placeholder: 'Mumbai, MH India',
       label: 'Location',
       defaultValue: 'Mumbai, India',
       options: [
@@ -157,7 +161,8 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       <div className="relative cursor-pointer">
         <img
           className="object-cover w-full h-[108px]"
-          src="https://libg.s3.us-east-2.amazonaws.com/download/Blue-And-Red-Over-The-Mountains.jpg"
+          style={data?.coverImage?.original || { backgroundColor: '#3F83F8' }}
+          src={data?.coverImage?.original}
         />
         <IconButton
           icon="edit"
@@ -171,11 +176,8 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         <div className="-mt-20">
           <div className="relative">
             <Avatar
-              name={data?.fullName || 'U'}
-              image={
-                data?.profileImage?.original ||
-                'https://play-lh.googleusercontent.com/7Ac5TgaL15Ra4bvFVHJKCdJp4qvnL4djZj5bKc6RN-MZjzrvkeHbJytek0NPTSdZcp8'
-              }
+              name={data?.fullName}
+              image={data?.profileImage?.original}
               size={96}
               className="border-2 border-white mt-8"
             />
@@ -188,13 +190,20 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
                 onClick={() => coverImageRef?.current?.click()}
               />
             </div>
+            <div></div>
           </div>
         </div>
       </div>
       <div className="mx-6 mb-14 space-y-6 overflow-y-auto">
         <Layout fields={nameField} />
-        <Layout fields={positionTitlefields} />
-        <Layout fields={departmentField} />
+        <div className="w-full flex space-x-6">
+          <div className="w-[50%]">
+            <Layout fields={positionTitlefields} />
+          </div>
+          <div className="w-[50%]">
+            <Layout fields={departmentField} />
+          </div>
+        </div>
         <Layout fields={locationField} />
       </div>
       <Footer />

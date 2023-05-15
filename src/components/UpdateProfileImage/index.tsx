@@ -5,7 +5,7 @@ import useAuth from 'hooks/useAuth';
 import { UploadStatus, useUpload } from 'queries/files';
 import { EntityType } from 'queries/files';
 import { useMutation } from '@tanstack/react-query';
-import { updateUserAPI } from 'queries/users';
+import { updateCurrentUser } from 'queries/users';
 import { IMedia } from 'contexts/CreatePostContext';
 
 type UpdateProfileImageProps = {
@@ -22,7 +22,7 @@ const UpdateProfileImage: React.FC<UpdateProfileImageProps> = ({
   const { uploadMedia, uploadStatus } = useUpload();
 
   const updateProfileImageMutation = useMutation({
-    mutationFn: updateUserAPI,
+    mutationFn: updateCurrentUser,
     mutationKey: ['update-user-profile-image-mutation'],
     onError: (error: any) => {
       console.log('API call resulted in error: ', error);
@@ -37,7 +37,7 @@ const UpdateProfileImage: React.FC<UpdateProfileImageProps> = ({
           id: response?.result?.data?.org?.id,
           domain: response?.result?.data?.org?.domain,
         },
-        profileImage: response?.result?.data?.profileImage?.original,
+        profileImage: response?.result?.data?.profileImage?.originalUrl,
       });
     },
   });
@@ -61,7 +61,6 @@ const UpdateProfileImage: React.FC<UpdateProfileImageProps> = ({
       files = await uploadMedia(profilePicture, EntityType.UserProfileImage);
       console.log({ files });
       updateProfileImageMutation.mutate({
-        id: user?.id || '',
         profileImage: {
           fileId: files[0].id,
           originalUrl: files[0].originalUrl,
@@ -79,7 +78,7 @@ const UpdateProfileImage: React.FC<UpdateProfileImageProps> = ({
       size={200}
       indicatorIcon={<EditIcon setProfilePicture={setProfilePicture} />}
       name={user?.name}
-      image={user?.profileImage || ''}
+      image={user?.profileImage}
       bgColor="#DBEAFE"
       loading={isLoading || uploadStatus === UploadStatus.Uploading}
     />

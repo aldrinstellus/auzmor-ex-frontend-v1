@@ -19,7 +19,7 @@ interface IUsersProps {}
 
 const Users: React.FC<IUsersProps> = () => {
   const [page, setPage] = useState(1);
-  const { data: users, isLoading } = useUsers({ next: page });
+  const { data: users, isLoading } = useUsers({ limit: 30, next: page });
   const [showAddUserModal, setShowAddUserModal] = useState(false);
 
   const {
@@ -54,7 +54,8 @@ const Users: React.FC<IUsersProps> = () => {
                 {
                   type: FieldType.SingleSelect,
                   control,
-                  className: 'h-9 w-44',
+                  height: '36px',
+                  className: 'p-0 w-44',
                   name: 'role',
                   placeholder: 'Role',
                   size: InputSize.Small,
@@ -114,7 +115,11 @@ const Users: React.FC<IUsersProps> = () => {
         <div className="flex flex-wrap gap-6">
           {users?.result?.data?.length > 0 &&
             users?.result?.data?.map((user: any) => (
-              <UserCard key={user.id} {...user} />
+              <UserCard
+                key={user.id}
+                {...user}
+                image={user?.profileImage?.originalUrl}
+              />
             ))}
           {isLoading && <Spinner color="#000" />}
         </div>
@@ -127,13 +132,12 @@ const Users: React.FC<IUsersProps> = () => {
           onPageChange={setPage}
         />
       </div>
-      {showAddUserModal && (
-        <InviteUserModal
-          showModal={showAddUserModal}
-          setShowAddUserModal={setShowAddUserModal}
-          closeModal={() => setShowAddUserModal(false)}
-        />
-      )}
+
+      <InviteUserModal
+        showModal={showAddUserModal}
+        setShowAddUserModal={setShowAddUserModal}
+        closeModal={() => setShowAddUserModal(false)}
+      />
     </div>
   );
 
@@ -143,7 +147,7 @@ const Users: React.FC<IUsersProps> = () => {
   ];
 
   return (
-    <Card className="px-8 pt-9 pb-8 w-full space-y-6">
+    <Card className="p-8 w-full h-full space-y-6">
       {/* Top People Directory Section */}
       <div className="space-y-6">
         <div className="flex justify-between">

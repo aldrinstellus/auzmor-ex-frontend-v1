@@ -30,6 +30,7 @@ const AvatarList: React.FC<AvatarListProps> = ({
         return (
           <Avatar
             size={size}
+            key={`${user.name}${user.image}`}
             name={user?.name}
             image={user?.image}
             active={false}

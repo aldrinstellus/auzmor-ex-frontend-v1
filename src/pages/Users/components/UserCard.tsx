@@ -3,18 +3,16 @@ import _ from 'lodash';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import useHover from 'hooks/useHover';
-import Button, { Variant } from 'components/Button';
 import clsx from 'clsx';
-import { useMutation } from '@tanstack/react-query';
-import { deleteUser } from 'queries/users';
-import ConfirmationBox from 'components/ConfirmationBox';
-import queryClient from 'utils/queryClient';
 import IconButton, {
   Variant as IconVariant,
   Size as IconSize,
 } from 'components/IconButton';
 import { useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
+import Icon from 'components/Icon';
+import PopupMenu from 'components/PopupMenu';
+import DeleteUserModal from './DeleteUserModal';
 
 export interface IUserCardProps {
   id: string;
@@ -57,22 +55,23 @@ const UserCard: React.FC<IUserCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
-
   const [isHovered, hoverEvents] = useHover();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const deleteUserMutation = useMutation({
-    mutationKey: ['delete-user', id],
-    mutationFn: deleteUser,
-    onError: (error) => {
-      console.log(error);
+  const postOptions = [
+    {
+      icon: 'redo',
+      label: 'Resend Invite',
+      onClick: () => null,
     },
-    onSuccess: (data, variables, context) => {
-      setShowDeleteModal(false);
-      alert('Successfully Deleted');
-      queryClient.invalidateQueries({ queryKey: ['users'] });
+    {
+      icon: 'userRemove',
+      label: 'Remove',
+      onClick: () => {
+        setShowDeleteModal(true);
+      },
     },
-  });
+  ];
 
   const hoverStyle = useMemo(
     () =>
@@ -137,10 +136,9 @@ const UserCard: React.FC<IUserCardProps> = ({
           <div className="flex justify-between items-center mt-4 space-x-4">
             <div className="rounded-7xl border border-solid border-neutral-200">
               <IconButton
-                icon="draft"
+                icon="email"
                 variant={IconVariant.Secondary}
                 size={IconSize.Medium}
-                className="rounded-7xl"
                 onClick={() => {
                   if (user?.id === id) {
                     navigate('/profile', { state: { userId: id } });
@@ -153,37 +151,30 @@ const UserCard: React.FC<IUserCardProps> = ({
                 icon="slack"
                 variant={IconVariant.Secondary}
                 size={IconSize.Medium}
-                className="rounded-7xl"
               />
             </div>
           </div>
         )}
+        {isHovered && (
+          <PopupMenu
+            triggerNode={
+              <div className="cursor-pointer p-2">
+                <Icon
+                  name="dotsVertical"
+                  stroke="#000"
+                  className="absolute top-4 right-4"
+                  hover={false}
+                />
+              </div>
+            }
+            menuItems={postOptions}
+          />
+        )}
       </Card>
-
-      <ConfirmationBox
-        open={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        title="Delete User?"
-        description={
-          <span>
-            Are you sure you want to delete this member?
-            <br /> This cannot be undone.
-          </span>
-        }
-        success={{
-          label: 'Delete',
-          className: 'bg-red-500 text-white ',
-          onSubmit: () => {
-            deleteUserMutation.mutate(id);
-          },
-        }}
-        discard={{
-          label: 'cancel',
-          className: 'text-neutral-900 bg-white ',
-          onCancel: () => {
-            setShowDeleteModal(false);
-          },
-        }}
+      <DeleteUserModal
+        showModal={showDeleteModal}
+        setShowModal={setShowDeleteModal}
+        userId={id}
       />
     </div>
   );

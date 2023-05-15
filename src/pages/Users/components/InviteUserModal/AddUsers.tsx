@@ -141,7 +141,7 @@ const AddUsers: React.FC<IAddUsersProps> = ({
         >
           <div className="mr-1">
             <Icon
-              name="addCircle"
+              name="addCircleOutline"
               size={16}
               stroke={
                 fields.length >= FIELD_LIMIT

@@ -113,9 +113,9 @@ const Banner: React.FC<BannerProps> = ({
 
   const iconName = useMemo(() => {
     if (variant === Variant.Error) {
-      return 'infoCircle';
+      return 'infoCircleOutline';
     }
-    return 'infoCircle';
+    return 'infoCircleOutline';
   }, [variant]);
 
   const getStroke = (variant: Variant): string => {

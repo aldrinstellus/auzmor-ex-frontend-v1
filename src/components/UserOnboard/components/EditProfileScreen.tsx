@@ -28,7 +28,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
           <p className="font-normal text-sm text-neutral-500">
             Click on the image above to upload your profile photo.
           </p>
-          <div className="bg-green-50 px-5 py-3 border rounded-md border-transparent">
+          <div className="bg-green-50 px-5 border rounded-md border-transparent">
             <p className="font-normal text-sm text-neutral-900 whitespace-nowrap">
               Adding a profile photo will make it easier for your colleagues to
               recognise you.
@@ -37,12 +37,13 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
         </div>
       </div>
       <div className="mt-10">
-        {error && !loading && (
-          <Banner
-            variant={Variant.Error}
-            title="Failed to upload media. Please try again!"
-          />
-        )}
+        <Banner
+          variant={Variant.Error}
+          title="Failed to upload media. Please try again!"
+          className={`min-w-full ${
+            error && !loading ? 'visible' : 'invisible'
+          }`}
+        />
         <div className="bg-blue-50 ">
           <div className="p-3 flex items-center justify-between">
             <div

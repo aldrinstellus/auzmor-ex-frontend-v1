@@ -80,6 +80,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
       );
     }
   };
+
   const inviteUsersMutation = useMutation({
     mutationKey: ['inviteUsersMutation'],
     mutationFn: inviteUsers,
@@ -173,7 +174,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
     formState: { errors, isValid },
   } = useForm<IUserForm>({
     resolver: yupResolver(schema),
-    mode: 'onSubmit',
+    mode: 'onChange',
     defaultValues: {
       members: [{ fullName: '', workEmail: '', role: roleOptions[0] }],
     },
@@ -229,9 +230,9 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
         {/*---------- {<>Footer</>} ---------*/}
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50">
           <Button
-            label="Cancle"
+            label="Cancel"
             variant={ButtonVariant.Secondary}
-            disabled={false}
+            disabled={inviteUsersMutation.isLoading}
             className="mr-4"
             onClick={close}
           />
@@ -242,7 +243,11 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
                 setShowInvitedMembers(false);
                 remove();
                 invitedUsersResponse
-                  .filter((user) => user.status === UserStatus.Failed)
+                  .filter(
+                    (user) =>
+                      user.status === UserStatus.Failed ||
+                      user.status === UserStatus.Created,
+                  )
                   .forEach((user: IPostUsersResponse) => {
                     append({
                       fullName: user.fullName,
@@ -258,7 +263,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
             <Button
               label="Send Invite"
               onClick={handleSubmit(onSubmit)}
-              disabled={inviteUsersMutation.isLoading}
+              disabled={inviteUsersMutation.isLoading || !isValid}
               loading={inviteUsersMutation.isLoading}
             />
           )}

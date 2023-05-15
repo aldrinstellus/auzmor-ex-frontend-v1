@@ -4,8 +4,7 @@ import OnboardTimezone from 'images/onboard-timezone.png';
 import Layout, { FieldType } from 'components/Form';
 import { useForm } from 'react-hook-form';
 import Button, { Type } from 'components/Button';
-import useAuth from 'hooks/useAuth';
-import { updateUserAPI } from 'queries/users';
+import { updateCurrentUser } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -41,10 +40,8 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
     resolver: yupResolver(schema),
   });
 
-  const { user } = useAuth();
-
   const updateUserTimezoneMutation = useMutation({
-    mutationFn: updateUserAPI,
+    mutationFn: updateCurrentUser,
     mutationKey: ['update-user-timezone-mutation'],
     onError: (error: any) => {
       console.log('Error while updating timezone: ', error);
@@ -56,9 +53,14 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
 
   const onSubmit = async () => {
     const selectedTimezone = getValues();
+    let timezoneValue;
+    if (selectedTimezone.timezone === undefined) {
+      timezoneValue = defaultTimezone.value[0];
+    } else {
+      timezoneValue = selectedTimezone.timezone.value[0];
+    }
     await updateUserTimezoneMutation.mutateAsync({
-      id: user?.id || '',
-      timezone: selectedTimezone.timezone.value[0],
+      timezone: timezoneValue,
     });
     next();
   };

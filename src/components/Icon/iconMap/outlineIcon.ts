@@ -39,6 +39,9 @@ import SvgArrowRightOutline from '../components/ArrowRight/ArrowRightOutline';
 import SvgPlayOutline from '../components/Play/PlayOutline';
 import SvgTickCircleOutline from '../components/TickCircle/TickCircleOutline';
 import SvgCloseCircleOutline from '../components/CloseCircle/CloseCircleOutline';
+import SvgDotsVerticalOutline from '../components/DotsVertical/DotsVerticalOutline';
+import SvgRedoOutline from '../components/Redo/RedoOutline';
+import SvgUserRemoveOutline from '../components/UserRemove/UserRemoveOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -54,6 +57,7 @@ export const outlineIcon = {
   convertShapeOutline: SvgConvertShapeOutline,
   crossCircleOutline: SvgCrossCircleOutline,
   documentOutline: SvgDocumentOutline,
+  dotsVerticalOutline: SvgDotsVerticalOutline,
   draftOutline: SvgDraftOutline,
   editOutline: SvgEditOutline,
   emojiHappyOutline: SvgEmojiHappyOutline,
@@ -73,6 +77,7 @@ export const outlineIcon = {
   moreOutline: SvgMoreOutline,
   peopleOutline: SvgPeopleOutline,
   playOutline: SvgPlayOutline,
+  redoOutline: SvgRedoOutline,
   replyOutline: SvgReplyOutline,
   searchOutline: SvgSearchOutline,
   sendOutline: SvgSendOutline,
@@ -81,5 +86,6 @@ export const outlineIcon = {
   tickCircleOutline: SvgTickCircleOutline,
   trashOutline: SvgTrashOutline,
   userOutline: SvgUserOutline,
+  userRemoveOutline: SvgUserRemoveOutline,
   videoOutline: SvgVideoOutline,
 };
