@@ -131,13 +131,12 @@ const Users: React.FC<IUsersProps> = () => {
           onPageChange={setPage}
         />
       </div>
-      {showAddUserModal && (
-        <InviteUserModal
-          showModal={showAddUserModal}
-          setShowAddUserModal={setShowAddUserModal}
-          closeModal={() => setShowAddUserModal(false)}
-        />
-      )}
+
+      <InviteUserModal
+        showModal={showAddUserModal}
+        setShowAddUserModal={setShowAddUserModal}
+        closeModal={() => setShowAddUserModal(false)}
+      />
     </div>
   );
 
