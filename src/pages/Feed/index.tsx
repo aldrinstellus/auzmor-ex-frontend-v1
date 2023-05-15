@@ -13,7 +13,7 @@ interface IFeedProps {}
 
 export interface IProfileImage {
   blurHash: string;
-  url: string;
+  originalUrl: string;
 }
 
 export interface ICreated {

@@ -4,7 +4,6 @@ import Mention from './components/Mention';
 import Hashtag from './components/Hashtag';
 import Emoji from './components/Emoji';
 import { Text } from './components/Text';
-import PreviewLink from 'components/PreviewLink';
 import MediaPreview, { Mode } from 'components/MediaPreview';
 import { IGetPost } from 'queries/post';
 import { getMentionProps } from './utils';

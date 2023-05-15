@@ -56,7 +56,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             <Avatar
               name={profileCoverData?.fullName || 'U'}
               image={
-                profileCoverData?.profileImage?.original ||
+                profileCoverData?.profileImage?.originalUrl ||
                 'https://play-lh.googleusercontent.com/7Ac5TgaL15Ra4bvFVHJKCdJp4qvnL4djZj5bKc6RN-MZjzrvkeHbJytek0NPTSdZcp8'
               }
               size={96}

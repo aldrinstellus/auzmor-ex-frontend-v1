@@ -74,7 +74,7 @@ export const Comment: React.FC<CommentProps> = ({
               <Avatar
                 name={comment?.createdBy?.fullName}
                 size={32}
-                image={comment?.createdBy?.profileImage?.url}
+                image={comment?.createdBy?.profileImage?.originalUrl}
               />
             </div>
             <div className="flex flex-col items-start p-0 w-64">

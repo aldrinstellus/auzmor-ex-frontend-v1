@@ -2,6 +2,7 @@ import React, { ReactNode, createContext, useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { getItem, removeAllItems, setItem } from 'utils/persist';
 import { fetchMe } from 'queries/account';
+import UserOnboard from 'components/UserOnboard';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -71,7 +72,7 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
           domain: userData?.result?.data?.org.domain,
         },
         profileImage:
-          userData?.result?.data.profileImage?.original || undefined,
+          userData?.result?.data.profileImage?.originalUrl || undefined,
       });
     }
     setLoading(false);
@@ -95,7 +96,7 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
   return (
     <AuthContext.Provider value={{ user, reset, updateUser }}>
       {children}
-      {showOnboard && <></>}
+      {showOnboard && <UserOnboard />}
     </AuthContext.Provider>
   );
 };

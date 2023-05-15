@@ -130,11 +130,6 @@ export const inviteUsers = async (payload: IPostUsers) => {
   });
 };
 
-export const updateUserAPI = async (user: IUserUpdate) => {
-  const { id, ...rest } = user;
-  const data = await apiService.patch(`/users/${user.id}`, { ...rest });
-  return data;
-};
 export const verifyInviteLink = async (q: Record<string, any>) => {
   const { data } = await apiService.get('/users/invite/verify', q);
   return data;

@@ -173,7 +173,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
             <Avatar
               name={data?.fullName || 'U'}
               image={
-                data?.profileImage?.original ||
+                data?.profileImage?.originalUrl ||
                 'https://play-lh.googleusercontent.com/7Ac5TgaL15Ra4bvFVHJKCdJp4qvnL4djZj5bKc6RN-MZjzrvkeHbJytek0NPTSdZcp8'
               }
               size={96}

@@ -1,4 +1,4 @@
-import React, { ReactElement as ReactNode, useState } from 'react';
+import React, { ReactElement as ReactNode, useEffect, useState } from 'react';
 import WelcomeScreen from './components/WelcomeScreen';
 import EditProfileScreen from './components/EditProfileScreen';
 import SelectTimezoneScreen from './components/SelectTimezoneScreen';
@@ -39,6 +39,13 @@ const UserOnboard: React.FC = (): ReactNode => {
       cardText: `You're all set`,
     },
   ];
+
+  // Remove the 'showOnboard' query param once the page loads.
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('showOnboard');
+    history.replaceState({}, '', url);
+  }, []);
 
   return (
     <Modal open={open}>

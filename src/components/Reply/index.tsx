@@ -69,7 +69,11 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
         <div className="ml-8">
           <div className="flex flex-row items-center justify-between p-0">
             <div className="flex-none grow-0 order-none pr-2">
-              <Avatar name={user?.name || 'U'} size={32} />
+              <Avatar
+                name={user?.name || 'U'}
+                size={32}
+                image={user?.profileImage}
+              />
             </div>
             <CommentForm
               className="w-full py-1"

@@ -114,7 +114,11 @@ const Users: React.FC<IUsersProps> = () => {
         <div className="flex flex-wrap gap-6">
           {users?.result?.data?.length > 0 &&
             users?.result?.data?.map((user: any) => (
-              <UserCard key={user.id} {...user} />
+              <UserCard
+                key={user.id}
+                {...user}
+                image={user?.profileImage?.originalUrl}
+              />
             ))}
           {isLoading && <Spinner color="#000" />}
         </div>

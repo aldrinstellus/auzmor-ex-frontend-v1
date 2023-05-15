@@ -99,7 +99,7 @@ const Avatar: React.FC<AvatarProps> = ({
 
   return (
     <div className={containerStyles} style={divStyle} onClick={onClick}>
-      {!!image ? (
+      {!!image && !loading ? (
         <img className={imgStyles} style={divStyle} src={image} alt={name} />
       ) : (
         <span className={textStyles} style={{ fontSize: `${size * 0.45}px` }}>

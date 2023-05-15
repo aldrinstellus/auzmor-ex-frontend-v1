@@ -99,7 +99,12 @@ const CreatePostCard: React.FC<ICreatePostCardProps> = ({ setShowModal }) => {
   return (
     <Card className="bg-white px-2">
       <div className="flex items-center px-4 pt-6 pb-4">
-        <Avatar size={32} name={user?.name} active={false} />
+        <Avatar
+          size={32}
+          name={user?.name}
+          active={false}
+          image={user?.profileImage}
+        />
         <input
           type="input"
           className="w-full h-11 border border-neutral-200 rounded-19xl ml-3 px-5 py-3 text-sm font-medium outline-none text-neutral-500"
