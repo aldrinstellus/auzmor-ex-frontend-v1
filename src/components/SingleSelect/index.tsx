@@ -13,6 +13,7 @@ export interface ISingleSelectProps {
   control?: Control<Record<string, any>>;
   label?: string;
   placeholder?: string;
+  height?: string;
   options: any;
   menuPlacement: MenuPlacement;
 }
@@ -26,6 +27,7 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
   control,
   label = '',
   placeholder = '',
+  height = '44px',
   options,
   defaultValue,
   menuPlacement = 'bottom',
@@ -42,7 +44,7 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
           '!text-red-500': !!error,
         },
         {
-          'text-sm text-neutral-900 font-bold truncate pl-1': true,
+          'text-sm text-neutral-900 font-bold truncate pl-1 mb-1': !!label,
         },
       ),
     [error],
@@ -56,13 +58,14 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
     [error],
   );
 
-  const colourStyles = {
+  const selectStyle = {
     control: (styles: any) => ({
       ...styles,
       backgroundColor: '#fff',
       border: '1px solid #E5E5E5',
       borderRadius: '32px',
-      padding: '4px 6px', // change style here because it breaking 2px
+      height,
+      padding: '0px 6px', // change style here because it breaking 2px
     }),
   };
 
@@ -81,7 +84,7 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
           render={() => (
             <Select
               placeholder={placeholder}
-              styles={colourStyles}
+              styles={selectStyle}
               options={options}
               {...field}
               defaultValue={defaultValue}
