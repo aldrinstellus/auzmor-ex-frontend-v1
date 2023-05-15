@@ -69,17 +69,7 @@ export interface IPost {
   link?: string;
   myReactions?: [
     {
-      createdBy: {
-        department?: string;
-        designation?: string;
-        fullName?: string;
-        profileImage: {
-          blurHash?: string;
-        };
-        status?: string;
-        userId?: string;
-        workLocation?: string;
-      };
+      createdBy: ICreatedBy;
       reaction: string;
       type: string;
       id: string;
@@ -93,17 +83,7 @@ export interface IReaction {
   type: string;
   reaction: string;
   myReactions?: {
-    createdBy: {
-      department?: string;
-      designation?: string;
-      fullName?: string;
-      profileImage: {
-        blurHash?: string;
-      };
-      status?: string;
-      userId?: string;
-      workLocation?: string;
-    };
+    createdBy: ICreatedBy;
     reaction: string;
     type: string;
     id: string;
@@ -136,6 +116,20 @@ export interface MyObjectType {
   [key: string]: number;
 }
 
+export interface ICreatedBy {
+  department?: string;
+  designation?: string;
+  fullName?: string;
+  profileImage: {
+    blurHash?: string;
+    id: string;
+    original: string;
+  };
+  status?: string;
+  userId?: string;
+  workLocation?: string;
+}
+
 export interface IGetPost {
   content: {
     text: string;
@@ -143,17 +137,7 @@ export interface IGetPost {
     editor: DeltaStatic;
   };
   mentions?: IMention[];
-  createdBy?: {
-    department?: string;
-    designation?: string;
-    fullName?: string;
-    profileImage: {
-      blurHash?: string;
-    };
-    status?: string;
-    userId?: string;
-    workLocation?: string;
-  };
+  createdBy?: ICreatedBy;
   hashtags:
     | [
         {
@@ -174,18 +158,7 @@ export interface IGetPost {
   link: Metadata;
   id: string;
   myReaction: {
-    createdBy: {
-      department?: string;
-      designation?: string;
-      fullName?: string;
-      profileImage: {
-        blurHash?: string;
-        url?: string;
-      };
-      status?: string;
-      userId?: string;
-      workLocation?: string;
-    };
+    createdBy: ICreatedBy;
     reaction: string;
     type: string;
     id: string;

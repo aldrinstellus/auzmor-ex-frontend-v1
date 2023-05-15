@@ -65,7 +65,7 @@ const Post: React.FC<PostProps> = ({ data }) => {
           visibility="Everyone"
           contentMode={VIEW_POST}
           createdTime={humanizeTime(data?.createdAt)}
-          createdBy={data?.createdBy?.fullName}
+          createdBy={data?.createdBy}
         />
         <div className="relative">
           <FeedPostMenu data={data as unknown as IPost} /> {/* Temp fix */}
