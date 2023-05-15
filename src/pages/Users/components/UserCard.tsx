@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import _ from 'lodash';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
@@ -91,16 +91,7 @@ const UserCard: React.FC<IUserCardProps> = ({
   );
 
   return (
-    <div
-      {...hoverEvents}
-      className="cursor-pointer"
-      onClick={() => {
-        if (id === user?.id) {
-          return navigate('/profile');
-        }
-        return navigate(`/users/${id}`);
-      }}
-    >
+    <div {...hoverEvents} className="cursor-pointer">
       <Card className={`${hoverStyle}`}>
         <div
           style={{ backgroundColor: statusColorMap[role] }}
@@ -108,7 +99,15 @@ const UserCard: React.FC<IUserCardProps> = ({
         >
           {role}
         </div>
-        <div className="my-6 flex flex-col items-center">
+        <div
+          className="my-6 flex flex-col items-center"
+          onClick={() => {
+            if (id === user?.id) {
+              return navigate('/profile');
+            }
+            return navigate(`/users/${id}`);
+          }}
+        >
           <Avatar size={80} name={fullName} image={image} active={active} />
           <div className="mt-1 truncate text-neutral-900 text-base font-bold">
             {_.truncate(fullName, {
@@ -139,11 +138,6 @@ const UserCard: React.FC<IUserCardProps> = ({
                 icon="email"
                 variant={IconVariant.Secondary}
                 size={IconSize.Medium}
-                onClick={() => {
-                  if (user?.id === id) {
-                    navigate('/profile', { state: { userId: id } });
-                  } else navigate(`/users/${id}`);
-                }}
               />
             </div>
             <div className="rounded-7xl border border-solid border-neutral-200">
