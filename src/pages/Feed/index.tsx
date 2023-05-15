@@ -92,7 +92,6 @@ const Feed: React.FC<IFeedProps> = () => {
     /> */}
       </div>
       <PostBuilder showModal={showModal} setShowModal={setShowModal} />
-      <UserOnboard />
     </>
   );
 };

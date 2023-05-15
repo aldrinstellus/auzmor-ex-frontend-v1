@@ -29,6 +29,16 @@ const UpdateProfileImage: React.FC<UpdateProfileImageProps> = ({
     },
     onSuccess: (response: any) => {
       console.log('API call success', response);
+      updateUser({
+        name: response?.result?.data?.fullName,
+        id: response?.result?.data?.id,
+        email: response?.result?.data?.primaryEmail,
+        organization: {
+          id: response?.result?.data?.org?.id,
+          domain: response?.result?.data?.org?.domain,
+        },
+        profileImage: response?.result?.data?.profileImage?.original,
+      });
     },
   });
 

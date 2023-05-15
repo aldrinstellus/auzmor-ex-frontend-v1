@@ -71,7 +71,7 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
           domain: userData?.result?.data?.org.domain,
         },
         profileImage:
-          userData?.result?.data.profileImage?.originalUrl || undefined,
+          userData?.result?.data.profileImage?.original || undefined,
       });
     }
     setLoading(false);
