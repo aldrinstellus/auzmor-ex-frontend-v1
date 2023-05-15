@@ -6,7 +6,7 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import AddUsers from './AddUsers';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   IPostUser,
   IPostUsersResponse,
@@ -47,11 +47,13 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
   closeModal,
   setShowAddUserModal,
 }) => {
+  const queryClient = useQueryClient();
   const [showInvitedMembers, setShowInvitedMembers] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [invitedUsersResponse, setInvitedUsersResponse] = useState<
     IPostUsersResponse[]
   >([]);
+
   const getToastMessage = (users: IPostUsersResponse[]) => {
     close();
     if (users.length === 1) {
@@ -88,6 +90,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
       setShowConfirmationModal(true);
     },
     onSuccess: (data: any) => {
+      queryClient.invalidateQueries(['users']);
       setInvitedUsersResponse(data.result.data);
       let invitedCount = 0;
       data.result.data.forEach(
@@ -99,6 +102,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
         invitedCount === data.result.data.length
           ? getToastMessage(data.result.data)
           : `${invitedCount} out of the ${data.result.data.length} users were invited successfully `;
+
       toast(
         <div className="flex justify-between items-center">
           <div className="flex items-center">

@@ -81,10 +81,10 @@ const UserCard: React.FC<IUserCardProps> = ({
             true,
         },
         {
-          'z-20 shadow-xl': isHovered,
+          '-mb-6 z-10 shadow-xl ': isHovered,
         },
         {
-          'mb-0 z-0': !isHovered,
+          'mb-6 z-0': !isHovered,
         },
       ),
     [isHovered],
@@ -148,7 +148,7 @@ const UserCard: React.FC<IUserCardProps> = ({
         </div>
         {isHovered && (
           <div className="">
-            <div className="flex justify-between items-center mt-4 space-x-4">
+            <div className="flex justify-between items-center mt-0 space-x-4">
               <div className="rounded-7xl border border-solid border-neutral-200">
                 <IconButton
                   icon="email"
