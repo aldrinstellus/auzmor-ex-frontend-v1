@@ -69,32 +69,39 @@ const UserCard: React.FC<IUserCardProps> = ({
     {
       icon: 'redo',
       label: 'Resend Invite',
-      onClick: () =>
-        resendInviteMutation.mutate(id, {
-          onSuccess: () =>
-            toast(
-              <SuccessToast
-                content="Invitation has been sent"
-                actionLabel="Undo"
-                action={() => {}}
-              />,
-              {
-                closeButton: (
-                  <Icon
-                    name="closeCircleOutline"
-                    stroke={twConfig.theme.colors.primary['500']}
-                    size={20}
-                  />
-                ),
-                style: {
-                  border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-                  borderRadius: '6px',
-                  display: 'flex',
-                  alignItems: 'center',
-                },
-              },
+      onClick: () => {
+        let undo = false;
+        toast(
+          <SuccessToast
+            content="Invitation has been sent"
+            actionLabel="Undo"
+            action={() => {
+              undo = true;
+            }}
+          />,
+          {
+            closeButton: (
+              <Icon
+                name="closeCircleOutline"
+                stroke={twConfig.theme.colors.primary['500']}
+                size={20}
+              />
             ),
-        }),
+            style: {
+              border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+              borderRadius: '6px',
+              display: 'flex',
+              alignItems: 'center',
+            },
+            autoClose: 2000,
+          },
+        );
+        setTimeout(() => {
+          if (!undo) {
+            resendInviteMutation.mutate(id);
+          }
+        }, 2000);
+      },
     },
     {
       icon: 'userRemove',
