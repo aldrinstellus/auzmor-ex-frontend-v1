@@ -61,15 +61,15 @@ const Button = ({
     () =>
       clsx(
         {
-          'items-center bg-primary-500 text-white rounded-16xl hover:bg-primary-600 active:bg-primary-700 disabled:text-neutral-400 disabled:border-none disabled:bg-neutral-200':
+          'flex justify-center items-center bg-primary-500 text-white rounded-16xl hover:bg-primary-600 active:bg-primary-700 disabled:text-neutral-400 disabled:border-none disabled:bg-neutral-200':
             variant === Variant.Primary,
         },
         {
-          'items-center text-neutral-900 bg-white border-solid border border-neutral-200 rounded-16xl hover:text-primary-600 active:text-primary-700 disabled:text-neutral-400 disabled:border-none disabled:bg-neutral-200':
+          'flex justify-center items-center text-neutral-900 bg-white border-solid border border-neutral-200 rounded-16xl hover:text-primary-600 active:text-primary-700 disabled:text-neutral-400 disabled:border-none disabled:bg-neutral-200':
             variant === Variant.Secondary,
         },
         {
-          'items-center text-neutral-900 bg-white rounded-16xl hover:text-primary-600 active:text-primary-700 disabled:text-neutral-400':
+          'flex justify-center items-center text-neutral-900 bg-white rounded-16xl hover:text-primary-600 active:text-primary-700 disabled:text-neutral-400':
             variant === Variant.Tertiary,
         },
         {
@@ -121,7 +121,7 @@ const Button = ({
           />
         )}
       </div>
-      <div>{loading && <Spinner className="ml-2" color={PRIMARY_COLOR} />}</div>
+      {loading && <Spinner className="ml-2" color={PRIMARY_COLOR} />}
     </button>
   );
 };

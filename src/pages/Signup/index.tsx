@@ -7,7 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Button, { Size, Type as ButtonType } from 'components/Button';
 import { Logo } from 'components/Logo';
 import { useMutation } from '@tanstack/react-query';
-import { redirectWithToken } from 'utils/misc';
+import { readFirstAxiosError, redirectWithToken } from 'utils/misc';
 import { signup } from 'queries/account';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 
@@ -142,7 +142,8 @@ const Signup: React.FC<ISignupProps> = () => {
               <div className="mb-8">
                 <Banner
                   title={
-                    signupMutation.error?.toString() || 'Something went wrong'
+                    readFirstAxiosError(signupMutation.error) ||
+                    'Something went wrong'
                   }
                   variant={BannerVariant.Error}
                 />

@@ -70,3 +70,10 @@ export const isVideo = (type: string) => {
   }
   return false;
 };
+
+export const readFirstAxiosError = (err: any) => {
+  if (err.response) {
+    return err?.response?.data?.errors[0]?.message;
+  }
+  return 'Something went wrong!';
+};
