@@ -72,6 +72,11 @@ import ArrowSwap from '../components/ArrowSwap';
 import dotsVerticalIcon from '../components/DotsVertical';
 import Redo from '../components/Redo';
 import UserRemove from '../components/UserRemove';
+import Gear from '../components/Gear';
+import UserManagement from '../components/UserManagement';
+import Branding from '../components/Branding';
+import Link from '../components/Link';
+import Marketplace from '../components/Marketplace';
 
 export const icon = {
   add: Add,
@@ -148,4 +153,9 @@ export const icon = {
   marriedIcon: MarriedIcon,
   copyIcon: CopyIcon,
   outOfOfficeIcon: OutOfOfficeIcon,
+  gear: Gear,
+  userManagement: UserManagement,
+  branding: Branding,
+  link: Link,
+  marketplace: Marketplace,
 };
