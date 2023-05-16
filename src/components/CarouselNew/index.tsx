@@ -36,10 +36,10 @@ const Carousel: React.FC<ICarouselProps> = ({
   return (
     <div className={style}>
       {media[currentIndex].type === 'IMAGE' ? (
-        <img src={media[currentIndex].originalUrl} />
+        <img src={media[currentIndex].original} />
       ) : (
         <video>
-          <source src={media[currentIndex].originalUrl} />
+          <source src={media[currentIndex].original} />
         </video>
       )}
 

@@ -15,7 +15,7 @@ export type ImageProps = {
 };
 
 const Image: React.FC<ImageProps> = ({
-  image = { blurhash: '', name: '', originalUrl: '', type: '' },
+  image = { blurhash: '', name: '', original: '', type: '' },
   hashSize,
 }) => {
   const [isLoaded, setLoaded] = useState(false);
@@ -44,7 +44,7 @@ const Image: React.FC<ImageProps> = ({
         className="w-full h-full object-cover"
         key={image.name}
         alt={image.name}
-        src={image.originalUrl}
+        src={image.original}
         // @ts-ignore
         onLoad={handleLoad}
         beforeLoad={handleLoadStarted}

@@ -37,7 +37,7 @@ const UpdateProfileImage: React.FC<UpdateProfileImageProps> = ({
           id: response?.result?.data?.org?.id,
           domain: response?.result?.data?.org?.domain,
         },
-        profileImage: response?.result?.data?.profileImage?.originalUrl,
+        profileImage: response?.result?.data?.profileImage?.original,
       });
     },
   });
@@ -63,7 +63,7 @@ const UpdateProfileImage: React.FC<UpdateProfileImageProps> = ({
       updateProfileImageMutation.mutate({
         profileImage: {
           fileId: files[0].id,
-          originalUrl: files[0].originalUrl,
+          original: files[0].original,
         },
       });
     }

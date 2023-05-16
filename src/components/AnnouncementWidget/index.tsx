@@ -58,7 +58,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
                           }
                           image={
                             data?.data?.result?.data?.[0]?.createdBy
-                              ?.profileImage?.originalUrl
+                              ?.profileImage?.original
                           }
                           size={40}
                         />

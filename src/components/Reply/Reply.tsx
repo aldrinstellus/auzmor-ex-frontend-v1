@@ -65,7 +65,7 @@ export const Reply: React.FC<ReplyProps> = ({
               <Avatar
                 name={comment?.createdBy?.fullName}
                 size={32}
-                image={comment?.createdBy?.profileImage?.originalUrl}
+                image={comment?.createdBy?.profileImage?.original}
               />
             </div>
             <div className="flex flex-col items-start p-0 w-64">

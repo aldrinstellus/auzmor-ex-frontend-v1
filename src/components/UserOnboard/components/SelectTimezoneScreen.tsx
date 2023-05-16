@@ -17,7 +17,7 @@ type SelectTimezoneScreenProps = {
 };
 
 interface IForm {
-  timezone: OptionType;
+  timeZone: OptionType;
 }
 
 export type OptionType = {
@@ -32,7 +32,7 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
   const defaultTimezone = getDefaultTimezoneOption();
 
   const schema = yup.object({
-    timezone: yup.object(),
+    timeZone: yup.object(),
   });
 
   const { control, handleSubmit, getValues } = useForm<IForm>({
@@ -42,7 +42,7 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
 
   const updateUserTimezoneMutation = useMutation({
     mutationFn: updateCurrentUser,
-    mutationKey: ['update-user-timezone-mutation'],
+    mutationKey: ['update-user-timeZone-mutation'],
     onError: (error: any) => {
       console.log('Error while updating timezone: ', error);
     },
@@ -54,13 +54,13 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
   const onSubmit = async () => {
     const selectedTimezone = getValues();
     let timezoneValue;
-    if (selectedTimezone.timezone === undefined) {
+    if (selectedTimezone.timeZone === undefined) {
       timezoneValue = defaultTimezone.value[0];
     } else {
-      timezoneValue = selectedTimezone.timezone.value[0];
+      timezoneValue = selectedTimezone.timeZone.value[0];
     }
     await updateUserTimezoneMutation.mutateAsync({
-      timezone: timezoneValue,
+      timeZone: timezoneValue,
     });
     next();
   };
@@ -72,11 +72,11 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
   const fields = [
     {
       type: FieldType.SingleSelect,
-      name: 'timezone',
+      name: 'timeZone',
       control,
-      options: timezones.map((timezone) => ({
-        label: timezone.timezoneName,
-        value: timezone.iana,
+      options: timezones.map((timeZone) => ({
+        label: timeZone.timezoneName,
+        value: timeZone.iana,
       })),
       defaultValue: defaultTimezone,
       menuPlacement: 'top',

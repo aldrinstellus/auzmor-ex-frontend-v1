@@ -18,7 +18,7 @@ const Video = ({ video }: VideoProps) => {
       </div>
       <video
         className="w-full h-full"
-        src={video.originalUrl}
+        src={video.original}
         controls={true}
         ref={videoRef}
       />

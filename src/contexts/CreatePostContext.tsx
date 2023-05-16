@@ -61,7 +61,7 @@ export interface IMedia {
   isDeleted: boolean;
   isPublic: boolean;
   name: string;
-  originalUrl: string;
+  original: string;
   size: string;
   thumbnailUrl: string;
   type: 'IMAGE' | 'VIDEO';

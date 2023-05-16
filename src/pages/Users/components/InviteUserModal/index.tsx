@@ -6,7 +6,7 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import AddUsers from './AddUsers';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   IPostUser,
   IPostUsersResponse,
@@ -20,6 +20,7 @@ import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import InvitedUsersList from './InvitedUsersList';
 import { EMAIL_REGX } from 'utils/constants';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
 
 export interface IInviteUserModalProps {
   showModal: boolean;
@@ -47,11 +48,13 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
   closeModal,
   setShowAddUserModal,
 }) => {
+  const queryClient = useQueryClient();
   const [showInvitedMembers, setShowInvitedMembers] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [invitedUsersResponse, setInvitedUsersResponse] = useState<
     IPostUsersResponse[]
   >([]);
+
   const getToastMessage = (users: IPostUsersResponse[]) => {
     close();
     if (users.length === 1) {
@@ -88,6 +91,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
       setShowConfirmationModal(true);
     },
     onSuccess: (data: any) => {
+      queryClient.invalidateQueries(['users']);
       setInvitedUsersResponse(data.result.data);
       let invitedCount = 0;
       data.result.data.forEach(
@@ -99,32 +103,18 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
         invitedCount === data.result.data.length
           ? getToastMessage(data.result.data)
           : `${invitedCount} out of the ${data.result.data.length} users were invited successfully `;
+
       toast(
-        <div className="flex justify-between items-center">
-          <div className="flex items-center">
-            <div>
-              <Icon
-                className="p-1.5 bg-primary-100 rounded-7xl mr-2.5"
-                name="tickCircleOutline"
-                stroke={twConfig.theme.colors.primary['500']}
-              />
-            </div>
-            <span className="text-primary-500 text-sm w-56">{toastString}</span>
-          </div>
-          {invitedCount !== data.result.data.length && (
-            <div className="flex">
-              <Button
-                className="text-primary-500 ml-4 pr-1"
-                variant={ButtonVariant.Tertiary}
-                label="Show details"
-                onClick={() => {
-                  setShowAddUserModal(true);
-                  setShowInvitedMembers(true);
-                }}
-              />
-            </div>
-          )}
-        </div>,
+        <SuccessToast
+          content={toastString}
+          actionLabel={
+            invitedCount !== data.result.data.length ? 'Show details' : ''
+          }
+          action={() => {
+            setShowAddUserModal(true);
+            setShowInvitedMembers(true);
+          }}
+        />,
         {
           closeButton: (
             <Icon

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import _ from 'lodash';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
@@ -13,6 +13,10 @@ import useAuth from 'hooks/useAuth';
 import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
 import DeleteUserModal from './DeleteUserModal';
+import { UserStatus, useResendInvitation } from 'queries/users';
+import { toast } from 'react-toastify';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { twConfig } from 'utils/misc';
 
 export interface IUserCardProps {
   id: string;
@@ -24,6 +28,7 @@ export interface IUserCardProps {
   location?: string;
   active?: boolean;
   workEmail?: string;
+  status?: string;
 }
 
 export enum Status {
@@ -51,18 +56,45 @@ const UserCard: React.FC<IUserCardProps> = ({
   department,
   location,
   active,
+  status,
   workEmail,
 }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isHovered, hoverEvents] = useHover();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const resendInviteMutation = useResendInvitation();
 
   const postOptions = [
     {
       icon: 'redo',
       label: 'Resend Invite',
-      onClick: () => null,
+      onClick: () =>
+        resendInviteMutation.mutate(id, {
+          onSuccess: () =>
+            toast(
+              <SuccessToast
+                content="Invitation has been sent"
+                actionLabel="Undo"
+                action={() => {}}
+              />,
+              {
+                closeButton: (
+                  <Icon
+                    name="closeCircleOutline"
+                    stroke={twConfig.theme.colors.primary['500']}
+                    size={20}
+                  />
+                ),
+                style: {
+                  border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                },
+              },
+            ),
+        }),
     },
     {
       icon: 'userRemove',
@@ -81,34 +113,51 @@ const UserCard: React.FC<IUserCardProps> = ({
             true,
         },
         {
-          'z-10 shadow-xl visible': isHovered,
+          '-mb-6 z-10 shadow-xl ': isHovered,
         },
         {
-          'mb-0 z-0': !isHovered,
+          'mb-6 z-0': !isHovered,
         },
       ),
     [isHovered],
   );
 
   return (
-    <div
-      {...hoverEvents}
-      className="cursor-pointer"
-      onClick={() => {
-        if (id === user?.id) {
-          return navigate('/profile');
-        }
-        return navigate(`/users/${id}`);
-      }}
-    >
-      <Card className={`${hoverStyle}`}>
+    <div {...hoverEvents} className="cursor-pointer">
+      <Card className={hoverStyle}>
+        {isHovered && (
+          <PopupMenu
+            triggerNode={
+              <div className="cursor-pointer">
+                <Icon
+                  name="dotsVertical"
+                  stroke="#000"
+                  className="absolute top-2 right-2"
+                  hover={false}
+                />
+              </div>
+            }
+            menuItems={postOptions}
+          />
+        )}
         <div
-          style={{ backgroundColor: statusColorMap[role] }}
+          style={{
+            backgroundColor:
+              status === UserStatus.Invited ? '#EA580C' : statusColorMap[role],
+          }}
           className="absolute top-0 left-0 text-white rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium"
         >
-          {role}
+          {status === UserStatus.Invited ? 'Pending' : role}
         </div>
-        <div className="my-6 flex flex-col items-center">
+        <div
+          className="my-6 flex flex-col items-center"
+          onClick={() => {
+            if (id === user?.id) {
+              return navigate('/profile');
+            }
+            return navigate(`/users/${id}`);
+          }}
+        >
           <Avatar size={80} name={fullName} image={image} active={active} />
           <div className="mt-1 truncate text-neutral-900 text-base font-bold">
             {_.truncate(fullName, {
@@ -133,42 +182,24 @@ const UserCard: React.FC<IUserCardProps> = ({
           </div>
         </div>
         {isHovered && (
-          <div className="flex justify-between items-center mt-4 space-x-4">
-            <div className="rounded-7xl border border-solid border-neutral-200">
-              <IconButton
-                icon="email"
-                variant={IconVariant.Secondary}
-                size={IconSize.Medium}
-                onClick={() => {
-                  if (user?.id === id) {
-                    navigate('/profile', { state: { userId: id } });
-                  } else navigate(`/users/${id}`);
-                }}
-              />
-            </div>
-            <div className="rounded-7xl border border-solid border-neutral-200">
-              <IconButton
-                icon="slack"
-                variant={IconVariant.Secondary}
-                size={IconSize.Medium}
-              />
-            </div>
-          </div>
-        )}
-        {isHovered && (
-          <PopupMenu
-            triggerNode={
-              <div className="cursor-pointer p-2">
-                <Icon
-                  name="dotsVertical"
-                  stroke="#000"
-                  className="absolute top-4 right-4"
-                  hover={false}
+          <div className="">
+            <div className="flex justify-between items-center mt-0 space-x-4">
+              <div className="rounded-7xl border border-solid border-neutral-200">
+                <IconButton
+                  icon="email"
+                  variant={IconVariant.Secondary}
+                  size={IconSize.Medium}
                 />
               </div>
-            }
-            menuItems={postOptions}
-          />
+              <div className="rounded-7xl border border-solid border-neutral-200">
+                <IconButton
+                  icon="slack"
+                  variant={IconVariant.Secondary}
+                  size={IconSize.Medium}
+                />
+              </div>
+            </div>
+          </div>
         )}
       </Card>
       <DeleteUserModal

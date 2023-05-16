@@ -32,7 +32,7 @@ const Users: React.FC<IUsersProps> = () => {
   });
 
   const peopleHubNode = (
-    <div className="relative">
+    <div className="relative pb-8">
       <div>
         <div className="flex justify-between items-center">
           <div className="flex space-x-4">
@@ -118,7 +118,7 @@ const Users: React.FC<IUsersProps> = () => {
               <UserCard
                 key={user.id}
                 {...user}
-                image={user?.profileImage?.originalUrl}
+                image={user?.profileImage?.original}
               />
             ))}
           {isLoading && <Spinner color="#000" />}
@@ -147,7 +147,7 @@ const Users: React.FC<IUsersProps> = () => {
   ];
 
   return (
-    <Card className="p-8 w-full h-full space-y-6">
+    <Card className="p-8 w-full h-full">
       {/* Top People Directory Section */}
       <div className="space-y-6">
         <div className="flex justify-between">

@@ -56,7 +56,7 @@ export const getMediaObj = (files: File[]): IMedia[] => {
         isDeleted: false,
         isPublic: false,
         name: file.name,
-        originalUrl: getBlobUrl(file),
+        original: getBlobUrl(file),
         size: file.size.toString(),
         thumbnailUrl: '',
         type: getType(file.type),

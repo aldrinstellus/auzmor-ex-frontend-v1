@@ -27,10 +27,10 @@ const MediaRender: React.FC<IMediaRenderProps> = ({
       onClick={onClick}
     >
       {data.type === 'IMAGE' ? (
-        <img src={data.originalUrl} className="h-full" />
+        <img src={data.original} className="h-full" />
       ) : (
         <video className="h-full">
-          <source src={data.originalUrl} />
+          <source src={data.original} />
         </video>
       )}
 

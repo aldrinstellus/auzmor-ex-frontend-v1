@@ -3,7 +3,7 @@ import apiService from 'utils/apiService';
 
 export interface IProfileImage {
   fileId: string;
-  originalUrl: string;
+  original: string;
 }
 export interface IUserUpdate {
   id: string;
@@ -166,5 +166,17 @@ export const useCurrentUser = () => {
     queryKey: ['current-user-me'],
     queryFn: () => getCurrentUser(),
     staleTime: 15 * 60 * 1000,
+  });
+};
+
+export const useResendInvitation = () => {
+  const resendInvitation = async (id: string) => {
+    const { data } = await apiService.put(`/users/${id}/resend-invitation`);
+    return data;
+  };
+
+  return useMutation({
+    mutationKey: ['resend-invitation'],
+    mutationFn: resendInvitation,
   });
 };
