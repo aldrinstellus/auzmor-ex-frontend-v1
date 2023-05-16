@@ -52,9 +52,14 @@ const Signup: React.FC<ISignupProps> = () => {
     watch,
     control,
     handleSubmit,
+    getValues,
     formState: { errors, isValid },
   } = useForm<IForm>({
     resolver: yupResolver(schema),
+    defaultValues: {
+      password: '',
+      confirmPassword: '',
+    },
     mode: 'onChange',
   });
 
@@ -91,6 +96,7 @@ const Signup: React.FC<ISignupProps> = () => {
     },
     {
       type: FieldType.Password,
+      InputVariant: InputVariant.Password,
       placeholder: 'Enter password',
       name: 'password',
       label: 'Password*',
@@ -98,7 +104,8 @@ const Signup: React.FC<ISignupProps> = () => {
       error: errors.password?.message,
       dataTestId: 'signup-work-password',
       control,
-      showChecks: false,
+      getValues,
+      onChange: () => {},
     },
     {
       type: FieldType.Password,

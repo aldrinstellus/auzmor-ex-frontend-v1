@@ -85,44 +85,6 @@ const ChangePassword: React.FC<IChangePasswordProps> = () => {
     watch('confirmPassword'),
   ]);
 
-  const validatePassword = (value: string) => {
-    const validationState = {
-      length: true,
-      isUppercase: true,
-      isLowercase: true,
-      isNumber: true,
-      isSymbol: true,
-    };
-    let isValid = true;
-    // password length should be at least 6 characters
-    if (value.length < 6) {
-      isValid = false;
-      validationState.length = false;
-    }
-    // password should contain at least one uppercase letter
-    if (!/[A-Z]/.test(value)) {
-      isValid = false;
-      validationState.isUppercase = false;
-    }
-    // password should contain at least one lowercase letter
-    if (!/[a-z]/.test(value)) {
-      isValid = false;
-      validationState.isLowercase = false;
-    }
-    // password should contain at least one digit
-    if (!/\d/.test(value)) {
-      isValid = false;
-      validationState.isNumber = false;
-    }
-    // password should contain at least one special character
-    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value)) {
-      isValid = false;
-      validationState.isSymbol = false;
-    }
-    setPasswordRule(validationState);
-    return isValid;
-  };
-
   const passwordField = [
     {
       type: FieldType.Password,
