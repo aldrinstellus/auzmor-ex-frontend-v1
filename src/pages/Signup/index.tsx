@@ -44,38 +44,6 @@ export interface IValidationErrors {
 }
 
 const Signup: React.FC<ISignupProps> = () => {
-  const [emailValidationErrors, setEmailValidationErrors] =
-    useState<IValidationErrors | null>(null);
-
-  const [domainValidationErrors, setDomainValidationErrors] =
-    useState<IValidationErrors | null>(null);
-
-  const isEmailValid = () => {
-    if (emailValidationErrors) {
-      let error = true;
-      // Object.keys(emailValidationErrors).forEach((key: string) => {
-      if (emailValidationErrors.isError || emailValidationErrors.isLoading) {
-        error = false;
-        return;
-      }
-      // });
-      return error;
-    } else return true;
-  };
-
-  const isDomainValid = () => {
-    if (domainValidationErrors) {
-      let error = true;
-      // Object.keys(domainValidationErrors).forEach((key: string) => {
-      if (domainValidationErrors.isError || domainValidationErrors.isLoading) {
-        error = false;
-        return;
-      }
-      // });
-      return error;
-    } else return true;
-  };
-
   const signupMutation = useMutation((formData: IForm) => signup(formData), {
     onSuccess: (data) =>
       redirectWithToken(
