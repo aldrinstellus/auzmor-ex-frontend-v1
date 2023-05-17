@@ -68,81 +68,6 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       department: data?.department,
     },
   });
-
-  const { updateUser } = useAuth();
-
-  const updateUsersMutation = useMutation({
-    mutationFn: updateCurrentUser,
-    mutationKey: ['update-users-mutation'],
-    onError: (error: any) => {
-      console.log('API call resulted in error: ', error);
-    },
-    // need to change the response type
-    onSuccess: async (response: Record<string, any>) => {
-      console.log('API call success', response);
-      const userUpdateResponse = response?.result?.data;
-      updateUser({
-        name: userUpdateResponse.fullName,
-        id: userUpdateResponse.id,
-        email: userUpdateResponse.primaryEmail,
-        organization: {
-          id: userUpdateResponse.org?.id,
-          domain: userUpdateResponse.org?.domain,
-        },
-        workLocation: userUpdateResponse.workLocation,
-        preferredName: userUpdateResponse.preferredName,
-        designation: userUpdateResponse.designation,
-        // department: userUpdateResponse.department,
-        location: userUpdateResponse.location,
-        profileImage: userUpdateResponse.profileImage?.original,
-        coverImage: userUpdateResponse.profileImage?.original,
-      });
-      await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
-      setFile({});
-    },
-  });
-
-  const onSubmit = async (user: IUpdateProfileForm) => {
-    let profileImageUploadResponse;
-    let coverImageUploadResponse;
-    // optimize with one uploadMedia function - taking time to upload the files
-    if (Object.keys(file).length) {
-      profileImageUploadResponse = await uploadMedia(
-        [file?.profileImage],
-        EntityType.UserProfileImage,
-      );
-      coverImageUploadResponse = await uploadMedia(
-        [file?.coverImage],
-        EntityType.UserCoverImage,
-      );
-    }
-    const profileImageFile = profileImageUploadResponse
-      ? {
-          profileImage: {
-            fileId: profileImageUploadResponse[0]?.id,
-            original: profileImageUploadResponse[0].original,
-          },
-        }
-      : {};
-    const coverImageFile = coverImageUploadResponse
-      ? {
-          coverImage: {
-            fileId: coverImageUploadResponse[0]?.id,
-            original: coverImageUploadResponse[0]?.original,
-          },
-        }
-      : {};
-    updateUsersMutation.mutate({
-      fullName: user.fullName,
-      designation: user?.designation?.value,
-      preferredName: user?.firstName,
-      // department: user?.department?.value,
-      workLocation: user?.workLocation?.value,
-      ...profileImageFile,
-      ...coverImageFile,
-    });
-  };
-
   const nameField = [
     {
       type: FieldType.Input,
@@ -225,6 +150,79 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       onClick: () => null,
     },
   ];
+  const { updateUser } = useAuth();
+
+  const updateUsersMutation = useMutation({
+    mutationFn: updateCurrentUser,
+    mutationKey: ['update-users-mutation'],
+    onError: (error: any) => {
+      console.log('API call resulted in error: ', error);
+    },
+    // need to change the response type
+    onSuccess: async (response: Record<string, any>) => {
+      const userUpdateResponse = response?.result?.data;
+      updateUser({
+        name: userUpdateResponse.fullName,
+        id: userUpdateResponse.id,
+        email: userUpdateResponse.primaryEmail,
+        organization: {
+          id: userUpdateResponse.org?.id,
+          domain: userUpdateResponse.org?.domain,
+        },
+        workLocation: userUpdateResponse.workLocation,
+        preferredName: userUpdateResponse.preferredName,
+        designation: userUpdateResponse.designation,
+        // department: userUpdateResponse.department,
+        location: userUpdateResponse.location,
+        profileImage: userUpdateResponse.profileImage?.original,
+        coverImage: userUpdateResponse.profileImage?.original,
+      });
+      setFile({});
+      setShowModal(false);
+      await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
+    },
+  });
+
+  const onSubmit = async (user: IUpdateProfileForm) => {
+    let profileImageUploadResponse;
+    let coverImageUploadResponse;
+    // optimize with one uploadMedia function - taking time to upload the files
+    if (Object.keys(file).length) {
+      profileImageUploadResponse = await uploadMedia(
+        [file?.profileImage],
+        EntityType.UserProfileImage,
+      );
+      coverImageUploadResponse = await uploadMedia(
+        [file?.coverImage],
+        EntityType.UserCoverImage,
+      );
+    }
+    const profileImageFile = profileImageUploadResponse
+      ? {
+          profileImage: {
+            fileId: profileImageUploadResponse[0]?.id,
+            original: profileImageUploadResponse[0].original,
+          },
+        }
+      : {};
+    const coverImageFile = coverImageUploadResponse
+      ? {
+          coverImage: {
+            fileId: coverImageUploadResponse[0]?.id,
+            original: coverImageUploadResponse[0]?.original,
+          },
+        }
+      : {};
+    updateUsersMutation.mutate({
+      fullName: user.fullName,
+      designation: user?.designation?.value,
+      preferredName: user?.firstName,
+      // department: user?.department?.value,
+      workLocation: user?.workLocation?.value,
+      ...profileImageFile,
+      ...coverImageFile,
+    });
+  };
 
   const disableClosed = () => {
     if (
@@ -313,6 +311,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
             className="mr-3"
             onClick={() => {
               setShowModal(false);
+              setFile({});
             }}
           />
           <Button
