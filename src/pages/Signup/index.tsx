@@ -49,8 +49,6 @@ const Signup: React.FC<ISignupProps> = () => {
   const [domainValidationErrors, setDomainValidationErrors] =
     useState<IValidationErrors | null>(null);
 
-  console.log(emailValidationErrors, 'KKKKK', domainValidationErrors);
-
   const isEmailValid = () => {
     if (emailValidationErrors) {
       let error = true;
