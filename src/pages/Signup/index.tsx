@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
@@ -7,9 +7,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Button, { Size, Type as ButtonType } from 'components/Button';
 import { Logo } from 'components/Logo';
 import { useMutation } from '@tanstack/react-query';
-import { readFirstAxiosError, redirectWithToken } from 'utils/misc';
+import { redirectWithToken } from 'utils/misc';
 import { signup } from 'queries/account';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
+import { useDebounce } from 'hooks/useDebounce';
+import { useDomainExists, useIsUserExist } from 'queries/users';
 
 interface IForm {
   workEmail: string;
@@ -35,7 +37,49 @@ const schema = yup.object({
 
 export interface ISignupProps {}
 
+export interface IValidationErrors {
+  isError: boolean;
+  isLoading: boolean;
+}
+
 const Signup: React.FC<ISignupProps> = () => {
+  const [emailValidationErrors, setEmailValidationErrors] =
+    useState<IValidationErrors | null>(null);
+
+  const [domainValidationErrors, setDomainValidationErrors] =
+    useState<IValidationErrors | null>(null);
+
+  console.log(emailValidationErrors, 'KKKKK', domainValidationErrors);
+
+  const isEmailValid = () => {
+    if (emailValidationErrors) {
+      let error = true;
+      Object.keys(emailValidationErrors).forEach((key: string) => {
+        if (emailValidationErrors.isError || emailValidationErrors.isLoading) {
+          error = false;
+          return;
+        }
+      });
+      return error;
+    } else return true;
+  };
+
+  const isDomainValid = () => {
+    if (domainValidationErrors) {
+      let error = true;
+      Object.keys(domainValidationErrors).forEach((key: string) => {
+        if (
+          domainValidationErrors.isError ||
+          domainValidationErrors.isLoading
+        ) {
+          error = false;
+          return;
+        }
+      });
+      return error;
+    } else return true;
+  };
+
   const signupMutation = useMutation((formData: IForm) => signup(formData), {
     onSuccess: (data) =>
       redirectWithToken(
@@ -78,7 +122,9 @@ const Signup: React.FC<ISignupProps> = () => {
       placeholder: 'Enter your email address',
       name: 'workEmail',
       label: 'Work Email*',
-      error: errors.workEmail?.message,
+      error:
+        errors.workEmail?.message ||
+        (emailValidationErrors?.isError && 'User already exists'),
       dataTestId: 'sign-up-email',
       control,
     },
@@ -88,7 +134,9 @@ const Signup: React.FC<ISignupProps> = () => {
       placeholder: 'Enter domain',
       name: 'domain',
       label: 'Domain*',
-      error: errors.domain?.message,
+      error:
+        errors.domain?.message ||
+        (domainValidationErrors?.isError && 'Domain already exists'),
       dataTestId: 'sign-up-domain',
       control,
     },
@@ -131,6 +179,30 @@ const Signup: React.FC<ISignupProps> = () => {
     signupMutation.mutate(formData);
   };
 
+  const debouncedEmailValue = useDebounce(getValues().workEmail, 500);
+  const { isLoading: isEmailLoading, data: isEmailData } =
+    useIsUserExist(debouncedEmailValue);
+
+  const debouncedDomainValue = useDebounce(getValues().domain, 500);
+  const { isLoading: isDomainLoading, data: isDomainData } =
+    useDomainExists(debouncedDomainValue);
+
+  useEffect(() => {
+    setEmailValidationErrors({
+      ...emailValidationErrors,
+      isError: isEmailData ? !!isEmailData.result.data.userExists : false,
+      isLoading: isEmailLoading,
+    });
+  }, [isEmailLoading, isEmailData]);
+
+  useEffect(() => {
+    setDomainValidationErrors({
+      ...domainValidationErrors,
+      isError: isDomainData ? !!isDomainData.data.exists : false,
+      isLoading: isDomainLoading,
+    });
+  }, [isDomainLoading, isDomainData]);
+
   return (
     <div className="flex h-screen w-screen">
       <div
@@ -155,8 +227,7 @@ const Signup: React.FC<ISignupProps> = () => {
                 <Banner
                   dataTestId="signup-error-msg"
                   title={
-                    readFirstAxiosError(signupMutation.error) ||
-                    'Something went wrong'
+                    signupMutation.error?.toString() || 'Something went wrong'
                   }
                   variant={BannerVariant.Error}
                 />

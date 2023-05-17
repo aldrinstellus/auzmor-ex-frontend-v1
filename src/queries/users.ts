@@ -75,6 +75,19 @@ export const isUserExist = async (q: { email: string }) => {
   return data;
 };
 
+export const isDomainExists = async (q: { domain: string }) => {
+  const { data } = await apiService.get('/organizations/domain/exists', q);
+  return data;
+};
+
+export const useDomainExists = (domain: string) => {
+  return useQuery({
+    queryKey: ['domain-exist', domain],
+    queryFn: () => isDomainExists({ domain }),
+    staleTime: 1000,
+  });
+};
+
 // verify invite
 export const verifyInviteLink = async (q: Record<string, any>) => {
   const { data } = await apiService.get('/users/invite/verify', q);
