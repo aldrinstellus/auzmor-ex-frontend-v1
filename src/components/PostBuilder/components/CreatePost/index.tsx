@@ -45,7 +45,6 @@ const CreatePost: React.FC<ICreatePostProps> = ({
         accept="image/*"
         onChange={(e) => {
           if (e.target.files?.length) {
-            // array of files
             setUploads(Array.prototype.slice.call(e.target.files));
           }
         }}
