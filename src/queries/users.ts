@@ -71,13 +71,17 @@ const getAllUsers = async ({ limit, prev, next }: UserQueryParams) => {
 
 // existing user
 export const isUserExist = async (q: { email: string }) => {
-  const { data } = await apiService.get('/users/exists', q);
-  return data;
+  if (!!q.email) {
+    const { data } = await apiService.get('/users/exists', q);
+    return data;
+  }
 };
 
 export const isDomainExists = async (q: { domain: string }) => {
-  const { data } = await apiService.get('/organizations/domain/exists', q);
-  return data;
+  if (!!q.domain) {
+    const { data } = await apiService.get('/organizations/domain/exists', q);
+    return data;
+  }
 };
 
 export const useDomainExists = (domain: string) => {
