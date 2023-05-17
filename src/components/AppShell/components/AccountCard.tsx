@@ -4,17 +4,19 @@ import useAuth from 'hooks/useAuth';
 import Popover from 'components/Popover';
 import Button, { Size, Variant } from 'components/Button';
 import clsx from 'clsx';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { logout } from 'queries/account';
 import { removeAllItems } from 'utils/persist';
 import { useNavigate } from 'react-router-dom';
 
 const AccountCard = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const logoutMutation = useMutation(logout, {
     onSuccess: () => {
       removeAllItems();
+      queryClient.clear();
       navigate('/login');
     },
   });
