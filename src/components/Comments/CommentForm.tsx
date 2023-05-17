@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import IconButton, {
   Variant as IconVariant,
   Size as SizeVariant,
@@ -13,18 +13,20 @@ interface CommentFormProps {
   className?: string;
   entityId: string;
   entityType: string;
-  setReplyInputBox?: (inputBox: boolean) => void;
+  defaultValue?: string;
+  inputRef?: any;
 }
 
 export const CommentForm: React.FC<CommentFormProps> = ({
   className = '',
   entityId,
   entityType,
-  setReplyInputBox,
+  defaultValue,
+  inputRef,
 }) => {
   const queryClient = useQueryClient();
-  const quillRef = useRef<ReactQuill>(null);
 
+  const quillRef = useRef<ReactQuill>(null);
   const createCommentMutation = useMutation({
     mutationKey: ['create-comment-mutation'],
     mutationFn: createComments,
@@ -32,9 +34,6 @@ export const CommentForm: React.FC<CommentFormProps> = ({
       console.log(error);
     },
     onSuccess: (data: any, variables, context) => {
-      if (setReplyInputBox) {
-        setReplyInputBox(false);
-      }
       quillRef.current?.setEditorContents(quillRef.current?.getEditor(), '');
       queryClient.invalidateQueries({ queryKey: ['comments'] });
     },
@@ -67,11 +66,15 @@ export const CommentForm: React.FC<CommentFormProps> = ({
 
   return (
     <div className={`flex flex-row ${className} `}>
-      <div className="flex items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full">
+      <div
+        ref={inputRef}
+        className="flex items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full"
+      >
         <RichTextEditor
           placeholder="Leave a Comment..."
           className="max-h-18 overflow-y-auto w-[70%] max-w-[70%]"
           ref={quillRef}
+          defaultValue={defaultValue}
         />
       </div>
 

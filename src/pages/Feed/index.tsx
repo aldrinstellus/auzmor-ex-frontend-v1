@@ -7,20 +7,13 @@ import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
 import Post from 'components/Post';
 import { useInView } from 'react-intersection-observer';
 import { IMenuItem } from 'components/PopupMenu';
+import UserOnboard from 'components/UserOnboard';
 
 interface IFeedProps {}
 
-export interface IPostTypeIcon {
-  id: number;
-  label: string;
-  icon: ReactNode;
-  menuItems: IMenuItem[];
-  divider?: ReactNode;
-}
-
 export interface IProfileImage {
   blurHash: string;
-  url: string;
+  original: string;
 }
 
 export interface ICreated {
@@ -63,41 +56,43 @@ const Feed: React.FC<IFeedProps> = () => {
   }) as IGetPost[];
 
   return (
-    <div className="mb-12 flex space-x-8 relative">
-      <div>
-        <UserCard />
-      </div>
-      <div className="max-w-2xl">
-        <div className="max-">
-          <CreatePostCard setShowModal={setShowModal} />
-          {isLoading ? (
-            <div>loading...</div>
-          ) : (
-            <div>
-              {feed.map((post) => (
-                <Post data={post} key={post.id} />
-              ))}
-            </div>
-          )}
-
-          <div className="h-12 w-12">
-            {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
-          </div>
-          {isFetchingNextPage && <div>Loading more...</div>}
+    <>
+      <div className="mb-12 space-x-8 flex w-full">
+        <div className="sticky top-10 z-10 w-1/4">
+          <UserCard />
         </div>
+        <div className="w-1/2">
+          <div className="">
+            <CreatePostCard setShowModal={setShowModal} />
+            {isLoading ? (
+              <div className="mt-4">loading...</div>
+            ) : (
+              <div className="mt-4">
+                {feed.map((post) => (
+                  <Post data={post} key={post.id} />
+                ))}
+              </div>
+            )}
+
+            <div className="h-12 w-12">
+              {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+            </div>
+            {isFetchingNextPage && <div>Loading more...</div>}
+          </div>
+        </div>
+        <div className="w-1/4">
+          <AnnouncementCard />
+        </div>
+        {/* <ActivityFeed
+      activityFeed={feed}
+      loadMore={fetchNextPage}
+      setShowModal={setShowModal}
+      isLoading={isLoading}
+      isFetchingNextPage={isFetchingNextPage}
+    /> */}
       </div>
-      <div className="max-w-xs">
-        <AnnouncementCard />
-      </div>
-      {/* <ActivityFeed
-        activityFeed={feed}
-        loadMore={fetchNextPage}
-        setShowModal={setShowModal}
-        isLoading={isLoading}
-        isFetchingNextPage={isFetchingNextPage}
-      /> */}
       <PostBuilder showModal={showModal} setShowModal={setShowModal} />
-    </div>
+    </>
   );
 };
 

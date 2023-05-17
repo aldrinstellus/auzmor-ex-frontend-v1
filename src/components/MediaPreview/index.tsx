@@ -6,6 +6,8 @@ import { twConfig } from 'utils/misc';
 import Icon from 'components/Icon';
 import { IMedia } from 'contexts/CreatePostContext';
 import useModal from 'hooks/useModal';
+import './index.css';
+import Modal from 'components/Modal';
 
 export enum Mode {
   View = 'VIEW',
@@ -47,6 +49,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
     closeModal();
     setMediaIndex(-1);
   };
+
   const getLayout = () => {
     if (media.length === 0) {
     } else if (media.length === 1) {
@@ -64,10 +67,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
       );
     } else if (media.length === 2) {
       return (
-        <div className="flex w-full h-full">
+        <div className="flex w-full h-full items-center">
           <MediaRender
             data={media[0]}
-            localClassName="mr-4"
+            localClassName="!w-1/2 !mr-2 bg-slate-400"
             onClick={(e) => {
               if (mode === Mode.View) {
                 setIndexAndOpenCarousel(0);
@@ -76,9 +79,9 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
               }
             }}
           />
-
           <MediaRender
             data={media[1]}
+            localClassName="!w-1/2 !ml-2 bg-slate-400"
             onClick={(e) => {
               if (mode === Mode.View) {
                 setIndexAndOpenCarousel(1);
@@ -92,7 +95,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
     } else if (media.length === 3) {
       return (
         <div className="flex w-full h-full">
-          <div className="mr-4">
+          <div className="!w-1/2 !mr-2">
             <MediaRender
               data={media[0]}
               localClassName="mr-4"
@@ -105,9 +108,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
               }}
             />
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col !w-1/2 !ml-2">
             <MediaRender
               data={media[1]}
+              localClassName="mb-2"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(1);
@@ -118,6 +122,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
             />
             <MediaRender
               data={media[2]}
+              localClassName="mt-2"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(2);
@@ -132,10 +137,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
     } else if (media.length === 4) {
       return (
         <div className="flex flex-col w-full h-full">
-          <div className="flex mb-4">
+          <div className="flex mb-2 !h-1/2">
             <MediaRender
               data={media[0]}
-              localClassName="mr-4"
+              localClassName="!w-1/2 !mr-2"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(0);
@@ -146,7 +151,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
             />
             <MediaRender
               data={media[1]}
-              localClassName="mr-4"
+              localClassName="!w-1/2 !ml-2"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(1);
@@ -156,10 +161,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
               }}
             />
           </div>
-          <div className="flex">
+          <div className="flex mt-2 !h-1/2">
             <MediaRender
               data={media[2]}
-              localClassName="mr-4"
+              localClassName="!w-1/2 mr-2"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(2);
@@ -170,7 +175,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
             />
             <MediaRender
               data={media[3]}
-              localClassName="mr-4"
+              localClassName="!w-1/2 ml-2"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(3);
@@ -185,10 +190,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
     } else if (media.length === 5) {
       return (
         <div className="flex flex-col w-full h-full">
-          <div className="flex mb-4">
+          <div className="flex mb-2 !h-1/2 ">
             <MediaRender
               data={media[0]}
-              localClassName="mr-4"
+              localClassName="mr-2 !w-1/2"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(0);
@@ -199,7 +204,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
             />
             <MediaRender
               data={media[1]}
-              localClassName="mr-4"
+              localClassName="ml-2 !w-1/2"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(1);
@@ -209,10 +214,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
               }}
             />
           </div>
-          <div className="flex">
+          <div className="flex !h-1/2 mt-2">
             <MediaRender
               data={media[2]}
-              localClassName="mr-4"
+              localClassName="!w-1/3 mr-2"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(2);
@@ -223,7 +228,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
             />
             <MediaRender
               data={media[3]}
-              localClassName="mr-4"
+              localClassName="!w-1/3 mx-2"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(3);
@@ -234,7 +239,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
             />
             <MediaRender
               data={media[4]}
-              localClassName="mr-4"
+              localClassName="!w-1/3 ml-2"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(4);
@@ -249,10 +254,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
     } else if (media.length > 5) {
       return (
         <div className="flex flex-col w-full h-full">
-          <div className="flex mb-4">
+          <div className="flex mb-2 !h-1/2 ">
             <MediaRender
               data={media[0]}
-              localClassName="mr-4"
+              localClassName="mr-2 !w-1/2"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(0);
@@ -263,7 +268,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
             />
             <MediaRender
               data={media[1]}
-              localClassName="mr-4"
+              localClassName="ml-2 !w-1/2"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(1);
@@ -273,10 +278,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
               }}
             />
           </div>
-          <div className="flex">
+          <div className="flex !h-1/2 mt-2">
             <MediaRender
               data={media[2]}
-              localClassName="mr-4"
+              localClassName="!w-1/3 mr-2"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(2);
@@ -287,7 +292,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
             />
             <MediaRender
               data={media[3]}
-              localClassName="mr-4"
+              localClassName="!w-1/3 mx-2"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(3);
@@ -299,7 +304,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
             <MediaRender
               overlayCount={media.length - 5}
               data={media[4]}
-              localClassName="mr-4"
+              localClassName="!w-1/3 ml-2"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(4);
@@ -353,12 +358,14 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
         </div>
       )}
       {mode === Mode.View && mediaIndex >= 0 && (
-        <Carousel
-          media={media}
-          index={mediaIndex}
-          open={open}
-          closeModal={closeModalAndResetMediaIndex}
-        />
+        <Modal open={open} className="!w-[65vw] !h-[80vh] p-6">
+          <Carousel
+            media={media}
+            index={mediaIndex}
+            open={open}
+            closeModal={closeModalAndResetMediaIndex}
+          />
+        </Modal>
       )}
     </div>
   );

@@ -15,7 +15,7 @@ export interface ICreatePostProviderProps {
 export enum CreatePostFlow {
   CreatePost = 'CREATE_POST',
   CreateAnnouncement = 'CREATE_ANNOUNCEMENT',
-  EditPost = 'EDIT_POST',
+  EditMedia = 'EDIT_MEDIA',
 }
 
 export interface IAnnouncement {
@@ -33,12 +33,18 @@ export interface ICreatePostContext {
   media: IMedia[];
   files: File[];
   setFiles: (files: File[]) => void;
-  setMedia: any;
+  setMedia: (media: IMedia[]) => void;
   inputImgRef: React.RefObject<HTMLInputElement> | null;
   inputVideoRef: React.RefObject<HTMLInputElement> | null;
   setUploads: (uploads: File[]) => void;
   replaceMedia: (index: number, data: File) => void;
-  removeMedia: (index: number) => void;
+  removeMedia: (index: number, callback?: () => void) => void;
+  clearPostContext: () => void;
+  removeAllMedia: () => void;
+  isPreviewRemoved: boolean;
+  setIsPreviewRemoved: (flag: boolean) => void;
+  isCharLimit: boolean;
+  setIsCharLimit: (flag: boolean) => void;
 }
 
 export interface IEditorValue {
@@ -55,7 +61,7 @@ export interface IMedia {
   isDeleted: boolean;
   isPublic: boolean;
   name: string;
-  originalUrl: string;
+  original: string;
   size: string;
   thumbnailUrl: string;
   type: 'IMAGE' | 'VIDEO';
@@ -77,6 +83,12 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setUploads: () => {},
   replaceMedia: () => {},
   removeMedia: () => {},
+  clearPostContext: () => {},
+  removeAllMedia: () => {},
+  isPreviewRemoved: false,
+  setIsPreviewRemoved: () => {},
+  isCharLimit: false,
+  setIsCharLimit: () => {},
 });
 
 const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
@@ -93,6 +105,8 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
   const inputImgRef = useRef<HTMLInputElement>(null);
   const inputVideoRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<File[]>([]);
+  const [isPreviewRemoved, setIsPreviewRemoved] = useState<boolean>(false);
+  const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
 
   const setUploads = (uploads: File[]) => {
     setMedia([...media, ...getMediaObj(uploads)]);
@@ -101,11 +115,15 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
 
   const replaceMedia = (index: number, data: File) => {
     // Replace Files
-    setFiles(
-      files.map((file: File) =>
-        file.name === media[index].name ? data : file,
-      ),
-    );
+    if (files.findIndex((file: File) => file.name === media[index].name) > -1) {
+      setFiles(
+        files.map((file: File) =>
+          file.name === media[index].name ? data : file,
+        ),
+      );
+    } else {
+      setFiles([...files, data]);
+    }
 
     // Replace Media
     setMedia(
@@ -115,10 +133,30 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     );
   };
 
-  const removeMedia = (index: number) => {
+  const removeMedia = (index: number, callback?: () => void) => {
     const fileName = media[index].name;
     setMedia([...media.filter((file: IMedia) => file.name !== fileName)]);
     setFiles([...files.filter((file: File) => file.name !== fileName)]);
+    callback && callback();
+  };
+
+  const removeAllMedia = () => {
+    setMedia([]);
+    setFiles([]);
+  };
+
+  const clearPostContext = () => {
+    setMedia([]);
+    setAnnouncement(null);
+    setEditorValue({
+      html: '',
+      json: {} as DeltaStatic,
+      text: '',
+    });
+    setFiles([]);
+    setActiveFlow(CreatePostFlow.CreatePost);
+    setIsPreviewRemoved(false);
+    setIsCharLimit(false);
   };
   return (
     <CreatePostContext.Provider
@@ -138,6 +176,12 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         inputVideoRef,
         replaceMedia,
         removeMedia,
+        clearPostContext,
+        removeAllMedia,
+        isPreviewRemoved,
+        setIsPreviewRemoved,
+        isCharLimit,
+        setIsCharLimit,
       }}
     >
       {children}

@@ -3,12 +3,13 @@ import Avatar from 'components/Avatar';
 import Earth from 'images/earth.svg';
 import { CREATE_POST, VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
+import { ICreatedBy } from 'queries/post';
 
 type ActorProps = {
   visibility: string;
   contentMode?: string;
   createdTime?: string;
-  createdBy?: string;
+  createdBy?: ICreatedBy;
 };
 
 const Actor: React.FC<ActorProps> = ({
@@ -23,11 +24,15 @@ const Actor: React.FC<ActorProps> = ({
     <div className={`flex justify-between items-center mx-6 mt-6 mb-4`}>
       <div className="flex items-center">
         <div>
-          <Avatar name={user?.name || 'U'} size={32} />
+          <Avatar
+            name={createdBy?.fullName || user?.name || 'U'}
+            size={32}
+            image={createdBy?.profileImage.original}
+          />
         </div>
         <div className="ml-3">
           <div className="font-bold text-sm text-neutral-900">
-            {user?.name}
+            {createdBy?.fullName}
             {contentMode === VIEW_POST ? (
               <span className="ml-1 text-sm font-normal text-neutral-900">
                 shared a post

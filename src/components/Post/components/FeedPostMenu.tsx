@@ -22,6 +22,9 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
     onError: (error) => console.log(error),
     onSuccess: async (data, variables, context) => {
       await queryClient.invalidateQueries(['feed']);
+      await queryClient.invalidateQueries(['announcements-widget']);
+      await queryClient.invalidateQueries(['my-profile-feed']);
+      await queryClient.invalidateQueries(['people-profile-feed']);
       closeConfirm();
     },
   });
@@ -88,8 +91,10 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
         success={{
           label: 'Delete',
           className: 'bg-red-500 text-white ',
-          onSubmit: () => {
+          onSubmit: async () => {
             deletePostMutation.mutate(data?.id || '');
+            await queryClient.invalidateQueries(['feed']);
+            await queryClient.invalidateQueries(['announcements-widget']);
           },
         }}
         discard={{

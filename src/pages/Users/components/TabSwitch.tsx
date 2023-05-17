@@ -1,25 +1,28 @@
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React, { ReactNode, useState } from 'react';
+import { find } from 'lodash';
 
-interface Tab {
-  label: string;
+interface ITab {
+  id: number;
+  title: string;
+  content?: ReactNode;
 }
 
 interface TabSwitcherProps {
-  tabs: Tab[];
+  tabs: ITab[];
 }
 
 const TabSwitcher: React.FC<TabSwitcherProps> = ({ tabs }) => {
-  const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id);
 
-  const handleTabClick = (index: number) => {
-    setActiveTabIndex(index);
+  const handleTabClick = (tabId: number) => {
+    setActiveTab(tabId);
   };
 
   const styles = (active: boolean) =>
     clsx(
       {
-        'pl-6 pr-6 pt-1 pb-1 font-bold gap-1': true,
+        'font-bold px-4 cursor-pointer py-1': true,
       },
       {
         'bg-primary-500 rounded-6xl text-white': active,
@@ -29,18 +32,23 @@ const TabSwitcher: React.FC<TabSwitcherProps> = ({ tabs }) => {
       },
     );
 
+  const activeTabNode = find(tabs, { id: activeTab });
+
   return (
-    <div className="p-1 bg-neutral-50 rounded-6xl border-solid border-2 border-neutral-200 flex max-w-min">
-      {tabs.map((tab, index) => (
-        <div
-          style={{ cursor: 'pointer' }}
-          key={tab.label}
-          onClick={() => handleTabClick(index)}
-          className={styles(index === activeTabIndex)}
-        >
-          {tab.label}
-        </div>
-      ))}
+    <div className="space-y-8">
+      <div className="flex max-w-min p-1 bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200">
+        {tabs.map((tab) => (
+          <div
+            key={tab?.id}
+            onClick={() => handleTabClick(tab?.id)}
+            className={styles(tab?.id === activeTab)}
+          >
+            {tab?.title}
+          </div>
+        ))}
+      </div>
+
+      <div>{activeTabNode?.content}</div>
     </div>
   );
 };

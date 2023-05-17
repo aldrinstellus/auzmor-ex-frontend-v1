@@ -2,6 +2,7 @@ import apiService from 'utils/apiService';
 import axios from 'axios';
 import { useState } from 'react';
 import { getType } from 'utils/misc';
+import { IMedia } from 'contexts/CreatePostContext';
 
 export const validImageTypes = ['image/png', 'image/jpg', 'image/jpeg'];
 
@@ -63,6 +64,7 @@ export enum UploadStatus {
   YetToStart = 'YET_TO_START',
   Uploading = 'UPLOADING',
   Finished = 'FINISHED',
+  Error = 'ERROR',
 }
 
 export const useUpload = () => {
@@ -86,7 +88,7 @@ export const useUpload = () => {
       promises.push(
         axios.put(
           `${res.uploadUrl}?partNumber=${partnumber}&uploadId=${res.uploadId}`,
-          { data: getChunk(partnumber, file) },
+          getChunk(partnumber, file),
           { headers: { authorization: `Bearer ${res.accessToken}` } },
         ),
       );
@@ -124,7 +126,8 @@ export const useUpload = () => {
   }
 
   const uploadMedia = async (fileList: File[], entityType: EntityType) => {
-    const fileIds: string[] = [];
+    // TODO Add error state when upload fails.
+    const uploadedFiles: IMedia[] = [];
     const createFilePromises: Promise<ICreateFileResponse>[] = [];
     const uploadToGCPPromises: Promise<IUploadToGcpResposne | undefined>[] = [];
     const uploadETagPromises: Promise<any>[] = [];
@@ -167,12 +170,13 @@ export const useUpload = () => {
           } else {
             console.log(promiseRes);
             console.log('create file failed');
+            // setUploadStatus(UploadStatus.Error);
           }
         },
       );
     } else {
       setUploadStatus(UploadStatus.Finished);
-      return fileIds;
+      return uploadedFiles;
     }
 
     if (uploadToGCPPromises.length > 0) {
@@ -193,15 +197,17 @@ export const useUpload = () => {
         },
       );
     } else {
-      setUploadStatus(UploadStatus.Finished);
-      return fileIds;
+      if (uploadStatus !== UploadStatus.Error) {
+        setUploadStatus(UploadStatus.Finished);
+      }
+      return uploadedFiles;
     }
 
     if (uploadETagPromises.length > 0) {
       const promisesRes = await Promise.allSettled(uploadETagPromises);
-      promisesRes.forEach((promiseRes: PromiseSettledResult<any>) => {
+      promisesRes.forEach((promiseRes: PromiseSettledResult<IMedia>) => {
         if (promiseRes.status === 'fulfilled') {
-          fileIds.push(promiseRes.value.result.data.id);
+          uploadedFiles.push((promiseRes.value as any).result.data);
         } else {
           console.log(promiseRes);
           console.log('etag upload failed');
@@ -209,7 +215,7 @@ export const useUpload = () => {
       });
     }
     setUploadStatus(UploadStatus.Finished);
-    return fileIds;
+    return uploadedFiles;
   };
 
   return { uploadMedia, uploadStatus };

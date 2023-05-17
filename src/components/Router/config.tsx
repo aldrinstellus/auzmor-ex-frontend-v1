@@ -6,7 +6,7 @@ import {
   Route,
 } from 'react-router-dom';
 import queryClient from 'utils/queryClient';
-import { loader as homeLoader } from 'pages/Home';
+// import { loader as homeLoader } from 'pages/Home';
 import RequireAuth from 'components/RequireAuth';
 
 const ErrorBoundary = React.lazy(() => import('components/ErrorBoundary'));
@@ -40,16 +40,16 @@ const routers = createBrowserRouter(
         <Route
           path="/"
           element={<Home />}
-          loader={() => {
-            // ⬇️ loader fetch data as earlier as possible
-            return '';
-          }}
+          // loader={() => {
+          //   // ⬇️ loader fetch data as earlier as possible
+          //   return '';
+          // }}
         />
         <Route
           path="/home"
           element={<Home />}
           // ⬇️ loader fetch data as earlier as possible
-          loader={homeLoader(queryClient)}
+          // loader={homeLoader(queryClient)}
         />
         <Route
           path="/users"
@@ -62,8 +62,15 @@ const routers = createBrowserRouter(
         <Route
           path="/users/:userId"
           element={<UserDetail />}
-          loader={() => {
+          loader={({ params }) => {
             // ⬇️ loader fetch data as earlier as possible
+            return '';
+          }}
+        />
+        <Route
+          path="/profile"
+          element={<UserDetail />}
+          loader={() => {
             return '';
           }}
         />

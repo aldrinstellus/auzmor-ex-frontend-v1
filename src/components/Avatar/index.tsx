@@ -1,7 +1,9 @@
-import React, { MouseEventHandler, useMemo } from 'react';
+import React, { MouseEventHandler, ReactNode, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
 import isDarkColor from 'is-dark-color';
 import { getInitials } from 'utils/misc';
+import Spinner from 'components/Spinner';
+import { PRIMARY_COLOR } from 'utils/constants';
 
 export type AvatarProps = {
   name?: string;
@@ -13,6 +15,9 @@ export type AvatarProps = {
   active?: boolean;
   size?: number;
   bgColor?: string;
+  indicatorIcon?: ReactNode;
+  loading?: boolean;
+  dataTestId?: string;
 };
 
 const Avatar: React.FC<AvatarProps> = ({
@@ -25,6 +30,9 @@ const Avatar: React.FC<AvatarProps> = ({
   size = 48,
   showActiveIndicator = false,
   bgColor = '#343434',
+  indicatorIcon = null,
+  loading = false,
+  dataTestId = '',
 }) => {
   const containerStyles = useMemo(
     () =>
@@ -82,25 +90,33 @@ const Avatar: React.FC<AvatarProps> = ({
       )
     );
   }, []);
-
   const isBgDark = isDarkColor(bgColor);
 
   const textStyles = clsx(
     { 'text-white': isBgDark },
     { 'text-neutral-800': !isBgDark },
     { 'font-bold': true },
+    { 'flex items-center': true },
   );
 
   return (
-    <div className={containerStyles} style={divStyle} onClick={onClick}>
-      {!!image ? (
+    <div
+      className={containerStyles}
+      style={divStyle}
+      onClick={onClick}
+      data-testId={dataTestId}
+    >
+      {!!image && !loading ? (
         <img className={imgStyles} style={divStyle} src={image} alt={name} />
       ) : (
         <span className={textStyles} style={{ fontSize: `${size * 0.45}px` }}>
-          {name && getInitials(name)}
+          {loading && <Spinner color={PRIMARY_COLOR} />}
+          {!loading && name && getInitials(name)}
         </span>
       )}
-      {showActiveIndicator && activeIndicator}
+      {!!indicatorIcon && !loading
+        ? indicatorIcon
+        : showActiveIndicator && activeIndicator}
     </div>
   );
 };

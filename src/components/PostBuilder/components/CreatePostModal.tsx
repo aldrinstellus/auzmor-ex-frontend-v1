@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { ReactNode, useContext, useEffect } from 'react';
 import Modal from 'components/Modal';
 import CreatePost from 'components/PostBuilder/components/CreatePost';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -8,24 +8,28 @@ import {
   CreatePostFlow,
   CreatePostContext,
   IEditorValue,
+  IMedia,
 } from 'contexts/CreatePostContext';
 import { PostBuilderMode } from '..';
 import { EntityType, useUpload } from 'queries/files';
 import { previewLinkRegex } from 'components/RichTextEditor/config';
-import EditPost from './EditPost';
+import EditMedia from './EditMedia';
+import { UploadStatus } from 'queries/files';
+import { IMenuItem } from 'components/PopupMenu';
+
+export interface IPostMenu {
+  id: number;
+  label: string;
+  icon: ReactNode;
+  menuItems: IMenuItem[];
+  divider?: boolean;
+}
 
 interface ICreatePostModal {
   showModal: boolean;
   setShowModal: (flag: boolean) => void;
   data?: IPost;
   mode: PostBuilderMode;
-}
-
-interface IUserMention {
-  denotationChar?: string;
-  id: string;
-  index?: number;
-  value: string;
 }
 
 const CreatePostModal: React.FC<ICreatePostModal> = ({
@@ -40,16 +44,23 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     editorValue,
     setAnnouncement,
     setEditorValue,
+    isPreviewRemoved,
+    setMedia,
+    media,
+    clearPostContext,
   } = useContext(CreatePostContext);
   const queryClient = useQueryClient();
 
-  const { uploadMedia } = useUpload();
+  const { uploadMedia, uploadStatus } = useUpload();
 
   useEffect(() => {
     if (data) {
       setEditorValue(data.content.editor);
       if (data.isAnnouncement) {
         setAnnouncement({ label: 'Custom Date', value: data.announcement.end });
+      }
+      if (data?.files?.length) {
+        setMedia(data?.files as IMedia[]);
       }
     }
   }, []);
@@ -60,6 +71,9 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     onError: (error) => console.log(error),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['feed']);
+      await queryClient.invalidateQueries(['announcements-widget']);
+      await queryClient.invalidateQueries(['my-profile-feed']);
+      await queryClient.invalidateQueries(['people-profile-feed']);
       setShowModal(false);
     },
   });
@@ -70,6 +84,9 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       updatePost(payload.id || '', payload as IPost),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['feed']);
+      await queryClient.invalidateQueries(['announcements-widget']);
+      await queryClient.invalidateQueries(['my-profile-feed']);
+      await queryClient.invalidateQueries(['people-profile-feed']);
       setShowModal(false);
     },
   });
@@ -77,13 +94,18 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
   const handleSubmitPost = async (content?: IEditorValue, files?: File[]) => {
     let fileIds: string[] = [];
     if (files?.length) {
-      fileIds = await uploadMedia(files, EntityType.Post);
+      fileIds = (await uploadMedia(files, EntityType.Post)).map(
+        (media: IMedia) => media.id,
+      );
+      console.log(fileIds, '<===fileIds');
     }
     const userMentionList = content?.json?.ops
       ?.filter((op) => op.insert.mention)
       .map((userItem) => userItem?.insert?.mention?.id);
 
-    const previewUrl = content?.text.match(previewLinkRegex) as string[];
+    const previewUrl = isPreviewRemoved
+      ? []
+      : (content?.text.match(previewLinkRegex) as string[]);
 
     if (mode === PostBuilderMode.Create) {
       createPostMutation.mutate(
@@ -106,7 +128,12 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           },
           link: previewUrl && previewUrl[0],
         },
-        { onSuccess: () => setShowModal(false) },
+        {
+          onSuccess: () => {
+            clearPostContext();
+            setShowModal(false);
+          },
+        },
       );
     } else if (PostBuilderMode.Edit) {
       updatePostMutation.mutate(
@@ -117,6 +144,12 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             editor: content?.json || editorValue.json,
           },
           type: 'UPDATE',
+          files: [
+            ...fileIds,
+            ...media
+              .filter((eachMedia: IMedia) => eachMedia.id !== '')
+              .map((eachMedia: IMedia) => eachMedia.id),
+          ],
           mentions: userMentionList || [],
           hashtags: [],
           audience: {
@@ -134,9 +167,19 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     }
   };
 
-  const loading = createPostMutation.isLoading || updatePostMutation.isLoading;
+  const loading =
+    createPostMutation.isLoading ||
+    updatePostMutation.isLoading ||
+    uploadStatus === UploadStatus.Uploading;
+
   return (
-    <Modal open={showModal} closeModal={() => setShowModal(false)}>
+    <Modal
+      open={showModal}
+      closeModal={() => {
+        clearPostContext();
+        setShowModal(false);
+      }}
+    >
       {activeFlow === CreatePostFlow.CreatePost && (
         <CreatePost
           data={data}
@@ -151,10 +194,20 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         />
       )}
       {activeFlow === CreatePostFlow.CreateAnnouncement && (
-        <CreateAnnouncement closeModal={() => setShowModal(false)} />
+        <CreateAnnouncement
+          closeModal={() => {
+            clearPostContext();
+            setShowModal(false);
+          }}
+        />
       )}
-      {activeFlow === CreatePostFlow.EditPost && (
-        <EditPost closeModal={() => setShowModal(false)} />
+      {activeFlow === CreatePostFlow.EditMedia && (
+        <EditMedia
+          closeModal={() => {
+            clearPostContext();
+            setShowModal(false);
+          }}
+        />
       )}
     </Modal>
   );

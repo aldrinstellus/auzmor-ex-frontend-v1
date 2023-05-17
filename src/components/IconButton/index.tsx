@@ -20,6 +20,7 @@ export type IconButtonProps = {
   icon: string;
   onClick?: MouseEventHandler<Element>;
   className?: string;
+  borderAround?: boolean;
 };
 
 const IconButton = ({
@@ -28,6 +29,7 @@ const IconButton = ({
   disabled = false,
   icon = '',
   className = '',
+  borderAround = false,
   onClick = () => {},
 }: IconButtonProps) => {
   const styles = useMemo(
@@ -53,6 +55,14 @@ const IconButton = ({
     [],
   );
 
+  const borderStyle = useMemo(
+    () =>
+      clsx({
+        'border border-solid border-neutral-200 rounded-17xl': borderAround,
+      }),
+    [],
+  );
+
   const getSize = () => {
     switch (size) {
       case Size.Large:
@@ -65,14 +75,16 @@ const IconButton = ({
   };
 
   return (
-    <button
-      type="button"
-      className={styles}
-      disabled={disabled}
-      onClick={onClick}
-    >
-      <Icon name={icon} size={getSize()} />
-    </button>
+    <div className={borderStyle}>
+      <button
+        type="button"
+        className={styles}
+        disabled={disabled}
+        onClick={onClick}
+      >
+        <Icon name={icon} size={getSize()} />
+      </button>
+    </div>
   );
 };
 

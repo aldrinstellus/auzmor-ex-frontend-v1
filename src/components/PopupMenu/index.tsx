@@ -11,6 +11,7 @@ export interface IMenuItem {
   dataTestId?: string;
   icon?: string;
   label?: string;
+  iconClassName?: string;
   onClick?: () => any;
 }
 
@@ -51,7 +52,7 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
                     <Icon
                       name={menuItem.icon}
                       size={16}
-                      // className="p-2 rounded-7xl border mr-2.5 bg-white"
+                      className={menuItem.iconClassName}
                       fill={twConfig.theme.colors.primary['500']}
                     />
                   )}

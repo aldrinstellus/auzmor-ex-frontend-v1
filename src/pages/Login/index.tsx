@@ -13,7 +13,7 @@ import Button, {
 } from 'components/Button';
 import Divider from 'components/Divider';
 import { Logo } from 'components/Logo';
-import { redirectWithToken } from 'utils/misc';
+import { readFirstAxiosError, redirectWithToken } from 'utils/misc';
 import { Link } from 'react-router-dom';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 
@@ -63,7 +63,7 @@ const Login: React.FC<ILoginProps> = () => {
       name: 'email',
       label: 'Work Email / Username',
       error: loginMutation.isError || errors.email?.message,
-      dataTestId: 'login-email',
+      dataTestId: 'signin-email',
       control,
     },
     {
@@ -73,12 +73,11 @@ const Login: React.FC<ILoginProps> = () => {
       label: 'Password',
       rightIcon: 'people',
       error: loginMutation.isError || errors.password?.message,
-      dataTestId: 'login-password',
+      dataTestId: 'signin-password',
       control,
+      showChecks: false,
     },
   ];
-
-  useEffect(() => {}, []);
 
   const onSubmit = (formData: IForm) => {
     loginMutation.mutate(formData);
@@ -86,30 +85,45 @@ const Login: React.FC<ILoginProps> = () => {
 
   return (
     <div className="flex h-screen w-screen">
-      <div className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover"></div>
+      <div
+        className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover"
+        data-testid="signin-cover-image"
+      ></div>
       <div className="w-1/2 h-full flex justify-center items-center relative bg-white">
-        <div className="absolute top-8 right-8">
+        <div className="absolute top-8 right-8" data-testid="signin-logo-image">
           <Logo />
         </div>
         <div className="w-full max-w-[440px]">
           <div className="font-extrabold text-neutral-900 text-4xl">Signin</div>
-          <form className="mt-16" onSubmit={handleSubmit(onSubmit)}>
+          <form
+            className="mt-16"
+            onSubmit={handleSubmit(onSubmit)}
+            data-testid="signin-form"
+          >
             {!!loginMutation.isError && (
               <div className="mb-8">
                 <Banner
-                  title="Email address or password is incorrect"
+                  dataTestId="signin-incorrect-creds-msg"
+                  title={
+                    readFirstAxiosError(loginMutation.error) ||
+                    'Email address or password is incorrect'
+                  }
                   variant={BannerVariant.Error}
                 />
               </div>
             )}
 
             <Layout fields={fields} />
-            <div className="flex justify-end mt-4">
+            <div
+              className="flex justify-end mt-4"
+              data-testId="signin-forgot-password"
+            >
               <Link to="/forgot-password">
                 <div className="font-bold text-sm">Forgot Password?</div>
               </Link>
             </div>
             <Button
+              dataTestId="signin-btn"
               label={'Sign In'}
               className="w-full mt-8"
               disabled={!isValid}
@@ -126,11 +140,12 @@ const Login: React.FC<ILoginProps> = () => {
             <Divider />
           </div>
           <Button
+            dataTestId="signin-sso-cta"
             label={'Sign In via SSO'}
             variant={ButtonVariant.Secondary}
             size={Size.Large}
             className="w-full mt-8"
-            loading={loginMutation.isLoading}
+            disabled={loginMutation.isLoading}
           />
         </div>
       </div>

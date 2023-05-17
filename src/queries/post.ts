@@ -40,7 +40,7 @@ export interface IPost {
         },
       ]
     | [];
-  files?: string[];
+  files?: string[] | IMedia[];
   type: string;
   audience: {
     users: string[];
@@ -69,17 +69,7 @@ export interface IPost {
   link?: string;
   myReactions?: [
     {
-      createdBy: {
-        department?: string;
-        designation?: string;
-        fullName?: string;
-        profileImage: {
-          blurHash?: string;
-        };
-        status?: string;
-        userId?: string;
-        workLocation?: string;
-      };
+      createdBy: ICreatedBy;
       reaction: string;
       type: string;
       id: string;
@@ -93,17 +83,7 @@ export interface IReaction {
   type: string;
   reaction: string;
   myReactions?: {
-    createdBy: {
-      department?: string;
-      designation?: string;
-      fullName?: string;
-      profileImage: {
-        blurHash?: string;
-      };
-      status?: string;
-      userId?: string;
-      workLocation?: string;
-    };
+    createdBy: ICreatedBy;
     reaction: string;
     type: string;
     id: string;
@@ -136,6 +116,20 @@ export interface MyObjectType {
   [key: string]: number;
 }
 
+export interface ICreatedBy {
+  department?: string;
+  designation?: string;
+  fullName?: string;
+  profileImage: {
+    blurHash?: string;
+    id: string;
+    original: string;
+  };
+  status?: string;
+  userId?: string;
+  workLocation?: string;
+}
+
 export interface IGetPost {
   content: {
     text: string;
@@ -143,17 +137,7 @@ export interface IGetPost {
     editor: DeltaStatic;
   };
   mentions?: IMention[];
-  createdBy?: {
-    department?: string;
-    designation?: string;
-    fullName?: string;
-    profileImage: {
-      blurHash?: string;
-    };
-    status?: string;
-    userId?: string;
-    workLocation?: string;
-  };
+  createdBy?: ICreatedBy;
   hashtags:
     | [
         {
@@ -174,18 +158,7 @@ export interface IGetPost {
   link: Metadata;
   id: string;
   myReaction: {
-    createdBy: {
-      department?: string;
-      designation?: string;
-      fullName?: string;
-      profileImage: {
-        blurHash?: string;
-        url?: string;
-      };
-      status?: string;
-      userId?: string;
-      workLocation?: string;
-    };
+    createdBy: ICreatedBy;
     reaction: string;
     type: string;
     id: string;
@@ -260,7 +233,7 @@ export const fetchAnnouncement = async (postType: string, limit: number) => {
   return data;
 };
 
-export const useAnnouncements = () =>
+export const useAnnouncementsWidget = () =>
   useQuery({
     queryKey: ['announcements-widget'],
     queryFn: () => fetchAnnouncement('ANNOUNCEMENT', 1),
@@ -270,6 +243,48 @@ export const useAnnouncements = () =>
 export const announcementRead = async (payload: IAnnounce) => {
   const data = await apiService.post('/reactions', payload);
   return data;
+};
+
+export const myProfileFeed = ({ pageParam = null }) => {
+  if (pageParam === null) return apiService.get('/posts/my-profile');
+  else return apiService.get(pageParam);
+};
+
+export const useInfiniteMyProfileFeed = (q?: Record<string, any>) => {
+  return useInfiniteQuery({
+    queryKey: ['my-profile-feed', q],
+    queryFn: myProfileFeed,
+    getNextPageParam: (lastPage: any) => {
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const peopleProfileFeed = (userId: string, { pageParam = null }) => {
+  if (pageParam === null)
+    return apiService.get(`/posts/people-profile?memberId=${userId}`);
+  else return apiService.get(pageParam);
+};
+
+export const useInfinitePeopleProfileFeed = (
+  userId: string,
+  q?: Record<string, any>,
+) => {
+  return useInfiniteQuery({
+    queryKey: ['people-profile-feed', q, userId],
+    queryFn: () => peopleProfileFeed(userId, {}),
+    getNextPageParam: (lastPage: any) => {
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
 };
 
 export const fetchFeed = ({ pageParam = null }) => {

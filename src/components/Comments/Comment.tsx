@@ -1,21 +1,18 @@
 import React, { useState } from 'react';
 import Likes from 'components/Reactions';
-import IconButton, {
-  Variant as IconVariant,
-  Size as SizeVariant,
-} from 'components/IconButton';
+import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import Avatar from 'components/Avatar';
 import { deleteComment, useComments } from 'queries/reaction';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { IComment, activeCommentsDataType } from '.';
 import Popover from 'components/Popover';
 import clsx from 'clsx';
-import { getTime } from 'utils/time';
+import { humanizeTime } from 'utils/time';
 import { iconsStyle } from 'components/Post';
 import { MyObjectType } from 'queries/post';
 import useAuth from 'hooks/useAuth';
-import { CommentForm } from './CommentForm';
-import { Reply } from './Reply';
+import Reply from '../Reply';
+import Icon from 'components/Icon';
 
 interface CommentProps {
   comment: IComment;
@@ -35,24 +32,11 @@ export const Comment: React.FC<CommentProps> = ({
   setReplyInputBox,
 }) => {
   const queryClient = useQueryClient();
-  const { data, isLoading } = useComments({
-    entityId: comment.id,
-    entityType: 'comment',
-    limit: 30,
-    page: 1,
-  });
 
-  const replies = data?.result?.data;
   const { user } = useAuth();
-  const createdAt = getTime(comment.updatedAt);
+  const createdAt = humanizeTime(comment.updatedAt);
 
   const [showReplies, setShowReplies] = useState(false);
-
-  const isReplying =
-    activeComment &&
-    activeComment.id === comment.id &&
-    activeComment.type === 'replying';
-
   const deleteReactionMutation = useMutation({
     mutationKey: ['delete-comment-mutation'],
     mutationFn: deleteComment,
@@ -90,7 +74,7 @@ export const Comment: React.FC<CommentProps> = ({
               <Avatar
                 name={comment?.createdBy?.fullName}
                 size={32}
-                image={comment?.createdBy?.profileImage?.url}
+                image={comment?.createdBy?.profileImage?.original}
               />
             </div>
             <div className="flex flex-col items-start p-0 w-64">
@@ -142,24 +126,24 @@ export const Comment: React.FC<CommentProps> = ({
         <div className="flex flex-row justify-between mt-4 cursor-pointer">
           <div className={`flex flex-row`}>
             {keys > 0 && (
-              <div className="mr-2">
+              <div className="mr-2 flex flex-row">
                 {Object.keys(reactionCount)
                   .slice(0, 3)
                   .map((key, i) => (
-                    <IconButton
-                      icon={key}
-                      size={SizeVariant.Small}
-                      key={key}
-                      className={`!p-1 rounded-17xl ${
-                        i > 0 ? '-ml-2 z-1' : ''
-                      } ${iconsStyle(key)} hover:${iconsStyle(key)} `}
-                      variant={IconVariant.Primary}
-                    />
+                    <div className={` ${i > 0 ? '-ml-2 z-1' : ''}  `} key={key}>
+                      <Icon
+                        name={key}
+                        size={12}
+                        className={`p-0.5 rounded-17xl cursor-pointer border-white border border-solid ${iconsStyle(
+                          key,
+                        )}`}
+                      />
+                    </div>
                   ))}
               </div>
             )}
 
-            <div className={`flex text-sm font-normal text-neutral-500 mt-0.5`}>
+            <div className={`flex text-sm font-normal text-neutral-500`}>
               {totalCount} reacted
             </div>
           </div>
@@ -204,36 +188,11 @@ export const Comment: React.FC<CommentProps> = ({
           <div></div>
         </div>
 
-        {isReplying && replyInputBox && (
-          <div className="flex flex-row items-center justify-between p-0">
-            <div className="flex-none grow-0 order-none pr-2">
-              <Avatar name={user?.name || 'U'} size={32} />
-            </div>
-            <CommentForm
-              className="w-full my-1"
-              entityId={comment.id}
-              entityType="comment"
-            />
-          </div>
-        )}
-        {showReplies && isLoading ? (
-          <div className="flex justify-center items-center py-5">
-            Loading ...{' '}
-          </div>
-        ) : (
-          showReplies &&
-          replies?.length > 0 && (
-            <div className="ml-8">
-              {replies.map((reply: any) => (
-                <Reply
-                  comment={reply}
-                  key={reply.id}
-                  activeComment={activeComment}
-                  setActiveComment={setActiveComment}
-                />
-              ))}
-            </div>
-          )
+        {showReplies && (
+          <Reply
+            entityId={comment.id}
+            className={`${comment.repliesCount > 0 ? '' : 'mb-5'}`}
+          />
         )}
       </div>
     </div>

@@ -59,6 +59,7 @@ const RichTextEditor = React.forwardRef(
       media,
       inputImgRef,
       setMedia,
+      removeAllMedia,
     } = useContext(CreatePostContext);
 
     const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
@@ -145,20 +146,20 @@ const RichTextEditor = React.forwardRef(
           onChange={onChangeEditorContent}
           defaultValue={defaultValue}
         />
-        {media.length && (
+        {media.length > 0 && (
           <MediaPreview
             media={media}
             className="m-6"
             mode={Mode.Edit}
             onAddButtonClick={() => inputImgRef?.current?.click()}
-            onCloseButtonClick={() => setMedia([])}
+            onCloseButtonClick={removeAllMedia}
             onEditButtonClick={() => {
               updateContext();
-              setActiveFlow(CreatePostFlow.EditPost);
+              setActiveFlow(CreatePostFlow.EditMedia);
             }}
           />
         )}
-        {announcement && (
+        {announcement?.label && (
           <div className="flex justify-between bg-primary-100 px-4 py-2 m-4">
             <div className="flex items-center">
               <Icon

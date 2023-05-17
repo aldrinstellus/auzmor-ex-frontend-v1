@@ -1,19 +1,26 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
+import _ from 'lodash';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import useHover from 'hooks/useHover';
-import Button, { Variant } from 'components/Button';
 import clsx from 'clsx';
-import { useMutation } from '@tanstack/react-query';
-import { deleteUser } from 'queries/users';
-import ConfirmationBox from 'components/ConfirmationBox';
-import _ from 'lodash';
-
-import queryClient from 'utils/queryClient';
+import IconButton, {
+  Variant as IconVariant,
+  Size as IconSize,
+} from 'components/IconButton';
+import { useNavigate } from 'react-router-dom';
+import useAuth from 'hooks/useAuth';
+import Icon from 'components/Icon';
+import PopupMenu from 'components/PopupMenu';
+import DeleteUserModal from './DeleteUserModal';
+import { UserStatus, useResendInvitation } from 'queries/users';
+import { toast } from 'react-toastify';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { twConfig } from 'utils/misc';
 
 export interface IUserCardProps {
   id: string;
-  status: string;
+  role: string;
   fullName: string;
   image?: string;
   designation?: string;
@@ -21,135 +28,177 @@ export interface IUserCardProps {
   location?: string;
   active?: boolean;
   workEmail?: string;
+  status?: string;
 }
 
 export enum Status {
-  Admin = 'Admin',
-  Pending = 'Pending',
-  Owner = 'Owner',
+  ADMIN = 'ADMIN',
+  PENDING = 'PENDING',
+  OWNER = 'OWNER',
+  MEMBER = 'MEMBER',
+  SUPERADMIN = 'SUPERADMIN',
 }
 
 const statusColorMap: Record<string, string> = {
-  [Status.Admin]: '#3F83F8',
-  [Status.Pending]: '#EA580C',
-  [Status.Owner]: '#171717',
+  [Status.ADMIN]: '#3F83F8',
+  [Status.PENDING]: '#EA580C',
+  [Status.OWNER]: '#171717',
+  [Status.MEMBER]: '#c6cc8d',
+  [Status.SUPERADMIN]: '#10B981',
 };
 
 const UserCard: React.FC<IUserCardProps> = ({
   id,
-  status,
+  role,
   fullName,
   image,
   designation,
   department,
   location,
   active,
+  status,
   workEmail,
 }) => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [isHovered, hoverEvents] = useHover();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const resendInviteMutation = useResendInvitation();
 
-  const deleteUserMutation = useMutation({
-    mutationKey: ['delete-user', id],
-    mutationFn: deleteUser,
-    onError: (error) => {
-      console.log(error);
+  const postOptions = [
+    {
+      icon: 'redo',
+      label: 'Resend Invite',
+      onClick: () => {
+        toast(<SuccessToast content="Invitation has been sent" />, {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.primary['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: 2000,
+        });
+        resendInviteMutation.mutate(id);
+      },
     },
-    onSuccess: (data, variables, context) => {
-      setShowDeleteModal(false);
-      alert('Successfully Deleted');
-
-      queryClient.invalidateQueries({ queryKey: ['users'] });
+    {
+      icon: 'userRemove',
+      label: 'Remove',
+      onClick: () => {
+        setShowDeleteModal(true);
+      },
     },
-  });
+  ];
 
   const hoverStyle = useMemo(
     () =>
       clsx(
         {
-          'w-[244px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white relative':
+          'relative w-[234px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white':
             true,
         },
         {
           '-mb-6 z-10 shadow-xl ': isHovered,
         },
         {
-          'mb-8 z-0': !isHovered,
+          'mb-6 z-0': !isHovered,
         },
       ),
     [isHovered],
   );
 
   return (
-    <div {...hoverEvents}>
+    <div {...hoverEvents} className="cursor-pointer">
       <Card className={hoverStyle}>
+        {isHovered && (
+          <PopupMenu
+            triggerNode={
+              <div className="cursor-pointer">
+                <Icon
+                  name="dotsVertical"
+                  stroke="#000"
+                  className="absolute top-2 right-2"
+                  hover={false}
+                />
+              </div>
+            }
+            menuItems={postOptions}
+          />
+        )}
         <div
-          style={{ backgroundColor: statusColorMap[status] }}
+          style={{
+            backgroundColor:
+              status === UserStatus.Invited ? '#EA580C' : statusColorMap[role],
+          }}
           className="absolute top-0 left-0 text-white rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium"
         >
-          {status}
+          {status === UserStatus.Invited ? 'Pending' : role}
         </div>
-        <div className="flex flex-col justify-center items-center">
+        <div
+          className="my-6 flex flex-col items-center"
+          onClick={() => {
+            if (id === user?.id) {
+              return navigate('/profile');
+            }
+            return navigate(`/users/${id}`);
+          }}
+        >
           <Avatar size={80} name={fullName} image={image} active={active} />
-          <div className="mt-0.5 truncate text-neutral-900 text-base font-bold">
+          <div className="mt-1 truncate text-neutral-900 text-base font-bold">
             {_.truncate(fullName, {
               length: 24,
               separator: ' ',
             })}
           </div>
           <div className="mt-1 truncate text-neutral-900 text-xs font-normal">
-            {designation ? designation : workEmail}
+            {designation || role}
           </div>
-          <div className="mt-2 bg-orange-100 px-4 rounded-md truncate">
-            {department}
-          </div>
-          <div className="mt-3 text-neutral-500 text-xs font-normal truncate">
-            {location}
-          </div>
-          {isHovered && (
-            <div className="flex justify-between items-center mt-4 space-x-3">
-              <Button
-                variant={Variant.Secondary}
-                label={'O'}
-                className="!p-2 !gap-2 !rounded-[8px] !border !border-neutral-200 !border-solid"
-              />
-              <Button
-                variant={Variant.Secondary}
-                label={'X'}
-                onClick={() => {
-                  setShowDeleteModal(true);
-                }}
-                className="!p-2 !gap-2 !rounded-[8px] !border !border-neutral-200 !border-solid"
-              />
+          <div className="flex justify-center items-center px-3 py-1 mt-2 rounded-xl">
+            <div></div>
+            <div className="text-neutral-900 text-xxs font-medium truncate">
+              {department}
             </div>
-          )}
+          </div>
+          <div className="flex space-x-[6px] mt-3">
+            <div></div>
+            <div className="text-neutral-500 text-xs font-normal truncate">
+              {location}
+            </div>
+          </div>
         </div>
+        {isHovered && (
+          <div className="">
+            <div className="flex justify-between items-center mt-0 space-x-4">
+              <div className="rounded-7xl border border-solid border-neutral-200">
+                <IconButton
+                  icon="email"
+                  variant={IconVariant.Secondary}
+                  size={IconSize.Medium}
+                />
+              </div>
+              <div className="rounded-7xl border border-solid border-neutral-200">
+                <IconButton
+                  icon="slack"
+                  variant={IconVariant.Secondary}
+                  size={IconSize.Medium}
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </Card>
-
-      <ConfirmationBox
-        open={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        title="Delete User?"
-        description={
-          <span>
-            Are you sure you want to delete this member?
-            <br /> This cannot be undone.
-          </span>
-        }
-        success={{
-          label: 'Delete',
-          className: 'bg-red-500 text-white ',
-          onSubmit: () => {
-            deleteUserMutation.mutate(id);
-          },
-        }}
-        discard={{
-          label: 'cancel',
-          className: 'text-neutral-900 bg-white ',
-          onCancel: () => {
-            setShowDeleteModal(false);
-          },
-        }}
+      <DeleteUserModal
+        showModal={showDeleteModal}
+        setShowModal={setShowDeleteModal}
+        userId={id}
       />
     </div>
   );

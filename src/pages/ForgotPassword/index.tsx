@@ -64,15 +64,24 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
 
   return (
     <div className="flex h-screen w-screen">
-      <div className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover" />
+      <div
+        className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover"
+        data-testid="forgot-password-cover-image"
+      />
       <div className="w-1/2 h-full flex justify-center items-center relative bg-white">
-        <div className="absolute top-8 right-8">
+        <div
+          className="absolute top-8 right-8"
+          data-testid="forgot-password-logo-image"
+        >
           <Logo />
         </div>
         <div className="w-full max-w-[440px]">
           {forgotPasswordMutation.isSuccess ? (
             <>
-              <div className="text-center flex justify-center items-center flex-col space-y-9">
+              <div
+                className="text-center flex justify-center items-center flex-col space-y-9"
+                data-testid="forgot-password-success-message"
+              >
                 <Success />
                 <div>
                   Email has been sent to <b>{getValues().email}</b> with
@@ -91,7 +100,11 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
               <div className="font-extrabold text-neutral-900 text-4xl">
                 Forgot Password
               </div>
-              <form className="mt-16" onSubmit={handleSubmit(onSubmit)}>
+              <form
+                className="mt-16"
+                onSubmit={handleSubmit(onSubmit)}
+                data-testid="forgot-password-form"
+              >
                 <Layout fields={fields} />
                 <Button
                   type={Type.Submit}
@@ -100,6 +113,7 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
                   className="w-full mt-8"
                   size={Size.Large}
                   disabled={!isValid}
+                  data-testid="forgot-password-submit"
                 />
               </form>
             </>

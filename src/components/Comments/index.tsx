@@ -7,6 +7,7 @@ import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import { ICreated, IMyReactions } from 'pages/Feed';
 import { MyObjectType } from 'queries/post';
+import Spinner from 'components/Spinner';
 
 interface CommentsProps {
   entityId: string;
@@ -57,15 +58,19 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
     <div>
       <div className="flex flex-row items-center justify-between p-0">
         <div className="flex-none grow-0 order-none pr-2">
-          <Avatar name={user?.name || 'U'} size={32} />
+          <Avatar
+            name={user?.name || 'U'}
+            size={32}
+            image={user?.profileImage}
+          />
         </div>
         <CommentForm className="w-full" entityId={entityId} entityType="post" />
       </div>
       <div className="border-b border-neutral-200 my-4"></div>
 
       {isLoading ? (
-        <div className="flex justify-center items-center py-5">
-          Loading ...{' '}
+        <div className="flex justify-center items-center py-10">
+          <Spinner color="#FFFFFF" />
         </div>
       ) : (
         commentData && (

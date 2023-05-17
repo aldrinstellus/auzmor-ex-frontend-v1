@@ -1,6 +1,8 @@
 import React, { MouseEventHandler, ReactElement, useMemo } from 'react';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
+import Spinner from 'components/Spinner';
+import { PRIMARY_COLOR } from 'utils/constants';
 
 export enum Variant {
   Primary = 'PRIMARY',
@@ -21,13 +23,14 @@ export enum Type {
 }
 
 export type ButtonProps = {
-  label: string;
+  label: string | ReactElement;
   variant?: Variant;
   size?: Size;
   type?: Type;
   disabled?: boolean;
   loading?: boolean;
   onClick?: MouseEventHandler<Element>;
+  leftIconSize?: number;
   leftIcon?: any; // should accept the react element
   rightIcon?: any; // should accept the string and react element
   className?: string;
@@ -35,6 +38,7 @@ export type ButtonProps = {
   iconStroke?: string;
   leftIconClassName?: string;
   rightIconClassName?: string;
+  dataTestId?: string;
 };
 
 const Button = ({
@@ -49,23 +53,25 @@ const Button = ({
   className = '',
   iconFill,
   iconStroke,
+  leftIconSize,
   leftIconClassName,
   rightIconClassName,
   onClick = () => {},
+  dataTestId = '',
 }: ButtonProps) => {
   const styles = useMemo(
     () =>
       clsx(
         {
-          'items-center bg-primary-500 text-white rounded-16xl hover:bg-primary-600 active:bg-primary-700 disabled:text-neutral-400 disabled:border-none disabled:bg-neutral-200':
+          'flex justify-center items-center bg-primary-500 text-white rounded-16xl hover:bg-primary-600 active:bg-primary-700 disabled:text-neutral-400 disabled:border-none disabled:bg-neutral-200':
             variant === Variant.Primary,
         },
         {
-          'items-center text-neutral-900 bg-white border-solid border border-neutral-200 rounded-16xl hover:text-primary-600 active:text-primary-700 disabled:text-neutral-400 disabled:border-none disabled:bg-neutral-200':
+          'flex justify-center items-center text-neutral-900 bg-white border-solid border border-neutral-200 rounded-16xl hover:text-primary-600 active:text-primary-700 disabled:text-neutral-400 disabled:border-none disabled:bg-neutral-200':
             variant === Variant.Secondary,
         },
         {
-          'items-center text-neutral-900 bg-white rounded-16xl hover:text-primary-600 active:text-primary-700 disabled:text-neutral-400':
+          'flex justify-center items-center text-neutral-900 bg-white rounded-16xl hover:text-primary-600 active:text-primary-700 disabled:text-neutral-400':
             variant === Variant.Tertiary,
         },
         {
@@ -93,26 +99,32 @@ const Button = ({
       className={styles}
       disabled={disabled || loading}
       onClick={onClick}
+      data-testId={dataTestId}
     >
-      {leftIcon && (
-        <Icon
-          name={leftIcon}
-          fill={iconFill}
-          stroke={iconStroke}
-          className={leftIconClassName}
-          size={size === Size.Small ? 16 : 24}
-        />
-      )}
-      {label}
-      {rightIcon && (
-        <Icon
-          name={rightIcon}
-          fill={iconFill}
-          stroke={iconStroke}
-          className={rightIconClassName}
-          size={size === Size.Small ? 16 : 24}
-        />
-      )}
+      <div>
+        {leftIcon && (
+          <Icon
+            name={leftIcon}
+            fill={iconFill}
+            stroke={iconStroke}
+            className={leftIconClassName}
+            size={leftIconSize || (size === Size.Small ? 16 : 24)}
+          />
+        )}
+      </div>
+      <div>{label}</div>
+      <div>
+        {rightIcon && (
+          <Icon
+            name={rightIcon}
+            fill={iconFill}
+            stroke={iconStroke}
+            className={rightIconClassName}
+            size={size === Size.Small ? 16 : 24}
+          />
+        )}
+      </div>
+      {loading && <Spinner className="ml-2" color={PRIMARY_COLOR} />}
     </button>
   );
 };

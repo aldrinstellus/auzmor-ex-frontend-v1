@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 // import { Blurhash } from 'react-blurhash';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { IMedia } from 'contexts/CreatePostContext';
+import Loader from './components/Loader';
 
 export interface hashSize {
   width: number;
@@ -14,7 +15,7 @@ export type ImageProps = {
 };
 
 const Image: React.FC<ImageProps> = ({
-  image = { blurhash: '', name: '', originalUrl: '', type: '' },
+  image = { blurhash: '', name: '', original: '', type: '' },
   hashSize,
 }) => {
   const [isLoaded, setLoaded] = useState(false);
@@ -32,27 +33,23 @@ const Image: React.FC<ImageProps> = ({
     setLoadStarted(true);
   };
 
+  const handleLoadEnd = () => {
+    setLoaded(true);
+    setLoadStarted(false);
+  };
+
   return (
     <div className="w-full h-full relative">
-      {/* {image.blurhash && hashSize && !isLoaded && isLoadStarted && (
-        <Blurhash
-          className="!absolute z-20 top-0 left-0"
-          width={hashSize.width}
-          height={hashSize.height}
-          hash={image.blurhash}
-          resolutionX={32}
-          resolutionY={32}
-          punch={1}
-        />
-      )} */}
       <LazyLoadImage
-        className="w-full h-full"
+        className="w-full h-full object-cover"
         key={image.name}
         alt={image.name}
-        src={image.originalUrl}
+        src={image.original}
         // @ts-ignore
         onLoad={handleLoad}
         beforeLoad={handleLoadStarted}
+        afterLoad={handleLoadEnd}
+        placeholder={<Loader />}
       />
     </div>
   );

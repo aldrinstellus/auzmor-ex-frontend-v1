@@ -7,10 +7,6 @@ export const afterXUnit = (
   return moment().add(x, unit);
 };
 
-export const getTime = (time: string) => {
-  return new Date(time).toLocaleDateString();
-};
-
 export const humanizeTime = (time: string) => {
   return moment(new Date(time)).fromNow();
 };
