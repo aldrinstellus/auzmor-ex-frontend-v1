@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
@@ -11,7 +11,7 @@ import { redirectWithToken } from 'utils/misc';
 import { signup } from 'queries/account';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useDebounce } from 'hooks/useDebounce';
-import { useDomainExists } from 'queries/users';
+import { useDomainExists, useIsUserExist } from 'queries/users';
 
 interface IForm {
   workEmail: string;
@@ -35,17 +35,51 @@ const schema = yup.object({
   privacyPolicy: yup.boolean().required('Required field').oneOf([true]),
 });
 
-export interface ISignupProps {
-  setErrorValidationErrors?: any;
-  emailValidationErrors?: any;
-  // setErrorValidationErrors?: IEmailValidationErrors | null;
-  // emailValidationErrors?: (errors: IEmailValidationErrors | null) => void;
+export interface ISignupProps {}
+
+export interface IValidationErrors {
+  isError: boolean;
+  isLoading: boolean;
 }
 
-const Signup: React.FC<ISignupProps> = ({
-  setErrorValidationErrors,
-  emailValidationErrors,
-}) => {
+const Signup: React.FC<ISignupProps> = () => {
+  const [emailValidationErrors, setEmailValidationErrors] =
+    useState<IValidationErrors | null>(null);
+
+  const [domainValidationErrors, setDomainValidationErrors] =
+    useState<IValidationErrors | null>(null);
+
+  console.log(emailValidationErrors, 'KKKKK', domainValidationErrors);
+
+  const isEmailValid = () => {
+    if (emailValidationErrors) {
+      let error = true;
+      Object.keys(emailValidationErrors).forEach((key: string) => {
+        if (emailValidationErrors.isError || emailValidationErrors.isLoading) {
+          error = false;
+          return;
+        }
+      });
+      return error;
+    } else return true;
+  };
+
+  const isDomainValid = () => {
+    if (domainValidationErrors) {
+      let error = true;
+      Object.keys(domainValidationErrors).forEach((key: string) => {
+        if (
+          domainValidationErrors.isError ||
+          domainValidationErrors.isLoading
+        ) {
+          error = false;
+          return;
+        }
+      });
+      return error;
+    } else return true;
+  };
+
   const signupMutation = useMutation((formData: IForm) => signup(formData), {
     onSuccess: (data) =>
       redirectWithToken(
@@ -88,7 +122,9 @@ const Signup: React.FC<ISignupProps> = ({
       placeholder: 'Enter your email address',
       name: 'workEmail',
       label: 'Work Email*',
-      error: errors.workEmail?.message,
+      error:
+        errors.workEmail?.message ||
+        (emailValidationErrors?.isError && 'User already exists'),
       dataTestId: 'sign-up-email',
       control,
     },
@@ -98,7 +134,9 @@ const Signup: React.FC<ISignupProps> = ({
       placeholder: 'Enter domain',
       name: 'domain',
       label: 'Domain*',
-      error: errors.domain?.message,
+      error:
+        errors.domain?.message ||
+        (domainValidationErrors?.isError && 'Domain already exists'),
       dataTestId: 'sign-up-domain',
       control,
     },
@@ -141,23 +179,29 @@ const Signup: React.FC<ISignupProps> = ({
     signupMutation.mutate(formData);
   };
 
-  // const debouncedEmailValue = useDebounce(getValues().workEmail, 500);
-  // const { isLoading: isEmailLoading, data: isEmailData } =
-  //   useIsUserExist(debouncedEmailValue);
+  const debouncedEmailValue = useDebounce(getValues().workEmail, 500);
+  const { isLoading: isEmailLoading, data: isEmailData } =
+    useIsUserExist(debouncedEmailValue);
 
   const debouncedDomainValue = useDebounce(getValues().domain, 500);
   const { isLoading: isDomainLoading, data: isDomainData } =
     useDomainExists(debouncedDomainValue);
 
-  console.log(isDomainData, 'LLLLLL');
+  useEffect(() => {
+    setEmailValidationErrors({
+      ...emailValidationErrors,
+      isError: isEmailData ? !!isEmailData.result.data.userExists : false,
+      isLoading: isEmailLoading,
+    });
+  }, [isEmailLoading, isEmailData]);
 
-  // useEffect(() => {
-  //   setErrorValidationErrors({
-  //     ...emailValidationErrors,
-  //     isError: data ? !!data.result.data.userExists : false,
-  //     isLoading,
-  //   });
-  // }, [isLoading, data]);
+  useEffect(() => {
+    setDomainValidationErrors({
+      ...domainValidationErrors,
+      isError: isDomainData ? !!isDomainData.data.exists : false,
+      isLoading: isDomainLoading,
+    });
+  }, [isDomainLoading, isDomainData]);
 
   return (
     <div className="flex h-screen w-screen">
