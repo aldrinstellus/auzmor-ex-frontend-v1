@@ -17,6 +17,7 @@ export type AvatarProps = {
   bgColor?: string;
   indicatorIcon?: ReactNode;
   loading?: boolean;
+  dataTestId?: string;
 };
 
 const Avatar: React.FC<AvatarProps> = ({
@@ -31,6 +32,7 @@ const Avatar: React.FC<AvatarProps> = ({
   bgColor = '#343434',
   indicatorIcon = null,
   loading = false,
+  dataTestId = '',
 }) => {
   const containerStyles = useMemo(
     () =>
@@ -98,7 +100,12 @@ const Avatar: React.FC<AvatarProps> = ({
   );
 
   return (
-    <div className={containerStyles} style={divStyle} onClick={onClick}>
+    <div
+      className={containerStyles}
+      style={divStyle}
+      onClick={onClick}
+      data-testId={dataTestId}
+    >
       {!!image && !loading ? (
         <img className={imgStyles} style={divStyle} src={image} alt={name} />
       ) : (

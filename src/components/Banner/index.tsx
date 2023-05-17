@@ -19,6 +19,7 @@ export type BannerProps = {
   action?: ReactNode | null;
   onClose?: MouseEventHandler<Element> | null;
   className?: string;
+  dataTestId?: string;
 };
 
 const Banner: React.FC<BannerProps> = ({
@@ -28,6 +29,7 @@ const Banner: React.FC<BannerProps> = ({
   action = null,
   onClose = null,
   className = '',
+  dataTestId = '',
 }) => {
   const containerStyles = useMemo(
     () =>
@@ -132,7 +134,7 @@ const Banner: React.FC<BannerProps> = ({
   };
 
   return (
-    <div className={containerStyles}>
+    <div className={containerStyles} data-testId={dataTestId}>
       <div className="mr-2">
         <Icon
           name={iconName}

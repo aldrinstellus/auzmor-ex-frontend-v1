@@ -38,6 +38,7 @@ export type ButtonProps = {
   iconStroke?: string;
   leftIconClassName?: string;
   rightIconClassName?: string;
+  dataTestId?: string;
 };
 
 const Button = ({
@@ -56,6 +57,7 @@ const Button = ({
   leftIconClassName,
   rightIconClassName,
   onClick = () => {},
+  dataTestId = '',
 }: ButtonProps) => {
   const styles = useMemo(
     () =>
@@ -97,6 +99,7 @@ const Button = ({
       className={styles}
       disabled={disabled || loading}
       onClick={onClick}
+      data-testId={dataTestId}
     >
       <div>
         {leftIcon && (

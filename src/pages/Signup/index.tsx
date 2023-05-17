@@ -25,10 +25,7 @@ const schema = yup.object({
     .email('Please enter valid email address')
     .required('Required field'),
   domain: yup.string().required('Required field'),
-  password: yup
-    .string()
-    .min(6, 'At leaset 6 digits')
-    .required('Required field'),
+  password: yup.string().min(6, 'At least 6 digits').required('Required field'),
   confirmPassword: yup
     .string()
     .oneOf([yup.ref('password')], 'This must match the password')
@@ -52,9 +49,15 @@ const Signup: React.FC<ISignupProps> = () => {
     watch,
     control,
     handleSubmit,
+    getValues,
     formState: { errors, isValid },
   } = useForm<IForm>({
     resolver: yupResolver(schema),
+    defaultValues: {
+      workEmail: '',
+      password: '',
+      confirmPassword: '',
+    },
     mode: 'onChange',
   });
 
@@ -76,7 +79,7 @@ const Signup: React.FC<ISignupProps> = () => {
       name: 'workEmail',
       label: 'Work Email*',
       error: errors.workEmail?.message,
-      dataTestId: 'signup-work-email',
+      dataTestId: 'sign-up-email',
       control,
     },
     {
@@ -86,19 +89,21 @@ const Signup: React.FC<ISignupProps> = () => {
       name: 'domain',
       label: 'Domain*',
       error: errors.domain?.message,
-      dataTestId: 'signup-work-domain',
+      dataTestId: 'sign-up-domain',
       control,
     },
     {
       type: FieldType.Password,
+      InputVariant: InputVariant.Password,
       placeholder: 'Enter password',
       name: 'password',
       label: 'Password*',
       rightIcon: 'people',
       error: errors.password?.message,
-      dataTestId: 'signup-work-password',
+      dataTestId: 'sign-up-password',
       control,
-      showChecks: false,
+      getValues,
+      onChange: () => {},
     },
     {
       type: FieldType.Password,
@@ -107,7 +112,7 @@ const Signup: React.FC<ISignupProps> = () => {
       label: 'Confirm Password*',
       rightIcon: 'people',
       error: errors.confirmPassword?.message,
-      dataTestId: 'signup-work-re-password',
+      dataTestId: 'sign-confirm-password',
       control,
       showChecks: false,
     },
@@ -117,7 +122,7 @@ const Signup: React.FC<ISignupProps> = () => {
         'By Signing up you are agreeing to Auzmor Office’s Terms of Use and Privacy Policy',
       name: 'privacyPolicy',
       error: errors.privacyPolicy?.message,
-      dataTestId: 'signup-work-privacy',
+      dataTestId: 'sign-up-checkbox',
       control,
     },
   ];
@@ -151,6 +156,7 @@ const Signup: React.FC<ISignupProps> = () => {
             )}
             <Layout fields={fields} />
             <Button
+              dataTestId="sign-up-btn"
               label={'Sign Up'}
               disabled={!isValid}
               className="w-full mt-8"

@@ -63,7 +63,7 @@ const Login: React.FC<ILoginProps> = () => {
       name: 'email',
       label: 'Work Email / Username',
       error: loginMutation.isError || errors.email?.message,
-      dataTestId: 'login-email',
+      dataTestId: 'signin-email',
       control,
     },
     {
@@ -73,7 +73,7 @@ const Login: React.FC<ILoginProps> = () => {
       label: 'Password',
       rightIcon: 'people',
       error: loginMutation.isError || errors.password?.message,
-      dataTestId: 'login-password',
+      dataTestId: 'signin-password',
       control,
       showChecks: false,
     },
@@ -96,6 +96,7 @@ const Login: React.FC<ILoginProps> = () => {
             {!!loginMutation.isError && (
               <div className="mb-8">
                 <Banner
+                  dataTestId="signin-incorrect-creds-msg"
                   title={
                     readFirstAxiosError(loginMutation.error) ||
                     'Email address or password is incorrect'
@@ -106,12 +107,16 @@ const Login: React.FC<ILoginProps> = () => {
             )}
 
             <Layout fields={fields} />
-            <div className="flex justify-end mt-4">
+            <div
+              className="flex justify-end mt-4"
+              data-testId="signin-forgot-password"
+            >
               <Link to="/forgot-password">
                 <div className="font-bold text-sm">Forgot Password?</div>
               </Link>
             </div>
             <Button
+              dataTestId="signin-btn"
               label={'Sign In'}
               className="w-full mt-8"
               disabled={!isValid}
@@ -128,6 +133,7 @@ const Login: React.FC<ILoginProps> = () => {
             <Divider />
           </div>
           <Button
+            dataTestId="signin-sso-cta"
             label={'Sign In via SSO'}
             variant={ButtonVariant.Secondary}
             size={Size.Large}

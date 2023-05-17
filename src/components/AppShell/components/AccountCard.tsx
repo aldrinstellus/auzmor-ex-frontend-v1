@@ -28,7 +28,12 @@ const AccountCard = () => {
   return (
     <Popover
       triggerNode={
-        <Avatar name={user?.name || 'U'} size={32} image={user?.profileImage} />
+        <Avatar
+          dataTestId="profile-avatar"
+          name={user?.name || 'U'}
+          size={32}
+          image={user?.profileImage}
+        />
       }
       className="-right-2 top-[52px] rounded-9xl"
     >
@@ -40,11 +45,22 @@ const AccountCard = () => {
             image={user?.profileImage}
             showActiveIndicator
           />
-          <div className="text-sm font-bold mt-4">{user?.name}</div>
-          <div className="text-neutral-500 text-xs">{user?.email}</div>
+          <div
+            className="text-sm font-bold mt-4"
+            data-testId="user-menu-user-name"
+          >
+            {user?.name}
+          </div>
+          <div
+            className="text-neutral-500 text-xs"
+            data-testId="user-menu-user-email"
+          >
+            {user?.email}
+          </div>
         </div>
         <div className="px-4">
           <Button
+            dataTestId="user-menu-profile"
             variant={Variant.Secondary}
             label="Go to my profile"
             onClick={() => {
@@ -54,11 +70,16 @@ const AccountCard = () => {
           />
         </div>
         <div className="w-full pt-4">
-          <div className={menuItemStyle}>User Settings</div>
-          <div className={menuItemStyle}>Admin Settings</div>
+          <div className={menuItemStyle} data-testId="user-menu-user-settings">
+            User Settings
+          </div>
+          <div className={menuItemStyle} data-testId="user-menu-admin-settings">
+            Admin Settings
+          </div>
           <div
             className={menuItemStyle}
             onClick={() => logoutMutation.mutate()}
+            data-testId="user-menu-signout-cta"
           >
             Sign out
           </div>
