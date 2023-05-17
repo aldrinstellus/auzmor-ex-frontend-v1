@@ -27,7 +27,7 @@ const schema = yup.object({
     .email('Please enter valid email address')
     .required('Required field'),
   domain: yup.string().required('Required field'),
-  password: yup.string().min(6, 'At least 6 digits').required('Required field'),
+  password: yup.string().required('Required field'),
   confirmPassword: yup
     .string()
     .oneOf([yup.ref('password')], 'This must match the password')
