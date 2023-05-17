@@ -12,7 +12,6 @@ import {
   IPostUsersResponse,
   UserStatus,
   inviteUsers,
-  isUserExist,
 } from 'queries/users';
 import ConfirmationBox from 'components/ConfirmationBox';
 import { toast } from 'react-toastify';
@@ -43,6 +42,10 @@ export interface IUserForm {
   members: { fullName: string; workEmail: string; role: IRoleOption }[];
 }
 
+export interface IEmailValidationErrors {
+  [index: number]: { isError: boolean; isLoading: boolean };
+}
+
 const InviteUserModal: React.FC<IInviteUserModalProps> = ({
   showModal,
   closeModal,
@@ -54,6 +57,24 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
   const [invitedUsersResponse, setInvitedUsersResponse] = useState<
     IPostUsersResponse[]
   >([]);
+  const [emailValidationErrors, setErrorValidationErrors] =
+    useState<IEmailValidationErrors | null>(null);
+
+  const isEmailValid = () => {
+    if (emailValidationErrors) {
+      let error = true;
+      Object.keys(emailValidationErrors).forEach((key: string) => {
+        if (
+          emailValidationErrors[parseInt(key)].isError ||
+          emailValidationErrors[parseInt(key)].isLoading
+        ) {
+          error = false;
+          return;
+        }
+      });
+      return error;
+    } else return true;
+  };
 
   const getToastMessage = (users: IPostUsersResponse[]) => {
     close();
@@ -134,33 +155,24 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
       setShowAddUserModal(false);
     },
   });
+
   const schema = yup.object({
     members: yup.array().of(
       yup.object().shape({
-        fullName: yup.string().required('Please enter name'),
+        fullName: yup.string().required('Please enter Name'),
         workEmail: yup
           .string()
           .required('Please enter Email')
-          .matches(new RegExp(EMAIL_REGX), 'Please enter valid email address')
-          .test(
-            'Email exist',
-            'User already belongs to the organization',
-            async (email, values) => {
-              if (new RegExp(EMAIL_REGX).test(email)) {
-                const data = await isUserExist({ email });
-                return !data.result.data.userExists;
-              } else {
-                return true;
-              }
-            },
-          ),
+          .matches(new RegExp(EMAIL_REGX), 'Please enter valid email address'),
         role: yup.object().required('please enter role'),
       }),
     ),
   });
+
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors, isValid },
   } = useForm<IUserForm>({
     resolver: yupResolver(schema),
@@ -214,6 +226,9 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
             control={control}
             errors={errors}
             remove={remove}
+            watch={watch}
+            emailValidationErrors={emailValidationErrors}
+            setErrorValidationErrors={setErrorValidationErrors}
           />
         )}
 
@@ -253,7 +268,9 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
             <Button
               label="Send Invite"
               onClick={handleSubmit(onSubmit)}
-              disabled={inviteUsersMutation.isLoading || !isValid}
+              disabled={
+                inviteUsersMutation.isLoading || !isValid || !isEmailValid()
+              }
               loading={inviteUsersMutation.isLoading}
             />
           )}

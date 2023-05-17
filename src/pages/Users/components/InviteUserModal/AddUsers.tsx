@@ -1,7 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import Layout, { FieldType } from 'components/Form';
-import Button, { Variant } from 'components/Button';
-import Divider from 'components/Divider';
+import React from 'react';
 import _ from 'lodash';
 import {
   Control,
@@ -9,16 +6,13 @@ import {
   FieldErrors,
   UseFieldArrayAppend,
   UseFieldArrayRemove,
-  UseFormGetValues,
 } from 'react-hook-form';
-import { IUserForm, roleOptions } from '.';
-import File from 'images/file.svg';
-import { Variant as InputVariant } from 'components/Input';
+import { IEmailValidationErrors, IRoleOption, IUserForm, roleOptions } from '.';
 import { twConfig } from 'utils/misc';
 import Icon from 'components/Icon';
 import useHover from 'hooks/useHover';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
-import { useDebounce } from 'hooks/useDebounce';
+import InviteFormRow from './InviteFormRow';
 
 export interface IAddUsersProps {
   fields: FieldArrayWithId<IUserForm, 'members', 'id'>[];
@@ -26,6 +20,9 @@ export interface IAddUsersProps {
   control: Control<IUserForm, any>;
   errors: FieldErrors<IUserForm>;
   remove: UseFieldArrayRemove;
+  emailValidationErrors: IEmailValidationErrors | null;
+  setErrorValidationErrors: (errors: IEmailValidationErrors | null) => void;
+  watch: any;
 }
 
 const FIELD_LIMIT = 20;
@@ -36,84 +33,29 @@ const AddUsers: React.FC<IAddUsersProps> = ({
   control,
   errors,
   remove,
+  emailValidationErrors,
+  setErrorValidationErrors,
+  watch,
 }) => {
   const [isHovered, eventHandlers] = useHover();
+  const members = watch('members');
   return (
     <form>
       <div className="pl-6 pr-2 pt-6 max-h-[50vh] w-full overflow-y-scroll">
         <div className="flex flex-col mb-3 w-full">
           {fields.map((field, index) => (
-            <div key={field.id}>
-              <div className="flex w-full items-center">
-                <Layout
-                  className="flex mb-3 w-full"
-                  key={field.id}
-                  fields={[
-                    {
-                      type: FieldType.Input,
-                      InputVariant: InputVariant.Text,
-                      className: 'w-[37.5%] mr-1.5',
-                      placeholder: 'Enter name',
-                      name: `members.${index}.fullName`,
-                      label: 'Full Name',
-                      defaultValue: field.fullName,
-                      control,
-                    },
-                    {
-                      type: FieldType.Input,
-                      variant: InputVariant.Text,
-                      className: 'w-[37.5%] mx-1.5',
-                      placeholder: 'Add via email',
-                      name: `members.${index}.workEmail`,
-                      label: 'Email Address',
-                      defaultValue: field.workEmail,
-                      control,
-                    },
-                    {
-                      type: FieldType.SingleSelect,
-                      name: `members.${index}.role`,
-                      control,
-                      label: 'Role',
-                      className: 'w-[25%] ml-1.5',
-                      options: roleOptions,
-                      defautValue: field.role,
-                    },
-                  ]}
-                />
-                {fields.length > 1 && (
-                  <div className="ml-3" onClick={() => remove(index)}>
-                    <Icon name="close" size={16} />
-                  </div>
-                )}
-              </div>
-              {errors.members && errors.members[index]?.fullName?.message && (
-                <Banner
-                  title={
-                    errors.members[index]?.fullName?.message || 'Require field'
-                  }
-                  variant={BannerVariant.Error}
-                  className="mb-3"
-                />
-              )}
-              {errors.members && errors.members[index]?.workEmail?.message && (
-                <Banner
-                  title={
-                    errors.members[index]?.workEmail?.message || 'Require field'
-                  }
-                  variant={BannerVariant.Error}
-                  className="mb-3"
-                />
-              )}
-              {errors.members && errors.members[index]?.role?.message && (
-                <Banner
-                  title={
-                    errors.members[index]?.role?.message || 'Require field'
-                  }
-                  variant={BannerVariant.Error}
-                  className="mb-3"
-                />
-              )}
-            </div>
+            <InviteFormRow
+              key={field.id}
+              field={field}
+              control={control}
+              remove={remove}
+              fieldsCount={fields.length}
+              errors={errors}
+              index={index}
+              member={members[index]}
+              emailValidationErrors={emailValidationErrors}
+              setErrorValidationErrors={setErrorValidationErrors}
+            />
           ))}
         </div>
         {fields.length >= FIELD_LIMIT && (

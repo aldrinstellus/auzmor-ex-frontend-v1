@@ -180,3 +180,11 @@ export const useResendInvitation = () => {
     mutationFn: resendInvitation,
   });
 };
+
+export const useIsUserExist = (email: string) => {
+  return useQuery({
+    queryKey: ['user-exist', email],
+    queryFn: () => isUserExist({ email }),
+    staleTime: 1000,
+  });
+};
