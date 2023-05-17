@@ -79,7 +79,6 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
     },
     // need to change the response type
     onSuccess: async (response: Record<string, any>) => {
-      setShowModal(false);
       console.log('API call success', response);
       const userUpdateResponse = response?.result?.data;
       updateUser({
@@ -227,21 +226,21 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
     },
   ];
 
+  const disableClosed = () => {
+    if (
+      updateUsersMutation.isLoading ||
+      uploadStatus === UploadStatus.Uploading
+    ) {
+      return null;
+    } else {
+      return setShowModal(false);
+    }
+  };
+
   return (
-    <Modal
-      open={showModal}
-      closeModal={() => {
-        if (
-          updateUsersMutation.isLoading ||
-          uploadStatus === UploadStatus.Uploading
-        ) {
-          return null;
-        }
-        return setShowModal(false);
-      }}
-    >
+    <Modal open={showModal} closeModal={disableClosed}>
       <form>
-        <Header title="Edit Profile" onClose={() => setShowModal(false)} />
+        <Header title="Edit Profile" onClose={disableClosed} />
         <div className="relative cursor-pointer">
           <img
             className="object-cover w-full h-[108px]"
