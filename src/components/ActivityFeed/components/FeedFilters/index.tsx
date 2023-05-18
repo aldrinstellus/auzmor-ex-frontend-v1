@@ -64,6 +64,7 @@ const feedFilterOptions: FeedFilterOption[] = [
     value: PostType.Birthday,
     filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
+    isDisabled: true,
   },
   {
     label: 'Work anniversary',
@@ -77,6 +78,7 @@ const feedFilterOptions: FeedFilterOption[] = [
     value: PostType.WelcomNewHire,
     filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
+    isDisabled: true,
   },
   {
     label: 'Polls',
