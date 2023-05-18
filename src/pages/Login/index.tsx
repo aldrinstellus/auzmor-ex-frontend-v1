@@ -13,9 +13,15 @@ import Button, {
 } from 'components/Button';
 import Divider from 'components/Divider';
 import { Logo } from 'components/Logo';
-import { readFirstAxiosError, redirectWithToken } from 'utils/misc';
+import {
+  getSubDomain,
+  readFirstAxiosError,
+  redirectWithToken,
+} from 'utils/misc';
 import { Link } from 'react-router-dom';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
+import { useGetSSOFromDomain } from 'queries/organization';
+import { useLoginViaSSO } from 'queries/auth';
 
 interface ILoginProps {}
 
@@ -39,6 +45,16 @@ const Login: React.FC<ILoginProps> = () => {
     onSuccess: (data) =>
       redirectWithToken(data.result.data.redirectUrl, data.result.data.uat),
   });
+
+  const domain = getSubDomain(window.location.host);
+  const { data, isLoading } = useGetSSOFromDomain(
+    domain,
+    domain !== '' ? true : false,
+  );
+
+  const { refetch } = useLoginViaSSO({ domain }, false, (data) =>
+    console.log(data),
+  );
 
   const {
     watch,
@@ -132,21 +148,31 @@ const Login: React.FC<ILoginProps> = () => {
               loading={loginMutation.isLoading}
             />
           </form>
-          <div className="flex items-center mt-8">
-            <Divider />
-            <div className="rounded-full border text-sm mx-6 px-2.5 py-1.5">
-              or
-            </div>
-            <Divider />
-          </div>
-          <Button
-            dataTestId="signin-sso-cta"
-            label={'Sign In via SSO'}
-            variant={ButtonVariant.Secondary}
-            size={Size.Large}
-            className="w-full mt-8"
-            disabled={loginMutation.isLoading}
-          />
+          {!isLoading && (!!!domain || data?.result?.data?.sso?.active) && (
+            <>
+              <div className="flex items-center mt-8">
+                <Divider />
+                <div className="rounded-full border text-sm mx-6 px-2.5 py-1.5">
+                  or
+                </div>
+                <Divider />
+              </div>
+              <Button
+                dataTestId="signin-sso-cta"
+                label={'Sign In via SSO'}
+                variant={ButtonVariant.Secondary}
+                size={Size.Large}
+                className="w-full mt-8"
+                disabled={loginMutation.isLoading}
+                onClick={() => {
+                  if (domain) {
+                    refetch();
+                  } else {
+                  }
+                }}
+              />
+            </>
+          )}
         </div>
       </div>
     </div>

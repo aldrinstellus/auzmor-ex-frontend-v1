@@ -77,3 +77,15 @@ export const readFirstAxiosError = (err: any) => {
   }
   return 'Something went wrong!';
 };
+
+export const getSubDomain = (host: string) => {
+  if (process.env.NODE_ENV === 'development') {
+    return 'incendia';
+  }
+  const domains = host.split('.');
+  if (domains.length >= 3) {
+    return domains[0];
+  } else {
+    return '';
+  }
+};
