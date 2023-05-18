@@ -162,6 +162,9 @@ const Password: React.FC<PasswordProps> = ({
     [error, helpText],
   );
 
+  const isValidationSchemeVisible =
+    Object.values(validationChecks).includes(false);
+
   return (
     <div className={`relative ${className}`}>
       <div className={labelStyle}>{label}</div>
@@ -203,7 +206,7 @@ const Password: React.FC<PasswordProps> = ({
       >
         {error || helpText || ' '}
       </div>
-      {!!field.value && showChecks && (
+      {!!field.value && isValidationSchemeVisible && showChecks && (
         <div>
           <PasswordPolicy
             policyName="Must have atleast 6 characters"
