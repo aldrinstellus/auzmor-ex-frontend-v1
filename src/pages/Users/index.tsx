@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button, { Size, Variant } from 'components/Button';
 import UserCard from './components/UserCard';
 import TabSwitch from './components/TabSwitch';
 import { IPostUsersResponse, useUsers } from 'queries/users';
+import { Variant as InputVariant } from 'components/Input';
 import InviteUserModal from './components/InviteUserModal';
 import TablePagination from 'components/TablePagination';
 import Card from 'components/Card';
@@ -15,12 +16,15 @@ import IconButton, {
   Size as IconSize,
 } from 'components/IconButton';
 import FilterModal from './components/FilterModal';
+import { useDebounce } from 'hooks/useDebounce';
 
+interface IForm {
+  search?: string;
+}
 interface IUsersProps {}
 
 const Users: React.FC<IUsersProps> = () => {
   const [page, setPage] = useState(1);
-  const { data: users, isLoading } = useUsers({ limit: 30, next: page });
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
 
@@ -28,9 +32,20 @@ const Users: React.FC<IUsersProps> = () => {
     control,
     handleSubmit,
     watch,
+    getValues,
     formState: { errors, isValid },
-  } = useForm({
+  } = useForm<IForm>({
     mode: 'onChange',
+  });
+
+  const searchValue = watch('search');
+
+  const debouncedSearchValue = useDebounce(searchValue || '', 500);
+  console.log(debouncedSearchValue, 'KKKK');
+  const { isLoading, data: users } = useUsers({
+    q: debouncedSearchValue,
+    limit: 30,
+    next: page,
   });
 
   const peopleHubNode = (
@@ -99,11 +114,14 @@ const Users: React.FC<IUsersProps> = () => {
                 fields={[
                   {
                     type: FieldType.Input,
+                    variant: InputVariant.Text,
                     size: InputSize.Small,
                     leftIcon: 'search',
                     control,
+                    getValues,
                     name: 'search',
                     placeholder: 'Search members',
+                    error: errors.search?.message,
                   },
                 ]}
               />

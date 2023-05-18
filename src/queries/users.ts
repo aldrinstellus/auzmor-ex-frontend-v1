@@ -60,11 +60,12 @@ interface UserQueryParams {
 }
 
 // get all users people listing
-const getAllUsers = async ({ limit, prev, next }: UserQueryParams) => {
+const getAllUsers = async ({ limit, prev, next, ...rest }: UserQueryParams) => {
   const { data } = await apiService.get(`/users`, {
     limit: limit,
     prev: prev,
     next: next,
+    ...rest,
   });
   return data;
 };
@@ -147,11 +148,15 @@ export const acceptInviteSetPassword = async (q: Record<string, any>) => {
 }
 
 // use react query to get all users
-export const useUsers = ({ limit, prev, next }: UserQueryParams) => {
+export const useUsers = (
+  params: UserQueryParams,
+  onSuccess?: (data: any) => void,
+) => {
   return useQuery({
-    queryKey: ['users', limit, prev, next],
-    queryFn: () => getAllUsers({ limit, prev, next }),
+    queryKey: ['users', params],
+    queryFn: () => getAllUsers({ ...params }),
     staleTime: 15 * 60 * 1000,
+    onSuccess,
   });
 };
 
