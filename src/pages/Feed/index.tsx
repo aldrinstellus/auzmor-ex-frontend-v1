@@ -2,12 +2,21 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import PostBuilder from 'components/PostBuilder';
 import UserCard from 'components/UserWidget';
 import AnnouncementCard from 'components/AnnouncementWidget';
-import { IGetPost, useInfiniteFeed } from 'queries/post';
+import {
+  IGetPost,
+  IPostFilters,
+  PostFilterKeys,
+  PostType,
+  useInfiniteFeed,
+} from 'queries/post';
 import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
 import Post from 'components/Post';
 import { useInView } from 'react-intersection-observer';
-import { IMenuItem } from 'components/PopupMenu';
-import UserOnboard from 'components/UserOnboard';
+import FeedFilter from 'components/ActivityFeed/components/FeedFilters';
+import Divider from 'components/Divider';
+import SortByDropdown from 'components/ActivityFeed/components/SortByDropdown';
+import Icon from 'components/Icon';
+import { twConfig } from 'utils/misc';
 
 interface IFeedProps {}
 
@@ -34,10 +43,13 @@ export interface IMyReactions {
 
 const Feed: React.FC<IFeedProps> = () => {
   const [showModal, setShowModal] = useState(false);
+  const [appliedFeedFilters, setAppliedFeedFilters] = useState<IPostFilters>({
+    [PostFilterKeys.PostType]: [],
+  });
   const { ref, inView } = useInView();
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteFeed();
+    useInfiniteFeed(appliedFeedFilters);
 
   useEffect(() => {
     if (inView) {
@@ -55,6 +67,30 @@ const Feed: React.FC<IFeedProps> = () => {
     });
   }) as IGetPost[];
 
+  const clearAppliedFilters = () => {
+    setAppliedFeedFilters({
+      ...appliedFeedFilters,
+      [PostFilterKeys.PostType]: [],
+      [PostFilterKeys.MyPosts]: false,
+      [PostFilterKeys.MentionedInPost]: false,
+    });
+  };
+
+  const getAppliedFiltersCount = () => {
+    return appliedFeedFilters[PostFilterKeys.PostType]?.length || 0;
+  };
+
+  const removePostTypeFilter = (filter: PostType) => {
+    if (appliedFeedFilters[PostFilterKeys.PostType]) {
+      setAppliedFeedFilters({
+        ...appliedFeedFilters,
+        [PostFilterKeys.PostType]: appliedFeedFilters[
+          PostFilterKeys.PostType
+        ].filter((each) => each !== filter),
+      });
+    }
+  };
+
   return (
     <>
       <div className="mb-12 space-x-8 flex w-full">
@@ -64,6 +100,51 @@ const Feed: React.FC<IFeedProps> = () => {
         <div className="w-1/2">
           <div className="">
             <CreatePostCard setShowModal={setShowModal} />
+            <div className="flex flex-row items-center gap-x-2 mt-8">
+              <FeedFilter
+                appliedFeedFilters={appliedFeedFilters}
+                onApplyFilters={(filters: IPostFilters) => {
+                  setAppliedFeedFilters(filters);
+                }}
+              />
+              <Divider />
+              <SortByDropdown />
+            </div>
+            <div className="flex w-full overflow-y-auto">
+              {appliedFeedFilters[PostFilterKeys.PostType]?.map(
+                (filter: PostType) => (
+                  <div
+                    key={filter}
+                    className="border border-neutral-200 rounded-17xl px-3 py-2 flex bg-white capitalize text-sm font-medium items-center mr-1"
+                  >
+                    <div className="mr-1">{filter.toLocaleLowerCase()}</div>
+                    <Icon
+                      name="closeCircleOutline"
+                      stroke={twConfig.theme.colors.neutral['900']}
+                      className="cursor-pointer"
+                      onClick={() => removePostTypeFilter(filter)}
+                    />
+                  </div>
+                ),
+              )}
+              {getAppliedFiltersCount() > 0 && (
+                <div
+                  className="flex items-center cursor-pointer"
+                  onClick={clearAppliedFilters}
+                >
+                  <Icon
+                    name="deleteOutline"
+                    size={16}
+                    className="mr-1"
+                    stroke={twConfig.theme.colors.primary['600']}
+                    strokeWidth={'2'}
+                  />
+                  <div className="font-bold text-sm text-primary-600">
+                    Clear all
+                  </div>
+                </div>
+              )}
+            </div>
             {isLoading ? (
               <div className="mt-4">loading...</div>
             ) : (

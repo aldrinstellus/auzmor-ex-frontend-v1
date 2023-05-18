@@ -1,5 +1,9 @@
 import apiService from 'utils/apiService';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import {
+  QueryFunctionContext,
+  useInfiniteQuery,
+  useQuery,
+} from '@tanstack/react-query';
 import { DeltaStatic } from 'quill';
 import { isValidUrl } from 'utils/misc';
 import { IMyReactions } from 'pages/Feed';
@@ -197,6 +201,61 @@ interface IAnnounce {
   reaction: string;
 }
 
+export enum PostType {
+  Update = 'UPDATE',
+  Event = 'EVENT',
+  Document = 'DOCUMENT',
+  Poll = 'POLL',
+  ShoutOut = 'SHOUT_OUT',
+  Birthday = 'BIRTHDAY',
+  WorkAniversary = 'WORK_ANNIVERSARY',
+  WelcomNewHire = 'WELCOME_NEW_HIRE',
+  Repost = 'REPOST',
+  Scheduled = 'SCHEDULED',
+}
+
+export enum ActivityType {
+  Created = 'CREATED',
+  Commented = 'COMMENTED',
+  Reacted = 'REACTED',
+  Mentioned = 'MENTIONED',
+  Bookemarked = 'BOOKMARKED',
+}
+
+export enum FeedType {
+  Post = 'POST',
+  Announcement = 'ANNOUNCEMENT',
+  All = 'ALL',
+}
+
+export enum PostFilterKeys {
+  PostType = 'type',
+  ActorId = 'actorId',
+  ActivityType = 'activityType',
+  MyPosts = 'myPosts',
+  MentionedInPost = 'mentionedInPost',
+  Limit = 'limit',
+  Hashtags = 'hashtags',
+  Sort = 'sort',
+  Feed = 'feed',
+  Next = 'next',
+  Prev = 'prev',
+}
+
+export interface IPostFilters {
+  [PostFilterKeys.PostType]?: PostType[];
+  [PostFilterKeys.ActorId]?: string;
+  [PostFilterKeys.ActivityType]?: ActivityType;
+  [PostFilterKeys.MyPosts]?: boolean;
+  [PostFilterKeys.MentionedInPost]?: boolean;
+  [PostFilterKeys.Limit]?: number;
+  [PostFilterKeys.Hashtags]?: string[];
+  [PostFilterKeys.Sort]?: { createdAt: 'ASC' | 'DESC' };
+  [PostFilterKeys.Feed]?: FeedType;
+  [PostFilterKeys.Next]?: number;
+  [PostFilterKeys.Prev]?: number;
+}
+
 export const createPost = async (payload: IPost) => {
   const data = await apiService.post('/posts', payload);
   return data;
@@ -287,9 +346,13 @@ export const useInfinitePeopleProfileFeed = (
   });
 };
 
-export const fetchFeed = ({ pageParam = null }) => {
-  if (pageParam === null) return apiService.get('/posts');
-  else return apiService.get(pageParam);
+export const fetchFeed = ({
+  pageParam = null,
+  queryKey,
+}: QueryFunctionContext<(string | Record<string, any> | undefined)[], any>) => {
+  console.log(queryKey);
+  if (pageParam === null) return apiService.get('/posts', queryKey[1]);
+  else return apiService.get(pageParam, queryKey[1]);
 };
 
 export const useInfiniteFeed = (q?: Record<string, any>) => {

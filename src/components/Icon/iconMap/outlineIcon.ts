@@ -42,6 +42,7 @@ import SvgCloseCircleOutline from '../components/CloseCircle/CloseCircleOutline'
 import SvgDotsVerticalOutline from '../components/DotsVertical/DotsVerticalOutline';
 import SvgRedoOutline from '../components/Redo/RedoOutline';
 import SvgUserRemoveOutline from '../components/UserRemove/UserRemoveOutline';
+import SvgDeleteOutline from '../components/Delete/DeleteOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -56,6 +57,7 @@ export const outlineIcon = {
   closeOutline: SvgCloseOutline,
   convertShapeOutline: SvgConvertShapeOutline,
   crossCircleOutline: SvgCrossCircleOutline,
+  deleteOutline: SvgDeleteOutline,
   documentOutline: SvgDocumentOutline,
   dotsVerticalOutline: SvgDotsVerticalOutline,
   draftOutline: SvgDraftOutline,
