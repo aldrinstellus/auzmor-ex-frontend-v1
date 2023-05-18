@@ -1,3 +1,4 @@
+import qs from 'qs';
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 
 import { getItem } from './persist';
@@ -32,7 +33,12 @@ class ApiService {
   }
 
   async get(url: string, params = {}) {
-    return await this.instance.get(url, { params });
+    const _params = qs.stringify(params, { arrayFormat: 'repeat' });
+    let _url = url;
+    if (_params) {
+      _url += `?${_params}`;
+    }
+    return await this.instance.get(_url);
   }
 
   async put(url: string, data = {}) {
