@@ -6,28 +6,71 @@ import TextArea from 'components/TextArea';
 import useHover from 'hooks/useHover';
 import Header from './Header';
 import { useForm } from 'react-hook-form';
+import Layout, { FieldType } from 'components/Form';
+import queryClient from 'utils/queryClient';
+import { updateCurrentUser } from 'queries/users';
+import { useMutation } from '@tanstack/react-query';
 
 export interface IUpdateAboutMe {
-  messageText: string;
+  about: string;
 }
 export interface IAboutMeProps {
-  aboutMe: any;
+  aboutMeData: Record<string, any>;
   canEdit?: boolean;
 }
 
-const AboutMe: React.FC<IAboutMeProps> = ({ aboutMe, canEdit }) => {
+const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [isHovered, eventHandlers] = useHover();
-  const { control, handleSubmit } = useForm<IUpdateAboutMe>({
+
+  const { control, handleSubmit, getValues } = useForm<IUpdateAboutMe>({
     mode: 'onSubmit',
+    defaultValues: {
+      about: aboutMeData?.personal?.about || aboutMeData?.fullName,
+    },
   });
+
   const onHoverStyles = useMemo(
     () => clsx({ 'mb-8': true }, { 'shadow-xl': isHovered && canEdit }),
     [isHovered],
   );
 
-  const onSubmit = (data: any) => {
-    console.log('dafdasdf', data);
+  const textAreaField = [
+    {
+      type: FieldType.TextArea,
+      name: 'about',
+      placeholder: 'write here',
+      defaultValue: getValues().about,
+      dataTestId: '',
+      control,
+      className: 'w-full',
+      rows: 3,
+      maxLength: 2000,
+      showCounter: false,
+    },
+  ];
+
+  const updateUserAboutMeMutation = useMutation({
+    mutationFn: updateCurrentUser,
+    mutationKey: ['update-user-personal-details-mutation'],
+    onError: (error: any) => {
+      console.log('Error while updating the user about me section: ', error);
+    },
+    onSuccess: (response: any) => {
+      console.log('Updated User about me successfully', response);
+      setIsEditable(false);
+    },
+  });
+
+  const onSubmit = async (message: Record<string, string>) => {
+    await updateUserAboutMeMutation.mutateAsync({
+      // ...aboutMeData,
+      personal: {
+        about: message?.about,
+      },
+    });
+    await queryClient.invalidateQueries(['current-user-me']);
+    setIsEditable(false);
   };
 
   return (
@@ -41,13 +84,14 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMe, canEdit }) => {
           canEdit={canEdit}
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
+          isLoading={updateUserAboutMeMutation.isLoading}
         />
         <Divider />
         <div className="text-neutral-900 text-sm font-normal pt-4 pb-6 px-6">
           {!isEditable ? (
-            aboutMe?.fullName
+            aboutMeData?.fullName
           ) : (
-            <TextArea placeholder="write here" rows={3} />
+            <Layout fields={textAreaField} />
           )}
         </div>
       </Card>

@@ -57,6 +57,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
     },
     onSuccess: (response: any) => {
       console.log('Updated timezone successfully', response);
+      setIsEditable(false);
     },
   });
 

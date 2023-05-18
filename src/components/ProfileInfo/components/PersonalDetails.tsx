@@ -59,6 +59,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
     },
     onSuccess: (response: any) => {
       console.log('Updated User data successfully', response);
+      setIsEditable(false);
     },
   });
 
