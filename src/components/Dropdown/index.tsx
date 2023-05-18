@@ -1,4 +1,4 @@
-import DropdownArrowIcon from 'components/Icon/components/DropdownArrow';
+import ArrowDown from 'components/Icon/components/ArrowDown';
 import React, { ReactElement, useState } from 'react';
 
 export type DropdownOption = {
@@ -41,7 +41,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         data-testid={dataTestId}
       >
         {dropdownName}
-        <DropdownArrowIcon />
+        <ArrowDown />
         {showDropdown && (
           <div className="absolute top-full min-w-full w-max bg-white shadow-md mt-1 rounded z-10">
             <ul className="text-left border rounded-md space-y-1">

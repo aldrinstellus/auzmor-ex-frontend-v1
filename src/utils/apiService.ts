@@ -35,9 +35,12 @@ class ApiService {
     return await this.instance.get(url, { params });
   }
 
-  async put(url: string, data = {}) {
+  async put(url: string, data = {}, headers = {}) {
     try {
-      const { data: res } = await this.instance.put(url, data);
+      console.log({ headers });
+      const { data: res } = await this.instance.put(url, data, {
+        headers,
+      });
       return res;
     } catch (e: any) {
       throw new Error(e.response.data.message);

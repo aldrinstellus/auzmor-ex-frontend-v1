@@ -5,12 +5,17 @@ import React, { ReactElement } from 'react';
 export type SSOCardProps = {
   logo: string;
   description: string;
+  id: string;
   buttonText?: string;
+  onClick: any;
 };
+
 const SSOCard: React.FC<SSOCardProps> = ({
   logo,
   description,
+  id,
   buttonText = 'Configure',
+  onClick,
 }): ReactElement => {
   return (
     <Card className="w-80 h-60">
@@ -21,7 +26,13 @@ const SSOCard: React.FC<SSOCardProps> = ({
             <p>{description}</p>
           </div>
         </div>
-        <Button className="mb-6 max-w-fit" label={buttonText}></Button>
+        <Button
+          onClick={() => {
+            onClick(id);
+          }}
+          className="mb-6 max-w-fit"
+          label={buttonText}
+        ></Button>
       </div>
     </Card>
   );

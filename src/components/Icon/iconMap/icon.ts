@@ -5,7 +5,7 @@ import MagicStarIcon from '../components/MagicStar';
 import UsersIcon from '../components/Users';
 import HomeIcon from '../components/Home';
 import FeedIcon from '../components/Feed';
-import DropdownArrowIcon from '../components/DropdownArrow';
+import ArrowDown from '../components/ArrowDown';
 import ClockIcon from '../components/Clock';
 import FilterIcon from '../components/Filter';
 import MoreIcon from '../components/More';
@@ -77,6 +77,8 @@ import UserManagement from '../components/UserManagement';
 import Branding from '../components/Branding';
 import Link from '../components/Link';
 import Marketplace from '../components/Marketplace';
+import DocumentUpload from '../components/DocumentUpload';
+import ArrowUp from '../components/ArrowUp';
 
 export const icon = {
   add: Add,
@@ -103,7 +105,7 @@ export const icon = {
   document: DocumentIcon,
   draft: DraftIcon,
   dotsVertical: dotsVerticalIcon,
-  dropdownArrow: DropdownArrowIcon,
+  arrowDown: ArrowDown,
   edit: EditIcon,
   editIcon: MenuEditIcon,
   emojiHappy: EmojiHappy,
@@ -158,4 +160,6 @@ export const icon = {
   branding: Branding,
   link: Link,
   marketplace: Marketplace,
+  documentUpload: DocumentUpload,
+  arrowUp: ArrowUp,
 };

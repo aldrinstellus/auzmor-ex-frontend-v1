@@ -47,6 +47,8 @@ import SvgUserManagementOutline from '../components/UserManagement/UserManagemen
 import SvgBrandingOutline from '../components/Branding/BrandingOutline';
 import SvgLinkOutline from '../components/Link/LinkOutline';
 import SvgMarketplaceOutline from '../components/Marketplace/MarketplaceOutline';
+import SvgArrowUpOutline from '../components/ArrowUp/ArrowUpOutline';
+import SvgArrowDownOutline from '../components/ArrowDown/ArrowDownOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -98,4 +100,6 @@ export const outlineIcon = {
   brandingOutline: SvgBrandingOutline,
   linkOutline: SvgLinkOutline,
   marketplaceOutline: SvgMarketplaceOutline,
+  arrowUpOutline: SvgArrowUpOutline,
+  arrowDownOutline: SvgArrowDownOutline,
 };
