@@ -2,20 +2,10 @@ import Divider, { Variant } from 'components/Divider';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
 import Modal from 'components/Modal';
-import React, {
-  MouseEventHandler,
-  ReactElement,
-  ReactNode,
-  useEffect,
-  useState,
-} from 'react';
+import React, { ReactElement, ReactNode, useEffect, useState } from 'react';
 import ConnectionSettings, {
   IConnectionSettingsForm,
 } from './ConnectionSettings';
-import Button, {
-  Variant as ButtonVariant,
-  Type as ButtonType,
-} from 'components/Button';
 import UserFieldsMapping, { IUserFieldsMappingForm } from './UserFieldsMapping';
 import GroupFieldsMapping, {
   IGroupFieldsMappingForm,
@@ -32,6 +22,7 @@ type LdapForm = {
   id: string;
   form: ReactNode;
   nextButtonText?: string;
+  error?: boolean;
 };
 
 const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
@@ -44,6 +35,13 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
     useState<IConnectionSettingsForm>();
   const [userFieldsMappingData, setUserFieldsMappingData] =
     useState<IUserFieldsMappingForm>();
+  const [groupFieldsMappingData, setGroupFieldsMappingData] =
+    useState<IGroupFieldsMappingForm>();
+
+  const [connectionSettingsError, setConnectionSettingsError] =
+    useState<boolean>(false);
+  const [userFieldsMappingError, setUserFieldsMappingError] =
+    useState<boolean>(false);
 
   useEffect(() => {
     console.log({ connectionSettingsData });
@@ -55,130 +53,127 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
       id: 'connection-settings',
       form: (
         <ConnectionSettings
-          hostname=""
-          port=""
-          baseDN=""
-          groupBaseDN=""
-          upnSuffix=""
-          administratorDN=""
-          password=""
+          hostname={connectionSettingsData?.hostname}
+          port={connectionSettingsData?.port}
+          baseDN={connectionSettingsData?.baseDN}
+          groupBaseDN={connectionSettingsData?.groupBaseDN}
+          upnSuffix={connectionSettingsData?.upnSuffix}
+          administratorDN={connectionSettingsData?.administratorDN}
+          password={connectionSettingsData?.password}
           allowFallback={false}
           setData={setConnectionSettingsData}
+          setError={setConnectionSettingsError}
           closeModal={closeModal}
           next={next}
         />
       ),
+      error: connectionSettingsError,
     },
     {
       label: 'User Fields Mapping',
       id: 'user-fields-mapping',
       form: (
         <UserFieldsMapping
-          email=""
-          fullName=""
-          title=""
-          username=""
-          userObjectFilter=""
-          workMobile=""
+          email={userFieldsMappingData?.email}
+          fullName={userFieldsMappingData?.fullName}
+          title={userFieldsMappingData?.title}
+          username={userFieldsMappingData?.username}
+          userObjectFilter={userFieldsMappingData?.userObjectFilter}
+          workMobile={userFieldsMappingData?.workMobile}
           setData={setUserFieldsMappingData}
           closeModal={closeModal}
           next={next}
         />
       ),
+      error: userFieldsMappingError,
     },
     {
       label: 'Group Fields Mapping',
       id: 'group-fields-mapping',
       form: (
         <GroupFieldsMapping
-          groupName=""
-          groupMemberUid=""
-          groupObjectFilter=""
-          closeModal={closeModal}
-          next={next}
+          groupName={groupFieldsMappingData?.groupName}
+          groupMemberUid={groupFieldsMappingData?.groupMemberUid}
+          groupObjectFilter={groupFieldsMappingData?.groupObjectFilter}
           connectionSettingsData={connectionSettingsData}
           userFieldsMappingData={userFieldsMappingData}
+          setConnectionSettingsError={setConnectionSettingsError}
+          setUserFieldsMappingError={setUserFieldsMappingError}
+          setData={setGroupFieldsMappingData}
+          closeModal={closeModal}
         />
       ),
       nextButtonText: 'Activate',
     },
   ] as LdapForm[];
 
-  const onNextClick = () => {
-    next();
-  };
-
   return (
-    <Modal open={open} className="max-w-2xl max-h-[600px] overflow-y-visible">
+    <Modal open={open} className="max-w-[700px] max-h-[600px]">
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div className="p-4">
-          <p className="font-extrabold text-black text-lg">Active Directory</p>
-          <p className="font-normal text-neutral-500 text-sm flex items-center gap-x-1">
-            Seamlessly control access to anyone in your organization.
-            <Link label="Learn More." />
-          </p>
+      <div className="relative h-full">
+        <div className="flex items-start justify-between absolute top-0 left-0 right-0">
+          <div className="p-4">
+            <p className="font-extrabold text-black text-lg">
+              Active Directory
+            </p>
+            <p className="font-normal text-neutral-500 text-sm flex items-center gap-x-1">
+              Seamlessly control access to anyone in your organization.
+              <Link label="Learn More." />
+            </p>
+          </div>
+          <Icon
+            className="p-4"
+            onClick={closeModal}
+            name="close"
+            hover={false}
+            stroke="#000"
+          />
         </div>
-        <Icon
-          className="p-4"
-          onClick={closeModal}
-          name="close"
-          hover={false}
-          stroke="#000"
-        />
-      </div>
 
-      {/* Content */}
-      <Divider className="!bg-neutral-100" />
-      <div className="flex flex-col justify-between min-h-[500px]">
-        <div className="flex">
-          <div className="flex flex-col min-h-fit justify-between min-w-fit">
-            <div>
-              {ldapForms &&
-                ldapForms.map((form, index) => (
-                  <div key={form.id}>
-                    <div
-                      className={`${
-                        ldapForms[currentScreen].id === form.id
-                          ? 'bg-primary-50'
-                          : 'hover:bg-primary-50 cursor-pointer'
-                      }`}
-                      onClick={() => setCurrentScreen(index)}
-                    >
-                      <p className="font-medium text-sm text-neutral-900 px-6 py-4">
-                        {form.label}
-                      </p>
+        {/* Content */}
+        <Divider className="!bg-neutral-100" />
+        <div className="flex flex-col justify-between h-[560px] pt-20">
+          <div className="flex">
+            <div className="flex flex-col min-h-fit justify-between min-w-fit">
+              <div>
+                {ldapForms &&
+                  ldapForms.map((form, index) => (
+                    <div key={form.id}>
+                      <div
+                        className={`${
+                          ldapForms[currentScreen].id === form.id
+                            ? 'bg-primary-50'
+                            : 'hover:bg-primary-50 cursor-pointer'
+                        }`}
+                        onClick={() => setCurrentScreen(index)}
+                      >
+                        <p className="flex items-center font-medium text-sm text-neutral-900 px-6 py-4">
+                          {form.label}
+                          <div
+                            className={`${
+                              form.error ? 'visible' : 'invisible'
+                            }`}
+                          >
+                            <Icon
+                              className="pl-1"
+                              name="infoCircle"
+                              stroke="red"
+                              hover={false}
+                            />
+                          </div>
+                        </p>
+                      </div>
+                      {index !== ldapForms.length - 1 && (
+                        <Divider className="!bg-gray-100" />
+                      )}
                     </div>
-                    {index !== ldapForms.length - 1 && (
-                      <Divider className="!bg-gray-100" />
-                    )}
-                  </div>
-                ))}
+                  ))}
+              </div>
             </div>
-            <div className="bg-blue-50 p-8" />
+            {/* <Divider variant={Variant.Vertical} /> */}
+            {ldapForms[currentScreen].form}
           </div>
-          {/* <Divider variant={Variant.Vertical} /> */}
-          {ldapForms[currentScreen].form}
         </div>
-
-        {/* Footer */}
-        {/* <div className="bg-blue-50 mt-4 p-0">
-          <div className="p-3 flex items-center justify-end gap-x-3">
-            <Button
-              className="font-bold"
-              label="Cancel"
-              onClick={closeModal}
-              variant={ButtonVariant.Primary}
-            />
-            <Button
-              className="font-bold"
-              label="Continue"
-              variant={ButtonVariant.Primary}
-              type={ButtonType.Submit}
-              onClick={onNextClick}
-            />
-          </div>
-        </div> */}
       </div>
     </Modal>
   );

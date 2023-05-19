@@ -25,10 +25,12 @@ type GroupFieldsMappingProps = {
   groupMemberUid?: string;
   groupObjectFilter?: string;
   closeModal: () => void;
-  next: () => void;
+  setData: (data: IGroupFieldsMappingForm) => void;
   // The form data from the previous forms.
   connectionSettingsData?: IConnectionSettingsForm;
   userFieldsMappingData?: IUserFieldsMappingForm;
+  setConnectionSettingsError: (error: boolean) => void;
+  setUserFieldsMappingError: (error: boolean) => void;
 };
 
 export interface IGroupFieldsMappingForm {
@@ -42,9 +44,11 @@ const GroupFieldsMapping: React.FC<GroupFieldsMappingProps> = ({
   groupMemberUid = '',
   groupObjectFilter = '',
   closeModal,
-  next,
+  setData,
   connectionSettingsData,
   userFieldsMappingData,
+  setConnectionSettingsError,
+  setUserFieldsMappingError,
 }): ReactElement => {
   const {
     control,
@@ -53,7 +57,12 @@ const GroupFieldsMapping: React.FC<GroupFieldsMappingProps> = ({
     formState: { errors, isValid },
   } = useForm<IGroupFieldsMappingForm>({
     resolver: yupResolver(schema),
-    mode: 'onSubmit',
+    mode: 'onChange',
+    defaultValues: {
+      groupName,
+      groupMemberUid,
+      groupObjectFilter,
+    },
   });
 
   const userFields = [
@@ -94,8 +103,11 @@ const GroupFieldsMapping: React.FC<GroupFieldsMappingProps> = ({
     },
     onSuccess: (response: any) => {
       console.log('Updated sso successfully', response);
+      closeModal();
     },
   });
+
+  const { isLoading } = updateSsoMutation;
 
   const onSubmit = async () => {
     console.log({ connectionSettingsData, userFieldsMappingData });
@@ -103,12 +115,11 @@ const GroupFieldsMapping: React.FC<GroupFieldsMappingProps> = ({
       connectionSettingsData !== undefined &&
       userFieldsMappingData !== undefined
     ) {
+      setConnectionSettingsError(false);
+      setUserFieldsMappingError(false);
       const groupFieldsMappingData: IGroupFieldsMappingForm = getValues();
-      const ldapFormData = {
-        connection: connectionSettingsData,
-        userFieldMap: userFieldsMappingData,
-        groupFieldMap: groupFieldsMappingData,
-      };
+      setData(groupFieldsMappingData);
+
       const formData = new FormData();
 
       formData.append('active', 'true');
@@ -187,7 +198,7 @@ const GroupFieldsMapping: React.FC<GroupFieldsMappingProps> = ({
       if (groupFieldsMappingData.groupObjectFilter) {
         formData.append(
           'config[groupFieldMap][groupObjectFilter]',
-          '(objectclass=group)',
+          groupFieldsMappingData.groupObjectFilter,
         );
       }
 
@@ -195,31 +206,33 @@ const GroupFieldsMapping: React.FC<GroupFieldsMappingProps> = ({
         idp: IdentityProvider.CUSTOM_LDAP,
         formData,
       });
+    } else {
+      setConnectionSettingsError(true);
+      setUserFieldsMappingError(true);
     }
   };
 
   return (
     <form
-      className="mt-8 ml-6 w-[450px] overflow-y-auto"
+      className="mt-8 ml-6 w-[450px] overflow-y-auto pr-6 "
       onSubmit={handleSubmit(onSubmit)}
     >
-      <div className="flex flex-col justify-between">
-        <Layout fields={userFields} />
-        <div className="bg-blue-50 mt-4 p-0">
-          <div className="p-3 flex items-center justify-end gap-x-3">
-            <Button
-              className="font-bold"
-              label="Cancel"
-              onClick={closeModal}
-              variant={ButtonVariant.Secondary}
-            />
-            <Button
-              className="font-bold"
-              label="Activate"
-              variant={ButtonVariant.Primary}
-              type={ButtonType.Submit}
-            />
-          </div>
+      <Layout fields={userFields} />
+      <div className="bg-blue-50 mt-4 p-0 absolute bottom-0 left-0 right-0">
+        <div className="p-3 flex items-center justify-end gap-x-3">
+          <Button
+            className="font-bold"
+            label="Cancel"
+            onClick={closeModal}
+            variant={ButtonVariant.Secondary}
+          />
+          <Button
+            className="font-bold"
+            label="Activate"
+            variant={ButtonVariant.Primary}
+            type={ButtonType.Submit}
+            loading={isLoading}
+          />
         </div>
       </div>
     </form>

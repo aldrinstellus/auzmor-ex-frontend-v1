@@ -6,20 +6,21 @@ import Button, {
 import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import { Variant } from 'components/Input';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 type ConnectionSettingsProps = {
-  hostname: string;
-  port: string;
-  baseDN: string;
+  hostname?: string;
+  port?: string;
+  baseDN?: string;
   groupBaseDN?: string;
-  upnSuffix: string;
-  administratorDN: string;
-  password: string;
+  upnSuffix?: string;
+  administratorDN?: string;
+  password?: string;
   allowFallback?: boolean;
   setData: (data: IConnectionSettingsForm) => void;
+  setError: (error: boolean) => void;
   closeModal: () => void;
   next: () => void;
 };
@@ -55,6 +56,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
   password = '',
   allowFallback = false,
   setData,
+  setError,
   closeModal,
   next,
 }): ReactElement => {
@@ -65,7 +67,17 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
     formState: { errors, isValid },
   } = useForm<IConnectionSettingsForm>({
     resolver: yupResolver(schema),
-    mode: 'onSubmit',
+    mode: 'onChange',
+    defaultValues: {
+      hostname,
+      port,
+      baseDN,
+      groupBaseDN,
+      upnSuffix,
+      administratorDN,
+      password,
+      allowFallback,
+    },
   });
 
   const connectionSettingFields = [
@@ -77,7 +89,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
       label: 'Hostname*',
       control,
       defaultValue: hostname,
-      error: errors.hostname && 'Hostname is required',
+      error: errors.hostname?.message,
     },
     {
       type: FieldType.Input,
@@ -87,7 +99,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
       label: 'Port*',
       control,
       defaultValue: port,
-      error: errors.port && 'Port is required',
+      error: errors.port?.message,
     },
     {
       type: FieldType.Input,
@@ -97,7 +109,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
       label: 'Base DN*',
       control,
       defaultValue: baseDN,
-      error: errors.baseDN && 'Base DN is required',
+      error: errors.baseDN?.message,
     },
     {
       type: FieldType.Input,
@@ -119,7 +131,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
       label: 'UPN Suffix*',
       control,
       defaultValue: upnSuffix,
-      error: errors.upnSuffix && 'UPN Suffix is required',
+      error: errors.upnSuffix?.message,
     },
   ];
 
@@ -132,7 +144,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
       label: 'Administrator DN*',
       control,
       defaultValue: administratorDN,
-      error: errors.administratorDN && 'Administrator DN is required',
+      error: errors.administratorDN?.message,
     },
     {
       type: FieldType.Input,
@@ -142,7 +154,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
       label: 'Password*',
       control,
       defaultValue: password,
-      error: errors.password && 'Password is required',
+      error: errors.password?.message,
     },
     {
       type: FieldType.Checkbox,
@@ -157,12 +169,13 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
 
   const onSubmit = () => {
     setData(getValues());
+    setError(false);
     next();
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="mt-8 ml-6 max-h-[400px] w-[450px] overflow-y-auto">
+      <div className="mt-8 ml-6 max-h-[400px] w-[450px] overflow-y-auto pr-6 pb-12">
         <Layout fields={connectionSettingFields} />
         <Divider className="mt-6 mb-4 !bg-neutral-100" />
         <p className="mb-6 text-neutral-900 font-bold text-base">
@@ -177,7 +190,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
         <Divider className="mt-6 mb-4 !bg-neutral-100" />
         <Layout fields={authenticationFields} />
       </div>
-      <div className="bg-blue-50 mt-4 p-0">
+      <div className="bg-blue-50 mt-4 p-0 absolute bottom-0 left-0 right-0">
         <div className="p-3 flex items-center justify-end gap-x-3">
           <Button
             className="font-bold"
@@ -190,6 +203,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
             label="Continue"
             variant={ButtonVariant.Primary}
             type={ButtonType.Submit}
+            disabled={Object.keys(errors).length > 0}
           />
         </div>
       </div>
