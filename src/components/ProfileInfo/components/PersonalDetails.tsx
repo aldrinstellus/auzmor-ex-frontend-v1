@@ -118,6 +118,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
         { value: 'SINGLE', label: 'Single' },
       ],
       control,
+      menuPlacement: 'top',
     },
     // {
     //   type: FieldType.Input,

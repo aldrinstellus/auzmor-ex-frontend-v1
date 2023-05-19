@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import clsx from 'clsx';
 import { Control, useController, Controller } from 'react-hook-form';
 import Select, { MenuPlacement } from 'react-select';
+import { twConfig } from 'utils/misc';
 
 export interface ISingleSelectProps {
   name: string;
@@ -59,14 +60,21 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
   );
 
   const selectStyle = {
-    control: (styles: any) => ({
-      ...styles,
-      backgroundColor: '#fff',
-      border: '1px solid #E5E5E5',
-      borderRadius: '32px',
-      height,
-      padding: '0px 6px', // change style here because it breaking 2px
-    }),
+    control: (styles: any) => {
+      return {
+        ...styles,
+        backgroundColor: '#fff',
+        border: '1px solid #E5E5E5',
+        borderRadius: '32px',
+        height,
+        padding: '0px 6px', // change style here because it breaking 2px
+        '&:hover': { borderColor: twConfig.theme.colors.primary['600'] },
+        borderColor: twConfig.theme.colors.primary['500'],
+        boxShadow: styles.boxShadow
+          ? `0 0 0 1px ${twConfig.theme.colors.primary['500']}`
+          : undefined,
+      };
+    },
   };
 
   return (

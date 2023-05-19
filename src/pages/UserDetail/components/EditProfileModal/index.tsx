@@ -105,6 +105,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         { value: 'Research Analyst', label: 'Research Analyst' },
       ],
       control,
+      menuPlacement: 'top',
     },
   ];
 
@@ -136,6 +137,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         { value: 'Hydrabad, Talangana', label: 'Hydrabad, Talangana' },
       ],
       control,
+      menuPlacement: 'top',
     },
   ];
 
@@ -302,7 +304,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
             </div>
           </div>
         </div>
-        <div className="mx-6 mb-14 space-y-6 overflow-y-auto">
+        <div className="mx-4 px-2 mb-10 pb-4 space-y-6 overflow-y-auto">
           <div className="w-full flex space-x-6">
             <Layout fields={nameField} className="w-2/4" />
             <Layout fields={preferredNameField} className="w-2/4" />
