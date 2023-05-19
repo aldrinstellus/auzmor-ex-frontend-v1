@@ -13,6 +13,7 @@ import * as yup from 'yup';
 import Layout, { FieldType } from 'components/Form';
 import { updateSso } from 'queries/organization';
 import { useMutation } from '@tanstack/react-query';
+import apiService from 'utils/apiService';
 
 type ConfigureGenericSSOProps = {
   open: boolean;
@@ -85,10 +86,12 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
       );
       formData.append('file', xmlFile[0]);
 
+      apiService.updateContentType('multipart/form-data');
       const data = await updateSsoMutation.mutateAsync({
         idp: ssoSetting.idp,
         formData,
       });
+      apiService.updateContentType('application/json');
 
       console.log({ data });
     }
