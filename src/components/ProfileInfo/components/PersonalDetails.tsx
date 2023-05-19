@@ -15,7 +15,7 @@ import queryClient from 'utils/queryClient';
 import { OptionType } from 'components/UserOnboard/components/SelectTimeZone';
 
 interface IPersonalDetails {
-  dateOfBirth: string;
+  birthDate: string;
   gender: OptionType;
   permanentAddress: string;
   maritalStatus: OptionType;
@@ -41,7 +41,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
     mode: 'onChange',
     defaultValues: {
       personal: {
-        dateOfBirth: personalDetails?.personal?.birthDate,
+        birthDate: personalDetails?.personal?.birthDate,
         gender: personalDetails?.personal?.gender,
         permanentAddress: personalDetails?.personal?.permanentLocation,
         maritalStatus: personalDetails?.personal?.maritalStatus,
@@ -70,6 +70,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
     const updatedPersonalDetails = {
       personal: {
         gender: personalDetailData?.personal?.gender?.value,
+        birthDate: personalDetailData?.personal?.birthDate,
         permanentAddress: personalDetailData?.personal?.permanentAddress,
         maritalStatus: personalDetailData?.personal?.maritalStatus?.value,
         skills: ['ReactJs'],
@@ -85,10 +86,10 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   const fields = [
     {
       type: FieldType.DatePicker,
-      name: 'personal.dateOfBirth',
+      name: 'personal.birthDate',
       control,
       dataTestId: 'personal-details-dob',
-      defaultValue: getValues()?.personal?.dateOfBirth,
+      defaultValue: getValues()?.personal?.birthDate,
     },
     {
       type: FieldType.SingleSelect,
@@ -121,7 +122,6 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
       dataTestId: 'personal-details-marital-status',
       options: [
         { value: 'MARRIED', label: 'Married' },
-        { value: 'UNMARRIED', label: 'Unmarried' },
         { value: 'SINGLE', label: 'Single' },
       ],
       control,
