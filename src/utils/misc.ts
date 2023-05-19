@@ -80,7 +80,7 @@ export const readFirstAxiosError = (err: any) => {
 
 export const getSubDomain = (host: string) => {
   const domains = host.split('.');
-  if (domains.length >= 3) {
+  if (domains.length >= 4) {
     return domains[0];
   } else {
     return '';
