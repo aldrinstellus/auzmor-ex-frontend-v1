@@ -12,23 +12,26 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { updateCurrentUser } from 'queries/users';
 import queryClient from 'utils/queryClient';
+import { OptionType } from 'components/UserOnboard/components/SelectTimeZone';
 
-export interface IPersonalDetailsProps {
-  personalDetails: any;
-  skills: string[];
-  canEdit?: boolean;
-}
-
-interface IPersonalDetailsForm {
+interface IPersonalDetails {
   dateOfBirth: string;
-  gender: string;
+  gender: OptionType;
   permanentAddress: string;
-  maritalStatus: string;
+  maritalStatus: OptionType;
+  skills: string[];
 }
+interface IPersonalDetailsForm {
+  personal: IPersonalDetails;
+}
+
+type IPersonalDetailsProps = {
+  personalDetails: any;
+  canEdit?: boolean;
+};
 
 const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   personalDetails,
-  skills,
   canEdit,
 }) => {
   const [isHovered, eventHandlers] = useHover();
@@ -37,10 +40,12 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   const { control, handleSubmit, getValues } = useForm<IPersonalDetailsForm>({
     mode: 'onChange',
     defaultValues: {
-      dateOfBirth: personalDetails?.personal?.birthDate,
-      gender: personalDetails?.personal?.gender,
-      permanentAddress: personalDetails?.personal?.permanentLocation,
-      maritalStatus: personalDetails?.personal?.maritalStatus,
+      personal: {
+        dateOfBirth: personalDetails?.personal?.birthDate,
+        gender: personalDetails?.personal?.gender,
+        permanentAddress: personalDetails?.personal?.permanentLocation,
+        maritalStatus: personalDetails?.personal?.maritalStatus,
+      },
     },
   });
 
@@ -61,16 +66,18 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
     },
   });
 
-  const onSubmit = async (personalDetailData: any) => {
-    // await updateUserPersonalDetailsMutation.mutateAsync({
-    //   about: 'Hello I am groot',
-    //   birthDate: moment(personalDetailData?.dateOfBirth).toISOString(),
-    //   permanentLocation: personalDetailData?.permanentAddress,
-    //   gender: personalDetailData?.gender?.value,
-    //   maritalStatus: personalDetailData?.maritalStatus?.value,
-    //   // skills: personalDetails?.skills, // array of string
-    //   skills: ['Nodejs'],
-    // });
+  const onSubmit = async (personalDetailData: IPersonalDetailsForm) => {
+    const updatedPersonalDetails = {
+      personal: {
+        gender: personalDetailData?.personal?.gender?.value,
+        permanentAddress: personalDetailData?.personal?.permanentAddress,
+        maritalStatus: personalDetailData?.personal?.maritalStatus?.value,
+        skills: ['ReactJs'],
+      },
+    };
+    await updateUserPersonalDetailsMutation.mutateAsync({
+      personal: updatedPersonalDetails?.personal,
+    });
     await queryClient.invalidateQueries(['current-user-me']);
     setIsEditable(false);
   };
@@ -78,17 +85,17 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   const fields = [
     {
       type: FieldType.DatePicker,
-      name: 'dateOfBirth',
+      name: 'personal.dateOfBirth',
       control,
       dataTestId: 'personal-details-dob',
-      defaultValue: getValues().dateOfBirth,
+      defaultValue: getValues()?.personal?.dateOfBirth,
     },
     {
       type: FieldType.SingleSelect,
-      name: 'gender',
+      name: 'personal.gender',
       placeholder: 'Select Gender',
       label: 'Gender',
-      defaultValue: getValues().gender,
+      defaultValue: getValues()?.personal?.gender?.label,
       dataTestId: 'personal-details-gender',
       options: [
         { value: 'MALE', label: 'Male' },
@@ -98,19 +105,19 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
     },
     {
       type: FieldType.Input,
-      name: 'permanentAddress',
+      name: 'personal.permanentAddress',
       placeholder: 'Ex - Flat no, line Address',
       label: 'Permanent Address',
-      defaultValue: getValues().permanentAddress,
+      defaultValue: getValues()?.personal?.permanentAddress,
       dataTestId: 'personal-details-address',
       control,
     },
     {
       type: FieldType.SingleSelect,
-      name: 'maritalStatus',
+      name: 'personal.maritalStatus',
       placeholder: '',
       label: 'Marital Status',
-      defaultValue: getValues().maritalStatus,
+      defaultValue: getValues()?.personal?.maritalStatus?.label,
       dataTestId: 'personal-details-marital-status',
       options: [
         { value: 'MARRIED', label: 'Married' },
@@ -121,10 +128,10 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
     },
     // {
     //   type: FieldType.Input,
-    //   name: 'skills',
+    //   name: 'personal.skills',
     //   placeholder: 'Search for Skills',
     //   label: 'Skills',
-    //   defaultValue: '',
+    //   defaultValue: getValues()?.personal?.skills,
     //   dataTestId: 'personal-details-skills',
     //   control,
     // },
@@ -155,7 +162,9 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                   </IconWrapper>
                   <div className="text-neutral-900 text-base font-medium">
                     Born on{' '}
-                    {moment(personalDetails?.createdAt).format('Do MMMM')}
+                    {moment(personalDetails?.personal?.birthDate).format(
+                      'Do MMMM YYYY',
+                    ) || 'N/A'}
                   </div>
                 </div>
                 <div className="flex space-x-3">
@@ -192,18 +201,22 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                     </div>
                   </div>
                 </div>
-                <div>
-                  <div className="text-neutral-500 text-sm font-bold">
-                    Skills
+                {personalDetails?.personal?.skills?.length > 0 && (
+                  <div>
+                    <div className="text-neutral-500 text-sm font-bold">
+                      Skills
+                    </div>
+                    <div className="text-neutral-900 text-base font-medium">
+                      {personalDetails?.personal?.skills.map(
+                        (skill: string, index: number) => (
+                          <ul key={index}>
+                            <li>{skill}</li>
+                          </ul>
+                        ),
+                      ) || 'N/A'}
+                    </div>
                   </div>
-                  <div className="text-neutral-900 text-base font-medium">
-                    {skills.map((skill, index) => (
-                      <ul key={index}>
-                        <li>{skill}</li>
-                      </ul>
-                    )) || 'N/A'}
-                  </div>
-                </div>
+                )}
               </>
             ) : (
               <form>

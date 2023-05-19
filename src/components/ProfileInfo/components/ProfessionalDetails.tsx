@@ -117,7 +117,10 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
               {isEditable ? (
                 <SelectTimeZone
                   control={control}
-                  defaultTimezone={defaultTimezone}
+                  defaultTimezone={{
+                    value: professionalDetails?.timeZone,
+                    label: professionalDetails?.timeZone,
+                  }}
                   dataTestId="professional-details-timezone"
                 />
               ) : (

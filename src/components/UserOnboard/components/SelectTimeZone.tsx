@@ -1,9 +1,11 @@
 import React from 'react';
 import timezones from 'utils/timezones.json';
 import Layout, { FieldType } from 'components/Form';
-import { getDefaultTimezoneOption } from '../utils/';
-import { useForm } from 'react-hook-form';
-import { OptionType } from './SelectTimezoneScreen';
+
+export type OptionType = {
+  label: string;
+  value: string;
+};
 
 export type SelectTimeZoneProps = {
   control: any;

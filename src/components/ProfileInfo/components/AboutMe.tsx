@@ -11,8 +11,11 @@ import queryClient from 'utils/queryClient';
 import { updateCurrentUser } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
 
-export interface IUpdateAboutMe {
+interface IAboutMe {
   about: string;
+}
+export interface IUpdateAboutMe {
+  personal: IAboutMe;
 }
 export interface IAboutMeProps {
   aboutMeData: Record<string, any>;
@@ -26,7 +29,9 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
   const { control, handleSubmit, getValues } = useForm<IUpdateAboutMe>({
     mode: 'onSubmit',
     defaultValues: {
-      about: aboutMeData?.personal?.about || aboutMeData?.fullName,
+      personal: {
+        about: aboutMeData?.personal?.about || aboutMeData?.fullName,
+      },
     },
   });
 
@@ -38,9 +43,9 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
   const textAreaField = [
     {
       type: FieldType.TextArea,
-      name: 'about',
+      name: 'personal.about',
       placeholder: 'write here',
-      defaultValue: getValues().about,
+      defaultValue: getValues()?.personal?.about,
       dataTestId: 'about-me-edit-text',
       control,
       className: 'w-full',
@@ -63,9 +68,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
   });
 
   const onSubmit = async (message: Record<string, string>) => {
-    // await updateUserAboutMeMutation.mutateAsync({
-    //   about: message?.about,
-    // });
+    await updateUserAboutMeMutation.mutateAsync(message);
     await queryClient.invalidateQueries(['current-user-me']);
     setIsEditable(false);
   };
@@ -87,7 +90,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
         <Divider />
         <div className="text-neutral-900 text-sm font-normal pt-4 pb-6 px-6">
           {!isEditable ? (
-            aboutMeData?.fullName
+            aboutMeData?.personal?.about
           ) : (
             <Layout fields={textAreaField} />
           )}
