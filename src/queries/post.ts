@@ -350,7 +350,6 @@ export const fetchFeed = ({
   pageParam = null,
   queryKey,
 }: QueryFunctionContext<(string | Record<string, any> | undefined)[], any>) => {
-  console.log(queryKey);
   if (pageParam === null) return apiService.get('/posts', queryKey[1]);
   else return apiService.get(pageParam, queryKey[1]);
 };

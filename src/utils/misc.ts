@@ -77,3 +77,12 @@ export const readFirstAxiosError = (err: any) => {
   }
   return 'Something went wrong!';
 };
+
+export const getSubDomain = (host: string) => {
+  const domains = host.split('.');
+  if (domains.length >= 4) {
+    return domains[0];
+  } else {
+    return '';
+  }
+};

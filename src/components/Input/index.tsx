@@ -29,6 +29,7 @@ export type InputProps = {
   helpText?: string;
   className?: string;
   dataTestId?: string;
+  errorDataTestId?: string;
   control?: Control<Record<string, any>>;
   label?: string;
   onLeftIconClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
@@ -48,6 +49,7 @@ const Input: React.FC<InputProps> = ({
   disabled = false,
   className = '',
   dataTestId = '',
+  errorDataTestId = '',
   error,
   helpText,
   control,
@@ -161,6 +163,7 @@ const Input: React.FC<InputProps> = ({
       </label>
       <div
         className={`absolute -bottom-4 text-xs truncate leading-tight ${helpTextStyles}`}
+        data-testid={errorDataTestId}
       >
         {error || helpText || ' '}
       </div>
