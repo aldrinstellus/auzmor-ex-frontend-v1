@@ -1,3 +1,7 @@
+import Button, {
+  Variant as ButtonVariant,
+  Type as ButtonType,
+} from 'components/Button';
 import Layout, { FieldType } from 'components/Form';
 import { Variant } from 'components/Input';
 import React, { ReactElement } from 'react';
@@ -10,6 +14,9 @@ type UserFieldsMappingProps = {
   title: string;
   workMobile?: string;
   userObjectFilter?: string;
+  setData: (data: IUserFieldsMappingForm) => void;
+  closeModal: () => void;
+  next: () => void;
 };
 
 export interface IUserFieldsMappingForm {
@@ -28,6 +35,9 @@ const UserFieldsMapping: React.FC<UserFieldsMappingProps> = ({
   title = '',
   workMobile = '',
   userObjectFilter = '',
+  setData,
+  closeModal,
+  next,
 }): ReactElement => {
   const { control, getValues, handleSubmit } =
     useForm<IUserFieldsMappingForm>();
@@ -92,9 +102,31 @@ const UserFieldsMapping: React.FC<UserFieldsMappingProps> = ({
   const onSubmit = () => {};
 
   return (
-    <form className="mt-8 ml-6" onSubmit={handleSubmit(onSubmit)}>
-      <Layout fields={userFields} />
-    </form>
+    <div>
+      <form
+        className="mt-8 ml-6 max-h-[400px] w-[450px] overflow-y-auto"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <Layout fields={userFields} />
+      </form>
+      <div className="bg-blue-50 mt-4 p-0">
+        <div className="p-3 flex items-center justify-end gap-x-3">
+          <Button
+            className="font-bold"
+            label="Cancel"
+            onClick={closeModal}
+            variant={ButtonVariant.Primary}
+          />
+          <Button
+            className="font-bold"
+            label="Continue"
+            variant={ButtonVariant.Primary}
+            type={ButtonType.Submit}
+            onClick={next}
+          />
+        </div>
+      </div>
+    </div>
   );
 };
 

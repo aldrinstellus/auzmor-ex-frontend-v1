@@ -5,7 +5,7 @@ import Button, {
 import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import { Variant } from 'components/Input';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 type ConnectionSettingsProps = {
@@ -135,19 +135,43 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
   };
 
   return (
-    <form className="mt-8 ml-6" onSubmit={handleSubmit(onSubmit)}>
-      <Layout fields={connectionSettingFields} />
-      <Divider className="mt-6 mb-4 !bg-neutral-100" />
-      <p className="mb-6 text-neutral-900 font-bold text-base">User Setting:</p>
-      <Divider className="mt-6 mb-4 !bg-neutral-100" />
-      <Layout fields={userSettingFields} />
-      <Divider className="mt-6 mb-4 !bg-neutral-100" />
-      <p className="mb-6 text-neutral-900 font-bold text-base">
-        Authentication:
-      </p>
-      <Divider className="mt-6 mb-4 !bg-neutral-100" />
-      <Layout fields={authenticationFields} />
-    </form>
+    <div>
+      <form
+        className="mt-8 ml-6 max-h-[400px] w-[450px] overflow-y-auto"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <Layout fields={connectionSettingFields} />
+        <Divider className="mt-6 mb-4 !bg-neutral-100" />
+        <p className="mb-6 text-neutral-900 font-bold text-base">
+          User Setting:
+        </p>
+        <Divider className="mt-6 mb-4 !bg-neutral-100" />
+        <Layout fields={userSettingFields} />
+        <Divider className="mt-6 mb-4 !bg-neutral-100" />
+        <p className="mb-6 text-neutral-900 font-bold text-base">
+          Authentication:
+        </p>
+        <Divider className="mt-6 mb-4 !bg-neutral-100" />
+        <Layout fields={authenticationFields} />
+      </form>
+      <div className="bg-blue-50 mt-4 p-0">
+        <div className="p-3 flex items-center justify-end gap-x-3">
+          <Button
+            className="font-bold"
+            label="Cancel"
+            onClick={closeModal}
+            variant={ButtonVariant.Primary}
+          />
+          <Button
+            className="font-bold"
+            label="Continue"
+            variant={ButtonVariant.Primary}
+            type={ButtonType.Submit}
+            onClick={next}
+          />
+        </div>
+      </div>
+    </div>
   );
 };
 

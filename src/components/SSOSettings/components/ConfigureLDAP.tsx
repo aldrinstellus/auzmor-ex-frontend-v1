@@ -2,7 +2,13 @@ import Divider, { Variant } from 'components/Divider';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
 import Modal from 'components/Modal';
-import React, { ReactElement, ReactNode, useEffect, useState } from 'react';
+import React, {
+  MouseEventHandler,
+  ReactElement,
+  ReactNode,
+  useEffect,
+  useState,
+} from 'react';
 import ConnectionSettings, {
   IConnectionSettingsForm,
 } from './ConnectionSettings';
@@ -76,6 +82,9 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
           username=""
           userObjectFilter=""
           workMobile=""
+          setData={setUserFieldsMappingData}
+          closeModal={closeModal}
+          next={next}
         />
       ),
     },
@@ -87,6 +96,9 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
           groupName=""
           groupMemberUid=""
           groupObjectFilter=""
+          setData={setGroupFieldsMappingData}
+          closeModal={closeModal}
+          next={next}
         />
       ),
       nextButtonText: 'Activate',
@@ -100,51 +112,58 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
   return (
     <Modal open={open} className="max-w-2xl max-h-[600px] overflow-y-visible">
       {/* Header */}
-      <div className="flex items-start justify-between p-4">
-        <div>
+      <div className="flex items-start justify-between">
+        <div className="p-4">
           <p className="font-extrabold text-black text-lg">Active Directory</p>
           <p className="font-normal text-neutral-500 text-sm flex items-center gap-x-1">
             Seamlessly control access to anyone in your organization.
             <Link label="Learn More." />
           </p>
         </div>
-        <Icon onClick={closeModal} name="close" hover={false} stroke="#000" />
+        <Icon
+          className="p-4"
+          onClick={closeModal}
+          name="close"
+          hover={false}
+          stroke="#000"
+        />
       </div>
 
       {/* Content */}
       <Divider className="!bg-neutral-100" />
       <div className="flex flex-col justify-between min-h-[500px]">
         <div className="flex">
-          <div className="flex-col min-w-fit">
-            {ldapForms &&
-              ldapForms.map((form, index) => (
-                <div key={form.id}>
-                  <div
-                    className={`${
-                      ldapForms[currentScreen].id === form.id
-                        ? 'bg-primary-50'
-                        : 'hover:bg-primary-50 cursor-pointer'
-                    }`}
-                    onClick={() => setCurrentScreen(index)}
-                  >
-                    <p className="font-medium text-sm text-neutral-900 px-6 py-4">
-                      {form.label}
-                    </p>
+          <div className="flex flex-col min-h-fit justify-between min-w-fit">
+            <div>
+              {ldapForms &&
+                ldapForms.map((form, index) => (
+                  <div key={form.id}>
+                    <div
+                      className={`${
+                        ldapForms[currentScreen].id === form.id
+                          ? 'bg-primary-50'
+                          : 'hover:bg-primary-50 cursor-pointer'
+                      }`}
+                      onClick={() => setCurrentScreen(index)}
+                    >
+                      <p className="font-medium text-sm text-neutral-900 px-6 py-4">
+                        {form.label}
+                      </p>
+                    </div>
+                    {index !== ldapForms.length - 1 && (
+                      <Divider className="!bg-gray-100" />
+                    )}
                   </div>
-                  {index !== ldapForms.length - 1 && (
-                    <Divider className="!bg-gray-100" />
-                  )}
-                </div>
-              ))}
+                ))}
+            </div>
+            <div className="bg-blue-50 p-8" />
           </div>
-          <Divider variant={Variant.Vertical} />
-          <div className="max-h-[400px] w-[450px] overflow-y-auto">
-            {ldapForms[currentScreen].form}
-          </div>
+          {/* <Divider variant={Variant.Vertical} /> */}
+          {ldapForms[currentScreen].form}
         </div>
 
         {/* Footer */}
-        <div className="bg-blue-50 mt-4 p-0">
+        {/* <div className="bg-blue-50 mt-4 p-0">
           <div className="p-3 flex items-center justify-end gap-x-3">
             <Button
               className="font-bold"
@@ -160,7 +179,7 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
               onClick={onNextClick}
             />
           </div>
-        </div>
+        </div> */}
       </div>
     </Modal>
   );
