@@ -32,6 +32,10 @@ class ApiService {
     });
   }
 
+  updateContentType = (contentType: string) => {
+    this.instance.defaults.headers.common['Content-Type'] = contentType;
+  };
+
   async get(url: string, params = {}) {
     const _params = qs.stringify(params, { arrayFormat: 'repeat' });
     let _url = url;
