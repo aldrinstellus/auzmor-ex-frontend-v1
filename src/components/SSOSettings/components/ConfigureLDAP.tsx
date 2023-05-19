@@ -44,8 +44,6 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
     useState<IConnectionSettingsForm>();
   const [userFieldsMappingData, setUserFieldsMappingData] =
     useState<IUserFieldsMappingForm>();
-  const [groupFieldsMappingData, setGroupFieldsMappingData] =
-    useState<IGroupFieldsMappingForm>();
 
   useEffect(() => {
     console.log({ connectionSettingsData });
@@ -96,9 +94,10 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
           groupName=""
           groupMemberUid=""
           groupObjectFilter=""
-          setData={setGroupFieldsMappingData}
           closeModal={closeModal}
           next={next}
+          connectionSettingsData={connectionSettingsData}
+          userFieldsMappingData={userFieldsMappingData}
         />
       ),
       nextButtonText: 'Activate',

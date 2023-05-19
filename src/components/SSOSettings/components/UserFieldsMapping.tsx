@@ -1,3 +1,4 @@
+import { yupResolver } from '@hookform/resolvers/yup';
 import Button, {
   Variant as ButtonVariant,
   Type as ButtonType,
@@ -6,6 +7,7 @@ import Layout, { FieldType } from 'components/Form';
 import { Variant } from 'components/Input';
 import React, { ReactElement } from 'react';
 import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
 type UserFieldsMappingProps = {
   username: string;
@@ -28,6 +30,15 @@ export interface IUserFieldsMappingForm {
   userObjectFilter?: string;
 }
 
+const schema = yup.object({
+  username: yup.string().required('Required field'),
+  fullName: yup.string().required('Required field'),
+  email: yup.string().required('Required field'),
+  title: yup.string().required('Required field'),
+  workMobile: yup.string(),
+  userObjectFilter: yup.string(),
+});
+
 const UserFieldsMapping: React.FC<UserFieldsMappingProps> = ({
   username = '',
   fullName = '',
@@ -39,8 +50,15 @@ const UserFieldsMapping: React.FC<UserFieldsMappingProps> = ({
   closeModal,
   next,
 }): ReactElement => {
-  const { control, getValues, handleSubmit } =
-    useForm<IUserFieldsMappingForm>();
+  const {
+    control,
+    getValues,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<IUserFieldsMappingForm>({
+    resolver: yupResolver(schema),
+    mode: 'onSubmit',
+  });
 
   const userFields = [
     {
@@ -51,6 +69,7 @@ const UserFieldsMapping: React.FC<UserFieldsMappingProps> = ({
       label: 'User Name*',
       control,
       defaultValue: username,
+      error: errors.username && 'User Name is required',
     },
     {
       type: FieldType.Input,
@@ -60,6 +79,7 @@ const UserFieldsMapping: React.FC<UserFieldsMappingProps> = ({
       label: 'Full Name*',
       control,
       defaultValue: fullName,
+      error: errors.fullName && 'Full Name is required',
     },
     {
       type: FieldType.Input,
@@ -69,6 +89,7 @@ const UserFieldsMapping: React.FC<UserFieldsMappingProps> = ({
       label: 'Email*',
       control,
       defaultValue: email,
+      error: errors.email && 'Email is required',
     },
     {
       type: FieldType.Input,
@@ -78,6 +99,7 @@ const UserFieldsMapping: React.FC<UserFieldsMappingProps> = ({
       label: 'Title*',
       control,
       defaultValue: title,
+      error: errors.email && 'Title is required',
     },
     {
       type: FieldType.Input,
@@ -99,34 +121,34 @@ const UserFieldsMapping: React.FC<UserFieldsMappingProps> = ({
     },
   ];
 
-  const onSubmit = () => {};
+  const onSubmit = () => {
+    setData(getValues());
+    next();
+  };
 
   return (
-    <div>
-      <form
-        className="mt-8 ml-6 max-h-[400px] w-[450px] overflow-y-auto"
-        onSubmit={handleSubmit(onSubmit)}
-      >
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="mt-8 ml-6 max-h-[400px] w-[450px] overflow-y-auto">
         <Layout fields={userFields} />
-      </form>
+      </div>
+
       <div className="bg-blue-50 mt-4 p-0">
         <div className="p-3 flex items-center justify-end gap-x-3">
           <Button
             className="font-bold"
             label="Cancel"
             onClick={closeModal}
-            variant={ButtonVariant.Primary}
+            variant={ButtonVariant.Secondary}
           />
           <Button
             className="font-bold"
             label="Continue"
             variant={ButtonVariant.Primary}
             type={ButtonType.Submit}
-            onClick={next}
           />
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 
