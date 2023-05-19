@@ -110,15 +110,91 @@ const GroupFieldsMapping: React.FC<GroupFieldsMappingProps> = ({
         groupFieldMap: groupFieldsMappingData,
       };
       const formData = new FormData();
+
       formData.append('active', 'true');
-      formData.append('config', JSON.stringify(ldapFormData));
+
+      // Connection settings data
+      formData.append(
+        'config[connection][hostName]',
+        connectionSettingsData.hostname,
+      );
+      formData.append('config[connection][port]', connectionSettingsData.port);
+      formData.append(
+        'config[connection][baseDN]',
+        connectionSettingsData.baseDN,
+      );
+      if (connectionSettingsData.groupBaseDN) {
+        formData.append(
+          'config[connection][groupBaseDN]',
+          connectionSettingsData.groupBaseDN,
+        );
+      }
+      formData.append(
+        'config[connection][upnSuffix]',
+        connectionSettingsData.upnSuffix,
+      );
+      formData.append(
+        'config[connection][authentication][adminDN]',
+        connectionSettingsData.administratorDN,
+      );
+      formData.append(
+        'config[connection][authentication][password]',
+        connectionSettingsData.password,
+      );
+
+      // UserFieldMap data
+      formData.append(
+        'config[userFieldMap][userName]',
+        userFieldsMappingData.username,
+      );
+      formData.append(
+        'config[userFieldMap][fullName]',
+        userFieldsMappingData.fullName,
+      );
+      formData.append(
+        'config[userFieldMap][email]',
+        userFieldsMappingData.email,
+      );
+      formData.append(
+        'config[userFieldMap][title]',
+        userFieldsMappingData.title,
+      );
+      if (userFieldsMappingData.workMobile) {
+        formData.append(
+          'config[userFieldMap][workMobile]',
+          userFieldsMappingData.workMobile,
+        );
+      }
+      if (userFieldsMappingData.userObjectFilter) {
+        formData.append(
+          'config[userFieldMap][userObjectFilter]',
+          userFieldsMappingData.userObjectFilter,
+        );
+      }
+
+      if (groupFieldsMappingData.groupName) {
+        formData.append(
+          'config[groupFieldMap][groupName]',
+          groupFieldsMappingData.groupName,
+        );
+      }
+      if (groupFieldsMappingData.groupMemberUid) {
+        formData.append(
+          'config[groupFieldMap][groupMemberUID]',
+          groupFieldsMappingData.groupMemberUid,
+        );
+      }
+      if (groupFieldsMappingData.groupObjectFilter) {
+        formData.append(
+          'config[groupFieldMap][groupObjectFilter]',
+          '(objectclass=group)',
+        );
+      }
 
       const data = await updateSsoMutation.mutateAsync({
         idp: IdentityProvider.CUSTOM_LDAP,
         formData,
       });
-
-      console.log({ data });
     }
   };
 
