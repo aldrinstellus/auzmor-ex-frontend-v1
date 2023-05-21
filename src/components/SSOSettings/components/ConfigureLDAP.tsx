@@ -2,7 +2,7 @@ import Divider, { Variant } from 'components/Divider';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
 import Modal from 'components/Modal';
-import React, { ReactElement, ReactNode, useEffect, useState } from 'react';
+import React, { ReactElement, ReactNode, useState } from 'react';
 import ConnectionSettings, {
   IConnectionSettingsForm,
 } from './ConnectionSettings';

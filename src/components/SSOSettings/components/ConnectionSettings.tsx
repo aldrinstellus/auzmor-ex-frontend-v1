@@ -6,7 +6,7 @@ import Button, {
 import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import { Variant } from 'components/Input';
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import React, { ReactElement } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 

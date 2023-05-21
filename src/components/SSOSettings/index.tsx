@@ -9,9 +9,7 @@ import useModal from 'hooks/useModal';
 import ConfigureGenericSSO from './components/ConfigureGenericSSO';
 import { IdentityProvider, useGetSSO } from 'queries/organization';
 import ConfigureLDAP from './components/ConfigureLDAP';
-import Card from 'components/Card';
 import Banner, { Variant } from 'components/Banner';
-import { config } from 'process';
 
 enum ConfigureScreen {
   GENERIC = 'GENERIC',
