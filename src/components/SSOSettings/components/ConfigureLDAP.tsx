@@ -43,10 +43,6 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
   const [userFieldsMappingError, setUserFieldsMappingError] =
     useState<boolean>(false);
 
-  useEffect(() => {
-    console.log({ connectionSettingsData });
-  }, [connectionSettingsData]);
-
   const ldapForms = [
     {
       label: 'Connection Settings',
@@ -119,7 +115,7 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
             </p>
             <p className="font-normal text-neutral-500 text-sm flex items-center gap-x-1">
               Seamlessly control access to anyone in your organization.
-              <Link label="Learn More." />
+              <Link label="Learn more." to="#" />
             </p>
           </div>
           <Icon
@@ -171,7 +167,7 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
                   ))}
               </div>
             </div>
-            {/* <Divider variant={Variant.Vertical} /> */}
+            <Divider className="!bg-gray-100" variant={Variant.Vertical} />
             {ldapForms[currentScreen].form}
           </div>
         </div>

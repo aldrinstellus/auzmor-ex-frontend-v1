@@ -13,6 +13,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from '@tanstack/react-query';
 import { updateSso } from 'queries/organization';
 import { IdentityProvider } from 'queries/organization';
+import Banner, { Variant as BannerVariant } from 'components/Banner';
 
 const schema = yup.object({
   groupName: yup.string(),
@@ -99,18 +100,17 @@ const GroupFieldsMapping: React.FC<GroupFieldsMappingProps> = ({
     mutationKey: ['update-sso-mutation-ldap'],
     mutationFn: updateSso,
     onError: (error: any) => {
-      console.log('Error while updating sso: ', error);
+      console.log('Error while updating LDAP: ', error);
     },
     onSuccess: (response: any) => {
-      console.log('Updated sso successfully', response);
+      console.log('Updated LDAP successfully', response);
       closeModal();
     },
   });
 
-  const { isLoading } = updateSsoMutation;
+  const { isLoading, isError } = updateSsoMutation;
 
   const onSubmit = async () => {
-    console.log({ connectionSettingsData, userFieldsMappingData });
     if (
       connectionSettingsData !== undefined &&
       userFieldsMappingData !== undefined
@@ -218,7 +218,14 @@ const GroupFieldsMapping: React.FC<GroupFieldsMappingProps> = ({
       onSubmit={handleSubmit(onSubmit)}
     >
       <Layout fields={userFields} />
-      <div className="bg-blue-50 mt-4 p-0 absolute bottom-0 left-0 right-0">
+      <Banner
+        variant={BannerVariant.Error}
+        title={`Failed to integrate with your LDAP. Please try again.`}
+        className={`${
+          isError && !isLoading ? 'visible' : 'invisible'
+        } mt-4 absolute bottom-20 left-0 right-0`}
+      />
+      <div className="bg-blue-50 p-0 absolute bottom-0 left-0 right-0">
         <div className="p-3 flex items-center justify-end gap-x-3">
           <Button
             className="font-bold"

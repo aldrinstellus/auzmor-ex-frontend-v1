@@ -14,6 +14,7 @@ import Layout, { FieldType } from 'components/Form';
 import { updateSso } from 'queries/organization';
 import { useMutation } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
+import Banner, { Variant as BannerVariant } from 'components/Banner';
 
 type ConfigureGenericSSOProps = {
   open: boolean;
@@ -65,12 +66,15 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
     mutationKey: ['update-sso-mutation'],
     mutationFn: updateSso,
     onError: (error: any) => {
-      console.log('Error while updating sso: ', error);
+      console.log('Error while updating SSO: ', error);
     },
     onSuccess: (response: any) => {
-      console.log('Updated sso successfully', response);
+      console.log('Updated SSO successfully', response);
+      closeModal();
     },
   });
+
+  const { isLoading, isError } = updateSsoMutation;
 
   const [xmlFile, setXmlFile] = useState<File[]>();
 
@@ -92,8 +96,6 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
         formData,
       });
       apiService.updateContentType('application/json');
-
-      console.log({ data });
     }
   };
 
@@ -111,7 +113,7 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
       <div className="mt-4 max-w-full">
         <p className="flex p-4 items-center text-sm font-normal text-neutral-500">
           Seamlessly control access to anyone in your organization.&nbsp;
-          <Link label="Learn more" />.
+          <Link label="Learn more." to="#" />
         </p>
         <p className="text-neutral-900 px-4 text-base font-bold mt-6">
           Details necessary to create your SAML application.
@@ -176,7 +178,14 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
             </Collapse>
           </div>
           {/* Footer */}
-          <div className="bg-blue-50 mt-4 p-0">
+          <Banner
+            variant={BannerVariant.Error}
+            title={`Failed to integrate with ${ssoSetting?.key}. Please try again.`}
+            className={`min-w-full ${
+              isError && !isLoading ? 'visible' : 'invisible'
+            } mt-4`}
+          />
+          <div className="bg-blue-50 p-0">
             <div className="p-3 flex items-center justify-end gap-x-3">
               <Button
                 className="font-bold"
@@ -190,6 +199,7 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
                 variant={Variant.Primary}
                 type={Type.Submit}
                 disabled={xmlFile === undefined}
+                loading={isLoading}
               />
             </div>
           </div>
