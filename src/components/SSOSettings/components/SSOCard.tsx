@@ -13,7 +13,6 @@ export type SSOCardProps = {
   onClick: any;
   idp: IdentityProvider;
   active: boolean;
-  refetch: any;
   activeSSO?: ISSOSetting;
   setShowErrorBanner: (show: boolean) => void;
 };
@@ -26,7 +25,6 @@ const SSOCard: React.FC<SSOCardProps> = ({
   onClick,
   idp,
   active = false,
-  refetch,
   activeSSO,
   setShowErrorBanner,
 }): ReactElement => {
@@ -50,11 +48,7 @@ const SSOCard: React.FC<SSOCardProps> = ({
               <span className="font-medium text-sm text-green-500 bg-green-100 border-1 border-green-500 rounded-17xl px-2 py-1">
                 Activated
               </span>
-              <SSOCardMenu
-                idp={idp}
-                onClick={customOnClick}
-                refetch={refetch}
-              />
+              <SSOCardMenu idp={idp} name={id} onClick={customOnClick} />
             </div>
           </div>
           <div className="mt-5 w-80 h-24 text-neutral-500 text-sm font-normal">

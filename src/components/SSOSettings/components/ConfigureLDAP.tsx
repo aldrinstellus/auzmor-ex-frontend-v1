@@ -13,11 +13,11 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from '@tanstack/react-query';
 import { IdentityProvider, updateSso } from 'queries/organization';
+import queryClient from 'utils/queryClient';
 
 type ConfigureLDAPProps = {
   open: boolean;
   closeModal: () => void;
-  refetch: any;
   ssoSetting?: ISSOSetting;
 };
 
@@ -86,7 +86,6 @@ const groupFieldMappingSchema = yup.object({
 const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
   open,
   closeModal,
-  refetch,
   ssoSetting,
 }): ReactElement => {
   const [currentScreen, prev, next, setCurrentScreen] = useCarousel(0, 3);
@@ -208,9 +207,9 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
     onError: (error: any) => {
       console.log('Error while updating LDAP: ', error);
     },
-    onSuccess: (response: any) => {
+    onSuccess: async (response: any) => {
       console.log('Updated LDAP successfully', response);
-      refetch();
+      await queryClient.invalidateQueries(['get-sso']);
       closeModal();
     },
   });

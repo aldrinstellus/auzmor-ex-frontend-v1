@@ -1,55 +1,83 @@
 import { useMutation } from '@tanstack/react-query';
+import Button, { Variant } from 'components/Button';
 import Card from 'components/Card';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
+import Modal from 'components/Modal';
 import useHover from 'hooks/useHover';
+import useModal from 'hooks/useModal';
 import { IdentityProvider, deleteSSO } from 'queries/organization';
 import React, { ReactElement } from 'react';
+import queryClient from 'utils/queryClient';
 
 type SSOCardMenuProps = {
   idp: IdentityProvider;
+  name: string;
   onClick: any;
-  refetch: any;
 };
 
 const SSOCardMenu: React.FC<SSOCardMenuProps> = ({
   idp,
+  name,
   onClick,
-  refetch,
 }): ReactElement => {
   const deleteSSOMutation = useMutation({
     mutationKey: ['delete-sso-mutation'],
     mutationFn: deleteSSO,
-    onSuccess: () => {
+    onSuccess: async () => {
       console.log('Delete SSO operation successful');
-      refetch();
+      await queryClient.invalidateQueries(['get-sso']);
+      closeModal();
     },
-    onError: () => {
+    onError: async () => {
       console.log('Delete SSO operation failed');
-      refetch();
+      await queryClient.invalidateQueries(['get-sso']);
     },
   });
 
+  const { isLoading } = deleteSSOMutation;
+
   const [hovered, eventHandlers] = useHover();
+  const [open, openModal, closeModal] = useModal();
   return (
-    <div className="relative" onClick={() => {}} {...eventHandlers}>
-      <div className="cursor-pointer">
-        <Icon name="threeDots" />
+    <div>
+      <div className="relative" onClick={() => {}} {...eventHandlers}>
+        <div className="cursor-pointer">
+          <Icon name="threeDots" />
+        </div>
+        {hovered && (
+          <Card className="absolute">
+            <p className="py-3 px-6 cursor-pointer" onClick={onClick}>
+              Edit
+            </p>
+            <Divider />
+            <p className="py-3 px-6 cursor-pointer" onClick={openModal}>
+              Deactivate
+            </p>
+          </Card>
+        )}
       </div>
-      {hovered && (
-        <Card className="absolute">
-          <p className="py-3 px-6 cursor-pointer" onClick={onClick}>
-            Edit
-          </p>
-          <Divider />
-          <p
-            className="py-3 px-6 cursor-pointer"
+      <Modal open={open}>
+        <div className="flex items-center justify-between p-4">
+          <p className="font-bold text-lg text-gray-900">Deactivate?</p>
+          <Icon name="close" hover={false} onClick={closeModal} />
+        </div>
+        <Divider />
+        <p className="p-4">Do you wish to deactivate {name}?</p>
+        <div className="flex min-w-full items-center justify-end gap-x-3 p-4">
+          <Button
+            variant={Variant.Secondary}
+            label="Cancel"
+            onClick={closeModal}
+          />
+          <Button
+            variant={Variant.Danger}
+            label="Deactivate"
             onClick={() => deleteSSOMutation.mutateAsync(idp)}
-          >
-            Deactivate
-          </p>
-        </Card>
-      )}
+            loading={isLoading}
+          />
+        </div>
+      </Modal>
     </div>
   );
 };

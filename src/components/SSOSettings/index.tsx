@@ -25,14 +25,14 @@ export type ISSOSetting = {
   active?: boolean;
   config?: any;
   allowFallback?: boolean;
-  autoAllowNewUser?: boolean;
+  allowOnlyExistingUser?: boolean;
 };
 
 type SSOConfig = {
   idp: IdentityProvider;
   config: any;
   allowFallback?: boolean;
-  autoAllowNewUser?: boolean;
+  allowOnlyExistingUser?: boolean;
   active: boolean;
 };
 
@@ -43,7 +43,7 @@ const SSOSettings: React.FC = (): ReactElement => {
   // 4. If the user successfully integrates SSO, refetch list of SSOs
   // 5. If the user successfully deletes SSO, refetch list of SSOs.
 
-  const { data, isLoading, isError, refetch } = useGetSSO();
+  const { data, isLoading, isError } = useGetSSO();
   const [open, openModal, closeModal] = useModal();
   const [ssoSetting, setSsoSetting] = useState<ISSOSetting>();
   const [showErrorBanner, setShowErrorBanner] = useState<boolean>(false);
@@ -65,8 +65,8 @@ const SSOSettings: React.FC = (): ReactElement => {
       result = {
         active: ssoSetting.active,
         config: ssoSetting.config,
-        allowFallback: ssoSetting.allowFallback,
-        autoAllowNewUser: ssoSetting.autoAllowNewUser,
+        allowFallback: ssoSetting?.allowFallback,
+        allowOnlyExistingUser: ssoSetting?.allowOnlyExistingUser,
       };
     }
     return result;
@@ -146,7 +146,6 @@ const SSOSettings: React.FC = (): ReactElement => {
             onClick={onClick}
             idp={integration.idp}
             active={integration.active || false}
-            refetch={refetch}
             setShowErrorBanner={setShowErrorBanner}
             activeSSO={ssoIntegrations.find((sso: ISSOSetting) => sso.active)}
           />
@@ -156,7 +155,6 @@ const SSOSettings: React.FC = (): ReactElement => {
             ssoSetting={ssoSetting}
             closeModal={closeModal}
             open={open}
-            refetch={refetch}
           />
         )}
         {open && ssoSetting?.configureScreen === ConfigureScreen.LDAP && (
@@ -164,7 +162,6 @@ const SSOSettings: React.FC = (): ReactElement => {
             ssoSetting={ssoSetting}
             closeModal={closeModal}
             open={open}
-            refetch={refetch}
           />
         )}
       </div>
