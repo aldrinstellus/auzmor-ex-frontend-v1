@@ -25,13 +25,13 @@ type ConfigureGenericSSOProps = {
 
 interface IForm {
   allowFallback: boolean;
-  allowOnlyExistingUsers: boolean;
+  allowOnlyExistingUser: boolean;
   file: File;
 }
 
 const schema = yup.object({
   allowFallback: yup.boolean().default(false),
-  allowOnlyExistingUsers: yup.boolean().default(false),
+  allowOnlyExistingUser: yup.boolean().default(false),
 });
 
 const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
@@ -60,7 +60,7 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
       label: 'Allow only existing users to do SSO',
       labelDescription:
         'Enable this option when you do NOT want SSO to create a new user and strictly allow only existing users to login.',
-      name: 'allowOnlyExistingUsers',
+      name: 'allowOnlyExistingUser',
       control,
       defaultValue: ssoSetting?.config?.autoAllowNewUser,
     },
@@ -84,24 +84,26 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
   const [xmlFile, setXmlFile] = useState<File[]>();
 
   const onSubmit = async () => {
-    if (xmlFile && xmlFile[0] && xmlFile[0]?.type == 'text/xml' && ssoSetting) {
-      const values = getValues();
-      const formData = new FormData();
-      formData.append('active', 'true');
-      formData.append('allowFallback', String(values.allowFallback || false));
-      formData.append(
-        'allowOnlyExistingUsers',
-        String(values.allowOnlyExistingUsers || false),
-      );
-      formData.append('file', xmlFile[0]);
+    const values = getValues();
+    const formData = new FormData();
+    formData.append('active', 'true');
+    formData.append('allowFallback', String(values.allowFallback || false));
+    formData.append(
+      'allowOnlyExistingUser',
+      String(values.allowOnlyExistingUser || false),
+    );
+    if (xmlFile && xmlFile[0] && xmlFile[0]?.type == 'text/xml') {
+      formData.append('file', new Blob(xmlFile, { type: 'application/xml' }));
+    }
 
-      apiService.updateContentType('multipart/form-data');
+    apiService.updateContentType('multipart/form-data');
+    if (ssoSetting) {
       const data = await updateSsoMutation.mutateAsync({
         idp: ssoSetting.idp,
         formData,
       });
-      apiService.updateContentType('application/json');
     }
+    apiService.updateContentType('application/json');
   };
 
   return (

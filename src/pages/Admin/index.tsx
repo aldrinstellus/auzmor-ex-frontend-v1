@@ -13,6 +13,7 @@ const Admin: React.FC<IAdminProps> = () => {
     component: ReactNode;
     disabled: boolean;
     hidden: boolean;
+    dataTestId?: string;
   };
 
   const settings = [
@@ -23,6 +24,7 @@ const Admin: React.FC<IAdminProps> = () => {
       component: <div>General Settings Page</div>,
       disabled: false,
       hidden: false,
+      dataTestId: 'settings-general',
     },
     {
       label: 'User Management',
@@ -31,6 +33,7 @@ const Admin: React.FC<IAdminProps> = () => {
       component: <div>User Management Settings Page</div>,
       disabled: false,
       hidden: false,
+      dataTestId: 'settings-user-management',
     },
     {
       label: 'Branding',
@@ -39,6 +42,7 @@ const Admin: React.FC<IAdminProps> = () => {
       component: <div>Branding Settings Page</div>,
       disabled: false,
       hidden: false,
+      dataTestId: 'settings-branding',
     },
     {
       label: 'Single Sign-on',
@@ -47,6 +51,7 @@ const Admin: React.FC<IAdminProps> = () => {
       component: <SSOSettings />,
       disabled: false,
       hidden: false,
+      dataTestId: 'settings-sso',
     },
     {
       label: 'Marketplace',
@@ -55,6 +60,7 @@ const Admin: React.FC<IAdminProps> = () => {
       component: <div>Marketplace Settings Page</div>,
       disabled: false,
       hidden: false,
+      dataTestId: 'settings-marketplace',
     },
     {
       label: 'Notifications',
@@ -63,6 +69,7 @@ const Admin: React.FC<IAdminProps> = () => {
       component: <div>Notifications Settings Page</div>,
       disabled: false,
       hidden: false,
+      dataTestId: 'settings-notifications',
     },
   ];
 
@@ -86,6 +93,7 @@ const Admin: React.FC<IAdminProps> = () => {
                   : 'bg-white'
               }`}
               onClick={() => setActiveSettingsPage(item)}
+              data-testid={item.dataTestId}
             >
               <div
                 className={`${

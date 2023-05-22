@@ -164,6 +164,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
       name: 'allowFallback',
       control,
       defaultValue: allowFallback,
+      error: errors.allowFallback?.message,
     },
   ];
 
