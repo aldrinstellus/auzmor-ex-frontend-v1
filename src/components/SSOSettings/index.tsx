@@ -56,10 +56,10 @@ const SSOSettings: React.FC = (): ReactElement => {
     return <div>Error fetching SSO List</div>;
   }
 
-  const getSSOValues = (idp: IdentityProvider) => {
+  const getSSOValues = (idp: string) => {
     let result = {};
     const ssoSetting: SSOConfig = data.result.data.find(
-      (sso: SSOConfig) => sso.idp === idp,
+      (sso: any) => sso.idp === idp,
     );
     if (ssoSetting) {
       result = {
@@ -80,7 +80,7 @@ const SSOSettings: React.FC = (): ReactElement => {
       key: 'Active Directory',
       idp: IdentityProvider.CUSTOM_LDAP,
       configureScreen: ConfigureScreen.LDAP,
-      ...getSSOValues(IdentityProvider.CUSTOM_LDAP),
+      ...getSSOValues(IdentityProvider[0]),
     },
     {
       logo: MicrosoftAD,
@@ -89,7 +89,7 @@ const SSOSettings: React.FC = (): ReactElement => {
       key: 'ADFS (SSO)',
       idp: IdentityProvider.MS_AZURE_AD,
       configureScreen: ConfigureScreen.GENERIC,
-      ...getSSOValues(IdentityProvider.MS_AZURE_AD),
+      ...getSSOValues(IdentityProvider[1]),
     },
     {
       logo: Okta,
@@ -98,7 +98,7 @@ const SSOSettings: React.FC = (): ReactElement => {
       key: 'Okta (SSO)',
       idp: IdentityProvider.OKTA,
       configureScreen: ConfigureScreen.GENERIC,
-      ...getSSOValues(IdentityProvider.OKTA),
+      ...getSSOValues(IdentityProvider[2]),
     },
     {
       logo: GSuite,
@@ -107,7 +107,7 @@ const SSOSettings: React.FC = (): ReactElement => {
       key: 'Google (SSO)',
       idp: IdentityProvider.GSUITE,
       configureScreen: ConfigureScreen.GENERIC,
-      ...getSSOValues(IdentityProvider.GSUITE),
+      ...getSSOValues(IdentityProvider[3]),
     },
     {
       logo: SAML,
@@ -116,7 +116,7 @@ const SSOSettings: React.FC = (): ReactElement => {
       key: 'SAML (SSO)',
       idp: IdentityProvider.CUSTOM_SAML,
       configureScreen: ConfigureScreen.GENERIC,
-      ...getSSOValues(IdentityProvider.CUSTOM_SAML),
+      ...getSSOValues(IdentityProvider[4]),
     },
   ];
   const onClick = (key: string) => {
@@ -126,13 +126,16 @@ const SSOSettings: React.FC = (): ReactElement => {
 
   return (
     <div>
-      {showErrorBanner && (
-        <Banner
-          variant={Variant.Error}
-          title={`Deactivate existing SSO to configure`}
-          className="mb-4"
-        />
-      )}
+      {showErrorBanner &&
+        ssoIntegrations.find((sso: ISSOSetting) => sso.active) && (
+          <Banner
+            variant={Variant.Error}
+            title={`Deactivate ${
+              ssoIntegrations.find((sso: ISSOSetting) => sso.active)?.key
+            } to configure`}
+            className="mb-4"
+          />
+        )}
       <div className="flex gap-x-6 flex-wrap gap-y-6">
         {ssoIntegrations.map((integration: ISSOSetting) => (
           <SSOCard
