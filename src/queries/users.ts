@@ -1,6 +1,22 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 
+// for future filters
+export enum PeopleFilterKeys {
+  PeopleFilterType = 'type',
+}
+
+export enum FilterType {
+  Status = 'STATUS',
+  Location = 'LOCATION',
+  Depratment = 'DEPARTMENT',
+  Reporter = 'REPORTER',
+}
+
+export interface IPeopleFilters {
+  [PeopleFilterKeys.PeopleFilterType]?: FilterType[];
+}
+
 export interface IProfileImage {
   fileId: string;
   original: string;
@@ -60,24 +76,45 @@ interface UserQueryParams {
 }
 
 // get all users people listing
-const getAllUsers = async ({ limit, prev, next }: UserQueryParams) => {
+const getAllUsers = async ({
+  limit,
+  prev,
+  next,
+  q,
+  status,
+}: UserQueryParams) => {
+  if (!status || status === 'ALL') {
+    const { data } = await apiService.get(`/users`, {
+      limit: limit,
+      prev: prev,
+      next: next,
+      q: q,
+    });
+    return data;
+  }
   const { data } = await apiService.get(`/users`, {
     limit: limit,
     prev: prev,
     next: next,
+    q: q,
+    status: status,
   });
   return data;
 };
 
 // existing user
 export const isUserExist = async (q: { email: string }) => {
-  const { data } = await apiService.get('/users/exists', q);
-  return data;
+  if (!!q.email) {
+    const { data } = await apiService.get('/users/exists', q);
+    return data;
+  }
 };
 
 export const isDomainExists = async (q: { domain: string }) => {
-  const { data } = await apiService.get('/organizations/domain/exists', q);
-  return data;
+  if (!!q.domain) {
+    const { data } = await apiService.get('/organizations/domain/exists', q);
+    return data;
+  }
 };
 
 export const useDomainExists = (domain: string) => {
@@ -143,11 +180,15 @@ export const acceptInviteSetPassword = async (q: Record<string, any>) => {
 }
 
 // use react query to get all users
-export const useUsers = ({ limit, prev, next }: UserQueryParams) => {
+export const useUsers = (
+  params: UserQueryParams,
+  onSuccess?: (data: any) => void,
+) => {
   return useQuery({
-    queryKey: ['users', limit, prev, next],
-    queryFn: () => getAllUsers({ limit, prev, next }),
+    queryKey: ['users', params],
+    queryFn: () => getAllUsers({ ...params }),
     staleTime: 15 * 60 * 1000,
+    onSuccess,
   });
 };
 

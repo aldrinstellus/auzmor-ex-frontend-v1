@@ -5,6 +5,8 @@ import Password from 'components/Password';
 import SingleSelect from 'components/SingleSelect';
 import DatePickerInput from 'components/DatePicker';
 import TextArea from 'components/TextArea';
+import RadioGroup from 'components/RadioGroup';
+import clsx from 'clsx';
 
 export enum FieldType {
   Input = 'INPUT',
@@ -20,7 +22,7 @@ export enum FieldType {
 const fieldMap: Record<string, any> = {
   [FieldType.Input]: Input,
   [FieldType.SingleSelect]: SingleSelect,
-  // [FieldType.Radio]: RadioButtonGroup,
+  [FieldType.Radio]: RadioGroup,
   [FieldType.Checkbox]: Checkbox,
   [FieldType.Password]: Password,
   [FieldType.DatePicker]: DatePickerInput,

@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button, { Size, Variant } from 'components/Button';
 import UserCard from './components/UserCard';
 import TabSwitch from './components/TabSwitch';
-import { IPostUsersResponse, useUsers } from 'queries/users';
+import {
+  PeopleFilterKeys,
+  IPeopleFilters,
+  useUsers,
+  FilterType,
+} from 'queries/users';
+import { Variant as InputVariant } from 'components/Input';
 import InviteUserModal from './components/InviteUserModal';
 import TablePagination from 'components/TablePagination';
 import Card from 'components/Card';
@@ -14,21 +20,58 @@ import IconButton, {
   Variant as IconVariant,
   Size as IconSize,
 } from 'components/IconButton';
+import FilterModal from './components/FilterModal';
+import { useDebounce } from 'hooks/useDebounce';
+import Icon from 'components/Icon';
+import { twConfig } from 'utils/misc';
 
+interface IForm {
+  search?: string;
+  role?: { value: string; label: string };
+}
 interface IUsersProps {}
 
 const Users: React.FC<IUsersProps> = () => {
   const [page, setPage] = useState(1);
-  const { data: users, isLoading } = useUsers({ limit: 30, next: page });
   const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [userStatus, setUserStatus] = useState<string>('');
+  const [peopleFilters, setPeopleFilters] = useState<IPeopleFilters>({
+    [PeopleFilterKeys.PeopleFilterType]: [],
+  }); // for future filters
 
   const {
     control,
-    handleSubmit,
     watch,
-    formState: { errors, isValid },
-  } = useForm({
+    getValues,
+    formState: { errors },
+  } = useForm<IForm>({
     mode: 'onChange',
+  });
+
+  const clearAppliedFilters = () => {
+    setUserStatus('');
+  };
+
+  const getAppliedFiltersCount = () => {
+    return userStatus?.length || 0;
+  };
+
+  const removePostTypeFilter = (filter: FilterType) => {
+    if (userStatus) {
+      setUserStatus('');
+    }
+  };
+
+  const searchValue = watch('search');
+  const role = watch('role');
+
+  const debouncedSearchValue = useDebounce(searchValue || '', 500);
+  const { isLoading, data: users } = useUsers({
+    q: debouncedSearchValue,
+    limit: 30,
+    next: page,
+    status: userStatus,
   });
 
   const peopleHubNode = (
@@ -47,7 +90,7 @@ const Users: React.FC<IUsersProps> = () => {
               label="All Members"
               size={Size.Small}
               variant={Variant.Secondary}
-              className="h-9 grow-0"
+              className="!py-2 grow-0"
             />
             <Layout
               fields={[
@@ -59,15 +102,15 @@ const Users: React.FC<IUsersProps> = () => {
                   name: 'role',
                   placeholder: 'Role',
                   size: InputSize.Small,
-                  defaultValue: 'ADMIN',
+                  disabled: true,
                   options: [
                     {
-                      id: 1,
-                      label: 'ADMIN',
+                      value: 'ADMIN',
+                      label: 'Admin',
                     },
                     {
-                      id: 2,
-                      label: 'SUPER ADMIN',
+                      id: 'SUPER ADMIN',
+                      label: 'Super Admin',
                     },
                   ],
                 },
@@ -76,6 +119,9 @@ const Users: React.FC<IUsersProps> = () => {
           </div>
           <div className="flex space-x-2 justify-center items-center">
             <IconButton
+              onClick={() => {
+                setShowFilterModal(true);
+              }}
               icon="filterLinear"
               variant={IconVariant.Secondary}
               size={IconSize.Medium}
@@ -94,11 +140,14 @@ const Users: React.FC<IUsersProps> = () => {
                 fields={[
                   {
                     type: FieldType.Input,
+                    variant: InputVariant.Text,
                     size: InputSize.Small,
                     leftIcon: 'search',
                     control,
+                    getValues,
                     name: 'search',
                     placeholder: 'Search members',
+                    error: errors.search?.message,
                   },
                 ]}
               />
@@ -106,8 +155,22 @@ const Users: React.FC<IUsersProps> = () => {
           </div>
         </div>
 
-        <div className=" text-neutral-500 mt-6 mb-3">
+        <div className="text-neutral-500 mt-6 mb-3">
           Showing {!isLoading && users.result.data.length} results
+        </div>
+
+        <div className="mb-4 flex">
+          {userStatus && (
+            <div className="border border-neutral-200 rounded-17xl px-3 py-2 flex bg-white capitalize text-sm font-medium items-center mr-1">
+              <div className="mr-1">{userStatus}</div>
+              <Icon
+                name="closeCircleOutline"
+                stroke={twConfig.theme.colors.neutral['900']}
+                className="cursor-pointer"
+                onClick={() => setUserStatus('')}
+              />
+            </div>
+          )}
         </div>
       </div>
 
@@ -138,6 +201,17 @@ const Users: React.FC<IUsersProps> = () => {
         setShowAddUserModal={setShowAddUserModal}
         closeModal={() => setShowAddUserModal(false)}
       />
+
+      {showFilterModal && (
+        <FilterModal
+          setUserStatus={setUserStatus}
+          userStatus={userStatus}
+          page={page}
+          showModal={showFilterModal}
+          setShowFilterModal={setShowFilterModal}
+          closeModal={() => setShowFilterModal(false)}
+        />
+      )}
     </div>
   );
 

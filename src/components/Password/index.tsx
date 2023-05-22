@@ -162,6 +162,9 @@ const Password: React.FC<PasswordProps> = ({
     [error, helpText],
   );
 
+  const isValidationSchemeVisible =
+    Object.values(validationChecks).includes(false);
+
   return (
     <div className={`relative ${className}`}>
       <div className={labelStyle}>{label}</div>
@@ -203,27 +206,27 @@ const Password: React.FC<PasswordProps> = ({
       >
         {error || helpText || ' '}
       </div>
-      {showChecks && (
+      {!!field.value && isValidationSchemeVisible && showChecks && (
         <div>
           <PasswordPolicy
             policyName="Must have atleast 6 characters"
             isChecked={validationChecks.length}
           />
           <PasswordPolicy
-            policyName="Must have atleast 1 Lowercase letter"
-            isChecked={validationChecks.isLowercase}
-          />
-          <PasswordPolicy
-            policyName="Must have atleast 1 Uppercase letter"
-            isChecked={validationChecks.isUppercase}
-          />
-          <PasswordPolicy
-            policyName="Must have atleast 1 number"
+            policyName="1 Number"
             isChecked={validationChecks.isNumber}
           />
           <PasswordPolicy
-            policyName="Must have atleast 1 symbol"
+            policyName="1 Symbol"
             isChecked={validationChecks.isSymbol}
+          />
+          <PasswordPolicy
+            policyName="1 Upper case letter"
+            isChecked={validationChecks.isUppercase}
+          />
+          <PasswordPolicy
+            policyName="1 Lower case letter"
+            isChecked={validationChecks.isLowercase}
           />
         </div>
       )}

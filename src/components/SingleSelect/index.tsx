@@ -91,6 +91,7 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
           }}
           render={() => (
             <Select
+              isDisabled={disabled}
               placeholder={placeholder}
               styles={selectStyle}
               options={options}
