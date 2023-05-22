@@ -3,7 +3,7 @@ import { useState } from 'react';
 const useCarousel = (
   index: number,
   mediaLength: number,
-): [number, () => void, () => void] => {
+): [number, () => void, () => void, (index: number) => void] => {
   const [currentIndex, setCurrentIndex] = useState<number>(index);
 
   const prevSlide = () => {
@@ -18,7 +18,7 @@ const useCarousel = (
     setCurrentIndex(newIndex);
   };
 
-  return [currentIndex, prevSlide, nextSlide];
+  return [currentIndex, prevSlide, nextSlide, setCurrentIndex];
 };
 
 export default useCarousel;

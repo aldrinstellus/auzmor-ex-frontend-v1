@@ -12,6 +12,7 @@ export type CheckboxProps = {
   dataTestId?: string;
   control?: any;
   defaultValue?: boolean;
+  labelDescription?: string;
 };
 
 const Checkbox: React.FC<CheckboxProps> = ({
@@ -23,17 +24,21 @@ const Checkbox: React.FC<CheckboxProps> = ({
   defaultValue = false,
   label = '',
   control,
+  labelDescription,
   ...rest
 }) => {
   const { field } = useController({ name, control });
 
-  const styles = clsx({ 'flex space-x-2': true }, { [className]: true });
+  const styles = clsx(
+    { 'flex items-start justify-between': true },
+    { [className]: true },
+  );
 
   return (
     <label className={styles} data-testid={dataTestId}>
       <input
         type="checkbox"
-        className="h-4 w-4 rounded-xl cursor-pointer accent-primary-500"
+        className="h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600"
         name={field.name}
         ref={field.ref}
         disabled={loading || disabled}
@@ -42,8 +47,13 @@ const Checkbox: React.FC<CheckboxProps> = ({
         {...rest}
       />
       {label && (
-        <div className="text-text-medium text-sm ml-1 relative bottom-[2px] cursor-pointer">
-          {label}
+        <div className="pl-4 -mt-1">
+          <div className="font-medium text-sm cursor-pointer">{label}</div>
+          {labelDescription && (
+            <div className="font-normal text-xs text-neutral-500">
+              {labelDescription}
+            </div>
+          )}
         </div>
       )}
     </label>

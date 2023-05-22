@@ -1,27 +1,71 @@
 import Button from 'components/Button';
 import Card from 'components/Card';
 import React, { ReactElement } from 'react';
+import SSOCardMenu from './SSOCardMenu';
+import { IdentityProvider } from 'queries/organization';
+import { ISSOSetting } from '..';
 
 export type SSOCardProps = {
   logo: string;
   description: string;
+  id: string;
   buttonText?: string;
+  onClick: any;
+  idp: IdentityProvider;
+  active: boolean;
+  refetch: any;
+  activeSSO?: ISSOSetting;
+  setShowErrorBanner: (show: boolean) => void;
 };
+
 const SSOCard: React.FC<SSOCardProps> = ({
   logo,
   description,
+  id,
   buttonText = 'Configure',
+  onClick,
+  idp,
+  active = false,
+  refetch,
+  activeSSO,
+  setShowErrorBanner,
 }): ReactElement => {
+  const customOnClick = () => {
+    if (activeSSO && activeSSO?.idp !== idp) {
+      setShowErrorBanner(true);
+    } else onClick(id);
+  };
+
   return (
-    <Card className="w-80 h-60">
-      <div className="flex flex-col w-full h-full items-start justify-between ml-6">
+    <Card className="w-96 h-60">
+      <div className="flex flex-col h-full items-start justify-between ml-6">
         <div className="mt-7">
-          <img src={logo} className="h-6" />
-          <div className="mt-5 w-64 h-20 text-neutral-500 text-sm font-normal">
+          <div className="flex items-center justify-between">
+            <img src={logo} className="h-6" />
+            <div
+              className={`flex items-center gap-x-3 flex-end ${
+                active ? 'visible' : 'invisible'
+              }`}
+            >
+              <span className="font-medium text-sm text-green-500 bg-green-100 border-1 border-green-500 rounded-17xl px-2 py-1">
+                Activated
+              </span>
+              <SSOCardMenu
+                idp={idp}
+                onClick={customOnClick}
+                refetch={refetch}
+              />
+            </div>
+          </div>
+          <div className="mt-5 w-80 h-24 text-neutral-500 text-sm font-normal">
             <p>{description}</p>
           </div>
         </div>
-        <Button className="mb-6 max-w-fit" label={buttonText}></Button>
+        <Button
+          onClick={customOnClick}
+          className="mb-6 max-w-fit"
+          label={buttonText}
+        ></Button>
       </div>
     </Card>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import useHover from 'hooks/useHover';
-import { default as DropdownArrowFilled } from './DropdownArrowFilled';
+import { default as BrandingOutline } from './BrandingOutline';
 
 type IconProps = {
   size?: number;
@@ -9,7 +9,7 @@ type IconProps = {
   onClick?: () => void;
 };
 
-const DropdownArrowIcon: React.FC<IconProps> = ({
+const Branding: React.FC<IconProps> = ({
   hover,
   onClick,
   className = '',
@@ -18,10 +18,10 @@ const DropdownArrowIcon: React.FC<IconProps> = ({
   const [isHovered, eventHandlers] = useHover();
 
   return (
-    <div onClick={onClick} className={className} {...eventHandlers}>
-      <DropdownArrowFilled {...props} />
+    <div onClick={onClick} {...eventHandlers}>
+      <BrandingOutline {...props} />
     </div>
   );
 };
 
-export default DropdownArrowIcon;
+export default Branding;

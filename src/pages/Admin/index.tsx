@@ -18,7 +18,7 @@ const Admin: React.FC<IAdminProps> = () => {
   const settings = [
     {
       label: 'General',
-      icon: '',
+      icon: 'gear',
       key: 'general-settings',
       component: <div>General Settings Page</div>,
       disabled: false,
@@ -26,7 +26,7 @@ const Admin: React.FC<IAdminProps> = () => {
     },
     {
       label: 'User Management',
-      icon: '',
+      icon: 'userManagement',
       key: 'user-management-settings',
       component: <div>User Management Settings Page</div>,
       disabled: false,
@@ -34,7 +34,7 @@ const Admin: React.FC<IAdminProps> = () => {
     },
     {
       label: 'Branding',
-      icon: '',
+      icon: 'branding',
       key: 'branding-settings',
       component: <div>Branding Settings Page</div>,
       disabled: false,
@@ -42,7 +42,7 @@ const Admin: React.FC<IAdminProps> = () => {
     },
     {
       label: 'Single Sign-on',
-      icon: '',
+      icon: 'link',
       key: 'single-sign-on-settings',
       component: <SSOSettings />,
       disabled: false,
@@ -50,7 +50,7 @@ const Admin: React.FC<IAdminProps> = () => {
     },
     {
       label: 'Marketplace',
-      icon: '',
+      icon: 'marketplace',
       key: 'marketplace-settings',
       component: <div>Marketplace Settings Page</div>,
       disabled: false,
@@ -58,7 +58,7 @@ const Admin: React.FC<IAdminProps> = () => {
     },
     {
       label: 'Notifications',
-      icon: '',
+      icon: 'notification',
       key: 'notifications-settings',
       component: <div>Notifications Settings Page</div>,
       disabled: false,
@@ -80,11 +80,27 @@ const Admin: React.FC<IAdminProps> = () => {
           {settings.map((item, index) => (
             <div
               key={item.key}
-              className="hover:bg-green-50 cursor-pointer"
+              className={`hover:bg-primary-50 cursor-pointer ${
+                item.key === activeSettingsPage.key
+                  ? 'bg-primary-50'
+                  : 'bg-white'
+              }`}
               onClick={() => setActiveSettingsPage(item)}
             >
-              <div className="text-neutral-500 text-sm font-medium p-4 flex items-center gap-x-3">
-                <Icon name="clock" hover={false} />
+              <div
+                className={`${
+                  item.key === activeSettingsPage.key
+                    ? 'text-neutral-900'
+                    : 'text-neutral-500'
+                } text-sm font-medium p-4 flex items-center gap-x-3`}
+              >
+                <Icon
+                  name={item.icon}
+                  hover={false}
+                  stroke={
+                    item.key === activeSettingsPage.key ? '#171717' : undefined
+                  }
+                />
                 {item.label}
               </div>
               {index !== settings.length - 1 && <Divider />}
