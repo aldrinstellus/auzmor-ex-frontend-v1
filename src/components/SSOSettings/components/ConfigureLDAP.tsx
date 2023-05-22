@@ -2,7 +2,7 @@ import Divider, { Variant as DividerVariant } from 'components/Divider';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
 import Modal from 'components/Modal';
-import React, { ReactElement, ReactNode, useState } from 'react';
+import React, { ReactElement, ReactNode, useRef, useState } from 'react';
 import ConnectionSettings from './ConnectionSettings';
 import UserFieldsMapping from './UserFieldsMapping';
 import GroupFieldsMapping from './GroupFieldsMapping';
@@ -93,6 +93,7 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
     useState<boolean>(false);
   const [userFieldsMappingError, setUserFieldsMappingError] =
     useState<boolean>(false);
+  const groupFieldMappingRef = useRef<IGroupFieldsMappingForm>();
 
   // Seed data for all three forms
   const connectionSettingsConfig = ssoSetting?.config?.connection;
@@ -238,10 +239,14 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
   };
 
   const groupFieldMappingOnSubmit = async () => {
+    groupFieldMappingRef.current = groupFieldMappingGetValues();
+    configureLDAP();
+  };
+
+  const configureLDAP = async () => {
     if (checkIfFormsAreValid()) {
       setConnectionSettingsError(false);
       setUserFieldsMappingError(false);
-      setGroupFieldsMappingData(groupFieldMappingGetValues());
 
       const formData = new FormData();
 
@@ -310,22 +315,23 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
         );
       }
 
-      if (groupFieldsMappingData.groupName) {
+      if (groupFieldMappingRef.current?.groupName) {
+        console.log('Not working?');
         formData.append(
           'config[groupFieldMap][groupName]',
-          groupFieldsMappingData.groupName,
+          groupFieldMappingRef.current?.groupName,
         );
       }
-      if (groupFieldsMappingData.groupMemberUID) {
+      if (groupFieldMappingRef.current?.groupMemberUID) {
         formData.append(
           'config[groupFieldMap][groupMemberUID]',
-          groupFieldsMappingData.groupMemberUID,
+          groupFieldMappingRef.current?.groupMemberUID,
         );
       }
-      if (groupFieldsMappingData.groupObjectFilter) {
+      if (groupFieldMappingRef.current?.groupObjectFilter) {
         formData.append(
           'config[groupFieldMap][groupObjectFilter]',
-          groupFieldsMappingData.groupObjectFilter,
+          groupFieldMappingRef.current?.groupObjectFilter,
         );
       }
 
