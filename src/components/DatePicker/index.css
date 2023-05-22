@@ -16,9 +16,9 @@
 }
 
 .react-date-picker__calendar {
-  position: fixed !important;
-  top: 0px !important;
-  left: 0px !important;
+  position: fixed;
+  top: 100% !important;
+  left: calc(50% - 175px) !important;
 }
 
 .react-calendar__tile--active {

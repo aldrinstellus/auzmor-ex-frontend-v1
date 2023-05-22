@@ -11,6 +11,7 @@ export interface IIconWrapperProps {
   type?: string;
   className?: string;
   size?: number;
+  dataTestId?: string;
 }
 
 const IconWrapper: React.FC<IIconWrapperProps> = ({
@@ -18,6 +19,7 @@ const IconWrapper: React.FC<IIconWrapperProps> = ({
   className = '',
   children,
   size = 24,
+  dataTestId,
 }) => {
   const styles = useMemo(
     () =>
@@ -48,7 +50,7 @@ const IconWrapper: React.FC<IIconWrapperProps> = ({
   );
 
   return (
-    <div className={styles} style={divStyle}>
+    <div className={styles} style={divStyle} data-testid={dataTestId}>
       {children}
     </div>
   );

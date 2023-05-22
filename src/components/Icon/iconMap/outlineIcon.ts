@@ -50,6 +50,8 @@ import SvgMarketplaceOutline from '../components/Marketplace/MarketplaceOutline'
 import SvgArrowUpOutline from '../components/ArrowUp/ArrowUpOutline';
 import SvgArrowDownOutline from '../components/ArrowDown/ArrowDownOutline';
 import SvgDeleteOutline from '../components/Delete/DeleteOutline';
+import SvgExportOutline from '../components/Export/ExportOutline';
+import SvgMaximizeOutline from '../components/Maximize/MaximizeOutline';
 import SvgThreeDotsOutline from '../components/ThreeDots/ThreeDotsOutline';
 
 export const outlineIcon = {
@@ -71,6 +73,7 @@ export const outlineIcon = {
   draftOutline: SvgDraftOutline,
   editOutline: SvgEditOutline,
   emojiHappyOutline: SvgEmojiHappyOutline,
+  exportOutline: SvgExportOutline,
   eyeOutline: SvgEyeOutline,
   eyeSlashOutline: SvgEyeSlashOutline,
   filterLinearOutline: SvgFilterLinearOutline,
@@ -84,6 +87,7 @@ export const outlineIcon = {
   loveOutline: SvgLoveOutline,
   magicStarOutline: SvgMagicStarOutline,
   mailOutline: SvgMailOutline,
+  maximizeOutline: SvgMaximizeOutline,
   moreOutline: SvgMoreOutline,
   peopleOutline: SvgPeopleOutline,
   playOutline: SvgPlayOutline,

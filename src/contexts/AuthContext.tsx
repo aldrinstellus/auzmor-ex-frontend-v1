@@ -18,7 +18,13 @@ interface IUser {
   name: string;
   email: string;
   organization: IOrganization;
+  workLocation?: string;
+  preferredName?: string;
+  designation?: string;
+  // department?: string;
+  location?: string;
   profileImage?: string;
+  coverImage?: string;
 }
 
 interface IAuthContext {

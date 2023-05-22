@@ -1,58 +1,171 @@
 import Card from 'components/Card';
 import Divider from 'components/Divider';
-import React, { useMemo } from 'react';
+import React, { memo, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import useHover from 'hooks/useHover';
 import Icon from 'components/Icon';
 import moment from 'moment';
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
+import Header from './Header';
+import Layout, { FieldType } from 'components/Form';
+import { useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
+import { updateCurrentUser } from 'queries/users';
+import queryClient from 'utils/queryClient';
+import { OptionType } from 'components/UserOnboard/components/SelectTimeZone';
 
-export interface IPersonalDetailsProps {
-  personalDetails: any;
+interface IPersonalDetails {
+  birthDate: string;
+  gender: OptionType;
+  permanentAddress: string;
+  maritalStatus: OptionType;
   skills: string[];
-  canEdit?: boolean;
 }
+interface IPersonalDetailsForm {
+  personal: IPersonalDetails;
+}
+
+type IPersonalDetailsProps = {
+  personalDetails: any;
+  canEdit?: boolean;
+};
 
 const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   personalDetails,
-  skills,
   canEdit,
 }) => {
   const [isHovered, eventHandlers] = useHover();
+  const [isEditable, setIsEditable] = useState<boolean>(false);
+
+  const { control, handleSubmit, getValues } = useForm<IPersonalDetailsForm>({
+    mode: 'onChange',
+    defaultValues: {
+      personal: {
+        birthDate: personalDetails?.personal?.birthDate,
+        gender: personalDetails?.personal?.gender,
+        permanentAddress: personalDetails?.personal?.permanentLocation,
+        maritalStatus: personalDetails?.personal?.maritalStatus,
+      },
+    },
+  });
 
   const onHoverStyles = useMemo(
-    () => clsx({ 'mb-8 px-6': true }, { 'shadow-xl': isHovered }),
+    () => clsx({ 'mb-8': true }, { 'shadow-xl': isHovered && canEdit }),
     [isHovered],
   );
 
-  const timestamp = personalDetails?.createdAt;
+  const updateUserPersonalDetailsMutation = useMutation({
+    mutationFn: updateCurrentUser,
+    mutationKey: ['update-user-personal-details-mutation'],
+    onError: (error: any) => {
+      console.log('Error while updating the user: ', error);
+    },
+    onSuccess: (response: any) => {
+      console.log('Updated User data successfully', response);
+      setIsEditable(false);
+    },
+  });
 
-  const formattedDate = moment(timestamp).format('Do MMMM');
+  const onSubmit = async (personalDetailData: IPersonalDetailsForm) => {
+    const updatedPersonalDetails = {
+      personal: {
+        gender: personalDetailData?.personal?.gender?.value,
+        birthDate: personalDetailData?.personal?.birthDate,
+        permanentAddress: personalDetailData?.personal?.permanentAddress,
+        maritalStatus: personalDetailData?.personal?.maritalStatus?.value,
+        skills: ['ReactJs'],
+      },
+    };
+    await updateUserPersonalDetailsMutation.mutateAsync({
+      personal: updatedPersonalDetails?.personal,
+    });
+    await queryClient.invalidateQueries(['current-user-me']);
+    setIsEditable(false);
+  };
+
+  const fields = [
+    {
+      type: FieldType.DatePicker,
+      name: 'personal.birthDate',
+      control,
+      dataTestId: 'personal-details-dob',
+      defaultValue: getValues()?.personal?.birthDate,
+    },
+    {
+      type: FieldType.SingleSelect,
+      name: 'personal.gender',
+      placeholder: 'Select Gender',
+      label: 'Gender',
+      defaultValue: getValues()?.personal?.gender?.label,
+      dataTestId: 'personal-details-gender',
+      options: [
+        { value: 'MALE', label: 'Male' },
+        { value: 'FEMALE', label: 'Female' },
+      ],
+      control,
+    },
+    {
+      type: FieldType.Input,
+      name: 'personal.permanentAddress',
+      placeholder: 'Ex - Flat no, line Address',
+      label: 'Permanent Address',
+      defaultValue: getValues()?.personal?.permanentAddress,
+      dataTestId: 'personal-details-address',
+      control,
+    },
+    {
+      type: FieldType.SingleSelect,
+      name: 'personal.maritalStatus',
+      placeholder: '',
+      label: 'Marital Status',
+      defaultValue: getValues()?.personal?.maritalStatus?.label,
+      dataTestId: 'personal-details-marital-status',
+      options: [
+        { value: 'MARRIED', label: 'Married' },
+        { value: 'SINGLE', label: 'Single' },
+      ],
+      control,
+      menuPlacement: 'top',
+    },
+    // {
+    //   type: FieldType.Input,
+    //   name: 'personal.skills',
+    //   placeholder: 'Search for Skills',
+    //   label: 'Skills',
+    //   defaultValue: getValues()?.personal?.skills,
+    //   dataTestId: 'personal-details-skills',
+    //   control,
+    // },
+  ];
 
   return (
-    <>
-      {canEdit ? (
-        <div {...eventHandlers}>
-          <Card className={onHoverStyles}>
-            <div className="flex justify-between items-center">
-              <div className="text-neutral-900 font-bold text-base pt-6 pb-4">
-                Personal Details
-              </div>
-              {isHovered && (
-                <IconWrapper type={Type.Square} className="cursor-pointer">
-                  <Icon name="edit" size={16} />
-                </IconWrapper>
-              )}
-            </div>
-            <Divider />
-            <div className="py-6">
-              <div className="pb-4 space-y-3">
+    <div {...eventHandlers}>
+      <Card className={onHoverStyles}>
+        <Header
+          title="Personal Details"
+          dataTestId="personal-details"
+          isHovered={isHovered}
+          isEditable={isEditable}
+          setIsEditable={setIsEditable}
+          canEdit={canEdit}
+          handleSubmit={handleSubmit}
+          onSubmit={onSubmit}
+          isLoading={updateUserPersonalDetailsMutation.isLoading}
+        />
+        <Divider />
+        <div className="p-6">
+          <div className="pb-4 space-y-3">
+            {!isEditable ? (
+              <>
                 <div className="flex space-x-3">
                   <IconWrapper type={Type.Square} className="cursor-pointer">
                     <Icon name="cake" size={16} />
                   </IconWrapper>
                   <div className="text-neutral-900 text-base font-medium">
-                    Born on {formattedDate}
+                    Born on{' '}
+                    {moment(personalDetails?.personal?.birthDate).format(
+                      'Do MMMM YYYY',
+                    ) || 'N/A'}
                   </div>
                 </div>
                 <div className="flex space-x-3">
@@ -63,114 +176,62 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                     {personalDetails?.personal?.gender || 'N/A'}
                   </div>
                 </div>
-              </div>
-              <div className="space-y-2 mb-4">
-                <div className="text-neutral-500 text-sm font-bold">
-                  Permanent Address
-                </div>
-                <div className="flex space-x-3">
-                  <IconWrapper type={Type.Square} className="cursor-pointer">
-                    <Icon name="location" size={16} />
-                  </IconWrapper>
-                  <div className="text-neutral-900 text-base font-medium">
-                    {personalDetails?.personal?.permanentAddress || 'N/A'}
+                <div className="space-y-2 mb-4">
+                  <div className="text-neutral-500 text-sm font-bold">
+                    Permanent Address
+                  </div>
+                  <div className="flex space-x-3">
+                    <IconWrapper type={Type.Square} className="cursor-pointer">
+                      <Icon name="location" size={16} />
+                    </IconWrapper>
+                    <div className="text-neutral-900 text-base font-medium">
+                      {personalDetails?.personal?.permanentAddress || 'N/A'}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="space-y-2 mb-4">
-                <div className="text-neutral-500 text-sm font-bold">
-                  Marital Status
-                </div>
-                <div className="flex space-x-3">
-                  <IconWrapper type={Type.Square} className="cursor-pointer">
-                    <Icon name="marriedIcon" size={16} />
-                  </IconWrapper>
-                  <div className="text-neutral-900 text-base font-medium">
-                    {personalDetails?.personal?.maritalStatus || 'N/A'}
+                <div className="space-y-2 mb-4">
+                  <div className="text-neutral-500 text-sm font-bold">
+                    Marital Status
+                  </div>
+                  <div className="flex space-x-3">
+                    <IconWrapper type={Type.Square} className="cursor-pointer">
+                      <Icon name="marriedIcon" size={16} />
+                    </IconWrapper>
+                    <div className="text-neutral-900 text-base font-medium">
+                      {personalDetails?.personal?.maritalStatus || 'N/A'}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div>
-                <div className="text-neutral-500 text-sm font-bold">Skills</div>
-                <div className="text-neutral-900 text-base font-medium">
-                  {skills.map((skill, index) => (
-                    <ul key={index}>
-                      <li>{skill}</li>
-                    </ul>
-                  )) || 'N/A'}
+                {personalDetails?.personal?.skills?.length > 0 && (
+                  <div>
+                    <div className="text-neutral-500 text-sm font-bold">
+                      Skills
+                    </div>
+                    <div className="text-neutral-900 text-base font-medium">
+                      {personalDetails?.personal?.skills.map(
+                        (skill: string, index: number) => (
+                          <ul key={index}>
+                            <li>{skill}</li>
+                          </ul>
+                        ),
+                      ) || 'N/A'}
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <form>
+                <div className="text-neutral-900 text-sm font-bold">
+                  Date of Birth
                 </div>
-              </div>
-            </div>
-          </Card>
+                <Layout fields={fields} />
+              </form>
+            )}
+          </div>
         </div>
-      ) : (
-        <Card className={onHoverStyles}>
-          <div className="flex justify-between items-center">
-            <div className="text-neutral-900 font-bold text-base pt-6 pb-4">
-              Personal Details
-            </div>
-          </div>
-          <Divider />
-          <div className="py-6">
-            <div className="pb-4 space-y-3">
-              <div className="flex space-x-3">
-                <IconWrapper type={Type.Square} className="cursor-pointer">
-                  <Icon name="cake" size={16} />
-                </IconWrapper>
-                <div className="text-neutral-900 text-base font-medium">
-                  Born on {formattedDate}
-                </div>
-              </div>
-              <div className="flex space-x-3">
-                <IconWrapper type={Type.Square} className="cursor-pointer">
-                  <Icon name="femaleIcon" size={16} />
-                </IconWrapper>
-                <div className="text-neutral-900 text-base font-medium">
-                  {personalDetails?.personal?.gender || 'N/A'}
-                </div>
-              </div>
-            </div>
-            <div className="space-y-2 mb-4">
-              <div className="text-neutral-500 text-sm font-bold">
-                Permanent Address
-              </div>
-              <div className="flex space-x-3">
-                <IconWrapper type={Type.Square} className="cursor-pointer">
-                  <Icon name="location" size={16} />
-                </IconWrapper>
-                <div className="text-neutral-900 text-base font-medium">
-                  {personalDetails?.personal?.permanentAddress || 'N/A'}
-                </div>
-              </div>
-            </div>
-            <div className="space-y-2 mb-4">
-              <div className="text-neutral-500 text-sm font-bold">
-                Marital Status
-              </div>
-              <div className="flex space-x-3">
-                <IconWrapper type={Type.Square} className="cursor-pointer">
-                  <Icon name="marriedIcon" size={16} />
-                </IconWrapper>
-                <div className="text-neutral-900 text-base font-medium">
-                  {personalDetails?.personal?.maritalStatus || 'N/A'}
-                </div>
-              </div>
-            </div>
-            <div>
-              <div className="text-neutral-500 text-sm font-bold">Skills</div>
-              <div className="text-neutral-900 text-base font-medium">
-                {skills.map((skill, index) => (
-                  <ul key={index}>
-                    <li>{skill}</li>
-                  </ul>
-                ))}
-              </div>
-            </div>
-          </div>
-        </Card>
-      )}
-    </>
+      </Card>
+    </div>
   );
 };
 
-export default PersonalDetails;
+export default memo(PersonalDetails);

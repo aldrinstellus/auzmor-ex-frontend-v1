@@ -46,6 +46,8 @@ import SvgCloseCircleFilled from '../components/CloseCircle/CloseCircleFilled';
 import SvgFilterLinearFilled from '../components/FilterLinear/FilterLinearFilled';
 import SvgDocumentUploadOutline from '../components/DocumentUpload/DocumentUploadOutline';
 import SvgDeleteFilled from '../components/Delete/DeleteFilled';
+import SvgExportFilled from '../components/Export/ExportFilled';
+import SvgMaximizeFilled from '../components/Maximize/MaximizeFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -68,6 +70,7 @@ export const filledIcon = {
   draftFilled: SvgDraftFilled,
   editFilled: SvgEditFilled,
   emojiHappyFilled: SvgEmojiHappyFilled,
+  exportFilled: SvgExportFilled,
   eyeFilled: SvgEyeFilled,
   eyeSlashFilled: SvgEyeSlashFilled,
   filterFilled: SvgFilterFilled,
@@ -82,6 +85,7 @@ export const filledIcon = {
   likeIconFilled: SvgLikeIconFilled,
   loveFilled: SvgLoveFilled,
   magicStarFilled: SvgMagicStarFilled,
+  maximizeFilled: SvgMaximizeFilled,
   moreFilled: SvgMoreFilled,
   peopleFilled: SvgPeopleFilled,
   playFilled: SvgPlayFilled,

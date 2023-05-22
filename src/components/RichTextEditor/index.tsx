@@ -58,7 +58,6 @@ const RichTextEditor = React.forwardRef(
       setEditorValue,
       media,
       inputImgRef,
-      setMedia,
       removeAllMedia,
     } = useContext(CreatePostContext);
 

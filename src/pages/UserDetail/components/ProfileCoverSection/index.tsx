@@ -1,5 +1,5 @@
 import Card from 'components/Card';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Avatar from 'components/Avatar';
 import Divider, { Variant as DividerVariant } from 'components/Divider';
 import Button, {
@@ -11,8 +11,9 @@ import IconButton, {
   Size,
   Variant as IconVariant,
 } from 'components/IconButton';
-import EditProfileModal from './components/EditProfileModal';
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
+import EditProfileModal from '../EditProfileModal';
+import { IUpdateProfileImage } from 'pages/UserDetail';
 
 export interface IProfileCoverProps {
   profileCoverData: Record<string, any>;
@@ -27,16 +28,29 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
   setShowModal,
   canEdit,
 }) => {
-  const coverImageRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<IUpdateProfileImage | Record<string, any>>(
+    {},
+  );
+  const [isCoverImageRemoved, setIsCoverImageRemoved] = useState(false);
+  const userProfileImageRef = useRef<HTMLInputElement>(null);
+  const userCoverImageRef = useRef<HTMLInputElement>(null);
+
   return (
     <>
-      <Card className="bg-white pb-1 w-full h-[290.56px]">
-        {/* Image Cover */}
+      <Card
+        className="bg-white pb-1 w-full h-[290.56px]"
+        data-testid="profile-details"
+      >
         <div className="relative cursor-pointer">
-          <img
-            className="object-cover w-full h-[179.56px] rounded-9xl"
-            src={profileCoverData?.coverImage?.original}
-          />
+          <div className="w-full h-[179.56px] overflow-hidden rounded-9xl">
+            {!isCoverImageRemoved && (
+              <img
+                className="object-cover w-full"
+                src={profileCoverData?.coverImage?.original}
+              />
+            )}
+          </div>
+
           {canEdit && (
             <IconButton
               icon="edit"
@@ -46,20 +60,19 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
               onClick={() => {
                 setShowModal(true);
               }}
+              dataTestId="edit-cover-pic"
             />
           )}
         </div>
         <div className="flex">
-          {/* Profile Picture */}
           <div className="-mt-20 ml-8">
             <Avatar
               name={profileCoverData?.fullName}
               image={profileCoverData?.profileImage?.original}
               size={96}
-              className="border-2 border-white mt-8"
+              className="border-2 border-white mt-8 overflow-hidden"
             />
           </div>
-
           <div className="ml-4 mb-7 flex flex-col space-y-5 w-full">
             <div className="flex items-center">
               <div className="mr-6 mt-2 flex justify-between w-full">
@@ -88,6 +101,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                   onClick={() => {
                     canEdit && setShowModal(true);
                   }}
+                  dataTestId={canEdit ? 'edit-profile' : 'follow'}
                 />
               </div>
             </div>
@@ -108,7 +122,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                   </div>
                 </>
               )}
-              {profileCoverData?.location && (
+              {profileCoverData?.workLocation && (
                 <>
                   <Divider variant={DividerVariant.Vertical} />
                   <div className="flex space-x-3 items-center">
@@ -116,7 +130,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                       <Icon name="location" size={16} />
                     </IconWrapper>
                     <div className="text-xs font-normal text-neutral-900">
-                      {profileCoverData?.location}
+                      {profileCoverData?.workLocation}
                     </div>
                   </div>
                 </>
@@ -124,11 +138,52 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             </div>
           </div>
         </div>
-        <EditProfileModal
-          data={profileCoverData}
-          showModal={showModal}
-          setShowModal={setShowModal}
-          coverImageRef={coverImageRef}
+        {showModal && (
+          <EditProfileModal
+            data={profileCoverData}
+            showModal={showModal}
+            setShowModal={setShowModal}
+            userProfileImageRef={userProfileImageRef}
+            userCoverImageRef={userCoverImageRef}
+            file={file}
+            setFile={setFile}
+            key={'edit-profile'}
+            dataTestId="edit-profile"
+            isCoverImageRemoved={isCoverImageRemoved}
+            setIsCoverImageRemoved={setIsCoverImageRemoved}
+          />
+        )}
+        <input
+          id="file-input"
+          type="file"
+          ref={userProfileImageRef}
+          className="hidden"
+          accept="image/*"
+          multiple={false}
+          onChange={(e) => {
+            if (e.target.files?.length) {
+              setFile({
+                ...file,
+                profileImage: Array.prototype.slice.call(e.target.files)[0],
+              });
+            }
+          }}
+        />
+        <input
+          id="file-input"
+          type="file"
+          ref={userCoverImageRef}
+          className="hidden"
+          accept="image/*"
+          multiple={false}
+          onChange={(e) => {
+            if (e.target.files?.length) {
+              setFile({
+                ...file,
+                coverImage: Array.prototype.slice.call(e.target.files)[0],
+              });
+            }
+          }}
         />
       </Card>
     </>

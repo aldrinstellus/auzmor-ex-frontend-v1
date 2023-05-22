@@ -117,7 +117,7 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
                 label="Next"
                 type={Type.Submit}
                 disabled={isLoading}
-              ></Button>
+              />
             </div>
           </div>
         </div>
