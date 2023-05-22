@@ -27,6 +27,7 @@ import { twConfig } from 'utils/misc';
 
 interface IForm {
   search?: string;
+  role?: { value: string; label: string };
 }
 interface IUsersProps {}
 
@@ -63,6 +64,7 @@ const Users: React.FC<IUsersProps> = () => {
   };
 
   const searchValue = watch('search');
+  const role = watch('role');
 
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
   const { isLoading, data: users } = useUsers({
@@ -88,7 +90,7 @@ const Users: React.FC<IUsersProps> = () => {
               label="All Members"
               size={Size.Small}
               variant={Variant.Secondary}
-              className="h-9 grow-0"
+              className="!py-2 grow-0"
             />
             <Layout
               fields={[
@@ -100,15 +102,15 @@ const Users: React.FC<IUsersProps> = () => {
                   name: 'role',
                   placeholder: 'Role',
                   size: InputSize.Small,
-                  defaultValue: 'ADMIN',
+                  disabled: true,
                   options: [
                     {
-                      id: 1,
-                      label: 'ADMIN',
+                      value: 'ADMIN',
+                      label: 'Admin',
                     },
                     {
-                      id: 2,
-                      label: 'SUPER ADMIN',
+                      id: 'SUPER ADMIN',
+                      label: 'Super Admin',
                     },
                   ],
                 },
@@ -200,13 +202,16 @@ const Users: React.FC<IUsersProps> = () => {
         closeModal={() => setShowAddUserModal(false)}
       />
 
-      <FilterModal
-        setUserStatus={setUserStatus}
-        page={page}
-        showModal={showFilterModal}
-        setShowFilterModal={setShowFilterModal}
-        closeModal={() => setShowFilterModal(false)}
-      />
+      {showFilterModal && (
+        <FilterModal
+          setUserStatus={setUserStatus}
+          userStatus={userStatus}
+          page={page}
+          showModal={showFilterModal}
+          setShowFilterModal={setShowFilterModal}
+          closeModal={() => setShowFilterModal(false)}
+        />
+      )}
     </div>
   );
 

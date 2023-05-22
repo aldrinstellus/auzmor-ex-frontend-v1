@@ -57,6 +57,7 @@ const RadioGroup: React.FC<RadioButtonProps> = ({
                   onChange={field.onChange}
                   onBlur={field.onBlur}
                   value={item?.options?.value}
+                  defaultChecked={item?.isChecked}
                 />
                 <label htmlFor={item?.options?.label}>
                   {item?.options?.label}

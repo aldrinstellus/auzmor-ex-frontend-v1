@@ -15,6 +15,7 @@ export interface IFilterModalProps {
   setShowFilterModal: (flag: boolean) => void;
   setPeopleFilters?: any; // for future filters
   page?: number;
+  userStatus: string;
 }
 
 interface IFilters {
@@ -34,6 +35,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({
   setShowFilterModal,
   setUserStatus,
   setPeopleFilters,
+  userStatus,
 }) => {
   const { control, handleSubmit, getValues } = useForm({
     mode: 'onChange',
@@ -67,14 +69,17 @@ const FilterModal: React.FC<IFilterModalProps> = ({
         {
           options: { value: 'INVITED', label: 'Invited' },
           name: 'invited',
+          isChecked: userStatus === 'INVITED',
         },
         {
           options: { value: 'ACTIVE', label: 'Active' },
           name: 'active',
+          isChecked: userStatus === 'ACTIVE',
         },
         {
           options: { value: 'ALL', label: 'All' },
           name: 'all',
+          isChecked: userStatus === 'ALL',
         },
       ],
     },
