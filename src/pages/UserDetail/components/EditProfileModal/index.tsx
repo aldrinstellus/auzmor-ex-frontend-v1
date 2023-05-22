@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import Modal from 'components/Modal';
@@ -9,7 +9,7 @@ import IconButton, {
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import Avatar from 'components/Avatar';
 import { Variant as InputVariant } from 'components/Input';
-import { getBlobUrl } from 'utils/misc';
+import { getBlobUrl, twConfig } from 'utils/misc';
 import { IUpdateProfileImage } from 'pages/UserDetail';
 import { EntityType, UploadStatus, useUpload } from 'queries/files';
 import { useMutation } from '@tanstack/react-query';
@@ -17,7 +17,7 @@ import { updateCurrentUser } from 'queries/users';
 import useAuth from 'hooks/useAuth';
 import queryClient from 'utils/queryClient';
 import Header from 'components/ModalHeader';
-// import PopupMenu from 'components/PopupMenu';
+import PopupMenu from 'components/PopupMenu';
 
 interface IOptions {
   value: string;
@@ -41,6 +41,8 @@ interface IEditProfileModal {
   userProfileImageRef: React.RefObject<HTMLInputElement> | null;
   userCoverImageRef: React.RefObject<HTMLInputElement> | null;
   dataTestId?: string;
+  isCoverImageRemoved?: boolean;
+  setIsCoverImageRemoved?: (flag: boolean) => void;
 }
 
 const EditProfileModal: React.FC<IEditProfileModal> = ({
@@ -52,6 +54,8 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
   userProfileImageRef,
   userCoverImageRef,
   dataTestId,
+  isCoverImageRemoved = false,
+  setIsCoverImageRemoved = () => {},
 }) => {
   const { uploadMedia, uploadStatus } = useUpload();
   const {
@@ -143,22 +147,45 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
 
   const coverImageOption = [
     {
-      icon: 'bookmarkOutline',
+      icon: 'exportOutline',
       label: 'Upload a photo',
+      stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => userCoverImageRef?.current?.click(),
     },
     {
-      icon: 'copyLink',
+      icon: 'maximizeOutline',
       label: 'Reposition',
+      stroke: twConfig.theme.colors.neutral['900'],
+      disabled: true,
       onClick: () => null,
     },
     {
-      icon: 'copyLink',
+      icon: 'trashOutline',
       label: 'Delete post',
-      onClick: () => null,
+      stroke: twConfig.theme.colors.neutral['900'],
+      disabled: true,
+      onClick: () => {
+        if (file.coverImage) {
+          if (file.profileImage) {
+            setFile({
+              profileImage: file.profileImage,
+            });
+          } else {
+            setFile({});
+          }
+        }
+        setIsCoverImageRemoved(true);
+      },
     },
   ];
   const { updateUser } = useAuth();
+
+  useEffect(
+    () => () => {
+      setIsCoverImageRemoved(false);
+    },
+    [],
+  );
 
   const updateUsersMutation = useMutation({
     mutationFn: updateCurrentUser,
@@ -195,16 +222,21 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
     let profileImageUploadResponse;
     let coverImageUploadResponse;
     // optimize with one uploadMedia function - taking time to upload the files
-    if (Object.keys(file).length) {
-      profileImageUploadResponse = await uploadMedia(
-        [file?.profileImage],
-        EntityType.UserProfileImage,
-      );
-      coverImageUploadResponse = await uploadMedia(
-        [file?.coverImage],
-        EntityType.UserCoverImage,
-      );
+    if (file && Object.keys(file).length) {
+      if (file?.profileImage) {
+        profileImageUploadResponse = await uploadMedia(
+          [file?.profileImage],
+          EntityType.UserProfileImage,
+        );
+      }
+      if (file?.coverImage && !isCoverImageRemoved) {
+        coverImageUploadResponse = await uploadMedia(
+          [file?.coverImage],
+          EntityType.UserCoverImage,
+        );
+      }
     }
+
     const profileImageFile = profileImageUploadResponse
       ? {
           profileImage: {
@@ -248,34 +280,31 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       <form>
         <Header title="Edit Profile" onClose={disableClosed} />
         <div className="relative cursor-pointer">
-          <img
-            className="object-cover w-full h-[108px]"
-            src={
-              (file?.coverImage && getBlobUrl(file?.coverImage)) ||
-              data?.coverImage?.original
-            }
-          />
-          {/* <PopupMenu
+          <div className="w-full h-[108px] overflow-hidden">
+            {!isCoverImageRemoved && (
+              <img
+                className="object-cover w-full"
+                src={
+                  (file?.coverImage && getBlobUrl(file?.coverImage)) ||
+                  data?.coverImage?.original
+                }
+              />
+            )}
+          </div>
+
+          <PopupMenu
             triggerNode={
-              <div className="cursor-pointer p-2">
+              <div className="cursor-pointer absolute top-4 right-4">
                 <IconButton
                   icon="edit"
-                  className="bg-white m-4 absolute top-0 right-0 p-3 text-black"
+                  className="bg-white p-2.5 text-black"
                   variant={IconVariant.Secondary}
                   size={Size.Medium}
-                  onClick={() => userCoverImageRef?.current?.click()}
                 />
               </div>
             }
+            className="top-16 right-4 bottom-auto"
             menuItems={coverImageOption}
-          /> */}
-          <IconButton
-            icon="edit"
-            className="bg-white m-4 absolute top-0 right-0 p-3 text-black"
-            variant={IconVariant.Secondary}
-            size={Size.Medium}
-            onClick={() => userCoverImageRef?.current?.click()}
-            dataTestId={`${dataTestId}-coverpic`}
           />
         </div>
         <div className="ml-8 mb-8 flex items-center">
@@ -288,7 +317,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
                   data?.profileImage?.original
                 }
                 size={96}
-                className="border-2 border-white mt-8"
+                className="border-2 border-white overflow-hidden"
               />
               <div>
                 <IconButton

@@ -12,6 +12,8 @@ export interface IMenuItem {
   icon?: string;
   label?: string;
   iconClassName?: string;
+  stroke?: string;
+  fill?: string;
   onClick?: () => any;
 }
 
@@ -45,7 +47,9 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
               }
               return (
                 <div
-                  className="flex px-6 py-3 items-center hover:bg-primary-50 cursor-pointer space-x-3"
+                  className={`flex px-6 py-3 items-center hover:bg-primary-50 cursor-pointer space-x-3 ${
+                    menuItem.disabled && '!cursor-default'
+                  }`}
                   onClick={menuItem.onClick}
                 >
                   {menuItem.icon && (
@@ -53,10 +57,21 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
                       name={menuItem.icon}
                       size={16}
                       className={menuItem.iconClassName}
-                      fill={twConfig.theme.colors.primary['500']}
+                      fill={
+                        menuItem.fill || twConfig.theme.colors.primary['500']
+                      }
+                      stroke={
+                        (menuItem.disabled &&
+                          twConfig.theme.colors.neutral['400']) ||
+                        menuItem.stroke
+                      }
                     />
                   )}
-                  <div className="text-sm text-neutral-900 font-medium whitespace-nowrap">
+                  <div
+                    className={`text-sm text-neutral-900 font-medium whitespace-nowrap ${
+                      menuItem.disabled && '!text-neutral-400'
+                    }`}
+                  >
                     {menuItem.label}
                   </div>
                 </div>

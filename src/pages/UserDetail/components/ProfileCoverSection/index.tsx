@@ -31,6 +31,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
   const [file, setFile] = useState<IUpdateProfileImage | Record<string, any>>(
     {},
   );
+  const [isCoverImageRemoved, setIsCoverImageRemoved] = useState(false);
   const userProfileImageRef = useRef<HTMLInputElement>(null);
   const userCoverImageRef = useRef<HTMLInputElement>(null);
 
@@ -41,10 +42,15 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
         data-testid="profile-details"
       >
         <div className="relative cursor-pointer">
-          <img
-            className="object-cover w-full h-[179.56px] rounded-9xl"
-            src={profileCoverData?.coverImage?.original}
-          />
+          <div className="w-full h-[179.56px] overflow-hidden rounded-9xl">
+            {!isCoverImageRemoved && (
+              <img
+                className="object-cover w-full"
+                src={profileCoverData?.coverImage?.original}
+              />
+            )}
+          </div>
+
           {canEdit && (
             <IconButton
               icon="edit"
@@ -64,7 +70,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
               name={profileCoverData?.fullName}
               image={profileCoverData?.profileImage?.original}
               size={96}
-              className="border-2 border-white mt-8"
+              className="border-2 border-white mt-8 overflow-hidden"
             />
           </div>
           <div className="ml-4 mb-7 flex flex-col space-y-5 w-full">
@@ -143,6 +149,8 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             setFile={setFile}
             key={'edit-profile'}
             dataTestId="edit-profile"
+            isCoverImageRemoved={isCoverImageRemoved}
+            setIsCoverImageRemoved={setIsCoverImageRemoved}
           />
         )}
         <input

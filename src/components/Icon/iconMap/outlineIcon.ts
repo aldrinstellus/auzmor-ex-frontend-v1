@@ -43,6 +43,8 @@ import SvgDotsVerticalOutline from '../components/DotsVertical/DotsVerticalOutli
 import SvgRedoOutline from '../components/Redo/RedoOutline';
 import SvgUserRemoveOutline from '../components/UserRemove/UserRemoveOutline';
 import SvgDeleteOutline from '../components/Delete/DeleteOutline';
+import SvgExportOutline from '../components/Export/ExportOutline';
+import SvgMaximizeOutline from '../components/Maximize/MaximizeOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -63,6 +65,7 @@ export const outlineIcon = {
   draftOutline: SvgDraftOutline,
   editOutline: SvgEditOutline,
   emojiHappyOutline: SvgEmojiHappyOutline,
+  exportOutline: SvgExportOutline,
   eyeOutline: SvgEyeOutline,
   eyeSlashOutline: SvgEyeSlashOutline,
   filterLinearOutline: SvgFilterLinearOutline,
@@ -76,6 +79,7 @@ export const outlineIcon = {
   loveOutline: SvgLoveOutline,
   magicStarOutline: SvgMagicStarOutline,
   mailOutline: SvgMailOutline,
+  maximizeOutline: SvgMaximizeOutline,
   moreOutline: SvgMoreOutline,
   peopleOutline: SvgPeopleOutline,
   playOutline: SvgPlayOutline,
