@@ -62,18 +62,25 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
     // if token in LS, make /me api call and update setUser
     token = getItem(process.env.SESSION_KEY || 'uat');
     if (token) {
-      const userData = await fetchMe();
-      setUser({
-        id: userData?.result?.data?.id,
-        name: userData?.result?.data?.fullName,
-        email: userData?.result?.data?.workEmail,
-        organization: {
-          id: userData?.result?.data?.org.id,
-          domain: userData?.result?.data?.org.domain,
-        },
-        profileImage:
-          userData?.result?.data.profileImage?.original || undefined,
-      });
+      try {
+        const userData = await fetchMe();
+        setUser({
+          id: userData?.result?.data?.id,
+          name: userData?.result?.data?.fullName,
+          email: userData?.result?.data?.workEmail,
+          organization: {
+            id: userData?.result?.data?.org.id,
+            domain: userData?.result?.data?.org.domain,
+          },
+          profileImage:
+            userData?.result?.data.profileImage?.original || undefined,
+        });
+      } catch (e: any) {
+        if (e?.response?.status === 401) {
+          removeAllItems();
+          queryClient.clear();
+        }
+      }
     }
     setLoading(false);
   };

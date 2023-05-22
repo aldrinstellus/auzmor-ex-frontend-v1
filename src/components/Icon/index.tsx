@@ -7,6 +7,7 @@ export type IconProps = {
   size?: number;
   fill?: string;
   stroke?: string;
+  strokeWidth?: string;
   onClick?: (...param: any) => void | null;
   className?: string;
   hover?: boolean;
@@ -20,6 +21,7 @@ const Icon: React.FC<IconProps> = ({
   hover = true,
   fill,
   stroke,
+  strokeWidth,
 }) => {
   const Component = iconMap[name] || null;
   if (!Component) {
@@ -37,6 +39,7 @@ const Icon: React.FC<IconProps> = ({
       onClick={onClick}
       fill={fill}
       stroke={stroke}
+      strokeWidth={strokeWidth}
     />
   );
 };

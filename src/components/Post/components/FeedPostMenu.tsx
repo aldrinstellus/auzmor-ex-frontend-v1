@@ -46,7 +46,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       onClick: () => setShowModal(true),
     },
     {
-      icon: 'deleteIcon',
+      icon: 'delete',
       label: 'Delete post',
       onClick: () => showConfirm(),
     },

@@ -1,10 +1,10 @@
 import Divider from 'components/Divider';
 import Post from 'components/Post';
-import React from 'react';
+import React, { useState } from 'react';
 import SortByDropdown from './components/SortByDropdown';
 import ClockIcon from 'components/Icon/components/Clock';
 import FeedFilter from './components/FeedFilters';
-import { IGetPost } from 'queries/post';
+import { IGetPost, IPostFilters } from 'queries/post';
 
 import { InfiniteScroll } from 'components/InfiniteScroll';
 import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
@@ -26,6 +26,9 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
   isLoading = false,
   isFetchingNextPage = false,
 }) => {
+  const [appliedFeedFilters, setAppliedFeedFilters] = useState<IPostFilters>(
+    {},
+  );
   return (
     <>
       {activityFeed?.length > 0 ? (
@@ -46,7 +49,12 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
             <>
               <CreatePostCard setShowModal={setShowModal} />
               <div className="flex flex-row items-center gap-x-2 mt-8">
-                <FeedFilter name="Filters" />
+                <FeedFilter
+                  appliedFeedFilters={appliedFeedFilters}
+                  onApplyFilters={(filters: IPostFilters) => {
+                    setAppliedFeedFilters(filters);
+                  }}
+                />
                 <Icon name="clock" size={16} />
                 <Divider />
                 <SortByDropdown />

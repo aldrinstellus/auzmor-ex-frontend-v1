@@ -30,7 +30,7 @@ import ArrowLeftIcon from '../components/ArrowLeft';
 import BookmarkOutline from '../components/Bookmark';
 import AnalyticsOutline from '../components/AnalyticsIcon';
 import CopyLink from '../components/CopyLinkIcon';
-import DeleteIcon from '../components/DeleteIcon';
+import DeleteIcon from '../components/Delete';
 import MenuEditIcon from '../components/MenuEditIcon';
 import MenuNotificationIcon from '../components/MenuNotificationIcon';
 import OrangeHashtagIcon from '../components/OrangeHashtag';
@@ -94,7 +94,7 @@ export const icon = {
   convertShape: ConvertShape,
   copyLink: CopyLink,
   crossCircle: CrossCircle,
-  deleteIcon: DeleteIcon,
+  delete: DeleteIcon,
   document: DocumentIcon,
   draft: DraftIcon,
   dotsVertical: dotsVerticalIcon,

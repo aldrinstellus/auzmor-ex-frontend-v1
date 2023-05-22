@@ -2,7 +2,8 @@ import Button, { Variant } from 'components/Button';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
 import CloseIcon from 'components/Icon/components/Close';
-import React, { ReactElement, useState } from 'react';
+import { IPostFilters, PostFilterKeys, PostType } from 'queries/post';
+import React, { ReactElement, useEffect, useState } from 'react';
 
 export enum FeedFilterContentType {
   Filter = 'FILTER',
@@ -11,126 +12,223 @@ export enum FeedFilterContentType {
 
 export type FeedFilterOption = {
   label: string;
-  value: string;
-  checked: boolean;
+  value: string | PostType;
   type: FeedFilterContentType;
+  filterKey?: PostFilterKeys;
+  isDisabled?: boolean;
 };
 
 export type FeedFilterProps = {
-  name: string;
-  options?: FeedFilterOption[];
-  onChange?: any;
   className?: string;
-  error?: string;
-  loading?: boolean;
   disabled?: boolean;
   dataTestId?: string;
+  appliedFeedFilters?: IPostFilters;
+  onApplyFilters?: (filters: IPostFilters) => void;
 };
 
 const feedFilterOptions: FeedFilterOption[] = [
   {
     label: 'Content (type)',
     value: 'content-type',
-    checked: false,
     type: FeedFilterContentType.Section,
   },
   {
     label: 'Updates',
-    value: 'UPDATE',
-    checked: false,
+    value: PostType.Update,
+    filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
   },
   {
     label: 'Events',
-    value: 'EVENT',
-    checked: false,
+    value: PostType.Event,
+    filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
+    isDisabled: true,
   },
   {
     label: 'Documents',
-    value: 'DOCUMENT',
-    checked: false,
+    value: PostType.Document,
+    filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
+    isDisabled: true,
   },
   {
     label: 'Shoutouts',
-    value: 'SHOUT_OUT',
-    checked: false,
+    value: PostType.ShoutOut,
+    filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
+    isDisabled: true,
   },
   {
     label: 'Birthdays',
-    value: 'BIRTHDAY',
-    checked: false,
+    value: PostType.Birthday,
+    filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
+    isDisabled: true,
   },
   {
     label: 'Work anniversary',
-    value: 'WORK_ANNIVERSARY',
-    checked: false,
+    value: PostType.WorkAniversary,
+    filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
+    isDisabled: true,
   },
   {
     label: 'Welcome new hire',
-    value: 'WELCOME_NEW_HIRE',
-    checked: false,
+    value: PostType.WelcomNewHire,
+    filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
+    isDisabled: true,
   },
   {
     label: 'Polls',
-    value: 'POLL',
-    checked: false,
+    value: PostType.Poll,
+    filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
+    isDisabled: true,
   },
   {
     label: 'Preference',
     value: 'preference',
-    checked: false,
     type: FeedFilterContentType.Section,
   },
   {
     label: 'My posts',
     value: 'my-posts',
-    checked: false,
+    filterKey: PostFilterKeys.MyPosts,
     type: FeedFilterContentType.Filter,
+    isDisabled: true,
   },
   {
     label: 'Mentions',
     value: 'mentions',
-    checked: false,
+    filterKey: PostFilterKeys.MentionedInPost,
     type: FeedFilterContentType.Filter,
+    isDisabled: true,
   },
   {
     label: 'Bookmarked by me',
     value: 'bookmarked-by-me',
-    checked: false,
     type: FeedFilterContentType.Filter,
+    isDisabled: true,
   },
 ];
 
 const FeedFilter: React.FC<FeedFilterProps> = ({
-  name,
-  options,
-  error = '',
-  loading = false,
   disabled = false,
   dataTestId = '',
+  appliedFeedFilters = {},
+  onApplyFilters,
 }): ReactElement => {
   const [showFeedFilter, setShowFeedFilter] = useState<boolean>(false);
-  const [feedFilters, setFeedFilters] = useState<string[]>([]);
+  const [feedFilters, setFeedFilters] =
+    useState<IPostFilters>(appliedFeedFilters);
   const [haveFiltersBeenModified, setHaveFiltersBeenModified] =
     useState<boolean>(false);
+
+  useEffect(() => {
+    if (!showFeedFilter) {
+      setFeedFilters(appliedFeedFilters);
+    }
+  }, [showFeedFilter]);
+
+  useEffect(() => {
+    setFeedFilters(appliedFeedFilters);
+  }, [appliedFeedFilters]);
+
+  const isOptionSelected = (option: FeedFilterOption) => {
+    if (option.filterKey) {
+      switch (option.filterKey) {
+        case PostFilterKeys.PostType:
+          return feedFilters[PostFilterKeys.PostType]?.includes(
+            option.value as PostType,
+          );
+        case PostFilterKeys.MyPosts:
+          feedFilters[PostFilterKeys.MyPosts];
+        case PostFilterKeys.MentionedInPost:
+          feedFilters[PostFilterKeys.MentionedInPost];
+        default:
+          return false;
+      }
+    } else return false;
+  };
+
+  const clearFeedFilters = () => {
+    setFeedFilters({
+      ...feedFilters,
+      [PostFilterKeys.PostType]: [],
+      [PostFilterKeys.MyPosts]: false,
+      [PostFilterKeys.MentionedInPost]: false,
+    });
+    setHaveFiltersBeenModified(true);
+  };
+
+  const isFeelFiltersEmpty = () => {
+    if (
+      feedFilters[PostFilterKeys.PostType]?.length ||
+      feedFilters[PostFilterKeys.MyPosts] ||
+      feedFilters[PostFilterKeys.MentionedInPost]
+    ) {
+      return false;
+    }
+    return true;
+  };
+
+  const updateFeedFilters = (option: FeedFilterOption) => {
+    if (option.filterKey === PostFilterKeys.PostType) {
+      if (
+        feedFilters[PostFilterKeys.PostType]?.includes(option.value as PostType)
+      ) {
+        setFeedFilters({
+          ...feedFilters,
+          [PostFilterKeys.PostType]: feedFilters[
+            PostFilterKeys.PostType
+          ].filter((each) => each !== option.value),
+        });
+      } else {
+        setFeedFilters({
+          ...feedFilters,
+          [PostFilterKeys.PostType]: [
+            ...(feedFilters[PostFilterKeys.PostType] as PostType[]),
+            option.value as PostType,
+          ],
+        });
+      }
+    } else if (option.filterKey === PostFilterKeys.MentionedInPost) {
+      setFeedFilters({
+        ...feedFilters,
+        [PostFilterKeys.MentionedInPost]:
+          !feedFilters[PostFilterKeys.MentionedInPost],
+      });
+    } else if (option.filterKey === PostFilterKeys.MyPosts) {
+      setFeedFilters({
+        ...feedFilters,
+        [PostFilterKeys.MyPosts]: !feedFilters[PostFilterKeys.MyPosts],
+      });
+    }
+    setHaveFiltersBeenModified(true);
+  };
+
+  const getFeedFilterCount = () => {
+    return feedFilters[PostFilterKeys.PostType]?.length || 0;
+  };
+
   return (
-    <div className="relative">
+    <div className="relative mr-6">
       <button
-        className="box-border font-bold flex flex-row justify-center items-center p-1 gap-4 border-none"
+        className="box-border font-bold flex flex-row justify-center items-center p-1 gap-4 border-none relative"
         onClick={() => {
           setShowFeedFilter(!showFeedFilter);
           setHaveFiltersBeenModified(false);
         }}
         data-testid={dataTestId}
       >
-        <Icon name="filter" size={16} />
+        {getFeedFilterCount() > 0 && (
+          <div className="absolute rounded-full bg-red-600 text-white text-xxs -top-1 -right-1.5 flex w-4 h-4 items-center justify-center">
+            {getFeedFilterCount()}
+          </div>
+        )}
+        <Icon name="filter" size={16} className="" />
       </button>
 
       {showFeedFilter && (
@@ -150,27 +248,21 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
               {feedFilterOptions.map((option) => (
                 <div
                   key={option?.value}
-                  onClick={() => {
-                    setHaveFiltersBeenModified(true);
-                    if (feedFilters.includes(option.value)) {
-                      setFeedFilters(
-                        feedFilters.filter((filter) => filter !== option.value),
-                      );
-                    } else {
-                      setFeedFilters([...feedFilters, option?.value]);
-                    }
-                  }}
+                  onClick={() =>
+                    !option.isDisabled && updateFeedFilters(option)
+                  }
+                  className={`${
+                    option.isDisabled
+                      ? 'cursor-default text-neutral-400'
+                      : 'cursor-pointer'
+                  }`}
                 >
                   <li
                     className={
                       option?.type === FeedFilterContentType.Section
                         ? 'bg-blue-50 text-gray-600 font-medium text-sm px-4 py-2 rounded-md min-w-full'
                         : `bg-white font-medium text-sm px-4 py-2 rounded-md min-w-full overflow ${
-                            feedFilters.find(
-                              (filter) => filter === option?.value,
-                            )
-                              ? 'bg-green-50'
-                              : ''
+                            isOptionSelected(option) && 'bg-green-50'
                           } hover:bg-green-50 flex items-center`
                     }
                     value={option?.value}
@@ -182,11 +274,8 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
                           ? 'hidden'
                           : 'block px-2 mr-2 accent-emerald-600 '
                       }
-                      checked={
-                        feedFilters.find((filter) => filter === option?.value)
-                          ? true
-                          : false
-                      }
+                      disabled={option.isDisabled}
+                      checked={isOptionSelected(option)}
                     ></input>
                     {option?.label}
                   </li>
@@ -197,13 +286,10 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
           <div className="flex items-center justify-around mt-3 mb-2">
             <button
               className={`box-border border-none px-4 ${
-                feedFilters.length > 0 ? 'text-gray-900 ' : 'text-gray-400'
+                isFeelFiltersEmpty() ? 'text-gray-400' : 'text-gray-900'
               }`}
-              onClick={() => {
-                setHaveFiltersBeenModified(true);
-                setFeedFilters([]);
-              }}
-              disabled={feedFilters.length === 0}
+              onClick={clearFeedFilters}
+              disabled={isFeelFiltersEmpty()}
             >
               Clear filters
             </button>
@@ -211,7 +297,10 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
               label="Apply"
               variant={Variant.Primary}
               disabled={!haveFiltersBeenModified}
-              onClick={() => setShowFeedFilter(false)}
+              onClick={() => {
+                onApplyFilters && onApplyFilters(feedFilters);
+                setShowFeedFilter(false);
+              }}
             />
           </div>
         </Card>
