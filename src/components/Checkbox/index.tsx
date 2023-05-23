@@ -1,10 +1,10 @@
 import clsx from 'clsx';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { UseFormGetValues, useController } from 'react-hook-form';
 
 export type CheckboxProps = {
   name: string;
-  label?: string;
+  label?: ReactElement | string;
   className?: string;
   error?: string;
   loading?: boolean;
