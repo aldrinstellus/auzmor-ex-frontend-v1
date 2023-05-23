@@ -31,7 +31,7 @@ const AccountCard = () => {
     <Popover
       triggerNode={
         <Avatar
-          dataTestId="profile-avatar"
+          dataTestId="my-profile-avatar"
           name={user?.name || 'U'}
           size={32}
           image={user?.profileImage}
