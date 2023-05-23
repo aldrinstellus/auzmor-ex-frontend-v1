@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Button, { Size, Type as ButtonType } from 'components/Button';
 import { Logo } from 'components/Logo';
+import WelcomeOffice from 'images/welcomeToOffice.png';
 import { useMutation } from '@tanstack/react-query';
 import { redirectWithToken } from 'utils/misc';
 import { signup } from 'queries/account';
@@ -96,6 +97,11 @@ const Signup: React.FC<ISignupProps> = () => {
       type: FieldType.Input,
       variant: InputVariant.Text,
       placeholder: 'Enter domain',
+      rightElement: (
+        <div className="text-sm font-medium text-neutral-500">
+          office.auzmor.com
+        </div>
+      ),
       name: 'domain',
       label: 'Domain*',
       error: errors.domain?.message || errors.domain?.types?.domainExists,
@@ -169,11 +175,12 @@ const Signup: React.FC<ISignupProps> = () => {
 
   return (
     <div className="flex h-screen w-screen">
-      <div
-        className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover"
+      <img
+        src={WelcomeOffice}
+        className="h-full w-[48%]"
         data-testid="signup-cover-image"
-      ></div>
-      <div className="w-1/2 flex justify-center items-center relative bg-white">
+      />
+      <div className="w-[52%] flex justify-center items-center relative bg-white overflow-y-auto overscroll-auto">
         <div className="absolute top-8 right-8" data-testid="signup-logo-image">
           <Logo />
         </div>

@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Logo } from 'components/Logo';
+import WelcomeOffice from 'images/welcomeToOffice.png';
 import { Success } from 'components/Logo';
 import Layout, { FieldType } from 'components/Form';
 import Button, { Size, Type } from 'components/Button';
@@ -106,8 +107,8 @@ const ResetPassword = () => {
 
   return (
     <div className="flex h-screen w-screen">
-      <div className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover" />
-      <div className="w-1/2 h-full flex justify-center items-center relative bg-white">
+      <img src={WelcomeOffice} className="h-full w-[48%]" />
+      <div className="w-[52%] h-full flex justify-center items-center relative bg-white overflow-y-auto">
         <div className="absolute top-8 right-8">
           <Logo />
         </div>
