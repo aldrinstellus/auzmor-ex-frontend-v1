@@ -200,6 +200,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         name: userUpdateResponse.fullName,
         id: userUpdateResponse.id,
         email: userUpdateResponse.primaryEmail,
+        role: userUpdateResponse.role,
         organization: {
           id: userUpdateResponse.org?.id,
           domain: userUpdateResponse.org?.domain,

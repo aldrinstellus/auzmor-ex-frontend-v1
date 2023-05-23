@@ -47,6 +47,7 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
     onSuccess: (data) =>
       redirectWithToken(data.result.data.redirectUrl, data.result.data.uat),
   });
+
   const domain = getSubDomain(window.location.host);
   const { data, isLoading } = useGetSSOFromDomain(
     domain,

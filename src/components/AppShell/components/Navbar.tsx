@@ -5,6 +5,7 @@ import { Logo } from 'components/Logo';
 import Icon from 'components/Icon';
 import Divider, { Variant } from 'components/Divider';
 import AccountCard from './AccountCard';
+import useRole from 'hooks/useRole';
 
 const navigations = [
   {
@@ -40,6 +41,8 @@ const navigations = [
 ];
 
 const Navbar = () => {
+  const { isAdmin } = useRole();
+
   return (
     <header className="sticky top-0 z-40">
       <div className="bg-white shadow h-16 w-full flex items-center justify-center px-8">
@@ -74,17 +77,19 @@ const Navbar = () => {
           <Divider variant={Variant.Vertical} />
         </div>
         <div className="flex items-center space-x-8">
-          <NavLink
-            to="/admin"
-            className={({ isActive }) =>
-              isActive ? 'text-primary-500' : 'text-neutral-500'
-            }
-          >
-            <div className="flex flex-col items-center">
-              <Icon name="admin" size={22} />
-              <div className="text-sm mt-[1px]">Admin</div>
-            </div>
-          </NavLink>
+          {isAdmin && (
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                isActive ? 'text-primary-500' : 'text-neutral-500'
+              }
+            >
+              <div className="flex flex-col items-center">
+                <Icon name="admin" size={22} />
+                <div className="text-sm mt-[1px]">Admin</div>
+              </div>
+            </NavLink>
+          )}
           <div>
             <Icon name="notification" size={26} />
           </div>

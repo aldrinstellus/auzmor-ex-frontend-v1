@@ -5,17 +5,17 @@ import SSOSettings from 'components/SSOSettings';
 import React, { ReactNode, useState } from 'react';
 interface IAdminProps {}
 
-const Admin: React.FC<IAdminProps> = () => {
-  type setting = {
-    label: string;
-    icon: string;
-    key: string;
-    component: ReactNode;
-    disabled: boolean;
-    hidden: boolean;
-    dataTestId?: string;
-  };
+interface ISetting {
+  label: string;
+  icon: string;
+  key: string;
+  component: ReactNode;
+  disabled: boolean;
+  hidden: boolean;
+  dataTestId?: string;
+}
 
+const Admin: React.FC<IAdminProps> = () => {
   const settings = [
     {
       label: 'General',
@@ -73,9 +73,10 @@ const Admin: React.FC<IAdminProps> = () => {
     },
   ];
 
-  const [activeSettingsPage, setActiveSettingsPage] = useState<setting>(
-    settings[0],
+  const [activeSettingsPage, setActiveSettingsPage] = useState<ISetting>(
+    settings[3],
   );
+
   return (
     <div className="flex justify-between w-full gap-x-14">
       <Card className="min-w-[300px] max-h-[400px]">

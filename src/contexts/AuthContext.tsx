@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { getItem, removeAllItems, setItem } from 'utils/persist';
 import { fetchMe } from 'queries/account';
 import UserOnboard from 'components/UserOnboard';
+import { Role } from 'utils/enum';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -17,6 +18,7 @@ interface IUser {
   id: string;
   name: string;
   email: string;
+  role: Role;
   organization: IOrganization;
   workLocation?: string;
   preferredName?: string;
@@ -70,16 +72,17 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
     if (token) {
       try {
         const userData = await fetchMe();
+        const data = userData?.result?.data;
         setUser({
-          id: userData?.result?.data?.id,
-          name: userData?.result?.data?.fullName,
-          email: userData?.result?.data?.workEmail,
+          id: data?.id,
+          name: data?.fullName,
+          email: data?.workEmail,
+          role: data?.role,
           organization: {
-            id: userData?.result?.data?.org.id,
-            domain: userData?.result?.data?.org.domain,
+            id: data?.org.id,
+            domain: data?.org.domain,
           },
-          profileImage:
-            userData?.result?.data.profileImage?.original || undefined,
+          profileImage: data?.profileImage?.original,
         });
       } catch (e: any) {
         if (e?.response?.status === 401) {

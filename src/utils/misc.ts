@@ -2,6 +2,7 @@ import resolveConfig from 'tailwindcss/resolveConfig';
 import tailwindConfig from 'components/../../tailwind.config.js';
 import { IMedia } from 'contexts/CreatePostContext';
 import { validImageTypes } from 'queries/files';
+import { getItem, removeItem } from './persist';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -26,7 +27,10 @@ export const redirectWithToken = (
   token: string,
   showOnboard = false,
 ) => {
-  let url = `/feed?accessToken=${token}`;
+  const _next = getItem('redirect_post_login_to') || '/feed';
+  removeItem('redirect_post_login_to');
+
+  let url = `${_next}?accessToken=${token}`;
   if (showOnboard) {
     url += '&showOnboard=true';
   }
