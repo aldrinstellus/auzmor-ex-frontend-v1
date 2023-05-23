@@ -2,6 +2,7 @@ import React, { ElementType, ReactNode } from 'react';
 import { Menu } from '@headlessui/react';
 import { twConfig } from 'utils/misc';
 import Icon from 'components/Icon';
+import useHover from 'hooks/useHover';
 
 export interface IMenuItem {
   renderNode?: ReactNode;
@@ -42,6 +43,7 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
             disabled={menuItem.disabled}
           >
             {(() => {
+              const [hovered, eventHandlers] = useHover();
               if (menuItem.renderNode) {
                 return menuItem.renderNode;
               }
@@ -51,6 +53,7 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
                     menuItem.disabled && '!cursor-default'
                   }`}
                   onClick={menuItem.onClick}
+                  {...eventHandlers}
                 >
                   {menuItem.icon && (
                     <Icon
@@ -62,9 +65,11 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
                       }
                       stroke={
                         (menuItem.disabled &&
-                          twConfig.theme.colors.neutral['400']) ||
+                          twConfig.theme.colors.neutral['200']) ||
                         menuItem.stroke
                       }
+                      hover={hovered}
+                      disabled={menuItem.disabled}
                     />
                   )}
                   <div
