@@ -128,8 +128,18 @@ const Signup: React.FC<ISignupProps> = () => {
     },
     {
       type: FieldType.Checkbox,
-      label:
-        'By Signing up you are agreeing to Auzmor Office’s Terms of Use and Privacy Policy',
+      label: (
+        <div>
+          By Signing up you are agreeing to Auzmor Office’s{' '}
+          <span className="text-primary-500">
+            <a href="https://www.auzmor.com/tc">Terms of Use</a>
+          </span>{' '}
+          and{' '}
+          <span className="text-primary-500">
+            <a href="https://www.auzmor.com/privacy-policy">Privacy Policy</a>
+          </span>
+        </div>
+      ),
       name: 'privacyPolicy',
       error: errors.privacyPolicy?.message,
       dataTestId: 'sign-up-checkbox',
