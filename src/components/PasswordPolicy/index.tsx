@@ -1,17 +1,20 @@
 import React, { useMemo, useState } from 'react';
 import { Check } from '../Logo/';
 import clsx from 'clsx';
+import { string } from 'yup';
 
 export interface IPasswordPolicyProps {
   policyName: any;
   isChecked?: boolean;
   className?: string;
+  dataTestId?: string;
 }
 
 const PasswordPolicy: React.FC<IPasswordPolicyProps> = ({
   policyName,
   isChecked,
   className,
+  dataTestId,
 }) => {
   const checkStyles = useMemo(
     () =>
@@ -31,7 +34,9 @@ const PasswordPolicy: React.FC<IPasswordPolicyProps> = ({
 
   return (
     <div className="flex justify-start items-center space-x-4">
-      <div className={checkStyles}>{isChecked && <Check />}</div>
+      <div className={checkStyles} data-testid={dataTestId}>
+        {isChecked && <Check />}
+      </div>
       <div>{policyName}</div>
     </div>
   );

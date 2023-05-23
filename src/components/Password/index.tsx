@@ -211,22 +211,27 @@ const Password: React.FC<PasswordProps> = ({
           <PasswordPolicy
             policyName="Must have atleast 6 characters"
             isChecked={validationChecks.length}
+            dataTestId="password-checklist-character"
           />
           <PasswordPolicy
             policyName="1 Number"
             isChecked={validationChecks.isNumber}
+            dataTestId="password-checklist-number"
           />
           <PasswordPolicy
             policyName="1 Symbol"
             isChecked={validationChecks.isSymbol}
+            dataTestId="password-checklist-symbol"
           />
           <PasswordPolicy
             policyName="1 Upper case letter"
             isChecked={validationChecks.isUppercase}
+            dataTestId="password-checklist-uppercase"
           />
           <PasswordPolicy
             policyName="1 Lower case letter"
             isChecked={validationChecks.isLowercase}
+            dataTestId="password-checklist-lowercase"
           />
         </div>
       )}
