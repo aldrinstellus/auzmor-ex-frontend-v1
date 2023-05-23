@@ -69,6 +69,7 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
         src={WelcomeOffice}
         className="h-full w-[48%]"
         data-testid="forgot-password-cover-image"
+        alt="Welcome to Auzmor Office"
       />
       <div className="w-[52%] h-full flex justify-center items-center relative bg-white overflow-y-auto">
         <div

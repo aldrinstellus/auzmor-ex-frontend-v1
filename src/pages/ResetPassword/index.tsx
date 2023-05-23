@@ -107,7 +107,11 @@ const ResetPassword = () => {
 
   return (
     <div className="flex h-screen w-screen">
-      <img src={WelcomeOffice} className="h-full w-[48%]" />
+      <img
+        src={WelcomeOffice}
+        className="h-full w-[48%]"
+        alt="Welcome to Auzmor Office"
+      />
       <div className="w-[52%] h-full flex justify-center items-center relative bg-white overflow-y-auto">
         <div className="absolute top-8 right-8">
           <Logo />

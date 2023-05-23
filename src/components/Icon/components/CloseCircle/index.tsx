@@ -22,11 +22,7 @@ const CloseCircleIcon: React.FC<IconProps> = ({
 
   return (
     <div onClick={onClick} className={className} {...eventHandlers}>
-      {!disabled && (hover || isHovered) ? (
-        <CloseCircleFilled {...props} />
-      ) : (
-        <CloseCircleOutline {...props} />
-      )}
+      <CloseCircleOutline {...props} />
     </div>
   );
 };
