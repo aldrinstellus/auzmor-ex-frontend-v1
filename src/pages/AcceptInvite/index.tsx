@@ -48,13 +48,11 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
     mutationFn: acceptInviteSetPassword,
     mutationKey: ['accept-invite-mutation'],
     onSuccess: (data) => {
-      console.log({ data });
-      // Not getting any data as a part of response here.
-      redirectWithToken(
-        data.result.data.redirectUrl,
-        data.result.data.uat,
-        true,
-      );
+      redirectWithToken({
+        redirectUrl: data.result.data.redirectUrl,
+        token: data.result.data.uat,
+        showOnboard: true,
+      });
     },
     onError: () => {},
   });

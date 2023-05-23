@@ -22,15 +22,22 @@ export const isValidUrl = (url: string) => {
   return urlPattern.test(url);
 };
 
-export const redirectWithToken = (
-  redirectUrl: string,
-  token: string,
-  showOnboard = false,
-) => {
-  const _next = getItem('redirect_post_login_to') || '/feed';
-  removeItem('redirect_post_login_to');
+interface IRedirect {
+  redirectUrl?: string;
+  token?: string;
+  showOnboard?: boolean;
+}
 
-  let url = `${_next}?accessToken=${token}`;
+export const redirectWithToken = ({
+  redirectUrl,
+  token,
+  showOnboard = false,
+}: IRedirect) => {
+  let url = getItem('redirect_post_login_to') || '/feed';
+  removeItem('redirect_post_login_to');
+  if (token) {
+    url = `${url}?accessToken=${token}`;
+  }
   if (showOnboard) {
     url += '&showOnboard=true';
   }
