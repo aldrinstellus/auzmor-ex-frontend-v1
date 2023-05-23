@@ -6,6 +6,7 @@ type IconProps = {
   size?: number;
   className?: string;
   hover?: boolean;
+  disabled?: boolean;
   onClick?: () => void;
 };
 
@@ -13,6 +14,7 @@ const CarouselLeftIcon: React.FC<IconProps> = ({
   hover,
   onClick,
   className = '',
+  disabled,
   ...props
 }) => {
   const [isHovered, eventHandlers] = useHover();

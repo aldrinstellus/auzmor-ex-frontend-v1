@@ -11,6 +11,7 @@ import {
 import { DeltaStatic } from 'quill';
 import React, { ForwardedRef, useContext, useMemo } from 'react';
 import ReactQuill from 'react-quill';
+import { twConfig } from 'utils/misc';
 
 export interface IFooterProps {
   isLoading: boolean;
@@ -67,6 +68,7 @@ const Footer: React.FC<IFooterProps> = ({
             label: 'Share a document',
             icon: 'document',
             iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
+            disabled: true,
           },
         ],
         divider: <Divider variant={DividerVariant.Vertical} />,
@@ -74,21 +76,23 @@ const Footer: React.FC<IFooterProps> = ({
       {
         id: 2,
         label: 'Shoutout',
-        icon: <Icon name="magicStarFilled" fill="#000000" size={14} />,
+        icon: <Icon name="magicStarFilled" size={14} />,
         menuItems: [],
         divider: <Divider variant={DividerVariant.Vertical} />,
+        disabled: true,
       },
       {
         id: 3,
         label: 'Events',
-        icon: <Icon name="calendarFilledTwo" fill="#000000" size={14} />,
+        icon: <Icon name="calendarFilledTwo" size={14} />,
         menuItems: [],
         divider: <Divider variant={DividerVariant.Vertical} />,
+        disabled: true,
       },
       {
         id: 4,
         label: 'Polls',
-        icon: <Icon name="chartFilled" fill="#000000" size={14} />,
+        icon: <Icon name="chartFilled" size={14} />,
         menuItems: [],
       },
       {
@@ -109,6 +113,7 @@ const Footer: React.FC<IFooterProps> = ({
             label: 'Save as drafts',
             icon: 'draft',
             iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
+            disabled: true,
           },
         ],
       },
@@ -122,18 +127,24 @@ const Footer: React.FC<IFooterProps> = ({
           <PopupMenu
             triggerNode={
               <div className="mr-4">
-                <Tooltip
-                  tooltipContent={postMenuItem.label}
-                  className="cursor-pointer"
-                >
-                  {postMenuItem.label !== 'More' ? (
-                    <div className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl">
-                      {postMenuItem.icon}
-                    </div>
-                  ) : (
-                    postMenuItem.icon
-                  )}
-                </Tooltip>
+                {postMenuItem?.disabled ? (
+                  <div className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl cursor-default">
+                    {postMenuItem.icon}
+                  </div>
+                ) : (
+                  <Tooltip
+                    tooltipContent={postMenuItem.label}
+                    className="cursor-pointer"
+                  >
+                    {postMenuItem.label !== 'More' ? (
+                      <div className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl">
+                        {postMenuItem.icon}
+                      </div>
+                    ) : (
+                      postMenuItem.icon
+                    )}
+                  </Tooltip>
+                )}
               </div>
             }
             menuItems={postMenuItem.menuItems}
