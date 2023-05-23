@@ -33,6 +33,7 @@ const UpdateProfileImage: React.FC<UpdateProfileImageProps> = ({
         name: response?.result?.data?.fullName,
         id: response?.result?.data?.id,
         email: response?.result?.data?.primaryEmail,
+        role: response?.result?.data?.role,
         organization: {
           id: response?.result?.data?.org?.id,
           domain: response?.result?.data?.org?.domain,

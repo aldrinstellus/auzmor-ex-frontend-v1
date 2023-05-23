@@ -48,17 +48,12 @@ const SSOSettings: React.FC = (): ReactElement => {
   const [ssoSetting, setSsoSetting] = useState<ISSOSetting>();
   const [showErrorBanner, setShowErrorBanner] = useState<boolean>(false);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error fetching SSO List</div>;
-  }
-
   const getSSOValues = (idp: string) => {
+    if (!idp) {
+      return {};
+    }
     let result = {};
-    const ssoSetting: SSOConfig = data.result.data.find(
+    const ssoSetting: SSOConfig = data?.result.data.find(
       (sso: any) => sso.idp === idp,
     );
     if (ssoSetting) {
@@ -120,15 +115,23 @@ const SSOSettings: React.FC = (): ReactElement => {
     },
   ];
 
-  const onClick = (key: string) => {
-    setSsoSetting(ssoIntegrations.find((item) => item.key === key));
-    openModal();
-  };
-
   const activeSSO = useMemo(
     () => ssoIntegrations.find((sso: ISSOSetting) => sso.active),
     [ssoIntegrations],
   );
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error fetching SSO List</div>;
+  }
+
+  const onClick = (key: string) => {
+    setSsoSetting(ssoIntegrations.find((item) => item.key === key));
+    openModal();
+  };
 
   return (
     <div>
