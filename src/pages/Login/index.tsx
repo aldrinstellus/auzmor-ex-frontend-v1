@@ -13,7 +13,7 @@ const Login: React.FC<ILoginProps> = () => {
         className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover"
         data-testid="signin-cover-image"
       ></div>
-      <div className="w-1/2 h-full flex justify-center items-center relative bg-white">
+      <div className="w-1/2 h-full flex justify-center items-center relative bg-white overflow-y-auto">
         <div className="absolute top-8 right-8" data-testid="signin-logo-image">
           <Logo />
         </div>

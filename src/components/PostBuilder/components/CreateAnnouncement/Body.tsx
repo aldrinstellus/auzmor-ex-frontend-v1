@@ -1,14 +1,19 @@
-import Layout, { FieldType } from 'components/Form';
+import Layout from 'components/Form';
 import Icon from 'components/Icon';
 import { CreatePostContext } from 'contexts/CreatePostContext';
 import React, { useContext } from 'react';
 
 export interface IBodyProps {
-  fields: any[];
+  expiryFields: Array<Record<string, any>>;
+  datepickerFields: Array<Record<string, any>>;
   selecetedExpiry: any;
 }
 
-const Body: React.FC<IBodyProps> = ({ fields, selecetedExpiry }) => {
+const Body: React.FC<IBodyProps> = ({
+  expiryFields,
+  selecetedExpiry,
+  datepickerFields,
+}) => {
   const { announcement } = useContext(CreatePostContext);
   return (
     <div className="text-sm text-neutral-900">
@@ -24,11 +29,11 @@ const Body: React.FC<IBodyProps> = ({ fields, selecetedExpiry }) => {
           </div>
         </div>
         <form>
-          <Layout fields={fields} />
+          <Layout fields={expiryFields} />
         </form>
         {((selecetedExpiry && selecetedExpiry.label === 'Custom Date') ||
           (announcement && announcement.label === 'Custom Date')) && (
-          <Layout fields={fields} className="mt-6" />
+          <Layout fields={datepickerFields} className="mt-6" />
         )}
       </div>
     </div>

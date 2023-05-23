@@ -6,6 +6,7 @@ type IBookmarkProps = {
   size?: number;
   className?: string;
   hover?: boolean;
+  disabled?: boolean;
   onClick?: () => void;
 };
 
@@ -13,6 +14,7 @@ const Bookmark: React.FC<IBookmarkProps> = ({
   hover = true,
   onClick,
   className = '',
+  disabled,
   ...props
 }) => {
   return (

@@ -235,7 +235,7 @@ export const useResendInvitation = () => {
   });
 };
 
-export const useIsUserExist = (email: string) => {
+export const useIsUserExist = (email = '') => {
   return useQuery({
     queryKey: ['user-exist', email],
     queryFn: () => isUserExist({ email }),

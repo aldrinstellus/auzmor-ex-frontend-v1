@@ -9,7 +9,6 @@ import SvgMagicStarFilled from '../components/MagicStar/MagicStarFilled';
 import SvgMoreFilled from '../components/More/MoreFilled';
 import SvgPeopleFilled from '../components/People/PeopleFilled';
 import SvgVideoFilled from '../components/video/VideoFilled';
-import SvgDropdownArrowFilled from '../components/DropdownArrow/DropdownArrowFilled';
 import SvgClockFilled from '../components/Clock/ClockFilled';
 import SvgFilterFilled from '../components/Filter/FilterFilled';
 import SvgAddCircleFilled from '../components/AddCircle/AddCircleFilled';
@@ -45,7 +44,10 @@ import SvgPlayFilled from '../components/Play/PlayFilled';
 import SvgTickCircleFilled from '../components/TickCircle/TickCircleFilled';
 import SvgCloseCircleFilled from '../components/CloseCircle/CloseCircleFilled';
 import SvgFilterLinearFilled from '../components/FilterLinear/FilterLinearFilled';
+import SvgDocumentUploadOutline from '../components/DocumentUpload/DocumentUploadOutline';
 import SvgDeleteFilled from '../components/Delete/DeleteFilled';
+import SvgExportFilled from '../components/Export/ExportFilled';
+import SvgMaximizeFilled from '../components/Maximize/MaximizeFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -66,9 +68,9 @@ export const filledIcon = {
   deleteFilled: SvgDeleteFilled,
   documentFilled: SvgDocumentFilled,
   draftFilled: SvgDraftFilled,
-  dropdownArrowFilled: SvgDropdownArrowFilled,
   editFilled: SvgEditFilled,
   emojiHappyFilled: SvgEmojiHappyFilled,
+  exportFilled: SvgExportFilled,
   eyeFilled: SvgEyeFilled,
   eyeSlashFilled: SvgEyeSlashFilled,
   filterFilled: SvgFilterFilled,
@@ -83,6 +85,7 @@ export const filledIcon = {
   likeIconFilled: SvgLikeIconFilled,
   loveFilled: SvgLoveFilled,
   magicStarFilled: SvgMagicStarFilled,
+  maximizeFilled: SvgMaximizeFilled,
   moreFilled: SvgMoreFilled,
   peopleFilled: SvgPeopleFilled,
   playFilled: SvgPlayFilled,
@@ -96,4 +99,5 @@ export const filledIcon = {
   trashFilled: SvgTrashFilled,
   userFilled: SvgUsersFilled,
   videoFilled: SvgVideoFilled,
+  documentUpload: SvgDocumentUploadOutline,
 };

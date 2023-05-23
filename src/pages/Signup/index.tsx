@@ -14,6 +14,7 @@ import { useDebounce } from 'hooks/useDebounce';
 import { useDomainExists, useIsUserExist } from 'queries/users';
 
 interface IForm {
+  fullName: string;
   workEmail: string;
   domain: string;
   password: string;
@@ -23,6 +24,7 @@ interface IForm {
 }
 
 const schema = yup.object({
+  fullName: yup.string().required('Required Field'),
   workEmail: yup
     .string()
     .email('Please enter valid email address')
@@ -46,11 +48,11 @@ export interface IValidationErrors {
 const Signup: React.FC<ISignupProps> = () => {
   const signupMutation = useMutation((formData: IForm) => signup(formData), {
     onSuccess: (data) =>
-      redirectWithToken(
-        data.result.data.redirectUrl,
-        data.result.data.uat,
-        true,
-      ),
+      redirectWithToken({
+        redirectUrl: data.result.data.redirectUrl,
+        token: data.result.data.uat,
+        showOnboard: true,
+      }),
   });
 
   const {
@@ -63,6 +65,7 @@ const Signup: React.FC<ISignupProps> = () => {
   } = useForm<IForm>({
     resolver: yupResolver(schema),
     defaultValues: {
+      fullName: '',
       workEmail: '',
       password: '',
       confirmPassword: '',
@@ -74,6 +77,7 @@ const Signup: React.FC<ISignupProps> = () => {
   useEffect(() => {
     signupMutation.reset();
   }, [
+    watch('fullName'),
     watch('workEmail'),
     watch('domain'),
     watch('password'),
@@ -82,6 +86,16 @@ const Signup: React.FC<ISignupProps> = () => {
   ]);
 
   const fields = [
+    {
+      type: FieldType.Input,
+      variant: InputVariant.Text,
+      placeholder: 'Enter your name',
+      name: 'fullName',
+      label: 'Full Name*',
+      error: errors.fullName?.message,
+      dataTestId: 'sign-up-fullname',
+      control,
+    },
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
@@ -128,8 +142,18 @@ const Signup: React.FC<ISignupProps> = () => {
     },
     {
       type: FieldType.Checkbox,
-      label:
-        'By Signing up you are agreeing to Auzmor Office’s Terms of Use and Privacy Policy',
+      label: (
+        <div>
+          By Signing up you are agreeing to Auzmor Office’s{' '}
+          <span className="text-primary-500">
+            <a href="https://www.auzmor.com/tc">Terms of Use</a>
+          </span>{' '}
+          and{' '}
+          <span className="text-primary-500">
+            <a href="https://www.auzmor.com/privacy-policy">Privacy Policy</a>
+          </span>
+        </div>
+      ),
       name: 'privacyPolicy',
       error: errors.privacyPolicy?.message,
       dataTestId: 'sign-up-checkbox',
@@ -173,11 +197,11 @@ const Signup: React.FC<ISignupProps> = () => {
         className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover"
         data-testid="signup-cover-image"
       ></div>
-      <div className="w-1/2 flex justify-center items-center relative bg-white">
+      <div className="w-1/2 flex justify-center items-center relative bg-white  h-full overflow-y-auto">
         <div className="absolute top-8 right-8" data-testid="signup-logo-image">
           <Logo />
         </div>
-        <div className="w-full max-w-[440px]">
+        <div className="pt-8 w-full h-full max-w-[440px]">
           <div className="font-extrabold text-neutral-900 text-4xl">
             Sign Up
           </div>

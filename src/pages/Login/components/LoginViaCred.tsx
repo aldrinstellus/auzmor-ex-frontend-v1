@@ -12,7 +12,6 @@ import Button, {
   Size,
 } from 'components/Button';
 import Divider from 'components/Divider';
-import { Logo } from 'components/Logo';
 import {
   getSubDomain,
   readFirstAxiosError,
@@ -22,6 +21,7 @@ import { Link } from 'react-router-dom';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useGetSSOFromDomain } from 'queries/organization';
 import { useLoginViaSSO } from 'queries/auth';
+import useAuth from 'hooks/useAuth';
 
 export interface ILoginViaCredProps {
   setViaSSO: (flag: boolean) => void;
@@ -43,10 +43,16 @@ const schema = yup.object({
 });
 
 const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
+  const { user } = useAuth();
+
   const loginMutation = useMutation((formData: IForm) => login(formData), {
     onSuccess: (data) =>
-      redirectWithToken(data.result.data.redirectUrl, data.result.data.uat),
+      redirectWithToken({
+        redirectUrl: data.result.data.redirectUrl,
+        token: data.result.data.uat,
+      }),
   });
+
   const domain = getSubDomain(window.location.host);
   const { data, isLoading } = useGetSSOFromDomain(
     domain,
@@ -83,6 +89,11 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
   const onSubmit = (formData: IForm) => {
     loginMutation.mutate(formData);
   };
+
+  if (user) {
+    redirectWithToken({});
+    return null;
+  }
 
   const fields = [
     {

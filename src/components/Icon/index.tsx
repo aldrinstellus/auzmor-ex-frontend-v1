@@ -11,6 +11,7 @@ export type IconProps = {
   onClick?: (...param: any) => void | null;
   className?: string;
   hover?: boolean;
+  disabled?: boolean;
 };
 
 const Icon: React.FC<IconProps> = ({
@@ -18,10 +19,11 @@ const Icon: React.FC<IconProps> = ({
   size = 24,
   onClick = null,
   className = '',
-  hover = true,
+  hover = false,
   fill,
   stroke,
   strokeWidth,
+  disabled = false,
 }) => {
   const Component = iconMap[name] || null;
   if (!Component) {
@@ -35,11 +37,12 @@ const Icon: React.FC<IconProps> = ({
       name={name}
       size={size}
       className={styles}
-      hover={hover}
+      hover={!disabled && hover}
       onClick={onClick}
       fill={fill}
       stroke={stroke}
       strokeWidth={strokeWidth}
+      disabled={disabled}
     />
   );
 };

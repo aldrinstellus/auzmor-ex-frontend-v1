@@ -1,27 +1,29 @@
 import React from 'react';
 import useHover from 'hooks/useHover';
-import { default as DropdownArrowFilled } from './DropdownArrowFilled';
+import { default as ThreeDotsOutline } from './ThreeDotsOutline';
 
 type IconProps = {
   size?: number;
   className?: string;
   hover?: boolean;
+  disabled?: boolean;
   onClick?: () => void;
 };
 
-const DropdownArrowIcon: React.FC<IconProps> = ({
+const ThreeDots: React.FC<IconProps> = ({
   hover,
   onClick,
   className = '',
+  disabled,
   ...props
 }) => {
   const [isHovered, eventHandlers] = useHover();
 
   return (
-    <div onClick={onClick} className={className} {...eventHandlers}>
-      <DropdownArrowFilled {...props} />
+    <div onClick={onClick} {...eventHandlers}>
+      <ThreeDotsOutline {...props} />
     </div>
   );
 };
 
-export default DropdownArrowIcon;
+export default ThreeDots;

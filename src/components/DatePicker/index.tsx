@@ -14,6 +14,7 @@ export interface IDatePickerInputProps {
   minDate?: Date;
   defaultValue?: string;
   portalContainer?: HTMLElement | null;
+  calendarClassName?: string;
   onDateChange?: (date: DateValue) => void;
 }
 
@@ -23,6 +24,8 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
   minDate,
   defaultValue,
   portalContainer = null,
+  className,
+  calendarClassName,
   onDateChange,
 }) => {
   return (
@@ -42,7 +45,8 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
               onChange(date);
               onDateChange && onDateChange(date);
             }}
-            className="flex border rounded-19xl w-full px-5 py-2.5"
+            calendarClassName={calendarClassName}
+            className={`flex border rounded-19xl w-full px-5 py-2.5 ${className}`}
             calendarIcon={<Icon name="calendarTwo" size={16} />}
             format="dd/MM/yyyy"
             dayPlaceholder="DD"

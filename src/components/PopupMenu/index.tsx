@@ -2,6 +2,7 @@ import React, { ElementType, ReactNode } from 'react';
 import { Menu } from '@headlessui/react';
 import { twConfig } from 'utils/misc';
 import Icon from 'components/Icon';
+import useHover from 'hooks/useHover';
 
 export interface IMenuItem {
   renderNode?: ReactNode;
@@ -12,6 +13,8 @@ export interface IMenuItem {
   icon?: string;
   label?: string;
   iconClassName?: string;
+  stroke?: string;
+  fill?: string;
   onClick?: () => any;
 }
 
@@ -40,23 +43,40 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
             disabled={menuItem.disabled}
           >
             {(() => {
+              const [hovered, eventHandlers] = useHover();
               if (menuItem.renderNode) {
                 return menuItem.renderNode;
               }
               return (
                 <div
-                  className="flex px-6 py-3 items-center hover:bg-primary-50 cursor-pointer space-x-3"
+                  className={`flex px-6 py-3 items-center hover:bg-primary-50 cursor-pointer space-x-3 ${
+                    menuItem.disabled && '!cursor-default'
+                  }`}
                   onClick={menuItem.onClick}
+                  {...eventHandlers}
                 >
                   {menuItem.icon && (
                     <Icon
                       name={menuItem.icon}
                       size={16}
                       className={menuItem.iconClassName}
-                      fill={twConfig.theme.colors.primary['500']}
+                      fill={
+                        menuItem.fill || twConfig.theme.colors.primary['500']
+                      }
+                      stroke={
+                        (menuItem.disabled &&
+                          twConfig.theme.colors.neutral['200']) ||
+                        menuItem.stroke
+                      }
+                      hover={hovered}
+                      disabled={menuItem.disabled}
                     />
                   )}
-                  <div className="text-sm text-neutral-900 font-medium whitespace-nowrap">
+                  <div
+                    className={`text-sm text-neutral-900 font-medium whitespace-nowrap ${
+                      menuItem.disabled && '!text-neutral-400'
+                    }`}
+                  >
                     {menuItem.label}
                   </div>
                 </div>

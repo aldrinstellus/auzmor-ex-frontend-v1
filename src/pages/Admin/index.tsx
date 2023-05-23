@@ -5,70 +5,78 @@ import SSOSettings from 'components/SSOSettings';
 import React, { ReactNode, useState } from 'react';
 interface IAdminProps {}
 
-const Admin: React.FC<IAdminProps> = () => {
-  type setting = {
-    label: string;
-    icon: string;
-    key: string;
-    component: ReactNode;
-    disabled: boolean;
-    hidden: boolean;
-  };
+interface ISetting {
+  label: string;
+  icon: string;
+  key: string;
+  component: ReactNode;
+  disabled: boolean;
+  hidden: boolean;
+  dataTestId?: string;
+}
 
+const Admin: React.FC<IAdminProps> = () => {
   const settings = [
     {
       label: 'General',
-      icon: '',
+      icon: 'gear',
       key: 'general-settings',
       component: <div>General Settings Page</div>,
       disabled: false,
       hidden: false,
+      dataTestId: 'settings-general',
     },
     {
       label: 'User Management',
-      icon: '',
+      icon: 'userManagement',
       key: 'user-management-settings',
       component: <div>User Management Settings Page</div>,
       disabled: false,
       hidden: false,
+      dataTestId: 'settings-user-management',
     },
     {
       label: 'Branding',
-      icon: '',
+      icon: 'branding',
       key: 'branding-settings',
       component: <div>Branding Settings Page</div>,
       disabled: false,
       hidden: false,
+      dataTestId: 'settings-branding',
     },
     {
       label: 'Single Sign-on',
-      icon: '',
+      icon: 'link',
       key: 'single-sign-on-settings',
       component: <SSOSettings />,
       disabled: false,
       hidden: false,
+      dataTestId: 'settings-sso',
     },
     {
       label: 'Marketplace',
-      icon: '',
+      icon: 'marketplace',
       key: 'marketplace-settings',
       component: <div>Marketplace Settings Page</div>,
       disabled: false,
       hidden: false,
+      dataTestId: 'settings-marketplace',
     },
     {
       label: 'Notifications',
-      icon: '',
+      icon: 'notification',
       key: 'notifications-settings',
       component: <div>Notifications Settings Page</div>,
       disabled: false,
       hidden: false,
+      dataTestId: 'settings-notifications',
     },
   ];
 
-  const [activeSettingsPage, setActiveSettingsPage] = useState<setting>(
-    settings[0],
+  const [activeSettingsPage, setActiveSettingsPage] = useState<ISetting>(
+    settings[3],
   );
+
   return (
     <div className="flex justify-between w-full gap-x-14">
       <Card className="min-w-[300px] max-h-[400px]">
@@ -80,11 +88,28 @@ const Admin: React.FC<IAdminProps> = () => {
           {settings.map((item, index) => (
             <div
               key={item.key}
-              className="hover:bg-green-50 cursor-pointer"
+              className={`hover:bg-primary-50 cursor-pointer ${
+                item.key === activeSettingsPage.key
+                  ? 'bg-primary-50'
+                  : 'bg-white'
+              }`}
               onClick={() => setActiveSettingsPage(item)}
+              data-testid={item.dataTestId}
             >
-              <div className="text-neutral-500 text-sm font-medium p-4 flex items-center gap-x-3">
-                <Icon name="clock" hover={false} />
+              <div
+                className={`${
+                  item.key === activeSettingsPage.key
+                    ? 'text-neutral-900'
+                    : 'text-neutral-500'
+                } text-sm font-medium p-4 flex items-center gap-x-3`}
+              >
+                <Icon
+                  name={item.icon}
+                  hover={false}
+                  stroke={
+                    item.key === activeSettingsPage.key ? '#171717' : undefined
+                  }
+                />
                 {item.label}
               </div>
               {index !== settings.length - 1 && <Divider />}

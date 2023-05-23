@@ -14,16 +14,12 @@ const ProfileInfo: React.FC<IProfileInfoProps> = ({
 }) => {
   return (
     <>
-      <AboutMe aboutMe={profileDetails} canEdit={canEdit} />
+      <AboutMe aboutMeData={profileDetails} canEdit={canEdit} />
       <ProfessionalDetails
         professionalDetails={profileDetails}
         canEdit={canEdit}
       />
-      <PersonalDetails
-        personalDetails={profileDetails}
-        canEdit={canEdit}
-        skills={[]}
-      />
+      <PersonalDetails personalDetails={profileDetails} canEdit={canEdit} />
     </>
   );
 };

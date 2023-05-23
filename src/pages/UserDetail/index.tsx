@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import ContactWidget from 'components/ContactWidget';
-import ProfileCoverSection from 'components/ProfileCoverSection';
 import { useCurrentUser, useSingleUser } from 'queries/users';
 import ProfileInfo from 'components/ProfileInfo';
 import Spinner from 'components/Spinner';
@@ -9,6 +8,13 @@ import TabSwitcher from 'pages/Users/components/TabSwitch';
 import ProfileActivityFeed from './components/ProfileActivityFeed';
 import useAuth from 'hooks/useAuth';
 import NoDataCard from './components/NoDataCard';
+import ProfileCoverSection from './components/ProfileCoverSection';
+
+export interface IUpdateProfileImage {
+  profileImage: File;
+  coverImage: File;
+}
+
 interface IUserDetailProps {}
 
 const UserDetail: React.FC<IUserDetailProps> = () => {

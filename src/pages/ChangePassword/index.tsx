@@ -164,7 +164,7 @@ const ChangePassword: React.FC<IChangePasswordProps> = () => {
       </div>
       <div className="bg-white px-8 py-9 rounded-9xl w-[67%] h-[100%]">
         <div className="flex mb-4">
-          <Icon className="rotate-90" name={'dropdownArrow'} />
+          <Icon className="rotate-90" name={'arrowDown'} />
           Change Password
         </div>
         <Divider className="mb-10 w-full" />

@@ -5,7 +5,7 @@ import MagicStarIcon from '../components/MagicStar';
 import UsersIcon from '../components/Users';
 import HomeIcon from '../components/Home';
 import FeedIcon from '../components/Feed';
-import DropdownArrowIcon from '../components/DropdownArrow';
+import ArrowDown from '../components/ArrowDown';
 import ClockIcon from '../components/Clock';
 import FilterIcon from '../components/Filter';
 import MoreIcon from '../components/More';
@@ -72,6 +72,16 @@ import ArrowSwap from '../components/ArrowSwap';
 import dotsVerticalIcon from '../components/DotsVertical';
 import Redo from '../components/Redo';
 import UserRemove from '../components/UserRemove';
+import ExportIcon from '../components/Export';
+import MaximizeIcon from '../components/Maximize';
+import Gear from '../components/Gear';
+import UserManagement from '../components/UserManagement';
+import Branding from '../components/Branding';
+import Link from '../components/Link';
+import Marketplace from '../components/Marketplace';
+import DocumentUpload from '../components/DocumentUpload';
+import ArrowUp from '../components/ArrowUp';
+import ThreeDots from '../components/ThreeDots';
 
 export const icon = {
   add: Add,
@@ -82,6 +92,8 @@ export const icon = {
   arrowRight: ArrowRightIcon,
   arrowSwap: ArrowSwap,
   bookmarkOutline: BookmarkOutline,
+  briefcase: BriefcaseIcon,
+  cake: CakeIcon,
   calendarTwo: CalendarIconTwo,
   carouselClose: CarouselCloseIcon,
   carouselLeft: CarouselLeftIcon,
@@ -92,23 +104,28 @@ export const icon = {
   close: CloseIcon,
   closeCircle: CloseCircleIcon,
   convertShape: ConvertShape,
+  copyIcon: CopyIcon,
   copyLink: CopyLink,
   crossCircle: CrossCircle,
   delete: DeleteIcon,
   document: DocumentIcon,
-  draft: DraftIcon,
   dotsVertical: dotsVerticalIcon,
-  dropdownArrow: DropdownArrowIcon,
+  draft: DraftIcon,
+  arrowDown: ArrowDown,
   edit: EditIcon,
   editIcon: MenuEditIcon,
+  email: EmailIcon,
   emojiHappy: EmojiHappy,
   explore: ExploreIcon,
+  export: ExportIcon,
   eye: EyeIcon,
   eyeSlash: EyeSlashIcon,
   feed: FeedIcon,
-  filterLinear: FilterLinear,
+  femaleIcon: FemaleIcon,
   filter: FilterIcon,
+  filterLinear: FilterLinear,
   flashIcon: FlashIcon,
+  folderConnection: FolderConnectionIcon,
   funny: Funny,
   home: HomeIcon,
   iconLinear: IconLinear,
@@ -118,34 +135,37 @@ export const icon = {
   launcher: LauncherIcon,
   like: Like,
   likeIcon: LikeIcon,
+  location: LocationIcon,
   love: Love,
   magicStar: MagicStarIcon,
   mail: MailIcon,
+  marriedIcon: MarriedIcon,
+  maximize: MaximizeIcon,
   more: MoreIcon,
   notification: NotificationIcon,
   notificationIcon: MenuNotificationIcon,
   orangeHashtag: OrangeHashtagIcon,
+  outOfOfficeIcon: OutOfOfficeIcon,
   people: PeopleIcon,
   play: PlayIcon,
-  userRemove: UserRemove,
-  reply: Reply,
   redo: Redo,
-  send: Send,
+  reply: Reply,
   search: Search,
+  send: Send,
   slack: SlackIcon,
   speaker: SpeakerIcon,
   support: Support,
   tickCircle: TickCircleIcon,
   trash: Trash,
   user: UsersIcon,
+  userRemove: UserRemove,
   video: VideoIcon,
-  briefcase: BriefcaseIcon,
-  location: LocationIcon,
-  email: EmailIcon,
-  folderConnection: FolderConnectionIcon,
-  cake: CakeIcon,
-  femaleIcon: FemaleIcon,
-  marriedIcon: MarriedIcon,
-  copyIcon: CopyIcon,
-  outOfOfficeIcon: OutOfOfficeIcon,
+  gear: Gear,
+  userManagement: UserManagement,
+  branding: Branding,
+  link: Link,
+  marketplace: Marketplace,
+  documentUpload: DocumentUpload,
+  arrowUp: ArrowUp,
+  threeDots: ThreeDots,
 };

@@ -5,6 +5,7 @@ import { Logo } from 'components/Logo';
 import Icon from 'components/Icon';
 import Divider, { Variant } from 'components/Divider';
 import AccountCard from './AccountCard';
+import useRole from 'hooks/useRole';
 import Layout, { FieldType } from 'components/Form';
 import { useForm } from 'react-hook-form';
 
@@ -47,6 +48,8 @@ const navigations = [
 ];
 
 const Navbar = () => {
+  const { isAdmin } = useRole();
+
   const { control } = useForm({
     mode: 'onChange',
   });
@@ -93,20 +96,23 @@ const Navbar = () => {
           <Divider variant={Variant.Vertical} />
         </div>
         <div className="flex items-center space-x-8">
-          <NavLink
-            to="/admin"
-            className={({ isActive }) =>
-              isActive ? 'text-primary-500' : 'text-neutral-500'
-            }
-          >
-            <div
-              className="flex flex-col items-center"
-              data-testid={'office-admin-page'}
+          {isAdmin && (
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                isActive ? 'text-primary-500' : 'text-neutral-500'
+              }
             >
-              <Icon name="admin" size={22} />
-              <div className="text-sm mt-[1px]">Admin</div>
-            </div>
-          </NavLink>
+              <div
+                className="flex flex-col items-center"
+                data-testid="office-admin-page"
+              >
+                <Icon name="admin" size={22} />
+                <div className="text-sm mt-[1px]">Admin</div>
+              </div>
+            </NavLink>
+          )}
+          <div></div>
           <div data-testid="notifications">
             <Icon name="notification" size={26} />
           </div>

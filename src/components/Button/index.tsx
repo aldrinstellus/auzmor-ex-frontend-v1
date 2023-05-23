@@ -8,6 +8,7 @@ export enum Variant {
   Primary = 'PRIMARY',
   Secondary = 'SECONDARY',
   Tertiary = 'TERTIARY',
+  Danger = 'DANGER',
 }
 
 export enum Size {
@@ -73,6 +74,10 @@ const Button = ({
         {
           'flex justify-center items-center text-neutral-900 bg-white rounded-16xl hover:text-primary-600 active:text-primary-700 disabled:text-neutral-400':
             variant === Variant.Tertiary,
+        },
+        {
+          'flex justify-center items-center bg-red-500 text-white rounded-16xl hover:bg-red-600 active:bg-red-700 disabled:text-neutral-400 disabled:border-none disabled:bg-neutral-200':
+            variant === Variant.Danger,
         },
         {
           'py-1 px-4 text-sm': size === Size.Small,

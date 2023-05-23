@@ -1,14 +1,26 @@
 import Card from 'components/Card';
 import Divider from 'components/Divider';
-import React, { useMemo } from 'react';
-import Time from 'images/time.svg';
+import React, { useMemo, useState } from 'react';
 import useHover from 'hooks/useHover';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 import moment from 'moment';
+import * as yup from 'yup';
 import 'moment-timezone';
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
+import Header from './Header';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import SelectTimeZone from 'components/UserOnboard/components/SelectTimeZone';
+import { OptionType } from 'components/UserOnboard/components/SelectTimezoneScreen';
+import { useMutation } from '@tanstack/react-query';
+import { updateCurrentUser } from 'queries/users';
+import { getDefaultTimezoneOption } from 'components/UserOnboard/utils';
+import queryClient from 'utils/queryClient';
 
+interface IForm {
+  timeZone: OptionType;
+}
 export interface IProfessionalDetailsProps {
   professionalDetails: any;
   canEdit?: boolean;
@@ -19,76 +31,68 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
   canEdit,
 }) => {
   const [isHovered, eventHandlers] = useHover();
+  const [isEditable, setIsEditable] = useState<boolean>(false);
+  const defaultTimezone = getDefaultTimezoneOption();
+
+  const schema = yup.object({
+    timeZone: yup.object(),
+  });
+
+  // professional handlesubmit only
+  const { handleSubmit, control, getValues } = useForm<any>({
+    mode: 'onSubmit',
+    resolver: yupResolver(schema),
+  });
 
   const onHoverStyles = useMemo(
-    () => clsx({ 'mb-8 px-6': true }, { 'shadow-xl': isHovered }),
+    () => clsx({ 'mb-8': true }, { 'shadow-xl': isHovered && canEdit }),
     [isHovered],
   );
 
-  const timestamp = professionalDetails?.createdAt;
+  const updateUserTimezoneMutation = useMutation({
+    mutationFn: updateCurrentUser,
+    mutationKey: ['update-user-timeZone-mutation'],
+    onError: (error: any) => {
+      console.log('Error while updating timezone: ', error);
+    },
+    onSuccess: (response: any) => {
+      console.log('Updated timezone successfully', response);
+      setIsEditable(false);
+    },
+  });
 
-  const formattedTime = moment
-    .utc(timestamp)
-    .tz('America/New_York')
-    .format('(UTC-05:00) z');
-
-  const formattedDate = moment(timestamp).format('Do MMMM YYYY');
+  const onSubmit = async () => {
+    const selectedTimezone = getValues();
+    let timezoneValue;
+    if (selectedTimezone.timeZone === undefined) {
+      timezoneValue = defaultTimezone.value[0];
+    } else {
+      timezoneValue = selectedTimezone.timeZone.value[0];
+    }
+    await updateUserTimezoneMutation.mutateAsync({
+      timeZone: timezoneValue,
+    });
+    await queryClient.invalidateQueries(['current-user-me']);
+    setIsEditable(false);
+  };
 
   return (
-    <>
-      {canEdit ? (
-        <div {...eventHandlers}>
-          <Card className={onHoverStyles}>
-            <div className="flex justify-between items-center">
-              <div className="text-neutral-900 font-bold text-base pt-6 pb-4">
-                Professional Details
-              </div>
-              {isHovered && (
-                <IconWrapper type={Type.Square} className="cursor-pointer">
-                  <Icon name="edit" size={16} />
-                </IconWrapper>
-              )}
-            </div>
-            <Divider />
-            <div className="py-6 space-y-6">
-              <div className="space-y-2">
-                <div className="text-neutral-500 text-sm font-bold">
-                  Date of Joining
-                </div>
-                <div className="flex space-x-3">
-                  <IconWrapper type={Type.Square}>
-                    <Icon name="clock" size={16} />
-                  </IconWrapper>
-                  <div className="text-neutral-900 text-base font-medium ">
-                    Joined on {formattedDate}
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div className="text-neutral-500 text-sm font-bold">
-                  Timezone
-                </div>
-                <div className="flex space-x-3">
-                  <IconWrapper type={Type.Square}>
-                    <Icon name="clock" size={16} />
-                  </IconWrapper>
-                  <div className="text-neutral-900 text-base font-medium ">
-                    {formattedTime}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Card>
-        </div>
-      ) : (
-        <Card className={onHoverStyles}>
-          <div className="flex justify-between items-center">
-            <div className="text-neutral-900 font-bold text-base pt-6 pb-4">
-              Professional Details
-            </div>
-          </div>
-          <Divider />
-          <div className="py-6 space-y-6">
+    <div {...eventHandlers}>
+      <Card className={onHoverStyles}>
+        <Header
+          title="Professinal Details"
+          dataTestId="professional-details"
+          isHovered={isHovered}
+          isEditable={isEditable}
+          setIsEditable={setIsEditable}
+          canEdit={canEdit}
+          onSubmit={onSubmit}
+          handleSubmit={handleSubmit}
+          isLoading={updateUserTimezoneMutation.isLoading}
+        />
+        <Divider />
+        <form>
+          <div className="py-6 space-y-6 px-6">
             <div className="space-y-2">
               <div className="text-neutral-500 text-sm font-bold">
                 Date of Joining
@@ -97,26 +101,43 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
                 <IconWrapper type={Type.Square}>
                   <Icon name="clock" size={16} />
                 </IconWrapper>
-                <div className="text-neutral-900 text-base font-medium ">
-                  Joined on {formattedDate}
+                <div
+                  className="text-neutral-900 text-base font-medium"
+                  data-testid="professional-details-joining-date"
+                >
+                  Joined on{' '}
+                  {moment(professionalDetails?.createdAt).format(
+                    'Do MMMM YYYY',
+                  )}
                 </div>
               </div>
             </div>
             <div className="space-y-2">
               <div className="text-neutral-500 text-sm font-bold">Timezone</div>
-              <div className="flex space-x-3">
-                <IconWrapper type={Type.Square}>
-                  <Icon name="clock" size={16} />
-                </IconWrapper>
-                <div className="text-neutral-900 text-base font-medium ">
-                  {formattedTime}
+              {isEditable ? (
+                <SelectTimeZone
+                  control={control}
+                  defaultTimezone={{
+                    value: professionalDetails?.timeZone,
+                    label: professionalDetails?.timeZone,
+                  }}
+                  dataTestId="professional-details-timezone"
+                />
+              ) : (
+                <div className="flex space-x-3">
+                  <IconWrapper type={Type.Square}>
+                    <Icon name="clock" size={16} />
+                  </IconWrapper>
+                  <div className="text-neutral-900 text-base font-medium ">
+                    {professionalDetails?.timeZone}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
-        </Card>
-      )}
-    </>
+        </form>
+      </Card>
+    </div>
   );
 };
 
