@@ -53,6 +53,8 @@ import SvgDeleteOutline from '../components/Delete/DeleteOutline';
 import SvgExportOutline from '../components/Export/ExportOutline';
 import SvgMaximizeOutline from '../components/Maximize/MaximizeOutline';
 import SvgThreeDotsOutline from '../components/ThreeDots/ThreeDotsOutline';
+import SvgConnectionFolderOutline from '../components/ConnectionFolder/ConnectionFolderOutline';
+import SvgCallOutline from '../components/Call/CallOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -65,6 +67,8 @@ export const outlineIcon = {
   chartOutline: SvgChartOutline,
   closeCircleOutline: SvgCloseCircleOutline,
   closeOutline: SvgCloseOutline,
+  callOutline: SvgCallOutline,
+  connectionOutline: SvgConnectionFolderOutline,
   convertShapeOutline: SvgConvertShapeOutline,
   crossCircleOutline: SvgCrossCircleOutline,
   deleteOutline: SvgDeleteOutline,

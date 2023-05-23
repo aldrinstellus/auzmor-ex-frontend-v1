@@ -82,6 +82,8 @@ import Marketplace from '../components/Marketplace';
 import DocumentUpload from '../components/DocumentUpload';
 import ArrowUp from '../components/ArrowUp';
 import ThreeDots from '../components/ThreeDots';
+import ConnectionFolder from '../components/ConnectionFolder';
+import Call from '../components/Call';
 
 export const icon = {
   add: Add,
@@ -99,6 +101,8 @@ export const icon = {
   carouselLeft: CarouselLeftIcon,
   carouselRight: CarouselRightIcon,
   celebrate: Celebrate,
+  connectionFolder: ConnectionFolder,
+  call: Call,
   chart: ChartIcon,
   clock: ClockIcon,
   close: CloseIcon,

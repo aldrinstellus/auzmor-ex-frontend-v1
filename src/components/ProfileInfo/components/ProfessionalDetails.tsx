@@ -38,7 +38,6 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
     timeZone: yup.object(),
   });
 
-  // professional handlesubmit only
   const { handleSubmit, control, getValues } = useForm<any>({
     mode: 'onSubmit',
     resolver: yupResolver(schema),

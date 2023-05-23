@@ -47,6 +47,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
               <img
                 className="object-cover w-full"
                 src={profileCoverData?.coverImage?.original}
+                onClick={() => setShowModal(true)}
               />
             )}
           </div>
