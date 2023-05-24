@@ -1,0 +1,142 @@
+{
+  "total": 0,
+  "unread": 0,
+  "data": [
+    {
+      "message": "mentioned you in a post",
+      "ownerId": "646b3580b31034a2d68411a3",
+      "orgId": "645e0e87a3955e193d8a1188",
+      "actor": {
+        "designation": "",
+        "fullName": "abc@abc.com",
+        "profileImage": {
+          "blurHash": ""
+        },
+        "userId": "645e0e87a3955e193d8a118a",
+        "workLocation": "",
+        "status": "ACTIVE",
+        "department": ""
+      },
+      "action": {
+        "type": "MENTION",
+        "content": "<p>Lorem Ipsum Dolor Simet Lorem Ipsum Dolor Simet Lorem Ipsum Dolor Simet Lorem Ipsum Dolor Simet Lorem Ipsum Dolor Simet Lorem Ipsum Dolor Simet Lorem Ipsum Dolor Simet Lorem Ipsum Dolor Simet Lorem Ipsum Dolor Simet Lorem Ipsum Dolor Simet Lorem Ipsum Dolor Simet Lorem Ipsum Dolor Simet Lorem Ipsum Dolor Simet Lorem Ipsum Dolor Simet Lorem Ipsum Dolor Simet</p>",
+        "actedAt": "2023-05-23T11:21:05.170Z",
+        "entityId": "646ca23163bcb4182736008d",
+        "image": null
+      },
+      "target": [
+        {
+          "content": "<p>Have a blast Updatet</p>",
+          "entityId": "646ca23163bcb4182736008d",
+          "type": "POST",
+          "image": null
+        }
+      ],
+      "isRead": false,
+      "createdAt": "2023-05-23T11:23:29.845Z",
+      "updatedAt": "2023-05-23T11:23:29.845Z"
+    },
+    {
+      "message": "mentioned you in a post",
+      "ownerId": "646b3580b31034a2d68411a3",
+      "orgId": "645e0e87a3955e193d8a1188",
+      "actor": {
+        "designation": "",
+        "fullName": "abc@abc.com",
+        "profileImage": {
+          "blurHash": ""
+        },
+        "userId": "645e0e87a3955e193d8a118a",
+        "workLocation": "",
+        "status": "ACTIVE",
+        "department": ""
+      },
+      "action": {
+        "type": "MENTION",
+        "content": "<p>Have a blast Updatet</p>",
+        "actedAt": "2023-05-23T11:21:05.170Z",
+        "entityId": "646ca23063bcb41827360081",
+        "image": null
+      },
+      "target": [
+        {
+          "content": "<p>Have a blast Updatet</p>",
+          "entityId": "646ca23063bcb41827360081",
+          "type": "POST",
+          "image": null
+        }
+      ],
+      "isRead": true,
+      "createdAt": "2023-05-23T11:23:28.884Z",
+      "updatedAt": "2023-05-23T11:23:28.884Z"
+    },
+    {
+      "message": "mentioned you in a post",
+      "ownerId": "646b3580b31034a2d68411a3",
+      "orgId": "645e0e87a3955e193d8a1188",
+      "actor": {
+        "designation": "",
+        "fullName": "abc@abc.com",
+        "profileImage": {
+          "blurHash": ""
+        },
+        "userId": "645e0e87a3955e193d8a118a",
+        "workLocation": "",
+        "status": "ACTIVE",
+        "department": ""
+      },
+      "action": {
+        "type": "MENTION",
+        "content": "<p>Have a blast Updatet</p>",
+        "actedAt": "2023-05-23T11:21:05.170Z",
+        "entityId": "646ca22f63bcb41827360075",
+        "image": null
+      },
+      "target": [
+        {
+          "content": "<p>Have a blast Updatet</p>",
+          "entityId": "646ca22f63bcb41827360075",
+          "type": "POST",
+          "image": null
+        }
+      ],
+      "isRead": false,
+      "createdAt": "2023-05-23T11:23:27.930Z",
+      "updatedAt": "2023-05-23T11:23:27.930Z"
+    },
+    {
+      "message": "mentioned you in a post",
+      "ownerId": "646b3580b31034a2d68411a3",
+      "orgId": "645e0e87a3955e193d8a1188",
+      "actor": {
+        "designation": "",
+        "fullName": "abc@abc.com",
+        "profileImage": {
+          "blurHash": ""
+        },
+        "userId": "645e0e87a3955e193d8a118a",
+        "workLocation": "",
+        "status": "ACTIVE",
+        "department": ""
+      },
+      "action": {
+        "type": "MENTION",
+        "content": "<p>Have a blast Updatet</p>",
+        "actedAt": "2023-05-23T11:21:05.170Z",
+        "entityId": "646c94aa7ddc41b56db3fe6d",
+        "image": null
+      },
+      "target": [
+        {
+          "content": "<p>Have a blast Updatet</p>",
+          "entityId": "646c94aa7ddc41b56db3fe6d",
+          "type": "POST",
+          "image": null
+        }
+      ],
+      "isRead": true,
+      "createdAt": "2023-05-23T10:25:46.714Z",
+      "updatedAt": "2023-05-23T10:25:46.714Z"
+    }
+  ]
+}

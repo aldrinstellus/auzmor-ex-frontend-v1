@@ -7,6 +7,7 @@ import Divider, { Variant } from 'components/Divider';
 import AccountCard from './AccountCard';
 import Notifications from 'components/Notifications';
 import useRole from 'hooks/useRole';
+import notifications from './dummy.json';
 
 const navigations = [
   {
@@ -45,6 +46,7 @@ const Navbar = () => {
   const notifRef = useRef<HTMLDivElement>(null);
 
   const [showNotifications, setShowNotifications] = useState<boolean>(false);
+
   useEffect(() => {
     const checkIfClickedOutside = (e: any) => {
       // If the menu is open and the clicked target is not within the menu,
@@ -123,9 +125,11 @@ const Navbar = () => {
                 {/* Get unread notif count here */}10
               </div>
 
-              <Icon name="notification" size={26} hover={false} />
+              <Icon name="notification" size={26} disabled={true} />
             </button>
-            {showNotifications && <Notifications />}
+            {showNotifications && (
+              <Notifications notifications={notifications.data} />
+            )}
           </div>
           <div>
             <AccountCard />
