@@ -97,3 +97,10 @@ export const getSubDomain = (host: string) => {
     return '';
   }
 };
+
+export const removeElementsByClass = (className: string) => {
+  const elements = document.getElementsByClassName(className);
+  while (elements.length > 0 && elements && elements[0].parentNode) {
+    elements[0].parentNode.removeChild(elements[0]);
+  }
+};
