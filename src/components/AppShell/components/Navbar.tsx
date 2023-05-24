@@ -116,7 +116,7 @@ const Navbar = () => {
               </div>
             </NavLink>
           )}
-          <div ref={notifRef}>
+          <div ref={notifRef} className="relative">
             <button
               className="box-border font-bold flex flex-row justify-center items-center p-1 gap-4 border-none relative"
               onClick={() => setShowNotifications(!showNotifications)}

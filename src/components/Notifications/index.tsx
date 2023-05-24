@@ -72,7 +72,7 @@ const Notifications: React.FC<NotificationProps> = ({ notifications }) => {
   ];
 
   return (
-    <Card className="absolute w-[500px] right-64 ">
+    <Card className="absolute w-[500px] right-0 top-14 ">
       {/* Header */}
       <div className="px-6 py-4 flex items-center justify-between">
         <p className="text-gray-900 font-extrabold text-base">Notifications</p>
