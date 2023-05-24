@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Control, useController } from 'react-hook-form';
+import { Control, UseFormSetError, useController } from 'react-hook-form';
 import Icon from 'components/Icon';
 import PasswordPolicy from 'components/PasswordPolicy';
 
@@ -19,6 +19,7 @@ export type PasswordProps = {
   loading?: boolean;
   disabled?: boolean;
   error?: string;
+  setError?: UseFormSetError<any>;
   helpText?: string;
   className?: string;
   dataTestId?: string;
@@ -39,6 +40,7 @@ const Password: React.FC<PasswordProps> = ({
   className = '',
   dataTestId = '',
   error,
+  setError = () => {},
   helpText,
   control,
   label,
@@ -46,7 +48,9 @@ const Password: React.FC<PasswordProps> = ({
   showChecks = true,
 }) => {
   const [show, setShow] = useState(false);
-  const [validationChecks, setValidationChecks] = useState({
+  const [validationChecks, setValidationChecks] = useState<
+    Record<string, boolean>
+  >({
     length: false,
     isUppercase: false,
     isLowercase: false,
@@ -62,6 +66,20 @@ const Password: React.FC<PasswordProps> = ({
   useEffect(() => {
     showChecks && validatePassword(field?.value);
   }, [field.value]);
+
+  useEffect(() => {
+    if (
+      Object.keys(validationChecks).some(
+        (key: string) => !validationChecks[key],
+      ) &&
+      show
+    ) {
+      setError(field.name, {
+        type: field.name,
+        message: '',
+      });
+    }
+  }, [validationChecks]);
 
   const validatePassword = (value: string) => {
     const validationState = {
