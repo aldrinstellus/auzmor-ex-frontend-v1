@@ -107,7 +107,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
                   Joined on{' '}
                   {moment(professionalDetails?.createdAt).format(
                     'Do MMMM YYYY',
-                  )}
+                  ) || 'N//A'}
                 </div>
               </div>
             </div>
@@ -120,6 +120,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
                     value: professionalDetails?.timeZone,
                     label: professionalDetails?.timeZone,
                   }}
+                  placeholder="Select your timezone"
                   dataTestId="professional-details-timezone"
                 />
               ) : (
@@ -128,7 +129,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
                     <Icon name="clock" size={16} />
                   </IconWrapper>
                   <div className="text-neutral-900 text-base font-medium ">
-                    {professionalDetails?.timeZone}
+                    {professionalDetails?.timeZone || 'N/A'}
                   </div>
                 </div>
               )}

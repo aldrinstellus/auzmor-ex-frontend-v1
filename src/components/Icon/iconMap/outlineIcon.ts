@@ -55,6 +55,7 @@ import SvgMaximizeOutline from '../components/Maximize/MaximizeOutline';
 import SvgThreeDotsOutline from '../components/ThreeDots/ThreeDotsOutline';
 import SvgConnectionFolderOutline from '../components/ConnectionFolder/ConnectionFolderOutline';
 import SvgCallOutline from '../components/Call/CallOutline';
+import SvgMaleOutline from '../components/Male/MaleOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -111,6 +112,7 @@ export const outlineIcon = {
   brandingOutline: SvgBrandingOutline,
   linkOutline: SvgLinkOutline,
   marketplaceOutline: SvgMarketplaceOutline,
+  maleOutline: SvgMaleOutline,
   arrowUpOutline: SvgArrowUpOutline,
   arrowDownOutline: SvgArrowDownOutline,
   threeDotsOutline: SvgThreeDotsOutline,

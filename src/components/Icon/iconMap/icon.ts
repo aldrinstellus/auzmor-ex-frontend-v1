@@ -84,6 +84,7 @@ import ArrowUp from '../components/ArrowUp';
 import ThreeDots from '../components/ThreeDots';
 import ConnectionFolder from '../components/ConnectionFolder';
 import Call from '../components/Call';
+import Male from '../components/Male';
 
 export const icon = {
   add: Add,
@@ -143,6 +144,7 @@ export const icon = {
   love: Love,
   magicStar: MagicStarIcon,
   mail: MailIcon,
+  male: Male,
   marriedIcon: MarriedIcon,
   maximize: MaximizeIcon,
   more: MoreIcon,

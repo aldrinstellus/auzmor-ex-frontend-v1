@@ -170,10 +170,19 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                 </div>
                 <div className="flex space-x-3">
                   <IconWrapper type={Type.Square} className="cursor-pointer">
-                    <Icon name="femaleIcon" size={16} />
+                    {personalDetails?.personal?.gender === 'FEMALE' ? (
+                      <Icon name="femaleIcon" size={16} />
+                    ) : (
+                      <Icon name="male" size={16} />
+                    )}
                   </IconWrapper>
                   <div className="text-neutral-900 text-base font-medium">
-                    {personalDetails?.personal?.gender || 'N/A'}
+                    {personalDetails?.personal?.gender
+                      ?.charAt(0)
+                      ?.toUpperCase() +
+                      personalDetails?.personal?.gender
+                        ?.slice(1)
+                        ?.toLowerCase() || 'N/A'}
                   </div>
                 </div>
                 <div className="space-y-2 mb-4">
@@ -202,22 +211,22 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                     </div>
                   </div>
                 </div>
-                {personalDetails?.personal?.skills?.length > 0 && (
-                  <div>
-                    <div className="text-neutral-500 text-sm font-bold">
-                      Skills
-                    </div>
-                    <div className="text-neutral-900 text-base font-medium">
-                      {personalDetails?.personal?.skills.map(
+                <div>
+                  <div className="text-neutral-500 text-sm font-bold">
+                    Skills
+                  </div>
+                  <div className="text-neutral-900 text-base font-medium px-4">
+                    {(personalDetails?.personal?.skills?.length > 0 &&
+                      personalDetails?.personal?.skills.map(
                         (skill: string, index: number) => (
-                          <ul key={index}>
+                          <ul key={index} className="list-disc">
                             <li>{skill}</li>
                           </ul>
                         ),
-                      ) || 'N/A'}
-                    </div>
+                      )) ||
+                      'N/A'}
                   </div>
-                )}
+                </div>
               </>
             ) : (
               <form>

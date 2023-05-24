@@ -6,6 +6,7 @@ import IconButton, {
   Size,
   Variant as IconVariant,
 } from 'components/IconButton';
+import DefaultCoverImage from 'images/png/CoverImage.png';
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import Avatar from 'components/Avatar';
 import { Variant as InputVariant } from 'components/Input';
@@ -287,7 +288,8 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
                 className="object-cover w-full"
                 src={
                   (file?.coverImage && getBlobUrl(file?.coverImage)) ||
-                  data?.coverImage?.original
+                  data?.coverImage?.original ||
+                  DefaultCoverImage
                 }
               />
             )}

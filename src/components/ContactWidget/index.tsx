@@ -27,7 +27,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                 <Icon name="email" stroke="#737373" size={15} />
               </IconWrapper>
               <div className="text-xs font-normal text-neutral-900">
-                {contactCardData?.workEmail}
+                {contactCardData?.workEmail || 'N/A'}
               </div>
             </div>
             <div>
@@ -40,16 +40,18 @@ const ContactWidget: React.FC<IContactCardProps> = ({
               />
             </div>
           </div>
-          <div className="flex space-x-4">
-            <div className="flex space-x-2 truncate items-center">
-              <IconWrapper>
-                <Icon name="call" stroke="#737373" size={15} />
-              </IconWrapper>{' '}
-              <div className="text-xs font-normal text-neutral-900">
-                {contactCardData?.contact || 'N/A'}
+          {contactCardData?.contact && (
+            <div className="flex space-x-4">
+              <div className="flex space-x-2 truncate items-center">
+                <IconWrapper>
+                  <Icon name="call" stroke="#737373" size={15} />
+                </IconWrapper>{' '}
+                <div className="text-xs font-normal text-neutral-900">
+                  {contactCardData?.contact || 'N/A'}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="flex justify-center items-center">
           <Button
