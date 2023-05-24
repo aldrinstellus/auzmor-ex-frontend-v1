@@ -88,7 +88,10 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
         canEdit={pathname === '/profile'}
       />
       <div className="mb-32 space-x-8 flex w-full">
-        <ContactWidget contactCardData={profileData} className="w-1/4" />
+        <ContactWidget
+          contactCardData={profileData}
+          canEdit={pathname === '/profile'}
+        />
         <div className="w-1/2">
           <TabSwitcher tabs={tabs} />
         </div>

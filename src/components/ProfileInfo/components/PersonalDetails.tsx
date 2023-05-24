@@ -13,6 +13,9 @@ import { useMutation } from '@tanstack/react-query';
 import { updateCurrentUser } from 'queries/users';
 import queryClient from 'utils/queryClient';
 import { OptionType } from 'components/UserOnboard/components/SelectTimeZone';
+import { twConfig } from 'utils/misc';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { toast } from 'react-toastify';
 
 interface IPersonalDetails {
   birthDate: string;
@@ -57,11 +60,23 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   const updateUserPersonalDetailsMutation = useMutation({
     mutationFn: updateCurrentUser,
     mutationKey: ['update-user-personal-details-mutation'],
-    onError: (error: any) => {
-      console.log('Error while updating the user: ', error);
-    },
+    onError: (error: any) => {},
     onSuccess: (response: any) => {
-      console.log('Updated User data successfully', response);
+      toast(<SuccessToast content={'User Profile Updated Successfully'} />, {
+        closeButton: (
+          <Icon
+            name="closeCircleOutline"
+            stroke={twConfig.theme.colors.primary['500']}
+            size={20}
+          />
+        ),
+        style: {
+          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+        },
+      });
       setIsEditable(false);
     },
   });
@@ -207,7 +222,10 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                       <Icon name="marriedIcon" size={16} />
                     </IconWrapper>
                     <div className="text-neutral-900 text-base font-medium">
-                      {personalDetails?.personal?.maritalStatus || 'N/A'}
+                      {personalDetails?.personal?.maritalStatus?.charAt(0) +
+                        personalDetails?.personal?.maritalStatus
+                          ?.slice(1)
+                          ?.toLowerCase() || 'N/A'}
                     </div>
                   </div>
                 </div>

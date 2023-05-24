@@ -10,6 +10,10 @@ import Layout, { FieldType } from 'components/Form';
 import queryClient from 'utils/queryClient';
 import { updateCurrentUser } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { toast } from 'react-toastify';
+import { twConfig } from 'utils/misc';
+import Icon from 'components/Icon';
 
 interface IAboutMe {
   about: string;
@@ -30,7 +34,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
     mode: 'onSubmit',
     defaultValues: {
       personal: {
-        about: aboutMeData?.personal?.about || aboutMeData?.fullName,
+        about: aboutMeData?.personal?.about || 'N/A',
       },
     },
   });
@@ -58,11 +62,23 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
   const updateUserAboutMeMutation = useMutation({
     mutationFn: updateCurrentUser,
     mutationKey: ['update-user-personal-details-mutation'],
-    onError: (error: any) => {
-      console.log('Error while updating the user about me section: ', error);
-    },
+    onError: (error: any) => {},
     onSuccess: (response: any) => {
-      console.log('Updated User about me successfully', response);
+      toast(<SuccessToast content={'User Profile Updated Successfully'} />, {
+        closeButton: (
+          <Icon
+            name="closeCircleOutline"
+            stroke={twConfig.theme.colors.primary['500']}
+            size={20}
+          />
+        ),
+        style: {
+          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+        },
+      });
       setIsEditable(false);
     },
   });

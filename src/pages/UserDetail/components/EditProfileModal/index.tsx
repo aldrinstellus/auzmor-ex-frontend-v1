@@ -19,6 +19,9 @@ import useAuth from 'hooks/useAuth';
 import queryClient from 'utils/queryClient';
 import Header from 'components/ModalHeader';
 import PopupMenu from 'components/PopupMenu';
+import { toast } from 'react-toastify';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import Icon from 'components/Icon';
 
 interface IOptions {
   value: string;
@@ -80,7 +83,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       variant: InputVariant.Text,
       defaultValue: getValues().fullName,
       name: 'fullName',
-      label: 'Name',
+      label: 'Name*',
       dataTestId: `${dataTestId}-name`,
       control,
     },
@@ -215,6 +218,21 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         coverImage: userUpdateResponse.profileImage?.original,
       });
       setFile({});
+      toast(<SuccessToast content={'User Profile Updated Successfully'} />, {
+        closeButton: (
+          <Icon
+            name="closeCircleOutline"
+            stroke={twConfig.theme.colors.primary['500']}
+            size={20}
+          />
+        ),
+        style: {
+          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+        },
+      });
       setShowModal(false);
       await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
     },
@@ -306,7 +324,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
                 />
               </div>
             }
-            className="top-16 right-4 bottom-auto"
+            className="top-16 right-4"
             menuItems={coverImageOption}
           />
         </div>
