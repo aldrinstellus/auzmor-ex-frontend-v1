@@ -1,3 +1,7 @@
+.react-datepicker-popper {
+  z-index: 9999 !important;
+}
+/* 
 .react-date-picker__wrapper {
   border: none;
 }
@@ -27,4 +31,4 @@
 
 .react-calendar__tile--active:hover {
   background: #047857 !important;
-}
+} */
