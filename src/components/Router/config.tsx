@@ -8,6 +8,7 @@ import {
 import queryClient from 'utils/queryClient';
 // import { loader as homeLoader } from 'pages/Home';
 import RequireAuth from 'components/RequireAuth';
+import Notifications from 'pages/Notifications';
 
 const ErrorBoundary = React.lazy(() => import('components/ErrorBoundary'));
 const Login = React.lazy(() => import('pages/Login'));
@@ -81,6 +82,7 @@ const routers = createBrowserRouter(
         <Route path="/discover" element={<Discover />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/post/:id" element={<PostPage />} />
+        <Route path="/notifications" element={<Notifications />} />
       </Route>
       <Route
         path="/404"

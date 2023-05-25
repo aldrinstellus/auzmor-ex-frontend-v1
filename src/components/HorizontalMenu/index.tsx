@@ -3,16 +3,18 @@ import React, { ReactElement } from 'react';
 
 type MenuItem = {
   label: string;
-  id: string;
+  id: any;
   onClick?: any;
 };
 
 type HorizontalMenuProps = {
   items: MenuItem[];
+  onChange: (id: any) => void;
 };
 
 const HorizontalMenu: React.FC<HorizontalMenuProps> = ({
   items,
+  onChange = (id: any) => {},
 }): ReactElement => {
   const [currentIndex, prev, next, setCurrentIndex] = useCarousel(
     0,
@@ -24,7 +26,10 @@ const HorizontalMenu: React.FC<HorizontalMenuProps> = ({
         <div
           key={item.id}
           className="cursor-pointer flex flex-col items-center justify-between w-14"
-          onClick={() => setCurrentIndex(index)}
+          onClick={() => {
+            onChange(item.id);
+            setCurrentIndex(index);
+          }}
         >
           <p
             className={`font-bold text-sm pb-2 ${

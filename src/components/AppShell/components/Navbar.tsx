@@ -8,6 +8,9 @@ import AccountCard from './AccountCard';
 import Notifications from 'components/Notifications';
 import useRole from 'hooks/useRole';
 import notifications from './dummy.json';
+import { useGetNotifications } from 'queries/notifications';
+import Spinner from 'components/Spinner';
+import queryClient from 'utils/queryClient';
 
 const navigations = [
   {
@@ -42,10 +45,19 @@ const navigations = [
   },
 ];
 
+export enum NotificationType {
+  ALL = 'All',
+  MENTIONS = 'Mentions',
+}
+
 const Navbar = () => {
   const notifRef = useRef<HTMLDivElement>(null);
+  const { isAdmin } = useRole();
 
   const [showNotifications, setShowNotifications] = useState<boolean>(false);
+  const [notificationType, setNotificationType] = useState<NotificationType>(
+    NotificationType.ALL,
+  );
 
   useEffect(() => {
     const checkIfClickedOutside = (e: any) => {
@@ -67,7 +79,20 @@ const Navbar = () => {
       document.removeEventListener('mousedown', checkIfClickedOutside);
     };
   }, [showNotifications]);
-  const { isAdmin } = useRole();
+
+  const { data, isLoading, isError } = useGetNotifications(
+    notificationType === NotificationType.MENTIONS,
+  );
+
+  useEffect(() => {
+    console.log({ notificationType });
+    console.log(notificationType === NotificationType.MENTIONS);
+    queryClient.invalidateQueries(['get-notifications']);
+  }, [notificationType]);
+
+  useEffect(() => {
+    console.log({ data });
+  }, [data]);
 
   return (
     <header className="sticky top-0 z-40">
@@ -116,19 +141,32 @@ const Navbar = () => {
               </div>
             </NavLink>
           )}
-          <div ref={notifRef} className="relative">
-            <button
+          <div ref={notifRef} className="relative cursor-pointer">
+            <div
               className="box-border font-bold flex flex-row justify-center items-center p-1 gap-4 border-none relative"
               onClick={() => setShowNotifications(!showNotifications)}
             >
-              <div className="absolute rounded-full bg-red-600 text-white text-xxs -top-1 -right-1.5 flex w-4 h-4 items-center justify-center">
-                {/* Get unread notif count here */}10
-              </div>
+              {!isLoading && (
+                <div className="absolute rounded-full bg-red-600 text-white text-xxs -top-1 -right-1.5 flex w-4 h-4 items-center justify-center">
+                  {/* Get unread notif count here */}10
+                </div>
+              )}
+              {isLoading && (
+                <Spinner
+                  className="absolute -top-1 -right-1.5 w-3 h-3 border-2"
+                  color="#dc2626"
+                />
+              )}
 
               <Icon name="notification" size={26} disabled={true} />
-            </button>
+            </div>
             {showNotifications && (
-              <Notifications notifications={notifications.data} />
+              <Notifications
+                notifications={notifications.data}
+                setShowNotifications={setShowNotifications}
+                isLoading={isLoading}
+                setNotificationType={setNotificationType}
+              />
             )}
           </div>
           <div>
