@@ -16,6 +16,7 @@ import { useMutation } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import queryClient from 'utils/queryClient';
+import useAuth from 'hooks/useAuth';
 
 type ConfigureGenericSSOProps = {
   open: boolean;
@@ -39,6 +40,8 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
   closeModal,
   ssoSetting,
 }): ReactElement => {
+  const { user } = useAuth();
+
   const { control, handleSubmit, getValues } = useForm<IForm>({
     resolver: yupResolver(schema),
     mode: 'onSubmit',
@@ -127,12 +130,15 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
         <div className="mt-2 px-4 bg-primary-50 rounded-9xl">
           <SAMLDetail
             prop="ACS URL"
-            value="sso-staging.api.auzmor.com/saml/SSO"
+            value={process.env.REACT_APP_ACS_URL || ''}
           />
-          <SAMLDetail prop="Entity ID" value="Auzmor" />
+          <SAMLDetail
+            prop="Entity ID"
+            value={process.env.REACT_APP_ENTITY_ID || ''}
+          />
           <SAMLDetail
             prop="Relay State/Start URL"
-            value='{"domain": "auzmoroffice"}'
+            value={`{"domain": "${user?.organization.domain}"}`}
           />
         </div>
 

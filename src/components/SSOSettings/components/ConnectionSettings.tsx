@@ -37,6 +37,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
       control: connectionSettingsControl,
       defaultValue: connectionSettingsData?.hostName,
       error: connectionSettingsFormState.errors.hostName?.message,
+      dataTestId: 'sso-config-ad-hostname',
     },
     {
       type: FieldType.Input,
@@ -47,6 +48,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
       control: connectionSettingsControl,
       defaultValue: connectionSettingsData?.port,
       error: connectionSettingsFormState.errors.port?.message,
+      dataTestId: 'sso-config-ad-port',
     },
     {
       type: FieldType.Input,
@@ -57,6 +59,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
       control: connectionSettingsControl,
       defaultValue: connectionSettingsData?.baseDN,
       error: connectionSettingsFormState.errors.baseDN?.message,
+      dataTestId: 'sso-config-ad-basedn',
     },
     {
       type: FieldType.Input,
@@ -66,6 +69,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
       label: 'Group Base DN',
       control: connectionSettingsControl,
       defaultValue: connectionSettingsData?.groupBaseDN,
+      dataTestId: 'sso-config-ad-groupbasedn',
     },
   ];
 
@@ -79,6 +83,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
       control: connectionSettingsControl,
       defaultValue: connectionSettingsData?.upnSuffix,
       error: connectionSettingsFormState.errors.upnSuffix?.message,
+      dataTestId: 'sso-config-ad-upnsuffix',
     },
   ];
 
@@ -92,6 +97,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
       control: connectionSettingsControl,
       defaultValue: connectionSettingsData?.administratorDN,
       error: connectionSettingsFormState.errors.administratorDN?.message,
+      dataTestId: 'sso-config-ad-administratordn',
     },
     {
       type: FieldType.Input,
@@ -102,6 +108,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
       control: connectionSettingsControl,
       defaultValue: connectionSettingsData?.password,
       error: connectionSettingsFormState.errors.password?.message,
+      dataTestId: 'sso-config-ad-password',
     },
     {
       type: FieldType.Checkbox,
@@ -112,6 +119,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
       control: connectionSettingsControl,
       defaultValue: connectionSettingsData?.allowFallback,
       error: connectionSettingsFormState.errors.allowFallback?.message,
+      dataTestId: 'sso-config-ad-allowfallback',
     },
   ];
   return (
@@ -138,6 +146,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
             label="Cancel"
             onClick={closeModal}
             variant={ButtonVariant.Secondary}
+            dataTestId="sso-config-ad-cta-cancel"
           />
           <Button
             className="font-bold"
@@ -145,6 +154,7 @@ const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
             variant={ButtonVariant.Primary}
             type={ButtonType.Submit}
             disabled={isError}
+            dataTestId="sso-config-ad-cta-continue"
           />
         </div>
       </div>

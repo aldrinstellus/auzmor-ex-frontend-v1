@@ -36,7 +36,7 @@ interface IForm {
 const schema = yup.object({
   email: yup
     .string()
-    .email('Please enter valid email address')
+    .email('Invalid email address. Please enter a valid email address.')
     .required('Required field'),
   password: yup.string().required('Required field'),
   domain: yup.string(),

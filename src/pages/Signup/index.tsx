@@ -28,13 +28,13 @@ const schema = yup.object({
   fullName: yup.string().required('Required Field'),
   workEmail: yup
     .string()
-    .email('Please enter valid email address')
+    .email('The email address you entered is invalid')
     .required('Required field'),
   domain: yup.string().required('Required field'),
   password: yup.string().required('Required field'),
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref('password')], 'This must match the password')
+    .oneOf([yup.ref('password')], 'Passwords do not match')
     .required('Required field'),
   privacyPolicy: yup.boolean().required('Required field').oneOf([true]),
 });

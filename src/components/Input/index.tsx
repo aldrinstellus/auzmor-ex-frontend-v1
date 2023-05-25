@@ -6,6 +6,7 @@ import Icon from 'components/Icon';
 export enum Variant {
   Text = 'TEXT',
   Password = 'PASSWORD',
+  Tel = 'TEL',
 }
 
 export enum Size {

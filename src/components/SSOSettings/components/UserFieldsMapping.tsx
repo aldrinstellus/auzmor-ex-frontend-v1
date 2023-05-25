@@ -36,6 +36,7 @@ const UserFieldsMapping: React.FC<UserFieldsMappingProps> = ({
       control: userFieldMappingControl,
       defaultValue: userFieldsMappingData?.userName,
       error: userFieldMappingFormState.errors.userName?.message,
+      dataTestId: 'sso-config-ad-username',
     },
     {
       type: FieldType.Input,
@@ -46,6 +47,7 @@ const UserFieldsMapping: React.FC<UserFieldsMappingProps> = ({
       control: userFieldMappingControl,
       defaultValue: userFieldsMappingData?.fullName,
       error: userFieldMappingFormState.errors.fullName?.message,
+      dataTestId: 'sso-config-ad-fullname',
     },
     {
       type: FieldType.Input,
@@ -56,6 +58,7 @@ const UserFieldsMapping: React.FC<UserFieldsMappingProps> = ({
       control: userFieldMappingControl,
       defaultValue: userFieldsMappingData?.email,
       error: userFieldMappingFormState.errors.email?.message,
+      dataTestId: 'sso-config-ad-email',
     },
     {
       type: FieldType.Input,
@@ -66,6 +69,7 @@ const UserFieldsMapping: React.FC<UserFieldsMappingProps> = ({
       control: userFieldMappingControl,
       defaultValue: userFieldsMappingData?.title,
       error: userFieldMappingFormState.errors.title?.message,
+      dataTestId: 'sso-config-ad-title',
     },
     {
       type: FieldType.Input,
@@ -75,6 +79,7 @@ const UserFieldsMapping: React.FC<UserFieldsMappingProps> = ({
       label: 'Work Mobile',
       control: userFieldMappingControl,
       defaultValue: userFieldsMappingData?.workMobile,
+      dataTestId: 'sso-config-ad-workmobile',
     },
     {
       type: FieldType.Input,
@@ -84,6 +89,7 @@ const UserFieldsMapping: React.FC<UserFieldsMappingProps> = ({
       label: 'User Object Filter',
       control: userFieldMappingControl,
       defaultValue: userFieldsMappingData?.userObjectFilter,
+      dataTestId: 'sso-config-ad-userobjectfilter',
     },
   ];
   return (

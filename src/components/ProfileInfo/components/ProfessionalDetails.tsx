@@ -17,7 +17,9 @@ import { useMutation } from '@tanstack/react-query';
 import { updateCurrentUser } from 'queries/users';
 import { getDefaultTimezoneOption } from 'components/UserOnboard/utils';
 import queryClient from 'utils/queryClient';
-import Layout, { FieldType } from 'components/Form';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { toast } from 'react-toastify';
+import { twConfig } from 'utils/misc';
 
 interface IForm {
   timeZone: OptionType;
@@ -39,7 +41,6 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
     timeZone: yup.object(),
   });
 
-  // professional handlesubmit only
   const { handleSubmit, control, getValues } = useForm<any>({
     mode: 'onSubmit',
     resolver: yupResolver(schema),
@@ -53,11 +54,23 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
   const updateUserTimezoneMutation = useMutation({
     mutationFn: updateCurrentUser,
     mutationKey: ['update-user-timeZone-mutation'],
-    onError: (error: any) => {
-      console.log('Error while updating timezone: ', error);
-    },
+    onError: (error: any) => {},
     onSuccess: (response: any) => {
-      console.log('Updated timezone successfully', response);
+      toast(<SuccessToast content={'User Profile Updated Successfully'} />, {
+        closeButton: (
+          <Icon
+            name="closeCircleOutline"
+            stroke={twConfig.theme.colors.primary['500']}
+            size={20}
+          />
+        ),
+        style: {
+          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+        },
+      });
       setIsEditable(false);
     },
   });
@@ -109,7 +122,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
                   Joined on{' '}
                   {moment(professionalDetails?.createdAt).format(
                     'Do MMMM YYYY',
-                  )}
+                  ) || 'N//A'}
                 </div>
               </div>
             </div>
@@ -122,6 +135,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
                     value: professionalDetails?.timeZone,
                     label: professionalDetails?.timeZone,
                   }}
+                  placeholder="Select your timezone"
                   dataTestId="professional-details-timezone"
                 />
               ) : (
@@ -130,7 +144,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
                     <Icon name="clock" size={16} />
                   </IconWrapper>
                   <div className="text-neutral-900 text-base font-medium ">
-                    {professionalDetails?.timeZone}
+                    {professionalDetails?.timeZone || 'N/A'}
                   </div>
                 </div>
               )}

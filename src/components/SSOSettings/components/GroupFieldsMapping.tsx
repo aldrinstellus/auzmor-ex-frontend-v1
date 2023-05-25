@@ -36,6 +36,7 @@ const GroupFieldsMapping: React.FC<GroupFieldsMappingProps> = ({
       label: 'Group Name',
       control: groupFieldMappingControl,
       defaultValue: groupFieldsMappingData?.groupName,
+      dataTestId: 'sso-config-ad-groupname',
     },
     {
       type: FieldType.Input,
@@ -45,6 +46,7 @@ const GroupFieldsMapping: React.FC<GroupFieldsMappingProps> = ({
       label: 'Group Member UID',
       control: groupFieldMappingControl,
       defaultValue: groupFieldsMappingData?.groupMemberUID,
+      dataTestId: 'sso-config-ad-groupmemberuid',
     },
     {
       type: FieldType.Input,
@@ -54,6 +56,7 @@ const GroupFieldsMapping: React.FC<GroupFieldsMappingProps> = ({
       label: 'Group Object Filter',
       control: groupFieldMappingControl,
       defaultValue: groupFieldsMappingData?.groupObjectFilter,
+      dataTestId: 'sso-config-ad-groupobjectfilter',
     },
   ];
 

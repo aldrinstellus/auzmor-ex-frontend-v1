@@ -15,6 +15,7 @@ export type SSOCardProps = {
   active: boolean;
   activeSSO?: ISSOSetting;
   setShowErrorBanner: (show: boolean) => void;
+  dataTestId?: string;
 };
 
 const SSOCard: React.FC<SSOCardProps> = ({
@@ -27,6 +28,7 @@ const SSOCard: React.FC<SSOCardProps> = ({
   active = false,
   activeSSO,
   setShowErrorBanner,
+  dataTestId = '',
 }): ReactElement => {
   const customOnClick = () => {
     if (activeSSO && activeSSO?.idp !== idp) {
@@ -35,7 +37,7 @@ const SSOCard: React.FC<SSOCardProps> = ({
   };
 
   return (
-    <Card className="w-96 h-60">
+    <Card className="w-96 h-60" dataTestId={dataTestId}>
       <div className="flex flex-col h-full items-start justify-between ml-6">
         <div className="mt-7">
           <div className="flex items-center justify-between">
@@ -59,6 +61,7 @@ const SSOCard: React.FC<SSOCardProps> = ({
           onClick={customOnClick}
           className="mb-6 max-w-fit"
           label={buttonText}
+          dataTestId={`${dataTestId}-submit`}
         ></Button>
       </div>
     </Card>
