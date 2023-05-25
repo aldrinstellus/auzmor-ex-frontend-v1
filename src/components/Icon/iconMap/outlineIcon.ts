@@ -53,6 +53,9 @@ import SvgDeleteOutline from '../components/Delete/DeleteOutline';
 import SvgExportOutline from '../components/Export/ExportOutline';
 import SvgMaximizeOutline from '../components/Maximize/MaximizeOutline';
 import SvgThreeDotsOutline from '../components/ThreeDots/ThreeDotsOutline';
+import SvgConnectionFolderOutline from '../components/ConnectionFolder/ConnectionFolderOutline';
+import SvgCallOutline from '../components/Call/CallOutline';
+import SvgMaleOutline from '../components/Male/MaleOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -65,6 +68,8 @@ export const outlineIcon = {
   chartOutline: SvgChartOutline,
   closeCircleOutline: SvgCloseCircleOutline,
   closeOutline: SvgCloseOutline,
+  callOutline: SvgCallOutline,
+  connectionOutline: SvgConnectionFolderOutline,
   convertShapeOutline: SvgConvertShapeOutline,
   crossCircleOutline: SvgCrossCircleOutline,
   deleteOutline: SvgDeleteOutline,
@@ -107,6 +112,7 @@ export const outlineIcon = {
   brandingOutline: SvgBrandingOutline,
   linkOutline: SvgLinkOutline,
   marketplaceOutline: SvgMarketplaceOutline,
+  maleOutline: SvgMaleOutline,
   arrowUpOutline: SvgArrowUpOutline,
   arrowDownOutline: SvgArrowDownOutline,
   threeDotsOutline: SvgThreeDotsOutline,
