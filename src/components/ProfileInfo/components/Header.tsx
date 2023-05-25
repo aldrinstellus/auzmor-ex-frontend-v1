@@ -16,6 +16,7 @@ export type HeaderProps = {
   canEdit?: boolean;
   onSubmit?: any;
   handleSubmit: UseFormHandleSubmit<FieldValues>;
+  setInitialSkills?: () => void;
   isLoading?: boolean;
 };
 
@@ -28,6 +29,7 @@ const Header: React.FC<HeaderProps> = ({
   canEdit,
   onSubmit,
   handleSubmit,
+  setInitialSkills,
   isLoading,
 }) => {
   return (
@@ -58,7 +60,10 @@ const Header: React.FC<HeaderProps> = ({
               variant={ButtonVariant.Secondary}
               label={'Cancel'}
               size={ButtonSize.Small}
-              onClick={() => setIsEditable(false)}
+              onClick={() => {
+                setInitialSkills && setInitialSkills();
+                setIsEditable(false);
+              }}
               dataTestId={`${dataTestId}-cancel`}
             />
             <Button

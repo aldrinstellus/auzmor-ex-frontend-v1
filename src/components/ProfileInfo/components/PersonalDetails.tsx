@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Card from 'components/Card';
 import Divider from 'components/Divider';
@@ -60,16 +60,19 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
     [isHovered],
   );
 
-  const personalSkillsList = personalDetails?.personal?.skills?.map(
-    (skill: string) => ({
-      id: uuidv4(),
-      value: skill,
-    }),
-  );
+  const setInitialSkills = () => {
+    const personalSkillsList = personalDetails?.personal?.skills?.map(
+      (skill: string) => ({
+        id: uuidv4(),
+        value: skill,
+      }),
+    );
+    setSkills(personalSkillsList);
+  };
 
-  const updatedSkillListItem = [...personalSkillsList, ...skills];
-
-  console.log(updatedSkillListItem);
+  useEffect(() => {
+    setInitialSkills();
+  }, []);
 
   const updateUserPersonalDetailsMutation = useMutation({
     mutationFn: updateCurrentUser,
@@ -102,7 +105,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
         birthDate: personalDetailData?.personal?.birthDate,
         permanentAddress: personalDetailData?.personal?.permanentAddress,
         maritalStatus: personalDetailData?.personal?.maritalStatus?.value,
-        skills: ['ReactJs'],
+        skills: skills.map((skill: Record<string, string>) => skill.value),
       },
     };
     await updateUserPersonalDetailsMutation.mutateAsync({
@@ -190,6 +193,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
           canEdit={canEdit}
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
+          setInitialSkills={setInitialSkills}
           isLoading={updateUserPersonalDetailsMutation.isLoading}
         />
         <Divider />
@@ -277,7 +281,10 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                   Date of Birth
                 </div>
                 <Layout fields={fields} />
-                <DragDropList items={updatedSkillListItem} />
+                <DragDropList
+                  draggableItems={skills}
+                  setDraggableItems={setSkills}
+                />
               </form>
             )}
           </div>

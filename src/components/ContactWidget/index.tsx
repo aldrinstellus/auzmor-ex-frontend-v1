@@ -63,11 +63,20 @@ const ContactWidget: React.FC<IContactCardProps> = ({
   const phoneField = [
     {
       name: 'workPhone',
-      label: 'Contact No.:',
       type: FieldType.Input,
       defaultValue: getValues().workPhone,
       variant: InputVariant.Tel,
       control,
+    },
+  ];
+
+  const countryCodeField = [
+    {
+      name: 'countryCode',
+      type: FieldType.SingleSelect,
+      defaultValue: '+91',
+      control,
+      options: [{ value: '+91', label: '+91' }],
     },
   ];
 
@@ -164,8 +173,9 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                   </div>
                 </div>
               ) : (
-                <div>
-                  <Layout fields={phoneField} />
+                <div className="flex items-center space-x-2">
+                  <Layout fields={countryCodeField} />
+                  <Layout fields={phoneField} className="w-full" />
                 </div>
               )}
             </div>

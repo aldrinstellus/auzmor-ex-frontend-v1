@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import React from 'react';
 import {
   DragDropContext,
   Droppable,
@@ -9,13 +8,14 @@ import {
 import Icon from 'components/Icon';
 
 type DragDropListProps = {
-  items: Record<string, string>[];
+  draggableItems: Record<string, string>[];
+  setDraggableItems: (items: Record<string, string>[]) => void;
 };
 
-const DragDropList: React.FC<DragDropListProps> = ({ items }) => {
-  const [draggableItems, setDraggableItems] =
-    useState<Record<string, string>[]>(items);
-
+const DragDropList: React.FC<DragDropListProps> = ({
+  draggableItems,
+  setDraggableItems,
+}) => {
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
     const { source, destination } = result;
@@ -25,11 +25,9 @@ const DragDropList: React.FC<DragDropListProps> = ({ items }) => {
     setDraggableItems(updatedItems);
   };
 
-  console.log(items, '33333');
-
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId={uuidv4()}>
+      <Droppable droppableId={'skils-list'}>
         {(provided) => (
           <ul
             className="mt-3 space-y-1"
