@@ -14,6 +14,7 @@ import IconButton, {
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 import EditProfileModal from '../EditProfileModal';
 import { IUpdateProfileImage } from 'pages/UserDetail';
+import DefaultCoverImage from 'images/png/CoverImage.png';
 
 export interface IProfileCoverProps {
   profileCoverData: Record<string, any>;
@@ -46,7 +47,11 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             {!isCoverImageRemoved && (
               <img
                 className="object-cover w-full"
-                src={profileCoverData?.coverImage?.original}
+                src={
+                  profileCoverData?.coverImage?.original || DefaultCoverImage
+                }
+                data-testid="user-cover-pic"
+                onClick={() => canEdit && setShowModal(true)}
               />
             )}
           </div>
@@ -65,31 +70,33 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
           )}
         </div>
         <div className="flex">
-          <div className="-mt-20 ml-8">
+          <div className="-mt-[75px] ml-8">
             <Avatar
               name={profileCoverData?.fullName}
               image={profileCoverData?.profileImage?.original}
-              size={96}
+              size={80}
               className="border-2 border-white mt-8 overflow-hidden"
+              dataTestId="user-profile-pic"
             />
           </div>
           <div className="ml-4 mb-7 flex flex-col space-y-5 w-full">
             <div className="flex items-center">
               <div className="mr-6 mt-2 flex justify-between w-full">
                 <div className="flex space-x-4">
-                  <div className="text-2xl font-bold">
+                  <div className="text-2xl font-bold" data-testid="user-name">
                     {profileCoverData?.fullName}
                   </div>
-                  <div className="p-1">
+                  {/* <div className="p-1">
                     {!canEdit && (
-                      <div className="bg-red-100 border-1 border-red-200 rounded-full px-3 py-1 flex justify-center items-center space-x-2">
+                      <div className="border-1 rounded-full px-3 py-1 flex justify-center items-center space-x-2">
                         <Icon name="outOfOfficeIcon" size={16} />
                         <div className="text-xxs font-medium">
-                          {profileCoverData?.status}
+                          {profileCoverData?.status?.charAt(0) +
+                            profileCoverData?.status?.slice(1)?.toLowerCase()}
                         </div>
                       </div>
                     )}
-                  </div>
+                  </div> */}
                 </div>
                 <Button
                   className="flex"
@@ -106,35 +113,36 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
               </div>
             </div>
             <div className="flex space-x-4 items-center">
-              <div className="text-xs font-normal text-neutral-900">
-                <div>{profileCoverData?.designation}</div>
+              <div
+                className="text-xs font-normal text-neutral-900"
+                data-testid="user-designation"
+              >
+                {profileCoverData?.designation || 'N/A'}
               </div>
-              {profileCoverData?.department && (
-                <>
-                  <Divider variant={DividerVariant.Vertical} />
-                  <div className="flex space-x-3 items-center">
-                    <IconWrapper type={Type.Square} className="cursor-pointer">
-                      <Icon name="briefcase" size={16} />
-                    </IconWrapper>
-                    <div className="text-xs font-normal text-neutral-900">
-                      {profileCoverData?.department}
-                    </div>
-                  </div>
-                </>
-              )}
-              {profileCoverData?.workLocation && (
-                <>
-                  <Divider variant={DividerVariant.Vertical} />
-                  <div className="flex space-x-3 items-center">
-                    <IconWrapper type={Type.Square} className="cursor-pointer">
-                      <Icon name="location" size={16} />
-                    </IconWrapper>
-                    <div className="text-xs font-normal text-neutral-900">
-                      {profileCoverData?.workLocation}
-                    </div>
-                  </div>
-                </>
-              )}
+              <Divider variant={DividerVariant.Vertical} className="h-8" />
+              <div className="flex space-x-3 items-center">
+                <IconWrapper type={Type.Square} className="cursor-pointer">
+                  <Icon name="briefcase" size={16} />
+                </IconWrapper>
+                <div
+                  className="text-xs font-normal text-neutral-900"
+                  data-testid="user-department"
+                >
+                  {profileCoverData?.department || 'N/A'}
+                </div>
+              </div>
+              <Divider variant={DividerVariant.Vertical} className="h-8" />
+              <div className="flex space-x-3 items-center">
+                <IconWrapper type={Type.Square} className="cursor-pointer">
+                  <Icon name="location" size={16} />
+                </IconWrapper>
+                <div
+                  className="text-xs font-normal text-neutral-900"
+                  data-testid="user-location"
+                >
+                  {profileCoverData?.workLocation || 'N/A'}
+                </div>
+              </div>
             </div>
           </div>
         </div>

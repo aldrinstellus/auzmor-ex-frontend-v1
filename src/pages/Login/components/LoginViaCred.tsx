@@ -124,6 +124,9 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
       <div className="font-extrabold text-neutral-900 text-4xl mt-20">
         Signin
       </div>
+      <div className="text-neutral-900 text-sm font-normal mt-4">
+        Hello! Welcome back <span>👋</span>
+      </div>
       <form
         className="mt-16"
         onSubmit={handleSubmit(onSubmit)}

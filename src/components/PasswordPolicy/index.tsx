@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Check } from '../Logo/';
 import clsx from 'clsx';
-import { string } from 'yup';
+import Icon from 'components/Icon';
 
 export interface IPasswordPolicyProps {
   policyName: any;
@@ -26,6 +26,9 @@ const PasswordPolicy: React.FC<IPasswordPolicyProps> = ({
           'bg-primary-500': isChecked,
         },
         {
+          'bg-red-500': !isChecked,
+        },
+        {
           'border border-2 border-neutral-50': !isChecked,
         },
       ),
@@ -35,7 +38,11 @@ const PasswordPolicy: React.FC<IPasswordPolicyProps> = ({
   return (
     <div className="flex justify-start items-center space-x-4">
       <div className={checkStyles} data-testid={dataTestId}>
-        {isChecked && <Check />}
+        {isChecked ? (
+          <Check />
+        ) : (
+          <Icon name="closeCircle" size={24} stroke="white" />
+        )}
       </div>
       <div>{policyName}</div>
     </div>

@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Logo } from 'components/Logo';
+import WelcomeOffice from 'images/welcomeToOffice.png';
 import { Success } from 'components/Logo';
 import Layout, { FieldType } from 'components/Form';
 import Button, { Size, Type } from 'components/Button';
@@ -44,6 +45,7 @@ const ResetPassword = () => {
     control,
     handleSubmit,
     formState: { errors, isValid },
+    setError,
   } = useForm<IForm>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -68,6 +70,7 @@ const ResetPassword = () => {
       label: 'Enter New Password',
       rightIcon: 'people',
       error: errors.newPassword?.message,
+      setError,
       control,
       onChange: (e: any) => {
         const value = e.target.value;
@@ -106,8 +109,12 @@ const ResetPassword = () => {
 
   return (
     <div className="flex h-screen w-screen">
-      <div className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover" />
-      <div className="w-1/2 h-full flex justify-center items-center relative bg-white">
+      <img
+        src={WelcomeOffice}
+        className="h-full w-[48%]"
+        alt="Welcome to Auzmor Office"
+      />
+      <div className="w-[52%] h-full flex justify-center items-center relative bg-white overflow-y-auto">
         <div className="absolute top-8 right-8">
           <Logo />
         </div>
@@ -147,7 +154,7 @@ const ResetPassword = () => {
                             label={'Reset Password'}
                             className="w-full mt-8"
                             loading={resetPasswordMutation.isLoading}
-                            disabled={!isValid}
+                            disabled={!isValid || !!errors?.password?.type}
                             size={Size.Large}
                           />
                         </>

@@ -1,11 +1,12 @@
 import clsx from 'clsx';
-import React, { useMemo } from 'react';
+import React, { ReactElement, useMemo } from 'react';
 import { Control, useController } from 'react-hook-form';
 import Icon from 'components/Icon';
 
 export enum Variant {
   Text = 'TEXT',
   Password = 'PASSWORD',
+  Tel = 'TEL',
 }
 
 export enum Size {
@@ -20,6 +21,7 @@ export type InputProps = {
   variant?: Variant;
   size?: Size;
   rightIcon?: string;
+  rightElement?: ReactElement;
   leftIcon?: string;
   defaultValue?: string;
   placeholder?: string;
@@ -43,6 +45,7 @@ const Input: React.FC<InputProps> = ({
   size = Size.Medium,
   rightIcon = null,
   leftIcon = null,
+  rightElement,
   defaultValue = '',
   placeholder = '',
   loading = false,
@@ -158,6 +161,11 @@ const Input: React.FC<InputProps> = ({
         {rightIcon && (
           <div className="absolute right-5" onClick={onRightIconClick}>
             <Icon name={rightIcon} size={16} />
+          </div>
+        )}
+        {rightElement && (
+          <div className="absolute right-0 border border-solid border-neutral-200 rounded-19xl bg-blue-50 py-3 px-5">
+            {rightElement}
           </div>
         )}
       </label>

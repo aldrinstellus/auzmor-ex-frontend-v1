@@ -1,6 +1,6 @@
 import React, { LegacyRef, ReactNode, memo, useContext, useState } from 'react';
 import ReactQuill, { Quill, UnprivilegedEditor } from 'react-quill';
-import { DeltaStatic, Sources } from 'quill';
+import { DeltaStatic, Sources, Delta } from 'quill';
 import 'react-quill/dist/quill.snow.css';
 import 'quill-emoji/dist/quill-emoji.css';
 import './mentions/quill.mention';
@@ -47,7 +47,7 @@ const RichTextEditor = React.forwardRef(
       renderToolbar = () => <div id="toolbar"></div>,
       renderPreviewLink,
     }: IQuillEditorProps,
-    ref,
+    ref: React.ForwardedRef<ReactQuill>,
   ) => {
     const {
       announcement,
@@ -64,7 +64,15 @@ const RichTextEditor = React.forwardRef(
 
     const [previewUrl, setPreviewUrl] = useState<string>('');
 
-    const formats = ['bold', 'italic', 'underline', 'mention', 'link', 'emoji'];
+    const formats = [
+      'bold',
+      'italic',
+      'underline',
+      'mention',
+      'link',
+      'emoji',
+      'color',
+    ];
 
     const modules = {
       toolbar: {
@@ -93,10 +101,11 @@ const RichTextEditor = React.forwardRef(
       editor: UnprivilegedEditor,
     ) => {
       if (editor.getLength() > charLimit) {
-        (ref as any)?.current?.editor?.deleteText(
-          charLimit,
-          editor.getLength() - charLimit,
-        );
+        ((ref as any).current as ReactQuill)
+          .getEditor()
+          .formatText(charLimit - 1, editor.getLength() - charLimit, {
+            color: twConfig.theme.colors.red['500'],
+          });
         setIsCharLimit(true);
       } else {
         setIsCharLimit(false);

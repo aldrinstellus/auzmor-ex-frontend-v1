@@ -1,7 +1,6 @@
 import React from 'react';
 import useHover from 'hooks/useHover';
-import { default as CloseCircleFilled } from './CloseCircleFilled';
-import { default as CloseCircleOutline } from './CloseCircleOutline';
+import { default as MaleOutline } from './MaleOutline';
 
 type IconProps = {
   size?: number;
@@ -11,8 +10,8 @@ type IconProps = {
   onClick?: () => void;
 };
 
-const CloseCircleIcon: React.FC<IconProps> = ({
-  hover = true,
+const Male: React.FC<IconProps> = ({
+  hover,
   onClick,
   className = '',
   disabled,
@@ -22,9 +21,9 @@ const CloseCircleIcon: React.FC<IconProps> = ({
 
   return (
     <div onClick={onClick} className={className} {...eventHandlers}>
-      <CloseCircleOutline {...props} />
+      <MaleOutline {...props} />
     </div>
   );
 };
 
-export default CloseCircleIcon;
+export default Male;

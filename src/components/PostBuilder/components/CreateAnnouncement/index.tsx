@@ -1,5 +1,5 @@
 import { FieldType } from 'components/Form';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import { afterXUnit } from 'utils/time';
@@ -28,6 +28,16 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
   });
 
   const selecetedExpiry = watch('expityOption');
+  const customDate = watch('date');
+
+  useEffect(() => {
+    if (customDate) {
+      setValue('expityOption', {
+        label: 'Custom Date',
+        value: customDate.toISOString().substring(0, 19) + 'Z',
+      });
+    }
+  }, [customDate]);
 
   const expiryFields = [
     {
@@ -64,14 +74,6 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
       control,
       minDate: new Date(),
       defaultValue: announcement?.value || '',
-      onDateChange: (date: Value) =>
-        setValue('expityOption', {
-          label: 'Custom Date',
-          value:
-            new Date(date?.toLocaleString() || '')
-              .toISOString()
-              .substring(0, 19) + 'Z',
-        }),
     },
   ];
   return (

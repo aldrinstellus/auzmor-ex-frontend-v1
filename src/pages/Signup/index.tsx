@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Button, { Size, Type as ButtonType } from 'components/Button';
 import { Logo } from 'components/Logo';
+import WelcomeOffice from 'images/welcomeToOffice.png';
 import { useMutation } from '@tanstack/react-query';
 import { redirectWithToken } from 'utils/misc';
 import { signup } from 'queries/account';
@@ -110,6 +111,11 @@ const Signup: React.FC<ISignupProps> = () => {
       type: FieldType.Input,
       variant: InputVariant.Text,
       placeholder: 'Enter domain',
+      rightElement: (
+        <div className="text-sm font-medium text-neutral-500">
+          office.auzmor.com
+        </div>
+      ),
       name: 'domain',
       label: 'Domain*',
       error: errors.domain?.message || errors.domain?.types?.domainExists,
@@ -124,6 +130,7 @@ const Signup: React.FC<ISignupProps> = () => {
       label: 'Password*',
       rightIcon: 'people',
       error: errors.password?.message,
+      setError,
       dataTestId: 'sign-up-password',
       control,
       getValues,
@@ -193,11 +200,13 @@ const Signup: React.FC<ISignupProps> = () => {
 
   return (
     <div className="flex h-screen w-screen">
-      <div
-        className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover"
+      <img
+        src={WelcomeOffice}
+        className="h-full w-[48%]"
         data-testid="signup-cover-image"
-      ></div>
-      <div className="w-1/2 flex justify-center items-center relative bg-white  h-full overflow-y-auto">
+        alt="Welcome to Auzmor Office"
+      />
+      <div className="w-[52%] h-full flex justify-center items-center relative bg-white overflow-y-auto">
         <div className="absolute top-8 right-8" data-testid="signup-logo-image">
           <Logo />
         </div>
@@ -225,7 +234,7 @@ const Signup: React.FC<ISignupProps> = () => {
             <Button
               dataTestId="sign-up-btn"
               label={'Sign Up'}
-              disabled={!isValid}
+              disabled={!isValid || !!errors?.password?.type}
               className="w-full mt-8"
               type={ButtonType.Submit}
               size={Size.Large}

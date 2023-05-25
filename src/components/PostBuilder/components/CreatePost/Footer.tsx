@@ -24,8 +24,14 @@ const Footer: React.FC<IFooterProps> = ({
   quillRef,
   handleSubmitPost,
 }) => {
-  const { setActiveFlow, setEditorValue, inputImgRef, inputVideoRef, files } =
-    useContext(CreatePostContext);
+  const {
+    setActiveFlow,
+    setEditorValue,
+    inputImgRef,
+    inputVideoRef,
+    files,
+    isCharLimit,
+  } = useContext(CreatePostContext);
   const updateContext = () => {
     setEditorValue({
       text: quillRef
@@ -94,6 +100,7 @@ const Footer: React.FC<IFooterProps> = ({
         label: 'Polls',
         icon: <Icon name="chartFilled" size={14} />,
         menuItems: [],
+        disabled: true,
       },
       {
         id: 5,
@@ -124,10 +131,10 @@ const Footer: React.FC<IFooterProps> = ({
     <div className="flex justify-between items-center h-16 p-6 bg-blue-50">
       <div className="flex relative">
         {postMenuItems.map((postMenuItem) => (
-          <PopupMenu
-            triggerNode={
-              <div className="mr-4">
-                {postMenuItem?.disabled ? (
+          <div key={postMenuItem.id} className="flex mr-4 items-center">
+            <PopupMenu
+              triggerNode={
+                postMenuItem?.disabled ? (
                   <div className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl cursor-default">
                     {postMenuItem.icon}
                   </div>
@@ -144,12 +151,11 @@ const Footer: React.FC<IFooterProps> = ({
                       postMenuItem.icon
                     )}
                   </Tooltip>
-                )}
-              </div>
-            }
-            menuItems={postMenuItem.menuItems}
-            key={postMenuItem.id}
-          />
+                )
+              }
+              menuItems={postMenuItem.menuItems}
+            />
+          </div>
         ))}
         <Divider variant={DividerVariant.Vertical} className="!h-8" />
       </div>
@@ -157,7 +163,7 @@ const Footer: React.FC<IFooterProps> = ({
         <Button
           label="Post"
           className="w-24"
-          disabled={isLoading}
+          disabled={isLoading || isCharLimit}
           onClick={() => {
             updateContext();
             handleSubmitPost(
