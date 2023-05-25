@@ -1,10 +1,18 @@
-import { useQuery } from '@tanstack/react-query';
+import {
+  UseQueryOptions,
+  useQuery,
+  useInfiniteQuery,
+  UseInfiniteQueryOptions,
+  QueryFunctionContext,
+} from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 
-interface IReactions {
+export interface IReactions {
   entityId: string;
   entityType: string;
   reaction?: string;
+  limit?: number;
+  cursor?: string;
 }
 
 interface IDelete {
@@ -29,22 +37,59 @@ interface IComments {
   mentions?: Array<object>;
 }
 
+export interface IGetReaction {
+  type: string;
+  reaction: string;
+  createdBy: ICreatedBy;
+  entityId: string;
+  entityType: string;
+  createdAt: string;
+  updatedAt: string;
+  id: string;
+}
+
+export interface ICreatedBy {
+  department: string;
+  designation: string;
+  fullName: string;
+  profileImage: { id: string; original: string; blurHash: string };
+  status: string;
+  userId: string;
+  workLocation: string;
+  email: string;
+}
+
 export const createReaction = async (payload: IReactions) => {
   const { data } = await apiService.post('/reactions', payload);
   return data;
 };
 
-export const getReactions = async (payload: IReactions) => {
-  const { entityId, entityType } = payload;
-
-  const { data } = await apiService.get(`reactions`, { entityId, entityType });
+export const getReactions = async ({
+  pageParam = null,
+  queryKey,
+}: QueryFunctionContext<any>) => {
+  const { data } = await apiService.get(`reactions`, {
+    ...queryKey[1],
+    cursor: pageParam,
+  });
   return data;
 };
 
-export const useReactions = (q: IReactions) => {
-  return useQuery({
-    queryKey: ['reactions'],
-    queryFn: () => getReactions(q),
+export const useReactions = (
+  q: IReactions,
+  config?: UseInfiniteQueryOptions,
+) => {
+  return useInfiniteQuery({
+    queryKey: ['reactions', q],
+    queryFn: getReactions,
+    staleTime: 0,
+    getNextPageParam: (lastPage: any) => {
+      return lastPage?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.paging?.previous;
+    },
+    ...config,
   });
 };
 
