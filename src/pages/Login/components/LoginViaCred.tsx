@@ -135,7 +135,7 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
         {!!loginMutation.isError && (
           <div className="mb-8">
             <Banner
-              dataTestId="signin-incorrect-creds-msg"
+              dataTestId="signin-error-message"
               title={
                 readFirstAxiosError(loginMutation.error) ||
                 'Email address or password is incorrect'
