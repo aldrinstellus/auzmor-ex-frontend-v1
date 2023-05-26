@@ -8,9 +8,14 @@ interface ITab {
 export interface ITabsProps {
   tabs: ITab[];
   activeTabIndex?: number;
+  tabContentClassName?: string;
 }
 
-const Tabs: React.FC<ITabsProps> = ({ tabs, activeTabIndex = 0 }) => {
+const Tabs: React.FC<ITabsProps> = ({
+  tabs,
+  activeTabIndex = 0,
+  tabContentClassName = 'px-6',
+}) => {
   const [activeTab, setActiveTab] = useState(activeTabIndex);
 
   const isActive = (index: number) => activeTab === index;
@@ -32,7 +37,7 @@ const Tabs: React.FC<ITabsProps> = ({ tabs, activeTabIndex = 0 }) => {
           </div>
         ))}
       </div>
-      <div className="px-6">{tabs[activeTab].tabContent}</div>
+      <div className={tabContentClassName}>{tabs[activeTab].tabContent}</div>
     </div>
   );
 };

@@ -47,11 +47,6 @@ const navigations = [
   },
 ];
 
-export enum NotificationType {
-  ALL = 'All',
-  MENTIONS = 'Mentions',
-}
-
 const Navbar = () => {
   const { isAdmin } = useRole();
 

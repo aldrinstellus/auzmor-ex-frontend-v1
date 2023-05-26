@@ -1,31 +1,48 @@
 import Card from 'components/Card';
 import Divider from 'components/Divider';
-import HorizontalMenu from 'components/HorizontalMenu';
 import Icon from 'components/Icon';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import Spinner from 'components/Spinner';
-import { NotificationType } from 'components/AppShell/components/Navbar';
 import Popover from 'components/Popover';
 import { useGetUnreadNotificationsCount } from 'queries/notifications';
+import Tabs from 'components/Tabs';
+import NotificationsList from './components/NotificationsList';
+
+export enum NotificationType {
+  ALL = 'All',
+  MENTIONS = 'Mentions',
+}
 
 const NotificationsOverview: React.FC = () => {
   const { data, isLoading, isError } = useGetUnreadNotificationsCount();
 
-  const notificationMenuItems = [
+  const notifTabs = [
     {
-      label: NotificationType.ALL,
-      id: NotificationType.ALL,
+      tabLable: (isActive: boolean) => (
+        <p
+          className={`font-bold text-sm pb-2 ${
+            isActive ? 'text-neutral-900' : 'text-neutral-500'
+          }`}
+        >
+          All
+        </p>
+      ),
+      tabContent: <NotificationsList />,
     },
     {
-      label: NotificationType.MENTIONS,
-      id: NotificationType.MENTIONS,
+      tabLable: (isActive: boolean) => (
+        <p
+          className={`font-bold text-sm pb-2 ${
+            isActive ? 'text-neutral-900' : 'text-neutral-500'
+          }`}
+        >
+          Mentions
+        </p>
+      ),
+      tabContent: <NotificationsList mentions />,
     },
   ];
-
-  const onMenuChange = (id: NotificationType) => {
-    // setNotificationType(id);
-  };
 
   return (
     <Popover
@@ -66,8 +83,7 @@ const NotificationsOverview: React.FC = () => {
         </div>
         {/* Content */}
         <Divider />
-        {/* Use Dhruvin's component here and render <NotificationsList /> with and without mentions prop respectively */}
-        <HorizontalMenu items={notificationMenuItems} onChange={onMenuChange} />
+        <Tabs tabs={notifTabs} tabContentClassName="" />
         <Divider />
         <div className="px-6 bg-blue-100 text-sm font-normal flex items-center justify-start py-4 rounded-b-9xl">
           <NavLink
