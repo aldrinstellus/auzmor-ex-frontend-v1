@@ -358,7 +358,11 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
         </div>
       )}
       {mode === Mode.View && mediaIndex >= 0 && (
-        <Modal open={open} className="!w-[65vw] !h-[80vh] p-6">
+        <Modal
+          open={open}
+          className="!w-[65vw] !h-[80vh] p-6"
+          closeModal={closeModal}
+        >
           <Carousel
             media={media}
             index={mediaIndex}

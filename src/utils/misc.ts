@@ -3,6 +3,8 @@ import tailwindConfig from 'components/../../tailwind.config.js';
 import { IMedia } from 'contexts/CreatePostContext';
 import { validImageTypes } from 'queries/files';
 import { getItem, removeItem } from './persist';
+import { toast } from 'react-toastify';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -103,4 +105,26 @@ export const removeElementsByClass = (className: string) => {
   while (elements.length > 0 && elements && elements[0].parentNode) {
     elements[0].parentNode.removeChild(elements[0]);
   }
+};
+
+// export const downloadURI = (uri: string, name: string) => {
+//   const link = document.createElement('a');
+//   link.download = name;
+//   link.href = uri;
+//   document.body.appendChild(link);
+//   link.click();
+//   document.body.removeChild(link);
+// };
+
+export const downloadURI = (uri: string, name: string) => {
+  const link = document.createElement('a');
+  link.href = uri;
+  link.download = name;
+  document.body.appendChild(link);
+  link.onclick = function () {
+    setTimeout(function () {
+      document.body.removeChild(link);
+    }, 100);
+  };
+  link.click();
 };
