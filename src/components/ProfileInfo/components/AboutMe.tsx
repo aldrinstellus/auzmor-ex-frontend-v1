@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import clsx from 'clsx';
 import Card from 'components/Card';
 import Divider from 'components/Divider';
-import TextArea from 'components/TextArea';
 import useHover from 'hooks/useHover';
 import Header from './Header';
 import { useForm } from 'react-hook-form';
@@ -83,7 +82,44 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
     },
   });
 
-  const onSubmit = async (message: Record<string, string>) => {
+  const renderContentWithLinks = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const matches = text.match(urlRegex);
+    if (!matches) {
+      return text;
+    }
+    const elements = [];
+    let lastIndex = 0;
+    matches.forEach((match: any, index: any) => {
+      const startIndex = text.indexOf(match, lastIndex);
+      const endIndex = startIndex + match.length;
+      const beforeText = text.substring(lastIndex, startIndex);
+      const linkText = match;
+      elements.push(
+        <React.Fragment key={index}>
+          {beforeText}
+          <a
+            href={match}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#0000EE' }}
+          >
+            {linkText}
+          </a>
+        </React.Fragment>,
+      );
+
+      lastIndex = endIndex;
+    });
+    elements.push(text.substring(lastIndex));
+    return elements;
+  };
+
+  const onSubmit = async () => {
+    const message = getValues();
+    if (!message?.personal?.about) {
+      return;
+    }
     await updateUserAboutMeMutation.mutateAsync(message);
     await queryClient.invalidateQueries(['current-user-me']);
     setIsEditable(false);
@@ -107,7 +143,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
         <div className="text-neutral-900 text-sm font-normal pt-4 pb-6 px-6">
           {!isEditable ? (
             <div className="whitespace-pre-wrap">
-              {aboutMeData?.personal?.about || 'N/A'}
+              {renderContentWithLinks(aboutMeData?.personal?.about) || 'N/A'}
             </div>
           ) : (
             <Layout fields={textAreaField} />
