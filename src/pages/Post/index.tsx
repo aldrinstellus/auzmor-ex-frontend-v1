@@ -3,6 +3,7 @@ import Card from 'components/Card';
 import { activeCommentsDataType } from 'components/Comments';
 import { Comment } from 'components/Comments/Comment';
 import Post from 'components/Post';
+import { Reply } from 'components/Reply/Reply';
 import UserCard from 'components/UserWidget';
 import { IGetPost, useGetPost } from 'queries/post';
 import React, { useState } from 'react';
@@ -19,14 +20,7 @@ const PostPage: React.FC = () => {
   const { data, isLoading, isError } = useGetPost(id, commentId);
 
   const [activeComment, setActiveComment] =
-    useState<activeCommentsDataType | null>(
-      commentId
-        ? {
-            id: commentId,
-            type: 'abc',
-          }
-        : null,
-    );
+    useState<activeCommentsDataType | null>(null);
   const [replyInputBox, setReplyInputBox] = useState(false);
 
   if (isLoading) {
@@ -43,19 +37,28 @@ const PostPage: React.FC = () => {
         </div>
         <div className="w-1/2">
           <div className="mt-4">
-            <Card>
-              <Post data={post} />
-              {post.comment && (
-                <Comment
-                  comment={post.comment}
-                  setActiveComment={setActiveComment}
-                  activeComment={activeComment}
-                  setReplyInputBox={setReplyInputBox}
-                  replyInputBox={replyInputBox}
-                  className="m-4"
-                />
-              )}
-            </Card>
+            <Post
+              data={post}
+              customNode={
+                post?.comment && (
+                  <Comment
+                    comment={post.comment}
+                    setActiveComment={setActiveComment}
+                    activeComment={activeComment}
+                    setReplyInputBox={setReplyInputBox}
+                    replyInputBox={replyInputBox}
+                    customNode={
+                      post?.comment?.comment ? (
+                        <Reply
+                          handleClick={() => {}}
+                          comment={post?.comment?.comment}
+                        />
+                      ) : null
+                    }
+                  />
+                )
+              }
+            />
           </div>
         </div>
         <div className="w-1/4">
