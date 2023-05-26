@@ -84,7 +84,8 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
 
   const renderContentWithLinks = (text: string) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const matches = text.match(urlRegex);
+    const matches = text?.match(urlRegex);
+    console.log(matches);
     if (!matches) {
       return text;
     }
