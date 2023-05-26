@@ -33,13 +33,17 @@ const ReactionTab: React.FC<IReactionTabProps> = ({ postId, activeTab }) => {
   }, [inView]);
 
   const reactions = data?.pages.flatMap((page: any) => {
-    return page.data.map((reaction: IGetReaction) => {
-      try {
-        return reaction;
-      } catch (e) {
-        console.log('Error', { reaction });
-      }
-    });
+    try {
+      return page.data.map((reaction: IGetReaction) => {
+        try {
+          return reaction;
+        } catch (e) {
+          console.log('Error', { reaction });
+        }
+      });
+    } catch (error) {
+      return [];
+    }
   }) as IGetReaction[];
   return (
     <div>

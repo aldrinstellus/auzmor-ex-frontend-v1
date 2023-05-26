@@ -8,6 +8,7 @@ export type ModalProps = {
   closeModal?: () => void | null;
   children: ReactNode;
   className?: string;
+  showModalCloseBtn?: boolean;
 };
 
 const Modal: React.FC<ModalProps> = ({
@@ -15,6 +16,7 @@ const Modal: React.FC<ModalProps> = ({
   closeModal,
   children,
   className = 'max-w-xl',
+  showModalCloseBtn = false,
 }) => {
   const panelStyle = clsx(
     {
@@ -69,14 +71,18 @@ const Modal: React.FC<ModalProps> = ({
         className="fixed inset-0 top-0 left-0 right-0 w-screen h-screen bg-black/60 z-50 flex justify-center items-center"
         onClick={closeModal}
       >
-        <div className={`${panelStyle} fixed bg-transparent overflow-visible`}>
-          <Icon
-            name="close"
-            className="absolute -top-6 -right-6"
-            fill={'#fff'}
-            onClick={closeModal}
-          />
-        </div>
+        {showModalCloseBtn && (
+          <div
+            className={`${panelStyle} fixed bg-transparent overflow-visible`}
+          >
+            <Icon
+              name="close"
+              className="absolute -top-6 -right-6"
+              fill={'#fff'}
+              onClick={closeModal}
+            />
+          </div>
+        )}
         <div onClick={(e) => e.stopPropagation()} className={panelStyle}>
           {children}
         </div>

@@ -362,6 +362,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
           open={open}
           className="!w-[65vw] !h-[80vh] p-6"
           closeModal={closeModal}
+          showModalCloseBtn
         >
           <Carousel
             media={media}
