@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useMemo, useEffect, useState } from 'react';
 import SSOCard from './components/SSOCard';
 import ActiveDirectory from 'images/activeDirectory.png';
 import MicrosoftAD from 'images/microsoftAd.svg';
@@ -10,6 +10,7 @@ import ConfigureGenericSSO from './components/ConfigureGenericSSO';
 import { IdentityProvider, useGetSSO } from 'queries/organization';
 import ConfigureLDAP from './components/ConfigureLDAP';
 import Banner, { Variant } from 'components/Banner';
+import { snakeCase } from 'lodash';
 
 enum ConfigureScreen {
   GENERIC = 'GENERIC',
@@ -48,17 +49,16 @@ const SSOSettings: React.FC = (): ReactElement => {
   const [ssoSetting, setSsoSetting] = useState<ISSOSetting>();
   const [showErrorBanner, setShowErrorBanner] = useState<boolean>(false);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error fetching SSO List</div>;
-  }
+  useEffect(() => {
+    setShowErrorBanner(false);
+  }, [data]);
 
   const getSSOValues = (idp: string) => {
+    if (!idp) {
+      return {};
+    }
     let result = {};
-    const ssoSetting: SSOConfig = data.result.data.find(
+    const ssoSetting: SSOConfig = data?.result.data.find(
       (sso: any) => sso.idp === idp,
     );
     if (ssoSetting) {
@@ -119,6 +119,20 @@ const SSOSettings: React.FC = (): ReactElement => {
       ...getSSOValues(IdentityProvider[4]),
     },
   ];
+
+  const activeSSO = useMemo(
+    () => ssoIntegrations.find((sso: ISSOSetting) => sso.active),
+    [ssoIntegrations],
+  );
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error fetching SSO List</div>;
+  }
+
   const onClick = (key: string) => {
     setSsoSetting(ssoIntegrations.find((item) => item.key === key));
     openModal();
@@ -126,16 +140,13 @@ const SSOSettings: React.FC = (): ReactElement => {
 
   return (
     <div>
-      {showErrorBanner &&
-        ssoIntegrations.find((sso: ISSOSetting) => sso.active) && (
-          <Banner
-            variant={Variant.Error}
-            title={`Deactivate ${
-              ssoIntegrations.find((sso: ISSOSetting) => sso.active)?.key
-            } to configure`}
-            className="mb-4"
-          />
-        )}
+      {showErrorBanner && activeSSO && (
+        <Banner
+          variant={Variant.Error}
+          title={`Deactivate ${activeSSO?.key} to configure`}
+          className="mb-4"
+        />
+      )}
       <div className="flex gap-x-6 flex-wrap gap-y-6">
         {ssoIntegrations.map((integration: ISSOSetting) => (
           <SSOCard
@@ -147,7 +158,8 @@ const SSOSettings: React.FC = (): ReactElement => {
             idp={integration.idp}
             active={integration.active || false}
             setShowErrorBanner={setShowErrorBanner}
-            activeSSO={ssoIntegrations.find((sso: ISSOSetting) => sso.active)}
+            activeSSO={activeSSO}
+            dataTestId={`sso-admin-${snakeCase(integration.key)}`}
           />
         ))}
         {open && ssoSetting?.configureScreen === ConfigureScreen.GENERIC && (

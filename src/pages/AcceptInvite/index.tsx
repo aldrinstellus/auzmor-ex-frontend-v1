@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Button, { Size, Type as ButtonType } from 'components/Button';
 import { Logo } from 'components/Logo';
+import WelcomeOffice from 'images/welcomeToOffice.png';
 import { useMutation } from '@tanstack/react-query';
 import { redirectWithToken } from 'utils/misc';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
@@ -27,7 +28,7 @@ const schema = yup.object({
     .required('Required field'),
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref('password')], 'This must match the password')
+    .oneOf([yup.ref('password')], 'Passwords do not match')
     .required('Required field'),
   privacyPolicy: yup.boolean().required('Required field').oneOf([true]),
 });
@@ -48,13 +49,11 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
     mutationFn: acceptInviteSetPassword,
     mutationKey: ['accept-invite-mutation'],
     onSuccess: (data) => {
-      console.log({ data });
-      // Not getting any data as a part of response here.
-      redirectWithToken(
-        data.result.data.redirectUrl,
-        data.result.data.uat,
-        true,
-      );
+      redirectWithToken({
+        redirectUrl: data.result.data.redirectUrl,
+        token: data.result.data.uat,
+        showOnboard: true,
+      });
     },
     onError: () => {},
   });
@@ -129,8 +128,12 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
     <div>Error</div>
   ) : (
     <div className="flex h-screen w-screen">
-      <div className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover"></div>
-      <div className="w-1/2 flex justify-center items-center relative bg-white">
+      <img
+        src={WelcomeOffice}
+        className="h-full w-[48%]"
+        alt="Welcome to Auzmor Office"
+      />
+      <div className="w-[52%] flex justify-center items-center relative bg-white h-full overflow-y-auto">
         <div className="absolute top-8 right-8">
           <Logo />
         </div>

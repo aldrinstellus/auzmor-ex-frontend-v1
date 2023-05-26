@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import clsx from 'clsx';
 import Card from 'components/Card';
 import Divider from 'components/Divider';
-import TextArea from 'components/TextArea';
 import useHover from 'hooks/useHover';
 import Header from './Header';
 import { useForm } from 'react-hook-form';
@@ -10,6 +9,10 @@ import Layout, { FieldType } from 'components/Form';
 import queryClient from 'utils/queryClient';
 import { updateCurrentUser } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { toast } from 'react-toastify';
+import { twConfig } from 'utils/misc';
+import Icon from 'components/Icon';
 
 interface IAboutMe {
   about: string;
@@ -30,7 +33,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
     mode: 'onSubmit',
     defaultValues: {
       personal: {
-        about: aboutMeData?.personal?.about || aboutMeData?.fullName,
+        about: aboutMeData?.personal?.about || 'N/A',
       },
     },
   });
@@ -58,16 +61,65 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
   const updateUserAboutMeMutation = useMutation({
     mutationFn: updateCurrentUser,
     mutationKey: ['update-user-personal-details-mutation'],
-    onError: (error: any) => {
-      console.log('Error while updating the user about me section: ', error);
-    },
+    onError: (error: any) => {},
     onSuccess: (response: any) => {
-      console.log('Updated User about me successfully', response);
+      toast(<SuccessToast content={'User Profile Updated Successfully'} />, {
+        closeButton: (
+          <Icon
+            name="closeCircleOutline"
+            stroke={twConfig.theme.colors.primary['500']}
+            size={20}
+          />
+        ),
+        style: {
+          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+        },
+      });
       setIsEditable(false);
     },
   });
 
-  const onSubmit = async (message: Record<string, string>) => {
+  const renderContentWithLinks = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const matches = text.match(urlRegex);
+    if (!matches) {
+      return text;
+    }
+    const elements = [];
+    let lastIndex = 0;
+    matches.forEach((match: any, index: any) => {
+      const startIndex = text.indexOf(match, lastIndex);
+      const endIndex = startIndex + match.length;
+      const beforeText = text.substring(lastIndex, startIndex);
+      const linkText = match;
+      elements.push(
+        <React.Fragment key={index}>
+          {beforeText}
+          <a
+            href={match}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#0000EE' }}
+          >
+            {linkText}
+          </a>
+        </React.Fragment>,
+      );
+
+      lastIndex = endIndex;
+    });
+    elements.push(text.substring(lastIndex));
+    return elements;
+  };
+
+  const onSubmit = async () => {
+    const message = getValues();
+    if (!message?.personal?.about) {
+      return;
+    }
     await updateUserAboutMeMutation.mutateAsync(message);
     await queryClient.invalidateQueries(['current-user-me']);
     setIsEditable(false);
@@ -90,7 +142,9 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
         <Divider />
         <div className="text-neutral-900 text-sm font-normal pt-4 pb-6 px-6">
           {!isEditable ? (
-            aboutMeData?.personal?.about
+            <div className="whitespace-pre-wrap">
+              {renderContentWithLinks(aboutMeData?.personal?.about) || 'N/A'}
+            </div>
           ) : (
             <Layout fields={textAreaField} />
           )}

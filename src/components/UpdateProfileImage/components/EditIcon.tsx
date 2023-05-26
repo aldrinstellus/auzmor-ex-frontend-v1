@@ -3,13 +3,15 @@ import React, { ReactElement } from 'react';
 
 type EditIconProps = {
   setProfilePicture: (file: File[]) => void;
+  dataTestId?: string;
 };
 
 const EditIcon: React.FC<EditIconProps> = ({
   setProfilePicture,
+  dataTestId,
 }): ReactElement => {
   return (
-    <label htmlFor="file-input">
+    <label htmlFor="file-input" data-testid={dataTestId}>
       <input
         id="file-input"
         type="file"

@@ -1,10 +1,10 @@
 import clsx from 'clsx';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { UseFormGetValues, useController } from 'react-hook-form';
 
 export type CheckboxProps = {
   name: string;
-  label?: string;
+  label?: ReactElement | string;
   className?: string;
   error?: string;
   loading?: boolean;
@@ -35,7 +35,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   );
 
   return (
-    <label className={styles} data-testid={dataTestId}>
+    <div className="flex">
       <input
         type="checkbox"
         className="h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600"
@@ -46,17 +46,19 @@ const Checkbox: React.FC<CheckboxProps> = ({
         onChange={field.onChange}
         {...rest}
       />
-      {label && (
-        <div className="pl-4 -mt-1">
-          <div className="font-medium text-sm cursor-pointer">{label}</div>
-          {labelDescription && (
-            <div className="font-normal text-xs text-neutral-500">
-              {labelDescription}
-            </div>
-          )}
-        </div>
-      )}
-    </label>
+      <label className={styles} data-testid={dataTestId}>
+        {label && (
+          <div className="pl-4 -mt-1">
+            <div className="font-medium text-sm cursor-pointer">{label}</div>
+            {labelDescription && (
+              <div className="font-normal text-xs text-neutral-500">
+                {labelDescription}
+              </div>
+            )}
+          </div>
+        )}
+      </label>
+    </div>
   );
 };
 

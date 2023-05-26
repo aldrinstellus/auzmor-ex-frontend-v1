@@ -82,6 +82,10 @@ import Marketplace from '../components/Marketplace';
 import DocumentUpload from '../components/DocumentUpload';
 import ArrowUp from '../components/ArrowUp';
 import ThreeDots from '../components/ThreeDots';
+import Reorder from '../components/Reorder';
+import ConnectionFolder from '../components/ConnectionFolder';
+import Call from '../components/Call';
+import Male from '../components/Male';
 
 export const icon = {
   add: Add,
@@ -99,6 +103,8 @@ export const icon = {
   carouselLeft: CarouselLeftIcon,
   carouselRight: CarouselRightIcon,
   celebrate: Celebrate,
+  connectionFolder: ConnectionFolder,
+  call: Call,
   chart: ChartIcon,
   clock: ClockIcon,
   close: CloseIcon,
@@ -139,6 +145,7 @@ export const icon = {
   love: Love,
   magicStar: MagicStarIcon,
   mail: MailIcon,
+  male: Male,
   marriedIcon: MarriedIcon,
   maximize: MaximizeIcon,
   more: MoreIcon,
@@ -150,6 +157,7 @@ export const icon = {
   play: PlayIcon,
   redo: Redo,
   reply: Reply,
+  reorder: Reorder,
   search: Search,
   send: Send,
   slack: SlackIcon,

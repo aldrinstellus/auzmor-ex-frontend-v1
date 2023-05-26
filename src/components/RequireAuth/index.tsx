@@ -1,21 +1,25 @@
 import AppShell from 'components/AppShell';
 import useAuth from 'hooks/useAuth';
 import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useParams } from 'react-router-dom';
+import { setItem } from 'utils/persist';
 
 interface IRequireAuthProps {}
 
 const RequireAuth: React.FC<IRequireAuthProps> = () => {
-  // ⬇️ get authentication
   const { user } = useAuth();
+  const location = useLocation();
 
-  return user ? (
-    <AppShell>
-      <Outlet />
-    </AppShell>
-  ) : (
-    <Navigate to="/login" />
-  );
+  if (user) {
+    return (
+      <AppShell>
+        <Outlet />
+      </AppShell>
+    );
+  }
+
+  setItem('redirect_post_login_to', location.pathname);
+  return <Navigate to="/login" />;
 };
 
 export default RequireAuth;

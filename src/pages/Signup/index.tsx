@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Button, { Size, Type as ButtonType } from 'components/Button';
 import { Logo } from 'components/Logo';
+import WelcomeOffice from 'images/welcomeToOffice.png';
 import { useMutation } from '@tanstack/react-query';
 import { redirectWithToken } from 'utils/misc';
 import { signup } from 'queries/account';
@@ -14,6 +15,7 @@ import { useDebounce } from 'hooks/useDebounce';
 import { useDomainExists, useIsUserExist } from 'queries/users';
 
 interface IForm {
+  fullName: string;
   workEmail: string;
   domain: string;
   password: string;
@@ -23,15 +25,16 @@ interface IForm {
 }
 
 const schema = yup.object({
+  fullName: yup.string().required('Required Field'),
   workEmail: yup
     .string()
-    .email('Please enter valid email address')
+    .email('The email address you entered is invalid')
     .required('Required field'),
   domain: yup.string().required('Required field'),
   password: yup.string().required('Required field'),
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref('password')], 'This must match the password')
+    .oneOf([yup.ref('password')], 'Passwords do not match')
     .required('Required field'),
   privacyPolicy: yup.boolean().required('Required field').oneOf([true]),
 });
@@ -46,11 +49,11 @@ export interface IValidationErrors {
 const Signup: React.FC<ISignupProps> = () => {
   const signupMutation = useMutation((formData: IForm) => signup(formData), {
     onSuccess: (data) =>
-      redirectWithToken(
-        data.result.data.redirectUrl,
-        data.result.data.uat,
-        true,
-      ),
+      redirectWithToken({
+        redirectUrl: data.result.data.redirectUrl,
+        token: data.result.data.uat,
+        showOnboard: true,
+      }),
   });
 
   const {
@@ -63,6 +66,7 @@ const Signup: React.FC<ISignupProps> = () => {
   } = useForm<IForm>({
     resolver: yupResolver(schema),
     defaultValues: {
+      fullName: '',
       workEmail: '',
       password: '',
       confirmPassword: '',
@@ -74,6 +78,7 @@ const Signup: React.FC<ISignupProps> = () => {
   useEffect(() => {
     signupMutation.reset();
   }, [
+    watch('fullName'),
     watch('workEmail'),
     watch('domain'),
     watch('password'),
@@ -82,6 +87,16 @@ const Signup: React.FC<ISignupProps> = () => {
   ]);
 
   const fields = [
+    {
+      type: FieldType.Input,
+      variant: InputVariant.Text,
+      placeholder: 'Enter your name',
+      name: 'fullName',
+      label: 'Full Name*',
+      error: errors.fullName?.message,
+      dataTestId: 'sign-up-fullname',
+      control,
+    },
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
@@ -96,6 +111,11 @@ const Signup: React.FC<ISignupProps> = () => {
       type: FieldType.Input,
       variant: InputVariant.Text,
       placeholder: 'Enter domain',
+      rightElement: (
+        <div className="text-sm font-medium text-neutral-500">
+          office.auzmor.com
+        </div>
+      ),
       name: 'domain',
       label: 'Domain*',
       error: errors.domain?.message || errors.domain?.types?.domainExists,
@@ -110,6 +130,7 @@ const Signup: React.FC<ISignupProps> = () => {
       label: 'Password*',
       rightIcon: 'people',
       error: errors.password?.message,
+      setError,
       dataTestId: 'sign-up-password',
       control,
       getValues,
@@ -128,8 +149,18 @@ const Signup: React.FC<ISignupProps> = () => {
     },
     {
       type: FieldType.Checkbox,
-      label:
-        'By Signing up you are agreeing to Auzmor Office’s Terms of Use and Privacy Policy',
+      label: (
+        <div>
+          By Signing up you are agreeing to Auzmor Office’s{' '}
+          <span className="text-primary-500">
+            <a href="https://www.auzmor.com/tc">Terms of Use</a>
+          </span>{' '}
+          and{' '}
+          <span className="text-primary-500">
+            <a href="https://www.auzmor.com/privacy-policy">Privacy Policy</a>
+          </span>
+        </div>
+      ),
       name: 'privacyPolicy',
       error: errors.privacyPolicy?.message,
       dataTestId: 'sign-up-checkbox',
@@ -169,15 +200,17 @@ const Signup: React.FC<ISignupProps> = () => {
 
   return (
     <div className="flex h-screen w-screen">
-      <div
-        className="bg-[url(images/welcomeToOffice.png)] w-1/2 h-full bg-no-repeat bg-cover"
+      <img
+        src={WelcomeOffice}
+        className="h-full w-[48%]"
         data-testid="signup-cover-image"
-      ></div>
-      <div className="w-1/2 flex justify-center items-center relative bg-white">
+        alt="Welcome to Auzmor Office"
+      />
+      <div className="w-[52%] h-full flex justify-center items-center relative bg-white overflow-y-auto">
         <div className="absolute top-8 right-8" data-testid="signup-logo-image">
           <Logo />
         </div>
-        <div className="w-full max-w-[440px]">
+        <div className="pt-8 w-full h-full max-w-[440px]">
           <div className="font-extrabold text-neutral-900 text-4xl">
             Sign Up
           </div>
@@ -201,7 +234,7 @@ const Signup: React.FC<ISignupProps> = () => {
             <Button
               dataTestId="sign-up-btn"
               label={'Sign Up'}
-              disabled={!isValid}
+              disabled={!isValid || !!errors?.password?.type}
               className="w-full mt-8"
               type={ButtonType.Submit}
               size={Size.Large}

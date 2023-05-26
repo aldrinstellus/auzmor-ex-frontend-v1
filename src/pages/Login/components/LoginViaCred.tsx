@@ -12,7 +12,6 @@ import Button, {
   Size,
 } from 'components/Button';
 import Divider from 'components/Divider';
-import { Logo } from 'components/Logo';
 import {
   getSubDomain,
   readFirstAxiosError,
@@ -22,6 +21,7 @@ import { Link } from 'react-router-dom';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useGetSSOFromDomain } from 'queries/organization';
 import { useLoginViaSSO } from 'queries/auth';
+import useAuth from 'hooks/useAuth';
 
 export interface ILoginViaCredProps {
   setViaSSO: (flag: boolean) => void;
@@ -36,17 +36,23 @@ interface IForm {
 const schema = yup.object({
   email: yup
     .string()
-    .email('Please enter valid email address')
+    .email('Invalid email address. Please enter a valid email address.')
     .required('Required field'),
   password: yup.string().required('Required field'),
   domain: yup.string(),
 });
 
 const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
+  const { user } = useAuth();
+
   const loginMutation = useMutation((formData: IForm) => login(formData), {
     onSuccess: (data) =>
-      redirectWithToken(data.result.data.redirectUrl, data.result.data.uat),
+      redirectWithToken({
+        redirectUrl: data.result.data.redirectUrl,
+        token: data.result.data.uat,
+      }),
   });
+
   const domain = getSubDomain(window.location.host);
   const { data, isLoading } = useGetSSOFromDomain(
     domain,
@@ -84,6 +90,11 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
     loginMutation.mutate(formData);
   };
 
+  if (user) {
+    redirectWithToken({});
+    return null;
+  }
+
   const fields = [
     {
       type: FieldType.Input,
@@ -112,6 +123,9 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
     <div className="w-full max-w-[440px] h-full">
       <div className="font-extrabold text-neutral-900 text-4xl mt-20">
         Signin
+      </div>
+      <div className="text-neutral-900 text-sm font-normal mt-4">
+        Hello! Welcome back <span>👋</span>
       </div>
       <form
         className="mt-16"

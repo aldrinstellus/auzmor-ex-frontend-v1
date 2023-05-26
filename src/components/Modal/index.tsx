@@ -17,7 +17,7 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   const panelStyle = clsx(
     {
-      'w-full transform overflow-hidden bg-white text-left align-middle transition-all rounded-9xl shadow':
+      'w-full transform overflow-hidden bg-white text-left align-middle rounded-9xl shadow':
         true,
     },
     {
@@ -65,7 +65,7 @@ const Modal: React.FC<ModalProps> = ({
     // </>
     open ? (
       <div
-        className="flex justify-center items-center fixed top-0 left-0 right-0 w-screen h-screen bg-black/60 z-[99999]"
+        className="fixed inset-0 top-0 left-0 right-0 w-screen h-screen bg-black/60 z-50 flex justify-center items-center"
         onClick={closeModal}
       >
         <div onClick={(e) => e.stopPropagation()} className={panelStyle}>

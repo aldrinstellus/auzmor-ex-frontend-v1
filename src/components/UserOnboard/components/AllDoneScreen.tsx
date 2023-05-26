@@ -25,7 +25,8 @@ const AllDoneScreen: React.FC<AllDoneScreenProps> = ({
             className="font-bold"
             label="Launch Auzmor Office"
             onClick={closeModal}
-          ></Button>
+            dataTestId="launch-auzmor-office-btn"
+          />
         </div>
       </div>
     </div>

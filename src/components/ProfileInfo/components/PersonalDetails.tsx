@@ -1,6 +1,7 @@
+import React, { memo, useEffect, useMemo, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import Card from 'components/Card';
 import Divider from 'components/Divider';
-import React, { memo, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import useHover from 'hooks/useHover';
 import Icon from 'components/Icon';
@@ -13,6 +14,10 @@ import { useMutation } from '@tanstack/react-query';
 import { updateCurrentUser } from 'queries/users';
 import queryClient from 'utils/queryClient';
 import { OptionType } from 'components/UserOnboard/components/SelectTimeZone';
+import { twConfig } from 'utils/misc';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { toast } from 'react-toastify';
+import DragDropList from 'components/DragDropList';
 
 interface IPersonalDetails {
   birthDate: string;
@@ -36,6 +41,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
 }) => {
   const [isHovered, eventHandlers] = useHover();
   const [isEditable, setIsEditable] = useState<boolean>(false);
+  const [skills, setSkills] = useState<Record<string, string>[]>([]);
 
   const { control, handleSubmit, getValues } = useForm<IPersonalDetailsForm>({
     mode: 'onChange',
@@ -54,14 +60,40 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
     [isHovered],
   );
 
+  const setInitialSkills = () => {
+    const personalSkillsList = personalDetails?.personal?.skills?.map(
+      (skill: string) => ({
+        id: uuidv4(),
+        value: skill,
+      }),
+    );
+    setSkills(personalSkillsList);
+  };
+
+  useEffect(() => {
+    setInitialSkills();
+  }, []);
+
   const updateUserPersonalDetailsMutation = useMutation({
     mutationFn: updateCurrentUser,
     mutationKey: ['update-user-personal-details-mutation'],
-    onError: (error: any) => {
-      console.log('Error while updating the user: ', error);
-    },
+    onError: (error: any) => {},
     onSuccess: (response: any) => {
-      console.log('Updated User data successfully', response);
+      toast(<SuccessToast content={'User Profile Updated Successfully'} />, {
+        closeButton: (
+          <Icon
+            name="closeCircleOutline"
+            stroke={twConfig.theme.colors.primary['500']}
+            size={20}
+          />
+        ),
+        style: {
+          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+        },
+      });
       setIsEditable(false);
     },
   });
@@ -73,7 +105,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
         birthDate: personalDetailData?.personal?.birthDate,
         permanentAddress: personalDetailData?.personal?.permanentAddress,
         maritalStatus: personalDetailData?.personal?.maritalStatus?.value,
-        skills: ['ReactJs'],
+        skills: skills.map((skill: Record<string, string>) => skill.value),
       },
     };
     await updateUserPersonalDetailsMutation.mutateAsync({
@@ -84,13 +116,13 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   };
 
   const fields = [
-    {
-      type: FieldType.DatePicker,
-      name: 'personal.birthDate',
-      control,
-      dataTestId: 'personal-details-dob',
-      defaultValue: getValues()?.personal?.birthDate,
-    },
+    // {
+    //   type: FieldType.DatePicker,
+    //   name: 'personal.birthDate',
+    //   control,
+    //   dataTestId: 'personal-details-dob',
+    //   defaultValue: getValues()?.personal?.birthDate,
+    // },
     {
       type: FieldType.SingleSelect,
       name: 'personal.gender',
@@ -127,15 +159,26 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
       control,
       menuPlacement: 'top',
     },
-    // {
-    //   type: FieldType.Input,
-    //   name: 'personal.skills',
-    //   placeholder: 'Search for Skills',
-    //   label: 'Skills',
-    //   defaultValue: getValues()?.personal?.skills,
-    //   dataTestId: 'personal-details-skills',
-    //   control,
-    // },
+    {
+      name: 'personal.skills',
+      type: FieldType.Input,
+      label: 'Skills',
+      control,
+      placeholder: 'Search for Skills',
+      dataTestId: 'personal-details-skills',
+      defaultValue: getValues()?.personal?.skills,
+      onEnter: (event: any) => {
+        if (event?.key === 'Enter') {
+          event.preventDefault();
+          const skillObject = {
+            id: uuidv4(),
+            value: event?.target?.value,
+          };
+          console.log(skillObject);
+          setSkills([...skills, skillObject]);
+        }
+      },
+    },
   ];
 
   return (
@@ -150,6 +193,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
           canEdit={canEdit}
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
+          setInitialSkills={setInitialSkills}
           isLoading={updateUserPersonalDetailsMutation.isLoading}
         />
         <Divider />
@@ -170,10 +214,19 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                 </div>
                 <div className="flex space-x-3">
                   <IconWrapper type={Type.Square} className="cursor-pointer">
-                    <Icon name="femaleIcon" size={16} />
+                    {personalDetails?.personal?.gender === 'FEMALE' ? (
+                      <Icon name="femaleIcon" size={16} />
+                    ) : (
+                      <Icon name="male" size={16} />
+                    )}
                   </IconWrapper>
                   <div className="text-neutral-900 text-base font-medium">
-                    {personalDetails?.personal?.gender || 'N/A'}
+                    {personalDetails?.personal?.gender
+                      ?.charAt(0)
+                      ?.toUpperCase() +
+                      personalDetails?.personal?.gender
+                        ?.slice(1)
+                        ?.toLowerCase() || 'N/A'}
                   </div>
                 </div>
                 <div className="space-y-2 mb-4">
@@ -198,26 +251,29 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                       <Icon name="marriedIcon" size={16} />
                     </IconWrapper>
                     <div className="text-neutral-900 text-base font-medium">
-                      {personalDetails?.personal?.maritalStatus || 'N/A'}
+                      {personalDetails?.personal?.maritalStatus?.charAt(0) +
+                        personalDetails?.personal?.maritalStatus
+                          ?.slice(1)
+                          ?.toLowerCase() || 'N/A'}
                     </div>
                   </div>
                 </div>
-                {personalDetails?.personal?.skills?.length > 0 && (
-                  <div>
-                    <div className="text-neutral-500 text-sm font-bold">
-                      Skills
-                    </div>
-                    <div className="text-neutral-900 text-base font-medium">
-                      {personalDetails?.personal?.skills.map(
+                <div>
+                  <div className="text-neutral-500 text-sm font-bold">
+                    Skills
+                  </div>
+                  <div className="text-neutral-900 text-base font-medium px-4">
+                    {(personalDetails?.personal?.skills?.length > 0 &&
+                      personalDetails?.personal?.skills.map(
                         (skill: string, index: number) => (
-                          <ul key={index}>
+                          <ul key={index} className="list-disc">
                             <li>{skill}</li>
                           </ul>
                         ),
-                      ) || 'N/A'}
-                    </div>
+                      )) ||
+                      'N/A'}
                   </div>
-                )}
+                </div>
               </>
             ) : (
               <form>
@@ -225,6 +281,10 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                   Date of Birth
                 </div>
                 <Layout fields={fields} />
+                <DragDropList
+                  draggableItems={skills}
+                  setDraggableItems={setSkills}
+                />
               </form>
             )}
           </div>

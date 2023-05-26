@@ -22,16 +22,24 @@ const UserOnboard: React.FC = (): ReactNode => {
 
   const screens: IScreen[] = [
     {
-      screen: <WelcomeScreen next={next} />,
+      screen: <WelcomeScreen next={next} dataTestId="user-welcome-next" />,
     },
     {
       screen: (
-        <EditProfileScreen next={next} setDisableClose={setDisableClose} />
+        <EditProfileScreen
+          next={next}
+          setDisableClose={setDisableClose}
+          dataTestId="edit-profilepic-next"
+        />
       ),
     },
     {
       screen: (
-        <SelectTimezoneScreen next={next} setDisableClose={setDisableClose} />
+        <SelectTimezoneScreen
+          next={next}
+          setDisableClose={setDisableClose}
+          dataTestId="select-timezone"
+        />
       ),
     },
     {
@@ -54,15 +62,17 @@ const UserOnboard: React.FC = (): ReactNode => {
           <span className="font-extrabold text-lg">
             {screens[currentScreen].cardText || 'Profile Setup'}
           </span>
-          <Icon
-            className={`${
-              disableClose ? 'cursor-not-allowed' : 'cursor-pointer'
-            }`}
-            name="close"
-            fill="#000000"
-            onClick={disableClose ? undefined : closeModal}
-            hover={false}
-          />
+          <div data-testid={`profile-setup-close`}>
+            <Icon
+              className={`${
+                disableClose ? 'cursor-not-allowed' : 'cursor-pointer'
+              }`}
+              name="close"
+              fill="#000000"
+              onClick={disableClose ? undefined : closeModal}
+              hover={false}
+            />
+          </div>
         </div>
         <Divider />
         <span className="flex items-center justify-center h-[500px]">

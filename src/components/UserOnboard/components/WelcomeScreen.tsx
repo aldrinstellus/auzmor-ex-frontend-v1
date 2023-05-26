@@ -4,10 +4,12 @@ import Button from 'components/Button';
 
 type WelcomeScreenProps = {
   next: () => void;
+  dataTestId?: string;
 };
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   next,
+  dataTestId,
 }): ReactElement => {
   return (
     <div className="flex flex-col min-h-full justify-between min-w-full">
@@ -24,7 +26,12 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       <div className="bg-blue-50">
         <div className="p-3 flex items-center justify-between">
           <div />
-          <Button className="font-bold" label={'Next'} onClick={next}></Button>
+          <Button
+            className="font-bold"
+            label={'Next'}
+            onClick={next}
+            dataTestId={dataTestId}
+          ></Button>
         </div>
       </div>
     </div>

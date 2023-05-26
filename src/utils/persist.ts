@@ -6,6 +6,10 @@ export const getItem = (key: string, defaultValue = '') => {
   return localStorage.getItem(key) || defaultValue;
 };
 
+export const removeItem = (key: string) => {
+  return localStorage.removeItem(key);
+};
+
 export const removeAllItems = () => {
   localStorage.clear();
 };

@@ -14,6 +14,7 @@ import Banner, { Variant } from 'components/Banner';
 type SelectTimezoneScreenProps = {
   next: () => void;
   setDisableClose: (disableClose: boolean) => void;
+  dataTestId?: string;
 };
 
 interface IForm {
@@ -28,6 +29,7 @@ export type OptionType = {
 const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
   next,
   setDisableClose,
+  dataTestId,
 }): ReactElement => {
   const defaultTimezone = getDefaultTimezoneOption();
 
@@ -78,6 +80,7 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
         label: timeZone.timezoneName,
         value: timeZone.iana,
       })),
+      dataTestId: dataTestId,
       defaultValue: defaultTimezone,
       menuPlacement: 'top',
     },
@@ -117,6 +120,7 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
                 label="Next"
                 type={Type.Submit}
                 disabled={isLoading}
+                dataTestId="select-timezone-next"
               />
             </div>
           </div>

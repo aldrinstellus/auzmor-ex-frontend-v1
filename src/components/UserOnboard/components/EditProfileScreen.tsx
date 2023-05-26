@@ -6,11 +6,13 @@ import Banner, { Variant } from 'components/Banner';
 type EditProfileScreenProps = {
   next: () => void;
   setDisableClose: (disableClose: boolean) => void;
+  dataTestId?: string;
 };
 
 const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   next,
   setDisableClose,
+  dataTestId,
 }): ReactElement => {
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -20,7 +22,11 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   return (
     <div className="flex flex-col min-h-full justify-between min-w-full">
       <div className="flex items-center flex-col justify-between gap-y-4 mt-6">
-        <UpdateProfileImage setError={setError} setLoading={setLoading} />
+        <UpdateProfileImage
+          setError={setError}
+          setLoading={setLoading}
+          dataTestId="edit-profilepic"
+        />
         <div className="flex flex-col items-center gap-y-4 mt-4">
           <p className="font-bold text-neutral-900 text-2xl">
             Set your profile photo
@@ -43,7 +49,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
           className={`min-w-full ${
             error && !loading ? 'visible' : 'invisible'
           }`}
+          dataTestId="error-set-profilepic"
         />
+
         <div className="bg-blue-50 ">
           <div className="p-3 flex items-center justify-between">
             <div
@@ -59,6 +67,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
               label="Next"
               disabled={loading}
               onClick={next}
+              dataTestId={`${dataTestId}`}
             />
           </div>
         </div>

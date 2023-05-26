@@ -1,11 +1,12 @@
 import clsx from 'clsx';
-import React, { useMemo } from 'react';
+import React, { ReactElement, useMemo } from 'react';
 import { Control, useController } from 'react-hook-form';
 import Icon from 'components/Icon';
 
 export enum Variant {
   Text = 'TEXT',
   Password = 'PASSWORD',
+  Tel = 'TEL',
 }
 
 export enum Size {
@@ -20,6 +21,7 @@ export type InputProps = {
   variant?: Variant;
   size?: Size;
   rightIcon?: string;
+  rightElement?: ReactElement;
   leftIcon?: string;
   defaultValue?: string;
   placeholder?: string;
@@ -34,6 +36,7 @@ export type InputProps = {
   label?: string;
   onLeftIconClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   onRightIconClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onEnter?: any;
 };
 
 const Input: React.FC<InputProps> = ({
@@ -43,6 +46,7 @@ const Input: React.FC<InputProps> = ({
   size = Size.Medium,
   rightIcon = null,
   leftIcon = null,
+  rightElement,
   defaultValue = '',
   placeholder = '',
   loading = false,
@@ -56,6 +60,7 @@ const Input: React.FC<InputProps> = ({
   label,
   onLeftIconClick,
   onRightIconClick,
+  onEnter,
 }) => {
   const { field } = useController({
     name,
@@ -152,12 +157,18 @@ const Input: React.FC<InputProps> = ({
             defaultValue={defaultValue}
             ref={field.ref}
             onChange={field.onChange}
+            onKeyDown={onEnter}
             onBlur={field.onBlur}
           />
         </div>
         {rightIcon && (
           <div className="absolute right-5" onClick={onRightIconClick}>
             <Icon name={rightIcon} size={16} />
+          </div>
+        )}
+        {rightElement && (
+          <div className="absolute right-0 border border-solid border-neutral-200 rounded-19xl bg-blue-50 py-3 px-5">
+            {rightElement}
           </div>
         )}
       </label>
