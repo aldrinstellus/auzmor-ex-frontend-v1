@@ -116,13 +116,13 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   };
 
   const fields = [
-    // {
-    //   type: FieldType.DatePicker,
-    //   name: 'personal.birthDate',
-    //   control,
-    //   dataTestId: 'personal-details-dob',
-    //   defaultValue: getValues()?.personal?.birthDate,
-    // },
+    {
+      type: FieldType.DatePicker,
+      name: 'personal.birthDate',
+      control,
+      dataTestId: 'personal-details-dob',
+      defaultValue: getValues()?.personal?.birthDate,
+    },
     {
       type: FieldType.SingleSelect,
       name: 'personal.gender',
