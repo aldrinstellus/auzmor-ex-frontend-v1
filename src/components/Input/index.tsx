@@ -155,6 +155,7 @@ const Input: React.FC<InputProps> = ({
             placeholder={placeholder}
             data-testid={dataTestId}
             defaultValue={defaultValue}
+            value={field.value}
             ref={field.ref}
             onChange={field.onChange}
             onKeyDown={onEnter}

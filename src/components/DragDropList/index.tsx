@@ -10,11 +10,15 @@ import Icon from 'components/Icon';
 type DragDropListProps = {
   draggableItems: Record<string, string>[];
   setDraggableItems: (items: Record<string, string>[]) => void;
+  dataTestIdEdit?: string;
+  dataTestIdDelete?: string;
 };
 
 const DragDropList: React.FC<DragDropListProps> = ({
   draggableItems,
   setDraggableItems,
+  dataTestIdEdit,
+  dataTestIdDelete,
 }) => {
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
@@ -46,23 +50,29 @@ const DragDropList: React.FC<DragDropListProps> = ({
                   >
                     <div className="flex items-center space-x-4">
                       <Icon name="reorder" />
-                      <span className="mr-2">{item.value}</span>
+                      <span className="mr-2" data-testid={`edit-${item.value}`}>
+                        {item.value}
+                      </span>
                     </div>
                     <div className="flex space-x-4 items-center">
-                      <Icon name="edit" size={20} />
-                      <Icon
-                        name="delete"
-                        stroke="#F05252"
-                        hover={false}
-                        fill="#F05252"
-                        size={20}
-                        onClick={() => {
-                          const updatedValues = draggableItems.filter(
-                            (element) => element?.value !== item.value,
-                          );
-                          setDraggableItems(updatedValues);
-                        }}
-                      />
+                      <div data-testid={`${dataTestIdEdit}-${item.value}`}>
+                        <Icon name="edit" size={20} />
+                      </div>
+                      <div data-testid={`${dataTestIdDelete}-${item.value}`}>
+                        <Icon
+                          name="delete"
+                          stroke="#F05252"
+                          hover={false}
+                          fill="#F05252"
+                          size={20}
+                          onClick={() => {
+                            const updatedValues = draggableItems.filter(
+                              (element) => element?.value !== item.value,
+                            );
+                            setDraggableItems(updatedValues);
+                          }}
+                        />
+                      </div>
                     </div>
                   </li>
                 )}

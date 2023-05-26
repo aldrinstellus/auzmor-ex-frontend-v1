@@ -103,7 +103,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                   leftIconClassName="mr-2"
                   label={canEdit ? 'Edit Profile' : 'Follow'}
                   leftIcon={canEdit ? 'edit' : 'addCircle'}
-                  size={ButtonSize.Small}
+                  size={ButtonSize.Medium}
                   variant={ButtonVariant.Secondary}
                   onClick={() => {
                     canEdit && setShowModal(true);

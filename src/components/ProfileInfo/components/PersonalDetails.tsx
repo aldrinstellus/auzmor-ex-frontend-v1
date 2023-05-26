@@ -20,14 +20,15 @@ import { toast } from 'react-toastify';
 import DragDropList from 'components/DragDropList';
 
 interface IPersonalDetails {
-  birthDate: string;
+  birthDate: Date | string;
   gender: OptionType;
-  permanentAddress: string;
+  permanentLocation: string;
   maritalStatus: OptionType;
   skills: string[];
 }
 interface IPersonalDetailsForm {
   personal: IPersonalDetails;
+  skills: string;
 }
 
 type IPersonalDetailsProps = {
@@ -43,17 +44,19 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [skills, setSkills] = useState<Record<string, string>[]>([]);
 
-  const { control, handleSubmit, getValues } = useForm<IPersonalDetailsForm>({
-    mode: 'onChange',
-    defaultValues: {
-      personal: {
-        birthDate: personalDetails?.personal?.birthDate,
-        gender: personalDetails?.personal?.gender,
-        permanentAddress: personalDetails?.personal?.permanentLocation,
-        maritalStatus: personalDetails?.personal?.maritalStatus,
+  const { control, handleSubmit, getValues, resetField } =
+    useForm<IPersonalDetailsForm>({
+      mode: 'onChange',
+      defaultValues: {
+        personal: {
+          birthDate: new Date(personalDetails?.personal?.birthDate),
+          gender: personalDetails?.personal?.gender,
+          permanentLocation: personalDetails?.personal?.permanentAddress,
+          maritalStatus: personalDetails?.personal?.maritalStatus,
+        },
+        skills: personalDetails?.personal?.skills[0],
       },
-    },
-  });
+    });
 
   const onHoverStyles = useMemo(
     () => clsx({ 'mb-8': true }, { 'shadow-xl': isHovered && canEdit }),
@@ -93,6 +96,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
           display: 'flex',
           alignItems: 'center',
         },
+        autoClose: 2000,
       });
       setIsEditable(false);
     },
@@ -103,7 +107,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
       personal: {
         gender: personalDetailData?.personal?.gender?.value,
         birthDate: personalDetailData?.personal?.birthDate,
-        permanentAddress: personalDetailData?.personal?.permanentAddress,
+        permanentLocation: personalDetailData?.personal?.permanentLocation,
         maritalStatus: personalDetailData?.personal?.maritalStatus?.value,
         skills: skills.map((skill: Record<string, string>) => skill.value),
       },
@@ -116,19 +120,22 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   };
 
   const fields = [
-    // {
-    //   type: FieldType.DatePicker,
-    //   name: 'personal.birthDate',
-    //   control,
-    //   dataTestId: 'personal-details-dob',
-    //   defaultValue: getValues()?.personal?.birthDate,
-    // },
+    {
+      type: FieldType.DatePicker,
+      name: 'personal.birthDate',
+      control,
+      dataTestId: 'personal-details-dob',
+      defaultValue: getValues()?.personal?.birthDate,
+    },
     {
       type: FieldType.SingleSelect,
       name: 'personal.gender',
       placeholder: 'Select Gender',
       label: 'Gender',
-      defaultValue: getValues()?.personal?.gender?.label,
+      defaultValue: {
+        value: getValues()?.personal?.gender,
+        label: getValues()?.personal?.gender,
+      },
       dataTestId: 'personal-details-gender',
       options: [
         { value: 'MALE', label: 'Male' },
@@ -138,19 +145,22 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
     },
     {
       type: FieldType.Input,
-      name: 'personal.permanentAddress',
+      name: 'personal.permanentLocation',
       placeholder: 'Ex - Flat no, line Address',
       label: 'Permanent Address',
-      defaultValue: getValues()?.personal?.permanentAddress,
+      defaultValue: getValues()?.personal?.permanentLocation,
       dataTestId: 'personal-details-address',
       control,
     },
     {
       type: FieldType.SingleSelect,
       name: 'personal.maritalStatus',
-      placeholder: '',
+      placeholder: 'Select Marital Status',
       label: 'Marital Status',
-      defaultValue: getValues()?.personal?.maritalStatus?.label,
+      defaultValue: {
+        value: getValues()?.personal?.maritalStatus,
+        label: getValues()?.personal?.maritalStatus,
+      },
       dataTestId: 'personal-details-marital-status',
       options: [
         { value: 'MARRIED', label: 'Married' },
@@ -160,13 +170,13 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
       menuPlacement: 'top',
     },
     {
-      name: 'personal.skills',
+      name: 'skills',
       type: FieldType.Input,
       label: 'Skills',
       control,
       placeholder: 'Search for Skills',
       dataTestId: 'personal-details-skills',
-      defaultValue: getValues()?.personal?.skills,
+      defaultValue: getValues()?.skills,
       onEnter: (event: any) => {
         if (event?.key === 'Enter') {
           event.preventDefault();
@@ -174,7 +184,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
             id: uuidv4(),
             value: event?.target?.value,
           };
-          console.log(skillObject);
+          resetField('skills');
           setSkills([...skills, skillObject]);
         }
       },
@@ -262,7 +272,10 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                   <div className="text-neutral-500 text-sm font-bold">
                     Skills
                   </div>
-                  <div className="text-neutral-900 text-base font-medium px-4">
+                  <div
+                    className="text-neutral-900 text-base font-medium px-4"
+                    data-testid="added-skills"
+                  >
                     {(personalDetails?.personal?.skills?.length > 0 &&
                       personalDetails?.personal?.skills.map(
                         (skill: string, index: number) => (
@@ -284,6 +297,8 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                 <DragDropList
                   draggableItems={skills}
                   setDraggableItems={setSkills}
+                  dataTestIdEdit={'edit-button'}
+                  dataTestIdDelete={'delete-button'}
                 />
               </form>
             )}

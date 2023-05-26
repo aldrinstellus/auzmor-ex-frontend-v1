@@ -9,7 +9,6 @@ import useHover from 'hooks/useHover';
 import clsx from 'clsx';
 import Header from 'components/ProfileInfo/components/Header';
 import { useForm } from 'react-hook-form';
-import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import { useMutation } from '@tanstack/react-query';
 import { updateCurrentUser } from 'queries/users';
@@ -99,6 +98,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
           display: 'flex',
           alignItems: 'center',
         },
+        autoClose: 2000,
       });
       setIsEditable(false);
     },
@@ -134,7 +134,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                       <Icon name="email" stroke="#737373" size={15} />
                     </IconWrapper>
                     <div
-                      className="text-xs font-normal text-neutral-900"
+                      className="text-sm font-normal text-neutral-900"
                       data-testid="user-contact-widget-email"
                     >
                       {contactCardData?.primaryEmail || 'N/A'}
@@ -147,6 +147,26 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                       onClick={() => {
                         navigator.clipboard.writeText(
                           contactCardData?.primaryEmail,
+                        );
+                        toast(
+                          <SuccessToast content={'Copied to clipboard'} />,
+                          {
+                            closeButton: (
+                              <Icon
+                                name="closeCircleOutline"
+                                stroke={twConfig.theme.colors.primary['500']}
+                                size={20}
+                              />
+                            ),
+                            style: {
+                              border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+                              borderRadius: '6px',
+                              display: 'flex',
+                              alignItems: 'center',
+                            },
+                            autoClose: 2000,
+                            position: 'bottom-center',
+                          },
                         );
                       }}
                     />
@@ -165,7 +185,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                       <Icon name="call" stroke="#737373" size={15} />
                     </IconWrapper>{' '}
                     <div
-                      className="text-xs font-normal text-neutral-900"
+                      className="text-sm font-normal text-neutral-900"
                       data-testid="user-contact-widget-number"
                     >
                       {contactCardData?.workPhone || 'N/A'}

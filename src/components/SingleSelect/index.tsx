@@ -6,7 +6,7 @@ import { twConfig } from 'utils/misc';
 
 export interface ISingleSelectProps {
   name: string;
-  defaultValue?: string;
+  defaultValue?: any;
   disabled?: boolean;
   error?: string;
   className?: string;
@@ -37,7 +37,6 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
     name,
     control,
   });
-
   const labelStyle = useMemo(
     () =>
       clsx(

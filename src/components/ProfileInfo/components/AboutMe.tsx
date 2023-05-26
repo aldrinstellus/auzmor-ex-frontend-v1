@@ -77,6 +77,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
           display: 'flex',
           alignItems: 'center',
         },
+        autoClose: 2000,
       });
       setIsEditable(false);
     },
@@ -117,9 +118,9 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
 
   const onSubmit = async () => {
     const message = getValues();
-    if (!message?.personal?.about) {
-      return;
-    }
+    // if (!message?.personal?.about) {
+    //   return;
+    // }
     await updateUserAboutMeMutation.mutateAsync(message);
     await queryClient.invalidateQueries(['current-user-me']);
     setIsEditable(false);
