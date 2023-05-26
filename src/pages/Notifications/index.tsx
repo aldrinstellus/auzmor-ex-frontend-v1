@@ -3,7 +3,7 @@ import React, { ReactElement, ReactNode, useState } from 'react';
 import NotificationSettingsCard from './components/NotificationSettingsCard';
 import Card from 'components/Card';
 import Button, { Variant } from 'components/Button';
-import NotificationsList from 'components/NotificationsOverview/components/NotificationsList';
+import NotificationsListing from './components/NotificationsListing';
 
 enum NotificationType {
   ALL = 'ALL',
@@ -22,19 +22,19 @@ const buttonGroup = [
   {
     label: 'All',
     type: NotificationType.ALL,
-    component: <NotificationsList />,
+    component: <NotificationsListing />,
     disabled: false,
   },
   {
     label: 'Mentions',
     type: NotificationType.MENTIONS,
-    component: <NotificationsList mentions />,
+    component: <NotificationsListing mentions />,
     disabled: false,
   },
   {
     label: 'Channels',
     type: NotificationType.CHANNELS,
-    component: <NotificationsList />,
+    component: <NotificationsListing />,
     disabled: true,
   },
 ];

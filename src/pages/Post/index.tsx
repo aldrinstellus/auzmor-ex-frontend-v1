@@ -1,5 +1,4 @@
 import AnnouncementCard from 'components/AnnouncementWidget';
-import Card from 'components/Card';
 import { activeCommentsDataType } from 'components/Comments';
 import { Comment } from 'components/Comments/Comment';
 import Post from 'components/Post';
