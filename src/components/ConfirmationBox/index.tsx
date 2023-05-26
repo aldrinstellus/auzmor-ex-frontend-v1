@@ -10,7 +10,7 @@ export interface Discard {
 }
 export interface Success {
   label: string;
-  onSubmit: () => void;
+  onSubmit: () => any;
   className: string;
 }
 

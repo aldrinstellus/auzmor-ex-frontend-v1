@@ -5,6 +5,7 @@ import { find } from 'lodash';
 interface ITab {
   id: number;
   title: string;
+  dataTestId?: string;
   content?: ReactNode;
 }
 
@@ -42,6 +43,7 @@ const TabSwitcher: React.FC<TabSwitcherProps> = ({ tabs }) => {
             key={tab?.id}
             onClick={() => handleTabClick(tab?.id)}
             className={styles(tab?.id === activeTab)}
+            data-testId={tab?.dataTestId}
           >
             {tab?.title}
           </div>

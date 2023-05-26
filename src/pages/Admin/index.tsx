@@ -78,8 +78,14 @@ const Admin: React.FC<IAdminProps> = () => {
   );
 
   return (
-    <div className="flex justify-between w-full gap-x-14">
-      <Card className="min-w-[300px] max-h-[400px]">
+    <div
+      className="flex justify-between w-full gap-x-14"
+      data-testid="admin-settings"
+    >
+      <Card
+        className="min-w-[300px] max-h-[400px]"
+        dataTestId="admin-settings-controls"
+      >
         <p className="text-neutral-900 text-base font-bold p-4">
           Admin Settings
         </p>

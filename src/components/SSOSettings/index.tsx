@@ -10,6 +10,7 @@ import ConfigureGenericSSO from './components/ConfigureGenericSSO';
 import { IdentityProvider, useGetSSO } from 'queries/organization';
 import ConfigureLDAP from './components/ConfigureLDAP';
 import Banner, { Variant } from 'components/Banner';
+import { snakeCase } from 'lodash';
 
 enum ConfigureScreen {
   GENERIC = 'GENERIC',
@@ -158,6 +159,7 @@ const SSOSettings: React.FC = (): ReactElement => {
             active={integration.active || false}
             setShowErrorBanner={setShowErrorBanner}
             activeSSO={activeSSO}
+            dataTestId={`sso-admin-${snakeCase(integration.key)}`}
           />
         ))}
         {open && ssoSetting?.configureScreen === ConfigureScreen.GENERIC && (
