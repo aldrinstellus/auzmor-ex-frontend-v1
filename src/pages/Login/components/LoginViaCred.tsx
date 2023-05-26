@@ -104,6 +104,7 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
       label: 'Work Email / Username',
       error: loginMutation.isError || errors.email?.message,
       dataTestId: 'signin-email',
+      errorDataTestId: 'signin-invalid-email-format-msg',
       control,
     },
     {
