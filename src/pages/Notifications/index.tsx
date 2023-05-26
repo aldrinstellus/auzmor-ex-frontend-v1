@@ -50,31 +50,29 @@ const Notifications: React.FC = (): ReactElement => {
           <UserCard />
         </div>
         <div className="w-1/2">
-          <div className="mt-4">
-            <Card className="p-6">
-              <div className="flex flex-col">
-                <p className="text-2xl text-neutral-900 font-bold">
-                  Notifications
-                </p>
-                <div className="flex gap-x-3 pt-6">
-                  {buttonGroup.map((button, index) => (
-                    <Button
-                      label={button.label}
-                      variant={Variant.Secondary}
-                      key={button.type}
-                      disabled={button.disabled}
-                      onClick={() => setNotificationsList(buttonGroup[index])}
-                      className={`${
-                        notificationsList.type === button.type
-                          ? '!text-primary-600'
-                          : ''
-                      }`}
-                    />
-                  ))}
-                </div>
+          <Card className="p-6">
+            <div className="flex flex-col">
+              <p className="text-2xl text-neutral-900 font-bold">
+                Notifications
+              </p>
+              <div className="flex gap-x-3 pt-6">
+                {buttonGroup.map((button, index) => (
+                  <Button
+                    label={button.label}
+                    variant={Variant.Secondary}
+                    key={button.type}
+                    disabled={button.disabled}
+                    onClick={() => setNotificationsList(buttonGroup[index])}
+                    className={`${
+                      notificationsList.type === button.type
+                        ? '!text-primary-600'
+                        : ''
+                    }`}
+                  />
+                ))}
               </div>
-            </Card>
-          </div>
+            </div>
+          </Card>
           <div className="mt-4">{notificationsList.component}</div>
         </div>
         <div className="w-1/4">

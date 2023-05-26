@@ -45,7 +45,7 @@ const AccountCard = () => {
               size={80}
               name={user?.name || 'U'}
               image={user?.profileImage}
-              showActiveIndicator
+              // showActiveIndicator
             />
             <div
               className="text-sm font-bold mt-4"

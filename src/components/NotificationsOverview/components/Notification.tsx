@@ -21,7 +21,6 @@ const Notification: React.FC<NotificationCardProps> = ({
   id,
 }): ReactElement => {
   const notificationMessage = getNotificationMessage(
-    actor.fullName,
     action.type,
     target[target.length - 1].type,
   );
@@ -68,20 +67,25 @@ const Notification: React.FC<NotificationCardProps> = ({
       } py-4 px-6 cursor-pointer`}
       onClick={handleOnClick}
     >
-      <div className="flex gap-x-4 items-start">
+      <div className="flex gap-x-4">
         {/* Avatar of the actor with indicator */}
-        <Avatar
-          name={actor.fullName}
-          image={actor.profileImage?.original}
-          indicatorIcon={
-            <div className="bg-green-400 rounded-full w-3 h-3 top-0 right-0 absolute" />
-          }
-          size={40}
-        />
+        <div className="w-fit">
+          <Avatar
+            name={actor.fullName}
+            image={actor.profileImage?.original}
+            // indicatorIcon={
+            //   <div className="bg-green-400 rounded-full w-3 h-3 top-0 right-0 absolute" />
+            // }
+            size={40}
+          />
+        </div>
         {/* Content */}
         <div className="flex items-start justify-between w-full">
           <div className="flex flex-col gap-y-1 w-11/12">
-            <p className="text-neutral-900">{notificationMessage}</p>
+            <p className="text-neutral-900">
+              <span className="font-bold">{actor.fullName}&nbsp;</span>
+              {notificationMessage}
+            </p>
             <p className="text-sm text-neutral-500 font-normal">
               {getTimeSinceActedAt(action.actedAt)}
             </p>

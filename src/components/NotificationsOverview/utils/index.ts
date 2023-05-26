@@ -146,11 +146,10 @@ export const getNotificationElementContent = (
 };
 
 export const getNotificationMessage = (
-  actorName: string,
   actionType: string,
   targetType: string,
 ) => {
-  let message = actorName + ' ';
+  let message = '';
   if (targetType === TargetType[TargetType.POST]) {
     if (actionType === ActionType[ActionType.COMMENT]) {
       message += 'commented on your post';

@@ -28,7 +28,7 @@ const NotificationsOverview: React.FC = () => {
           All
         </p>
       ),
-      tabContent: <NotificationsList key="All" />,
+      tabContent: <NotificationsList key="All" className="max-h-96" />,
     },
     {
       tabLable: (isActive: boolean) => (
@@ -40,7 +40,13 @@ const NotificationsOverview: React.FC = () => {
           Mentions
         </p>
       ),
-      tabContent: <NotificationsList key="Mentions" mentions={true} />,
+      tabContent: (
+        <NotificationsList
+          key="Mentions"
+          mentions={true}
+          className="max-h-96"
+        />
+      ),
     },
   ];
 
@@ -74,16 +80,21 @@ const NotificationsOverview: React.FC = () => {
             Notifications
           </p>
           {/* Mark all as read */}
-          <div className="flex items-center gap-x-1 cursor-pointer">
+          {/* <div className="flex items-center gap-x-1 cursor-pointer">
             <Icon name="checkbox" stroke="#059669" size={18} />
             <p className="text-primary-600 font-bold text-sm">
               Mark all as read
             </p>
-          </div>
+          </div> */}
         </div>
         {/* Content */}
         <Divider />
-        <Tabs tabs={notifTabs} tabContentClassName="" />
+        <Tabs
+          tabs={notifTabs}
+          tabContentClassName=""
+          className="flex justify-start gap-x-1 px-4 border-b-1 border border-neutral-200"
+          itemSpacing={4}
+        />
         <Divider />
         <div className="px-6 bg-blue-100 text-sm font-normal flex items-center justify-start py-4 rounded-b-9xl">
           <NavLink
