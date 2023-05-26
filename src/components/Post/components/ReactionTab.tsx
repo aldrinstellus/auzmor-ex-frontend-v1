@@ -44,9 +44,7 @@ const ReactionTab: React.FC<IReactionTabProps> = ({ postId, activeTab }) => {
   return (
     <div>
       {isLoading ? (
-        <div className="flex items-center justify-center w-full py-20">
-          <Spinner color={PRIMARY_COLOR} />
-        </div>
+        <ReactionRow isLoading={true} />
       ) : (
         reactions &&
         reactions.map((reaction: IGetReaction) => (
@@ -54,11 +52,7 @@ const ReactionTab: React.FC<IReactionTabProps> = ({ postId, activeTab }) => {
         ))
       )}
       <div>
-        {hasNextPage && isFetchingNextPage && (
-          <div className="flex justify-center items-center w-full py-6">
-            <Spinner color={PRIMARY_COLOR} />
-          </div>
-        )}
+        {hasNextPage && isFetchingNextPage && <ReactionRow isLoading={true} />}
         {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
       </div>
     </div>
