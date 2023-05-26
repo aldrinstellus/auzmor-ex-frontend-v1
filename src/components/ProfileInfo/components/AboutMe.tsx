@@ -84,16 +84,16 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
 
   const renderContentWithLinks = (text: string) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const matches = text.match(urlRegex);
+    const matches = text?.match(urlRegex);
     if (!matches) {
       return text;
     }
     const elements = [];
     let lastIndex = 0;
-    matches.forEach((match: any, index: any) => {
-      const startIndex = text.indexOf(match, lastIndex);
-      const endIndex = startIndex + match.length;
-      const beforeText = text.substring(lastIndex, startIndex);
+    matches?.forEach((match: any, index: any) => {
+      const startIndex = text?.indexOf(match, lastIndex);
+      const endIndex = startIndex + match?.length;
+      const beforeText = text?.substring(lastIndex, startIndex);
       const linkText = match;
       elements.push(
         <React.Fragment key={index}>
@@ -111,7 +111,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
 
       lastIndex = endIndex;
     });
-    elements.push(text.substring(lastIndex));
+    elements.push(text?.substring(lastIndex));
     return elements;
   };
 
