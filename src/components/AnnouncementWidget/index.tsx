@@ -31,7 +31,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
     data?.data?.result?.data?.[0]?.myAcknowledgement?.reaction !== 'mark_read';
 
   return (
-    <div className="min-w-[240px] sticky -top-4">
+    <div className="min-w-[240px] sticky top-24">
       <div className="flex justify-between items-center ">
         <div className="text-base font-bold">Announcements</div>
         {/* <div className="text-sm font-bold">View All</div> */}

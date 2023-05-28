@@ -3,13 +3,15 @@ import Card from 'components/Card';
 import useAuth from 'hooks/useAuth';
 import React from 'react';
 
-export interface IUserCardProps {}
+export interface IUserCardProps {
+  className?: string;
+}
 
-const UserCard: React.FC<IUserCardProps> = () => {
+const UserCard: React.FC<IUserCardProps> = ({ className }) => {
   const { user } = useAuth();
 
   return (
-    <div>
+    <div className={className}>
       <Card className="pb-10 pt-0 rounded-9xl">
         <div className="flex flex-col items-center relative px-12">
           <div className="bg-blue-700 w-full h-20 absolute top-0 rounded-t-9xl"></div>
@@ -19,7 +21,9 @@ const UserCard: React.FC<IUserCardProps> = () => {
             size={96}
             className="border-4 border-white mt-8 overflow-hidden"
           />
-          <div className="text-base font-bold mt-2">{user?.name}</div>
+          <div className="text-base font-bold mt-2 truncate w-full">
+            {user?.name}
+          </div>
         </div>
       </Card>
     </div>

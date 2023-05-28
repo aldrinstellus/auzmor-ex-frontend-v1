@@ -3,6 +3,7 @@ import React, { ReactNode, useState } from 'react';
 interface ITab {
   tabLable: (isActive: boolean) => string | ReactNode;
   tabContent: ReactNode;
+  dataTestId?: string;
 }
 
 export interface ITabsProps {
@@ -24,6 +25,7 @@ const Tabs: React.FC<ITabsProps> = ({ tabs, activeTabIndex = 0 }) => {
             } ${index !== tabs.length - 1 && 'mr-10'}`}
             onClick={() => setActiveTab(index)}
             key={index}
+            data-test-id={tab.dataTestId}
           >
             {tab.tabLable(activeTab === index)}
             {isActive(index) && (

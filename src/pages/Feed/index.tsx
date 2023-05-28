@@ -94,8 +94,8 @@ const Feed: React.FC<IFeedProps> = () => {
   return (
     <>
       <div className="mb-12 space-x-8 flex w-full">
-        <div className="sticky top-10 z-10 w-1/4">
-          <UserCard />
+        <div className="top-10 z-10 w-1/4">
+          <UserCard className="sticky top-24" />
         </div>
         <div className="w-1/2">
           <div className="">
