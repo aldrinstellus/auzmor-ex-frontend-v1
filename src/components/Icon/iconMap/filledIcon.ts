@@ -48,6 +48,7 @@ import SvgDocumentUploadOutline from '../components/DocumentUpload/DocumentUploa
 import SvgDeleteFilled from '../components/Delete/DeleteFilled';
 import SvgExportFilled from '../components/Export/ExportFilled';
 import SvgMaximizeFilled from '../components/Maximize/MaximizeFilled';
+import SvgImportFilled from '../components/Import/ImportFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -67,6 +68,7 @@ export const filledIcon = {
   crossCircleFilled: SvgCrossCircleFilled,
   deleteFilled: SvgDeleteFilled,
   documentFilled: SvgDocumentFilled,
+  documentUpload: SvgDocumentUploadOutline,
   draftFilled: SvgDraftFilled,
   editFilled: SvgEditFilled,
   emojiHappyFilled: SvgEmojiHappyFilled,
@@ -79,6 +81,7 @@ export const filledIcon = {
   hashtagFilled: SvgOrangeHashtagFilled,
   iconLinearFilled: SvgIconLinearFilled,
   imageFilled: SvgImageFilled,
+  importFilled: SvgImportFilled,
   infoCircleFilled: SvgInfoCircleFilled,
   insightfulFilled: SvgInsightfulFilled,
   likeFilled: SvgLikeFilled,
@@ -99,5 +102,4 @@ export const filledIcon = {
   trashFilled: SvgTrashFilled,
   userFilled: SvgUsersFilled,
   videoFilled: SvgVideoFilled,
-  documentUpload: SvgDocumentUploadOutline,
 };

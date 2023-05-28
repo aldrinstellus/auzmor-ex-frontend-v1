@@ -27,9 +27,9 @@ const MediaRender: React.FC<IMediaRenderProps> = ({
       onClick={onClick}
     >
       {data.type === 'IMAGE' ? (
-        <img src={data.original} className="h-full" />
+        <img src={data.original} className="object-cover w-full h-full" />
       ) : (
-        <video className="h-full">
+        <video className="object-cover w-full h-full">
           <source src={data.original} />
         </video>
       )}
