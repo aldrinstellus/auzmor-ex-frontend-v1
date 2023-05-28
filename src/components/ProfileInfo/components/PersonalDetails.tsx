@@ -59,7 +59,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
           permanentLocation: personalDetails?.personal?.permanentAddress,
           maritalStatus: personalDetails?.personal?.maritalStatus,
         },
-        skills: personalDetails?.personal?.skills[0],
+        skills: '',
       },
     });
 

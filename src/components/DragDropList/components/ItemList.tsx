@@ -29,20 +29,19 @@ const ItemList: React.FC<IItemListProps> = ({
   }, [isEditable]);
 
   const updateInitialSkillsets = (id: string, newValue: string) => {
-    const updateSkillsets = (previousItems: ISkillsOption[]) => {
-      console.log(previousItems);
-      return previousItems?.map((item) =>
-        item.id === id ? { ...item, value: newValue } : item,
-      );
-    };
-    // setDraggableItems((prevValues: ISkillsOption[]) => console.log('sdfsdfsd'));
+    console.log(id, newValue);
+    const updateSkillsets = draggableItems?.map((item) =>
+      item.id === id ? { ...item, value: newValue } : item,
+    );
+    console.log('sdsds', updateSkillsets);
+    setDraggableItems(updateSkillsets);
   };
 
   return (
     <>
       <div className="flex items-center space-x-4">
         <Icon name="reorder" />
-        <div className="mr-2" data-testid={`edit-${item.value}`}>
+        <div className="mr-2 w-full" data-testid={`edit-${item.value}`}>
           {isEditable ? (
             <input
               type="text"
@@ -56,6 +55,7 @@ const ItemList: React.FC<IItemListProps> = ({
                 if (event.key === 'Enter') {
                   event.preventDefault();
                   updateInitialSkillsets(item.id, newEnteredValue);
+                  inputRef?.current?.blur();
                 }
               }}
             />
