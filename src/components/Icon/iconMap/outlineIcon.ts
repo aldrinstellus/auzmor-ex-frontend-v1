@@ -53,6 +53,7 @@ import SvgDeleteOutline from '../components/Delete/DeleteOutline';
 import SvgExportOutline from '../components/Export/ExportOutline';
 import SvgMaximizeOutline from '../components/Maximize/MaximizeOutline';
 import SvgThreeDotsOutline from '../components/ThreeDots/ThreeDotsOutline';
+import SvgCheckboxOutline from '../components/Checkbox/CheckboxOutline';
 import SvgConnectionFolderOutline from '../components/ConnectionFolder/ConnectionFolderOutline';
 import SvgCallOutline from '../components/Call/CallOutline';
 import SvgMaleOutline from '../components/Male/MaleOutline';

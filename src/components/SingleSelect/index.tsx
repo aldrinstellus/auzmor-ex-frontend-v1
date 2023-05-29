@@ -79,7 +79,6 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
   return (
     <div className={`relative ${className}`}>
       <div className={labelStyle}>{label}</div>
-
       <div>
         {/* remove top margin provide it to parent div if required */}
         <Controller

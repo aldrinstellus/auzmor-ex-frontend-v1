@@ -81,6 +81,7 @@ const Avatar: React.FC<AvatarProps> = ({
   );
 
   const activeIndicator = useMemo(() => {
+    return null;
     return (
       active && (
         <div

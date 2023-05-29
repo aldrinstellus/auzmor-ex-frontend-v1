@@ -20,7 +20,15 @@ const Popover: React.FC<AppProps> = ({
 
   return (
     <HUIPopover className="relative">
-      <HUIPopover.Button>{triggerNode}</HUIPopover.Button>
+      <HUIPopover.Button
+        style={{
+          borderWidth: 0,
+          borderColor: undefined,
+          backgroundColor: undefined,
+        }}
+      >
+        {triggerNode}
+      </HUIPopover.Button>
 
       <HUIPopover.Panel className={styles}>{children}</HUIPopover.Panel>
     </HUIPopover>

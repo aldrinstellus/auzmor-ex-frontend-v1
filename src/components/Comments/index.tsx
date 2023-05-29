@@ -37,6 +37,7 @@ export interface IComment {
   myReaction: IMyReactions;
   reactionsCount: MyObjectType;
   repliesCount: number;
+  comment: IComment;
 }
 
 const Comments: React.FC<CommentsProps> = ({ entityId }) => {

@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
+import countryPhoneCode from 'utils/countryPhoneCodes.json';
 import Button, { Variant } from 'components/Button';
 import { Variant as InputVariant } from 'components/Input';
 import IconWrapper from 'components/Icon/components/IconWrapper';
@@ -75,7 +76,11 @@ const ContactWidget: React.FC<IContactCardProps> = ({
       type: FieldType.SingleSelect,
       defaultValue: '+91',
       control,
-      options: [{ value: '+91', label: '+91' }],
+      options: countryPhoneCode.map((phone) => ({
+        value: phone.country,
+        label: phone.country,
+        code: phone.code,
+      })),
     },
   ];
 
@@ -193,9 +198,18 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center space-x-2">
-                  <Layout fields={countryCodeField} />
-                  <Layout fields={phoneField} className="w-full" />
+                <div className="space-y-1">
+                  <div className="text-sm font-bold text-neutral-900">
+                    Contact No.:
+                  </div>
+                  <div className="flex items-center space-x-2 w-full">
+                    <div className="w-[35%]">
+                      <Layout fields={countryCodeField} />
+                    </div>
+                    <div className="w-[65%]">
+                      <Layout fields={phoneField} />
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
