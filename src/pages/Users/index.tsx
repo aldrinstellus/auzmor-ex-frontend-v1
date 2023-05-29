@@ -85,12 +85,14 @@ const Users: React.FC<IUsersProps> = () => {
               variant={Variant.Secondary}
               disabled
               className="cursor-not-allowed h-9 grow-0"
+              dataTestId="people-view-my-teams"
             />
             <Button
               label="All Members"
               size={Size.Small}
               variant={Variant.Secondary}
               className="!py-2 grow-0"
+              dataTestId="people-view-all-members"
             />
             <Layout
               fields={[
@@ -103,6 +105,7 @@ const Users: React.FC<IUsersProps> = () => {
                   placeholder: 'Role',
                   size: InputSize.Small,
                   disabled: true,
+                  dataTestid: 'people-role',
                   options: [
                     {
                       value: 'ADMIN',
@@ -127,6 +130,7 @@ const Users: React.FC<IUsersProps> = () => {
               size={IconSize.Medium}
               borderAround
               className="bg-white"
+              dataTestId="people-filter"
             />
             <IconButton
               icon="arrowSwap"
@@ -134,6 +138,7 @@ const Users: React.FC<IUsersProps> = () => {
               size={IconSize.Medium}
               borderAround
               className="bg-white"
+              dataTestId="people-sort"
             />
             <div>
               <Layout
@@ -148,6 +153,7 @@ const Users: React.FC<IUsersProps> = () => {
                     name: 'search',
                     placeholder: 'Search members',
                     error: errors.search?.message,
+                    dataTestId: 'people-search-members',
                   },
                 ]}
               />
@@ -193,6 +199,7 @@ const Users: React.FC<IUsersProps> = () => {
           total={users?.result?.totalCount}
           page={page}
           onPageChange={setPage}
+          dataTestIdPrefix="people-pagination"
         />
       </div>
 
@@ -216,8 +223,18 @@ const Users: React.FC<IUsersProps> = () => {
   );
 
   const tabs = [
-    { id: 1, title: 'People', content: peopleHubNode },
-    { id: 2, title: 'Teams', content: <div>Teams</div> },
+    {
+      id: 1,
+      title: 'People',
+      dataTestId: 'people-view-people',
+      content: peopleHubNode,
+    },
+    {
+      id: 2,
+      title: 'Teams',
+      dataTestId: 'people-view-teams',
+      content: <div>Teams</div>,
+    },
   ];
 
   return (
@@ -225,7 +242,12 @@ const Users: React.FC<IUsersProps> = () => {
       {/* Top People Directory Section */}
       <div className="space-y-6">
         <div className="flex justify-between">
-          <div className="text-2xl font-bold">People Hub</div>
+          <div
+            className="text-2xl font-bold"
+            data-testid="people-hub-page-title"
+          >
+            People Hub
+          </div>
           <div className="flex space-x-2">
             <Button
               className="flex space-x-[6px]"
@@ -233,6 +255,7 @@ const Users: React.FC<IUsersProps> = () => {
               variant={Variant.Secondary}
               leftIcon="convertShape"
               leftIconSize={20}
+              dataTestId="people-org-chart"
             />
             <Button
               className="flex space-x-1"
@@ -241,6 +264,7 @@ const Users: React.FC<IUsersProps> = () => {
               onClick={() => {
                 setShowAddUserModal(true);
               }}
+              dataTestId="people-invite-users"
             />
           </div>
         </div>

@@ -72,7 +72,6 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
   );
 
   const {
-    watch,
     control,
     handleSubmit,
     formState: { errors, isValid },
@@ -82,12 +81,8 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
     mode: 'onChange',
   });
 
-  useEffect(() => {
-    loginMutation.reset();
-  }, [watch('email'), watch('password')]);
-
   const onSubmit = (formData: IForm) => {
-    loginMutation.mutate(formData);
+    loginMutation.mutate({ ...formData, domain });
   };
 
   if (user) {
