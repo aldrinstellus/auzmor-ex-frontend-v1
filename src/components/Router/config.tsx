@@ -8,6 +8,7 @@ import {
 import queryClient from 'utils/queryClient';
 // import { loader as homeLoader } from 'pages/Home';
 import RequireAuth from 'components/RequireAuth';
+import Notifications from 'pages/Notifications';
 
 const ErrorBoundary = React.lazy(() => import('components/ErrorBoundary'));
 const Login = React.lazy(() => import('pages/Login'));
@@ -26,6 +27,7 @@ const Admin = React.lazy(() => import('pages/Admin'));
 const AcceptInvite = React.lazy(() => import('pages/AcceptInvite'));
 const PageNotFound = React.lazy(() => import('pages/PageNotFound'));
 const ServerErrorPage = React.lazy(() => import('pages/ServerErrorPage'));
+const PostPage = React.lazy(() => import('pages/Post'));
 
 const routers = createBrowserRouter(
   createRoutesFromElements(
@@ -79,6 +81,8 @@ const routers = createBrowserRouter(
         <Route path="/apps" element={<Apps />} />
         <Route path="/discover" element={<Discover />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/posts/:id" element={<PostPage />} />
+        <Route path="/notifications" element={<Notifications />} />
       </Route>
       <Route
         path="/404"

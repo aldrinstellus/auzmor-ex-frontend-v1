@@ -82,6 +82,7 @@ import Marketplace from '../components/Marketplace';
 import DocumentUpload from '../components/DocumentUpload';
 import ArrowUp from '../components/ArrowUp';
 import ThreeDots from '../components/ThreeDots';
+import Checkbox from '../components/Checkbox';
 import Reorder from '../components/Reorder';
 import ConnectionFolder from '../components/ConnectionFolder';
 import Call from '../components/Call';

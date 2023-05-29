@@ -1,10 +1,10 @@
 import React from 'react';
-
 import { Link, NavLink } from 'react-router-dom';
 import { Logo } from 'components/Logo';
 import Icon from 'components/Icon';
 import Divider, { Variant } from 'components/Divider';
 import AccountCard from './AccountCard';
+import NotificationsOverview from 'components/NotificationsOverview';
 import useRole from 'hooks/useRole';
 import Layout, { FieldType } from 'components/Form';
 import { useForm } from 'react-hook-form';
@@ -53,6 +53,7 @@ const Navbar = () => {
   const { control } = useForm({
     mode: 'onChange',
   });
+
   return (
     <header className="sticky top-0 z-40">
       <div className="bg-white shadow h-16 w-full flex items-center justify-center px-8">
@@ -112,9 +113,8 @@ const Navbar = () => {
               </div>
             </NavLink>
           )}
-          <div></div>
-          <div data-testid="notifications">
-            <Icon name="notification" size={26} />
+          <div>
+            <NotificationsOverview />
           </div>
           <div>
             <AccountCard />

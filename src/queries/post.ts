@@ -9,6 +9,7 @@ import { isValidUrl } from 'utils/misc';
 import { IMyReactions } from 'pages/Feed';
 import { Metadata } from 'components/PreviewLink/types';
 import { IMedia } from 'contexts/CreatePostContext';
+import { IComment } from 'components/Comments';
 
 export interface IMention {
   name: string;
@@ -188,6 +189,7 @@ export interface IGetPost {
   commentsCount: number;
   createdAt: string;
   updatedAt: string;
+  comment?: IComment;
 }
 
 interface IDeletePost {
@@ -365,5 +367,19 @@ export const useInfiniteFeed = (q?: Record<string, any>) => {
       return currentPage?.data?.result?.paging?.prev;
     },
     staleTime: 5 * 60 * 1000,
+  });
+};
+
+const getPost = async (id: string, commentId?: string) => {
+  const data = await apiService.get(
+    `/posts/${id}${commentId ? '?commentId=' + commentId : ''}`,
+  );
+  return data;
+};
+
+export const useGetPost = (id: string, commentId?: string) => {
+  return useQuery({
+    queryKey: ['get-post', id, commentId],
+    queryFn: () => getPost(id, commentId),
   });
 };
