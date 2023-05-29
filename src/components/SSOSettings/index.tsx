@@ -27,6 +27,7 @@ export type ISSOSetting = {
   config?: any;
   allowFallback?: boolean;
   allowOnlyExistingUser?: boolean;
+  dataTestId?: string;
 };
 
 type SSOConfig = {
