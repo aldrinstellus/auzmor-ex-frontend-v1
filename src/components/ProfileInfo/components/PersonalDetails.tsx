@@ -31,6 +31,11 @@ interface IPersonalDetailsForm {
   skills: string;
 }
 
+export interface ISkillsOption {
+  id: string;
+  value: string;
+}
+
 type IPersonalDetailsProps = {
   personalDetails: any;
   canEdit?: boolean;
@@ -42,7 +47,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
 }) => {
   const [isHovered, eventHandlers] = useHover();
   const [isEditable, setIsEditable] = useState<boolean>(false);
-  const [skills, setSkills] = useState<Record<string, string>[]>([]);
+  const [skills, setSkills] = useState<ISkillsOption[]>([]);
 
   const { control, handleSubmit, getValues, resetField } =
     useForm<IPersonalDetailsForm>({
@@ -54,7 +59,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
           permanentLocation: personalDetails?.personal?.permanentAddress,
           maritalStatus: personalDetails?.personal?.maritalStatus,
         },
-        skills: personalDetails?.personal?.skills[0],
+        skills: '',
       },
     });
 
@@ -109,7 +114,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
         birthDate: personalDetailData?.personal?.birthDate,
         permanentLocation: personalDetailData?.personal?.permanentLocation,
         maritalStatus: personalDetailData?.personal?.maritalStatus?.value,
-        skills: skills.map((skill: Record<string, string>) => skill.value),
+        skills: skills.map((skill: ISkillsOption) => skill.value),
       },
     };
     await updateUserPersonalDetailsMutation.mutateAsync({

@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   DragDropContext,
   Droppable,
   Draggable,
   DropResult,
 } from 'react-beautiful-dnd';
-import Icon from 'components/Icon';
+import ItemList from './components/ItemList';
+import { ISkillsOption } from 'components/ProfileInfo/components/PersonalDetails';
 
 type DragDropListProps = {
-  draggableItems: Record<string, string>[];
-  setDraggableItems: (items: Record<string, string>[]) => void;
+  draggableItems: ISkillsOption[];
+  setDraggableItems: (items: ISkillsOption[]) => void;
   dataTestIdEdit?: string;
   dataTestIdDelete?: string;
 };
@@ -38,7 +39,7 @@ const DragDropList: React.FC<DragDropListProps> = ({
             {...provided.droppableProps}
             ref={provided.innerRef}
           >
-            {draggableItems?.map((item, index) => (
+            {draggableItems?.map((item: ISkillsOption, index) => (
               <Draggable key={index} draggableId={item.id} index={index}>
                 {(provided) => (
                   <li
@@ -48,32 +49,13 @@ const DragDropList: React.FC<DragDropListProps> = ({
                     ref={provided.innerRef}
                     key={item.id}
                   >
-                    <div className="flex items-center space-x-4">
-                      <Icon name="reorder" />
-                      <span className="mr-2" data-testid={`edit-${item.value}`}>
-                        {item.value}
-                      </span>
-                    </div>
-                    <div className="flex space-x-4 items-center">
-                      <div data-testid={`${dataTestIdEdit}-${item.value}`}>
-                        <Icon name="edit" size={20} />
-                      </div>
-                      <div data-testid={`${dataTestIdDelete}-${item.value}`}>
-                        <Icon
-                          name="delete"
-                          stroke="#F05252"
-                          hover={false}
-                          fill="#F05252"
-                          size={20}
-                          onClick={() => {
-                            const updatedValues = draggableItems.filter(
-                              (element) => element?.value !== item.value,
-                            );
-                            setDraggableItems(updatedValues);
-                          }}
-                        />
-                      </div>
-                    </div>
+                    <ItemList
+                      draggableItems={draggableItems}
+                      item={item}
+                      setDraggableItems={setDraggableItems}
+                      dataTestIdDelete={dataTestIdDelete}
+                      dataTestIdEdit={dataTestIdEdit}
+                    />
                   </li>
                 )}
               </Draggable>
