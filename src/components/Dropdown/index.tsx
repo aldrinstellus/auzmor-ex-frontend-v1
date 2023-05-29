@@ -1,65 +1,44 @@
-import ArrowDown from 'components/Icon/components/ArrowDown';
-import React, { ReactElement, useState } from 'react';
-
-export type DropdownOption = {
-  value: string;
-  label: string;
-  default: boolean;
-};
+import { Listbox } from '@headlessui/react';
+import React, { Fragment, ReactElement, ReactNode, useState } from 'react';
 
 export type DropdownProps = {
-  name: string;
-  options?: DropdownOption[];
-  onChange?: any;
-  className?: string;
-  error?: string;
-  loading?: boolean;
-  disabled?: boolean;
-  dataTestId?: string;
+  options: Record<string, any>[];
+  triggerNode: (
+    selectedOption: Record<string, any>,
+    open: boolean,
+  ) => ReactNode;
+  optionRenderer: (
+    active: boolean,
+    selected: boolean,
+    option: Record<string, any>,
+  ) => JSX.Element;
+  selectedIndex?: number;
 };
 
 const Dropdown: React.FC<DropdownProps> = ({
-  name,
   options,
-  error = '',
-  loading = false,
-  disabled = false,
-  dataTestId = '',
+  triggerNode,
+  optionRenderer,
+  selectedIndex = 0,
 }): ReactElement => {
-  const [showDropdown, setShowDropdown] = useState<boolean>(false);
-  const [dropdownName, setDropdownName] = useState<string>(
-    options?.find((option) => option.default)?.label || name,
-  );
-
+  const [selectedOption, setSelectedOption] = useState(options[selectedIndex]);
   return (
-    <div className="relative">
-      <button
-        className="box-border font-bold flex flex-row justify-center items-center py-2 px-4 gap-4 bg-white border border-gray-300 rounded-[24px]"
-        onClick={() => {
-          setShowDropdown(!showDropdown);
-        }}
-        data-testid={dataTestId}
-      >
-        {dropdownName}
-        <ArrowDown />
-        {showDropdown && (
-          <div className="absolute top-full min-w-full w-max bg-white shadow-md mt-1 rounded z-10">
-            <ul className="text-left border rounded-md space-y-1">
-              {options?.map((option) => (
-                <li
-                  className="px-4 py-2 hover:bg-green-50 rounded-md"
-                  onClick={() => setDropdownName(option?.label)}
-                  key={option?.value}
-                  value={option?.value}
-                >
-                  {option?.label}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </button>
-    </div>
+    <Listbox value={selectedOption} onChange={setSelectedOption}>
+      {({ open }) => (
+        <>
+          <Listbox.Button>{triggerNode(selectedOption, open)}</Listbox.Button>
+          <Listbox.Options className="absolute mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg min-w-[112px] z-10">
+            {options.map((option) => (
+              <Listbox.Option key={option.id} value={option} as={Fragment}>
+                {({ active, selected }) =>
+                  optionRenderer(active, selected, option)
+                }
+              </Listbox.Option>
+            ))}
+          </Listbox.Options>
+        </>
+      )}
+    </Listbox>
   );
 };
 
