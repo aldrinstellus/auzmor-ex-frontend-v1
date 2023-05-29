@@ -29,7 +29,6 @@ const ItemList: React.FC<IItemListProps> = ({
   }, [isEditable]);
 
   const updateInitialSkillsets = (id: string, newValue: string) => {
-    console.log(id, newValue);
     const updateSkillsets = draggableItems?.map((item) =>
       item.id === id ? { ...item, value: newValue } : item,
     );
