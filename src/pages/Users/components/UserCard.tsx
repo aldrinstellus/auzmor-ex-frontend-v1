@@ -3,6 +3,7 @@ import _ from 'lodash';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import useHover from 'hooks/useHover';
+import useRole from 'hooks/useRole';
 import clsx from 'clsx';
 import IconButton, {
   Variant as IconVariant,
@@ -61,12 +62,15 @@ const UserCard: React.FC<IUserCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { isAdmin } = useRole();
   const [isHovered, hoverEvents] = useHover();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const resendInviteMutation = useResendInvitation();
 
-  const postOptions = [
-    {
+  const _options = [];
+
+  if (status === Status.PENDING) {
+    _options.push({
       icon: 'redo',
       label: 'Resend Invite',
       onClick: () => {
@@ -88,15 +92,15 @@ const UserCard: React.FC<IUserCardProps> = ({
         });
         resendInviteMutation.mutate(id);
       },
+    });
+  }
+  _options.push({
+    icon: 'userRemove',
+    label: 'Remove',
+    onClick: () => {
+      setShowDeleteModal(true);
     },
-    {
-      icon: 'userRemove',
-      label: 'Remove',
-      onClick: () => {
-        setShowDeleteModal(true);
-      },
-    },
-  ];
+  });
 
   const hoverStyle = useMemo(
     () =>
@@ -118,7 +122,7 @@ const UserCard: React.FC<IUserCardProps> = ({
   return (
     <div {...hoverEvents} className="cursor-pointer" data-testid="people-card">
       <Card className={hoverStyle}>
-        {isHovered && (
+        {isAdmin && isHovered && (
           <PopupMenu
             triggerNode={
               <div className="cursor-pointer">
@@ -130,7 +134,7 @@ const UserCard: React.FC<IUserCardProps> = ({
                 />
               </div>
             }
-            menuItems={postOptions}
+            menuItems={_options}
           />
         )}
         <div
