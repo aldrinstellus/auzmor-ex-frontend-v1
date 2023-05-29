@@ -6,7 +6,7 @@ import Button, { Size, Variant } from 'components/Button';
 import clsx from 'clsx';
 import { useMutation } from '@tanstack/react-query';
 import { logout } from 'queries/account';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useModal from 'hooks/useModal';
 import ConfirmationBox from 'components/ConfirmationBox';
 
@@ -72,12 +72,14 @@ const AccountCard = () => {
             />
           </div>
           <div className="w-full pt-4">
-            <div
-              className={menuItemStyle}
-              data-testId="user-menu-user-settings"
-            >
-              User Settings
-            </div>
+            <Link to="/settings">
+              <div
+                className={menuItemStyle}
+                data-testId="user-menu-user-settings"
+              >
+                User Settings
+              </div>
+            </Link>
             <div
               className={menuItemStyle}
               data-testId="user-menu-admin-settings"

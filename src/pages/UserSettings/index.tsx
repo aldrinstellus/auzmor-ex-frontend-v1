@@ -36,7 +36,7 @@ const schema = yup.object({
     .oneOf([yup.ref('newPassword')], 'Passwords do not match'),
 });
 
-const ChangePassword: React.FC<IChangePasswordProps> = () => {
+const UserSettings: React.FC<IChangePasswordProps> = () => {
   const [success, setSuccess] = useState(false);
   const [err, setErr] = useState(false);
 
@@ -193,4 +193,4 @@ const ChangePassword: React.FC<IChangePasswordProps> = () => {
   );
 };
 
-export default ChangePassword;
+export default UserSettings;
