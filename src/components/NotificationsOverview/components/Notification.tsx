@@ -58,6 +58,7 @@ const Notification: React.FC<NotificationCardProps> = ({
       `/posts/${redirect?.postId}${
         redirect?.commentId ? '?commentId=' + redirect?.commentId : ''
       }`,
+      '_self',
     );
   };
 
