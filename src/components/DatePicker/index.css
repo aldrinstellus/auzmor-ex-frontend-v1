@@ -1,6 +1,31 @@
 .react-datepicker-popper {
   z-index: 9999 !important;
 }
+
+.react-datepicker__header {
+  background-color: #10b981;
+}
+
+.react-datepicker__day-name {
+  color: white;
+}
+
+.react-datepicker__current-month {
+  color: white;
+}
+
+.react-datepicker__triangle {
+  visibility: hidden;
+}
+
+.react-datepicker__day--keyboard-selected {
+  background-color: #10b981;
+}
+
+.react-datepicker__day--selected {
+  background-color: #10b981;
+}
+
 /* 
 .react-date-picker__wrapper {
   border: none;

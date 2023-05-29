@@ -81,11 +81,13 @@ const Avatar: React.FC<AvatarProps> = ({
   );
 
   const activeIndicator = useMemo(() => {
+    return null;
     return (
       active && (
         <div
           style={{ height: `${size / 5}px`, width: `${size / 5}px` }}
           className={indicatorStyles}
+          data-testid="people-card-status-active"
         />
       )
     );

@@ -3,6 +3,7 @@ import _ from 'lodash';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import useHover from 'hooks/useHover';
+import useRole from 'hooks/useRole';
 import clsx from 'clsx';
 import IconButton, {
   Variant as IconVariant,
@@ -61,12 +62,15 @@ const UserCard: React.FC<IUserCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { isAdmin } = useRole();
   const [isHovered, hoverEvents] = useHover();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const resendInviteMutation = useResendInvitation();
 
-  const postOptions = [
-    {
+  const _options = [];
+
+  if (status === Status.PENDING) {
+    _options.push({
       icon: 'redo',
       label: 'Resend Invite',
       onClick: () => {
@@ -88,15 +92,15 @@ const UserCard: React.FC<IUserCardProps> = ({
         });
         resendInviteMutation.mutate(id);
       },
+    });
+  }
+  _options.push({
+    icon: 'userRemove',
+    label: 'Remove',
+    onClick: () => {
+      setShowDeleteModal(true);
     },
-    {
-      icon: 'userRemove',
-      label: 'Remove',
-      onClick: () => {
-        setShowDeleteModal(true);
-      },
-    },
-  ];
+  });
 
   const hoverStyle = useMemo(
     () =>
@@ -116,9 +120,9 @@ const UserCard: React.FC<IUserCardProps> = ({
   );
 
   return (
-    <div {...hoverEvents} className="cursor-pointer">
+    <div {...hoverEvents} className="cursor-pointer" data-testid="people-card">
       <Card className={hoverStyle}>
-        {isHovered && (
+        {isAdmin && isHovered && (
           <PopupMenu
             triggerNode={
               <div className="cursor-pointer">
@@ -130,7 +134,7 @@ const UserCard: React.FC<IUserCardProps> = ({
                 />
               </div>
             }
-            menuItems={postOptions}
+            menuItems={_options}
           />
         )}
         <div
@@ -139,6 +143,7 @@ const UserCard: React.FC<IUserCardProps> = ({
               status === UserStatus.Invited ? '#EA580C' : statusColorMap[role],
           }}
           className="absolute top-0 left-0 text-white rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium"
+          data-testid={`people-card-role-${role}`}
         >
           {status === UserStatus.Invited ? 'Pending' : role}
         </div>
@@ -151,17 +156,33 @@ const UserCard: React.FC<IUserCardProps> = ({
             return navigate(`/users/${id}`);
           }}
         >
-          <Avatar size={80} name={fullName} image={image} active={active} />
-          <div className="mt-1 truncate text-neutral-900 text-base font-bold">
+          <Avatar
+            size={80}
+            name={fullName}
+            image={image}
+            active={active}
+            dataTestId="people-card-profile-pic"
+            showActiveIndicator
+          />
+          <div
+            className="mt-1 truncate text-neutral-900 text-base font-bold"
+            data-testid={`people-card-name-${fullName}`}
+          >
             {_.truncate(fullName, {
               length: 24,
               separator: ' ',
             })}
           </div>
-          <div className="mt-1 truncate text-neutral-900 text-xs font-normal">
+          <div
+            className="mt-1 truncate text-neutral-900 text-xs font-normal"
+            data-testid={`people-card-title-${designation || role}`}
+          >
             {designation || role}
           </div>
-          <div className="flex justify-center items-center px-3 py-1 mt-2 rounded-xl">
+          <div
+            className="flex justify-center items-center px-3 py-1 mt-2 rounded-xl"
+            data-testid={`people-card-department-${department}`}
+          >
             <div></div>
             <div className="text-neutral-900 text-xxs font-medium truncate">
               {department}
@@ -169,7 +190,10 @@ const UserCard: React.FC<IUserCardProps> = ({
           </div>
           <div className="flex space-x-[6px] mt-3">
             <div></div>
-            <div className="text-neutral-500 text-xs font-normal truncate">
+            <div
+              className="text-neutral-500 text-xs font-normal truncate"
+              data-testid={`people-card-location-${location}`}
+            >
               {location}
             </div>
           </div>
@@ -182,6 +206,7 @@ const UserCard: React.FC<IUserCardProps> = ({
                   icon="email"
                   variant={IconVariant.Secondary}
                   size={IconSize.Medium}
+                  dataTestId="people-card-email"
                 />
               </div>
               <div className="rounded-7xl border border-solid border-neutral-200">
@@ -189,6 +214,7 @@ const UserCard: React.FC<IUserCardProps> = ({
                   icon="slack"
                   variant={IconVariant.Secondary}
                   size={IconSize.Medium}
+                  dataTestId="people-card-slack"
                 />
               </div>
             </div>

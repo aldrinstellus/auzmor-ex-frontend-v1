@@ -31,11 +31,9 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
       {isAnnouncement &&
         !(data?.myAcknowledgement?.reaction === 'mark_read') && (
           <div className="flex justify-between items-center bg-blue-700 -mb-4 p-2 rounded-t-9xl">
-            <div className="flex justify-center items-center text-white text-xs font-bold space-x-4">
-              <div>
-                <Icon name="flashIcon" />
-              </div>
-              <div className="text-xs font-bold">Announcement</div>
+            <div className="flex justify-center items-center text-white text-xs font-bold pl-1">
+              <Icon name="flashIcon" />
+              <div className="text-sm font-bold">Announcement</div>
             </div>
             <Button
               className="text-sm font-bold"

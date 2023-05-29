@@ -8,13 +8,14 @@ import {
 import queryClient from 'utils/queryClient';
 // import { loader as homeLoader } from 'pages/Home';
 import RequireAuth from 'components/RequireAuth';
+import Notifications from 'pages/Notifications';
 
 const ErrorBoundary = React.lazy(() => import('components/ErrorBoundary'));
 const Login = React.lazy(() => import('pages/Login'));
 const Signup = React.lazy(() => import('pages/Signup'));
 const Registration = React.lazy(() => import('pages/Registration'));
 const ForgotPassword = React.lazy(() => import('pages/ForgotPassword'));
-const ChangePassword = React.lazy(() => import('pages/ChangePassword'));
+const UserSettings = React.lazy(() => import('pages/UserSettings'));
 const ResetPassword = React.lazy(() => import('pages/ResetPassword'));
 const Feed = React.lazy(() => import('pages/Feed'));
 const Home = React.lazy(() => import('pages/Home'));
@@ -26,6 +27,8 @@ const Admin = React.lazy(() => import('pages/Admin'));
 const AcceptInvite = React.lazy(() => import('pages/AcceptInvite'));
 const PageNotFound = React.lazy(() => import('pages/PageNotFound'));
 const ServerErrorPage = React.lazy(() => import('pages/ServerErrorPage'));
+const PostPage = React.lazy(() => import('pages/Post'));
+const Logout = React.lazy(() => import('pages/Logout'));
 
 const routers = createBrowserRouter(
   createRoutesFromElements(
@@ -33,6 +36,7 @@ const routers = createBrowserRouter(
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/register" element={<Registration />} />
+      <Route path="/logout" element={<Logout />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/accept-invite" element={<AcceptInvite />} />
@@ -75,10 +79,12 @@ const routers = createBrowserRouter(
           }}
         />
         <Route path="/feed" element={<Feed />} />
-        <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/settings" element={<UserSettings />} />
         <Route path="/apps" element={<Apps />} />
         <Route path="/discover" element={<Discover />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/posts/:id" element={<PostPage />} />
+        <Route path="/notifications" element={<Notifications />} />
       </Route>
       <Route
         path="/404"

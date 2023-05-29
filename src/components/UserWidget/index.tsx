@@ -21,7 +21,7 @@ const UserCard: React.FC<IUserCardProps> = ({ className }) => {
             size={96}
             className="border-4 border-white mt-8 overflow-hidden"
           />
-          <div className="text-base font-bold mt-2 truncate w-full">
+          <div className="text-base font-bold mt-2 truncate w-full text-center">
             {user?.name}
           </div>
         </div>
