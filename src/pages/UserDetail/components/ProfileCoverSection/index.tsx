@@ -183,6 +183,8 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             setFile={setFile}
             userProfileImageRef={userProfileImageRef}
             userCoverImageRef={userCoverImageRef}
+            profileImage={profileCoverData?.profileImage}
+            coverImage={profileCoverData?.coverImage}
           />
         )}
         <input
@@ -219,6 +221,8 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                 ...file,
                 coverImage: Array.prototype.slice.call(e.target.files)[0],
               });
+              setShowPictureCropModal(true);
+              setShowEditProfileModal(false);
               setCoverImageName(e?.target?.files[0]?.name);
             }
           }}

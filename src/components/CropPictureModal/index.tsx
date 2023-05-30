@@ -16,6 +16,8 @@ export interface ICropPictureModalProps {
   setFile: (file: IUpdateProfileImage | Record<string, any>) => void;
   userProfileImageRef: React.RefObject<HTMLInputElement> | null;
   userCoverImageRef: React.RefObject<HTMLInputElement> | null;
+  profileImage: Record<string, any>;
+  coverImage: Record<string, any>;
 }
 
 const CropPictureModal: React.FC<ICropPictureModalProps> = ({
@@ -27,14 +29,14 @@ const CropPictureModal: React.FC<ICropPictureModalProps> = ({
   file,
   userCoverImageRef,
   userProfileImageRef,
+  profileImage,
+  coverImage,
 }) => {
   const disableClosed = () => {
     setShowPictureCropModal(false);
     setShowEditProfileModal(true);
     setFile([{}]);
   };
-
-  console.log(file);
 
   return (
     <Modal
@@ -45,18 +47,29 @@ const CropPictureModal: React.FC<ICropPictureModalProps> = ({
       }}
     >
       <Header title={title} onClose={disableClosed} />
-      <>
-        <div className="h-[320px] ">
-          {file?.profileImage && (
-            <img
-              src={file?.profileImage && getBlobUrl(file?.profileImage)}
-              alt="profile image crop"
-            />
-          )}
-          {file?.coverImage && (
-            <img src={file?.coverImage && getBlobUrl(file?.coverImage)} />
-          )}
-        </div>
+      <div>
+        {file?.profileImage ? (
+          <img
+            src={
+              (file?.profileImage && getBlobUrl(file?.profileImage)) ||
+              profileImage?.original
+            }
+            alt="profile image crop"
+            className="h-[320px] w-full"
+          />
+        ) : file?.coverImage ? (
+          <img
+            src={file?.coverImage && getBlobUrl(file?.coverImage)}
+            alt="Cover Image Crop"
+            className="h-[320px] w-full"
+          />
+        ) : (
+          <img
+            src={coverImage?.original}
+            alt="Cover Image Crop"
+            className="h-[320px] w-full"
+          />
+        )}
         <Divider />
         <div className="h-[53px] px-6 flex justify-between items-center">
           <div className="flex space-x-2">
@@ -88,8 +101,11 @@ const CropPictureModal: React.FC<ICropPictureModalProps> = ({
               variant={Variant.Secondary}
               size={Size.Small}
               onClick={() => {
-                userProfileImageRef?.current?.click() ||
-                  userCoverImageRef?.current?.click;
+                if (file?.profileImage) {
+                  userProfileImageRef?.current?.click();
+                } else {
+                  userCoverImageRef?.current?.click();
+                }
               }}
             />
             <Button
@@ -100,7 +116,7 @@ const CropPictureModal: React.FC<ICropPictureModalProps> = ({
             />
           </div>
         </div>
-      </>
+      </div>
     </Modal>
   );
 };

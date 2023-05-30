@@ -159,7 +159,9 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       icon: 'exportOutline',
       label: 'Upload a photo',
       stroke: twConfig.theme.colors.neutral['900'],
-      onClick: () => userCoverImageRef?.current?.click(),
+      onClick: () => {
+        userCoverImageRef?.current?.click();
+      },
     },
     {
       icon: 'maximizeOutline',
