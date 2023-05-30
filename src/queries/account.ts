@@ -22,6 +22,11 @@ interface IMailExpiry {
   token: string;
 }
 
+export const checkLogin = async () => {
+  const data = await apiService.get('/login');
+  return data;
+};
+
 export const login = async (payload: ILogin) => {
   const data = await apiService.post('/login', payload);
   return data;

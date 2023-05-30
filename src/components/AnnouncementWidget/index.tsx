@@ -27,6 +27,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
 
   const { user } = useAuth();
 
+  const itemCount = data?.data?.result?.data.length;
   const isAcknowledged =
     data?.data?.result?.data?.[0]?.myAcknowledgement?.reaction !== 'mark_read';
 
@@ -46,7 +47,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
             <div>Loading...</div>
           ) : (
             <div>
-              {isAcknowledged ? (
+              {itemCount && isAcknowledged ? (
                 <div className="flex flex-col justify-center items-center">
                   <div className="px-3 mt-5">
                     <div className="flex items-center space-x-3">

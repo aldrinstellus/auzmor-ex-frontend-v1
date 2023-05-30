@@ -36,6 +36,7 @@ export const redirectWithToken = ({
   showOnboard = false,
 }: IRedirect) => {
   let url = getItem('redirect_post_login_to') || '/feed';
+  if (url === '/') url = '/feed';
   removeItem('redirect_post_login_to');
   if (token) {
     url = `${url}?accessToken=${token}`;
