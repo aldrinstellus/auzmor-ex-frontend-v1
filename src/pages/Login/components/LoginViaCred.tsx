@@ -72,7 +72,6 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
   );
 
   const {
-    watch,
     control,
     handleSubmit,
     formState: { errors, isValid },
@@ -82,12 +81,8 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
     mode: 'onChange',
   });
 
-  useEffect(() => {
-    loginMutation.reset();
-  }, [watch('email'), watch('password')]);
-
   const onSubmit = (formData: IForm) => {
-    loginMutation.mutate(formData);
+    loginMutation.mutate({ ...formData, domain });
   };
 
   if (user) {
@@ -104,6 +99,7 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
       label: 'Work Email / Username',
       error: loginMutation.isError || errors.email?.message,
       dataTestId: 'signin-email',
+      errorDataTestId: 'signin-invalid-email-format-msg',
       control,
     },
     {
@@ -135,7 +131,7 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
         {!!loginMutation.isError && (
           <div className="mb-8">
             <Banner
-              dataTestId="signin-incorrect-creds-msg"
+              dataTestId="signin-error-message"
               title={
                 readFirstAxiosError(loginMutation.error) ||
                 'Email address or password is incorrect'

@@ -70,6 +70,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
           display: 'flex',
           alignItems: 'center',
         },
+        autoClose: 2000,
       });
       setIsEditable(false);
     },

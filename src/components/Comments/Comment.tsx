@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import Likes from 'components/Reactions';
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import Avatar from 'components/Avatar';
@@ -21,6 +21,7 @@ interface CommentProps {
   setActiveComment: (activeComment: activeCommentsDataType) => void;
   replyInputBox: boolean;
   setReplyInputBox: (inputBox: boolean) => void;
+  customNode?: ReactNode;
 }
 
 export const Comment: React.FC<CommentProps> = ({
@@ -30,6 +31,7 @@ export const Comment: React.FC<CommentProps> = ({
   setActiveComment,
   replyInputBox,
   setReplyInputBox,
+  customNode = null,
 }) => {
   const queryClient = useQueryClient();
 
@@ -64,6 +66,14 @@ export const Comment: React.FC<CommentProps> = ({
     (total, count) => total + count,
     0,
   );
+
+  const previousShowReply = useRef<boolean>(false);
+
+  useEffect(() => {
+    if (showReplies) {
+      previousShowReply.current = true;
+    }
+  }, [showReplies]);
 
   return (
     <div key={comment.id}>
@@ -187,12 +197,13 @@ export const Comment: React.FC<CommentProps> = ({
           </div>
           <div></div>
         </div>
-
-        {showReplies && (
+        {showReplies ? (
           <Reply
             entityId={comment.id}
             className={`${comment.repliesCount > 0 ? '' : 'mb-5'}`}
           />
+        ) : (
+          !previousShowReply.current && customNode
         )}
       </div>
     </div>

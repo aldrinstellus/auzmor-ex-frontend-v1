@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import Card from 'components/Card';
 import Comments from 'images/comments.svg';
 import Actor from 'components/Actor';
@@ -43,21 +43,29 @@ export const iconsStyle = (key: string) => {
 type PostProps = {
   // data: IPost;
   data: IGetPost;
+  customNode?: ReactNode;
 };
 
-const Post: React.FC<PostProps> = ({ data }) => {
+const Post: React.FC<PostProps> = ({ data, customNode = null }) => {
   const [showComments, setShowComments] = useState(false);
   const [showReactionModal, setShowReactionModal] = useState(false);
 
   const reaction = data?.myReaction?.reaction;
   const reactionId = data?.myReaction?.id;
 
-  const content: DeltaStatic = data?.content?.editor;
   const keys = Object.keys(data.reactionsCount).length;
   const totalCount = Object.values(data.reactionsCount).reduce(
     (total, count) => total + count,
     0,
   );
+
+  const previousShowComment = useRef<boolean>(false);
+
+  useEffect(() => {
+    if (showComments) {
+      previousShowComment.current = true;
+    }
+  }, [showComments]);
 
   return (
     <>
@@ -155,7 +163,11 @@ const Post: React.FC<PostProps> = ({ data }) => {
             <div></div>
           </div>
           {/* Comments */}
-          {showComments && <CommentCard entityId={data?.id || ''} />}
+          {showComments ? (
+            <CommentCard entityId={data?.id || ''} />
+          ) : (
+            !previousShowComment.current && customNode
+          )}
         </div>
       </Card>
       {showReactionModal && (

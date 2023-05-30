@@ -77,6 +77,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
           display: 'flex',
           alignItems: 'center',
         },
+        autoClose: 2000,
       });
       setIsEditable(false);
     },
@@ -85,16 +86,15 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
   const renderContentWithLinks = (text: string) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     const matches = text?.match(urlRegex);
-    console.log(matches);
     if (!matches) {
       return text;
     }
     const elements = [];
     let lastIndex = 0;
-    matches.forEach((match: any, index: any) => {
-      const startIndex = text.indexOf(match, lastIndex);
-      const endIndex = startIndex + match.length;
-      const beforeText = text.substring(lastIndex, startIndex);
+    matches?.forEach((match: any, index: any) => {
+      const startIndex = text?.indexOf(match, lastIndex);
+      const endIndex = startIndex + match?.length;
+      const beforeText = text?.substring(lastIndex, startIndex);
       const linkText = match;
       elements.push(
         <React.Fragment key={index}>
@@ -112,15 +112,15 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
 
       lastIndex = endIndex;
     });
-    elements.push(text.substring(lastIndex));
+    elements.push(text?.substring(lastIndex));
     return elements;
   };
 
   const onSubmit = async () => {
     const message = getValues();
-    if (!message?.personal?.about) {
-      return;
-    }
+    // if (!message?.personal?.about) {
+    //   return;
+    // }
     await updateUserAboutMeMutation.mutateAsync(message);
     await queryClient.invalidateQueries(['current-user-me']);
     setIsEditable(false);

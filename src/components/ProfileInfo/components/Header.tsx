@@ -53,7 +53,6 @@ const Header: React.FC<HeaderProps> = ({
           />
         </IconWrapper>
       ) : (
-        isHovered &&
         isEditable && (
           <div className="flex space-x-3">
             <Button

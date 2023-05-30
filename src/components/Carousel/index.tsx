@@ -4,10 +4,13 @@ import Image from 'components/Image';
 import Video from 'components/Video';
 
 import clsx from 'clsx';
-import Modal from 'components/Modal';
 import Icon from 'components/Icon';
 import useCarousel from 'hooks/useCarousel';
 import { IMedia } from 'contexts/CreatePostContext';
+import { twConfig } from 'utils/misc';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { toast } from 'react-toastify';
+import FailureToast from 'components/Toast/variants/FailureToast';
 
 export interface hashSize {
   width: number;
@@ -22,6 +25,53 @@ export type CarouselProps = {
   open: boolean;
   closeModal: any;
   openModal?: any;
+};
+
+export const fetchFile = (url: string) => {
+  fetch(url)
+    .then((res) => res.blob())
+    .then((file) => {
+      const tempUrl = URL.createObjectURL(file);
+      const aTag = document.createElement('a');
+      aTag.href = tempUrl;
+      aTag.download = url.replace(/^.*[\\\/]/, '');
+      document.body.appendChild(aTag);
+      aTag.click();
+      toast(<SuccessToast content={'Download successful'} />, {
+        closeButton: (
+          <Icon
+            name="closeCircleOutline"
+            stroke={twConfig.theme.colors.primary['500']}
+            size={20}
+          />
+        ),
+        style: {
+          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+        },
+      });
+      URL.revokeObjectURL(tempUrl);
+      aTag.remove();
+    })
+    .catch(() => {
+      toast(<FailureToast content={'Download failed'} />, {
+        closeButton: (
+          <Icon
+            name="closeCircleOutline"
+            stroke={twConfig.theme.colors.red['500']}
+            size={20}
+          />
+        ),
+        style: {
+          border: `1px solid ${twConfig.theme.colors.red['300']}`,
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+        },
+      });
+    });
 };
 
 const Carousel: React.FC<CarouselProps> = ({
@@ -59,8 +109,9 @@ const Carousel: React.FC<CarouselProps> = ({
       true,
   });
 
-  const crossIconStyles = clsx({
-    '!top-[2%] !right-2 !absolute !right-8 !rounded-lg !p-1 !px-2': true,
+  const downloadBtnStyle = clsx({
+    'top-4 right-4 absolute p-2.5 bg-white rounded-full cursor-pointer border-neutral-200 border':
+      true,
   });
 
   if (media.length > 0) {
@@ -91,9 +142,12 @@ const Carousel: React.FC<CarouselProps> = ({
           size={36}
         />
         <Icon
-          name="carouselClose"
-          className={crossIconStyles}
-          onClick={closeModal}
+          name="import"
+          className={downloadBtnStyle}
+          size={16}
+          disabled={true}
+          stroke={twConfig.theme.colors.neutral['900']}
+          onClick={() => fetchFile(media[currentIndex].original)}
         />
       </div>
     );

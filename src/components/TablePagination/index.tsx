@@ -9,6 +9,7 @@ export type TablePaginationProps = {
   total: number;
   limit?: number;
   className?: string;
+  dataTestIdPrefix?: string;
 };
 
 const TablePagination: React.FC<TablePaginationProps> = ({
@@ -17,6 +18,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
   total,
   limit = 30,
   className = '',
+  dataTestIdPrefix = '',
 }) => {
   const containerStyles = useMemo(
     () =>
@@ -60,7 +62,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
       className=""
       breakLabel="..."
       nextLabel={
-        <div className={nextStyle}>
+        <div className={nextStyle} data-testid={`${dataTestIdPrefix}-next`}>
           <Icon name="arrowRightOutline" size={16} />
         </div>
       }
@@ -70,7 +72,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
       pageRangeDisplayed={3}
       pageCount={pageCount}
       previousLabel={
-        <div className={prevStyle}>
+        <div className={prevStyle} data-testid={`${dataTestIdPrefix}-previous`}>
           <Icon name="arrowLeftOutline" size={16} />
         </div>
       }
