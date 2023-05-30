@@ -198,7 +198,7 @@ const UserCard: React.FC<IUserCardProps> = ({
             </div>
           </div>
         </div>
-        {isHovered && (
+        {/* {isHovered && (
           <div className="">
             <div className="flex justify-between items-center mt-0 space-x-4">
               <div className="rounded-7xl border border-solid border-neutral-200">
@@ -219,7 +219,7 @@ const UserCard: React.FC<IUserCardProps> = ({
               </div>
             </div>
           </div>
-        )}
+        )} */}
       </Card>
       <DeleteUserModal
         showModal={showDeleteModal}
