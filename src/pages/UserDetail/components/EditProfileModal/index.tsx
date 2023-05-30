@@ -321,6 +321,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
                   className="bg-white p-2.5 text-black"
                   variant={IconVariant.Secondary}
                   size={Size.Medium}
+                  dataTestId="edit-coverpic-btn"
                 />
               </div>
             }
@@ -347,7 +348,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
                   variant={IconVariant.Secondary}
                   size={Size.Medium}
                   onClick={() => userProfileImageRef?.current?.click()}
-                  dataTestId={`${dataTestId}-profilepic`}
+                  dataTestId={`${dataTestId}-profilepic-btn`}
                 />
               </div>
               <div></div>
@@ -373,7 +374,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
               setShowModal(false);
               setFile({});
             }}
-            dataTestId={`${dataTestId}-savechanges`}
+            dataTestId={`${dataTestId}-cancel`}
           />
           <Button
             label={'Save Changes'}
@@ -383,7 +384,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
               uploadStatus === UploadStatus.Uploading ||
               updateUsersMutation.isLoading
             }
-            dataTestId={`${dataTestId}-cancel`}
+            dataTestId={`${dataTestId}-savechanges`}
           />
         </div>
       </form>
