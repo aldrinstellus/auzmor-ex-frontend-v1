@@ -45,7 +45,21 @@ const CreatePost: React.FC<ICreatePostProps> = ({
         accept="image/*"
         onChange={(e) => {
           if (e.target.files?.length) {
-            setUploads(Array.prototype.slice.call(e.target.files));
+            // setUploads(Array.prototype.slice.call(e.target.files));
+            setUploads(
+              Array.prototype.slice
+                .call(e.target.files)
+                .map(
+                  (eachFile: File) =>
+                    new File(
+                      [eachFile],
+                      `id-${Math.random().toString(16).slice(2)}-${
+                        eachFile.name
+                      }`,
+                      { type: eachFile.type },
+                    ),
+                ),
+            );
           }
         }}
         multiple
@@ -57,7 +71,21 @@ const CreatePost: React.FC<ICreatePostProps> = ({
         accept="video/*"
         onChange={(e) => {
           if (e.target.files?.length) {
-            setUploads(Array.prototype.slice.call(e.target.files));
+            setUploads(
+              Array.prototype.slice
+                .call(e.target.files)
+                .map(
+                  (eachFile: File) =>
+                    new File(
+                      [eachFile],
+                      `id-${Math.random().toString(16).slice(2)}-${
+                        eachFile.name
+                      }`,
+                      { type: eachFile.type },
+                    ),
+                ),
+            );
+            // setUploads(Array.prototype.slice.call(e.target.files));
           }
         }}
         multiple

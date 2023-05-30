@@ -4,7 +4,7 @@ import MediaRender from './components/MediaRender';
 import Button, { Variant as ButtonVariant, Size } from 'components/Button';
 import { twConfig } from 'utils/misc';
 import Icon from 'components/Icon';
-import { IMedia } from 'contexts/CreatePostContext';
+import { ICoverImageMap, IMedia } from 'contexts/CreatePostContext';
 import useModal from 'hooks/useModal';
 import './index.css';
 import Modal from 'components/Modal';
@@ -26,6 +26,7 @@ export interface IMediaPreviewProps {
   onAddButtonClick?: React.MouseEventHandler<Element>;
   onCloseButtonClick?: React.MouseEventHandler<Element>;
   onEditButtonClick?: React.MouseEventHandler<Element>;
+  coverImageMap?: ICoverImageMap[];
 }
 
 const MediaPreview: React.FC<IMediaPreviewProps> = ({
@@ -36,6 +37,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
   onCloseButtonClick = () => {},
   onEditButtonClick = () => {},
   onClick = () => {},
+  coverImageMap,
 }) => {
   const [mediaIndex, setMediaIndex] = useState<number>(-1);
   const [open, openModal, closeModal] = useModal(true);
@@ -64,6 +66,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
             }
           }}
           localClassName="!h-64"
+          coverImageUrl={
+            coverImageMap?.find((map) => map.videoName === media[0].name)
+              ?.blobUrl || media[0]?.coverImage?.original
+          }
         />
       );
     } else if (media.length === 2) {
@@ -79,6 +85,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                 onClick(e, 1, media[0]);
               }
             }}
+            coverImageUrl={
+              coverImageMap?.find((map) => map.videoName === media[0].name)
+                ?.blobUrl || media[1]?.coverImage?.original
+            }
           />
           <MediaRender
             data={media[1]}
@@ -90,6 +100,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                 onClick(e, 2, media[1]);
               }
             }}
+            coverImageUrl={
+              coverImageMap?.find((map) => map.videoName === media[1].name)
+                ?.blobUrl || media[2]?.coverImage?.original
+            }
           />
         </div>
       );
@@ -107,6 +121,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   onClick(e, 1, media[0]);
                 }
               }}
+              coverImageUrl={
+                coverImageMap?.find((map) => map.videoName === media[0].name)
+                  ?.blobUrl || media[0]?.coverImage?.original
+              }
             />
           </div>
           <div className="flex flex-col !w-1/2 !ml-2">
@@ -120,6 +138,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   onClick(e, 2, media[1]);
                 }
               }}
+              coverImageUrl={
+                coverImageMap?.find((map) => map.videoName === media[1].name)
+                  ?.blobUrl || media[1]?.coverImage?.original
+              }
             />
             <MediaRender
               data={media[2]}
@@ -131,6 +153,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   onClick(e, 3, media[2]);
                 }
               }}
+              coverImageUrl={
+                coverImageMap?.find((map) => map.videoName === media[2].name)
+                  ?.blobUrl || media[2]?.coverImage?.original
+              }
             />
           </div>
         </div>
@@ -149,6 +175,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   onClick(e, 1, media[0]);
                 }
               }}
+              coverImageUrl={
+                coverImageMap?.find((map) => map.videoName === media[0].name)
+                  ?.blobUrl || media[0]?.coverImage?.original
+              }
             />
             <MediaRender
               data={media[1]}
@@ -160,6 +190,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   onClick(e, 2, media[1]);
                 }
               }}
+              coverImageUrl={
+                coverImageMap?.find((map) => map.videoName === media[1].name)
+                  ?.blobUrl || media[1]?.coverImage?.original
+              }
             />
           </div>
           <div className="flex mt-2 !h-1/2">
@@ -173,6 +207,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   onClick(e, 3, media[2]);
                 }
               }}
+              coverImageUrl={
+                coverImageMap?.find((map) => map.videoName === media[2].name)
+                  ?.blobUrl || media[2]?.coverImage?.original
+              }
             />
             <MediaRender
               data={media[3]}
@@ -184,6 +222,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   onClick(e, 4, media[3]);
                 }
               }}
+              coverImageUrl={
+                coverImageMap?.find((map) => map.videoName === media[3].name)
+                  ?.blobUrl || media[3]?.coverImage?.original
+              }
             />
           </div>
         </div>
@@ -202,6 +244,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   onClick(e, 1, media[0]);
                 }
               }}
+              coverImageUrl={
+                coverImageMap?.find((map) => map.videoName === media[0].name)
+                  ?.blobUrl || media[0]?.coverImage?.original
+              }
             />
             <MediaRender
               data={media[1]}
@@ -213,6 +259,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   onClick(e, 2, media[1]);
                 }
               }}
+              coverImageUrl={
+                coverImageMap?.find((map) => map.videoName === media[1].name)
+                  ?.blobUrl || media[1]?.coverImage?.original
+              }
             />
           </div>
           <div className="flex !h-1/2 mt-2">
@@ -226,6 +276,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   onClick(e, 3, media[2]);
                 }
               }}
+              coverImageUrl={
+                coverImageMap?.find((map) => map.videoName === media[2].name)
+                  ?.blobUrl || media[2]?.coverImage?.original
+              }
             />
             <MediaRender
               data={media[3]}
@@ -237,6 +291,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   onClick(e, 4, media[3]);
                 }
               }}
+              coverImageUrl={
+                coverImageMap?.find((map) => map.videoName === media[3].name)
+                  ?.blobUrl || media[3]?.coverImage?.original
+              }
             />
             <MediaRender
               data={media[4]}
@@ -248,6 +306,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   onClick(e, 5, media[4]);
                 }
               }}
+              coverImageUrl={
+                coverImageMap?.find((map) => map.videoName === media[4].name)
+                  ?.blobUrl || media[4]?.coverImage?.original
+              }
             />
           </div>
         </div>
@@ -266,6 +328,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   onClick(e, 1, media[0]);
                 }
               }}
+              coverImageUrl={
+                coverImageMap?.find((map) => map.videoName === media[0].name)
+                  ?.blobUrl || media[0]?.coverImage?.original
+              }
             />
             <MediaRender
               data={media[1]}
@@ -277,6 +343,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   onClick(e, 2, media[1]);
                 }
               }}
+              coverImageUrl={
+                coverImageMap?.find((map) => map.videoName === media[1].name)
+                  ?.blobUrl || media[1]?.coverImage?.original
+              }
             />
           </div>
           <div className="flex !h-1/2 mt-2">
@@ -290,6 +360,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   onClick(e, 3, media[2]);
                 }
               }}
+              coverImageUrl={
+                coverImageMap?.find((map) => map.videoName === media[2].name)
+                  ?.blobUrl || media[2]?.coverImage?.original
+              }
             />
             <MediaRender
               data={media[3]}
@@ -301,6 +375,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   onClick(e, 4, media[3]);
                 }
               }}
+              coverImageUrl={
+                coverImageMap?.find((map) => map.videoName === media[3].name)
+                  ?.blobUrl || media[3]?.coverImage?.original
+              }
             />
             <MediaRender
               overlayCount={media.length - 5}
@@ -313,12 +391,17 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   onClick(e, 5, media[4]);
                 }
               }}
+              coverImageUrl={
+                coverImageMap?.find((map) => map.videoName === media[4].name)
+                  ?.blobUrl || media[4]?.coverImage?.original
+              }
             />
           </div>
         </div>
       );
     }
   };
+
   return (
     <div className={`${className} relative`}>
       {getLayout()}

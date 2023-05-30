@@ -111,8 +111,11 @@ export const useUpload = () => {
     }
   };
 
-  const postETags = async (id?: string, etags?: IETag[]) =>
-    await apiService.patch(`/files/${id}`, { etags: etags });
+  const postETags = async (
+    id?: string,
+    etags?: IETag[],
+    coverImageUrl?: string,
+  ) => await apiService.patch(`/files/${id}`, { etags: etags, coverImageUrl });
 
   function getChunk(partNumber: number, file: any) {
     const beginchunk = (partNumber - 1) * chunksize;
@@ -218,5 +221,27 @@ export const useUpload = () => {
     return uploadedFiles;
   };
 
-  return { uploadMedia, uploadStatus };
+  const useUploadCoverImage = async (
+    mappings: { fileId: string; coverImageUrl: string }[],
+  ) => {
+    const updateFilePromises: Promise<any>[] = [];
+    mappings.forEach((mapping) => {
+      updateFilePromises.push(
+        postETags(mapping.fileId, [], mapping.coverImageUrl),
+      );
+    });
+    if (updateFilePromises.length > 0) {
+      const promisesRes = await Promise.allSettled(updateFilePromises);
+      promisesRes.forEach((promiseRes: PromiseSettledResult<IMedia>) => {
+        if (promiseRes.status === 'fulfilled') {
+          console.log(promiseRes, '""""" promiseRes   ""');
+        } else {
+          console.log(promiseRes);
+          console.log('etag upload failed');
+        }
+      });
+    }
+  };
+
+  return { uploadMedia, uploadStatus, useUploadCoverImage };
 };

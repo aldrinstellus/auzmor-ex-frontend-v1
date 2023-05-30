@@ -10,6 +10,7 @@ export interface IMediaRenderProps {
   localClassName?: string;
   mode?: Mode;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
+  coverImageUrl?: string;
 }
 
 const MediaRender: React.FC<IMediaRenderProps> = ({
@@ -18,6 +19,7 @@ const MediaRender: React.FC<IMediaRenderProps> = ({
   localClassName,
   mode = Mode.View,
   onClick,
+  coverImageUrl,
 }) => {
   return (
     <div
@@ -29,7 +31,7 @@ const MediaRender: React.FC<IMediaRenderProps> = ({
       {data.type === 'IMAGE' ? (
         <img src={data.original} className="object-cover w-full h-full" />
       ) : (
-        <video className="object-cover w-full h-full">
+        <video className="object-cover w-full h-full" poster={coverImageUrl}>
           <source src={data.original} />
         </video>
       )}

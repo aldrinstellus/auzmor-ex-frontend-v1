@@ -60,6 +60,7 @@ const RichTextEditor = React.forwardRef(
       setIsCharLimit,
       setIsPreviewRemoved,
       removeAllMedia,
+      coverImageMap,
     } = useContext(CreatePostContext);
 
     const [previewUrl, setPreviewUrl] = useState<string>('');
@@ -159,6 +160,7 @@ const RichTextEditor = React.forwardRef(
               updateContext();
               setActiveFlow(CreatePostFlow.EditMedia);
             }}
+            coverImageMap={coverImageMap}
           />
         )}
         {announcement?.label && (

@@ -48,10 +48,11 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     setMedia,
     media,
     clearPostContext,
+    coverImageMap,
   } = useContext(CreatePostContext);
   const queryClient = useQueryClient();
 
-  const { uploadMedia, uploadStatus } = useUpload();
+  const { uploadMedia, uploadStatus, useUploadCoverImage } = useUpload();
 
   useEffect(() => {
     if (data) {
@@ -94,9 +95,24 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
   const handleSubmitPost = async (content?: IEditorValue, files?: File[]) => {
     let fileIds: string[] = [];
     if (files?.length) {
-      fileIds = (await uploadMedia(files, EntityType.Post)).map(
-        (media: IMedia) => media.id,
+      const uploadedMedia = await uploadMedia(files, EntityType.Post);
+      await useUploadCoverImage(
+        coverImageMap.map((map) => {
+          return {
+            fileId:
+              uploadedMedia.find((media) => media.name === map.videoName)?.id ||
+              '',
+            coverImageUrl:
+              uploadedMedia.find((media) => media.name === map.coverImageName)
+                ?.original || '',
+          };
+        }),
       );
+      fileIds = uploadedMedia
+        .filter((media: IMedia) =>
+          coverImageMap.find((map) => map.coverImageName !== media.name),
+        )
+        .map((media: IMedia) => media.id);
     }
     const userMentionList = content?.json?.ops
       ?.filter((op) => op.insert.mention)
