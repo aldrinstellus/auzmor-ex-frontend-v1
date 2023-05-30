@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { login } from 'queries/account';
+import { checkLogin, login } from 'queries/account';
 import React, { useEffect } from 'react';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
@@ -45,6 +45,14 @@ const schema = yup.object({
 const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
   const { user } = useAuth();
 
+  const checkLoginMutation = useMutation(() => checkLogin(), {
+    onSuccess: (data) => {
+      if (data) {
+        redirectWithToken({});
+      }
+    },
+  });
+
   const loginMutation = useMutation((formData: IForm) => login(formData), {
     onSuccess: (data) =>
       redirectWithToken({
@@ -58,6 +66,12 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
     domain,
     domain !== '' ? true : false,
   );
+
+  useEffect(() => {
+    if (domain) {
+      checkLoginMutation.mutate();
+    }
+  }, [domain]);
 
   const { refetch } = useLoginViaSSO(
     { domain },
@@ -77,7 +91,7 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
     formState: { errors, isValid },
   } = useForm<IForm>({
     resolver: yupResolver(schema),
-    defaultValues: { domain: '' },
+    defaultValues: { domain },
     mode: 'onChange',
   });
 
