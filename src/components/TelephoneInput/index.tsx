@@ -1,6 +1,6 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import { Control, useController } from 'react-hook-form';
-import { CountryIso2, usePhoneInput } from 'react-international-phone';
+import { CountryIso2 } from 'react-international-phone';
 import 'react-international-phone/style.css';
 import CountryList, { Country } from 'country-list-with-dial-code-and-flag';
 import Button, { Size, Variant } from 'components/Button';
@@ -19,7 +19,6 @@ type TelephoneInputProps = {
   errorDataTestId?: string;
   defaultCountry: CountryIso2;
   setValue?: any;
-  inputRef?: any;
 };
 
 const TelephoneInput: React.FC<TelephoneInputProps> = ({
@@ -32,14 +31,11 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
   errorDataTestId,
   defaultCountry,
   setValue,
-  inputRef,
 }): ReactElement => {
   const { field } = useController({
     name,
     control,
   });
-
-  if (inputRef) field.ref = inputRef;
 
   const [selectedCountry, setSelectedCountry] = useState<Country[]>(
     CountryList.findByCountryCode(defaultCountry),
