@@ -20,7 +20,6 @@ import { usePhoneInput } from 'react-international-phone';
 export interface IContactInfoForm {
   primaryEmail: string;
   workPhone: string;
-  countryCode: string;
 }
 
 type IContactCardProps = {
@@ -40,19 +39,17 @@ const ContactWidget: React.FC<IContactCardProps> = ({
     [isHovered],
   );
 
-  const { country, phone } = usePhoneInput({
-    value: contactCardData.workPhone,
+  const { control, handleSubmit, getValues } = useForm<IContactInfoForm>({
+    mode: 'onSubmit',
+    defaultValues: {
+      primaryEmail: contactCardData?.primaryEmail,
+      workPhone: contactCardData?.workPhone,
+    },
   });
 
-  const { control, handleSubmit, getValues, setValue } =
-    useForm<IContactInfoForm>({
-      mode: 'onSubmit',
-      defaultValues: {
-        primaryEmail: contactCardData?.primaryEmail,
-        workPhone: phone.substring(phone.indexOf(' ') + 1),
-        countryCode: country,
-      },
-    });
+  const { phone } = usePhoneInput({
+    value: contactCardData.workPhone,
+  });
 
   const fields = [
     {
@@ -68,9 +65,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
       label: 'Contact No.',
       type: FieldType.TelephoneInput,
       control,
-      defaultCountry: country,
       inputClassName: 'bg-red-500',
-      setValue,
       disabled: false,
     },
   ];
@@ -101,12 +96,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
   });
 
   const onSubmit = async () => {
-    const contactData = getValues();
-    const sanitizedContactData = {
-      primaryEmail: contactData.primaryEmail,
-      workPhone: contactData.countryCode + contactData.workPhone,
-    };
-    await updateUserContactDetailMutation.mutateAsync(sanitizedContactData);
+    await updateUserContactDetailMutation.mutateAsync(getValues());
     await queryClient.invalidateQueries(['current-user-me']);
     setIsEditable(false);
   };

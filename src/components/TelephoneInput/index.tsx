@@ -1,11 +1,10 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { Control, useController } from 'react-hook-form';
-import { CountryIso2 } from 'react-international-phone';
+import { usePhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
 import CountryList, { Country } from 'country-list-with-dial-code-and-flag';
 import Button, { Size, Variant } from 'components/Button';
 import Card from 'components/Card';
-import Input from 'components/Input';
 import Icon from 'components/Icon';
 import Divider from 'components/Divider';
 
@@ -17,7 +16,6 @@ type TelephoneInputProps = {
   control?: Control<Record<string, any>>;
   dataTestId?: string;
   errorDataTestId?: string;
-  defaultCountry: CountryIso2;
   setValue?: any;
 };
 
@@ -29,7 +27,6 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
   control,
   dataTestId,
   errorDataTestId,
-  defaultCountry,
   setValue,
 }): ReactElement => {
   const { field } = useController({
@@ -37,16 +34,26 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
     control,
   });
 
-  const [selectedCountry, setSelectedCountry] = useState<Country[]>(
-    CountryList.findByCountryCode(defaultCountry),
+  const { country: countryIso2, phone: formattedPhone } = usePhoneInput({
+    value: field.value,
+  });
+
+  const defaultCountry = CountryList.findOneByCountryCode(countryIso2);
+  const fallbackCountry = CountryList.findOneByCountryCode(
+    Intl.DateTimeFormat().resolvedOptions().timeZone.toLowerCase(),
   );
+  const usa = CountryList.findByCountryCode('us')[0];
+
+  const [selectedCountry, setSelectedCountry] = useState<Country>(
+    defaultCountry || fallbackCountry || usa,
+  );
+
+  const updatedPhone = formattedPhone
+    .replace(new RegExp(`^\\${selectedCountry.dialCode}`), '')
+    .trim();
 
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>('');
-
-  useEffect(() => {
-    setValue('countryCode', selectedCountry[0].dialCode);
-  }, [selectedCountry]);
 
   return (
     <div>
@@ -56,8 +63,8 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
           label={
             <div className="flex items-center justify-between gap-x-4">
               <div className="flex items-center gap-x-1">
-                <p className="text-2xl">{selectedCountry[0].flag}</p>
-                <p className="text-base">{selectedCountry[0].dialCode}</p>
+                <p className="text-2xl">{selectedCountry.flag}</p>
+                <p className="text-base">{selectedCountry.dialCode}</p>
               </div>
               <Icon name={showDropdown ? 'arrowUp' : 'arrowDown'} size={16} />
             </div>
@@ -95,7 +102,7 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
                     key={index}
                     className="py-4 cursor-pointer"
                     onClick={() => {
-                      setSelectedCountry([item]);
+                      setSelectedCountry(item);
                       setShowDropdown(false);
                     }}
                   >
@@ -110,11 +117,12 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
             </div>
           </Card>
         )}
-        <Input
-          control={control}
-          className="w-3/5"
-          {...field}
-          disabled={disabled}
+        <input
+          defaultValue={updatedPhone}
+          onChange={(e) =>
+            field.onChange(selectedCountry.dialCode + e.target.value)
+          }
+          className="w-full rounded-19xl border border-neutral-200 focus:outline-none h-11 px-4"
         />
       </div>
     </div>
