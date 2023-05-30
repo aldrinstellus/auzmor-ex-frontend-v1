@@ -39,13 +39,15 @@ const ContactWidget: React.FC<IContactCardProps> = ({
     [isHovered],
   );
 
-  const { control, handleSubmit, getValues } = useForm<IContactInfoForm>({
-    mode: 'onSubmit',
-    defaultValues: {
-      primaryEmail: contactCardData?.primaryEmail,
-      workPhone: contactCardData?.workPhone,
+  const { control, handleSubmit, getValues, reset } = useForm<IContactInfoForm>(
+    {
+      mode: 'onSubmit',
+      defaultValues: {
+        primaryEmail: contactCardData?.primaryEmail,
+        workPhone: contactCardData?.workPhone,
+      },
     },
-  });
+  );
 
   const { phone } = usePhoneInput({
     value: contactCardData.workPhone,
@@ -59,6 +61,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
       control,
       className: '',
       disabled: true,
+      defaultValue: contactCardData.primaryEmail,
     },
     {
       name: 'workPhone',
@@ -67,6 +70,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
       control,
       inputClassName: 'bg-red-500',
       disabled: false,
+      defaultValue: contactCardData.workPhone,
     },
   ];
 
@@ -131,6 +135,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                       size={Size.Small}
                       onClick={() => {
                         setIsEditable(false);
+                        reset();
                       }}
                       // dataTestId={`${dataTestId}-cancel`}
                     />

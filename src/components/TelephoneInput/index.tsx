@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { Control, useController } from 'react-hook-form';
 import { usePhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
@@ -44,12 +44,10 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
   );
   const usa = CountryList.findByCountryCode('us')[0];
 
-  const [selectedCountry, setSelectedCountry] = useState<Country>(
-    defaultCountry || fallbackCountry || usa,
-  );
-
+  const selectedCountry = defaultCountry || fallbackCountry || usa;
   const updatedPhone = formattedPhone
     .replace(new RegExp(`^\\${selectedCountry.dialCode}`), '')
+    .replaceAll(new RegExp(`[^0-9a-zA-Z]*$`, 'g'), '')
     .trim();
 
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
@@ -102,7 +100,12 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
                     key={index}
                     className="py-4 cursor-pointer"
                     onClick={() => {
-                      setSelectedCountry(item);
+                      field.onChange(
+                        (item.dialCode + ' ' + updatedPhone)
+                          .split(' ')
+                          .join('')
+                          .trim(),
+                      );
                       setShowDropdown(false);
                     }}
                   >
@@ -118,9 +121,14 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
           </Card>
         )}
         <input
-          defaultValue={updatedPhone}
+          value={updatedPhone}
           onChange={(e) =>
-            field.onChange(selectedCountry.dialCode + e.target.value)
+            field.onChange(
+              (selectedCountry.dialCode + ' ' + e.target.value)
+                .split(' ')
+                .join('')
+                .trim(),
+            )
           }
           className="w-full rounded-19xl border border-neutral-200 focus:outline-none h-11 px-4"
         />
