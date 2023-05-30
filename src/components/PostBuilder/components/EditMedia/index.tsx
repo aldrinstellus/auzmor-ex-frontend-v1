@@ -81,7 +81,11 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
                     deleteCoverImageMap(
                       coverImageMap.find(
                         (map) => map.videoName === media[currentIndex].name,
-                      ) || null,
+                      ) || {
+                          videoName: media[currentIndex].name,
+                          coverImageName: '',
+                        } ||
+                        null,
                     );
                   }}
                 >

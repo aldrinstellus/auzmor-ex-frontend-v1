@@ -236,7 +236,7 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         return '';
       }
     } else {
-      return '';
+      return media.coverImage?.original || '';
     }
   };
   return (
