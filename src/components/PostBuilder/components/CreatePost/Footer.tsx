@@ -154,6 +154,7 @@ const Footer: React.FC<IFooterProps> = ({
                 )
               }
               menuItems={postMenuItem.menuItems}
+              className="bottom-full"
             />
           </div>
         ))}
