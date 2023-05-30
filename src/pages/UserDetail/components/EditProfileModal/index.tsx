@@ -238,8 +238,6 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
     },
   });
 
-  console.log(file);
-
   const onSubmit = async (user: IUpdateProfileForm) => {
     let profileImageUploadResponse;
     let coverImageUploadResponse;
