@@ -97,7 +97,6 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       fileIds = (await uploadMedia(files, EntityType.Post)).map(
         (media: IMedia) => media.id,
       );
-      console.log(fileIds, '<===fileIds');
     }
     const userMentionList = content?.json?.ops
       ?.filter((op) => op.insert.mention)

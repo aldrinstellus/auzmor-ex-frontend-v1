@@ -10,6 +10,7 @@ import { NotificationProps } from './NotificationsList';
 import { useMutation } from '@tanstack/react-query';
 import { markNotificationAsReadById } from 'queries/notifications';
 import queryClient from 'utils/queryClient';
+import { Link } from 'react-router-dom';
 
 type NotificationCardProps = NotificationProps;
 
@@ -39,6 +40,7 @@ const Notification: React.FC<NotificationCardProps> = ({
         JSON.stringify(response),
       );
       queryClient.invalidateQueries(['get-notifications']);
+      queryClient.refetchQueries(['notifications-page']);
     },
     onError: (response) => {
       console.log(
@@ -53,57 +55,55 @@ const Notification: React.FC<NotificationCardProps> = ({
     if (!isRead) {
       markNotificationAsReadMutation.mutateAsync(id);
     }
-    window.open(
-      `/posts/${redirect?.postId}${
-        redirect?.commentId ? '?commentId=' + redirect?.commentId : ''
-      }`,
-    );
   };
 
   return (
-    <div
-      className={`${
-        !isRead ? 'bg-orange-50' : 'bg-white'
-      } py-4 px-6 cursor-pointer`}
+    <Link
+      to={`/posts/${redirect?.postId}${
+        redirect?.commentId ? '?commentId=' + redirect?.commentId : ''
+      }`}
       onClick={handleOnClick}
     >
-      <div className="flex gap-x-4">
-        {/* Avatar of the actor with indicator */}
-        <div className="w-fit">
-          <Avatar
-            name={actor.fullName}
-            image={actor.profileImage?.original}
-            // indicatorIcon={
-            //   <div className="bg-green-400 rounded-full w-3 h-3 top-0 right-0 absolute" />
-            // }
-            size={40}
-          />
-        </div>
-        {/* Content */}
-        <div className="flex items-start justify-between w-full">
-          <div className="flex flex-col gap-y-1 w-11/12">
-            <p className="text-neutral-900">
-              <span className="font-bold">{actor.fullName}&nbsp;</span>
-              {notificationMessage}
-            </p>
-            <p className="text-sm text-neutral-500 font-normal">
-              {getTimeSinceActedAt(action.actedAt)}
-            </p>
-            <NotificationCard
-              TopCardContent={cardContent?.TopCardContent}
-              BottomCardContent={cardContent?.BottomCardContent}
-              image={cardContent?.image}
+      <div
+        className={`${
+          !isRead ? 'bg-orange-50' : 'bg-white'
+        } py-4 px-6 cursor-pointer`}
+      >
+        <div className="flex gap-x-4">
+          {/* Avatar of the actor with indicator */}
+          <div className="w-fit">
+            <Avatar
+              name={actor.fullName}
+              image={actor.profileImage?.original}
+              size={40}
             />
           </div>
-          {/* Unread indicator (orange dot) */}
-          {!isRead && (
-            <div className="bg-orange-400 rounded-full w-2 h-2 mt-2" />
-          )}
-        </div>
+          {/* Content */}
+          <div className="flex items-start justify-between w-full">
+            <div className="flex flex-col gap-y-1 w-11/12">
+              <p className="text-neutral-900">
+                <span className="font-bold">{actor.fullName}&nbsp;</span>
+                {notificationMessage}
+              </p>
+              <p className="text-sm text-neutral-500 font-normal">
+                {getTimeSinceActedAt(action.actedAt)}
+              </p>
+              <NotificationCard
+                TopCardContent={cardContent?.TopCardContent}
+                BottomCardContent={cardContent?.BottomCardContent}
+                image={cardContent?.image}
+              />
+            </div>
+            {/* Unread indicator (orange dot) */}
+            {!isRead && (
+              <div className="bg-orange-400 rounded-full w-2 h-2 mt-2" />
+            )}
+          </div>
 
-        <div />
+          <div />
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

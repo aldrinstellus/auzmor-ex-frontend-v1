@@ -327,6 +327,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
                     className="bg-white p-2.5 text-black"
                     variant={IconVariant.Secondary}
                     size={Size.Medium}
+                    dataTestId="edit-coverpic-btn"
                   />
                 </div>
               }
@@ -355,7 +356,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
                     onClick={() => {
                       userProfileImageRef?.current?.click();
                     }}
-                    dataTestId={`${dataTestId}-profilepic`}
+                    dataTestId={`${dataTestId}-profilepic-btn`}
                   />
                 </div>
                 <div></div>

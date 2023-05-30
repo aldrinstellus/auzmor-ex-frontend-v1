@@ -27,6 +27,7 @@ export type ISSOSetting = {
   config?: any;
   allowFallback?: boolean;
   allowOnlyExistingUser?: boolean;
+  dataTestId?: string;
 };
 
 type SSOConfig = {
@@ -80,6 +81,7 @@ const SSOSettings: React.FC = (): ReactElement => {
       key: 'Active Directory',
       idp: IdentityProvider.CUSTOM_LDAP,
       configureScreen: ConfigureScreen.LDAP,
+      dataTestId: 'sso-ldap-configure-btn',
       ...getSSOValues(IdentityProvider[0]),
     },
     {
@@ -89,6 +91,7 @@ const SSOSettings: React.FC = (): ReactElement => {
       key: 'ADFS (SSO)',
       idp: IdentityProvider.MS_AZURE_AD,
       configureScreen: ConfigureScreen.GENERIC,
+      dataTestId: 'sso-azure-ad-configure-btn',
       ...getSSOValues(IdentityProvider[1]),
     },
     {
@@ -98,6 +101,7 @@ const SSOSettings: React.FC = (): ReactElement => {
       key: 'Okta (SSO)',
       idp: IdentityProvider.OKTA,
       configureScreen: ConfigureScreen.GENERIC,
+      dataTestId: 'sso-okta-configure-btn',
       ...getSSOValues(IdentityProvider[2]),
     },
     {
@@ -107,6 +111,7 @@ const SSOSettings: React.FC = (): ReactElement => {
       key: 'Google (SSO)',
       idp: IdentityProvider.GSUITE,
       configureScreen: ConfigureScreen.GENERIC,
+      dataTestId: 'sso-gsuite-configure-btn',
       ...getSSOValues(IdentityProvider[3]),
     },
     {
@@ -116,6 +121,7 @@ const SSOSettings: React.FC = (): ReactElement => {
       key: 'SAML (SSO)',
       idp: IdentityProvider.CUSTOM_SAML,
       configureScreen: ConfigureScreen.GENERIC,
+      dataTestId: 'sso-saml-configure-btn',
       ...getSSOValues(IdentityProvider[4]),
     },
   ];
@@ -159,7 +165,7 @@ const SSOSettings: React.FC = (): ReactElement => {
             active={integration.active || false}
             setShowErrorBanner={setShowErrorBanner}
             activeSSO={activeSSO}
-            dataTestId={`sso-admin-${snakeCase(integration.key)}`}
+            dataTestId={integration.dataTestId}
           />
         ))}
         {open && ssoSetting?.configureScreen === ConfigureScreen.GENERIC && (

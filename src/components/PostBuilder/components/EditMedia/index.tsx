@@ -6,7 +6,7 @@ import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import React, { useContext, useRef } from 'react';
 import { isVideo } from 'utils/misc';
 import useCarousel from 'hooks/useCarousel';
-import SwitchToggle from 'components/SwitchToggle';
+// import SwitchToggle from 'components/SwitchToggle';
 import Header from 'components/ModalHeader';
 import Body from './Body';
 import Footer from './Footer';
@@ -16,9 +16,9 @@ export interface IEditMediaProps {
 }
 
 const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
-  const { setActiveFlow, media, replaceMedia, removeMedia } =
-    useContext(CreatePostContext);
+  const { setActiveFlow, media, replaceMedia } = useContext(CreatePostContext);
   const changeInputImgRef = useRef<HTMLInputElement>(null);
+  const uploadCoverImageRef = useRef<HTMLInputElement>(null);
   const [currentIndex, prevSlide, nextSlide] = useCarousel(0, media.length);
 
   return (
@@ -49,12 +49,13 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
               leftIcon="upload"
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Small}
+              onClick={() => uploadCoverImageRef.current?.click()}
             />
           </div>
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <div className="text-xs font-bold mr-3">Sound:</div>
             <SwitchToggle color="bg-primary-500" />
-          </div>
+          </div> */}
         </div>
       )}
       <Footer
@@ -74,6 +75,17 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
               Array.prototype.slice.call(e.target.files)[0],
             );
           }
+        }}
+      />
+      <input
+        type="file"
+        className="hidden"
+        ref={uploadCoverImageRef}
+        accept="image/*"
+        onChange={(e) => {
+          // if (e.target.files?.length) {
+          //   setUploads(Array.prototype.slice.call(e.target.files));
+          // }
         }}
       />
     </>

@@ -18,7 +18,7 @@ const ItemList: React.FC<IItemListProps> = ({
   setDraggableItems,
 }) => {
   const [isEditable, setIsEditable] = useState<boolean>(false);
-  const [newEnteredValue, setNewEnteredValue] = useState<string>('');
+  const [newEnteredValue, setNewEnteredValue] = useState<string>(item.value);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -29,11 +29,9 @@ const ItemList: React.FC<IItemListProps> = ({
   }, [isEditable]);
 
   const updateInitialSkillsets = (id: string, newValue: string) => {
-    console.log(id, newValue);
     const updateSkillsets = draggableItems?.map((item) =>
       item.id === id ? { ...item, value: newValue } : item,
     );
-    console.log('sdsds', updateSkillsets);
     setDraggableItems(updateSkillsets);
   };
 
@@ -45,7 +43,7 @@ const ItemList: React.FC<IItemListProps> = ({
           {isEditable ? (
             <input
               type="text"
-              value={`${newEnteredValue}`}
+              value={newEnteredValue}
               ref={inputRef}
               style={{ border: 'none', outline: 'none' }}
               onChange={(event) => {
@@ -71,7 +69,6 @@ const ItemList: React.FC<IItemListProps> = ({
             size={20}
             onClick={() => {
               setIsEditable(!isEditable);
-              console.log(item.id);
             }}
           />
         </div>

@@ -40,6 +40,8 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
   const [isCoverImageRemoved, setIsCoverImageRemoved] = useState(false);
   const userProfileImageRef = useRef<HTMLInputElement>(null);
   const userCoverImageRef = useRef<HTMLInputElement>(null);
+  const [profileImageName, setProfileImageName] = useState<string>('');
+  const [coverImageName, setCoverImageName] = useState<string>('');
 
   return (
     <>
@@ -48,13 +50,17 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
         data-testid="profile-details"
       >
         <div className="relative cursor-pointer">
-          <div className="w-full h-[179.56px] overflow-hidden rounded-9xl">
+          <div
+            className="w-full h-[179.56px] overflow-hidden rounded-9xl"
+            data-testid={coverImageName}
+          >
             {!isCoverImageRemoved && (
               <img
                 className="object-cover w-full"
                 src={
                   profileCoverData?.coverImage?.original || DefaultCoverImage
                 }
+                alt={profileCoverData?.coverImage}
                 data-testid="user-cover-pic"
                 onClick={() => canEdit && setShowEditProfileModal(true)}
               />
@@ -81,7 +87,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
               image={profileCoverData?.profileImage?.original}
               size={80}
               className="border-2 border-white mt-8 overflow-hidden"
-              dataTestId="user-profile-pic"
+              dataTestId={profileImageName}
             />
           </div>
           <div className="ml-4 mb-7 flex flex-col space-y-5 w-full">
@@ -183,6 +189,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
           id="file-input"
           type="file"
           ref={userProfileImageRef}
+          data-testid="edit-profile-profilepic"
           className="hidden"
           accept="image/*"
           multiple={false}
@@ -194,6 +201,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
               });
               setShowPictureCropModal(true);
               setShowEditProfileModal(false);
+              setProfileImageName(e?.target?.files[0]?.name);
             }
           }}
         />
@@ -204,12 +212,14 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
           className="hidden"
           accept="image/*"
           multiple={false}
+          data-testid="edit-profile-coverpic"
           onChange={(e) => {
             if (e.target.files?.length) {
               setFile({
                 ...file,
                 coverImage: Array.prototype.slice.call(e.target.files)[0],
               });
+              setCoverImageName(e?.target?.files[0]?.name);
             }
           }}
         />

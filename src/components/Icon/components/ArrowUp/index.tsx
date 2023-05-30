@@ -20,7 +20,7 @@ const ArrowUp: React.FC<IconProps> = ({
   const [isHovered, eventHandlers] = useHover();
 
   return (
-    <div onClick={onClick} {...eventHandlers}>
+    <div onClick={onClick} className={className} {...eventHandlers}>
       <SvgArrowUpOutline {...props} />
     </div>
   );

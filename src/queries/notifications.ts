@@ -56,36 +56,13 @@ export const fetchNotifications = ({
 };
 
 // Infinite scroll for notifications
-export const useInfiniteNotifications = (
-  q?: Record<string, any>,
-  limit = 20,
-) => {
+export const useInfiniteNotifications = (q?: Record<string, any>) => {
   return useInfiniteQuery({
     queryKey: ['notifications-page', q],
     queryFn: fetchNotifications,
-    getNextPageParam: (lastPage: any) => {
-      const limitOffset = {
-        limit,
-        offset: lastPage?.data?.result?.offset
-          ? lastPage?.data?.result?.offset + limit >
-            lastPage?.data?.result?.total
-            ? lastPage?.data?.result?.offset
-            : lastPage?.data?.result?.offset + limit
-          : undefined,
-      };
-      return `/notifications?${limitOffset?.limit ? 'limit=' + limitOffset.limit : ''}${limitOffset?.offset ? '&offset=' + limitOffset.offset : ''}${q?.mentions && q.mentions === true ? '&mentions=true' : ''}`;
-    },
-    getPreviousPageParam: (currentPage: any) => {
-      const limitOffset = {
-        limit,
-        offset: currentPage?.data?.result?.offset
-          ? currentPage?.data?.result?.offset - limit > 0
-            ? currentPage?.data?.result?.offset
-            : 0
-          : undefined,
-      };
-      return `/notifications?${limitOffset?.limit ? 'limit=' + limitOffset.limit : ''}${limitOffset?.offset ? '&offset=' + limitOffset.offset : ''}${q?.mentions && q.mentions === true ? '&mentions=true' : ''}`;
-    },
+    getNextPageParam: (lastPage: any) => lastPage?.data?.result?.paging?.next,
+    getPreviousPageParam: (currentPage: any) =>
+      currentPage?.data?.result?.paging?.prev,
     staleTime: 5 * 60 * 1000,
   });
 };

@@ -72,7 +72,8 @@ const NotificationsListing: React.FC<NotificationsListing> = ({
     hasNextPage,
     error,
   } = useInfiniteNotifications({
-    mentions,
+    limit: 20,
+    ...(mentions ? { mentions: true } : undefined),
   });
 
   useEffect(() => {
@@ -99,21 +100,23 @@ const NotificationsListing: React.FC<NotificationsListing> = ({
     <div>
       {!isLoading && !isError && (
         <div className={`flex flex-col overflow-y-auto ${className}`}>
-          {notifications?.map(
-            (notification: NotificationProps, index: number) => (
-              <div key={index}>
-                <Notification
-                  action={notification.action}
-                  actor={notification.actor}
-                  target={notification.target}
-                  isRead={notification.isRead}
-                  createdAt={notification.createdAt}
-                  id={notification.id}
-                />
-                <Divider className="bg-gray-200" />
-              </div>
-            ),
-          )}
+          {notifications?.length > 0 &&
+            notifications[0] !== undefined &&
+            notifications.map(
+              (notification: NotificationProps, index: number) => (
+                <div key={index}>
+                  <Notification
+                    action={notification.action}
+                    actor={notification.actor}
+                    target={notification.target}
+                    isRead={notification.isRead}
+                    createdAt={notification.createdAt}
+                    id={notification.id}
+                  />
+                  <Divider className="bg-gray-200" />
+                </div>
+              ),
+            )}
           <Divider />
           <div className="text-neutral-500 text-sm font-normal flex justify-center py-4">
             That&apos;s all for now
