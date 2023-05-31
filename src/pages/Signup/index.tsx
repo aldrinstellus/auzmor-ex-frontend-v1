@@ -30,7 +30,19 @@ const schema = yup.object({
     .string()
     .email('The email address you entered is invalid')
     .required('Required field'),
-  domain: yup.string().required('Required field'),
+  domain: yup
+    .string()
+    .min(3)
+    .max(63)
+    .matches(
+      /^(?!-)(?!.*--)(?!.*-$)/,
+      'Hyphen cannot appear at either the beginning or the end of the domain. Two consecutive hyphens are not allowed.',
+    )
+    .matches(
+      /[a-zA-Z0-9-]$/,
+      'Only alphabets, numbers and hyphens are allowed.',
+    )
+    .required('Required field'),
   password: yup.string().required('Required field'),
   confirmPassword: yup
     .string()
@@ -113,7 +125,7 @@ const Signup: React.FC<ISignupProps> = () => {
       placeholder: 'Enter domain',
       rightElement: (
         <div className="text-sm font-medium text-neutral-500">
-          office.auzmor.com
+          .office.auzmor.com
         </div>
       ),
       name: 'domain',
