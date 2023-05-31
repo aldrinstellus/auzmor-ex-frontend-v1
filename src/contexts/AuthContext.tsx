@@ -4,6 +4,7 @@ import { getItem, removeAllItems, setItem } from 'utils/persist';
 import { fetchMe } from 'queries/account';
 import UserOnboard from 'components/UserOnboard';
 import { Role } from 'utils/enum';
+import PageLoader from 'components/PageLoader';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -107,7 +108,11 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
   const updateUser = (user: IUser) => setUser((u) => ({ ...u, ...user }));
 
   if (loading) {
-    return <>Loading...</>;
+    return (
+      <div className="h-screen w-screen">
+        <PageLoader />
+      </div>
+    );
   }
   return (
     <AuthContext.Provider value={{ user, reset, updateUser }}>

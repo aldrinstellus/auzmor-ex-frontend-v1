@@ -10,7 +10,7 @@ import ConfigureGenericSSO from './components/ConfigureGenericSSO';
 import { IdentityProvider, useGetSSO } from 'queries/organization';
 import ConfigureLDAP from './components/ConfigureLDAP';
 import Banner, { Variant } from 'components/Banner';
-import { snakeCase } from 'lodash';
+import PageLoader from 'components/PageLoader';
 
 enum ConfigureScreen {
   GENERIC = 'GENERIC',
@@ -132,7 +132,7 @@ const SSOSettings: React.FC = (): ReactElement => {
   );
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <PageLoader />;
   }
 
   if (isError) {

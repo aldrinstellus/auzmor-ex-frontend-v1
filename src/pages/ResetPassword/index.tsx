@@ -13,6 +13,7 @@ import { useMutation } from '@tanstack/react-query';
 import { resetPassword, useTokenValidation } from 'queries/account';
 import PasswordExpiry from 'pages/PasswordExpiry';
 import clsx from 'clsx';
+import PageLoader from 'components/PageLoader';
 
 interface IForm {
   newPassword: string;
@@ -120,7 +121,7 @@ const ResetPassword = () => {
         </div>
         <div className={resetPasswordContainerStyles}>
           {isLoading ? (
-            <div className="flex justify-center items-center">Loading ...</div>
+            <PageLoader />
           ) : (
             <>
               {!!data ? (

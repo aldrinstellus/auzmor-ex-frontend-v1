@@ -88,19 +88,21 @@ const AccountCard = () => {
                   <div className="text-neutral-900 text-sm">User Settings</div>
                 </div>
               </Link>
-              <div
-                className={`flex ${menuItemStyle}`}
-                data-testId="user-menu-admin-settings"
-                onClick={close}
-              >
-                <Icon
-                  name="settingThreeOutline"
-                  size={20}
-                  className="mr-2.5"
-                  stroke={twConfig.theme.colors.neutral['900']}
-                />
-                <div className="text-neutral-900 text-sm">Admin Settings</div>
-              </div>
+              <Link to="/admin">
+                <div
+                  className={`flex ${menuItemStyle}`}
+                  data-testId="user-menu-admin-settings"
+                  onClick={close}
+                >
+                  <Icon
+                    name="settingThreeOutline"
+                    size={20}
+                    className="mr-2.5"
+                    stroke={twConfig.theme.colors.neutral['900']}
+                  />
+                  <div className="text-neutral-900 text-sm">Admin Settings</div>
+                </div>
+              </Link>
               <div
                 className={`flex ${menuItemStyle}`}
                 onClick={() => {

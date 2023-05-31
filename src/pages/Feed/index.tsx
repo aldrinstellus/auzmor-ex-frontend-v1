@@ -17,6 +17,7 @@ import Divider from 'components/Divider';
 import SortByDropdown from 'components/ActivityFeed/components/SortByDropdown';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
+import PageLoader from 'components/PageLoader';
 
 interface IFeedProps {}
 
@@ -146,7 +147,7 @@ const Feed: React.FC<IFeedProps> = () => {
               )}
             </div>
             {isLoading ? (
-              <div className="mt-4">loading...</div>
+              <PageLoader />
             ) : (
               <div className="mt-4">
                 {feed.map((post) => (
@@ -158,7 +159,7 @@ const Feed: React.FC<IFeedProps> = () => {
             <div className="h-12 w-12">
               {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
             </div>
-            {isFetchingNextPage && <div>Loading more...</div>}
+            {isFetchingNextPage && <PageLoader />}
           </div>
         </div>
         <div className="w-1/4">
