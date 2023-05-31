@@ -18,12 +18,15 @@ export interface IUpdateProfileImage {
 interface IUserDetailProps {}
 
 const UserDetail: React.FC<IUserDetailProps> = () => {
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showEditProfileModal, setShowEditProfileModal] =
+    useState<boolean>(false);
+  const [showPictureCropModal, setShowPictureCropModal] =
+    useState<boolean>(false);
   const [showFeedModal, setShowFeedModal] = useState<boolean>(false);
   const { user } = useAuth();
 
   const params = useParams();
-  const { state, pathname } = useLocation();
+  const { pathname } = useLocation();
 
   let userData;
 
@@ -83,8 +86,10 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
     <div className="flex flex-col space-y-9 w-full">
       <ProfileCoverSection
         profileCoverData={profileData}
-        showModal={showModal}
-        setShowModal={setShowModal}
+        showEditProfileModal={showEditProfileModal}
+        setShowEditProfileModal={setShowEditProfileModal}
+        showPictureCropModal={showPictureCropModal}
+        setShowPictureCropModal={setShowPictureCropModal}
         canEdit={pathname === '/profile'}
       />
       <div className="mb-32 space-x-8 flex w-full">

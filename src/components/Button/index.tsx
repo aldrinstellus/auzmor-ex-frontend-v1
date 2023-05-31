@@ -80,7 +80,7 @@ const Button = ({
             variant === Variant.Danger,
         },
         {
-          'py-1 px-4 text-sm': size === Size.Small,
+          'py-2 px-4 text-sm': size === Size.Small,
         },
         {
           'py-2 px-4 text-base': size === Size.Medium,

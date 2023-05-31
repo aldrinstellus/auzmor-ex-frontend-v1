@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { DeltaStatic } from 'quill';
-import { getMediaObj } from 'utils/misc';
+import { getBlobUrl, getMediaObj } from 'utils/misc';
 
 export interface ICreatePostProviderProps {
   children?: ReactNode;
@@ -36,7 +36,7 @@ export interface ICreatePostContext {
   setMedia: (media: IMedia[]) => void;
   inputImgRef: React.RefObject<HTMLInputElement> | null;
   inputVideoRef: React.RefObject<HTMLInputElement> | null;
-  setUploads: (uploads: File[]) => void;
+  setUploads: (uploads: File[], isCoverImage?: boolean) => void;
   replaceMedia: (index: number, data: File) => void;
   removeMedia: (index: number, callback?: () => void) => void;
   clearPostContext: () => void;
@@ -45,6 +45,11 @@ export interface ICreatePostContext {
   setIsPreviewRemoved: (flag: boolean) => void;
   isCharLimit: boolean;
   setIsCharLimit: (flag: boolean) => void;
+  coverImageMap: ICoverImageMap[];
+  setCoverImageMap: (coverImage: ICoverImageMap[]) => void;
+  updateCoverImageMap: (map: ICoverImageMap) => void;
+  deleteCoverImageMap: (map: ICoverImageMap | null) => void;
+  getCoverImageBlobURL: (media: IMedia) => string;
 }
 
 export interface IEditorValue {
@@ -65,6 +70,13 @@ export interface IMedia {
   size: string;
   thumbnailUrl: string;
   type: 'IMAGE' | 'VIDEO';
+  coverImage?: { original: string } | null;
+}
+
+export interface ICoverImageMap {
+  videoName?: string;
+  coverImageName: string;
+  blobUrl?: string;
 }
 
 export const CreatePostContext = createContext<ICreatePostContext>({
@@ -89,6 +101,11 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setIsPreviewRemoved: () => {},
   isCharLimit: false,
   setIsCharLimit: () => {},
+  coverImageMap: [],
+  setCoverImageMap: () => {},
+  updateCoverImageMap: () => {},
+  deleteCoverImageMap: () => {},
+  getCoverImageBlobURL: () => '',
 });
 
 const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
@@ -107,9 +124,12 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
   const [files, setFiles] = useState<File[]>([]);
   const [isPreviewRemoved, setIsPreviewRemoved] = useState<boolean>(false);
   const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
+  const [coverImageMap, setCoverImageMap] = useState<ICoverImageMap[]>([]);
 
-  const setUploads = (uploads: File[]) => {
-    setMedia([...media, ...getMediaObj(uploads)]);
+  const setUploads = (uploads: File[], isCoverImage?: boolean) => {
+    if (!isCoverImage) {
+      setMedia([...media, ...getMediaObj(uploads)]);
+    }
     setFiles([...files, ...uploads]);
   };
 
@@ -157,6 +177,67 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     setActiveFlow(CreatePostFlow.CreatePost);
     setIsPreviewRemoved(false);
     setIsCharLimit(false);
+    setCoverImageMap([]);
+  };
+
+  const updateCoverImageMap = (map: ICoverImageMap) => {
+    if (
+      coverImageMap.some(
+        (value: ICoverImageMap) => value.videoName === map.videoName,
+      )
+    ) {
+      setCoverImageMap(
+        coverImageMap.map((value: ICoverImageMap) => {
+          if (map.videoName === value.videoName) {
+            return {
+              videoName: map.videoName,
+              coverImageName: map.coverImageName,
+            };
+          } else {
+            return value;
+          }
+        }),
+      );
+    } else {
+      setCoverImageMap([...coverImageMap, map]);
+    }
+  };
+
+  const deleteCoverImageMap = (map: ICoverImageMap | null) => {
+    if (!map) return;
+    setCoverImageMap(
+      coverImageMap.filter(
+        (eachmap: ICoverImageMap) => eachmap.videoName !== map.videoName,
+      ),
+    );
+    setFiles([
+      ...files.filter((file: File) => file.name !== map.coverImageName),
+    ]);
+
+    const updatedMedia = media.map((media: IMedia) => {
+      if (media.name === map.videoName) {
+        return { ...media, coverImage: null };
+      } else {
+        return media;
+      }
+    });
+    setMedia([...updatedMedia]);
+  };
+
+  const getCoverImageBlobURL = (media: IMedia) => {
+    const coverImageName = coverImageMap.find(
+      (map) => map.videoName === media.name,
+    )?.coverImageName;
+    if (coverImageName) {
+      const file = files.find((file) => file.name === coverImageName);
+      if (file) {
+        return getBlobUrl(file);
+      } else {
+        return '';
+      }
+    } else {
+      return media.coverImage?.original || '';
+    }
   };
   return (
     <CreatePostContext.Provider
@@ -182,6 +263,11 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         setIsPreviewRemoved,
         isCharLimit,
         setIsCharLimit,
+        coverImageMap,
+        setCoverImageMap,
+        updateCoverImageMap,
+        deleteCoverImageMap,
+        getCoverImageBlobURL,
       }}
     >
       {children}

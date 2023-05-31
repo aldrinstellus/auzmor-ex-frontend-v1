@@ -4,19 +4,28 @@ import Button, {
 } from 'components/Button';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import React, { useContext, useRef } from 'react';
-import { isVideo } from 'utils/misc';
+import { getBlobUrl, isVideo, twConfig } from 'utils/misc';
 import useCarousel from 'hooks/useCarousel';
 // import SwitchToggle from 'components/SwitchToggle';
 import Header from 'components/ModalHeader';
 import Body from './Body';
 import Footer from './Footer';
+import Icon from 'components/Icon';
 
 export interface IEditMediaProps {
   closeModal: () => void;
 }
 
 const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
-  const { setActiveFlow, media, replaceMedia } = useContext(CreatePostContext);
+  const {
+    setActiveFlow,
+    media,
+    replaceMedia,
+    updateCoverImageMap,
+    setUploads,
+    deleteCoverImageMap,
+    coverImageMap,
+  } = useContext(CreatePostContext);
   const changeInputImgRef = useRef<HTMLInputElement>(null);
   const uploadCoverImageRef = useRef<HTMLInputElement>(null);
   const [currentIndex, prevSlide, nextSlide] = useCarousel(0, media.length);
@@ -46,11 +55,48 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
             <div className="text-xs font-bold mr-3">Cover image:</div>
             <Button
               label="Upload image"
-              leftIcon="upload"
+              leftIcon="exportOutline"
+              leftIconClassName="mr-1"
+              iconStroke={twConfig.theme.colors.neutral['900']}
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Small}
               onClick={() => uploadCoverImageRef.current?.click()}
             />
+            {(coverImageMap.find(
+              (map) => map.videoName === media[currentIndex].name,
+            ) ||
+              media[currentIndex]?.coverImage?.original) && (
+              <div className="flex items-center ml-2 font-bold text-sm text-primary-500 px-4 py-2 border border-neutral-200 rounded-19xl">
+                <div>
+                  {/* {
+                    coverImageMap.find(
+                      (map) => map.videoName === media[currentIndex].name,
+                    )?.coverImageName
+                  } */}
+                  cover-image.png
+                </div>
+                <div
+                  className="flex items-center ml-2 cursor-pointer"
+                  onClick={() => {
+                    deleteCoverImageMap(
+                      coverImageMap.find(
+                        (map) => map.videoName === media[currentIndex].name,
+                      ) || {
+                          videoName: media[currentIndex].name,
+                          coverImageName: '',
+                        } ||
+                        null,
+                    );
+                  }}
+                >
+                  <Icon
+                    name="closeCircle"
+                    size={16}
+                    stroke={twConfig.theme.colors.neutral['900']}
+                  />
+                </div>
+              </div>
+            )}
           </div>
           {/* <div className="flex items-center">
             <div className="text-xs font-bold mr-3">Sound:</div>
@@ -74,6 +120,10 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
               currentIndex,
               Array.prototype.slice.call(e.target.files)[0],
             );
+            deleteCoverImageMap({
+              videoName: media[currentIndex].name,
+              coverImageName: '',
+            });
           }
         }}
       />
@@ -83,9 +133,25 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
         ref={uploadCoverImageRef}
         accept="image/*"
         onChange={(e) => {
-          // if (e.target.files?.length) {
-          //   setUploads(Array.prototype.slice.call(e.target.files));
-          // }
+          if (e.target.files?.length) {
+            const fileName = `id-${Math.random().toString(16).slice(2)}-${
+              e.target.files[0].name
+            }`;
+            setUploads(
+              Array.prototype.slice
+                .call(e.target.files)
+                .map(
+                  (eachFile: File) =>
+                    new File([eachFile], fileName, { type: eachFile.type }),
+                ),
+              true,
+            );
+            updateCoverImageMap({
+              videoName: media[currentIndex].name,
+              coverImageName: fileName,
+              blobUrl: getBlobUrl(e.target.files[0]),
+            });
+          }
         }}
       />
     </>

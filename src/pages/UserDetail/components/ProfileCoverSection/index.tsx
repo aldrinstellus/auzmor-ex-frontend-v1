@@ -15,18 +15,23 @@ import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 import EditProfileModal from '../EditProfileModal';
 import { IUpdateProfileImage } from 'pages/UserDetail';
 import DefaultCoverImage from 'images/png/CoverImage.png';
+import CropPictureModal from 'components/CropPictureModal';
 
 export interface IProfileCoverProps {
   profileCoverData: Record<string, any>;
-  showModal: boolean;
-  setShowModal: (flag: boolean) => void;
+  showEditProfileModal: boolean;
+  setShowEditProfileModal: (showModal: boolean) => void;
+  showPictureCropModal: boolean;
+  setShowPictureCropModal: (showModal: boolean) => void;
   canEdit: boolean;
 }
 
 const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
   profileCoverData,
-  showModal,
-  setShowModal,
+  showEditProfileModal,
+  setShowEditProfileModal,
+  showPictureCropModal,
+  setShowPictureCropModal,
   canEdit,
 }) => {
   const [file, setFile] = useState<IUpdateProfileImage | Record<string, any>>(
@@ -57,7 +62,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                 }
                 alt={profileCoverData?.coverImage}
                 data-testid="user-cover-pic"
-                onClick={() => canEdit && setShowModal(true)}
+                onClick={() => canEdit && setShowEditProfileModal(true)}
               />
             )}
           </div>
@@ -69,7 +74,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
               variant={IconVariant.Secondary}
               size={Size.Medium}
               onClick={() => {
-                setShowModal(true);
+                setShowEditProfileModal(true);
               }}
               dataTestId="edit-cover-pic"
             />
@@ -112,7 +117,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                   size={ButtonSize.Medium}
                   variant={ButtonVariant.Secondary}
                   onClick={() => {
-                    canEdit && setShowModal(true);
+                    canEdit && setShowEditProfileModal(true);
                   }}
                   dataTestId={canEdit ? 'edit-profile' : 'follow'}
                 />
@@ -152,11 +157,12 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             </div>
           </div>
         </div>
-        {showModal && (
+        {showEditProfileModal && (
           <EditProfileModal
             data={profileCoverData}
-            showModal={showModal}
-            setShowModal={setShowModal}
+            showEditProfileModal={showEditProfileModal}
+            setShowEditProfileModal={setShowEditProfileModal}
+            setShowPictureCropModal={setShowPictureCropModal}
             userProfileImageRef={userProfileImageRef}
             userCoverImageRef={userCoverImageRef}
             file={file}
@@ -165,6 +171,20 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             dataTestId="edit-profile"
             isCoverImageRemoved={isCoverImageRemoved}
             setIsCoverImageRemoved={setIsCoverImageRemoved}
+          />
+        )}
+        {showPictureCropModal && (
+          <CropPictureModal
+            title={file?.profileImage ? 'Apply Changes' : 'Reposition'}
+            showPictureCropModal={showPictureCropModal}
+            setShowPictureCropModal={setShowPictureCropModal}
+            setShowEditProfileModal={setShowEditProfileModal}
+            file={file}
+            setFile={setFile}
+            userProfileImageRef={userProfileImageRef}
+            userCoverImageRef={userCoverImageRef}
+            profileImage={profileCoverData?.profileImage}
+            coverImage={profileCoverData?.coverImage}
           />
         )}
         <input
@@ -181,6 +201,8 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                 ...file,
                 profileImage: Array.prototype.slice.call(e.target.files)[0],
               });
+              setShowPictureCropModal(true);
+              setShowEditProfileModal(false);
               setProfileImageName(e?.target?.files[0]?.name);
             }
           }}
@@ -199,6 +221,8 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                 ...file,
                 coverImage: Array.prototype.slice.call(e.target.files)[0],
               });
+              setShowPictureCropModal(true);
+              setShowEditProfileModal(false);
               setCoverImageName(e?.target?.files[0]?.name);
             }
           }}

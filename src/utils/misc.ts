@@ -129,3 +129,8 @@ export const downloadURI = (uri: string, name: string) => {
   };
   link.click();
 };
+
+export const BlobToFile = (blob: Blob, fileName: string): File => {
+  const file = new File([blob], fileName, { type: 'image/jpeg' });
+  return file;
+};
