@@ -28,10 +28,6 @@ const Body: React.FC<IBodyProps> = ({ currentIndex, nextSlide, prevSlide }) => {
             nextSlide();
           }
         });
-        deleteCoverImageMap({
-          videoName: media[currentIndex].name,
-          coverImageName: '',
-        });
       }}
       currentIndex={currentIndex}
       prevSlide={prevSlide}

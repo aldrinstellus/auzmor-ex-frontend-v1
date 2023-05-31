@@ -50,6 +50,8 @@ export interface ICreatePostContext {
   updateCoverImageMap: (map: ICoverImageMap) => void;
   deleteCoverImageMap: (map: ICoverImageMap | null) => void;
   getCoverImageBlobURL: (media: IMedia) => string;
+  removedCoverimageFileIds: string[];
+  setRemovedCoverimageFileIds: (fileIds: string[]) => void;
 }
 
 export interface IEditorValue {
@@ -106,6 +108,8 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   updateCoverImageMap: () => {},
   deleteCoverImageMap: () => {},
   getCoverImageBlobURL: () => '',
+  removedCoverimageFileIds: [],
+  setRemovedCoverimageFileIds: () => {},
 });
 
 const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
@@ -125,6 +129,9 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
   const [isPreviewRemoved, setIsPreviewRemoved] = useState<boolean>(false);
   const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
   const [coverImageMap, setCoverImageMap] = useState<ICoverImageMap[]>([]);
+  const [removedCoverimageFileIds, setRemovedCoverimageFileIds] = useState<
+    string[]
+  >([]);
 
   const setUploads = (uploads: File[], isCoverImage?: boolean) => {
     if (!isCoverImage) {
@@ -155,8 +162,39 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
 
   const removeMedia = (index: number, callback?: () => void) => {
     const fileName = media[index].name;
-    setMedia([...media.filter((file: IMedia) => file.name !== fileName)]);
-    setFiles([...files.filter((file: File) => file.name !== fileName)]);
+    const coverImageName = coverImageMap.find(
+      (eachmap: ICoverImageMap) => eachmap.videoName === fileName,
+    )?.coverImageName;
+
+    //Update files
+    setFiles([
+      ...files.filter(
+        (file: File) => file.name !== fileName || file.name !== coverImageName,
+      ),
+    ]);
+
+    // update media
+    const updatedMedia = media.map((media: IMedia) => {
+      if (media.name === fileName) {
+        if (media.id !== '') {
+          setRemovedCoverimageFileIds([...removedCoverimageFileIds, media.id]);
+        }
+        return { ...media, coverImage: null };
+      } else {
+        return media;
+      }
+    });
+    setMedia([
+      ...updatedMedia.filter((file: IMedia) => file.name !== fileName),
+    ]);
+
+    // update cover image
+    setCoverImageMap(
+      coverImageMap.filter(
+        (eachmap: ICoverImageMap) => eachmap.videoName !== fileName,
+      ),
+    );
+
     callback && callback();
   };
 
@@ -178,6 +216,7 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     setIsPreviewRemoved(false);
     setIsCharLimit(false);
     setCoverImageMap([]);
+    setRemovedCoverimageFileIds([]);
   };
 
   const updateCoverImageMap = (map: ICoverImageMap) => {
@@ -201,6 +240,12 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     } else {
       setCoverImageMap([...coverImageMap, map]);
     }
+    setRemovedCoverimageFileIds([
+      ...removedCoverimageFileIds.filter(
+        (fileId: string) =>
+          fileId !== media.find((media) => media.name === map.videoName)?.id,
+      ),
+    ]);
   };
 
   const deleteCoverImageMap = (map: ICoverImageMap | null) => {
@@ -216,6 +261,9 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
 
     const updatedMedia = media.map((media: IMedia) => {
       if (media.name === map.videoName) {
+        if (media.id !== '') {
+          setRemovedCoverimageFileIds([...removedCoverimageFileIds, media.id]);
+        }
         return { ...media, coverImage: null };
       } else {
         return media;
@@ -268,6 +316,8 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         updateCoverImageMap,
         deleteCoverImageMap,
         getCoverImageBlobURL,
+        removedCoverimageFileIds,
+        setRemovedCoverimageFileIds,
       }}
     >
       {children}

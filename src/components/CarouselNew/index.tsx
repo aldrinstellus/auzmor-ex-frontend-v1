@@ -40,13 +40,9 @@ const Carousel: React.FC<ICarouselProps> = ({
       {media[currentIndex].type === 'IMAGE' ? (
         <img src={media[currentIndex].original} />
       ) : coverImageUrl ? (
-        <video poster={coverImageUrl}>
-          <source src={media[currentIndex].original} />
-        </video>
+        <video poster={coverImageUrl} src={media[currentIndex].original} />
       ) : (
-        <video>
-          <source src={media[currentIndex].original} />
-        </video>
+        <video src={media[currentIndex].original} />
       )}
 
       <div className="top-0 absolute p-4 justify-between flex w-full">

@@ -224,6 +224,7 @@ export const useUpload = () => {
   const useUploadCoverImage = async (
     mappings: { fileId: string; coverImageUrl: string }[],
   ) => {
+    setUploadStatus(UploadStatus.Uploading);
     const updateFilePromises: Promise<any>[] = [];
     mappings.forEach((mapping) => {
       updateFilePromises.push(
@@ -234,14 +235,35 @@ export const useUpload = () => {
       const promisesRes = await Promise.allSettled(updateFilePromises);
       promisesRes.forEach((promiseRes: PromiseSettledResult<IMedia>) => {
         if (promiseRes.status === 'fulfilled') {
-          console.log(promiseRes, '""""" promiseRes   ""');
+          console.log(promiseRes, 'Upload cover image response');
         } else {
           console.log(promiseRes);
-          console.log('etag upload failed');
+          console.log('upload cover image failed');
         }
       });
     }
+    setUploadStatus(UploadStatus.Finished);
   };
 
-  return { uploadMedia, uploadStatus, useUploadCoverImage };
+  const removeCoverImage = async (fileIds: string[]) => {
+    setUploadStatus(UploadStatus.Uploading);
+    const updateFilePromises: Promise<any>[] = [];
+    fileIds.forEach((fileId) => {
+      updateFilePromises.push(postETags(fileId, [], ''));
+    });
+    if (updateFilePromises.length > 0) {
+      const promisesRes = await Promise.allSettled(updateFilePromises);
+      promisesRes.forEach((promiseRes: PromiseSettledResult<IMedia>) => {
+        if (promiseRes.status === 'fulfilled') {
+          console.log(promiseRes, 'Rmove cover image response');
+        } else {
+          console.log(promiseRes);
+          console.log('Remove cover image failed');
+        }
+      });
+    }
+    setUploadStatus(UploadStatus.Finished);
+  };
+
+  return { uploadMedia, uploadStatus, useUploadCoverImage, removeCoverImage };
 };

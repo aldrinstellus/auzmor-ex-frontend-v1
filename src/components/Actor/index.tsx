@@ -4,6 +4,7 @@ import Earth from 'images/earth.svg';
 import { CREATE_POST, VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
 import { ICreatedBy } from 'queries/post';
+import { Link } from 'react-router-dom';
 
 type ActorProps = {
   visibility: string;
@@ -24,11 +25,19 @@ const Actor: React.FC<ActorProps> = ({
     <div className={`flex justify-between items-center mx-6 mt-6 mb-4`}>
       <div className="flex items-center">
         <div>
-          <Avatar
-            name={createdBy?.fullName || user?.name || 'U'}
-            size={32}
-            image={createdBy?.profileImage.original}
-          />
+          <Link
+            to={`${
+              createdBy?.userId && createdBy.userId !== user?.id
+                ? '/users/' + createdBy.userId
+                : '/profile'
+            }`}
+          >
+            <Avatar
+              name={createdBy?.fullName || user?.name || 'U'}
+              size={32}
+              image={createdBy?.profileImage.original}
+            />
+          </Link>
         </div>
         <div className="ml-3">
           <div className="font-bold text-sm text-neutral-900">

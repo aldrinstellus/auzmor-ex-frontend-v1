@@ -1,5 +1,6 @@
 import Button, { Variant as ButtonVariant, Size } from 'components/Button';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
+import { UploadStatus, useUpload } from 'queries/files';
 import React, { useContext } from 'react';
 import { isVideo } from 'utils/misc';
 
@@ -12,8 +13,9 @@ const Footer: React.FC<IFooterProps> = ({
   currentIndex,
   changeInputImgRef,
 }) => {
-  const { setActiveFlow, media, replaceMedia, removeMedia } =
+  const { setActiveFlow, media, removedCoverimageFileIds } =
     useContext(CreatePostContext);
+  const { removeCoverImage, uploadStatus } = useUpload();
   return (
     <div className="flex justify-end items-center h-16 p-6 bg-blue-50">
       <Button
@@ -30,7 +32,13 @@ const Footer: React.FC<IFooterProps> = ({
       <Button
         label={'Apply changes'}
         size={Size.Small}
-        onClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
+        disabled={uploadStatus === UploadStatus.Uploading}
+        onClick={async () => {
+          if (removedCoverimageFileIds.length) {
+            await removeCoverImage(removedCoverimageFileIds);
+          }
+          setActiveFlow(CreatePostFlow.CreatePost);
+        }}
       />
     </div>
   );
