@@ -1,6 +1,7 @@
 import AnnouncementCard from 'components/AnnouncementWidget';
 import { activeCommentsDataType } from 'components/Comments';
 import { Comment } from 'components/Comments/Comment';
+import PageLoader from 'components/PageLoader';
 import Post from 'components/Post';
 import { Reply } from 'components/Reply/Reply';
 import UserCard from 'components/UserWidget';
@@ -23,7 +24,7 @@ const PostPage: React.FC = () => {
   const [replyInputBox, setReplyInputBox] = useState(false);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <PageLoader />;
   } else if (isError) {
     return <div>Error...</div>;
   }

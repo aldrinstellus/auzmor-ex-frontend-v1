@@ -1,3 +1,4 @@
+import PageLoader from 'components/PageLoader';
 import React, { LegacyRef, ReactNode } from 'react';
 import useVirtual, { MeasureRef, OnScroll } from 'react-cool-virtual';
 
@@ -44,7 +45,7 @@ export const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
       <div ref={innerRef} className={innerClassName}>
         {prependElement}
         {isLoading
-          ? loadingComponent || <div>Loading...</div>
+          ? loadingComponent || <PageLoader />
           : items.map(({ index, measureRef }) => {
               return itemRenderer(index, measureRef);
             })}

@@ -7,6 +7,7 @@ import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
 import { humanizeTime } from 'utils/time';
+import Spinner from 'components/Spinner';
 
 export interface IAnnouncementCardProps {}
 
@@ -44,7 +45,9 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
             <div className="text-base font-bold">Announcement</div>
           </div>
           {isLoading ? (
-            <div>Loading...</div>
+            <div className="p-6 flex items-center justify-center">
+              <Spinner color="#10b981" />
+            </div>
           ) : (
             <div>
               {itemCount && isAcknowledged ? (

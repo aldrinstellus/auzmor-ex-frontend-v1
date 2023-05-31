@@ -49,9 +49,13 @@ const ContactWidget: React.FC<IContactCardProps> = ({
     },
   );
 
-  const { phone } = usePhoneInput({
-    value: contactCardData.workPhone,
-  });
+  let phoneValue = undefined;
+  if (contactCardData?.workPhone) {
+    const { phone } = usePhoneInput({
+      value: contactCardData?.workPhone,
+    });
+    phoneValue = phone;
+  }
 
   const fields = [
     {
@@ -177,10 +181,10 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                           className="text-sm font-normal text-neutral-900"
                           data-testid="user-contact-widget-number"
                         >
-                          {phone || 'N/A'}
+                          {phoneValue || 'N/A'}
                         </div>
                       </div>
-                      <CopyButton content={phone} />
+                      {phoneValue && <CopyButton content={phoneValue} />}
                     </div>
                   </div>
                 ) : (

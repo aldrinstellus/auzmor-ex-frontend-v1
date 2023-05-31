@@ -35,16 +35,16 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
   });
 
   const { country: countryIso2, phone: formattedPhone } = usePhoneInput({
-    value: field.value,
+    value: field.value || '',
   });
 
   const defaultCountry = CountryList.findOneByCountryCode(countryIso2);
-  const fallbackCountry = CountryList.findOneByCountryCode(
-    Intl.DateTimeFormat().resolvedOptions().timeZone.toLowerCase(),
-  );
-  const usa = CountryList.findByCountryCode('us')[0];
+  const fallbackCountry =
+    CountryList.findOneByCountryCode(
+      Intl.DateTimeFormat().resolvedOptions().timeZone.toLowerCase(),
+    ) || CountryList.findByCountryCode('us')[0];
 
-  const selectedCountry = defaultCountry || fallbackCountry || usa;
+  const selectedCountry = defaultCountry || fallbackCountry;
   const updatedPhone = formattedPhone
     .replace(new RegExp(`^\\${selectedCountry.dialCode}`), '')
     .replaceAll(new RegExp(`[^0-9a-zA-Z]*$`, 'g'), '')

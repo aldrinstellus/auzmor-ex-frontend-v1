@@ -12,6 +12,7 @@ import { redirectWithToken } from 'utils/misc';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useSearchParams } from 'react-router-dom';
 import { acceptInviteSetPassword, useVerifyInviteLink } from 'queries/users';
+import PageLoader from 'components/PageLoader';
 
 interface IForm {
   workEmail: string;
@@ -123,7 +124,7 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
   const onSubmit = (formData: IForm) =>
     acceptInviteMutation.mutate({ password: formData.password, token, orgId });
   return isLoading ? (
-    <div>Loading</div>
+    <PageLoader />
   ) : isError ? (
     <div>Error</div>
   ) : (
