@@ -91,6 +91,9 @@ import ImportIcon from '../components/Import';
 import Minus from '../components/Minus';
 import Plus from '../components/Plus';
 import RotateLeft from '../components/RotateLeft';
+import SettingIcon from '../components/Setting';
+import SettingThreeIcon from '../components/SettingThree';
+import LogoutIcon from '../components/Logout';
 
 export const icon = {
   add: Add,
@@ -153,6 +156,7 @@ export const icon = {
   likeIcon: LikeIcon,
   link: Link,
   location: LocationIcon,
+  logout: LogoutIcon,
   love: Love,
   magicStar: MagicStarIcon,
   mail: MailIcon,
@@ -168,12 +172,15 @@ export const icon = {
   outOfOfficeIcon: OutOfOfficeIcon,
   people: PeopleIcon,
   play: PlayIcon,
+  plus: Plus,
   redo: Redo,
   reorder: Reorder,
   reply: Reply,
   rotateLeft: RotateLeft,
   search: Search,
   send: Send,
+  setting: SettingIcon,
+  settingThree: SettingThreeIcon,
   slack: SlackIcon,
   speaker: SpeakerIcon,
   support: Support,
@@ -184,5 +191,4 @@ export const icon = {
   userManagement: UserManagement,
   userRemove: UserRemove,
   video: VideoIcon,
-  plus: Plus,
 };

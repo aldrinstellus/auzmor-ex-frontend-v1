@@ -49,6 +49,9 @@ import SvgDeleteFilled from '../components/Delete/DeleteFilled';
 import SvgExportFilled from '../components/Export/ExportFilled';
 import SvgMaximizeFilled from '../components/Maximize/MaximizeFilled';
 import SvgImportFilled from '../components/Import/ImportFilled';
+import SvgSettingFilled from '../components/Setting/SettingFilled';
+import SvgSettingThreeFilled from '../components/SettingThree/SettingThreeFilled';
+import SvgLogoutFilled from '../components/Logout/LogoutFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -86,6 +89,7 @@ export const filledIcon = {
   insightfulFilled: SvgInsightfulFilled,
   likeFilled: SvgLikeFilled,
   likeIconFilled: SvgLikeIconFilled,
+  logoutFilled: SvgLogoutFilled,
   loveFilled: SvgLoveFilled,
   magicStarFilled: SvgMagicStarFilled,
   maximizeFilled: SvgMaximizeFilled,
@@ -95,6 +99,8 @@ export const filledIcon = {
   replyFilled: SvgReplyFilled,
   searchFilled: SvgSearchFilled,
   sendFilled: SvgSendFilled,
+  settingFilled: SvgSettingFilled,
+  settingThreeFilled: SvgSettingThreeFilled,
   slackFilled: SvgSlackFilled,
   speakerFilled: SvgSpeakerFilled,
   supportFilled: SvgSupportFilled,

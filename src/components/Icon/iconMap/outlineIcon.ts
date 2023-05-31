@@ -58,6 +58,9 @@ import SvgConnectionFolderOutline from '../components/ConnectionFolder/Connectio
 import SvgCallOutline from '../components/Call/CallOutline';
 import SvgMaleOutline from '../components/Male/MaleOutline';
 import SvgImportOutline from '../components/Import/ImportOutline';
+import SvgSettingOutline from '../components/Setting/SettingOutline';
+import SvgSettingThreeOutline from '../components/SettingThree/SettingThreeOutline';
+import SvgLogoutOutline from '../components/Logout/LogoutOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -97,6 +100,7 @@ export const outlineIcon = {
   likeIconOutline: SvgLikeIconOutline,
   likeOutline: SvgLikeOutline,
   linkOutline: SvgLinkOutline,
+  logoutOutline: SvgLogoutOutline,
   loveOutline: SvgLoveOutline,
   magicStarOutline: SvgMagicStarOutline,
   mailOutline: SvgMailOutline,
@@ -110,6 +114,8 @@ export const outlineIcon = {
   replyOutline: SvgReplyOutline,
   searchOutline: SvgSearchOutline,
   sendOutline: SvgSendOutline,
+  settingOutline: SvgSettingOutline,
+  settingThreeOutline: SvgSettingThreeOutline,
   speakerOutline: SvgSpeakerOutline,
   supportOutline: SvgSupportOutline,
   threeDotsOutline: SvgThreeDotsOutline,
