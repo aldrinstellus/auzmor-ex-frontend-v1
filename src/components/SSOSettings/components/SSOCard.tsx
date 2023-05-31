@@ -37,7 +37,7 @@ const SSOCard: React.FC<SSOCardProps> = ({
   };
 
   return (
-    <Card className="w-96 h-60 hover:shadow-2xl" dataTestId={dataTestId}>
+    <Card className="w-96 h-60 hover:shadow-2xl">
       <div className="flex flex-col h-full items-start justify-between ml-6">
         <div className="mt-7">
           <div className="flex items-center justify-between">
@@ -61,7 +61,7 @@ const SSOCard: React.FC<SSOCardProps> = ({
           onClick={customOnClick}
           className={`mb-6 max-w-fit ${active ? 'invisible' : 'visible'}`}
           label={buttonText}
-          dataTestId={`${dataTestId}-submit`}
+          dataTestId={dataTestId}
         ></Button>
       </div>
     </Card>
