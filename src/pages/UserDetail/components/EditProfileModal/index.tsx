@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+
 import Layout, { FieldType } from 'components/Form';
 import Modal from 'components/Modal';
 import IconButton, {
@@ -22,6 +23,7 @@ import PopupMenu from 'components/PopupMenu';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import Icon from 'components/Icon';
+import CropPictureModal from 'components/CropPictureModal';
 
 interface IOptions {
   value: string;
@@ -38,8 +40,9 @@ export interface IUpdateProfileForm {
 
 interface IEditProfileModal {
   data: Record<string, any>;
-  showModal: boolean;
-  setShowModal: (flag: boolean) => void;
+  showEditProfileModal: boolean;
+  setShowEditProfileModal: (showModal: boolean) => void;
+  setShowPictureCropModal: (showModal: boolean) => void;
   file: IUpdateProfileImage | Record<string, any>;
   setFile: (file: IUpdateProfileImage | Record<string, any>) => void;
   userProfileImageRef: React.RefObject<HTMLInputElement> | null;
@@ -51,8 +54,9 @@ interface IEditProfileModal {
 
 const EditProfileModal: React.FC<IEditProfileModal> = ({
   data,
-  showModal,
-  setShowModal,
+  showEditProfileModal,
+  setShowEditProfileModal,
+  setShowPictureCropModal,
   file,
   setFile,
   userProfileImageRef,
@@ -77,6 +81,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       department: { value: data?.department, label: data?.department },
     },
   });
+
   const nameField = [
     {
       type: FieldType.Input,
@@ -154,14 +159,18 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       icon: 'exportOutline',
       label: 'Upload a photo',
       stroke: twConfig.theme.colors.neutral['900'],
-      onClick: () => userCoverImageRef?.current?.click(),
+      onClick: () => {
+        userCoverImageRef?.current?.click();
+      },
     },
     {
       icon: 'maximizeOutline',
       label: 'Reposition',
       stroke: twConfig.theme.colors.neutral['900'],
-      disabled: true,
-      onClick: () => null,
+      onClick: () => {
+        setShowPictureCropModal(true);
+        setShowEditProfileModal(false);
+      },
     },
     {
       icon: 'trashOutline',
@@ -197,7 +206,6 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
     onError: (error: any) => {
       console.log('API call resulted in error: ', error);
     },
-    // need to change the response type
     onSuccess: async (response: Record<string, any>) => {
       const userUpdateResponse = response?.result?.data;
       updateUser({
@@ -233,7 +241,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
           alignItems: 'center',
         },
       });
-      setShowModal(false);
+      setShowEditProfileModal(false);
       await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
     },
   });
@@ -241,7 +249,6 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
   const onSubmit = async (user: IUpdateProfileForm) => {
     let profileImageUploadResponse;
     let coverImageUploadResponse;
-    // optimize with one uploadMedia function - taking time to upload the files
     if (file && Object.keys(file).length) {
       if (file?.profileImage) {
         profileImageUploadResponse = await uploadMedia(
@@ -273,6 +280,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
           },
         }
       : {};
+
     updateUsersMutation.mutate({
       fullName: user.fullName,
       designation: user?.designation?.value,
@@ -291,104 +299,100 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
     ) {
       return null;
     } else {
-      return setShowModal(false);
+      return setShowEditProfileModal(false);
     }
   };
 
   return (
-    <Modal open={showModal} closeModal={disableClosed}>
-      <form>
-        <Header title="Edit Profile" onClose={disableClosed} />
-        <div className="relative cursor-pointer">
-          <div className="w-full h-[108px] overflow-hidden">
-            {!isCoverImageRemoved && (
-              <img
-                className="object-cover w-full"
-                src={
-                  (file?.coverImage && getBlobUrl(file?.coverImage)) ||
-                  data?.coverImage?.original ||
-                  DefaultCoverImage
-                }
-              />
-            )}
+    <>
+      <Modal open={showEditProfileModal} closeModal={disableClosed}>
+        <form>
+          <Header title="Edit Profile" onClose={disableClosed} />
+          <div className="relative cursor-pointer">
+            <div className="w-full h-[108px] overflow-hidden">
+              {!isCoverImageRemoved && (
+                <img
+                  className="object-cover w-full"
+                  src={data?.coverImage?.original || DefaultCoverImage}
+                />
+              )}
+            </div>
+            <PopupMenu
+              triggerNode={
+                <div className="cursor-pointer absolute top-4 right-4">
+                  <IconButton
+                    icon="edit"
+                    className="bg-white p-2.5 text-black"
+                    variant={IconVariant.Secondary}
+                    size={Size.Medium}
+                    dataTestId="edit-coverpic-btn"
+                  />
+                </div>
+              }
+              className="top-16 right-4"
+              menuItems={coverImageOption}
+            />
           </div>
-
-          <PopupMenu
-            triggerNode={
-              <div className="cursor-pointer absolute top-4 right-4">
-                <IconButton
-                  icon="edit"
-                  className="bg-white p-2.5 text-black"
-                  variant={IconVariant.Secondary}
-                  size={Size.Medium}
-                  dataTestId="edit-coverpic-btn"
+          <div className="ml-8 mb-8 flex items-center">
+            <div className="-mt-20">
+              <div className="relative">
+                <Avatar
+                  name={data?.fullName}
+                  image={data?.profileImage?.original}
+                  size={96}
+                  className="border-2 border-white overflow-hidden"
                 />
+                <div>
+                  <IconButton
+                    icon="edit"
+                    className="bg-white m-0 absolute top-0 right-0 p-[7px] text-black"
+                    variant={IconVariant.Secondary}
+                    size={Size.Medium}
+                    onClick={() => {
+                      userProfileImageRef?.current?.click();
+                    }}
+                    dataTestId={`${dataTestId}-profilepic-btn`}
+                  />
+                </div>
+                <div></div>
               </div>
-            }
-            className="top-16 right-4"
-            menuItems={coverImageOption}
-          />
-        </div>
-        <div className="ml-8 mb-8 flex items-center">
-          <div className="-mt-20">
-            <div className="relative">
-              <Avatar
-                name={data?.fullName}
-                image={
-                  (file?.profileImage && getBlobUrl(file?.profileImage)) ||
-                  data?.profileImage?.original
-                }
-                size={96}
-                className="border-2 border-white overflow-hidden"
-              />
-              <div>
-                <IconButton
-                  icon="edit"
-                  className="bg-white m-0 absolute top-0 right-0 p-[7px] text-black"
-                  variant={IconVariant.Secondary}
-                  size={Size.Medium}
-                  onClick={() => userProfileImageRef?.current?.click()}
-                  dataTestId={`${dataTestId}-profilepic-btn`}
-                />
-              </div>
-              <div></div>
             </div>
           </div>
-        </div>
-        <div className="mx-4 px-2 mb-10 pb-4 space-y-6 overflow-y-auto">
-          <div className="w-full flex space-x-6">
-            <Layout fields={nameField} className="w-2/4" />
-            <Layout fields={preferredNameField} className="w-2/4" />
+          <div className="mx-4 px-2 mb-10 pb-4 space-y-6 overflow-y-auto">
+            <div className="w-full flex space-x-6">
+              <Layout fields={nameField} className="w-2/4" />
+              <Layout fields={preferredNameField} className="w-2/4" />
+            </div>
+            <Layout fields={positionTitlefields} />
+            {/* <Layout fields={departmentField} className="w-2/4" /> */}
+            <Layout fields={locationField} />
           </div>
-          <Layout fields={positionTitlefields} />
-          {/* <Layout fields={departmentField} className="w-2/4" /> */}
-          <Layout fields={locationField} />
-        </div>
-        <div className="flex justify-end items-center h-16 p-6 bg-blue-50">
-          <Button
-            variant={ButtonVariant.Secondary}
-            size={Size.Small}
-            label={'Cancel'}
-            className="mr-3"
-            onClick={() => {
-              setShowModal(false);
-              setFile({});
-            }}
-            dataTestId={`${dataTestId}-cancel`}
-          />
-          <Button
-            label={'Save Changes'}
-            size={Size.Small}
-            onClick={handleSubmit(onSubmit)}
-            loading={
-              uploadStatus === UploadStatus.Uploading ||
-              updateUsersMutation.isLoading
-            }
-            dataTestId={`${dataTestId}-savechanges`}
-          />
-        </div>
-      </form>
-    </Modal>
+          <div className="flex justify-end items-center h-16 p-6 bg-blue-50">
+            <Button
+              variant={ButtonVariant.Secondary}
+              size={Size.Small}
+              label={'Cancel'}
+              className="mr-3"
+              onClick={() => {
+                setShowEditProfileModal(false);
+                setFile({});
+              }}
+              dataTestId={`${dataTestId}-savechanges`}
+            />
+            <Button
+              label={'Save Changes'}
+              size={Size.Small}
+              onClick={handleSubmit(onSubmit)}
+              loading={
+                uploadStatus === UploadStatus.Uploading ||
+                updateUsersMutation.isLoading
+              }
+              dataTestId={`${dataTestId}-cancel`}
+            />
+          </div>
+        </form>
+      </Modal>
+    </>
   );
 };
 

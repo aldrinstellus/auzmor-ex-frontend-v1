@@ -88,6 +88,9 @@ import ConnectionFolder from '../components/ConnectionFolder';
 import Call from '../components/Call';
 import Male from '../components/Male';
 import ImportIcon from '../components/Import';
+import Minus from '../components/Minus';
+import Plus from '../components/Plus';
+import RotateLeft from '../components/RotateLeft';
 
 export const icon = {
   add: Add,
@@ -157,6 +160,7 @@ export const icon = {
   marketplace: Marketplace,
   marriedIcon: MarriedIcon,
   maximize: MaximizeIcon,
+  minus: Minus,
   more: MoreIcon,
   notification: NotificationIcon,
   notificationIcon: MenuNotificationIcon,
@@ -167,6 +171,7 @@ export const icon = {
   redo: Redo,
   reorder: Reorder,
   reply: Reply,
+  rotateLeft: RotateLeft,
   search: Search,
   send: Send,
   slack: SlackIcon,
@@ -179,4 +184,5 @@ export const icon = {
   userManagement: UserManagement,
   userRemove: UserRemove,
   video: VideoIcon,
+  plus: Plus,
 };
