@@ -70,7 +70,7 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
           variant={Variant.Secondary}
           size={Size.Small}
           onClick={() => setShowDropdown(!showDropdown)}
-          className=" min-w-[130px] max-w-[130px]"
+          className=" min-w-[130px] max-w-[130px] max-h-11"
           disabled={disabled}
         />
 
@@ -101,10 +101,7 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
                     className="py-4 cursor-pointer"
                     onClick={() => {
                       field.onChange(
-                        (item.dialCode + ' ' + updatedPhone)
-                          .split(' ')
-                          .join('')
-                          .trim(),
+                        (item.dialCode + ' ' + updatedPhone).trim(),
                       );
                       setShowDropdown(false);
                     }}
@@ -124,13 +121,10 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
           value={updatedPhone}
           onChange={(e) =>
             field.onChange(
-              (selectedCountry.dialCode + ' ' + e.target.value)
-                .split(' ')
-                .join('')
-                .trim(),
+              (selectedCountry.dialCode + ' ' + e.target.value).trim(),
             )
           }
-          className="w-full rounded-19xl border border-neutral-200 focus:outline-none h-11 px-4"
+          className="ml-3 w-full rounded-19xl border border-neutral-200 focus:outline-none h-12 px-4"
         />
       </div>
     </div>
