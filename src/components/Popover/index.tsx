@@ -1,17 +1,21 @@
-import React from 'react';
+import React, { JSXElementConstructor, ReactElement, ReactNode } from 'react';
 import { Popover as HUIPopover } from '@headlessui/react';
 import clsx from 'clsx';
 
 type AppProps = {
   triggerNode: React.ReactNode;
-  children: React.ReactNode;
+  children?: ReactElement<any, string | JSXElementConstructor<any>>;
   className?: string;
+  contentRenderer?: (
+    close: any,
+  ) => ReactElement<any, string | JSXElementConstructor<any>>;
 };
 
 const Popover: React.FC<AppProps> = ({
   triggerNode,
   children,
   className = 'right-0',
+  contentRenderer,
 }) => {
   const styles = clsx(
     { 'absolute z-10 bg-white': true },
@@ -30,7 +34,11 @@ const Popover: React.FC<AppProps> = ({
         {triggerNode}
       </HUIPopover.Button>
 
-      <HUIPopover.Panel className={styles}>{children}</HUIPopover.Panel>
+      <HUIPopover.Panel className={styles}>
+        {({ close }) =>
+          contentRenderer ? contentRenderer(close) : children || <></>
+        }
+      </HUIPopover.Panel>
     </HUIPopover>
   );
 };
