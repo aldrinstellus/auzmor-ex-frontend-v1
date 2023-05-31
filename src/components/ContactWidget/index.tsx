@@ -1,14 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
-import countryPhoneCode from 'utils/countryPhoneCodes.json';
-import Button, { Variant } from 'components/Button';
-import { Variant as InputVariant } from 'components/Input';
-import IconWrapper from 'components/Icon/components/IconWrapper';
+import Button, { Variant, Type as ButtonType } from 'components/Button';
+import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 import { Size } from 'components/Button';
 import useHover from 'hooks/useHover';
 import clsx from 'clsx';
-import Header from 'components/ProfileInfo/components/Header';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import { useMutation } from '@tanstack/react-query';
@@ -17,6 +14,8 @@ import queryClient from 'utils/queryClient';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { twConfig } from 'utils/misc';
 import { toast } from 'react-toastify';
+import CopyButton from './components/CopyButton';
+import { usePhoneInput } from 'react-international-phone';
 
 export interface IContactInfoForm {
   primaryEmail: string;
@@ -24,7 +23,7 @@ export interface IContactInfoForm {
 }
 
 type IContactCardProps = {
-  contactCardData: any;
+  contactCardData: IContactInfoForm;
   canEdit: boolean;
 };
 
@@ -40,47 +39,38 @@ const ContactWidget: React.FC<IContactCardProps> = ({
     [isHovered],
   );
 
-  const { control, handleSubmit, getValues } = useForm<IContactInfoForm>({
-    mode: 'onSubmit',
-    defaultValues: {
-      primaryEmail: contactCardData?.primaryEmail,
-      workPhone: contactCardData?.workPhone,
+  const { control, handleSubmit, getValues, reset } = useForm<IContactInfoForm>(
+    {
+      mode: 'onSubmit',
+      defaultValues: {
+        primaryEmail: contactCardData?.primaryEmail,
+        workPhone: contactCardData?.workPhone,
+      },
     },
+  );
+
+  const { phone } = usePhoneInput({
+    value: contactCardData.workPhone,
   });
 
-  const emailField = [
+  const fields = [
     {
       name: 'primaryEmail',
-      label: 'Primary Email:',
+      label: 'Primary Email',
       type: FieldType.Input,
-      defaultValue: getValues().primaryEmail,
       control,
       className: '',
       disabled: true,
+      defaultValue: contactCardData.primaryEmail,
     },
-  ];
-
-  const phoneField = [
     {
       name: 'workPhone',
-      type: FieldType.Input,
-      defaultValue: getValues().workPhone,
-      variant: InputVariant.Tel,
+      label: 'Contact No.',
+      type: FieldType.TelephoneInput,
       control,
-    },
-  ];
-
-  const countryCodeField = [
-    {
-      name: 'countryCode',
-      type: FieldType.SingleSelect,
-      defaultValue: '+91',
-      control,
-      options: countryPhoneCode.map((phone) => ({
-        value: phone.country,
-        label: phone.country,
-        code: phone.code,
-      })),
+      inputClassName: 'bg-red-500',
+      disabled: false,
+      defaultValue: contactCardData.workPhone,
     },
   ];
 
@@ -109,8 +99,8 @@ const ContactWidget: React.FC<IContactCardProps> = ({
     },
   });
 
-  const onSubmit = async (contactDetails: any) => {
-    await updateUserContactDetailMutation.mutateAsync(contactDetails);
+  const onSubmit = async () => {
+    await updateUserContactDetailMutation.mutateAsync(getValues());
     await queryClient.invalidateQueries(['current-user-me']);
     setIsEditable(false);
   };
@@ -119,112 +109,98 @@ const ContactWidget: React.FC<IContactCardProps> = ({
     <div className="w-1/4">
       <div {...eventHandlers}>
         <Card className={onHoverStyles}>
-          <Header
-            title="Contact Info"
-            dataTestId="user-contact-info"
-            isHovered={isHovered}
-            isEditable={isEditable}
-            setIsEditable={setIsEditable}
-            canEdit={canEdit}
-            handleSubmit={handleSubmit}
-            onSubmit={onSubmit}
-            isLoading={updateUserContactDetailMutation.isLoading}
-          />
-          <div className="pt-2 px-6 pb-4 space-y-6">
-            <div className="space-y-4">
-              {!isEditable ? (
-                <div className="flex justify-between items-center">
-                  <div className="flex space-x-2 truncate items-center">
-                    <IconWrapper>
-                      <Icon name="email" stroke="#737373" size={15} />
-                    </IconWrapper>
-                    <div
-                      className="text-sm font-normal text-neutral-900"
-                      data-testid="user-contact-widget-email"
-                    >
-                      {contactCardData?.primaryEmail || 'N/A'}
-                    </div>
-                  </div>
-                  <div>
-                    <Icon
-                      name="copyIcon"
-                      size={16}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="p-4 flex items-center justify-between">
+              <p className="text-neutral-900 font-bold text-base">
+                Contact Info
+              </p>
+              {canEdit && isHovered && !isEditable ? (
+                <IconWrapper
+                  type={Type.Square}
+                  className="cursor-pointer"
+                  // dataTestId={`edit-${dataTestId}`}
+                >
+                  <Icon
+                    name="edit"
+                    size={16}
+                    onClick={() => setIsEditable(!isEditable)}
+                  />
+                </IconWrapper>
+              ) : (
+                isEditable && (
+                  <div className="flex space-x-3">
+                    <Button
+                      variant={Variant.Secondary}
+                      label={'Cancel'}
+                      size={Size.Small}
                       onClick={() => {
-                        navigator.clipboard.writeText(
-                          contactCardData?.primaryEmail,
-                        );
-                        toast(
-                          <SuccessToast content={'Copied to clipboard'} />,
-                          {
-                            closeButton: (
-                              <Icon
-                                name="closeCircleOutline"
-                                stroke={twConfig.theme.colors.primary['500']}
-                                size={20}
-                              />
-                            ),
-                            style: {
-                              border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-                              borderRadius: '6px',
-                              display: 'flex',
-                              alignItems: 'center',
-                            },
-                            autoClose: 2000,
-                            position: 'bottom-center',
-                          },
-                        );
+                        setIsEditable(false);
+                        reset();
                       }}
+                      // dataTestId={`${dataTestId}-cancel`}
+                    />
+                    <Button
+                      label={'Save'}
+                      size={Size.Small}
+                      type={ButtonType.Submit}
+                      // dataTestId={`${dataTestId}-save`}
+                      loading={updateUserContactDetailMutation.isLoading}
                     />
                   </div>
-                </div>
-              ) : (
-                <div>
-                  <Layout fields={emailField} />
-                </div>
-              )}
-
-              {!isEditable ? (
-                <div className="flex space-x-4">
-                  <div className="flex space-x-2 truncate items-center">
-                    <IconWrapper>
-                      <Icon name="call" stroke="#737373" size={15} />
-                    </IconWrapper>{' '}
-                    <div
-                      className="text-sm font-normal text-neutral-900"
-                      data-testid="user-contact-widget-number"
-                    >
-                      {contactCardData?.workPhone || 'N/A'}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-1">
-                  <div className="text-sm font-bold text-neutral-900">
-                    Contact No.:
-                  </div>
-                  <div className="flex items-center space-x-2 w-full">
-                    <div className="w-[35%]">
-                      <Layout fields={countryCodeField} />
-                    </div>
-                    <div className="w-[65%]">
-                      <Layout fields={phoneField} />
-                    </div>
-                  </div>
-                </div>
+                )
               )}
             </div>
-            {/* Button */}
-            <div className="flex justify-center items-center">
-              <Button
-                label="View Organization Chart"
-                variant={Variant.Secondary}
-                className="space-x-1 font-bold"
-                leftIcon="connectionFolder"
-                size={Size.Small}
-                dataTestId="user-view-org-chart"
-              />
+            <div className="pt-2 px-6 pb-4 space-y-6">
+              <div className="space-y-4">
+                {!isEditable ? (
+                  <div className="flex flex-col gap-y-4">
+                    <div className="flex justify-between items-center">
+                      <div className="flex space-x-2 truncate items-center">
+                        <IconWrapper>
+                          <Icon name="email" stroke="#737373" size={15} />
+                        </IconWrapper>
+                        <div
+                          className="text-sm font-normal text-neutral-900"
+                          data-testid="user-contact-widget-email"
+                        >
+                          {contactCardData?.primaryEmail || 'N/A'}
+                        </div>
+                      </div>
+                      <CopyButton content={contactCardData.primaryEmail} />
+                    </div>
+                    <div className="flex space-x-4 justify-between items-center">
+                      <div className="flex space-x-2 truncate items-center">
+                        <IconWrapper>
+                          <Icon name="call" stroke="#737373" size={15} />
+                        </IconWrapper>
+                        <div
+                          className="text-sm font-normal text-neutral-900"
+                          data-testid="user-contact-widget-number"
+                        >
+                          {phone || 'N/A'}
+                        </div>
+                      </div>
+                      <CopyButton content={phone} />
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <Layout fields={fields} />
+                  </div>
+                )}
+                <div className="flex justify-center items-center">
+                  <Button
+                    label="View Organization Chart"
+                    variant={Variant.Secondary}
+                    className="space-x-1 font-bold"
+                    leftIcon="connectionFolder"
+                    size={Size.Small}
+                    dataTestId="user-view-org-chart"
+                  />
+                </div>
+              </div>
             </div>
-          </div>
+          </form>
         </Card>
       </div>
     </div>

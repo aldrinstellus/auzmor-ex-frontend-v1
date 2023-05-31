@@ -6,6 +6,7 @@ import SingleSelect from 'components/SingleSelect';
 import DatePickerInput from 'components/DatePicker';
 import TextArea from 'components/TextArea';
 import RadioGroup from 'components/RadioGroup';
+import TelephoneInput from 'components/TelephoneInput';
 
 export enum FieldType {
   Input = 'INPUT',
@@ -16,6 +17,7 @@ export enum FieldType {
   Radio = 'RADIO',
   DatePicker = 'DATEPICKER',
   TextArea = 'TEXTAREA',
+  TelephoneInput = 'TELEPHONE_INPUT',
 }
 
 const fieldMap: Record<string, any> = {
@@ -26,6 +28,7 @@ const fieldMap: Record<string, any> = {
   [FieldType.Password]: Password,
   [FieldType.DatePicker]: DatePickerInput,
   [FieldType.TextArea]: TextArea,
+  [FieldType.TelephoneInput]: TelephoneInput,
 };
 
 export type LayoutProps = {

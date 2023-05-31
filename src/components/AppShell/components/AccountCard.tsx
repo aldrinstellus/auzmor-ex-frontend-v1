@@ -7,8 +7,6 @@ import clsx from 'clsx';
 import { useMutation } from '@tanstack/react-query';
 import { logout } from 'queries/account';
 import { Link, useNavigate } from 'react-router-dom';
-import useModal from 'hooks/useModal';
-import ConfirmationBox from 'components/ConfirmationBox';
 
 const AccountCard = () => {
   const navigate = useNavigate();

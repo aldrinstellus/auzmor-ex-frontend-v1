@@ -3603,6 +3603,11 @@ cosmiconfig@^7.0.0:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
+country-list-with-dial-code-and-flag@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/country-list-with-dial-code-and-flag/-/country-list-with-dial-code-and-flag-5.0.2.tgz#e0b439ed384ad429ef2105839fd9481e4253d873"
+  integrity sha512-jlTmTu41KH/D8RO8Mc84zKv+g8uwVOiYIKx0U1D4ils27PR1mGDarilE8FwyqivFXl3IcwyTtaYFbhyQoIssNQ==
+
 cross-spawn@^7.0.2, cross-spawn@^7.0.3:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.3.tgz#f73a85b9d5d41d045551c177e2882d4ac85728a6"
@@ -8123,6 +8128,11 @@ react-hook-form@^7.43.9:
   version "7.43.9"
   resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.43.9.tgz#84b56ac2f38f8e946c6032ccb760e13a1037c66d"
   integrity sha512-AUDN3Pz2NSeoxQ7Hs6OhQhDr6gtF9YRuutGDwPQqhSUAHJSgGl2VeY3qN19MG0SucpjgDiuMJ4iC5T5uB+eaNQ==
+
+react-international-phone@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/react-international-phone/-/react-international-phone-2.2.2.tgz#5fee69da21490426fcc1777b60d1bb777b995a22"
+  integrity sha512-geH3exdxFeDzPKM1EqVPUCkKVp+pNkbYoBhQsqQL5vM++2fMb+0AD4k5IfB+I0p1dSz0Ugg7NY2RQzGXlUUiTw==
 
 react-intersection-observer@^9.4.3:
   version "9.4.3"
