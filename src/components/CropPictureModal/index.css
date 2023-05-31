@@ -5,3 +5,7 @@
 .preview {
   border: solid 2px white;
 }
+
+.advanced-cropper-boundary__stretcher {
+  min-height: 320px;
+}

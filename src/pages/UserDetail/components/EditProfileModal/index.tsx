@@ -65,7 +65,6 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
   isCoverImageRemoved = false,
   setIsCoverImageRemoved = () => {},
 }) => {
-  const { uploadMedia, uploadStatus } = useUpload();
   const {
     control,
     handleSubmit,
@@ -240,6 +239,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
           display: 'flex',
           alignItems: 'center',
         },
+        autoClose: 2000,
       });
       setShowEditProfileModal(false);
       await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
@@ -247,56 +247,17 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
   });
 
   const onSubmit = async (user: IUpdateProfileForm) => {
-    let profileImageUploadResponse;
-    let coverImageUploadResponse;
-    if (file && Object.keys(file).length) {
-      if (file?.profileImage) {
-        profileImageUploadResponse = await uploadMedia(
-          [file?.profileImage],
-          EntityType.UserProfileImage,
-        );
-      }
-      if (file?.coverImage && !isCoverImageRemoved) {
-        coverImageUploadResponse = await uploadMedia(
-          [file?.coverImage],
-          EntityType.UserCoverImage,
-        );
-      }
-    }
-
-    const profileImageFile = profileImageUploadResponse
-      ? {
-          profileImage: {
-            fileId: profileImageUploadResponse[0]?.id,
-            original: profileImageUploadResponse[0].original,
-          },
-        }
-      : {};
-    const coverImageFile = coverImageUploadResponse
-      ? {
-          coverImage: {
-            fileId: coverImageUploadResponse[0]?.id,
-            original: coverImageUploadResponse[0]?.original,
-          },
-        }
-      : {};
-
     updateUsersMutation.mutate({
       fullName: user.fullName,
       designation: user?.designation?.value,
       preferredName: user?.preferredName,
       // department: user?.department?.value,
       workLocation: user?.workLocation?.value,
-      ...profileImageFile,
-      ...coverImageFile,
     });
   };
 
   const disableClosed = () => {
-    if (
-      updateUsersMutation.isLoading ||
-      uploadStatus === UploadStatus.Uploading
-    ) {
+    if (updateUsersMutation.isLoading) {
       return null;
     } else {
       return setShowEditProfileModal(false);
@@ -383,10 +344,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
               label={'Save Changes'}
               size={Size.Small}
               onClick={handleSubmit(onSubmit)}
-              loading={
-                uploadStatus === UploadStatus.Uploading ||
-                updateUsersMutation.isLoading
-              }
+              loading={updateUsersMutation.isLoading}
               dataTestId={`${dataTestId}-cancel`}
             />
           </div>

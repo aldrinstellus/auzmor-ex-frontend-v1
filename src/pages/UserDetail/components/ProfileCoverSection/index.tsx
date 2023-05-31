@@ -183,7 +183,6 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             setFile={setFile}
             userProfileImageRef={userProfileImageRef}
             userCoverImageRef={userCoverImageRef}
-            profileImage={profileCoverData?.profileImage}
             coverImage={profileCoverData?.coverImage}
           />
         )}
