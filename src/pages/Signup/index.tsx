@@ -32,15 +32,19 @@ const schema = yup.object({
     .required('Required field'),
   domain: yup
     .string()
-    .min(3)
-    .max(63)
+    .min(3, 'The minimum length required is 3 characters for domain name')
+    .max(63, 'The maximum length required is 63 characters for domain name')
     .matches(
-      /^(?!-)(?!.*--)(?!.*-$)/,
-      'Hyphen cannot appear at either the beginning or the end of the domain. Two consecutive hyphens are not allowed.',
+      /^(?!-)(?!.*-$)/,
+      'Hyphens cannot be used at the beginning and the end of a domain name',
+    )
+    .matches(
+      /^(?!.*--).*$/,
+      'Two hyphens cannot appear together in the domain name',
     )
     .matches(
       /[a-zA-Z0-9-]$/,
-      'Only alphabets, numbers and hyphens are allowed.',
+      'Spaces and special characters (such as ! $,&,_ and so on) cannot appear in the domain name',
     )
     .required('Required field'),
   password: yup.string().required('Required field'),
@@ -59,6 +63,8 @@ export interface IValidationErrors {
 }
 
 const Signup: React.FC<ISignupProps> = () => {
+  const [errorBannerMessage, setErrorBannerMessage] = useState<string>();
+
   const signupMutation = useMutation((formData: IForm) => signup(formData), {
     onSuccess: (data) =>
       redirectWithToken({
@@ -66,6 +72,11 @@ const Signup: React.FC<ISignupProps> = () => {
         token: data.result.data.uat,
         showOnboard: true,
       }),
+    onError: (data: any) => {
+      if (data?.response?.data?.errors[0]?.code === 'DUPLICATE_DOMAIN') {
+        setErrorBannerMessage('Domain name is already taken');
+      }
+    },
   });
 
   const {
@@ -107,6 +118,7 @@ const Signup: React.FC<ISignupProps> = () => {
       label: 'Full Name*',
       error: errors.fullName?.message,
       dataTestId: 'sign-up-fullname',
+      errorDataTestId: 'signup-error-msg',
       control,
     },
     {
@@ -117,7 +129,7 @@ const Signup: React.FC<ISignupProps> = () => {
       label: 'Work Email*',
       error: errors.workEmail?.message || errors.workEmail?.types?.userExists,
       dataTestId: 'sign-up-email',
-      errorDataTestId: 'invalid-email-address',
+      errorDataTestId: 'signup-error-msg',
       control,
     },
     {
@@ -133,6 +145,7 @@ const Signup: React.FC<ISignupProps> = () => {
       label: 'Domain*',
       error: errors.domain?.message || errors.domain?.types?.domainExists,
       dataTestId: 'sign-up-domain',
+      errorDataTestId: 'signup-error-msg',
       control,
     },
     {
@@ -145,6 +158,7 @@ const Signup: React.FC<ISignupProps> = () => {
       error: errors.password?.message,
       setError,
       dataTestId: 'sign-up-password',
+      errorDataTestId: 'signup-error-msg',
       control,
       getValues,
       onChange: () => {},
@@ -159,7 +173,7 @@ const Signup: React.FC<ISignupProps> = () => {
       dataTestId: 'sign-up-confirm-password',
       control,
       showChecks: false,
-      errorDataTestId: 'password-mismatch-error',
+      errorDataTestId: 'signup-error-msg',
     },
     {
       type: FieldType.Checkbox,
@@ -178,6 +192,7 @@ const Signup: React.FC<ISignupProps> = () => {
       name: 'privacyPolicy',
       error: errors.privacyPolicy?.message,
       dataTestId: 'sign-up-checkbox',
+      errorDataTestId: 'signup-error-msg',
       control,
     },
   ];
@@ -198,7 +213,8 @@ const Signup: React.FC<ISignupProps> = () => {
     isEmailData?.result?.data?.userExists &&
       setError('workEmail', {
         types: {
-          userExists: 'User already exists',
+          userExists:
+            'The login email already exists. Please try a different email address.',
         },
       });
   }, [isEmailLoading, isEmailData]);
@@ -237,9 +253,7 @@ const Signup: React.FC<ISignupProps> = () => {
               <div className="mb-8">
                 <Banner
                   dataTestId="signup-error-msg"
-                  title={
-                    signupMutation.error?.toString() || 'Something went wrong'
-                  }
+                  title={errorBannerMessage || 'Something went wrong'}
                   variant={BannerVariant.Error}
                 />
               </div>
