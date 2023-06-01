@@ -1,14 +1,10 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import _ from 'lodash';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import useHover from 'hooks/useHover';
 import useRole from 'hooks/useRole';
 import clsx from 'clsx';
-import IconButton, {
-  Variant as IconVariant,
-  Size as IconSize,
-} from 'components/IconButton';
 import { useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import Icon from 'components/Icon';
@@ -18,6 +14,7 @@ import { UserStatus, useResendInvitation } from 'queries/users';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { twConfig } from 'utils/misc';
+import { Role } from 'utils/enum';
 
 export interface IUserCardProps {
   id: string;
@@ -94,13 +91,16 @@ const UserCard: React.FC<IUserCardProps> = ({
       },
     });
   }
-  _options.push({
-    icon: 'userRemove',
-    label: 'Remove',
-    onClick: () => {
-      setShowDeleteModal(true);
-    },
-  });
+
+  if (id !== user?.id) {
+    _options.push({
+      icon: 'userRemove',
+      label: 'Remove',
+      onClick: () => {
+        setShowDeleteModal(true);
+      },
+    });
+  }
 
   const hoverStyle = useMemo(
     () =>
@@ -122,7 +122,7 @@ const UserCard: React.FC<IUserCardProps> = ({
   return (
     <div {...hoverEvents} className="cursor-pointer" data-testid="people-card">
       <Card className={hoverStyle}>
-        {isAdmin && isHovered && (
+        {isAdmin && isHovered && _options.length > 0 && (
           <PopupMenu
             triggerNode={
               <div className="cursor-pointer">
