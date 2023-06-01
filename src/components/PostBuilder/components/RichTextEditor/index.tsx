@@ -35,6 +35,7 @@ export interface IQuillEditorProps {
     setPreviewUrl: (previewUrl: string) => void,
     setIsPreviewRemove: (isPreviewRemove: boolean) => void,
   ) => ReactNode;
+  dataTestId?: string;
 }
 
 const RichTextEditor = React.forwardRef(
@@ -46,6 +47,7 @@ const RichTextEditor = React.forwardRef(
       defaultValue,
       renderToolbar = () => <div id="toolbar"></div>,
       renderPreviewLink,
+      dataTestId,
     }: IQuillEditorProps,
     ref: React.ForwardedRef<ReactQuill>,
   ) => {
@@ -137,7 +139,7 @@ const RichTextEditor = React.forwardRef(
     };
 
     return (
-      <>
+      <div data-testid={`${dataTestId}-content`}>
         <ReactQuill
           id="quill"
           className={className}
@@ -161,6 +163,7 @@ const RichTextEditor = React.forwardRef(
               setActiveFlow(CreatePostFlow.EditMedia);
             }}
             coverImageMap={coverImageMap}
+            dataTestId={dataTestId}
           />
         )}
         {announcement?.label && (
@@ -200,7 +203,7 @@ const RichTextEditor = React.forwardRef(
           renderPreviewLink &&
           renderPreviewLink(previewUrl, setPreviewUrl, setIsPreviewRemoved)}
         {renderToolbar && renderToolbar(isCharLimit)}
-      </>
+      </div>
     );
   },
 );

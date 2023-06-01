@@ -11,6 +11,7 @@ interface ICreatePostProps {
   handleSubmitPost: (content: IEditorValue, files: File[]) => void;
   data?: IPost;
   isLoading?: boolean;
+  dataTestId?: string;
 }
 
 const CreatePost: React.FC<ICreatePostProps> = ({
@@ -18,6 +19,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
   closeModal,
   handleSubmitPost,
   isLoading = false,
+  dataTestId,
 }) => {
   const quillRef = useRef<ReactQuill>(null);
   const { inputImgRef, inputVideoRef, setUploads, clearPostContext } =
@@ -31,8 +33,9 @@ const CreatePost: React.FC<ICreatePostProps> = ({
           clearPostContext();
           closeModal && closeModal();
         }}
+        closeBtnDataTestId={`${dataTestId}-closeicon`}
       />
-      <Body data={data} ref={quillRef} />
+      <Body data={data} ref={quillRef} dataTestId={dataTestId} />
       <Footer
         isLoading={isLoading}
         quillRef={quillRef}

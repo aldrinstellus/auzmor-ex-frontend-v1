@@ -27,6 +27,7 @@ export interface IMediaPreviewProps {
   onCloseButtonClick?: React.MouseEventHandler<Element>;
   onEditButtonClick?: React.MouseEventHandler<Element>;
   coverImageMap?: ICoverImageMap[];
+  dataTestId?: string;
 }
 
 const MediaPreview: React.FC<IMediaPreviewProps> = ({
@@ -38,6 +39,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
   onEditButtonClick = () => {},
   onClick = () => {},
   coverImageMap,
+  dataTestId,
 }) => {
   const [mediaIndex, setMediaIndex] = useState<number>(-1);
   const [open, openModal, closeModal] = useModal(true);
@@ -417,10 +419,14 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
               iconFill={twConfig.theme.colors.neutral['900']}
               size={Size.Small}
               onClick={onAddButtonClick}
+              dataTestId={`${dataTestId}-addphotoscta`}
             />
           </div>
           <div className="flex items-center">
-            <div onClick={onEditButtonClick}>
+            <div
+              onClick={onEditButtonClick}
+              data-testid={`${dataTestId}-editicon`}
+            >
               <Icon
                 name="edit"
                 size={16}

@@ -6,9 +6,15 @@ export interface IBodyProps {
   currentIndex: number;
   nextSlide: () => void;
   prevSlide: () => void;
+  dataTestId?: string;
 }
 
-const Body: React.FC<IBodyProps> = ({ currentIndex, nextSlide, prevSlide }) => {
+const Body: React.FC<IBodyProps> = ({
+  currentIndex,
+  nextSlide,
+  prevSlide,
+  dataTestId,
+}) => {
   const {
     setActiveFlow,
     media,
@@ -33,6 +39,7 @@ const Body: React.FC<IBodyProps> = ({ currentIndex, nextSlide, prevSlide }) => {
       prevSlide={prevSlide}
       nextSlide={nextSlide}
       coverImageUrl={getCoverImageBlobURL(media[currentIndex])}
+      dataTestId={dataTestId}
     />
   );
 };

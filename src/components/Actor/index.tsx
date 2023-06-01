@@ -11,6 +11,7 @@ type ActorProps = {
   contentMode?: string;
   createdTime?: string;
   createdBy?: ICreatedBy;
+  dataTestId?: string;
 };
 
 const Actor: React.FC<ActorProps> = ({
@@ -18,6 +19,7 @@ const Actor: React.FC<ActorProps> = ({
   contentMode,
   createdTime,
   createdBy,
+  dataTestId,
 }) => {
   const { user } = useAuth();
 
@@ -35,13 +37,16 @@ const Actor: React.FC<ActorProps> = ({
             <Avatar
               name={createdBy?.fullName || user?.name || 'U'}
               size={32}
-              image={createdBy?.profileImage.original}
+              image={createdBy?.profileImage.original || user?.profileImage}
             />
           </Link>
         </div>
         <div className="ml-3">
-          <div className="font-bold text-sm text-neutral-900">
-            {createdBy?.fullName}
+          <div
+            className="font-bold text-sm text-neutral-900"
+            data-testid={dataTestId}
+          >
+            {createdBy?.fullName || user?.name}
             {contentMode === VIEW_POST ? (
               <span className="ml-1 text-sm font-normal text-neutral-900">
                 shared a post
@@ -61,7 +66,10 @@ const Actor: React.FC<ActorProps> = ({
       {/* post visibility - dropdown */}
       <div>
         {contentMode === CREATE_POST && (
-          <div className="flex justify-between items-center border border-neutral-300 rounded-17xl py-1.5 px-3">
+          <div
+            className="flex justify-between items-center border border-neutral-300 rounded-17xl py-1.5 px-3"
+            data-testid={`feed-createpost-visibility-${visibility.toLowerCase()}`}
+          >
             <div>
               <img src={Earth} height={13.33} width={13.33} />
             </div>

@@ -23,6 +23,7 @@ export type PasswordProps = {
   helpText?: string;
   className?: string;
   dataTestId?: string;
+  errorDataTestId?: string;
   control?: Control<Record<string, any>>;
   label?: string;
   onChange?: any;
@@ -39,6 +40,7 @@ const Password: React.FC<PasswordProps> = ({
   disabled = false,
   className = '',
   dataTestId = '',
+  errorDataTestId = '',
   error,
   setError = () => {},
   helpText,
@@ -221,6 +223,7 @@ const Password: React.FC<PasswordProps> = ({
       </label>
       <div
         className={`absolute -bottom-4 text-xs truncate leading-tight ${helpTextStyles}`}
+        data-testid={errorDataTestId}
       >
         {error || helpText || ' '}
       </div>

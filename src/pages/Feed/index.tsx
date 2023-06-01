@@ -150,8 +150,10 @@ const Feed: React.FC<IFeedProps> = () => {
               <PageLoader />
             ) : (
               <div className="mt-4">
-                {feed.map((post) => (
-                  <Post data={post} key={post.id} />
+                {feed.map((post, index) => (
+                  <div data-testid={`feed-post-${index}`} key={post.id}>
+                    <Post data={post} />
+                  </div>
                 ))}
               </div>
             )}

@@ -12,6 +12,7 @@ export type IconProps = {
   className?: string;
   hover?: boolean;
   disabled?: boolean;
+  dataTestId?: string;
 };
 
 const Icon: React.FC<IconProps> = ({
@@ -24,6 +25,7 @@ const Icon: React.FC<IconProps> = ({
   stroke,
   strokeWidth,
   disabled = false,
+  dataTestId,
 }) => {
   const Component = iconMap[name] || null;
   if (!Component) {
@@ -43,6 +45,7 @@ const Icon: React.FC<IconProps> = ({
       stroke={stroke}
       strokeWidth={strokeWidth}
       disabled={disabled}
+      dataTestId={dataTestId}
     />
   );
 };
