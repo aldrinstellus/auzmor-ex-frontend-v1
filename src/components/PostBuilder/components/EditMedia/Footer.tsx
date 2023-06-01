@@ -7,11 +7,13 @@ import { isVideo } from 'utils/misc';
 export interface IFooterProps {
   currentIndex: number;
   changeInputImgRef: React.RefObject<HTMLInputElement>;
+  dataTestId?: string;
 }
 
 const Footer: React.FC<IFooterProps> = ({
   currentIndex,
   changeInputImgRef,
+  dataTestId,
 }) => {
   const { setActiveFlow, media, removedCoverimageFileIds } =
     useContext(CreatePostContext);
@@ -28,6 +30,11 @@ const Footer: React.FC<IFooterProps> = ({
         }
         className="mr-3"
         onClick={() => changeInputImgRef?.current?.click()}
+        dataTestId={`${dataTestId}-${
+          isVideo(media[currentIndex].contentType)
+            ? 'changevideocta'
+            : 'changephotocta'
+        }`}
       />
       <Button
         label={'Apply changes'}
@@ -39,6 +46,7 @@ const Footer: React.FC<IFooterProps> = ({
           }
           setActiveFlow(CreatePostFlow.CreatePost);
         }}
+        dataTestId={`${dataTestId}-applychangescta`}
       />
     </div>
   );

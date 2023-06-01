@@ -21,6 +21,7 @@ const SortByDropdown: React.FC = ({}) => {
               className={`px-4 py-1 cursor-pointer text-sm ${
                 (active || selected) && 'bg-primary-50'
               }`}
+              data-testid={`feed-sortpost-by${option.value}`}
             >
               {option.label}
             </div>
@@ -34,6 +35,7 @@ const SortByDropdown: React.FC = ({}) => {
               rightIconClassName="ml-1"
               iconStroke={twConfig.theme.colors.neutral['900']}
               className="min-w-[112px]"
+              dataTestId="feed-sortby-dropdown"
             />
           )}
         />

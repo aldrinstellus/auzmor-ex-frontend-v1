@@ -4,14 +4,18 @@ import { twConfig } from 'utils/misc';
 
 interface IToolbarProps {
   isCharLimit: boolean;
+  dataTestId?: string;
 }
 
-const Toolbar: React.FC<IToolbarProps> = ({ isCharLimit }) => {
+const Toolbar: React.FC<IToolbarProps> = ({ isCharLimit, dataTestId }) => {
   return (
     <div id="toolbar">
       <div className="relative">
         {isCharLimit && (
-          <div className="bg-red-50 border-y-1 border-red-300 px-4 py-2 flex justify-between w-full bottom-full items-center">
+          <div
+            className="bg-red-50 border-y-1 border-red-300 px-4 py-2 flex justify-between w-full bottom-full items-center"
+            data-testid="createpost-content-charlimitreached-error"
+          >
             <div className="flex items-center">
               <Icon
                 name="infoCircleOutline"
@@ -31,10 +35,22 @@ const Toolbar: React.FC<IToolbarProps> = ({ isCharLimit }) => {
         <div className="flex justify-between items-center h-14 pl-5 pr-6 border-t-1 py-4">
           <div className="flex items-center">
             <span className="ql-formats">
-              <button className="ql-bold" />
-              <button className="ql-italic" />
-              <button className="ql-underline" />
-              <button className="ql-emoji" />
+              <button
+                className="ql-bold"
+                data-testid={`${dataTestId}-content-bold`}
+              />
+              <button
+                className="ql-italic"
+                data-testid={`${dataTestId}-content-italic`}
+              />
+              <button
+                className="ql-underline"
+                data-testid={`${dataTestId}-content-underline`}
+              />
+              <button
+                className="ql-emoji"
+                data-testid={`${dataTestId}-content-emoji`}
+              />
             </span>
           </div>
           <div className="font-bold text-sm text-neutral-900">

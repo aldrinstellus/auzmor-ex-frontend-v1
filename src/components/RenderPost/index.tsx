@@ -31,6 +31,7 @@ export const RenderPost: React.FC<RenderPostProps> = ({
     ) {
       removeElementsByClass('read-more-button');
       const button = document.createElement('button');
+      button.setAttribute('data-testid', 'feed-post-seemore');
       button.type = 'button';
       button.classList.add(
         'showMoreLess',
@@ -84,7 +85,11 @@ export const RenderPost: React.FC<RenderPostProps> = ({
 
   return (
     <div>
-      <span className="line-clamp-3 paragraph" id={`${data?.id}-content`}>
+      <span
+        className="line-clamp-3 paragraph"
+        id={`${data?.id}-content`}
+        data-testid="feed-post-content"
+      >
         <span>{postContent}</span>
       </span>
       {link && (

@@ -39,6 +39,9 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
         }
         onBackIconClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
         onClose={closeModal}
+        closeBtnDataTestId={`feed-${
+          isVideo(media[currentIndex].contentType) ? 'editvideo' : 'editphoto'
+        }-close`}
       />
 
       {/* <>------ Body -------</> */}
@@ -46,6 +49,9 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
         currentIndex={currentIndex}
         prevSlide={prevSlide}
         nextSlide={nextSlide}
+        dataTestId={`feed-${
+          isVideo(media[currentIndex].contentType) ? 'editvideo' : 'editphoto'
+        }`}
       />
 
       {/* {<> -------- Footer --------</>} */}
@@ -61,6 +67,7 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Small}
               onClick={() => uploadCoverImageRef.current?.click()}
+              dataTestId={`feed-editvideo-uploadimage`}
             />
             {(coverImageMap.find(
               (map) => map.videoName === media[currentIndex].name,
@@ -107,6 +114,9 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
       <Footer
         currentIndex={currentIndex}
         changeInputImgRef={changeInputImgRef}
+        dataTestId={`feed-${
+          isVideo(media[currentIndex].contentType) ? 'editvideo' : 'editphoto'
+        }`}
       />
 
       <input

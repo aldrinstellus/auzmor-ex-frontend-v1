@@ -60,6 +60,7 @@ const Footer: React.FC<IFooterProps> = ({
               inputImgRef?.current && inputImgRef?.current?.click();
             },
             iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
+            dataTestId: 'feed-createpost-uploadphoto',
           },
           {
             label: 'Upload a video',
@@ -69,6 +70,7 @@ const Footer: React.FC<IFooterProps> = ({
               inputVideoRef?.current && inputVideoRef?.current?.click();
             },
             iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
+            dataTestId: 'feed-createpost-uploadvideo',
           },
           {
             label: 'Share a document',
@@ -184,6 +186,7 @@ const Footer: React.FC<IFooterProps> = ({
               files,
             );
           }}
+          dataTestId="feed-submitpost"
         />
       </div>
     </div>

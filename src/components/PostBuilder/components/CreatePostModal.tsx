@@ -206,6 +206,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           }}
           handleSubmitPost={handleSubmitPost}
           isLoading={loading}
+          dataTestId="feed-createpost"
         />
       )}
       {activeFlow === CreatePostFlow.CreateAnnouncement && (

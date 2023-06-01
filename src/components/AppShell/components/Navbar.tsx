@@ -21,7 +21,7 @@ const navigations = [
     label: 'Feed',
     icon: 'feed',
     linkTo: '/feed',
-    dataTestId: 'offie-feed-page',
+    dataTestId: 'office-feedpage',
     iconSize: 24,
   },
   {

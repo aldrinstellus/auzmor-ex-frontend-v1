@@ -11,15 +11,20 @@ import Toolbar from '../RichTextEditor/toolbar';
 
 export interface IBodyProps {
   data?: IPost;
+  dataTestId?: string;
 }
 
 const Body = React.forwardRef(
-  ({ data }: IBodyProps, ref: ForwardedRef<ReactQuill>) => {
+  ({ data, dataTestId }: IBodyProps, ref: ForwardedRef<ReactQuill>) => {
     const { editorValue } = useContext(CreatePostContext);
     return (
       <div className="text-sm text-neutral-900">
         <div className="max-h-[75vh] overflow-y-auto">
-          <Actor visibility="Everyone" contentMode={CREATE_POST} />
+          <Actor
+            visibility="Everyone"
+            contentMode={CREATE_POST}
+            dataTestId={`${dataTestId}-creatorname`}
+          />
           <RichTextEditor
             placeholder="What’s on your mind?"
             className="max-h-64 overflow-y-auto min-h-[128px]"
@@ -28,7 +33,7 @@ const Body = React.forwardRef(
             }
             ref={ref}
             renderToolbar={(isCharLimit: boolean) => (
-              <Toolbar isCharLimit={isCharLimit} />
+              <Toolbar isCharLimit={isCharLimit} dataTestId={dataTestId} />
             )}
             renderPreviewLink={(
               previewUrl: string,
@@ -41,6 +46,7 @@ const Body = React.forwardRef(
                 setIsPreviewRemove={setIsPreviewRemove}
               />
             )}
+            dataTestId={dataTestId}
           />
         </div>
       </div>

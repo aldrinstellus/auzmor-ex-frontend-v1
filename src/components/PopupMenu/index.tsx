@@ -39,7 +39,7 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
           <Menu.Item
             key={`menu-item-${index}`}
             as={menuItem.as}
-            data-test-id={menuItem.dataTestId}
+            data-testid={menuItem.dataTestId}
             disabled={menuItem.disabled}
           >
             {(() => {
