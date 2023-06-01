@@ -8,7 +8,7 @@ import React from 'react';
 export interface IFooterProps {
   userProfileImageRef: React.RefObject<HTMLInputElement> | null;
   userCoverImageRef?: React.RefObject<HTMLInputElement> | null;
-  file?: IUpdateProfileImage | Record<string, any>;
+  imageFile?: IUpdateProfileImage | Record<string, any>;
   uploadStatus: UploadStatus;
   isLoading: boolean;
   onSubmit: any;
@@ -17,7 +17,7 @@ export interface IFooterProps {
 const Footer: React.FC<IFooterProps> = ({
   userProfileImageRef,
   userCoverImageRef,
-  file,
+  imageFile,
   uploadStatus,
   isLoading,
   onSubmit,
@@ -51,7 +51,7 @@ const Footer: React.FC<IFooterProps> = ({
             variant={Variant.Secondary}
             size={Size.Small}
             onClick={() => {
-              if (file?.profileImage) {
+              if (imageFile?.profileImage) {
                 userProfileImageRef?.current?.click();
               } else {
                 userCoverImageRef?.current?.click();

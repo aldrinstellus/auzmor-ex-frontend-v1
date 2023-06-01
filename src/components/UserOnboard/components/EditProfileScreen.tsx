@@ -6,13 +6,14 @@ import Avatar from 'components/Avatar';
 import EditIcon from 'components/Icon/components/Edit';
 import Icon from 'components/Icon';
 import useAuth from 'hooks/useAuth';
-import CropPictureModal from 'components/CropPictureModal';
 
 type EditProfileScreenProps = {
   next: () => void;
   setDisableClose: (disableClose: boolean) => void;
   dataTestId?: string;
   profilePictureRef?: React.RefObject<HTMLInputElement> | null;
+  error?: boolean;
+  loading?: boolean;
 };
 
 const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
@@ -20,11 +21,10 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
   setDisableClose,
   dataTestId,
   profilePictureRef,
+  error = false,
+  loading = false,
 }): ReactElement => {
   const { user } = useAuth();
-
-  const [error, setError] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => setDisableClose(loading), [loading]);
 
@@ -32,11 +32,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
     <>
       <div className="flex flex-col min-h-full justify-between min-w-full">
         <div className="flex items-center flex-col justify-between gap-y-6 mt-6">
-          {/* <UpdateProfileImage
-      setError={setError}
-      setLoading={setLoading}
-      dataTestId="edit-profilepic"
-    /> */}
           <div className="text-2xl font-bold text-neutral-900">
             {user?.name}
           </div>

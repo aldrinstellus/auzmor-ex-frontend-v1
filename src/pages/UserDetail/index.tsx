@@ -9,6 +9,7 @@ import ProfileActivityFeed from './components/ProfileActivityFeed';
 import useAuth from 'hooks/useAuth';
 import NoDataCard from './components/NoDataCard';
 import ProfileCoverSection from './components/ProfileCoverSection';
+import useModal from 'hooks/useModal';
 
 export interface IUpdateProfileImage {
   profileImage: File;
@@ -18,31 +19,27 @@ export interface IUpdateProfileImage {
 interface IUserDetailProps {}
 
 const UserDetail: React.FC<IUserDetailProps> = () => {
-  const [showEditProfileModal, setShowEditProfileModal] =
-    useState<boolean>(false);
-  const [showPictureCropModal, setShowPictureCropModal] =
-    useState<boolean>(false);
   const [showFeedModal, setShowFeedModal] = useState<boolean>(false);
   const { user } = useAuth();
-
   const params = useParams();
   const { pathname } = useLocation();
 
-  let userData;
+  let userDetail;
 
   if (pathname === '/profile') {
-    userData = useCurrentUser();
+    userDetail = useCurrentUser();
   } else {
-    userData = useSingleUser(params?.userId || '');
+    userDetail = useSingleUser(params?.userId || '');
   }
 
-  const profileData = userData?.data?.data?.result?.data;
+  const data = userDetail?.data?.data?.result?.data;
 
-  if (userData?.isLoading) {
+  if (userDetail?.isLoading) {
     return <Spinner color="#000" />;
   }
 
-  if (userData?.isError) {
+  // if APi failed show some Error
+  if (userDetail?.isError) {
     return <div></div>;
   }
 
@@ -52,10 +49,7 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
       title: 'Profile',
       dataTestId: 'user-profile-tab',
       content: (
-        <ProfileInfo
-          profileDetails={profileData}
-          canEdit={pathname === '/profile'}
-        />
+        <ProfileInfo profileDetails={data} canEdit={pathname === '/profile'} />
       ),
     },
     {
@@ -68,7 +62,7 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
           userId={params?.userId || user?.id || ''}
           showFeedModal={showFeedModal}
           setShowFeedModal={setShowFeedModal}
-          data={profileData}
+          data={data}
         />
       ),
     },
@@ -76,25 +70,19 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
       id: 3,
       title: 'Recognitions',
       dataTestId: 'user-recognitions-tab',
-      content: (
-        <NoDataCard user={userData?.data?.data?.result?.data?.fullName} />
-      ),
+      content: <NoDataCard user={data?.fullName} />,
     },
   ];
 
   return (
     <div className="flex flex-col space-y-9 w-full">
       <ProfileCoverSection
-        profileCoverData={profileData}
-        showEditProfileModal={showEditProfileModal}
-        setShowEditProfileModal={setShowEditProfileModal}
-        showPictureCropModal={showPictureCropModal}
-        setShowPictureCropModal={setShowPictureCropModal}
+        userDetails={data}
         canEdit={pathname === '/profile'}
       />
       <div className="mb-32 space-x-8 flex w-full">
         <ContactWidget
-          contactCardData={profileData}
+          contactCardData={data}
           canEdit={pathname === '/profile'}
         />
         <div className="w-1/2">

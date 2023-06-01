@@ -14,7 +14,9 @@ import Card from 'components/Card';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import useCarousel from 'hooks/useCarousel';
-import CropPictureModal from 'components/CropPictureModal';
+import EditImageModal from 'components/EditImageModal';
+import { getBlobUrl } from 'utils/misc';
+import { EntityType } from 'queries/files';
 
 export type IScreen = {
   screen: ReactNode;
@@ -22,14 +24,12 @@ export type IScreen = {
 };
 
 const UserOnboard: React.FC = (): ReactNode => {
-  const [file, setFile] = useState<File[]>([]);
+  const [file, setFile] = useState<File>();
   const [open, openModal, closeModal] = useModal(true);
   const [currentScreen, prev, next] = useCarousel(0, 5);
   const [disableClose, setDisableClose] = useState<boolean>(false);
-  const [showProfileCropModal, setShowProfileCropModal] =
-    useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false); // showing error on banner
-  const [loading, setLoading] = useState<boolean>(false); // loader for the api call
+  const [openEditImage, openEditImageModal, closeEditImageModal] =
+    useModal(false);
   const profilePictureRef = useRef<HTMLInputElement>(null);
 
   const screens: IScreen[] = [
@@ -69,7 +69,7 @@ const UserOnboard: React.FC = (): ReactNode => {
   }, []);
 
   return (
-    <>
+    <div>
       <Modal open={open}>
         <Card>
           <div className="flex items-center justify-between m-4">
@@ -103,26 +103,26 @@ const UserOnboard: React.FC = (): ReactNode => {
         accept="image/*"
         onChange={(e) => {
           if (e.target.files?.length) {
-            setShowProfileCropModal(true);
             setFile(Array.prototype.slice.call(e.target.files)[0]);
+            openEditImageModal();
             closeModal();
           }
         }}
       />
-      {showProfileCropModal && (
-        <CropPictureModal
-          title={'Apply Changes'}
-          showPictureCropModal={showProfileCropModal}
-          setShowPictureCropModal={setShowProfileCropModal}
-          userProfilePictureFile={file}
-          setUserProfilePictureFile={setFile}
+      {openEditImage && file && (
+        <EditImageModal
+          title="Apply Change"
+          openEditImage={openEditImage}
+          openEditProfileModal={openModal}
+          closeEditImageModal={closeEditImageModal}
           userProfileImageRef={profilePictureRef}
-          openModal={openModal}
-          setError={setError}
-          setLoading={setLoading}
+          image={getBlobUrl(file)}
+          onBoardImageFile={file}
+          imageName={file?.name}
+          fileEntityType={EntityType?.UserProfileImage}
         />
       )}
-    </>
+    </div>
   );
 };
 
