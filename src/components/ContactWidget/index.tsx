@@ -15,7 +15,6 @@ import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { twConfig } from 'utils/misc';
 import { toast } from 'react-toastify';
 import CopyButton from './components/CopyButton';
-import { usePhoneInput } from 'react-international-phone';
 
 export interface IContactInfoForm {
   primaryEmail: string;
@@ -49,13 +48,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
     },
   );
 
-  let phoneValue = undefined;
-  if (contactCardData?.workPhone) {
-    const { phone } = usePhoneInput({
-      value: contactCardData?.workPhone,
-    });
-    phoneValue = phone;
-  }
+  const phoneValue = contactCardData?.workPhone;
 
   const fields = [
     {

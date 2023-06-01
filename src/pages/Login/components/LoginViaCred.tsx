@@ -68,7 +68,7 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
   );
 
   useEffect(() => {
-    if (domain) {
+    if (!domain) {
       checkLoginMutation.mutate();
     }
   }, [domain]);
@@ -101,6 +101,10 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
 
   if (user) {
     redirectWithToken({});
+    return null;
+  }
+
+  if (loginMutation.isLoading) {
     return null;
   }
 

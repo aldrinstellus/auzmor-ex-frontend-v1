@@ -153,6 +153,7 @@ const Post: React.FC<PostProps> = ({ data, customNode = null }) => {
                     setShowComments(true);
                   }
                 }}
+                data-testid="feed-post-comment"
               >
                 <img src={Comments} height={13.33} width={13.33} />
                 <div className="text-xs font-normal text-neutral-500 ml-1.5">

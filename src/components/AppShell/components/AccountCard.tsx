@@ -9,10 +9,12 @@ import { logout } from 'queries/account';
 import { Link, useNavigate } from 'react-router-dom';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
+import useRole from 'hooks/useRole';
 
 const AccountCard = () => {
   const navigate = useNavigate();
   const { user, reset } = useAuth();
+  const { isAdmin } = useRole();
 
   const logoutMutation = useMutation(logout, {
     onSuccess: async () => {
@@ -88,21 +90,25 @@ const AccountCard = () => {
                   <div className="text-neutral-900 text-sm">User Settings</div>
                 </div>
               </Link>
-              <Link to="/admin">
-                <div
-                  className={`flex ${menuItemStyle}`}
-                  data-testId="user-menu-admin-settings"
-                  onClick={close}
-                >
-                  <Icon
-                    name="settingThreeOutline"
-                    size={20}
-                    className="mr-2.5"
-                    stroke={twConfig.theme.colors.neutral['900']}
-                  />
-                  <div className="text-neutral-900 text-sm">Admin Settings</div>
-                </div>
-              </Link>
+              {isAdmin && (
+                <Link to="/admin">
+                  <div
+                    className={`flex ${menuItemStyle}`}
+                    data-testId="user-menu-admin-settings"
+                    onClick={close}
+                  >
+                    <Icon
+                      name="settingThreeOutline"
+                      size={20}
+                      className="mr-2.5"
+                      stroke={twConfig.theme.colors.neutral['900']}
+                    />
+                    <div className="text-neutral-900 text-sm">
+                      Admin Settings
+                    </div>
+                  </div>
+                </Link>
+              )}
               <div
                 className={`flex ${menuItemStyle}`}
                 onClick={() => {

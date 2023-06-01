@@ -114,6 +114,7 @@ const CreatePostCard: React.FC<ICreatePostCardProps> = ({ setShowModal }) => {
           readOnly
           onClick={() => setShowModal(true)}
           placeholder="What's on your mind?"
+          data-testid="activityfeed-whatsonurmind"
         />
       </div>
       <div className="flex justify-between border-t border-neutral-100 mx-8.5">

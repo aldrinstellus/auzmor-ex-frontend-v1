@@ -117,6 +117,7 @@ const Signup: React.FC<ISignupProps> = () => {
       label: 'Work Email*',
       error: errors.workEmail?.message || errors.workEmail?.types?.userExists,
       dataTestId: 'sign-up-email',
+      errorDataTestId: 'invalid-email-address',
       control,
     },
     {
@@ -155,9 +156,10 @@ const Signup: React.FC<ISignupProps> = () => {
       label: 'Confirm Password*',
       rightIcon: 'people',
       error: errors.confirmPassword?.message,
-      dataTestId: 'sign-confirm-password',
+      dataTestId: 'sign-up-confirm-password',
       control,
       showChecks: false,
+      errorDataTestId: 'password-mismatch-error',
     },
     {
       type: FieldType.Checkbox,

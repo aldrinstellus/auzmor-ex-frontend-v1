@@ -69,7 +69,7 @@ const UserCard: React.FC<IUserCardProps> = ({
 
   const _options = [];
 
-  if (status === Status.PENDING) {
+  if (status === UserStatus.Invited) {
     _options.push({
       icon: 'redo',
       label: 'Resend Invite',
@@ -135,6 +135,7 @@ const UserCard: React.FC<IUserCardProps> = ({
               </div>
             }
             menuItems={_options}
+            className="right-0 top-8"
           />
         )}
         <div

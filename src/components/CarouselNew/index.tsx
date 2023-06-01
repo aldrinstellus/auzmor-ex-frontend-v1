@@ -16,6 +16,7 @@ export interface ICarouselProps {
   prevSlide: () => void;
   nextSlide: () => void;
   coverImageUrl?: string;
+  dataTestId?: string;
 }
 
 const Carousel: React.FC<ICarouselProps> = ({
@@ -26,6 +27,7 @@ const Carousel: React.FC<ICarouselProps> = ({
   prevSlide = () => {},
   nextSlide = () => {},
   coverImageUrl = '',
+  dataTestId,
 }) => {
   const style = useMemo(
     () =>
@@ -49,7 +51,14 @@ const Carousel: React.FC<ICarouselProps> = ({
         <div className="px-4 py-2 text-sm font-bold bg-white rounded-17xl">
           {currentIndex + 1} of {media.length}
         </div>
-        <div onClick={(e) => onClose(e, media[currentIndex], currentIndex)}>
+        <div
+          onClick={(e) => onClose(e, media[currentIndex], currentIndex)}
+          data-testid={`${dataTestId}-${
+            media[currentIndex].type === 'IMAGE'
+              ? 'discardphoto'
+              : 'discardvideo'
+          }`}
+        >
           <Icon name="close" size={16} className="p-2 bg-white rounded-7xl" />
         </div>
       </div>
