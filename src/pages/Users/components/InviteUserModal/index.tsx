@@ -35,7 +35,7 @@ export interface IRoleOption {
 export const roleOptions: IRoleOption[] = [
   { value: 'MEMBER', label: 'Member' },
   { value: 'ADMIN', label: 'Admin' },
-  { value: 'SUPERADMIN', label: 'SuperAdmin' },
+  // { value: 'SUPERADMIN', label: 'SuperAdmin' },
 ];
 
 export interface IUserForm {
