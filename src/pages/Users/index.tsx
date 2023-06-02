@@ -259,12 +259,12 @@ const Users: React.FC<IUsersProps> = () => {
             />
             <Button
               className="flex space-x-1"
-              label="Add People"
+              label="Add Members"
               leftIcon="add"
               onClick={() => {
                 setShowAddUserModal(true);
               }}
-              dataTestId="people-invite-users"
+              dataTestId="add-members-btn"
             />
           </div>
         </div>
