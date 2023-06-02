@@ -118,7 +118,14 @@ export const useInfiniteComments = (q: IComments) => {
   return useInfiniteQuery({
     queryKey: ['comments', q],
     queryFn: () => getComments(q),
-    getNextPageParam: (lastPage: any) => lastPage?.result?.paging?.next,
+    getNextPageParam: (lastPage: any) => {
+      const pageDataLen = lastPage?.result?.data?.length;
+      const pageLimit = lastPage?.result?.paging?.limit;
+      if (pageDataLen < pageLimit) {
+        return null;
+      }
+      return lastPage?.result?.paging?.next;
+    },
     getPreviousPageParam: (currentPage: any) =>
       currentPage?.result?.paging?.prev,
   });
