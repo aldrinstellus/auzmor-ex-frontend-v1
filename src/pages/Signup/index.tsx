@@ -137,7 +137,10 @@ const Signup: React.FC<ISignupProps> = () => {
       variant: InputVariant.Text,
       placeholder: 'Enter domain',
       rightElement: (
-        <div className="text-sm font-medium text-neutral-500">
+        <div
+          className="text-sm font-medium text-neutral-500"
+          data-testId="sign-up-domain"
+        >
           .office.auzmor.com
         </div>
       ),
@@ -178,7 +181,7 @@ const Signup: React.FC<ISignupProps> = () => {
     {
       type: FieldType.Checkbox,
       label: (
-        <div>
+        <div data-testId="sign-up-checkbox">
           By Signing up you are agreeing to Auzmor Office’s{' '}
           <span className="text-primary-500">
             <a href="https://www.auzmor.com/tc">Terms of Use</a>
