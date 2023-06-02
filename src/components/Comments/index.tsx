@@ -59,7 +59,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
     entityType: 'post',
     // Limit here is arbitrary, need to check with product team.
     // Linkedin loads 2 by default and then 10 each time you click 'Load more'
-    limit: 2,
+    limit: 4,
   });
 
   const commentData = data?.pages.flatMap((page) => {
