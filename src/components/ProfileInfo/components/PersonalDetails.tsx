@@ -54,7 +54,9 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
       mode: 'onChange',
       defaultValues: {
         personal: {
-          birthDate: new Date(personalDetails?.personal?.birthDate),
+          birthDate:
+            personalDetails?.personal?.birthDate &&
+            new Date(personalDetails?.personal?.birthDate),
           gender: personalDetails?.personal?.gender,
           permanentLocation: personalDetails?.personal?.permanentAddress,
           maritalStatus: personalDetails?.personal?.maritalStatus,
@@ -114,7 +116,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
         birthDate: personalDetailData?.personal?.birthDate,
         permanentLocation: personalDetailData?.personal?.permanentLocation,
         maritalStatus: personalDetailData?.personal?.maritalStatus?.value,
-        skills: skills.map((skill: ISkillsOption) => skill.value),
+        skills: skills?.map((skill: ISkillsOption) => skill.value),
       },
     };
     await updateUserPersonalDetailsMutation.mutateAsync({
@@ -129,6 +131,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
       type: FieldType.DatePicker,
       name: 'personal.birthDate',
       control,
+      placeholder: 'DD/MM/YYYY',
       dataTestId: 'personal-details-dob',
       defaultValue: getValues()?.personal?.birthDate,
     },
@@ -222,9 +225,11 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                   </IconWrapper>
                   <div className="text-neutral-900 text-base font-medium">
                     Born on{' '}
-                    {moment(personalDetails?.personal?.birthDate).format(
-                      'Do MMMM YYYY',
-                    ) || 'N/A'}
+                    {(personalDetails?.personal?.birthDate &&
+                      moment(personalDetails?.personal?.birthDate).format(
+                        'DD MMMM YYYY',
+                      )) ||
+                      'N/A'}
                   </div>
                 </div>
                 <div className="flex space-x-3">
