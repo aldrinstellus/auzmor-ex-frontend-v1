@@ -25,7 +25,7 @@ const schema = yup.object({
   workEmail: yup.string(),
   password: yup
     .string()
-    .min(6, 'At leaset 6 digits')
+    .min(6, 'Password should be atleast 6 characters')
     .required('Required field'),
   confirmPassword: yup
     .string()
@@ -122,51 +122,62 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
 
   const onSubmit = (formData: IForm) =>
     acceptInviteMutation.mutate({ password: formData.password, token, orgId });
-  return isLoading ? (
-    <PageLoader />
-  ) : isError ? (
-    <div>Error</div>
-  ) : (
-    <div className="flex h-screen w-screen">
-      <img
-        src={WelcomeOffice}
-        className="h-full w-[48%]"
-        alt="Welcome to Auzmor Office"
-      />
-      <div className="w-[52%] flex justify-center items-center relative bg-white h-full overflow-y-auto">
-        <div className="absolute top-8 right-8">
-          <Logo />
-        </div>
-        <div className="w-full max-w-[440px]">
-          <div className="font-extrabold text-neutral-900 text-4xl">
-            Sign Up
+  let returnElement = <></>;
+
+  // If a redirectUrl is present in the response of the verify invite link API,
+  // we must redirect the user to that page because the user needs to get Auth'd by either SSO or LDAP
+  if (data?.result?.data?.redirectUrl) {
+    window.location.replace(data.result.data.redirectUrl);
+  } else {
+    returnElement = isLoading ? (
+      <div className="w-screen h-screen">
+        <PageLoader />
+      </div>
+    ) : isError ? (
+      <div>Error</div>
+    ) : (
+      <div className="flex h-screen w-screen">
+        <img
+          src={WelcomeOffice}
+          className="h-full w-[48%]"
+          alt="Welcome to Auzmor Office"
+        />
+        <div className="w-[52%] flex justify-center items-center relative bg-white h-full overflow-y-auto">
+          <div className="absolute top-8 right-8">
+            <Logo />
           </div>
-          <form className="mt-12" onSubmit={handleSubmit(onSubmit)}>
-            {!!acceptInviteMutation.isError && (
-              <div className="mb-8">
-                <Banner
-                  title={
-                    acceptInviteMutation.error?.toString() ||
-                    'Something went wrong'
-                  }
-                  variant={BannerVariant.Error}
-                />
-              </div>
-            )}
-            <Layout fields={fields} />
-            <Button
-              label={'Sign Up'}
-              disabled={!isValid}
-              className="w-full mt-8"
-              type={ButtonType.Submit}
-              size={Size.Large}
-              loading={acceptInviteMutation.isLoading}
-            />
-          </form>
+          <div className="w-full max-w-[440px]">
+            <div className="font-extrabold text-neutral-900 text-4xl">
+              Sign Up
+            </div>
+            <form className="mt-12" onSubmit={handleSubmit(onSubmit)}>
+              {!!acceptInviteMutation.isError && (
+                <div className="mb-8">
+                  <Banner
+                    title={
+                      acceptInviteMutation.error?.toString() ||
+                      'Something went wrong'
+                    }
+                    variant={BannerVariant.Error}
+                  />
+                </div>
+              )}
+              <Layout fields={fields} />
+              <Button
+                label={'Sign Up'}
+                disabled={!isValid}
+                className="w-full mt-8"
+                type={ButtonType.Submit}
+                size={Size.Large}
+                loading={acceptInviteMutation.isLoading}
+              />
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+  return returnElement;
 };
 
 export default AcceptInvite;

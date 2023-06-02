@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Logo } from 'components/Logo';
 import Icon from 'components/Icon';
 import Divider, { Variant } from 'components/Divider';
@@ -16,6 +16,7 @@ const navigations = [
     linkTo: '/home',
     dataTestId: 'offie-home-page',
     iconSize: 24,
+    disabled: true,
   },
   {
     label: 'Feed',
@@ -49,6 +50,7 @@ const navigations = [
 
 const Navbar = () => {
   const { isAdmin } = useRole();
+  const location = useLocation();
 
   const { control } = useForm({
     mode: 'onChange',
@@ -77,7 +79,7 @@ const Navbar = () => {
         <div className="flex items-center space-x-8">
           {navigations.map((nav) => (
             <NavLink
-              to={nav.linkTo}
+              to={nav.disabled ? location.pathname : nav.linkTo}
               key={nav.label}
               className={({ isActive }) =>
                 isActive ? 'text-primary-500' : 'text-neutral-500'

@@ -29,7 +29,7 @@ const InvitedUsersList: React.FC<IInvitedUsersListProps> = ({
           <div className="w-1/4 truncate text-sm mr-2">{user.workEmail}</div>
           <div className="w-1/4 truncate text-sm mr-2">{user.role}</div>
           <div className="w-1/4 truncate text-sm text-red-500 font-bold">
-            {user.message}
+            {user.reason}
           </div>
         </div>
       ))}

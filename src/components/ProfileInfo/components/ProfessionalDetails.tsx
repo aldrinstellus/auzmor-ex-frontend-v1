@@ -20,6 +20,7 @@ import queryClient from 'utils/queryClient';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import { twConfig } from 'utils/misc';
+import { getTimezoneNameFromIANA } from 'utils/time';
 
 interface IForm {
   timeZone: OptionType;
@@ -95,7 +96,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
     <div {...eventHandlers}>
       <Card className={onHoverStyles}>
         <Header
-          title="Professinal Details"
+          title="Professional Details"
           dataTestId="professional-details"
           isHovered={isHovered}
           isEditable={isEditable}
@@ -116,14 +117,13 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
                 <IconWrapper type={Type.Square}>
                   <Icon name="clock" size={16} />
                 </IconWrapper>
-                <div
-                  className="text-neutral-900 text-base font-medium"
-                  data-testid="professional-details-joining-date"
-                >
+                <div className="text-neutral-900 text-base font-medium">
                   Joined on{' '}
-                  {moment(professionalDetails?.createdAt).format(
-                    'Do MMMM YYYY',
-                  ) || 'N//A'}
+                  <span data-testid="professional-details-joining-date">
+                    {moment(professionalDetails?.createdAt).format(
+                      'Do MMMM YYYY',
+                    ) || 'N//A'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -144,8 +144,12 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
                   <IconWrapper type={Type.Square}>
                     <Icon name="clock" size={16} />
                   </IconWrapper>
-                  <div className="text-neutral-900 text-base font-medium ">
-                    {professionalDetails?.timeZone || 'N/A'}
+                  <div
+                    className="text-neutral-900 text-base font-medium"
+                    data-testid="professional-details-timezone"
+                  >
+                    {getTimezoneNameFromIANA(professionalDetails?.timeZone) ||
+                      'N/A'}
                   </div>
                 </div>
               )}

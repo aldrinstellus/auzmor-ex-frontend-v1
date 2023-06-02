@@ -87,6 +87,7 @@ const InviteFormRow: React.FC<IInviteFormRowProps> = ({
               className: 'w-[25%] ml-1.5',
               options: roleOptions,
               defautValue: field.role,
+              dataTestId: 'invite-people-role',
             },
           ]}
         />

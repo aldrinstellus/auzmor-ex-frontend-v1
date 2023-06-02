@@ -6,10 +6,11 @@ import Avatar from 'components/Avatar';
 import { ICreated, IMyReactions } from 'pages/Feed';
 import { MyObjectType } from 'queries/post';
 import { Reply } from 'components/Reply/Reply';
-import { CommentForm } from 'components/Comments/CommentForm';
+import { CommentForm } from 'components/Comments/components/CommentForm';
 import Spinner from 'components/Spinner';
 import Button, { Variant } from 'components/Button';
 import { PRIMARY_COLOR } from 'utils/constants';
+import LoadMore from 'components/Comments/components/LoadMore';
 
 interface CommentsProps {
   entityId: string;
@@ -58,7 +59,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
     entityType: 'comment',
     // Limit here is arbitrary, need to check with product team.
     // Linkedin loads 2 by default and then 10 each time you click 'Load more'
-    limit: 2,
+    limit: 4,
   });
 
   const replies = data?.pages.flatMap((page) => {
@@ -112,13 +113,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
                 />
               ))}
               {hasNextPage && !isFetchingNextPage && (
-                <div className="flex justify-center items-center py-10">
-                  <Button
-                    label="Load more"
-                    variant={Variant.Tertiary}
-                    onClick={() => fetchNextPage()}
-                  />
-                </div>
+                <LoadMore onClick={fetchNextPage} label="Load more replies" />
               )}
               {isFetchingNextPage && (
                 <div className="flex justify-center items-center py-10">

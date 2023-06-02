@@ -58,6 +58,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
       control,
       className: '',
       disabled: true,
+      dataTestId: 'contact-info-email',
       defaultValue: contactCardData.primaryEmail,
     },
     {
@@ -67,6 +68,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
       control,
       inputClassName: 'bg-red-500',
       disabled: false,
+      dataTestId: 'contact-info',
       defaultValue: contactCardData.workPhone,
     },
   ];
@@ -108,14 +110,17 @@ const ContactWidget: React.FC<IContactCardProps> = ({
         <Card className={onHoverStyles}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="p-4 flex items-center justify-between">
-              <p className="text-neutral-900 font-bold text-base">
+              <p
+                className="text-neutral-900 font-bold text-base"
+                data-testid="user-contact-details"
+              >
                 Contact Info
               </p>
               {canEdit && isHovered && !isEditable ? (
                 <IconWrapper
                   type={Type.Square}
                   className="cursor-pointer"
-                  // dataTestId={`edit-${dataTestId}`}
+                  dataTestId={`contact-info-edit`}
                 >
                   <Icon
                     name="edit"
@@ -134,13 +139,13 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                         setIsEditable(false);
                         reset();
                       }}
-                      // dataTestId={`${dataTestId}-cancel`}
+                      dataTestId={`contact-info-cancel`}
                     />
                     <Button
                       label={'Save'}
                       size={Size.Small}
                       type={ButtonType.Submit}
-                      // dataTestId={`${dataTestId}-save`}
+                      dataTestId={`contact-info-save`}
                       loading={updateUserContactDetailMutation.isLoading}
                     />
                   </div>
@@ -163,7 +168,10 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                           {contactCardData?.primaryEmail || 'N/A'}
                         </div>
                       </div>
-                      <CopyButton content={contactCardData.primaryEmail} />
+                      <CopyButton
+                        content={contactCardData.primaryEmail}
+                        dataTestId="contact-info-copy-email"
+                      />
                     </div>
                     <div className="flex space-x-4 justify-between items-center">
                       <div className="flex space-x-2 truncate items-center">
@@ -177,7 +185,12 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                           {phoneValue || 'N/A'}
                         </div>
                       </div>
-                      {phoneValue && <CopyButton content={phoneValue} />}
+                      {phoneValue && (
+                        <CopyButton
+                          content={phoneValue}
+                          dataTestId="contact-info-copy-number"
+                        />
+                      )}
                     </div>
                   </div>
                 ) : (

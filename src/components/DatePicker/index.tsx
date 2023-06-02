@@ -18,6 +18,7 @@ export interface IDatePickerInputProps {
   className?: string;
   control?: Control<Record<string, any>>;
   minDate?: Date;
+  placeholder?: string;
   error?: string;
   defaultValue?: string;
   portalContainer?: HTMLElement | null;
@@ -31,6 +32,7 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
   name,
   label = '',
   minDate,
+  placeholder,
   defaultValue,
   portalContainer = null,
   className,
@@ -64,7 +66,8 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
         selected={field.value}
         onChange={field.onChange}
         calendarClassName={calendarClassName}
-        className={`flex border relative rounded-19xl w-full px-5 py-2.5 ${className}`}
+        data-testid={dataTestId}
+        className={`flex border relative z-[99999] rounded-19xl w-full px-5 py-2.5 ${className}`}
         // calendarIcon={<Icon name="calendarTwo" size={16} />}
         // format="dd/MM/yyyy"
         // dayPlaceholder="DD"
@@ -75,6 +78,7 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
         minDate={minDate}
         // portalContainer={portalContainer}
         portalId="root"
+        placeholderText={placeholder}
         popperProps={{
           positionFixed: true,
           strategy: 'fixed',

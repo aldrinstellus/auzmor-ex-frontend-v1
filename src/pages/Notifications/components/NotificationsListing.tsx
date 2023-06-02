@@ -1,6 +1,7 @@
 import Divider from 'components/Divider';
 import Notification from 'components/NotificationsOverview/components/Notification';
 import Spinner from 'components/Spinner';
+import { IMedia } from 'contexts/CreatePostContext';
 import { useInfiniteNotifications } from 'queries/notifications';
 import React, { ReactElement, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -39,14 +40,14 @@ export type Action = {
   content: string;
   actedAt: string;
   entityId: string;
-  image?: string | null;
+  image?: IMedia;
 };
 
 export type Target = {
   type: string;
   content: string;
   entityId: string;
-  image?: string | null;
+  image?: IMedia;
 };
 
 export type NotificationProps = {

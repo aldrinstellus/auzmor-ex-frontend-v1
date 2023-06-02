@@ -45,7 +45,7 @@ const Icon: React.FC<IconProps> = ({
       stroke={stroke}
       strokeWidth={strokeWidth}
       disabled={disabled}
-      dataTestId={dataTestId}
+      data-testid={dataTestId}
     />
   );
 };

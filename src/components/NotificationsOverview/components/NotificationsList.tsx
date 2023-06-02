@@ -4,6 +4,7 @@ import { useGetNotifications } from 'queries/notifications';
 import React, { ReactElement } from 'react';
 import NotificationProps from './Notification';
 import Notification from './Notification';
+import { IMedia } from 'contexts/CreatePostContext';
 
 type NotificationsList = {
   mentions?: boolean;
@@ -39,14 +40,14 @@ export type Action = {
   content: string;
   actedAt: string;
   entityId: string;
-  image?: string | null;
+  image?: IMedia;
 };
 
 export type Target = {
   type: string;
   content: string;
   entityId: string;
-  image?: string | null;
+  image?: IMedia;
 };
 
 export type NotificationProps = {

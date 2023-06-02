@@ -24,6 +24,8 @@ import FilterModal from './components/FilterModal';
 import { useDebounce } from 'hooks/useDebounce';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
+import useAuth from 'hooks/useAuth';
+import { Role } from 'utils/enum';
 
 interface IForm {
   search?: string;
@@ -39,6 +41,7 @@ const Users: React.FC<IUsersProps> = () => {
   const [peopleFilters, setPeopleFilters] = useState<IPeopleFilters>({
     [PeopleFilterKeys.PeopleFilterType]: [],
   }); // for future filters
+  const { user } = useAuth();
 
   const {
     control,
@@ -167,13 +170,17 @@ const Users: React.FC<IUsersProps> = () => {
 
         <div className="mb-4 flex">
           {userStatus && (
-            <div className="border border-neutral-200 rounded-17xl px-3 py-2 flex bg-white capitalize text-sm font-medium items-center mr-1">
+            <div
+              className="border border-neutral-200 rounded-17xl px-3 py-2 flex bg-white capitalize text-sm font-medium items-center mr-1"
+              data-testid={`people-filterby-${userStatus}`}
+            >
               <div className="mr-1">{userStatus}</div>
               <Icon
                 name="closeCircleOutline"
                 stroke={twConfig.theme.colors.neutral['900']}
                 className="cursor-pointer"
                 onClick={() => setUserStatus('')}
+                dataTestId={`people-filterby-close-${userStatus}`}
               />
             </div>
           )}
@@ -257,15 +264,17 @@ const Users: React.FC<IUsersProps> = () => {
               leftIconSize={20}
               dataTestId="people-org-chart"
             />
-            <Button
-              className="flex space-x-1"
-              label="Add Members"
-              leftIcon="add"
-              onClick={() => {
-                setShowAddUserModal(true);
-              }}
-              dataTestId="add-members-btn"
-            />
+            {user?.role !== Role.Member && (
+              <Button
+                className="flex space-x-1"
+                label="Add Members"
+                leftIcon="add"
+                onClick={() => {
+                  setShowAddUserModal(true);
+                }}
+                dataTestId="add-members-btn"
+              />
+            )}
           </div>
         </div>
 

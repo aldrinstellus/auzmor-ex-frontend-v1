@@ -8,6 +8,7 @@ interface ILoginProps {}
 
 const Login: React.FC<ILoginProps> = () => {
   const [viaSSO, setViaSSO] = useState(false);
+
   return (
     <div className="flex h-screen w-screen">
       <img

@@ -104,10 +104,6 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
     return null;
   }
 
-  if (loginMutation.isLoading) {
-    return null;
-  }
-
   const fields = [
     {
       type: FieldType.Input,

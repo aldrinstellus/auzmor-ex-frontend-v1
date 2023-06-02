@@ -72,6 +72,7 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
           onClick={() => setShowDropdown(!showDropdown)}
           className=" min-w-[130px] max-w-[130px] max-h-11"
           disabled={disabled}
+          dataTestId={`${dataTestId}-countrycode`}
         />
 
         {showDropdown && (
@@ -124,6 +125,7 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
               (selectedCountry.dialCode + ' ' + e.target.value).trim(),
             )
           }
+          data-testid={`${dataTestId}-number`}
           className="ml-3 w-full rounded-19xl border border-neutral-200 focus:outline-none h-12 px-4"
         />
       </div>

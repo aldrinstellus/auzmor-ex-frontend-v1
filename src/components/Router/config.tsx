@@ -43,7 +43,7 @@ const routers = createBrowserRouter(
       <Route element={<RequireAuth />}>
         <Route
           path="/"
-          element={<Home />}
+          element={<Feed />}
           // loader={() => {
           //   // ⬇️ loader fetch data as earlier as possible
           //   return '';
@@ -51,7 +51,7 @@ const routers = createBrowserRouter(
         />
         <Route
           path="/home"
-          element={<Home />}
+          element={<Feed />}
           // ⬇️ loader fetch data as earlier as possible
           // loader={homeLoader(queryClient)}
         />

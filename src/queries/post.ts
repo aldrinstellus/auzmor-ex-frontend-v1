@@ -361,6 +361,11 @@ export const useInfiniteFeed = (q?: Record<string, any>) => {
     queryKey: ['feed', q],
     queryFn: fetchFeed,
     getNextPageParam: (lastPage: any) => {
+      const pageDataLen = lastPage?.data?.result?.data?.length;
+      const pageLimit = lastPage?.data?.result?.paging?.limit;
+      if (pageDataLen < pageLimit) {
+        return null;
+      }
       return lastPage?.data?.result?.paging?.next;
     },
     getPreviousPageParam: (currentPage: any) => {

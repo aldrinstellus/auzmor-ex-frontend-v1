@@ -49,12 +49,16 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [skills, setSkills] = useState<ISkillsOption[]>([]);
 
+  console.log(skills, 'state...');
+
   const { control, handleSubmit, getValues, resetField } =
     useForm<IPersonalDetailsForm>({
       mode: 'onChange',
       defaultValues: {
         personal: {
-          birthDate: new Date(personalDetails?.personal?.birthDate),
+          birthDate:
+            personalDetails?.personal?.birthDate &&
+            new Date(personalDetails?.personal?.birthDate),
           gender: personalDetails?.personal?.gender,
           permanentLocation: personalDetails?.personal?.permanentAddress,
           maritalStatus: personalDetails?.personal?.maritalStatus,
@@ -69,13 +73,15 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   );
 
   const setInitialSkills = () => {
-    const personalSkillsList = personalDetails?.personal?.skills?.map(
-      (skill: string) => ({
-        id: uuidv4(),
-        value: skill,
-      }),
-    );
-    setSkills(personalSkillsList);
+    if (personalDetails?.personal?.skills) {
+      const personalSkillsList = personalDetails?.personal?.skills?.map(
+        (skill: string) => ({
+          id: uuidv4(),
+          value: skill,
+        }),
+      );
+      setSkills(personalSkillsList);
+    }
   };
 
   useEffect(() => {
@@ -114,7 +120,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
         birthDate: personalDetailData?.personal?.birthDate,
         permanentLocation: personalDetailData?.personal?.permanentLocation,
         maritalStatus: personalDetailData?.personal?.maritalStatus?.value,
-        skills: skills.map((skill: ISkillsOption) => skill.value),
+        skills: skills?.map((skill: ISkillsOption) => skill.value),
       },
     };
     await updateUserPersonalDetailsMutation.mutateAsync({
@@ -129,6 +135,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
       type: FieldType.DatePicker,
       name: 'personal.birthDate',
       control,
+      placeholder: 'DD/MM/YYYY',
       dataTestId: 'personal-details-dob',
       defaultValue: getValues()?.personal?.birthDate,
     },
@@ -190,7 +197,8 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
             value: event?.target?.value,
           };
           resetField('skills');
-          setSkills([...skills, skillObject]);
+          console.log(skills, skillObject);
+          setSkills([skillObject, ...skills]);
         }
       },
     },
@@ -222,9 +230,13 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                   </IconWrapper>
                   <div className="text-neutral-900 text-base font-medium">
                     Born on{' '}
-                    {moment(personalDetails?.personal?.birthDate).format(
-                      'Do MMMM YYYY',
-                    ) || 'N/A'}
+                    <span data-testid="personal-details-dob">
+                      {(personalDetails?.personal?.birthDate &&
+                        moment(personalDetails?.personal?.birthDate).format(
+                          'DD MMMM YYYY',
+                        )) ||
+                        'N/A'}
+                    </span>
                   </div>
                 </div>
                 <div className="flex space-x-3">
@@ -235,7 +247,10 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                       <Icon name="male" size={16} />
                     )}
                   </IconWrapper>
-                  <div className="text-neutral-900 text-base font-medium">
+                  <div
+                    className="text-neutral-900 text-base font-medium"
+                    data-testid="personal-details-gender"
+                  >
                     {personalDetails?.personal?.gender
                       ?.charAt(0)
                       ?.toUpperCase() +
@@ -252,7 +267,10 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                     <IconWrapper type={Type.Square} className="cursor-pointer">
                       <Icon name="location" size={16} />
                     </IconWrapper>
-                    <div className="text-neutral-900 text-base font-medium">
+                    <div
+                      className="text-neutral-900 text-base font-medium"
+                      data-testid="personal-details-permanent-address"
+                    >
                       {personalDetails?.personal?.permanentAddress || 'N/A'}
                     </div>
                   </div>
@@ -265,7 +283,10 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                     <IconWrapper type={Type.Square} className="cursor-pointer">
                       <Icon name="marriedIcon" size={16} />
                     </IconWrapper>
-                    <div className="text-neutral-900 text-base font-medium">
+                    <div
+                      className="text-neutral-900 text-base font-medium"
+                      data-testid={`personal-details-marital-status`}
+                    >
                       {personalDetails?.personal?.maritalStatus?.charAt(0) +
                         personalDetails?.personal?.maritalStatus
                           ?.slice(1)
@@ -285,7 +306,9 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                       personalDetails?.personal?.skills.map(
                         (skill: string, index: number) => (
                           <ul key={index} className="list-disc">
-                            <li>{skill}</li>
+                            <li data-testid={`personal-details-skill-${skill}`}>
+                              {skill}
+                            </li>
                           </ul>
                         ),
                       )) ||

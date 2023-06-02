@@ -96,6 +96,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({
       disabled: true,
       hidden: false,
       search: true,
+      dataTestId: 'people-filterby-location',
     },
     {
       label: 'Departments',
@@ -105,6 +106,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({
       disabled: true,
       hidden: false,
       search: true,
+      dataTestId: 'people-filterby-department',
     },
     {
       label: 'Status',
@@ -114,6 +116,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({
       disabled: false,
       hidden: false,
       search: false,
+      dataTestId: 'people-filterby-status',
     },
     {
       label: 'Reports to me',
@@ -123,6 +126,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({
       disabled: true,
       hidden: false,
       search: true,
+      dataTestId: 'people-filterby-reportstome',
     },
   ];
 
@@ -133,7 +137,11 @@ const FilterModal: React.FC<IFilterModalProps> = ({
     <div>
       <Modal open={showModal} closeModal={close} className="max-w-3xl">
         {/* Body */}
-        <Header title="Filter by" onClose={close} />
+        <Header
+          title="Filter by"
+          onClose={close}
+          closeBtnDataTestId="close-filters"
+        />
 
         {/* Body */}
         <form>
@@ -149,6 +157,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({
                         : 'hover:bg-green-50 cursor-pointer'
                     }
                     onClick={() => setActiveFilter(item)}
+                    data-testid={item?.dataTestId}
                   >
                     <div className="text-neutral-500 text-sm font-medium p-4 flex items-center gap-x-3">
                       {item.label}
@@ -187,12 +196,14 @@ const FilterModal: React.FC<IFilterModalProps> = ({
             variant={ButtonVariant.Secondary}
             onClick={close}
             className="mr-4"
+            dataTestId="clear-filters"
           />
           <Button
             label="Apply"
             variant={ButtonVariant.Primary}
             onClick={handleSubmit(onSubmit)}
             className="mr-4"
+            dataTestId="apply-filter"
           />
         </div>
       </Modal>

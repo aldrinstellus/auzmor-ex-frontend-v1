@@ -79,7 +79,7 @@ export const getNotificationElementContent = (
     if (target.length === 1) {
       const post = target[0];
       cardContent.BottomCardContent = post.content;
-      cardContent.image = post?.image || undefined;
+      cardContent.image = post?.image?.thumbnailUrl || undefined;
 
       redirect.postId = target[0].entityId;
     }
@@ -90,7 +90,7 @@ export const getNotificationElementContent = (
       const comment = target[1];
       cardContent.TopCardContent = comment.content;
       cardContent.BottomCardContent = post.content;
-      cardContent.image = post.image || undefined;
+      cardContent.image = post?.image?.thumbnailUrl || undefined;
 
       redirect.postId = post.entityId;
       redirect.commentId = comment.entityId;
@@ -119,7 +119,7 @@ export const getNotificationElementContent = (
 
       cardContent.TopCardContent = comment.content;
       cardContent.BottomCardContent = post.content;
-      cardContent.image = post.image || undefined;
+      cardContent.image = post?.image?.thumbnailUrl || undefined;
 
       redirect.postId = post.entityId;
       redirect.commentId = comment.entityId;

@@ -1,6 +1,6 @@
 import AnnouncementCard from 'components/AnnouncementWidget';
 import { activeCommentsDataType } from 'components/Comments';
-import { Comment } from 'components/Comments/Comment';
+import { Comment } from 'components/Comments/components/Comment';
 import PageLoader from 'components/PageLoader';
 import Post from 'components/Post';
 import { Reply } from 'components/Reply/Reply';
