@@ -49,6 +49,8 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [skills, setSkills] = useState<ISkillsOption[]>([]);
 
+  console.log(skills, 'state...');
+
   const { control, handleSubmit, getValues, resetField } =
     useForm<IPersonalDetailsForm>({
       mode: 'onChange',
@@ -71,13 +73,15 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   );
 
   const setInitialSkills = () => {
-    const personalSkillsList = personalDetails?.personal?.skills?.map(
-      (skill: string) => ({
-        id: uuidv4(),
-        value: skill,
-      }),
-    );
-    setSkills(personalSkillsList);
+    if (personalDetails?.personal?.skills) {
+      const personalSkillsList = personalDetails?.personal?.skills?.map(
+        (skill: string) => ({
+          id: uuidv4(),
+          value: skill,
+        }),
+      );
+      setSkills(personalSkillsList);
+    }
   };
 
   useEffect(() => {
@@ -193,7 +197,8 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
             value: event?.target?.value,
           };
           resetField('skills');
-          setSkills([...skills, skillObject]);
+          console.log(skills, skillObject);
+          setSkills([skillObject, ...skills]);
         }
       },
     },
