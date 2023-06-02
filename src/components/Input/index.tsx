@@ -167,7 +167,13 @@ const Input: React.FC<InputProps> = ({
           </div>
         )}
         {rightElement && (
-          <div className="absolute right-0 border border-solid border-neutral-200 rounded-19xl bg-blue-50 py-3 px-5">
+          <div
+            className={`absolute right-0 border border-solid border-neutral-200 rounded-19xl bg-blue-50 py-3 px-5 ${
+              error
+                ? 'border-red-500 focus:border-red-500 focus:ring-red-500 text-red-500'
+                : ''
+            }`}
+          >
             {rightElement}
           </div>
         )}

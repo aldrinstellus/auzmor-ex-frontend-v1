@@ -210,23 +210,31 @@ const Signup: React.FC<ISignupProps> = () => {
     useDomainExists(debouncedDomainValue);
 
   useEffect(() => {
-    isEmailData?.result?.data?.userExists &&
+    if (
+      isEmailData?.result?.data?.userExists ||
+      signupMutation.error?.response?.data?.errors[0]?.code ===
+        'USER_ALREADY_EXISTS'
+    )
       setError('workEmail', {
         types: {
           userExists:
             'The login email already exists. Please try a different email address.',
         },
       });
-  }, [isEmailLoading, isEmailData]);
+  }, [isEmailLoading, isEmailData, signupMutation.error]);
 
   useEffect(() => {
-    isDomainData?.data?.exists &&
+    if (
+      isDomainData?.data?.exists ||
+      signupMutation.error?.response?.data?.errors[0]?.code ===
+        'DUPLICATE_DOMAIN'
+    )
       setError('domain', {
         types: {
-          domainExists: 'Domain already exists',
+          domainExists: 'Domain name is already taken',
         },
       });
-  }, [isDomainLoading, isDomainData]);
+  }, [isDomainLoading, isDomainData, signupMutation.error]);
 
   return (
     <div className="flex h-screen w-screen">
@@ -249,15 +257,6 @@ const Signup: React.FC<ISignupProps> = () => {
             onSubmit={handleSubmit(onSubmit)}
             data-testid="signup-form"
           >
-            {!!signupMutation.isError && (
-              <div className="mb-8">
-                <Banner
-                  dataTestId="signup-error-msg"
-                  title={errorBannerMessage || 'Something went wrong'}
-                  variant={BannerVariant.Error}
-                />
-              </div>
-            )}
             <Layout fields={fields} />
             <Button
               dataTestId="sign-up-btn"
