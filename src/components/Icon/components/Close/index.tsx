@@ -8,6 +8,7 @@ type IconProps = {
   className?: string;
   hover?: boolean;
   disabled?: boolean;
+  dataTestId?: string;
   onClick?: () => void;
 };
 
@@ -16,12 +17,18 @@ const CloseIcon: React.FC<IconProps> = ({
   onClick,
   className = '',
   disabled,
+  dataTestId,
   ...props
 }) => {
   const [isHovered, eventHandlers] = useHover();
 
   return (
-    <div onClick={onClick} className={className} {...eventHandlers}>
+    <div
+      onClick={onClick}
+      className={className}
+      {...eventHandlers}
+      data-testid={dataTestId}
+    >
       {!disabled && (hover || isHovered) ? (
         <CloseFilled {...props} />
       ) : (

@@ -23,8 +23,8 @@ export interface IDatePickerInputProps {
   defaultValue?: string;
   portalContainer?: HTMLElement | null;
   calendarClassName?: string;
-  onDateChange?: (date: Date) => void;
   dataTestId?: string;
+  onDateChange?: (date: Date) => void;
 }
 
 const DatePickerInput: React.FC<IDatePickerInputProps> = ({
@@ -38,8 +38,8 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
   className,
   calendarClassName,
   onDateChange,
-  error,
   dataTestId,
+  error,
 }) => {
   const { field } = useController({
     name,

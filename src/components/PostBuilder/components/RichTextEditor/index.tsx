@@ -174,7 +174,10 @@ const RichTextEditor = React.forwardRef(
                 size={16}
                 stroke={twConfig.theme.colors.neutral['900']}
               />
-              <div className="ml-2.5">
+              <div
+                className="ml-2.5"
+                data-testid="announcement-scheduled-toaster"
+              >
                 Post will be scheduled for{' '}
                 {moment(new Date(announcement.value)).format(
                   'ddd, MMM DD [at] h:mm a',
@@ -187,6 +190,7 @@ const RichTextEditor = React.forwardRef(
                 updateContext();
                 setActiveFlow(CreatePostFlow.CreateAnnouncement);
               }}
+              data-testId="announcement-toaster-editicon"
             >
               <Icon
                 name="editOutline"

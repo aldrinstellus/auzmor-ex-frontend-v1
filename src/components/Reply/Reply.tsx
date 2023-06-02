@@ -89,6 +89,7 @@ export const Reply: React.FC<ReplyProps> = ({
                       icon={'more'}
                       className="!p-0 !bg-inherit"
                       variant={IconVariant.Primary}
+                      dataTestId="comment-reply-ecllipsis"
                     />
                   }
                   className="left-0"
@@ -111,7 +112,10 @@ export const Reply: React.FC<ReplyProps> = ({
             )}
           </div>
         </div>
-        <div className=" text-neutral-900  font-normal text-sm mt-4">
+        <div
+          className=" text-neutral-900  font-normal text-sm mt-4"
+          data-testid="comment-reply-content"
+        >
           {comment.content.text}
         </div>
         <div className="flex flex-row justify-between mt-3 cursor-pointer">
@@ -139,7 +143,7 @@ export const Reply: React.FC<ReplyProps> = ({
           </div>
         </div>
         <div className="flex justify-between pt-3 pb-3 cursor-pointer">
-          <div className="flex">
+          <div className="flex items-center">
             <Likes
               reaction={comment?.myReaction?.reaction || ''}
               entityId={comment.id}

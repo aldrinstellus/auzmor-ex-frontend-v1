@@ -13,11 +13,13 @@ interface LikesProps {
   entityType: string;
   reactionId: string;
   queryKey: string;
+  dataTestIdPrefix?: string;
 }
 interface IReaction {
   name: string;
   icon: string;
   type: string;
+  dataTestId: string;
   setShowTooltip: (show: false) => void;
 }
 
@@ -54,6 +56,7 @@ const Likes: React.FC<LikesProps> = ({
   entityType,
   reactionId,
   queryKey,
+  dataTestIdPrefix,
 }) => {
   const queryClient = useQueryClient();
   const [showTooltip, setShowTooltip] = useState(true);
@@ -173,45 +176,55 @@ const Likes: React.FC<LikesProps> = ({
               icon="like"
               type={ReactionType.Like}
               setShowTooltip={setShowTooltip}
+              dataTestId={`${dataTestIdPrefix}-like`}
             />
             <Reactions
               name="Love"
               icon="love"
               type={ReactionType.Love}
               setShowTooltip={setShowTooltip}
+              dataTestId={`${dataTestIdPrefix}-love`}
             />
             <Reactions
               name="Celebrate"
               icon="celebrate"
               type={ReactionType.Celebrate}
               setShowTooltip={setShowTooltip}
+              dataTestId={`${dataTestIdPrefix}-celebrate`}
             />
             <Reactions
               name="Support"
               icon="support"
               type={ReactionType.Support}
               setShowTooltip={setShowTooltip}
+              dataTestId={`${dataTestIdPrefix}-support`}
             />
             <Reactions
               name="Funny"
               icon="funny"
               type={ReactionType.Funny}
               setShowTooltip={setShowTooltip}
+              dataTestId={`${dataTestIdPrefix}-funny`}
             />
             <Reactions
               name="Insightful"
               icon="insightful"
               type={ReactionType.Insightful}
               setShowTooltip={setShowTooltip}
+              dataTestId={`${dataTestIdPrefix}-insightful`}
             />
           </div>
         </span>
       ) : null}
 
-      <div className="flex flex-row" onClick={handleDeleteReaction}>
+      <div
+        className="flex flex-row items-center"
+        onClick={handleDeleteReaction}
+        data-testid={'liketo-commentcta'}
+      >
         <IconButton
           icon={nameIcon ? nameIcon : 'likeIcon'}
-          className=" !bg-inherit  !p-0"
+          className="flex !bg-inherit  !p-0"
           variant={IconVariant.Primary}
           size={SizeVariant.Medium}
         />

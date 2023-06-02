@@ -28,11 +28,8 @@ import SpeakerIcon from '../components/Speaker';
 import DraftIcon from '../components/Draft';
 import ArrowLeftIcon from '../components/ArrowLeft';
 import BookmarkOutline from '../components/Bookmark';
-import AnalyticsOutline from '../components/AnalyticsIcon';
-import CopyLink from '../components/CopyLinkIcon';
+import CopyLink from '../components/CopyLink';
 import DeleteIcon from '../components/Delete';
-import MenuEditIcon from '../components/MenuEditIcon';
-import MenuNotificationIcon from '../components/MenuNotificationIcon';
 import OrangeHashtagIcon from '../components/OrangeHashtag';
 import MailIcon from '../components/Mail';
 import SlackIcon from '../components/Slack';
@@ -82,7 +79,6 @@ import Marketplace from '../components/Marketplace';
 import DocumentUpload from '../components/DocumentUpload';
 import ArrowUp from '../components/ArrowUp';
 import ThreeDots from '../components/ThreeDots';
-import Checkbox from '../components/Checkbox';
 import Reorder from '../components/Reorder';
 import ConnectionFolder from '../components/ConnectionFolder';
 import Call from '../components/Call';
@@ -94,12 +90,12 @@ import RotateLeft from '../components/RotateLeft';
 import SettingIcon from '../components/Setting';
 import SettingThreeIcon from '../components/SettingThree';
 import LogoutIcon from '../components/Logout';
+import ClipboardCloseIcon from '../components/ClipboardClose';
 
 export const icon = {
   add: Add,
   addCircle: AddCircle,
   admin: AdminIcon,
-  analyticsIconOutline: AnalyticsOutline,
   arrowDown: ArrowDown,
   arrowLeft: ArrowLeftIcon,
   arrowRight: ArrowRightIcon,
@@ -116,12 +112,13 @@ export const icon = {
   carouselRight: CarouselRightIcon,
   celebrate: Celebrate,
   chart: ChartIcon,
+  clipboardClose: ClipboardCloseIcon,
   clock: ClockIcon,
   close: CloseIcon,
   closeCircle: CloseCircleIcon,
   connectionFolder: ConnectionFolder,
   convertShape: ConvertShape,
-  copyIcon: CopyIcon,
+  copy: CopyIcon,
   copyLink: CopyLink,
   crossCircle: CrossCircle,
   delete: DeleteIcon,
@@ -130,7 +127,6 @@ export const icon = {
   dotsVertical: dotsVerticalIcon,
   draft: DraftIcon,
   edit: EditIcon,
-  editIcon: MenuEditIcon,
   email: EmailIcon,
   emojiHappy: EmojiHappy,
   explore: ExploreIcon,
@@ -167,7 +163,6 @@ export const icon = {
   minus: Minus,
   more: MoreIcon,
   notification: NotificationIcon,
-  notificationIcon: MenuNotificationIcon,
   orangeHashtag: OrangeHashtagIcon,
   outOfOfficeIcon: OutOfOfficeIcon,
   people: PeopleIcon,

@@ -16,6 +16,7 @@ export type FeedFilterOption = {
   type: FeedFilterContentType;
   filterKey?: PostFilterKeys;
   isDisabled?: boolean;
+  dataTestId?: string;
 };
 
 export type FeedFilterProps = {
@@ -37,6 +38,7 @@ const feedFilterOptions: FeedFilterOption[] = [
     value: PostType.Update,
     filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
+    dataTestId: 'filterby-updates',
   },
   {
     label: 'Events',
@@ -44,6 +46,7 @@ const feedFilterOptions: FeedFilterOption[] = [
     filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
     isDisabled: true,
+    dataTestId: 'filterby-events',
   },
   {
     label: 'Documents',
@@ -51,6 +54,7 @@ const feedFilterOptions: FeedFilterOption[] = [
     filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
     isDisabled: true,
+    dataTestId: 'filterby-documents',
   },
   {
     label: 'Shoutouts',
@@ -58,6 +62,7 @@ const feedFilterOptions: FeedFilterOption[] = [
     filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
     isDisabled: true,
+    dataTestId: 'filterby-shoutouts',
   },
   {
     label: 'Birthdays',
@@ -65,6 +70,7 @@ const feedFilterOptions: FeedFilterOption[] = [
     filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
     isDisabled: true,
+    dataTestId: 'filterby-birthdays',
   },
   {
     label: 'Work anniversary',
@@ -72,6 +78,7 @@ const feedFilterOptions: FeedFilterOption[] = [
     filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
     isDisabled: true,
+    dataTestId: 'filterby-workanniversary',
   },
   {
     label: 'Welcome new hire',
@@ -79,6 +86,7 @@ const feedFilterOptions: FeedFilterOption[] = [
     filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
     isDisabled: true,
+    dataTestId: 'filterby-welcomenewhire',
   },
   {
     label: 'Polls',
@@ -86,6 +94,7 @@ const feedFilterOptions: FeedFilterOption[] = [
     filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
     isDisabled: true,
+    dataTestId: 'filterby-polls',
   },
   {
     label: 'Preference',
@@ -98,6 +107,7 @@ const feedFilterOptions: FeedFilterOption[] = [
     filterKey: PostFilterKeys.MyPosts,
     type: FeedFilterContentType.Filter,
     isDisabled: true,
+    dataTestId: 'filterby-myposts',
   },
   {
     label: 'Mentions',
@@ -105,12 +115,14 @@ const feedFilterOptions: FeedFilterOption[] = [
     filterKey: PostFilterKeys.MentionedInPost,
     type: FeedFilterContentType.Filter,
     isDisabled: true,
+    dataTestId: 'filterby-mentions',
   },
   {
     label: 'Bookmarked by me',
     value: 'bookmarked-by-me',
     type: FeedFilterContentType.Filter,
     isDisabled: true,
+    dataTestId: 'filterby-bookmarkedbyme',
   },
 ];
 
@@ -241,7 +253,11 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
             }}
           >
             <p className="text-base font-bold">Filter by</p>
-            <CloseIcon size={16} className="cursor-pointer" />
+            <CloseIcon
+              size={16}
+              className="cursor-pointer"
+              dataTestId="filter-closeicon"
+            />
           </div>
           <div>
             <ul className="text-left border rounded-md space-y-1">
@@ -290,6 +306,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
               }`}
               onClick={clearFeedFilters}
               disabled={isFeelFiltersEmpty()}
+              data-testid="filters-clearfiltercta"
             >
               Clear filters
             </button>
@@ -301,6 +318,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
                 onApplyFilters && onApplyFilters(feedFilters);
                 setShowFeedFilter(false);
               }}
+              dataTestId="filters-applycta"
             />
           </div>
         </Card>

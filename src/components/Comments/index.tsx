@@ -110,7 +110,11 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
               />
             ))}
             {hasNextPage && !isFetchingNextPage && (
-              <LoadMore onClick={fetchNextPage} label="Load more comments" />
+              <LoadMore
+                onClick={fetchNextPage}
+                label="Load more comments"
+                dataTestId="comments-loadmorecta"
+              />
             )}
             {isFetchingNextPage && (
               <div className="flex justify-center items-center py-10">

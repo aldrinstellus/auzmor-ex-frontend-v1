@@ -128,6 +128,7 @@ export const Comment: React.FC<CommentProps> = ({
                       icon={'more'}
                       className="!p-0 !bg-inherit"
                       variant={IconVariant.Primary}
+                      dataTestId="comment-ellipsis"
                     />
                   }
                   className="left-0"
@@ -173,19 +174,23 @@ export const Comment: React.FC<CommentProps> = ({
               </div>
             )}
 
-            <div className={`flex text-sm font-normal text-neutral-500`}>
+            <div
+              className={`flex text-sm font-normal text-neutral-500`}
+              data-testid="comment-reaction-count"
+            >
               {totalCount} reacted
             </div>
           </div>
         </div>
         <div className="flex justify-between mt-4 pb-3 cursor-pointer">
-          <div className="flex">
+          <div className="flex items-center">
             <Likes
               reaction={comment?.myReaction?.reaction || ''}
               entityId={comment.id}
               entityType="comment"
               reactionId={comment?.myReaction?.id || ''}
               queryKey="comments"
+              dataTestIdPrefix="comment-reaction"
             />
             <div
               className="flex items-center ml-7"
@@ -203,13 +208,17 @@ export const Comment: React.FC<CommentProps> = ({
                 }
                 setActiveComment({ id: comment.id, type: 'replying' });
               }}
+              data-testid="replyto-commentcta"
             >
               <IconButton
                 icon={'reply'}
                 className="!p-0 !bg-inherit"
                 variant={IconVariant.Primary}
               />
-              <div className="text-xs font-normal text-neutral-500 ml-1.5">
+              <div
+                className="text-xs font-normal text-neutral-500 ml-1.5"
+                data-testid="comment-replies-count"
+              >
                 {comment?.repliesCount}
                 {comment.repliesCount > 0 ? ' Replies' : ' Reply'}
               </div>

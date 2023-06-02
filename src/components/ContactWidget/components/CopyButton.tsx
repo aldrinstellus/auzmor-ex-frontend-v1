@@ -16,7 +16,7 @@ const CopyButton: React.FC<CopyButtonProps> = ({
   return (
     <div>
       <Icon
-        name="copyIcon"
+        name="copy"
         size={16}
         dataTestId={dataTestId}
         onClick={() => {

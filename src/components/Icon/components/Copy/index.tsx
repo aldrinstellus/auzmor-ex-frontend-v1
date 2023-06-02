@@ -1,8 +1,9 @@
-import useHover from 'hooks/useHover';
 import React from 'react';
-import SvgCopyOutline from './CopyOutline';
+import useHover from 'hooks/useHover';
+import { default as CopyFilled } from './CopyFilled';
+import { default as CopyOutline } from './CopyOutline';
 
-type IBookmarkProps = {
+type IconProps = {
   size?: number;
   className?: string;
   hover?: boolean;
@@ -10,18 +11,24 @@ type IBookmarkProps = {
   onClick?: () => void;
 };
 
-const Bookmark: React.FC<IBookmarkProps> = ({
+const CopyIcon: React.FC<IconProps> = ({
   hover = true,
   onClick,
   className = '',
   disabled,
   ...props
 }) => {
+  const [isHovered, eventHandlers] = useHover();
+
   return (
-    <div onClick={onClick} className={className}>
-      <SvgCopyOutline {...props} />
+    <div onClick={onClick} className={className} {...eventHandlers}>
+      {!disabled && (hover || isHovered) ? (
+        <CopyFilled {...props} />
+      ) : (
+        <CopyOutline {...props} />
+      )}
     </div>
   );
 };
 
-export default Bookmark;
+export default CopyIcon;

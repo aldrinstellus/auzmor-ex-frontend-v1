@@ -34,14 +34,17 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       icon: 'bookmarkOutline',
       label: 'Bookmark this post',
       onClick: () => null,
+      dataTestId: 'post-ellipsis-bookmark-this-post',
+      disabled: true,
     },
     {
       icon: 'copyLink',
       label: 'Copy link to post',
       onClick: () => null,
+      disabled: true,
     },
     {
-      icon: 'editIcon',
+      icon: 'edit',
       label: 'Edit Post',
       onClick: () => setShowModal(true),
     },
@@ -51,14 +54,16 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       onClick: () => showConfirm(),
     },
     {
-      icon: 'notificationIcon',
+      icon: 'clipboardClose',
       label: 'Turn off commenting',
       onClick: () => null,
+      disabled: true,
     },
     {
-      icon: 'analyticsIconOutline',
+      icon: 'chart',
       label: 'View Post analytics',
       onClick: () => null,
+      disabled: true,
     },
   ];
 
@@ -66,7 +71,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
     <>
       <PopupMenu
         triggerNode={
-          <div className="cursor-pointer p-2">
+          <div className="cursor-pointer p-2" data-testid="feed-post-ellipsis">
             <Icon name="more" />
           </div>
         }

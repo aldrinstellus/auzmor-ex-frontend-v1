@@ -24,8 +24,13 @@ const Footer: React.FC<IFooterProps> = ({ handleSubmit }) => {
         label="Back"
         className="mr-3"
         onClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
+        dataTestId="announcement-expiry-backcta"
       />
-      <Button label={'Next'} onClick={handleSubmit(onSubmit)} />
+      <Button
+        label={'Next'}
+        onClick={handleSubmit(onSubmit)}
+        dataTestId="announcement-expiry-nextcta"
+      />
     </div>
   );
 };

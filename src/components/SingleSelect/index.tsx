@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import clsx from 'clsx';
 import { Control, useController, Controller } from 'react-hook-form';
-import Select, { MenuPlacement } from 'react-select';
+import Select, { MenuPlacement, components } from 'react-select';
 import { twConfig } from 'utils/misc';
 
 export interface ISingleSelectProps {
@@ -77,7 +77,7 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
   };
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative ${className}`} data-testid={dataTestId}>
       <div className={labelStyle}>{label}</div>
       <div data-testid={dataTestId}>
         {/* remove top margin provide it to parent div if required */}
@@ -96,6 +96,21 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
               {...field}
               defaultValue={defaultValue}
               menuPlacement={menuPlacement ? menuPlacement : undefined}
+              components={{
+                Option: ({ innerProps, data, isDisabled, isSelected }) => {
+                  return (
+                    <div
+                      {...innerProps}
+                      className={`px-6 py-3 hover:bg-primary-50 font-medium text-sm ${
+                        isDisabled ? 'cursor-default' : 'cursor-pointer'
+                      } ${isSelected && 'bg-primary-50'}`}
+                      data-testid={data.dataTestId}
+                    >
+                      {data.label}
+                    </div>
+                  );
+                },
+              }}
             />
           )}
         />
