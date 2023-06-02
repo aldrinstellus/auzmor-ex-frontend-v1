@@ -178,7 +178,9 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
           loading={loginMutation.isLoading}
         />
       </form>
-      {(data?.result?.data?.sso?.active || !!!domain) && (
+      {((data?.result?.data?.sso?.active &&
+        data?.result?.data?.sso?.idp !== 'CUSTOM_LDAP') ||
+        !!!domain) && (
         <>
           <div className="flex items-center mt-8">
             <Divider />

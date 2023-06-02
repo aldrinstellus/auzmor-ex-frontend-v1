@@ -66,6 +66,7 @@ const InviteFormRow: React.FC<IInviteFormRowProps> = ({
               label: 'Full Name',
               defaultValue: field.fullName,
               control,
+              dataTestId: 'invite-people-name',
             },
             {
               type: FieldType.Input,
@@ -76,6 +77,7 @@ const InviteFormRow: React.FC<IInviteFormRowProps> = ({
               label: 'Email Address',
               defaultValue: field.workEmail,
               control,
+              dataTestId: 'invite-people-email',
             },
             {
               type: FieldType.SingleSelect,
@@ -115,6 +117,7 @@ const InviteFormRow: React.FC<IInviteFormRowProps> = ({
             title="User already belongs to the organization"
             variant={BannerVariant.Error}
             className="mb-3"
+            dataTestId="invite-people-error-message"
           />
         )}
       {errors.members && errors.members[index]?.role?.message && (

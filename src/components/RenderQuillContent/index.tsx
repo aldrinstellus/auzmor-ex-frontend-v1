@@ -9,18 +9,19 @@ import { IGetPost } from 'queries/post';
 import { getMentionProps } from './utils';
 import PreviewCard from 'components/PreviewCard';
 import { removeElementsByClass } from 'utils/misc';
+import { IComment } from 'components/Comments';
 
-type RenderPostProps = {
-  data: IGetPost;
+type RenderQuillContent = {
+  data: IGetPost | IComment;
 };
 
-export const RenderPost: React.FC<RenderPostProps> = ({
+const RenderQuillContent: React.FC<RenderQuillContent> = ({
   data,
 }): ReactElement => {
   const content = data?.content?.editor;
   const mentions = data?.mentions ? data.mentions : [];
-  const link = data?.link;
-  const media = data?.files;
+  const link = (data as IGetPost)?.link;
+  const media = (data as IGetPost)?.files;
 
   useEffect(() => {
     const element = document.getElementById(`${data?.id}-content`);
@@ -66,6 +67,7 @@ export const RenderPost: React.FC<RenderPostProps> = ({
           <Mention
             value={op.insert.mention?.value}
             {...getMentionProps(mentions, op.insert.mention)}
+            userId={op.insert.mention.id}
           />
         );
       case op.insert.hasOwnProperty('hashtag'):
@@ -94,7 +96,7 @@ export const RenderPost: React.FC<RenderPostProps> = ({
       </span>
       {link && (
         <div className="mt-4">
-          <PreviewCard metaData={data?.link} className="my-2" />
+          <PreviewCard metaData={link} className="my-2" />
         </div>
       )}
       {media && (
@@ -105,3 +107,5 @@ export const RenderPost: React.FC<RenderPostProps> = ({
     </div>
   );
 };
+
+export default RenderQuillContent;

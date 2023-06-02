@@ -35,7 +35,7 @@ export interface IRoleOption {
 export const roleOptions: IRoleOption[] = [
   { value: 'MEMBER', label: 'Member' },
   { value: 'ADMIN', label: 'Admin' },
-  { value: 'SUPERADMIN', label: 'SuperAdmin' },
+  // { value: 'SUPERADMIN', label: 'SuperAdmin' },
 ];
 
 export interface IUserForm {
@@ -80,14 +80,14 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
     close();
     if (users.length === 1) {
       return (
-        <span>
+        <span data-testId="added-people-toaster">
           <span className="font-bold">{users[0].fullName}</span> added to your
           organization successfully
         </span>
       );
     } else if (users.length === 2) {
       return (
-        <span>
+        <span data-testId="added-people-toaster">
           <span className="font-bold">{users[0].fullName}, </span>
           <span className="font-bold">{users[1].fullName}</span> added to your
           organization successfully
@@ -95,7 +95,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
       );
     } else if (users.length > 2) {
       return (
-        <span>
+        <span data-testId="added-people-toaster">
           <span className="font-bold">{users[0].fullName}, </span>
           <span className="font-bold">{users[1].fullName}, </span>{' '}
           <span className="font-bold">+{users.length - 2} others</span> added to
@@ -240,6 +240,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
             disabled={inviteUsersMutation.isLoading}
             className="mr-4"
             onClick={close}
+            dataTestId="invite-people-cancel"
           />
           {showInvitedMembers ? (
             <Button
@@ -272,6 +273,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
                 inviteUsersMutation.isLoading || !isValid || !isEmailValid()
               }
               loading={inviteUsersMutation.isLoading}
+              dataTestId="invite-people-send-invite"
             />
           )}
         </div>

@@ -5,8 +5,6 @@ import Actor from 'components/Actor';
 import { VIEW_POST } from 'components/Actor/constant';
 import CommentCard from 'components/Comments/index';
 import Likes, { ReactionType } from 'components/Reactions';
-import { RenderPost } from 'components/RenderPost';
-import { DeltaStatic } from 'quill';
 import FeedPostMenu from './components/FeedPostMenu';
 import { IPost, IGetPost } from 'queries/post';
 import Icon from 'components/Icon';
@@ -14,6 +12,7 @@ import clsx from 'clsx';
 import { humanizeTime } from 'utils/time';
 import AcknowledgementBanner from './components/AcknowledgementBanner';
 import ReactionModal from './components/ReactionModal';
+import RenderQuillContent from 'components/RenderQuillContent';
 
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
@@ -83,7 +82,7 @@ const Post: React.FC<PostProps> = ({ data, customNode = null }) => {
           </div>
         </div>
         <div className="mx-6">
-          <RenderPost data={data} />
+          <RenderQuillContent data={data} />
           <div className="border-b border-neutral-100 mt-4"></div>
           <div className="flex flex-row justify-between my-3">
             <div className={`flex flex-row`}>

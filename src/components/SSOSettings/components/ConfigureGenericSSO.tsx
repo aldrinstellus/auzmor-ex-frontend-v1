@@ -17,6 +17,7 @@ import apiService from 'utils/apiService';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import queryClient from 'utils/queryClient';
 import useAuth from 'hooks/useAuth';
+import { PRIMARY_COLOR } from 'utils/constants';
 
 type ConfigureGenericSSOProps = {
   open: boolean;
@@ -175,8 +176,7 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
               }}
             />
             <div className="flex items-center gap-x-2">
-              {/* <Spinner color="#10B981" /> */}
-              <Icon name="documentUpload" stroke="#10B981" />
+              <Icon name="documentUpload" stroke={PRIMARY_COLOR} />
               <p className="text-primary-500 text-base">Upload Metadata Xml</p>
             </div>
           </label>

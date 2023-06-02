@@ -109,8 +109,9 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         }),
       );
       fileIds = uploadedMedia
-        .filter((media: IMedia) =>
-          coverImageMap.find((map) => map.coverImageName !== media.name),
+        .filter(
+          (media: IMedia) =>
+            !!coverImageMap.find((map) => map.coverImageName !== media.name),
         )
         .map((media: IMedia) => media.id);
     }

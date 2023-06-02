@@ -1,5 +1,4 @@
 import {
-  UseQueryOptions,
   useQuery,
   useInfiniteQuery,
   UseInfiniteQueryOptions,
@@ -112,6 +111,16 @@ export const useComments = (q: IComments) => {
   return useQuery({
     queryKey: ['comments', q],
     queryFn: () => getComments(q),
+  });
+};
+
+export const useInfiniteComments = (q: IComments) => {
+  return useInfiniteQuery({
+    queryKey: ['comments', q],
+    queryFn: () => getComments(q),
+    getNextPageParam: (lastPage: any) => lastPage?.result?.paging?.next,
+    getPreviousPageParam: (currentPage: any) =>
+      currentPage?.result?.paging?.prev,
   });
 };
 

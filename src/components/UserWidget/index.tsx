@@ -24,9 +24,11 @@ const UserCard: React.FC<IUserCardProps> = ({ className }) => {
               className="border-4 border-white mt-8 overflow-hidden"
             />
           </Link>
-          <div className="text-base font-bold mt-2 truncate w-full text-center">
-            {user?.name}
-          </div>
+          <Link to="/profile">
+            <div className="text-base font-bold mt-2 truncate w-full text-center">
+              {user?.name}
+            </div>
+          </Link>
         </div>
       </Card>
     </div>

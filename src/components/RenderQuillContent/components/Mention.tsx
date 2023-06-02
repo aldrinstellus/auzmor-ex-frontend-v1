@@ -1,6 +1,8 @@
 import React, { ReactElement } from 'react';
 import MentionUserCard from './MentionUserCard';
 import useHover from 'hooks/useHover';
+import { Link } from 'react-router-dom';
+import useAuth from 'hooks/useAuth';
 
 type MentionProps = {
   value: string;
@@ -8,6 +10,7 @@ type MentionProps = {
   image?: string;
   active?: boolean;
   email?: string;
+  userId?: string;
 };
 
 const Mention: React.FC<MentionProps> = ({
@@ -16,8 +19,10 @@ const Mention: React.FC<MentionProps> = ({
   image,
   active,
   email,
+  userId,
 }): ReactElement => {
   const [isHovered, eventHandlers] = useHover();
+  const { user } = useAuth();
   return (
     <span className="relative">
       {isHovered && (
@@ -29,13 +34,17 @@ const Mention: React.FC<MentionProps> = ({
           className="absolute -top-[170px] z-10 shadow-lg transition-opacity duration-200 min-w-max border-transparent border-[12px]"
         />
       )}
-      <span
-        {...eventHandlers}
-        className="cursor-pointer mention"
-        contentEditable="false"
+      <Link
+        to={userId && userId !== user?.id ? '/users/' + userId : '/profile'}
       >
-        {value}
-      </span>
+        <span
+          {...eventHandlers}
+          className="cursor-pointer mention"
+          contentEditable="false"
+        >
+          {value}
+        </span>
+      </Link>
     </span>
   );
 };

@@ -80,6 +80,7 @@ const AddUsers: React.FC<IAddUsersProps> = ({
             }
           }}
           {...eventHandlers}
+          data-testId="invite-people-add-another"
         >
           <div className="mr-1">
             <Icon
