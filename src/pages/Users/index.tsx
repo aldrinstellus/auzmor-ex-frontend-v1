@@ -24,6 +24,8 @@ import FilterModal from './components/FilterModal';
 import { useDebounce } from 'hooks/useDebounce';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
+import useAuth from 'hooks/useAuth';
+import { Role } from 'utils/enum';
 
 interface IForm {
   search?: string;
@@ -39,6 +41,7 @@ const Users: React.FC<IUsersProps> = () => {
   const [peopleFilters, setPeopleFilters] = useState<IPeopleFilters>({
     [PeopleFilterKeys.PeopleFilterType]: [],
   }); // for future filters
+  const { user } = useAuth();
 
   const {
     control,
@@ -257,15 +260,17 @@ const Users: React.FC<IUsersProps> = () => {
               leftIconSize={20}
               dataTestId="people-org-chart"
             />
-            <Button
-              className="flex space-x-1"
-              label="Add Members"
-              leftIcon="add"
-              onClick={() => {
-                setShowAddUserModal(true);
-              }}
-              dataTestId="add-members-btn"
-            />
+            {user?.role !== Role.Member && (
+              <Button
+                className="flex space-x-1"
+                label="Add Members"
+                leftIcon="add"
+                onClick={() => {
+                  setShowAddUserModal(true);
+                }}
+                dataTestId="add-members-btn"
+              />
+            )}
           </div>
         </div>
 

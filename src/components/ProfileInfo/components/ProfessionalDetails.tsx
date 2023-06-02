@@ -20,6 +20,7 @@ import queryClient from 'utils/queryClient';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import { twConfig } from 'utils/misc';
+import { getTimezoneNameFromIANA } from 'utils/time';
 
 interface IForm {
   timeZone: OptionType;
@@ -95,7 +96,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
     <div {...eventHandlers}>
       <Card className={onHoverStyles}>
         <Header
-          title="Professinal Details"
+          title="Professional Details"
           dataTestId="professional-details"
           isHovered={isHovered}
           isEditable={isEditable}
@@ -145,7 +146,8 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
                     <Icon name="clock" size={16} />
                   </IconWrapper>
                   <div className="text-neutral-900 text-base font-medium ">
-                    {professionalDetails?.timeZone || 'N/A'}
+                    {getTimezoneNameFromIANA(professionalDetails?.timeZone) ||
+                      'N/A'}
                   </div>
                 </div>
               )}
