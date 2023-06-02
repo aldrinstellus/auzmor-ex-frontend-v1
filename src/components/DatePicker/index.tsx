@@ -18,6 +18,7 @@ export interface IDatePickerInputProps {
   className?: string;
   control?: Control<Record<string, any>>;
   minDate?: Date;
+  placeholder?: string;
   error?: string;
   defaultValue?: string;
   portalContainer?: HTMLElement | null;
@@ -30,6 +31,7 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
   name,
   label = '',
   minDate,
+  placeholder,
   defaultValue,
   portalContainer = null,
   className,
@@ -73,6 +75,7 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
         minDate={minDate}
         // portalContainer={portalContainer}
         portalId="root"
+        placeholderText={placeholder}
         popperProps={{
           positionFixed: true,
           strategy: 'fixed',
