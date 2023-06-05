@@ -103,12 +103,18 @@ const RichTextEditor = React.forwardRef(
       source: Sources,
       editor: UnprivilegedEditor,
     ) => {
+      if (!!!ref || !!!(ref as any)?.current || source === 'silent') {
+        return;
+      }
       if (editor.getLength() > charLimit) {
-        ((ref as any).current as ReactQuill)
-          .getEditor()
-          .formatText(charLimit - 1, editor.getLength() - charLimit, {
+        ((ref as any).current as ReactQuill).getEditor().formatText(
+          charLimit - 1,
+          editor.getLength() - charLimit,
+          {
             color: twConfig.theme.colors.red['500'],
-          });
+          },
+          'silent',
+        );
         setIsCharLimit(true);
       } else {
         setIsCharLimit(false);
