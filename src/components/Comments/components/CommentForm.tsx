@@ -80,25 +80,28 @@ export const CommentForm: React.FC<CommentFormProps> = ({
 
       <div className="flex flex-row items-center z-10 -ml-32">
         <IconButton
-          icon={'emojiHappy'}
-          className="mx-2 !p-0 cursor-pointer !bg-inherit hover:bg-inherit"
+          icon={'iconLinear'}
+          className="flex mx-2 !p-0 cursor-pointer !bg-inherit hover:bg-inherit"
           size={SizeVariant.Large}
           variant={IconVariant.Primary}
+          dataTestId="postcomment-attachmediacta"
         />
         <IconButton
-          icon={'iconLinear'}
-          className="mx-2 !p-0 cursor-pointer !bg-inherit hover:bg-inherit"
+          icon={'emojiHappy'}
+          className="flex mx-2 !p-0 cursor-pointer !bg-inherit hover:bg-inherit"
           size={SizeVariant.Large}
           variant={IconVariant.Primary}
+          dataTestId="postcomment-addemojiscta"
         />
         <IconButton
           icon={'send'}
-          className="mx-2 !p-0 !bg-inherit hover:bg-inherit disabled:bg-inherit disabled:cursor-auto "
+          className="flex mx-2 !p-0 !bg-inherit hover:bg-inherit disabled:bg-inherit disabled:cursor-auto "
           size={SizeVariant.Large}
           variant={IconVariant.Primary}
           onClick={() => {
             onSubmit();
           }}
+          dataTestId="postcomment-sendcta"
         />
       </div>
     </div>

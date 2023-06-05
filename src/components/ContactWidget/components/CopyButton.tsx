@@ -6,14 +6,19 @@ import { twConfig } from 'utils/misc';
 
 type CopyButtonProps = {
   content: string;
+  dataTestId?: string;
 };
 
-const CopyButton: React.FC<CopyButtonProps> = ({ content }): ReactElement => {
+const CopyButton: React.FC<CopyButtonProps> = ({
+  content,
+  dataTestId,
+}): ReactElement => {
   return (
     <div>
       <Icon
-        name="copyIcon"
+        name="copy"
         size={16}
+        dataTestId={dataTestId}
         onClick={() => {
           navigator.clipboard.writeText(content);
           toast(<SuccessToast content={'Copied to clipboard'} />, {

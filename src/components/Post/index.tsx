@@ -85,7 +85,10 @@ const Post: React.FC<PostProps> = ({ data, customNode = null }) => {
           <RenderQuillContent data={data} />
           <div className="border-b border-neutral-100 mt-4"></div>
           <div className="flex flex-row justify-between my-3">
-            <div className={`flex flex-row`}>
+            <div
+              className={`flex flex-row`}
+              data-testid="feed-post-reactioncount"
+            >
               {keys > 0 && (
                 <div className="flex flex-row mr-2">
                   {Object.keys(data.reactionsCount)
@@ -124,10 +127,11 @@ const Post: React.FC<PostProps> = ({ data, customNode = null }) => {
                     setShowComments(true);
                   }
                 }}
+                data-testid="feed-post-commentscount"
               >
                 {data.commentsCount || 0} Comments
               </div>
-              <div>0 reposts</div>
+              <div data-testid="feed-post-repostcount">0 reposts</div>
             </div>
           </div>
 
@@ -141,6 +145,7 @@ const Post: React.FC<PostProps> = ({ data, customNode = null }) => {
                 entityType="post"
                 reactionId={reactionId || ''}
                 queryKey="feed"
+                dataTestIdPrefix="post-reaction"
               />
 
               <button

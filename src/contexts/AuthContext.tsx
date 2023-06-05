@@ -28,6 +28,7 @@ export interface IUser {
   location?: string;
   profileImage?: string;
   coverImage?: string;
+  permissions?: [];
 }
 
 interface IAuthContext {

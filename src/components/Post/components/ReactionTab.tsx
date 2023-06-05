@@ -19,10 +19,12 @@ const ReactionTab: React.FC<IReactionTabProps> = ({ postId, activeTab }) => {
             entityId: postId,
             entityType: 'post',
             reaction: activeTab,
+            limit: 5,
           }
         : {
             entityId: postId,
             entityType: 'post',
+            limit: 5,
           },
     );
 

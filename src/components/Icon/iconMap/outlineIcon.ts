@@ -53,7 +53,6 @@ import SvgDeleteOutline from '../components/Delete/DeleteOutline';
 import SvgExportOutline from '../components/Export/ExportOutline';
 import SvgMaximizeOutline from '../components/Maximize/MaximizeOutline';
 import SvgThreeDotsOutline from '../components/ThreeDots/ThreeDotsOutline';
-import SvgCheckboxOutline from '../components/Checkbox/CheckboxOutline';
 import SvgConnectionFolderOutline from '../components/ConnectionFolder/ConnectionFolderOutline';
 import SvgCallOutline from '../components/Call/CallOutline';
 import SvgMaleOutline from '../components/Male/MaleOutline';
@@ -61,6 +60,9 @@ import SvgImportOutline from '../components/Import/ImportOutline';
 import SvgSettingOutline from '../components/Setting/SettingOutline';
 import SvgSettingThreeOutline from '../components/SettingThree/SettingThreeOutline';
 import SvgLogoutOutline from '../components/Logout/LogoutOutline';
+import SvgCopyOutline from '../components/Copy/CopyOutline';
+import SvgCopyLinkOutline from '../components/CopyLink/CopyLinkOutline';
+import SvgClipboardCloseOutline from '../components/ClipboardClose/ClipboardCloseOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -75,10 +77,13 @@ export const outlineIcon = {
   callOutline: SvgCallOutline,
   celebrateOutline: SvgCelebrateOutline,
   chartOutline: SvgChartOutline,
+  clipboardOutline: SvgClipboardCloseOutline,
   closeCircleOutline: SvgCloseCircleOutline,
   closeOutline: SvgCloseOutline,
   connectionOutline: SvgConnectionFolderOutline,
   convertShapeOutline: SvgConvertShapeOutline,
+  copyLinkOutline: SvgCopyLinkOutline,
+  copyOutline: SvgCopyOutline,
   crossCircleOutline: SvgCrossCircleOutline,
   deleteOutline: SvgDeleteOutline,
   documentOutline: SvgDocumentOutline,

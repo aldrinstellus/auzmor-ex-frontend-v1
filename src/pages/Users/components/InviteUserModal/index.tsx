@@ -214,6 +214,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
               : 'Invite new people to your organization'
           }
           onClose={close}
+          closeBtnDataTestId="invite-people-close"
         />
 
         {/*---------- {<>Body</>} ----------*/}

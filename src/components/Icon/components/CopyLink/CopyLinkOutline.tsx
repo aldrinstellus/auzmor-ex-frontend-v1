@@ -6,7 +6,7 @@ type IconProps = {
   stroke?: string;
 };
 
-const SvgCopyOutline = ({
+const SvgCopyLinkOutline = ({
   size = 24,
   stroke = '#737373',
   ...props
@@ -20,14 +20,14 @@ const SvgCopyOutline = ({
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      d="M16 12.9V17.1C16 20.6 14.6 22 11.1 22H6.9C3.4 22 2 20.6 2 17.1V12.9C2 9.4 3.4 8 6.9 8H11.1C14.6 8 16 9.4 16 12.9Z"
+      d="M3.27 12C2.48 11.05 2 9.83 2 8.5C2 5.48 4.47 3 7.5 3H12.5C15.52 3 18 5.48 18 8.5C18 11.52 15.53 14 12.5 14H10"
       stroke={stroke}
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
-      d="M22 6.9V11.1C22 14.6 20.6 16 17.1 16H16V12.9C16 9.4 14.6 8 11.1 8H8V6.9C8 3.4 9.4 2 12.9 2H17.1C20.6 2 22 3.4 22 6.9Z"
+      d="M20.73 12C21.52 12.95 22 14.17 22 15.5C22 18.52 19.53 21 16.5 21H11.5C8.48 21 6 18.52 6 15.5C6 12.48 8.47 10 11.5 10H14"
       stroke={stroke}
       strokeWidth="1.5"
       strokeLinecap="round"
@@ -36,4 +36,4 @@ const SvgCopyOutline = ({
   </svg>
 );
 
-export default SvgCopyOutline;
+export default SvgCopyLinkOutline;

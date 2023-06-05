@@ -15,7 +15,7 @@ const Login = React.lazy(() => import('pages/Login'));
 const Signup = React.lazy(() => import('pages/Signup'));
 const Registration = React.lazy(() => import('pages/Registration'));
 const ForgotPassword = React.lazy(() => import('pages/ForgotPassword'));
-const UserSettings = React.lazy(() => import('pages/UserSettings'));
+const UserSettings = React.lazy(() => import('pages/UserSettings/index'));
 const ResetPassword = React.lazy(() => import('pages/ResetPassword'));
 const Feed = React.lazy(() => import('pages/Feed'));
 const Home = React.lazy(() => import('pages/Home'));

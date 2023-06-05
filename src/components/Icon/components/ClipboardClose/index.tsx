@@ -1,9 +1,9 @@
-import useHover from 'hooks/useHover';
 import React from 'react';
-import { default as BookmarkOutline } from './BookmarkOutline';
-import { default as BookmarkFilled } from './BookmarkFilled';
+import useHover from 'hooks/useHover';
+import { default as ClipboardCloseFilled } from './ClipboardCloseFilled';
+import { default as ClipboardCloseOutline } from './ClipboardCloseOutline';
 
-type IBookmarkProps = {
+type IconProps = {
   size?: number;
   className?: string;
   hover?: boolean;
@@ -11,7 +11,7 @@ type IBookmarkProps = {
   onClick?: () => void;
 };
 
-const Bookmark: React.FC<IBookmarkProps> = ({
+const ClipboardCloseIcon: React.FC<IconProps> = ({
   hover = true,
   onClick,
   className = '',
@@ -19,15 +19,16 @@ const Bookmark: React.FC<IBookmarkProps> = ({
   ...props
 }) => {
   const [isHovered, eventHandlers] = useHover();
+
   return (
     <div onClick={onClick} className={className} {...eventHandlers}>
       {!disabled && (hover || isHovered) ? (
-        <BookmarkFilled {...props} />
+        <ClipboardCloseFilled {...props} />
       ) : (
-        <BookmarkOutline {...props} />
+        <ClipboardCloseOutline {...props} />
       )}
     </div>
   );
 };
 
-export default Bookmark;
+export default ClipboardCloseIcon;

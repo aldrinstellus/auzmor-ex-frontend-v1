@@ -9,6 +9,7 @@ export type ModalProps = {
   children: ReactNode;
   className?: string;
   showModalCloseBtn?: boolean;
+  size?: string;
 };
 
 const Modal: React.FC<ModalProps> = ({
@@ -17,6 +18,7 @@ const Modal: React.FC<ModalProps> = ({
   children,
   className = 'max-w-xl',
   showModalCloseBtn = false,
+  size,
 }) => {
   const panelStyle = clsx(
     {

@@ -20,7 +20,7 @@ const SAMLDetail: React.FC<SAMLDetailProps> = ({
         <p className="font-bold text-neutral-900">{value}</p>
         <Icon
           className="ml-2 mb-1"
-          name="copyIcon"
+          name="copy"
           onClick={() => {
             navigator.clipboard.writeText(value);
             toast(

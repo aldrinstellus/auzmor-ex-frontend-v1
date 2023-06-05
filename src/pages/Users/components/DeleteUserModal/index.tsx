@@ -11,7 +11,6 @@ import Modal from 'components/Modal';
 import { deleteUser } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
-import Spinner from 'components/Spinner';
 
 export interface IDeleteUserModalProps {
   showModal: boolean;
@@ -46,6 +45,7 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
           setShowModal(false);
         }}
         icon={'close'}
+        dataTestId="delete-user-close"
         className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"
         variant={IconVariant.Primary}
       />
@@ -57,6 +57,7 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
         variant={ButtonVariant.Secondary}
         size={Size.Small}
         label={'Cancel'}
+        dataTestId="delete-user-cancel"
         onClick={() => {
           setShowModal(false);
         }}
@@ -67,6 +68,7 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
         loading={deleteUserMutation.isLoading}
         size={Size.Small}
         type={ButtonType.Submit}
+        dataTestId="delete-user-delete"
         onClick={() => deleteUserMutation.mutate(userId)}
       />
     </div>
@@ -77,6 +79,7 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
       closeModal={() => {
         setShowModal(false);
       }}
+      className="max-w-sm"
     >
       <Header />
       <div className="text-sm font-medium text-neutral-500 mx-6 mt-6 mb-8">

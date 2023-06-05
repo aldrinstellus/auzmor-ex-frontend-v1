@@ -52,6 +52,9 @@ import SvgImportFilled from '../components/Import/ImportFilled';
 import SvgSettingFilled from '../components/Setting/SettingFilled';
 import SvgSettingThreeFilled from '../components/SettingThree/SettingThreeFilled';
 import SvgLogoutFilled from '../components/Logout/LogoutFilled';
+import SvgCopyFilled from '../components/Copy/CopyFilled';
+import SvgCopyLinkFilled from '../components/CopyLink/CopyLinkFilled';
+import SvgClipboardCloseFilled from '../components/ClipboardClose/ClipboardCloseFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -64,10 +67,13 @@ export const filledIcon = {
   carouselRightFilled: SvgCarouselRightFilled,
   celebrateFilled: SvgCelebrateFilled,
   chartFilled: SvgChartFilled,
+  clipboardFilled: SvgClipboardCloseFilled,
   clockFilled: SvgClockFilled,
   closeCircleFilled: SvgCloseCircleFilled,
   closeFilled: SvgCloseFilled,
   convertShapeFilled: SvgConvertShapeFilled,
+  copyFilled: SvgCopyFilled,
+  copyLinkFilled: SvgCopyLinkFilled,
   crossCircleFilled: SvgCrossCircleFilled,
   deleteFilled: SvgDeleteFilled,
   documentFilled: SvgDocumentFilled,

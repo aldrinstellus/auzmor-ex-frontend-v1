@@ -18,7 +18,7 @@ const Body: React.FC<IBodyProps> = ({
   return (
     <div className="text-sm text-neutral-900">
       <div className="m-4 min-h-[300px]">
-        <div className="flex w-full mb-6">
+        <div className="flex w-full mb-6" data-testid="announcement-tooltip">
           <div className="mr-3">
             <Icon name="infoCircleOutline" />
           </div>
@@ -28,7 +28,7 @@ const Body: React.FC<IBodyProps> = ({
             it as read.
           </div>
         </div>
-        <form>
+        <form data-testid="feed-announcement-expire">
           <Layout fields={expiryFields} />
         </form>
         {((selecetedExpiry && selecetedExpiry.label === 'Custom Date') ||

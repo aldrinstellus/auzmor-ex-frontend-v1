@@ -48,22 +48,31 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
         {
           label: '1 Day',
           value: afterXUnit(1, 'days').toISOString().substring(0, 19) + 'Z',
+          dataTestId: 'announcement-expiry-1day',
         },
         {
           label: '1 Week',
           value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
+          dataTestId: 'announcement-expiry-1week',
         },
         {
           label: '2 Weeks',
           value: afterXUnit(2, 'weeks').toISOString().substring(0, 19) + 'Z',
+          dataTestId: 'announcement-expiry-2weeks',
         },
         {
           label: '1 Month',
           value: afterXUnit(1, 'months').toISOString().substring(0, 19) + 'Z',
+          dataTestId: 'announcement-expiry-1month',
         },
-        { label: 'Custom Date', value: '' },
+        {
+          label: 'Custom Date',
+          value: '',
+          dataTestId: 'announcement-expiry-customdate',
+        },
       ],
       defaultValue: announcement,
+      dataTestId: 'announcement-expiry-dropdown',
     },
   ];
 
@@ -74,6 +83,7 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
       control,
       minDate: new Date(),
       defaultValue: announcement?.value || '',
+      dataTestId: 'custom-date-calendar',
     },
   ];
   return (
@@ -85,6 +95,7 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
           clearPostContext();
           closeModal();
         }}
+        closeBtnDataTestId="announcement-modal-close"
       />
       <Body
         selecetedExpiry={selecetedExpiry}

@@ -8,10 +8,10 @@ import {
   CreatePostFlow,
   IEditorValue,
 } from 'contexts/CreatePostContext';
+import useRole from 'hooks/useRole';
 import { DeltaStatic } from 'quill';
-import React, { ForwardedRef, useContext, useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import ReactQuill from 'react-quill';
-import { twConfig } from 'utils/misc';
 
 export interface IFooterProps {
   isLoading: boolean;
@@ -24,6 +24,7 @@ const Footer: React.FC<IFooterProps> = ({
   quillRef,
   handleSubmitPost,
 }) => {
+  const { isMember } = useRole();
   const {
     setActiveFlow,
     setEditorValue,
@@ -51,6 +52,7 @@ const Footer: React.FC<IFooterProps> = ({
         id: 1,
         label: 'Media',
         icon: <Icon name="imageFilled" fill="#000000" size={14} />,
+        dataTestId: 'feed-createpost-media',
         menuItems: [
           {
             label: 'Upload a photo',
@@ -85,6 +87,7 @@ const Footer: React.FC<IFooterProps> = ({
         id: 2,
         label: 'Shoutout',
         icon: <Icon name="magicStarFilled" size={14} />,
+        dataTestId: 'feed-createpost-shoutout',
         menuItems: [],
         divider: <Divider variant={DividerVariant.Vertical} />,
         disabled: true,
@@ -93,6 +96,7 @@ const Footer: React.FC<IFooterProps> = ({
         id: 3,
         label: 'Events',
         icon: <Icon name="calendarFilledTwo" size={14} />,
+        dataTestId: 'feed-createpost-events',
         menuItems: [],
         divider: <Divider variant={DividerVariant.Vertical} />,
         disabled: true,
@@ -101,6 +105,7 @@ const Footer: React.FC<IFooterProps> = ({
         id: 4,
         label: 'Polls',
         icon: <Icon name="chartFilled" size={14} />,
+        dataTestId: 'feed-createpost-polls',
         menuItems: [],
         disabled: true,
       },
@@ -108,6 +113,7 @@ const Footer: React.FC<IFooterProps> = ({
         id: 5,
         label: 'More',
         icon: <Icon name="moreOutline" stroke="#000000" />,
+        dataTestId: 'feed-createpost-ellipsis',
         menuItems: [
           {
             label: 'Share as an announcement',
@@ -116,13 +122,16 @@ const Footer: React.FC<IFooterProps> = ({
               updateContext();
               setActiveFlow(CreatePostFlow.CreateAnnouncement);
             },
+            disabled: isMember,
             iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
+            dataTestId: 'feed-createpost-shareasannouncement',
           },
           {
             label: 'Save as drafts',
             icon: 'draft',
             iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
             disabled: true,
+            dataTestId: 'feed-createpost-saveasdraft',
           },
         ],
       },

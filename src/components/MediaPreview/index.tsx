@@ -435,7 +435,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                 fill={twConfig.theme.colors.neutral['900']}
               />
             </div>
-            <div onClick={onCloseButtonClick}>
+            <div
+              onClick={onCloseButtonClick}
+              data-testid={`${dataTestId}-remove-image`}
+            >
               <Icon
                 name="close"
                 size={16}

@@ -19,7 +19,7 @@ const Tabs: React.FC<ITabsProps> = ({
   activeTabIndex = 0,
   tabContentClassName = 'px-6',
   className = 'w-full flex justify-start border-b-1 border border-neutral-200 px-8',
-  itemSpacing = 10,
+  itemSpacing = 4,
 }) => {
   const [activeTab, setActiveTab] = useState(activeTabIndex);
 

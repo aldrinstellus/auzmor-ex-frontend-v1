@@ -107,6 +107,7 @@ const Feed: React.FC<IFeedProps> = () => {
                 onApplyFilters={(filters: IPostFilters) => {
                   setAppliedFeedFilters(filters);
                 }}
+                dataTestId="filters-dropdown"
               />
               <Divider />
               <SortByDropdown />

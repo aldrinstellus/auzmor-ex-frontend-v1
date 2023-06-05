@@ -95,7 +95,7 @@ const Password: React.FC<PasswordProps> = ({
     let isValid = true;
 
     // password length should be at least 6 characters
-    if (value.length < 6) {
+    if (value?.length < 6) {
       isValid = false;
       validationState.length = false;
     }

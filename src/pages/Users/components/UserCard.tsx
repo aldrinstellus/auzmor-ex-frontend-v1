@@ -71,6 +71,7 @@ const UserCard: React.FC<IUserCardProps> = ({
     _options.push({
       icon: 'redo',
       label: 'Resend Invite',
+      dataTestId: 'people-card-ellipsis-resend-invite',
       onClick: () => {
         toast(<SuccessToast content="Invitation has been sent" />, {
           closeButton: (
@@ -97,6 +98,7 @@ const UserCard: React.FC<IUserCardProps> = ({
     _options.push({
       icon: 'userRemove',
       label: 'Remove',
+      dataTestId: 'people-card-ellipsis-remove-user',
       onClick: () => {
         setShowDeleteModal(true);
       },
@@ -132,6 +134,7 @@ const UserCard: React.FC<IUserCardProps> = ({
                   stroke="#000"
                   className="absolute top-2 right-2"
                   hover={false}
+                  dataTestId="people-card-ellipsis"
                 />
               </div>
             }

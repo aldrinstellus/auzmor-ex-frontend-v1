@@ -30,7 +30,10 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
     <div>
       {isAnnouncement &&
         !(data?.myAcknowledgement?.reaction === 'mark_read') && (
-          <div className="flex justify-between items-center bg-blue-700 -mb-4 p-2 rounded-t-9xl">
+          <div
+            className="flex justify-between items-center bg-blue-700 -mb-4 p-2 rounded-t-9xl"
+            data-testid="announcement-header"
+          >
             <div className="flex justify-center items-center text-white text-xs font-bold pl-1">
               <Icon name="flashIcon" />
               <div className="text-sm font-bold">Announcement</div>
@@ -49,6 +52,7 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
                   reaction: 'mark_read',
                 });
               }}
+              dataTestId="announcment-markasreadcta"
             />
           </div>
         )}

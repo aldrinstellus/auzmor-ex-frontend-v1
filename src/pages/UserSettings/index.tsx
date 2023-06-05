@@ -1,193 +1,156 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useState } from 'react';
+import Card from 'components/Card';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
-import Layout, { FieldType } from 'components/Form';
-import { Variant as InputVariant } from 'components/Input';
-import Button, { Type } from 'components/Button';
+import AccountSecurity from './AccountSecurity';
+import clsx from 'clsx';
+interface IUserSettingsProps {}
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
-import { useMutation } from '@tanstack/react-query';
-import { changePassword } from 'queries/account';
-import { Link } from 'react-router-dom';
-import PasswordPolicy from 'components/PasswordPolicy';
-
-export interface IChangePasswordProps {}
-
-interface IForm {
-  currentPassword: string;
-  newPassword: string;
-  confirmPassword: any;
+interface ISetting {
+  label: string;
+  icon: string;
+  key: string;
+  component: ReactNode;
+  disabled: boolean;
+  hidden: boolean;
+  dataTestId?: string;
 }
 
-const schema = yup.object({
-  currentPassword: yup.string().required(),
-  newPassword: yup
-    .string()
-    .required()
-    .notOneOf(
-      [yup.ref('currentPassword')],
-      'New password cannot be the same as current password',
-    ),
-  confirmPassword: yup
-    .string()
-    .required()
-    .oneOf([yup.ref('newPassword')], 'Passwords do not match'),
-});
+const UserSettings: React.FC<IUserSettingsProps> = () => {
+  const [isHeaderVisible, setIsHeaderVisible] = useState(false);
 
-const UserSettings: React.FC<IChangePasswordProps> = () => {
-  const [success, setSuccess] = useState(false);
-  const [err, setErr] = useState(false);
-
-  const [passwordRule, setPasswordRule] = useState({
-    length: false,
-    isUppercase: false,
-    isLowercase: false,
-    isNumber: false,
-    isSymbol: false,
-  });
-
-  const changePasswordMutation = useMutation(
-    (formData: any) => changePassword(formData),
+  const settings = [
     {
-      onError: (data) => {
-        setErr(true);
-      },
-      onSuccess: (data) => {
-        setSuccess(true);
-      },
+      label: 'My Settings',
+      icon: 'gear',
+      key: 'my-settings',
+      component: <div>My Settings Page</div>,
+      disabled: false,
+      hidden: false,
+      dataTestId: 'my-settings',
     },
+    {
+      label: 'General',
+      icon: 'userManagement',
+      key: 'user-management-settings',
+      component: <div>General Settings Page</div>,
+      disabled: false,
+      hidden: false,
+      dataTestId: 'settings-user-management',
+    },
+    {
+      label: 'Profile Settings',
+      icon: 'branding',
+      key: 'branding-settings',
+      component: <div>Profile Settings Page</div>,
+      disabled: false,
+      hidden: false,
+      dataTestId: 'settings-branding',
+    },
+    {
+      label: 'Out of Office',
+      icon: 'link',
+      key: 'single-sign-on-settings',
+      component: <div>Out of Office Settings Page</div>,
+      disabled: false,
+      hidden: false,
+      dataTestId: 'settings-sso',
+    },
+    {
+      label: 'Account',
+      icon: 'marketplace',
+      key: 'marketplace-settings',
+      component: <div>Account Settings Page</div>,
+      disabled: false,
+      hidden: false,
+      dataTestId: 'settings-marketplace',
+    },
+    {
+      label: 'Account Security',
+      icon: 'notification',
+      key: 'account-security-settings',
+      component: <AccountSecurity setIsHeaderVisible={setIsHeaderVisible} />,
+      disabled: false,
+      hidden: false,
+      dataTestId: 'account-security-notifications',
+    },
+    {
+      label: 'Notifications',
+      icon: 'notification',
+      key: 'notifications-settings',
+      component: <div>Notifications Settings Page</div>,
+      disabled: false,
+      hidden: false,
+      dataTestId: 'settings-notifications',
+    },
+  ];
+
+  const [activeSettingsPage, setActiveSettingsPage] = useState<ISetting>(
+    settings[0],
   );
 
-  const {
-    watch,
-    control,
-    handleSubmit,
-    formState: { errors, isValid },
-    getValues,
-  } = useForm<IForm>({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: '',
-    },
-    mode: 'onChange',
+  const componentStyle = clsx({
+    'border-1 border-neutral-100 p-6 rounded-3xl w-[100%]': !isHeaderVisible,
   });
 
-  useEffect(() => {
-    changePasswordMutation.reset();
-    setErr(false);
-  }, [
-    watch('currentPassword'),
-    watch('newPassword'),
-    watch('confirmPassword'),
-  ]);
-
-  const passwordField = [
-    {
-      type: FieldType.Password,
-      InputVariant: InputVariant.Password,
-      className: 'w-1/2',
-      placeholder: 'Current password',
-      name: 'currentPassword',
-      label: 'Current Password',
-      rightIcon: 'eye',
-      error: err || errors.currentPassword?.message,
-      control,
-      getValues,
-      onChange: () => {},
-      dataTestId: 'new-password',
-      showChecks: false,
-    },
-    {
-      type: FieldType.Password,
-      InputVariant: InputVariant.Password,
-      className: 'w-1/2 mt-6',
-      placeholder: 'New password',
-      name: 'newPassword',
-      label: 'New Password',
-      rightIcon: 'eye',
-      error: errors.newPassword?.message,
-      control,
-      getValues,
-      onChange: () => {},
-      dataTestId: 'new-password',
-    },
-  ];
-
-  const confirmPasswordField = [
-    {
-      type: FieldType.Password,
-      InputVariant: InputVariant.Password,
-      className: 'w-1/2 mt-6',
-      placeholder: 'Re-enter Password',
-      name: 'confirmPassword',
-      label: 'Confirm Password',
-      rightIcon: 'eye',
-      error: errors.confirmPassword?.message,
-      control,
-      getValues,
-      onChange: () => {},
-      dataTestId: 'confirm-password',
-      showChecks: false,
-    },
-  ];
-
-  const onSubmit = (formData: IForm) => {
-    changePasswordMutation.mutate({
-      currentPassword: formData.currentPassword,
-      newPassword: formData.newPassword,
-    });
-  };
-
-  const sideNav = [
-    { label: 'My Settings' },
-    { label: 'General' },
-    { label: 'Profile Settings' },
-    { label: 'Out of Office' },
-    { label: 'Account' },
-    { label: 'Account Security' },
-    { label: 'Notifications' },
-  ];
-  //TODO: side bar navigation
-
   return (
-    <div className="flex justify-between items-center w-full space-x-14">
-      <div className="bg-white px-8 py-9 rounded-9xl w-[33%] h-[100%]">
-        {sideNav.map((ele) => (
-          <div className="mb-8 text-sm font-medium" key={ele.label}>
-            {ele.label}
-          </div>
-        ))}
-      </div>
-      <div className="bg-white px-8 py-9 rounded-9xl w-[67%] h-[100%]">
-        <div className="flex mb-4">
-          <Icon className="rotate-90" name={'arrowDown'} />
-          Change Password
-        </div>
-        <Divider className="mb-10 w-full" />
-        <form className="" onSubmit={handleSubmit(onSubmit)}>
-          <>
-            <Layout fields={passwordField} className="mb-4" />
-            <Layout fields={confirmPasswordField} />
-            <div className="flex justify-between items-center mt-28">
-              <div className="text-primary-500 text-base font-bold">
-                <Link to="/forgot-password">Forgot Password</Link>
-              </div>
-              <div className="w-1/4">
-                <Button
-                  type={Type.Submit}
-                  label={'Change Password'}
-                  className="w-full"
-                  loading={changePasswordMutation.isLoading}
-                  disabled={!isValid}
+    <div
+      className="flex justify-between w-full gap-x-14"
+      data-testid="admin-settings"
+    >
+      <Card
+        className="w-[25%] max-h-[400px]"
+        dataTestId="admin-settings-controls"
+      >
+        <p className="text-neutral-900 text-base font-bold p-4">
+          User Settings
+        </p>
+        <Divider className="border-neutral-500" />
+        <div className="flex flex-col">
+          {settings.map((item, index) => (
+            <div
+              key={item.key}
+              className={`hover:bg-primary-50 cursor-pointer ${
+                item.key === activeSettingsPage.key
+                  ? 'bg-primary-50'
+                  : 'bg-white'
+              }`}
+              onClick={() => setActiveSettingsPage(item)}
+              data-testid={item.dataTestId}
+            >
+              <div
+                className={`${
+                  item.key === activeSettingsPage.key
+                    ? 'text-neutral-900'
+                    : 'text-neutral-500'
+                } text-sm font-medium p-4 flex items-center gap-x-3`}
+              >
+                <Icon
+                  name={item.icon}
+                  hover={false}
+                  stroke={
+                    item.key === activeSettingsPage.key ? '#171717' : undefined
+                  }
                 />
+                {item.label}
               </div>
+              {index !== settings.length - 1 && <Divider />}
             </div>
-          </>
-        </form>
+          ))}
+        </div>
+      </Card>
+      <div className="flex flex-col w-[75%] gap-y-4">
+        <Card className="py-4 px-6 space-y-4">
+          {!isHeaderVisible && (
+            <>
+              <div className="text-neutral-900 text-base font-bold">
+                {activeSettingsPage.label}
+              </div>
+              <Divider />
+            </>
+          )}
+          <div className={componentStyle}>{activeSettingsPage.component}</div>
+        </Card>
       </div>
     </div>
   );
