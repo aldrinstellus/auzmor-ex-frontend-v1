@@ -42,7 +42,7 @@ const AddUsers: React.FC<IAddUsersProps> = ({
   return (
     <form>
       <div className="pl-6 pr-2 pt-6 max-h-[50vh] w-full overflow-y-scroll">
-        <div className="flex flex-col mb-3 w-full">
+        <div className="flex flex-col mb-12 w-full">
           {fields.map((field, index) => (
             <InviteFormRow
               key={field.id}
