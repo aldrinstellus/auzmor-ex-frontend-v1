@@ -134,3 +134,10 @@ export const BlobToFile = (blob: Blob, fileName: string): File => {
   const file = new File([blob], fileName, { type: 'image/jpeg' });
   return file;
 };
+
+export const isSubset = (subset?: string[], set?: string[]) => {
+  if (set && subset) {
+    return subset.every((ele) => set.includes(ele));
+  }
+  return false;
+};

@@ -8,6 +8,7 @@ import PostBuilder, { PostBuilderMode } from 'components/PostBuilder';
 import useModal from 'hooks/useModal';
 import useAuth from 'hooks/useAuth';
 import useRole from 'hooks/useRole';
+import { isSubset } from 'utils/misc';
 
 export interface IFeedPostMenuProps {
   data: IPost;
@@ -51,11 +52,13 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       icon: 'edit',
       label: 'Edit Post',
       onClick: () => setShowModal(true),
+      permissions: ['UPDATE_MY_POSTS'],
     },
     {
       icon: 'delete',
       label: 'Delete post',
       onClick: () => showConfirm(),
+      permissions: ['DELETE_MY_POSTS'],
     },
     {
       icon: 'clipboardClose',
@@ -70,11 +73,10 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       disabled: true,
     },
   ].filter((menuItem) => {
-    //remove edit post and delete post if [its created by same -- and -- is not admin or superadmin -- and -- option is delete __ or __ edit ]
     if (
-      data.createdBy?.userId !== user?.id &&
-      isMember &&
-      (menuItem.label === 'Edit Post' || menuItem.label === 'Delete post')
+      menuItem.permissions &&
+      !isSubset(menuItem.permissions, user?.permissions) &&
+      isMember
     ) {
       return false;
     }
