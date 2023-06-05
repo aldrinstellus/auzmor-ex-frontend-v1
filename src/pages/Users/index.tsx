@@ -7,6 +7,8 @@ import {
   IPeopleFilters,
   useUsers,
   FilterType,
+  IGetUser,
+  UserRole,
 } from 'queries/users';
 import { Variant as InputVariant } from 'components/Input';
 import InviteUserModal from './components/InviteUserModal';
@@ -47,24 +49,11 @@ const Users: React.FC<IUsersProps> = () => {
     control,
     watch,
     getValues,
+    reset,
     formState: { errors },
   } = useForm<IForm>({
     mode: 'onChange',
   });
-
-  const clearAppliedFilters = () => {
-    setUserStatus('');
-  };
-
-  const getAppliedFiltersCount = () => {
-    return userStatus?.length || 0;
-  };
-
-  const removePostTypeFilter = (filter: FilterType) => {
-    if (userStatus) {
-      setUserStatus('');
-    }
-  };
 
   const searchValue = watch('search');
   const role = watch('role');
@@ -76,6 +65,29 @@ const Users: React.FC<IUsersProps> = () => {
     next: page,
     status: userStatus,
   });
+
+  const roleFields = [
+    {
+      type: FieldType.SingleSelect,
+      control,
+      height: '36px',
+      className: 'p-0 w-44',
+      name: 'role',
+      placeholder: 'Role',
+      size: InputSize.Small,
+      dataTestid: 'people-role',
+      options: [
+        {
+          value: UserRole.Admin,
+          label: 'Admin',
+        },
+        {
+          value: UserRole.Superadmin,
+          label: 'Super Admin',
+        },
+      ],
+    },
+  ];
 
   const peopleHubNode = (
     <div className="relative pb-8">
@@ -96,32 +108,9 @@ const Users: React.FC<IUsersProps> = () => {
               variant={Variant.Secondary}
               className="!py-2 grow-0"
               dataTestId="people-view-all-members"
+              onClick={() => reset()}
             />
-            <Layout
-              fields={[
-                {
-                  type: FieldType.SingleSelect,
-                  control,
-                  height: '36px',
-                  className: 'p-0 w-44',
-                  name: 'role',
-                  placeholder: 'Role',
-                  size: InputSize.Small,
-                  disabled: true,
-                  dataTestid: 'people-role',
-                  options: [
-                    {
-                      value: 'ADMIN',
-                      label: 'Admin',
-                    },
-                    {
-                      id: 'SUPER ADMIN',
-                      label: 'Super Admin',
-                    },
-                  ],
-                },
-              ]}
-            />
+            <Layout fields={roleFields} />
           </div>
           <div className="flex space-x-2 justify-center items-center">
             <IconButton
@@ -190,13 +179,19 @@ const Users: React.FC<IUsersProps> = () => {
       <div className="">
         <div className="flex flex-wrap gap-6">
           {users?.result?.data?.length > 0 &&
-            users?.result?.data?.map((user: any) => (
-              <UserCard
-                key={user.id}
-                {...user}
-                image={user?.profileImage?.original}
-              />
-            ))}
+            users?.result?.data
+              ?.filter((userCard: IGetUser) => {
+                if (role) {
+                  return role.value === userCard.role;
+                } else return true;
+              })
+              .map((user: any) => (
+                <UserCard
+                  key={user.id}
+                  {...user}
+                  image={user?.profileImage?.original}
+                />
+              ))}
           {isLoading && <Spinner color="#000" />}
         </div>
       </div>

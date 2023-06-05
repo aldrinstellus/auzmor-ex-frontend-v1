@@ -65,6 +65,31 @@ export interface IPostUsersResponse {
   workEmail: string;
 }
 
+export interface IGetUser {
+  id: string;
+  fullName?: string;
+  firstName?: string;
+  lastName?: string;
+  userName?: string;
+  primaryEmail?: string;
+  org: {
+    id: string;
+    name?: string;
+    domain: string;
+  };
+  workEmail: string;
+  profileImage?: { blurHash: string; id: string; original: string };
+  role: UserRole;
+  flags: {
+    isDeactivated: boolean;
+    isReported: boolean;
+  };
+  createdAt: string;
+  status: string;
+  timeZone?: string;
+  workLocation?: string;
+}
+
 interface UserQueryParams {
   q?: string;
   limit?: number;
