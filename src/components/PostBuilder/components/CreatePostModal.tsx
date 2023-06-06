@@ -109,10 +109,13 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         }),
       );
       fileIds = uploadedMedia
-        .filter(
-          (media: IMedia) =>
-            !!coverImageMap.find((map) => map.coverImageName !== media.name),
-        )
+        .filter((media: IMedia) => {
+          if (coverImageMap.length) {
+            return !!!coverImageMap.find(
+              (map) => map.coverImageName === media.name,
+            );
+          } else return true;
+        })
         .map((media: IMedia) => media.id);
     }
     const userMentionList = content?.json?.ops
