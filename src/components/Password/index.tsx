@@ -1,6 +1,11 @@
 import clsx from 'clsx';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Control, UseFormSetError, useController } from 'react-hook-form';
+import {
+  Control,
+  UseFormSetError,
+  useController,
+  Controller,
+} from 'react-hook-form';
 import Icon from 'components/Icon';
 import PasswordPolicy from 'components/PasswordPolicy';
 
@@ -193,21 +198,26 @@ const Password: React.FC<PasswordProps> = ({
         htmlFor={id}
       >
         <div className="flex relative items-center w-full">
-          <input
-            id={id}
-            name={field.name}
-            type={show ? 'text' : 'password'}
-            className={inputStyles}
-            disabled={loading || disabled}
-            placeholder={placeholder}
-            data-testid={dataTestId}
-            defaultValue={defaultValue}
-            ref={field.ref}
-            onChange={(e: any) => {
-              field.onChange(e);
-              onChange && onChange(e);
-            }}
-            onBlur={field.onBlur}
+          <Controller
+            control={control}
+            name={name}
+            render={() => (
+              <input
+                id={id}
+                type={show ? 'text' : 'password'}
+                className={inputStyles}
+                disabled={loading || disabled}
+                placeholder={placeholder}
+                data-testid={dataTestId}
+                defaultValue={defaultValue}
+                {...field}
+                onChange={(e: any) => {
+                  field.onChange(e);
+                  onChange && onChange(e);
+                }}
+                onBlur={field.onBlur}
+              />
+            )}
           />
         </div>
         <div
