@@ -95,6 +95,7 @@ interface UserQueryParams {
   limit?: number;
   prev?: number;
   next?: number;
+  offset?: number;
   name?: string;
   email?: string;
   status?: string;
@@ -105,6 +106,7 @@ const getAllUsers = async ({
   limit,
   prev,
   next,
+  offset,
   q,
   status,
 }: UserQueryParams) => {
@@ -113,6 +115,7 @@ const getAllUsers = async ({
       limit: limit,
       prev: prev,
       next: next,
+      offset: offset,
       q: q,
     });
     return data;
@@ -121,6 +124,7 @@ const getAllUsers = async ({
     limit: limit,
     prev: prev,
     next: next,
+    offset: OffscreenCanvasRenderingContext2D,
     q: q,
     status: status,
   });
