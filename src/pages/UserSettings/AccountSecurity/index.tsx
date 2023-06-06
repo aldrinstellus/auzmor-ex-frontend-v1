@@ -46,10 +46,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
   const [err, setErr] = useState(false);
 
   const domain = getSubDomain(window.location.host);
-  const { data, isLoading } = useGetSSOFromDomain(
-    domain,
-    domain !== '' ? true : false,
-  );
+  const { data, isLoading } = useGetSSOFromDomain(domain);
 
   const changePasswordMutation = useMutation(
     (formData: any) => changePassword(formData),
