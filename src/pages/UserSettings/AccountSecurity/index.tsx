@@ -116,10 +116,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       onChange: () => {},
       dataTestId: 'new-password',
       showChecks: false,
-      disabled:
-        isLoading ||
-        (data?.result?.data?.sso?.active &&
-          data?.result?.data?.sso?.idp !== 'CUSTOM_LDAP'),
+      disabled: isLoading || data?.result?.data?.sso?.active,
     },
     {
       type: FieldType.Password,
@@ -134,10 +131,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       getValues,
       onChange: () => {},
       dataTestId: 'new-password',
-      disabled:
-        isLoading ||
-        (data?.result?.data?.sso?.active &&
-          data?.result?.data?.sso?.idp !== 'CUSTOM_LDAP'),
+      disabled: isLoading || data?.result?.data?.sso?.active,
     },
   ];
 
@@ -156,10 +150,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       onChange: () => {},
       dataTestId: 'confirm-password',
       showChecks: false,
-      disabled:
-        isLoading ||
-        (data?.result?.data?.sso?.active &&
-          data?.result?.data?.sso?.idp !== 'CUSTOM_LDAP'),
+      disabled: isLoading || data?.result?.data?.sso?.active,
     },
   ];
 
