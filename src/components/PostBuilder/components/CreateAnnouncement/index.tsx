@@ -71,6 +71,7 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
           dataTestId: 'announcement-expiry-customdate',
         },
       ],
+      placeholder: 'Select Announcement Expiry',
       defaultValue: announcement,
       dataTestId: 'announcement-expiry-dropdown',
     },
@@ -84,6 +85,7 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
       minDate: new Date(),
       defaultValue: announcement?.value || '',
       dataTestId: 'custom-date-calendar',
+      placeholder: 'MM/DD/YYYY',
     },
   ];
   return (
