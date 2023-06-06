@@ -75,6 +75,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({
           className="max-h-18 overflow-y-auto w-[70%] max-w-[70%]"
           ref={quillRef}
           defaultValue={defaultValue}
+          dataTestId="postcomment-textbox"
         />
       </div>
 

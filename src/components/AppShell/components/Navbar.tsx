@@ -72,6 +72,7 @@ const Navbar = () => {
                 className: '',
                 placeholder: 'Search name, channel, page, document etc.,',
                 dataTestId: 'global-search',
+                disabled: true,
               },
             ]}
           />

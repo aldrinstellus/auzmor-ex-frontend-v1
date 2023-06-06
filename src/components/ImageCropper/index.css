@@ -5,3 +5,8 @@
 .preview {
   border: solid 2px white;
 }
+
+.cropper {
+  height: 600px;
+  background: #ddd;
+}

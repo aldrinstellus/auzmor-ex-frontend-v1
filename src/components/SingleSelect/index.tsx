@@ -79,7 +79,7 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
   return (
     <div className={`relative ${className}`} data-testid={dataTestId}>
       <div className={labelStyle}>{label}</div>
-      <div data-testid={dataTestId}>
+      <div>
         {/* remove top margin provide it to parent div if required */}
         <Controller
           name={name}

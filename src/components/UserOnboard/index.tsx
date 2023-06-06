@@ -1,4 +1,9 @@
-import React, { ReactElement as ReactNode, useEffect, useState } from 'react';
+import React, {
+  ReactElement as ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import WelcomeScreen from './components/WelcomeScreen';
 import EditProfileScreen from './components/EditProfileScreen';
 import SelectTimezoneScreen from './components/SelectTimezoneScreen';
@@ -9,6 +14,9 @@ import Card from 'components/Card';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import useCarousel from 'hooks/useCarousel';
+import EditImageModal from 'components/EditImageModal';
+import { getBlobUrl } from 'utils/misc';
+import { EntityType } from 'queries/files';
 
 export type IScreen = {
   screen: ReactNode;
@@ -16,9 +24,13 @@ export type IScreen = {
 };
 
 const UserOnboard: React.FC = (): ReactNode => {
+  const [file, setFile] = useState<File>();
   const [open, openModal, closeModal] = useModal(true);
-  const [currentScreen, prev, next] = useCarousel(0, 4);
+  const [currentScreen, prev, next] = useCarousel(0, 5);
   const [disableClose, setDisableClose] = useState<boolean>(false);
+  const [openEditImage, openEditImageModal, closeEditImageModal] =
+    useModal(false);
+  const profilePictureRef = useRef<HTMLInputElement>(null);
 
   const screens: IScreen[] = [
     {
@@ -30,6 +42,7 @@ const UserOnboard: React.FC = (): ReactNode => {
           next={next}
           setDisableClose={setDisableClose}
           dataTestId="edit-profilepic-next"
+          profilePictureRef={profilePictureRef}
         />
       ),
     },
@@ -56,31 +69,60 @@ const UserOnboard: React.FC = (): ReactNode => {
   }, []);
 
   return (
-    <Modal open={open}>
-      <Card>
-        <div className="flex items-center justify-between m-4">
-          <span className="font-extrabold text-lg">
-            {screens[currentScreen].cardText || 'Profile Setup'}
-          </span>
-          <div data-testid={`profile-setup-close`}>
-            <Icon
-              className={`${
-                disableClose ? 'cursor-not-allowed' : 'cursor-pointer'
-              }`}
-              name="close"
-              fill="#000000"
-              onClick={disableClose ? undefined : closeModal}
-              hover={false}
-            />
+    <div>
+      <Modal open={open}>
+        <Card>
+          <div className="flex items-center justify-between m-4">
+            <span className="font-extrabold text-lg">
+              {screens[currentScreen].cardText || 'Profile Setup'}
+            </span>
+            <div data-testid={`profile-setup-close`}>
+              <Icon
+                className={`${
+                  disableClose ? 'cursor-not-allowed' : 'cursor-pointer'
+                }`}
+                name="close"
+                fill="#000000"
+                onClick={disableClose ? undefined : closeModal}
+                hover={false}
+              />
+            </div>
           </div>
-        </div>
-        <Divider />
-        <span className="flex items-center justify-center h-[500px]">
-          {screens[currentScreen].screen}
-        </span>
-        <Divider />
-      </Card>
-    </Modal>
+          <Divider />
+          <span className="flex items-center justify-center h-[500px]">
+            {screens[currentScreen].screen}
+          </span>
+          <Divider />
+        </Card>
+      </Modal>
+      <input
+        id="file-input"
+        type="file"
+        className="hidden"
+        ref={profilePictureRef}
+        accept="image/*"
+        onChange={(e) => {
+          if (e.target.files?.length) {
+            setFile(Array.prototype.slice.call(e.target.files)[0]);
+            openEditImageModal();
+            closeModal();
+          }
+        }}
+      />
+      {openEditImage && file && (
+        <EditImageModal
+          title="Apply Change"
+          openEditImage={openEditImage}
+          openEditProfileModal={openModal}
+          closeEditImageModal={closeEditImageModal}
+          userProfileImageRef={profilePictureRef}
+          image={getBlobUrl(file)}
+          onBoardImageFile={file}
+          imageName={file?.name}
+          fileEntityType={EntityType?.UserProfileImage}
+        />
+      )}
+    </div>
   );
 };
 

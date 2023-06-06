@@ -63,6 +63,7 @@ const Users: React.FC<IUsersProps> = () => {
     q: debouncedSearchValue,
     limit: 30,
     next: page,
+    offset: (page - 1) * 30,
     status: userStatus,
   });
 
