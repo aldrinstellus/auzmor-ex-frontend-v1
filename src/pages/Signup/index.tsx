@@ -63,8 +63,6 @@ export interface IValidationErrors {
 }
 
 const Signup: React.FC<ISignupProps> = () => {
-  const [errorBannerMessage, setErrorBannerMessage] = useState<string>();
-
   const signupMutation = useMutation((formData: IForm) => signup(formData), {
     onSuccess: (data) =>
       redirectWithToken({
@@ -72,11 +70,7 @@ const Signup: React.FC<ISignupProps> = () => {
         token: data.result.data.uat,
         showOnboard: true,
       }),
-    onError: (data: any) => {
-      if (data?.response?.data?.errors[0]?.code === 'DUPLICATE_DOMAIN') {
-        setErrorBannerMessage('Domain name is already taken');
-      }
-    },
+    onError: (data: any) => {},
   });
 
   const {

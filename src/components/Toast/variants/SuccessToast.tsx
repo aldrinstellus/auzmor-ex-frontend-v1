@@ -8,15 +8,17 @@ export interface ISuccessToastProps {
   content?: string | ReactNode;
   action?: () => void;
   actionLabel?: string;
+  dataTestId?: string;
 }
 
 const SuccessToast: React.FC<ISuccessToastProps> = ({
   content,
   actionLabel,
   action,
+  dataTestId,
 }) => {
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between items-center" data-testid={dataTestId}>
       <div className="flex items-center">
         <div>
           <Icon
