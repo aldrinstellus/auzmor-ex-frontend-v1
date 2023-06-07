@@ -43,7 +43,7 @@ const schema = yup.object({
       'Two hyphens cannot appear together in the domain name',
     )
     .matches(
-      /[a-zA-Z0-9-]$/,
+      /^[a-zA-Z0-9-]+$/,
       'Spaces and special characters (such as ! $,&,_ and so on) cannot appear in the domain name',
     )
     .required('Required field'),
