@@ -168,14 +168,14 @@ const SSOSettings: React.FC = (): ReactElement => {
             dataTestId={integration.dataTestId}
           />
         ))}
-        {open && ssoSetting?.configureScreen === ConfigureScreen.GENERIC && (
+        {ssoSetting?.configureScreen === ConfigureScreen.GENERIC && (
           <ConfigureGenericSSO
             ssoSetting={ssoSetting}
             closeModal={closeModal}
             open={open}
           />
         )}
-        {open && ssoSetting?.configureScreen === ConfigureScreen.LDAP && (
+        {ssoSetting?.configureScreen === ConfigureScreen.LDAP && (
           <ConfigureLDAP
             ssoSetting={ssoSetting}
             closeModal={closeModal}

@@ -1,5 +1,4 @@
-import React, { ReactNode, Fragment } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
+import React, { ReactNode } from 'react';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 
@@ -31,7 +30,7 @@ const Modal: React.FC<ModalProps> = ({
   return (
     <div
       className={`fixed inset-0 flex items-center z-50
-       transition-colors ${open ? 'visible bg-black/60' : 'invisible'}
+       transition-opacity ${open ? 'visible bg-black/60' : 'invisible'}
        backdrop-blur-sm`}
       onClick={closeModal}
     >
@@ -39,8 +38,8 @@ const Modal: React.FC<ModalProps> = ({
         className={`
         flex justify-center
         min-w-full
-        transition-all duration-200
-      ${open ? 'scale-100 opacity-100' : 'scale-110 opacity-0'}`}
+        transition-opacity
+      ${open ? 'scale-100 opacity-100' : 'scale-125 opacity-0'}`}
       >
         {showModalCloseBtn && (
           <div

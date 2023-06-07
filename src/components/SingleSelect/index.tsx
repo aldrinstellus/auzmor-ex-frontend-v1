@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import clsx from 'clsx';
 import { Control, useController, Controller } from 'react-hook-form';
-import Select, { MenuPlacement, components } from 'react-select';
+import Select, { MenuPlacement } from 'react-select';
 import { twConfig } from 'utils/misc';
 
 export interface ISingleSelectProps {

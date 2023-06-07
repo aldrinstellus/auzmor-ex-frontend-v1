@@ -170,42 +170,38 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
           </div>
         </div>
 
-        {openEditProfile && (
-          <EditProfileModal
-            userDetails={userDetails}
-            openEditProfile={openEditProfile}
-            openEditImageModal={openEditImageModal}
-            closeEditProfileModal={closeEditProfileModal}
-            userProfileImageRef={userProfileImageRef}
-            userCoverImageRef={userCoverImageRef}
-            key={'edit-profile'}
-            dataTestId="edit-profile"
-            isCoverImageRemoved={isCoverImageRemoved}
-            setIsCoverImageRemoved={setIsCoverImageRemoved}
-            setImageFile={setFile}
-            imageFile={file}
-          />
-        )}
+        <EditProfileModal
+          userDetails={userDetails}
+          openEditProfile={openEditProfile}
+          openEditImageModal={openEditImageModal}
+          closeEditProfileModal={closeEditProfileModal}
+          userProfileImageRef={userProfileImageRef}
+          userCoverImageRef={userCoverImageRef}
+          key={'edit-profile'}
+          dataTestId="edit-profile"
+          isCoverImageRemoved={isCoverImageRemoved}
+          setIsCoverImageRemoved={setIsCoverImageRemoved}
+          setImageFile={setFile}
+          imageFile={file}
+        />
 
-        {openEditImage && (
-          <EditImageModal
-            title={getBlobFile ? 'Apply Changes' : 'Reposition'}
-            openEditImage={openEditImage}
-            closeEditImageModal={closeEditImageModal}
-            openEditProfileModal={openEditProfileModal}
-            image={getBlobFile || userDetails?.coverImage?.original}
-            userCoverImageRef={userCoverImageRef}
-            setImageFile={setFile}
-            imageFile={file}
-            imageName={profileImageName || coverImageName}
-            fileEntityType={
-              file?.profileImage
-                ? EntityType?.UserProfileImage
-                : EntityType?.UserCoverImage
-            }
-            userProfileImageRef={userProfileImageRef}
-          />
-        )}
+        <EditImageModal
+          title={getBlobFile ? 'Apply Changes' : 'Reposition'}
+          openEditImage={openEditImage}
+          closeEditImageModal={closeEditImageModal}
+          openEditProfileModal={openEditProfileModal}
+          image={getBlobFile || userDetails?.coverImage?.original}
+          userCoverImageRef={userCoverImageRef}
+          setImageFile={setFile}
+          imageFile={file}
+          imageName={profileImageName || coverImageName}
+          fileEntityType={
+            file?.profileImage
+              ? EntityType?.UserProfileImage
+              : EntityType?.UserCoverImage
+          }
+          userProfileImageRef={userProfileImageRef}
+        />
 
         {canEdit && (
           <div>
