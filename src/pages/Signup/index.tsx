@@ -10,9 +10,9 @@ import WelcomeOffice from 'images/welcomeToOffice.png';
 import { useMutation } from '@tanstack/react-query';
 import { redirectWithToken } from 'utils/misc';
 import { signup } from 'queries/account';
-import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useDebounce } from 'hooks/useDebounce';
 import { useDomainExists, useIsUserExist } from 'queries/users';
+import 'utils/custom-yup-validators/email/validateEmail';
 
 interface IForm {
   fullName: string;
@@ -28,8 +28,8 @@ const schema = yup.object({
   fullName: yup.string().required('Required Field'),
   workEmail: yup
     .string()
-    .email('The email address you entered is invalid')
-    .required('Required field'),
+    .required('Required field')
+    .validateEmail('The email address you entered is invalid'),
   domain: yup
     .string()
     .min(3, 'The minimum length required is 3 characters for domain name')
@@ -43,7 +43,7 @@ const schema = yup.object({
       'Two hyphens cannot appear together in the domain name',
     )
     .matches(
-      /[a-zA-Z0-9-]$/,
+      /^[a-zA-Z0-9-]+$/,
       'Spaces and special characters (such as ! $,&,_ and so on) cannot appear in the domain name',
     )
     .required('Required field'),
@@ -63,8 +63,6 @@ export interface IValidationErrors {
 }
 
 const Signup: React.FC<ISignupProps> = () => {
-  const [errorBannerMessage, setErrorBannerMessage] = useState<string>();
-
   const signupMutation = useMutation((formData: IForm) => signup(formData), {
     onSuccess: (data) =>
       redirectWithToken({
@@ -72,11 +70,7 @@ const Signup: React.FC<ISignupProps> = () => {
         token: data.result.data.uat,
         showOnboard: true,
       }),
-    onError: (data: any) => {
-      if (data?.response?.data?.errors[0]?.code === 'DUPLICATE_DOMAIN') {
-        setErrorBannerMessage('Domain name is already taken');
-      }
-    },
+    onError: (data: any) => {},
   });
 
   const {

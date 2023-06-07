@@ -13,6 +13,7 @@ import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useSearchParams } from 'react-router-dom';
 import { acceptInviteSetPassword, useVerifyInviteLink } from 'queries/users';
 import PageLoader from 'components/PageLoader';
+import InviteLinkExpired from './components/InviteLinkExpired';
 
 interface IForm {
   workEmail: string;
@@ -111,8 +112,18 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
     },
     {
       type: FieldType.Checkbox,
-      label:
-        'By Signing up you are agreeing to Auzmor Office’s Terms of Use and Privacy Policy',
+      label: (
+        <div data-testId="sign-up-checkbox">
+          By Signing up you are agreeing to Auzmor Office’s{' '}
+          <span className="text-primary-500">
+            <a href="https://www.auzmor.com/tc">Terms of Use</a>
+          </span>{' '}
+          and{' '}
+          <span className="text-primary-500">
+            <a href="https://www.auzmor.com/privacy-policy">Privacy Policy</a>
+          </span>
+        </div>
+      ),
       name: 'privacyPolicy',
       error: errors.privacyPolicy?.message,
       dataTestId: 'signup-work-privacy',
@@ -134,7 +145,7 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
         <PageLoader />
       </div>
     ) : isError ? (
-      <div>Error</div>
+      <InviteLinkExpired />
     ) : (
       <div className="flex h-screen w-screen">
         <img

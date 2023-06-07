@@ -3,8 +3,7 @@ import tailwindConfig from 'components/../../tailwind.config.js';
 import { IMedia } from 'contexts/CreatePostContext';
 import { validImageTypes } from 'queries/files';
 import { getItem, removeItem } from './persist';
-import { toast } from 'react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { EMAIL_REGEX } from './constants';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 

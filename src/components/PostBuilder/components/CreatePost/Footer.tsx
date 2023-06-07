@@ -51,8 +51,14 @@ const Footer: React.FC<IFooterProps> = ({
       {
         id: 1,
         label: 'Media',
-        icon: <Icon name="imageFilled" fill="#000000" size={14} />,
-        dataTestId: 'feed-createpost-media',
+        icon: (
+          <Icon
+            name="imageFilled"
+            fill="#000000"
+            size={14}
+            dataTestId="feed-createpost-media"
+          />
+        ),
         menuItems: [
           {
             label: 'Upload a photo',
@@ -86,8 +92,13 @@ const Footer: React.FC<IFooterProps> = ({
       {
         id: 2,
         label: 'Shoutout',
-        icon: <Icon name="magicStarFilled" size={14} />,
-        dataTestId: 'feed-createpost-shoutout',
+        icon: (
+          <Icon
+            name="magicStarFilled"
+            size={14}
+            dataTestId="feed-createpost-shoutout"
+          />
+        ),
         menuItems: [],
         divider: <Divider variant={DividerVariant.Vertical} />,
         disabled: true,
@@ -95,8 +106,13 @@ const Footer: React.FC<IFooterProps> = ({
       {
         id: 3,
         label: 'Events',
-        icon: <Icon name="calendarFilledTwo" size={14} />,
-        dataTestId: 'feed-createpost-events',
+        icon: (
+          <Icon
+            name="calendarFilledTwo"
+            size={14}
+            dataTestId="feed-createpost-events"
+          />
+        ),
         menuItems: [],
         divider: <Divider variant={DividerVariant.Vertical} />,
         disabled: true,
@@ -104,16 +120,26 @@ const Footer: React.FC<IFooterProps> = ({
       {
         id: 4,
         label: 'Polls',
-        icon: <Icon name="chartFilled" size={14} />,
-        dataTestId: 'feed-createpost-polls',
+        icon: (
+          <Icon
+            name="chartFilled"
+            size={14}
+            dataTestId="feed-createpost-polls"
+          />
+        ),
         menuItems: [],
         disabled: true,
       },
       {
         id: 5,
         label: 'More',
-        icon: <Icon name="moreOutline" stroke="#000000" />,
-        dataTestId: 'feed-createpost-ellipsis',
+        icon: (
+          <Icon
+            name="moreOutline"
+            stroke="#000000"
+            dataTestId="feed-createpost-ellipsis"
+          />
+        ),
         menuItems: [
           {
             label: 'Share as an announcement',

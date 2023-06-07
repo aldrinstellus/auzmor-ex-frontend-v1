@@ -79,7 +79,7 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
   return (
     <div className={`relative ${className}`} data-testid={dataTestId}>
       <div className={labelStyle}>{label}</div>
-      <div data-testid={dataTestId}>
+      <div>
         {/* remove top margin provide it to parent div if required */}
         <Controller
           name={name}
@@ -91,11 +91,16 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
             <Select
               isDisabled={disabled}
               placeholder={placeholder}
-              styles={selectStyle}
+              styles={{
+                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                ...selectStyle,
+              }}
               options={options}
               {...field}
               defaultValue={defaultValue}
               menuPlacement={menuPlacement ? menuPlacement : undefined}
+              menuPortalTarget={document.body}
+              menuPosition="absolute"
               components={{
                 Option: ({ innerProps, data, isDisabled, isSelected }) => {
                   return (

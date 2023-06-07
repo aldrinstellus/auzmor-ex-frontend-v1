@@ -60,23 +60,15 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
   );
 
   return (
-    <div data-testid={dataTestId}>
+    <div data-testid={dataTestId} className="relative">
       {!!label && <div className={labelStyle}>{label}</div>}
       <DatePicker
         selected={field.value}
         onChange={field.onChange}
         calendarClassName={calendarClassName}
         data-testid={dataTestId}
-        className={`flex border relative z-[99999] rounded-19xl w-full px-5 py-2.5 ${className}`}
-        // calendarIcon={<Icon name="calendarTwo" size={16} />}
-        // format="dd/MM/yyyy"
-        // dayPlaceholder="DD"
-        // monthPlaceholder="MM"
-        // yearPlaceholder="YYYY"
-        // clearIcon={null}
-        // dateFormat="MM/DD/YYYY"
+        className={`flex border relative rounded-19xl w-full px-5 py-2.5 focus:!border-primary-500 hover:border-primary-500 ${className}`}
         minDate={minDate}
-        // portalContainer={portalContainer}
         portalId="root"
         placeholderText={placeholder}
         popperProps={{
@@ -84,6 +76,9 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
           strategy: 'fixed',
         }}
       />
+      <div className="absolute right-4 top-[calc(50%-8px)]">
+        <Icon name="calendarTwo" size={16} />
+      </div>
       {!!error && (
         <div className={`absolute -bottom-4 text-xs truncate leading-tight`}>
           {error}
@@ -91,49 +86,6 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
       )}
     </div>
   );
-
-  // return (
-  //   <Controller
-  //     control={control}
-  //     name={name}
-  //     defaultValue={defaultValue}
-  //     render={({
-  //       field: { onChange, name, value },
-  //       fieldState: { invalid, isDirty }, //optional
-  //       formState: { errors }, //optional, but necessary if you want to show an error message
-  //     }) => (
-  //       <>
-  //         <DatePicker
-  //           value={value}
-  //           onChange={(date) => {
-  //             console.log('>>>>', date);
-  //             // onChange(date);
-  //             // onDateChange && onDateChange(date);
-  //           }}
-  //           wrapperClassName="relative z-[9999]"
-  //           calendarClassName={calendarClassName}
-  //           className={`flex border relative z-[99999] rounded-19xl w-full px-5 py-2.5 ${className}`}
-  //           // calendarIcon={<Icon name="calendarTwo" size={16} />}
-  //           // format="dd/MM/yyyy"
-  //           // dayPlaceholder="DD"
-  //           // monthPlaceholder="MM"
-  //           // yearPlaceholder="YYYY"
-  //           // clearIcon={null}
-  //           minDate={minDate}
-  //           // portalContainer={portalContainer}
-  //           portalId="root"
-  //           popperProps={{
-  //             positionFixed: true,
-  //             strategy: 'fixed',
-  //           }}
-  //         />
-  //         {errors && errors[name] && errors[name]?.message === 'required' && (
-  //           <span>your error message !</span>
-  //         )}
-  //       </>
-  //     )}
-  //   />
-  // );
 };
 
 export default DatePickerInput;

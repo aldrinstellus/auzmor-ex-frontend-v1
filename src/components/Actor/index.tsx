@@ -5,6 +5,7 @@ import { CREATE_POST, VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
 import { ICreatedBy } from 'queries/post';
 import { Link } from 'react-router-dom';
+import clsx from 'clsx';
 
 type ActorProps = {
   visibility: string;
@@ -12,6 +13,7 @@ type ActorProps = {
   createdTime?: string;
   createdBy?: ICreatedBy;
   dataTestId?: string;
+  disabled?: boolean;
 };
 
 const Actor: React.FC<ActorProps> = ({
@@ -20,11 +22,44 @@ const Actor: React.FC<ActorProps> = ({
   createdTime,
   createdBy,
   dataTestId,
+  disabled = false,
 }) => {
   const { user } = useAuth();
 
+  const actorStyles = clsx({
+    'flex justify-between items-center mx-6 mt-6 mb-4': true,
+  });
+
+  const postVisibilityStylesContainer = clsx(
+    {
+      'cursor-not-allowed text-neutral-900 bg-neutral-100 rounded-17xl hover:rounded-17xl':
+        disabled,
+    },
+    {
+      'cursor-pointer': !disabled,
+    },
+  );
+
+  const postVisibilityStyles = clsx({
+    'flex justify-between items-center border border-neutral-300 rounded-17xl py-1.5 px-3':
+      true,
+  });
+
+  const iconStyle = clsx({
+    'text-neutral-400': disabled,
+  });
+
+  const visibilityStyle = clsx(
+    {
+      'text-xxs font-medium ml-1.5': true,
+    },
+    {
+      'text-neutral-400': disabled,
+    },
+  );
+
   return (
-    <div className={`flex justify-between items-center mx-6 mt-6 mb-4`}>
+    <div className={actorStyles}>
       <div className="flex items-center">
         <div>
           <Link
@@ -64,18 +99,16 @@ const Actor: React.FC<ActorProps> = ({
         </div>
       </div>
       {/* post visibility - dropdown */}
-      <div>
+      <div className={postVisibilityStylesContainer}>
         {contentMode === CREATE_POST && (
           <div
-            className="flex justify-between items-center border border-neutral-300 rounded-17xl py-1.5 px-3"
+            className={postVisibilityStyles}
             data-testid={`feed-createpost-visibility-${visibility.toLowerCase()}`}
           >
-            <div>
+            <div className={iconStyle}>
               <img src={Earth} height={13.33} width={13.33} />
             </div>
-            <div className="cursor-pointer text-xxs text-neutral-900 font-medium ml-1.5">
-              {visibility}
-            </div>
+            <div className={visibilityStyle}>{visibility}</div>
           </div>
         )}
       </div>

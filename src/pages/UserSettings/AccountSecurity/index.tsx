@@ -5,11 +5,15 @@ import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
 import { changePassword } from 'queries/account';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Variant as InputVariant } from 'components/Input';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { getSubDomain, twConfig } from 'utils/misc';
+import { useGetSSOFromDomain } from 'queries/organization';
 
 interface IForm {
   currentPassword: string;
@@ -41,7 +45,8 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
 }) => {
   const [err, setErr] = useState(false);
 
-  const [success, setSuccess] = useState(false);
+  const domain = getSubDomain(window.location.host);
+  const { data, isLoading } = useGetSSOFromDomain(domain);
 
   const changePasswordMutation = useMutation(
     (formData: any) => changePassword(formData),
@@ -50,7 +55,22 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
         setErr(true);
       },
       onSuccess: (data) => {
-        setSuccess(true);
+        reset();
+        toast(<SuccessToast content={'Password updated successfully'} />, {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.primary['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+        });
       },
     },
   );
@@ -61,6 +81,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
     handleSubmit,
     formState: { errors, isValid },
     getValues,
+    reset,
   } = useForm<IForm>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -95,6 +116,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       onChange: () => {},
       dataTestId: 'new-password',
       showChecks: false,
+      disabled: isLoading || data?.result?.data?.sso?.active,
     },
     {
       type: FieldType.Password,
@@ -109,6 +131,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       getValues,
       onChange: () => {},
       dataTestId: 'new-password',
+      disabled: isLoading || data?.result?.data?.sso?.active,
     },
   ];
 
@@ -127,6 +150,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       onChange: () => {},
       dataTestId: 'confirm-password',
       showChecks: false,
+      disabled: isLoading || data?.result?.data?.sso?.active,
     },
   ];
 

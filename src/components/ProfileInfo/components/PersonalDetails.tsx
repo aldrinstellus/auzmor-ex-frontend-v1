@@ -49,8 +49,6 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [skills, setSkills] = useState<ISkillsOption[]>([]);
 
-  console.log(skills, 'state...');
-
   const { control, handleSubmit, getValues, resetField } =
     useForm<IPersonalDetailsForm>({
       mode: 'onChange',

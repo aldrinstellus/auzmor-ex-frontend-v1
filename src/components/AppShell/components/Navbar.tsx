@@ -38,6 +38,7 @@ const navigations = [
     linkTo: '/apps',
     dataTestId: 'offie-apps-page',
     iconSize: 24,
+    disabled: true,
   },
   {
     label: 'Discover',
@@ -45,6 +46,7 @@ const navigations = [
     linkTo: '/discover',
     dataTestId: 'offie-discover-page',
     iconSize: 26,
+    disabled: true,
   },
 ];
 
@@ -72,27 +74,30 @@ const Navbar = () => {
                 className: '',
                 placeholder: 'Search name, channel, page, document etc.,',
                 dataTestId: 'global-search',
+                disabled: true,
               },
             ]}
           />
         </div>
         <div className="flex items-center space-x-8">
           {navigations.map((nav) => (
-            <NavLink
-              to={nav.disabled ? location.pathname : nav.linkTo}
-              key={nav.label}
-              className={({ isActive }) =>
-                isActive ? 'text-primary-500' : 'text-neutral-500'
-              }
-            >
-              <div
-                className="flex flex-col items-center"
-                data-testid={nav.dataTestId}
+            <>
+              <NavLink
+                to={nav.disabled ? location.pathname : nav.linkTo}
+                key={nav.label}
+                className={({ isActive }) =>
+                  isActive ? 'text-primary-500' : 'text-neutral-500'
+                }
               >
-                <Icon name={nav.icon} size={nav.iconSize} />
-                <div className="text-sm">{nav.label}</div>
-              </div>
-            </NavLink>
+                <div
+                  className="flex flex-col items-center"
+                  data-testid={nav.dataTestId}
+                >
+                  <Icon name={nav.icon} size={nav.iconSize} />
+                  <div className="text-sm">{nav.label}</div>
+                </div>
+              </NavLink>
+            </>
           ))}
         </div>
         <div className="mx-8 h-full py-2">

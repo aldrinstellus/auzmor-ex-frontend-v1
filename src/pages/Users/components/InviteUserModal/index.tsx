@@ -18,8 +18,8 @@ import { toast } from 'react-toastify';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import InvitedUsersList from './InvitedUsersList';
-import { EMAIL_REGX } from 'utils/constants';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
+import 'utils/custom-yup-validators/email/validateEmail';
 
 export interface IInviteUserModalProps {
   showModal: boolean;
@@ -160,10 +160,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
     members: yup.array().of(
       yup.object().shape({
         fullName: yup.string().required('Please enter Name'),
-        workEmail: yup
-          .string()
-          .required('Please enter Email')
-          .matches(new RegExp(EMAIL_REGX), 'Please enter valid email address'),
+        workEmail: yup.string().required('Please enter Email').validateEmail(),
         role: yup.object().required('please enter role'),
       }),
     ),
