@@ -82,23 +82,21 @@ const Navbar = () => {
         <div className="flex items-center space-x-8">
           {navigations.map((nav) => (
             <>
-              {!nav.disabled && (
-                <NavLink
-                  to={nav.disabled ? location.pathname : nav.linkTo}
-                  key={nav.label}
-                  className={({ isActive }) =>
-                    isActive ? 'text-primary-500' : 'text-neutral-500'
-                  }
+              <NavLink
+                to={nav.disabled ? location.pathname : nav.linkTo}
+                key={nav.label}
+                className={({ isActive }) =>
+                  isActive ? 'text-primary-500' : 'text-neutral-500'
+                }
+              >
+                <div
+                  className="flex flex-col items-center"
+                  data-testid={nav.dataTestId}
                 >
-                  <div
-                    className="flex flex-col items-center"
-                    data-testid={nav.dataTestId}
-                  >
-                    <Icon name={nav.icon} size={nav.iconSize} />
-                    <div className="text-sm">{nav.label}</div>
-                  </div>
-                </NavLink>
-              )}
+                  <Icon name={nav.icon} size={nav.iconSize} />
+                  <div className="text-sm">{nav.label}</div>
+                </div>
+              </NavLink>
             </>
           ))}
         </div>
