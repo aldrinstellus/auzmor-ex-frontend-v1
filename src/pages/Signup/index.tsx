@@ -8,11 +8,11 @@ import Button, { Size, Type as ButtonType } from 'components/Button';
 import { Logo } from 'components/Logo';
 import WelcomeOffice from 'images/welcomeToOffice.png';
 import { useMutation } from '@tanstack/react-query';
-import { redirectWithToken, validateEmail } from 'utils/misc';
+import { redirectWithToken } from 'utils/misc';
 import { signup } from 'queries/account';
-import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useDebounce } from 'hooks/useDebounce';
 import { useDomainExists, useIsUserExist } from 'queries/users';
+import 'utils/custom-yup-validators/email/validateEmail';
 
 interface IForm {
   fullName: string;
@@ -29,11 +29,7 @@ const schema = yup.object({
   workEmail: yup
     .string()
     .required('Required field')
-    .test(
-      'is-valid-email',
-      'The email address you entered is invalid',
-      (value) => validateEmail(value),
-    ),
+    .validateEmail('The email address you entered is invalid'),
   domain: yup
     .string()
     .min(3, 'The minimum length required is 3 characters for domain name')

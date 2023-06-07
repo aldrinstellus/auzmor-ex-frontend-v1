@@ -3,9 +3,7 @@ import tailwindConfig from 'components/../../tailwind.config.js';
 import { IMedia } from 'contexts/CreatePostContext';
 import { validImageTypes } from 'queries/files';
 import { getItem, removeItem } from './persist';
-import { toast } from 'react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import { EMAIL_REGX } from './constants';
+import { EMAIL_REGEX } from './constants';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -166,5 +164,5 @@ export const validateEmail = (email: string) => {
   )
     return false;
 
-  return EMAIL_REGX.test(email);
+  return EMAIL_REGEX.test(email);
 };
