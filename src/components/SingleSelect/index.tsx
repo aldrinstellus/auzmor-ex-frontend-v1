@@ -91,11 +91,16 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
             <Select
               isDisabled={disabled}
               placeholder={placeholder}
-              styles={selectStyle}
+              styles={{
+                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                ...selectStyle,
+              }}
               options={options}
               {...field}
               defaultValue={defaultValue}
               menuPlacement={menuPlacement ? menuPlacement : undefined}
+              menuPortalTarget={document.body}
+              menuPosition="absolute"
               components={{
                 Option: ({ innerProps, data, isDisabled, isSelected }) => {
                   return (
