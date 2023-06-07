@@ -46,7 +46,7 @@ const fetchSSOFromDomain = async (domain: string) => {
   return data;
 };
 
-export const useGetSSOFromDomain = (domain: string, enabled: boolean) => {
+export const useGetSSOFromDomain = (domain: string, enabled?: boolean) => {
   return useQuery({
     queryKey: ['get-sso-from-domain'],
     queryFn: () => fetchSSOFromDomain(domain),

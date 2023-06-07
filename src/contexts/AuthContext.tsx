@@ -66,7 +66,7 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
         updatedUrl += `?${queryParams}`;
       }
 
-      return window.history.pushState({ path: updatedUrl }, '', updatedUrl);
+      window.history.pushState({ path: updatedUrl }, '', updatedUrl);
     }
 
     // if token in LS, make /me api call and update setUser

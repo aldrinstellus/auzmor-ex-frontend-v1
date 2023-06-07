@@ -12,7 +12,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
-import { twConfig } from 'utils/misc';
+import { getSubDomain, twConfig } from 'utils/misc';
+import { useGetSSOFromDomain } from 'queries/organization';
 
 interface IForm {
   currentPassword: string;
@@ -43,6 +44,9 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
   setIsHeaderVisible,
 }) => {
   const [err, setErr] = useState(false);
+
+  const domain = getSubDomain(window.location.host);
+  const { data, isLoading } = useGetSSOFromDomain(domain);
 
   const changePasswordMutation = useMutation(
     (formData: any) => changePassword(formData),
@@ -112,6 +116,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       onChange: () => {},
       dataTestId: 'new-password',
       showChecks: false,
+      disabled: isLoading || data?.result?.data?.sso?.active,
     },
     {
       type: FieldType.Password,
@@ -126,6 +131,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       getValues,
       onChange: () => {},
       dataTestId: 'new-password',
+      disabled: isLoading || data?.result?.data?.sso?.active,
     },
   ];
 
@@ -144,6 +150,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       onChange: () => {},
       dataTestId: 'confirm-password',
       showChecks: false,
+      disabled: isLoading || data?.result?.data?.sso?.active,
     },
   ];
 

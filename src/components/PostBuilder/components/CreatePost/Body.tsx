@@ -24,6 +24,7 @@ const Body = React.forwardRef(
             visibility="Everyone"
             contentMode={CREATE_POST}
             dataTestId={`${dataTestId}-creatorname`}
+            disabled={true}
           />
           <RichTextEditor
             placeholder="What’s on your mind?"
