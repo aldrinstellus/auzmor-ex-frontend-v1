@@ -148,8 +148,8 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
       },
       dataTestId: 'personal-details-gender',
       options: [
-        { value: 'MALE', label: 'Male' },
-        { value: 'FEMALE', label: 'Female' },
+        { value: 'MALE', label: 'Male', dataTestId: 'gender-male' },
+        { value: 'FEMALE', label: 'Female', dataTestId: 'gender-female' },
       ],
       control,
     },
