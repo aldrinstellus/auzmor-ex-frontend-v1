@@ -41,7 +41,7 @@ const DragDropList: React.FC<DragDropListProps> = ({
           >
             {draggableItems?.map((item: ISkillsOption, index) => (
               <Draggable key={item.id} draggableId={item.id} index={index}>
-                {(provided) => (
+                {(provided, snapshot) => (
                   <li
                     className="flex items-center justify-between border border-solid border-neutral-200 rounded-17xl py-2 px-4 bg-white"
                     {...provided.draggableProps}
@@ -55,6 +55,7 @@ const DragDropList: React.FC<DragDropListProps> = ({
                       setDraggableItems={setDraggableItems}
                       dataTestIdDelete={dataTestIdDelete}
                       dataTestIdEdit={dataTestIdEdit}
+                      isDragging={snapshot.isDragging}
                     />
                   </li>
                 )}
