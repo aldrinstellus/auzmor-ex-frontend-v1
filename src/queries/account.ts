@@ -27,6 +27,12 @@ export const checkLogin = async () => {
   return data;
 };
 
+export const useCheckLogin = () =>
+  useQuery({
+    queryKey: ['check-login'],
+    queryFn: () => checkLogin(),
+  });
+
 export const login = async (payload: ILogin) => {
   const data = await apiService.post('/login', payload);
   return data;

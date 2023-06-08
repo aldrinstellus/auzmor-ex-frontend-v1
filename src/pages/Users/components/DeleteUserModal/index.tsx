@@ -11,7 +11,11 @@ import Modal from 'components/Modal';
 import { deleteUser } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
-
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import FailureToast from 'components/Toast/variants/FailureToast';
+import { toast } from 'react-toastify';
+import Icon from 'components/Icon';
+import { twConfig } from 'utils/misc';
 export interface IDeleteUserModalProps {
   showModal: boolean;
   setShowModal: (flag: boolean) => void;
@@ -28,10 +32,52 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
     mutationFn: deleteUser,
     onError: (error) => {
       console.log(error);
+      toast(
+        <FailureToast
+          content="Error deleting member"
+          dataTestId="people-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.red['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+        },
+      );
     },
     onSuccess: (data, variables, context) => {
       setShowModal(false);
       queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast(
+        <SuccessToast
+          content="Member has been deleted"
+          dataTestId="people-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.primary['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+        },
+      );
     },
   });
 
@@ -76,9 +122,9 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
   return (
     <Modal
       open={showModal}
-      closeModal={() => {
-        setShowModal(false);
-      }}
+      // closeModal={() => {
+      //   setShowModal(false);
+      // }}
       className="max-w-sm"
     >
       <Header />

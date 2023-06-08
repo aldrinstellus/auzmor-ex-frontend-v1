@@ -146,7 +146,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
                   </IconWrapper>
                   <div
                     className="text-neutral-900 text-base font-medium"
-                    data-testid="professional-details-timezone"
+                    data-testid="user-timezone"
                   >
                     {getTimezoneNameFromIANA(professionalDetails?.timeZone) ||
                       'N/A'}

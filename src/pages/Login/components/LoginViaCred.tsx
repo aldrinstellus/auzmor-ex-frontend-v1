@@ -22,6 +22,7 @@ import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useGetSSOFromDomain } from 'queries/organization';
 import { useLoginViaSSO } from 'queries/auth';
 import useAuth from 'hooks/useAuth';
+import 'utils/custom-yup-validators/email/validateEmail';
 
 export interface ILoginViaCredProps {
   setViaSSO: (flag: boolean) => void;
@@ -36,8 +37,10 @@ interface IForm {
 const schema = yup.object({
   email: yup
     .string()
-    .email('Invalid email address. Please enter a valid email address.')
-    .required('Required field'),
+    .required('Required field')
+    .validateEmail(
+      'Invalid email address. Please enter a valid email address.',
+    ),
   password: yup.string().required('Required field'),
   domain: yup.string(),
 });

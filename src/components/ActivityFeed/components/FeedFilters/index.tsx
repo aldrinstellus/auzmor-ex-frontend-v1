@@ -1,3 +1,4 @@
+import { Popover, Transition } from '@headlessui/react';
 import Button, { Variant } from 'components/Button';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
@@ -226,8 +227,8 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
   };
 
   return (
-    <div className="relative mr-6">
-      <button
+    <Popover className="z-50 mr-6">
+      <Popover.Button
         className="box-border font-bold flex flex-row justify-center items-center p-1 gap-4 border-none relative"
         onClick={() => {
           setShowFeedFilter(!showFeedFilter);
@@ -241,89 +242,98 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
           </div>
         )}
         <Icon name="filter" size={16} className="" />
-      </button>
-
-      {showFeedFilter && (
-        <Card className="bg-white rounded-3xl top-full min-w-full w-max shadow-md z-10 mt-1 absolute">
-          <div
-            className="flex flex-row justify-center items-center py-2 px-4 gap-40"
-            onClick={() => {
-              setShowFeedFilter(false);
-              setHaveFiltersBeenModified(true);
-            }}
-          >
-            <p className="text-base font-bold">Filter by</p>
-            <CloseIcon
-              size={16}
-              className="cursor-pointer"
-              dataTestId="filter-closeicon"
-            />
-          </div>
-          <div>
-            <ul className="text-left border rounded-md space-y-1">
-              {feedFilterOptions.map((option) => (
-                <div
-                  key={option?.value}
-                  onClick={() =>
-                    !option.isDisabled && updateFeedFilters(option)
-                  }
-                  className={`${
-                    option.isDisabled
-                      ? 'cursor-default text-neutral-400'
-                      : 'cursor-pointer'
-                  }`}
-                >
-                  <li
-                    className={
-                      option?.type === FeedFilterContentType.Section
-                        ? 'bg-blue-50 text-gray-600 font-medium text-sm px-4 py-2 rounded-md min-w-full'
-                        : `bg-white font-medium text-sm px-4 py-2 rounded-md min-w-full overflow ${
-                            isOptionSelected(option) && 'bg-green-50'
-                          } hover:bg-green-50 flex items-center`
+      </Popover.Button>
+      <Transition
+        show={showFeedFilter}
+        enter="transition duration-100 ease-out"
+        enterFrom="transform scale-95 opacity-0"
+        enterTo="transform scale-100 opacity-100"
+        leave="transition duration-75 ease-out"
+        leaveFrom="transform scale-100 opacity-100"
+        leaveTo="transform scale-95 opacity-0"
+      >
+        <Popover.Panel static>
+          <Card className="bg-white rounded-3xl top-full min-w-full w-max shadow-md z-10 mt-1 absolute">
+            <div
+              className="flex flex-row justify-center items-center py-2 px-4 gap-40"
+              onClick={() => {
+                setShowFeedFilter(false);
+                setHaveFiltersBeenModified(true);
+              }}
+            >
+              <p className="text-base font-bold">Filter by</p>
+              <CloseIcon
+                size={16}
+                className="cursor-pointer"
+                dataTestId="filter-closeicon"
+              />
+            </div>
+            <div>
+              <ul className="text-left border rounded-md space-y-1">
+                {feedFilterOptions.map((option) => (
+                  <div
+                    key={option?.value}
+                    onClick={() =>
+                      !option.isDisabled && updateFeedFilters(option)
                     }
-                    value={option?.value}
+                    className={`${
+                      option.isDisabled
+                        ? 'cursor-default text-neutral-400'
+                        : 'cursor-pointer'
+                    }`}
                   >
-                    <input
-                      type="checkbox"
+                    <li
                       className={
                         option?.type === FeedFilterContentType.Section
-                          ? 'hidden'
-                          : 'block px-2 mr-2 accent-emerald-600 '
+                          ? 'bg-blue-50 text-gray-600 font-medium text-sm px-4 py-2 rounded-md min-w-full'
+                          : `bg-white font-medium text-sm px-4 py-2 rounded-md min-w-full overflow ${
+                              isOptionSelected(option) && 'bg-green-50'
+                            } hover:bg-green-50 flex items-center`
                       }
-                      disabled={option.isDisabled}
-                      checked={isOptionSelected(option)}
-                    ></input>
-                    {option?.label}
-                  </li>
-                </div>
-              ))}
-            </ul>
-          </div>
-          <div className="flex items-center justify-around mt-3 mb-2">
-            <button
-              className={`box-border border-none px-4 ${
-                isFeelFiltersEmpty() ? 'text-gray-400' : 'text-gray-900'
-              }`}
-              onClick={clearFeedFilters}
-              disabled={isFeelFiltersEmpty()}
-              data-testid="filters-clearfiltercta"
-            >
-              Clear filters
-            </button>
-            <Button
-              label="Apply"
-              variant={Variant.Primary}
-              disabled={!haveFiltersBeenModified}
-              onClick={() => {
-                onApplyFilters && onApplyFilters(feedFilters);
-                setShowFeedFilter(false);
-              }}
-              dataTestId="filters-applycta"
-            />
-          </div>
-        </Card>
-      )}
-    </div>
+                      value={option?.value}
+                    >
+                      <input
+                        type="checkbox"
+                        className={
+                          option?.type === FeedFilterContentType.Section
+                            ? 'hidden'
+                            : 'block px-2 mr-2 accent-emerald-600 '
+                        }
+                        disabled={option.isDisabled}
+                        checked={isOptionSelected(option)}
+                      ></input>
+                      {option?.label}
+                    </li>
+                  </div>
+                ))}
+              </ul>
+            </div>
+            <div className="flex items-center justify-around mt-3 mb-2">
+              <button
+                className={`box-border border-none px-4 ${
+                  isFeelFiltersEmpty() ? 'text-gray-400' : 'text-gray-900'
+                }`}
+                onClick={clearFeedFilters}
+                disabled={isFeelFiltersEmpty()}
+                data-testid="filters-clearfiltercta"
+              >
+                Clear filters
+              </button>
+              <Button
+                label="Apply"
+                variant={Variant.Primary}
+                disabled={!haveFiltersBeenModified}
+                onClick={() => {
+                  onApplyFilters && onApplyFilters(feedFilters);
+                  setShowFeedFilter(false);
+                }}
+                dataTestId="filters-applycta"
+              />
+            </div>
+          </Card>
+        </Popover.Panel>
+      </Transition>
+    </Popover>
   );
 };
 

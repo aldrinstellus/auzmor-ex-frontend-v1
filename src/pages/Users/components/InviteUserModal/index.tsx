@@ -18,8 +18,8 @@ import { toast } from 'react-toastify';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import InvitedUsersList from './InvitedUsersList';
-import { EMAIL_REGX } from 'utils/constants';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
+import 'utils/custom-yup-validators/email/validateEmail';
 
 export interface IInviteUserModalProps {
   showModal: boolean;
@@ -30,11 +30,12 @@ export interface IInviteUserModalProps {
 export interface IRoleOption {
   value: string;
   label: string;
+  dataTestId?: string;
 }
 
 export const roleOptions: IRoleOption[] = [
-  { value: 'MEMBER', label: 'Member' },
-  { value: 'ADMIN', label: 'Admin' },
+  { value: 'MEMBER', label: 'Member', dataTestId: 'invite-people-role-member' },
+  { value: 'ADMIN', label: 'Admin', dataTestId: 'invite-people-role-admin' },
   // { value: 'SUPERADMIN', label: 'SuperAdmin' },
 ];
 
@@ -142,6 +143,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
               name="closeCircleOutline"
               stroke={twConfig.theme.colors.primary['500']}
               size={20}
+              dataTestId="people-invite-toaster-close"
             />
           ),
           style: {
@@ -160,10 +162,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
     members: yup.array().of(
       yup.object().shape({
         fullName: yup.string().required('Please enter Name'),
-        workEmail: yup
-          .string()
-          .required('Please enter Email')
-          .matches(new RegExp(EMAIL_REGX), 'Please enter valid email address'),
+        workEmail: yup.string().required('Please enter Email').validateEmail(),
         role: yup.object().required('please enter role'),
       }),
     ),
@@ -205,7 +204,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
 
   return (
     <>
-      <Modal open={showModal} closeModal={close} className="max-w-3xl">
+      <Modal open={showModal} className="max-w-3xl">
         {/*---------- {<>Header</>} ----------*/}
         <Header
           title={

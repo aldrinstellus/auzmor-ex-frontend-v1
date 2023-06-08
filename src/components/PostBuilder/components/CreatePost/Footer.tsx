@@ -12,6 +12,7 @@ import useRole from 'hooks/useRole';
 import { DeltaStatic } from 'quill';
 import React, { useContext, useMemo } from 'react';
 import ReactQuill from 'react-quill';
+import { convert } from 'html-to-text';
 
 export interface IFooterProps {
   isLoading: boolean;
@@ -206,10 +207,14 @@ const Footer: React.FC<IFooterProps> = ({
             updateContext();
             handleSubmitPost(
               {
-                text:
+                text: convert(
                   quillRef.current
                     ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
-                    .getText() || '',
+                    .getHTML() || '',
+                  {
+                    wordwrap: false, // by default it include all the tag
+                  },
+                ),
                 html:
                   quillRef.current
                     ?.makeUnprivilegedEditor(quillRef.current?.getEditor())

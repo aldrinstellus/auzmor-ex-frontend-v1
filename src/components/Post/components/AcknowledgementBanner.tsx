@@ -20,7 +20,6 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
     mutationFn: announcementRead,
     onError: (error) => console.log(error),
     onSuccess: async (data, variables, context) => {
-      console.log('data==>', data);
       await queryClient.invalidateQueries(['feed']);
       await queryClient.invalidateQueries(['announcements-widget']);
     },

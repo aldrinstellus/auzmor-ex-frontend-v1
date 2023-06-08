@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import clsx from 'clsx';
 import { Control, useController, Controller } from 'react-hook-form';
-import Select, { MenuPlacement, components } from 'react-select';
+import Select, { MenuPlacement } from 'react-select';
 import { twConfig } from 'utils/misc';
 
 export interface ISingleSelectProps {
@@ -91,11 +91,16 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
             <Select
               isDisabled={disabled}
               placeholder={placeholder}
-              styles={selectStyle}
+              styles={{
+                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                ...selectStyle,
+              }}
               options={options}
               {...field}
               defaultValue={defaultValue}
               menuPlacement={menuPlacement ? menuPlacement : undefined}
+              menuPortalTarget={document.body}
+              menuPosition="absolute"
               components={{
                 Option: ({ innerProps, data, isDisabled, isSelected }) => {
                   return (

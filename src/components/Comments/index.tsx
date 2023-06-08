@@ -9,7 +9,6 @@ import { ICreated, IMyReactions } from 'pages/Feed';
 import { IMention, MyObjectType } from 'queries/post';
 import Spinner from 'components/Spinner';
 import { PRIMARY_COLOR } from 'utils/constants';
-import Button, { Type, Variant } from 'components/Button';
 import LoadMore from './components/LoadMore';
 
 interface CommentsProps {

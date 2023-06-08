@@ -11,6 +11,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { forgotPassword } from 'queries/account';
+import 'utils/custom-yup-validators/email/validateEmail';
 
 interface IForgotPasswordProps {}
 
@@ -19,7 +20,7 @@ interface IForm {
 }
 
 const schema = yup.object({
-  email: yup.string().required().email('Please enter valid email address'),
+  email: yup.string().required().validateEmail(),
 });
 
 const ForgotPassword: React.FC<IForgotPasswordProps> = () => {

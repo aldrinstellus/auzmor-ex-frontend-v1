@@ -13,6 +13,7 @@ import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useSearchParams } from 'react-router-dom';
 import { acceptInviteSetPassword, useVerifyInviteLink } from 'queries/users';
 import PageLoader from 'components/PageLoader';
+import InviteLinkExpired from './components/InviteLinkExpired';
 
 interface IForm {
   workEmail: string;
@@ -144,7 +145,7 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
         <PageLoader />
       </div>
     ) : isError ? (
-      <div>Error</div>
+      <InviteLinkExpired />
     ) : (
       <div className="flex h-screen w-screen">
         <img

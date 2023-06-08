@@ -23,6 +23,7 @@
     "clsx": "^1.2.1",
     "country-list-with-dial-code-and-flag": "^5.0.2",
     "fuse.js": "^6.6.2",
+    "html-to-text": "^9.0.5",
     "is-dark-color": "^1.2.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
@@ -91,6 +92,7 @@
     ]
   },
   "devDependencies": {
+    "@types/html-to-text": "^9.0.1",
     "tailwindcss": "^3.3.1"
   }
 }
