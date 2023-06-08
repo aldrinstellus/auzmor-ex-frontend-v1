@@ -138,7 +138,7 @@ const Footer: React.FC<IFooterProps> = ({
           <Icon
             name="moreOutline"
             stroke="#000000"
-            dataTestId="feed-createpost-ellipsis"
+            dataTestId="feed-createpost-ellipsis-icon"
           />
         ),
         menuItems: [
