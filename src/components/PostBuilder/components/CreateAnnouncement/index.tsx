@@ -85,7 +85,6 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
       minDate: new Date(),
       defaultValue: announcement?.value || '',
       dataTestId: 'custom-date-calendar',
-      placeholder: 'MM/DD/YYYY',
     },
   ];
   return (

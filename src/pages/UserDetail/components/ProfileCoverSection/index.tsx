@@ -210,22 +210,20 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
           </div>
         </div>
 
-        {openEditProfile && (
-          <EditProfileModal
-            userDetails={userDetails}
-            openEditProfile={openEditProfile}
-            openEditImageModal={openEditImageModal}
-            closeEditProfileModal={closeEditProfileModal}
-            userProfileImageRef={userProfileImageRef}
-            userCoverImageRef={userCoverImageRef}
-            key={'edit-profile'}
-            dataTestId="edit-profile"
-            isCoverImageRemoved={isCoverImageRemoved}
-            setIsCoverImageRemoved={setIsCoverImageRemoved}
-            setImageFile={setFile}
-            imageFile={file}
-          />
-        )}
+        <EditProfileModal
+          userDetails={userDetails}
+          openEditProfile={openEditProfile}
+          openEditImageModal={openEditImageModal}
+          closeEditProfileModal={closeEditProfileModal}
+          userProfileImageRef={userProfileImageRef}
+          userCoverImageRef={userCoverImageRef}
+          key={'edit-profile'}
+          dataTestId="edit-profile"
+          isCoverImageRemoved={isCoverImageRemoved}
+          setIsCoverImageRemoved={setIsCoverImageRemoved}
+          setImageFile={setFile}
+          imageFile={file}
+        />
 
         {openEditImage && (
           <EditImageModal

@@ -36,10 +36,10 @@ const UserCard: React.FC<IUserCardProps> = ({ className }) => {
             <div className="text-xs font-normal mt-2 truncate w-full text-center">
               {userDetails?.workEmail}
             </div>
-            <div className="text-xxs font-normal mt-2 truncate w-full text-center flex justify-center items-center gap-x-2">
+            {/* <div className="text-xxs font-normal mt-2 truncate w-full text-center flex justify-center items-center gap-x-2">
               <Icon name="location" size={16} />
               {userDetails?.workLocation}
-            </div>
+            </div> */}
           </Link>
         </div>
       </Card>

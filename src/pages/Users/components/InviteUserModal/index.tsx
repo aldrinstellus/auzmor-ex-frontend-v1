@@ -30,11 +30,12 @@ export interface IInviteUserModalProps {
 export interface IRoleOption {
   value: string;
   label: string;
+  dataTestId?: string;
 }
 
 export const roleOptions: IRoleOption[] = [
-  { value: 'MEMBER', label: 'Member' },
-  { value: 'ADMIN', label: 'Admin' },
+  { value: 'MEMBER', label: 'Member', dataTestId: 'invite-people-role-member' },
+  { value: 'ADMIN', label: 'Admin', dataTestId: 'invite-people-role-admin' },
   // { value: 'SUPERADMIN', label: 'SuperAdmin' },
 ];
 
@@ -203,7 +204,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
 
   return (
     <>
-      <Modal open={showModal} closeModal={close} className="max-w-3xl">
+      <Modal open={showModal} className="max-w-3xl">
         {/*---------- {<>Header</>} ----------*/}
         <Header
           title={

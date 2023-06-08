@@ -49,6 +49,10 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [skills, setSkills] = useState<ISkillsOption[]>([]);
 
+  const convertUpperCaseToPascalCase = (value: string) => {
+    return value[0] + value.substring(1, value.length).toLowerCase();
+  };
+
   const { control, handleSubmit, getValues, resetField } =
     useForm<IPersonalDetailsForm>({
       mode: 'onChange',
@@ -57,9 +61,19 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
           birthDate:
             personalDetails?.personal?.birthDate &&
             new Date(personalDetails?.personal?.birthDate),
-          gender: personalDetails?.personal?.gender,
+          gender: {
+            label: convertUpperCaseToPascalCase(
+              personalDetails?.personal?.gender,
+            ),
+            value: personalDetails?.personal?.gender,
+          },
           permanentLocation: personalDetails?.personal?.permanentAddress,
-          maritalStatus: personalDetails?.personal?.maritalStatus,
+          maritalStatus: {
+            label: convertUpperCaseToPascalCase(
+              personalDetails?.personal?.maritalStatus,
+            ),
+            value: personalDetails?.personal?.maritalStatus,
+          },
         },
         skills: '',
       },
@@ -116,9 +130,12 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
       personal: {
         gender: personalDetailData?.personal?.gender?.value,
         birthDate: personalDetailData?.personal?.birthDate,
-        permanentLocation: personalDetailData?.personal?.permanentLocation,
+        permanentAddress: personalDetailData?.personal?.permanentLocation,
         maritalStatus: personalDetailData?.personal?.maritalStatus?.value,
-        skills: skills?.map((skill: ISkillsOption) => skill.value),
+        skills:
+          skills.length > 0
+            ? skills.map((skill: ISkillsOption) => skill.value)
+            : undefined,
       },
     };
     await updateUserPersonalDetailsMutation.mutateAsync({
@@ -133,7 +150,6 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
       type: FieldType.DatePicker,
       name: 'personal.birthDate',
       control,
-      placeholder: 'DD/MM/YYYY',
       dataTestId: 'personal-details-dob',
       defaultValue: getValues()?.personal?.birthDate,
     },
@@ -142,14 +158,19 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
       name: 'personal.gender',
       placeholder: 'Select Gender',
       label: 'Gender',
-      defaultValue: {
-        value: getValues()?.personal?.gender,
-        label: getValues()?.personal?.gender,
-      },
+      defaultValue: getValues()?.personal?.gender,
       dataTestId: 'personal-details-gender',
       options: [
-        { value: 'MALE', label: 'Male' },
-        { value: 'FEMALE', label: 'Female' },
+        {
+          value: 'MALE',
+          label: 'Male',
+          dataTestId: 'personal-details-gender-male',
+        },
+        {
+          value: 'FEMALE',
+          label: 'Female',
+          dataTestId: 'personal-details-gender-female',
+        },
       ],
       control,
     },
@@ -167,14 +188,19 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
       name: 'personal.maritalStatus',
       placeholder: 'Select Marital Status',
       label: 'Marital Status',
-      defaultValue: {
-        value: getValues()?.personal?.maritalStatus,
-        label: getValues()?.personal?.maritalStatus,
-      },
+      defaultValue: getValues()?.personal?.maritalStatus,
       dataTestId: 'personal-details-marital-status',
       options: [
-        { value: 'MARRIED', label: 'Married', dataTestId: 'user-married' },
-        { value: 'SINGLE', label: 'Single', dataTestId: 'user-single' },
+        {
+          value: 'MARRIED',
+          label: 'Married',
+          dataTestId: 'personal-details-marital-status-married',
+        },
+        {
+          value: 'SINGLE',
+          label: 'Single',
+          dataTestId: 'personal-details-marital-status-single',
+        },
       ],
       control,
       menuPlacement: 'top',

@@ -30,6 +30,7 @@ const SelectTimeZone: React.FC<SelectTimeZoneProps> = ({
       options: timezones.map((timeZone) => ({
         label: timeZone.timezoneName,
         value: timeZone.iana,
+        dataTestId: `professional-detail-timezone-${timeZone.iana}`,
       })),
       defaultValue: defaultTimezone || '',
       menuPlacement: 'top',

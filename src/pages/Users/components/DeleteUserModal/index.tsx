@@ -122,9 +122,9 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
   return (
     <Modal
       open={showModal}
-      closeModal={() => {
-        setShowModal(false);
-      }}
+      // closeModal={() => {
+      //   setShowModal(false);
+      // }}
       className="max-w-sm"
     >
       <Header />

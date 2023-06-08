@@ -219,16 +219,14 @@ const Users: React.FC<IUsersProps> = () => {
         closeModal={() => setShowAddUserModal(false)}
       />
 
-      {showFilterModal && (
-        <FilterModal
-          setUserStatus={setUserStatus}
-          userStatus={userStatus}
-          page={page}
-          showModal={showFilterModal}
-          setShowFilterModal={setShowFilterModal}
-          closeModal={() => setShowFilterModal(false)}
-        />
-      )}
+      <FilterModal
+        setUserStatus={setUserStatus}
+        userStatus={userStatus}
+        page={page}
+        showModal={showFilterModal}
+        setShowFilterModal={setShowFilterModal}
+        closeModal={() => setShowFilterModal(false)}
+      />
     </div>
   );
 

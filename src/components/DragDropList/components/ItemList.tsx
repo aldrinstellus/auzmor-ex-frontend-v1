@@ -8,6 +8,7 @@ export interface IItemListProps {
   dataTestIdDelete?: string;
   draggableItems: ISkillsOption[];
   setDraggableItems: (items: ISkillsOption[]) => void;
+  isDragging: boolean;
 }
 
 const ItemList: React.FC<IItemListProps> = ({
@@ -16,6 +17,7 @@ const ItemList: React.FC<IItemListProps> = ({
   dataTestIdDelete,
   draggableItems,
   setDraggableItems,
+  isDragging = false,
 }) => {
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [newEnteredValue, setNewEnteredValue] = useState<string>(item.value);
@@ -62,32 +64,34 @@ const ItemList: React.FC<IItemListProps> = ({
           )}
         </div>
       </div>
-      <div className="flex space-x-4 items-center">
-        <div data-testid={`${dataTestIdEdit}-${item.value}`}>
-          <Icon
-            name="edit"
-            size={20}
-            onClick={() => {
-              setIsEditable(!isEditable);
-            }}
-          />
+      {!isDragging && (
+        <div className="flex space-x-4 items-center">
+          <div data-testid={`${dataTestIdEdit}-${item.value}`}>
+            <Icon
+              name="edit"
+              size={20}
+              onClick={() => {
+                setIsEditable(!isEditable);
+              }}
+            />
+          </div>
+          <div data-testid={`${dataTestIdDelete}-${item.value}`}>
+            <Icon
+              name="delete"
+              stroke="#F05252"
+              hover={false}
+              fill="#F05252"
+              size={20}
+              onClick={() => {
+                const updatedValues = draggableItems.filter(
+                  (element) => element?.value !== item.value,
+                );
+                setDraggableItems(updatedValues);
+              }}
+            />
+          </div>
         </div>
-        <div data-testid={`${dataTestIdDelete}-${item.value}`}>
-          <Icon
-            name="delete"
-            stroke="#F05252"
-            hover={false}
-            fill="#F05252"
-            size={20}
-            onClick={() => {
-              const updatedValues = draggableItems.filter(
-                (element) => element?.value !== item.value,
-              );
-              setDraggableItems(updatedValues);
-            }}
-          />
-        </div>
-      </div>
+      )}
     </>
   );
 };

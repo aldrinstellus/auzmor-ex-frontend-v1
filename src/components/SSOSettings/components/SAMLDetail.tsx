@@ -21,6 +21,7 @@ const SAMLDetail: React.FC<SAMLDetailProps> = ({
         <Icon
           className="ml-2 mb-1"
           name="copy"
+          disabled
           onClick={() => {
             navigator.clipboard.writeText(value);
             toast(
