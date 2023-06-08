@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   DragDropContext,
   Droppable,
@@ -40,10 +40,10 @@ const DragDropList: React.FC<DragDropListProps> = ({
             ref={provided.innerRef}
           >
             {draggableItems?.map((item: ISkillsOption, index) => (
-              <Draggable key={index} draggableId={item.id} index={index}>
+              <Draggable key={item.id} draggableId={item.id} index={index}>
                 {(provided) => (
                   <li
-                    className="flex items-center justify-between border border-solid border-neutral-200 rounded-17xl py-2 px-4"
+                    className="flex items-center justify-between border border-solid border-neutral-200 rounded-17xl py-2 px-4 bg-white"
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     ref={provided.innerRef}
@@ -60,6 +60,7 @@ const DragDropList: React.FC<DragDropListProps> = ({
                 )}
               </Draggable>
             ))}
+            {provided.placeholder}
           </ul>
         )}
       </Droppable>
