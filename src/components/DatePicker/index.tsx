@@ -32,7 +32,7 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
   name,
   label = '',
   minDate,
-  placeholder,
+  placeholder = 'MM/DD/YYYY',
   defaultValue,
   portalContainer = null,
   className,

@@ -27,7 +27,7 @@ const UserSettings: React.FC<IUserSettingsProps> = () => {
       component: <div>My Settings Page</div>,
       disabled: false,
       hidden: false,
-      dataTestId: 'my-settings',
+      dataTestId: 'settings-my-settings',
     },
     {
       label: 'General',
@@ -36,7 +36,7 @@ const UserSettings: React.FC<IUserSettingsProps> = () => {
       component: <div>General Settings Page</div>,
       disabled: false,
       hidden: false,
-      dataTestId: 'settings-user-management',
+      dataTestId: 'settings-general',
     },
     {
       label: 'Profile Settings',
@@ -45,7 +45,7 @@ const UserSettings: React.FC<IUserSettingsProps> = () => {
       component: <div>Profile Settings Page</div>,
       disabled: false,
       hidden: false,
-      dataTestId: 'settings-branding',
+      dataTestId: 'settings-profile',
     },
     {
       label: 'Out of Office',
@@ -54,7 +54,7 @@ const UserSettings: React.FC<IUserSettingsProps> = () => {
       component: <div>Out of Office Settings Page</div>,
       disabled: false,
       hidden: false,
-      dataTestId: 'settings-sso',
+      dataTestId: 'settings-out-of-office',
     },
     {
       label: 'Account',
@@ -63,7 +63,7 @@ const UserSettings: React.FC<IUserSettingsProps> = () => {
       component: <div>Account Settings Page</div>,
       disabled: false,
       hidden: false,
-      dataTestId: 'settings-marketplace',
+      dataTestId: 'settings-account',
     },
     {
       label: 'Account Security',
@@ -72,7 +72,7 @@ const UserSettings: React.FC<IUserSettingsProps> = () => {
       component: <AccountSecurity setIsHeaderVisible={setIsHeaderVisible} />,
       disabled: false,
       hidden: false,
-      dataTestId: 'account-security-notifications',
+      dataTestId: 'settings-account-security',
     },
     {
       label: 'Notifications',

@@ -133,7 +133,6 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
       type: FieldType.DatePicker,
       name: 'personal.birthDate',
       control,
-      placeholder: 'DD/MM/YYYY',
       dataTestId: 'personal-details-dob',
       defaultValue: getValues()?.personal?.birthDate,
     },
@@ -148,8 +147,16 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
       },
       dataTestId: 'personal-details-gender',
       options: [
-        { value: 'MALE', label: 'Male', dataTestId: 'gender-male' },
-        { value: 'FEMALE', label: 'Female', dataTestId: 'gender-female' },
+        {
+          value: 'MALE',
+          label: 'Male',
+          dataTestId: 'personal-details-gender-male',
+        },
+        {
+          value: 'FEMALE',
+          label: 'Female',
+          dataTestId: 'personal-details-gender-female',
+        },
       ],
       control,
     },
@@ -173,8 +180,16 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
       },
       dataTestId: 'personal-details-marital-status',
       options: [
-        { value: 'MARRIED', label: 'Married' },
-        { value: 'SINGLE', label: 'Single' },
+        {
+          value: 'MARRIED',
+          label: 'Married',
+          dataTestId: 'personal-details-marital-status-married',
+        },
+        {
+          value: 'SINGLE',
+          label: 'Single',
+          dataTestId: 'personal-details-marital-status-single',
+        },
       ],
       control,
       menuPlacement: 'top',

@@ -114,7 +114,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       control,
       getValues,
       onChange: () => {},
-      dataTestId: 'new-password',
+      dataTestId: 'change-password-current-password',
       showChecks: false,
       disabled: isLoading || data?.result?.data?.sso?.active,
     },
@@ -130,7 +130,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       control,
       getValues,
       onChange: () => {},
-      dataTestId: 'new-password',
+      dataTestId: 'change-password-new-password',
       disabled: isLoading || data?.result?.data?.sso?.active,
     },
   ];
@@ -148,7 +148,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       control,
       getValues,
       onChange: () => {},
-      dataTestId: 'confirm-password',
+      dataTestId: 'change-password-confirm-password',
       showChecks: false,
       disabled: isLoading || data?.result?.data?.sso?.active,
     },
@@ -174,6 +174,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
               setIsSettings(true);
               setIsHeaderVisible(true);
             }}
+            dataTestId="account-security-change-between-password"
           />
         </div>
       ) : (
@@ -194,7 +195,10 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
               <Layout fields={passwordField} className="mb-4" />
               <Layout fields={confirmPasswordField} />
               <div className="flex justify-between items-center mt-28">
-                <div className="text-primary-500 text-base font-bold">
+                <div
+                  className="text-primary-500 text-base font-bold"
+                  data-testId="change-password-forgot-password-cta"
+                >
                   <Link to="/forgot-password">Forgot Password</Link>
                 </div>
                 <div className="">
@@ -204,6 +208,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
                     className="w-full"
                     loading={changePasswordMutation.isLoading}
                     disabled={!isValid}
+                    dataTestId="change-password-btn"
                   />
                 </div>
               </div>
