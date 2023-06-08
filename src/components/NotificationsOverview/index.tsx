@@ -63,10 +63,7 @@ const NotificationsOverview: React.FC = () => {
             </div>
           )}
           {isLoading && (
-            <Spinner
-              className="absolute -top-1 -right-1.5 w-3 h-3 border-2"
-              color="#dc2626"
-            />
+            <Spinner className="absolute -top-1 -right-1.5 fill-red-600 !w-4 !h-4 !m-0" />
           )}
 
           <Icon name="notification" size={26} disabled={true} />

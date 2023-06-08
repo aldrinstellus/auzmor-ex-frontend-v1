@@ -113,7 +113,13 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between p-4">
         <p className="font-extrabold text-black text-lg">{ssoSetting?.key}</p>
-        <Icon onClick={closeModal} name="close" hover={false} stroke="#000" />
+        <Icon
+          onClick={closeModal}
+          name="close"
+          hover={false}
+          stroke="#000"
+          disabled
+        />
       </div>
 
       <Divider className="!bg-neutral-100" />

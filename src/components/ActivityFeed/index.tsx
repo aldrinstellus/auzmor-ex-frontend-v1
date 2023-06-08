@@ -2,7 +2,6 @@ import Divider from 'components/Divider';
 import Post from 'components/Post';
 import React, { useState } from 'react';
 import SortByDropdown from './components/SortByDropdown';
-import ClockIcon from 'components/Icon/components/Clock';
 import FeedFilter from './components/FeedFilters';
 import { IGetPost, IPostFilters } from 'queries/post';
 
