@@ -23,6 +23,10 @@ export interface IAnnouncement {
   value: string;
 }
 
+export const IMG_FILE_SIZE_LIMIT = 5; //MB
+export const VIDEO_FILE_SIZE_LIMIT = 2; //GB
+export const MEDIA_LIMIT = 10; // number of media can be uploaded
+
 export interface ICreatePostContext {
   activeFlow: CreatePostFlow;
   setActiveFlow: any;
@@ -54,6 +58,22 @@ export interface ICreatePostContext {
   setRemovedCoverimageFileIds: (fileIds: string[]) => void;
   showFullscreenVideo: IMedia | false;
   setShowFullscreenVideo: (showFullscreenVideo: IMedia | false) => void;
+  mediaValidationErrors: IMediaValidationError[];
+  setMediaValidationErrors: (
+    mediaValidationErrors: IMediaValidationError[],
+  ) => void;
+}
+
+export enum MediaValidationError {
+  ImageSizeExceed = 'IMAGE_SIZE_EXCEED',
+  VideoSizeExceed = 'VIDEO_SIZE_EXCEED',
+  MediaLengthExceed = 'MEDIA_LENGTH_EXCEED',
+}
+
+export interface IMediaValidationError {
+  errorType: MediaValidationError;
+  errorMsg: string;
+  fileName?: string;
 }
 
 export interface IEditorValue {
@@ -114,6 +134,8 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setRemovedCoverimageFileIds: () => {},
   showFullscreenVideo: false,
   setShowFullscreenVideo: () => {},
+  mediaValidationErrors: [],
+  setMediaValidationErrors: () => {},
 });
 
 const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
@@ -139,6 +161,9 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
   const [showFullscreenVideo, setShowFullscreenVideo] = useState<
     IMedia | false
   >(false);
+  const [mediaValidationErrors, setMediaValidationErrors] = useState<
+    IMediaValidationError[]
+  >([]);
 
   const setUploads = (uploads: File[], isCoverImage?: boolean) => {
     if (!isCoverImage) {
@@ -225,6 +250,7 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     setCoverImageMap([]);
     setRemovedCoverimageFileIds([]);
     setShowFullscreenVideo(false);
+    setMediaValidationErrors([]);
   };
 
   const updateCoverImageMap = (map: ICoverImageMap) => {
@@ -328,6 +354,8 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         setRemovedCoverimageFileIds,
         showFullscreenVideo,
         setShowFullscreenVideo,
+        mediaValidationErrors,
+        setMediaValidationErrors,
       }}
     >
       {children}

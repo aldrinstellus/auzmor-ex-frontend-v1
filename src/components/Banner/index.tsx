@@ -151,10 +151,11 @@ const Banner: React.FC<BannerProps> = ({
           <div className="pl-2">{action}</div>
           {onClose && (
             <IconButton
-              icon={'X'}
+              icon={'closeCircle'}
               className={iconButtonStyles}
               onClick={onClose}
               variant={IconVariant.Primary}
+              stroke={twConfig.theme.colors.red['500']}
             />
           )}
         </div>

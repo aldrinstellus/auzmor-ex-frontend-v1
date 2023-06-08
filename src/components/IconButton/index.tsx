@@ -21,6 +21,8 @@ export type IconButtonProps = {
   onClick?: MouseEventHandler<Element>;
   className?: string;
   borderAround?: boolean;
+  fill?: string;
+  stroke?: string;
   dataTestId?: string;
 };
 
@@ -32,6 +34,8 @@ const IconButton = ({
   className = '',
   borderAround = false,
   onClick = () => {},
+  fill,
+  stroke,
   dataTestId,
 }: IconButtonProps) => {
   const styles = useMemo(
@@ -85,7 +89,7 @@ const IconButton = ({
         onClick={onClick}
         data-testid={dataTestId}
       >
-        <Icon name={icon} size={getSize()} />
+        <Icon name={icon} size={getSize()} fill={fill} stroke={stroke} />
       </button>
     </div>
   );
