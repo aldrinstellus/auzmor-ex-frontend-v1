@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Likes from 'components/Reactions';
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import Avatar from 'components/Avatar';
@@ -13,6 +13,7 @@ import { iconsStyle } from 'components/Post';
 import { MyObjectType } from 'queries/post';
 import useAuth from 'hooks/useAuth';
 import Icon from 'components/Icon';
+import ReactionModal from 'components/Post/components/ReactionModal';
 
 interface ReplyProps {
   comment: IComment;
@@ -27,6 +28,7 @@ export const Reply: React.FC<ReplyProps> = ({
 }) => {
   const { user } = useAuth();
   const createdAt = humanizeTime(comment.createdAt);
+  const [showReactionModal, setShowReactionModal] = useState(false);
 
   const deleteReactionMutation = useMutation({
     mutationKey: ['delete-comment-mutation'],
@@ -137,7 +139,10 @@ export const Reply: React.FC<ReplyProps> = ({
                   ))}
               </div>
             )}
-            <div className={`flex text-sm font-normal text-neutral-500`}>
+            <div
+              className={`flex text-sm font-normal text-neutral-500`}
+              onClick={() => setShowReactionModal(true)}
+            >
               {totalCount} reacted
             </div>
           </div>
@@ -168,6 +173,14 @@ export const Reply: React.FC<ReplyProps> = ({
           <div></div>
         </div>
       </div>
+      {showReactionModal && (
+        <ReactionModal
+          closeModal={() => setShowReactionModal(false)}
+          reactionCounts={comment.reactionsCount || {}}
+          postId={comment.id}
+          entityType="comment"
+        />
+      )}
     </div>
   );
 };

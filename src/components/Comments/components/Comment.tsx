@@ -15,6 +15,7 @@ import Reply from '../../Reply';
 import Icon from 'components/Icon';
 import { Link } from 'react-router-dom';
 import RenderQuillContent from 'components/RenderQuillContent';
+import ReactionModal from 'components/Post/components/ReactionModal';
 
 interface CommentProps {
   comment: IComment;
@@ -36,6 +37,8 @@ export const Comment: React.FC<CommentProps> = ({
   customNode = null,
 }) => {
   const queryClient = useQueryClient();
+
+  const [showReactionModal, setShowReactionModal] = useState(false);
 
   const { user } = useAuth();
   const createdAt = humanizeTime(comment.updatedAt);
@@ -177,6 +180,7 @@ export const Comment: React.FC<CommentProps> = ({
             <div
               className={`flex text-sm font-normal text-neutral-500`}
               data-testid="comment-reaction-count"
+              onClick={() => setShowReactionModal(true)}
             >
               {totalCount} reacted
             </div>
@@ -235,6 +239,14 @@ export const Comment: React.FC<CommentProps> = ({
           !previousShowReply.current && customNode
         )}
       </div>
+      {showReactionModal && (
+        <ReactionModal
+          closeModal={() => setShowReactionModal(false)}
+          reactionCounts={comment.reactionsCount || {}}
+          postId={comment.id}
+          entityType="comment"
+        />
+      )}
     </div>
   );
 };

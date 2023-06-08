@@ -180,6 +180,7 @@ const Post: React.FC<PostProps> = ({ data, customNode = null }) => {
           closeModal={() => setShowReactionModal(false)}
           reactionCounts={data.reactionsCount}
           postId={data.id}
+          entityType="post"
         />
       )}
     </>
