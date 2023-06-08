@@ -28,15 +28,16 @@ const Footer: React.FC<IFooterProps> = ({
   dataTestId,
 }) => {
   const sliderValueRef = useRef<number>(0);
+  const sliderInputRef = useRef<HTMLInputElement>(null);
   const zoomIn = () => {
     if (cropperRef.current) {
-      cropperRef.current.zoomImage({ factor: 1.1 }, { immediately: true }); // zoom-in 2x
+      cropperRef.current.zoomImage({ factor: 1.1 }, { immediately: true }); // zoom-in 1.1x
     }
   };
 
   const zoomOut = () => {
     if (cropperRef.current) {
-      cropperRef.current.zoomImage({ factor: 0.9 }, { immediately: true }); // zoom-out 2x
+      cropperRef.current.zoomImage({ factor: 0.9 }, { immediately: true }); // zoom-out 0.9x
     }
   };
   return (
@@ -50,6 +51,16 @@ const Footer: React.FC<IFooterProps> = ({
               name="minus"
               size={16}
               dataTestId={`${dataTestId}-zoom-min`}
+              onClick={() => {
+                const sliderValue = parseInt(
+                  (sliderInputRef.current as any).value as any,
+                );
+                if (sliderValue > 0) {
+                  zoomOut();
+                  ((sliderInputRef.current as any).value as any) =
+                    sliderValue - 1;
+                }
+              }}
             />
             <input
               type="range"
@@ -65,8 +76,23 @@ const Footer: React.FC<IFooterProps> = ({
                 }
                 sliderValueRef.current = parseInt(e.target.value);
               }}
+              ref={sliderInputRef}
             />
-            <Icon name="plus" size={16} dataTestId={`${dataTestId}-zoom-max`} />
+            <Icon
+              name="plus"
+              size={16}
+              dataTestId={`${dataTestId}-zoom-max`}
+              onClick={() => {
+                const sliderValue = parseInt(
+                  (sliderInputRef.current as any).value as any,
+                );
+                if (sliderValue < 10) {
+                  zoomIn();
+                  ((sliderInputRef.current as any).value as any) =
+                    sliderValue + 1;
+                }
+              }}
+            />
           </div>
         </div>
         <div
