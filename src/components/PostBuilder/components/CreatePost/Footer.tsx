@@ -69,7 +69,7 @@ const Footer: React.FC<IFooterProps> = ({
               inputImgRef?.current && inputImgRef?.current?.click();
             },
             iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
-            dataTestId: 'feed-createpost-uploadphoto',
+            dataTestId: 'feed-createpost-uploadphoto-menuitem',
           },
           {
             label: 'Upload a video',
@@ -79,7 +79,7 @@ const Footer: React.FC<IFooterProps> = ({
               inputVideoRef?.current && inputVideoRef?.current?.click();
             },
             iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
-            dataTestId: 'feed-createpost-uploadvideo',
+            dataTestId: 'feed-createpost-uploadvideo-menuitem',
           },
           {
             label: 'Share a document',
@@ -138,7 +138,7 @@ const Footer: React.FC<IFooterProps> = ({
           <Icon
             name="moreOutline"
             stroke="#000000"
-            dataTestId="feed-createpost-ellipsis"
+            dataTestId="feed-createpost-ellipsis-icon"
           />
         ),
         menuItems: [

@@ -17,6 +17,9 @@ const Modal: React.FC<ModalProps> = ({
   className = 'max-w-xl',
   showModalCloseBtn = false,
 }) => {
+  if (!open) {
+    return null;
+  }
   const panelStyle = clsx(
     {
       'w-full transform overflow-hidden bg-white text-left align-middle rounded-9xl shadow':
@@ -29,9 +32,9 @@ const Modal: React.FC<ModalProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 flex items-center z-50
-       transition-opacity ${open ? 'visible bg-black/60' : 'invisible'}
-       backdrop-blur-sm`}
+      className={`fixed inset-0 flex items-center z-50 transition-opacity ${
+        open ? 'visible bg-black/60' : 'invisible'
+      } backdrop-blur-sm`}
       onClick={closeModal}
     >
       <div

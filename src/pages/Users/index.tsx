@@ -76,7 +76,7 @@ const Users: React.FC<IUsersProps> = () => {
       name: 'role',
       placeholder: 'Role',
       size: InputSize.Small,
-      dataTestid: 'filterby-role',
+      dataTestId: 'filterby-role',
       options: [
         {
           value: UserRole.Admin,

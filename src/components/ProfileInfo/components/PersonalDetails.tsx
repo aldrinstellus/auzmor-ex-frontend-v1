@@ -50,6 +50,9 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   const [skills, setSkills] = useState<ISkillsOption[]>([]);
 
   const convertUpperCaseToPascalCase = (value: string) => {
+    if (!value) {
+      return '';
+    }
     return value[0] + value.substring(1, value.length).toLowerCase();
   };
 

@@ -1,5 +1,12 @@
-import React, { useContext, useMemo, useRef } from 'react';
-import { CreatePostContext, IEditorValue } from 'contexts/CreatePostContext';
+import React, { useContext, useRef } from 'react';
+import {
+  CreatePostContext,
+  IEditorValue,
+  IMG_FILE_SIZE_LIMIT,
+  MEDIA_LIMIT,
+  MediaValidationError,
+  VIDEO_FILE_SIZE_LIMIT,
+} from 'contexts/CreatePostContext';
 import ReactQuill from 'react-quill';
 import { IPost } from 'queries/post';
 import Header from 'components/ModalHeader';
@@ -22,8 +29,15 @@ const CreatePost: React.FC<ICreatePostProps> = ({
   dataTestId,
 }) => {
   const quillRef = useRef<ReactQuill>(null);
-  const { inputImgRef, inputVideoRef, setUploads, clearPostContext } =
-    useContext(CreatePostContext);
+  const {
+    inputImgRef,
+    inputVideoRef,
+    setUploads,
+    clearPostContext,
+    media,
+    setMediaValidationErrors,
+    mediaValidationErrors,
+  } = useContext(CreatePostContext);
 
   return (
     <>
@@ -47,11 +61,50 @@ const CreatePost: React.FC<ICreatePostProps> = ({
         ref={inputImgRef}
         accept="image/*"
         onChange={(e) => {
+          const mediaErrors = [...mediaValidationErrors];
           if (e.target.files?.length) {
-            // setUploads(Array.prototype.slice.call(e.target.files));
+            if (
+              e.target.files!.length + media.length > MEDIA_LIMIT &&
+              !!!mediaValidationErrors.find(
+                (errors) =>
+                  errors.errorMsg === MediaValidationError.MediaLengthExceed,
+              )
+            ) {
+              mediaErrors.push({
+                errorMsg:
+                  'The number of images/ videos attached should be 10 or less. Please attach a fewer images/videos and try again later',
+                errorType: MediaValidationError.MediaLengthExceed,
+              });
+            }
             setUploads(
               Array.prototype.slice
                 .call(e.target.files)
+                .filter((eachFile: File) => {
+                  if (eachFile.type.match('image')) {
+                    if (eachFile.size > IMG_FILE_SIZE_LIMIT * 1024 * 1024) {
+                      mediaErrors.push({
+                        errorType: MediaValidationError.ImageSizeExceed,
+                        errorMsg: `The file “${eachFile.name}” you are trying to upload exceeds the 5MB attachment limit. Try uploading a smaller file`,
+                        fileName: eachFile.name,
+                      });
+                      return false;
+                    }
+                    return true;
+                  } else if (eachFile.type.match('video')) {
+                    if (
+                      eachFile.size >
+                      VIDEO_FILE_SIZE_LIMIT * 1024 * 1024 * 1024
+                    ) {
+                      mediaErrors.push({
+                        errorType: MediaValidationError.ImageSizeExceed,
+                        errorMsg: `The file “${eachFile.name}” you are trying to upload exceeds the 2GB attachment limit. Try uploading a smaller file`,
+                        fileName: eachFile.name,
+                      });
+                      return false;
+                    }
+                    return true;
+                  }
+                })
                 .map(
                   (eachFile: File) =>
                     new File(
@@ -63,9 +116,12 @@ const CreatePost: React.FC<ICreatePostProps> = ({
                     ),
                 ),
             );
+            console.log(mediaErrors);
+            setMediaValidationErrors([...mediaErrors]);
           }
         }}
         multiple
+        data-testid="feed-createpost-uploadphoto"
       />
       <input
         type="file"
@@ -73,10 +129,54 @@ const CreatePost: React.FC<ICreatePostProps> = ({
         ref={inputVideoRef}
         accept="video/*"
         onChange={(e) => {
+          const mediaErrors = [...mediaValidationErrors];
+
           if (e.target.files?.length) {
+            if (
+              e.target.files!.length + media.length > MEDIA_LIMIT &&
+              !!!mediaValidationErrors.find(
+                (errors) =>
+                  errors.errorMsg === MediaValidationError.MediaLengthExceed,
+              )
+            ) {
+              mediaErrors.push({
+                errorMsg:
+                  'The number of images/ videos attached should be 10 or less. Please attach a fewer images/videos and try again later',
+                errorType: MediaValidationError.MediaLengthExceed,
+              });
+            }
             setUploads(
               Array.prototype.slice
                 .call(e.target.files)
+                .filter((eachFile: File) => {
+                  return true;
+                })
+                .filter((eachFile: File) => {
+                  if (eachFile.type.match('image')) {
+                    if (eachFile.size > IMG_FILE_SIZE_LIMIT * 1024 * 1024) {
+                      mediaErrors.push({
+                        errorType: MediaValidationError.ImageSizeExceed,
+                        errorMsg: `The file “${eachFile.name}” you are trying to upload exceeds the 5MB attachment limit. Try uploading a smaller file`,
+                        fileName: eachFile.name,
+                      });
+                      return false;
+                    }
+                    return true;
+                  } else if (eachFile.type.match('video')) {
+                    if (
+                      eachFile.size >
+                      VIDEO_FILE_SIZE_LIMIT * 1024 * 1024 * 1024
+                    ) {
+                      mediaErrors.push({
+                        errorType: MediaValidationError.ImageSizeExceed,
+                        errorMsg: `The file “${eachFile.name}” you are trying to upload exceeds the 2GB attachment limit. Try uploading a smaller file`,
+                        fileName: eachFile.name,
+                      });
+                      return false;
+                    }
+                    return true;
+                  }
+                })
                 .map(
                   (eachFile: File) =>
                     new File(
@@ -88,10 +188,10 @@ const CreatePost: React.FC<ICreatePostProps> = ({
                     ),
                 ),
             );
-            // setUploads(Array.prototype.slice.call(e.target.files));
           }
         }}
         multiple
+        data-testid="feed-createpost-uploadvideo"
       />
     </>
   );

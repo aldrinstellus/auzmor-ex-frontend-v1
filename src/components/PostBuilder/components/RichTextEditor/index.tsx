@@ -1,4 +1,11 @@
-import React, { LegacyRef, ReactNode, memo, useContext, useState } from 'react';
+import React, {
+  LegacyRef,
+  ReactNode,
+  memo,
+  useCallback,
+  useContext,
+  useState,
+} from 'react';
 import ReactQuill, { Quill, UnprivilegedEditor } from 'react-quill';
 import { DeltaStatic, Sources, Delta } from 'quill';
 import 'react-quill/dist/quill.snow.css';
@@ -14,9 +21,15 @@ import EmojiToolbar from './emoji';
 import { mention, previewLinkRegex } from './config';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
-import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
+import {
+  CreatePostContext,
+  CreatePostFlow,
+  IMediaValidationError,
+  MediaValidationError,
+} from 'contexts/CreatePostContext';
 import moment from 'moment';
 import MediaPreview, { Mode } from 'components/MediaPreview';
+import Banner, { Variant } from 'components/Banner';
 
 export interface IEditorContentChanged {
   text: string;
@@ -63,6 +76,8 @@ const RichTextEditor = React.forwardRef(
       setIsPreviewRemoved,
       removeAllMedia,
       coverImageMap,
+      mediaValidationErrors,
+      setMediaValidationErrors,
     } = useContext(CreatePostContext);
 
     const [previewUrl, setPreviewUrl] = useState<string>('');
@@ -144,6 +159,70 @@ const RichTextEditor = React.forwardRef(
       });
     };
 
+    const getMediaValidationErrors = useCallback(() => {
+      let imageSizeExceedCount = 0;
+      let videoSizeExceedCount = 0;
+      let mediaLengthExceedCount = 0;
+
+      const errors: IMediaValidationError[] = [];
+      mediaValidationErrors.forEach((eachError) => {
+        if (eachError.errorType === MediaValidationError.ImageSizeExceed) {
+          imageSizeExceedCount += 1;
+        }
+        if (eachError.errorType === MediaValidationError.VideoSizeExceed) {
+          videoSizeExceedCount += 1;
+        }
+        if (eachError.errorType === MediaValidationError.MediaLengthExceed) {
+          mediaLengthExceedCount += 1;
+        }
+      });
+
+      // console.log(
+      //   imageSizeExceedCount,
+      //   videoSizeExceedCount,
+      //   mediaLengthExceedCount,
+      //   mediaValidationErrors,
+      // );
+
+      if (imageSizeExceedCount === 1) {
+        errors.push(
+          mediaValidationErrors.find(
+            (error) => error.errorType === MediaValidationError.ImageSizeExceed,
+          )!,
+        );
+      } else if (imageSizeExceedCount > 1) {
+        errors.push({
+          errorType: MediaValidationError.ImageSizeExceed,
+          errorMsg:
+            'Some images are droped. An Image can not exceeded 5MB limit size. Please try again later',
+        });
+      }
+
+      if (videoSizeExceedCount === 1) {
+        errors.push(
+          mediaValidationErrors.find(
+            (error) => error.errorType === MediaValidationError.VideoSizeExceed,
+          )!,
+        );
+      } else if (videoSizeExceedCount > 1) {
+        errors.push({
+          errorType: MediaValidationError.VideoSizeExceed,
+          errorMsg:
+            'Some videos are droped. A Video can not exceeded 2GB limit size. Please try again later',
+        });
+      }
+
+      if (mediaLengthExceedCount !== 0) {
+        errors.push(
+          mediaValidationErrors.find(
+            (error) =>
+              error.errorType === MediaValidationError.MediaLengthExceed,
+          )!,
+        );
+      }
+      return errors;
+    }, [mediaValidationErrors]);
+
     return (
       <div data-testid={`${dataTestId}-content`}>
         <ReactQuill
@@ -209,6 +288,22 @@ const RichTextEditor = React.forwardRef(
             </div>
           </div>
         )}
+        {getMediaValidationErrors().map((error, index) => (
+          <div className="mx-8 mb-1" key={index}>
+            <Banner
+              title={error.errorMsg}
+              variant={Variant.Error}
+              action={<></>}
+              onClose={() =>
+                setMediaValidationErrors([
+                  ...mediaValidationErrors.filter(
+                    (mediaError) => mediaError.errorType !== error.errorType,
+                  ),
+                ])
+              }
+            />
+          </div>
+        ))}
         {!isPreviewRemoved &&
           renderPreviewLink &&
           renderPreviewLink(previewUrl, setPreviewUrl, setIsPreviewRemoved)}

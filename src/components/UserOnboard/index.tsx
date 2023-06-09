@@ -85,6 +85,7 @@ const UserOnboard: React.FC = (): ReactNode => {
                 fill="#000000"
                 onClick={disableClose ? undefined : closeModal}
                 hover={false}
+                size={20}
               />
             </div>
           </div>

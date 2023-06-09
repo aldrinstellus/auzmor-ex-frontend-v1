@@ -66,7 +66,12 @@ const NotificationsOverview: React.FC = () => {
             <Spinner className="absolute -top-1 -right-1.5 fill-red-600 !w-4 !h-4 !m-0" />
           )}
 
-          <Icon name="notification" size={26} disabled={true} />
+          <Icon
+            name="notification"
+            size={26}
+            disabled={true}
+            dataTestId="office-notification-page"
+          />
         </div>
       }
     >

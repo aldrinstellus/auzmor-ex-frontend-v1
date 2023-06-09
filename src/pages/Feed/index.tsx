@@ -176,7 +176,9 @@ const Feed: React.FC<IFeedProps> = () => {
       isFetchingNextPage={isFetchingNextPage}
     /> */}
       </div>
-      <PostBuilder showModal={showModal} setShowModal={setShowModal} />
+      {showModal && (
+        <PostBuilder showModal={showModal} setShowModal={setShowModal} />
+      )}
     </>
   );
 };

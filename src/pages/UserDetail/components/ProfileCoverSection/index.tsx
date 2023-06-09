@@ -172,6 +172,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                     showEditProfile.current = true;
                   }}
                   dataTestId={canEdit ? 'edit-profile' : 'follow'}
+                  disabled={!canEdit}
                 />
               </div>
             </div>

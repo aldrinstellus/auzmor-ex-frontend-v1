@@ -9,12 +9,14 @@ export interface IReactionModalProps {
   closeModal?: () => void;
   reactionCounts: Record<string, number>;
   postId: string;
+  entityType: string;
 }
 
 const ReactionModal: React.FC<IReactionModalProps> = ({
   closeModal,
   reactionCounts,
   postId,
+  entityType = 'post',
 }) => {
   const getClassName = (isActive: boolean) =>
     `flex font-extrabold ${isActive ? 'text-neutral-900' : 'text-neutral-500'}`;
@@ -28,6 +30,8 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
     'insightful',
     'support',
   ];
+
+  console.log(reactionCounts);
 
   return (
     <Modal open={true} closeModal={closeModal} className="max-w-2xl">
@@ -43,7 +47,13 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
                 )})`}
               </div>
             ),
-            tabContent: <ReactionTab postId={postId} activeTab={'all'} />,
+            tabContent: (
+              <ReactionTab
+                postId={postId}
+                activeTab={'all'}
+                entityType={entityType}
+              />
+            ),
           },
           {
             tabLable: (isActive: boolean) => (
@@ -56,7 +66,13 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
                 </div>
               </>
             ),
-            tabContent: <ReactionTab postId={postId} activeTab={'like'} />,
+            tabContent: (
+              <ReactionTab
+                postId={postId}
+                activeTab={'like'}
+                entityType={entityType}
+              />
+            ),
           },
           {
             tabLable: (isActive: boolean) => (
@@ -69,7 +85,13 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
                 </div>
               </>
             ),
-            tabContent: <ReactionTab postId={postId} activeTab={'love'} />,
+            tabContent: (
+              <ReactionTab
+                postId={postId}
+                activeTab={'love'}
+                entityType={entityType}
+              />
+            ),
           },
           {
             tabLable: (isActive: boolean) => (
@@ -82,7 +104,13 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
                 </div>
               </>
             ),
-            tabContent: <ReactionTab postId={postId} activeTab={'funny'} />,
+            tabContent: (
+              <ReactionTab
+                postId={postId}
+                activeTab={'funny'}
+                entityType={entityType}
+              />
+            ),
           },
           {
             tabLable: (isActive: boolean) => (
@@ -95,7 +123,13 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
                 </div>
               </>
             ),
-            tabContent: <ReactionTab postId={postId} activeTab={'celebrate'} />,
+            tabContent: (
+              <ReactionTab
+                postId={postId}
+                activeTab={'celebrate'}
+                entityType={entityType}
+              />
+            ),
           },
           {
             tabLable: (isActive: boolean) => (
@@ -109,7 +143,11 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
               </>
             ),
             tabContent: (
-              <ReactionTab postId={postId} activeTab={'insightful'} />
+              <ReactionTab
+                postId={postId}
+                activeTab={'insightful'}
+                entityType={entityType}
+              />
             ),
           },
           {
@@ -123,7 +161,13 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
                 </div>
               </>
             ),
-            tabContent: <ReactionTab postId={postId} activeTab={'support'} />,
+            tabContent: (
+              <ReactionTab
+                postId={postId}
+                activeTab={'support'}
+                entityType={entityType}
+              />
+            ),
           },
         ]
           .filter((tab, index) => {

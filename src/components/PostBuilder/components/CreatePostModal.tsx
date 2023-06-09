@@ -16,6 +16,7 @@ import { previewLinkRegex } from 'components/RichTextEditor/config';
 import EditMedia from './EditMedia';
 import { UploadStatus } from 'queries/files';
 import { IMenuItem } from 'components/PopupMenu';
+import Icon from 'components/Icon';
 
 export interface IPostMenu {
   id: number;
@@ -49,6 +50,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     media,
     clearPostContext,
     coverImageMap,
+    showFullscreenVideo,
+    setShowFullscreenVideo,
   } = useContext(CreatePostContext);
   const queryClient = useQueryClient();
 
@@ -192,44 +195,64 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     uploadStatus === UploadStatus.Uploading;
 
   return (
-    <Modal
-      open={showModal}
-      closeModal={() => {
-        clearPostContext();
-        setShowModal(false);
-      }}
-    >
-      {activeFlow === CreatePostFlow.CreatePost && (
-        <CreatePost
-          data={data}
-          closeModal={() => {
-            if (loading) {
-              return null;
-            }
-            return setShowModal(false);
-          }}
-          handleSubmitPost={handleSubmitPost}
-          isLoading={loading}
-          dataTestId="feed-createpost"
-        />
+    <>
+      <Modal
+        open={showModal}
+        closeModal={() => {
+          clearPostContext();
+          setShowModal(false);
+        }}
+      >
+        {activeFlow === CreatePostFlow.CreatePost && (
+          <CreatePost
+            data={data}
+            closeModal={() => {
+              if (loading) {
+                return null;
+              }
+              return setShowModal(false);
+            }}
+            handleSubmitPost={handleSubmitPost}
+            isLoading={loading}
+            dataTestId="feed-createpost"
+          />
+        )}
+        {activeFlow === CreatePostFlow.CreateAnnouncement && (
+          <CreateAnnouncement
+            closeModal={() => {
+              clearPostContext();
+              setShowModal(false);
+            }}
+          />
+        )}
+        {activeFlow === CreatePostFlow.EditMedia && (
+          <EditMedia
+            closeModal={() => {
+              clearPostContext();
+              setShowModal(false);
+            }}
+          />
+        )}
+      </Modal>
+      {!!showFullscreenVideo && (
+        <Modal
+          open={!!showFullscreenVideo}
+          className="!fixed !w-screen !h-screen !top-0 !left-0 z-50 flex items-center justify-center bg-black/10"
+          showModalCloseBtn
+          closeModal={() => setShowFullscreenVideo(false)}
+        >
+          {!!showFullscreenVideo && (
+            <video src={showFullscreenVideo.original} controls />
+          )}
+          <Icon
+            name="close"
+            className="absolute top-6 right-6"
+            fill={'#fff'}
+            onClick={() => setShowFullscreenVideo(false)}
+          />
+        </Modal>
       )}
-      {activeFlow === CreatePostFlow.CreateAnnouncement && (
-        <CreateAnnouncement
-          closeModal={() => {
-            clearPostContext();
-            setShowModal(false);
-          }}
-        />
-      )}
-      {activeFlow === CreatePostFlow.EditMedia && (
-        <EditMedia
-          closeModal={() => {
-            clearPostContext();
-            setShowModal(false);
-          }}
-        />
-      )}
-    </Modal>
+    </>
   );
 };
 

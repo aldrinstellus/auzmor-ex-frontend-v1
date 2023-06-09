@@ -98,12 +98,14 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
         }
         menuItems={postOptions}
       />
-      <PostBuilder
-        data={data}
-        showModal={showModal}
-        setShowModal={() => setShowModal(false)}
-        mode={PostBuilderMode.Edit}
-      />
+      {showModal && (
+        <PostBuilder
+          data={data}
+          showModal={showModal}
+          setShowModal={() => setShowModal(false)}
+          mode={PostBuilderMode.Edit}
+        />
+      )}
       <ConfirmationBox
         open={confirm}
         onClose={closeConfirm}

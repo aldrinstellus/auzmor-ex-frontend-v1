@@ -8,22 +8,27 @@ import ReactionRow from './ReactionRow';
 export interface IReactionTabProps {
   postId: string;
   activeTab: string;
+  entityType: string;
 }
 
-const ReactionTab: React.FC<IReactionTabProps> = ({ postId, activeTab }) => {
+const ReactionTab: React.FC<IReactionTabProps> = ({
+  postId,
+  activeTab,
+  entityType,
+}) => {
   const { ref, inView } = useInView();
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useReactions(
       activeTab !== 'all'
         ? {
             entityId: postId,
-            entityType: 'post',
+            entityType,
             reaction: activeTab,
             limit: 5,
           }
         : {
             entityId: postId,
-            entityType: 'post',
+            entityType,
             limit: 5,
           },
     );

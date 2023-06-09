@@ -170,6 +170,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       onClick: () => {
         userCoverImageRef?.current?.click();
       },
+      dataTestId: 'edit-coverpic-upload',
     },
     {
       icon: 'maximizeOutline',
@@ -179,6 +180,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         openEditImageModal();
         closeEditProfileModal();
       },
+      dataTestId: 'edit-coverpic-reposition',
     },
     {
       icon: 'trashOutline',
@@ -197,6 +199,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         }
         setIsCoverImageRemoved(true);
       },
+      dataTestId: 'edit-coverpic-deletepost',
     },
   ];
   const { updateUser } = useAuth();
@@ -273,7 +276,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
   };
 
   return (
-    <Modal open={openEditProfile} closeModal={disableClosed}>
+    <Modal open={openEditProfile}>
       <form>
         <Header title="Edit Profile" onClose={disableClosed} />
         <div className="relative">

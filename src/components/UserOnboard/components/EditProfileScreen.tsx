@@ -37,7 +37,6 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
           </div>
           <Avatar
             size={144}
-            dataTestId="edit-profilepic"
             indicatorIcon={
               <Icon
                 name="edit"
@@ -46,6 +45,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
                 stroke="#ffffff"
                 hover={false}
                 onClick={() => profilePictureRef?.current?.click()}
+                dataTestId="edit-profilepic"
               />
             }
             name={user?.name}

@@ -19,7 +19,7 @@ const Body: React.FC<IBodyProps> = ({
     setActiveFlow,
     media,
     removeMedia,
-    deleteCoverImageMap,
+    setShowFullscreenVideo,
     getCoverImageBlobURL,
   } = useContext(CreatePostContext);
   return (
@@ -39,6 +39,7 @@ const Body: React.FC<IBodyProps> = ({
       prevSlide={prevSlide}
       nextSlide={nextSlide}
       coverImageUrl={getCoverImageBlobURL(media[currentIndex])}
+      setShowFullscreenVideo={setShowFullscreenVideo}
       dataTestId={dataTestId}
     />
   );

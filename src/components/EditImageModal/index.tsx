@@ -175,7 +175,15 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
 
   return (
     <Modal open={openEditImage} closeModal={disableClosed}>
-      <Header title={title} onClose={disableClosed} />
+      <Header
+        title={title}
+        onClose={disableClosed}
+        closeBtnDataTestId={
+          imageFile?.profileImage || onBoardImageFile
+            ? 'profile-pic-close'
+            : 'reposition-close'
+        }
+      />
       <div>
         <ImageCropper
           src={image}
@@ -194,6 +202,11 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
           uploadStatus={uploadStatus}
           isLoading={isLoading}
           onSubmit={onSubmit}
+          dataTestId={
+            imageFile?.profileImage || onBoardImageFile
+              ? 'profile-pic'
+              : 'reposition'
+          }
         />
       </div>
     </Modal>
