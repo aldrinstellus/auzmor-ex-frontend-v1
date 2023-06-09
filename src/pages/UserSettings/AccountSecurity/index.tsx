@@ -149,6 +149,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       getValues,
       onChange: () => {},
       dataTestId: 'change-password-confirm-password',
+      errorDataTestId: 'change-password-error',
       showChecks: false,
       disabled: isLoading || data?.result?.data?.sso?.active,
     },
@@ -174,7 +175,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
               setIsSettings(true);
               setIsHeaderVisible(true);
             }}
-            dataTestId="account-security-change-between-password"
+            dataTestId="change-password-btn"
           />
         </div>
       ) : (
@@ -197,7 +198,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
               <div className="flex justify-between items-center mt-28">
                 <div
                   className="text-primary-500 text-base font-bold"
-                  data-testId="change-password-forgot-password-cta"
+                  data-testId="forgot-password-cta"
                 >
                   <Link to="/forgot-password">Forgot Password</Link>
                 </div>
