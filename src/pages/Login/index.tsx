@@ -1,19 +1,48 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Logo } from 'components/Logo';
 import WelcomeOffice from 'images/welcomeToOffice.png';
 import LoginViaCred from './components/LoginViaCred';
 import LoginViaSSO from './components/LoginViaSSO';
 import useAuth from 'hooks/useAuth';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { checkLogin } from 'queries/account';
+import { getSubDomain } from 'utils/misc';
 
 interface ILoginProps {}
 
 const Login: React.FC<ILoginProps> = () => {
   const [viaSSO, setViaSSO] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   const { user } = useAuth();
+
+  const domain = getSubDomain(window.location.host);
+
+  useEffect(() => {
+    if (!user && !domain) {
+      checkLoginMutation.mutate();
+    }
+  }, [domain, user]);
+
+  const checkLoginMutation = useMutation(() => checkLogin(), {
+    onSuccess: (data) => {
+      if (data?.data?.code === 200) {
+        return navigate('/');
+      }
+      setLoading(false);
+    },
+    onError: () => {
+      setLoading(false);
+    },
+  });
 
   if (user) {
     return <Navigate to="/" />;
+  }
+
+  if (loading) {
+    return null;
   }
 
   return (
