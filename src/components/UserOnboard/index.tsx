@@ -102,6 +102,7 @@ const UserOnboard: React.FC = (): ReactNode => {
         className="hidden"
         ref={profilePictureRef}
         accept="image/*"
+        data-testid="profilepic-upload"
         onChange={(e) => {
           if (e.target.files?.length) {
             setFile(Array.prototype.slice.call(e.target.files)[0]);
