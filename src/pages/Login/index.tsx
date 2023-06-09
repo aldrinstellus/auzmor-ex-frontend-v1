@@ -3,11 +3,18 @@ import { Logo } from 'components/Logo';
 import WelcomeOffice from 'images/welcomeToOffice.png';
 import LoginViaCred from './components/LoginViaCred';
 import LoginViaSSO from './components/LoginViaSSO';
+import useAuth from 'hooks/useAuth';
+import { Navigate } from 'react-router-dom';
 
 interface ILoginProps {}
 
 const Login: React.FC<ILoginProps> = () => {
   const [viaSSO, setViaSSO] = useState(false);
+  const { user } = useAuth();
+
+  if (user) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <div className="flex h-screen w-screen">
