@@ -6,7 +6,6 @@ import { afterXUnit } from 'utils/time';
 import Header from 'components/ModalHeader';
 import Footer from './Footer';
 import Body from './Body';
-import { Value } from 'react-date-picker/dist/cjs/shared/types';
 
 export interface ICreateAnnouncementProps {
   closeModal: () => void;
@@ -104,7 +103,16 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
         expiryFields={expiryFields}
         datepickerFields={datepickerFields}
       />
-      <Footer handleSubmit={handleSubmit} />
+      <Footer
+        handleSubmit={handleSubmit}
+        isValid={
+          (selecetedExpiry?.label === 'Custom Date' &&
+            selecetedExpiry?.value === '') ||
+          (!!!selecetedExpiry && !!!announcement)
+            ? false
+            : true
+        }
+      />
     </>
   );
 };
