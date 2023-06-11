@@ -17,7 +17,10 @@ import { twConfig } from 'utils/misc';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import moment from 'moment';
 import MediaPreview, { Mode } from 'components/MediaPreview';
-import { useUpload } from 'queries/files';
+import IconButton, {
+  Variant as IconVariant,
+  Size as SizeVariant,
+} from 'components/IconButton';
 
 export interface IEditorContentChanged {
   text: string;
@@ -135,7 +138,7 @@ const RichTextEditor = React.forwardRef(
     };
 
     return (
-      <div className="w-full" data-testid={dataTestId}>
+      <div className="w-full relative" data-testid={dataTestId}>
         <ReactQuill
           id="quill"
           className={className}
