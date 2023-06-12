@@ -63,15 +63,19 @@ export interface IValidationErrors {
 }
 
 const Signup: React.FC<ISignupProps> = () => {
-  const signupMutation = useMutation((formData: IForm) => signup(formData), {
-    onSuccess: (data) =>
-      redirectWithToken({
-        redirectUrl: data.result.data.redirectUrl,
-        token: data.result.data.uat,
-        showOnboard: true,
-      }),
-    onError: (data: any) => {},
-  });
+  const signupMutation = useMutation(
+    (formData: IForm) =>
+      signup({ ...formData, domain: formData.domain.toLowerCase() }),
+    {
+      onSuccess: (data) =>
+        redirectWithToken({
+          redirectUrl: data.result.data.redirectUrl,
+          token: data.result.data.uat,
+          showOnboard: true,
+        }),
+      onError: (data: any) => {},
+    },
+  );
 
   const {
     watch,
