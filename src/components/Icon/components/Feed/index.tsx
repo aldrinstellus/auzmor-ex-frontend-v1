@@ -5,15 +5,28 @@ import { default as FeedOutline } from './FeedOutline';
 
 type IconProps = {
   size?: number;
-  fill?: string;
+  className?: string;
+  hover?: boolean;
+  disabled?: boolean;
+  onClick?: () => void;
+  isActive?: boolean;
 };
 
-const FeedIcon: React.FC<IconProps> = (props) => {
-  const [isHovered, eventHandlers] = useHover();
-
+const FeedIcon: React.FC<IconProps> = ({
+  hover,
+  onClick,
+  className = '',
+  disabled,
+  isActive,
+  ...props
+}) => {
   return (
-    <div {...eventHandlers}>
-      {isHovered ? <FeedFilled {...props} /> : <FeedOutline {...props} />}
+    <div onClick={onClick} className={className}>
+      {!disabled && (hover || isActive) ? (
+        <FeedFilled {...props} />
+      ) : (
+        <FeedOutline {...props} />
+      )}
     </div>
   );
 };

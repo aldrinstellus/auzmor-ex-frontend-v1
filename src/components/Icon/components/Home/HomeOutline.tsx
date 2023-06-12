@@ -3,28 +3,28 @@ import { SVGProps } from 'react';
 
 interface IconProps {
   size?: number;
-  fill?: string;
+  stroke?: string;
 }
 
 const SvgHomeOutline = ({
   size = 24,
-  fill = '#737373',
+  stroke = '#737373',
   ...props
 }: SVGProps<SVGSVGElement> & IconProps) => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
     width={size}
     height={size}
     viewBox="0 0 24 24"
     {...props}
     fill="none"
+    xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      stroke={fill}
+      d="M12 18V15M10.07 2.82L3.14 8.37C2.36 8.99 1.86 10.3 2.03 11.28L3.36 19.24C3.6 20.66 4.96 21.81 6.4 21.81H17.6C19.03 21.81 20.4 20.65 20.64 19.24L21.97 11.28C22.13 10.3 21.63 8.99 20.86 8.37L13.93 2.83C12.86 1.97 11.13 1.97 10.07 2.82Z"
+      stroke={stroke}
+      strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={1.5}
-      d="M11 17v-3M9.07 1.82 2.14 7.37c-.78.62-1.28 1.93-1.11 2.91l1.33 7.96c.24 1.42 1.6 2.57 3.04 2.57h11.2c1.43 0 2.8-1.16 3.04-2.57l1.33-7.96c.16-.98-.34-2.29-1.11-2.91l-6.93-5.54c-1.07-.86-2.8-.86-3.86-.01Z"
     />
   </svg>
 );

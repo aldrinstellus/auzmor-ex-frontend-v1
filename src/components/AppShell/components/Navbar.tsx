@@ -8,6 +8,8 @@ import NotificationsOverview from 'components/NotificationsOverview';
 import useRole from 'hooks/useRole';
 import Layout, { FieldType } from 'components/Form';
 import { useForm } from 'react-hook-form';
+import { twConfig } from 'utils/misc';
+import NavbarMenuItem from './NavbarMenuItem';
 
 const navigations = [
   {
@@ -52,7 +54,6 @@ const navigations = [
 
 const Navbar = () => {
   const { isAdmin } = useRole();
-  const location = useLocation();
 
   const { control } = useForm({
     mode: 'onChange',
@@ -80,25 +81,27 @@ const Navbar = () => {
           />
         </div>
         <div className="flex items-center space-x-8">
-          {navigations.map((nav) => (
-            <>
-              <NavLink
-                to={nav.disabled ? location.pathname : nav.linkTo}
+          {navigations.map((nav) =>
+            nav.disabled ? (
+              <div
+                className="flex flex-col items-center"
+                data-testid={nav.dataTestId}
                 key={nav.label}
-                className={({ isActive }) =>
-                  isActive ? 'text-primary-500' : 'text-neutral-500'
-                }
               >
-                <div
-                  className="flex flex-col items-center"
-                  data-testid={nav.dataTestId}
-                >
-                  <Icon name={nav.icon} size={nav.iconSize} />
-                  <div className="text-sm">{nav.label}</div>
+                <Icon
+                  name={nav.icon}
+                  size={nav.iconSize}
+                  stroke={twConfig.theme.colors.neutral['200']}
+                  disabled
+                />
+                <div className="text-sm text-neutral-200 cursor-default">
+                  {nav.label}
                 </div>
-              </NavLink>
-            </>
-          ))}
+              </div>
+            ) : (
+              <NavbarMenuItem nav={nav} key={nav.label} />
+            ),
+          )}
         </div>
         <div className="mx-8 h-full py-2">
           <Divider variant={Variant.Vertical} />
@@ -108,16 +111,20 @@ const Navbar = () => {
             <NavLink
               to="/admin"
               className={({ isActive }) =>
-                isActive ? 'text-primary-500' : 'text-neutral-500'
+                `${isActive ? 'text-primary-500' : 'text-neutral-500'} group`
               }
             >
-              <div
-                className="flex flex-col items-center"
-                data-testid="office-admin-page"
-              >
-                <Icon name="admin" size={22} />
-                <div className="text-sm mt-[1px]">Admin</div>
-              </div>
+              {({ isActive }) => (
+                <div
+                  className="flex flex-col items-center"
+                  data-testid="office-admin-page"
+                >
+                  <Icon name="admin" size={24} isActive={isActive} />
+                  <div className="text-sm mt-[1px] group-hover:text-primary-500">
+                    Admin
+                  </div>
+                </div>
+              )}
             </NavLink>
           )}
           <div>
