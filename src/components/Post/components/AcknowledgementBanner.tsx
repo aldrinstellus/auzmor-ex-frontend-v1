@@ -3,6 +3,7 @@ import Button, { Size, Variant } from 'components/Button';
 import Icon from 'components/Icon';
 import { announcementRead } from 'queries/post';
 import React from 'react';
+import { hasDatePassed } from 'utils/time';
 
 export interface IAcknowledgementBannerProps {
   data: any;
@@ -28,7 +29,10 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
   return (
     <div>
       {isAnnouncement &&
-        !(data?.myAcknowledgement?.reaction === 'mark_read') && (
+        !(
+          data?.myAcknowledgement?.reaction === 'mark_read' ||
+          hasDatePassed(data?.announcement?.end)
+        ) && (
           <div
             className="flex justify-between items-center bg-blue-700 -mb-4 p-2 rounded-t-9xl"
             data-testid="announcement-header"
