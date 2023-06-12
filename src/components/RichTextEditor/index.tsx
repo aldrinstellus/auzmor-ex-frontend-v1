@@ -18,6 +18,7 @@ import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import moment from 'moment';
 import MediaPreview, { Mode } from 'components/MediaPreview';
 import { useUpload } from 'queries/files';
+import { hasDatePassed } from 'utils/time';
 
 export interface IEditorContentChanged {
   text: string;
@@ -160,7 +161,7 @@ const RichTextEditor = React.forwardRef(
             }}
           />
         )}
-        {announcement?.label && (
+        {announcement?.label && !hasDatePassed(announcement.value) && (
           <div className="flex justify-between bg-primary-100 px-4 py-2 m-4">
             <div className="flex items-center">
               <Icon
@@ -169,7 +170,7 @@ const RichTextEditor = React.forwardRef(
                 stroke={twConfig.theme.colors.neutral['900']}
               />
               <div className="ml-2.5">
-                Post will be scheduled for{' '}
+                Announcement will expire on{' '}
                 {moment(new Date(announcement.value)).format(
                   'ddd, MMM DD [at] h:mm a',
                 )}
