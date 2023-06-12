@@ -15,6 +15,10 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
 
   const isAnnouncement = data?.isAnnouncement;
 
+  const hasDatePassed = (date: string) =>
+    new Date(date).setHours(0, 0, 0, 0) <
+    new Date(Date.now()).setHours(0, 0, 0, 0);
+
   const acknowledgeMutation = useMutation({
     mutationKey: ['acknowledge-announcement'],
     mutationFn: announcementRead,
@@ -28,7 +32,10 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
   return (
     <div>
       {isAnnouncement &&
-        !(data?.myAcknowledgement?.reaction === 'mark_read') && (
+        !(
+          data?.myAcknowledgement?.reaction === 'mark_read' ||
+          hasDatePassed(data?.announcement?.end)
+        ) && (
           <div
             className="flex justify-between items-center bg-blue-700 -mb-4 p-2 rounded-t-9xl"
             data-testid="announcement-header"
