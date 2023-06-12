@@ -3,6 +3,7 @@ import Button, { Size, Variant } from 'components/Button';
 import Icon from 'components/Icon';
 import { announcementRead } from 'queries/post';
 import React from 'react';
+import { hasDatePassed } from 'utils/time';
 
 export interface IAcknowledgementBannerProps {
   data: any;
@@ -14,10 +15,6 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
   const queryClient = useQueryClient();
 
   const isAnnouncement = data?.isAnnouncement;
-
-  const hasDatePassed = (date: string) =>
-    new Date(date).setHours(0, 0, 0, 0) <
-    new Date(Date.now()).setHours(0, 0, 0, 0);
 
   const acknowledgeMutation = useMutation({
     mutationKey: ['acknowledge-announcement'],

@@ -30,6 +30,7 @@ import {
 import moment from 'moment';
 import MediaPreview, { Mode } from 'components/MediaPreview';
 import Banner, { Variant } from 'components/Banner';
+import { hasDatePassed } from 'utils/time';
 
 export interface IEditorContentChanged {
   text: string;
@@ -251,7 +252,7 @@ const RichTextEditor = React.forwardRef(
             dataTestId={dataTestId}
           />
         )}
-        {announcement?.label && (
+        {announcement?.label && !hasDatePassed(announcement.value) && (
           <div className="flex justify-between bg-primary-100 px-4 py-2 m-4">
             <div className="flex items-center">
               <Icon

@@ -18,3 +18,13 @@ export const getTimezoneNameFromIANA = (iana: string): string => {
   )?.timezoneName;
   return timezoneName || iana;
 };
+
+export const hasDatePassed = (date: string) => {
+  try {
+    return new Date(date) < new Date(Date.now());
+  } catch (exception) {
+    // If date is invalid, assume that it has passed.
+    console.log(exception);
+    return true;
+  }
+};
