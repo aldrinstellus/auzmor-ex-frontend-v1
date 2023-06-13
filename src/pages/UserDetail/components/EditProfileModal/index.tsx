@@ -22,6 +22,7 @@ import PopupMenu from 'components/PopupMenu';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import Icon from 'components/Icon';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 
 interface IOptions {
   value: string;
@@ -250,7 +251,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
           display: 'flex',
           alignItems: 'center',
         },
-        autoClose: 2000,
+        autoClose: TOAST_AUTOCLOSE_TIME,
       });
       closeEditProfileModal();
       await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });

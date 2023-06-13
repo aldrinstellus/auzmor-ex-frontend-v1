@@ -20,6 +20,7 @@ import { twConfig } from 'utils/misc';
 import InvitedUsersList from './InvitedUsersList';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import 'utils/custom-yup-validators/email/validateEmail';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 
 export interface IInviteUserModalProps {
   showModal: boolean;
@@ -152,6 +153,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
             display: 'flex',
             alignItems: 'center',
           },
+          autoClose: TOAST_AUTOCLOSE_TIME,
         },
       );
       setShowAddUserModal(false);

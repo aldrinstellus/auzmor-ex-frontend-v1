@@ -11,6 +11,7 @@ import { twConfig } from 'utils/misc';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 
 export interface hashSize {
   width: number;
@@ -51,6 +52,7 @@ export const fetchFile = (url: string) => {
           display: 'flex',
           alignItems: 'center',
         },
+        autoClose: TOAST_AUTOCLOSE_TIME,
       });
       URL.revokeObjectURL(tempUrl);
       aTag.remove();
@@ -70,6 +72,7 @@ export const fetchFile = (url: string) => {
           display: 'flex',
           alignItems: 'center',
         },
+        autoClose: TOAST_AUTOCLOSE_TIME,
       });
     });
 };

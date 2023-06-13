@@ -18,6 +18,7 @@ import { twConfig } from 'utils/misc';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import DragDropList from 'components/DragDropList';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 
 interface IPersonalDetails {
   birthDate: Date | string;
@@ -122,7 +123,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
           display: 'flex',
           alignItems: 'center',
         },
-        autoClose: 2000,
+        autoClose: TOAST_AUTOCLOSE_TIME,
       });
       setIsEditable(false);
     },

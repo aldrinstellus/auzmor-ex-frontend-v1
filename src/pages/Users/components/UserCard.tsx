@@ -15,7 +15,7 @@ import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { twConfig } from 'utils/misc';
 import { Role } from 'utils/enum';
-import { PRIMARY_COLOR } from 'utils/constants';
+import { PRIMARY_COLOR, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 
 export interface IUserCardProps {
   id: string;
@@ -87,7 +87,7 @@ const UserCard: React.FC<IUserCardProps> = ({
             display: 'flex',
             alignItems: 'center',
           },
-          autoClose: 2000,
+          autoClose: TOAST_AUTOCLOSE_TIME,
         });
         resendInviteMutation.mutate(id);
       },
