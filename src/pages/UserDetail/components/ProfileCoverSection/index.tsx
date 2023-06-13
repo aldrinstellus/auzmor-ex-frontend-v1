@@ -61,6 +61,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
       onClick: () => {
         userCoverImageRef?.current?.click();
       },
+      dataTestId: 'edit-coverpic-upload',
     },
     {
       icon: 'maximizeOutline',
@@ -70,6 +71,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
         openEditImageModal();
         closeEditProfileModal();
       },
+      dataTestId: 'edit-coverpic-reposition',
     },
     {
       icon: 'trashOutline',
@@ -87,6 +89,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
         }
         setIsCoverImageRemoved(true);
       },
+      dataTestId: 'edit-coverpic-deletepost',
     },
   ];
 
