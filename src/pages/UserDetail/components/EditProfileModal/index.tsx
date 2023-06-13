@@ -258,7 +258,6 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
   });
 
   const onSubmit = async (user: IUpdateProfileForm) => {
-    console.log({ user });
     updateUsersMutation.mutate({
       fullName: user.fullName,
       designation: user?.designation?.value,
