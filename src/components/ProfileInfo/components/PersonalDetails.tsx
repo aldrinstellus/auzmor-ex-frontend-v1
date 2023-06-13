@@ -224,7 +224,6 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
             value: event?.target?.value,
           };
           resetField('skills');
-          console.log(skills, skillObject);
           setSkills([skillObject, ...skills]);
         }
       },

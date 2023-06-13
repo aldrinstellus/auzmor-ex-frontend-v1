@@ -50,13 +50,7 @@ const ItemList: React.FC<IItemListProps> = ({
               style={{ border: 'none', outline: 'none' }}
               onChange={(event) => {
                 setNewEnteredValue(event?.target?.value);
-              }}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') {
-                  event.preventDefault();
-                  updateInitialSkillsets(item.id, newEnteredValue);
-                  inputRef?.current?.blur();
-                }
+                updateInitialSkillsets(item.id, newEnteredValue);
               }}
             />
           ) : (
