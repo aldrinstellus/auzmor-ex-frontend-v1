@@ -5,11 +5,11 @@ import { FieldValues, UseFormHandleSubmit } from 'react-hook-form';
 
 export interface IFooterProps {
   handleSubmit: UseFormHandleSubmit<FieldValues>;
+  isValid: boolean;
 }
 
-const Footer: React.FC<IFooterProps> = ({ handleSubmit }) => {
-  const { setAnnouncement, setActiveFlow, clearPostContext } =
-    useContext(CreatePostContext);
+const Footer: React.FC<IFooterProps> = ({ handleSubmit, isValid }) => {
+  const { setAnnouncement, setActiveFlow } = useContext(CreatePostContext);
   const onSubmit = (data: any) => {
     setAnnouncement({
       label: data.expityOption.label,
@@ -30,6 +30,7 @@ const Footer: React.FC<IFooterProps> = ({ handleSubmit }) => {
         label={'Next'}
         onClick={handleSubmit(onSubmit)}
         dataTestId="announcement-expiry-nextcta"
+        disabled={!isValid}
       />
     </div>
   );

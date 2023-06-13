@@ -42,10 +42,11 @@ body {
 }
 
 /* Custom toolbar style globall applied */
-#toolbar {
-  border: none;
+#toolbar,
+.quill-toolbar {
+  border: none !important;
   /* padding: 0px 24px 0px 28px; */
-  background-color: white;
+  background-color: white !important;
 }
 
 .ql-toolbar.ql-snow .ql-formats {

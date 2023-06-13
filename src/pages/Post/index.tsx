@@ -49,10 +49,7 @@ const PostPage: React.FC = () => {
                     replyInputBox={replyInputBox}
                     customNode={
                       post?.comment?.comment ? (
-                        <Reply
-                          handleClick={() => {}}
-                          comment={post?.comment?.comment}
-                        />
+                        <Reply comment={post?.comment?.comment} />
                       ) : null
                     }
                   />

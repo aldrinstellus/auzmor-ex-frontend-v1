@@ -8,23 +8,23 @@ interface IconProps {
 
 const SvgExploreOutline = ({
   size = 24,
-  fill = '#737373',
+  stroke = '#737373',
   ...props
 }: SVGProps<SVGSVGElement> & IconProps) => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
     width={size}
     height={size}
     viewBox="0 0 24 24"
     {...props}
     fill="none"
+    xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      stroke={fill}
+      d="M18.816 13.58C21.108 15.718 22.362 17.58 21.908 18.48C21.163 19.94 16.125 18.221 10.653 14.642C5.183 11.063 1.349 6.978 2.093 5.519C2.557 4.609 5.019 5.075 7.896 6.324M19 12C19 15.866 15.866 19 12 19C8.13401 19 5 15.866 5 12C5 8.13401 8.13401 5 12 5C15.866 5 19 8.13401 19 12Z"
+      stroke={stroke}
+      strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={1.5}
-      d="M18.816 13.58c2.292 2.138 3.546 4 3.092 4.9-.745 1.46-5.783-.259-11.255-3.838-5.47-3.579-9.304-7.664-8.56-9.123.464-.91 2.926-.444 5.803.805M19 12a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
     />
   </svg>
 );

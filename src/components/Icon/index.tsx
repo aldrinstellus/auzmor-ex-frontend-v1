@@ -13,6 +13,7 @@ export type IconProps = {
   hover?: boolean;
   disabled?: boolean;
   dataTestId?: string;
+  isActive?: boolean;
 };
 
 const Icon: React.FC<IconProps> = ({
@@ -26,6 +27,7 @@ const Icon: React.FC<IconProps> = ({
   strokeWidth,
   disabled = false,
   dataTestId,
+  isActive,
 }) => {
   const Component = iconMap[name] || null;
   if (!Component) {
@@ -46,6 +48,7 @@ const Icon: React.FC<IconProps> = ({
       strokeWidth={strokeWidth}
       disabled={disabled}
       data-testid={dataTestId}
+      isActive={isActive}
     />
   );
 };

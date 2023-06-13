@@ -55,7 +55,7 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
     {
       id: 2,
       title: 'Activity',
-      dataTestId: 'user-actiity-tab',
+      dataTestId: 'user-activity-tab',
       content: (
         <ProfileActivityFeed
           pathname={pathname}

@@ -6,7 +6,6 @@ import { afterXUnit } from 'utils/time';
 import Header from 'components/ModalHeader';
 import Footer from './Footer';
 import Body from './Body';
-import { Value } from 'react-date-picker/dist/cjs/shared/types';
 
 export interface ICreateAnnouncementProps {
   closeModal: () => void;
@@ -17,13 +16,7 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
 }) => {
   const { setActiveFlow, announcement, clearPostContext } =
     useContext(CreatePostContext);
-  const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors, isValid },
-  } = useForm({
+  const { control, handleSubmit, watch, setValue } = useForm({
     mode: 'onChange',
   });
 
@@ -42,6 +35,7 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
   const expiryFields = [
     {
       type: FieldType.SingleSelect,
+      label: 'Announcement Expiry',
       name: 'expityOption',
       control,
       options: [
@@ -72,7 +66,11 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
         },
       ],
       placeholder: 'Select Announcement Expiry',
-      defaultValue: announcement,
+      defaultValue: announcement || {
+        label: '1 Week',
+        value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
+        dataTestId: 'announcement-expiry-1week',
+      },
       dataTestId: 'announcement-expiry-dropdown',
     },
   ];
@@ -103,7 +101,15 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
         expiryFields={expiryFields}
         datepickerFields={datepickerFields}
       />
-      <Footer handleSubmit={handleSubmit} />
+      <Footer
+        handleSubmit={handleSubmit}
+        isValid={
+          selecetedExpiry?.label === 'Custom Date' &&
+          selecetedExpiry?.value === ''
+            ? false
+            : true
+        }
+      />
     </>
   );
 };

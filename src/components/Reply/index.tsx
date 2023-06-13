@@ -72,13 +72,6 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
       }
     });
   });
-  const quillRef = useRef<HTMLDivElement>(null);
-
-  const handleClick = () => {
-    // quillRef.current?.animate({
-    //   scrollTop: 100,
-    // });
-  };
 
   return (
     <div className={className}>
@@ -100,14 +93,13 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
               className="w-full py-1"
               entityId={entityId}
               entityType="comment"
-              inputRef={quillRef}
             />
           </div>
           {replies && replies.length > 0 && (
             <div>
               {replies.map((reply: any) => (
                 <Reply
-                  handleClick={handleClick}
+                  // handleClick={handleClick}
                   comment={reply}
                   key={reply.id}
                 />

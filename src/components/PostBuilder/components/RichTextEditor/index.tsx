@@ -178,13 +178,6 @@ const RichTextEditor = React.forwardRef(
         }
       });
 
-      // console.log(
-      //   imageSizeExceedCount,
-      //   videoSizeExceedCount,
-      //   mediaLengthExceedCount,
-      //   mediaValidationErrors,
-      // );
-
       if (imageSizeExceedCount === 1) {
         errors.push(
           mediaValidationErrors.find(

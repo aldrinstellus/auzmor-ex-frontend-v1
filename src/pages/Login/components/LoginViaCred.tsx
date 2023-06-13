@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { checkLogin, login } from 'queries/account';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
@@ -17,11 +17,10 @@ import {
   readFirstAxiosError,
   redirectWithToken,
 } from 'utils/misc';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useGetSSOFromDomain } from 'queries/organization';
 import { useLoginViaSSO } from 'queries/auth';
-import useAuth from 'hooks/useAuth';
 import 'utils/custom-yup-validators/email/validateEmail';
 
 export interface ILoginViaCredProps {
@@ -46,16 +45,6 @@ const schema = yup.object({
 });
 
 const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
-  const { user } = useAuth();
-
-  const checkLoginMutation = useMutation(() => checkLogin(), {
-    onSuccess: (data) => {
-      // if (data?.data?.code === 200) {
-      //   redirectWithToken({ redirectUrl: '' });
-      // }
-    },
-  });
-
   const loginMutation = useMutation((formData: IForm) => login(formData), {
     onSuccess: (data) =>
       redirectWithToken({
@@ -69,12 +58,6 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
     domain,
     domain !== '' ? true : false,
   );
-
-  useEffect(() => {
-    if (!domain) {
-      checkLoginMutation.mutate();
-    }
-  }, [domain]);
 
   const { refetch } = useLoginViaSSO(
     { domain },

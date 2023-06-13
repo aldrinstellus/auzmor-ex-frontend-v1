@@ -25,6 +25,7 @@ const Body = React.forwardRef(
             contentMode={CREATE_POST}
             dataTestId={`${dataTestId}-creatorname`}
             disabled={true}
+            createdBy={data?.createdBy}
           />
           <RichTextEditor
             placeholder="What’s on your mind?"

@@ -9,6 +9,7 @@ type IconProps = {
   hover?: boolean;
   disabled?: boolean;
   onClick?: () => void;
+  isActive?: boolean;
 };
 
 const PeopleIcon: React.FC<IconProps> = ({
@@ -16,13 +17,12 @@ const PeopleIcon: React.FC<IconProps> = ({
   onClick,
   className = '',
   disabled,
+  isActive,
   ...props
 }) => {
-  const [isHovered, eventHandlers] = useHover();
-
   return (
-    <div onClick={onClick} className={className} {...eventHandlers}>
-      {!disabled && (hover || isHovered) ? (
+    <div onClick={onClick} className={className}>
+      {!disabled && (hover || isActive) ? (
         <PeopleFilled {...props} />
       ) : (
         <PeopleOutline {...props} />

@@ -14,7 +14,6 @@ interface CommentFormProps {
   entityId: string;
   entityType: string;
   defaultValue?: string;
-  inputRef?: any;
 }
 
 export const CommentForm: React.FC<CommentFormProps> = ({
@@ -22,7 +21,6 @@ export const CommentForm: React.FC<CommentFormProps> = ({
   entityId,
   entityType,
   defaultValue,
-  inputRef,
 }) => {
   const queryClient = useQueryClient();
 
@@ -66,43 +64,46 @@ export const CommentForm: React.FC<CommentFormProps> = ({
 
   return (
     <div className={`flex flex-row ${className} `}>
-      <div
-        ref={inputRef}
-        className="flex items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full"
-      >
+      <div className="flex items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full">
         <RichTextEditor
+          toolbarId={`toolbar-${entityId}`}
           placeholder="Leave a Comment..."
-          className="max-h-18 overflow-y-auto w-[70%] max-w-[70%]"
+          className="max-h-18 w-[70%] max-w-[70%]"
           ref={quillRef}
           defaultValue={defaultValue}
           dataTestId="postcomment-textbox"
-        />
-      </div>
-
-      <div className="flex flex-row items-center z-10 -ml-32">
-        <IconButton
-          icon={'iconLinear'}
-          className="flex mx-2 !p-0 cursor-pointer !bg-inherit hover:bg-inherit"
-          size={SizeVariant.Large}
-          variant={IconVariant.Primary}
-          dataTestId="postcomment-attachmediacta"
-        />
-        <IconButton
-          icon={'emojiHappy'}
-          className="flex mx-2 !p-0 cursor-pointer !bg-inherit hover:bg-inherit"
-          size={SizeVariant.Large}
-          variant={IconVariant.Primary}
-          dataTestId="postcomment-addemojiscta"
-        />
-        <IconButton
-          icon={'send'}
-          className="flex mx-2 !p-0 !bg-inherit hover:bg-inherit disabled:bg-inherit disabled:cursor-auto "
-          size={SizeVariant.Large}
-          variant={IconVariant.Primary}
-          onClick={() => {
-            onSubmit();
-          }}
-          dataTestId="postcomment-sendcta"
+          renderToolbar={() => (
+            <div
+              className="flex flex-row items-center z-10 -ml-32 absolute top-0 right-2 quill-toolbar"
+              id={`toolbar-${entityId}-toolbar`}
+            >
+              {/* <IconButton
+                icon={'iconLinear'}
+                className="flex mx-2 !p-0 cursor-pointer !bg-inherit hover:bg-inherit"
+                size={SizeVariant.Large}
+                variant={IconVariant.Primary}
+                dataTestId="postcomment-attachmediacta"
+              /> */}
+              <button className="ql-emoji" />
+              {/* <IconButton
+                icon={'emojiHappy'}
+                className="flex mx-2 !p-0 cursor-pointer !bg-inherit hover:bg-inherit"
+                size={SizeVariant.Large}
+                variant={IconVariant.Primary}
+                dataTestId="postcomment-addemojiscta"
+              /> */}
+              <IconButton
+                icon={'send'}
+                className="flex mx-2 !p-0 !bg-inherit hover:bg-inherit disabled:bg-inherit disabled:cursor-auto "
+                size={SizeVariant.Large}
+                variant={IconVariant.Primary}
+                onClick={() => {
+                  onSubmit();
+                }}
+                dataTestId="postcomment-sendcta"
+              />
+            </div>
+          )}
         />
       </div>
     </div>

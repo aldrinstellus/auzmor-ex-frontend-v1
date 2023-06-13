@@ -92,6 +92,8 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
     setIsEditable(false);
   };
 
+  const userTimezone = getTimezoneNameFromIANA(professionalDetails?.timeZone);
+
   return (
     <div {...eventHandlers}>
       <Card className={onHoverStyles}>
@@ -134,7 +136,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
                   control={control}
                   defaultTimezone={{
                     value: professionalDetails?.timeZone,
-                    label: professionalDetails?.timeZone,
+                    label: userTimezone,
                   }}
                   placeholder="Select your timezone"
                   dataTestId="professional-details-timezone"
@@ -148,8 +150,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
                     className="text-neutral-900 text-base font-medium"
                     data-testid="user-timezone"
                   >
-                    {getTimezoneNameFromIANA(professionalDetails?.timeZone) ||
-                      'N/A'}
+                    {userTimezone || 'N/A'}
                   </div>
                 </div>
               )}

@@ -32,7 +32,9 @@ const Body: React.FC<IBodyProps> = ({
           <Layout fields={expiryFields} />
         </form>
         {((selecetedExpiry && selecetedExpiry.label === 'Custom Date') ||
-          (announcement && announcement.label === 'Custom Date')) && (
+          (!!!selecetedExpiry &&
+            announcement &&
+            announcement.label === 'Custom Date')) && (
           <Layout fields={datepickerFields} className="mt-6" />
         )}
       </div>

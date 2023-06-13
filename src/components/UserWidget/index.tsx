@@ -27,15 +27,25 @@ const UserCard: React.FC<IUserCardProps> = ({ className }) => {
               image={user?.profileImage}
               size={96}
               className="border-4 border-white mt-8 overflow-hidden"
+              dataTestId="profilecard-profilepic"
             />
           </Link>
           <Link to="/profile">
-            <div className="text-base font-bold mt-2 truncate w-full text-center">
+            <div
+              className="text-base font-bold mt-2 truncate w-full text-center"
+              data-testid="profilecard-username"
+            >
               {userDetails?.fullName}
             </div>
-            <div className="text-xs font-normal mt-2 truncate w-full text-center">
-              {userDetails?.workEmail}
-            </div>
+            {userDetails?.designation && (
+              <div
+                className="text-xs font-normal mt-2 truncate w-full text-center"
+                data-testid="profilecard-designation"
+              >
+                {userDetails?.designation || 'NA'}
+              </div>
+            )}
+
             {/* <div className="text-xxs font-normal mt-2 truncate w-full text-center flex justify-center items-center gap-x-2">
               <Icon name="location" size={16} />
               {userDetails?.workLocation}
