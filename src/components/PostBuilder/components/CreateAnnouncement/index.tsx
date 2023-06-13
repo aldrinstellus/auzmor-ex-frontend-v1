@@ -72,7 +72,11 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
         },
       ],
       placeholder: 'Select Announcement Expiry',
-      defaultValue: announcement,
+      defaultValue: announcement || {
+        label: '1 Week',
+        value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
+        dataTestId: 'announcement-expiry-1week',
+      },
       dataTestId: 'announcement-expiry-dropdown',
     },
   ];
@@ -106,9 +110,8 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
       <Footer
         handleSubmit={handleSubmit}
         isValid={
-          (selecetedExpiry?.label === 'Custom Date' &&
-            selecetedExpiry?.value === '') ||
-          (!!!selecetedExpiry && !!!announcement)
+          selecetedExpiry?.label === 'Custom Date' &&
+          selecetedExpiry?.value === ''
             ? false
             : true
         }
