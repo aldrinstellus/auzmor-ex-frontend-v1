@@ -156,19 +156,6 @@ export const Reply: React.FC<ReplyProps> = ({
               reactionId={comment?.myReaction?.id || ''}
               queryKey="comments"
             />
-            <div
-              className="flex items-center ml-7"
-              // onClick={() => handleClick()}
-            >
-              <IconButton
-                icon={'reply'}
-                className="!p-0 !bg-inherit"
-                variant={IconVariant.Primary}
-              />
-              <div className="text-xs font-normal text-neutral-500 ml-1.5">
-                Comment
-              </div>
-            </div>
           </div>
           <div></div>
         </div>
