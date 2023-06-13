@@ -352,14 +352,14 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
             onClick={() => {
               closeEditProfileModal();
             }}
-            dataTestId={`${dataTestId}-savechanges`}
+            dataTestId={`${dataTestId}-cancel`}
           />
           <Button
             label={'Save Changes'}
             size={Size.Small}
             onClick={handleSubmit(onSubmit)}
             loading={updateUsersMutation.isLoading}
-            dataTestId={`${dataTestId}-cancel`}
+            dataTestId={`${dataTestId}-savechanges `}
           />
         </div>
       </form>
