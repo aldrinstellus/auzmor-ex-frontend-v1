@@ -32,6 +32,8 @@ export interface IPost {
     fullName?: string;
     profileImage: {
       blurHash?: string;
+      id: string;
+      original: string;
     };
     status?: string;
     userId?: string;
