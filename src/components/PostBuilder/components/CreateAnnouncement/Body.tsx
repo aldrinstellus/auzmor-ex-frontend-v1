@@ -15,6 +15,7 @@ const Body: React.FC<IBodyProps> = ({
   datepickerFields,
 }) => {
   const { announcement } = useContext(CreatePostContext);
+  console.log(selecetedExpiry, announcement, 'announcement ');
   return (
     <div className="text-sm text-neutral-900">
       <div className="m-4 min-h-[300px]">
@@ -32,7 +33,9 @@ const Body: React.FC<IBodyProps> = ({
           <Layout fields={expiryFields} />
         </form>
         {((selecetedExpiry && selecetedExpiry.label === 'Custom Date') ||
-          (announcement && announcement.label === 'Custom Date')) && (
+          (!!!selecetedExpiry &&
+            announcement &&
+            announcement.label === 'Custom Date')) && (
           <Layout fields={datepickerFields} className="mt-6" />
         )}
       </div>

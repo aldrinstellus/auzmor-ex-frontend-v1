@@ -58,19 +58,25 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
   return (
     <div data-testid={dataTestId} className="relative">
       {!!label && <div className={labelStyle}>{label}</div>}
-      <DatePicker
-        selected={new Date(defaultValue!)}
-        onChange={field.onChange}
-        calendarClassName={calendarClassName}
-        data-testid={dataTestId}
-        className={`flex border relative rounded-19xl w-full px-5 py-2.5 focus:!border-primary-500 hover:border-primary-500 ${className}`}
-        minDate={minDate}
-        portalId="root"
-        placeholderText={placeholder}
-        popperProps={{
-          positionFixed: true,
-          strategy: 'fixed',
-        }}
+      <Controller
+        name={field.name}
+        control={control}
+        render={() => (
+          <DatePicker
+            {...field}
+            selected={field.value || (defaultValue && new Date(defaultValue))}
+            calendarClassName={calendarClassName}
+            data-testid={dataTestId}
+            className={`flex border relative rounded-19xl w-full px-5 py-2.5 focus:!border-primary-500 hover:border-primary-500 ${className}`}
+            minDate={minDate}
+            portalId="root"
+            placeholderText={placeholder}
+            popperProps={{
+              positionFixed: true,
+              strategy: 'fixed',
+            }}
+          />
+        )}
       />
       <div className="absolute right-4 top-[calc(50%-8px)]">
         <Icon name="calendarTwo" size={16} />
