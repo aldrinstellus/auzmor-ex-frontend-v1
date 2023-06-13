@@ -36,25 +36,12 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
 
   const postOptions = [
     {
-      icon: 'bookmarkOutline',
-      label: 'Bookmark this post',
-      onClick: () => null,
-      dataTestId: 'post-ellipsis-bookmark-this-post',
-      disabled: true,
-    },
-    {
-      icon: 'copyLink',
-      label: 'Copy link to post',
-      onClick: () => null,
-      dataTestId: 'post-ellipsis-copy-link-to-post',
-      disabled: true,
-    },
-    {
       icon: 'edit',
-      label: 'Edit Post',
+      label: 'Edit post',
       onClick: () => setShowModal(true),
       dataTestId: 'post-ellipsis-edit-post',
       permissions: ['UPDATE_MY_POSTS'],
+      disabled: isMember && data.createdBy?.userId !== user?.id,
     },
     {
       icon: 'delete',
@@ -62,20 +49,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       onClick: () => showConfirm(),
       dataTestId: 'post-ellipsis-delete-post',
       permissions: ['DELETE_MY_POSTS'],
-    },
-    {
-      icon: 'clipboardClose',
-      label: 'Turn off commenting',
-      onClick: () => null,
-      dataTestId: 'post-ellipsis-turn-off-commenting',
-      disabled: true,
-    },
-    {
-      icon: 'chart',
-      label: 'View Post analytics',
-      onClick: () => null,
-      dataTestId: 'post-ellipsis-view-post-anlytics',
-      disabled: true,
+      disabled: isMember && data.createdBy?.userId !== user?.id,
     },
   ].filter((menuItem) => {
     if (
@@ -88,7 +62,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
     return true;
   });
 
-  return (
+  return postOptions.filter((postOption) => !postOption.disabled).length > 0 ? (
     <>
       <PopupMenu
         triggerNode={
@@ -133,6 +107,8 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
         isLoading={deletePostMutation.isLoading}
       />
     </>
+  ) : (
+    <></>
   );
 };
 
