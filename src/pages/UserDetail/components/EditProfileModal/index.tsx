@@ -185,7 +185,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
     },
     {
       icon: 'trashOutline',
-      label: 'Delete post',
+      label: 'Delete photo',
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         if (imageFile?.coverImage) {
@@ -265,6 +265,11 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       preferredName: user?.preferredName,
       // department: user?.department?.value,
       workLocation: user?.workLocation?.value,
+      ...(isCoverImageRemoved && {
+        coverImage: {
+          fileId: '',
+        },
+      }),
     });
   };
 
