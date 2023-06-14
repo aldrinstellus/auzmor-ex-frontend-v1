@@ -186,32 +186,62 @@ const Users: React.FC<IUsersProps> = () => {
 
       <div className="">
         <div className="flex flex-wrap gap-6">
-          {users?.result?.data?.length > 0 &&
-            users?.result?.data
-              ?.filter((userCard: IGetUser) => {
-                if (role) {
-                  return role.value === userCard.role;
-                } else return true;
-              })
-              .map((user: any) => (
-                <UserCard
-                  key={user.id}
-                  {...user}
-                  image={user?.profileImage?.original}
-                />
-              ))}
-          {isLoading && <Spinner color="#000" />}
+          {(() => {
+            if (isLoading) {
+              return <Spinner color="#000" />;
+            }
+            if (users?.result?.data?.length > 0) {
+              return (
+                <>
+                  {users?.result?.data
+                    ?.filter((userCard: IGetUser) => {
+                      if (role) {
+                        return role.value === userCard.role;
+                      } else return true;
+                    })
+                    .map((user: any) => (
+                      <UserCard
+                        key={user.id}
+                        {...user}
+                        image={user?.profileImage?.original}
+                      />
+                    ))}
+                </>
+              );
+            }
+            return (
+              <div className="py-16 w-full">
+                <div className="flex w-full justify-center">
+                  <img src={require('images/noResult.png')} />
+                </div>
+                <div className="text-center">
+                  <div
+                    className="mt-8 text-lg font-bold"
+                    data-testid="no-result-found"
+                  >
+                    No result found for &apos;{searchValue}&apos;
+                  </div>
+                  <div className="text-sm text-gray-500 mt-2">
+                    Sorry we can&apos;t find the profile you are looking for.
+                    <br /> Please check the spelling or try again.
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </div>
 
-      <div className="absolute right-0">
-        <TablePagination
-          total={users?.result?.totalCount}
-          page={page}
-          onPageChange={setPage}
-          dataTestIdPrefix="people-pagination"
-        />
-      </div>
+      {users?.result?.data?.length > 0 && (
+        <div className="absolute right-0">
+          <TablePagination
+            total={users?.result?.totalCount}
+            page={page}
+            onPageChange={setPage}
+            dataTestIdPrefix="people-pagination"
+          />
+        </div>
+      )}
 
       <InviteUserModal
         showModal={showAddUserModal}

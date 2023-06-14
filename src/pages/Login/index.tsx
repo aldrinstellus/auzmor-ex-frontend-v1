@@ -19,12 +19,6 @@ const Login: React.FC<ILoginProps> = () => {
 
   const domain = getSubDomain(window.location.host);
 
-  useEffect(() => {
-    if (!user && !domain) {
-      checkLoginMutation.mutate();
-    }
-  }, [domain, user]);
-
   const checkLoginMutation = useMutation(() => checkLogin(), {
     onSuccess: (data) => {
       if (data?.data?.code === 200) {
@@ -36,6 +30,15 @@ const Login: React.FC<ILoginProps> = () => {
       setLoading(false);
     },
   });
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      return;
+    }
+    if (!user && !domain) {
+      checkLoginMutation.mutate();
+    }
+  }, [domain, user]);
 
   if (user) {
     return <Navigate to="/" />;
