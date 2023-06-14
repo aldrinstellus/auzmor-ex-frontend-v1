@@ -144,7 +144,9 @@ const Banner: React.FC<BannerProps> = ({
         />
       </div>
 
-      <div className={titleStyles}>{title}</div>
+      <div className={titleStyles} data-testId={dataTestId}>
+        {title}
+      </div>
 
       {!!action && (
         <div className="flex items-center">

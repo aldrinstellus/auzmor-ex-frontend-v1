@@ -7,12 +7,14 @@ import { isVideo } from 'utils/misc';
 export interface IFooterProps {
   currentIndex: number;
   changeInputImgRef: React.RefObject<HTMLInputElement>;
+  changeInputVideoRef: React.RefObject<HTMLInputElement>;
   dataTestId?: string;
 }
 
 const Footer: React.FC<IFooterProps> = ({
   currentIndex,
   changeInputImgRef,
+  changeInputVideoRef,
   dataTestId,
 }) => {
   const { setActiveFlow, media, removedCoverimageFileIds } =
@@ -29,7 +31,11 @@ const Footer: React.FC<IFooterProps> = ({
             : 'Change photo'
         }
         className="mr-3"
-        onClick={() => changeInputImgRef?.current?.click()}
+        onClick={() =>
+          isVideo(media[currentIndex].contentType)
+            ? changeInputVideoRef?.current?.click()
+            : changeInputImgRef?.current?.click()
+        }
         dataTestId={`${dataTestId}-${
           isVideo(media[currentIndex].contentType)
             ? 'changevideocta'

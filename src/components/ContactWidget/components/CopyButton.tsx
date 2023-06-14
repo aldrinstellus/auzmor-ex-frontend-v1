@@ -2,6 +2,7 @@ import Icon from 'components/Icon';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import React, { ReactElement } from 'react';
 import { toast } from 'react-toastify';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { twConfig } from 'utils/misc';
 
 type CopyButtonProps = {
@@ -35,7 +36,7 @@ const CopyButton: React.FC<CopyButtonProps> = ({
               display: 'flex',
               alignItems: 'center',
             },
-            autoClose: 2000,
+            autoClose: TOAST_AUTOCLOSE_TIME,
             position: 'bottom-center',
           });
         }}

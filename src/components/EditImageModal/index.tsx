@@ -15,6 +15,7 @@ import { updateCurrentUser } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
 import Footer from './Footer';
 import ImageCropper from 'components/ImageCropper';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 
 export interface IEditImageModalProps {
   title: string;
@@ -95,7 +96,7 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
           display: 'flex',
           alignItems: 'center',
         },
-        autoClose: 2000,
+        autoClose: TOAST_AUTOCLOSE_TIME,
       });
       closeEditImageModal();
       openEditProfileModal();

@@ -227,6 +227,7 @@ const Footer: React.FC<IFooterProps> = ({
             );
           }}
           dataTestId="feed-submitpost"
+          loading={isLoading}
         />
       </div>
     </div>

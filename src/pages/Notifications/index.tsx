@@ -29,12 +29,6 @@ const buttonGroup = [
     label: 'Mentions',
     type: NotificationType.MENTIONS,
     component: <NotificationsListing mentions />,
-    disabled: false,
-  },
-  {
-    label: 'Channels',
-    type: NotificationType.CHANNELS,
-    component: <NotificationsListing />,
     disabled: true,
   },
 ];
@@ -67,7 +61,7 @@ const Notifications: React.FC = (): ReactElement => {
                       notificationsList.type === button.type
                         ? '!text-primary-600'
                         : ''
-                    }`}
+                    } ${button.disabled ? 'cursor-not-allowed' : undefined}`}
                   />
                 ))}
               </div>

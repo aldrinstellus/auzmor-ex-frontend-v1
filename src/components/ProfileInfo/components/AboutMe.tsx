@@ -13,6 +13,7 @@ import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import { twConfig } from 'utils/misc';
 import Icon from 'components/Icon';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 
 interface IAboutMe {
   about: string;
@@ -77,7 +78,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
           display: 'flex',
           alignItems: 'center',
         },
-        autoClose: 2000,
+        autoClose: TOAST_AUTOCLOSE_TIME,
       });
       setIsEditable(false);
     },

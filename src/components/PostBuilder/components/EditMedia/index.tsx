@@ -27,6 +27,7 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
     coverImageMap,
   } = useContext(CreatePostContext);
   const changeInputImgRef = useRef<HTMLInputElement>(null);
+  const changeInputVideoRef = useRef<HTMLInputElement>(null);
   const uploadCoverImageRef = useRef<HTMLInputElement>(null);
   const [currentIndex, prevSlide, nextSlide] = useCarousel(0, media.length);
 
@@ -114,6 +115,7 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
       <Footer
         currentIndex={currentIndex}
         changeInputImgRef={changeInputImgRef}
+        changeInputVideoRef={changeInputVideoRef}
         dataTestId={`feed-${
           isVideo(media[currentIndex].contentType) ? 'editvideo' : 'editphoto'
         }`}
@@ -130,10 +132,20 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
               currentIndex,
               Array.prototype.slice.call(e.target.files)[0],
             );
-            deleteCoverImageMap({
-              videoName: media[currentIndex].name,
-              coverImageName: '',
-            });
+          }
+        }}
+      />
+      <input
+        type="file"
+        className="hidden"
+        ref={changeInputVideoRef}
+        accept="video/*"
+        onChange={(e) => {
+          if (e.target.files?.length) {
+            replaceMedia(
+              currentIndex,
+              Array.prototype.slice.call(e.target.files)[0],
+            );
           }
         }}
       />

@@ -102,6 +102,7 @@ const InviteFormRow: React.FC<IInviteFormRowProps> = ({
           title={errors.members[index]?.fullName?.message || 'Require field'}
           variant={BannerVariant.Error}
           className="mb-3"
+          dataTestId="invite-people-error-message"
         />
       )}
       {errors.members && errors.members[index]?.workEmail?.message && (
@@ -109,6 +110,7 @@ const InviteFormRow: React.FC<IInviteFormRowProps> = ({
           title={errors.members[index]?.workEmail?.message || 'Require field'}
           variant={BannerVariant.Error}
           className="mb-3"
+          dataTestId="invite-people-error-message"
         />
       )}
       {emailValidationErrors &&
@@ -126,6 +128,7 @@ const InviteFormRow: React.FC<IInviteFormRowProps> = ({
           title={errors.members[index]?.role?.message || 'Require field'}
           variant={BannerVariant.Error}
           className="mb-3"
+          dataTestId="invite-people-error-message"
         />
       )}
     </div>

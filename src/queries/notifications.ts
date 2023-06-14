@@ -60,9 +60,14 @@ export const useInfiniteNotifications = (q?: Record<string, any>) => {
   return useInfiniteQuery({
     queryKey: ['notifications-page', q],
     queryFn: fetchNotifications,
-    getNextPageParam: (lastPage: any) => lastPage?.data?.result?.paging?.next,
+    getNextPageParam: (lastPage: any) =>
+      lastPage?.data?.result?.data?.length >= q?.limit
+        ? lastPage?.data?.result?.paging?.next
+        : null,
     getPreviousPageParam: (currentPage: any) =>
-      currentPage?.data?.result?.paging?.prev,
+      currentPage?.data?.result?.data?.length >= q?.limit
+        ? currentPage?.data?.result?.paging?.prev
+        : null,
     staleTime: 5 * 60 * 1000,
   });
 };

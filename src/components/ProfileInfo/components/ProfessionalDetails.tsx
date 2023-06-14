@@ -21,6 +21,7 @@ import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import { twConfig } from 'utils/misc';
 import { getTimezoneNameFromIANA } from 'utils/time';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 
 interface IForm {
   timeZone: OptionType;
@@ -71,7 +72,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
           display: 'flex',
           alignItems: 'center',
         },
-        autoClose: 2000,
+        autoClose: TOAST_AUTOCLOSE_TIME,
       });
       setIsEditable(false);
     },

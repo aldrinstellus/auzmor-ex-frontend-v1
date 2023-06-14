@@ -29,6 +29,7 @@ const NotificationsOverview: React.FC = () => {
         </p>
       ),
       tabContent: <NotificationsList key="All" className="max-h-96" />,
+      disabled: false,
     },
     {
       tabLable: (isActive: boolean) => (
@@ -47,6 +48,7 @@ const NotificationsOverview: React.FC = () => {
           className="max-h-96"
         />
       ),
+      disabled: true,
     },
   ];
 

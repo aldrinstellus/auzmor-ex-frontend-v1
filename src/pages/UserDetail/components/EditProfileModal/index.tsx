@@ -22,6 +22,7 @@ import PopupMenu from 'components/PopupMenu';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import Icon from 'components/Icon';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 
 interface IOptions {
   value: string;
@@ -184,7 +185,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
     },
     {
       icon: 'trashOutline',
-      label: 'Delete post',
+      label: 'Delete photo',
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         if (imageFile?.coverImage) {
@@ -250,7 +251,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
           display: 'flex',
           alignItems: 'center',
         },
-        autoClose: 2000,
+        autoClose: TOAST_AUTOCLOSE_TIME,
       });
       closeEditProfileModal();
       await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
@@ -264,6 +265,11 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       preferredName: user?.preferredName,
       // department: user?.department?.value,
       workLocation: user?.workLocation?.value,
+      ...(isCoverImageRemoved && {
+        coverImage: {
+          fileId: '',
+        },
+      }),
     });
   };
 
@@ -352,14 +358,14 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
             onClick={() => {
               closeEditProfileModal();
             }}
-            dataTestId={`${dataTestId}-savechanges`}
+            dataTestId={`${dataTestId}-cancel`}
           />
           <Button
             label={'Save Changes'}
             size={Size.Small}
             onClick={handleSubmit(onSubmit)}
             loading={updateUsersMutation.isLoading}
-            dataTestId={`${dataTestId}-cancel`}
+            dataTestId={`${dataTestId}-savechanges `}
           />
         </div>
       </form>
