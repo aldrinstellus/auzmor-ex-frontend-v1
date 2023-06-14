@@ -49,7 +49,7 @@ const ReactionRow: React.FC<IReactionRowProps> = ({
       </div>
       <div className="flex flex-col w-1/2">
         <div className="flex flex-row w-full justify-end">
-          <div
+          {/* <div
             className={`text-neutral-500 text-xs truncate mr-6 ${
               isLoading && 'w-1/3'
             }`}
@@ -69,7 +69,7 @@ const ReactionRow: React.FC<IReactionRowProps> = ({
             {reaction?.createdBy.workLocation ||
               (isLoading && <Skeleton />) ||
               'NA'}
-          </div>
+          </div> */}
         </div>
         <div></div>
       </div>
