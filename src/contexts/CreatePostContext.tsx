@@ -30,8 +30,8 @@ export const MEDIA_LIMIT = 10; // number of media can be uploaded
 export interface ICreatePostContext {
   activeFlow: CreatePostFlow;
   setActiveFlow: any;
-  announcement: any;
-  setAnnouncement: any;
+  announcement: IAnnouncement | null;
+  setAnnouncement: (announcement: IAnnouncement | null) => void;
   editorValue: IEditorValue;
   setEditorValue: any;
   media: IMedia[];

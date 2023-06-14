@@ -84,9 +84,7 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
         <Controller
           name={name}
           control={control}
-          rules={{
-            required: true,
-          }}
+          defaultValue={defaultValue}
           render={() => (
             <Select
               isDisabled={disabled}
@@ -96,7 +94,6 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
                 ...selectStyle,
               }}
               options={options}
-              {...field}
               defaultValue={defaultValue}
               menuPlacement={menuPlacement ? menuPlacement : undefined}
               menuPortalTarget={document.body}
@@ -116,6 +113,7 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
                   );
                 },
               }}
+              {...field}
             />
           )}
         />
