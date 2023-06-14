@@ -1,4 +1,10 @@
-import React, { Fragment, JSXElementConstructor, ReactElement } from 'react';
+/* eslint-disable react/display-name */
+import React, {
+  Fragment,
+  JSXElementConstructor,
+  ReactElement,
+  memo,
+} from 'react';
 import { Popover as HUIPopover, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 
@@ -11,46 +17,47 @@ type AppProps = {
   ) => ReactElement<any, string | JSXElementConstructor<any>>;
 };
 
-const Popover: React.FC<AppProps> = ({
-  triggerNode,
-  children,
-  className = 'right-0',
-  contentRenderer,
-}) => {
-  const styles = clsx(
-    { 'absolute z-10 bg-white': true },
-    { [className]: true },
-  );
+const Popover = React.forwardRef(
+  (
+    { triggerNode, children, className = 'right-0', contentRenderer }: AppProps,
+    ref: React.ForwardedRef<HTMLButtonElement>,
+  ) => {
+    const styles = clsx(
+      { 'absolute z-10 bg-white': true },
+      { [className]: true },
+    );
 
-  return (
-    <HUIPopover className="relative">
-      <HUIPopover.Button
-        style={{
-          borderWidth: 0,
-          borderColor: undefined,
-          backgroundColor: undefined,
-        }}
-      >
-        {triggerNode}
-      </HUIPopover.Button>
+    return (
+      <HUIPopover className="relative">
+        <HUIPopover.Button
+          style={{
+            borderWidth: 0,
+            borderColor: undefined,
+            backgroundColor: undefined,
+          }}
+          ref={ref}
+        >
+          {triggerNode}
+        </HUIPopover.Button>
 
-      <Transition
-        as={Fragment}
-        enter="transition ease-out duration-200"
-        enterFrom="opacity-0 translate-y-1"
-        enterTo="opacity-100 translate-y-0"
-        leave="transition ease-in duration-150"
-        leaveFrom="opacity-100 translate-y-0"
-        leaveTo="opacity-0 translate-y-1"
-      >
-        <HUIPopover.Panel className={styles}>
-          {({ close }) =>
-            contentRenderer ? contentRenderer(close) : children || <></>
-          }
-        </HUIPopover.Panel>
-      </Transition>
-    </HUIPopover>
-  );
-};
+        <Transition
+          as={Fragment}
+          enter="transition ease-out duration-200"
+          enterFrom="opacity-0 translate-y-1"
+          enterTo="opacity-100 translate-y-0"
+          leave="transition ease-in duration-150"
+          leaveFrom="opacity-100 translate-y-0"
+          leaveTo="opacity-0 translate-y-1"
+        >
+          <HUIPopover.Panel className={styles}>
+            {({ close }) =>
+              contentRenderer ? contentRenderer(close) : children || <></>
+            }
+          </HUIPopover.Panel>
+        </Transition>
+      </HUIPopover>
+    );
+  },
+);
 
-export default Popover;
+export default memo(Popover);

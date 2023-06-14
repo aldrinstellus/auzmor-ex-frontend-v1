@@ -1,7 +1,7 @@
 import Card from 'components/Card';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
-import React from 'react';
+import React, { useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import Spinner from 'components/Spinner';
 import Popover from 'components/Popover';
@@ -51,7 +51,7 @@ const NotificationsOverview: React.FC = () => {
       disabled: true,
     },
   ];
-
+  const viewAllRef = useRef<HTMLButtonElement>(null);
   return (
     <Popover
       triggerNode={
@@ -76,6 +76,7 @@ const NotificationsOverview: React.FC = () => {
           />
         </div>
       }
+      ref={viewAllRef}
     >
       <Card className="absolute w-[500px] right-0 top-6 ">
         {/* Header */}
@@ -100,7 +101,10 @@ const NotificationsOverview: React.FC = () => {
           itemSpacing={4}
         />
         <Divider />
-        <div className="px-6 bg-blue-100 text-sm font-normal flex items-center justify-start py-4 rounded-b-9xl">
+        <div
+          className="px-6 bg-blue-100 text-sm font-normal flex items-center justify-start py-4 rounded-b-9xl"
+          onClick={() => viewAllRef.current?.click()}
+        >
           <NavLink
             to="/notifications"
             className={({ isActive }) =>
