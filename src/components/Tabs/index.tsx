@@ -4,6 +4,7 @@ interface ITab {
   tabLable: (isActive: boolean) => string | ReactNode;
   tabContent: ReactNode;
   dataTestId?: string;
+  disabled?: boolean;
 }
 
 export interface ITabsProps {
@@ -30,9 +31,14 @@ const Tabs: React.FC<ITabsProps> = ({
         {tabs.map((tab, index) => (
           <div
             className={`flex py-4 relative ${
-              isActive(index) ? 'cursor-default' : 'cursor-pointer'
-            } ${index !== tabs.length - 1 && `mr-${itemSpacing}`}`}
-            onClick={() => setActiveTab(index)}
+              !tab.disabled
+                ? isActive(index)
+                  ? 'cursor-default'
+                  : 'cursor-pointer'
+                : 'cursor-not-allowed'
+            } ${index !== tabs.length - 1 && `mr-${itemSpacing}`}
+            `}
+            onClick={() => !tab?.disabled && setActiveTab(index)}
             key={index}
             data-testid={tab.dataTestId}
           >
