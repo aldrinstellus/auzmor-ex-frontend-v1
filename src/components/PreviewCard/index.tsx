@@ -21,7 +21,10 @@ const PreviewCard: React.FC<PreviewCardProps> = ({
     if (metaData?.image) {
       return (
         <Card className={`${className} cursor-pointer`}>
-          <ImagePreview metaData={metaData} />
+          <ImagePreview
+            metaData={metaData}
+            dataTestId="feed-createpost-linkpreview"
+          />
         </Card>
       );
     } else if (metaData?.favicon) {
@@ -29,7 +32,10 @@ const PreviewCard: React.FC<PreviewCardProps> = ({
         <Card
           className={`${className} cursor-pointer bg-[#F7F8FB] h-[166px] rounded-7xl`}
         >
-          <IconPreview metaData={metaData} />
+          <IconPreview
+            metaData={metaData}
+            dataTestId="feed-createpost-linkpreview"
+          />
         </Card>
       );
     } else if (isLoading) {

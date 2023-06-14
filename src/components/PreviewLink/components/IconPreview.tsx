@@ -3,11 +3,17 @@ import { Metadata } from '../types';
 
 type IconPreviewProps = {
   metaData: Metadata;
+  dataTestId?: string;
 };
 
-const IconPreview: React.FC<IconPreviewProps> = ({ metaData }) => {
+const IconPreview: React.FC<IconPreviewProps> = ({ metaData, dataTestId }) => {
   return (
-    <a href={metaData?.url} target="_blank" rel="noreferrer">
+    <a
+      href={metaData?.url}
+      target="_blank"
+      rel="noreferrer"
+      data-testid={dataTestId}
+    >
       <div className="flex p-8">
         <img
           src={metaData?.favicon}

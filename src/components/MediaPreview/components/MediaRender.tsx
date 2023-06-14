@@ -29,9 +29,17 @@ const MediaRender: React.FC<IMediaRenderProps> = ({
       onClick={onClick}
     >
       {data.type === 'IMAGE' ? (
-        <img src={data.original} className="object-cover w-full h-full" />
+        <img
+          src={data.original}
+          className="object-cover w-full h-full"
+          data-testid="feed-createpost-uploadedmedia"
+        />
       ) : (
-        <video className="object-cover w-full h-full" poster={coverImageUrl}>
+        <video
+          className="object-cover w-full h-full"
+          poster={coverImageUrl}
+          data-testid="feed-createpost-uploadedmedia"
+        >
           <source src={data.original} />
         </video>
       )}

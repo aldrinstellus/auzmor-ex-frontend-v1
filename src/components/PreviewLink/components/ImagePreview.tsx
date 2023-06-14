@@ -3,11 +3,20 @@ import { Metadata } from '../types';
 
 type ImagePreviewProps = {
   metaData: Metadata;
+  dataTestId?: string;
 };
 
-const ImagePreview: React.FC<ImagePreviewProps> = ({ metaData }) => {
+const ImagePreview: React.FC<ImagePreviewProps> = ({
+  metaData,
+  dataTestId,
+}) => {
   return (
-    <a href={metaData.url} target="_blank" rel="noreferrer">
+    <a
+      href={metaData.url}
+      target="_blank"
+      rel="noreferrer"
+      data-testid={dataTestId}
+    >
       <img
         src={metaData?.image}
         alt={metaData?.title}

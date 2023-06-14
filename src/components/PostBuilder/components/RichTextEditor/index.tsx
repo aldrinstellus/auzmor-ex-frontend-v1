@@ -217,6 +217,17 @@ const RichTextEditor = React.forwardRef(
       return errors;
     }, [mediaValidationErrors]);
 
+    const getDataTestIdForErrors = (errorType: MediaValidationError) => {
+      switch (errorType) {
+        case MediaValidationError.MediaLengthExceed:
+          return 'createpost-maxnumberuploadlimitreached-error';
+        case MediaValidationError.ImageSizeExceed:
+          return 'createpost-imageuploadlimitreached-error';
+        case MediaValidationError.VideoSizeExceed:
+          return 'createpost-videouploadlimitreached-error';
+      }
+    };
+
     return (
       <div data-testid={`${dataTestId}-content`}>
         <ReactQuill
@@ -295,6 +306,7 @@ const RichTextEditor = React.forwardRef(
                   ),
                 ])
               }
+              dataTestId={getDataTestIdForErrors(error.errorType)}
             />
           </div>
         ))}
