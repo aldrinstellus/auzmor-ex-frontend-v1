@@ -145,6 +145,9 @@ module.exports = {
       margin: {
         8.5: '32px',
       },
+      transitionDuration: {
+        default: '200'
+      }
     },
     plugins: [],
   },
