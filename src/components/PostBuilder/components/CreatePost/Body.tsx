@@ -17,6 +17,7 @@ export interface IBodyProps {
 const Body = React.forwardRef(
   ({ data, dataTestId }: IBodyProps, ref: ForwardedRef<ReactQuill>) => {
     const { editorValue } = useContext(CreatePostContext);
+    console.log(data, '<---data');
     return (
       <div className="text-sm text-neutral-900">
         <div className="max-h-[75vh] overflow-y-auto">
