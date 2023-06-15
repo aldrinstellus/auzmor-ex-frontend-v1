@@ -41,7 +41,10 @@ const PreviewCard: React.FC<PreviewCardProps> = ({
     } else if (isLoading) {
       return (
         <div className="flex justify-center items-center mb-14">
-          <div className="text-neutral-900 text-xs font-normal">
+          <div
+            className="text-neutral-900 text-xs font-normal"
+            data-testid="createpost-sharedlink-loadingprev"
+          >
             Loading Preview
           </div>
         </div>

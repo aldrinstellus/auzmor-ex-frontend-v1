@@ -47,6 +47,7 @@ const PreviewLink: React.FC<PreviewLinkProps> = ({
             setPreviewUrl('');
             setIsPreviewRemove(true);
           }}
+          dataTestId="createpost-remove-sharedlink"
         />
       )}
       <PreviewCard
