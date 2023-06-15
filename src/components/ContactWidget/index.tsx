@@ -206,6 +206,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                     className="space-x-1 font-bold"
                     leftIcon="connectionFolder"
                     size={Size.Small}
+                    disabled
                     dataTestId="user-view-org-chart"
                   />
                 </div>

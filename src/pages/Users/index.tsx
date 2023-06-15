@@ -294,6 +294,7 @@ const Users: React.FC<IUsersProps> = () => {
               variant={Variant.Secondary}
               leftIcon="convertShape"
               leftIconSize={20}
+              disabled
               dataTestId="people-org-chart"
             />
             {user?.role !== Role.Member && (
