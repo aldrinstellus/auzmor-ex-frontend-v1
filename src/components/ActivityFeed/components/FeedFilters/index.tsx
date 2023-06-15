@@ -227,7 +227,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
   };
 
   return (
-    <Popover className="z-50 mr-6">
+    <Popover className="z-40 mr-6">
       <Popover.Button
         className="box-border font-bold flex flex-row justify-center items-center p-1 gap-4 border-none relative"
         onClick={() => {

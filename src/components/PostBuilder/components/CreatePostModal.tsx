@@ -201,7 +201,6 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         open={showModal}
         closeModal={() => {
           clearPostContext();
-          setShowModal(false);
         }}
       >
         {activeFlow === CreatePostFlow.CreatePost && (

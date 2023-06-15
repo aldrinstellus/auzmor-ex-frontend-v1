@@ -35,7 +35,7 @@ const Modal: React.FC<ModalProps> = ({
       className={`fixed inset-0 flex items-center z-50 transition-opacity ${
         open ? 'visible bg-black/60' : 'invisible'
       } backdrop-blur-sm`}
-      onClick={closeModal}
+      // onClick={closeModal}
     >
       <div
         className={`

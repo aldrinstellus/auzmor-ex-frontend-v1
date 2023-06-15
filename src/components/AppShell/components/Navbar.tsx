@@ -60,7 +60,7 @@ const Navbar = () => {
   });
 
   return (
-    <header className="sticky top-0 z-40">
+    <header className="sticky top-0 z-50">
       <div className="bg-white shadow h-16 w-full flex items-center justify-center px-8">
         <Link to="/" data-testid="auzmor-office">
           <Logo />
