@@ -77,17 +77,25 @@ const Actor: React.FC<ActorProps> = ({
           </Link>
         </div>
         <div className="ml-3">
-          <div
-            className="font-bold text-sm text-neutral-900"
-            data-testid={dataTestId}
+          <Link
+            to={`${
+              createdBy?.userId && createdBy.userId !== user?.id
+                ? '/users/' + createdBy.userId
+                : '/profile'
+            }`}
           >
-            {createdBy?.fullName || user?.name}
-            {contentMode === VIEW_POST ? (
-              <span className="ml-1 text-sm font-normal text-neutral-900">
-                shared a post
-              </span>
-            ) : null}
-          </div>
+            <div
+              className="font-bold text-sm text-neutral-900"
+              data-testid={dataTestId}
+            >
+              {createdBy?.fullName || user?.name}
+              {contentMode === VIEW_POST ? (
+                <span className="ml-1 text-sm font-normal text-neutral-900">
+                  shared a post
+                </span>
+              ) : null}
+            </div>
+          </Link>
           {contentMode === VIEW_POST ? (
             <div className="flex">
               <div className="text-xs font-normal text-neutral-500 mr-4">
