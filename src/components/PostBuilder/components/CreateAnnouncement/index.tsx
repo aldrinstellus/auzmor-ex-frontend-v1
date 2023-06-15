@@ -80,7 +80,7 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
       type: FieldType.DatePicker,
       name: 'date',
       control,
-      minDate: new Date(),
+      minDate: new Date(afterXUnit(1, 'day').toISOString()),
       defaultValue: announcement?.value || '',
       dataTestId: 'custom-date-calendar',
     },
