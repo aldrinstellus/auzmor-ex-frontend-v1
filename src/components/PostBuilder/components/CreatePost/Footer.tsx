@@ -142,6 +142,7 @@ const Footer: React.FC<IFooterProps> = ({
             dataTestId="feed-createpost-ellipsis-icon"
           />
         ),
+        hidden: isMember,
         menuItems: [
           {
             label: 'Share as an announcement',
@@ -169,34 +170,37 @@ const Footer: React.FC<IFooterProps> = ({
   return (
     <div className="flex justify-between items-center h-16 p-6 bg-blue-50">
       <div className="flex relative">
-        {postMenuItems.map((postMenuItem) => (
-          <div key={postMenuItem.id} className="flex mr-4 items-center">
-            <PopupMenu
-              triggerNode={
-                postMenuItem?.disabled ? (
-                  <div className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl cursor-default">
-                    {postMenuItem.icon}
-                  </div>
-                ) : (
-                  <Tooltip
-                    tooltipContent={postMenuItem.label}
-                    className="cursor-pointer"
-                  >
-                    {postMenuItem.label !== 'More' ? (
-                      <div className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl">
+        {postMenuItems.map(
+          (postMenuItem) =>
+            !!!postMenuItem.hidden && (
+              <div key={postMenuItem.id} className="flex mr-4 items-center">
+                <PopupMenu
+                  triggerNode={
+                    postMenuItem?.disabled ? (
+                      <div className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl cursor-default">
                         {postMenuItem.icon}
                       </div>
                     ) : (
-                      postMenuItem.icon
-                    )}
-                  </Tooltip>
-                )
-              }
-              menuItems={postMenuItem.menuItems}
-              className="bottom-full"
-            />
-          </div>
-        ))}
+                      <Tooltip
+                        tooltipContent={postMenuItem.label}
+                        className="cursor-pointer"
+                      >
+                        {postMenuItem.label !== 'More' ? (
+                          <div className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl">
+                            {postMenuItem.icon}
+                          </div>
+                        ) : (
+                          postMenuItem.icon
+                        )}
+                      </Tooltip>
+                    )
+                  }
+                  menuItems={postMenuItem.menuItems}
+                  className="bottom-full"
+                />
+              </div>
+            ),
+        )}
         <Divider variant={DividerVariant.Vertical} className="!h-8" />
       </div>
       <div className="flex items-center">
