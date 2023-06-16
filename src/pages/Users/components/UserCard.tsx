@@ -16,6 +16,7 @@ import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { twConfig } from 'utils/misc';
 import { Role } from 'utils/enum';
 import { PRIMARY_COLOR, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
 
 export interface IUserCardProps {
   id: string;
@@ -88,6 +89,7 @@ const UserCard: React.FC<IUserCardProps> = ({
             alignItems: 'center',
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
         });
         resendInviteMutation.mutate(id);
       },

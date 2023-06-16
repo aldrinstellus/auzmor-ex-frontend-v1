@@ -15,6 +15,7 @@ import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { getSubDomain, twConfig } from 'utils/misc';
 import { useGetSSOFromDomain } from 'queries/organization';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
 
 interface IForm {
   currentPassword: string;
@@ -72,6 +73,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
             alignItems: 'center',
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
         });
       },
     },

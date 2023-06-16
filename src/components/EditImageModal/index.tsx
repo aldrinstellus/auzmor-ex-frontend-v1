@@ -16,6 +16,7 @@ import { useMutation } from '@tanstack/react-query';
 import Footer from './Footer';
 import ImageCropper from 'components/ImageCropper';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
 
 export interface IEditImageModalProps {
   title: string;
@@ -97,6 +98,7 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
           alignItems: 'center',
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
+        transition: slideInAndOutTop,
       });
       closeEditImageModal();
       openEditProfileModal();
