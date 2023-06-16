@@ -111,12 +111,20 @@ function fn_showEmojiPalette(quill: {
         paletteWidthAndHeight -
         editorBounds.top;
 
-  quill.container.appendChild(ele_emoji_area);
+  document.getElementById('officeApp')!.appendChild(ele_emoji_area);
+  const quillContainerCord = document
+    .getElementById('quill')!
+    .getBoundingClientRect();
   ele_emoji_area.id = 'emoji-palette';
   ele_emoji_area.style.left = `${
-    paletteLeft > 310 ? 310 : paletteLeft < 0 ? 90 : paletteLeft
+    paletteLeft > 310
+      ? 310 + quillContainerCord.left
+      : paletteLeft < 0
+      ? 90 + quillContainerCord.left
+      : paletteLeft + quillContainerCord.left
   }px`;
-  ele_emoji_area.style.top = `${paletteTop}px`;
+  ele_emoji_area.style.position = 'fixed';
+  ele_emoji_area.style.top = `${paletteTop + quillContainerCord.top}px`;
 
   const tabToolbar = document.createElement('div');
   tabToolbar.id = 'tab-toolbar';

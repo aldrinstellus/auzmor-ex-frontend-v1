@@ -99,6 +99,7 @@ interface UserQueryParams {
   name?: string;
   email?: string;
   status?: string;
+  role?: string;
 }
 
 // get all users people listing
@@ -109,6 +110,7 @@ const getAllUsers = async ({
   offset,
   q,
   status,
+  role,
 }: UserQueryParams) => {
   if (!status || status === 'ALL') {
     const { data } = await apiService.get(`/users`, {
@@ -117,6 +119,7 @@ const getAllUsers = async ({
       next: next,
       offset: offset,
       q: q,
+      role: role,
     });
     return data;
   }
@@ -127,6 +130,7 @@ const getAllUsers = async ({
     offset: OffscreenCanvasRenderingContext2D,
     q: q,
     status: status,
+    role: role,
   });
   return data;
 };
