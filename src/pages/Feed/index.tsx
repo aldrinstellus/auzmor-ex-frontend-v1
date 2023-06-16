@@ -18,6 +18,7 @@ import SortByDropdown from 'components/ActivityFeed/components/SortByDropdown';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import PageLoader from 'components/PageLoader';
+import useScrollTop from 'hooks/useScrollTop';
 
 interface IFeedProps {}
 
@@ -43,6 +44,7 @@ export interface IMyReactions {
 }
 
 const Feed: React.FC<IFeedProps> = () => {
+  useScrollTop();
   const [showModal, setShowModal] = useState(false);
   const [appliedFeedFilters, setAppliedFeedFilters] = useState<IPostFilters>({
     [PostFilterKeys.PostType]: [],
