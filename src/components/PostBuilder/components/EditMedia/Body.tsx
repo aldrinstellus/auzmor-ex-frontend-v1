@@ -1,6 +1,6 @@
 import Carousel from 'components/CarouselNew';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 export interface IBodyProps {
   currentIndex: number;
@@ -21,6 +21,8 @@ const Body: React.FC<IBodyProps> = ({
     removeMedia,
     setShowFullscreenVideo,
     getCoverImageBlobURL,
+    mediaOpenIndex,
+    setMediaOpenIndex,
   } = useContext(CreatePostContext);
   return (
     <Carousel
@@ -40,6 +42,8 @@ const Body: React.FC<IBodyProps> = ({
       nextSlide={nextSlide}
       coverImageUrl={getCoverImageBlobURL(media[currentIndex])}
       setShowFullscreenVideo={setShowFullscreenVideo}
+      autoplayIndex={mediaOpenIndex}
+      resetAutoplayIndex={() => setMediaOpenIndex(-1)}
       dataTestId={dataTestId}
     />
   );

@@ -3,7 +3,7 @@ import Button, {
   Size as ButtonSize,
 } from 'components/Button';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { getBlobUrl, isVideo, twConfig } from 'utils/misc';
 import useCarousel from 'hooks/useCarousel';
 // import SwitchToggle from 'components/SwitchToggle';
@@ -25,11 +25,15 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
     setUploads,
     deleteCoverImageMap,
     coverImageMap,
+    mediaOpenIndex,
   } = useContext(CreatePostContext);
   const changeInputImgRef = useRef<HTMLInputElement>(null);
   const changeInputVideoRef = useRef<HTMLInputElement>(null);
   const uploadCoverImageRef = useRef<HTMLInputElement>(null);
-  const [currentIndex, prevSlide, nextSlide] = useCarousel(0, media.length);
+  const [currentIndex, prevSlide, nextSlide] = useCarousel(
+    mediaOpenIndex > -1 ? mediaOpenIndex : 0,
+    media.length,
+  );
 
   return (
     <>

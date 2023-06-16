@@ -79,6 +79,7 @@ const RichTextEditor = React.forwardRef(
       coverImageMap,
       mediaValidationErrors,
       setMediaValidationErrors,
+      setMediaOpenIndex,
     } = useContext(CreatePostContext);
 
     const [previewUrl, setPreviewUrl] = useState<string>('');
@@ -254,6 +255,11 @@ const RichTextEditor = React.forwardRef(
             }}
             coverImageMap={coverImageMap}
             dataTestId={dataTestId}
+            onClick={(e, index) => {
+              updateContext();
+              setMediaOpenIndex(index - 1);
+              setActiveFlow(CreatePostFlow.EditMedia);
+            }}
           />
         )}
         {announcement?.label && !hasDatePassed(announcement.value) && (

@@ -62,6 +62,8 @@ export interface ICreatePostContext {
   setMediaValidationErrors: (
     mediaValidationErrors: IMediaValidationError[],
   ) => void;
+  mediaOpenIndex: number;
+  setMediaOpenIndex: (index: number) => void;
 }
 
 export enum MediaValidationError {
@@ -136,6 +138,8 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setShowFullscreenVideo: () => {},
   mediaValidationErrors: [],
   setMediaValidationErrors: () => {},
+  mediaOpenIndex: 0,
+  setMediaOpenIndex: () => {},
 });
 
 const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
@@ -164,6 +168,7 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
   const [mediaValidationErrors, setMediaValidationErrors] = useState<
     IMediaValidationError[]
   >([]);
+  const [mediaOpenIndex, setMediaOpenIndex] = useState<number>(-1);
 
   const setUploads = (uploads: File[], isCoverImage?: boolean) => {
     if (!isCoverImage) {
@@ -356,6 +361,8 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         setShowFullscreenVideo,
         mediaValidationErrors,
         setMediaValidationErrors,
+        mediaOpenIndex,
+        setMediaOpenIndex,
       }}
     >
       {children}
