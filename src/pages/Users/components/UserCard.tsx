@@ -1,10 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import _ from 'lodash';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import useHover from 'hooks/useHover';
 import useRole from 'hooks/useRole';
-import clsx from 'clsx';
 import { useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import Icon from 'components/Icon';
@@ -14,8 +13,8 @@ import { UserStatus, useResendInvitation } from 'queries/users';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { twConfig } from 'utils/misc';
-import { Role } from 'utils/enum';
 import { PRIMARY_COLOR, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
 
 export interface IUserCardProps {
   id: string;
@@ -88,6 +87,7 @@ const UserCard: React.FC<IUserCardProps> = ({
             alignItems: 'center',
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
         });
         resendInviteMutation.mutate(id);
       },
@@ -105,26 +105,12 @@ const UserCard: React.FC<IUserCardProps> = ({
     });
   }
 
-  const hoverStyle = useMemo(
-    () =>
-      clsx(
-        {
-          'relative w-[234px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white':
-            true,
-        },
-        {
-          '-mb-6 z-10 shadow-xl ': isHovered,
-        },
-        {
-          'mb-6 z-0': !isHovered,
-        },
-      ),
-    [isHovered],
-  );
-
   return (
-    <div {...hoverEvents} className="cursor-pointer" data-testid="people-card">
-      <Card className={hoverStyle}>
+    <div className="cursor-pointer" data-testid="people-card">
+      <Card
+        shadowOnHover
+        className="relative w-[234px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white"
+      >
         {isAdmin && isHovered && _options.length > 0 && (
           <PopupMenu
             triggerNode={

@@ -15,6 +15,7 @@ import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { getSubDomain, twConfig } from 'utils/misc';
 import { useGetSSOFromDomain } from 'queries/organization';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
 
 interface IForm {
   currentPassword: string;
@@ -52,8 +53,14 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
   const changePasswordMutation = useMutation(
     (formData: any) => changePassword(formData),
     {
-      onError: (data) => {
+      onError: (error: any) => {
         setErr(true);
+        if (error?.response?.data?.errors?.length) {
+          setError('currentPassword', {
+            type: 'custom',
+            message: error?.response?.data?.errors[0]?.message,
+          });
+        }
       },
       onSuccess: (data) => {
         reset();
@@ -72,6 +79,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
             alignItems: 'center',
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
         });
       },
     },
@@ -84,6 +92,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
     formState: { errors, isValid },
     getValues,
     reset,
+    setError,
   } = useForm<IForm>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -112,7 +121,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       name: 'currentPassword',
       label: 'Current Password',
       rightIcon: 'eye',
-      error: err || errors.currentPassword?.message,
+      error: err && errors.currentPassword?.message,
       control,
       getValues,
       onChange: () => {},

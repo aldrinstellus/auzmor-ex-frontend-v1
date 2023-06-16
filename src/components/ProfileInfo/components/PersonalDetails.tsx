@@ -19,6 +19,7 @@ import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import DragDropList from 'components/DragDropList';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
 
 interface IPersonalDetails {
   birthDate: Date | string;
@@ -124,6 +125,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
           alignItems: 'center',
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
+        transition: slideInAndOutTop,
       });
       setIsEditable(false);
     },

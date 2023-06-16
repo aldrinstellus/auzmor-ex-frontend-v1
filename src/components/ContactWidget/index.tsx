@@ -16,6 +16,7 @@ import { twConfig } from 'utils/misc';
 import { toast } from 'react-toastify';
 import CopyButton from './components/CopyButton';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
 
 export interface IContactInfoForm {
   primaryEmail: string;
@@ -94,6 +95,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
           alignItems: 'center',
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
+        transition: slideInAndOutTop,
       });
       setIsEditable(false);
     },

@@ -37,7 +37,7 @@ const SSOCard: React.FC<SSOCardProps> = ({
   };
 
   return (
-    <Card className="w-96 h-60 hover:shadow-2xl">
+    <Card className="w-96 h-60" shadowOnHover>
       <div className="flex flex-col h-full items-start justify-between ml-6">
         <div className="mt-7">
           <div className="flex items-center justify-between">

@@ -1,4 +1,7 @@
 import React, { ReactNode } from 'react';
+import ReactDOM from 'react-dom';
+import './styles.css';
+import { CSSTransition } from 'react-transition-group';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 
@@ -17,50 +20,45 @@ const Modal: React.FC<ModalProps> = ({
   className = 'max-w-xl',
   showModalCloseBtn = false,
 }) => {
-  if (!open) {
-    return null;
-  }
   const panelStyle = clsx(
     {
-      'w-full transform overflow-hidden bg-white text-left align-middle rounded-9xl shadow':
+      'w-full transform overflow-hidden bg-white text-left align-middle rounded-9xl shadow modalContent':
         true,
     },
     {
       [className]: true,
     },
   );
-
   return (
-    <div
-      className={`fixed inset-0 flex items-center z-50 transition-opacity ${
-        open ? 'visible bg-black/60' : 'invisible'
-      } backdrop-blur-sm`}
-      // onClick={closeModal}
-    >
-      <div
-        className={`
-        flex justify-center
-        min-w-full
-        transition-opacity
-      ${open ? 'scale-100 opacity-100' : 'scale-125 opacity-0'}`}
-      >
-        {showModalCloseBtn && (
+    <>
+      {ReactDOM.createPortal(
+        <CSSTransition in={open} timeout={200} classNames="modal" unmountOnExit>
           <div
-            className={`${panelStyle} fixed bg-transparent overflow-visible`}
+            className="z-50 flex items-center justify-center fixed left-0 right-0 top-0 bottom-0 backdrop-blur-sm bg-black/60"
+            onClick={closeModal}
           >
-            <Icon
-              name="close"
-              className="absolute -top-6 -right-6"
-              fill={'#fff'}
-              onClick={closeModal}
-            />
+            <div className="flex justify-center min-w-full">
+              {showModalCloseBtn && (
+                <div
+                  className={`${panelStyle} fixed bg-transparent overflow-visible`}
+                >
+                  <Icon
+                    name="close"
+                    className="absolute -top-6 -right-6"
+                    fill={'#fff'}
+                    onClick={closeModal}
+                  />
+                </div>
+              )}
+              <div className={panelStyle} onClick={(e) => e.stopPropagation()}>
+                {children}
+              </div>
+            </div>
           </div>
-        )}
-        <div onClick={(e) => e.stopPropagation()} className={panelStyle}>
-          {children}
-        </div>
-      </div>
-    </div>
+        </CSSTransition>,
+        document.getElementById('modal')!,
+      )}
+    </>
   );
 };
 

@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
 
 type SAMLDetailProps = {
   prop: string;
@@ -44,6 +45,7 @@ const SAMLDetail: React.FC<SAMLDetailProps> = ({
                   alignItems: 'center',
                 },
                 autoClose: TOAST_AUTOCLOSE_TIME,
+                transition: slideInAndOutTop,
               },
             );
           }}

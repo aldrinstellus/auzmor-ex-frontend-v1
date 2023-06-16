@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 import { twConfig } from 'utils/misc';
 import Icon from 'components/Icon';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
 
 interface IAboutMe {
   about: string;
@@ -79,6 +80,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
           alignItems: 'center',
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
+        transition: slideInAndOutTop,
       });
       setIsEditable(false);
     },

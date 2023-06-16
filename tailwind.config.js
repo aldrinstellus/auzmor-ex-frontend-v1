@@ -146,7 +146,7 @@ module.exports = {
         8.5: '32px',
       },
       transitionDuration: {
-        default: '200'
+        default: '200ms'
       }
     },
     plugins: [],

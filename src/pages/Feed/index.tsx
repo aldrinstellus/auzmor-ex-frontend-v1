@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PostBuilder from 'components/PostBuilder';
 import UserCard from 'components/UserWidget';
 import AnnouncementCard from 'components/AnnouncementWidget';
@@ -176,9 +176,7 @@ const Feed: React.FC<IFeedProps> = () => {
       isFetchingNextPage={isFetchingNextPage}
     /> */}
       </div>
-      {showModal && (
-        <PostBuilder showModal={showModal} setShowModal={setShowModal} />
-      )}
+      <PostBuilder showModal={showModal} setShowModal={setShowModal} />
     </>
   );
 };

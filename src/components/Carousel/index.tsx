@@ -12,6 +12,7 @@ import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
 
 export interface hashSize {
   width: number;
@@ -53,6 +54,7 @@ export const fetchFile = (url: string) => {
           alignItems: 'center',
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
+        transition: slideInAndOutTop,
       });
       URL.revokeObjectURL(tempUrl);
       aTag.remove();
@@ -73,6 +75,7 @@ export const fetchFile = (url: string) => {
           alignItems: 'center',
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
+        transition: slideInAndOutTop,
       });
     });
 };
