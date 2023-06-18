@@ -101,6 +101,7 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
             clearIcon={null}
             data-testid={dataTestId}
             minDate={minDate}
+            id="react-date-picker-calendar"
           />
         )}
       />

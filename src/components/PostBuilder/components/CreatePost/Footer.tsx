@@ -168,7 +168,7 @@ const Footer: React.FC<IFooterProps> = ({
     [],
   );
   return (
-    <div className="flex justify-between items-center h-16 p-6 bg-blue-50">
+    <div className="flex justify-between items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
       <div className="flex relative">
         {postMenuItems.map(
           (postMenuItem) =>

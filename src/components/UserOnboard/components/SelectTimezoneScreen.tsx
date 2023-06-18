@@ -115,7 +115,7 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
               }`}
             />
           </div>
-          <div className="bg-blue-50 min-w-full">
+          <div className="bg-blue-50 min-w-full rounded-b-9xl">
             <div className="p-3 flex items-center justify-between">
               <div />
               <Button
