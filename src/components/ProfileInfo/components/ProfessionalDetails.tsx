@@ -22,6 +22,7 @@ import { toast } from 'react-toastify';
 import { twConfig } from 'utils/misc';
 import { getTimezoneNameFromIANA } from 'utils/time';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
 
 export interface IProfessionalDetailsProps {
   professionalDetails: any;
@@ -70,6 +71,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
           alignItems: 'center',
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
+        transition: slideInAndOutTop,
       });
       setIsEditable(false);
     },

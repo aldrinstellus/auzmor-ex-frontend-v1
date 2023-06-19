@@ -17,6 +17,7 @@ import { toast } from 'react-toastify';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
 export interface IDeleteUserModalProps {
   showModal: boolean;
   setShowModal: (flag: boolean) => void;
@@ -53,6 +54,7 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
             alignItems: 'center',
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
         },
       );
     },
@@ -79,6 +81,7 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
             alignItems: 'center',
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
         },
       );
     },

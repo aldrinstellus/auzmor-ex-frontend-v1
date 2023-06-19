@@ -4,6 +4,7 @@ import React, { ReactElement } from 'react';
 import { toast } from 'react-toastify';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { twConfig } from 'utils/misc';
+import { slideInAndOutBottom } from 'utils/react-toastify';
 
 type CopyButtonProps = {
   content: string;
@@ -38,6 +39,7 @@ const CopyButton: React.FC<CopyButtonProps> = ({
             },
             autoClose: TOAST_AUTOCLOSE_TIME,
             position: 'bottom-center',
+            transition: slideInAndOutBottom,
           });
         }}
       />

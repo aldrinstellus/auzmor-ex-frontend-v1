@@ -65,6 +65,7 @@ const Users: React.FC<IUsersProps> = () => {
     next: page,
     offset: (page - 1) * 30,
     status: userStatus,
+    role: role?.value,
   });
 
   const roleFields = [
@@ -293,6 +294,7 @@ const Users: React.FC<IUsersProps> = () => {
               variant={Variant.Secondary}
               leftIcon="convertShape"
               leftIconSize={20}
+              disabled
               dataTestId="people-org-chart"
             />
             {user?.role !== Role.Member && (

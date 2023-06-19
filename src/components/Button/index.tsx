@@ -89,7 +89,8 @@ const Button = ({
           'py-2.5 px-6 text-base': size === Size.Large,
         },
         {
-          'font-manrope font-bold': true,
+          'font-manrope font-bold transition-colors ease-out duration-default':
+            true,
         },
         {
           [className]: true,

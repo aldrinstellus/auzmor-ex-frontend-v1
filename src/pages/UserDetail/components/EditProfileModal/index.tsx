@@ -23,6 +23,7 @@ import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import Icon from 'components/Icon';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
 
 interface IOptions {
   value: string;
@@ -252,6 +253,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
           alignItems: 'center',
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
+        transition: slideInAndOutTop,
       });
       closeEditProfileModal();
       await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
