@@ -1,4 +1,5 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
+import './styles.css';
 
 interface ITab {
   tabLable: (isActive: boolean) => string | ReactNode;
@@ -23,6 +24,24 @@ const Tabs: React.FC<ITabsProps> = ({
   itemSpacing = 4,
 }) => {
   const [activeTab, setActiveTab] = useState(activeTabIndex);
+  const [previousTab, setPreviousTab] = useState(activeTab);
+
+  useEffect(() => {
+    const tabContent = document.getElementById(
+      `tab-${activeTab}-content`,
+    ) as HTMLElement;
+    if (activeTab > previousTab) {
+      tabContent.classList.remove('slide-in-right'); // reset animation
+      tabContent.classList.remove('slide-in-left'); // reset animation
+      void tabContent.offsetWidth; // trigger reflow
+      tabContent.classList.add('slide-in-right'); // start animation
+    } else if (activeTab < previousTab) {
+      tabContent.classList.remove('slide-in-left'); // reset animation
+      tabContent.classList.remove('slide-in-right'); // reset animation
+      void tabContent.offsetWidth; // trigger reflow
+      tabContent.classList.add('slide-in-left'); // start animation
+    }
+  }, [activeTab, previousTab]);
 
   const isActive = (index: number) => activeTab === index;
   return (
@@ -38,7 +57,10 @@ const Tabs: React.FC<ITabsProps> = ({
                 : 'cursor-not-allowed'
             } ${index !== tabs.length - 1 && `mr-${itemSpacing}`}
             `}
-            onClick={() => !tab?.disabled && setActiveTab(index)}
+            onClick={() => {
+              setPreviousTab(activeTab);
+              !tab?.disabled && setActiveTab(index);
+            }}
             key={index}
             data-testid={tab.dataTestId}
           >
@@ -49,7 +71,9 @@ const Tabs: React.FC<ITabsProps> = ({
           </div>
         ))}
       </div>
-      <div className={tabContentClassName}>{tabs[activeTab].tabContent}</div>
+      <div className={`${tabContentClassName}`}>
+        <div id={`tab-${activeTab}-content`}>{tabs[activeTab].tabContent}</div>
+      </div>
     </div>
   );
 };
