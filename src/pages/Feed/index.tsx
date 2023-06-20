@@ -150,7 +150,7 @@ const Feed: React.FC<IFeedProps> = () => {
                 </div>
               )}
             </div>
-            {isLoading ? (
+            {!isLoading ? (
               <SkeletonLoader />
             ) : (
               <div className="mt-4">

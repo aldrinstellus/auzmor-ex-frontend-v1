@@ -10,14 +10,12 @@ const MultipleMediaPostSkeleton: React.FC = (): ReactElement => {
         <div className="flex mt-7 gap-x-4">
           <Skeleton circle className="!h-8 !w-8" />
           <div className="flex-1 flex-col ">
-            <Skeleton borderRadius={100} />
-            <Skeleton borderRadius={100} />
+            <Skeleton count={2} borderRadius={100} />
           </div>
         </div>
         <Skeleton className="mt-7" borderRadius={100} />
         <div className="mt-4">
-          <Skeleton borderRadius={100} />
-          <Skeleton borderRadius={100} />
+          <Skeleton count={2} borderRadius={100} />
         </div>
         {/* Top row images */}
         <div className="flex mt-5 gap-x-4">
