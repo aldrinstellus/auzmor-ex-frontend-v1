@@ -7,8 +7,7 @@ import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
 import { humanizeTime } from 'utils/time';
-import Spinner from 'components/Spinner';
-import { PRIMARY_COLOR } from 'utils/constants';
+import SkeletonLoader from './components/SkeletonLoader';
 
 export interface IAnnouncementCardProps {}
 
@@ -46,9 +45,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
             <div className="text-base font-bold">Announcement</div>
           </div>
           {isLoading ? (
-            <div className="p-6 flex items-center justify-center">
-              <Spinner color={PRIMARY_COLOR} />
-            </div>
+            <SkeletonLoader />
           ) : (
             <div>
               {itemCount && isAcknowledged ? (
