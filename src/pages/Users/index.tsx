@@ -2,14 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Button, { Size, Variant } from 'components/Button';
 import UserCard from './components/UserCard';
 import TabSwitch from './components/TabSwitch';
-import {
-  PeopleFilterKeys,
-  IPeopleFilters,
-  useUsers,
-  FilterType,
-  IGetUser,
-  UserRole,
-} from 'queries/users';
+import { IGetUser, UserRole, useInfiniteUsers } from 'queries/users';
 import { Variant as InputVariant } from 'components/Input';
 import InviteUserModal from './components/InviteUserModal';
 import TablePagination from 'components/TablePagination';
@@ -25,9 +18,11 @@ import IconButton, {
 import FilterModal from './components/FilterModal';
 import { useDebounce } from 'hooks/useDebounce';
 import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
+import { isFiltersEmpty, twConfig } from 'utils/misc';
 import useAuth from 'hooks/useAuth';
 import { Role } from 'utils/enum';
+import { useInView } from 'react-intersection-observer';
+import PageLoader from 'components/PageLoader';
 import clsx from 'clsx';
 import Tabs from 'components/Tabs';
 
@@ -38,13 +33,9 @@ interface IForm {
 interface IUsersProps {}
 
 const Users: React.FC<IUsersProps> = () => {
-  const [page, setPage] = useState(1);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [userStatus, setUserStatus] = useState<string>('');
-  const [peopleFilters, setPeopleFilters] = useState<IPeopleFilters>({
-    [PeopleFilterKeys.PeopleFilterType]: [],
-  }); // for future filters
   const { user } = useAuth();
 
   const {
@@ -57,17 +48,35 @@ const Users: React.FC<IUsersProps> = () => {
     mode: 'onChange',
   });
 
+  const { ref, inView } = useInView();
+
   const searchValue = watch('search');
   const role = watch('role');
-
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
-  const { isLoading, data: users } = useUsers({
-    q: debouncedSearchValue,
-    limit: 30,
-    next: page,
-    offset: (page - 1) * 30,
-    status: userStatus,
-    role: role?.value,
+
+  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
+    useInfiniteUsers(
+      isFiltersEmpty({
+        status: userStatus,
+        role: role?.value,
+        q: debouncedSearchValue,
+      }),
+    );
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
+
+  const usersData = data?.pages.flatMap((page) => {
+    return page?.data?.result?.data.map((user: any) => {
+      try {
+        return user;
+      } catch (e) {
+        console.log('Error', { user });
+      }
+    });
   });
 
   const roleFields = [
@@ -165,7 +174,7 @@ const Users: React.FC<IUsersProps> = () => {
         </div>
 
         <div className="text-neutral-500 mt-6 mb-3">
-          Showing {!isLoading && users?.result?.data?.length} results
+          Showing {!isLoading && usersData?.length} results
         </div>
 
         <div className="mb-4 flex">
@@ -193,13 +202,13 @@ const Users: React.FC<IUsersProps> = () => {
             if (isLoading) {
               return <Spinner color="#000" />;
             }
-            if (users?.result?.data?.length > 0) {
+            if (usersData && usersData?.length > 0) {
               return (
                 <>
-                  {users?.result?.data
+                  {usersData
                     ?.filter((userCard: IGetUser) => {
                       if (role) {
-                        return role.value === userCard.role;
+                        return role?.value === userCard.role;
                       } else return true;
                     })
                     .map((user: any) => (
@@ -209,6 +218,10 @@ const Users: React.FC<IUsersProps> = () => {
                         image={user?.profileImage?.original}
                       />
                     ))}
+                  <div className="h-12 w-12">
+                    {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+                  </div>
+                  {isFetchingNextPage && <PageLoader />}
                 </>
               );
             }
@@ -235,7 +248,7 @@ const Users: React.FC<IUsersProps> = () => {
         </div>
       </div>
 
-      {users?.result?.data?.length > 0 && (
+      {/* {users?.result?.data?.length > 0 && (
         <div className="absolute right-0">
           <TablePagination
             total={users?.result?.totalCount}
@@ -244,8 +257,7 @@ const Users: React.FC<IUsersProps> = () => {
             dataTestIdPrefix="people-pagination"
           />
         </div>
-      )}
-
+      )} */}
       <InviteUserModal
         showModal={showAddUserModal}
         setShowAddUserModal={setShowAddUserModal}
@@ -256,7 +268,6 @@ const Users: React.FC<IUsersProps> = () => {
         <FilterModal
           setUserStatus={setUserStatus}
           userStatus={userStatus}
-          page={page}
           showModal={showFilterModal}
           closeModal={() => setShowFilterModal(false)}
         />
@@ -312,7 +323,6 @@ const Users: React.FC<IUsersProps> = () => {
   ];
   return (
     <Card className="p-8 w-full h-full">
-      {/* Top People Directory Section */}
       <div className="space-y-6">
         <div className="flex justify-between">
           <div

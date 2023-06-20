@@ -1,4 +1,9 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  QueryFunctionContext,
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+} from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 
 // for future filters
@@ -91,23 +96,37 @@ export interface IGetUser {
 }
 
 interface UserQueryParams {
-  q?: string;
   limit?: number;
   prev?: number;
   next?: number;
-  offset?: number;
-  name?: string;
-  email?: string;
+  q?: string;
   status?: string;
   role?: string;
 }
+
+export const getAllUser = ({
+  pageParam = null,
+  queryKey,
+}: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
+  if (pageParam === null) {
+    if (typeof queryKey[1] === 'object') {
+      if (!queryKey[1]?.status || queryKey[1]?.status === 'ALL') {
+        return apiService.get('/users', {
+          q: queryKey[1]?.q,
+          role: queryKey[1]?.role,
+        });
+      } else {
+        return apiService.get('/users', queryKey[1]);
+      }
+    }
+  } else return apiService.get(pageParam);
+};
 
 // get all users people listing
 const getAllUsers = async ({
   limit,
   prev,
   next,
-  offset,
   q,
   status,
   role,
@@ -117,22 +136,31 @@ const getAllUsers = async ({
       limit: limit,
       prev: prev,
       next: next,
-      offset: offset,
       q: q,
+      status: status,
       role: role,
     });
     return data;
   }
-  const { data } = await apiService.get(`/users`, {
-    limit: limit,
-    prev: prev,
-    next: next,
-    offset: OffscreenCanvasRenderingContext2D,
-    q: q,
-    status: status,
-    role: role,
+};
+
+export const useInfiniteUsers = (q?: Record<string, any>) => {
+  return useInfiniteQuery({
+    queryKey: ['users', q],
+    queryFn: getAllUser,
+    getNextPageParam: (lastPage: any) => {
+      const pageDataLen = lastPage?.data?.result?.data?.length;
+      const pageLimit = lastPage?.data?.result?.paging?.limit;
+      if (pageDataLen < pageLimit) {
+        return null;
+      }
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
+    staleTime: 5 * 60 * 1000,
   });
-  return data;
 };
 
 // existing user

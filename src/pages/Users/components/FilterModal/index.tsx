@@ -12,8 +12,6 @@ export interface IFilterModalProps {
   showModal: boolean;
   setUserStatus: (status: string) => void;
   closeModal: () => void;
-  setPeopleFilters?: any; // for future filters
-  page?: number;
   userStatus: string;
 }
 
@@ -28,11 +26,9 @@ interface IFilters {
 }
 
 const FilterModal: React.FC<IFilterModalProps> = ({
-  page = 1,
   showModal,
   closeModal,
   setUserStatus,
-  setPeopleFilters,
   userStatus,
 }) => {
   const { control, handleSubmit, getValues } = useForm({
@@ -177,7 +173,10 @@ const FilterModal: React.FC<IFilterModalProps> = ({
           <Button
             label="Clear Fiters"
             variant={ButtonVariant.Secondary}
-            onClick={close}
+            onClick={() => {
+              setUserStatus('');
+              closeModal();
+            }}
             className="mr-4"
             dataTestId="clear-filters"
           />
