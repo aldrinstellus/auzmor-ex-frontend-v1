@@ -12,7 +12,6 @@ export interface IFilterModalProps {
   showModal: boolean;
   setUserStatus: (status: string) => void;
   closeModal: () => void;
-  setShowFilterModal: (flag: boolean) => void;
   setPeopleFilters?: any; // for future filters
   page?: number;
   userStatus: string;
@@ -32,7 +31,6 @@ const FilterModal: React.FC<IFilterModalProps> = ({
   page = 1,
   showModal,
   closeModal,
-  setShowFilterModal,
   setUserStatus,
   setPeopleFilters,
   userStatus,
@@ -41,24 +39,11 @@ const FilterModal: React.FC<IFilterModalProps> = ({
     mode: 'onChange',
   });
 
-  const close = () => {
-    closeModal();
-    setUserStatus('');
-  };
-
   const onSubmit = () => {
     const status = getValues().status;
     setUserStatus(status);
     closeModal();
   };
-
-  const radioDivStyles = useMemo(
-    () =>
-      clsx({
-        'hover:bg-green-50 cursor-pointer': true,
-      }),
-    [],
-  );
 
   const fields = [
     {
@@ -85,8 +70,6 @@ const FilterModal: React.FC<IFilterModalProps> = ({
     },
   ];
 
-  const statusFiltersListNode = <Layout fields={fields} />;
-
   const filterNavigation = [
     {
       label: 'Location',
@@ -112,7 +95,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({
       label: 'Status',
       icon: '',
       key: 'status-filters',
-      component: statusFiltersListNode,
+      component: <Layout fields={fields} />,
       disabled: false,
       hidden: false,
       search: false,
@@ -139,7 +122,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({
         {/* Body */}
         <Header
           title="Filter by"
-          onClose={close}
+          onClose={() => closeModal()}
           closeBtnDataTestId="close-filters"
         />
 
