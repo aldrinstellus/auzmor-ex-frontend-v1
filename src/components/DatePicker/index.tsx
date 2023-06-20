@@ -1,7 +1,14 @@
 import React, { useMemo } from 'react';
 import { Control, Controller, useController } from 'react-hook-form';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+
+import DatePicker from 'react-date-picker';
+import 'react-date-picker/dist/DatePicker.css';
+import 'react-calendar/dist/Calendar.css';
+
+import { Value as DateValue } from 'react-date-picker/dist/cjs/shared/types';
+
+// import DatePicker from 'react-datepicker';
+// import 'react-datepicker/dist/react-datepicker.css';
 
 import './index.css';
 
@@ -14,13 +21,12 @@ export interface IDatePickerInputProps {
   className?: string;
   control?: Control<Record<string, any>>;
   minDate?: Date;
-  placeholder?: string;
   error?: string;
   defaultValue?: string;
   portalContainer?: HTMLElement | null;
   calendarClassName?: string;
   dataTestId?: string;
-  onDateChange?: (date: Date) => void;
+  onDateChange?: (date: DateValue) => void;
 }
 
 const DatePickerInput: React.FC<IDatePickerInputProps> = ({
@@ -28,7 +34,6 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
   name,
   label = '',
   minDate,
-  placeholder = 'MM/DD/YYYY',
   defaultValue,
   portalContainer = null,
   className,
@@ -61,26 +66,45 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
       <Controller
         name={field.name}
         control={control}
-        render={() => (
+        render={({
+          field: { onChange, name, value },
+          fieldState: { invalid, isDirty },
+          formState: { errors },
+        }) => (
+          // <DatePicker
+          //   {...field}
+          //   selected={field.value || (defaultValue && new Date(defaultValue))}
+          //   calendarClassName={calendarClassName}
+          //   data-testid={dataTestId}
+          //   className={`flex border relative rounded-19xl w-full px-5 py-2.5 focus:!border-primary-500 hover:border-primary-500 ${className}`}
+          //   minDate={minDate}
+          //   portalId="root"
+          //   placeholderText={placeholder}
+          //   popperProps={{
+          //     positionFixed: true,
+          //     strategy: 'fixed',
+          //   }}
+          // />
+
           <DatePicker
-            {...field}
-            selected={field.value || (defaultValue && new Date(defaultValue))}
-            calendarClassName={calendarClassName}
-            data-testid={dataTestId}
-            className={`flex border relative rounded-19xl w-full px-5 py-2.5 focus:!border-primary-500 hover:border-primary-500 ${className}`}
-            minDate={minDate}
-            portalId="root"
-            placeholderText={placeholder}
-            popperProps={{
-              positionFixed: true,
-              strategy: 'fixed',
+            value={value}
+            onChange={(date: DateValue) => {
+              onChange(date);
+              onDateChange && onDateChange(date);
             }}
+            className={`flex border relative rounded-19xl w-full px-5 py-2.5 focus:!border-primary-500 hover:border-primary-500 ${className}`}
+            calendarIcon={<Icon name="calendarTwo" size={16} />}
+            format="dd/MM/yyyy"
+            dayPlaceholder="DD"
+            monthPlaceholder="MM"
+            yearPlaceholder="YYYY"
+            clearIcon={null}
+            data-testid={dataTestId}
+            minDate={minDate}
+            id="react-date-picker-calendar"
           />
         )}
       />
-      <div className="absolute right-4 top-[calc(50%-8px)]">
-        <Icon name="calendarTwo" size={16} />
-      </div>
       {!!error && (
         <div className={`absolute -bottom-4 text-xs truncate leading-tight`}>
           {error}

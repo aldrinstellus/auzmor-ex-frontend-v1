@@ -1,5 +1,11 @@
-import { Listbox } from '@headlessui/react';
-import React, { Fragment, ReactElement, ReactNode, useState } from 'react';
+import { Listbox, Transition } from '@headlessui/react';
+import React, {
+  Fragment,
+  ReactElement,
+  ReactNode,
+  useRef,
+  useState,
+} from 'react';
 
 export type DropdownProps = {
   options: Record<string, any>[];
@@ -27,15 +33,25 @@ const Dropdown: React.FC<DropdownProps> = ({
       {({ open }) => (
         <>
           <Listbox.Button>{triggerNode(selectedOption, open)}</Listbox.Button>
-          <Listbox.Options className="absolute mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg min-w-[112px] z-10">
-            {options.map((option) => (
-              <Listbox.Option key={option.id} value={option} as={Fragment}>
-                {({ active, selected }) =>
-                  optionRenderer(active, selected, option)
-                }
-              </Listbox.Option>
-            ))}
-          </Listbox.Options>
+          <Transition
+            show={open}
+            enter="transition-all duration-300 ease-in-out"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-all duration-300 ease-in-out"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <Listbox.Options className="absolute mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg min-w-[112px] z-10">
+              {options.map((option) => (
+                <Listbox.Option key={option.id} value={option} as={Fragment}>
+                  {({ active, selected }) =>
+                    optionRenderer(active, selected, option)
+                  }
+                </Listbox.Option>
+              ))}
+            </Listbox.Options>
+          </Transition>
         </>
       )}
     </Listbox>

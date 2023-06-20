@@ -23,7 +23,7 @@ const Footer: React.FC<IFooterProps> = ({ handleSubmit, isValid }) => {
     setActiveFlow(CreatePostFlow.CreatePost);
   };
   return (
-    <div className="flex justify-end items-center h-16 p-6 bg-blue-50">
+    <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
       <Button
         variant={ButtonVariant.Secondary}
         label="Back"
