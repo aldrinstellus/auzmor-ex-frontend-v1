@@ -111,10 +111,7 @@ const UserCard: React.FC<IUserCardProps> = ({
       data-testid="people-card"
       {...eventHandlers}
     >
-      <Card
-        shadowOnHover
-        className="relative w-[234px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white"
-      >
+      <Card className="relative w-[234px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white">
         {isAdmin && isHovered && _options.length > 0 && (
           <PopupMenu
             triggerNode={
