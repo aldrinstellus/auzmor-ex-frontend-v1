@@ -10,7 +10,7 @@ import ConfigureGenericSSO from './components/ConfigureGenericSSO';
 import { IdentityProvider, useGetSSO } from 'queries/organization';
 import ConfigureLDAP from './components/ConfigureLDAP';
 import Banner, { Variant } from 'components/Banner';
-import PageLoader from 'components/PageLoader';
+import SkeletonLoader from './components/SkeletonLoader';
 
 enum ConfigureScreen {
   GENERIC = 'GENERIC',
@@ -131,10 +131,6 @@ const SSOSettings: React.FC = (): ReactElement => {
     [ssoIntegrations],
   );
 
-  if (isLoading) {
-    return <PageLoader />;
-  }
-
   if (isError) {
     return <div>Error fetching SSO List</div>;
   }
@@ -154,20 +150,24 @@ const SSOSettings: React.FC = (): ReactElement => {
         />
       )}
       <div className="flex gap-x-6 flex-wrap gap-y-6">
-        {ssoIntegrations.map((integration: ISSOSetting) => (
-          <SSOCard
-            key={integration.key}
-            id={integration.key}
-            logo={integration.logo}
-            description={integration.description}
-            onClick={onClick}
-            idp={integration.idp}
-            active={integration.active || false}
-            setShowErrorBanner={setShowErrorBanner}
-            activeSSO={activeSSO}
-            dataTestId={integration.dataTestId}
-          />
-        ))}
+        {!isLoading ? (
+          ssoIntegrations.map((integration: ISSOSetting) => (
+            <SSOCard
+              key={integration.key}
+              id={integration.key}
+              logo={integration.logo}
+              description={integration.description}
+              onClick={onClick}
+              idp={integration.idp}
+              active={integration.active || false}
+              setShowErrorBanner={setShowErrorBanner}
+              activeSSO={activeSSO}
+              dataTestId={integration.dataTestId}
+            />
+          ))
+        ) : (
+          <SkeletonLoader />
+        )}
         {ssoSetting?.configureScreen === ConfigureScreen.GENERIC && (
           <ConfigureGenericSSO
             ssoSetting={ssoSetting}
