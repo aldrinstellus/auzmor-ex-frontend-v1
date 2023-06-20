@@ -83,23 +83,30 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
         coverImage: userUpdateResponse?.coverImage?.original,
       });
       setImageFile && setImageFile({});
-      toast(<SuccessToast content={'Profile Picture Updated Successfully'} />, {
-        closeButton: (
-          <Icon
-            name="closeCircleOutline"
-            stroke={twConfig.theme.colors.primary['500']}
-            size={20}
-          />
-        ),
-        style: {
-          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
+      toast(
+        <SuccessToast
+          content={`${
+            imageFile?.profileImage ? 'Profile Picture' : 'Cover Picture'
+          } Updated Successfully`}
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.primary['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
         },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-      });
+      );
       closeEditImageModal();
       openEditProfileModal();
       setBlob(null);

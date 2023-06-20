@@ -12,7 +12,6 @@ export interface IFilterModalProps {
   showModal: boolean;
   setUserStatus: (status: string) => void;
   closeModal: () => void;
-  setShowFilterModal: (flag: boolean) => void;
   userStatus: string;
 }
 
@@ -29,18 +28,12 @@ interface IFilters {
 const FilterModal: React.FC<IFilterModalProps> = ({
   showModal,
   closeModal,
-  setShowFilterModal,
   setUserStatus,
   userStatus,
 }) => {
   const { control, handleSubmit, getValues } = useForm({
     mode: 'onChange',
   });
-
-  const close = () => {
-    closeModal();
-    setUserStatus('');
-  };
 
   const onSubmit = () => {
     const status = getValues().status;
@@ -73,8 +66,6 @@ const FilterModal: React.FC<IFilterModalProps> = ({
     },
   ];
 
-  const statusFiltersListNode = <Layout fields={fields} />;
-
   const filterNavigation = [
     {
       label: 'Location',
@@ -100,7 +91,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({
       label: 'Status',
       icon: '',
       key: 'status-filters',
-      component: statusFiltersListNode,
+      component: <Layout fields={fields} />,
       disabled: false,
       hidden: false,
       search: false,
@@ -127,7 +118,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({
         {/* Body */}
         <Header
           title="Filter by"
-          onClose={close}
+          onClose={() => closeModal()}
           closeBtnDataTestId="close-filters"
         />
 
@@ -178,7 +169,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({
         </form>
 
         {/* Footer */}
-        <div className="flex justify-end items-center h-16 p-6 bg-blue-50">
+        <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
             label="Clear Fiters"
             variant={ButtonVariant.Secondary}

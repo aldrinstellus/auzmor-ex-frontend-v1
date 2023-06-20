@@ -109,7 +109,10 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
   };
 
   return (
-    <Modal open={open} className="max-w-2xl max-h-[600px] overflow-y-visible">
+    <Modal
+      open={open}
+      className="max-w-2xl max-h-[600px] overflow-y-visible overflow-hidden"
+    >
       {/* Header */}
       <div className="flex items-center justify-between p-4">
         <p className="font-extrabold text-black text-lg">{ssoSetting?.key}</p>
@@ -202,7 +205,7 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
               isError && !isLoading ? 'visible' : 'invisible'
             } mt-4`}
           />
-          <div className="bg-blue-50 p-0">
+          <div className="bg-blue-50 p-0 rounded-b-9xl">
             <div className="p-3 flex items-center justify-end gap-x-3">
               <Button
                 className="font-bold"

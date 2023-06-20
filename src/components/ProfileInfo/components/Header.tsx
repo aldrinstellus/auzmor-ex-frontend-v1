@@ -6,6 +6,7 @@ import Button, {
 import Icon from 'components/Icon';
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 import { FieldValues, UseFormHandleSubmit } from 'react-hook-form';
+import './styles.css';
 
 export type HeaderProps = {
   title: string;
@@ -54,7 +55,7 @@ const Header: React.FC<HeaderProps> = ({
         </IconWrapper>
       ) : (
         isEditable && (
-          <div className="flex space-x-3">
+          <div className="flex space-x-3 slide-in-right">
             <Button
               variant={ButtonVariant.Secondary}
               label={'Cancel'}

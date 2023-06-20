@@ -23,6 +23,8 @@ import useAuth from 'hooks/useAuth';
 import { Role } from 'utils/enum';
 import { useInView } from 'react-intersection-observer';
 import PageLoader from 'components/PageLoader';
+import clsx from 'clsx';
+import Tabs from 'components/Tabs';
 
 interface IForm {
   search?: string;
@@ -262,13 +264,14 @@ const Users: React.FC<IUsersProps> = () => {
         closeModal={() => setShowAddUserModal(false)}
       />
 
-      <FilterModal
-        setUserStatus={setUserStatus}
-        userStatus={userStatus}
-        showModal={showFilterModal}
-        setShowFilterModal={setShowFilterModal}
-        closeModal={() => setShowFilterModal(false)}
-      />
+      {showFilterModal && (
+        <FilterModal
+          setUserStatus={setUserStatus}
+          userStatus={userStatus}
+          showModal={showFilterModal}
+          closeModal={() => setShowFilterModal(false)}
+        />
+      )}
     </div>
   );
 
@@ -287,6 +290,37 @@ const Users: React.FC<IUsersProps> = () => {
     },
   ];
 
+  const tabStyles = (active: boolean) =>
+    clsx(
+      {
+        'font-bold px-4 cursor-pointer py-1': true,
+      },
+      {
+        'bg-primary-500 rounded-6xl text-white': active,
+      },
+      {
+        'bg-neutral-50 rounded-lg': !active,
+      },
+    );
+
+  const tabs2 = [
+    {
+      id: 1,
+      tabLable: (isActive: boolean) => (
+        <div className={tabStyles(isActive)}>People</div>
+      ),
+      dataTestId: 'people-view-people',
+      tabContent: peopleHubNode,
+    },
+    {
+      id: 2,
+      tabLable: (isActive: boolean) => (
+        <div className={tabStyles(isActive)}>Teams</div>
+      ),
+      dataTestId: 'people-view-teams',
+      tabContent: <div>Teams</div>,
+    },
+  ];
   return (
     <Card className="p-8 w-full h-full">
       <div className="space-y-6">
@@ -321,7 +355,15 @@ const Users: React.FC<IUsersProps> = () => {
           </div>
         </div>
         {/* Tab Switcher */}
-        <TabSwitch tabs={tabs} />
+        {/* <TabSwitch tabs={tabs} /> */}
+        <Tabs
+          tabs={tabs2}
+          className="w-fit flex justify-start bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200"
+          tabSwitcherClassName="!p-1"
+          showUnderline={false}
+          itemSpacing={1}
+          tabContentClassName="mt-8"
+        />
       </div>
     </Card>
   );

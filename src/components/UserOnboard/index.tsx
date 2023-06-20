@@ -93,7 +93,6 @@ const UserOnboard: React.FC = (): ReactNode => {
           <span className="flex items-center justify-center h-[500px]">
             {screens[currentScreen].screen}
           </span>
-          <Divider />
         </Card>
       </Modal>
       <input

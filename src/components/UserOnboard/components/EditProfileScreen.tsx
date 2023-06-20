@@ -80,7 +80,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
             }`}
             dataTestId="error-set-profilepic"
           />
-          <div className="bg-blue-50 ">
+          <div className="bg-blue-50 rounded-b-9xl">
             <div className="p-3 flex items-center justify-between">
               <div
                 className={`font-bold text-neutral-900 ${

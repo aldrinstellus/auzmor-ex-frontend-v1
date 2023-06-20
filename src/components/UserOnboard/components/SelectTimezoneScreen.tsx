@@ -87,10 +87,7 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
   ];
 
   return (
-    <div
-      className="flex flex-col min-h-full justify-between min-w-full"
-      data-testid="select-timezone"
-    >
+    <div className="flex flex-col min-h-full justify-between min-w-full">
       <div className="flex items-center flex-col justify-between gap-y-3 px-10 mt-6">
         <img src={OnboardTimezone} />
         <p className="font-bold text-neutral-900 text-2xl">
@@ -115,7 +112,7 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
               }`}
             />
           </div>
-          <div className="bg-blue-50 min-w-full">
+          <div className="bg-blue-50 min-w-full rounded-b-9xl">
             <div className="p-3 flex items-center justify-between">
               <div />
               <Button
