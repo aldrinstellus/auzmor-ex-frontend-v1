@@ -13,7 +13,7 @@ const Card: React.FC<CardProps> = ({
   children,
   className = '',
   dataTestId = '',
-  shadowOnHover = true,
+  shadowOnHover = false,
 }) => {
   const [isHovered, hoverEvents] = useHover();
 
