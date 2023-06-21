@@ -10,6 +10,8 @@ import NoDataCard from './components/NoDataCard';
 import ProfileCoverSection from './components/ProfileCoverSection';
 import clsx from 'clsx';
 import Tabs from 'components/Tabs';
+import UserDetailSkeleton from './components/UserDetailSkeleton';
+import ContactSkeleton from 'components/ContactWidget/components/Skeletons';
 
 export interface IUpdateProfileImage {
   profileImage: File;
@@ -34,15 +36,6 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
 
   const data = userDetail?.data?.data?.result?.data;
 
-  if (userDetail?.isLoading) {
-    return <Spinner color="#000" />;
-  }
-
-  // if API failed show some Error
-  if (userDetail?.isError) {
-    return <div></div>;
-  }
-
   const tabStyles = (active: boolean) =>
     clsx(
       {
@@ -64,7 +57,11 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
       ),
       dataTestId: 'user-profile-tab',
       tabContent: (
-        <ProfileInfo profileDetails={data} canEdit={pathname === '/profile'} />
+        <ProfileInfo
+          profileDetails={data}
+          isLoading={userDetail?.isLoading}
+          canEdit={pathname === '/profile'}
+        />
       ),
     },
     {
@@ -96,15 +93,24 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
 
   return (
     <div className="flex flex-col space-y-9 w-full">
-      <ProfileCoverSection
-        userDetails={data}
-        canEdit={pathname === '/profile'}
-      />
-      <div className="mb-32 space-x-8 flex w-full">
-        <ContactWidget
-          contactCardData={data}
+      {userDetail?.isLoading ? (
+        <UserDetailSkeleton />
+      ) : (
+        <ProfileCoverSection
+          userDetails={data}
           canEdit={pathname === '/profile'}
         />
+      )}
+
+      <div className="mb-32 space-x-8 flex w-full">
+        {userDetail?.isLoading ? (
+          <ContactSkeleton />
+        ) : (
+          <ContactWidget
+            contactCardData={data}
+            canEdit={pathname === '/profile'}
+          />
+        )}
         <div className="w-1/2">
           <Tabs
             tabs={tabs}
