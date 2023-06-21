@@ -1,7 +1,6 @@
 import React from 'react';
 import Post from 'components/Post';
 import {
-  IGetPost,
   useInfiniteMyProfileFeed,
   useInfinitePeopleProfileFeed,
 } from 'queries/post';
@@ -43,7 +42,7 @@ const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
             <>
               {myProfileFeed?.pages?.[0].data?.result?.data?.map(
                 (post: any) => (
-                  <Post data={post} key={post.id} />
+                  <Post post={post} key={post.id} />
                 ),
               )}
             </>
@@ -65,7 +64,7 @@ const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
             <>
               {peopleProfileFeed?.pages?.[0].data?.result?.data?.map(
                 (post: any) => (
-                  <Post data={post} key={post.id} />
+                  <Post post={post} key={post.id} />
                 ),
               )}
             </>

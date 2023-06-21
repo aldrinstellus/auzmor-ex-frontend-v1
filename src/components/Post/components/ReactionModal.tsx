@@ -4,10 +4,11 @@ import Header from 'components/ModalHeader';
 import React from 'react';
 import Tabs from 'components/Tabs';
 import ReactionTab from './ReactionTab';
+import { IReactionsCount } from 'queries/post';
 
 export interface IReactionModalProps {
   closeModal?: () => void;
-  reactionCounts: Record<string, number>;
+  reactionCounts: IReactionsCount;
   postId: string;
   entityType: string;
 }

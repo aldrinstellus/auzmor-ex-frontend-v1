@@ -9,7 +9,7 @@ import Popover from 'components/Popover';
 import clsx from 'clsx';
 import { humanizeTime } from 'utils/time';
 import { iconsStyle } from 'components/Post';
-import { MyObjectType } from 'queries/post';
+import { IReactionsCount } from 'queries/post';
 import useAuth from 'hooks/useAuth';
 import Reply from '../../Reply';
 import Icon from 'components/Icon';
@@ -64,7 +64,7 @@ export const Comment: React.FC<CommentProps> = ({
       true,
   });
 
-  const reactionCount: MyObjectType = comment?.reactionsCount || {};
+  const reactionCount: IReactionsCount = comment?.reactionsCount || {};
 
   const keys = Object.keys(reactionCount).length;
   const totalCount = Object.values(reactionCount).reduce(

@@ -1,18 +1,20 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import { DeltaOperation } from 'quill';
 import Mention from './components/Mention';
 import Hashtag from './components/Hashtag';
 import Emoji from './components/Emoji';
 import { Text } from './components/Text';
 import MediaPreview, { Mode } from 'components/MediaPreview';
-import { IGetPost } from 'queries/post';
+import { IPost } from 'queries/post';
 import { getMentionProps } from './utils';
 import PreviewCard from 'components/PreviewCard';
 import { removeElementsByClass } from 'utils/misc';
 import { IComment } from 'components/Comments';
+import { IMedia } from 'contexts/CreatePostContext';
+import { Metadata } from 'components/PreviewLink/types';
 
 type RenderQuillContent = {
-  data: IGetPost | IComment;
+  data: IPost | IComment;
 };
 
 const RenderQuillContent: React.FC<RenderQuillContent> = ({
@@ -20,8 +22,8 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
 }): ReactElement => {
   const content = data?.content?.editor;
   const mentions = data?.mentions ? data.mentions : [];
-  const link = (data as IGetPost)?.link;
-  const media = (data as IGetPost)?.files;
+  const link = (data as IPost)?.link;
+  const media = (data as IPost)?.files;
 
   useEffect(() => {
     const element = document.getElementById(`${data?.id}-content`);
@@ -96,12 +98,12 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
       </span>
       {link && (
         <div className="mt-4">
-          <PreviewCard metaData={link} className="my-2" />
+          <PreviewCard metaData={link as Metadata} className="my-2" />
         </div>
       )}
       {media && (
         <div className="mt-4">
-          <MediaPreview media={media} mode={Mode.View} />
+          <MediaPreview media={media as IMedia[]} mode={Mode.View} />
         </div>
       )}
     </div>

@@ -2,7 +2,7 @@ import React, { ReactNode, useContext, useEffect } from 'react';
 import Modal from 'components/Modal';
 import CreatePost from 'components/PostBuilder/components/CreatePost';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { IPost, createPost, updatePost } from 'queries/post';
+import { IPost, IPostPayload, createPost, updatePost } from 'queries/post';
 import CreateAnnouncement from './CreateAnnouncement';
 import {
   CreatePostFlow,
@@ -84,8 +84,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
 
   const updatePostMutation = useMutation({
     mutationKey: ['updatePostMutation'],
-    mutationFn: (payload: IPost) =>
-      updatePost(payload.id || '', payload as IPost),
+    mutationFn: (payload: IPostPayload) =>
+      updatePost(payload.id || '', payload as IPostPayload),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['feed']);
       await queryClient.invalidateQueries(['announcements-widget']);

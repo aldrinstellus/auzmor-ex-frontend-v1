@@ -10,10 +10,10 @@ import clsx from 'clsx';
 import queryClient from 'utils/queryClient';
 import { humanizeTime } from 'utils/time';
 import { iconsStyle } from 'components/Post';
-import { MyObjectType } from 'queries/post';
 import useAuth from 'hooks/useAuth';
 import Icon from 'components/Icon';
 import ReactionModal from 'components/Post/components/ReactionModal';
+import { IReactionsCount } from 'queries/post';
 
 interface ReplyProps {
   comment: IComment;
@@ -50,7 +50,7 @@ export const Reply: React.FC<ReplyProps> = ({
       true,
   });
 
-  const reactionCount: MyObjectType = comment?.reactionsCount || {};
+  const reactionCount: IReactionsCount = comment?.reactionsCount || {};
 
   const keys = Object.keys(reactionCount).length;
   const totalCount = Object.values(reactionCount).reduce(

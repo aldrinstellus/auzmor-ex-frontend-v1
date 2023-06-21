@@ -3,7 +3,7 @@ import Post from 'components/Post';
 import React, { useState } from 'react';
 import SortByDropdown from './components/SortByDropdown';
 import FeedFilter from './components/FeedFilters';
-import { IGetPost, IPostFilters } from 'queries/post';
+import { IPostFilters } from 'queries/post';
 
 import { InfiniteScroll } from 'components/InfiniteScroll';
 import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
@@ -11,7 +11,6 @@ import Icon from 'components/Icon';
 
 type ActivityFeedProps = {
   activityFeed: any;
-  // activityFeed: IGetPost[];
   loadMore: any; // Change this type to something more appropriate for functions
   setShowModal: (flag: boolean) => void;
   isLoading?: boolean;
@@ -38,7 +37,7 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
           itemCount={activityFeed.length}
           itemRenderer={(index) => (
             <div key={`post-${index}`}>
-              <Post data={activityFeed[index]} />
+              <Post post={activityFeed[index]} />
             </div>
           )}
           isFetchingNextPage={isFetchingNextPage}

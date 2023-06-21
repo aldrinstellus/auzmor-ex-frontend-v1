@@ -6,7 +6,7 @@ import { DeltaStatic } from 'quill';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import { ICreated, IMyReactions } from 'pages/Feed';
-import { IMention, MyObjectType } from 'queries/post';
+import { IMention, IReactionsCount } from 'queries/post';
 import Spinner from 'components/Spinner';
 import { PRIMARY_COLOR } from 'utils/constants';
 import LoadMore from './components/LoadMore';
@@ -37,7 +37,7 @@ export interface IComment {
   createdBy: ICreated;
   id: string;
   myReaction: IMyReactions;
-  reactionsCount: MyObjectType;
+  reactionsCount: IReactionsCount;
   repliesCount: number;
   comment: IComment;
 }

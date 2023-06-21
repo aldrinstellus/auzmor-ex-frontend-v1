@@ -6,10 +6,13 @@ import {
 } from '@tanstack/react-query';
 import { DeltaStatic } from 'quill';
 import { isValidUrl } from 'utils/misc';
-import { IMyReactions } from 'pages/Feed';
-import { Metadata } from 'components/PreviewLink/types';
 import { IMedia } from 'contexts/CreatePostContext';
 import { IComment } from 'components/Comments';
+import { Metadata } from 'components/PreviewLink/types';
+
+export interface IReactionsCount {
+  [key: string]: number;
+}
 
 export interface IMention {
   name: string;
@@ -73,15 +76,59 @@ export interface IPost {
     type: string;
     id: string;
   };
-  link?: string;
-  myReactions?: [
-    {
-      createdBy: ICreatedBy;
-      reaction: string;
-      type: string;
+  link?: Metadata | string;
+  myReaction?: {
+    createdBy: ICreatedBy;
+    reaction: string;
+    type: string;
+    id: string;
+  };
+  reactionsCount: IReactionsCount;
+  commentsCount: number;
+  createdAt: string;
+  updatedAt: string;
+  comment: IComment;
+}
+
+export interface IPostPayload {
+  id?: string;
+  content: {
+    text: string;
+    html: string;
+    editor: DeltaStatic;
+  };
+  mentions?: IMention[];
+  createdBy?: {
+    department?: string;
+    designation?: string;
+    fullName?: string;
+    profileImage: {
+      blurHash?: string;
       id: string;
-    },
-  ];
+      original: string;
+    };
+    status?: string;
+    userId?: string;
+    workLocation?: string;
+  };
+  hashtags:
+    | [
+        {
+          name: string;
+          id: string;
+        },
+      ]
+    | [];
+  files?: string[] | IMedia[];
+  type: string;
+  audience: {
+    users: string[];
+  };
+  isAnnouncement: boolean;
+  announcement: {
+    end: string;
+  };
+  link?: string;
 }
 
 export interface IReaction {
@@ -119,10 +166,6 @@ export interface IReaction {
   updatedAt?: string;
 }
 
-export interface MyObjectType {
-  [key: string]: number;
-}
-
 export interface ICreatedBy {
   department?: string;
   designation?: string;
@@ -135,63 +178,6 @@ export interface ICreatedBy {
   status?: string;
   userId?: string;
   workLocation?: string;
-}
-
-export interface IGetPost {
-  content: {
-    text: string;
-    html: string;
-    editor: DeltaStatic;
-  };
-  mentions?: IMention[];
-  createdBy?: ICreatedBy;
-  hashtags:
-    | [
-        {
-          name: string;
-          id: string;
-        },
-      ]
-    | [];
-  files?: IMedia[];
-  type: string;
-  audience: {
-    users: string[];
-  };
-  isAnnouncement: boolean;
-  announcement: {
-    end: string;
-  };
-  link: Metadata;
-  id: string;
-  myReaction: {
-    createdBy: ICreatedBy;
-    reaction: string;
-    type: string;
-    id: string;
-  };
-  myAcknowledgement?: {
-    // createdBy: {
-    //   department?: string;
-    //   designation?: string;
-    //   fullName?: string;
-    //   profileImage: {
-    //     blurHash?: string;
-    //   };
-    //   status?: string;
-    //   userId?: string;
-    //   workLocation?: string;
-    // };
-    reaction: string;
-    type: string;
-    id: string;
-  };
-  reactionsCount: MyObjectType;
-  turnOffComments: boolean;
-  commentsCount: number;
-  createdAt: string;
-  updatedAt: string;
-  comment?: IComment;
 }
 
 interface IDeletePost {
@@ -260,7 +246,7 @@ export interface IPostFilters {
   [PostFilterKeys.Prev]?: number;
 }
 
-export const createPost = async (payload: IPost) => {
+export const createPost = async (payload: IPostPayload) => {
   const data = await apiService.post('/posts', payload);
   return data;
 };
@@ -282,7 +268,7 @@ export const usePreviewLink = (previewUrl: string) => {
   });
 };
 
-export const updatePost = async (id: string, payload: IPost) => {
+export const updatePost = async (id: string, payload: IPostPayload) => {
   await apiService.put(`/posts/${id}`, payload);
 };
 

@@ -3,7 +3,7 @@ import PostBuilder from 'components/PostBuilder';
 import UserCard from 'components/UserWidget';
 import AnnouncementCard from 'components/AnnouncementWidget';
 import {
-  IGetPost,
+  IPost,
   IPostFilters,
   PostFilterKeys,
   PostType,
@@ -68,7 +68,7 @@ const Feed: React.FC<IFeedProps> = () => {
         console.log('Error', { post });
       }
     });
-  }) as IGetPost[];
+  }) as IPost[];
 
   const clearAppliedFilters = () => {
     setAppliedFeedFilters({
@@ -155,7 +155,7 @@ const Feed: React.FC<IFeedProps> = () => {
               <div className="mt-4">
                 {feed.map((post, index) => (
                   <div data-testid={`feed-post-${index}`} key={post.id}>
-                    <Post data={post} />
+                    <Post post={post} />
                   </div>
                 ))}
               </div>

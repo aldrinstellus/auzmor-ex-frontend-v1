@@ -4,13 +4,13 @@ import { DeltaStatic } from 'quill';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import { ICreated, IMyReactions } from 'pages/Feed';
-import { MyObjectType } from 'queries/post';
 import { Reply } from 'components/Reply/Reply';
 import { CommentForm } from 'components/Comments/components/CommentForm';
 import Spinner from 'components/Spinner';
 import Button, { Variant } from 'components/Button';
 import { PRIMARY_COLOR } from 'utils/constants';
 import LoadMore from 'components/Comments/components/LoadMore';
+import { IReactionsCount } from 'queries/post';
 
 interface CommentsProps {
   entityId: string;
@@ -39,7 +39,7 @@ export interface IComment {
   createdBy: ICreated;
   id: string;
   myReaction: IMyReactions;
-  reactionsCount: MyObjectType;
+  reactionsCount: IReactionsCount;
   repliesCount: number;
 }
 

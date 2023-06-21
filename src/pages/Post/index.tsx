@@ -5,7 +5,7 @@ import PageLoader from 'components/PageLoader';
 import Post from 'components/Post';
 import { Reply } from 'components/Reply/Reply';
 import UserCard from 'components/UserWidget';
-import { IGetPost, useGetPost } from 'queries/post';
+import { IPost, useGetPost } from 'queries/post';
 import React, { useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 
@@ -28,7 +28,7 @@ const PostPage: React.FC = () => {
   } else if (isError) {
     return <div>Error...</div>;
   }
-  const post = data.data?.result?.data as IGetPost;
+  const post = data.data?.result?.data as IPost;
   return (
     <>
       <div className="mb-12 space-x-8 flex w-full">
@@ -38,7 +38,7 @@ const PostPage: React.FC = () => {
         <div className="w-1/2">
           <div className="mt-4">
             <Post
-              data={post}
+              post={post}
               customNode={
                 post?.comment && (
                   <Comment

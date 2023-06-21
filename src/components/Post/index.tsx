@@ -6,7 +6,7 @@ import { VIEW_POST } from 'components/Actor/constant';
 import CommentCard from 'components/Comments/index';
 import Likes, { ReactionType } from 'components/Reactions';
 import FeedPostMenu from './components/FeedPostMenu';
-import { IPost, IGetPost } from 'queries/post';
+import { IPost } from 'queries/post';
 import Icon from 'components/Icon';
 import clsx from 'clsx';
 import { humanizeTime } from 'utils/time';
@@ -40,20 +40,19 @@ export const iconsStyle = (key: string) => {
 };
 
 type PostProps = {
-  // data: IPost;
-  data: IGetPost;
+  post: IPost;
   customNode?: ReactNode;
 };
 
-const Post: React.FC<PostProps> = ({ data, customNode = null }) => {
+const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
   const [showComments, setShowComments] = useState(false);
   const [showReactionModal, setShowReactionModal] = useState(false);
 
-  const reaction = data?.myReaction?.reaction;
-  const reactionId = data?.myReaction?.id;
+  const reaction = post?.myReaction?.reaction;
+  const reactionId = post?.myReaction?.id;
 
-  const keys = Object.keys(data.reactionsCount).length;
-  const totalCount = Object.values(data.reactionsCount).reduce(
+  const keys = Object.keys(post.reactionsCount!).length;
+  const totalCount = Object.values(post.reactionsCount!).reduce(
     (total, count) => total + count,
     0,
   );
@@ -69,20 +68,20 @@ const Post: React.FC<PostProps> = ({ data, customNode = null }) => {
   return (
     <>
       <Card className="mb-4">
-        <AcknowledgementBanner data={data} />
+        <AcknowledgementBanner data={post} />
         <div className="flex justify-between items-center">
           <Actor
             visibility="Everyone"
             contentMode={VIEW_POST}
-            createdTime={humanizeTime(data?.createdAt)}
-            createdBy={data?.createdBy}
+            createdTime={humanizeTime(post.createdAt!)}
+            createdBy={post?.createdBy}
           />
           <div className="relative">
-            <FeedPostMenu data={data as unknown as IPost} /> {/* Temp fix */}
+            <FeedPostMenu data={post as unknown as IPost} /> {/* Temp fix */}
           </div>
         </div>
         <div className="mx-6">
-          <RenderQuillContent data={data} />
+          <RenderQuillContent data={post} />
           <div className="border-b border-neutral-100 mt-4"></div>
           <div className="flex flex-row justify-between my-3">
             <div
@@ -91,7 +90,7 @@ const Post: React.FC<PostProps> = ({ data, customNode = null }) => {
             >
               {keys > 0 && (
                 <div className="flex flex-row mr-2">
-                  {Object.keys(data.reactionsCount)
+                  {Object.keys(post.reactionsCount!)
                     .slice(0, 3)
                     .map((key, i) => (
                       <div
@@ -129,7 +128,7 @@ const Post: React.FC<PostProps> = ({ data, customNode = null }) => {
                 }}
                 data-testid="feed-post-commentscount"
               >
-                {data.commentsCount || 0} Comments
+                {post.commentsCount || 0} Comments
               </div>
               <div data-testid="feed-post-repostcount">0 reposts</div>
             </div>
@@ -141,7 +140,7 @@ const Post: React.FC<PostProps> = ({ data, customNode = null }) => {
             <div className="flex ">
               <Likes
                 reaction={reaction || ''}
-                entityId={data?.id || ''}
+                entityId={post?.id || ''}
                 entityType="post"
                 reactionId={reactionId || ''}
                 queryKey="feed"
@@ -169,7 +168,7 @@ const Post: React.FC<PostProps> = ({ data, customNode = null }) => {
           </div>
           {/* Comments */}
           {showComments ? (
-            <CommentCard entityId={data?.id || ''} />
+            <CommentCard entityId={post?.id || ''} />
           ) : (
             !previousShowComment.current && customNode
           )}
@@ -178,8 +177,8 @@ const Post: React.FC<PostProps> = ({ data, customNode = null }) => {
       {showReactionModal && (
         <ReactionModal
           closeModal={() => setShowReactionModal(false)}
-          reactionCounts={data.reactionsCount}
-          postId={data.id}
+          reactionCounts={post.reactionsCount}
+          postId={post!.id!}
           entityType="post"
         />
       )}
