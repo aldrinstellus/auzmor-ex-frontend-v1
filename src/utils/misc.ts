@@ -134,6 +134,19 @@ export const BlobToFile = (blob: Blob, fileName: string): File => {
   return file;
 };
 
+export const isFiltersEmpty = <T extends Record<string, any>>(
+  filters: T,
+): Partial<T> => {
+  const filteredValues: Partial<T> = {};
+  for (const key in filters) {
+    const value = filters[key];
+    if (value !== '' && value !== null && value !== undefined) {
+      filteredValues[key] = value;
+    }
+  }
+  return filteredValues;
+};
+
 export const isSubset = (subset?: string[], set?: string[]) => {
   if (set && subset) {
     return subset.every((ele) => set.includes(ele));

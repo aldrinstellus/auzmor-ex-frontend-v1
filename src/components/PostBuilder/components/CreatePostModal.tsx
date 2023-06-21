@@ -217,6 +217,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
               if (loading) {
                 return null;
               }
+              const ele = document.getElementById('emoji-close-div');
+              ele?.click();
               return setShowModal(false);
             }}
             handleSubmitPost={handleSubmitPost}

@@ -142,7 +142,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       getValues,
       onChange: () => {},
       dataTestId: 'change-password-new-password',
-      errorDataTestId: 'change-password-new-error',
+      errorDataTestId: 'change-password-error',
       disabled: isLoading || data?.result?.data?.sso?.active,
     },
   ];

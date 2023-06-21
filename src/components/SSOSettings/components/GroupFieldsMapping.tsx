@@ -73,7 +73,7 @@ const GroupFieldsMapping: React.FC<GroupFieldsMappingProps> = ({
           isError && !isLoading ? 'visible' : 'invisible'
         } mt-4 absolute bottom-20 left-0 right-0`}
       />
-      <div className="bg-blue-50 p-0 absolute bottom-0 left-0 right-0">
+      <div className="bg-blue-50 p-0 absolute bottom-0 left-0 right-0 rounded-b-9xl">
         <div className="p-3 flex items-center justify-end gap-x-3">
           <Button
             className="font-bold"

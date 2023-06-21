@@ -12,9 +12,6 @@ export interface IFilterModalProps {
   showModal: boolean;
   setUserStatus: (status: string) => void;
   closeModal: () => void;
-  setShowFilterModal: (flag: boolean) => void;
-  setPeopleFilters?: any; // for future filters
-  page?: number;
   userStatus: string;
 }
 
@@ -29,36 +26,20 @@ interface IFilters {
 }
 
 const FilterModal: React.FC<IFilterModalProps> = ({
-  page = 1,
   showModal,
   closeModal,
-  setShowFilterModal,
   setUserStatus,
-  setPeopleFilters,
   userStatus,
 }) => {
   const { control, handleSubmit, getValues } = useForm({
     mode: 'onChange',
   });
 
-  const close = () => {
-    closeModal();
-    setUserStatus('');
-  };
-
   const onSubmit = () => {
     const status = getValues().status;
     setUserStatus(status);
     closeModal();
   };
-
-  const radioDivStyles = useMemo(
-    () =>
-      clsx({
-        'hover:bg-green-50 cursor-pointer': true,
-      }),
-    [],
-  );
 
   const fields = [
     {
@@ -85,8 +66,6 @@ const FilterModal: React.FC<IFilterModalProps> = ({
     },
   ];
 
-  const statusFiltersListNode = <Layout fields={fields} />;
-
   const filterNavigation = [
     {
       label: 'Location',
@@ -112,7 +91,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({
       label: 'Status',
       icon: '',
       key: 'status-filters',
-      component: statusFiltersListNode,
+      component: <Layout fields={fields} />,
       disabled: false,
       hidden: false,
       search: false,
@@ -139,7 +118,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({
         {/* Body */}
         <Header
           title="Filter by"
-          onClose={close}
+          onClose={() => closeModal()}
           closeBtnDataTestId="close-filters"
         />
 
@@ -190,11 +169,14 @@ const FilterModal: React.FC<IFilterModalProps> = ({
         </form>
 
         {/* Footer */}
-        <div className="flex justify-end items-center h-16 p-6 bg-blue-50">
+        <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
             label="Clear Fiters"
             variant={ButtonVariant.Secondary}
-            onClick={close}
+            onClick={() => {
+              setUserStatus('');
+              closeModal();
+            }}
             className="mr-4"
             dataTestId="clear-filters"
           />

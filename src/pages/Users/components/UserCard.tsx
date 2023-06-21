@@ -60,7 +60,7 @@ const UserCard: React.FC<IUserCardProps> = ({
   const navigate = useNavigate();
   const { user } = useAuth();
   const { isAdmin } = useRole();
-  const [isHovered, hoverEvents] = useHover();
+  const [isHovered, eventHandlers] = useHover();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const resendInviteMutation = useResendInvitation();
 
@@ -106,7 +106,11 @@ const UserCard: React.FC<IUserCardProps> = ({
   }
 
   return (
-    <div className="cursor-pointer" data-testid="people-card">
+    <div
+      className="cursor-pointer"
+      data-testid="people-card"
+      {...eventHandlers}
+    >
       <Card
         shadowOnHover
         className="relative w-[234px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white"

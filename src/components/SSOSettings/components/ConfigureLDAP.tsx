@@ -420,9 +420,7 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
             stroke="#000"
           />
         </div>
-
         {/* Content */}
-        <Divider className="!bg-neutral-100" />
         <div className="flex flex-col justify-between h-[560px] pt-20">
           <div className="flex">
             <div className="flex flex-col min-h-fit justify-between min-w-fit">

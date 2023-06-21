@@ -62,7 +62,7 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50">
       <div className="bg-white shadow h-16 w-full flex items-center justify-center px-8">
-        <Link to="/" data-testid="auzmor-office">
+        <Link to="/feed" data-testid="auzmor-office">
           <Logo />
         </Link>
         <div className="mx-8 w-[40%]">
