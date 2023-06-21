@@ -78,8 +78,8 @@ body {
 
 .ql-editor {
   padding-left: 24px !important;
-  padding-top: 0px !important;
-  padding-bottom: 0px !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
 }
 
 .ql-editor.ql-blank::before {

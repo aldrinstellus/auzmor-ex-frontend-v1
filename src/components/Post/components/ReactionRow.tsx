@@ -3,8 +3,6 @@ import useAuth from 'hooks/useAuth';
 import { IGetReaction } from 'queries/reaction';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 
 export interface IReactionRowProps {
   reaction?: IGetReaction;
@@ -38,12 +36,10 @@ const ReactionRow: React.FC<IReactionRowProps> = ({
         </div>
         <div className="flex flex-col truncate w-full">
           <div className="text-neutral-900 font-bold text-sm truncate">
-            {reaction?.createdBy.fullName ||
-              (isLoading && <Skeleton />) ||
-              'NA'}
+            {reaction?.createdBy.fullName || 'NA'}
           </div>
           <div className="text-neutral-500 text-xs truncate">
-            {reaction?.createdBy.email || (isLoading && <Skeleton />) || 'NA'}
+            {reaction?.createdBy.email || 'NA'}
           </div>
         </div>
       </div>

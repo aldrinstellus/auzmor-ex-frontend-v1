@@ -11,7 +11,7 @@ import {
   IMedia,
 } from 'contexts/CreatePostContext';
 import { PostBuilderMode } from '..';
-import { EntityType, useUpload } from 'queries/files';
+import { EntityType, IFile, useUpload } from 'queries/files';
 import { previewLinkRegex } from 'components/RichTextEditor/config';
 import EditMedia from './EditMedia';
 import { UploadStatus } from 'queries/files';
@@ -120,6 +120,13 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             );
           } else return true;
         })
+        .sort((a: IMedia, b: IMedia) => {
+          const aIndex = files.findIndex((file: File) => file.name === a.name);
+          const bIndex = files.findIndex((file: File) => file.name === b.name);
+          if (aIndex && bIndex) {
+            return aIndex - bIndex;
+          } else return 0;
+        })
         .map((media: IMedia) => media.id);
     }
     const userMentionList = content?.json?.ops
@@ -210,6 +217,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
               if (loading) {
                 return null;
               }
+              const ele = document.getElementById('emoji-close-div');
+              ele?.click();
               return setShowModal(false);
             }}
             handleSubmitPost={handleSubmitPost}

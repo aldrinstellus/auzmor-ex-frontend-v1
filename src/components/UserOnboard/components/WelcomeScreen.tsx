@@ -23,7 +23,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           start using Auzmor office.
         </p>
       </div>
-      <div className="bg-blue-50">
+      <div className="bg-blue-50 rounded-b-9xl">
         <div className="p-3 flex items-center justify-between">
           <div />
           <Button
@@ -31,7 +31,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             label={'Next'}
             onClick={next}
             dataTestId={dataTestId}
-          ></Button>
+          />
         </div>
       </div>
     </div>

@@ -83,79 +83,81 @@ export const Comment: React.FC<CommentProps> = ({
   return (
     <div key={comment.id}>
       <div className={`flex flex-col mt-4 ${className}`}>
-        <div className="flex justify-between p-0">
-          <div className="flex flex-row">
-            <div className="mr-4">
-              <Link
-                to={
-                  comment?.createdBy?.userId &&
-                  comment.createdBy.userId !== user?.id
-                    ? '/users/' + comment.createdBy.userId
-                    : '/profile'
-                }
-              >
-                <Avatar
-                  name={comment?.createdBy?.fullName}
-                  size={32}
-                  image={comment?.createdBy?.profileImage?.original}
-                />
-              </Link>
-            </div>
-            <div className="flex flex-col items-start p-0 w-64">
-              <Link
-                to={
-                  comment?.createdBy?.userId &&
-                  comment.createdBy.userId !== user?.id
-                    ? '/users/' + comment.createdBy.userId
-                    : '/profile'
-                }
-              >
-                <div className="text-neutral-900 font-bold text-sm">
-                  {comment?.createdBy?.fullName}
-                </div>
-              </Link>
-              <div className="font-normal text-neutral-500 text-sm ">
-                {comment?.createdBy?.designation}
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-row items-start">
-            <div className="text-neutral-500 font-normal text-xs">
-              {createdAt}
-            </div>
-            {user?.id === comment.createdBy.userId && (
-              <div className="ml-4">
-                <Popover
-                  triggerNode={
-                    <IconButton
-                      icon={'more'}
-                      className="!p-0 !bg-inherit"
-                      variant={IconVariant.Primary}
-                      dataTestId="comment-ellipsis"
-                    />
+        <div className="bg-neutral-100 p-3 rounded-9xl">
+          <div className="flex justify-between p-0 ">
+            <div className="flex flex-row">
+              <div className="mr-4">
+                <Link
+                  to={
+                    comment?.createdBy?.userId &&
+                    comment.createdBy.userId !== user?.id
+                      ? '/users/' + comment.createdBy.userId
+                      : '/profile'
                   }
-                  className="left-0"
                 >
-                  <div className="rounded-10xl shadow-xl flex flex-col w-20">
-                    <div className={menuItemStyle} onClick={() => {}}>
-                      Edit{' '}
-                    </div>
-                    <div
-                      className={menuItemStyle}
-                      onClick={() => {
-                        handleDeleteReaction();
-                      }}
-                    >
-                      Delete
-                    </div>
-                  </div>
-                </Popover>
+                  <Avatar
+                    name={comment?.createdBy?.fullName}
+                    size={32}
+                    image={comment?.createdBy?.profileImage?.original}
+                  />
+                </Link>
               </div>
-            )}
+              <div className="flex flex-col items-start p-0 w-64">
+                <Link
+                  to={
+                    comment?.createdBy?.userId &&
+                    comment.createdBy.userId !== user?.id
+                      ? '/users/' + comment.createdBy.userId
+                      : '/profile'
+                  }
+                >
+                  <div className="text-neutral-900 font-bold text-sm">
+                    {comment?.createdBy?.fullName}
+                  </div>
+                </Link>
+                <div className="font-normal text-neutral-500 text-sm ">
+                  {comment?.createdBy?.designation}
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-row items-start">
+              <div className="text-neutral-500 font-normal text-xs">
+                {createdAt}
+              </div>
+              {user?.id === comment.createdBy.userId && (
+                <div className="ml-4">
+                  <Popover
+                    triggerNode={
+                      <IconButton
+                        icon={'more'}
+                        className="!p-0 !bg-inherit"
+                        variant={IconVariant.Primary}
+                        dataTestId="comment-ellipsis"
+                      />
+                    }
+                    className="left-0"
+                  >
+                    <div className="rounded-10xl shadow-xl flex flex-col w-20">
+                      <div className={menuItemStyle} onClick={() => {}}>
+                        Edit{' '}
+                      </div>
+                      <div
+                        className={menuItemStyle}
+                        onClick={() => {
+                          handleDeleteReaction();
+                        }}
+                      >
+                        Delete
+                      </div>
+                    </div>
+                  </Popover>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-        <div className=" text-neutral-900  font-normal text-sm mt-4">
-          <RenderQuillContent data={comment} />
+          <div className="text-neutral-900  font-normal text-sm mt-4">
+            <RenderQuillContent data={comment} />
+          </div>
         </div>
         <div className="flex flex-row justify-between mt-4 cursor-pointer">
           <div className={`flex flex-row`}>

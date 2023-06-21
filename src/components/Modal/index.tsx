@@ -22,7 +22,7 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   const panelStyle = clsx(
     {
-      'w-full transform overflow-hidden bg-white text-left align-middle rounded-9xl shadow modalContent':
+      'w-full transform bg-white text-left align-middle rounded-9xl shadow modalContent':
         true,
     },
     {

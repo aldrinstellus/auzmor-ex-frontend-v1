@@ -18,7 +18,7 @@ const AllDoneScreen: React.FC<AllDoneScreenProps> = ({
           You are all set to start using Auzmor office
         </p>
       </div>
-      <div className="bg-blue-50">
+      <div className="bg-blue-50 rounded-b-9xl">
         <div className="p-3 flex items-center justify-between">
           <div />
           <Button

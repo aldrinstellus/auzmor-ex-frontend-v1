@@ -10,6 +10,7 @@ import { IMention, MyObjectType } from 'queries/post';
 import Spinner from 'components/Spinner';
 import { PRIMARY_COLOR } from 'utils/constants';
 import LoadMore from './components/LoadMore';
+import CommentSkeleton from './components/CommentSkeleton';
 
 interface CommentsProps {
   entityId: string;
@@ -91,13 +92,11 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
       <div className="border-b border-neutral-200 my-4"></div>
 
       {isLoading ? (
-        <div className="flex justify-center items-center py-10">
-          <Spinner color={PRIMARY_COLOR} />
-        </div>
+        <CommentSkeleton />
       ) : (
         commentData && (
           <div>
-            {commentData.map((rootComment: IComment, i: any) => (
+            {commentData?.map((rootComment: IComment, i: any) => (
               <Comment
                 key={rootComment.id}
                 comment={rootComment}

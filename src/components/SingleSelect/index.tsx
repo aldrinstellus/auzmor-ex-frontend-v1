@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Control, useController, Controller } from 'react-hook-form';
-import Select, { MenuPlacement } from 'react-select';
+import Select, { MenuPlacement, components } from 'react-select';
 import { twConfig } from 'utils/misc';
 
 export interface ISingleSelectProps {
@@ -76,10 +76,30 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
     },
   };
 
+  const uniqueClassName = 'select_' + Math.random().toFixed(5).slice(2);
+  const menuListRef = useRef<HTMLDivElement>(null);
+
+  const getHeightOfMenu = () => {
+    if (menuListRef.current)
+      return getComputedStyle(menuListRef.current).height;
+  };
+
+  const animationStyles = (open: boolean) => ({
+    menu: (provided: any) => ({
+      ...provided,
+      height: open ? getHeightOfMenu() : '0px',
+      opacity: open ? 1 : 0,
+      transition: 'all 300ms ease-in-out',
+      overflow: 'hidden',
+    }),
+  });
+
+  const [open, setOpen] = useState<boolean>(false);
+
   return (
     <div className={`relative ${className}`}>
       <div className={labelStyle}>{label}</div>
-      <div data-testid={dataTestId}>
+      <div data-testid={dataTestId} onClick={() => setOpen(!open)}>
         {/* remove top margin provide it to parent div if required */}
         <Controller
           name={name}
@@ -92,7 +112,9 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
               styles={{
                 menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                 ...selectStyle,
+                ...animationStyles(open),
               }}
+              menuIsOpen
               options={options}
               defaultValue={defaultValue}
               menuPlacement={menuPlacement ? menuPlacement : undefined}
@@ -112,8 +134,16 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
                     </div>
                   );
                 },
+                MenuList: (props) => (
+                  <components.MenuList
+                    {...props}
+                    className={uniqueClassName}
+                    innerRef={menuListRef}
+                  ></components.MenuList>
+                ),
               }}
               {...field}
+              onBlur={() => setOpen(false)}
             />
           )}
         />

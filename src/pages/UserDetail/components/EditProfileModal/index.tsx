@@ -351,7 +351,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
           {/* <Layout fields={departmentField} className="w-2/4" /> */}
           <Layout fields={locationField} />
         </div>
-        <div className="flex justify-end items-center h-16 p-6 bg-blue-50">
+        <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
             variant={ButtonVariant.Secondary}
             size={Size.Small}

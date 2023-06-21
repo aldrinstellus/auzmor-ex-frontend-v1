@@ -104,7 +104,7 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
     </div>
   );
   const Footer: React.FC = () => (
-    <div className="flex justify-end space-x-3 items-center h-16 p-6 bg-blue-50">
+    <div className="flex justify-end space-x-3 items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
       <Button
         variant={ButtonVariant.Secondary}
         size={Size.Small}

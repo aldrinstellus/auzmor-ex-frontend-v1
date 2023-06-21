@@ -102,7 +102,7 @@ const Footer: React.FC<IFooterProps> = ({
           <Icon name="rotateLeft" />
         </div>
       </div>
-      <div className="flex justify-between items-center h-16 p-6 bg-blue-50">
+      <div className="flex justify-between items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
         <div></div>
         <div className="flex space-x-3">
           <Button

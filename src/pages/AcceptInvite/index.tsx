@@ -42,7 +42,7 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
   const token = searchParams.get('token');
   const orgId = searchParams.get('orgId');
 
-  const { data, isLoading, isError } = useVerifyInviteLink({
+  const { data, isLoading, isError, error } = useVerifyInviteLink({
     token,
     orgId,
   });
@@ -145,7 +145,9 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
         <PageLoader />
       </div>
     ) : isError ? (
-      <InviteLinkExpired />
+      <InviteLinkExpired
+        message={(error as any).response.data.errors[0].message}
+      />
     ) : (
       <div className="flex h-screen w-screen">
         <img

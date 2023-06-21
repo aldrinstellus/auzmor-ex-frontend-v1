@@ -1,9 +1,8 @@
-import Spinner from 'components/Spinner';
 import { IGetReaction, useReactions } from 'queries/reaction';
 import React, { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { PRIMARY_COLOR } from 'utils/constants';
 import ReactionRow from './ReactionRow';
+import ReactionSkeleton from './ReactionSkeleton';
 
 export interface IReactionTabProps {
   postId: string;
@@ -55,7 +54,7 @@ const ReactionTab: React.FC<IReactionTabProps> = ({
   return (
     <div>
       {isLoading ? (
-        <ReactionRow isLoading={true} />
+        <ReactionSkeleton />
       ) : (
         reactions &&
         reactions.map((reaction: IGetReaction) => (
