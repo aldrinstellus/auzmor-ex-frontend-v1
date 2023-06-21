@@ -19,6 +19,7 @@ import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import PageLoader from 'components/PageLoader';
 import useScrollTop from 'hooks/useScrollTop';
+import SkeletonLoader from './components/SkeletonLoader';
 
 interface IFeedProps {}
 
@@ -150,10 +151,10 @@ const Feed: React.FC<IFeedProps> = () => {
               )}
             </div>
             {isLoading ? (
-              <PageLoader />
+              <SkeletonLoader />
             ) : (
               <div className="mt-4">
-                {feed.map((post, index) => (
+                {feed?.map((post, index) => (
                   <div data-testid={`feed-post-${index}`} key={post.id}>
                     <Post data={post} />
                   </div>
