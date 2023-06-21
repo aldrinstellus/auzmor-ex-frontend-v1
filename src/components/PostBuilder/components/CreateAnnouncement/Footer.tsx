@@ -23,20 +23,31 @@ const Footer: React.FC<IFooterProps> = ({ handleSubmit, isValid }) => {
     setActiveFlow(CreatePostFlow.CreatePost);
   };
   return (
-    <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
-      <Button
-        variant={ButtonVariant.Secondary}
-        label="Back"
-        className="mr-3"
-        onClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
-        dataTestId="announcement-expiry-backcta"
-      />
-      <Button
-        label={'Next'}
-        onClick={handleSubmit(onSubmit)}
-        dataTestId="announcement-expiry-nextcta"
-        disabled={!isValid}
-      />
+    <div className="flex justify-between items-center h-16 p-6 bg-blue-50">
+      <div
+        className="font-bold text-base cursor-pointer"
+        onClick={() => {
+          setAnnouncement(null);
+          setActiveFlow(CreatePostFlow.CreatePost);
+        }}
+      >
+        Clear Announcements
+      </div>
+      <div className="flex">
+        <Button
+          variant={ButtonVariant.Secondary}
+          label="Back"
+          className="mr-3"
+          onClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
+          dataTestId="announcement-expiry-backcta"
+        />
+        <Button
+          label={'Next'}
+          onClick={handleSubmit(onSubmit)}
+          dataTestId="announcement-expiry-nextcta"
+          disabled={!isValid}
+        />
+      </div>
     </div>
   );
 };

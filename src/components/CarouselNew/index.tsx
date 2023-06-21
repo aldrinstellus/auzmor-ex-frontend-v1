@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 import { IMedia } from 'contexts/CreatePostContext';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { twConfig } from 'utils/misc';
 
 const MIN = 0;
@@ -21,6 +21,8 @@ export interface ICarouselProps {
   nextSlide: () => void;
   coverImageUrl?: string;
   setShowFullscreenVideo?: (showFullscreenVideo: IMedia | false) => void;
+  autoplayIndex?: number; // default -1
+  resetAutoplayIndex?: () => void;
   dataTestId?: string;
 }
 
@@ -39,6 +41,8 @@ const Carousel: React.FC<ICarouselProps> = ({
   nextSlide = () => {},
   coverImageUrl = '',
   setShowFullscreenVideo,
+  autoplayIndex = -1,
+  resetAutoplayIndex = () => {},
   dataTestId,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -77,6 +81,13 @@ const Carousel: React.FC<ICarouselProps> = ({
   ) => {
     return newMin + ((newMax - newMin) / (oldMax - oldMin)) * (value - oldMin);
   };
+
+  useEffect(() => {
+    if (videoRef.current && autoplayIndex > -1) {
+      resetAutoplayIndex();
+      videoRef.current.play();
+    }
+  }, [videoRef.current, autoplayIndex]);
   return (
     <div className={style}>
       {media[currentIndex].type === 'IMAGE' ? (
@@ -108,6 +119,7 @@ const Carousel: React.FC<ICarouselProps> = ({
               ? videoRef.current!.pause()
               : videoRef.current!.play()
           }
+          autoPlay={autoplayIndex === currentIndex}
         />
       ) : (
         <video
@@ -135,6 +147,7 @@ const Carousel: React.FC<ICarouselProps> = ({
               ? videoRef.current!.pause()
               : videoRef.current!.play()
           }
+          autoPlay={autoplayIndex === currentIndex}
         />
       )}
       {media[currentIndex].type !== 'IMAGE' && (
