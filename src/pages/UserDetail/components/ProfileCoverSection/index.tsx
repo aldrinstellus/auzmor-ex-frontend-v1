@@ -17,7 +17,7 @@ import { IUpdateProfileImage } from 'pages/UserDetail';
 import DefaultCoverImage from 'images/png/CoverImage.png';
 import useModal from 'hooks/useModal';
 import EditImageModal from 'components/EditImageModal';
-import { getBlobUrl, twConfig } from 'utils/misc';
+import { clearInputValue, getBlobUrl, twConfig } from 'utils/misc';
 import { EntityType } from 'queries/files';
 import PopupMenu from 'components/PopupMenu';
 import { useMutation } from '@tanstack/react-query';
@@ -279,6 +279,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
               className="hidden"
               accept="image/*"
               multiple={false}
+              onClick={clearInputValue}
               onChange={(e) => {
                 if (e.target.files?.length) {
                   setFile({
@@ -299,6 +300,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
               accept="image/*"
               multiple={false}
               data-testid="edit-profile-coverpic"
+              onClick={clearInputValue}
               onChange={(e) => {
                 if (e.target.files?.length) {
                   setFile({
