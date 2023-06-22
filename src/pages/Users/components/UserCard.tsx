@@ -135,12 +135,16 @@ const UserCard: React.FC<IUserCardProps> = ({
         <div
           style={{
             backgroundColor:
-              status === UserStatus.Invited ? '#EA580C' : statusColorMap[role],
+              status === UserStatus.Invited || status === UserStatus.Attempted
+                ? '#EA580C'
+                : statusColorMap[role],
           }}
           className="absolute top-0 left-0 text-white rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium"
           data-testid={`people-card-role-${role}`}
         >
-          {status === UserStatus.Invited ? 'Pending' : role}
+          {status === UserStatus.Invited || status === UserStatus.Attempted
+            ? 'Pending'
+            : role}
         </div>
         <div
           className="my-6 flex flex-col items-center"
