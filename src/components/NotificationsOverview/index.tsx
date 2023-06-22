@@ -16,6 +16,7 @@ export enum NotificationType {
 
 const NotificationsOverview: React.FC = () => {
   const { data, isLoading, isError } = useGetUnreadNotificationsCount();
+  const viewAllRef = useRef<HTMLButtonElement>(null);
 
   const notifTabs = [
     {
@@ -28,7 +29,9 @@ const NotificationsOverview: React.FC = () => {
           All
         </p>
       ),
-      tabContent: <NotificationsList key="All" className="max-h-96" />,
+      tabContent: (
+        <NotificationsList key="All" className="max-h-96" ref={viewAllRef} />
+      ),
       disabled: false,
     },
     {
@@ -46,12 +49,13 @@ const NotificationsOverview: React.FC = () => {
           key="Mentions"
           mentions={true}
           className="max-h-96"
+          ref={viewAllRef}
         />
       ),
       disabled: true,
     },
   ];
-  const viewAllRef = useRef<HTMLButtonElement>(null);
+
   return (
     <Popover
       triggerNode={
@@ -101,21 +105,21 @@ const NotificationsOverview: React.FC = () => {
           itemSpacing={4}
         />
         <Divider />
-        <div
-          className="px-6 bg-blue-100 text-sm font-normal flex items-center justify-start py-4 rounded-b-9xl"
-          onClick={() => viewAllRef.current?.click()}
+        <NavLink
+          to="/notifications"
+          className={({ isActive }) =>
+            isActive ? 'text-primary-500' : 'text-neutral-500'
+          }
         >
-          <NavLink
-            to="/notifications"
-            className={({ isActive }) =>
-              isActive ? 'text-primary-500' : 'text-neutral-500'
-            }
+          <div
+            className="px-6 bg-blue-100 text-sm font-normal flex items-center justify-start py-4 rounded-b-9xl"
+            onClick={() => viewAllRef.current?.click()}
           >
             <p className="text-neutral-900 font-bold text-base cursor-pointer">
               View All
             </p>
-          </NavLink>
-        </div>
+          </div>
+        </NavLink>
       </Card>
     </Popover>
   );
