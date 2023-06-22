@@ -80,10 +80,10 @@ export interface IPost {
   };
   link?: Metadata | string;
   myReaction?: {
-    createdBy: ICreatedBy;
-    reaction: string;
-    type: string;
-    id: string;
+    createdBy?: ICreatedBy;
+    reaction?: string;
+    type?: string;
+    id?: string;
   };
   reactionsCount: IReactionsCount;
   commentsCount: number;

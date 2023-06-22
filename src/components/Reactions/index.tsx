@@ -6,6 +6,7 @@ import IconButton, {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createReaction, deleteReaction } from 'queries/reaction';
 import clsx from 'clsx';
+import { useFeedStore } from 'stores/feedStore';
 
 interface LikesProps {
   reaction: string;
@@ -58,6 +59,7 @@ const Likes: React.FC<LikesProps> = ({
   queryKey,
   dataTestIdPrefix,
 }) => {
+  const { feed, updateFeed } = useFeedStore();
   const queryClient = useQueryClient();
   const [showTooltip, setShowTooltip] = useState(true);
 
@@ -96,7 +98,28 @@ const Likes: React.FC<LikesProps> = ({
   const createReactionMutation = useMutation({
     mutationKey: ['create-reaction-mutation'],
     mutationFn: createReaction,
-
+    onMutate: (variables) => {
+      updateFeed(variables.entityId, {
+        ...feed[variables.entityId],
+        myReaction: {
+          ...feed[variables.entityId].myReaction,
+          reaction: variables.reaction,
+        },
+        reactionsCount:
+          feed[variables.entityId].reactionsCount &&
+          Object.keys(feed[variables.entityId].reactionsCount)
+            ? {
+                ...feed[variables.entityId].reactionsCount,
+                [variables.reaction as string]: feed[variables.entityId]
+                  .reactionsCount[variables.reaction as string]
+                  ? feed[variables.entityId].reactionsCount[
+                      variables.reaction as string
+                    ] + 1
+                  : 1,
+              }
+            : { [variables.reaction as string]: 1 },
+      });
+    },
     onError: (error: any) => {
       console.log(error);
     },
