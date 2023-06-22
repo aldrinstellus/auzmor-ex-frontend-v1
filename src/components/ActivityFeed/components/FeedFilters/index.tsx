@@ -281,6 +281,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
                         ? 'cursor-default text-neutral-400'
                         : 'cursor-pointer'
                     }`}
+                    data-testid={option.dataTestId}
                   >
                     <li
                       className={
