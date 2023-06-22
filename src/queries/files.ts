@@ -93,13 +93,11 @@ export const useUpload = () => {
       parseInt(res.size) % chunksize === 0
         ? parseInt(res.size) / chunksize
         : Math.floor(parseInt(res.size) / chunksize) + 1;
-    const remainingparts = [1];
-    for (let i = 0; i < remainingparts.length; i++) {
-      const partnumber = remainingparts[i];
+    for (let i = 0; i < totalPartsCount; i++) {
       promises.push(
         axios.put(
-          `${res.uploadUrl}?partNumber=${partnumber}&uploadId=${res.uploadId}`,
-          getChunk(partnumber, file),
+          `${res.uploadUrl}?partNumber=${i + 1}&uploadId=${res.uploadId}`,
+          getChunk(i + 1, file),
           { headers: { authorization: `Bearer ${res.accessToken}` } },
         ),
       );
