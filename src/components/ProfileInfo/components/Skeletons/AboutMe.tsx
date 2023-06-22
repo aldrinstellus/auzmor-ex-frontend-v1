@@ -7,7 +7,7 @@ const AboutMe: React.FC = (): ReactElement => {
   return (
     <Card className="mb-8">
       <div className="p-6">
-        <Skeleton borderRadius={100} style={{ width: 100 }} />
+        <Skeleton borderRadius={100} className="!w-24" />
       </div>
       <Divider />
       <div className="p-6">

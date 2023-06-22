@@ -22,12 +22,12 @@ const ProfileInfo: React.FC<IProfileInfoProps> = ({
   useScrollTop();
   return (
     <>
-      {isLoading ? (
+      {!isLoading ? (
         <AboutMeSkeleton />
       ) : (
         <AboutMe aboutMeData={profileDetails} canEdit={canEdit} />
       )}
-      {isLoading ? (
+      {!isLoading ? (
         <ProfessionalDetailsSkeleton />
       ) : (
         <ProfessionalDetails
@@ -35,7 +35,7 @@ const ProfileInfo: React.FC<IProfileInfoProps> = ({
           canEdit={canEdit}
         />
       )}
-      {isLoading ? (
+      {!isLoading ? (
         <PersonalDetailsSkeleton />
       ) : (
         <PersonalDetails personalDetails={profileDetails} canEdit={canEdit} />

@@ -18,19 +18,19 @@ const ProfileCoverSectionSkeleton: React.FC = (): ReactElement => {
         <div className="ml-4 mb-6 mt-6 flex flex-col space-y-12 w-full">
           <div className="flex items-center">
             <div className="mr-6 mt-2 flex justify-between w-full">
-              <Skeleton style={{ width: 150 }} borderRadius={100} />
-              <Skeleton style={{ width: 100 }} borderRadius={100} />
+              <Skeleton className="!w-36" borderRadius={100} />
+              <Skeleton className="!w-24" borderRadius={100} />
             </div>
           </div>
           <div className="flex space-x-4 items-center">
-            <Skeleton style={{ width: 100 }} borderRadius={100} />
+            <Skeleton className="!w-24" borderRadius={100} />
             <Divider variant={DividerVariant.Vertical} className="h-8" />
             <div className="flex space-x-3 items-center">
-              <Skeleton style={{ width: 100 }} borderRadius={100} />
+              <Skeleton className="!w-24" borderRadius={100} />
             </div>
             <Divider variant={DividerVariant.Vertical} className="h-8" />
             <div className="flex space-x-3 items-center">
-              <Skeleton style={{ width: 100 }} borderRadius={100} />
+              <Skeleton className="!w-24" borderRadius={100} />
             </div>
           </div>
         </div>

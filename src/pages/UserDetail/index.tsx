@@ -93,7 +93,7 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
 
   return (
     <div className="flex flex-col space-y-9 w-full">
-      {userDetail?.isLoading ? (
+      {!userDetail?.isLoading ? (
         <UserDetailSkeleton />
       ) : (
         <ProfileCoverSection
@@ -103,7 +103,7 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
       )}
 
       <div className="mb-32 space-x-8 flex w-full">
-        {userDetail?.isLoading ? (
+        {!userDetail?.isLoading ? (
           <ContactSkeleton />
         ) : (
           <ContactWidget

@@ -6,8 +6,8 @@ const ContactSkeleton: React.FC = (): ReactElement => {
   return (
     <div className="w-1/4">
       <Card>
-        <div className="p-6 flex items-center justify-between">
-          <Skeleton borderRadius={100} style={{ width: 100 }} />
+        <div className="p-6 w-40">
+          <Skeleton borderRadius={100} containerClassName="flex-1" />
         </div>
         <div className="pt-2 px-6 pb-4 space-y-6">
           <div className="space-y-4">
@@ -19,7 +19,7 @@ const ContactSkeleton: React.FC = (): ReactElement => {
               <Skeleton
                 borderRadius={100}
                 containerClassName="flex-1"
-                style={{ height: 40 }}
+                className="h-10"
               />
             </div>
           </div>

@@ -200,12 +200,12 @@ const Users: React.FC<IUsersProps> = () => {
       <div className="">
         <div className="flex flex-wrap gap-6">
           {(() => {
-            const totalUserLoader = 30;
-            const loaders = [];
-            if (isLoading) {
-              for (let count = 0; count < totalUserLoader; count++) {
-                loaders?.push(<UsersSkeleton key={count} />);
-              }
+            if (!isLoading) {
+              const loaders = [...Array(30)].map((element) => (
+                <div key={element}>
+                  <UsersSkeleton />
+                </div>
+              ));
               return loaders;
             }
             if (usersData && usersData?.length > 0) {
