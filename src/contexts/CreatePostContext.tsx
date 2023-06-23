@@ -84,6 +84,12 @@ export interface IEditorValue {
   json: DeltaStatic;
 }
 
+export interface ITranscodedData {
+  l: string;
+  m: string;
+  s: string;
+}
+
 export interface IMedia {
   altText: string;
   blurhash: string;
@@ -97,6 +103,7 @@ export interface IMedia {
   thumbnailUrl: string;
   type: 'IMAGE' | 'VIDEO';
   coverImage?: { original: string } | null;
+  transcodedData?: { image: ITranscodedData };
 }
 
 export interface ICoverImageMap {
