@@ -6,7 +6,6 @@ import IconButton, {
   Size,
 } from 'components/IconButton';
 import PreviewCard from 'components/PreviewCard';
-import { Metadata } from './types';
 
 export type LinkMetadataProps = {
   title?: string;
@@ -21,23 +20,28 @@ export type PreviewLinkProps = {
   previewUrl?: string;
   setPreviewUrl?: (previewUrl: string) => void;
   setIsPreviewRemove?: (isPreviewRemove: boolean) => void;
-  linkMetadata?: Metadata;
 };
 
 const PreviewLink: React.FC<PreviewLinkProps> = ({
   previewUrl = '',
   setPreviewUrl = () => {},
   setIsPreviewRemove = () => {},
-  linkMetadata,
 }) => {
   const debouncePreviewUrl = useDebounce(previewUrl, 1000);
+
   const { data, isLoading, isError } = usePreviewLink(debouncePreviewUrl);
-  if (!previewUrl && !linkMetadata) {
+
+  if (!previewUrl) {
     return null;
   }
+
+  const isMetaDataPresent = ['image', 'favicon', 'title'].some((value) =>
+    data?.hasOwnProperty(value),
+  );
+
   return (
     <div className="relative">
-      {linkMetadata === undefined && !isLoading && (
+      {isMetaDataPresent && !isLoading && (
         <IconButton
           icon="closeOutline"
           className="absolute bg-white top-0 right-0 border-1 border-neutral-200 border-solid rounded-7xl mx-8 my-4 p-2"
@@ -51,9 +55,9 @@ const PreviewLink: React.FC<PreviewLinkProps> = ({
         />
       )}
       <PreviewCard
-        metaData={linkMetadata !== undefined ? linkMetadata : data}
-        isLoading={linkMetadata !== undefined ? undefined : isLoading}
-        isError={linkMetadata !== undefined ? undefined : isError}
+        metaData={data}
+        isLoading={isLoading}
+        isError={isError}
         className="mx-6 mb-9"
       />
     </div>

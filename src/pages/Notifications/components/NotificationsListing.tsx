@@ -5,6 +5,7 @@ import { IMedia } from 'contexts/CreatePostContext';
 import { useInfiniteNotifications } from 'queries/notifications';
 import React, { ReactElement, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
+import NotificationSkeleton from './SkeletonLoader';
 
 type NotificationsListing = {
   mentions?: boolean;
@@ -124,8 +125,9 @@ const NotificationsListing: React.FC<NotificationsListing> = ({
           </div>
         </div>
       )}
+      {isLoading && <NotificationSkeleton />}
       {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
-      {(isLoading || isFetchingNextPage) && (
+      {isFetchingNextPage && (
         <div className="flex items-center justify-center p-6">
           <Spinner color="#059669" />
         </div>
