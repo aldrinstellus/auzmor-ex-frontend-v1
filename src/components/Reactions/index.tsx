@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createReaction, deleteReaction } from 'queries/reaction';
 import clsx from 'clsx';
 import { useFeedStore } from 'stores/feedStore';
+import { produce } from 'immer';
 
 interface LikesProps {
   reaction: string;
@@ -100,26 +101,25 @@ const Likes: React.FC<LikesProps> = ({
     mutationFn: createReaction,
     onMutate: (variables) => {
       const previousPost = feed[variables.entityId];
-      updateFeed(variables.entityId, {
-        ...feed[variables.entityId],
-        myReaction: {
-          ...feed[variables.entityId].myReaction,
-          reaction: variables.reaction,
-        },
-        reactionsCount:
-          feed[variables.entityId].reactionsCount &&
-          Object.keys(feed[variables.entityId].reactionsCount)
-            ? {
-                ...feed[variables.entityId].reactionsCount,
-                [variables.reaction as string]: feed[variables.entityId]
-                  .reactionsCount[variables.reaction as string]
-                  ? feed[variables.entityId].reactionsCount[
-                      variables.reaction as string
-                    ] + 1
-                  : 1,
-              }
-            : { [variables.reaction as string]: 1 },
-      });
+      updateFeed(
+        variables.entityId,
+        produce(feed[variables.entityId], (draft) => {
+          (draft.myReaction = { reaction: variables.reaction }),
+            (draft.reactionsCount =
+              feed[variables.entityId].reactionsCount &&
+              Object.keys(feed[variables.entityId].reactionsCount)
+                ? {
+                    ...feed[variables.entityId].reactionsCount,
+                    [variables.reaction as string]: feed[variables.entityId]
+                      .reactionsCount[variables.reaction as string]
+                      ? feed[variables.entityId].reactionsCount[
+                          variables.reaction as string
+                        ] + 1
+                      : 1,
+                  }
+                : { [variables.reaction as string]: 1 });
+        }),
+      );
       return { previousPost };
     },
     onError: (error, variables, context) => {
@@ -135,17 +135,19 @@ const Likes: React.FC<LikesProps> = ({
     mutationFn: deleteReaction,
     onMutate: (variables) => {
       const previousPost = feed[variables.entityId];
-      updateFeed(variables.entityId, {
-        ...feed[variables.entityId],
-        myReaction: undefined,
-        reactionsCount: {
-          ...feed[variables.entityId].reactionsCount,
-          [feed[variables.entityId]!.myReaction!.reaction!]:
-            feed[variables.entityId].reactionsCount[
-              feed[variables.entityId]!.myReaction!.reaction!
-            ] - 1,
-        },
-      });
+      updateFeed(
+        variables.entityId,
+        produce(feed[variables.entityId], (draft) => {
+          (draft.myReaction = undefined),
+            (draft.reactionsCount = {
+              ...feed[variables.entityId].reactionsCount,
+              [feed[variables.entityId]!.myReaction!.reaction!]:
+                feed[variables.entityId].reactionsCount[
+                  feed[variables.entityId]!.myReaction!.reaction!
+                ] - 1,
+            });
+        }),
+      );
       return { previousPost };
     },
     onError: (error, variables, context) => {

@@ -1,16 +1,12 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { useInfiniteComments } from 'queries/reaction';
-import { DeltaStatic } from 'quill';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
-import { ICreated, IMyReactions } from 'pages/Feed';
 import { Reply } from 'components/Reply/Reply';
 import { CommentForm } from 'components/Comments/components/CommentForm';
 import Spinner from 'components/Spinner';
-import Button, { Variant } from 'components/Button';
 import { PRIMARY_COLOR } from 'utils/constants';
 import LoadMore from 'components/Comments/components/LoadMore';
-import { IReactionsCount } from 'queries/post';
 
 interface CommentsProps {
   entityId: string;
@@ -20,27 +16,6 @@ interface CommentsProps {
 export interface activeCommentsDataType {
   id: string;
   type: string;
-}
-
-export interface IComment {
-  content: {
-    text: string;
-    html: string;
-    editor: DeltaStatic;
-  };
-  mentions: object[];
-  hashtags: string[];
-  latestComments: object[];
-  entityType: string;
-  entityId: string;
-  orgId: string;
-  createdAt: string;
-  updatedAt: string;
-  createdBy: ICreated;
-  id: string;
-  myReaction: IMyReactions;
-  reactionsCount: IReactionsCount;
-  repliesCount: number;
 }
 
 const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
