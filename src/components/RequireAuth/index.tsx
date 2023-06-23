@@ -1,4 +1,5 @@
 import AppShell from 'components/AppShell';
+import PageLoader from 'components/PageLoader';
 import useAuth from 'hooks/useAuth';
 import React from 'react';
 import { Navigate, Outlet, useLocation, useParams } from 'react-router-dom';
@@ -13,7 +14,15 @@ const RequireAuth: React.FC<IRequireAuthProps> = () => {
   if (user) {
     return (
       <AppShell>
-        <Outlet />
+        <React.Suspense
+          fallback={
+            <div className="w-full h-screen">
+              <PageLoader />
+            </div>
+          }
+        >
+          <Outlet />
+        </React.Suspense>
       </AppShell>
     );
   }

@@ -171,13 +171,6 @@ const Feed: React.FC<IFeedProps> = () => {
         <div className="w-1/4">
           <AnnouncementCard />
         </div>
-        {/* <ActivityFeed
-      activityFeed={feed}
-      loadMore={fetchNextPage}
-      setShowModal={setShowModal}
-      isLoading={isLoading}
-      isFetchingNextPage={isFetchingNextPage}
-    /> */}
       </div>
       <PostBuilder showModal={showModal} setShowModal={setShowModal} />
     </>

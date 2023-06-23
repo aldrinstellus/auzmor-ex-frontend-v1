@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { Logo } from 'components/Logo';
 import Icon from 'components/Icon';
 import Divider, { Variant } from 'components/Divider';

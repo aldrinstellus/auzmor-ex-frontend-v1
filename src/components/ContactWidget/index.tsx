@@ -61,7 +61,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
       className: '',
       disabled: true,
       dataTestId: 'contact-info-email',
-      defaultValue: contactCardData.primaryEmail,
+      defaultValue: contactCardData?.primaryEmail,
     },
     {
       name: 'workPhone',
@@ -71,7 +71,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
       inputClassName: 'bg-red-500',
       disabled: false,
       dataTestId: 'contact-info',
-      defaultValue: contactCardData.workPhone,
+      defaultValue: contactCardData?.workPhone,
     },
   ];
 
@@ -172,7 +172,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                         </div>
                       </div>
                       <CopyButton
-                        content={contactCardData.primaryEmail}
+                        content={contactCardData?.primaryEmail}
                         dataTestId="contact-info-copy-email"
                       />
                     </div>

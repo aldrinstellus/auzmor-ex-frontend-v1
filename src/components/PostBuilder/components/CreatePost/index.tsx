@@ -12,6 +12,7 @@ import { IPost } from 'queries/post';
 import Header from 'components/ModalHeader';
 import Body from './Body';
 import Footer from './Footer';
+import { validImageTypes, validVideoTypes } from 'queries/files';
 
 interface ICreatePostProps {
   closeModal: () => void;
@@ -80,6 +81,18 @@ const CreatePost: React.FC<ICreatePostProps> = ({
               Array.prototype.slice
                 .call(e.target.files)
                 .filter((eachFile: File) => {
+                  if (
+                    !!![...validImageTypes, ...validVideoTypes].includes(
+                      eachFile.type,
+                    )
+                  ) {
+                    mediaErrors.push({
+                      errorMsg: `File (${eachFile.name}) type not supported. Upload a supported file content`,
+                      errorType: MediaValidationError.FileTypeNotSupported,
+                      fileName: eachFile.name,
+                    });
+                    return false;
+                  }
                   if (eachFile.type.match('image')) {
                     if (eachFile.size > IMG_FILE_SIZE_LIMIT * 1024 * 1024) {
                       mediaErrors.push({
@@ -148,6 +161,18 @@ const CreatePost: React.FC<ICreatePostProps> = ({
               Array.prototype.slice
                 .call(e.target.files)
                 .filter((eachFile: File) => {
+                  if (
+                    !!![...validImageTypes, ...validVideoTypes].includes(
+                      eachFile.type,
+                    )
+                  ) {
+                    mediaErrors.push({
+                      errorMsg: `File (${eachFile.name}) type not supported. Upload a supported file content`,
+                      errorType: MediaValidationError.FileTypeNotSupported,
+                      fileName: eachFile.name,
+                    });
+                    return false;
+                  }
                   if (eachFile.type.match('image')) {
                     if (eachFile.size > IMG_FILE_SIZE_LIMIT * 1024 * 1024) {
                       mediaErrors.push({

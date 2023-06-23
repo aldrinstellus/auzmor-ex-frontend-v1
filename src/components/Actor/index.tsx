@@ -98,7 +98,10 @@ const Actor: React.FC<ActorProps> = ({
           </Link>
           {contentMode === VIEW_POST ? (
             <div className="flex">
-              <div className="text-xs font-normal text-neutral-500 mr-4">
+              <div
+                className="text-xs font-normal text-neutral-500 mr-4"
+                data-testid="feed-post-time"
+              >
                 {createdTime}
               </div>
               <img src={Earth} width={13.33} height={13.33} />

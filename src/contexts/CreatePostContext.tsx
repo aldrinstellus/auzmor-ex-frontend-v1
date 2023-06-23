@@ -70,6 +70,7 @@ export enum MediaValidationError {
   ImageSizeExceed = 'IMAGE_SIZE_EXCEED',
   VideoSizeExceed = 'VIDEO_SIZE_EXCEED',
   MediaLengthExceed = 'MEDIA_LENGTH_EXCEED',
+  FileTypeNotSupported = 'FILE_TYPE_NOT_SUPPORTED',
 }
 
 export interface IMediaValidationError {
@@ -82,6 +83,12 @@ export interface IEditorValue {
   text: string;
   html: string;
   json: DeltaStatic;
+}
+
+export interface ITranscodedData {
+  l: string;
+  m: string;
+  s: string;
 }
 
 export interface IMedia {
@@ -97,6 +104,7 @@ export interface IMedia {
   thumbnailUrl: string;
   type: 'IMAGE' | 'VIDEO';
   coverImage?: { original: string } | null;
+  transcodedData?: { image: ITranscodedData };
 }
 
 export interface ICoverImageMap {

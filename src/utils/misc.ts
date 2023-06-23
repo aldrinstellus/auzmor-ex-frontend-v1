@@ -147,6 +147,13 @@ export const isFiltersEmpty = <T extends Record<string, any>>(
   return filteredValues;
 };
 
+export const clearInputValue = (
+  event: React.MouseEvent<HTMLInputElement, MouseEvent>,
+) => {
+  const element = event.target as HTMLInputElement;
+  element.value = '';
+};
+
 export const isSubset = (subset?: string[], set?: string[]) => {
   if (set && subset) {
     return subset.every((ele) => set.includes(ele));

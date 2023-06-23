@@ -165,6 +165,7 @@ const RichTextEditor = React.forwardRef(
       let imageSizeExceedCount = 0;
       let videoSizeExceedCount = 0;
       let mediaLengthExceedCount = 0;
+      let invalidFileTypeCount = 0;
 
       const errors: IMediaValidationError[] = [];
       mediaValidationErrors.forEach((eachError) => {
@@ -176,6 +177,9 @@ const RichTextEditor = React.forwardRef(
         }
         if (eachError.errorType === MediaValidationError.MediaLengthExceed) {
           mediaLengthExceedCount += 1;
+        }
+        if (eachError.errorType === MediaValidationError.FileTypeNotSupported) {
+          invalidFileTypeCount += 1;
         }
       });
 
@@ -215,6 +219,13 @@ const RichTextEditor = React.forwardRef(
           )!,
         );
       }
+
+      if (invalidFileTypeCount) {
+        errors.push({
+          errorType: MediaValidationError.FileTypeNotSupported,
+          errorMsg: 'File type not supported. Upload a supported file content',
+        });
+      }
       return errors;
     }, [mediaValidationErrors]);
 
@@ -226,6 +237,8 @@ const RichTextEditor = React.forwardRef(
           return 'createpost-imageuploadlimitreached-error';
         case MediaValidationError.VideoSizeExceed:
           return 'createpost-videouploadlimitreached-error';
+        case MediaValidationError.FileTypeNotSupported:
+          return 'createpost-filetypenotsupported-error';
       }
     };
 

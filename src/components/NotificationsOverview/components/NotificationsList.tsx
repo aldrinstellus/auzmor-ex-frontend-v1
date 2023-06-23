@@ -1,10 +1,10 @@
-import Divider from 'components/Divider';
-import Spinner from 'components/Spinner';
-import { useGetNotifications } from 'queries/notifications';
 import React from 'react';
+import Divider from 'components/Divider';
+import { useGetNotifications } from 'queries/notifications';
 import NotificationProps from './Notification';
 import Notification from './Notification';
 import { IMedia } from 'contexts/CreatePostContext';
+import NotificationsOverviewSkeleton from './NotificationsOverviewSkeleton';
 
 type NotificationsList = {
   mentions?: boolean;
@@ -88,11 +88,7 @@ const NotificationsList = React.forwardRef(
             </div>
           </div>
         )}
-        {isLoading && (
-          <div className="flex items-center justify-center p-6">
-            <Spinner color="#059669" />
-          </div>
-        )}
+        {isLoading && <NotificationsOverviewSkeleton />}
         {isError && (
           <div className="flex items-center justify-center p-6">
             Error loading notifications

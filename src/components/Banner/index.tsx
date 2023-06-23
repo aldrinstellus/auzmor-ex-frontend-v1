@@ -50,7 +50,8 @@ const Banner: React.FC<BannerProps> = ({
             variant === Variant.Warning,
         },
         {
-          'flex items-center text-sm shadow-sm p-2 gap-x-3': true,
+          'flex items-center text-sm shadow-sm p-2 gap-x-3 justify-between':
+            true,
         },
         {
           [className]: true,
@@ -135,17 +136,19 @@ const Banner: React.FC<BannerProps> = ({
 
   return (
     <div className={containerStyles} data-testId={dataTestId}>
-      <div className="mr-2">
-        <Icon
-          name={iconName}
-          className="relative top-[2px]"
-          size={20}
-          stroke={getIconColor()}
-        />
-      </div>
+      <div className="flex">
+        <div className="mr-2">
+          <Icon
+            name={iconName}
+            className="relative top-[2px]"
+            size={20}
+            stroke={getIconColor()}
+          />
+        </div>
 
-      <div className={titleStyles} data-testId={dataTestId}>
-        {title}
+        <div className={titleStyles} data-testId={dataTestId}>
+          {title}
+        </div>
       </div>
 
       {!!action && (
