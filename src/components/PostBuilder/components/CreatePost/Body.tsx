@@ -2,6 +2,7 @@ import Actor from 'components/Actor';
 import { CREATE_POST } from 'components/Actor/constant';
 import PreviewLink from 'components/PreviewLink';
 import { CreatePostContext } from 'contexts/CreatePostContext';
+import useAuth from 'hooks/useAuth';
 import { IPost } from 'queries/post';
 import { DeltaStatic } from 'quill';
 import React, { ForwardedRef, useContext } from 'react';
@@ -17,6 +18,7 @@ export interface IBodyProps {
 const Body = React.forwardRef(
   ({ data, dataTestId }: IBodyProps, ref: ForwardedRef<ReactQuill>) => {
     const { editorValue } = useContext(CreatePostContext);
+    const { user } = useAuth();
     return (
       <div className="text-sm text-neutral-900">
         <div className="max-h-[75vh] overflow-y-auto">
@@ -25,7 +27,12 @@ const Body = React.forwardRef(
             contentMode={CREATE_POST}
             dataTestId={`${dataTestId}-creatorname`}
             disabled={true}
-            createdBy={data?.createdBy}
+            createdBy={
+              data?.createdBy || {
+                fullName: user?.name,
+                profileImage: { id: '', original: user?.profileImage || '' },
+              }
+            }
           />
           <RichTextEditor
             placeholder="What’s on your mind?"
