@@ -113,7 +113,7 @@ function fn_showEmojiPalette(quill: {
 
   document.getElementById('officeApp')!.appendChild(ele_emoji_area);
   const quillContainerCord = document
-    .getElementById('quill')!
+    .getElementById('createpost-quill')!
     .getBoundingClientRect();
   ele_emoji_area.id = 'emoji-palette';
   ele_emoji_area.style.left = `${
