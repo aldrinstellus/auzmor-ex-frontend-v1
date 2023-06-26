@@ -37,7 +37,7 @@ export interface IComment {
   updatedAt: string;
   createdBy: ICreated;
   id: string;
-  myReaction: IMyReactions;
+  myReaction?: IMyReactions;
   reactionsCount: IReactionsCount;
   repliesCount: number;
   comment: IComment;
@@ -96,17 +96,19 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
       ) : (
         commentIds && (
           <div>
-            {commentIds.map((rootComment, i: any) => (
-              <Comment
-                key={rootComment.id}
-                comment={comment[rootComment.id]}
-                className=""
-                setActiveComment={setActiveComment}
-                activeComment={activeComment}
-                setReplyInputBox={setReplyInputBox}
-                replyInputBox={replyInputBox}
-              />
-            ))}
+            {commentIds
+              .filter(({ id }) => !!comment[id])
+              .map((rootComment, i: any) => (
+                <Comment
+                  key={rootComment.id}
+                  comment={comment[rootComment.id]}
+                  className=""
+                  setActiveComment={setActiveComment}
+                  activeComment={activeComment}
+                  setReplyInputBox={setReplyInputBox}
+                  replyInputBox={replyInputBox}
+                />
+              ))}
             {hasNextPage && !isFetchingNextPage && (
               <LoadMore
                 onClick={fetchNextPage}

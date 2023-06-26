@@ -16,6 +16,8 @@ import Icon from 'components/Icon';
 import { Link } from 'react-router-dom';
 import RenderQuillContent from 'components/RenderQuillContent';
 import ReactionModal from 'components/Post/components/ReactionModal';
+import { useCommentStore } from 'stores/commentStore';
+import _ from 'lodash';
 
 interface CommentProps {
   comment: IComment;
@@ -36,6 +38,7 @@ export const Comment: React.FC<CommentProps> = ({
   setReplyInputBox,
   customNode = null,
 }) => {
+  const { comment: storedComments, setComment } = useCommentStore();
   const queryClient = useQueryClient();
 
   const [showReactionModal, setShowReactionModal] = useState(false);
@@ -47,8 +50,13 @@ export const Comment: React.FC<CommentProps> = ({
   const deleteReactionMutation = useMutation({
     mutationKey: ['delete-comment-mutation'],
     mutationFn: deleteComment,
-    onError: (error: any) => {
-      console.log(error);
+    onMutate: (variables) => {
+      const previousData = storedComments;
+      setComment({ ..._.omit(storedComments, [variables]) });
+      return { previousData };
+    },
+    onError: (error, variables, context) => {
+      setComment(context!.previousData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['comments'] });
@@ -161,9 +169,9 @@ export const Comment: React.FC<CommentProps> = ({
         </div>
         <div className="flex flex-row justify-between mt-4 cursor-pointer">
           <div className={`flex flex-row`}>
-            {keys > 0 && (
+            {totalCount > 0 && (
               <div className="mr-2 flex flex-row">
-                {Object.keys(reactionCount)
+                {Object.keys(comment.reactionsCount!)
                   .slice(0, 3)
                   .map((key, i) => (
                     <div className={` ${i > 0 ? '-ml-2 z-1' : ''}  `} key={key}>

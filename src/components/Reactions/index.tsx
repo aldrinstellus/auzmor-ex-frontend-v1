@@ -129,7 +129,21 @@ const Likes: React.FC<LikesProps> = ({
         updateComment(
           variables.entityId,
           produce(comment[variables.entityId], (draft) => {
-            draft.myReaction = { reaction: variables.reaction };
+            (draft.myReaction = { reaction: variables.reaction }),
+              (draft.reactionsCount =
+                comment[variables.entityId].reactionsCount &&
+                Object.keys(comment[variables.entityId].reactionsCount)
+                  ? {
+                      ...comment[variables.entityId].reactionsCount,
+                      [variables.reaction as string]: comment[
+                        variables.entityId
+                      ].reactionsCount[variables.reaction as string]
+                        ? comment[variables.entityId].reactionsCount[
+                            variables.reaction as string
+                          ] + 1
+                        : 1,
+                    }
+                  : { [variables.reaction as string]: 1 });
           }),
         );
         return { previousComment };
@@ -151,24 +165,46 @@ const Likes: React.FC<LikesProps> = ({
     mutationKey: ['delete-reaction-mutation'],
     mutationFn: deleteReaction,
     onMutate: (variables) => {
-      const previousPost = feed[variables.entityId];
-      updateFeed(
-        variables.entityId,
-        produce(feed[variables.entityId], (draft) => {
-          (draft.myReaction = undefined),
-            (draft.reactionsCount = {
-              ...feed[variables.entityId].reactionsCount,
-              [feed[variables.entityId]!.myReaction!.reaction!]:
-                feed[variables.entityId].reactionsCount[
-                  feed[variables.entityId]!.myReaction!.reaction!
-                ] - 1,
-            });
-        }),
-      );
-      return { previousPost };
+      if (variables.entityType === 'post') {
+        const previousPost = feed[variables.entityId];
+        updateFeed(
+          variables.entityId,
+          produce(feed[variables.entityId], (draft) => {
+            (draft.myReaction = undefined),
+              (draft.reactionsCount = {
+                ...feed[variables.entityId].reactionsCount,
+                [feed[variables.entityId]!.myReaction!.reaction!]:
+                  feed[variables.entityId].reactionsCount[
+                    feed[variables.entityId]!.myReaction!.reaction!
+                  ] - 1,
+              });
+          }),
+        );
+        return { previousPost };
+      } else if (variables.entityType === 'comment') {
+        const previousComment = comment[variables.entityId];
+        updateComment(
+          variables.entityId,
+          produce(comment[variables.entityId], (draft) => {
+            (draft.myReaction = undefined),
+              (draft.reactionsCount = {
+                ...comment[variables.entityId].reactionsCount,
+                [comment[variables.entityId]!.myReaction!.reaction!]:
+                  comment[variables.entityId].reactionsCount[
+                    comment[variables.entityId]!.myReaction!.reaction!
+                  ] - 1,
+              });
+          }),
+        );
+        return { previousComment };
+      }
     },
     onError: (error, variables, context) => {
-      updateFeed(context!.previousPost.id!, context!.previousPost);
+      if (variables.entityType === 'post') {
+        updateFeed(context!.previousPost!.id!, context!.previousPost!);
+      } else if (variables.entityType === 'comment') {
+        updateComment(context!.previousComment!.id!, context!.previousComment!);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [queryKey] });
