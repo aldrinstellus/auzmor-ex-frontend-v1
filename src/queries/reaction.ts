@@ -20,22 +20,6 @@ interface IDelete {
   id: string;
 }
 
-interface IContent {
-  html: string;
-  text: string;
-  editor: Record<string, any>;
-}
-
-interface IComments {
-  entityId: string;
-  entityType: string;
-  limit?: number;
-  page?: number;
-  content?: IContent;
-  hashtags?: Array<object>;
-  mentions?: Array<object>;
-}
-
 export interface IGetReaction {
   type: string;
   reaction: string;
@@ -67,27 +51,29 @@ export const getReactions = async ({
   pageParam = null,
   queryKey,
 }: QueryFunctionContext<any>) => {
+  if (pageParam === null) {
+    console.log('here.... first time....');
+    console.log(queryKey[1], 'payloadss...');
+  } else {
+    return apiService.get(pageParam, queryKey[1]);
+  }
   const { data } = await apiService.get(!!pageParam ? pageParam : `reactions`, {
     ...queryKey[1],
   });
   return data;
 };
 
-export const useReactions = (
-  q: IReactions,
-  config?: UseInfiniteQueryOptions,
-) => {
+export const useInfiniteReactions = (q: IReactions) => {
   return useInfiniteQuery({
     queryKey: ['reactions', q],
     queryFn: getReactions,
-    staleTime: 0,
     getNextPageParam: (lastPage: any) => {
       return lastPage?.paging?.next;
     },
     getPreviousPageParam: (currentPage: any) => {
       return currentPage?.paging?.previous;
     },
-    ...config,
+    staleTime: 0,
   });
 };
 
@@ -95,42 +81,4 @@ export const deleteReaction = async (payload: IDelete) => {
   const { entityId, entityType, id } = payload;
 
   await apiService.delete(`/reactions/${id}`, { entityId, entityType });
-};
-
-export const deleteComment = async (id: string) => {
-  await apiService.delete(`/comments/${id}`);
-};
-
-export const getComments = async (payload: IComments) => {
-  const { data } = await apiService.get(`/comments`, payload);
-  return data;
-};
-
-export const useComments = (q: IComments) => {
-  return useQuery({
-    queryKey: ['comments', q],
-    queryFn: () => getComments(q),
-  });
-};
-
-export const useInfiniteComments = (q: IComments) => {
-  return useInfiniteQuery({
-    queryKey: ['comments', q],
-    queryFn: () => getComments(q),
-    getNextPageParam: (lastPage: any) => {
-      const pageDataLen = lastPage?.result?.data?.length;
-      const pageLimit = lastPage?.result?.paging?.limit;
-      if (pageDataLen < pageLimit) {
-        return null;
-      }
-      return lastPage?.result?.paging?.next;
-    },
-    getPreviousPageParam: (currentPage: any) =>
-      currentPage?.result?.paging?.prev,
-  });
-};
-
-export const createComments = async (payload: IComments) => {
-  const { data } = await apiService.post(`/comments`, payload);
-  return data;
 };

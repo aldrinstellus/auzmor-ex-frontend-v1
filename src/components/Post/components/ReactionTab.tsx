@@ -1,36 +1,25 @@
-import { IGetReaction, useReactions } from 'queries/reaction';
-import React, { useEffect } from 'react';
+import { IGetReaction, useInfiniteReactions } from 'queries/reaction';
+import React, { memo, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import ReactionRow from './ReactionRow';
 import ReactionSkeleton from './ReactionSkeleton';
 
-export interface IReactionTabProps {
-  postId: string;
-  activeTab: string;
+interface IGetReactionQuery {
+  entityId: string;
   entityType: string;
+  reaction?: string;
+  limit: number;
 }
 
-const ReactionTab: React.FC<IReactionTabProps> = ({
-  postId,
-  activeTab,
-  entityType,
-}) => {
+export interface IReactionTabProps {
+  getReactionQuery: IGetReactionQuery;
+}
+
+const ReactionTab: React.FC<IReactionTabProps> = ({ getReactionQuery }) => {
   const { ref, inView } = useInView();
+
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    useReactions(
-      activeTab !== 'all'
-        ? {
-            entityId: postId,
-            entityType,
-            reaction: activeTab,
-            limit: 5,
-          }
-        : {
-            entityId: postId,
-            entityType,
-            limit: 5,
-          },
-    );
+    useInfiniteReactions(getReactionQuery);
 
   useEffect(() => {
     if (inView) {
@@ -51,6 +40,7 @@ const ReactionTab: React.FC<IReactionTabProps> = ({
       return [];
     }
   }) as IGetReaction[];
+
   return (
     <div>
       {isLoading ? (
@@ -69,4 +59,4 @@ const ReactionTab: React.FC<IReactionTabProps> = ({
   );
 };
 
-export default ReactionTab;
+export default memo(ReactionTab);

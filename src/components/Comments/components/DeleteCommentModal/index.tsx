@@ -17,7 +17,7 @@ import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
-import { deleteComment } from 'queries/reaction';
+import { deleteComment } from 'queries/comments';
 
 export interface IDeleteCommentModalProps {
   showModal: boolean;
