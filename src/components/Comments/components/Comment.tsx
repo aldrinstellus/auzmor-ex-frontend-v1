@@ -47,7 +47,7 @@ export const Comment: React.FC<CommentProps> = ({
   const createdAt = humanizeTime(comment.updatedAt);
 
   const [showReplies, setShowReplies] = useState(false);
-  const deleteReactionMutation = useMutation({
+  const deleteCommentMutation = useMutation({
     mutationKey: ['delete-comment-mutation'],
     mutationFn: deleteComment,
     onMutate: (variables) => {
@@ -63,8 +63,8 @@ export const Comment: React.FC<CommentProps> = ({
     },
   });
 
-  const handleDeleteReaction = () => {
-    deleteReactionMutation.mutate(comment.id);
+  const handleDeleteComment = () => {
+    deleteCommentMutation.mutate(comment.id);
   };
 
   const menuItemStyle = clsx({
@@ -152,7 +152,7 @@ export const Comment: React.FC<CommentProps> = ({
                       <div
                         className={menuItemStyle}
                         onClick={() => {
-                          handleDeleteReaction();
+                          handleDeleteComment();
                         }}
                       >
                         Delete
