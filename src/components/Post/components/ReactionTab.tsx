@@ -29,7 +29,7 @@ const ReactionTab: React.FC<IReactionTabProps> = ({ getReactionQuery }) => {
 
   const reactions = data?.pages.flatMap((page: any) => {
     try {
-      return page.data.map((reaction: IGetReaction) => {
+      return page?.data?.data?.map((reaction: IGetReaction) => {
         try {
           return reaction;
         } catch (e) {
@@ -42,20 +42,22 @@ const ReactionTab: React.FC<IReactionTabProps> = ({ getReactionQuery }) => {
   }) as IGetReaction[];
 
   return (
-    <div>
+    <>
       {isLoading ? (
         <ReactionSkeleton />
       ) : (
         reactions &&
-        reactions.map((reaction: IGetReaction) => (
-          <ReactionRow key={reaction.id} reaction={reaction} />
+        reactions?.map((reaction: IGetReaction) => (
+          <div key={reaction?.id} className="">
+            <ReactionRow reaction={reaction} />
+          </div>
         ))
       )}
       <div>
         {hasNextPage && isFetchingNextPage && <ReactionRow isLoading={true} />}
         {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
       </div>
-    </div>
+    </>
   );
 };
 

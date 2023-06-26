@@ -1,9 +1,4 @@
-import {
-  useQuery,
-  useInfiniteQuery,
-  UseInfiniteQueryOptions,
-  QueryFunctionContext,
-} from '@tanstack/react-query';
+import { useInfiniteQuery, QueryFunctionContext } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 
 export interface IReactions {
@@ -52,15 +47,10 @@ export const getReactions = async ({
   queryKey,
 }: QueryFunctionContext<any>) => {
   if (pageParam === null) {
-    console.log('here.... first time....');
-    console.log(queryKey[1], 'payloadss...');
+    return apiService.get('/reactions', queryKey[1]);
   } else {
-    return apiService.get(pageParam, queryKey[1]);
+    return apiService.get(pageParam);
   }
-  const { data } = await apiService.get(!!pageParam ? pageParam : `reactions`, {
-    ...queryKey[1],
-  });
-  return data;
 };
 
 export const useInfiniteReactions = (q: IReactions) => {
@@ -68,10 +58,10 @@ export const useInfiniteReactions = (q: IReactions) => {
     queryKey: ['reactions', q],
     queryFn: getReactions,
     getNextPageParam: (lastPage: any) => {
-      return lastPage?.paging?.next;
+      return lastPage?.data?.paging?.next;
     },
     getPreviousPageParam: (currentPage: any) => {
-      return currentPage?.paging?.previous;
+      return currentPage?.data?.paging?.prev;
     },
     staleTime: 0,
   });

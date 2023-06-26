@@ -32,13 +32,10 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
   ];
 
   return (
-    <Modal
-      open={true}
-      closeModal={closeModal}
-      className="max-w-2xl min-h-[510px]"
-    >
+    <Modal open={true} closeModal={closeModal} className="max-w-2xl">
       <Header title="Reactions" onClose={closeModal} />
       <Tabs
+        tabContentClassName="px-6 h-[482px] overflow-y-auto" // update style
         tabs={[
           {
             tabLable: (isActive: boolean) => (
