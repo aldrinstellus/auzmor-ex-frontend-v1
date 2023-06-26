@@ -47,8 +47,10 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
   const removeAnnouncementMutation = useMutation({
     mutationKey: ['removeAnnouncementMutation', data.id],
     mutationFn: async () => {
+      const fileIds = data.files?.map((file: any) => file.id);
       const payload = {
         ...data,
+        files: fileIds,
         isAnnouncement: false,
         announcement: {
           end: '',

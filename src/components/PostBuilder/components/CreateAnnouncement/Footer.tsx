@@ -43,10 +43,11 @@ const Footer: React.FC<IFooterProps> = ({
     mutationKey: ['makePostAnnouncementMutation', data?.id],
     mutationFn: async () => {
       const formData = getFormValues();
-      console.log({ formData });
+      const fileIds = data?.files?.map((file: any) => file.id);
       if (data?.id)
         await updatePost(data?.id, {
           ...data,
+          files: fileIds,
           isAnnouncement: true,
           announcement: {
             end:
