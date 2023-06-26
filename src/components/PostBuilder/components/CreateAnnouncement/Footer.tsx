@@ -24,15 +24,17 @@ const Footer: React.FC<IFooterProps> = ({ handleSubmit, isValid }) => {
   };
   return (
     <div className="flex justify-between items-center h-16 p-6 bg-blue-50">
-      <div
-        className="font-bold text-base cursor-pointer"
+      <Button
+        variant={ButtonVariant.Secondary}
+        label="Clear"
+        className="mr-3"
         onClick={() => {
           setAnnouncement(null);
           setActiveFlow(CreatePostFlow.CreatePost);
         }}
-      >
-        Clear Announcements
-      </div>
+        dataTestId="announcement-clear"
+      />
+
       <div className="flex">
         <Button
           variant={ButtonVariant.Secondary}

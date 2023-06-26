@@ -293,10 +293,11 @@ const Users: React.FC<IUsersProps> = () => {
       title: 'Teams',
       dataTestId: 'people-view-teams',
       content: <div>Teams</div>,
+      disable: true,
     },
   ];
 
-  const tabStyles = (active: boolean) =>
+  const tabStyles = (active: boolean, disabled = false) =>
     clsx(
       {
         'font-bold px-4 cursor-pointer py-1': true,
@@ -306,6 +307,9 @@ const Users: React.FC<IUsersProps> = () => {
       },
       {
         'bg-neutral-50 rounded-lg': !active,
+      },
+      {
+        'bg-opacity-50 text-gray-400': disabled,
       },
     );
 
@@ -321,10 +325,11 @@ const Users: React.FC<IUsersProps> = () => {
     {
       id: 2,
       tabLable: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>Teams</div>
+        <div className={tabStyles(isActive, true)}>Teams</div>
       ),
       dataTestId: 'people-view-teams',
       tabContent: <div>Teams</div>,
+      disabled: true,
     },
   ];
   return (

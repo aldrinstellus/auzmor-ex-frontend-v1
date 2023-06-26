@@ -13,6 +13,7 @@ import { signup } from 'queries/account';
 import { useDebounce } from 'hooks/useDebounce';
 import { useDomainExists, useIsUserExist } from 'queries/users';
 import 'utils/custom-yup-validators/email/validateEmail';
+import { Navigate, useLocation } from 'react-router-dom';
 
 interface IForm {
   fullName: string;
@@ -236,6 +237,13 @@ const Signup: React.FC<ISignupProps> = () => {
         },
       });
   }, [isDomainLoading, isDomainData, signupMutation.error]);
+
+  if (
+    process.env.NODE_ENV !== 'development' &&
+    process.env.REACT_APP_BASE_URL !== window.location.origin
+  ) {
+    return <Navigate to="/feed" />;
+  }
 
   return (
     <div className="flex h-screen w-screen">
