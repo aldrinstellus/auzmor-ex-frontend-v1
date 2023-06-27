@@ -61,7 +61,7 @@ const NotificationsOverview: React.FC = () => {
       triggerNode={
         <div className="font-bold flex flex-row justify-center items-center p-1 gap-4 border-none relative">
           {!isLoading && !isError && data?.data?.result?.unread > 0 && (
-            <div className="absolute rounded-full bg-red-600 text-white text-xxs -top-1 -right-1.5 flex w-4 h-4 items-center justify-center">
+            <div className="absolute rounded-full bg-red-600 text-white antialiased text-sm -top-1 -right-1.5 flex w-5 h-5 items-center justify-center">
               {/* Get unread notif count here */}
               {(data.data.result.unread > 10
                 ? '9+'
