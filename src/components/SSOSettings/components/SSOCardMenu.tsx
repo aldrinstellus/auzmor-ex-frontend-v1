@@ -47,11 +47,17 @@ const SSOCardMenu: React.FC<SSOCardMenuProps> = ({
         </div>
         {hovered && (
           <Card className="absolute">
-            <p className="py-3 px-6 cursor-pointer" onClick={onClick}>
+            <p
+              className="py-3 px-6 cursor-pointer hover:bg-primary-50"
+              onClick={onClick}
+            >
               Edit
             </p>
             <Divider />
-            <p className="py-3 px-6 cursor-pointer" onClick={openModal}>
+            <p
+              className="py-3 px-6 cursor-pointer hover:bg-primary-50"
+              onClick={openModal}
+            >
               Deactivate
             </p>
           </Card>
