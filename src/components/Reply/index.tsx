@@ -1,16 +1,13 @@
-import React, { useRef } from 'react';
-import { useInfiniteComments } from 'queries/reaction';
-import { DeltaStatic } from 'quill';
+import React from 'react';
+import { useInfiniteComments } from 'queries/comments';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
-import { ICreated, IMyReactions } from 'pages/Feed';
-import { MyObjectType } from 'queries/post';
 import { Reply } from 'components/Reply/Reply';
-import { CommentForm } from 'components/Comments/components/CommentForm';
 import Spinner from 'components/Spinner';
 import { PRIMARY_COLOR } from 'utils/constants';
 import LoadMore from 'components/Comments/components/LoadMore';
 import CommentSkeleton from 'components/Comments/components/CommentSkeleton';
+import { CommentsRTE } from 'components/Comments/components/CommentsRTE';
 
 interface CommentsProps {
   entityId: string;
@@ -20,27 +17,6 @@ interface CommentsProps {
 export interface activeCommentsDataType {
   id: string;
   type: string;
-}
-
-export interface IComment {
-  content: {
-    text: string;
-    html: string;
-    editor: DeltaStatic;
-  };
-  mentions: object[];
-  hashtags: string[];
-  latestComments: object[];
-  entityType: string;
-  entityId: string;
-  orgId: string;
-  createdAt: string;
-  updatedAt: string;
-  createdBy: ICreated;
-  id: string;
-  myReaction: IMyReactions;
-  reactionsCount: MyObjectType;
-  repliesCount: number;
 }
 
 const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
@@ -89,7 +65,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
                 image={user?.profileImage}
               />
             </div>
-            <CommentForm
+            <CommentsRTE
               className="w-full py-1"
               entityId={entityId}
               entityType="comment"

@@ -13,6 +13,8 @@ import { humanizeTime } from 'utils/time';
 import AcknowledgementBanner from './components/AcknowledgementBanner';
 import ReactionModal from './components/ReactionModal';
 import RenderQuillContent from 'components/RenderQuillContent';
+import { getNouns } from 'utils/misc';
+import Divider from 'components/Divider';
 
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
@@ -83,60 +85,65 @@ const Post: React.FC<PostProps> = ({ data, customNode = null }) => {
         </div>
         <div className="mx-6">
           <RenderQuillContent data={data} />
-          <div className="border-b border-neutral-100 mt-4"></div>
-          <div className="flex flex-row justify-between my-3">
-            <div
-              className={`flex flex-row`}
-              data-testid="feed-post-reactioncount"
-            >
-              {keys > 0 && (
-                <div className="flex flex-row mr-2">
-                  {Object.keys(data.reactionsCount)
-                    .slice(0, 3)
-                    .map((key, i) => (
-                      <div
-                        className={` ${i > 0 ? '-ml-2 z-1' : ''}  `}
-                        key={key}
-                      >
-                        <Icon
-                          name={key}
-                          size={12}
-                          className={`p-0.5 rounded-17xl cursor-pointer border-white border border-solid ${iconsStyle(
-                            key,
-                          )}`}
-                        />
-                      </div>
-                    ))}
+          {(totalCount > 0 || data?.commentsCount > 0) && (
+            <>
+              <Divider className="mt-4" />
+              <div className="flex flex-row justify-between my-3">
+                <div
+                  className={`flex flex-row`}
+                  data-testid="feed-post-reactioncount"
+                >
+                  {keys > 0 && (
+                    <div className="flex flex-row mr-2">
+                      {Object.keys(data.reactionsCount)
+                        .slice(0, 3)
+                        .map((key, i) => (
+                          <div
+                            className={` ${i > 0 ? '-ml-2 z-1' : ''}  `}
+                            key={key}
+                          >
+                            <Icon
+                              name={key}
+                              size={12}
+                              className={`p-0.5 rounded-17xl cursor-pointer border-white border border-solid ${iconsStyle(
+                                key,
+                              )}`}
+                            />
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                  {totalCount > 0 && (
+                    <div
+                      className={`flex text-sm font-normal text-neutral-500 cursor-pointer`}
+                      onClick={() => setShowReactionModal(true)}
+                    >
+                      {totalCount} reacted
+                    </div>
+                  )}
                 </div>
-              )}
-
-              <div
-                className={`flex text-sm font-normal text-neutral-500 cursor-pointer`}
-                onClick={() => setShowReactionModal(true)}
-              >
-                {totalCount} reacted
+                {data?.commentsCount > 0 && (
+                  <div className="flex flex-row text-sm font-normal text-neutral-500 space-x-7 items-center cursor-pointer">
+                    <div
+                      onClick={() => {
+                        if (showComments) {
+                          setShowComments(false);
+                        } else {
+                          setShowComments(true);
+                        }
+                      }}
+                      data-testid="feed-post-commentscount"
+                    >
+                      {data.commentsCount || 0}{' '}
+                      {getNouns('Comment', data?.commentsCount || 0)}
+                    </div>
+                    {/* <div data-testid="feed-post-repostcount">0 reposts</div> */}
+                  </div>
+                )}
               </div>
-            </div>
-
-            <div className="flex flex-row text-sm font-normal text-neutral-500 space-x-7 items-center cursor-pointer">
-              <div
-                onClick={() => {
-                  if (showComments) {
-                    setShowComments(false);
-                  } else {
-                    setShowComments(true);
-                  }
-                }}
-                data-testid="feed-post-commentscount"
-              >
-                {data.commentsCount || 0} Comments
-              </div>
-              <div data-testid="feed-post-repostcount">0 reposts</div>
-            </div>
-          </div>
-
-          <div className="border-b border-neutral-100 mt-3"></div>
-
+              <Divider className="mt-3" />
+            </>
+          )}
           <div className="flex justify-between pt-4 pb-6">
             <div className="flex ">
               <Likes

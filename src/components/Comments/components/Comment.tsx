@@ -1,10 +1,11 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import Likes from 'components/Reactions';
-import IconButton, { Variant as IconVariant } from 'components/IconButton';
+import IconButton, {
+  Variant as IconVariant,
+  Size,
+} from 'components/IconButton';
 import Avatar from 'components/Avatar';
-import { deleteComment } from 'queries/reaction';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { IComment, activeCommentsDataType } from '..';
+import { useQueryClient } from '@tanstack/react-query';
 import Popover from 'components/Popover';
 import clsx from 'clsx';
 import { humanizeTime } from 'utils/time';
@@ -16,51 +17,39 @@ import Icon from 'components/Icon';
 import { Link } from 'react-router-dom';
 import RenderQuillContent from 'components/RenderQuillContent';
 import ReactionModal from 'components/Post/components/ReactionModal';
+import useModal from 'hooks/useModal';
+import DeleteCommentModal from './DeleteCommentModal';
+import { twConfig } from 'utils/misc';
+import { IComment } from '..';
+import { CommentsRTE, PostCommentMode } from './CommentsRTE';
 
 interface CommentProps {
   comment: IComment;
   className?: string;
-  activeComment: activeCommentsDataType | null;
-  setActiveComment: (activeComment: activeCommentsDataType) => void;
-  replyInputBox: boolean;
-  setReplyInputBox: (inputBox: boolean) => void;
   customNode?: ReactNode;
+  entityId?: string;
 }
 
 export const Comment: React.FC<CommentProps> = ({
   comment,
   className,
-  activeComment,
-  setActiveComment,
-  replyInputBox,
-  setReplyInputBox,
   customNode = null,
+  entityId,
 }) => {
   const queryClient = useQueryClient();
 
   const [showReactionModal, setShowReactionModal] = useState(false);
+  const [deleteCommentModal, openDeleteCommentModal, closedDeleteCommentModal] =
+    useModal(false);
+  const [editComment, setEditComment] = useState(false);
+  const [showReplies, setShowReplies] = useState(false);
+
+  const previousShowReply = useRef<boolean>(false);
 
   const { user } = useAuth();
-  const createdAt = humanizeTime(comment.updatedAt);
-
-  const [showReplies, setShowReplies] = useState(false);
-  const deleteReactionMutation = useMutation({
-    mutationKey: ['delete-comment-mutation'],
-    mutationFn: deleteComment,
-    onError: (error: any) => {
-      console.log(error);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comments'] });
-    },
-  });
-
-  const handleDeleteReaction = () => {
-    deleteReactionMutation.mutate(comment.id);
-  };
 
   const menuItemStyle = clsx({
-    ' flex flex-row items-center py-3 px-6 gap-2.5 border-b text-sm hover:bg-primary-50 cursor-pointer ':
+    'flex flex-row items-center py-3 px-6 gap-2.5 border-b text-sm hover:bg-primary-50 cursor-pointer':
       true,
   });
 
@@ -72,8 +61,6 @@ export const Comment: React.FC<CommentProps> = ({
     0,
   );
 
-  const previousShowReply = useRef<boolean>(false);
-
   useEffect(() => {
     if (showReplies) {
       previousShowReply.current = true;
@@ -84,8 +71,8 @@ export const Comment: React.FC<CommentProps> = ({
     <div key={comment.id}>
       <div className={`flex flex-col mt-4 ${className}`}>
         <div className="bg-neutral-100 p-3 rounded-9xl">
-          <div className="flex justify-between p-0 ">
-            <div className="flex flex-row">
+          <div className="flex justify-between p-0">
+            <div className="flex">
               <div className="mr-4">
                 <Link
                   to={
@@ -120,44 +107,75 @@ export const Comment: React.FC<CommentProps> = ({
                 </div>
               </div>
             </div>
-            <div className="flex flex-row items-start">
-              <div className="text-neutral-500 font-normal text-xs">
-                {createdAt}
+            <div className="flex">
+              <div className="text-neutral-500 font-normal text-xs mt-1">
+                {humanizeTime(comment.updatedAt)}
               </div>
-              {user?.id === comment.createdBy.userId && (
-                <div className="ml-4">
+              <div className="ml-4">
+                {user?.id === comment?.createdBy?.userId && (
                   <Popover
                     triggerNode={
                       <IconButton
                         icon={'more'}
                         className="!p-0 !bg-inherit"
                         variant={IconVariant.Primary}
+                        size={Size.Large}
                         dataTestId="comment-ellipsis"
                       />
                     }
-                    className="left-0"
+                    className="left-0 rounded-9xl"
                   >
-                    <div className="rounded-10xl shadow-xl flex flex-col w-20">
-                      <div className={menuItemStyle} onClick={() => {}}>
-                        Edit{' '}
+                    <div className="w-48">
+                      <div
+                        className={`${menuItemStyle} rounded-t-9xl`}
+                        onClick={() => {
+                          setEditComment(true);
+                        }}
+                        data-testid="post-ellipsis-edit-comment"
+                      >
+                        <Icon
+                          name={'edit'}
+                          size={16}
+                          fill={twConfig.theme.colors.primary['500']}
+                          stroke={twConfig.theme.colors.neutral['200']}
+                        />
+                        <div className="text-sm font-medium text-neutral-900">
+                          Edit comment
+                        </div>
                       </div>
                       <div
-                        className={menuItemStyle}
+                        className={`${menuItemStyle} rounded-b-9xl`}
                         onClick={() => {
-                          handleDeleteReaction();
+                          openDeleteCommentModal();
                         }}
                       >
-                        Delete
+                        <Icon
+                          name={'delete'}
+                          size={16}
+                          fill={twConfig.theme.colors.primary['500']}
+                          stroke={twConfig.theme.colors.neutral['200']}
+                        />
+                        <div className="text-sm font-medium text-neutral-900">
+                          Delete comment
+                        </div>
                       </div>
                     </div>
                   </Popover>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
+          {/* {editComment ? (
+            <CommentsRTE
+              entityId={entityId}
+              entityType="post"
+              mode={PostCommentMode.Edit}
+            />
+          ) : ( */}
           <div className="text-neutral-900  font-normal text-sm mt-4">
             <RenderQuillContent data={comment} />
           </div>
+          {/* )} */}
         </div>
         <div className="flex flex-row justify-between mt-4 cursor-pointer">
           <div className={`flex flex-row`}>
@@ -201,18 +219,7 @@ export const Comment: React.FC<CommentProps> = ({
             <div
               className="flex items-center ml-7"
               onClick={() => {
-                if (replyInputBox) {
-                  setReplyInputBox(false);
-                } else {
-                  setReplyInputBox(true);
-                }
-
-                if (showReplies) {
-                  setShowReplies(false);
-                } else {
-                  setShowReplies(true);
-                }
-                setActiveComment({ id: comment.id, type: 'replying' });
+                setShowReplies(!showReplies);
               }}
               data-testid="replyto-commentcta"
             >
@@ -226,7 +233,7 @@ export const Comment: React.FC<CommentProps> = ({
                 data-testid="comment-replies-count"
               >
                 {comment?.repliesCount}
-                {comment.repliesCount > 0 ? ' Replies' : ' Reply'}
+                {comment?.repliesCount > 0 ? ' Replies' : ' Reply'}
               </div>
             </div>
           </div>
@@ -247,6 +254,13 @@ export const Comment: React.FC<CommentProps> = ({
           reactionCounts={comment.reactionsCount || {}}
           postId={comment.id}
           entityType="comment"
+        />
+      )}
+      {deleteCommentModal && (
+        <DeleteCommentModal
+          showModal={deleteCommentModal}
+          closedModal={closedDeleteCommentModal}
+          commentId={comment?.id}
         />
       )}
     </div>

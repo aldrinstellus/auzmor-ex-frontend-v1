@@ -122,28 +122,6 @@ export const getAllUser = ({
   } else return apiService.get(pageParam);
 };
 
-// get all users people listing
-const getAllUsers = async ({
-  limit,
-  prev,
-  next,
-  q,
-  status,
-  role,
-}: UserQueryParams) => {
-  if (!status || status === 'ALL') {
-    const { data } = await apiService.get(`/users`, {
-      limit: limit,
-      prev: prev,
-      next: next,
-      q: q,
-      status: status,
-      role: role,
-    });
-    return data;
-  }
-};
-
 export const useInfiniteUsers = (q?: Record<string, any>) => {
   return useInfiniteQuery({
     queryKey: ['users', q],
@@ -239,19 +217,6 @@ export const acceptInviteSetPassword = async (q: Record<string, any>) => {
 {
   /* REACT QUERY */
 }
-
-// use react query to get all users
-export const useUsers = (
-  params: UserQueryParams,
-  onSuccess?: (data: any) => void,
-) => {
-  return useQuery({
-    queryKey: ['users', params],
-    queryFn: () => getAllUsers({ ...params }),
-    staleTime: 15 * 60 * 1000,
-    onSuccess,
-  });
-};
 
 // use react query to get single user
 export const useSingleUser = (userId: string) => {
