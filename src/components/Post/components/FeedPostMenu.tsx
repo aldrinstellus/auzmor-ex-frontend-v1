@@ -75,7 +75,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
         setCustomActiveFlow(CreatePostFlow.CreateAnnouncement);
         setShowModal(true);
       },
-      dataTestId: 'post-ellipsis-promote-announcement',
+      dataTestId: 'post-ellipsis-promote-to-announcement',
       permissions: ['CREATE_ANNOUNCEMENTS'],
       disabled: data.isAnnouncement,
     },
@@ -94,7 +94,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       icon: 'cyclicArrow',
       label: 'Change to regular post',
       onClick: () => showRemoveAnnouncement(),
-      dataTestId: 'post-ellipsis-remove-announcement',
+      dataTestId: 'post-ellipsis-changeto-regularpost',
       permissions: ['UPDATE_ANNOUNCEMENTS'],
       disabled: !data.isAnnouncement,
     },
@@ -182,6 +182,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
             name="close"
             onClick={closeRemoveAnnouncement}
             disabled={true}
+            dataTestId="changeto-regularpost-closemodal"
           />
         </div>
         <Divider />
@@ -200,12 +201,14 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
             variant={Variant.Secondary}
             label="Cancel"
             onClick={closeRemoveAnnouncement}
+            dataTestId="changeto-regularpost-cancel"
           />
           <Button
             variant={Variant.Primary}
             label="Yes"
             onClick={() => removeAnnouncementMutation.mutate()}
             loading={removeAnnouncementLoading}
+            dataTestId="changeto-regularpost-accept"
           />
         </div>
       </Modal>

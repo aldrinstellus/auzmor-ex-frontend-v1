@@ -109,7 +109,11 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
           clearPostContext();
           closeModal();
         }}
-        closeBtnDataTestId="announcement-modal-close"
+        closeBtnDataTestId={
+          mode === CreateAnnouncementMode.POST_BUILDER
+            ? 'announcement-modal-close'
+            : 'promote-to-announcement-closemodal'
+        }
       />
       <Body
         selecetedExpiry={selecetedExpiry}
