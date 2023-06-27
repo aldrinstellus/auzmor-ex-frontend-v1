@@ -5,7 +5,6 @@ import {
   Navigate,
   Route,
 } from 'react-router-dom';
-import queryClient from 'utils/queryClient';
 // import { loader as homeLoader } from 'pages/Home';
 import RequireAuth from 'components/RequireAuth';
 import Notifications from 'pages/Notifications';
@@ -18,7 +17,6 @@ const ForgotPassword = React.lazy(() => import('pages/ForgotPassword'));
 const UserSettings = React.lazy(() => import('pages/UserSettings'));
 const ResetPassword = React.lazy(() => import('pages/ResetPassword'));
 const Feed = React.lazy(() => import('pages/Feed'));
-const Home = React.lazy(() => import('pages/Home'));
 const Users = React.lazy(() => import('pages/Users'));
 const UserDetail = React.lazy(() => import('pages/UserDetail'));
 const Apps = React.lazy(() => import('pages/Apps'));

@@ -7,9 +7,12 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import queryClient from 'utils/queryClient';
 import Toast from 'components/Toast';
+import useMediaQuery from 'hooks/useMediaQuery';
+import Unsupported from 'pages/Unsupported';
 
 function App() {
-  return (
+  const isDesktop = useMediaQuery('(min-width: 960px)');
+  return isDesktop ? (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         {process.env.NODE_ENV === 'development' ? (
@@ -19,6 +22,8 @@ function App() {
         <Toast />
       </AuthProvider>
     </QueryClientProvider>
+  ) : (
+    <Unsupported />
   );
 }
 
