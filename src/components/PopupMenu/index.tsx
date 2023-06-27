@@ -1,8 +1,9 @@
-import React, { ElementType, ReactNode } from 'react';
+import React, { ElementType, ReactNode, useRef } from 'react';
 import { Menu } from '@headlessui/react';
 import { twConfig } from 'utils/misc';
 import Icon from 'components/Icon';
 import useHover from 'hooks/useHover';
+import PopupMenuItem from './PopupMenuItem';
 
 export interface IMenuItem {
   renderNode?: ReactNode;
@@ -30,9 +31,10 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
   menuItems,
   className,
 }) => {
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   return (
     <Menu>
-      <Menu.Button>{triggerNode}</Menu.Button>
+      <Menu.Button ref={menuButtonRef}>{triggerNode}</Menu.Button>
       <Menu.Items
         className={`bg-white rounded-9xl shadow-lg absolute z-[99999] overflow-hidden ${className}`}
       >
@@ -46,44 +48,14 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
                 disabled={menuItem.disabled}
               >
                 {(() => {
-                  const [hovered, eventHandlers] = useHover();
                   if (menuItem.renderNode) {
                     return menuItem.renderNode;
                   }
                   return (
-                    <div
-                      className={`flex px-6 py-3 items-center hover:bg-primary-50 cursor-pointer space-x-3 ${
-                        menuItem.disabled && '!cursor-default'
-                      }`}
-                      onClick={menuItem.onClick}
-                      {...eventHandlers}
-                    >
-                      {menuItem.icon && (
-                        <Icon
-                          name={menuItem.icon}
-                          size={16}
-                          className={menuItem.iconClassName}
-                          fill={
-                            menuItem.fill ||
-                            twConfig.theme.colors.primary['500']
-                          }
-                          stroke={
-                            (menuItem.disabled &&
-                              twConfig.theme.colors.neutral['200']) ||
-                            menuItem.stroke
-                          }
-                          hover={hovered}
-                          disabled={menuItem.disabled}
-                        />
-                      )}
-                      <div
-                        className={`text-sm text-neutral-900 font-medium whitespace-nowrap ${
-                          menuItem.disabled && '!text-neutral-400'
-                        }`}
-                      >
-                        {menuItem.label}
-                      </div>
-                    </div>
+                    <PopupMenuItem
+                      menuItem={menuItem}
+                      menuButtonRef={menuButtonRef}
+                    />
                   );
                 })()}
               </Menu.Item>

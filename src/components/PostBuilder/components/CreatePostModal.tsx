@@ -1,9 +1,11 @@
-import React, { ReactNode, useContext, useEffect } from 'react';
+import React, { ReactNode, useContext, useEffect, useMemo } from 'react';
 import Modal from 'components/Modal';
 import CreatePost from 'components/PostBuilder/components/CreatePost';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { IPost, createPost, updatePost } from 'queries/post';
-import CreateAnnouncement from './CreateAnnouncement';
+import CreateAnnouncement, {
+  CreateAnnouncementMode,
+} from './CreateAnnouncement';
 import {
   CreatePostFlow,
   CreatePostContext,
@@ -11,7 +13,7 @@ import {
   IMedia,
 } from 'contexts/CreatePostContext';
 import { PostBuilderMode } from '..';
-import { EntityType, IFile, useUpload } from 'queries/files';
+import { EntityType, useUpload } from 'queries/files';
 import { previewLinkRegex } from 'components/RichTextEditor/config';
 import EditMedia from './EditMedia';
 import { UploadStatus } from 'queries/files';
@@ -31,6 +33,7 @@ interface ICreatePostModal {
   setShowModal: (flag: boolean) => void;
   data?: IPost;
   mode: PostBuilderMode;
+  customActiveFlow?: CreatePostFlow;
 }
 
 const CreatePostModal: React.FC<ICreatePostModal> = ({
@@ -38,9 +41,11 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
   setShowModal,
   data,
   mode,
+  customActiveFlow = CreatePostFlow.CreatePost,
 }) => {
   const {
     activeFlow,
+    setActiveFlow,
     announcement,
     editorValue,
     setAnnouncement,
@@ -53,9 +58,16 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     showFullscreenVideo,
     setShowFullscreenVideo,
   } = useContext(CreatePostContext);
+
   const queryClient = useQueryClient();
 
   const { uploadMedia, uploadStatus, useUploadCoverImage } = useUpload();
+
+  // When we need to show create announcement modal directly
+  useMemo(() => {
+    if (customActiveFlow === CreatePostFlow.CreateAnnouncement)
+      setActiveFlow(CreatePostFlow.CreateAnnouncement);
+  }, [customActiveFlow]);
 
   useEffect(() => {
     if (data) {
@@ -248,6 +260,12 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
               clearPostContext();
               setShowModal(false);
             }}
+            mode={
+              customActiveFlow === CreatePostFlow.CreateAnnouncement
+                ? CreateAnnouncementMode.DIRECT
+                : CreateAnnouncementMode.POST_BUILDER
+            }
+            data={data}
           />
         )}
         {activeFlow === CreatePostFlow.EditMedia && (

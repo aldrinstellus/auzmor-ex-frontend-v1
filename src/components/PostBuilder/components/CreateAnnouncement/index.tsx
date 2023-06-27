@@ -6,17 +6,27 @@ import { afterXUnit } from 'utils/time';
 import Header from 'components/ModalHeader';
 import Footer from './Footer';
 import Body from './Body';
+import { IPost } from 'queries/post';
+
+export enum CreateAnnouncementMode {
+  POST_BUILDER,
+  DIRECT,
+}
 
 export interface ICreateAnnouncementProps {
   closeModal: () => void;
+  mode?: CreateAnnouncementMode;
+  data?: IPost;
 }
 
 const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
   closeModal,
+  mode,
+  data,
 }) => {
   const { setActiveFlow, announcement, clearPostContext } =
     useContext(CreatePostContext);
-  const { control, handleSubmit, watch, setValue } = useForm({
+  const { control, handleSubmit, watch, setValue, getValues } = useForm({
     mode: 'onChange',
   });
 
@@ -89,7 +99,11 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
     <>
       <Header
         title={'Create an announcement'}
-        onBackIconClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
+        onBackIconClick={
+          mode === CreateAnnouncementMode.POST_BUILDER
+            ? () => setActiveFlow(CreatePostFlow.CreatePost)
+            : undefined
+        }
         onClose={() => {
           clearPostContext();
           closeModal();
@@ -109,6 +123,10 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
             ? false
             : true
         }
+        mode={mode}
+        closeModal={closeModal}
+        data={data}
+        getFormValues={getValues}
       />
     </>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import CreatePostProvider from 'contexts/CreatePostContext';
+import CreatePostProvider, { CreatePostFlow } from 'contexts/CreatePostContext';
 import CreatePostModal from './components/CreatePostModal';
 import { IPost } from 'queries/post';
 
@@ -13,6 +13,7 @@ export interface IPostBuilderProps {
   showModal: boolean;
   setShowModal: (flag: boolean) => void;
   mode?: PostBuilderMode;
+  customActiveFlow?: CreatePostFlow;
 }
 
 const PostBuilder: React.FC<IPostBuilderProps> = ({
@@ -20,6 +21,7 @@ const PostBuilder: React.FC<IPostBuilderProps> = ({
   showModal,
   mode = PostBuilderMode.Create,
   setShowModal,
+  customActiveFlow = CreatePostFlow.CreatePost,
 }) => {
   return (
     <CreatePostProvider>
@@ -28,6 +30,7 @@ const PostBuilder: React.FC<IPostBuilderProps> = ({
         setShowModal={setShowModal}
         data={data}
         mode={mode}
+        customActiveFlow={customActiveFlow}
       />
     </CreatePostProvider>
   );

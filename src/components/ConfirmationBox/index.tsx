@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
-import Spinner from 'components/Spinner';
 
 export interface Discard {
   label: string;
