@@ -4,13 +4,13 @@ import NotificationCard from './NotificationCard';
 import {
   getNotificationMessage,
   getNotificationElementContent,
-  getTimeSinceActedAt,
 } from '../utils';
 import { NotificationProps } from './NotificationsList';
 import { useMutation } from '@tanstack/react-query';
 import { markNotificationAsReadById } from 'queries/notifications';
 import queryClient from 'utils/queryClient';
 import { Link } from 'react-router-dom';
+import { humanizeTime } from 'utils/time';
 
 type NotificationCardProps = NotificationProps;
 
@@ -87,7 +87,7 @@ const Notification: React.FC<NotificationCardProps> = ({
                 {notificationMessage}
               </p>
               <p className="text-sm text-neutral-500 font-normal">
-                {getTimeSinceActedAt(action.actedAt)}
+                {humanizeTime(action.actedAt)}
               </p>
               <NotificationCard
                 TopCardContent={cardContent?.TopCardContent}
