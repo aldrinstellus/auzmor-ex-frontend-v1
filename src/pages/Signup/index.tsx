@@ -270,7 +270,9 @@ const Signup: React.FC<ISignupProps> = () => {
             <Button
               dataTestId="sign-up-btn"
               label={'Sign Up'}
-              disabled={!isValid || !!errors?.password?.type}
+              disabled={
+                !isValid || !!errors?.password?.type || signupMutation.isLoading
+              }
               className="w-full mt-8"
               type={ButtonType.Submit}
               size={Size.Large}
