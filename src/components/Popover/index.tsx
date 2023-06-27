@@ -29,17 +29,9 @@ const Popover = React.forwardRef(
 
     return (
       <HUIPopover className="relative">
-        <HUIPopover.Button
-          style={{
-            borderWidth: 0,
-            borderColor: undefined,
-            backgroundColor: undefined,
-          }}
-          ref={ref}
-        >
+        <HUIPopover.Button className="outline-none" ref={ref}>
           {triggerNode}
         </HUIPopover.Button>
-
         <Transition
           as={Fragment}
           enter="transition ease-out duration-200"
