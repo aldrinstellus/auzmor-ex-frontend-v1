@@ -96,7 +96,7 @@ const Footer: React.FC<IFooterProps> = ({
           </div>
         </div>
         <div
-          onClick={() => cropperRef?.current?.transformImage({ rotate: 90 })}
+          onClick={() => cropperRef?.current?.transformImage({ rotate: -90 })}
           data-testid={`${dataTestId}-tilt`}
         >
           <Icon name="rotateLeft" />
