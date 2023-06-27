@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createComments } from 'queries/reaction';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
+import { twConfig } from 'utils/misc';
 
 interface CommentFormProps {
   className?: string;
@@ -94,13 +95,14 @@ export const CommentForm: React.FC<CommentFormProps> = ({
               /> */}
               <IconButton
                 icon={'send'}
-                className="flex mx-2 !p-0 !bg-inherit hover:bg-inherit disabled:bg-inherit disabled:cursor-auto "
+                className="flex mx-2 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
                 size={SizeVariant.Large}
                 variant={IconVariant.Primary}
                 onClick={() => {
                   onSubmit();
                 }}
                 dataTestId="postcomment-sendcta"
+                fill={twConfig.theme.colors.primary['500']}
               />
             </div>
           )}
