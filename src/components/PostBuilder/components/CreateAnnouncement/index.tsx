@@ -26,6 +26,7 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
 }) => {
   const { setActiveFlow, announcement, clearPostContext } =
     useContext(CreatePostContext);
+
   const { control, handleSubmit, watch, setValue, getValues } = useForm({
     mode: 'onChange',
   });
