@@ -245,7 +245,7 @@ const RichTextEditor = React.forwardRef(
     return (
       <div data-testid={`${dataTestId}-content`}>
         <ReactQuill
-          id="quill"
+          id="createpost-quill"
           className={className}
           modules={{ ...modules }}
           placeholder={placeholder}

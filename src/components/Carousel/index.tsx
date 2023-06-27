@@ -1,4 +1,9 @@
-import React, { MouseEventHandler, ReactElement } from 'react';
+import React, {
+  MouseEventHandler,
+  ReactElement,
+  useRef,
+  useState,
+} from 'react';
 
 import Image from 'components/Image';
 import Video from 'components/Video';
@@ -93,6 +98,10 @@ const Carousel: React.FC<CarouselProps> = ({
     Object.keys(media).length,
   );
 
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
   const containerStyles = clsx({
     'm-auto w-full h-full relative group rounded-xl': true,
   });
@@ -120,6 +129,14 @@ const Carousel: React.FC<CarouselProps> = ({
       true,
   });
 
+  const playBtnStyle = clsx(
+    {
+      'top-1/2 left-1/2 absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer':
+        true,
+    },
+    { hidden: isPlaying },
+  );
+
   if (media.length > 0) {
     return (
       <div className={containerStyles}>
@@ -127,7 +144,18 @@ const Carousel: React.FC<CarouselProps> = ({
           {media[currentIndex].type === 'IMAGE' ? (
             <Image image={media[currentIndex]} hashSize={hashSize} />
           ) : (
-            <Video video={media[currentIndex]} />
+            <div className="w-full h-full flex items-center ">
+              <video
+                className="w-full h-full"
+                src={media[currentIndex].original}
+                controls={true}
+                ref={videoRef}
+                onEnded={() => setIsPlaying(false)}
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                autoPlay={index > -1}
+              />
+            </div>
           )}
         </div>
 
@@ -154,6 +182,15 @@ const Carousel: React.FC<CarouselProps> = ({
           disabled={true}
           stroke={twConfig.theme.colors.neutral['900']}
           onClick={() => fetchFile(media[currentIndex].original)}
+        />
+        <Icon
+          name="playFilled"
+          className={playBtnStyle}
+          fill="white"
+          size={32}
+          onClick={() => {
+            isPlaying ? videoRef.current?.pause() : videoRef.current?.play();
+          }}
         />
       </div>
     );
