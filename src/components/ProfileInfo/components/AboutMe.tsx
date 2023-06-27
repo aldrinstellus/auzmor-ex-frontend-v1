@@ -133,7 +133,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
     <div {...eventHandlers}>
       <Card className={onHoverStyles}>
         <Header
-          title="About Me"
+          title={isEditable ? 'About Me' : 'About'}
           dataTestId="about-me"
           isHovered={isHovered}
           isEditable={isEditable}

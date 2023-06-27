@@ -213,7 +213,12 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
                   className="text-primary-500 text-base font-bold"
                   data-testId="forgot-password-cta"
                 >
-                  <Link to="/forgot-password">Forgot Password</Link>
+                  <a
+                    href={`${process.env.REACT_APP_BASE_URL}/forgot-password`}
+                    className="text-primary-500"
+                  >
+                    Forgot Password
+                  </a>
                 </div>
                 <div className="">
                   <Button

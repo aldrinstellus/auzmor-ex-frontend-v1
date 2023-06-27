@@ -46,6 +46,9 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
         {
           'text-sm text-neutral-900 font-bold truncate pl-1 mb-1': !!label,
         },
+        {
+          '!text-gray-400': disabled,
+        },
       ),
     [error],
   );
@@ -97,9 +100,21 @@ const SingleSelect: React.FC<ISingleSelectProps> = ({
   const [open, setOpen] = useState<boolean>(false);
 
   return (
-    <div className={`relative ${className}`}>
+    <div
+      className={clsx(
+        { [`relative ${className}`]: true },
+        { 'cursor-not-allowed': disabled },
+      )}
+    >
       <div className={labelStyle}>{label}</div>
-      <div data-testid={dataTestId} onClick={() => setOpen(!open)}>
+      <div
+        data-testid={dataTestId}
+        onClick={() => {
+          if (!disabled) {
+            setOpen(!open);
+          }
+        }}
+      >
         {/* remove top margin provide it to parent div if required */}
         <Controller
           name={name}
