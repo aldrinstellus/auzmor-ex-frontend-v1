@@ -101,32 +101,30 @@ export const deleteComment = async (id: string) => {
   await apiService.delete(`/comments/${id}`);
 };
 
-export const getComments = async (payload: IComments) => {
-  const { data } = await apiService.get(`/comments`, payload);
-  return data;
+export const fetchComments = ({
+  pageParam = null,
+  queryKey,
+}: QueryFunctionContext<(string | Record<string, any> | undefined)[], any>) => {
+  if (pageParam === null) return apiService.get('/comments', queryKey[1]);
+  else return apiService.get(pageParam);
 };
 
-export const useComments = (q: IComments) => {
-  return useQuery({
-    queryKey: ['comments', q],
-    queryFn: () => getComments(q),
-  });
-};
-
-export const useInfiniteComments = (q: IComments) => {
+export const useInfiniteComments = (q?: Record<string, any>) => {
   return useInfiniteQuery({
     queryKey: ['comments', q],
-    queryFn: () => getComments(q),
+    queryFn: fetchComments,
     getNextPageParam: (lastPage: any) => {
-      const pageDataLen = lastPage?.result?.data?.length;
-      const pageLimit = lastPage?.result?.paging?.limit;
+      const pageDataLen = lastPage?.data?.result?.data?.length;
+      const pageLimit = lastPage?.data?.result?.paging?.limit;
       if (pageDataLen < pageLimit) {
         return null;
       }
-      return lastPage?.result?.paging?.next;
+      return lastPage?.data?.result?.paging?.next;
     },
-    getPreviousPageParam: (currentPage: any) =>
-      currentPage?.result?.paging?.prev,
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
+    staleTime: 5 * 60 * 1000,
   });
 };
 
