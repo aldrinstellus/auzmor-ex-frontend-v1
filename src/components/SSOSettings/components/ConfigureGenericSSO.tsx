@@ -42,6 +42,7 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
   ssoSetting,
 }): ReactElement => {
   const { user } = useAuth();
+  const [xmlFile, setXmlFile] = useState<File[]>();
   const inputRef = useRef<HTMLInputElement>(null);
   const { control, handleSubmit, getValues } = useForm<IForm>({
     resolver: yupResolver(schema),
@@ -68,6 +69,18 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
     },
   ];
 
+  const clearInput = () => {
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
+    setXmlFile([]);
+  };
+
+  const closeModalAndClearInput = () => {
+    closeModal();
+    clearInput();
+  };
+
   const updateSsoMutation = useMutation({
     mutationKey: ['update-sso-mutation'],
     mutationFn: updateSso,
@@ -77,13 +90,11 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
     onSuccess: async (response: any) => {
       console.log('Updated SSO successfully', response);
       await queryClient.invalidateQueries(['get-sso']);
-      closeModal();
+      closeModalAndClearInput();
     },
   });
 
   const { isLoading, isError } = updateSsoMutation;
-
-  const [xmlFile, setXmlFile] = useState<File[]>();
 
   const onSubmit = async () => {
     const values = getValues();
@@ -114,7 +125,7 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
       <div className="flex items-center justify-between p-4">
         <p className="font-extrabold text-black text-lg">{ssoSetting?.key}</p>
         <Icon
-          onClick={closeModal}
+          onClick={closeModalAndClearInput}
           name="close"
           hover={false}
           stroke="#000"
@@ -208,7 +219,7 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
                   name="deleteCross"
                   size={18}
                   className="cursor-pointer"
-                  onClick={() => setXmlFile([])}
+                  onClick={clearInput}
                 />
               </div>
             </div>
@@ -234,7 +245,7 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
             <Button
               className="font-bold"
               label="Cancel"
-              onClick={closeModal}
+              onClick={closeModalAndClearInput}
               variant={Variant.Secondary}
             />
             <Button
