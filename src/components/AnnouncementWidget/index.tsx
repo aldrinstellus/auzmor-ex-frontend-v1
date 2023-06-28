@@ -68,10 +68,12 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
                       </div>
                       <div>
                         <div className="space-x-1 text-sm">
-                          <b>
+                          <span className="text-neutral-900 font-bold">
                             {data?.data?.result?.data?.[0]?.createdBy?.fullName}
-                          </b>
-                          <span>shared a post</span>
+                          </span>
+                          <span className="text-neutral-900 font-normal">
+                            shared a post
+                          </span>
                         </div>
                         <div className="text-xs text-gray-500">
                           {humanizeTime(
