@@ -121,6 +121,7 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
                 type={Type.Submit}
                 disabled={isLoading}
                 dataTestId="select-timezone-next"
+                loading={isLoading}
               />
             </div>
           </div>
