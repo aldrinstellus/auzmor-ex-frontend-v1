@@ -39,7 +39,6 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
   });
 
   const replies = data?.pages.flatMap((page) => {
-    console.log({ page });
     return page?.result?.data.map((comment: any) => {
       try {
         return comment;

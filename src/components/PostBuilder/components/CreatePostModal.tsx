@@ -19,6 +19,7 @@ import EditMedia from './EditMedia';
 import { UploadStatus } from 'queries/files';
 import { IMenuItem } from 'components/PopupMenu';
 import Icon from 'components/Icon';
+import { hideEmojiPalette } from 'utils/misc';
 
 export interface IPostMenu {
   id: number;
@@ -250,8 +251,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
               if (loading) {
                 return null;
               }
-              const ele = document.getElementById('emoji-close-div');
-              ele?.click();
+              hideEmojiPalette();
               return setShowModal(false);
             }}
             handleSubmitPost={handleSubmitPost}

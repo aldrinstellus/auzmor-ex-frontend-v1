@@ -72,3 +72,34 @@ export const deleteReaction = async (payload: IDelete) => {
 
   await apiService.delete(`/reactions/${id}`, { entityId, entityType });
 };
+
+export const deleteComment = async (id: string) => {
+  await apiService.delete(`/comments/${id}`);
+};
+
+export const fetchComments = ({
+  pageParam = null,
+  queryKey,
+}: QueryFunctionContext<(string | Record<string, any> | undefined)[], any>) => {
+  if (pageParam === null) return apiService.get('/comments', queryKey[1]);
+  else return apiService.get(pageParam);
+};
+
+export const useInfiniteComments = (q?: Record<string, any>) => {
+  return useInfiniteQuery({
+    queryKey: ['comments', q],
+    queryFn: fetchComments,
+    getNextPageParam: (lastPage: any) => {
+      const pageDataLen = lastPage?.data?.result?.data?.length;
+      const pageLimit = lastPage?.data?.result?.paging?.limit;
+      if (pageDataLen < pageLimit) {
+        return null;
+      }
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+};

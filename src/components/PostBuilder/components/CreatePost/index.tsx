@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import {
   CreatePostContext,
   IEditorValue,
@@ -13,6 +13,7 @@ import Header from 'components/ModalHeader';
 import Body from './Body';
 import Footer from './Footer';
 import { validImageTypes, validVideoTypes } from 'queries/files';
+import { hideEmojiPalette } from 'utils/misc';
 
 interface ICreatePostProps {
   closeModal: () => void;
@@ -40,8 +41,23 @@ const CreatePost: React.FC<ICreatePostProps> = ({
     mediaValidationErrors,
   } = useContext(CreatePostContext);
 
+  useEffect(() => () => hideEmojiPalette());
+
   return (
-    <>
+    <div
+      onClick={(e) => {
+        const ele = e.target as HTMLElement;
+        if (
+          !!!ele?.classList.contains('ql-emoji') &&
+          !!!(ele.parentNode?.parentNode as Element).classList.contains(
+            'ql-emoji',
+          ) &&
+          !!!(ele.parentNode as Element).classList.contains('ql-emoji')
+        ) {
+          hideEmojiPalette();
+        }
+      }}
+    >
       <Header
         title="Create a post"
         onClose={() => {
@@ -215,7 +231,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
         multiple
         data-testid="feed-createpost-uploadvideo"
       />
-    </>
+    </div>
   );
 };
 
