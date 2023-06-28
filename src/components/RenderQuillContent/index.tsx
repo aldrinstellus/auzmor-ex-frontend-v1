@@ -30,8 +30,9 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
       element.parentNode &&
       element.scrollHeight > element.clientHeight
     ) {
-      removeElementsByClass('read-more-button');
+      removeElementsByClass(`${data?.id}-expand-collapse-button`);
       const button = document.createElement('button');
+      button.setAttribute('id', `${data?.id}-expand-collapse-button`);
       button.setAttribute('data-testid', 'feed-post-seemore');
       button.type = 'button';
       button.classList.add(
@@ -39,12 +40,15 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
         'read-more-button',
         'text-neutral-500',
         'font-bold',
+        `${data?.id}-expand-collapse-button`,
       );
       button.textContent = 'See more';
       element.parentNode.insertBefore(button, element.nextSibling);
     }
-    const showMoreLessButtons = document.querySelectorAll('.showMoreLess');
-    showMoreLessButtons.forEach((button) => {
+    const button = document.getElementById(
+      `${data?.id}-expand-collapse-button`,
+    );
+    if (button) {
       button.addEventListener('click', () => {
         const paragraph = button.previousElementSibling;
         if (paragraph && paragraph.classList.contains('line-clamp-none')) {
@@ -57,7 +61,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
           }
         }
       });
-    });
+    }
   }, []);
 
   const postContent = content?.ops?.map((op: DeltaOperation) => {

@@ -45,6 +45,8 @@ export interface ICreatePostContext {
   removeMedia: (index: number, callback?: () => void) => void;
   clearPostContext: () => void;
   removeAllMedia: () => void;
+  previewUrl: string;
+  setPreviewUrl: (url: string) => void;
   isPreviewRemoved: boolean;
   setIsPreviewRemoved: (flag: boolean) => void;
   isCharLimit: boolean;
@@ -131,6 +133,8 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   removeMedia: () => {},
   clearPostContext: () => {},
   removeAllMedia: () => {},
+  previewUrl: '',
+  setPreviewUrl: () => {},
   isPreviewRemoved: false,
   setIsPreviewRemoved: () => {},
   isCharLimit: false,
@@ -164,6 +168,7 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
   const inputImgRef = useRef<HTMLInputElement>(null);
   const inputVideoRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<File[]>([]);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isPreviewRemoved, setIsPreviewRemoved] = useState<boolean>(false);
   const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
   const [coverImageMap, setCoverImageMap] = useState<ICoverImageMap[]>([]);
@@ -259,6 +264,7 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     setFiles([]);
     setActiveFlow(CreatePostFlow.CreatePost);
     setIsPreviewRemoved(false);
+    setPreviewUrl('');
     setIsCharLimit(false);
     setCoverImageMap([]);
     setRemovedCoverimageFileIds([]);
@@ -354,6 +360,8 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         removeMedia,
         clearPostContext,
         removeAllMedia,
+        previewUrl,
+        setPreviewUrl,
         isPreviewRemoved,
         setIsPreviewRemoved,
         isCharLimit,

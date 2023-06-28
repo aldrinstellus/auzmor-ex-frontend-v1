@@ -30,8 +30,9 @@ const MediaRender: React.FC<IMediaRenderProps> = ({
     >
       {data.type === 'IMAGE' ? (
         <img
-          src={data?.transcodedData?.image?.m}
+          src={data?.transcodedData?.image?.m || data.original}
           className="object-cover w-full h-full"
+          alt={data?.name}
           data-testid="feed-createpost-uploadedmedia"
         />
       ) : (

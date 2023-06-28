@@ -80,9 +80,9 @@ const RichTextEditor = React.forwardRef(
       mediaValidationErrors,
       setMediaValidationErrors,
       setMediaOpenIndex,
+      previewUrl,
+      setPreviewUrl,
     } = useContext(CreatePostContext);
-
-    const [previewUrl, setPreviewUrl] = useState<string>('');
 
     const formats = [
       'bold',

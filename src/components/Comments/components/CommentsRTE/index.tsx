@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createComment, updateComment } from 'queries/comments';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
+import { twConfig } from 'utils/misc';
 import { IComment } from 'components/Comments';
 
 export enum PostCommentMode {
@@ -120,13 +121,14 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
               <button className="ql-emoji" />
               <IconButton
                 icon={'send'}
-                className="flex mx-2 !p-0 !bg-inherit hover:bg-inherit disabled:bg-inherit disabled:cursor-auto "
+                className="flex mx-2 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
                 size={SizeVariant.Large}
                 variant={IconVariant.Primary}
                 onClick={() => {
                   onSubmit();
                 }}
                 dataTestId="postcomment-sendcta"
+                fill={twConfig.theme.colors.primary['500']}
               />
             </div>
           )}

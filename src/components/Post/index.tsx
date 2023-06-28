@@ -135,7 +135,7 @@ const Post: React.FC<PostProps> = ({ data, customNode = null }) => {
                       data-testid="feed-post-commentscount"
                     >
                       {data.commentsCount || 0}{' '}
-                      {getNouns('Comment', data?.commentsCount || 0)}
+                      {getNouns('comment', data?.commentsCount || 0)}
                     </div>
                     {/* <div data-testid="feed-post-repostcount">0 reposts</div> */}
                   </div>

@@ -86,7 +86,9 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
       toast(
         <SuccessToast
           content={`${
-            imageFile?.profileImage ? 'Profile Picture' : 'Cover Picture'
+            fileEntityType === EntityType.UserProfileImage
+              ? 'Profile Picture'
+              : 'Cover Picture'
           } Updated Successfully`}
         />,
         {

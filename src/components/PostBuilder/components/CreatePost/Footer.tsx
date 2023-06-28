@@ -34,6 +34,8 @@ const Footer: React.FC<IFooterProps> = ({
     files,
     isCharLimit,
     mediaValidationErrors,
+    isPreviewRemoved,
+    previewUrl,
   } = useContext(CreatePostContext);
   const updateContext = () => {
     setEditorValue({
@@ -48,6 +50,9 @@ const Footer: React.FC<IFooterProps> = ({
         .getContents(),
     });
   };
+
+  const disabledMedia = !isPreviewRemoved && !!previewUrl;
+
   const postMenuItems = useMemo(
     () => [
       {
@@ -61,6 +66,7 @@ const Footer: React.FC<IFooterProps> = ({
             dataTestId="feed-createpost-media"
           />
         ),
+        disabled: disabledMedia,
         menuItems: [
           {
             label: 'Upload a photo',

@@ -18,6 +18,7 @@ export interface IDatePickerInputProps {
   className?: string;
   control?: Control<Record<string, any>>;
   minDate?: Date;
+  maxDate?: Date;
   error?: string;
   defaultValue?: string;
   portalContainer?: HTMLElement | null;
@@ -31,6 +32,7 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
   name,
   label = '',
   minDate,
+  maxDate,
   defaultValue,
   portalContainer = null,
   className,
@@ -87,6 +89,7 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
             monthPlaceholder="MM"
             yearPlaceholder="YYYY"
             minDate={minDate}
+            maxDate={maxDate}
             portalContainer={portalContainer}
             id="react-date-picker-calendar"
           />

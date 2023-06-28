@@ -67,6 +67,7 @@ import SvgSeekForwardOutline from '../components/SeekForward/SeekForwardOutline'
 import SvgFullScreenOutline from '../components/FullScreen/FullScreenOutline';
 import SvgCyclicArrowOutline from '../components/CyclicArrow/CyclicArrowOutline';
 import SvgEditReceiptOutline from '../components/EditReceipt/EditReceiptOutline';
+import SvgDeleteCrossOutline from '../components/DeleteCross/DeleteCrossOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -138,4 +139,5 @@ export const outlineIcon = {
   videoOutline: SvgVideoOutline,
   cyclicArrowOutline: SvgCyclicArrowOutline,
   editReceiptOutline: SvgEditReceiptOutline,
+  deleteCrossOutline: SvgDeleteCrossOutline,
 };

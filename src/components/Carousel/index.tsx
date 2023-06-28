@@ -162,19 +162,22 @@ const Carousel: React.FC<CarouselProps> = ({
         <div className={currentIndexDivStyles}>
           {currentIndex + 1} of {Object.keys(media).length}
         </div>
-
-        <Icon
-          name="carouselLeft"
-          onClick={prevSlide}
-          className={leftArrowIconStyles}
-          size={36}
-        />
-        <Icon
-          name="carouselRight"
-          onClick={nextSlide}
-          className={rightArrowIconStyles}
-          size={36}
-        />
+        {media?.length > 1 && (
+          <Icon
+            name="carouselLeft"
+            onClick={prevSlide}
+            className={leftArrowIconStyles}
+            size={36}
+          />
+        )}
+        {media?.length > 1 && (
+          <Icon
+            name="carouselRight"
+            onClick={nextSlide}
+            className={rightArrowIconStyles}
+            size={36}
+          />
+        )}
         <Icon
           name="import"
           className={downloadBtnStyle}
@@ -183,15 +186,17 @@ const Carousel: React.FC<CarouselProps> = ({
           stroke={twConfig.theme.colors.neutral['900']}
           onClick={() => fetchFile(media[currentIndex].original)}
         />
-        <Icon
-          name="playFilled"
-          className={playBtnStyle}
-          fill="white"
-          size={32}
-          onClick={() => {
-            isPlaying ? videoRef.current?.pause() : videoRef.current?.play();
-          }}
-        />
+        {media[currentIndex].type !== 'IMAGE' && (
+          <Icon
+            name="playFilled"
+            className={playBtnStyle}
+            fill="white"
+            size={32}
+            onClick={() => {
+              isPlaying ? videoRef.current?.pause() : videoRef.current?.play();
+            }}
+          />
+        )}
       </div>
     );
   } else return <></>;

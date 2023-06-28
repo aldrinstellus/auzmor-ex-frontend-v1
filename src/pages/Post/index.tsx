@@ -31,7 +31,7 @@ const PostPage: React.FC = () => {
           <UserCard />
         </div>
         <div className="w-1/2">
-          <div className="mt-4 bg-red-300">
+          <div className="mt-4">
             <Post
               data={post}
               customNode={

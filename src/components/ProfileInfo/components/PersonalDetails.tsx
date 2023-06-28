@@ -157,6 +157,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
       name: 'personal.birthDate',
       className: '',
       minDate: new Date(moment().subtract(100, 'years').toISOString()),
+      maxDate: new Date(moment().toISOString()),
       control,
       dataTestId: 'personal-details-dob',
       defaultValue: getValues()?.personal?.birthDate,
