@@ -17,6 +17,7 @@ import RenderQuillContent from 'components/RenderQuillContent';
 import { useCommentStore } from 'stores/commentStore';
 import _ from 'lodash';
 import { IComment } from 'components/Comments';
+import { twConfig } from 'utils/misc';
 
 interface ReplyProps {
   comment: IComment;
@@ -101,15 +102,35 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
                     }
                     className="left-0"
                   >
-                    <div className="rounded-10xl shadow-xl flex flex-col w-20">
-                      <div className={menuItemStyle} onClick={() => {}}>
-                        Edit reply
+                    <div className="w-48">
+                      <div
+                        className={`${menuItemStyle} rounded-t-9xl`}
+                        onClick={() => {}}
+                        data-testid="post-ellipsis-edit-comment"
+                      >
+                        <Icon
+                          name={'edit'}
+                          size={16}
+                          fill={twConfig.theme.colors.primary['500']}
+                          stroke={twConfig.theme.colors.neutral['200']}
+                        />
+                        <div className="text-sm font-medium text-neutral-900">
+                          Edit reply
+                        </div>
                       </div>
                       <div
                         className={menuItemStyle}
                         onClick={handleDeleteReply}
                       >
-                        Delete reply
+                        <Icon
+                          name={'delete'}
+                          size={16}
+                          fill={twConfig.theme.colors.primary['500']}
+                          stroke={twConfig.theme.colors.neutral['200']}
+                        />
+                        <div className="text-sm font-medium text-neutral-900">
+                          Delete reply
+                        </div>
                       </div>
                     </div>
                   </Popover>

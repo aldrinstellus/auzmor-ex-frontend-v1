@@ -18,6 +18,8 @@ import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import { deleteComment } from 'queries/comments';
+import { useCommentStore } from 'stores/commentStore';
+import _ from 'lodash';
 
 export interface IDeleteCommentModalProps {
   showModal: boolean;
@@ -30,11 +32,16 @@ const DeleteCommentModal: React.FC<IDeleteCommentModalProps> = ({
   closedModal = () => {},
   commentId,
 }) => {
-  const deleteReactionMutation = useMutation({
+  const { comment, setComment } = useCommentStore();
+  const deleteCommentMutation = useMutation({
     mutationKey: ['delete-comment-mutation'],
     mutationFn: deleteComment,
+    onMutate: (variables) => {
+      const previousData = comment;
+      setComment({ ..._.omit(comment, [variables]) });
+      return { previousData };
+    },
     onError: (error: any) => {
-      console.log(error);
       toast(
         <FailureToast
           content="Error deleting comment"
@@ -118,11 +125,11 @@ const DeleteCommentModal: React.FC<IDeleteCommentModalProps> = ({
       <Button
         label={'Delete'}
         className="!bg-red-500 !text-white flex"
-        loading={deleteReactionMutation.isLoading}
+        loading={deleteCommentMutation.isLoading}
         size={Size.Small}
         type={ButtonType.Submit}
         dataTestId="delete-user-delete"
-        onClick={() => deleteReactionMutation.mutate(commentId)}
+        onClick={() => deleteCommentMutation.mutate(commentId)}
       />
     </div>
   );
