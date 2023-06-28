@@ -26,6 +26,7 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
 }) => {
   const { setActiveFlow, announcement, clearPostContext } =
     useContext(CreatePostContext);
+
   const { control, handleSubmit, watch, setValue, getValues } = useForm({
     mode: 'onChange',
   });
@@ -108,7 +109,11 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
           clearPostContext();
           closeModal();
         }}
-        closeBtnDataTestId="announcement-modal-close"
+        closeBtnDataTestId={
+          mode === CreateAnnouncementMode.POST_BUILDER
+            ? 'announcement-modal-close'
+            : 'promote-to-announcement-closemodal'
+        }
       />
       <Body
         selecetedExpiry={selecetedExpiry}

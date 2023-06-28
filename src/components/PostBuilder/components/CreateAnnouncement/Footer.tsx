@@ -99,13 +99,13 @@ const Footer: React.FC<IFooterProps> = ({
             label="Cancel"
             className="mr-3"
             onClick={closeModal}
-            dataTestId="announcement-expiry-cancelcta"
+            dataTestId="promote-to-announcement-cancel"
           />
           <Button
             label={'Done'}
             loading={makePostAnnouncementMutation.isLoading}
             onClick={() => makePostAnnouncementMutation.mutate()}
-            dataTestId="announcement-expiry-donecta"
+            dataTestId="promote-to-announcement-done"
             disabled={!isValid}
           />
         </div>

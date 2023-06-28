@@ -65,8 +65,13 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
 
   // When we need to show create announcement modal directly
   useMemo(() => {
-    if (customActiveFlow === CreatePostFlow.CreateAnnouncement)
+    if (customActiveFlow === CreatePostFlow.CreateAnnouncement) {
+      setAnnouncement({
+        label: 'Custom Date',
+        value: data?.announcement.end || '',
+      });
       setActiveFlow(CreatePostFlow.CreateAnnouncement);
+    }
   }, [customActiveFlow]);
 
   useEffect(() => {
