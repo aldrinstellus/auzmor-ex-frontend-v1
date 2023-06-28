@@ -75,13 +75,15 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
           </div>
           {repliesIds && repliesIds.length > 0 && (
             <div>
-              {repliesIds.map((reply) => (
-                <Reply
-                  // handleClick={handleClick}
-                  comment={comment[reply.id]}
-                  key={reply.id}
-                />
-              ))}
+              {repliesIds
+                .filter(({ id }) => !!comment[id])
+                .map(({ id }) => (
+                  <Reply
+                    // handleClick={handleClick}
+                    comment={comment[id]}
+                    key={id}
+                  />
+                ))}
               {hasNextPage && !isFetchingNextPage && (
                 <LoadMore onClick={fetchNextPage} label="Load more replies" />
               )}

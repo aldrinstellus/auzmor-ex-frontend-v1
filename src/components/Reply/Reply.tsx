@@ -15,6 +15,8 @@ import Icon from 'components/Icon';
 import ReactionModal from 'components/Post/components/ReactionModal';
 import { IReactionsCount } from 'queries/post';
 import RenderQuillContent from 'components/RenderQuillContent';
+import { useCommentStore } from 'stores/commentStore';
+import _ from 'lodash';
 
 interface ReplyProps {
   comment: IComment;
@@ -30,20 +32,26 @@ export const Reply: React.FC<ReplyProps> = ({
   const { user } = useAuth();
   const createdAt = humanizeTime(comment.createdAt);
   const [showReactionModal, setShowReactionModal] = useState(false);
+  const { comment: storedComments, setComment } = useCommentStore();
 
-  const deleteReactionMutation = useMutation({
+  const deleteReplyMutation = useMutation({
     mutationKey: ['delete-comment-mutation'],
     mutationFn: deleteComment,
-    onError: (error: any) => {
-      console.log(error);
+    onMutate: (variables) => {
+      const previousData = storedComments;
+      setComment({ ..._.omit(storedComments, [variables]) });
+      return { previousData };
+    },
+    onError: (error, variables, context) => {
+      setComment(context!.previousData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['comments'] });
     },
   });
 
-  const handleDeleteReaction = () => {
-    deleteReactionMutation.mutate(comment.id);
+  const handleDeleteReply = () => {
+    deleteReplyMutation.mutate(comment.id);
   };
 
   const menuItemStyle = clsx({
@@ -105,7 +113,7 @@ export const Reply: React.FC<ReplyProps> = ({
                       <div
                         className={menuItemStyle}
                         onClick={() => {
-                          handleDeleteReaction();
+                          handleDeleteReply();
                         }}
                       >
                         Delete
