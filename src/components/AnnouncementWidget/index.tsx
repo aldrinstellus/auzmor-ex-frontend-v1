@@ -8,6 +8,7 @@ import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
 import { humanizeTime } from 'utils/time';
 import SkeletonLoader from './components/SkeletonLoader';
+import RenderQuillContent from 'components/RenderQuillContent';
 
 export interface IAnnouncementCardProps {}
 
@@ -70,7 +71,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
                           <b>
                             {data?.data?.result?.data?.[0]?.createdBy?.fullName}
                           </b>
-                          <span>Shared a post</span>
+                          <span>shared a post</span>
                         </div>
                         <div className="text-xs text-gray-500">
                           {humanizeTime(
@@ -80,7 +81,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
                       </div>
                     </div>
                     <div className="mt-5 flex ">
-                      {data?.data?.result?.data[0]?.content?.text}
+                      <RenderQuillContent data={data?.data?.result?.data[0]} />
                     </div>
                   </div>
                   <div className="w-full flex justify-center">
