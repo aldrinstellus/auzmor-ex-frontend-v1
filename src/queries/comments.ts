@@ -55,7 +55,7 @@ export const createComment = async (payload: IComments) => {
   return data;
 };
 
-export const updateComment = async (id: string, payload: IComments) => {
+export const updateComment = async (id: string, payload: any) => {
   const { data } = await apiService.put(`/comments/${id}`, payload);
   return data;
 };

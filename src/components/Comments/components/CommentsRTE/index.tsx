@@ -9,7 +9,6 @@ import { createComment, updateComment } from 'queries/comments';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
 import { twConfig } from 'utils/misc';
-import { IComment } from 'components/Comments';
 
 export enum PostCommentMode {
   Create = 'CREATE',
@@ -21,6 +20,7 @@ interface CommentFormProps {
   entityId?: string;
   entityType: string;
   mode?: PostCommentMode;
+  setEditComment?: (edit: boolean) => void;
 }
 
 export const CommentsRTE: React.FC<CommentFormProps> = ({
@@ -28,6 +28,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
   entityId,
   entityType,
   mode = PostCommentMode.Create,
+  setEditComment,
 }) => {
   const queryClient = useQueryClient();
   const quillRef = useRef<ReactQuill>(null);
@@ -46,13 +47,16 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
 
   const updateCommentMutation = useMutation({
     mutationKey: ['update-comment'],
-    mutationFn: (payload: any) => updateComment(payload.id || '', payload),
+    mutationFn: (payload: any) => {
+      return updateComment(entityId || '', payload);
+    },
     onError: (error: any) => {
       console.log(error);
     },
     onSuccess: (data: any) => {
       quillRef.current?.setEditorContents(quillRef.current?.getEditor(), '');
       queryClient.invalidateQueries({ queryKey: ['comments'] });
+      setEditComment && setEditComment(false);
     },
   });
 
@@ -94,7 +98,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
           .getContents() as DeltaStatic,
       };
       const data = {
-        entityId: entityId || '',
+        entityId: entityId,
         entityType: entityType,
         content: commentData,
         hashtags: [],
