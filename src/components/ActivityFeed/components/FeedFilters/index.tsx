@@ -2,7 +2,6 @@ import { Popover, Transition } from '@headlessui/react';
 import Button, { Variant } from 'components/Button';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
-import CloseIcon from 'components/Icon/components/Close';
 import { IPostFilters, PostFilterKeys, PostType } from 'queries/post';
 import React, { ReactElement, useEffect, useState } from 'react';
 
@@ -262,7 +261,8 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
               }}
             >
               <p className="text-base font-bold">Filter by</p>
-              <CloseIcon
+              <Icon
+                name="close"
                 size={16}
                 className="cursor-pointer"
                 dataTestId="filter-closeicon"

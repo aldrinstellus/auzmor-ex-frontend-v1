@@ -2,7 +2,7 @@ import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
 import Modal from 'components/Modal';
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useRef, useState } from 'react';
 import SAMLDetail from './SAMLDetail';
 import Collapse from 'components/Collapse';
 import Button, { Type, Variant } from 'components/Button';
@@ -22,7 +22,7 @@ import { PRIMARY_COLOR } from 'utils/constants';
 type ConfigureGenericSSOProps = {
   open: boolean;
   closeModal: () => void;
-  ssoSetting?: ISSOSetting;
+  ssoSetting: ISSOSetting;
 };
 
 interface IForm {
@@ -42,7 +42,8 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
   ssoSetting,
 }): ReactElement => {
   const { user } = useAuth();
-
+  const [xmlFile, setXmlFile] = useState<File[]>();
+  const inputRef = useRef<HTMLInputElement>(null);
   const { control, handleSubmit, getValues } = useForm<IForm>({
     resolver: yupResolver(schema),
     mode: 'onSubmit',
@@ -68,6 +69,18 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
     },
   ];
 
+  const clearInput = () => {
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
+    setXmlFile([]);
+  };
+
+  const closeModalAndClearInput = () => {
+    closeModal();
+    clearInput();
+  };
+
   const updateSsoMutation = useMutation({
     mutationKey: ['update-sso-mutation'],
     mutationFn: updateSso,
@@ -77,13 +90,11 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
     onSuccess: async (response: any) => {
       console.log('Updated SSO successfully', response);
       await queryClient.invalidateQueries(['get-sso']);
-      closeModal();
+      closeModalAndClearInput();
     },
   });
 
   const { isLoading, isError } = updateSsoMutation;
-
-  const [xmlFile, setXmlFile] = useState<File[]>();
 
   const onSubmit = async () => {
     const values = getValues();
@@ -114,7 +125,7 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
       <div className="flex items-center justify-between p-4">
         <p className="font-extrabold text-black text-lg">{ssoSetting?.key}</p>
         <Icon
-          onClick={closeModal}
+          onClick={closeModalAndClearInput}
           name="close"
           hover={false}
           stroke="#000"
@@ -167,35 +178,51 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
             </div>
 
             {/* Upload XML  */}
-            <label
-              htmlFor="xml-file-input"
-              className="flex cursor-pointer gap-x-2 px-4"
-            >
-              <input
-                id="xml-file-input"
-                type="file"
-                className="hidden"
-                accept="text/xml"
-                onChange={(e) => {
-                  if (e.target.files?.length) {
-                    setXmlFile(Array.prototype.slice.call(e.target.files));
-                  }
-                }}
-              />
-              <div className="flex items-start gap-x-2">
+            <div className="flex flex-col items-center gap-y-1">
+              <label
+                htmlFor={`xml-file-input-sso-config-${ssoSetting?.idp}`}
+                className="flex cursor-pointer gap-x-2 px-4"
+              >
+                <input
+                  id={`xml-file-input-sso-config-${ssoSetting?.idp}`}
+                  ref={inputRef}
+                  type="file"
+                  className="hidden"
+                  accept="text/xml"
+                  onChange={(e) => {
+                    if (e.target.files?.length) {
+                      setXmlFile(Array.prototype.slice.call(e.target.files));
+                    }
+                  }}
+                  onClick={() => {
+                    if (inputRef.current) {
+                      inputRef.current.value = '';
+                    }
+                  }}
+                />
                 <Icon name="documentUpload" stroke={PRIMARY_COLOR} />
-                <div>
-                  <p className="text-primary-500 text-base">
-                    Upload Metadata Xml
-                  </p>
-                  <p className="text-sm cursor-default overflow-hidden text-ellipsis w-fit whitespace-nowrap max-w-[150px]">
-                    {xmlFile && xmlFile[0] && xmlFile[0].name
-                      ? xmlFile[0].name
-                      : ''}
-                  </p>
-                </div>
+                <p className="text-primary-500 text-base">
+                  Upload Metadata Xml
+                </p>
+              </label>
+              <div
+                className={`flex ${
+                  xmlFile && xmlFile[0] && xmlFile[0].name ? 'block' : 'hidden'
+                }`}
+              >
+                <p className="text-sm cursor-default overflow-hidden text-ellipsis w-fit whitespace-nowrap max-w-[150px]">
+                  {xmlFile && xmlFile[0] && xmlFile[0].name
+                    ? xmlFile[0].name
+                    : ''}
+                </p>
+                <Icon
+                  name="deleteCross"
+                  size={18}
+                  className="cursor-pointer"
+                  onClick={clearInput}
+                />
               </div>
-            </label>
+            </div>
           </div>
           <Divider className="!bg-neutral-100 my-8 px-4" />
 
@@ -218,7 +245,7 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
             <Button
               className="font-bold"
               label="Cancel"
-              onClick={closeModal}
+              onClick={closeModalAndClearInput}
               variant={Variant.Secondary}
             />
             <Button

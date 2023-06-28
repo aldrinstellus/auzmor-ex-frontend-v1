@@ -97,6 +97,7 @@ import PauseIcon from '../components/Pause';
 import MuteIcon from '../components/Mute';
 import CyclicArrow from '../components/CyclicArrow';
 import EditReceipt from '../components/EditReceipt';
+import DeleteCrossIcon from '../components/DeleteCross';
 
 export const icon = {
   add: Add,
@@ -198,4 +199,5 @@ export const icon = {
   video: VideoIcon,
   cyclicArrow: CyclicArrow,
   editReceipt: EditReceipt,
+  deleteCross: DeleteCrossIcon,
 };
