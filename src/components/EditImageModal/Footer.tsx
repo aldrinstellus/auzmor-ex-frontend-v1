@@ -112,8 +112,10 @@ const Footer: React.FC<IFooterProps> = ({
             onClick={() => {
               if (imageFile?.profileImage) {
                 userProfileImageRef?.current?.click();
-              } else {
+              } else if (imageFile?.coverImage) {
                 userCoverImageRef?.current?.click();
+              } else {
+                userProfileImageRef?.current?.click();
               }
             }}
             dataTestId={`${dataTestId}-chnagephoto`}
