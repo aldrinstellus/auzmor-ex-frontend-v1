@@ -32,6 +32,7 @@ import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
+import { produce } from 'immer';
 
 export interface IPostMenu {
   id: number;
@@ -74,7 +75,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
 
   const mediaRef = useRef<IMedia[]>([]);
 
-  const { feed, updateFeed } = useFeedStore();
+  const { feed, updateFeed, setFeed } = useFeedStore();
 
   const queryClient = useQueryClient();
 
@@ -107,11 +108,23 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     mutationKey: ['createPostMutation'],
     mutationFn: createPost,
     onError: (error) => console.log(error),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['feed']);
-      await queryClient.invalidateQueries(['announcements-widget']);
-      await queryClient.invalidateQueries(['my-profile-feed']);
-      await queryClient.invalidateQueries(['people-profile-feed']);
+    onSuccess: async ({
+      result,
+    }: {
+      code: number;
+      message: string;
+      result: { data: IPost };
+    }) => {
+      setFeed({ ...feed, [result.data.id!]: { ...result.data } });
+      await queryClient.setQueryData(['feed', { type: [] }], (oldData: any) =>
+        produce(oldData, (draft: any) => {
+          draft.pages[0].data.result.data = [
+            { id: result.data.id },
+            ...draft.pages[0].data.result.data,
+          ];
+        }),
+      );
+      clearPostContext();
       setShowModal(false);
     },
   });

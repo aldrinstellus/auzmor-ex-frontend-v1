@@ -53,7 +53,7 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
   const reaction = post?.myReaction?.reaction;
   const reactionId = post?.myReaction?.id;
 
-  const totalCount = Object.values(post.reactionsCount!).reduce(
+  const totalCount = Object.values(post.reactionsCount || {}).reduce(
     (total, count) => total + count,
     0,
   );
