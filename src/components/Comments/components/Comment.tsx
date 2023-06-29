@@ -44,6 +44,8 @@ export const Comment: React.FC<CommentProps> = ({
   const [editComment, setEditComment] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
 
+  const closePopOver = useRef<HTMLButtonElement>(null);
+
   const previousShowReply = useRef<boolean>(false);
 
   const { user } = useAuth();
@@ -180,42 +182,50 @@ export const Comment: React.FC<CommentProps> = ({
                         dataTestId="comment-ellipsis"
                       />
                     }
+                    ref={closePopOver}
                     className="left-0 rounded-9xl"
                   >
-                    <div className="w-48">
-                      <div
-                        className={`${menuItemStyle} rounded-t-9xl`}
-                        onClick={() => {
-                          setEditComment(true);
-                        }}
-                        data-testid="post-ellipsis-edit-comment"
-                      >
-                        <Icon
-                          name={'edit'}
-                          size={16}
-                          fill={twConfig.theme.colors.primary['500']}
-                          stroke={twConfig.theme.colors.neutral['200']}
-                        />
-                        <div className="text-sm font-medium text-neutral-900">
-                          Edit comment
+                    <div>
+                      {!editComment && (
+                        <div className="w-48">
+                          <div
+                            className={`${menuItemStyle} rounded-t-9xl`}
+                            onClick={() => {
+                              setEditComment(true);
+                              closePopOver?.current?.click();
+                            }}
+                            data-testid="post-ellipsis-edit-comment"
+                          >
+                            <Icon
+                              name={'edit'}
+                              size={16}
+                              fill={twConfig.theme.colors.primary['500']}
+                              stroke={twConfig.theme.colors.neutral['200']}
+                            />
+                            <div className="text-sm font-medium text-neutral-900">
+                              Edit comment
+                            </div>
+                          </div>
+                          <div
+                            className={`${menuItemStyle} rounded-b-9xl`}
+                            onClick={() => {
+                              showConfirm();
+                            }}
+                          >
+                            <Icon
+                              name={'delete'}
+                              size={16}
+                              fill={twConfig.theme.colors.primary['500']}
+                              stroke={twConfig.theme.colors.neutral['200']}
+                            />
+                            <div
+                              className={`text-sm font-medium text-neutral-900 `}
+                            >
+                              Delete comment
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <div
-                        className={`${menuItemStyle} rounded-b-9xl`}
-                        onClick={() => {
-                          showConfirm();
-                        }}
-                      >
-                        <Icon
-                          name={'delete'}
-                          size={16}
-                          fill={twConfig.theme.colors.primary['500']}
-                          stroke={twConfig.theme.colors.neutral['200']}
-                        />
-                        <div className="text-sm font-medium text-neutral-900">
-                          Delete comment
-                        </div>
-                      </div>
+                      )}
                     </div>
                   </Popover>
                 )}

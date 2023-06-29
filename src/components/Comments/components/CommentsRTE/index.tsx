@@ -200,7 +200,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
               <button className="ql-emoji" />
               <IconButton
                 icon={'send'}
-                className="flex mx-2 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
+                className="flex mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
                 size={SizeVariant.Large}
                 variant={IconVariant.Primary}
                 onClick={() => {

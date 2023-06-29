@@ -98,40 +98,44 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
                     }
                     className="left-0 rounded-9xl"
                   >
-                    <div className="w-48">
-                      <div
-                        className={`${menuItemStyle} rounded-t-9xl`}
-                        onClick={() => {
-                          setEditReply(true);
-                        }}
-                        data-testid="post-ellipsis-edit-comment"
-                      >
-                        <Icon
-                          name={'edit'}
-                          size={16}
-                          fill={twConfig.theme.colors.primary['500']}
-                          stroke={twConfig.theme.colors.neutral['200']}
-                        />
-                        <div className="text-sm font-medium text-neutral-900">
-                          Edit reply
+                    <div>
+                      {!editReply && (
+                        <div className="w-48">
+                          <div
+                            className={`${menuItemStyle} rounded-t-9xl`}
+                            onClick={() => {
+                              setEditReply(true);
+                            }}
+                            data-testid="post-ellipsis-edit-comment"
+                          >
+                            <Icon
+                              name={'edit'}
+                              size={16}
+                              fill={twConfig.theme.colors.primary['500']}
+                              stroke={twConfig.theme.colors.neutral['200']}
+                            />
+                            <div className="text-sm font-medium text-neutral-900">
+                              Edit reply
+                            </div>
+                          </div>
+                          <div
+                            className={`${menuItemStyle} rounded-b-9xl`}
+                            onClick={() => {
+                              showConfirm();
+                            }}
+                          >
+                            <Icon
+                              name={'delete'}
+                              size={16}
+                              fill={twConfig.theme.colors.primary['500']}
+                              stroke={twConfig.theme.colors.neutral['200']}
+                            />
+                            <div className="text-sm font-medium text-neutral-900">
+                              Delete reply
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <div
-                        className={`${menuItemStyle} rounded-b-9xl`}
-                        onClick={() => {
-                          showConfirm();
-                        }}
-                      >
-                        <Icon
-                          name={'delete'}
-                          size={16}
-                          fill={twConfig.theme.colors.primary['500']}
-                          stroke={twConfig.theme.colors.neutral['200']}
-                        />
-                        <div className="text-sm font-medium text-neutral-900">
-                          Delete reply
-                        </div>
-                      </div>
+                      )}
                     </div>
                   </Popover>
                 </div>
