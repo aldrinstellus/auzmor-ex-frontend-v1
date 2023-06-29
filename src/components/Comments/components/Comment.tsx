@@ -5,7 +5,7 @@ import IconButton, {
   Size,
 } from 'components/IconButton';
 import Avatar from 'components/Avatar';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 import Popover from 'components/Popover';
 import clsx from 'clsx';
 import { humanizeTime } from 'utils/time';
@@ -18,10 +18,16 @@ import { Link } from 'react-router-dom';
 import RenderQuillContent from 'components/RenderQuillContent';
 import ReactionModal from 'components/Post/components/ReactionModal';
 import useModal from 'hooks/useModal';
-import DeleteCommentModal from './DeleteCommentModal';
 import { twConfig } from 'utils/misc';
 import { IComment } from '..';
 import { CommentsRTE, PostCommentMode } from './CommentsRTE';
+import ConfirmationBox from 'components/ConfirmationBox';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import FailureToast from 'components/Toast/variants/FailureToast';
+import { toast } from 'react-toastify';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
+import { deleteComment } from 'queries/comments';
 
 interface CommentProps {
   comment: IComment;
@@ -37,10 +43,8 @@ export const Comment: React.FC<CommentProps> = ({
   entityId,
 }) => {
   const queryClient = useQueryClient();
-
   const [showReactionModal, setShowReactionModal] = useState(false);
-  const [deleteCommentModal, openDeleteCommentModal, closedDeleteCommentModal] =
-    useModal(false);
+  const [confirm, showConfirm, closeConfirm] = useModal();
   const [editComment, setEditComment] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
 
@@ -66,6 +70,63 @@ export const Comment: React.FC<CommentProps> = ({
       previousShowReply.current = true;
     }
   }, [showReplies]);
+
+  const deleteReactionMutation = useMutation({
+    mutationKey: ['delete-comment-mutation'],
+    mutationFn: deleteComment,
+    onError: (error: any) => {
+      console.log(error);
+      toast(
+        <FailureToast
+          content="Error deleting comment"
+          dataTestId="comment-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.red['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+        },
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['comments'] });
+      toast(
+        <SuccessToast
+          content="Comment has been deleted"
+          dataTestId="comment-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.primary['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+        },
+      );
+    },
+  });
 
   return (
     <div key={comment.id}>
@@ -146,7 +207,7 @@ export const Comment: React.FC<CommentProps> = ({
                       <div
                         className={`${menuItemStyle} rounded-b-9xl`}
                         onClick={() => {
-                          openDeleteCommentModal();
+                          showConfirm();
                         }}
                       >
                         <Icon
@@ -258,13 +319,30 @@ export const Comment: React.FC<CommentProps> = ({
           entityType="comment"
         />
       )}
-      {deleteCommentModal && (
-        <DeleteCommentModal
-          showModal={deleteCommentModal}
-          closedModal={closedDeleteCommentModal}
-          commentId={comment?.id}
-        />
-      )}
+      <ConfirmationBox
+        open={confirm}
+        onClose={closeConfirm}
+        title="Delete"
+        description={
+          <span>
+            Are you sure you want to delete this comment?
+            <br /> This cannot be undone.
+          </span>
+        }
+        success={{
+          label: 'Delete',
+          className: 'bg-red-500 text-white ',
+          onSubmit: () => {
+            deleteReactionMutation.mutate(comment?.id || '');
+          },
+        }}
+        discard={{
+          label: 'Cancel',
+          className: 'text-neutral-900 bg-white ',
+          onCancel: closeConfirm,
+        }}
+        isLoading={deleteReactionMutation?.isLoading}
+      />
     </div>
   );
 };
