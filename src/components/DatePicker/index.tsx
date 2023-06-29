@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useState } from 'react';
 import { Control, Controller, useController } from 'react-hook-form';
 
 import DatePicker from 'react-date-picker';
@@ -11,6 +11,7 @@ import './index.css';
 
 import Icon from 'components/Icon';
 import clsx from 'clsx';
+import { parseDate } from 'utils/time';
 
 export interface IDatePickerInputProps {
   name: string;
@@ -33,7 +34,6 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
   label = '',
   minDate,
   maxDate,
-  defaultValue,
   portalContainer = null,
   className,
   calendarClassName,
@@ -62,38 +62,28 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
   return (
     <div data-testid={dataTestId} className="relative">
       {!!label && <div className={labelStyle}>{label}</div>}
-      <Controller
-        name={field.name}
-        control={control}
-        render={({
-          field: { onChange, name, value },
-          fieldState: { invalid, isDirty },
-          formState: { errors },
-        }) => (
-          <DatePicker
-            autoFocus={true}
-            calendarAriaLabel="Toggle Calendar"
-            clearAriaLabel={'Clear value'}
-            calendarClassName={calendarClassName}
-            calendarIcon={<Icon name="calendarTwo" size={16} />}
-            className={`flex border relative rounded-19xl w-full px-5 py-2.5 focus:!border-primary-500 hover:border-primary-500 ${className}`}
-            clearIcon={null}
-            data-testid={dataTestId}
-            value={value || defaultValue}
-            onChange={(date: DateValue) => {
-              onChange(date);
-              onDateChange && onDateChange(date);
-            }}
-            format="dd/MM/yyyy"
-            dayPlaceholder="DD"
-            monthPlaceholder="MM"
-            yearPlaceholder="YYYY"
-            minDate={minDate}
-            maxDate={maxDate}
-            portalContainer={portalContainer}
-            id="react-date-picker-calendar"
-          />
-        )}
+
+      <DatePicker
+        calendarAriaLabel="Toggle Calendar"
+        clearAriaLabel={'Clear value'}
+        calendarClassName={calendarClassName}
+        calendarIcon={<Icon name="calendarTwo" size={16} />}
+        className={`flex border relative rounded-19xl w-full px-5 py-2.5 focus:!border-primary-500 hover:border-primary-500 ${className}`}
+        clearIcon={null}
+        data-testid={dataTestId}
+        value={field.value}
+        onChange={(date: any) => {
+          field.onChange(date);
+          onDateChange?.(date);
+        }}
+        format="MM/dd/yyyy"
+        dayPlaceholder="dd"
+        monthPlaceholder="MM"
+        yearPlaceholder="YYYY"
+        minDate={minDate}
+        maxDate={maxDate}
+        portalContainer={portalContainer}
+        id="react-date-picker-calendar"
       />
       {!!error && (
         <div className={`absolute -bottom-4 text-xs truncate leading-tight`}>
@@ -104,4 +94,4 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
   );
 };
 
-export default memo(DatePickerInput);
+export default DatePickerInput;

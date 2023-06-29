@@ -31,6 +31,7 @@ const Body: React.FC<IBodyProps> = ({
         <form data-testid="feed-announcement-expire">
           <Layout fields={expiryFields} />
         </form>
+
         {((selecetedExpiry && selecetedExpiry.label === 'Custom Date') ||
           (!!!selecetedExpiry &&
             announcement &&
