@@ -31,16 +31,12 @@ import { deleteComment } from 'queries/comments';
 
 interface CommentProps {
   comment: IComment;
-  className?: string;
   customNode?: ReactNode;
-  entityId?: string;
 }
 
 export const Comment: React.FC<CommentProps> = ({
   comment,
-  className,
   customNode = null,
-  entityId,
 }) => {
   const queryClient = useQueryClient();
   const [showReactionModal, setShowReactionModal] = useState(false);
@@ -130,7 +126,7 @@ export const Comment: React.FC<CommentProps> = ({
 
   return (
     <div key={comment.id}>
-      <div className={`flex flex-col mt-4 ${className}`}>
+      <div className={`flex flex-col mt-4`}>
         <div className="bg-neutral-100 p-3 rounded-9xl">
           <div className="flex justify-between p-0">
             <div className="flex">
@@ -228,14 +224,18 @@ export const Comment: React.FC<CommentProps> = ({
           </div>
           {/* Comment Edit at Post level type Post */}
           {editComment ? (
-            <CommentsRTE
-              entityId={comment?.id}
-              entityType="post"
-              mode={PostCommentMode.Edit}
-              setEditComment={setEditComment}
-            />
+            <div className="mt-4">
+              <CommentsRTE
+                entityId={comment?.id}
+                entityType="post"
+                mode={PostCommentMode.Edit}
+                setEditComment={setEditComment}
+                commentData={comment}
+                className="bg-white rounded-19xl"
+              />
+            </div>
           ) : (
-            <div className="text-neutral-900  font-normal text-sm mt-4">
+            <div className="text-neutral-900 font-normal text-sm mt-4">
               <RenderQuillContent data={comment} />
             </div>
           )}

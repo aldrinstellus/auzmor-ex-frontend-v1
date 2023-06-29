@@ -139,13 +139,16 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
             </div>
           </div>
           {editReply ? (
-            <CommentsRTE
-              className="w-full py-1"
-              entityId={comment?.id}
-              entityType="comment"
-              mode={PostCommentMode.Edit}
-              setEditComment={setEditReply}
-            />
+            <div className="mt-4">
+              <CommentsRTE
+                className="bg-white rounded-19xl"
+                entityId={comment?.id}
+                entityType="comment"
+                mode={PostCommentMode.Edit}
+                setEditComment={setEditReply}
+                commentData={comment}
+              />
+            </div>
           ) : (
             <div
               className=" text-neutral-900  font-normal text-sm mt-4"
