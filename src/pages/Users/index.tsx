@@ -150,6 +150,7 @@ const Users: React.FC<IUsersProps> = () => {
               variant={IconVariant.Secondary}
               size={IconSize.Medium}
               borderAround
+              disabled
               className="bg-white"
               dataTestId="people-sort"
             />

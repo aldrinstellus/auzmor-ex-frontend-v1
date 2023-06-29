@@ -8,10 +8,17 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createComment, updateComment } from 'queries/comments';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
+import { toast } from 'react-toastify';
 import { twConfig } from 'utils/misc';
 import { produce } from 'immer';
 import { useCommentStore } from 'stores/commentStore';
 import { useFeedStore } from 'stores/feedStore';
+import FailureToast from 'components/Toast/variants/FailureToast';
+import Icon from 'components/Icon';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import Button, { Size, Variant } from 'components/Button';
 
 export enum PostCommentMode {
   Create = 'CREATE',
@@ -23,6 +30,7 @@ interface CommentFormProps {
   entityId?: string;
   entityType: string;
   mode?: PostCommentMode;
+  setEditComment?: (edit: boolean) => void;
 }
 
 export const CommentsRTE: React.FC<CommentFormProps> = ({
@@ -30,6 +38,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
   entityId,
   entityType,
   mode = PostCommentMode.Create,
+  setEditComment,
 }) => {
   const {
     comment,
@@ -81,13 +90,66 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
 
   const updateCommentMutation = useMutation({
     mutationKey: ['update-comment'],
-    mutationFn: (payload: any) => updateComment(payload.id || '', payload),
+    mutationFn: (payload: any) => {
+      return updateComment(entityId || '', payload);
+    },
     onError: (error: any) => {
       console.log(error);
+      toast(
+        <FailureToast
+          content={`Error Updating ${
+            entityType === 'post' ? 'Comment' : 'Reply'
+          }`}
+          dataTestId="comment-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.red['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+        },
+      );
     },
     onSuccess: (data: any) => {
+      toast(
+        <SuccessToast
+          content={`${
+            entityType === 'post' ? 'Comment' : 'Reply'
+          } has been updated`}
+          dataTestId="comment-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.primary['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+        },
+      );
       quillRef.current?.setEditorContents(quillRef.current?.getEditor(), '');
       queryClient.invalidateQueries({ queryKey: ['comments'] });
+      setEditComment && setEditComment(false);
     },
   });
 
@@ -129,7 +191,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
           .getContents() as DeltaStatic,
       };
       const data = {
-        entityId: entityId || '',
+        entityId: entityId,
         entityType: entityType,
         content: commentData,
         hashtags: [],
@@ -153,6 +215,16 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
               className="flex flex-row items-center z-10 -ml-32 absolute top-0 right-2 quill-toolbar"
               id={`toolbar-${entityId}-toolbar`}
             >
+              {mode === PostCommentMode.Edit && (
+                <Button
+                  label={'Cancel'}
+                  size={Size.Small}
+                  variant={Variant.Secondary}
+                  dataTestId="cancel-edit-comment"
+                  onClick={() => setEditComment && setEditComment(false)}
+                  className="mr-4"
+                />
+              )}
               <button className="ql-emoji" />
               <IconButton
                 icon={'send'}

@@ -1,5 +1,7 @@
 import React from 'react';
 import { useInfiniteReplies } from 'queries/reaction';
+/* Comment Level RTE - Comment on the comment level 2 */
+import { useInfiniteComments } from 'queries/comments';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import { Reply } from 'components/Reply/Reply';

@@ -21,6 +21,7 @@ import useModal from 'hooks/useModal';
 import DeleteCommentModal from './DeleteCommentModal';
 import { twConfig } from 'utils/misc';
 import { IComment } from '..';
+import { CommentsRTE, PostCommentMode } from './CommentsRTE';
 
 interface CommentProps {
   comment: IComment;
@@ -161,17 +162,19 @@ export const Comment: React.FC<CommentProps> = ({
               </div>
             </div>
           </div>
-          {/* {editComment ? (
+          {/* Comment Edit at Post level type Post */}
+          {editComment ? (
             <CommentsRTE
-              entityId={entityId}
+              entityId={comment?.id}
               entityType="post"
               mode={PostCommentMode.Edit}
+              setEditComment={setEditComment}
             />
-          ) : ( */}
-          <div className="text-neutral-900  font-normal text-sm mt-4">
-            <RenderQuillContent data={comment} />
-          </div>
-          {/* )} */}
+          ) : (
+            <div className="text-neutral-900  font-normal text-sm mt-4">
+              <RenderQuillContent data={comment} />
+            </div>
+          )}
         </div>
         <div className="flex flex-row justify-between mt-4 cursor-pointer">
           <div className={`flex flex-row`}>

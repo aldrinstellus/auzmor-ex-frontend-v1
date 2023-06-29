@@ -66,7 +66,7 @@ const UserCard: React.FC<IUserCardProps> = ({
 
   const _options = [];
 
-  if (status === UserStatus.Invited) {
+  if ([UserStatus.Invited, UserStatus.Created].includes(status as any)) {
     _options.push({
       icon: 'redo',
       label: 'Resend Invite',
@@ -134,15 +134,22 @@ const UserCard: React.FC<IUserCardProps> = ({
         )}
         <div
           style={{
-            backgroundColor:
-              status === UserStatus.Invited || status === UserStatus.Attempted
-                ? '#EA580C'
-                : statusColorMap[role],
+            backgroundColor: [
+              UserStatus.Invited,
+              UserStatus.Created,
+              UserStatus.Attempted,
+            ].includes(status as any)
+              ? '#EA580C'
+              : statusColorMap[role],
           }}
           className="absolute top-0 left-0 text-white rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium"
           data-testid={`people-card-role-${role}`}
         >
-          {status === UserStatus.Invited || status === UserStatus.Attempted
+          {[
+            UserStatus.Invited,
+            UserStatus.Created,
+            UserStatus.Attempted,
+          ].includes(status as any)
             ? 'Pending'
             : role}
         </div>

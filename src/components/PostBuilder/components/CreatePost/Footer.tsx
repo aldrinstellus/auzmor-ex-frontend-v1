@@ -37,6 +37,7 @@ const Footer: React.FC<IFooterProps> = ({
     isPreviewRemoved,
     previewUrl,
   } = useContext(CreatePostContext);
+
   const updateContext = () => {
     setEditorValue({
       text: quillRef
@@ -51,14 +52,22 @@ const Footer: React.FC<IFooterProps> = ({
     });
   };
 
-  const disabledMedia = !isPreviewRemoved && !!previewUrl;
+  const isMediaDisabled =
+    (isPreviewRemoved && !!!previewUrl) || (!isPreviewRemoved && !!previewUrl);
 
   const postMenuItems = useMemo(
     () => [
       {
         id: 1,
         label: 'Media',
-        icon: (
+        icon: isMediaDisabled ? (
+          <Icon
+            name="imageFilled"
+            fill="#737373"
+            size={14}
+            dataTestId="feed-createpost-media"
+          />
+        ) : (
           <Icon
             name="imageFilled"
             fill="#000000"
@@ -66,7 +75,7 @@ const Footer: React.FC<IFooterProps> = ({
             dataTestId="feed-createpost-media"
           />
         ),
-        disabled: disabledMedia,
+        disabled: isMediaDisabled,
         menuItems: [
           {
             label: 'Upload a photo',
@@ -75,6 +84,7 @@ const Footer: React.FC<IFooterProps> = ({
               updateContext();
               inputImgRef?.current && inputImgRef?.current?.click();
             },
+            disabled: isMediaDisabled,
             iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
             dataTestId: 'feed-createpost-uploadphoto-menuitem',
           },
@@ -85,6 +95,7 @@ const Footer: React.FC<IFooterProps> = ({
               updateContext();
               inputVideoRef?.current && inputVideoRef?.current?.click();
             },
+            disabled: isMediaDisabled,
             iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
             dataTestId: 'feed-createpost-uploadvideo-menuitem',
           },
@@ -171,8 +182,9 @@ const Footer: React.FC<IFooterProps> = ({
         ],
       },
     ],
-    [],
+    [isPreviewRemoved, previewUrl],
   );
+
   return (
     <div className="flex justify-between items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
       <div className="flex relative">
@@ -183,7 +195,13 @@ const Footer: React.FC<IFooterProps> = ({
                 <PopupMenu
                   triggerNode={
                     postMenuItem?.disabled ? (
-                      <div className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl cursor-default">
+                      <div
+                        className={`flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl ${
+                          isPreviewRemoved || !!previewUrl
+                            ? 'cursor-not-allowed'
+                            : 'cursor-default'
+                        }`}
+                      >
                         {postMenuItem.icon}
                       </div>
                     ) : (

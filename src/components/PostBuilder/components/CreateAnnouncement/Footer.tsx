@@ -32,9 +32,11 @@ const Footer: React.FC<IFooterProps> = ({
     setAnnouncement({
       label: data?.expityOption?.label || announcement?.label || '1 Week',
       value:
-        data?.expityOption?.value ||
-        announcement?.value ||
-        afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
+        data?.expityOption?.label === 'Custom Date'
+          ? data?.date?.toISOString().substring(0, 19) + 'Z'
+          : data?.expityOption?.value ||
+            announcement?.value ||
+            afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
     });
     setActiveFlow(CreatePostFlow.CreatePost);
   };
@@ -66,15 +68,15 @@ const Footer: React.FC<IFooterProps> = ({
     <div>
       {mode === CreateAnnouncementMode.POST_BUILDER && (
         <div className="flex justify-between items-center h-16 p-6 bg-blue-50">
-          <div
-            className="font-bold text-base cursor-pointer"
+          <Button
+            variant={ButtonVariant.Secondary}
+            label="Clear"
             onClick={() => {
               setAnnouncement(null);
               setActiveFlow(CreatePostFlow.CreatePost);
             }}
-          >
-            Clear Announcements
-          </div>
+          />
+
           <div className="flex">
             <Button
               variant={ButtonVariant.Secondary}

@@ -8,6 +8,7 @@ import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
 import { humanizeTime } from 'utils/time';
 import SkeletonLoader from './components/SkeletonLoader';
+import RenderQuillContent from 'components/RenderQuillContent';
 
 export interface IAnnouncementCardProps {}
 
@@ -39,7 +40,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
         {/* <div className="text-sm font-bold">View All</div> */}
       </div>
       <div className="mt-2">
-        <Card className="pb-6 flex flex-col items-center rounded-9xl">
+        <Card className="pb-6 flex flex-col rounded-9xl">
           <div className="rounded-t-9xl bg-blue-700 text-white py-3 w-full flex justify-start space-x-1 px-3">
             <Icon name="flashIcon" />
             <div className="text-base font-bold">Announcement</div>
@@ -47,10 +48,10 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
           {isLoading ? (
             <SkeletonLoader />
           ) : (
-            <div>
+            <div className="w-full px-6">
               {itemCount && isAcknowledged ? (
-                <div className="flex flex-col justify-center">
-                  <div className="mt-4 px-3">
+                <div className="flex flex-col items-start">
+                  <div className="mt-4">
                     <div className="flex space-x-3">
                       <div>
                         <Avatar
@@ -67,12 +68,14 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
                       </div>
                       <div>
                         <div className="space-x-1 text-sm">
-                          <b>
+                          <span className="text-neutral-900 font-bold">
                             {data?.data?.result?.data?.[0]?.createdBy?.fullName}
-                          </b>
-                          <span>Shared a post</span>
+                          </span>
+                          <span className="text-neutral-900 font-normal">
+                            shared a post
+                          </span>
                         </div>
-                        <div className="text-xs">
+                        <div className="text-xs text-gray-500">
                           {humanizeTime(
                             data?.data?.result?.data?.[0]?.createdAt,
                           )}
@@ -80,14 +83,14 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
                       </div>
                     </div>
                     <div className="mt-5 flex ">
-                      {data?.data?.result?.data[0]?.content?.text}
+                      <RenderQuillContent data={data?.data?.result?.data[0]} />
                     </div>
                   </div>
                   <div className="w-full flex justify-center">
                     <Button
                       label="Mark as read"
                       variant={Variant.Secondary}
-                      className="border-2 border-neutral-200 mt-4 w-[75%]"
+                      className="border-2 border-neutral-200 mt-4 w-full"
                       loading={acknowledgeAnnouncement.isLoading}
                       onClick={() => {
                         acknowledgeAnnouncement.mutate({

@@ -1,8 +1,8 @@
-import { FieldType } from 'components/Form';
+import Layout, { FieldType } from 'components/Form';
 import React, { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import { afterXUnit } from 'utils/time';
+import { afterXUnit, parseDate } from 'utils/time';
 import Header from 'components/ModalHeader';
 import Footer from './Footer';
 import Body from './Body';
@@ -32,16 +32,20 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
   });
 
   const selecetedExpiry = watch('expityOption');
-  const customDate = watch('date');
 
   useEffect(() => {
-    if (customDate) {
-      setValue('expityOption', {
-        label: 'Custom Date',
-        value: customDate.toISOString().substring(0, 19) + 'Z',
-      });
+    if (announcement?.value) {
+      setValue('date', parseDate(announcement?.value));
     }
-  }, [customDate]);
+    setValue(
+      'expityOption',
+      announcement || {
+        label: '1 Week',
+        value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
+        dataTestId: 'announcement-expiry-1week',
+      },
+    );
+  }, []);
 
   const expiryFields = [
     {
@@ -77,11 +81,11 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
         },
       ],
       placeholder: 'Select Announcement Expiry',
-      defaultValue: announcement || {
-        label: '1 Week',
-        value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
-        dataTestId: 'announcement-expiry-1week',
-      },
+      // defaultValue: announcement || {
+      //   label: '1 Week',
+      //   value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
+      //   dataTestId: 'announcement-expiry-1week',
+      // },
       dataTestId: 'announcement-expiry-dropdown',
     },
   ];
@@ -92,10 +96,10 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
       name: 'date',
       control,
       minDate: new Date(afterXUnit(1, 'day').toISOString()),
-      defaultValue: announcement?.value || '',
       dataTestId: 'custom-date-calendar',
     },
   ];
+
   return (
     <>
       <Header
@@ -122,12 +126,7 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
       />
       <Footer
         handleSubmit={handleSubmit}
-        isValid={
-          selecetedExpiry?.label === 'Custom Date' &&
-          selecetedExpiry?.value === ''
-            ? false
-            : true
-        }
+        isValid={true}
         mode={mode}
         closeModal={closeModal}
         data={data}

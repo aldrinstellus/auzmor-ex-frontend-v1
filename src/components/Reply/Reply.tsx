@@ -24,6 +24,12 @@ import FailureToast from 'components/Toast/variants/FailureToast';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
+import ConfirmationBox from 'components/ConfirmationBox';
+import useModal from 'hooks/useModal';
+import {
+  CommentsRTE,
+  PostCommentMode,
+} from 'components/Comments/components/CommentsRTE';
 
 interface ReplyProps {
   comment: IComment;
@@ -32,12 +38,13 @@ interface ReplyProps {
 
 export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
   const { user } = useAuth();
-  const createdAt = humanizeTime(comment.createdAt);
+  const [confirm, showConfirm, closeConfirm] = useModal();
   const [showReactionModal, setShowReactionModal] = useState(false);
+  const [editReply, setEditReply] = useState<boolean>(false);
   const { comment: storedComments, setComment } = useCommentStore();
 
   const deleteReplyMutation = useMutation({
-    mutationKey: ['delete-comment-mutation'],
+    mutationKey: ['delete-reply-comment-mutation'],
     mutationFn: deleteComment,
     onMutate: (variables) => {
       const previousData = comment;
@@ -51,6 +58,7 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
         ..._.omit(storedComments, [variables]),
         [storedComments[variables].entityId]: { ...updatedComment },
       });
+      closeConfirm();
       return { previousData };
     },
     onError: (error: any) => {
@@ -146,7 +154,7 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
             </div>
             <div className="flex flex-row items-start">
               <div className="text-neutral-500 font-normal text-xs">
-                {createdAt}
+                {humanizeTime(comment.createdAt)}
               </div>
               {user?.id === comment.createdBy.userId && (
                 <div className="ml-4">
@@ -159,12 +167,14 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
                         dataTestId="comment-reply-ecllipsis"
                       />
                     }
-                    className="left-0"
+                    className="left-0 rounded-9xl"
                   >
                     <div className="w-48">
                       <div
                         className={`${menuItemStyle} rounded-t-9xl`}
-                        onClick={() => {}}
+                        onClick={() => {
+                          setEditReply(true);
+                        }}
                         data-testid="post-ellipsis-edit-comment"
                       >
                         <Icon
@@ -178,8 +188,10 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
                         </div>
                       </div>
                       <div
-                        className={menuItemStyle}
-                        onClick={handleDeleteReply}
+                        className={`${menuItemStyle} rounded-b-9xl`}
+                        onClick={() => {
+                          showConfirm();
+                        }}
                       >
                         <Icon
                           name={'delete'}
@@ -197,12 +209,22 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
               )}
             </div>
           </div>
-          <div
-            className=" text-neutral-900  font-normal text-sm mt-4"
-            data-testid="comment-reply-content"
-          >
-            <RenderQuillContent data={comment} />
-          </div>
+          {editReply ? (
+            <CommentsRTE
+              className="w-full py-1"
+              entityId={comment?.id}
+              entityType="comment"
+              mode={PostCommentMode.Edit}
+              setEditComment={setEditReply}
+            />
+          ) : (
+            <div
+              className=" text-neutral-900  font-normal text-sm mt-4"
+              data-testid="comment-reply-content"
+            >
+              <RenderQuillContent data={comment} />
+            </div>
+          )}
         </div>
         <div className="flex flex-row justify-between mt-3 cursor-pointer">
           <div className={`flex flex-row`}>
@@ -244,6 +266,30 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
           <div></div>
         </div>
       </div>
+      <ConfirmationBox
+        open={confirm}
+        onClose={closeConfirm}
+        title="Delete"
+        description={
+          <span>
+            Are you sure you want to delete this reply?
+            <br /> This cannot be undone.
+          </span>
+        }
+        success={{
+          label: 'Delete',
+          className: 'bg-red-500 text-white ',
+          onSubmit: () => {
+            deleteReplyMutation.mutate(comment.id || '');
+          },
+        }}
+        discard={{
+          label: 'Cancel',
+          className: 'text-neutral-900 bg-white ',
+          onCancel: closeConfirm,
+        }}
+        isLoading={deleteReplyMutation.isLoading}
+      />
       {showReactionModal && (
         <ReactionModal
           closeModal={() => setShowReactionModal(false)}

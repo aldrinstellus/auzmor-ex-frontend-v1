@@ -25,7 +25,7 @@
 .react-datepicker__day--selected {
   background-color: #10b981;
 } */
-
+/* 
 .react-date-picker__wrapper {
   border: none;
 }
@@ -114,4 +114,8 @@ abbr {
 
 .react-calendar__tile:disabled {
   cursor: not-allowed;
+} */
+
+#react-date-picker-calendar > .react-date-picker__wrapper {
+  border: none !important;
 }
