@@ -1,0 +1,154 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './src/**/*.{js,jsx,ts,tsx}',
+    './node_modules/@auzmorui/**/*.{js, jsx, ts, tsx}',
+  ],
+  theme: {
+    extend: {
+      colors: {
+        'black-white': { black: '#000000', white: '#ffffff' },
+        primary: {
+          50: '#ecfdf5',
+          100: '#d1fae5',
+          200: '#a7f3d0',
+          300: '#6ee7b7',
+          400: '#34d399',
+          500: '#10b981',
+          600: '#059669',
+          700: '#047857',
+          800: '#065f46',
+          900: '#064e3b',
+        },
+        neutral: {
+          50: '#fafafa',
+          100: '#f5f5f5',
+          200: '#e5e5e5',
+          300: '#d4d4d4',
+          400: '#a3a3a3',
+          500: '#737373',
+          600: '#525252',
+          700: '#404040',
+          800: '#262626',
+          900: '#171717',
+        },
+        social: {
+          facebook: '#35518d',
+          twitter: '#1da1f2',
+          google: '#4284f4',
+          dribbble: '#ea4c89',
+          github: '#1b1f23',
+        },
+      },
+      fontSize: {
+        xxs: '0.625rem',
+      },
+      fontFamily: { manrope: 'Manrope' },
+      boxShadow: {
+        'shadow-sm': '0px 1px 2px 0px rgba(0,0,0,0.08)',
+        shadow:
+          '0px 1px 2px -1px rgba(0,0,0,0.1), 0px 1px 3px 0px rgba(0,0,0,0.1)',
+        'shadow-md':
+          '0px 2px 4px -2px rgba(0,0,0,0.05), 0px 4px 6px -1px rgba(0,0,0,0.1)',
+        'shadow-lg':
+          '0px 4px 6px 0px rgba(0,0,0,0.05), 0px 10px 15px -3px rgba(0,0,0,0.1)',
+        'shadow-xl':
+          '0px 10px 10px 0px rgba(0,0,0,0.04), 0px 20px 25px -5px rgba(0,0,0,0.1)',
+        'shadow-2xl': '0px 25px 50px -12px rgba(0,0,0,0.25)',
+        'Shadow-md1': '0px 10px 20px 0px rgba(0,0,0,0.12)',
+        'shadow-blue-600/50':
+          '0px 4px 6px 0px rgba(28,100,242,0.5), 0px 10px 15px -3px rgba(28,100,242,0.5)',
+        'shadow-green-500/50':
+          '0px 4px 6px 0px rgba(14,159,110,0.5), 0px 10px 15px -3px rgba(14,159,110,0.5)',
+        'shadow-teal-500/50':
+          '0px 4px 6px 0px rgba(6,148,162,0.5), 0px 10px 15px -3px rgba(6,148,162,0.5)',
+        'shadow-indigo-600/50':
+          '0px 4px 6px 0px rgba(88,80,236,0.5), 0px 10px 15px -3px rgba(88,80,236,0.5)',
+        'shadow-purple-600/50':
+          '0px 4px 6px 0px rgba(126,58,242,0.5), 0px 10px 15px -3px rgba(126,58,242,0.5)',
+        'shadow-pink-500/50':
+          '0px 4px 6px 0px rgba(231,70,148,0.5), 0px 10px 15px -3px rgba(231,70,148,0.5)',
+        'shadow-red-500/50':
+          '0px 4px 6px 0px rgba(240,82,82,0.5), 0px 10px 15px -3px rgba(240,82,82,0.5)',
+        'shadow-orange-500/50':
+          '0px 4px 6px 0px rgba(255,90,31,0.5), 0px 10px 15px -3px rgba(255,90,31,0.5)',
+        'blur/none': '',
+        'blur/sm': '',
+        'blur/base': '',
+        'blur/md': '',
+        'blur/lg': '',
+        'blur/xl': '',
+        'blur/2xl': '',
+        'blur/3xl': '',
+        'backdrop-blur/none': '',
+        'backdrop-blur/sm': '',
+        'backdrop-blur/base': '',
+        'backdrop-blur/md': '',
+        'backdrop-blur/lg': '',
+        'backdrop-blur/xl': '',
+        'backdrop-blur/2xl': '',
+        'backdrop-blur/3xl': '',
+      },
+      borderRadius: {
+        none: '0',
+        xs: '0.0625rem',
+        sm: '0.09375rem',
+        default: '0.125rem',
+        lg: '0.1875rem',
+        xl: '0.25rem',
+        '2xl': '0.2580920457839966rem',
+        '3xl': '0.3125rem',
+        '4xl': '0.375rem',
+        '5xl': '0.4215686321258545rem',
+        '6xl': '0.4907398521900177rem',
+        '7xl': '0.5rem',
+        '8xl': '0.7361097931861877rem',
+        '9xl': '0.75rem',
+        '10xl': '0.7750787138938904rem',
+        '11xl': '0.7869982719421387rem',
+        '12xl': '0.8190879225730896rem',
+        '13xl': '0.8345439434051514rem',
+        '14xl': '0.9375rem',
+        '15xl': '1rem',
+        '16xl': '1.25rem',
+        '17xl': '1.5rem',
+        '18xl': '1.875rem',
+        '19xl': '2rem',
+        '20xl': '2.125rem',
+        '21xl': '2.25rem',
+        '22xl': '3rem',
+        '23xl': '3.125rem',
+        '24xl': '3.25rem',
+        '25xl': '3.75rem',
+        '26xl': '4rem',
+        '27xl': '4.7847137451171875rem',
+        '28xl': '4.875rem',
+        '29xl': '4.907398700714111rem',
+        full: '9999px',
+      },
+      borderWidth: {
+        1: '1px',
+      },
+      spacing: {
+        52: '3.25rem',
+      },
+      height: {
+        56: '56px',
+        11: '44px',
+        31.5: '126px',
+        54.75: '219px',
+      },
+      width: {
+        135.25: '541px',
+        90: '90px',
+      },
+      margin: {
+        8.5: '32px',
+      },
+      transitionDuration: {
+        default: '200ms'
+      }
+    },
+    plugins: [],
+  },
+};
