@@ -48,7 +48,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
     },
     onSuccess: async (data: any, variables, context) => {
       quillRef.current?.setEditorContents(quillRef.current?.getEditor(), '');
-      await queryClient.setQueriesData(
+      await queryClient.setQueryData(
         ['comments', { entityId, entityType, limit: 4 }],
         (oldData) =>
           produce(oldData, (draft: any) => {
