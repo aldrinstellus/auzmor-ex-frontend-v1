@@ -1,4 +1,5 @@
-import React from 'react';
+/* Comment Level RTE - Comment on the comment level 2 */
+import React, { useState } from 'react';
 import { useInfiniteComments } from 'queries/comments';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
@@ -22,21 +23,14 @@ export interface activeCommentsDataType {
 const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
   const { user } = useAuth();
 
-  const {
-    data,
-    isLoading,
-    isError,
-    isFetchingNextPage,
-    fetchNextPage,
-    hasNextPage,
-    error,
-  } = useInfiniteComments({
-    entityId: entityId,
-    entityType: 'comment',
-    // Limit here is arbitrary, need to check with product team.
-    // Linkedin loads 2 by default and then 10 each time you click 'Load more'
-    limit: 4,
-  });
+  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
+    useInfiniteComments({
+      entityId: entityId,
+      entityType: 'comment',
+      // Limit here is arbitrary, need to check with product team.
+      // Linkedin loads 2 by default and then 10 each time you click 'Load more'
+      limit: 4,
+    });
 
   const replies = data?.pages.flatMap((page) => {
     return page?.result?.data.map((comment: any) => {
@@ -73,11 +67,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
           {replies && replies.length > 0 && (
             <div>
               {replies.map((reply: any) => (
-                <Reply
-                  // handleClick={handleClick}
-                  comment={reply}
-                  key={reply.id}
-                />
+                <Reply comment={reply} key={reply.id} />
               ))}
               {hasNextPage && !isFetchingNextPage && (
                 <LoadMore onClick={fetchNextPage} label="Load more replies" />

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* Comment RTE - Post Level Comment Editor */
+import React from 'react';
 import { Comment } from './components/Comment';
 import { useInfiniteComments } from 'queries/comments';
 import { DeltaStatic } from 'quill';
