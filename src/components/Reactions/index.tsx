@@ -142,18 +142,28 @@ const Likes: React.FC<LikesProps> = ({
           produce(comment[variables.entityId], (draft) => {
             (draft.myReaction = { reaction: variables.reaction }),
               (draft.reactionsCount =
-                comment[variables.entityId].reactionsCount &&
-                Object.keys(comment[variables.entityId].reactionsCount)
-                  ? {
-                      ...comment[variables.entityId].reactionsCount,
-                      [variables.reaction as string]: comment[
-                        variables.entityId
-                      ].reactionsCount[variables.reaction as string]
-                        ? comment[variables.entityId].reactionsCount[
-                            variables.reaction as string
-                          ] + 1
-                        : 1,
-                    }
+                draft.reactionsCount && Object.keys(draft.reactionsCount)
+                  ? Object.keys(draft.myReaction)
+                    ? {
+                        [draft.myReaction.reaction as string]:
+                          draft.reactionsCount[
+                            draft.myReaction.reaction as string
+                          ] - 1,
+                        [variables.reaction as string]: draft.reactionsCount[
+                          variables.reaction as string
+                        ]
+                          ? draft.reactionsCount[variables.reaction as string] +
+                            1
+                          : 1,
+                      }
+                    : {
+                        [variables.reaction as string]: draft.reactionsCount[
+                          variables.reaction as string
+                        ]
+                          ? draft.reactionsCount[variables.reaction as string] +
+                            1
+                          : 1,
+                      }
                   : { [variables.reaction as string]: 1 });
           }),
         );
