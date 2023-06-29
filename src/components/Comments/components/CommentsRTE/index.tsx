@@ -9,7 +9,9 @@ import { createComment, updateComment } from 'queries/comments';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
 import { twConfig } from 'utils/misc';
-import { IComment } from 'components/Comments';
+import { produce } from 'immer';
+import { useCommentStore } from 'stores/commentStore';
+import { useFeedStore } from 'stores/feedStore';
 
 export enum PostCommentMode {
   Create = 'CREATE',
@@ -29,6 +31,12 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
   entityType,
   mode = PostCommentMode.Create,
 }) => {
+  const {
+    comment,
+    setComment,
+    updateComment: updateStoredComment,
+  } = useCommentStore();
+  const { feed, updateFeed } = useFeedStore();
   const queryClient = useQueryClient();
   const quillRef = useRef<ReactQuill>(null);
 
@@ -38,9 +46,34 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
     onError: (error: any) => {
       console.log(error);
     },
-    onSuccess: (data: any, variables, context) => {
+    onSuccess: async (data: any, variables, context) => {
       quillRef.current?.setEditorContents(quillRef.current?.getEditor(), '');
-      queryClient.invalidateQueries({ queryKey: ['comments'] });
+      await queryClient.setQueriesData(
+        ['comments', { entityId, entityType, limit: 4 }],
+        (oldData) =>
+          produce(oldData, (draft: any) => {
+            draft.pages[0].data.result.data = [
+              { id: data.id },
+              ...draft.pages[0].data.result.data,
+            ];
+          }),
+      );
+      setComment({ ...comment, [data.id]: { ...data } });
+      if (entityType === 'post' && entityId) {
+        updateFeed(
+          entityId,
+          produce(feed[entityId], (draft) => {
+            draft.commentsCount = draft.commentsCount + 1;
+          }),
+        );
+      } else if (entityType === 'comment' && entityId) {
+        updateStoredComment(
+          entityId,
+          produce(comment[entityId], (draft) => {
+            draft.repliesCount = draft.repliesCount + 1;
+          }),
+        );
+      }
     },
   });
 

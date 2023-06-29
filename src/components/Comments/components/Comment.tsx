@@ -53,26 +53,6 @@ export const Comment: React.FC<CommentProps> = ({
   const { user } = useAuth();
   const createdAt = humanizeTime(comment.updatedAt);
 
-  const deleteCommentMutation = useMutation({
-    mutationKey: ['delete-comment-mutation'],
-    mutationFn: deleteComment,
-    onMutate: (variables) => {
-      const previousData = storedComments;
-      setComment({ ..._.omit(storedComments, [variables]) });
-      return { previousData };
-    },
-    onError: (error, variables, context) => {
-      setComment(context!.previousData);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comments'] });
-    },
-  });
-
-  const handleDeleteComment = () => {
-    deleteCommentMutation.mutate(comment.id);
-  };
-
   const menuItemStyle = clsx({
     'flex flex-row items-center py-3 px-6 gap-2.5 border-b text-sm hover:bg-primary-50 cursor-pointer rounded-b-9xl':
       true,

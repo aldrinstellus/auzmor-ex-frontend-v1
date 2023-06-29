@@ -20,6 +20,8 @@ import { slideInAndOutTop } from 'utils/react-toastify';
 import { deleteComment } from 'queries/comments';
 import { useCommentStore } from 'stores/commentStore';
 import _ from 'lodash';
+import { useFeedStore } from 'stores/feedStore';
+import { produce } from 'immer';
 
 export interface IDeleteCommentModalProps {
   showModal: boolean;
@@ -33,11 +35,18 @@ const DeleteCommentModal: React.FC<IDeleteCommentModalProps> = ({
   commentId,
 }) => {
   const { comment, setComment } = useCommentStore();
+  const { feed, updateFeed } = useFeedStore();
   const deleteCommentMutation = useMutation({
     mutationKey: ['delete-comment-mutation'],
     mutationFn: deleteComment,
     onMutate: (variables) => {
       const previousData = comment;
+      updateFeed(
+        feed[comment[variables].entityId].id!,
+        produce(feed[comment[variables].entityId], (draft) => {
+          draft.commentsCount = draft.commentsCount - 1;
+        }),
+      );
       setComment({ ..._.omit(comment, [variables]) });
       return { previousData };
     },
@@ -67,7 +76,6 @@ const DeleteCommentModal: React.FC<IDeleteCommentModalProps> = ({
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comments'] });
       toast(
         <SuccessToast
           content="Comment has been deleted"

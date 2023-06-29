@@ -18,6 +18,12 @@ import { useCommentStore } from 'stores/commentStore';
 import _ from 'lodash';
 import { IComment } from 'components/Comments';
 import { twConfig } from 'utils/misc';
+import { produce } from 'immer';
+import { toast } from 'react-toastify';
+import FailureToast from 'components/Toast/variants/FailureToast';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
 
 interface ReplyProps {
   comment: IComment;
@@ -34,15 +40,68 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
     mutationKey: ['delete-comment-mutation'],
     mutationFn: deleteComment,
     onMutate: (variables) => {
-      const previousData = storedComments;
-      setComment({ ..._.omit(storedComments, [variables]) });
+      const previousData = comment;
+      const updatedComment = produce(
+        storedComments[storedComments[variables].entityId],
+        (draft) => {
+          draft.repliesCount = draft.repliesCount - 1;
+        },
+      );
+      setComment({
+        ..._.omit(storedComments, [variables]),
+        [storedComments[variables].entityId]: { ...updatedComment },
+      });
       return { previousData };
     },
-    onError: (error, variables, context) => {
-      setComment(context!.previousData);
+    onError: (error: any) => {
+      toast(
+        <FailureToast
+          content="Error deleting reply"
+          dataTestId="reply-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.red['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+        },
+      );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comments'] });
+      toast(
+        <SuccessToast
+          content="Reply has been deleted"
+          dataTestId="comment-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.primary['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+        },
+      );
     },
   });
 
