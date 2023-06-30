@@ -1,5 +1,5 @@
 import React from 'react';
-import AnnouncementCard from 'components/AnnouncementWidget';
+import AnnouncementCard from 'components/AnnouncementWidget/PostAnnouncementWidget';
 import { Comment } from 'components/Comments/components/Comment';
 import PageLoader from 'components/PageLoader';
 import Post from 'components/Post';

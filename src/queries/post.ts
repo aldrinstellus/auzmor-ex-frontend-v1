@@ -275,7 +275,19 @@ export const deletePost = async (id: string) => {
   return data;
 };
 
-export const fetchAnnouncement = ({ pageParam = null }) => {
+export const fetchAnnouncement = async (postType: string, limit: number) => {
+  const data = await apiService.get(`/posts?feed=${postType}&limit=${limit}`);
+  return data;
+};
+
+export const useAnnouncementsWidget = () =>
+  useQuery({
+    queryKey: ['announcements-widget'],
+    queryFn: () => fetchAnnouncement('ANNOUNCEMENT', 1),
+    staleTime: 15 * 60 * 1000,
+  });
+
+export const fetchInfiniteAnnouncement = ({ pageParam = null }) => {
   if (pageParam === null)
     return apiService.get(`/posts?feed=ANNOUNCEMENT&limit=1`);
   return apiService.get(pageParam);
@@ -284,7 +296,7 @@ export const fetchAnnouncement = ({ pageParam = null }) => {
 export const useInfiniteFetchAnnouncement = (q?: Record<string, any>) => {
   return useInfiniteQuery({
     queryKey: ['announcements-widget', q],
-    queryFn: fetchAnnouncement,
+    queryFn: fetchInfiniteAnnouncement,
     staleTime: 15 * 60 * 1000,
     getNextPageParam: (lastPage: any) => {
       if (lastPage?.data?.result?.data?.length === 0) return null;
