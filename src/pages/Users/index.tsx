@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Button, { Size, Variant } from 'components/Button';
 import UserCard from './components/UserCard';
-import TabSwitch from './components/TabSwitch';
 import { IGetUser, UserRole, useInfiniteUsers } from 'queries/users';
 import { Variant as InputVariant } from 'components/Input';
 import InviteUserModal from './components/InviteUserModal';
-import TablePagination from 'components/TablePagination';
 import Card from 'components/Card';
-import Spinner from 'components/Spinner';
 import Layout, { FieldType } from 'components/Form';
 import { Size as InputSize } from 'components/Input';
 import { useForm } from 'react-hook-form';
@@ -43,11 +40,17 @@ const Users: React.FC<IUsersProps> = () => {
     control,
     watch,
     getValues,
-    reset,
     formState: { errors },
   } = useForm<IForm>({
     mode: 'onChange',
   });
+
+  const roleSelectRef = useRef<any>();
+
+  const customReset = () => {
+    if (roleSelectRef && roleSelectRef.current)
+      roleSelectRef.current.setValue('');
+  };
 
   const { ref, inView } = useInView();
 
@@ -90,6 +93,7 @@ const Users: React.FC<IUsersProps> = () => {
       placeholder: 'Role',
       size: InputSize.Small,
       dataTestId: 'filterby-role',
+      ref: roleSelectRef,
       options: [
         {
           value: UserRole.Admin,
@@ -129,7 +133,7 @@ const Users: React.FC<IUsersProps> = () => {
               variant={Variant.Secondary}
               className="!py-2 grow-0"
               dataTestId="people-view-all-members"
-              onClick={() => reset()}
+              onClick={() => customReset()}
             />
             <Layout fields={roleFields} />
           </div>

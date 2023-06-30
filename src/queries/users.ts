@@ -141,10 +141,9 @@ export const useInfiniteUsers = (q?: Record<string, any>) => {
   });
 };
 
-// existing user
 export const isUserExist = async (q: { email: string }) => {
   if (!!q.email) {
-    const { data } = await apiService.get('/users/exists', q);
+    const { data } = await apiService.get('/users/email/exists', q);
     return data;
   }
 };

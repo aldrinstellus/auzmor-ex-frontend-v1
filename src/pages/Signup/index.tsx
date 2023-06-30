@@ -213,16 +213,17 @@ const Signup: React.FC<ISignupProps> = () => {
 
   useEffect(() => {
     if (
-      isEmailData?.result?.data?.userExists ||
+      isEmailData?.data?.exists ||
       signupMutation.error?.response?.data?.errors[0]?.code ===
         'USER_ALREADY_EXISTS'
-    )
+    ) {
       setError('workEmail', {
         types: {
           userExists:
             'The login email already exists. Please try a different email address.',
         },
       });
+    }
   }, [isEmailLoading, isEmailData, signupMutation.error]);
 
   useEffect(() => {
@@ -230,12 +231,13 @@ const Signup: React.FC<ISignupProps> = () => {
       isDomainData?.data?.exists ||
       signupMutation.error?.response?.data?.errors[0]?.code ===
         'DUPLICATE_DOMAIN'
-    )
+    ) {
       setError('domain', {
         types: {
           domainExists: 'Domain name is already taken',
         },
       });
+    }
   }, [isDomainLoading, isDomainData, signupMutation.error]);
 
   if (

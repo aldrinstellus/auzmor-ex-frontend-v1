@@ -17,6 +17,7 @@ import Footer from './Footer';
 import ImageCropper from 'components/ImageCropper';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
+import PageLoader from 'components/PageLoader';
 
 export interface IEditImageModalProps {
   title: string;
@@ -61,6 +62,34 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
   const cropperRef = useRef<CropperRef>(null);
 
   const [blob, setBlob] = useState<Blob | null>(null);
+
+  const [height, setHeight] = useState<number>(1000);
+  const [width, setWidth] = useState<number>(1000);
+  const [top, setTop] = useState<number>(0);
+  const [left, setLeft] = useState<number>(0);
+  const [isImageLoading, setIsImageLoading] = useState<boolean>(true);
+
+  // To determine the custom visible area in the image cropper
+  useEffect(() => {
+    const img = new Image();
+
+    img.onload = () => {
+      const getWidthFactor = (width: number): number => {
+        // Need better algorithm here
+        let factor = 0.6;
+        if (width > 3000) factor = 0.7;
+        return factor;
+      };
+
+      setHeight(img.height * 0.8);
+      setWidth(img.width * getWidthFactor(img.width));
+      setTop(img.height / 4);
+      setLeft(img.width / 4);
+      setIsImageLoading(false);
+    };
+
+    img.src = image;
+  }, []);
 
   const updateUsersPictureMutation = useMutation({
     mutationFn: updateCurrentUser,
@@ -186,7 +215,15 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
   };
 
   return (
-    <Modal open={openEditImage} closeModal={disableClosed}>
+    <Modal
+      open={openEditImage}
+      closeModal={disableClosed}
+      className={
+        !imageFile?.profileImage
+          ? 'max-w-5xl flex flex-col justify-between'
+          : undefined
+      }
+    >
       <Header
         title={title}
         onClose={disableClosed}
@@ -196,7 +233,11 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
             : 'reposition-close'
         }
       />
-      <div>
+      {isImageLoading ? (
+        <div className="w-full h-full">
+          <PageLoader />
+        </div>
+      ) : (
         <ImageCropper
           src={image}
           cropperRef={cropperRef}
@@ -205,22 +246,26 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
               ? Shape.Circle
               : Shape.Rectangle
           }
+          customHeight={height}
+          customWidth={width}
+          customLeft={left}
+          customTop={top}
         />
-        <Footer
-          cropperRef={cropperRef}
-          userProfileImageRef={userProfileImageRef}
-          userCoverImageRef={userCoverImageRef}
-          imageFile={imageFile}
-          uploadStatus={uploadStatus}
-          isLoading={isLoading}
-          onSubmit={onSubmit}
-          dataTestId={
-            imageFile?.profileImage || onBoardImageFile
-              ? 'profile-pic'
-              : 'reposition'
-          }
-        />
-      </div>
+      )}
+      <Footer
+        cropperRef={cropperRef}
+        userProfileImageRef={userProfileImageRef}
+        userCoverImageRef={userCoverImageRef}
+        imageFile={imageFile}
+        uploadStatus={uploadStatus}
+        isLoading={isLoading}
+        onSubmit={onSubmit}
+        dataTestId={
+          imageFile?.profileImage || onBoardImageFile
+            ? 'profile-pic'
+            : 'reposition'
+        }
+      />
     </Modal>
   );
 };
