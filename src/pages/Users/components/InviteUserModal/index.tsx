@@ -111,7 +111,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
   const inviteUsersMutation = useMutation({
     mutationKey: ['inviteUsersMutation'],
     mutationFn: inviteUsers,
-    onError: (error) => {
+    onError: () => {
       setShowConfirmationModal(true);
     },
     onSuccess: (data: any) => {
@@ -120,7 +120,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
       let invitedCount = 0;
       data.result.data.forEach(
         (eachMember: IPostUsersResponse) =>
-          eachMember.status === UserStatus.Invited && ++invitedCount,
+          eachMember.status !== UserStatus.Failed && ++invitedCount,
       );
 
       const toastString =

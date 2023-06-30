@@ -4,14 +4,13 @@ import {
   FieldArrayWithId,
   FieldErrors,
   UseFieldArrayRemove,
-  UseFormGetValues,
 } from 'react-hook-form';
 import { IEmailValidationErrors, IRoleOption, IUserForm, roleOptions } from '.';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import Layout, { FieldType } from 'components/Form';
 import { Variant as InputVariant } from 'components/Input';
 import Icon from 'components/Icon';
-import { useIsUserExist } from 'queries/users';
+import { useIsUserExistAuthenticated } from 'queries/users';
 import { useDebounce } from 'hooks/useDebounce';
 
 export interface IInviteFormRowProps {
@@ -38,13 +37,13 @@ const InviteFormRow: React.FC<IInviteFormRowProps> = ({
   member,
 }) => {
   const debouncedValue = useDebounce(member.workEmail, 500);
-  const { isLoading, data } = useIsUserExist(debouncedValue);
+  const { isLoading, data } = useIsUserExistAuthenticated(debouncedValue);
 
   useEffect(() => {
     setErrorValidationErrors({
       ...emailValidationErrors,
       [index]: {
-        isError: data ? !!data.result.data.userExists : false,
+        isError: data ? !!data?.exists : false,
         isLoading,
       },
     });

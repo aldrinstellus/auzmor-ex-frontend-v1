@@ -141,9 +141,16 @@ export const useInfiniteUsers = (q?: Record<string, any>) => {
   });
 };
 
-export const isUserExist = async (q: { email: string }) => {
+export const isUserExistOpen = async (q: { email: string }) => {
   if (!!q.email) {
     const { data } = await apiService.get('/users/email/exists', q);
+    return data;
+  }
+};
+
+export const isUserExistAuthenticated = async (q: { email: string }) => {
+  if (!!q.email) {
+    const { data } = await apiService.get('/users/exists', q);
     return data;
   }
 };
@@ -260,10 +267,18 @@ export const useResendInvitation = () => {
   });
 };
 
-export const useIsUserExist = (email = '') => {
+export const useIsUserExistOpen = (email = '') => {
   return useQuery({
-    queryKey: ['user-exist', email],
-    queryFn: () => isUserExist({ email }),
+    queryKey: ['user-exist-open', email],
+    queryFn: () => isUserExistOpen({ email }),
+    staleTime: 1000,
+  });
+};
+
+export const useIsUserExistAuthenticated = (email = '') => {
+  return useQuery({
+    queryKey: ['user-exist-auth', email],
+    queryFn: () => isUserExistAuthenticated({ email }),
     staleTime: 1000,
   });
 };

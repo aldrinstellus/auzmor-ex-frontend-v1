@@ -11,7 +11,7 @@ import { useMutation } from '@tanstack/react-query';
 import { redirectWithToken } from 'utils/misc';
 import { signup } from 'queries/account';
 import { useDebounce } from 'hooks/useDebounce';
-import { useDomainExists, useIsUserExist } from 'queries/users';
+import { useDomainExists, useIsUserExistOpen } from 'queries/users';
 import 'utils/custom-yup-validators/email/validateEmail';
 import { Navigate, useLocation } from 'react-router-dom';
 
@@ -126,7 +126,7 @@ const Signup: React.FC<ISignupProps> = () => {
       placeholder: 'Enter your email address',
       name: 'workEmail',
       label: 'Work Email*',
-      error: errors.workEmail?.message || errors.workEmail?.types?.userExists,
+      error: errors.workEmail?.message || errors.workEmail?.types?.exists,
       dataTestId: 'sign-up-email',
       errorDataTestId: 'signup-error-msg',
       control,
@@ -205,7 +205,7 @@ const Signup: React.FC<ISignupProps> = () => {
 
   const debouncedEmailValue = useDebounce(getValues().workEmail, 500);
   const { isLoading: isEmailLoading, data: isEmailData } =
-    useIsUserExist(debouncedEmailValue);
+    useIsUserExistOpen(debouncedEmailValue);
 
   const debouncedDomainValue = useDebounce(getValues().domain, 500);
   const { isLoading: isDomainLoading, data: isDomainData } =
@@ -219,7 +219,7 @@ const Signup: React.FC<ISignupProps> = () => {
     ) {
       setError('workEmail', {
         types: {
-          userExists:
+          exists:
             'The login email already exists. Please try a different email address.',
         },
       });
