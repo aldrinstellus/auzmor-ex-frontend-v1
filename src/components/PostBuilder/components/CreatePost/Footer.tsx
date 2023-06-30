@@ -13,6 +13,7 @@ import { DeltaStatic } from 'quill';
 import React, { useContext, useMemo } from 'react';
 import ReactQuill from 'react-quill';
 import { convert } from 'html-to-text';
+import { operatorXOR } from 'utils/misc';
 
 export interface IFooterProps {
   isLoading: boolean;
@@ -36,6 +37,7 @@ const Footer: React.FC<IFooterProps> = ({
     mediaValidationErrors,
     isPreviewRemoved,
     previewUrl,
+    media,
   } = useContext(CreatePostContext);
 
   const updateContext = () => {
@@ -52,9 +54,7 @@ const Footer: React.FC<IFooterProps> = ({
     });
   };
 
-  const isMediaDisabled =
-    (isPreviewRemoved && !!!previewUrl) || (!isPreviewRemoved && !!previewUrl);
-
+  const isMediaDisabled = operatorXOR(isPreviewRemoved, !!previewUrl);
   const postMenuItems = useMemo(
     () => [
       {

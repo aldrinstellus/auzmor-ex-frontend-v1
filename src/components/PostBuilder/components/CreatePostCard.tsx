@@ -93,8 +93,13 @@ const CreatePostCard: React.FC<ICreatePostCardProps> = ({ setShowModal }) => {
 
   const tabStyle = (hasDivider = false) =>
     clsx(
-      { 'flex justify-center items-center mx-2 px-4': true },
-      { 'border-r border-neutral-100': hasDivider },
+      { 'flex justify-center items-center': true },
+      {
+        'border-r border-neutral-100': hasDivider && window.innerWidth >= 1480,
+      },
+      {
+        'mx-2 px-4': window.innerWidth >= 1480,
+      },
     );
 
   return (
@@ -117,7 +122,7 @@ const CreatePostCard: React.FC<ICreatePostCardProps> = ({ setShowModal }) => {
           data-testid="activityfeed-whatsonurmind"
         />
       </div>
-      <div className="flex justify-between border-t border-neutral-100 mx-8.5">
+      <div className="flex flex-wrap justify-between border-t border-neutral-100 mx-8.5">
         {postTypeMapIcons.map((type) => (
           <div key={type.id} className={tabStyle(type.divider)}>
             <div className="mt-3 mb-3 flex justify-center items-center py-3 rounded-7xl border-1 border-neutral-200 bg-neutral-200 w-8 h-8">

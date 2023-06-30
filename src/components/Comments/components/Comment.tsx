@@ -5,7 +5,7 @@ import IconButton, {
   Size,
 } from 'components/IconButton';
 import Avatar from 'components/Avatar';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 import Popover from 'components/Popover';
 import clsx from 'clsx';
 import { humanizeTime } from 'utils/time';
@@ -18,31 +18,33 @@ import { Link } from 'react-router-dom';
 import RenderQuillContent from 'components/RenderQuillContent';
 import ReactionModal from 'components/Post/components/ReactionModal';
 import useModal from 'hooks/useModal';
-import DeleteCommentModal from './DeleteCommentModal';
 import { twConfig } from 'utils/misc';
 import { IComment } from '..';
 import { CommentsRTE, PostCommentMode } from './CommentsRTE';
+import ConfirmationBox from 'components/ConfirmationBox';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import FailureToast from 'components/Toast/variants/FailureToast';
+import { toast } from 'react-toastify';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
+import { deleteComment } from 'queries/comments';
 
 interface CommentProps {
   comment: IComment;
-  className?: string;
   customNode?: ReactNode;
-  entityId?: string;
 }
 
 export const Comment: React.FC<CommentProps> = ({
   comment,
-  className,
   customNode = null,
-  entityId,
 }) => {
   const queryClient = useQueryClient();
-
   const [showReactionModal, setShowReactionModal] = useState(false);
-  const [deleteCommentModal, openDeleteCommentModal, closedDeleteCommentModal] =
-    useModal(false);
+  const [confirm, showConfirm, closeConfirm] = useModal();
   const [editComment, setEditComment] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
+
+  const closePopOver = useRef<HTMLButtonElement>(null);
 
   const previousShowReply = useRef<boolean>(false);
 
@@ -67,9 +69,66 @@ export const Comment: React.FC<CommentProps> = ({
     }
   }, [showReplies]);
 
+  const deleteReactionMutation = useMutation({
+    mutationKey: ['delete-comment-mutation'],
+    mutationFn: deleteComment,
+    onError: (error: any) => {
+      console.log(error);
+      toast(
+        <FailureToast
+          content="Error deleting comment"
+          dataTestId="comment-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.red['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+        },
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['comments'] });
+      toast(
+        <SuccessToast
+          content="Comment has been deleted"
+          dataTestId="comment-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.primary['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+        },
+      );
+    },
+  });
+
   return (
     <div key={comment.id}>
-      <div className={`flex flex-col mt-4 ${className}`}>
+      <div className={`flex flex-col mt-4`}>
         <div className="bg-neutral-100 p-3 rounded-9xl">
           <div className="flex justify-between p-0">
             <div className="flex">
@@ -123,42 +182,50 @@ export const Comment: React.FC<CommentProps> = ({
                         dataTestId="comment-ellipsis"
                       />
                     }
+                    ref={closePopOver}
                     className="left-0 rounded-9xl"
                   >
-                    <div className="w-48">
-                      <div
-                        className={`${menuItemStyle} rounded-t-9xl`}
-                        onClick={() => {
-                          setEditComment(true);
-                        }}
-                        data-testid="post-ellipsis-edit-comment"
-                      >
-                        <Icon
-                          name={'edit'}
-                          size={16}
-                          fill={twConfig.theme.colors.primary['500']}
-                          stroke={twConfig.theme.colors.neutral['200']}
-                        />
-                        <div className="text-sm font-medium text-neutral-900">
-                          Edit comment
+                    <div>
+                      {!editComment && (
+                        <div className="w-48">
+                          <div
+                            className={`${menuItemStyle} rounded-t-9xl`}
+                            onClick={() => {
+                              setEditComment(true);
+                              closePopOver?.current?.click();
+                            }}
+                            data-testid="post-ellipsis-edit-comment"
+                          >
+                            <Icon
+                              name={'edit'}
+                              size={16}
+                              fill={twConfig.theme.colors.primary['500']}
+                              stroke={twConfig.theme.colors.neutral['200']}
+                            />
+                            <div className="text-sm font-medium text-neutral-900">
+                              Edit comment
+                            </div>
+                          </div>
+                          <div
+                            className={`${menuItemStyle} rounded-b-9xl`}
+                            onClick={() => {
+                              showConfirm();
+                            }}
+                          >
+                            <Icon
+                              name={'delete'}
+                              size={16}
+                              fill={twConfig.theme.colors.primary['500']}
+                              stroke={twConfig.theme.colors.neutral['200']}
+                            />
+                            <div
+                              className={`text-sm font-medium text-neutral-900 `}
+                            >
+                              Delete comment
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <div
-                        className={`${menuItemStyle} rounded-b-9xl`}
-                        onClick={() => {
-                          openDeleteCommentModal();
-                        }}
-                      >
-                        <Icon
-                          name={'delete'}
-                          size={16}
-                          fill={twConfig.theme.colors.primary['500']}
-                          stroke={twConfig.theme.colors.neutral['200']}
-                        />
-                        <div className="text-sm font-medium text-neutral-900">
-                          Delete comment
-                        </div>
-                      </div>
+                      )}
                     </div>
                   </Popover>
                 )}
@@ -167,14 +234,18 @@ export const Comment: React.FC<CommentProps> = ({
           </div>
           {/* Comment Edit at Post level type Post */}
           {editComment ? (
-            <CommentsRTE
-              entityId={comment?.id}
-              entityType="post"
-              mode={PostCommentMode.Edit}
-              setEditComment={setEditComment}
-            />
+            <div className="mt-4">
+              <CommentsRTE
+                entityId={comment?.id}
+                entityType="post"
+                mode={PostCommentMode.Edit}
+                setEditComment={setEditComment}
+                commentData={comment}
+                className="bg-white rounded-19xl"
+              />
+            </div>
           ) : (
-            <div className="text-neutral-900  font-normal text-sm mt-4">
+            <div className="text-neutral-900 font-normal text-sm mt-4">
               <RenderQuillContent data={comment} />
             </div>
           )}
@@ -258,13 +329,30 @@ export const Comment: React.FC<CommentProps> = ({
           entityType="comment"
         />
       )}
-      {deleteCommentModal && (
-        <DeleteCommentModal
-          showModal={deleteCommentModal}
-          closedModal={closedDeleteCommentModal}
-          commentId={comment?.id}
-        />
-      )}
+      <ConfirmationBox
+        open={confirm}
+        onClose={closeConfirm}
+        title="Delete"
+        description={
+          <span>
+            Are you sure you want to delete this comment?
+            <br /> This cannot be undone.
+          </span>
+        }
+        success={{
+          label: 'Delete',
+          className: 'bg-red-500 text-white ',
+          onSubmit: () => {
+            deleteReactionMutation.mutate(comment?.id || '');
+          },
+        }}
+        discard={{
+          label: 'Cancel',
+          className: 'text-neutral-900 bg-white ',
+          onCancel: closeConfirm,
+        }}
+        isLoading={deleteReactionMutation?.isLoading}
+      />
     </div>
   );
 };

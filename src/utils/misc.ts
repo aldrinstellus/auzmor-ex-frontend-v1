@@ -173,3 +173,10 @@ export const getNouns = (label: string, count: number) => {
     return label + 's';
   }
 };
+
+export const operatorXOR = (...args: boolean[]): boolean => {
+  const value = args.reduce(
+    (accumulator, currentValue) => accumulator !== currentValue,
+  );
+  return value;
+};
