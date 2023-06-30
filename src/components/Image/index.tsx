@@ -14,7 +14,7 @@ const Image: React.FC<ImageProps> = ({
     src: image.original,
     key: image.name,
     alt: image.name,
-    className: 'w-full h-full object-cover',
+    className: 'w-full h-full object-contain',
   };
 
   return (
