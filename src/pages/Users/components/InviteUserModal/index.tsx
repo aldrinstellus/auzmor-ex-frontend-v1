@@ -1,7 +1,7 @@
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import AddUsers from './AddUsers';
 import * as yup from 'yup';
@@ -177,6 +177,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
     handleSubmit,
     watch,
     formState: { errors, isValid },
+    reset,
   } = useForm<IUserForm>({
     resolver: yupResolver(schema),
     mode: 'onChange',
@@ -184,6 +185,10 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
       members: [{ fullName: '', workEmail: '', role: roleOptions[0] }],
     },
   });
+
+  useEffect(() => {
+    if (!showModal) reset();
+  }, [showModal]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -203,7 +208,6 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
     setInvitedUsersResponse([]);
     setShowInvitedMembers(false);
     remove();
-    append({ fullName: '', workEmail: '', role: roleOptions[0] });
   };
 
   return (
