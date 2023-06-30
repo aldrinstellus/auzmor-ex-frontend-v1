@@ -113,19 +113,12 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
     },
   });
 
-  const handleDeleteReply = () => {
-    deleteReplyMutation.mutate(comment.id);
-  };
-
   const menuItemStyle = clsx({
     ' flex flex-row items-center py-3 px-6 gap-2.5 border-b text-sm hover:bg-primary-50 cursor-pointer ':
       true,
   });
 
-  const reactionCount: IReactionsCount = comment?.reactionsCount || {};
-
-  const keys = Object.keys(reactionCount).length;
-  const totalCount = Object.values(reactionCount).reduce(
+  const totalCount = Object.values(comment?.reactionsCount || {}).reduce(
     (total, count) => total + count,
     0,
   );
@@ -228,9 +221,9 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
         </div>
         <div className="flex flex-row justify-between mt-3 cursor-pointer">
           <div className={`flex flex-row`}>
-            {keys > 0 && (
+            {totalCount > 0 && (
               <div className="mr-2 flex flex-row">
-                {Object.keys(reactionCount)
+                {Object.keys(comment?.reactionsCount || {})
                   .slice(0, 3)
                   .map((key, i) => (
                     <div className={` ${i > 0 ? '-ml-2 z-1' : ''}  `} key={key}>
