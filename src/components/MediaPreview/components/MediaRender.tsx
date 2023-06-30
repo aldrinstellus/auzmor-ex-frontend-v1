@@ -3,6 +3,7 @@ import React from 'react';
 import { Mode } from '..';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
+import BlurImg from 'components/Image/components/BlurImg';
 
 export interface IMediaRenderProps {
   data: IMedia;
@@ -21,6 +22,15 @@ const MediaRender: React.FC<IMediaRenderProps> = ({
   onClick,
   coverImageUrl,
 }) => {
+  const blurImgProps = {
+    src: data?.transcodedData?.image?.m || data.original,
+    className: 'object-cover w-full h-full',
+    key: data?.name,
+    alt: data?.name,
+    blurhash: data?.blurhash,
+    dataTestid: 'feed-createpost-uploadedmedia',
+  };
+
   return (
     <div
       className={`rounded-9xl overflow-hidden w-full h-full bg-no-repeat bg-cover relative ${localClassName} ${
@@ -29,12 +39,7 @@ const MediaRender: React.FC<IMediaRenderProps> = ({
       onClick={onClick}
     >
       {data.type === 'IMAGE' ? (
-        <img
-          src={data?.transcodedData?.image?.m || data.original}
-          className="object-cover w-full h-full"
-          alt={data?.name}
-          data-testid="feed-createpost-uploadedmedia"
-        />
+        <BlurImg {...blurImgProps} />
       ) : (
         <video
           className="object-cover w-full h-full"

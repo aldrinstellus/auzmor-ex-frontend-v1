@@ -457,12 +457,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
           closeModal={closeModal}
           showModalCloseBtn
         >
-          <Carousel
-            media={media}
-            index={mediaIndex}
-            open={open}
-            closeModal={closeModalAndResetMediaIndex}
-          />
+          <Carousel media={media} index={mediaIndex} />
         </Modal>
       )}
     </div>

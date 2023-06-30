@@ -6,7 +6,6 @@ import React, {
 } from 'react';
 
 import Image from 'components/Image';
-import Video from 'components/Video';
 
 import clsx from 'clsx';
 import Icon from 'components/Icon';
@@ -19,19 +18,10 @@ import FailureToast from 'components/Toast/variants/FailureToast';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 
-export interface hashSize {
-  width: number;
-  height: number;
-}
-
 export type CarouselProps = {
   media: IMedia[];
   onClose?: MouseEventHandler<Element>;
-  hashSize?: hashSize;
   index: number;
-  open: boolean;
-  closeModal: any;
-  openModal?: any;
 };
 
 export const fetchFile = (url: string) => {
@@ -85,14 +75,7 @@ export const fetchFile = (url: string) => {
     });
 };
 
-const Carousel: React.FC<CarouselProps> = ({
-  media,
-  hashSize = { width: 0, height: 0 },
-  index,
-  open,
-  closeModal,
-  openModal,
-}): ReactElement => {
+const Carousel: React.FC<CarouselProps> = ({ media, index }): ReactElement => {
   const [currentIndex, prevSlide, nextSlide] = useCarousel(
     index,
     Object.keys(media).length,
@@ -142,7 +125,7 @@ const Carousel: React.FC<CarouselProps> = ({
       <div className={containerStyles}>
         <div className={mediaDivStyles}>
           {media[currentIndex].type === 'IMAGE' ? (
-            <Image image={media[currentIndex]} hashSize={hashSize} />
+            <Image image={media[currentIndex]} />
           ) : (
             <div className="w-full h-full flex items-center ">
               <video

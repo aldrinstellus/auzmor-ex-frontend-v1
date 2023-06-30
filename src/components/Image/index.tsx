@@ -1,56 +1,25 @@
 import React, { useState } from 'react';
-// import { Blurhash } from 'react-blurhash';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { IMedia } from 'contexts/CreatePostContext';
-import Loader from './components/Loader';
-
-export interface hashSize {
-  width: number;
-  height: number;
-}
+import BlurImg from './components/BlurImg';
 
 export type ImageProps = {
   image: IMedia;
-  hashSize?: hashSize;
 };
 
 const Image: React.FC<ImageProps> = ({
   image = { blurhash: '', name: '', original: '', type: '' },
-  hashSize,
 }) => {
-  const [isLoaded, setLoaded] = useState(false);
-  const [isLoadStarted, setLoadStarted] = useState(false);
-
-  const handleLoad = () => {
-    setTimeout(() => {
-      setLoaded(true);
-      console.log('Delayed for 10 second.');
-    }, 10000);
-  };
-
-  const handleLoadStarted = () => {
-    console.log('Started: ');
-    setLoadStarted(true);
-  };
-
-  const handleLoadEnd = () => {
-    setLoaded(true);
-    setLoadStarted(false);
+  const imgProps = {
+    blurhash: image.blurhash,
+    src: image.original,
+    key: image.name,
+    alt: image.name,
+    className: 'w-full h-full object-cover',
   };
 
   return (
     <div className="w-full h-full relative">
-      <LazyLoadImage
-        className="w-full h-full object-cover"
-        key={image.name}
-        alt={image.name}
-        src={image.original}
-        // @ts-ignore
-        onLoad={handleLoad}
-        beforeLoad={handleLoadStarted}
-        afterLoad={handleLoadEnd}
-        placeholder={<Loader />}
-      />
+      <BlurImg {...imgProps} />
     </div>
   );
 };
