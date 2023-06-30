@@ -98,6 +98,7 @@ import MuteIcon from '../components/Mute';
 import CyclicArrow from '../components/CyclicArrow';
 import EditReceipt from '../components/EditReceipt';
 import DeleteCrossIcon from '../components/DeleteCross';
+import CommentIcon from '../components/Comment';
 
 export const icon = {
   add: Add,
@@ -152,6 +153,7 @@ export const icon = {
   home: HomeIcon,
   iconLinear: IconLinear,
   image: ImageIcon,
+  comment: CommentIcon,
   import: ImportIcon,
   infoCircle: InfoCircleIcon,
   insightful: Insightful,

@@ -1,6 +1,5 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import Card from 'components/Card';
-import Comments from 'images/comments.svg';
 import Actor from 'components/Actor';
 import { VIEW_POST } from 'components/Actor/constant';
 import CommentCard from 'components/Comments/index';
@@ -151,7 +150,6 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
                 queryKey="feed"
                 dataTestIdPrefix="post-reaction"
               />
-
               <button
                 className="flex items-center ml-7"
                 onClick={() => {
@@ -163,7 +161,8 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
                 }}
                 data-testid="feed-post-comment"
               >
-                <img src={Comments} height={13.33} width={13.33} />
+                {/* comments..... */}
+                <Icon name="comment" size={16} />
                 <div className="text-xs font-normal text-neutral-500 ml-1.5">
                   Comment
                 </div>

@@ -210,7 +210,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
         <RichTextEditor
           toolbarId={`toolbar-${entityId}`}
           defaultValue={commentData?.content?.editor}
-          placeholder="Leave a Comment..."
+          placeholder="Leave a comment..."
           className="max-h-18 w-[70%] max-w-[70%]"
           ref={quillRef}
           dataTestId="postcomment-textbox"

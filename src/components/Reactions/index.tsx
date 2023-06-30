@@ -326,7 +326,7 @@ const Likes: React.FC<LikesProps> = ({
       ) : null}
 
       <div
-        className="flex flex-row items-center"
+        className="flex flex-row items-center justify-center"
         onClick={handleDeleteReaction}
         data-testid={'liketo-commentcta'}
       >

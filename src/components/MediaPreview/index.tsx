@@ -166,7 +166,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
     } else if (media.length === 4) {
       return (
         <div className="flex flex-col w-full h-64">
-          <div className="flex mb-2 !h-1/2">
+          <div className="flex !h-1/2 pb-2">
             <MediaRender
               data={media[0]}
               localClassName="!w-1/2 !mr-2"
@@ -198,7 +198,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
               }
             />
           </div>
-          <div className="flex mt-2 !h-1/2">
+          <div className="flex !h-1/2 pb-2">
             <MediaRender
               data={media[2]}
               localClassName="!w-1/2 mr-2"

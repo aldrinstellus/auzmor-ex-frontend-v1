@@ -12,6 +12,7 @@ import { PRIMARY_COLOR } from 'utils/constants';
 import LoadMore from './components/LoadMore';
 import CommentSkeleton from './components/CommentSkeleton';
 import { CommentsRTE } from './components/CommentsRTE';
+import Divider from 'components/Divider';
 
 interface CommentsProps {
   entityId: string;
@@ -77,13 +78,12 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
         </div>
         <CommentsRTE className="w-full" entityId={entityId} entityType="post" />
       </div>
-      <div className="border-b border-neutral-200 my-4"></div>
-
+      <Divider className="mt-4" />
       {isLoading ? (
         <CommentSkeleton />
       ) : (
         commentIds && (
-          <div>
+          <div className="pb-4">
             {commentIds
               ?.filter(({ id }) => !!comment[id])
               .map(({ id }, i: any) => (

@@ -31,6 +31,7 @@ import { deleteComment } from 'queries/comments';
 import { useFeedStore } from 'stores/feedStore';
 import { useCommentStore } from 'stores/commentStore';
 import { produce } from 'immer';
+import Divider, { Variant } from 'components/Divider';
 
 interface CommentProps {
   comment: IComment;
@@ -139,200 +140,216 @@ export const Comment: React.FC<CommentProps> = ({
   });
 
   return (
-    <div key={comment.id}>
-      <div className={`flex flex-col mt-4`}>
-        <div className="bg-neutral-100 p-3 rounded-9xl">
-          <div className="flex justify-between p-0">
-            <div className="flex">
-              <div className="mr-4">
-                <Link
-                  to={
-                    comment?.createdBy?.userId &&
-                    comment.createdBy.userId !== user?.id
-                      ? '/users/' + comment.createdBy.userId
-                      : '/profile'
-                  }
-                >
-                  <Avatar
-                    name={comment?.createdBy?.fullName}
-                    size={32}
-                    image={comment?.createdBy?.profileImage?.original}
-                  />
-                </Link>
-              </div>
-              <div className="flex flex-col items-start p-0 w-64">
-                <Link
-                  to={
-                    comment?.createdBy?.userId &&
-                    comment.createdBy.userId !== user?.id
-                      ? '/users/' + comment.createdBy.userId
-                      : '/profile'
-                  }
-                >
-                  <div className="text-neutral-900 font-bold text-sm">
-                    {comment?.createdBy?.fullName}
-                  </div>
-                </Link>
-                <div className="font-normal text-neutral-500 text-sm ">
-                  {comment?.createdBy?.designation}
+    <div className="flex flex-col space-y-4 mt-4">
+      {/* Comment */}
+      <div className="bg-neutral-100 p-3 rounded-9xl">
+        <div className="flex justify-between p-0">
+          <div className="flex">
+            <div className="mr-4">
+              <Link
+                to={
+                  comment?.createdBy?.userId &&
+                  comment.createdBy.userId !== user?.id
+                    ? '/users/' + comment.createdBy.userId
+                    : '/profile'
+                }
+              >
+                <Avatar
+                  name={comment?.createdBy?.fullName}
+                  size={32}
+                  image={comment?.createdBy?.profileImage?.original}
+                />
+              </Link>
+            </div>
+            <div className="flex flex-col items-start p-0 w-64">
+              <Link
+                to={
+                  comment?.createdBy?.userId &&
+                  comment.createdBy.userId !== user?.id
+                    ? '/users/' + comment.createdBy.userId
+                    : '/profile'
+                }
+              >
+                <div className="text-neutral-900 font-bold text-sm">
+                  {comment?.createdBy?.fullName}
                 </div>
+              </Link>
+              <div className="font-normal text-neutral-500 text-sm ">
+                {comment?.createdBy?.designation}
               </div>
             </div>
-            <div className="flex">
-              <div className="text-neutral-500 font-normal text-xs mt-1">
-                {humanizeTime(comment.updatedAt)}
-              </div>
-              <div className="ml-4">
-                {user?.id === comment?.createdBy?.userId && (
-                  <Popover
-                    triggerNode={
-                      <IconButton
-                        icon={'more'}
-                        className="!p-0 !bg-inherit"
-                        variant={IconVariant.Primary}
-                        size={Size.Large}
-                        dataTestId="comment-ellipsis"
-                      />
-                    }
-                    ref={closePopOver}
-                    className="left-0 rounded-9xl"
-                  >
-                    <div>
-                      {!editComment && (
-                        <div className="w-48">
-                          <div
-                            className={`${menuItemStyle} rounded-t-9xl`}
-                            onClick={() => {
-                              setEditComment(true);
-                              closePopOver?.current?.click();
-                            }}
-                            data-testid="post-ellipsis-edit-comment"
-                          >
-                            <Icon
-                              name={'edit'}
-                              size={16}
-                              fill={twConfig.theme.colors.primary['500']}
-                              stroke={twConfig.theme.colors.neutral['200']}
-                            />
-                            <div className="text-sm font-medium text-neutral-900">
-                              Edit comment
-                            </div>
-                          </div>
-                          <div
-                            className={`${menuItemStyle} rounded-b-9xl`}
-                            onClick={() => {
-                              showConfirm();
-                            }}
-                          >
-                            <Icon
-                              name={'delete'}
-                              size={16}
-                              fill={twConfig.theme.colors.primary['500']}
-                              stroke={twConfig.theme.colors.neutral['200']}
-                            />
-                            <div
-                              className={`text-sm font-medium text-neutral-900 `}
-                            >
-                              Delete comment
-                            </div>
+          </div>
+          <div className="flex">
+            <div className="text-neutral-500 font-normal text-xs mt-1">
+              {humanizeTime(comment.updatedAt)}
+            </div>
+            <div className="ml-4">
+              {user?.id === comment?.createdBy?.userId && (
+                <Popover
+                  triggerNode={
+                    <IconButton
+                      icon={'more'}
+                      className="!p-0 !bg-inherit"
+                      variant={IconVariant.Primary}
+                      size={Size.Large}
+                      dataTestId="comment-ellipsis"
+                    />
+                  }
+                  ref={closePopOver}
+                  className="left-0 rounded-9xl"
+                >
+                  <div>
+                    {!editComment && (
+                      <div className="w-48">
+                        <div
+                          className={`${menuItemStyle} rounded-t-9xl`}
+                          onClick={() => {
+                            setEditComment(true);
+                            closePopOver?.current?.click();
+                          }}
+                          data-testid="post-ellipsis-edit-comment"
+                        >
+                          <Icon
+                            name={'edit'}
+                            size={16}
+                            fill={twConfig.theme.colors.primary['500']}
+                            stroke={twConfig.theme.colors.neutral['200']}
+                          />
+                          <div className="text-sm font-medium text-neutral-900">
+                            Edit comment
                           </div>
                         </div>
-                      )}
-                    </div>
-                  </Popover>
-                )}
-              </div>
+                        <div
+                          className={`${menuItemStyle} rounded-b-9xl`}
+                          onClick={() => {
+                            showConfirm();
+                          }}
+                        >
+                          <Icon
+                            name={'delete'}
+                            size={16}
+                            fill={twConfig.theme.colors.primary['500']}
+                            stroke={twConfig.theme.colors.neutral['200']}
+                          />
+                          <div
+                            className={`text-sm font-medium text-neutral-900 `}
+                          >
+                            Delete comment
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </Popover>
+              )}
             </div>
           </div>
-          {/* Comment Edit at Post level type Post */}
-          {editComment ? (
-            <div className="mt-4">
-              <CommentsRTE
-                entityId={comment?.id}
-                entityType="post"
-                mode={PostCommentMode.Edit}
-                setEditComment={setEditComment}
-                commentData={comment}
-                className="bg-white rounded-19xl"
-              />
-            </div>
-          ) : (
-            <div className="text-neutral-900 font-normal text-sm mt-4">
-              <RenderQuillContent data={comment} />
-            </div>
-          )}
         </div>
-        <div className="flex flex-row justify-between mt-4 cursor-pointer">
-          <div className={`flex flex-row`}>
-            {totalCount > 0 && (
-              <div className="mr-2 flex flex-row">
-                {Object.keys(comment.reactionsCount!)
-                  .slice(0, 3)
-                  .map((key, i) => (
-                    <div className={` ${i > 0 ? '-ml-2 z-1' : ''}  `} key={key}>
-                      <Icon
-                        name={key}
-                        size={12}
-                        className={`p-0.5 rounded-17xl cursor-pointer border-white border border-solid ${iconsStyle(
-                          key,
-                        )}`}
-                      />
-                    </div>
-                  ))}
-              </div>
-            )}
 
-            <div
-              className={`flex text-sm font-normal text-neutral-500`}
-              data-testid="comment-reaction-count"
-              onClick={() => setShowReactionModal(true)}
-            >
-              {totalCount} reacted
-            </div>
-          </div>
-        </div>
-        <div className="flex justify-between mt-4 pb-3 cursor-pointer">
-          <div className="flex items-center">
-            <Likes
-              reaction={comment?.myReaction?.reaction || ''}
-              entityId={comment.id}
-              entityType="comment"
-              reactionId={comment?.myReaction?.id || ''}
-              queryKey="comments"
-              dataTestIdPrefix="comment-reaction"
+        {/* Comment Edit at Post level type Post */}
+        {editComment ? (
+          <div className="mt-4">
+            <CommentsRTE
+              entityId={comment?.id}
+              entityType="post"
+              mode={PostCommentMode.Edit}
+              setEditComment={setEditComment}
+              commentData={comment}
+              className="bg-white rounded-19xl"
             />
-            <div
-              className="flex items-center ml-7"
-              onClick={() => {
-                setShowReplies(!showReplies);
-              }}
-              data-testid="replyto-commentcta"
-            >
-              <IconButton
-                icon={'reply'}
-                className="!p-0 !bg-inherit"
-                variant={IconVariant.Primary}
-              />
-              <div
-                className="text-xs font-normal text-neutral-500 ml-1.5"
-                data-testid="comment-replies-count"
-              >
-                {comment?.repliesCount}
-                {comment?.repliesCount > 0 ? ' Replies' : ' Reply'}
-              </div>
-            </div>
           </div>
-          <div></div>
-        </div>
-        {showReplies ? (
-          <Reply
-            entityId={comment.id}
-            className={`${comment.repliesCount > 0 ? '' : 'mb-5'}`}
-          />
         ) : (
-          !previousShowReply.current && customNode
+          <div className="text-neutral-900 font-normal text-sm mt-4">
+            <RenderQuillContent data={comment} />
+          </div>
         )}
       </div>
+
+      {/* Replies */}
+      <div className="flex items-center">
+        <div className="flex items-center space-x-2">
+          <Likes
+            reaction={comment?.myReaction?.reaction || ''}
+            entityId={comment.id}
+            entityType="comment"
+            reactionId={comment?.myReaction?.id || ''}
+            queryKey="comments"
+            dataTestIdPrefix="comment-reaction"
+          />
+          {/* ellipse */}
+          <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
+          {/* Show Reaction */}
+          <div className="flex justify-between cursor-pointer">
+            <div className="flex space-x-1 items-center mr-2">
+              {totalCount > 0 && (
+                <div className="flex ">
+                  {Object.keys(comment.reactionsCount)
+                    .slice(0, 3)
+                    .map((react, i) => (
+                      <div
+                        className={` ${i > 0 ? '-ml-2 z-1' : ''}  `}
+                        key={react}
+                      >
+                        <Icon
+                          name={react}
+                          size={12}
+                          className={`p-0.5 rounded-17xl cursor-pointer border-white border border-solid ${iconsStyle(
+                            react,
+                          )}`}
+                        />
+                      </div>
+                    ))}
+                </div>
+              )}
+              <div
+                className={`flex text-sm font-normal text-neutral-500`}
+                data-testid="comment-reaction-count"
+                onClick={() => setShowReactionModal(true)}
+              >
+                {totalCount}
+              </div>
+            </div>
+          </div>
+          <Divider variant={Variant.Vertical} />
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <div
+            className="flex space-x-1 cursor-pointer"
+            onClick={() => {
+              setShowReplies(!showReplies);
+            }}
+          >
+            <Icon name="comment" size={16} />
+            <div
+              className="text-xs font-normal text-neutral-500 ml-1.5"
+              data-testid="comment-replies-count"
+            >
+              Reply
+            </div>
+          </div>
+          {/* ellipse */}
+          <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
+
+          <div className="flex items-center" data-testid="replyto-commentcta">
+            <div
+              className="text-xs font-normal text-neutral-500"
+              data-testid="comment-replies-count"
+            >
+              {comment?.repliesCount}
+              {comment?.repliesCount > 0 ? ' Replies' : ' Reply'}
+            </div>
+          </div>
+        </div>
+      </div>
+      {showReplies ? (
+        <Reply
+          entityId={comment.id}
+          className={`${comment.repliesCount > 0 ? '' : 'mb-5'}`}
+        />
+      ) : (
+        !previousShowReply.current && customNode
+      )}
       {showReactionModal && (
         <ReactionModal
           closeModal={() => setShowReactionModal(false)}

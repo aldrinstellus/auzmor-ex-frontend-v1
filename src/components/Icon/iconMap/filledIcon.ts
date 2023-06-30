@@ -60,6 +60,7 @@ import SvgFullScreenFilled from '../components/FullScreen/FullScreenFilled';
 import SvgCyclicArrowFilled from '../components/CyclicArrow/CyclicArrowFilled';
 import SvgEditReceiptFilled from '../components/EditReceipt/EditReceiptFilled';
 import SvgDeleteCrossFilled from '../components/DeleteCross/DeleteCrossFilled';
+import SvgCommentFilled from '../components/Comment/CommentFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -96,6 +97,7 @@ export const filledIcon = {
   hashtagFilled: SvgOrangeHashtagFilled,
   iconLinearFilled: SvgIconLinearFilled,
   imageFilled: SvgImageFilled,
+  commentFilled: SvgCommentFilled,
   importFilled: SvgImportFilled,
   infoCircleFilled: SvgInfoCircleFilled,
   insightfulFilled: SvgInsightfulFilled,

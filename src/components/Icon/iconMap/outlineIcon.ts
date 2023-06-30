@@ -68,6 +68,7 @@ import SvgFullScreenOutline from '../components/FullScreen/FullScreenOutline';
 import SvgCyclicArrowOutline from '../components/CyclicArrow/CyclicArrowOutline';
 import SvgEditReceiptOutline from '../components/EditReceipt/EditReceiptOutline';
 import SvgDeleteCrossOutline from '../components/DeleteCross/DeleteCrossOutline';
+import SvgCommentOutline from '../components/Comment/CommentOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -105,6 +106,7 @@ export const outlineIcon = {
   gearOutline: SvgGearOutline,
   iconLinearOutline: SvgIconLinearOutline,
   imageOutline: SvgImageOutline,
+  commentOutline: SvgCommentOutline,
   importOutline: SvgImportOutline,
   infoCircleOutline: SvgInfoCircleOutline,
   insightfulOutline: SvgInsightfulOutline,
