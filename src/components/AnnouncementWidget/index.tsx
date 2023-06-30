@@ -3,12 +3,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Card from 'components/Card';
 import { announcementRead, useAnnouncementsWidget } from 'queries/post';
 import Button, { Variant } from 'components/Button';
-import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
 import { humanizeTime } from 'utils/time';
 import SkeletonLoader from './components/SkeletonLoader';
 import RenderQuillContent from 'components/RenderQuillContent';
+import { Link } from 'react-router-dom';
 
 export interface IAnnouncementCardProps {}
 
@@ -27,11 +27,10 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
 
   const { data, isLoading } = useAnnouncementsWidget();
 
-  const { user } = useAuth();
-
   const itemCount = data?.data?.result?.data.length;
   const isAcknowledged =
     data?.data?.result?.data?.[0]?.myAcknowledgement?.reaction !== 'mark_read';
+  const postId = data?.data?.result?.data?.[0]?.id;
 
   return (
     <div className="min-w-[240px] sticky top-24">
@@ -82,9 +81,13 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="mt-5 flex ">
-                      <RenderQuillContent data={data?.data?.result?.data[0]} />
-                    </div>
+                    <Link to={`/posts/${postId}`}>
+                      <div className="mt-5 flex">
+                        <RenderQuillContent
+                          data={data?.data?.result?.data[0]}
+                        />
+                      </div>
+                    </Link>
                   </div>
                   <div className="w-full flex justify-center">
                     <Button
