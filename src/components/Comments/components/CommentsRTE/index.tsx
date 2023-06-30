@@ -19,6 +19,7 @@ import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import Button, { Size, Variant } from 'components/Button';
+import { IComment } from 'components/Comments';
 
 export enum PostCommentMode {
   Create = 'CREATE',
@@ -31,6 +32,7 @@ interface CommentFormProps {
   entityType: string;
   mode?: PostCommentMode;
   setEditComment?: (edit: boolean) => void;
+  commentData?: IComment;
 }
 
 export const CommentsRTE: React.FC<CommentFormProps> = ({
@@ -38,6 +40,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
   entityId,
   entityType,
   mode = PostCommentMode.Create,
+  commentData,
   setEditComment,
 }) => {
   const {
@@ -206,6 +209,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
       <div className="flex items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full">
         <RichTextEditor
           toolbarId={`toolbar-${entityId}`}
+          defaultValue={commentData?.content?.editor}
           placeholder="Leave a Comment..."
           className="max-h-18 w-[70%] max-w-[70%]"
           ref={quillRef}
@@ -215,20 +219,22 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
               className="flex flex-row items-center z-10 -ml-32 absolute top-0 right-2 quill-toolbar"
               id={`toolbar-${entityId}-toolbar`}
             >
-              {mode === PostCommentMode.Edit && (
-                <Button
-                  label={'Cancel'}
-                  size={Size.Small}
-                  variant={Variant.Secondary}
-                  dataTestId="cancel-edit-comment"
-                  onClick={() => setEditComment && setEditComment(false)}
-                  className="mr-4"
-                />
-              )}
+              <div className="mr-6">
+                {mode === PostCommentMode.Edit && (
+                  <Button
+                    label={'Cancel'}
+                    size={Size.Small}
+                    variant={Variant.Secondary}
+                    className="text-sm"
+                    dataTestId="cancel-edit-comment"
+                    onClick={() => setEditComment && setEditComment(false)}
+                  />
+                )}
+              </div>
               <button className="ql-emoji" />
               <IconButton
                 icon={'send'}
-                className="flex mx-2 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
+                className="flex mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
                 size={SizeVariant.Large}
                 variant={IconVariant.Primary}
                 onClick={() => {
