@@ -94,7 +94,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
   return (
     <div>
       <span
-        className="line-clamp-3 paragraph"
+        className="line-clamp-3 paragraph pt-px"
         id={`${data?.id}-content`}
         data-testid="feed-post-content"
       >
