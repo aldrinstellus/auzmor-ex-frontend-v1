@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { Control, useController } from 'react-hook-form';
 import { DatePicker } from 'antd';
 import './index.css';
-import Icon from 'components/Icon';
 import clsx from 'clsx';
 import dayjs, { Dayjs } from 'dayjs';
 
@@ -76,7 +75,6 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
       {!!label && <div className={labelStyle}>{label}</div>}
       <DatePicker
         aria-label="Toggle Calendar"
-        allowClear={false}
         format="MM/DD/YYYY"
         data-testid={dataTestId}
         placeholder="MM/DD/YYYY"
@@ -85,7 +83,6 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
             ? dayjs(getDateInMMDDYYYY(field.value), 'MM/DD/YYYY')
             : undefined
         }
-        suffixIcon={<Icon name="calendarTwo" size={16} />}
         className={`flex border relative rounded-19xl w-full px-5 py-2.5 focus:!border-primary-500 hover:border-primary-500 ${className}`}
         onChange={(date) => {
           // Set all time components to 0
@@ -104,7 +101,7 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
           (minDate ? d.isBefore(minDate) : false) ||
           (maxDate ? d.isAfter(maxDate) : false)
         }
-        id="react-date-picker-calendar"
+        showToday={false}
       />
       {!!error && (
         <div className={`absolute -bottom-4 text-xs truncate leading-tight`}>
