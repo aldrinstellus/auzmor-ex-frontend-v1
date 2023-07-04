@@ -8,7 +8,7 @@ import { useMutation } from '@tanstack/react-query';
 import { logout } from 'queries/account';
 import { Link, useNavigate } from 'react-router-dom';
 import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
+import { twConfig, userChannel } from 'utils/misc';
 import useRole from 'hooks/useRole';
 
 const AccountCard = () => {
@@ -19,6 +19,12 @@ const AccountCard = () => {
   const logoutMutation = useMutation(logout, {
     onSuccess: async () => {
       reset();
+      userChannel.postMessage({
+        userId: user?.id,
+        payload: {
+          type: 'SIGN_OUT',
+        },
+      });
       navigate('/logout');
     },
   });

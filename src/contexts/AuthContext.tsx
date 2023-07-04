@@ -5,6 +5,8 @@ import { fetchMe } from 'queries/account';
 import UserOnboard from 'components/UserOnboard';
 import { Role } from 'utils/enum';
 import PageLoader from 'components/PageLoader';
+import { userChannel } from 'utils/misc';
+import { useNavigate } from 'react-router-dom';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -106,6 +108,15 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
     queryClient.clear();
     removeAllItems();
   };
+
+  useEffect(() => {
+    userChannel.onmessage = (data: any) => {
+      if (data?.data?.payload?.type === 'SIGN_OUT') {
+        reset();
+        return window.location.replace(`${window.location.origin}/logout`);
+      }
+    };
+  }, []);
 
   const updateUser = (user: IUser) => setUser((u) => ({ ...u, ...user }));
 
