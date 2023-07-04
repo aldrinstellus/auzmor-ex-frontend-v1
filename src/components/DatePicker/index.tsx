@@ -4,6 +4,7 @@ import { DatePicker } from 'antd';
 import './index.css';
 import Icon from 'components/Icon';
 import clsx from 'clsx';
+import dayjs, { Dayjs } from 'dayjs';
 
 export interface IDatePickerInputProps {
   name: string;
@@ -47,6 +48,29 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
     [error],
   );
 
+  // Custom function that handles the mess of working with Date and Dayjs date formats
+  const getDateInMMDDYYYY = (date: Date | Dayjs) => {
+    let finalDate: Date;
+
+    if (date instanceof Date) {
+      finalDate = date;
+    } else {
+      finalDate = new Date(date.toDate());
+    }
+
+    const day =
+      finalDate.getDate() < 10
+        ? '0' + finalDate.getDate()
+        : finalDate.getDate();
+    const month =
+      finalDate.getMonth() + 1 < 10
+        ? '0' + (finalDate.getMonth() + 1)
+        : finalDate.getMonth() + 1;
+    const year = finalDate.getFullYear();
+
+    return `${month}/${day}/${year}`;
+  };
+
   return (
     <div data-testid={dataTestId} className="relative">
       {!!label && <div className={labelStyle}>{label}</div>}
@@ -56,7 +80,10 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
         format="MM/DD/YYYY"
         data-testid={dataTestId}
         placeholder="MM/DD/YYYY"
-        value={field.value}
+        defaultValue={dayjs(
+          getDateInMMDDYYYY(field.value as Date),
+          'MM/DD/YYYY',
+        )}
         suffixIcon={<Icon name="calendarTwo" size={16} />}
         className={`flex border relative rounded-19xl w-full px-5 py-2.5 focus:!border-primary-500 hover:border-primary-500 ${className}`}
         onChange={(date) => {
@@ -71,7 +98,10 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
           if (date) onDateChange?.(date);
         }}
         disabledDate={(d) =>
-          !d || d.isAfter(maxDate) || d.isSame(minDate) || d.isBefore(minDate)
+          !d ||
+          (minDate ? d.isSame(minDate) : false) ||
+          (minDate ? d.isBefore(minDate) : false) ||
+          (maxDate ? d.isAfter(maxDate) : false)
         }
         id="react-date-picker-calendar"
       />
