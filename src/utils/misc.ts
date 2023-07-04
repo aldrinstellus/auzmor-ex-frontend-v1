@@ -7,6 +7,8 @@ import { EMAIL_REGEX } from './constants';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
+export const userChannel = new BroadcastChannel('user');
+
 export const getInitials = (name: string) => {
   return name
     .match(/(^\S\S?|\s\S)?/g)!

@@ -44,7 +44,7 @@ const Login: React.FC<ILoginProps> = () => {
   }, [domain, user]);
 
   if (user) {
-    return <Navigate to="/" />;
+    return <Navigate to="/feed" />;
   }
 
   if (loading) {

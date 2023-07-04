@@ -155,7 +155,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
         type="file"
         className="hidden"
         ref={inputVideoRef}
-        accept="video/*"
+        accept={validVideoTypes.join(',')}
         onChange={(e) => {
           const mediaErrors = [...mediaValidationErrors];
 
