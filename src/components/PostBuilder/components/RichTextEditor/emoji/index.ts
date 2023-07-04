@@ -124,7 +124,7 @@ function fn_showEmojiPalette(quill: {
       : paletteLeft + quillContainerCord.left
   }px`;
   ele_emoji_area.style.position = 'fixed';
-  ele_emoji_area.style.top = `${paletteTop + quillContainerCord.top}px`;
+  ele_emoji_area.style.top = `${paletteTop > 260 ? 260 : paletteTop + quillContainerCord.top}px`;
 
   const tabToolbar = document.createElement('div');
   tabToolbar.id = 'tab-toolbar';
