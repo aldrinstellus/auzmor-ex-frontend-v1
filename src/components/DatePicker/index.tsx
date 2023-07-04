@@ -4,7 +4,6 @@ import { DatePicker } from 'antd';
 import './index.css';
 import Icon from 'components/Icon';
 import clsx from 'clsx';
-import moment from 'moment';
 
 export interface IDatePickerInputProps {
   name: string;
@@ -16,7 +15,7 @@ export interface IDatePickerInputProps {
   error?: string;
   defaultValue?: string;
   dataTestId?: string;
-  onDateChange?: (date: string) => void;
+  onDateChange?: (date: any) => void;
 }
 
 const DatePickerInput: React.FC<IDatePickerInputProps> = ({
@@ -60,17 +59,16 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
         value={field.value}
         suffixIcon={<Icon name="calendarTwo" size={16} />}
         className={`flex border relative rounded-19xl w-full px-5 py-2.5 focus:!border-primary-500 hover:border-primary-500 ${className}`}
-        onChange={(date, dateString) => {
-          const utcDate = moment
-            .tz(
-              dateString,
-              'MM/DD/YYYY',
-              Intl.DateTimeFormat().resolvedOptions().timeZone,
-            )
-            .toISOString();
+        onChange={(date) => {
+          // Set all time components to 0
+          date?.set('hour', 0);
+          date?.set('minute', 0);
+          date?.set('second', 0);
+          date?.set('millisecond', 0);
+
           // Call onChange functions
-          field.onChange(utcDate);
-          onDateChange?.(utcDate);
+          field.onChange(date);
+          if (date) onDateChange?.(date);
         }}
         disabledDate={(d) =>
           !d || d.isAfter(maxDate) || d.isSame(minDate) || d.isBefore(minDate)
