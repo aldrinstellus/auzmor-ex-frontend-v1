@@ -52,7 +52,7 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
     let finalDate: Date;
 
     if (date instanceof Date) {
-      finalDate = date;
+      finalDate = new Date(date);
     } else {
       finalDate = new Date(date.toDate());
     }

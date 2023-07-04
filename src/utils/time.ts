@@ -28,11 +28,3 @@ export const hasDatePassed = (date: string) => {
     return true;
   }
 };
-
-export const parseDate = (dateStr: string, format = 'YYYY-MM-DD') => {
-  try {
-    return moment(dateStr, format).toDate();
-  } catch (e) {
-    return undefined;
-  }
-};
