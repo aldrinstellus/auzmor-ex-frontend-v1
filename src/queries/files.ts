@@ -19,6 +19,7 @@ export const validImageTypes = [
 
 export const validVideoTypes = [
   'video/x-msvideo',
+  'video/avi',
   'video/mp4',
   'video/mpeg',
   'video/ogg',
