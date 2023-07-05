@@ -112,9 +112,9 @@ const Likes: React.FC<LikesProps> = ({
               type: data.type,
             }),
               (draft.reactionsCount =
-                draft.reactionsCount && Object.keys(draft.reactionsCount)
-                  ? Object.keys(draft.myReaction)
-                    ? {
+                draft.reactionsCount && Object.keys(draft.reactionsCount) 
+                  ? Object.keys(draft.myReaction) // if reactions count exist
+                    ? {// if reactions count and my reaction exist
                         [draft.myReaction.reaction as string]:
                           draft.reactionsCount[
                             draft.myReaction.reaction as string
@@ -122,11 +122,11 @@ const Likes: React.FC<LikesProps> = ({
                         [variables.reaction as string]: draft.reactionsCount[
                           variables.reaction as string
                         ]
-                          ? draft.reactionsCount[variables.reaction as string] +
+                          ?  variables.reaction === draft.myReaction.reaction ? draft.reactionsCount[variables.reaction as string] :draft.reactionsCount[variables.reaction as string] +
                             1
                           : 1,
                       }
-                    : {
+                    : { // if reactions count exist but my reaction does not exist
                         [variables.reaction as string]: draft.reactionsCount[
                           variables.reaction as string
                         ]
@@ -134,7 +134,7 @@ const Likes: React.FC<LikesProps> = ({
                             1
                           : 1,
                       }
-                  : { [variables.reaction as string]: 1 });
+                  : { [variables.reaction as string]: 1 }); // if reactions count does not exist at all
           }),
         );
       } else if (variables.entityType === 'comment') {
@@ -151,17 +151,17 @@ const Likes: React.FC<LikesProps> = ({
                 draft.reactionsCount && Object.keys(draft.reactionsCount)
                   ? Object.keys(draft.myReaction)
                     ? {
-                        [draft.myReaction.reaction as string]:
-                          draft.reactionsCount[
-                            draft.myReaction.reaction as string
-                          ] - 1,
-                        [variables.reaction as string]: draft.reactionsCount[
-                          variables.reaction as string
-                        ]
-                          ? draft.reactionsCount[variables.reaction as string] +
-                            1
-                          : 1,
-                      }
+                      [draft.myReaction.reaction as string]:
+                        draft.reactionsCount[
+                          draft.myReaction.reaction as string
+                        ] - 1,
+                      [variables.reaction as string]: draft.reactionsCount[
+                        variables.reaction as string
+                      ]
+                        ?  variables.reaction === draft.myReaction.reaction ? draft.reactionsCount[variables.reaction as string] :draft.reactionsCount[variables.reaction as string] +
+                          1
+                        : 1,
+                    }
                     : {
                         [variables.reaction as string]: draft.reactionsCount[
                           variables.reaction as string
