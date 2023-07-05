@@ -1,8 +1,8 @@
-import Layout, { FieldType } from 'components/Form';
+import { FieldType } from 'components/Form';
 import React, { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import { afterXUnit, parseDate } from 'utils/time';
+import { afterXUnit } from 'utils/time';
 import Header from 'components/ModalHeader';
 import Footer from './Footer';
 import Body from './Body';
@@ -31,14 +31,14 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
     mode: 'onChange',
   });
 
-  const selecetedExpiry = watch('expityOption');
+  const selecetedExpiry = watch('expiryOption');
 
   useEffect(() => {
     if (announcement?.value) {
-      setValue('date', parseDate(announcement?.value));
+      setValue('date', new Date(announcement?.value));
     }
     setValue(
-      'expityOption',
+      'expiryOption',
       announcement || {
         label: '1 Week',
         value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
@@ -51,7 +51,7 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
     {
       type: FieldType.SingleSelect,
       label: 'Announcement Expiry',
-      name: 'expityOption',
+      name: 'expiryOption',
       control,
       options: [
         {

@@ -7,6 +7,7 @@ import { CreateAnnouncementMode } from '.';
 import { useMutation } from '@tanstack/react-query';
 import { IPost, updatePost } from 'queries/post';
 import queryClient from 'utils/queryClient';
+import { Dayjs } from 'dayjs';
 
 export interface IFooterProps {
   handleSubmit: UseFormHandleSubmit<FieldValues>;
@@ -30,11 +31,11 @@ const Footer: React.FC<IFooterProps> = ({
 
   const onSubmit = (data: any) => {
     setAnnouncement({
-      label: data?.expityOption?.label || announcement?.label || '1 Week',
+      label: data?.expiryOption?.label || announcement?.label || '1 Week',
       value:
-        data?.expityOption?.label === 'Custom Date'
+        data?.expiryOption?.label === 'Custom Date'
           ? data?.date?.toISOString().substring(0, 19) + 'Z'
-          : data?.expityOption?.value ||
+          : data?.expiryOption?.value ||
             announcement?.value ||
             afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
     });
@@ -45,6 +46,8 @@ const Footer: React.FC<IFooterProps> = ({
     mutationKey: ['makePostAnnouncementMutation', data?.id],
     mutationFn: async () => {
       const formData = getFormValues();
+      const expiryDate =
+        (formData.date as Dayjs).toDate().toISOString().substring(0, 19) + 'Z';
       const fileIds = data?.files?.map((file: any) => file.id);
       if (data?.id)
         await updatePost(data?.id, {
@@ -53,7 +56,8 @@ const Footer: React.FC<IFooterProps> = ({
           isAnnouncement: true,
           announcement: {
             end:
-              formData?.expityOption?.value ||
+              expiryDate ||
+              formData?.expiryOption?.value ||
               afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
           },
         });
