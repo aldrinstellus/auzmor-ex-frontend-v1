@@ -124,11 +124,11 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
   );
 
   return (
-    <div key={comment.id}>
-      <div className={`flex flex-col mt-4 ${className}`}>
+    <div>
+      <div className={`flex flex-col space-y-4 mt-4`}>
         <div className="bg-neutral-100 p-3 rounded-9xl">
           <div className="flex justify-between p-0">
-            <div className="flex flex-row">
+            <div className="flex">
               <div className="mr-4">
                 <Avatar
                   name={comment?.createdBy?.fullName}

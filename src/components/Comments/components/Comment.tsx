@@ -266,7 +266,7 @@ export const Comment: React.FC<CommentProps> = ({
       </div>
 
       {/* Replies */}
-      <div className="flex items-center">
+      <div className="flex items-center pb-4">
         <div className="flex items-center space-x-2">
           <Likes
             reaction={comment?.myReaction?.reaction || ''}
