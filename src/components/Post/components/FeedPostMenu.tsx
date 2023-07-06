@@ -32,7 +32,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
   const [confirm, showConfirm, closeConfirm] = useModal();
   const [removeAnnouncement, showRemoveAnnouncement, closeRemoveAnnouncement] =
     useModal();
-  const [open, openModal, closeModal] = useModal();
+  const [open, openModal, closeModal] = useModal(undefined, false);
   const [customActiveFlow, setCustomActiveFlow] = useState<CreatePostFlow>(
     CreatePostFlow.CreatePost,
   );

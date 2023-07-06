@@ -22,7 +22,7 @@ export interface IUpdateProfileImage {
 interface IUserDetailProps {}
 
 const UserDetail: React.FC<IUserDetailProps> = () => {
-  const [open, openModal, closeModal] = useModal();
+  const [open, openModal, closeModal] = useModal(undefined, false);
   const { user } = useAuth();
   const params = useParams();
   const { pathname } = useLocation();

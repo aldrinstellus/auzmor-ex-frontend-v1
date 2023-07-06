@@ -47,7 +47,7 @@ export interface IMyReactions {
 
 const Feed: React.FC<IFeedProps> = () => {
   useScrollTop();
-  const [open, openModal, closeModal] = useModal();
+  const [open, openModal, closeModal] = useModal(undefined, false);
   const [appliedFeedFilters, setAppliedFeedFilters] = useState<IPostFilters>({
     [PostFilterKeys.PostType]: [],
   });

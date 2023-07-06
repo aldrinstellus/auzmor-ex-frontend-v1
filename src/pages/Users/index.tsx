@@ -32,7 +32,10 @@ interface IForm {
 interface IUsersProps {}
 
 const Users: React.FC<IUsersProps> = () => {
-  const [showAddUserModal, openAddUserModal, closeAddUserModal] = useModal();
+  const [showAddUserModal, openAddUserModal, closeAddUserModal] = useModal(
+    undefined,
+    false,
+  );
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const [userStatus, setUserStatus] = useState<string>('');
   const { user } = useAuth();
@@ -274,15 +277,13 @@ const Users: React.FC<IUsersProps> = () => {
         closeModal={closeAddUserModal}
       />
 
-      {showFilterModal && (
-        <FilterModal
-          setUserStatus={setUserStatus}
-          userStatus={userStatus}
-          open={showFilterModal}
-          openModal={openFilterModal}
-          closeModal={closeFilterModal}
-        />
-      )}
+      <FilterModal
+        setUserStatus={setUserStatus}
+        userStatus={userStatus}
+        open={showFilterModal}
+        openModal={openFilterModal}
+        closeModal={closeFilterModal}
+      />
     </div>
   );
 
