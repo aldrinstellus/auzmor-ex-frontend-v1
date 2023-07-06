@@ -86,7 +86,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     if (customActiveFlow === CreatePostFlow.CreateAnnouncement) {
       setAnnouncement({
         label: 'Custom Date',
-        value: data?.announcement.end || '',
+        value: data?.announcement?.end || '',
       });
       setActiveFlow(CreatePostFlow.CreateAnnouncement);
     }

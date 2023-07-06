@@ -217,7 +217,11 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
   return (
     <Modal
       open={openEditImage}
-      closeModal={disableClosed}
+      closeModal={() => {
+        if (imageFile) {
+          return null;
+        }
+      }}
       className={
         !imageFile?.profileImage
           ? 'max-w-5xl flex flex-col justify-between'

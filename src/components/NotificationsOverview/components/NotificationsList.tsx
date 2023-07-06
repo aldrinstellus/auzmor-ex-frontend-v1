@@ -57,6 +57,7 @@ export type NotificationProps = {
   isRead: boolean;
   createdAt: string;
   id: string;
+  interactionCount?: number;
 };
 
 const NotificationsList = React.forwardRef(
@@ -77,6 +78,7 @@ const NotificationsList = React.forwardRef(
                     isRead={notification.isRead}
                     createdAt={notification.createdAt}
                     id={notification.id}
+                    interactionCount={notification.interactionCount}
                   />
                   <Divider className="bg-gray-200" />
                 </div>

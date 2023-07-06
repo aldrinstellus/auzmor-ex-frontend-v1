@@ -6,6 +6,7 @@ import React from 'react';
 import { useFeedStore } from 'stores/feedStore';
 import { hasDatePassed } from 'utils/time';
 import { produce } from 'immer';
+import useAuth from 'hooks/useAuth';
 
 export interface IAcknowledgementBannerProps {
   data: any;
@@ -16,8 +17,12 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
 }) => {
   const { feed, updateFeed } = useFeedStore();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const isAnnouncement = data?.isAnnouncement;
+
+  const hasLoggedInUserCreatedAnnouncement =
+    user?.id === data?.announcement?.actor?.userId;
 
   const acknowledgeMutation = useMutation({
     mutationKey: ['acknowledge-announcement'],
@@ -47,29 +52,33 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
           hasDatePassed(data?.announcement?.end)
         ) && (
           <div
-            className="flex justify-between items-center bg-blue-700 -mb-4 p-2 rounded-t-9xl"
+            className={`flex justify-between items-center bg-blue-700 -mb-4 ${
+              hasLoggedInUserCreatedAnnouncement ? 'p-3' : 'p-2'
+            } rounded-t-9xl`}
             data-testid="announcement-header"
           >
             <div className="flex justify-center items-center text-white text-xs font-bold pl-1">
               <Icon name="flashIcon" />
               <div className="text-sm font-bold">Announcement</div>
             </div>
-            <Button
-              className="text-sm font-bold"
-              label={'Mark as read'}
-              size={Size.Small}
-              variant={Variant.Tertiary}
-              loading={acknowledgeMutation.isLoading}
-              onClick={() => {
-                acknowledgeMutation.mutate({
-                  entityId: data?.id,
-                  entityType: 'post',
-                  type: 'acknowledge',
-                  reaction: 'mark_read',
-                });
-              }}
-              dataTestId="announcment-markasreadcta"
-            />
+            {!hasLoggedInUserCreatedAnnouncement && (
+              <Button
+                className="text-sm font-bold"
+                label={'Mark as read'}
+                size={Size.Small}
+                variant={Variant.Tertiary}
+                loading={acknowledgeMutation.isLoading}
+                onClick={() => {
+                  acknowledgeMutation.mutate({
+                    entityId: data?.id,
+                    entityType: 'post',
+                    type: 'acknowledge',
+                    reaction: 'mark_read',
+                  });
+                }}
+                dataTestId="announcment-markasreadcta"
+              />
+            )}
           </div>
         )}
     </div>
