@@ -109,9 +109,12 @@ export const getNotificationElementContent = (
 export const getNotificationMessage = (
   actionType: string,
   targetType: string,
-  count?: number,
+  interactionCount?: number,
 ) => {
-  let message = count && count > 1 ? `and ${count - 1} others ` : '';
+  let message =
+    interactionCount && interactionCount > 1
+      ? `and ${interactionCount - 1} others `
+      : '';
 
   if (targetType === TargetType[TargetType.POST]) {
     if (actionType === ActionType[ActionType.COMMENT]) {

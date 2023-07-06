@@ -58,7 +58,7 @@ export type NotificationProps = {
   isRead: boolean;
   createdAt: string;
   id: string;
-  count?: number;
+  interactionCount?: number;
 };
 
 const NotificationsListing: React.FC<NotificationsListing> = ({
@@ -114,7 +114,7 @@ const NotificationsListing: React.FC<NotificationsListing> = ({
                     target={notification.target}
                     isRead={notification.isRead}
                     createdAt={notification.createdAt}
-                    count={notification.count}
+                    interactionCount={notification.interactionCount}
                     id={notification.id}
                   />
                   <Divider className="bg-gray-200" />
