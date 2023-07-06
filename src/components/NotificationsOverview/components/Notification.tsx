@@ -20,10 +20,12 @@ const Notification: React.FC<NotificationCardProps> = ({
   target,
   isRead,
   id,
+  interactionCount,
 }): ReactElement => {
   const notificationMessage = getNotificationMessage(
     action.type,
     target[target.length - 1].type,
+    interactionCount,
   );
 
   const { cardContent, redirect } = getNotificationElementContent(
