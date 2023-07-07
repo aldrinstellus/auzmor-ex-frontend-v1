@@ -107,17 +107,22 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
     },
     onMutate: (variables) => {
       const previousComment = comment[variables.entityId!]
-      updateComment(variables.entityId!, produce(comment[variables.entityId!], (draft) => {
+
+      updateStoredComment(variables.entityId!, produce(comment[variables.entityId!], (draft) => {
         draft.content = {
           ...variables.content
         }
         draft.mentions = variables.mentions
         draft.hashtags = variables.hashtags
       }))
+      quillRef.current?.setEditorContents(quillRef.current?.getEditor(), '');
+      setEditComment && setEditComment(false);
       return {previousComment}
     },
     onError: (error: any, variables, context) => {
-      updateComment(variables.entityId, context?.previousComment)
+      if(context?.previousComment){
+        updateStoredComment(variables.entityId, context?.previousComment)
+      }
       toast(
         <FailureToast
           content={`Error Updating ${
@@ -170,9 +175,6 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
           transition: slideInAndOutTop,
         },
       );
-      quillRef.current?.setEditorContents(quillRef.current?.getEditor(), '');
-      queryClient.invalidateQueries({ queryKey: ['comments'] });
-      setEditComment && setEditComment(false);
     },
   });
 
