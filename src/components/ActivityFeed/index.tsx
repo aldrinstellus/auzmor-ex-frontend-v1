@@ -12,7 +12,9 @@ import Icon from 'components/Icon';
 type ActivityFeedProps = {
   activityFeed: any;
   loadMore: any; // Change this type to something more appropriate for functions
-  setShowModal: (flag: boolean) => void;
+  open: boolean;
+  openModal: () => void;
+  closeModal: () => void;
   isLoading?: boolean;
   isFetchingNextPage?: boolean;
 };
@@ -20,7 +22,9 @@ type ActivityFeedProps = {
 const ActivityFeed: React.FC<ActivityFeedProps> = ({
   activityFeed,
   loadMore,
-  setShowModal,
+  open,
+  openModal,
+  closeModal,
   isLoading = false,
   isFetchingNextPage = false,
 }) => {
@@ -45,7 +49,11 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
           loadMore={loadMore}
           prependElement={
             <>
-              <CreatePostCard setShowModal={setShowModal} />
+              <CreatePostCard
+                open={open}
+                openModal={openModal}
+                closeModal={closeModal}
+              />
               <div className="flex flex-row items-center gap-x-2 mt-8">
                 <FeedFilter
                   appliedFeedFilters={appliedFeedFilters}
@@ -62,7 +70,11 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
         />
       ) : (
         <>
-          <CreatePostCard setShowModal={setShowModal} />
+          <CreatePostCard
+            open={open}
+            openModal={openModal}
+            closeModal={closeModal}
+          />
           {!isLoading && (
             <div className="flex justify-center items-center mt-20">
               Feed Not Found

@@ -24,9 +24,9 @@ import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 
 export interface IInviteUserModalProps {
-  showModal: boolean;
+  open: boolean;
+  openModal: () => void;
   closeModal: () => void;
-  setShowAddUserModal: (flag: boolean) => void;
 }
 
 export interface IRoleOption {
@@ -50,9 +50,9 @@ export interface IEmailValidationErrors {
 }
 
 const InviteUserModal: React.FC<IInviteUserModalProps> = ({
-  showModal,
+  open,
+  openModal,
   closeModal,
-  setShowAddUserModal,
 }) => {
   const queryClient = useQueryClient();
   const [showInvitedMembers, setShowInvitedMembers] = useState(false);
@@ -135,7 +135,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
             invitedCount !== data.result.data.length ? 'Show details' : ''
           }
           action={() => {
-            setShowAddUserModal(true);
+            openModal();
             setShowInvitedMembers(true);
           }}
         />,
@@ -158,7 +158,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
           transition: slideInAndOutTop,
         },
       );
-      setShowAddUserModal(false);
+      closeModal();
     },
   });
 
@@ -187,8 +187,8 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
   });
 
   useEffect(() => {
-    if (!showModal) reset();
-  }, [showModal]);
+    if (!open) reset();
+  }, [open]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -212,7 +212,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
 
   return (
     <>
-      <Modal open={showModal} className="max-w-3xl">
+      <Modal open={open} className="max-w-3xl">
         {/*---------- {<>Header</>} ----------*/}
         <Header
           title={
@@ -301,7 +301,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
           className: 'bg-primary-500 text-white ',
           onSubmit: () => {
             setShowConfirmationModal(false);
-            setShowAddUserModal(true);
+            openModal();
           },
         }}
         discard={{

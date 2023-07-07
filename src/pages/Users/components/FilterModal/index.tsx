@@ -9,8 +9,9 @@ import Divider from 'components/Divider';
 import clsx from 'clsx';
 
 export interface IFilterModalProps {
-  showModal: boolean;
+  open: boolean;
   setUserStatus: (status: string) => void;
+  openModal: () => void;
   closeModal: () => void;
   userStatus: string;
 }
@@ -26,7 +27,8 @@ interface IFilters {
 }
 
 const FilterModal: React.FC<IFilterModalProps> = ({
-  showModal,
+  open,
+  openModal,
   closeModal,
   setUserStatus,
   userStatus,
@@ -36,7 +38,10 @@ const FilterModal: React.FC<IFilterModalProps> = ({
   });
 
   const onSubmit = () => {
-    if(!!!getValues().status) {closeModal(); return}
+    if (!!!getValues().status) {
+      closeModal();
+      return;
+    }
     const status = getValues().status;
     setUserStatus(status);
     closeModal();
@@ -115,7 +120,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({
   );
   return (
     <div>
-      <Modal open={showModal} closeModal={close} className="max-w-3xl">
+      <Modal open={open} closeModal={close} className="max-w-3xl">
         {/* Body */}
         <Header
           title="Filter by"

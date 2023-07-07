@@ -19,14 +19,16 @@ import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 export interface IDeleteUserModalProps {
-  showModal: boolean;
-  setShowModal: (flag: boolean) => void;
+  open: boolean;
+  openModal: () => void;
+  closeModal: () => void;
   userId: string;
 }
 
 const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
-  showModal,
-  setShowModal,
+  open,
+  openModal,
+  closeModal,
   userId,
 }) => {
   const deleteUserMutation = useMutation({
@@ -59,7 +61,7 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
       );
     },
     onSuccess: (data, variables, context) => {
-      setShowModal(false);
+      closeModal();
       queryClient.invalidateQueries({ queryKey: ['users'] });
       toast(
         <SuccessToast
@@ -93,9 +95,7 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
         Delete User?
       </div>
       <IconButton
-        onClick={() => {
-          setShowModal(false);
-        }}
+        onClick={closeModal}
         icon={'close'}
         dataTestId="delete-user-close"
         className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"
@@ -110,9 +110,7 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
         size={Size.Small}
         label={'Cancel'}
         dataTestId="delete-user-cancel"
-        onClick={() => {
-          setShowModal(false);
-        }}
+        onClick={closeModal}
       />
       <Button
         label={'Delete'}
@@ -126,13 +124,7 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
     </div>
   );
   return (
-    <Modal
-      open={showModal}
-      // closeModal={() => {
-      //   setShowModal(false);
-      // }}
-      className="max-w-sm"
-    >
+    <Modal open={open} className="max-w-sm">
       <Header />
       <div className="text-sm font-medium text-neutral-500 mx-6 mt-6 mb-8">
         Are you sure you want to delete this member?

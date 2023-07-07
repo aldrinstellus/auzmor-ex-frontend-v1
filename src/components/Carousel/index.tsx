@@ -22,6 +22,7 @@ export type CarouselProps = {
   media: IMedia[];
   onClose?: MouseEventHandler<Element>;
   index: number;
+  closeModal?: () => void;
 };
 
 export const fetchFile = (url: string) => {
@@ -75,10 +76,15 @@ export const fetchFile = (url: string) => {
     });
 };
 
-const Carousel: React.FC<CarouselProps> = ({ media, index }): ReactElement => {
+const Carousel: React.FC<CarouselProps> = ({
+  media,
+  index,
+  closeModal,
+}): ReactElement => {
   const [currentIndex, prevSlide, nextSlide] = useCarousel(
     index,
     Object.keys(media).length,
+    closeModal,
   );
 
   const videoRef = useRef<HTMLVideoElement>(null);

@@ -37,9 +37,11 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
   );
 
   const [openEditProfile, openEditProfileModal, closeEditProfileModal] =
-    useModal(false);
-  const [openEditImage, openEditImageModal, closeEditImageModal] =
-    useModal(false);
+    useModal(undefined, false);
+  const [openEditImage, openEditImageModal, closeEditImageModal] = useModal(
+    undefined,
+    false,
+  );
 
   const [isCoverImageRemoved, setIsCoverImageRemoved] = useState(false);
 

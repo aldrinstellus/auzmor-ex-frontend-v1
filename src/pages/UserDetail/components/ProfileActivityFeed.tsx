@@ -12,8 +12,9 @@ import SkeletonLoader from 'pages/Feed/components/SkeletonLoader';
 export interface IProfileActivityFeedProps {
   data: any;
   userId: string;
-  showFeedModal: boolean;
-  setShowFeedModal: (flag: boolean) => void;
+  open: boolean;
+  openModal: () => void;
+  closeModal: () => void;
   pathname?: string;
 }
 
@@ -21,8 +22,9 @@ const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
   data,
   pathname,
   userId,
-  showFeedModal,
-  setShowFeedModal,
+  open,
+  openModal,
+  closeModal,
 }) => {
   if (pathname === '/profile') {
     const { data: myProfileFeed, isLoading: myProfileFeedLoading } =
@@ -30,10 +32,15 @@ const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
 
     return (
       <div>
-        <CreatePostCard setShowModal={setShowFeedModal} />
+        <CreatePostCard
+          open={open}
+          openModal={openModal}
+          closeModal={closeModal}
+        />
         <PostBuilder
-          showModal={showFeedModal}
-          setShowModal={setShowFeedModal}
+          open={open}
+          openModal={openModal}
+          closeModal={closeModal}
         />
         {myProfileFeedLoading && <SkeletonLoader />}
         <div className="mt-4">

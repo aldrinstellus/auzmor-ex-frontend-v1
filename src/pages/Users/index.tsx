@@ -23,6 +23,7 @@ import PageLoader from 'components/PageLoader';
 import clsx from 'clsx';
 import Tabs from 'components/Tabs';
 import UsersSkeleton from './components/UsersSkeleton';
+import useModal from 'hooks/useModal';
 
 interface IForm {
   search?: string;
@@ -31,8 +32,11 @@ interface IForm {
 interface IUsersProps {}
 
 const Users: React.FC<IUsersProps> = () => {
-  const [showAddUserModal, setShowAddUserModal] = useState(false);
-  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [showAddUserModal, openAddUserModal, closeAddUserModal] = useModal(
+    undefined,
+    false,
+  );
+  const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const [userStatus, setUserStatus] = useState<string>('');
   const { user } = useAuth();
 
@@ -139,9 +143,7 @@ const Users: React.FC<IUsersProps> = () => {
           </div>
           <div className="flex space-x-2 justify-center items-center">
             <IconButton
-              onClick={() => {
-                setShowFilterModal(true);
-              }}
+              onClick={openFilterModal}
               icon="filterLinear"
               variant={IconVariant.Secondary}
               size={IconSize.Medium}
@@ -270,19 +272,18 @@ const Users: React.FC<IUsersProps> = () => {
         </div>
       )} */}
       <InviteUserModal
-        showModal={showAddUserModal}
-        setShowAddUserModal={setShowAddUserModal}
-        closeModal={() => setShowAddUserModal(false)}
+        open={showAddUserModal}
+        openModal={openAddUserModal}
+        closeModal={closeAddUserModal}
       />
 
-      {showFilterModal && (
-        <FilterModal
-          setUserStatus={setUserStatus}
-          userStatus={userStatus}
-          showModal={showFilterModal}
-          closeModal={() => setShowFilterModal(false)}
-        />
-      )}
+      <FilterModal
+        setUserStatus={setUserStatus}
+        userStatus={userStatus}
+        open={showFilterModal}
+        openModal={openFilterModal}
+        closeModal={closeFilterModal}
+      />
     </div>
   );
 
@@ -362,9 +363,7 @@ const Users: React.FC<IUsersProps> = () => {
                 className="flex space-x-1"
                 label="Add Members"
                 leftIcon="add"
-                onClick={() => {
-                  setShowAddUserModal(true);
-                }}
+                onClick={openAddUserModal}
                 dataTestId="add-members-btn"
               />
             )}

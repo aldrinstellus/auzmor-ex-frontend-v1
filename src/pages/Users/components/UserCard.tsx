@@ -15,6 +15,7 @@ import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { twConfig } from 'utils/misc';
 import { PRIMARY_COLOR, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
+import useModal from 'hooks/useModal';
 
 export interface IUserCardProps {
   id: string;
@@ -61,7 +62,7 @@ const UserCard: React.FC<IUserCardProps> = ({
   const { user } = useAuth();
   const { isAdmin } = useRole();
   const [isHovered, eventHandlers] = useHover();
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [open, openModal, closeModal] = useModal();
   const resendInviteMutation = useResendInvitation();
 
   const _options = [];
@@ -99,9 +100,7 @@ const UserCard: React.FC<IUserCardProps> = ({
       icon: 'userRemove',
       label: 'Remove',
       dataTestId: 'people-card-ellipsis-remove-user',
-      onClick: () => {
-        setShowDeleteModal(true);
-      },
+      onClick: openModal,
     });
   }
 
@@ -228,8 +227,9 @@ const UserCard: React.FC<IUserCardProps> = ({
         )} */}
       </Card>
       <DeleteUserModal
-        showModal={showDeleteModal}
-        setShowModal={setShowDeleteModal}
+        open={open}
+        openModal={openModal}
+        closeModal={closeModal}
         userId={id}
       />
     </div>

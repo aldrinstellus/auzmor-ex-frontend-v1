@@ -20,6 +20,7 @@ import PageLoader from 'components/PageLoader';
 import useScrollTop from 'hooks/useScrollTop';
 import SkeletonLoader from './components/SkeletonLoader';
 import { useFeedStore } from 'stores/feedStore';
+import useModal from 'hooks/useModal';
 
 interface IFeedProps {}
 
@@ -46,7 +47,7 @@ export interface IMyReactions {
 
 const Feed: React.FC<IFeedProps> = () => {
   useScrollTop();
-  const [showModal, setShowModal] = useState(false);
+  const [open, openModal, closeModal] = useModal(undefined, false);
   const [appliedFeedFilters, setAppliedFeedFilters] = useState<IPostFilters>({
     [PostFilterKeys.PostType]: [],
   });
@@ -54,10 +55,10 @@ const Feed: React.FC<IFeedProps> = () => {
 
   const { feed } = useFeedStore();
 
-  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage} =
+  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteFeed(appliedFeedFilters);
 
-    useEffect(() => {
+  useEffect(() => {
     if (inView) {
       fetchNextPage();
     }
@@ -105,7 +106,11 @@ const Feed: React.FC<IFeedProps> = () => {
         </div>
         <div className="w-1/2">
           <div className="">
-            <CreatePostCard setShowModal={setShowModal} />
+            <CreatePostCard
+              open={open}
+              openModal={openModal}
+              closeModal={closeModal}
+            />
             <div className="flex flex-row items-center gap-x-2 mt-8">
               <FeedFilter
                 appliedFeedFilters={appliedFeedFilters}
@@ -176,7 +181,7 @@ const Feed: React.FC<IFeedProps> = () => {
           <AnnouncementCard />
         </div>
       </div>
-      <PostBuilder showModal={showModal} setShowModal={setShowModal} />
+      <PostBuilder open={open} openModal={openModal} closeModal={closeModal} />
     </>
   );
 };

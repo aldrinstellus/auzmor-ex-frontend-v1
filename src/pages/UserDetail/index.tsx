@@ -12,6 +12,7 @@ import clsx from 'clsx';
 import Tabs from 'components/Tabs';
 import UserDetailSkeleton from './components/UserDetailSkeleton';
 import ContactSkeleton from 'components/ContactWidget/components/Skeletons';
+import useModal from 'hooks/useModal';
 
 export interface IUpdateProfileImage {
   profileImage: File;
@@ -21,7 +22,7 @@ export interface IUpdateProfileImage {
 interface IUserDetailProps {}
 
 const UserDetail: React.FC<IUserDetailProps> = () => {
-  const [showFeedModal, setShowFeedModal] = useState<boolean>(false);
+  const [open, openModal, closeModal] = useModal(undefined, false);
   const { user } = useAuth();
   const params = useParams();
   const { pathname } = useLocation();
@@ -74,8 +75,9 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
         <ProfileActivityFeed
           pathname={pathname}
           userId={params?.userId || user?.id || ''}
-          showFeedModal={showFeedModal}
-          setShowFeedModal={setShowFeedModal}
+          open={open}
+          openModal={openModal}
+          closeModal={closeModal}
           data={data}
         />
       ),

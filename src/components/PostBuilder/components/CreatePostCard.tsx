@@ -9,7 +9,9 @@ import { IPostMenu } from './CreatePostModal';
 import { Link } from 'react-router-dom';
 
 export interface ICreatePostCardProps {
-  setShowModal: (flag: boolean) => void;
+  open: boolean;
+  openModal: () => void;
+  closeModal: () => void;
 }
 
 export const postTypeMapIcons: IPostMenu[] = [
@@ -88,7 +90,11 @@ export const postTypeMapIcons: IPostMenu[] = [
   },
 ];
 
-const CreatePostCard: React.FC<ICreatePostCardProps> = ({ setShowModal }) => {
+const CreatePostCard: React.FC<ICreatePostCardProps> = ({
+  open,
+  openModal,
+  closeModal,
+}) => {
   const { user } = useAuth();
 
   const tabStyle = (hasDivider = false) =>
@@ -117,7 +123,7 @@ const CreatePostCard: React.FC<ICreatePostCardProps> = ({ setShowModal }) => {
           type="input"
           className="w-full h-11 border border-neutral-200 rounded-19xl ml-3 px-5 py-3 text-sm font-medium outline-none text-neutral-500"
           readOnly
-          onClick={() => setShowModal(true)}
+          onClick={openModal}
           placeholder="What's on your mind?"
           data-testid="activityfeed-whatsonurmind"
         />

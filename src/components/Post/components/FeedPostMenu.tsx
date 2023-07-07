@@ -32,7 +32,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
   const [confirm, showConfirm, closeConfirm] = useModal();
   const [removeAnnouncement, showRemoveAnnouncement, closeRemoveAnnouncement] =
     useModal();
-  const [showModal, setShowModal] = useState(false);
+  const [open, openModal, closeModal] = useModal(undefined, false);
   const [customActiveFlow, setCustomActiveFlow] = useState<CreatePostFlow>(
     CreatePostFlow.CreatePost,
   );
@@ -136,7 +136,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       label: 'Promote to announcement',
       onClick: () => {
         setCustomActiveFlow(CreatePostFlow.CreateAnnouncement);
-        setShowModal(true);
+        openModal();
       },
       dataTestId: 'post-ellipsis-promote-to-announcement',
       permissions: ['CREATE_ANNOUNCEMENTS'],
@@ -147,7 +147,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       label: 'Edit announcement',
       onClick: () => {
         setCustomActiveFlow(CreatePostFlow.CreateAnnouncement);
-        setShowModal(true);
+        openModal();
       },
       dataTestId: 'post-ellipsis-edit-announcement',
       permissions: ['UPDATE_ANNOUNCEMENTS'],
@@ -166,7 +166,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       label: 'Edit post',
       onClick: () => {
         setCustomActiveFlow(CreatePostFlow.CreatePost);
-        setShowModal(true);
+        openModal();
       },
       dataTestId: 'post-ellipsis-edit-post',
       permissions: ['UPDATE_MY_POSTS'],
@@ -201,11 +201,12 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
         }
         menuItems={postOptions}
       />
-      {showModal && (
+      {open && (
         <PostBuilder
           data={data}
-          showModal={showModal}
-          setShowModal={() => setShowModal(false)}
+          open={open}
+          openModal={openModal}
+          closeModal={closeModal}
           mode={PostBuilderMode.Edit}
           customActiveFlow={customActiveFlow}
         />

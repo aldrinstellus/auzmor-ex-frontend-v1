@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 const useCarousel = (
   index: number,
   mediaLength: number,
+  closeModal?: () => void,
 ): [number, () => void, () => void, (index: number) => void] => {
   const [currentIndex, setCurrentIndex] = useState<number>(index);
 
@@ -30,6 +31,8 @@ const useCarousel = (
       prevSlide();
     } else if (event?.key === 'ArrowRight') {
       nextSlide();
+    } else if (event?.key === 'Escape' && closeModal) {
+      closeModal();
     }
   };
 

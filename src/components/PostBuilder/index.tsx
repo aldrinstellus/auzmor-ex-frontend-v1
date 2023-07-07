@@ -10,24 +10,27 @@ export enum PostBuilderMode {
 
 export interface IPostBuilderProps {
   data?: IPost;
-  showModal: boolean;
-  setShowModal: (flag: boolean) => void;
+  open: boolean;
+  openModal: () => void;
+  closeModal: () => void;
   mode?: PostBuilderMode;
   customActiveFlow?: CreatePostFlow;
 }
 
 const PostBuilder: React.FC<IPostBuilderProps> = ({
   data,
-  showModal,
   mode = PostBuilderMode.Create,
-  setShowModal,
+  open,
+  openModal,
+  closeModal,
   customActiveFlow = CreatePostFlow.CreatePost,
 }) => {
   return (
     <CreatePostProvider>
       <CreatePostModal
-        showModal={showModal}
-        setShowModal={setShowModal}
+        open={open}
+        openModal={openModal}
+        closeModal={closeModal}
         data={data}
         mode={mode}
         customActiveFlow={customActiveFlow}

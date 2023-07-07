@@ -46,7 +46,7 @@ const SSOSettings: React.FC = (): ReactElement => {
   // 5. If the user successfully deletes SSO, refetch list of SSOs.
 
   const { data, isLoading, isError } = useGetSSO();
-  const [open, openModal, closeModal] = useModal();
+  const [open, openModal, closeModal] = useModal(undefined, false);
   const [ssoSetting, setSsoSetting] = useState<ISSOSetting>();
   const [showErrorBanner, setShowErrorBanner] = useState<boolean>(false);
 
