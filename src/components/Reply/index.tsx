@@ -15,6 +15,7 @@ import { EntityType } from 'queries/files';
 import { IMG_FILE_SIZE_LIMIT, IMedia, IMediaValidationError, MediaValidationError } from 'contexts/CreatePostContext';
 import { getMediaObj } from 'utils/misc';
 import { validImageTypesForComments } from 'components/Comments';
+import { useUploadState } from 'hooks/useUploadState';
 
 interface CommentsProps {
   entityId: string;
@@ -29,14 +30,7 @@ export interface activeCommentsDataType {
 const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
   const { user } = useAuth();
   const inputImgRef = useRef<HTMLInputElement>(null);
-  const [mediaValidationErrors, setMediaValidationErrors] = useState<IMediaValidationError[]>([]);
-  const [media, setMedia] = useState<IMedia[]>([]);
-  const [files, setFiles] = useState<File[]>([]);
-
-  const setUploads = (uploads: File[]) => {
-    setMedia([...getMediaObj(uploads)]);
-    setFiles([...uploads]);
-  };
+  const {inputRef, media, setMedia, files, setFiles, mediaValidationErrors, setMediaValidationErrors, setUploads} = useUploadState();
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteReplies({
@@ -73,7 +67,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
                 image={user?.profileImage}
               />
             </div>
-            <CommentsRTE className="w-full py-1" entityId={entityId} entityType={EntityType.Comment.toLocaleLowerCase()} inputRef={inputImgRef} media={media} removeMedia={() => {setMedia([]); setFiles([]); setMediaValidationErrors([])}} files={files}/>
+            <CommentsRTE className="w-full py-1" entityId={entityId} entityType={EntityType.Comment.toLocaleLowerCase()} inputRef={inputRef} media={media} removeMedia={() => {setMedia([]); setFiles([]); setMediaValidationErrors([])}} files={files} mediaValidationErrors={mediaValidationErrors}/>
           </div>
           {replyIds && replyIds.length > 0 && (
             <div>
@@ -101,7 +95,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
       <input
         type="file"
         className="hidden"
-        ref={inputImgRef}
+        ref={inputRef}
         accept={validImageTypesForComments.join(',')}
         onChange={(e) => {
           const mediaErrors = [...mediaValidationErrors];

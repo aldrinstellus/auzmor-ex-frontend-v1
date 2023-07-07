@@ -15,6 +15,7 @@ import { CommentsRTE } from './components/CommentsRTE';
 import Divider from 'components/Divider';
 import { IMG_FILE_SIZE_LIMIT, IMedia, IMediaValidationError, MediaValidationError } from 'contexts/CreatePostContext';
 import { getMediaObj } from 'utils/misc';
+import { useUploadState } from 'hooks/useUploadState';
 
 export const validImageTypesForComments = [
   'image/png',
@@ -52,10 +53,7 @@ export interface IComment {
 
 const Comments: React.FC<CommentsProps> = ({ entityId }) => {
   const { user } = useAuth();
-  const inputImgRef = useRef<HTMLInputElement>(null);
-  const [mediaValidationErrors, setMediaValidationErrors] = useState<IMediaValidationError[]>([]);
-  const [media, setMedia] = useState<IMedia[]>([]);
-  const [files, setFiles] = useState<File[]>([]);
+  const {inputRef, media, setMedia, files, setFiles, mediaValidationErrors, setMediaValidationErrors, setUploads} = useUploadState();
   const {
     data,
     isLoading,
@@ -79,11 +77,6 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
     });
   }) as { id: string }[];
 
-  const setUploads = (uploads: File[]) => {
-    setMedia([...getMediaObj(uploads)]);
-    setFiles([...uploads]);
-  };
-
   return (
     <div>
       <div className="flex flex-row items-center justify-between p-0">
@@ -94,7 +87,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
             image={user?.profileImage}
           />
         </div>
-        <CommentsRTE className="w-full" entityId={entityId} entityType="post" inputRef={inputImgRef} media={media} removeMedia={() => {setMedia([]); setFiles([]); setMediaValidationErrors([])}} files={files}/>
+        <CommentsRTE className="w-full" entityId={entityId} entityType="post" inputRef={inputRef} media={media} removeMedia={() => {setMedia([]); setFiles([]); setMediaValidationErrors([])}} files={files} mediaValidationErrors={mediaValidationErrors}/>
       </div>
       <Divider className="mt-4" />
       {isLoading ? (
@@ -125,7 +118,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
       <input
         type="file"
         className="hidden"
-        ref={inputImgRef}
+        ref={inputRef}
         accept={validImageTypesForComments.join(',')}
         onChange={(e) => {
           console.log(e)

@@ -2,7 +2,7 @@ import Avatar from 'components/Avatar';
 import React, { ReactElement, useEffect, useState } from 'react';
 import EditIcon from './components/EditIcon';
 import useAuth from 'hooks/useAuth';
-import { UploadStatus, useUpload } from 'queries/files';
+import { UploadStatus, useUpload } from 'hooks/useUpload';
 import { EntityType } from 'queries/files';
 import { useMutation } from '@tanstack/react-query';
 import { updateCurrentUser } from 'queries/users';

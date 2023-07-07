@@ -1,6 +1,6 @@
 import Button, { Variant as ButtonVariant, Size } from 'components/Button';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import { UploadStatus, useUpload } from 'queries/files';
+import { UploadStatus, useUpload } from 'hooks/useUpload';
 import React, { useContext } from 'react';
 import { isVideo } from 'utils/misc';
 
