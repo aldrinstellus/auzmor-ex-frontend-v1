@@ -24,7 +24,6 @@ import MediaPreview, { Mode } from 'components/MediaPreview';
 import { IMedia, IMediaValidationError } from 'contexts/CreatePostContext';
 import { EntityType } from 'queries/files';
 import {useUpload} from 'hooks/useUpload';
-import { EntityType } from 'queries/files';
 
 export enum PostCommentMode {
   Create = 'CREATE',
