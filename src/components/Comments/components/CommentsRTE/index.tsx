@@ -20,6 +20,7 @@ import { slideInAndOutTop } from 'utils/react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import Button, { Size, Variant } from 'components/Button';
 import { IComment } from 'components/Comments';
+import { EntityType } from 'queries/files';
 
 export enum PostCommentMode {
   Create = 'CREATE',
@@ -33,6 +34,14 @@ interface CommentFormProps {
   mode?: PostCommentMode;
   setEditComment?: (edit: boolean) => void;
   commentData?: IComment;
+}
+
+interface IUpdateCommentPayload {
+  entityId: string;
+  entityType: string;
+  content: {text: string, html: string, editor: DeltaStatic};
+  hashtags: Array<any>;
+  mentions: Array<any>;
 }
 
 export const CommentsRTE: React.FC<CommentFormProps> = ({
@@ -93,11 +102,27 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
 
   const updateCommentMutation = useMutation({
     mutationKey: ['update-comment'],
-    mutationFn: (payload: any) => {
+    mutationFn: (payload: IUpdateCommentPayload) => {
       return updateComment(entityId || '', payload);
     },
-    onError: (error: any) => {
-      console.log(error);
+    onMutate: (variables) => {
+      const previousComment = comment[variables.entityId!]
+
+      updateStoredComment(variables.entityId!, produce(comment[variables.entityId!], (draft) => {
+        draft.content = {
+          ...variables.content
+        }
+        draft.mentions = variables.mentions
+        draft.hashtags = variables.hashtags
+      }))
+      quillRef.current?.setEditorContents(quillRef.current?.getEditor(), '');
+      setEditComment && setEditComment(false);
+      return {previousComment}
+    },
+    onError: (error: any, variables, context) => {
+      if(context?.previousComment){
+        updateStoredComment(variables.entityId, context?.previousComment)
+      }
       toast(
         <FailureToast
           content={`Error Updating ${
@@ -150,9 +175,6 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
           transition: slideInAndOutTop,
         },
       );
-      quillRef.current?.setEditorContents(quillRef.current?.getEditor(), '');
-      queryClient.invalidateQueries({ queryKey: ['comments'] });
-      setEditComment && setEditComment(false);
     },
   });
 
@@ -193,8 +215,8 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
           ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
           .getContents() as DeltaStatic,
       };
-      const data = {
-        entityId: entityId,
+      const data: IUpdateCommentPayload = {
+        entityId: entityId!,
         entityType: entityType,
         content: commentData,
         hashtags: [],
