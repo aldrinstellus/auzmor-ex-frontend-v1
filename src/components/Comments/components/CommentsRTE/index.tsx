@@ -50,6 +50,7 @@ interface IUpdateCommentPayload {
   content: {text: string, html: string, editor: DeltaStatic};
   hashtags: Array<any>;
   mentions: Array<any>;
+  files: string[];
 }
 
 export const CommentsRTE: React.FC<CommentFormProps> = ({
@@ -200,7 +201,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
       fileIds = uploadedMedia.map((media: IMedia) => media.id)
     }
     if (mode === PostCommentMode.Create) {
-      const commentData = {
+      const commentContent = {
         text:
           quillRef.current
             ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
@@ -216,14 +217,14 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
       const data = {
         entityId: entityId || '',
         entityType: entityType,
-        content: commentData,
+        content: commentContent,
         hashtags: [],
         mentions: [],
         files: fileIds
       };
       createCommentMutation.mutate(data);
     } else if (mode === PostCommentMode.Edit) {
-      const commentData = {
+      const commentContent = {
         text:
           quillRef.current
             ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
@@ -239,9 +240,10 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
       const data: IUpdateCommentPayload = {
         entityId: entityId!,
         entityType: entityType,
-        content: commentData,
+        content: commentContent,
         hashtags: [],
         mentions: [],
+        files: commentData?.files.map((media: IMedia) => media.id) || []
       };
       updateCommentMutation.mutate(data);
     }
