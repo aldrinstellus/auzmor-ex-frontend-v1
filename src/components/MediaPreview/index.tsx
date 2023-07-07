@@ -28,6 +28,8 @@ export interface IMediaPreviewProps {
   onEditButtonClick?: React.MouseEventHandler<Element>;
   coverImageMap?: ICoverImageMap[];
   dataTestId?: string;
+  showAddMediaButton?: boolean;
+  showEditButton?: boolean;
 }
 
 const MediaPreview: React.FC<IMediaPreviewProps> = ({
@@ -40,6 +42,9 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
   onClick = () => {},
   coverImageMap,
   dataTestId,
+  showAddMediaButton = true,
+  showEditButton = true,
+
 }) => {
   const [mediaIndex, setMediaIndex] = useState<number>(-1);
   const [open, openModal, closeModal] = useModal(true);
@@ -410,7 +415,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
       {mode === Mode.Edit && (
         <div className="flex justify-between absolute p-4 top-0 w-full">
           <div>
-            <Button
+            {showAddMediaButton && <Button
               label="Add photos/videos"
               leftIcon="imageFilled"
               className="flex"
@@ -420,10 +425,10 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
               size={Size.Small}
               onClick={onAddButtonClick}
               dataTestId={`${dataTestId}-addphotoscta`}
-            />
+            />}
           </div>
           <div className="flex items-center">
-            <div
+            {showEditButton && <div
               onClick={onEditButtonClick}
               data-testid={`${dataTestId}-editicon`}
             >
@@ -434,7 +439,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                 stroke={twConfig.theme.colors.neutral['900']}
                 fill={twConfig.theme.colors.neutral['900']}
               />
-            </div>
+            </div>}
             <div
               onClick={onCloseButtonClick}
               data-testid={`${dataTestId}-remove-image`}

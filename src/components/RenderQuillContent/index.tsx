@@ -105,10 +105,8 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
           <PreviewCard metaData={link as Metadata} className="my-2" />
         </div>
       )}
-      {media && (
-        <div className="mt-4">
-          <MediaPreview media={media as IMedia[]} mode={Mode.View} />
-        </div>
+      {media && media.length > 0 && (
+        <div className='w-full flex justify-start mt-4'><MediaPreview className='w-64 h-32 overflow-hidden rounded-9xl' media={media as IMedia[]} showAddMediaButton={false} showEditButton={false}/></div> 
       )}
     </div>
   );

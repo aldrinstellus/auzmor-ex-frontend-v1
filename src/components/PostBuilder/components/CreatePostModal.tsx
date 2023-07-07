@@ -19,10 +19,10 @@ import {
   IMedia,
 } from 'contexts/CreatePostContext';
 import { PostBuilderMode } from '..';
-import { EntityType, useUpload } from 'queries/files';
+import {EntityType} from 'queries/files';
+import { useUpload, UploadStatus } from 'hooks/useUpload';
 import { previewLinkRegex } from 'components/RichTextEditor/config';
 import EditMedia from './EditMedia';
-import { UploadStatus } from 'queries/files';
 import { IMenuItem } from 'components/PopupMenu';
 import Icon from 'components/Icon';
 import { hideEmojiPalette, twConfig } from 'utils/misc';

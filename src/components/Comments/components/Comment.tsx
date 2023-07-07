@@ -32,6 +32,7 @@ import { useFeedStore } from 'stores/feedStore';
 import { useCommentStore } from 'stores/commentStore';
 import { produce } from 'immer';
 import Divider, { Variant } from 'components/Divider';
+import MediaPreview from 'components/MediaPreview';
 
 interface CommentProps {
   comment: IComment;
