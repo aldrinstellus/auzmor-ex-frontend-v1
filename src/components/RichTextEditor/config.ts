@@ -37,25 +37,18 @@ interface IHashtags {
 export const previewLinkRegex = /(http|https):\/\/[^\s]+/gi;
 
 const mentionEntityFetch = async (character: string, searchTerm: string) => {
-  let list;
-  let hashtagsData;
-  const { data: mentions } = await apiService.get('/users', {
-    params: { q: searchTerm },
-  });
-  if (searchTerm) {
-    const { data: hashtags } = await apiService.get('/hashtags', {
-      params: {
-        q: searchTerm,
-      },
+  if (character === '@' && searchTerm !== '') {
+    const { data: mentions } = await apiService.get('/users', {
+      q: searchTerm,
     });
-    hashtagsData = hashtags;
-  }
-  if (character === '@') {
-    list = mentions?.result?.data;
-    return createMentionsList(list, character);
-  } else if (character === '#') {
-    list = hashtagsData?.result;
-    return createHashtagsList(list, character);
+    const mentionList = mentions?.result?.data;
+    return createMentionsList(mentionList, character);
+  } else if (character === '#' && searchTerm !== '') {
+    const { data: hashtags } = await apiService.get('/hashtags', {
+      q: searchTerm,
+    });
+    const hashtagList = hashtags?.result;
+    return createHashtagsList(hashtagList, character);
   } else {
     return null;
   }
