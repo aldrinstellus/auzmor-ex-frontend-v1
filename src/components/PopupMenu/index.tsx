@@ -1,9 +1,9 @@
-import React, { ElementType, ReactNode, useRef } from 'react';
+import React, { ElementType, ReactElement, ReactNode, useRef } from 'react';
 import { Menu } from '@headlessui/react';
 import PopupMenuItem from './PopupMenuItem';
 
 export interface IMenuItem {
-  renderNode?: ReactNode;
+  renderNode?: ReactElement;
   disabled?: boolean;
   as?: ElementType;
   isActive?: boolean;
@@ -45,9 +45,11 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
               >
                 {(() => {
                   if (menuItem.renderNode) {
-                    // If we are rendering a custom react element,
-                    // pass data-testid as a prop to that custom element itself
-                    return menuItem.renderNode;
+                    const menuItemWithDataTestId = React.cloneElement(
+                      menuItem.renderNode,
+                      { 'data-testid': menuItem.dataTestId },
+                    );
+                    return menuItemWithDataTestId;
                   }
                   return (
                     <PopupMenuItem
