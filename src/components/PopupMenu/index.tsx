@@ -1,8 +1,5 @@
 import React, { ElementType, ReactNode, useRef } from 'react';
 import { Menu } from '@headlessui/react';
-import { twConfig } from 'utils/misc';
-import Icon from 'components/Icon';
-import useHover from 'hooks/useHover';
 import PopupMenuItem from './PopupMenuItem';
 
 export interface IMenuItem {
@@ -44,11 +41,12 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
               <Menu.Item
                 key={`menu-item-${index}`}
                 as={menuItem.as}
-                data-testid={menuItem.dataTestId}
                 disabled={menuItem.disabled}
               >
                 {(() => {
                   if (menuItem.renderNode) {
+                    // If we are rendering a custom react element,
+                    // pass data-testid as a prop to that custom element itself
                     return menuItem.renderNode;
                   }
                   return (

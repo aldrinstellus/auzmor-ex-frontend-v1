@@ -24,6 +24,7 @@ const PopupMenuItem: React.FC<PopupMenuItemProps> = ({
         menuItem?.onClick && menuItem.onClick();
       }}
       {...eventHandlers}
+      data-testid={menuItem.dataTestId}
     >
       {menuItem.icon && (
         <Icon
