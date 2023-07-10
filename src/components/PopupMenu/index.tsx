@@ -1,12 +1,9 @@
-import React, { ElementType, ReactNode, useRef } from 'react';
+import React, { ElementType, ReactElement, ReactNode, useRef } from 'react';
 import { Menu } from '@headlessui/react';
-import { twConfig } from 'utils/misc';
-import Icon from 'components/Icon';
-import useHover from 'hooks/useHover';
 import PopupMenuItem from './PopupMenuItem';
 
 export interface IMenuItem {
-  renderNode?: ReactNode;
+  renderNode?: ReactElement;
   disabled?: boolean;
   as?: ElementType;
   isActive?: boolean;
@@ -44,12 +41,15 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
               <Menu.Item
                 key={`menu-item-${index}`}
                 as={menuItem.as}
-                data-testid={menuItem.dataTestId}
                 disabled={menuItem.disabled}
               >
                 {(() => {
                   if (menuItem.renderNode) {
-                    return menuItem.renderNode;
+                    const menuItemWithDataTestId = React.cloneElement(
+                      menuItem.renderNode,
+                      { 'data-testid': menuItem.dataTestId },
+                    );
+                    return menuItemWithDataTestId;
                   }
                   return (
                     <PopupMenuItem
