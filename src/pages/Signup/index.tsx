@@ -213,7 +213,7 @@ const Signup: React.FC<ISignupProps> = () => {
 
   useEffect(() => {
     if (
-      isEmailData?.data?.exists ||
+      isEmailData?.result?.data?.exists ||
       signupMutation.error?.response?.data?.errors[0]?.code ===
         'USER_ALREADY_EXISTS'
     ) {
