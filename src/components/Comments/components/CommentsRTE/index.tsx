@@ -42,6 +42,7 @@ interface CommentFormProps {
   removeMedia?: () => void;
   files?: File[];
   mediaValidationErrors?: IMediaValidationError[];
+  setIsCreateCommentLoading?: (state: boolean) => void;
 }
 
 interface IUpdateCommentPayload {
@@ -65,6 +66,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
   removeMedia = () => {},
   files = [],
   mediaValidationErrors = [],
+  setIsCreateCommentLoading = () => {}
 }) => {
   const {
     comment,
@@ -79,6 +81,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
   const createCommentMutation = useMutation({
     mutationKey: ['create-comment'],
     mutationFn: createComment,
+    onMutate: () => {setIsCreateCommentLoading(true)},
     onError: (error: any) => {
       console.log(error);
     },
@@ -114,6 +117,9 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
         });
       }
     },
+    onSettled:() => {
+      setIsCreateCommentLoading(false);
+    }
   });
 
   const updateCommentMutation = useMutation({

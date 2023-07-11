@@ -43,7 +43,7 @@ const InviteFormRow: React.FC<IInviteFormRowProps> = ({
     setErrorValidationErrors({
       ...emailValidationErrors,
       [index]: {
-        isError: data ? !!data?.exists : false,
+        isError: data ? !!data?.result?.data?.userExists : false,
         isLoading,
       },
     });

@@ -66,6 +66,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
     entityType: 'post',
     limit: 4,
   });
+  const [isCreateCommentLoading, setIsCreateCommentLoading] = useState(false);
 
   const commentIds = data?.pages.flatMap((page) => {
     return page.data?.result?.data.map((comment: { id: string }) => {
@@ -87,7 +88,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
             image={user?.profileImage}
           />
         </div>
-        <CommentsRTE className="w-full" entityId={entityId} entityType="post" inputRef={inputRef} media={media} removeMedia={() => {setMedia([]); setFiles([]); setMediaValidationErrors([])}} files={files} mediaValidationErrors={mediaValidationErrors}/>
+        <CommentsRTE className="w-full" entityId={entityId} entityType="post" inputRef={inputRef} media={media} removeMedia={() => {setMedia([]); setFiles([]); setMediaValidationErrors([])}} files={files} mediaValidationErrors={mediaValidationErrors} setIsCreateCommentLoading={setIsCreateCommentLoading}/>
       </div>
       <Divider className="mt-4" />
       {isLoading ? (
@@ -95,6 +96,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
       ) : (
         commentIds && (
           <div className="pb-4">
+            {isCreateCommentLoading && <CommentSkeleton />}
             {commentIds
               ?.filter(({ id }) => !!comment[id])
               .map(({ id }, i: any) => (

@@ -29,8 +29,8 @@ export interface activeCommentsDataType {
 
 const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
   const { user } = useAuth();
-  const inputImgRef = useRef<HTMLInputElement>(null);
   const {inputRef, media, setMedia, files, setFiles, mediaValidationErrors, setMediaValidationErrors, setUploads} = useUploadState();
+  const [isCreateCommentLoading, setIsCreateCommentLoading] = useState(false);
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteReplies({
@@ -67,10 +67,11 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
                 image={user?.profileImage}
               />
             </div>
-            <CommentsRTE className="w-full py-1" entityId={entityId} entityType={EntityType.Comment.toLocaleLowerCase()} inputRef={inputRef} media={media} removeMedia={() => {setMedia([]); setFiles([]); setMediaValidationErrors([])}} files={files} mediaValidationErrors={mediaValidationErrors}/>
+            <CommentsRTE className="w-full py-1" entityId={entityId} entityType={EntityType.Comment.toLocaleLowerCase()} inputRef={inputRef} media={media} removeMedia={() => {setMedia([]); setFiles([]); setMediaValidationErrors([])}} files={files} mediaValidationErrors={mediaValidationErrors} setIsCreateCommentLoading={setIsCreateCommentLoading}/>
           </div>
           {replyIds && replyIds.length > 0 && (
             <div>
+              {isCreateCommentLoading && <CommentSkeleton />}
               {replyIds
                 .filter(({ id }) => !!comment[id])
                 .map(({ id }) => (
