@@ -275,21 +275,33 @@ export const deletePost = async (id: string) => {
   return data;
 };
 
-export const fetchAnnouncement = async (postType: string, limit: number) => {
-  const data = await apiService.get(`/posts?feed=${postType}&limit=${limit}`);
+export const fetchAnnouncement = async (
+  postType: string,
+  limit: number,
+  excludeMyAnnouncements = true,
+) => {
+  const data = await apiService.get(
+    `/posts?feed=${postType}&excludeMyAnnouncements=${excludeMyAnnouncements}&limit=${limit}`,
+  );
   return data;
 };
 
-export const useAnnouncementsWidget = () =>
+export const useAnnouncementsWidget = (limit = 1) =>
   useQuery({
     queryKey: ['announcements-widget'],
-    queryFn: () => fetchAnnouncement('ANNOUNCEMENT', 1),
+    queryFn: () => fetchAnnouncement('ANNOUNCEMENT', limit),
     staleTime: 15 * 60 * 1000,
   });
 
-export const fetchInfiniteAnnouncement = ({ pageParam = null }) => {
+export const fetchInfiniteAnnouncement = ({
+  pageParam = null,
+  limit = 1,
+  excludeMyAnnouncements = true,
+}) => {
   if (pageParam === null)
-    return apiService.get(`/posts?feed=ANNOUNCEMENT&limit=1`);
+    return apiService.get(
+      `/posts?feed=ANNOUNCEMENT&limit=${limit}&excludeMyAnnouncements=${excludeMyAnnouncements}`,
+    );
   return apiService.get(pageParam);
 };
 
