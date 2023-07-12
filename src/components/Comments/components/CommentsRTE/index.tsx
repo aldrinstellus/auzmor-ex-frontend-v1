@@ -108,7 +108,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
         );
       } else if (entityType === 'comment' && entityId) {
         const updatedComment = produce(comment[entityId], (draft) => {
-          draft.repliesCount = draft.repliesCount + 1;
+          draft.repliesCount = draft.repliesCount? draft.repliesCount + 1 : 1;
         });
         setComment({
           ...comment,

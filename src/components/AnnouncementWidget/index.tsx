@@ -1,7 +1,7 @@
 import React from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Card from 'components/Card';
-import { announcementRead, useInfiniteFetchAnnouncement } from 'queries/post';
+import { announcementRead, useAnnouncementsWidget } from 'queries/post';
 import Button, { Variant } from 'components/Button';
 import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
@@ -19,28 +19,40 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
+  // Default values for useAnnouncementWidget when postId is undefined
+  let limit = 1,
+    queryKey = 'feed-announcements-widget';
+
+  // If postId is a defined value, then set limit = 2 and modify queryKey
+  if (postId) {
+    limit = 2;
+    queryKey = 'post-announcements-widget';
+  }
+
   const acknowledgeAnnouncement = useMutation({
     mutationKey: ['acknowledge-announcement'],
     mutationFn: announcementRead,
     onError: (error) => console.log(error),
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['announcements-widget']);
+      await queryClient.invalidateQueries([queryKey]);
       await queryClient.invalidateQueries(['feed']);
     },
   });
 
-  const { data, isLoading, fetchNextPage, isFetchingNextPage } =
-    useInfiniteFetchAnnouncement();
+  const { data, isLoading } = useAnnouncementsWidget(limit, queryKey);
 
-  const result = data?.pages[data?.pages?.length - 1]?.data?.result?.data;
+  const result = data?.data?.result?.data;
   const itemCount = result?.length;
-  const postData = result?.[0];
+
+  // By default, postData will be result[0].
+  // If postId is defined and result[0].id === postId, then set postData = result[1]
+  let postData = result?.[0];
+  if (postId && postData?.id === postId) {
+    postData = result?.[1];
+  }
+
   const isAcknowledged = postData?.myAcknowledgement?.reaction !== 'mark_read';
   const dataPostId = postData?.id;
-
-  if (dataPostId === postId) {
-    fetchNextPage();
-  }
 
   const hasLoggedInUserCreatedAnnouncement =
     user?.id === postData?.announcement?.actor?.userId;
@@ -57,7 +69,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
             <Icon name="flashIcon" />
             <div className="text-base font-bold">Announcement</div>
           </div>
-          {isLoading || dataPostId === postId || isFetchingNextPage ? (
+          {isLoading || dataPostId === postId ? (
             <SkeletonLoader />
           ) : (
             <div className="w-full px-6">

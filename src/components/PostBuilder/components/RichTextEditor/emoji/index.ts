@@ -241,6 +241,8 @@ function fn_emojiElementsToPanel(
       arg3: any,
     ) => void;
     setSelection: (arg0: any) => void;
+    getBounds: (param: any) => any;
+    container: any;
   },
 ) {
   const fuseOptions = {
@@ -281,7 +283,10 @@ function fn_emojiElementsToPanel(
           innerHTML: `${emoji.code_decimal} `,
         });
         quill.insertEmbed(range.index, 'emoji', emoji, Quill); // Quill.source.USER Error source doesn't exist
-        setTimeout(() => quill.setSelection(range.index + 1), 0);
+        setTimeout(() => {
+          quill.setSelection(range.index + 1);
+          quill.container.parentNode.scrollTop = quill.getBounds(range.index + 1).top;
+        }, 0)
         fn_close();
       });
     }

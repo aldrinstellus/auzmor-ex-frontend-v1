@@ -101,7 +101,8 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
           transition: slideInAndOutTop,
         },
       );
-      await queryClient.invalidateQueries(['announcements-widget']);
+      await queryClient.invalidateQueries(['feed-announcements-widget']);
+      await queryClient.invalidateQueries(['post-announcements-widget']);
     },
   });
 
@@ -124,7 +125,8 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       updateFeed(context!.previousPost.id!, context!.previousPost!);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['announcements-widget']);
+      await queryClient.invalidateQueries(['feed-announcements-widget']);
+      await queryClient.invalidateQueries(['post-announcements-widget']);
     },
   });
 
