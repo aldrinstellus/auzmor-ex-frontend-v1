@@ -286,40 +286,15 @@ export const fetchAnnouncement = async (
   return data;
 };
 
-export const useAnnouncementsWidget = (limit = 1) =>
+export const useAnnouncementsWidget = (
+  limit = 1,
+  queryKey = 'feed-announcements-widget',
+) =>
   useQuery({
-    queryKey: ['announcements-widget'],
+    queryKey: [queryKey],
     queryFn: () => fetchAnnouncement('ANNOUNCEMENT', limit),
     staleTime: 15 * 60 * 1000,
   });
-
-export const fetchInfiniteAnnouncement = ({
-  pageParam = null,
-  limit = 1,
-  excludeMyAnnouncements = true,
-}) => {
-  if (pageParam === null)
-    return apiService.get(
-      `/posts?feed=ANNOUNCEMENT&limit=${limit}&excludeMyAnnouncements=${excludeMyAnnouncements}`,
-    );
-  return apiService.get(pageParam);
-};
-
-export const useInfiniteFetchAnnouncement = (q?: Record<string, any>) => {
-  return useInfiniteQuery({
-    queryKey: ['announcements-widget', q],
-    queryFn: fetchInfiniteAnnouncement,
-    staleTime: 15 * 60 * 1000,
-    getNextPageParam: (lastPage: any) => {
-      if (lastPage?.data?.result?.data?.length === 0) return null;
-      return lastPage?.data?.result?.paging?.next;
-    },
-    getPreviousPageParam: (currentPage: any) => {
-      if (currentPage?.data?.result?.data?.length === 0) return null;
-      return currentPage?.data?.result?.paging?.prev;
-    },
-  });
-};
 
 export const announcementRead = async (payload: IAnnounce) => {
   const data = await apiService.post('/reactions', payload);

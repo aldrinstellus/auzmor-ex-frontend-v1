@@ -19,7 +19,7 @@ import {
   IMedia,
 } from 'contexts/CreatePostContext';
 import { PostBuilderMode } from '..';
-import {EntityType} from 'queries/files';
+import { EntityType } from 'queries/files';
 import { useUpload, UploadStatus } from 'hooks/useUpload';
 import { previewLinkRegex } from 'components/RichTextEditor/config';
 import EditMedia from './EditMedia';
@@ -128,7 +128,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       );
       clearPostContext();
       closeModal();
-      await queryClient.invalidateQueries(['announcements-widget']);
+      await queryClient.invalidateQueries(['feed-announcements-widget']);
+      await queryClient.invalidateQueries(['post-announcements-widget']);
     },
   });
 
@@ -205,7 +206,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           transition: slideInAndOutTop,
         },
       );
-      await queryClient.invalidateQueries(['announcements-widget']);
+      await queryClient.invalidateQueries(['feed-announcements-widget']);
+      await queryClient.invalidateQueries(['post-announcements-widget']);
     },
   });
 

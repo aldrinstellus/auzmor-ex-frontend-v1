@@ -40,7 +40,8 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
     onError: (error, variables, context) =>
       updateFeed(context!.previousPost.id!, context!.previousPost!),
     onSuccess: async (data, variables, context) => {
-      await queryClient.invalidateQueries(['announcements-widget']);
+      await queryClient.invalidateQueries(['feed-announcements-widget']);
+      await queryClient.invalidateQueries(['post-announcements-widget']);
     },
   });
 
