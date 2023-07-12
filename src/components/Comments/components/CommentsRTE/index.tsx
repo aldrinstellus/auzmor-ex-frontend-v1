@@ -288,12 +288,12 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
           toolbarId={`toolbar-${entityId}`}
           defaultValue={commentData?.content?.editor}
           placeholder="Leave a comment..."
-          className="max-h-18 relative"
+          className="max-h-18 min-w-[70%] relative"
           ref={quillRef}
           dataTestId="postcomment-textbox"
           renderToolbar={() => (
             <div
-              className="flex flex-row items-center z-10 -ml-32 absolute top-0 right-2 quill-toolbar"
+              className="flex flex-row items-center z-10 -ml-32 absolute top-0 right-2 quill-toolbar quill-toolbar-icons"
               id={`toolbar-${entityId}-toolbar`}
             >
               <div className="mr-6">
