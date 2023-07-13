@@ -81,7 +81,8 @@
   margin-left: 16px;
 }
 
-/*Hashtags*/
+/* Hashtags */
+
 .hashtag-container {
   display: flex;
   padding: 5px;
@@ -94,4 +95,5 @@
   color: #059669;
   text-decoration: underline;
   cursor: pointer;
+  font-weight: 700;
 }
