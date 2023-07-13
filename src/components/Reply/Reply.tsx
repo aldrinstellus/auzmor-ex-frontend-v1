@@ -222,7 +222,7 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
               className=" text-neutral-900  font-normal text-sm mt-4"
               data-testid="comment-reply-content"
             >
-              <RenderQuillContent data={comment} />
+              <RenderQuillContent data={comment} isComment />
             </div>
           )}
         </div>

@@ -23,7 +23,7 @@ import { IComment } from 'components/Comments';
 import MediaPreview, { Mode } from 'components/MediaPreview';
 import { IMedia, IMediaValidationError } from 'contexts/CreatePostContext';
 import { EntityType } from 'queries/files';
-import {useUpload} from 'hooks/useUpload';
+import { useUpload } from 'hooks/useUpload';
 
 export enum PostCommentMode {
   Create = 'CREATE',
@@ -48,7 +48,7 @@ interface CommentFormProps {
 interface IUpdateCommentPayload {
   entityId: string;
   entityType: string;
-  content: {text: string, html: string, editor: DeltaStatic};
+  content: { text: string; html: string; editor: DeltaStatic };
   hashtags: Array<any>;
   mentions: Array<any>;
   files: string[];
@@ -66,7 +66,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
   removeMedia = () => {},
   files = [],
   mediaValidationErrors = [],
-  setIsCreateCommentLoading = () => {}
+  setIsCreateCommentLoading = () => {},
 }) => {
   const {
     comment,
@@ -76,12 +76,14 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
   const { feed, updateFeed } = useFeedStore();
   const queryClient = useQueryClient();
   const quillRef = useRef<ReactQuill>(null);
-  const {uploadMedia} = useUpload();
+  const { uploadMedia } = useUpload();
 
   const createCommentMutation = useMutation({
     mutationKey: ['create-comment'],
     mutationFn: createComment,
-    onMutate: () => {setIsCreateCommentLoading(true)},
+    onMutate: () => {
+      setIsCreateCommentLoading(true);
+    },
     onError: (error: any) => {
       console.log(error);
     },
@@ -108,7 +110,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
         );
       } else if (entityType === 'comment' && entityId) {
         const updatedComment = produce(comment[entityId], (draft) => {
-          draft.repliesCount = draft.repliesCount? draft.repliesCount + 1 : 1;
+          draft.repliesCount = draft.repliesCount ? draft.repliesCount + 1 : 1;
         });
         setComment({
           ...comment,
@@ -117,9 +119,9 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
         });
       }
     },
-    onSettled:() => {
+    onSettled: () => {
       setIsCreateCommentLoading(false);
-    }
+    },
   });
 
   const updateCommentMutation = useMutation({
@@ -128,22 +130,25 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
       return updateComment(entityId || '', payload);
     },
     onMutate: (variables) => {
-      const previousComment = comment[variables.entityId!]
+      const previousComment = comment[variables.entityId!];
 
-      updateStoredComment(variables.entityId!, produce(comment[variables.entityId!], (draft) => {
-        draft.content = {
-          ...variables.content
-        }
-        draft.mentions = variables.mentions
-        draft.hashtags = variables.hashtags
-      }))
+      updateStoredComment(
+        variables.entityId!,
+        produce(comment[variables.entityId!], (draft) => {
+          draft.content = {
+            ...variables.content,
+          };
+          draft.mentions = variables.mentions;
+          draft.hashtags = variables.hashtags;
+        }),
+      );
       quillRef.current?.setEditorContents(quillRef.current?.getEditor(), '');
       setEditComment && setEditComment(false);
-      return {previousComment}
+      return { previousComment };
     },
     onError: (error: any, variables, context) => {
-      if(context?.previousComment){
-        updateStoredComment(variables.entityId, context?.previousComment)
+      if (context?.previousComment) {
+        updateStoredComment(variables.entityId, context?.previousComment);
       }
       toast(
         <FailureToast
@@ -201,10 +206,10 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
   });
 
   const onSubmit = async () => {
-    let fileIds:string[] = [];
-    if(files.length){
+    let fileIds: string[] = [];
+    if (files.length) {
       const uploadedMedia = await uploadMedia(files, EntityType.Comment);
-      fileIds = uploadedMedia.map((media: IMedia) => media.id)
+      fileIds = uploadedMedia.map((media: IMedia) => media.id);
     }
     if (mode === PostCommentMode.Create) {
       const commentContent = {
@@ -226,7 +231,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
         content: commentContent,
         hashtags: [],
         mentions: [],
-        files: fileIds
+        files: fileIds,
       };
       createCommentMutation.mutate(data);
     } else if (mode === PostCommentMode.Edit) {
@@ -249,7 +254,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
         content: commentContent,
         hashtags: [],
         mentions: [],
-        files: commentData?.files.map((media: IMedia) => media.id) || []
+        files: commentData?.files.map((media: IMedia) => media.id) || [],
       };
       updateCommentMutation.mutate(data);
     }
@@ -282,13 +287,17 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
                   />
                 )}
               </div>
-              {mode !== PostCommentMode.Edit && <IconButton icon={'imageOutline'}
-                className="flex mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
-                size={SizeVariant.Large}
-                variant={IconVariant.Primary}
-                dataTestId="postcomment-mediacta"
-                onClick={() => inputRef && inputRef?.current?.click()}
-                fill={twConfig.theme.colors.primary['500']} />}
+              {mode !== PostCommentMode.Edit && (
+                <IconButton
+                  icon={'imageOutline'}
+                  className="flex mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
+                  size={SizeVariant.Large}
+                  variant={IconVariant.Primary}
+                  dataTestId="postcomment-mediacta"
+                  onClick={() => inputRef && inputRef?.current?.click()}
+                  fill={twConfig.theme.colors.primary['500']}
+                />
+              )}
               <button className="ql-emoji" />
               <IconButton
                 icon={'send'}
@@ -304,9 +313,44 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
             </div>
           )}
         />
-        {media.length > 0 && <div className='w-full flex justify-start pl-6'><MediaPreview className='w-64 h-32 overflow-hidden rounded-9xl' media={media} mode={Mode.Edit} showAddMediaButton={false} showEditButton={false} onCloseButtonClick={removeMedia}/></div>}
-        {commentData && commentData?.files.length > 0 && <div className='w-full flex justify-start pl-6 pointer-events-none opacity-50'><MediaPreview className='w-64 h-32 overflow-hidden rounded-9xl' media={commentData.files} showAddMediaButton={false} showEditButton={false}/></div>}
-        {mediaValidationErrors.map((error: IMediaValidationError, index: number) => <div key={index} className="text-red-500 flex justify-start w-full pl-6"><div className='mr-2'><Icon name='infoCircle' stroke={twConfig.theme.colors.red['500']} /></div><div className='truncate'>{error.errorMsg}</div></div>)}
+        {media.length > 0 && (
+          <div className="w-full flex justify-start pl-6">
+            <MediaPreview
+              className="w-64 h-32 overflow-hidden rounded-9xl"
+              media={media}
+              mode={Mode.Edit}
+              showAddMediaButton={false}
+              showEditButton={false}
+              onCloseButtonClick={removeMedia}
+            />
+          </div>
+        )}
+        {commentData && commentData?.files.length > 0 && (
+          <div className="w-full flex justify-start pl-6 pointer-events-none opacity-50">
+            <MediaPreview
+              className="w-64 h-32 overflow-hidden rounded-9xl"
+              media={commentData.files}
+              showAddMediaButton={false}
+              showEditButton={false}
+            />
+          </div>
+        )}
+        {mediaValidationErrors.map(
+          (error: IMediaValidationError, index: number) => (
+            <div
+              key={index}
+              className="text-red-500 flex justify-start w-full pl-6"
+            >
+              <div className="mr-2">
+                <Icon
+                  name="infoCircle"
+                  stroke={twConfig.theme.colors.red['500']}
+                />
+              </div>
+              <div className="truncate">{error.errorMsg}</div>
+            </div>
+          ),
+        )}
       </div>
     </div>
   );

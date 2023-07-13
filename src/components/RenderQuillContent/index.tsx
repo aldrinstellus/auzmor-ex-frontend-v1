@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement, useEffect, useMemo } from 'react';
 import { DeltaOperation } from 'quill';
 import Mention from './components/Mention';
 import Hashtag from './components/Hashtag';
@@ -12,13 +12,16 @@ import { removeElementsByClass } from 'utils/misc';
 import { IComment } from 'components/Comments';
 import { IMedia } from 'contexts/CreatePostContext';
 import { Metadata } from 'components/PreviewLink/types';
+import clsx from 'clsx';
 
 type RenderQuillContent = {
   data: IPost | IComment;
+  isComment?: boolean;
 };
 
 const RenderQuillContent: React.FC<RenderQuillContent> = ({
   data,
+  isComment = false,
 }): ReactElement => {
   const content = data?.content?.editor;
   const mentions = data?.mentions ? data.mentions : [];
@@ -91,12 +94,29 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
     }
   });
 
+  const containerStyle = useMemo(
+    () =>
+      clsx({
+        'w-full flex justify-start': isComment,
+        'mt-4': true,
+      }),
+    [],
+  );
+
+  const mediaPreviewStyle = useMemo(
+    () =>
+      clsx({
+        'w-64 h-32 overflow-hidden rounded-9xl': isComment,
+      }),
+    [],
+  );
+
   return (
     <div>
       <span
         className="line-clamp-3 paragraph pt-px"
         id={`${data?.id}-content`}
-        data-testid="feed-post-content"
+        data-testid={isComment && 'comment-content'}
       >
         <span>{postContent}</span>
       </span>
@@ -106,7 +126,14 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
         </div>
       )}
       {media && media.length > 0 && (
-        <div className='w-full flex justify-start mt-4'><MediaPreview className='w-64 h-32 overflow-hidden rounded-9xl' media={media as IMedia[]} showAddMediaButton={false} showEditButton={false}/></div> 
+        <div className={containerStyle}>
+          <MediaPreview
+            className={mediaPreviewStyle}
+            media={media as IMedia[]}
+            showAddMediaButton={false}
+            showEditButton={false}
+          />
+        </div>
       )}
     </div>
   );

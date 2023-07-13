@@ -261,7 +261,7 @@ export const Comment: React.FC<CommentProps> = ({
           </div>
         ) : (
           <div className="text-neutral-900 font-normal text-sm mt-4">
-            <RenderQuillContent data={comment} />
+            <RenderQuillContent data={comment} isComment />
           </div>
         )}
       </div>
