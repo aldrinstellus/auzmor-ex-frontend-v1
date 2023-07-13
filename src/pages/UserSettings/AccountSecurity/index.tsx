@@ -31,14 +31,14 @@ const schema = yup.object({
   currentPassword: yup.string().required(),
   newPassword: yup
     .string()
-    .required()
+    .required('New Password is a required field')
     .notOneOf(
       [yup.ref('currentPassword')],
       'New password cannot be the same as current password',
     ),
   confirmPassword: yup
     .string()
-    .required()
+    .required('Confirm Password is a required field')
     .oneOf([yup.ref('newPassword')], 'Passwords do not match'),
 });
 
