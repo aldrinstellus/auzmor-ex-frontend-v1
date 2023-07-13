@@ -23,7 +23,7 @@ import { useFeedStore } from 'stores/feedStore';
 import useModal from 'hooks/useModal';
 import { useNavigate } from 'react-router-dom';
 import { CreatePostContext } from 'contexts/CreatePostContext';
-
+import HashtagIcon from 'images/hashtag.svg';
 interface IFeedProps {}
 
 export interface IProfileImage {
@@ -118,57 +118,81 @@ const Feed: React.FC<IFeedProps> = () => {
         </div>
         <div className="w-1/2">
           <div className="">
-            <CreatePostCard
-              open={open}
-              openModal={openModal}
-              closeModal={closeModal}
-            />
-            <div className="flex flex-row items-center gap-x-2 mt-8">
-              <FeedFilter
-                appliedFeedFilters={appliedFeedFilters}
-                onApplyFilters={(filters: IPostFilters) => {
-                  setAppliedFeedFilters(filters);
-                }}
-                dataTestId="filters-dropdown"
-              />
-              <Divider />
-              <SortByDropdown />
-            </div>
-            <div className="flex w-full overflow-y-auto">
-              {appliedFeedFilters[PostFilterKeys.PostType]?.map(
-                (filter: PostType) => (
-                  <div
-                    key={filter}
-                    className="border border-neutral-200 rounded-17xl px-3 py-2 flex bg-white capitalize text-sm font-medium items-center mr-1"
-                  >
-                    <div className="mr-1">{filter.toLocaleLowerCase()}</div>
-                    <Icon
-                      name="closeCircleOutline"
-                      stroke={twConfig.theme.colors.neutral['900']}
-                      className="cursor-pointer"
-                      onClick={() => removePostTypeFilter(filter)}
-                    />
+            {feedHashtag ? (
+              <div className="bg-orange-50 shadow-md rounded-9xl h-24 px-6 py-4">
+                <div className="flex justify-between items-center">
+                  <div className="gap-y-1">
+                    <div className="flex gap-x-3 items-center">
+                      <Icon name="arrowLeft" fill="#171717" stroke="#171717" />
+                      <div className="text-2xl font-bold text-neutral-900">
+                        <span>#</span>
+                        {feedHashtag || 'office'}
+                      </div>
+                    </div>
+                    <div className="text-base font-normal text-neutral-500">
+                      0 people are posting about this
+                    </div>
                   </div>
-                ),
-              )}
-              {getAppliedFiltersCount() > 0 && (
-                <div
-                  className="flex items-center cursor-pointer"
-                  onClick={clearAppliedFilters}
-                >
-                  <Icon
-                    name="deleteOutline"
-                    size={16}
-                    className="mr-1"
-                    stroke={twConfig.theme.colors.primary['600']}
-                    strokeWidth={'2'}
-                  />
-                  <div className="font-bold text-sm text-primary-600">
-                    Clear all
+                  <div>
+                    <img src={HashtagIcon} />
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            ) : (
+              <>
+                <CreatePostCard
+                  open={open}
+                  openModal={openModal}
+                  closeModal={closeModal}
+                />
+                <div className="flex flex-row items-center gap-x-2 mt-8">
+                  <FeedFilter
+                    appliedFeedFilters={appliedFeedFilters}
+                    onApplyFilters={(filters: IPostFilters) => {
+                      setAppliedFeedFilters(filters);
+                    }}
+                    dataTestId="filters-dropdown"
+                  />
+                  <Divider />
+                  <SortByDropdown />
+                </div>
+                <div className="flex w-full overflow-y-auto">
+                  {appliedFeedFilters[PostFilterKeys.PostType]?.map(
+                    (filter: PostType) => (
+                      <div
+                        key={filter}
+                        className="border border-neutral-200 rounded-17xl px-3 py-2 flex bg-white capitalize text-sm font-medium items-center mr-1"
+                      >
+                        <div className="mr-1">{filter.toLocaleLowerCase()}</div>
+                        <Icon
+                          name="closeCircleOutline"
+                          stroke={twConfig.theme.colors.neutral['900']}
+                          className="cursor-pointer"
+                          onClick={() => removePostTypeFilter(filter)}
+                        />
+                      </div>
+                    ),
+                  )}
+                  {getAppliedFiltersCount() > 0 && (
+                    <div
+                      className="flex items-center cursor-pointer"
+                      onClick={clearAppliedFilters}
+                    >
+                      <Icon
+                        name="deleteOutline"
+                        size={16}
+                        className="mr-1"
+                        stroke={twConfig.theme.colors.primary['600']}
+                        strokeWidth={'2'}
+                      />
+                      <div className="font-bold text-sm text-primary-600">
+                        Clear all
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
             {isLoading ? (
               <SkeletonLoader />
             ) : (
