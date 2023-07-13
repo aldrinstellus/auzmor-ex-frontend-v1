@@ -116,7 +116,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
       <span
         className="line-clamp-3 paragraph pt-px"
         id={`${data?.id}-content`}
-        data-testid="feed-post-content"
+        data-testid={isComment && 'comment-content'}
       >
         <span>{postContent}</span>
       </span>
