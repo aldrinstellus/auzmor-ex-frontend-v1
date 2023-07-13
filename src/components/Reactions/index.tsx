@@ -104,84 +104,82 @@ const Likes: React.FC<LikesProps> = ({
         updateFeed(
           variables.entityId,
           produce(feed[variables.entityId], (draft) => {
-            (draft.myReaction = {
-              reaction: data.reaction,
-              createdBy: data.createdBy,
-              id: data.id,
-              type: data.type,
-            }),
-              (draft.reactionsCount =
-                draft.reactionsCount && Object.keys(draft.reactionsCount).length > 0
-                  ? Object.keys(draft.myReaction).length > 0 // if reactions count exist
-                    ? {
+            (draft.reactionsCount =
+              draft.reactionsCount &&
+              Object.keys(draft.reactionsCount).length > 0
+                ? Object.keys(draft.myReaction || {}).length > 0 // if reactions count exist
+                  ? {
                       ...draft.reactionsCount,
-                        // if reactions count and my reaction exist
-                        [draft.myReaction.reaction as string]:
-                          draft.reactionsCount[
-                            draft.myReaction.reaction as string
-                          ] - 1,
-                        [variables.reaction as string]: draft.reactionsCount[
-                          variables.reaction as string
-                        ]
-                          ? variables.reaction === draft.myReaction.reaction
-                            ? draft.reactionsCount[variables.reaction as string]
-                            : draft.reactionsCount[
-                                variables.reaction as string
-                              ] + 1
-                          : 1,
-                      }
-                    : {
-                      ...draft.reactionsCount,
-                        // if reactions count exist but my reaction does not exist
-                        [variables.reaction as string]: draft.reactionsCount[
-                          variables.reaction as string
-                        ]
-                          ? draft.reactionsCount[variables.reaction as string] +
+                      // if reactions count and my reaction exist
+                      [draft.myReaction!.reaction as string]:
+                        draft.reactionsCount[
+                          draft.myReaction!.reaction as string
+                        ] - 1,
+                      [variables.reaction as string]: draft.reactionsCount[
+                        variables.reaction as string
+                      ]
+                        ? variables.reaction === draft.myReaction!.reaction
+                          ? draft.reactionsCount[variables.reaction as string]
+                          : draft.reactionsCount[variables.reaction as string] +
                             1
-                          : 1,
-                      }
-                  : { [variables.reaction as string]: 1 }); // if reactions count does not exist at all
+                        : 1,
+                    }
+                  : {
+                      ...draft.reactionsCount,
+                      // if reactions count exist but my reaction does not exist
+                      [variables.reaction as string]: draft.reactionsCount[
+                        variables.reaction as string
+                      ]
+                        ? draft.reactionsCount[variables.reaction as string] + 1
+                        : 1,
+                    }
+                : { [variables.reaction as string]: 1 }),
+              (draft.myReaction = {
+                reaction: data.reaction,
+                createdBy: data.createdBy,
+                id: data.id,
+                type: data.type,
+              }); // if reactions count does not exist at all
           }),
         );
       } else if (variables.entityType === 'comment') {
         updateComment(
           variables.entityId,
           produce(comment[variables.entityId], (draft) => {
-            (draft.myReaction = {
-              reaction: data.reaction,
-              createdBy: data.createdBy,
-              id: data.id,
-              type: data.type,
-            }),
-              (draft.reactionsCount =
-                draft.reactionsCount && Object.keys(draft.reactionsCount).length > 0
-                  ? Object.keys(draft.myReaction).length > 0
-                    ? {
-                        ...draft.reactionsCount,
-                        [draft.myReaction.reaction as string]:
-                          draft.reactionsCount[
-                            draft.myReaction.reaction as string
-                          ] - 1,
-                        [variables.reaction as string]: draft.reactionsCount[
-                          variables.reaction as string
-                        ]
-                          ? variables.reaction === draft.myReaction.reaction
-                            ? draft.reactionsCount[variables.reaction as string]
-                            : draft.reactionsCount[
-                                variables.reaction as string
-                              ] + 1
-                          : 1,
-                      }
-                    : {
-                        ...draft.reactionsCount,
-                        [variables.reaction as string]: draft.reactionsCount[
-                          variables.reaction as string
-                        ]
-                          ? draft.reactionsCount[variables.reaction as string] +
+            (draft.reactionsCount =
+              draft.reactionsCount &&
+              Object.keys(draft.reactionsCount).length > 0
+                ? Object.keys(draft.myReaction || {}).length > 0
+                  ? {
+                      ...draft.reactionsCount,
+                      [draft.myReaction!.reaction as string]:
+                        draft.reactionsCount[
+                          draft.myReaction!.reaction as string
+                        ] - 1,
+                      [variables.reaction as string]: draft.reactionsCount[
+                        variables.reaction as string
+                      ]
+                        ? variables.reaction === draft.myReaction!.reaction
+                          ? draft.reactionsCount[variables.reaction as string]
+                          : draft.reactionsCount[variables.reaction as string] +
                             1
-                          : 1,
-                      }
-                  : { [variables.reaction as string]: 1 });
+                        : 1,
+                    }
+                  : {
+                      ...draft.reactionsCount,
+                      [variables.reaction as string]: draft.reactionsCount[
+                        variables.reaction as string
+                      ]
+                        ? draft.reactionsCount[variables.reaction as string] + 1
+                        : 1,
+                    }
+                : { [variables.reaction as string]: 1 }),
+              (draft.myReaction = {
+                reaction: data.reaction,
+                createdBy: data.createdBy,
+                id: data.id,
+                type: data.type,
+              });
           }),
         );
       }

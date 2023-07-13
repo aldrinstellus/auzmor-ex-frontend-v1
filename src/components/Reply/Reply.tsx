@@ -231,6 +231,11 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
             {totalCount > 0 && (
               <div className="mr-2 flex flex-row">
                 {Object.keys(comment?.reactionsCount || {})
+                  .filter(
+                    (key) =>
+                      !!comment.reactionsCount[key] &&
+                      comment.reactionsCount[key] > 0,
+                  )
                   .slice(0, 3)
                   .map((key, i) => (
                     <div className={` ${i > 0 ? '-ml-2 z-1' : ''}  `} key={key}>

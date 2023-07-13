@@ -280,37 +280,47 @@ export const Comment: React.FC<CommentProps> = ({
           {/* ellipse */}
           <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
           {/* Show Reaction */}
-          <div className="flex justify-between cursor-pointer">
-            <div className="flex space-x-1 items-center mr-2">
-              {totalCount > 0 && (
-                <div className="flex ">
-                  {Object.keys(comment.reactionsCount)
-                    .slice(0, 3)
-                    .map((react, i) => (
-                      <div
-                        className={` ${i > 0 ? '-ml-2 z-1' : ''}  `}
-                        key={react}
-                      >
-                        <Icon
-                          name={react}
-                          size={12}
-                          className={`p-0.5 rounded-17xl cursor-pointer border-white border border-solid ${iconsStyle(
-                            react,
-                          )}`}
-                        />
-                      </div>
-                    ))}
-                </div>
-              )}
-              <div
-                className={`flex text-sm font-normal text-neutral-500`}
-                data-testid="comment-reaction-count"
-                onClick={() => setShowReactionModal(true)}
-              >
-                {totalCount}
+          {totalCount > 0 && (
+            <div className="flex justify-between cursor-pointer">
+              <div className="flex space-x-1 items-center mr-2">
+                {totalCount > 0 && (
+                  <div className="flex ">
+                    {Object.keys(comment.reactionsCount)
+                      .filter(
+                        (key) =>
+                          !!comment.reactionsCount[key] &&
+                          comment.reactionsCount[key] > 0,
+                      )
+                      .slice(0, 3)
+                      .map((react, i) => (
+                        <div
+                          className={` ${i > 0 ? '-ml-2 z-1' : ''}  `}
+                          key={react}
+                        >
+                          <Icon
+                            name={react}
+                            size={12}
+                            className={`p-0.5 rounded-17xl cursor-pointer border-white border border-solid ${iconsStyle(
+                              react,
+                            )}`}
+                          />
+                        </div>
+                      ))}
+                  </div>
+                )}
+                {totalCount > 0 && (
+                  <div
+                    className={`flex text-sm font-normal text-neutral-500`}
+                    data-testid="comment-reaction-count"
+                    onClick={() => setShowReactionModal(true)}
+                  >
+                    {totalCount}
+                  </div>
+                )}
               </div>
             </div>
-          </div>
+          )}
+
           <Divider variant={Variant.Vertical} />
         </div>
 
@@ -329,18 +339,28 @@ export const Comment: React.FC<CommentProps> = ({
               Reply
             </div>
           </div>
-          {/* ellipse */}
-          <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
 
-          <div className="flex items-center" data-testid="replyto-commentcta">
-            <div
-              className="text-xs font-normal text-neutral-500"
-              data-testid="comment-replies-count"
-            >
-              {comment?.repliesCount}
-              {comment?.repliesCount > 0 ? ' Replies' : ' Reply'}
-            </div>
-          </div>
+          {comment?.repliesCount > 0 && (
+            <>
+              {/* ellipse */}
+              <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
+              <div
+                className="flex items-center cursor-pointer"
+                data-testid="replyto-commentcta"
+                onClick={() => {
+                  setShowReplies(!showReplies);
+                }}
+              >
+                <div
+                  className="text-xs font-normal text-neutral-500"
+                  data-testid="comment-replies-count"
+                >
+                  {comment?.repliesCount}
+                  {comment?.repliesCount > 0 ? ' Replies' : ' Reply'}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
       {showReplies ? (

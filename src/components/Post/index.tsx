@@ -92,8 +92,12 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
                   {totalCount > 0 && (
                     <div className="flex flex-row mr-2">
                       {Object.keys(post.reactionsCount)
+                        .filter(
+                          (key) =>
+                            !!post.reactionsCount[key] &&
+                            post.reactionsCount[key] > 0,
+                        )
                         .slice(0, 3)
-                        .filter((key) => !!post.reactionsCount[key] && post.reactionsCount[key] > 0)
                         .map((key, i) => (
                           <div
                             className={` ${i > 0 ? '-ml-2 z-1' : ''}  `}
