@@ -331,6 +331,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
                 }}
                 dataTestId="postcomment-sendcta"
                 fill={twConfig.theme.colors.primary['500']}
+                disabled={mediaValidationErrors.length > 0}
               />
             </div>
           )}
@@ -363,13 +364,14 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
               title={error.errorMsg}
               variant={BannerVariant.Error}
               action={<></>}
-              onClose={() =>
+              onClose={() => {
                 setMediaValidationErrors([
                   ...mediaValidationErrors.filter(
                     (mediaError) => mediaError.errorType !== error.errorType,
                   ),
-                ])
-              }
+                ]);
+                removeMedia();
+              }}
               dataTestId={getDataTestIdForErrors(error.errorType)}
             />
           </div>

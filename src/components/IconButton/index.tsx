@@ -89,7 +89,13 @@ const IconButton = ({
         onClick={onClick}
         data-testid={dataTestId}
       >
-        <Icon name={icon} size={getSize()} fill={fill} stroke={stroke} />
+        <Icon
+          name={icon}
+          size={getSize()}
+          fill={fill}
+          stroke={stroke}
+          disabled={disabled}
+        />
       </button>
     </div>
   );

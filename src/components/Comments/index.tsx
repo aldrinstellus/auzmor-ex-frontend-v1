@@ -112,6 +112,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
             setMedia([]);
             setFiles([]);
             setMediaValidationErrors([]);
+            inputRef!.current!.value = '';
           }}
           files={files}
           mediaValidationErrors={mediaValidationErrors}
