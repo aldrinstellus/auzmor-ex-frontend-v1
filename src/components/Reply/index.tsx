@@ -12,7 +12,12 @@ import { useCommentStore } from 'stores/commentStore';
 import CommentSkeleton from 'components/Comments/components/CommentSkeleton';
 import { CommentsRTE } from 'components/Comments/components/CommentsRTE';
 import { EntityType } from 'queries/files';
-import { IMG_FILE_SIZE_LIMIT, IMedia, IMediaValidationError, MediaValidationError } from 'contexts/CreatePostContext';
+import {
+  IMG_FILE_SIZE_LIMIT,
+  IMedia,
+  IMediaValidationError,
+  MediaValidationError,
+} from 'contexts/CreatePostContext';
 import { getMediaObj } from 'utils/misc';
 import { validImageTypesForComments } from 'components/Comments';
 import { useUploadState } from 'hooks/useUploadState';
@@ -29,7 +34,16 @@ export interface activeCommentsDataType {
 
 const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
   const { user } = useAuth();
-  const {inputRef, media, setMedia, files, setFiles, mediaValidationErrors, setMediaValidationErrors, setUploads} = useUploadState();
+  const {
+    inputRef,
+    media,
+    setMedia,
+    files,
+    setFiles,
+    mediaValidationErrors,
+    setMediaValidationErrors,
+    setUploads,
+  } = useUploadState();
   const [isCreateCommentLoading, setIsCreateCommentLoading] = useState(false);
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
@@ -67,7 +81,23 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
                 image={user?.profileImage}
               />
             </div>
-            <CommentsRTE className="w-full py-1" entityId={entityId} entityType={EntityType.Comment.toLocaleLowerCase()} inputRef={inputRef} media={media} removeMedia={() => {setMedia([]); setFiles([]); setMediaValidationErrors([])}} files={files} mediaValidationErrors={mediaValidationErrors} setIsCreateCommentLoading={setIsCreateCommentLoading}/>
+            <CommentsRTE
+              className="w-full py-1"
+              entityId={entityId}
+              entityType={EntityType.Comment.toLocaleLowerCase()}
+              inputRef={inputRef}
+              media={media}
+              removeMedia={() => {
+                setMedia([]);
+                setFiles([]);
+                setMediaValidationErrors([]);
+              }}
+              files={files}
+              mediaValidationErrors={mediaValidationErrors}
+              setIsCreateCommentLoading={setIsCreateCommentLoading}
+              setMediaValidationErrors={setMediaValidationErrors}
+              isCreateCommentLoading={isCreateCommentLoading}
+            />
           </div>
           {replyIds && replyIds.length > 0 && (
             <div>
@@ -99,16 +129,14 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
         ref={inputRef}
         accept={validImageTypesForComments.join(',')}
         onChange={(e) => {
-          const mediaErrors = [...mediaValidationErrors];
+          const mediaErrors: IMediaValidationError[] = [];
           if (e.target.files?.length) {
             setUploads(
               Array.prototype.slice
                 .call(e.target.files)
                 .filter((eachFile: File) => {
                   if (
-                    !!![...validImageTypesForComments].includes(
-                      eachFile.type,
-                    )
+                    !!![...validImageTypesForComments].includes(eachFile.type)
                   ) {
                     mediaErrors.push({
                       errorMsg: `File (${eachFile.name}) type not supported. Upload a supported file content`,

@@ -28,6 +28,11 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
   const link = (data as IPost)?.link;
   const media = (data as IPost)?.files;
 
+  const isEmpty = useMemo(
+    () => data.content.text === '\n' || data.content.text === '',
+    [data],
+  );
+
   useEffect(() => {
     const element = document.getElementById(`${data?.id}-content`);
     if (
@@ -113,13 +118,16 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
 
   return (
     <div>
-      <span
-        className="line-clamp-3 paragraph pt-px"
-        id={`${data?.id}-content`}
-        data-testid={isComment && 'comment-content'}
-      >
-        <span>{postContent}</span>
-      </span>
+      {!isEmpty && (
+        <span
+          className="line-clamp-3 paragraph pt-px"
+          id={`${data?.id}-content`}
+          data-testid={isComment && 'comment-content'}
+        >
+          <span>{postContent}</span>
+        </span>
+      )}
+
       {link && (
         <div className="mt-4">
           <PreviewCard metaData={link as Metadata} className="my-2" />
