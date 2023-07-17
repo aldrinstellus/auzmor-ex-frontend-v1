@@ -47,7 +47,7 @@ const mentionEntityFetch = async (character: string, searchTerm: string) => {
     const { data: hashtags } = await apiService.get('/hashtags', {
       q: searchTerm,
     });
-    const hashtagList = hashtags?.result;
+    const hashtagList = hashtags?.result?.data;
     return createHashtagsList(hashtagList, character);
   } else {
     return null;
