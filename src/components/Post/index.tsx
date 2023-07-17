@@ -88,6 +88,7 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
                 <div
                   className={`flex flex-row`}
                   data-testid="feed-post-reactioncount"
+                  onClick={() => setShowReactionModal(true)}
                 >
                   {totalCount > 0 && (
                     <div className="flex flex-row mr-2">
@@ -117,7 +118,6 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
                   {totalCount > 0 && (
                     <div
                       className={`flex text-sm font-normal text-neutral-500 cursor-pointer`}
-                      onClick={() => setShowReactionModal(true)}
                     >
                       {totalCount} reacted
                     </div>

@@ -282,7 +282,10 @@ export const Comment: React.FC<CommentProps> = ({
           {/* Show Reaction */}
           {totalCount > 0 && (
             <div className="flex justify-between cursor-pointer">
-              <div className="flex space-x-1 items-center mr-2">
+              <div
+                className="flex space-x-1 items-center mr-2"
+                onClick={() => setShowReactionModal(true)}
+              >
                 {totalCount > 0 && (
                   <div className="flex ">
                     {Object.keys(comment.reactionsCount)
@@ -312,7 +315,6 @@ export const Comment: React.FC<CommentProps> = ({
                   <div
                     className={`flex text-sm font-normal text-neutral-500`}
                     data-testid="comment-reaction-count"
-                    onClick={() => setShowReactionModal(true)}
                   >
                     {totalCount}
                   </div>

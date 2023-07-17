@@ -227,7 +227,10 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
           )}
         </div>
         <div className="flex flex-row justify-between mt-3 cursor-pointer">
-          <div className={`flex flex-row`}>
+          <div
+            className={`flex flex-row`}
+            onClick={() => setShowReactionModal(true)}
+          >
             {totalCount > 0 && (
               <div className="mr-2 flex flex-row">
                 {Object.keys(comment?.reactionsCount || {})
@@ -250,10 +253,7 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
                   ))}
               </div>
             )}
-            <div
-              className={`flex text-sm font-normal text-neutral-500`}
-              onClick={() => setShowReactionModal(true)}
-            >
+            <div className={`flex text-sm font-normal text-neutral-500`}>
               {totalCount} reacted
             </div>
           </div>
