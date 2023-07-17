@@ -7,7 +7,7 @@ import Icon from 'components/Icon';
 import { BlobToFile, twConfig } from 'utils/misc';
 import Modal from 'components/Modal';
 import { EntityType } from 'queries/files';
-import {UploadStatus, useUpload} from 'hooks/useUpload';
+import { UploadStatus, useUpload } from 'hooks/useUpload';
 import queryClient from 'utils/queryClient';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
@@ -64,10 +64,10 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
 
   const [blob, setBlob] = useState<Blob | null>(null);
 
-  const [height, setHeight] = useState<number>(1000);
-  const [width, setWidth] = useState<number>(1000);
-  const [top, setTop] = useState<number>(0);
-  const [left, setLeft] = useState<number>(0);
+  // const [height, setHeight] = useState<number>(1000);
+  // const [width, setWidth] = useState<number>(1000);
+  // const [top, setTop] = useState<number>(0);
+  // const [left, setLeft] = useState<number>(0);
   const [isImageLoading, setIsImageLoading] = useState<boolean>(true);
 
   // To determine the custom visible area in the image cropper
@@ -82,10 +82,10 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
         return factor;
       };
 
-      setHeight(img.height * 0.8);
-      setWidth(img.width * getWidthFactor(img.width));
-      setTop(img.height / 4);
-      setLeft(img.width / 4);
+      // setHeight(img.height * 0.8);
+      // setWidth(img.width * getWidthFactor(img.width));
+      // setTop(img.height / 4);
+      // setLeft(img.width / 4);
       setIsImageLoading(false);
     };
 
@@ -251,10 +251,10 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
               ? Shape.Circle
               : Shape.Rectangle
           }
-          customHeight={height}
-          customWidth={width}
-          customLeft={left}
-          customTop={top}
+          // customHeight={height}
+          // customWidth={width}
+          // customLeft={left}
+          // customTop={top}
         />
       )}
       <Footer

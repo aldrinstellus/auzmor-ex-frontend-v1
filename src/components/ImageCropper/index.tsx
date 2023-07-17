@@ -18,10 +18,10 @@ export type ImageCropperProps = {
   shape?: Shape;
   className?: string;
   cropperRef: React.RefObject<CropperRef>;
-  customHeight: number;
-  customWidth: number;
-  customTop: number;
-  customLeft: number;
+  // customHeight: number;
+  // customWidth: number;
+  // customTop: number;
+  // customLeft: number;
 };
 
 const ImageCropper = ({
@@ -29,11 +29,11 @@ const ImageCropper = ({
   shape = Shape.Circle,
   className = '',
   cropperRef,
-  customHeight,
-  customWidth,
-  customTop,
-  customLeft,
-}: ImageCropperProps) => {
+}: // customHeight,
+// customWidth,
+// customTop,
+// customLeft,
+ImageCropperProps) => {
   const imageWrapperStyle = useMemo(
     () => clsx({ 'h-[550px]': true }, { [className]: true }),
     [className],
@@ -47,7 +47,6 @@ const ImageCropper = ({
           ref={cropperRef}
           stencilComponent={CircleStencil}
           stencilProps={{
-            aspectRatio: 6 / 9,
             handlers: {
               north: false,
               eastNorth: true,
@@ -71,28 +70,29 @@ const ImageCropper = ({
           src={src}
           ref={cropperRef}
           stencilProps={{
+            aspectRatio: 4 / 1,
             handlers: {
               north: false,
-              eastNorth: true,
-              westNorth: true,
+              eastNorth: false,
+              westNorth: false,
               east: false,
               west: false,
               south: false,
-              westSouth: true,
-              eastSouth: true,
+              westSouth: false,
+              eastSouth: false,
             },
             lines: false,
             resizable: true,
           }}
           // Modify the width and height to modify the stencil
-          defaultVisibleArea={{
-            width: customWidth,
-            height: customHeight,
-            top: customTop,
-            left: customLeft,
-          }}
+          // defaultVisibleArea={{
+          //   width: customWidth,
+          //   height: customHeight,
+          //   top: customTop,
+          //   left: customLeft,
+          // }}
           className="cropper"
-          maxHeight={180}
+          // maxHeight={180}
           priority={Priority.visibleArea}
         />
       )}
