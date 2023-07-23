@@ -70,7 +70,7 @@ ImageCropperProps) => {
           src={src}
           ref={cropperRef}
           stencilProps={{
-            aspectRatio: 4 / 1,
+            aspectRatio: 7.38 / 1,
             handlers: {
               north: false,
               eastNorth: false,
