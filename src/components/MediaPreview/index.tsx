@@ -44,7 +44,6 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
   dataTestId,
   showAddMediaButton = true,
   showEditButton = true,
-
 }) => {
   const [mediaIndex, setMediaIndex] = useState<number>(-1);
   const [open, openModal, closeModal] = useModal(true);
@@ -137,7 +136,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
           <div className="flex flex-col !w-1/2 !ml-2">
             <MediaRender
               data={media[1]}
-              localClassName="mb-2"
+              localClassName="mb-4"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(1);
@@ -152,7 +151,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
             />
             <MediaRender
               data={media[2]}
-              localClassName="mt-2"
+              localClassName="mt-0"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(2);
@@ -170,8 +169,8 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
       );
     } else if (media.length === 4) {
       return (
-        <div className="flex flex-col w-full h-64">
-          <div className="flex !h-1/2 pb-2">
+        <div className="flex flex-col w-full h-80 space-y-4">
+          <div className="flex !h-1/2">
             <MediaRender
               data={media[0]}
               localClassName="!w-1/2 !mr-2"
@@ -203,7 +202,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
               }
             />
           </div>
-          <div className="flex !h-1/2 pb-2">
+          <div className="flex !h-1/2">
             <MediaRender
               data={media[2]}
               localClassName="!w-1/2 mr-2"
@@ -239,11 +238,11 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
       );
     } else if (media.length === 5) {
       return (
-        <div className="flex flex-col w-full h-64">
-          <div className="flex mb-2 !h-1/2 ">
+        <div className="flex flex-col w-full h-80 space-y-4">
+          <div className="flex mb-0 !h-1/2">
             <MediaRender
               data={media[0]}
-              localClassName="mr-2 !w-1/2"
+              localClassName="mr-2 mb-4 !w-1/2"
               onClick={(e) => {
                 if (mode === Mode.View) {
                   setIndexAndOpenCarousel(0);
@@ -272,7 +271,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
               }
             />
           </div>
-          <div className="flex !h-1/2 mt-2">
+          <div className="flex !h-1/2 mt-0">
             <MediaRender
               data={media[2]}
               localClassName="!w-1/3 mr-2"
@@ -323,7 +322,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
       );
     } else if (media.length > 5) {
       return (
-        <div className="flex flex-col w-full h-64">
+        <div className="flex flex-col w-full h-80">
           <div className="flex mb-2 !h-1/2 ">
             <MediaRender
               data={media[0]}
@@ -356,7 +355,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
               }
             />
           </div>
-          <div className="flex !h-1/2 mt-2">
+          <div className="flex !h-1/2">
             <MediaRender
               data={media[2]}
               localClassName="!w-1/3 mr-2"
@@ -415,31 +414,35 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
       {mode === Mode.Edit && (
         <div className="flex justify-between absolute p-4 top-0 w-full">
           <div>
-            {showAddMediaButton && <Button
-              label="Add photos/videos"
-              leftIcon="imageFilled"
-              className="flex"
-              variant={ButtonVariant.Secondary}
-              leftIconClassName="mr-1"
-              iconFill={twConfig.theme.colors.neutral['900']}
-              size={Size.Small}
-              onClick={onAddButtonClick}
-              dataTestId={`${dataTestId}-addphotoscta`}
-            />}
+            {showAddMediaButton && (
+              <Button
+                label="Add photos/videos"
+                leftIcon="imageFilled"
+                className="flex"
+                variant={ButtonVariant.Secondary}
+                leftIconClassName="mr-1"
+                iconFill={twConfig.theme.colors.neutral['900']}
+                size={Size.Small}
+                onClick={onAddButtonClick}
+                dataTestId={`${dataTestId}-addphotoscta`}
+              />
+            )}
           </div>
           <div className="flex items-center">
-            {showEditButton && <div
-              onClick={onEditButtonClick}
-              data-testid={`${dataTestId}-editicon`}
-            >
-              <Icon
-                name="edit"
-                size={16}
-                className="p-2 rounded-7xl mr-2 bg-white"
-                stroke={twConfig.theme.colors.neutral['900']}
-                fill={twConfig.theme.colors.neutral['900']}
-              />
-            </div>}
+            {showEditButton && (
+              <div
+                onClick={onEditButtonClick}
+                data-testid={`${dataTestId}-editicon`}
+              >
+                <Icon
+                  name="edit"
+                  size={16}
+                  className="p-2 rounded-7xl mr-2 bg-white"
+                  stroke={twConfig.theme.colors.neutral['900']}
+                  fill={twConfig.theme.colors.neutral['900']}
+                />
+              </div>
+            )}
             <div
               onClick={onCloseButtonClick}
               data-testid={`${dataTestId}-remove-image`}
