@@ -32,6 +32,7 @@ const NotificationsOverview: React.FC = () => {
       tabContent: (
         <NotificationsList key="All" className="max-h-96" ref={viewAllRef} />
       ),
+      dataTestId: 'notifications-all',
     },
     {
       tabLable: (isActive: boolean) => (
@@ -51,6 +52,7 @@ const NotificationsOverview: React.FC = () => {
           ref={viewAllRef}
         />
       ),
+      dataTestId: 'notifications-mentions',
     },
   ];
 
@@ -112,6 +114,7 @@ const NotificationsOverview: React.FC = () => {
           <div
             className="px-6 bg-blue-100 text-sm font-normal flex items-center justify-start py-4 rounded-b-9xl"
             onClick={() => viewAllRef.current?.click()}
+            data-testid="notifications-view-all"
           >
             <p className="text-neutral-900 font-bold text-base cursor-pointer">
               View All

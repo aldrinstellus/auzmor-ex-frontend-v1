@@ -123,7 +123,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
           >
             {userDetails?.coverImage?.original && !isCoverImageRemoved ? (
               <img
-                className=" h-[180px] object-fill w-full"
+                className="object-cover w-full"
                 src={userDetails?.coverImage?.original}
                 alt={'User Cover Picture Profile'}
                 data-testid="user-cover-pic"

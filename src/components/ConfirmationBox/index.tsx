@@ -21,6 +21,7 @@ export type ConfirmationBoxProps = {
   discard: Discard;
   success: Success;
   isLoading?: boolean;
+  dataTestId?: string;
 };
 
 const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({
@@ -31,6 +32,7 @@ const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({
   discard,
   success,
   isLoading = false,
+  dataTestId,
 }) => {
   return (
     <Modal
@@ -38,7 +40,7 @@ const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({
       closeModal={() => (isLoading ? null : onClose())}
       className="max-w-md"
     >
-      <div>
+      <div data-testid={`${dataTestId}-confirmation-window"}`}>
         <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
           {title}
         </div>
@@ -51,12 +53,14 @@ const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({
             label={success.label}
             className={`!rounded-6 !px-4 !py-2 !${success.className}`}
             loading={isLoading}
+            dataTestId={`${dataTestId}-delete`}
           />
           <Button
             onClick={discard.onCancel}
             label={discard.label}
             disabled={isLoading}
             className={`!rounded-17xl !px-4 !py-2 !mr-3 !border-2 !border-neutral-200 !${discard.className}`}
+            dataTestId={`${dataTestId}-close`}
           />
         </div>
       </div>

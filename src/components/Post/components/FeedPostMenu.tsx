@@ -234,6 +234,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
           onCancel: closeConfirm,
         }}
         isLoading={deletePostMutation.isLoading}
+        dataTestId="post-deletepost"
       />
       <Modal open={removeAnnouncement} className="w-max">
         <div className="flex items-center justify-between p-4">

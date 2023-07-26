@@ -71,6 +71,7 @@ const Notification: React.FC<NotificationCardProps> = ({
         className={`${
           !isRead ? 'bg-orange-50' : 'bg-white'
         } py-4 px-6 cursor-pointer`}
+        data-testid={`notification-all-row`}
       >
         <div className="flex gap-x-4">
           {/* Avatar of the actor with indicator */}
