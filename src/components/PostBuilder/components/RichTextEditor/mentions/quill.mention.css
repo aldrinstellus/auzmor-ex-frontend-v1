@@ -43,7 +43,7 @@
   cursor: pointer;
   line-height: 44px;
   font-size: 16px;
-  padding: 16px 24px;
+  padding: 0px 0px;
   vertical-align: middle;
 }
 
@@ -62,8 +62,8 @@
 /* User */
 .user-container {
   display: flex;
-  height: 40px;
   align-items: center;
+  padding: 16px 24px;
 }
 
 .user-avatar {
@@ -85,12 +85,21 @@
 
 .hashtag-container {
   display: flex;
-  padding: 5px;
+  padding: 0px 24px;
 }
+
+.hashtag-name {
+  font-family: Manrope;
+  font-size: 12px;
+  font-weight: 500;
+  color: #171717;
+}
+
 .hashtag {
   color: #10b981;
   font-weight: 500;
 }
+
 .hashtag:hover {
   color: #059669;
   text-decoration: underline;

@@ -122,8 +122,8 @@ export const mention = {
     } else if (item.charDenotation === '#') {
       return `
             <div class="hashtag-container">
-              <div>${item?.name}</div>
-            </div>
+              <div class="hashtag-name">#${item?.name}</div>      
+            </div>        
       `;
     } else {
       return null;

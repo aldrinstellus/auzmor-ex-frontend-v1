@@ -55,7 +55,6 @@ const Toolbar: React.FC<IToolbarProps> = ({ isCharLimit, dataTestId }) => {
           </div>
           <div className="font-bold text-sm text-neutral-900">
             {/* <div>Add Hashtags</div> */}
-            <div></div>
           </div>
         </div>
       </div>
