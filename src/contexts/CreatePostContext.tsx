@@ -16,6 +16,8 @@ export enum CreatePostFlow {
   CreatePost = 'CREATE_POST',
   CreateAnnouncement = 'CREATE_ANNOUNCEMENT',
   EditMedia = 'EDIT_MEDIA',
+  CreatePoll = 'CREATE_POLL',
+  EditPoll = 'EDIT_POLL',
 }
 
 export interface IAnnouncement {

@@ -39,6 +39,7 @@ import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { produce } from 'immer';
+import CreatePoll from './CreatePoll';
 
 export interface IPostMenu {
   id: number;
@@ -385,6 +386,14 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             closeModal={() => {
               clearPostContext();
               closeModal();
+            }}
+          />
+        )}
+        {activeFlow === CreatePostFlow.CreatePoll && (
+          <CreatePoll
+            closeModal={() => {
+              closeModal();
+              clearPostContext();
             }}
           />
         )}
