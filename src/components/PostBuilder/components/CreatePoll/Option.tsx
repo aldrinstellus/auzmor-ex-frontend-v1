@@ -7,7 +7,7 @@ import {
   FieldErrors,
   UseFieldArrayRemove,
 } from 'react-hook-form';
-import { PollForm } from './Body';
+import { PollForm } from '.';
 
 export type OptionRowProps = {
   field: FieldArrayWithId<PollForm, 'options', 'id'>;
