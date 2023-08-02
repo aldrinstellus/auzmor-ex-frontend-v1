@@ -50,7 +50,7 @@ const mentionEntityFetch = async (character: string, searchTerm: string) => {
     return createMentionsList(mentionList, character);
   } else if (character === '#' && !isContainWhiteSpace) {
     const hashtagValue = searchTerm.split(' ').filter((ele) => ele !== '');
-    if (hashtagValue.length === 1) {
+    if (hashtagValue.length === 1 || character === '#') {
       const hashtag = hashtagValue[0];
       const { data: hashtags } = await apiService.get('/hashtags', {
         q: hashtag,
