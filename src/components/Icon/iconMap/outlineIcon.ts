@@ -69,6 +69,12 @@ import SvgCyclicArrowOutline from '../components/CyclicArrow/CyclicArrowOutline'
 import SvgEditReceiptOutline from '../components/EditReceipt/EditReceiptOutline';
 import SvgDeleteCrossOutline from '../components/DeleteCross/DeleteCrossOutline';
 import SvgCommentOutline from '../components/Comment/CommentOutline';
+import SvgGroupOutline from '../components/Group/GroupOutline';
+import SvgExpandOutline from '../components/Expand/ExpandOutline';
+import SvgCollapseOutline from '../components/Collapse/CollapseOutline';
+import SvgFocusOutline from '../components/Focus/FocusOutline';
+import SvgZoomInOutline from '../components/ZoomIn/ZoomInOutline';
+import SvgZoomOutOutline from '../components/ZoomOut/ZoomOutOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -142,4 +148,10 @@ export const outlineIcon = {
   cyclicArrowOutline: SvgCyclicArrowOutline,
   editReceiptOutline: SvgEditReceiptOutline,
   deleteCrossOutline: SvgDeleteCrossOutline,
+  groupOutline: SvgGroupOutline,
+  expandOutline: SvgExpandOutline,
+  collapseOutline: SvgCollapseOutline,
+  focusOutline: SvgFocusOutline,
+  zoomInOutline: SvgZoomInOutline,
+  zoomOutOutline: SvgZoomOutOutline,
 };

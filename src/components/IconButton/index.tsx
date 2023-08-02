@@ -14,10 +14,10 @@ export enum Size {
 }
 
 export type IconButtonProps = {
+  icon: string;
   variant?: Variant;
   size?: Size;
   disabled?: boolean;
-  icon: string;
   onClick?: MouseEventHandler<Element>;
   className?: string;
   borderAround?: boolean;
@@ -64,7 +64,8 @@ const IconButton = ({
   const borderStyle = useMemo(
     () =>
       clsx({
-        'border border-solid border-neutral-200 rounded-17xl': borderAround,
+        'border border-solid border-neutral-200 rounded-17xl hover:border-primary-500':
+          borderAround,
       }),
     [],
   );

@@ -234,7 +234,7 @@ const Carousel: React.FC<ICarouselProps> = ({
             }}
             className="cursor-pointer"
           >
-            <Icon name="fullScreen" />
+            <Icon name="fullScreen" stroke="white" />
           </div>
         </div>
       )}

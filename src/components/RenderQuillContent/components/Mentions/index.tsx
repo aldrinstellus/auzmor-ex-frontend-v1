@@ -23,7 +23,6 @@ const Mention: React.FC<MentionProps> = ({
   email,
   userId,
 }): ReactElement => {
-  const [isHovered, eventHandlers] = useHover();
   const { user } = useAuth();
   return (
     <Tooltip
@@ -37,16 +36,11 @@ const Mention: React.FC<MentionProps> = ({
       }
       tooltipId="user-mentions-card"
       variant={Variant.Light}
-      isOpen={isHovered}
     >
       <Link
         to={userId && userId !== user?.id ? '/users/' + userId : '/profile'}
       >
-        <span
-          className="cursor-pointer mention"
-          contentEditable="false"
-          {...eventHandlers}
-        >
+        <span className="cursor-pointer mention" contentEditable="false">
           {value}
         </span>
       </Link>

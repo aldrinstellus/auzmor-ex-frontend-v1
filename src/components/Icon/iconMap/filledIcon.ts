@@ -61,6 +61,12 @@ import SvgCyclicArrowFilled from '../components/CyclicArrow/CyclicArrowFilled';
 import SvgEditReceiptFilled from '../components/EditReceipt/EditReceiptFilled';
 import SvgDeleteCrossFilled from '../components/DeleteCross/DeleteCrossFilled';
 import SvgCommentFilled from '../components/Comment/CommentFilled';
+import SvgGroupFilled from '../components/Group/GroupFilled';
+import SvgExpandFilled from '../components/Expand/ExpandFilled';
+import SvgCollapseFilled from '../components/Collapse/CollapseFilled';
+import SvgFocusFilled from '../components/Focus/FocusFilled';
+import SvgZoomInFilled from '../components/ZoomIn/ZoomInFilled';
+import SvgZoomOutFilled from '../components/ZoomOut/ZoomOutFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -126,4 +132,10 @@ export const filledIcon = {
   cyclicArrowFilled: SvgCyclicArrowFilled,
   editReceiptFilled: SvgEditReceiptFilled,
   deleteCrossFilled: SvgDeleteCrossFilled,
+  groupFilled: SvgGroupFilled,
+  expandFilled: SvgExpandFilled,
+  collapseFilled: SvgCollapseFilled,
+  focusFilled: SvgFocusFilled,
+  zoomInFilled: SvgZoomInFilled,
+  zoomOutFilled: SvgZoomOutFilled,
 };
