@@ -25,7 +25,7 @@ const SvgZoomInOutline = ({
       {...props}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="hidden group-hover:block"
+      className="hidden group-hover:block cursor-pointer"
     >
       <path
         d="M9.2002 11.7002H14.2002"
