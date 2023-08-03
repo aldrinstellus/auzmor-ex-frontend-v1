@@ -298,20 +298,14 @@ export const Comment: React.FC<CommentProps> = ({
                           className={` ${i > 0 ? '-ml-2 z-1' : ''}  `}
                           key={react}
                         >
-                          <Icon
-                            name={react}
-                            size={12}
-                            className={`p-0.5 rounded-17xl cursor-pointer border-white border border-solid ${iconsStyle(
-                              react,
-                            )}`}
-                          />
+                          <Icon name={`${react}Reaction`} size={20} />
                         </div>
                       ))}
                   </div>
                 )}
                 {totalCount > 0 && (
                   <div
-                    className={`flex text-sm font-normal text-neutral-500`}
+                    className={`flex text-xs font-normal text-neutral-500`}
                     data-testid="comment-reaction-count"
                   >
                     {totalCount}

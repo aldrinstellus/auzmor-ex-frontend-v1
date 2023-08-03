@@ -226,39 +226,8 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
             </div>
           )}
         </div>
-        <div className="flex flex-row justify-between cursor-pointer">
-          <div
-            className={`flex flex-row`}
-            onClick={() => setShowReactionModal(true)}
-          >
-            {totalCount > 0 && (
-              <div className="mr-2 flex flex-row">
-                {Object.keys(comment?.reactionsCount || {})
-                  .filter(
-                    (key) =>
-                      !!comment.reactionsCount[key] &&
-                      comment.reactionsCount[key] > 0,
-                  )
-                  .slice(0, 3)
-                  .map((key, i) => (
-                    <div className={` ${i > 0 ? '-ml-2 z-1' : ''}  `} key={key}>
-                      <Icon
-                        name={key}
-                        size={12}
-                        className={`p-0.5 rounded-17xl cursor-pointer border-white border border-solid ${iconsStyle(
-                          key,
-                        )}`}
-                      />
-                    </div>
-                  ))}
-              </div>
-            )}
-            <div className={`flex text-sm font-normal text-neutral-500 mb-2`}>
-              {totalCount} reacted
-            </div>
-          </div>
-        </div>
-        <div className="flex justify-between cursor-pointer mb-2">
+
+        <div className="flex items-center space-x-2 cursor-pointer mb-2">
           <div className="flex items-center">
             <Likes
               reaction={comment?.myReaction?.reaction || ''}
@@ -268,7 +237,35 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
               queryKey="comments"
             />
           </div>
-          <div></div>
+          {totalCount > 0 && (
+            <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
+          )}
+          <div className="flex cursor-pointer">
+            <div
+              className={`flex flex-row`}
+              onClick={() => setShowReactionModal(true)}
+            >
+              {totalCount > 0 && (
+                <div className="mr-2 flex flex-row">
+                  {Object.keys(comment?.reactionsCount || {})
+                    .filter(
+                      (key) =>
+                        !!comment.reactionsCount[key] &&
+                        comment.reactionsCount[key] > 0,
+                    )
+                    .slice(0, 3)
+                    .map((key, i) => (
+                      <div
+                        className={` ${i > 0 ? '-ml-2 z-1' : ''}  `}
+                        key={key}
+                      >
+                        <Icon name={`${key}Reaction`} size={20} />
+                      </div>
+                    ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
       <ConfirmationBox

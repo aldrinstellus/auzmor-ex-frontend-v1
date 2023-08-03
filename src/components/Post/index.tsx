@@ -144,6 +144,7 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
 
           <div className="flex justify-between pt-4 pb-6">
             <div className="flex ">
+              {/* this is for post */}
               <Likes
                 reaction={reaction || ''}
                 entityId={post?.id || ''}

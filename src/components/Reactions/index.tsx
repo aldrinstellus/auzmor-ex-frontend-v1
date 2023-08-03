@@ -59,6 +59,7 @@ const Likes: React.FC<LikesProps> = ({
   entityId,
   entityType,
   reactionId,
+  queryKey,
   dataTestIdPrefix,
 }) => {
   const { feed, updateFeed } = useFeedStore();
@@ -345,7 +346,19 @@ const Likes: React.FC<LikesProps> = ({
 
       <div
         className="flex items-center space-x-1"
-        onClick={handleDeleteReaction} //here.....
+        onClick={() => {
+          switch (true) {
+            case !feed[entityId]?.myReaction && queryKey === 'feed':
+              handleReaction('like');
+              break;
+            case !comment[entityId]?.myReaction && queryKey === 'comments':
+              handleReaction('like');
+              break;
+            default:
+              handleDeleteReaction();
+              break;
+          }
+        }}
         data-testid={'liketo-commentcta'}
       >
         <Icon
