@@ -155,6 +155,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
     {
       type: FieldType.DatePicker,
       name: 'personal.birthDate',
+      label: 'Date of Birth',
       className: '',
       minDate: moment().subtract(100, 'years').toDate(),
       maxDate: new Date(),

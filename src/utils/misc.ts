@@ -9,6 +9,7 @@ import {
   TransformedQuillDelta,
 } from 'components/PostBuilder/components/RichTextEditor/mentions/types';
 import { useSearchParams } from 'react-router-dom';
+import { capitalize } from 'lodash';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -207,4 +208,11 @@ export const quillHashtagConversion = (
     transformedQuillDelta.ops.push(transformedOp);
   });
   return transformedQuillDelta;
+};
+
+export const titleCase = (input: string) => {
+  return input
+    .split(' ')
+    .map((i) => capitalize(i))
+    .join(' ');
 };

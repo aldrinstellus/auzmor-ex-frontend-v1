@@ -115,10 +115,10 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
 
   return (
     <div>
-      <Card className="bg-white pb-1 w-full h-80" data-testid="profile-details">
+      <Card className="bg-white pb-6 w-full" data-testid="profile-details">
         <div className="relative">
           <div
-            className="w-full h-[180px] overflow-hidden rounded-9xl"
+            className="w-full overflow-hidden h-[180px] rounded-9xl"
             data-testid={coverImageName}
           >
             {userDetails?.coverImage?.original && !isCoverImageRemoved ? (
@@ -137,6 +137,15 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
               />
             )}
           </div>
+          <div className="absolute left-8 -bottom-3.5">
+            <Avatar
+              name={userDetails?.fullName}
+              image={userDetails?.profileImage?.original}
+              size={80}
+              className="border-2 border-white mt-8 overflow-hidden"
+              dataTestId={profileImageName || 'edit-profile-pic'}
+            />
+          </div>
           {canEdit && (
             <PopupMenu
               triggerNode={
@@ -154,17 +163,8 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             />
           )}
         </div>
-        <div className="flex">
-          <div className="-mt-[75px] ml-8">
-            <Avatar
-              name={userDetails?.fullName}
-              image={userDetails?.profileImage?.original}
-              size={80}
-              className="border-2 border-white mt-8 overflow-hidden"
-              dataTestId={profileImageName || 'edit-profile-pic'}
-            />
-          </div>
-          <div className="ml-4 mb-7 flex flex-col space-y-5 w-full">
+        <div className="flex ml-32 -mt-5">
+          <div className="flex flex-col w-full">
             <div className="flex items-center">
               <div className="mr-6 mt-2 flex justify-between w-full">
                 <div className="flex space-x-4">
@@ -199,7 +199,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                 />
               </div>
             </div>
-            <div className="flex space-x-4 items-center">
+            <div className="flex space-x-4 mt-3 items-center">
               <div
                 className="text-xs font-normal text-neutral-900"
                 data-testid="user-designation"

@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import Icon from 'components/Icon';
 import Spinner from 'components/Spinner';
 import { PRIMARY_COLOR } from 'utils/constants';
+import useHover from 'hooks/useHover';
 
 export enum Variant {
   Primary = 'PRIMARY',
@@ -39,7 +40,9 @@ export type ButtonProps = {
   iconStroke?: string;
   leftIconClassName?: string;
   rightIconClassName?: string;
+  labelClassName?: string;
   dataTestId?: string;
+  active?: boolean;
 };
 
 const Button = ({
@@ -58,8 +61,12 @@ const Button = ({
   leftIconClassName,
   rightIconClassName,
   onClick = () => {},
+  labelClassName = '',
   dataTestId = '',
+  active = false,
 }: ButtonProps) => {
+  const [hovered, hoverEvents] = useHover();
+
   const styles = useMemo(
     () =>
       clsx(
@@ -93,10 +100,13 @@ const Button = ({
             true,
         },
         {
+          '!text-primary-600 !border-primary-600': active,
+        },
+        {
           [className]: true,
         },
       ),
-    [variant, size, className],
+    [variant, size, className, active],
   );
 
   return (
@@ -106,6 +116,7 @@ const Button = ({
       disabled={disabled || loading}
       onClick={onClick}
       data-testId={dataTestId}
+      {...hoverEvents}
     >
       <div>
         {leftIcon && (
@@ -115,10 +126,11 @@ const Button = ({
             stroke={iconStroke}
             className={leftIconClassName}
             size={leftIconSize || (size === Size.Small ? 16 : 24)}
+            hover={hovered}
           />
         )}
       </div>
-      <div>{label}</div>
+      <div className={labelClassName}>{label}</div>
       <div>
         {rightIcon && (
           <Icon

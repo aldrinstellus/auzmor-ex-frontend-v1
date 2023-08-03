@@ -41,7 +41,7 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
           '!text-red-500': !!error,
         },
         {
-          'text-sm text-neutral-900 font-bold truncate': true,
+          'text-sm text-neutral-900 font-bold truncate mb-1': true,
         },
       ),
     [error],

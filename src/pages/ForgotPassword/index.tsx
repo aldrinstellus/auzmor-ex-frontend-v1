@@ -68,11 +68,11 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
     <div className="flex h-screen w-screen">
       <img
         src={WelcomeOffice}
-        className="h-full w-[48%]"
+        className="h-full w-[45%] object-cover"
         data-testid="forgot-password-cover-image"
         alt="Welcome to Auzmor Office"
       />
-      <div className="w-[52%] h-full flex justify-center items-center relative bg-white overflow-y-auto">
+      <div className="w-[55%] h-full flex justify-center relative bg-white overflow-y-auto">
         <div
           className="absolute top-8 right-8"
           data-testid="forgot-password-logo-image"
@@ -81,7 +81,7 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
         </div>
         <div className="w-full max-w-[440px]">
           {forgotPasswordMutation.isSuccess ? (
-            <>
+            <div className="h-full flex flex-col justify-center">
               <div
                 className="text-center flex justify-center items-center flex-col space-y-9"
                 data-testid="forgot-password-success-message"
@@ -98,9 +98,9 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
                 onClick={() => navigate('/login')}
                 size={Size.Large}
               />
-            </>
+            </div>
           ) : (
-            <>
+            <div className="mt-24">
               <div className="font-extrabold text-neutral-900 text-4xl">
                 Forgot Password
               </div>
@@ -120,7 +120,7 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
                   data-testid="forgot-password-submit"
                 />
               </form>
-            </>
+            </div>
           )}
         </div>
       </div>

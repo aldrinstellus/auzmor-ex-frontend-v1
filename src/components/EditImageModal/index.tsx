@@ -225,7 +225,7 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
       }}
       className={
         !imageFile?.profileImage
-          ? 'max-w-5xl flex flex-col justify-between'
+          ? 'max-w-2xl flex flex-col justify-between'
           : undefined
       }
     >
