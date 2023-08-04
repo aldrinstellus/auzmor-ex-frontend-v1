@@ -143,7 +143,7 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
           )}
 
           <div className="flex justify-between pt-4 pb-6">
-            <div className="flex ">
+            <div className="flex space-x-6">
               {/* this is for post */}
               <Likes
                 reaction={reaction || ''}
@@ -154,7 +154,7 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
                 dataTestIdPrefix="post-reaction"
               />
               <button
-                className="flex items-center ml-7"
+                className="flex items-center"
                 onClick={() => {
                   if (showComments) {
                     closeComments();
