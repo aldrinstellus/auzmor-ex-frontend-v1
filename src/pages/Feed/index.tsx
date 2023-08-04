@@ -194,29 +194,20 @@ const Feed: React.FC<IFeedProps> = () => {
                   </div>
 
                   {getAppliedFiltersCount() > 0 && (
-                    // <div
-                    //   className="flex items-center cursor-pointer"
-                    //   onClick={clearAppliedFilters}
-                    // >
-                    //   <Icon
-                    //     name="deleteOutline"
-                    //     size={16}
-                    //     className="mr-1"
-                    //     stroke={twConfig.theme.colors.primary['600']}
-                    //     strokeWidth={'2'}
-                    //   />
-                    //   <div className="font-bold text-sm text-primary-600">
-                    //     Clear all
-                    //   </div>
-                    // </div>
-
-                    <div>
-                      <Button
-                        label={'Clear filters'}
-                        variant={Variant.Secondary}
-                        size={Size.Small}
-                        onClick={clearAppliedFilters}
+                    <div
+                      className="flex items-center cursor-pointer"
+                      onClick={clearAppliedFilters}
+                    >
+                      <Icon
+                        name="deleteOutline"
+                        size={16}
+                        className="mr-1"
+                        stroke={twConfig.theme.colors.primary['600']}
+                        strokeWidth={'2'}
                       />
+                      <div className="font-bold text-sm text-primary-600">
+                        Clear all
+                      </div>
                     </div>
                   )}
                 </div>
