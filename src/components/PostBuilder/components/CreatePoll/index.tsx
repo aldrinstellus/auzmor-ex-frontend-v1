@@ -37,7 +37,7 @@ const schema = yup.object({
 });
 
 const CreatePoll: React.FC<CreatePollProps> = ({ closeModal }) => {
-  const { setActiveFlow } = useContext(CreatePostContext);
+  const { poll, setActiveFlow } = useContext(CreatePostContext);
 
   // Form
   const {
@@ -50,8 +50,8 @@ const CreatePoll: React.FC<CreatePollProps> = ({ closeModal }) => {
     mode: 'onChange',
     resolver: yupResolver(schema),
     defaultValues: {
-      question: '',
-      options: [
+      question: poll?.question || '',
+      options: poll?.options || [
         {
           text: '',
         },
@@ -59,11 +59,18 @@ const CreatePoll: React.FC<CreatePollProps> = ({ closeModal }) => {
           text: '',
         },
       ],
-      closedAt: {
-        label: '1 Week',
-        value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
-      },
-      datepickerValue: new Date(afterXUnit(1, 'day').toISOString()),
+      closedAt: poll?.closedAt
+        ? {
+            label: 'Custom Date',
+            value: '',
+          }
+        : {
+            label: '1 Week',
+            value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
+          },
+      datepickerValue: poll?.closedAt
+        ? new Date(poll?.closedAt)
+        : new Date(afterXUnit(1, 'day').toISOString()),
     },
   });
 
@@ -178,7 +185,11 @@ const CreatePoll: React.FC<CreatePollProps> = ({ closeModal }) => {
         remove={remove}
       />
       <div className="bg-blue-50 flex items-center justify-end p-3 gap-x-3 rounded-9xl w-full">
-        <Button label="Back" variant={ButtonVariant.Secondary} />
+        <Button
+          onClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
+          label="Back"
+          variant={ButtonVariant.Secondary}
+        />
         <Button
           label="Next"
           variant={ButtonVariant.Secondary}

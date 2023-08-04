@@ -1,12 +1,17 @@
 import IconButton, { Size, Variant } from 'components/IconButton';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './styles.css';
-import { IPoll } from 'contexts/CreatePostContext';
+import {
+  CreatePostContext,
+  CreatePostFlow,
+  IPoll,
+} from 'contexts/CreatePostContext';
 import moment from 'moment';
 
 const Poll: React.FC<IPoll> = ({ question, options, total, closedAt }) => {
   const [userVoted, setUserVoted] = useState<boolean>(false);
   const momentClosedAt = moment(new Date(closedAt));
+  const { setPoll, setActiveFlow } = useContext(CreatePostContext);
 
   // Set thresholds for proper weeks, months, and years calculation.
   moment.relativeTimeThreshold('d', 7);
@@ -42,6 +47,7 @@ const Poll: React.FC<IPoll> = ({ question, options, total, closedAt }) => {
         <div className="flex gap-x-2">
           <IconButton
             icon="edit"
+            onClick={() => setActiveFlow(CreatePostFlow.CreatePoll)}
             variant={Variant.Secondary}
             size={Size.Medium}
             borderAround
@@ -51,6 +57,7 @@ const Poll: React.FC<IPoll> = ({ question, options, total, closedAt }) => {
           />
           <IconButton
             icon="close"
+            onClick={() => setPoll(null)}
             variant={Variant.Secondary}
             size={Size.Medium}
             borderAround
