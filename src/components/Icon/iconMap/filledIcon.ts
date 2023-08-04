@@ -61,6 +61,7 @@ import SvgCyclicArrowFilled from '../components/CyclicArrow/CyclicArrowFilled';
 import SvgEditReceiptFilled from '../components/EditReceipt/EditReceiptFilled';
 import SvgDeleteCrossFilled from '../components/DeleteCross/DeleteCrossFilled';
 import SvgCommentFilled from '../components/Comment/CommentFilled';
+import SvgGlobalFilled from '../components/Global/GlobalFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -77,15 +78,19 @@ export const filledIcon = {
   clockFilled: SvgClockFilled,
   closeCircleFilled: SvgCloseCircleFilled,
   closeFilled: SvgCloseFilled,
+  commentFilled: SvgCommentFilled,
   convertShapeFilled: SvgConvertShapeFilled,
   copyFilled: SvgCopyFilled,
   copyLinkFilled: SvgCopyLinkFilled,
   crossCircleFilled: SvgCrossCircleFilled,
+  cyclicArrowFilled: SvgCyclicArrowFilled,
+  deleteCrossFilled: SvgDeleteCrossFilled,
   deleteFilled: SvgDeleteFilled,
   documentFilled: SvgDocumentFilled,
   documentUpload: SvgDocumentUploadOutline,
   draftFilled: SvgDraftFilled,
   editFilled: SvgEditFilled,
+  editReceiptFilled: SvgEditReceiptFilled,
   emojiHappyFilled: SvgEmojiHappyFilled,
   exportFilled: SvgExportFilled,
   eyeFilled: SvgEyeFilled,
@@ -94,10 +99,10 @@ export const filledIcon = {
   filterLinearFilled: SvgFilterLinearFilled,
   fullScreenFilled: SvgFullScreenFilled,
   funnyFilled: SvgFunnyFilled,
+  globalFilled: SvgGlobalFilled,
   hashtagFilled: SvgOrangeHashtagFilled,
   iconLinearFilled: SvgIconLinearFilled,
   imageFilled: SvgImageFilled,
-  commentFilled: SvgCommentFilled,
   importFilled: SvgImportFilled,
   infoCircleFilled: SvgInfoCircleFilled,
   insightfulFilled: SvgInsightfulFilled,
@@ -123,7 +128,4 @@ export const filledIcon = {
   trashFilled: SvgTrashFilled,
   userFilled: SvgUsersFilled,
   videoFilled: SvgVideoFilled,
-  cyclicArrowFilled: SvgCyclicArrowFilled,
-  editReceiptFilled: SvgEditReceiptFilled,
-  deleteCrossFilled: SvgDeleteCrossFilled,
 };

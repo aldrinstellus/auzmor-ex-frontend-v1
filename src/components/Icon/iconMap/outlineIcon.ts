@@ -69,6 +69,7 @@ import SvgCyclicArrowOutline from '../components/CyclicArrow/CyclicArrowOutline'
 import SvgEditReceiptOutline from '../components/EditReceipt/EditReceiptOutline';
 import SvgDeleteCrossOutline from '../components/DeleteCross/DeleteCrossOutline';
 import SvgCommentOutline from '../components/Comment/CommentOutline';
+import SvgGlobalOutline from '../components/Global/GlobalOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -86,16 +87,20 @@ export const outlineIcon = {
   clipboardOutline: SvgClipboardCloseOutline,
   closeCircleOutline: SvgCloseCircleOutline,
   closeOutline: SvgCloseOutline,
+  commentOutline: SvgCommentOutline,
   connectionOutline: SvgConnectionFolderOutline,
   convertShapeOutline: SvgConvertShapeOutline,
   copyLinkOutline: SvgCopyLinkOutline,
   copyOutline: SvgCopyOutline,
   crossCircleOutline: SvgCrossCircleOutline,
+  cyclicArrowOutline: SvgCyclicArrowOutline,
+  deleteCrossOutline: SvgDeleteCrossOutline,
   deleteOutline: SvgDeleteOutline,
   documentOutline: SvgDocumentOutline,
   dotsVerticalOutline: SvgDotsVerticalOutline,
   draftOutline: SvgDraftOutline,
   editOutline: SvgEditOutline,
+  editReceiptOutline: SvgEditReceiptOutline,
   emojiHappyOutline: SvgEmojiHappyOutline,
   exportOutline: SvgExportOutline,
   eyeOutline: SvgEyeOutline,
@@ -104,9 +109,9 @@ export const outlineIcon = {
   fullScreenOutline: SvgFullScreenOutline,
   funnyOutline: SvgFunnyOutline,
   gearOutline: SvgGearOutline,
+  globalOutline: SvgGlobalOutline,
   iconLinearOutline: SvgIconLinearOutline,
   imageOutline: SvgImageOutline,
-  commentOutline: SvgCommentOutline,
   importOutline: SvgImportOutline,
   infoCircleOutline: SvgInfoCircleOutline,
   insightfulOutline: SvgInsightfulOutline,
@@ -139,7 +144,4 @@ export const outlineIcon = {
   userOutline: SvgUserOutline,
   userRemoveOutline: SvgUserRemoveOutline,
   videoOutline: SvgVideoOutline,
-  cyclicArrowOutline: SvgCyclicArrowOutline,
-  editReceiptOutline: SvgEditReceiptOutline,
-  deleteCrossOutline: SvgDeleteCrossOutline,
 };

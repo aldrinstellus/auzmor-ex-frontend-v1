@@ -66,8 +66,8 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
       <div className="mt-2">
         <Card className="pb-6 flex flex-col rounded-9xl">
           <div className="rounded-t-9xl bg-blue-700 text-white py-3 w-full flex justify-start space-x-1 px-3">
-            <Icon name="flashIcon" />
-            <div className="text-base font-bold">Announcement</div>
+            <Icon name="flashIcon" size={16} className="p-[1px]" />
+            <div className="text-xs font-bold">Announcement</div>
           </div>
           {isLoading || dataPostId === postId ? (
             <SkeletonLoader />
@@ -76,16 +76,18 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
               {itemCount && isAcknowledged ? (
                 <div className="flex flex-col items-start">
                   <div className="mt-4">
-                    <div className="flex space-x-3">
+                    <div className="flex space-x-4">
                       <div>
                         <Avatar
                           name={postData?.createdBy?.fullName || 'U'}
                           image={postData?.createdBy?.profileImage?.original}
-                          size={40}
+                          size={32}
+                          className="border-2 border-white"
                         />
                       </div>
+
                       <div>
-                        <div className="space-x-1 text-sm">
+                        <div className="flex space-x-1 text-sm">
                           <span className="text-neutral-900 font-bold">
                             {postData?.createdBy?.fullName}
                           </span>
@@ -93,13 +95,21 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
                             shared a post
                           </span>
                         </div>
-                        <div className="text-xs text-gray-500">
-                          {humanizeTime(postData?.createdAt)}
+                        <div className="flex space-x-2">
+                          <div className="text-xs text-gray-500">
+                            {humanizeTime(postData?.createdAt)}
+                          </div>
+                          <div className="bg-neutral-500 rounded-full w-2 h-2" />
+                          <Icon
+                            name="globalOutline"
+                            size={16}
+                            className="p-0.5"
+                          />
                         </div>
                       </div>
                     </div>
                     <Link to={`/posts/${dataPostId}`}>
-                      <div className="mt-5 flex">
+                      <div className="mt-4 flex">
                         <RenderQuillContent data={postData} />
                       </div>
                     </Link>

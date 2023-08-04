@@ -14,6 +14,7 @@ import ReactionModal from './components/ReactionModal';
 import RenderQuillContent from 'components/RenderQuillContent';
 import { getNouns } from 'utils/misc';
 import Divider from 'components/Divider';
+import useModal from 'hooks/useModal';
 
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
@@ -46,16 +47,14 @@ type PostProps = {
 };
 
 const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
-  const [showComments, setShowComments] = useState(false);
-  const [showReactionModal, setShowReactionModal] = useState(false);
-
+  const [showComments, openComments, closeComments] = useModal(false);
+  const [showReactionModal, openReactionModal, closeReactionModal] =
+    useModal(false);
   const reaction = post?.myReaction?.reaction;
-
   const totalCount = Object.values(post.reactionsCount || {}).reduce(
     (total, count) => total + count,
     0,
   );
-
   const previousShowComment = useRef<boolean>(false);
 
   useEffect(() => {
@@ -66,7 +65,7 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
 
   return (
     <>
-      <Card className="mb-4">
+      <Card className="mb-6">
         <AcknowledgementBanner data={post} />
         <div className="flex justify-between items-center">
           <Actor
@@ -76,22 +75,23 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
             createdBy={post?.createdBy}
           />
           <div className="relative">
-            <FeedPostMenu data={post as unknown as IPost} /> {/* Temp fix */}
+            <FeedPostMenu data={post as unknown as IPost} />
           </div>
         </div>
         <div className="mx-6">
           <RenderQuillContent data={post} />
+          {/* Reaction Count */}
           {(totalCount > 0 || post?.commentsCount > 0) && (
             <>
               <Divider className="mt-4" />
               <div className="flex flex-row justify-between my-3">
                 <div
-                  className={`flex flex-row`}
+                  className={`flex flex-row items-center space-x-1`}
                   data-testid="feed-post-reactioncount"
-                  onClick={() => setShowReactionModal(true)}
+                  onClick={() => openReactionModal()}
                 >
                   {totalCount > 0 && (
-                    <div className="flex flex-row mr-2">
+                    <div className="flex">
                       {Object.keys(post.reactionsCount)
                         .filter(
                           (key) =>
@@ -101,23 +101,19 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
                         .slice(0, 3)
                         .map((key, i) => (
                           <div
-                            className={` ${i > 0 ? '-ml-2 z-1' : ''}  `}
+                            className={`${
+                              i > 0 ? 'p-[1px] -ml-[8px] z-1' : 'p-[1px]'
+                            }`}
                             key={key}
                           >
-                            <Icon
-                              name={key}
-                              size={12}
-                              className={`p-0.5 rounded-17xl cursor-pointer border-white border border-solid ${iconsStyle(
-                                key,
-                              )}`}
-                            />
+                            <Icon name={`${key}Reaction`} size={20} />
                           </div>
                         ))}
                     </div>
                   )}
                   {totalCount > 0 && (
                     <div
-                      className={`flex text-sm font-normal text-neutral-500 cursor-pointer`}
+                      className={`flex text-xs font-normal text-neutral-500 cursor-pointer`}
                     >
                       {totalCount} reacted
                     </div>
@@ -128,9 +124,9 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
                     <div
                       onClick={() => {
                         if (showComments) {
-                          setShowComments(false);
+                          closeComments();
                         } else {
-                          setShowComments(true);
+                          openComments();
                         }
                       }}
                       data-testid="feed-post-commentscount"
@@ -145,8 +141,10 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
               <Divider className="mt-3" />
             </>
           )}
+
           <div className="flex justify-between pt-4 pb-6">
             <div className="flex ">
+              {/* this is for post */}
               <Likes
                 reaction={reaction || ''}
                 entityId={post?.id || ''}
@@ -159,9 +157,9 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
                 className="flex items-center ml-7"
                 onClick={() => {
                   if (showComments) {
-                    setShowComments(false);
+                    closeComments();
                   } else {
-                    setShowComments(true);
+                    openComments();
                   }
                 }}
                 data-testid="feed-post-comment"
@@ -184,7 +182,7 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
       </Card>
       {showReactionModal && (
         <ReactionModal
-          closeModal={() => setShowReactionModal(false)}
+          closeModal={() => closeReactionModal()}
           reactionCounts={post.reactionsCount}
           postId={post!.id!}
           entityType="post"

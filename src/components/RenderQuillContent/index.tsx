@@ -50,6 +50,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
         'read-more-button',
         'text-neutral-500',
         'font-bold',
+        'text-sm',
         `${data?.id}-expand-collapse-button`,
       );
       button.textContent = 'See more';
@@ -91,7 +92,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
       default:
         return (
           <Text
-            value={op.insert}
+            value={op.insert.trim()}
             attributes={op?.attributes}
             isLink={op?.attributes?.link ? true : false}
           />
@@ -120,7 +121,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
     <div>
       {!isEmpty && (
         <span
-          className="line-clamp-3 paragraph pt-px"
+          className="line-clamp-3 paragraph pt-px text-sm"
           id={`${data?.id}-content`}
           data-testid={isComment ? 'comment-content' : 'feed-post-content'}
         >

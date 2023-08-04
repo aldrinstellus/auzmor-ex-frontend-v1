@@ -20,12 +20,12 @@ const UserCard: React.FC<IUserCardProps> = ({ className }) => {
     <div className={className}>
       <Card className="pb-10 pt-0 rounded-9xl">
         <div className="flex flex-col items-center relative px-12">
-          <div className="bg-blue-700 w-full h-20 absolute top-0 rounded-t-9xl"></div>
+          <div className="bg-blue-500 w-full h-20 absolute top-0 rounded-t-9xl"></div>
           <Link to="/profile">
             <Avatar
               name={userDetails?.fullName || ''}
               image={user?.profileImage}
-              size={96}
+              size={80}
               className="border-4 border-white mt-8 overflow-hidden"
               dataTestId="profilecard-profilepic"
             />

@@ -18,7 +18,7 @@ export const postTypeMapIcons: IPostMenu[] = [
   {
     id: 1,
     label: 'Media',
-    icon: <Icon name="imageFilled" fill="#000000" size={14} />,
+    icon: <Icon name="imageFilled" fill="#737373" size={14} />,
     menuItems: [
       {
         renderNode: (
@@ -71,21 +71,21 @@ export const postTypeMapIcons: IPostMenu[] = [
   {
     id: 2,
     label: 'Shoutout',
-    icon: <Icon name="magicStarFilled" fill="#000000" size={14} />,
+    icon: <Icon name="magicStarFilled" fill="#737373" size={14} />,
     menuItems: [],
     divider: true,
   },
   {
     id: 3,
     label: 'Events',
-    icon: <Icon name="calendarFilledTwo" fill="#000000" size={14} />,
+    icon: <Icon name="calendarFilledTwo" fill="#737373" size={14} />,
     menuItems: [],
     divider: true,
   },
   {
     id: 4,
     label: 'Polls',
-    icon: <Icon name="chartFilled" fill="#000000" size={14} />,
+    icon: <Icon name="chartFilled" fill="#737373" size={14} />,
     menuItems: [],
   },
 ];
@@ -134,7 +134,7 @@ const CreatePostCard: React.FC<ICreatePostCardProps> = ({
             <div className="mt-3 mb-3 flex justify-center items-center py-3 rounded-7xl border-1 border-neutral-200 bg-neutral-200 w-8 h-8">
               {type.icon}
             </div>
-            <div className="ml-3">{type.label}</div>
+            <div className="ml-3 text-xs font-normal">{type.label}</div>
           </div>
         ))}
       </div>

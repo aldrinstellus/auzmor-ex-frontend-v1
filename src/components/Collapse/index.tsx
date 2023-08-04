@@ -35,12 +35,12 @@ const Collapse: React.FC<CollapseProps> = ({
   );
 
   return (
-    <div className="">
+    <>
       <div
-        className="flex items-center justify-between cursor-pointer pb-5"
+        className="flex items-center justify-between cursor-pointer"
         onClick={toggleModal}
       >
-        <div className=" text-neutral-500 font-bold text-base">{label}</div>
+        <div className=" text-neutral-500 font-bold text-sm">{label}</div>
         <div>
           <Icon name={open ? 'arrowUp' : 'arrowDown'} />
         </div>
@@ -48,7 +48,7 @@ const Collapse: React.FC<CollapseProps> = ({
       <div className={`py-0 ${open ? 'max-h-fit' : 'max-h-0'} overflow-hidden`}>
         {children}
       </div>
-    </div>
+    </>
   );
 };
 

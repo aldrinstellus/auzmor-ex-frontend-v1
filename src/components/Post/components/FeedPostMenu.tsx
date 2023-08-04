@@ -197,7 +197,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
     <>
       <PopupMenu
         triggerNode={
-          <div className="cursor-pointer p-2" data-testid="feed-post-ellipsis">
+          <div className="cursor-pointer mr-6" data-testid="feed-post-ellipsis">
             <Icon name="more" />
           </div>
         }

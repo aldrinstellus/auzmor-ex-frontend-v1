@@ -70,10 +70,10 @@ const Notification: React.FC<NotificationCardProps> = ({
       <div
         className={`${
           !isRead ? 'bg-orange-50' : 'bg-white'
-        } py-4 px-6 cursor-pointer`}
+        } py-4 pl-6 cursor-pointer`}
         data-testid={`notification-all-row`}
       >
-        <div className="flex gap-x-4">
+        <div className="flex gap-x-2">
           {/* Avatar of the actor with indicator */}
           <div className="w-fit">
             <Avatar
@@ -83,15 +83,17 @@ const Notification: React.FC<NotificationCardProps> = ({
             />
           </div>
           {/* Content */}
-          <div className="flex items-start justify-between w-full">
-            <div className="flex flex-col gap-y-1 w-11/12">
-              <p className="text-neutral-900">
-                <span className="font-bold">{actor.fullName}&nbsp;</span>
-                {notificationMessage}
-              </p>
-              <p className="text-sm text-neutral-500 font-normal">
-                {humanizeTime(action.actedAt)}
-              </p>
+          <div className="flex items-start justify-between space-x-2 w-full mr-6">
+            <div className="flex flex-col gap-y-2 w-11/12">
+              <div className="flex flex-col gap-y-1">
+                <p className="text-neutral-900">
+                  <span className="font-bold">{actor.fullName}&nbsp;</span>
+                  {notificationMessage}
+                </p>
+                <p className="text-sm text-neutral-500 font-normal">
+                  {humanizeTime(action.actedAt)}
+                </p>
+              </div>
               <NotificationCard
                 TopCardContent={cardContent?.TopCardContent}
                 BottomCardContent={cardContent?.BottomCardContent}
@@ -103,8 +105,6 @@ const Notification: React.FC<NotificationCardProps> = ({
               <div className="bg-orange-400 rounded-full w-2 h-2 mt-2" />
             )}
           </div>
-
-          <div />
         </div>
       </div>
     </Link>

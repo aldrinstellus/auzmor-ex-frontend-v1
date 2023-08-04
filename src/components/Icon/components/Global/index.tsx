@@ -1,7 +1,7 @@
 import React from 'react';
 import useHover from 'hooks/useHover';
-import { default as LikeFilled } from './LikeFilled';
-import { default as LikeOutline } from './LikeOutline';
+import { default as GlobalFilled } from './GlobalFilled';
+import { default as GlobalOutline } from './GlobalOutline';
 
 type IconProps = {
   size?: number;
@@ -11,7 +11,7 @@ type IconProps = {
   onClick?: () => void;
 };
 
-const Like: React.FC<IconProps> = ({
+const Global: React.FC<IconProps> = ({
   hover = true,
   onClick,
   className = '',
@@ -22,12 +22,12 @@ const Like: React.FC<IconProps> = ({
   return (
     <div onClick={onClick} className={className} {...eventHandlers}>
       {!disabled && (hover || isHovered) ? (
-        <LikeFilled {...props} />
+        <GlobalFilled {...props} />
       ) : (
-        <LikeOutline {...props} />
+        <GlobalOutline {...props} />
       )}
     </div>
   );
 };
 
-export default Like;
+export default Global;

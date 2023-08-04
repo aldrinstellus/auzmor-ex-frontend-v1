@@ -108,7 +108,7 @@ const Feed: React.FC<IFeedProps> = () => {
 
   return (
     <>
-      <div className="mb-12 space-x-8 flex w-full">
+      <div className="mb-12 gap-x-[52px] flex w-full">
         <div className="top-10 z-10 w-1/4">
           <UserCard className="sticky top-24" />
         </div>
@@ -160,7 +160,7 @@ const Feed: React.FC<IFeedProps> = () => {
                     }}
                     dataTestId="filters-dropdown"
                   />
-                  <Divider />
+                  <Divider className="bg-neutral-200" />
                   <SortByDropdown />
                 </div>
                 <div className="flex w-full overflow-y-auto">
