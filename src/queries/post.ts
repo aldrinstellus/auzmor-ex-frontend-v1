@@ -399,3 +399,16 @@ export const useGetPost = (id: string, commentId?: string) => {
     queryFn: () => getPost(id, commentId),
   });
 };
+
+export const getHashtags = async () => {
+  const { data } = await apiService.get('hashtags');
+  return data;
+};
+
+export const useGetHashtags = () => {
+  return useQuery({
+    queryKey: ['get-hashtags'],
+    queryFn: () => getHashtags(),
+    enabled: false,
+  });
+};

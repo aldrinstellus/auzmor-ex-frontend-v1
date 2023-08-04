@@ -4,6 +4,7 @@ import {
   createHashtagsList,
   newHashtags,
 } from './mentions/utils';
+import { extractFirstWord } from 'utils/misc';
 
 interface IOrg {
   id: string;
@@ -49,24 +50,22 @@ const mentionEntityFetch = async (character: string, searchTerm: string) => {
     const mentionList = mentions?.result?.data;
     return createMentionsList(mentionList, character);
   } else if (character === '#' && !isContainWhiteSpace) {
-    const hashtagValue = searchTerm.split(' ').filter((ele) => ele !== '');
-    if (hashtagValue.length === 1 || character === '#') {
-      const hashtag = hashtagValue[0];
-      const { data: hashtags } = await apiService.get('/hashtags', {
-        q: hashtag,
-      });
-      const hashtagList = hashtags?.result?.data;
-      const newHashtagValue = {
-        name: hashtagValue[0],
-      };
-      const hasHashtags = hashtagList?.some(
-        (hashValue: IHashtags) => hashValue?.name === hashtag,
-      );
-      if (hasHashtags) {
-        return createHashtagsList(hashtagList, character);
+    const hashtag = extractFirstWord(searchTerm);
+    const { data: hashtags } = await apiService.get('/hashtags', {
+      q: hashtag,
+    });
+    const hashtagList = hashtags?.result?.data;
+    const isOlderHashtag = hashtagList?.some((hashValue: IHashtags) => {
+      if (hashtag) {
+        return hashValue?.name === hashtag;
       } else {
-        return newHashtags(newHashtagValue, character);
+        return true;
       }
+    });
+    if (isOlderHashtag) {
+      return createHashtagsList(hashtagList, character);
+    } else {
+      return newHashtags({ name: hashtag }, character);
     }
   } else if (isContainWhiteSpace) {
     return null;
@@ -97,6 +96,7 @@ export const mention = {
     if (item?.charDenotation === '@') {
       return `
               <div class="user-container">
+
                     <div class="user-avatar">
                           ${
                             item?.profileImage?.original
@@ -113,9 +113,14 @@ export const mention = {
                                 </div>`
                           }
                     </div>
-                    <div class="user-details">
-                      <span>${item.fullName}</span>
+
                     <div>
+                      <div class="user-details">
+                        <div>${item.fullName}</div>
+                      <div>
+                        <div class="user-email">${item.workEmail}</div>
+                    </div>
+
               </div>
             `;
     } else if (item.charDenotation === '#') {

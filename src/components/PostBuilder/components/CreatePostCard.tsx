@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import useAuth from 'hooks/useAuth';
