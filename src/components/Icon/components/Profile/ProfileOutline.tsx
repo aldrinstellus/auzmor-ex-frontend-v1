@@ -2,19 +2,22 @@ import * as React from 'react';
 import { SVGProps } from 'react';
 import { PRIMARY_COLOR } from 'utils/constants';
 
-type IconProps = {
+interface IconProps {
   size?: number;
   stroke?: string;
   hoveredStroke?: string;
-};
+  isActive?: boolean;
+}
 
-const SvgExportOutline = ({
+const SvgProfileOutline = ({
   size = 24,
   stroke = '#737373',
   hoveredStroke = PRIMARY_COLOR,
+  isActive = false,
   ...props
 }: SVGProps<SVGSVGElement> & IconProps) => (
   <>
+    {/* Hovered state*/}
     <svg
       width={size}
       height={size}
@@ -22,30 +25,25 @@ const SvgExportOutline = ({
       {...props}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="hidden group-hover:block"
+      className="hidden group-hover:block cursor-pointer"
     >
       <path
-        d="M16.4405 8.8999C20.0405 9.2099 21.5105 11.0599 21.5105 15.1099V15.2399C21.5105 19.7099 19.7205 21.4999 15.2505 21.4999H8.74047C4.27047 21.4999 2.48047 19.7099 2.48047 15.2399V15.1099C2.48047 11.0899 3.93047 9.2399 7.47047 8.9099"
+        d="M12.1596 10.87C12.0596 10.86 11.9396 10.86 11.8296 10.87C9.44957 10.79 7.55957 8.84 7.55957 6.44C7.55957 3.99 9.53957 2 11.9996 2C14.4496 2 16.4396 3.99 16.4396 6.44C16.4296 8.84 14.5396 10.79 12.1596 10.87Z"
         stroke={hoveredStroke}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M12 15.0001V3.62012"
-        stroke={hoveredStroke}
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M15.3504 5.85L12.0004 2.5L8.65039 5.85"
+        d="M7.15973 14.56C4.73973 16.18 4.73973 18.82 7.15973 20.43C9.90973 22.27 14.4197 22.27 17.1697 20.43C19.5897 18.81 19.5897 16.17 17.1697 14.56C14.4297 12.73 9.91973 12.73 7.15973 14.56Z"
         stroke={hoveredStroke}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
     </svg>
+
+    {/* Normal state */}
     <svg
       width={size}
       height={size}
@@ -56,21 +54,14 @@ const SvgExportOutline = ({
       className="group-hover:hidden"
     >
       <path
-        d="M16.4405 8.8999C20.0405 9.2099 21.5105 11.0599 21.5105 15.1099V15.2399C21.5105 19.7099 19.7205 21.4999 15.2505 21.4999H8.74047C4.27047 21.4999 2.48047 19.7099 2.48047 15.2399V15.1099C2.48047 11.0899 3.93047 9.2399 7.47047 8.9099"
+        d="M12.1596 10.87C12.0596 10.86 11.9396 10.86 11.8296 10.87C9.44957 10.79 7.55957 8.84 7.55957 6.44C7.55957 3.99 9.53957 2 11.9996 2C14.4496 2 16.4396 3.99 16.4396 6.44C16.4296 8.84 14.5396 10.79 12.1596 10.87Z"
         stroke={stroke}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M12 15.0001V3.62012"
-        stroke={stroke}
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M15.3504 5.85L12.0004 2.5L8.65039 5.85"
+        d="M7.15973 14.56C4.73973 16.18 4.73973 18.82 7.15973 20.43C9.90973 22.27 14.4197 22.27 17.1697 20.43C19.5897 18.81 19.5897 16.17 17.1697 14.56C14.4297 12.73 9.91973 12.73 7.15973 14.56Z"
         stroke={stroke}
         strokeWidth="1.5"
         strokeLinecap="round"
@@ -80,4 +71,4 @@ const SvgExportOutline = ({
   </>
 );
 
-export default SvgExportOutline;
+export default SvgProfileOutline;

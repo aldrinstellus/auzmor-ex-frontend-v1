@@ -1,6 +1,6 @@
 import React from 'react';
-import { default as FeedFilled } from './FeedFilled';
-import { default as FeedOutline } from './FeedOutline';
+import { default as FocusFilled } from './FocusFilled';
+import { default as FocusOutline } from './FocusOutline';
 
 type IconProps = {
   size?: number;
@@ -11,7 +11,7 @@ type IconProps = {
   isActive?: boolean;
 };
 
-const FeedIcon: React.FC<IconProps> = ({
+const FocusIcon: React.FC<IconProps> = ({
   hover,
   onClick,
   className = '',
@@ -22,12 +22,12 @@ const FeedIcon: React.FC<IconProps> = ({
   return (
     <div onClick={onClick} className={className}>
       {!disabled && (hover || isActive) ? (
-        <FeedFilled {...props} />
+        <FocusFilled {...props} />
       ) : (
-        <FeedOutline {...props} />
+        <FocusOutline {...props} />
       )}
     </div>
   );
 };
 
-export default FeedIcon;
+export default FocusIcon;

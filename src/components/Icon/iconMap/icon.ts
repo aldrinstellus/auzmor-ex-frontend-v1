@@ -99,6 +99,13 @@ import CyclicArrow from '../components/CyclicArrow';
 import EditReceipt from '../components/EditReceipt';
 import DeleteCrossIcon from '../components/DeleteCross';
 import CommentIcon from '../components/Comment';
+import GroupIcon from '../components/Group';
+import ExpandIcon from '../components/Expand';
+import CollapseIcon from '../components/Collapse';
+import FocusIcon from '../components/Focus';
+import ZoomInIcon from '../components/ZoomIn';
+import ZoomOutIcon from '../components/ZoomOut';
+import ProfileIcon from '../components/Profile';
 import Global from '../components/Global';
 import LikeReaction from '../components/LikeReaction';
 import CelebrateReaction from '../components/CelebrateReaction';
@@ -163,6 +170,7 @@ export const icon = {
   funny: Funny,
   funnyReaction: FunnyReaction,
   gear: Gear,
+  group: GroupIcon,
   global: Global,
   home: HomeIcon,
   iconLinear: IconLinear,
@@ -212,8 +220,14 @@ export const icon = {
   threeDots: ThreeDots,
   tickCircle: TickCircleIcon,
   trash: Trash,
-  user: UsersIcon,
+  users: UsersIcon,
   userManagement: UserManagement,
   userRemove: UserRemove,
   video: VideoIcon,
+  expand: ExpandIcon,
+  collapse: CollapseIcon,
+  focus: FocusIcon,
+  zoomIn: ZoomInIcon,
+  zoomOut: ZoomOutIcon,
+  profile: ProfileIcon,
 };

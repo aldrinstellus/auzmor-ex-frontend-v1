@@ -1,6 +1,6 @@
 import React from 'react';
-import { default as FeedFilled } from './FeedFilled';
-import { default as FeedOutline } from './FeedOutline';
+import { default as GroupFilled } from './GroupFilled';
+import { default as GroupOutline } from './GroupOutline';
 
 type IconProps = {
   size?: number;
@@ -11,7 +11,7 @@ type IconProps = {
   isActive?: boolean;
 };
 
-const FeedIcon: React.FC<IconProps> = ({
+const GroupIcon: React.FC<IconProps> = ({
   hover,
   onClick,
   className = '',
@@ -22,12 +22,12 @@ const FeedIcon: React.FC<IconProps> = ({
   return (
     <div onClick={onClick} className={className}>
       {!disabled && (hover || isActive) ? (
-        <FeedFilled {...props} />
+        <GroupFilled {...props} />
       ) : (
-        <FeedOutline {...props} />
+        <GroupOutline {...props} />
       )}
     </div>
   );
 };
 
-export default FeedIcon;
+export default GroupIcon;

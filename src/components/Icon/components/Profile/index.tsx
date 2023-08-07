@@ -1,6 +1,6 @@
 import React from 'react';
-import { default as FeedFilled } from './FeedFilled';
-import { default as FeedOutline } from './FeedOutline';
+import { default as ProfileFilled } from './ProfileFilled';
+import { default as ProfileOutline } from './ProfileOutline';
 
 type IconProps = {
   size?: number;
@@ -11,7 +11,7 @@ type IconProps = {
   isActive?: boolean;
 };
 
-const FeedIcon: React.FC<IconProps> = ({
+const ProfileIcon: React.FC<IconProps> = ({
   hover,
   onClick,
   className = '',
@@ -22,12 +22,12 @@ const FeedIcon: React.FC<IconProps> = ({
   return (
     <div onClick={onClick} className={className}>
       {!disabled && (hover || isActive) ? (
-        <FeedFilled {...props} />
+        <ProfileFilled {...props} />
       ) : (
-        <FeedOutline {...props} />
+        <ProfileOutline {...props} />
       )}
     </div>
   );
 };
 
-export default FeedIcon;
+export default ProfileIcon;
