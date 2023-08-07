@@ -1,10 +1,38 @@
-/* .ql-mention-list-container {
-  border: 1px solid #f0f0f0;
-  border-radius: 4px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 12px 0 rgba(30, 30, 30, 0.08);
+.ql-mention-list-container {
+  width: 37%;
+  box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.05),
+    0px 10px 15px -3px rgba(0, 0, 0, 0.1);
   z-index: 9001;
-  overflow: auto;
+  overflow-y: scroll;
+  border-radius: 12px;
+  background: #fff;
+}
+
+/* mention denotation char class*/
+/* .ql-mention-denotation-char {
+  display: none;
+} */
+
+.ql-hash-list-container {
+  width: 155px;
+  box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.05),
+    0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  z-index: 9001;
+  overflow-y: scroll;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.mention {
+  user-select: all;
+  color: #10b981;
+  font-weight: 500;
+}
+
+.ql-mention-list-item.selected {
+  background-color: #ecfdf5 !important;
+  text-decoration: none;
+  border-radius: 5px;
 }
 
 .ql-mention-loading {
@@ -17,7 +45,7 @@
 .ql-mention-list {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0px 0px;
   overflow: hidden;
 }
 
@@ -25,7 +53,7 @@
   cursor: pointer;
   line-height: 44px;
   font-size: 16px;
-  padding: 0 20px;
+  padding: 0px 0px;
   vertical-align: middle;
 }
 
@@ -37,19 +65,58 @@
   cursor: auto;
 }
 
-.ql-mention-list-item.selected {
-  background-color: #d3e1eb;
-  text-decoration: none;
-}
-
 .ql-mention-denotation-char {
   vertical-align: 0.1rem;
 }
 
-.mention {
-  user-select: all;
-  color: #10b981;
+.ql-mention-list-item {
+  line-height: 22px;
+}
+
+/* User */
+.user-container {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.user-avatar {
+  background-color: #f7f8fb;
+  font-weight: bold;
+  border-radius: 100px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-details {
+  margin-left: 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #171717;
+}
+
+.user-email {
+  font-size: 12px;
+  font-weight: 400;
+  color: #737373;
+  line-height: 18px;
+}
+/* Hashtags */
+
+.hashtag-container {
+  display: flex;
+  padding: 8px 24px;
+}
+
+.hashtag-name {
+  font-family: Manrope;
+  font-size: 12px;
   font-weight: 500;
+  color: #171717;
 }
 
 .hashtag {
@@ -61,4 +128,5 @@
   color: #059669;
   text-decoration: underline;
   cursor: pointer;
-} */
+  font-weight: 700;
+}
