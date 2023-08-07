@@ -1,9 +1,14 @@
+import React, { ReactNode } from 'react';
+import Skeleton from 'react-loading-skeleton';
+import { renderToString } from 'react-dom/server';
+import ReactionSkeleton from 'components/Post/components/ReactionSkeleton';
 import apiService from 'utils/apiService';
 import {
   createMentionsList,
   createHashtagsList,
   newHashtags,
 } from './mentions/utils';
+import { extractFirstWord } from 'utils/misc';
 
 interface IOrg {
   id: string;
@@ -39,7 +44,6 @@ interface IHashtags {
 }
 
 export const previewLinkRegex = /(http|https):\/\/[^\s]+/gi;
-
 const mentionEntityFetch = async (character: string, searchTerm: string) => {
   const isContainWhiteSpace = /^\s/.test(searchTerm);
   if (character === '@' && !isContainWhiteSpace) {
@@ -49,24 +53,22 @@ const mentionEntityFetch = async (character: string, searchTerm: string) => {
     const mentionList = mentions?.result?.data;
     return createMentionsList(mentionList, character);
   } else if (character === '#' && !isContainWhiteSpace) {
-    const hashtagValue = searchTerm.split(' ').filter((ele) => ele !== '');
-    if (hashtagValue.length === 1) {
-      const hashtag = hashtagValue[0];
-      const { data: hashtags } = await apiService.get('/hashtags', {
-        q: hashtag,
-      });
-      const hashtagList = hashtags?.result?.data;
-      const newHashtagValue = {
-        name: hashtagValue[0],
-      };
-      const hasHashtags = hashtagList?.some(
-        (hashValue: IHashtags) => hashValue?.name === hashtag,
-      );
-      if (hasHashtags) {
-        return createHashtagsList(hashtagList, character);
+    const hashtag = extractFirstWord(searchTerm);
+    const { data: hashtags } = await apiService.get('/hashtags', {
+      q: hashtag,
+    });
+    const hashtagList = hashtags?.result?.data;
+    const isOlderHashtag = hashtagList?.some((hashValue: IHashtags) => {
+      if (hashtag) {
+        return hashValue?.name === hashtag;
       } else {
-        return newHashtags(newHashtagValue, character);
+        return true;
       }
+    });
+    if (isOlderHashtag) {
+      return createHashtagsList(hashtagList, character);
+    } else {
+      return newHashtags({ name: hashtag }, character);
     }
   } else if (isContainWhiteSpace) {
     return null;
@@ -87,16 +89,31 @@ export const mention = {
     mentionEntityFetch(mentionChar, searchTerm).then((listItem: any) => {
       renderItem(listItem, searchTerm);
     });
+    // Loaders =
+    //   mentionChar === '@' ? (
+    //     <ReactionSkeleton />
+    //   ) : (
+    //     <div>
+    //       {[...Array(4)].map((value, index) => (
+    //         <div className="flex gap-x-2 items-start py-5" key={index}>
+    //           <Skeleton className="!w-56 h-3" count={1} borderRadius={100} />
+    //         </div>
+    //       ))}
+    //     </div>
+    //   );
   },
   dataAttributes: ['id'],
   showDenotationChar: true,
   onOpen: () => {},
   onclose: () => {},
-  renderLoading: () => {},
+  renderLoading: () => {
+    return renderToString(<ReactionSkeleton />);
+  },
   renderItem: (item: any, searchItem: any) => {
     if (item?.charDenotation === '@') {
       return `
               <div class="user-container">
+
                     <div class="user-avatar">
                           ${
                             item?.profileImage?.original
@@ -113,9 +130,14 @@ export const mention = {
                                 </div>`
                           }
                     </div>
-                    <div class="user-details">
-                      <span>${item.fullName}</span>
+
                     <div>
+                      <div class="user-details">
+                        <div>${item.fullName}</div>
+                      <div>
+                        <div class="user-email">${item.workEmail}</div>
+                    </div>
+
               </div>
             `;
     } else if (item.charDenotation === '#') {

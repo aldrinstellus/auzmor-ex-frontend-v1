@@ -10,6 +10,8 @@ import './quill.mention.css';
 import './blots/mentions';
 
 class Mention {
+  // constructor that initialize various properties related mention features
+
   constructor(quill, options) {
     this.isOpen = false;
     this.itemIndex = 0;
@@ -78,12 +80,13 @@ class Mention {
         : this.options.dataAttributes,
     });
 
-    // create mention container
+    // create mention container div - basically dropdown after @ and # (common for both)
+
     this.mentionContainer = document.createElement('div');
     this.mentionContainer.className = this.options.mentionContainerClass
       ? this.options.mentionContainerClass
       : '';
-    this.mentionContainer.style.cssText = 'display: none; position: absolute;';
+    this.mentionContainer.style.cssText = 'display: none; position: absolute';
     this.mentionContainer.onmousemove = this.onContainerMouseMove.bind(this);
 
     if (this.options.fixMentionsToQuill) {
@@ -103,6 +106,9 @@ class Mention {
 
     // Pasting doesn't fire selection-change after the pasted text is
     // inserted, so here we manually trigger one
+
+    // quill events
+
     quill.container.addEventListener('paste', () => {
       setTimeout(() => {
         const range = quill.getSelection();
@@ -116,6 +122,7 @@ class Mention {
       },
       this.selectHandler.bind(this),
     );
+
     quill.keyboard.bindings[Keys.TAB].unshift(
       quill.keyboard.bindings[Keys.TAB].pop(),
     );
@@ -128,6 +135,7 @@ class Mention {
         this.selectHandler.bind(this),
       );
     }
+
     quill.keyboard.bindings[Keys.ENTER].unshift(
       quill.keyboard.bindings[Keys.ENTER].pop(),
     );
@@ -162,6 +170,7 @@ class Mention {
     return true;
   }
 
+  // hide dropdown on click of escape key
   escapeHandler() {
     if (this.isOpen) {
       if (this.existingSourceExecutionToken) {
@@ -195,7 +204,6 @@ class Mention {
     } else {
       this.quill.container.appendChild(this.mentionContainer);
     }
-
     this.mentionContainer.style.visibility = 'hidden';
     this.mentionContainer.style.display = '';
     this.mentionContainer.scrollTop = 0;
@@ -650,7 +658,6 @@ class Mention {
       // it doesnt fit either so put it where there's the most space
       placement = availableSpaceBottom > availableSpaceTop ? 'bottom' : 'top';
     }
-
     if (placement === 'bottom') {
       topPos = relativeToPos.top + relativeToPos.height;
       if (!fitsBottom) {
@@ -782,6 +789,6 @@ class Mention {
   }
 }
 
-Quill.register('modules/mention', Mention);
+Quill.register('modules/office-mention', Mention); // overriding issue
 
 export default Mention;

@@ -40,7 +40,11 @@ const Mention: React.FC<MentionProps> = ({
       <Link
         to={userId && userId !== user?.id ? '/users/' + userId : '/profile'}
       >
-        <span className="cursor-pointer mention" contentEditable="false">
+        <span
+          className="cursor-pointer mention"
+          contentEditable="false"
+          data-testid={`feedpage-at-${value}`}
+        >
           {value}
         </span>
       </Link>

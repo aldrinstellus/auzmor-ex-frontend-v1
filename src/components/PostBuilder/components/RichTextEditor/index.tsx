@@ -9,7 +9,8 @@ import ReactQuill, { Quill, UnprivilegedEditor } from 'react-quill';
 import { DeltaStatic, Sources } from 'quill';
 import 'react-quill/dist/quill.snow.css';
 import 'quill-emoji/dist/quill-emoji.css';
-import './mentions/quill.mention';
+
+// Issue Identitfied - in this folder quill mention does not applied
 import './mentions/quill.mention.css';
 
 import { MentionBlot } from './mentions/blots/mentions';

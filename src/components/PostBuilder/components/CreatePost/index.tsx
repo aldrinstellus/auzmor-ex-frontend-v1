@@ -66,7 +66,12 @@ const CreatePost: React.FC<ICreatePostProps> = ({
         }}
         closeBtnDataTestId={`${dataTestId}-closeicon`}
       />
-      <Body data={data} ref={quillRef} dataTestId={dataTestId} />
+      <Body
+        data={data}
+        ref={quillRef}
+        quillRef={quillRef}
+        dataTestId={dataTestId}
+      />
       <Footer
         isLoading={isLoading}
         quillRef={quillRef}

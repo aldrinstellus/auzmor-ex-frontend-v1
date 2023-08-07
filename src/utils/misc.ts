@@ -216,3 +216,11 @@ export const titleCase = (input: string) => {
     .map((i) => capitalize(i))
     .join(' ');
 };
+
+export const extractFirstWord = (str: string) => {
+  const words = str.trim().split(' ');
+  if (words.length > 0) {
+    return words[0];
+  }
+  return '';
+};

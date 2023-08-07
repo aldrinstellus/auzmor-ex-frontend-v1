@@ -5,18 +5,23 @@ import { CreatePostContext } from 'contexts/CreatePostContext';
 import useAuth from 'hooks/useAuth';
 import { IPost } from 'queries/post';
 import { DeltaStatic } from 'quill';
-import React, { ForwardedRef, useContext } from 'react';
+import React, { ForwardedRef, Ref, useContext } from 'react';
 import ReactQuill from 'react-quill';
 import RichTextEditor from '../RichTextEditor';
 import Toolbar from '../RichTextEditor/toolbar';
+import Button from 'components/Button';
 
 export interface IBodyProps {
   data?: IPost;
   dataTestId?: string;
+  quillRef: React.RefObject<ReactQuill>;
 }
 
 const Body = React.forwardRef(
-  ({ data, dataTestId }: IBodyProps, ref: ForwardedRef<ReactQuill>) => {
+  (
+    { data, dataTestId, quillRef }: IBodyProps,
+    ref: ForwardedRef<ReactQuill>,
+  ) => {
     const { editorValue } = useContext(CreatePostContext);
     const { user } = useAuth();
     return (
@@ -41,9 +46,15 @@ const Body = React.forwardRef(
               data?.content?.editor || (editorValue.json as DeltaStatic)
             }
             ref={ref}
-            renderToolbar={(isCharLimit: boolean) => (
-              <Toolbar isCharLimit={isCharLimit} dataTestId={dataTestId} />
-            )}
+            renderToolbar={(isCharLimit: boolean) => {
+              return (
+                <Toolbar
+                  isCharLimit={isCharLimit}
+                  dataTestId={dataTestId}
+                  quillRef={quillRef}
+                />
+              );
+            }}
             renderPreviewLink={(
               previewUrl: string,
               setPreviewUrl: (previewUrl: string) => void,

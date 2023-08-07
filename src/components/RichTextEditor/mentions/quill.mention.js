@@ -69,7 +69,12 @@ class Mention {
       // Style options
       listItemClass: 'ql-mention-list-item',
       mentionContainerClass: 'ql-mention-list-container',
+      hashContainerClass: 'ql-hash-list-container',
       mentionListClass: 'ql-mention-list',
+      hashListDataTestId: 'createpost-listof-hashtag',
+      hashItemDataTestId: 'createpost-hashtag-item',
+      atListDataTestId: 'createpost-listof-at',
+      atItemDataTestId: 'createpost-at-item',
       spaceAfterInsert: true,
       selectKeys: [Keys.ENTER],
     };
@@ -94,6 +99,7 @@ class Mention {
 
     this.mentionList = document.createElement('ul');
     this.mentionList.id = 'quill-mention-list';
+
     quill.root.setAttribute('aria-owns', 'quill-mention-list');
     this.mentionList.className = this.options.mentionListClass
       ? this.options.mentionListClass
@@ -390,7 +396,12 @@ class Mention {
   renderList(mentionChar, data, searchTerm) {
     if (data && data.length > 0) {
       this.removeLoading();
-
+      const textBeforeCursor = this.getTextBeforeCursor();
+      const { mentionChar } = getMentionCharIndex(
+        textBeforeCursor,
+        this.options.mentionDenotationChars,
+      );
+      const isHashCharEntered = mentionChar === '#';
       this.values = data;
       this.mentionList.innerHTML = '';
 
@@ -402,6 +413,12 @@ class Mention {
         li.className = this.options.listItemClass
           ? this.options.listItemClass
           : '';
+        li.setAttribute(
+          'data-testid',
+          isHashCharEntered
+            ? this.options.hashItemDataTestId
+            : this.options.atItemDataTestId,
+        );
         if (data[i].disabled) {
           li.className += ' disabled';
           li.setAttribute('aria-hidden', 'true');
@@ -704,6 +721,25 @@ class Mention {
       textBeforeCursor,
       this.options.mentionDenotationChars,
     );
+
+    // hashtag style changes
+    const isHashCharEntered = mentionChar === '#';
+    this.mentionList.setAttribute(
+      'data-testid',
+      isHashCharEntered
+        ? this.options.hashListDataTestId
+        : this.options.atListDataTestId,
+    );
+
+    if (isHashCharEntered) {
+      this.mentionContainer.classList.add(this.options.hashContainerClass);
+      this.mentionContainer.classList.remove(
+        this.options.mentionContainerClass,
+      );
+    } else {
+      this.mentionContainer.classList.remove(this.options.hashContainerClass);
+      this.mentionContainer.classList.add(this.options.mentionContainerClass);
+    }
 
     if (
       hasValidMentionCharIndex(

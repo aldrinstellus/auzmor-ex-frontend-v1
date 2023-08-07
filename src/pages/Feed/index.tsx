@@ -134,11 +134,16 @@ const Feed: React.FC<IFeedProps> = () => {
                       />
                       <div className="text-2xl font-bold text-neutral-900">
                         <span>#</span>
-                        {hashtag}
+                        <span data-testid={`feedpage-filter-${hashtag}`}>
+                          {hashtag}
+                        </span>
                       </div>
                     </div>
                     <div className="text-base font-normal text-neutral-500">
-                      {hashtag && feedIds?.length} people are posting about this
+                      <span data-testid="feedpage-filter-hashtagcount-text">
+                        {hashtag && feedIds?.length}
+                      </span>{' '}
+                      people are posting about this
                     </div>
                   </div>
                   <div>
