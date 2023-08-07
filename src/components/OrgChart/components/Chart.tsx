@@ -4,6 +4,7 @@ import { renderToString } from 'react-dom/server';
 import './index.css';
 import UserNode from './UserNode';
 import ExpandButtonContent from './ExpandButtonContent';
+import UserCard from 'components/UserCard';
 
 export interface INode {
   id: string;
@@ -137,6 +138,7 @@ const Chart: React.FC<IChart> = ({ orgChartRef }) => {
           .nodeContent((node: any, i: any, arr: any, state: any) => {
             return renderToString(<UserNode node={node} />);
           })
+          .hoverCardContent(() => renderToString(<UserCard />))
           // .onExpandCollapseClick((d: any, data: any) => {
           //   if (
           //     d.children?.length &&

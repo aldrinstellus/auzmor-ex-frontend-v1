@@ -105,6 +105,7 @@ import CollapseIcon from '../components/Collapse';
 import FocusIcon from '../components/Focus';
 import ZoomInIcon from '../components/ZoomIn';
 import ZoomOutIcon from '../components/ZoomOut';
+import ProfileIcon from '../components/Profile';
 
 export const icon = {
   add: Add,
@@ -205,7 +206,7 @@ export const icon = {
   threeDots: ThreeDots,
   tickCircle: TickCircleIcon,
   trash: Trash,
-  user: UsersIcon,
+  users: UsersIcon,
   userManagement: UserManagement,
   userRemove: UserRemove,
   video: VideoIcon,
@@ -214,4 +215,5 @@ export const icon = {
   focus: FocusIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
+  profile: ProfileIcon,
 };

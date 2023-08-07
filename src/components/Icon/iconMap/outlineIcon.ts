@@ -14,7 +14,7 @@ import SvgAddCircleOutline from '../components/AddCircle/AddCircleOutline';
 import SvgAddOutline from '../components/Add/AddOutline';
 import SvgConvertShapeOutline from '../components/ConvertShape/ConvertShapeOutline';
 import SvgVideoOutline from '../components/video/VideoOutline';
-import SvgUserOutline from '../components/Users/UsersOutline';
+import SvgUsersOutline from '../components/Users/UsersOutline';
 import SvgSpeakerOutline from '../components/Speaker/SpeakerOutline';
 import SvgDraftOutline from '../components/Draft/DraftOutline';
 import SvgArrowSwapOutline from '../components/ArrowSwap/ArrowSwapOutline';
@@ -75,6 +75,7 @@ import SvgCollapseOutline from '../components/Collapse/CollapseOutline';
 import SvgFocusOutline from '../components/Focus/FocusOutline';
 import SvgZoomInOutline from '../components/ZoomIn/ZoomInOutline';
 import SvgZoomOutOutline from '../components/ZoomOut/ZoomOutOutline';
+import SvgProfileOutline from '../components/Profile/ProfileOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -92,27 +93,34 @@ export const outlineIcon = {
   clipboardOutline: SvgClipboardCloseOutline,
   closeCircleOutline: SvgCloseCircleOutline,
   closeOutline: SvgCloseOutline,
+  collapseOutline: SvgCollapseOutline,
+  commentOutline: SvgCommentOutline,
   connectionOutline: SvgConnectionFolderOutline,
   convertShapeOutline: SvgConvertShapeOutline,
   copyLinkOutline: SvgCopyLinkOutline,
   copyOutline: SvgCopyOutline,
   crossCircleOutline: SvgCrossCircleOutline,
+  cyclicArrowOutline: SvgCyclicArrowOutline,
+  deleteCrossOutline: SvgDeleteCrossOutline,
   deleteOutline: SvgDeleteOutline,
   documentOutline: SvgDocumentOutline,
   dotsVerticalOutline: SvgDotsVerticalOutline,
   draftOutline: SvgDraftOutline,
   editOutline: SvgEditOutline,
+  editReceiptOutline: SvgEditReceiptOutline,
   emojiHappyOutline: SvgEmojiHappyOutline,
+  expandOutline: SvgExpandOutline,
   exportOutline: SvgExportOutline,
   eyeOutline: SvgEyeOutline,
   eyeSlashOutline: SvgEyeSlashOutline,
   filterLinearOutline: SvgFilterLinearOutline,
+  focusOutline: SvgFocusOutline,
   fullScreenOutline: SvgFullScreenOutline,
   funnyOutline: SvgFunnyOutline,
   gearOutline: SvgGearOutline,
+  groupOutline: SvgGroupOutline,
   iconLinearOutline: SvgIconLinearOutline,
   imageOutline: SvgImageOutline,
-  commentOutline: SvgCommentOutline,
   importOutline: SvgImportOutline,
   infoCircleOutline: SvgInfoCircleOutline,
   insightfulOutline: SvgInsightfulOutline,
@@ -142,16 +150,10 @@ export const outlineIcon = {
   tickCircleOutline: SvgTickCircleOutline,
   trashOutline: SvgTrashOutline,
   userManagementOutline: SvgUserManagementOutline,
-  userOutline: SvgUserOutline,
+  usersOutline: SvgUsersOutline,
   userRemoveOutline: SvgUserRemoveOutline,
   videoOutline: SvgVideoOutline,
-  cyclicArrowOutline: SvgCyclicArrowOutline,
-  editReceiptOutline: SvgEditReceiptOutline,
-  deleteCrossOutline: SvgDeleteCrossOutline,
-  groupOutline: SvgGroupOutline,
-  expandOutline: SvgExpandOutline,
-  collapseOutline: SvgCollapseOutline,
-  focusOutline: SvgFocusOutline,
   zoomInOutline: SvgZoomInOutline,
   zoomOutOutline: SvgZoomOutOutline,
+  profileOutline: SvgProfileOutline,
 };
