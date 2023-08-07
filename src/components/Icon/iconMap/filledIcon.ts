@@ -61,6 +61,13 @@ import SvgCyclicArrowFilled from '../components/CyclicArrow/CyclicArrowFilled';
 import SvgEditReceiptFilled from '../components/EditReceipt/EditReceiptFilled';
 import SvgDeleteCrossFilled from '../components/DeleteCross/DeleteCrossFilled';
 import SvgCommentFilled from '../components/Comment/CommentFilled';
+import SvgGroupFilled from '../components/Group/GroupFilled';
+import SvgExpandFilled from '../components/Expand/ExpandFilled';
+import SvgCollapseFilled from '../components/Collapse/CollapseFilled';
+import SvgFocusFilled from '../components/Focus/FocusFilled';
+import SvgZoomInFilled from '../components/ZoomIn/ZoomInFilled';
+import SvgZoomOutFilled from '../components/ZoomOut/ZoomOutFilled';
+import SvgProfileFilled from '../components/Profile/ProfileFilled';
 import SvgGlobalFilled from '../components/Global/GlobalFilled';
 
 export const filledIcon = {
@@ -78,6 +85,7 @@ export const filledIcon = {
   clockFilled: SvgClockFilled,
   closeCircleFilled: SvgCloseCircleFilled,
   closeFilled: SvgCloseFilled,
+  collapseFilled: SvgCollapseFilled,
   commentFilled: SvgCommentFilled,
   convertShapeFilled: SvgConvertShapeFilled,
   copyFilled: SvgCopyFilled,
@@ -92,13 +100,16 @@ export const filledIcon = {
   editFilled: SvgEditFilled,
   editReceiptFilled: SvgEditReceiptFilled,
   emojiHappyFilled: SvgEmojiHappyFilled,
+  expandFilled: SvgExpandFilled,
   exportFilled: SvgExportFilled,
   eyeFilled: SvgEyeFilled,
   eyeSlashFilled: SvgEyeSlashFilled,
   filterFilled: SvgFilterFilled,
   filterLinearFilled: SvgFilterLinearFilled,
+  focusFilled: SvgFocusFilled,
   fullScreenFilled: SvgFullScreenFilled,
   funnyFilled: SvgFunnyFilled,
+  groupFilled: SvgGroupFilled,
   globalFilled: SvgGlobalFilled,
   hashtagFilled: SvgOrangeHashtagFilled,
   iconLinearFilled: SvgIconLinearFilled,
@@ -126,6 +137,9 @@ export const filledIcon = {
   supportFilled: SvgSupportFilled,
   tickCircleFilled: SvgTickCircleFilled,
   trashFilled: SvgTrashFilled,
-  userFilled: SvgUsersFilled,
+  usersFilled: SvgUsersFilled,
   videoFilled: SvgVideoFilled,
+  zoomInFilled: SvgZoomInFilled,
+  zoomOutFilled: SvgZoomOutFilled,
+  profileFilled: SvgProfileFilled,
 };

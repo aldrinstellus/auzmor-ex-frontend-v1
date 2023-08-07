@@ -24,6 +24,7 @@ import clsx from 'clsx';
 import Tabs from 'components/Tabs';
 import UsersSkeleton from './components/UsersSkeleton';
 import useModal from 'hooks/useModal';
+import OrgChart from 'components/OrgChart';
 
 interface IForm {
   search?: string;
@@ -32,6 +33,7 @@ interface IForm {
 interface IUsersProps {}
 
 const Users: React.FC<IUsersProps> = () => {
+  const [showOrgChart, setShowOrgChart] = useState<boolean>(false);
   const [showAddUserModal, openAddUserModal, closeAddUserModal] = useModal(
     undefined,
     false,
@@ -350,8 +352,9 @@ const Users: React.FC<IUsersProps> = () => {
       disabled: true,
     },
   ];
-
-  return (
+  return showOrgChart ? (
+    <OrgChart setShowOrgChart={setShowOrgChart} />
+  ) : (
     <Card className="p-8 w-full h-full">
       <div className="space-y-6">
         <div className="flex justify-between">
@@ -363,13 +366,14 @@ const Users: React.FC<IUsersProps> = () => {
           </div>
           <div className="flex space-x-2">
             <Button
-              className="flex space-x-[6px]"
+              className="flex space-x-[6px] group"
               label="View Organization Chart"
               variant={Variant.Secondary}
-              leftIcon="convertShape"
+              leftIcon="groupOutline"
               leftIconSize={20}
-              disabled
               dataTestId="people-org-chart"
+              iconStroke="black"
+              onClick={() => setShowOrgChart(true)}
             />
             {user?.role !== Role.Member && (
               <Button

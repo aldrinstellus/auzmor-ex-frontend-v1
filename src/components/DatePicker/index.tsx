@@ -81,6 +81,8 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
         value={
           field.value
             ? dayjs(getDateInMMDDYYYY(field.value), 'MM/DD/YYYY')
+            : minDate
+            ? dayjs(getDateInMMDDYYYY(minDate), 'MM/DD/YYYY')
             : undefined
         }
         className={`flex border relative rounded-19xl w-full px-5 py-2.5 focus:!border-primary-500 hover:border-primary-500 ${className}`}

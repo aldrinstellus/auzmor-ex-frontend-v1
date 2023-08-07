@@ -36,6 +36,7 @@ export type InputProps = {
   onLeftIconClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   onRightIconClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   onEnter?: any;
+  customLabelRightElement?: ReactElement;
   isClearable?: boolean;
 };
 
@@ -61,6 +62,7 @@ const Input: React.FC<InputProps> = ({
   onLeftIconClick,
   onRightIconClick,
   onEnter,
+  customLabelRightElement,
   isClearable = false,
 }) => {
   const { field } = useController({
@@ -136,7 +138,10 @@ const Input: React.FC<InputProps> = ({
 
   return (
     <div className={`relative ${className}`}>
-      <div className={labelStyle}>{label}</div>
+      <div className="flex items-center justify-between">
+        <div className={labelStyle}>{label}</div>
+        {customLabelRightElement}
+      </div>
       <label
         className={`flex justify-between flex-1 relative items-center my-1 w-full`}
         htmlFor={id}

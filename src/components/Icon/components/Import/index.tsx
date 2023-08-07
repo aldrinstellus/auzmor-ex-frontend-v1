@@ -9,6 +9,7 @@ type IconProps = {
   hover?: boolean;
   disabled?: boolean;
   onClick?: () => void;
+  isActive?: boolean;
 };
 
 const ImportIcon: React.FC<IconProps> = ({
@@ -16,13 +17,14 @@ const ImportIcon: React.FC<IconProps> = ({
   onClick,
   className = '',
   disabled,
+  isActive,
   ...props
 }) => {
   const [isHovered, eventHandlers] = useHover();
 
   return (
-    <div onClick={onClick} className={className} {...eventHandlers}>
-      {!disabled && (hover || isHovered) ? (
+    <div onClick={onClick} className={className}>
+      {!disabled && (hover || isActive) ? (
         <ImportFilled {...props} />
       ) : (
         <ImportOutline {...props} />
