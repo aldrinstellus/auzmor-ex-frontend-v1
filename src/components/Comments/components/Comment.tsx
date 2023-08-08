@@ -141,10 +141,9 @@ export const Comment: React.FC<CommentProps> = ({
   });
 
   return (
-    <div className="flex flex-col space-y-4 mt-4">
-      {/* Comment */}
-      <div className="bg-neutral-100 p-3 rounded-9xl">
-        <div className="flex justify-between p-0">
+    <div className="flex flex-col">
+      <div className="bg-neutral-100 p-3 rounded-9xl mb-4">
+        <div className="flex justify-between">
           <div className="flex">
             <div className="mr-4">
               <Link
@@ -246,7 +245,6 @@ export const Comment: React.FC<CommentProps> = ({
             </div>
           </div>
         </div>
-
         {/* Comment Edit at Post level type Post */}
         {editComment ? (
           <div className="mt-4">
@@ -260,14 +258,14 @@ export const Comment: React.FC<CommentProps> = ({
             />
           </div>
         ) : (
-          <div className="text-neutral-900 font-normal text-sm mt-4">
+          <div className="text-neutral-900 font-normal text-sm mt-2">
             <RenderQuillContent data={comment} isComment />
           </div>
         )}
       </div>
 
       {/* Replies */}
-      <div className="flex items-center pb-4">
+      <div className="flex items-center mb-4">
         <div className="flex items-center space-x-2">
           <Likes
             reaction={comment?.myReaction?.reaction || ''}
@@ -300,20 +298,14 @@ export const Comment: React.FC<CommentProps> = ({
                           className={` ${i > 0 ? '-ml-2 z-1' : ''}  `}
                           key={react}
                         >
-                          <Icon
-                            name={react}
-                            size={12}
-                            className={`p-0.5 rounded-17xl cursor-pointer border-white border border-solid ${iconsStyle(
-                              react,
-                            )}`}
-                          />
+                          <Icon name={`${react}Reaction`} size={20} />
                         </div>
                       ))}
                   </div>
                 )}
                 {totalCount > 0 && (
                   <div
-                    className={`flex text-sm font-normal text-neutral-500`}
+                    className={`flex text-xs font-normal text-neutral-500`}
                     data-testid="comment-reaction-count"
                   >
                     {totalCount}
@@ -322,7 +314,6 @@ export const Comment: React.FC<CommentProps> = ({
               </div>
             </div>
           )}
-
           <Divider variant={Variant.Vertical} />
         </div>
 
@@ -365,14 +356,13 @@ export const Comment: React.FC<CommentProps> = ({
           )}
         </div>
       </div>
+
       {showReplies ? (
-        <Reply
-          entityId={comment.id}
-          className={`${comment.repliesCount > 0 ? '' : 'mb-5'}`}
-        />
+        <Reply entityId={comment.id} />
       ) : (
         !previousShowReply.current && customNode
       )}
+
       {showReactionModal && (
         <ReactionModal
           closeModal={() => setShowReactionModal(false)}
@@ -381,6 +371,7 @@ export const Comment: React.FC<CommentProps> = ({
           entityType="comment"
         />
       )}
+
       <ConfirmationBox
         open={confirm}
         onClose={closeConfirm}

@@ -2,7 +2,7 @@ import useHover from 'hooks/useHover';
 import React from 'react';
 import SvgLocationOutline from './LocationFilled';
 
-type IBookmarkProps = {
+type ILocationProps = {
   size?: number;
   className?: string;
   hover?: boolean;
@@ -10,7 +10,7 @@ type IBookmarkProps = {
   onClick?: () => void;
 };
 
-const Bookmark: React.FC<IBookmarkProps> = ({
+const Location: React.FC<ILocationProps> = ({
   hover = true,
   onClick,
   className = '',
@@ -24,4 +24,4 @@ const Bookmark: React.FC<IBookmarkProps> = ({
   );
 };
 
-export default Bookmark;
+export default Location;

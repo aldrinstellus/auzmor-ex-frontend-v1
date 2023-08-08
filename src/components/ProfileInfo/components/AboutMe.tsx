@@ -31,7 +31,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [isHovered, eventHandlers] = useHover();
 
-  const { control, handleSubmit, getValues } = useForm<IUpdateAboutMe>({
+  const { control, handleSubmit, getValues, watch } = useForm<IUpdateAboutMe>({
     mode: 'onSubmit',
     defaultValues: {
       personal: {
@@ -39,6 +39,8 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
       },
     },
   });
+
+  const _text = watch('personal.about');
 
   const onHoverStyles = useMemo(
     () => clsx({ 'mb-8': true }, { 'shadow-xl': isHovered && canEdit }),
@@ -153,7 +155,12 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
               {renderContentWithLinks(aboutMeData?.personal?.about) || 'N/A'}
             </div>
           ) : (
-            <Layout fields={textAreaField} />
+            <div>
+              <div className="flex w-full justify-end mb-1 text-sm text-neutral-500">
+                {_text?.length}/2000
+              </div>
+              <Layout fields={textAreaField} />
+            </div>
           )}
         </div>
       </Card>

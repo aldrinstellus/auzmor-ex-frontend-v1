@@ -84,6 +84,18 @@ function createHashtagsList(hashtagsList, character) {
   return atValues;
 }
 
+function newHashtags(hashtag, character) {
+  const atValues = [];
+  const val = hashtag.name;
+  atValues.push({
+    ...hashtag,
+    charDenotation: character,
+    name: val,
+    value: val,
+  });
+  return atValues;
+}
+
 // parsing the mention
 function parseMentionData(delta, mentionsData) {
   const updatedData = [];
@@ -212,6 +224,7 @@ export {
   hasValidMentionCharIndex,
   createMentionsList,
   createHashtagsList,
+  newHashtags,
   parseMentionData,
   generatePlainText,
 };

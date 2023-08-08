@@ -20,3 +20,11 @@ export interface IQuillDelta {
 export interface TransformedQuillDelta {
   ops: ITransformedOp[];
 }
+
+export interface IHashtags {
+  _id: string;
+  name: string;
+  orgId: string;
+  createdAt: string;
+  updatedAt: string;
+}

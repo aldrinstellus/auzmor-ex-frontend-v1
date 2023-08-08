@@ -8,7 +8,7 @@ type IconProps = {
 
 const SvgFullScreenOutline = ({
   size = 24,
-  stroke = 'white',
+  stroke = '#737373',
   ...props
 }: SVGProps<SVGSVGElement> & IconProps) => (
   <svg

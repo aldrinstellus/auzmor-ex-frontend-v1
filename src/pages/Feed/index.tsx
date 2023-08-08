@@ -23,6 +23,7 @@ import { useFeedStore } from 'stores/feedStore';
 import useModal from 'hooks/useModal';
 import { useSearchParams } from 'react-router-dom';
 import HashtagIcon from 'images/hashtag.svg';
+import Button, { Size, Variant } from 'components/Button';
 interface IFeedProps {}
 
 export interface IProfileImage {
@@ -108,7 +109,7 @@ const Feed: React.FC<IFeedProps> = () => {
 
   return (
     <>
-      <div className="mb-12 space-x-8 flex w-full">
+      <div className="mb-12 gap-x-[52px] flex w-full">
         <div className="top-10 z-10 w-1/4">
           <UserCard className="sticky top-24" />
         </div>
@@ -133,11 +134,16 @@ const Feed: React.FC<IFeedProps> = () => {
                       />
                       <div className="text-2xl font-bold text-neutral-900">
                         <span>#</span>
-                        {hashtag}
+                        <span data-testid={`feedpage-filter-${hashtag}`}>
+                          {hashtag}
+                        </span>
                       </div>
                     </div>
                     <div className="text-base font-normal text-neutral-500">
-                      {hashtag && feedIds?.length} people are posting about this
+                      <span data-testid="feedpage-filter-hashtagcount-text">
+                        {hashtag && feedIds?.length}
+                      </span>{' '}
+                      people are posting about this
                     </div>
                   </div>
                   <div>
@@ -160,26 +166,38 @@ const Feed: React.FC<IFeedProps> = () => {
                     }}
                     dataTestId="filters-dropdown"
                   />
-                  <Divider />
+                  <Divider className="bg-neutral-200" />
                   <SortByDropdown />
                 </div>
-                <div className="flex w-full overflow-y-auto">
-                  {appliedFeedFilters[PostFilterKeys.PostType]?.map(
-                    (filter: PostType) => (
-                      <div
-                        key={filter}
-                        className="border border-neutral-200 rounded-17xl px-3 py-2 flex bg-white capitalize text-sm font-medium items-center mr-1"
-                      >
-                        <div className="mr-1">{filter.toLocaleLowerCase()}</div>
-                        <Icon
-                          name="closeCircleOutline"
-                          stroke={twConfig.theme.colors.neutral['900']}
-                          className="cursor-pointer"
-                          onClick={() => removePostTypeFilter(filter)}
-                        />
-                      </div>
-                    ),
-                  )}
+
+                <div className="flex w-full items-center justify-between overflow-y-auto">
+                  <div className="flex items-center space-x-2">
+                    {appliedFeedFilters[PostFilterKeys.PostType]?.map(
+                      (filter: PostType) => (
+                        <>
+                          <div className="text-base font-medium text-neutral-500">
+                            Filter By
+                          </div>
+                          <div
+                            key={filter}
+                            className="border border-neutral-200 rounded-17xl px-3 py-2 flex bg-white capitalize text-sm font-medium items-center mr-1"
+                          >
+                            <div className="mr-1 text-sm text-primary-500 font-bold">
+                              {filter.toLocaleLowerCase()}
+                            </div>
+                            <Icon
+                              name="closeOutline"
+                              stroke={twConfig.theme.colors.neutral['900']}
+                              className="cursor-pointer"
+                              size={16}
+                              onClick={() => removePostTypeFilter(filter)}
+                            />
+                          </div>
+                        </>
+                      ),
+                    )}
+                  </div>
+
                   {getAppliedFiltersCount() > 0 && (
                     <div
                       className="flex items-center cursor-pointer"

@@ -121,7 +121,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
           isCreateCommentLoading={isCreateCommentLoading}
         />
       </div>
-      <Divider className="mt-4" />
+      <Divider className="mt-4 mb-4" />
       {isLoading ? (
         <CommentSkeleton />
       ) : (

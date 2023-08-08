@@ -15,7 +15,7 @@ import IconButton, {
 import FilterModal from './components/FilterModal';
 import { useDebounce } from 'hooks/useDebounce';
 import Icon from 'components/Icon';
-import { isFiltersEmpty, twConfig } from 'utils/misc';
+import { isFiltersEmpty, titleCase, twConfig } from 'utils/misc';
 import useAuth from 'hooks/useAuth';
 import { Role } from 'utils/enum';
 import { useInView } from 'react-intersection-observer';
@@ -24,6 +24,7 @@ import clsx from 'clsx';
 import Tabs from 'components/Tabs';
 import UsersSkeleton from './components/UsersSkeleton';
 import useModal from 'hooks/useModal';
+import OrgChart from 'components/OrgChart';
 
 interface IForm {
   search?: string;
@@ -32,6 +33,7 @@ interface IForm {
 interface IUsersProps {}
 
 const Users: React.FC<IUsersProps> = () => {
+  const [showOrgChart, setShowOrgChart] = useState<boolean>(false);
   const [showAddUserModal, openAddUserModal, closeAddUserModal] = useModal(
     undefined,
     false,
@@ -138,6 +140,7 @@ const Users: React.FC<IUsersProps> = () => {
               className="!py-2 grow-0"
               dataTestId="people-view-all-members"
               onClick={() => customReset()}
+              active={!searchValue && !role}
             />
             <Layout fields={roleFields} />
           </div>
@@ -174,6 +177,7 @@ const Users: React.FC<IUsersProps> = () => {
                     placeholder: 'Search members',
                     error: errors.search?.message,
                     dataTestId: 'people-search-members',
+                    isClearable: true,
                   },
                 ]}
               />
@@ -181,30 +185,40 @@ const Users: React.FC<IUsersProps> = () => {
           </div>
         </div>
 
-        <div className="text-neutral-500 mt-6 mb-3">
+        <div className="text-neutral-500 mt-6 mb-6">
           Showing {!isLoading && usersData?.length} results
         </div>
 
-        <div className="mb-4 flex">
-          {userStatus && (
-            <div
-              className="border border-neutral-200 rounded-17xl px-3 py-2 flex bg-white capitalize text-sm font-medium items-center mr-1"
-              data-testid={`people-filterby-${userStatus}`}
-            >
-              <div className="mr-1">{userStatus}</div>
-              <Icon
-                name="closeCircleOutline"
-                stroke={twConfig.theme.colors.neutral['900']}
-                className="cursor-pointer"
-                onClick={() => setUserStatus('')}
-                dataTestId={`people-filterby-close-${userStatus}`}
-              />
+        {userStatus && (
+          <div className="flex justify-between  mb-6">
+            <div className="flex items-center space-x-2">
+              <div className="text-base text-neutral-500">Filter By</div>
+              <div
+                className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1"
+                data-testid={`people-filterby-${userStatus}`}
+              >
+                <div className="mr-1">{titleCase(userStatus)}</div>
+                <Icon
+                  name="close"
+                  size={16}
+                  stroke={twConfig.theme.colors.neutral['900']}
+                  className="cursor-pointer"
+                  onClick={() => setUserStatus('')}
+                  dataTestId={`people-filterby-close-${userStatus}`}
+                />
+              </div>
             </div>
-          )}
-        </div>
+            <div
+              className="text-neutral-500 border px-3 py-1 rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
+              onClick={() => setUserStatus('')}
+            >
+              Clear Filters
+            </div>
+          </div>
+        )}
       </div>
 
-      <div className="">
+      <div>
         <div className="flex flex-wrap gap-6">
           {(() => {
             if (isLoading) {
@@ -338,7 +352,9 @@ const Users: React.FC<IUsersProps> = () => {
       disabled: true,
     },
   ];
-  return (
+  return showOrgChart ? (
+    <OrgChart setShowOrgChart={setShowOrgChart} />
+  ) : (
     <Card className="p-8 w-full h-full">
       <div className="space-y-6">
         <div className="flex justify-between">
@@ -350,13 +366,14 @@ const Users: React.FC<IUsersProps> = () => {
           </div>
           <div className="flex space-x-2">
             <Button
-              className="flex space-x-[6px]"
+              className="flex space-x-[6px] group"
               label="View Organization Chart"
               variant={Variant.Secondary}
-              leftIcon="convertShape"
+              leftIcon="groupOutline"
               leftIconSize={20}
-              disabled
               dataTestId="people-org-chart"
+              iconStroke="black"
+              onClick={() => setShowOrgChart(true)}
             />
             {user?.role !== Role.Member && (
               <Button

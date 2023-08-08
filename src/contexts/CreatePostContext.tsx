@@ -16,6 +16,8 @@ export enum CreatePostFlow {
   CreatePost = 'CREATE_POST',
   CreateAnnouncement = 'CREATE_ANNOUNCEMENT',
   EditMedia = 'EDIT_MEDIA',
+  CreatePoll = 'CREATE_POLL',
+  EditPoll = 'EDIT_POLL',
 }
 
 export interface IAnnouncement {
@@ -26,6 +28,20 @@ export interface IAnnouncement {
 export const IMG_FILE_SIZE_LIMIT = 5; //MB
 export const VIDEO_FILE_SIZE_LIMIT = 2; //GB
 export const MEDIA_LIMIT = 10; // number of media can be uploaded
+
+export interface IPollOption {
+  id?: string;
+  text: string;
+  votes?: number;
+}
+
+export interface IPoll {
+  question: string;
+  closedAt: any;
+  total?: number;
+  options: IPollOption[];
+  datepickerValue?: Date;
+}
 
 export interface ICreatePostContext {
   activeFlow: CreatePostFlow;
@@ -66,6 +82,8 @@ export interface ICreatePostContext {
   ) => void;
   mediaOpenIndex: number;
   setMediaOpenIndex: (index: number) => void;
+  poll: IPoll | null;
+  setPoll: (pollContext: IPoll | null) => void;
 }
 
 export enum MediaValidationError {
@@ -152,6 +170,8 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setMediaValidationErrors: () => {},
   mediaOpenIndex: 0,
   setMediaOpenIndex: () => {},
+  poll: null,
+  setPoll: () => {},
 });
 
 const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
@@ -182,6 +202,7 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     IMediaValidationError[]
   >([]);
   const [mediaOpenIndex, setMediaOpenIndex] = useState<number>(-1);
+  const [poll, setPoll] = useState<IPoll | null>(null);
 
   const setUploads = (uploads: File[], isCoverImage?: boolean) => {
     if (!isCoverImage) {
@@ -270,6 +291,7 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     setRemovedCoverimageFileIds([]);
     setShowFullscreenVideo(false);
     setMediaValidationErrors([]);
+    setPoll(null);
   };
 
   const updateCoverImageMap = (map: ICoverImageMap) => {
@@ -379,6 +401,8 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         setMediaValidationErrors,
         mediaOpenIndex,
         setMediaOpenIndex,
+        poll,
+        setPoll,
       }}
     >
       {children}

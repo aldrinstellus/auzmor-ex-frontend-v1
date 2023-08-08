@@ -38,7 +38,7 @@ const Banner: React.FC<BannerProps> = ({
           'bg-green-100 rounded-none': variant === Variant.Success,
         },
         {
-          'border-1 bg-red-100 border-red-300 rounded-md':
+          'border-1 bg-[#FDF2F2] border-red-300 rounded-md':
             variant === Variant.Error,
         },
         {
@@ -74,6 +74,9 @@ const Banner: React.FC<BannerProps> = ({
         },
         {
           'text-orange-500': variant === Variant.Warning,
+        },
+        {
+          'text-xs': true,
         },
       ),
     [variant],
@@ -137,11 +140,11 @@ const Banner: React.FC<BannerProps> = ({
   return (
     <div className={containerStyles} data-testId={dataTestId}>
       <div className="flex">
-        <div className="mr-2">
+        <div className="mr-1">
           <Icon
             name={iconName}
-            className="relative top-[2px]"
-            size={20}
+            className="relative bottom-[2px]"
+            size={18}
             stroke={getIconColor()}
           />
         </div>

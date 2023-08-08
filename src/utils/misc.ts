@@ -9,6 +9,7 @@ import {
   TransformedQuillDelta,
 } from 'components/PostBuilder/components/RichTextEditor/mentions/types';
 import { useSearchParams } from 'react-router-dom';
+import { capitalize } from 'lodash';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -161,6 +162,13 @@ export const clearInputValue = (
   element.value = '';
 };
 
+export const canPerform = (checkFor?: string[], allPermissions?: string[]) => {
+  if (allPermissions?.length && checkFor?.length) {
+    return allPermissions.some((perm) => checkFor.includes(perm));
+  }
+  return false;
+};
+
 export const isSubset = (subset?: string[], set?: string[]) => {
   if (set && subset) {
     return subset.every((ele) => set.includes(ele));
@@ -207,4 +215,19 @@ export const quillHashtagConversion = (
     transformedQuillDelta.ops.push(transformedOp);
   });
   return transformedQuillDelta;
+};
+
+export const titleCase = (input: string) => {
+  return input
+    .split(' ')
+    .map((i) => capitalize(i))
+    .join(' ');
+};
+
+export const extractFirstWord = (str: string) => {
+  const words = str.trim().split(' ');
+  if (words.length > 0) {
+    return words[0];
+  }
+  return '';
 };

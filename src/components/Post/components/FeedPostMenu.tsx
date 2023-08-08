@@ -8,7 +8,7 @@ import PostBuilder, { PostBuilderMode } from 'components/PostBuilder';
 import useModal from 'hooks/useModal';
 import useAuth from 'hooks/useAuth';
 import useRole from 'hooks/useRole';
-import { isSubset, twConfig } from 'utils/misc';
+import { canPerform, isSubset, twConfig } from 'utils/misc';
 import { useFeedStore } from 'stores/feedStore';
 import _ from 'lodash';
 import { CreatePostFlow } from 'contexts/CreatePostContext';
@@ -39,6 +39,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
 
   const queryClient = useQueryClient();
   const { feed, setFeed, updateFeed } = useFeedStore();
+  const { isAdmin } = useRole();
 
   const deletePostMutation = useMutation({
     mutationKey: ['deletePostMutation', data.id],
@@ -132,7 +133,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
 
   const { isLoading: removeAnnouncementLoading } = removeAnnouncementMutation;
 
-  const postOptions = [
+  const allOptions = [
     {
       icon: 'cyclicArrow',
       label: 'Promote to announcement',
@@ -142,7 +143,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       },
       dataTestId: 'post-ellipsis-promote-to-announcement',
       permissions: ['CREATE_ANNOUNCEMENTS'],
-      disabled: data.isAnnouncement,
+      enabled: !data.isAnnouncement,
     },
     {
       icon: 'editReceipt',
@@ -153,7 +154,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       },
       dataTestId: 'post-ellipsis-edit-announcement',
       permissions: ['UPDATE_ANNOUNCEMENTS'],
-      disabled: !data.isAnnouncement,
+      enabled: data.isAnnouncement,
     },
     {
       icon: 'cyclicArrow',
@@ -161,7 +162,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       onClick: () => showRemoveAnnouncement(),
       dataTestId: 'post-ellipsis-changeto-regularpost',
       permissions: ['UPDATE_ANNOUNCEMENTS'],
-      disabled: !data.isAnnouncement,
+      enabled: data.isAnnouncement,
     },
     {
       icon: 'edit',
@@ -172,36 +173,52 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       },
       dataTestId: 'post-ellipsis-edit-post',
       permissions: ['UPDATE_MY_POSTS'],
-      disabled: data.createdBy?.userId !== user?.id,
+      enabled: data.createdBy?.userId === user?.id,
     },
     {
       icon: 'delete',
       label: 'Delete post',
       onClick: () => showConfirm(),
+      stroke: '#F05252',
+      fill: '#F05252',
+      labelClassName: '!text-red-500',
       dataTestId: 'post-ellipsis-delete-post',
-      permissions: ['DELETE_MY_POSTS'],
-      disabled: data.createdBy?.userId !== user?.id,
+      permissions: ['DELETE_MY_POSTS', 'DELETE_POSTS'],
+      enabled: isAdmin || data.createdBy?.userId !== user?.id,
     },
-  ].filter((menuItem) => {
-    if (
-      menuItem.permissions &&
-      !isSubset(menuItem.permissions, user?.permissions) &&
-      isMember
-    ) {
-      return false;
-    }
-    return true;
-  });
+    {
+      icon: 'editReceipt',
+      label: 'View acknowledgement report',
+      onClick: () => showConfirm(),
+      dataTestId: 'post-ellipsis-view-acknowledgement-report',
+      permissions: ['CREATE_ANNOUNCEMENTS', 'UPDATE_ANNOUNCEMENTS'],
+      enabled: data.isAnnouncement,
+    },
+  ];
 
-  return postOptions.filter((postOption) => !postOption.disabled).length > 0 ? (
+  const postOptions = allOptions
+    .filter((option) => option.enabled)
+    .filter((menuItem) => {
+      if (
+        menuItem.permissions &&
+        !canPerform(menuItem.permissions, user?.permissions) &&
+        isMember
+      ) {
+        return false;
+      }
+      return true;
+    });
+
+  return !!postOptions.length ? (
     <>
       <PopupMenu
         triggerNode={
-          <div className="cursor-pointer p-2" data-testid="feed-post-ellipsis">
+          <div className="cursor-pointer" data-testid="feed-post-ellipsis">
             <Icon name="more" />
           </div>
         }
         menuItems={postOptions}
+        className="mt-6 right-0 border-1 border-neutral-200"
       />
       {open && (
         <PostBuilder

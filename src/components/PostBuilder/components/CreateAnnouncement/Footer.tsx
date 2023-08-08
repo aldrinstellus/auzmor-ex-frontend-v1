@@ -47,7 +47,8 @@ const Footer: React.FC<IFooterProps> = ({
     mutationFn: async () => {
       const formData = getFormValues();
       const expiryDate =
-        (formData.date as Dayjs).toDate().toISOString().substring(0, 19) + 'Z';
+        (formData?.date as Dayjs)?.toDate().toISOString().substring(0, 19) +
+        'Z';
       const fileIds = data?.files?.map((file: any) => file.id);
       if (data?.id)
         await updatePost(data?.id, {

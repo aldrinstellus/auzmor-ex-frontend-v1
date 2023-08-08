@@ -58,9 +58,9 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
             } rounded-t-9xl`}
             data-testid="announcement-header"
           >
-            <div className="flex justify-center items-center text-white text-xs font-bold pl-1">
-              <Icon name="flashIcon" />
-              <div className="text-sm font-bold">Announcement</div>
+            <div className="flex justify-center items-center text-white text-xs font-bold space-x-3">
+              <Icon name="flashIcon" size={18} stroke="#fff" />
+              <div className="text-xs font-bold">Announcement</div>
             </div>
             {!hasLoggedInUserCreatedAnnouncement && (
               <Button

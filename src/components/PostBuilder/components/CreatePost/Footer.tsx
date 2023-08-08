@@ -144,10 +144,15 @@ const Footer: React.FC<IFooterProps> = ({
             name="chartFilled"
             size={14}
             dataTestId="feed-createpost-polls"
+            fill="#000000"
           />
         ),
         menuItems: [],
-        disabled: true,
+        hidden: false,
+        onClick: () => {
+          updateContext();
+          setActiveFlow(CreatePostFlow.CreatePoll);
+        },
       },
       {
         id: 5,
@@ -190,8 +195,12 @@ const Footer: React.FC<IFooterProps> = ({
       <div className="flex relative">
         {postMenuItems.map(
           (postMenuItem) =>
-            !!!postMenuItem.hidden && (
-              <div key={postMenuItem.id} className="flex mr-4 items-center">
+            !postMenuItem.hidden && (
+              <div
+                key={postMenuItem.id}
+                className="flex mr-4 items-center"
+                onClick={postMenuItem?.onClick}
+              >
                 <PopupMenu
                   triggerNode={
                     postMenuItem?.disabled ? (

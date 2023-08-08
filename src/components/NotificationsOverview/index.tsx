@@ -82,7 +82,7 @@ const NotificationsOverview: React.FC = () => {
       }
       ref={viewAllRef}
     >
-      <Card className="absolute w-[500px] right-0 top-6 ">
+      <Card className="absolute w-[455px] right-0 top-6 ">
         {/* Header */}
         <div className="px-6 py-4 flex items-center justify-between">
           <p className="text-gray-900 font-extrabold text-base">

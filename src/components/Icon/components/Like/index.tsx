@@ -19,7 +19,6 @@ const Like: React.FC<IconProps> = ({
   ...props
 }) => {
   const [isHovered, eventHandlers] = useHover();
-
   return (
     <div onClick={onClick} className={className} {...eventHandlers}>
       {!disabled && (hover || isHovered) ? (

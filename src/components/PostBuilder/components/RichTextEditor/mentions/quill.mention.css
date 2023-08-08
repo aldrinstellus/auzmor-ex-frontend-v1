@@ -1,5 +1,5 @@
-.ql-mention-list-container {
-  width: 32%;
+/* .ql-mention-list-container {
+  width: 37%;
   box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.05),
     0px 10px 15px -3px rgba(0, 0, 0, 0.1);
   z-index: 9001;
@@ -8,10 +8,10 @@
   background: #fff;
 }
 
-/* mention denotation char class*/
-/* .ql-mention-denotation-char {
+mention denotation char class
+.ql-mention-denotation-char {
   display: none;
-} */
+}
 
 .mention {
   user-select: all;
@@ -43,7 +43,7 @@
   cursor: pointer;
   line-height: 44px;
   font-size: 16px;
-  padding: 0px 16px;
+  padding: 0px 0px;
   vertical-align: middle;
 }
 
@@ -59,11 +59,15 @@
   vertical-align: 0.1rem;
 }
 
-/* User */
+.ql-mention-list-item {
+  line-height: 22px;
+}
+
 .user-container {
   display: flex;
-  height: 40px;
   align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #f5f5f5;
 }
 
 .user-avatar {
@@ -79,21 +83,38 @@
 
 .user-details {
   margin-left: 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #171717;
 }
 
-/* Hashtags */
+.user-email {
+  font-size: 12px;
+  font-weight: 400;
+  color: #737373;
+  line-height: 18px;
+}
 
 .hashtag-container {
   display: flex;
-  padding: 5px;
+  padding: 0px 24px;
 }
+
+.hashtag-name {
+  font-family: Manrope;
+  font-size: 12px;
+  font-weight: 500;
+  color: #171717;
+}
+
 .hashtag {
   color: #10b981;
   font-weight: 500;
 }
+
 .hashtag:hover {
   color: #059669;
   text-decoration: underline;
   cursor: pointer;
   font-weight: 700;
-}
+} */
