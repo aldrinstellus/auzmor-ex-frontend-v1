@@ -115,6 +115,21 @@ const AccountCard = () => {
                   </div>
                 </Link>
               )}
+              <Link to="/feed?bookmarks=true">
+                <div
+                  className={`flex ${menuItemStyle}`}
+                  data-testId="user-menu-user-settings"
+                  onClick={close}
+                >
+                  <Icon
+                    name="bookmarkOutline"
+                    size={20}
+                    className="mr-2.5"
+                    stroke={twConfig.theme.colors.neutral['900']}
+                  />
+                  <div className="text-neutral-900 text-sm">My bookmarks</div>
+                </div>
+              </Link>
               <div
                 className={`flex ${menuItemStyle}`}
                 onClick={() => {

@@ -5,7 +5,7 @@ import { VIEW_POST } from 'components/Actor/constant';
 import CommentCard from 'components/Comments/index';
 import Likes, { ReactionType } from 'components/Reactions';
 import FeedPostMenu from './components/FeedPostMenu';
-import { IPost } from 'queries/post';
+import { IPost, createBookmark, deleteBookmark } from 'queries/post';
 import Icon from 'components/Icon';
 import clsx from 'clsx';
 import { humanizeTime } from 'utils/time';
@@ -16,6 +16,9 @@ import { getNouns } from 'utils/misc';
 import Divider from 'components/Divider';
 import useModal from 'hooks/useModal';
 import { PRIMARY_COLOR } from 'utils/constants';
+import { useMutation } from '@tanstack/react-query';
+import { useFeedStore } from 'stores/feedStore';
+import { IpcNetConnectOpts } from 'net';
 
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
@@ -56,7 +59,32 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
     (total, count) => total + count,
     0,
   );
+  const { feed, updateFeed } = useFeedStore();
   const previousShowComment = useRef<boolean>(false);
+
+  const createBookmarkMutation = useMutation({
+    mutationKey: ['create-bookmark-mutation'],
+    mutationFn: createBookmark,
+    onSuccess: (data, variables) => {
+      updateFeed(variables, { ...feed[variables], bookmarked: true });
+    },
+  });
+
+  const deleteBookmarkMutation = useMutation({
+    mutationKey: ['delete-bookmark-mutation'],
+    mutationFn: deleteBookmark,
+    onSuccess: (data, variables) => {
+      updateFeed(variables, { ...feed[variables], bookmarked: false });
+    },
+  });
+
+  const handleBookmarkClick = (post: IPost) => {
+    if (post.bookmarked) {
+      deleteBookmarkMutation.mutate(post.id as string);
+    } else {
+      createBookmarkMutation.mutate(post.id as string);
+    }
+  };
 
   useEffect(() => {
     if (showComments) {
@@ -76,7 +104,13 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
             createdBy={post?.createdBy}
           />
           <div className="relative flex space-x-4 mr-6">
-            <Icon name="bookmarkOutline" size={20} className="cursor-pointer" />
+            <Icon
+              name="bookmarkOutline"
+              size={20}
+              className="cursor-pointer"
+              onClick={() => handleBookmarkClick(post)}
+              isActive={post.bookmarked}
+            />
             <FeedPostMenu data={post as unknown as IPost} />
           </div>
         </div>

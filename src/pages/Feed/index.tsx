@@ -51,6 +51,7 @@ const Feed: React.FC<IFeedProps> = () => {
   useScrollTop();
   const [searchParams, setSearchParams] = useSearchParams();
   const hashtag = searchParams.get('hashtag') || '';
+  const bookmarks = searchParams.get('bookmarks') || false;
   const { ref, inView } = useInView();
   const [open, openModal, closeModal] = useModal(undefined, false);
   const [appliedFeedFilters, setAppliedFeedFilters] = useState<IPostFilters>({
@@ -63,6 +64,12 @@ const Feed: React.FC<IFeedProps> = () => {
       setAppliedFeedFilters({ hashtags: [hashtag] });
     }
   }, [hashtag]);
+
+  useEffect(() => {
+    if (bookmarks) {
+      setAppliedFeedFilters({ bookmarks: true });
+    }
+  }, [bookmarks]);
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteFeed(appliedFeedFilters);
@@ -148,6 +155,32 @@ const Feed: React.FC<IFeedProps> = () => {
                   </div>
                   <div>
                     <img src={HashtagIcon} />
+                  </div>
+                </div>
+              </div>
+            ) : bookmarks ? (
+              <div className="bg-blue-50 shadow-md rounded-9xl h-24 px-6 py-4">
+                <div className="flex justify-between items-center">
+                  <div className="gap-y-1">
+                    <div className="flex gap-x-3 items-center">
+                      <Icon
+                        name="arrowLeft"
+                        fill="#171717"
+                        stroke="#171717"
+                        onClick={() => {
+                          if (searchParams.has('bookmarks')) {
+                            searchParams.delete('bookmarks');
+                            setSearchParams(searchParams);
+                            setAppliedFeedFilters({ bookmarks: false });
+                          }
+                        }}
+                      />
+                      <div className="text-2xl font-bold text-neutral-900">
+                        <span data-testid={`feedpage-filter-${hashtag}`}>
+                          My Bookmarks
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
