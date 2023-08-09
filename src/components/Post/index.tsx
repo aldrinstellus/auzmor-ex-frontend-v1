@@ -12,9 +12,11 @@ import { humanizeTime } from 'utils/time';
 import AcknowledgementBanner from './components/AcknowledgementBanner';
 import ReactionModal from './components/ReactionModal';
 import RenderQuillContent from 'components/RenderQuillContent';
-import { getNouns } from 'utils/misc';
+import { getNouns, twConfig } from 'utils/misc';
 import Divider from 'components/Divider';
 import useModal from 'hooks/useModal';
+import PublishPostModal from './components/PublishPostModal';
+import EditSchedulePostModal from './components/EditSchedulePostModal';
 
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
@@ -63,6 +65,13 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
     }
   }, [showComments]);
 
+  const [showPublishModal, openPublishModal, closePublishModal] = useModal();
+  const [
+    showEditSchedulePostModal,
+    openEditSchedulePostModal,
+    closeEditSchedulePostModal,
+  ] = useModal();
+
   return (
     <>
       <Card className="mb-6">
@@ -78,6 +87,39 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
             <FeedPostMenu data={post as unknown as IPost} />
           </div>
         </div>
+        {post?.schedule && (
+          <div className="flex mx-6 items-center bg-primary-50 px-3 py-2 justify-between mb-4">
+            <div className="flex">
+              <div className="mr-2">
+                <Icon
+                  name="calendarOutlineTwo"
+                  size={16}
+                  stroke={twConfig.theme.colors.neutral[900]}
+                />
+              </div>
+              <div className="text-xs text-neutral-600">
+                Post scheduled for , based on your profile timezone.
+              </div>
+            </div>
+            <div className="flex items-center">
+              <div className="group mr-4">
+                <Icon
+                  name="editOutline"
+                  size={16}
+                  stroke={twConfig.theme.colors.neutral[900]}
+                  onClick={openEditSchedulePostModal}
+                />
+              </div>
+              <div
+                className="text-neutral-900 underline cursor-pointer hover:text-primary-500"
+                onClick={openPublishModal}
+              >
+                Publish now
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="mx-6">
           <RenderQuillContent data={post} />
           {/* Reaction Count */}
@@ -186,6 +228,13 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
           reactionCounts={post.reactionsCount}
           postId={post!.id!}
           entityType="post"
+        />
+      )}
+      {showPublishModal && <PublishPostModal closeModal={closePublishModal} />}
+      {showEditSchedulePostModal && (
+        <EditSchedulePostModal
+          closeModal={closeEditSchedulePostModal}
+          schedule={post.schedule}
         />
       )}
     </>

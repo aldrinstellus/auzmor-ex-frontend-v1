@@ -83,6 +83,10 @@ export interface IPost {
   createdAt: string;
   updatedAt: string;
   comment: IComment;
+  schedule: {
+    dateTime: string;
+    timeZone: string;
+  };
 }
 
 export interface IPostPayload {
@@ -117,6 +121,10 @@ export interface IPostPayload {
     end: string;
   };
   link?: Metadata | string;
+  schedule: {
+    dateTime: string;
+    timeZone: string;
+  };
 }
 
 export interface IReaction {

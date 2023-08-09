@@ -13,7 +13,7 @@ import { DeltaStatic } from 'quill';
 import React, { useContext, useMemo } from 'react';
 import ReactQuill from 'react-quill';
 import { convert } from 'html-to-text';
-import { operatorXOR } from 'utils/misc';
+import { operatorXOR, twConfig } from 'utils/misc';
 
 export interface IFooterProps {
   isLoading: boolean;
@@ -37,7 +37,7 @@ const Footer: React.FC<IFooterProps> = ({
     mediaValidationErrors,
     isPreviewRemoved,
     previewUrl,
-    media,
+    schedule,
   } = useContext(CreatePostContext);
 
   const updateContext = () => {
@@ -237,9 +237,21 @@ const Footer: React.FC<IFooterProps> = ({
         <Divider variant={DividerVariant.Vertical} className="!h-8" />
       </div>
       <div className="flex items-center">
+        <div className="mr-4">
+          <Tooltip tooltipContent="Schedule" className="cursor-pointer">
+            <Icon
+              name="clock"
+              size={16}
+              fill={twConfig.theme.colors.neutral[900]}
+              onClick={() => {
+                updateContext();
+                setActiveFlow(CreatePostFlow.SchedulePost);
+              }}
+            />
+          </Tooltip>
+        </div>
         <Button
-          label="Post"
-          className="w-24"
+          label={schedule ? 'Schedule' : 'Post'}
           disabled={isLoading || isCharLimit || !!mediaValidationErrors?.length}
           onClick={() => {
             updateContext();

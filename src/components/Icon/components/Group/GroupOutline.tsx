@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { SVGProps } from 'react';
 import { PRIMARY_COLOR } from 'utils/constants';
-import { twConfig } from 'utils/misc';
 
 interface IconProps {
   size?: number;

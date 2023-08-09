@@ -40,6 +40,8 @@ import { slideInAndOutTop } from 'utils/react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { produce } from 'immer';
 import CreatePoll from './CreatePoll';
+import SchedulePost from './SchedulePost';
+import moment from 'moment';
 
 export interface IPostMenu {
   id: number;
@@ -80,6 +82,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     coverImageMap,
     showFullscreenVideo,
     setShowFullscreenVideo,
+    schedule,
+    setSchedule,
   } = useContext(CreatePostContext);
 
   const mediaRef = useRef<IMedia[]>([]);
@@ -97,6 +101,13 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         label: 'Custom Date',
         value: data?.announcement?.end || '',
       });
+      if (data?.schedule) {
+        setSchedule({
+          timezone: data.schedule.timeZone,
+          date: data.schedule.dateTime,
+          time: `${moment(new Date(data.schedule.dateTime)).format('h:mm a')}`,
+        });
+      }
       setActiveFlow(CreatePostFlow.CreateAnnouncement);
     }
   }, [customActiveFlow]);
@@ -290,6 +301,10 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           end: announcement?.value || '',
         },
         link: previewUrl && previewUrl[0],
+        schedule: {
+          timeZone: schedule?.timezone || '',
+          dateTime: schedule?.date || '',
+        },
       });
     } else if (PostBuilderMode.Edit) {
       mediaRef.current = [...media, ...uploadedMedia];
@@ -335,6 +350,10 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         },
         id: data?.id,
         link: previewUrl && previewUrl[0],
+        schedule: {
+          timeZone: schedule?.timezone || '',
+          dateTime: schedule?.date || '',
+        },
       });
     }
   };
@@ -391,6 +410,14 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         )}
         {activeFlow === CreatePostFlow.CreatePoll && (
           <CreatePoll
+            closeModal={() => {
+              closeModal();
+              clearPostContext();
+            }}
+          />
+        )}
+        {activeFlow === CreatePostFlow.SchedulePost && (
+          <SchedulePost
             closeModal={() => {
               closeModal();
               clearPostContext();
