@@ -73,7 +73,7 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
       toast(
         <SuccessToast
           content="Post has been bookmarked successfully!"
-          dataTestId="comment-toaster"
+          data-testid="notification-successfully-bookmarked"
         />,
         {
           closeButton: (
@@ -105,7 +105,7 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
       toast(
         <SuccessToast
           content="Post removed from your bookmarks"
-          dataTestId="comment-toaster"
+          data-testid="notification-removed-bookmark"
         />,
         {
           closeButton: (
@@ -156,10 +156,16 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
             createdBy={post?.createdBy}
           />
           <div className="relative flex space-x-4 mr-6">
-            <Tooltip tooltipContent="Bookmark post" tooltipPosition="top">
+            <Tooltip
+              tooltipContent={
+                post.bookmarked ? 'Remove from bookmark' : 'Bookmark post'
+              }
+              tooltipPosition="top"
+            >
               <Icon
                 name="postBookmark"
                 size={24}
+                data-testid="feed-post-bookmark"
                 onClick={() => handleBookmarkClick(post)}
                 isActive={post.bookmarked}
               />

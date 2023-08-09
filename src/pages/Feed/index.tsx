@@ -161,7 +161,10 @@ const Feed: React.FC<IFeedProps> = () => {
                 </div>
               </div>
             ) : bookmarks ? (
-              <div className="bg-blue-50 shadow-md rounded-9xl h-32 px-6 py-4">
+              <div
+                className="bg-blue-50 shadow-md rounded-9xl h-32 px-6 py-4"
+                data-testid="mybookmarks-tab"
+              >
                 <div className="flex justify-between items-center">
                   <div className="gap-y-1">
                     <div className="flex gap-x-3 items-center">
@@ -187,6 +190,7 @@ const Feed: React.FC<IFeedProps> = () => {
                       <div
                         className="w-28 inline-flex py-2 px-4 justify-center align-center rounded-full border-solid border-white bg-white font-bold"
                         style={{ borderColor: '#e5e5e5' }}
+                        data-testid="mybookmarks-tab-posts"
                       >
                         Posts
                       </div>
@@ -286,7 +290,7 @@ const Feed: React.FC<IFeedProps> = () => {
             ) : feedIds.length === 0 && bookmarks ? (
               <div className="bg-white mt-4 p-6 flex flex-col rounded-9xl">
                 <div className="h-220 bg-blue-50 flex justify-center rounded-9xl">
-                  <img src={NoPosts}></img>
+                  <img src={NoPosts} data-testid="mybookmark-tab-nopost"></img>
                 </div>
                 <div className="font-bold text-2xl/[36px] text-center mt-5">
                   No posts found

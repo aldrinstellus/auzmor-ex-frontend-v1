@@ -83,7 +83,7 @@ const AccountCard = () => {
             <div className="w-full pt-4">
               <Link to="/settings">
                 <div
-                  className={`flex ${menuItemStyle}`}
+                  className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold`}
                   data-testId="user-menu-user-settings"
                   onClick={close}
                 >
@@ -93,13 +93,13 @@ const AccountCard = () => {
                     className="mr-2.5"
                     stroke={twConfig.theme.colors.neutral['900']}
                   />
-                  <div className="text-neutral-900 text-sm">User Settings</div>
+                  <div>User Settings</div>
                 </div>
               </Link>
               {isAdmin && (
                 <Link to="/admin">
                   <div
-                    className={`flex ${menuItemStyle}`}
+                    className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold`}
                     data-testId="user-menu-admin-settings"
                     onClick={close}
                   >
@@ -109,16 +109,14 @@ const AccountCard = () => {
                       className="mr-2.5"
                       stroke={twConfig.theme.colors.neutral['900']}
                     />
-                    <div className="text-neutral-900 text-sm">
-                      Admin Settings
-                    </div>
+                    <div>Admin Settings</div>
                   </div>
                 </Link>
               )}
               <Link to="/feed?bookmarks=true">
                 <div
-                  className={`flex ${menuItemStyle}`}
-                  data-testId="user-menu-user-settings"
+                  className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold`}
+                  data-testid="user-menu-mybookmarks"
                   onClick={close}
                 >
                   <Icon
@@ -127,11 +125,11 @@ const AccountCard = () => {
                     className="mr-2.5"
                     stroke={twConfig.theme.colors.neutral['900']}
                   />
-                  <div className="text-neutral-900 text-sm">My bookmarks</div>
+                  <div>My bookmarks</div>
                 </div>
               </Link>
               <div
-                className={`flex ${menuItemStyle}`}
+                className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold`}
                 onClick={() => {
                   logoutMutation.mutate();
                   close();
@@ -144,7 +142,7 @@ const AccountCard = () => {
                   className="mr-2.5"
                   stroke={twConfig.theme.colors.neutral['900']}
                 />
-                <div className="text-neutral-900 text-sm">Sign out</div>
+                <div>Sign out</div>
               </div>
             </div>
           </div>
