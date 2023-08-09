@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PostBuilder from 'components/PostBuilder';
 import UserCard from 'components/UserWidget';
 import AnnouncementCard from 'components/AnnouncementWidget';
+import NoPosts from 'images/NoPostsFound.png';
 import {
   IPostFilters,
   PostFilterKeys,
@@ -21,9 +22,10 @@ import useScrollTop from 'hooks/useScrollTop';
 import SkeletonLoader from './components/SkeletonLoader';
 import { useFeedStore } from 'stores/feedStore';
 import useModal from 'hooks/useModal';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import HashtagIcon from 'images/hashtag.svg';
 import Button, { Size, Variant } from 'components/Button';
+import Image from 'components/Image';
 interface IFeedProps {}
 
 export interface IProfileImage {
@@ -159,7 +161,7 @@ const Feed: React.FC<IFeedProps> = () => {
                 </div>
               </div>
             ) : bookmarks ? (
-              <div className="bg-blue-50 shadow-md rounded-9xl h-24 px-6 py-4">
+              <div className="bg-blue-50 shadow-md rounded-9xl h-32 px-6 py-4">
                 <div className="flex justify-between items-center">
                   <div className="gap-y-1">
                     <div className="flex gap-x-3 items-center">
@@ -181,6 +183,26 @@ const Feed: React.FC<IFeedProps> = () => {
                         </span>
                       </div>
                     </div>
+                    <div className="flex gap-4 mt-6">
+                      <div
+                        className="w-28 inline-flex py-2 px-4 justify-center align-center rounded-full border-solid border-white bg-white font-bold"
+                        style={{ borderColor: '#e5e5e5' }}
+                      >
+                        Posts
+                      </div>
+                      <div
+                        className="w-28 inline-flex py-2 px-4 w-106 justify-center align-center rounded-full border-solid border-white bg-white font-bold"
+                        style={{ backgroundColor: '#e5e5e5', color: '#A3A3A3' }}
+                      >
+                        Channels
+                      </div>
+                      <div
+                        className="w-28 inline-flex py-2 px-4 w-106 justify-center align-center rounded-full border-solid border-white bg-white font-bold"
+                        style={{ backgroundColor: '#e5e5e5', color: '#A3A3A3' }}
+                      >
+                        Documents
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -191,14 +213,22 @@ const Feed: React.FC<IFeedProps> = () => {
                   openModal={openModal}
                   closeModal={closeModal}
                 />
-                <div className="flex flex-row items-center gap-x-2 mt-8">
-                  <FeedFilter
-                    appliedFeedFilters={appliedFeedFilters}
-                    onApplyFilters={(filters: IPostFilters) => {
-                      setAppliedFeedFilters(filters);
-                    }}
-                    dataTestId="filters-dropdown"
-                  />
+                <div className="flex flex-row items-center mt-8">
+                  <div className="flex items-center">
+                    <div className="mr-4">
+                      <FeedFilter
+                        appliedFeedFilters={appliedFeedFilters}
+                        onApplyFilters={(filters: IPostFilters) => {
+                          setAppliedFeedFilters(filters);
+                        }}
+                        dataTestId="filters-dropdown"
+                      />
+                    </div>
+                    <Icon name="clockFilled" size={24} className="mr-4" />
+                    <Link to="/feed?bookmarks=true">
+                      <Icon name="postBookmark" size={24} className="mr-4" />
+                    </Link>
+                  </div>
                   <Divider className="bg-neutral-200" />
                   <SortByDropdown />
                 </div>
@@ -253,6 +283,18 @@ const Feed: React.FC<IFeedProps> = () => {
             )}
             {isLoading ? (
               <SkeletonLoader />
+            ) : feedIds.length === 0 && bookmarks ? (
+              <div className="bg-white mt-4 p-6 flex flex-col rounded-9xl">
+                <div className="h-220 bg-blue-50 flex justify-center rounded-9xl">
+                  <img src={NoPosts}></img>
+                </div>
+                <div className="font-bold text-2xl/[36px] text-center mt-5">
+                  No posts found
+                </div>
+                <div className="text-center mt-1" style={{ color: '#737373' }}>
+                  Your bookmarked posts will show here
+                </div>
+              </div>
             ) : (
               <div className="mt-4">
                 {feedIds

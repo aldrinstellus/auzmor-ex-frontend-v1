@@ -286,8 +286,8 @@ export const useAnnouncementsWidget = (
     staleTime: 15 * 60 * 1000,
   });
 
-export const announcementRead = async (payload: IAnnounce) => {
-  const data = await apiService.post('/reactions', payload);
+export const announcementRead = async (postId: string) => {
+  const data = await apiService.post(`/posts/${postId}/acknowledge`);
   return data;
 };
 
