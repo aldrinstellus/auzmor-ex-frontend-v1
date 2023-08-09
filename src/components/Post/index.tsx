@@ -172,11 +172,9 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
                 </div>
               </button>
             </div>
-            <div className="flex items-center space-x-1">
-              <Icon name="comment" size={16} />
-              <span className="text-xs font-normal text-neutral-500">
-                Repost
-              </span>
+            <div className="flex items-center space-x-1 cursor-pointer text-neutral-500 hover:text-primary-500">
+              <Icon name="repost" size={16} />
+              <span className="text-xs font-normal">Repost</span>
             </div>
           </div>
           {/* Comments */}

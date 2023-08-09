@@ -113,6 +113,7 @@ import LoveReaction from '../components/LoveReaction';
 import SupportReaction from '../components/SupportReaction';
 import InsightfulReaction from '../components/InsightfulReaction';
 import FunnyReaction from '../components/FunnyReaction';
+import Repost from '../components/Repost';
 
 export const icon = {
   add: Add,
@@ -206,6 +207,7 @@ export const icon = {
   plus: Plus,
   redo: Redo,
   reorder: Reorder,
+  repost: Repost,
   reply: Reply,
   rotateLeft: RotateLeft,
   search: Search,

@@ -69,6 +69,7 @@ import SvgZoomInFilled from '../components/ZoomIn/ZoomInFilled';
 import SvgZoomOutFilled from '../components/ZoomOut/ZoomOutFilled';
 import SvgProfileFilled from '../components/Profile/ProfileFilled';
 import SvgGlobalFilled from '../components/Global/GlobalFilled';
+import SvgRepostFilled from '../components/Repost/RepostFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -126,6 +127,7 @@ export const filledIcon = {
   moreFilled: SvgMoreFilled,
   peopleFilled: SvgPeopleFilled,
   playFilled: SvgPlayFilled,
+  repostFilled: SvgRepostFilled,
   replyFilled: SvgReplyFilled,
   searchFilled: SvgSearchFilled,
   seekForwardFilled: SvgSeekForwardFilled,
