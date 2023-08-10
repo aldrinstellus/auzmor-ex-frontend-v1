@@ -293,9 +293,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         files: fileIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],
-        audience: {
-          users: [],
-        },
+        audience: [],
         isAnnouncement: !!announcement,
         announcement: {
           end: announcement?.value || '',
@@ -341,9 +339,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         files: sortedIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],
-        audience: {
-          users: [],
-        },
+        audience: [],
         isAnnouncement: !!announcement,
         announcement: {
           end: announcement?.value || '',

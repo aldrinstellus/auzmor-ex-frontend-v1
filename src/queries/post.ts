@@ -47,9 +47,7 @@ export interface IPost {
   hashtags: string[] | [];
   files?: string[] | IMedia[];
   type: string;
-  audience: {
-    users: string[];
-  };
+  audience: Record<string, any>[];
   isAnnouncement: boolean;
   announcement: {
     end: string;
@@ -113,9 +111,7 @@ export interface IPostPayload {
   hashtags: string[] | [];
   files?: string[] | IMedia[];
   type: string;
-  audience: {
-    users: string[];
-  };
+  audience: Record<string, any>[];
   isAnnouncement: boolean;
   announcement: {
     end: string;
