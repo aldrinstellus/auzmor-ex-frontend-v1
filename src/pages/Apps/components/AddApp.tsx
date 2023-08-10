@@ -103,6 +103,7 @@ const AddApp: React.FC<AddAppProps> = ({ open, closeModal }) => {
     if (!errors.url && !errors.label) {
       const formData = getValues();
       let uploadedFile;
+
       if (formData.icon) {
         uploadedFile = await uploadMedia([formData.icon], EntityType.AppIcon);
       }
@@ -118,7 +119,17 @@ const AddApp: React.FC<AddAppProps> = ({ open, closeModal }) => {
         ...(uploadedFile && uploadedFile[0] && { icon: uploadedFile[0].id }),
         audience: [],
       };
-
+      const credentials: any = {};
+      if (formData.acsUrl) {
+        credentials.acsUrl = formData.acsUrl;
+      }
+      if (formData.entityId) {
+        credentials.entityId = formData.entityId;
+      }
+      if (formData.relayState) {
+        credentials.relayState = formData.relayState;
+      }
+      req.credentials = credentials;
       addAppMutation.mutate(req);
     }
   };

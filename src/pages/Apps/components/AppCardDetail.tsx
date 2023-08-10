@@ -25,7 +25,7 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
         <div className="flex items-center justify-between p-4">
           <div className="flex gap-x-3 items-center">
             <img
-              src={app?.icon?.thumbnail}
+              src={app?.icon?.original}
               className="p-1 bg-neutral-100 rounded-xl"
               height={28}
               width={28}
@@ -57,7 +57,7 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
               {/* The icon, name and description */}
               <div className="flex px-6 pt-4 gap-x-6">
                 <img
-                  src={app?.icon?.thumbnail}
+                  src={app?.icon?.original}
                   className="p-1 bg-neutral-100 rounded-xl"
                   height={100}
                   width={100}
