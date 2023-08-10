@@ -18,21 +18,21 @@ import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
-export interface IDeleteUserModalProps {
+export interface IDeleteTeamProps {
   open: boolean;
   openModal: () => void;
   closeModal: () => void;
   userId: string;
 }
 
-const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
+const DeleteTeam: React.FC<IDeleteTeamProps> = ({
   open,
   openModal,
   closeModal,
   userId,
 }) => {
   const deleteUserMutation = useMutation({
-    mutationKey: ['delete-user', userId],
+    mutationKey: ['delete-team', userId],
     mutationFn: deleteUser,
     onError: (error) => {
       console.log(error);
@@ -116,11 +116,11 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
       <Button
         label={'Delete'}
         className="!bg-red-500 !text-white flex"
-        loading={deleteUserMutation.isLoading}
+        // loading={deleteUserMutation.isLoading}
         size={Size.Small}
         type={ButtonType.Submit}
         dataTestId="delete-user-delete"
-        onClick={() => deleteUserMutation.mutate(userId)}
+        // onClick={() => deleteUserMutation.mutate(userId)}
       />
     </div>
   );
@@ -136,4 +136,4 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
   );
 };
 
-export default DeleteUserModal;
+export default DeleteTeam;

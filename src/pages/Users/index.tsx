@@ -8,16 +8,23 @@ import Tabs from 'components/Tabs';
 import OrgChart from 'components/OrgChart';
 import People from './components/People';
 import { Role } from 'utils/enum';
+import Team from './components/Teams';
+import TeamMember from './components/Teams/TeamMember';
+import InviteUserModal from './components/InviteUserModal';
 
 interface IUsersProps {}
 
 const Users: React.FC<IUsersProps> = () => {
   const [showOrgChart, setShowOrgChart] = useState<boolean>(false);
+  const [showMyTeam, setShowMyTeam] = useState<boolean>(false);
   const [showAddUserModal, openAddUserModal, closeAddUserModal] = useModal(
     undefined,
     false,
   );
-
+  const [showAddTeamModal, openAddTeamModal, closeAddTeamModal] = useModal(
+    undefined,
+    false,
+  );
   const { user } = useAuth();
 
   const tabStyles = (active: boolean, disabled = false) =>
@@ -44,68 +51,84 @@ const Users: React.FC<IUsersProps> = () => {
       ),
       dataTestId: 'people-view-people',
       tabContent: (
-        <People
-          showAddUserModal={showAddUserModal}
-          openAddUserModal={openAddUserModal}
-          closeAddUserModal={closeAddUserModal}
-        />
+        <>
+          <People
+            showModal={showAddUserModal}
+            openModal={openAddUserModal}
+            closeModal={closeAddUserModal}
+          />
+        </>
+      ),
+      tabAction: (
+        <div className="flex space-x-2">
+          <Button
+            className="flex space-x-[6px] group"
+            label="View Organization Chart"
+            variant={Variant.Secondary}
+            leftIcon="groupOutline"
+            leftIconSize={20}
+            dataTestId="people-org-chart"
+            iconStroke="black"
+            onClick={() => setShowOrgChart(true)}
+          />
+          {user?.role !== Role.Member && (
+            <Button
+              className="flex space-x-1"
+              label="Add Members"
+              leftIcon="add"
+              onClick={openAddUserModal}
+              dataTestId="add-members-btn"
+            />
+          )}
+        </div>
       ),
     },
     {
       id: 2,
       tabLable: (isActive: boolean) => (
-        <div className={tabStyles(isActive, true)}>Teams</div>
+        <div className={tabStyles(isActive)}>Teams</div>
       ),
       dataTestId: 'people-view-teams',
-      tabContent: <div>Teams</div>,
+      tabContent: (
+        <Team
+          setShowMyTeam={setShowMyTeam}
+          showAddTeamModal={showAddTeamModal}
+          openAddTeamModal={openAddTeamModal}
+          closeAddTeamModal={closeAddTeamModal}
+        />
+      ),
+      tabAction: user?.role !== Role.Member && (
+        <Button
+          className="flex space-x-1"
+          label="Add Teams"
+          leftIcon="add"
+          onClick={openAddTeamModal}
+          dataTestId="add-teams-btn"
+        />
+      ),
     },
   ];
 
   return showOrgChart ? (
     <OrgChart setShowOrgChart={setShowOrgChart} />
   ) : (
-    <Card className="p-8 w-full h-full">
-      <div className="space-y-6">
-        <div className="flex justify-between">
-          <div
-            className="text-2xl font-bold"
-            data-testid="people-hub-page-title"
-          >
-            People Hub
-          </div>
-
-          <div className="flex space-x-2">
-            <Button
-              className="flex space-x-[6px] group"
-              label="View Organization Chart"
-              variant={Variant.Secondary}
-              leftIcon="groupOutline"
-              leftIconSize={20}
-              dataTestId="people-org-chart"
-              iconStroke="black"
-              onClick={() => setShowOrgChart(true)}
-            />
-            {user?.role !== Role.Member && (
-              <Button
-                className="flex space-x-1"
-                label="Add Members"
-                leftIcon="add"
-                onClick={openAddUserModal}
-                dataTestId="add-members-btn"
-              />
-            )}
-          </div>
-        </div>
-        <Tabs
-          tabs={tabs}
-          className="w-fit flex justify-start bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200"
-          tabSwitcherClassName="!p-1"
-          showUnderline={false}
-          itemSpacing={1}
-          tabContentClassName="mt-8"
-        />
-      </div>
-    </Card>
+    <>
+      {!showMyTeam ? (
+        <Card className="p-8 w-full h-full">
+          <Tabs
+            tabs={tabs}
+            title={'People Hub'}
+            className="w-fit flex justify-start bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200"
+            tabSwitcherClassName="!p-1"
+            showUnderline={false}
+            itemSpacing={1}
+            tabContentClassName="mt-8"
+          />
+        </Card>
+      ) : (
+        <TeamMember setShowMyTeam={setShowMyTeam} />
+      )}
+    </>
   );
 };
 

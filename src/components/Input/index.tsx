@@ -29,6 +29,7 @@ export type InputProps = {
   error?: string;
   helpText?: string;
   className?: string;
+  inputClassName?: string;
   dataTestId?: string;
   errorDataTestId?: string;
   control?: Control<Record<string, any>>;
@@ -53,6 +54,7 @@ const Input: React.FC<InputProps> = ({
   loading = false,
   disabled = false,
   className = '',
+  inputClassName = '',
   dataTestId = '',
   errorDataTestId = '',
   error,
@@ -156,7 +158,7 @@ const Input: React.FC<InputProps> = ({
             id={id}
             name={field.name}
             type={variant?.toLowerCase()}
-            className={inputStyles}
+            className={`${inputStyles} ${inputClassName}`}
             disabled={loading || disabled}
             placeholder={placeholder}
             data-testid={dataTestId}

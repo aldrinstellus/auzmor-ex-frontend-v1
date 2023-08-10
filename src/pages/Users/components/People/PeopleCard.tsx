@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
-import DeleteUserModal from '../DeleteUserModal';
 import { UserStatus, useResendInvitation } from 'queries/users';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
@@ -16,6 +15,7 @@ import { twConfig } from 'utils/misc';
 import { PRIMARY_COLOR, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import useModal from 'hooks/useModal';
+import DeletePeople from '../DeleteModals/People';
 
 export interface IPeopleCardProps {
   id: string;
@@ -112,7 +112,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
     >
       <Card
         shadowOnHover
-        className="relative w-[234px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white"
+        className="relative w-[230px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white"
       >
         {isAdmin && isHovered && _options.length > 0 && (
           <PopupMenu
@@ -226,7 +226,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
           </div>
         )} */}
       </Card>
-      <DeleteUserModal
+      <DeletePeople
         open={open}
         openModal={openModal}
         closeModal={closeModal}

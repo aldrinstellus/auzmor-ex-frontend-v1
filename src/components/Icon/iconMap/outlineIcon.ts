@@ -77,6 +77,9 @@ import SvgZoomInOutline from '../components/ZoomIn/ZoomInOutline';
 import SvgZoomOutOutline from '../components/ZoomOut/ZoomOutOutline';
 import SvgProfileOutline from '../components/Profile/ProfileOutline';
 import SvgGlobalOutline from '../components/Global/GlobalOutline';
+import SvgProfileUserOutline from '../components/ProfileUser/ProfileUserOutline';
+import SvgShareForwardOutline from '../components/ShareForward/ShareForwardOutline';
+import SvgLinearLeftArrowOutline from '../components/LinearLeftArrow/LinearLeftArrowOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -119,8 +122,8 @@ export const outlineIcon = {
   fullScreenOutline: SvgFullScreenOutline,
   funnyOutline: SvgFunnyOutline,
   gearOutline: SvgGearOutline,
-  groupOutline: SvgGroupOutline,
   globalOutline: SvgGlobalOutline,
+  groupOutline: SvgGroupOutline,
   iconLinearOutline: SvgIconLinearOutline,
   imageOutline: SvgImageOutline,
   importOutline: SvgImportOutline,
@@ -128,6 +131,7 @@ export const outlineIcon = {
   insightfulOutline: SvgInsightfulOutline,
   likeIconOutline: SvgLikeIconOutline,
   likeOutline: SvgLikeOutline,
+  linearLeftArrowOutline: SvgLinearLeftArrowOutline,
   linkOutline: SvgLinkOutline,
   logoutOutline: SvgLogoutOutline,
   loveOutline: SvgLoveOutline,
@@ -139,6 +143,8 @@ export const outlineIcon = {
   moreOutline: SvgMoreOutline,
   peopleOutline: SvgPeopleOutline,
   playOutline: SvgPlayOutline,
+  profileOutline: SvgProfileOutline,
+  profileUserOutline: SvgProfileUserOutline,
   redoOutline: SvgRedoOutline,
   replyOutline: SvgReplyOutline,
   searchOutline: SvgSearchOutline,
@@ -146,16 +152,16 @@ export const outlineIcon = {
   sendOutline: SvgSendOutline,
   settingOutline: SvgSettingOutline,
   settingThreeOutline: SvgSettingThreeOutline,
+  shareForwardOutline: SvgShareForwardOutline,
   speakerOutline: SvgSpeakerOutline,
   supportOutline: SvgSupportOutline,
   threeDotsOutline: SvgThreeDotsOutline,
   tickCircleOutline: SvgTickCircleOutline,
   trashOutline: SvgTrashOutline,
   userManagementOutline: SvgUserManagementOutline,
-  usersOutline: SvgUsersOutline,
   userRemoveOutline: SvgUserRemoveOutline,
+  usersOutline: SvgUsersOutline,
   videoOutline: SvgVideoOutline,
   zoomInOutline: SvgZoomInOutline,
   zoomOutOutline: SvgZoomOutOutline,
-  profileOutline: SvgProfileOutline,
 };

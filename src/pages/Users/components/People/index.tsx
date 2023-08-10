@@ -1,34 +1,33 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import Layout, { FieldType } from 'components/Form';
-import Button, { Size, Variant } from 'components/Button';
-import { Size as InputSize } from 'components/Input';
+import { useInView } from 'react-intersection-observer';
+import { useDebounce } from 'hooks/useDebounce';
+import useModal from 'hooks/useModal';
 import IconButton, {
   Variant as IconVariant,
   Size as IconSize,
 } from 'components/IconButton';
 import Icon from 'components/Icon';
-
-import { Variant as InputVariant } from 'components/Input';
 import PageLoader from 'components/PageLoader';
-import UsersSkeleton from '../UsersSkeleton';
+import { Size as InputSize } from 'components/Input';
+import Layout, { FieldType } from 'components/Form';
+import Button, { Size, Variant } from 'components/Button';
+import { Variant as InputVariant } from 'components/Input';
+
+import UsersSkeleton from '../Skeletons/UsersSkeleton';
 
 import { IGetUser, UserRole, useInfiniteUsers } from 'queries/users';
 import { isFiltersEmpty, titleCase, twConfig } from 'utils/misc';
-import { useDebounce } from 'hooks/useDebounce';
-import useModal from 'hooks/useModal';
+
 import PeopleCard from './PeopleCard';
-import { useInView } from 'react-intersection-observer';
 import InviteUserModal from '../InviteUserModal';
-import FilterModal from '../FilterModal';
+import PeopleFilterModal from '../FilterModals/PeopleFilterModal';
 
 export interface IPeopleProps {
-  showAddUserModal: boolean;
-  openAddUserModal: () => void;
-  closeAddUserModal: () => void;
+  showModal: boolean;
+  openModal: () => void;
+  closeModal: () => void;
 }
-
-// types ----
 
 interface IForm {
   search?: string;
@@ -36,16 +35,12 @@ interface IForm {
 }
 
 const People: React.FC<IPeopleProps> = ({
-  showAddUserModal,
-  openAddUserModal,
-  closeAddUserModal,
+  showModal,
+  openModal,
+  closeModal,
 }) => {
-  // state management
-
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const [userStatus, setUserStatus] = useState<string>('');
-
-  //reference
   const { ref, inView } = useInView();
 
   const {
@@ -162,7 +157,6 @@ const People: React.FC<IPeopleProps> = ({
               variant={IconVariant.Secondary}
               size={IconSize.Medium}
               borderAround
-              disabled
               className="bg-white"
               dataTestId="people-sort"
             />
@@ -279,12 +273,12 @@ const People: React.FC<IPeopleProps> = ({
       </div>
 
       <InviteUserModal
-        open={showAddUserModal}
-        openModal={openAddUserModal}
-        closeModal={closeAddUserModal}
+        open={showModal}
+        openModal={openModal}
+        closeModal={closeModal}
       />
 
-      <FilterModal
+      <PeopleFilterModal
         setUserStatus={setUserStatus}
         userStatus={userStatus}
         open={showFilterModal}
