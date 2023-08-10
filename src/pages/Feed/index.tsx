@@ -23,8 +23,11 @@ import SkeletonLoader from './components/SkeletonLoader';
 import { useFeedStore } from 'stores/feedStore';
 import useModal from 'hooks/useModal';
 import { Link, useSearchParams } from 'react-router-dom';
-import HashtagIcon from 'images/hashtag.svg';
+
 import MyTeamWidget from 'components/MyTeamWidget';
+import HashtagFeedHeader from './components/HashtagFeedHeader';
+import BookmarkFeedHeader from './components/BookmarkFeedHeader';
+import ScheduledFeedHeader from './components/ScheduledFeedHeader';
 interface IFeedProps {}
 
 export interface IProfileImage {
@@ -50,9 +53,10 @@ export interface IMyReactions {
 
 const Feed: React.FC<IFeedProps> = () => {
   useScrollTop();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const hashtag = searchParams.get('hashtag') || '';
   const bookmarks = searchParams.get('bookmarks') || false;
+  const scheduled = searchParams.get('scheduled') || false;
   const { ref, inView } = useInView();
   const [open, openModal, closeModal] = useModal(undefined, false);
   const [appliedFeedFilters, setAppliedFeedFilters] = useState<IPostFilters>({
@@ -71,6 +75,12 @@ const Feed: React.FC<IFeedProps> = () => {
       setAppliedFeedFilters({ bookmarks: true });
     }
   }, [bookmarks]);
+
+  useEffect(() => {
+    if (scheduled) {
+      setAppliedFeedFilters({ scheduled: true });
+    }
+  }, [scheduled]);
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteFeed(appliedFeedFilters);
@@ -115,6 +125,40 @@ const Feed: React.FC<IFeedProps> = () => {
     }
   };
 
+  const getEmptyFeedComponent = () => {
+    if (bookmarks) {
+      return (
+        <div className="bg-white mt-4 p-6 flex flex-col rounded-9xl">
+          <div className="h-220 bg-blue-50 flex justify-center rounded-9xl">
+            <img src={NoPosts} data-testid="mybookmark-tab-nopost"></img>
+          </div>
+          <div className="font-bold text-2xl/[36px] text-center mt-5">
+            No posts found
+          </div>
+          <div className="text-center mt-1" style={{ color: '#737373' }}>
+            Your bookmarked posts will show here
+          </div>
+        </div>
+      );
+    } else if (scheduled) {
+      return (
+        <div className="bg-white mt-4 p-6 flex flex-col rounded-9xl">
+          <div className="h-220 bg-blue-50 flex justify-center rounded-9xl">
+            <img src={NoPosts} data-testid="mybookmark-tab-nopost"></img>
+          </div>
+          <div className="font-bold text-base text-neutral-900 text-center mt-6">
+            Not ready to share your post right now?
+          </div>
+          <div className="font-bold text-base text-neutral-900 text-center">
+            Try scheduling for later.
+          </div>
+        </div>
+      );
+    } else {
+      return <></>;
+    }
+  };
+
   return (
     <>
       <div className="mb-12 gap-x-[52px] flex w-full">
@@ -125,91 +169,19 @@ const Feed: React.FC<IFeedProps> = () => {
         <div className="w-1/2">
           <div className="">
             {hashtag ? (
-              <div className="bg-orange-50 shadow-md rounded-9xl h-24 px-6 py-4">
-                <div className="flex justify-between items-center">
-                  <div className="gap-y-1">
-                    <div className="flex gap-x-3 items-center">
-                      <Icon
-                        name="arrowLeft"
-                        fill="#171717"
-                        stroke="#171717"
-                        onClick={() => {
-                          if (searchParams.has('hashtag')) {
-                            searchParams.delete('hashtag');
-                            setSearchParams(searchParams);
-                            setAppliedFeedFilters({ hashtags: [''] });
-                          }
-                        }}
-                      />
-                      <div className="text-2xl font-bold text-neutral-900">
-                        <span>#</span>
-                        <span data-testid={`feedpage-filter-${hashtag}`}>
-                          {hashtag}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="text-base font-normal text-neutral-500">
-                      <span data-testid="feedpage-filter-hashtagcount-text">
-                        {hashtag && feedIds?.length}
-                      </span>{' '}
-                      people are posting about this
-                    </div>
-                  </div>
-                  <div>
-                    <img src={HashtagIcon} />
-                  </div>
-                </div>
-              </div>
+              <HashtagFeedHeader
+                hashtag={hashtag}
+                feedIds={feedIds}
+                setAppliedFeedFilters={setAppliedFeedFilters}
+              />
             ) : bookmarks ? (
-              <div
-                className="bg-blue-50 shadow-md rounded-9xl h-32 px-6 py-4"
-                data-testid="mybookmarks-tab"
-              >
-                <div className="flex justify-between items-center">
-                  <div className="gap-y-1">
-                    <div className="flex gap-x-3 items-center">
-                      <Icon
-                        name="arrowLeft"
-                        fill="#171717"
-                        stroke="#171717"
-                        onClick={() => {
-                          if (searchParams.has('bookmarks')) {
-                            searchParams.delete('bookmarks');
-                            setSearchParams(searchParams);
-                            setAppliedFeedFilters({ bookmarks: false });
-                          }
-                        }}
-                      />
-                      <div className="text-2xl font-bold text-neutral-900">
-                        <span data-testid={`feedpage-filter-${hashtag}`}>
-                          My Bookmarks
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex gap-4 mt-6">
-                      <div
-                        className="w-28 inline-flex py-2 px-4 justify-center align-center rounded-full border-solid border-white bg-white font-bold"
-                        style={{ borderColor: '#e5e5e5' }}
-                        data-testid="mybookmarks-tab-posts"
-                      >
-                        Posts
-                      </div>
-                      <div
-                        className="w-28 inline-flex py-2 px-4 w-106 justify-center align-center rounded-full border-solid border-white bg-white font-bold"
-                        style={{ backgroundColor: '#e5e5e5', color: '#A3A3A3' }}
-                      >
-                        Channels
-                      </div>
-                      <div
-                        className="w-28 inline-flex py-2 px-4 w-106 justify-center align-center rounded-full border-solid border-white bg-white font-bold"
-                        style={{ backgroundColor: '#e5e5e5', color: '#A3A3A3' }}
-                      >
-                        Documents
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <BookmarkFeedHeader
+                setAppliedFeedFilters={setAppliedFeedFilters}
+              />
+            ) : scheduled ? (
+              <ScheduledFeedHeader
+                setAppliedFeedFilters={setAppliedFeedFilters}
+              />
             ) : (
               <>
                 <CreatePostCard
@@ -228,7 +200,9 @@ const Feed: React.FC<IFeedProps> = () => {
                         dataTestId="filters-dropdown"
                       />
                     </div>
-                    <Icon name="clockFilled" size={24} className="mr-4" />
+                    <Link to="/feed?scheduled=true">
+                      <Icon name="clockFilled" size={24} className="mr-4" />
+                    </Link>
                     <Link to="/feed?bookmarks=true">
                       <Icon name="postBookmark" size={24} className="mr-4" />
                     </Link>
@@ -287,18 +261,8 @@ const Feed: React.FC<IFeedProps> = () => {
             )}
             {isLoading ? (
               <SkeletonLoader />
-            ) : feedIds.length === 0 && bookmarks ? (
-              <div className="bg-white mt-4 p-6 flex flex-col rounded-9xl">
-                <div className="h-220 bg-blue-50 flex justify-center rounded-9xl">
-                  <img src={NoPosts} data-testid="mybookmark-tab-nopost"></img>
-                </div>
-                <div className="font-bold text-2xl/[36px] text-center mt-5">
-                  No posts found
-                </div>
-                <div className="text-center mt-1" style={{ color: '#737373' }}>
-                  Your bookmarked posts will show here
-                </div>
-              </div>
+            ) : feedIds.length === 0 ? (
+              getEmptyFeedComponent()
             ) : (
               <div className="mt-4">
                 {feedIds

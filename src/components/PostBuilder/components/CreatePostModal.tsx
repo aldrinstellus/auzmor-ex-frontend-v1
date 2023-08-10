@@ -101,13 +101,6 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         label: 'Custom Date',
         value: data?.announcement?.end || '',
       });
-      if (data?.schedule) {
-        setSchedule({
-          timezone: data.schedule.timeZone,
-          date: data.schedule.dateTime,
-          time: `${moment(new Date(data.schedule.dateTime)).format('h:mm a')}`,
-        });
-      }
       setActiveFlow(CreatePostFlow.CreateAnnouncement);
     }
   }, [customActiveFlow]);
@@ -120,6 +113,13 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       }
       if (data?.files?.length) {
         setMedia(data?.files as IMedia[]);
+      }
+      if (data?.schedule) {
+        setSchedule({
+          timezone: data.schedule.timeZone,
+          date: data.schedule.dateTime,
+          time: `${moment(new Date(data.schedule.dateTime)).format('h:mm a')}`,
+        });
       }
     }
   }, []);
@@ -194,6 +194,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             borderRadius: '6px',
             display: 'flex',
             alignItems: 'center',
+            backgroundColor: twConfig.theme.colors.neutral[900],
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
@@ -219,6 +220,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             borderRadius: '6px',
             display: 'flex',
             alignItems: 'center',
+            backgroundColor: twConfig.theme.colors.neutral[900],
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
@@ -299,10 +301,12 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           end: announcement?.value || '',
         },
         link: previewUrl && previewUrl[0],
-        schedule: {
-          timeZone: schedule?.timezone || '',
-          dateTime: schedule?.date || '',
-        },
+        schedule: schedule
+          ? {
+              timeZone: schedule?.timezone || '',
+              dateTime: schedule?.date || '',
+            }
+          : null,
       });
     } else if (PostBuilderMode.Edit) {
       mediaRef.current = [...media, ...uploadedMedia];
@@ -346,10 +350,12 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         },
         id: data?.id,
         link: previewUrl && previewUrl[0],
-        schedule: {
-          timeZone: schedule?.timezone || '',
-          dateTime: schedule?.date || '',
-        },
+        schedule: schedule
+          ? {
+              timeZone: schedule?.timezone || '',
+              dateTime: schedule?.date || '',
+            }
+          : null,
       });
     }
   };

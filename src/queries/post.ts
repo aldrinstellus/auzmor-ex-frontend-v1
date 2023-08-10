@@ -84,7 +84,7 @@ export interface IPost {
   schedule: {
     dateTime: string;
     timeZone: string;
-  };
+  } | null;
   bookmarked: boolean;
   acknowledged: boolean;
 }
@@ -122,7 +122,7 @@ export interface IPostPayload {
   schedule: {
     dateTime: string;
     timeZone: string;
-  };
+  } | null;
 }
 
 export interface IReaction {
@@ -221,6 +221,7 @@ export enum PostFilterKeys {
   Next = 'next',
   Prev = 'prev',
   Bookmarks = 'bookmarks',
+  Scheduled = 'scheduled',
 }
 
 export interface IPostFilters {
@@ -236,6 +237,7 @@ export interface IPostFilters {
   [PostFilterKeys.Next]?: number;
   [PostFilterKeys.Prev]?: number;
   [PostFilterKeys.Bookmarks]?: boolean;
+  [PostFilterKeys.Scheduled]?: boolean;
 }
 
 export const createPost = async (payload: IPostPayload) => {
@@ -354,6 +356,20 @@ export const fetchFeed = async (
     !!!context.pageParam
   ) {
     response = await apiService.get('/posts/my-bookmarks');
+    setFeed({
+      ...feed,
+      ..._.chain(response.data.result.data).keyBy('id').value(),
+    });
+    response.data.result.data = response.data.result.data.map(
+      (eachPost: IPost) => ({ id: eachPost.id }),
+    );
+    return response;
+  } else if (
+    !!context.queryKey[1] &&
+    !!(context.queryKey[1] as Record<string, any>).scheduled &&
+    !!!context.pageParam
+  ) {
+    response = await apiService.get('/posts/scheduled');
     setFeed({
       ...feed,
       ..._.chain(response.data.result.data).keyBy('id').value(),

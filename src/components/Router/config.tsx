@@ -76,6 +76,7 @@ const routers = createBrowserRouter(
             return '';
           }}
         />
+        <Route path="/posts/scheduled" element={<Feed />} />
         <Route path="/feed" element={<Feed />} />
         <Route path="/settings" element={<UserSettings />} />
         <Route path="/apps" element={<Apps />} />

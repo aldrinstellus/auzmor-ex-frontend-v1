@@ -25,6 +25,7 @@ import Tooltip from 'components/Tooltip';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { slideInAndOutTop } from 'utils/react-toastify';
+import moment from 'moment';
 
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
@@ -193,7 +194,10 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
                 />
               </div>
               <div className="text-xs text-neutral-600">
-                Post scheduled for , based on your profile timezone.
+                Post scheduled for{' '}
+                {moment(post?.schedule.dateTime).format('ddd, MMM DD')} at{' '}
+                {moment(post?.schedule.dateTime).format('h:mm a')}, based on
+                your profile timezone.
               </div>
             </div>
             <div className="flex items-center">
@@ -328,11 +332,14 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
           entityType="post"
         />
       )}
-      {showPublishModal && <PublishPostModal closeModal={closePublishModal} />}
+      {showPublishModal && (
+        <PublishPostModal closeModal={closePublishModal} post={post} />
+      )}
       {showEditSchedulePostModal && (
         <EditSchedulePostModal
           closeModal={closeEditSchedulePostModal}
-          schedule={post.schedule}
+          schedule={post.schedule!}
+          post={post}
         />
       )}
     </>

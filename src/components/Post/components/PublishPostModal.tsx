@@ -3,12 +3,98 @@ import Header from 'components/ModalHeader';
 import React from 'react';
 import ErrorWarningPng from 'images/error-warning-line.png';
 import Button, { Variant as ButtonVariant } from 'components/Button';
+import { useMutation } from '@tanstack/react-query';
+import { IPost, IPostPayload, updatePost } from 'queries/post';
+import { useFeedStore } from 'stores/feedStore';
+import { toast } from 'react-toastify';
+import FailureToast from 'components/Toast/variants/FailureToast';
+import Icon from 'components/Icon';
+import { twConfig } from 'utils/misc';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
 
 interface PublishPostModalProps {
+  post: IPost;
   closeModal?: () => void;
 }
 
-const PublishPostModal: React.FC<PublishPostModalProps> = ({ closeModal }) => {
+const PublishPostModal: React.FC<PublishPostModalProps> = ({
+  closeModal,
+  post,
+}) => {
+  const { feed, updateFeed } = useFeedStore();
+  const updatePostMutation = useMutation({
+    mutationKey: ['updatePostMutation'],
+    mutationFn: (payload: IPostPayload) =>
+      updatePost(payload.id || '', payload as IPostPayload),
+    onMutate: (variables) => {
+      if (variables?.id) {
+        const previousData = feed[variables.id];
+        updateFeed(variables.id, {
+          ...feed[variables.id],
+          ...variables,
+        } as IPost);
+        closeModal && closeModal();
+        return { previousData };
+      }
+    },
+    onError: (error, variables, context) => {
+      if (context?.previousData && variables?.id) {
+        updateFeed(variables.id, context?.previousData);
+      }
+      toast(
+        <FailureToast
+          content="Error updating post"
+          dataTestId="post-update-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.red['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+            backgroundColor: twConfig.theme.colors.neutral[900],
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+        },
+      );
+    },
+    onSuccess: async () => {
+      toast(
+        <SuccessToast
+          content="Post updated successfully"
+          dataTestId="post-update-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.primary['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+            backgroundColor: twConfig.theme.colors.neutral[900],
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+        },
+      );
+    },
+  });
   return (
     <Modal open={true} closeModal={closeModal} className="max-w-sm">
       <Header title="Publish right now?" onClose={closeModal} />
@@ -27,8 +113,15 @@ const PublishPostModal: React.FC<PublishPostModalProps> = ({ closeModal }) => {
             label="Cancel"
             className="mr-3"
             dataTestId="schedule-post-backcta"
+            onClick={closeModal}
           />
-          <Button label={'Post now'} dataTestId="schedule-post-next-cta" />
+          <Button
+            label={'Post now'}
+            dataTestId="schedule-post-next-cta"
+            onClick={() => {
+              updatePostMutation.mutate({ ...post, schedule: null });
+            }}
+          />
         </div>
       </div>
     </Modal>
