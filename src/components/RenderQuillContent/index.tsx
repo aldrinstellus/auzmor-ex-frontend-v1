@@ -92,7 +92,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
       default:
         return (
           <Text
-            value={op.insert.trim()}
+            value={op.insert.trimEnd()}
             attributes={op?.attributes}
             isLink={op?.attributes?.link ? true : false}
           />

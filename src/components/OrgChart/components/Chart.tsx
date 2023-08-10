@@ -138,7 +138,7 @@ const Chart: React.FC<IChart> = ({ orgChartRef }) => {
           .nodeContent((node: any, i: any, arr: any, state: any) => {
             return renderToString(<UserNode node={node} />);
           })
-          .hoverCardContent(() => renderToString(<UserCard />))
+          // .hoverCardContent(() => renderToString(<UserCard />))
           // .onExpandCollapseClick((d: any, data: any) => {
           //   if (
           //     d.children?.length &&

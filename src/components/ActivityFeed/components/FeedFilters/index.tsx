@@ -229,9 +229,9 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
   };
 
   return (
-    <Popover className="z-40 mr-6">
+    <Popover className="z-40">
       <Popover.Button
-        className="box-border font-bold flex flex-row justify-center items-center p-1 gap-4 border-none relative"
+        className="box-border font-bold flex flex-row justify-center items-center p-1 border-none relative"
         onClick={() => {
           setShowFeedFilter(!showFeedFilter);
           setHaveFiltersBeenModified(false);
@@ -243,7 +243,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
             {getFeedFilterCount()}
           </div>
         )}
-        <Icon name="filter" size={16} className="" />
+        <Icon name="filter" size={24} className="" />
       </Popover.Button>
       <Transition
         show={showFeedFilter}

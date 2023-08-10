@@ -8,6 +8,12 @@ import { useMutation } from '@tanstack/react-query';
 import { IPost, updatePost } from 'queries/post';
 import queryClient from 'utils/queryClient';
 import { Dayjs } from 'dayjs';
+import { toast } from 'react-toastify';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import Icon from 'components/Icon';
+import { twConfig } from 'utils/misc';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
 
 export interface IFooterProps {
   handleSubmit: UseFormHandleSubmit<FieldValues>;
@@ -47,7 +53,8 @@ const Footer: React.FC<IFooterProps> = ({
     mutationFn: async () => {
       const formData = getFormValues();
       const expiryDate =
-        (formData.date as Dayjs).toDate().toISOString().substring(0, 19) + 'Z';
+        (formData?.date as Dayjs)?.toDate().toISOString().substring(0, 19) +
+        'Z';
       const fileIds = data?.files?.map((file: any) => file.id);
       if (data?.id)
         await updatePost(data?.id, {
@@ -65,6 +72,30 @@ const Footer: React.FC<IFooterProps> = ({
     onError: () => {},
     onSuccess: async () => {
       await queryClient.invalidateQueries(['feed']);
+      toast(
+        <SuccessToast
+          content="Your announcement was converted to a post"
+          data-testid="notification-announcement-to-post"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors['black-white'].white}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
       closeModal();
     },
   });

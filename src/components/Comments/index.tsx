@@ -175,7 +175,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
                     if (eachFile.size > IMG_FILE_SIZE_LIMIT * 1024 * 1024) {
                       mediaErrors.push({
                         errorType: MediaValidationError.ImageSizeExceed,
-                        errorMsg: `The file “${eachFile.name}” you are trying to upload exceeds the 5MB attachment limit. Try uploading a smaller file`,
+                        errorMsg: `The file “${eachFile.name}" you are trying to upload exceeds the 5MB attachment limit. Try uploading a smaller file`,
                         fileName: eachFile.name,
                       });
                       return false;

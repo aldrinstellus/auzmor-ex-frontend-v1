@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { SVGProps } from 'react';
+import { PRIMARY_COLOR } from 'utils/constants';
 
 type IconProps = {
   size?: number;
@@ -8,7 +9,7 @@ type IconProps = {
 
 const SvgMoreFilled = ({
   size = 24,
-  fill = '#737373',
+  fill = PRIMARY_COLOR,
   ...props
 }: SVGProps<SVGSVGElement> & IconProps) => (
   <svg

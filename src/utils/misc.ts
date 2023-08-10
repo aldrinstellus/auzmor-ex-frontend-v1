@@ -162,6 +162,13 @@ export const clearInputValue = (
   element.value = '';
 };
 
+export const canPerform = (checkFor?: string[], allPermissions?: string[]) => {
+  if (allPermissions?.length && checkFor?.length) {
+    return allPermissions.some((perm) => checkFor.includes(perm));
+  }
+  return false;
+};
+
 export const isSubset = (subset?: string[], set?: string[]) => {
   if (set && subset) {
     return subset.every((ele) => set.includes(ele));
@@ -215,4 +222,12 @@ export const titleCase = (input: string) => {
     .split(' ')
     .map((i) => capitalize(i))
     .join(' ');
+};
+
+export const extractFirstWord = (str: string) => {
+  const words = str.trim().split(' ');
+  if (words.length > 0) {
+    return words[0];
+  }
+  return '';
 };

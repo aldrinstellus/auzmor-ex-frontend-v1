@@ -1,9 +1,13 @@
+import React from 'react';
+import { renderToString } from 'react-dom/server';
+import ReactionSkeleton from 'components/Post/components/ReactionSkeleton';
 import apiService from 'utils/apiService';
 import {
   createMentionsList,
   createHashtagsList,
   newHashtags,
 } from './mentions/utils';
+import { extractFirstWord } from 'utils/misc';
 
 interface IOrg {
   id: string;
@@ -49,25 +53,22 @@ const mentionEntityFetch = async (character: string, searchTerm: string) => {
     const mentionList = mentions?.result?.data;
     return createMentionsList(mentionList, character);
   } else if (character === '#' && !isContainWhiteSpace) {
-    const hashtagValue = searchTerm.split(' ').filter((ele) => ele !== '');
-    if (hashtagValue.length === 1) {
-      const hashtag = hashtagValue[0];
-      const { data: hashtags } = await apiService.get('/hashtags', {
-        q: hashtag,
-      });
-      const hashtagList = hashtags?.result?.data;
-      const newHashtagValue = {
-        name: hashtagValue[0],
-      };
-      const hasHashtags = hashtagList?.some(
-        (hashValue: IHashtags) => hashValue?.name === hashtag,
-      );
-      console.log('check', hasHashtags);
-      if (hasHashtags) {
-        return createHashtagsList(hashtagList, character);
+    const hashtag = extractFirstWord(searchTerm);
+    const { data: hashtags } = await apiService.get('/hashtags', {
+      q: hashtag,
+    });
+    const hashtagList = hashtags?.result?.data;
+    const isOlderHashtag = hashtagList?.some((hashValue: IHashtags) => {
+      if (hashtag) {
+        return hashValue?.name === hashtag;
       } else {
-        return newHashtags(newHashtagValue, character);
+        return true;
       }
+    });
+    if (isOlderHashtag) {
+      return createHashtagsList(hashtagList, character);
+    } else {
+      return newHashtags({ name: hashtag }, character);
     }
   } else if (isContainWhiteSpace) {
     return null;
@@ -93,31 +94,39 @@ export const mention = {
   showDenotationChar: true,
   onOpen: () => {}, // Callback when mention dropdown is open.
   onclose: () => {}, // Callback when mention dropdown is closed.
-  renderLoading: () => {},
+  renderLoading: () => {
+    return renderToString(<ReactionSkeleton />);
+  },
   renderItem: (item: any, searchItem: any) => {
     if (item?.charDenotation === '@') {
       return `
-              <div class="user-container">
-                    <div class="user-avatar">
-                          ${
-                            item?.profileImage?.original
-                              ? `<img 
-                                  src=${item?.profileImage?.original} 
-                                  style="width:32px;height:32px;border-radius: 100px;
-                            "/>`
-                              : `<div class="user-avatar-name"> 
-                                    ${
-                                      item?.firstName?.charAt(0) +
-                                        item?.lastName?.charAt(0) ||
-                                      item?.fullName?.charAt(0).toUpperCase()
-                                    }
-                                </div>`
-                          }
-                    </div>
-                    <div class="user-details">
-                      <span>${item.fullName}</span>
-                    <div>
-              </div>
+      <div class="user-container">
+
+            <div class="user-avatar">
+                  ${
+                    item?.profileImage?.original
+                      ? `<img 
+                          src=${item?.profileImage?.original} 
+                          style="width:32px;height:32px;border-radius: 100px;
+                    "/>`
+                      : `<div class="user-avatar-name"> 
+                            ${
+                              item?.firstName?.charAt(0) +
+                                item?.lastName?.charAt(0) ||
+                              item?.fullName?.charAt(0).toUpperCase()
+                            }
+                        </div>`
+                  }
+            </div>
+
+            <div>
+              <div class="user-details">
+                <div>${item.fullName}</div>
+              <div>
+                <div class="user-email">${item.workEmail}</div>
+            </div>
+
+</div>
             `;
     } else if (item.charDenotation === '#') {
       return `

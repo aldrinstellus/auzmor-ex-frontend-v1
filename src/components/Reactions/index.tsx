@@ -294,8 +294,7 @@ const Likes: React.FC<LikesProps> = ({
           className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition text-white p-1 rounded absolute  bottom-full  whitespace-nowrap"
         >
           <div
-            className={`h-[42px] flex flex-row items-center bg-white
-             rounded-7xl shadow-lg py-2 px-3 space-x-4 mb-3.5 -ml-1`}
+            className={`h-[42px] flex flex-row items-center bg-white rounded-7xl shadow-lg py-2 px-3 space-x-4 mb-3.5 -ml-1`}
             data-testid={dataTestIdPrefix}
           >
             <Reactions

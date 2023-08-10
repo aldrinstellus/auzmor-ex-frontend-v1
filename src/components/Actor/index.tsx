@@ -32,8 +32,7 @@ const Actor: React.FC<ActorProps> = ({
 
   const postVisibilityStylesContainer = clsx(
     {
-      'cursor-not-allowed text-neutral-900 bg-neutral-100 rounded-17xl hover:rounded-17xl':
-        disabled,
+      'text-neutral-900 rounded-17xl hover:rounded-17xl': disabled,
     },
     {
       'cursor-pointer': !disabled,
@@ -51,7 +50,7 @@ const Actor: React.FC<ActorProps> = ({
 
   const visibilityStyle = clsx(
     {
-      'text-xxs font-medium ml-1.5': true,
+      'text-xxs text-neutral-900 font-medium ml-1.5': true,
     },
     {
       'text-neutral-400': disabled,

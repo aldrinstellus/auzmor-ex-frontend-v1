@@ -77,6 +77,7 @@ import SvgZoomInOutline from '../components/ZoomIn/ZoomInOutline';
 import SvgZoomOutOutline from '../components/ZoomOut/ZoomOutOutline';
 import SvgProfileOutline from '../components/Profile/ProfileOutline';
 import SvgGlobalOutline from '../components/Global/GlobalOutline';
+import SvgRepostOutline from '../components/Repost/RepostOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -140,6 +141,7 @@ export const outlineIcon = {
   peopleOutline: SvgPeopleOutline,
   playOutline: SvgPlayOutline,
   redoOutline: SvgRedoOutline,
+  repostOutline: SvgRepostOutline,
   replyOutline: SvgReplyOutline,
   searchOutline: SvgSearchOutline,
   seekForwardOutline: SvgSeekForwardOutline,

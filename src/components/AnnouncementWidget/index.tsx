@@ -51,7 +51,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
     postData = result?.[1];
   }
 
-  const isAcknowledged = postData?.myAcknowledgement?.reaction !== 'mark_read';
+  const isAcknowledged = postData?.acknowledged;
   const dataPostId = postData?.id;
 
   const hasLoggedInUserCreatedAnnouncement =
@@ -122,12 +122,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
                         className="border-2 border-neutral-200 mt-4 w-full"
                         loading={acknowledgeAnnouncement.isLoading}
                         onClick={() => {
-                          acknowledgeAnnouncement.mutate({
-                            entityId: postData.id,
-                            entityType: 'post',
-                            type: 'acknowledge',
-                            reaction: 'mark_read',
-                          });
+                          acknowledgeAnnouncement.mutate(postData.id);
                         }}
                       />
                     </div>

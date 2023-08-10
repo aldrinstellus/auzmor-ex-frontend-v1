@@ -3,22 +3,30 @@ import { IMenuItem } from '.';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import useHover from 'hooks/useHover';
+import clsx from 'clsx';
 
 type PopupMenuItemProps = {
   menuItem: IMenuItem;
   menuButtonRef: React.RefObject<HTMLButtonElement>;
+  border?: boolean;
 };
 
 const PopupMenuItem: React.FC<PopupMenuItemProps> = ({
   menuItem,
   menuButtonRef,
+  border = false,
 }) => {
   const [hovered, eventHandlers] = useHover();
   return (
     <div
-      className={`flex px-6 py-3 items-center hover:bg-primary-50 cursor-pointer space-x-3 ${
-        menuItem.disabled && '!cursor-default'
-      }`}
+      className={clsx(
+        {
+          'flex px-6 py-3 items-center hover:bg-primary-50 cursor-pointer space-x-3':
+            true,
+        },
+        { 'border-b-1': border },
+        { '!cursor-default': menuItem.disabled },
+      )}
       onClick={() => {
         menuButtonRef.current?.click();
         menuItem?.onClick && menuItem.onClick();
@@ -41,9 +49,12 @@ const PopupMenuItem: React.FC<PopupMenuItemProps> = ({
         />
       )}
       <div
-        className={`text-sm text-neutral-900 font-medium whitespace-nowrap ${
-          menuItem.disabled && '!text-neutral-400'
-        }`}
+        className={clsx(
+          { 'text-sm text-neutral-900 font-medium whitespace-nowrap': true },
+          { 'text-primary-500': !menuItem.disabled && hovered },
+          { '!text-neutral-400': menuItem.disabled },
+          { [`${menuItem.labelClassName}`]: true },
+        )}
       >
         {menuItem.label}
       </div>

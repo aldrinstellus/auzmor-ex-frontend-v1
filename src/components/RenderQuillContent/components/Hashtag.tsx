@@ -23,7 +23,10 @@ const Hashtag: React.FC<HashtagProps> = ({ value }): ReactElement => {
       }}
       className="hashtag"
     >
-      #<span ref={hashtagRef}>{value}</span>
+      #
+      <span ref={hashtagRef} data-testid={`feedpage-hashtag-${value}`}>
+        {value}
+      </span>
     </span>
   );
 };

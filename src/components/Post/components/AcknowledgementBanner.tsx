@@ -27,11 +27,11 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
   const acknowledgeMutation = useMutation({
     mutationKey: ['acknowledge-announcement'],
     mutationFn: announcementRead,
-    onMutate: (variables) => {
-      const previousPost = feed[variables.entityId];
+    onMutate: (postId) => {
+      const previousPost = feed[postId];
       updateFeed(
-        variables.entityId,
-        produce(feed[variables.entityId], (draft) => {
+        postId,
+        produce(feed[postId], (draft) => {
           (draft.announcement = { end: '' }), (draft.isAnnouncement = false);
         }),
       );
@@ -48,10 +48,7 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
   return (
     <div>
       {isAnnouncement &&
-        !(
-          data?.myAcknowledgement?.reaction === 'mark_read' ||
-          hasDatePassed(data?.announcement?.end)
-        ) && (
+        !(data?.acknowledged || hasDatePassed(data?.announcement?.end)) && (
           <div
             className={`flex justify-between items-center bg-blue-700 -mb-4 ${
               hasLoggedInUserCreatedAnnouncement ? 'p-3' : 'p-2'
@@ -70,12 +67,7 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
                 variant={Variant.Tertiary}
                 loading={acknowledgeMutation.isLoading}
                 onClick={() => {
-                  acknowledgeMutation.mutate({
-                    entityId: data?.id,
-                    entityType: 'post',
-                    type: 'acknowledge',
-                    reaction: 'mark_read',
-                  });
+                  acknowledgeMutation.mutate(data?.id);
                 }}
                 dataTestId="announcment-markasreadcta"
               />
