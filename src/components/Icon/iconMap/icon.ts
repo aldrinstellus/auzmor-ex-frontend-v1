@@ -113,6 +113,7 @@ import LoveReaction from '../components/LoveReaction';
 import SupportReaction from '../components/SupportReaction';
 import InsightfulReaction from '../components/InsightfulReaction';
 import FunnyReaction from '../components/FunnyReaction';
+import PostBookmarkIcon from '../components/PostBookmark';
 import Repost from '../components/Repost';
 
 export const icon = {
@@ -232,4 +233,5 @@ export const icon = {
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
   profile: ProfileIcon,
+  postBookmark: PostBookmarkIcon,
 };

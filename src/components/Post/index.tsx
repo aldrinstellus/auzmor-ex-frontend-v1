@@ -5,17 +5,24 @@ import { VIEW_POST } from 'components/Actor/constant';
 import CommentCard from 'components/Comments/index';
 import Likes, { ReactionType } from 'components/Reactions';
 import FeedPostMenu from './components/FeedPostMenu';
-import { IPost } from 'queries/post';
+import { IPost, createBookmark, deleteBookmark } from 'queries/post';
 import Icon from 'components/Icon';
 import clsx from 'clsx';
 import { humanizeTime } from 'utils/time';
 import AcknowledgementBanner from './components/AcknowledgementBanner';
 import ReactionModal from './components/ReactionModal';
 import RenderQuillContent from 'components/RenderQuillContent';
-import { getNouns } from 'utils/misc';
+import { getNouns, twConfig } from 'utils/misc';
 import Divider from 'components/Divider';
 import useModal from 'hooks/useModal';
-import { PRIMARY_COLOR } from 'utils/constants';
+import { PRIMARY_COLOR, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { useMutation } from '@tanstack/react-query';
+import { useFeedStore } from 'stores/feedStore';
+import { IpcNetConnectOpts } from 'net';
+import Tooltip from 'components/Tooltip';
+import { toast } from 'react-toastify';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { slideInAndOutTop } from 'utils/react-toastify';
 
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
@@ -56,7 +63,80 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
     (total, count) => total + count,
     0,
   );
+  const { feed, updateFeed } = useFeedStore();
   const previousShowComment = useRef<boolean>(false);
+
+  const createBookmarkMutation = useMutation({
+    mutationKey: ['create-bookmark-mutation'],
+    mutationFn: createBookmark,
+    onSuccess: (data, variables) => {
+      toast(
+        <SuccessToast
+          content="Post has been bookmarked successfully!"
+          data-testid="notification-successfully-bookmarked"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors['black-white'].white}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+      updateFeed(variables, { ...feed[variables], bookmarked: true });
+    },
+  });
+
+  const deleteBookmarkMutation = useMutation({
+    mutationKey: ['delete-bookmark-mutation'],
+    mutationFn: deleteBookmark,
+    onSuccess: (data, variables) => {
+      toast(
+        <SuccessToast
+          content="Post removed from your bookmarks"
+          data-testid="notification-removed-bookmark"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors['black-white'].white}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+      updateFeed(variables, { ...feed[variables], bookmarked: false });
+    },
+  });
+
+  const handleBookmarkClick = (post: IPost) => {
+    if (post.bookmarked) {
+      deleteBookmarkMutation.mutate(post.id as string);
+    } else {
+      createBookmarkMutation.mutate(post.id as string);
+    }
+  };
 
   useEffect(() => {
     if (showComments) {
@@ -76,7 +156,20 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
             createdBy={post?.createdBy}
           />
           <div className="relative flex space-x-4 mr-6">
-            <Icon name="bookmarkOutline" size={20} className="cursor-pointer" />
+            <Tooltip
+              tooltipContent={
+                post.bookmarked ? 'Remove from bookmark' : 'Bookmark post'
+              }
+              tooltipPosition="top"
+            >
+              <Icon
+                name="postBookmark"
+                size={24}
+                data-testid="feed-post-bookmark"
+                onClick={() => handleBookmarkClick(post)}
+                isActive={post.bookmarked}
+              />
+            </Tooltip>
             <FeedPostMenu data={post as unknown as IPost} />
           </div>
         </div>
