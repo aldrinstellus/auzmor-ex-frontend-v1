@@ -10,7 +10,6 @@ import People from './components/People';
 import { Role } from 'utils/enum';
 import Team from './components/Teams';
 import TeamMember from './components/Teams/TeamMember';
-import InviteUserModal from './components/InviteUserModal';
 
 interface IUsersProps {}
 
@@ -46,7 +45,7 @@ const Users: React.FC<IUsersProps> = () => {
   const tabs = [
     {
       id: 1,
-      tabLable: (isActive: boolean) => (
+      tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>People</div>
       ),
       dataTestId: 'people-view-people',
@@ -85,7 +84,7 @@ const Users: React.FC<IUsersProps> = () => {
     },
     {
       id: 2,
-      tabLable: (isActive: boolean) => (
+      tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>Teams</div>
       ),
       dataTestId: 'people-view-teams',

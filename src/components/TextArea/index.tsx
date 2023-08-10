@@ -1,9 +1,10 @@
-import React, { ReactElement } from 'react';
-import { Control, Controller, useController } from 'react-hook-form';
+import React, { useMemo, useRef } from 'react';
+import { Control, useController } from 'react-hook-form';
 import clsx from 'clsx';
 
 export type TextAreaProps = {
   defaultValue: string;
+  label?: string;
   disabled?: boolean;
   error?: string;
   className?: string;
@@ -21,6 +22,7 @@ export type TextAreaProps = {
 
 const TextArea: React.FC<TextAreaProps> = ({
   defaultValue = '',
+  label = '',
   disabled = false,
   error,
   className = '',
@@ -50,9 +52,34 @@ const TextArea: React.FC<TextAreaProps> = ({
     },
   );
 
+  const labelStyle = useMemo(
+    () =>
+      clsx(
+        {
+          '!text-red-500': !!error,
+        },
+        {
+          'text-sm text-neutral-900 font-bold whitespace-nowrap': true,
+        },
+      ),
+    [error],
+  );
+
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
   return (
-    <>
+    <div className="flex flex-col gap-y-1">
+      <div className="flex items-center justify-between">
+        <div className={labelStyle}>{label}</div>
+        {showCounter && (
+          <div className="flex w-full justify-end text-sm text-neutral-500">
+            {textAreaRef.current?.value.length || defaultValue.length || 0}/
+            {maxLength}
+          </div>
+        )}
+      </div>
       <textarea
+        ref={textAreaRef}
         name={field.name}
         onChange={field.onChange}
         onBlur={field.onBlur}
@@ -68,7 +95,7 @@ const TextArea: React.FC<TextAreaProps> = ({
       >
         {defaultValue}
       </textarea>
-    </>
+    </div>
   );
 };
 

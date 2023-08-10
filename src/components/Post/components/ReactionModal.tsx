@@ -39,7 +39,7 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
         tabContentClassName="px-6 h-[482px] overflow-y-auto" // update style
         tabs={[
           {
-            tabLable: (isActive: boolean) => (
+            tabLabel: (isActive: boolean) => (
               <div className={getClassName(isActive)}>
                 {`All (${Object.values(reactionCounts).reduce(
                   (a, b) => a + b,
@@ -58,7 +58,7 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
             ),
           },
           {
-            tabLable: (isActive: boolean) => (
+            tabLabel: (isActive: boolean) => (
               <>
                 <div className="mr-3">
                   <Icon name="like" />
@@ -80,7 +80,7 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
             ),
           },
           {
-            tabLable: (isActive: boolean) => (
+            tabLabel: (isActive: boolean) => (
               <>
                 <div className="mr-3">
                   <Icon name="love" />
@@ -102,7 +102,7 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
             ),
           },
           {
-            tabLable: (isActive: boolean) => (
+            tabLabel: (isActive: boolean) => (
               <>
                 <div className="mr-3">
                   <Icon name="funny" />
@@ -124,7 +124,7 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
             ),
           },
           {
-            tabLable: (isActive: boolean) => (
+            tabLabel: (isActive: boolean) => (
               <>
                 <div className="mr-3">
                   <Icon name="celebrate" />
@@ -146,7 +146,7 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
             ),
           },
           {
-            tabLable: (isActive: boolean) => (
+            tabLabel: (isActive: boolean) => (
               <>
                 <div className="mr-3">
                   <Icon name="insightful" />
@@ -168,7 +168,7 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
             ),
           },
           {
-            tabLable: (isActive: boolean) => (
+            tabLabel: (isActive: boolean) => (
               <>
                 <div className="mr-3">
                   <Icon name="support" />
