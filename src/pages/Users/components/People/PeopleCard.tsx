@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
-import DeleteUserModal from './DeleteUserModal';
 import { UserStatus, useResendInvitation } from 'queries/users';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
@@ -16,8 +15,9 @@ import { twConfig } from 'utils/misc';
 import { PRIMARY_COLOR, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import useModal from 'hooks/useModal';
+import DeletePeople from '../DeleteModals/People';
 
-export interface IUserCardProps {
+export interface IPeopleCardProps {
   id: string;
   role: string;
   fullName: string;
@@ -46,7 +46,7 @@ const statusColorMap: Record<string, string> = {
   [Status.SUPERADMIN]: PRIMARY_COLOR,
 };
 
-const UserCard: React.FC<IUserCardProps> = ({
+const PeopleCard: React.FC<IPeopleCardProps> = ({
   id,
   role,
   fullName,
@@ -112,7 +112,7 @@ const UserCard: React.FC<IUserCardProps> = ({
     >
       <Card
         shadowOnHover
-        className="relative w-[234px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white"
+        className="relative w-[230px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white"
       >
         {isAdmin && isHovered && _options.length > 0 && (
           <PopupMenu
@@ -226,7 +226,7 @@ const UserCard: React.FC<IUserCardProps> = ({
           </div>
         )} */}
       </Card>
-      <DeleteUserModal
+      <DeletePeople
         open={open}
         openModal={openModal}
         closeModal={closeModal}
@@ -236,4 +236,4 @@ const UserCard: React.FC<IUserCardProps> = ({
   );
 };
 
-export default UserCard;
+export default PeopleCard;

@@ -69,6 +69,8 @@ import SvgZoomInFilled from '../components/ZoomIn/ZoomInFilled';
 import SvgZoomOutFilled from '../components/ZoomOut/ZoomOutFilled';
 import SvgProfileFilled from '../components/Profile/ProfileFilled';
 import SvgGlobalFilled from '../components/Global/GlobalFilled';
+import SvgProfileUserFilled from '../components/ProfileUser/ProfileUserFilled';
+import SvgLinearLeftArrowFilled from '../components/LinearLeftArrow/LinearLeftArrowFilled';
 import SvgRepostFilled from '../components/Repost/RepostFilled';
 
 export const filledIcon = {
@@ -110,8 +112,8 @@ export const filledIcon = {
   focusFilled: SvgFocusFilled,
   fullScreenFilled: SvgFullScreenFilled,
   funnyFilled: SvgFunnyFilled,
-  groupFilled: SvgGroupFilled,
   globalFilled: SvgGlobalFilled,
+  groupFilled: SvgGroupFilled,
   hashtagFilled: SvgOrangeHashtagFilled,
   iconLinearFilled: SvgIconLinearFilled,
   imageFilled: SvgImageFilled,
@@ -120,6 +122,7 @@ export const filledIcon = {
   insightfulFilled: SvgInsightfulFilled,
   likeFilled: SvgLikeFilled,
   likeIconFilled: SvgLikeIconFilled,
+  linearLeftArrowFilled: SvgLinearLeftArrowFilled,
   logoutFilled: SvgLogoutFilled,
   loveFilled: SvgLoveFilled,
   magicStarFilled: SvgMagicStarFilled,
@@ -127,8 +130,10 @@ export const filledIcon = {
   moreFilled: SvgMoreFilled,
   peopleFilled: SvgPeopleFilled,
   playFilled: SvgPlayFilled,
-  repostFilled: SvgRepostFilled,
+  profileFilled: SvgProfileFilled,
+  profileUserFilled: SvgProfileUserFilled,
   replyFilled: SvgReplyFilled,
+  repostFilled: SvgRepostFilled,
   searchFilled: SvgSearchFilled,
   seekForwardFilled: SvgSeekForwardFilled,
   sendFilled: SvgSendFilled,
@@ -143,5 +148,4 @@ export const filledIcon = {
   videoFilled: SvgVideoFilled,
   zoomInFilled: SvgZoomInFilled,
   zoomOutFilled: SvgZoomOutFilled,
-  profileFilled: SvgProfileFilled,
 };
