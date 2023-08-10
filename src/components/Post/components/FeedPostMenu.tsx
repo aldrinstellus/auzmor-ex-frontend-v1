@@ -100,10 +100,12 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
       await queryClient.invalidateQueries(['feed-announcements-widget']);
       await queryClient.invalidateQueries(['post-announcements-widget']);
+      await queryClient.invalidateQueries(['my-bookmarks']);
     },
   });
 

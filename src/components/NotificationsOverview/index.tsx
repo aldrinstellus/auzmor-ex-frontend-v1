@@ -20,7 +20,7 @@ const NotificationsOverview: React.FC = () => {
 
   const notifTabs = [
     {
-      tabLable: (isActive: boolean) => (
+      tabLabel: (isActive: boolean) => (
         <p
           className={`font-bold text-sm pb-2 ${
             isActive ? 'text-neutral-900' : 'text-neutral-500'
@@ -35,7 +35,7 @@ const NotificationsOverview: React.FC = () => {
       dataTestId: 'notifications-all',
     },
     {
-      tabLable: (isActive: boolean) => (
+      tabLabel: (isActive: boolean) => (
         <p
           className={`font-bold text-sm pb-2 ${
             isActive ? 'text-neutral-900' : 'text-neutral-500'

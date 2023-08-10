@@ -8,12 +8,10 @@ import { useForm } from 'react-hook-form';
 import Divider from 'components/Divider';
 import clsx from 'clsx';
 
-export interface IFilterModalProps {
+export interface ITeamFilterModalProps {
   open: boolean;
-  setUserStatus: (status: string) => void;
   openModal: () => void;
   closeModal: () => void;
-  userStatus: string;
 }
 
 interface IFilters {
@@ -26,98 +24,39 @@ interface IFilters {
   search: boolean;
 }
 
-const FilterModal: React.FC<IFilterModalProps> = ({
+const TeamFilterModal: React.FC<ITeamFilterModalProps> = ({
   open,
   openModal,
   closeModal,
-  setUserStatus,
-  userStatus,
 }) => {
   const { control, handleSubmit, getValues } = useForm({
     mode: 'onChange',
   });
 
   const onSubmit = () => {
-    if (!!!getValues().status) {
-      closeModal();
-      return;
-    }
-    const status = getValues().status;
-    setUserStatus(status);
+    // logic to send the value to react query
     closeModal();
   };
 
-  const fields = [
-    {
-      type: FieldType.Radio,
-      control,
-      name: 'status',
-      radioList: [
-        {
-          options: { value: 'INVITED', label: 'Invited' },
-          name: 'invited',
-          isChecked: userStatus === 'INVITED',
-        },
-        {
-          options: { value: 'ACTIVE', label: 'Active' },
-          name: 'active',
-          isChecked: userStatus === 'ACTIVE',
-        },
-        {
-          options: { value: 'ALL', label: 'All' },
-          name: 'all',
-          isChecked: userStatus === 'ALL',
-        },
-      ],
-    },
-  ];
-
   const filterNavigation = [
     {
-      label: 'Location',
+      label: 'Category',
       icon: '',
-      key: 'location-filters',
-      component: <div>General Settings Page</div>,
-      disabled: true,
+      key: 'category-filters',
+      component: (
+        <div>Categories in checkbox with the filters label and search bar</div>
+      ),
+      disabled: false,
       hidden: false,
       search: true,
       dataTestId: 'people-filterby-location',
     },
-    {
-      label: 'Departments',
-      icon: '',
-      key: 'departments-filters',
-      component: <div>User Management Settings Page</div>,
-      disabled: true,
-      hidden: false,
-      search: true,
-      dataTestId: 'people-filterby-department',
-    },
-    {
-      label: 'Status',
-      icon: '',
-      key: 'status-filters',
-      component: <Layout fields={fields} />,
-      disabled: false,
-      hidden: false,
-      search: false,
-      dataTestId: 'people-filterby-status',
-    },
-    {
-      label: 'Reports to me',
-      icon: '',
-      key: 'reporting-filters',
-      component: <div>Hello</div>,
-      disabled: true,
-      hidden: false,
-      search: true,
-      dataTestId: 'people-filterby-reportstome',
-    },
   ];
 
   const [activeFilter, setActiveFilter] = useState<IFilters>(
-    filterNavigation[2], // change this to 0 when other fields are ready
+    filterNavigation[0], // change this to 0 when other fields are ready
   );
+
   return (
     <div>
       <Modal open={open} closeModal={close} className="max-w-3xl">
@@ -144,7 +83,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({
                     onClick={() => setActiveFilter(item)}
                     data-testid={item?.dataTestId}
                   >
-                    <div className="text-neutral-500 text-sm font-medium p-4 flex items-center gap-x-3">
+                    <div className="text-primary-500 text-sm font-medium p-4 flex items-center gap-x-3">
                       {item.label}
                     </div>
                     {index !== filterNavigation.length - 1 && <Divider />}
@@ -152,7 +91,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({
                 ))}
               </div>
             </div>
-            <div className="w-2/3">
+            <div className="w-2/3 py-4 px-2">
               {activeFilter.search && (
                 <div>
                   <Layout
@@ -163,7 +102,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({
                         leftIcon: 'search',
                         control,
                         name: 'search',
-                        placeholder: 'Search members',
+                        placeholder: 'Search catagories',
                       },
                     ]}
                   />
@@ -180,7 +119,6 @@ const FilterModal: React.FC<IFilterModalProps> = ({
             label="Clear Fiters"
             variant={ButtonVariant.Secondary}
             onClick={() => {
-              setUserStatus('');
               closeModal();
             }}
             className="mr-4"
@@ -199,4 +137,4 @@ const FilterModal: React.FC<IFilterModalProps> = ({
   );
 };
 
-export default FilterModal;
+export default TeamFilterModal;

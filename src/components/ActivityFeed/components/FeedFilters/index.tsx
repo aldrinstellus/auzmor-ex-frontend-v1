@@ -122,9 +122,9 @@ const feedFilterOptions: FeedFilterOption[] = [
   },
   {
     label: 'Bookmarked by me',
-    value: 'bookmarked-by-me',
+    value: PostFilterKeys.Bookmarks,
     type: FeedFilterContentType.Filter,
-    isDisabled: true,
+    filterKey: PostFilterKeys.Bookmarks,
     dataTestId: 'filterby-bookmarkedbyme',
   },
 ];
@@ -219,6 +219,11 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
       setFeedFilters({
         ...feedFilters,
         [PostFilterKeys.MyPosts]: !feedFilters[PostFilterKeys.MyPosts],
+      });
+    } else if (option.filterKey === PostFilterKeys.Bookmarks) {
+      setFeedFilters({
+        ...feedFilters,
+        [PostFilterKeys.Bookmarks]: !feedFilters[PostFilterKeys.Bookmarks],
       });
     }
     setHaveFiltersBeenModified(true);

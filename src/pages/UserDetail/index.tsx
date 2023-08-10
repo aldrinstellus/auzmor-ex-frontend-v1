@@ -53,7 +53,7 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
   const tabs = [
     {
       id: 1,
-      tabLable: (isActive: boolean) => (
+      tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>Profile</div>
       ),
       dataTestId: 'user-profile-tab',
@@ -67,7 +67,7 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
     },
     {
       id: 2,
-      tabLable: (isActive: boolean) => (
+      tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>Activity</div>
       ),
       dataTestId: 'user-activity-tab',
@@ -84,7 +84,7 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
     },
     {
       id: 3,
-      tabLable: (isActive: boolean) => (
+      tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>Recognitions</div>
       ),
       title: 'Recognitions',

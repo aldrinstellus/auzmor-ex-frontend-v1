@@ -32,10 +32,5 @@ export enum EntityType {
   OrgBanner = 'ORG_BANNER',
   OrgFavicon = 'ORG_FAVICON',
   OrgLoginVideo = 'ORG_LOGIN_VIDEO',
+  AppIcon = 'APP_ICON',
 }
-
-
-
-
-
-

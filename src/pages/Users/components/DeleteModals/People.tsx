@@ -18,14 +18,14 @@ import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
-export interface IDeleteUserModalProps {
+export interface IDeletePeopleProps {
   open: boolean;
   openModal: () => void;
   closeModal: () => void;
   userId: string;
 }
 
-const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
+const DeletePeople: React.FC<IDeletePeopleProps> = ({
   open,
   openModal,
   closeModal,
@@ -103,6 +103,7 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
       />
     </div>
   );
+
   const Footer: React.FC = () => (
     <div className="flex justify-end space-x-3 items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
       <Button
@@ -135,4 +136,4 @@ const DeleteUserModal: React.FC<IDeleteUserModalProps> = ({
   );
 };
 
-export default DeleteUserModal;
+export default DeletePeople;

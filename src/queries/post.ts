@@ -357,7 +357,6 @@ export const fetchFeed = async (
   ) {
     response = await apiService.get('/posts/my-bookmarks');
     setFeed({
-      ...feed,
       ..._.chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
@@ -405,7 +404,10 @@ export const useInfiniteFeed = (q?: Record<string, any>) => {
   const { feed, setFeed } = useFeedStore();
   return {
     ...useInfiniteQuery({
-      queryKey: ['feed', q],
+      queryKey: [
+        (q as Record<string, any>).bookmarks ? 'my-bookmarks' : 'feed',
+        q,
+      ],
       queryFn: (context) => fetchFeed(context, feed, setFeed),
       getNextPageParam: (lastPage: any) => {
         const pageDataLen = lastPage?.data?.result?.data?.length;
