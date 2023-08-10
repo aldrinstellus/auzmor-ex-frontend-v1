@@ -109,9 +109,7 @@ export interface IPostPayload {
   hashtags: string[] | [];
   files?: string[] | IMedia[];
   type: string;
-  audience: {
-    users: string[];
-  };
+  audience: any;
   isAnnouncement: boolean;
   announcement: {
     end: string;

@@ -336,7 +336,7 @@ const Users: React.FC<IUsersProps> = () => {
   const tabs2 = [
     {
       id: 1,
-      tabLable: (isActive: boolean) => (
+      tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>People</div>
       ),
       dataTestId: 'people-view-people',
@@ -344,7 +344,7 @@ const Users: React.FC<IUsersProps> = () => {
     },
     {
       id: 2,
-      tabLable: (isActive: boolean) => (
+      tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive, true)}>Teams</div>
       ),
       dataTestId: 'people-view-teams',

@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import './styles.css';
 
 interface ITab {
-  tabLable: (isActive: boolean) => string | ReactNode;
+  tabLabel: (isActive: boolean) => string | ReactNode;
   tabContent: ReactNode;
   dataTestId?: string;
   disabled?: boolean;
@@ -16,6 +16,7 @@ export interface ITabsProps {
   itemSpacing?: number;
   showUnderline?: boolean;
   tabSwitcherClassName?: string;
+  disableAnimation?: boolean;
 }
 
 const Tabs: React.FC<ITabsProps> = ({
@@ -26,24 +27,27 @@ const Tabs: React.FC<ITabsProps> = ({
   itemSpacing = 4,
   showUnderline = true,
   tabSwitcherClassName = '',
+  disableAnimation = false,
 }) => {
   const [activeTab, setActiveTab] = useState(activeTabIndex);
   const [previousTab, setPreviousTab] = useState(activeTab);
 
   useEffect(() => {
-    const tabContent = document.getElementById(
-      `tab-${activeTab}-content`,
-    ) as HTMLElement;
-    if (activeTab > previousTab) {
-      tabContent.classList.remove('slide-in-right'); // reset animation
-      tabContent.classList.remove('slide-in-left'); // reset animation
-      void tabContent.offsetWidth; // trigger reflow
-      tabContent.classList.add('slide-in-right'); // start animation
-    } else if (activeTab < previousTab) {
-      tabContent.classList.remove('slide-in-left'); // reset animation
-      tabContent.classList.remove('slide-in-right'); // reset animation
-      void tabContent.offsetWidth; // trigger reflow
-      tabContent.classList.add('slide-in-left'); // start animation
+    if (!disableAnimation) {
+      const tabContent = document.getElementById(
+        `tab-${activeTab}-content`,
+      ) as HTMLElement;
+      if (activeTab > previousTab) {
+        tabContent.classList.remove('slide-in-right'); // reset animation
+        tabContent.classList.remove('slide-in-left'); // reset animation
+        void tabContent.offsetWidth; // trigger reflow
+        tabContent.classList.add('slide-in-right'); // start animation
+      } else if (activeTab < previousTab) {
+        tabContent.classList.remove('slide-in-left'); // reset animation
+        tabContent.classList.remove('slide-in-right'); // reset animation
+        void tabContent.offsetWidth; // trigger reflow
+        tabContent.classList.add('slide-in-left'); // start animation
+      }
     }
   }, [activeTab, previousTab]);
 
@@ -68,7 +72,7 @@ const Tabs: React.FC<ITabsProps> = ({
             key={index}
             data-testid={tab.dataTestId}
           >
-            {tab.tabLable(activeTab === index)}
+            {tab.tabLabel(activeTab === index)}
             {isActive(index) && showUnderline && (
               <div className="absolute bottom-0 bg-primary-500 w-full rounded-7xl h-1"></div>
             )}
