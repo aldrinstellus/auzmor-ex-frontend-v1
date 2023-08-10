@@ -5,8 +5,13 @@ import Button, {
 } from 'components/Button';
 import Icon from 'components/Icon';
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
-import { FieldValues, UseFormHandleSubmit } from 'react-hook-form';
+import {
+  FieldValues,
+  UseFormHandleSubmit,
+  UseFormReset,
+} from 'react-hook-form';
 import './styles.css';
+import { IUpdateAboutMe } from './AboutMe';
 
 export type HeaderProps = {
   title: string;
@@ -19,6 +24,7 @@ export type HeaderProps = {
   handleSubmit: UseFormHandleSubmit<FieldValues>;
   setInitialSkills?: () => void;
   isLoading?: boolean;
+  reset?: UseFormReset<IUpdateAboutMe>;
 };
 
 const Header: React.FC<HeaderProps> = ({
@@ -32,6 +38,7 @@ const Header: React.FC<HeaderProps> = ({
   handleSubmit,
   setInitialSkills,
   isLoading,
+  reset,
 }) => {
   return (
     <div className="flex justify-between items-center px-6">
@@ -63,6 +70,7 @@ const Header: React.FC<HeaderProps> = ({
               onClick={() => {
                 setInitialSkills && setInitialSkills();
                 setIsEditable(false);
+                reset && reset();
               }}
               dataTestId={`${dataTestId}-cancel`}
             />

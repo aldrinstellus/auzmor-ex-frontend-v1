@@ -43,6 +43,7 @@
     "react-beautiful-dnd": "13.0.0",
     "react-cool-virtual": "^0.7.0",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.43.9",
     "react-international-phone": "^2.2.2",
     "react-intersection-observer": "^9.4.3",
