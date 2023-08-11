@@ -99,7 +99,11 @@ const PublishPostModal: React.FC<PublishPostModalProps> = ({
   });
   return (
     <Modal open={true} closeModal={closeModal} className="max-w-sm">
-      <Header title="Publish right now?" onClose={closeModal} />
+      <Header
+        title="Publish right now?"
+        onClose={closeModal}
+        closeBtnDataTestId="publishnow-closemodal"
+      />
       <div className="px-6 py-4">
         <div className="flex justify-center mb-4">
           <img src={ErrorWarningPng} />
@@ -114,12 +118,12 @@ const PublishPostModal: React.FC<PublishPostModalProps> = ({
             variant={ButtonVariant.Secondary}
             label="Cancel"
             className="mr-3"
-            dataTestId="schedule-post-backcta"
+            dataTestId="publishnow-cancelcta"
             onClick={closeModal}
           />
           <Button
             label={'Post now'}
-            dataTestId="schedule-post-next-cta"
+            dataTestId="publishnow-postnowcta"
             onClick={() => {
               updatePostMutation.mutate({ ...post, schedule: null });
             }}

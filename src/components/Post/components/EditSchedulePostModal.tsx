@@ -15,7 +15,7 @@ import { useFeedStore } from 'stores/feedStore';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { twConfig } from 'utils/misc';
 import { slideInAndOutTop } from 'utils/react-toastify';
-import { afterXUnit, getTimezoneNameFromIANA } from 'utils/time';
+import { afterXUnit, beforeXUnit, getTimezoneNameFromIANA } from 'utils/time';
 import timezones from 'utils/timezones.json';
 
 interface EditSchedulePostModalProp {
@@ -117,14 +117,23 @@ const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
   const onSubmit = (data: IForm) => {
     console.log(data);
   };
-  const { handleSubmit, control, setValue, watch } = useForm<IForm>({
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    watch,
+    setError,
+    clearErrors,
+    getValues,
+    formState: { errors, isValid },
+  } = useForm<IForm>({
     defaultValues: {
       timeZone: {
         value: schedule.timeZone,
         label: userTimezone,
       },
       date: new Date(schedule.dateTime),
-      time: moment(new Date(schedule.dateTime)).format('h:mm a'),
+      time: moment(new Date(schedule.dateTime)).format('hh:mm a'),
     },
   });
 
@@ -152,19 +161,25 @@ const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
       label: 'Date',
       name: 'date',
       control,
-      minDate: new Date(),
+      minDate: new Date(beforeXUnit(1, 'day').toISOString()),
       maxDate: new Date(afterXUnit(3, 'month').toISOString()),
       dataTestId: 'schedule-post-date',
     },
     {
       type: FieldType.TimePicker,
-      setValue,
-      control,
+      setValue, //required
+      setError, //required
+      clearErrors, //required
+      getValues, //required
+      minTime: 'now', // required  "now" | Date
+      control, //required
+      dateFieldName: 'date', //require string | Date
       name: 'time',
       label: 'Time',
       placeholder: 'Select time',
       dataTestId: 'schedule-post-time',
       rightIcon: 'clock',
+      error: errors.time?.message,
     },
   ];
 
@@ -207,6 +222,7 @@ const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
                   },
                 });
               }}
+              disabled={!(isValid && !!!errors.time)}
             />
           </div>
         </div>

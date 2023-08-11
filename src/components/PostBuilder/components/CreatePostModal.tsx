@@ -146,6 +146,37 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       );
       clearPostContext();
       closeModal();
+      if (result.data.schedule) {
+        toast(
+          <SuccessToast
+            content={`Post scheduled for ${moment(
+              new Date(result.data.schedule.dateTime),
+            ).format('ddd, MMM DD')} at ${moment(
+              new Date(result.data.schedule.dateTime),
+            ).format('hh:mm a')}`}
+            dataTestId="toast-post-scheduled"
+          />,
+          {
+            closeButton: (
+              <Icon
+                name="closeCircleOutline"
+                stroke={twConfig.theme.colors.primary['500']}
+                size={20}
+              />
+            ),
+            style: {
+              border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+              borderRadius: '6px',
+              display: 'flex',
+              alignItems: 'center',
+            },
+            autoClose: TOAST_AUTOCLOSE_TIME,
+            transition: slideInAndOutTop,
+            theme: 'dark',
+          },
+        );
+      }
+
       await queryClient.invalidateQueries(['feed-announcements-widget']);
       await queryClient.invalidateQueries(['post-announcements-widget']);
     },
@@ -374,6 +405,11 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         closeModal={() => {
           clearPostContext();
         }}
+        dataTestId={
+          activeFlow === CreatePostFlow.SchedulePost
+            ? 'createpost-scheduledpost-modal'
+            : ''
+        }
       >
         {activeFlow === CreatePostFlow.CreatePost && (
           <CreatePost
