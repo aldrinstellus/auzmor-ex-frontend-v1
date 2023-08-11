@@ -231,3 +231,6 @@ export const extractFirstWord = (str: string) => {
   }
   return '';
 };
+
+export const padZero = (num: number, places: number) =>
+  String(num).padStart(places, '0');

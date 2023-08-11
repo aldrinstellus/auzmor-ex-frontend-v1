@@ -4,9 +4,11 @@ import React, { useContext } from 'react';
 import { UseFormHandleSubmit } from 'react-hook-form';
 import { IForm } from '.';
 
-interface IFooter {}
+interface IFooter {
+  isValid: boolean;
+}
 
-const Footer: React.FC<IFooter> = () => {
+const Footer: React.FC<IFooter> = ({ isValid }) => {
   const { setActiveFlow } = useContext(CreatePostContext);
   return (
     <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-19xl">
@@ -22,6 +24,7 @@ const Footer: React.FC<IFooter> = () => {
           label={'Next'}
           type={Type.Submit}
           dataTestId="schedule-post-next-cta"
+          disabled={!isValid}
         />
       </div>
     </div>

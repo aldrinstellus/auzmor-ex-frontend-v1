@@ -1,5 +1,7 @@
 import clsx from 'clsx';
 import Icon from 'components/Icon';
+import { isDate } from 'lodash';
+import moment from 'moment';
 import React, {
   ReactElement,
   useEffect,
@@ -7,7 +9,16 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Control, UseFormSetValue, useController } from 'react-hook-form';
+import {
+  Control,
+  UseFormClearErrors,
+  UseFormGetValues,
+  UseFormSetError,
+  UseFormSetValue,
+  useController,
+} from 'react-hook-form';
+import { padZero } from 'utils/misc';
+import { TIME_PATTERN } from 'utils/time';
 
 export enum Variant {
   Text = 'TEXT',
@@ -23,6 +34,11 @@ export enum Size {
 interface TimePickerProps {
   name: string;
   setValue: UseFormSetValue<any>;
+  setError: UseFormSetError<any>;
+  clearErrors: UseFormClearErrors<any>;
+  getValues: UseFormGetValues<any>;
+  minTime: 'now' | Date;
+  dateFieldName: string | Date;
   id?: string;
   variant?: Variant;
   size?: Size;
@@ -51,6 +67,11 @@ const TimePicker: React.FC<TimePickerProps> = ({
   name,
   id,
   setValue,
+  setError,
+  clearErrors,
+  getValues,
+  minTime,
+  dateFieldName,
   variant = Variant.Text,
   size = Size.Medium,
   rightIcon = null,
@@ -153,12 +174,38 @@ const TimePicker: React.FC<TimePickerProps> = ({
     const options = [];
     for (let i = hours; i < 24; i += 0.5) {
       options.push(
-        `${i > 12 ? Math.floor(i) - 12 : Math.floor(i)}:${
-          i % 1 === 0 ? '00' : '30'
-        } ${i >= 12 ? 'pm' : 'am'}`,
+        `${
+          i > 12 ? padZero(Math.floor(i) - 12, 2) : padZero(Math.floor(i), 2)
+        }:${i % 1 === 0 ? '00' : '30'} ${i >= 12 ? 'pm' : 'am'}`,
       );
     }
     return options;
+  };
+
+  const validateTime = (time: string) => {
+    if (!TIME_PATTERN.test(time)) {
+      setError(field.name, { message: 'Invalid time. [HH:MM am/pm]' });
+      return;
+    }
+    let hours = parseInt(time.split(' ')[0].split(':')[0]);
+    const min = parseInt(time.split(' ')[0].split(':')[1]);
+    if (time.indexOf('pm') > -1) {
+      hours += 12;
+    }
+    const inputTime = isDate(dateFieldName)
+      ? dateFieldName.setHours(hours, min, 0, 0)
+      : new Date(getValues(dateFieldName)).setHours(hours, min, 0, 0);
+    let now = new Date().getTime();
+    if (minTime !== 'now') {
+      now = minTime.getTime();
+    }
+    if (now > inputTime) {
+      setError(field.name, {
+        message: 'Invalid time. Time should be greater than now.',
+      });
+      return;
+    }
+    clearErrors(field.name);
   };
 
   return (
@@ -188,10 +235,16 @@ const TimePicker: React.FC<TimePickerProps> = ({
             defaultValue={defaultValue}
             value={field.value}
             ref={field.ref}
-            onChange={field.onChange}
+            onChange={(e) => {
+              field.onChange(e);
+              validateTime(e.target.value);
+            }}
             onKeyDown={onEnter}
             onFocus={() => setOptions(getOptions())}
-            onBlur={field.onBlur}
+            onBlur={() => {
+              field.onBlur();
+              setTimeout(() => setShowDropdown(false), 200);
+            }}
             onClick={() => setShowDropdown(true)}
             maxLength={8}
           />

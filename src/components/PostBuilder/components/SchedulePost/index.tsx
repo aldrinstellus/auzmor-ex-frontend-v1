@@ -6,7 +6,7 @@ import Footer from './Footer';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import { useCurrentUser } from 'queries/users';
-import { afterXUnit, getTimezoneNameFromIANA } from 'utils/time';
+import { afterXUnit, beforeXUnit, getTimezoneNameFromIANA } from 'utils/time';
 import moment from 'moment';
 
 interface ISchedulePost {
@@ -39,7 +39,16 @@ const SchedulePost: React.FC<ISchedulePost> = ({ closeModal }) => {
   const userTimezone = getTimezoneNameFromIANA(
     data?.data?.result?.data?.timeZone,
   );
-  const { handleSubmit, control, setValue, watch } = useForm<IForm>({
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    watch,
+    setError,
+    clearErrors,
+    getValues,
+    formState: { errors, isValid },
+  } = useForm<IForm>({
     defaultValues: {
       timeZone: {
         value: data?.data?.result?.data?.timeZone,
@@ -48,7 +57,7 @@ const SchedulePost: React.FC<ISchedulePost> = ({ closeModal }) => {
       date:
         (schedule?.date && new Date(schedule?.date)) ||
         new Date(afterXUnit(1, 'day').toISOString()),
-      time: schedule?.time || moment(new Date()).format('h:mm a'),
+      time: schedule?.time || moment(new Date()).format('hh:mm a'),
     },
   });
 
@@ -77,21 +86,28 @@ const SchedulePost: React.FC<ISchedulePost> = ({ closeModal }) => {
       label: 'Date',
       name: 'date',
       control,
-      minDate: new Date(),
+      minDate: new Date(beforeXUnit(1, 'day').toISOString()),
       maxDate: new Date(afterXUnit(3, 'month').toISOString()),
       dataTestId: 'schedule-post-date',
     },
     {
       type: FieldType.TimePicker,
-      setValue,
-      control,
+      setValue, //required
+      setError, //required
+      clearErrors, //required
+      getValues, //required
+      minTime: 'now', // required  "now" | Date
+      control, //required
+      dateFieldName: 'date', //require string | Date
       name: 'time',
       label: 'Time',
       placeholder: 'Select time',
       dataTestId: 'schedule-post-time',
       rightIcon: 'clock',
+      error: errors.time?.message,
     },
   ];
+
   return (
     <>
       <Header
@@ -111,7 +127,7 @@ const SchedulePost: React.FC<ISchedulePost> = ({ closeModal }) => {
           </div>
           <Layout fields={fields} />
         </div>
-        <Footer />
+        <Footer isValid={isValid && !!!errors.time} />
       </form>
     </>
   );
