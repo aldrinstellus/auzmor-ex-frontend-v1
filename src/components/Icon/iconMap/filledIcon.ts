@@ -72,6 +72,7 @@ import SvgGlobalFilled from '../components/Global/GlobalFilled';
 import SvgProfileUserFilled from '../components/ProfileUser/ProfileUserFilled';
 import SvgLinearLeftArrowFilled from '../components/LinearLeftArrow/LinearLeftArrowFilled';
 import SvgRepostFilled from '../components/Repost/RepostFilled';
+import SvgGearFilled from '../components/Gear/GearFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -148,4 +149,5 @@ export const filledIcon = {
   videoFilled: SvgVideoFilled,
   zoomInFilled: SvgZoomInFilled,
   zoomOutFilled: SvgZoomOutFilled,
+  gearFilled: SvgGearFilled,
 };
