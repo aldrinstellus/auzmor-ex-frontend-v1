@@ -13,6 +13,8 @@ export type SelectTimeZoneProps = {
   defaultTimezone: OptionType;
   placeholder?: string;
   dataTestId?: string;
+  label?: string;
+  name?: string;
 };
 
 const SelectTimeZone: React.FC<SelectTimeZoneProps> = ({
@@ -21,11 +23,14 @@ const SelectTimeZone: React.FC<SelectTimeZoneProps> = ({
   defaultTimezone,
   placeholder,
   dataTestId,
+  label = '',
+  name = 'timeZone',
 }) => {
   const fields = [
     {
       type: FieldType.SingleSelect,
-      name: 'timeZone',
+      label,
+      name: name,
       control: control,
       options: timezones.map((timeZone) => ({
         label: timeZone.timezoneName,

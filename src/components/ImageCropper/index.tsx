@@ -35,7 +35,7 @@ const ImageCropper = ({
 // customLeft,
 ImageCropperProps) => {
   const imageWrapperStyle = useMemo(
-    () => clsx({ 'h-[550px]': true }, { [className]: true }),
+    () => clsx({ 'h-[264px]': true }, { [className]: true }),
     [className],
   );
 

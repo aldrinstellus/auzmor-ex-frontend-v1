@@ -5,7 +5,7 @@ import InfoLogo from './images/InfoCircle.svg';
 import CheckboxImage from './images/check.svg';
 
 export const Logo = () => {
-  return <img src={OfficeLogoSvg} alt="Office Lofo" />;
+  return <img src={OfficeLogoSvg} alt="Office Logo" className="h-[68px]" />;
 };
 
 export const Success = () => {

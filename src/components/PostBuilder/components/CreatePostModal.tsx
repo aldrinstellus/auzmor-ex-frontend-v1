@@ -39,6 +39,9 @@ import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { produce } from 'immer';
+import CreatePoll from './CreatePoll';
+import SchedulePost from './SchedulePost';
+import moment from 'moment';
 
 export interface IPostMenu {
   id: number;
@@ -79,6 +82,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     coverImageMap,
     showFullscreenVideo,
     setShowFullscreenVideo,
+    schedule,
+    setSchedule,
   } = useContext(CreatePostContext);
 
   const mediaRef = useRef<IMedia[]>([]);
@@ -108,6 +113,13 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       }
       if (data?.files?.length) {
         setMedia(data?.files as IMedia[]);
+      }
+      if (data?.schedule) {
+        setSchedule({
+          timezone: data.schedule.timeZone,
+          date: data.schedule.dateTime,
+          time: `${moment(new Date(data.schedule.dateTime)).format('h:mm a')}`,
+        });
       }
     }
   }, []);
@@ -182,9 +194,11 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             borderRadius: '6px',
             display: 'flex',
             alignItems: 'center',
+            backgroundColor: twConfig.theme.colors.neutral[900],
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
     },
@@ -207,9 +221,11 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             borderRadius: '6px',
             display: 'flex',
             alignItems: 'center',
+            backgroundColor: twConfig.theme.colors.neutral[900],
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
       await queryClient.invalidateQueries(['feed-announcements-widget']);
@@ -281,14 +297,18 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         files: fileIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],
-        audience: {
-          users: [],
-        },
+        audience: [],
         isAnnouncement: !!announcement,
         announcement: {
           end: announcement?.value || '',
         },
         link: previewUrl && previewUrl[0],
+        schedule: schedule
+          ? {
+              timeZone: schedule?.timezone || '',
+              dateTime: schedule?.date || '',
+            }
+          : null,
       });
     } else if (PostBuilderMode.Edit) {
       mediaRef.current = [...media, ...uploadedMedia];
@@ -325,15 +345,19 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         files: sortedIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],
-        audience: {
-          users: [],
-        },
+        audience: [],
         isAnnouncement: !!announcement,
         announcement: {
           end: announcement?.value || '',
         },
         id: data?.id,
         link: previewUrl && previewUrl[0],
+        schedule: schedule
+          ? {
+              timeZone: schedule?.timezone || '',
+              dateTime: schedule?.date || '',
+            }
+          : null,
       });
     }
   };
@@ -385,6 +409,22 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             closeModal={() => {
               clearPostContext();
               closeModal();
+            }}
+          />
+        )}
+        {activeFlow === CreatePostFlow.CreatePoll && (
+          <CreatePoll
+            closeModal={() => {
+              closeModal();
+              clearPostContext();
+            }}
+          />
+        )}
+        {activeFlow === CreatePostFlow.SchedulePost && (
+          <SchedulePost
+            closeModal={() => {
+              closeModal();
+              clearPostContext();
             }}
           />
         )}

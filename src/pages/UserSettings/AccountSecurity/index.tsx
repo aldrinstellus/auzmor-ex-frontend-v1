@@ -80,6 +80,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         });
       },
     },

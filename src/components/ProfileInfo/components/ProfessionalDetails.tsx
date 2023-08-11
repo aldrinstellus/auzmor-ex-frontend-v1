@@ -72,6 +72,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
         transition: slideInAndOutTop,
+        theme: 'dark',
       });
       setIsEditable(false);
     },

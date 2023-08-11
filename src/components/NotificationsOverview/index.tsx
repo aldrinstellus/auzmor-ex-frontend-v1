@@ -20,7 +20,7 @@ const NotificationsOverview: React.FC = () => {
 
   const notifTabs = [
     {
-      tabLable: (isActive: boolean) => (
+      tabLabel: (isActive: boolean) => (
         <p
           className={`font-bold text-sm pb-2 ${
             isActive ? 'text-neutral-900' : 'text-neutral-500'
@@ -35,7 +35,7 @@ const NotificationsOverview: React.FC = () => {
       dataTestId: 'notifications-all',
     },
     {
-      tabLable: (isActive: boolean) => (
+      tabLabel: (isActive: boolean) => (
         <p
           className={`font-bold text-sm pb-2 ${
             isActive ? 'text-neutral-900' : 'text-neutral-500'
@@ -82,7 +82,7 @@ const NotificationsOverview: React.FC = () => {
       }
       ref={viewAllRef}
     >
-      <Card className="absolute w-[500px] right-0 top-6 ">
+      <Card className="absolute w-[455px] right-0 top-6 ">
         {/* Header */}
         <div className="px-6 py-4 flex items-center justify-between">
           <p className="text-gray-900 font-extrabold text-base">

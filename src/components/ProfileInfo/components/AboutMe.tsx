@@ -31,14 +31,15 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [isHovered, eventHandlers] = useHover();
 
-  const { control, handleSubmit, getValues } = useForm<IUpdateAboutMe>({
-    mode: 'onSubmit',
-    defaultValues: {
-      personal: {
-        about: aboutMeData?.personal?.about || 'N/A',
+  const { control, handleSubmit, getValues, watch, reset } =
+    useForm<IUpdateAboutMe>({
+      mode: 'onSubmit',
+      defaultValues: {
+        personal: {
+          about: aboutMeData?.personal?.about || 'N/A',
+        },
       },
-    },
-  });
+    });
 
   const onHoverStyles = useMemo(
     () => clsx({ 'mb-8': true }, { 'shadow-xl': isHovered && canEdit }),
@@ -56,7 +57,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
       className: 'w-full',
       rows: 3,
       maxLength: 2000,
-      showCounter: false,
+      showCounter: true,
     },
   ];
 
@@ -81,6 +82,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
         transition: slideInAndOutTop,
+        theme: 'dark',
       });
       setIsEditable(false);
     },
@@ -142,6 +144,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
           isLoading={updateUserAboutMeMutation.isLoading}
+          reset={reset}
         />
         <Divider />
         <div className="text-neutral-900 text-sm font-normal pt-4 pb-6 px-6">
@@ -153,7 +156,12 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
               {renderContentWithLinks(aboutMeData?.personal?.about) || 'N/A'}
             </div>
           ) : (
-            <Layout fields={textAreaField} />
+            <div>
+              {/* <div className="flex w-full justify-end mb-1 text-sm text-neutral-500">
+                {_text?.length}/2000
+              </div> */}
+              <Layout fields={textAreaField} />
+            </div>
           )}
         </div>
       </Card>

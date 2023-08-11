@@ -9,20 +9,20 @@ type IconProps = {
   hover?: boolean;
   disabled?: boolean;
   onClick?: () => void;
+  isActive?: boolean;
 };
 
 const ExportIcon: React.FC<IconProps> = ({
-  hover = true,
+  hover,
   onClick,
   className = '',
   disabled,
+  isActive,
   ...props
 }) => {
-  const [isHovered, eventHandlers] = useHover();
-
   return (
-    <div onClick={onClick} className={className} {...eventHandlers}>
-      {!disabled && (hover || isHovered) ? (
+    <div onClick={onClick} className={className}>
+      {!disabled && (hover || isActive) ? (
         <ExportFilled {...props} />
       ) : (
         <ExportOutline {...props} />

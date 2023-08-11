@@ -156,6 +156,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
       closeModal();
@@ -212,7 +213,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
 
   return (
     <>
-      <Modal open={open} className="max-w-3xl">
+      <Modal open={open} className="max-w-4xl">
         {/*---------- {<>Header</>} ----------*/}
         <Header
           title={

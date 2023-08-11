@@ -96,6 +96,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
         transition: slideInAndOutTop,
+        theme: 'dark',
       });
       setIsEditable(false);
     },
@@ -201,11 +202,11 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                     <Layout fields={fields} />
                   </div>
                 )}
-                <div className="flex justify-center items-center">
+                <div className="flex justify-center items-center w-full">
                   <Button
                     label="View Organization Chart"
                     variant={Variant.Secondary}
-                    className="space-x-1 font-bold"
+                    className="space-x-1 font-bold w-full"
                     leftIcon="connectionFolder"
                     size={Size.Small}
                     disabled

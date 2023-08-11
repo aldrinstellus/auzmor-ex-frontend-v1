@@ -81,11 +81,6 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
         },
       ],
       placeholder: 'Select Announcement Expiry',
-      // defaultValue: announcement || {
-      //   label: '1 Week',
-      //   value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
-      //   dataTestId: 'announcement-expiry-1week',
-      // },
       dataTestId: 'announcement-expiry-dropdown',
     },
   ];

@@ -61,6 +61,17 @@ import SvgCyclicArrowFilled from '../components/CyclicArrow/CyclicArrowFilled';
 import SvgEditReceiptFilled from '../components/EditReceipt/EditReceiptFilled';
 import SvgDeleteCrossFilled from '../components/DeleteCross/DeleteCrossFilled';
 import SvgCommentFilled from '../components/Comment/CommentFilled';
+import SvgGroupFilled from '../components/Group/GroupFilled';
+import SvgExpandFilled from '../components/Expand/ExpandFilled';
+import SvgCollapseFilled from '../components/Collapse/CollapseFilled';
+import SvgFocusFilled from '../components/Focus/FocusFilled';
+import SvgZoomInFilled from '../components/ZoomIn/ZoomInFilled';
+import SvgZoomOutFilled from '../components/ZoomOut/ZoomOutFilled';
+import SvgProfileFilled from '../components/Profile/ProfileFilled';
+import SvgGlobalFilled from '../components/Global/GlobalFilled';
+import SvgProfileUserFilled from '../components/ProfileUser/ProfileUserFilled';
+import SvgLinearLeftArrowFilled from '../components/LinearLeftArrow/LinearLeftArrowFilled';
+import SvgRepostFilled from '../components/Repost/RepostFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -77,32 +88,41 @@ export const filledIcon = {
   clockFilled: SvgClockFilled,
   closeCircleFilled: SvgCloseCircleFilled,
   closeFilled: SvgCloseFilled,
+  collapseFilled: SvgCollapseFilled,
+  commentFilled: SvgCommentFilled,
   convertShapeFilled: SvgConvertShapeFilled,
   copyFilled: SvgCopyFilled,
   copyLinkFilled: SvgCopyLinkFilled,
   crossCircleFilled: SvgCrossCircleFilled,
+  cyclicArrowFilled: SvgCyclicArrowFilled,
+  deleteCrossFilled: SvgDeleteCrossFilled,
   deleteFilled: SvgDeleteFilled,
   documentFilled: SvgDocumentFilled,
   documentUpload: SvgDocumentUploadOutline,
   draftFilled: SvgDraftFilled,
   editFilled: SvgEditFilled,
+  editReceiptFilled: SvgEditReceiptFilled,
   emojiHappyFilled: SvgEmojiHappyFilled,
+  expandFilled: SvgExpandFilled,
   exportFilled: SvgExportFilled,
   eyeFilled: SvgEyeFilled,
   eyeSlashFilled: SvgEyeSlashFilled,
   filterFilled: SvgFilterFilled,
   filterLinearFilled: SvgFilterLinearFilled,
+  focusFilled: SvgFocusFilled,
   fullScreenFilled: SvgFullScreenFilled,
   funnyFilled: SvgFunnyFilled,
+  globalFilled: SvgGlobalFilled,
+  groupFilled: SvgGroupFilled,
   hashtagFilled: SvgOrangeHashtagFilled,
   iconLinearFilled: SvgIconLinearFilled,
   imageFilled: SvgImageFilled,
-  commentFilled: SvgCommentFilled,
   importFilled: SvgImportFilled,
   infoCircleFilled: SvgInfoCircleFilled,
   insightfulFilled: SvgInsightfulFilled,
   likeFilled: SvgLikeFilled,
   likeIconFilled: SvgLikeIconFilled,
+  linearLeftArrowFilled: SvgLinearLeftArrowFilled,
   logoutFilled: SvgLogoutFilled,
   loveFilled: SvgLoveFilled,
   magicStarFilled: SvgMagicStarFilled,
@@ -110,7 +130,10 @@ export const filledIcon = {
   moreFilled: SvgMoreFilled,
   peopleFilled: SvgPeopleFilled,
   playFilled: SvgPlayFilled,
+  profileFilled: SvgProfileFilled,
+  profileUserFilled: SvgProfileUserFilled,
   replyFilled: SvgReplyFilled,
+  repostFilled: SvgRepostFilled,
   searchFilled: SvgSearchFilled,
   seekForwardFilled: SvgSeekForwardFilled,
   sendFilled: SvgSendFilled,
@@ -121,9 +144,8 @@ export const filledIcon = {
   supportFilled: SvgSupportFilled,
   tickCircleFilled: SvgTickCircleFilled,
   trashFilled: SvgTrashFilled,
-  userFilled: SvgUsersFilled,
+  usersFilled: SvgUsersFilled,
   videoFilled: SvgVideoFilled,
-  cyclicArrowFilled: SvgCyclicArrowFilled,
-  editReceiptFilled: SvgEditReceiptFilled,
-  deleteCrossFilled: SvgDeleteCrossFilled,
+  zoomInFilled: SvgZoomInFilled,
+  zoomOutFilled: SvgZoomOutFilled,
 };

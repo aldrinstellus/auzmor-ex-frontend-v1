@@ -99,6 +99,26 @@ import CyclicArrow from '../components/CyclicArrow';
 import EditReceipt from '../components/EditReceipt';
 import DeleteCrossIcon from '../components/DeleteCross';
 import CommentIcon from '../components/Comment';
+import GroupIcon from '../components/Group';
+import ExpandIcon from '../components/Expand';
+import CollapseIcon from '../components/Collapse';
+import FocusIcon from '../components/Focus';
+import ZoomInIcon from '../components/ZoomIn';
+import ZoomOutIcon from '../components/ZoomOut';
+import ProfileIcon from '../components/Profile';
+import Global from '../components/Global';
+import LikeReaction from '../components/LikeReaction';
+import CelebrateReaction from '../components/CelebrateReaction';
+import LoveReaction from '../components/LoveReaction';
+import SupportReaction from '../components/SupportReaction';
+import InsightfulReaction from '../components/InsightfulReaction';
+import FunnyReaction from '../components/FunnyReaction';
+import ProfileUser from '../components/ProfileUser';
+import ShareForward from '../components/ShareForward';
+import Cancel from '../components/Cancel';
+import LinearLeftArrow from '../components/LinearLeftArrow';
+import PostBookmarkIcon from '../components/PostBookmark';
+import Repost from '../components/Repost';
 
 export const icon = {
   add: Add,
@@ -115,28 +135,36 @@ export const icon = {
   cake: CakeIcon,
   calendarTwo: CalendarIconTwo,
   call: Call,
+  cancel: Cancel,
   carouselClose: CarouselCloseIcon,
   carouselLeft: CarouselLeftIcon,
   carouselRight: CarouselRightIcon,
   celebrate: Celebrate,
+  celebrateReaction: CelebrateReaction,
   chart: ChartIcon,
   clipboardClose: ClipboardCloseIcon,
   clock: ClockIcon,
   close: CloseIcon,
   closeCircle: CloseCircleIcon,
+  collapse: CollapseIcon,
+  comment: CommentIcon,
   connectionFolder: ConnectionFolder,
   convertShape: ConvertShape,
   copy: CopyIcon,
   copyLink: CopyLink,
   crossCircle: CrossCircle,
+  cyclicArrow: CyclicArrow,
   delete: DeleteIcon,
+  deleteCross: DeleteCrossIcon,
   document: DocumentIcon,
   documentUpload: DocumentUpload,
   dotsVertical: dotsVerticalIcon,
   draft: DraftIcon,
   edit: EditIcon,
+  editReceipt: EditReceipt,
   email: EmailIcon,
   emojiHappy: EmojiHappy,
+  expand: ExpandIcon,
   explore: ExploreIcon,
   export: ExportIcon,
   eye: EyeIcon,
@@ -146,24 +174,31 @@ export const icon = {
   filter: FilterIcon,
   filterLinear: FilterLinear,
   flashIcon: FlashIcon,
+  focus: FocusIcon,
   folderConnection: FolderConnectionIcon,
   fullScreen: FullScreenIcon,
   funny: Funny,
+  funnyReaction: FunnyReaction,
   gear: Gear,
+  global: Global,
+  group: GroupIcon,
   home: HomeIcon,
   iconLinear: IconLinear,
   image: ImageIcon,
-  comment: CommentIcon,
   import: ImportIcon,
   infoCircle: InfoCircleIcon,
   insightful: Insightful,
+  insightfulReaction: InsightfulReaction,
   launcher: LauncherIcon,
   like: Like,
   likeIcon: LikeIcon,
+  likeReaction: LikeReaction,
+  linearLeftArrow: LinearLeftArrow,
   link: Link,
   location: LocationIcon,
   logout: LogoutIcon,
   love: Love,
+  loveReaction: LoveReaction,
   magicStar: MagicStarIcon,
   mail: MailIcon,
   male: Male,
@@ -180,26 +215,31 @@ export const icon = {
   people: PeopleIcon,
   play: PlayIcon,
   plus: Plus,
+  postBookmark: PostBookmarkIcon,
+  profile: ProfileIcon,
+  profileUser: ProfileUser,
   redo: Redo,
   reorder: Reorder,
   reply: Reply,
+  repost: Repost,
   rotateLeft: RotateLeft,
   search: Search,
   seekForward: SeekForwardIcon,
   send: Send,
   setting: SettingIcon,
   settingThree: SettingThreeIcon,
+  shareForward: ShareForward,
   slack: SlackIcon,
   speaker: SpeakerIcon,
   support: Support,
+  supportReaction: SupportReaction,
   threeDots: ThreeDots,
   tickCircle: TickCircleIcon,
   trash: Trash,
-  user: UsersIcon,
   userManagement: UserManagement,
   userRemove: UserRemove,
+  users: UsersIcon,
   video: VideoIcon,
-  cyclicArrow: CyclicArrow,
-  editReceipt: EditReceipt,
-  deleteCross: DeleteCrossIcon,
+  zoomIn: ZoomInIcon,
+  zoomOut: ZoomOutIcon,
 };

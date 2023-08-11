@@ -29,6 +29,7 @@ export type InputProps = {
   error?: string;
   helpText?: string;
   className?: string;
+  inputClassName?: string;
   dataTestId?: string;
   errorDataTestId?: string;
   control?: Control<Record<string, any>>;
@@ -36,6 +37,8 @@ export type InputProps = {
   onLeftIconClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   onRightIconClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   onEnter?: any;
+  customLabelRightElement?: ReactElement;
+  isClearable?: boolean;
 };
 
 const Input: React.FC<InputProps> = ({
@@ -51,6 +54,7 @@ const Input: React.FC<InputProps> = ({
   loading = false,
   disabled = false,
   className = '',
+  inputClassName = '',
   dataTestId = '',
   errorDataTestId = '',
   error,
@@ -60,6 +64,8 @@ const Input: React.FC<InputProps> = ({
   onLeftIconClick,
   onRightIconClick,
   onEnter,
+  customLabelRightElement,
+  isClearable = false,
 }) => {
   const { field } = useController({
     name,
@@ -134,7 +140,10 @@ const Input: React.FC<InputProps> = ({
 
   return (
     <div className={`relative ${className}`}>
-      <div className={labelStyle}>{label}</div>
+      <div className="flex items-center justify-between">
+        <div className={labelStyle}>{label}</div>
+        {customLabelRightElement}
+      </div>
       <label
         className={`flex justify-between flex-1 relative items-center my-1 w-full`}
         htmlFor={id}
@@ -142,14 +151,14 @@ const Input: React.FC<InputProps> = ({
         <div className="flex relative items-center w-full">
           {leftIcon && (
             <div className="absolute ml-5" onClick={onLeftIconClick}>
-              <Icon name={leftIcon} size={16} />
+              <Icon disabled name={leftIcon} size={16} />
             </div>
           )}
           <input
             id={id}
             name={field.name}
             type={variant?.toLowerCase()}
-            className={inputStyles}
+            className={`${inputStyles} ${inputClassName}`}
             disabled={loading || disabled}
             placeholder={placeholder}
             data-testid={dataTestId}
@@ -160,6 +169,16 @@ const Input: React.FC<InputProps> = ({
             onKeyDown={onEnter}
             onBlur={field.onBlur}
           />
+          {isClearable && !!field.value && (
+            <div className="absolute right-2">
+              <Icon
+                name="close"
+                size={16}
+                className="p-2 rounded-7xl bg-white"
+                onClick={() => field.onChange('')}
+              />
+            </div>
+          )}
         </div>
         {rightIcon && (
           <div className="absolute right-5" onClick={onRightIconClick}>

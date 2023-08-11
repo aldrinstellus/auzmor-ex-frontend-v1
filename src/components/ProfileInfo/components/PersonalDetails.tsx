@@ -126,6 +126,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
         transition: slideInAndOutTop,
+        theme: 'dark',
       });
       setIsEditable(false);
     },
@@ -155,6 +156,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
     {
       type: FieldType.DatePicker,
       name: 'personal.birthDate',
+      label: 'Date of Birth',
       className: '',
       minDate: moment().subtract(100, 'years').toDate(),
       maxDate: new Date(),

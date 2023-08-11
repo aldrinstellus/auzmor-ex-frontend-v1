@@ -1,5 +1,4 @@
 import React from 'react';
-import useHover from 'hooks/useHover';
 import { default as EditFilled } from './EditFilled';
 import { default as EditOutline } from './EditOutline';
 
@@ -8,6 +7,7 @@ type IconProps = {
   className?: string;
   hover?: boolean;
   disabled?: boolean;
+  isActive?: boolean;
   onClick?: () => void;
 };
 
@@ -16,13 +16,12 @@ const EditIcon: React.FC<IconProps> = ({
   onClick,
   className = '',
   disabled,
+  isActive,
   ...props
 }) => {
-  const [isHovered, eventHandlers] = useHover();
-
   return (
-    <div onClick={onClick} className={className} {...eventHandlers}>
-      {!disabled && (hover || isHovered) ? (
+    <div onClick={onClick} className={className}>
+      {!disabled && (hover || isActive) ? (
         <EditFilled {...props} />
       ) : (
         <EditOutline {...props} />

@@ -254,6 +254,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
         transition: slideInAndOutTop,
+        theme: 'dark',
       });
       closeEditProfileModal();
       await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
@@ -284,7 +285,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
   };
 
   return (
-    <Modal open={openEditProfile}>
+    <Modal open={openEditProfile} className="max-w-2xl">
       <form>
         <Header title="Edit Profile" onClose={disableClosed} />
         <div className="relative">

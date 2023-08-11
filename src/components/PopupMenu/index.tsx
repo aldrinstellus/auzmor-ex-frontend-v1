@@ -10,13 +10,14 @@ export interface IMenuItem {
   dataTestId?: string;
   icon?: string;
   label?: string;
+  labelClassName?: string;
   iconClassName?: string;
   stroke?: string;
   fill?: string;
   onClick?: () => any;
   permissions?: string[];
   addDivider?: boolean;
-  dividerStyle?: React.CSSProperties
+  dividerStyle?: React.CSSProperties;
 }
 
 export interface IPopupMenuProps {
@@ -37,14 +38,10 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
       <Menu.Items
         className={`bg-white rounded-9xl shadow-lg absolute z-[99999] overflow-hidden ${className}`}
       >
-        {menuItems.map((menuItem: IMenuItem, index: number) => (
+        {menuItems.map((menuItem: IMenuItem, idx: number) => (
           <>
             {!menuItem.disabled && (
-              <Menu.Item
-                key={`menu-item-${index}`}
-                as={menuItem.as}
-                disabled={menuItem.disabled}
-              >
+              <Menu.Item key={`menu-item-${idx}`} as={menuItem.as}>
                 {(() => {
                   if (menuItem.renderNode) {
                     const menuItemWithDataTestId = React.cloneElement(
@@ -57,7 +54,7 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
                     <PopupMenuItem
                       menuItem={menuItem}
                       menuButtonRef={menuButtonRef}
-                      lastItem={index === menuItems.length - 1}
+                      border={idx !== menuItems?.length - 1}
                     />
                   );
                 })()}

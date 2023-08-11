@@ -48,11 +48,7 @@ export interface IFile {
   type: 'IMAGE' | 'VIDEO';
   altText: 'no image';
   size: string;
-  audience: {
-    users: [];
-    teams: [];
-    channels: [];
-  };
+  audience: any;
 }
 
 export const useUpload = () => {
@@ -128,11 +124,7 @@ export const useUpload = () => {
         type: getType(file.type),
         size: file?.size.toString(),
         altText: 'no image',
-        audience: {
-          users: [],
-          teams: [],
-          channels: [],
-        },
+        audience: [],
       });
     });
     files.forEach((file: IFile, index: number) => {

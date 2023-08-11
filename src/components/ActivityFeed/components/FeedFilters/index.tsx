@@ -122,9 +122,9 @@ const feedFilterOptions: FeedFilterOption[] = [
   },
   {
     label: 'Bookmarked by me',
-    value: 'bookmarked-by-me',
+    value: PostFilterKeys.Bookmarks,
     type: FeedFilterContentType.Filter,
-    isDisabled: true,
+    filterKey: PostFilterKeys.Bookmarks,
     dataTestId: 'filterby-bookmarkedbyme',
   },
 ];
@@ -220,6 +220,11 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
         ...feedFilters,
         [PostFilterKeys.MyPosts]: !feedFilters[PostFilterKeys.MyPosts],
       });
+    } else if (option.filterKey === PostFilterKeys.Bookmarks) {
+      setFeedFilters({
+        ...feedFilters,
+        [PostFilterKeys.Bookmarks]: !feedFilters[PostFilterKeys.Bookmarks],
+      });
     }
     setHaveFiltersBeenModified(true);
   };
@@ -229,9 +234,9 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
   };
 
   return (
-    <Popover className="z-40 mr-6">
+    <Popover className="z-40 mr-4">
       <Popover.Button
-        className="box-border font-bold flex flex-row justify-center items-center p-1 gap-4 border-none relative"
+        className="box-border font-bold flex flex-row justify-center items-center p-1 border-none relative"
         onClick={() => {
           setShowFeedFilter(!showFeedFilter);
           setHaveFiltersBeenModified(false);
@@ -243,7 +248,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
             {getFeedFilterCount()}
           </div>
         )}
-        <Icon name="filter" size={16} className="" />
+        <Icon name="filter" size={24} className="" />
       </Popover.Button>
       <Transition
         show={showFeedFilter}

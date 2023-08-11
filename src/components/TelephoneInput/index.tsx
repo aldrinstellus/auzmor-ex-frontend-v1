@@ -74,7 +74,7 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
       <div className="flex items-center justify-between relative">
         <Button
           label={
-            <div className="flex items-center justify-between gap-x-4">
+            <div className="flex items-center justify-between gap-x-2">
               <div className="flex items-center gap-x-1">
                 <p className="text-2xl">{selectedCountry.flag}</p>
                 <p className="text-base">{selectedCountry.dialCode}</p>
@@ -85,7 +85,7 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
           variant={Variant.Secondary}
           size={Size.Small}
           onClick={() => setShowDropdown(!showDropdown)}
-          className=" min-w-[130px] max-w-[130px] max-h-11"
+          className=" min-w-[96px] max-w-[96px] max-h-11"
           disabled={disabled}
           dataTestId={`${dataTestId}-countrycode`}
         />

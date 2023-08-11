@@ -1,0 +1,16 @@
+.node-button-g {
+  transform: translate(32px, 100px) !important;
+}
+.node-button-rect {
+  display: none;
+}
+.node-button-foreign-object {
+  width: 120px !important;
+  height: 16px !important;
+  transform: translate(108px, 26px) !important;
+  cursor: pointer;
+}
+.node,
+.node-rect {
+  cursor: default !important;
+}
