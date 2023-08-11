@@ -293,6 +293,13 @@ export const updateStatus = async (payload: { id: string; status: string }) => {
   return data;
 };
 
+export const updateRoleToAdmin = async (payload: { id: string }) => {
+  const { data } = await apiService.patch(`/users/${payload.id}`, {
+    role: 'ADMIN',
+  });
+  return data;
+};
+
 export const useIsUserExistOpen = (email = '') => {
   return useQuery({
     queryKey: ['user-exist-open', email],

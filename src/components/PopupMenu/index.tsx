@@ -9,15 +9,13 @@ export interface IMenuItem {
   isActive?: boolean;
   dataTestId?: string;
   icon?: string;
-  label?: string;
+  label?: ReactNode;
   labelClassName?: string;
   iconClassName?: string;
   stroke?: string;
   fill?: string;
   onClick?: () => any;
   permissions?: string[];
-  addDivider?: boolean;
-  dividerStyle?: React.CSSProperties;
 }
 
 export interface IPopupMenuProps {

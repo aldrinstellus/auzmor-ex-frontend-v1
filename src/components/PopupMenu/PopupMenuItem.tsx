@@ -22,7 +22,7 @@ const PopupMenuItem: React.FC<PopupMenuItemProps> = ({
     <div
       className={clsx(
         {
-          'flex px-6 py-3 items-center hover:bg-primary-50 cursor-pointer space-x-3':
+          'flex px-6 py-3 items-center hover:bg-primary-50 cursor-pointer space-x-3 group':
             true,
         },
         { 'border-b-1': border },

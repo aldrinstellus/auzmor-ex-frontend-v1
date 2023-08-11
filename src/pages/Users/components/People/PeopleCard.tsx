@@ -22,6 +22,7 @@ import { slideInAndOutTop } from 'utils/react-toastify';
 import useModal from 'hooks/useModal';
 import DeletePeople from '../DeleteModals/People';
 import { useMutation } from '@tanstack/react-query';
+import UserProfileDropdown from 'components/UserProfileDropdown';
 
 export interface IPeopleCardProps {
   id: string;
@@ -69,108 +70,6 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
   const { isAdmin } = useRole();
   const [isHovered, eventHandlers] = useHover();
   const [open, openModal, closeModal] = useModal();
-  const resendInviteMutation = useResendInvitation();
-  const updateUserStatusMutation = useMutation({
-    mutationFn: updateStatus,
-    mutationKey: ['update-user-status'],
-    onSuccess: () => {
-      toast(
-        <SuccessToast
-          content={`User has been ${
-            (status as any) === UserStatus.Inactive
-              ? 'reactivated'
-              : 'deactivated'
-          }`}
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-    },
-  });
-
-  const _options = [];
-  const dividerStyle = { borderBottom: '1px solid #E5E5E5' };
-
-  if ([UserStatus.Invited, UserStatus.Created].includes(status as any)) {
-    _options.push({
-      icon: 'redo',
-      label: 'Resend Invite',
-      addDivider: true,
-      dividerStyle,
-      dataTestId: 'people-card-ellipsis-resend-invite',
-      onClick: () => {
-        toast(<SuccessToast content="Invitation has been sent" />, {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        });
-        resendInviteMutation.mutate(id);
-      },
-    });
-  }
-
-  if (
-    [UserStatus.Inactive, UserStatus.Active].includes(status as any) &&
-    role !== UserRole.Member
-  ) {
-    _options.push({
-      icon:
-        (status as any) === UserStatus.Inactive
-          ? 'reactivateUser'
-          : 'deactivateUser',
-      label: `${
-        (status as any) === UserStatus.Inactive ? 'Reactivate' : 'Deactivate'
-      } user`,
-      dataTestId: 'people-card-ellipsis-resend-invite',
-      onClick: () => {
-        updateUserStatusMutation.mutate({
-          id,
-          status:
-            (status as any) === UserStatus.Active
-              ? UserStatus.Inactive
-              : UserStatus.Active,
-        });
-      },
-    });
-  }
-
-  if (id !== user?.id) {
-    _options.push({
-      icon: 'userRemove',
-      label: 'Remove account',
-      dataTestId: 'people-card-ellipsis-remove-user',
-      onClick: openModal,
-    });
-  }
 
   return (
     <div
@@ -182,21 +81,14 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
         shadowOnHover
         className="relative w-[230px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white"
       >
-        {isAdmin && isHovered && _options.length > 0 && (
-          <PopupMenu
-            triggerNode={
-              <div className="cursor-pointer">
-                <Icon
-                  name="dotsVertical"
-                  stroke="#000"
-                  className="absolute top-2 right-2"
-                  hover={false}
-                  dataTestId="people-card-ellipsis"
-                />
-              </div>
-            }
-            menuItems={_options}
-            className="right-0 top-8"
+        {status !== UserStatus.Inactive && (
+          <UserProfileDropdown
+            id={id}
+            role={role}
+            status={status}
+            isAdmin={isAdmin}
+            isHovered={isHovered}
+            openModal={openModal}
           />
         )}
         {(status as any) === UserStatus.Inactive ? (

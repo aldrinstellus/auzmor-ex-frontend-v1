@@ -28,21 +28,21 @@ export const getInitials = (name: string) => {
 };
 
 export const getProfileImage = (user: any) => {
-  if (user?.status === UserStatus.Active) {
+  if (user?.status !== UserStatus.Inactive) {
     return user?.profileImage?.original;
   }
   return DeactivatedUser;
 };
 
 export const getCoverImage = (user: any) => {
-  if (user?.status === UserStatus.Active) {
+  if (user?.status !== UserStatus.Inactive) {
     return user?.coverImage?.original;
   }
   return undefined;
 };
 
 export const getFullName = (user: any) => {
-  if (user?.status === UserStatus.Active) {
+  if (user?.status === UserStatus.Inactive) {
     return user?.fullName;
   }
   return `${user?.fullName} (deactivated)`;
