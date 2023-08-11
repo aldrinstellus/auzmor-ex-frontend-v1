@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import TeamsCard from './TeamsCard';
 import Button, { Size, Variant } from 'components/Button';
 import Layout, { FieldType } from 'components/Form';
@@ -23,6 +23,11 @@ interface IForm {
   search?: string;
 }
 
+export enum TeamFlow {
+  CreateTeam = 'CREATE_TEAM',
+  EditTeam = 'EDIT_TEAM',
+}
+
 export interface ITeamProps {
   setShowMyTeam: (show: boolean) => void;
   showAddTeamModal: boolean;
@@ -37,9 +42,8 @@ const Team: React.FC<ITeamProps> = ({
   closeAddTeamModal,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
+  const [teamFlow, setTeamFlow] = useState<TeamFlow>(TeamFlow.CreateTeam);
   const { ref, inView } = useInView();
-
-  const { user } = useAuth();
 
   const {
     control,
@@ -162,6 +166,7 @@ const Team: React.FC<ITeamProps> = ({
                       key={team.id}
                       {...team}
                       setShowMyTeam={setShowMyTeam}
+                      setTeamFlow={setTeamFlow}
                     />
                   ))}
                   <div className="h-12 w-12">
@@ -203,6 +208,8 @@ const Team: React.FC<ITeamProps> = ({
         open={showAddTeamModal}
         openModal={openAddTeamModal}
         closeModal={closeAddTeamModal}
+        data={teamsData}
+        mode={teamFlow}
       />
 
       <TeamFilterModal

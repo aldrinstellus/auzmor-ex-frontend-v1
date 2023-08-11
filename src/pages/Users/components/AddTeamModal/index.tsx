@@ -6,7 +6,7 @@ import Header from 'components/ModalHeader';
 import ConfirmationBox from 'components/ConfirmationBox';
 import AddTeams from './AddTeams';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { ICreateTeams, createTeams } from 'queries/users';
+import { createTeams } from 'queries/users';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
@@ -25,12 +25,16 @@ export interface IAddTeamModalProps {
   open: boolean;
   openModal: () => void;
   closeModal: () => void;
+  data: any;
+  mode: string;
 }
 
 const AddTeamModal: React.FC<IAddTeamModalProps> = ({
   open,
   openModal,
   closeModal,
+  data,
+  mode,
 }) => {
   const queryClient = useQueryClient();
 
@@ -53,6 +57,8 @@ const AddTeamModal: React.FC<IAddTeamModalProps> = ({
       closeModal();
     },
   });
+
+  console.log('what is the data', data, mode);
 
   const schema = yup.object({
     name: yup.string().required('Please enter team name'),

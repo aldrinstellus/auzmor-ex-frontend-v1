@@ -9,6 +9,7 @@ import PopupMenu from 'components/PopupMenu';
 import useRole from 'hooks/useRole';
 import DeleteTeam from '../DeleteModals/Team';
 import useModal from 'hooks/useModal';
+import { TeamFlow } from '.';
 
 // types....
 
@@ -18,6 +19,7 @@ export interface ITeamsCardProps {
   category: Record<string, any>;
   description: string;
   setShowMyTeam: (show: boolean) => void;
+  setTeamFlow: (mode: string) => void;
 }
 
 const TeamsCard: React.FC<ITeamsCardProps> = ({
@@ -26,6 +28,7 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
   name,
   category,
   description,
+  setTeamFlow,
 }) => {
   const [isHovered, eventHandlers] = useHover();
   const [open, openModal, closeModal] = useModal();
@@ -55,7 +58,8 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
                 icon: 'edit',
                 label: 'Edit',
                 onClick: () => {
-                  // edit action flow
+                  setTeamFlow(TeamFlow.EditTeam);
+                  openModal();
                 },
                 dataTestId: '',
                 permissions: [''],

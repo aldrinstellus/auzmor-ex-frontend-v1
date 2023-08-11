@@ -42,7 +42,7 @@ export interface IPostUsers {
   users: IPostUser[];
 }
 
-export interface ICreateTeams {
+export interface ITeamPayload {
   name: string;
   category: string;
   description?: string;
@@ -226,11 +226,15 @@ export const getAllTeams = async ({
   } else return apiService.get(pageParam);
 };
 
-export const createTeams = async (payload: ICreateTeams) => {
+export const createTeams = async (payload: ITeamPayload) => {
   const data = await apiService.post('/teams', payload);
   return new Promise((res) => {
     res(data);
   });
+};
+
+export const updateTeam = async (id: string, payload: ITeamPayload) => {
+  await apiService.put(`/teams/${id}`, payload);
 };
 
 // delete team by id -> teams/:id
