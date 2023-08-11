@@ -193,15 +193,14 @@ const Feed: React.FC<IFeedProps> = () => {
                 />
                 <div className="flex flex-row items-center mt-8">
                   <div className="flex items-center">
-                    <div className="mr-4">
-                      <FeedFilter
-                        appliedFeedFilters={appliedFeedFilters}
-                        onApplyFilters={(filters: IPostFilters) => {
-                          setAppliedFeedFilters(filters);
-                        }}
-                        dataTestId="filters-dropdown"
-                      />
-                    </div>
+                    <FeedFilter
+                      appliedFeedFilters={appliedFeedFilters}
+                      onApplyFilters={(filters: IPostFilters) => {
+                        setAppliedFeedFilters(filters);
+                      }}
+                      dataTestId="filters-dropdown"
+                    />
+
                     <Link to="/feed?scheduled=true">
                       <Icon name="clock" size={24} className="mr-4" />
                     </Link>

@@ -83,6 +83,7 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
     },
@@ -108,6 +109,7 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
     },

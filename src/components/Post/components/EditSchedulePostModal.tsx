@@ -80,6 +80,7 @@ const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
     },
@@ -107,6 +108,7 @@ const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
     },

@@ -156,6 +156,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
       closeModal();

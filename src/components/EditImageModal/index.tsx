@@ -137,6 +137,7 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
       closeEditImageModal();

@@ -51,6 +51,7 @@ export const fetchFile = (url: string) => {
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
         transition: slideInAndOutTop,
+        theme: 'dark',
       });
       URL.revokeObjectURL(tempUrl);
       aTag.remove();
@@ -72,6 +73,7 @@ export const fetchFile = (url: string) => {
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
         transition: slideInAndOutTop,
+        theme: 'dark',
       });
     });
 };

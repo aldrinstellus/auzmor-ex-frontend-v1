@@ -82,6 +82,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
         transition: slideInAndOutTop,
+        theme: 'dark',
       });
       setIsEditable(false);
     },

@@ -89,6 +89,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         });
         resendInviteMutation.mutate(id);
       },

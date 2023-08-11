@@ -180,6 +180,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
     },
@@ -207,6 +208,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
     },

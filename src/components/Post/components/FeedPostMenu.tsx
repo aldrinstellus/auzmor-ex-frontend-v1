@@ -72,6 +72,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
       if (context?.previousFeed) {

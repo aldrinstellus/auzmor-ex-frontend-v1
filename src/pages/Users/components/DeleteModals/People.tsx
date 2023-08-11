@@ -57,6 +57,7 @@ const DeletePeople: React.FC<IDeletePeopleProps> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
     },
@@ -84,6 +85,7 @@ const DeletePeople: React.FC<IDeletePeopleProps> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
     },

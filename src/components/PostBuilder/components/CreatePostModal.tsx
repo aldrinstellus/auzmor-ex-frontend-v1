@@ -229,6 +229,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
     },
@@ -255,6 +256,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
       await queryClient.invalidateQueries(['feed-announcements-widget']);
