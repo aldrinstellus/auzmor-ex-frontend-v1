@@ -1,6 +1,6 @@
 import Icon from 'components/Icon';
 import React from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 interface IScheduledFeedHeaderProps {
   setAppliedFeedFilters: (appliedFeedFilters: Record<string, any>) => void;
@@ -18,18 +18,9 @@ const ScheduledFeedHeader: React.FC<IScheduledFeedHeaderProps> = ({
       <div className="flex justify-between items-center">
         <div className="gap-y-1">
           <div className="flex gap-x-3 items-center">
-            <Icon
-              name="arrowLeft"
-              fill="#171717"
-              stroke="#171717"
-              onClick={() => {
-                if (searchParams.has('scheduled')) {
-                  searchParams.delete('scheduled');
-                  setSearchParams(searchParams);
-                  setAppliedFeedFilters({ scheduled: false });
-                }
-              }}
-            />
+            <Link to="/feed">
+              <Icon name="arrowLeft" fill="#171717" stroke="#171717" />
+            </Link>
             <div className="text-2xl font-bold text-neutral-900">
               <span data-testid={`feedpage-filter-scheduled`}>
                 Scheduled posts
