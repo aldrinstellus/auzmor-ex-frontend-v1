@@ -40,25 +40,28 @@ const ScheduledFeedHeader: React.FC<IScheduledFeedHeaderProps> = ({
             <div
               className="inline-flex py-2 px-4 justify-center align-center rounded-full border-solid border-white bg-white font-bold"
               style={{ borderColor: '#e5e5e5' }}
-              data-testid="scheduled-tab-posts"
+              data-testid="scheduledpost-tab-all"
             >
               All posts
             </div>
             <div
               className="inline-flex py-2 px-4 justify-center align-center rounded-full border-solid border-white bg-white font-bold"
               style={{ backgroundColor: '#e5e5e5', color: '#A3A3A3' }}
+              data-testid="scheduledpost-tab-announcement"
             >
               Announcements
             </div>
             <div
               className="inline-flex py-2 px-4 justify-center align-center rounded-full border-solid border-white bg-white font-bold"
               style={{ backgroundColor: '#e5e5e5', color: '#A3A3A3' }}
+              data-testid="scheduledpost-tab-polls"
             >
               Polls
             </div>
             <div
               className="inline-flex py-2 px-4 justify-center align-center rounded-full border-solid border-white bg-white font-bold"
               style={{ backgroundColor: '#e5e5e5', color: '#A3A3A3' }}
+              data-testid="scheduledpost-tab-shoutouts"
             >
               Shoutouts
             </div>

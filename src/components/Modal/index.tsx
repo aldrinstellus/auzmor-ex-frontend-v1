@@ -11,6 +11,7 @@ export type ModalProps = {
   children: ReactNode;
   className?: string;
   showModalCloseBtn?: boolean;
+  dataTestId?: string;
 };
 
 const Modal: React.FC<ModalProps> = ({
@@ -19,6 +20,7 @@ const Modal: React.FC<ModalProps> = ({
   children,
   className = 'max-w-xl',
   showModalCloseBtn = false,
+  dataTestId = '',
 }) => {
   const panelStyle = clsx(
     {
@@ -37,7 +39,10 @@ const Modal: React.FC<ModalProps> = ({
             className="z-50 flex items-center justify-center fixed left-0 right-0 top-0 bottom-0 backdrop-blur-sm bg-black/60"
             onClick={closeModal}
           >
-            <div className="flex justify-center min-w-full">
+            <div
+              className="flex justify-center min-w-full"
+              data-testid={dataTestId}
+            >
               {showModalCloseBtn && (
                 <div
                   className={`${panelStyle} fixed bg-transparent overflow-visible`}

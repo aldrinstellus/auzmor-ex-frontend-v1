@@ -71,7 +71,7 @@ const SchedulePost: React.FC<ISchedulePost> = ({ closeModal }) => {
       options: timezones.map((timeZone) => ({
         label: timeZone.timezoneName,
         value: timeZone.iana,
-        dataTestId: `professional-detail-timezone-${timeZone.iana}`,
+        dataTestId: `scheduledpost-timezone-${timeZone.iana}`,
       })),
       defaultValue:
         {
@@ -79,7 +79,7 @@ const SchedulePost: React.FC<ISchedulePost> = ({ closeModal }) => {
           label: userTimezone,
         } || '',
       placeholder: 'Select your timezone',
-      dataTestId: 'schedule-post-timezone',
+      dataTestId: 'scheduledpost-timezone',
     },
     {
       type: FieldType.DatePicker,
@@ -88,7 +88,7 @@ const SchedulePost: React.FC<ISchedulePost> = ({ closeModal }) => {
       control,
       minDate: new Date(beforeXUnit(1, 'day').toISOString()),
       maxDate: new Date(afterXUnit(3, 'month').toISOString()),
-      dataTestId: 'schedule-post-date',
+      dataTestId: 'scheduledpost-date-calendar',
     },
     {
       type: FieldType.TimePicker,
@@ -102,7 +102,7 @@ const SchedulePost: React.FC<ISchedulePost> = ({ closeModal }) => {
       name: 'time',
       label: 'Time',
       placeholder: 'Select time',
-      dataTestId: 'schedule-post-time',
+      dataTestId: 'scheduledpost-time',
       rightIcon: 'clock',
       error: errors.time?.message,
     },

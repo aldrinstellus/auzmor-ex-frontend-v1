@@ -146,11 +146,13 @@ const Feed: React.FC<IFeedProps> = () => {
           <div className="h-220 bg-blue-50 flex justify-center rounded-9xl">
             <img src={NoPosts} data-testid="mybookmark-tab-nopost"></img>
           </div>
-          <div className="font-bold text-base text-neutral-900 text-center mt-6">
-            Not ready to share your post right now?
-          </div>
-          <div className="font-bold text-base text-neutral-900 text-center">
-            Try scheduling for later.
+          <div data-testid="scheduledpost-tab-nodata">
+            <div className="font-bold text-base text-neutral-900 text-center mt-6">
+              Not ready to share your post right now?
+            </div>
+            <div className="font-bold text-base text-neutral-900 text-center">
+              Try scheduling for later.
+            </div>
           </div>
         </div>
       );
@@ -200,7 +202,7 @@ const Feed: React.FC<IFeedProps> = () => {
                     />
 
                     <Link to="/feed?scheduled=true">
-                      <Icon name="clockFilled" size={24} className="mr-4" />
+                      <Icon name="clock" size={24} className="mr-4" />
                     </Link>
                     <Link to="/feed?bookmarks=true">
                       <Icon name="postBookmark" size={24} className="mr-4" />
