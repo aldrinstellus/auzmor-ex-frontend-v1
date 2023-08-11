@@ -27,7 +27,7 @@ const SuccessToast: React.FC<ISuccessToastProps> = ({
             size={32}
           />
         </div>
-        <span className="text-neutral-900 text-sm w-56">{content}</span>
+        <span className="text-white text-sm w-56">{content}</span>
       </div>
       {actionLabel && (
         <div className="flex">

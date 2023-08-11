@@ -96,6 +96,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
         transition: slideInAndOutTop,
+        theme: 'dark',
       });
       setIsEditable(false);
     },

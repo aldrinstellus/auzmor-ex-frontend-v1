@@ -65,6 +65,7 @@ const PublishPostModal: React.FC<PublishPostModalProps> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
     },
@@ -91,6 +92,7 @@ const PublishPostModal: React.FC<PublishPostModalProps> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
     },

@@ -254,6 +254,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
         transition: slideInAndOutTop,
+        theme: 'dark',
       });
       closeEditProfileModal();
       await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });

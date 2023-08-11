@@ -51,6 +51,7 @@ const DeleteTeam: React.FC<IDeleteTeamProps> = ({
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
         transition: slideInAndOutTop,
+        theme: 'dark',
       });
     },
     onSuccess: (data, variables, context) => {
@@ -77,6 +78,7 @@ const DeleteTeam: React.FC<IDeleteTeamProps> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
     },

@@ -100,6 +100,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({ setValue }) => {
       },
       autoClose: TOAST_AUTOCLOSE_TIME,
       transition: slideInAndOutTop,
+      theme: 'dark',
     });
   };
 
