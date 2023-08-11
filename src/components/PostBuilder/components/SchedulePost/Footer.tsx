@@ -18,12 +18,12 @@ const Footer: React.FC<IFooter> = ({ isValid }) => {
           label="Back"
           className="mr-3"
           onClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
-          dataTestId="schedule-post-backcta"
+          dataTestId="scheduledpost-back"
         />
         <Button
           label={'Next'}
           type={Type.Submit}
-          dataTestId="schedule-post-next-cta"
+          dataTestId="scheduledpost-next"
           disabled={!isValid}
         />
       </div>

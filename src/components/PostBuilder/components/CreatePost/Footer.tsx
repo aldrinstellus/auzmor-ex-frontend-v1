@@ -240,13 +240,14 @@ const Footer: React.FC<IFooterProps> = ({
         <div className="mr-4">
           <Tooltip tooltipContent="Schedule" className="cursor-pointer">
             <Icon
-              name="clock"
+              name="clockOutline"
               size={16}
-              fill={twConfig.theme.colors.neutral[900]}
+              stroke={twConfig.theme.colors.neutral[900]}
               onClick={() => {
                 updateContext();
                 setActiveFlow(CreatePostFlow.SchedulePost);
               }}
+              dataTestId="createpost-clock-icon"
             />
           </Tooltip>
         </div>
@@ -276,7 +277,9 @@ const Footer: React.FC<IFooterProps> = ({
               files,
             );
           }}
-          dataTestId="feed-submitpost"
+          dataTestId={
+            schedule ? 'createpost-submit-scheduledpost' : 'feed-submitpost'
+          }
           loading={isLoading}
         />
       </div>

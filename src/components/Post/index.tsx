@@ -247,6 +247,7 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
               <div
                 className="text-neutral-900 underline cursor-pointer hover:text-primary-500"
                 onClick={openPublishModal}
+                data-testid="scheduledpost-tab-publishnow"
               >
                 Publish now
               </div>

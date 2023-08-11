@@ -1,6 +1,6 @@
 import React from 'react';
-import useHover from 'hooks/useHover';
 import { default as ClockFilled } from './ClockFilled';
+import { default as ClockOutline } from './ClockOutline';
 
 type IconProps = {
   size?: number;
@@ -8,6 +8,7 @@ type IconProps = {
   hover?: boolean;
   disabled?: boolean;
   onClick?: () => void;
+  isActive?: boolean;
 };
 
 const ClockIcon: React.FC<IconProps> = ({
@@ -15,13 +16,16 @@ const ClockIcon: React.FC<IconProps> = ({
   onClick,
   className = '',
   disabled,
+  isActive,
   ...props
 }) => {
-  const [isHovered, eventHandlers] = useHover();
-
   return (
-    <div onClick={onClick} className={className} {...eventHandlers}>
-      <ClockFilled {...props} />
+    <div onClick={onClick} className={className}>
+      {!disabled && (hover || isActive) ? (
+        <ClockFilled {...props} />
+      ) : (
+        <ClockOutline {...props} />
+      )}
     </div>
   );
 };

@@ -87,6 +87,7 @@ const Body = React.forwardRef(
                       });
                       setActiveFlow(CreatePostFlow.SchedulePost);
                     }}
+                    dataTestId="createpost-scheduledpost-editicon"
                   />
                 </div>
                 <div>
@@ -94,6 +95,7 @@ const Body = React.forwardRef(
                     name="close"
                     size={16}
                     onClick={() => setSchedule(null)}
+                    dataTestId="createpost-scheduledpost-remove"
                   />
                 </div>
               </div>
