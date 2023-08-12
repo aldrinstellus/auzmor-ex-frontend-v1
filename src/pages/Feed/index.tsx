@@ -81,13 +81,21 @@ const Feed: React.FC<IFeedProps> = () => {
   }, [inView]);
 
   const feedIds = data?.pages.flatMap((page) => {
-    return page.data?.result?.data.map((post: any) => {
-      try {
-        return post;
-      } catch (e) {
-        console.log('Error', { post });
-      }
-    });
+    return page.data?.result?.data
+      .filter((post: { id: string }) => {
+        if (scheduled) {
+          return !!feed[post.id]?.schedule;
+        } else {
+          return true;
+        }
+      })
+      .map((post: any) => {
+        try {
+          return post;
+        } catch (e) {
+          console.log('Error', { post });
+        }
+      });
   }) as { id: string }[];
 
   const clearAppliedFilters = () => {
