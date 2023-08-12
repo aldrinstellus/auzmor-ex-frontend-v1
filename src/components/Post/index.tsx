@@ -199,6 +199,7 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
             contentMode={VIEW_POST}
             createdTime={humanizeTime(post.createdAt!)}
             createdBy={post?.createdBy}
+            dataTestId="feedpage-activity-username"
           />
           <div className="relative flex space-x-4 mr-6">
             <Tooltip

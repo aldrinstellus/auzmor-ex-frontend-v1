@@ -6,6 +6,7 @@ import { ICreatedBy } from 'queries/post';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
+import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
 
 type ActorProps = {
   visibility: string;
@@ -69,11 +70,16 @@ const Actor: React.FC<ActorProps> = ({
             }`}
           >
             <Avatar
-              name={createdBy?.fullName || 'U'}
+              name={getFullName(createdBy) || 'U'}
               size={32}
               image={
-                createdBy ? createdBy.profileImage.original : user?.profileImage
+                createdBy
+                  ? getProfileImage(createdBy)
+                  : user
+                  ? getProfileImage(user)
+                  : ''
               }
+              bgColor={getAvatarColor(createdBy)}
             />
           </Link>
         </div>
@@ -89,7 +95,11 @@ const Actor: React.FC<ActorProps> = ({
               className="font-bold text-sm text-neutral-900"
               data-testid={dataTestId}
             >
-              {createdBy?.fullName || user?.name}
+              {createdBy
+                ? getFullName(createdBy)
+                : user
+                ? getFullName(user)
+                : ''}
               {contentMode === VIEW_POST ? (
                 <span className="ml-1 text-sm font-normal text-neutral-900">
                   shared a post

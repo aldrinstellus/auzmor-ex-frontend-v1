@@ -17,7 +17,12 @@ import RenderQuillContent from 'components/RenderQuillContent';
 import { useCommentStore } from 'stores/commentStore';
 import _ from 'lodash';
 import { IComment } from 'components/Comments';
-import { twConfig } from 'utils/misc';
+import {
+  getAvatarColor,
+  getFullName,
+  getProfileImage,
+  twConfig,
+} from 'utils/misc';
 import { produce } from 'immer';
 import { toast } from 'react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
@@ -135,12 +140,13 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
                 <Avatar
                   name={comment?.createdBy?.fullName}
                   size={32}
-                  image={comment?.createdBy?.profileImage?.original}
+                  image={getProfileImage(comment?.createdBy)}
+                  bgColor={getAvatarColor(comment?.createdBy)}
                 />
               </div>
               <div className="flex flex-col items-start p-0 w-64">
                 <div className="text-neutral-900 font-bold text-sm">
-                  {comment?.createdBy?.fullName}
+                  {getFullName(comment?.createdBy)}
                 </div>
                 <div className="font-normal text-neutral-500 text-sm ">
                   {comment?.createdBy?.designation}

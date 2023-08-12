@@ -15,9 +15,19 @@ import Button, { Size, Variant } from 'components/Button';
 import { Variant as InputVariant } from 'components/Input';
 
 import UsersSkeleton from '../Skeletons/UsersSkeleton';
-
-import { IGetUser, UserRole, useInfiniteUsers } from 'queries/users';
-import { isFiltersEmpty, titleCase, twConfig } from 'utils/misc';
+import DeactivatedUser from 'images/DeactivatedUser.png';
+import {
+  IGetUser,
+  UserRole,
+  UserStatus,
+  useInfiniteUsers,
+} from 'queries/users';
+import {
+  getProfileImage,
+  isFiltersEmpty,
+  titleCase,
+  twConfig,
+} from 'utils/misc';
 
 import PeopleCard from './PeopleCard';
 import InviteUserModal from '../InviteUserModal';
@@ -239,7 +249,7 @@ const People: React.FC<IPeopleProps> = ({
                       <PeopleCard
                         key={user.id}
                         {...user}
-                        image={user?.profileImage?.original}
+                        image={getProfileImage(user)}
                       />
                     ))}
                   <div className="h-12 w-12">

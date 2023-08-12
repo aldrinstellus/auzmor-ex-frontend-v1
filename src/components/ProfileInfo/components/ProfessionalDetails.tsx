@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Card from 'components/Card';
 import Divider from 'components/Divider';
 import useHover from 'hooks/useHover';
@@ -14,7 +14,7 @@ import { useForm } from 'react-hook-form';
 import SelectTimeZone from 'components/UserOnboard/components/SelectTimeZone';
 import { OptionType } from 'components/UserOnboard/components/SelectTimezoneScreen';
 import { useMutation } from '@tanstack/react-query';
-import { updateCurrentUser } from 'queries/users';
+import { EditUserSection, updateCurrentUser } from 'queries/users';
 import { getDefaultTimezoneOption } from 'components/UserOnboard/utils';
 import queryClient from 'utils/queryClient';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
@@ -27,15 +27,34 @@ import { slideInAndOutTop } from 'utils/react-toastify';
 export interface IProfessionalDetailsProps {
   professionalDetails: any;
   canEdit?: boolean;
+  editSection?: string;
+  setSearchParams?: any;
+  searchParams?: any;
 }
 
 const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
   professionalDetails,
   canEdit,
+  editSection,
+  setSearchParams,
+  searchParams,
 }) => {
   const [isHovered, eventHandlers] = useHover();
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const defaultTimezone = getDefaultTimezoneOption();
+
+  useEffect(() => {
+    if (editSection === EditUserSection.PROFESSIONAL && canEdit) {
+      setIsEditable(true);
+    }
+  }, [editSection]);
+
+  useEffect(() => {
+    if (!isEditable && searchParams.has('edit')) {
+      searchParams.delete('edit');
+      setSearchParams(searchParams);
+    }
+  }, [isEditable]);
 
   const schema = yup.object({
     timeZone: yup.object(),

@@ -7,17 +7,24 @@ import PersonalDetails from './components/PersonalDetails';
 import PersonalDetailsSkeleton from './components/Skeletons/PersonalDetails';
 
 import useScrollTop from 'hooks/useScrollTop';
+import { UserEditType } from 'queries/users';
 
 export interface IProfileInfoProps {
   profileDetails: any;
-  canEdit?: boolean;
+  editSection?: string;
   isLoading?: boolean;
+  editType?: UserEditType;
+  setSearchParams?: any;
+  searchParams?: any;
 }
 
 const ProfileInfo: React.FC<IProfileInfoProps> = ({
   profileDetails,
-  canEdit,
   isLoading,
+  editSection,
+  editType,
+  setSearchParams,
+  searchParams,
 }) => {
   useScrollTop();
   return (
@@ -25,20 +32,32 @@ const ProfileInfo: React.FC<IProfileInfoProps> = ({
       {isLoading ? (
         <AboutMeSkeleton />
       ) : (
-        <AboutMe aboutMeData={profileDetails} canEdit={canEdit} />
+        <AboutMe
+          aboutMeData={profileDetails}
+          canEdit={editType === UserEditType.COMPLETE}
+          editSection={editSection}
+          setSearchParams={setSearchParams}
+          searchParams={searchParams}
+        />
       )}
       {isLoading ? (
         <ProfessionalDetailsSkeleton />
       ) : (
         <ProfessionalDetails
           professionalDetails={profileDetails}
-          canEdit={canEdit}
+          canEdit={editType !== UserEditType.NONE}
+          editSection={editSection}
+          setSearchParams={setSearchParams}
+          searchParams={searchParams}
         />
       )}
       {isLoading ? (
         <PersonalDetailsSkeleton />
       ) : (
-        <PersonalDetails personalDetails={profileDetails} canEdit={canEdit} />
+        <PersonalDetails
+          personalDetails={profileDetails}
+          canEdit={editType === UserEditType.COMPLETE}
+        />
       )}
     </>
   );
