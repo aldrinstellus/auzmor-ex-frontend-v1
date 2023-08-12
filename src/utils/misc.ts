@@ -9,6 +9,8 @@ import {
   TransformedQuillDelta,
 } from 'components/PostBuilder/components/RichTextEditor/mentions/types';
 import { useSearchParams } from 'react-router-dom';
+import DeactivatedCoverImage from 'images/deactivatedCoverPhoto.png';
+import DefaultCoverImage from 'images/png/CoverImage.png';
 import { capitalize } from 'lodash';
 import DeactivatedUser from 'images/DeactivatedUser.png';
 import { UserStatus } from 'queries/users';
@@ -34,18 +36,25 @@ export const getProfileImage = (user: any) => {
   return DeactivatedUser;
 };
 
-export const getCoverImage = (user: any) => {
+export const getAvatarColor = (user: any) => {
   if (user?.status !== UserStatus.Inactive) {
-    return user?.coverImage?.original;
+    return '#343434';
   }
-  return undefined;
+  return '#ffffff';
+};
+
+export const getCoverImage = (user: any) => {
+  if (user?.status === UserStatus.Inactive) {
+    return DeactivatedCoverImage;
+  }
+  return user?.coverImage?.original || DefaultCoverImage;
 };
 
 export const getFullName = (user: any) => {
   if (user?.status === UserStatus.Inactive) {
-    return user?.fullName;
+    return `${user?.fullName} (deactivated)`;
   }
-  return `${user?.fullName} (deactivated)`;
+  return user?.fullName;
 };
 
 export const isValidUrl = (url: string) => {

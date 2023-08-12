@@ -3,7 +3,7 @@ import useAuth from 'hooks/useAuth';
 import { IGetReaction } from 'queries/reaction';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getFullName, getProfileImage } from 'utils/misc';
+import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
 
 export interface IReactionRowProps {
   reaction?: IGetReaction;
@@ -33,11 +33,12 @@ const ReactionRow: React.FC<IReactionRowProps> = ({
             image={getProfileImage(reaction?.createdBy)}
             name={getFullName(reaction?.createdBy)}
             loading={isLoading}
+            bgColor={getAvatarColor(reaction?.createdBy)}
           />
         </div>
         <div className="flex flex-col truncate w-full">
           <div className="text-neutral-900 font-bold text-sm truncate">
-            {reaction?.createdBy.fullName || 'NA'}
+            {reaction?.createdBy ? getFullName(reaction.createdBy) : 'NA'}
           </div>
           <div className="text-neutral-500 text-xs truncate">
             {reaction?.createdBy.email || 'NA'}

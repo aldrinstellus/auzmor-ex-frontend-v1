@@ -79,7 +79,7 @@ const Avatar: React.FC<AvatarProps> = ({
       width: `${size}px`,
       backgroundColor: bgColor,
     }),
-    [size],
+    [size, bgColor],
   );
 
   const activeIndicator = useMemo(() => {

@@ -11,6 +11,7 @@ import PopupMenu from 'components/PopupMenu';
 import {
   UserRole,
   UserStatus,
+  updateRoleToAdmin,
   updateStatus,
   useResendInvitation,
 } from 'queries/users';
@@ -21,7 +22,7 @@ import { PRIMARY_COLOR, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import useModal from 'hooks/useModal';
 import DeletePeople from '../DeleteModals/People';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import UserProfileDropdown from 'components/UserProfileDropdown';
 
 export interface IPeopleCardProps {
@@ -66,10 +67,73 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
   workEmail,
 }) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user } = useAuth();
   const { isAdmin } = useRole();
   const [isHovered, eventHandlers] = useHover();
   const [open, openModal, closeModal] = useModal();
+
+  const resendInviteMutation = useResendInvitation();
+  const updateUserStatusMutation = useMutation({
+    mutationFn: updateStatus,
+    mutationKey: ['update-user-status'],
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast(
+        <SuccessToast
+          content={`User has been ${
+            (status as any) === UserStatus.Inactive
+              ? 'reactivated'
+              : 'deactivated'
+          }`}
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.primary['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+    },
+  });
+
+  const updateUserRoleMutation = useMutation({
+    mutationFn: updateRoleToAdmin,
+    mutationKey: ['update-user-role'],
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast(<SuccessToast content={`User role has been updated to admin`} />, {
+        closeButton: (
+          <Icon
+            name="closeCircleOutline"
+            stroke={twConfig.theme.colors.primary['500']}
+            size={20}
+          />
+        ),
+        style: {
+          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+        },
+        autoClose: TOAST_AUTOCLOSE_TIME,
+        transition: slideInAndOutTop,
+        theme: 'dark',
+      });
+    },
+  });
 
   return (
     <div
@@ -88,7 +152,48 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
             status={status}
             isAdmin={isAdmin}
             isHovered={isHovered}
-            openModal={openModal}
+            onDeleteClick={openModal}
+            onPromoteClick={() => updateUserRoleMutation.mutate({ id })}
+            onDeactivateClick={() =>
+              updateUserStatusMutation.mutate({
+                id,
+                status: UserStatus.Inactive,
+              })
+            }
+            onResendInviteClick={() => () => {
+              toast(<SuccessToast content="Invitation has been sent" />, {
+                closeButton: (
+                  <Icon
+                    name="closeCircleOutline"
+                    stroke={twConfig.theme.colors.primary['500']}
+                    size={20}
+                  />
+                ),
+                style: {
+                  border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                },
+                autoClose: TOAST_AUTOCLOSE_TIME,
+                transition: slideInAndOutTop,
+                theme: 'dark',
+              });
+              resendInviteMutation.mutate(id);
+            }}
+            triggerNode={
+              <div className="cursor-pointer">
+                <Icon
+                  name="dotsVertical"
+                  stroke="#000"
+                  className="absolute top-2 right-2"
+                  hover={false}
+                  dataTestId="people-card-ellipsis"
+                />
+              </div>
+            }
+            showOnHover={true}
+            className="right-0 top-8 border border-[#e5e5e5]"
           />
         )}
         {(status as any) === UserStatus.Inactive ? (
@@ -179,28 +284,6 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
             </div>
           </div>
         </div>
-        {/* {isHovered && (
-          <div className="">
-            <div className="flex justify-between items-center mt-0 space-x-4">
-              <div className="rounded-7xl border border-solid border-neutral-200">
-                <IconButton
-                  icon="email"
-                  variant={IconVariant.Secondary}
-                  size={IconSize.Medium}
-                  dataTestId="people-card-email"
-                />
-              </div>
-              <div className="rounded-7xl border border-solid border-neutral-200">
-                <IconButton
-                  icon="slack"
-                  variant={IconVariant.Secondary}
-                  size={IconSize.Medium}
-                  dataTestId="people-card-slack"
-                />
-              </div>
-            </div>
-          </div>
-        )} */}
       </Card>
       <DeletePeople
         open={open}

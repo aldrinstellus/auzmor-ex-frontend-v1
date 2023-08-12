@@ -122,6 +122,7 @@ import Repost from '../components/Repost';
 import DeactivateUser from '../components/DeactivateUser';
 import ReactivateUser from '../components/ReactivateUser';
 import Forbidden from '../components/Forbidden';
+import PromoteUserIcon from '../components/Promote';
 
 export const icon = {
   add: Add,
@@ -248,4 +249,5 @@ export const icon = {
   deactivateUser: DeactivateUser,
   reactivateUser: ReactivateUser,
   forbidden: Forbidden,
+  promoteUser: PromoteUserIcon,
 };
