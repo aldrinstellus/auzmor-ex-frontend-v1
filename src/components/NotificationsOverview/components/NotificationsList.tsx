@@ -15,6 +15,7 @@ export enum ActionType {
   REACTION = 'REACTION',
   COMMENT = 'COMMENT',
   MENTION = 'MENTION',
+  SCHEDULE_POST = 'SCHEDULE_POST',
 }
 
 export enum TargetType {

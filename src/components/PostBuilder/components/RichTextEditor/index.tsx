@@ -289,10 +289,10 @@ const RichTextEditor = React.forwardRef(
           </div>
         )}
         {announcement?.label && !hasDatePassed(announcement.value) && (
-          <div className="flex justify-between bg-primary-100 px-4 py-2 m-4">
+          <div className="flex justify-between bg-blue-50 px-4 py-2 m-4">
             <div className="flex items-center">
               <Icon
-                name="calendarOutlineTwo"
+                name="micOutline"
                 size={16}
                 stroke={twConfig.theme.colors.neutral['900']}
               />
