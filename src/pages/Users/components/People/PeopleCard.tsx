@@ -8,14 +8,24 @@ import { useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
-import { UserStatus, useResendInvitation } from 'queries/users';
+import {
+  EditUserSection,
+  UserEditType,
+  UserRole,
+  UserStatus,
+  updateRoleToAdmin,
+  updateStatus,
+  useResendInvitation,
+} from 'queries/users';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
-import { twConfig } from 'utils/misc';
+import { getEditSection, twConfig } from 'utils/misc';
 import { PRIMARY_COLOR, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import useModal from 'hooks/useModal';
 import DeletePeople from '../DeleteModals/People';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import UserProfileDropdown from 'components/UserProfileDropdown';
 
 export interface IPeopleCardProps {
   id: string;
@@ -59,21 +69,27 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
   workEmail,
 }) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user } = useAuth();
   const { isAdmin } = useRole();
   const [isHovered, eventHandlers] = useHover();
   const [open, openModal, closeModal] = useModal();
+
   const resendInviteMutation = useResendInvitation();
-
-  const _options = [];
-
-  if ([UserStatus.Invited, UserStatus.Created].includes(status as any)) {
-    _options.push({
-      icon: 'redo',
-      label: 'Resend Invite',
-      dataTestId: 'people-card-ellipsis-resend-invite',
-      onClick: () => {
-        toast(<SuccessToast content="Invitation has been sent" />, {
+  const updateUserStatusMutation = useMutation({
+    mutationFn: updateStatus,
+    mutationKey: ['update-user-status'],
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast(
+        <SuccessToast
+          content={`User has been ${
+            (status as any) === UserStatus.Inactive
+              ? 'reactivated'
+              : 'deactivated'
+          }`}
+        />,
+        {
           closeButton: (
             <Icon
               name="closeCircleOutline"
@@ -90,20 +106,36 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
           theme: 'dark',
-        });
-        resendInviteMutation.mutate(id);
-      },
-    });
-  }
+        },
+      );
+    },
+  });
 
-  if (id !== user?.id) {
-    _options.push({
-      icon: 'userRemove',
-      label: 'Remove',
-      dataTestId: 'people-card-ellipsis-remove-user',
-      onClick: openModal,
-    });
-  }
+  const updateUserRoleMutation = useMutation({
+    mutationFn: updateRoleToAdmin,
+    mutationKey: ['update-user-role'],
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast(<SuccessToast content={`User role has been updated to admin`} />, {
+        closeButton: (
+          <Icon
+            name="closeCircleOutline"
+            stroke={twConfig.theme.colors.primary['500']}
+            size={20}
+          />
+        ),
+        style: {
+          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+        },
+        autoClose: TOAST_AUTOCLOSE_TIME,
+        transition: slideInAndOutTop,
+        theme: 'dark',
+      });
+    },
+  });
 
   return (
     <div
@@ -115,8 +147,53 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
         shadowOnHover
         className="relative w-[230px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white"
       >
-        {isAdmin && isHovered && _options.length > 0 && (
-          <PopupMenu
+        {status !== UserStatus.Inactive && (
+          <UserProfileDropdown
+            id={id}
+            loggedInUserId={user?.id}
+            role={role}
+            status={status}
+            isAdmin={isAdmin}
+            isHovered={isHovered}
+            onDeleteClick={openModal}
+            onEditClick={() =>
+              navigate(
+                `/users/${id}?edit=${getEditSection(
+                  id,
+                  user?.id,
+                  isAdmin,
+                  role,
+                )}`,
+              )
+            }
+            onPromoteClick={() => updateUserRoleMutation.mutate({ id })}
+            onDeactivateClick={() =>
+              updateUserStatusMutation.mutate({
+                id,
+                status: UserStatus.Inactive,
+              })
+            }
+            onResendInviteClick={() => () => {
+              toast(<SuccessToast content="Invitation has been sent" />, {
+                closeButton: (
+                  <Icon
+                    name="closeCircleOutline"
+                    stroke={twConfig.theme.colors.primary['500']}
+                    size={20}
+                  />
+                ),
+                style: {
+                  border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                },
+                autoClose: TOAST_AUTOCLOSE_TIME,
+                transition: slideInAndOutTop,
+                theme: 'dark',
+              });
+              resendInviteMutation.mutate(id);
+            }}
             triggerNode={
               <div className="cursor-pointer">
                 <Icon
@@ -128,31 +205,46 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
                 />
               </div>
             }
-            menuItems={_options}
-            className="right-0 top-8"
+            showOnHover={true}
+            className="right-0 top-8 border border-[#e5e5e5]"
           />
         )}
-        <div
-          style={{
-            backgroundColor: [
+        {(status as any) === UserStatus.Inactive ? (
+          <div
+            className="absolute top-0 text-[12px] text-[#737373] font-medium py-1 bg-[#F5F5F5] w-full justify-center align-center rounded-t-9xl flex"
+            data-testid="usercard-deactivate-banner"
+          >
+            <Icon
+              name="forbidden"
+              stroke="#737373"
+              size={18}
+              className="mr-1"
+            ></Icon>
+            Deactivated Account
+          </div>
+        ) : (
+          <div
+            style={{
+              backgroundColor: [
+                UserStatus.Invited,
+                UserStatus.Created,
+                UserStatus.Attempted,
+              ].includes(status as any)
+                ? '#EA580C'
+                : statusColorMap[role],
+            }}
+            className="absolute top-0 left-0 text-white rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium"
+            data-testid={`people-card-role-${role}`}
+          >
+            {[
               UserStatus.Invited,
               UserStatus.Created,
               UserStatus.Attempted,
             ].includes(status as any)
-              ? '#EA580C'
-              : statusColorMap[role],
-          }}
-          className="absolute top-0 left-0 text-white rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium"
-          data-testid={`people-card-role-${role}`}
-        >
-          {[
-            UserStatus.Invited,
-            UserStatus.Created,
-            UserStatus.Attempted,
-          ].includes(status as any)
-            ? 'Pending'
-            : role}
-        </div>
+              ? 'Pending'
+              : role}
+          </div>
+        )}
         <div
           className="my-6 flex flex-col items-center"
           onClick={() => {
@@ -169,6 +261,10 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
             active={active}
             dataTestId="people-card-profile-pic"
             showActiveIndicator
+            disable={(status as any) === UserStatus.Inactive}
+            bgColor={
+              (status as any) === UserStatus.Inactive ? '#ffffff' : undefined
+            }
           />
           <div
             className="mt-1 truncate text-neutral-900 text-base font-bold"
@@ -204,28 +300,6 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
             </div>
           </div>
         </div>
-        {/* {isHovered && (
-          <div className="">
-            <div className="flex justify-between items-center mt-0 space-x-4">
-              <div className="rounded-7xl border border-solid border-neutral-200">
-                <IconButton
-                  icon="email"
-                  variant={IconVariant.Secondary}
-                  size={IconSize.Medium}
-                  dataTestId="people-card-email"
-                />
-              </div>
-              <div className="rounded-7xl border border-solid border-neutral-200">
-                <IconButton
-                  icon="slack"
-                  variant={IconVariant.Secondary}
-                  size={IconSize.Medium}
-                  dataTestId="people-card-slack"
-                />
-              </div>
-            </div>
-          </div>
-        )} */}
       </Card>
       <DeletePeople
         open={open}

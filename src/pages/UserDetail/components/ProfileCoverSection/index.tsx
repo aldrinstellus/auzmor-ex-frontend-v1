@@ -17,32 +17,62 @@ import { IUpdateProfileImage } from 'pages/UserDetail';
 import DefaultCoverImage from 'images/png/CoverImage.png';
 import useModal from 'hooks/useModal';
 import EditImageModal from 'components/EditImageModal';
-import { clearInputValue, getBlobUrl, twConfig } from 'utils/misc';
+import {
+  clearInputValue,
+  getBlobUrl,
+  getCoverImage,
+  getEditSection,
+  getFullName,
+  getProfileImage,
+  twConfig,
+} from 'utils/misc';
 import { EntityType } from 'queries/files';
 import PopupMenu from 'components/PopupMenu';
-import { useMutation } from '@tanstack/react-query';
-import { updateCurrentUser } from 'queries/users';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  UserStatus,
+  updateCurrentUser,
+  updateRoleToAdmin,
+  updateStatus,
+  useResendInvitation,
+} from 'queries/users';
+import UserProfileDropdown from 'components/UserProfileDropdown';
+import useHover from 'hooks/useHover';
+import useRole from 'hooks/useRole';
+import { toast } from 'react-toastify';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
+import DeletePeople from 'pages/Users/components/DeleteModals/People';
+import ReactivatePeople from 'pages/Users/components/ReactivateModal/Reactivate';
+import useAuth from 'hooks/useAuth';
 
 export interface IProfileCoverProps {
   userDetails: Record<string, any>;
   canEdit: boolean;
+  setSearchParams?: any;
+  searchParams?: URLSearchParams;
 }
 
 const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
   userDetails,
   canEdit,
+  setSearchParams,
+  searchParams,
 }) => {
   const [file, setFile] = useState<IUpdateProfileImage | Record<string, any>>(
     {},
   );
-
+  const { user } = useAuth();
+  const { isAdmin } = useRole();
+  const queryClient = useQueryClient();
   const [openEditProfile, openEditProfileModal, closeEditProfileModal] =
     useModal(undefined, false);
   const [openEditImage, openEditImageModal, closeEditImageModal] = useModal(
     undefined,
     false,
   );
-
+  const [isHovered, eventHandlers] = useHover();
   const [isCoverImageRemoved, setIsCoverImageRemoved] = useState(false);
 
   const userProfileImageRef = useRef<HTMLInputElement>(null);
@@ -113,36 +143,108 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
     },
   ];
 
+  const [openDelete, openDeleteModal, closeDeleteModal] = useModal();
+  const [openReactivate, openReactivateModal, closeReactivateModal] =
+    useModal();
+
+  const resendInviteMutation = useResendInvitation();
+  const updateUserStatusMutation = useMutation({
+    mutationFn: updateStatus,
+    mutationKey: ['update-user-status'],
+    onSuccess: () => {
+      queryClient.invalidateQueries(['user', userDetails?.id]);
+      toast(
+        <SuccessToast
+          content={`User has been ${
+            (userDetails?.status as any) === UserStatus.Inactive
+              ? 'reactivated'
+              : 'deactivated'
+          }`}
+          dataTestId="deactivate -toaster-msg"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.primary['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+    },
+  });
+
+  const updateUserRoleMutation = useMutation({
+    mutationFn: updateRoleToAdmin,
+    mutationKey: ['update-user-role'],
+    onSuccess: () => {
+      queryClient.invalidateQueries(['user', userDetails?.id]);
+      toast(<SuccessToast content={`User role has been updated to admin`} />, {
+        closeButton: (
+          <Icon
+            name="closeCircleOutline"
+            stroke={twConfig.theme.colors.primary['500']}
+            size={20}
+          />
+        ),
+        style: {
+          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+        },
+        autoClose: TOAST_AUTOCLOSE_TIME,
+        transition: slideInAndOutTop,
+        theme: 'dark',
+      });
+    },
+  });
+
   return (
-    <div>
+    <div {...eventHandlers}>
       <Card className="bg-white pb-6 w-full" data-testid="profile-details">
         <div className="relative">
           <div
-            className="w-full overflow-hidden h-[180px] rounded-9xl"
+            className="w-full overflow-hidden h-[180px]"
             data-testid={coverImageName}
           >
             {userDetails?.coverImage?.original && !isCoverImageRemoved ? (
               <img
                 className="object-cover w-full"
-                src={userDetails?.coverImage?.original}
+                src={getCoverImage(userDetails)}
                 alt={'User Cover Picture Profile'}
                 data-testid="user-cover-pic"
               />
             ) : (
               <img
                 className="object-cover w-full"
-                src={DefaultCoverImage}
+                src={getCoverImage(userDetails)}
                 alt="Default Image"
                 data-testid="user-cover-pic"
               />
             )}
           </div>
-          <div className="absolute left-8 -bottom-3.5">
+          <div className="absolute left-8 bottom-[-6rem]">
             <Avatar
-              name={userDetails?.fullName}
-              image={userDetails?.profileImage?.original}
-              size={80}
-              className="border-2 border-white mt-8 overflow-hidden"
+              name={getFullName(userDetails)}
+              image={getProfileImage(userDetails)}
+              size={150}
+              className="mt-8 overflow-hidden"
+              bgColor={
+                userDetails?.status === UserStatus.Inactive
+                  ? '#ffffff'
+                  : '#343434'
+              }
               dataTestId={profileImageName || 'edit-profile-pic'}
             />
           </div>
@@ -163,40 +265,91 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             />
           )}
         </div>
-        <div className="flex ml-32 -mt-5">
+        <div className="flex ml-[12rem]">
           <div className="flex flex-col w-full">
             <div className="flex items-center">
               <div className="mr-6 mt-2 flex justify-between w-full">
                 <div className="flex space-x-4">
                   <div className="text-2xl font-bold" data-testid="user-name">
-                    {userDetails?.fullName}
+                    {getFullName(userDetails)}
                   </div>
-                  {/* <div className="p-1">
-                    {!canEdit && (
-                      <div className="border-1 rounded-full px-3 py-1 flex justify-center items-center space-x-2">
-                        <Icon name="outOfOfficeIcon" size={16} />
-                        <div className="text-xxs font-medium">
-                          {profileCoverData?.status?.charAt(0) +
-                            profileCoverData?.status?.slice(1)?.toLowerCase()}
-                        </div>
-                      </div>
-                    )}
-                  </div> */}
                 </div>
-                <Button
-                  className="flex"
-                  leftIconClassName="mr-2"
-                  label={canEdit ? 'Edit Profile' : 'Follow'}
-                  leftIcon={canEdit ? 'edit' : 'addCircle'}
-                  size={ButtonSize.Medium}
-                  variant={ButtonVariant.Secondary}
-                  onClick={() => {
-                    canEdit && openEditProfileModal();
-                    showEditProfile.current = true;
-                  }}
-                  dataTestId={canEdit ? 'edit-profile' : 'follow'}
-                  disabled={!canEdit}
-                />
+                <div className="flex gap-4">
+                  <Button
+                    className="flex"
+                    leftIconClassName="mr-2"
+                    label={'Follow'}
+                    leftIcon={'addCircle'}
+                    size={ButtonSize.Medium}
+                    variant={ButtonVariant.Secondary}
+                    dataTestId={'follow'}
+                    disabled
+                  />
+                  <UserProfileDropdown
+                    triggerNode={
+                      <div
+                        className="rounded-[24px] font-bold border py-[8px] px-[16px] border-[#e5e5e5]"
+                        data-testid="profile-more-cta"
+                      >
+                        More
+                      </div>
+                    }
+                    id={userDetails.id}
+                    role={userDetails.role}
+                    status={userDetails.status}
+                    isAdmin={isAdmin}
+                    isHovered={isHovered}
+                    showOnHover={false}
+                    className="mt-[3%] border border-[#e5e5e5]"
+                    onDeleteClick={openDeleteModal}
+                    onReactivateClick={openReactivateModal}
+                    onPromoteClick={() =>
+                      updateUserRoleMutation.mutate({ id: userDetails?.id })
+                    }
+                    onDeactivateClick={() =>
+                      updateUserStatusMutation.mutate({
+                        id: userDetails?.id,
+                        status: UserStatus.Inactive,
+                      })
+                    }
+                    onEditClick={() => {
+                      searchParams?.append(
+                        'edit',
+                        getEditSection(
+                          userDetails?.id,
+                          user?.id,
+                          isAdmin,
+                          userDetails?.role,
+                        ),
+                      );
+                      setSearchParams(searchParams);
+                    }}
+                    onResendInviteClick={() => () => {
+                      toast(
+                        <SuccessToast content="Invitation has been sent" />,
+                        {
+                          closeButton: (
+                            <Icon
+                              name="closeCircleOutline"
+                              stroke={twConfig.theme.colors.primary['500']}
+                              size={20}
+                            />
+                          ),
+                          style: {
+                            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+                            borderRadius: '6px',
+                            display: 'flex',
+                            alignItems: 'center',
+                          },
+                          autoClose: TOAST_AUTOCLOSE_TIME,
+                          transition: slideInAndOutTop,
+                          theme: 'dark',
+                        },
+                      );
+                      resendInviteMutation.mutate(userDetails?.id);
+                    }}
+                  />
+                </div>
               </div>
             </div>
             <div className="flex space-x-4 mt-3 items-center">
@@ -318,6 +471,18 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
           </div>
         )}
       </Card>
+      <DeletePeople
+        open={openDelete}
+        openModal={openDeleteModal}
+        closeModal={closeDeleteModal}
+        userId={userDetails?.id}
+      />
+      <ReactivatePeople
+        open={openReactivate}
+        openModal={openReactivateModal}
+        closeModal={closeReactivateModal}
+        userId={userDetails?.id}
+      />
     </div>
   );
 };

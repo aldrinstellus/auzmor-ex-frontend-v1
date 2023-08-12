@@ -18,7 +18,12 @@ import RenderQuillContent from 'components/RenderQuillContent';
 import ReactionModal from 'components/Post/components/ReactionModal';
 import _ from 'lodash';
 import useModal from 'hooks/useModal';
-import { twConfig } from 'utils/misc';
+import {
+  getAvatarColor,
+  getFullName,
+  getProfileImage,
+  twConfig,
+} from 'utils/misc';
 import { IComment } from '..';
 import { CommentsRTE, PostCommentMode } from './CommentsRTE';
 import ConfirmationBox from 'components/ConfirmationBox';
@@ -159,7 +164,8 @@ export const Comment: React.FC<CommentProps> = ({
                 <Avatar
                   name={comment?.createdBy?.fullName}
                   size={32}
-                  image={comment?.createdBy?.profileImage?.original}
+                  image={getProfileImage(comment?.createdBy)}
+                  bgColor={getAvatarColor(comment?.createdBy)}
                 />
               </Link>
             </div>
@@ -173,7 +179,7 @@ export const Comment: React.FC<CommentProps> = ({
                 }
               >
                 <div className="text-neutral-900 font-bold text-sm">
-                  {comment?.createdBy?.fullName}
+                  {getFullName(comment?.createdBy)}
                 </div>
               </Link>
               <div className="font-normal text-neutral-500 text-sm ">

@@ -9,7 +9,11 @@ import {
   TransformedQuillDelta,
 } from 'components/PostBuilder/components/RichTextEditor/mentions/types';
 import { useSearchParams } from 'react-router-dom';
+import DeactivatedCoverImage from 'images/deactivatedCoverPhoto.png';
+import DefaultCoverImage from 'images/png/CoverImage.png';
 import { capitalize } from 'lodash';
+import DeactivatedUser from 'images/DeactivatedUser.png';
+import { EditUserSection, UserRole, UserStatus } from 'queries/users';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -23,6 +27,47 @@ export const getInitials = (name: string) => {
     .match(/(^\S|\S$)?/g)!
     .join('')
     .toLocaleUpperCase();
+};
+
+export const getProfileImage = (user: any) => {
+  if (user?.status !== UserStatus.Inactive) {
+    return user?.profileImage?.original;
+  }
+  return DeactivatedUser;
+};
+
+export const getAvatarColor = (user: any) => {
+  if (user?.status !== UserStatus.Inactive) {
+    return '#343434';
+  }
+  return '#ffffff';
+};
+
+export const getCoverImage = (user: any) => {
+  if (user?.status === UserStatus.Inactive) {
+    return DeactivatedCoverImage;
+  }
+  return user?.coverImage?.original || DefaultCoverImage;
+};
+
+export const getFullName = (user: any) => {
+  if (user?.status === UserStatus.Inactive) {
+    return `${user?.fullName} (deactivated)`;
+  }
+  return user?.fullName;
+};
+
+export const getEditSection = (
+  userId: any,
+  loggedInUserId: any,
+  isAdmin: any,
+  role: any,
+) => {
+  return userId === loggedInUserId
+    ? EditUserSection.ABOUT
+    : isAdmin && role === UserRole.Member
+    ? EditUserSection.PROFESSIONAL
+    : '';
 };
 
 export const isValidUrl = (url: string) => {

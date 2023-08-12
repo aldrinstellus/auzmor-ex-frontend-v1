@@ -1,0 +1,118 @@
+import React from 'react';
+import IconButton, {
+  Size,
+  Variant as IconVariant,
+} from 'components/IconButton';
+import Button, {
+  Variant as ButtonVariant,
+  Type as ButtonType,
+} from 'components/Button';
+import Modal from 'components/Modal';
+import { UserStatus, deleteUser, updateStatus } from 'queries/users';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import queryClient from 'utils/queryClient';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import FailureToast from 'components/Toast/variants/FailureToast';
+import { toast } from 'react-toastify';
+import Icon from 'components/Icon';
+import { twConfig } from 'utils/misc';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
+export interface IReactivatePeopleProps {
+  open: boolean;
+  openModal: () => void;
+  closeModal: () => void;
+  userId: string;
+}
+
+const ReactivatePeople: React.FC<IReactivatePeopleProps> = ({
+  open,
+  openModal,
+  closeModal,
+  userId,
+}) => {
+  const queryClient = useQueryClient();
+  const updateUserStatusMutation = useMutation({
+    mutationFn: updateStatus,
+    mutationKey: ['update-user-status'],
+    onSuccess: () => {
+      queryClient.invalidateQueries(['user', userId]);
+      toast(<SuccessToast content={`User has been reactivated`} />, {
+        closeButton: (
+          <Icon
+            name="closeCircleOutline"
+            stroke={twConfig.theme.colors.primary['500']}
+            size={20}
+          />
+        ),
+        style: {
+          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+        },
+        autoClose: TOAST_AUTOCLOSE_TIME,
+        transition: slideInAndOutTop,
+        theme: 'dark',
+      });
+    },
+  });
+
+  const Header: React.FC = () => (
+    <div className="flex flex-wrap items-center">
+      <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
+        Reactivate User?
+      </div>
+      <IconButton
+        onClick={closeModal}
+        icon={'close'}
+        dataTestId="reactivate-user-close"
+        className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"
+        variant={IconVariant.Primary}
+      />
+    </div>
+  );
+
+  const Footer: React.FC = () => (
+    <div className="flex justify-end space-x-3 items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
+      <Button
+        variant={ButtonVariant.Secondary}
+        size={Size.Small}
+        label={'Cancel'}
+        dataTestId="cancel-cta"
+        onClick={closeModal}
+      />
+      <Button
+        label={'Reactivate'}
+        className="bg-primary-500 !text-white flex"
+        loading={updateUserStatusMutation.isLoading}
+        size={Size.Small}
+        type={ButtonType.Submit}
+        dataTestId="Reactivate"
+        onClick={() => {
+          updateUserStatusMutation.mutate({
+            id: userId,
+            status: UserStatus.Active,
+          });
+          closeModal();
+        }}
+      />
+    </div>
+  );
+  return (
+    <Modal
+      open={open}
+      className="max-w-md"
+      dataTestId="reactivate-confirm-modal"
+    >
+      <Header />
+      <div className="text-sm font-medium text-[#171717] mx-4 mt-3 mb-4">
+        Are you sure you want to reactivate this account?
+        <br /> All the data associated with this account will be restored.
+      </div>
+      <Footer />
+    </Modal>
+  );
+};
+
+export default ReactivatePeople;

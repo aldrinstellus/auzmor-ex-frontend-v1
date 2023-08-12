@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import ContactWidget from 'components/ContactWidget';
-import { useCurrentUser, useSingleUser } from 'queries/users';
+import {
+  UserEditType,
+  UserRole,
+  useCurrentUser,
+  useSingleUser,
+} from 'queries/users';
 import ProfileInfo from 'components/ProfileInfo';
 import Spinner from 'components/Spinner';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import ProfileActivityFeed from './components/ProfileActivityFeed';
 import useAuth from 'hooks/useAuth';
 import NoDataCard from './components/NoDataCard';
@@ -13,6 +18,7 @@ import Tabs from 'components/Tabs';
 import UserDetailSkeleton from './components/UserDetailSkeleton';
 import ContactSkeleton from 'components/ContactWidget/components/Skeletons';
 import useModal from 'hooks/useModal';
+import useRole from 'hooks/useRole';
 
 export interface IUpdateProfileImage {
   profileImage: File;
@@ -24,8 +30,11 @@ interface IUserDetailProps {}
 const UserDetail: React.FC<IUserDetailProps> = () => {
   const [open, openModal, closeModal] = useModal(undefined, false);
   const { user } = useAuth();
+  const { isAdmin } = useRole();
   const params = useParams();
   const { pathname } = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  let editType = UserEditType.NONE;
 
   let userDetail;
 
@@ -35,7 +44,18 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
     userDetail = useSingleUser(params?.userId || '');
   }
 
+  const editSection = searchParams.get('edit') || '';
+
   const data = userDetail?.data?.data?.result?.data;
+
+  if (data) {
+    editType =
+      data?.id === user?.id
+        ? UserEditType.COMPLETE
+        : isAdmin && data?.role === UserRole.Member
+        ? UserEditType.PARTIAL
+        : editType;
+  }
 
   const tabStyles = (active: boolean) =>
     clsx(
@@ -61,7 +81,10 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
         <ProfileInfo
           profileDetails={data}
           isLoading={userDetail?.isLoading}
-          canEdit={pathname === '/profile'}
+          editType={editType}
+          editSection={editSection}
+          setSearchParams={setSearchParams}
+          searchParams={searchParams}
         />
       ),
     },
@@ -100,7 +123,9 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
       ) : (
         <ProfileCoverSection
           userDetails={data}
-          canEdit={pathname === '/profile'}
+          canEdit={editType === UserEditType.COMPLETE}
+          setSearchParams={setSearchParams}
+          searchParams={searchParams}
         />
       )}
 

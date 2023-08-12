@@ -120,6 +120,10 @@ import LinearLeftArrow from '../components/LinearLeftArrow';
 import PostBookmarkIcon from '../components/PostBookmark';
 import Repost from '../components/Repost';
 import Calendar from '../components/Calendar';
+import DeactivateUser from '../components/DeactivateUser';
+import ReactivateUser from '../components/ReactivateUser';
+import Forbidden from '../components/Forbidden';
+import PromoteUserIcon from '../components/Promote';
 import MicIcon from '../components/Mic';
 
 export const icon = {
@@ -245,5 +249,9 @@ export const icon = {
   video: VideoIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
+  deactivateUser: DeactivateUser,
+  reactivateUser: ReactivateUser,
+  forbidden: Forbidden,
+  promoteUser: PromoteUserIcon,
   mic: MicIcon,
 };

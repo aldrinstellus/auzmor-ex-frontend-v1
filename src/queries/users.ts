@@ -18,6 +18,17 @@ export enum FilterType {
   Reporter = 'REPORTER',
 }
 
+export enum UserEditType {
+  COMPLETE = 'complete',
+  PARTIAL = 'partial',
+  NONE = 'none',
+}
+
+export enum EditUserSection {
+  ABOUT = 'about',
+  PROFESSIONAL = 'professional',
+}
+
 export interface IPeopleFilters {
   [PeopleFilterKeys.PeopleFilterType]?: FilterType[];
 }
@@ -288,6 +299,20 @@ export const useResendInvitation = () => {
     mutationKey: ['resend-invitation'],
     mutationFn: resendInvitation,
   });
+};
+
+export const updateStatus = async (payload: { id: string; status: string }) => {
+  const { data } = await apiService.patch(`/users/${payload.id}`, {
+    status: payload.status,
+  });
+  return data;
+};
+
+export const updateRoleToAdmin = async (payload: { id: string }) => {
+  const { data } = await apiService.patch(`/users/${payload.id}`, {
+    role: 'ADMIN',
+  });
+  return data;
 };
 
 export const useIsUserExistOpen = (email = '') => {
