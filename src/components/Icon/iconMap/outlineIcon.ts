@@ -82,6 +82,7 @@ import SvgShareForwardOutline from '../components/ShareForward/ShareForwardOutli
 import SvgLinearLeftArrowOutline from '../components/LinearLeftArrow/LinearLeftArrowOutline';
 import SvgRepostOutline from '../components/Repost/RepostOutline';
 import SvgClockOutline from '../components/Clock/ClockOutline';
+import SvgMicOutline from '../components/Mic/MicOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -168,4 +169,5 @@ export const outlineIcon = {
   zoomInOutline: SvgZoomInOutline,
   zoomOutOutline: SvgZoomOutOutline,
   clockOutline: SvgClockOutline,
+  micOutline: SvgMicOutline,
 };

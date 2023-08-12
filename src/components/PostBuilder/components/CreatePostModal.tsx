@@ -135,15 +135,17 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       message: string;
       result: { data: IPost };
     }) => {
-      setFeed({ ...feed, [result.data.id!]: { ...result.data } });
-      await queryClient.setQueryData(['feed', { type: [] }], (oldData: any) =>
-        produce(oldData, (draft: any) => {
-          draft.pages[0].data.result.data = [
-            { id: result.data.id },
-            ...draft.pages[0].data.result.data,
-          ];
-        }),
-      );
+      if (!!!result.data.schedule) {
+        setFeed({ ...feed, [result.data.id!]: { ...result.data } });
+        await queryClient.setQueryData(['feed', { type: [] }], (oldData: any) =>
+          produce(oldData, (draft: any) => {
+            draft.pages[0].data.result.data = [
+              { id: result.data.id },
+              ...draft.pages[0].data.result.data,
+            ];
+          }),
+        );
+      }
       clearPostContext();
       closeModal();
       if (result.data.schedule) {
@@ -176,7 +178,6 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           },
         );
       }
-
       await queryClient.invalidateQueries(['feed-announcements-widget']);
       await queryClient.invalidateQueries(['post-announcements-widget']);
     },

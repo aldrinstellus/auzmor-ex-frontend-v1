@@ -191,7 +191,7 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
 
   return (
     <>
-      <Card className="mb-6">
+      <Card className="mb-6 pb-6">
         <AcknowledgementBanner data={post} />
         <div className="flex justify-between items-center">
           <Actor
@@ -258,7 +258,8 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
         <div className="mx-6">
           <RenderQuillContent data={post} />
           {/* Reaction Count */}
-          {(totalCount > 0 || post?.commentsCount > 0) && (
+
+          {(totalCount > 0 || post?.commentsCount > 0) && !!!post.schedule && (
             <>
               <Divider className="mt-4" />
               <div className="flex flex-row justify-between my-3">
@@ -319,42 +320,44 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
             </>
           )}
 
-          <div className="flex justify-between pt-4 pb-6">
-            <div className="flex space-x-6">
-              {/* this is for post */}
-              <Likes
-                reaction={reaction || ''}
-                entityId={post?.id || ''}
-                entityType="post"
-                reactionId={post?.myReaction?.id || ''}
-                queryKey="feed"
-                dataTestIdPrefix="post-reaction"
-              />
-              <button
-                className="flex items-center space-x-1"
-                onClick={() => {
-                  if (showComments) {
-                    closeComments();
-                  } else {
-                    openComments();
-                  }
-                }}
-                data-testid="feed-post-comment"
+          {!!!post.schedule && (
+            <div className="flex justify-between pt-4">
+              <div className="flex space-x-6">
+                {/* this is for post */}
+                <Likes
+                  reaction={reaction || ''}
+                  entityId={post?.id || ''}
+                  entityType="post"
+                  reactionId={post?.myReaction?.id || ''}
+                  queryKey="feed"
+                  dataTestIdPrefix="post-reaction"
+                />
+                <button
+                  className="flex items-center space-x-1"
+                  onClick={() => {
+                    if (showComments) {
+                      closeComments();
+                    } else {
+                      openComments();
+                    }
+                  }}
+                  data-testid="feed-post-comment"
+                >
+                  <Icon name="comment" size={16} />
+                  <div className="text-xs font-normal text-neutral-500">
+                    Comment
+                  </div>
+                </button>
+              </div>
+              <div
+                className="flex items-center space-x-1 cursor-pointer text-neutral-500 hover:text-primary-500"
+                data-testid="feed-post-repost"
               >
-                <Icon name="comment" size={16} />
-                <div className="text-xs font-normal text-neutral-500">
-                  Comment
-                </div>
-              </button>
+                <Icon name="repost" size={16} />
+                <span className="text-xs font-normal">Repost</span>
+              </div>
             </div>
-            <div
-              className="flex items-center space-x-1 cursor-pointer text-neutral-500 hover:text-primary-500"
-              data-testid="feed-post-repost"
-            >
-              <Icon name="repost" size={16} />
-              <span className="text-xs font-normal">Repost</span>
-            </div>
-          </div>
+          )}
           {/* Comments */}
           {showComments ? (
             <CommentCard entityId={post?.id || ''} />
