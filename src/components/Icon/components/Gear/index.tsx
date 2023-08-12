@@ -1,12 +1,13 @@
 import React from 'react';
-import useHover from 'hooks/useHover';
 import { default as GearOutline } from './GearOutline';
+import { default as GearFilled } from './GearFilled';
 
 type IconProps = {
   size?: number;
   className?: string;
   hover?: boolean;
   disabled?: boolean;
+  isActive?: boolean;
   onClick?: () => void;
 };
 
@@ -15,13 +16,16 @@ const Gear: React.FC<IconProps> = ({
   onClick,
   className = '',
   disabled,
+  isActive,
   ...props
 }) => {
-  const [isHovered, eventHandlers] = useHover();
-
   return (
-    <div onClick={onClick} {...eventHandlers}>
-      <GearOutline {...props} />
+    <div onClick={onClick} className={className}>
+      {!disabled && (hover || isActive) ? (
+        <GearFilled {...props} />
+      ) : (
+        <GearOutline {...props} />
+      )}
     </div>
   );
 };

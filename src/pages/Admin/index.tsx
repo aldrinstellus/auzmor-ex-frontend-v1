@@ -1,7 +1,10 @@
 import Card from 'components/Card';
+import Collapse from 'components/Collapse';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import SSOSettings from 'components/SSOSettings';
+import SwitchToggle from 'components/SwitchToggle';
+// import { useUpdateLimitPostingControls } from 'queries/organization';
 import React, { ReactNode, useState } from 'react';
 interface IAdminProps {}
 
@@ -16,12 +19,35 @@ interface ISetting {
 }
 
 const Admin: React.FC<IAdminProps> = () => {
+  // const mutation = useUpdateLimitPostingControls();
   const settings = [
     {
-      label: 'General',
-      icon: 'gear',
+      label: 'General settings',
+      icon: 'gearOutline',
       key: 'general-settings',
-      component: <div>General Settings Page</div>,
+      component: (
+        <Collapse
+          label="Posting controls"
+          className="rounded-9xl overflow-hidden"
+          headerClassName="px-4 py-2 bg-blue-50"
+          headerTextClassName="text-base font-bold text-neutral-900"
+        >
+          <div className="bg-white">
+            <div className="px-6 py-4 flex justify-between">
+              <div className="flex flex-col">
+                <div className="text-neutral-900 font-semibold text-sm">
+                  Limit global posting
+                </div>
+                <div className="text-xs text-neutral-900">
+                  When Global Posting is ON, end users can&apos;t post to
+                  everyone, only to their Team(s) or permitted Channels.
+                </div>
+              </div>
+              <SwitchToggle />
+            </div>
+          </div>
+        </Collapse>
+      ),
       disabled: false,
       hidden: false,
       dataTestId: 'settings-general',
@@ -74,7 +100,7 @@ const Admin: React.FC<IAdminProps> = () => {
   ];
 
   const [activeSettingsPage, setActiveSettingsPage] = useState<ISetting>(
-    settings[3],
+    settings[0],
   );
 
   return (
@@ -105,16 +131,14 @@ const Admin: React.FC<IAdminProps> = () => {
               <div
                 className={`${
                   item.key === activeSettingsPage.key
-                    ? 'text-neutral-900'
+                    ? 'text-primary-500'
                     : 'text-neutral-500'
                 } text-sm font-medium p-4 flex items-center gap-x-3`}
               >
                 <Icon
                   name={item.icon}
                   hover={false}
-                  stroke={
-                    item.key === activeSettingsPage.key ? '#171717' : undefined
-                  }
+                  isActive={activeSettingsPage.key === item.key}
                 />
                 {item.label}
               </div>

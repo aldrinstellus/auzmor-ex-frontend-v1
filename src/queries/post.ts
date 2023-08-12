@@ -221,6 +221,7 @@ export enum PostFilterKeys {
   Next = 'next',
   Prev = 'prev',
   Bookmarks = 'bookmarks',
+  BookmarkedByMe = 'bookmarkedbyme',
   Scheduled = 'scheduled',
 }
 
@@ -236,8 +237,7 @@ export interface IPostFilters {
   [PostFilterKeys.Feed]?: FeedType;
   [PostFilterKeys.Next]?: number;
   [PostFilterKeys.Prev]?: number;
-  [PostFilterKeys.Bookmarks]?: boolean;
-  [PostFilterKeys.Scheduled]?: boolean;
+  [PostFilterKeys.BookmarkedByMe]?: boolean;
 }
 
 export const createPost = async (payload: IPostPayload) => {
@@ -350,34 +350,7 @@ export const fetchFeed = async (
   setFeed: (feed: { [key: string]: IPost }) => void,
 ) => {
   let response = null;
-  if (
-    !!context.queryKey[1] &&
-    !!(context.queryKey[1] as Record<string, any>).bookmarks &&
-    !!!context.pageParam
-  ) {
-    response = await apiService.get('/posts/my-bookmarks');
-    setFeed({
-      ..._.chain(response.data.result.data).keyBy('id').value(),
-    });
-    response.data.result.data = response.data.result.data.map(
-      (eachPost: IPost) => ({ id: eachPost.id }),
-    );
-    return response;
-  } else if (
-    !!context.queryKey[1] &&
-    !!(context.queryKey[1] as Record<string, any>).scheduled &&
-    !!!context.pageParam
-  ) {
-    response = await apiService.get('/posts/scheduled');
-    setFeed({
-      ...feed,
-      ..._.chain(response.data.result.data).keyBy('id').value(),
-    });
-    response.data.result.data = response.data.result.data.map(
-      (eachPost: IPost) => ({ id: eachPost.id }),
-    );
-    return response;
-  } else if (!!!context.pageParam) {
+  if (!!!context.pageParam) {
     response = await apiService.get('/posts', context.queryKey[1]);
     setFeed({
       ...feed,
@@ -400,15 +373,86 @@ export const fetchFeed = async (
   }
 };
 
-export const useInfiniteFeed = (q?: Record<string, any>) => {
+export const fetchScheduledPosts = async (
+  context: QueryFunctionContext<
+    (string | Record<string, any> | undefined)[],
+    any
+  >,
+  feed: {
+    [key: string]: IPost;
+  },
+  setFeed: (feed: { [key: string]: IPost }) => void,
+) => {
+  let response = null;
+  if (!!!context.pageParam) {
+    response = await apiService.get('/posts/scheduled');
+    setFeed({
+      ..._.chain(response.data.result.data).keyBy('id').value(),
+    });
+    response.data.result.data = response.data.result.data.map(
+      (eachPost: IPost) => ({ id: eachPost.id }),
+    );
+    return response;
+  } else {
+    response = await apiService.get(context.pageParam, context.queryKey[1]);
+    setFeed({
+      ...feed,
+      ..._.chain(response.data.result.data).keyBy('id').value(),
+    });
+    response.data.result.data = response.data.result.data.map(
+      (eachPost: IPost) => ({ id: eachPost.id }),
+    );
+    return response;
+  }
+};
+
+export const fetchBookmarks = async (
+  context: QueryFunctionContext<
+    (string | Record<string, any> | undefined)[],
+    any
+  >,
+  feed: {
+    [key: string]: IPost;
+  },
+  setFeed: (feed: { [key: string]: IPost }) => void,
+) => {
+  let response = null;
+  if (!!!context.pageParam) {
+    response = await apiService.get('/posts/my-bookmarks');
+    setFeed({
+      ..._.chain(response.data.result.data).keyBy('id').value(),
+    });
+    response.data.result.data = response.data.result.data.map(
+      (eachPost: IPost) => ({ id: eachPost.id }),
+    );
+    return response;
+  } else {
+    response = await apiService.get(context.pageParam, context.queryKey[1]);
+    setFeed({
+      ...feed,
+      ..._.chain(response.data.result.data).keyBy('id').value(),
+    });
+    response.data.result.data = response.data.result.data.map(
+      (eachPost: IPost) => ({ id: eachPost.id }),
+    );
+    return response;
+  }
+};
+
+const feedFunction: Record<string, any> = {
+  feed: fetchFeed,
+  bookmarks: fetchBookmarks,
+  scheduledPosts: fetchScheduledPosts,
+};
+
+export const useInfiniteFeed = (pathname: string, q?: Record<string, any>) => {
   const { feed, setFeed } = useFeedStore();
+  const queryKey = pathname.replaceAll('/', '');
+  const queryFunction = queryKey === '' ? fetchFeed : feedFunction[queryKey];
   return {
     ...useInfiniteQuery({
-      queryKey: [
-        (q as Record<string, any>).bookmarks ? 'my-bookmarks' : 'feed',
-        q,
-      ],
-      queryFn: (context) => fetchFeed(context, feed, setFeed),
+      queryKey: [queryKey, q],
+      queryFn: (context) => queryFunction(context, feed, setFeed),
       getNextPageParam: (lastPage: any) => {
         const pageDataLen = lastPage?.data?.result?.data?.length;
         const pageLimit = lastPage?.data?.result?.paging?.limit;

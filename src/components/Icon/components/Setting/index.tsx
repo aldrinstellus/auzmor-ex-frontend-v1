@@ -9,6 +9,7 @@ type IconProps = {
   hover?: boolean;
   disabled?: boolean;
   onClick?: () => void;
+  isActive?: boolean;
 };
 
 const SettingIcon: React.FC<IconProps> = ({
@@ -16,6 +17,7 @@ const SettingIcon: React.FC<IconProps> = ({
   onClick,
   className = '',
   disabled,
+  isActive,
   ...props
 }) => {
   const [isHovered, eventHandlers] = useHover();
