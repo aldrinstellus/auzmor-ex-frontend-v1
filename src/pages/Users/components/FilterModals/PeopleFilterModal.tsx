@@ -73,26 +73,26 @@ const PeopleFilterModal: React.FC<IPeopleFilterModalProps> = ({
   ];
 
   const filterNavigation = [
-    {
-      label: 'Location',
-      icon: '',
-      key: 'location-filters',
-      component: <div>General Settings Page</div>,
-      disabled: true,
-      hidden: false,
-      search: true,
-      dataTestId: 'people-filterby-location',
-    },
-    {
-      label: 'Departments',
-      icon: '',
-      key: 'departments-filters',
-      component: <div>User Management Settings Page</div>,
-      disabled: true,
-      hidden: false,
-      search: true,
-      dataTestId: 'people-filterby-department',
-    },
+    // {
+    //   label: 'Location',
+    //   icon: '',
+    //   key: 'location-filters',
+    //   component: <div>General Settings Page</div>,
+    //   disabled: true,
+    //   hidden: false,
+    //   search: true,
+    //   dataTestId: 'people-filterby-location',
+    // },
+    // {
+    //   label: 'Departments',
+    //   icon: '',
+    //   key: 'departments-filters',
+    //   component: <div>User Management Settings Page</div>,
+    //   disabled: true,
+    //   hidden: false,
+    //   search: true,
+    //   dataTestId: 'people-filterby-department',
+    // },
     {
       label: 'Status',
       icon: '',
@@ -103,32 +103,31 @@ const PeopleFilterModal: React.FC<IPeopleFilterModalProps> = ({
       search: false,
       dataTestId: 'people-filterby-status',
     },
-    {
-      label: 'Reports to me',
-      icon: '',
-      key: 'reporting-filters',
-      component: <div>Hello</div>,
-      disabled: true,
-      hidden: false,
-      search: true,
-      dataTestId: 'people-filterby-reportstome',
-    },
+    // {
+    //   label: 'Reports to me',
+    //   icon: '',
+    //   key: 'reporting-filters',
+    //   component: <div>Hello</div>,
+    //   disabled: true,
+    //   hidden: false,
+    //   search: true,
+    //   dataTestId: 'people-filterby-reportstome',
+    // },
   ];
 
   const [activeFilter, setActiveFilter] = useState<IFilters>(
-    filterNavigation[2], // change this to 0 when other fields are ready
+    filterNavigation[0],
   );
+
   return (
     <div>
-      <Modal open={open} closeModal={close} className="max-w-3xl">
-        {/* Body */}
+      <Modal open={open} closeModal={close} className="max-w-[665px]">
         <Header
-          title="Filter by"
+          title="Filter By"
           onClose={() => closeModal()}
           closeBtnDataTestId="close-filters"
         />
 
-        {/* Body */}
         <form>
           <div className="flex w-full">
             <div className="flex flex-col w-1/3 pb-64 border-r-2 border-r-neutral-200">
@@ -136,15 +135,10 @@ const PeopleFilterModal: React.FC<IPeopleFilterModalProps> = ({
                 {filterNavigation.map((item, index) => (
                   <div
                     key={item.key}
-                    className={
-                      item.disabled
-                        ? 'hover:cursor-not-allowed bg-neutral-100'
-                        : 'hover:bg-green-50 cursor-pointer'
-                    }
                     onClick={() => setActiveFilter(item)}
                     data-testid={item?.dataTestId}
                   >
-                    <div className="text-neutral-500 text-sm font-medium p-4 flex items-center gap-x-3">
+                    <div className="text-primary-500 bg-primary-50 text-sm font-medium p-4">
                       {item.label}
                     </div>
                     {index !== filterNavigation.length - 1 && <Divider />}
@@ -152,32 +146,15 @@ const PeopleFilterModal: React.FC<IPeopleFilterModalProps> = ({
                 ))}
               </div>
             </div>
-            <div className="w-2/3">
-              {activeFilter.search && (
-                <div>
-                  <Layout
-                    fields={[
-                      {
-                        type: FieldType.Input,
-                        size: InputSize.Small,
-                        leftIcon: 'search',
-                        control,
-                        name: 'search',
-                        placeholder: 'Search members',
-                      },
-                    ]}
-                  />
-                </div>
-              )}
-              {activeFilter.component}
-            </div>
+
+            <div className="w-2/3">{activeFilter.component}</div>
           </div>
         </form>
 
         {/* Footer */}
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
-            label="Clear Fiters"
+            label="Clear Filters"
             variant={ButtonVariant.Secondary}
             onClick={() => {
               setUserStatus && setUserStatus('');

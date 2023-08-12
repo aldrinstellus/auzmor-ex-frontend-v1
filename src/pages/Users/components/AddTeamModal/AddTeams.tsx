@@ -28,7 +28,7 @@ const AddTeams: React.FC<IAddTeamsProps> = ({
       required: true,
       control,
       error: errors?.name?.message,
-      dataTestId: '',
+      dataTestId: 'add-team-name',
       showCounter: true,
       maxLength: 100,
     },
@@ -45,7 +45,7 @@ const AddTeams: React.FC<IAddTeamsProps> = ({
       defaultValue: defaultValues,
       categoryType: CategoryType.TEAM,
       error: errors.category?.message,
-      dataTestId: '',
+      dataTestId: 'select-team-category',
     },
   ];
   const teamDescription = [
@@ -55,7 +55,7 @@ const AddTeams: React.FC<IAddTeamsProps> = ({
       label: 'Team description',
       placeholder: 'What is the purpose of this team',
       defaultValue: defaultValues,
-      dataTestId: '',
+      dataTestId: 'adding-team-description',
       control,
       className: 'resize-none rounded-19xl',
       rows: 4,

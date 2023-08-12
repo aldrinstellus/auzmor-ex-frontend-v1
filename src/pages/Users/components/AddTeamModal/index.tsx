@@ -58,8 +58,6 @@ const AddTeamModal: React.FC<IAddTeamModalProps> = ({
     },
   });
 
-  console.log('what is the data', data, mode);
-
   const schema = yup.object({
     name: yup.string().required('Please enter team name'),
     category: yup.object().required('Please select team category'),
@@ -110,18 +108,18 @@ const AddTeamModal: React.FC<IAddTeamModalProps> = ({
         />
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
-            label="Cancel"
+            label="Back"
             variant={ButtonVariant.Secondary}
             disabled={false}
             className="mr-4"
             onClick={() => closeModal()}
-            dataTestId=""
+            dataTestId="add-team-back"
           />
           <Button
             label="Create"
             onClick={handleSubmit(onSubmit)}
             loading={createTeamMutation?.isLoading}
-            dataTestId=""
+            dataTestId="create-team-cta"
           />
         </div>
       </Modal>

@@ -72,6 +72,7 @@ import SvgGlobalFilled from '../components/Global/GlobalFilled';
 import SvgProfileUserFilled from '../components/ProfileUser/ProfileUserFilled';
 import SvgLinearLeftArrowFilled from '../components/LinearLeftArrow/LinearLeftArrowFilled';
 import SvgRepostFilled from '../components/Repost/RepostFilled';
+import SvgCalendarFilled from '../components/Calendar/CalendarFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -83,6 +84,7 @@ export const filledIcon = {
   carouselLeftFilled: SvgCarouselLeftFilled,
   carouselRightFilled: SvgCarouselRightFilled,
   celebrateFilled: SvgCelebrateFilled,
+  calendarFilled: SvgCalendarFilled,
   chartFilled: SvgChartFilled,
   clipboardFilled: SvgClipboardCloseFilled,
   clockFilled: SvgClockFilled,

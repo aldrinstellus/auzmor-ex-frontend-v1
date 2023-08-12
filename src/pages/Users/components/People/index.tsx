@@ -183,7 +183,8 @@ const People: React.FC<IPeopleProps> = ({
         </div>
 
         <div className="text-neutral-500 mt-6 mb-6">
-          Showing {!isLoading && usersData?.length} results
+          Showing {!isLoading && data?.pages[0]?.data?.result?.totalCount}{' '}
+          results
         </div>
 
         {userStatus && (

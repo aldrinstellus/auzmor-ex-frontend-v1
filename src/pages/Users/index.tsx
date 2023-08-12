@@ -48,7 +48,7 @@ const Users: React.FC<IUsersProps> = () => {
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>People</div>
       ),
-      dataTestId: 'people-view-people',
+      dataTestId: 'people-view-tab',
       tabContent: (
         <>
           <People
@@ -87,7 +87,7 @@ const Users: React.FC<IUsersProps> = () => {
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>Teams</div>
       ),
-      dataTestId: 'people-view-teams',
+      dataTestId: 'teams-view-tab',
       tabContent: (
         <Team
           setShowMyTeam={setShowMyTeam}

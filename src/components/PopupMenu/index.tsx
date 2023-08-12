@@ -22,12 +22,14 @@ export interface IPopupMenuProps {
   triggerNode: ReactNode;
   menuItems: IMenuItem[];
   className?: string;
+  title?: ReactNode;
 }
 
 const PopupMenu: React.FC<IPopupMenuProps> = ({
   triggerNode,
   menuItems,
   className,
+  title,
 }) => {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   return (
@@ -36,6 +38,7 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
       <Menu.Items
         className={`bg-white rounded-9xl shadow-lg absolute z-[99999] overflow-hidden ${className}`}
       >
+        {title && title}
         {menuItems.map((menuItem: IMenuItem, idx: number) => (
           <>
             {!menuItem.disabled && (

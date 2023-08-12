@@ -8,6 +8,7 @@ export type AvatarListProps = {
   size?: number;
   className?: string;
   onClick?: () => null;
+  dataTestId?: string;
 };
 
 interface IUser {
@@ -22,10 +23,11 @@ const AvatarList: React.FC<AvatarListProps> = ({
   className = '',
   size = 48,
   onClick = () => {},
+  dataTestId = '',
 }) => {
   const styles = clsx({ 'flex -space-x-8': true }, { [className]: true });
   return (
-    <div className={styles}>
+    <div className={styles} data-testid={dataTestId}>
       {users
         .map((user: IUser) => {
           return (

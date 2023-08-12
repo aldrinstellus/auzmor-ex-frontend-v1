@@ -81,6 +81,9 @@ import SvgProfileUserOutline from '../components/ProfileUser/ProfileUserOutline'
 import SvgShareForwardOutline from '../components/ShareForward/ShareForwardOutline';
 import SvgLinearLeftArrowOutline from '../components/LinearLeftArrow/LinearLeftArrowOutline';
 import SvgRepostOutline from '../components/Repost/RepostOutline';
+import SvgCalendarOutline from '../components/Calendar/CalendarOutline';
+import SvgSortByAcsOutline from '../components/SortByAcs/SortByAcsOutline';
+import SvgSortByDescOutline from '../components/SortByDesc/SortByDescOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -102,6 +105,7 @@ export const outlineIcon = {
   commentOutline: SvgCommentOutline,
   connectionOutline: SvgConnectionFolderOutline,
   convertShapeOutline: SvgConvertShapeOutline,
+  calendarOutline: SvgCalendarOutline,
   copyLinkOutline: SvgCopyLinkOutline,
   copyOutline: SvgCopyOutline,
   crossCircleOutline: SvgCrossCircleOutline,
@@ -157,6 +161,8 @@ export const outlineIcon = {
   shareForwardOutline: SvgShareForwardOutline,
   speakerOutline: SvgSpeakerOutline,
   supportOutline: SvgSupportOutline,
+  sortByAcs: SvgSortByAcsOutline,
+  sortByDesc: SvgSortByDescOutline,
   threeDotsOutline: SvgThreeDotsOutline,
   tickCircleOutline: SvgTickCircleOutline,
   trashOutline: SvgTrashOutline,

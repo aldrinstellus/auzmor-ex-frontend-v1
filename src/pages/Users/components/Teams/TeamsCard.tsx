@@ -10,6 +10,7 @@ import useRole from 'hooks/useRole';
 import DeleteTeam from '../DeleteModals/Team';
 import useModal from 'hooks/useModal';
 import { TeamFlow } from '.';
+import moment from 'moment';
 
 // types....
 
@@ -18,6 +19,8 @@ export interface ITeamsCardProps {
   name: string;
   category: Record<string, any>;
   description: string;
+  createdAtDate: string;
+  totalMembers: number;
   setShowMyTeam: (show: boolean) => void;
   setTeamFlow: (mode: string) => void;
 }
@@ -28,17 +31,20 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
   name,
   category,
   description,
+  createdAtDate,
+  totalMembers,
   setTeamFlow,
 }) => {
   const [isHovered, eventHandlers] = useHover();
   const [open, openModal, closeModal] = useModal();
   const { isAdmin } = useRole();
-
+  const currentDate = moment();
   return (
     <div className="cursor-pointer" data-testid="" {...eventHandlers}>
       <Card
         shadowOnHover
         className="relative w-[188px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white"
+        dataTestId="team-card"
       >
         {isAdmin && isHovered > 0 && (
           <PopupMenu
@@ -58,10 +64,9 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
                 icon: 'edit',
                 label: 'Edit',
                 onClick: () => {
-                  setTeamFlow(TeamFlow.EditTeam);
                   openModal();
                 },
-                dataTestId: '',
+                dataTestId: 'team-edit',
                 permissions: [''],
               },
               {
@@ -70,29 +75,36 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
                 onClick: () => {
                   // sharing the team
                 },
-                dataTestId: '',
+                dataTestId: 'team-share',
                 permissions: [''],
               },
               {
                 icon: 'cancel',
                 label: 'Remove',
                 onClick: () => openModal(),
+                dataTestId: 'team-remove',
                 permissions: [''],
               },
             ]}
             className="-right-36 w-44 top-8"
           />
         )}
-        {/* Conditionally Render based on API Response - based on the communintated using createdAt date*/}
-        {/* <div
-          style={{
-            backgroundColor: '#D1FAE5',
-          }}
-          className="absolute top-0 left-0 text-primary-500 rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium"
-        >
-          Recently added
-        </div> */}
-
+        {moment(createdAtDate)?.isBetween(
+          moment().subtract(7, 'days'),
+          currentDate,
+          null,
+          '[]',
+        ) && (
+          <div
+            style={{
+              backgroundColor: '#D1FAE5',
+            }}
+            className="absolute top-0 left-0 text-primary-500 rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium"
+            data-testid="team-badge-recentlyadded"
+          >
+            Recently added
+          </div>
+        )}
         <div
           className="flex flex-col items-center"
           onClick={() => setShowMyTeam(true)}
@@ -102,6 +114,7 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
             users={[]}
             displayCount={2}
             className="mb-4 mt-1"
+            dataTestId="teams-people-icon"
           />
           <div className="p-[18px] bg-neutral-200 rounded-full mb-4 mt-1">
             <img src={TeamWork} height={44} width={44} />
@@ -110,7 +123,7 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
             <div className="flex flex-col items-center space-y-1">
               <div
                 className="truncate text-neutral-900 text-base font-bold"
-                data-testid={`team-card-name-${name}`}
+                data-testid={`team-name-${name}`}
               >
                 {truncate(name, {
                   length: 24,
@@ -118,15 +131,21 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
                 })}
               </div>
 
-              <div className="bg-indigo-100 text-indigo-500 text-xxs font-semibold rounded-xl py-0.4 px-2 truncate capitalize">
+              <div
+                className="bg-indigo-100 text-indigo-500 text-xxs font-semibold rounded-xl py-0.4 px-2 truncate capitalize"
+                data-testid={`team-category-${category?.name?.toLowerCase()}`}
+              >
                 {category?.name?.toLowerCase()}
               </div>
             </div>
 
             <div className="flex items-center justify-center space-x-1">
               <Icon name="profileUserOutline" size={18} />
-              <div className="text-xs font-normal text-neutral-500">
-                {0} members
+              <div
+                className="text-xs font-normal text-neutral-500"
+                data-testid={`team-no-of-members-${totalMembers}`}
+              >
+                {totalMembers} members
               </div>
             </div>
           </div>
