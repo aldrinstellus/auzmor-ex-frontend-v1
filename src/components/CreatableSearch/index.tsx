@@ -137,7 +137,6 @@ const CreatableSearch = React.forwardRef(
           <Controller
             name={name}
             control={control}
-            defaultValue={defaultValue}
             render={() => (
               <CreatableSelect
                 isDisabled={disabled}
@@ -146,6 +145,7 @@ const CreatableSearch = React.forwardRef(
                   menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                   ...selectStyle,
                 }}
+                defaultValue={defaultValue}
                 onInputChange={(value) => setSearchValue(value)}
                 options={categoriesData}
                 menuPlacement={menuPlacement ? menuPlacement : 'top'}

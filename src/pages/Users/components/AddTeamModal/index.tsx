@@ -6,7 +6,7 @@ import Header from 'components/ModalHeader';
 import ConfirmationBox from 'components/ConfirmationBox';
 import AddTeams from './AddTeams';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createTeams } from 'queries/users';
+import { createTeams, updateTeam } from 'queries/users';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
@@ -14,10 +14,13 @@ import { twConfig } from 'utils/misc';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import FailureToast from 'components/Toast/variants/FailureToast';
+import Icon from 'components/Icon';
+import { ITeamCategory, ITeamDetails, TeamFlow } from '../Teams';
 
 export interface ITeamForm {
   name: string;
-  category: Record<string, any>;
+  category: ITeamCategory | string;
   description: string;
 }
 
@@ -25,18 +28,31 @@ export interface IAddTeamModalProps {
   open: boolean;
   openModal: () => void;
   closeModal: () => void;
-  data: any;
-  mode: string;
 }
 
 const AddTeamModal: React.FC<IAddTeamModalProps> = ({
   open,
   openModal,
   closeModal,
-  data,
-  mode,
 }) => {
   const queryClient = useQueryClient();
+
+  const schema = yup.object({
+    name: yup.string().required('Please enter team name'),
+    category: yup.object().required('Please select team category'),
+    description: yup.string().required('please enter role'),
+  });
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    getValues,
+    formState: { errors, isValid },
+  } = useForm<ITeamForm>({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+  });
 
   const createTeamMutation = useMutation({
     mutationKey: ['create-teams'],
@@ -59,33 +75,70 @@ const AddTeamModal: React.FC<IAddTeamModalProps> = ({
     },
   });
 
-  const schema = yup.object({
-    name: yup.string().required('Please enter team name'),
-    category: yup.object().required('Please select team category'),
-    description: yup.string().required('please enter role'),
-  });
-
-  const {
-    control,
-    handleSubmit,
-    watch,
-    reset,
-    formState: { errors, isValid },
-  } = useForm<ITeamForm>({
-    resolver: yupResolver(schema),
-    mode: 'onChange',
-    defaultValues: {
-      name: 'Team Name',
-      category: { name: 'Nothing' },
-      description: 'new team description',
-    },
-  });
+  // const updateTeamMutation = useMutation({
+  //   mutationKey: ['update-team', teamId],
+  //   mutationFn: (payload: any) => {
+  //     return updateTeam(teamId || '', payload);
+  //   },
+  //   onError: () => {
+  //     toast(
+  //       <FailureToast
+  //         content={`Error Updating Team`}
+  //         dataTestId="team-update-error-toaster"
+  //       />,
+  //       {
+  //         closeButton: (
+  //           <Icon
+  //             name="closeCircleOutline"
+  //             stroke={twConfig.theme.colors.red['500']}
+  //             size={20}
+  //           />
+  //         ),
+  //         style: {
+  //           border: `1px solid ${twConfig.theme.colors.red['300']}`,
+  //           borderRadius: '6px',
+  //           display: 'flex',
+  //           alignItems: 'center',
+  //         },
+  //         autoClose: TOAST_AUTOCLOSE_TIME,
+  //         transition: slideInAndOutTop,
+  //         theme: 'dark',
+  //       },
+  //     );
+  //   },
+  //   onSuccess: () => {
+  //     toast(
+  //       <SuccessToast
+  //         content={`Team has been updated`}
+  //         dataTestId="team-updated-success-toaster"
+  //       />,
+  //       {
+  //         closeButton: (
+  //           <Icon
+  //             name="closeCircleOutline"
+  //             stroke={twConfig.theme.colors.primary['500']}
+  //             size={20}
+  //           />
+  //         ),
+  //         style: {
+  //           border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+  //           borderRadius: '6px',
+  //           display: 'flex',
+  //           alignItems: 'center',
+  //         },
+  //         autoClose: TOAST_AUTOCLOSE_TIME,
+  //         transition: slideInAndOutTop,
+  //         theme: 'dark',
+  //       },
+  //     );
+  //   },
+  // });
 
   useEffect(() => {
     if (!open) reset();
   }, [open]);
 
-  const onSubmit = (data: ITeamForm) => {
+  const onSubmit = (data: any) => {
     const payload = {
       name: data?.name,
       category: data?.category?.value,
@@ -98,15 +151,11 @@ const AddTeamModal: React.FC<IAddTeamModalProps> = ({
     <>
       <Modal open={open} className="max-w-[638px]">
         <Header
-          title="Add new team"
+          title="Add new Team"
           onClose={() => closeModal()}
           closeBtnDataTestId="invite-people-close"
         />
-        <AddTeams
-          control={control}
-          errors={errors}
-          defaultValues={'Something'}
-        />
+        <AddTeams control={control} errors={errors} />
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
             label="Back"

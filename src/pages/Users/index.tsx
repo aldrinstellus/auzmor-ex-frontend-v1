@@ -90,7 +90,6 @@ const Users: React.FC<IUsersProps> = () => {
       dataTestId: 'teams-view-tab',
       tabContent: (
         <Team
-          setShowMyTeam={setShowMyTeam}
           showAddTeamModal={showAddTeamModal}
           openAddTeamModal={openAddTeamModal}
           closeAddTeamModal={closeAddTeamModal}

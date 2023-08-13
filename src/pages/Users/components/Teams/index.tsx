@@ -16,7 +16,6 @@ import AddTeamModal from '../AddTeamModal';
 import { useInfiniteTeams } from 'queries/users';
 import { isFiltersEmpty } from 'utils/misc';
 import PageLoader from 'components/PageLoader';
-import UsersSkeleton from '../Skeletons/UsersSkeleton';
 import TeamNotFound from 'images/TeamNotFound.svg';
 import PopupMenu from 'components/PopupMenu';
 import TeamsSkeleton from '../Skeletons/TeamsSkeleton';
@@ -29,22 +28,33 @@ export enum TeamFlow {
   EditTeam = 'EDIT_TEAM',
 }
 
+export interface ITeamCategory {
+  name: string;
+  categoryId: string;
+}
+
+export interface ITeamDetails {
+  id: string;
+  name: string;
+  category: ITeamCategory;
+  createdAt: string;
+  totalMembers: number;
+  description: string;
+}
+
 export interface ITeamProps {
-  setShowMyTeam: (show: boolean) => void;
   showAddTeamModal: boolean;
   openAddTeamModal: () => void;
   closeAddTeamModal: () => void;
 }
 
 const Team: React.FC<ITeamProps> = ({
-  setShowMyTeam,
   showAddTeamModal,
   openAddTeamModal,
   closeAddTeamModal,
 }) => {
   const [sortByFilter, setSortByFilter] = useState<string>('');
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
-  const [teamFlow, setTeamFlow] = useState<TeamFlow>(TeamFlow.CreateTeam);
   const { ref, inView } = useInView();
 
   const {
@@ -240,12 +250,7 @@ const Team: React.FC<ITeamProps> = ({
               return (
                 <>
                   {teamsData?.map((team: any) => (
-                    <TeamsCard
-                      key={team.id}
-                      {...team}
-                      setShowMyTeam={setShowMyTeam}
-                      setTeamFlow={setTeamFlow}
-                    />
+                    <TeamsCard key={team.id} {...team} />
                   ))}
                   <div className="h-12 w-12">
                     {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
@@ -324,13 +329,13 @@ const Team: React.FC<ITeamProps> = ({
           })()}
         </div>
       </div>
+
       <AddTeamModal
         open={showAddTeamModal}
         openModal={openAddTeamModal}
         closeModal={closeAddTeamModal}
-        data={teamsData}
-        mode={teamFlow}
       />
+
       <TeamFilterModal
         open={showFilterModal}
         openModal={openFilterModal}

@@ -9,10 +9,8 @@ import PopupMenu from 'components/PopupMenu';
 import useRole from 'hooks/useRole';
 import DeleteTeam from '../DeleteModals/Team';
 import useModal from 'hooks/useModal';
-import { TeamFlow } from '.';
+import { ITeamDetails, TeamFlow } from '.';
 import moment from 'moment';
-
-// types....
 
 export interface ITeamsCardProps {
   id: string;
@@ -21,22 +19,17 @@ export interface ITeamsCardProps {
   description: string;
   createdAtDate: string;
   totalMembers: number;
-  setShowMyTeam: (show: boolean) => void;
-  setTeamFlow: (mode: string) => void;
 }
 
 const TeamsCard: React.FC<ITeamsCardProps> = ({
-  setShowMyTeam,
   id,
   name,
   category,
-  description,
   createdAtDate,
   totalMembers,
-  setTeamFlow,
 }) => {
   const [isHovered, eventHandlers] = useHover();
-  const [open, openModal, closeModal] = useModal();
+  const [showDeleteModal, openDeleteModal, closeDeleteModal] = useModal();
   const { isAdmin } = useRole();
   const currentDate = moment();
   return (
@@ -63,25 +56,20 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
               {
                 icon: 'edit',
                 label: 'Edit',
-                onClick: () => {
-                  openModal();
-                },
+                onClick: () => {},
                 dataTestId: 'team-edit',
                 permissions: [''],
               },
               {
                 icon: 'shareForwardOutline',
                 label: 'Share',
-                onClick: () => {
-                  // sharing the team
-                },
                 dataTestId: 'team-share',
                 permissions: [''],
               },
               {
                 icon: 'cancel',
                 label: 'Remove',
-                onClick: () => openModal(),
+                onClick: () => openDeleteModal(),
                 dataTestId: 'team-remove',
                 permissions: [''],
               },
@@ -105,10 +93,7 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
             Recently added
           </div>
         )}
-        <div
-          className="flex flex-col items-center"
-          onClick={() => setShowMyTeam(true)}
-        >
+        <div className="flex flex-col items-center">
           <AvatarList
             size={80}
             users={[]}
@@ -153,9 +138,9 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
       </Card>
 
       <DeleteTeam
-        open={open}
-        openModal={openModal}
-        closeModal={closeModal}
+        open={showDeleteModal}
+        openModal={openDeleteModal}
+        closeModal={closeDeleteModal}
         userId={id}
       />
     </div>
