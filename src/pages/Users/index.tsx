@@ -15,7 +15,6 @@ interface IUsersProps {}
 
 const Users: React.FC<IUsersProps> = () => {
   const [showOrgChart, setShowOrgChart] = useState<boolean>(false);
-  const [showMyTeam, setShowMyTeam] = useState<boolean>(false);
   const [showAddUserModal, openAddUserModal, closeAddUserModal] = useModal(
     undefined,
     false,
@@ -110,23 +109,17 @@ const Users: React.FC<IUsersProps> = () => {
   return showOrgChart ? (
     <OrgChart setShowOrgChart={setShowOrgChart} />
   ) : (
-    <>
-      {!showMyTeam ? (
-        <Card className="p-8 w-full h-full">
-          <Tabs
-            tabs={tabs}
-            title={'People Hub'}
-            className="w-fit flex justify-start bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200"
-            tabSwitcherClassName="!p-1"
-            showUnderline={false}
-            itemSpacing={1}
-            tabContentClassName="mt-8"
-          />
-        </Card>
-      ) : (
-        <TeamMember setShowMyTeam={setShowMyTeam} />
-      )}
-    </>
+    <Card className="p-8 w-full h-full">
+      <Tabs
+        tabs={tabs}
+        title={'People Hub'}
+        className="w-fit flex justify-start bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200"
+        tabSwitcherClassName="!p-1"
+        showUnderline={false}
+        itemSpacing={1}
+        tabContentClassName="mt-8"
+      />
+    </Card>
   );
 };
 
