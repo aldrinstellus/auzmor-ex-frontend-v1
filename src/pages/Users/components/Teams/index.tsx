@@ -44,18 +44,20 @@ export interface ITeamDetails {
 }
 
 export interface ITeamProps {
-  showAddTeamModal: boolean;
-  openAddTeamModal: () => void;
-  closeAddTeamModal: () => void;
+  showTeamModal: boolean;
+  openTeamModal: () => void;
+  closeTeamModal: () => void;
 }
 
 const Team: React.FC<ITeamProps> = ({
-  showAddTeamModal,
-  openAddTeamModal,
-  closeAddTeamModal,
+  showTeamModal,
+  openTeamModal,
+  closeTeamModal,
 }) => {
   const [sortByFilter, setSortByFilter] = useState<string>('');
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
+  const [teamFlow, setTeamFlow] = useState<TeamFlow>(TeamFlow.CreateTeam);
+  const [teamId, setTeamId] = useState<string>('');
   const { ref, inView } = useInView();
 
   const {
@@ -94,6 +96,8 @@ const Team: React.FC<ITeamProps> = ({
       }
     });
   });
+
+  const editSelectedTeam = teamsData?.find((team) => team.id === teamId);
 
   return (
     <div className="relative pb-8">
@@ -255,7 +259,13 @@ const Team: React.FC<ITeamProps> = ({
             return (
               <>
                 {teamsData?.map((team: any) => (
-                  <TeamsCard key={team.id} {...team} />
+                  <TeamsCard
+                    key={team.id}
+                    setTeamFlow={setTeamFlow}
+                    openModal={openTeamModal}
+                    setTeamId={setTeamId}
+                    {...team}
+                  />
                 ))}
                 <div className="h-12 w-12">
                   {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
@@ -291,7 +301,7 @@ const Team: React.FC<ITeamProps> = ({
                     </div>
                     <div
                       className="text-blue-500 cursor-pointer"
-                      onClick={() => openAddTeamModal()}
+                      onClick={() => openTeamModal()}
                       data-testid="create-one-team"
                     >
                       create one
@@ -334,9 +344,12 @@ const Team: React.FC<ITeamProps> = ({
       </div>
 
       <AddTeamModal
-        open={showAddTeamModal}
-        openModal={openAddTeamModal}
-        closeModal={closeAddTeamModal}
+        open={showTeamModal}
+        openModal={openTeamModal}
+        closeModal={closeTeamModal}
+        teamFlowMode={teamFlow}
+        setTeamFlow={setTeamFlow}
+        team={editSelectedTeam}
       />
 
       <TeamFilterModal

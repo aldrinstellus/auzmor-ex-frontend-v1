@@ -187,6 +187,7 @@ const Input: React.FC<InputProps> = ({
             defaultValue={defaultValue}
             value={field.value}
             ref={inputRef}
+            maxLength={maxLength}
             onChange={field.onChange}
             onKeyDown={onEnter}
             onBlur={field.onBlur}

@@ -145,7 +145,7 @@ const CreatableSearch = React.forwardRef(
                   menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                   ...selectStyle,
                 }}
-                defaultValue={defaultValue}
+                defaultInputValue={defaultValue}
                 onInputChange={(value) => setSearchValue(value)}
                 options={categoriesData}
                 menuPlacement={menuPlacement ? menuPlacement : 'top'}

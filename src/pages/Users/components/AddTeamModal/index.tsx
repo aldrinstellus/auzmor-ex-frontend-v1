@@ -28,12 +28,18 @@ export interface IAddTeamModalProps {
   open: boolean;
   openModal: () => void;
   closeModal: () => void;
+  teamFlowMode: string;
+  setTeamFlow: any;
+  team: ITeamDetails;
 }
 
 const AddTeamModal: React.FC<IAddTeamModalProps> = ({
   open,
   openModal,
   closeModal,
+  teamFlowMode,
+  setTeamFlow,
+  team,
 }) => {
   const queryClient = useQueryClient();
 
@@ -48,10 +54,17 @@ const AddTeamModal: React.FC<IAddTeamModalProps> = ({
     handleSubmit,
     formState: { errors, isValid },
     reset,
+    getValues,
     setError,
+    resetField,
   } = useForm<ITeamForm>({
     resolver: yupResolver(schema),
     mode: 'onChange',
+    defaultValues: {
+      name: team?.name || '',
+      category: team?.category?.name || '',
+      description: team?.description || '',
+    },
   });
 
   const createTeamMutation = useMutation({
@@ -64,6 +77,30 @@ const AddTeamModal: React.FC<IAddTeamModalProps> = ({
           message: error?.response?.data?.errors[0]?.message,
         });
       }
+      toast(
+        <FailureToast
+          content={`Error Creating Team`}
+          dataTestId="team-create-error-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.red['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
     },
     onSuccess: (data: any) => {
       queryClient.invalidateQueries(['teams']);
@@ -82,68 +119,73 @@ const AddTeamModal: React.FC<IAddTeamModalProps> = ({
     },
   });
 
-  // const updateTeamMutation = useMutation({
-  //   mutationKey: ['update-team', teamId],
-  //   mutationFn: (payload: any) => {
-  //     return updateTeam(teamId || '', payload);
-  //   },
-  //   onError: () => {
-  //     toast(
-  //       <FailureToast
-  //         content={`Error Updating Team`}
-  //         dataTestId="team-update-error-toaster"
-  //       />,
-  //       {
-  //         closeButton: (
-  //           <Icon
-  //             name="closeCircleOutline"
-  //             stroke={twConfig.theme.colors.red['500']}
-  //             size={20}
-  //           />
-  //         ),
-  //         style: {
-  //           border: `1px solid ${twConfig.theme.colors.red['300']}`,
-  //           borderRadius: '6px',
-  //           display: 'flex',
-  //           alignItems: 'center',
-  //         },
-  //         autoClose: TOAST_AUTOCLOSE_TIME,
-  //         transition: slideInAndOutTop,
-  //         theme: 'dark',
-  //       },
-  //     );
-  //   },
-  //   onSuccess: () => {
-  //     toast(
-  //       <SuccessToast
-  //         content={`Team has been updated`}
-  //         dataTestId="team-updated-success-toaster"
-  //       />,
-  //       {
-  //         closeButton: (
-  //           <Icon
-  //             name="closeCircleOutline"
-  //             stroke={twConfig.theme.colors.primary['500']}
-  //             size={20}
-  //           />
-  //         ),
-  //         style: {
-  //           border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-  //           borderRadius: '6px',
-  //           display: 'flex',
-  //           alignItems: 'center',
-  //         },
-  //         autoClose: TOAST_AUTOCLOSE_TIME,
-  //         transition: slideInAndOutTop,
-  //         theme: 'dark',
-  //       },
-  //     );
-  //   },
-  // });
-
-  useEffect(() => {
-    if (!open) reset();
-  }, [open]);
+  const updateTeamMutation = useMutation({
+    mutationKey: ['update-team', team?.id],
+    mutationFn: (payload: any) => {
+      return updateTeam(team?.id || '', payload);
+    },
+    onError: (error: any) => {
+      if (error?.response?.data?.errors?.length) {
+        setError('name', {
+          type: 'custom',
+          message: error?.response?.data?.errors[0]?.message,
+        });
+      }
+      toast(
+        <FailureToast
+          content={`Error Updating Team`}
+          dataTestId="team-update-error-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.red['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['teams']);
+      toast(
+        <SuccessToast
+          content={`Team has been updated`}
+          dataTestId="team-updated-success-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.primary['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+      closeModal();
+      setTeamFlow(TeamFlow.CreateTeam);
+    },
+  });
 
   const onSubmit = (data: any) => {
     const payload = {
@@ -151,16 +193,27 @@ const AddTeamModal: React.FC<IAddTeamModalProps> = ({
       category: data?.category?.value,
       description: data?.description,
     };
-    createTeamMutation.mutate(payload);
+    if (teamFlowMode === TeamFlow.CreateTeam) {
+      createTeamMutation.mutate(payload);
+    } else {
+      updateTeamMutation.mutate(payload);
+    }
   };
 
   return (
     <>
       <Modal open={open} className="max-w-[638px]">
         <Header
-          title="Add new Team"
-          onClose={() => closeModal()}
-          closeBtnDataTestId="invite-people-close"
+          title={`${
+            teamFlowMode === TeamFlow.CreateTeam ? 'Add New' : 'Edit'
+          } Team`}
+          onClose={() => {
+            closeModal();
+            if (teamFlowMode === TeamFlow.EditTeam) {
+              setTeamFlow(TeamFlow.CreateTeam);
+            }
+          }}
+          closeBtnDataTestId="team-close"
         />
         <AddTeams control={control} errors={errors} />
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
@@ -169,13 +222,19 @@ const AddTeamModal: React.FC<IAddTeamModalProps> = ({
             variant={ButtonVariant.Secondary}
             disabled={false}
             className="mr-4"
-            onClick={() => closeModal()}
+            onClick={() => {
+              closeModal();
+              if (teamFlowMode === TeamFlow.EditTeam) {
+                setTeamFlow(TeamFlow.CreateTeam);
+              }
+            }}
             dataTestId="add-team-back"
           />
           <Button
-            label="Create"
+            label={`${
+              teamFlowMode === TeamFlow.CreateTeam ? 'Create' : 'Update'
+            }`}
             onClick={handleSubmit(onSubmit)}
-            disabled={!isValid}
             loading={createTeamMutation?.isLoading}
             dataTestId="create-team-cta"
           />

@@ -19,6 +19,9 @@ export interface ITeamsCardProps {
   description: string;
   createdAtDate: string;
   totalMembers: number;
+  setTeamFlow: (mode: string) => void;
+  openModal: () => void;
+  setTeamId: (teamId: string) => void;
 }
 
 const TeamsCard: React.FC<ITeamsCardProps> = ({
@@ -27,6 +30,9 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
   category,
   createdAtDate,
   totalMembers,
+  setTeamFlow,
+  openModal,
+  setTeamId,
 }) => {
   const [isHovered, eventHandlers] = useHover();
   const [showDeleteModal, openDeleteModal, closeDeleteModal] = useModal();
@@ -56,7 +62,11 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
               {
                 icon: 'edit',
                 label: 'Edit',
-                onClick: () => {},
+                onClick: () => {
+                  openModal();
+                  setTeamFlow(TeamFlow.EditTeam);
+                  setTeamId(id);
+                },
                 dataTestId: 'team-edit',
                 permissions: [''],
               },

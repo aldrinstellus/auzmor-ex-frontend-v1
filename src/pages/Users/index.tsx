@@ -19,7 +19,7 @@ const Users: React.FC<IUsersProps> = () => {
     undefined,
     false,
   );
-  const [showAddTeamModal, openAddTeamModal, closeAddTeamModal] = useModal(
+  const [showTeamModal, openTeamModal, closeTeamModal] = useModal(
     undefined,
     false,
   );
@@ -89,9 +89,9 @@ const Users: React.FC<IUsersProps> = () => {
       dataTestId: 'teams-view-tab',
       tabContent: (
         <Team
-          showAddTeamModal={showAddTeamModal}
-          openAddTeamModal={openAddTeamModal}
-          closeAddTeamModal={closeAddTeamModal}
+          showTeamModal={showTeamModal}
+          openTeamModal={openTeamModal}
+          closeTeamModal={closeTeamModal}
         />
       ),
       tabAction: user?.role !== Role.Member && (
@@ -99,7 +99,7 @@ const Users: React.FC<IUsersProps> = () => {
           className="flex space-x-1"
           label="Add Teams"
           leftIcon="add"
-          onClick={openAddTeamModal}
+          onClick={openTeamModal}
           dataTestId="add-teams-btn"
         />
       ),
