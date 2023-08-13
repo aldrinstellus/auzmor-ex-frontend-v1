@@ -100,6 +100,18 @@ export const getNotificationElementContent = (
     }
   }
 
+  // If the action performed is a SCHEDULE_POST
+  else if (action.type === ActionType.SCHEDULE_POST) {
+    // If target length is 1
+    if (target.length === 1) {
+      const post = target[0];
+      cardContent.BottomCardContent = post.content;
+      cardContent.image = post?.image?.thumbnailUrl || undefined;
+
+      redirect.postId = post.entityId;
+    }
+  }
+
   return {
     cardContent,
     redirect,

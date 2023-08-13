@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { ReactElement, useMemo } from 'react';
+import React, { ReactElement, useMemo, useRef } from 'react';
 import { Control, useController } from 'react-hook-form';
 import Icon from 'components/Icon';
 
@@ -29,6 +29,8 @@ export type InputProps = {
   error?: string;
   helpText?: string;
   className?: string;
+  inputClassName?: string;
+  labelClassName?: string;
   dataTestId?: string;
   errorDataTestId?: string;
   control?: Control<Record<string, any>>;
@@ -38,6 +40,9 @@ export type InputProps = {
   onEnter?: any;
   customLabelRightElement?: ReactElement;
   isClearable?: boolean;
+  required?: boolean;
+  showCounter?: boolean;
+  maxLength?: number;
 };
 
 const Input: React.FC<InputProps> = ({
@@ -53,6 +58,8 @@ const Input: React.FC<InputProps> = ({
   loading = false,
   disabled = false,
   className = '',
+  inputClassName = '',
+  labelClassName = '',
   dataTestId = '',
   errorDataTestId = '',
   error,
@@ -64,6 +71,9 @@ const Input: React.FC<InputProps> = ({
   onEnter,
   customLabelRightElement,
   isClearable = false,
+  showCounter,
+  maxLength,
+  required = false,
 }) => {
   const { field } = useController({
     name,
@@ -119,7 +129,10 @@ const Input: React.FC<InputProps> = ({
           '!text-red-500': !!error,
         },
         {
-          'text-sm text-neutral-900 font-bold truncate': true,
+          'text-sm text-neutral-900 font-bold': true,
+        },
+        {
+          [labelClassName]: true,
         },
       ),
     [error],
@@ -136,11 +149,22 @@ const Input: React.FC<InputProps> = ({
     [error, helpText],
   );
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
   return (
     <div className={`relative ${className}`}>
       <div className="flex items-center justify-between">
-        <div className={labelStyle}>{label}</div>
-        {customLabelRightElement}
+        <div className={labelStyle}>
+          {label}
+          <span className="text-red-500">{required && '*'}</span>
+        </div>
+        {showCounter && (
+          <div className="text-sm text-neutral-500">
+            {inputRef?.current?.value.length || defaultValue.length || 0}/
+            {maxLength}
+          </div>
+        )}
+        {customLabelRightElement && customLabelRightElement}
       </div>
       <label
         className={`flex justify-between flex-1 relative items-center my-1 w-full`}
@@ -149,14 +173,14 @@ const Input: React.FC<InputProps> = ({
         <div className="flex relative items-center w-full">
           {leftIcon && (
             <div className="absolute ml-5" onClick={onLeftIconClick}>
-              <Icon name={leftIcon} size={16} />
+              <Icon disabled name={leftIcon} size={16} />
             </div>
           )}
           <input
             id={id}
             name={field.name}
             type={variant?.toLowerCase()}
-            className={inputStyles}
+            className={`${inputStyles} ${inputClassName}`}
             disabled={loading || disabled}
             placeholder={placeholder}
             data-testid={dataTestId}

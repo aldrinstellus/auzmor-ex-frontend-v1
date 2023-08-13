@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 
 export enum IdentityProvider {
@@ -53,3 +53,19 @@ export const useGetSSOFromDomain = (domain: string, enabled?: boolean) => {
     enabled,
   });
 };
+
+const patchLimitPostingControls = async (
+  id: string,
+  limitPostingControls: boolean,
+) => {
+  const data = await apiService.patch(`/organization/${id}`, {
+    limitPostingControls,
+  });
+};
+
+// export const useUpdateLimitPostingControls = () => {
+//   return useMutation({
+//     mutationFn: (id: string, limitPostingControls: boolean) =>
+//       patchLimitPostingControls(id, limitPostingControls),
+//   });
+// };

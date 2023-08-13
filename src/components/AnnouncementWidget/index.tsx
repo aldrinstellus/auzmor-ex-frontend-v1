@@ -10,6 +10,7 @@ import SkeletonLoader from './components/SkeletonLoader';
 import RenderQuillContent from 'components/RenderQuillContent';
 import { Link } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
+import { getFullName, getProfileImage } from 'utils/misc';
 
 export interface IAnnouncementCardProps {
   postId?: string;
@@ -51,7 +52,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
     postData = result?.[1];
   }
 
-  const isAcknowledged = postData?.myAcknowledgement?.reaction !== 'mark_read';
+  const isAcknowledged = postData?.acknowledged;
   const dataPostId = postData?.id;
 
   const hasLoggedInUserCreatedAnnouncement =
@@ -79,8 +80,12 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
                     <div className="flex space-x-4">
                       <div>
                         <Avatar
-                          name={postData?.createdBy?.fullName || 'U'}
-                          image={postData?.createdBy?.profileImage?.original}
+                          name={
+                            postData?.createdBy
+                              ? getFullName(postData?.createdBy)
+                              : 'U'
+                          }
+                          image={getProfileImage(postData?.createdBy)}
                           size={32}
                           className="border-2 border-white"
                         />
@@ -89,7 +94,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
                       <div>
                         <div className="flex space-x-1 text-sm">
                           <span className="text-neutral-900 font-bold">
-                            {postData?.createdBy?.fullName}
+                            {getFullName(postData?.createdBy)}
                           </span>
                           <span className="text-neutral-900 font-normal">
                             shared a post
@@ -122,12 +127,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
                         className="border-2 border-neutral-200 mt-4 w-full"
                         loading={acknowledgeAnnouncement.isLoading}
                         onClick={() => {
-                          acknowledgeAnnouncement.mutate({
-                            entityId: postData.id,
-                            entityType: 'post',
-                            type: 'acknowledge',
-                            reaction: 'mark_read',
-                          });
+                          acknowledgeAnnouncement.mutate(postData.id);
                         }}
                       />
                     </div>

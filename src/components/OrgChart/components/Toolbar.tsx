@@ -4,7 +4,7 @@ import IconButton, {
   Size as IconSize,
 } from 'components/IconButton';
 import useModal from 'hooks/useModal';
-import FilterModal from 'pages/Users/components/FilterModal';
+import FilterModal from 'pages/Users/components/FilterModals/PeopleFilterModal';
 import React, { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { OrgChartMode } from '..';

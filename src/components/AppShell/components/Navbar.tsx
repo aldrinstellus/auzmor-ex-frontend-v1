@@ -40,7 +40,6 @@ const navigations = [
     linkTo: '/apps',
     dataTestId: 'office-apps-page',
     iconSize: 24,
-    disabled: true,
   },
   {
     label: 'Discover',

@@ -126,6 +126,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
         transition: slideInAndOutTop,
+        theme: 'dark',
       });
       setIsEditable(false);
     },

@@ -18,6 +18,7 @@ export type AvatarProps = {
   indicatorIcon?: ReactNode;
   loading?: boolean;
   dataTestId?: string;
+  disable?: boolean;
 };
 
 const Avatar: React.FC<AvatarProps> = ({
@@ -33,6 +34,7 @@ const Avatar: React.FC<AvatarProps> = ({
   indicatorIcon = null,
   loading = false,
   dataTestId = '',
+  disable = false,
 }) => {
   const containerStyles = useMemo(
     () =>
@@ -77,7 +79,7 @@ const Avatar: React.FC<AvatarProps> = ({
       width: `${size}px`,
       backgroundColor: bgColor,
     }),
-    [size],
+    [size, bgColor],
   );
 
   const activeIndicator = useMemo(() => {
@@ -104,12 +106,17 @@ const Avatar: React.FC<AvatarProps> = ({
   return (
     <div
       className={containerStyles}
-      style={divStyle}
+      style={{ ...divStyle, pointerEvents: disable ? 'none' : 'auto' }}
       onClick={onClick}
       data-testId={dataTestId}
     >
       {!!image && !loading ? (
-        <img className={imgStyles} style={divStyle} src={image} alt={name} />
+        <img
+          className={imgStyles}
+          style={{ ...divStyle, pointerEvents: disable ? 'none' : 'auto' }}
+          src={image}
+          alt={name}
+        />
       ) : (
         <span className={textStyles} style={{ fontSize: `${size * 0.45}px` }}>
           {loading && <Spinner color={PRIMARY_COLOR} />}

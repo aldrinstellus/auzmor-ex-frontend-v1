@@ -48,6 +48,7 @@ const SAMLDetail: React.FC<SAMLDetailProps> = ({
                   },
                   autoClose: TOAST_AUTOCLOSE_TIME,
                   transition: slideInAndOutTop,
+                  theme: 'dark',
                 },
               );
             }}

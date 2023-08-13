@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { IMenuItem } from '.';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
@@ -17,11 +17,12 @@ const PopupMenuItem: React.FC<PopupMenuItemProps> = ({
   border = false,
 }) => {
   const [hovered, eventHandlers] = useHover();
+  const itemRef = useRef<HTMLButtonElement>(null);
   return (
     <div
       className={clsx(
         {
-          'flex px-6 py-3 items-center hover:bg-primary-50 cursor-pointer space-x-3':
+          'flex px-6 py-3 items-center hover:bg-primary-50 cursor-pointer space-x-3 group':
             true,
         },
         { 'border-b-1': border },

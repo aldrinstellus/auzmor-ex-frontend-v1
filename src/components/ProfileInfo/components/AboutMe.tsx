@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import Card from 'components/Card';
 import Divider from 'components/Divider';
@@ -7,7 +7,7 @@ import Header from './Header';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import queryClient from 'utils/queryClient';
-import { updateCurrentUser } from 'queries/users';
+import { EditUserSection, updateCurrentUser } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
@@ -25,22 +25,43 @@ export interface IUpdateAboutMe {
 export interface IAboutMeProps {
   aboutMeData: Record<string, any>;
   canEdit?: boolean;
+  editSection?: string;
+  setSearchParams?: any;
+  searchParams?: any;
 }
 
-const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
+const AboutMe: React.FC<IAboutMeProps> = ({
+  aboutMeData,
+  canEdit,
+  editSection,
+  setSearchParams,
+  searchParams,
+}) => {
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [isHovered, eventHandlers] = useHover();
 
-  const { control, handleSubmit, getValues, watch } = useForm<IUpdateAboutMe>({
-    mode: 'onSubmit',
-    defaultValues: {
-      personal: {
-        about: aboutMeData?.personal?.about || 'N/A',
+  const { control, handleSubmit, getValues, watch, reset } =
+    useForm<IUpdateAboutMe>({
+      mode: 'onSubmit',
+      defaultValues: {
+        personal: {
+          about: aboutMeData?.personal?.about || 'N/A',
+        },
       },
-    },
-  });
+    });
 
-  const _text = watch('personal.about');
+  useEffect(() => {
+    if (editSection === EditUserSection.ABOUT && canEdit) {
+      setIsEditable(true);
+    }
+  }, [editSection]);
+
+  useEffect(() => {
+    if (!isEditable && searchParams.has('edit')) {
+      searchParams.delete('edit');
+      setSearchParams(searchParams);
+    }
+  }, [isEditable]);
 
   const onHoverStyles = useMemo(
     () => clsx({ 'mb-8': true }, { 'shadow-xl': isHovered && canEdit }),
@@ -55,10 +76,10 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
       defaultValue: getValues()?.personal?.about,
       dataTestId: 'about-me-edit-text',
       control,
-      className: 'w-full',
+      className: 'w-full rounded-9xl',
       rows: 3,
       maxLength: 2000,
-      showCounter: false,
+      showCounter: true,
     },
   ];
 
@@ -83,6 +104,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
         transition: slideInAndOutTop,
+        theme: 'dark',
       });
       setIsEditable(false);
     },
@@ -144,6 +166,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
           isLoading={updateUserAboutMeMutation.isLoading}
+          reset={reset}
         />
         <Divider />
         <div className="text-neutral-900 text-sm font-normal pt-4 pb-6 px-6">
@@ -156,9 +179,9 @@ const AboutMe: React.FC<IAboutMeProps> = ({ aboutMeData, canEdit }) => {
             </div>
           ) : (
             <div>
-              <div className="flex w-full justify-end mb-1 text-sm text-neutral-500">
+              {/* <div className="flex w-full justify-end mb-1 text-sm text-neutral-500">
                 {_text?.length}/2000
-              </div>
+              </div> */}
               <Layout fields={textAreaField} />
             </div>
           )}

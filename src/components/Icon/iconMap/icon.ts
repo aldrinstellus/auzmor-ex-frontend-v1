@@ -113,6 +113,18 @@ import LoveReaction from '../components/LoveReaction';
 import SupportReaction from '../components/SupportReaction';
 import InsightfulReaction from '../components/InsightfulReaction';
 import FunnyReaction from '../components/FunnyReaction';
+import ProfileUser from '../components/ProfileUser';
+import ShareForward from '../components/ShareForward';
+import Cancel from '../components/Cancel';
+import LinearLeftArrow from '../components/LinearLeftArrow';
+import PostBookmarkIcon from '../components/PostBookmark';
+import Repost from '../components/Repost';
+import Calendar from '../components/Calendar';
+import DeactivateUser from '../components/DeactivateUser';
+import ReactivateUser from '../components/ReactivateUser';
+import Forbidden from '../components/Forbidden';
+import PromoteUserIcon from '../components/Promote';
+import MicIcon from '../components/Mic';
 
 export const icon = {
   add: Add,
@@ -129,7 +141,9 @@ export const icon = {
   cake: CakeIcon,
   calendarTwo: CalendarIconTwo,
   call: Call,
+  cancel: Cancel,
   carouselClose: CarouselCloseIcon,
+  calendar: Calendar,
   carouselLeft: CarouselLeftIcon,
   carouselRight: CarouselRightIcon,
   celebrate: Celebrate,
@@ -139,6 +153,7 @@ export const icon = {
   clock: ClockIcon,
   close: CloseIcon,
   closeCircle: CloseCircleIcon,
+  collapse: CollapseIcon,
   comment: CommentIcon,
   connectionFolder: ConnectionFolder,
   convertShape: ConvertShape,
@@ -156,6 +171,7 @@ export const icon = {
   editReceipt: EditReceipt,
   email: EmailIcon,
   emojiHappy: EmojiHappy,
+  expand: ExpandIcon,
   explore: ExploreIcon,
   export: ExportIcon,
   eye: EyeIcon,
@@ -165,13 +181,14 @@ export const icon = {
   filter: FilterIcon,
   filterLinear: FilterLinear,
   flashIcon: FlashIcon,
+  focus: FocusIcon,
   folderConnection: FolderConnectionIcon,
   fullScreen: FullScreenIcon,
   funny: Funny,
   funnyReaction: FunnyReaction,
   gear: Gear,
-  group: GroupIcon,
   global: Global,
+  group: GroupIcon,
   home: HomeIcon,
   iconLinear: IconLinear,
   image: ImageIcon,
@@ -183,6 +200,7 @@ export const icon = {
   like: Like,
   likeIcon: LikeIcon,
   likeReaction: LikeReaction,
+  linearLeftArrow: LinearLeftArrow,
   link: Link,
   location: LocationIcon,
   logout: LogoutIcon,
@@ -204,15 +222,20 @@ export const icon = {
   people: PeopleIcon,
   play: PlayIcon,
   plus: Plus,
+  postBookmark: PostBookmarkIcon,
+  profile: ProfileIcon,
+  profileUser: ProfileUser,
   redo: Redo,
   reorder: Reorder,
   reply: Reply,
+  repost: Repost,
   rotateLeft: RotateLeft,
   search: Search,
   seekForward: SeekForwardIcon,
   send: Send,
   setting: SettingIcon,
   settingThree: SettingThreeIcon,
+  shareForward: ShareForward,
   slack: SlackIcon,
   speaker: SpeakerIcon,
   support: Support,
@@ -220,14 +243,15 @@ export const icon = {
   threeDots: ThreeDots,
   tickCircle: TickCircleIcon,
   trash: Trash,
-  users: UsersIcon,
   userManagement: UserManagement,
   userRemove: UserRemove,
+  users: UsersIcon,
   video: VideoIcon,
-  expand: ExpandIcon,
-  collapse: CollapseIcon,
-  focus: FocusIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
-  profile: ProfileIcon,
+  deactivateUser: DeactivateUser,
+  reactivateUser: ReactivateUser,
+  forbidden: Forbidden,
+  promoteUser: PromoteUserIcon,
+  mic: MicIcon,
 };

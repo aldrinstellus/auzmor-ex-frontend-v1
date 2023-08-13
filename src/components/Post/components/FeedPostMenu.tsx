@@ -72,6 +72,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
       if (context?.previousFeed) {
@@ -100,10 +101,12 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
       await queryClient.invalidateQueries(['feed-announcements-widget']);
       await queryClient.invalidateQueries(['post-announcements-widget']);
+      await queryClient.invalidateQueries(['my-bookmarks']);
     },
   });
 
@@ -184,12 +187,12 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       labelClassName: '!text-red-500',
       dataTestId: 'post-ellipsis-delete-post',
       permissions: ['DELETE_MY_POSTS', 'DELETE_POSTS'],
-      enabled: isAdmin || data.createdBy?.userId !== user?.id,
+      enabled: isAdmin || data.createdBy?.userId === user?.id,
     },
     {
       icon: 'editReceipt',
       label: 'View acknowledgement report',
-      onClick: () => showConfirm(),
+      // onClick: () => showConfirm(),
       dataTestId: 'post-ellipsis-view-acknowledgement-report',
       permissions: ['CREATE_ANNOUNCEMENTS', 'UPDATE_ANNOUNCEMENTS'],
       enabled: data.isAnnouncement,

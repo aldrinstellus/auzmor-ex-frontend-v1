@@ -8,6 +8,7 @@ export type AvatarListProps = {
   size?: number;
   className?: string;
   onClick?: () => null;
+  dataTestId?: string;
 };
 
 interface IUser {
@@ -18,31 +19,36 @@ interface IUser {
 
 const AvatarList: React.FC<AvatarListProps> = ({
   users,
-  displayCount = 3,
+  displayCount = 0,
   className = '',
   size = 48,
   onClick = () => {},
+  dataTestId = '',
 }) => {
-  const styles = clsx({ 'flex -space-x-4': true }, { [className]: true });
+  const styles = clsx({ 'flex -space-x-8': true }, { [className]: true });
   return (
-    <div className="flex -space-x-4">
-      {users.map((user: IUser) => {
-        return (
-          <Avatar
-            size={size}
-            key={`${user.name}${user.image}`}
-            name={user?.name}
-            image={user?.image}
-            active={false}
-          />
-        );
-      })}
-      <Avatar
-        size={size}
-        name={`+${users.length - displayCount}`}
-        onClick={onClick}
-        active={false}
-      />
+    <div className={styles} data-testid={dataTestId}>
+      {users
+        .map((user: IUser) => {
+          return (
+            <Avatar
+              size={size}
+              key={`${user.name}${user.image}`}
+              name={user?.name}
+              image={user?.image}
+              active={false}
+            />
+          );
+        })
+        .slice(0, 2)}
+      {users.length > 2 && (
+        <Avatar
+          size={size}
+          name={`+${users.length - displayCount}`}
+          onClick={onClick}
+          active={false}
+        />
+      )}
     </div>
   );
 };

@@ -1,13 +1,12 @@
-import React, { ReactNode } from 'react';
-import Skeleton from 'react-loading-skeleton';
-import { renderToString } from 'react-dom/server';
-import ReactionSkeleton from 'components/Post/components/ReactionSkeleton';
+import React from 'react';
 import apiService from 'utils/apiService';
 import {
   createMentionsList,
   createHashtagsList,
   newHashtags,
 } from './mentions/utils';
+import { renderToString } from 'react-dom/server';
+import ReactionSkeleton from 'components/Post/components/ReactionSkeleton';
 import { extractFirstWord } from 'utils/misc';
 
 interface IOrg {

@@ -66,7 +66,6 @@ const feedFilterOptions: FeedFilterOption[] = [
     value: PostType.ShoutOut,
     filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
-    isDisabled: true,
     dataTestId: 'filterby-shoutouts',
   },
   {
@@ -74,7 +73,6 @@ const feedFilterOptions: FeedFilterOption[] = [
     value: PostType.Birthday,
     filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
-    isDisabled: true,
     dataTestId: 'filterby-birthdays',
   },
   {
@@ -82,7 +80,6 @@ const feedFilterOptions: FeedFilterOption[] = [
     value: PostType.WorkAniversary,
     filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
-    isDisabled: true,
     dataTestId: 'filterby-workanniversary',
   },
   {
@@ -98,7 +95,6 @@ const feedFilterOptions: FeedFilterOption[] = [
     value: PostType.Poll,
     filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
-    isDisabled: true,
     dataTestId: 'filterby-polls',
   },
   {
@@ -122,9 +118,9 @@ const feedFilterOptions: FeedFilterOption[] = [
   },
   {
     label: 'Bookmarked by me',
-    value: 'bookmarked-by-me',
+    value: ActivityType.Bookemarked,
     type: FeedFilterContentType.Filter,
-    isDisabled: true,
+    filterKey: PostFilterKeys.BookmarkedByMe,
     dataTestId: 'filterby-bookmarkedbyme',
   },
 ];
@@ -162,6 +158,8 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
           return feedFilters[PostFilterKeys.MyPosts];
         case PostFilterKeys.MentionedInPost:
           return feedFilters[PostFilterKeys.MentionedInPost];
+        case PostFilterKeys.BookmarkedByMe:
+          return feedFilters[PostFilterKeys.BookmarkedByMe];
         default:
           return false;
       }
@@ -174,6 +172,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
       [PostFilterKeys.PostType]: [],
       [PostFilterKeys.MyPosts]: false,
       [PostFilterKeys.MentionedInPost]: false,
+      [PostFilterKeys.BookmarkedByMe]: false,
     });
     setHaveFiltersBeenModified(true);
   };
@@ -182,7 +181,8 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
     if (
       feedFilters[PostFilterKeys.PostType]?.length ||
       feedFilters[PostFilterKeys.MyPosts] ||
-      feedFilters[PostFilterKeys.MentionedInPost]
+      feedFilters[PostFilterKeys.MentionedInPost] ||
+      feedFilters[PostFilterKeys.BookmarkedByMe]
     ) {
       return false;
     }
@@ -204,7 +204,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
         setFeedFilters({
           ...feedFilters,
           [PostFilterKeys.PostType]: [
-            ...(feedFilters[PostFilterKeys.PostType] as PostType[]),
+            ...((feedFilters[PostFilterKeys.PostType] as PostType[]) || []),
             option.value as PostType,
           ],
         });
@@ -220,6 +220,12 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
         ...feedFilters,
         [PostFilterKeys.MyPosts]: !feedFilters[PostFilterKeys.MyPosts],
       });
+    } else if (option.filterKey === PostFilterKeys.BookmarkedByMe) {
+      setFeedFilters({
+        ...feedFilters,
+        [PostFilterKeys.BookmarkedByMe]:
+          !feedFilters[PostFilterKeys.BookmarkedByMe],
+      });
     }
     setHaveFiltersBeenModified(true);
   };
@@ -229,9 +235,9 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
   };
 
   return (
-    <Popover className="z-40 mr-6">
+    <Popover className="z-40 mr-4">
       <Popover.Button
-        className="box-border font-bold flex flex-row justify-center items-center p-1 gap-4 border-none relative"
+        className="box-border font-bold flex flex-row justify-center items-center p-1 border-none relative"
         onClick={() => {
           setShowFeedFilter(!showFeedFilter);
           setHaveFiltersBeenModified(false);
@@ -243,7 +249,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
             {getFeedFilterCount()}
           </div>
         )}
-        <Icon name="filter" size={16} className="" />
+        <Icon name="filter" size={24} className="" />
       </Popover.Button>
       <Transition
         show={showFeedFilter}

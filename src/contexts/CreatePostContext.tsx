@@ -18,6 +18,7 @@ export enum CreatePostFlow {
   EditMedia = 'EDIT_MEDIA',
   CreatePoll = 'CREATE_POLL',
   EditPoll = 'EDIT_POLL',
+  SchedulePost = 'SCHEDULE_POST',
 }
 
 export interface IAnnouncement {
@@ -84,6 +85,8 @@ export interface ICreatePostContext {
   setMediaOpenIndex: (index: number) => void;
   poll: IPoll | null;
   setPoll: (pollContext: IPoll | null) => void;
+  schedule: ISchedule | null;
+  setSchedule: (schedule: ISchedule | null) => void;
 }
 
 export enum MediaValidationError {
@@ -109,6 +112,12 @@ export interface ITranscodedData {
   l: string;
   m: string;
   s: string;
+}
+
+export interface ISchedule {
+  timezone: string;
+  date: string;
+  time: string;
 }
 
 export interface IMedia {
@@ -172,6 +181,8 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setMediaOpenIndex: () => {},
   poll: null,
   setPoll: () => {},
+  schedule: null,
+  setSchedule: () => {},
 });
 
 const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
@@ -203,6 +214,7 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
   >([]);
   const [mediaOpenIndex, setMediaOpenIndex] = useState<number>(-1);
   const [poll, setPoll] = useState<IPoll | null>(null);
+  const [schedule, setSchedule] = useState<ISchedule | null>(null);
 
   const setUploads = (uploads: File[], isCoverImage?: boolean) => {
     if (!isCoverImage) {
@@ -292,6 +304,7 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     setShowFullscreenVideo(false);
     setMediaValidationErrors([]);
     setPoll(null);
+    setSchedule(null);
   };
 
   const updateCoverImageMap = (map: ICoverImageMap) => {
@@ -403,6 +416,8 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         setMediaOpenIndex,
         poll,
         setPoll,
+        schedule,
+        setSchedule,
       }}
     >
       {children}
