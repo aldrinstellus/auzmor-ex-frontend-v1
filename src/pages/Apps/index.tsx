@@ -1,4 +1,4 @@
-import Button, { Variant as ButtonVariant } from 'components/Button';
+import Button, { Variant as ButtonVariant, Variant } from 'components/Button';
 import Card from 'components/Card';
 import React, { useState } from 'react';
 import AppsBanner from 'images/appsBanner.png';
@@ -16,8 +16,13 @@ import { uniqueId } from 'lodash';
 import { useInfiniteApps } from 'queries/apps';
 import { useAppStore } from 'stores/appStore';
 import AppCardSkeleton from './components/Skeletons/AppCardSkeleton';
-interface IAppsProps {}
+import PopupMenu from 'components/PopupMenu';
+import { useDebounce } from 'hooks/useDebounce';
+import { isFiltersEmpty } from 'utils/misc';
+import AppFilterModal from './components/AppFilterModal';
+import TeamNotFound from 'images/TeamNotFound.svg';
 
+interface IAppsProps {}
 interface IAppSearchForm {
   search?: string;
 }
@@ -37,6 +42,7 @@ const Apps: React.FC<IAppsProps> = () => {
     control,
     watch,
     getValues,
+    resetField,
     formState: { errors },
   } = useForm<IAppSearchForm>({
     mode: 'onChange',
@@ -50,12 +56,22 @@ const Apps: React.FC<IAppsProps> = () => {
 
   // Add apps modal
   const [open, openModal, closeModal] = useModal(false, false);
+  const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
+  const [sortByFilter, setSortByFilter] = useState<string>('');
 
   const selectedButtonClassName = '!bg-primary-50 text-primary-500';
   const regularButtonClassName = '!text-neutral-500';
 
+  const searchValue = watch('search');
+  const debouncedSearchValue = useDebounce(searchValue || '', 500);
+
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteApps();
+    useInfiniteApps(
+      isFiltersEmpty({
+        q: debouncedSearchValue,
+        sort: sortByFilter,
+      }),
+    );
 
   const appIds = data?.pages.flatMap((page) => {
     return page.data?.result?.data.map((apps: any) => {
@@ -140,20 +156,61 @@ const Apps: React.FC<IAppsProps> = () => {
               onClick={() => setSelectedAppGroup(AppGroup.RESOURCES)}
             />
           </div>
-          <div className="flex gap-x-2 items-center">
+          <div className="flex space-x-2 justify-center items-center relative">
             <IconButton
               icon="filterLinear"
               variant={IconVariant.Secondary}
               size={IconSize.Medium}
               borderAround
               className="bg-white"
+              onClick={openFilterModal}
             />
-            <IconButton
-              icon="arrowSwap"
-              variant={IconVariant.Secondary}
-              size={IconSize.Medium}
-              borderAround
-              className="bg-white"
+            <PopupMenu
+              triggerNode={
+                <IconButton
+                  icon="arrowSwap"
+                  variant={IconVariant.Secondary}
+                  size={IconSize.Medium}
+                  borderAround
+                  className="bg-white"
+                  dataTestId="apps-sort"
+                />
+              }
+              title={
+                <div className="bg-blue-50 flex px-6 py-2 font-xs font-medium text-neutral-500">
+                  Sort by
+                </div>
+              }
+              menuItems={[
+                {
+                  icon: 'calendar',
+                  label: 'Date added',
+                  onClick: () => {
+                    setSortByFilter('createdAt:DESC');
+                  },
+                  dataTestId: 'app-sortby-dateadded',
+                  permissions: [''],
+                },
+                {
+                  icon: 'sortByAcs',
+                  label: 'A to Z',
+                  onClick: () => {
+                    setSortByFilter('createdAt:ASC');
+                  },
+                  dataTestId: 'app-sortBy-asc',
+                  permissions: [''],
+                },
+                {
+                  icon: 'sortByDesc',
+                  label: 'Z to A',
+                  onClick: () => {
+                    setSortByFilter('createdAt:DESC');
+                  },
+                  dataTestId: 'app-sortBy-desc',
+                  permissions: [''],
+                },
+              ]}
+              className="right-48 w-[157px] top-12"
             />
             <Layout
               fields={[
@@ -202,10 +259,80 @@ const Apps: React.FC<IAppsProps> = () => {
             );
           }
 
-          return <></>;
+          return (
+            <>
+              {(debouncedSearchValue === undefined ||
+                debouncedSearchValue === '') &&
+              appIds?.length === 0 ? (
+                <div className="flex flex-col space-y-3 items-center w-full">
+                  <div className="flex flex-col space-y-6 items-center">
+                    <img
+                      src={TeamNotFound}
+                      alt="Apps Not Found"
+                      height={140}
+                      width={165}
+                    />
+                    <div
+                      className="text-lg font-bold"
+                      data-testid="no-app-found"
+                    >
+                      No Apps found
+                    </div>
+                  </div>
+                  <div className="flex space-x-1 text-xs font-normal">
+                    <div className="text-neutral-500">
+                      There is no app found in your organization right now. Be
+                      the first to
+                    </div>
+                    <div
+                      className="text-blue-500 cursor-pointer"
+                      onClick={openModal}
+                      data-testid="create-app"
+                    >
+                      create one
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="py-16 w-full">
+                  <div className="flex w-full justify-center">
+                    <img src={require('images/noResult.png')} />
+                  </div>
+                  <div className="text-center">
+                    <div
+                      className="mt-8 text-lg font-bold"
+                      data-testid="apps-noresult-found"
+                    >
+                      No result found for &apos;{searchValue}&apos;
+                    </div>
+                    <div className="text-sm text-gray-500 mt-2">
+                      Sorry we can&apos;t find the app you are looking for.
+                      <br /> Please try using different filters.
+                    </div>
+                  </div>
+
+                  <div className="flex justify-center mt-6">
+                    <Button
+                      label={'Clear search'}
+                      variant={Variant.Secondary}
+                      onClick={() => {
+                        resetField('search', { defaultValue: '' });
+                      }}
+                      dataTestId="apps-clear-applied-filter"
+                    />
+                  </div>
+                </div>
+              )}
+            </>
+          );
         })()}
       </Card>
       <AddApp open={open} closeModal={closeModal} />
+      <AppFilterModal
+        open={showFilterModal}
+        openModal={openFilterModal}
+        closeModal={closeFilterModal}
+      />
     </div>
   );
 };

@@ -135,11 +135,11 @@ export const fetchApps = async (
   }
 };
 
-export const useInfiniteApps = () => {
+export const useInfiniteApps = (q?: Record<string, any>) => {
   const { apps, setApp } = useAppStore();
   return {
     ...useInfiniteQuery({
-      queryKey: ['apps'],
+      queryKey: ['apps', q],
       queryFn: (context) => fetchApps(context, apps, setApp),
       getNextPageParam: (lastPage: any) => {
         const pageDataLen = lastPage?.data?.result?.data?.length;
