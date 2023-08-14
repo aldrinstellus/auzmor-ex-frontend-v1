@@ -11,12 +11,16 @@ type AppDetailModalProps = {
   app: App;
   open: boolean;
   closeModal: () => void;
+  openEditAppModal: () => void;
+  openDeleteAppModal: () => void;
 };
 
 const AppDetailModal: React.FC<AppDetailModalProps> = ({
   app,
   open,
   closeModal,
+  openEditAppModal,
+  openDeleteAppModal,
 }) => {
   return (
     <Modal open={open}>
@@ -47,11 +51,13 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
         <div className="px-6 py-3">
           <div className="border-orange-300 border-1 rounded-9xl">
             <div className="w-fit pt-4 pl-5">
-              <Badge
-                text={app.category}
-                textClassName="text-blue-500 text-base"
-                bgClassName="bg-blue-100"
-              />
+              {app.category && (
+                <Badge
+                  text={app.category.name}
+                  textClassName="text-blue-500 text-[10px] font-semibold"
+                  bgClassName="bg-blue-100"
+                />
+              )}
             </div>
             <div className="pb-8">
               {/* The icon, name and description */}
@@ -80,8 +86,12 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
         </div>
         {/* Footer */}
         <div className="bg-blue-50 flex items-center justify-end px-6 py-4 gap-x-3 rounded-9xl">
-          <Button label="Delete app" variant={Variant.Secondary} />
-          <Button label="Edit app" />
+          <Button
+            label="Delete app"
+            variant={Variant.Secondary}
+            onClick={openDeleteAppModal}
+          />
+          <Button label="Edit app" onClick={openEditAppModal} />
         </div>
       </Card>
     </Modal>

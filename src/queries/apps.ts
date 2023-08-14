@@ -40,10 +40,11 @@ export type App = {
   url: string;
   label: string;
   description: string;
-  category: string;
+  category: Record<string, any>;
   icon: AppIcon;
   credentials: AppCredentials;
   audience?: AppAudience[];
+  featured?: boolean;
 };
 
 export enum CategoryType {
@@ -159,5 +160,15 @@ export const useInfiniteApps = () => {
 
 export const createApp = async (payload: IAddApp) => {
   const { data } = await apiService.post('apps', payload);
+  return data;
+};
+
+export const editApp = async (id: string, payload: IAddApp) => {
+  const { data } = await apiService.put(`/apps/${id}`, payload);
+  return data;
+};
+
+export const deleteApp = async (id: string) => {
+  const data = await apiService.delete(`/apps/${id}`);
   return data;
 };

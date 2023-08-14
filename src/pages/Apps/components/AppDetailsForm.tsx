@@ -1,16 +1,21 @@
 import Layout, { FieldType } from 'components/Form';
 import { Variant as InputVariant } from 'components/Input';
 import React from 'react';
-import { Control, FieldErrors, UseFormSetValue } from 'react-hook-form';
+import {
+  Control,
+  FieldErrors,
+  UseFormGetValues,
+  UseFormSetValue,
+} from 'react-hook-form';
 import { IAddAppForm } from './AddApp';
 import UploadIconButton from './UploadIconButton';
 import Button, { Variant } from 'components/Button';
-import { CategoryType } from 'queries/apps';
+import { App, CategoryType } from 'queries/apps';
 
 type AppDetailsFormProps = {
   control: Control<IAddAppForm, any>;
   errors: FieldErrors<IAddAppForm>;
-  defaultValues?: IAddAppForm;
+  defaultValues: UseFormGetValues<IAddAppForm>;
   setValue: UseFormSetValue<IAddAppForm>;
 };
 
@@ -28,9 +33,11 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
       name: 'url',
       label: 'URL *',
       control: control,
-      defaultValue: defaultValues?.url,
+      defaultValue: defaultValues()?.url,
       error: errors.url?.message,
       dataTestId: 'sso-config-ad-hostname',
+      inputClassName:
+        errors.url || !defaultValues()?.url ? '' : 'text-blue-500 underline',
     },
   ];
 
@@ -42,7 +49,7 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
       name: 'label',
       label: 'Label *',
       control: control,
-      defaultValue: defaultValues?.label,
+      defaultValue: defaultValues()?.label,
       error: errors.label?.message,
       dataTestId: 'sso-config-ad-hostname',
     },
@@ -51,7 +58,7 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
       name: 'description',
       label: 'Short description',
       placeholder: 'Enter description',
-      defaultValue: defaultValues?.description,
+      defaultValue: defaultValues()?.description,
       dataTestId: 'about-me-edit-text',
       control,
       className: 'resize-none rounded-9xl',
@@ -66,7 +73,7 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
       name: 'category',
       label: 'Category',
       control: control,
-      defaultValue: defaultValues?.category,
+      defaultValue: defaultValues()?.category,
       categoryType: CategoryType.APP,
       error: errors.category?.message,
       dataTestId: 'sso-config-ad-hostname',
@@ -81,9 +88,9 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
       <div className="flex justify-between gap-x-6 pt-6">
         <Layout fields={appFields} className="w-full flex flex-col gap-y-6" />
         <div className="w-full">
-          <UploadIconButton setValue={setValue} />
+          <UploadIconButton setValue={setValue} icon={defaultValues()?.icon} />
           <div className="pt-6">
-            <p className="text-neutral-900 font-bold pb-2">Audience</p>
+            <p className="text-neutral-900 font-bold pb-1 text-sm">Audience</p>
             <Button variant={Variant.Secondary} label="Everyone" />
           </div>
         </div>

@@ -8,6 +8,8 @@ import Icon from 'components/Icon';
 import Divider from 'components/Divider';
 import useModal from 'hooks/useModal';
 import AppDetailModal from './AppCardDetail';
+import AddApp, { APP_MODE } from './AddApp';
+import DeleteApp from './DeleteApp';
 
 type AppCardProps = {
   app: App;
@@ -18,6 +20,9 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
   const [menuHovered, menuEventHandlers] = useHover();
 
   const [appDetailModal, openAppDetailModal, closeAppDetailModal] = useModal();
+  // Add apps modal
+  const [editAppModal, openEditAppModal, closeEditAppModal] = useModal();
+  const [deleteAppModal, openDeleteAppModal, closeDeleteAppModal] = useModal();
 
   const appCardMenu = [
     {
@@ -41,7 +46,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
       text: 'Edit',
       icon: 'edit',
       dataTestId: 'something',
-      onClick: () => {},
+      onClick: openEditAppModal,
       hidden: false,
     },
     {
@@ -49,10 +54,17 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
       text: 'Delete',
       icon: 'delete',
       dataTestId: 'something',
-      onClick: () => {},
+      onClick: openDeleteAppModal,
       hidden: false,
     },
   ];
+
+  const handleCloseDeleteAppModal = (closeAppDetail = false) => {
+    if (closeAppDetail) {
+      closeAppDetailModal();
+    }
+    closeDeleteAppModal();
+  };
 
   return (
     <div>
@@ -63,11 +75,13 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
       >
         <div className="pt-2 px-4" {...appCardEventHandlers}>
           <div className="flex justify-end">
-            <Badge
-              text={app.category}
-              textClassName="text-blue-500"
-              bgClassName="bg-blue-100"
-            />
+            {app.category && (
+              <Badge
+                text={app.category.name}
+                textClassName="text-blue-500 text-[10px] font-semibold"
+                bgClassName="bg-blue-100"
+              />
+            )}
           </div>
           <div className="pb-8">
             <div className="flex items-center justify-between">
@@ -79,7 +93,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
               />
               {appCardHovered && (
                 <div {...menuEventHandlers}>
-                  <Icon name="threeDots" className="relative " />
+                  <Icon name="threeDots" className="relative cursor-pointer" />
                   {menuHovered && (
                     <Card className="absolute border-1 rounded-11xl">
                       {appCardMenu.map((menuItem) => (
@@ -114,8 +128,23 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
       <AppDetailModal
         open={appDetailModal}
         closeModal={closeAppDetailModal}
+        openEditAppModal={openEditAppModal}
+        openDeleteAppModal={openDeleteAppModal}
         app={app}
       />
+      <DeleteApp
+        open={deleteAppModal}
+        closeModal={handleCloseDeleteAppModal}
+        appId={app.id}
+      />
+      {editAppModal && (
+        <AddApp
+          open={editAppModal}
+          closeModal={closeEditAppModal}
+          data={app}
+          mode={APP_MODE.Edit}
+        />
+      )}
     </div>
   );
 };

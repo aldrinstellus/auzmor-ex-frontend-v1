@@ -58,7 +58,7 @@ const CreatableSearch = React.forwardRef(
     const categoriesData = data?.pages.flatMap((page) => {
       return page?.data?.result?.data.map((category: any) => {
         try {
-          return category;
+          return { ...category, label: category.name };
         } catch (e) {
           console.log('Error', { category });
         }
@@ -151,7 +151,8 @@ const CreatableSearch = React.forwardRef(
                 menuPlacement={menuPlacement ? menuPlacement : 'top'}
                 menuPortalTarget={document.body}
                 components={{
-                  Option: ({ innerProps, data, isDisabled, isSelected }) => {
+                  Option: ({ innerProps, data, isDisabled }) => {
+                    const isSelected = data?.id === field?.value?.id;
                     return (
                       <div
                         {...innerProps}

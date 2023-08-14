@@ -2,7 +2,7 @@ import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import Tabs from 'components/Tabs';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import AppDetailsForm from './AppDetailsForm';
 import clsx from 'clsx';
@@ -10,24 +10,43 @@ import AppCredentialsForm from './AppCredentialsForm';
 import Button, { Variant as ButtonVariant, Type } from 'components/Button';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { URL_REGEX } from 'utils/constants';
+import { TOAST_AUTOCLOSE_TIME, URL_REGEX } from 'utils/constants';
 import { useUpload } from 'hooks/useUpload';
 import { EntityType } from 'queries/files';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createApp } from 'queries/apps';
+import {
+  App,
+  AppAudience,
+  AppIcon,
+  IAddApp,
+  createApp,
+  editApp,
+} from 'queries/apps';
+import { useAppStore } from 'stores/appStore';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { toast } from 'react-toastify';
+import { twConfig } from 'utils/misc';
+import { slideInAndOutTop } from 'utils/react-toastify';
+import FailureToast from 'components/Toast/variants/FailureToast';
+
+export enum APP_MODE {
+  Create = 'CREATE',
+  Edit = 'EDIT',
+}
 
 type AddAppProps = {
   open: boolean;
   closeModal: () => void | null;
+  data?: App;
+  mode?: APP_MODE;
 };
-
 export interface IAddAppForm {
   url: string;
   label: string;
   description?: string;
   category?: any;
-  audience?: string;
-  icon?: File;
+  audience?: AppAudience[];
+  icon?: any;
   acsUrl?: string;
   entityId?: string;
   relayState?: string;
@@ -49,17 +68,38 @@ const AddAppFormSchema = yup.object({
   relayState: yup.string(),
 });
 
-const AddApp: React.FC<AddAppProps> = ({ open, closeModal }) => {
+const AddApp: React.FC<AddAppProps> = ({
+  open,
+  closeModal,
+  data,
+  mode = APP_MODE.Create,
+}) => {
   const {
     control,
     formState: { errors, isValid },
     trigger,
     setValue,
     getValues,
+    reset,
   } = useForm<IAddAppForm>({
     resolver: yupResolver(AddAppFormSchema),
     mode: 'onChange',
+    defaultValues: {
+      url: data?.url || '',
+      label: data?.label || '',
+      description: data?.description || '',
+      category: {
+        label: data?.category?.name,
+        value: data?.category?.name,
+      },
+      audience: data?.audience || [],
+      icon: data?.icon,
+      acsUrl: data?.credentials?.acsUrl || '',
+      entityId: data?.credentials?.entityId || '',
+      relayState: data?.credentials?.relayState || '',
+    },
   });
+  const { apps, updateApp } = useAppStore();
 
   const queryClient = useQueryClient();
 
@@ -71,6 +111,66 @@ const AddApp: React.FC<AddAppProps> = ({ open, closeModal }) => {
       closeModal();
     },
     onError: async () => {},
+  });
+
+  const updateAppMutation = useMutation({
+    mutationKey: ['edit-app-mutation'],
+    mutationFn: (payload) => editApp(data?.id || '', payload as any),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['apps']);
+      toast(
+        <SuccessToast
+          content={`App has been updated`}
+          dataTestId="app-updated-success-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.primary['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+      closeModal();
+      queryClient.invalidateQueries(['categories']);
+    },
+    onError: (error: any) => {
+      toast(
+        <FailureToast
+          content={`Error Creating App`}
+          dataTestId="app-create-error-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.red['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+    },
   });
 
   const { uploadMedia } = useUpload();
@@ -86,7 +186,12 @@ const AddApp: React.FC<AddAppProps> = ({ open, closeModal }) => {
         <div className={tabStyles(isActive)}>Add apps</div>
       ),
       tabContent: (
-        <AppDetailsForm control={control} errors={errors} setValue={setValue} />
+        <AppDetailsForm
+          control={control}
+          errors={errors}
+          setValue={setValue}
+          defaultValues={getValues}
+        />
       ),
     },
     {
@@ -100,11 +205,14 @@ const AddApp: React.FC<AddAppProps> = ({ open, closeModal }) => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     trigger();
+    console.log(errors, mode, !errors.url && !errors.label);
     if (!errors.url && !errors.label) {
       const formData = getValues();
       let uploadedFile;
 
-      if (formData.icon) {
+      if (formData.icon.id) {
+        uploadedFile = [{ id: formData.icon.id }];
+      } else if (formData.icon) {
         uploadedFile = await uploadMedia([formData.icon], EntityType.AppIcon);
       }
 
@@ -115,9 +223,9 @@ const AddApp: React.FC<AddAppProps> = ({ open, closeModal }) => {
         featured: false,
         ...(formData.description && { description: formData.description }),
         ...(formData.category &&
-          formData.category.label && { category: formData.category.labe }),
+          formData.category.label && { category: formData.category.label }),
         ...(uploadedFile && uploadedFile[0] && { icon: uploadedFile[0].id }),
-        audience: [],
+        audience: formData?.audience || [],
       };
       const credentials: any = {};
       if (formData.acsUrl) {
@@ -130,15 +238,26 @@ const AddApp: React.FC<AddAppProps> = ({ open, closeModal }) => {
         credentials.relayState = formData.relayState;
       }
       req.credentials = credentials;
-      addAppMutation.mutate(req);
+      if (mode === APP_MODE.Create) {
+        addAppMutation.mutate(req);
+      } else if (mode === APP_MODE.Edit) {
+        console.log('Inside');
+        updateAppMutation.mutate(req);
+      }
     }
   };
+
+  useEffect(() => {
+    if (!open) {
+      reset();
+    }
+  }, [open]);
 
   return (
     <Modal
       open={open}
       closeModal={closeModal}
-      className="max-w-[800px] max-h-[650px]"
+      className="min-h-[630px] max-w-[800px] max-h-[650px]"
     >
       <div className="flex flex-col h-full">
         <div className="p-4 flex items-center justify-between">
@@ -146,7 +265,10 @@ const AddApp: React.FC<AddAppProps> = ({ open, closeModal }) => {
           <Icon name="close" disabled onClick={closeModal} />
         </div>
         <Divider />
-        <form onSubmit={onSubmit}>
+        <form
+          onSubmit={onSubmit}
+          className="flex flex-col justify-between h-full"
+        >
           <Tabs tabs={tabs} disableAnimation={true} />
           <div className="bg-blue-50 flex items-center justify-end gap-x-3 px-6 py-4 mt-auto rounded-9xl">
             <Button

@@ -1,6 +1,6 @@
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { twConfig } from 'utils/misc';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'react-toastify';
@@ -9,12 +9,17 @@ import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import { UseFormSetValue } from 'react-hook-form';
 import { IAddAppForm } from './AddApp';
+import { AppIcon } from 'queries/apps';
 
 type UploadIconButtonProps = {
   setValue: UseFormSetValue<IAddAppForm>;
+  icon?: AppIcon;
 };
 
-const UploadIconButton: React.FC<UploadIconButtonProps> = ({ setValue }) => {
+const UploadIconButton: React.FC<UploadIconButtonProps> = ({
+  setValue,
+  icon,
+}) => {
   // Callback function to handle file upload
   const handleIconUpload = (file: File) => {
     let isError = false;
@@ -76,12 +81,20 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({ setValue }) => {
   const [appIcon, setAppIcon] = useState<File[]>();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const clearInput = () => {
-    if (inputRef.current) {
-      inputRef.current.value = '';
-    }
+  const clearInput = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setValue('icon', undefined);
     setAppIcon([]);
   };
+
+  // Edit flow prefill icon
+  useEffect(() => {
+    if (icon) {
+      const iconElement = document.getElementById('icon') as HTMLImageElement;
+
+      iconElement.src = icon.original;
+    }
+  }, [icon]);
 
   const showErrorToast = (message: string) => {
     toast(<FailureToast content={message} dataTestId="comment-toaster" />, {
@@ -104,10 +117,12 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({ setValue }) => {
     });
   };
 
+  const hasIcon = icon?.id || (appIcon && appIcon.length > 0);
+
   return (
     <div>
-      <div className="flex justify-between pb-2">
-        <p className="text-neutral-900 font-bold">Upload Icon</p>
+      <div className="flex justify-between pb-1">
+        <p className="text-neutral-900 font-bold text-sm">Upload Icon</p>
         <Tooltip
           tooltipContent={
             <div>
@@ -137,33 +152,35 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({ setValue }) => {
       >
         <label htmlFor="upload-app-icon">
           <div
-            className="flex flex-col items-center justify-evenly p-6 gap-y-2"
+            className="flex flex-col items-center justify-evenly px-6 py-11 gap-y-2"
             onClick={(e) => e.stopPropagation()}
           >
-            <input
-              id="upload-app-icon"
-              {...getInputProps()}
-              type="file"
-              ref={inputRef}
-              className="hidden"
-              accept="image/jpeg, image/png, image/svg+xml"
-              onChange={(e) => {
-                if (e.target.files?.length) {
-                  // Check for all three conditions:
-                  const file = e.target.files[0];
-                  handleIconUpload(file);
-                }
-              }}
-              onClick={() => {
-                if (inputRef.current) {
-                  inputRef.current.value = '';
-                }
-              }}
-            />
+            {!hasIcon && (
+              <input
+                id="upload-app-icon"
+                {...getInputProps()}
+                type="file"
+                ref={inputRef}
+                className="hidden"
+                accept="image/jpeg, image/png, image/svg+xml"
+                onChange={(e) => {
+                  if (e.target.files?.length) {
+                    // Check for all three conditions:
+                    const file = e.target.files[0];
+                    handleIconUpload(file);
+                  }
+                }}
+                onClick={() => {
+                  if (inputRef.current) {
+                    inputRef.current.value = '';
+                  }
+                }}
+              />
+            )}
 
             <div
               className={`${
-                appIcon ? 'hidden' : 'block'
+                !hasIcon ? 'block' : 'hidden'
               } flex flex-col items-center justify-between gap-y-2`}
             >
               <Icon
@@ -181,8 +198,23 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({ setValue }) => {
               </p>
             </div>
 
-            <div className={`${appIcon ? 'block' : 'block'}`}>
-              <img id="icon" />
+            <div
+              className={`${
+                hasIcon
+                  ? 'block bg-neutral-100 rounded-lg relative group'
+                  : 'hidden'
+              }`}
+            >
+              <Icon
+                name="close"
+                size={16}
+                className="group-hover:block hidden cursor-pointer absolute -top-1 -right-1 bg-black rounded-full p-[4px]"
+                fill="#fff"
+                disabled
+                dataTestId="filter-closeicon"
+                onClick={(e) => clearInput(e)}
+              />
+              <img id="icon" className="p-[10.3px]" />
             </div>
           </div>
         </label>
