@@ -152,6 +152,7 @@ const CreatableSearch = React.forwardRef(
                 menuPortalTarget={document.body}
                 components={{
                   Option: ({ innerProps, data, isDisabled }) => {
+                    console.log(field);
                     const isSelected = data?.id === field?.value?.id;
                     return (
                       <div

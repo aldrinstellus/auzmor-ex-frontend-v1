@@ -91,6 +91,7 @@ const AddApp: React.FC<AddAppProps> = ({
       category: {
         label: data?.category?.name,
         value: data?.category?.name,
+        id: data?.category?.categoryId,
       },
       audience: data?.audience || [],
       icon: data?.icon,

@@ -54,7 +54,7 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
               {app.category && (
                 <Badge
                   text={app.category.name}
-                  textClassName="text-blue-500 text-[10px] font-semibold"
+                  textClassName="text-blue-500 text-xs font-semibold"
                   bgClassName="bg-blue-100"
                 />
               )}
