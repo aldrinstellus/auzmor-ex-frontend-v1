@@ -170,7 +170,7 @@ const CreatableSearch = React.forwardRef(
                     return (
                       <div
                         {...innerProps}
-                        className={`px-6 py-3 hover:bg-primary-50 font-medium text-sm ${
+                        className={`px-6 py-3 hover:bg-primary-50 hover:text-primary-500 font-medium  text-sm ${
                           isDisabled ? 'cursor-default' : 'cursor-pointer'
                         } ${isSelected && 'bg-primary-50'}`}
                         data-testid={data.dataTestId}

@@ -35,12 +35,64 @@ export const deleteTeam = async (id: string) => {
   });
 };
 
+// get team members by team id -> /teams/:id/members
+export const getTeamMembers = async (
+  {
+    pageParam = null,
+    queryKey,
+  }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>,
+  id: string,
+) => {
+  if (pageParam === null) {
+    return apiService.get(`/teams/members/${id}`, queryKey[1]);
+  } else return apiService.get(pageParam);
+};
+
+export const addTeamMember = async (
+  teamId: string,
+  payload: { userIds: string[] },
+) => {
+  const data = await apiService.post(`/teams/members/${teamId}`, payload);
+  return new Promise((res) => {
+    res(data);
+  });
+};
+
+export const removeTeamMember = async (teamId: string) => {
+  const data = await apiService.delete(`/teams/members/${teamId}`);
+  return new Promise((res) => {
+    res(data);
+  });
+};
+
 // ------------------ React Query -----------------------
 
 export const useInfiniteTeams = (q?: Record<string, any>) => {
   return useInfiniteQuery({
     queryKey: ['teams', q],
     queryFn: getAllTeams,
+    getNextPageParam: (lastPage: any) => {
+      const pageDataLen = lastPage?.data?.result?.data?.length;
+      const pageLimit = lastPage?.data?.result?.paging?.limit;
+      if (pageDataLen < pageLimit) {
+        return null;
+      }
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useInfiniteTeamMembers = (
+  teamId: string,
+  q?: Record<string, any>,
+) => {
+  return useInfiniteQuery({
+    queryKey: ['team-members', q, teamId],
+    queryFn: ({ pageParam }) => getTeamMembers(pageParam, teamId), // need fix
     getNextPageParam: (lastPage: any) => {
       const pageDataLen = lastPage?.data?.result?.data?.length;
       const pageLimit = lastPage?.data?.result?.paging?.limit;

@@ -11,6 +11,7 @@ import DeleteTeam from '../DeleteModals/Team';
 import useModal from 'hooks/useModal';
 import { ITeamDetails, TeamFlow } from '.';
 import moment from 'moment';
+import { ITeamDetailState } from 'pages/Users';
 
 export interface ITeamsCardProps {
   id: string;
@@ -22,20 +23,28 @@ export interface ITeamsCardProps {
   setTeamFlow: (mode: string) => void;
   openModal: () => void;
   setTeamId: (teamId: string) => void;
+  setShowTeamDetail: (detail: ITeamDetailState) => void;
+  showDeleteModal: boolean;
+  openDeleteModal: () => void;
+  closeDeleteModal: () => void;
 }
 
 const TeamsCard: React.FC<ITeamsCardProps> = ({
   id,
   name,
+  description,
   category,
   createdAtDate,
   totalMembers,
   setTeamFlow,
   openModal,
   setTeamId,
+  setShowTeamDetail,
+  showDeleteModal,
+  openDeleteModal,
+  closeDeleteModal,
 }) => {
   const [isHovered, eventHandlers] = useHover();
-  const [showDeleteModal, openDeleteModal, closeDeleteModal] = useModal();
   const { isAdmin } = useRole();
   const currentDate = moment();
   return (
@@ -103,7 +112,23 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
             Recently added
           </div>
         )}
-        <div className="flex flex-col items-center">
+        <div
+          className="flex flex-col items-center"
+          onClick={() => {
+            setShowTeamDetail({
+              isTeamSelected: true,
+              teamDetail: {
+                id: id,
+                name: name,
+                description: description,
+                category: category?.name,
+                createdAt: createdAtDate,
+                totalMembers: totalMembers,
+              },
+              activeTab: 'TEAM',
+            });
+          }}
+        >
           <AvatarList
             size={80}
             users={[]}

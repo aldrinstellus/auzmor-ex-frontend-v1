@@ -8,21 +8,43 @@ import Tabs from 'components/Tabs';
 import OrgChart from 'components/OrgChart';
 import People from './components/People';
 import { Role } from 'utils/enum';
-import Team from './components/Teams';
-import TeamMember from './components/Teams/TeamMember';
+import Team, { ITeamDetails, TeamFlow } from './components/Teams';
+import TeamDetail from './components/Teams/TeamDetail';
+import { useInfiniteUsers } from 'queries/users';
+
+export interface ITeamDetailState {
+  isTeamSelected: boolean;
+  teamDetail: Record<string, any> | null;
+  activeTab: string;
+}
 
 interface IUsersProps {}
 
 const Users: React.FC<IUsersProps> = () => {
   const [showOrgChart, setShowOrgChart] = useState<boolean>(false);
+
   const [showAddUserModal, openAddUserModal, closeAddUserModal] = useModal(
     undefined,
     false,
   );
+
   const [showTeamModal, openTeamModal, closeTeamModal] = useModal(
     undefined,
     false,
   );
+
+  const [teamFlow, setTeamFlow] = useState<TeamFlow>(TeamFlow.CreateTeam);
+
+  const [showDeleteModal, openDeleteModal, closeDeleteModal] = useModal();
+
+  const [teamId, setTeamId] = useState<string>('');
+
+  const [showTeamDetail, setShowTeamDetail] = useState<ITeamDetailState>({
+    isTeamSelected: false,
+    teamDetail: {},
+    activeTab: '',
+  });
+
   const { user } = useAuth();
 
   const tabStyles = (active: boolean, disabled = false) =>
@@ -92,6 +114,15 @@ const Users: React.FC<IUsersProps> = () => {
           showTeamModal={showTeamModal}
           openTeamModal={openTeamModal}
           closeTeamModal={closeTeamModal}
+          showTeamDetail={showTeamDetail}
+          setShowTeamDetail={setShowTeamDetail}
+          setTeamFlow={setTeamFlow}
+          teamFlow={teamFlow}
+          showDeleteModal={showDeleteModal}
+          openDeleteModal={openDeleteModal}
+          closeDeleteModal={closeDeleteModal}
+          setTeamId={setTeamId}
+          teamId={teamId}
         />
       ),
       tabAction: user?.role !== Role.Member && (
@@ -109,17 +140,32 @@ const Users: React.FC<IUsersProps> = () => {
   return showOrgChart ? (
     <OrgChart setShowOrgChart={setShowOrgChart} />
   ) : (
-    <Card className="p-8 w-full h-full">
-      <Tabs
-        tabs={tabs}
-        title={'People Hub'}
-        className="w-fit flex justify-start bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200"
-        tabSwitcherClassName="!p-1"
-        showUnderline={false}
-        itemSpacing={1}
-        tabContentClassName="mt-8"
-      />
-    </Card>
+    <>
+      {!showTeamDetail.isTeamSelected ? (
+        <Card className="p-8 w-full h-full">
+          <Tabs
+            tabs={tabs}
+            title={'People Hub'}
+            className="w-fit flex justify-start bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200"
+            tabSwitcherClassName="!p-1"
+            showUnderline={false}
+            itemSpacing={1}
+            activeTabIndex={showTeamDetail.activeTab === 'TEAM' ? 1 : 0} //need to handle the behaviour
+            tabContentClassName="mt-8"
+          />
+        </Card>
+      ) : (
+        <TeamDetail
+          setShowTeamDetail={setShowTeamDetail}
+          teamTab={showTeamDetail.activeTab}
+          openModal={openTeamModal}
+          setTeamFlow={setTeamFlow}
+          openDeleteModal={openDeleteModal}
+          setTeamId={setTeamId}
+          {...showTeamDetail.teamDetail}
+        />
+      )}
+    </>
   );
 };
 

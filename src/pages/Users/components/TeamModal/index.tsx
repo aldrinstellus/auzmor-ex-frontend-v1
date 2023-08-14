@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import Icon from 'components/Icon';
-import { ITeamCategory, ITeamDetails, TeamFlow } from '../Teams';
+import { ITeamDetails, TeamFlow } from '../Teams';
 
 export interface ITeamForm {
   name: string;
@@ -32,7 +32,7 @@ export interface IAddTeamModalProps {
   team: ITeamDetails;
 }
 
-const AddTeamModal: React.FC<IAddTeamModalProps> = ({
+const TeamModal: React.FC<IAddTeamModalProps> = ({
   open,
   openModal,
   closeModal,
@@ -246,4 +246,4 @@ const AddTeamModal: React.FC<IAddTeamModalProps> = ({
   );
 };
 
-export default AddTeamModal;
+export default TeamModal;
