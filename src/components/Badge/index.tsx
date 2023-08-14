@@ -29,7 +29,7 @@ const Badge: React.FC<BadgeProps> = ({
     () =>
       clsx(
         {
-          'px-2 py-1 font-semibold text-sm': true,
+          'px-2 py-0.5 font-semibold text-[10px] leading-3': true,
         },
         {
           [textClassName]: true,

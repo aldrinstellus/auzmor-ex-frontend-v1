@@ -18,6 +18,9 @@ export type TextAreaProps = {
   maxLength?: number; // max character allowed
   readOnly?: boolean; // not edit access
   showCounter?: boolean; // show char counter
+  errorDataTestId?: string;
+  helpText?: string;
+  disableMaxLength?: boolean;
 };
 
 const TextArea: React.FC<TextAreaProps> = ({
@@ -36,6 +39,9 @@ const TextArea: React.FC<TextAreaProps> = ({
   maxLength,
   readOnly,
   showCounter,
+  errorDataTestId = '',
+  helpText,
+  disableMaxLength = false,
 }) => {
   const { field } = useController({
     name,
@@ -46,6 +52,10 @@ const TextArea: React.FC<TextAreaProps> = ({
     {
       'bg-red-400 text-sm font-medium text-neutral-900 bg-white border border-solid px-5 py-3 focus:outline-none':
         true,
+    },
+    {
+      'border-red-500 focus:border-red-500 focus:ring-red-500 text-red-500':
+        error,
     },
     {
       [className]: true,
@@ -65,10 +75,21 @@ const TextArea: React.FC<TextAreaProps> = ({
     [error],
   );
 
+  const helpTextStyles = useMemo(
+    () =>
+      clsx(
+        {
+          'text-red-500': error,
+        },
+        { 'text-neutral-500': helpText },
+      ),
+    [error, helpText],
+  );
+
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   return (
-    <div className="flex flex-col gap-y-1">
+    <div className="relative flex flex-col gap-y-1">
       <div className="flex items-center justify-between">
         <div className={labelStyle}>{label}</div>
         {showCounter && (
@@ -86,7 +107,7 @@ const TextArea: React.FC<TextAreaProps> = ({
         cols={cols}
         rows={rows}
         placeholder={placeholder}
-        maxLength={maxLength}
+        maxLength={disableMaxLength ? undefined : maxLength}
         disabled={disabled}
         readOnly={readOnly}
         required={required}
@@ -95,6 +116,12 @@ const TextArea: React.FC<TextAreaProps> = ({
       >
         {defaultValue}
       </textarea>
+      <div
+        className={`absolute -bottom-4 text-xs truncate leading-tight ${helpTextStyles}`}
+        data-testid={errorDataTestId}
+      >
+        {error || helpText || ' '}
+      </div>
     </div>
   );
 };

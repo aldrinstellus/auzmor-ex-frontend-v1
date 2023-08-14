@@ -158,20 +158,45 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
   };
 
   return (
-    <div>
+    <div {...appCardEventHandlers}>
       {/* <Link to={app.url} target="_blank"> */}
       <Card
-        className="min-w-[320px] max-w-xs min-h-[224px] max-h-56 border-1"
+        className="relative min-w-[234px] max-w-[234px] min-h-[148px] max-h-[148px] border-1 px-4 py-6"
         shadowOnHover
       >
-        <div className="pt-2 px-4" {...appCardEventHandlers}>
-          <div className="flex justify-end">
+        <div>
+          <div className="absolute top-2 right-2 flex flex-col items-end">
             {app.category && (
               <Badge
                 text={app.category.name}
-                textClassName="text-blue-500 text-xs font-semibold"
+                textClassName="text-blue-500"
                 bgClassName="bg-blue-100"
               />
+            )}
+            {appCardHovered && (
+              <div {...menuEventHandlers} className="relative z-10">
+                <Icon name="threeDots" className="cursor-pointer" />
+                {menuHovered && (
+                  <Card className="absolute border-1 rounded-11xl">
+                    {appCardMenu.map((menuItem) => (
+                      <div key={menuItem.id} onClick={menuItem.onClick}>
+                        <div className="flex gap-x-2 cursor-pointer py-2 px-6 items-center hover:bg-blue-50">
+                          <Icon
+                            name={menuItem.icon}
+                            size={16}
+                            stroke="#000"
+                            disabled
+                          />
+                          <p className="text-neutral-900 text-sm whitespace-nowrap">
+                            {menuItem.text}
+                          </p>
+                        </div>
+                        <Divider />
+                      </div>
+                    ))}
+                  </Card>
+                )}
+              </div>
             )}
           </div>
           <div className="pb-8">
@@ -179,39 +204,16 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
               <img
                 src={app?.icon?.original}
                 className="p-1 bg-neutral-100 rounded-xl"
-                height={48}
-                width={48}
+                height={28}
+                width={28}
               />
-              {appCardHovered && (
-                <div {...menuEventHandlers} className="relative">
-                  <Icon name="threeDots" className="cursor-pointer" />
-                  {menuHovered && (
-                    <Card className="absolute border-1 rounded-11xl">
-                      {appCardMenu.map((menuItem) => (
-                        <div key={menuItem.id} onClick={menuItem.onClick}>
-                          <div className="flex gap-x-2 cursor-pointer py-2 px-6 items-center hover:bg-blue-50">
-                            <Icon
-                              name={menuItem.icon}
-                              size={16}
-                              stroke="#000"
-                              disabled
-                            />
-                            <p className="text-neutral-900 text-sm whitespace-nowrap">
-                              {menuItem.text}
-                            </p>
-                          </div>
-                          <Divider />
-                        </div>
-                      ))}
-                    </Card>
-                  )}
-                </div>
-              )}
             </div>
-            <p className="text-neutral-900 font-bold py-2 text-lg">
+            <p className="text-neutral-900 font-bold py-2 text-sm">
               {app.label}
             </p>
-            <p className="text-neutral-500 line-clamp-3">{app.description}</p>
+            <p className="text-neutral-500 line-clamp-3 text-xs">
+              {app.description}
+            </p>
           </div>
         </div>
       </Card>

@@ -59,8 +59,8 @@ const Apps: React.FC<IAppsProps> = () => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const [sortByFilter, setSortByFilter] = useState<string>('');
 
-  const selectedButtonClassName = '!bg-primary-50 text-primary-500';
-  const regularButtonClassName = '!text-neutral-500';
+  const selectedButtonClassName = '!bg-primary-50 text-primary-500 text-sm';
+  const regularButtonClassName = '!text-neutral-500 text-sm';
 
   const searchValue = watch('search');
   const debouncedSearchValue = useDebounce(searchValue || '', 500);

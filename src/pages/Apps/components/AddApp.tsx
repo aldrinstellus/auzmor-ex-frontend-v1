@@ -14,12 +14,7 @@ import { TOAST_AUTOCLOSE_TIME, URL_REGEX } from 'utils/constants';
 import { UploadStatus, useUpload } from 'hooks/useUpload';
 import { EntityType } from 'queries/files';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  App,
-  AppAudience,
-  createApp,
-  editApp,
-} from 'queries/apps';
+import { App, AppAudience, createApp, editApp } from 'queries/apps';
 import { useAppStore } from 'stores/appStore';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
@@ -57,7 +52,13 @@ const AddAppFormSchema = yup.object({
     .matches(URL_REGEX, 'Enter a valid URL'),
 
   label: yup.string().required('Required field'),
-  description: yup.string(),
+  description: yup
+    .string()
+    .test(
+      'len',
+      'Description cannot exceed 300 characters',
+      (val) => (val || '').toString().length <= 300,
+    ),
   category: yup.object(),
   audience: yup.string(),
   icon: yup.object().nullable(),
@@ -204,7 +205,7 @@ const AddApp: React.FC<AddAppProps> = ({
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     trigger();
-    if (!errors.url && !errors.label) {
+    if (!errors.url && !errors.label && !errors.description) {
       const formData = getValues();
       let uploadedFile;
       if (formData.icon?.id) {

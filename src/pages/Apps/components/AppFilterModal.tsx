@@ -72,7 +72,6 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
               },
             ]}
           />
-          {console.log(categoriesData)}
           {categoriesData?.length === 0 ? <div>No category Found</div> : (
             <div>
               
