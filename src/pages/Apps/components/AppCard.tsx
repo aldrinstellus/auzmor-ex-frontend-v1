@@ -1,7 +1,7 @@
 import Badge from 'components/Badge';
 import Card from 'components/Card';
 import React, { useEffect, useState } from 'react';
-import { App } from 'queries/apps';
+import { App, editApp } from 'queries/apps';
 import { Link } from 'react-router-dom';
 import useHover from 'hooks/useHover';
 import Icon from 'components/Icon';
@@ -10,6 +10,13 @@ import useModal from 'hooks/useModal';
 import AppDetailModal from './AppCardDetail';
 import AddApp, { APP_MODE } from './AddApp';
 import DeleteApp from './DeleteApp';
+import { twConfig } from 'utils/misc';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import FailureToast from 'components/Toast/variants/FailureToast';
+import { toast } from 'react-toastify';
+import { slideInAndOutTop } from 'utils/react-toastify';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 type AppCardProps = {
   app: App;
@@ -24,12 +31,96 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
   const [editAppModal, openEditAppModal, closeEditAppModal] = useModal();
   const [deleteAppModal, openDeleteAppModal, closeDeleteAppModal] = useModal();
 
+  const queryClient = useQueryClient();
+
+  const featuredAppMutation = useMutation({
+    mutationKey: ['edit-app-mutation'],
+    mutationFn: (payload: any) => editApp(app?.id || '', payload as any),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['apps']);
+      toast(
+        <SuccessToast
+          content={`App has been added to featured apps`}
+          dataTestId="app-updated-success-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.primary['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+    },
+    onError: (error: any) => {
+      toast(
+        <FailureToast
+          content={`Error while adding app to featured apps`}
+          dataTestId="app-create-error-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.red['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+    },
+  });
+
+  const makeFeaturedApp = () => {
+    const payload = {
+      url: app.url,
+      label: app.label,
+      featured: false,
+      ...(app.description && { description: app.description }),
+      ...(app.category?.id && { category: app.category.label }),
+      ...(app.icon?.id && { icon: app.icon.id }),
+      audience: app?.audience || [],
+    };
+    const credentials: any = {};
+    if (app.credentials?.acsUrl) {
+      credentials.acsUrl = app.credentials.acsUrl;
+    }
+    if (app.credentials?.entityId) {
+      credentials.entityId = app.credentials.entityId;
+    }
+    if (app.credentials?.relayState) {
+      credentials.relayState = app.credentials.relayState;
+    }
+    payload.credentials = credentials;
+    featuredAppMutation.mutate({ ...payload, featured: true });
+  };
+
   const appCardMenu = [
     {
       id: 0,
       text: 'Show details',
       icon: 'editReceipt',
-      dataTestId: 'something',
+      dataTestId: 'show-app-details',
       onClick: openAppDetailModal,
       hidden: false,
     },
@@ -37,15 +128,15 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
       id: 1,
       text: 'Feature',
       icon: 'filterLinear',
-      dataTestId: 'something',
-      onClick: () => {},
+      dataTestId: 'feature-app',
+      onClick: makeFeaturedApp,
       hidden: false,
     },
     {
       id: 3,
       text: 'Edit',
       icon: 'edit',
-      dataTestId: 'something',
+      dataTestId: 'edit-app',
       onClick: openEditAppModal,
       hidden: false,
     },
@@ -53,7 +144,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
       id: 4,
       text: 'Delete',
       icon: 'delete',
-      dataTestId: 'something',
+      dataTestId: 'delete-app',
       onClick: openDeleteAppModal,
       hidden: false,
     },
@@ -92,8 +183,8 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
                 width={48}
               />
               {appCardHovered && (
-                <div {...menuEventHandlers}>
-                  <Icon name="threeDots" className="relative cursor-pointer" />
+                <div {...menuEventHandlers} className="relative">
+                  <Icon name="threeDots" className="cursor-pointer" />
                   {menuHovered && (
                     <Card className="absolute border-1 rounded-11xl">
                       {appCardMenu.map((menuItem) => (
@@ -105,7 +196,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
                               stroke="#000"
                               disabled
                             />
-                            <p className="text-neutral-900 text-sm ">
+                            <p className="text-neutral-900 text-sm whitespace-nowrap">
                               {menuItem.text}
                             </p>
                           </div>

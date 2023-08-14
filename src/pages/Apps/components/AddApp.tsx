@@ -17,8 +17,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   App,
   AppAudience,
-  AppIcon,
-  IAddApp,
   createApp,
   editApp,
 } from 'queries/apps';
