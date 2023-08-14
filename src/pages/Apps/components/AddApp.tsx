@@ -11,7 +11,7 @@ import Button, { Variant as ButtonVariant, Type } from 'components/Button';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TOAST_AUTOCLOSE_TIME, URL_REGEX } from 'utils/constants';
-import { useUpload } from 'hooks/useUpload';
+import { UploadStatus, useUpload } from 'hooks/useUpload';
 import { EntityType } from 'queries/files';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -174,7 +174,7 @@ const AddApp: React.FC<AddAppProps> = ({
     },
   });
 
-  const { uploadMedia } = useUpload();
+  const { uploadMedia, uploadStatus } = useUpload();
 
   const tabStyles = (active: boolean) =>
     clsx({
@@ -206,7 +206,6 @@ const AddApp: React.FC<AddAppProps> = ({
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     trigger();
-    console.log(errors, mode, !errors.url && !errors.label);
     if (!errors.url && !errors.label) {
       const formData = getValues();
       let uploadedFile;
@@ -241,7 +240,6 @@ const AddApp: React.FC<AddAppProps> = ({
       if (mode === APP_MODE.Create) {
         addAppMutation.mutate(req);
       } else if (mode === APP_MODE.Edit) {
-        console.log('Inside');
         updateAppMutation.mutate(req);
       }
     }
@@ -276,7 +274,15 @@ const AddApp: React.FC<AddAppProps> = ({
               variant={ButtonVariant.Secondary}
               onClick={closeModal}
             />
-            <Button label="Save" type={Type.Submit} />
+            <Button
+              label="Save"
+              type={Type.Submit}
+              loading={
+                addAppMutation?.isLoading ||
+                updateAppMutation.isLoading ||
+                uploadStatus === UploadStatus.Uploading
+              }
+            />
           </div>
         </form>
       </div>

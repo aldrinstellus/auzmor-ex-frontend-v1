@@ -97,7 +97,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
 
       iconElement.src = icon.original;
     }
-  }, [icon]);
+  }, []);
 
   const showErrorToast = (message: string) => {
     toast(<FailureToast content={message} dataTestId="comment-toaster" />, {
@@ -155,7 +155,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
       >
         <label htmlFor="upload-app-icon">
           <div
-            className="flex flex-col items-center justify-evenly px-6 py-11 gap-y-2"
+            className="flex flex-col items-center justify-evenly h-[176px] gap-y-2"
             onClick={(e) => e.stopPropagation()}
           >
             {!hasIcon && (
