@@ -31,8 +31,8 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
             <img
               src={app?.icon?.original}
               className="p-1 bg-neutral-100 rounded-xl"
-              height={28}
-              width={28}
+              height={20}
+              width={20}
             />
             <p className="text-neutral-900 text-lg font-extrabold">
               {app.label}
@@ -64,7 +64,7 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
               <div className="flex px-6 pt-4 gap-x-6">
                 <img
                   src={app?.icon?.original}
-                  className="p-1 bg-neutral-100 rounded-xl"
+                  className="p-1 rounded-xl min-w-[100px] min-h-[100px]"
                   height={100}
                   width={100}
                 />
