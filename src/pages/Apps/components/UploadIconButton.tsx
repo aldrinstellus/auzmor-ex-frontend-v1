@@ -79,17 +79,20 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
     });
 
   const [appIcon, setAppIcon] = useState<File[]>();
+  const [currentIcon, setCurrentIcon] = useState<AppIcon | undefined>(icon);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const clearInput = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     setValue('icon', undefined);
+    setCurrentIcon(undefined);
     setAppIcon([]);
   };
 
   // Edit flow prefill icon
   useEffect(() => {
     if (icon) {
+      setCurrentIcon(icon);
       const iconElement = document.getElementById('icon') as HTMLImageElement;
 
       iconElement.src = icon.original;
@@ -117,7 +120,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
     });
   };
 
-  const hasIcon = icon?.id || (appIcon && appIcon.length > 0);
+  const hasIcon = currentIcon?.id || (appIcon && appIcon.length > 0);
 
   return (
     <div>
