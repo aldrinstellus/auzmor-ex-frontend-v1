@@ -343,14 +343,16 @@ const Team: React.FC<ITeamProps> = ({
         })()}
       </div>
 
-      <AddTeamModal
-        open={showTeamModal}
-        openModal={openTeamModal}
-        closeModal={closeTeamModal}
-        teamFlowMode={teamFlow}
-        setTeamFlow={setTeamFlow}
-        team={editSelectedTeam}
-      />
+      {showTeamModal && (
+        <AddTeamModal
+          open={showTeamModal}
+          openModal={openTeamModal}
+          closeModal={closeTeamModal}
+          teamFlowMode={teamFlow}
+          setTeamFlow={setTeamFlow}
+          team={teamFlow === TeamFlow.EditTeam ? editSelectedTeam : undefined} // Default value doesn't clear
+        />
+      )}
 
       <TeamFilterModal
         open={showFilterModal}

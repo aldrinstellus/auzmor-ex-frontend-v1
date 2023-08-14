@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import * as yup from 'yup';
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
-import ConfirmationBox from 'components/ConfirmationBox';
 import AddTeams from './AddTeams';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createTeams, updateTeam } from 'queries/users';
@@ -20,7 +19,7 @@ import { ITeamCategory, ITeamDetails, TeamFlow } from '../Teams';
 
 export interface ITeamForm {
   name: string;
-  category: ITeamCategory | string;
+  category: Record<string, any>;
   description: string;
 }
 
@@ -46,23 +45,26 @@ const AddTeamModal: React.FC<IAddTeamModalProps> = ({
   const schema = yup.object({
     name: yup.string().required('Please enter team name'),
     category: yup.object().required('Please select team category'),
-    description: yup.string().required('Please enter team description'),
   });
 
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid },
-    reset,
+    formState: { errors },
+    // reset,
+    // resetField,
     getValues,
     setError,
-    resetField,
   } = useForm<ITeamForm>({
     resolver: yupResolver(schema),
     mode: 'onChange',
     defaultValues: {
       name: team?.name || '',
-      category: team?.category?.name || '',
+      category:
+        {
+          label: team?.category?.name,
+          value: team?.category?.name?.toUpperCase(),
+        } || '',
       description: team?.description || '',
     },
   });
@@ -116,6 +118,7 @@ const AddTeamModal: React.FC<IAddTeamModalProps> = ({
         theme: 'dark',
       });
       closeModal();
+      queryClient.invalidateQueries(['categories']);
     },
   });
 
@@ -183,20 +186,28 @@ const AddTeamModal: React.FC<IAddTeamModalProps> = ({
         },
       );
       closeModal();
-      setTeamFlow(TeamFlow.CreateTeam);
+      queryClient.invalidateQueries(['categories']);
     },
   });
 
   const onSubmit = (data: any) => {
+    // issue with update is when we click update it will create new category with case sensitive
     const payload = {
       name: data?.name,
-      category: data?.category?.value,
+      category: data?.category?.value, // this should be pass in capital
       description: data?.description,
     };
-    if (teamFlowMode === TeamFlow.CreateTeam) {
+
+    if (teamFlowMode === TeamFlow.CreateTeam)
       createTeamMutation.mutate(payload);
-    } else {
-      updateTeamMutation.mutate(payload);
+    else updateTeamMutation.mutate(payload);
+  };
+
+  const onCloseReset = () => {
+    closeModal();
+    if (teamFlowMode === TeamFlow.EditTeam) {
+      setTeamFlow(TeamFlow.CreateTeam);
+      // reset({ name: '', category: '', description: '' });
     }
   };
 
@@ -207,27 +218,17 @@ const AddTeamModal: React.FC<IAddTeamModalProps> = ({
           title={`${
             teamFlowMode === TeamFlow.CreateTeam ? 'Add New' : 'Edit'
           } Team`}
-          onClose={() => {
-            closeModal();
-            if (teamFlowMode === TeamFlow.EditTeam) {
-              setTeamFlow(TeamFlow.CreateTeam);
-            }
-          }}
+          onClose={onCloseReset}
           closeBtnDataTestId="team-close"
         />
-        <AddTeams control={control} errors={errors} />
+        <AddTeams control={control} errors={errors} defaultValues={getValues} />
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
             label="Back"
             variant={ButtonVariant.Secondary}
             disabled={false}
             className="mr-4"
-            onClick={() => {
-              closeModal();
-              if (teamFlowMode === TeamFlow.EditTeam) {
-                setTeamFlow(TeamFlow.CreateTeam);
-              }
-            }}
+            onClick={onCloseReset}
             dataTestId="add-team-back"
           />
           <Button

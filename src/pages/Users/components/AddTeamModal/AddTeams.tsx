@@ -4,14 +4,18 @@ import Layout, { FieldType } from 'components/Form';
 import { Variant as InputVariant } from 'components/Input';
 import { ITeamForm } from '.';
 import { CategoryType } from 'queries/apps';
-import { ITeamDetails } from '../Teams';
 
 export interface IAddTeamsProps {
   control: Control<ITeamForm, any>;
   errors: FieldErrors<ITeamForm>;
+  defaultValues: UseFormGetValues<ITeamForm>;
 }
 
-const AddTeams: React.FC<IAddTeamsProps> = ({ control, errors }) => {
+const AddTeams: React.FC<IAddTeamsProps> = ({
+  control,
+  errors,
+  defaultValues,
+}) => {
   const teamName = [
     {
       type: FieldType.Input,
@@ -19,7 +23,7 @@ const AddTeams: React.FC<IAddTeamsProps> = ({ control, errors }) => {
       className: '',
       placeholder: 'ex. Product and design team',
       name: `name`,
-      defaultValue: '',
+      defaultValue: defaultValues()?.name || '',
       label: 'Team Name',
       required: true,
       control,
@@ -38,7 +42,7 @@ const AddTeams: React.FC<IAddTeamsProps> = ({ control, errors }) => {
       label: 'Team Category',
       required: true,
       control,
-      defaultValue: '',
+      defaultValue: defaultValues()?.category?.label || '',
       categoryType: CategoryType.TEAM,
       error: errors.category?.message,
       dataTestId: 'select-team-category',
@@ -50,12 +54,11 @@ const AddTeams: React.FC<IAddTeamsProps> = ({ control, errors }) => {
       name: 'description',
       label: 'Team description',
       placeholder: 'What is the purpose of this team',
-      defaultValue: '',
       dataTestId: 'adding-team-description',
       control,
+      defaultValue: defaultValues()?.description || '',
       className: 'resize-none rounded-19xl',
       rows: 4,
-      error: errors.description?.message,
       maxLength: 200,
       showCounter: true,
     },

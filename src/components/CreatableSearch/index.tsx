@@ -1,13 +1,17 @@
-import React, { useMemo, useRef, useState } from 'react';
-
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
-
 import { Control, Controller, useController } from 'react-hook-form';
 import { MenuPlacement, components } from 'react-select';
 import clsx from 'clsx';
 import { isFiltersEmpty, twConfig } from 'utils/misc';
 import { useInfiniteCategories } from 'queries/apps';
 import { useDebounce } from 'hooks/useDebounce';
+
+export interface ICategoryDetail {
+  name: string;
+  type: string;
+  id: string;
+}
 
 export interface ICreatableSearch {
   name: string;
@@ -64,6 +68,17 @@ const CreatableSearch = React.forwardRef(
         }
       });
     });
+
+    const transformedOption = categoriesData?.map(
+      (category: ICategoryDetail) => ({
+        value: category?.name?.toUpperCase(),
+        label: category?.name,
+        type: category?.type,
+        dataTestId: `category-option-${category?.type?.toLowerCase()}-${
+          category?.name
+        }`,
+      }),
+    );
 
     const { field } = useController({
       name,
@@ -147,11 +162,16 @@ const CreatableSearch = React.forwardRef(
                 }}
                 defaultInputValue={defaultValue}
                 onInputChange={(value) => setSearchValue(value)}
-                options={categoriesData}
+                options={transformedOption}
                 menuPlacement={menuPlacement ? menuPlacement : 'top'}
                 menuPortalTarget={document.body}
                 components={{
                   Option: ({ innerProps, data, isDisabled, isSelected }) => {
+                    console.log(
+                      'what is label here....',
+                      data?.label,
+                      data?.value,
+                    );
                     return (
                       <div
                         {...innerProps}

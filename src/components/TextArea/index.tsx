@@ -107,9 +107,8 @@ const TextArea: React.FC<TextAreaProps> = ({
         required={required}
         className={textAreaStyle}
         data-testid={dataTestId}
-      >
-        {defaultValue}
-      </textarea>
+        defaultValue={defaultValue}
+      />
       <div
         className={`text-xs truncate leading-tight ${helpTextStyles}`}
         data-testid={errorDataTestId}
