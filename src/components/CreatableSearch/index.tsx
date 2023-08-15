@@ -1,13 +1,17 @@
-import React, { useMemo, useRef, useState } from 'react';
-
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
-
 import { Control, Controller, useController } from 'react-hook-form';
 import { MenuPlacement, components } from 'react-select';
 import clsx from 'clsx';
 import { isFiltersEmpty, twConfig } from 'utils/misc';
 import { useInfiniteCategories } from 'queries/apps';
 import { useDebounce } from 'hooks/useDebounce';
+
+export interface ICategoryDetail {
+  name: string;
+  type: string;
+  id: string;
+}
 
 export interface ICreatableSearch {
   name: string;
@@ -64,6 +68,17 @@ const CreatableSearch = React.forwardRef(
         }
       });
     });
+
+    const transformedOption = categoriesData?.map(
+      (category: ICategoryDetail) => ({
+        value: category?.name?.toUpperCase(),
+        label: category?.name,
+        type: category?.type,
+        dataTestId: `category-option-${category?.type?.toLowerCase()}-${
+          category?.name
+        }`,
+      }),
+    );
 
     const { field } = useController({
       name,
@@ -137,7 +152,6 @@ const CreatableSearch = React.forwardRef(
           <Controller
             name={name}
             control={control}
-            defaultValue={defaultValue}
             render={() => (
               <CreatableSelect
                 isDisabled={disabled}
@@ -146,8 +160,9 @@ const CreatableSearch = React.forwardRef(
                   menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                   ...selectStyle,
                 }}
+                defaultInputValue={defaultValue}
                 onInputChange={(value) => setSearchValue(value)}
-                options={categoriesData}
+                options={transformedOption}
                 menuPlacement={menuPlacement ? menuPlacement : 'top'}
                 menuPortalTarget={document.body}
                 components={{
@@ -155,7 +170,7 @@ const CreatableSearch = React.forwardRef(
                     return (
                       <div
                         {...innerProps}
-                        className={`px-6 py-3 hover:bg-primary-50 font-medium text-sm ${
+                        className={`px-6 py-3 hover:bg-primary-50 hover:text-primary-500 font-medium  text-sm ${
                           isDisabled ? 'cursor-default' : 'cursor-pointer'
                         } ${isSelected && 'bg-primary-50'}`}
                         data-testid={data.dataTestId}

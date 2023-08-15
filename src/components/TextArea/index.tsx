@@ -7,6 +7,8 @@ export type TextAreaProps = {
   label?: string;
   disabled?: boolean;
   error?: string;
+  errorDataTestId?: string;
+  helpText?: string;
   className?: string;
   dataTestId?: string;
   control?: Control<Record<string, any>>;
@@ -25,6 +27,8 @@ const TextArea: React.FC<TextAreaProps> = ({
   label = '',
   disabled = false,
   error,
+  errorDataTestId,
+  helpText,
   className = '',
   dataTestId = '',
   control,
@@ -65,6 +69,17 @@ const TextArea: React.FC<TextAreaProps> = ({
     [error],
   );
 
+  const helpTextStyles = useMemo(
+    () =>
+      clsx(
+        {
+          'text-red-500': error,
+        },
+        { 'text-neutral-500': helpText },
+      ),
+    [error, helpText],
+  );
+
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   return (
@@ -92,9 +107,14 @@ const TextArea: React.FC<TextAreaProps> = ({
         required={required}
         className={textAreaStyle}
         data-testid={dataTestId}
+        defaultValue={defaultValue}
+      />
+      <div
+        className={`text-xs truncate leading-tight ${helpTextStyles}`}
+        data-testid={errorDataTestId}
       >
-        {defaultValue}
-      </textarea>
+        {error || helpText || ''}
+      </div>
     </div>
   );
 };

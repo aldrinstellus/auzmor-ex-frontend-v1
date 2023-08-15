@@ -6,7 +6,7 @@ export interface ITeamsSkeletonProps {}
 
 const TeamsSkeleton: React.FC<ITeamsSkeletonProps> = () => {
   return (
-    <Card className="w-[188px] border-solid border border-neutral-200 flex flex-col">
+    <Card className="w-[189.5px] border-solid border border-neutral-200 flex flex-col">
       <Skeleton
         containerClassName="flex-1"
         className="absolute top-0 left-0 px-2 py-1 !w-32 !rounded-tl-9xl !rounded-br-9xl bg-red-200"

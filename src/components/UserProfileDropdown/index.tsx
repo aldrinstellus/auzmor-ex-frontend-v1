@@ -74,7 +74,8 @@ const UserProfileDropdown: React.FC<IUserDropdownProps> = ({
   if (
     [UserStatus.Inactive, UserStatus.Active].includes(status as any) &&
     role !== UserRole.Superadmin &&
-    id !== user?.id
+    id !== user?.id &&
+    isAdmin
   ) {
     _options.push({
       icon:
