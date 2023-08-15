@@ -28,6 +28,7 @@ import MyTeamWidget from 'components/MyTeamWidget';
 import HashtagFeedHeader from './components/HashtagFeedHeader';
 import BookmarkFeedHeader from './components/BookmarkFeedHeader';
 import ScheduledFeedHeader from './components/ScheduledFeedHeader';
+import EntitySearchModal from 'components/EntitySearchModal';
 interface IFeedProps {}
 
 export interface IProfileImage {

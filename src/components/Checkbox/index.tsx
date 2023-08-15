@@ -35,21 +35,22 @@ const Checkbox: React.FC<CheckboxProps> = ({
   );
 
   return (
-    <div className="flex">
+    <div className="flex items-center">
       <input
         type="checkbox"
-        className="h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600"
+        className="h-5 w-5 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600"
         name={field.name}
         ref={field.ref}
         disabled={loading || disabled}
         defaultChecked={defaultValue}
         onChange={field.onChange}
+        checked={field.value}
         {...rest}
       />
       <label className={styles} data-testid={dataTestId}>
         {label && (
-          <div className="pl-4 -mt-1">
-            <div className="font-medium text-sm cursor-pointer">{label}</div>
+          <div className="pl-2">
+            <div className="font-semibold text-sm cursor-pointer">{label}</div>
             {labelDescription && (
               <div className="font-normal text-xs text-neutral-500">
                 {labelDescription}
