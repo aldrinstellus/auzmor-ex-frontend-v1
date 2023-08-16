@@ -20,6 +20,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
   setValue,
   icon,
 }) => {
+  const [error, setError] = useState('');
   // Callback function to handle file upload
   const handleIconUpload = (file: File) => {
     let isError = false;
@@ -27,12 +28,14 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
     if (!['image/jpeg', 'image/png', 'image/svg+xml'].includes(file.type)) {
       isError = true;
       showErrorToast('Only JPEG/PNG/SVG filetypes are supported!');
+      setError('Unsupported filetypes.');
     }
 
     // 2. File is under 8MB
     if (file.size > 8 * 1024 * 1024) {
       isError = true;
       showErrorToast('Uploaded image must be less than 8MB in size!');
+      setError('The file size exceed the limit.');
     }
 
     // 3. File is of max 100 x 100 resolution
@@ -46,6 +49,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
         showErrorToast(
           'Uploaded image must not be more than 100x100px resolution',
         );
+        setError('File resolution not matched.');
       }
       // If the image has supported dimensions, then call setAppIcon
       else if (!isError) {
@@ -187,27 +191,52 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
                 !hasIcon ? 'block' : 'hidden'
               } flex flex-col items-center justify-between gap-y-2`}
             >
-              <Icon
-                name="documentUpload"
-                size={24}
-                stroke={twConfig.theme.colors.neutral['900']}
-              />
-              <p className="text-neutral-900 font-medium">Upload App Icon</p>
-              <p className="text-neutral-500 font-medium">
-                Drag and drop or{' '}
-                <span
-                  className="text-primary-500 font-bold cursor-pointer"
-                  data-testid="add-app-icon"
-                >
-                  click here
-                </span>{' '}
-                to upload file
-              </p>
+              {error ? (
+                <>
+                  <Icon name="infoCircle" size={24} stroke="#F05252" disabled />
+                  <p
+                    className="text-red-500 font-medium text-sm"
+                    data-testid="add-app-icon-failed"
+                  >
+                    Oops! Upload failed
+                  </p>
+                  <p className="text-neutral-500 font-medium text-xs">
+                    {error}
+                    <span
+                      className="text-primary-500 font-bold cursor-pointer"
+                      data-testid="add-app-icon-try-again"
+                    >
+                      {' '}
+                      Try again
+                    </span>
+                  </p>
+                </>
+              ) : (
+                <>
+                  <Icon
+                    name="documentUpload"
+                    size={24}
+                    stroke={twConfig.theme.colors.neutral['900']}
+                  />
+                  <p className="text-neutral-900 font-medium text-sm">
+                    Upload App Icon
+                  </p>
+                  <p className="text-neutral-500 font-medium text-xs">
+                    Drag and drop or{' '}
+                    <span
+                      className="text-primary-500 font-bold cursor-pointer"
+                      data-testid="add-app-icon"
+                    >
+                      click here
+                    </span>{' '}
+                    to upload file
+                  </p>
+                </>
+              )}
             </div>
-
             <div
               className={`${
-                hasIcon
+                hasIcon && !error
                   ? 'block bg-neutral-100 rounded-lg relative group'
                   : 'hidden'
               }`}
