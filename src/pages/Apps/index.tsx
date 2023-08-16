@@ -13,7 +13,11 @@ import useModal from 'hooks/useModal';
 import AddApp from './components/AddApp';
 import AppGrid from './components/AppGrid';
 import { uniqueId } from 'lodash';
-import { useInfiniteApps } from 'queries/apps';
+import {
+  useInfiniteApps,
+  useInfiniteCategories,
+  useInfiniteFeaturedApps,
+} from 'queries/apps';
 import { useAppStore } from 'stores/appStore';
 import AppCardSkeleton from './components/Skeletons/AppCardSkeleton';
 import PopupMenu from 'components/PopupMenu';
@@ -33,9 +37,6 @@ enum AppGroup {
   MY_APPS = 'My apps',
   ALL_APPS = 'All apps',
   FEATURED = 'Featured',
-  COMMUNICATION = 'Communication',
-  CUSTOMER_SUPPORT = 'Customer support',
-  RESOURCES = 'Resources',
 }
 
 const Apps: React.FC<IAppsProps> = () => {
@@ -50,7 +51,7 @@ const Apps: React.FC<IAppsProps> = () => {
     mode: 'onChange',
   });
 
-  const { apps } = useAppStore();
+  const { apps, featuredApps } = useAppStore();
   // State to store apps group
   const [selectedAppGroup, setSelectedAppGroup] = useState<AppGroup>(
     AppGroup.MY_APPS,
@@ -72,13 +73,43 @@ const Apps: React.FC<IAppsProps> = () => {
   const searchValue = watch('search');
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
 
+  const isQuickCategorySelected = ![
+    AppGroup.ALL_APPS,
+    AppGroup.MY_APPS,
+    AppGroup.FEATURED,
+  ].includes(selectedAppGroup);
+  const isAllAppsGroupSelected = selectedAppGroup === AppGroup.ALL_APPS;
+
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteApps(
       isFiltersEmpty({
         q: debouncedSearchValue,
         sort: sortByFilter,
+        ...(isQuickCategorySelected
+          ? {
+              'categoryId[0]': isQuickCategorySelected
+                ? selectedAppGroup
+                : undefined,
+            }
+          : selectedAppGroup === AppGroup.FEATURED
+          ? {
+              featured: true,
+            }
+          : {}),
       }),
     );
+
+  const { data: featured } = useInfiniteFeaturedApps(
+    isFiltersEmpty({
+      q: debouncedSearchValue,
+      limit: 5,
+    }),
+  );
+  const { data: categories } = useInfiniteCategories(
+    isFiltersEmpty({
+      limit: 3,
+    }),
+  );
 
   const appIds = data?.pages.flatMap((page) => {
     return page.data?.result?.data.map((apps: any) => {
@@ -89,6 +120,26 @@ const Apps: React.FC<IAppsProps> = () => {
       }
     });
   }) as { id: string }[];
+
+  const featuredAppIds = featured?.pages.flatMap((page) => {
+    return page.data?.result?.data.map((apps: any) => {
+      try {
+        return apps;
+      } catch (e) {
+        console.log('Error', { apps });
+      }
+    });
+  }) as { id: string }[];
+
+  const flattenCategories = categories?.pages.flatMap((page: any) => {
+    return page?.data?.result?.data.map((category: any) => {
+      try {
+        return category;
+      } catch (e) {
+        console.log('Error', { category });
+      }
+    });
+  });
 
   useEffect(() => {
     if (inView) {
@@ -145,36 +196,22 @@ const Apps: React.FC<IAppsProps> = () => {
               }
               onClick={() => setSelectedAppGroup(AppGroup.FEATURED)}
             />
-            <Button
-              variant={ButtonVariant.Secondary}
-              label={AppGroup.COMMUNICATION}
-              className={
-                selectedAppGroup === AppGroup.COMMUNICATION
-                  ? selectedButtonClassName
-                  : regularButtonClassName
-              }
-              onClick={() => setSelectedAppGroup(AppGroup.COMMUNICATION)}
-            />
-            <Button
-              variant={ButtonVariant.Secondary}
-              label={AppGroup.CUSTOMER_SUPPORT}
-              className={
-                selectedAppGroup === AppGroup.CUSTOMER_SUPPORT
-                  ? selectedButtonClassName
-                  : regularButtonClassName
-              }
-              onClick={() => setSelectedAppGroup(AppGroup.CUSTOMER_SUPPORT)}
-            />
-            <Button
-              variant={ButtonVariant.Secondary}
-              label={AppGroup.RESOURCES}
-              className={
-                selectedAppGroup === AppGroup.RESOURCES
-                  ? selectedButtonClassName
-                  : regularButtonClassName
-              }
-              onClick={() => setSelectedAppGroup(AppGroup.RESOURCES)}
-            />
+            {flattenCategories &&
+              flattenCategories.length > 0 &&
+              flattenCategories.map((category) => (
+                <div key={category.id}>
+                  <Button
+                    variant={ButtonVariant.Secondary}
+                    label={category.name}
+                    className={
+                      selectedAppGroup === category.id
+                        ? selectedButtonClassName
+                        : regularButtonClassName
+                    }
+                    onClick={() => setSelectedAppGroup(category.id)}
+                  />
+                </div>
+              ))}
           </div>
           <div className="flex space-x-2 justify-center items-center relative">
             <IconButton
@@ -270,7 +307,23 @@ const Apps: React.FC<IAppsProps> = () => {
 
           if (appIds && appIds?.length > 0) {
             return (
-              <div className="pt-6">
+              <div className="flex flex-col gap-6">
+                {isAllAppsGroupSelected && (
+                  <>
+                    <div className="flex justify-between">
+                      <div className="text-xl font-bold">Featured</div>
+                      <div className="text-base font-semibold text-neutral-500 cursor-pointer">
+                        View all featured
+                      </div>
+                    </div>
+                    <AppGrid
+                      apps={featuredAppIds
+                        ?.filter(({ id }) => !!featuredApps[id])
+                        ?.map(({ id }) => apps[id])}
+                    />
+                    <div className="text-xl font-bold">All Apps</div>
+                  </>
+                )}
                 <AppGrid
                   apps={appIds
                     ?.filter(({ id }) => !!apps[id])

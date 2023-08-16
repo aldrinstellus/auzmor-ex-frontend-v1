@@ -231,6 +231,7 @@ const AddApp: React.FC<AddAppProps> = ({
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>App credentials</div>
       ),
+      disabled: !isValid,
       dataTestId: 'add-app-credentials',
       tabContent: <AppCredentialsForm control={control} errors={errors} />,
     },
@@ -341,6 +342,7 @@ const AddApp: React.FC<AddAppProps> = ({
             ) : (
               <Button
                 label="Next"
+                disabled={!isValid}
                 onClick={(e) => handleNextTab(e)}
                 dataTestId="add-app-next-cta"
               />
