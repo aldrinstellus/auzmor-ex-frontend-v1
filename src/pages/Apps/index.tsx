@@ -238,7 +238,7 @@ const Apps: React.FC<IAppsProps> = () => {
               <div className="flex justify-between mt-6 mb-6">
                 <div className="text-xl font-bold">Featured</div>
                 <div
-                  className="text-base font-semibold text-neutral-500 cursor-pointer"
+                  className="text-base font-semibold text-primary-500 cursor-pointer"
                   onClick={() => setSelectedAppGroup(AppGroup.FEATURED)}
                 >
                   View all featured
