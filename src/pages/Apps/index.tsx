@@ -62,7 +62,9 @@ const Apps: React.FC<IAppsProps> = () => {
     teams: [],
   });
   const [appsCount, setAppsCount] = useState<any>();
-  const [isLoading, setIsLoading] = useState();
+  const [featuredAppsCount, setFeaturedAppsCount] = useState<any>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFeauturedAppLoading, setIsFeaturedAppLoading] = useState(false);
 
   const selectedButtonClassName = '!bg-primary-50 text-primary-500 text-sm';
   const regularButtonClassName = '!text-neutral-500 text-sm';
@@ -313,25 +315,32 @@ const Apps: React.FC<IAppsProps> = () => {
           )}
           {isAllAppsGroupSelected && (
             <div>
-              <div className="flex justify-between mb-6">
-                <div className="text-xl font-bold">Featured</div>
-                <div
-                  className="text-base font-semibold text-primary-500 cursor-pointer"
-                  onClick={() => setSelectedAppGroup(AppGroup.FEATURED)}
-                >
-                  View all featured
+              {featuredAppsCount > 0 && !isFeauturedAppLoading && (
+                <div className="flex justify-between mb-6">
+                  <div className="text-xl font-bold">Featured</div>
+                  <div
+                    className="text-base font-semibold text-primary-500 cursor-pointer"
+                    onClick={() => setSelectedAppGroup(AppGroup.FEATURED)}
+                  >
+                    View all featured
+                  </div>
                 </div>
-              </div>
+              )}
               <AppList
                 fetchQuery={useInfiniteFeaturedApps}
                 apps={featuredApps}
                 queryParams={{
                   limit: 5,
+                  featured: true,
                 }}
                 isInfinite={false}
                 showEmptyState={false}
+                setAppsCount={setFeaturedAppsCount}
+                setAppsLoading={setIsFeaturedAppLoading}
               />
-              <div className="text-xl font-bold">All Apps</div>
+              {featuredAppsCount > 0 && !isFeauturedAppLoading && (
+                <div className="text-xl font-bold">All Apps</div>
+              )}
             </div>
           )}
           <AppList
