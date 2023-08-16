@@ -14,12 +14,14 @@ export interface ITeamFilterModalProps {
   open: boolean;
   closeModal: () => void;
   setFilters: (param: any) => void;
+  filters: any;
 }
 
 const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
   open,
   closeModal,
   setFilters,
+  filters,
 }) => {
   const { handleSubmit } = useForm({
     mode: 'onChange',
@@ -30,10 +32,15 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
   const onSubmit = (value: any) => {
     closeModal();
     setFilters({
-      categories: selectedCategories.map((category: any) => category.id),
-      teams: selectedTeams.map((team: any) => team.id),
+      categories: selectedCategories,
+      teams: selectedTeams,
     });
   };
+
+  useEffect(() => {
+    setSelectedCategories(filters.categories);
+    setSelectedTeams(filters.teams);
+  }, [filters]);
 
   const filterNavigation = [
     {
@@ -87,8 +94,8 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
             dataTestId: 'app-filter-team-search',
             isClearable: true,
           }}
-          setSelectedItems={setSelectedCategories}
-          selectedItems={selectedCategories}
+          setSelectedItems={setSelectedTeams}
+          selectedItems={selectedTeams}
           renderItem={(item) => (
             <>
               <input

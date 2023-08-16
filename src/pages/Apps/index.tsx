@@ -19,9 +19,10 @@ import {
 import { useAppStore } from 'stores/appStore';
 import PopupMenu from 'components/PopupMenu';
 import { useDebounce } from 'hooks/useDebounce';
-import { isFiltersEmpty } from 'utils/misc';
+import { isFiltersEmpty, twConfig } from 'utils/misc';
 import AppFilterModal from './components/AppFilterModal';
 import AppList from './components/AppList';
+import Icon from 'components/Icon';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -60,6 +61,8 @@ const Apps: React.FC<IAppsProps> = () => {
     categories: [],
     teams: [],
   });
+  const [appsCount, setAppsCount] = useState<any>();
+  const [isLoading, setIsLoading] = useState();
 
   const selectedButtonClassName = '!bg-primary-50 text-primary-500 text-sm';
   const regularButtonClassName = '!text-neutral-500 text-sm';
@@ -89,6 +92,20 @@ const Apps: React.FC<IAppsProps> = () => {
       }
     });
   });
+
+  const handleRemoveFilters = (key: any, id: any) => {
+    setAppFilters({
+      ...appFilters,
+      [key]: appFilters[key].filter((item: any) => item.id !== id),
+    });
+  };
+
+  const clearFilters = () => {
+    setAppFilters({
+      categories: [],
+      teams: [],
+    });
+  };
 
   return (
     <div>
@@ -232,10 +249,71 @@ const Apps: React.FC<IAppsProps> = () => {
             />
           </div>
         </div>
-        <>
+        <div className="flex flex-col gap-6">
+          <div className="text-neutral-500">
+            Showing {!isLoading && !!appsCount && appsCount} results
+          </div>
+          {(appFilters.categories.length > 0 ||
+            appFilters.teams.length > 0) && (
+            <div className="flex justify-between items-start">
+              <div className="flex items-center space-x-2 flex-wrap space-y-2">
+                <div className="text-base text-neutral-500 whitespace-nowrap">
+                  Filter By
+                </div>
+                {appFilters.categories.map((category: any) => (
+                  <div
+                    key={category.id}
+                    className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1"
+                    data-testid={`people-filterby`}
+                  >
+                    <div className="mr-1 text-neutral-500 whitespace-nowrap">
+                      Category{' '}
+                      <span className="text-primary-500">L{category.name}</span>
+                    </div>
+                    <Icon
+                      name="close"
+                      size={16}
+                      stroke={twConfig.theme.colors.neutral['900']}
+                      className="cursor-pointer"
+                      onClick={() =>
+                        handleRemoveFilters('categories', category.id)
+                      }
+                      dataTestId={`people-filterby-close`}
+                    />
+                  </div>
+                ))}
+                {appFilters.teams.map((team: any) => (
+                  <div
+                    key={team.id}
+                    className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1"
+                    data-testid={`people-filterby`}
+                  >
+                    <div className="mr-1 text-neutral-500">
+                      Team{' '}
+                      <span className="text-primary-500">L{team.name}</span>
+                    </div>
+                    <Icon
+                      name="close"
+                      size={16}
+                      stroke={twConfig.theme.colors.neutral['900']}
+                      className="cursor-pointer"
+                      onClick={() => handleRemoveFilters('teams', team.id)}
+                      dataTestId={`people-filterby-close`}
+                    />
+                  </div>
+                ))}
+              </div>
+              <div
+                className="text-neutral-500 border px-3 py-1  mt-2 whitespace-nowrap rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
+                onClick={clearFilters}
+              >
+                Clear Filters
+              </div>
+            </div>
+          )}
           {isAllAppsGroupSelected && (
             <div>
-              <div className="flex justify-between mt-6 mb-6">
+              <div className="flex justify-between mb-6">
                 <div className="text-xl font-bold">Featured</div>
                 <div
                   className="text-base font-semibold text-primary-500 cursor-pointer"
@@ -250,7 +328,6 @@ const Apps: React.FC<IAppsProps> = () => {
                 queryParams={{
                   limit: 5,
                 }}
-                showCount={false}
                 isInfinite={false}
                 showEmptyState={false}
               />
@@ -275,15 +352,18 @@ const Apps: React.FC<IAppsProps> = () => {
                   }
                 : {}),
             }}
+            setAppsCount={setAppsCount}
+            setAppsLoading={setIsLoading}
             openAddAppModal={openModal}
             resetField={resetField}
           />
-        </>
+        </div>
       </Card>
       <AddApp open={open} closeModal={closeModal} />
       {showFilterModal && (
         <AppFilterModal
           open={showFilterModal}
+          filters={appFilters}
           closeModal={closeFilterModal}
           setFilters={setAppFilters}
         />

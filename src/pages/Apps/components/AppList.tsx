@@ -14,10 +14,11 @@ interface IAppListProps {
   queryParams?: any; // Parameters for the API call
   apps: any;
   showSkeleton?: boolean;
-  showCount?: boolean;
   isInfinite?: boolean;
   showEmptyState?: boolean;
   openAddAppModal?: () => void;
+  setAppsCount?: (params: any) => void;
+  setAppsLoading?: (params: any) => void;
   resetField?: (key: any, param: any) => void;
 }
 
@@ -26,11 +27,12 @@ const AppList: React.FC<IAppListProps> = ({
   queryParams,
   apps,
   showSkeleton = true,
-  showCount = true,
   isInfinite = true,
   showEmptyState = true,
   openAddAppModal,
   resetField,
+  setAppsCount,
+  setAppsLoading,
 }) => {
   const { ref, inView } = useInView();
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
@@ -51,6 +53,16 @@ const AppList: React.FC<IAppListProps> = ({
   }) as { id: string }[];
 
   useEffect(() => {
+    if (setAppsCount && appIds) {
+      setAppsCount(appIds.length);
+    }
+  }, [appIds]);
+
+  useEffect(() => {
+    if (setAppsLoading) setAppsLoading(isLoading);
+  }, [isLoading]);
+
+  useEffect(() => {
     if (inView && isInfinite) {
       fetchNextPage();
     }
@@ -58,11 +70,6 @@ const AppList: React.FC<IAppListProps> = ({
 
   return (
     <div>
-      {showCount && (
-        <div className="text-neutral-500 mt-6 mb-6">
-          Showing {!isLoading && appIds.length} results
-        </div>
-      )}
       {(() => {
         if (isLoading && showSkeleton) {
           return (
