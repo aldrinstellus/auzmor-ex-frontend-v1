@@ -104,6 +104,7 @@ export const useInfiniteTeams = (q?: Record<string, any>) => {
   });
 };
 
+// data is not stored in cache
 export const useInfiniteTeamMembers = (
   teamId: string,
   q?: Record<string, any>,

@@ -9,7 +9,6 @@ import EntitySearchModal, {
 } from 'components/EntitySearchModal';
 import Tooltip from 'components/Tooltip';
 import PopupMenu from 'components/PopupMenu';
-import { TeamFlow } from '../Teams';
 import { IGetUser } from 'queries/users';
 import Avatar from 'components/Avatar';
 import { addTeamMember } from 'queries/teams';
@@ -21,7 +20,6 @@ import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import queryClient from 'utils/queryClient';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
-import TeamMember from './TeamMembers';
 
 export interface ITeamMemberProps {
   id?: string;
@@ -199,13 +197,13 @@ const TeamDetail: React.FC<ITeamMemberProps> = ({
           </div>
         </div>
         <div className="px-8">
-          {/* <TeamMember
+          <People
             showModal={false}
             openModal={() => {}}
             closeModal={() => {}}
             teamTab={teamTab}
             teamId={id}
-          /> */}
+          />
         </div>
       </Card>
       {showAddMemberModal && (
