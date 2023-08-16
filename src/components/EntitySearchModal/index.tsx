@@ -8,17 +8,22 @@ import { useForm } from 'react-hook-form';
 import { IGetUser } from 'queries/users';
 
 export enum EntitySearchModalType {
-  Member = 'MEMBER',
+  User = 'USER',
   Team = 'TEAM',
   Channel = 'CHANNEL',
 }
 
 interface IEntitySearchModalProps {
+  open: boolean;
+  openModal: () => void;
+  closeModal: () => void;
+  onBackPress?: () => void;
   title?: string;
   submitButtonText?: string;
+  cancelButtonText?: string;
   entityType?: EntitySearchModalType;
   entityRenderer?: (data: IGetUser) => ReactNode;
-  onSubmit?: () => void;
+  onSubmit?: (ids: string[]) => void;
   onCancel?: () => void;
 }
 
@@ -31,14 +36,18 @@ export interface IMemberForm {
 }
 
 const EntitySearchModal: React.FC<IEntitySearchModalProps> = ({
+  open,
+  openModal,
+  closeModal,
+  onBackPress,
   title = 'Add team members',
-  entityType = EntitySearchModalType.Member,
+  entityType = EntitySearchModalType.User,
   onSubmit = () => {},
   onCancel = () => {},
   submitButtonText = 'Next',
+  cancelButtonText = 'Back',
   entityRenderer = (data: any) => <></>,
 }) => {
-  const [open, openModal, closeModal] = useModal(true);
   const { control, watch, handleSubmit, setValue, resetField } =
     useForm<IMemberForm>({
       defaultValues: {
@@ -47,15 +56,18 @@ const EntitySearchModal: React.FC<IEntitySearchModalProps> = ({
       },
     });
   return (
-    <Modal open={open} closeModal={closeModal}>
+    <Modal open={open} closeModal={closeModal} className="max-w-[638px]">
       <form>
         <Header
           title={title || ''}
-          onBackIconClick={() => console.log('back clicked')}
+          onBackIconClick={() => {
+            closeModal();
+            onBackPress && onBackPress();
+          }}
           onClose={closeModal}
         />
         <EntitySearchBodyModal
-          entityType={EntitySearchModalType.Member}
+          entityType={EntitySearchModalType.User}
           control={control}
           watch={watch}
           setValue={setValue}
@@ -67,6 +79,7 @@ const EntitySearchModal: React.FC<IEntitySearchModalProps> = ({
           entityType={entityType}
           onSubmit={onSubmit}
           onCancel={onCancel}
+          cancelButtonText={cancelButtonText}
           submitButtonText={submitButtonText}
         />
       </form>
