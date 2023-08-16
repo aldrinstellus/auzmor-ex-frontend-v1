@@ -42,38 +42,85 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
     setSelectedTeams(filters.teams);
   }, [filters]);
 
+  const CategoryFilterComponent = () => (
+    <InfiniteFilterList
+      apiCall={useInfiniteCategories} // Provide the API call function
+      apiCallParams={{
+        type: CategoryType.APP,
+        limit: 10,
+      }} // Provide the API call parameters
+      searchProps={{
+        placeholder: 'Search',
+        dataTestId: 'teams-category-search',
+        isClearable: true,
+      }}
+      setSelectedItems={setSelectedCategories}
+      selectedItems={selectedCategories}
+      showSelectedFilterPill
+      renderItem={(item) => (
+        <>
+          <input
+            type="checkbox"
+            data-testid="app-filter-category-checkbox"
+            className="h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 outline-neutral-500"
+            checked={find(selectedCategories, item)}
+          ></input>
+          <span className="ml-3 text-xs font-medium">{item?.name}</span>
+        </>
+      )}
+    />
+  );
+
+  const TeamFilterComponent = () => (
+    <InfiniteFilterList
+      apiCall={useInfiniteTeams} // Provide the API call function
+      apiCallParams={{
+        limit: 10,
+      }} // Provide the API call parameters
+      searchProps={{
+        placeholder: 'Search',
+        dataTestId: 'app-filter-team-search',
+        isClearable: true,
+      }}
+      setSelectedItems={setSelectedTeams}
+      selectedItems={selectedTeams}
+      renderItem={(item) => (
+        <>
+          <input
+            type="checkbox"
+            data-testid="app-filter-team-checkbox"
+            className="h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 border-2 border-b-bg-neutral-200"
+            checked={find(selectedTeams, item)}
+          ></input>
+          <div className="ml-3 w-full text-xs flex justify-between items-center">
+            <div>
+              <span className="font-bold text-sm">{item?.name}</span>
+            </div>
+            <div className="flex items-center gap-2 text-neutral-500">
+              <div>{item.category?.name}</div>
+              <div className="bg-neutral-500 rounded-full w-1 h-1" />
+              <div className="flex items-center justify-center space-x-1">
+                <Icon name="profileUserOutline" size={16} />
+                <div
+                  className="text-xs font-normal"
+                  data-testid={`team-no-of-members-${item.totalMembers}`}
+                >
+                  {item.totalMembers} members
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+      noResultsMessage="No Teams Found"
+    />
+  );
+
   const filterNavigation = [
     {
       label: 'Categories',
       icon: '',
       key: 'category-filters',
-      component: (
-        <InfiniteFilterList
-          apiCall={useInfiniteCategories} // Provide the API call function
-          apiCallParams={{
-            type: CategoryType.APP,
-            limit: 10,
-          }} // Provide the API call parameters
-          searchProps={{
-            placeholder: 'Search',
-            dataTestId: 'teams-category-search',
-            isClearable: true,
-          }}
-          setSelectedItems={setSelectedCategories}
-          selectedItems={selectedCategories}
-          renderItem={(item) => (
-            <>
-              <input
-                type="checkbox"
-                data-testid="app-filter-category-checkbox"
-                className="h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 outline-neutral-500"
-                checked={find(selectedCategories, item)}
-              ></input>
-              <span className="ml-3 text-xs font-medium">{item?.name}</span>
-            </>
-          )}
-        />
-      ),
       disabled: false,
       hidden: false,
       search: true,
@@ -83,50 +130,6 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
       label: 'Team',
       icon: '',
       key: 'team-filters',
-      component: (
-        <InfiniteFilterList
-          apiCall={useInfiniteTeams} // Provide the API call function
-          apiCallParams={{
-            limit: 10,
-          }} // Provide the API call parameters
-          searchProps={{
-            placeholder: 'Search',
-            dataTestId: 'app-filter-team-search',
-            isClearable: true,
-          }}
-          setSelectedItems={setSelectedTeams}
-          selectedItems={selectedTeams}
-          renderItem={(item) => (
-            <>
-              <input
-                type="checkbox"
-                data-testid="app-filter-team-checkbox"
-                className="h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 border-2 border-b-bg-neutral-200"
-                checked={find(selectedTeams, item)}
-              ></input>
-              <div className="ml-3 w-full text-xs flex justify-between items-center">
-                <div>
-                  <span className="font-bold text-sm">{item?.name}</span>
-                </div>
-                <div className="flex items-center gap-2 text-neutral-500">
-                  <div>{item.category?.name}</div>
-                  <div className="bg-neutral-500 rounded-full w-1 h-1" />
-                  <div className="flex items-center justify-center space-x-1">
-                    <Icon name="profileUserOutline" size={16} />
-                    <div
-                      className="text-xs font-normal"
-                      data-testid={`team-no-of-members-${item.totalMembers}`}
-                    >
-                      {item.totalMembers} members
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-          noResultsMessage="No Teams Found"
-        />
-      ),
       disabled: false,
       hidden: false,
       search: true,
@@ -165,7 +168,13 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
               </div>
             ))}
           </div>
-          <div className="w-2/3 py-4 px-2">{activeFilter.component}</div>
+          <div className="w-2/3 py-4 px-2">
+            {activeFilter.key === 'category-filters' ? (
+              <CategoryFilterComponent />
+            ) : (
+              <TeamFilterComponent />
+            )}
+          </div>
         </div>
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button

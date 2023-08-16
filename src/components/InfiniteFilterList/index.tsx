@@ -2,12 +2,13 @@ import React, { useEffect, ReactNode } from 'react';
 import { useDebounce } from 'hooks/useDebounce';
 import { useForm } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
-import { isFiltersEmpty } from 'utils/misc';
+import { isFiltersEmpty, twConfig } from 'utils/misc';
 import find from 'lodash/find';
 import Layout, { FieldType } from 'components/Form';
 import { Size as InputSize, Variant as InputVariant } from 'components/Input';
 import ItemSkeleton from './components/Skeletons/ItemSkeleton';
 import PageLoader from 'components/PageLoader';
+import Icon from 'components/Icon';
 
 type ApiCallFunction = (queryParams: any) => any;
 
@@ -21,6 +22,7 @@ interface IInfiniteFilterListProps {
   apiCallParams: any; // Parameters for the API call
   searchProps?: any; // Props for the input field
   noResultsMessage?: string; // Custom no results message
+  showSelectedFilterPill?: boolean;
 }
 
 const InfiniteFilterList: React.FC<IInfiniteFilterListProps> = ({
@@ -32,6 +34,7 @@ const InfiniteFilterList: React.FC<IInfiniteFilterListProps> = ({
   apiCall,
   apiCallParams,
   searchProps,
+  showSelectedFilterPill,
   noResultsMessage = 'No Category found', // Default no results message
 }) => {
   const { control, watch } = useForm({
@@ -73,7 +76,6 @@ const InfiniteFilterList: React.FC<IInfiniteFilterListProps> = ({
       fetchNextPage();
     }
   }, [inView]);
-  console.log(listClassName);
 
   return (
     <>
@@ -93,6 +95,25 @@ const InfiniteFilterList: React.FC<IInfiniteFilterListProps> = ({
       <div
         className={`mt-3 max-h-[300px] min-h-[300px] overflow-y-auto ${listClassName}`}
       >
+        {showSelectedFilterPill && (
+          <div className="flex items-center gap-2 flex-wrap">
+            {selectedItems.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center gap-1 rounded-[24px] border-2 border-b-bg-neutral-200 py-2 px-3 text-sm"
+              >
+                <span className="whitespace-nowrap">{item.name}</span>
+                <Icon
+                  name="closeCircleOutline"
+                  size={20}
+                  className="cursor-pointer"
+                  stroke={twConfig.theme.colors['black-white'].black}
+                  onClick={() => onSelectItem(item)}
+                />
+              </div>
+            ))}
+          </div>
+        )}
         {(() => {
           if (isLoading) {
             return (
