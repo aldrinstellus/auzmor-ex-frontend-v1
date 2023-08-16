@@ -197,7 +197,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
     {
       id: 2,
       text: 'Remove from Feature',
-      icon: 'filterLinear',
+      icon: 'tag',
       dataTestId: 'app-card-remove-feature',
       onClick: () => toggleAppFeature(false),
       hidden: !app.featured,
