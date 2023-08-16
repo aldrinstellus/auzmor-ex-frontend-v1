@@ -6,6 +6,7 @@ import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import { App } from 'queries/apps';
 import React from 'react';
+import { twConfig } from 'utils/misc';
 
 type AppDetailModalProps = {
   app: App;
@@ -51,23 +52,35 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
         {/* Body */}
         <div className="px-6 py-3">
           <div className="border-orange-300 border-1 rounded-9xl">
-            <div className="w-fit pt-4 pl-5 flex gap-2">
-              {app.category && (
-                <Badge
-                  text={app.category.name}
-                  textClassName="text-blue-500 text-base leading-6 font-semibold"
-                  bgClassName="bg-blue-100"
-                  dataTestId="app-details-category"
+            <div className="w-full pt-4 px-5 flex justify-between">
+              <div className="flex gap-2">
+                {app.category && (
+                  <Badge
+                    text={app.category.name}
+                    textClassName="text-blue-500 text-base leading-6 font-semibold"
+                    bgClassName="bg-blue-100"
+                    dataTestId="app-details-category"
+                  />
+                )}
+                {app.featured && (
+                  <Badge
+                    text="Featured"
+                    textClassName="text-white text-base leading-6 font-semibold"
+                    bgClassName="bg-blue-500"
+                    dataTestId="app-details-category"
+                  />
+                )}
+              </div>
+              <div
+                className="cursor-pointer text-primary-500 text-lg font-medium flex items-center gap-1"
+                onClick={() => window.open(app.url, '_target')}
+              >
+                <span>Visit app</span>
+                <Icon
+                  name="arrowRightUp"
+                  fill={twConfig.theme.colors.primary[500]}
                 />
-              )}
-              {app.featured && (
-                <Badge
-                  text="Featured"
-                  textClassName="text-white text-base leading-6 font-semibold"
-                  bgClassName="bg-blue-500"
-                  dataTestId="app-details-category"
-                />
-              )}
+              </div>
             </div>
             <div className="pb-8">
               {/* The icon, name and description */}

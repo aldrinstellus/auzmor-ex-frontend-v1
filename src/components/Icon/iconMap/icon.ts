@@ -128,6 +128,7 @@ import MicIcon from '../components/Mic';
 import AnnouncementChartIcon from '../components/AnnouncementChart';
 import dotsHorizontalIcon from '../components/DotsHorizontal';
 import Tag from '../components/Tag';
+import ArrowRightUp from '../components/ArrowRightUp';
 
 export const icon = {
   add: Add,
@@ -260,4 +261,5 @@ export const icon = {
   mic: MicIcon,
   announcementChart: AnnouncementChartIcon,
   tag: Tag,
+  arrowRightUp: ArrowRightUp,
 };
