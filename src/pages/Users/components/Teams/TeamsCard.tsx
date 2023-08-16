@@ -91,21 +91,23 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
         className="relative w-[189.5px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white"
         dataTestId="team-card"
       >
-        <PopupMenu
-          triggerNode={
-            <div className="cursor-pointer">
-              <Icon
-                name="moreOutline"
-                stroke="#000"
-                className="absolute top-2 right-2"
-                hover={false}
-                dataTestId="people-card-ellipsis"
-              />
-            </div>
-          }
-          menuItems={teamOption}
-          className="-right-36 w-44 top-8"
-        />
+        {isHovered && (
+          <PopupMenu
+            triggerNode={
+              <div className="cursor-pointer">
+                <Icon
+                  name="moreOutline"
+                  stroke="#000"
+                  className="absolute top-2 right-2"
+                  hover={false}
+                  dataTestId="people-card-ellipsis"
+                />
+              </div>
+            }
+            menuItems={teamOption}
+            className="-right-36 w-44 top-8"
+          />
+        )}
         {moment(createdAtDate)?.isBetween(
           moment().subtract(7, 'days'),
           currentDate,

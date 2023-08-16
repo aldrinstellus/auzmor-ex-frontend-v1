@@ -13,14 +13,27 @@ import { useForm } from 'react-hook-form';
 import { useDebounce } from 'hooks/useDebounce';
 import TeamFilterModal from '../FilterModals/TeamFilterModal';
 import TeamModal from '../TeamModal';
-import { useInfiniteTeams } from 'queries/teams';
-import { isFiltersEmpty } from 'utils/misc';
+import { addTeamMember, useInfiniteTeams } from 'queries/teams';
+import { isFiltersEmpty, twConfig } from 'utils/misc';
 import PageLoader from 'components/PageLoader';
 import TeamNotFound from 'images/TeamNotFound.svg';
 import TeamsSkeleton from '../Skeletons/TeamsSkeleton';
 import Skeleton from 'react-loading-skeleton';
 import { ITeamDetailState } from 'pages/Users';
 import Sort from 'components/Sort';
+import EntitySearchModal, {
+  EntitySearchModalType,
+} from 'components/EntitySearchModal';
+import { IGetUser } from 'queries/users';
+import Avatar from 'components/Avatar';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import FailureToast from 'components/Toast/variants/FailureToast';
+import Icon from 'components/Icon';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import queryClient from 'utils/queryClient';
 interface IForm {
   search?: string;
 }
@@ -45,13 +58,20 @@ export interface ITeamDetails {
 }
 
 export interface ITeamProps {
+  // show add team modal
   showTeamModal: boolean;
   openTeamModal: () => void;
   closeTeamModal: () => void;
+  // stored one team detail
   showTeamDetail: ITeamDetailState;
   setShowTeamDetail: (detail: ITeamDetailState) => void;
+  // set team flow
   setTeamFlow: any;
   teamFlow: string;
+  // show add members modal
+  showAddMemberModal: boolean;
+  openAddMemberModal: () => void;
+  closeAddMemberModal: () => void;
 }
 
 const Team: React.FC<ITeamProps> = ({
@@ -62,9 +82,14 @@ const Team: React.FC<ITeamProps> = ({
   setShowTeamDetail,
   setTeamFlow,
   teamFlow,
+  showAddMemberModal,
+  openAddMemberModal,
+  closeAddMemberModal,
 }) => {
   const [sortByFilter, setSortByFilter] = useState<string>('');
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
+  useModal();
+
   const { ref, inView } = useInView();
 
   const {
@@ -103,6 +128,56 @@ const Team: React.FC<ITeamProps> = ({
       }
     });
   });
+
+  // const teamId = showTeamDetail?.teamDetail?.id;
+
+  // const addTeamMemberMutation = useMutation({
+  //   mutationKey: ['add-team-member', teamId],
+  //   mutationFn: (payload: any) => {
+  //     return addTeamMember(teamId || '', payload);
+  //   },
+  //   onError: (error: any) => {
+  //     toast(
+  //       <FailureToast
+  //         content={`Error Adding Team Members`}
+  //         dataTestId="team-create-error-toaster"
+  //       />,
+  //       {
+  //         closeButton: (
+  //           <Icon
+  //             name="closeCircleOutline"
+  //             stroke={twConfig.theme.colors.red['500']}
+  //             size={20}
+  //           />
+  //         ),
+  //         style: {
+  //           border: `1px solid ${twConfig.theme.colors.red['300']}`,
+  //           borderRadius: '6px',
+  //           display: 'flex',
+  //           alignItems: 'center',
+  //         },
+  //         autoClose: TOAST_AUTOCLOSE_TIME,
+  //         transition: slideInAndOutTop,
+  //         theme: 'dark',
+  //       },
+  //     );
+  //   },
+  //   onSuccess: (data: any) => {
+  //     toast(<SuccessToast content={'Members has been added to team'} />, {
+  //       style: {
+  //         border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+  //         borderRadius: '6px',
+  //         display: 'flex',
+  //         alignItems: 'center',
+  //       },
+  //       autoClose: TOAST_AUTOCLOSE_TIME,
+  //       transition: slideInAndOutTop,
+  //       theme: 'dark',
+  //     });
+  //     queryClient.invalidateQueries(['categories']);
+  //     queryClient.invalidateQueries(['team-members']);
+  //   },
+  // });
 
   return (
     <div className="relative pb-8">
@@ -181,6 +256,8 @@ const Team: React.FC<ITeamProps> = ({
           borderRadius={100}
         />
       )}
+
+      {/* CATEGORY FILTER */}
 
       {/* <div className="flex justify-between  mb-6">
     <div className="flex items-center space-x-2">
@@ -324,6 +401,63 @@ const Team: React.FC<ITeamProps> = ({
               ? showTeamDetail.teamDetail
               : undefined
           }
+          openAddMemberModal={openAddMemberModal}
+        />
+      )}
+
+      {showAddMemberModal && (
+        <EntitySearchModal
+          open={showAddMemberModal}
+          openModal={openAddMemberModal}
+          closeModal={closeAddMemberModal}
+          onBackPress={openTeamModal}
+          entityType={EntitySearchModalType.Team}
+          entityRenderer={(data: IGetUser) => {
+            return (
+              <div className="flex space-x-4 w-full">
+                <Avatar
+                  name={data?.fullName || 'U'}
+                  size={32}
+                  image={data?.profileImage?.original}
+                />
+                <div className="flex space-x-6 w-full">
+                  <div className="flex flex-col w-full">
+                    <div className="flex justify-between items-center">
+                      <div className="text-sm font-bold text-neutral-900">
+                        {data?.fullName}
+                      </div>
+                      {/* <div className="flex space-x-[14px] items-center">
+                        <div className="flex space-x-1 items-start">
+                          <Icon name="briefcase" size={16} />
+                          <div className="text-xs font-normal text-neutral-500">
+                            {'Chief Financial officer'}
+                          </div>
+                        </div>
+
+                        <div className="w-1 h-1 bg-neutral-500 rounded-full" />
+
+                        <div className="flex space-x-1 items-start">
+                          <Icon name="location" size={16} />
+                          <div className="text-xs font-normal text-neutral-500">
+                            {'New York, US.'}
+                          </div>
+                        </div>
+                      </div> */}
+                    </div>
+                    <div className="text-xs font-normal text-neutral-500">
+                      {data?.primaryEmail}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          }}
+          onSubmit={(userIds: string[]) => {
+            closeAddMemberModal();
+          }}
+          onCancel={closeAddMemberModal}
+          title="Add Members"
+          submitButtonText="Add Members"
         />
       )}
 

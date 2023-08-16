@@ -30,6 +30,7 @@ export interface IAddTeamModalProps {
   teamFlowMode: string;
   setTeamFlow: any;
   team: Record<string, any> | any;
+  openAddMemberModal: () => void;
 }
 
 const TeamModal: React.FC<IAddTeamModalProps> = ({
@@ -39,6 +40,7 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
   teamFlowMode,
   setTeamFlow,
   team,
+  openAddMemberModal,
 }) => {
   const queryClient = useQueryClient();
 
@@ -119,6 +121,7 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
         theme: 'dark',
       });
       closeModal();
+      openAddMemberModal();
       queryClient.invalidateQueries(['categories']);
     },
   });
@@ -187,6 +190,7 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
         },
       );
       closeModal();
+      openAddMemberModal();
       queryClient.invalidateQueries(['categories']);
     },
   });
@@ -208,7 +212,6 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
     closeModal();
     if (teamFlowMode === TeamFlow.EditTeam) {
       setTeamFlow(TeamFlow.CreateTeam);
-      // reset({ name: '', category: '', description: '' });
     }
   };
 

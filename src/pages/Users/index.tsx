@@ -21,24 +21,25 @@ interface IUsersProps {}
 
 const Users: React.FC<IUsersProps> = () => {
   const [showOrgChart, setShowOrgChart] = useState<boolean>(false);
-
   const [showAddUserModal, openAddUserModal, closeAddUserModal] = useModal(
     undefined,
     false,
   );
-
   const [showTeamModal, openTeamModal, closeTeamModal] = useModal(
     undefined,
     false,
   );
 
-  const [teamFlow, setTeamFlow] = useState<TeamFlow>(TeamFlow.CreateTeam);
+  const [teamFlow, setTeamFlow] = useState<TeamFlow>(TeamFlow.CreateTeam); // to context
 
   const [showTeamDetail, setShowTeamDetail] = useState<ITeamDetailState>({
     isTeamSelected: false,
     teamDetail: {},
     activeTab: '',
-  });
+  }); // to context
+
+  const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
+    useModal(false);
 
   const { user } = useAuth();
 
@@ -113,6 +114,9 @@ const Users: React.FC<IUsersProps> = () => {
           setShowTeamDetail={setShowTeamDetail}
           setTeamFlow={setTeamFlow}
           teamFlow={teamFlow}
+          showAddMemberModal={showAddMemberModal}
+          openAddMemberModal={openAddMemberModal}
+          closeAddMemberModal={closeAddMemberModal}
         />
       ),
       tabAction: user?.role !== Role.Member && (
@@ -149,7 +153,9 @@ const Users: React.FC<IUsersProps> = () => {
           setShowTeamDetail={setShowTeamDetail}
           teamTab={showTeamDetail.activeTab}
           openModal={openTeamModal}
-          setTeamFlow={setTeamFlow}
+          showAddMemberModal={showAddMemberModal}
+          openAddMemberModal={openAddMemberModal}
+          closeAddMemberModal={closeAddMemberModal}
           {...showTeamDetail.teamDetail}
         />
       )}
