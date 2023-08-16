@@ -190,7 +190,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       enabled: isAdmin || data.createdBy?.userId === user?.id,
     },
     {
-      icon: 'editReceipt',
+      icon: 'announcementChart',
       label: 'View acknowledgement report',
       // onClick: () => showConfirm(),
       dataTestId: 'post-ellipsis-view-acknowledgement-report',

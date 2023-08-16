@@ -7,6 +7,8 @@ export type TextAreaProps = {
   label?: string;
   disabled?: boolean;
   error?: string;
+  errorDataTestId?: string;
+  helpText?: string;
   className?: string;
   dataTestId?: string;
   control?: Control<Record<string, any>>;
@@ -18,8 +20,6 @@ export type TextAreaProps = {
   maxLength?: number; // max character allowed
   readOnly?: boolean; // not edit access
   showCounter?: boolean; // show char counter
-  errorDataTestId?: string;
-  helpText?: string;
   disableMaxLength?: boolean;
 };
 
@@ -28,6 +28,8 @@ const TextArea: React.FC<TextAreaProps> = ({
   label = '',
   disabled = false,
   error,
+  errorDataTestId,
+  helpText,
   className = '',
   dataTestId = '',
   control,
@@ -39,8 +41,6 @@ const TextArea: React.FC<TextAreaProps> = ({
   maxLength,
   readOnly,
   showCounter,
-  errorDataTestId = '',
-  helpText,
   disableMaxLength = false,
 }) => {
   const { field } = useController({
@@ -113,14 +113,13 @@ const TextArea: React.FC<TextAreaProps> = ({
         required={required}
         className={textAreaStyle}
         data-testid={dataTestId}
-      >
-        {defaultValue}
-      </textarea>
+        defaultValue={defaultValue}
+      />
       <div
-        className={`absolute -bottom-4 text-xs truncate leading-tight ${helpTextStyles}`}
+        className={`text-xs truncate leading-tight ${helpTextStyles}`}
         data-testid={errorDataTestId}
       >
-        {error || helpText || ' '}
+        {error || helpText || ''}
       </div>
     </div>
   );

@@ -147,68 +147,73 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
         shadowOnHover
         className="relative w-[230px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white"
       >
-        {status !== UserStatus.Inactive && (
-          <UserProfileDropdown
-            id={id}
-            loggedInUserId={user?.id}
-            role={role}
-            status={status}
-            isAdmin={isAdmin}
-            isHovered={isHovered}
-            onDeleteClick={openModal}
-            onEditClick={() =>
-              navigate(
-                `/users/${id}?edit=${getEditSection(
-                  id,
-                  user?.id,
-                  isAdmin,
-                  role,
-                )}`,
-              )
-            }
-            onPromoteClick={() => updateUserRoleMutation.mutate({ id })}
-            onDeactivateClick={() =>
-              updateUserStatusMutation.mutate({
+        <UserProfileDropdown
+          id={id}
+          loggedInUserId={user?.id}
+          role={role}
+          status={status}
+          isAdmin={isAdmin}
+          isHovered={isHovered}
+          onDeleteClick={openModal}
+          onEditClick={() =>
+            navigate(
+              `/users/${id}?edit=${getEditSection(
                 id,
-                status: UserStatus.Inactive,
-              })
-            }
-            onResendInviteClick={() => () => {
-              toast(<SuccessToast content="Invitation has been sent" />, {
-                closeButton: (
-                  <Icon
-                    name="closeCircleOutline"
-                    stroke={twConfig.theme.colors.primary['500']}
-                    size={20}
-                  />
-                ),
-                style: {
-                  border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-                  borderRadius: '6px',
-                  display: 'flex',
-                  alignItems: 'center',
-                },
-                autoClose: TOAST_AUTOCLOSE_TIME,
-                transition: slideInAndOutTop,
-                theme: 'dark',
-              });
-              resendInviteMutation.mutate(id);
-            }}
-            triggerNode={
-              <div className="cursor-pointer">
+                user?.id,
+                isAdmin,
+                role,
+              )}`,
+            )
+          }
+          onReactivateClick={() => {
+            updateUserStatusMutation.mutate({
+              id,
+              status: UserStatus.Active,
+            });
+          }}
+          onPromoteClick={() => updateUserRoleMutation.mutate({ id })}
+          onDeactivateClick={() =>
+            updateUserStatusMutation.mutate({
+              id,
+              status: UserStatus.Inactive,
+            })
+          }
+          onResendInviteClick={() => () => {
+            toast(<SuccessToast content="Invitation has been sent" />, {
+              closeButton: (
                 <Icon
-                  name="dotsVertical"
-                  stroke="#000"
-                  className="absolute top-2 right-2"
-                  hover={false}
-                  dataTestId="people-card-ellipsis"
+                  name="closeCircleOutline"
+                  stroke={twConfig.theme.colors.primary['500']}
+                  size={20}
                 />
-              </div>
-            }
-            showOnHover={true}
-            className="right-0 top-8 border border-[#e5e5e5]"
-          />
-        )}
+              ),
+              style: {
+                border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+                borderRadius: '6px',
+                display: 'flex',
+                alignItems: 'center',
+              },
+              autoClose: TOAST_AUTOCLOSE_TIME,
+              transition: slideInAndOutTop,
+              theme: 'dark',
+            });
+            resendInviteMutation.mutate(id);
+          }}
+          triggerNode={
+            <div className="cursor-pointer">
+              <Icon
+                name={'dotsHorizontal'}
+                className={`absolute top-${
+                  status === UserStatus.Inactive ? 6 : 2
+                } right-2`}
+                hover={false}
+                dataTestId="people-card-ellipsis"
+              />
+            </div>
+          }
+          showOnHover={true}
+          className="right-0 top-8 border border-[#e5e5e5]"
+        />
         {(status as any) === UserStatus.Inactive ? (
           <div
             className="absolute top-0 text-[12px] text-[#737373] font-medium py-1 bg-[#F5F5F5] w-full justify-center align-center rounded-t-9xl flex"

@@ -12,14 +12,15 @@ import { useInView } from 'react-intersection-observer';
 import { useForm } from 'react-hook-form';
 import { useDebounce } from 'hooks/useDebounce';
 import TeamFilterModal from '../FilterModals/TeamFilterModal';
-import AddTeamModal from '../AddTeamModal';
-import { useInfiniteTeams } from 'queries/users';
+import AddTeamModal from '../TeamModal';
+import { useInfiniteTeams } from 'queries/teams';
 import { isFiltersEmpty } from 'utils/misc';
 import PageLoader from 'components/PageLoader';
-import UsersSkeleton from '../Skeletons/UsersSkeleton';
 import TeamNotFound from 'images/TeamNotFound.svg';
-import PopupMenu from 'components/PopupMenu';
 import TeamsSkeleton from '../Skeletons/TeamsSkeleton';
+import Skeleton from 'react-loading-skeleton';
+import { ITeamDetailState } from 'pages/Users';
+import Sort from 'components/Sort';
 interface IForm {
   search?: string;
 }
@@ -29,22 +30,51 @@ export enum TeamFlow {
   EditTeam = 'EDIT_TEAM',
 }
 
+export interface ITeamCategory {
+  name: string;
+  categoryId: string;
+}
+
+export interface ITeamDetails {
+  id: string;
+  name: string;
+  category: ITeamCategory;
+  createdAt: string;
+  totalMembers: number;
+  description: string;
+}
+
 export interface ITeamProps {
-  setShowMyTeam: (show: boolean) => void;
-  showAddTeamModal: boolean;
-  openAddTeamModal: () => void;
-  closeAddTeamModal: () => void;
+  showTeamModal: boolean;
+  openTeamModal: () => void;
+  closeTeamModal: () => void;
+  showTeamDetail: ITeamDetailState;
+  setShowTeamDetail: (detail: ITeamDetailState) => void;
+  setTeamFlow: any;
+  teamFlow: string;
+  showDeleteModal: boolean;
+  openDeleteModal: () => void;
+  closeDeleteModal: () => void;
+  teamId: string;
+  setTeamId: (teamId: string) => void;
 }
 
 const Team: React.FC<ITeamProps> = ({
-  setShowMyTeam,
-  showAddTeamModal,
-  openAddTeamModal,
-  closeAddTeamModal,
+  showTeamModal,
+  openTeamModal,
+  closeTeamModal,
+  showTeamDetail,
+  setShowTeamDetail,
+  setTeamFlow,
+  teamFlow,
+  showDeleteModal,
+  openDeleteModal,
+  closeDeleteModal,
+  setTeamId,
+  teamId,
 }) => {
   const [sortByFilter, setSortByFilter] = useState<string>('');
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
-  const [teamFlow, setTeamFlow] = useState<TeamFlow>(TeamFlow.CreateTeam);
   const { ref, inView } = useInView();
 
   const {
@@ -84,6 +114,8 @@ const Team: React.FC<ITeamProps> = ({
     });
   });
 
+  const editSelectedTeam = teamsData?.find((team) => team.id === teamId);
+
   return (
     <div className="relative pb-8">
       <div className="flex justify-between items-center">
@@ -115,52 +147,16 @@ const Team: React.FC<ITeamProps> = ({
             className="bg-white"
             dataTestId="teams-filter"
           />
-          <PopupMenu
-            triggerNode={
-              <IconButton
-                icon="arrowSwap"
-                variant={IconVariant.Secondary}
-                size={IconSize.Medium}
-                borderAround
-                className="bg-white"
-                dataTestId="teams-sort"
-              />
-            }
+          <Sort
+            setFilter={setSortByFilter}
+            filterKey="createdAt"
+            filterValue={{ asc: 'ASC', desc: 'DESC' }}
             title={
               <div className="bg-blue-50 flex px-6 py-2 font-xs font-medium text-neutral-500">
                 Sort by
               </div>
             }
-            menuItems={[
-              {
-                icon: 'calendar',
-                label: 'Date added',
-                onClick: () => {
-                  setSortByFilter('createdAt:DESC');
-                },
-                dataTestId: 'team-sortby-dateadded',
-                permissions: [''],
-              },
-              {
-                icon: 'sortByAcs',
-                label: 'A to Z',
-                onClick: () => {
-                  setSortByFilter('createdAt:ASC');
-                },
-                dataTestId: 'teams-sortBy-asc',
-                permissions: [''],
-              },
-              {
-                icon: 'sortByDesc',
-                label: 'Z to A',
-                onClick: () => {
-                  setSortByFilter('createdAt:DESC');
-                },
-                dataTestId: 'teams-sortBy-desc',
-                permissions: [''],
-              },
-            ]}
-            className="right-48 w-[157px] top-12"
+            entity="TEAM"
           />
           <div>
             <Layout
@@ -184,153 +180,165 @@ const Team: React.FC<ITeamProps> = ({
         </div>
       </div>
 
-      {!isLoading && teamsData?.length !== 0 && (
+      {!isLoading ? (
         <div className="text-neutral-500 mt-6 mb-6">
           Showing{' '}
           {!isLoading && data?.pages[0]?.data?.result?.paging?.totalCount}{' '}
           results
         </div>
+      ) : (
+        <Skeleton
+          className="!w-32 mt-6 mb-6"
+          containerClassName="flex-1"
+          borderRadius={100}
+        />
       )}
 
       {/* <div className="flex justify-between  mb-6">
-        <div className="flex items-center space-x-2">
-          <div className="text-base font-medium text-neutral-500">
-            Filter by
-          </div>
-          <div
-            className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center space-x-1"
-            data-testid={``}
-          >
-            <div className="text-base font-bold flex space-x-1">
-              <div className="text-neutral-500 >Category</div>
-              <div className="text-primary-500" data-testid="applied-filterby-category">Something</div>
-            </div>
-            <Icon
-              name="close"
-              size={16}
-              stroke={twConfig.theme.colors.neutral['900']}
-              className="cursor-pointer"
-              onClick={() => {}}
-              dataTestId={`applied-filter-close`}
-            />
-          </div>
+    <div className="flex items-center space-x-2">
+      <div className="text-base font-medium text-neutral-500">
+        Filter by
+      </div>
+      <div
+        className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center space-x-1"
+        data-testid={``}
+      >
+        <div className="text-base font-bold flex space-x-1">
+          <div className="text-neutral-500 >Category</div>
+          <div className="text-primary-500" data-testid="applied-filterby-category">Something</div>
         </div>
-        <div
-          className="text-neutral-500 border px-3 py-1 rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
+        <Icon
+          name="close"
+          size={16}
+          stroke={twConfig.theme.colors.neutral['900']}
+          className="cursor-pointer"
           onClick={() => {}}
-          data-testid="teams-clear-filters"
-        >
-          Clear Filters
-        </div>
-      </div> */}
+          dataTestId={`applied-filter-close`}
+        />
+      </div>
+    </div>
+    <div
+      className="text-neutral-500 border px-3 py-1 rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
+      onClick={() => {}}
+      data-testid="teams-clear-filters"
+    >
+      Clear Filters
+    </div>
+  </div> */}
 
-      <div>
-        <div className="flex flex-wrap gap-6">
-          {(() => {
-            if (isLoading) {
-              const loaders = [...Array(30)].map((element) => (
-                <div key={element}>
-                  <TeamsSkeleton />
-                </div>
-              ));
-              return loaders;
-            }
-
-            if (teamsData && teamsData?.length > 0) {
-              return (
-                <>
-                  {teamsData?.map((team: any) => (
-                    <TeamsCard
-                      key={team.id}
-                      {...team}
-                      setShowMyTeam={setShowMyTeam}
-                      setTeamFlow={setTeamFlow}
-                    />
-                  ))}
-                  <div className="h-12 w-12">
-                    {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
-                  </div>
-                  {isFetchingNextPage && <PageLoader />}
-                </>
-              );
-            }
-
+      <div className="flex flex-wrap gap-6">
+        {(() => {
+          if (isLoading) {
+            const loaders = [...Array(30)].map((element) => (
+              <div key={element}>
+                <TeamsSkeleton />
+              </div>
+            ));
+            return loaders;
+          }
+          if (teamsData && teamsData?.length > 0) {
             return (
               <>
-                {(debouncedSearchValue === undefined ||
-                  debouncedSearchValue === '') &&
-                teamsData?.length === 0 ? (
-                  <div className="flex flex-col space-y-3 items-center w-full">
-                    <div className="flex flex-col space-y-6 items-center">
-                      <img
-                        src={TeamNotFound}
-                        alt="Team Not Found"
-                        height={140}
-                        width={165}
-                      />
-                      <div
-                        className="text-lg font-bold"
-                        data-testid="no-teams-found"
-                      >
-                        No teams found
-                      </div>
-                    </div>
-                    <div className="flex space-x-1 text-xs font-normal">
-                      <div className="text-neutral-500">
-                        There are no teams found in your organization right now.
-                        Be the first to
-                      </div>
-                      <div
-                        className="text-blue-500 cursor-pointer"
-                        onClick={() => openAddTeamModal()}
-                        data-testid="create-one-team"
-                      >
-                        create one
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="py-16 w-full">
-                    <div className="flex w-full justify-center">
-                      <img src={require('images/noResult.png')} />
-                    </div>
-                    <div className="text-center">
-                      <div
-                        className="mt-8 text-lg font-bold"
-                        data-testid="teams-noresult-found"
-                      >
-                        No result found for &apos;{searchValue}&apos;
-                      </div>
-                      <div className="text-sm text-gray-500 mt-2">
-                        Sorry we can&apos;t find the team you are looking for.
-                        <br /> Please try using different filters.
-                      </div>
-                    </div>
-
-                    <div className="flex justify-center mt-6">
-                      <Button
-                        label={'Clear search'}
-                        variant={Variant.Secondary}
-                        onClick={() => {
-                          resetField('search', { defaultValue: '' });
-                        }}
-                        dataTestId="teams-clear-applied-filter"
-                      />
-                    </div>
-                  </div>
-                )}
+                {teamsData?.map((team: any) => (
+                  <TeamsCard
+                    key={team.id}
+                    setTeamFlow={setTeamFlow}
+                    openModal={openTeamModal}
+                    setTeamId={setTeamId}
+                    setShowTeamDetail={setShowTeamDetail}
+                    showDeleteModal={showDeleteModal}
+                    openDeleteModal={openDeleteModal}
+                    closeDeleteModal={closeDeleteModal}
+                    {...team}
+                  />
+                ))}
+                <div className="h-12 w-12">
+                  {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+                </div>
+                {isFetchingNextPage && <PageLoader />}
               </>
             );
-          })()}
-        </div>
+          }
+          return (
+            <>
+              {(debouncedSearchValue === undefined ||
+                debouncedSearchValue === '') &&
+              teamsData?.length === 0 ? (
+                <div className="flex flex-col space-y-3 items-center w-full">
+                  <div className="flex flex-col space-y-6 items-center">
+                    <img
+                      src={TeamNotFound}
+                      alt="Team Not Found"
+                      height={140}
+                      width={165}
+                    />
+                    <div
+                      className="text-lg font-bold"
+                      data-testid="no-teams-found"
+                    >
+                      No teams found
+                    </div>
+                  </div>
+                  <div className="flex space-x-1 text-xs font-normal">
+                    <div className="text-neutral-500">
+                      There are no teams found in your organization right now.
+                      Be the first to
+                    </div>
+                    <div
+                      className="text-blue-500 cursor-pointer"
+                      onClick={() => openTeamModal()}
+                      data-testid="create-one-team"
+                    >
+                      create one
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="py-16 w-full">
+                  <div className="flex w-full justify-center">
+                    <img src={require('images/noResult.png')} />
+                  </div>
+                  <div className="text-center">
+                    <div
+                      className="mt-8 text-lg font-bold"
+                      data-testid="teams-noresult-found"
+                    >
+                      No result found for &apos;{searchValue}&apos;
+                    </div>
+                    <div className="text-sm text-gray-500 mt-2">
+                      Sorry we can&apos;t find the team you are looking for.
+                      <br /> Please try using different filters.
+                    </div>
+                  </div>
+
+                  <div className="flex justify-center mt-6">
+                    <Button
+                      label={'Clear search'}
+                      variant={Variant.Secondary}
+                      onClick={() => {
+                        resetField('search', { defaultValue: '' });
+                      }}
+                      dataTestId="teams-clear-applied-filter"
+                    />
+                  </div>
+                </div>
+              )}
+            </>
+          );
+        })()}
       </div>
-      <AddTeamModal
-        open={showAddTeamModal}
-        openModal={openAddTeamModal}
-        closeModal={closeAddTeamModal}
-        data={teamsData}
-        mode={teamFlow}
-      />
+
+      {showTeamModal && (
+        <AddTeamModal
+          open={showTeamModal}
+          openModal={openTeamModal}
+          closeModal={closeTeamModal}
+          teamFlowMode={teamFlow}
+          setTeamFlow={setTeamFlow}
+          team={teamFlow === TeamFlow.EditTeam ? editSelectedTeam : undefined} // Default value doesn't clear
+        />
+      )}
+
       <TeamFilterModal
         open={showFilterModal}
         openModal={openFilterModal}

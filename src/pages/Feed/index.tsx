@@ -28,6 +28,7 @@ import MyTeamWidget from 'components/MyTeamWidget';
 import HashtagFeedHeader from './components/HashtagFeedHeader';
 import BookmarkFeedHeader from './components/BookmarkFeedHeader';
 import ScheduledFeedHeader from './components/ScheduledFeedHeader';
+import EntitySearchModal from 'components/EntitySearchModal';
 interface IFeedProps {}
 
 export interface IProfileImage {
@@ -201,13 +202,8 @@ const Feed: React.FC<IFeedProps> = () => {
                     <Link to="/scheduledPosts">
                       <Icon name="clock" size={24} className="mr-4" />
                     </Link>
-                    <Link to="/bookmarks">
-                      <Icon
-                        name="postBookmark"
-                        size={24}
-                        className="mr-4"
-                        dataTestId="feed-page-mybookmarks"
-                      />
+                    <Link to="/bookmarks" data-testid="feed-page-mybookmarks">
+                      <Icon name="postBookmark" size={24} className="mr-4" />
                     </Link>
                   </div>
                   <Divider className="bg-neutral-200" />

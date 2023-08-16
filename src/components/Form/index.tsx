@@ -9,11 +9,13 @@ import RadioGroup from 'components/RadioGroup';
 import TelephoneInput from 'components/TelephoneInput';
 import TimePicker from 'components/TimePicker';
 import CreatableSearch from 'components/CreatableSearch';
+import AsyncSingleSelect from 'components/AsyncSingleSelect';
 
 export enum FieldType {
   Input = 'INPUT',
   Password = 'PASSWORD',
   SingleSelect = 'SELECT',
+  AsyncSingleSelect = 'ASYNC_SELECT',
   MultiSelect = 'MULTISELECT',
   Checkbox = 'CHECKBOX',
   Radio = 'RADIO',
@@ -35,6 +37,7 @@ const fieldMap: Record<string, any> = {
   [FieldType.TelephoneInput]: TelephoneInput,
   [FieldType.TimePicker]: TimePicker,
   [FieldType.CreatableSearch]: CreatableSearch,
+  [FieldType.AsyncSingleSelect]: AsyncSingleSelect,
 };
 
 export type LayoutProps = {

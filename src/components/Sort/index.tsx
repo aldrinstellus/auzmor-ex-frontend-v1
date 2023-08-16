@@ -1,19 +1,73 @@
-import { Card } from 'antd';
-import Popover from 'components/Popover';
-import React, { ReactNode } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
+import IconButton, { Size, Variant } from 'components/IconButton';
+import PopupMenu from 'components/PopupMenu';
 
-export interface ISortProps {
-  sortIcon: ReactNode;
+interface ISortByOption {
+  asc: string;
+  desc: string;
 }
 
-const Sort: React.FC<ISortProps> = ({ sortIcon }) => {
+export interface ISortProps {
+  setFilter: (filter: string) => void;
+  filterKey: string;
+  filterValue: ISortByOption;
+  title: ReactElement;
+  entity: string;
+  permission?: string[];
+}
+
+const Sort: React.FC<ISortProps> = ({
+  setFilter,
+  filterKey,
+  filterValue,
+  title,
+  entity,
+  permission,
+}) => {
   return (
-    <Popover triggerNode={sortIcon}>
-      <Card className="absolute w-[157px] right-0 top-0 shadow-lg rounded-9xl border border-neutral-200">
-        {/* Header */}
-        <div className="bg-blue-50 text-xs font-medium">Sort by</div>
-      </Card>
-    </Popover>
+    <PopupMenu
+      triggerNode={
+        <IconButton
+          icon="arrowSwap"
+          variant={Variant.Secondary}
+          size={Size.Medium}
+          borderAround
+          className="bg-white"
+          dataTestId="teams-sort"
+        />
+      }
+      title={title}
+      menuItems={[
+        {
+          icon: 'calendar',
+          label: 'Date added',
+          onClick: () => {
+            setFilter(`${filterKey}:${filterValue.desc}`);
+          },
+          dataTestId: `${entity}-sortby-dateadded`,
+          permissions: permission,
+        },
+        {
+          icon: 'sortByAcs',
+          label: 'A to Z',
+          onClick: () => {
+            setFilter(`${filterKey}:${filterValue.asc}`);
+          },
+          dataTestId: `${entity}-sortBy-asc`,
+          permissions: [''],
+        },
+        {
+          icon: 'sortByDesc',
+          label: 'Z to A',
+          onClick: () => {
+            setFilter(`${filterKey}:${filterValue.desc}`);
+          },
+          dataTestId: `${entity}-sortBy-desc`,
+          permissions: permission,
+        },
+      ]}
+      className="right-48 w-[157px] top-12"
+    />
   );
 };
 

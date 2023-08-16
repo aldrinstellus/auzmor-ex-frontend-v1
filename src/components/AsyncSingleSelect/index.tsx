@@ -1,19 +1,16 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import CreatableSelect from 'react-select/creatable';
-import { Control, Controller, useController } from 'react-hook-form';
-import { MenuPlacement, components } from 'react-select';
+import React, { useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
-import { isFiltersEmpty, twConfig } from 'utils/misc';
-import { useInfiniteCategories } from 'queries/apps';
-import { useDebounce } from 'hooks/useDebounce';
+import { Control, useController, Controller } from 'react-hook-form';
+import AsyncSelect from 'react-select/async';
+import {
+  MenuPlacement,
+  components,
+  IndicatorSeparatorProps,
+} from 'react-select';
+import { twConfig } from 'utils/misc';
+import './index.css';
 
-export interface ICategoryDetail {
-  name: string;
-  type: string;
-  id: string;
-}
-
-export interface ICreatableSearch {
+export interface IAsyncSingleSelectProps {
   name: string;
   defaultValue?: any;
   disabled?: boolean;
@@ -22,14 +19,15 @@ export interface ICreatableSearch {
   dataTestId?: string;
   control?: Control<Record<string, any>>;
   label?: string;
-  required?: boolean;
-  categoryType: string;
   placeholder?: string;
   height?: string;
+  options: any;
   menuPlacement: MenuPlacement;
+  isLoading?: boolean;
+  loadOptions: (inputValue: string) => Promise<any>;
 }
 
-const CreatableSearch = React.forwardRef(
+const AsyncSingleSelect = React.forwardRef(
   (
     {
       name,
@@ -39,58 +37,20 @@ const CreatableSearch = React.forwardRef(
       error,
       control,
       label = '',
-      required = false,
-      categoryType,
       placeholder = '',
       height = '44px',
+      options,
       defaultValue,
       menuPlacement = 'bottom',
-    }: ICreatableSearch,
+      isLoading = false,
+      loadOptions,
+    }: IAsyncSingleSelectProps,
     ref?: any,
   ) => {
-    const [searchValue, setSearchValue] = useState<string>('');
-    const debouncedSearchValue = useDebounce(searchValue || '', 500);
-
-    const { data } = useInfiniteCategories(
-      isFiltersEmpty({
-        q: debouncedSearchValue.toLowerCase().trim(),
-        type: categoryType,
-        limit: 10,
-      }),
-    );
-
-    const categoriesData = data?.pages.flatMap((page) => {
-      return page?.data?.result?.data.map((category: any) => {
-        try {
-          return { ...category, label: category.name };
-        } catch (e) {
-          console.log('Error', { category });
-        }
-      });
-    });
-
-    const transformedOption = categoriesData?.map(
-      (category: ICategoryDetail) => ({
-        value: category?.name?.toUpperCase(),
-        label: category?.name,
-        type: category?.type,
-        id: category?.id,
-        dataTestId: `category-option-${category?.type?.toLowerCase()}-${
-          category?.name
-        }`,
-      }),
-    );
-
     const { field } = useController({
       name,
       control,
     });
-
-    const [open, setOpen] = useState<boolean>(false);
-    const uniqueClassName =
-      'select_' + Math.random().toFixed(5).slice(2) + ' !max-h-44';
-    const menuListRef = useRef<HTMLDivElement>(null);
-
     const labelStyle = useMemo(
       () =>
         clsx(
@@ -132,6 +92,27 @@ const CreatableSearch = React.forwardRef(
         };
       },
     };
+
+    const uniqueClassName = 'select_' + Math.random().toFixed(5).slice(2);
+    const menuListRef = useRef<HTMLDivElement>(null);
+
+    const getHeightOfMenu = () => {
+      if (menuListRef.current)
+        return getComputedStyle(menuListRef.current).height;
+    };
+
+    const animationStyles = (open: boolean) => ({
+      menu: (provided: any) => ({
+        ...provided,
+        height: open ? getHeightOfMenu() : '0px',
+        opacity: open ? 1 : 0,
+        transition: 'all 300ms ease-in-out',
+        overflow: 'hidden',
+      }),
+    });
+
+    const [open, setOpen] = useState<boolean>(false);
+
     return (
       <div
         className={clsx(
@@ -139,9 +120,7 @@ const CreatableSearch = React.forwardRef(
           { 'cursor-not-allowed': disabled },
         )}
       >
-        <div className={labelStyle}>
-          {label} <span className="text-red-500">{required && '*'}</span>
-        </div>
+        <div className={labelStyle}>{label}</div>
         <div
           data-testid={dataTestId}
           onClick={() => {
@@ -150,30 +129,33 @@ const CreatableSearch = React.forwardRef(
             }
           }}
         >
+          {/* remove top margin provide it to parent div if required */}
           <Controller
             name={name}
             control={control}
+            defaultValue={defaultValue}
             render={() => (
-              <CreatableSelect
+              <AsyncSelect
                 isDisabled={disabled}
                 placeholder={placeholder}
                 styles={{
                   menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                   ...selectStyle,
+                  ...animationStyles(open),
                 }}
-                defaultInputValue={defaultValue}
-                onInputChange={(value) => setSearchValue(value)}
-                options={transformedOption}
-                menuPlacement={menuPlacement ? menuPlacement : 'top'}
+                menuIsOpen
+                options={options}
+                loadOptions={loadOptions}
+                defaultValue={defaultValue}
+                menuPlacement={menuPlacement ? menuPlacement : undefined}
                 menuPortalTarget={document.body}
+                menuPosition="absolute"
                 components={{
-                  Option: ({ innerProps, data, isDisabled }) => {
-                    console.log(data, field);
-                    const isSelected = data?.id === field?.value?.id;
+                  Option: ({ innerProps, data, isDisabled, isSelected }) => {
                     return (
                       <div
                         {...innerProps}
-                        className={`px-6 py-3 hover:bg-primary-50 hover:text-primary-500 font-medium  text-sm ${
+                        className={`px-6 py-3 hover:bg-primary-50 font-medium text-sm ${
                           isDisabled ? 'cursor-default' : 'cursor-pointer'
                         } ${isSelected && 'bg-primary-50'}`}
                         data-testid={data.dataTestId}
@@ -189,14 +171,23 @@ const CreatableSearch = React.forwardRef(
                       innerRef={menuListRef}
                     ></components.MenuList>
                   ),
+                  IndicatorSeparator: ({
+                    innerProps,
+                  }: IndicatorSeparatorProps<any, true>) => {
+                    return <span style={{ display: 'none' }} {...innerProps} />;
+                  },
                 }}
                 {...field}
-                ref={ref}
                 onBlur={() => setOpen(false)}
+                ref={ref}
+                cacheOptions
+                defaultOptions
+                isLoading={isLoading}
               />
             )}
           />
         </div>
+
         <div
           className={`absolute -bottom-4 text-xs truncate leading-tight ${helpTextStyles}`}
         >
@@ -207,6 +198,6 @@ const CreatableSearch = React.forwardRef(
   },
 );
 
-CreatableSearch.displayName = 'CreatableSearch';
+AsyncSingleSelect.displayName = 'AsyncSingleSelect';
 
-export default CreatableSearch;
+export default AsyncSingleSelect;

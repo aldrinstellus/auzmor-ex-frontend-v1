@@ -2,20 +2,13 @@ import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import Button, { Variant as ButtonVariant, Type } from 'components/Button';
-import Layout, { FieldType } from 'components/Form';
-import { Size as InputSize, Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
-import Popover from 'components/Popover';
 import Divider from 'components/Divider';
 import { CategoryType, useInfiniteCategories } from 'queries/apps';
-import { isFiltersEmpty, twConfig } from 'utils/misc';
-import { useDebounce } from 'hooks/useDebounce';
 import find from 'lodash/find';
-import { useInView } from 'react-intersection-observer';
-import PageLoader from 'components/PageLoader';
-import { useInfiniteTeams } from 'queries/users';
 import Icon from 'components/Icon';
 import InfiniteFilterList from 'components/InfiniteFilterList';
+import { useInfiniteTeams } from 'queries/teams';
 
 export interface ITeamFilterModalProps {
   open: boolean;

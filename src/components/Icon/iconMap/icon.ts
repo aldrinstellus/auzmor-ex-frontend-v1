@@ -125,6 +125,8 @@ import ReactivateUser from '../components/ReactivateUser';
 import Forbidden from '../components/Forbidden';
 import PromoteUserIcon from '../components/Promote';
 import MicIcon from '../components/Mic';
+import AnnouncementChartIcon from '../components/AnnouncementChart';
+import dotsHorizontalIcon from '../components/DotsHorizontal';
 
 export const icon = {
   add: Add,
@@ -166,6 +168,7 @@ export const icon = {
   document: DocumentIcon,
   documentUpload: DocumentUpload,
   dotsVertical: dotsVerticalIcon,
+  dotsHorizontal: dotsHorizontalIcon,
   draft: DraftIcon,
   edit: EditIcon,
   editReceipt: EditReceipt,
@@ -254,4 +257,5 @@ export const icon = {
   forbidden: Forbidden,
   promoteUser: PromoteUserIcon,
   mic: MicIcon,
+  announcementChart: AnnouncementChartIcon,
 };

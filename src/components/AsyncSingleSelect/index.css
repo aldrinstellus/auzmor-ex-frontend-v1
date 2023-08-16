@@ -1,0 +1,4 @@
+div[class$='-control'] {
+  display: flex;
+  height: 28px;
+}
