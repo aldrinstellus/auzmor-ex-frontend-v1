@@ -51,7 +51,7 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
         {/* Body */}
         <div className="px-6 py-3">
           <div className="border-orange-300 border-1 rounded-9xl">
-            <div className="w-fit pt-4 pl-5">
+            <div className="w-fit pt-4 pl-5 flex gap-2">
               {app.category && (
                 <Badge
                   text={app.category.name}
