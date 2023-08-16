@@ -13,12 +13,6 @@ import { TeamFlow } from '.';
 import moment from 'moment';
 import { ITeamDetailState } from 'pages/Users';
 
-export interface IRecentMembers {
-  id: string;
-  name: string;
-  profileImage: any;
-}
-
 export interface ITeamsCardProps {
   id: string;
   name: string;
@@ -26,7 +20,7 @@ export interface ITeamsCardProps {
   description: string;
   createdAtDate: string;
   totalMembers: number;
-  recentMembers: IRecentMembers;
+  recentMembers: any;
   setTeamFlow: (mode: string) => void;
   openModal: () => void;
   setShowTeamDetail: (detail: ITeamDetailState) => void;
@@ -39,16 +33,57 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
   category,
   createdAtDate,
   totalMembers,
-  recentMembers,
+  recentMembers = [],
   setTeamFlow,
   openModal,
   setShowTeamDetail,
 }) => {
   const [isHovered, eventHandlers] = useHover();
   const [showDeleteModal, openDeleteModal, closeDeleteModal] = useModal(false);
-
-  const { isAdmin } = useRole();
+  const { isAdmin, isMember, isSuperAdmin } = useRole();
   const currentDate = moment();
+
+  const teamAllOption = [
+    {
+      icon: 'edit',
+      label: 'Edit',
+      onClick: () => {
+        openModal();
+        setTeamFlow(TeamFlow.EditTeam);
+        setShowTeamDetail({
+          activeTab: 'TEAM',
+          isTeamSelected: false,
+          teamDetail: {
+            id: id,
+            name: name,
+            description: description,
+            category: category,
+            createdAt: createdAtDate,
+            totalMembers: totalMembers,
+          },
+        });
+      },
+      dataTestId: 'team-edit',
+      enabled: isAdmin || isSuperAdmin,
+    },
+    {
+      icon: 'shareForwardOutline',
+      label: 'Share',
+      dataTestId: 'team-share',
+      enabled: isAdmin || isSuperAdmin || isMember,
+    },
+    {
+      icon: 'cancel',
+      label: 'Remove',
+      labelClassName: 'text-red-500',
+      onClick: () => openDeleteModal(),
+      dataTestId: 'team-remove',
+      enabled: isAdmin || isSuperAdmin,
+    },
+  ];
+
+  const teamOption = teamAllOption.filter((option) => option?.enabled);
+
   return (
     <div className="cursor-pointer" data-testid="" {...eventHandlers}>
       <Card
@@ -56,59 +91,21 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
         className="relative w-[189.5px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white"
         dataTestId="team-card"
       >
-        {isAdmin && isHovered > 0 && (
-          <PopupMenu
-            triggerNode={
-              <div className="cursor-pointer">
-                <Icon
-                  name="moreOutline"
-                  stroke="#000"
-                  className="absolute top-2 right-2"
-                  hover={false}
-                  dataTestId="people-card-ellipsis"
-                />
-              </div>
-            }
-            menuItems={[
-              {
-                icon: 'edit',
-                label: 'Edit',
-                onClick: () => {
-                  openModal();
-                  setTeamFlow(TeamFlow.EditTeam);
-                  setShowTeamDetail({
-                    activeTab: 'TEAM',
-                    isTeamSelected: false,
-                    teamDetail: {
-                      id: id,
-                      name: name,
-                      description: description,
-                      category: category,
-                      createdAt: createdAtDate,
-                      totalMembers: totalMembers,
-                    },
-                  });
-                },
-                dataTestId: 'team-edit',
-                permissions: [''],
-              },
-              {
-                icon: 'shareForwardOutline',
-                label: 'Share',
-                dataTestId: 'team-share',
-                permissions: [''],
-              },
-              {
-                icon: 'cancel',
-                label: 'Remove',
-                onClick: () => openDeleteModal(),
-                dataTestId: 'team-remove',
-                permissions: [''],
-              },
-            ]}
-            className="-right-36 w-44 top-8"
-          />
-        )}
+        <PopupMenu
+          triggerNode={
+            <div className="cursor-pointer">
+              <Icon
+                name="moreOutline"
+                stroke="#000"
+                className="absolute top-2 right-2"
+                hover={false}
+                dataTestId="people-card-ellipsis"
+              />
+            </div>
+          }
+          menuItems={teamOption}
+          className="-right-36 w-44 top-8"
+        />
         {moment(createdAtDate)?.isBetween(
           moment().subtract(7, 'days'),
           currentDate,
@@ -142,16 +139,19 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
             });
           }}
         >
-          <AvatarList
-            size={80}
-            users={recentMembers || []}
-            moreCount={totalMembers}
-            className="mb-4 mt-1"
-            dataTestId="teams-people-icon"
-          />
-          <div className="p-[18px] bg-neutral-200 rounded-full mb-4 mt-1">
-            <img src={TeamWork} height={44} width={44} />
-          </div>
+          {recentMembers?.length !== 0 ? (
+            <AvatarList
+              size={80}
+              users={recentMembers || []}
+              moreCount={totalMembers}
+              className="mb-4 mt-1"
+              dataTestId="teams-people-icon"
+            />
+          ) : (
+            <div className="p-[18px] bg-neutral-200 rounded-full mb-4 mt-1">
+              <img src={TeamWork} height={44} width={44} />
+            </div>
+          )}
           <div className="space-y-2">
             <div className="flex flex-col items-center space-y-1">
               <div
@@ -165,7 +165,7 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
               </div>
 
               <div
-                className="bg-indigo-100 text-indigo-500 text-xxs font-semibold rounded-xl py-0.4 px-2 truncate capitalize"
+                className="text-xxs font-semibold rounded-xl py-0.4 px-2 truncate capitalize"
                 data-testid={`team-category-${category?.name?.toLowerCase()}`}
               >
                 {category?.name?.toLowerCase()}

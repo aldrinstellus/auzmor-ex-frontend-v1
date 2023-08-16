@@ -7,7 +7,6 @@ import IconButton, {
   Variant as IconVariant,
   Size as IconSize,
 } from 'components/IconButton';
-import MemberNotFound from 'images/MemberNotFound.svg';
 import Icon from 'components/Icon';
 import PageLoader from 'components/PageLoader';
 import { Size as InputSize } from 'components/Input';
@@ -22,20 +21,15 @@ import {
   titleCase,
   twConfig,
 } from 'utils/misc';
-
 import PeopleCard from './PeopleCard';
 import InviteUserModal from '../InviteUserModal';
 import PeopleFilterModal from '../FilterModals/PeopleFilterModal';
-import { useInfiniteTeamMembers } from 'queries/teams';
-import { EntitySearchModalType } from 'components/EntitySearchModal';
 import Sort from 'components/Sort';
 
 export interface IPeopleProps {
   showModal: boolean;
   openModal: () => void;
   closeModal: () => void;
-  teamTab?: string;
-  teamId?: string;
 }
 
 interface IForm {
@@ -47,13 +41,12 @@ const People: React.FC<IPeopleProps> = ({
   showModal,
   openModal,
   closeModal,
-  teamTab,
-  teamId,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const [userStatus, setUserStatus] = useState<string>('');
   const [filterSortBy, setFilterSortBy] = useState<string>('');
   const { ref, inView } = useInView();
+  const roleSelectRef = useRef<any>();
 
   const {
     control,
@@ -75,26 +68,14 @@ const People: React.FC<IPeopleProps> = ({
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    teamTab === EntitySearchModalType?.Team && teamId
-      ? useInfiniteTeamMembers(
-          teamId,
-          isFiltersEmpty({
-            status: userStatus,
-            role: role?.value,
-            sort: filterSortBy,
-            q: debouncedSearchValue,
-          }),
-        )
-      : useInfiniteUsers(
-          isFiltersEmpty({
-            status: userStatus,
-            role: role?.value,
-            sort: filterSortBy,
-            q: debouncedSearchValue,
-          }),
-        );
-
-  const roleSelectRef = useRef<any>();
+    useInfiniteUsers(
+      isFiltersEmpty({
+        status: userStatus,
+        role: role?.value,
+        sort: filterSortBy,
+        q: debouncedSearchValue,
+      }),
+    );
 
   const customReset = () => {
     if (roleSelectRef && roleSelectRef.current)
@@ -147,26 +128,23 @@ const People: React.FC<IPeopleProps> = ({
       <div>
         <div className="flex justify-between items-center">
           <div className="flex space-x-4">
-            {teamTab !== 'TEAM' && (
-              <>
-                <Button
-                  label="My Teams"
-                  size={Size.Small}
-                  variant={Variant.Secondary}
-                  className="cursor-not-allowed h-9 grow-0"
-                  dataTestId="people-view-my-teams"
-                />
-                <Button
-                  label="All Members"
-                  size={Size.Small}
-                  variant={Variant.Secondary}
-                  className="!py-2 grow-0"
-                  dataTestId="people-view-all-members"
-                  onClick={() => customReset()}
-                  active={!searchValue && !role}
-                />
-              </>
-            )}
+            <Button
+              label="My Teams"
+              size={Size.Small}
+              variant={Variant.Secondary}
+              className="cursor-not-allowed h-9 grow-0"
+              dataTestId="people-view-my-teams"
+              disabled
+            />
+            <Button
+              label="All Members"
+              size={Size.Small}
+              variant={Variant.Secondary}
+              className="!py-2 grow-0"
+              dataTestId="people-view-all-members"
+              onClick={() => customReset()}
+              active={!searchValue && !role}
+            />
             <Layout fields={roleFields} />
           </div>
           <div className="flex space-x-2 justify-center items-center">
@@ -188,31 +166,25 @@ const People: React.FC<IPeopleProps> = ({
                   Sort by
                 </div>
               }
-              entity={
-                teamTab === EntitySearchModalType.Team
-                  ? EntitySearchModalType.Team
-                  : 'USER'
-              }
+              entity={'USER'}
             />
-            <div>
-              <Layout
-                fields={[
-                  {
-                    type: FieldType.Input,
-                    variant: InputVariant.Text,
-                    size: InputSize.Small,
-                    leftIcon: 'search',
-                    control,
-                    getValues,
-                    name: 'search',
-                    placeholder: 'Search members',
-                    error: errors.search?.message,
-                    dataTestId: 'people-search-members',
-                    isClearable: true,
-                  },
-                ]}
-              />
-            </div>
+            <Layout
+              fields={[
+                {
+                  type: FieldType.Input,
+                  variant: InputVariant.Text,
+                  size: InputSize.Small,
+                  leftIcon: 'search',
+                  control,
+                  getValues,
+                  name: 'search',
+                  placeholder: 'Search members',
+                  error: errors.search?.message,
+                  dataTestId: 'people-search-members',
+                  isClearable: true,
+                },
+              ]}
+            />
           </div>
         </div>
 
@@ -284,34 +256,7 @@ const People: React.FC<IPeopleProps> = ({
                 </>
               );
             }
-            return teamTab === EntitySearchModalType.Team ? (
-              <div className="flex flex-col w-full items-center space-y-4">
-                <img
-                  src={MemberNotFound}
-                  width={176}
-                  height={144}
-                  alt="No Member Found"
-                />
-                <div className="w-full flex flex-col items-center">
-                  <div className="flex items-center flex-col space-y-1">
-                    <div className="text-lg font-bold text-neutral-900">
-                      No members yet
-                    </div>
-                    <div className="text-base font-medium text-neutral-500">
-                      {"Let's get started by adding some members!"}
-                    </div>
-                  </div>
-                </div>
-                <Button
-                  label={'Add members'}
-                  variant={Variant.Secondary}
-                  className="space-x-1"
-                  size={Size.Large}
-                  dataTestId="no-result-add-team-cta"
-                  leftIcon={'addCircle'}
-                />
-              </div>
-            ) : (
+            return (
               <div className="py-16 w-full">
                 <div className="flex w-full justify-center">
                   <img src={require('images/noResult.png')} />
