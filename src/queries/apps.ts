@@ -45,6 +45,7 @@ export type App = {
   credentials: AppCredentials;
   audience?: AppAudience[];
   featured?: boolean;
+  createdAt: string;
 };
 
 export enum CategoryType {

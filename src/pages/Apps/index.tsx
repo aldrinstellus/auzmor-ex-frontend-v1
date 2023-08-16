@@ -11,22 +11,17 @@ import { Variant as InputVariant, Size as InputSize } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import useModal from 'hooks/useModal';
 import AddApp from './components/AddApp';
-import AppGrid from './components/AppGrid';
-import { uniqueId } from 'lodash';
 import {
   useInfiniteApps,
   useInfiniteCategories,
   useInfiniteFeaturedApps,
 } from 'queries/apps';
 import { useAppStore } from 'stores/appStore';
-import AppCardSkeleton from './components/Skeletons/AppCardSkeleton';
 import PopupMenu from 'components/PopupMenu';
 import { useDebounce } from 'hooks/useDebounce';
 import { isFiltersEmpty } from 'utils/misc';
 import AppFilterModal from './components/AppFilterModal';
-import TeamNotFound from 'images/TeamNotFound.svg';
-import { useInView } from 'react-intersection-observer';
-import PageLoader from 'components/PageLoader';
+import AppList from './components/AppList';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -65,7 +60,6 @@ const Apps: React.FC<IAppsProps> = () => {
     categories: [],
     teams: [],
   });
-  const { ref, inView } = useInView();
 
   const selectedButtonClassName = '!bg-primary-50 text-primary-500 text-sm';
   const regularButtonClassName = '!text-neutral-500 text-sm';
@@ -80,56 +74,11 @@ const Apps: React.FC<IAppsProps> = () => {
   ].includes(selectedAppGroup);
   const isAllAppsGroupSelected = selectedAppGroup === AppGroup.ALL_APPS;
 
-  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteApps(
-      isFiltersEmpty({
-        q: debouncedSearchValue,
-        sort: sortByFilter,
-        ...(isQuickCategorySelected
-          ? {
-              'categoryId[0]': isQuickCategorySelected
-                ? selectedAppGroup
-                : undefined,
-            }
-          : selectedAppGroup === AppGroup.FEATURED
-          ? {
-              featured: true,
-            }
-          : {}),
-      }),
-    );
-
-  const { data: featured } = useInfiniteFeaturedApps(
-    isFiltersEmpty({
-      q: debouncedSearchValue,
-      limit: 5,
-    }),
-  );
   const { data: categories } = useInfiniteCategories(
     isFiltersEmpty({
       limit: 3,
     }),
   );
-
-  const appIds = data?.pages.flatMap((page) => {
-    return page.data?.result?.data.map((apps: any) => {
-      try {
-        return apps;
-      } catch (e) {
-        console.log('Error', { apps });
-      }
-    });
-  }) as { id: string }[];
-
-  const featuredAppIds = featured?.pages.flatMap((page) => {
-    return page.data?.result?.data.map((apps: any) => {
-      try {
-        return apps;
-      } catch (e) {
-        console.log('Error', { apps });
-      }
-    });
-  }) as { id: string }[];
 
   const flattenCategories = categories?.pages.flatMap((page: any) => {
     return page?.data?.result?.data.map((category: any) => {
@@ -140,12 +89,6 @@ const Apps: React.FC<IAppsProps> = () => {
       }
     });
   });
-
-  useEffect(() => {
-    if (inView) {
-      fetchNextPage();
-    }
-  }, [inView]);
 
   return (
     <div>
@@ -289,121 +232,53 @@ const Apps: React.FC<IAppsProps> = () => {
             />
           </div>
         </div>
-        <div className="text-neutral-500 mt-6 mb-6">
-          Showing {!isLoading && appIds.length} results
-        </div>
-        {(() => {
-          if (isLoading) {
-            return (
-              <div className="flex flex-wrap gap-6">
-                {[...Array(30)].map((element) => (
-                  <div key={element}>
-                    <AppCardSkeleton />
-                  </div>
-                ))}
+        <>
+          {isAllAppsGroupSelected && (
+            <div>
+              <div className="flex justify-between mt-6 mb-6">
+                <div className="text-xl font-bold">Featured</div>
+                <div
+                  className="text-base font-semibold text-neutral-500 cursor-pointer"
+                  onClick={() => setSelectedAppGroup(AppGroup.FEATURED)}
+                >
+                  View all featured
+                </div>
               </div>
-            );
-          }
-
-          if (appIds && appIds?.length > 0) {
-            return (
-              <div className="flex flex-col gap-6">
-                {isAllAppsGroupSelected && (
-                  <>
-                    <div className="flex justify-between">
-                      <div className="text-xl font-bold">Featured</div>
-                      <div className="text-base font-semibold text-neutral-500 cursor-pointer">
-                        View all featured
-                      </div>
-                    </div>
-                    <AppGrid
-                      apps={featuredAppIds
-                        ?.filter(({ id }) => !!featuredApps[id])
-                        ?.map(({ id }) => apps[id])}
-                    />
-                    <div className="text-xl font-bold">All Apps</div>
-                  </>
-                )}
-                <AppGrid
-                  apps={appIds
-                    ?.filter(({ id }) => !!apps[id])
-                    ?.map(({ id }) => apps[id])}
-                />
-                <div className="h-12 w-12">
-                  {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
-                </div>
-                {isFetchingNextPage && <PageLoader />}
-              </div>
-            );
-          }
-
-          return (
-            <>
-              {(debouncedSearchValue === undefined ||
-                debouncedSearchValue === '') &&
-              appIds?.length === 0 ? (
-                <div className="flex flex-col space-y-3 items-center w-full">
-                  <div className="flex flex-col space-y-6 items-center">
-                    <img
-                      src={TeamNotFound}
-                      alt="Apps Not Found"
-                      height={140}
-                      width={165}
-                    />
-                    <div
-                      className="text-lg font-bold"
-                      data-testid="no-app-found"
-                    >
-                      No Apps found
-                    </div>
-                  </div>
-                  <div className="flex space-x-1 text-xs font-normal">
-                    <div className="text-neutral-500">
-                      There is no app found in your organization right now. Be
-                      the first to
-                    </div>
-                    <div
-                      className="text-blue-500 cursor-pointer"
-                      onClick={openModal}
-                      data-testid="create-app"
-                    >
-                      create one
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="py-16 w-full">
-                  <div className="flex w-full justify-center">
-                    <img src={require('images/noResult.png')} />
-                  </div>
-                  <div className="text-center">
-                    <div
-                      className="mt-8 text-lg font-bold"
-                      data-testid="apps-noresult-found"
-                    >
-                      No result found for &apos;{searchValue}&apos;
-                    </div>
-                    <div className="text-sm text-gray-500 mt-2">
-                      Sorry we can&apos;t find the app you are looking for.
-                      <br /> Please try using different filters.
-                    </div>
-                  </div>
-
-                  <div className="flex justify-center mt-6">
-                    <Button
-                      label={'Clear search'}
-                      variant={Variant.Secondary}
-                      onClick={() => {
-                        resetField('search', { defaultValue: '' });
-                      }}
-                      dataTestId="apps-clear-applied-filter"
-                    />
-                  </div>
-                </div>
-              )}
-            </>
-          );
-        })()}
+              <AppList
+                fetchQuery={useInfiniteFeaturedApps}
+                apps={featuredApps}
+                queryParams={{
+                  limit: 5,
+                }}
+                showCount={false}
+                isInfinite={false}
+                showEmptyState={false}
+              />
+              <div className="text-xl font-bold">All Apps</div>
+            </div>
+          )}
+          <AppList
+            fetchQuery={useInfiniteApps}
+            apps={apps}
+            queryParams={{
+              q: debouncedSearchValue,
+              sort: sortByFilter,
+              ...(isQuickCategorySelected
+                ? {
+                    'categoryId[0]': isQuickCategorySelected
+                      ? selectedAppGroup
+                      : undefined,
+                  }
+                : selectedAppGroup === AppGroup.FEATURED
+                ? {
+                    featured: true,
+                  }
+                : {}),
+            }}
+            openAddAppModal={openModal}
+            resetField={resetField}
+          />
+        </>
       </Card>
       <AddApp open={open} closeModal={closeModal} />
       {showFilterModal && (
