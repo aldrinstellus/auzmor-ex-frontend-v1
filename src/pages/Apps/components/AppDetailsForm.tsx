@@ -35,7 +35,8 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
       control: control,
       defaultValue: defaultValues()?.url,
       error: errors.url?.message,
-      dataTestId: 'sso-config-ad-hostname',
+      dataTestId: 'add-app-url',
+      errorDataTestId: 'add-app-url-invalid-error',
       inputClassName:
         errors.url || !defaultValues()?.url ? '' : 'text-blue-500 underline',
     },
@@ -51,7 +52,8 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
       control: control,
       defaultValue: defaultValues()?.label,
       error: errors.label?.message,
-      dataTestId: 'sso-config-ad-hostname',
+      errorDataTestId: 'add-app-label-empty-error',
+      dataTestId: 'add-app-label',
     },
     {
       type: FieldType.TextArea,
@@ -62,7 +64,8 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
       error: errors.description?.message,
       maxLength: 300,
       disableMaxLength: true,
-      dataTestId: 'about-me-edit-text',
+      errorDataTestId: 'add-app-exceed-description',
+      dataTestId: 'about-app-description',
       control,
       className: 'resize-none rounded-9xl',
       rows: 3,
@@ -75,9 +78,10 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
       name: 'category',
       label: 'Category',
       control: control,
-      defaultValue: defaultValues()?.category,
+      defaultValue: defaultValues()?.category?.label,
       categoryType: CategoryType.APP,
-      dataTestId: 'sso-config-ad-hostname',
+      dataTestId: 'add-app-category',
+      addItemDataTestId: 'add-app-add-category',
     },
   ];
 

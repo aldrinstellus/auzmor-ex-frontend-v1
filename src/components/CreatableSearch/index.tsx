@@ -27,6 +27,7 @@ export interface ICreatableSearch {
   placeholder?: string;
   height?: string;
   menuPlacement: MenuPlacement;
+  addItemDataTestId?: string;
 }
 
 const CreatableSearch = React.forwardRef(
@@ -36,6 +37,7 @@ const CreatableSearch = React.forwardRef(
       className = '',
       disabled = false,
       dataTestId = '',
+      addItemDataTestId = '',
       error,
       control,
       label = '',
@@ -168,7 +170,6 @@ const CreatableSearch = React.forwardRef(
                 menuPortalTarget={document.body}
                 components={{
                   Option: ({ innerProps, data, isDisabled }) => {
-                    console.log(data, field);
                     const isSelected = data?.id === field?.value?.id;
                     return (
                       <div
@@ -176,9 +177,18 @@ const CreatableSearch = React.forwardRef(
                         className={`px-6 py-3 hover:bg-primary-50 hover:text-primary-500 font-medium  text-sm ${
                           isDisabled ? 'cursor-default' : 'cursor-pointer'
                         } ${isSelected && 'bg-primary-50'}`}
-                        data-testid={data.dataTestId}
+                        data-testid={
+                          data.__isNew__ ? addItemDataTestId : data.dataTestId
+                        }
                       >
-                        {data.label}
+                        {data.__isNew__ ? (
+                          <>
+                            <span>+ Add</span>
+                            <span className="text-blue-500">{` '${data.value}'`}</span>
+                          </>
+                        ) : (
+                          data.label
+                        )}
                       </div>
                     );
                   },

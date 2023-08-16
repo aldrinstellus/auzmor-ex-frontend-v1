@@ -101,7 +101,11 @@ const Apps: React.FC<IAppsProps> = () => {
       <Card className="p-8">
         <div className="flex justify-between">
           <p className="font-bold text-2xl text-black">App Launcher</p>
-          <Button onClick={openModal} label="+ Add apps" />
+          <Button
+            onClick={openModal}
+            label="+ Add apps"
+            dataTestId="app-add-app-cta"
+          />
         </div>
         {/* Banner */}
         <img src={AppsBanner} className="w-full py-6" />
@@ -111,6 +115,7 @@ const Apps: React.FC<IAppsProps> = () => {
             <Button
               variant={ButtonVariant.Secondary}
               label={AppGroup.MY_APPS}
+              dataTestId="my-apps"
               className={
                 selectedAppGroup === AppGroup.MY_APPS
                   ? selectedButtonClassName
@@ -126,11 +131,13 @@ const Apps: React.FC<IAppsProps> = () => {
                   ? selectedButtonClassName
                   : regularButtonClassName
               }
+              dataTestId="all-apps"
               onClick={() => setSelectedAppGroup(AppGroup.ALL_APPS)}
             />
             <Button
               variant={ButtonVariant.Secondary}
               label={AppGroup.FEATURED}
+              dataTestId="featured-apps"
               className={
                 selectedAppGroup === AppGroup.FEATURED
                   ? selectedButtonClassName
@@ -177,6 +184,7 @@ const Apps: React.FC<IAppsProps> = () => {
               borderAround
               className="bg-white"
               onClick={openFilterModal}
+              dataTestId="app-filters"
             />
             <PopupMenu
               triggerNode={
@@ -201,7 +209,7 @@ const Apps: React.FC<IAppsProps> = () => {
                   onClick: () => {
                     setSortByFilter('createdAt:DESC');
                   },
-                  dataTestId: 'app-sortby-dateadded',
+                  dataTestId: 'app-filter-sort-date',
                   permissions: [''],
                 },
                 {
@@ -210,7 +218,7 @@ const Apps: React.FC<IAppsProps> = () => {
                   onClick: () => {
                     setSortByFilter('createdAt:ASC');
                   },
-                  dataTestId: 'app-sortBy-asc',
+                  dataTestId: 'app-filter-sort-ascending',
                   permissions: [''],
                 },
                 {
@@ -219,7 +227,7 @@ const Apps: React.FC<IAppsProps> = () => {
                   onClick: () => {
                     setSortByFilter('createdAt:DESC');
                   },
-                  dataTestId: 'app-sortBy-desc',
+                  dataTestId: 'app-filter-sort-descending',
                   permissions: [''],
                 },
               ]}
@@ -237,7 +245,7 @@ const Apps: React.FC<IAppsProps> = () => {
                   name: 'search',
                   placeholder: 'Search members',
                   error: errors.search?.message,
-                  dataTestId: 'people-search-members',
+                  dataTestId: 'app-searchbar',
                   isClearable: true,
                 },
               ]}

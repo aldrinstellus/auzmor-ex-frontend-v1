@@ -217,6 +217,7 @@ const AddApp: React.FC<AddAppProps> = ({
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>Add apps</div>
       ),
+      dataTestId: 'add-app-addapps',
       tabContent: (
         <AppDetailsForm
           control={control}
@@ -230,6 +231,7 @@ const AddApp: React.FC<AddAppProps> = ({
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>App credentials</div>
       ),
+      dataTestId: 'add-app-credentials',
       tabContent: <AppCredentialsForm control={control} errors={errors} />,
     },
   ];
@@ -240,8 +242,8 @@ const AddApp: React.FC<AddAppProps> = ({
     if (!errors.url && !errors.label && !errors.description) {
       const formData = getValues();
       let uploadedFile;
-      if (formData.icon?.id) {
-        uploadedFile = [{ id: formData.icon.id }];
+      if (formData?.icon?.id || data?.icon?.id) {
+        uploadedFile = [{ id: formData?.icon.id || data?.icon.id }];
       } else if (formData.icon) {
         uploadedFile = await uploadMedia([formData.icon], EntityType.AppIcon);
       }
@@ -300,7 +302,12 @@ const AddApp: React.FC<AddAppProps> = ({
       <div className="flex flex-col h-full">
         <div className="p-4 flex items-center justify-between">
           <p className="text-neutral-900 font-extrabold text-lg">Add app</p>
-          <Icon name="close" disabled onClick={closeModal} />
+          <Icon
+            name="close"
+            disabled
+            onClick={closeModal}
+            dataTestId="add-app-close"
+          />
         </div>
         <Divider />
         <form
@@ -318,11 +325,13 @@ const AddApp: React.FC<AddAppProps> = ({
               label="Cancel"
               variant={ButtonVariant.Secondary}
               onClick={closeModal}
+              dataTestId="add-app-cancel"
             />
             {activeTab === tabs.length - 1 ? (
               <Button
                 label="Save"
                 type={Type.Submit}
+                dataTestId="add-app-save"
                 loading={
                   addAppMutation?.isLoading ||
                   updateAppMutation.isLoading ||
@@ -330,7 +339,11 @@ const AddApp: React.FC<AddAppProps> = ({
                 }
               />
             ) : (
-              <Button label="Next" onClick={(e) => handleNextTab(e)} />
+              <Button
+                label="Next"
+                onClick={(e) => handleNextTab(e)}
+                dataTestId="add-app-next-cta"
+              />
             )}
           </div>
         </form>

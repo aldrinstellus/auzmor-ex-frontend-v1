@@ -144,6 +144,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
             stroke={twConfig.theme.colors.neutral['500']}
             hover={false}
             disabled={true}
+            dataTestId="add-app-icon-info"
           />
         </Tooltip>
       </div>
@@ -194,7 +195,10 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
               <p className="text-neutral-900 font-medium">Upload App Icon</p>
               <p className="text-neutral-500 font-medium">
                 Drag and drop or{' '}
-                <span className="text-primary-500 font-bold cursor-pointer">
+                <span
+                  className="text-primary-500 font-bold cursor-pointer"
+                  data-testid="add-app-icon"
+                >
                   click here
                 </span>{' '}
                 to upload file
@@ -214,7 +218,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
                 className="group-hover:block hidden cursor-pointer absolute -top-1 -right-1 bg-black rounded-full p-[4px]"
                 fill="#fff"
                 disabled
-                dataTestId="filter-closeicon"
+                dataTestId="add-app-remove-icon"
                 onClick={(e) => clearInput(e)}
               />
               <img id="icon" className="p-[10.3px]" />

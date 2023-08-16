@@ -5,12 +5,14 @@ type BadgeProps = {
   text: string;
   bgClassName?: string;
   textClassName?: string;
+  dataTestId?: string;
 };
 
 const Badge: React.FC<BadgeProps> = ({
   text,
   bgClassName = '',
   textClassName = '',
+  dataTestId,
 }) => {
   const bgStyles = useMemo(
     () =>
@@ -40,7 +42,9 @@ const Badge: React.FC<BadgeProps> = ({
 
   return (
     <div className={bgStyles}>
-      <p className={textStyles}>{text}</p>
+      <p className={textStyles} data-testid={dataTestId}>
+        {text}
+      </p>
     </div>
   );
 };

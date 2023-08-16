@@ -120,7 +120,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
       id: 0,
       text: 'Show details',
       icon: 'editReceipt',
-      dataTestId: 'show-app-details',
+      dataTestId: 'app-card-show-app-details',
       onClick: openAppDetailModal,
       hidden: false,
     },
@@ -128,7 +128,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
       id: 1,
       text: 'Feature',
       icon: 'filterLinear',
-      dataTestId: 'feature-app',
+      dataTestId: 'app-card-feature',
       onClick: makeFeaturedApp,
       hidden: false,
     },
@@ -136,7 +136,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
       id: 3,
       text: 'Edit',
       icon: 'edit',
-      dataTestId: 'edit-app',
+      dataTestId: 'app-card-edit',
       onClick: openEditAppModal,
       hidden: false,
     },
@@ -144,7 +144,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
       id: 4,
       text: 'Delete',
       icon: 'delete',
-      dataTestId: 'delete-app',
+      dataTestId: 'app-card-delete',
       onClick: openDeleteAppModal,
       hidden: false,
     },
@@ -158,7 +158,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
   };
 
   return (
-    <div {...appCardEventHandlers}>
+    <div {...appCardEventHandlers} data-testid="app-card">
       {/* <Link to={app.url} target="_blank"> */}
       <Card
         className="relative min-w-[234px] max-w-[234px] min-h-[148px] max-h-[148px] border-1 px-4 py-6"
@@ -171,15 +171,24 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
                 text={app.category.name}
                 textClassName="text-blue-500"
                 bgClassName="bg-blue-100"
+                dataTestId="app-category"
               />
             )}
             {appCardHovered && (
               <div {...menuEventHandlers} className="relative z-10">
-                <Icon name="threeDots" className="cursor-pointer" />
+                <Icon
+                  name="threeDots"
+                  className="cursor-pointer"
+                  dataTestId="app-card-ellipses"
+                />
                 {menuHovered && (
                   <Card className="absolute border-1 rounded-11xl">
                     {appCardMenu.map((menuItem) => (
-                      <div key={menuItem.id} onClick={menuItem.onClick}>
+                      <div
+                        key={menuItem.id}
+                        onClick={menuItem.onClick}
+                        data-testid={menuItem.dataTestId}
+                      >
                         <div className="flex gap-x-2 cursor-pointer py-2 px-6 items-center hover:bg-blue-50">
                           <Icon
                             name={menuItem.icon}
@@ -208,10 +217,16 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
                 width={28}
               />
             </div>
-            <p className="text-neutral-900 font-bold py-2 text-sm">
+            <p
+              className="text-neutral-900 font-bold py-2 text-sm"
+              data-testid="app-name"
+            >
               {app.label}
             </p>
-            <p className="text-neutral-500 line-clamp-3 text-xs">
+            <p
+              className="text-neutral-500 line-clamp-3 text-xs"
+              data-testid="app-description"
+            >
               {app.description}
             </p>
           </div>

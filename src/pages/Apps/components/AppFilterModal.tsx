@@ -48,7 +48,7 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
             limit: 10,
           }} // Provide the API call parameters
           searchProps={{
-            placeholder: 'Search Category',
+            placeholder: 'Search',
             dataTestId: 'teams-category-search',
             isClearable: true,
           }}
@@ -58,6 +58,7 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
             <>
               <input
                 type="checkbox"
+                data-testid="app-filter-category-checkbox"
                 className="h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 outline-neutral-500"
                 checked={find(selectedCategories, item)}
               ></input>
@@ -69,7 +70,7 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
       disabled: false,
       hidden: false,
       search: true,
-      dataTestId: 'app-filterby-category',
+      dataTestId: 'app-filter-category',
     },
     {
       label: 'Team',
@@ -82,8 +83,8 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
             limit: 10,
           }} // Provide the API call parameters
           searchProps={{
-            placeholder: 'Search Teams',
-            dataTestId: 'teams-category-search',
+            placeholder: 'Search',
+            dataTestId: 'app-filter-team-search',
             isClearable: true,
           }}
           setSelectedItems={setSelectedCategories}
@@ -92,6 +93,7 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
             <>
               <input
                 type="checkbox"
+                data-testid="app-filter-team-checkbox"
                 className="h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 border-2 border-b-bg-neutral-200"
                 checked={find(selectedTeams, item)}
               ></input>
@@ -121,7 +123,7 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
       disabled: false,
       hidden: false,
       search: true,
-      dataTestId: 'app-filterby-team',
+      dataTestId: 'app-filter-teams',
     },
   ];
 
@@ -133,7 +135,7 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
         <Header
           title="Filter By"
           onClose={() => closeModal()}
-          closeBtnDataTestId="close-filters"
+          closeBtnDataTestId="app-filter-close"
         />
         <div className="flex w-full">
           <div className="flex flex-col w-1/3 pb-64 border-r-2 border-r-neutral-200">
@@ -169,7 +171,7 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
               closeModal();
             }}
             className="mr-4"
-            dataTestId="clear-filters"
+            dataTestId="app-filter-clear-filter"
           />
           <Button
             label="Apply"
@@ -177,7 +179,7 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
             type={Type.Submit}
             onClick={handleSubmit(onSubmit)}
             className="mr-4"
-            dataTestId="apply-filter"
+            dataTestId="app-filter-apply"
           />
         </div>
       </Modal>

@@ -43,6 +43,7 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
             onClick={closeModal}
             stroke="#000"
             size={20}
+            dataTestId="app-details-close"
             disabled
           />
         </div>
@@ -56,6 +57,7 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
                   text={app.category.name}
                   textClassName="text-blue-500 text-xs font-semibold"
                   bgClassName="bg-blue-100"
+                  dataTestId="app-details-category"
                 />
               )}
             </div>
@@ -69,10 +71,16 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
                   width={100}
                 />
                 <div>
-                  <p className="text-3xl text-neutral-900 font-semibold">
+                  <p
+                    className="text-3xl text-neutral-900 font-semibold"
+                    data-testid="app-details-name"
+                  >
                     {app.label}
                   </p>
-                  <p className="pt-1 text-neutral-900 font-normal line-clamp-3">
+                  <p
+                    className="pt-1 text-neutral-900 font-normal line-clamp-3"
+                    data-testid="app-details-description"
+                  >
                     {app.description}
                   </p>
                 </div>
@@ -90,8 +98,13 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
             label="Delete app"
             variant={Variant.Secondary}
             onClick={openDeleteAppModal}
+            dataTestId="app-details-delete-app"
           />
-          <Button label="Edit app" onClick={openEditAppModal} />
+          <Button
+            label="Edit app"
+            onClick={openEditAppModal}
+            dataTestId="app-details-edit-app"
+          />
         </div>
       </Card>
     </Modal>
