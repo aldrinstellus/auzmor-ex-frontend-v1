@@ -158,7 +158,7 @@ const InfiniteFilterList: React.FC<IInfiniteFilterListProps> = ({
                 </div>
               ) : (
                 <div className="py-16 w-full text-lg font-bold text-center">
-                  No result found for &apos;{searchValue}&apos;
+                  {`No result found ${searchValue && `for '${searchValue}'`}`}
                 </div>
               )}
             </>

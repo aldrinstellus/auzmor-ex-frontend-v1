@@ -143,7 +143,9 @@ const AppList: React.FC<IAppListProps> = ({
                       className="mt-8 text-lg font-bold"
                       data-testid="apps-noresult-found"
                     >
-                      No result found for &apos;{queryParams.q}&apos;
+                      {`No result found ${
+                        queryParams.q && `for '${queryParams.q}'`
+                      }`}
                     </div>
                     <div className="text-sm text-gray-500 mt-2">
                       Sorry we can&apos;t find the app you are looking for.
