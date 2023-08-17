@@ -24,6 +24,7 @@ import AppFilterModal from './components/AppFilterModal';
 import AppList from './components/AppList';
 import Icon from 'components/Icon';
 import AppBannerSkeleton from './components/Skeletons/AppBannerSkeleton';
+import DynamicImagePreview from 'components/DynamicImagePreview';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -122,6 +123,7 @@ const Apps: React.FC<IAppsProps> = () => {
             dataTestId="app-add-app-cta"
           />
         </div>
+        <DynamicImagePreview />
         {/* Banner */}
         <img
           src={AppsBanner}

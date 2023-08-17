@@ -129,6 +129,8 @@ import AnnouncementChartIcon from '../components/AnnouncementChart';
 import dotsHorizontalIcon from '../components/DotsHorizontal';
 import Tag from '../components/Tag';
 import ArrowRightUp from '../components/ArrowRightUp';
+import GalleryExport from '../components/GalleryExport';
+import FolderOpen from '../components/FolderOpen';
 
 export const icon = {
   add: Add,
@@ -262,4 +264,6 @@ export const icon = {
   announcementChart: AnnouncementChartIcon,
   tag: Tag,
   arrowRightUp: ArrowRightUp,
+  galleryExport: GalleryExport,
+  folderOpen: FolderOpen,
 };
