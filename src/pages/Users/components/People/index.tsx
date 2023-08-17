@@ -105,7 +105,7 @@ const People: React.FC<IPeopleProps> = ({
 
   const roleSelectRef = useRef<any>();
 
-  console.log('data....', data);
+  console.log('data coming from User or Members....', data);
 
   const customReset = () => {
     if (roleSelectRef && roleSelectRef.current)
