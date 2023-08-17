@@ -40,10 +40,12 @@ export type App = {
   url: string;
   label: string;
   description: string;
-  category: string;
+  category: Record<string, any>;
   icon: AppIcon;
   credentials: AppCredentials;
   audience?: AppAudience[];
+  featured?: boolean;
+  createdAt: string;
 };
 
 export enum CategoryType {
@@ -134,11 +136,69 @@ export const fetchApps = async (
   }
 };
 
-export const useInfiniteApps = () => {
+export const fetchFeaturedApps = async (
+  context: QueryFunctionContext<
+    (string | Record<string, any> | undefined)[],
+    any
+  >,
+  featuredApps: {
+    [key: string]: App;
+  },
+  setFeaturedApp: (apps: { [key: string]: App }) => void,
+) => {
+  let response = null;
+  if (!!!context.pageParam) {
+    response = await apiService.get('/apps', context.queryKey[1]);
+    setFeaturedApp({
+      ...featuredApps,
+      ..._.chain(response.data.result.data).keyBy('id').value(),
+    });
+    response.data.result.data = response.data.result.data.map(
+      (eachApp: App) => ({ id: eachApp.id }),
+    );
+    return response;
+  } else {
+    response = await apiService.get(context.pageParam, context.queryKey[1]);
+    setFeaturedApp({
+      ...featuredApps,
+      ..._.chain(response.data.result.data).keyBy('id').value(),
+    });
+    response.data.result.data = response.data.result.data.map(
+      (eachApp: App) => ({ id: eachApp.id }),
+    );
+    return response;
+  }
+};
+
+export const useInfiniteFeaturedApps = (q?: Record<string, any>) => {
+  const { featuredApps, setFeaturedApp } = useAppStore();
+  return {
+    ...useInfiniteQuery({
+      queryKey: ['featured-apps', q],
+      queryFn: (context) =>
+        fetchFeaturedApps(context, featuredApps, setFeaturedApp),
+      getNextPageParam: (lastPage: any) => {
+        const pageDataLen = lastPage?.data?.result?.data?.length;
+        const pageLimit = lastPage?.data?.result?.paging?.limit;
+        if (pageDataLen < pageLimit) {
+          return null;
+        }
+        return lastPage?.data?.result?.paging?.next;
+      },
+      getPreviousPageParam: (currentPage: any) => {
+        return currentPage?.data?.result?.paging?.prev;
+      },
+      staleTime: 5 * 60 * 1000,
+    }),
+    featuredApps,
+  };
+};
+
+export const useInfiniteApps = (q?: Record<string, any>) => {
   const { apps, setApp } = useAppStore();
   return {
     ...useInfiniteQuery({
-      queryKey: ['apps'],
+      queryKey: ['apps', q],
       queryFn: (context) => fetchApps(context, apps, setApp),
       getNextPageParam: (lastPage: any) => {
         const pageDataLen = lastPage?.data?.result?.data?.length;
@@ -159,5 +219,15 @@ export const useInfiniteApps = () => {
 
 export const createApp = async (payload: IAddApp) => {
   const { data } = await apiService.post('apps', payload);
+  return data;
+};
+
+export const editApp = async (id: string, payload: IAddApp) => {
+  const { data } = await apiService.put(`/apps/${id}`, payload);
+  return data;
+};
+
+export const deleteApp = async (id: string) => {
+  const data = await apiService.delete(`/apps/${id}`);
   return data;
 };

@@ -19,6 +19,7 @@ export interface ITabsProps {
   showUnderline?: boolean;
   tabSwitcherClassName?: string;
   disableAnimation?: boolean;
+  onTabChange?: (param: any) => void;
 }
 
 const Tabs: React.FC<ITabsProps> = ({
@@ -31,6 +32,7 @@ const Tabs: React.FC<ITabsProps> = ({
   showUnderline = true,
   tabSwitcherClassName = '',
   disableAnimation = false,
+  onTabChange,
 }) => {
   const [activeTab, setActiveTab] = useState(activeTabIndex);
   const [previousTab, setPreviousTab] = useState(activeTab);
@@ -53,6 +55,10 @@ const Tabs: React.FC<ITabsProps> = ({
       }
     }
   }, [activeTab, previousTab]);
+
+  useEffect(() => {
+    setActiveTab(activeTabIndex);
+  }, [activeTabIndex]);
 
   const isActive = (index: number) => activeTab === index;
   return (
@@ -81,6 +87,7 @@ const Tabs: React.FC<ITabsProps> = ({
                 onClick={() => {
                   setPreviousTab(activeTab);
                   !tab?.disabled && setActiveTab(index);
+                  !tab?.disabled && onTabChange && onTabChange(index);
                 }}
                 key={index}
                 data-testid={tab.dataTestId}

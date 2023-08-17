@@ -27,6 +27,7 @@ export interface ICreatableSearch {
   placeholder?: string;
   height?: string;
   menuPlacement: MenuPlacement;
+  addItemDataTestId?: string;
 }
 
 const CreatableSearch = React.forwardRef(
@@ -36,6 +37,7 @@ const CreatableSearch = React.forwardRef(
       className = '',
       disabled = false,
       dataTestId = '',
+      addItemDataTestId = '',
       error,
       control,
       label = '',
@@ -62,7 +64,7 @@ const CreatableSearch = React.forwardRef(
     const categoriesData = data?.pages.flatMap((page) => {
       return page?.data?.result?.data.map((category: any) => {
         try {
-          return category;
+          return { ...category, label: category.name };
         } catch (e) {
           console.log('Error', { category });
         }
@@ -74,6 +76,7 @@ const CreatableSearch = React.forwardRef(
         value: category?.name?.toUpperCase(),
         label: category?.name,
         type: category?.type,
+        id: category?.id,
         dataTestId: `category-option-${category?.type?.toLowerCase()}-${
           category?.name
         }`,
@@ -166,16 +169,26 @@ const CreatableSearch = React.forwardRef(
                 menuPlacement={menuPlacement ? menuPlacement : 'top'}
                 menuPortalTarget={document.body}
                 components={{
-                  Option: ({ innerProps, data, isDisabled, isSelected }) => {
+                  Option: ({ innerProps, data, isDisabled }) => {
+                    const isSelected = data?.id === field?.value?.id;
                     return (
                       <div
                         {...innerProps}
                         className={`px-6 py-3 hover:bg-primary-50 hover:text-primary-500 font-medium  text-sm ${
                           isDisabled ? 'cursor-default' : 'cursor-pointer'
                         } ${isSelected && 'bg-primary-50'}`}
-                        data-testid={data.dataTestId}
+                        data-testid={
+                          data.__isNew__ ? addItemDataTestId : data.dataTestId
+                        }
                       >
-                        {data.label}
+                        {data.__isNew__ ? (
+                          <>
+                            <span>+ Add</span>
+                            <span className="text-blue-500">{` '${data.value}'`}</span>
+                          </>
+                        ) : (
+                          data.label
+                        )}
                       </div>
                     );
                   },

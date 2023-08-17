@@ -1,6 +1,6 @@
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { twConfig } from 'utils/misc';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'react-toastify';
@@ -9,12 +9,18 @@ import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import { UseFormSetValue } from 'react-hook-form';
 import { IAddAppForm } from './AddApp';
+import { AppIcon } from 'queries/apps';
 
 type UploadIconButtonProps = {
   setValue: UseFormSetValue<IAddAppForm>;
+  icon?: AppIcon;
 };
 
-const UploadIconButton: React.FC<UploadIconButtonProps> = ({ setValue }) => {
+const UploadIconButton: React.FC<UploadIconButtonProps> = ({
+  setValue,
+  icon,
+}) => {
+  const [error, setError] = useState('');
   // Callback function to handle file upload
   const handleIconUpload = (file: File) => {
     let isError = false;
@@ -22,12 +28,14 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({ setValue }) => {
     if (!['image/jpeg', 'image/png', 'image/svg+xml'].includes(file.type)) {
       isError = true;
       showErrorToast('Only JPEG/PNG/SVG filetypes are supported!');
+      setError('Unsupported filetypes.');
     }
 
     // 2. File is under 8MB
     if (file.size > 8 * 1024 * 1024) {
       isError = true;
       showErrorToast('Uploaded image must be less than 8MB in size!');
+      setError('The file size exceed the limit.');
     }
 
     // 3. File is of max 100 x 100 resolution
@@ -41,6 +49,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({ setValue }) => {
         showErrorToast(
           'Uploaded image must not be more than 100x100px resolution',
         );
+        setError('File resolution not matched.');
       }
       // If the image has supported dimensions, then call setAppIcon
       else if (!isError) {
@@ -74,14 +83,25 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({ setValue }) => {
     });
 
   const [appIcon, setAppIcon] = useState<File[]>();
+  const [currentIcon, setCurrentIcon] = useState<AppIcon | undefined>(icon);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const clearInput = () => {
-    if (inputRef.current) {
-      inputRef.current.value = '';
-    }
+  const clearInput = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setValue('icon', undefined);
+    setCurrentIcon(undefined);
     setAppIcon([]);
   };
+
+  // Edit flow prefill icon
+  useEffect(() => {
+    if (icon) {
+      setCurrentIcon(icon);
+      const iconElement = document.getElementById('icon') as HTMLImageElement;
+
+      iconElement.src = icon.original;
+    }
+  }, []);
 
   const showErrorToast = (message: string) => {
     toast(<FailureToast content={message} dataTestId="comment-toaster" />, {
@@ -104,10 +124,12 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({ setValue }) => {
     });
   };
 
+  const hasIcon = currentIcon?.id || (appIcon && appIcon.length > 0);
+
   return (
     <div>
-      <div className="flex justify-between pb-2">
-        <p className="text-neutral-900 font-bold">Upload Icon</p>
+      <div className="flex justify-between pb-1">
+        <p className="text-neutral-900 font-bold text-sm">Upload Icon</p>
         <Tooltip
           tooltipContent={
             <div>
@@ -126,6 +148,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({ setValue }) => {
             stroke={twConfig.theme.colors.neutral['500']}
             hover={false}
             disabled={true}
+            dataTestId="add-app-icon-info"
           />
         </Tooltip>
       </div>
@@ -137,52 +160,97 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({ setValue }) => {
       >
         <label htmlFor="upload-app-icon">
           <div
-            className="flex flex-col items-center justify-evenly p-6 gap-y-2"
+            className="flex flex-col items-center justify-evenly h-[176px] gap-y-2"
             onClick={(e) => e.stopPropagation()}
           >
-            <input
-              id="upload-app-icon"
-              {...getInputProps()}
-              type="file"
-              ref={inputRef}
-              className="hidden"
-              accept="image/jpeg, image/png, image/svg+xml"
-              onChange={(e) => {
-                if (e.target.files?.length) {
-                  // Check for all three conditions:
-                  const file = e.target.files[0];
-                  handleIconUpload(file);
-                }
-              }}
-              onClick={() => {
-                if (inputRef.current) {
-                  inputRef.current.value = '';
-                }
-              }}
-            />
+            {!hasIcon && (
+              <input
+                id="upload-app-icon"
+                {...getInputProps()}
+                type="file"
+                ref={inputRef}
+                className="hidden"
+                accept="image/jpeg, image/png, image/svg+xml"
+                onChange={(e) => {
+                  if (e.target.files?.length) {
+                    // Check for all three conditions:
+                    const file = e.target.files[0];
+                    handleIconUpload(file);
+                  }
+                }}
+                onClick={() => {
+                  if (inputRef.current) {
+                    inputRef.current.value = '';
+                  }
+                }}
+              />
+            )}
 
             <div
               className={`${
-                appIcon ? 'hidden' : 'block'
+                !hasIcon ? 'block' : 'hidden'
               } flex flex-col items-center justify-between gap-y-2`}
             >
-              <Icon
-                name="documentUpload"
-                size={24}
-                stroke={twConfig.theme.colors.neutral['900']}
-              />
-              <p className="text-neutral-900 font-medium">Upload App Icon</p>
-              <p className="text-neutral-500 font-medium">
-                Drag and drop or{' '}
-                <span className="text-primary-500 font-bold cursor-pointer">
-                  click here
-                </span>{' '}
-                to upload file
-              </p>
+              {error ? (
+                <>
+                  <Icon name="infoCircle" size={24} stroke="#F05252" disabled />
+                  <p
+                    className="text-red-500 font-medium text-sm"
+                    data-testid="add-app-icon-failed"
+                  >
+                    Oops! Upload failed
+                  </p>
+                  <p className="text-neutral-500 font-medium text-xs">
+                    {error}
+                    <span
+                      className="text-primary-500 font-bold cursor-pointer"
+                      data-testid="add-app-icon-try-again"
+                    >
+                      {' '}
+                      Try again
+                    </span>
+                  </p>
+                </>
+              ) : (
+                <>
+                  <Icon
+                    name="documentUpload"
+                    size={24}
+                    stroke={twConfig.theme.colors.neutral['900']}
+                  />
+                  <p className="text-neutral-900 font-medium text-sm">
+                    Upload App Icon
+                  </p>
+                  <p className="text-neutral-500 font-medium text-xs">
+                    Drag and drop or{' '}
+                    <span
+                      className="text-primary-500 font-bold cursor-pointer"
+                      data-testid="add-app-icon"
+                    >
+                      click here
+                    </span>{' '}
+                    to upload file
+                  </p>
+                </>
+              )}
             </div>
-
-            <div className={`${appIcon ? 'block' : 'block'}`}>
-              <img id="icon" />
+            <div
+              className={`${
+                hasIcon && !error
+                  ? 'block bg-neutral-100 rounded-lg relative group'
+                  : 'hidden'
+              }`}
+            >
+              <Icon
+                name="close"
+                size={16}
+                className="group-hover:block hidden cursor-pointer absolute -top-1 -right-1 bg-black rounded-full p-[4px]"
+                fill="#fff"
+                disabled
+                dataTestId="add-app-remove-icon"
+                onClick={(e) => clearInput(e)}
+              />
+              <img id="icon" className="p-[10.3px]" />
             </div>
           </div>
         </label>

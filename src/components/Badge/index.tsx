@@ -5,12 +5,14 @@ type BadgeProps = {
   text: string;
   bgClassName?: string;
   textClassName?: string;
+  dataTestId?: string;
 };
 
 const Badge: React.FC<BadgeProps> = ({
   text,
   bgClassName = '',
   textClassName = '',
+  dataTestId,
 }) => {
   const bgStyles = useMemo(
     () =>
@@ -29,7 +31,7 @@ const Badge: React.FC<BadgeProps> = ({
     () =>
       clsx(
         {
-          'px-2 py-1 font-semibold text-sm': true,
+          'px-2 py-0.5 font-semibold text-[10px] leading-3': true,
         },
         {
           [textClassName]: true,
@@ -40,7 +42,9 @@ const Badge: React.FC<BadgeProps> = ({
 
   return (
     <div className={bgStyles}>
-      <p className={textStyles}>{text}</p>
+      <p className={textStyles} data-testid={dataTestId}>
+        {text}
+      </p>
     </div>
   );
 };

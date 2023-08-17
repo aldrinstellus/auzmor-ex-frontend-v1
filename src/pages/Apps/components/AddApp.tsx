@@ -2,7 +2,7 @@ import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import Tabs from 'components/Tabs';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import AppDetailsForm from './AppDetailsForm';
 import clsx from 'clsx';
@@ -10,24 +10,36 @@ import AppCredentialsForm from './AppCredentialsForm';
 import Button, { Variant as ButtonVariant, Type } from 'components/Button';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { URL_REGEX } from 'utils/constants';
-import { useUpload } from 'hooks/useUpload';
+import { TOAST_AUTOCLOSE_TIME, URL_REGEX } from 'utils/constants';
+import { UploadStatus, useUpload } from 'hooks/useUpload';
 import { EntityType } from 'queries/files';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createApp } from 'queries/apps';
+import { App, AppAudience, createApp, editApp } from 'queries/apps';
+import { useAppStore } from 'stores/appStore';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { toast } from 'react-toastify';
+import { twConfig } from 'utils/misc';
+import { slideInAndOutTop } from 'utils/react-toastify';
+import FailureToast from 'components/Toast/variants/FailureToast';
+
+export enum APP_MODE {
+  Create = 'CREATE',
+  Edit = 'EDIT',
+}
 
 type AddAppProps = {
   open: boolean;
   closeModal: () => void | null;
+  data?: App;
+  mode?: APP_MODE;
 };
-
 export interface IAddAppForm {
   url: string;
   label: string;
   description?: string;
   category?: any;
-  audience?: string;
-  icon?: File;
+  audience?: AppAudience[];
+  icon?: any;
   acsUrl?: string;
   entityId?: string;
   relayState?: string;
@@ -36,30 +48,59 @@ export interface IAddAppForm {
 const AddAppFormSchema = yup.object({
   url: yup
     .string()
-    .required('Required field')
+    .required('This field cannot be empty')
     .matches(URL_REGEX, 'Enter a valid URL'),
 
-  label: yup.string().required('Required field'),
-  description: yup.string(),
-  category: yup.object(),
-  audience: yup.string(),
+  label: yup.string().required('This field cannot be empty'),
+  description: yup
+    .string()
+    .test(
+      'len',
+      'Description cannot exceed 300 characters',
+      (val) => (val || '').toString().length <= 300,
+    ),
+  audience: yup.array(),
   icon: yup.object().nullable(),
   acsUrl: yup.string(),
   entityId: yup.string(),
   relayState: yup.string(),
 });
 
-const AddApp: React.FC<AddAppProps> = ({ open, closeModal }) => {
+const AddApp: React.FC<AddAppProps> = ({
+  open,
+  closeModal,
+  data,
+  mode = APP_MODE.Create,
+}) => {
   const {
     control,
     formState: { errors, isValid },
     trigger,
     setValue,
     getValues,
+    reset,
   } = useForm<IAddAppForm>({
     resolver: yupResolver(AddAppFormSchema),
     mode: 'onChange',
+    defaultValues: {
+      url: data?.url || '',
+      label: data?.label || '',
+      description: data?.description || '',
+      category: data
+        ? {
+            label: data?.category?.name,
+            value: data?.category?.name,
+            id: data?.category?.categoryId,
+          }
+        : '',
+      audience: data?.audience || [],
+      icon: data?.icon,
+      acsUrl: data?.credentials?.acsUrl || '',
+      entityId: data?.credentials?.entityId || '',
+      relayState: data?.credentials?.relayState || '',
+    },
   });
+  const [activeTab, setActiveTab] = useState(0);
 
   const queryClient = useQueryClient();
 
@@ -68,12 +109,109 @@ const AddApp: React.FC<AddAppProps> = ({ open, closeModal }) => {
     mutationFn: createApp,
     onSuccess: async () => {
       await queryClient.invalidateQueries(['apps']);
+      toast(<SuccessToast content={'App added successfully'} />, {
+        style: {
+          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+        },
+        autoClose: TOAST_AUTOCLOSE_TIME,
+        transition: slideInAndOutTop,
+        theme: 'dark',
+      });
       closeModal();
+      queryClient.invalidateQueries(['categories']);
     },
-    onError: async () => {},
+    onError: async () => {
+      toast(
+        <FailureToast
+          content={`Error Creating App`}
+          dataTestId="app-create-error-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.red['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+    },
   });
 
-  const { uploadMedia } = useUpload();
+  const updateAppMutation = useMutation({
+    mutationKey: ['edit-app-mutation'],
+    mutationFn: (payload) => editApp(data?.id || '', payload as any),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['apps']);
+      toast(
+        <SuccessToast
+          content={`App has been updated`}
+          dataTestId="app-updated-success-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.primary['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+      closeModal();
+      queryClient.invalidateQueries(['categories']);
+    },
+    onError: (error: any) => {
+      toast(
+        <FailureToast
+          content={`Error updating the app`}
+          dataTestId="app-create-error-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              stroke={twConfig.theme.colors.red['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+    },
+  });
+
+  const { uploadMedia, uploadStatus } = useUpload();
 
   const tabStyles = (active: boolean) =>
     clsx({
@@ -85,14 +223,22 @@ const AddApp: React.FC<AddAppProps> = ({ open, closeModal }) => {
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>Add apps</div>
       ),
+      dataTestId: 'add-app-addapps',
       tabContent: (
-        <AppDetailsForm control={control} errors={errors} setValue={setValue} />
+        <AppDetailsForm
+          control={control}
+          errors={errors}
+          setValue={setValue}
+          defaultValues={getValues}
+        />
       ),
     },
     {
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>App credentials</div>
       ),
+      disabled: !isValid,
+      dataTestId: 'add-app-credentials',
       tabContent: <AppCredentialsForm control={control} errors={errors} />,
     },
   ];
@@ -100,11 +246,12 @@ const AddApp: React.FC<AddAppProps> = ({ open, closeModal }) => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     trigger();
-    if (!errors.url && !errors.label) {
+    if (!errors.url && !errors.label && !errors.description) {
       const formData = getValues();
       let uploadedFile;
-
-      if (formData.icon) {
+      if (formData?.icon?.id || data?.icon?.id) {
+        uploadedFile = [{ id: formData?.icon.id || data?.icon.id }];
+      } else if (formData.icon) {
         uploadedFile = await uploadMedia([formData.icon], EntityType.AppIcon);
       }
 
@@ -115,9 +262,9 @@ const AddApp: React.FC<AddAppProps> = ({ open, closeModal }) => {
         featured: false,
         ...(formData.description && { description: formData.description }),
         ...(formData.category &&
-          formData.category.label && { category: formData.category.labe }),
+          formData.category.label && { category: formData.category.label }),
         ...(uploadedFile && uploadedFile[0] && { icon: uploadedFile[0].id }),
-        audience: [],
+        audience: formData?.audience || [],
       };
       const credentials: any = {};
       if (formData.acsUrl) {
@@ -130,31 +277,82 @@ const AddApp: React.FC<AddAppProps> = ({ open, closeModal }) => {
         credentials.relayState = formData.relayState;
       }
       req.credentials = credentials;
-      addAppMutation.mutate(req);
+      if (mode === APP_MODE.Create) {
+        addAppMutation.mutate(req);
+      } else if (mode === APP_MODE.Edit) {
+        updateAppMutation.mutate(req);
+      }
     }
   };
+
+  const handleNextTab = (e: React.MouseEvent<Element, MouseEvent>) => {
+    e.preventDefault();
+    trigger();
+    if (isValid) {
+      setActiveTab(activeTab + 1);
+    }
+  };
+
+  useEffect(() => {
+    if (!open) {
+      reset();
+      setActiveTab(0);
+    }
+  }, [open]);
 
   return (
     <Modal
       open={open}
       closeModal={closeModal}
-      className="max-w-[800px] max-h-[650px]"
+      className="min-h-[630px] max-w-[800px] max-h-[650px]"
     >
       <div className="flex flex-col h-full">
         <div className="p-4 flex items-center justify-between">
           <p className="text-neutral-900 font-extrabold text-lg">Add app</p>
-          <Icon name="close" disabled onClick={closeModal} />
+          <Icon
+            name="close"
+            disabled
+            onClick={closeModal}
+            dataTestId="add-app-close"
+          />
         </div>
         <Divider />
-        <form onSubmit={onSubmit}>
-          <Tabs tabs={tabs} disableAnimation={true} />
+        <form
+          onSubmit={onSubmit}
+          className="flex flex-col justify-between h-full"
+        >
+          <Tabs
+            tabs={tabs}
+            disableAnimation={true}
+            activeTabIndex={activeTab}
+            onTabChange={(tab: any) => setActiveTab(tab)}
+          />
           <div className="bg-blue-50 flex items-center justify-end gap-x-3 px-6 py-4 mt-auto rounded-9xl">
             <Button
               label="Cancel"
               variant={ButtonVariant.Secondary}
               onClick={closeModal}
+              dataTestId="add-app-cancel"
             />
-            <Button label="Save" type={Type.Submit} />
+            {activeTab === tabs.length - 1 ? (
+              <Button
+                label="Save"
+                type={Type.Submit}
+                dataTestId="add-app-save"
+                loading={
+                  addAppMutation?.isLoading ||
+                  updateAppMutation.isLoading ||
+                  uploadStatus === UploadStatus.Uploading
+                }
+              />
+            ) : (
+              <Button
+                label="Next"
+                disabled={!isValid}
+                onClick={(e) => handleNextTab(e)}
+                dataTestId="add-app-next-cta"
+              />
+            )}
           </div>
         </form>
       </div>
