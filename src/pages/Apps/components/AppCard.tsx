@@ -38,6 +38,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
     mutationFn: (payload: any) => editApp(app?.id || '', payload as any),
     onSuccess: () => {
       queryClient.invalidateQueries(['apps']);
+      queryClient.invalidateQueries(['featured-apps']);
       toast(
         <SuccessToast
           content={`App has been added to featured apps`}
@@ -96,6 +97,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
     mutationFn: (payload: any) => editApp(app?.id || '', payload as any),
     onSuccess: () => {
       queryClient.invalidateQueries(['apps']);
+      queryClient.invalidateQueries(['featured-apps']);
       toast(
         <SuccessToast
           content={`App has been removed featured apps`}
