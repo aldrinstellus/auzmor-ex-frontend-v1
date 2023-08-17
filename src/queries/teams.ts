@@ -44,8 +44,26 @@ export const getTeamMembers = async (
   id: string,
 ) => {
   if (pageParam === null) {
-    return apiService.get(`/teams/members/${id}`, queryKey[1]);
+    if (typeof queryKey[1] === 'object') {
+      if (!queryKey[1]?.status || queryKey[1]?.status === 'ALL') {
+        return apiService.get(`/teams/members/${id}`, {
+          q: queryKey[1]?.q,
+          role: queryKey[1]?.role,
+          sort: queryKey[1]?.sort,
+        });
+      } else {
+        return apiService.get(`/teams/members/${id}`, queryKey[1]);
+      }
+    }
   } else return apiService.get(pageParam);
+};
+
+// delete team by id -> teams/:id
+export const deleteTeamMember = async (id: string) => {
+  const data = await apiService.delete(`/teams/members/${id}`);
+  return new Promise((res) => {
+    res(data);
+  });
 };
 
 export const addTeamMember = async (
@@ -92,7 +110,11 @@ export const useInfiniteTeamMembers = (
 ) => {
   return useInfiniteQuery({
     queryKey: ['team-members', q, teamId],
-    queryFn: ({ pageParam }) => getTeamMembers(pageParam, teamId), // need fix
+
+    // queryFn: (context) => {
+    //   getTeamMembers(context, teamId); # data is not stored in cache
+    // },
+
     getNextPageParam: (lastPage: any) => {
       const pageDataLen = lastPage?.data?.result?.data?.length;
       const pageLimit = lastPage?.data?.result?.paging?.limit;

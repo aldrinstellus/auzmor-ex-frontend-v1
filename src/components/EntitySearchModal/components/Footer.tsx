@@ -9,6 +9,7 @@ interface IFooter {
   onSubmit: (ids: string[]) => void;
   onCancel: () => void;
   submitButtonText: string;
+  cancelButtonText: string;
 }
 
 const Footer: React.FC<IFooter> = ({
@@ -17,13 +18,14 @@ const Footer: React.FC<IFooter> = ({
   onSubmit,
   onCancel,
   submitButtonText,
+  cancelButtonText,
 }) => {
   return (
     <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-19xl">
       <div className="flex">
         <Button
           variant={ButtonVariant.Secondary}
-          label="Back"
+          label={cancelButtonText}
           className="mr-3"
           onClick={onCancel}
           dataTestId="scheduledpost-back"
@@ -32,7 +34,7 @@ const Footer: React.FC<IFooter> = ({
           label={submitButtonText}
           dataTestId="scheduledpost-next"
           onClick={handleSubmit((formData) => {
-            if (entityType === EntitySearchModalType.Member) {
+            if (entityType === EntitySearchModalType.User) {
               const ids: string[] = [];
               Object.keys(formData).forEach((key) => {
                 if (

@@ -50,42 +50,12 @@ const TeamFilterModal: React.FC<ITeamFilterModalProps> = ({
     closeModal();
   };
 
-  // const categoryData = [
-  //   {
-  //     label: 'DEPARTMENT',
-  //     id: '64d4a97b629f3f97e9625b63',
-  //   },
-  //   {
-  //     label: 'LOCATION',
-  //     id: '64d4a773155d56c3df2c9c3f',
-  //   },
-  // ];
-
   const filterNavigation = [
     {
       label: 'Category',
       icon: '',
       key: 'category-filters',
-      component: (
-        <>
-          <Layout
-            fields={[
-              {
-                type: FieldType.Input,
-                variant: InputVariant.Text,
-                size: InputSize.Small,
-                leftIcon: 'search',
-                control,
-                name: 'search',
-                placeholder: 'Search Category',
-                dataTestId: 'teams-category-search',
-                isClearable: true,
-              },
-            ]}
-          />
-          {/* {categoriesData?.length === 0 && <div>No category Found</div>} */}
-        </>
-      ),
+      component: <>Checkbox Grouped Component </>,
       disabled: false,
       hidden: false,
       search: true,

@@ -26,7 +26,7 @@ const EntitySearchBodyModal: React.FC<IEntitySearchModalBodyProps> = ({
   entityRenderer,
 }) => {
   switch (entityType) {
-    case EntitySearchModalType.Member:
+    case EntitySearchModalType.User:
       return (
         <MembersBody
           control={control}

@@ -8,9 +8,8 @@ import Tabs from 'components/Tabs';
 import OrgChart from 'components/OrgChart';
 import People from './components/People';
 import { Role } from 'utils/enum';
-import Team, { ITeamDetails, TeamFlow } from './components/Teams';
-import TeamDetail from './components/Teams/TeamDetail';
-import { useInfiniteUsers } from 'queries/users';
+import Team, { TeamFlow } from './components/Teams';
+import TeamDetail from './components/TeamDetail';
 
 export interface ITeamDetailState {
   isTeamSelected: boolean;
@@ -22,28 +21,25 @@ interface IUsersProps {}
 
 const Users: React.FC<IUsersProps> = () => {
   const [showOrgChart, setShowOrgChart] = useState<boolean>(false);
-
   const [showAddUserModal, openAddUserModal, closeAddUserModal] = useModal(
     undefined,
     false,
   );
-
   const [showTeamModal, openTeamModal, closeTeamModal] = useModal(
     undefined,
     false,
   );
 
-  const [teamFlow, setTeamFlow] = useState<TeamFlow>(TeamFlow.CreateTeam);
-
-  const [showDeleteModal, openDeleteModal, closeDeleteModal] = useModal();
-
-  const [teamId, setTeamId] = useState<string>('');
+  const [teamFlow, setTeamFlow] = useState<TeamFlow>(TeamFlow.CreateTeam); // to context
 
   const [showTeamDetail, setShowTeamDetail] = useState<ITeamDetailState>({
     isTeamSelected: false,
     teamDetail: {},
     activeTab: '',
-  });
+  }); // to context
+
+  const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
+    useModal(false);
 
   const { user } = useAuth();
 
@@ -118,11 +114,9 @@ const Users: React.FC<IUsersProps> = () => {
           setShowTeamDetail={setShowTeamDetail}
           setTeamFlow={setTeamFlow}
           teamFlow={teamFlow}
-          showDeleteModal={showDeleteModal}
-          openDeleteModal={openDeleteModal}
-          closeDeleteModal={closeDeleteModal}
-          setTeamId={setTeamId}
-          teamId={teamId}
+          showAddMemberModal={showAddMemberModal}
+          openAddMemberModal={openAddMemberModal}
+          closeAddMemberModal={closeAddMemberModal}
         />
       ),
       tabAction: user?.role !== Role.Member && (
@@ -159,9 +153,9 @@ const Users: React.FC<IUsersProps> = () => {
           setShowTeamDetail={setShowTeamDetail}
           teamTab={showTeamDetail.activeTab}
           openModal={openTeamModal}
-          setTeamFlow={setTeamFlow}
-          openDeleteModal={openDeleteModal}
-          setTeamId={setTeamId}
+          showAddMemberModal={showAddMemberModal}
+          openAddMemberModal={openAddMemberModal}
+          closeAddMemberModal={closeAddMemberModal}
           {...showTeamDetail.teamDetail}
         />
       )}

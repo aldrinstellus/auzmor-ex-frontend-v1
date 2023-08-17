@@ -74,27 +74,38 @@ const People: React.FC<IPeopleProps> = ({
   const role = watch('role');
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
 
+  // get the conditional data
+  const getPeoplesData = () => {
+    return useInfiniteUsers(
+      isFiltersEmpty({
+        status: userStatus,
+        role: role?.value,
+        sort: filterSortBy,
+        q: debouncedSearchValue,
+      }),
+    );
+  };
+
+  const getTeamMembersData = () => {
+    return useInfiniteTeamMembers(
+      teamId || '',
+      isFiltersEmpty({
+        status: userStatus,
+        role: role?.value,
+        sort: filterSortBy,
+        q: debouncedSearchValue,
+      }),
+    );
+  };
+
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    teamTab === EntitySearchModalType?.Team && teamId
-      ? useInfiniteTeamMembers(
-          teamId,
-          isFiltersEmpty({
-            status: userStatus,
-            role: role?.value,
-            sort: filterSortBy,
-            q: debouncedSearchValue,
-          }),
-        )
-      : useInfiniteUsers(
-          isFiltersEmpty({
-            status: userStatus,
-            role: role?.value,
-            sort: filterSortBy,
-            q: debouncedSearchValue,
-          }),
-        );
+    teamTab === EntitySearchModalType.Team && teamId
+      ? getTeamMembersData()
+      : getPeoplesData();
 
   const roleSelectRef = useRef<any>();
+
+  console.log('data....', data);
 
   const customReset = () => {
     if (roleSelectRef && roleSelectRef.current)
