@@ -111,6 +111,13 @@ const Apps: React.FC<IAppsProps> = () => {
     });
   };
 
+  const onApplyFilter = (filters: any) => {
+    setAppFilters(filters);
+    if (filters.categories.length > 0) {
+      setSelectedAppGroup(AppGroup.ALL_APPS);
+    }
+  };
+
   return (
     <div>
       <Card className="p-8">
@@ -178,7 +185,13 @@ const Apps: React.FC<IAppsProps> = () => {
                         ? selectedButtonClassName
                         : regularButtonClassName
                     }
-                    onClick={() => setSelectedAppGroup(category.id)}
+                    onClick={() => {
+                      setSelectedAppGroup(category.id);
+                      setAppFilters((prevFilters: any) => ({
+                        ...prevFilters,
+                        categories: [],
+                      }));
+                    }}
                   />
                 </div>
               ))}
@@ -357,9 +370,13 @@ const Apps: React.FC<IAppsProps> = () => {
             queryParams={{
               q: debouncedSearchValue,
               sort: sortByFilter,
+              teamId:
+                appFilters.teams.length > 0
+                  ? appFilters.teams.map((team: any) => team.id).join(',')
+                  : undefined,
               ...(isQuickCategorySelected
                 ? {
-                    'categoryId[0]': isQuickCategorySelected
+                    categoryId: isQuickCategorySelected
                       ? selectedAppGroup
                       : undefined,
                   }
@@ -367,7 +384,14 @@ const Apps: React.FC<IAppsProps> = () => {
                 ? {
                     featured: true,
                   }
-                : {}),
+                : {
+                    categoryId:
+                      appFilters.categories.length > 0
+                        ? appFilters.categories
+                            .map((category: any) => category.id)
+                            .join(',')
+                        : undefined,
+                  }),
             }}
             setAppsCount={setAppsCount}
             setAppsLoading={setIsLoading}
@@ -382,7 +406,7 @@ const Apps: React.FC<IAppsProps> = () => {
           open={showFilterModal}
           filters={appFilters}
           closeModal={closeFilterModal}
-          setFilters={setAppFilters}
+          setFilters={onApplyFilter}
         />
       )}
     </div>
