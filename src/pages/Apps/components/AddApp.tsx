@@ -249,8 +249,8 @@ const AddApp: React.FC<AddAppProps> = ({
     if (!errors.url && !errors.label && !errors.description) {
       const formData = getValues();
       let uploadedFile;
-      if (formData?.icon?.id || data?.icon?.id) {
-        uploadedFile = [{ id: formData?.icon.id || data?.icon.id }];
+      if (formData?.icon?.id) {
+        uploadedFile = [{ id: formData?.icon.id }];
       } else if (formData.icon) {
         uploadedFile = await uploadMedia([formData.icon], EntityType.AppIcon);
       }

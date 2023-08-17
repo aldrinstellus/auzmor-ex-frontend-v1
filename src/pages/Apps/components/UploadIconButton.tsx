@@ -148,6 +148,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
             stroke={twConfig.theme.colors.neutral['500']}
             hover={false}
             disabled={true}
+            size={16}
             dataTestId="add-app-icon-info"
           />
         </Tooltip>
