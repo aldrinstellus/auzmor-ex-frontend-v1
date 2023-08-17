@@ -289,12 +289,14 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
                 width={28}
               />
             </div>
-            <p
-              className="text-neutral-900 font-bold py-2 text-sm"
-              data-testid="app-name"
-            >
-              {app.label}
-            </p>
+            <div className="py-2">
+              <p
+                className="text-neutral-900 font-bold text-sm line-clamp-1"
+                data-testid="app-name"
+              >
+                {app.label}
+              </p>
+            </div>
             <p
               className="text-neutral-500 line-clamp-3 text-xs"
               data-testid="app-description"

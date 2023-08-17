@@ -85,12 +85,14 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
             <div className="pb-8">
               {/* The icon, name and description */}
               <div className="flex px-6 pt-4 gap-x-6">
-                <img
-                  src={app?.icon?.original}
-                  className="p-1 rounded-xl min-w-[100px] min-h-[100px]"
-                  height={100}
-                  width={100}
-                />
+                <div className="min-w-[100px] min-h-[100px]">
+                  <img
+                    src={app?.icon?.original}
+                    className="p-1 rounded-xl"
+                    height={100}
+                    width={100}
+                  />
+                </div>
                 <div>
                   <p
                     className="text-3xl text-neutral-900 font-semibold"
