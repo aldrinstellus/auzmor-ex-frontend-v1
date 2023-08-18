@@ -1,10 +1,10 @@
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import React from 'react';
 import { UseFormHandleSubmit } from 'react-hook-form';
-import { EntitySearchModalType, IMemberForm } from '..';
+import { EntitySearchModalType, IAudienceForm } from '..';
 
 interface IFooter {
-  handleSubmit: UseFormHandleSubmit<IMemberForm>;
+  handleSubmit: UseFormHandleSubmit<IAudienceForm>;
   entityType: EntitySearchModalType;
   onSubmit: (ids: string[]) => void;
   onCancel: () => void;
@@ -36,17 +36,8 @@ const Footer: React.FC<IFooter> = ({
           onClick={handleSubmit((formData) => {
             if (entityType === EntitySearchModalType.User) {
               const ids: string[] = [];
-              Object.keys(formData).forEach((key) => {
-                if (
-                  !!![
-                    'memberSearch',
-                    'department',
-                    'location',
-                    'selectAll',
-                    'showSelectedMembers',
-                  ].includes(key) &&
-                  (formData as any)[key]
-                ) {
+              Object.keys(formData.users).forEach((key) => {
+                if (formData.users[key]) {
                   ids.push(key);
                 }
               });

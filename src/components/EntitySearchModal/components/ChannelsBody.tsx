@@ -18,52 +18,51 @@ import {
 } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
 import { IAudienceForm } from '..';
-import UserRow from './UserRow';
+import { useInfiniteChannels } from 'queries/channel';
 
-interface IMembersBodyProps {
+interface IChannelsBodyProps {
   control: Control<IAudienceForm, any>;
   watch: UseFormWatch<IAudienceForm>;
   setValue: UseFormSetValue<IAudienceForm>;
   resetField: UseFormResetField<IAudienceForm>;
   entityRenderer?: (data: IGetUser) => ReactNode;
-  selectedMemberIds?: string[];
+  selectedChannelIds?: string[];
 }
 
-const MembersBody: React.FC<IMembersBodyProps> = ({
+const ChannelsBody: React.FC<IChannelsBodyProps> = ({
   control,
   watch,
   setValue,
   resetField,
   entityRenderer,
-  selectedMemberIds = [],
+  selectedChannelIds = [],
 }) => {
   const formData = watch();
-  const debouncedSearchValue = useDebounce(formData.memberSearch || '', 500);
+  const debouncedSearchValue = useDebounce(formData.channelSearch || '', 500);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteUsers({
+    useInfiniteChannels({
       q: debouncedSearchValue,
-      department: [formData.department?.value || ''],
-      location: [formData.location?.value || ''],
+      privacy: [formData.privacy?.value || ''],
+      category: [formData.category?.value || ''],
     });
   const usersData = data?.pages
     .flatMap((page) => {
-      return page?.data?.result?.data.map((user: any) => {
+      return page?.data?.result?.data.map((channel: any) => {
         try {
-          return user;
+          return channel;
         } catch (e) {
-          console.log('Error', { user });
+          console.log('Error', { channel });
         }
       });
     })
-    .filter((user: IGetUser) => {
+    .filter((channel) => {
       if (formData.showSelectedMembers) {
-        return !!formData.users[user.id];
+        return !!formData.channels[channel.id];
       }
       return true;
     });
-  const { data: locations, isLoading: locationLoading } = useGetLocations('');
-  const { data: departments, isLoading: departmentLoading } =
-    useGetDepartments('');
+  const { data: privacy, isLoading: privacyLoading } = useGetLocations('');
+  const { data: category, isLoading: categoryLoading } = useGetDepartments('');
 
   useEffect(() => {
     if (formData.selectAll) {
@@ -81,22 +80,22 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
   }, [inView]);
 
   useEffect(() => {
-    if (selectedMemberIds.length) {
-      selectedMemberIds.forEach((id: string) => {
-        setValue(`users.${id}`, true);
+    if (selectedChannelIds.length) {
+      selectedChannelIds.forEach((id: string) => {
+        setValue(`channels.${id}`, true);
       });
     }
   }, []);
 
   const selectAll = () => {
-    Object.keys(formData.users).forEach((key) => {
-      setValue(`users.${key}`, true);
+    Object.keys(formData.channels).forEach((key) => {
+      setValue(`channels.${key}`, true);
     });
   };
 
   const deselectAll = () => {
-    Object.keys(formData.users).forEach((key) => {
-      setValue(`users.${key}`, false);
+    Object.keys(formData).forEach((key) => {
+      setValue(`channels.${key}`, false);
     });
   };
 
@@ -130,22 +129,18 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
           className="pb-4"
         />
         <div className="flex items-center justify-between">
-          <div className="flex items-center text-neutral-500 font-medium">
+          <div className="flex items-center">
             Quick filters:
             <Layout
               fields={[
                 {
                   type: FieldType.AsyncSingleSelect,
                   control,
-                  name: 'department',
-                  option: getDepartmentOptions(departments || []),
-                  loadOptions: (inputValue: string) =>
-                    getDepartments({ q: inputValue }).then(
-                      (departments: IDepartment[]) =>
-                        getDepartmentOptions(departments),
-                    ),
-                  placeholder: 'Department',
-                  isLoading: departmentLoading,
+                  name: 'privacy',
+                  option: [],
+                  // loadOptions: () => {},
+                  placeholder: 'Privacy',
+                  isLoading: privacyLoading,
                 },
               ]}
               className="ml-2"
@@ -155,21 +150,18 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
                 {
                   type: FieldType.AsyncSingleSelect,
                   control,
-                  name: 'location',
-                  placeholder: 'Location',
-                  option: getLocationOptions(locations || []),
-                  loadOptions: (inputValue: string) =>
-                    getLocations({ q: inputValue }).then(
-                      (locations: ILocation[]) => getLocationOptions(locations),
-                    ),
-                  isLoading: locationLoading,
+                  name: 'category',
+                  placeholder: 'Category',
+                  option: () => {},
+                  // loadOptions: () => {},
+                  isLoading: categoryLoading,
                 },
               ]}
               className="ml-2"
             />
           </div>
           <div
-            className="cursor-pointer text-neutral-500 font-medium hover:underline"
+            className="cursor-pointer"
             onClick={() => {
               resetField('department');
               resetField('location');
@@ -208,7 +200,7 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
             />
           </div>
           <div
-            className="cursor-pointer text-neutral-500 font-semibold hover:underline"
+            className="cursor-pointer"
             onClick={() => {
               setValue('selectAll', false);
               setValue('showSelectedMembers', false);
@@ -230,15 +222,13 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
                     fields={[
                       {
                         type: FieldType.Checkbox,
-                        name: `users.${user.id}`,
+                        name: `channels.${user.id}`,
                         control,
                         className: 'flex item-center mr-4',
                       },
                     ]}
                   />
-                  {(entityRenderer && entityRenderer(user)) || (
-                    <UserRow user={user} />
-                  )}
+                  {(entityRenderer && entityRenderer(user)) || user.fullName}
                 </div>
                 {index !== usersData.length - 1 && <Divider />}
               </>
@@ -251,4 +241,4 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
   );
 };
 
-export default MembersBody;
+export default ChannelsBody;

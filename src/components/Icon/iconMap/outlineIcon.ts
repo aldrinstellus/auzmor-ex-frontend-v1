@@ -86,6 +86,7 @@ import SvgSortByAcsOutline from '../components/SortByAcs/SortByAcsOutline';
 import SvgSortByDescOutline from '../components/SortByDesc/SortByDescOutline';
 import SvgClockOutline from '../components/Clock/ClockOutline';
 import SvgMicOutline from '../components/Mic/MicOutline';
+import SvgNoteFavouriteOutline from '../components/NoteFavourite/NoteFavouriteOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -96,18 +97,19 @@ export const outlineIcon = {
   arrowSwapOutline: SvgArrowSwapOutline,
   arrowUpOutline: SvgArrowUpOutline,
   brandingOutline: SvgBrandingOutline,
+  calendarOutline: SvgCalendarOutline,
   calendarOutlineTwo: SvgCalendarOutlineTwo,
   callOutline: SvgCallOutline,
   celebrateOutline: SvgCelebrateOutline,
   chartOutline: SvgChartOutline,
   clipboardOutline: SvgClipboardCloseOutline,
+  clockOutline: SvgClockOutline,
   closeCircleOutline: SvgCloseCircleOutline,
   closeOutline: SvgCloseOutline,
   collapseOutline: SvgCollapseOutline,
   commentOutline: SvgCommentOutline,
   connectionOutline: SvgConnectionFolderOutline,
   convertShapeOutline: SvgConvertShapeOutline,
-  calendarOutline: SvgCalendarOutline,
   copyLinkOutline: SvgCopyLinkOutline,
   copyOutline: SvgCopyOutline,
   crossCircleOutline: SvgCrossCircleOutline,
@@ -147,7 +149,9 @@ export const outlineIcon = {
   maleOutline: SvgMaleOutline,
   marketplaceOutline: SvgMarketplaceOutline,
   maximizeOutline: SvgMaximizeOutline,
+  micOutline: SvgMicOutline,
   moreOutline: SvgMoreOutline,
+  noteFavouriteOutline: SvgNoteFavouriteOutline,
   peopleOutline: SvgPeopleOutline,
   playOutline: SvgPlayOutline,
   profileOutline: SvgProfileOutline,
@@ -161,10 +165,10 @@ export const outlineIcon = {
   settingOutline: SvgSettingOutline,
   settingThreeOutline: SvgSettingThreeOutline,
   shareForwardOutline: SvgShareForwardOutline,
-  speakerOutline: SvgSpeakerOutline,
-  supportOutline: SvgSupportOutline,
   sortByAcs: SvgSortByAcsOutline,
   sortByDesc: SvgSortByDescOutline,
+  speakerOutline: SvgSpeakerOutline,
+  supportOutline: SvgSupportOutline,
   threeDotsOutline: SvgThreeDotsOutline,
   tickCircleOutline: SvgTickCircleOutline,
   trashOutline: SvgTrashOutline,
@@ -174,6 +178,4 @@ export const outlineIcon = {
   videoOutline: SvgVideoOutline,
   zoomInOutline: SvgZoomInOutline,
   zoomOutOutline: SvgZoomOutOutline,
-  clockOutline: SvgClockOutline,
-  micOutline: SvgMicOutline,
 };

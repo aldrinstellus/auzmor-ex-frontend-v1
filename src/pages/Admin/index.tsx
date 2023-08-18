@@ -4,7 +4,10 @@ import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import SSOSettings from 'components/SSOSettings';
 import SwitchToggle from 'components/SwitchToggle';
-// import { useUpdateLimitPostingControls } from 'queries/organization';
+import {
+  useOrganization,
+  useUpdateLimitGlobalPostingMutation,
+} from 'queries/organization';
 import React, { ReactNode, useState } from 'react';
 interface IAdminProps {}
 
@@ -19,7 +22,9 @@ interface ISetting {
 }
 
 const Admin: React.FC<IAdminProps> = () => {
-  // const mutation = useUpdateLimitPostingControls();
+  const updateLimitPostingControlsMutation =
+    useUpdateLimitGlobalPostingMutation();
+  const { data, isLoading } = useOrganization();
   const settings = [
     {
       label: 'General settings',
@@ -43,7 +48,16 @@ const Admin: React.FC<IAdminProps> = () => {
                   everyone, only to their Team(s) or permitted Channels.
                 </div>
               </div>
-              <SwitchToggle />
+              <SwitchToggle
+                onChange={(checked: boolean, setEnabled) =>
+                  updateLimitPostingControlsMutation.mutate(checked, {
+                    onError: () => setEnabled(!checked),
+                  })
+                }
+                defaultValue={
+                  !!data?.adminSettings?.postingControls.limitGlobalPosting
+                }
+              />
             </div>
           </div>
         </Collapse>
