@@ -33,21 +33,54 @@ const Body = React.forwardRef(
       setActiveFlow,
     } = useContext(CreatePostContext);
     const { user } = useAuth();
+    const updateContext = () => {
+      setEditorValue({
+        text: (ref as React.RefObject<ReactQuill>)
+          .current!.makeUnprivilegedEditor(
+            (ref as React.RefObject<ReactQuill>).current!.getEditor(),
+          )
+          .getText(),
+        html: (ref as React.RefObject<ReactQuill>).current
+          ?.makeUnprivilegedEditor(
+            (ref as React.RefObject<ReactQuill>)!.current!.getEditor(),
+          )
+          .getHTML(),
+        json: (ref as React.RefObject<ReactQuill>).current
+          ?.makeUnprivilegedEditor(
+            (ref as React.RefObject<ReactQuill>)!.current!.getEditor(),
+          )
+          .getContents(),
+      });
+    };
     return (
       <div className="text-sm text-neutral-900">
         <div className="max-h-[75vh] overflow-y-auto">
-          <Actor
-            visibility="Everyone"
-            contentMode={CREATE_POST}
-            dataTestId={`${dataTestId}-creatorname`}
-            disabled={true}
-            createdBy={
-              data?.createdBy || {
-                fullName: user?.name,
-                profileImage: { id: '', original: user?.profileImage || '' },
+          <div className="flex justify-between items-center">
+            <Actor
+              contentMode={CREATE_POST}
+              dataTestId={`${dataTestId}-creatorname`}
+              disabled={true}
+              createdBy={
+                data?.createdBy || {
+                  fullName: user?.name,
+                  profileImage: { id: '', original: user?.profileImage || '' },
+                }
               }
-            }
-          />
+            />
+            <div
+              className="flex items-center"
+              data-testid={`feed-createpost-visibility`}
+              onClick={() => {
+                updateContext();
+                setActiveFlow(CreatePostFlow.Audience);
+              }}
+            >
+              <div>
+                <Icon name="globalOutline" size={16} />
+              </div>
+              <div>Everyone</div>
+            </div>
+          </div>
           {schedule && (
             <div className="px-3 py-2 bg-primary-50 flex justify-between mx-4 mb-4">
               <div className="flex">
@@ -66,25 +99,7 @@ const Body = React.forwardRef(
                     name="edit"
                     size={16}
                     onClick={() => {
-                      setEditorValue({
-                        text: (ref as React.RefObject<ReactQuill>)
-                          .current!.makeUnprivilegedEditor(
-                            (
-                              ref as React.RefObject<ReactQuill>
-                            ).current!.getEditor(),
-                          )
-                          .getText(),
-                        html: (ref as React.RefObject<ReactQuill>).current
-                          ?.makeUnprivilegedEditor(
-                            (ref as React.RefObject<ReactQuill>)!.current!.getEditor(),
-                          )
-                          .getHTML(),
-                        json: (ref as React.RefObject<ReactQuill>).current
-                          ?.makeUnprivilegedEditor(
-                            (ref as React.RefObject<ReactQuill>)!.current!.getEditor(),
-                          )
-                          .getContents(),
-                      });
+                      updateContext();
                       setActiveFlow(CreatePostFlow.SchedulePost);
                     }}
                     dataTestId="createpost-scheduledpost-editicon"

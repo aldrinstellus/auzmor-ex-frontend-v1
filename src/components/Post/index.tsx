@@ -195,7 +195,6 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
         <AcknowledgementBanner data={post} />
         <div className="flex justify-between items-center">
           <Actor
-            visibility="Everyone"
             contentMode={VIEW_POST}
             createdTime={humanizeTime(post.createdAt!)}
             createdBy={post?.createdBy}

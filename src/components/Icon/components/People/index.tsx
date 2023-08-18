@@ -7,6 +7,7 @@ type IconProps = {
   size?: number;
   className?: string;
   hover?: boolean;
+  hoveredStroke?: string;
   disabled?: boolean;
   onClick?: () => void;
   isActive?: boolean;
@@ -18,6 +19,7 @@ const PeopleIcon: React.FC<IconProps> = ({
   className = '',
   disabled,
   isActive,
+  hoveredStroke,
   ...props
 }) => {
   return (

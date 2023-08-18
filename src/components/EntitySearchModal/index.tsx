@@ -1,9 +1,9 @@
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import useModal from 'hooks/useModal';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import Footer from './components/Footer';
-import EntitySearchBodyModal from './components/EntitySearchModalBody';
+import EntitySearchModalBody from './components/EntitySearchModalBody';
 import { useForm } from 'react-hook-form';
 import { IGetUser } from 'queries/users';
 
@@ -17,17 +17,25 @@ interface IEntitySearchModalProps {
   title?: string;
   submitButtonText?: string;
   entityType?: EntitySearchModalType;
+  selectedMemberIds?: string[];
   entityRenderer?: (data: IGetUser) => ReactNode;
-  onSubmit?: () => void;
+  onSubmit?: (data: string[]) => void;
   onCancel?: () => void;
 }
 
-export interface IMemberForm {
+export interface IAudienceForm {
   memberSearch: string;
+  teamSearch: string;
+  channelSearch: string;
   department: { value: string; label: string };
   location: { value: string; label: string };
   selectAll: boolean;
   showSelectedMembers: boolean;
+  privacy: { value: string; label: string };
+  category: { value: string; label: string };
+  teams: any;
+  channels: any;
+  users: any;
 }
 
 const EntitySearchModal: React.FC<IEntitySearchModalProps> = ({
@@ -37,26 +45,27 @@ const EntitySearchModal: React.FC<IEntitySearchModalProps> = ({
   onCancel = () => {},
   submitButtonText = 'Next',
   entityRenderer = (data: any) => <></>,
+  selectedMemberIds,
 }) => {
   const [open, openModal, closeModal] = useModal(true);
-  const { control, watch, handleSubmit, setValue, resetField } =
-    useForm<IMemberForm>({
-      defaultValues: {
-        showSelectedMembers: false,
-        selectAll: false,
-      },
-    });
+  const { control, watch, handleSubmit, setValue, resetField } = useForm<any>({
+    defaultValues: {
+      showSelectedMembers: false,
+      selectAll: false,
+    },
+  });
   return (
     <Modal open={open} closeModal={closeModal}>
       <form>
         <Header
           title={title || ''}
-          onBackIconClick={() => console.log('back clicked')}
+          onBackIconClick={() => {}}
           onClose={closeModal}
         />
-        <EntitySearchBodyModal
+        <EntitySearchModalBody
           entityType={EntitySearchModalType.Member}
           control={control}
+          selectedMemberIds={selectedMemberIds}
           watch={watch}
           setValue={setValue}
           resetField={resetField}

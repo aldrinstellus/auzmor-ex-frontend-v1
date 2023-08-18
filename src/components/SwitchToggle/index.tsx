@@ -1,23 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Switch } from '@headlessui/react';
 
 type SwitchToggleProps = {
+  defaultValue?: boolean;
   color?: string;
   disabled?: boolean;
-  onChange?: (checked: boolean) => void;
+  onChange?: (state: boolean, setEnabled: (state: boolean) => void) => void;
 };
 
 const SwitchToggle: React.FC<SwitchToggleProps> = ({
+  defaultValue = false,
   color = 'bg-primary-500',
   disabled = false,
   onChange = () => {},
 }) => {
-  const [enabled, setEnabled] = useState(false);
+  const [enabled, setEnabled] = useState(defaultValue);
+  useEffect(() => {
+    setEnabled(defaultValue);
+  }, []);
   return (
     <Switch
       checked={enabled}
       onChange={(checked: boolean) => {
-        onChange(checked);
+        onChange(checked, setEnabled);
         setEnabled(checked);
       }}
       className={`${

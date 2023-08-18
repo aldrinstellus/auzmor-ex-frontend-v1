@@ -42,6 +42,7 @@ import { produce } from 'immer';
 import CreatePoll from './CreatePoll';
 import SchedulePost from './SchedulePost';
 import moment from 'moment';
+import Audience from './Audience';
 
 export interface IPostMenu {
   id: number;
@@ -84,6 +85,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     setShowFullscreenVideo,
     schedule,
     setSchedule,
+    audience,
+    setAudience,
   } = useContext(CreatePostContext);
 
   const mediaRef = useRef<IMedia[]>([]);
@@ -121,6 +124,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           time: `${moment(new Date(data.schedule.dateTime)).format('h:mm a')}`,
         });
       }
+      setAudience(data?.audience || []);
     }
   }, []);
 
@@ -329,7 +333,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         files: fileIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],
-        audience: [],
+        audience,
         isAnnouncement: !!announcement,
         announcement: {
           end: announcement?.value || '',
@@ -377,7 +381,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         files: sortedIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],
-        audience: [],
+        audience,
         isAnnouncement: !!announcement,
         announcement: {
           end: announcement?.value || '',
@@ -459,6 +463,14 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         )}
         {activeFlow === CreatePostFlow.SchedulePost && (
           <SchedulePost
+            closeModal={() => {
+              closeModal();
+              clearPostContext();
+            }}
+          />
+        )}
+        {activeFlow === CreatePostFlow.Audience && (
+          <Audience
             closeModal={() => {
               closeModal();
               clearPostContext();
