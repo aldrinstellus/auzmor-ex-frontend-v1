@@ -115,12 +115,17 @@ const Footer: React.FC<IFooterProps> = ({
           <Icon
             name="magicStarFilled"
             size={14}
+            fill="#000000"
             dataTestId="feed-createpost-shoutout"
           />
         ),
         menuItems: [],
         divider: <Divider variant={DividerVariant.Vertical} />,
-        disabled: true,
+        disabled: false,
+        onClick: () => {
+          updateContext();
+          setActiveFlow(CreatePostFlow.CreateShoutout);
+        },
       },
       {
         id: 3,

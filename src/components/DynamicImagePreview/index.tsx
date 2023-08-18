@@ -1,28 +1,93 @@
-import React, { useRef, useState } from 'react';
-import { getBlobUrl } from 'utils/misc';
+import React, { useEffect, useRef, useState } from 'react';
 import ImageUploader from './components/ImageUploader';
 import ImagePicker from './components/ImagePicker';
+import ImagePreview from './components/ImagePreview';
+import { toBlob } from 'html-to-image';
 
-const DynamicImagePreview = () => {
+interface IDynamicImagePreview {
+  onSubmit: (param: any) => void;
+  setIsFileAdded: (flag: boolean) => void;
+  triggerSubmit: boolean;
+  users?: [];
+}
+
+const DynamicImagePreview: React.FC<IDynamicImagePreview> = ({
+  onSubmit,
+  triggerSubmit,
+  setIsFileAdded,
+  users,
+}) => {
+  const templateImageRef = useRef<HTMLInputElement>(null);
+  const imageUploaderRef = useRef<HTMLInputElement>(null);
   const [imageFile, setImageFile] = useState<any>(null);
   const [selectedTemplateImage, setSelectedTemplateImage] = useState<any>(null);
+
+  const getFile = async () => {
+    if (selectedTemplateImage && templateImageRef.current) {
+      const newFile = await toBlob(templateImageRef.current, {
+        canvasHeight: 580,
+        canvasWidth: 1090,
+      });
+      let data = null;
+      if (newFile) {
+        data = [
+          new File([newFile], 'kudos.png', {
+            type: newFile.type,
+          }),
+        ];
+      }
+      onSubmit(data && data[0]);
+      return;
+    }
+    onSubmit(imageFile);
+    return;
+  };
+
+  const handleSelectTemplate = (template: any) => {
+    setImageFile(null);
+    setSelectedTemplateImage(template);
+  };
+
+  useEffect(() => {
+    if (triggerSubmit) {
+      getFile();
+    }
+  }, [triggerSubmit]);
+
+  useEffect(() => {
+    if (selectedTemplateImage || imageFile) {
+      setIsFileAdded(true);
+    } else {
+      setIsFileAdded(false);
+    }
+  }, [selectedTemplateImage, imageFile]);
+
   return (
     <div>
-      <div className="bg-blue-50 max-h-[210px] mb-6">
-        {imageFile ? (
-          <img
-            src={getBlobUrl(imageFile)}
-            className="object-contain w-full h-full max-h-[210px]"
+      <div className={`bg-blue-50 max-h-[222px] min-h-[222px] mb-6`}>
+        {(imageFile || selectedTemplateImage) && (
+          <ImagePreview
+            templateImageRef={templateImageRef}
+            imageUploaderRef={imageUploaderRef}
+            selectedTemplate={selectedTemplateImage}
+            imageFile={imageFile}
+            onRemove={() => {
+              setImageFile(null);
+              setSelectedTemplateImage(null);
+            }}
+            users={users || []}
           />
-        ) : (
-          <ImageUploader setImageFile={setImageFile} />
         )}
+        <ImageUploader
+          isImageAdded={selectedTemplateImage || imageFile}
+          setImageFile={setImageFile}
+          imageUploaderRef={imageUploaderRef}
+        />
       </div>
       {/* Template Image Picker */}
       <ImagePicker
-        onSelect={setSelectedTemplateImage}
+        onSelect={handleSelectTemplate}
         selectedTemplate={selectedTemplateImage}
-        setImageFile={setImageFile}
       />
     </div>
   );

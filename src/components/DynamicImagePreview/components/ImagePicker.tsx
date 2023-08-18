@@ -65,14 +65,12 @@ const templateImages = [
 
 export interface IImagePickerProps {
   onSelect: (file: any) => void;
-  setImageFile: (file: any) => void;
   selectedTemplate?: any;
 }
 
 const ImagePicker: React.FC<IImagePickerProps> = ({
   selectedTemplate,
   onSelect,
-  setImageFile,
 }) => {
   const imageRef = useRef<HTMLInputElement>(null);
   const handleSelectTemplate = (item: any) => {
@@ -82,26 +80,9 @@ const ImagePicker: React.FC<IImagePickerProps> = ({
       onSelect(item);
     }
   };
-  const generateBlob = async () => {
-    if (imageRef.current) {
-      const newFile = await toBlob(imageRef.current);
-      if (newFile) {
-        const data = [
-          new File([newFile], 'kudos.png', {
-            type: newFile.type,
-          }),
-        ];
-        setImageFile(data[0]);
-      }
-    }
-  };
-
-  useEffect(() => {
-    generateBlob();
-  }, [selectedTemplate, imageRef.current]);
 
   return (
-    <>
+    <div className="ml-2 mb-2">
       <div className="flex gap-4 flex-wrap">
         {templateImages.map((item) => (
           <div
@@ -127,28 +108,7 @@ const ImagePicker: React.FC<IImagePickerProps> = ({
           </div>
         ))}
       </div>
-      {selectedTemplate && (
-        <div className="absolute -top-[9999px] -left-[9999px] w-full h-full">
-          <div
-            ref={imageRef}
-            className={`${selectedTemplate.bgColor} aspect-[2.5/1] max-h-[270px]`}
-          >
-            <div
-              className={`${selectedTemplate.bgColor} flex flex-col justify-center items-center p-2`}
-            >
-              <div className="mt-8">{selectedTemplate.label}</div>
-              <div className="text-lg font-bold text-center">
-                Alicia, Akash and Suresh
-              </div>
-              <img
-                src={selectedTemplate.image}
-                className="object-contain w-full h-full max-h-[200px]"
-              />
-            </div>
-          </div>
-        </div>
-      )}
-    </>
+    </div>
   );
 };
 

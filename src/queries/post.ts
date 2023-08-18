@@ -126,6 +126,7 @@ export interface IPostPayload {
   files?: string[] | IMedia[];
   type: string;
   audience: IAudience[];
+  shoutoutRecipients?: string[];
   isAnnouncement: boolean;
   announcement: {
     end: string;

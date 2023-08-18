@@ -43,6 +43,7 @@ import CreatePoll from './CreatePoll';
 import SchedulePost from './SchedulePost';
 import moment from 'moment';
 import Audience from './Audience';
+import CreateShoutout from './Shoutout';
 
 export interface IPostMenu {
   id: number;
@@ -87,6 +88,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     setSchedule,
     audience,
     setAudience,
+    shoutoutUserIds,
+    setShoutoutUserIds,
   } = useContext(CreatePostContext);
 
   const mediaRef = useRef<IMedia[]>([]);
@@ -317,6 +320,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         }
       },
     );
+    console.log(mentionList);
 
     const previewUrl = isPreviewRemoved
       ? []
@@ -334,6 +338,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         mentions: mentionList || [],
         hashtags: hashtagList || [],
         audience,
+        shoutoutRecipients: shoutoutUserIds || [],
         isAnnouncement: !!announcement,
         announcement: {
           end: announcement?.value || '',
@@ -455,6 +460,14 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         )}
         {activeFlow === CreatePostFlow.CreatePoll && (
           <CreatePoll
+            closeModal={() => {
+              closeModal();
+              clearPostContext();
+            }}
+          />
+        )}
+        {activeFlow === CreatePostFlow.CreateShoutout && (
+          <CreateShoutout
             closeModal={() => {
               closeModal();
               clearPostContext();

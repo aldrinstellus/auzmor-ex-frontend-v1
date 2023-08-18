@@ -1,5 +1,4 @@
 import React, {
-  LegacyRef,
   ReactNode,
   createContext,
   useRef,
@@ -21,6 +20,7 @@ export enum CreatePostFlow {
   EditPoll = 'EDIT_POLL',
   SchedulePost = 'SCHEDULE_POST',
   Audience = 'AUDIENCE',
+  CreateShoutout = 'CREATE_SHOUTOUT',
 }
 
 export interface IAnnouncement {
@@ -91,6 +91,8 @@ export interface ICreatePostContext {
   setSchedule: (schedule: ISchedule | null) => void;
   audience: IAudience[];
   setAudience: (audience: IAudience[]) => void;
+  shoutoutUserIds: string[];
+  setShoutoutUserIds: (ids: string[]) => void;
 }
 
 export enum MediaValidationError {
@@ -189,6 +191,8 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setSchedule: () => {},
   audience: [],
   setAudience: () => {},
+  shoutoutUserIds: [],
+  setShoutoutUserIds: () => {},
 });
 
 const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
@@ -222,6 +226,7 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
   const [poll, setPoll] = useState<IPoll | null>(null);
   const [schedule, setSchedule] = useState<ISchedule | null>(null);
   const [audience, setAudience] = useState<IAudience[]>([]);
+  const [shoutoutUserIds, setShoutoutUserIds] = useState<string[]>([]);
 
   const setUploads = (uploads: File[], isCoverImage?: boolean) => {
     if (!isCoverImage) {
@@ -313,6 +318,7 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     setPoll(null);
     setSchedule(null);
     setAudience([]);
+    setShoutoutUserIds([]);
   };
 
   const updateCoverImageMap = (map: ICoverImageMap) => {
@@ -428,6 +434,8 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         setSchedule,
         audience,
         setAudience,
+        shoutoutUserIds,
+        setShoutoutUserIds,
       }}
     >
       {children}
