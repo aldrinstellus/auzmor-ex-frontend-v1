@@ -91,8 +91,8 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
       title: 'Everyone',
       subTitle: 'Anyone who is a part of this organisation can see this post.',
       onClick: () => {
-        setAudienceFlow(AudienceFlow.UserSelect);
-        // setIsEveryoneSelected(!isEveryoneSelected);
+        // setAudienceFlow(AudienceFlow.UserSelect);
+        setIsEveryoneSelected(!isEveryoneSelected);
       },
       isHidden:
         data?.adminSettings?.postingControls.limitGlobalPosting && !isAdmin,
@@ -185,7 +185,7 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
     case AudienceFlow.UserSelect: {
       return (
         <EntitySearchModalBody
-          entityType={EntitySearchModalType.Member}
+          entityType={EntitySearchModalType.User}
           control={control}
           watch={watch}
           setValue={setValue}
