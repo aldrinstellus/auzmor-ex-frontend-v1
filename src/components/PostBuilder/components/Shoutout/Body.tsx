@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 import {
   Control,
   UseFormResetField,
@@ -42,7 +43,11 @@ const Body: React.FC<ShoutoutBodyProps> = ({
   users,
 }) => {
   return (
-    <div className="max-h-[510px] overflow-y-auto">
+    <div
+      className={clsx({
+        'max-h-[510px] overflow-y-auto': step === SHOUTOUT_STEPS.ImageSelect,
+      })}
+    >
       {step === SHOUTOUT_STEPS.UserSelect && (
         <EntitySearchModalBody
           entityType={EntitySearchModalType.User}

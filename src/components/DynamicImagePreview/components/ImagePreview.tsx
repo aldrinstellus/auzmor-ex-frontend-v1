@@ -7,7 +7,7 @@ interface IImagePreviewProps {
   imageFile: any;
   templateImageRef: React.RefObject<HTMLInputElement>;
   imageUploaderRef: React.RefObject<HTMLInputElement>;
-  users: [];
+  users: any[];
   onRemove: () => void;
 }
 
@@ -19,6 +19,22 @@ const ImagePreview: React.FC<IImagePreviewProps> = ({
   users,
   onRemove,
 }) => {
+  const formatUserList = () => {
+    const count = users.length;
+    if (count === 1) {
+      return users[0].name;
+    } else if (count === 2) {
+      return `${users[0].name} and ${users[1].name}`;
+    } else if (count === 3) {
+      return `${users[0].name}, ${users[1].name} and ${users[2].name}`;
+    } else if (count > 3) {
+      return `${users[0].name}, ${users[1].name}, ${users[2].name} and ${
+        count - 3
+      } others`;
+    }
+    return '';
+  };
+
   return (
     <div className="relative">
       <div className="absolute top-1 right-1 flex items-center gap-1">
@@ -30,7 +46,6 @@ const ImagePreview: React.FC<IImagePreviewProps> = ({
             size={16}
             className="p-2 bg-white rounded cursor-pointer"
             onClick={() => {
-              console.log(imageUploaderRef?.current);
               imageUploaderRef?.current?.click();
             }}
           />
@@ -60,9 +75,7 @@ const ImagePreview: React.FC<IImagePreviewProps> = ({
           >
             <div className="mt-4">{selectedTemplate.label}</div>
             <div className="text-lg font-bold text-center">
-              {users.slice(0, 2).map((user: any) => (
-                <span key={user.id}>{user.name}</span>
-              ))}
+              {formatUserList()}
             </div>
             <img
               src={selectedTemplate.image}
