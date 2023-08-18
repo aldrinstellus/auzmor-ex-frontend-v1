@@ -112,7 +112,6 @@ export const getAllUser = ({
 }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
   if (pageParam === null) {
     if (typeof queryKey[1] === 'object') {
-      console.log(queryKey);
       if (!queryKey[1]?.status || queryKey[1]?.status === 'ALL') {
         return apiService.get('/users', {
           q: queryKey[1]?.q,

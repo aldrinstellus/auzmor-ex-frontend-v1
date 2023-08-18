@@ -75,18 +75,19 @@ import SvgRepostFilled from '../components/Repost/RepostFilled';
 import SvgCalendarFilled from '../components/Calendar/CalendarFilled';
 import SvgMicFilled from '../components/Mic/MicFilled';
 import SvgGearFilled from '../components/Gear/GearFilled';
+import SvgNoteFavouriteFilled from '../components/NoteFavourite/NoteFavouriteFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
   addFilled: SvgAddFilled,
   arrowLeftFilled: SvgArrowLeftFilled,
   arrowRightFilled: SvgArrowRightFilled,
+  calendarFilled: SvgCalendarFilled,
   calendarFilledTwo: SvgCalendarFilledTwo,
   carouselCloseFilled: SvgCarouselCloseFilled,
   carouselLeftFilled: SvgCarouselLeftFilled,
   carouselRightFilled: SvgCarouselRightFilled,
   celebrateFilled: SvgCelebrateFilled,
-  calendarFilled: SvgCalendarFilled,
   chartFilled: SvgChartFilled,
   clipboardFilled: SvgClipboardCloseFilled,
   clockFilled: SvgClockFilled,
@@ -116,6 +117,7 @@ export const filledIcon = {
   focusFilled: SvgFocusFilled,
   fullScreenFilled: SvgFullScreenFilled,
   funnyFilled: SvgFunnyFilled,
+  gearFilled: SvgGearFilled,
   globalFilled: SvgGlobalFilled,
   groupFilled: SvgGroupFilled,
   hashtagFilled: SvgOrangeHashtagFilled,
@@ -131,7 +133,9 @@ export const filledIcon = {
   loveFilled: SvgLoveFilled,
   magicStarFilled: SvgMagicStarFilled,
   maximizeFilled: SvgMaximizeFilled,
+  micFilled: SvgMicFilled,
   moreFilled: SvgMoreFilled,
+  noteFavouriteFilled: SvgNoteFavouriteFilled,
   peopleFilled: SvgPeopleFilled,
   playFilled: SvgPlayFilled,
   profileFilled: SvgProfileFilled,
@@ -152,6 +156,4 @@ export const filledIcon = {
   videoFilled: SvgVideoFilled,
   zoomInFilled: SvgZoomInFilled,
   zoomOutFilled: SvgZoomOutFilled,
-  micFilled: SvgMicFilled,
-  gearFilled: SvgGearFilled,
 };

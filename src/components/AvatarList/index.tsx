@@ -4,7 +4,7 @@ import React from 'react';
 
 export type AvatarListProps = {
   users: any;
-  displayCount?: number;
+  moreCount?: number;
   size?: number;
   className?: string;
   onClick?: () => null;
@@ -19,7 +19,7 @@ interface IUser {
 
 const AvatarList: React.FC<AvatarListProps> = ({
   users,
-  displayCount = 0,
+  moreCount = 0,
   className = '',
   size = 48,
   onClick = () => {},
@@ -33,7 +33,7 @@ const AvatarList: React.FC<AvatarListProps> = ({
           return (
             <Avatar
               size={size}
-              key={`${user.name}${user.image}`}
+              key={`${user.id}`}
               name={user?.name}
               image={user?.image}
               active={false}
@@ -44,7 +44,7 @@ const AvatarList: React.FC<AvatarListProps> = ({
       {users.length > 2 && (
         <Avatar
           size={size}
-          name={`+${users.length - displayCount}`}
+          name={`+${moreCount - 2}`}
           onClick={onClick}
           active={false}
         />

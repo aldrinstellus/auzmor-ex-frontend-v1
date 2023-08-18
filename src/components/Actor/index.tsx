@@ -9,7 +9,6 @@ import Icon from 'components/Icon';
 import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
 
 type ActorProps = {
-  visibility: string;
   contentMode?: string;
   createdTime?: string;
   createdBy?: ICreatedBy;
@@ -18,7 +17,6 @@ type ActorProps = {
 };
 
 const Actor: React.FC<ActorProps> = ({
-  visibility,
   contentMode,
   createdTime,
   createdBy,
@@ -29,20 +27,6 @@ const Actor: React.FC<ActorProps> = ({
 
   const actorStyles = clsx({
     'flex justify-between items-center mx-6 mt-6 mb-4': true,
-  });
-
-  const postVisibilityStylesContainer = clsx(
-    {
-      'text-neutral-900 rounded-17xl hover:rounded-17xl': disabled,
-    },
-    {
-      'cursor-pointer': !disabled,
-    },
-  );
-
-  const postVisibilityStyles = clsx({
-    'flex justify-between items-center border border-neutral-300 rounded-17xl py-1.5 px-3':
-      true,
   });
 
   const iconStyle = clsx({
@@ -120,19 +104,6 @@ const Actor: React.FC<ActorProps> = ({
             </div>
           ) : null}
         </div>
-      </div>
-      <div className={postVisibilityStylesContainer}>
-        {contentMode === CREATE_POST && (
-          <div
-            className={postVisibilityStyles}
-            data-testid={`feed-createpost-visibility-${visibility.toLowerCase()}`}
-          >
-            <div className={iconStyle}>
-              <Icon name="globalOutline" size={16} />
-            </div>
-            <div className={visibilityStyle}>{visibility}</div>
-          </div>
-        )}
       </div>
     </div>
   );

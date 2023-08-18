@@ -1,7 +1,6 @@
 import React from 'react';
-import useHover from 'hooks/useHover';
-import { default as PeopleFilled } from './PeopleFilled';
-import { default as PeopleOutline } from './PeopleOutline';
+import { default as NoteFavouriteFilled } from './NoteFavouriteFilled';
+import { default as NoteFavouriteOutline } from './NoteFavouriteOutline';
 
 type IconProps = {
   size?: number;
@@ -13,7 +12,7 @@ type IconProps = {
   isActive?: boolean;
 };
 
-const PeopleIcon: React.FC<IconProps> = ({
+const NoteFavouriteIcon: React.FC<IconProps> = ({
   hover,
   onClick,
   className = '',
@@ -25,12 +24,12 @@ const PeopleIcon: React.FC<IconProps> = ({
   return (
     <div onClick={onClick} className={className}>
       {!disabled && (hover || isActive) ? (
-        <PeopleFilled {...props} />
+        <NoteFavouriteFilled {...props} />
       ) : (
-        <PeopleOutline {...props} />
+        <NoteFavouriteOutline {...props} />
       )}
     </div>
   );
 };
 
-export default PeopleIcon;
+export default NoteFavouriteIcon;

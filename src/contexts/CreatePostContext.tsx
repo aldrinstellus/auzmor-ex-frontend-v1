@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { DeltaStatic } from 'quill';
 import { getBlobUrl, getMediaObj } from 'utils/misc';
+import { IAudience } from 'queries/post';
 
 export interface ICreatePostProviderProps {
   children?: ReactNode;
@@ -19,6 +20,7 @@ export enum CreatePostFlow {
   CreatePoll = 'CREATE_POLL',
   EditPoll = 'EDIT_POLL',
   SchedulePost = 'SCHEDULE_POST',
+  Audience = 'AUDIENCE',
 }
 
 export interface IAnnouncement {
@@ -87,6 +89,8 @@ export interface ICreatePostContext {
   setPoll: (pollContext: IPoll | null) => void;
   schedule: ISchedule | null;
   setSchedule: (schedule: ISchedule | null) => void;
+  audience: IAudience[];
+  setAudience: (audience: IAudience[]) => void;
 }
 
 export enum MediaValidationError {
@@ -183,6 +187,8 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setPoll: () => {},
   schedule: null,
   setSchedule: () => {},
+  audience: [],
+  setAudience: () => {},
 });
 
 const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
@@ -215,6 +221,7 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
   const [mediaOpenIndex, setMediaOpenIndex] = useState<number>(-1);
   const [poll, setPoll] = useState<IPoll | null>(null);
   const [schedule, setSchedule] = useState<ISchedule | null>(null);
+  const [audience, setAudience] = useState<IAudience[]>([]);
 
   const setUploads = (uploads: File[], isCoverImage?: boolean) => {
     if (!isCoverImage) {
@@ -305,6 +312,7 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     setMediaValidationErrors([]);
     setPoll(null);
     setSchedule(null);
+    setAudience([]);
   };
 
   const updateCoverImageMap = (map: ICoverImageMap) => {
@@ -418,6 +426,8 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         setPoll,
         schedule,
         setSchedule,
+        audience,
+        setAudience,
       }}
     >
       {children}
