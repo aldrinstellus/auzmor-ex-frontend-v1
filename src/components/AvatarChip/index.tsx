@@ -10,14 +10,20 @@ export interface IAvatarUser {
   workLocation?: string;
   designation?: string;
   userId: string;
+  email?: string;
 }
 
 interface IAvatarChipProps {
   user: IAvatarUser;
   className?: string;
+  size?: number;
 }
 
-const AvatarChip: React.FC<IAvatarChipProps> = ({ className, user }) => {
+const AvatarChip: React.FC<IAvatarChipProps> = ({
+  className,
+  user,
+  size = 16,
+}) => {
   return (
     <div
       className={`flex items-center w-fit gap-1 rounded-[24px] border-1 border-neutral-200 bg-neutral-100
@@ -26,7 +32,7 @@ const AvatarChip: React.FC<IAvatarChipProps> = ({ className, user }) => {
       <Avatar
         name={getFullName(user)}
         image={getProfileImage(user)}
-        size={16}
+        size={size}
       />
       <span>{getFullName(user)}</span>
     </div>
