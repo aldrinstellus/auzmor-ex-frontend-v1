@@ -26,8 +26,8 @@ interface ShoutoutBodyProps {
   watch: UseFormWatch<IAudienceForm>;
   setValue: UseFormSetValue<IAudienceForm>;
   resetField: UseFormResetField<IAudienceForm>;
-  selectedUserIds: [];
-  users: [];
+  selectedUserIds: string[];
+  users: any[];
 }
 
 const Body: React.FC<ShoutoutBodyProps> = ({

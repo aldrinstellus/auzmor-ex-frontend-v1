@@ -12,16 +12,18 @@ import Toolbar from '../RichTextEditor/toolbar';
 import Icon from 'components/Icon';
 import moment from 'moment';
 import { useOrganization } from 'queries/organization';
+import { PostBuilderMode } from 'components/PostBuilder';
 
 export interface IBodyProps {
   data?: IPost;
   dataTestId?: string;
   quillRef: React.RefObject<ReactQuill>;
+  mode: PostBuilderMode;
 }
 
 const Body = React.forwardRef(
   (
-    { data, dataTestId, quillRef }: IBodyProps,
+    { data, dataTestId, quillRef, mode }: IBodyProps,
     ref: ForwardedRef<ReactQuill>,
   ) => {
     const {
@@ -126,6 +128,7 @@ const Body = React.forwardRef(
               data?.content?.editor || (editorValue.json as DeltaStatic)
             }
             ref={ref}
+            mode={mode}
             renderToolbar={(isCharLimit: boolean) => {
               return (
                 <Toolbar

@@ -7,6 +7,7 @@ import {
   CreatePostContext,
   CreatePostFlow,
   IEditorValue,
+  POST_TYPE,
 } from 'contexts/CreatePostContext';
 import useRole from 'hooks/useRole';
 import { DeltaStatic } from 'quill';
@@ -38,6 +39,7 @@ const Footer: React.FC<IFooterProps> = ({
     isPreviewRemoved,
     previewUrl,
     schedule,
+    postType,
   } = useContext(CreatePostContext);
 
   const updateContext = () => {
@@ -54,23 +56,25 @@ const Footer: React.FC<IFooterProps> = ({
     });
   };
 
-  const isMediaDisabled = operatorXOR(isPreviewRemoved, !!previewUrl);
+  const isMediaDisabled =
+    operatorXOR(isPreviewRemoved, !!previewUrl) ||
+    !!(postType && postType !== POST_TYPE.Media);
+  const isShoutoutDisabled = postType && postType !== POST_TYPE.Shoutout;
+  const isPollDisabled = postType && postType !== POST_TYPE.Poll;
+
   const postMenuItems = useMemo(
     () => [
       {
         id: 1,
         label: 'Media',
-        icon: isMediaDisabled ? (
+        icon: (
           <Icon
             name="imageFilled"
-            fill="#737373"
-            size={14}
-            dataTestId="feed-createpost-media"
-          />
-        ) : (
-          <Icon
-            name="imageFilled"
-            fill="#000000"
+            fill={
+              isMediaDisabled
+                ? twConfig.theme.colors.neutral[200]
+                : twConfig.theme.colors['black-white'].black
+            }
             size={14}
             dataTestId="feed-createpost-media"
           />
@@ -115,13 +119,17 @@ const Footer: React.FC<IFooterProps> = ({
           <Icon
             name="magicStarFilled"
             size={14}
-            fill="#000000"
+            fill={
+              isShoutoutDisabled
+                ? twConfig.theme.colors.neutral[200]
+                : twConfig.theme.colors['black-white'].black
+            }
             dataTestId="feed-createpost-shoutout"
           />
         ),
         menuItems: [],
         divider: <Divider variant={DividerVariant.Vertical} />,
-        disabled: false,
+        disabled: isShoutoutDisabled,
         onClick: () => {
           updateContext();
           setActiveFlow(CreatePostFlow.CreateShoutout);
@@ -135,6 +143,7 @@ const Footer: React.FC<IFooterProps> = ({
             name="calendarFilledTwo"
             size={14}
             dataTestId="feed-createpost-events"
+            fill={twConfig.theme.colors.neutral[200]}
           />
         ),
         menuItems: [],
@@ -149,11 +158,16 @@ const Footer: React.FC<IFooterProps> = ({
             name="chartFilled"
             size={14}
             dataTestId="feed-createpost-polls"
-            fill="#000000"
+            fill={
+              isPollDisabled
+                ? twConfig.theme.colors.neutral[200]
+                : twConfig.theme.colors['black-white'].black
+            }
           />
         ),
         menuItems: [],
         hidden: false,
+        disabled: isPollDisabled,
         onClick: () => {
           updateContext();
           setActiveFlow(CreatePostFlow.CreatePoll);
@@ -192,7 +206,13 @@ const Footer: React.FC<IFooterProps> = ({
         ],
       },
     ],
-    [isPreviewRemoved, previewUrl],
+    [
+      isPreviewRemoved,
+      previewUrl,
+      isMediaDisabled,
+      isPollDisabled,
+      isShoutoutDisabled,
+    ],
   );
 
   return (
@@ -204,7 +224,11 @@ const Footer: React.FC<IFooterProps> = ({
               <div
                 key={postMenuItem.id}
                 className="flex mr-4 items-center"
-                onClick={postMenuItem?.onClick}
+                onClick={() => {
+                  if (!postMenuItem.disabled && postMenuItem.onClick) {
+                    postMenuItem.onClick();
+                  }
+                }}
               >
                 <PopupMenu
                   triggerNode={

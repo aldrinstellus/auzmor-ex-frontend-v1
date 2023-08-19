@@ -1,7 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Header from 'components/ModalHeader';
-import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
+import {
+  CreatePostContext,
+  CreatePostFlow,
+  POST_TYPE,
+} from 'contexts/CreatePostContext';
 import Body from './Body';
 import Button from 'components/Button';
 import { Variant as ButtonVariant } from 'components/Button';
@@ -23,8 +27,14 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
       users: [],
     },
   });
-  const { setActiveFlow, setUploads, setShoutoutUserIds } =
-    useContext(CreatePostContext);
+  const {
+    setActiveFlow,
+    setUploads,
+    setShoutoutUserIds,
+    shoutoutUserIds,
+    setPostType,
+    removeAllMedia,
+  } = useContext(CreatePostContext);
   const [step, setStep] = useState<SHOUTOUT_STEPS>(SHOUTOUT_STEPS.UserSelect);
   const [triggerSubmit, setTriggerSubmit] = useState(false);
   const [users, setUsers] = useState<any>([]);
@@ -33,6 +43,7 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
 
   const getFile = (file: any) => {
     if (file) {
+      removeAllMedia();
       setUploads([file]);
     }
     setIsLoading(false);
@@ -40,16 +51,7 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
   };
 
   const onSubmit = () => {
-    const formData = getValues();
-    if (formData.users && Object.keys(formData.users).length > 0) {
-      const ids: string[] = [];
-      Object.keys(formData.users).forEach((key) => {
-        if (formData.users[key]) {
-          ids.push(key);
-        }
-      });
-      setShoutoutUserIds(ids);
-    }
+    setPostType(POST_TYPE.Shoutout);
     setActiveFlow(CreatePostFlow.CreatePost);
   };
 
@@ -57,12 +59,15 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
     if (step === SHOUTOUT_STEPS.UserSelect) {
       const formData = getValues();
       const _users: any[] = [];
+      const ids: any[] = [];
       Object.keys(formData.users).forEach((key) => {
         if (formData.users[key]) {
           _users.push({ id: key, name: 'Nitesh' });
+          ids.push(key);
         }
       });
       setUsers(_users);
+      setShoutoutUserIds(ids);
       setStep(SHOUTOUT_STEPS.ImageSelect);
     } else {
       setIsLoading(true);
@@ -110,7 +115,7 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
         setValue={setValue}
         resetField={resetField}
         users={users}
-        selectedUserIds={users.map((user: any) => user.id)}
+        selectedUserIds={shoutoutUserIds}
       />
       <div className="bg-blue-50 flex items-center justify-end p-3 gap-x-3 rounded-9xl w-full">
         <Button

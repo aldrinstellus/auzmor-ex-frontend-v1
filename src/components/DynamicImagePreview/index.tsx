@@ -8,7 +8,7 @@ interface IDynamicImagePreview {
   onSubmit: (param: any) => void;
   setIsFileAdded: (flag: boolean) => void;
   triggerSubmit: boolean;
-  users?: [];
+  users?: any[];
 }
 
 const DynamicImagePreview: React.FC<IDynamicImagePreview> = ({
