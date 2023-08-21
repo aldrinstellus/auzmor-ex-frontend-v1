@@ -5,6 +5,7 @@ import {
   IMG_FILE_SIZE_LIMIT,
   MEDIA_LIMIT,
   MediaValidationError,
+  POST_TYPE,
   VIDEO_FILE_SIZE_LIMIT,
 } from 'contexts/CreatePostContext';
 import ReactQuill from 'react-quill';
@@ -14,6 +15,7 @@ import Body from './Body';
 import Footer from './Footer';
 import { validImageTypes, validVideoTypes } from 'queries/files';
 import { hideEmojiPalette } from 'utils/misc';
+import { PostBuilderMode } from 'components/PostBuilder';
 
 interface ICreatePostProps {
   closeModal: () => void;
@@ -21,6 +23,7 @@ interface ICreatePostProps {
   data?: IPost;
   isLoading?: boolean;
   dataTestId?: string;
+  mode: PostBuilderMode;
 }
 
 const CreatePost: React.FC<ICreatePostProps> = ({
@@ -29,6 +32,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
   handleSubmitPost,
   isLoading = false,
   dataTestId,
+  mode,
 }) => {
   const quillRef = useRef<ReactQuill>(null);
   const {
@@ -39,6 +43,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
     media,
     setMediaValidationErrors,
     mediaValidationErrors,
+    setPostType,
   } = useContext(CreatePostContext);
 
   useEffect(() => () => hideEmojiPalette());
@@ -71,10 +76,12 @@ const CreatePost: React.FC<ICreatePostProps> = ({
         ref={quillRef}
         quillRef={quillRef}
         dataTestId={dataTestId}
+        mode={mode}
       />
       <Footer
         isLoading={isLoading}
         quillRef={quillRef}
+        mode={mode}
         handleSubmitPost={handleSubmitPost}
       />
       <input
@@ -98,6 +105,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
                 errorType: MediaValidationError.MediaLengthExceed,
               });
             }
+            setPostType(POST_TYPE.Media);
             setUploads(
               Array.prototype.slice
                 .call(e.target.files)
@@ -178,6 +186,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
                 errorType: MediaValidationError.MediaLengthExceed,
               });
             }
+            setPostType(POST_TYPE.Media);
             setUploads(
               Array.prototype.slice
                 .call(e.target.files)

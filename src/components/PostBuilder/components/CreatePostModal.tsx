@@ -12,6 +12,7 @@ import {
   IMention,
   IPost,
   IPostPayload,
+  IShoutoutRecipient,
   createPost,
   updatePost,
 } from 'queries/post';
@@ -43,6 +44,7 @@ import CreatePoll from './CreatePoll';
 import SchedulePost from './SchedulePost';
 import moment from 'moment';
 import Audience from './Audience';
+import CreateShoutout from './Shoutout';
 
 export interface IPostMenu {
   id: number;
@@ -87,6 +89,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     setSchedule,
     audience,
     setAudience,
+    shoutoutUserIds,
+    setShoutoutUserIds,
   } = useContext(CreatePostContext);
 
   const mediaRef = useRef<IMedia[]>([]);
@@ -123,6 +127,12 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           date: data.schedule.dateTime,
           time: `${moment(new Date(data.schedule.dateTime)).format('h:mm a')}`,
         });
+      }
+      if (data?.shoutoutRecipients?.length) {
+        const recipientIds = data.shoutoutRecipients.map(
+          (recipient) => recipient.userId,
+        );
+        setShoutoutUserIds(recipientIds);
       }
       setAudience(data?.audience || []);
     }
@@ -334,6 +344,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         mentions: mentionList || [],
         hashtags: hashtagList || [],
         audience,
+        shoutoutRecipients: shoutoutUserIds || [],
         isAnnouncement: !!announcement,
         announcement: {
           end: announcement?.value || '',
@@ -382,6 +393,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         mentions: mentionList || [],
         hashtags: hashtagList || [],
         audience,
+        shoutoutRecipients: shoutoutUserIds || [],
         isAnnouncement: !!announcement,
         announcement: {
           end: announcement?.value || '',
@@ -429,6 +441,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             handleSubmitPost={handleSubmitPost}
             isLoading={loading}
             dataTestId="feed-createpost"
+            mode={mode}
           />
         )}
         {activeFlow === CreatePostFlow.CreateAnnouncement && (
@@ -455,6 +468,14 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         )}
         {activeFlow === CreatePostFlow.CreatePoll && (
           <CreatePoll
+            closeModal={() => {
+              closeModal();
+              clearPostContext();
+            }}
+          />
+        )}
+        {activeFlow === CreatePostFlow.CreateShoutout && (
+          <CreateShoutout
             closeModal={() => {
               closeModal();
               clearPostContext();

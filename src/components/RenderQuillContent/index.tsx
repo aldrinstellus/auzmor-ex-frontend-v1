@@ -13,6 +13,7 @@ import { IComment } from 'components/Comments';
 import { IMedia } from 'contexts/CreatePostContext';
 import { Metadata } from 'components/PreviewLink/types';
 import clsx from 'clsx';
+import AvatarChips from 'components/AvatarChips';
 
 type RenderQuillContent = {
   data: IPost | IComment;
@@ -142,6 +143,12 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
             showAddMediaButton={false}
             showEditButton={false}
           />
+        </div>
+      )}
+      {data?.shoutoutRecipients && data?.shoutoutRecipients.length > 0 && (
+        <div className="mt-4 flex flex-col gap-2">
+          <p className="text-xs text-neutral-500">Shoutout to:</p>
+          <AvatarChips users={data.shoutoutRecipients} showCount={3} />
         </div>
       )}
     </div>

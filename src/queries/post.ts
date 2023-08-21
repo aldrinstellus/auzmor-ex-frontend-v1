@@ -11,6 +11,7 @@ import { IComment } from 'components/Comments';
 import { Metadata } from 'components/PreviewLink/types';
 import { useFeedStore } from 'stores/feedStore';
 import _ from 'lodash';
+import { string } from 'yargs';
 
 export interface IReactionsCount {
   [key: string]: number;
@@ -34,6 +35,15 @@ export interface IAudience {
   entityType: AudienceEntityType;
   entityId: string;
   name?: string;
+}
+
+export interface IShoutoutRecipient {
+  fullName: string;
+  profileImage: object;
+  status: string;
+  workLocation: string;
+  designation: string;
+  userId: string;
 }
 
 export interface IPost {
@@ -99,6 +109,7 @@ export interface IPost {
   } | null;
   bookmarked: boolean;
   acknowledged: boolean;
+  shoutoutRecipients?: IShoutoutRecipient[];
 }
 
 export interface IPostPayload {
@@ -126,6 +137,7 @@ export interface IPostPayload {
   files?: string[] | IMedia[];
   type: string;
   audience: IAudience[];
+  shoutoutRecipients?: string[] | IShoutoutRecipient[];
   isAnnouncement: boolean;
   announcement: {
     end: string;

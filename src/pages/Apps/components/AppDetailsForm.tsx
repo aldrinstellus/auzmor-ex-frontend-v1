@@ -7,16 +7,18 @@ import {
   UseFormGetValues,
   UseFormSetValue,
 } from 'react-hook-form';
-import { IAddAppForm } from './AddApp';
+import { ADD_APP_FLOW, IAddAppForm } from './AddApp';
 import UploadIconButton from './UploadIconButton';
-import Button, { Variant } from 'components/Button';
-import { App, CategoryType } from 'queries/apps';
+import Button, { Size, Variant } from 'components/Button';
+import { App, CategoryType, IAudience } from 'queries/apps';
 
 type AppDetailsFormProps = {
   control: Control<IAddAppForm, any>;
   errors: FieldErrors<IAddAppForm>;
   defaultValues: UseFormGetValues<IAddAppForm>;
   setValue: UseFormSetValue<IAddAppForm>;
+  setActiveFlow: (param: ADD_APP_FLOW) => void;
+  audience: IAudience[];
 };
 
 const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
@@ -24,6 +26,8 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
   errors,
   defaultValues,
   setValue,
+  setActiveFlow,
+  audience,
 }) => {
   const urlField = [
     {
@@ -96,7 +100,36 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
           <UploadIconButton setValue={setValue} icon={defaultValues()?.icon} />
           <div className="pt-6">
             <p className="text-neutral-900 font-bold pb-1 text-sm">Audience</p>
-            <Button variant={Variant.Secondary} label="Everyone" />
+            {audience.length > 0 ? (
+              <div className="flex gap-2">
+                <Button
+                  key={audience[0].entityId}
+                  leftIcon="noteFavourite"
+                  leftIconSize={16}
+                  leftIconClassName="mr-1"
+                  size={Size.Small}
+                  variant={Variant.Secondary}
+                  label={audience[0].name || 'Team Name'}
+                  onClick={() => setActiveFlow(ADD_APP_FLOW.AudienceSelector)}
+                />
+                {audience.length > 1 && (
+                  <Button
+                    key={audience[0].entityId}
+                    variant={Variant.Secondary}
+                    size={Size.Small}
+                    label={`+ ${audience.length - 1} more`}
+                    onClick={() => setActiveFlow(ADD_APP_FLOW.AudienceSelector)}
+                  />
+                )}
+              </div>
+            ) : (
+              <Button
+                variant={Variant.Secondary}
+                label="Everyone"
+                size={Size.Small}
+                onClick={() => setActiveFlow(ADD_APP_FLOW.AudienceSelector)}
+              />
+            )}
           </div>
         </div>
       </div>

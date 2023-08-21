@@ -1,52 +1,34 @@
-import React, { ReactNode, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import Button, { Variant as ButtonVariant, Type } from 'components/Button';
-import Layout, { FieldType } from 'components/Form';
-import { Size as InputSize, Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
-import Popover from 'components/Popover';
 import Divider from 'components/Divider';
 import { CategoryType, useInfiniteCategories } from 'queries/apps';
-import { isFiltersEmpty } from 'utils/misc';
 import { useDebounce } from 'hooks/useDebounce';
+import InfiniteFilterList from 'components/InfiniteFilterList';
+import { find } from 'lodash';
 
 export interface ITeamFilterModalProps {
   open: boolean;
   openModal: () => void;
   closeModal: () => void;
+  selectedCategories: Array<any>;
+  setSelectedCategories: (param: any) => void;
 }
 
 const TeamFilterModal: React.FC<ITeamFilterModalProps> = ({
   open,
   openModal,
   closeModal,
+  selectedCategories,
+  setSelectedCategories,
 }) => {
-  const { control, handleSubmit, watch } = useForm({
+  const { handleSubmit } = useForm({
     mode: 'onChange',
   });
-  const searchValue = watch('search');
-  const debouncedSearchValue = useDebounce(searchValue || '', 500);
 
-  const { data, isLoading, isError } = useInfiniteCategories(
-    isFiltersEmpty({
-      q: debouncedSearchValue.toLowerCase().trim(),
-      type: CategoryType.TEAM,
-      limit: 10,
-    }),
-  );
-
-  const categoriesData = data?.pages.flatMap((page) => {
-    return page?.data?.result?.data.map((category: any) => {
-      try {
-        return category;
-      } catch (e) {
-        console.log('Error', { category });
-      }
-    });
-  });
-
-  const onSubmit = (value: any) => {
+  const onSubmit = () => {
     closeModal();
   };
 
@@ -55,7 +37,34 @@ const TeamFilterModal: React.FC<ITeamFilterModalProps> = ({
       label: 'Category',
       icon: '',
       key: 'category-filters',
-      component: <>Checkbox Grouped Component </>,
+      component: (
+        <InfiniteFilterList
+          apiCall={useInfiniteCategories}
+          apiCallParams={{
+            type: CategoryType.TEAM,
+            limit: 10,
+          }}
+          searchProps={{
+            placeholder: 'Search',
+            dataTestId: 'teams-category-search',
+            isClearable: true,
+          }}
+          setSelectedItems={setSelectedCategories}
+          selectedItems={selectedCategories}
+          showSelectedFilterPill
+          renderItem={(item) => (
+            <>
+              <input
+                type="checkbox"
+                data-testid="app-filter-category-checkbox"
+                className="h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 outline-neutral-500"
+                checked={find(selectedCategories, item)}
+              ></input>
+              <span className="ml-3 text-xs font-medium">{item?.name}</span>
+            </>
+          )}
+        />
+      ),
       disabled: false,
       hidden: false,
       search: true,

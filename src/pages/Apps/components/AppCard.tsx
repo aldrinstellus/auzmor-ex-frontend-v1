@@ -38,6 +38,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
     mutationFn: (payload: any) => editApp(app?.id || '', payload as any),
     onSuccess: () => {
       queryClient.invalidateQueries(['apps']);
+      queryClient.invalidateQueries(['featured-apps']);
       toast(
         <SuccessToast
           content={`App has been added to featured apps`}
@@ -96,6 +97,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
     mutationFn: (payload: any) => editApp(app?.id || '', payload as any),
     onSuccess: () => {
       queryClient.invalidateQueries(['apps']);
+      queryClient.invalidateQueries(['featured-apps']);
       toast(
         <SuccessToast
           content={`App has been removed featured apps`}
@@ -240,7 +242,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
               <Badge
                 text={app.category.name}
                 textClassName="text-blue-500"
-                bgClassName="bg-blue-100"
+                bgClassName="bg-blue-100 border-1 border-blue-300"
                 dataTestId="app-category"
               />
             )}
@@ -282,19 +284,23 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
           </div>
           <div className="pb-8">
             <div className="flex items-center justify-between">
-              <img
-                src={app?.icon?.original}
-                className="p-1 bg-neutral-100 rounded-xl"
-                height={28}
-                width={28}
-              />
+              {app?.icon?.original && (
+                <img
+                  src={app?.icon?.original}
+                  className="p-1 bg-neutral-100 rounded-xl"
+                  height={28}
+                  width={28}
+                />
+              )}
             </div>
-            <p
-              className="text-neutral-900 font-bold py-2 text-sm"
-              data-testid="app-name"
-            >
-              {app.label}
-            </p>
+            <div className="py-2">
+              <p
+                className="text-neutral-900 font-bold text-sm line-clamp-1"
+                data-testid="app-name"
+              >
+                {app.label}
+              </p>
+            </div>
             <p
               className="text-neutral-500 line-clamp-3 text-xs"
               data-testid="app-description"

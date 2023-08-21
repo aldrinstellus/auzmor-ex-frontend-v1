@@ -68,6 +68,18 @@ export interface IAddApp {
   audience: any;
 }
 
+export enum AudienceEntityType {
+  User = 'USER',
+  Team = 'TEAM',
+  Channel = 'CHANNEL',
+}
+
+export interface IAudience {
+  entityType: AudienceEntityType;
+  entityId: string;
+  name?: string;
+}
+
 // Get apps categories
 export const getCategories = ({
   pageParam = null,

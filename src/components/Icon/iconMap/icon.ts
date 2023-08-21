@@ -129,6 +129,8 @@ import AnnouncementChartIcon from '../components/AnnouncementChart';
 import dotsHorizontalIcon from '../components/DotsHorizontal';
 import Tag from '../components/Tag';
 import ArrowRightUp from '../components/ArrowRightUp';
+import GalleryExport from '../components/GalleryExport';
+import FolderOpen from '../components/FolderOpen';
 import NoteFavouriteIcon from '../components/NoteFavourite';
 
 export const icon = {
@@ -264,4 +266,6 @@ export const icon = {
   video: VideoIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
+  galleryExport: GalleryExport,
+  folderOpen: FolderOpen,
 };

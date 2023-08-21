@@ -1,0 +1,119 @@
+import React, { useRef, useState } from 'react';
+import Icon from 'components/Icon';
+import { clearInputValue, getBlobUrl, twConfig } from 'utils/misc';
+import useModal from 'hooks/useModal';
+import ImageResosition from './ImageReposition';
+import FailureToast from 'components/Toast/variants/FailureToast';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
+import { toast } from 'react-toastify';
+import { validImageTypes } from 'queries/files';
+import { IMG_FILE_SIZE_LIMIT } from 'contexts/CreatePostContext';
+
+export interface IImageUploaderProps {
+  setImageFile: (file: any) => void;
+  imageFile?: any;
+  imageUploaderRef: React.RefObject<HTMLInputElement>;
+  isImageAdded: boolean;
+}
+
+const ImageUploader: React.FC<IImageUploaderProps> = ({
+  setImageFile,
+  imageUploaderRef,
+  isImageAdded,
+}) => {
+  const [file, setFile] = useState<any>(null);
+  const [openEditImage, openEditImageModal, closeEditImageModal] = useModal(
+    undefined,
+    false,
+  );
+
+  const showErrorToast = (message: string) => {
+    toast(<FailureToast content={message} dataTestId="comment-toaster" />, {
+      closeButton: (
+        <Icon
+          name="closeCircleOutline"
+          stroke={twConfig.theme.colors.red['500']}
+          size={20}
+        />
+      ),
+      style: {
+        border: `1px solid ${twConfig.theme.colors.red['300']}`,
+        borderRadius: '6px',
+        display: 'flex',
+        alignItems: 'center',
+      },
+      autoClose: TOAST_AUTOCLOSE_TIME,
+      transition: slideInAndOutTop,
+      theme: 'dark',
+    });
+  };
+
+  const handleImageUpload = (file: File) => {
+    if (!!![...validImageTypes].includes(file.type)) {
+      showErrorToast(
+        'File type not supported. Upload a supported file content',
+      );
+      return;
+    }
+    if (file.size > IMG_FILE_SIZE_LIMIT * 1024 * 1024) {
+      showErrorToast(
+        'The file you are trying to upload exceeds the 5MB attachment limit. Try uploading a smaller file',
+      );
+      return;
+    }
+    setFile(file);
+    openEditImageModal();
+  };
+
+  return (
+    <>
+      <div
+        className={`${
+          isImageAdded ? 'hidden' : 'block'
+        } py-10 flex flex-col justify-center items-center gap-2`}
+      >
+        <Icon name="folderOpen" size={40} />
+        <div
+          className="bg-white rounded-[24px] border-1
+            border-neutral-200 px-4 py-2 text-sm font-bold
+            flex items-center gap-1 cursor-pointer"
+          onClick={() => imageUploaderRef?.current?.click()}
+        >
+          <Icon name="galleryExport" size={16} />
+          <span>Upload an image</span>
+        </div>
+        <div className="text-sm">Add your document from the options below</div>
+        {openEditImage && (
+          <ImageResosition
+            title="Reposition"
+            openEditImage={openEditImage}
+            closeEditImageModal={closeEditImageModal}
+            image={getBlobUrl(file)}
+            imageRef={imageUploaderRef}
+            setImageFile={setImageFile}
+            imageFile={file}
+          />
+        )}
+      </div>
+      <input
+        id="file-input"
+        type="file"
+        ref={imageUploaderRef}
+        className="hidden"
+        accept="image/*"
+        multiple={false}
+        data-testid="edit-profile-coverpic"
+        onClick={clearInputValue}
+        onChange={(e) => {
+          if (e.target.files?.length) {
+            const file = e.target.files[0];
+            handleImageUpload(file);
+          }
+        }}
+      />
+    </>
+  );
+};
+
+export default ImageUploader;

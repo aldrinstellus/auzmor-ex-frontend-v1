@@ -6,7 +6,7 @@ import { DeltaStatic } from 'quill';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import { ICreated, IMyReactions } from 'pages/Feed';
-import { IMention, IReactionsCount } from 'queries/post';
+import { IMention, IReactionsCount, IShoutoutRecipient } from 'queries/post';
 import Spinner from 'components/Spinner';
 import { PRIMARY_COLOR } from 'utils/constants';
 import LoadMore from './components/LoadMore';
@@ -54,6 +54,7 @@ export interface IComment {
   repliesCount: number;
   comment: IComment;
   files: IMedia[];
+  shoutoutRecipients?: IShoutoutRecipient[];
 }
 
 const Comments: React.FC<CommentsProps> = ({ entityId }) => {

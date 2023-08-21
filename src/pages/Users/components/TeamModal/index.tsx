@@ -65,7 +65,7 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
       category:
         (team && {
           label: team?.category?.name,
-          value: team?.category?.name?.toUpperCase(),
+          value: team?.category?.name,
         }) ||
         '',
       description: team?.description || '',
@@ -196,13 +196,17 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
   });
 
   const onSubmit = (data: any) => {
-    // issue with update is when we click update it will create new category with case sensitive
+    let categoryValue;
+    if (data?.category?.type === 'TEAM') {
+      categoryValue = data?.category?.value;
+    } else {
+      categoryValue = data?.category?.value?.toUpperCase();
+    }
     const payload = {
       name: data?.name,
-      category: data?.category?.value, // this should be pass in capital
+      category: categoryValue,
       description: data?.description,
     };
-
     if (teamFlowMode === TeamFlow.CreateTeam)
       createTeamMutation.mutate(payload);
     else updateTeamMutation.mutate(payload);

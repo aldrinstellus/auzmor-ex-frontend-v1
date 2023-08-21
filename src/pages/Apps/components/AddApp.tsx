@@ -15,16 +15,21 @@ import { UploadStatus, useUpload } from 'hooks/useUpload';
 import { EntityType } from 'queries/files';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { App, AppAudience, createApp, editApp } from 'queries/apps';
-import { useAppStore } from 'stores/appStore';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import { twConfig } from 'utils/misc';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
+import Audience from './Audience';
 
 export enum APP_MODE {
   Create = 'CREATE',
   Edit = 'EDIT',
+}
+
+export enum ADD_APP_FLOW {
+  AddApp = 'ADD_APP',
+  AudienceSelector = 'AUDIENCE_SELECTOR',
 }
 
 type AddAppProps = {
@@ -100,6 +105,8 @@ const AddApp: React.FC<AddAppProps> = ({
       relayState: data?.credentials?.relayState || '',
     },
   });
+  const [activeFlow, setActiveFlow] = useState(ADD_APP_FLOW.AddApp);
+  const [audience, setAudience] = useState<any>(data?.audience || []);
   const [activeTab, setActiveTab] = useState(0);
 
   const queryClient = useQueryClient();
@@ -230,6 +237,8 @@ const AddApp: React.FC<AddAppProps> = ({
           errors={errors}
           setValue={setValue}
           defaultValues={getValues}
+          setActiveFlow={setActiveFlow}
+          audience={audience}
         />
       ),
     },
@@ -249,8 +258,8 @@ const AddApp: React.FC<AddAppProps> = ({
     if (!errors.url && !errors.label && !errors.description) {
       const formData = getValues();
       let uploadedFile;
-      if (formData?.icon?.id || data?.icon?.id) {
-        uploadedFile = [{ id: formData?.icon.id || data?.icon.id }];
+      if (formData?.icon?.id) {
+        uploadedFile = [{ id: formData?.icon.id }];
       } else if (formData.icon) {
         uploadedFile = await uploadMedia([formData.icon], EntityType.AppIcon);
       }
@@ -264,7 +273,7 @@ const AddApp: React.FC<AddAppProps> = ({
         ...(formData.category &&
           formData.category.label && { category: formData.category.label }),
         ...(uploadedFile && uploadedFile[0] && { icon: uploadedFile[0].id }),
-        audience: formData?.audience || [],
+        audience: audience || [],
       };
       const credentials: any = {};
       if (formData.acsUrl) {
@@ -304,58 +313,69 @@ const AddApp: React.FC<AddAppProps> = ({
     <Modal
       open={open}
       closeModal={closeModal}
-      className="min-h-[630px] max-w-[800px] max-h-[650px]"
+      className={clsx('max-w-[800px]', {
+        'min-h-[630px] max-h-[650px] ': activeFlow === ADD_APP_FLOW.AddApp,
+      })}
     >
-      <div className="flex flex-col h-full">
-        <div className="p-4 flex items-center justify-between">
-          <p className="text-neutral-900 font-extrabold text-lg">Add app</p>
-          <Icon
-            name="close"
-            disabled
-            onClick={closeModal}
-            dataTestId="add-app-close"
-          />
-        </div>
-        <Divider />
-        <form
-          onSubmit={onSubmit}
-          className="flex flex-col justify-between h-full"
-        >
-          <Tabs
-            tabs={tabs}
-            disableAnimation={true}
-            activeTabIndex={activeTab}
-            onTabChange={(tab: any) => setActiveTab(tab)}
-          />
-          <div className="bg-blue-50 flex items-center justify-end gap-x-3 px-6 py-4 mt-auto rounded-9xl">
-            <Button
-              label="Cancel"
-              variant={ButtonVariant.Secondary}
+      {activeFlow === ADD_APP_FLOW.AddApp && (
+        <div className="flex flex-col h-full">
+          <div className="p-4 flex items-center justify-between">
+            <p className="text-neutral-900 font-extrabold text-lg">Add app</p>
+            <Icon
+              name="close"
+              disabled
               onClick={closeModal}
-              dataTestId="add-app-cancel"
+              dataTestId="add-app-close"
             />
-            {activeTab === tabs.length - 1 ? (
-              <Button
-                label="Save"
-                type={Type.Submit}
-                dataTestId="add-app-save"
-                loading={
-                  addAppMutation?.isLoading ||
-                  updateAppMutation.isLoading ||
-                  uploadStatus === UploadStatus.Uploading
-                }
-              />
-            ) : (
-              <Button
-                label="Next"
-                disabled={!isValid}
-                onClick={(e) => handleNextTab(e)}
-                dataTestId="add-app-next-cta"
-              />
-            )}
           </div>
-        </form>
-      </div>
+          <Divider />
+          <form
+            onSubmit={onSubmit}
+            className="flex flex-col justify-between h-full"
+          >
+            <Tabs
+              tabs={tabs}
+              disableAnimation={true}
+              activeTabIndex={activeTab}
+              onTabChange={(tab: any) => setActiveTab(tab)}
+            />
+            <div className="bg-blue-50 flex items-center justify-end gap-x-3 px-6 py-4 mt-auto rounded-9xl">
+              <Button
+                label="Cancel"
+                variant={ButtonVariant.Secondary}
+                onClick={closeModal}
+                dataTestId="add-app-cancel"
+              />
+              {activeTab === tabs.length - 1 ? (
+                <Button
+                  label="Save"
+                  type={Type.Submit}
+                  dataTestId="add-app-save"
+                  loading={
+                    addAppMutation?.isLoading ||
+                    updateAppMutation.isLoading ||
+                    uploadStatus === UploadStatus.Uploading
+                  }
+                />
+              ) : (
+                <Button
+                  label="Next"
+                  disabled={!isValid}
+                  onClick={(e) => handleNextTab(e)}
+                  dataTestId="add-app-next-cta"
+                />
+              )}
+            </div>
+          </form>
+        </div>
+      )}
+      {activeFlow === ADD_APP_FLOW.AudienceSelector && (
+        <Audience
+          setActiveFlow={setActiveFlow}
+          audience={audience}
+          setAudience={setAudience}
+        />
+      )}
     </Modal>
   );
 };

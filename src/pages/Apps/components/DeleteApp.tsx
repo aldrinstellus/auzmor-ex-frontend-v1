@@ -30,6 +30,7 @@ const DeleteApp: React.FC<IDeleteAppProps> = ({ open, closeModal, appId }) => {
     mutationKey: ['delete-app', appId],
     mutationFn: deleteApp,
     onError: (error) => {
+      closeModal(true);
       toast(<FailureToast content="Error deleting the app" dataTestId="" />, {
         closeButton: (
           <Icon

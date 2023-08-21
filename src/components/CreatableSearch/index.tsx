@@ -73,7 +73,7 @@ const CreatableSearch = React.forwardRef(
 
     const transformedOption = categoriesData?.map(
       (category: ICategoryDetail) => ({
-        value: category?.name?.toUpperCase(),
+        value: category?.name,
         label: category?.name,
         type: category?.type,
         id: category?.id,

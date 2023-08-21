@@ -26,12 +26,14 @@ import {
   CreatePostFlow,
   IMediaValidationError,
   MediaValidationError,
+  POST_TYPE,
 } from 'contexts/CreatePostContext';
 import moment from 'moment';
 import MediaPreview, { Mode } from 'components/MediaPreview';
 import Banner, { Variant } from 'components/Banner';
 import { hasDatePassed } from 'utils/time';
 import Poll from 'components/Poll';
+import { PostBuilderMode } from 'components/PostBuilder';
 
 export interface IEditorContentChanged {
   text: string;
@@ -51,6 +53,7 @@ export interface IQuillEditorProps {
     setIsPreviewRemove: (isPreviewRemove: boolean) => void,
   ) => ReactNode;
   dataTestId?: string;
+  mode: PostBuilderMode;
 }
 
 const RichTextEditor = React.forwardRef(
@@ -63,6 +66,7 @@ const RichTextEditor = React.forwardRef(
       renderToolbar = () => <div id="toolbar"></div>,
       renderPreviewLink,
       dataTestId,
+      mode,
     }: IQuillEditorProps,
     ref: React.ForwardedRef<ReactQuill>,
   ) => {
@@ -85,6 +89,9 @@ const RichTextEditor = React.forwardRef(
       setPreviewUrl,
       poll,
       setPoll,
+      setShoutoutUserIds,
+      postType,
+      setPostType,
     } = useContext(CreatePostContext);
 
     const formats = [
@@ -245,6 +252,21 @@ const RichTextEditor = React.forwardRef(
       }
     };
 
+    const onRemoveMedia = () => {
+      removeAllMedia();
+      setShoutoutUserIds([]);
+      setPostType(null);
+    };
+
+    const onMediaEdit = () => {
+      updateContext();
+      if (postType === POST_TYPE.Shoutout) {
+        setActiveFlow(CreatePostFlow.CreateShoutout);
+      } else {
+        setActiveFlow(CreatePostFlow.EditMedia);
+      }
+    };
+
     return (
       <div data-testid={`${dataTestId}-content`}>
         <ReactQuill
@@ -264,11 +286,13 @@ const RichTextEditor = React.forwardRef(
             className="m-6"
             mode={Mode.Edit}
             onAddButtonClick={() => inputImgRef?.current?.click()}
-            onCloseButtonClick={removeAllMedia}
-            onEditButtonClick={() => {
-              updateContext();
-              setActiveFlow(CreatePostFlow.EditMedia);
-            }}
+            onCloseButtonClick={onRemoveMedia}
+            showEditButton={mode === PostBuilderMode.Create}
+            showCloseButton={mode === PostBuilderMode.Create}
+            showAddMediaButton={
+              mode === PostBuilderMode.Create && postType !== POST_TYPE.Shoutout
+            }
+            onEditButtonClick={onMediaEdit}
             coverImageMap={coverImageMap}
             dataTestId={dataTestId}
             onClick={(e, index) => {
