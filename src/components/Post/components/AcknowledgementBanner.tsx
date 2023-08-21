@@ -59,12 +59,11 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
             </div>
             {!hasLoggedInUserCreatedAnnouncement && (
               <Button
-                className="text-sm font-bold"
+                className="text-sm font-bold !py-[3px]"
                 label="Mark as read"
                 size={Size.Small}
                 variant={Variant.Tertiary}
                 loading={acknowledgeMutation.isLoading}
-                style={{ paddingTop: '3px', paddingBottom: '3px' }}
                 onClick={() => {
                   acknowledgeMutation.mutate(data?.id);
                 }}

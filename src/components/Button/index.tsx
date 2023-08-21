@@ -43,7 +43,6 @@ export type ButtonProps = {
   labelClassName?: string;
   dataTestId?: string;
   active?: boolean;
-  style?: Record<string, any>;
 };
 
 const Button = ({
@@ -65,7 +64,6 @@ const Button = ({
   labelClassName = '',
   dataTestId = '',
   active = false,
-  ...props
 }: ButtonProps) => {
   const [hovered, hoverEvents] = useHover();
 
@@ -118,7 +116,6 @@ const Button = ({
       disabled={disabled || loading}
       onClick={onClick}
       data-testId={dataTestId}
-      {...props}
       {...hoverEvents}
     >
       <div>
