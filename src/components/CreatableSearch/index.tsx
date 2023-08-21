@@ -44,7 +44,7 @@ const CreatableSearch = React.forwardRef(
       required = false,
       categoryType,
       placeholder = '',
-      height = '44px',
+      height = '46px',
       defaultValue,
       menuPlacement = 'bottom',
     }: ICreatableSearch,
@@ -90,7 +90,9 @@ const CreatableSearch = React.forwardRef(
 
     const [open, setOpen] = useState<boolean>(false);
     const uniqueClassName =
-      'select_' + Math.random().toFixed(5).slice(2) + ' !max-h-44';
+      'select_' +
+      Math.random().toFixed(5).slice(2) +
+      ' !max-h-44 divide-y divide-neutral-200 !py-0';
     const menuListRef = useRef<HTMLDivElement>(null);
 
     const labelStyle = useMemo(
@@ -124,13 +126,20 @@ const CreatableSearch = React.forwardRef(
           backgroundColor: '#fff',
           border: '1px solid #E5E5E5',
           borderRadius: '32px',
-          height,
+          height: `${height} !important`,
           padding: '0px 6px', // change style here because it breaking 2px
           '&:hover': { borderColor: twConfig.theme.colors.primary['600'] },
           borderColor: twConfig.theme.colors.primary['500'],
           boxShadow: styles.boxShadow
             ? `0 0 0 1px ${twConfig.theme.colors.primary['500']}`
             : undefined,
+        };
+      },
+      menu: (styles: any) => {
+        return {
+          ...styles,
+          borderRadius: '12px',
+          overflow: 'hidden',
         };
       },
     };
@@ -174,7 +183,7 @@ const CreatableSearch = React.forwardRef(
                     return (
                       <div
                         {...innerProps}
-                        className={`px-6 py-3 hover:bg-primary-50 hover:text-primary-500 font-medium  text-sm ${
+                        className={`px-6 py-3 hover:bg-primary-50 hover:text-primary-500 font-medium text-sm ${
                           isDisabled ? 'cursor-default' : 'cursor-pointer'
                         } ${isSelected && 'bg-primary-50'}`}
                         data-testid={
