@@ -256,7 +256,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
         isLoading={deletePostMutation.isLoading}
         dataTestId="post-deletepost"
       />
-      <Modal open={removeAnnouncement} className="w-max">
+      <Modal open={removeAnnouncement} className="w-max overflow-hidden">
         <div className="flex items-center justify-between p-4">
           <p className="font-bold text-lg text-gray-900">
             Change to regular post?
