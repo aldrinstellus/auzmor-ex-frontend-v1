@@ -2,14 +2,10 @@ import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
-import {
-  IDepartment,
-  getDepartments,
-  useGetDepartments,
-} from 'queries/department';
-import { ILocation, getLocations, useGetLocations } from 'queries/location';
+import { IDepartment, useInfiniteDepartments } from 'queries/department';
+import { useInfiniteLocations } from 'queries/location';
 import { IGetUser, useInfiniteUsers } from 'queries/users';
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import {
   Control,
   UseFormResetField,
@@ -19,6 +15,7 @@ import {
 import { useInView } from 'react-intersection-observer';
 import { IAudienceForm } from '..';
 import UserRow from './UserRow';
+import InfiniteSearch from 'components/InfiniteSearch';
 
 interface IMembersBodyProps {
   control: Control<IAudienceForm, any>;
@@ -37,13 +34,15 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
   entityRenderer,
   selectedMemberIds = [],
 }) => {
+  const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const formData = watch();
   const debouncedSearchValue = useDebounce(formData.memberSearch || '', 500);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteUsers({
       q: debouncedSearchValue,
-      department: [formData.department?.value || ''],
-      location: [formData.location?.value || ''],
+      department: selectedDepartments,
+      location: selectedLocations,
     });
   const usersData = data?.pages
     .flatMap((page) => {
@@ -61,9 +60,51 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
       }
       return true;
     });
-  const { data: locations, isLoading: locationLoading } = useGetLocations('');
-  const { data: departments, isLoading: departmentLoading } =
-    useGetDepartments('');
+  const debouncedDepartmentSearchValue = useDebounce(
+    formData.departmentSearch || '',
+    500,
+  );
+  const {
+    data: departments,
+    isLoading: departmentLoading,
+    isFetchingNextPage: isFetchingNextDepartmentPage,
+    fetchNextPage: fetchNextDepartmentPage,
+    hasNextPage: hasNextDepartmentPage,
+  } = useInfiniteDepartments({
+    q: debouncedDepartmentSearchValue,
+  });
+  const departmentData = departments?.pages.flatMap((page) => {
+    return (page as any)?.result?.data.map((department: any) => {
+      try {
+        return department;
+      } catch (e) {
+        console.log('Error', { department });
+      }
+    });
+  });
+
+  const debouncedLocationSearchValue = useDebounce(
+    formData.departmentSearch || '',
+    500,
+  );
+  const {
+    data: locations,
+    isLoading: locationLoading,
+    isFetchingNextPage: isFetchingNextLocationPage,
+    fetchNextPage: fetchNextLocationPage,
+    hasNextPage: hasNextLocationPage,
+  } = useInfiniteLocations({
+    q: debouncedLocationSearchValue,
+  });
+  const locationData = locations?.pages.flatMap((page) => {
+    return (page as any)?.result?.data.map((location: any) => {
+      try {
+        return location;
+      } catch (e) {
+        console.log('Error', { location });
+      }
+    });
+  });
 
   useEffect(() => {
     if (formData.selectAll) {
@@ -100,19 +141,6 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
     });
   };
 
-  const getLocationOptions = (locations: ILocation[]) => {
-    return locations.map((location: ILocation) => ({
-      label: location.country,
-      value: location.uuid,
-    }));
-  };
-
-  const getDepartmentOptions = (departments: IDepartment[]) => {
-    return departments.map((department: IDepartment) => ({
-      label: department.name,
-      value: department.uuid,
-    }));
-  };
   return (
     <div className="flex flex-col">
       <div className="flex flex-col py-4 px-6">
@@ -130,49 +158,96 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
           className="pb-4"
         />
         <div className="flex items-center justify-between">
-          <div className="flex items-center text-neutral-500 font-medium">
+          <div
+            className={`flex items-center text-neutral-500 font-medium ${
+              !!!usersData?.length && 'opacity-50 pointer-events-none'
+            }`}
+          >
             Quick filters:
-            <Layout
-              fields={[
-                {
-                  type: FieldType.AsyncSingleSelect,
-                  control,
-                  name: 'department',
-                  option: getDepartmentOptions(departments || []),
-                  loadOptions: (inputValue: string) =>
-                    getDepartments({ q: inputValue }).then(
-                      (departments: IDepartment[]) =>
-                        getDepartmentOptions(departments),
+            <div className="relative">
+              <InfiniteSearch
+                title="Department"
+                control={control}
+                options={
+                  departmentData?.map((department) => ({
+                    label: department.name,
+                    value: department,
+                    id: department.id,
+                  })) || []
+                }
+                searchName={'departmentSearch'}
+                optionsName={'departments'}
+                isLoading={departmentLoading}
+                isFetchingNextPage={isFetchingNextDepartmentPage}
+                fetchNextPage={fetchNextDepartmentPage}
+                hasNextPage={hasNextDepartmentPage}
+                onApply={() =>
+                  setSelectedDepartments([
+                    ...Object.keys(formData.departments).filter(
+                      (key: string) => !!formData.departments[key],
                     ),
-                  placeholder: 'Department',
-                  isLoading: departmentLoading,
-                },
-              ]}
-              className="ml-2"
-            />
-            <Layout
-              fields={[
-                {
-                  type: FieldType.AsyncSingleSelect,
-                  control,
-                  name: 'location',
-                  placeholder: 'Location',
-                  option: getLocationOptions(locations || []),
-                  loadOptions: (inputValue: string) =>
-                    getLocations({ q: inputValue }).then(
-                      (locations: ILocation[]) => getLocationOptions(locations),
+                  ])
+                }
+                onReset={() => {
+                  setSelectedDepartments([]);
+                  if (formData?.departments) {
+                    Object.keys(formData.departments).forEach((key: string) =>
+                      setValue(`departments.${key}`, false),
+                    );
+                  }
+                }}
+                selectionCount={selectedDepartments.length}
+              />
+            </div>
+            <div className="relative">
+              <InfiniteSearch
+                title="Location"
+                control={control}
+                options={
+                  locationData?.map((location) => ({
+                    label: location.name,
+                    value: location,
+                    id: location.id,
+                  })) || []
+                }
+                searchName={'locationSearch'}
+                optionsName={'locations'}
+                isLoading={locationLoading}
+                isFetchingNextPage={isFetchingNextLocationPage}
+                fetchNextPage={fetchNextLocationPage}
+                hasNextPage={hasNextLocationPage}
+                onApply={() =>
+                  setSelectedLocations([
+                    ...Object.keys(formData.locations).filter(
+                      (key: string) => !!formData.locations[key],
                     ),
-                  isLoading: locationLoading,
-                },
-              ]}
-              className="ml-2"
-            />
+                  ])
+                }
+                onReset={() => {
+                  setSelectedLocations([]);
+                  if (formData?.locations) {
+                    Object.keys(formData.locations).forEach((key: string) =>
+                      setValue(`locations.${key}`, false),
+                    );
+                  }
+                }}
+                selectionCount={selectedLocations.length}
+              />
+            </div>
           </div>
           <div
-            className="cursor-pointer text-neutral-500 font-medium hover:underline"
+            className={`cursor-pointer text-neutral-500 font-medium hover:underline ${
+              !!!usersData?.length && 'opacity-50 pointer-events-none'
+            }`}
             onClick={() => {
-              resetField('department');
-              resetField('location');
+              setSelectedDepartments([]);
+              setSelectedLocations([]);
+              Object.keys(formData.departments).forEach((key: string) =>
+                setValue(`departments.${key}`, false),
+              );
+              Object.keys(formData.locations).forEach((key: string) =>
+                setValue(`locations.${key}`, false),
+              );
             }}
           >
             Clear filters
@@ -181,7 +256,11 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
       </div>
       <Divider className="w-full" />
       <div className="pl-6 flex flex-col">
-        <div className="flex justify-between py-4 pr-6">
+        <div
+          className={`flex justify-between py-4 pr-6 ${
+            !!!usersData?.length && 'opacity-50 pointer-events-none'
+          }`}
+        >
           <div className="flex items-center">
             <Layout
               fields={[
@@ -222,7 +301,7 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
             <div className="flex items-center w-full justify-center p-12">
               <Spinner />
             </div>
-          ) : (
+          ) : usersData?.length ? (
             usersData?.map((user, index) => (
               <>
                 <div className="py-2 flex items-center" key={user.id}>
@@ -243,6 +322,23 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
                 {index !== usersData.length - 1 && <Divider />}
               </>
             ))
+          ) : (
+            <div className="flex flex-col items-center w-full justify-center">
+              <div className="mt-8 mb-4">
+                <img src={require('images/noResult.png')} />
+              </div>
+              <div className="text-neutral-900 text-lg font-bold mb-4">
+                No result found
+                {formData.memberSearch != '' &&
+                  `for ‘${formData.memberSearch}’`}
+              </div>
+              <div className="text-neutral-500 text-xs">
+                Sorry we can’t find the member you are looking for.
+              </div>
+              <div className="text-neutral-500 text-xs">
+                Please check the spelling or try again.
+              </div>
+            </div>
           )}
           {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
         </div>

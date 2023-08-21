@@ -32,12 +32,15 @@ export interface IAudienceForm {
   memberSearch: string;
   teamSearch: string;
   channelSearch: string;
-  department: { value: string; label: string };
-  location: { value: string; label: string };
+  departmentSearch: string;
+  departments: Record<string, boolean | undefined>;
+  locationSearch: string;
+  locations: Record<string, boolean | undefined>;
   selectAll: boolean;
   showSelectedMembers: boolean;
   privacy: { value: string; label: string };
-  category: { value: string; label: string };
+  categorySearch: string;
+  categories: Record<string, boolean | undefined>;
   teams: any;
   channels: any;
   users: any;

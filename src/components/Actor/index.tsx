@@ -2,7 +2,7 @@ import React from 'react';
 import Avatar from 'components/Avatar';
 import { CREATE_POST, VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
-import { ICreatedBy } from 'queries/post';
+import { IAudience, ICreatedBy } from 'queries/post';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
@@ -14,6 +14,7 @@ type ActorProps = {
   createdBy?: ICreatedBy;
   dataTestId?: string;
   disabled?: boolean;
+  audience?: IAudience[];
 };
 
 const Actor: React.FC<ActorProps> = ({

@@ -2,12 +2,8 @@ import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
-import {
-  IDepartment,
-  getDepartments,
-  useGetDepartments,
-} from 'queries/department';
-import { ILocation, getLocations, useGetLocations } from 'queries/location';
+import { IDepartment, useInfiniteDepartments } from 'queries/department';
+// import { ILocation, getLocations, useGetLocations } from 'queries/location';
 import { IGetUser, useInfiniteUsers } from 'queries/users';
 import React, { ReactNode, useEffect } from 'react';
 import {
@@ -43,7 +39,7 @@ const ChannelsBody: React.FC<IChannelsBodyProps> = ({
     useInfiniteChannels({
       q: debouncedSearchValue,
       privacy: [formData.privacy?.value || ''],
-      category: [formData.category?.value || ''],
+      // category: [formData.categories?.value || ''],
     });
   const usersData = data?.pages
     .flatMap((page) => {
@@ -61,8 +57,9 @@ const ChannelsBody: React.FC<IChannelsBodyProps> = ({
       }
       return true;
     });
-  const { data: privacy, isLoading: privacyLoading } = useGetLocations('');
-  const { data: category, isLoading: categoryLoading } = useGetDepartments('');
+  // const { data: privacy, isLoading: privacyLoading } = useGetLocations('');
+  const { data: category, isLoading: categoryLoading } =
+    useInfiniteDepartments();
 
   useEffect(() => {
     if (formData.selectAll) {
@@ -99,17 +96,17 @@ const ChannelsBody: React.FC<IChannelsBodyProps> = ({
     });
   };
 
-  const getLocationOptions = (locations: ILocation[]) => {
-    return locations.map((location: ILocation) => ({
-      label: location.country,
-      value: location.uuid,
-    }));
-  };
+  // const getLocationOptions = (locations: ILocation[]) => {
+  //   return locations.map((location: ILocation) => ({
+  //     label: location.country,
+  //     value: location.uuid,
+  //   }));
+  // };
 
   const getDepartmentOptions = (departments: IDepartment[]) => {
     return departments.map((department: IDepartment) => ({
       label: department.name,
-      value: department.uuid,
+      value: department.id,
     }));
   };
   return (
@@ -131,7 +128,7 @@ const ChannelsBody: React.FC<IChannelsBodyProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             Quick filters:
-            <Layout
+            {/* <Layout
               fields={[
                 {
                   type: FieldType.AsyncSingleSelect,
@@ -144,7 +141,7 @@ const ChannelsBody: React.FC<IChannelsBodyProps> = ({
                 },
               ]}
               className="ml-2"
-            />
+            /> */}
             <Layout
               fields={[
                 {
@@ -163,8 +160,8 @@ const ChannelsBody: React.FC<IChannelsBodyProps> = ({
           <div
             className="cursor-pointer"
             onClick={() => {
-              resetField('department');
-              resetField('location');
+              // resetField('department');
+              // resetField('location');
             }}
           >
             Clear filters
