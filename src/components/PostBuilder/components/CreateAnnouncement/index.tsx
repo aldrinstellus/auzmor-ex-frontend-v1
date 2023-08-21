@@ -34,6 +34,17 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
   const selecetedExpiry = watch('expiryOption');
 
   useEffect(() => {
+    if (mode === CreateAnnouncementMode.DIRECT) {
+      setValue('expiryOption', {
+        label: '1 Week',
+        value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
+        dataTestId: 'announcement-expiry-1week',
+      });
+      setValue('date', new Date(afterXUnit(1, 'weeks').toISOString()));
+    }
+  }, [mode]);
+
+  useEffect(() => {
     if (announcement?.value) {
       setValue('date', new Date(announcement?.value));
     }
