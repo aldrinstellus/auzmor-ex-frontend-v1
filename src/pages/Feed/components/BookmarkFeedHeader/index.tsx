@@ -10,6 +10,10 @@ const BookmarkFeedHeader: React.FC<IBookmarkFeedHeaderProps> = ({
   setAppliedFeedFilters,
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const btnStyle =
+    'w-[106px] inline-flex py-2 px-4 justify-center align-center rounded-full text-sm font-bold';
+
   return (
     <div
       className="bg-blue-50 shadow-md rounded-9xl h-32 px-6 py-4"
@@ -27,22 +31,19 @@ const BookmarkFeedHeader: React.FC<IBookmarkFeedHeaderProps> = ({
           </div>
           <div className="flex gap-4 mt-6">
             <div
-              className="w-28 inline-flex py-2 px-4 justify-center align-center rounded-full border-solid border-white bg-white font-bold"
-              style={{ borderColor: '#e5e5e5' }}
+              className={`${btnStyle} border-1 border-neutral-200 bg-white`}
               data-testid="mybookmarks-tab-posts"
             >
               Posts
             </div>
             <div
-              className="w-28 inline-flex py-2 px-4 w-106 justify-center align-center rounded-full border-solid border-white bg-white font-bold"
-              style={{ backgroundColor: '#e5e5e5', color: '#A3A3A3' }}
+              className={`${btnStyle} bg-neutral-200 text-neutral-400`}
               data-testid="mybookmarks-tab-channels"
             >
               Channels
             </div>
             <div
-              className="w-28 inline-flex py-2 px-4 w-106 justify-center align-center rounded-full border-solid border-white bg-white font-bold"
-              style={{ backgroundColor: '#e5e5e5', color: '#A3A3A3' }}
+              className={`${btnStyle} bg-neutral-200 text-neutral-400`}
               data-testid="mybookmarks-tab-documents"
             >
               Documents
