@@ -190,9 +190,11 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
                 }
                 onReset={() => {
                   setSelectedDepartments([]);
-                  Object.keys(formData.departments).forEach((key: string) =>
-                    setValue(`departments.${key}`, false),
-                  );
+                  if (formData?.departments) {
+                    Object.keys(formData.departments).forEach((key: string) =>
+                      setValue(`departments.${key}`, false),
+                    );
+                  }
                 }}
                 selectionCount={selectedDepartments.length}
               />
@@ -223,9 +225,11 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
                 }
                 onReset={() => {
                   setSelectedLocations([]);
-                  Object.keys(formData.locations).forEach((key: string) =>
-                    setValue(`locations.${key}`, false),
-                  );
+                  if (formData?.locations) {
+                    Object.keys(formData.locations).forEach((key: string) =>
+                      setValue(`locations.${key}`, false),
+                    );
+                  }
                 }}
                 selectionCount={selectedLocations.length}
               />

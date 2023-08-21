@@ -165,9 +165,11 @@ const TeamsBody: React.FC<ITeamsBodyProps> = ({
                 }
                 onReset={() => {
                   setSelectedCategories([]);
-                  Object.keys(formData.categories).forEach((key: string) =>
-                    setValue(`categories.${key}`, false),
-                  );
+                  if (formData?.categories) {
+                    Object.keys(formData.categories).forEach((key: string) =>
+                      setValue(`categories.${key}`, false),
+                    );
+                  }
                 }}
                 selectionCount={selectedCategories.length}
               />
