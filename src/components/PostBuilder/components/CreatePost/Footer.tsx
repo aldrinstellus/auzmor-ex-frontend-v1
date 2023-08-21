@@ -15,17 +15,20 @@ import React, { useContext, useMemo } from 'react';
 import ReactQuill from 'react-quill';
 import { convert } from 'html-to-text';
 import { operatorXOR, twConfig } from 'utils/misc';
+import { PostBuilderMode } from 'components/PostBuilder';
 
 export interface IFooterProps {
   isLoading: boolean;
   quillRef: React.RefObject<ReactQuill>;
   handleSubmitPost: (content: IEditorValue, files: File[]) => void;
+  mode: PostBuilderMode;
 }
 
 const Footer: React.FC<IFooterProps> = ({
   isLoading,
   quillRef,
   handleSubmitPost,
+  mode,
 }) => {
   const { isMember } = useRole();
   const {
@@ -58,11 +61,14 @@ const Footer: React.FC<IFooterProps> = ({
 
   const isMediaDisabled =
     operatorXOR(isPreviewRemoved, !!previewUrl) ||
-    !!(postType && postType !== POST_TYPE.Media);
+    !!(postType && postType !== POST_TYPE.Media) ||
+    mode === PostBuilderMode.Edit;
   const isShoutoutDisabled =
     operatorXOR(isPreviewRemoved, !!previewUrl) ||
-    (postType && postType !== POST_TYPE.Shoutout);
-  const isPollDisabled = postType && postType !== POST_TYPE.Poll;
+    (postType && postType !== POST_TYPE.Shoutout) ||
+    mode === PostBuilderMode.Edit;
+  const isPollDisabled =
+    (postType && postType !== POST_TYPE.Poll) || mode === PostBuilderMode.Edit;
 
   const postMenuItems = useMemo(
     () => [
@@ -237,7 +243,7 @@ const Footer: React.FC<IFooterProps> = ({
                     postMenuItem?.disabled ? (
                       <div
                         className={`flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl ${
-                          isPreviewRemoved || !!previewUrl
+                          postMenuItem.disabled
                             ? 'cursor-not-allowed'
                             : 'cursor-default'
                         }`}

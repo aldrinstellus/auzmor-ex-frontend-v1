@@ -81,6 +81,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
       <Footer
         isLoading={isLoading}
         quillRef={quillRef}
+        mode={mode}
         handleSubmitPost={handleSubmitPost}
       />
       <input

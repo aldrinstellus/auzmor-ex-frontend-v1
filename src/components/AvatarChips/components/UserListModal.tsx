@@ -23,11 +23,11 @@ const UserListModal: React.FC<IUserListModalProps> = ({
         onClose={() => closeModal()}
         closeBtnDataTestId="app-filter-close"
       />
-      <div className="w-full p-4 pt-0 max-h-[490px] overflow-y-auto">
+      <div className="w-full p-4 pt-0 max-h-[490px] min-h-[490px] overflow-y-auto">
         {users.map((user, index) => (
           <div
             key={user.userId}
-            className={`py-4 w-full ${
+            className={`py-3 w-full ${
               index !== users.length - 1 && 'border-b-1 border-neutral-100'
             }`}
           >

@@ -255,7 +255,7 @@ const Carousel: React.FC<ICarouselProps> = ({
               : 'discardvideo'
           }`}
         >
-          <Icon name="close" size={16} className="p-2 bg-white rounded-7xl" />
+          <Icon name="close" size={16} className="p-2 bg-white rounded-7xl cursor-pointer" />
         </div>
       </div>
       {!isPlaying && (

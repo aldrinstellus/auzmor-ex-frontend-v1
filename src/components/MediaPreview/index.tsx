@@ -439,7 +439,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                 <Icon
                   name="edit"
                   size={16}
-                  className="p-2 rounded-7xl mr-2 bg-white"
+                  className="p-2 rounded-7xl mr-2 bg-white cursor-pointer"
                   stroke={twConfig.theme.colors.neutral['900']}
                   fill={twConfig.theme.colors.neutral['900']}
                 />
@@ -453,7 +453,8 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                 <Icon
                   name="close"
                   size={16}
-                  className="p-2 rounded-7xl bg-white"
+                  disabled
+                  className="p-2 rounded-7xl bg-white cursor-pointer"
                   stroke={twConfig.theme.colors.neutral['900']}
                   fill={twConfig.theme.colors.neutral['900']}
                 />

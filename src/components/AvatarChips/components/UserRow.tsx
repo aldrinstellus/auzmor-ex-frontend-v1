@@ -13,7 +13,7 @@ interface IUserRowProps {
 const UserRow: React.FC<IUserRowProps> = ({ user }) => {
   const { user: currentUser } = useAuth();
   return (
-    <div className="flex items-center justify-between w-full group hover:bg-primary-50 transition">
+    <div className="flex items-center justify-between w-full group hover:bg-primary-50 transition py-1">
       <div className="flex items-center gap-4 flex-1">
         <Avatar
           name={getFullName(user)}
@@ -22,7 +22,7 @@ const UserRow: React.FC<IUserRowProps> = ({ user }) => {
         />
         <div>
           <p className="font-bold text-sm line-clamp-1">{getFullName(user)}</p>
-          <p className="text-xs text-neutral-500">{user.email}</p>
+          <p className="text-xs text-neutral-500 line-clamp-1">{user.email}</p>
         </div>
       </div>
       {user.designation && (
@@ -36,7 +36,7 @@ const UserRow: React.FC<IUserRowProps> = ({ user }) => {
       {user.workLocation && (
         <>
           <div className="bg-neutral-500 rounded-full mx-4 w-1 h-1" />
-          <div className="text-neutral-500 text-xs flex-1">
+          <div className="text-neutral-500 text-xs flex-1 line-clamp-1">
             {user.workLocation}
           </div>
         </>

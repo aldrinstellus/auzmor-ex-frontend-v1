@@ -38,17 +38,17 @@ const Tooltip = ({
     <span className={` ${className}`} onClick={onClick}>
       <ReactTooltip
         className={`${tooltipPlacement} ${tooltipId}`}
-        id={tooltipId || `my-tooltip`}
+        id={`my-tooltip`}
         react-tooltip-arrow
-        anchorSelect={`.${tooltipId || 'my-anchor-element'}`}
+        anchorSelect=".my-anchor-element"
         clickable
       >
         <div>{tooltipContent}</div>
       </ReactTooltip>
       <a
         href="#"
-        className={`${tooltipId || 'my-anchor-element'} cursor-default mt-10`}
-        data-tooltip-id={tooltipId || 'my-tooltip'}
+        className="my-anchor-element cursor-default mt-10"
+        data-tooltip-id="my-tooltip"
         data-tooltip-content={`${
           typeof tooltipContent === 'string' ? tooltipContent : ''
         }`}
