@@ -134,7 +134,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
             <Divider className="mt-4" />
             <div className="pt-4">
               {isCreateCommentLoading && <CommentSkeleton />}
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-4">
                 {commentIds
                   ?.filter(({ id }) => !!comment[id])
                   .map(({ id }, i: any) => (

@@ -102,7 +102,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
           {replyIds && replyIds.length > 0 && (
             <div>
               {isCreateCommentLoading && <CommentSkeleton />}
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-4">
                 {replyIds
                   .filter(({ id }) => !!comment[id])
                   .map(({ id }) => (
