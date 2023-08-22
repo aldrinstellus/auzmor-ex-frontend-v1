@@ -1,5 +1,5 @@
 import { FieldType } from 'components/Form';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   CreatePostContext,
@@ -46,36 +46,18 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
     useForm<IAnnouncementForm>({
       mode: 'onChange',
       defaultValues: {
-        date: new Date(afterXUnit(1, 'day').toISOString()),
+        date: announcement?.value
+          ? new Date(announcement?.value)
+          : new Date(afterXUnit(1, 'day').toISOString()),
+        expiryOption: announcement || {
+          label: '1 Week',
+          value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
+          dataTestId: 'announcement-expiry-1week',
+        },
       },
     });
 
   const selecetedExpiry = watch('expiryOption');
-
-  useEffect(() => {
-    if (mode === CreateAnnouncementMode.DIRECT) {
-      setValue('expiryOption', {
-        label: '1 Week',
-        value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
-        dataTestId: 'announcement-expiry-1week',
-      });
-      setValue('date', new Date(afterXUnit(1, 'weeks').toISOString()));
-    }
-  }, [mode]);
-
-  useEffect(() => {
-    if (announcement?.value) {
-      setValue('date', new Date(announcement?.value));
-    }
-    setValue(
-      'expiryOption',
-      announcement || {
-        label: '1 Week',
-        value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
-        dataTestId: 'announcement-expiry-1week',
-      },
-    );
-  }, []);
 
   const expiryFields = [
     {
