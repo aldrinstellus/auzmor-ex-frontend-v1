@@ -240,20 +240,19 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
 
   return (
     <div {...eventHandlers}>
+      <Header
+        title="Personal Details"
+        dataTestId="personal-details"
+        isHovered={isHovered}
+        isEditable={isEditable}
+        setIsEditable={setIsEditable}
+        canEdit={canEdit}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        setInitialSkills={setInitialSkills}
+        isLoading={updateUserPersonalDetailsMutation.isLoading}
+      />
       <Card className={onHoverStyles}>
-        <Header
-          title="Personal Details"
-          dataTestId="personal-details"
-          isHovered={isHovered}
-          isEditable={isEditable}
-          setIsEditable={setIsEditable}
-          canEdit={canEdit}
-          handleSubmit={handleSubmit}
-          onSubmit={onSubmit}
-          setInitialSkills={setInitialSkills}
-          isLoading={updateUserPersonalDetailsMutation.isLoading}
-        />
-        <Divider />
         <div className="p-6">
           <div className="pb-4 space-y-3">
             {!isEditable ? (
@@ -269,7 +268,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                         moment(personalDetails?.personal?.birthDate).format(
                           'DD MMMM YYYY',
                         )) ||
-                        'N/A'}
+                        'Field not specified'}
                     </span>
                   </div>
                 </div>
@@ -290,7 +289,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                       ?.toUpperCase() +
                       personalDetails?.personal?.gender
                         ?.slice(1)
-                        ?.toLowerCase() || 'N/A'}
+                        ?.toLowerCase() || 'Field not specified'}
                   </div>
                 </div>
                 <div className="space-y-2 mb-4">
@@ -305,7 +304,8 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                       className="text-neutral-900 text-base font-medium"
                       data-testid="personal-details-permanent-address"
                     >
-                      {personalDetails?.personal?.permanentAddress || 'N/A'}
+                      {personalDetails?.personal?.permanentAddress ||
+                        'Field not specified'}
                     </div>
                   </div>
                 </div>
@@ -324,7 +324,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                       {personalDetails?.personal?.maritalStatus?.charAt(0) +
                         personalDetails?.personal?.maritalStatus
                           ?.slice(1)
-                          ?.toLowerCase() || 'N/A'}
+                          ?.toLowerCase() || 'Field not specified'}
                     </div>
                   </div>
                 </div>
@@ -346,7 +346,7 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                           </ul>
                         ),
                       )) ||
-                      'N/A'}
+                      'Field not specified'}
                   </div>
                 </div>
               </>

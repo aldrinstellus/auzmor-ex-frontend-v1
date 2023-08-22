@@ -70,7 +70,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
             <Icon name="flashIcon" size={16} className="p-[1px]" />
             <div className="text-xs font-bold">Announcement</div>
           </div>
-          {isLoading || dataPostId === postId ? (
+          {isLoading ? (
             <SkeletonLoader />
           ) : (
             <div className="w-full px-6">

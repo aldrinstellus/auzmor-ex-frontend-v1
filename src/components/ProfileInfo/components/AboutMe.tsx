@@ -45,7 +45,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({
       mode: 'onSubmit',
       defaultValues: {
         personal: {
-          about: aboutMeData?.personal?.about || 'N/A',
+          about: aboutMeData?.personal?.about || 'Field not specified',
         },
       },
     });
@@ -155,27 +155,27 @@ const AboutMe: React.FC<IAboutMeProps> = ({
 
   return (
     <div {...eventHandlers}>
+      <Header
+        title={isEditable ? 'About Me' : 'About'}
+        dataTestId="about-me"
+        isHovered={isHovered}
+        isEditable={isEditable}
+        setIsEditable={setIsEditable}
+        canEdit={canEdit}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        isLoading={updateUserAboutMeMutation.isLoading}
+        reset={reset}
+      />
       <Card className={onHoverStyles}>
-        <Header
-          title={isEditable ? 'About Me' : 'About'}
-          dataTestId="about-me"
-          isHovered={isHovered}
-          isEditable={isEditable}
-          setIsEditable={setIsEditable}
-          canEdit={canEdit}
-          handleSubmit={handleSubmit}
-          onSubmit={onSubmit}
-          isLoading={updateUserAboutMeMutation.isLoading}
-          reset={reset}
-        />
-        <Divider />
-        <div className="text-neutral-900 text-sm font-normal pt-4 pb-6 px-6">
+        <div className="text-neutral-900 text-sm font-normal px-4 pb-4">
           {!isEditable ? (
             <div
               className="whitespace-pre-wrap"
               data-testid="aboutme-description"
             >
-              {renderContentWithLinks(aboutMeData?.personal?.about) || 'N/A'}
+              {renderContentWithLinks(aboutMeData?.personal?.about) ||
+                'Field not specified'}
             </div>
           ) : (
             <div>

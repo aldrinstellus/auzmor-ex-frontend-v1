@@ -41,9 +41,9 @@ const Header: React.FC<HeaderProps> = ({
   reset,
 }) => {
   return (
-    <div className="flex justify-between items-center px-6">
+    <div className="flex justify-between items-center mb-4">
       <div
-        className="text-neutral-900 font-bold text-base pt-6 pb-4"
+        className="text-neutral-900 font-bold text-lg"
         data-testid={dataTestId}
       >
         {title}

@@ -57,8 +57,10 @@ const Feed: React.FC<IFeedProps> = () => {
   const [searchParams] = useSearchParams();
   const { pathname } = useLocation();
   const hashtag = searchParams.get('hashtag') || '';
+
   const bookmarks = pathname === '/bookmarks';
   const scheduled = pathname === '/scheduledPosts';
+
   const { ref, inView } = useInView();
   const [open, openModal, closeModal] = useModal(undefined, false);
   const [appliedFeedFilters, setAppliedFeedFilters] = useState<IPostFilters>({

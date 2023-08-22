@@ -36,18 +36,20 @@ const PopupMenuItem: React.FC<PopupMenuItemProps> = ({
       data-testid={menuItem.dataTestId}
     >
       {menuItem.icon && (
-        <Icon
-          name={menuItem.icon}
-          size={16}
-          className={menuItem.iconClassName}
-          fill={menuItem.fill || twConfig.theme.colors.primary['500']}
-          stroke={
-            (menuItem.disabled && twConfig.theme.colors.neutral['200']) ||
-            menuItem.stroke
-          }
-          hover={hovered}
-          disabled={menuItem.disabled}
-        />
+        <div className="w-4">
+          <Icon
+            name={menuItem.icon}
+            size={16}
+            className={menuItem.iconClassName}
+            fill={menuItem.fill || twConfig.theme.colors.primary['500']}
+            stroke={
+              (menuItem.disabled && twConfig.theme.colors.neutral['200']) ||
+              menuItem.stroke
+            }
+            hover={hovered}
+            disabled={menuItem.disabled}
+          />
+        </div>
       )}
       <div
         className={clsx(

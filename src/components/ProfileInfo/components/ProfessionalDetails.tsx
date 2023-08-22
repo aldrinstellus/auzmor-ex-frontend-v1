@@ -116,19 +116,18 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
 
   return (
     <div {...eventHandlers}>
+      <Header
+        title="Professional Details"
+        dataTestId="professional-details"
+        isHovered={isHovered}
+        isEditable={isEditable}
+        setIsEditable={setIsEditable}
+        canEdit={canEdit}
+        onSubmit={onSubmit}
+        handleSubmit={handleSubmit}
+        isLoading={updateUserTimezoneMutation.isLoading}
+      />
       <Card className={onHoverStyles}>
-        <Header
-          title="Professional Details"
-          dataTestId="professional-details"
-          isHovered={isHovered}
-          isEditable={isEditable}
-          setIsEditable={setIsEditable}
-          canEdit={canEdit}
-          onSubmit={onSubmit}
-          handleSubmit={handleSubmit}
-          isLoading={updateUserTimezoneMutation.isLoading}
-        />
-        <Divider />
         <form>
           <div className="py-6 space-y-6 px-6">
             <div className="space-y-2">
@@ -170,7 +169,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
                     className="text-neutral-900 text-base font-medium"
                     data-testid="user-timezone"
                   >
-                    {userTimezone || 'N/A'}
+                    {userTimezone || 'Field not specified'}
                   </div>
                 </div>
               )}

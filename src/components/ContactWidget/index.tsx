@@ -169,7 +169,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                           className="text-sm font-normal text-neutral-900"
                           data-testid="user-contact-widget-email"
                         >
-                          {contactCardData?.primaryEmail || 'N/A'}
+                          {contactCardData?.primaryEmail || '-'}
                         </div>
                       </div>
                       <CopyButton
@@ -186,7 +186,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                           className="text-sm font-normal text-neutral-900"
                           data-testid="user-contact-widget-number"
                         >
-                          {phoneValue || 'N/A'}
+                          {phoneValue || '-'}
                         </div>
                       </div>
                       {phoneValue && (
@@ -202,7 +202,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                     <Layout fields={fields} />
                   </div>
                 )}
-                <div className="flex justify-center items-center w-full">
+                {/* <div className="flex justify-center items-center w-full">
                   <Button
                     label="View Organization Chart"
                     variant={Variant.Secondary}
@@ -212,7 +212,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                     disabled
                     dataTestId="user-view-org-chart"
                   />
-                </div>
+                </div> */}
               </div>
             </div>
           </form>

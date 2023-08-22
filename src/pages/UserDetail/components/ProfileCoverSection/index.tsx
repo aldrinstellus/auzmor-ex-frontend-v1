@@ -41,7 +41,7 @@ import useHover from 'hooks/useHover';
 import useRole from 'hooks/useRole';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { PRIMARY_COLOR, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import DeletePeople from 'pages/Users/components/DeleteModals/People';
 import ReactivatePeople from 'pages/Users/components/ReactivateModal/Reactivate';
@@ -212,8 +212,8 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
 
   return (
     <div {...eventHandlers}>
-      <Card className="bg-white pb-6 w-full" data-testid="profile-details">
-        <div className="relative">
+      <Card className="bg-white w-full" data-testid="profile-details">
+        <div className="relative p-0">
           <div
             className="w-full overflow-hidden h-[180px]"
             data-testid={coverImageName}
@@ -234,7 +234,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
               />
             )}
           </div>
-          <div className="absolute left-8 bottom-[-6rem]">
+          <div className="absolute left-8 -bottom-[72px]">
             <Avatar
               name={getFullName(userDetails)}
               image={getProfileImage(userDetails)}
@@ -265,16 +265,19 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             />
           )}
         </div>
-        <div className="flex ml-[12rem]">
+        <div className="flex ml-[12.5rem] -mt-8 pb-5">
           <div className="flex flex-col w-full">
             <div className="flex items-center">
-              <div className="mr-6 mt-2 flex justify-between w-full">
+              <div className="mr-6 flex justify-between w-full">
                 <div className="flex space-x-4">
-                  <div className="text-2xl font-bold" data-testid="user-name">
+                  <div
+                    className="text-2xl font-bold text-neutral-900"
+                    data-testid="user-name"
+                  >
                     {getFullName(userDetails)}
                   </div>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex">
                   <Button
                     className="flex"
                     leftIconClassName="mr-2"
@@ -352,37 +355,49 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                 </div>
               </div>
             </div>
-            <div className="flex space-x-4 mt-3 items-center">
-              <div
-                className="text-xs font-normal text-neutral-900"
-                data-testid="user-designation"
-              >
-                {userDetails?.designation || 'N/A'}
-              </div>
-              <Divider variant={DividerVariant.Vertical} className="h-8" />
-              <div className="flex space-x-3 items-center">
+            <div className="flex space-x-6 items-center">
+              <div className="flex space-x-2 items-center">
                 <IconWrapper type={Type.Square} className="cursor-pointer">
-                  <Icon name="briefcase" size={16} />
+                  <Icon name="briefcase" size={16} fill={PRIMARY_COLOR} />
                 </IconWrapper>
                 <div
-                  className="text-xs font-normal text-neutral-900"
+                  className="text-sm font-normal text-neutral-400"
+                  data-testid="user-designation"
+                >
+                  {userDetails?.designation || '-'}
+                </div>
+              </div>
+              <Divider variant={DividerVariant.Vertical} className="h-8" />
+              <div className="flex space-x-2 items-center">
+                <IconWrapper type={Type.Square} className="cursor-pointer">
+                  <Icon name="briefcase" size={16} fill={PRIMARY_COLOR} />
+                </IconWrapper>
+                <div
+                  className="text-sm font-normal text-neutral-400"
                   data-testid="user-department"
                 >
-                  {userDetails?.department || 'N/A'}
+                  {userDetails?.department || '-'}
                 </div>
               </div>
               <Divider variant={DividerVariant.Vertical} className="h-8" />
-              <div className="flex space-x-3 items-center">
+              <div className="flex space-x-2 items-center">
                 <IconWrapper type={Type.Square} className="cursor-pointer">
-                  <Icon name="location" size={16} />
+                  <Icon name="location" size={16} stroke={PRIMARY_COLOR} />
                 </IconWrapper>
                 <div
-                  className="text-xs font-normal text-neutral-900"
+                  className="text-sm font-normal text-neutral-400"
                   data-testid="user-location"
                 >
-                  {userDetails?.workLocation || 'N/A'}
+                  {userDetails?.workLocation || '-'}
                 </div>
               </div>
+            </div>
+            <div className="mt-3.5 flex items-center space-x-2">
+              <Icon name="linkedinFilled" />
+              <Icon name="linkedinFilled" />
+              <Icon name="linkedinFilled" />
+              <Icon name="linkedinFilled" />
+              <Icon name="linkedinFilled" />
             </div>
           </div>
         </div>

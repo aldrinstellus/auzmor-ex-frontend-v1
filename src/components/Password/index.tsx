@@ -211,7 +211,8 @@ const Password: React.FC<PasswordProps> = ({
                 data-testid={dataTestId}
                 defaultValue={defaultValue}
                 {...field}
-                onChange={(e: any) => {
+                onChange={(e) => {
+                  e.target.value = e.target.value?.trim();
                   field.onChange(e);
                   onChange && onChange(e);
                 }}

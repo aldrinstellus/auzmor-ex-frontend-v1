@@ -27,21 +27,21 @@ const BookmarkFeedHeader: React.FC<IBookmarkFeedHeaderProps> = ({
           </div>
           <div className="flex gap-4 mt-6">
             <div
-              className="w-28 inline-flex py-2 px-4 justify-center align-center rounded-full border-solid border-white bg-white font-bold"
+              className="w-28 inline-flex py-2 px-4 justify-center align-center rounded-full border-solid border-white bg-white font-bold cursor-pointer"
               style={{ borderColor: '#e5e5e5' }}
               data-testid="mybookmarks-tab-posts"
             >
               Posts
             </div>
             <div
-              className="w-28 inline-flex py-2 px-4 w-106 justify-center align-center rounded-full border-solid border-white bg-white font-bold"
+              className="w-28 inline-flex py-2 px-4 w-106 justify-center align-center rounded-full border-solid border-white bg-white font-bold cursor-not-allowed"
               style={{ backgroundColor: '#e5e5e5', color: '#A3A3A3' }}
               data-testid="mybookmarks-tab-channels"
             >
               Channels
             </div>
             <div
-              className="w-28 inline-flex py-2 px-4 w-106 justify-center align-center rounded-full border-solid border-white bg-white font-bold"
+              className="w-28 inline-flex py-2 px-4 w-106 justify-center align-center rounded-full border-solid border-white bg-white font-bold cursor-not-allowed"
               style={{ backgroundColor: '#e5e5e5', color: '#A3A3A3' }}
               data-testid="mybookmarks-tab-documents"
             >
