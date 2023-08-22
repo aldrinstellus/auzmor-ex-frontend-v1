@@ -71,7 +71,7 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
       errorDataTestId: 'add-app-exceed-description',
       dataTestId: 'about-app-description',
       control,
-      className: 'resize-none rounded-9xl',
+      className: 'resize-none rounded-19xl',
       rows: 3,
       showCounter: true,
     },
@@ -98,7 +98,7 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
         <Layout fields={appFields} className="w-full flex flex-col gap-y-6" />
         <div className="w-full">
           <UploadIconButton setValue={setValue} icon={defaultValues()?.icon} />
-          <div className="pt-6">
+          <div className="pt-8">
             <p className="text-neutral-900 font-bold pb-1 text-sm">Audience</p>
             {audience.length > 0 ? (
               <div className="flex gap-2">
@@ -127,6 +127,7 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
                 variant={Variant.Secondary}
                 label="Everyone"
                 size={Size.Small}
+                dataTestId='add-app-audience'
                 onClick={() => setActiveFlow(ADD_APP_FLOW.AudienceSelector)}
               />
             )}

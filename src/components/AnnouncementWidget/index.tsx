@@ -66,8 +66,8 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
       </div>
       <div className="mt-2">
         <Card className="pb-6 flex flex-col rounded-9xl">
-          <div className="rounded-t-9xl bg-blue-700 text-white py-3 w-full flex justify-start space-x-1 px-3">
-            <Icon name="flashIcon" size={16} className="p-[1px]" />
+          <div className="rounded-t-9xl bg-blue-700 text-white py-3 w-full flex justify-start space-x-3 px-3">
+            <Icon name="flashIcon" size={16} />
             <div className="text-xs font-bold">Announcement</div>
           </div>
           {isLoading || dataPostId === postId ? (
@@ -104,7 +104,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
                           <div className="text-xs text-gray-500">
                             {humanizeTime(postData?.createdAt)}
                           </div>
-                          <div className="bg-neutral-500 rounded-full w-2 h-2" />
+                          <div className="bg-neutral-500 rounded-full w-1 h-1" />
                           <Icon
                             name="globalOutline"
                             size={16}

@@ -50,19 +50,17 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
       {isAnnouncement &&
         !(data?.acknowledged || hasDatePassed(data?.announcement?.end)) && (
           <div
-            className={`flex justify-between items-center bg-blue-700 -mb-4 ${
-              hasLoggedInUserCreatedAnnouncement ? 'p-3' : 'p-2'
-            } rounded-t-9xl`}
+            className={`flex justify-between items-center bg-blue-700 px-6 py-2 rounded-t-9xl`}
             data-testid="announcement-header"
           >
             <div className="flex justify-center items-center text-white text-xs font-bold space-x-3">
-              <Icon name="flashIcon" size={18} stroke="#fff" />
+              <Icon name="flashIcon" size={16} stroke="#fff" />
               <div className="text-xs font-bold">Announcement</div>
             </div>
             {!hasLoggedInUserCreatedAnnouncement && (
               <Button
-                className="text-sm font-bold"
-                label={'Mark as read'}
+                className="text-sm font-bold !py-[3px]"
+                label="Mark as read"
                 size={Size.Small}
                 variant={Variant.Tertiary}
                 loading={acknowledgeMutation.isLoading}

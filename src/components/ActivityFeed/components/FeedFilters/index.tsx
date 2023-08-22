@@ -2,6 +2,7 @@ import { Popover, Transition } from '@headlessui/react';
 import Button, { Variant } from 'components/Button';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
+import Tooltip from 'components/Tooltip';
 import {
   ActivityType,
   IPostFilters,
@@ -236,21 +237,27 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
 
   return (
     <Popover className="z-40 mr-4">
-      <Popover.Button
-        className="box-border font-bold flex flex-row justify-center items-center p-1 border-none relative"
-        onClick={() => {
-          setShowFeedFilter(!showFeedFilter);
-          setHaveFiltersBeenModified(false);
-        }}
-        data-testid={dataTestId}
+      <Tooltip
+        tooltipContent="Filters"
+        tooltipPosition="top"
+        tooltipId="filter-tooltip"
       >
-        {getFeedFilterCount() > 0 && (
-          <div className="absolute rounded-full bg-red-600 text-white text-xxs -top-1 -right-1.5 flex w-4 h-4 items-center justify-center">
-            {getFeedFilterCount()}
-          </div>
-        )}
-        <Icon name="filter" size={24} className="" />
-      </Popover.Button>
+        <Popover.Button
+          className="box-border font-bold flex flex-row justify-center items-center p-1 border-none relative"
+          onClick={() => {
+            setShowFeedFilter(!showFeedFilter);
+            setHaveFiltersBeenModified(false);
+          }}
+          data-testid={dataTestId}
+        >
+          {getFeedFilterCount() > 0 && (
+            <div className="absolute rounded-full bg-red-600 text-white text-xxs -top-1 -right-1.5 flex w-4 h-4 items-center justify-center">
+              {getFeedFilterCount()}
+            </div>
+          )}
+          <Icon name="filter" size={24} className="" />
+        </Popover.Button>
+      </Tooltip>
       <Transition
         show={showFeedFilter}
         enter="transition duration-100 ease-out"

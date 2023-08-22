@@ -36,14 +36,18 @@ const PostPage: React.FC = () => {
               post={post}
               customNode={
                 post?.comment && (
-                  <Comment
-                    comment={post.comment}
-                    customNode={
-                      post?.comment?.comment ? (
-                        <Reply comment={post?.comment?.comment} />
-                      ) : null
-                    }
-                  />
+                  <div className="mt-6">
+                    <Comment
+                      comment={post.comment}
+                      customNode={
+                        post?.comment?.comment ? (
+                          <div className="mt-4">
+                            <Reply comment={post?.comment?.comment} />
+                          </div>
+                        ) : null
+                      }
+                    />
+                  </div>
                 )
               }
             />

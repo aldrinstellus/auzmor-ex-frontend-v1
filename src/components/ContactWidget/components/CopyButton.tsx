@@ -40,6 +40,7 @@ const CopyButton: React.FC<CopyButtonProps> = ({
             autoClose: TOAST_AUTOCLOSE_TIME,
             position: 'bottom-center',
             transition: slideInAndOutBottom,
+            theme: 'dark',
           });
         }}
       />

@@ -273,7 +273,7 @@ export const Comment: React.FC<CommentProps> = ({
       </div>
 
       {/* Replies */}
-      <div className="flex items-center mb-4">
+      <div className="flex items-center">
         <div className="flex items-center space-x-2">
           <Likes
             reaction={comment?.myReaction?.reaction || ''}
@@ -366,7 +366,9 @@ export const Comment: React.FC<CommentProps> = ({
       </div>
 
       {showReplies ? (
-        <Reply entityId={comment.id} />
+        <div className="mt-4">
+          <Reply entityId={comment.id} />
+        </div>
       ) : (
         !previousShowReply.current && customNode
       )}

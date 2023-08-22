@@ -26,6 +26,8 @@ import useModal from 'hooks/useModal';
 import DeletePeople from '../DeleteModals/People';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import UserProfileDropdown from 'components/UserProfileDropdown';
+import DeactivatePeople from '../DeactivateModal/Deactivate';
+import ReactivatePeople from '../ReactivateModal/Reactivate';
 
 export interface IPeopleCardProps {
   id: string;
@@ -73,7 +75,11 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
   const { user } = useAuth();
   const { isAdmin } = useRole();
   const [isHovered, eventHandlers] = useHover();
-  const [open, openModal, closeModal] = useModal();
+  const [openDelete, openDeleteModal, closeDeleteModal] = useModal();
+  const [openReactivate, openReactivateModal, closeReactivateModal] =
+    useModal();
+  const [openDeactivate, openDeactivateModal, closeDeactivateModal] =
+    useModal();
 
   const resendInviteMutation = useResendInvitation();
   const updateUserStatusMutation = useMutation({
@@ -154,7 +160,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
           status={status}
           isAdmin={isAdmin}
           isHovered={isHovered}
-          onDeleteClick={openModal}
+          onDeleteClick={openDeleteModal}
           onEditClick={() =>
             navigate(
               `/users/${id}?edit=${getEditSection(
@@ -165,19 +171,9 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
               )}`,
             )
           }
-          onReactivateClick={() => {
-            updateUserStatusMutation.mutate({
-              id,
-              status: UserStatus.Active,
-            });
-          }}
+          onReactivateClick={openReactivateModal}
           onPromoteClick={() => updateUserRoleMutation.mutate({ id })}
-          onDeactivateClick={() =>
-            updateUserStatusMutation.mutate({
-              id,
-              status: UserStatus.Inactive,
-            })
-          }
+          onDeactivateClick={openDeactivateModal}
           onResendInviteClick={() => () => {
             toast(<SuccessToast content="Invitation has been sent" />, {
               closeButton: (
@@ -307,9 +303,21 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
         </div>
       </Card>
       <DeletePeople
-        open={open}
-        openModal={openModal}
-        closeModal={closeModal}
+        open={openDelete}
+        openModal={openDeleteModal}
+        closeModal={closeDeleteModal}
+        userId={id}
+      />
+      <DeactivatePeople
+        open={openDeactivate}
+        openModal={openDeactivateModal}
+        closeModal={closeDeactivateModal}
+        userId={id}
+      />
+      <ReactivatePeople
+        open={openReactivate}
+        openModal={openReactivateModal}
+        closeModal={closeReactivateModal}
         userId={id}
       />
     </div>

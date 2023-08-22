@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef } from 'react';
 import Card from 'components/Card';
 import Actor from 'components/Actor';
 import { VIEW_POST } from 'components/Actor/constant';
@@ -22,16 +22,16 @@ import Divider from 'components/Divider';
 import useModal from 'hooks/useModal';
 import PublishPostModal from './components/PublishPostModal';
 import EditSchedulePostModal from './components/EditSchedulePostModal';
-import { PRIMARY_COLOR, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useFeedStore } from 'stores/feedStore';
-import { IpcNetConnectOpts } from 'net';
 import Tooltip from 'components/Tooltip';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import moment from 'moment';
 import _ from 'lodash';
+import { useNavigate } from 'react-router';
 
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
@@ -67,6 +67,7 @@ type PostProps = {
 const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
   const [showComments, openComments, closeComments] = useModal(false);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [showReactionModal, openReactionModal, closeReactionModal] =
     useModal(false);
   const reaction = post?.myReaction?.reaction;
@@ -95,6 +96,8 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
         <SuccessToast
           content="Post has been bookmarked successfully!"
           data-testid="toast-successfully-bookmarked"
+          actionLabel="View Bookmarks"
+          action={() => navigate('/bookmarks')}
         />,
         {
           closeButton: (
@@ -224,12 +227,12 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
             <div className="flex">
               <div className="mr-2">
                 <Icon
-                  name="calendarOutlineTwo"
+                  name="calendarOutline"
                   size={16}
                   stroke={twConfig.theme.colors.neutral[900]}
                 />
               </div>
-              <div className="text-xs text-neutral-600">
+              <div className="text-xs font-medium text-neutral-600">
                 Post scheduled for{' '}
                 {moment(post?.schedule.dateTime).format('ddd, MMM DD')} at{' '}
                 {moment(post?.schedule.dateTime).format('h:mm a')}
@@ -245,7 +248,8 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
                 />
               </div>
               <div
-                className="text-neutral-900 underline cursor-pointer hover:text-primary-500"
+                className="text-xs font-bold whitespace-nowrap text-neutral-900 
+                underline cursor-pointer hover:text-primary-500 decoration-neutral-400"
                 onClick={openPublishModal}
                 data-testid="scheduledpost-tab-publishnow"
               >
@@ -360,7 +364,9 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
           )}
           {/* Comments */}
           {showComments ? (
-            <CommentCard entityId={post?.id || ''} />
+            <div className="mt-6">
+              <CommentCard entityId={post?.id || ''} />
+            </div>
           ) : (
             !previousShowComment.current && customNode
           )}

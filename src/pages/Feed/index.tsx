@@ -28,7 +28,7 @@ import MyTeamWidget from 'components/MyTeamWidget';
 import HashtagFeedHeader from './components/HashtagFeedHeader';
 import BookmarkFeedHeader from './components/BookmarkFeedHeader';
 import ScheduledFeedHeader from './components/ScheduledFeedHeader';
-import EntitySearchModal from 'components/EntitySearchModal';
+import Tooltip from 'components/Tooltip';
 interface IFeedProps {}
 
 export interface IProfileImage {
@@ -199,12 +199,31 @@ const Feed: React.FC<IFeedProps> = () => {
                       dataTestId="filters-dropdown"
                     />
 
-                    <Link to="/scheduledPosts">
-                      <Icon name="clock" size={24} className="mr-4" />
-                    </Link>
-                    <Link to="/bookmarks" data-testid="feed-page-mybookmarks">
-                      <Icon name="postBookmark" size={24} className="mr-4" />
-                    </Link>
+                    <div className="mr-4">
+                      <Tooltip
+                        tooltipContent="My Scheduled Posts"
+                        tooltipPosition="top"
+                        tooltipId="my-scheduled-posts-tooltip"
+                      >
+                        <Link to="/scheduledPosts">
+                          <Icon name="clock" size={24} />
+                        </Link>
+                      </Tooltip>
+                    </div>
+                    <div className="mr-4">
+                      <Tooltip
+                        tooltipContent="My Bookmarks"
+                        tooltipPosition="top"
+                        tooltipId="my-bookmarks-tooltip"
+                      >
+                        <Link
+                          to="/bookmarks"
+                          data-testid="feed-page-mybookmarks"
+                        >
+                          <Icon name="postBookmark" size={24} />
+                        </Link>
+                      </Tooltip>
+                    </div>
                   </div>
                   <Divider className="bg-neutral-200" />
                   <SortByDropdown />

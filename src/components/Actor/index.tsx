@@ -100,7 +100,7 @@ const Actor: React.FC<ActorProps> = ({
               >
                 {createdTime}
               </div>
-              <div className="bg-neutral-500 rounded-full w-2 h-2" />
+              <div className="bg-neutral-500 rounded-full w-1 h-1" />
               <Icon name="globalOutline" size={16} />
             </div>
           ) : null}

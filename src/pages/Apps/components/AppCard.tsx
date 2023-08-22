@@ -1,11 +1,10 @@
+import React, { useEffect, useState } from 'react';
+import PopupMenu from 'components/PopupMenu';
 import Badge from 'components/Badge';
 import Card from 'components/Card';
-import React, { useEffect, useState } from 'react';
 import { App, editApp } from 'queries/apps';
-import { Link } from 'react-router-dom';
 import useHover from 'hooks/useHover';
 import Icon from 'components/Icon';
-import Divider from 'components/Divider';
 import useModal from 'hooks/useModal';
 import AppDetailModal from './AppCardDetail';
 import AddApp, { APP_MODE } from './AddApp';
@@ -17,12 +16,14 @@ import { toast } from 'react-toastify';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import useRole from 'hooks/useRole';
 
 type AppCardProps = {
   app: App;
 };
 
 const AppCard: React.FC<AppCardProps> = ({ app }) => {
+  const { isAdmin } = useRole();
   const [appCardHovered, appCardEventHandlers] = useHover();
   const [menuHovered, menuEventHandlers] = useHover();
 
@@ -182,7 +183,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
   const appCardMenu = [
     {
       id: 0,
-      text: 'Show details',
+      label: 'Show details',
       icon: 'editReceipt',
       dataTestId: 'app-card-show-app-details',
       onClick: openAppDetailModal,
@@ -190,35 +191,35 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
     },
     {
       id: 1,
-      text: 'Feature',
+      label: 'Feature',
       icon: 'filterLinear',
       dataTestId: 'app-card-feature',
       onClick: () => toggleAppFeature(true),
-      hidden: app.featured,
+      hidden: app.featured || !isAdmin,
     },
     {
       id: 2,
-      text: 'Remove from Feature',
+      label: 'Remove from Feature',
       icon: 'tag',
       dataTestId: 'app-card-remove-feature',
       onClick: () => toggleAppFeature(false),
-      hidden: !app.featured,
+      hidden: !app.featured || !isAdmin,
     },
     {
       id: 3,
-      text: 'Edit',
+      label: 'Edit',
       icon: 'edit',
       dataTestId: 'app-card-edit',
       onClick: openEditAppModal,
-      hidden: false,
+      hidden: !isAdmin,
     },
     {
       id: 4,
-      text: 'Delete',
+      label: 'Delete',
       icon: 'delete',
       dataTestId: 'app-card-delete',
       onClick: openDeleteAppModal,
-      hidden: false,
+      hidden: !isAdmin,
     },
   ];
 
@@ -246,41 +247,23 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
                 dataTestId="app-category"
               />
             )}
-            {appCardHovered && (
-              <div {...menuEventHandlers} className="relative z-10">
-                <Icon
-                  name="threeDots"
-                  className="cursor-pointer"
-                  dataTestId="app-card-ellipses"
+            <div className="relative">
+              {appCardHovered && (
+                <PopupMenu
+                  triggerNode={
+                    <div className="cursor-pointer">
+                      <Icon
+                        name="threeDots"
+                        hover={false}
+                        dataTestId="app-card-ellipsis"
+                      />
+                    </div>
+                  }
+                  menuItems={appCardMenu.filter((item) => !item.hidden)}
+                  className="-right-36 w-fit top-6"
                 />
-                {menuHovered && (
-                  <Card className="absolute border-1 rounded-11xl">
-                    {appCardMenu
-                      .filter((menuItem) => !menuItem.hidden)
-                      .map((menuItem) => (
-                        <div
-                          key={menuItem.id}
-                          onClick={menuItem.onClick}
-                          data-testid={menuItem.dataTestId}
-                        >
-                          <div className="flex gap-x-2 cursor-pointer py-2 px-6 items-center hover:bg-blue-50">
-                            <Icon
-                              name={menuItem.icon}
-                              size={16}
-                              stroke="#000"
-                              disabled
-                            />
-                            <p className="text-neutral-900 text-sm whitespace-nowrap">
-                              {menuItem.text}
-                            </p>
-                          </div>
-                          <Divider />
-                        </div>
-                      ))}
-                  </Card>
-                )}
-              </div>
-            )}
+              )}
+            </div>
           </div>
           <div className="pb-8">
             <div className="flex items-center justify-between">
