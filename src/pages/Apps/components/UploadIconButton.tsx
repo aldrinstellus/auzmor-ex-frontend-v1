@@ -148,6 +148,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
             stroke={twConfig.theme.colors.neutral['500']}
             hover={false}
             disabled={true}
+            size={16}
             dataTestId="add-app-icon-info"
           />
         </Tooltip>
@@ -237,20 +238,23 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
             <div
               className={`${
                 hasIcon && !error
-                  ? 'block bg-neutral-100 rounded-lg relative group'
+                  ? 'block bg-neutral-100 rounded-lg relative group p-[10.3px]'
                   : 'hidden'
               }`}
             >
               <Icon
                 name="close"
                 size={16}
-                className="group-hover:block hidden cursor-pointer absolute -top-1 -right-1 bg-black rounded-full p-[4px]"
+                className="group-hover:block group-hover:opacity-100 transition hidden cursor-pointer absolute -top-2 -right-2 bg-black rounded-full p-[4px]"
                 fill="#fff"
                 disabled
                 dataTestId="add-app-remove-icon"
                 onClick={(e) => clearInput(e)}
               />
-              <img id="icon" className="p-[10.3px]" />
+              <img
+                id="icon"
+                className="h-[71px] w-auto group-hover:opacity-50 transition-opacity duration-100"
+              />
             </div>
           </div>
         </label>

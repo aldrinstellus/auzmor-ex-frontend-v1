@@ -11,18 +11,19 @@ import RichTextEditor from '../RichTextEditor';
 import Toolbar from '../RichTextEditor/toolbar';
 import Icon from 'components/Icon';
 import moment from 'moment';
-import { twConfig } from 'utils/misc';
-import Button from 'components/Button';
+import { useOrganization } from 'queries/organization';
+import { PostBuilderMode } from 'components/PostBuilder';
 
 export interface IBodyProps {
   data?: IPost;
   dataTestId?: string;
   quillRef: React.RefObject<ReactQuill>;
+  mode: PostBuilderMode;
 }
 
 const Body = React.forwardRef(
   (
-    { data, dataTestId, quillRef }: IBodyProps,
+    { data, dataTestId, quillRef, mode }: IBodyProps,
     ref: ForwardedRef<ReactQuill>,
   ) => {
     const {
@@ -31,23 +32,60 @@ const Body = React.forwardRef(
       setSchedule,
       setEditorValue,
       setActiveFlow,
+      audience,
     } = useContext(CreatePostContext);
     const { user } = useAuth();
+    const { data: orgData } = useOrganization();
+    const updateContext = () => {
+      setEditorValue({
+        text: (ref as React.RefObject<ReactQuill>)
+          .current!.makeUnprivilegedEditor(
+            (ref as React.RefObject<ReactQuill>).current!.getEditor(),
+          )
+          .getText(),
+        html: (ref as React.RefObject<ReactQuill>).current
+          ?.makeUnprivilegedEditor(
+            (ref as React.RefObject<ReactQuill>)!.current!.getEditor(),
+          )
+          .getHTML(),
+        json: (ref as React.RefObject<ReactQuill>).current
+          ?.makeUnprivilegedEditor(
+            (ref as React.RefObject<ReactQuill>)!.current!.getEditor(),
+          )
+          .getContents(),
+      });
+    };
     return (
       <div className="text-sm text-neutral-900">
         <div className="max-h-[75vh] overflow-y-auto">
-          <Actor
-            visibility="Everyone"
-            contentMode={CREATE_POST}
-            dataTestId={`${dataTestId}-creatorname`}
-            disabled={true}
-            createdBy={
-              data?.createdBy || {
-                fullName: user?.name,
-                profileImage: { id: '', original: user?.profileImage || '' },
+          <div className="flex justify-between items-center">
+            <Actor
+              contentMode={CREATE_POST}
+              dataTestId={`${dataTestId}-creatorname`}
+              disabled={true}
+              createdBy={
+                data?.createdBy || {
+                  fullName: user?.name,
+                  profileImage: { id: '', original: user?.profileImage || '' },
+                }
               }
-            }
-          />
+            />
+            <div
+              className="flex items-center mr-6 cursor-pointer"
+              data-testid={`feed-createpost-visibility`}
+              onClick={() => {
+                updateContext();
+                setActiveFlow(CreatePostFlow.Audience);
+              }}
+            >
+              <div className="flex items-center rounded-17xl px-3 py-1.5 border">
+                <Icon name="profileUserOutline" size={16} />
+                <div className="ml-1 text-xxs font-medium text-neutral-900">
+                  Audience
+                </div>
+              </div>
+            </div>
+          </div>
           {schedule && (
             <div className="px-3 py-2 bg-primary-50 flex justify-between mx-4 mb-4">
               <div className="flex">
@@ -66,25 +104,7 @@ const Body = React.forwardRef(
                     name="edit"
                     size={16}
                     onClick={() => {
-                      setEditorValue({
-                        text: (ref as React.RefObject<ReactQuill>)
-                          .current!.makeUnprivilegedEditor(
-                            (
-                              ref as React.RefObject<ReactQuill>
-                            ).current!.getEditor(),
-                          )
-                          .getText(),
-                        html: (ref as React.RefObject<ReactQuill>).current
-                          ?.makeUnprivilegedEditor(
-                            (ref as React.RefObject<ReactQuill>)!.current!.getEditor(),
-                          )
-                          .getHTML(),
-                        json: (ref as React.RefObject<ReactQuill>).current
-                          ?.makeUnprivilegedEditor(
-                            (ref as React.RefObject<ReactQuill>)!.current!.getEditor(),
-                          )
-                          .getContents(),
-                      });
+                      updateContext();
                       setActiveFlow(CreatePostFlow.SchedulePost);
                     }}
                     dataTestId="createpost-scheduledpost-editicon"
@@ -108,6 +128,7 @@ const Body = React.forwardRef(
               data?.content?.editor || (editorValue.json as DeltaStatic)
             }
             ref={ref}
+            mode={mode}
             renderToolbar={(isCharLimit: boolean) => {
               return (
                 <Toolbar

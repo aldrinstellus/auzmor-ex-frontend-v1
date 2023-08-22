@@ -24,6 +24,7 @@ import AppFilterModal from './components/AppFilterModal';
 import AppList from './components/AppList';
 import Icon from 'components/Icon';
 import AppBannerSkeleton from './components/Skeletons/AppBannerSkeleton';
+import useRole from 'hooks/useRole';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -49,9 +50,10 @@ const Apps: React.FC<IAppsProps> = () => {
   });
 
   const { apps, featuredApps } = useAppStore();
+  const { isAdmin } = useRole();
   // State to store apps group
   const [selectedAppGroup, setSelectedAppGroup] = useState<AppGroup>(
-    AppGroup.MY_APPS,
+    AppGroup.ALL_APPS,
   );
 
   // Add apps modal
@@ -111,16 +113,25 @@ const Apps: React.FC<IAppsProps> = () => {
     });
   };
 
+  const onApplyFilter = (filters: any) => {
+    setAppFilters(filters);
+    if (filters.categories.length > 0) {
+      setSelectedAppGroup(AppGroup.ALL_APPS);
+    }
+  };
+
   return (
     <div>
       <Card className="p-8">
         <div className="flex justify-between">
           <p className="font-bold text-2xl text-black">App Launcher</p>
-          <Button
-            onClick={openModal}
-            label="+ Add apps"
-            dataTestId="app-add-app-cta"
-          />
+          {isAdmin && (
+            <Button
+              onClick={openModal}
+              label="+ Add apps"
+              dataTestId="app-add-app-cta"
+            />
+          )}
         </div>
         {/* Banner */}
         <img
@@ -133,17 +144,19 @@ const Apps: React.FC<IAppsProps> = () => {
         {/* App groups and sort/filter/search */}
         <div className="flex justify-between pb-6">
           <div className="flex items-center gap-x-4">
-            <Button
-              variant={ButtonVariant.Secondary}
-              label={AppGroup.MY_APPS}
-              dataTestId="my-apps"
-              className={
-                selectedAppGroup === AppGroup.MY_APPS
-                  ? selectedButtonClassName
-                  : regularButtonClassName
-              }
-              onClick={() => setSelectedAppGroup(AppGroup.MY_APPS)}
-            />
+            {isAdmin && (
+              <Button
+                variant={ButtonVariant.Secondary}
+                label={AppGroup.MY_APPS}
+                dataTestId="my-apps"
+                className={`${
+                  selectedAppGroup === AppGroup.MY_APPS
+                    ? selectedButtonClassName
+                    : regularButtonClassName
+                } cursor-not-allowed`}
+                onClick={() => setSelectedAppGroup(AppGroup.MY_APPS)}
+              />
+            )}
             <Button
               variant={ButtonVariant.Secondary}
               label={AppGroup.ALL_APPS}
@@ -178,7 +191,13 @@ const Apps: React.FC<IAppsProps> = () => {
                         ? selectedButtonClassName
                         : regularButtonClassName
                     }
-                    onClick={() => setSelectedAppGroup(category.id)}
+                    onClick={() => {
+                      setSelectedAppGroup(category.id);
+                      setAppFilters((prevFilters: any) => ({
+                        ...prevFilters,
+                        categories: [],
+                      }));
+                    }}
                   />
                 </div>
               ))}
@@ -357,9 +376,13 @@ const Apps: React.FC<IAppsProps> = () => {
             queryParams={{
               q: debouncedSearchValue,
               sort: sortByFilter,
+              teamId:
+                appFilters.teams.length > 0
+                  ? appFilters.teams.map((team: any) => team.id).join(',')
+                  : undefined,
               ...(isQuickCategorySelected
                 ? {
-                    'categoryId[0]': isQuickCategorySelected
+                    categoryId: isQuickCategorySelected
                       ? selectedAppGroup
                       : undefined,
                   }
@@ -367,7 +390,14 @@ const Apps: React.FC<IAppsProps> = () => {
                 ? {
                     featured: true,
                   }
-                : {}),
+                : {
+                    categoryId:
+                      appFilters.categories.length > 0
+                        ? appFilters.categories
+                            .map((category: any) => category.id)
+                            .join(',')
+                        : undefined,
+                  }),
             }}
             setAppsCount={setAppsCount}
             setAppsLoading={setIsLoading}
@@ -382,7 +412,7 @@ const Apps: React.FC<IAppsProps> = () => {
           open={showFilterModal}
           filters={appFilters}
           closeModal={closeFilterModal}
-          setFilters={setAppFilters}
+          setFilters={onApplyFilter}
         />
       )}
     </div>

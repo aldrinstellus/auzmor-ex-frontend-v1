@@ -30,6 +30,7 @@ export interface IMediaPreviewProps {
   dataTestId?: string;
   showAddMediaButton?: boolean;
   showEditButton?: boolean;
+  showCloseButton?: boolean;
 }
 
 const MediaPreview: React.FC<IMediaPreviewProps> = ({
@@ -44,6 +45,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
   dataTestId,
   showAddMediaButton = true,
   showEditButton = true,
+  showCloseButton = true,
 }) => {
   const [mediaIndex, setMediaIndex] = useState<number>(-1);
   const [open, openModal, closeModal] = useModal(true);
@@ -437,24 +439,27 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                 <Icon
                   name="edit"
                   size={16}
-                  className="p-2 rounded-7xl mr-2 bg-white"
+                  className="p-2 rounded-7xl mr-2 bg-white cursor-pointer"
                   stroke={twConfig.theme.colors.neutral['900']}
                   fill={twConfig.theme.colors.neutral['900']}
                 />
               </div>
             )}
-            <div
-              onClick={onCloseButtonClick}
-              data-testid={`${dataTestId}-remove-image`}
-            >
-              <Icon
-                name="close"
-                size={16}
-                className="p-2 rounded-7xl bg-white"
-                stroke={twConfig.theme.colors.neutral['900']}
-                fill={twConfig.theme.colors.neutral['900']}
-              />
-            </div>
+            {showCloseButton && (
+              <div
+                onClick={onCloseButtonClick}
+                data-testid={`${dataTestId}-remove-image`}
+              >
+                <Icon
+                  name="close"
+                  size={16}
+                  disabled
+                  className="p-2 rounded-7xl bg-white cursor-pointer"
+                  stroke={twConfig.theme.colors.neutral['900']}
+                  fill={twConfig.theme.colors.neutral['900']}
+                />
+              </div>
+            )}
           </div>
         </div>
       )}

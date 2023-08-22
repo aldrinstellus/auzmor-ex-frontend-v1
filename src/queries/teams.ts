@@ -12,8 +12,8 @@ export const getAllTeams = async ({
   queryKey,
 }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
   if (pageParam === null) {
-    return apiService.get('/teams', queryKey[1]);
-  } else return apiService.get(pageParam);
+    return await apiService.get('/teams', queryKey[1]);
+  } else return await apiService.get(pageParam);
 };
 
 export const createTeams = async (payload: ITeamPayload) => {

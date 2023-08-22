@@ -37,6 +37,7 @@ const ReactivatePeople: React.FC<IReactivatePeopleProps> = ({
     mutationKey: ['update-user-status'],
     onSuccess: () => {
       queryClient.invalidateQueries(['user', userId]);
+      queryClient.invalidateQueries(['users']);
       toast(<SuccessToast content={`User has been reactivated`} />, {
         closeButton: (
           <Icon

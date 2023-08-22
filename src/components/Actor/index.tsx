@@ -2,23 +2,22 @@ import React from 'react';
 import Avatar from 'components/Avatar';
 import { CREATE_POST, VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
-import { ICreatedBy } from 'queries/post';
+import { IAudience, ICreatedBy } from 'queries/post';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
 
 type ActorProps = {
-  visibility: string;
   contentMode?: string;
   createdTime?: string;
   createdBy?: ICreatedBy;
   dataTestId?: string;
   disabled?: boolean;
+  audience?: IAudience[];
 };
 
 const Actor: React.FC<ActorProps> = ({
-  visibility,
   contentMode,
   createdTime,
   createdBy,
@@ -29,20 +28,6 @@ const Actor: React.FC<ActorProps> = ({
 
   const actorStyles = clsx({
     'flex justify-between items-center mx-6 mt-6 mb-4': true,
-  });
-
-  const postVisibilityStylesContainer = clsx(
-    {
-      'text-neutral-900 rounded-17xl hover:rounded-17xl': disabled,
-    },
-    {
-      'cursor-pointer': !disabled,
-    },
-  );
-
-  const postVisibilityStyles = clsx({
-    'flex justify-between items-center border border-neutral-300 rounded-17xl py-1.5 px-3':
-      true,
   });
 
   const iconStyle = clsx({
@@ -115,24 +100,11 @@ const Actor: React.FC<ActorProps> = ({
               >
                 {createdTime}
               </div>
-              <div className="bg-neutral-500 rounded-full w-2 h-2" />
+              <div className="bg-neutral-500 rounded-full w-1 h-1" />
               <Icon name="globalOutline" size={16} />
             </div>
           ) : null}
         </div>
-      </div>
-      <div className={postVisibilityStylesContainer}>
-        {contentMode === CREATE_POST && (
-          <div
-            className={postVisibilityStyles}
-            data-testid={`feed-createpost-visibility-${visibility.toLowerCase()}`}
-          >
-            <div className={iconStyle}>
-              <Icon name="globalOutline" size={16} />
-            </div>
-            <div className={visibilityStyle}>{visibility}</div>
-          </div>
-        )}
       </div>
     </div>
   );

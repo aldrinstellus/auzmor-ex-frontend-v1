@@ -1,6 +1,10 @@
 import React, { MouseEventHandler, ReactNode, useMemo } from 'react';
 import clsx from 'clsx';
-import { PlacesType, Tooltip as ReactTooltip } from 'react-tooltip';
+import {
+  ChildrenType,
+  PlacesType,
+  Tooltip as ReactTooltip,
+} from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 
 export enum Variant {
@@ -16,6 +20,10 @@ export type TooltipProps = {
   className?: string;
   onClick?: MouseEventHandler<Element>;
   tooltipPosition?: PlacesType;
+  render?: (render: {
+    content: string | null;
+    activeAnchor: HTMLElement | null;
+  }) => ChildrenType;
 };
 
 const Tooltip = ({
@@ -26,6 +34,7 @@ const Tooltip = ({
   className = '',
   onClick = () => {},
   tooltipPosition = 'top',
+  render,
 }: TooltipProps) => {
   const tooltipPlacement = useMemo(
     () =>
@@ -34,21 +43,23 @@ const Tooltip = ({
       }),
     [className, variant],
   );
+  const id = Math.random().toString(16).slice(2);
   return (
     <span className={` ${className}`} onClick={onClick}>
       <ReactTooltip
         className={`${tooltipPlacement} ${tooltipId}`}
-        id={`my-tooltip`}
+        id={`tooltip-${id}`}
         react-tooltip-arrow
         anchorSelect=".my-anchor-element"
         clickable
+        render={render}
       >
         <div>{tooltipContent}</div>
       </ReactTooltip>
       <a
         href="#"
         className="my-anchor-element cursor-default mt-10"
-        data-tooltip-id="my-tooltip"
+        data-tooltip-id={`tooltip-${id}`}
         data-tooltip-content={`${
           typeof tooltipContent === 'string' ? tooltipContent : ''
         }`}

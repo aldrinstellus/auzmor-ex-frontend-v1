@@ -9,6 +9,7 @@ import find from 'lodash/find';
 import Icon from 'components/Icon';
 import InfiniteFilterList from 'components/InfiniteFilterList';
 import { useInfiniteTeams } from 'queries/teams';
+import AvatarList from 'components/AvatarList';
 
 export interface ITeamFilterModalProps {
   open: boolean;
@@ -93,8 +94,22 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
             checked={find(selectedTeams, item)}
           ></input>
           <div className="ml-3 w-full text-xs flex justify-between items-center">
-            <div>
-              <span className="font-bold text-sm">{item?.name}</span>
+            <div className="flex gap-2 items-center">
+              {item.recentMembers?.length !== 0 && (
+                <AvatarList
+                  size={24}
+                  users={item.recentMembers.map((member: any) => ({
+                    ...member,
+                    image: member.profileImage?.medium,
+                  }))}
+                  moreCount={item.totalMembers}
+                  className=""
+                  dataTestId="teams-people-icon"
+                />
+              )}
+              <span className="font-bold text-sm line-clamp-1">
+                {item?.name}
+              </span>
             </div>
             <div className="flex items-center gap-2 text-neutral-500">
               <div>{item.category?.name}</div>
@@ -102,7 +117,7 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
               <div className="flex items-center justify-center space-x-1">
                 <Icon name="profileUserOutline" size={16} />
                 <div
-                  className="text-xs font-normal"
+                  className="text-xs font-normal whitespace-nowrap"
                   data-testid={`team-no-of-members-${item.totalMembers}`}
                 >
                   {item.totalMembers} members

@@ -104,12 +104,16 @@ const Team: React.FC<ITeamProps> = ({
 
   const searchValue = watch('search');
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
+  const [selectedCategories, setSelectedCategories] = useState<any>([]);
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteTeams(
       isFiltersEmpty({
         q: debouncedSearchValue,
         sort: sortByFilter,
+        category: selectedCategories
+          .map((category: any) => category?.name?.toUpperCase())
+          .join(', '),
       }),
     );
 
@@ -465,6 +469,8 @@ const Team: React.FC<ITeamProps> = ({
         open={showFilterModal}
         openModal={openFilterModal}
         closeModal={closeFilterModal}
+        selectedCategories={selectedCategories}
+        setSelectedCategories={setSelectedCategories}
       />
     </div>
   );

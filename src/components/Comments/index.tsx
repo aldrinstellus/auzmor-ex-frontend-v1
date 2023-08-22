@@ -6,7 +6,7 @@ import { DeltaStatic } from 'quill';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import { ICreated, IMyReactions } from 'pages/Feed';
-import { IMention, IReactionsCount } from 'queries/post';
+import { IMention, IReactionsCount, IShoutoutRecipient } from 'queries/post';
 import Spinner from 'components/Spinner';
 import { PRIMARY_COLOR } from 'utils/constants';
 import LoadMore from './components/LoadMore';
@@ -54,6 +54,7 @@ export interface IComment {
   repliesCount: number;
   comment: IComment;
   files: IMedia[];
+  shoutoutRecipients?: IShoutoutRecipient[];
 }
 
 const Comments: React.FC<CommentsProps> = ({ entityId }) => {
@@ -121,31 +122,37 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
           isCreateCommentLoading={isCreateCommentLoading}
         />
       </div>
-      <Divider className="mt-4 mb-4" />
       {isLoading ? (
-        <CommentSkeleton />
+        <div>
+          <Divider className="my-4" />
+          <CommentSkeleton />
+        </div>
       ) : (
-        commentIds && (
-          <div className="pb-4">
-            {isCreateCommentLoading && <CommentSkeleton />}
-            {commentIds
-              ?.filter(({ id }) => !!comment[id])
-              .map(({ id }, i: any) => (
-                <Comment key={id} comment={comment[id]} />
-              ))}
-            {hasNextPage && !isFetchingNextPage && (
-              <LoadMore
-                onClick={fetchNextPage}
-                label="Load more comments"
-                dataTestId="comments-loadmorecta"
-              />
-            )}
-            {isFetchingNextPage && (
-              <div className="flex justify-center items-center py-10">
-                <Spinner color={PRIMARY_COLOR} />
-              </div>
-            )}
-          </div>
+        commentIds &&
+        commentIds.length > 0 && (
+          <>
+            <Divider className="mt-4" />
+            <div className="pt-4">
+              {isCreateCommentLoading && <CommentSkeleton />}
+              {commentIds
+                ?.filter(({ id }) => !!comment[id])
+                .map(({ id }, i: any) => (
+                  <Comment key={id} comment={comment[id]} />
+                ))}
+              {hasNextPage && !isFetchingNextPage && (
+                <LoadMore
+                  onClick={fetchNextPage}
+                  label="Load more comments"
+                  dataTestId="comments-loadmorecta"
+                />
+              )}
+              {isFetchingNextPage && (
+                <div className="flex justify-center items-center py-10">
+                  <Spinner color={PRIMARY_COLOR} />
+                </div>
+              )}
+            </div>
+          </>
         )
       )}
       <input

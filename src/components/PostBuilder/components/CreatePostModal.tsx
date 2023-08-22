@@ -12,6 +12,7 @@ import {
   IMention,
   IPost,
   IPostPayload,
+  IShoutoutRecipient,
   createPost,
   updatePost,
 } from 'queries/post';
@@ -42,6 +43,9 @@ import { produce } from 'immer';
 import CreatePoll from './CreatePoll';
 import SchedulePost from './SchedulePost';
 import moment from 'moment';
+import Audience from './Audience';
+import CreateShoutout from './Shoutout';
+import { afterXUnit } from 'utils/time';
 
 export interface IPostMenu {
   id: number;
@@ -84,6 +88,10 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     setShowFullscreenVideo,
     schedule,
     setSchedule,
+    audience,
+    setAudience,
+    shoutoutUserIds,
+    setShoutoutUserIds,
   } = useContext(CreatePostContext);
 
   const mediaRef = useRef<IMedia[]>([]);
@@ -98,8 +106,10 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
   useMemo(() => {
     if (customActiveFlow === CreatePostFlow.CreateAnnouncement) {
       setAnnouncement({
-        label: 'Custom Date',
-        value: data?.announcement?.end || '',
+        label: '1 week',
+        value:
+          data?.announcement?.end ||
+          afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
       });
       setActiveFlow(CreatePostFlow.CreateAnnouncement);
     }
@@ -121,6 +131,13 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           time: `${moment(new Date(data.schedule.dateTime)).format('h:mm a')}`,
         });
       }
+      if (data?.shoutoutRecipients?.length) {
+        const recipientIds = data.shoutoutRecipients.map(
+          (recipient) => recipient.userId,
+        );
+        setShoutoutUserIds(recipientIds);
+      }
+      setAudience(data?.audience || []);
     }
   }, []);
 
@@ -329,7 +346,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         files: fileIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],
-        audience: [],
+        audience,
+        shoutoutRecipients: shoutoutUserIds || [],
         isAnnouncement: !!announcement,
         announcement: {
           end: announcement?.value || '',
@@ -377,7 +395,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         files: sortedIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],
-        audience: [],
+        audience,
+        shoutoutRecipients: shoutoutUserIds || [],
         isAnnouncement: !!announcement,
         announcement: {
           end: announcement?.value || '',
@@ -425,6 +444,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             handleSubmitPost={handleSubmitPost}
             isLoading={loading}
             dataTestId="feed-createpost"
+            mode={mode}
           />
         )}
         {activeFlow === CreatePostFlow.CreateAnnouncement && (
@@ -457,8 +477,24 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             }}
           />
         )}
+        {activeFlow === CreatePostFlow.CreateShoutout && (
+          <CreateShoutout
+            closeModal={() => {
+              closeModal();
+              clearPostContext();
+            }}
+          />
+        )}
         {activeFlow === CreatePostFlow.SchedulePost && (
           <SchedulePost
+            closeModal={() => {
+              closeModal();
+              clearPostContext();
+            }}
+          />
+        )}
+        {activeFlow === CreatePostFlow.Audience && (
+          <Audience
             closeModal={() => {
               closeModal();
               clearPostContext();

@@ -1,29 +1,57 @@
-import { useQuery } from '@tanstack/react-query';
+import { QueryFunctionContext, useInfiniteQuery } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
-import { IGetUser } from './users';
 
 export interface IDepartment {
-  uuid: string;
+  id: string;
   name: string;
   createdAt: string;
-  createdBy: string;
   updatedAt: string;
-  updatedBy: Record<string, any>;
-  organization: Record<string, any>;
 }
 
-interface IGetDepartmentsPayload {
-  q: string;
-}
-
-export const getDepartments = async (payload: IGetDepartmentsPayload) => {
-  const data = await apiService.get('/depatment', payload);
-  return data.data.result.data as IDepartment[];
+export const getAllDepartments = async ({
+  pageParam = null,
+  queryKey,
+}: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
+  if (pageParam === null) {
+    // return await apiService.get('/departments', queryKey[1]);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve({
+          message: 'Successful',
+          code: 200,
+          result: {
+            data: [
+              { id: 'OP1', name: 'OP1' },
+              { id: 'OP2', name: 'OP2' },
+              { id: 'OP3', name: 'OP3' },
+            ],
+            paging: {
+              prev: 'https://office-dev.api.auzmor.com/api/v1/departments',
+              next: 'https://office-dev.api.auzmor.com/api/v1/departments',
+              limit: 30,
+            },
+          },
+        });
+      }, 1000);
+    });
+  } else return await apiService.get(pageParam);
 };
 
-export const useGetDepartments = (q: string) => {
-  return useQuery({
-    queryKey: ['getDepartments'],
-    queryFn: () => getDepartments({ q }),
+export const useInfiniteDepartments = (q?: Record<string, any>) => {
+  return useInfiniteQuery({
+    queryKey: ['departments', q],
+    queryFn: getAllDepartments,
+    getNextPageParam: (lastPage: any) => {
+      const pageDataLen = lastPage?.data?.result?.data?.length;
+      const pageLimit = lastPage?.data?.result?.paging?.limit;
+      if (pageDataLen < pageLimit) {
+        return null;
+      }
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
+    staleTime: 5 * 60 * 1000,
   });
 };
