@@ -25,7 +25,7 @@ export interface IReactivatePeopleProps {
   userId: string;
 }
 
-const ReactivatePeople: React.FC<IReactivatePeopleProps> = ({
+const DeactivatePeople: React.FC<IReactivatePeopleProps> = ({
   open,
   openModal,
   closeModal,
@@ -38,7 +38,7 @@ const ReactivatePeople: React.FC<IReactivatePeopleProps> = ({
     onSuccess: () => {
       queryClient.invalidateQueries(['user', userId]);
       queryClient.invalidateQueries(['users']);
-      toast(<SuccessToast content={`User has been reactivated`} />, {
+      toast(<SuccessToast content={`User has been deactivated`} />, {
         closeButton: (
           <Icon
             name="closeCircleOutline"
@@ -62,12 +62,12 @@ const ReactivatePeople: React.FC<IReactivatePeopleProps> = ({
   const Header: React.FC = () => (
     <div className="flex flex-wrap items-center">
       <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
-        Reactivate User?
+        Deactivate User?
       </div>
       <IconButton
         onClick={closeModal}
         icon={'close'}
-        dataTestId="reactivate-user-close"
+        dataTestId="deactivate-user-close"
         className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"
         variant={IconVariant.Primary}
       />
@@ -84,16 +84,16 @@ const ReactivatePeople: React.FC<IReactivatePeopleProps> = ({
         onClick={closeModal}
       />
       <Button
-        label={'Reactivate'}
+        label={'Deactivate'}
         className="bg-primary-500 !text-white flex"
         loading={updateUserStatusMutation.isLoading}
         size={Size.Small}
         type={ButtonType.Submit}
-        dataTestId="Reactivate"
+        dataTestId="Deactivate"
         onClick={() => {
           updateUserStatusMutation.mutate({
             id: userId,
-            status: UserStatus.Active,
+            status: UserStatus.Inactive,
           });
           closeModal();
         }}
@@ -104,16 +104,16 @@ const ReactivatePeople: React.FC<IReactivatePeopleProps> = ({
     <Modal
       open={open}
       className="max-w-md"
-      dataTestId="reactivate-confirm-modal"
+      dataTestId="deactivate-confirm-modal"
     >
       <Header />
       <div className="text-sm font-medium text-[#171717] mx-4 mt-3 mb-4">
-        Are you sure you want to reactivate this account?
-        <br /> All the data associated with this account will be restored.
+        Are you sure you want to deactivate this account?
+        <br /> All the data associated with this account will be removed.
       </div>
       <Footer />
     </Modal>
   );
 };
 
-export default ReactivatePeople;
+export default DeactivatePeople;

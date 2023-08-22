@@ -14,7 +14,6 @@ import IconButton, {
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 import EditProfileModal from '../EditProfileModal';
 import { IUpdateProfileImage } from 'pages/UserDetail';
-import DefaultCoverImage from 'images/png/CoverImage.png';
 import useModal from 'hooks/useModal';
 import EditImageModal from 'components/EditImageModal';
 import {
@@ -45,6 +44,7 @@ import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import DeletePeople from 'pages/Users/components/DeleteModals/People';
 import ReactivatePeople from 'pages/Users/components/ReactivateModal/Reactivate';
+import DeactivatePeople from 'pages/Users/components/DeactivateModal/Deactivate';
 import useAuth from 'hooks/useAuth';
 
 export interface IProfileCoverProps {
@@ -145,6 +145,8 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
 
   const [openDelete, openDeleteModal, closeDeleteModal] = useModal();
   const [openReactivate, openReactivateModal, closeReactivateModal] =
+    useModal();
+  const [openDeactivate, openDeactivateModal, closeDeactivateModal] =
     useModal();
 
   const resendInviteMutation = useResendInvitation();
@@ -306,12 +308,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                     onPromoteClick={() =>
                       updateUserRoleMutation.mutate({ id: userDetails?.id })
                     }
-                    onDeactivateClick={() =>
-                      updateUserStatusMutation.mutate({
-                        id: userDetails?.id,
-                        status: UserStatus.Inactive,
-                      })
-                    }
+                    onDeactivateClick={() => openDeactivateModal}
                     onEditClick={() => {
                       searchParams?.append(
                         'edit',
@@ -475,6 +472,12 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
         open={openDelete}
         openModal={openDeleteModal}
         closeModal={closeDeleteModal}
+        userId={userDetails?.id}
+      />
+      <DeactivatePeople
+        open={openDeactivate}
+        openModal={openDeactivateModal}
+        closeModal={closeDeactivateModal}
         userId={userDetails?.id}
       />
       <ReactivatePeople

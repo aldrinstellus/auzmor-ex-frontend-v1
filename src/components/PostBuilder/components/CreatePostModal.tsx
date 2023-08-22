@@ -45,6 +45,7 @@ import SchedulePost from './SchedulePost';
 import moment from 'moment';
 import Audience from './Audience';
 import CreateShoutout from './Shoutout';
+import { afterXUnit } from 'utils/time';
 
 export interface IPostMenu {
   id: number;
@@ -105,8 +106,10 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
   useMemo(() => {
     if (customActiveFlow === CreatePostFlow.CreateAnnouncement) {
       setAnnouncement({
-        label: 'Custom Date',
-        value: data?.announcement?.end || '',
+        label: '1 week',
+        value:
+          data?.announcement?.end ||
+          afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
       });
       setActiveFlow(CreatePostFlow.CreateAnnouncement);
     }

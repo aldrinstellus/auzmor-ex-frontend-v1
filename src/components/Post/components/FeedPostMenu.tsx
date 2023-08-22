@@ -279,7 +279,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
             announcements
           </p>
         </div>
-        <div className="flex min-w-full items-center justify-end gap-x-3 p-4 bg-blue-50">
+        <div className="flex min-w-full items-center justify-end gap-x-3 p-4 bg-blue-50 rounded-b-9xl">
           <Button
             variant={Variant.Secondary}
             label="Cancel"
