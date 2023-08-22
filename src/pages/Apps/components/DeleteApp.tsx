@@ -86,7 +86,7 @@ const DeleteApp: React.FC<IDeleteAppProps> = ({ open, closeModal, appId }) => {
         Delete App?
       </div>
       <IconButton
-        onClick={closeModal}
+        onClick={() => closeModal()}
         icon={'close'}
         dataTestId="close-app-modal"
         className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"

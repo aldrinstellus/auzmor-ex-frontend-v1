@@ -247,7 +247,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
                 dataTestId="app-category"
               />
             )}
-            <div className="relative">
+            <div className="relative mr-2">
               {appCardHovered && (
                 <PopupMenu
                   triggerNode={
@@ -268,12 +268,9 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
           <div className="pb-8">
             <div className="flex items-center justify-between">
               {app?.icon?.original && (
-                <img
-                  src={app?.icon?.original}
-                  className="p-1 bg-neutral-100 rounded-xl"
-                  height={28}
-                  width={28}
-                />
+                <div className="p-1 bg-neutral-100 rounded-xl">
+                  <img src={app?.icon?.original} height={20} width={20} />
+                </div>
               )}
             </div>
             <div className="py-2">
