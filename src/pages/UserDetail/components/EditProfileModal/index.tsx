@@ -285,7 +285,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
   };
 
   return (
-    <Modal open={openEditProfile} className="max-w-2xl">
+    <Modal open={openEditProfile} className="max-w-[648px] max-h-[605px]">
       <form>
         <Header title="Edit Profile" onClose={disableClosed} />
         <div className="relative">
@@ -318,7 +318,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
             menuItems={coverImageOption}
           />
         </div>
-        <div className="ml-8 mb-8 flex items-center">
+        <div className="ml-8 flex items-center">
           <div className="-mt-20">
             <div className="relative">
               <Avatar
@@ -343,14 +343,16 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
             </div>
           </div>
         </div>
-        <div className="mx-4 px-2 mb-10 pb-4 space-y-6 overflow-y-auto">
-          <div className="w-full flex space-x-6">
-            <Layout fields={nameField} className="w-2/4" />
-            <Layout fields={preferredNameField} className="w-2/4" />
+        <div className="max-h-[300px] mr-1 pt-8 mb-10 overflow-y-auto">
+          <div className="ml-4 mr-3 px-2 pb-4 space-y-6">
+            <div className="w-full flex space-x-6">
+              <Layout fields={nameField} className="w-2/4" />
+              <Layout fields={preferredNameField} className="w-2/4" />
+            </div>
+            <Layout fields={positionTitlefields} />
+            {/* <Layout fields={departmentField} className="w-2/4" /> */}
+            <Layout fields={locationField} />
           </div>
-          <Layout fields={positionTitlefields} />
-          {/* <Layout fields={departmentField} className="w-2/4" /> */}
-          <Layout fields={locationField} />
         </div>
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
