@@ -127,6 +127,7 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
                 variant={Variant.Secondary}
                 label="Everyone"
                 size={Size.Small}
+                dataTestId='add-app-audience'
                 onClick={() => setActiveFlow(ADD_APP_FLOW.AudienceSelector)}
               />
             )}

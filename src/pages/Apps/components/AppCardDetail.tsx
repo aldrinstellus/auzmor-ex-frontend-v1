@@ -4,6 +4,7 @@ import Card from 'components/Card';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
+import useRole from 'hooks/useRole';
 import { App } from 'queries/apps';
 import React from 'react';
 import { twConfig } from 'utils/misc';
@@ -23,6 +24,7 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
   openEditAppModal,
   openDeleteAppModal,
 }) => {
+  const { isAdmin } = useRole();
   const audienceChipStyle =
     'py-2 px-3 flex items-center gap-1 border-1 rounded-[24px] border-neutral-200';
   const audienceLabelStyle = 'text-sm font-semibold';
@@ -145,19 +147,23 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
           </div>
         </div>
         {/* Footer */}
-        <div className="bg-blue-50 flex items-center justify-end px-6 py-4 gap-x-3 rounded-9xl">
-          <Button
-            label="Delete app"
-            variant={Variant.Secondary}
-            onClick={openDeleteAppModal}
-            dataTestId="app-details-delete-app"
-          />
-          <Button
-            label="Edit app"
-            onClick={openEditAppModal}
-            dataTestId="app-details-edit-app"
-          />
-        </div>
+        {isAdmin ? (
+          <div className="bg-blue-50 flex items-center justify-end px-6 py-4 gap-x-3 rounded-9xl">
+            <Button
+              label="Delete app"
+              variant={Variant.Secondary}
+              onClick={openDeleteAppModal}
+              dataTestId="app-details-delete-app"
+            />
+            <Button
+              label="Edit app"
+              onClick={openEditAppModal}
+              dataTestId="app-details-edit-app"
+            />
+          </div>
+        ) : (
+          <div className="pb-2"></div>
+        )}
       </Card>
     </Modal>
   );
