@@ -19,7 +19,6 @@ export const Text: React.FC<TextProps> = ({
           target="_blank"
           role="button"
           className={`${getStyles(attributes)} underline text-[#06c]`}
-          contentEditable="false"
           rel="noreferrer"
         >
           {formatText(value)}

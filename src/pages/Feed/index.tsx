@@ -81,18 +81,38 @@ const Feed: React.FC<IFeedProps> = () => {
     }
   }, [inView]);
 
-  const feedIds = data?.pages.flatMap((page) =>
-    page.data?.result?.data
-      .filter((post: { id: string }) => {
-        if (bookmarks) {
-          return !!feed[post.id].bookmarked;
-        } else if (scheduled) {
-          return !!feed[post.id].schedule;
-        }
-        return true;
-      })
-      .map((post: { id: string }) => post),
-  ) as { id: string }[];
+  const feedIds = (
+    (data?.pages.flatMap((page) =>
+      page.data?.result?.data
+        .filter((post: { id: string }) => {
+          if (bookmarks) {
+            return !!feed[post.id].bookmarked;
+          } else if (scheduled) {
+            return !!feed[post.id].schedule;
+          }
+          return true;
+        })
+        .map((post: { id: string }) => post),
+    ) as { id: string }[]) || []
+  )
+    ?.filter(({ id }) => !!feed[id])
+    .sort(
+      (a, b) =>
+        new Date(feed[b.id].createdAt).getTime() -
+        new Date(feed[a.id].createdAt).getTime(),
+    );
+
+  const announcementFeedIds = feedIds
+    ? feedIds.filter(
+        (post: { id: string }) => !!feed[post.id]?.announcement?.end,
+      )
+    : [];
+
+  const regularFeedIds = feedIds
+    ? feedIds.filter(
+        (post: { id: string }) => !!!feed[post.id]?.announcement?.end,
+      )
+    : [];
 
   const clearAppliedFilters = () => {
     setAppliedFeedFilters({
@@ -273,17 +293,20 @@ const Feed: React.FC<IFeedProps> = () => {
           {FeedHeader}
           {isLoading ? (
             <SkeletonLoader />
-          ) : feedIds?.filter(({ id }) => !!feed[id])?.length === 0 ? (
+          ) : feedIds?.length === 0 ? (
             getEmptyFeedComponent()
           ) : (
             <div className="mt-4">
-              {feedIds
-                ?.filter(({ id }) => !!feed[id])
-                ?.map((feedId, index) => (
-                  <div data-testid={`feed-post-${index}`} key={feedId.id}>
-                    <Post post={feed[feedId.id!]} />
-                  </div>
-                ))}
+              {announcementFeedIds?.map((feedId, index) => (
+                <div data-testid={`feed-post-${index}`} key={feedId.id}>
+                  <Post post={feed[feedId.id!]} />
+                </div>
+              ))}
+              {regularFeedIds?.map((feedId, index) => (
+                <div data-testid={`feed-post-${index}`} key={feedId.id}>
+                  <Post post={feed[feedId.id!]} />
+                </div>
+              ))}
             </div>
           )}
 
