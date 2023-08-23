@@ -39,7 +39,7 @@ export const fetchFile = (url: string) => {
         closeButton: (
           <Icon
             name="closeCircleOutline"
-            stroke={twConfig.theme.colors.primary['500']}
+            color={twConfig.theme.colors.primary['500']}
             size={20}
           />
         ),
@@ -61,7 +61,7 @@ export const fetchFile = (url: string) => {
         closeButton: (
           <Icon
             name="closeCircleOutline"
-            stroke={twConfig.theme.colors.red['500']}
+            color={twConfig.theme.colors.red['500']}
             size={20}
           />
         ),
@@ -174,14 +174,14 @@ const Carousel: React.FC<CarouselProps> = ({
           className={downloadBtnStyle}
           size={16}
           disabled={true}
-          stroke={twConfig.theme.colors.neutral['900']}
+          color={twConfig.theme.colors.neutral['900']}
           onClick={() => fetchFile(media[currentIndex].original)}
         />
         {media[currentIndex].type !== 'IMAGE' && (
           <Icon
             name="playFilled"
             className={playBtnStyle}
-            fill="white"
+            color="white"
             size={32}
             onClick={() => {
               isPlaying ? videoRef.current?.pause() : videoRef.current?.play();

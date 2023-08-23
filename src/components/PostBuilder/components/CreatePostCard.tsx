@@ -18,7 +18,7 @@ export const postTypeMapIcons: IPostMenu[] = [
   {
     id: 1,
     label: 'Media',
-    icon: <Icon name="imageFilled" fill="#737373" size={14} />,
+    icon: <Icon name="imageFilled" color="#737373" size={14} />,
     menuItems: [
       {
         renderNode: (
@@ -27,7 +27,7 @@ export const postTypeMapIcons: IPostMenu[] = [
               name="image"
               size={16}
               className="p-2 rounded-7xl border mr-2.5 bg-white"
-              fill={twConfig.theme.colors.primary['500']}
+              color={twConfig.theme.colors.primary['500']}
             />
             <div className="text-sm text-neutral-900 font-medium">
               Upload a photo
@@ -42,7 +42,7 @@ export const postTypeMapIcons: IPostMenu[] = [
               name="video"
               size={16}
               className="p-2 rounded-7xl border mr-2.5 bg-white"
-              fill={twConfig.theme.colors.primary['500']}
+              color={twConfig.theme.colors.primary['500']}
             />
             <div className="text-sm text-neutral-900 font-medium">
               Upload a video
@@ -57,7 +57,7 @@ export const postTypeMapIcons: IPostMenu[] = [
               name="document"
               size={16}
               className="p-2 rounded-7xl border mr-2.5 bg-white"
-              fill={twConfig.theme.colors.primary['500']}
+              color={twConfig.theme.colors.primary['500']}
             />
             <div className="text-sm text-neutral-900 font-medium">
               Share a document
@@ -71,21 +71,21 @@ export const postTypeMapIcons: IPostMenu[] = [
   {
     id: 2,
     label: 'Shoutout',
-    icon: <Icon name="magicStarFilled" fill="#737373" size={14} />,
+    icon: <Icon name="magicStarFilled" color="#737373" size={14} />,
     menuItems: [],
     divider: true,
   },
   {
     id: 3,
     label: 'Events',
-    icon: <Icon name="calendarFilledTwo" fill="#737373" size={14} />,
+    icon: <Icon name="calendarFilledTwo" color="#737373" size={14} />,
     menuItems: [],
     divider: true,
   },
   {
     id: 4,
     label: 'Polls',
-    icon: <Icon name="chartFilled" fill="#737373" size={14} />,
+    icon: <Icon name="chartFilled" color="#737373" size={14} />,
     menuItems: [],
   },
 ];
@@ -99,7 +99,7 @@ const CreatePostCard: React.FC<ICreatePostCardProps> = ({
 
   const tabStyle = (hasDivider = false) =>
     clsx(
-      { 'flex justify-center items-center': true },
+      { 'flex justify-center items-center group': true },
       {
         'border-r border-neutral-100': hasDivider && window.innerWidth >= 1480,
       },

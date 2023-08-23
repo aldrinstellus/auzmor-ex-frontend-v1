@@ -80,7 +80,7 @@ const Footer: React.FC<IFooterProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors['black-white'].white}
+              color={twConfig.theme.colors['black-white'].white}
               size={20}
             />
           ),

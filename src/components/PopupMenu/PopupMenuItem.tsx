@@ -40,8 +40,7 @@ const PopupMenuItem: React.FC<PopupMenuItemProps> = ({
           name={menuItem.icon}
           size={16}
           className={menuItem.iconClassName}
-          fill={menuItem.fill || twConfig.theme.colors.primary['500']}
-          stroke={
+          color={
             (menuItem.disabled && twConfig.theme.colors.neutral['200']) ||
             menuItem.stroke
           }

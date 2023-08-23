@@ -53,7 +53,7 @@ const UserRow: React.FC<IUserRowProps> = ({ user }) => {
           <Icon
             name="arrowRightOutline"
             size={16}
-            stroke={twConfig.theme.colors.primary[600]}
+            color={twConfig.theme.colors.primary[600]}
           />
         </div>
       </Link>

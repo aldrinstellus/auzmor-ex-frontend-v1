@@ -33,7 +33,7 @@ const ImageUploader: React.FC<IImageUploaderProps> = ({
       closeButton: (
         <Icon
           name="closeCircleOutline"
-          stroke={twConfig.theme.colors.red['500']}
+          color={twConfig.theme.colors.red['500']}
           size={20}
         />
       ),

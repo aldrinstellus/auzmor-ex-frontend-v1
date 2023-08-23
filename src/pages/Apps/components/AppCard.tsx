@@ -49,7 +49,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color={twConfig.theme.colors.primary['500']}
               size={20}
             />
           ),
@@ -75,7 +75,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.red['500']}
+              color={twConfig.theme.colors.red['500']}
               size={20}
             />
           ),
@@ -108,7 +108,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color={twConfig.theme.colors.primary['500']}
               size={20}
             />
           ),
@@ -134,7 +134,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.red['500']}
+              color={twConfig.theme.colors.red['500']}
               size={20}
             />
           ),

@@ -29,7 +29,7 @@ const OrganizationChart: React.FC<IOrgChart> = ({ setShowOrgChart }) => {
           leftIcon="peopleOutline"
           leftIconSize={20}
           dataTestId="people-org-chart"
-          iconStroke="black"
+          iconColor="black"
           onClick={() => setShowOrgChart(false)}
         />
       </div>

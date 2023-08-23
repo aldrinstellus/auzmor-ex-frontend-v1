@@ -145,7 +145,7 @@ const Banner: React.FC<BannerProps> = ({
             name={iconName}
             className="relative bottom-[2px]"
             size={18}
-            stroke={getIconColor()}
+            color={getIconColor()}
           />
         </div>
 
@@ -163,7 +163,7 @@ const Banner: React.FC<BannerProps> = ({
               className={iconButtonStyles}
               onClick={onClose}
               variant={IconVariant.Primary}
-              stroke={twConfig.theme.colors.red['500']}
+              color={twConfig.theme.colors.red['500']}
             />
           )}
         </div>

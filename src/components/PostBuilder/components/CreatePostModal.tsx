@@ -179,7 +179,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             closeButton: (
               <Icon
                 name="closeCircleOutline"
-                stroke={twConfig.theme.colors.primary['500']}
+                color={twConfig.theme.colors.primary['500']}
                 size={20}
               />
             ),
@@ -234,7 +234,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.red['500']}
+              color={twConfig.theme.colors.red['500']}
               size={20}
             />
           ),
@@ -261,7 +261,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color={twConfig.theme.colors.primary['500']}
               size={20}
             />
           ),
@@ -513,7 +513,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           <Icon
             name="close"
             className="absolute top-6 right-6"
-            fill={'#fff'}
+            color={'#fff'}
             onClick={() => setShowFullscreenVideo(false)}
           />
         </Modal>

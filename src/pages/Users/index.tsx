@@ -84,7 +84,7 @@ const Users: React.FC<IUsersProps> = () => {
             leftIcon="groupOutline"
             leftIconSize={20}
             dataTestId="people-org-chart"
-            iconStroke="black"
+            iconColor="black"
             onClick={() => setShowOrgChart(true)}
           />
           {user?.role !== Role.Member && (

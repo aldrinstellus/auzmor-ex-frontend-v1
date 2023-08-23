@@ -23,7 +23,7 @@ const FailureToast: React.FC<IFailureToastProps> = ({
           <Icon
             className="p-1.5 bg-red-100 rounded-7xl mr-2.5"
             name="infoCircleOutline"
-            stroke={twConfig.theme.colors.red['500']}
+            color={twConfig.theme.colors.red['500']}
             size={32}
           />
         </div>

@@ -82,7 +82,7 @@ const UserOnboard: React.FC = (): ReactNode => {
                   disableClose ? 'cursor-not-allowed' : 'cursor-pointer'
                 }`}
                 name="close"
-                fill="#000000"
+                color="#000000"
                 onClick={disableClose ? undefined : closeModal}
                 hover={false}
                 size={20}

@@ -99,7 +99,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color={twConfig.theme.colors.primary['500']}
               size={20}
             />
           ),
@@ -126,7 +126,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
         closeButton: (
           <Icon
             name="closeCircleOutline"
-            stroke={twConfig.theme.colors.primary['500']}
+            color={twConfig.theme.colors.primary['500']}
             size={20}
           />
         ),
@@ -179,7 +179,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
               closeButton: (
                 <Icon
                   name="closeCircleOutline"
-                  stroke={twConfig.theme.colors.primary['500']}
+                  color={twConfig.theme.colors.primary['500']}
                   size={20}
                 />
               ),
@@ -217,7 +217,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
           >
             <Icon
               name="forbidden"
-              stroke="#737373"
+              color="#737373"
               size={18}
               className="mr-1"
             ></Icon>

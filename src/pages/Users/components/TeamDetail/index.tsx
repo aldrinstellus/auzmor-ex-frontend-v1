@@ -63,7 +63,7 @@ const TeamDetail: React.FC<ITeamMemberProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.red['500']}
+              color={twConfig.theme.colors.red['500']}
               size={20}
             />
           ),
@@ -164,7 +164,7 @@ const TeamDetail: React.FC<ITeamMemberProps> = ({
               <PopupMenu
                 triggerNode={
                   <div className="cursor-pointer">
-                    <Icon name="setting" stroke="#171717" />
+                    <Icon name="setting" color="#171717" />
                   </div>
                 }
                 menuItems={[

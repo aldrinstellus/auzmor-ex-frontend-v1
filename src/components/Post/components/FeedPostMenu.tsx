@@ -60,7 +60,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.red['500']}
+              color={twConfig.theme.colors.red['500']}
               size={20}
             />
           ),
@@ -89,7 +89,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color={twConfig.theme.colors.primary['500']}
               size={20}
             />
           ),
@@ -270,7 +270,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
         </div>
         <Divider />
         <div className="flex flex-col gap-y-4 items-center justify-center text-neutral-900 text-base p-6">
-          <Icon name="infoCircle" stroke="#3F83F8" size={66} disabled={true} />
+          <Icon name="infoCircle" color="#3F83F8" size={66} disabled={true} />
           <p className="font-semibold">
             Are you sure you want to change this announcement to a regular post?
           </p>

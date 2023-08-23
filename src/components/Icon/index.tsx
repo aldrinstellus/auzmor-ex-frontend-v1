@@ -5,8 +5,7 @@ import { iconMap } from './iconMap/index';
 export type IconProps = {
   name: string;
   size?: number;
-  fill?: string;
-  stroke?: string;
+  color?: string;
   strokeWidth?: string;
   onClick?: (...param: any) => void | null;
   className?: string;
@@ -14,7 +13,7 @@ export type IconProps = {
   disabled?: boolean;
   dataTestId?: string;
   isActive?: boolean;
-  hoveredStroke?: string;
+  hoverColor?: string;
 };
 
 const Icon: React.FC<IconProps> = ({
@@ -23,34 +22,32 @@ const Icon: React.FC<IconProps> = ({
   onClick = null,
   className = '',
   hover = false,
-  fill = 'none',
-  stroke,
-  strokeWidth,
   disabled = false,
-  dataTestId,
+  strokeWidth,
   isActive,
-  hoveredStroke,
+  color,
+  hoverColor,
+  dataTestId,
 }) => {
   const Component = iconMap[name] || null;
   if (!Component) {
     return null;
   }
 
-  const strokeClass = `text-[${stroke}]`;
-  const hoveredStrokeClass = `hover:text-[${hoveredStroke}] group-hover:text-[${hoveredStroke}]`;
+  const colorClass = `text-[${color}]`;
+  const hoverColorClass = `hover:text-[${hoverColor}] group-hover:text-[${hoverColor}]`;
   const isActiveClass = `text-primary-500 cursor-pointer`;
-  const isActiveHoveredStrokeClass = `text-[${hoveredStroke}]`;
+  const isActiveHoverColorClass = `text-[${hoverColor}]`;
   const disabledClass = `text-neutral-200 cursor-not-allowed pointer-events-none`;
 
   const styles = clsx({
     'text-neutral-500 hover:text-primary-500 group-hover:text-primary-500 hover:cursor-pointer':
       !disabled,
     'cursor-pointer': !!onClick && !disabled,
-    [strokeClass]: stroke && !disabled,
-    [hoveredStrokeClass]: hoveredStroke && !disabled,
+    [colorClass]: color && !disabled,
+    [hoverColorClass]: hoverColor && !disabled,
     [isActiveClass]: (isActive || hover) && !disabled,
-    [isActiveHoveredStrokeClass]:
-      (isActive || hover) && hoveredStroke && !disabled,
+    [isActiveHoverColorClass]: (isActive || hover) && hoverColor && !disabled,
     [disabledClass]: disabled,
     [className]: true,
   });
@@ -62,8 +59,6 @@ const Icon: React.FC<IconProps> = ({
       width={size}
       className={styles}
       onClick={!disabled ? onClick : undefined}
-      fill={fill}
-      stroke={stroke}
       strokeWidth={strokeWidth}
       data-testid={dataTestId}
     />

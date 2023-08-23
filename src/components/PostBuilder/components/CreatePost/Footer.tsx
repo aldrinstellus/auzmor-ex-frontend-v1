@@ -78,7 +78,7 @@ const Footer: React.FC<IFooterProps> = ({
         icon: (
           <Icon
             name="imageFilled"
-            fill={
+            color={
               isMediaDisabled
                 ? twConfig.theme.colors.neutral[200]
                 : twConfig.theme.colors['black-white'].black
@@ -127,7 +127,7 @@ const Footer: React.FC<IFooterProps> = ({
           <Icon
             name="magicStarFilled"
             size={14}
-            fill={
+            color={
               isShoutoutDisabled
                 ? twConfig.theme.colors.neutral[200]
                 : twConfig.theme.colors['black-white'].black
@@ -151,7 +151,7 @@ const Footer: React.FC<IFooterProps> = ({
             name="calendarFilledTwo"
             size={14}
             dataTestId="feed-createpost-events"
-            fill={twConfig.theme.colors.neutral[200]}
+            color={twConfig.theme.colors.neutral[200]}
           />
         ),
         menuItems: [],
@@ -166,7 +166,7 @@ const Footer: React.FC<IFooterProps> = ({
             name="chartFilled"
             size={14}
             dataTestId="feed-createpost-polls"
-            fill={
+            color={
               isPollDisabled
                 ? twConfig.theme.colors.neutral[200]
                 : twConfig.theme.colors['black-white'].black
@@ -187,7 +187,7 @@ const Footer: React.FC<IFooterProps> = ({
         icon: (
           <Icon
             name="moreOutline"
-            stroke="#000000"
+            color="#000000"
             dataTestId="feed-createpost-ellipsis-icon"
           />
         ),
@@ -279,7 +279,7 @@ const Footer: React.FC<IFooterProps> = ({
             <Icon
               name="clockOutline"
               size={16}
-              stroke={twConfig.theme.colors.neutral[900]}
+              color={twConfig.theme.colors.neutral[900]}
               onClick={() => {
                 updateContext();
                 setActiveFlow(CreatePostFlow.SchedulePost);

@@ -302,7 +302,7 @@ const Apps: React.FC<IAppsProps> = () => {
                     <Icon
                       name="close"
                       size={16}
-                      stroke={twConfig.theme.colors.neutral['900']}
+                      color={twConfig.theme.colors.neutral['900']}
                       className="cursor-pointer"
                       onClick={() =>
                         handleRemoveFilters('categories', category.id)
@@ -324,7 +324,7 @@ const Apps: React.FC<IAppsProps> = () => {
                     <Icon
                       name="close"
                       size={16}
-                      stroke={twConfig.theme.colors.neutral['900']}
+                      color={twConfig.theme.colors.neutral['900']}
                       className="cursor-pointer"
                       onClick={() => handleRemoveFilters('teams', team.id)}
                       dataTestId={`people-filterby-close`}

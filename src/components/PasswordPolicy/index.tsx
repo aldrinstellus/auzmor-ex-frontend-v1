@@ -41,7 +41,7 @@ const PasswordPolicy: React.FC<IPasswordPolicyProps> = ({
         {isChecked ? (
           <Check />
         ) : (
-          <Icon name="closeCircle" size={24} stroke="white" />
+          <Icon name="closeCircle" size={24} color="white" />
         )}
       </div>
       <div>{policyName}</div>

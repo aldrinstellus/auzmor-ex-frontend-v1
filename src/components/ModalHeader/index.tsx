@@ -21,7 +21,7 @@ const Header: React.FC<IHeaderProps> = ({
       {onBackIconClick && (
         <Icon
           name="arrowLeftOutline"
-          stroke={twConfig.theme.colors.neutral['900']}
+          color={twConfig.theme.colors.neutral['900']}
           className="ml-4"
           size={16}
           onClick={onBackIconClick}

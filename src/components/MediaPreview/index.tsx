@@ -423,7 +423,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                 className="flex"
                 variant={ButtonVariant.Secondary}
                 leftIconClassName="mr-1"
-                iconFill={twConfig.theme.colors.neutral['900']}
+                iconColor={twConfig.theme.colors.neutral['900']}
                 size={Size.Small}
                 onClick={onAddButtonClick}
                 dataTestId={`${dataTestId}-addphotoscta`}
@@ -440,8 +440,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   name="edit"
                   size={16}
                   className="p-2 rounded-7xl mr-2 bg-white cursor-pointer"
-                  stroke={twConfig.theme.colors.neutral['900']}
-                  fill={twConfig.theme.colors.neutral['900']}
+                  color={twConfig.theme.colors.neutral['900']}
                 />
               </div>
             )}
@@ -455,8 +454,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
                   size={16}
                   disabled
                   className="p-2 rounded-7xl bg-white cursor-pointer"
-                  stroke={twConfig.theme.colors.neutral['900']}
-                  fill={twConfig.theme.colors.neutral['900']}
+                  color={twConfig.theme.colors.neutral['900']}
                 />
               </div>
             )}

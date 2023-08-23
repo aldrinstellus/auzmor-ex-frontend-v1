@@ -36,8 +36,7 @@ export type ButtonProps = {
   leftIcon?: any; // should accept the react element
   rightIcon?: any; // should accept the string and react element
   className?: string;
-  iconFill?: string;
-  iconStroke?: string;
+  iconColor?: string;
   leftIconClassName?: string;
   rightIconClassName?: string;
   labelClassName?: string;
@@ -55,8 +54,7 @@ const Button = ({
   leftIcon = '',
   rightIcon = '',
   className = '',
-  iconFill,
-  iconStroke,
+  iconColor,
   leftIconSize,
   leftIconClassName,
   rightIconClassName,
@@ -96,7 +94,7 @@ const Button = ({
           'py-2.5 px-6 text-base': size === Size.Large,
         },
         {
-          'font-manrope font-bold transition-colors ease-out duration-default':
+          'font-manrope font-bold transition-colors ease-out duration-default group':
             true,
         },
         {
@@ -122,8 +120,7 @@ const Button = ({
         {leftIcon && (
           <Icon
             name={leftIcon}
-            fill={iconFill}
-            stroke={iconStroke}
+            color={iconColor}
             className={leftIconClassName}
             size={leftIconSize || (size === Size.Small ? 16 : 24)}
             hover={hovered}
@@ -135,8 +132,7 @@ const Button = ({
         {rightIcon && (
           <Icon
             name={rightIcon}
-            fill={iconFill}
-            stroke={iconStroke}
+            color={iconColor}
             className={rightIconClassName}
             size={size === Size.Small ? 16 : 24}
           />

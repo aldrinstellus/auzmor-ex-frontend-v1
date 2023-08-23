@@ -45,7 +45,7 @@ const DeletePeople: React.FC<IDeletePeopleProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.red['500']}
+              color={twConfig.theme.colors.red['500']}
               size={20}
             />
           ),
@@ -73,7 +73,7 @@ const DeletePeople: React.FC<IDeletePeopleProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color={twConfig.theme.colors.primary['500']}
               size={20}
             />
           ),
