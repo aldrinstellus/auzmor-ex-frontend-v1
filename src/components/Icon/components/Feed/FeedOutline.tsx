@@ -1,59 +1,22 @@
 import * as React from 'react';
 import { SVGProps } from 'react';
-import { twConfig } from 'utils/misc';
 
-interface IconProps {
-  size?: number;
-  stroke?: string;
-}
-
-const SvgFeedOutline = ({
-  size = 24,
-  stroke = '#737373',
-  ...props
-}: SVGProps<SVGSVGElement> & IconProps) => (
-  <>
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      {...props}
-      fill="none"
-      className="hidden group-hover:block"
-    >
-      <path
-        fill={twConfig.theme.colors.primary['500']}
-        d="M7 10a1.5 1.5 0 0 1 1.5-1.5h3a1.5 1.5 0 0 1 0 3h-3A1.5 1.5 0 0 1 7 10Z"
-      />
-      <path
-        fill={twConfig.theme.colors.primary['500']}
-        fillRule="evenodd"
-        d="M3 5.5v13a2 2 0 0 0 2 2h12L17.001 7H17V5.5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2Zm5.5 2a2.5 2.5 0 0 0 0 5h3a2.5 2.5 0 0 0 0-5h-3Zm-2 8a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-7Z"
-        clipRule="evenodd"
-      />
-      <path
-        fill={twConfig.theme.colors.primary['500']}
-        d="M18.001 7 18 20.5h1a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-.999Z"
-      />
-    </svg>
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      {...props}
-      fill="none"
-      className="group-hover:hidden"
-    >
-      <path
-        stroke={stroke}
-        strokeLinecap="round"
-        strokeWidth={1.5}
-        d="M17 7h2a2 2 0 0 1 2 2v9.5a2 2 0 0 1-2 2h-2M17 7v13.5M17 7V5.5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12M6.5 16h7m-5-4h3a2 2 0 1 0 0-4h-3a2 2 0 1 0 0 4Z"
-      />
-    </svg>
-  </>
+const SvgFeedOutline = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M17 7H19C20.1046 7 21 7.89543 21 9V18.5C21 19.6046 20.1046 20.5 19 20.5H17M17 7V20.5M17 7V5.5C17 4.39543 16.1046 3.5 15 3.5H5C3.89543 3.5 3 4.39543 3 5.5V18.5C3 19.6046 3.89543 20.5 5 20.5H17M6.5 16H13.5M8.5 12H11.5C12.6046 12 13.5 11.1046 13.5 10C13.5 8.89543 12.6046 8 11.5 8H8.5C7.39543 8 6.5 8.89543 6.5 10C6.5 11.1046 7.39543 12 8.5 12Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </svg>
 );
 
 export default SvgFeedOutline;

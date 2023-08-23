@@ -1,23 +1,14 @@
 import * as React from 'react';
 import { SVGProps } from 'react';
 
-type IconProps = {
-  size?: number;
-  fill?: string;
-};
-
-const SvgShareProfileFilled = ({
-  size = 24,
-  fill = '#737373',
-  ...props
-}: SVGProps<SVGSVGElement> & IconProps) => (
+const SvgShareProfileFilled = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width={size}
-    height={size}
+    width={24}
+    height={24}
     viewBox="0 0 24 24"
-    {...props}
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    {...props}
   ></svg>
 );
 

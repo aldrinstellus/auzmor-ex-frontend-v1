@@ -1,60 +1,23 @@
 import * as React from 'react';
 import { SVGProps } from 'react';
-import { PRIMARY_COLOR } from 'utils/constants';
 
-type IconProps = {
-  size?: number;
-  stroke?: string;
-  hoveredStroke?: string;
-  isActive?: boolean;
-  classname?: string;
-};
-const PostBookmarkOutline = ({
-  size = 24,
-  stroke = '#737373',
-  hoveredStroke = PRIMARY_COLOR,
-  isActive,
-  className = '',
-  ...props
-}: SVGProps<SVGSVGElement> & IconProps) => (
-  <>
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={size}
-      height={size}
-      {...props}
-      viewBox="0 0 24 24"
-      fill="none"
-      className={
-        !isActive ? `hidden group-hover:block cursor-pointer ${className}` : ''
-      }
-    >
-      <path
-        d="M5.58579 3.58579C5.21071 3.96086 5 4.46957 5 5V21L12 17.5L19 21V5C19 4.46957 18.7893 3.96086 18.4142 3.58579C18.0391 3.21071 17.5304 3 17 3H7C6.46957 3 5.96086 3.21071 5.58579 3.58579Z"
-        stroke={hoveredStroke}
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={size}
-      height={size}
-      {...props}
-      viewBox="0 0 24 24"
-      fill="none"
-      className={isActive ? 'hidden' : `group-hover:hidden ${className}`}
-    >
-      <path
-        d="M5.58579 3.58579C5.21071 3.96086 5 4.46957 5 5V21L12 17.5L19 21V5C19 4.46957 18.7893 3.96086 18.4142 3.58579C18.0391 3.21071 17.5304 3 17 3H7C6.46957 3 5.96086 3.21071 5.58579 3.58579Z"
-        stroke={stroke}
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  </>
+const PostBookmarkOutline = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24}
+    height={24}
+    viewBox="0 0 24 24"
+    fill="none"
+    {...props}
+  >
+    <path
+      d="M5.58579 3.58579C5.21071 3.96086 5 4.46957 5 5V21L12 17.5L19 21V5C19 4.46957 18.7893 3.96086 18.4142 3.58579C18.0391 3.21071 17.5304 3 17 3H7C6.46957 3 5.96086 3.21071 5.58579 3.58579Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
 );
 
 export default PostBookmarkOutline;

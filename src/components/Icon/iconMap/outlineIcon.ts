@@ -87,10 +87,16 @@ import SvgSortByDescOutline from '../components/SortByDesc/SortByDescOutline';
 import SvgClockOutline from '../components/Clock/ClockOutline';
 import SvgMicOutline from '../components/Mic/MicOutline';
 import SvgNoteFavouriteOutline from '../components/NoteFavourite/NoteFavouriteOutline';
+import SvgAdminOutline from '../components/Admin/AdminOutline';
+import SvgHomeOutline from '../components/Home/HomeOutline';
+import SvgFeedOutline from '../components/Feed/FeedOutline';
+import SvgLauncherOutline from '../components/Launcher/LauncherOutline';
+import SvgExploreOutline from '../components/Explore/ExploreOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
   addOutline: SvgAddOutline,
+  adminOutline: SvgAdminOutline,
   arrowDownOutline: SvgArrowDownOutline,
   arrowLeftOutline: SvgArrowLeftOutline,
   arrowRightOutline: SvgArrowRightOutline,
@@ -123,9 +129,11 @@ export const outlineIcon = {
   editReceiptOutline: SvgEditReceiptOutline,
   emojiHappyOutline: SvgEmojiHappyOutline,
   expandOutline: SvgExpandOutline,
+  exploreOutline: SvgExploreOutline,
   exportOutline: SvgExportOutline,
   eyeOutline: SvgEyeOutline,
   eyeSlashOutline: SvgEyeSlashOutline,
+  feedOutline: SvgFeedOutline,
   filterLinearOutline: SvgFilterLinearOutline,
   focusOutline: SvgFocusOutline,
   fullScreenOutline: SvgFullScreenOutline,
@@ -133,11 +141,13 @@ export const outlineIcon = {
   gearOutline: SvgGearOutline,
   globalOutline: SvgGlobalOutline,
   groupOutline: SvgGroupOutline,
+  homeOutline: SvgHomeOutline,
   iconLinearOutline: SvgIconLinearOutline,
   imageOutline: SvgImageOutline,
   importOutline: SvgImportOutline,
   infoCircleOutline: SvgInfoCircleOutline,
   insightfulOutline: SvgInsightfulOutline,
+  launcherOutline: SvgLauncherOutline,
   likeIconOutline: SvgLikeIconOutline,
   likeOutline: SvgLikeOutline,
   linearLeftArrowOutline: SvgLinearLeftArrowOutline,

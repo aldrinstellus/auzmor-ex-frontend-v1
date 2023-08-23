@@ -1,32 +1,23 @@
 import * as React from 'react';
 import { SVGProps } from 'react';
 
-type IconProps = {
-  size?: number;
-  fill?: string;
-};
-
-const SvgEyeFilled = ({
-  size = 24,
-  fill = '#737373',
-  ...props
-}: SVGProps<SVGSVGElement> & IconProps) => (
+const SvgEyeFilled = (props: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
+    width={24}
+    height={24}
     fill="none"
     {...props}
   >
     <path
-      stroke={fill}
+      stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={1.5}
       d="M10.39 8a2.384 2.384 0 0 1-2.386 2.387A2.384 2.384 0 0 1 5.617 8a2.384 2.384 0 0 1 2.387-2.387A2.384 2.384 0 0 1 10.39 8Z"
     />
     <path
-      stroke={fill}
+      stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={1.5}

@@ -1,27 +1,18 @@
 import * as React from 'react';
 import { SVGProps } from 'react';
 
-type IconProps = {
-  size?: number;
-  stroke?: string;
-};
-
-const SvgArrowRightOutline = ({
-  size = 24,
-  stroke = '#737373',
-  ...props
-}: SVGProps<SVGSVGElement> & IconProps) => (
+const SvgArrowRightOutline = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width={size}
-    height={size}
+    width={24}
+    height={24}
     viewBox="0 0 24 24"
-    {...props}
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    {...props}
   >
     <path
       d="M8.91 19.92L15.43 13.4C16.2 12.63 16.2 11.37 15.43 10.6L8.91 4.08"
-      stroke={stroke}
+      stroke="currentColor"
       strokeWidth="1.5"
       strokeMiterlimit="10"
       strokeLinecap="round"

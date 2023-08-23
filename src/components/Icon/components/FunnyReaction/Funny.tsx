@@ -1,66 +1,56 @@
 import * as React from 'react';
 import { SVGProps } from 'react';
 
-type IconProps = {
-  size?: number;
-  fill?: string;
-};
-
-const SvgFunny = ({
-  size = 24,
-  fill = '#737373',
-  ...props
-}: SVGProps<SVGSVGElement> & IconProps) => (
+const SvgFunny = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width={size}
-    height={size}
-    viewBox="0 0 28 28"
-    {...props}
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    {...props}
   >
-    <rect x="1" y="1" width="26" height="26" rx="13" fill="#8DA2FB" />
-    <circle cx="14" cy="14" r="6" fill="#E5EDFF" />
+    <rect x="0.5" y="0.5" width="19" height="19" rx="9.5" fill="#FFEDD5" />
+    <circle
+      cx="10"
+      cy="10"
+      r="5.7"
+      fill="#F5DB95"
+      stroke="#624C41"
+      strokeWidth="0.6"
+    />
     <path
-      d="M11.1289 11.729C11.4257 11.2004 12.3212 10.3576 13.5289 11.2147"
-      stroke="#E5EDFF"
+      d="M7.12891 7.72899C7.42568 7.20042 8.32116 6.35756 9.52891 7.2147"
+      stroke="#F5E497"
       strokeWidth="1.02857"
       strokeLinecap="round"
     />
     <path
-      d="M10.957 11.4712C11.2856 10.9426 12.277 10.0997 13.6142 10.9569"
-      stroke="#171717"
+      d="M6.95703 7.47118C7.2856 6.94261 8.27703 6.09975 9.61417 6.95689"
+      stroke="#624C41"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M10.5321 7.17352C11.0227 6.80853 12.207 6.39861 13.0197 7.6788"
+      stroke="#F5E497"
       strokeWidth="1.02857"
       strokeLinecap="round"
     />
     <path
-      d="M14.5321 11.1735C15.0227 10.8085 16.207 10.3986 17.0197 11.6788"
-      stroke="#E5EDFF"
-      strokeWidth="1.02857"
+      d="M10.5321 6.91571C11.0324 6.55489 12.2461 6.15755 13.0985 7.45472"
+      stroke="#624C41"
       strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
-      d="M14.5321 10.9157C15.0324 10.5549 16.2461 10.1576 17.0985 11.4547"
-      stroke="#171717"
-      strokeWidth="1.02857"
-      strokeLinecap="round"
-    />
-    <path
-      d="M17.7 13.7709C14.1522 13.4642 11.3687 13.6379 10.2631 13.7648C10.1712 13.7754 10.1067 13.8589 10.118 13.9507C10.4249 16.4445 11.9847 17.4723 13.9139 17.5562C15.8387 17.6399 17.7636 16.0894 17.8535 13.9417C17.8572 13.8531 17.7884 13.7786 17.7 13.7709Z"
+      d="M13.7019 9.77288C10.1542 9.46617 7.37066 9.63989 6.2651 9.76677C6.17314 9.77732 6.10861 9.8608 6.11991 9.95268C6.42684 12.4465 7.98667 13.4743 9.91585 13.5581C11.8407 13.6418 13.7655 12.0913 13.8554 9.94369C13.8591 9.85504 13.7903 9.78052 13.7019 9.77288Z"
       fill="white"
-      stroke="#723B13"
+      stroke="#624C41"
       strokeWidth="0.685714"
       strokeLinecap="round"
     />
-    <rect
-      x="1"
-      y="1"
-      width="26"
-      height="26"
-      rx="13"
-      stroke="white"
-      strokeWidth="2"
-    />
+    <rect x="0.5" y="0.5" width="19" height="19" rx="9.5" stroke="white" />
   </svg>
 );
 

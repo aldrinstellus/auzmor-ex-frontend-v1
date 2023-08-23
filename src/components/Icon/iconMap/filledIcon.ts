@@ -76,10 +76,16 @@ import SvgCalendarFilled from '../components/Calendar/CalendarFilled';
 import SvgMicFilled from '../components/Mic/MicFilled';
 import SvgGearFilled from '../components/Gear/GearFilled';
 import SvgNoteFavouriteFilled from '../components/NoteFavourite/NoteFavouriteFilled';
+import SvgAdminFilled from '../components/Admin/AdminFilled';
+import SvgHomeFilled from '../components/Home/HomeFilled';
+import SvgExploreFilled from '../components/Explore/ExploreFilled';
+import SvgLauncherFilled from '../components/Launcher/LauncherFilled';
+import SvgFeedFilled from '../components/Feed/FeedFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
   addFilled: SvgAddFilled,
+  adminFilled: SvgAdminFilled,
   arrowLeftFilled: SvgArrowLeftFilled,
   arrowRightFilled: SvgArrowRightFilled,
   calendarFilled: SvgCalendarFilled,
@@ -109,9 +115,11 @@ export const filledIcon = {
   editReceiptFilled: SvgEditReceiptFilled,
   emojiHappyFilled: SvgEmojiHappyFilled,
   expandFilled: SvgExpandFilled,
+  exploreFilled: SvgExploreFilled,
   exportFilled: SvgExportFilled,
   eyeFilled: SvgEyeFilled,
   eyeSlashFilled: SvgEyeSlashFilled,
+  feedFilled: SvgFeedFilled,
   filterFilled: SvgFilterFilled,
   filterLinearFilled: SvgFilterLinearFilled,
   focusFilled: SvgFocusFilled,
@@ -121,11 +129,13 @@ export const filledIcon = {
   globalFilled: SvgGlobalFilled,
   groupFilled: SvgGroupFilled,
   hashtagFilled: SvgOrangeHashtagFilled,
+  homeFilled: SvgHomeFilled,
   iconLinearFilled: SvgIconLinearFilled,
   imageFilled: SvgImageFilled,
   importFilled: SvgImportFilled,
   infoCircleFilled: SvgInfoCircleFilled,
   insightfulFilled: SvgInsightfulFilled,
+  launcherFilled: SvgLauncherFilled,
   likeFilled: SvgLikeFilled,
   likeIconFilled: SvgLikeIconFilled,
   linearLeftArrowFilled: SvgLinearLeftArrowFilled,

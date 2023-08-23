@@ -115,7 +115,7 @@ const Button = ({
       className={styles}
       disabled={disabled || loading}
       onClick={onClick}
-      data-testId={dataTestId}
+      data-testid={dataTestId}
       {...hoverEvents}
     >
       <div>

@@ -108,7 +108,7 @@ const Avatar: React.FC<AvatarProps> = ({
       className={containerStyles}
       style={{ ...divStyle, pointerEvents: disable ? 'none' : 'auto' }}
       onClick={onClick}
-      data-testId={dataTestId}
+      data-testid={dataTestId}
     >
       {!!image && !loading ? (
         <img

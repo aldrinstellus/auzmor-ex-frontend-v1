@@ -1,19 +1,10 @@
 import * as React from 'react';
 import { SVGProps } from 'react';
 
-type IconProps = {
-  size?: number;
-  fill?: string;
-};
-
-const SvgDeleteCrossFilled = ({
-  size = 24,
-  fill = '#000000',
-  ...props
-}: SVGProps<SVGSVGElement> & IconProps) => (
+const SvgDeleteCrossFilled = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width={size}
-    height={size}
+    width={24}
+    height={24}
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -25,7 +16,7 @@ const SvgDeleteCrossFilled = ({
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
-      fill={fill}
+      fill="currentColor"
     />
   </svg>
 );

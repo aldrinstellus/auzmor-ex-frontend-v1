@@ -1,23 +1,14 @@
 import * as React from 'react';
 import { SVGProps } from 'react';
 
-type IconProps = {
-  size?: number;
-  fill?: string;
-};
-
-const SvgInsightfulOutline = ({
-  size = 16,
-  fill = '#737373',
-  ...props
-}: SVGProps<SVGSVGElement> & IconProps) => (
+const SvgInsightfulOutline = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width={size}
-    height={size}
+    width={16}
+    height={16}
     viewBox="0 0 24 25"
     xmlns="http://www.w3.org/2000/svg"
-    {...props}
     fill="none"
+    {...props}
   >
     <path
       fillRule="evenodd"

@@ -1,38 +1,26 @@
 import * as React from 'react';
 import { SVGProps } from 'react';
-import { PRIMARY_COLOR } from 'utils/constants';
 
-interface IconProps {
-  size?: number;
-  fill?: string;
-}
-
-const SvgFeedFilled = ({
-  size = 24,
-  fill = PRIMARY_COLOR,
-  ...props
-}: SVGProps<SVGSVGElement> & IconProps) => (
+const SvgFeedFilled = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
+    width="24"
+    height="24"
     viewBox="0 0 24 24"
-    {...props}
     fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
   >
     <path
-      fill={fill}
-      d="M7 10a1.5 1.5 0 0 1 1.5-1.5h3a1.5 1.5 0 0 1 0 3h-3A1.5 1.5 0 0 1 7 10Z"
-    />
-    <path
-      fill={fill}
       fillRule="evenodd"
-      d="M3 5.5v13a2 2 0 0 0 2 2h12L17.001 7H17V5.5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2Zm5.5 2a2.5 2.5 0 0 0 0 5h3a2.5 2.5 0 0 0 0-5h-3Zm-2 8a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-7Z"
       clipRule="evenodd"
+      d="M3 5.5V18.5C3 19.6046 3.89543 20.5 5 20.5H17H17.5L17 20.5L17.0012 7H17V5.5C17 4.39543 16.1046 3.5 15 3.5H5C3.89543 3.5 3 4.39543 3 5.5ZM18.0012 7L18 20.5H19C20.1046 20.5 21 19.6046 21 18.5V9C21 7.89543 20.1046 7 19 7H18.0012Z"
+      fill="currentColor"
     />
+    <path d="M6.5 16H13.5" stroke="white" strokeLinecap="round" />
     <path
-      fill={fill}
-      d="M18.001 7 18 20.5h1a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-.999Z"
+      d="M11.5 12H8.5C7.39543 12 6.5 11.1046 6.5 10C6.5 8.89543 7.39543 8 8.5 8H11.5C12.6046 8 13.5 8.89543 13.5 10C13.5 11.1046 12.6046 12 11.5 12Z"
+      stroke="white"
+      strokeLinecap="round"
     />
   </svg>
 );

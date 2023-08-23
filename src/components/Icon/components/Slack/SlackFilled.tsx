@@ -1,21 +1,14 @@
 import * as React from 'react';
 import { SVGProps } from 'react';
 
-interface IconProps {
-  size?: number;
-  fill?: string;
-}
-
-const SvgSlackFilled = ({
-  size = 60,
-  fill,
-}: SVGProps<SVGSVGElement> & IconProps) => (
+const SvgSlackFilled = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width={size}
-    height={size}
+    width={60}
+    height={60}
     viewBox="0 0 20 20"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    {...props}
   >
     <path
       d="M12.0833 1.91797C11.25 1.91797 10.5 2.58464 10.5 3.5013V7.33464C10.5 8.16797 11.1667 8.91797 12.0833 8.91797C12.9167 8.91797 13.6667 8.2513 13.6667 7.33464V3.41797C13.6667 2.58464 13 1.91797 12.0833 1.91797Z"

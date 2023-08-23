@@ -336,7 +336,7 @@ const RichTextEditor = React.forwardRef(
                 updateContext();
                 setActiveFlow(CreatePostFlow.CreateAnnouncement);
               }}
-              data-testId="announcement-toaster-editicon"
+              data-testid="announcement-toaster-editicon"
             >
               <Icon
                 name="editOutline"
