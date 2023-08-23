@@ -160,7 +160,7 @@ const Carousel: React.FC<ICarouselProps> = ({
               <Icon
                 name="pause"
                 size={14}
-                fill={twConfig.theme.colors.primary['500']}
+                color={twConfig.theme.colors.primary['500']}
               />
             </div>
           ) : (
@@ -171,7 +171,7 @@ const Carousel: React.FC<ICarouselProps> = ({
               <Icon
                 name="playFilled"
                 size={14}
-                fill={twConfig.theme.colors.primary['500']}
+                color={twConfig.theme.colors.primary['500']}
               />
             </div>
           )}
@@ -219,11 +219,11 @@ const Carousel: React.FC<ICarouselProps> = ({
           </div>
           {isMuted ? (
             <div onClick={() => setIsMuted(false)} className="cursor-pointer">
-              <Icon name="mute" stroke="#fff" />
+              <Icon name="mute" color="#fff" />
             </div>
           ) : (
             <div onClick={() => setIsMuted(true)} className="cursor-pointer">
-              <Icon name="speaker" stroke="#fff" />
+              <Icon name="speaker" color="#fff" />
             </div>
           )}
           <div
@@ -234,7 +234,7 @@ const Carousel: React.FC<ICarouselProps> = ({
             }}
             className="cursor-pointer"
           >
-            <Icon name="fullScreen" stroke="white" />
+            <Icon name="fullScreen" color="white" />
           </div>
         </div>
       )}
@@ -255,7 +255,11 @@ const Carousel: React.FC<ICarouselProps> = ({
               : 'discardvideo'
           }`}
         >
-          <Icon name="close" size={16} className="p-2 bg-white rounded-7xl cursor-pointer" />
+          <Icon
+            name="close"
+            size={16}
+            className="p-2 bg-white rounded-7xl cursor-pointer"
+          />
         </div>
       </div>
       {!isPlaying && (
@@ -279,7 +283,7 @@ const Carousel: React.FC<ICarouselProps> = ({
               onClick={() => videoRef.current!.play()}
               className="cursor-pointer"
             >
-              <Icon name="playFilled" fill="#ffffff" size={46} />
+              <Icon name="playFilled" color="#ffffff" size={46} />
             </div>
           )}
 

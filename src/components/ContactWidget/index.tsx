@@ -84,7 +84,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
         closeButton: (
           <Icon
             name="closeCircleOutline"
-            stroke={twConfig.theme.colors.primary['500']}
+            color={twConfig.theme.colors.primary['500']}
             size={20}
           />
         ),
@@ -163,7 +163,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                     <div className="flex justify-between items-center">
                       <div className="flex space-x-2 truncate items-center">
                         <IconWrapper>
-                          <Icon name="email" stroke="#737373" size={15} />
+                          <Icon name="email" color="#737373" size={15} />
                         </IconWrapper>
                         <div
                           className="text-sm font-normal text-neutral-900"
@@ -180,7 +180,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                     <div className="flex space-x-4 justify-between items-center">
                       <div className="flex space-x-2 truncate items-center">
                         <IconWrapper>
-                          <Icon name="call" stroke="#737373" size={15} />
+                          <Icon name="call" color="#737373" size={15} />
                         </IconWrapper>
                         <div
                           className="text-sm font-normal text-neutral-900"

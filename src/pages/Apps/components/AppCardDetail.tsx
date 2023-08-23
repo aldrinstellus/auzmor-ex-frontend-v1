@@ -50,7 +50,7 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
           <Icon
             name="close"
             onClick={closeModal}
-            stroke="#000"
+            color="#000"
             size={20}
             dataTestId="app-details-close"
             disabled
@@ -86,7 +86,7 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
                 <span>Visit app</span>
                 <Icon
                   name="arrowRightUp"
-                  fill={twConfig.theme.colors.primary[500]}
+                  color={twConfig.theme.colors.primary[500]}
                 />
               </div>
             </div>

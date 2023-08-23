@@ -107,7 +107,7 @@ const InfiniteFilterList: React.FC<IInfiniteFilterListProps> = ({
                   name="closeCircleOutline"
                   size={20}
                   className="cursor-pointer"
-                  stroke={twConfig.theme.colors['black-white'].black}
+                  color={twConfig.theme.colors['black-white'].black}
                   onClick={() => onSelectItem(item)}
                 />
               </div>

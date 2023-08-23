@@ -24,7 +24,7 @@ const UserCard: React.FC<MentionUserCardProps> = ({
         <div className="text-base text-neutral-900 font-bold">{fullName}</div>
         <div className="text-sm font-normal text-neutral-500">{email}</div>
         {/* <div className="flex items-center gap-x-2">
-          <Icon name="location" fill="#171717" />
+          <Icon name="location" color="#171717" />
           <div className="text-sm font-normal text-neutral-500">
             New York, USA
           </div>

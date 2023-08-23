@@ -26,8 +26,7 @@ const BookmarkFeedHeader: React.FC<IBookmarkFeedHeaderProps> = ({
             <Link to="/feed">
               <Icon
                 name="arrowLeft"
-                fill={twConfig.theme.colors.primary[500]}
-                stroke={twConfig.theme.colors.neutral[900]}
+                color={twConfig.theme.colors.neutral[900]}
               />
             </Link>
             <div className="text-2xl font-bold text-neutral-900">

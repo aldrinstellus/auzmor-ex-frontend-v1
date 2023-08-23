@@ -35,7 +35,7 @@ const SortByDropdown: React.FC = ({}) => {
               rightIcon={open ? 'arrowUp' : 'arrowDown'}
               size={Size.Small}
               rightIconClassName="ml-1"
-              iconStroke={twConfig.theme.colors.neutral['900']}
+              iconColor={twConfig.theme.colors.neutral['900']}
               className="min-w-[112px]"
               dataTestId="feed-sortby-dropdown"
             />

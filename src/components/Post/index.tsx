@@ -103,7 +103,7 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors['black-white'].white}
+              color={twConfig.theme.colors['black-white'].white}
               size={20}
             />
           ),
@@ -153,7 +153,7 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors['black-white'].white}
+              color={twConfig.theme.colors['black-white'].white}
               size={20}
             />
           ),
@@ -230,7 +230,7 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
                 <Icon
                   name="calendarOutline"
                   size={16}
-                  stroke={twConfig.theme.colors.neutral[900]}
+                  color={twConfig.theme.colors.neutral[900]}
                 />
               </div>
               <div className="text-xs font-medium text-neutral-600">
@@ -245,7 +245,7 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
                 <Icon
                   name="editOutline"
                   size={16}
-                  stroke={twConfig.theme.colors.neutral[900]}
+                  color={twConfig.theme.colors.neutral[900]}
                   onClick={openEditSchedulePostModal}
                 />
               </div>

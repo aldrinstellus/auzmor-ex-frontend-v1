@@ -41,7 +41,7 @@ const UserNode: React.FC<IUserNode> = ({ node }) => {
             <div className="text-sm my-1">Sales Director</div>
             <div className="flex items-center">
               <div className="mr-1">
-                <Icon name="location" size={24} stroke="#171717" />
+                <Icon name="location" size={24} color="#171717" />
               </div>
               <div className="text-sm text-neutral-500">San Francisco</div>
             </div>

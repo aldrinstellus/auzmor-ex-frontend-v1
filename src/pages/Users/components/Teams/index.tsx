@@ -150,7 +150,7 @@ const Team: React.FC<ITeamProps> = ({
   //         closeButton: (
   //           <Icon
   //             name="closeCircleOutline"
-  //             stroke={twConfig.theme.colors.red['500']}
+  //             color={twConfig.theme.colors.red['500']}
   //             size={20}
   //           />
   //         ),
@@ -279,7 +279,7 @@ const Team: React.FC<ITeamProps> = ({
         <Icon
           name="close"
           size={16}
-          stroke={twConfig.theme.colors.neutral['900']}
+          color={twConfig.theme.colors.neutral['900']}
           className="cursor-pointer"
           onClick={() => {}}
           dataTestId={`applied-filter-close`}

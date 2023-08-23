@@ -25,8 +25,7 @@ const HashtagFeedHeader: React.FC<IHashtagFeedHeaderProps> = ({
           <div className="flex gap-x-3 items-center">
             <Icon
               name="arrowLeft"
-              fill={twConfig.theme.colors.primary[500]}
-              stroke={twConfig.theme.colors.neutral[900]}
+              color={twConfig.theme.colors.neutral[900]}
               onClick={() => {
                 if (searchParams.has('hashtag')) {
                   searchParams.delete('hashtag');

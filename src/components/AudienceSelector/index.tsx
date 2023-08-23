@@ -156,8 +156,8 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
                 >
                   <Icon
                     name={entity.icon || 'peopleOutline'}
-                    hoveredStroke="white"
-                    stroke={entity.isSelected ? 'white' : undefined}
+                    hoverColor="white"
+                    color={entity.isSelected ? 'white' : undefined}
                   />
                 </div>
                 <div className="ml-3 flex flex-col justify-between">
@@ -176,7 +176,7 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
                       name="tickCircle"
                       size={16}
                       className="mr-1"
-                      stroke={PRIMARY_COLOR}
+                      color={PRIMARY_COLOR}
                     />
                   </div>
                   <div className="text-xxs text-primary-500">

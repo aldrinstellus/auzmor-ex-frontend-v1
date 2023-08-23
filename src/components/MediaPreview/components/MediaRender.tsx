@@ -54,7 +54,7 @@ const MediaRender: React.FC<IMediaRenderProps> = ({
         <div className="absolute play-button bg-white rounded-full py-2 pr-2 pl-2.5">
           <Icon
             name="playFilled"
-            fill={twConfig.theme.colors.primary['500']}
+            color={twConfig.theme.colors.primary['500']}
             size={14}
           />
         </div>

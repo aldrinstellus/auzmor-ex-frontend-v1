@@ -67,7 +67,7 @@ const InfiniteSearch: React.FC<IInfiniteSearchProps> = ({
           <Icon
             name="arrowDown"
             size={16}
-            stroke={selectionCount ? PRIMARY_COLOR : undefined}
+            color={selectionCount ? PRIMARY_COLOR : undefined}
           />
         </div>
       }

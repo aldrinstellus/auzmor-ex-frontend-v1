@@ -143,7 +143,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color={twConfig.theme.colors.primary['500']}
               size={20}
               dataTestId="people-invite-toaster-close"
             />

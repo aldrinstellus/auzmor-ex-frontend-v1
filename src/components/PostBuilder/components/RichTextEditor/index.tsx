@@ -318,7 +318,7 @@ const RichTextEditor = React.forwardRef(
               <Icon
                 name="micOutline"
                 size={16}
-                stroke={twConfig.theme.colors.neutral['900']}
+                color={twConfig.theme.colors.neutral['900']}
               />
               <div
                 className="ml-2.5"
@@ -341,7 +341,7 @@ const RichTextEditor = React.forwardRef(
               <Icon
                 name="editOutline"
                 size={12}
-                stroke={twConfig.theme.colors.neutral['900']}
+                color={twConfig.theme.colors.neutral['900']}
               />
               <div className="ml-1 text-xs font-bold text-neutral-900">
                 Edit

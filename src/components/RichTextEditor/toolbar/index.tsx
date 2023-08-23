@@ -16,7 +16,7 @@ const Toolbar: React.FC<IToolbarProps> = ({ isCharLimit }) => {
               <Icon
                 name="infoCircleOutline"
                 size={32}
-                stroke={twConfig.theme.colors.red['500']}
+                color={twConfig.theme.colors.red['500']}
                 className="p-1.5 bg-red-100 rounded-7xl mr-2"
               />
               <div className="truncate text-red-500 text-sm">

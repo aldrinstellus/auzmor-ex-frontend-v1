@@ -22,8 +22,7 @@ export type IconButtonProps = {
   className?: string;
   borderAround?: boolean;
   borderAroundClassName?: string;
-  fill?: string;
-  stroke?: string;
+  color?: string;
   dataTestId?: string;
 };
 
@@ -36,8 +35,7 @@ const IconButton = ({
   borderAround = false,
   borderAroundClassName = '',
   onClick = () => {},
-  fill,
-  stroke,
+  color,
   dataTestId,
 }: IconButtonProps) => {
   const styles = useMemo(
@@ -55,6 +53,9 @@ const IconButton = ({
         },
         {
           'p-3': size === Size.Large,
+        },
+        {
+          group: true,
         },
         {
           [className]: true,
@@ -97,13 +98,7 @@ const IconButton = ({
         onClick={onClick}
         data-testid={dataTestId}
       >
-        <Icon
-          name={icon}
-          size={getSize()}
-          fill={fill}
-          stroke={stroke}
-          disabled={disabled}
-        />
+        <Icon name={icon} size={getSize()} color={color} disabled={disabled} />
       </button>
     </div>
   );

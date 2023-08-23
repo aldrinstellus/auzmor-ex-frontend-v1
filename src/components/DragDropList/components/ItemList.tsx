@@ -72,9 +72,8 @@ const ItemList: React.FC<IItemListProps> = ({
           <div data-testid={`${dataTestIdDelete}-${item.value}`}>
             <Icon
               name="delete"
-              stroke="#F05252"
+              color="#F05252"
               hover={false}
-              fill="#F05252"
               size={20}
               onClick={() => {
                 const updatedValues = draggableItems.filter(

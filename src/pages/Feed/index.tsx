@@ -246,7 +246,7 @@ const Feed: React.FC<IFeedProps> = () => {
                             </div>
                             <Icon
                               name="closeOutline"
-                              stroke={twConfig.theme.colors.neutral['900']}
+                              color={twConfig.theme.colors.neutral['900']}
                               className="cursor-pointer"
                               size={16}
                               onClick={() => removePostTypeFilter(filter)}
@@ -266,7 +266,7 @@ const Feed: React.FC<IFeedProps> = () => {
                         name="deleteOutline"
                         size={16}
                         className="mr-1"
-                        stroke={twConfig.theme.colors.primary['600']}
+                        color={twConfig.theme.colors.primary['600']}
                         strokeWidth={'2'}
                       />
                       <div className="font-bold text-sm text-primary-600">

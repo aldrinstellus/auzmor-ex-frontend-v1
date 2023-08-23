@@ -90,7 +90,7 @@ const NotificationsOverview: React.FC = () => {
           </p>
           {/* Mark all as read */}
           {/* <div className="flex items-center gap-x-1 cursor-pointer">
-            <Icon name="checkbox" stroke="#059669" size={18} />
+            <Icon name="checkbox" color="#059669" size={18} />
             <p className="text-primary-600 font-bold text-sm">
               Mark all as read
             </p>

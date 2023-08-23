@@ -108,7 +108,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
       closeButton: (
         <Icon
           name="closeCircleOutline"
-          stroke={twConfig.theme.colors.red['500']}
+          color={twConfig.theme.colors.red['500']}
           size={20}
         />
       ),
@@ -145,7 +145,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
         >
           <Icon
             name="infoCircle"
-            stroke={twConfig.theme.colors.neutral['500']}
+            color={twConfig.theme.colors.neutral['500']}
             hover={false}
             disabled={true}
             size={16}
@@ -194,7 +194,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
             >
               {error ? (
                 <>
-                  <Icon name="infoCircle" size={24} stroke="#F05252" disabled />
+                  <Icon name="infoCircle" size={24} color="#F05252" disabled />
                   <p
                     className="text-red-500 font-medium text-sm"
                     data-testid="add-app-icon-failed"
@@ -217,7 +217,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
                   <Icon
                     name="documentUpload"
                     size={24}
-                    stroke={twConfig.theme.colors.neutral['900']}
+                    color={twConfig.theme.colors.neutral['900']}
                   />
                   <p className="text-neutral-900 font-medium text-sm">
                     Upload App Icon
@@ -246,7 +246,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
                 name="close"
                 size={16}
                 className="group-hover:block group-hover:opacity-100 transition hidden cursor-pointer absolute -top-2 -right-2 bg-black rounded-full p-[4px]"
-                fill="#fff"
+                color="#fff"
                 disabled
                 dataTestId="add-app-remove-icon"
                 onClick={(e) => clearInput(e)}
