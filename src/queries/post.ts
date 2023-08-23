@@ -477,7 +477,7 @@ export const useInfiniteFeed = (pathname: string, q?: Record<string, any>) => {
   const queryFunction = queryKey === '' ? fetchFeed : feedFunction[queryKey];
   return {
     ...useInfiniteQuery({
-      queryKey: [queryKey, q, queryKey],
+      queryKey: [queryKey, q],
       queryFn: (context) => queryFunction(context, feed, setFeed),
       getNextPageParam: (lastPage: any) => {
         const pageDataLen = lastPage?.data?.result?.data?.length;
