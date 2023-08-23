@@ -20,12 +20,11 @@ const LoadMore: React.FC<LoadMoreProps> = ({
 }): ReactElement => {
   return (
     <div
-      className="flex items-center justify-between py-4 cursor-pointer"
+      className="flex items-center justify-center pt-4 cursor-pointer"
       onClick={() => onClick()}
       data-testid={dataTestId}
     >
       <p className="text-neutral-500 font-bold text-sm">{label}</p>
-      <Icon name="arrowDown" />
     </div>
   );
 };
