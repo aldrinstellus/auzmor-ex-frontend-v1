@@ -162,7 +162,7 @@ const Feed: React.FC<IFeedProps> = () => {
   return (
     <>
       <div className="mb-12 gap-x-[52px] flex w-full">
-        <div className="z-10 max-w-[278px] min-w-[278px] sticky top-24 space-y-6">
+        <div className="z-10 min-w-[293px] max-w-[293px] sticky top-24 space-y-6">
           <UserCard />
           <MyTeamWidget />
         </div>
