@@ -61,10 +61,9 @@ export const iconsStyle = (key: string) => {
 type PostProps = {
   post: IPost;
   customNode?: ReactNode;
-  bookmarks?: boolean;
 };
 
-const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
+const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
   const [showComments, openComments, closeComments] = useModal(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -75,21 +74,17 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
     (total, count) => total + count,
     0,
   );
-  const { feed, updateFeed, setFeed } = useFeedStore();
+  const { feed, updateFeed } = useFeedStore();
   const previousShowComment = useRef<boolean>(false);
 
   const createBookmarkMutation = useMutation({
     mutationKey: ['create-bookmark-mutation'],
     mutationFn: createBookmark,
-    onMutate: (variables) => {
-      if (!bookmarks) {
-        updateFeed(variables, { ...feed[variables], bookmarked: true });
-      }
+    onMutate: (id) => {
+      updateFeed(id, { ...feed[id], bookmarked: true });
     },
     onError: (error, variables, context) => {
-      if (!bookmarks) {
-        updateFeed(variables, { ...feed[variables], bookmarked: false });
-      }
+      updateFeed(variables, { ...feed[variables], bookmarked: false });
     },
     onSuccess: async (data, variables) => {
       toast(
@@ -126,22 +121,10 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
     mutationKey: ['delete-bookmark-mutation'],
     mutationFn: deleteBookmark,
     onMutate: (variables) => {
-      if (!bookmarks) {
-        updateFeed(variables, { ...feed[variables], bookmarked: false });
-      } else {
-        const previousFeed = feed;
-        setFeed({ ..._.omit(feed, [variables]) });
-        return { previousFeed };
-      }
+      updateFeed(variables, { ...feed[variables], bookmarked: false });
     },
     onError: (error, variables, context) => {
-      if (!bookmarks) {
-        updateFeed(variables, { ...feed[variables], bookmarked: true });
-      } else {
-        if (context?.previousFeed) {
-          setFeed(context?.previousFeed);
-        }
-      }
+      updateFeed(variables, { ...feed[variables], bookmarked: true });
     },
     onSuccess: async (data, variables) => {
       toast(

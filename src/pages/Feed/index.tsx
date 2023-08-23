@@ -82,7 +82,16 @@ const Feed: React.FC<IFeedProps> = () => {
   }, [inView]);
 
   const feedIds = data?.pages.flatMap((page) =>
-    page.data?.result?.data.map((post: { id: string }) => post),
+    page.data?.result?.data
+      .filter((post: { id: string }) => {
+        if (bookmarks) {
+          return !!feed[post.id].bookmarked;
+        } else if (scheduled) {
+          return !!feed[post.id].schedule;
+        }
+        return true;
+      })
+      .map((post: { id: string }) => post),
   ) as { id: string }[];
 
   const clearAppliedFilters = () => {
@@ -264,7 +273,7 @@ const Feed: React.FC<IFeedProps> = () => {
           {FeedHeader}
           {isLoading ? (
             <SkeletonLoader />
-          ) : feedIds?.length === 0 ? (
+          ) : feedIds?.filter(({ id }) => !!feed[id])?.length === 0 ? (
             getEmptyFeedComponent()
           ) : (
             <div className="mt-4">
@@ -272,7 +281,7 @@ const Feed: React.FC<IFeedProps> = () => {
                 ?.filter(({ id }) => !!feed[id])
                 ?.map((feedId, index) => (
                   <div data-testid={`feed-post-${index}`} key={feedId.id}>
-                    <Post post={feed[feedId.id!]} bookmarks={bookmarks} />
+                    <Post post={feed[feedId.id!]} />
                   </div>
                 ))}
             </div>
