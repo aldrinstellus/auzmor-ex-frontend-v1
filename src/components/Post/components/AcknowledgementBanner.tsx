@@ -50,7 +50,7 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
       {isAnnouncement &&
         !(data?.acknowledged || hasDatePassed(data?.announcement?.end)) && (
           <div
-            className={`flex justify-between items-center bg-blue-700 px-6 py-2 rounded-t-9xl`}
+            className={`flex justify-between items-center bg-blue-700 px-6 py-2 rounded-t-9xl min-h-[42px]`}
             data-testid="announcement-header"
           >
             <div className="flex justify-center items-center text-white text-xs font-bold space-x-3">
