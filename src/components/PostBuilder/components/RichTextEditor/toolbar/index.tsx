@@ -54,7 +54,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
                 data-testid={`${dataTestId}-content-underline`}
               />
               <button
-                className="ql-emoji !h-[18px] !w-[18px] -mb-[2px]"
+                className="ql-emoji mt-[2px] text-neutral-900"
                 data-testid={`${dataTestId}-content-emoji`}
               />
             </span>
