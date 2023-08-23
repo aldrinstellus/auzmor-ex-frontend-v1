@@ -33,7 +33,7 @@ const MediaRender: React.FC<IMediaRenderProps> = ({
 
   return (
     <div
-      className={`rounded-9xl overflow-hidden w-full h-full bg-no-repeat bg-cover relative ${localClassName} ${
+      className={`rounded-9xl border-1 border-neutral-200 overflow-hidden w-full h-full bg-no-repeat bg-cover relative ${localClassName} ${
         mode === Mode.View ? 'cursor-pointer ' : ''
       }`}
       onClick={onClick}
