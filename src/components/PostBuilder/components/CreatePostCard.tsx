@@ -134,7 +134,9 @@ const CreatePostCard: React.FC<ICreatePostCardProps> = ({
             <div className="mt-3 mb-3 flex justify-center items-center py-3 rounded-7xl border-1 border-neutral-200 bg-neutral-200 w-8 h-8">
               {type.icon}
             </div>
-            <div className="ml-3 text-xs font-normal">{type.label}</div>
+            <div className="ml-3 text-xs font-normal text-neutral-500">
+              {type.label}
+            </div>
           </div>
         ))}
       </div>
