@@ -301,16 +301,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                 }
                 onDeactivateClick={() => openDeactivateModal}
                 onEditClick={() => {
-                  searchParams?.append(
-                    'edit',
-                    getEditSection(
-                      userDetails?.id,
-                      user?.id,
-                      isAdmin,
-                      userDetails?.role,
-                    ),
-                  );
-                  setSearchParams(searchParams);
+                  openEditProfileModal();
                 }}
                 onResendInviteClick={() => () => {
                   toast(<SuccessToast content="Invitation has been sent" />, {
