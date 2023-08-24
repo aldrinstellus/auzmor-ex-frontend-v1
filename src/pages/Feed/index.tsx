@@ -12,7 +12,9 @@ import {
 import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
 import Post from 'components/Post';
 import { useInView } from 'react-intersection-observer';
-import FeedFilter from 'components/ActivityFeed/components/FeedFilters';
+import FeedFilter, {
+  filterKeyMap,
+} from 'components/ActivityFeed/components/FeedFilters';
 import Divider from 'components/Divider';
 import SortByDropdown from 'components/ActivityFeed/components/SortByDropdown';
 import Icon from 'components/Icon';
@@ -229,52 +231,45 @@ const Feed: React.FC<IFeedProps> = () => {
                   <SortByDropdown />
                 </div>
 
-                <div className="flex w-full items-center justify-between overflow-y-auto">
-                  <div className="flex items-center space-x-2">
-                    {appliedFeedFilters[PostFilterKeys.PostType]?.map(
-                      (filter: PostType) => (
-                        <>
-                          <div className="text-base font-medium text-neutral-500">
-                            Filter By
-                          </div>
-                          <div
-                            key={filter}
-                            className="border border-neutral-200 rounded-17xl px-3 py-2 flex bg-white capitalize text-sm font-medium items-center mr-1"
-                          >
-                            <div className="mr-1 text-sm text-primary-500 font-bold">
-                              {filter.toLocaleLowerCase()}
+                {getAppliedFiltersCount() > 0 && (
+                  <div className="flex w-full items-center justify-between overflow-y-auto mt-2 space-x-2">
+                    <div className="flex items-center space-x-2">
+                      <div className="text-base font-medium text-neutral-500 whitespace-nowrap">
+                        Filter By
+                      </div>
+                      {appliedFeedFilters[PostFilterKeys.PostType]?.map(
+                        (filter: PostType) => (
+                          <>
+                            <div
+                              key={filter}
+                              className="border border-neutral-200 rounded-[8px] px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1"
+                            >
+                              <div className="mr-1 text-base text-primary-500 font-bold whitespace-nowrap">
+                                {filterKeyMap[filter]}
+                              </div>
+                              <Icon
+                                name="closeOutline"
+                                color={twConfig.theme.colors.neutral['900']}
+                                className="cursor-pointer"
+                                size={16}
+                                onClick={() => removePostTypeFilter(filter)}
+                              />
                             </div>
-                            <Icon
-                              name="closeOutline"
-                              color={twConfig.theme.colors.neutral['900']}
-                              className="cursor-pointer"
-                              size={16}
-                              onClick={() => removePostTypeFilter(filter)}
-                            />
-                          </div>
-                        </>
-                      ),
+                          </>
+                        ),
+                      )}
+                    </div>
+
+                    {getAppliedFiltersCount() > 0 && (
+                      <div
+                        className="flex items-center cursor-pointer font-medium text-neutral-500 rounded-[8px] border border-neutral-200 px-3 py-1 whitespace-nowrap"
+                        onClick={clearAppliedFilters}
+                      >
+                        Clear filters
+                      </div>
                     )}
                   </div>
-
-                  {getAppliedFiltersCount() > 0 && (
-                    <div
-                      className="flex items-center cursor-pointer"
-                      onClick={clearAppliedFilters}
-                    >
-                      <Icon
-                        name="deleteOutline"
-                        size={16}
-                        className="mr-1"
-                        color={twConfig.theme.colors.primary['600']}
-                        strokeWidth={'2'}
-                      />
-                      <div className="font-bold text-sm text-primary-600">
-                        Clear all
-                      </div>
-                    </div>
-                  )}
-                </div>
+                )}
               </>
             )}
             {isLoading ? (
