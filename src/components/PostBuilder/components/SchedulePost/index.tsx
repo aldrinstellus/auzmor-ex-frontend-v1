@@ -1,6 +1,6 @@
 import Header from 'components/ModalHeader';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import timezones from 'utils/timezones.json';
 import Footer from './Footer';
 import { useForm } from 'react-hook-form';
@@ -8,6 +8,7 @@ import Layout, { FieldType } from 'components/Form';
 import { useCurrentUser } from 'queries/users';
 import { afterXUnit, beforeXUnit, getTimezoneNameFromIANA } from 'utils/time';
 import moment from 'moment';
+import Button, { Variant as ButtonVariant, Size } from 'components/Button';
 
 interface ISchedulePost {
   closeModal: () => void;
@@ -20,6 +21,7 @@ export interface IForm {
 }
 
 const SchedulePost: React.FC<ISchedulePost> = ({ closeModal }) => {
+  const [timezoneFieldVisible, setTimezoneFieldVisible] = useState(false);
   const { setActiveFlow, clearPostContext, setSchedule, schedule } =
     useContext(CreatePostContext);
   const onSubmit = (data: IForm) => {
@@ -62,7 +64,7 @@ const SchedulePost: React.FC<ISchedulePost> = ({ closeModal }) => {
   });
 
   const formData = watch();
-  const fields = [
+  let fields = [
     {
       type: FieldType.SingleSelect,
       label: 'Timezone',
@@ -108,6 +110,10 @@ const SchedulePost: React.FC<ISchedulePost> = ({ closeModal }) => {
     },
   ];
 
+  if (!timezoneFieldVisible) {
+    fields = fields.filter((field) => field.name != 'timezone');
+  }
+
   return (
     <>
       <Header
@@ -125,6 +131,21 @@ const SchedulePost: React.FC<ISchedulePost> = ({ closeModal }) => {
             {moment(formData.date).format('ddd, MMM DD')} at {formData.time}{' '}
             based on your profile timezone.
           </div>
+          {!timezoneFieldVisible ? (
+            <div className="flex flex-row space-x-2 text-sm items-end leading-5 pb-4">
+              <div>{userTimezone}</div>
+              <Button
+                label="Edit"
+                variant={ButtonVariant.Tertiary}
+                size={Size.Small}
+                rightIcon="edit"
+                onClick={() => setTimezoneFieldVisible(true)}
+                className="px-0 !py-0 mx-1"
+                labelClassName="text-primary-500 text-xs leading-normal"
+                rightIconClassName="mx-0.5 text-primary-500"
+              />
+            </div>
+          ) : null}
           <Layout fields={fields} />
         </div>
         <Footer isValid={isValid && !!!errors.time} />
