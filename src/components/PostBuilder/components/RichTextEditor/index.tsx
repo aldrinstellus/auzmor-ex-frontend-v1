@@ -72,6 +72,7 @@ const RichTextEditor = React.forwardRef(
   ) => {
     const {
       announcement,
+      setAnnouncement,
       setActiveFlow,
       setEditorValue,
       media,
@@ -280,6 +281,50 @@ const RichTextEditor = React.forwardRef(
           onChange={onChangeEditorContent}
           defaultValue={defaultValue}
         />
+        {announcement?.label && !hasDatePassed(announcement.value) && (
+          <div className="flex justify-between bg-blue-50 px-4 py-2 m-4">
+            <div className="flex items-center">
+              <Icon
+                name="micOutline"
+                size={16}
+                className="text-neutral-900"
+                hover={false}
+              />
+              <div
+                className="ml-2.5"
+                data-testid="announcement-scheduled-toaster"
+              >
+                Announcement will expire on{' '}
+                {moment(new Date(announcement.value)).format(
+                  'ddd, MMM DD [at] h:mm a',
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div
+                className="cursor-pointer"
+                onClick={() => {
+                  updateContext();
+                  setActiveFlow(CreatePostFlow.CreateAnnouncement);
+                }}
+                data-testid="announcement-toaster-editicon"
+              >
+                <Icon
+                  name="editOutline"
+                  size={12}
+                  className="text-neutral-900"
+                />
+              </div>
+              <div
+                className="cursor-pointer"
+                onClick={() => setAnnouncement(null)}
+                data-testid="announcement-toaster-closeicon"
+              >
+                <Icon name="close" size={12} className="text-neutral-900" />
+              </div>
+            </div>
+          </div>
+        )}
         {media.length > 0 && (
           <MediaPreview
             media={media}
@@ -310,43 +355,6 @@ const RichTextEditor = React.forwardRef(
               total={poll.total}
               closedAt={poll.closedAt}
             />
-          </div>
-        )}
-        {announcement?.label && !hasDatePassed(announcement.value) && (
-          <div className="flex justify-between bg-blue-50 px-4 py-2 m-4">
-            <div className="flex items-center">
-              <Icon
-                name="micOutline"
-                size={16}
-                color={twConfig.theme.colors.neutral['900']}
-              />
-              <div
-                className="ml-2.5"
-                data-testid="announcement-scheduled-toaster"
-              >
-                Announcement will expire on{' '}
-                {moment(new Date(announcement.value)).format(
-                  'ddd, MMM DD [at] h:mm a',
-                )}
-              </div>
-            </div>
-            <div
-              className="flex items-center cursor-pointer"
-              onClick={() => {
-                updateContext();
-                setActiveFlow(CreatePostFlow.CreateAnnouncement);
-              }}
-              data-testid="announcement-toaster-editicon"
-            >
-              <Icon
-                name="editOutline"
-                size={12}
-                color={twConfig.theme.colors.neutral['900']}
-              />
-              <div className="ml-1 text-xs font-bold text-neutral-900">
-                Edit
-              </div>
-            </div>
           </div>
         )}
         {getMediaValidationErrors().map((error, index) => (
