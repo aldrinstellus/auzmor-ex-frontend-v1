@@ -75,7 +75,6 @@ import SvgRepostFilled from '../components/Repost/RepostFilled';
 import SvgCalendarFilled from '../components/Calendar/CalendarFilled';
 import SvgMicFilled from '../components/Mic/MicFilled';
 import SvgGearFilled from '../components/Gear/GearFilled';
-import SvgLinkedinFilled from '../components/Linkedin/LinkedinFilled';
 import SvgNoteFavouriteFilled from '../components/NoteFavourite/NoteFavouriteFilled';
 import SvgAdminFilled from '../components/Admin/AdminFilled';
 import SvgHomeFilled from '../components/Home/HomeFilled';
@@ -140,7 +139,6 @@ export const filledIcon = {
   likeFilled: SvgLikeFilled,
   likeIconFilled: SvgLikeIconFilled,
   linearLeftArrowFilled: SvgLinearLeftArrowFilled,
-  linkedinFilled: SvgLinkedinFilled,
   logoutFilled: SvgLogoutFilled,
   loveFilled: SvgLoveFilled,
   magicStarFilled: SvgMagicStarFilled,

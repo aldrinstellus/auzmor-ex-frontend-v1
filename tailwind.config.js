@@ -6,6 +6,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        'welcome-to-office': "url('images/welcomeToOffice.png')",
+      },
       colors: {
         'black-white': { black: '#000000', white: '#ffffff' },
         primary: {
@@ -146,8 +149,8 @@ module.exports = {
         8.5: '32px',
       },
       transitionDuration: {
-        default: '200ms'
-      }
+        default: '200ms',
+      },
     },
     plugins: [],
   },

@@ -107,13 +107,13 @@ const Banner: React.FC<BannerProps> = ({
   const getIconColor = () => {
     switch (variant) {
       case Variant.Success:
-        return twConfig.theme.colors.neutral['900'];
+        return 'text-neutral-900';
       case Variant.Error:
-        return twConfig.theme.colors.red['500'];
+        return 'text-red-500';
       case Variant.Info:
-        return twConfig.theme.colors.blue['500'];
+        return 'text-blue-500';
       case Variant.Warning:
-        return twConfig.theme.colors.orange['500'];
+        return 'text-orange-500';
     }
   };
 
@@ -140,11 +140,11 @@ const Banner: React.FC<BannerProps> = ({
   return (
     <div className={containerStyles} data-testid={dataTestId}>
       <div className="flex">
-        <div className="mr-1">
+        <div className="mr-2">
           <Icon
             name={iconName}
-            className="relative bottom-[2px]"
-            size={18}
+            className="relative"
+            size={16}
             color={getIconColor()}
           />
         </div>

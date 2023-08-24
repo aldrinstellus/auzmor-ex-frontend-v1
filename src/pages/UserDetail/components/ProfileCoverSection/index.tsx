@@ -46,6 +46,13 @@ import DeletePeople from 'pages/Users/components/DeleteModals/People';
 import ReactivatePeople from 'pages/Users/components/ReactivateModal/Reactivate';
 import DeactivatePeople from 'pages/Users/components/DeactivateModal/Deactivate';
 import useAuth from 'hooks/useAuth';
+import {
+  FacebookIcon,
+  InstagramIcon,
+  LinkedinIcon,
+  TwitterIcon,
+  WebIcon,
+} from 'components/Icon/socialIcons';
 
 export interface IProfileCoverProps {
   userDetails: Record<string, any>;
@@ -327,7 +334,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
               />
             </div>
           </div>
-          <div className="mt-1 flex space-x-6 items-center">
+          <div className="flex space-x-6 items-center">
             <div className="flex space-x-2 items-center">
               <IconWrapper type={Type.Square} className="cursor-pointer">
                 <Icon name="briefcase" size={16} color="text-primary-500" />
@@ -365,11 +372,11 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             </div>
           </div>
           <div className="mt-3 flex items-center space-x-2">
-            <Icon name="linkedin" color="#0E76A8" />
-            <Icon name="linkedin" color="#0E76A8" />
-            <Icon name="linkedin" />
-            <Icon name="linkedin" />
-            <Icon name="linkedin" />
+            <LinkedinIcon />
+            <TwitterIcon />
+            <InstagramIcon />
+            <FacebookIcon />
+            <WebIcon />
           </div>
         </div>
       </Card>
