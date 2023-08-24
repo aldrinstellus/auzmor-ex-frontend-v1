@@ -284,10 +284,10 @@ export const Comment: React.FC<CommentProps> = ({
           {/* ellipse */}
           <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
           {/* Show Reaction */}
-          {totalCount > 0 && (
+          {totalCount > 0 ? (
             <div className="flex justify-between cursor-pointer">
               <div
-                className="flex space-x-1 items-center mr-2"
+                className="flex items-center"
                 onClick={() => setShowReactionModal(true)}
               >
                 {totalCount > 0 && (
@@ -317,10 +317,15 @@ export const Comment: React.FC<CommentProps> = ({
                     {totalCount}
                   </div>
                 )}
+                <Divider
+                  variant={Variant.Vertical}
+                  className="bg-neutral-200 mx-4"
+                />
               </div>
             </div>
+          ) : (
+            <div />
           )}
-          <Divider variant={Variant.Vertical} />
         </div>
 
         <div className="flex items-center space-x-2">

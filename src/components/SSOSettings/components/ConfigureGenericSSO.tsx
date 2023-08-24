@@ -127,7 +127,6 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
         <Icon
           onClick={closeModalAndClearInput}
           name="close"
-          hover={false}
           color="#000"
           size={16}
         />

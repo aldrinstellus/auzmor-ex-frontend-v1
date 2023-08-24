@@ -105,8 +105,6 @@ const People: React.FC<IPeopleProps> = ({
 
   const roleSelectRef = useRef<any>();
 
-  console.log('data coming from User or Members....', data);
-
   const customReset = () => {
     if (roleSelectRef && roleSelectRef.current)
       roleSelectRef.current.setValue('');
@@ -117,7 +115,7 @@ const People: React.FC<IPeopleProps> = ({
       type: FieldType.SingleSelect,
       control,
       height: '36px',
-      className: 'p-0 w-44',
+      className: 'p-0 w-[160px] font-bold text-sm',
       name: 'role',
       placeholder: 'Role',
       size: InputSize.Small,
@@ -163,6 +161,7 @@ const People: React.FC<IPeopleProps> = ({
                 <Button
                   label="My Teams"
                   size={Size.Small}
+                  disabled
                   variant={Variant.Secondary}
                   className="cursor-not-allowed h-9 grow-0"
                   dataTestId="people-view-my-teams"

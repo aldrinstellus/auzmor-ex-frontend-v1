@@ -137,7 +137,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
               </div>
               <div className="flex space-x-3">
                 <IconWrapper type={Type.Square}>
-                  <Icon name="clock" size={16} />
+                  <Icon name="clock" hover={false} size={16} />
                 </IconWrapper>
                 <div className="text-neutral-900 text-base font-medium">
                   Joined on{' '}
@@ -164,7 +164,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
               ) : (
                 <div className="flex space-x-3">
                   <IconWrapper type={Type.Square}>
-                    <Icon name="clock" size={16} />
+                    <Icon name="clock" hover={false} size={16} />
                   </IconWrapper>
                   <div
                     className="text-neutral-900 text-base font-medium"

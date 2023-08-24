@@ -259,8 +259,8 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
             {!isEditable ? (
               <>
                 <div className="flex space-x-3">
-                  <IconWrapper type={Type.Square} className="cursor-pointer">
-                    <Icon name="cake" size={16} />
+                  <IconWrapper type={Type.Square}>
+                    <Icon name="cake" hover={false} size={16} />
                   </IconWrapper>
                   <div className="text-neutral-900 text-base font-medium">
                     Born on{' '}
@@ -274,11 +274,11 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                   </div>
                 </div>
                 <div className="flex space-x-3">
-                  <IconWrapper type={Type.Square} className="cursor-pointer">
+                  <IconWrapper type={Type.Square}>
                     {personalDetails?.personal?.gender === 'FEMALE' ? (
-                      <Icon name="femaleIcon" size={16} />
+                      <Icon name="femaleIcon" hover={false} size={16} />
                     ) : (
-                      <Icon name="male" size={16} />
+                      <Icon name="male" hover={false} size={16} />
                     )}
                   </IconWrapper>
                   <div
@@ -298,8 +298,8 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                     Permanent Address
                   </div>
                   <div className="flex space-x-3">
-                    <IconWrapper type={Type.Square} className="cursor-pointer">
-                      <Icon name="location" size={16} />
+                    <IconWrapper type={Type.Square}>
+                      <Icon name="location" hover={false} size={16} />
                     </IconWrapper>
                     <div
                       className="text-neutral-900 text-base font-medium"
@@ -314,8 +314,8 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
                     Marital Status
                   </div>
                   <div className="flex space-x-3">
-                    <IconWrapper type={Type.Square} className="cursor-pointer">
-                      <Icon name="marriedIcon" size={16} />
+                    <IconWrapper type={Type.Square}>
+                      <Icon name="marriedIcon" hover={false} size={16} />
                     </IconWrapper>
                     <div
                       className="text-neutral-900 text-base font-medium"

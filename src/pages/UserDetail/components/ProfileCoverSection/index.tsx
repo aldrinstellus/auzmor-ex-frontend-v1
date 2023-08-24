@@ -358,8 +358,8 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
               </div>
               <Divider variant={DividerVariant.Vertical} className="h-8" />
               <div className="flex space-x-3 items-center">
-                <IconWrapper type={Type.Square} className="cursor-pointer">
-                  <Icon name="briefcase" size={16} />
+                <IconWrapper type={Type.Square}>
+                  <Icon name="briefcase" hover={false} size={16} />
                 </IconWrapper>
                 <div
                   className="text-xs font-normal text-neutral-900"
@@ -370,8 +370,8 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
               </div>
               <Divider variant={DividerVariant.Vertical} className="h-8" />
               <div className="flex space-x-3 items-center">
-                <IconWrapper type={Type.Square} className="cursor-pointer">
-                  <Icon name="location" size={16} />
+                <IconWrapper type={Type.Square}>
+                  <Icon name="location" hover={false} size={16} />
                 </IconWrapper>
                 <div
                   className="text-xs font-normal text-neutral-900"

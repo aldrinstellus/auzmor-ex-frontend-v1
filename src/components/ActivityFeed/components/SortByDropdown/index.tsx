@@ -20,7 +20,7 @@ const SortByDropdown: React.FC = ({}) => {
           ]}
           optionRenderer={(active, selected, option) => (
             <div
-              className={`px-4 py-1 cursor-pointer text-sm ${
+              className={`px-4 py-2 cursor-pointer text-sm ${
                 (active || selected) && 'bg-primary-50'
               }`}
               data-testid={`feed-sortpost-by${option.value}`}

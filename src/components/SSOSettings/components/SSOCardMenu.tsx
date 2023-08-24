@@ -66,7 +66,7 @@ const SSOCardMenu: React.FC<SSOCardMenuProps> = ({
       <Modal open={open}>
         <div className="flex items-center justify-between p-4">
           <p className="font-bold text-lg text-gray-900">Deactivate?</p>
-          <Icon name="close" hover={false} onClick={closeModal} />
+          <Icon name="close" onClick={closeModal} />
         </div>
         <Divider />
         <p className="p-4">Do you wish to deactivate {name}?</p>

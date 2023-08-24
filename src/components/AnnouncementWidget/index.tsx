@@ -2,7 +2,7 @@ import React from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Card from 'components/Card';
 import { announcementRead, useAnnouncementsWidget } from 'queries/post';
-import Button, { Variant } from 'components/Button';
+import Button, { Size, Variant } from 'components/Button';
 import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
 import { humanizeTime } from 'utils/time';
@@ -65,9 +65,14 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
         {/* <div className="text-sm font-bold">View All</div> */}
       </div>
       <div className="mt-2">
-        <Card className="pb-6 flex flex-col rounded-9xl">
+        <Card className="pb-6 flex flex-col rounded-9xl max-h-[386px]">
           <div className="rounded-t-9xl bg-blue-700 text-white py-3 w-full flex justify-start space-x-3 px-3">
-            <Icon name="flashIcon" size={16} />
+            <Icon
+              name="flashIcon"
+              className="text-white"
+              hover={false}
+              size={16}
+            />
             <div className="text-xs font-bold">Announcement</div>
           </div>
           {isLoading || dataPostId === postId ? (
@@ -78,7 +83,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
                 <div className="flex flex-col items-start">
                   <div className="mt-4">
                     <div className="flex space-x-4">
-                      <div>
+                      <div className="!min-w-[32px] !max-h-[32px]">
                         <Avatar
                           name={
                             postData?.createdBy
@@ -87,7 +92,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
                           }
                           image={getProfileImage(postData?.createdBy)}
                           size={32}
-                          className="border-2 border-white"
+                          className="border-2 border-white !h-full !w-full"
                         />
                       </div>
 
@@ -100,7 +105,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
                             shared a post
                           </span>
                         </div>
-                        <div className="flex space-x-2">
+                        <div className="flex space-x-2 items-center">
                           <div className="text-xs text-gray-500">
                             {humanizeTime(postData?.createdAt)}
                           </div>
@@ -115,7 +120,10 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
                     </div>
                     <Link to={`/posts/${dataPostId}`}>
                       <div className="mt-4 flex">
-                        <RenderQuillContent data={postData} />
+                        <RenderQuillContent
+                          data={postData}
+                          isAnnouncementWidgetPreview
+                        />
                       </div>
                     </Link>
                   </div>
@@ -124,6 +132,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
                       <Button
                         label="Mark as read"
                         variant={Variant.Secondary}
+                        size={Size.Small}
                         className="border-2 border-neutral-200 mt-4 w-full"
                         loading={acknowledgeAnnouncement.isLoading}
                         onClick={() => {
@@ -134,7 +143,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
                   )}
                 </div>
               ) : (
-                <div className="flex justify-center items-center p-6">
+                <div className="flex text-sm justify-center items-center p-6">
                   No pending announcements
                 </div>
                 // replace with empty widget

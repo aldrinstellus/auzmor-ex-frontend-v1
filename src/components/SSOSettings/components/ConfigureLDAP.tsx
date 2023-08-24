@@ -416,7 +416,6 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
             className="p-4"
             onClick={closeModal}
             name="close"
-            hover={false}
             color="#000"
           />
         </div>
@@ -447,7 +446,6 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
                               className="pl-1"
                               name="infoCircle"
                               color="red"
-                              hover={false}
                             />
                           </div>
                         </p>

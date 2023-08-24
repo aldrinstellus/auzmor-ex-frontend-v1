@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Carousel from 'components/Carousel';
 import MediaRender from './components/MediaRender';
 import Button, { Variant as ButtonVariant, Size } from 'components/Button';
@@ -31,6 +31,7 @@ export interface IMediaPreviewProps {
   showAddMediaButton?: boolean;
   showEditButton?: boolean;
   showCloseButton?: boolean;
+  isAnnouncementWidgetPreview?: boolean;
 }
 
 const MediaPreview: React.FC<IMediaPreviewProps> = ({
@@ -46,9 +47,23 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
   showAddMediaButton = true,
   showEditButton = true,
   showCloseButton = true,
+  isAnnouncementWidgetPreview = false,
 }) => {
   const [mediaIndex, setMediaIndex] = useState<number>(-1);
   const [open, openModal, closeModal] = useModal(true);
+
+  const getMediaHeight = () => {
+    if (isAnnouncementWidgetPreview) {
+      return 'h-20';
+    }
+    if (media.length <= 3) {
+      return 'h-64';
+    }
+    if (media.length > 3) {
+      return 'h-80';
+    }
+    return '';
+  };
 
   const setIndexAndOpenCarousel = (index: number) => {
     setMediaIndex(index);
@@ -61,6 +76,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
   };
 
   const getLayout = () => {
+    const mediaHeight = useMemo(getMediaHeight, [media.length]);
     if (media.length === 0) {
     } else if (media.length === 1) {
       return (
@@ -73,7 +89,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
               onClick(e, 1, media[0]);
             }
           }}
-          localClassName="!h-64"
+          localClassName={`!${mediaHeight}`}
           coverImageUrl={
             coverImageMap?.find((map) => map.videoName === media[0].name)
               ?.blobUrl || media[0]?.coverImage?.original
@@ -82,7 +98,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
       );
     } else if (media.length === 2) {
       return (
-        <div className="flex w-full h-64 items-center">
+        <div className={`flex w-full items-center ${mediaHeight}`}>
           <MediaRender
             data={media[0]}
             localClassName="!w-1/2 !mr-2"
@@ -117,7 +133,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
       );
     } else if (media.length === 3) {
       return (
-        <div className="flex w-full h-64">
+        <div className={`flex w-full ${mediaHeight}`}>
           <div className="!w-1/2 !mr-2">
             <MediaRender
               data={media[0]}
@@ -171,7 +187,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
       );
     } else if (media.length === 4) {
       return (
-        <div className="flex flex-col w-full h-80 space-y-4">
+        <div className={`flex flex-col w-full space-y-4 ${mediaHeight}`}>
           <div className="flex !h-1/2">
             <MediaRender
               data={media[0]}
@@ -240,7 +256,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
       );
     } else if (media.length === 5) {
       return (
-        <div className="flex flex-col w-full h-80 space-y-4">
+        <div className={`flex flex-col w-full space-y-4 ${mediaHeight}`}>
           <div className="flex mb-0 !h-1/2">
             <MediaRender
               data={media[0]}
@@ -324,7 +340,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
       );
     } else if (media.length > 5) {
       return (
-        <div className="flex flex-col w-full h-80">
+        <div className={`flex flex-col w-full ${mediaHeight}`}>
           <div className="flex mb-2 !h-1/2 ">
             <MediaRender
               data={media[0]}
@@ -390,6 +406,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
             />
             <MediaRender
               overlayCount={media.length - 5}
+              isAnnouncementWidgetPreview={isAnnouncementWidgetPreview}
               data={media[4]}
               localClassName="!w-1/3 ml-2"
               onClick={(e) => {

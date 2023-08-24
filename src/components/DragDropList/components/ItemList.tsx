@@ -73,7 +73,6 @@ const ItemList: React.FC<IItemListProps> = ({
             <Icon
               name="delete"
               color="#F05252"
-              hover={false}
               size={20}
               onClick={() => {
                 const updatedValues = draggableItems.filter(

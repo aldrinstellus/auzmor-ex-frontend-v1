@@ -304,7 +304,7 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
                   )}
                 </div>
                 {post?.commentsCount > 0 && (
-                  <div className="flex flex-row text-sm font-normal text-neutral-500 space-x-7 items-center cursor-pointer">
+                  <div className="flex flex-row text-xs font-normal text-neutral-500 space-x-7 items-center cursor-pointer">
                     <div
                       onClick={() => {
                         if (showComments) {

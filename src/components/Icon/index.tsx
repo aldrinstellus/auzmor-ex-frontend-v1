@@ -9,7 +9,7 @@ export type IconProps = {
   strokeWidth?: string;
   onClick?: (...param: any) => void | null;
   className?: string;
-  hover?: boolean;
+  hover?: boolean | undefined;
   disabled?: boolean;
   dataTestId?: string;
   isActive?: boolean;
@@ -21,7 +21,7 @@ const Icon: React.FC<IconProps> = ({
   size = 24,
   onClick = null,
   className = '',
-  hover = false,
+  hover,
   disabled = false,
   strokeWidth,
   isActive,
@@ -50,6 +50,7 @@ const Icon: React.FC<IconProps> = ({
     [isActiveHoverColorClass]: (isActive || hover) && hoverColor && !disabled,
     [disabledClass]: disabled,
     [className]: true,
+    'pointer-events-none': hover === false,
   });
 
   return (

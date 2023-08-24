@@ -151,7 +151,6 @@ const Admin: React.FC<IAdminProps> = () => {
               >
                 <Icon
                   name={item.icon}
-                  hover={false}
                   isActive={activeSettingsPage.key === item.key}
                 />
                 {item.label}

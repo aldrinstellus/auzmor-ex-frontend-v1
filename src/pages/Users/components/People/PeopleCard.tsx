@@ -202,7 +202,6 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
                 className={`absolute top-${
                   status === UserStatus.Inactive ? 6 : 2
                 } right-2`}
-                hover={false}
                 dataTestId="people-card-ellipsis"
               />
             </div>

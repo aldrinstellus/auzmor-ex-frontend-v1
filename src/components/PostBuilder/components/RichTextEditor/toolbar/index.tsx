@@ -40,21 +40,21 @@ const Toolbar: React.FC<IToolbarProps> = ({
         )}
         <div className="flex justify-between items-center h-14 pl-5 pr-6 border-t-1 py-4">
           <div className="flex items-center">
-            <span className="ql-formats">
+            <span className="flex items-center gap-[6px]">
               <button
-                className="ql-bold ql-bold-button"
+                className="ql-bold ql-bold-button !h-[16px] !w-[16px]"
                 data-testid={`${dataTestId}-content-bold`}
               />
               <button
-                className="ql-italic ql-italic-button"
+                className="ql-italic ql-italic-button !h-[16px] !w-[16px]"
                 data-testid={`${dataTestId}-content-italic`}
               />
               <button
-                className="ql-underline ql-underline-button"
+                className="ql-underline ql-underline-button !h-[16px] !w-[16px]"
                 data-testid={`${dataTestId}-content-underline`}
               />
               <button
-                className="ql-emoji"
+                className="ql-emoji mt-[2px] text-neutral-900"
                 data-testid={`${dataTestId}-content-emoji`}
               />
             </span>

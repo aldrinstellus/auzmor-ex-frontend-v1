@@ -84,7 +84,6 @@ const UserOnboard: React.FC = (): ReactNode => {
                 name="close"
                 color="#000000"
                 onClick={disableClose ? undefined : closeModal}
-                hover={false}
                 size={20}
               />
             </div>

@@ -112,7 +112,7 @@ const Input: React.FC<InputProps> = ({
           'py-3': size === Size.Large,
         },
         {
-          'bg-neutral-100': disabled,
+          'bg-neutral-100 text-neutral-400': disabled,
         },
         {
           'w-full rounded-19xl border border-neutral-200 focus:outline-none':

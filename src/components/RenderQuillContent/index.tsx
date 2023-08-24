@@ -18,11 +18,13 @@ import AvatarChips from 'components/AvatarChips';
 type RenderQuillContent = {
   data: IPost | IComment;
   isComment?: boolean;
+  isAnnouncementWidgetPreview?: boolean;
 };
 
 const RenderQuillContent: React.FC<RenderQuillContent> = ({
   data,
   isComment = false,
+  isAnnouncementWidgetPreview = false,
 }): ReactElement => {
   const content = data?.content?.editor;
   const mentions = data?.mentions ? data.mentions : [];
@@ -142,6 +144,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
             media={media as IMedia[]}
             showAddMediaButton={false}
             showEditButton={false}
+            isAnnouncementWidgetPreview={isAnnouncementWidgetPreview}
           />
         </div>
       )}

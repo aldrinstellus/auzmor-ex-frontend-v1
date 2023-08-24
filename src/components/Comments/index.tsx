@@ -134,11 +134,13 @@ const Comments: React.FC<CommentsProps> = ({ entityId }) => {
             <Divider className="mt-4" />
             <div className="pt-4">
               {isCreateCommentLoading && <CommentSkeleton />}
-              {commentIds
-                ?.filter(({ id }) => !!comment[id])
-                .map(({ id }, i: any) => (
-                  <Comment key={id} comment={comment[id]} />
-                ))}
+              <div className="flex flex-col gap-4">
+                {commentIds
+                  ?.filter(({ id }) => !!comment[id])
+                  .map(({ id }, i: any) => (
+                    <Comment key={id} comment={comment[id]} />
+                  ))}
+              </div>
               {hasNextPage && !isFetchingNextPage && (
                 <LoadMore
                   onClick={fetchNextPage}

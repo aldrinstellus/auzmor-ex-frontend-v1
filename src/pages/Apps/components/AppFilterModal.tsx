@@ -115,7 +115,7 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
               <div>{item.category?.name}</div>
               <div className="bg-neutral-500 rounded-full w-1 h-1" />
               <div className="flex items-center justify-center space-x-1">
-                <Icon name="profileUserOutline" size={16} />
+                <Icon name="profileUserOutline" hover={false} size={16} />
                 <div
                   className="text-xs font-normal whitespace-nowrap"
                   data-testid={`team-no-of-members-${item.totalMembers}`}

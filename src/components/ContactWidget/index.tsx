@@ -123,7 +123,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
               {canEdit && isHovered && !isEditable ? (
                 <IconWrapper
                   type={Type.Square}
-                  className="cursor-pointer"
+                  className="cursor-pointer h-[24px] w-[24px]["
                   dataTestId={`contact-info-edit`}
                 >
                   <Icon
@@ -163,7 +163,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                     <div className="flex justify-between items-center">
                       <div className="flex space-x-2 truncate items-center">
                         <IconWrapper>
-                          <Icon name="email" color="#737373" size={15} />
+                          <Icon name="email" hover={false} size={16} />
                         </IconWrapper>
                         <div
                           className="text-sm font-normal text-neutral-900"
@@ -180,7 +180,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                     <div className="flex space-x-4 justify-between items-center">
                       <div className="flex space-x-2 truncate items-center">
                         <IconWrapper>
-                          <Icon name="call" color="#737373" size={15} />
+                          <Icon name="call" hover={false} size={16} />
                         </IconWrapper>
                         <div
                           className="text-sm font-normal text-neutral-900"

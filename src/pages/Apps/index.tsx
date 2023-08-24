@@ -154,7 +154,7 @@ const Apps: React.FC<IAppsProps> = () => {
                     ? selectedButtonClassName
                     : regularButtonClassName
                 } cursor-not-allowed`}
-                onClick={() => setSelectedAppGroup(AppGroup.MY_APPS)}
+                // onClick={() => setSelectedAppGroup(AppGroup.MY_APPS)}
               />
             )}
             <Button
