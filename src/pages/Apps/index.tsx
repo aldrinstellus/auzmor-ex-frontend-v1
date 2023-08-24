@@ -25,6 +25,7 @@ import AppList from './components/AppList';
 import Icon from 'components/Icon';
 import AppBannerSkeleton from './components/Skeletons/AppBannerSkeleton';
 import useRole from 'hooks/useRole';
+import Skeleton from 'react-loading-skeleton';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -279,13 +280,23 @@ const Apps: React.FC<IAppsProps> = () => {
           </div>
         </div>
         <div className="flex flex-col gap-6">
-          <div className="text-neutral-500">
-            Showing {!isLoading && !!appsCount && appsCount} results
-          </div>
+          {!isLoading ? (
+            <div className="text-neutral-500">
+              Showing {!isLoading && !!appsCount && appsCount} results
+            </div>
+          ) : (
+            <Skeleton
+              className="!w-32"
+              containerClassName="flex-1"
+              borderRadius={100}
+            />
+          )}
+
+          {/* Filters pills */}
           {(appFilters.categories.length > 0 ||
             appFilters.teams.length > 0) && (
             <div className="flex justify-between items-start">
-              <div className="flex items-center space-x-2 flex-wrap space-y-2">
+              <div className="flex items-center space-x-2 flex-wrap gap-y-2">
                 <div className="text-base text-neutral-500 whitespace-nowrap">
                   Filter By
                 </div>
@@ -293,7 +304,7 @@ const Apps: React.FC<IAppsProps> = () => {
                   <div
                     key={category.id}
                     className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1"
-                    data-testid={`people-filterby`}
+                    data-testid={`applied-filterby-category`}
                   >
                     <div className="mr-1 text-neutral-500 whitespace-nowrap">
                       Category{' '}
@@ -307,7 +318,7 @@ const Apps: React.FC<IAppsProps> = () => {
                       onClick={() =>
                         handleRemoveFilters('categories', category.id)
                       }
-                      dataTestId={`people-filterby-close`}
+                      dataTestId={`applied-filter-close`}
                     />
                   </div>
                 ))}
@@ -335,11 +346,13 @@ const Apps: React.FC<IAppsProps> = () => {
               <div
                 className="text-neutral-500 border px-3 py-1  mt-2 whitespace-nowrap rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
                 onClick={clearFilters}
+                data-testid="teams-clear-filters"
               >
                 Clear Filters
               </div>
             </div>
           )}
+
           {isAllAppsGroupSelected && (
             <div>
               {featuredAppsCount > 0 && !isFeauturedAppLoading && (

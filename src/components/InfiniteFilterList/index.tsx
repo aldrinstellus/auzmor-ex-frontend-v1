@@ -109,6 +109,7 @@ const InfiniteFilterList: React.FC<IInfiniteFilterListProps> = ({
                   className="cursor-pointer"
                   color={twConfig.theme.colors['black-white'].black}
                   onClick={() => onSelectItem(item)}
+                  dataTestId={`chip-close-'${item.name}'`}
                 />
               </div>
             ))}
