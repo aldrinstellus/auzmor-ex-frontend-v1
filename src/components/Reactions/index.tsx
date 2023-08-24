@@ -1,9 +1,5 @@
 import React, { useRef, useState } from 'react';
-import IconButton, {
-  Variant as IconVariant,
-  Size as SizeVariant,
-} from 'components/IconButton';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createReaction, deleteReaction } from 'queries/reaction';
 import clsx from 'clsx';
 import { useFeedStore } from 'stores/feedStore';
@@ -96,13 +92,15 @@ const Likes: React.FC<LikesProps> = ({
   );
 
   const nameIcon = reactionIconMap[reaction];
+  const queryClient = useQueryClient();
 
   const name = reactionNameMap[reaction];
   const createReactionMutation = useMutation({
     mutationKey: ['create-reaction-mutation'],
     mutationFn: createReaction,
-    onSuccess: (data, variables) => {
+    onMutate: (variables) => {
       if (variables.entityType === 'post') {
+        const previousPost = feed[variables.entityId];
         updateFeed(
           variables.entityId,
           produce(feed[variables.entityId], (draft) => {
@@ -137,14 +135,14 @@ const Likes: React.FC<LikesProps> = ({
                     }
                 : { [variables.reaction as string]: 1 }),
               (draft.myReaction = {
-                reaction: data.reaction,
-                createdBy: data.createdBy,
-                id: data.id,
-                type: data.type,
+                reaction: variables.reaction,
+                type: variables.entityType,
               }); // if reactions count does not exist at all
           }),
         );
+        return { previousPost };
       } else if (variables.entityType === 'comment') {
+        const previousComment = comment[variables.entityId];
         updateComment(
           variables.entityId,
           produce(comment[variables.entityId], (draft) => {
@@ -177,13 +175,44 @@ const Likes: React.FC<LikesProps> = ({
                     }
                 : { [variables.reaction as string]: 1 }),
               (draft.myReaction = {
-                reaction: data.reaction,
-                createdBy: data.createdBy,
-                id: data.id,
-                type: data.type,
+                reaction: variables.reaction,
+                type: variables.entityType,
               });
           }),
         );
+        return { previousComment };
+      }
+    },
+    onSuccess: (data, variables) => {
+      if (variables.entityType === 'post') {
+        updateFeed(
+          variables.entityId,
+          produce(feed[variables.entityId], (draft) => {
+            draft.myReaction = {
+              ...draft.myReaction,
+              createdBy: data.createdBy,
+              id: data.id,
+            }; // if reactions count does not exist at all
+          }),
+        );
+      } else if (variables.entityType === 'comment') {
+        updateComment(
+          variables.entityId,
+          produce(comment[variables.entityId], (draft) => {
+            draft.myReaction = {
+              ...draft.myReaction,
+              createdBy: data.createdBy,
+              id: data.id,
+            };
+          }),
+        );
+      }
+    },
+    onError: (error, variables, context) => {
+      if (variables.entityType === 'post') {
+        updateFeed(context!.previousPost!.id!, context!.previousPost!);
+      } else if (variables.entityType === 'comment') {
+        updateComment(context!.previousComment!.id!, context!.previousComment!);
       }
     },
   });
@@ -192,6 +221,12 @@ const Likes: React.FC<LikesProps> = ({
     mutationKey: ['delete-reaction-mutation'],
     mutationFn: deleteReaction,
     onMutate: (variables) => {
+      if (variables.id === '') {
+        queryClient.cancelQueries({
+          queryKey: ['create-reaction-mutation', 'delete-reaction-mutation'],
+        });
+        return;
+      }
       if (variables.entityType === 'post') {
         const previousPost = feed[variables.entityId];
         updateFeed(

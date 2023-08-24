@@ -237,11 +237,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
 
   return (
     <Popover className="z-40 mr-4">
-      <Tooltip
-        tooltipContent="Filters"
-        tooltipPosition="top"
-        tooltipId="filter-tooltip"
-      >
+      <Tooltip tooltipContent="Filters" tooltipPosition="top">
         <Popover.Button
           className="box-border font-bold flex flex-row justify-center items-center p-1 border-none relative"
           onClick={() => {

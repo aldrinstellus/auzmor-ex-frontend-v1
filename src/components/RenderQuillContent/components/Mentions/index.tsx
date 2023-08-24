@@ -34,15 +34,14 @@ const Mention: React.FC<MentionProps> = ({
           active={active}
         />
       }
-      tooltipId="user-mentions-card"
       variant={Variant.Light}
+      className="shadow-md top rounded-9xl"
     >
       <Link
         to={userId && userId !== user?.id ? '/users/' + userId : '/profile'}
       >
         <span
           className="cursor-pointer mention"
-          contentEditable="false"
           data-testid={`feedpage-at-${value}`}
         >
           {value}

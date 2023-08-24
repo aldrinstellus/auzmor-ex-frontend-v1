@@ -411,6 +411,7 @@ export const fetchScheduledPosts = async (
   if (!!!context.pageParam) {
     response = await apiService.get('/posts/scheduled');
     setFeed({
+      ...feed,
       ..._.chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
@@ -444,6 +445,7 @@ export const fetchBookmarks = async (
   if (!!!context.pageParam) {
     response = await apiService.get('/posts/my-bookmarks');
     setFeed({
+      ...feed,
       ..._.chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(

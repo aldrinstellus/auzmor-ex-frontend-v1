@@ -1,5 +1,6 @@
 import moment from 'moment';
 import timezones from './timezones.json';
+import * as momentTimezone from 'moment-timezone';
 
 export const TIME_PATTERN = /^(0[0-9]|1[0-2]):[0-5][0-9] (am|pm)$/; // it will strictly follow "HH:MM am/pm, HH-> [00-12], MM-> [00->59]"
 
@@ -36,4 +37,43 @@ export const hasDatePassed = (date: string) => {
     console.log(exception);
     return true;
   }
+};
+
+export const convertTimezone = (
+  sourceDate: Date,
+  sourceTime: string,
+  sourceTimezone: string,
+  targetTimezone: string,
+) => {
+  try {
+    const sourceDatetime = momentTimezone.tz(
+      sourceDate.toISOString().split('T')[0] + ' ' + sourceTime,
+      'YYYY-MM-DD hh:mm a',
+      sourceTimezone,
+    );
+    const targetDatetime = sourceDatetime.clone().tz(targetTimezone);
+
+    const targetDate = targetDatetime.format('YYYY-MM-DD');
+    const targetTime = targetDatetime.format('hh:mm a');
+
+    return { targetDate, targetTime };
+  } catch (e) {
+    console.log(e);
+    return { targetDate: '', targetTime: '' };
+  }
+};
+
+export const getTimeInScheduleFormat = (
+  sourceDate: Date,
+  sourceTime: string,
+  sourceTimezone: string,
+  targetTimezone: string,
+) => {
+  const { targetDate, targetTime } = convertTimezone(
+    sourceDate,
+    sourceTime,
+    sourceTimezone,
+    targetTimezone,
+  );
+  return `${moment(targetDate).format('ddd, MMM DD')} at ${targetTime}`;
 };

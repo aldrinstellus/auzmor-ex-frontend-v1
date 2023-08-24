@@ -154,7 +154,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     }) => {
       if (!!!result.data.schedule) {
         setFeed({ ...feed, [result.data.id!]: { ...result.data } });
-        await queryClient.setQueryData(['feed', { type: [] }], (oldData: any) =>
+        queryClient.setQueryData(['feed', { type: [] }], (oldData: any) =>
           produce(oldData, (draft: any) => {
             draft.pages[0].data.result.data = [
               { id: result.data.id },

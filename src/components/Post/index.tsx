@@ -13,7 +13,7 @@ import {
 } from 'queries/post';
 import Icon from 'components/Icon';
 import clsx from 'clsx';
-import { humanizeTime } from 'utils/time';
+import { getTimeInScheduleFormat, humanizeTime } from 'utils/time';
 import AcknowledgementBanner from './components/AcknowledgementBanner';
 import ReactionModal from './components/ReactionModal';
 import RenderQuillContent from 'components/RenderQuillContent';
@@ -32,6 +32,8 @@ import { slideInAndOutTop } from 'utils/react-toastify';
 import moment from 'moment';
 import _ from 'lodash';
 import { useNavigate } from 'react-router';
+import { useCurrentUser } from 'queries/users';
+import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
@@ -61,10 +63,9 @@ export const iconsStyle = (key: string) => {
 type PostProps = {
   post: IPost;
   customNode?: ReactNode;
-  bookmarks?: boolean;
 };
 
-const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
+const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
   const [showComments, openComments, closeComments] = useModal(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -75,21 +76,18 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
     (total, count) => total + count,
     0,
   );
-  const { feed, updateFeed, setFeed } = useFeedStore();
+  const { feed, updateFeed } = useFeedStore();
   const previousShowComment = useRef<boolean>(false);
+  const { currentTimezone } = useCurrentTimezone();
 
   const createBookmarkMutation = useMutation({
     mutationKey: ['create-bookmark-mutation'],
     mutationFn: createBookmark,
-    onMutate: (variables) => {
-      if (!bookmarks) {
-        updateFeed(variables, { ...feed[variables], bookmarked: true });
-      }
+    onMutate: (id) => {
+      updateFeed(id, { ...feed[id], bookmarked: true });
     },
     onError: (error, variables, context) => {
-      if (!bookmarks) {
-        updateFeed(variables, { ...feed[variables], bookmarked: false });
-      }
+      updateFeed(variables, { ...feed[variables], bookmarked: false });
     },
     onSuccess: async (data, variables) => {
       toast(
@@ -126,22 +124,10 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
     mutationKey: ['delete-bookmark-mutation'],
     mutationFn: deleteBookmark,
     onMutate: (variables) => {
-      if (!bookmarks) {
-        updateFeed(variables, { ...feed[variables], bookmarked: false });
-      } else {
-        const previousFeed = feed;
-        setFeed({ ..._.omit(feed, [variables]) });
-        return { previousFeed };
-      }
+      updateFeed(variables, { ...feed[variables], bookmarked: false });
     },
     onError: (error, variables, context) => {
-      if (!bookmarks) {
-        updateFeed(variables, { ...feed[variables], bookmarked: true });
-      } else {
-        if (context?.previousFeed) {
-          setFeed(context?.previousFeed);
-        }
-      }
+      updateFeed(variables, { ...feed[variables], bookmarked: true });
     },
     onSuccess: async (data, variables) => {
       toast(
@@ -210,7 +196,6 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
                 post.bookmarked ? 'Remove from bookmark' : 'Bookmark post'
               }
               tooltipPosition="top"
-              tooltipId="bookmark-tooltip"
             >
               <Icon
                 name="postBookmark"
@@ -235,9 +220,12 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
               </div>
               <div className="text-xs font-medium text-neutral-600">
                 Post scheduled for{' '}
-                {moment(post?.schedule.dateTime).format('ddd, MMM DD')} at{' '}
-                {moment(post?.schedule.dateTime).format('h:mm a')}, based on
-                your profile timezone.
+                {getTimeInScheduleFormat(
+                  new Date(post?.schedule.dateTime),
+                  moment(post?.schedule.dateTime).format('h:mm a'),
+                  post?.schedule.timeZone,
+                  currentTimezone,
+                )}
               </div>
             </div>
             <div className="flex items-center">

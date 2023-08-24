@@ -52,7 +52,6 @@ const Footer: React.FC<IFooterProps> = ({
     mutationKey: ['makePostAnnouncementMutation', data?.id],
     mutationFn: async () => {
       const formData = getFormValues();
-      console.log(formData);
       const expiryDate = formData?.date.toISOString().substring(0, 19) + 'Z';
       const fileIds = data?.files?.map((file: any) => file.id);
       if (data?.id)

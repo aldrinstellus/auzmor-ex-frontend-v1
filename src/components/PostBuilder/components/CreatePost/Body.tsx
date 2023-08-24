@@ -13,6 +13,8 @@ import Icon from 'components/Icon';
 import moment from 'moment';
 import { useOrganization } from 'queries/organization';
 import { PostBuilderMode } from 'components/PostBuilder';
+import { getTimeInScheduleFormat } from 'utils/time';
+import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 
 export interface IBodyProps {
   data?: IPost;
@@ -35,7 +37,7 @@ const Body = React.forwardRef(
       audience,
     } = useContext(CreatePostContext);
     const { user } = useAuth();
-    const { data: orgData } = useOrganization();
+    const { currentTimezone } = useCurrentTimezone();
     const updateContext = () => {
       setEditorValue({
         text: (ref as React.RefObject<ReactQuill>)
@@ -94,8 +96,12 @@ const Body = React.forwardRef(
                 </div>
                 <div>
                   Post scheduled for{' '}
-                  {moment(new Date(schedule.date)).format('ddd, MMM DD')} at{' '}
-                  {schedule.time} , based on your profile timezone.
+                  {getTimeInScheduleFormat(
+                    new Date(schedule.date),
+                    schedule.time,
+                    schedule.timezone,
+                    currentTimezone,
+                  )}
                 </div>
               </div>
               <div className="flex">
