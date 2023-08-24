@@ -13,7 +13,7 @@ import {
 } from 'queries/post';
 import Icon from 'components/Icon';
 import clsx from 'clsx';
-import { humanizeTime } from 'utils/time';
+import { getTimeInScheduleFormat, humanizeTime } from 'utils/time';
 import AcknowledgementBanner from './components/AcknowledgementBanner';
 import ReactionModal from './components/ReactionModal';
 import RenderQuillContent from 'components/RenderQuillContent';
@@ -32,6 +32,8 @@ import { slideInAndOutTop } from 'utils/react-toastify';
 import moment from 'moment';
 import _ from 'lodash';
 import { useNavigate } from 'react-router';
+import { useCurrentUser } from 'queries/users';
+import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
@@ -76,6 +78,7 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
   );
   const { feed, updateFeed } = useFeedStore();
   const previousShowComment = useRef<boolean>(false);
+  const { currentTimezone } = useCurrentTimezone();
 
   const createBookmarkMutation = useMutation({
     mutationKey: ['create-bookmark-mutation'],
@@ -217,8 +220,12 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
               </div>
               <div className="text-xs font-medium text-neutral-600">
                 Post scheduled for{' '}
-                {moment(post?.schedule.dateTime).format('ddd, MMM DD')} at{' '}
-                {moment(post?.schedule.dateTime).format('h:mm a')}
+                {getTimeInScheduleFormat(
+                  new Date(post?.schedule.dateTime),
+                  moment(post?.schedule.dateTime).format('h:mm a'),
+                  post?.schedule.timeZone,
+                  currentTimezone,
+                )}
               </div>
             </div>
             <div className="flex items-center">
