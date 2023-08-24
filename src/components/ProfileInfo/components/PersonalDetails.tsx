@@ -314,17 +314,6 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
               'Field not specified'
             }
           />
-          {isEditable && (
-            <>
-              <Layout fields={fields} />
-              <DragDropList
-                draggableItems={skills}
-                setDraggableItems={setSkills}
-                dataTestIdEdit={'edit-button'}
-                dataTestIdDelete={'delete-button'}
-              />
-            </>
-          )}
         </div>
       </Card>
     </div>

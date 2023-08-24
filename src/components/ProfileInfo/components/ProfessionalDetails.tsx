@@ -116,7 +116,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
   const userTimezone = getTimezoneNameFromIANA(professionalDetails?.timeZone);
 
   return (
-    <div className="mt-6" {...eventHandlers}>
+    <div {...eventHandlers}>
       <Header title="Professional Details" dataTestId="professional-details" />
       <Card className={onHoverStyles}>
         <div className="px-4">

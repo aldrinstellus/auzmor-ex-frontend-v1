@@ -40,25 +40,30 @@ const ProfileInfo: React.FC<IProfileInfoProps> = ({
           searchParams={searchParams}
         />
       )}
-      {isLoading ? (
-        <ProfessionalDetailsSkeleton />
-      ) : (
-        <ProfessionalDetails
-          professionalDetails={profileDetails}
-          canEdit={editType !== UserEditType.NONE}
-          editSection={editSection}
-          setSearchParams={setSearchParams}
-          searchParams={searchParams}
-        />
-      )}
-      {isLoading ? (
-        <PersonalDetailsSkeleton />
-      ) : (
-        <PersonalDetails
-          personalDetails={profileDetails}
-          canEdit={editType === UserEditType.COMPLETE}
-        />
-      )}
+      <div className="mt-6">
+        {isLoading ? (
+          <ProfessionalDetailsSkeleton />
+        ) : (
+          <ProfessionalDetails
+            professionalDetails={profileDetails}
+            canEdit={editType !== UserEditType.NONE}
+            editSection={editSection}
+            setSearchParams={setSearchParams}
+            searchParams={searchParams}
+          />
+        )}
+      </div>
+
+      <div className="-mt-1">
+        {isLoading ? (
+          <PersonalDetailsSkeleton />
+        ) : (
+          <PersonalDetails
+            personalDetails={profileDetails}
+            canEdit={editType === UserEditType.COMPLETE}
+          />
+        )}
+      </div>
     </>
   );
 };

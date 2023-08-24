@@ -4,7 +4,7 @@ import Skeleton from 'react-loading-skeleton';
 
 const ContactSkeleton: React.FC = (): ReactElement => {
   return (
-    <div className="w-1/4">
+    <div>
       <Card>
         <div className="p-6 w-40">
           <Skeleton borderRadius={100} containerClassName="flex-1" />
