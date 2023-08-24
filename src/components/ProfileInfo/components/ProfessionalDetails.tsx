@@ -152,8 +152,8 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
           <InfoRow
             icon={{
               name: 'clock',
-              color: 'text-blue-500',
-              bgColor: 'bg-blue-50',
+              color: '!text-blue-500',
+              bgColor: '!bg-blue-50',
             }}
             label="Timezone"
             value={userTimezone || 'Field not specified'}

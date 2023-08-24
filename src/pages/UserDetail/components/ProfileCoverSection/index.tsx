@@ -330,7 +330,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
           <div className="mt-1 flex space-x-6 items-center">
             <div className="flex space-x-2 items-center">
               <IconWrapper type={Type.Square} className="cursor-pointer">
-                <Icon name="briefcase" size={16} color="primary-500" />
+                <Icon name="briefcase" size={16} color="text-primary-500" />
               </IconWrapper>
               <div
                 className="text-sm font-normal text-neutral-400"
@@ -342,7 +342,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             <Divider variant={DividerVariant.Vertical} className="h-8" />
             <div className="flex space-x-2 items-center">
               <IconWrapper type={Type.Square} className="cursor-pointer">
-                <Icon name="briefcase" size={16} color={PRIMARY_COLOR} />
+                <Icon name="briefcase" size={16} color="text-primary-500" />
               </IconWrapper>
               <div
                 className="text-sm font-normal text-neutral-400"
@@ -354,7 +354,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
             <Divider variant={DividerVariant.Vertical} className="h-8" />
             <div className="flex space-x-2 items-center">
               <IconWrapper type={Type.Square} className="cursor-pointer">
-                <Icon name="location" size={16} color={PRIMARY_COLOR} />
+                <Icon name="location" size={16} color="text-primary-500" />
               </IconWrapper>
               <div
                 className="text-sm font-normal text-neutral-400"
