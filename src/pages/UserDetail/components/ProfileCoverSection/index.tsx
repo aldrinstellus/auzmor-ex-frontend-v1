@@ -300,7 +300,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                 isAdmin={isAdmin}
                 isHovered={isHovered}
                 showOnHover={false}
-                className="mt-[3%] border border-[#e5e5e5]"
+                className="mt-[3.5%] right-8 border border-[#e5e5e5]"
                 onDeleteClick={openDeleteModal}
                 onReactivateClick={openReactivateModal}
                 onPromoteClick={() =>
