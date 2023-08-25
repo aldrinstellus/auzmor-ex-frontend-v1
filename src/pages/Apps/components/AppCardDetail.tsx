@@ -146,7 +146,7 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
           </div>
         </div>
         {/* Footer */}
-        {isAdmin ? (
+        {isAdmin && (
           <div className="bg-blue-50 flex items-center justify-end px-6 py-4 gap-x-3 rounded-9xl">
             <Button
               label="Delete app"
@@ -160,8 +160,6 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
               dataTestId="app-details-edit-app"
             />
           </div>
-        ) : (
-          <div className="pb-2"></div>
         )}
       </Card>
     </Modal>
