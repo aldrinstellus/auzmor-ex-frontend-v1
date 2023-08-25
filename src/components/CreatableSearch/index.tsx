@@ -4,8 +4,8 @@ import { Control, Controller, useController } from 'react-hook-form';
 import { MenuPlacement, components } from 'react-select';
 import clsx from 'clsx';
 import { isFiltersEmpty, twConfig } from 'utils/misc';
-import { useInfiniteCategories } from 'queries/apps';
 import { useDebounce } from 'hooks/useDebounce';
+import Icon from 'components/Icon';
 
 type ApiCallFunction = (queryParams: any) => any;
 export interface ICreatableSearch {
@@ -169,21 +169,14 @@ const CreatableSearch = React.forwardRef(
                     return (
                       <div
                         {...innerProps}
-                        className={`px-6 py-3 hover:bg-primary-50 hover:text-primary-500 font-medium text-sm ${
+                        className={`px-6 py-3 hover:bg-primary-50 hover:text-primary-500 font-medium text-sm flex items-center ${
                           isDisabled ? 'cursor-default' : 'cursor-pointer'
                         } ${isSelected && 'bg-primary-50'}`}
                         data-testid={
                           data.__isNew__ ? addItemDataTestId : data.dataTestId
                         }
                       >
-                        {data.__isNew__ ? (
-                          <>
-                            <span>+ Add</span>
-                            <span className="text-blue-500">{` '${data.value}'`}</span>
-                          </>
-                        ) : (
-                          data.label
-                        )}
+                        {data.label}
                       </div>
                     );
                   },
@@ -195,6 +188,13 @@ const CreatableSearch = React.forwardRef(
                     ></components.MenuList>
                   ),
                 }}
+                formatCreateLabel={(inputValue) => (
+                  <>
+                    <Icon name="add" size={16} color="text-neutral-900" />
+                    <span className="ml-[10px] mr-[6px]">Add</span>
+                    <span className="text-blue-500 line-clamp-1">{`'${inputValue}'`}</span>
+                  </>
+                )}
                 {...field}
                 ref={ref}
                 onBlur={() => setOpen(false)}
