@@ -24,6 +24,7 @@ import { getTimezoneNameFromIANA } from 'utils/time';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import InfoRow from './InfoRow';
+import useRole from 'hooks/useRole';
 
 export interface IProfessionalDetailsProps {
   professionalDetails: any;
@@ -43,6 +44,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
   const [isHovered, eventHandlers] = useHover();
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const defaultTimezone = getDefaultTimezoneOption();
+  const { isAdmin } = useRole();
 
   useEffect(() => {
     if (editSection === EditUserSection.PROFESSIONAL && canEdit) {
@@ -127,7 +129,8 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
               bgColor: 'bg-teal-50',
             }}
             label="Employee ID"
-            value="AUZ123"
+            value={professionalDetails?.employeeId}
+            canEdit={isAdmin}
             dataTestId="professional-details-employee-id"
           />
           <InfoRow

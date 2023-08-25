@@ -27,13 +27,14 @@ const IconWrapper: React.FC<IIconWrapperProps> = ({
     () =>
       clsx(
         {
-          'flex justify-center items-center bg-neutral-50 p-1 rounded-2xl':
+          'flex justify-center items-center bg-neutral-50 p-1 rounded-2xl group':
             true,
         },
         {
           'border-1  border-neutral-200': border,
         },
         { '!rounded-full': type === Type.Circle },
+        { 'cursor-pointer': !!onClick },
         {
           [className]: true,
         },
