@@ -79,18 +79,18 @@ const Notification: React.FC<NotificationCardProps> = ({
             <Avatar
               name={actor.fullName}
               image={actor.profileImage?.original}
-              size={40}
+              size={32}
             />
           </div>
           {/* Content */}
-          <div className="flex items-start justify-between space-x-2 w-full mr-6">
-            <div className="flex flex-col gap-y-2 w-11/12">
-              <div className="flex flex-col gap-y-1">
-                <p className="text-neutral-900">
+          <div className="flex items-start justify-between gap-x-2 w-full mr-4">
+            <div className="flex flex-col gap-y-2 w-full">
+              <div className="flex flex-col">
+                <p className="text-neutral-900 text-sm">
                   <span className="font-bold">{actor.fullName}&nbsp;</span>
                   {notificationMessage}
                 </p>
-                <p className="text-sm text-neutral-500 font-normal">
+                <p className="text-xs text-neutral-500 font-normal">
                   {humanizeTime(action.actedAt)}
                 </p>
               </div>
@@ -101,9 +101,9 @@ const Notification: React.FC<NotificationCardProps> = ({
               />
             </div>
             {/* Unread indicator (orange dot) */}
-            {!isRead && (
-              <div className="bg-orange-400 rounded-full w-2 h-2 mt-2" />
-            )}
+            <div className="w-2 h-2 mt-2">
+              {!isRead && <div className="bg-orange-400 rounded-full" />}
+            </div>
           </div>
         </div>
       </div>

@@ -104,16 +104,21 @@ const Team: React.FC<ITeamProps> = ({
 
   const searchValue = watch('search');
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
-  const [selectedCategories, setSelectedCategories] = useState<any>([]);
+  const [filters, setFilters] = useState<any>({
+    categories: [],
+  });
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteTeams(
       isFiltersEmpty({
         q: debouncedSearchValue,
         sort: sortByFilter,
-        category: selectedCategories
-          .map((category: any) => category?.name?.toUpperCase())
-          .join(', '),
+        category:
+          filters.categories.length > 0
+            ? filters.categories
+                .map((category: any) => category?.name?.toUpperCase())
+                .join(', ')
+            : undefined,
       }),
     );
 
@@ -132,6 +137,19 @@ const Team: React.FC<ITeamProps> = ({
       }
     });
   });
+
+  const handleRemoveFilters = (key: any, id: any) => {
+    setFilters((prevFilters: any) => ({
+      ...prevFilters,
+      [key]: prevFilters[key].filter((item: any) => item.id !== id),
+    }));
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      categories: [],
+    });
+  };
 
   // const teamId = showTeamDetail?.teamDetail?.id;
 
@@ -263,37 +281,41 @@ const Team: React.FC<ITeamProps> = ({
 
       {/* CATEGORY FILTER */}
 
-      {/* <div className="flex justify-between  mb-6">
-    <div className="flex items-center space-x-2">
-      <div className="text-base font-medium text-neutral-500">
-        Filter by
-      </div>
-      <div
-        className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center space-x-1"
-        data-testid={``}
-      >
-        <div className="text-base font-bold flex space-x-1">
-          <div className="text-neutral-500 >Category</div>
-          <div className="text-primary-500" data-testid="applied-filterby-category">Something</div>
+      {filters.categories.length > 0 && (
+        <div className="flex justify-between items-start">
+          <div className="flex items-center space-x-2 flex-wrap gap-y-2">
+            <div className="text-base text-neutral-500 whitespace-nowrap">
+              Filter By
+            </div>
+            {filters.categories.map((category: any) => (
+              <div
+                key={category.id}
+                className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1"
+                data-testid={`people-filterby`}
+              >
+                <div className="mr-1 text-neutral-500 whitespace-nowrap">
+                  Category{' '}
+                  <span className="text-primary-500">L{category.name}</span>
+                </div>
+                <Icon
+                  name="close"
+                  size={16}
+                  color="text-neutral-900"
+                  className="cursor-pointer"
+                  onClick={() => handleRemoveFilters('categories', category.id)}
+                  dataTestId={`people-filterby-close`}
+                />
+              </div>
+            ))}
+          </div>
+          <div
+            className="text-neutral-500 border px-3 py-1  mt-2 whitespace-nowrap rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
+            onClick={clearFilters}
+          >
+            Clear Filters
+          </div>
         </div>
-        <Icon
-          name="close"
-          size={16}
-          color="text-neutral-900"
-          className="cursor-pointer"
-          onClick={() => {}}
-          dataTestId={`applied-filter-close`}
-        />
-      </div>
-    </div>
-    <div
-      className="text-neutral-500 border px-3 py-1 rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
-      onClick={() => {}}
-      data-testid="teams-clear-filters"
-    >
-      Clear Filters
-    </div>
-  </div> */}
+      )}
 
       <div className="flex flex-wrap gap-6">
         {(() => {
@@ -469,8 +491,8 @@ const Team: React.FC<ITeamProps> = ({
         open={showFilterModal}
         openModal={openFilterModal}
         closeModal={closeFilterModal}
-        selectedCategories={selectedCategories}
-        setSelectedCategories={setSelectedCategories}
+        filters={filters}
+        setFilters={setFilters}
       />
     </div>
   );

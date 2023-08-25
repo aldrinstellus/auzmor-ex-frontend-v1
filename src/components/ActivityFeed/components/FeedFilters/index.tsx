@@ -126,6 +126,20 @@ const feedFilterOptions: FeedFilterOption[] = [
   },
 ];
 
+export const filterKeyMap: Record<string | PostType, string> = {
+  [PostType.Update]: 'Updates',
+  [PostType.Event]: 'Events',
+  [PostType.Document]: 'Documents',
+  [PostType.ShoutOut]: 'Shoutouts',
+  [PostType.Birthday]: 'Birthdays',
+  [PostType.WorkAniversary]: 'Work anniversary',
+  [PostType.WelcomNewHire]: 'Welcome new hire',
+  [PostType.Poll]: 'Polls',
+  'my-posts': 'My Posts',
+  [ActivityType.Mentioned]: 'Mentions',
+  [ActivityType.Bookemarked]: 'Bookmark by me',
+};
+
 const FeedFilter: React.FC<FeedFilterProps> = ({
   disabled = false,
   dataTestId = '',
