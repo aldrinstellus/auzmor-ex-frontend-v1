@@ -26,7 +26,7 @@ const EditIcon: React.FC<EditIconProps> = ({
       <Icon
         name="edit"
         className="absolute bg-primary-500 border-1 border-white rounded-full p-2 cursor-pointer top-0 right-0"
-        color="#ffffff"
+        color="text-white"
       />
     </label>
   );

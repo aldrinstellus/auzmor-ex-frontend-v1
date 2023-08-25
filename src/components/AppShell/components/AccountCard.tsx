@@ -91,7 +91,7 @@ const AccountCard = () => {
                     name="settingOutline"
                     size={20}
                     className="mr-2.5"
-                    color={twConfig.theme.colors.neutral['900']}
+                    color="text-neutral-900"
                   />
                   <div>User Settings</div>
                 </div>
@@ -107,7 +107,7 @@ const AccountCard = () => {
                       name="settingThreeOutline"
                       size={20}
                       className="mr-2.5"
-                      color={twConfig.theme.colors.neutral['900']}
+                      color="text-neutral-900"
                     />
                     <div>Admin Settings</div>
                   </div>
@@ -123,7 +123,7 @@ const AccountCard = () => {
                     name="postBookmark"
                     size={20}
                     className="mr-2.5"
-                    color={twConfig.theme.colors.neutral['900']}
+                    color="text-neutral-900"
                   />
                   <div>My bookmarks</div>
                 </div>
@@ -140,7 +140,7 @@ const AccountCard = () => {
                   name="logoutOutline"
                   size={20}
                   className="mr-2.5"
-                  color={twConfig.theme.colors.neutral['900']}
+                  color="text-neutral-900"
                 />
                 <div>Sign out</div>
               </div>

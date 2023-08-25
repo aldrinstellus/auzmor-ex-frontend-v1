@@ -100,7 +100,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              color={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
             />
           ),
@@ -125,11 +125,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
       queryClient.invalidateQueries({ queryKey: ['users'] });
       toast(<SuccessToast content={`User role has been updated to admin`} />, {
         closeButton: (
-          <Icon
-            name="closeCircleOutline"
-            color={twConfig.theme.colors.primary['500']}
-            size={20}
-          />
+          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
         ),
         style: {
           border: `1px solid ${twConfig.theme.colors.primary['300']}`,
@@ -185,7 +181,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
               closeButton: (
                 <Icon
                   name="closeCircleOutline"
-                  color={twConfig.theme.colors.primary['500']}
+                  color="text-primary-500"
                   size={20}
                 />
               ),
@@ -224,7 +220,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
               >
                 <Icon
                   name="forbidden"
-                  color="#737373"
+                  color="text-neutral-500"
                   size={18}
                   className="mr-1"
                 ></Icon>

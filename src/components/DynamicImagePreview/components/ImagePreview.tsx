@@ -42,7 +42,7 @@ const ImagePreview: React.FC<IImagePreviewProps> = ({
           <Icon
             name="edit"
             disabled
-            color={twConfig.theme.colors['black-white'].black}
+            color="text-black"
             size={16}
             className="p-2 bg-white rounded cursor-pointer"
             onClick={() => {
@@ -53,7 +53,7 @@ const ImagePreview: React.FC<IImagePreviewProps> = ({
         <Icon
           name="close"
           disabled
-          color={twConfig.theme.colors['black-white'].black}
+          color="text-black"
           size={16}
           className="p-2 bg-white rounded cursor-pointer"
           onClick={onRemove}

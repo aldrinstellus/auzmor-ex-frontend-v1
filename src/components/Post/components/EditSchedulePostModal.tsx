@@ -72,11 +72,7 @@ const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color={twConfig.theme.colors.red['500']}
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
           ),
           style: {
             border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -101,7 +97,7 @@ const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              color={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
             />
           ),

@@ -211,7 +211,7 @@ const RichTextEditor = React.forwardRef(
               <Icon
                 name="calendarOutlineTwo"
                 size={16}
-                color={twConfig.theme.colors.neutral['900']}
+                color="text-neutral-900"
               />
               <div className="ml-2.5">
                 Announcement will expire on{' '}
@@ -227,11 +227,7 @@ const RichTextEditor = React.forwardRef(
                 setActiveFlow(CreatePostFlow.CreateAnnouncement);
               }}
             >
-              <Icon
-                name="editOutline"
-                size={12}
-                color={twConfig.theme.colors.neutral['900']}
-              />
+              <Icon name="editOutline" size={12} color="text-neutral-900" />
               <div className="ml-1 text-xs font-bold text-neutral-900">
                 Edit
               </div>

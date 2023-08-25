@@ -163,7 +163,7 @@ const Banner: React.FC<BannerProps> = ({
               className={iconButtonStyles}
               onClick={onClose}
               variant={IconVariant.Primary}
-              color={twConfig.theme.colors.red['500']}
+              color="text-red-500"
             />
           )}
         </div>

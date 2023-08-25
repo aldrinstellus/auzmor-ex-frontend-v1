@@ -48,7 +48,7 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
           <Icon
             name="close"
             onClick={closeModal}
-            color="#000"
+            color="text-black"
             size={20}
             dataTestId="app-details-close"
           />
@@ -115,7 +115,7 @@ const AppDetailModal: React.FC<AppDetailModalProps> = ({
                   </div>
                 </div>
                 {/* The audience */}
-                <div className="flex px-6 pt-4 flex items-center gap-2">
+                <div className="flex px-6 pt-4 items-center gap-2">
                   <p className="text-neutral-900 text-sm font-medium">
                     Audience:
                   </p>

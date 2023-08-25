@@ -50,7 +50,7 @@ const Modal: React.FC<ModalProps> = ({
                   <Icon
                     name="close"
                     className="absolute -top-6 -right-6"
-                    color={'#fff'}
+                    color="text-white"
                     onClick={closeModal}
                   />
                 </div>

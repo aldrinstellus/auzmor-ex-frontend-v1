@@ -128,7 +128,9 @@ const UserSettings: React.FC<IUserSettingsProps> = () => {
                 <Icon
                   name={item.icon}
                   color={
-                    item.key === activeSettingsPage.key ? '#171717' : undefined
+                    item.key === activeSettingsPage.key
+                      ? 'text-neutral-900'
+                      : undefined
                   }
                 />
                 {item.label}

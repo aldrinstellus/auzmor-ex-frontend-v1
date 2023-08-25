@@ -24,10 +24,7 @@ const BookmarkFeedHeader: React.FC<IBookmarkFeedHeaderProps> = ({
         <div className="gap-y-1">
           <div className="flex gap-x-3 items-center">
             <Link to="/feed">
-              <Icon
-                name="arrowLeft"
-                color={twConfig.theme.colors.neutral[900]}
-              />
+              <Icon name="arrowLeft" color="text-neutral-900" />
             </Link>
             <div className="text-2xl font-bold text-neutral-900">
               <span data-testid={`feedpage-filter-bookmark`}>My Bookmarks</span>

@@ -75,7 +75,7 @@ const UserCard: React.FC = () => {
           <Button
             label="View Profile"
             leftIcon="profileOutline"
-            iconColor="white"
+            iconColor="text-white"
             leftIconSize={16}
             leftIconClassName="mr-1"
           />

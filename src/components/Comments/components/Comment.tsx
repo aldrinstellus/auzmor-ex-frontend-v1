@@ -101,11 +101,7 @@ export const Comment: React.FC<CommentProps> = ({
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color={twConfig.theme.colors.red['500']}
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
           ),
           style: {
             border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -129,7 +125,7 @@ export const Comment: React.FC<CommentProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              color={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
             />
           ),
@@ -220,7 +216,7 @@ export const Comment: React.FC<CommentProps> = ({
                           <Icon
                             name={'edit'}
                             size={16}
-                            color={twConfig.theme.colors.neutral['200']}
+                            color="text-neutral-200"
                           />
                           <div className="text-sm font-medium text-neutral-900">
                             Edit comment
@@ -235,7 +231,7 @@ export const Comment: React.FC<CommentProps> = ({
                           <Icon
                             name={'delete'}
                             size={16}
-                            color={twConfig.theme.colors.neutral['200']}
+                            color="text-neutral-200"
                           />
                           <div
                             className={`text-sm font-medium text-neutral-900 `}

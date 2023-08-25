@@ -106,11 +106,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
   const showErrorToast = (message: string) => {
     toast(<FailureToast content={message} dataTestId="comment-toaster" />, {
       closeButton: (
-        <Icon
-          name="closeCircleOutline"
-          color={twConfig.theme.colors.red['500']}
-          size={20}
-        />
+        <Icon name="closeCircleOutline" color="text-red-500" size={20} />
       ),
       style: {
         border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -145,7 +141,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
         >
           <Icon
             name="infoCircle"
-            color={twConfig.theme.colors.neutral['500']}
+            color="text-neutral-500"
             hover={false}
             size={16}
             dataTestId="add-app-icon-info"
@@ -221,7 +217,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
                   <Icon
                     name="documentUpload"
                     size={24}
-                    color={twConfig.theme.colors.neutral['900']}
+                    color="text-neutral-900"
                   />
                   <p className="text-neutral-900 font-medium text-sm">
                     Upload App Icon
@@ -253,7 +249,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
                 <Icon
                   name="close"
                   size={16}
-                  color="#fff"
+                  color="text-white"
                   disabled
                   dataTestId="add-app-remove-icon"
                 />

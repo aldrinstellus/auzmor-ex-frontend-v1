@@ -105,7 +105,7 @@ const NotificationsOverview: React.FC = () => {
               className="flex items-center gap-x-1 cursor-pointer"
               onClick={() => markReadMutation.mutate()}
             >
-              <Icon name="checkbox" color="#059669" size={18} />
+              <Icon name="checkbox" color="text-primary-600" size={18} />
               <p className="text-primary-600 font-bold text-sm cursor-pointer">
                 Mark all as read
               </p>

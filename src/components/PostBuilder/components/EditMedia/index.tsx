@@ -68,7 +68,7 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
               label="Upload image"
               leftIcon="exportOutline"
               leftIconClassName="mr-1"
-              iconColor={twConfig.theme.colors.neutral['900']}
+              iconColor="text-neutral-900"
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Small}
               onClick={() => uploadCoverImageRef.current?.click()}
@@ -101,11 +101,7 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
                     );
                   }}
                 >
-                  <Icon
-                    name="closeCircle"
-                    size={16}
-                    color={twConfig.theme.colors.neutral['900']}
-                  />
+                  <Icon name="closeCircle" size={16} color="text-neutral-900" />
                 </div>
               </div>
             )}

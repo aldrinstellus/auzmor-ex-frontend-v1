@@ -25,7 +25,7 @@ const SuccessToast: React.FC<ISuccessToastProps> = ({
           <Icon
             className="p-1.5 bg-primary-100 rounded-7xl mr-2.5"
             name="tickCircleOutline"
-            color={twConfig.theme.colors.primary['500']}
+            color="text-primary-500"
             size={32}
           />
         </div>

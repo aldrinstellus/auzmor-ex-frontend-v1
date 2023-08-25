@@ -315,11 +315,7 @@ const RichTextEditor = React.forwardRef(
         {announcement?.label && !hasDatePassed(announcement.value) && (
           <div className="flex justify-between bg-blue-50 px-4 py-2 m-4">
             <div className="flex items-center">
-              <Icon
-                name="micOutline"
-                size={16}
-                color={twConfig.theme.colors.neutral['900']}
-              />
+              <Icon name="micOutline" size={16} color="text-neutral-900" />
               <div
                 className="ml-2.5"
                 data-testid="announcement-scheduled-toaster"
@@ -338,11 +334,7 @@ const RichTextEditor = React.forwardRef(
               }}
               data-testid="announcement-toaster-editicon"
             >
-              <Icon
-                name="editOutline"
-                size={12}
-                color={twConfig.theme.colors.neutral['900']}
-              />
+              <Icon name="editOutline" size={12} color="text-neutral-900" />
               <div className="ml-1 text-xs font-bold text-neutral-900">
                 Edit
               </div>

@@ -40,11 +40,7 @@ const ReactivatePeople: React.FC<IReactivatePeopleProps> = ({
       queryClient.invalidateQueries(['users']);
       toast(<SuccessToast content={`User has been reactivated`} />, {
         closeButton: (
-          <Icon
-            name="closeCircleOutline"
-            color={twConfig.theme.colors.primary['500']}
-            size={20}
-          />
+          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
         ),
         style: {
           border: `1px solid ${twConfig.theme.colors.primary['300']}`,

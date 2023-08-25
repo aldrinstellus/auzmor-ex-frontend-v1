@@ -40,10 +40,7 @@ const PopupMenuItem: React.FC<PopupMenuItemProps> = ({
           name={menuItem.icon}
           size={16}
           className={menuItem.iconClassName}
-          color={
-            (menuItem.disabled && twConfig.theme.colors.neutral['200']) ||
-            menuItem.stroke
-          }
+          color={(menuItem.disabled && 'text-neutral-200') || menuItem.stroke}
           hover={hovered}
           disabled={menuItem.disabled}
         />
