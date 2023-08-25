@@ -33,11 +33,11 @@ const UserRow: React.FC<IUserRowProps> = ({ user }) => {
           </div>
         </>
       )}
-      {user.workLocation && (
+      {user.workLocation?.name && (
         <>
           <div className="bg-neutral-500 rounded-full mx-4 w-1 h-1" />
           <div className="text-neutral-500 text-xs flex-1 line-clamp-1">
-            {user.workLocation}
+            {user.workLocation?.name}
           </div>
         </>
       )}

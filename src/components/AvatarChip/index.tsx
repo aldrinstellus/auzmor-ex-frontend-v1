@@ -8,7 +8,7 @@ export interface IAvatarUser {
   fullName: string;
   profileImage: object;
   status: string;
-  workLocation?: string;
+  workLocation?: Record<string, string>;
   designation?: string;
   userId: string;
   email?: string;

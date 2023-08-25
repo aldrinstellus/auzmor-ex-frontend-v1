@@ -7,12 +7,7 @@ import { isFiltersEmpty, twConfig } from 'utils/misc';
 import { useInfiniteCategories } from 'queries/apps';
 import { useDebounce } from 'hooks/useDebounce';
 
-export interface ICategoryDetail {
-  name: string;
-  type: string;
-  id: string;
-}
-
+type ApiCallFunction = (queryParams: any) => any;
 export interface ICreatableSearch {
   name: string;
   defaultValue?: any;
@@ -23,11 +18,15 @@ export interface ICreatableSearch {
   control?: Control<Record<string, any>>;
   label?: string;
   required?: boolean;
-  categoryType: string;
   placeholder?: string;
   height?: string;
   menuPlacement: MenuPlacement;
   addItemDataTestId?: string;
+  fetchQuery: ApiCallFunction;
+  queryParams?: Record<string, any>;
+  getFormattedData: (param: any) => any[];
+  disableCreate?: boolean;
+  noOptionsMessage?: () => any;
 }
 
 const CreatableSearch = React.forwardRef(
@@ -42,46 +41,28 @@ const CreatableSearch = React.forwardRef(
       control,
       label = '',
       required = false,
-      categoryType,
       placeholder = '',
       height = '46px',
       defaultValue,
       menuPlacement = 'bottom',
+      fetchQuery,
+      queryParams,
+      getFormattedData,
+      disableCreate,
+      noOptionsMessage = () => 'No options',
     }: ICreatableSearch,
     ref?: any,
   ) => {
     const [searchValue, setSearchValue] = useState<string>('');
     const debouncedSearchValue = useDebounce(searchValue || '', 500);
-
-    const { data } = useInfiniteCategories(
+    const { data } = fetchQuery(
       isFiltersEmpty({
         q: debouncedSearchValue.toLowerCase().trim(),
-        type: categoryType,
-        limit: 10,
+        ...queryParams,
       }),
     );
 
-    const categoriesData = data?.pages.flatMap((page) => {
-      return page?.data?.result?.data.map((category: any) => {
-        try {
-          return { ...category, label: category.name };
-        } catch (e) {
-          console.log('Error', { category });
-        }
-      });
-    });
-
-    const transformedOption = categoriesData?.map(
-      (category: ICategoryDetail) => ({
-        value: category?.name,
-        label: category?.name,
-        type: category?.type,
-        id: category?.id,
-        dataTestId: `category-option-${category?.type?.toLowerCase()}-${
-          category?.name
-        }`,
-      }),
-    );
+    const transformedOption = getFormattedData(data);
 
     const { field } = useController({
       name,
@@ -167,19 +148,22 @@ const CreatableSearch = React.forwardRef(
             render={() => (
               <CreatableSelect
                 isDisabled={disabled}
-                placeholder={placeholder}
+                placeholder="Hello"
                 styles={{
                   menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                   ...selectStyle,
                 }}
-                defaultInputValue={defaultValue}
+                defaultValue=""
                 onInputChange={(value) => setSearchValue(value)}
                 options={transformedOption}
                 menuPlacement={menuPlacement ? menuPlacement : 'top'}
                 menuPortalTarget={document.body}
+                noOptionsMessage={noOptionsMessage}
+                {...(disableCreate && {
+                  isValidNewOption: () => false,
+                })}
                 components={{
-                  Option: ({ innerProps, data, isDisabled }) => {
-                    const isSelected = data?.id === field?.value?.id;
+                  Option: ({ innerProps, data, isDisabled, isSelected }) => {
                     return (
                       <div
                         {...innerProps}

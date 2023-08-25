@@ -8,6 +8,12 @@ export interface ICategory {
   updatedAt: string;
 }
 
+export interface ICategoryDetail {
+  name: string;
+  type: string;
+  id: string;
+}
+
 const getAllCategories = async ({
   pageParam = null,
   queryKey,

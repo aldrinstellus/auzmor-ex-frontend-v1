@@ -36,7 +36,7 @@ const UserRow: React.FC<IUserRowProps> = ({ user, onClick }) => {
         <div className="flex">
           <Icon name="location" size={16} />
           <div className="text-neutral-500 text-xs ml-1">
-            {user.workLocation || 'NA'}
+            {user.workLocation?.name || 'NA'}
           </div>
         </div>
       </div>

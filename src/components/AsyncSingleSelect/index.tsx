@@ -25,6 +25,8 @@ export interface IAsyncSingleSelectProps {
   menuPlacement: MenuPlacement;
   isLoading?: boolean;
   loadOptions: (inputValue: string) => Promise<any>;
+  noOptionsMessage?: () => any;
+  isClearable?: boolean;
 }
 
 const AsyncSingleSelect = React.forwardRef(
@@ -44,6 +46,8 @@ const AsyncSingleSelect = React.forwardRef(
       menuPlacement = 'bottom',
       isLoading = false,
       loadOptions,
+      noOptionsMessage = () => 'No options',
+      isClearable = false,
     }: IAsyncSingleSelectProps,
     ref?: any,
   ) => {
@@ -108,6 +112,7 @@ const AsyncSingleSelect = React.forwardRef(
         opacity: open ? 1 : 0,
         transition: 'all 300ms ease-in-out',
         overflow: 'hidden',
+        borderRadius: '12px',
       }),
     });
 
@@ -150,6 +155,8 @@ const AsyncSingleSelect = React.forwardRef(
                 menuPlacement={menuPlacement ? menuPlacement : undefined}
                 menuPortalTarget={document.body}
                 menuPosition="absolute"
+                noOptionsMessage={noOptionsMessage}
+                isClearable={isClearable}
                 components={{
                   Option: ({ innerProps, data, isDisabled, isSelected }) => {
                     return (
@@ -167,7 +174,7 @@ const AsyncSingleSelect = React.forwardRef(
                   MenuList: (props) => (
                     <components.MenuList
                       {...props}
-                      className={uniqueClassName}
+                      className={`${uniqueClassName} divide-y divide-neutral-200 !py-0`}
                       innerRef={menuListRef}
                     ></components.MenuList>
                   ),
@@ -179,6 +186,7 @@ const AsyncSingleSelect = React.forwardRef(
                 }}
                 {...field}
                 onBlur={() => setOpen(false)}
+                openMenuOnClick
                 ref={ref}
                 cacheOptions
                 defaultOptions

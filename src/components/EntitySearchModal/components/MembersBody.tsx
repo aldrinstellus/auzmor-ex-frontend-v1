@@ -74,7 +74,7 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
     q: debouncedDepartmentSearchValue,
   });
   const departmentData = departments?.pages.flatMap((page) => {
-    return (page as any)?.result?.data.map((department: any) => {
+    return (page as any)?.data?.result?.data.map((department: any) => {
       try {
         return department;
       } catch (e) {

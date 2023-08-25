@@ -55,3 +55,8 @@ export const useInfiniteLocations = (q?: Record<string, any>) => {
     staleTime: 5 * 60 * 1000,
   });
 };
+
+export const getGooglePlaces = async (payload: { q: string }) => {
+  const data = await apiService.get('/google-maps/places', payload);
+  return data.data.result.data;
+};

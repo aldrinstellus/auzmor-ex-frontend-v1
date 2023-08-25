@@ -29,7 +29,7 @@ export type Actor = {
     blurHash?: string;
     original?: string;
   };
-  workLocation?: string;
+  workLocation?: Record<string, string>;
   userId?: string;
   department?: string;
   designation?: string;

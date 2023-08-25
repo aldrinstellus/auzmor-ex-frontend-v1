@@ -10,7 +10,13 @@ import {
 import { ADD_APP_FLOW, IAddAppForm } from './AddApp';
 import UploadIconButton from './UploadIconButton';
 import Button, { Size, Variant } from 'components/Button';
-import { App, CategoryType, IAudience } from 'queries/apps';
+import {
+  App,
+  CategoryType,
+  IAudience,
+  useInfiniteCategories,
+} from 'queries/apps';
+import { ICategoryDetail } from 'queries/category';
 
 type AppDetailsFormProps = {
   control: Control<IAddAppForm, any>;
@@ -45,6 +51,31 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
         errors.url || !defaultValues()?.url ? '' : 'text-blue-500 underline',
     },
   ];
+
+  const formatCategories = (data: any) => {
+    const categoriesData = data?.pages.flatMap((page: any) => {
+      return page?.data?.result?.data.map((category: any) => {
+        try {
+          return { ...category, label: category.name };
+        } catch (e) {
+          console.log('Error', { category });
+        }
+      });
+    });
+
+    const transformedOption = categoriesData?.map(
+      (category: ICategoryDetail) => ({
+        value: category?.id,
+        label: category?.name,
+        type: category?.type,
+        id: category?.id,
+        dataTestId: `category-option-${category?.type?.toLowerCase()}-${
+          category?.name
+        }`,
+      }),
+    );
+    return transformedOption;
+  };
 
   const appFields = [
     {
@@ -82,10 +113,17 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
       name: 'category',
       label: 'Category',
       control: control,
-      defaultValue: defaultValues()?.category?.label,
-      categoryType: CategoryType.APP,
+      defaultValue: defaultValues()?.category?.categoryId
+        ? {
+            id: defaultValues()?.category?.categoryId,
+            label: defaultValues()?.category?.label,
+          }
+        : {},
       dataTestId: 'add-app-category',
       addItemDataTestId: 'add-app-add-category',
+      fetchQuery: useInfiniteCategories,
+      queryParams: { type: CategoryType.APP },
+      getFormattedData: formatCategories,
     },
   ];
 
@@ -127,7 +165,7 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
                 variant={Variant.Secondary}
                 label="Everyone"
                 size={Size.Small}
-                dataTestId='add-app-audience'
+                dataTestId="add-app-audience"
                 onClick={() => setActiveFlow(ADD_APP_FLOW.AudienceSelector)}
               />
             )}

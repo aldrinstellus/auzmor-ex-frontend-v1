@@ -23,10 +23,10 @@ export interface IUser {
   email: string;
   role: Role;
   organization: IOrganization;
-  workLocation?: string;
+  workLocation?: Record<string, string>;
   preferredName?: string;
   designation?: string;
-  // department?: string;
+  department?: Record<string, string>;
   location?: string;
   profileImage?: string;
   coverImage?: string;

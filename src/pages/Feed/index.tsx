@@ -42,7 +42,7 @@ export interface ICreated {
   designation: string;
   fullName: string;
   userId: string;
-  workLocation: string;
+  workLocation: Record<string, string>;
   status: string;
   department: string;
   profileImage: IProfileImage;

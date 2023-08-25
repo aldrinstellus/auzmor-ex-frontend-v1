@@ -41,7 +41,7 @@ export interface IShoutoutRecipient {
   fullName: string;
   profileImage: object;
   status: string;
-  workLocation: string;
+  workLocation: Record<string, string>;
   designation: string;
   userId: string;
 }

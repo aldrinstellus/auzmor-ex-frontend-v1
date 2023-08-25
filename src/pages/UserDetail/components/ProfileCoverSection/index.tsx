@@ -351,7 +351,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                 className="text-sm font-normal text-neutral-400"
                 data-testid="user-department"
               >
-                {userDetails?.department || '-'}
+                {userDetails?.department?.name || '-'}
               </div>
             </div>
             <Divider variant={DividerVariant.Vertical} className="h-8" />
@@ -363,7 +363,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
                 className="text-sm font-normal text-neutral-400"
                 data-testid="user-location"
               >
-                {userDetails?.workLocation || '-'}
+                {userDetails?.workLocation?.name || '-'}
               </div>
             </div>
           </div>
