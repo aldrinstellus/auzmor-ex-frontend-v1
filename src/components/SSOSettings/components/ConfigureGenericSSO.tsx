@@ -127,7 +127,7 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
         <Icon
           onClick={closeModalAndClearInput}
           name="close"
-          color="#000"
+          color="text-black"
           size={16}
         />
       </div>
@@ -199,7 +199,11 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
                   }}
                 />
                 <div className="flex items-center justify-center space-x-1">
-                  <Icon name="documentUpload" color={PRIMARY_COLOR} size={16} />
+                  <Icon
+                    name="documentUpload"
+                    color="text-primary-500"
+                    size={16}
+                  />
                   <p className="text-primary-500 text-sm font-bold">
                     Upload Metadata Xml
                   </p>

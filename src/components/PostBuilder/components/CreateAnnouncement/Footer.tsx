@@ -77,11 +77,7 @@ const Footer: React.FC<IFooterProps> = ({
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color={twConfig.theme.colors['black-white'].white}
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-white" size={20} />
           ),
           style: {
             border: `1px solid ${twConfig.theme.colors.primary['300']}`,

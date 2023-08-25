@@ -49,7 +49,7 @@ const Poll: React.FC<IPoll> = ({ question, options, total, closedAt }) => {
             variant={Variant.Secondary}
             size={Size.Medium}
             borderAround
-            color="#000"
+            color="text-black"
             className="bg-white rounded-7xl"
             borderAroundClassName="rounded-7xl"
           />
@@ -59,7 +59,7 @@ const Poll: React.FC<IPoll> = ({ question, options, total, closedAt }) => {
             variant={Variant.Secondary}
             size={Size.Medium}
             borderAround
-            color="#000"
+            color="text-black"
             className="bg-white rounded-7xl"
             borderAroundClassName="rounded-7xl"
           />

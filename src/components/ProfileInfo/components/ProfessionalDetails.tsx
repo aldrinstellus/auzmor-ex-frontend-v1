@@ -24,6 +24,7 @@ import { getTimezoneNameFromIANA } from 'utils/time';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import InfoRow from './InfoRow';
+import useRole from 'hooks/useRole';
 
 export interface IProfessionalDetailsProps {
   professionalDetails: any;
@@ -43,6 +44,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
   const [isHovered, eventHandlers] = useHover();
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const defaultTimezone = getDefaultTimezoneOption();
+  const { isAdmin } = useRole();
 
   useEffect(() => {
     if (editSection === EditUserSection.PROFESSIONAL && canEdit) {
@@ -78,11 +80,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
     onSuccess: (response: any) => {
       toast(<SuccessToast content={'User Profile Updated Successfully'} />, {
         closeButton: (
-          <Icon
-            name="closeCircleOutline"
-            color={twConfig.theme.colors.primary['500']}
-            size={20}
-          />
+          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
         ),
         style: {
           border: `1px solid ${twConfig.theme.colors.primary['300']}`,
@@ -116,38 +114,32 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
   const userTimezone = getTimezoneNameFromIANA(professionalDetails?.timeZone);
 
   return (
-    <div className="mt-6" {...eventHandlers}>
+    <div {...eventHandlers}>
       <Header title="Professional Details" dataTestId="professional-details" />
       <Card className={onHoverStyles}>
         <div className="px-4">
           <InfoRow
             icon={{
-              name: 'clock',
+              name: 'employee-tag',
               color: 'text-teal-500',
               bgColor: 'bg-teal-50',
             }}
             label="Employee ID"
-            value="AUZ123"
+            value={professionalDetails?.employeeId}
+            canEdit={isAdmin}
             dataTestId="professional-details-employee-id"
           />
           <InfoRow
             icon={{
-              name: 'clock',
+              name: 'calendar',
               color: 'text-orange-500',
               bgColor: 'bg-orange-50',
             }}
             label="Date of Joining"
             dataTestId="professional-details-joining-date"
-            value={
-              <div>
-                Joined on{' '}
-                <span>
-                  {moment(professionalDetails?.createdAt).format(
-                    'Do MMMM YYYY',
-                  ) || 'N//A'}
-                </span>
-              </div>
-            }
+            value={moment(professionalDetails?.createdAt).format(
+              'Do MMMM YYYY',
+            )}
           />
           <InfoRow
             icon={{
@@ -156,7 +148,7 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
               bgColor: '!bg-blue-50',
             }}
             label="Timezone"
-            value={userTimezone || 'Field not specified'}
+            value={userTimezone}
             dataTestId="professional-details-timezone"
             border={false}
             editNode={

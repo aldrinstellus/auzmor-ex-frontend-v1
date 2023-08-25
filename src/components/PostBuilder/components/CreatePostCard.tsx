@@ -18,7 +18,7 @@ export const postTypeMapIcons: IPostMenu[] = [
   {
     id: 1,
     label: 'Media',
-    icon: <Icon name="imageFilled" color="#737373" size={14} />,
+    icon: <Icon name="imageFilled" color="text-neutral-500" size={14} />,
     menuItems: [
       {
         renderNode: (
@@ -27,7 +27,7 @@ export const postTypeMapIcons: IPostMenu[] = [
               name="image"
               size={16}
               className="p-2 rounded-7xl border mr-2.5 bg-white"
-              color={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
             />
             <div className="text-sm text-neutral-900 font-medium">
               Upload a photo
@@ -42,7 +42,7 @@ export const postTypeMapIcons: IPostMenu[] = [
               name="video"
               size={16}
               className="p-2 rounded-7xl border mr-2.5 bg-white"
-              color={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
             />
             <div className="text-sm text-neutral-900 font-medium">
               Upload a video
@@ -57,7 +57,7 @@ export const postTypeMapIcons: IPostMenu[] = [
               name="document"
               size={16}
               className="p-2 rounded-7xl border mr-2.5 bg-white"
-              color={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
             />
             <div className="text-sm text-neutral-900 font-medium">
               Share a document
@@ -71,21 +71,21 @@ export const postTypeMapIcons: IPostMenu[] = [
   {
     id: 2,
     label: 'Shoutout',
-    icon: <Icon name="magicStarFilled" color="#737373" size={14} />,
+    icon: <Icon name="magicStarFilled" color="text-neutral-500" size={14} />,
     menuItems: [],
     divider: true,
   },
   {
     id: 3,
     label: 'Events',
-    icon: <Icon name="calendarFilledTwo" color="#737373" size={14} />,
+    icon: <Icon name="calendarFilledTwo" color="text-neutral-500" size={14} />,
     menuItems: [],
     divider: true,
   },
   {
     id: 4,
     label: 'Polls',
-    icon: <Icon name="chartFilled" color="#737373" size={14} />,
+    icon: <Icon name="chartFilled" color="text-neutral-500" size={14} />,
     menuItems: [],
   },
 ];

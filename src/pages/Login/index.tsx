@@ -53,13 +53,12 @@ const Login: React.FC<ILoginProps> = () => {
 
   return (
     <div className="flex h-screen w-screen">
-      <img
-        src={WelcomeOffice}
-        className="w-[45%] object-cover"
+      <div
+        className="w-[710px] bg-welcome-to-office"
         data-testid="signin-cover-image"
-        alt="Welcome to Auzmor Office"
       />
-      <div className="w-[55%] h-full flex justify-center items-center relative bg-white overflow-y-auto">
+
+      <div className="flex-1 h-full flex justify-center items-center relative bg-white overflow-y-auto">
         <div className="absolute top-8 right-8" data-testid="signin-logo-image">
           <Logo />
         </div>

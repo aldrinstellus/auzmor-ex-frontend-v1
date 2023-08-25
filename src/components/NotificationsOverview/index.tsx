@@ -5,9 +5,13 @@ import React, { useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import Spinner from 'components/Spinner';
 import Popover from 'components/Popover';
-import { useGetUnreadNotificationsCount } from 'queries/notifications';
+import {
+  markAllNotificationsAsRead,
+  useGetUnreadNotificationsCount,
+} from 'queries/notifications';
 import Tabs from 'components/Tabs';
 import NotificationsList from './components/NotificationsList';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export enum NotificationType {
   ALL = 'All',
@@ -17,6 +21,13 @@ export enum NotificationType {
 const NotificationsOverview: React.FC = () => {
   const { data, isLoading, isError } = useGetUnreadNotificationsCount();
   const viewAllRef = useRef<HTMLButtonElement>(null);
+  const queryClient = useQueryClient();
+
+  const markReadMutation = useMutation(() => markAllNotificationsAsRead(), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['get-notifications']);
+    },
+  });
 
   const notifTabs = [
     {
@@ -89,19 +100,24 @@ const NotificationsOverview: React.FC = () => {
             Notifications
           </p>
           {/* Mark all as read */}
-          {/* <div className="flex items-center gap-x-1 cursor-pointer">
-            <Icon name="checkbox" color="#059669" size={18} />
-            <p className="text-primary-600 font-bold text-sm">
-              Mark all as read
-            </p>
-          </div> */}
+          {!!data?.data.result.unread && (
+            <div
+              className="flex items-center gap-x-1 cursor-pointer"
+              onClick={() => markReadMutation.mutate()}
+            >
+              <Icon name="checkbox" color="text-primary-600" size={18} />
+              <p className="text-primary-600 font-bold text-sm cursor-pointer">
+                Mark all as read
+              </p>
+            </div>
+          )}
         </div>
         {/* Content */}
         <Divider />
         <Tabs
           tabs={notifTabs}
           tabContentClassName=""
-          className="flex justify-start gap-x-1 px-4 border-b-1 border border-neutral-200"
+          className="w-full flex justify-start gap-x-1 px-4 border-b-1 border border-neutral-200"
           itemSpacing={4}
         />
         <Divider />

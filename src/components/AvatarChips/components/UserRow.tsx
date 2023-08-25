@@ -50,11 +50,7 @@ const UserRow: React.FC<IUserRowProps> = ({ user }) => {
       >
         <div className="text-primary-600 text-sm font-bold cursor-pointer invisible group-hover:visible flex items-center gap-1">
           <span>Go to profile</span>
-          <Icon
-            name="arrowRightOutline"
-            size={16}
-            color={twConfig.theme.colors.primary[600]}
-          />
+          <Icon name="arrowRightOutline" size={16} color="text-primary-600" />
         </div>
       </Link>
     </div>

@@ -88,10 +88,10 @@ const AddUsers: React.FC<IAddUsersProps> = ({
               size={16}
               color={
                 fields.length >= FIELD_LIMIT
-                  ? twConfig.theme.colors.neutral['400']
+                  ? 'text-neutral-400'
                   : isHovered
-                  ? twConfig.theme.colors.primary['700']
-                  : twConfig.theme.colors.primary['500']
+                  ? 'text-primary-700'
+                  : 'text-primary-500'
               }
             />
           </div>

@@ -54,11 +54,7 @@ const MediaRender: React.FC<IMediaRenderProps> = ({
 
       {data.type === 'VIDEO' && (
         <div className="absolute play-button bg-white rounded-full py-2 pr-2 pl-2.5">
-          <Icon
-            name="playFilled"
-            color={twConfig.theme.colors.primary['500']}
-            size={14}
-          />
+          <Icon name="playFilled" color="text-primary-500" size={14} />
         </div>
       )}
       {overlayCount > 0 && (

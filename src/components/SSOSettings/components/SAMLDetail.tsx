@@ -36,7 +36,7 @@ const SAMLDetail: React.FC<SAMLDetailProps> = ({
                   closeButton: (
                     <Icon
                       name="closeCircleOutline"
-                      color={twConfig.theme.colors.primary['500']}
+                      color="text-primary-500"
                       size={20}
                     />
                   ),

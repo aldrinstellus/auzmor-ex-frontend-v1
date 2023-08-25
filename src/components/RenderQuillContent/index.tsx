@@ -77,7 +77,11 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
       });
     }
   }, []);
+
   const updatedContent = quillHashtagConversion(content);
+
+  console.log('UPD>>>', updatedContent);
+
   const postContent = updatedContent?.ops?.map((op: DeltaOperation) => {
     switch (true) {
       case op.insert.hasOwnProperty('mention'):
@@ -95,7 +99,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
       default:
         return (
           <Text
-            value={op.insert.trimEnd()}
+            value={op.insert}
             attributes={op?.attributes}
             isLink={op?.attributes?.link ? true : false}
           />

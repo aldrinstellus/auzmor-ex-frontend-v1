@@ -68,7 +68,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              color={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
             />
           ),

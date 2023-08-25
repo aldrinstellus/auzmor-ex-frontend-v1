@@ -166,11 +166,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color={twConfig.theme.colors.red['500']}
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
           ),
           style: {
             border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -196,7 +192,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              color={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
             />
           ),
@@ -342,7 +338,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
                 variant={IconVariant.Primary}
                 dataTestId="postcomment-mediacta"
                 onClick={() => inputRef && inputRef?.current?.click()}
-                color={twConfig.theme.colors.primary['500']}
+                color="text-primary-500"
               />
               <button className="ql-emoji" />
               <IconButton
@@ -356,7 +352,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
                   }
                 }}
                 dataTestId="postcomment-sendcta"
-                color={twConfig.theme.colors.primary['500']}
+                color="text-primary-500"
                 disabled={mediaValidationErrors.length > 0}
               />
             </div>

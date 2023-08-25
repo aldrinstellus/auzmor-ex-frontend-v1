@@ -78,11 +78,7 @@ const Footer: React.FC<IFooterProps> = ({
         icon: (
           <Icon
             name="imageFilled"
-            color={
-              isMediaDisabled
-                ? twConfig.theme.colors.neutral[200]
-                : twConfig.theme.colors['black-white'].black
-            }
+            color={isMediaDisabled ? 'text-neutral-200' : 'text-black'}
             size={14}
             dataTestId="feed-createpost-media"
           />
@@ -124,11 +120,7 @@ const Footer: React.FC<IFooterProps> = ({
           <Icon
             name="magicStarFilled"
             size={14}
-            color={
-              isShoutoutDisabled
-                ? twConfig.theme.colors.neutral[200]
-                : twConfig.theme.colors['black-white'].black
-            }
+            color={isShoutoutDisabled ? 'text-neutral-200' : 'text-black'}
             dataTestId="feed-createpost-shoutout"
           />
         ),
@@ -148,7 +140,7 @@ const Footer: React.FC<IFooterProps> = ({
             name="calendarFilledTwo"
             size={14}
             dataTestId="feed-createpost-events"
-            color={twConfig.theme.colors.neutral[200]}
+            color="text-neutral-200"
           />
         ),
         menuItems: [],
@@ -163,11 +155,7 @@ const Footer: React.FC<IFooterProps> = ({
             name="chartFilled"
             size={14}
             dataTestId="feed-createpost-polls"
-            color={
-              isPollDisabled
-                ? twConfig.theme.colors.neutral[200]
-                : twConfig.theme.colors['black-white'].black
-            }
+            color={isPollDisabled ? 'text-neutral-200' : 'text-black'}
           />
         ),
         menuItems: [],
@@ -184,7 +172,7 @@ const Footer: React.FC<IFooterProps> = ({
         icon: (
           <Icon
             name="moreOutline"
-            color="#000000"
+            color="text-black"
             dataTestId="feed-createpost-ellipsis-icon"
           />
         ),
@@ -274,7 +262,7 @@ const Footer: React.FC<IFooterProps> = ({
             <Icon
               name="clockOutline"
               size={16}
-              color={twConfig.theme.colors.neutral[900]}
+              color="text-neutral-900"
               onClick={() => {
                 updateContext();
                 setActiveFlow(CreatePostFlow.SchedulePost);

@@ -19,23 +19,25 @@ type AppProps = {
   dataTestId?: string;
   bgColor?: string;
   border?: boolean;
+  fallBackValue?: string;
+  onCancel?: () => any;
+  onSave?: (...args: any) => any;
 };
 
 const InfoRow: React.FC<AppProps> = ({
   icon,
   label,
   value,
-  canEdit,
+  canEdit = true,
   editNode,
   dataTestId,
   border = true,
+  fallBackValue = 'Field not specified',
+  onCancel = () => null,
+  onSave = () => null,
 }) => {
   const [isHovered, eventHandlers] = useHover();
-  const [editMode, setEditMode] = useState();
-
-  if (editMode) {
-    return <div>Edit</div>;
-  }
+  const [editMode, setEditMode] = useState(false);
 
   return (
     <div
@@ -56,11 +58,38 @@ const InfoRow: React.FC<AppProps> = ({
             {label}
           </div>
         </div>
-        <div className="text-neutral-900 font-medium">{value}</div>
+        {editMode ? (
+          <div className="flex items-center space-x-2">
+            <div>{editNode}</div>
+            <div className="flex items-center">
+              <IconWrapper
+                type={Type.Circle}
+                className="mr-2 w-8 h-8 rounded-full"
+                onClick={() => {
+                  setEditMode(false);
+                  onCancel?.();
+                }}
+              >
+                <Icon name="close" size={12} color="text-neutral-900" />
+              </IconWrapper>
+              <IconWrapper
+                type={Type.Circle}
+                className="w-8 h-8 rounded-full bg-primary-500"
+                onClick={onSave}
+              >
+                <Icon name="check" size={16} color="text-white" />
+              </IconWrapper>
+            </div>
+          </div>
+        ) : (
+          <div className="text-neutral-900 font-medium">
+            {value || fallBackValue}
+          </div>
+        )}
       </div>
-      {isHovered && (
+      {!editMode && canEdit && isHovered && (
         <div className="absolute right-0 top-7">
-          <Icon name="edit" size={16} />
+          <Icon name="edit" size={16} onClick={() => setEditMode(true)} />
         </div>
       )}
     </div>

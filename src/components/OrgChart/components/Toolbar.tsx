@@ -103,7 +103,7 @@ const Toolbar: React.FC<IToolbar> = ({
             variant={IconVariant.Secondary}
             className="group"
             borderAround
-            color={twConfig.theme.colors.neutral['900']}
+            color="text-neutral-900"
           />
           <div className="border-neutral-200 border rounded-9xl px-6 py-2 flex items-center ml-4">
             <Tooltip
@@ -111,10 +111,7 @@ const Toolbar: React.FC<IToolbar> = ({
               tooltipPosition="bottom"
             >
               <div className="group">
-                <Icon
-                  name="groupOutline"
-                  color={twConfig.theme.colors.neutral['900']}
-                />
+                <Icon name="groupOutline" color="text-neutral-900" />
               </div>
             </Tooltip>
             <div className="mx-4 bg-neutral-200 h-6 w-px" />
@@ -125,7 +122,7 @@ const Toolbar: React.FC<IToolbar> = ({
               >
                 <Icon
                   name={isCollapsed ? 'expandOutline' : 'collapseOutline'}
-                  color={twConfig.theme.colors.neutral['900']}
+                  color="text-neutral-900"
                   onClick={() => {
                     if (isCollapsed) {
                       chartRef.current?.expandAll();
@@ -141,7 +138,7 @@ const Toolbar: React.FC<IToolbar> = ({
               <Tooltip tooltipContent="Fit to screen" tooltipPosition="bottom">
                 <Icon
                   name="fullScreen"
-                  color={twConfig.theme.colors.neutral['900']}
+                  color="text-neutral-900"
                   className="flex items-center"
                   onClick={() => {
                     chartRef.current?.fit();
@@ -153,7 +150,7 @@ const Toolbar: React.FC<IToolbar> = ({
               <Tooltip tooltipContent="Spotlight me" tooltipPosition="bottom">
                 <Icon
                   name="focusOutline"
-                  color={twConfig.theme.colors.neutral['900']}
+                  color="text-neutral-900"
                   size={32}
                   onClick={() => {
                     if (isSpotlightActive) {
@@ -176,7 +173,7 @@ const Toolbar: React.FC<IToolbar> = ({
               <Tooltip tooltipContent="Zoom out" tooltipPosition="bottom">
                 <Icon
                   name="zoomOutOutline"
-                  color={twConfig.theme.colors.neutral['900']}
+                  color="text-neutral-900"
                   onClick={() => {
                     chartRef.current?.zoomOut();
                   }}
@@ -187,7 +184,7 @@ const Toolbar: React.FC<IToolbar> = ({
               <Tooltip tooltipContent="Zoom in" tooltipPosition="bottom">
                 <Icon
                   name="zoomInOutline"
-                  color={twConfig.theme.colors.neutral['900']}
+                  color="text-neutral-900"
                   onClick={() => chartRef.current?.zoomIn()}
                 />
               </Tooltip>

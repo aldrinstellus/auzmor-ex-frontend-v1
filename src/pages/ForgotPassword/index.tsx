@@ -66,20 +66,19 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
 
   return (
     <div className="flex h-screen w-screen">
-      <img
-        src={WelcomeOffice}
-        className="h-full w-[45%] object-cover"
+      <div
+        className=" w-[710px] bg-welcome-to-office"
         data-testid="forgot-password-cover-image"
-        alt="Welcome to Auzmor Office"
       />
-      <div className="w-[55%] h-full flex justify-center relative bg-white overflow-y-auto">
+
+      <div className="flex-1 h-full flex justify-center relative bg-white overflow-y-auto">
         <div
           className="absolute top-8 right-8"
           data-testid="forgot-password-logo-image"
         >
           <Logo />
         </div>
-        <div className="w-full max-w-[440px]">
+        <div className="w-full max-w-[440px] ">
           {forgotPasswordMutation.isSuccess ? (
             <div className="h-full flex flex-col justify-center">
               <div
@@ -100,12 +99,12 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
               />
             </div>
           ) : (
-            <div className="mt-24">
+            <div className="mt-20">
               <div className="font-extrabold text-neutral-900 text-4xl">
                 Forgot Password
               </div>
               <form
-                className="mt-16"
+                className="mt-24"
                 onSubmit={handleSubmit(onSubmit)}
                 data-testid="forgot-password-form"
               >

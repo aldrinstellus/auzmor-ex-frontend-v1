@@ -132,7 +132,8 @@ import ArrowRightUp from '../components/ArrowRightUp';
 import GalleryExport from '../components/GalleryExport';
 import FolderOpen from '../components/FolderOpen';
 import NoteFavouriteIcon from '../components/NoteFavourite';
-import LinkedinIcon from '../components/Linkedin';
+import EmployeeTagIcon from '../components/EmployeeTag';
+import CheckIcon from '../components/Check';
 
 export const icon = {
   add: Add,
@@ -159,6 +160,7 @@ export const icon = {
   celebrate: Celebrate,
   celebrateReaction: CelebrateReaction,
   chart: ChartIcon,
+  check: CheckIcon,
   clipboardClose: ClipboardCloseIcon,
   clock: ClockIcon,
   close: CloseIcon,
@@ -182,6 +184,7 @@ export const icon = {
   edit: EditIcon,
   editReceipt: EditReceipt,
   email: EmailIcon,
+  'employee-tag': EmployeeTagIcon,
   emojiHappy: EmojiHappy,
   expand: ExpandIcon,
   explore: ExploreIcon,
@@ -203,7 +206,6 @@ export const icon = {
   global: Global,
   group: GroupIcon,
   home: HomeIcon,
-  linkedin: LinkedinIcon,
   iconLinear: IconLinear,
   image: ImageIcon,
   import: ImportIcon,

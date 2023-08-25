@@ -31,11 +31,7 @@ const ImageUploader: React.FC<IImageUploaderProps> = ({
   const showErrorToast = (message: string) => {
     toast(<FailureToast content={message} dataTestId="comment-toaster" />, {
       closeButton: (
-        <Icon
-          name="closeCircleOutline"
-          color={twConfig.theme.colors.red['500']}
-          size={20}
-        />
+        <Icon name="closeCircleOutline" color="text-red-500" size={20} />
       ),
       style: {
         border: `1px solid ${twConfig.theme.colors.red['300']}`,

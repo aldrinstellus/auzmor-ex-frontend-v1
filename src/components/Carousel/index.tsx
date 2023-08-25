@@ -37,11 +37,7 @@ export const fetchFile = (url: string) => {
       aTag.click();
       toast(<SuccessToast content={'Download successful'} />, {
         closeButton: (
-          <Icon
-            name="closeCircleOutline"
-            color={twConfig.theme.colors.primary['500']}
-            size={20}
-          />
+          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
         ),
         style: {
           border: `1px solid ${twConfig.theme.colors.primary['300']}`,
@@ -59,11 +55,7 @@ export const fetchFile = (url: string) => {
     .catch(() => {
       toast(<FailureToast content={'Download failed'} />, {
         closeButton: (
-          <Icon
-            name="closeCircleOutline"
-            color={twConfig.theme.colors.red['500']}
-            size={20}
-          />
+          <Icon name="closeCircleOutline" color="text-red-500" size={20} />
         ),
         style: {
           border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -174,14 +166,14 @@ const Carousel: React.FC<CarouselProps> = ({
           className={downloadBtnStyle}
           size={16}
           disabled={true}
-          color={twConfig.theme.colors.neutral['900']}
+          color="text-neutral-900"
           onClick={() => fetchFile(media[currentIndex].original)}
         />
         {media[currentIndex].type !== 'IMAGE' && (
           <Icon
             name="playFilled"
             className={playBtnStyle}
-            color="white"
+            color="text-white"
             size={32}
             onClick={() => {
               isPlaying ? videoRef.current?.pause() : videoRef.current?.play();

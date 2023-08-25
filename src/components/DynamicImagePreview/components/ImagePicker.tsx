@@ -97,7 +97,7 @@ const ImagePicker: React.FC<IImagePickerProps> = ({
               <Icon
                 name="tickCircle"
                 className="absolute top-2 right-2"
-                color={twConfig.theme.colors.primary[500]}
+                color="text-primary-500"
                 hover
               />
             )}

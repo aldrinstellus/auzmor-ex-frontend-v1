@@ -14,6 +14,7 @@ export enum Size {
   Large = 'LARGE',
   Medium = 'MEDIUM',
   Small = 'SMALL',
+  ExtraSmall = 'EXTRA_SMALL',
 }
 
 export enum Type {
@@ -90,6 +91,9 @@ const Button = ({
         },
         {
           'py-2.5 px-6 text-base': size === Size.Large,
+        },
+        {
+          'py-1.5 px-3 text-xs': size === Size.ExtraSmall,
         },
         {
           'font-manrope font-bold transition-colors ease-out duration-default group':
