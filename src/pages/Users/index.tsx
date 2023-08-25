@@ -92,6 +92,8 @@ const Users: React.FC<IUsersProps> = () => {
               className="flex space-x-1"
               label="Add Members"
               leftIcon="add"
+              leftIconClassName="!text-white"
+              leftIconSize={20}
               onClick={openAddUserModal}
               dataTestId="add-members-btn"
             />

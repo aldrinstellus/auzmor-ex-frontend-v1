@@ -129,7 +129,11 @@ const Apps: React.FC<IAppsProps> = () => {
           {isAdmin && (
             <Button
               onClick={openModal}
-              label="+ Add apps"
+              label="Add apps"
+              leftIcon="add"
+              leftIconClassName="!text-white"
+              className="flex space-x-1"
+              leftIconSize={20}
               dataTestId="app-add-app-cta"
             />
           )}
