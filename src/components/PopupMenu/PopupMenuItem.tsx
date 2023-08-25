@@ -4,6 +4,7 @@ import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import useHover from 'hooks/useHover';
 import clsx from 'clsx';
+import IconWrapper from 'components/Icon/components/IconWrapper';
 
 type PopupMenuItemProps = {
   menuItem: IMenuItem;
@@ -36,14 +37,16 @@ const PopupMenuItem: React.FC<PopupMenuItemProps> = ({
       data-testid={menuItem.dataTestId}
     >
       {menuItem.icon && (
-        <Icon
-          name={menuItem.icon}
-          size={16}
-          className={menuItem.iconClassName}
-          color={(menuItem.disabled && 'text-neutral-200') || menuItem.stroke}
-          hover={hovered}
-          disabled={menuItem.disabled}
-        />
+        <IconWrapper className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl">
+          <Icon
+            name={menuItem.icon}
+            size={16}
+            className={menuItem.iconClassName}
+            color={(menuItem.disabled && 'text-neutral-200') || menuItem.stroke}
+            hover={hovered}
+            disabled={menuItem.disabled}
+          />
+        </IconWrapper>
       )}
       <div
         className={clsx(

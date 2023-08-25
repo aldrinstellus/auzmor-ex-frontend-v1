@@ -156,7 +156,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
               <div className="space-y-4">
                 {!isEditable ? (
                   <div className="flex flex-col gap-y-4">
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center group/item">
                       <div className="flex space-x-2 truncate items-center">
                         <IconWrapper>
                           <Icon name="email" hover={false} size={16} />
@@ -171,9 +171,10 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                       <CopyButton
                         content={contactCardData?.primaryEmail}
                         dataTestId="contact-info-copy-email"
+                        className="hidden group-hover/item:block"
                       />
                     </div>
-                    <div className="flex space-x-4 justify-between items-center">
+                    <div className="flex space-x-4 justify-between items-center group/item">
                       <div className="flex space-x-2 truncate items-center">
                         <IconWrapper>
                           <Icon name="call" hover={false} size={16} />
@@ -189,6 +190,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                         <CopyButton
                           content={phoneValue}
                           dataTestId="contact-info-copy-number"
+                          className="hidden group-hover/item:block"
                         />
                       )}
                     </div>
