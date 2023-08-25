@@ -58,6 +58,7 @@ const CreatableSearch = React.forwardRef(
     const { data } = fetchQuery(
       isFiltersEmpty({
         q: debouncedSearchValue.toLowerCase().trim(),
+        limit: 10,
         ...queryParams,
       }),
     );
