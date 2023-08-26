@@ -103,7 +103,11 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
           (minDate ? d.isBefore(minDate) : false) ||
           (maxDate ? d.isAfter(maxDate) : false)
         }
-        showToday={false}
+        showToday={
+          minDate
+            ? dayjs(minDate).isBefore(new Date().setHours(0, 0, 0, 0))
+            : false
+        }
       />
       {!!error && (
         <div className={`absolute -bottom-4 text-xs truncate leading-tight`}>
