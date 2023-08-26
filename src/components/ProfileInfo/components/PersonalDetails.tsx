@@ -295,7 +295,6 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
             }}
             label="Skills"
             dataTestId="added-skills"
-            canEdit={false}
             value={
               personalDetails?.personal?.skills?.length > 0 && (
                 <div className="flex items-center flex-wrap">

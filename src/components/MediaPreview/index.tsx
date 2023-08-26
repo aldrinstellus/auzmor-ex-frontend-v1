@@ -452,27 +452,18 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
               <div
                 onClick={onEditButtonClick}
                 data-testid={`${dataTestId}-editicon`}
+                className="p-2 mr-2 bg-white rounded-7xl border-1 border-neutral-200 group"
               >
-                <Icon
-                  name="edit"
-                  size={16}
-                  className="p-2 rounded-7xl mr-2 bg-white cursor-pointer"
-                  color="text-neutral-900"
-                />
+                <Icon name="edit" size={16} color="text-neutral-900" />
               </div>
             )}
             {showCloseButton && (
               <div
                 onClick={onCloseButtonClick}
                 data-testid={`${dataTestId}-remove-image`}
+                className="p-2 bg-white rounded-7xl border-1 border-neutral-200 group"
               >
-                <Icon
-                  name="close"
-                  size={16}
-                  disabled
-                  className="p-2 rounded-7xl bg-white cursor-pointer"
-                  color="text-neutral-900"
-                />
+                <Icon name="close" size={16} color="text-neutral-900" />
               </div>
             )}
           </div>

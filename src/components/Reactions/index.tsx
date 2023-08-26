@@ -71,23 +71,23 @@ const Likes: React.FC<LikesProps> = ({
 
   const nameStyle = clsx(
     {
-      'text-[#3F83F8]': reaction === 'like',
+      'text-blue-900': reaction === 'like',
     },
 
     {
-      'text-[#F98080]': reaction === 'love',
+      'text-orange-500': reaction === 'love',
     },
     {
-      'text-[#FDBA74]': reaction === 'celebrate',
+      'text-yellow-500': reaction === 'celebrate',
     },
     {
-      'text-[#FB923C]': reaction === 'support',
+      'text-red-500': reaction === 'support',
     },
     {
-      'text-[#8DA2FB]': reaction === 'funny',
+      'text-yellow-500': reaction === 'funny',
     },
     {
-      'text-yellow-400': reaction === 'insightful',
+      'text-yellow-500': reaction === 'insightful',
     },
   );
 
@@ -398,7 +398,7 @@ const Likes: React.FC<LikesProps> = ({
         <Icon name={nameIcon ? nameIcon : 'likeIcon'} size={16} />
         <div
           className={`text-xs font-normal ${
-            name ? nameStyle : 'text-neutral-500 '
+            name ? nameStyle : 'text-neutral-500 group-hover:text-primary-500'
           } `}
         >
           {name ? name : 'Like'}

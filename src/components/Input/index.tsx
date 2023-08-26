@@ -193,11 +193,11 @@ const Input: React.FC<InputProps> = ({
             onBlur={field.onBlur}
           />
           {isClearable && !!field.value && (
-            <div className="absolute right-2">
+            <div className="absolute right-2 p-2">
               <Icon
                 name="close"
                 size={16}
-                className="p-2 rounded-7xl bg-white"
+                className="rounded-7xl bg-white"
                 onClick={() => field.onChange('')}
               />
             </div>

@@ -338,7 +338,6 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
                 variant={IconVariant.Primary}
                 dataTestId="postcomment-mediacta"
                 onClick={() => inputRef && inputRef?.current?.click()}
-                color="text-primary-500"
               />
               <button className="ql-emoji" />
               <IconButton
@@ -352,7 +351,6 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
                   }
                 }}
                 dataTestId="postcomment-sendcta"
-                color="text-primary-500"
                 disabled={mediaValidationErrors.length > 0}
               />
             </div>

@@ -326,14 +326,14 @@ export const Comment: React.FC<CommentProps> = ({
 
         <div className="flex items-center space-x-2">
           <div
-            className="flex space-x-1 cursor-pointer"
+            className="flex space-x-1 cursor-pointer group"
             onClick={() => {
               setShowReplies(!showReplies);
             }}
           >
             <Icon name="comment" size={16} />
             <div
-              className="text-xs font-normal text-neutral-500 ml-1.5"
+              className="text-xs font-normal text-neutral-500 ml-1.5 group-hover:text-primary-500"
               data-testid="comment-replies-count"
             >
               Reply
@@ -345,18 +345,18 @@ export const Comment: React.FC<CommentProps> = ({
               {/* ellipse */}
               <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
               <div
-                className="flex items-center cursor-pointer"
+                className="flex items-center cursor-pointer group"
                 data-testid="replyto-commentcta"
                 onClick={() => {
                   setShowReplies(!showReplies);
                 }}
               >
                 <div
-                  className="text-xs font-normal text-neutral-500"
+                  className="text-xs font-normal text-neutral-500 group-hover:text-primary-500"
                   data-testid="comment-replies-count"
                 >
                   {comment?.repliesCount}
-                  {comment?.repliesCount > 0 ? ' Replies' : ' Reply'}
+                  {comment?.repliesCount > 1 ? ' Replies' : ' Reply'}
                 </div>
               </div>
             </>
