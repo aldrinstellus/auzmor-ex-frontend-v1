@@ -45,9 +45,11 @@ const SelectTimeZone: React.FC<SelectTimeZoneProps> = ({
   ];
 
   return (
-    <form>
-      <Layout className={className} fields={fields} />
-    </form>
+    <div className="w-full">
+      <form>
+        <Layout className={className} fields={fields} />
+      </form>
+    </div>
   );
 };
 

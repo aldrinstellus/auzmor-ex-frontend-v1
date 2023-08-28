@@ -7,6 +7,7 @@ import {
   CreatePostContext,
   CreatePostFlow,
   IEditorValue,
+  POST_TYPE,
 } from 'contexts/CreatePostContext';
 import useRole from 'hooks/useRole';
 import { DeltaStatic } from 'quill';
@@ -14,19 +15,21 @@ import React, { useContext, useMemo } from 'react';
 import ReactQuill from 'react-quill';
 import { convert } from 'html-to-text';
 import { operatorXOR, twConfig } from 'utils/misc';
+import { PostBuilderMode } from 'components/PostBuilder';
 
 export interface IFooterProps {
   isLoading: boolean;
   quillRef: React.RefObject<ReactQuill>;
   handleSubmitPost: (content: IEditorValue, files: File[]) => void;
+  mode: PostBuilderMode;
 }
 
 const Footer: React.FC<IFooterProps> = ({
   isLoading,
   quillRef,
   handleSubmitPost,
+  mode,
 }) => {
-  const { isMember } = useRole();
   const {
     setActiveFlow,
     setEditorValue,
@@ -38,7 +41,10 @@ const Footer: React.FC<IFooterProps> = ({
     isPreviewRemoved,
     previewUrl,
     schedule,
+    postType,
   } = useContext(CreatePostContext);
+  const { isMember } = useRole();
+  const canSchedule = !(!!!schedule && mode === PostBuilderMode.Edit);
 
   const updateContext = () => {
     setEditorValue({
@@ -54,23 +60,26 @@ const Footer: React.FC<IFooterProps> = ({
     });
   };
 
-  const isMediaDisabled = operatorXOR(isPreviewRemoved, !!previewUrl);
+  const isMediaDisabled =
+    operatorXOR(isPreviewRemoved, !!previewUrl) ||
+    !!(postType && postType !== POST_TYPE.Media) ||
+    mode === PostBuilderMode.Edit;
+  const isShoutoutDisabled =
+    operatorXOR(isPreviewRemoved, !!previewUrl) ||
+    (postType && postType !== POST_TYPE.Shoutout) ||
+    mode === PostBuilderMode.Edit;
+  const isPollDisabled =
+    (postType && postType !== POST_TYPE.Poll) || mode === PostBuilderMode.Edit;
+
   const postMenuItems = useMemo(
     () => [
       {
         id: 1,
         label: 'Media',
-        icon: isMediaDisabled ? (
+        icon: (
           <Icon
             name="imageFilled"
-            fill="#737373"
-            size={14}
-            dataTestId="feed-createpost-media"
-          />
-        ) : (
-          <Icon
-            name="imageFilled"
-            fill="#000000"
+            color={isMediaDisabled ? 'text-neutral-200' : 'text-neutral-900'}
             size={14}
             dataTestId="feed-createpost-media"
           />
@@ -85,7 +94,6 @@ const Footer: React.FC<IFooterProps> = ({
               inputImgRef?.current && inputImgRef?.current?.click();
             },
             disabled: isMediaDisabled,
-            iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
             dataTestId: 'feed-createpost-uploadphoto-menuitem',
           },
           {
@@ -96,13 +104,11 @@ const Footer: React.FC<IFooterProps> = ({
               inputVideoRef?.current && inputVideoRef?.current?.click();
             },
             disabled: isMediaDisabled,
-            iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
             dataTestId: 'feed-createpost-uploadvideo-menuitem',
           },
           {
             label: 'Share a document',
             icon: 'document',
-            iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
             disabled: true,
           },
         ],
@@ -115,12 +121,17 @@ const Footer: React.FC<IFooterProps> = ({
           <Icon
             name="magicStarFilled"
             size={14}
+            color={isShoutoutDisabled ? 'text-neutral-200' : 'text-neutral-900'}
             dataTestId="feed-createpost-shoutout"
           />
         ),
         menuItems: [],
         divider: <Divider variant={DividerVariant.Vertical} />,
-        disabled: true,
+        disabled: isShoutoutDisabled,
+        onClick: () => {
+          updateContext();
+          setActiveFlow(CreatePostFlow.CreateShoutout);
+        },
       },
       {
         id: 3,
@@ -129,7 +140,9 @@ const Footer: React.FC<IFooterProps> = ({
           <Icon
             name="calendarFilledTwo"
             size={14}
+            disabled
             dataTestId="feed-createpost-events"
+            color="text-neutral-200"
           />
         ),
         menuItems: [],
@@ -139,10 +152,18 @@ const Footer: React.FC<IFooterProps> = ({
       {
         id: 4,
         label: 'Polls',
-        icon: <Icon name="chartFilled" size={14} fill="#000000" />,
         menuItems: [],
         hidden: false,
         dataTestId: 'createpost-poll',
+        icon: (
+          <Icon
+            name="chartFilled"
+            size={14}
+            dataTestId="feed-createpost-polls"
+            color={isPollDisabled ? 'text-neutral-200' : 'text-neutral-900'}
+          />
+        ),
+        disabled: isPollDisabled,
         onClick: () => {
           updateContext();
           setActiveFlow(CreatePostFlow.CreatePoll);
@@ -154,7 +175,7 @@ const Footer: React.FC<IFooterProps> = ({
         icon: (
           <Icon
             name="moreOutline"
-            stroke="#000000"
+            color="text-neutral-900"
             dataTestId="feed-createpost-ellipsis-icon"
           />
         ),
@@ -168,20 +189,24 @@ const Footer: React.FC<IFooterProps> = ({
               setActiveFlow(CreatePostFlow.CreateAnnouncement);
             },
             disabled: isMember,
-            iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
             dataTestId: 'feed-createpost-shareasannouncement',
           },
           {
             label: 'Save as drafts',
             icon: 'draft',
-            iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
             disabled: true,
             dataTestId: 'feed-createpost-saveasdraft',
           },
         ],
       },
     ],
-    [isPreviewRemoved, previewUrl],
+    [
+      isPreviewRemoved,
+      previewUrl,
+      isMediaDisabled,
+      isPollDisabled,
+      isShoutoutDisabled,
+    ],
   );
 
   return (
@@ -193,14 +218,18 @@ const Footer: React.FC<IFooterProps> = ({
               <div
                 key={postMenuItem.id}
                 className="flex mr-4 items-center"
-                onClick={postMenuItem?.onClick}
+                onClick={() => {
+                  if (!postMenuItem.disabled && postMenuItem.onClick) {
+                    postMenuItem.onClick();
+                  }
+                }}
               >
                 <PopupMenu
                   triggerNode={
                     postMenuItem?.disabled ? (
                       <div
                         className={`flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl ${
-                          isPreviewRemoved || !!previewUrl
+                          postMenuItem.disabled
                             ? 'cursor-not-allowed'
                             : 'cursor-default'
                         }`}
@@ -235,20 +264,22 @@ const Footer: React.FC<IFooterProps> = ({
         <Divider variant={DividerVariant.Vertical} className="!h-8" />
       </div>
       <div className="flex items-center">
-        <div className="mr-4">
-          <Tooltip tooltipContent="Schedule" className="cursor-pointer">
-            <Icon
-              name="clockOutline"
-              size={16}
-              stroke={twConfig.theme.colors.neutral[900]}
-              onClick={() => {
-                updateContext();
-                setActiveFlow(CreatePostFlow.SchedulePost);
-              }}
-              dataTestId="createpost-clock-icon"
-            />
-          </Tooltip>
-        </div>
+        {canSchedule && (
+          <div className="mr-4">
+            <Tooltip tooltipContent="Schedule" className="cursor-pointer">
+              <Icon
+                name="clockOutline"
+                size={16}
+                color="text-neutral-900"
+                onClick={() => {
+                  updateContext();
+                  setActiveFlow(CreatePostFlow.SchedulePost);
+                }}
+                dataTestId="createpost-clock-icon"
+              />
+            </Tooltip>
+          </div>
+        )}
         <Button
           label={schedule ? 'Schedule' : 'Post'}
           disabled={isLoading || isCharLimit || !!mediaValidationErrors?.length}

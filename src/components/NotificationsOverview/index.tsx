@@ -5,9 +5,13 @@ import React, { useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import Spinner from 'components/Spinner';
 import Popover from 'components/Popover';
-import { useGetUnreadNotificationsCount } from 'queries/notifications';
+import {
+  markAllNotificationsAsRead,
+  useGetUnreadNotificationsCount,
+} from 'queries/notifications';
 import Tabs from 'components/Tabs';
 import NotificationsList from './components/NotificationsList';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export enum NotificationType {
   ALL = 'All',
@@ -17,12 +21,19 @@ export enum NotificationType {
 const NotificationsOverview: React.FC = () => {
   const { data, isLoading, isError } = useGetUnreadNotificationsCount();
   const viewAllRef = useRef<HTMLButtonElement>(null);
+  const queryClient = useQueryClient();
+
+  const markReadMutation = useMutation(() => markAllNotificationsAsRead(), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['get-notifications']);
+    },
+  });
 
   const notifTabs = [
     {
       tabLabel: (isActive: boolean) => (
         <p
-          className={`font-bold text-sm pb-2 ${
+          className={`font-bold text-sm pb-2 w-[53px] text-center ${
             isActive ? 'text-neutral-900' : 'text-neutral-500'
           }`}
         >
@@ -75,7 +86,6 @@ const NotificationsOverview: React.FC = () => {
           <Icon
             name="notification"
             size={26}
-            disabled={true}
             dataTestId="office-notification-page"
           />
         </div>
@@ -89,19 +99,24 @@ const NotificationsOverview: React.FC = () => {
             Notifications
           </p>
           {/* Mark all as read */}
-          {/* <div className="flex items-center gap-x-1 cursor-pointer">
-            <Icon name="checkbox" stroke="#059669" size={18} />
-            <p className="text-primary-600 font-bold text-sm">
-              Mark all as read
-            </p>
-          </div> */}
+          {!!data?.data.result.unread && (
+            <div
+              className="flex items-center gap-x-1 cursor-pointer"
+              onClick={() => markReadMutation.mutate()}
+            >
+              <Icon name="checkbox" color="text-primary-600" size={18} />
+              <p className="text-primary-600 font-bold text-sm cursor-pointer">
+                Mark all as read
+              </p>
+            </div>
+          )}
         </div>
         {/* Content */}
         <Divider />
         <Tabs
           tabs={notifTabs}
           tabContentClassName=""
-          className="flex justify-start gap-x-1 px-4 border-b-1 border border-neutral-200"
+          className="flex justify-start gap-x-1 px-4 border-b-1 border-neutral-200 w-full mb-2"
           itemSpacing={4}
         />
         <Divider />

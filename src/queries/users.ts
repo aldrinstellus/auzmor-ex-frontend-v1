@@ -103,7 +103,7 @@ export interface IGetUser {
   createdAt: string;
   status: string;
   timeZone?: string;
-  workLocation?: string;
+  workLocation?: Record<string, string>;
 }
 
 export const getAllUser = ({

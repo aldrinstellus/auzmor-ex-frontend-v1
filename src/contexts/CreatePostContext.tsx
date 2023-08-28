@@ -14,6 +14,13 @@ export enum CreatePostFlow {
   CreatePoll = 'CREATE_POLL',
   SchedulePost = 'SCHEDULE_POST',
   Audience = 'AUDIENCE',
+  CreateShoutout = 'CREATE_SHOUTOUT',
+}
+
+export enum POST_TYPE {
+  Media = 'MEDIA',
+  Poll = 'POLL',
+  Shoutout = 'SHOUTOUT',
 }
 
 export interface IAnnouncement {
@@ -84,6 +91,10 @@ export interface ICreatePostContext {
   setSchedule: (schedule: ISchedule | null) => void;
   audience: IAudience[];
   setAudience: (audience: IAudience[]) => void;
+  shoutoutUserIds: string[];
+  setShoutoutUserIds: (ids: string[]) => void;
+  postType: POST_TYPE | null;
+  setPostType: (type: POST_TYPE | null) => void;
 }
 
 export enum MediaValidationError {
@@ -182,6 +193,10 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setSchedule: () => {},
   audience: [],
   setAudience: () => {},
+  shoutoutUserIds: [],
+  setShoutoutUserIds: () => {},
+  postType: null,
+  setPostType: () => {},
 });
 
 const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
@@ -215,10 +230,12 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
   const [poll, setPoll] = useState<IPoll | null>(null);
   const [schedule, setSchedule] = useState<ISchedule | null>(null);
   const [audience, setAudience] = useState<IAudience[]>([]);
+  const [shoutoutUserIds, setShoutoutUserIds] = useState<string[]>([]);
+  const [postType, setPostType] = useState<POST_TYPE | null>(null);
 
   const setUploads = (uploads: File[], isCoverImage?: boolean) => {
     if (!isCoverImage) {
-      setMedia([...media, ...getMediaObj(uploads)]);
+      setMedia(prevMedia => ([...prevMedia, ...getMediaObj(uploads)]));
     }
     setFiles([...files, ...uploads]);
   };
@@ -306,6 +323,8 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     setPoll(null);
     setSchedule(null);
     setAudience([]);
+    setShoutoutUserIds([]);
+    setPostType(null);
   };
 
   const updateCoverImageMap = (map: ICoverImageMap) => {
@@ -421,6 +440,10 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         setSchedule,
         audience,
         setAudience,
+        shoutoutUserIds,
+        setShoutoutUserIds,
+        postType,
+        setPostType,
       }}
     >
       {children}

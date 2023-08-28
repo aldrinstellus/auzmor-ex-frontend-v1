@@ -50,7 +50,7 @@ const TextArea: React.FC<TextAreaProps> = ({
 
   const textAreaStyle = clsx(
     {
-      'bg-red-400 text-sm font-medium text-neutral-900 bg-white border border-solid px-5 py-3 focus:outline-none':
+      'bg-red-400 text-sm font-medium text-neutral-900 bg-white border border-solid px-5 !pt-2 pb-2 focus:outline-none !rounded-19xl':
         true,
     },
     {
@@ -90,14 +90,8 @@ const TextArea: React.FC<TextAreaProps> = ({
 
   return (
     <div className="relative flex flex-col gap-y-1">
-      <div className="flex items-center justify-between">
+      <div>
         <div className={labelStyle}>{label}</div>
-        {showCounter && (
-          <div className="flex w-full justify-end text-sm text-neutral-500">
-            {textAreaRef.current?.value.length || defaultValue.length || 0}/
-            {maxLength}
-          </div>
-        )}
       </div>
       <textarea
         ref={textAreaRef}
@@ -115,6 +109,12 @@ const TextArea: React.FC<TextAreaProps> = ({
         data-testid={dataTestId}
         defaultValue={defaultValue}
       />
+      {showCounter && (
+        <div className="flex mt-1 w-full justify-end text-xs text-neutral-500">
+          {textAreaRef.current?.value.length || defaultValue.length || 0}/
+          {maxLength}
+        </div>
+      )}
       <div
         className={`absolute -bottom-4 text-xs truncate leading-tight ${helpTextStyles}`}
         data-testid={errorDataTestId}

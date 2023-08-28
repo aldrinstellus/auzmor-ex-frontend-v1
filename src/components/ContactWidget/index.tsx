@@ -82,11 +82,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
     onSuccess: (response: any) => {
       toast(<SuccessToast content={'User Profile Updated Successfully'} />, {
         closeButton: (
-          <Icon
-            name="closeCircleOutline"
-            stroke={twConfig.theme.colors.primary['500']}
-            size={20}
-          />
+          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
         ),
         style: {
           border: `1px solid ${twConfig.theme.colors.primary['300']}`,
@@ -109,7 +105,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
   };
 
   return (
-    <div className="w-1/4">
+    <div>
       <div {...eventHandlers}>
         <Card className={onHoverStyles}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -123,7 +119,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
               {canEdit && isHovered && !isEditable ? (
                 <IconWrapper
                   type={Type.Square}
-                  className="cursor-pointer"
+                  className="cursor-pointer h-[24px] w-[24px]["
                   dataTestId={`contact-info-edit`}
                 >
                   <Icon
@@ -160,39 +156,41 @@ const ContactWidget: React.FC<IContactCardProps> = ({
               <div className="space-y-4">
                 {!isEditable ? (
                   <div className="flex flex-col gap-y-4">
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center group/item">
                       <div className="flex space-x-2 truncate items-center">
                         <IconWrapper>
-                          <Icon name="email" stroke="#737373" size={15} />
+                          <Icon name="email" hover={false} size={16} />
                         </IconWrapper>
                         <div
                           className="text-sm font-normal text-neutral-900"
                           data-testid="user-contact-widget-email"
                         >
-                          {contactCardData?.primaryEmail || 'N/A'}
+                          {contactCardData?.primaryEmail || '-'}
                         </div>
                       </div>
                       <CopyButton
                         content={contactCardData?.primaryEmail}
                         dataTestId="contact-info-copy-email"
+                        className="hidden group-hover/item:block"
                       />
                     </div>
-                    <div className="flex space-x-4 justify-between items-center">
+                    <div className="flex space-x-4 justify-between items-center group/item">
                       <div className="flex space-x-2 truncate items-center">
                         <IconWrapper>
-                          <Icon name="call" stroke="#737373" size={15} />
+                          <Icon name="call" hover={false} size={16} />
                         </IconWrapper>
                         <div
                           className="text-sm font-normal text-neutral-900"
                           data-testid="user-contact-widget-number"
                         >
-                          {phoneValue || 'N/A'}
+                          {phoneValue || '-'}
                         </div>
                       </div>
                       {phoneValue && (
                         <CopyButton
                           content={phoneValue}
                           dataTestId="contact-info-copy-number"
+                          className="hidden group-hover/item:block"
                         />
                       )}
                     </div>
@@ -202,7 +200,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                     <Layout fields={fields} />
                   </div>
                 )}
-                <div className="flex justify-center items-center w-full">
+                {/* <div className="flex justify-center items-center w-full">
                   <Button
                     label="View Organization Chart"
                     variant={Variant.Secondary}
@@ -212,7 +210,7 @@ const ContactWidget: React.FC<IContactCardProps> = ({
                     disabled
                     dataTestId="user-view-org-chart"
                   />
-                </div>
+                </div> */}
               </div>
             </div>
           </form>

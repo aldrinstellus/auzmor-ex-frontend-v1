@@ -34,7 +34,9 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   return (
     <Menu>
-      <Menu.Button ref={menuButtonRef}>{triggerNode}</Menu.Button>
+      <Menu.Button as="div" ref={menuButtonRef}>
+        {triggerNode}
+      </Menu.Button>
       <Menu.Items
         className={`bg-white rounded-9xl shadow-lg absolute z-[99999] overflow-hidden ${className}`}
       >

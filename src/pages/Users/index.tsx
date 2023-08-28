@@ -84,7 +84,7 @@ const Users: React.FC<IUsersProps> = () => {
             leftIcon="groupOutline"
             leftIconSize={20}
             dataTestId="people-org-chart"
-            iconStroke="black"
+            iconColor="text-black"
             onClick={() => setShowOrgChart(true)}
           />
           {user?.role !== Role.Member && (
@@ -92,6 +92,8 @@ const Users: React.FC<IUsersProps> = () => {
               className="flex space-x-1"
               label="Add Members"
               leftIcon="add"
+              leftIconClassName="!text-white"
+              leftIconSize={20}
               onClick={openAddUserModal}
               dataTestId="add-members-btn"
             />
@@ -124,6 +126,8 @@ const Users: React.FC<IUsersProps> = () => {
           className="flex space-x-1"
           label="Add Teams"
           leftIcon="add"
+          leftIconClassName="!text-white"
+          leftIconSize={20}
           onClick={openTeamModal}
           dataTestId="add-teams-btn"
         />

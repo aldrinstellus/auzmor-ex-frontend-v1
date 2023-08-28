@@ -19,17 +19,20 @@ import {
 } from 'queries/users';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
-import { getEditSection, twConfig } from 'utils/misc';
+import { getEditSection, titleCase, twConfig } from 'utils/misc';
 import { PRIMARY_COLOR, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import useModal from 'hooks/useModal';
 import DeletePeople from '../DeleteModals/People';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import UserProfileDropdown from 'components/UserProfileDropdown';
+import DeactivatePeople from '../DeactivateModal/Deactivate';
+import ReactivatePeople from '../ReactivateModal/Reactivate';
+import clsx from 'clsx';
 
 export interface IPeopleCardProps {
   id: string;
-  role: string;
+  role: any;
   fullName: string;
   image?: string;
   designation?: string;
@@ -37,7 +40,7 @@ export interface IPeopleCardProps {
   location?: string;
   active?: boolean;
   workEmail?: string;
-  status?: string;
+  status?: any;
 }
 
 export enum Status {
@@ -73,7 +76,11 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
   const { user } = useAuth();
   const { isAdmin } = useRole();
   const [isHovered, eventHandlers] = useHover();
-  const [open, openModal, closeModal] = useModal();
+  const [openDelete, openDeleteModal, closeDeleteModal] = useModal();
+  const [openReactivate, openReactivateModal, closeReactivateModal] =
+    useModal();
+  const [openDeactivate, openDeactivateModal, closeDeactivateModal] =
+    useModal();
 
   const resendInviteMutation = useResendInvitation();
   const updateUserStatusMutation = useMutation({
@@ -93,7 +100,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
             />
           ),
@@ -118,11 +125,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
       queryClient.invalidateQueries({ queryKey: ['users'] });
       toast(<SuccessToast content={`User role has been updated to admin`} />, {
         closeButton: (
-          <Icon
-            name="closeCircleOutline"
-            stroke={twConfig.theme.colors.primary['500']}
-            size={20}
-          />
+          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
         ),
         style: {
           border: `1px solid ${twConfig.theme.colors.primary['300']}`,
@@ -135,6 +138,11 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
         theme: 'dark',
       });
     },
+  });
+
+  const leftChipStyle = clsx({
+    'absolute top-0 left-0 text-white rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium':
+      true,
   });
 
   return (
@@ -154,7 +162,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
           status={status}
           isAdmin={isAdmin}
           isHovered={isHovered}
-          onDeleteClick={openModal}
+          onDeleteClick={openDeleteModal}
           onEditClick={() =>
             navigate(
               `/users/${id}?edit=${getEditSection(
@@ -165,25 +173,15 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
               )}`,
             )
           }
-          onReactivateClick={() => {
-            updateUserStatusMutation.mutate({
-              id,
-              status: UserStatus.Active,
-            });
-          }}
+          onReactivateClick={openReactivateModal}
           onPromoteClick={() => updateUserRoleMutation.mutate({ id })}
-          onDeactivateClick={() =>
-            updateUserStatusMutation.mutate({
-              id,
-              status: UserStatus.Inactive,
-            })
-          }
+          onDeactivateClick={openDeactivateModal}
           onResendInviteClick={() => () => {
             toast(<SuccessToast content="Invitation has been sent" />, {
               closeButton: (
                 <Icon
                   name="closeCircleOutline"
-                  stroke={twConfig.theme.colors.primary['500']}
+                  color="text-primary-500"
                   size={20}
                 />
               ),
@@ -206,7 +204,6 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
                 className={`absolute top-${
                   status === UserStatus.Inactive ? 6 : 2
                 } right-2`}
-                hover={false}
                 dataTestId="people-card-ellipsis"
               />
             </div>
@@ -214,42 +211,60 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
           showOnHover={true}
           className="right-0 top-8 border border-[#e5e5e5]"
         />
-        {(status as any) === UserStatus.Inactive ? (
-          <div
-            className="absolute top-0 text-[12px] text-[#737373] font-medium py-1 bg-[#F5F5F5] w-full justify-center align-center rounded-t-9xl flex"
-            data-testid="usercard-deactivate-banner"
-          >
-            <Icon
-              name="forbidden"
-              stroke="#737373"
-              size={18}
-              className="mr-1"
-            ></Icon>
-            Deactivated Account
-          </div>
-        ) : (
-          <div
-            style={{
-              backgroundColor: [
-                UserStatus.Invited,
-                UserStatus.Created,
-                UserStatus.Attempted,
-              ].includes(status as any)
-                ? '#EA580C'
-                : statusColorMap[role],
-            }}
-            className="absolute top-0 left-0 text-white rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium"
-            data-testid={`people-card-role-${role}`}
-          >
-            {[
+        {(() => {
+          if (status === UserStatus.Inactive) {
+            return (
+              <div
+                className="absolute top-0 text-[12px] text-[#737373] font-medium py-1 bg-[#F5F5F5] w-full justify-center align-center rounded-t-9xl flex"
+                data-testid="usercard-deactivate-banner"
+              >
+                <Icon
+                  name="forbidden"
+                  color="text-neutral-500"
+                  size={18}
+                  className="mr-1"
+                ></Icon>
+                Deactivated Account
+              </div>
+            );
+          }
+          if (
+            [
               UserStatus.Invited,
               UserStatus.Created,
               UserStatus.Attempted,
-            ].includes(status as any)
-              ? 'Pending'
-              : role}
-          </div>
-        )}
+            ].includes(status)
+          ) {
+            return (
+              <div
+                style={{
+                  backgroundColor: '#EA580C',
+                }}
+                className={leftChipStyle}
+                data-testid={`people-card-role-${role}`}
+              >
+                Pending
+              </div>
+            );
+          }
+
+          if ([Status.ADMIN, Status.SUPERADMIN].includes(role)) {
+            return (
+              <div
+                style={{
+                  backgroundColor: statusColorMap[role],
+                }}
+                className={leftChipStyle}
+                data-testid={`people-card-role-${role}`}
+              >
+                {titleCase(role)}
+              </div>
+            );
+          }
+
+          return null;
+        })()}
+
         <div
           className="my-6 flex flex-col items-center"
           onClick={() => {
@@ -307,9 +322,21 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
         </div>
       </Card>
       <DeletePeople
-        open={open}
-        openModal={openModal}
-        closeModal={closeModal}
+        open={openDelete}
+        openModal={openDeleteModal}
+        closeModal={closeDeleteModal}
+        userId={id}
+      />
+      <DeactivatePeople
+        open={openDeactivate}
+        openModal={openDeactivateModal}
+        closeModal={closeDeactivateModal}
+        userId={id}
+      />
+      <ReactivatePeople
+        open={openReactivate}
+        openModal={openReactivateModal}
+        closeModal={closeReactivateModal}
         userId={id}
       />
     </div>

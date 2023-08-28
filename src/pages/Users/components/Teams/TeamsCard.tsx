@@ -97,9 +97,8 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
               <div className="cursor-pointer">
                 <Icon
                   name="moreOutline"
-                  stroke="#000"
+                  color="text-black"
                   className="absolute top-2 right-2"
-                  hover={false}
                   dataTestId="people-card-ellipsis"
                 />
               </div>

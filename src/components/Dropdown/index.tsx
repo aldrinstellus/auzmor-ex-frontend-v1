@@ -42,7 +42,7 @@ const Dropdown: React.FC<DropdownProps> = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Listbox.Options className="absolute mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg min-w-[112px] z-10">
+            <Listbox.Options className="absolute mt-1 max-h-60 overflow-auto rounded-xl bg-white text-base shadow-lg min-w-[112px] z-10">
               {options.map((option) => (
                 <Listbox.Option key={option.id} value={option} as={Fragment}>
                   {({ active, selected }) =>

@@ -12,16 +12,20 @@ import Toolbar from '../RichTextEditor/toolbar';
 import Icon from 'components/Icon';
 import moment from 'moment';
 import { useOrganization } from 'queries/organization';
+import { PostBuilderMode } from 'components/PostBuilder';
+import { getTimeInScheduleFormat } from 'utils/time';
+import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 
 export interface IBodyProps {
   data?: IPost;
   dataTestId?: string;
   quillRef: React.RefObject<ReactQuill>;
+  mode: PostBuilderMode;
 }
 
 const Body = React.forwardRef(
   (
-    { data, dataTestId, quillRef }: IBodyProps,
+    { data, dataTestId, quillRef, mode }: IBodyProps,
     ref: ForwardedRef<ReactQuill>,
   ) => {
     const {
@@ -30,10 +34,10 @@ const Body = React.forwardRef(
       setSchedule,
       setEditorValue,
       setActiveFlow,
-      audience,
+      media,
     } = useContext(CreatePostContext);
     const { user } = useAuth();
-    const { data: orgData } = useOrganization();
+    const { currentTimezone } = useCurrentTimezone();
     const updateContext = () => {
       setEditorValue({
         text: (ref as React.RefObject<ReactQuill>)
@@ -92,8 +96,12 @@ const Body = React.forwardRef(
                 </div>
                 <div>
                   Post scheduled for{' '}
-                  {moment(new Date(schedule.date)).format('ddd, MMM DD')} at{' '}
-                  {schedule.time} , based on your profile timezone.
+                  {getTimeInScheduleFormat(
+                    new Date(schedule.date),
+                    schedule.time,
+                    schedule.timezone,
+                    currentTimezone,
+                  )}
                 </div>
               </div>
               <div className="flex">
@@ -121,11 +129,14 @@ const Body = React.forwardRef(
           )}
           <RichTextEditor
             placeholder="What’s on your mind?"
-            className="max-h-64 overflow-y-auto min-h-[128px]"
+            className={`max-h-64 overflow-y-auto ${
+              !media.length && 'min-h-[128px]'
+            }`}
             defaultValue={
               data?.content?.editor || (editorValue.json as DeltaStatic)
             }
             ref={ref}
+            mode={mode}
             renderToolbar={(isCharLimit: boolean) => {
               return (
                 <Toolbar

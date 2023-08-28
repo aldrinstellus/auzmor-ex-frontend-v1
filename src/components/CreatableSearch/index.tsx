@@ -4,15 +4,10 @@ import { Control, Controller, useController } from 'react-hook-form';
 import { MenuPlacement, components } from 'react-select';
 import clsx from 'clsx';
 import { isFiltersEmpty, twConfig } from 'utils/misc';
-import { useInfiniteCategories } from 'queries/apps';
 import { useDebounce } from 'hooks/useDebounce';
+import Icon from 'components/Icon';
 
-export interface ICategoryDetail {
-  name: string;
-  type: string;
-  id: string;
-}
-
+type ApiCallFunction = (queryParams: any) => any;
 export interface ICreatableSearch {
   name: string;
   defaultValue?: any;
@@ -23,11 +18,15 @@ export interface ICreatableSearch {
   control?: Control<Record<string, any>>;
   label?: string;
   required?: boolean;
-  categoryType: string;
   placeholder?: string;
   height?: string;
   menuPlacement: MenuPlacement;
   addItemDataTestId?: string;
+  fetchQuery: ApiCallFunction;
+  queryParams?: Record<string, any>;
+  getFormattedData: (param: any) => any[];
+  disableCreate?: boolean;
+  noOptionsMessage?: () => any;
 }
 
 const CreatableSearch = React.forwardRef(
@@ -42,46 +41,29 @@ const CreatableSearch = React.forwardRef(
       control,
       label = '',
       required = false,
-      categoryType,
       placeholder = '',
       height = '44px',
       defaultValue,
       menuPlacement = 'bottom',
+      fetchQuery,
+      queryParams,
+      getFormattedData,
+      disableCreate,
+      noOptionsMessage = () => 'No options',
     }: ICreatableSearch,
     ref?: any,
   ) => {
     const [searchValue, setSearchValue] = useState<string>('');
     const debouncedSearchValue = useDebounce(searchValue || '', 500);
-
-    const { data } = useInfiniteCategories(
+    const { data } = fetchQuery(
       isFiltersEmpty({
         q: debouncedSearchValue.toLowerCase().trim(),
-        type: categoryType,
         limit: 10,
+        ...queryParams,
       }),
     );
 
-    const categoriesData = data?.pages.flatMap((page) => {
-      return page?.data?.result?.data.map((category: any) => {
-        try {
-          return { ...category, label: category.name };
-        } catch (e) {
-          console.log('Error', { category });
-        }
-      });
-    });
-
-    const transformedOption = categoriesData?.map(
-      (category: ICategoryDetail) => ({
-        value: category?.name?.toUpperCase(),
-        label: category?.name,
-        type: category?.type,
-        id: category?.id,
-        dataTestId: `category-option-${category?.type?.toLowerCase()}-${
-          category?.name
-        }`,
-      }),
-    );
+    const transformedOption = getFormattedData(data);
 
     const { field } = useController({
       name,
@@ -90,7 +72,9 @@ const CreatableSearch = React.forwardRef(
 
     const [open, setOpen] = useState<boolean>(false);
     const uniqueClassName =
-      'select_' + Math.random().toFixed(5).slice(2) + ' !max-h-44';
+      'select_' +
+      Math.random().toFixed(5).slice(2) +
+      ' !max-h-44 divide-y divide-neutral-200 !py-0';
     const menuListRef = useRef<HTMLDivElement>(null);
 
     const labelStyle = useMemo(
@@ -124,13 +108,20 @@ const CreatableSearch = React.forwardRef(
           backgroundColor: '#fff',
           border: '1px solid #E5E5E5',
           borderRadius: '32px',
-          height,
+          height: `${height} !important`,
           padding: '0px 6px', // change style here because it breaking 2px
           '&:hover': { borderColor: twConfig.theme.colors.primary['600'] },
           borderColor: twConfig.theme.colors.primary['500'],
           boxShadow: styles.boxShadow
             ? `0 0 0 1px ${twConfig.theme.colors.primary['500']}`
             : undefined,
+        };
+      },
+      menu: (styles: any) => {
+        return {
+          ...styles,
+          borderRadius: '12px',
+          overflow: 'hidden',
         };
       },
     };
@@ -163,32 +154,29 @@ const CreatableSearch = React.forwardRef(
                   menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                   ...selectStyle,
                 }}
-                defaultInputValue={defaultValue}
+                defaultValue={defaultValue}
+                defaultInputValue={defaultValue?.label}
                 onInputChange={(value) => setSearchValue(value)}
                 options={transformedOption}
                 menuPlacement={menuPlacement ? menuPlacement : 'top'}
                 menuPortalTarget={document.body}
+                noOptionsMessage={noOptionsMessage}
+                {...(disableCreate && {
+                  isValidNewOption: () => false,
+                })}
                 components={{
-                  Option: ({ innerProps, data, isDisabled }) => {
-                    const isSelected = data?.id === field?.value?.id;
+                  Option: ({ innerProps, data, isDisabled, isSelected }) => {
                     return (
                       <div
                         {...innerProps}
-                        className={`px-6 py-3 hover:bg-primary-50 hover:text-primary-500 font-medium  text-sm ${
+                        className={`px-6 py-3 hover:bg-primary-50 hover:text-primary-500 font-medium text-sm flex items-center ${
                           isDisabled ? 'cursor-default' : 'cursor-pointer'
                         } ${isSelected && 'bg-primary-50'}`}
                         data-testid={
                           data.__isNew__ ? addItemDataTestId : data.dataTestId
                         }
                       >
-                        {data.__isNew__ ? (
-                          <>
-                            <span>+ Add</span>
-                            <span className="text-blue-500">{` '${data.value}'`}</span>
-                          </>
-                        ) : (
-                          data.label
-                        )}
+                        {data.label}
                       </div>
                     );
                   },
@@ -200,6 +188,13 @@ const CreatableSearch = React.forwardRef(
                     ></components.MenuList>
                   ),
                 }}
+                formatCreateLabel={(inputValue) => (
+                  <>
+                    <Icon name="add" size={16} color="text-neutral-900" />
+                    <span className="ml-[10px] mr-[6px]">Add</span>
+                    <span className="text-blue-500 line-clamp-1">{`'${inputValue}'`}</span>
+                  </>
+                )}
                 {...field}
                 ref={ref}
                 onBlur={() => setOpen(false)}

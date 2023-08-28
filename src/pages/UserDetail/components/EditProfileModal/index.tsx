@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import debounce from 'lodash/debounce';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import Layout, { FieldType } from 'components/Form';
 import Modal from 'components/Modal';
@@ -24,6 +27,9 @@ import SuccessToast from 'components/Toast/variants/SuccessToast';
 import Icon from 'components/Icon';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
+import { getGooglePlaces } from 'queries/location';
+import { IDepartment, useInfiniteDepartments } from 'queries/department';
+import useRole from 'hooks/useRole';
 
 interface IOptions {
   value: string;
@@ -33,9 +39,9 @@ interface IOptions {
 export interface IUpdateProfileForm {
   fullName: string;
   designation: IOptions;
-  department: IOptions;
+  department: IOptions | null;
   preferredName: string;
-  workLocation: IOptions;
+  workLocation: IOptions | null;
 }
 
 interface IEditProfileModal {
@@ -52,6 +58,10 @@ interface IEditProfileModal {
   setIsCoverImageRemoved?: (flag: boolean) => void;
 }
 
+const EditProfileSchema = yup.object({
+  fullName: yup.string().required('This field cannot be empty'),
+});
+
 const EditProfileModal: React.FC<IEditProfileModal> = ({
   userDetails,
   openEditProfile,
@@ -65,40 +75,82 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
   isCoverImageRemoved = false,
   setIsCoverImageRemoved = () => {},
 }) => {
+  const { isAdmin } = useRole();
   const {
     control,
     handleSubmit,
     getValues,
+    reset,
     formState: { errors, isValid },
   } = useForm<IUpdateProfileForm>({
-    mode: 'onSubmit',
+    resolver: yupResolver(EditProfileSchema),
+    mode: 'onChange',
     defaultValues: {
       fullName: userDetails?.fullName,
       preferredName: userDetails?.preferredName,
-      designation: {
-        value: userDetails?.designation,
-        label: userDetails?.designation,
-      },
-      workLocation: {
-        value: userDetails?.workLocation,
-        label: userDetails?.workLocation,
-      },
-      department: {
-        value: userDetails?.department,
-        label: userDetails?.department,
-      },
+      designation: userDetails?.designation,
+      workLocation: userDetails?.workLocation?.name
+        ? {
+            value: userDetails?.workLocation?.name,
+            label: userDetails?.workLocation?.name,
+          }
+        : null,
+      department: userDetails?.department?.name
+        ? {
+            value: userDetails?.department?.name,
+            label: userDetails?.department?.name,
+          }
+        : null,
     },
   });
+
+  const loadLocations = async (
+    inputValue: string,
+    callback: (options: any[]) => void,
+  ) => {
+    const data = await getGooglePlaces({
+      q: inputValue || userDetails?.workLocation?.name || 'a',
+    });
+    callback(
+      data.map((place: any) => ({ label: place.name, value: place.name })),
+    );
+  };
+
+  const formatDepartments = (data: any) => {
+    const departmentsData = data?.pages.flatMap((page: any) => {
+      return page?.data?.result?.data.map((department: any) => {
+        try {
+          return { ...department, label: department.name };
+        } catch (e) {
+          console.log('Error', { department });
+        }
+      });
+    });
+    const transformedOption = departmentsData?.map(
+      (department: IDepartment) => ({
+        value: department?.id,
+        label: department?.name,
+        id: department?.id,
+        dataTestId: `dept-option-${department?.name}`,
+      }),
+    );
+    return transformedOption;
+  };
+
+  // Declare a debounced version of loadLocations
+  const debouncedLoadLocations = debounce(loadLocations, 500);
 
   const nameField = [
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
       defaultValue: getValues().fullName,
+      error: errors.fullName?.message,
       name: 'fullName',
       label: 'Name*',
       dataTestId: `${dataTestId}-name`,
       control,
+      inputClassName: 'py-[9px]',
     },
   ];
 
@@ -111,54 +163,52 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       label: 'Preferred Name',
       dataTestId: `${dataTestId}-perferred-name`,
       control,
+      inputClassName: 'py-[9px]',
     },
   ];
 
   const positionTitlefields = [
     {
-      type: FieldType.SingleSelect,
+      type: FieldType.Input,
+      variant: InputVariant.Text,
       name: 'designation',
       defaultValue: getValues().designation,
-      dataTestId: `${dataTestId}`,
+      placeholder: 'ex. software engineer',
+      dataTestId: `${dataTestId}-title`,
       label: 'Position title',
-      disabled: true,
-      options: [
-        { value: 'Software Engineer', label: 'Software Engineer' },
-        { value: 'Research Analyst', label: 'Research Analyst' },
-      ],
       control,
-      menuPlacement: 'top',
+      inputClassName: 'py-[9px]',
     },
   ];
 
-  // const departmentField = [
-  //   {
-  //     type: FieldType.SingleSelect,
-  //     name: 'department',
-  //     // defaultValue: data?.department,
-  //     // placeholder: 'ex. Engineering',
-  //     label: 'Department',
-  //     dataTestId: `${dataTestId}`,
-  //     options: [
-  //       { value: 'Sales and Marketing', label: 'Sales and Marketing' },
-  //       { value: 'Engineering', label: 'Engineering' },
-  //     ],
-  //     control,
-  //   },
-  // ];
-
+  const departmentField = [
+    {
+      type: FieldType.CreatableSearch,
+      name: 'department',
+      defaultValue: getValues().department,
+      placeholder: 'ex. engineering',
+      label: 'Department',
+      dataTestId: `${dataTestId}-department`,
+      fetchQuery: useInfiniteDepartments,
+      getFormattedData: formatDepartments,
+      queryParams: {},
+      disableCreate: !isAdmin,
+      noOptionsMessage: () => 'No Departments found',
+      control,
+    },
+  ];
   const locationField = [
     {
-      type: FieldType.SingleSelect,
+      type: FieldType.AsyncSingleSelect,
       name: 'workLocation',
-      disabled: true,
-      defaultValue: getValues().workLocation?.label,
-      dataTestId: `${dataTestId}`,
+      defaultValue: getValues().workLocation,
+      dataTestId: `${dataTestId}-location`,
+      placeholder: 'Select a location',
       label: 'Location',
-      options: [
-        { value: 'Mumbai, India', label: 'Mumbai, India' },
-        { value: 'Hydrabad, Talangana', label: 'Hydrabad, Talangana' },
-      ],
+      loadOptions: (inputValue: string, callback: (options: any[]) => void) => {
+        debouncedLoadLocations(inputValue, callback);
+      },
+      noOptionsMessage: () => 'No locations',
       control,
       menuPlacement: 'top',
     },
@@ -179,6 +229,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       label: 'Reposition',
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
+        reset();
         openEditImageModal();
         closeEditProfileModal();
       },
@@ -233,18 +284,14 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         workLocation: userUpdateResponse.workLocation,
         preferredName: userUpdateResponse.preferredName,
         designation: userUpdateResponse.designation,
-        // department: userUpdateResponse.department,
+        department: userUpdateResponse.department,
         location: userUpdateResponse.location,
         profileImage: userUpdateResponse.profileImage?.original,
         coverImage: userUpdateResponse.profileImage?.original,
       });
       toast(<SuccessToast content={'User Profile Updated Successfully'} />, {
         closeButton: (
-          <Icon
-            name="closeCircleOutline"
-            stroke={twConfig.theme.colors.primary['500']}
-            size={20}
-          />
+          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
         ),
         style: {
           border: `1px solid ${twConfig.theme.colors.primary['300']}`,
@@ -256,7 +303,9 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         transition: slideInAndOutTop,
         theme: 'dark',
       });
+      reset();
       closeEditProfileModal();
+      await queryClient.invalidateQueries({ queryKey: ['departments'] });
       await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
     },
   });
@@ -264,10 +313,10 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
   const onSubmit = async (user: IUpdateProfileForm) => {
     updateUsersMutation.mutate({
       fullName: user.fullName,
-      designation: user?.designation?.value,
+      designation: user?.designation,
       preferredName: user?.preferredName,
-      // department: user?.department?.value,
-      workLocation: user?.workLocation?.value,
+      department: user?.department?.label,
+      workLocation: user?.workLocation?.label,
       ...(isCoverImageRemoved && {
         coverImage: {
           fileId: '',
@@ -280,12 +329,13 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
     if (updateUsersMutation.isLoading) {
       return null;
     } else {
+      reset();
       return closeEditProfileModal();
     }
   };
 
   return (
-    <Modal open={openEditProfile} className="max-w-2xl">
+    <Modal open={openEditProfile} className="max-w-[648px] max-h-[605px]">
       <form>
         <Header title="Edit Profile" onClose={disableClosed} />
         <div className="relative">
@@ -318,7 +368,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
             menuItems={coverImageOption}
           />
         </div>
-        <div className="ml-8 mb-8 flex items-center">
+        <div className="ml-8 flex items-center">
           <div className="-mt-20">
             <div className="relative">
               <Avatar
@@ -343,14 +393,18 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
             </div>
           </div>
         </div>
-        <div className="mx-4 px-2 mb-10 pb-4 space-y-6 overflow-y-auto">
-          <div className="w-full flex space-x-6">
-            <Layout fields={nameField} className="w-2/4" />
-            <Layout fields={preferredNameField} className="w-2/4" />
+        <div className="max-h-[300px] mr-1 pt-8 mb-10 overflow-y-auto">
+          <div className="ml-4 mr-3 px-2 pb-4 space-y-6">
+            <div className="w-full flex space-x-6">
+              <Layout fields={nameField} className="w-2/4" />
+              <Layout fields={preferredNameField} className="w-2/4" />
+            </div>
+            <div className="flex items-center gap-6">
+              <Layout fields={positionTitlefields} className="w-2/4" />
+              <Layout fields={departmentField} className="w-2/4" />
+            </div>
+            <Layout fields={locationField} />
           </div>
-          <Layout fields={positionTitlefields} />
-          {/* <Layout fields={departmentField} className="w-2/4" /> */}
-          <Layout fields={locationField} />
         </div>
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
@@ -359,6 +413,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
             label={'Cancel'}
             className="mr-3"
             onClick={() => {
+              reset();
               closeEditProfileModal();
             }}
             dataTestId={`${dataTestId}-cancel`}
@@ -366,6 +421,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
           <Button
             label={'Save Changes'}
             size={Size.Small}
+            disabled={!isValid}
             onClick={handleSubmit(onSubmit)}
             loading={updateUsersMutation.isLoading}
             dataTestId={`${dataTestId}-savechanges `}

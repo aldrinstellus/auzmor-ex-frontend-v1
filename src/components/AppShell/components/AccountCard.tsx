@@ -56,13 +56,13 @@ const AccountCard = () => {
               />
               <div
                 className="text-sm font-bold mt-4"
-                data-testId="user-menu-user-name"
+                data-testid="user-menu-user-name"
               >
                 {user?.name}
               </div>
               <div
                 className="text-neutral-500 text-xs"
-                data-testId="user-menu-user-email"
+                data-testid="user-menu-user-email"
               >
                 {user?.email}
               </div>
@@ -84,14 +84,14 @@ const AccountCard = () => {
               <Link to="/settings">
                 <div
                   className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
-                  data-testId="user-menu-user-settings"
+                  data-testid="user-menu-user-settings"
                   onClick={close}
                 >
                   <Icon
                     name="settingOutline"
                     size={20}
                     className="mr-2.5"
-                    stroke={twConfig.theme.colors.neutral['900']}
+                    color="text-neutral-900"
                   />
                   <div>User Settings</div>
                 </div>
@@ -100,14 +100,14 @@ const AccountCard = () => {
                 <Link to="/admin">
                   <div
                     className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
-                    data-testId="user-menu-admin-settings"
+                    data-testid="user-menu-admin-settings"
                     onClick={close}
                   >
                     <Icon
                       name="settingThreeOutline"
                       size={20}
                       className="mr-2.5"
-                      stroke={twConfig.theme.colors.neutral['900']}
+                      color="text-neutral-900"
                     />
                     <div>Admin Settings</div>
                   </div>
@@ -123,7 +123,7 @@ const AccountCard = () => {
                     name="postBookmark"
                     size={20}
                     className="mr-2.5"
-                    stroke={twConfig.theme.colors.neutral['900']}
+                    color="text-neutral-900"
                   />
                   <div>My bookmarks</div>
                 </div>
@@ -134,13 +134,13 @@ const AccountCard = () => {
                   logoutMutation.mutate();
                   close();
                 }}
-                data-testId="user-menu-signout-cta"
+                data-testid="user-menu-signout-cta"
               >
                 <Icon
                   name="logoutOutline"
                   size={20}
                   className="mr-2.5"
-                  stroke={twConfig.theme.colors.neutral['900']}
+                  color="text-neutral-900"
                 />
                 <div>Sign out</div>
               </div>

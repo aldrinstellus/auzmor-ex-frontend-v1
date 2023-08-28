@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef } from 'react';
 import Card from 'components/Card';
 import Actor from 'components/Actor';
 import { VIEW_POST } from 'components/Actor/constant';
@@ -12,8 +12,9 @@ import {
   deleteBookmark,
 } from 'queries/post';
 import Icon from 'components/Icon';
+import Button, { Size, Variant } from 'components/Button';
 import clsx from 'clsx';
-import { humanizeTime } from 'utils/time';
+import { getTimeInScheduleFormat, humanizeTime } from 'utils/time';
 import AcknowledgementBanner from './components/AcknowledgementBanner';
 import ReactionModal from './components/ReactionModal';
 import RenderQuillContent from 'components/RenderQuillContent';
@@ -22,16 +23,18 @@ import Divider from 'components/Divider';
 import useModal from 'hooks/useModal';
 import PublishPostModal from './components/PublishPostModal';
 import EditSchedulePostModal from './components/EditSchedulePostModal';
-import { PRIMARY_COLOR, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useFeedStore } from 'stores/feedStore';
-import { IpcNetConnectOpts } from 'net';
 import Tooltip from 'components/Tooltip';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import moment from 'moment';
 import _ from 'lodash';
+import { useNavigate } from 'react-router';
+import { useCurrentUser } from 'queries/users';
+import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
@@ -61,12 +64,12 @@ export const iconsStyle = (key: string) => {
 type PostProps = {
   post: IPost;
   customNode?: ReactNode;
-  bookmarks?: boolean;
 };
 
-const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
+const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
   const [showComments, openComments, closeComments] = useModal(false);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [showReactionModal, openReactionModal, closeReactionModal] =
     useModal(false);
   const reaction = post?.myReaction?.reaction;
@@ -74,35 +77,30 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
     (total, count) => total + count,
     0,
   );
-  const { feed, updateFeed, setFeed } = useFeedStore();
+  const { feed, updateFeed } = useFeedStore();
   const previousShowComment = useRef<boolean>(false);
+  const { currentTimezone } = useCurrentTimezone();
 
   const createBookmarkMutation = useMutation({
     mutationKey: ['create-bookmark-mutation'],
     mutationFn: createBookmark,
-    onMutate: (variables) => {
-      if (!bookmarks) {
-        updateFeed(variables, { ...feed[variables], bookmarked: true });
-      }
+    onMutate: (id) => {
+      updateFeed(id, { ...feed[id], bookmarked: true });
     },
     onError: (error, variables, context) => {
-      if (!bookmarks) {
-        updateFeed(variables, { ...feed[variables], bookmarked: false });
-      }
+      updateFeed(variables, { ...feed[variables], bookmarked: false });
     },
     onSuccess: async (data, variables) => {
       toast(
         <SuccessToast
           content="Post has been bookmarked successfully!"
           data-testid="toast-successfully-bookmarked"
+          actionLabel="View Bookmarks"
+          action={() => navigate('/bookmarks')}
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              stroke={twConfig.theme.colors['black-white'].white}
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-white" size={20} />
           ),
           style: {
             border: `1px solid ${twConfig.theme.colors.primary['300']}`,
@@ -123,22 +121,10 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
     mutationKey: ['delete-bookmark-mutation'],
     mutationFn: deleteBookmark,
     onMutate: (variables) => {
-      if (!bookmarks) {
-        updateFeed(variables, { ...feed[variables], bookmarked: false });
-      } else {
-        const previousFeed = feed;
-        setFeed({ ..._.omit(feed, [variables]) });
-        return { previousFeed };
-      }
+      updateFeed(variables, { ...feed[variables], bookmarked: false });
     },
     onError: (error, variables, context) => {
-      if (!bookmarks) {
-        updateFeed(variables, { ...feed[variables], bookmarked: true });
-      } else {
-        if (context?.previousFeed) {
-          setFeed(context?.previousFeed);
-        }
-      }
+      updateFeed(variables, { ...feed[variables], bookmarked: true });
     },
     onSuccess: async (data, variables) => {
       toast(
@@ -148,11 +134,7 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              stroke={twConfig.theme.colors['black-white'].white}
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-white" size={20} />
           ),
           style: {
             border: `1px solid ${twConfig.theme.colors.primary['300']}`,
@@ -198,6 +180,7 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
             contentMode={VIEW_POST}
             createdTime={humanizeTime(post.createdAt!)}
             createdBy={post?.createdBy}
+            audience={post.audience}
             dataTestId="feedpage-activity-username"
           />
           <div className="relative flex space-x-4 mr-6">
@@ -223,16 +206,19 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
             <div className="flex">
               <div className="mr-2">
                 <Icon
-                  name="calendarOutlineTwo"
+                  name="calendarOutline"
                   size={16}
-                  stroke={twConfig.theme.colors.neutral[900]}
+                  color="text-neutral-900"
                 />
               </div>
-              <div className="text-xs text-neutral-600">
+              <div className="text-xs font-medium text-neutral-600">
                 Post scheduled for{' '}
-                {moment(post?.schedule.dateTime).format('ddd, MMM DD')} at{' '}
-                {moment(post?.schedule.dateTime).format('h:mm a')}, based on
-                your profile timezone.
+                {getTimeInScheduleFormat(
+                  new Date(post?.schedule.dateTime),
+                  moment(post?.schedule.dateTime).format('h:mm a'),
+                  post?.schedule.timeZone,
+                  currentTimezone,
+                )}
               </div>
             </div>
             <div className="flex items-center">
@@ -240,12 +226,13 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
                 <Icon
                   name="editOutline"
                   size={16}
-                  stroke={twConfig.theme.colors.neutral[900]}
+                  color="text-neutral-900"
                   onClick={openEditSchedulePostModal}
                 />
               </div>
               <div
-                className="text-neutral-900 underline cursor-pointer hover:text-primary-500"
+                className="text-xs font-bold whitespace-nowrap text-neutral-900 
+                underline cursor-pointer hover:text-primary-500 decoration-neutral-400"
                 onClick={openPublishModal}
                 data-testid="scheduledpost-tab-publishnow"
               >
@@ -264,7 +251,7 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
               <Divider className="mt-4" />
               <div className="flex flex-row justify-between my-3">
                 <div
-                  className={`flex flex-row items-center space-x-1`}
+                  className={`flex flex-row items-center space-x-1 group`}
                   data-testid="feed-post-reactioncount"
                   onClick={() => openReactionModal()}
                 >
@@ -291,14 +278,14 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
                   )}
                   {totalCount > 0 && (
                     <div
-                      className={`flex text-xs font-normal text-neutral-500 cursor-pointer`}
+                      className={`flex text-xs font-normal text-neutral-500 cursor-pointer group-hover:text-primary-500`}
                     >
                       {totalCount} reacted
                     </div>
                   )}
                 </div>
                 {post?.commentsCount > 0 && (
-                  <div className="flex flex-row text-sm font-normal text-neutral-500 space-x-7 items-center cursor-pointer">
+                  <div className="flex flex-row text-xs font-normal text-neutral-500 space-x-7 items-center cursor-pointer hover:text-primary-500">
                     <div
                       onClick={() => {
                         if (showComments) {
@@ -332,8 +319,13 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
                   queryKey="feed"
                   dataTestIdPrefix="post-reaction"
                 />
-                <button
-                  className="flex items-center space-x-1"
+                <Button
+                  label="Comment"
+                  variant={Variant.Tertiary}
+                  size={Size.Small}
+                  labelClassName="text-xs font-normal text-neutral-500 hover:text-primary-500"
+                  leftIcon="comment"
+                  className="space-x-1 !p-0"
                   onClick={() => {
                     if (showComments) {
                       closeComments();
@@ -342,25 +334,22 @@ const Post: React.FC<PostProps> = ({ post, bookmarks, customNode = null }) => {
                     }
                   }}
                   data-testid="feed-post-comment"
-                >
-                  <Icon name="comment" size={16} />
-                  <div className="text-xs font-normal text-neutral-500">
-                    Comment
-                  </div>
-                </button>
+                />
               </div>
-              <div
+              {/* <div
                 className="flex items-center space-x-1 cursor-pointer text-neutral-500 hover:text-primary-500"
                 data-testid="feed-post-repost"
               >
                 <Icon name="repost" size={16} />
                 <span className="text-xs font-normal">Repost</span>
-              </div>
+              </div> */}
             </div>
           )}
           {/* Comments */}
           {showComments ? (
-            <CommentCard entityId={post?.id || ''} />
+            <div className="mt-6">
+              <CommentCard entityId={post?.id || ''} />
+            </div>
           ) : (
             !previousShowComment.current && customNode
           )}

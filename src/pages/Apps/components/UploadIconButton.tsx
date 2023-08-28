@@ -106,11 +106,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
   const showErrorToast = (message: string) => {
     toast(<FailureToast content={message} dataTestId="comment-toaster" />, {
       closeButton: (
-        <Icon
-          name="closeCircleOutline"
-          stroke={twConfig.theme.colors.red['500']}
-          size={20}
-        />
+        <Icon name="closeCircleOutline" color="text-red-500" size={20} />
       ),
       style: {
         border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -145,9 +141,9 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
         >
           <Icon
             name="infoCircle"
-            stroke={twConfig.theme.colors.neutral['500']}
+            color="text-neutral-500"
             hover={false}
-            disabled={true}
+            size={16}
             dataTestId="add-app-icon-info"
           />
         </Tooltip>
@@ -193,7 +189,12 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
             >
               {error ? (
                 <>
-                  <Icon name="infoCircle" size={24} stroke="#F05252" disabled />
+                  <Icon
+                    name="infoCircle"
+                    size={24}
+                    className="text-[#F05252]"
+                    hover={false}
+                  />
                   <p
                     className="text-red-500 font-medium text-sm"
                     data-testid="add-app-icon-failed"
@@ -216,7 +217,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
                   <Icon
                     name="documentUpload"
                     size={24}
-                    stroke={twConfig.theme.colors.neutral['900']}
+                    color="text-neutral-900"
                   />
                   <p className="text-neutral-900 font-medium text-sm">
                     Upload App Icon
@@ -237,20 +238,26 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
             <div
               className={`${
                 hasIcon && !error
-                  ? 'block bg-neutral-100 rounded-lg relative group'
+                  ? 'block bg-neutral-100 rounded-lg relative group p-[10.3px] text-neutral-200'
                   : 'hidden'
               }`}
             >
-              <Icon
-                name="close"
-                size={16}
-                className="group-hover:block hidden cursor-pointer absolute -top-1 -right-1 bg-black rounded-full p-[4px]"
-                fill="#fff"
-                disabled
-                dataTestId="add-app-remove-icon"
+              <div
+                className="group-hover:block group-hover:opacity-100 transition hidden cursor-pointer absolute -top-2 -right-2 bg-black rounded-full p-[4px]"
                 onClick={(e) => clearInput(e)}
+              >
+                <Icon
+                  name="close"
+                  size={16}
+                  color="text-white"
+                  disabled
+                  dataTestId="add-app-remove-icon"
+                />
+              </div>
+              <img
+                id="icon"
+                className="h-[71px] w-auto group-hover:opacity-50 transition-opacity duration-100"
               />
-              <img id="icon" className="p-[10.3px]" />
             </div>
           </div>
         </label>

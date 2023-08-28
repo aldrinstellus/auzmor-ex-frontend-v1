@@ -91,28 +91,28 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
       title: 'Everyone',
       subTitle: 'Anyone who is a part of this organisation can see this post.',
       onClick: () => {
-        // setAudienceFlow(AudienceFlow.UserSelect);
-        setIsEveryoneSelected(!isEveryoneSelected);
+        setAudienceFlow(AudienceFlow.UserSelect);
+        // setIsEveryoneSelected(!isEveryoneSelected);
       },
       isHidden:
         data?.adminSettings?.postingControls.limitGlobalPosting && !isAdmin,
       isSelected: isEveryoneSelected,
       selectedCount: 0,
     },
-    {
-      key: 'channels',
-      icon: 'noteFavouriteOutline',
-      title: 'Channels',
-      subTitle: 'Select a channel you are part of',
-      onClick: () => {},
-      isHidden: false,
-      isSelected: Object.keys(formData.channels).some(
-        (id: string) => !!formData.channels[id] && !isEveryoneSelected,
-      ),
-      selectedCount: Object.keys(formData.channels).filter(
-        (id: string) => !!formData.channels[id],
-      ).length,
-    },
+    // {
+    //   key: 'channels',
+    //   icon: 'noteFavouriteOutline',
+    //   title: 'Channels',
+    //   subTitle: 'Select a channel you are part of',
+    //   onClick: () => {},
+    //   isHidden: false,
+    //   isSelected: Object.keys(formData.channels).some(
+    //     (id: string) => !!formData.channels[id] && !isEveryoneSelected,
+    //   ),
+    //   selectedCount: Object.keys(formData.channels).filter(
+    //     (id: string) => !!formData.channels[id],
+    //   ).length,
+    // },
     {
       key: 'teams',
       icon: 'profileUserOutline',
@@ -133,6 +133,15 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
     case AudienceFlow.EntitySelect: {
       return (
         <div className="flex flex-col m-4">
+          <div className="px-4 py-2 flex items-center bg-neutral-100 rounded-md mb-4">
+            <div className="bg-neutral-200 p-1 rounded-7xl">
+              <Icon name="infoCircleOutline" />
+            </div>
+            <div className="ml-2.5 text-neutral-500 font-medium text-sm">
+              Your post will appear in Feed, on your profile and in search
+              results. You can change the audience of this specific post.
+            </div>
+          </div>
           {audienceEntity.map((entity) => (
             <div
               key={entity.key}
@@ -147,8 +156,8 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
                 >
                   <Icon
                     name={entity.icon || 'peopleOutline'}
-                    hoveredStroke="white"
-                    stroke={entity.isSelected ? 'white' : undefined}
+                    hoverColor="text-white"
+                    color={entity.isSelected ? 'text-white' : undefined}
                   />
                 </div>
                 <div className="ml-3 flex flex-col justify-between">
@@ -167,7 +176,7 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
                       name="tickCircle"
                       size={16}
                       className="mr-1"
-                      stroke={PRIMARY_COLOR}
+                      color="text-primary-500"
                     />
                   </div>
                   <div className="text-xxs text-primary-500">

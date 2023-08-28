@@ -125,7 +125,7 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
             />
           ),
@@ -226,7 +226,7 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
       }}
       className={
         !imageFile?.profileImage
-          ? 'max-w-2xl flex flex-col justify-between'
+          ? 'max-w-[648px] flex flex-col justify-between'
           : undefined
       }
     >

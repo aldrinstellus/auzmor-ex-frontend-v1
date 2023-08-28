@@ -2,8 +2,6 @@ import React, { MouseEventHandler, ReactElement, useMemo } from 'react';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 import Spinner from 'components/Spinner';
-import { PRIMARY_COLOR } from 'utils/constants';
-import useHover from 'hooks/useHover';
 
 export enum Variant {
   Primary = 'PRIMARY',
@@ -16,6 +14,7 @@ export enum Size {
   Large = 'LARGE',
   Medium = 'MEDIUM',
   Small = 'SMALL',
+  ExtraSmall = 'EXTRA_SMALL',
 }
 
 export enum Type {
@@ -33,11 +32,11 @@ export type ButtonProps = {
   loading?: boolean;
   onClick?: MouseEventHandler<Element>;
   leftIconSize?: number;
+  rightIconSize?: number;
   leftIcon?: any; // should accept the react element
   rightIcon?: any; // should accept the string and react element
   className?: string;
-  iconFill?: string;
-  iconStroke?: string;
+  iconColor?: string;
   leftIconClassName?: string;
   rightIconClassName?: string;
   labelClassName?: string;
@@ -55,9 +54,9 @@ const Button = ({
   leftIcon = '',
   rightIcon = '',
   className = '',
-  iconFill,
-  iconStroke,
+  iconColor,
   leftIconSize,
+  rightIconSize,
   leftIconClassName,
   rightIconClassName,
   onClick = () => {},
@@ -65,8 +64,6 @@ const Button = ({
   dataTestId = '',
   active = false,
 }: ButtonProps) => {
-  const [hovered, hoverEvents] = useHover();
-
   const styles = useMemo(
     () =>
       clsx(
@@ -96,7 +93,10 @@ const Button = ({
           'py-2.5 px-6 text-base': size === Size.Large,
         },
         {
-          'font-manrope font-bold transition-colors ease-out duration-default':
+          'py-1.5 px-3 text-xs': size === Size.ExtraSmall,
+        },
+        {
+          'font-manrope font-bold transition-colors ease-out duration-default group':
             true,
         },
         {
@@ -115,18 +115,17 @@ const Button = ({
       className={styles}
       disabled={disabled || loading}
       onClick={onClick}
-      data-testId={dataTestId}
-      {...hoverEvents}
+      data-testid={dataTestId}
     >
       <div>
         {leftIcon && (
           <Icon
             name={leftIcon}
-            fill={iconFill}
-            stroke={iconStroke}
+            color={iconColor}
             className={leftIconClassName}
+            disabled={disabled || loading}
             size={leftIconSize || (size === Size.Small ? 16 : 24)}
-            hover={hovered}
+            isActive={active}
           />
         )}
       </div>
@@ -135,10 +134,11 @@ const Button = ({
         {rightIcon && (
           <Icon
             name={rightIcon}
-            fill={iconFill}
-            stroke={iconStroke}
+            color={iconColor}
             className={rightIconClassName}
-            size={size === Size.Small ? 16 : 24}
+            disabled={disabled || loading}
+            size={rightIconSize || (size === Size.Small ? 16 : 24)}
+            isActive={active}
           />
         )}
       </div>

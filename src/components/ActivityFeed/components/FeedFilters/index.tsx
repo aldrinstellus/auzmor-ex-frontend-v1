@@ -2,6 +2,7 @@ import { Popover, Transition } from '@headlessui/react';
 import Button, { Variant } from 'components/Button';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
+import Tooltip from 'components/Tooltip';
 import {
   ActivityType,
   IPostFilters,
@@ -125,6 +126,20 @@ const feedFilterOptions: FeedFilterOption[] = [
   },
 ];
 
+export const filterKeyMap: Record<string | PostType, string> = {
+  [PostType.Update]: 'Updates',
+  [PostType.Event]: 'Events',
+  [PostType.Document]: 'Documents',
+  [PostType.ShoutOut]: 'Shoutouts',
+  [PostType.Birthday]: 'Birthdays',
+  [PostType.WorkAniversary]: 'Work anniversary',
+  [PostType.WelcomNewHire]: 'Welcome new hire',
+  [PostType.Poll]: 'Polls',
+  'my-posts': 'My Posts',
+  [ActivityType.Mentioned]: 'Mentions',
+  [ActivityType.Bookemarked]: 'Bookmark by me',
+};
+
 const FeedFilter: React.FC<FeedFilterProps> = ({
   disabled = false,
   dataTestId = '',
@@ -236,21 +251,23 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
 
   return (
     <Popover className="z-40 mr-4">
-      <Popover.Button
-        className="box-border font-bold flex flex-row justify-center items-center p-1 border-none relative"
-        onClick={() => {
-          setShowFeedFilter(!showFeedFilter);
-          setHaveFiltersBeenModified(false);
-        }}
-        data-testid={dataTestId}
-      >
-        {getFeedFilterCount() > 0 && (
-          <div className="absolute rounded-full bg-red-600 text-white text-xxs -top-1 -right-1.5 flex w-4 h-4 items-center justify-center">
-            {getFeedFilterCount()}
-          </div>
-        )}
-        <Icon name="filter" size={24} className="" />
-      </Popover.Button>
+      <Tooltip tooltipContent="Filters" tooltipPosition="top">
+        <Popover.Button
+          className="box-border font-bold flex flex-row justify-center items-center p-1 border-none relative"
+          onClick={() => {
+            setShowFeedFilter(!showFeedFilter);
+            setHaveFiltersBeenModified(false);
+          }}
+          data-testid={dataTestId}
+        >
+          {getFeedFilterCount() > 0 && (
+            <div className="absolute rounded-full bg-red-600 text-white text-xxs -top-1 -right-1.5 flex w-4 h-4 items-center justify-center">
+              {getFeedFilterCount()}
+            </div>
+          )}
+          <Icon name="filter" size={24} className="" />
+        </Popover.Button>
+      </Tooltip>
       <Transition
         show={showFeedFilter}
         enter="transition duration-100 ease-out"

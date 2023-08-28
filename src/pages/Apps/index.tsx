@@ -24,6 +24,8 @@ import AppFilterModal from './components/AppFilterModal';
 import AppList from './components/AppList';
 import Icon from 'components/Icon';
 import AppBannerSkeleton from './components/Skeletons/AppBannerSkeleton';
+import useRole from 'hooks/useRole';
+import Skeleton from 'react-loading-skeleton';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -49,9 +51,10 @@ const Apps: React.FC<IAppsProps> = () => {
   });
 
   const { apps, featuredApps } = useAppStore();
+  const { isAdmin } = useRole();
   // State to store apps group
   const [selectedAppGroup, setSelectedAppGroup] = useState<AppGroup>(
-    AppGroup.MY_APPS,
+    AppGroup.ALL_APPS,
   );
 
   // Add apps modal
@@ -111,16 +114,29 @@ const Apps: React.FC<IAppsProps> = () => {
     });
   };
 
+  const onApplyFilter = (filters: any) => {
+    setAppFilters(filters);
+    if (filters.categories.length > 0) {
+      setSelectedAppGroup(AppGroup.ALL_APPS);
+    }
+  };
+
   return (
     <div>
       <Card className="p-8">
         <div className="flex justify-between">
           <p className="font-bold text-2xl text-black">App Launcher</p>
-          <Button
-            onClick={openModal}
-            label="+ Add apps"
-            dataTestId="app-add-app-cta"
-          />
+          {isAdmin && (
+            <Button
+              onClick={openModal}
+              label="Add apps"
+              leftIcon="add"
+              leftIconClassName="!text-white"
+              className="flex space-x-1"
+              leftIconSize={20}
+              dataTestId="app-add-app-cta"
+            />
+          )}
         </div>
         {/* Banner */}
         <img
@@ -133,17 +149,19 @@ const Apps: React.FC<IAppsProps> = () => {
         {/* App groups and sort/filter/search */}
         <div className="flex justify-between pb-6">
           <div className="flex items-center gap-x-4">
-            <Button
-              variant={ButtonVariant.Secondary}
-              label={AppGroup.MY_APPS}
-              dataTestId="my-apps"
-              className={
-                selectedAppGroup === AppGroup.MY_APPS
-                  ? selectedButtonClassName
-                  : regularButtonClassName
-              }
-              onClick={() => setSelectedAppGroup(AppGroup.MY_APPS)}
-            />
+            {isAdmin && (
+              <Button
+                variant={ButtonVariant.Secondary}
+                label={AppGroup.MY_APPS}
+                dataTestId="my-apps"
+                className={`${
+                  selectedAppGroup === AppGroup.MY_APPS
+                    ? selectedButtonClassName
+                    : regularButtonClassName
+                } cursor-not-allowed`}
+                // onClick={() => setSelectedAppGroup(AppGroup.MY_APPS)}
+              />
+            )}
             <Button
               variant={ButtonVariant.Secondary}
               label={AppGroup.ALL_APPS}
@@ -178,7 +196,13 @@ const Apps: React.FC<IAppsProps> = () => {
                         ? selectedButtonClassName
                         : regularButtonClassName
                     }
-                    onClick={() => setSelectedAppGroup(category.id)}
+                    onClick={() => {
+                      setSelectedAppGroup(category.id);
+                      setAppFilters((prevFilters: any) => ({
+                        ...prevFilters,
+                        categories: [],
+                      }));
+                    }}
                   />
                 </div>
               ))}
@@ -260,13 +284,23 @@ const Apps: React.FC<IAppsProps> = () => {
           </div>
         </div>
         <div className="flex flex-col gap-6">
-          <div className="text-neutral-500">
-            Showing {!isLoading && !!appsCount && appsCount} results
-          </div>
+          {!isLoading ? (
+            <div className="text-neutral-500">
+              Showing {!isLoading && !!appsCount && appsCount} results
+            </div>
+          ) : (
+            <Skeleton
+              className="!w-32"
+              containerClassName="flex-1"
+              borderRadius={100}
+            />
+          )}
+
+          {/* Filters pills */}
           {(appFilters.categories.length > 0 ||
             appFilters.teams.length > 0) && (
             <div className="flex justify-between items-start">
-              <div className="flex items-center space-x-2 flex-wrap space-y-2">
+              <div className="flex items-center space-x-2 flex-wrap gap-y-2">
                 <div className="text-base text-neutral-500 whitespace-nowrap">
                   Filter By
                 </div>
@@ -274,7 +308,7 @@ const Apps: React.FC<IAppsProps> = () => {
                   <div
                     key={category.id}
                     className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1"
-                    data-testid={`people-filterby`}
+                    data-testid={`applied-filterby-category`}
                   >
                     <div className="mr-1 text-neutral-500 whitespace-nowrap">
                       Category{' '}
@@ -283,12 +317,12 @@ const Apps: React.FC<IAppsProps> = () => {
                     <Icon
                       name="close"
                       size={16}
-                      stroke={twConfig.theme.colors.neutral['900']}
+                      color="text-neutral-900"
                       className="cursor-pointer"
                       onClick={() =>
                         handleRemoveFilters('categories', category.id)
                       }
-                      dataTestId={`people-filterby-close`}
+                      dataTestId={`applied-filter-close`}
                     />
                   </div>
                 ))}
@@ -305,7 +339,7 @@ const Apps: React.FC<IAppsProps> = () => {
                     <Icon
                       name="close"
                       size={16}
-                      stroke={twConfig.theme.colors.neutral['900']}
+                      color="text-neutral-900"
                       className="cursor-pointer"
                       onClick={() => handleRemoveFilters('teams', team.id)}
                       dataTestId={`people-filterby-close`}
@@ -316,11 +350,13 @@ const Apps: React.FC<IAppsProps> = () => {
               <div
                 className="text-neutral-500 border px-3 py-1  mt-2 whitespace-nowrap rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
                 onClick={clearFilters}
+                data-testid="teams-clear-filters"
               >
                 Clear Filters
               </div>
             </div>
           )}
+
           {isAllAppsGroupSelected && (
             <div>
               {featuredAppsCount > 0 && !isFeauturedAppLoading && (
@@ -357,9 +393,13 @@ const Apps: React.FC<IAppsProps> = () => {
             queryParams={{
               q: debouncedSearchValue,
               sort: sortByFilter,
+              teamId:
+                appFilters.teams.length > 0
+                  ? appFilters.teams.map((team: any) => team.id).join(',')
+                  : undefined,
               ...(isQuickCategorySelected
                 ? {
-                    'categoryId[0]': isQuickCategorySelected
+                    categoryId: isQuickCategorySelected
                       ? selectedAppGroup
                       : undefined,
                   }
@@ -367,7 +407,14 @@ const Apps: React.FC<IAppsProps> = () => {
                 ? {
                     featured: true,
                   }
-                : {}),
+                : {
+                    categoryId:
+                      appFilters.categories.length > 0
+                        ? appFilters.categories
+                            .map((category: any) => category.id)
+                            .join(',')
+                        : undefined,
+                  }),
             }}
             setAppsCount={setAppsCount}
             setAppsLoading={setIsLoading}
@@ -382,7 +429,7 @@ const Apps: React.FC<IAppsProps> = () => {
           open={showFilterModal}
           filters={appFilters}
           closeModal={closeFilterModal}
-          setFilters={setAppFilters}
+          setFilters={onApplyFilter}
         />
       )}
     </div>

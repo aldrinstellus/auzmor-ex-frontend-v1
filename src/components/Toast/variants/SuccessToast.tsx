@@ -8,6 +8,7 @@ export interface ISuccessToastProps {
   action?: () => void;
   actionLabel?: string;
   dataTestId?: string;
+  actionClassName?: string;
 }
 
 const SuccessToast: React.FC<ISuccessToastProps> = ({
@@ -15,6 +16,7 @@ const SuccessToast: React.FC<ISuccessToastProps> = ({
   actionLabel,
   action,
   dataTestId,
+  actionClassName,
 }) => {
   return (
     <div className="flex justify-between items-center" data-testid={dataTestId}>
@@ -23,20 +25,18 @@ const SuccessToast: React.FC<ISuccessToastProps> = ({
           <Icon
             className="p-1.5 bg-primary-100 rounded-7xl mr-2.5"
             name="tickCircleOutline"
-            stroke={twConfig.theme.colors.primary['500']}
+            color="text-primary-500"
             size={32}
           />
         </div>
         <span className="text-white text-sm min-w-[256px]">{content}</span>
       </div>
       {actionLabel && (
-        <div className="flex">
-          <Button
-            className="text-primary-500 ml-4 pr-1"
-            variant={ButtonVariant.Tertiary}
-            label={actionLabel}
-            onClick={action}
-          />
+        <div
+          className={`ml-4 pr-1 text-sm font-bold ${actionClassName}`}
+          onClick={action}
+        >
+          {actionLabel}
         </div>
       )}
     </div>

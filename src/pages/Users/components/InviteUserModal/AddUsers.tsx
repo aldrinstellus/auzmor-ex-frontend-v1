@@ -86,12 +86,12 @@ const AddUsers: React.FC<IAddUsersProps> = ({
             <Icon
               name="addCircleOutline"
               size={16}
-              stroke={
+              color={
                 fields.length >= FIELD_LIMIT
-                  ? twConfig.theme.colors.neutral['400']
+                  ? 'text-neutral-400'
                   : isHovered
-                  ? twConfig.theme.colors.primary['700']
-                  : twConfig.theme.colors.primary['500']
+                  ? 'text-primary-700'
+                  : 'text-primary-500'
               }
             />
           </div>

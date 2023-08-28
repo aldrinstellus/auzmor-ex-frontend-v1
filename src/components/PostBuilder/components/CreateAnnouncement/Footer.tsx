@@ -52,9 +52,7 @@ const Footer: React.FC<IFooterProps> = ({
     mutationKey: ['makePostAnnouncementMutation', data?.id],
     mutationFn: async () => {
       const formData = getFormValues();
-      const expiryDate =
-        (formData?.date as Dayjs)?.toDate().toISOString().substring(0, 19) +
-        'Z';
+      const expiryDate = formData?.date.toISOString().substring(0, 19) + 'Z';
       const fileIds = data?.files?.map((file: any) => file.id);
       if (data?.id)
         await updatePost(data?.id, {
@@ -79,11 +77,7 @@ const Footer: React.FC<IFooterProps> = ({
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              stroke={twConfig.theme.colors['black-white'].white}
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-white" size={20} />
           ),
           style: {
             border: `1px solid ${twConfig.theme.colors.primary['300']}`,
@@ -102,7 +96,7 @@ const Footer: React.FC<IFooterProps> = ({
   return (
     <div>
       {mode === CreateAnnouncementMode.POST_BUILDER && (
-        <div className="flex justify-between items-center h-16 p-6 bg-blue-50">
+        <div className="flex justify-between items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
             variant={ButtonVariant.Secondary}
             label="Clear"
@@ -130,7 +124,7 @@ const Footer: React.FC<IFooterProps> = ({
         </div>
       )}
       {mode === CreateAnnouncementMode.DIRECT && (
-        <div className="flex justify-between items-center h-16 p-6 bg-blue-50">
+        <div className="flex justify-between items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
             variant={ButtonVariant.Secondary}
             label="Cancel"

@@ -1,61 +1,79 @@
-import React, { ReactNode, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import Button, { Variant as ButtonVariant, Type } from 'components/Button';
-import Layout, { FieldType } from 'components/Form';
-import { Size as InputSize, Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
-import Popover from 'components/Popover';
 import Divider from 'components/Divider';
 import { CategoryType, useInfiniteCategories } from 'queries/apps';
-import { isFiltersEmpty } from 'utils/misc';
 import { useDebounce } from 'hooks/useDebounce';
+import InfiniteFilterList from 'components/InfiniteFilterList';
+import { find } from 'lodash';
 
 export interface ITeamFilterModalProps {
   open: boolean;
   openModal: () => void;
   closeModal: () => void;
+  filters: { categories: [] };
+  setFilters: (param: any) => void;
 }
 
 const TeamFilterModal: React.FC<ITeamFilterModalProps> = ({
   open,
   openModal,
   closeModal,
+  filters,
+  setFilters,
 }) => {
-  const { control, handleSubmit, watch } = useForm({
+  const { handleSubmit } = useForm({
     mode: 'onChange',
   });
-  const searchValue = watch('search');
-  const debouncedSearchValue = useDebounce(searchValue || '', 500);
+  const [selectedCategories, setSelectedCategories] = useState<any>([]);
 
-  const { data, isLoading, isError } = useInfiniteCategories(
-    isFiltersEmpty({
-      q: debouncedSearchValue.toLowerCase().trim(),
-      type: CategoryType.TEAM,
-      limit: 10,
-    }),
-  );
-
-  const categoriesData = data?.pages.flatMap((page) => {
-    return page?.data?.result?.data.map((category: any) => {
-      try {
-        return category;
-      } catch (e) {
-        console.log('Error', { category });
-      }
+  const onSubmit = () => {
+    setFilters({
+      categories: selectedCategories,
     });
-  });
-
-  const onSubmit = (value: any) => {
     closeModal();
   };
+
+  useEffect(() => {
+    setSelectedCategories(filters.categories);
+  }, [filters]);
+
+  const CategoryFilter = () => (
+    <InfiniteFilterList
+      apiCall={useInfiniteCategories}
+      apiCallParams={{
+        type: CategoryType.TEAM,
+        limit: 10,
+      }}
+      searchProps={{
+        placeholder: 'Search',
+        dataTestId: 'teams-category-search',
+        isClearable: true,
+      }}
+      setSelectedItems={setSelectedCategories}
+      selectedItems={selectedCategories}
+      showSelectedFilterPill
+      renderItem={(item) => (
+        <>
+          <input
+            type="checkbox"
+            data-testid={`select-'${item.name}'`}
+            className="h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 outline-neutral-500"
+            checked={find(selectedCategories, item)}
+          ></input>
+          <span className="ml-3 text-xs font-medium">{item?.name}</span>
+        </>
+      )}
+    />
+  );
 
   const filterNavigation = [
     {
       label: 'Category',
       icon: '',
       key: 'category-filters',
-      component: <>Checkbox Grouped Component </>,
       disabled: false,
       hidden: false,
       search: true,
@@ -71,7 +89,7 @@ const TeamFilterModal: React.FC<ITeamFilterModalProps> = ({
         <Header
           title="Filter By"
           onClose={() => closeModal()}
-          closeBtnDataTestId="close-filters"
+          closeBtnDataTestId="close-filter"
         />
         <div className="flex w-full">
           <div className="flex flex-col w-1/3 pb-64 border-r-2 border-r-neutral-200">
@@ -90,13 +108,17 @@ const TeamFilterModal: React.FC<ITeamFilterModalProps> = ({
               ))}
             </div>
           </div>
-          <div className="w-2/3 py-4 px-2">{activeFilter.component}</div>
+          <div className="w-2/3 py-4 px-2">
+            {activeFilter.key === 'category-filters' && <CategoryFilter />}
+          </div>
         </div>
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
             label="Clear Filters"
             variant={ButtonVariant.Secondary}
             onClick={() => {
+              setSelectedCategories([]);
+              setFilters({ categories: [] });
               closeModal();
             }}
             className="mr-4"

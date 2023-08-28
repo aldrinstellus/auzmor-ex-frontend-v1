@@ -1,20 +1,19 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Logo } from 'components/Logo';
-import Icon from 'components/Icon';
 import Divider, { Variant } from 'components/Divider';
 import AccountCard from './AccountCard';
 import NotificationsOverview from 'components/NotificationsOverview';
 import useRole from 'hooks/useRole';
 import Layout, { FieldType } from 'components/Form';
 import { useForm } from 'react-hook-form';
-import { twConfig } from 'utils/misc';
 import NavbarMenuItem from './NavbarMenuItem';
 
 const navigations = [
   {
     label: 'Home',
-    icon: 'home',
+    icon: 'homeOutline',
+    hoverIcon: 'homeFilled',
     linkTo: '/home',
     dataTestId: 'office-home-page',
     iconSize: 24,
@@ -22,32 +21,47 @@ const navigations = [
   },
   {
     label: 'Feed',
-    icon: 'feed',
+    icon: 'feedOutline',
+    hoverIcon: 'feedFilled',
     linkTo: '/feed',
     dataTestId: 'office-feed-page',
     iconSize: 24,
   },
   {
     label: 'People',
-    icon: 'people',
+    icon: 'peopleOutline',
+    hoverIcon: 'peopleFilled',
     linkTo: '/users',
     dataTestId: 'office-people-page',
     iconSize: 24,
   },
   {
     label: 'Apps',
-    icon: 'launcher',
+    icon: 'launcherOutline',
+    hoverIcon: 'launcherFilled',
     linkTo: '/apps',
     dataTestId: 'office-apps-page',
     iconSize: 24,
   },
   {
     label: 'Discover',
-    icon: 'explore',
+    icon: 'exploreOutline',
+    hoverIcon: 'exploreFilled',
     linkTo: '/discover',
     dataTestId: 'office-discover-page',
     iconSize: 26,
     disabled: true,
+  },
+];
+
+const adminNavigations = [
+  {
+    label: 'Admin',
+    icon: 'adminOutline',
+    hoverIcon: 'adminFilled',
+    linkTo: '/admin',
+    dataTestId: 'office-admin-page',
+    iconSize: 24,
   },
 ];
 
@@ -80,52 +94,18 @@ const Navbar = () => {
           />
         </div>
         <div className="flex items-center space-x-8">
-          {navigations.map((nav) =>
-            nav.disabled ? (
-              <div
-                className="flex flex-col items-center"
-                data-testid={nav.dataTestId}
-                key={nav.label}
-              >
-                <Icon
-                  name={nav.icon}
-                  size={nav.iconSize}
-                  stroke={twConfig.theme.colors.neutral['200']}
-                  disabled
-                />
-                <div className="text-sm text-neutral-200 cursor-default">
-                  {nav.label}
-                </div>
-              </div>
-            ) : (
-              <NavbarMenuItem nav={nav} key={nav.label} />
-            ),
-          )}
+          {navigations.map((nav) => (
+            <NavbarMenuItem nav={nav} key={nav.label} />
+          ))}
         </div>
         <div className="mx-8 h-full py-2">
           <Divider variant={Variant.Vertical} />
         </div>
         <div className="flex items-center space-x-8">
-          {isAdmin && (
-            <NavLink
-              to="/admin"
-              className={({ isActive }) =>
-                `${isActive ? 'text-primary-500' : 'text-neutral-500'} group`
-              }
-            >
-              {({ isActive }) => (
-                <div
-                  className="flex flex-col items-center"
-                  data-testid="office-admin-page"
-                >
-                  <Icon name="admin" size={24} isActive={isActive} />
-                  <div className="text-sm mt-[1px] group-hover:text-primary-500">
-                    Admin
-                  </div>
-                </div>
-              )}
-            </NavLink>
-          )}
+          {isAdmin &&
+            adminNavigations.map((nav) => (
+              <NavbarMenuItem nav={nav} key={nav.label} />
+            ))}
           <div>
             <NotificationsOverview />
           </div>

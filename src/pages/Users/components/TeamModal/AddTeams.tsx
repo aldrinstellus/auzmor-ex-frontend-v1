@@ -3,7 +3,8 @@ import { Control, FieldErrors, UseFormGetValues } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import { Variant as InputVariant } from 'components/Input';
 import { ITeamForm } from '.';
-import { CategoryType } from 'queries/apps';
+import { CategoryType, useInfiniteCategories } from 'queries/apps';
+import { ICategoryDetail } from 'queries/category';
 
 export interface IAddTeamsProps {
   control: Control<ITeamForm, any>;
@@ -16,6 +17,31 @@ const AddTeams: React.FC<IAddTeamsProps> = ({
   errors,
   defaultValues,
 }) => {
+  const formatCategories = (data: any) => {
+    const categoriesData = data?.pages.flatMap((page: any) => {
+      return page?.data?.result?.data.map((category: any) => {
+        try {
+          return { ...category, label: category.name };
+        } catch (e) {
+          console.log('Error', { category });
+        }
+      });
+    });
+
+    const transformedOption = categoriesData?.map(
+      (category: ICategoryDetail) => ({
+        value: category?.id,
+        label: category?.name,
+        type: category?.type,
+        id: category?.id,
+        dataTestId: `category-option-${category?.type?.toLowerCase()}-${
+          category?.name
+        }`,
+      }),
+    );
+    return transformedOption;
+  };
+
   const teamName = [
     {
       type: FieldType.Input,
@@ -42,8 +68,10 @@ const AddTeams: React.FC<IAddTeamsProps> = ({
       label: 'Team Category',
       required: true,
       control,
-      defaultValue: defaultValues()?.category?.label || '',
-      categoryType: CategoryType.TEAM,
+      defaultValue: defaultValues()?.category,
+      fetchQuery: useInfiniteCategories,
+      queryParams: { type: CategoryType.TEAM },
+      getFormattedData: formatCategories,
       error: errors.category?.message,
       dataTestId: 'select-team-category',
     },

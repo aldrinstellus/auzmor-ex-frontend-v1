@@ -14,15 +14,18 @@ import { IMedia } from 'contexts/CreatePostContext';
 import { Metadata } from 'components/PreviewLink/types';
 import clsx from 'clsx';
 import Poll, { PollMode } from 'components/Poll';
+import AvatarChips from 'components/AvatarChips';
 
 type RenderQuillContent = {
   data: IPost | IComment;
   isComment?: boolean;
+  isAnnouncementWidgetPreview?: boolean;
 };
 
 const RenderQuillContent: React.FC<RenderQuillContent> = ({
   data,
   isComment = false,
+  isAnnouncementWidgetPreview = false,
 }): ReactElement => {
   const content = data?.content?.editor;
   const mentions = data?.mentions ? data.mentions : [];
@@ -98,7 +101,9 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
       });
     }
   }, []);
+
   const updatedContent = quillHashtagConversion(content);
+
   const postContent = updatedContent?.ops?.map((op: DeltaOperation) => {
     switch (true) {
       case op.insert.hasOwnProperty('mention'):
@@ -116,7 +121,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
       default:
         return (
           <Text
-            value={op.insert.trimEnd()}
+            value={op.insert}
             attributes={op?.attributes}
             isLink={op?.attributes?.link ? true : false}
           />
@@ -165,6 +170,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
             media={media as IMedia[]}
             showAddMediaButton={false}
             showEditButton={false}
+            isAnnouncementWidgetPreview={isAnnouncementWidgetPreview}
           />
         </div>
       )}
@@ -176,6 +182,12 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
             options={poll.options}
             mode={PollMode.VIEW}
           />
+        </div>
+      )}
+      {data?.shoutoutRecipients && data?.shoutoutRecipients.length > 0 && (
+        <div className="mt-4 flex flex-col gap-2">
+          <p className="text-xs text-neutral-500">Shoutout to:</p>
+          <AvatarChips users={data.shoutoutRecipients} showCount={3} />
         </div>
       )}
     </div>

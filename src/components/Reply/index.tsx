@@ -102,15 +102,17 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
           {replyIds && replyIds.length > 0 && (
             <div>
               {isCreateCommentLoading && <CommentSkeleton />}
-              {replyIds
-                .filter(({ id }) => !!comment[id])
-                .map(({ id }) => (
-                  <Reply
-                    // handleClick={handleClick}
-                    comment={comment[id]}
-                    key={id}
-                  />
-                ))}
+              <div className="flex flex-col gap-4">
+                {replyIds
+                  .filter(({ id }) => !!comment[id])
+                  .map(({ id }) => (
+                    <Reply
+                      // handleClick={handleClick}
+                      comment={comment[id]}
+                      key={id}
+                    />
+                  ))}
+              </div>
               {hasNextPage && !isFetchingNextPage && (
                 <LoadMore onClick={fetchNextPage} label="Load more replies" />
               )}

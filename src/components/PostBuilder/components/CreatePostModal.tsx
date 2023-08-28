@@ -12,6 +12,7 @@ import {
   IMention,
   IPost,
   IPostPayload,
+  IShoutoutRecipient,
   createPost,
   updatePost,
 } from 'queries/post';
@@ -43,6 +44,8 @@ import CreatePoll from './CreatePoll';
 import SchedulePost from './SchedulePost';
 import moment from 'moment';
 import Audience from './Audience';
+import CreateShoutout from './Shoutout';
+import { afterXUnit } from 'utils/time';
 
 export interface IPostMenu {
   id: number;
@@ -88,6 +91,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     setPoll,
     audience,
     setAudience,
+    shoutoutUserIds,
+    setShoutoutUserIds,
   } = useContext(CreatePostContext);
 
   const mediaRef = useRef<IMedia[]>([]);
@@ -102,8 +107,10 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
   useMemo(() => {
     if (customActiveFlow === CreatePostFlow.CreateAnnouncement) {
       setAnnouncement({
-        label: 'Custom Date',
-        value: data?.announcement?.end || '',
+        label: '1 week',
+        value:
+          data?.announcement?.end ||
+          afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
       });
       setActiveFlow(CreatePostFlow.CreateAnnouncement);
     }
@@ -132,6 +139,12 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           closedAt: data.pollContext.closedAt,
         });
       }
+      if (data?.shoutoutRecipients?.length) {
+        const recipientIds = data.shoutoutRecipients.map(
+          (recipient) => recipient.userId,
+        );
+        setShoutoutUserIds(recipientIds);
+      }
       setAudience(data?.audience || []);
     }
   }, []);
@@ -139,7 +152,11 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
   const createPostMutation = useMutation({
     mutationKey: ['createPostMutation'],
     mutationFn: createPost,
-    onError: (error) => console.log(error),
+    onError: (error) => {
+      clearPostContext();
+      closeModal();
+      console.log(error);
+    },
     onSuccess: async ({
       result,
     }: {
@@ -149,13 +166,31 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     }) => {
       if (!!!result.data.schedule) {
         setFeed({ ...feed, [result.data.id!]: { ...result.data } });
-        await queryClient.setQueryData(['feed', { type: [] }], (oldData: any) =>
-          produce(oldData, (draft: any) => {
-            draft.pages[0].data.result.data = [
-              { id: result.data.id },
-              ...draft.pages[0].data.result.data,
-            ];
-          }),
+        queryClient.setQueriesData(
+          {
+            queryKey: ['feed'],
+            exact: false,
+          },
+          (oldData: any) =>
+            produce(oldData, (draft: any) => {
+              draft.pages[0].data.result.data = [
+                { id: result.data.id },
+                ...draft.pages[0].data.result.data,
+              ];
+            }),
+        );
+        queryClient.setQueriesData(
+          {
+            queryKey: ['my-profile-feed'],
+            exact: false,
+          },
+          (oldData: any) =>
+            produce(oldData, (draft: any) => {
+              draft.pages[0].data.result.data = [
+                { id: result.data.id },
+                ...draft.pages[0].data.result.data,
+              ];
+            }),
         );
       }
       clearPostContext();
@@ -174,7 +209,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             closeButton: (
               <Icon
                 name="closeCircleOutline"
-                stroke={twConfig.theme.colors.primary['500']}
+                color="text-primary-500"
                 size={20}
               />
             ),
@@ -227,11 +262,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              stroke={twConfig.theme.colors.red['500']}
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
           ),
           style: {
             border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -256,7 +287,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
             />
           ),
@@ -342,6 +373,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         mentions: mentionList || [],
         hashtags: hashtagList || [],
         audience,
+        shoutoutRecipients: shoutoutUserIds || [],
         isAnnouncement: !!announcement,
         announcement: {
           end: announcement?.value || '',
@@ -397,6 +429,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         mentions: mentionList || [],
         hashtags: hashtagList || [],
         audience,
+        shoutoutRecipients: shoutoutUserIds || [],
         isAnnouncement: !!announcement,
         announcement: {
           end: announcement?.value || '',
@@ -451,6 +484,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             handleSubmitPost={handleSubmitPost}
             isLoading={loading}
             dataTestId="feed-createpost"
+            mode={mode}
           />
         )}
         {activeFlow === CreatePostFlow.CreateAnnouncement && (
@@ -485,6 +519,14 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             />
           </div>
         )}
+        {activeFlow === CreatePostFlow.CreateShoutout && (
+          <CreateShoutout
+            closeModal={() => {
+              closeModal();
+              clearPostContext();
+            }}
+          />
+        )}
         {activeFlow === CreatePostFlow.SchedulePost && (
           <SchedulePost
             closeModal={() => {
@@ -513,7 +555,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           <Icon
             name="close"
             className="absolute top-6 right-6"
-            fill={'#fff'}
+            color={'text-white'}
             onClick={() => setShowFullscreenVideo(false)}
           />
         </Modal>

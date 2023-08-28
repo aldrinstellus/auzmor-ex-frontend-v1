@@ -98,6 +98,7 @@ const SingleSelect = React.forwardRef(
         opacity: open ? 1 : 0,
         transition: 'all 300ms ease-in-out',
         overflow: 'hidden',
+        borderRadius: '12px',
       }),
     });
 
@@ -156,7 +157,7 @@ const SingleSelect = React.forwardRef(
                   MenuList: (props) => (
                     <components.MenuList
                       {...props}
-                      className={uniqueClassName}
+                      className={`${uniqueClassName} divide-y divide-neutral-200 !py-0`}
                       innerRef={menuListRef}
                     ></components.MenuList>
                   ),

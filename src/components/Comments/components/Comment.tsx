@@ -101,11 +101,7 @@ export const Comment: React.FC<CommentProps> = ({
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              stroke={twConfig.theme.colors.red['500']}
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
           ),
           style: {
             border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -129,7 +125,7 @@ export const Comment: React.FC<CommentProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
             />
           ),
@@ -182,7 +178,7 @@ export const Comment: React.FC<CommentProps> = ({
                   {getFullName(comment?.createdBy)}
                 </div>
               </Link>
-              <div className="font-normal text-neutral-500 text-sm ">
+              <div className="font-normal text-neutral-500 text-xs">
                 {comment?.createdBy?.designation}
               </div>
             </div>
@@ -220,8 +216,7 @@ export const Comment: React.FC<CommentProps> = ({
                           <Icon
                             name={'edit'}
                             size={16}
-                            fill={twConfig.theme.colors.primary['500']}
-                            stroke={twConfig.theme.colors.neutral['200']}
+                            color="text-neutral-200"
                           />
                           <div className="text-sm font-medium text-neutral-900">
                             Edit comment
@@ -236,8 +231,7 @@ export const Comment: React.FC<CommentProps> = ({
                           <Icon
                             name={'delete'}
                             size={16}
-                            fill={twConfig.theme.colors.primary['500']}
-                            stroke={twConfig.theme.colors.neutral['200']}
+                            color="text-neutral-200"
                           />
                           <div
                             className={`text-sm font-medium text-neutral-900 `}
@@ -273,7 +267,7 @@ export const Comment: React.FC<CommentProps> = ({
       </div>
 
       {/* Replies */}
-      <div className="flex items-center mb-4">
+      <div className="flex items-center">
         <div className="flex items-center space-x-2">
           <Likes
             reaction={comment?.myReaction?.reaction || ''}
@@ -286,10 +280,10 @@ export const Comment: React.FC<CommentProps> = ({
           {/* ellipse */}
           <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
           {/* Show Reaction */}
-          {totalCount > 0 && (
+          {totalCount > 0 ? (
             <div className="flex justify-between cursor-pointer">
               <div
-                className="flex space-x-1 items-center mr-2"
+                className="flex items-center"
                 onClick={() => setShowReactionModal(true)}
               >
                 {totalCount > 0 && (
@@ -319,22 +313,27 @@ export const Comment: React.FC<CommentProps> = ({
                     {totalCount}
                   </div>
                 )}
+                <Divider
+                  variant={Variant.Vertical}
+                  className="bg-neutral-200 mx-4"
+                />
               </div>
             </div>
+          ) : (
+            <div />
           )}
-          <Divider variant={Variant.Vertical} />
         </div>
 
         <div className="flex items-center space-x-2">
           <div
-            className="flex space-x-1 cursor-pointer"
+            className="flex space-x-1 cursor-pointer group"
             onClick={() => {
               setShowReplies(!showReplies);
             }}
           >
             <Icon name="comment" size={16} />
             <div
-              className="text-xs font-normal text-neutral-500 ml-1.5"
+              className="text-xs font-normal text-neutral-500 ml-1.5 group-hover:text-primary-500"
               data-testid="comment-replies-count"
             >
               Reply
@@ -346,18 +345,18 @@ export const Comment: React.FC<CommentProps> = ({
               {/* ellipse */}
               <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
               <div
-                className="flex items-center cursor-pointer"
+                className="flex items-center cursor-pointer group"
                 data-testid="replyto-commentcta"
                 onClick={() => {
                   setShowReplies(!showReplies);
                 }}
               >
                 <div
-                  className="text-xs font-normal text-neutral-500"
+                  className="text-xs font-normal text-neutral-500 group-hover:text-primary-500"
                   data-testid="comment-replies-count"
                 >
                   {comment?.repliesCount}
-                  {comment?.repliesCount > 0 ? ' Replies' : ' Reply'}
+                  {comment?.repliesCount > 1 ? ' Replies' : ' Reply'}
                 </div>
               </div>
             </>
@@ -366,7 +365,9 @@ export const Comment: React.FC<CommentProps> = ({
       </div>
 
       {showReplies ? (
-        <Reply entityId={comment.id} />
+        <div className="mt-4">
+          <Reply entityId={comment.id} />
+        </div>
       ) : (
         !previousShowReply.current && customNode
       )}

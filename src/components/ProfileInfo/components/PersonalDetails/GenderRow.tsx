@@ -1,0 +1,108 @@
+import React, { useRef } from 'react';
+import InfoRow from '../InfoRow';
+import 'moment-timezone';
+import useRole from 'hooks/useRole';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { updateCurrentUser } from 'queries/users';
+import Icon from 'components/Icon';
+import { convertUpperCaseToPascalCase, twConfig } from 'utils/misc';
+import { toastConfig } from '../utils';
+import { useForm } from 'react-hook-form';
+import Layout, { FieldType } from 'components/Form';
+
+type AppProps = {
+  data: any;
+};
+
+const GenderRow: React.FC<AppProps> = ({ data }) => {
+  const queryClient = useQueryClient();
+  const ref = useRef<any>(null);
+  const { isAdmin } = useRole();
+
+  const updateUserGenderMutation = useMutation({
+    mutationFn: updateCurrentUser,
+    mutationKey: ['update-user-gender-mutation'],
+    onError: (error: any) => {},
+    onSuccess: async (response: any) => {
+      toastConfig(
+        <Icon
+          name="closeCircleOutline"
+          color={twConfig.theme.colors.primary['500']}
+          size={20}
+        />,
+      );
+      ref?.current?.setEditMode(false);
+      await queryClient.invalidateQueries(['current-user-me']);
+    },
+  });
+
+  const { handleSubmit, control, reset, getValues } = useForm<any>({
+    mode: 'onSubmit',
+    defaultValues: {
+      personal: {
+        gender: {
+          label: convertUpperCaseToPascalCase(data?.personal?.gender),
+          value: data?.personal?.gender,
+        },
+      },
+    },
+  });
+
+  const onSubmit = () => {
+    const { personal } = getValues();
+    updateUserGenderMutation.mutate({
+      personal: { gender: personal?.gender?.value },
+    });
+  };
+
+  const fields = [
+    {
+      type: FieldType.SingleSelect,
+      name: 'personal.gender',
+      placeholder: 'Select Gender',
+      defaultValue: getValues()?.personal?.gender,
+      dataTestId: 'personal-details-gender',
+      options: [
+        {
+          value: 'MALE',
+          label: 'Male',
+          dataTestId: 'personal-details-gender-male',
+        },
+        {
+          value: 'FEMALE',
+          label: 'Female',
+          dataTestId: 'personal-details-gender-female',
+        },
+      ],
+      control,
+    },
+  ];
+
+  return (
+    <InfoRow
+      ref={ref}
+      icon={{
+        name: data?.personal?.gender === 'FEMALE' ? 'femaleIcon' : 'male',
+        color: 'text-pink-500',
+        bgColor: 'bg-pink-50',
+      }}
+      label="Gender"
+      value={
+        data?.personal?.gender?.charAt(0)?.toUpperCase() +
+        data?.personal?.gender?.slice(1)?.toLowerCase()
+      }
+      dataTestId="personal-details-gender"
+      editNode={
+        <div>
+          <form>
+            <Layout fields={fields} />
+          </form>
+        </div>
+      }
+      onCancel={reset}
+      onSave={handleSubmit(onSubmit)}
+    />
+  );
+};
+
+export default GenderRow;

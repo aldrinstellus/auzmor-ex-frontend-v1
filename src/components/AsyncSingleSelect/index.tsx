@@ -25,6 +25,8 @@ export interface IAsyncSingleSelectProps {
   menuPlacement: MenuPlacement;
   isLoading?: boolean;
   loadOptions: (inputValue: string) => Promise<any>;
+  noOptionsMessage?: () => any;
+  isClearable?: boolean;
 }
 
 const AsyncSingleSelect = React.forwardRef(
@@ -44,6 +46,8 @@ const AsyncSingleSelect = React.forwardRef(
       menuPlacement = 'bottom',
       isLoading = false,
       loadOptions,
+      noOptionsMessage = () => 'No options',
+      isClearable = false,
     }: IAsyncSingleSelectProps,
     ref?: any,
   ) => {
@@ -82,7 +86,7 @@ const AsyncSingleSelect = React.forwardRef(
           backgroundColor: '#fff',
           border: '1px solid #E5E5E5',
           borderRadius: '32px',
-          height,
+          height: `${height} !important`,
           padding: '0px 6px', // change style here because it breaking 2px
           '&:hover': { borderColor: twConfig.theme.colors.primary['600'] },
           borderColor: twConfig.theme.colors.primary['500'],
@@ -108,6 +112,7 @@ const AsyncSingleSelect = React.forwardRef(
         opacity: open ? 1 : 0,
         transition: 'all 300ms ease-in-out',
         overflow: 'hidden',
+        borderRadius: '12px',
       }),
     });
 
@@ -150,6 +155,8 @@ const AsyncSingleSelect = React.forwardRef(
                 menuPlacement={menuPlacement ? menuPlacement : undefined}
                 menuPortalTarget={document.body}
                 menuPosition="absolute"
+                noOptionsMessage={noOptionsMessage}
+                isClearable={isClearable}
                 components={{
                   Option: ({ innerProps, data, isDisabled, isSelected }) => {
                     return (
@@ -167,7 +174,7 @@ const AsyncSingleSelect = React.forwardRef(
                   MenuList: (props) => (
                     <components.MenuList
                       {...props}
-                      className={uniqueClassName}
+                      className={`${uniqueClassName} divide-y divide-neutral-200 !py-0`}
                       innerRef={menuListRef}
                     ></components.MenuList>
                   ),
@@ -179,6 +186,7 @@ const AsyncSingleSelect = React.forwardRef(
                 }}
                 {...field}
                 onBlur={() => setOpen(false)}
+                openMenuOnClick
                 ref={ref}
                 cacheOptions
                 defaultOptions

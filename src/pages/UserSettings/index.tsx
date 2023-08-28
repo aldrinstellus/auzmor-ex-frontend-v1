@@ -127,9 +127,10 @@ const UserSettings: React.FC<IUserSettingsProps> = () => {
               >
                 <Icon
                   name={item.icon}
-                  hover={false}
-                  stroke={
-                    item.key === activeSettingsPage.key ? '#171717' : undefined
+                  color={
+                    item.key === activeSettingsPage.key
+                      ? 'text-neutral-900'
+                      : undefined
                   }
                 />
                 {item.label}

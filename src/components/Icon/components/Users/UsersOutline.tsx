@@ -1,25 +1,16 @@
 import * as React from 'react';
 import { SVGProps } from 'react';
 
-interface IconProps {
-  size?: number;
-  fill?: string;
-}
-
-const SvgUsersOutline = ({
-  size = 22,
-  fill = '#737373',
-  ...props
-}: SVGProps<SVGSVGElement> & IconProps) => (
+const SvgUsersOutline = (props: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
+    width={22}
+    height={22}
     fill="none"
     {...props}
   >
     <path
-      stroke={fill}
+      stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={1.5}

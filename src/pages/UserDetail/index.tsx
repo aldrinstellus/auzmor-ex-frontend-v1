@@ -129,15 +129,17 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
         />
       )}
 
-      <div className="mb-32 space-x-8 flex w-full">
-        {userDetail?.isLoading ? (
-          <ContactSkeleton />
-        ) : (
-          <ContactWidget
-            contactCardData={data}
-            canEdit={pathname === '/profile'}
-          />
-        )}
+      <div className="mb-32 flex w-full">
+        <div className="w-1/4 pr-12">
+          {userDetail?.isLoading ? (
+            <ContactSkeleton />
+          ) : (
+            <ContactWidget
+              contactCardData={data}
+              canEdit={pathname === '/profile'}
+            />
+          )}
+        </div>
         <div className="w-1/2">
           <Tabs
             tabs={tabs}
@@ -148,7 +150,7 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
             tabContentClassName="mt-8"
           />
         </div>
-        <div className="w-1/4"></div>
+        <div className="w-1/4 pl-12"></div>
       </div>
     </div>
   );

@@ -103,7 +103,7 @@ const AppList: React.FC<IAppListProps> = ({
           return (
             <>
               {(queryParams.q === undefined || queryParams.q === '') &&
-              appIds?.length === 0 ? (
+              (!appIds || appIds?.length === 0) ? (
                 <div className="flex flex-col space-y-3 items-center w-full">
                   <div className="flex flex-col space-y-6 items-center">
                     <img

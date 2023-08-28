@@ -2,6 +2,7 @@ import Icon from 'components/Icon';
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import HashtagIcon from 'images/hashtag.svg';
+import { twConfig } from 'utils/misc';
 
 interface IHashtagFeedHeaderProps {
   hashtag: string;
@@ -24,8 +25,7 @@ const HashtagFeedHeader: React.FC<IHashtagFeedHeaderProps> = ({
           <div className="flex gap-x-3 items-center">
             <Icon
               name="arrowLeft"
-              fill="#171717"
-              stroke="#171717"
+              color="text-neutral-900"
               onClick={() => {
                 if (searchParams.has('hashtag')) {
                   searchParams.delete('hashtag');

@@ -2,7 +2,7 @@ import React from 'react';
 import Avatar from 'components/Avatar';
 import { CREATE_POST, VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
-import { ICreatedBy } from 'queries/post';
+import { IAudience, ICreatedBy } from 'queries/post';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
@@ -14,6 +14,7 @@ type ActorProps = {
   createdBy?: ICreatedBy;
   dataTestId?: string;
   disabled?: boolean;
+  audience?: IAudience[];
 };
 
 const Actor: React.FC<ActorProps> = ({
@@ -99,7 +100,7 @@ const Actor: React.FC<ActorProps> = ({
               >
                 {createdTime}
               </div>
-              <div className="bg-neutral-500 rounded-full w-2 h-2" />
+              <div className="bg-neutral-500 rounded-full w-1 h-1" />
               <Icon name="globalOutline" size={16} />
             </div>
           ) : null}

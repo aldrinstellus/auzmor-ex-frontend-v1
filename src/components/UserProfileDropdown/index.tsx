@@ -38,13 +38,15 @@ const UserProfileDropdown: React.FC<IUserDropdownProps> = ({
   triggerNode,
   showOnHover,
   className,
-  loggedInUserId,
 }) => {
   const { user } = useAuth();
 
   const _options = [];
 
-  if ([UserStatus.Invited, UserStatus.Created].includes(status as any)) {
+  if (
+    isAdmin &&
+    [UserStatus.Invited, UserStatus.Created].includes(status as any)
+  ) {
     _options.push({
       icon: 'redo',
       label: 'Resend Invite',
@@ -53,7 +55,7 @@ const UserProfileDropdown: React.FC<IUserDropdownProps> = ({
     });
   }
 
-  if ((isAdmin && role === UserRole.Member) || id === loggedInUserId) {
+  if (id === user?.id) {
     _options.push({
       icon: 'edit',
       label: `Edit`,
@@ -96,7 +98,7 @@ const UserProfileDropdown: React.FC<IUserDropdownProps> = ({
     });
   }
 
-  if (id !== user?.id) {
+  if (isAdmin && id !== user?.id) {
     _options.push({
       icon: 'forbidden',
       label: <div className="text-red-500">Remove account</div>,
@@ -105,6 +107,7 @@ const UserProfileDropdown: React.FC<IUserDropdownProps> = ({
       stroke: '#F05252',
     });
   }
+
   if (((showOnHover && isHovered) || !showOnHover) && _options.length > 0) {
     return (
       <PopupMenu

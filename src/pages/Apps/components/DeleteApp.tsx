@@ -30,13 +30,10 @@ const DeleteApp: React.FC<IDeleteAppProps> = ({ open, closeModal, appId }) => {
     mutationKey: ['delete-app', appId],
     mutationFn: deleteApp,
     onError: (error) => {
+      closeModal(true);
       toast(<FailureToast content="Error deleting the app" dataTestId="" />, {
         closeButton: (
-          <Icon
-            name="closeCircleOutline"
-            stroke={twConfig.theme.colors.red['500']}
-            size={20}
-          />
+          <Icon name="closeCircleOutline" color="text-red-500" size={20} />
         ),
         style: {
           border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -61,7 +58,7 @@ const DeleteApp: React.FC<IDeleteAppProps> = ({ open, closeModal, appId }) => {
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
             />
           ),
@@ -85,7 +82,7 @@ const DeleteApp: React.FC<IDeleteAppProps> = ({ open, closeModal, appId }) => {
         Delete App?
       </div>
       <IconButton
-        onClick={closeModal}
+        onClick={() => closeModal()}
         icon={'close'}
         dataTestId="close-app-modal"
         className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"

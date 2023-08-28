@@ -1,9 +1,5 @@
 import React, { useRef, useState } from 'react';
-import IconButton, {
-  Variant as IconVariant,
-  Size as SizeVariant,
-} from 'components/IconButton';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createReaction, deleteReaction } from 'queries/reaction';
 import clsx from 'clsx';
 import { useFeedStore } from 'stores/feedStore';
@@ -75,34 +71,36 @@ const Likes: React.FC<LikesProps> = ({
 
   const nameStyle = clsx(
     {
-      'text-[#3F83F8]': reaction === 'like',
+      'text-blue-900': reaction === 'like',
     },
 
     {
-      'text-[#F98080]': reaction === 'love',
+      'text-orange-500': reaction === 'love',
     },
     {
-      'text-[#FDBA74]': reaction === 'celebrate',
+      'text-yellow-500': reaction === 'celebrate',
     },
     {
-      'text-[#FB923C]': reaction === 'support',
+      'text-red-500': reaction === 'support',
     },
     {
-      'text-[#8DA2FB]': reaction === 'funny',
+      'text-yellow-500': reaction === 'funny',
     },
     {
-      'text-yellow-400': reaction === 'insightful',
+      'text-yellow-500': reaction === 'insightful',
     },
   );
 
   const nameIcon = reactionIconMap[reaction];
+  const queryClient = useQueryClient();
 
   const name = reactionNameMap[reaction];
   const createReactionMutation = useMutation({
     mutationKey: ['create-reaction-mutation'],
     mutationFn: createReaction,
-    onSuccess: (data, variables) => {
+    onMutate: (variables) => {
       if (variables.entityType === 'post') {
+        const previousPost = feed[variables.entityId];
         updateFeed(
           variables.entityId,
           produce(feed[variables.entityId], (draft) => {
@@ -137,14 +135,14 @@ const Likes: React.FC<LikesProps> = ({
                     }
                 : { [variables.reaction as string]: 1 }),
               (draft.myReaction = {
-                reaction: data.reaction,
-                createdBy: data.createdBy,
-                id: data.id,
-                type: data.type,
+                reaction: variables.reaction,
+                type: variables.entityType,
               }); // if reactions count does not exist at all
           }),
         );
+        return { previousPost };
       } else if (variables.entityType === 'comment') {
+        const previousComment = comment[variables.entityId];
         updateComment(
           variables.entityId,
           produce(comment[variables.entityId], (draft) => {
@@ -177,13 +175,44 @@ const Likes: React.FC<LikesProps> = ({
                     }
                 : { [variables.reaction as string]: 1 }),
               (draft.myReaction = {
-                reaction: data.reaction,
-                createdBy: data.createdBy,
-                id: data.id,
-                type: data.type,
+                reaction: variables.reaction,
+                type: variables.entityType,
               });
           }),
         );
+        return { previousComment };
+      }
+    },
+    onSuccess: (data, variables) => {
+      if (variables.entityType === 'post') {
+        updateFeed(
+          variables.entityId,
+          produce(feed[variables.entityId], (draft) => {
+            draft.myReaction = {
+              ...draft.myReaction,
+              createdBy: data.createdBy,
+              id: data.id,
+            }; // if reactions count does not exist at all
+          }),
+        );
+      } else if (variables.entityType === 'comment') {
+        updateComment(
+          variables.entityId,
+          produce(comment[variables.entityId], (draft) => {
+            draft.myReaction = {
+              ...draft.myReaction,
+              createdBy: data.createdBy,
+              id: data.id,
+            };
+          }),
+        );
+      }
+    },
+    onError: (error, variables, context) => {
+      if (variables.entityType === 'post') {
+        updateFeed(context!.previousPost!.id!, context!.previousPost!);
+      } else if (variables.entityType === 'comment') {
+        updateComment(context!.previousComment!.id!, context!.previousComment!);
       }
     },
   });
@@ -192,6 +221,12 @@ const Likes: React.FC<LikesProps> = ({
     mutationKey: ['delete-reaction-mutation'],
     mutationFn: deleteReaction,
     onMutate: (variables) => {
+      if (variables.id === '') {
+        queryClient.cancelQueries({
+          queryKey: ['create-reaction-mutation', 'delete-reaction-mutation'],
+        });
+        return;
+      }
       if (variables.entityType === 'post') {
         const previousPost = feed[variables.entityId];
         updateFeed(
@@ -363,7 +398,7 @@ const Likes: React.FC<LikesProps> = ({
         <Icon name={nameIcon ? nameIcon : 'likeIcon'} size={16} />
         <div
           className={`text-xs font-normal ${
-            name ? nameStyle : 'text-neutral-500 '
+            name ? nameStyle : 'text-neutral-500 group-hover:text-primary-500'
           } `}
         >
           {name ? name : 'Like'}

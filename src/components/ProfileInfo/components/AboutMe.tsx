@@ -15,6 +15,7 @@ import { twConfig } from 'utils/misc';
 import Icon from 'components/Icon';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
+import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 
 interface IAboutMe {
   about: string;
@@ -45,7 +46,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({
       mode: 'onSubmit',
       defaultValues: {
         personal: {
-          about: aboutMeData?.personal?.about || 'N/A',
+          about: aboutMeData?.personal?.about || 'Field not specified',
         },
       },
     });
@@ -64,7 +65,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({
   }, [isEditable]);
 
   const onHoverStyles = useMemo(
-    () => clsx({ 'mb-8': true }, { 'shadow-xl': isHovered && canEdit }),
+    () => clsx({ '': true }, { 'shadow-xl': isHovered && canEdit }),
     [isHovered],
   );
 
@@ -77,7 +78,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({
       dataTestId: 'about-me-edit-text',
       control,
       className: 'w-full rounded-9xl',
-      rows: 3,
+      rows: 8,
       maxLength: 2000,
       showCounter: true,
     },
@@ -90,11 +91,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({
     onSuccess: (response: any) => {
       toast(<SuccessToast content={'User Profile Updated Successfully'} />, {
         closeButton: (
-          <Icon
-            name="closeCircleOutline"
-            stroke={twConfig.theme.colors.primary['500']}
-            size={20}
-          />
+          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
         ),
         style: {
           border: `1px solid ${twConfig.theme.colors.primary['300']}`,
@@ -155,34 +152,60 @@ const AboutMe: React.FC<IAboutMeProps> = ({
 
   return (
     <div {...eventHandlers}>
+      <Header
+        title={isEditable ? 'About Me' : 'About'}
+        dataTestId="about-me"
+        isHovered={isHovered}
+        // isEditable={isEditable}
+        setIsEditable={setIsEditable}
+        canEdit={false}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        isLoading={updateUserAboutMeMutation.isLoading}
+        reset={reset}
+      />
       <Card className={onHoverStyles}>
-        <Header
-          title={isEditable ? 'About Me' : 'About'}
-          dataTestId="about-me"
-          isHovered={isHovered}
-          isEditable={isEditable}
-          setIsEditable={setIsEditable}
-          canEdit={canEdit}
-          handleSubmit={handleSubmit}
-          onSubmit={onSubmit}
-          isLoading={updateUserAboutMeMutation.isLoading}
-          reset={reset}
-        />
-        <Divider />
-        <div className="text-neutral-900 text-sm font-normal pt-4 pb-6 px-6">
+        <div className="text-neutral-900 text-sm font-normal px-4 pb-4">
           {!isEditable ? (
             <div
-              className="whitespace-pre-wrap"
+              className="whitespace-pre-wrap relative pt-4"
               data-testid="aboutme-description"
             >
-              {renderContentWithLinks(aboutMeData?.personal?.about) || 'N/A'}
+              {canEdit && isHovered && (
+                <div className="absolute right-0 top-4">
+                  <Icon
+                    name="edit"
+                    size={16}
+                    onClick={() => setIsEditable(!isEditable)}
+                    dataTestId="edit-about-me"
+                  />
+                </div>
+              )}
+              {renderContentWithLinks(aboutMeData?.personal?.about) ||
+                'Field not specified'}
             </div>
           ) : (
-            <div>
-              {/* <div className="flex w-full justify-end mb-1 text-sm text-neutral-500">
-                {_text?.length}/2000
-              </div> */}
+            <div className="relative pt-2">
               <Layout fields={textAreaField} />
+              <div className="flex justify-end mt-2">
+                <IconWrapper
+                  type={Type.Circle}
+                  className="!p-2 mr-2"
+                  onClick={() => {
+                    setIsEditable(false);
+                    reset();
+                  }}
+                >
+                  <Icon name="close" size={16} color="text-neutral-900" />
+                </IconWrapper>
+                <IconWrapper
+                  type={Type.Circle}
+                  className="bg-primary-500 !p-2"
+                  onClick={handleSubmit(onSubmit)}
+                >
+                  <Icon name="check" size={16} color="text-white" />
+                </IconWrapper>
+              </div>
             </div>
           )}
         </div>

@@ -11,6 +11,7 @@ import { IComment } from 'components/Comments';
 import { Metadata } from 'components/PreviewLink/types';
 import { useFeedStore } from 'stores/feedStore';
 import _ from 'lodash';
+import { string } from 'yargs';
 
 export interface IReactionsCount {
   [key: string]: number;
@@ -34,6 +35,15 @@ export interface IAudience {
   entityType: AudienceEntityType;
   entityId: string;
   name?: string;
+}
+
+export interface IShoutoutRecipient {
+  fullName: string;
+  profileImage: object;
+  status: string;
+  workLocation: Record<string, string>;
+  designation: string;
+  userId: string;
 }
 
 export interface IPost {
@@ -100,6 +110,7 @@ export interface IPost {
   } | null;
   bookmarked: boolean;
   acknowledged: boolean;
+  shoutoutRecipients?: IShoutoutRecipient[];
 }
 
 export interface IPostPayload {
@@ -127,6 +138,7 @@ export interface IPostPayload {
   files?: string[] | IMedia[];
   type: string;
   audience: IAudience[];
+  shoutoutRecipients?: string[] | IShoutoutRecipient[];
   isAnnouncement: boolean;
   announcement: {
     end: string;
@@ -311,46 +323,125 @@ export const announcementRead = async (postId: string) => {
   return data;
 };
 
-export const myProfileFeed = ({ pageParam = null }) => {
-  if (pageParam === null) return apiService.get('/posts/my-profile');
-  else return apiService.get(pageParam);
+export const myProfileFeed = async (
+  context: QueryFunctionContext<
+    (string | Record<string, any> | undefined)[],
+    any
+  >,
+  feed: {
+    [key: string]: IPost;
+  },
+  setFeed: (feed: { [key: string]: IPost }) => void,
+) => {
+  let response = null;
+  if (!!!context.pageParam) {
+    response = await apiService.get('/posts/my-profile', context.queryKey[1]);
+    setFeed({
+      ...feed,
+      ..._.chain(response.data.result.data).keyBy('id').value(),
+    });
+    response.data.result.data = response.data.result.data.map(
+      (eachPost: IPost) => ({ id: eachPost.id }),
+    );
+    return response;
+  } else {
+    response = await apiService.get(context.pageParam, context.queryKey[1]);
+    setFeed({
+      ...feed,
+      ..._.chain(response.data.result.data).keyBy('id').value(),
+    });
+    response.data.result.data = response.data.result.data.map(
+      (eachPost: IPost) => ({ id: eachPost.id }),
+    );
+    return response;
+  }
 };
 
 export const useInfiniteMyProfileFeed = (q?: Record<string, any>) => {
-  return useInfiniteQuery({
-    queryKey: ['my-profile-feed', q],
-    queryFn: myProfileFeed,
-    getNextPageParam: (lastPage: any) => {
-      return lastPage?.data?.result?.paging?.next;
-    },
-    getPreviousPageParam: (currentPage: any) => {
-      return currentPage?.data?.result?.paging?.prev;
-    },
-    staleTime: 5 * 60 * 1000,
-  });
+  const { feed, setFeed } = useFeedStore();
+  return {
+    ...useInfiniteQuery({
+      queryKey: ['my-profile-feed', q],
+      queryFn: (context) => myProfileFeed(context, feed, setFeed),
+      getNextPageParam: (lastPage: any) => {
+        const pageDataLen = lastPage?.data?.result?.data?.length;
+        const pageLimit = lastPage?.data?.result?.paging?.limit;
+        if (pageDataLen < pageLimit) {
+          return null;
+        }
+        return lastPage?.data?.result?.paging?.next;
+      },
+      getPreviousPageParam: (currentPage: any) => {
+        return currentPage?.data?.result?.paging?.prev;
+      },
+      staleTime: 5 * 60 * 1000,
+    }),
+    feed,
+  };
 };
 
-export const peopleProfileFeed = (userId: string, { pageParam = null }) => {
-  if (pageParam === null)
-    return apiService.get(`/posts/people-profile?memberId=${userId}`);
-  else return apiService.get(pageParam);
+export const peopleProfileFeed = async (
+  context: QueryFunctionContext<
+    (string | Record<string, any> | undefined)[],
+    any
+  >,
+  feed: {
+    [key: string]: IPost;
+  },
+  setFeed: (feed: { [key: string]: IPost }) => void,
+  userId: string,
+) => {
+  let response = null;
+  if (!!!context.pageParam) {
+    response = await apiService.get(
+      `/posts/people-profile?memberId=${userId}`,
+      context.queryKey[1],
+    );
+    setFeed({
+      ...feed,
+      ..._.chain(response.data.result.data).keyBy('id').value(),
+    });
+    response.data.result.data = response.data.result.data.map(
+      (eachPost: IPost) => ({ id: eachPost.id }),
+    );
+    return response;
+  } else {
+    response = await apiService.get(context.pageParam, context.queryKey[1]);
+    setFeed({
+      ...feed,
+      ..._.chain(response.data.result.data).keyBy('id').value(),
+    });
+    response.data.result.data = response.data.result.data.map(
+      (eachPost: IPost) => ({ id: eachPost.id }),
+    );
+    return response;
+  }
 };
 
 export const useInfinitePeopleProfileFeed = (
   userId: string,
   q?: Record<string, any>,
 ) => {
-  return useInfiniteQuery({
-    queryKey: ['people-profile-feed', q, userId],
-    queryFn: () => peopleProfileFeed(userId, {}),
-    getNextPageParam: (lastPage: any) => {
-      return lastPage?.data?.result?.paging?.next;
-    },
-    getPreviousPageParam: (currentPage: any) => {
-      return currentPage?.data?.result?.paging?.prev;
-    },
-    staleTime: 5 * 60 * 1000,
-  });
+  const { feed, setFeed } = useFeedStore();
+  return {
+    ...useInfiniteQuery({
+      queryKey: ['people-profile-feed', q, userId],
+      queryFn: (context) => peopleProfileFeed(context, feed, setFeed, userId),
+      getNextPageParam: (lastPage: any) => {
+        const pageDataLen = lastPage?.data?.result?.data?.length;
+        const pageLimit = lastPage?.data?.result?.paging?.limit;
+        if (pageDataLen < pageLimit) {
+          return null;
+        }
+        return lastPage?.data?.result?.paging?.next;
+      },
+      getPreviousPageParam: (currentPage: any) => {
+        return currentPage?.data?.result?.paging?.prev;
+      },
+      staleTime: 5 * 60 * 1000,
+    }),
+    feed,
+  };
 };
 
 export const fetchFeed = async (
@@ -401,6 +492,7 @@ export const fetchScheduledPosts = async (
   if (!!!context.pageParam) {
     response = await apiService.get('/posts/scheduled');
     setFeed({
+      ...feed,
       ..._.chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
@@ -434,6 +526,7 @@ export const fetchBookmarks = async (
   if (!!!context.pageParam) {
     response = await apiService.get('/posts/my-bookmarks');
     setFeed({
+      ...feed,
       ..._.chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(

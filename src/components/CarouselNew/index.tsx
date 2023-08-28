@@ -157,22 +157,14 @@ const Carousel: React.FC<ICarouselProps> = ({
               className="p-2 bg-white rounded-full cursor-pointer"
               onClick={() => videoRef?.current?.pause()}
             >
-              <Icon
-                name="pause"
-                size={14}
-                fill={twConfig.theme.colors.primary['500']}
-              />
+              <Icon name="pause" size={14} color="text-primary-500" />
             </div>
           ) : (
             <div
               className="p-2 bg-white rounded-full cursor-pointer"
               onClick={() => videoRef?.current?.play()}
             >
-              <Icon
-                name="playFilled"
-                size={14}
-                fill={twConfig.theme.colors.primary['500']}
-              />
+              <Icon name="playFilled" size={14} color="text-primary-500" />
             </div>
           )}
           <div className="flex items-center">
@@ -219,11 +211,11 @@ const Carousel: React.FC<ICarouselProps> = ({
           </div>
           {isMuted ? (
             <div onClick={() => setIsMuted(false)} className="cursor-pointer">
-              <Icon name="mute" stroke="#fff" />
+              <Icon name="mute" color="text-white" />
             </div>
           ) : (
             <div onClick={() => setIsMuted(true)} className="cursor-pointer">
-              <Icon name="speaker" stroke="#fff" />
+              <Icon name="speaker" color="text-white" />
             </div>
           )}
           <div
@@ -234,7 +226,7 @@ const Carousel: React.FC<ICarouselProps> = ({
             }}
             className="cursor-pointer"
           >
-            <Icon name="fullScreen" stroke="white" />
+            <Icon name="fullScreen" color="text-white" />
           </div>
         </div>
       )}
@@ -255,7 +247,11 @@ const Carousel: React.FC<ICarouselProps> = ({
               : 'discardvideo'
           }`}
         >
-          <Icon name="close" size={16} className="p-2 bg-white rounded-7xl" />
+          <Icon
+            name="close"
+            size={16}
+            className="p-2 bg-white rounded-7xl cursor-pointer"
+          />
         </div>
       </div>
       {!isPlaying && (
@@ -279,7 +275,7 @@ const Carousel: React.FC<ICarouselProps> = ({
               onClick={() => videoRef.current!.play()}
               className="cursor-pointer"
             >
-              <Icon name="playFilled" fill="#ffffff" size={46} />
+              <Icon name="playFilled" color="text-white" size={46} />
             </div>
           )}
 

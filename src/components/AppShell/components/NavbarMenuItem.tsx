@@ -1,5 +1,4 @@
 import Icon from 'components/Icon';
-import useHover from 'hooks/useHover';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
@@ -7,6 +6,7 @@ export interface INavbarMenuItemProps {
   nav: {
     label: string;
     icon: string;
+    hoverIcon: string;
     linkTo: string;
     dataTestId: string;
     iconSize: number;
@@ -15,10 +15,14 @@ export interface INavbarMenuItemProps {
 }
 
 const NavbarMenuItem: React.FC<INavbarMenuItemProps> = ({ nav }) => {
-  return (
+  return nav.disabled ? (
+    <div className="flex flex-col items-center" data-testid={nav.dataTestId}>
+      <Icon name={nav.icon} size={nav.iconSize} disabled />
+      <div className="text-sm text-neutral-200 cursor-default">{nav.label}</div>
+    </div>
+  ) : (
     <NavLink
       to={nav.linkTo}
-      key={nav.label}
       className={({ isActive }) =>
         `${isActive ? 'text-primary-500' : 'text-neutral-500'} group`
       }
@@ -28,7 +32,19 @@ const NavbarMenuItem: React.FC<INavbarMenuItemProps> = ({ nav }) => {
           className="flex flex-col items-center"
           data-testid={nav.dataTestId}
         >
-          <Icon name={nav.icon} size={nav.iconSize} isActive={isActive} />
+          <Icon
+            name={nav.hoverIcon}
+            size={nav.iconSize}
+            isActive={isActive}
+            className={!isActive ? 'hidden group-hover:block' : ''}
+          />
+          <Icon
+            name={nav.icon}
+            size={nav.iconSize}
+            isActive={isActive}
+            className={isActive ? 'hidden' : 'group-hover:hidden'}
+          />
+
           <div className="text-sm group-hover:text-primary-500">
             {nav.label}
           </div>

@@ -1,22 +1,14 @@
 import * as React from 'react';
 import { SVGProps } from 'react';
 
-type IconProps = {
-  size?: number;
-  fill?: string;
-};
-
-const SvgLoveReaction = ({
-  size = 24,
-  ...props
-}: SVGProps<SVGSVGElement> & IconProps) => (
+const SvgLoveReaction = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width={size}
-    height={size}
+    width={24}
+    height={24}
     viewBox="0 0 28 28"
-    {...props}
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    {...props}
   >
     <rect x="1" y="1" width="26" height="26" rx="13" fill="#F98080" />
     <path

@@ -9,9 +9,8 @@ export enum Variant {
 }
 
 export type TooltipProps = {
-  tooltipContent: string | ReactNode;
+  tooltipContent?: string | ReactNode;
   children: ReactNode;
-  tooltipId?: string;
   variant?: Variant;
   className?: string;
   onClick?: MouseEventHandler<Element>;
@@ -21,41 +20,35 @@ export type TooltipProps = {
 const Tooltip = ({
   tooltipContent,
   children,
-  tooltipId,
   variant = Variant.Dark,
   className = '',
   onClick = () => {},
   tooltipPosition = 'top',
 }: TooltipProps) => {
-  const tooltipPlacement = useMemo(
-    () =>
-      clsx({
-        [className]: true,
-      }),
-    [className, variant],
-  );
+  const id = Math.random().toString(16).slice(2);
   return (
-    <span className={` ${className}`} onClick={onClick}>
+    <span onClick={onClick}>
       <ReactTooltip
-        className={`${tooltipPlacement} ${tooltipId}`}
-        id={`my-tooltip`}
+        className={className}
+        id={`tooltip-${id}`}
         react-tooltip-arrow
-        anchorSelect=".my-anchor-element"
+        anchorSelect={`#anchor-${id}`}
         clickable
       >
-        <div>{tooltipContent}</div>
+        {tooltipContent}
       </ReactTooltip>
       <a
+        id={`anchor-${id}`}
         href="#"
-        className="my-anchor-element cursor-default mt-10"
-        data-tooltip-id="my-tooltip"
+        className="cursor-default mt-10"
+        data-tooltip-id={`tooltip-${id}`}
         data-tooltip-content={`${
           typeof tooltipContent === 'string' ? tooltipContent : ''
         }`}
         data-tooltip-variant={variant}
         data-tooltip-place={`${tooltipPosition}`}
       >
-        <span className={`${className}`}>{children}</span>
+        <span>{children}</span>
       </a>
     </span>
   );

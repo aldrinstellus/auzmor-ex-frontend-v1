@@ -65,7 +65,7 @@ const Poll: React.FC<IPoll & PollProps> = ({
               variant={Variant.Secondary}
               size={Size.Medium}
               borderAround
-              stroke="#000"
+              color="text-black"
               className="bg-white rounded-7xl"
               borderAroundClassName="rounded-7xl"
               dataTestId="createpost-edit-poll"
@@ -76,7 +76,7 @@ const Poll: React.FC<IPoll & PollProps> = ({
               variant={Variant.Secondary}
               size={Size.Medium}
               borderAround
-              stroke="#000"
+              color="text-black"
               className="bg-white rounded-7xl"
               borderAroundClassName="rounded-7xl"
               dataTestId="createpost-remove-poll"

@@ -19,7 +19,7 @@ import { ITeamDetails, TeamFlow } from '../Teams';
 
 export interface ITeamForm {
   name: string;
-  category: Record<string, any>;
+  category: Record<string, any> | null;
   description: string;
 }
 
@@ -62,12 +62,12 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
     mode: 'onChange',
     defaultValues: {
       name: team?.name || '',
-      category:
-        (team && {
-          label: team?.category?.name,
-          value: team?.category?.name?.toUpperCase(),
-        }) ||
-        '',
+      category: team?.category?.categoryId
+        ? {
+            label: team?.category?.name,
+            value: team?.category?.name,
+          }
+        : null,
       description: team?.description || '',
     },
   });
@@ -89,11 +89,7 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              stroke={twConfig.theme.colors.red['500']}
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
           ),
           style: {
             border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -145,11 +141,7 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              stroke={twConfig.theme.colors.red['500']}
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
           ),
           style: {
             border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -174,7 +166,7 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
             />
           ),
@@ -196,13 +188,17 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
   });
 
   const onSubmit = (data: any) => {
-    // issue with update is when we click update it will create new category with case sensitive
+    let categoryValue;
+    if (data?.category?.type === 'TEAM') {
+      categoryValue = data?.category?.value;
+    } else {
+      categoryValue = data?.category?.value?.toUpperCase();
+    }
     const payload = {
       name: data?.name,
-      category: data?.category?.value, // this should be pass in capital
+      category: categoryValue,
       description: data?.description,
     };
-
     if (teamFlowMode === TeamFlow.CreateTeam)
       createTeamMutation.mutate(payload);
     else updateTeamMutation.mutate(payload);

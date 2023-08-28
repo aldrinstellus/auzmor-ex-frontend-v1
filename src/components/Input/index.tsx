@@ -112,7 +112,7 @@ const Input: React.FC<InputProps> = ({
           'py-3': size === Size.Large,
         },
         {
-          'bg-neutral-100': disabled,
+          'bg-neutral-100 text-neutral-400': disabled,
         },
         {
           'w-full rounded-19xl border border-neutral-200 focus:outline-none':
@@ -193,11 +193,11 @@ const Input: React.FC<InputProps> = ({
             onBlur={field.onBlur}
           />
           {isClearable && !!field.value && (
-            <div className="absolute right-2">
+            <div className="absolute right-2 p-2">
               <Icon
                 name="close"
                 size={16}
-                className="p-2 rounded-7xl bg-white"
+                className="rounded-7xl bg-white"
                 onClick={() => field.onChange('')}
               />
             </div>

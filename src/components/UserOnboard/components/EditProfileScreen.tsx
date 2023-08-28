@@ -42,8 +42,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
                 name="edit"
                 size={20}
                 className="absolute bg-primary-500 border-1 border-white rounded-full p-2 cursor-pointer top-0 right-1"
-                stroke="#ffffff"
-                hover={false}
+                color="text-white"
                 onClick={() => profilePictureRef?.current?.click()}
                 dataTestId="edit-profilepic"
               />

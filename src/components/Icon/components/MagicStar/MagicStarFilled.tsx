@@ -1,31 +1,22 @@
 import * as React from 'react';
 import { SVGProps } from 'react';
 
-type IconProps = {
-  size?: number;
-  fill?: string;
-};
-
-const SvgMagicStarFilled = ({
-  size = 24,
-  fill = '#737373',
-  ...props
-}: SVGProps<SVGSVGElement> & IconProps) => (
+const SvgMagicStarFilled = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width={size}
-    height={size}
+    width={24}
+    height={24}
     viewBox="0 0 24 24"
-    {...props}
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    {...props}
   >
     <path
       d="M17.29 4.14L17.22 7.93C17.21 8.45 17.54 9.14 17.96 9.45L20.44 11.33C22.03 12.53 21.77 14 19.87 14.6L16.64 15.61C16.1 15.78 15.53 16.37 15.39 16.92L14.62 19.86C14.01 22.18 12.49 22.41 11.23 20.37L9.47 17.52C9.15 17 8.39 16.61 7.79 16.64L4.45 16.81C2.06 16.93 1.38 15.55 2.94 13.73L4.92 11.43C5.29 11 5.46 10.2 5.29 9.66L4.27 6.42C3.68 4.52 4.74 3.47 6.63 4.09L9.58 5.06C10.08 5.22 10.83 5.11 11.25 4.8L14.33 2.58C16 1.39 17.33 2.09 17.29 4.14Z"
-      fill={fill}
+      fill="currentColor"
     />
     <path
       d="M21.44 20.47L18.41 17.44C18.12 17.15 17.64 17.15 17.35 17.44C17.06 17.73 17.06 18.21 17.35 18.5L20.38 21.53C20.53 21.68 20.72 21.75 20.91 21.75C21.1 21.75 21.29 21.68 21.44 21.53C21.73 21.24 21.73 20.76 21.44 20.47Z"
-      fill={fill}
+      fill="currentColor"
     />
   </svg>
 );

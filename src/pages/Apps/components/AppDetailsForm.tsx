@@ -7,16 +7,24 @@ import {
   UseFormGetValues,
   UseFormSetValue,
 } from 'react-hook-form';
-import { IAddAppForm } from './AddApp';
+import { ADD_APP_FLOW, IAddAppForm } from './AddApp';
 import UploadIconButton from './UploadIconButton';
-import Button, { Variant } from 'components/Button';
-import { App, CategoryType } from 'queries/apps';
+import Button, { Size, Variant } from 'components/Button';
+import {
+  App,
+  CategoryType,
+  IAudience,
+  useInfiniteCategories,
+} from 'queries/apps';
+import { ICategoryDetail } from 'queries/category';
 
 type AppDetailsFormProps = {
   control: Control<IAddAppForm, any>;
   errors: FieldErrors<IAddAppForm>;
   defaultValues: UseFormGetValues<IAddAppForm>;
   setValue: UseFormSetValue<IAddAppForm>;
+  setActiveFlow: (param: ADD_APP_FLOW) => void;
+  audience: IAudience[];
 };
 
 const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
@@ -24,6 +32,8 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
   errors,
   defaultValues,
   setValue,
+  setActiveFlow,
+  audience,
 }) => {
   const urlField = [
     {
@@ -41,6 +51,31 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
         errors.url || !defaultValues()?.url ? '' : 'text-blue-500 underline',
     },
   ];
+
+  const formatCategories = (data: any) => {
+    const categoriesData = data?.pages.flatMap((page: any) => {
+      return page?.data?.result?.data.map((category: any) => {
+        try {
+          return { ...category, label: category.name };
+        } catch (e) {
+          console.log('Error', { category });
+        }
+      });
+    });
+
+    const transformedOption = categoriesData?.map(
+      (category: ICategoryDetail) => ({
+        value: category?.id,
+        label: category?.name,
+        type: category?.type,
+        id: category?.id,
+        dataTestId: `category-option-${category?.type?.toLowerCase()}-${
+          category?.name
+        }`,
+      }),
+    );
+    return transformedOption;
+  };
 
   const appFields = [
     {
@@ -67,7 +102,7 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
       errorDataTestId: 'add-app-exceed-description',
       dataTestId: 'about-app-description',
       control,
-      className: 'resize-none rounded-9xl',
+      className: 'resize-none rounded-19xl',
       rows: 3,
       showCounter: true,
     },
@@ -78,10 +113,12 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
       name: 'category',
       label: 'Category',
       control: control,
-      defaultValue: defaultValues()?.category?.label,
-      categoryType: CategoryType.APP,
+      defaultValue: defaultValues()?.category,
       dataTestId: 'add-app-category',
       addItemDataTestId: 'add-app-add-category',
+      fetchQuery: useInfiniteCategories,
+      queryParams: { type: CategoryType.APP },
+      getFormattedData: formatCategories,
     },
   ];
 
@@ -94,9 +131,39 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
         <Layout fields={appFields} className="w-full flex flex-col gap-y-6" />
         <div className="w-full">
           <UploadIconButton setValue={setValue} icon={defaultValues()?.icon} />
-          <div className="pt-6">
+          <div className="pt-8">
             <p className="text-neutral-900 font-bold pb-1 text-sm">Audience</p>
-            <Button variant={Variant.Secondary} label="Everyone" />
+            {audience.length > 0 ? (
+              <div className="flex gap-2">
+                <Button
+                  key={audience[0].entityId}
+                  leftIcon="noteFavourite"
+                  leftIconSize={16}
+                  leftIconClassName="mr-1"
+                  size={Size.Small}
+                  variant={Variant.Secondary}
+                  label={audience[0].name || 'Team Name'}
+                  onClick={() => setActiveFlow(ADD_APP_FLOW.AudienceSelector)}
+                />
+                {audience.length > 1 && (
+                  <Button
+                    key={audience[0].entityId}
+                    variant={Variant.Secondary}
+                    size={Size.Small}
+                    label={`+ ${audience.length - 1} more`}
+                    onClick={() => setActiveFlow(ADD_APP_FLOW.AudienceSelector)}
+                  />
+                )}
+              </div>
+            ) : (
+              <Button
+                variant={Variant.Secondary}
+                label="Everyone"
+                size={Size.Small}
+                dataTestId="add-app-audience"
+                onClick={() => setActiveFlow(ADD_APP_FLOW.AudienceSelector)}
+              />
+            )}
           </div>
         </div>
       </div>
