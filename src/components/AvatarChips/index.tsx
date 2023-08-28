@@ -9,6 +9,7 @@ interface IAvatarChipsProps {
   className?: string;
   avatarClassName?: string;
   avatarSize?: number;
+  dataTestId?: string;
 }
 
 const AvatarChips: React.FC<IAvatarChipsProps> = ({
@@ -17,6 +18,7 @@ const AvatarChips: React.FC<IAvatarChipsProps> = ({
   className,
   avatarClassName,
   avatarSize = 16,
+  dataTestId,
 }) => {
   const [open, openModal, closeModal] = useModal();
 
@@ -32,6 +34,7 @@ const AvatarChips: React.FC<IAvatarChipsProps> = ({
                 key={user.userId}
                 className={avatarClassName}
                 size={avatarSize}
+                dataTestId={dataTestId}
               />
             ))}
 
@@ -41,12 +44,18 @@ const AvatarChips: React.FC<IAvatarChipsProps> = ({
       px-2 py-3 text-primary-500 text-semibold text-sm 
       hover:border-primary-500 transition cursor-pointer ${avatarClassName}`}
             onClick={openModal}
+            data-testid={`${dataTestId}morecta`}
           >
             +{users.length - showCount} more
           </div>
         )}
       </div>
-      <UserListModal open={open} closeModal={closeModal} users={users} />
+      <UserListModal
+        open={open}
+        closeModal={closeModal}
+        users={users}
+        dataTestId={dataTestId}
+      />
     </>
   );
 };

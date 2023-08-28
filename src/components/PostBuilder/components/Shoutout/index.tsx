@@ -104,6 +104,16 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
         title="Give Kudos"
         onBackIconClick={handleBack}
         onClose={closeModal}
+        titleDataTestId={
+          step === SHOUTOUT_STEPS.UserSelect
+            ? 'createpost-givekudos'
+            : 'kudos-uploading-button'
+        }
+        closeBtnDataTestId={
+          step === SHOUTOUT_STEPS.UserSelect
+            ? 'kudos-closemodal'
+            : 'kudos-selectbanner-closemodal'
+        }
       />
       <Body
         step={step}
@@ -122,6 +132,11 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
           onClick={handleBack}
           label="Back"
           variant={ButtonVariant.Secondary}
+          dataTestId={
+            step === SHOUTOUT_STEPS.UserSelect
+              ? 'kudos-givekudos-backcta'
+              : 'kudos-selectbanner-back'
+          }
         />
         <Button
           label="Next"
@@ -129,6 +144,11 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
           variant={ButtonVariant.Primary}
           onClick={handleNext}
           disabled={isBtnDisabled()}
+          dataTestId={
+            step === SHOUTOUT_STEPS.UserSelect
+              ? 'kudos-givekudos-nextcta'
+              : 'kudos-selectbanner-next'
+          }
         />
       </div>
     </div>

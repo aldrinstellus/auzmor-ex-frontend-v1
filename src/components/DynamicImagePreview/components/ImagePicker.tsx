@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import clsx from 'clsx';
-import { toBlob } from 'html-to-image';
 import Kudos1 from 'images/kudos1.png';
 import Kudos2 from 'images/kudos2.png';
 import Kudos3 from 'images/kudos3.png';
@@ -10,7 +9,6 @@ import Kudos6 from 'images/kudos6.png';
 import Kudos7 from 'images/kudos7.png';
 import Kudos8 from 'images/kudos8.png';
 import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
 
 const templateImages = [
   {
@@ -18,30 +16,32 @@ const templateImages = [
     image: Kudos1,
     label: 'Thanks for the Exceptional Effort',
     bgColor: 'bg-[#FFEDD5]',
+    dataTestId: 'kudos-thanks-banner',
   },
   {
     id: 2,
+    image: Kudos3,
+    label: 'Good Job!',
+    bgColor: 'bg-[#FCE8F3]',
+    dataTestId: 'kudos-goodjob-banner',
+  },
+  {
+    id: 3,
+    image: Kudos5,
+    label: 'Thank you for your hardwork!',
+    bgColor: 'bg-[#FDFDEA]',
+  },
+  {
+    id: 4,
     image: Kudos2,
     label: 'Your motivation is inspiring',
     bgColor: 'bg-[#D1FAE5]',
   },
   {
-    id: 3,
-    image: Kudos3,
-    label: 'Good Job!',
-    bgColor: 'bg-[#FCE8F3]',
-  },
-  {
-    id: 4,
+    id: 5,
     image: Kudos4,
     label: 'I Appreciate your excellent work!',
     bgColor: 'bg-[#E5EDFF]',
-  },
-  {
-    id: 5,
-    image: Kudos5,
-    label: 'Thank you for your hardwork!',
-    bgColor: 'bg-[#FDFDEA]',
   },
   {
     id: 6,

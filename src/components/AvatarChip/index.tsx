@@ -20,12 +20,14 @@ interface IAvatarChipProps {
   user: IAvatarUser;
   className?: string;
   size?: number;
+  dataTestId?: string;
 }
 
 const AvatarChip: React.FC<IAvatarChipProps> = ({
   className,
   user,
   size = 16,
+  dataTestId,
 }) => {
   const { user: currentUser } = useAuth();
 
@@ -45,6 +47,7 @@ const AvatarChip: React.FC<IAvatarChipProps> = ({
         <div
           className={`flex items-center w-fit gap-1 rounded-[24px] border-1 border-neutral-200 bg-neutral-100
       px-2 py-3 text-primary-500 text-semibold text-sm hover:border-primary-500 transition cursor-pointer ${className} hover:shadow-lg`}
+          data-testid={`${dataTestId}${getFullName(user) || user.email}`}
         >
           <Avatar
             name={getFullName(user) || user.email}

@@ -75,7 +75,7 @@ const ImageResosition: React.FC<IImageResositionProps> = ({
           : undefined
       }
     >
-      <Header title={title} closeBtnDataTestId={'reposition-close'} />
+      <Header title={title} closeBtnDataTestId={'kudos-custombanner-close'} />
       {isImageLoading ? (
         <div className="w-full h-full">
           <PageLoader />
@@ -93,7 +93,7 @@ const ImageResosition: React.FC<IImageResositionProps> = ({
         imageRef={imageRef}
         imageFile={imageFile}
         onSubmit={onSubmit}
-        dataTestId="reposition"
+        dataTestId="kudos-custombanner"
       />
     </Modal>
   );

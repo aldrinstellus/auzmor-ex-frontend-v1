@@ -37,27 +37,28 @@ const ImagePreview: React.FC<IImagePreviewProps> = ({
 
   return (
     <div className="relative">
-      <div className="absolute top-1 right-1 flex items-center gap-1">
+      <div className="absolute top-[14px] right-[14px] flex items-center gap-1">
         {imageFile && (
-          <Icon
-            name="edit"
-            disabled
-            color="text-black"
-            size={16}
-            className="p-2 bg-white rounded cursor-pointer"
-            onClick={() => {
-              imageUploaderRef?.current?.click();
-            }}
-          />
+          <div className="p-[7px] bg-white rounded cursor-pointer border border-neutral-200">
+            <Icon
+              name="edit"
+              color="text-neutral-900"
+              size={16}
+              onClick={() => {
+                imageUploaderRef?.current?.click();
+              }}
+            />
+          </div>
         )}
-        <Icon
-          name="close"
-          disabled
-          color="text-black"
-          size={16}
-          className="p-2 bg-white rounded cursor-pointer"
-          onClick={onRemove}
-        />
+        <div className="p-[7px] bg-white rounded cursor-pointer border border-neutral-200">
+          <Icon
+            name="close"
+            color="text-neutral-900"
+            size={16}
+            onClick={onRemove}
+            dataTestId="kudos-remove-banner"
+          />
+        </div>
       </div>
       {imageFile && (
         <img
@@ -72,6 +73,7 @@ const ImagePreview: React.FC<IImagePreviewProps> = ({
         >
           <div
             className={`${selectedTemplate.bgColor} flex flex-col justify-center items-center p-2`}
+            data-testid="kudos-banner-text"
           >
             <div className="mt-4">{selectedTemplate.label}</div>
             <div className="text-lg font-bold text-center">
