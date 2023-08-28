@@ -11,24 +11,66 @@ import { Variant as InputVariant } from 'components/Input';
 import Modal from 'components/Modal';
 import { ISkillDetail, useInfiniteSkills } from 'queries/skills';
 
-import { ISkillsOption, IPersonalDetailsForm } from './PersonalDetails';
-import { Control } from 'react-hook-form';
+import { ISkillsOption } from '../PersonalDetails';
+import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Icon from 'components/Icon';
+import { updateCurrentUser } from 'queries/users';
+import { twConfig, convertUpperCaseToPascalCase } from 'utils/misc';
+import { toastConfig } from '../utils';
 export interface ISkillsModalProps {
   open: boolean;
   closeModal: () => void;
   skills: ISkillsOption[];
-  setSkills: React.Dispatch<React.SetStateAction<ISkillsOption[]>>;
-  control: Control<IPersonalDetailsForm, any>;
 }
 
 const SkillsModal: React.FC<ISkillsModalProps> = ({
   open,
   closeModal,
   skills,
-  setSkills,
-  control,
 }) => {
+  const queryClient = useQueryClient();
+
+  const updateUserSkillsMutation = useMutation({
+    mutationFn: updateCurrentUser,
+    mutationKey: ['update-user-skills-mutation'],
+    onError: (error: any) => {},
+    onSuccess: async (response: any) => {
+      toastConfig(
+        <Icon
+          name="closeCircleOutline"
+          color={twConfig.theme.colors.primary['500']}
+          size={20}
+        />,
+      );
+      closeModal();
+      await queryClient.invalidateQueries(['current-user-me']);
+    },
+  });
+
+  const { handleSubmit, control, reset, getValues } = useForm<any>({
+    mode: 'onSubmit',
+    defaultValues: {
+      personal: {
+        skills: skills?.map(
+          (skill) =>
+            ({
+              label: skill.value,
+              value: skill.id,
+            } || []),
+        ),
+      },
+    },
+  });
+
+  const onSubmit = () => {
+    const { personal } = getValues();
+    updateUserSkillsMutation.mutate({
+      personal: { gender: personal?.gender?.value },
+    });
+  };
+
   const formatSkills = (data: any) => {
     const skillsData = data?.pages.flatMap((page: any) => {
       return page?.data?.result?.data.map((skill: any) => {
@@ -97,10 +139,7 @@ const SkillsModal: React.FC<ISkillsModalProps> = ({
         size={Size.Small}
         type={ButtonType.Submit}
         dataTestId="save-cta"
-        onClick={() => {
-          setSkills(skills);
-          closeModal();
-        }}
+        onClick={handleSubmit(onSubmit)}
       />
     </div>
   );
