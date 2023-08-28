@@ -1,12 +1,10 @@
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Card from 'components/Card';
-import Divider from 'components/Divider';
 import clsx from 'clsx';
 import useHover from 'hooks/useHover';
 import Icon from 'components/Icon';
 import moment from 'moment';
-import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 import Header from './Header';
 import Layout, { FieldType } from 'components/Form';
 import { useForm } from 'react-hook-form';
@@ -17,11 +15,12 @@ import { OptionType } from 'components/UserOnboard/components/SelectTimeZone';
 import { twConfig } from 'utils/misc';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
-import DragDropList from 'components/DragDropList';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import InfoRow from './InfoRow';
 import Button, { Size, Variant } from 'components/Button';
+import useModal from 'hooks/useModal';
+import SkillsModal from './SkillsModal';
 
 interface IPersonalDetails {
   birthDate: Date | string;
@@ -30,7 +29,7 @@ interface IPersonalDetails {
   maritalStatus: OptionType;
   skills: string[];
 }
-interface IPersonalDetailsForm {
+export interface IPersonalDetailsForm {
   personal: IPersonalDetails;
   skills: string;
 }
@@ -52,6 +51,8 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   const [isHovered, eventHandlers] = useHover();
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [skills, setSkills] = useState<ISkillsOption[]>([]);
+
+  const [openSkills, openSkillsModal, closeSkillsModal] = useModal();
 
   const convertUpperCaseToPascalCase = (value: string) => {
     if (!value) {
@@ -295,35 +296,42 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
             }}
             label="Skills"
             dataTestId="added-skills"
+            canEdit={false}
             value={
-              personalDetails?.personal?.skills?.length > 0 && (
-                <div className="flex items-center flex-wrap">
-                  {personalDetails?.personal?.skills.map(
-                    (skill: string, index: number) => (
-                      <div
-                        key={skill}
-                        data-testid={`personal-details-skill-${skill}`}
-                        className="bg-primary-50 text-primary-500 flex justify-center items-center px-2 py-2 text-xs rounded-16xl mr-2"
-                      >
-                        {skill}
-                      </div>
-                    ),
-                  )}
-                  <div>
-                    <Button
-                      label="Add Skills"
-                      variant={Variant.Secondary}
-                      size={Size.ExtraSmall}
-                      leftIcon="add"
-                      leftIconSize={16}
-                    />
-                  </div>
+              <div className="flex items-center flex-wrap">
+                {personalDetails?.personal?.skills.map(
+                  (skill: string, index: number) => (
+                    <div
+                      key={skill}
+                      data-testid={`personal-details-skill-${skill}`}
+                      className="bg-primary-50 text-primary-500 flex justify-center items-center px-2 py-2 text-xs rounded-16xl mr-2"
+                    >
+                      {skill}
+                    </div>
+                  ),
+                )}
+                <div>
+                  <Button
+                    label="Add Skills"
+                    variant={Variant.Secondary}
+                    size={Size.ExtraSmall}
+                    leftIcon="add"
+                    leftIconSize={16}
+                    onClick={openSkillsModal}
+                  />
                 </div>
-              )
+              </div>
             }
           />
         </div>
       </Card>
+      <SkillsModal
+        open={openSkills}
+        closeModal={closeSkillsModal}
+        skills={skills}
+        setSkills={setSkills}
+        control={control}
+      />
     </div>
   );
 };
