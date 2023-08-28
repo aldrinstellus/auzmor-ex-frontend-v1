@@ -82,13 +82,13 @@ const ImagePicker: React.FC<IImagePickerProps> = ({
   };
 
   return (
-    <div className="ml-2 mb-2">
-      <div className="flex gap-4 flex-wrap">
+    <div className="flex justify-center mb-2">
+      <div className="inline-grid grid-cols-2 gap-4">
         {templateImages.map((item) => (
           <div
             key={item.id}
             className={clsx(
-              'relative cursor-pointer max-w-[270px] max-h-[183px] min-h-[183px] max-w-[270px] border-1 border-neutral-200 w-full h-full rounded-[12px] overflow-hidden',
+              'relative cursor-pointer max-w-[269px] max-h-[182px] min-h-[183px] max-w-[270px] border-1 border-neutral-200 w-full h-full rounded-[12px] overflow-hidden',
               { 'border-primary-500': item.id === selectedTemplate?.id },
             )}
             onClick={() => handleSelectTemplate(item)}

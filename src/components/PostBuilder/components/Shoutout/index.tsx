@@ -62,7 +62,7 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
       const ids: any[] = [];
       Object.keys(formData.users).forEach((key) => {
         if (formData.users[key]) {
-          _users.push({ id: key, name: 'Nitesh' });
+          _users.push({ id: key, name: 'Nitesh Seram' });
           ids.push(key);
         }
       });

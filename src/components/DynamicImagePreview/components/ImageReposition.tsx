@@ -85,7 +85,7 @@ const ImageResosition: React.FC<IImageResositionProps> = ({
           src={image}
           cropperRef={cropperRef}
           shape={Shape.Rectangle}
-          aspectRatio={2.5}
+          aspectRatio={3}
         />
       )}
       <Footer

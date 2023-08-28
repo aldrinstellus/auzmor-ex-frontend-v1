@@ -232,6 +232,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
         updateFeed(variables.id, {
           ...feed[variables.id],
           ...variables,
+          shoutoutRecipients: data?.shoutoutRecipients,
           files: [
             ...mediaRef.current.filter(
               (media) => !!(variables.files as string[])?.includes(media.id),
@@ -448,6 +449,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
             ? 'createpost-scheduledpost-modal'
             : ''
         }
+        className="max-w-[638px]"
       >
         {activeFlow === CreatePostFlow.CreatePost && (
           <CreatePost

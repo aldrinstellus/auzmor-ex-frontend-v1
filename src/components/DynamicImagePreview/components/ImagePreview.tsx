@@ -1,5 +1,5 @@
 import Icon from 'components/Icon';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getBlobUrl, twConfig } from 'utils/misc';
 
 interface IImagePreviewProps {
@@ -19,21 +19,58 @@ const ImagePreview: React.FC<IImagePreviewProps> = ({
   users,
   onRemove,
 }) => {
-  const formatUserList = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [showNameCount, setShowNameCount] = useState(0);
+
+  const formatUserList = (_showNameCount: any) => {
     const count = users.length;
-    if (count === 1) {
-      return users[0].name;
-    } else if (count === 2) {
-      return `${users[0].name} and ${users[1].name}`;
-    } else if (count === 3) {
-      return `${users[0].name}, ${users[1].name} and ${users[2].name}`;
-    } else if (count > 3) {
-      return `${users[0].name}, ${users[1].name}, ${users[2].name} and ${
-        count - 3
-      } others`;
+    if (_showNameCount < count) {
+      const showNames = users
+        .slice(0, _showNameCount)
+        .map((user) => user.name)
+        .join(', ');
+      if (_showNameCount + 1 === count) {
+        return `${showNames} and ${users[count - 1].name}`;
+      } else {
+        return `${showNames} and ${count - _showNameCount} others`;
+      }
+    } else {
+      if (count === 1) {
+        return users[0].name;
+      } else if (count === 2) {
+        return `${users[0].name} and ${users[1].name}`;
+      } else if (count === 3) {
+        return `${users[0].name}, ${users[1].name} and ${users[2].name}`;
+      } else if (count > 3) {
+        return `${users[0].name}, ${users[1].name}, ${users[2].name} and ${
+          count - 3
+        } others`;
+      }
     }
     return '';
   };
+
+  // Logic to handle number of username to show which fit in 1 line
+  useEffect(() => {
+    if (containerRef.current) {
+      const containerWidth = containerRef.current.clientWidth;
+      let totalWidth = 0;
+      let count = 0;
+
+      for (let i = 0; i < users.length; i++) {
+        const nameWidth = users[i].name.length * 17; // Adjust this multiplier as needed
+        totalWidth += nameWidth;
+
+        if (totalWidth > containerWidth) {
+          break;
+        } else {
+          count++;
+        }
+      }
+
+      setShowNameCount(count);
+    }
+  }, [users]);
 
   return (
     <div className="relative">
@@ -63,25 +100,26 @@ const ImagePreview: React.FC<IImagePreviewProps> = ({
       {imageFile && (
         <img
           src={getBlobUrl(imageFile)}
-          className="object-contain w-full h-full max-h-[222px]"
+          className="object-contain w-full h-full min-h-[209px]"
         />
       )}
       {selectedTemplate && (
         <div
           ref={templateImageRef}
-          className={`${selectedTemplate.bgColor} aspect-[2.5/1] max-h-[222px] w-full`}
+          className={`${selectedTemplate.bgColor} aspect-[3/1] min-h-[209px] w-full`}
         >
           <div
-            className={`${selectedTemplate.bgColor} flex flex-col justify-center items-center p-2`}
+            ref={containerRef}
+            className={`${selectedTemplate.bgColor} flex flex-col justify-center items-center p-2 pb-0`}
             data-testid="kudos-banner-text"
           >
             <div className="mt-4">{selectedTemplate.label}</div>
             <div className="text-lg font-bold text-center">
-              {formatUserList()}
+              {formatUserList(showNameCount)}
             </div>
             <img
               src={selectedTemplate.image}
-              className="object-contain w-full h-full max-h-[138px]"
+              className="object-contain w-full h-full max-h-[130px]"
             />
           </div>
         </div>
