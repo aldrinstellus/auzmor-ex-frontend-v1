@@ -279,3 +279,10 @@ export const extractFirstWord = (str: string) => {
 
 export const padZero = (num: number, places: number) =>
   String(num).padStart(places, '0');
+
+export const convertUpperCaseToPascalCase = (value: string) => {
+  if (!value) {
+    return '';
+  }
+  return value[0] + value.substring(1, value.length).toLowerCase();
+};
