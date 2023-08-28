@@ -2,6 +2,8 @@ import React, { useRef } from 'react';
 import InfoRow from '../InfoRow';
 import 'moment-timezone';
 import Button, { Size, Variant } from 'components/Button';
+import useModal from 'hooks/useModal';
+import SkillsModal from './SkillsModal';
 
 type AppProps = {
   data: any;
@@ -9,19 +11,20 @@ type AppProps = {
 
 const SkillsRow: React.FC<AppProps> = ({ data }) => {
   const ref = useRef<any>(null);
+  const [openSkills, openSkillsModal, closeSkillsModal] = useModal();
 
   return (
-    <InfoRow
-      ref={ref}
-      icon={{
-        name: 'edit',
-        color: 'text-primary-500',
-        bgColor: 'text-primary-50',
-      }}
-      label="Skills"
-      canEdit={false}
-      value={
-        data?.personal?.skills?.length > 0 && (
+    <>
+      <InfoRow
+        ref={ref}
+        icon={{
+          name: 'edit',
+          color: 'text-primary-500',
+          bgColor: 'text-primary-50',
+        }}
+        label="Skills"
+        canEdit={false}
+        value={
           <div className="flex items-center flex-wrap">
             {data?.personal?.skills.map((skill: string, index: number) => (
               <div
@@ -39,13 +42,19 @@ const SkillsRow: React.FC<AppProps> = ({ data }) => {
                 size={Size.ExtraSmall}
                 leftIcon="add"
                 leftIconSize={16}
+                onClick={openSkillsModal}
               />
             </div>
           </div>
-        )
-      }
-      dataTestId="added-skills"
-    />
+        }
+        dataTestId="added-skills"
+      />
+      <SkillsModal
+        open={openSkills}
+        closeModal={closeSkillsModal}
+        skills={data?.personal?.skills || []}
+      />
+    </>
   );
 };
 
