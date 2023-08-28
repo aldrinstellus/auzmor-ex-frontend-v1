@@ -16,7 +16,7 @@ const UserRow: React.FC<IUserRowProps> = ({ user }) => {
     <div className="flex items-center justify-between w-full group hover:bg-primary-50 transition py-1">
       <div className="flex items-center gap-4 flex-1">
         <Avatar
-          name={getFullName(user)}
+          name={getFullName(user) || user.email}
           image={getProfileImage(user)}
           size={32}
         />
