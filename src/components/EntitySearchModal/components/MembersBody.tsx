@@ -46,7 +46,7 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
     });
   const usersData = data?.pages
     .flatMap((page) => {
-      return page?.data?.result?.data.map((user: any) => {
+      return page?.data?.result?.data.map((user: IGetUser) => {
         try {
           return user;
         } catch (e) {
@@ -312,6 +312,13 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
                         name: `users.${user.id}`,
                         control,
                         className: 'flex item-center mr-4',
+                        transform: {
+                          input: (value: IGetUser | boolean) => !!value,
+                          output: (e: React.ChangeEvent<HTMLInputElement>) => {
+                            if (e.target.checked) return user;
+                            return false;
+                          },
+                        },
                       },
                     ]}
                   />

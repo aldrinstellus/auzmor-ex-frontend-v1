@@ -5,14 +5,12 @@ import { AudienceFlow } from '.';
 interface IFooterProps {
   isValid: boolean;
   handleBackButtonClick: () => void;
-  showSaveChangesBtn: boolean;
   audienceFlow: AudienceFlow;
 }
 
 const Footer: React.FC<IFooterProps> = ({
   isValid,
   handleBackButtonClick,
-  showSaveChangesBtn,
   audienceFlow,
 }) => {
   return (
@@ -24,7 +22,7 @@ const Footer: React.FC<IFooterProps> = ({
           onClick={handleBackButtonClick}
           dataTestId="scheduledpost-back"
         />
-        {showSaveChangesBtn && audienceFlow === AudienceFlow.EntitySelect && (
+        {audienceFlow === AudienceFlow.EntitySelect && (
           <Button
             label={'Save changes'}
             type={Type.Submit}

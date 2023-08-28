@@ -3,10 +3,9 @@ import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
 import Spinner from 'components/Spinner';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, ReactNode } from 'react';
 import { Control } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
-import { PRIMARY_COLOR } from 'utils/constants';
 
 interface IOption {
   label: string;
@@ -27,6 +26,7 @@ interface IInfiniteSearchProps {
   fetchNextPage?: any;
   hasNextPage?: boolean;
   selectionCount?: number;
+  itemRenderer?: (item: IOption) => ReactNode;
 }
 
 const InfiniteSearch: React.FC<IInfiniteSearchProps> = ({
@@ -42,6 +42,7 @@ const InfiniteSearch: React.FC<IInfiniteSearchProps> = ({
   fetchNextPage,
   hasNextPage,
   selectionCount = 0,
+  itemRenderer,
 }) => {
   const { ref, inView } = useInView();
   useEffect(() => {
@@ -49,6 +50,31 @@ const InfiniteSearch: React.FC<IInfiniteSearchProps> = ({
       fetchNextPage();
     }
   }, [inView]);
+
+  const checkboxField = useCallback(
+    (option: IOption) => {
+      return [
+        {
+          type: FieldType.Checkbox,
+          name: `${optionsName}.${option.id}`,
+          control,
+          className: 'flex item-center mr-4',
+        },
+      ];
+    },
+    [options],
+  );
+
+  const searchField = [
+    {
+      type: FieldType.Input,
+      control,
+      name: searchName,
+      placeholder: 'Search',
+      isClearable: true,
+      leftIcon: 'search',
+    },
+  ];
 
   return (
     <PopupMenu
@@ -76,19 +102,7 @@ const InfiniteSearch: React.FC<IInfiniteSearchProps> = ({
           renderNode: (
             <div className="flex flex-col">
               <div onClick={(e) => e.preventDefault()}>
-                <Layout
-                  fields={[
-                    {
-                      type: FieldType.Input,
-                      control,
-                      name: searchName,
-                      placeholder: 'Search',
-                      isClearable: true,
-                      leftIcon: 'search',
-                    },
-                  ]}
-                  className="mx-3 mt-3 mb-2"
-                />
+                <Layout fields={searchField} className="mx-3 mt-3 mb-2" />
               </div>
               {isLoading ? (
                 <div className="w-full flex items-center justify-center p-10">
@@ -96,25 +110,20 @@ const InfiniteSearch: React.FC<IInfiniteSearchProps> = ({
                 </div>
               ) : (
                 <div className="max-h-[128px] overflow-y-scroll">
-                  {options.map((option: IOption, index) => (
-                    <div
-                      className="px-6 py-2 flex items-center"
-                      key={index}
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <Layout
-                        fields={[
-                          {
-                            type: FieldType.Checkbox,
-                            name: `${optionsName}.${option.id}`,
-                            control,
-                            className: 'flex item-center mr-4',
-                          },
-                        ]}
-                      />
-                      <div>{option.label}</div>
-                    </div>
-                  ))}
+                  {options.map((option: IOption) =>
+                    itemRenderer ? (
+                      itemRenderer(option)
+                    ) : (
+                      <div
+                        className="px-6 py-2 flex items-center"
+                        key={option.id}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Layout fields={checkboxField(option)} />
+                        <div>{option.label}</div>
+                      </div>
+                    ),
+                  )}
                   {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
                 </div>
               )}

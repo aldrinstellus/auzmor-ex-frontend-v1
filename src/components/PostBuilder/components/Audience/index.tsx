@@ -21,6 +21,9 @@ export enum AudienceFlow {
 const Audience: React.FC<IAudienceProps> = ({ closeModal }) => {
   const { setActiveFlow, clearPostContext, audience, setAudience } =
     useContext(CreatePostContext);
+  const [isEveryoneSelected, setIsEveryoneSelected] = useState<boolean>(
+    !!!audience.length,
+  );
   const { control, watch, handleSubmit, setValue, resetField } =
     useForm<IAudienceForm>({
       defaultValues: {
@@ -62,7 +65,6 @@ const Audience: React.FC<IAudienceProps> = ({ closeModal }) => {
       },
     });
   const [audienceFlow, setAudienceFlow] = useState(AudienceFlow.EntitySelect);
-  const [showSaveChangesBtn, setShowSaveChangesBtn] = useState(false);
 
   const getHeaderText = () => {
     switch (audienceFlow) {
@@ -90,31 +92,51 @@ const Audience: React.FC<IAudienceProps> = ({ closeModal }) => {
   };
 
   const onSubmit = (formData: IAudienceForm) => {
+    const localAudience: IAudience[] = [];
+    Object.keys(formData.channels).forEach((id: string) => {
+      if (formData.channels[id]) {
+        localAudience.push({
+          entityId: id,
+          entityType: AudienceEntityType.Channel,
+        });
+      }
+    });
+    Object.keys(formData.teams).forEach((id: string) => {
+      if (formData.teams[id]) {
+        localAudience.push({
+          entityId: id,
+          entityType: AudienceEntityType.Team,
+        });
+      }
+    });
+    Object.keys(formData.users).forEach((id: string) => {
+      if (formData.users[id]) {
+        localAudience.push({
+          entityId: id,
+          entityType: AudienceEntityType.User,
+        });
+      }
+    });
     switch (audienceFlow) {
       case AudienceFlow.ChannelSelect:
       case AudienceFlow.TeamSelect:
       case AudienceFlow.UserSelect:
+        if (localAudience.length === 0) {
+          setIsEveryoneSelected(true);
+        } else {
+          setIsEveryoneSelected(false);
+        }
         setAudienceFlow(AudienceFlow.EntitySelect);
         return;
       default:
-        const localAudience: IAudience[] = [];
-        Object.keys(formData.channels).forEach((id: string) => {
-          if (formData.channels[id]) {
-            localAudience.push({
-              entityId: id,
-              entityType: AudienceEntityType.Channel,
-            });
-          }
-        });
-        Object.keys(formData.teams).forEach((id: string) => {
-          if (formData.teams[id]) {
-            localAudience.push({
-              entityId: id,
-              entityType: AudienceEntityType.Team,
-            });
-          }
-        });
-        setAudience(localAudience);
+        if (isEveryoneSelected) {
+          setValue('channels', {});
+          setValue('teams', {});
+          setValue('users', {});
+          setAudience([]);
+        } else {
+          setAudience(localAudience);
+        }
         setActiveFlow(CreatePostFlow.CreatePost);
     }
   };
@@ -138,12 +160,12 @@ const Audience: React.FC<IAudienceProps> = ({ closeModal }) => {
           resetField={resetField}
           audienceFlow={audienceFlow}
           setAudienceFlow={setAudienceFlow}
-          setShowSaveChangesBtn={setShowSaveChangesBtn}
+          isEveryoneSelected={isEveryoneSelected}
+          setIsEveryoneSelected={setIsEveryoneSelected}
         />
         <Footer
           isValid
           handleBackButtonClick={handleBackButtonClick}
-          showSaveChangesBtn={showSaveChangesBtn}
           audienceFlow={audienceFlow}
         />
       </form>

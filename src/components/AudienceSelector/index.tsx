@@ -8,8 +8,7 @@ import { AudienceFlow } from 'components/PostBuilder/components/Audience';
 import useRole from 'hooks/useRole';
 import { useOrganization } from 'queries/organization';
 import { AudienceEntityType, IAudience } from 'queries/post';
-import { IGetUser } from 'queries/users';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Control,
   UseFormWatch,
@@ -17,7 +16,6 @@ import {
   UseFormResetField,
 } from 'react-hook-form';
 import _ from 'lodash';
-import { PRIMARY_COLOR } from 'utils/constants';
 
 interface IAudienceSelectorProps {
   audience: IAudience[];
@@ -27,7 +25,8 @@ interface IAudienceSelectorProps {
   resetField: UseFormResetField<IAudienceForm>;
   audienceFlow: AudienceFlow;
   setAudienceFlow: any;
-  setShowSaveChangesBtn?: (showSaveChangesBtn: boolean) => void;
+  isEveryoneSelected: boolean;
+  setIsEveryoneSelected: (value: boolean) => void;
 }
 
 const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
@@ -38,48 +37,16 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
   resetField,
   audienceFlow,
   setAudienceFlow,
-  setShowSaveChangesBtn = () => {},
+  isEveryoneSelected,
+  setIsEveryoneSelected,
 }) => {
   const { isAdmin } = useRole();
   const { data } = useOrganization();
-  const [isEveryoneSelected, setIsEveryoneSelected] = useState<boolean>(
-    audience.length === 0,
-  );
 
-  const formData = watch();
+  const { teams } = watch();
 
   useEffect(() => {
-    const localAudience: IAudience[] = [];
-    if (!isEveryoneSelected) {
-      Object.keys(formData.channels).forEach((id: string) => {
-        if (formData.channels[id]) {
-          localAudience.push({
-            entityId: id,
-            entityType: AudienceEntityType.Channel,
-          });
-        }
-      });
-      Object.keys(formData.teams).forEach((id: string) => {
-        if (formData.teams[id]) {
-          localAudience.push({
-            entityId: id,
-            entityType: AudienceEntityType.Team,
-          });
-        }
-      });
-    }
-
-    const diff = _.differenceWith(localAudience, audience, _.isEqual);
-
-    if (diff.length) {
-      setShowSaveChangesBtn(true);
-    } else {
-      setShowSaveChangesBtn(false);
-    }
-  }, [formData, audience, isEveryoneSelected]);
-
-  useEffect(() => {
-    if (!!data?.adminSettings?.postingControls.limitGlobalPosting) {
+    if (!isAdmin && !!data?.adminSettings?.postingControls.limitGlobalPosting) {
       setIsEveryoneSelected(false);
     }
   }, [data]);
@@ -87,13 +54,10 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
   const audienceEntity = [
     {
       key: 'everyone',
-      icon: '',
+      icon: 'people',
       title: 'Everyone',
       subTitle: 'Anyone who is a part of this organisation can see this post.',
-      onClick: () => {
-        setAudienceFlow(AudienceFlow.UserSelect);
-        // setIsEveryoneSelected(!isEveryoneSelected);
-      },
+      onClick: () => setIsEveryoneSelected(true),
       isHidden:
         data?.adminSettings?.postingControls.limitGlobalPosting && !isAdmin,
       isSelected: isEveryoneSelected,
@@ -106,26 +70,25 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
     //   subTitle: 'Select a channel you are part of',
     //   onClick: () => {},
     //   isHidden: false,
-    //   isSelected: Object.keys(formData.channels).some(
-    //     (id: string) => !!formData.channels[id] && !isEveryoneSelected,
+    //   isSelected: Object.keys(channels).some(
+    //     (id: string) => !!channels[id] && !isEveryoneSelected,
     //   ),
-    //   selectedCount: Object.keys(formData.channels).filter(
-    //     (id: string) => !!formData.channels[id],
+    //   selectedCount: Object.keys(channels).filter(
+    //     (id: string) => !!channels[id],
     //   ).length,
     // },
     {
       key: 'teams',
-      icon: 'profileUserOutline',
+      icon: 'profileUser',
       title: 'Teams',
       subTitle: 'Select a team you are part of',
       onClick: () => setAudienceFlow(AudienceFlow.TeamSelect),
       isHidden: false,
-      isSelected: Object.keys(formData.teams).some(
-        (id: string) => !!formData.teams[id] && !isEveryoneSelected,
+      isSelected: Object.keys(teams).some(
+        (id: string) => !!teams[id] && !isEveryoneSelected,
       ),
-      selectedCount: Object.keys(formData.teams).filter(
-        (id: string) => !!formData.teams[id],
-      ).length,
+      selectedCount: Object.keys(teams).filter((id: string) => !!teams[id])
+        .length,
     },
   ];
 
@@ -135,7 +98,7 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
         <div className="flex flex-col m-4">
           <div className="px-4 py-2 flex items-center bg-neutral-100 rounded-md mb-4">
             <div className="bg-neutral-200 p-1 rounded-7xl">
-              <Icon name="infoCircleOutline" />
+              <Icon name="infoCircleOutline" hover={false} />
             </div>
             <div className="ml-2.5 text-neutral-500 font-medium text-sm">
               Your post will appear in Feed, on your profile and in search
@@ -155,9 +118,10 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
                   }`}
                 >
                   <Icon
-                    name={entity.icon || 'peopleOutline'}
-                    hoverColor="text-white"
-                    color={entity.isSelected ? 'text-white' : undefined}
+                    name={entity.icon}
+                    className={`text-neutral-500 group-hover:text-white ${
+                      entity.isSelected && 'text-white'
+                    }`}
                   />
                 </div>
                 <div className="ml-3 flex flex-col justify-between">
