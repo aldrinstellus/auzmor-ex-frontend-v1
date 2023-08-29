@@ -43,7 +43,7 @@ const ImagePreview: React.FC<IImagePreviewProps> = ({
       let count = 0;
 
       for (let i = 0; i < users.length; i++) {
-        const nameWidth = users[i].fullName.length * 14; // Adjust this multiplier as needed
+        const nameWidth = users[i].fullName.length * 12; // Adjust this multiplier as needed
         totalWidth += nameWidth;
 
         if (totalWidth > containerWidth) {
@@ -90,22 +90,26 @@ const ImagePreview: React.FC<IImagePreviewProps> = ({
       )}
       {selectedTemplate && (
         <div
-          ref={templateImageRef}
-          className={`${selectedTemplate.bgColor} aspect-[3/1] min-h-[209px] w-full`}
+          className={`${selectedTemplate.bgColor} w-full flex justify-center`}
         >
           <div
-            ref={containerRef}
-            className={`${selectedTemplate.bgColor} flex flex-col justify-center items-center p-2 pb-0`}
-            data-testid="kudos-banner-text"
+            ref={templateImageRef}
+            className={`${selectedTemplate.bgColor} aspect-[3/1] min-h-[209px] max-w-[500px]`}
           >
-            <div className="mt-4">{selectedTemplate.label}</div>
-            <div className="text-lg font-bold text-center">
-              {formatUserList(showNameCount)}
+            <div
+              ref={containerRef}
+              className={`${selectedTemplate.bgColor} flex flex-col justify-center items-center p-2 pb-0`}
+              data-testid="kudos-banner-text"
+            >
+              <div className="mt-4">{selectedTemplate.label}</div>
+              <div className="text-lg font-bold text-center">
+                {formatUserList(showNameCount)}
+              </div>
+              <img
+                src={selectedTemplate.image}
+                className="object-contain w-full h-full max-h-[130px]"
+              />
             </div>
-            <img
-              src={selectedTemplate.image}
-              className="object-contain w-full h-full max-h-[130px]"
-            />
           </div>
         </div>
       )}
