@@ -31,6 +31,9 @@ import HashtagFeedHeader from './components/HashtagFeedHeader';
 import BookmarkFeedHeader from './components/BookmarkFeedHeader';
 import ScheduledFeedHeader from './components/ScheduledFeedHeader';
 import Tooltip from 'components/Tooltip';
+import CelebrationWidget, {
+  CELEBRATION_TYPE,
+} from 'components/CelebrationWidget';
 interface IFeedProps {}
 
 export interface IProfileImage {
@@ -313,7 +316,11 @@ const Feed: React.FC<IFeedProps> = () => {
           {isFetchingNextPage && <PageLoader />}
         </div>
         <div className="min-w-[293px] max-w-[293px]">
-          <AnnouncementCard />
+          <div className="flex flex-col gap-6 sticky top-24">
+            <CelebrationWidget type={CELEBRATION_TYPE.Birthday} />
+            <CelebrationWidget type={CELEBRATION_TYPE.WorkAnniversary} />
+            <AnnouncementCard />
+          </div>
         </div>
       </div>
       <PostBuilder open={open} openModal={openModal} closeModal={closeModal} />

@@ -59,7 +59,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
     user?.id === postData?.announcement?.actor?.userId;
 
   return (
-    <div className="min-w-[240px] sticky top-24">
+    <div className="min-w-[240px]">
       <div className="flex justify-between items-center ">
         <div className="text-base font-bold">Announcements</div>
         {/* <div className="text-sm font-bold">View All</div> */}
