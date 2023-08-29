@@ -55,13 +55,13 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
 
   const getMediaHeight = () => {
     if (isAnnouncementWidgetPreview) {
-      return 'h-20';
+      return '!h-20';
     }
     if (media.length <= 3) {
-      return 'h-64';
+      return '!h-64';
     }
     if (media.length > 3) {
-      return 'h-80';
+      return '!h-80';
     }
     return '';
   };
@@ -90,7 +90,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
               onClick(e, 1, media[0]);
             }
           }}
-          localClassName={`!${mediaHeight}`}
+          localClassName={`${mediaHeight}`}
           coverImageUrl={
             coverImageMap?.find((map) => map.videoName === media[0].name)
               ?.blobUrl || media[0]?.coverImage?.original
