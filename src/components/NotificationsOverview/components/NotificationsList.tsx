@@ -16,6 +16,7 @@ export enum ActionType {
   COMMENT = 'COMMENT',
   MENTION = 'MENTION',
   SCHEDULE_POST = 'SCHEDULE_POST',
+  SHOUTOUT = 'SHOUT_OUT',
 }
 
 export enum TargetType {
@@ -81,7 +82,7 @@ const NotificationsList = React.forwardRef(
                     id={notification.id}
                     interactionCount={notification.interactionCount}
                   />
-                  <Divider className="bg-gray-200" />
+                  <Divider className="bg-neutral-200" />
                 </div>
               ),
             )}
