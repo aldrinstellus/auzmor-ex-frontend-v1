@@ -22,6 +22,9 @@ body {
   .center {
     @apply flex justify-center items-center;
   }
+  .apart {
+    @apply flex justify-between items-center;
+  }
 }
 
 /* Width of the vertical scrollbar */
