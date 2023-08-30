@@ -1,11 +1,12 @@
 import Header from 'components/ModalHeader';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Footer from './Footer';
 import AudienceSelector from 'components/AudienceSelector';
 import { useForm } from 'react-hook-form';
 import { IAudienceForm } from 'components/EntitySearchModal';
 import { AudienceEntityType, IAudience } from 'queries/post';
+import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 
 interface IAudienceProps {
   closeModal: () => void;
@@ -24,47 +25,60 @@ const Audience: React.FC<IAudienceProps> = ({ closeModal }) => {
   const [isEveryoneSelected, setIsEveryoneSelected] = useState<boolean>(
     !!!audience.length,
   );
-  const { control, watch, handleSubmit, setValue, resetField } =
-    useForm<IAudienceForm>({
-      defaultValues: {
-        showSelectedMembers: false,
-        selectAll: false,
-        teams: {
-          ...audience
-            .filter(
-              (value: IAudience) =>
-                value.entityType === AudienceEntityType.Team,
-            )
-            .reduce(
-              (obj, value) => Object.assign(obj, { [value.entityId]: true }),
-              {},
-            ),
-        },
-        channels: {
-          ...audience
-            .filter(
-              (value: IAudience) =>
-                value.entityType === AudienceEntityType.Channel,
-            )
-            .reduce(
-              (obj, value) => Object.assign(obj, { [value.entityId]: true }),
-              {},
-            ),
-        },
-        users: {
-          ...audience
-            .filter(
-              (value: IAudience) =>
-                value.entityType === AudienceEntityType.User,
-            )
-            .reduce(
-              (obj, value) => Object.assign(obj, { [value.entityId]: true }),
-              {},
-            ),
-        },
-      },
-    });
   const [audienceFlow, setAudienceFlow] = useState(AudienceFlow.EntitySelect);
+  const { form, setForm } = useEntitySearchFormStore();
+
+  const audienceForm = useForm<IAudienceForm>({
+    defaultValues: {
+      showSelectedMembers: false,
+      selectAll: false,
+      teams: {
+        ...audience
+          .filter(
+            (value: IAudience) => value.entityType === AudienceEntityType.Team,
+          )
+          .reduce(
+            (obj, value) =>
+              Object.assign(obj, {
+                [value.entityId]: value?.entity || true,
+              }),
+            {},
+          ),
+      },
+      channels: {
+        ...audience
+          .filter(
+            (value: IAudience) =>
+              value.entityType === AudienceEntityType.Channel,
+          )
+          .reduce(
+            (obj, value) =>
+              Object.assign(obj, {
+                [value.entityId]: value?.entity || true,
+              }),
+            {},
+          ),
+      },
+      users: {
+        ...audience
+          .filter(
+            (value: IAudience) => value.entityType === AudienceEntityType.User,
+          )
+          .reduce(
+            (obj, value) =>
+              Object.assign(obj, {
+                [value.entityId]: value?.entity || true,
+              }),
+            {},
+          ),
+      },
+    },
+  });
+
+  useEffect(() => {
+    setForm(audienceForm);
+    return () => setForm(null);
+  }, []);
 
   const getHeaderText = () => {
     switch (audienceFlow) {
@@ -133,9 +147,9 @@ const Audience: React.FC<IAudienceProps> = ({ closeModal }) => {
         return;
       default:
         if (isEveryoneSelected) {
-          setValue('channels', {});
-          setValue('teams', {});
-          setValue('users', {});
+          form!.setValue('channels', {});
+          form!.setValue('teams', {});
+          form!.setValue('users', {});
           setAudience([]);
         } else {
           setAudience(localAudience);
@@ -143,9 +157,9 @@ const Audience: React.FC<IAudienceProps> = ({ closeModal }) => {
         setActiveFlow(CreatePostFlow.CreatePost);
     }
   };
-  return (
+  return form ? (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={form?.handleSubmit(onSubmit)}>
         <Header
           title={getHeaderText()}
           onBackIconClick={handleBackButtonClick}
@@ -153,14 +167,9 @@ const Audience: React.FC<IAudienceProps> = ({ closeModal }) => {
             clearPostContext();
             closeModal();
           }}
-          closeBtnDataTestId="schedule-post-modal-close"
+          closeBtnDataTestId="audience-modal-close"
         />
         <AudienceSelector
-          audience={audience}
-          control={control}
-          watch={watch}
-          setValue={setValue}
-          resetField={resetField}
           audienceFlow={audienceFlow}
           setAudienceFlow={setAudienceFlow}
           isEveryoneSelected={isEveryoneSelected}
@@ -173,6 +182,8 @@ const Audience: React.FC<IAudienceProps> = ({ closeModal }) => {
         />
       </form>
     </>
+  ) : (
+    <></>
   );
 };
 

@@ -166,11 +166,6 @@ const Audience: React.FC<IAudienceProps> = ({
           </span>
         </div>
         <AudienceSelector
-          audience={audience}
-          control={control}
-          watch={watch}
-          setValue={setValue}
-          resetField={resetField}
           audienceFlow={audienceFlow}
           setAudienceFlow={setAudienceFlow}
           isEveryoneSelected={isEveryoneSelected}

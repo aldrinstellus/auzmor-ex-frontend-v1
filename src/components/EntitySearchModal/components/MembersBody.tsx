@@ -6,37 +6,25 @@ import { IDepartment, useInfiniteDepartments } from 'queries/department';
 import { ILocation, useInfiniteLocations } from 'queries/location';
 import { IGetUser, useInfiniteUsers } from 'queries/users';
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
-import {
-  Control,
-  UseFormResetField,
-  UseFormSetValue,
-  UseFormWatch,
-} from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
-import { IAudienceForm } from '..';
 import UserRow from './UserRow';
 import InfiniteSearch from 'components/InfiniteSearch';
+import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 
 interface IMembersBodyProps {
-  control: Control<IAudienceForm, any>;
-  watch: UseFormWatch<IAudienceForm>;
-  setValue: UseFormSetValue<IAudienceForm>;
-  resetField: UseFormResetField<IAudienceForm>;
   entityRenderer?: (data: IGetUser) => ReactNode;
   selectedMemberIds?: string[];
 }
 
 const MembersBody: React.FC<IMembersBodyProps> = ({
-  control,
-  watch,
-  setValue,
-  resetField,
   entityRenderer,
   selectedMemberIds = [],
 }) => {
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
-  const {
+  const { form } = useEntitySearchFormStore();
+  const { watch, setValue, control } = form!;
+  const [
     memberSearch,
     showSelectedMembers,
     users,
@@ -44,8 +32,15 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
     departments,
     locationSearch,
     locations,
-    selectAll,
-  } = watch();
+  ] = watch([
+    'memberSearch',
+    'showSelectedMembers',
+    'users',
+    'departmentSearch',
+    'departments',
+    'locationSearch',
+    'locations',
+  ]);
 
   // fetch users from search input
   const debouncedSearchValue = useDebounce(memberSearch || '', 500);
@@ -117,31 +112,12 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
     });
   });
 
-  useEffect(() => {
-    if (selectAll) {
-      selectAllEntity();
-    } else {
-      deselectAll();
-    }
-  }, [selectAll]);
-
   const { ref, inView } = useInView();
   useEffect(() => {
     if (inView) {
       fetchNextPage();
     }
   }, [inView]);
-
-  useEffect(() => {
-    if (selectedMemberIds.length) {
-      selectedMemberIds.forEach((id: string) => {
-        setValue(
-          `users.${id}`,
-          usersData?.find((user: IGetUser) => user.id === id),
-        );
-      });
-    }
-  }, []);
 
   const selectAllEntity = () => {
     usersData?.forEach((user: IGetUser) => setValue(`users.${user.id}`, user));
@@ -151,6 +127,14 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
     Object.keys(users).forEach((key) => {
       setValue(`users.${key}`, false);
     });
+  };
+
+  const updateSelectAll = () => {
+    if (Object.keys(users).some((key: string) => !!!users[key])) {
+      setValue('selectAll', false);
+    } else {
+      setValue('selectAll', true);
+    }
   };
 
   const isControlsDisabled =
@@ -285,6 +269,19 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
                   control,
                   label: 'Select all',
                   className: 'flex item-center',
+                  transform: {
+                    input: (value: boolean) => {
+                      return value;
+                    },
+                    output: (e: React.ChangeEvent<HTMLInputElement>) => {
+                      if (e.target.checked) {
+                        selectAllEntity();
+                      } else {
+                        deselectAll();
+                      }
+                      return e.target.checked;
+                    },
+                  },
                 },
               ]}
             />
@@ -328,12 +325,16 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
                         control,
                         className: 'flex item-center mr-4',
                         transform: {
-                          input: (value: IGetUser | boolean) => !!value,
+                          input: (value: IGetUser | boolean) => {
+                            updateSelectAll();
+                            return !!value;
+                          },
                           output: (e: React.ChangeEvent<HTMLInputElement>) => {
                             if (e.target.checked) return user;
                             return false;
                           },
                         },
+                        defaultChecked: selectedMemberIds.includes(user.id),
                       },
                     ]}
                   />

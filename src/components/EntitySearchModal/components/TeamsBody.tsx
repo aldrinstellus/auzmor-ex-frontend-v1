@@ -3,41 +3,36 @@ import Layout, { FieldType } from 'components/Form';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
 import React, { ReactNode, useEffect, useState } from 'react';
-import {
-  Control,
-  UseFormResetField,
-  UseFormSetValue,
-  UseFormWatch,
-} from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
-import { IAudienceForm } from '..';
 import { ITeam, useInfiniteTeams } from 'queries/teams';
 import TeamRow from './TeamRow';
 import InfiniteSearch from 'components/InfiniteSearch';
 import { ICategory, useInfiniteCategories } from 'queries/category';
+import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 
 interface ITeamsBodyProps {
-  control: Control<IAudienceForm, any>;
-  watch: UseFormWatch<IAudienceForm>;
-  setValue: UseFormSetValue<IAudienceForm>;
-  resetField: UseFormResetField<IAudienceForm>;
   entityRenderer?: (data: ITeam) => ReactNode;
   selectedTeamIds?: string[];
 }
 
 const TeamsBody: React.FC<ITeamsBodyProps> = ({
-  control,
-  watch,
-  setValue,
-  resetField,
   entityRenderer,
   selectedTeamIds = [],
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const formData = watch();
+  const { form } = useEntitySearchFormStore();
+  const { watch, setValue, control } = form!;
+  const [teamSearch, showSelectedMembers, teams, categorySearch, categories] =
+    watch([
+      'teamSearch',
+      'showSelectedMembers',
+      'teams',
+      'categorySearch',
+      'categories',
+    ]);
 
-  // fetch teams data
-  const debouncedSearchValue = useDebounce(formData.teamSearch || '', 500);
+  // fetch teams datar
+  const debouncedSearchValue = useDebounce(teamSearch || '', 500);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteTeams({
       q: debouncedSearchValue,
@@ -54,19 +49,16 @@ const TeamsBody: React.FC<ITeamsBodyProps> = ({
       });
     })
     .filter((team) => {
-      if (formData.showSelectedMembers) {
-        return !!formData.teams[team.id];
+      if (showSelectedMembers) {
+        return !!teams[team.id];
       }
       return true;
     });
 
   // fetch category data
-  const debouncedCategorySearchValue = useDebounce(
-    formData.categorySearch || '',
-    500,
-  );
+  const debouncedCategorySearchValue = useDebounce(categorySearch || '', 500);
   const {
-    data: categories,
+    data: fetchedCategories,
     isLoading: categoryLoading,
     isFetchingNextPage: isFetchingNextCategoryPage,
     fetchNextPage: fetchNextCategoryPage,
@@ -74,7 +66,7 @@ const TeamsBody: React.FC<ITeamsBodyProps> = ({
   } = useInfiniteCategories({
     q: debouncedCategorySearchValue,
   });
-  const categoryData = categories?.pages.flatMap((page) => {
+  const categoryData = fetchedCategories?.pages.flatMap((page) => {
     return page?.data?.result?.data.map((category: ICategory) => {
       try {
         return category;
@@ -84,14 +76,6 @@ const TeamsBody: React.FC<ITeamsBodyProps> = ({
     });
   });
 
-  useEffect(() => {
-    if (formData.selectAll) {
-      selectAll();
-    } else {
-      deselectAll();
-    }
-  }, [formData.selectAll]);
-
   const { ref, inView } = useInView();
   useEffect(() => {
     if (inView) {
@@ -99,27 +83,24 @@ const TeamsBody: React.FC<ITeamsBodyProps> = ({
     }
   }, [inView]);
 
-  useEffect(() => {
-    if (selectedTeamIds.length) {
-      selectedTeamIds.forEach((id: string) => {
-        setValue(
-          `teams.${id}`,
-          teamsData?.find((team: ITeam) => team.id === id),
-        );
-      });
-    }
-  }, [teamsData]);
-
-  const selectAll = () => {
+  const selectAllEntity = () => {
     teamsData?.forEach((team: ITeam) => {
       setValue(`teams.${team.id}`, team);
     });
   };
 
   const deselectAll = () => {
-    Object.keys(formData.teams).forEach((key) => {
+    Object.keys(teams).forEach((key) => {
       setValue(`teams.${key}`, false);
     });
+  };
+
+  const updateSelectAll = () => {
+    if (Object.keys(teams).some((key: string) => !!!teams[key])) {
+      setValue('selectAll', false);
+    } else {
+      setValue('selectAll', true);
+    }
   };
 
   const isControlsDisabled =
@@ -167,15 +148,15 @@ const TeamsBody: React.FC<ITeamsBodyProps> = ({
                 hasNextPage={hasNextCategoryPage}
                 onApply={() =>
                   setSelectedCategories([
-                    ...Object.keys(formData.categories).filter(
-                      (key: string) => !!formData.categories[key],
+                    ...Object.keys(categories).filter(
+                      (key: string) => !!categories[key],
                     ),
                   ])
                 }
                 onReset={() => {
                   setSelectedCategories([]);
-                  if (formData?.categories) {
-                    Object.keys(formData.categories).forEach((key: string) =>
+                  if (categories) {
+                    Object.keys(categories).forEach((key: string) =>
                       setValue(`categories.${key}`, false),
                     );
                   }
@@ -190,7 +171,7 @@ const TeamsBody: React.FC<ITeamsBodyProps> = ({
             }`}
             onClick={() => {
               setSelectedCategories([]);
-              Object.keys(formData.categories).forEach((key: string) =>
+              Object.keys(categories).forEach((key: string) =>
                 setValue(`categories.${key}`, false),
               );
             }}
@@ -215,6 +196,19 @@ const TeamsBody: React.FC<ITeamsBodyProps> = ({
                   control,
                   label: 'Select all',
                   className: 'flex item-center',
+                  transform: {
+                    input: (value: boolean) => {
+                      return value;
+                    },
+                    output: (e: React.ChangeEvent<HTMLInputElement>) => {
+                      if (e.target.checked) {
+                        selectAllEntity();
+                      } else {
+                        deselectAll();
+                      }
+                      return e.target.checked;
+                    },
+                  },
                 },
               ]}
             />
@@ -258,12 +252,16 @@ const TeamsBody: React.FC<ITeamsBodyProps> = ({
                         control,
                         className: 'flex item-center mr-4',
                         transform: {
-                          input: (value: ITeam | boolean) => !!value,
+                          input: (value: ITeam | boolean) => {
+                            updateSelectAll();
+                            return !!value;
+                          },
                           output: (e: React.ChangeEvent<HTMLInputElement>) => {
                             if (e.target.checked) return team;
                             return false;
                           },
                         },
+                        defaultChecked: selectedTeamIds.includes(team.id),
                       },
                     ]}
                   />
@@ -281,7 +279,7 @@ const TeamsBody: React.FC<ITeamsBodyProps> = ({
               </div>
               <div className="text-neutral-900 text-lg font-bold mb-4">
                 No result found
-                {!!formData.teamSearch && ` for ‘${formData.teamSearch}’`}
+                {!!teamSearch && ` for ‘${teamSearch}’`}
               </div>
               <div className="text-neutral-500 text-xs">
                 Sorry we can’t find the member you are looking for.

@@ -110,10 +110,6 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
         triggerSubmit={triggerSubmit}
         getFile={getFile}
         setIsFileAdded={setIsFileAdded}
-        control={control}
-        watch={watch}
-        setValue={setValue}
-        resetField={resetField}
         users={users}
         selectedUserIds={shoutoutUserIds}
       />
