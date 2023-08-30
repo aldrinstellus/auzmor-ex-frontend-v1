@@ -18,7 +18,6 @@ import FeedFilter, {
 import Divider from 'components/Divider';
 import SortByDropdown from 'components/ActivityFeed/components/SortByDropdown';
 import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
 import PageLoader from 'components/PageLoader';
 import useScrollTop from 'hooks/useScrollTop';
 import SkeletonLoader from './components/SkeletonLoader';
@@ -34,6 +33,8 @@ import Tooltip from 'components/Tooltip';
 import CelebrationWidget, {
   CELEBRATION_TYPE,
 } from 'components/CelebrationWidget';
+import './index.css';
+
 interface IFeedProps {}
 
 export interface IProfileImage {
@@ -316,10 +317,10 @@ const Feed: React.FC<IFeedProps> = () => {
           {isFetchingNextPage && <PageLoader />}
         </div>
         <div className="min-w-[293px] max-w-[293px]">
-          <div className="flex flex-col gap-6 sticky top-24">
+          <div className="flex flex-col gap-6 sticky top-24 overflow-y-auto max-h-[calc(100vh-120px)] widget-hide-scroll">
             <CelebrationWidget type={CELEBRATION_TYPE.Birthday} />
             <CelebrationWidget type={CELEBRATION_TYPE.WorkAnniversary} />
-            <AnnouncementCard />
+            <AnnouncementCard openModal={openModal} />
           </div>
         </div>
       </div>

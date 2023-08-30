@@ -13,6 +13,18 @@ export const formatDate = (inputDate: string): string => {
   }
 };
 
+export const isCelebrationToday = (inputDate: string): boolean => {
+  const currentDate = moment();
+  const parsedDate = moment(inputDate);
+
+  // Check if the parsed date is today
+  if (currentDate.isSame(parsedDate, 'day')) {
+    return true;
+  }
+
+  return false;
+};
+
 export const calculateWorkAnniversaryYears = (
   workAnniversaryDate: string,
 ): number => {

@@ -5,6 +5,7 @@ import React from 'react';
 import User from './components/User';
 import Button, { Size, Variant } from 'components/Button';
 import UpcomingCelebrationModal from './components/UpcomingCelebrationModal';
+import EmptyState from './components/EmptyState';
 
 export enum CELEBRATION_TYPE {
   Birthday = 'BIRTHDAY',
@@ -53,6 +54,7 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
             label={buttonLabel}
             onClick={openUpcomingModal}
           />
+          {/* <EmptyState type={type} /> */}
         </div>
       )}
       <UpcomingCelebrationModal

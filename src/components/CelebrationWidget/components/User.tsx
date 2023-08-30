@@ -3,7 +3,11 @@ import Avatar from 'components/Avatar';
 import { CELEBRATION_TYPE } from '..';
 import clsx from 'clsx';
 import Button, { Size } from 'components/Button';
-import { calculateWorkAnniversaryYears, formatDate } from '../utils';
+import {
+  calculateWorkAnniversaryYears,
+  formatDate,
+  isCelebrationToday,
+} from '../utils';
 import { getNouns } from 'utils/misc';
 
 interface UserProps {
@@ -34,6 +38,9 @@ const User: React.FC<UserProps> = ({ type, hideSendWishBtn = false }) => {
       : `${anniversaryYears} ${getNouns('yr', anniversaryYears)} (${formatDate(
           '2023-08-29T10:45:50.336Z',
         )})`;
+  const showSendWishBtn =
+    isCelebrationToday('2023-08-29T10:45:50.336Z') && !hideSendWishBtn;
+
   return (
     <div className="flex flex-col gap-2 w-full">
       <div className="flex items-center gap-2 w-full justify-between">
@@ -52,7 +59,7 @@ const User: React.FC<UserProps> = ({ type, hideSendWishBtn = false }) => {
           {celebrationDate}
         </div>
       </div>
-      {!hideSendWishBtn && (
+      {showSendWishBtn && (
         <Button
           size={Size.Small}
           className="!bg-blue-50 !text-blue-500 px-4 py-2 rounded-[8px]"
