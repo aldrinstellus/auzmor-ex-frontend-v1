@@ -1,5 +1,5 @@
 import Header from 'components/ModalHeader';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AudienceSelector from 'components/AudienceSelector';
 import { useForm } from 'react-hook-form';
 import { IAudienceForm } from 'components/EntitySearchModal';
@@ -7,6 +7,7 @@ import { AudienceEntityType, IAudience } from 'queries/apps';
 import Footer from './Footer';
 import { ADD_APP_FLOW } from './AddApp';
 import Icon from 'components/Icon';
+import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 
 interface IAudienceProps {
   audience: IAudience[];
@@ -29,47 +30,49 @@ const Audience: React.FC<IAudienceProps> = ({
   const [isEveryoneSelected, setIsEveryoneSelected] = useState<boolean>(
     audience.length === 0,
   );
-  const { control, watch, handleSubmit, setValue, resetField } =
-    useForm<IAudienceForm>({
-      defaultValues: {
-        showSelectedMembers: false,
-        selectAll: false,
-        teams: {
-          ...audience
-            .filter(
-              (value: IAudience) =>
-                value.entityType === AudienceEntityType.Team,
-            )
-            .reduce(
-              (obj, value) => Object.assign(obj, { [value.entityId]: true }),
-              {},
-            ),
-        },
-        channels: {
-          ...audience
-            .filter(
-              (value: IAudience) =>
-                value.entityType === AudienceEntityType.Channel,
-            )
-            .reduce(
-              (obj, value) => Object.assign(obj, { [value.entityId]: true }),
-              {},
-            ),
-        },
-        users: {
-          ...audience
-            .filter(
-              (value: IAudience) =>
-                value.entityType === AudienceEntityType.User,
-            )
-            .reduce(
-              (obj, value) => Object.assign(obj, { [value.entityId]: true }),
-              {},
-            ),
-        },
-      },
-    });
   const [audienceFlow, setAudienceFlow] = useState(AudienceFlow.EntitySelect);
+  const { form, setForm } = useEntitySearchFormStore();
+  const audienceForm = useForm<IAudienceForm>({
+    defaultValues: {
+      showSelectedMembers: false,
+      selectAll: false,
+      teams: {
+        ...audience
+          .filter(
+            (value: IAudience) => value.entityType === AudienceEntityType.Team,
+          )
+          .reduce(
+            (obj, value) => Object.assign(obj, { [value.entityId]: true }),
+            {},
+          ),
+      },
+      channels: {
+        ...audience
+          .filter(
+            (value: IAudience) =>
+              value.entityType === AudienceEntityType.Channel,
+          )
+          .reduce(
+            (obj, value) => Object.assign(obj, { [value.entityId]: true }),
+            {},
+          ),
+      },
+      users: {
+        ...audience
+          .filter(
+            (value: IAudience) => value.entityType === AudienceEntityType.User,
+          )
+          .reduce(
+            (obj, value) => Object.assign(obj, { [value.entityId]: true }),
+            {},
+          ),
+      },
+    },
+  });
+  useEffect(() => {
+    setForm(audienceForm);
+    return () => setForm(null);
+  }, []);
 
   const getHeaderText = () => {
     switch (audienceFlow) {
@@ -135,9 +138,9 @@ const Audience: React.FC<IAudienceProps> = ({
         return;
       default:
         if (isEveryoneSelected) {
-          setValue('channels', {});
-          setValue('teams', {});
-          setValue('users', {});
+          form!.setValue('channels', {});
+          form!.setValue('teams', {});
+          form!.setValue('users', {});
           setAudience([]);
         } else {
           setAudience(localAudience);
@@ -145,9 +148,9 @@ const Audience: React.FC<IAudienceProps> = ({
         setActiveFlow(ADD_APP_FLOW.AddApp);
     }
   };
-  return (
+  return form ? (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <Header
           title={getHeaderText()}
           onBackIconClick={handleBackButtonClick}
@@ -178,6 +181,8 @@ const Audience: React.FC<IAudienceProps> = ({
         />
       </form>
     </>
+  ) : (
+    <></>
   );
 };
 
