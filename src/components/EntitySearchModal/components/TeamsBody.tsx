@@ -11,7 +11,7 @@ import {
 } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
 import { IAudienceForm } from '..';
-import { useInfiniteTeams } from 'queries/teams';
+import { ITeam, useInfiniteTeams } from 'queries/teams';
 import TeamRow from './TeamRow';
 import InfiniteSearch from 'components/InfiniteSearch';
 import { useInfiniteCategories } from 'queries/category';
@@ -21,7 +21,7 @@ interface ITeamsBodyProps {
   watch: UseFormWatch<IAudienceForm>;
   setValue: UseFormSetValue<IAudienceForm>;
   resetField: UseFormResetField<IAudienceForm>;
-  entityRenderer?: (data: any) => ReactNode;
+  entityRenderer?: (data: ITeam) => ReactNode;
   selectedTeamIds?: string[];
 }
 
@@ -56,7 +56,7 @@ const TeamsBody: React.FC<ITeamsBodyProps> = ({
   });
   const teamsData = data?.pages
     .flatMap((page) => {
-      return page?.data?.result?.data.map((team: any) => {
+      return page?.data?.result?.data.map((team: ITeam) => {
         try {
           return team;
         } catch (e) {
@@ -248,6 +248,13 @@ const TeamsBody: React.FC<ITeamsBodyProps> = ({
                         name: `teams.${team.id}`,
                         control,
                         className: 'flex item-center mr-4',
+                        transform: {
+                          input: (value: ITeam | boolean) => !!value,
+                          output: (e: React.ChangeEvent<HTMLInputElement>) => {
+                            if (e.target.checked) return team;
+                            return false;
+                          },
+                        },
                       },
                     ]}
                   />

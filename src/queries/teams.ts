@@ -1,10 +1,22 @@
 import { QueryFunctionContext, useInfiniteQuery } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
+import { ICategory } from './category';
 
 export interface ITeamPayload {
   name: string;
   category: string;
   description?: string;
+}
+
+export interface ITeam {
+  category: { categoryId: string; name: string };
+  createdAt: string;
+  description: string;
+  id: string;
+  name: string;
+  orgId: string;
+  recentMembers: string[];
+  totalMembers: number;
 }
 
 export const getAllTeams = async ({

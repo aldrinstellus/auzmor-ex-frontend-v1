@@ -56,12 +56,16 @@ const EntitySearchModal: React.FC<IEntitySearchModalProps> = ({
   submitButtonText = 'Next',
   cancelButtonText = 'Back',
   entityRenderer = (data: any) => <></>,
-  selectedMemberIds,
+  selectedMemberIds = [],
 }) => {
   const { control, watch, handleSubmit, setValue, resetField } = useForm<any>({
     defaultValues: {
       showSelectedMembers: false,
       selectAll: false,
+      users: selectedMemberIds.reduce(
+        (obj, value) => Object.assign(obj, { [value]: true }),
+        {},
+      ),
     },
   });
   return (

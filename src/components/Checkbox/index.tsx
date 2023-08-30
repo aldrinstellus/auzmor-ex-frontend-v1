@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { ReactElement } from 'react';
-import { UseFormGetValues, useController } from 'react-hook-form';
+import { useController } from 'react-hook-form';
 
 export type CheckboxProps = {
   name: string;
@@ -13,6 +13,10 @@ export type CheckboxProps = {
   control?: any;
   defaultValue?: boolean;
   labelDescription?: string;
+  transform?: {
+    input: (value: any) => boolean;
+    output: (e: React.ChangeEvent<HTMLInputElement>) => any;
+  };
 };
 
 const Checkbox: React.FC<CheckboxProps> = ({
@@ -25,6 +29,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   label = '',
   control,
   labelDescription,
+  transform,
   ...rest
 }) => {
   const { field } = useController({ name, control });
@@ -43,8 +48,10 @@ const Checkbox: React.FC<CheckboxProps> = ({
         ref={field.ref}
         disabled={loading || disabled}
         defaultChecked={defaultValue}
-        onChange={field.onChange}
-        checked={field.value}
+        onChange={(e) =>
+          field.onChange(transform?.output ? transform?.output(e) : e)
+        }
+        checked={transform?.input ? transform?.input(field.value) : field.value}
         {...rest}
       />
       <label className={styles} data-testid={dataTestId}>
