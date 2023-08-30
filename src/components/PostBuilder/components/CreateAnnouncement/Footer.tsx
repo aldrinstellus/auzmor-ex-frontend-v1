@@ -65,6 +65,10 @@ const Footer: React.FC<IFooterProps> = ({
               formData?.expiryOption?.value ||
               afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
           },
+          shoutoutRecipients:
+            data.shoutoutRecipients && data.shoutoutRecipients.length > 0
+              ? data.shoutoutRecipients.map((user) => user.userId)
+              : [],
         });
     },
     onError: () => {},
