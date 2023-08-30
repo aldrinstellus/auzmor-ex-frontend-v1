@@ -176,6 +176,7 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
             createdBy={post?.createdBy}
             audience={post.audience}
             dataTestId="feedpage-activity-username"
+            postType={post.type}
           />
           <div className="relative flex space-x-4 mr-6">
             <Tooltip
