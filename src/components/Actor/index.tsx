@@ -101,7 +101,7 @@ const Actor: React.FC<ActorProps> = ({
                 {createdTime}
               </div>
               <div className="bg-neutral-500 rounded-full w-1 h-1" />
-              <Icon name="globalOutline" size={16} />
+              <Icon name="globalOutline" size={16} hover={false} />
             </div>
           ) : null}
         </div>

@@ -191,7 +191,7 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
               tooltipPosition="top"
             >
               <Icon
-                name="postBookmark"
+                name={post.bookmarked ? 'postBookmarkFilled' : 'postBookmark'}
                 size={24}
                 dataTestId="feed-post-bookmark"
                 onClick={() => handleBookmarkClick(post)}
