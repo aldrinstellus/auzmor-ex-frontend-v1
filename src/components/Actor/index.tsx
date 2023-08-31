@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
+import AudiencePopup from 'components/AudiencePopup';
 
 type ActorProps = {
   contentMode?: string;
@@ -15,6 +16,7 @@ type ActorProps = {
   dataTestId?: string;
   disabled?: boolean;
   audience?: IAudience[];
+  entityId?: string;
 };
 
 const Actor: React.FC<ActorProps> = ({
@@ -23,6 +25,8 @@ const Actor: React.FC<ActorProps> = ({
   createdBy,
   dataTestId,
   disabled = false,
+  entityId,
+  audience,
 }) => {
   const { user } = useAuth();
 
@@ -88,7 +92,7 @@ const Actor: React.FC<ActorProps> = ({
                 {createdTime}
               </div>
               <div className="bg-neutral-500 rounded-full w-1 h-1" />
-              <Icon name="globalOutline" size={16} />
+              <AudiencePopup entityId={entityId} audience={audience} />
             </div>
           ) : null}
         </div>
