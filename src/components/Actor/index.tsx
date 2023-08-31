@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Avatar from 'components/Avatar';
-import { CREATE_POST, VIEW_POST } from './constant';
+import { VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
 import { IAudience, ICreatedBy } from 'queries/post';
 import { Link } from 'react-router-dom';
@@ -15,6 +15,7 @@ type ActorProps = {
   dataTestId?: string;
   disabled?: boolean;
   audience?: IAudience[];
+  postType?: string;
 };
 
 const Actor: React.FC<ActorProps> = ({
@@ -22,6 +23,7 @@ const Actor: React.FC<ActorProps> = ({
   createdTime,
   createdBy,
   dataTestId,
+  postType,
   disabled = false,
 }) => {
   const { user } = useAuth();
@@ -30,18 +32,21 @@ const Actor: React.FC<ActorProps> = ({
     'flex justify-between items-center mx-6 mt-6 mb-4': true,
   });
 
-  const iconStyle = clsx({
-    'text-neutral-400': disabled,
-  });
-
-  const visibilityStyle = clsx(
-    {
-      'text-xxs text-neutral-900 font-medium ml-1.5': true,
-    },
-    {
-      'text-neutral-400': disabled,
-    },
-  );
+  const actionLabel = useMemo(() => {
+    if (postType === 'BIRTHDAY') {
+      return 'is celebrating their birthday';
+    }
+    if (postType === 'WORK_ANNIVERSARY') {
+      return 'is celebrating their work anniversary';
+    }
+    if (postType === 'NEW_JOINEE') {
+      return 'is a new joinee';
+    }
+    if (contentMode === VIEW_POST) {
+      return 'shared a post';
+    }
+    return '';
+  }, [postType]);
 
   return (
     <div className={actorStyles}>
@@ -85,11 +90,9 @@ const Actor: React.FC<ActorProps> = ({
                 : user
                 ? getFullName(user)
                 : ''}
-              {contentMode === VIEW_POST ? (
-                <span className="ml-1 text-sm font-normal text-neutral-900">
-                  shared a post
-                </span>
-              ) : null}
+              <span className="ml-1 text-sm font-normal text-neutral-900">
+                {actionLabel}
+              </span>
             </div>
           </Link>
           {contentMode === VIEW_POST ? (

@@ -66,7 +66,7 @@ import TickCircleIcon from '../components/TickCircle';
 import CloseCircleIcon from '../components/CloseCircle';
 import FilterLinear from '../components/FilterLinear';
 import ArrowSwap from '../components/ArrowSwap';
-import dotsVerticalIcon from '../components/DotsVertical';
+import DotsVerticalIcon from '../components/DotsVertical';
 import Redo from '../components/Redo';
 import UserRemove from '../components/UserRemove';
 import ExportIcon from '../components/Export';
@@ -134,6 +134,7 @@ import FolderOpen from '../components/FolderOpen';
 import NoteFavouriteIcon from '../components/NoteFavourite';
 import EmployeeTagIcon from '../components/EmployeeTag';
 import CheckIcon from '../components/Check';
+import DownloadIcon from '../components/Download';
 
 export const icon = {
   add: Add,
@@ -179,7 +180,8 @@ export const icon = {
   document: DocumentIcon,
   documentUpload: DocumentUpload,
   dotsHorizontal: dotsHorizontalIcon,
-  dotsVertical: dotsVerticalIcon,
+  dotsVertical: DotsVerticalIcon,
+  download: DownloadIcon,
   draft: DraftIcon,
   edit: EditIcon,
   editReceipt: EditReceipt,

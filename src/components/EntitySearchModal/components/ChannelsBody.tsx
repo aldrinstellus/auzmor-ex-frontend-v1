@@ -3,36 +3,24 @@ import Layout, { FieldType } from 'components/Form';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
 import { IDepartment, useInfiniteDepartments } from 'queries/department';
-// import { ILocation, getLocations, useGetLocations } from 'queries/location';
-import { IGetUser, useInfiniteUsers } from 'queries/users';
+import { IGetUser } from 'queries/users';
 import React, { ReactNode, useEffect } from 'react';
-import {
-  Control,
-  UseFormResetField,
-  UseFormSetValue,
-  UseFormWatch,
-} from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
-import { IAudienceForm } from '..';
 import { useInfiniteChannels } from 'queries/channel';
+import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 
 interface IChannelsBodyProps {
-  control: Control<IAudienceForm, any>;
-  watch: UseFormWatch<IAudienceForm>;
-  setValue: UseFormSetValue<IAudienceForm>;
-  resetField: UseFormResetField<IAudienceForm>;
   entityRenderer?: (data: IGetUser) => ReactNode;
   selectedChannelIds?: string[];
+  dataTestId?: string;
 }
 
 const ChannelsBody: React.FC<IChannelsBodyProps> = ({
-  control,
-  watch,
-  setValue,
-  resetField,
   entityRenderer,
   selectedChannelIds = [],
 }) => {
+  const { form } = useEntitySearchFormStore();
+  const { watch, setValue, control } = form!;
   const formData = watch();
   const debouncedSearchValue = useDebounce(formData.channelSearch || '', 500);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =

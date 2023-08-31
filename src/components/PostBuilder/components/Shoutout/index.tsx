@@ -9,6 +9,9 @@ import {
 import Body from './Body';
 import Button from 'components/Button';
 import { Variant as ButtonVariant } from 'components/Button';
+import { AudienceEntityType, IAudience } from 'queries/post';
+import { IAudienceForm } from 'components/EntitySearchModal';
+import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 
 interface ICreateShoutoutProps {
   closeModal: () => void;
@@ -20,11 +23,12 @@ export enum SHOUTOUT_STEPS {
 }
 
 const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
-  const { control, watch, setValue, resetField, getValues } = useForm<any>({
+  const { form, setForm } = useEntitySearchFormStore();
+  const audienceForm = useForm<IAudienceForm>({
     defaultValues: {
       showSelectedMembers: false,
       selectAll: false,
-      users: [],
+      users: {},
     },
   });
   const {
@@ -57,7 +61,7 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
 
   const handleNext = () => {
     if (step === SHOUTOUT_STEPS.UserSelect) {
-      const formData = getValues();
+      const formData = form!.getValues();
       const _users: any[] = [];
       const ids: any[] = [];
       Object.keys(formData.users).forEach((key) => {
@@ -85,7 +89,7 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
 
   const isBtnDisabled = () => {
     if (step === SHOUTOUT_STEPS.UserSelect) {
-      const formData = getValues();
+      const formData = form!.getValues();
       return (
         !formData.users ||
         Object.keys(formData.users).filter((key) => formData.users[key])
@@ -98,7 +102,14 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
     return true;
   };
 
-  return (
+  useEffect(() => {
+    setForm(audienceForm);
+    return () => {
+      setForm(null);
+    };
+  }, []);
+
+  return form ? (
     <div>
       <Header
         title="Give Kudos"
@@ -120,10 +131,6 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
         triggerSubmit={triggerSubmit}
         getFile={getFile}
         setIsFileAdded={setIsFileAdded}
-        control={control}
-        watch={watch}
-        setValue={setValue}
-        resetField={resetField}
         users={users}
         selectedUserIds={shoutoutUserIds}
       />
@@ -152,6 +159,8 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
         />
       </div>
     </div>
+  ) : (
+    <></>
   );
 };
 

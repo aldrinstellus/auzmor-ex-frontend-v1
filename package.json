@@ -42,6 +42,7 @@
     "react": "^18.2.0",
     "react-advanced-cropper": "~0.19.3",
     "react-beautiful-dnd": "13.0.0",
+    "react-circular-progressbar": "^2.1.0",
     "react-cool-virtual": "^0.7.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",

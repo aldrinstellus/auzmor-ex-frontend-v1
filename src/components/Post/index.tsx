@@ -5,12 +5,7 @@ import { VIEW_POST } from 'components/Actor/constant';
 import CommentCard from 'components/Comments/index';
 import Likes, { ReactionType } from 'components/Reactions';
 import FeedPostMenu from './components/FeedPostMenu';
-import {
-  IPost,
-  IPostFilters,
-  createBookmark,
-  deleteBookmark,
-} from 'queries/post';
+import { IPost, createBookmark, deleteBookmark } from 'queries/post';
 import Icon from 'components/Icon';
 import Button, { Size, Variant } from 'components/Button';
 import clsx from 'clsx';
@@ -33,7 +28,6 @@ import { slideInAndOutTop } from 'utils/react-toastify';
 import moment from 'moment';
 import _ from 'lodash';
 import { useNavigate } from 'react-router';
-import { useCurrentUser } from 'queries/users';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 
 export const iconsStyle = (key: string) => {
@@ -182,6 +176,7 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
             createdBy={post?.createdBy}
             audience={post.audience}
             dataTestId="feedpage-activity-username"
+            postType={post.type}
           />
           <div className="relative flex space-x-4 mr-6">
             <Tooltip

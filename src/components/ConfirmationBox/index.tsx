@@ -34,6 +34,10 @@ const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({
   isLoading = false,
   dataTestId,
 }) => {
+  if (!open) {
+    return null;
+  }
+
   return (
     <Modal
       open={open}

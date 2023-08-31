@@ -9,6 +9,7 @@ type CollapseProps = {
   className?: string;
   headerClassName?: string;
   headerTextClassName?: string;
+  dataTestId?: string;
 };
 
 const Collapse: React.FC<CollapseProps> = ({
@@ -17,6 +18,7 @@ const Collapse: React.FC<CollapseProps> = ({
   className,
   headerClassName = '',
   headerTextClassName = '',
+  dataTestId,
 }): ReactElement => {
   // If you think about it, modal has similar interactivity as collapse
   const [open, openCollpase, closeCollapse] = useModal();
@@ -44,7 +46,7 @@ const Collapse: React.FC<CollapseProps> = ({
   );
 
   return (
-    <div className={className}>
+    <div className={className} data-testid={dataTestId}>
       <div className={headerStyle} onClick={toggleModal}>
         <div className={headerTextStyle}>{label}</div>
         <div>

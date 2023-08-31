@@ -1,28 +1,14 @@
-import {
-  EntitySearchModalType,
-  IAudienceForm,
-} from 'components/EntitySearchModal';
+import { EntitySearchModalType } from 'components/EntitySearchModal';
 import EntitySearchModalBody from 'components/EntitySearchModal/components/EntitySearchModalBody';
 import Icon from 'components/Icon';
 import { AudienceFlow } from 'components/PostBuilder/components/Audience';
 import useRole from 'hooks/useRole';
 import { useOrganization } from 'queries/organization';
-import { AudienceEntityType, IAudience } from 'queries/post';
-import React, { useEffect, useState } from 'react';
-import {
-  Control,
-  UseFormWatch,
-  UseFormSetValue,
-  UseFormResetField,
-} from 'react-hook-form';
+import React, { useCallback, useEffect } from 'react';
 import _ from 'lodash';
+import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 
 interface IAudienceSelectorProps {
-  audience: IAudience[];
-  control: Control<IAudienceForm, any>;
-  watch: UseFormWatch<IAudienceForm>;
-  setValue: UseFormSetValue<IAudienceForm>;
-  resetField: UseFormResetField<IAudienceForm>;
   audienceFlow: AudienceFlow;
   setAudienceFlow: any;
   isEveryoneSelected: boolean;
@@ -30,11 +16,6 @@ interface IAudienceSelectorProps {
 }
 
 const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
-  audience,
-  control,
-  watch,
-  setValue,
-  resetField,
   audienceFlow,
   setAudienceFlow,
   isEveryoneSelected,
@@ -42,8 +23,9 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
 }) => {
   const { isAdmin } = useRole();
   const { data } = useOrganization();
+  const { form } = useEntitySearchFormStore();
 
-  const { teams } = watch();
+  const [teams, channels, users] = form!.watch(['teams', 'channels', 'users']);
 
   useEffect(() => {
     if (!isAdmin && !!data?.adminSettings?.postingControls.limitGlobalPosting) {
@@ -62,6 +44,7 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
         data?.adminSettings?.postingControls.limitGlobalPosting && !isAdmin,
       isSelected: isEveryoneSelected,
       selectedCount: 0,
+      dataTestId: 'audience-selection-everyone',
     },
     // {
     //   key: 'channels',
@@ -76,6 +59,7 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
     //   selectedCount: Object.keys(channels).filter(
     //     (id: string) => !!channels[id],
     //   ).length,
+    //   dataTestId: 'audience-selection-channel'
     // },
     {
       key: 'teams',
@@ -89,6 +73,7 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
       ),
       selectedCount: Object.keys(teams).filter((id: string) => !!teams[id])
         .length,
+      dataTestId: 'audience-selection-teams',
     },
   ];
 
@@ -110,6 +95,7 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
               key={entity.key}
               className="flex p-4 border border-neutral-200 rounded-22xl mb-4 hover:shadow-xl group cursor-pointer justify-between items-center"
               onClick={entity.onClick}
+              data-testid={entity.dataTestId}
             >
               <div className="flex items-center">
                 <div
@@ -134,7 +120,10 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
                 </div>
               </div>
               {entity.selectedCount ? (
-                <div className="flex border rounded-17xl px-3 py-1 items-center bg-primary-50 h-6">
+                <div
+                  className="flex border rounded-17xl px-3 py-1 items-center bg-primary-50 h-6"
+                  data-testid="audience-selection-selectedmsg"
+                >
                   <div>
                     <Icon
                       name="tickCircle"
@@ -159,16 +148,9 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
       return (
         <EntitySearchModalBody
           entityType={EntitySearchModalType.User}
-          control={control}
-          watch={watch}
-          setValue={setValue}
-          resetField={resetField}
-          selectedMemberIds={audience
-            .filter(
-              (value: IAudience) =>
-                value.entityType === AudienceEntityType.User,
-            )
-            .map((value: IAudience) => value.entityId)}
+          selectedMemberIds={Object.keys(users).filter(
+            (key: string) => users[key],
+          )}
         />
       );
     }
@@ -176,16 +158,9 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
       return (
         <EntitySearchModalBody
           entityType={EntitySearchModalType.Channel}
-          control={control}
-          watch={watch}
-          setValue={setValue}
-          resetField={resetField}
-          selectedChannelIds={audience
-            .filter(
-              (value: IAudience) =>
-                value.entityType === AudienceEntityType.Channel,
-            )
-            .map((value: IAudience) => value.entityId)}
+          selectedChannelIds={Object.keys(channels).filter(
+            (key: string) => channels[key],
+          )}
         />
       );
     }
@@ -193,16 +168,9 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
       return (
         <EntitySearchModalBody
           entityType={EntitySearchModalType.Team}
-          control={control}
-          watch={watch}
-          setValue={setValue}
-          resetField={resetField}
-          selectedTeamIds={audience
-            .filter(
-              (value: IAudience) =>
-                value.entityType === AudienceEntityType.Team,
-            )
-            .map((value: IAudience) => value.entityId)}
+          selectedTeamIds={Object.keys(teams).filter(
+            (key: string) => teams[key],
+          )}
         />
       );
     }

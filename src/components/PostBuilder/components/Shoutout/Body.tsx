@@ -22,10 +22,6 @@ interface ShoutoutBodyProps {
   triggerSubmit: boolean;
   getFile: (file: any) => void;
   setIsFileAdded: (flag: boolean) => void;
-  control: Control<IAudienceForm, any>;
-  watch: UseFormWatch<IAudienceForm>;
-  setValue: UseFormSetValue<IAudienceForm>;
-  resetField: UseFormResetField<IAudienceForm>;
   selectedUserIds: string[];
   users: any[];
 }
@@ -35,10 +31,6 @@ const Body: React.FC<ShoutoutBodyProps> = ({
   triggerSubmit,
   getFile,
   setIsFileAdded,
-  control,
-  watch,
-  resetField,
-  setValue,
   selectedUserIds,
   users,
 }) => {
@@ -51,12 +43,9 @@ const Body: React.FC<ShoutoutBodyProps> = ({
       {step === SHOUTOUT_STEPS.UserSelect && (
         <EntitySearchModalBody
           entityType={EntitySearchModalType.User}
-          control={control}
-          watch={watch}
-          setValue={setValue}
-          resetField={resetField}
           selectedMemberIds={selectedUserIds}
           entityRenderer={(data: IGetUser) => {
+            console.log(data);
             return (
               <div className="flex space-x-4 w-full pr-2">
                 <Avatar
@@ -71,21 +60,25 @@ const Body: React.FC<ShoutoutBodyProps> = ({
                         {data?.fullName}
                       </div>
                       <div className="flex space-x-[14px] items-center">
-                        <div className="flex space-x-1 items-start">
-                          <Icon name="briefcase" size={16} />
-                          <div className="text-xs font-normal text-neutral-500">
-                            {'Chief Financial officer'}
+                        {data?.designation && (
+                          <div className="flex space-x-1 items-start">
+                            <Icon name="briefcase" size={16} />
+                            <div className="text-xs font-normal text-neutral-500">
+                              {data?.designation}
+                            </div>
                           </div>
-                        </div>
-
-                        <div className="w-1 h-1 bg-neutral-500 rounded-full" />
-
-                        <div className="flex space-x-1 items-start">
-                          <Icon name="location" size={16} />
-                          <div className="text-xs font-normal text-neutral-500">
-                            {'New York, US.'}
+                        )}
+                        {data?.designation && data?.workLocation?.name && (
+                          <div className="w-1 h-1 bg-neutral-500 rounded-full" />
+                        )}
+                        {data?.workLocation?.name && (
+                          <div className="flex space-x-1 items-start">
+                            <Icon name="location" size={16} />
+                            <div className="text-xs font-normal text-neutral-500">
+                              {data?.workLocation.name}
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                     <div className="text-xs font-normal text-neutral-500">

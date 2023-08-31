@@ -13,6 +13,8 @@ import { useFeedStore } from 'stores/feedStore';
 import _ from 'lodash';
 import { string } from 'yargs';
 import { celebrations } from 'mocks/feed';
+import { ITeam } from './teams';
+import { IGetUser } from './users';
 
 export interface IReactionsCount {
   [key: string]: number;
@@ -35,6 +37,7 @@ export enum AudienceEntityType {
 export interface IAudience {
   entityType: AudienceEntityType;
   entityId: string;
+  entity?: ITeam | IGetUser | false; // | IChannel
   name?: string;
 }
 

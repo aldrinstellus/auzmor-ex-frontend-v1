@@ -1,9 +1,10 @@
+import clsx from 'clsx';
 import Button, { Variant, Size } from 'components/Button';
 import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
 import Spinner from 'components/Spinner';
-import React, { useCallback, useEffect, ReactNode } from 'react';
+import React, { useCallback, useEffect, ReactNode, useMemo } from 'react';
 import { Control } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
 
@@ -27,6 +28,8 @@ interface IInfiniteSearchProps {
   hasNextPage?: boolean;
   selectionCount?: number;
   itemRenderer?: (item: IOption) => ReactNode;
+  disabled?: boolean;
+  dataTestId?: string;
 }
 
 const InfiniteSearch: React.FC<IInfiniteSearchProps> = ({
@@ -43,6 +46,8 @@ const InfiniteSearch: React.FC<IInfiniteSearchProps> = ({
   hasNextPage,
   selectionCount = 0,
   itemRenderer,
+  disabled = false,
+  dataTestId,
 }) => {
   const { ref, inView } = useInView();
   useEffect(() => {
@@ -73,20 +78,32 @@ const InfiniteSearch: React.FC<IInfiniteSearchProps> = ({
       placeholder: 'Search',
       isClearable: true,
       leftIcon: 'search',
+      dataTestId: `${dataTestId}-search`,
     },
   ];
+
+  const triggeredNodeStyle = useMemo(
+    () =>
+      clsx({
+        'flex items-center ml-2 px-3 py-1 border border-neutral-200 rounded-17xl':
+          true,
+        'border-none bg-primary-50 text-primary-500': !!selectionCount,
+        'cursor-pointer': !disabled,
+        'pointer-events-none opacity-50': disabled,
+      }),
+    [selectionCount, disabled],
+  );
 
   return (
     <PopupMenu
       triggerNode={
-        <div
-          className={`flex items-center ml-2 px-3 py-1 border border-neutral-200 rounded-17xl ${
-            selectionCount && 'border-none bg-primary-50 text-primary-500'
-          }`}
-        >
+        <div className={triggeredNodeStyle} data-testid={dataTestId}>
           <div className="mr-1">{title}</div>
           {selectionCount > 0 && (
-            <div className="flex items-center justify-center rounded-full bg-red-500 text-white w-6 h-6 mx-1">
+            <div
+              className="flex items-center justify-center rounded-full bg-red-500 text-white w-6 h-6 mx-1"
+              data-testid={`${dataTestId}-count`}
+            >
               {selectionCount}
             </div>
           )}
@@ -118,6 +135,7 @@ const InfiniteSearch: React.FC<IInfiniteSearchProps> = ({
                         className="px-6 py-2 flex items-center"
                         key={option.id}
                         onClick={(e) => e.stopPropagation()}
+                        data-testid={`${dataTestId}-${option.label}`}
                       >
                         <Layout fields={checkboxField(option)} />
                         <div>{option.label}</div>
@@ -134,14 +152,21 @@ const InfiniteSearch: React.FC<IInfiniteSearchProps> = ({
                   className="mr-2"
                   size={Size.Small}
                   onClick={onReset}
+                  dataTestId={`${dataTestId}-reset`}
                 />
-                <Button label={'Apply'} size={Size.Small} onClick={onApply} />
+                <Button
+                  label={'Apply'}
+                  size={Size.Small}
+                  onClick={onApply}
+                  dataTestId={`${dataTestId}-apply`}
+                />
               </div>
             </div>
           ),
         },
       ]}
       className="top-full -left-[50%] mt-2 border border-neutral-200 min-w-[256px]"
+      disabled={disabled}
     />
   );
 };

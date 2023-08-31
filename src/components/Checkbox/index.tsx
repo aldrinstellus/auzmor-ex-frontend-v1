@@ -17,6 +17,7 @@ export type CheckboxProps = {
     input: (value: any) => boolean;
     output: (e: React.ChangeEvent<HTMLInputElement>) => any;
   };
+  defaultChecked?: boolean;
 };
 
 const Checkbox: React.FC<CheckboxProps> = ({
@@ -30,6 +31,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   control,
   labelDescription,
   transform,
+  defaultChecked,
   ...rest
 }) => {
   const { field } = useController({ name, control });
@@ -47,11 +49,14 @@ const Checkbox: React.FC<CheckboxProps> = ({
         name={field.name}
         ref={field.ref}
         disabled={loading || disabled}
-        defaultChecked={defaultValue}
         onChange={(e) =>
           field.onChange(transform?.output ? transform?.output(e) : e)
         }
-        checked={transform?.input ? transform?.input(field.value) : field.value}
+        checked={
+          transform?.input
+            ? transform?.input(field.value || defaultChecked)
+            : field.value || defaultChecked
+        }
         {...rest}
       />
       <label className={styles} data-testid={dataTestId}>

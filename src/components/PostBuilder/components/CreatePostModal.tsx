@@ -543,6 +543,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
               closeModal();
               clearPostContext();
             }}
+            dataTestId="audience-selection"
           />
         )}
       </Modal>
