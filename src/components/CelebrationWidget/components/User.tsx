@@ -26,16 +26,16 @@ const User: React.FC<UserProps> = ({ type, hideSendWishBtn = false, data }) => {
     data.joinDate,
     userTimezone,
   );
-  const celebrationDate =
-    type === CELEBRATION_TYPE.Birthday
-      ? formatDate(data.dateOfBirth, userTimezone)
-      : `${anniversaryYears} ${getNouns('yr', anniversaryYears)} (${formatDate(
-          data.joinDate,
-          userTimezone,
-        )})`;
+  const isBirthday = type === CELEBRATION_TYPE.Birthday;
+  const celebrationDate = isBirthday
+    ? formatDate(data.dateOfBirth, userTimezone)
+    : `${anniversaryYears} ${getNouns('yr', anniversaryYears)} (${formatDate(
+        data.joinDate,
+        userTimezone,
+      )})`;
   const showSendWishBtn =
     isCelebrationToday(
-      type === CELEBRATION_TYPE.Birthday ? data.dateOfBirth : data.joinDate,
+      isBirthday ? data.dateOfBirth : data.joinDate,
       userTimezone,
     ) && !hideSendWishBtn;
 
@@ -63,7 +63,12 @@ const User: React.FC<UserProps> = ({ type, hideSendWishBtn = false, data }) => {
             className="min-w-[32px]"
           />
           <div className="flex flex-col">
-            <p className="text-sm font-bold line-clamp-1">
+            <p
+              className="text-sm font-bold line-clamp-1"
+              data-testid={`${
+                isBirthday ? 'birthday' : 'anniversaries'
+              }-profile-name`}
+            >
               {getFullName(data.featuredUser)}
             </p>
             {data.featuredUser.designation && (
@@ -75,6 +80,7 @@ const User: React.FC<UserProps> = ({ type, hideSendWishBtn = false, data }) => {
         </div>
         <div
           className={`px-[6px] rounded-[4px] text-xs font-semibold whitespace-nowrap ${dateStyles}`}
+          data-testid={`${isBirthday ? 'birthday' : 'anniversaries'}-date`}
         >
           {celebrationDate}
         </div>
@@ -84,6 +90,9 @@ const User: React.FC<UserProps> = ({ type, hideSendWishBtn = false, data }) => {
           size={Size.Small}
           className="!bg-blue-50 !text-blue-500 px-4 py-2 rounded-[8px]"
           label="Send them wishes"
+          dataTestId={`${
+            isBirthday ? 'birthday' : 'anniversaries'
+          }-send-wishes-cta`}
         />
       )}
     </div>

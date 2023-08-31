@@ -29,6 +29,8 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
   const [openUpcoming, openUpcomingModal, closeUpcomingModal] = useModal();
   const currentDate = momentTz().tz(userTimezone);
 
+  const isBirthday = type === CELEBRATION_TYPE.Birthday;
+
   const { data, isLoading } = useCelebrations();
 
   const formattedData = data?.pages.flatMap((page: any) => {
@@ -44,7 +46,7 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
   const thisMonthCelebration = formattedData
     ? formattedData.filter((item) => {
         const itemDate = momentTz(
-          type === CELEBRATION_TYPE.Birthday ? item.dateOfBirth : item.joinDate,
+          isBirthday ? item.dateOfBirth : item.joinDate,
         ).tz(userTimezone);
         return itemDate.month() === currentDate.month();
       })
@@ -53,20 +55,16 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
   const upcomingMonthCelebration = formattedData
     ? formattedData.filter((item) => {
         const itemDate = momentTz(
-          type === CELEBRATION_TYPE.Birthday ? item.dateOfBirth : item.joinDate,
+          isBirthday ? item.dateOfBirth : item.joinDate,
         ).tz(userTimezone);
         return itemDate.month() >= currentDate.month() + 1;
       })
     : [];
 
-  const widgetTitle =
-    type === CELEBRATION_TYPE.Birthday
-      ? 'Birthdays 🎂'
-      : 'Work anniversaries 🎉';
-  const buttonLabel =
-    type === CELEBRATION_TYPE.Birthday
-      ? 'Upcoming Birthdays'
-      : 'Upcoming anniversaries';
+  const widgetTitle = isBirthday ? 'Birthdays 🎂' : 'Work anniversaries 🎉';
+  const buttonLabel = isBirthday
+    ? 'Upcoming Birthdays'
+    : 'Upcoming anniversaries';
 
   const toggleModal = () => {
     if (open) closeCollapse();
@@ -77,6 +75,7 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
     <Card className="py-6 flex flex-col rounded-9xl">
       <div
         className="px-6 flex items-center justify-between cursor-pointer"
+        data-testid={`collapse-${isBirthday ? 'birthday' : 'anniversaries'}`}
         onClick={toggleModal}
       >
         <div className="font-bold">{widgetTitle}</div>
@@ -142,6 +141,9 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
                     size={Size.Small}
                     className="py-[7px]"
                     label={buttonLabel}
+                    dataTestId={`upcoming-${
+                      isBirthday ? 'birthday' : 'anniversaries'
+                    }`}
                     onClick={openUpcomingModal}
                   />
                 </>
