@@ -74,7 +74,7 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
   };
 
   return (
-    <Card className="py-6 flex flex-col rounded-9xl gap-4">
+    <Card className="py-6 flex flex-col rounded-9xl">
       <div
         className="px-6 flex items-center justify-between cursor-pointer"
         onClick={toggleModal}
@@ -82,8 +82,12 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
         <div className="font-bold">{widgetTitle}</div>
         <Icon name={open ? 'arrowUp' : 'arrowDown'} size={20} />
       </div>
-      {open && (
-        <div className="px-4 flex flex-col gap-4">
+      <div
+        className={`transition-max-h duration-300 ease-in-out overflow-hidden ${
+          open ? 'max-h-[1000px]' : 'max-h-[0]'
+        }`}
+      >
+        <div className="px-4 flex flex-col gap-4 mt-4">
           {(() => {
             if (isLoading) {
               return (
@@ -146,7 +150,7 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
             return <EmptyState type={type} />;
           })()}
         </div>
-      )}
+      </div>
       <UpcomingCelebrationModal
         open={openUpcoming}
         closeModal={closeUpcomingModal}
