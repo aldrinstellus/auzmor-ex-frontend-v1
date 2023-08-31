@@ -127,6 +127,7 @@ const AsyncSingleSelect = React.forwardRef(
                 {...field}
                 onBlur={() => setOpen(false)}
                 ref={ref}
+                className="async-single-select"
               />
             )}
           />

@@ -8,6 +8,8 @@ import Icon from 'components/Icon';
 import './index.css';
 import { SelectCommonPlacement } from 'antd/es/_util/motion';
 
+const { Option } = Select;
+
 type ApiCallFunction = (queryParams: any) => any;
 
 const AddOption = (props: { value?: string }) => (
@@ -67,7 +69,7 @@ const CreatableSearch = React.forwardRef(
     const { data } = fetchQuery(
       isFiltersEmpty({
         q: debouncedSearchValue.toLowerCase().trim(),
-        limit: 10,
+        limit: 3,
         ...queryParams,
       }),
     );
@@ -105,18 +107,19 @@ const CreatableSearch = React.forwardRef(
       [error],
     );
 
+    const isOptionContains = (searchValue: string) =>
+      (transformedOptions || []).find((option) => searchValue === option.label);
+
     const addOptionObject =
-      !disableCreate && searchValue
+      !disableCreate && searchValue && !isOptionContains(searchValue)
         ? {
-            label: <AddOption value={searchValue} />,
+            label: searchValue,
             value: searchValue,
+            isNew: true,
           }
         : null;
     const options = addOptionObject
-      ? [
-          ...(transformedOptions || [{ label: 'D1', value: 'D1' }]),
-          addOptionObject,
-        ]
+      ? [...(transformedOptions || []), addOptionObject]
       : transformedOptions;
 
     return (
@@ -146,19 +149,44 @@ const CreatableSearch = React.forwardRef(
                 showSearch
                 disabled={disabled}
                 placeholder={placeholder}
-                options={options}
                 defaultValue={defaultValue}
                 placement={menuPlacement ? menuPlacement : undefined}
                 getPopupContainer={(triggerNode) => triggerNode.parentElement}
                 searchValue={searchValue}
                 onSearch={setSearchValue}
+                filterOption={false}
                 notFoundContent={
                   disableCreate || !searchValue ? noOptionsMessage : null
                 }
                 {...field}
                 ref={ref}
                 onBlur={() => setOpen(false)}
-              />
+                optionLabelProp="label"
+                onChange={(_, option) => {
+                  field.onChange(option);
+                }}
+                className="creatable-search"
+              >
+                {(options || []).map((option) => (
+                  <Option
+                    key={option.value}
+                    value={option.value}
+                    label={option.label}
+                  >
+                    {option.isNew ? (
+                      <div className="flex items-center justify-start">
+                        <Icon name="add" size={16} color="text-neutral-900" />
+                        <span className="ml-[10px] mr-[6px]">Add</span>
+                        <span className="text-blue-500 line-clamp-1">
+                          {`'${option.label}'`}
+                        </span>
+                      </div>
+                    ) : (
+                      option.label
+                    )}
+                  </Option>
+                ))}
+              </Select>
             )}
           />
         </div>

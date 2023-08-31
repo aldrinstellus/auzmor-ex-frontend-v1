@@ -170,7 +170,7 @@ const People: React.FC<IPeopleProps> = ({
                   label="All Members"
                   size={Size.Small}
                   variant={Variant.Secondary}
-                  className="!py-2 grow-0"
+                  className="h-9 grow-0"
                   dataTestId="people-view-all-members"
                   onClick={() => customReset()}
                   active={!searchValue && !role}
