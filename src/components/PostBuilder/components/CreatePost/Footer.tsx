@@ -81,6 +81,7 @@ const Footer: React.FC<IFooterProps> = ({
             name="imageFilled"
             color={isMediaDisabled ? 'text-neutral-200' : 'text-neutral-900'}
             size={14}
+            disabled={isMediaDisabled}
             dataTestId="feed-createpost-media"
           />
         ),
@@ -122,6 +123,7 @@ const Footer: React.FC<IFooterProps> = ({
             name="magicStarFilled"
             size={14}
             color={isShoutoutDisabled ? 'text-neutral-200' : 'text-neutral-900'}
+            disabled={isShoutoutDisabled}
             dataTestId="feed-createpost-shoutout"
           />
         ),
@@ -159,6 +161,7 @@ const Footer: React.FC<IFooterProps> = ({
           <Icon
             name="chartFilled"
             size={14}
+            disabled={isPollDisabled}
             dataTestId="feed-createpost-polls"
             color={isPollDisabled ? 'text-neutral-200' : 'text-neutral-900'}
           />

@@ -9,6 +9,9 @@ import {
 import Body from './Body';
 import Button from 'components/Button';
 import { Variant as ButtonVariant } from 'components/Button';
+import { AudienceEntityType, IAudience } from 'queries/post';
+import { IAudienceForm } from 'components/EntitySearchModal';
+import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 
 interface ICreateShoutoutProps {
   closeModal: () => void;
@@ -20,11 +23,12 @@ export enum SHOUTOUT_STEPS {
 }
 
 const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
-  const { control, watch, setValue, resetField, getValues } = useForm<any>({
+  const { form, setForm } = useEntitySearchFormStore();
+  const audienceForm = useForm<IAudienceForm>({
     defaultValues: {
       showSelectedMembers: false,
       selectAll: false,
-      users: [],
+      users: {},
     },
   });
   const {
@@ -57,12 +61,12 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
 
   const handleNext = () => {
     if (step === SHOUTOUT_STEPS.UserSelect) {
-      const formData = getValues();
+      const formData = form!.getValues();
       const _users: any[] = [];
       const ids: any[] = [];
       Object.keys(formData.users).forEach((key) => {
         if (formData.users[key]) {
-          _users.push({ id: key, name: 'Nitesh' });
+          _users.push(formData.users[key]);
           ids.push(key);
         }
       });
@@ -85,7 +89,7 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
 
   const isBtnDisabled = () => {
     if (step === SHOUTOUT_STEPS.UserSelect) {
-      const formData = getValues();
+      const formData = form!.getValues();
       return (
         !formData.users ||
         Object.keys(formData.users).filter((key) => formData.users[key])
@@ -98,12 +102,29 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
     return true;
   };
 
-  return (
+  useEffect(() => {
+    setForm(audienceForm);
+    return () => {
+      setForm(null);
+    };
+  }, []);
+
+  return form ? (
     <div>
       <Header
         title="Give Kudos"
         onBackIconClick={handleBack}
         onClose={closeModal}
+        titleDataTestId={
+          step === SHOUTOUT_STEPS.UserSelect
+            ? 'createpost-givekudos'
+            : 'kudos-uploading-button'
+        }
+        closeBtnDataTestId={
+          step === SHOUTOUT_STEPS.UserSelect
+            ? 'kudos-closemodal'
+            : 'kudos-selectbanner-closemodal'
+        }
       />
       <Body
         step={step}
@@ -118,6 +139,11 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
           onClick={handleBack}
           label="Back"
           variant={ButtonVariant.Secondary}
+          dataTestId={
+            step === SHOUTOUT_STEPS.UserSelect
+              ? 'kudos-givekudos-backcta'
+              : 'kudos-selectbanner-back'
+          }
         />
         <Button
           label="Next"
@@ -125,9 +151,16 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
           variant={ButtonVariant.Primary}
           onClick={handleNext}
           disabled={isBtnDisabled()}
+          dataTestId={
+            step === SHOUTOUT_STEPS.UserSelect
+              ? 'kudos-givekudos-nextcta'
+              : 'kudos-selectbanner-next'
+          }
         />
       </div>
     </div>
+  ) : (
+    <></>
   );
 };
 

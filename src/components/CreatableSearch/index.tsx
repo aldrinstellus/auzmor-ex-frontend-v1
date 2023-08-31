@@ -86,9 +86,6 @@ const CreatableSearch = React.forwardRef(
           {
             'text-sm text-neutral-900 font-bold truncate pl-1 mb-1': !!label,
           },
-          {
-            '!text-gray-400': disabled,
-          },
         ),
       [error],
     );
@@ -105,7 +102,9 @@ const CreatableSearch = React.forwardRef(
       control: (styles: any) => {
         return {
           ...styles,
-          backgroundColor: '#fff',
+          backgroundColor: disabled
+            ? twConfig.theme.colors.neutral[100]
+            : '#fff',
           border: '1px solid #E5E5E5',
           borderRadius: '32px',
           height: `${height} !important`,
@@ -115,6 +114,14 @@ const CreatableSearch = React.forwardRef(
           boxShadow: styles.boxShadow
             ? `0 0 0 1px ${twConfig.theme.colors.primary['500']}`
             : undefined,
+        };
+      },
+      singleValue: (styles: any) => {
+        return {
+          ...styles,
+          color: disabled
+            ? twConfig.theme.colors.neutral[400]
+            : twConfig.theme.colors.neutral[900],
         };
       },
       menu: (styles: any) => {
@@ -129,7 +136,7 @@ const CreatableSearch = React.forwardRef(
       <div
         className={clsx(
           { [`relative ${className}`]: true },
-          { 'cursor-not-allowed': disabled },
+          { 'pointer-events-none': disabled },
         )}
       >
         <div className={labelStyle}>

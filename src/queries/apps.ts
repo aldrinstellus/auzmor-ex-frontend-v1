@@ -77,7 +77,7 @@ export enum AudienceEntityType {
 export interface IAudience {
   entityType: AudienceEntityType;
   entityId: string;
-  name?: string;
+  name: string;
 }
 
 // Get apps categories

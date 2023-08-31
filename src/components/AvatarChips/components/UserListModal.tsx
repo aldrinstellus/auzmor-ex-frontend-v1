@@ -9,19 +9,26 @@ export interface IUserListModalProps {
   open: boolean;
   closeModal: () => void;
   users: IAvatarUser[];
+  dataTestId?: string;
 }
 
 const UserListModal: React.FC<IUserListModalProps> = ({
   open,
   closeModal,
   users,
+  dataTestId,
 }) => {
   return (
-    <Modal open={open} closeModal={close} className="max-w-[638px]">
+    <Modal
+      open={open}
+      closeModal={close}
+      className="max-w-[638px]"
+      dataTestId={`${dataTestId}modal`}
+    >
       <Header
         title="Shoutout to:"
         onClose={() => closeModal()}
-        closeBtnDataTestId="app-filter-close"
+        closeBtnDataTestId={`${dataTestId}closemodal`}
       />
       <div className="w-full p-4 pt-0 max-h-[490px] min-h-[490px] overflow-y-auto">
         {users.map((user, index) => (
@@ -31,7 +38,7 @@ const UserListModal: React.FC<IUserListModalProps> = ({
               index !== users.length - 1 && 'border-b-1 border-neutral-100'
             }`}
           >
-            <UserRow user={user} />
+            <UserRow user={user} dataTestId={dataTestId} />
           </div>
         ))}
       </div>
@@ -40,7 +47,7 @@ const UserListModal: React.FC<IUserListModalProps> = ({
           label="Close"
           variant={ButtonVariant.Secondary}
           onClick={closeModal}
-          dataTestId="app-filter-clear-filter"
+          dataTestId={`${dataTestId}closecta`}
         />
       </div>
     </Modal>

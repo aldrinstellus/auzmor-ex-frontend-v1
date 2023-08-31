@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Avatar from 'components/Avatar';
 import { VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
 import { IAudience, ICreatedBy } from 'queries/post';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-import Icon from 'components/Icon';
 import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
 import AudiencePopup from 'components/AudiencePopup';
 
@@ -17,6 +16,7 @@ type ActorProps = {
   disabled?: boolean;
   audience?: IAudience[];
   entityId?: string;
+  postType?: string;
 };
 
 const Actor: React.FC<ActorProps> = ({
@@ -24,6 +24,7 @@ const Actor: React.FC<ActorProps> = ({
   createdTime,
   createdBy,
   dataTestId,
+  postType,
   disabled = false,
   entityId,
   audience,
@@ -33,6 +34,22 @@ const Actor: React.FC<ActorProps> = ({
   const actorStyles = clsx({
     'flex justify-between items-center mx-6 mt-6 mb-4': true,
   });
+
+  const actionLabel = useMemo(() => {
+    if (postType === 'BIRTHDAY') {
+      return 'is celebrating their birthday';
+    }
+    if (postType === 'WORK_ANNIVERSARY') {
+      return 'is celebrating their work anniversary';
+    }
+    if (postType === 'NEW_JOINEE') {
+      return 'is a new joinee';
+    }
+    if (contentMode === VIEW_POST) {
+      return 'shared a post';
+    }
+    return '';
+  }, [postType]);
 
   return (
     <div className={actorStyles}>
@@ -76,11 +93,9 @@ const Actor: React.FC<ActorProps> = ({
                 : user
                 ? getFullName(user)
                 : ''}
-              {contentMode === VIEW_POST ? (
-                <span className="ml-1 text-sm font-normal text-neutral-900">
-                  shared a post
-                </span>
-              ) : null}
+              <span className="ml-1 text-sm font-normal text-neutral-900">
+                {actionLabel}
+              </span>
             </div>
           </Link>
           {contentMode === VIEW_POST ? (

@@ -164,7 +164,14 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
         </div>
       )}
       {media && media.length > 0 && (
-        <div className={containerStyle}>
+        <div
+          className={containerStyle}
+          data-testid={
+            data?.shoutoutRecipients && data?.shoutoutRecipients.length > 0
+              ? 'feed-post-shoutout'
+              : ''
+          }
+        >
           <MediaPreview
             className={mediaPreviewStyle}
             media={media as IMedia[]}
@@ -186,8 +193,17 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
       )} */}
       {data?.shoutoutRecipients && data?.shoutoutRecipients.length > 0 && (
         <div className="mt-4 flex flex-col gap-2">
-          <p className="text-xs text-neutral-500">Shoutout to:</p>
-          <AvatarChips users={data.shoutoutRecipients} showCount={3} />
+          <p
+            className="text-xs text-neutral-500"
+            data-testid="feed-post-shoutoutto-list"
+          >
+            Shoutout to:
+          </p>
+          <AvatarChips
+            users={data.shoutoutRecipients}
+            showCount={3}
+            dataTestId="feed-post-shoutoutto-"
+          />
         </div>
       )}
     </div>

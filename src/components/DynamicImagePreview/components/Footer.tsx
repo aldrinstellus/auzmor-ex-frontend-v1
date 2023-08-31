@@ -108,12 +108,12 @@ const Footer: React.FC<IFooterProps> = ({
                 imageRef?.current?.click();
               }
             }}
-            dataTestId={`${dataTestId}-changephoto`}
+            dataTestId={`${dataTestId}-changephotocta`}
           />
           <Button
             label="Apply"
             onClick={onSubmit}
-            dataTestId={`${dataTestId}-apply`}
+            dataTestId={`${dataTestId}-applycta`}
           />
         </div>
       </div>

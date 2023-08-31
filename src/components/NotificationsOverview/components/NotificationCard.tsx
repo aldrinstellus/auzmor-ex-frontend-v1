@@ -6,14 +6,21 @@ export type NotificationCardProps = {
   TopCardContent?: string;
   BottomCardContent?: string;
   image?: string;
+  type?: NOTIFICATION_CARD_TYPE;
 };
+
+export enum NOTIFICATION_CARD_TYPE {
+  Card = 'CARD',
+  Content = 'CONTENT',
+}
 
 const NotificationCard: React.FC<NotificationCardProps> = ({
   TopCardContent,
   BottomCardContent,
   image = undefined,
+  type = NOTIFICATION_CARD_TYPE.Card,
 }) => {
-  return (
+  return type === NOTIFICATION_CARD_TYPE.Card ? (
     <Card className="border-neutral-200 border-1 overflow-hidden">
       {/* Comment */}
       {TopCardContent && (
@@ -48,6 +55,17 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
         )}
       </div>
     </Card>
+  ) : (
+    <div>
+      {TopCardContent && (
+        <p
+          className="my-2 text-sm text-neutral-900 font-medium"
+          dangerouslySetInnerHTML={{
+            __html: TopCardContent,
+          }}
+        />
+      )}
+    </div>
   );
 };
 

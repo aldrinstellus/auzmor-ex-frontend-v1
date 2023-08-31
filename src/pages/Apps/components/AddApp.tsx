@@ -309,6 +309,7 @@ const AddApp: React.FC<AddAppProps> = ({
       closeModal={closeModal}
       className={clsx('max-w-[868px]', {
         'min-h-[630px] max-h-[650px] ': activeFlow === ADD_APP_FLOW.AddApp,
+        '!max-w-[638px]': activeFlow === ADD_APP_FLOW.AudienceSelector,
       })}
     >
       {activeFlow === ADD_APP_FLOW.AddApp && (

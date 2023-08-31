@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import clsx from 'clsx';
-import { toBlob } from 'html-to-image';
 import Kudos1 from 'images/kudos1.png';
 import Kudos2 from 'images/kudos2.png';
 import Kudos3 from 'images/kudos3.png';
@@ -10,7 +9,6 @@ import Kudos6 from 'images/kudos6.png';
 import Kudos7 from 'images/kudos7.png';
 import Kudos8 from 'images/kudos8.png';
 import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
 
 const templateImages = [
   {
@@ -18,30 +16,32 @@ const templateImages = [
     image: Kudos1,
     label: 'Thanks for the Exceptional Effort',
     bgColor: 'bg-[#FFEDD5]',
+    dataTestId: 'kudos-thanks-banner',
   },
   {
     id: 2,
+    image: Kudos3,
+    label: 'Good Job!',
+    bgColor: 'bg-[#FCE8F3]',
+    dataTestId: 'kudos-goodjob-banner',
+  },
+  {
+    id: 3,
+    image: Kudos5,
+    label: 'Thank you for your hardwork!',
+    bgColor: 'bg-[#FDFDEA]',
+  },
+  {
+    id: 4,
     image: Kudos2,
     label: 'Your motivation is inspiring',
     bgColor: 'bg-[#D1FAE5]',
   },
   {
-    id: 3,
-    image: Kudos3,
-    label: 'Good Job!',
-    bgColor: 'bg-[#FCE8F3]',
-  },
-  {
-    id: 4,
+    id: 5,
     image: Kudos4,
     label: 'I Appreciate your excellent work!',
     bgColor: 'bg-[#E5EDFF]',
-  },
-  {
-    id: 5,
-    image: Kudos5,
-    label: 'Thank you for your hardwork!',
-    bgColor: 'bg-[#FDFDEA]',
   },
   {
     id: 6,
@@ -82,13 +82,13 @@ const ImagePicker: React.FC<IImagePickerProps> = ({
   };
 
   return (
-    <div className="ml-2 mb-2">
-      <div className="flex gap-4 flex-wrap">
+    <div className="flex justify-center mb-2">
+      <div className="inline-grid grid-cols-2 gap-4">
         {templateImages.map((item) => (
           <div
             key={item.id}
             className={clsx(
-              'relative cursor-pointer max-w-[270px] max-h-[183px] min-h-[183px] max-w-[270px] border-1 border-neutral-200 w-full h-full rounded-[12px] overflow-hidden',
+              'relative cursor-pointer max-w-[269px] max-h-[182px] min-h-[183px] max-w-[270px] border-1 border-neutral-200 w-full h-full rounded-[12px] overflow-hidden',
               { 'border-primary-500': item.id === selectedTemplate?.id },
             )}
             onClick={() => handleSelectTemplate(item)}

@@ -105,6 +105,7 @@ const Audience: React.FC<IAudienceProps> = ({
       if (formData.channels[id]) {
         localAudience.push({
           entityId: id,
+          name: formData.channels[id].name,
           entityType: AudienceEntityType.Channel,
         });
       }
@@ -113,15 +114,8 @@ const Audience: React.FC<IAudienceProps> = ({
       if (formData.teams[id]) {
         localAudience.push({
           entityId: id,
+          name: formData.teams[id].name,
           entityType: AudienceEntityType.Team,
-        });
-      }
-    });
-    Object.keys(formData.users).forEach((id: string) => {
-      if (formData.users[id]) {
-        localAudience.push({
-          entityId: id,
-          entityType: AudienceEntityType.User,
         });
       }
     });
