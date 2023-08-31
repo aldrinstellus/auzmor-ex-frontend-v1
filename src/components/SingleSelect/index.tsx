@@ -113,6 +113,9 @@ const SingleSelect = React.forwardRef(
                 }
                 {...field}
                 onBlur={() => setOpen(false)}
+                onChange={(_, option) => {
+                  field.onChange(option);
+                }}
                 className="single-select"
                 ref={ref}
               />

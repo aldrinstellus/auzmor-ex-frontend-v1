@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Control, useController, Controller } from 'react-hook-form';
 import { Select } from 'antd';
@@ -27,7 +27,7 @@ export interface IAsyncSingleSelectProps {
     inputValue: string,
     callBack: (options: IOptions[]) => void,
   ) => Promise<any>;
-  noOptionsMessage?: ReactNode | string;
+  noOptionsMessage?: string;
   isClearable?: boolean;
 }
 
@@ -65,9 +65,6 @@ const AsyncSingleSelect = React.forwardRef(
           {
             'text-sm text-neutral-900 font-bold truncate pl-1 mb-1': !!label,
           },
-          {
-            '!text-gray-400': disabled,
-          },
         ),
       [error],
     );
@@ -83,11 +80,23 @@ const AsyncSingleSelect = React.forwardRef(
     const [open, setOpen] = useState<boolean>(false);
     const [asyncOptions, setAsyncOptions] = useState<IOptions[]>(options);
 
+    useEffect(() => {
+      if (defaultValue.label) {
+        loadOptions(defaultValue.label, setAsyncOptions);
+      }
+    }, []);
+
+    const noContentFound = () => (
+      <div className="px-6 py-2 text-neutral-500 text-center">
+        {isLoading ? 'Loading...' : noOptionsMessage}
+      </div>
+    );
+
     return (
       <div
         className={clsx(
           { [`relative ${className}`]: true },
-          { 'cursor-not-allowed': disabled },
+          { 'pointer-events-none': disabled },
         )}
       >
         <div className={labelStyle}>{label}</div>
@@ -121,12 +130,15 @@ const AsyncSingleSelect = React.forwardRef(
                     .includes(input.toLowerCase())
                 }
                 onSearch={(q) => loadOptions(q, setAsyncOptions)}
-                notFoundContent={noOptionsMessage}
+                notFoundContent={noContentFound()}
                 allowClear={isClearable}
                 loading={isLoading}
                 {...field}
                 onBlur={() => setOpen(false)}
                 ref={ref}
+                onChange={(_, option) => {
+                  field.onChange(option);
+                }}
                 className="async-single-select"
               />
             )}

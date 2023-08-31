@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import debounce from 'lodash/debounce';
 import * as yup from 'yup';
@@ -103,17 +103,20 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         : null,
     },
   });
+  const [locationLoading, setLocationLoading] = useState(false);
 
   const loadLocations = async (
     inputValue: string,
     callback: (options: any[]) => void,
   ) => {
+    setLocationLoading(true);
     const data = await getGooglePlaces({
       q: inputValue || userDetails?.workLocation?.name || 'a',
     });
     callback(
       data.map((place: any) => ({ label: place.name, value: place.name })),
     );
+    setLocationLoading(false);
   };
 
   const formatDepartments = (data: any) => {
@@ -150,7 +153,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       label: 'Name*',
       dataTestId: `${dataTestId}-name`,
       control,
-      inputClassName: 'py-[9px]',
+      inputClassName: 'py-[11px] !text-sm',
     },
   ];
 
@@ -163,7 +166,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       label: 'Preferred Name',
       dataTestId: `${dataTestId}-perferred-name`,
       control,
-      inputClassName: 'py-[9px]',
+      inputClassName: 'py-[11px] !text-sm',
     },
   ];
 
@@ -177,7 +180,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       dataTestId: `${dataTestId}-title`,
       label: 'Position title',
       control,
-      inputClassName: 'py-[9px]',
+      inputClassName: 'py-[11px] !text-sm',
     },
   ];
 
@@ -211,8 +214,9 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       ) => {
         debouncedLoadLocations(inputValue, callback);
       },
-      noOptionsMessage: () => 'No locations',
+      noOptionsMessage: 'No locations',
       control,
+      isLoading: locationLoading,
     },
   ];
 

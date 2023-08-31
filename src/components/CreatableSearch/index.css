@@ -20,12 +20,16 @@
   border-color: theme('colors.primary.500') !important;
 }
 
-.ant-select-selection-item {
+.creatable-search .ant-select-selection-item {
   font-weight: theme('fontWeight.medium') !important;
   font-size: theme('fontSize.sm') !important;
   line-height: theme('lineHeight.normal') !important;
   color: theme('colors.neutral.900') !important;
   font-family: 'Manrope';
+}
+
+.creatable-search.ant-select-disabled .ant-select-selection-item {
+  color: theme('colors.neutral.400') !important;
 }
 
 .ant-select-dropdown {

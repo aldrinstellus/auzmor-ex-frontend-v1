@@ -39,7 +39,7 @@ export interface ICreatableSearch {
   queryParams?: Record<string, any>;
   getFormattedData: (param: any) => any[];
   disableCreate?: boolean;
-  noOptionsMessage?: ReactNode | string;
+  noOptionsMessage?: string;
 }
 
 const CreatableSearch = React.forwardRef(
@@ -92,9 +92,6 @@ const CreatableSearch = React.forwardRef(
           {
             'text-sm text-neutral-900 font-bold truncate pl-1 mb-1': !!label,
           },
-          {
-            '!text-gray-400': disabled,
-          },
         ),
       [error],
     );
@@ -122,11 +119,17 @@ const CreatableSearch = React.forwardRef(
       ? [...(transformedOptions || []), addOptionObject]
       : transformedOptions;
 
+    const noContentFound = () => (
+      <div className="px-6 py-2 text-neutral-500 text-center">
+        {noOptionsMessage}
+      </div>
+    );
+
     return (
       <div
         className={clsx(
           { [`relative ${className}`]: true },
-          { 'cursor-not-allowed': disabled },
+          { 'pointer-events-none': disabled },
         )}
       >
         <div className={labelStyle}>
@@ -156,7 +159,7 @@ const CreatableSearch = React.forwardRef(
                 onSearch={setSearchValue}
                 filterOption={false}
                 notFoundContent={
-                  disableCreate || !searchValue ? noOptionsMessage : null
+                  disableCreate || !searchValue ? noContentFound() : null
                 }
                 {...field}
                 ref={ref}
