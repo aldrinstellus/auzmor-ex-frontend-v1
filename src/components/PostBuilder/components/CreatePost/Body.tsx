@@ -15,6 +15,7 @@ import { useOrganization } from 'queries/organization';
 import { PostBuilderMode } from 'components/PostBuilder';
 import { getTimeInScheduleFormat } from 'utils/time';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
+import Button, { Size, Variant } from 'components/Button';
 
 export interface IBodyProps {
   data?: IPost;
@@ -35,6 +36,7 @@ const Body = React.forwardRef(
       setEditorValue,
       setActiveFlow,
       media,
+      audience,
     } = useContext(CreatePostContext);
     const { user } = useAuth();
     const { currentTimezone } = useCurrentTimezone();
@@ -72,20 +74,56 @@ const Body = React.forwardRef(
                 }
               }
             />
-            <div
-              className="flex items-center mr-6 cursor-pointer"
-              data-testid={`feed-createpost-visibility`}
-              onClick={() => {
-                updateContext();
-                setActiveFlow(CreatePostFlow.Audience);
-              }}
-            >
-              <div className="flex items-center rounded-17xl px-3 py-1.5 border">
-                <Icon name="profileUserOutline" size={16} />
-                <div className="ml-1 text-xxs font-medium text-neutral-900">
-                  Audience
+            <div className="flex items-center mr-6 cursor-pointer">
+              {audience.length > 0 ? (
+                <div className="flex gap-2">
+                  <Button
+                    key={audience[0].entityId}
+                    leftIcon="noteFavourite"
+                    leftIconSize={16}
+                    leftIconClassName="mr-1"
+                    size={Size.Small}
+                    variant={Variant.Secondary}
+                    label={audience[0].name || 'Team Name'}
+                    onClick={() => {
+                      updateContext();
+                      setActiveFlow(CreatePostFlow.Audience);
+                    }}
+                    className="group"
+                    labelClassName="text-xss text-neutral-900 font-medium group-hover:text-primary-500"
+                    dataTestId="createpost-selected-audience-list"
+                  />
+                  {audience.length > 1 && (
+                    <Button
+                      key={audience[0].entityId}
+                      variant={Variant.Secondary}
+                      size={Size.Small}
+                      label={`+ ${audience.length - 1} more`}
+                      onClick={() => {
+                        updateContext();
+                        setActiveFlow(CreatePostFlow.Audience);
+                      }}
+                      className="group"
+                      labelClassName="text-xss text-neutral-900 font-medium group-hover:text-primary-500"
+                      dataTestId="createpost-more-audience"
+                    />
+                  )}
                 </div>
-              </div>
+              ) : (
+                <Button
+                  variant={Variant.Secondary}
+                  leftIcon={'profileUser'}
+                  label="Audience"
+                  size={Size.Small}
+                  onClick={() => {
+                    updateContext();
+                    setActiveFlow(CreatePostFlow.Audience);
+                  }}
+                  className="group"
+                  labelClassName="text-xss text-neutral-900 font-medium group-hover:text-primary-500"
+                  dataTestId={`createpost-audience`}
+                />
+              )}
             </div>
           </div>
           {schedule && (

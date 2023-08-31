@@ -173,7 +173,12 @@ const Input: React.FC<InputProps> = ({
         <div className="flex relative items-center w-full">
           {leftIcon && (
             <div className="absolute ml-5" onClick={onLeftIconClick}>
-              <Icon disabled name={leftIcon} size={16} />
+              <Icon
+                disabled
+                name={leftIcon}
+                size={16}
+                className="text-neutral-500"
+              />
             </div>
           )}
           <input

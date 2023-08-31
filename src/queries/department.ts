@@ -4,8 +4,6 @@ import apiService from 'utils/apiService';
 export interface IDepartment {
   id: string;
   name: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export const getAllDepartments = async ({

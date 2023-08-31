@@ -6,6 +6,7 @@ export interface IHeaderProps {
   onClose?: () => void;
   onBackIconClick?: () => void;
   closeBtnDataTestId?: string;
+  titleDataTestId?: string;
 }
 
 const Header: React.FC<IHeaderProps> = ({
@@ -13,6 +14,7 @@ const Header: React.FC<IHeaderProps> = ({
   onClose,
   onBackIconClick,
   closeBtnDataTestId,
+  titleDataTestId,
 }) => {
   return (
     <div className="flex flex-wrap p-4 space-x-3 border-b-1 border-neutral-200 items-center">
@@ -26,7 +28,10 @@ const Header: React.FC<IHeaderProps> = ({
         />
       )}
 
-      <div className="text-lg text-neutral-900 font-extrabold flex-[50%]">
+      <div
+        className="text-lg text-neutral-900 font-extrabold flex-[50%]"
+        data-testid={titleDataTestId}
+      >
         {title}
       </div>
       {onClose && (

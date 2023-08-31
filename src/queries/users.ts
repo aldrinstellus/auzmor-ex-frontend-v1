@@ -106,23 +106,13 @@ export interface IGetUser {
   workLocation?: Record<string, string>;
 }
 
-export const getAllUser = ({
+export const getAllUser = async ({
   pageParam = null,
   queryKey,
 }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
   if (pageParam === null) {
-    if (typeof queryKey[1] === 'object') {
-      if (!queryKey[1]?.status || queryKey[1]?.status === 'ALL') {
-        return apiService.get('/users', {
-          q: queryKey[1]?.q,
-          role: queryKey[1]?.role,
-          sort: queryKey[1]?.sort,
-        });
-      } else {
-        return apiService.get('/users', queryKey[1]);
-      }
-    }
-  } else return apiService.get(pageParam);
+    return await apiService.get('/users', queryKey[1]);
+  } else return await apiService.get(pageParam);
 };
 
 export const useInfiniteUsers = (q?: Record<string, any>) => {

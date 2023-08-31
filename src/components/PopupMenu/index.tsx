@@ -23,6 +23,7 @@ export interface IPopupMenuProps {
   menuItems: IMenuItem[];
   className?: string;
   title?: ReactNode;
+  disabled?: boolean;
 }
 
 const PopupMenu: React.FC<IPopupMenuProps> = ({
@@ -30,11 +31,12 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
   menuItems,
   className,
   title,
+  disabled = false,
 }) => {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   return (
     <Menu>
-      <Menu.Button as="div" ref={menuButtonRef}>
+      <Menu.Button as="div" ref={menuButtonRef} disabled={disabled}>
         {triggerNode}
       </Menu.Button>
       <Menu.Items

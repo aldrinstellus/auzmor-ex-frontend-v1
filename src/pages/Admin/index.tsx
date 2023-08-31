@@ -36,6 +36,7 @@ const Admin: React.FC<IAdminProps> = () => {
           className="rounded-9xl overflow-hidden"
           headerClassName="px-4 py-2 bg-blue-50"
           headerTextClassName="text-base font-bold text-neutral-900"
+          dataTestId="generalsetting-postingcontrols"
         >
           <div className="bg-white">
             <div className="px-6 py-4 flex justify-between">
@@ -43,7 +44,10 @@ const Admin: React.FC<IAdminProps> = () => {
                 <div className="text-neutral-900 font-semibold text-sm">
                   Limit global posting
                 </div>
-                <div className="text-xs text-neutral-900">
+                <div
+                  className="text-xs text-neutral-900"
+                  data-testid="globalposting-helpnote"
+                >
                   When Global Posting is ON, end users can&apos;t post to
                   everyone, only to their Team(s) or permitted Channels.
                 </div>
@@ -57,6 +61,7 @@ const Admin: React.FC<IAdminProps> = () => {
                 defaultValue={
                   !!data?.adminSettings?.postingControls.limitGlobalPosting
                 }
+                dataTestId="postingcontrols-globalposting-cta"
               />
             </div>
           </div>
@@ -64,7 +69,7 @@ const Admin: React.FC<IAdminProps> = () => {
       ),
       disabled: false,
       hidden: false,
-      dataTestId: 'settings-general',
+      dataTestId: 'adminsettings-generalsetting',
     },
     {
       label: 'User Management',

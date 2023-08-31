@@ -22,10 +22,6 @@ interface ShoutoutBodyProps {
   triggerSubmit: boolean;
   getFile: (file: any) => void;
   setIsFileAdded: (flag: boolean) => void;
-  control: Control<IAudienceForm, any>;
-  watch: UseFormWatch<IAudienceForm>;
-  setValue: UseFormSetValue<IAudienceForm>;
-  resetField: UseFormResetField<IAudienceForm>;
   selectedUserIds: string[];
   users: any[];
 }
@@ -35,10 +31,6 @@ const Body: React.FC<ShoutoutBodyProps> = ({
   triggerSubmit,
   getFile,
   setIsFileAdded,
-  control,
-  watch,
-  resetField,
-  setValue,
   selectedUserIds,
   users,
 }) => {
@@ -51,10 +43,6 @@ const Body: React.FC<ShoutoutBodyProps> = ({
       {step === SHOUTOUT_STEPS.UserSelect && (
         <EntitySearchModalBody
           entityType={EntitySearchModalType.User}
-          control={control}
-          watch={watch}
-          setValue={setValue}
-          resetField={resetField}
           selectedMemberIds={selectedUserIds}
           entityRenderer={(data: IGetUser) => {
             return (

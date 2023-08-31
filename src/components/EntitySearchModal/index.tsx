@@ -1,11 +1,12 @@
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
-import useModal from 'hooks/useModal';
 import React, { ReactNode, useEffect } from 'react';
 import Footer from './components/Footer';
 import EntitySearchModalBody from './components/EntitySearchModalBody';
 import { useForm } from 'react-hook-form';
 import { IGetUser } from 'queries/users';
+import { ITeam } from 'queries/teams';
+import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 
 export enum EntitySearchModalType {
   User = 'USER',
@@ -41,9 +42,9 @@ export interface IAudienceForm {
   privacy: { value: string; label: string };
   categorySearch: string;
   categories: Record<string, boolean | undefined>;
-  teams: any;
+  teams: Record<string, ITeam | false>;
   channels: any;
-  users: any;
+  users: Record<string, IGetUser | false>;
 }
 
 const EntitySearchModal: React.FC<IEntitySearchModalProps> = ({
@@ -58,7 +59,7 @@ const EntitySearchModal: React.FC<IEntitySearchModalProps> = ({
   entityRenderer = (data: any) => <></>,
   selectedMemberIds = [],
 }) => {
-  const { control, watch, handleSubmit, setValue, resetField } = useForm<any>({
+  const audienceForm = useForm<any>({
     defaultValues: {
       showSelectedMembers: false,
       selectAll: false,
@@ -68,7 +69,14 @@ const EntitySearchModal: React.FC<IEntitySearchModalProps> = ({
       ),
     },
   });
-  return (
+
+  const { form, setForm } = useEntitySearchFormStore();
+
+  useEffect(() => {
+    setForm(audienceForm);
+    return () => setForm(null);
+  }, []);
+  return form ? (
     <Modal open={open} closeModal={closeModal} className="max-w-[638px]">
       <form>
         <Header
@@ -78,15 +86,11 @@ const EntitySearchModal: React.FC<IEntitySearchModalProps> = ({
         />
         <EntitySearchModalBody
           entityType={EntitySearchModalType.User}
-          control={control}
           selectedMemberIds={selectedMemberIds}
-          watch={watch}
-          setValue={setValue}
-          resetField={resetField}
           entityRenderer={entityRenderer}
         />
         <Footer
-          handleSubmit={handleSubmit}
+          handleSubmit={form.handleSubmit}
           entityType={entityType}
           onSubmit={onSubmit}
           onCancel={onCancel}
@@ -95,6 +99,8 @@ const EntitySearchModal: React.FC<IEntitySearchModalProps> = ({
         />
       </form>
     </Modal>
+  ) : (
+    <></>
   );
 };
 

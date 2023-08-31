@@ -6,6 +6,7 @@ type SwitchToggleProps = {
   color?: string;
   disabled?: boolean;
   onChange?: (state: boolean, setEnabled: (state: boolean) => void) => void;
+  dataTestId?: string;
 };
 
 const SwitchToggle: React.FC<SwitchToggleProps> = ({
@@ -13,6 +14,7 @@ const SwitchToggle: React.FC<SwitchToggleProps> = ({
   color = 'bg-primary-500',
   disabled = false,
   onChange = () => {},
+  dataTestId,
 }) => {
   const [enabled, setEnabled] = useState(defaultValue);
   useEffect(() => {
@@ -20,6 +22,7 @@ const SwitchToggle: React.FC<SwitchToggleProps> = ({
   }, []);
   return (
     <Switch
+      data-testid={dataTestId}
       checked={enabled}
       onChange={(checked: boolean) => {
         onChange(checked, setEnabled);
