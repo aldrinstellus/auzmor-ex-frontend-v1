@@ -1,8 +1,8 @@
-import moment from 'moment';
+import momentTz from 'moment-timezone';
 
-export const formatDate = (inputDate: string): string => {
-  const currentDate = moment();
-  const parsedDate = moment(inputDate);
+export const formatDate = (inputDate: string, userTimezone: string): string => {
+  const currentDate = momentTz().tz(userTimezone);
+  const parsedDate = momentTz(inputDate).tz(userTimezone);
 
   // Check if the parsed date is today
   if (currentDate.isSame(parsedDate, 'day')) {
@@ -13,9 +13,12 @@ export const formatDate = (inputDate: string): string => {
   }
 };
 
-export const isCelebrationToday = (inputDate: string): boolean => {
-  const currentDate = moment();
-  const parsedDate = moment(inputDate);
+export const isCelebrationToday = (
+  inputDate: string,
+  userTimezone: string,
+): boolean => {
+  const currentDate = momentTz().tz(userTimezone);
+  const parsedDate = momentTz(inputDate).tz(userTimezone);
 
   // Check if the parsed date is today
   if (currentDate.isSame(parsedDate, 'day')) {
@@ -27,9 +30,10 @@ export const isCelebrationToday = (inputDate: string): boolean => {
 
 export const calculateWorkAnniversaryYears = (
   workAnniversaryDate: string,
+  userTimezone: string,
 ): number => {
-  const anniversary = moment(workAnniversaryDate);
-  const currentDate = moment();
+  const anniversary = momentTz(workAnniversaryDate).tz(userTimezone);
+  const currentDate = momentTz().tz(userTimezone);
 
   return currentDate.diff(anniversary, 'years');
 };

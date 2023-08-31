@@ -30,6 +30,7 @@ export interface IUser {
   profileImage?: string;
   coverImage?: string;
   permissions?: [];
+  timezone?: string;
 }
 
 interface IAuthContext {
@@ -87,6 +88,7 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
           },
           profileImage: data?.profileImage?.original,
           permissions: data?.permissions,
+          timezone: data?.timeZone,
         });
       } catch (e: any) {
         if (e?.response?.status === 401) {

@@ -9,6 +9,8 @@ import {
   isCelebrationToday,
 } from '../utils';
 import { getFullName, getNouns } from 'utils/misc';
+import { AuthContext } from 'contexts/AuthContext';
+import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 
 interface UserProps {
   type: CELEBRATION_TYPE;
@@ -17,16 +19,24 @@ interface UserProps {
 }
 
 const User: React.FC<UserProps> = ({ type, hideSendWishBtn = false, data }) => {
-  const anniversaryYears = calculateWorkAnniversaryYears(data.joinDate);
+  const { user } = useContext(AuthContext);
+  const { currentTimezone } = useCurrentTimezone();
+  const userTimezone = user?.timezone || currentTimezone || 'Asia/Kolkata';
+  const anniversaryYears = calculateWorkAnniversaryYears(
+    data.joinDate,
+    userTimezone,
+  );
   const celebrationDate =
     type === CELEBRATION_TYPE.Birthday
-      ? formatDate(data.dateOfBirth)
+      ? formatDate(data.dateOfBirth, userTimezone)
       : `${anniversaryYears} ${getNouns('yr', anniversaryYears)} (${formatDate(
           data.joinDate,
+          userTimezone,
         )})`;
   const showSendWishBtn =
     isCelebrationToday(
       type === CELEBRATION_TYPE.Birthday ? data.dateOfBirth : data.joinDate,
+      userTimezone,
     ) && !hideSendWishBtn;
 
   const dateStyles = useMemo(

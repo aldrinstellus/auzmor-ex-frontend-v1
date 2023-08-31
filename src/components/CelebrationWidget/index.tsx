@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import moment from 'moment-timezone';
+import momentTz from 'moment-timezone';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
 import useModal from 'hooks/useModal';
@@ -9,6 +9,8 @@ import UpcomingCelebrationModal from './components/UpcomingCelebrationModal';
 import EmptyState from './components/EmptyState';
 import { useCelebrations } from 'queries/post';
 import SkeletonLoader from './components/SkeletonLoader';
+import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
+import { AuthContext } from 'contexts/AuthContext';
 
 export enum CELEBRATION_TYPE {
   Birthday = 'BIRTHDAY',
@@ -20,9 +22,12 @@ interface CelebrationWidgetProps {
 }
 
 const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
+  const { user } = useContext(AuthContext);
+  const { currentTimezone } = useCurrentTimezone();
+  const userTimezone = user?.timezone || currentTimezone || 'Asia/Kolkata';
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const [openUpcoming, openUpcomingModal, closeUpcomingModal] = useModal();
-  const currentDate = moment();
+  const currentDate = momentTz().tz(userTimezone);
 
   const { data, isLoading } = useCelebrations();
 
@@ -38,18 +43,18 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
 
   const thisMonthCelebration = formattedData
     ? formattedData.filter((item) => {
-        const itemDate = moment(
+        const itemDate = momentTz(
           type === CELEBRATION_TYPE.Birthday ? item.dateOfBirth : item.joinDate,
-        );
+        ).tz(userTimezone);
         return itemDate.month() === currentDate.month();
       })
     : [];
 
   const upcomingMonthCelebration = formattedData
     ? formattedData.filter((item) => {
-        const itemDate = moment(
+        const itemDate = momentTz(
           type === CELEBRATION_TYPE.Birthday ? item.dateOfBirth : item.joinDate,
-        );
+        ).tz(userTimezone);
         return itemDate.month() >= currentDate.month() + 1;
       })
     : [];
