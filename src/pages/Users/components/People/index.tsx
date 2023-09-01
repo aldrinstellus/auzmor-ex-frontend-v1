@@ -283,7 +283,7 @@ const People: React.FC<IPeopleProps> = ({
                       <PeopleCard
                         key={user.id}
                         {...user}
-                        image={getProfileImage(user)}
+                        image={getProfileImage(user, 'large')}
                       />
                     ))}
                   <div className="h-12 w-12">

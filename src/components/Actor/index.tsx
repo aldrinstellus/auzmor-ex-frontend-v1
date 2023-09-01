@@ -62,13 +62,7 @@ const Actor: React.FC<ActorProps> = ({
             <Avatar
               name={getFullName(createdBy) || 'U'}
               size={32}
-              image={
-                createdBy
-                  ? getProfileImage(createdBy)
-                  : user
-                  ? getProfileImage(user)
-                  : ''
-              }
+              image={getProfileImage(createdBy)}
               bgColor={getAvatarColor(createdBy)}
             />
           </Link>

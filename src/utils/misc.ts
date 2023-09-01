@@ -28,9 +28,9 @@ export const getInitials = (name: string) => {
     .toLocaleUpperCase();
 };
 
-export const getProfileImage = (user: any) => {
+export const getProfileImage = (user: any, preferredKey = 'small') => {
   if (user?.status !== UserStatus.Inactive) {
-    return user?.profileImage?.original;
+    return user?.profileImage?.[preferredKey] || user?.profileImage?.original;
   }
   return DeactivatedUser;
 };

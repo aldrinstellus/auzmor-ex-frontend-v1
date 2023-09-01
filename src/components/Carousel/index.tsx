@@ -86,7 +86,7 @@ const Carousel: React.FC<CarouselProps> = ({
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   const containerStyles = clsx({
-    'm-auto w-full h-full relative group rounded-xl': true,
+    'm-auto w-full h-full relative rounded-xl': true,
   });
 
   const mediaDivStyles = clsx({
@@ -99,11 +99,12 @@ const Carousel: React.FC<CarouselProps> = ({
   });
 
   const leftArrowIconStyles = clsx({
-    '!absolute !top-[50%] !left-1 !rounded-lg !cursor-pointer !p-1 !px-3': true,
+    '!absolute !top-[50%] !left-1 !rounded-lg !cursor-pointer !p-1 !px-3 bg-white':
+      true,
   });
 
   const rightArrowIconStyles = clsx({
-    '!absolute !top-[50%] !right-1 !rounded-lg !cursor-pointer !p-1 !px-3':
+    '!absolute !top-[50%] !right-1 !rounded-lg !cursor-pointer !p-1 !px-3 bg-white':
       true,
   });
 
@@ -146,39 +147,36 @@ const Carousel: React.FC<CarouselProps> = ({
           {currentIndex + 1} of {Object.keys(media).length}
         </div>
         {media?.length > 1 && (
-          <Icon
-            name="carouselLeft"
-            onClick={prevSlide}
-            className={leftArrowIconStyles}
-            size={36}
-          />
+          <div className={leftArrowIconStyles}>
+            <Icon name="carouselLeft" onClick={prevSlide} size={36} />
+          </div>
         )}
         {media?.length > 1 && (
-          <Icon
-            name="carouselRight"
-            onClick={nextSlide}
-            className={rightArrowIconStyles}
-            size={36}
-          />
+          <div className={rightArrowIconStyles}>
+            <Icon name="carouselRight" onClick={nextSlide} size={36} />
+          </div>
         )}
-        <Icon
-          name="import"
-          className={downloadBtnStyle}
-          size={16}
-          disabled={true}
-          color="text-neutral-900"
-          onClick={() => fetchFile(media[currentIndex].original)}
-        />
-        {media[currentIndex].type !== 'IMAGE' && (
+        <div className={downloadBtnStyle}>
           <Icon
-            name="playFilled"
-            className={playBtnStyle}
-            color="text-white"
-            size={32}
-            onClick={() => {
-              isPlaying ? videoRef.current?.pause() : videoRef.current?.play();
-            }}
+            name="import"
+            size={16}
+            color="text-neutral-900"
+            onClick={() => fetchFile(media[currentIndex].original)}
           />
+        </div>
+        {media[currentIndex].type !== 'IMAGE' && (
+          <div className={playBtnStyle}>
+            <Icon
+              name="playFilled"
+              color="text-white"
+              size={32}
+              onClick={() => {
+                isPlaying
+                  ? videoRef.current?.pause()
+                  : videoRef.current?.play();
+              }}
+            />
+          </div>
         )}
       </div>
     );

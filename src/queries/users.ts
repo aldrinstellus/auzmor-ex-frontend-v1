@@ -104,6 +104,7 @@ export interface IGetUser {
   status: string;
   timeZone?: string;
   workLocation?: Record<string, string>;
+  designation?: string;
 }
 
 export const getAllUser = async ({

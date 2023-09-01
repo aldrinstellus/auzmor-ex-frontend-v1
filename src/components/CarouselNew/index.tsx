@@ -246,12 +246,9 @@ const Carousel: React.FC<ICarouselProps> = ({
               ? 'discardphoto'
               : 'discardvideo'
           }`}
+          className="p-2 bg-white rounded-7xl cursor-pointer"
         >
-          <Icon
-            name="close"
-            size={16}
-            className="p-2 bg-white rounded-7xl cursor-pointer"
-          />
+          <Icon name="close" size={16} />
         </div>
       </div>
       {!isPlaying && (
@@ -263,12 +260,11 @@ const Carousel: React.FC<ICarouselProps> = ({
             }
           }}
         >
-          <div onClick={prevSlide} className="cursor-pointer">
-            <Icon
-              name="arrowLeft"
-              size={16}
-              className="rounded-7xl p-2 bg-white"
-            />
+          <div
+            onClick={prevSlide}
+            className="cursor-pointer rounded-7xl p-2 bg-white"
+          >
+            <Icon name="arrowLeft" size={16} />
           </div>
           {media[currentIndex].type === 'VIDEO' && (
             <div
@@ -279,12 +275,11 @@ const Carousel: React.FC<ICarouselProps> = ({
             </div>
           )}
 
-          <div onClick={nextSlide} className="cursor-pointer">
-            <Icon
-              name="arrowRight"
-              size={16}
-              className="rounded-7xl p-2 bg-white"
-            />
+          <div
+            onClick={nextSlide}
+            className="cursor-pointer rounded-7xl p-2 bg-white"
+          >
+            <Icon name="arrowRight" size={16} />
           </div>
         </div>
       )}

@@ -330,7 +330,7 @@ const RichTextEditor = React.forwardRef(
           <MediaPreview
             media={media}
             className="m-6"
-            mode={Mode.Edit}
+            mode={mode === PostBuilderMode.Create ? Mode.Edit : Mode.View}
             onAddButtonClick={() => inputImgRef?.current?.click()}
             onCloseButtonClick={media.length > 1 ? showConfirm : onRemoveMedia}
             showEditButton={mode === PostBuilderMode.Create}

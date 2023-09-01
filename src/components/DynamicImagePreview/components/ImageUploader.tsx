@@ -69,15 +69,16 @@ const ImageUploader: React.FC<IImageUploaderProps> = ({
           isImageAdded ? 'hidden' : 'block'
         } py-10 flex flex-col justify-center items-center gap-2`}
       >
-        <Icon name="folderOpen" size={40} />
+        <Icon name="folderOpen" size={40} color="text-primary-500" />
         <div
           className="bg-white rounded-[24px] border-1
             border-neutral-200 px-4 py-2 text-sm font-bold
             flex items-center gap-1 cursor-pointer"
+          data-testid="kudos-uploadimg-button"
           onClick={() => imageUploaderRef?.current?.click()}
         >
           <Icon name="galleryExport" size={16} />
-          <span>Upload an image</span>
+          <span data-testid="kudos-uploadimg">Upload an image</span>
         </div>
         <div className="text-sm">Add your document from the options below</div>
         {openEditImage && (

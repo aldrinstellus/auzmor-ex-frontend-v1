@@ -15,7 +15,7 @@ import { addTeamMember } from 'queries/teams';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { toast } from 'react-toastify';
 import { useMutation } from '@tanstack/react-query';
-import { twConfig } from 'utils/misc';
+import { getProfileImage, twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import queryClient from 'utils/queryClient';
@@ -214,7 +214,7 @@ const TeamDetail: React.FC<ITeamMemberProps> = ({
                 <Avatar
                   name={data?.fullName || 'U'}
                   size={32}
-                  image={data?.profileImage?.original}
+                  image={getProfileImage(data)}
                 />
                 <div className="flex space-x-6 w-full">
                   <div className="flex flex-col w-full">

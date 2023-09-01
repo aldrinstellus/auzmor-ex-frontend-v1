@@ -235,9 +235,9 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
 
   const setUploads = (uploads: File[], isCoverImage?: boolean) => {
     if (!isCoverImage) {
-      setMedia(prevMedia => ([...prevMedia, ...getMediaObj(uploads)]));
+      setMedia((prevMedia) => [...prevMedia, ...getMediaObj(uploads)]);
     }
-    setFiles([...files, ...uploads]);
+    setFiles((prevFiles) => [...prevFiles, ...uploads]);
   };
 
   const replaceMedia = (index: number, data: File) => {

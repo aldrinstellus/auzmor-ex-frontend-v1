@@ -2,6 +2,7 @@ import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
 import { IGetUser } from 'queries/users';
 import React from 'react';
+import { getProfileImage } from 'utils/misc';
 
 interface IUserRowProps {
   user: IGetUser;
@@ -18,7 +19,7 @@ const UserRow: React.FC<IUserRowProps> = ({ user, onClick }) => {
         <Avatar
           name={user?.fullName || ''}
           size={32}
-          image={user.profileImage?.original}
+          image={getProfileImage(user)}
         />
         <div className="flex flex-col justify-between ml-4 truncate">
           <div>{user?.fullName || ''}</div>

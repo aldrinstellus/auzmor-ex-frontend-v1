@@ -85,7 +85,8 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
             id: data?.org.id,
             domain: data?.org.domain,
           },
-          profileImage: data?.profileImage?.original,
+          profileImage:
+            data?.profileImage?.small || data?.profileImage?.original,
           permissions: data?.permissions,
         });
       } catch (e: any) {

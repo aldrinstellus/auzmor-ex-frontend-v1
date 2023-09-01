@@ -25,7 +25,7 @@ const DynamicImagePreview: React.FC<IDynamicImagePreview> = ({
   const getFile = async () => {
     if (selectedTemplateImage && templateImageRef.current) {
       const newFile = await toBlob(templateImageRef.current, {
-        canvasHeight: 580,
+        canvasHeight: 500,
         canvasWidth: 1090,
       });
       let data = null;
@@ -39,7 +39,7 @@ const DynamicImagePreview: React.FC<IDynamicImagePreview> = ({
       onSubmit(data && data[0]);
       return;
     }
-    onSubmit(imageFile);
+    onSubmit(new File([imageFile], 'kudos.png', { type: imageFile.type }));
     return;
   };
 
@@ -64,7 +64,7 @@ const DynamicImagePreview: React.FC<IDynamicImagePreview> = ({
 
   return (
     <div>
-      <div className={`bg-blue-50 max-h-[222px] min-h-[222px] mb-6`}>
+      <div className={`bg-blue-50 min-h-[209px] mb-6`}>
         {(imageFile || selectedTemplateImage) && (
           <ImagePreview
             templateImageRef={templateImageRef}

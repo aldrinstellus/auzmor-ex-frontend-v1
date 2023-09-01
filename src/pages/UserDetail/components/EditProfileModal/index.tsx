@@ -14,7 +14,7 @@ import DefaultCoverImage from 'images/png/CoverImage.png';
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import Avatar from 'components/Avatar';
 import { Variant as InputVariant } from 'components/Input';
-import { twConfig } from 'utils/misc';
+import { getProfileImage, twConfig } from 'utils/misc';
 import { IUpdateProfileImage } from 'pages/UserDetail';
 import { useMutation } from '@tanstack/react-query';
 import { updateCurrentUser } from 'queries/users';
@@ -152,6 +152,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       name: 'fullName',
       label: 'Name*',
       dataTestId: `${dataTestId}-name`,
+      disabled: userDetails.freezeEdit?.fullName,
       control,
       inputClassName: 'py-[11px] !text-sm',
     },
@@ -179,6 +180,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       placeholder: 'ex. software engineer',
       dataTestId: `${dataTestId}-title`,
       label: 'Position title',
+      disabled: userDetails.freezeEdit?.designation,
       control,
       inputClassName: 'py-[11px] !text-sm',
     },
@@ -195,6 +197,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       fetchQuery: useInfiniteDepartments,
       getFormattedData: formatDepartments,
       queryParams: {},
+      disabled: userDetails.freezeEdit?.department,
       disableCreate: !isAdmin,
       getPopupContainer: document.body,
       noOptionsMessage: () => 'No Departments found',
@@ -380,7 +383,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
             <div className="relative">
               <Avatar
                 name={userDetails?.fullName}
-                image={userDetails?.profileImage?.original}
+                image={getProfileImage(userDetails)}
                 size={96}
                 className="border-2 border-white overflow-hidden"
               />

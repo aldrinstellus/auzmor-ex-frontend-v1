@@ -1,7 +1,11 @@
-import { NotificationCardProps } from '../components/NotificationCard';
+import {
+  NOTIFICATION_CARD_TYPE,
+  NotificationCardProps,
+} from '../components/NotificationCard';
 import {
   Action,
   ActionType,
+  Actor,
   Target,
   TargetType,
 } from '../components/NotificationsList';
@@ -19,11 +23,13 @@ export type NotificationElementProps = {
 export const getNotificationElementContent = (
   action: Action,
   target: Target[],
+  actor: Actor,
 ): NotificationElementProps => {
   const cardContent: NotificationCardProps = {
     BottomCardContent: undefined,
     TopCardContent: undefined,
     image: undefined,
+    type: NOTIFICATION_CARD_TYPE.Card,
   };
 
   const redirect: NotificationRedirect = {
@@ -69,6 +75,13 @@ export const getNotificationElementContent = (
       redirect.postId = post.entityId;
       redirect.commentId = reply.entityId;
     }
+  }
+
+  // If the action performed is a SHOUTOUT
+  else if (action.type === ActionType.SHOUTOUT) {
+    cardContent.TopCardContent = `Congratulations! You have received a shout-out From <span class="font-bold text-primary-500">${actor.fullName}</span>. Your hard work and contributions are being recognized by your colleagues. Keep up the great work!`;
+    cardContent.type = NOTIFICATION_CARD_TYPE.Content;
+    redirect.postId = target[0].entityId;
   }
 
   // If the action performed is a COMMENT
@@ -135,6 +148,8 @@ export const getNotificationMessage = (
       message += 'mentioned you in a post';
     } else if (actionType === ActionType[ActionType.REACTION]) {
       message += 'reacted to your post';
+    } else if (actionType === ActionType.SHOUTOUT) {
+      message = 'You Received a Shout Out From';
     }
   } else if (targetType === TargetType[TargetType.COMMENT]) {
     if (actionType === ActionType[ActionType.COMMENT]) {
