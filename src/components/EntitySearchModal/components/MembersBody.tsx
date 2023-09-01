@@ -298,7 +298,10 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
                   type: FieldType.Checkbox,
                   name: 'showSelectedMembers',
                   control,
-                  label: 'Show selected members',
+                  label: `Show selected members (${
+                    Object.keys(users).filter((key: string) => !!users[key])
+                      .length
+                  })`,
                   className: 'flex item-center',
                   dataTestId: `select-${dataTestId}-showselected`,
                 },
