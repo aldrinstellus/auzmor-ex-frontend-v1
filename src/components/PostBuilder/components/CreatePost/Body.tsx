@@ -84,7 +84,7 @@ const Body = React.forwardRef(
                     leftIconClassName="mr-1"
                     size={Size.Small}
                     variant={Variant.Secondary}
-                    label={audience[0].name || 'Team Name'}
+                    label={(audience[0].entity as any).name || 'Team Name'}
                     onClick={() => {
                       updateContext();
                       setActiveFlow(CreatePostFlow.Audience);
