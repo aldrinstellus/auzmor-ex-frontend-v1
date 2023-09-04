@@ -112,7 +112,12 @@ const User: React.FC<UserProps> = ({
               </>
             )}
           </div>
-          <div className="flex items-center gap-1 text-primary-500 text-xs font-bold cursor-pointer">
+          <div
+            className="flex items-center gap-1 text-primary-500 text-xs font-bold cursor-pointer"
+            data-testid={`${
+              isBirthday ? 'birthday' : 'anniversaries'
+            }-visit-post`}
+          >
             Visit post
             <Icon name="arrowRightUp" size={12} color="text-primary-500" />
           </div>
