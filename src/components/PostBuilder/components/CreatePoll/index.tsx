@@ -1,5 +1,5 @@
 import Header from 'components/ModalHeader';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import {
   CreatePostContext,
   CreatePostFlow,
@@ -12,7 +12,11 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { afterXUnit } from 'utils/time';
 import { Variant } from 'components/Input';
-import { Variant as ButtonVariant, Type } from 'components/Button';
+import {
+  Variant as ButtonVariant,
+  Size as ButtonSize,
+  Type,
+} from 'components/Button';
 import Button from 'components/Button';
 
 type CreatePollProps = {
@@ -90,7 +94,7 @@ const CreatePoll: React.FC<CreatePollProps> = ({ closeModal }) => {
       variant: Variant.Text,
       placeholder: 'ex. What is your favourite kind of cookie?',
       name: 'question',
-      label: 'Question*',
+      label: 'Ask a Question*',
       error: errors.question?.message,
       dataTestId: 'createpoll-que',
       errorDataTestId: 'createpoll-que-error',
@@ -184,16 +188,18 @@ const CreatePoll: React.FC<CreatePollProps> = ({ closeModal }) => {
         append={append}
         remove={remove}
       />
-      <div className="bg-blue-50 flex items-center justify-end p-3 gap-x-3 rounded-9xl w-full">
+      <div className="bg-blue-50 flex items-center justify-end px-6 py-4 gap-x-3 rounded-b-9xl w-full border-t-1 border-neutral-200">
         <Button
           onClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
           label="Back"
+          size={ButtonSize.Small}
           variant={ButtonVariant.Secondary}
           dataTestId="createpoll-back"
         />
         <Button
           label="Next"
           variant={ButtonVariant.Secondary}
+          size={ButtonSize.Small}
           type={Type.Submit}
           dataTestId="createpoll-next"
         />

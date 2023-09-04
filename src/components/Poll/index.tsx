@@ -55,10 +55,10 @@ const Poll: React.FC<IPoll & PollProps> = ({
   return (
     <div className="bg-neutral-100 py-4 px-8 rounded-9xl w-full">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <p className="text-neutral-900 font-bold">{question}</p>
+      <div className="flex items-start gap-4">
+        <p className="text-neutral-900 font-bold flex-auto pb-6">{question}</p>
         {mode === PollMode.EDIT && (
-          <div className="flex gap-x-2">
+          <div className="flex gap-x-2 -mr-4">
             <IconButton
               icon="edit"
               onClick={() => setActiveFlow(CreatePostFlow.CreatePoll)}
@@ -66,8 +66,8 @@ const Poll: React.FC<IPoll & PollProps> = ({
               size={Size.Medium}
               borderAround
               color="text-black"
-              className="bg-white rounded-7xl"
-              borderAroundClassName="rounded-7xl"
+              className="bg-white !rounded-7xl"
+              borderAroundClassName="!rounded-7xl"
               dataTestId="createpost-edit-poll"
             />
             <IconButton
@@ -77,8 +77,8 @@ const Poll: React.FC<IPoll & PollProps> = ({
               size={Size.Medium}
               borderAround
               color="text-black"
-              className="bg-white rounded-7xl"
-              borderAroundClassName="rounded-7xl"
+              className="bg-white !rounded-7xl"
+              borderAroundClassName="!rounded-7xl"
               dataTestId="createpost-remove-poll"
             />
           </div>
@@ -86,15 +86,17 @@ const Poll: React.FC<IPoll & PollProps> = ({
       </div>
 
       {/* Options */}
-      <div className="py-4">
+      <div className="pb-6 flex flex-col gap-2">
         {options.map((option) => (
           <div
-            className="grid py-2 cursor-pointer"
+            className={`grid ${
+              mode === PollMode.VIEW ? 'cursor-pointer' : 'cursor-default'
+            }`}
             key={option.id}
             onClick={() => setUserVoted(true)}
           >
             {/* The white background that contains the option */}
-            <div className="grid-area w-full cursor-pointer bg-white rounded-19xl" />
+            <div className="grid-area w-full bg-white rounded-19xl" />
             {/* The progress bar that fills up the background */}
             <div
               className={`grid-area w-0 ${
@@ -113,7 +115,7 @@ const Poll: React.FC<IPoll & PollProps> = ({
       {/* Time left */}
       <div>
         <p
-          className="text-orange-500 font-bold"
+          className="text-orange-500 text-xs leading-normal font-bold"
           data-testid="createpost-poll-expiry"
         >
           {momentClosedAt.fromNow(true) + ' left'}

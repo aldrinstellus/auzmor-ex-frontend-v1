@@ -8,7 +8,7 @@ import {
   UseFieldArrayAppend,
   UseFieldArrayRemove,
 } from 'react-hook-form';
-import Button, { Variant } from 'components/Button';
+import Button, { Size, Variant } from 'components/Button';
 import { IPoll } from 'contexts/CreatePostContext';
 
 type PollBodyProps = {
@@ -35,8 +35,8 @@ const Body: React.FC<PollBodyProps> = ({
   datePickerField,
 }) => {
   return (
-    <div className="px-4 py-6 max-h-[510px] overflow-y-auto">
-      <Layout fields={questionField} className="mb-5" />
+    <div className="p-6 max-h-[60vh] overflow-y-auto ">
+      <Layout fields={questionField} className="mb-6" />
       {fields.map((field, index) => (
         <OptionRow
           key={field.id}
@@ -50,8 +50,11 @@ const Body: React.FC<PollBodyProps> = ({
       ))}
       <Button
         variant={Variant.Secondary}
+        size={Size.Small}
         disabled={fields.length >= 10}
-        label="+ Add another option"
+        leftIcon="addOutline"
+        iconColor="text-neutral-900"
+        label="Add another option"
         dataTestId="createpoll-add-option"
         onClick={() => {
           if (fields.length < 10) {
@@ -63,9 +66,9 @@ const Body: React.FC<PollBodyProps> = ({
           }
         }}
       />
-      <Layout fields={durationFields} className="pt-4" />
+      <Layout fields={durationFields} className="mt-6" />
       {selectedDuration && selectedDuration.label === 'Custom Date' && (
-        <Layout fields={datePickerField} className="pt-4" />
+        <Layout fields={datePickerField} className="mt-6" />
       )}
     </div>
   );
