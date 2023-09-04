@@ -22,11 +22,17 @@ export const humanizeTime = (time: string) => {
   return moment(new Date(time)).fromNow();
 };
 
-export const getTimezoneNameFromIANA = (iana: string): string => {
-  const timezoneName = timezones.find((tz) =>
-    tz.iana.includes(iana),
-  )?.timezoneName;
-  return timezoneName || iana;
+export const getTimezoneNameFromIANA = (
+  iana: string,
+  dateString?: string,
+): string => {
+  const timezone = timezones.find((tz) => tz.iana == iana);
+  if (!timezone) return iana;
+  const date = (dateString && moment.tz(dateString, iana)) || moment.tz(iana);
+  const offset = date.isDST() ? timezone.DST_offset : timezone.raw_offset;
+  return `(GMT${offset.replace(/\s/g, '')}) ${timezone.display_name} - ${
+    timezone.iana.split('/')[1]
+  }`.replace(/_/g, ' ');
 };
 
 export const hasDatePassed = (date: string) => {

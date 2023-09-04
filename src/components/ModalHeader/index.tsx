@@ -1,7 +1,5 @@
-import Icon from 'components/Icon';
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import React from 'react';
-import { twConfig } from 'utils/misc';
 
 export interface IHeaderProps {
   title: string;
@@ -19,30 +17,33 @@ const Header: React.FC<IHeaderProps> = ({
   titleDataTestId,
 }) => {
   return (
-    <div className="flex flex-wrap border-b-1 border-neutral-200 items-center">
+    <div className="flex flex-wrap p-4 space-x-3 border-b-1 border-neutral-200 items-center">
       {onBackIconClick && (
-        <Icon
-          name="arrowLeftOutline"
-          color="text-neutral-900"
-          className="ml-4"
-          size={16}
+        <IconButton
           onClick={onBackIconClick}
+          icon="arrowLeftOutline"
+          color="text-neutral-900"
+          className="!p-1 !bg-inherit hover:!bg-inherit"
+          variant={IconVariant.Primary}
         />
       )}
 
       <div
-        className="text-lg text-black p-4 font-extrabold flex-[50%]"
+        className="text-lg text-neutral-900 font-extrabold flex-[50%]"
         data-testid={titleDataTestId}
       >
         {title}
       </div>
-      <IconButton
-        onClick={onClose}
-        icon={'close'}
-        className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"
-        variant={IconVariant.Primary}
-        dataTestId={closeBtnDataTestId}
-      />
+      {onClose && (
+        <IconButton
+          onClick={onClose}
+          icon="close"
+          color="text-neutral-900"
+          className="!p-1 !bg-inherit hover:!bg-inherit"
+          variant={IconVariant.Primary}
+          dataTestId={closeBtnDataTestId}
+        />
+      )}
     </div>
   );
 };

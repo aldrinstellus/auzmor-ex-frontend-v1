@@ -117,31 +117,30 @@ const Button = ({
       onClick={onClick}
       data-testid={dataTestId}
     >
-      <div>
-        {leftIcon && (
-          <Icon
-            name={leftIcon}
-            color={iconColor}
-            className={leftIconClassName}
-            disabled={disabled || loading}
-            size={leftIconSize || (size === Size.Small ? 16 : 24)}
-            isActive={active}
-          />
-        )}
-      </div>
+      {leftIcon && (
+        <Icon
+          name={leftIcon}
+          color={iconColor}
+          className={leftIconClassName}
+          disabled={disabled || loading}
+          size={leftIconSize || (size === Size.Small ? 16 : 24)}
+          isActive={active}
+        />
+      )}
+
       <div className={labelClassName}>{label}</div>
-      <div>
-        {rightIcon && (
-          <Icon
-            name={rightIcon}
-            color={iconColor}
-            className={rightIconClassName}
-            disabled={disabled || loading}
-            size={rightIconSize || (size === Size.Small ? 16 : 24)}
-            isActive={active}
-          />
-        )}
-      </div>
+
+      {rightIcon && (
+        <Icon
+          name={rightIcon}
+          color={iconColor}
+          className={rightIconClassName}
+          disabled={disabled || loading}
+          size={rightIconSize || (size === Size.Small ? 16 : 24)}
+          isActive={active}
+        />
+      )}
+
       {loading && <Spinner />}
     </button>
   );

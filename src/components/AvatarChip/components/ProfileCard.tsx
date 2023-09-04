@@ -12,8 +12,8 @@ const ProfileCard: React.FC<IProfileCardProps> = ({ user }) => {
   return (
     <div className="flex gap-4 min-w-[200px]">
       <Avatar
-        name={getFullName(user) || user.email}
-        image={getProfileImage(user)}
+        name={getFullName(user)}
+        image={getProfileImage(user, 'medium')}
         size={80}
       />
       <div className="flex flex-col gap-2 justify-center">

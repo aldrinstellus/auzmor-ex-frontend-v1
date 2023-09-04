@@ -5,8 +5,8 @@ import useAuth from 'hooks/useAuth';
 import { IAudience, ICreatedBy } from 'queries/post';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-import Icon from 'components/Icon';
 import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
+import AudiencePopup from 'components/AudiencePopup';
 
 type ActorProps = {
   contentMode?: string;
@@ -15,6 +15,7 @@ type ActorProps = {
   dataTestId?: string;
   disabled?: boolean;
   audience?: IAudience[];
+  entityId?: string;
   postType?: string;
 };
 
@@ -25,6 +26,8 @@ const Actor: React.FC<ActorProps> = ({
   dataTestId,
   postType,
   disabled = false,
+  entityId,
+  audience,
 }) => {
   const { user } = useAuth();
 
@@ -62,13 +65,7 @@ const Actor: React.FC<ActorProps> = ({
             <Avatar
               name={getFullName(createdBy) || 'U'}
               size={32}
-              image={
-                createdBy
-                  ? getProfileImage(createdBy)
-                  : user
-                  ? getProfileImage(user)
-                  : ''
-              }
+              image={getProfileImage(createdBy)}
               bgColor={getAvatarColor(createdBy)}
             />
           </Link>
@@ -104,7 +101,7 @@ const Actor: React.FC<ActorProps> = ({
                 {createdTime}
               </div>
               <div className="bg-neutral-500 rounded-full w-1 h-1" />
-              <Icon name="globalOutline" size={16} hover={false} />
+              <AudiencePopup entityId={entityId} audience={audience} />
             </div>
           ) : null}
         </div>

@@ -10,8 +10,6 @@ import ReactQuill from 'react-quill';
 import RichTextEditor from '../RichTextEditor';
 import Toolbar from '../RichTextEditor/toolbar';
 import Icon from 'components/Icon';
-import moment from 'moment';
-import { useOrganization } from 'queries/organization';
 import { PostBuilderMode } from 'components/PostBuilder';
 import { getTimeInScheduleFormat } from 'utils/time';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
@@ -84,7 +82,7 @@ const Body = React.forwardRef(
                     leftIconClassName="mr-1"
                     size={Size.Small}
                     variant={Variant.Secondary}
-                    label={audience[0].name || 'Team Name'}
+                    label={(audience[0]?.entity as any)?.name || 'Team Name'}
                     onClick={() => {
                       updateContext();
                       setActiveFlow(CreatePostFlow.Audience);

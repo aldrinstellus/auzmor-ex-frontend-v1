@@ -252,7 +252,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({
         <div className="absolute left-8 bottom-4">
           <Avatar
             name={getFullName(userDetails)}
-            image={getProfileImage(userDetails)}
+            image={getProfileImage(userDetails, 'large')}
             size={144}
             bgColor={
               userDetails?.status === UserStatus.Inactive

@@ -14,7 +14,7 @@ import { useDebounce } from 'hooks/useDebounce';
 import TeamFilterModal from '../FilterModals/TeamFilterModal';
 import TeamModal from '../TeamModal';
 import { addTeamMember, useInfiniteTeams } from 'queries/teams';
-import { isFiltersEmpty, twConfig } from 'utils/misc';
+import { getProfileImage, isFiltersEmpty, twConfig } from 'utils/misc';
 import PageLoader from 'components/PageLoader';
 import TeamNotFound from 'images/TeamNotFound.svg';
 import TeamsSkeleton from '../Skeletons/TeamsSkeleton';
@@ -444,7 +444,7 @@ const Team: React.FC<ITeamProps> = ({
                 <Avatar
                   name={data?.fullName || 'U'}
                   size={32}
-                  image={data?.profileImage?.original}
+                  image={getProfileImage(data)}
                 />
                 <div className="flex space-x-6 w-full">
                   <div className="flex flex-col w-full">

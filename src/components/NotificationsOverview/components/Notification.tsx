@@ -11,6 +11,7 @@ import { markNotificationAsReadById } from 'queries/notifications';
 import queryClient from 'utils/queryClient';
 import { Link } from 'react-router-dom';
 import { humanizeTime } from 'utils/time';
+import { getProfileImage } from 'utils/misc';
 
 type NotificationCardProps = NotificationProps;
 
@@ -98,7 +99,7 @@ const Notification: React.FC<NotificationCardProps> = ({
           <div className="w-fit">
             <Avatar
               name={actor.fullName}
-              image={actor.profileImage?.original}
+              image={getProfileImage(actor)}
               size={32}
             />
           </div>

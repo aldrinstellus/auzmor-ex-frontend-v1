@@ -47,6 +47,7 @@ const AddTeams: React.FC<IAddTeamsProps> = ({
       type: FieldType.Input,
       InputVariant: InputVariant.Text,
       className: '',
+      inputClassName: 'py-[11px] text-sm',
       placeholder: 'ex. Product and design team',
       name: `name`,
       defaultValue: defaultValues()?.name || '',

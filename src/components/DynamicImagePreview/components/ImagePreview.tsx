@@ -28,10 +28,13 @@ const ImagePreview: React.FC<IImagePreviewProps> = ({
       .slice(0, _showNameCount - 1)
       .map((user) => user.fullName)
       .join(', ');
+    if (count === 1) {
+      return users[0].fullName;
+    }
     if (_showNameCount === count) {
       return `${showNames} and ${users[count - 1].fullName}`;
     } else {
-      return `${showNames} and ${count - _showNameCount} others`;
+      return `${showNames} and ${count - _showNameCount + 1} others`;
     }
   };
 
