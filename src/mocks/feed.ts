@@ -60,7 +60,7 @@ export const celebrations = [
     featuredUser: {
       userId: '619893adaaf348c2184d81',
       email: 'john@example.com',
-      fullName: 'John Doee',
+      fullName: 'NItesh Seram Seram',
       status: 'active',
       workLocation: 'Office A',
       designation: 'Manager',

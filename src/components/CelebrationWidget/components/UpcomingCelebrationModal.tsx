@@ -91,7 +91,7 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
                     className="py-4 border-b border-neutral-200"
                     key={celebration.featuredUser.userId}
                   >
-                    <User type={type} data={celebration} hideSendWishBtn />
+                    <User type={type} data={celebration} isModalView />
                   </div>
                 ))}
 
@@ -109,7 +109,7 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
                         className="py-4"
                         key={celebration.featuredUser.userId}
                       >
-                        <User type={type} data={celebration} hideSendWishBtn />
+                        <User type={type} data={celebration} isModalView />
                       </div>
                     ))}
                   </>

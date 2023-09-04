@@ -26,14 +26,14 @@ import {
 
 interface UserProps {
   type: CELEBRATION_TYPE;
-  hideSendWishBtn?: boolean;
+  isModalView?: boolean;
   data: Record<string, any>;
   onSendWish?: () => void;
 }
 
 const User: React.FC<UserProps> = ({
   type,
-  hideSendWishBtn = false,
+  isModalView = false,
   data,
   onSendWish,
 }) => {
@@ -68,8 +68,17 @@ const User: React.FC<UserProps> = ({
     isCelebrationToday(
       isBirthday ? data.dateOfBirth : data.joinDate,
       userTimezone,
-    ) && !hideSendWishBtn;
-  const showSendWishRTE = hideSendWishBtn;
+    ) && !isModalView;
+
+  const alreadyWished = false;
+
+  const showSendWishRTELayout =
+    isModalView &&
+    (isCelebrationToday(
+      isBirthday ? data.dateOfBirth : data.joinDate,
+      userTimezone,
+    ) ||
+      alreadyWished);
 
   const dateStyles = useMemo(
     () =>
@@ -85,14 +94,27 @@ const User: React.FC<UserProps> = ({
     [type],
   );
 
-  return showSendWishRTE ? (
+  const wishesSent = useMemo(
+    () => (
+      <div
+        className={`py-[2px] px-[6px] rounded-[4px] text-xs font-bold flex items-center ${dateStyles} w-fit whitespace-nowrap`}
+      >
+        Wishes sent {isBirthday ? '🎂' : '🎉'}
+      </div>
+    ),
+    [],
+  );
+
+  return showSendWishRTELayout ? (
     <div className="flex gap-2 w-full">
       <Avatar
         name={getFullName(data.featuredUser)}
         size={48}
         className="min-w-[48px]"
       />
-      <div className="flex flex-col gap-3 w-full">
+      <div
+        className={clsx('flex flex-col gap-3 w-full', '!gap-2', alreadyWished)}
+      >
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2">
             <p
@@ -122,25 +144,29 @@ const User: React.FC<UserProps> = ({
             <Icon name="arrowRightUp" size={12} color="text-primary-500" />
           </div>
         </div>
-        <CommentsRTE
-          entityId={data.featuredUser.userId}
-          entityType="post"
-          className="w-full"
-          mode={PostCommentMode.SendWish}
-          inputRef={inputRef}
-          media={media}
-          removeMedia={() => {
-            setMedia([]);
-            setFiles([]);
-            setMediaValidationErrors([]);
-            inputRef!.current!.value = '';
-          }}
-          files={files}
-          mediaValidationErrors={mediaValidationErrors}
-          setIsCreateCommentLoading={setIsCreateCommentLoading}
-          setMediaValidationErrors={setMediaValidationErrors}
-          isCreateCommentLoading={isCreateCommentLoading}
-        />
+        {alreadyWished ? (
+          wishesSent
+        ) : (
+          <CommentsRTE
+            entityId={data.featuredUser.userId}
+            entityType="post"
+            className="w-full"
+            mode={PostCommentMode.SendWish}
+            inputRef={inputRef}
+            media={media}
+            removeMedia={() => {
+              setMedia([]);
+              setFiles([]);
+              setMediaValidationErrors([]);
+              inputRef!.current!.value = '';
+            }}
+            files={files}
+            mediaValidationErrors={mediaValidationErrors}
+            setIsCreateCommentLoading={setIsCreateCommentLoading}
+            setMediaValidationErrors={setMediaValidationErrors}
+            isCreateCommentLoading={isCreateCommentLoading}
+          />
+        )}
         <input
           type="file"
           className="hidden"
@@ -219,23 +245,37 @@ const User: React.FC<UserProps> = ({
             )}
           </div>
         </div>
-        <div
-          className={`px-[6px] rounded-[4px] text-xs font-semibold whitespace-nowrap ${dateStyles}`}
-          data-testid={`${isBirthday ? 'birthday' : 'anniversaries'}-date`}
-        >
-          {celebrationDate}
-        </div>
+        {alreadyWished ? (
+          wishesSent
+        ) : (
+          <div
+            className={`px-[6px] rounded-[4px] text-xs font-semibold whitespace-nowrap ${dateStyles}`}
+            data-testid={`${isBirthday ? 'birthday' : 'anniversaries'}-date`}
+          >
+            {celebrationDate}
+          </div>
+        )}
       </div>
-      {showSendWishBtn && (
+      {alreadyWished ? (
         <Button
           size={Size.Small}
-          className="!bg-blue-50 !text-blue-500 px-4 py-2 rounded-[8px]"
-          label="Send them wishes"
-          dataTestId={`${
-            isBirthday ? 'birthday' : 'anniversaries'
-          }-send-wishes-cta`}
-          onClick={onSendWish}
+          className="!bg-primary-50 !text-primary-500 px-4 py-2 rounded-[8px]"
+          label="Visit post"
+          dataTestId={`${isBirthday ? 'birthday' : 'anniversaries'}-visit-post`}
+          // onClick={onSendWish}
         />
+      ) : (
+        showSendWishBtn && (
+          <Button
+            size={Size.Small}
+            className="!bg-blue-50 !text-blue-500 px-4 py-2 rounded-[8px]"
+            label="Send them wishes"
+            dataTestId={`${
+              isBirthday ? 'birthday' : 'anniversaries'
+            }-send-wishes-cta`}
+            onClick={onSendWish}
+          />
+        )
       )}
     </div>
   );
