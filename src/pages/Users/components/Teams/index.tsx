@@ -13,27 +13,19 @@ import { useForm } from 'react-hook-form';
 import { useDebounce } from 'hooks/useDebounce';
 import TeamFilterModal from '../FilterModals/TeamFilterModal';
 import TeamModal from '../TeamModal';
-import { addTeamMember, useInfiniteTeams } from 'queries/teams';
-import { getProfileImage, isFiltersEmpty, twConfig } from 'utils/misc';
+import { useInfiniteTeams } from 'queries/teams';
+import { getProfileImage, isFiltersEmpty } from 'utils/misc';
 import PageLoader from 'components/PageLoader';
 import TeamNotFound from 'images/TeamNotFound.svg';
 import TeamsSkeleton from '../Skeletons/TeamsSkeleton';
 import Skeleton from 'react-loading-skeleton';
-import { ITeamDetailState } from 'pages/Users';
 import Sort from 'components/Sort';
 import EntitySearchModal, {
   EntitySearchModalType,
 } from 'components/EntitySearchModal';
 import { IGetUser } from 'queries/users';
 import Avatar from 'components/Avatar';
-import { useMutation } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
-import FailureToast from 'components/Toast/variants/FailureToast';
 import Icon from 'components/Icon';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import queryClient from 'utils/queryClient';
 interface IForm {
   search?: string;
 }
@@ -41,6 +33,10 @@ interface IForm {
 export enum TeamFlow {
   CreateTeam = 'CREATE_TEAM',
   EditTeam = 'EDIT_TEAM',
+}
+export interface ITeamDetailState {
+  isTeamSelected: boolean;
+  teamDetail: Record<string, any> | null;
 }
 
 export interface ITeamCategory {
@@ -62,30 +58,21 @@ export interface ITeamProps {
   showTeamModal: boolean;
   openTeamModal: () => void;
   closeTeamModal: () => void;
-  // stored one team detail
-  showTeamDetail: ITeamDetailState;
-  setShowTeamDetail: (detail: ITeamDetailState) => void;
-  // set team flow
-  setTeamFlow: any;
-  teamFlow: string;
-  // show add members modal
-  showAddMemberModal: boolean;
-  openAddMemberModal: () => void;
-  closeAddMemberModal: () => void;
 }
 
 const Team: React.FC<ITeamProps> = ({
   showTeamModal,
   openTeamModal,
   closeTeamModal,
-  showTeamDetail,
-  setShowTeamDetail,
-  setTeamFlow,
-  teamFlow,
-  showAddMemberModal,
-  openAddMemberModal,
-  closeAddMemberModal,
 }) => {
+  const [teamFlow, setTeamFlow] = useState<TeamFlow>(TeamFlow.CreateTeam); // to context
+
+  const [showTeamDetail, setShowTeamDetail] = useState<ITeamDetailState>({
+    isTeamSelected: false,
+    teamDetail: {},
+  });
+  const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
+    useModal(false);
   const [sortByFilter, setSortByFilter] = useState<string>('');
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   useModal();
@@ -418,7 +405,6 @@ const Team: React.FC<ITeamProps> = ({
       {showTeamModal && (
         <TeamModal
           open={showTeamModal}
-          openModal={openTeamModal}
           closeModal={closeTeamModal}
           teamFlowMode={teamFlow}
           setTeamFlow={setTeamFlow}

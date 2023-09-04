@@ -25,22 +25,22 @@ export interface ITeamForm {
 
 export interface IAddTeamModalProps {
   open: boolean;
-  openModal: () => void;
   closeModal: () => void;
   teamFlowMode: string;
   setTeamFlow: any;
   team: Record<string, any> | any;
   openAddMemberModal: () => void;
+  isDetailPage?: boolean;
 }
 
 const TeamModal: React.FC<IAddTeamModalProps> = ({
   open,
-  openModal,
   closeModal,
   teamFlowMode,
   setTeamFlow,
   team,
   openAddMemberModal,
+  isDetailPage,
 }) => {
   const queryClient = useQueryClient();
 
@@ -116,8 +116,8 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
         transition: slideInAndOutTop,
         theme: 'dark',
       });
-      closeModal();
       openAddMemberModal();
+      closeModal();
       queryClient.invalidateQueries(['categories']);
     },
   });
@@ -157,6 +157,9 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['teams']);
+      if (isDetailPage) {
+        queryClient.invalidateQueries(['team']);
+      }
       toast(
         <SuccessToast
           content={`Team has been updated`}

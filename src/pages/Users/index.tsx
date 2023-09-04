@@ -8,18 +8,17 @@ import Tabs from 'components/Tabs';
 import OrgChart from 'components/OrgChart';
 import People from './components/People';
 import { Role } from 'utils/enum';
-import Team, { TeamFlow } from './components/Teams';
-import TeamDetail from './components/TeamDetail';
-
-export interface ITeamDetailState {
-  isTeamSelected: boolean;
-  teamDetail: Record<string, any> | null;
-  activeTab: string;
-}
+import Team from './components/Teams';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface IUsersProps {}
 
 const Users: React.FC<IUsersProps> = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentPathname = location.pathname;
+  const isUserTab = currentPathname.includes('users');
+
   const [showOrgChart, setShowOrgChart] = useState<boolean>(false);
   const [showAddUserModal, openAddUserModal, closeAddUserModal] = useModal(
     undefined,
@@ -28,18 +27,7 @@ const Users: React.FC<IUsersProps> = () => {
   const [showTeamModal, openTeamModal, closeTeamModal] = useModal(
     undefined,
     false,
-  );
-
-  const [teamFlow, setTeamFlow] = useState<TeamFlow>(TeamFlow.CreateTeam); // to context
-
-  const [showTeamDetail, setShowTeamDetail] = useState<ITeamDetailState>({
-    isTeamSelected: false,
-    teamDetail: {},
-    activeTab: '',
-  }); // to context
-
-  const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
-    useModal(false);
+  ); // to context
 
   const { user } = useAuth();
 
@@ -112,13 +100,6 @@ const Users: React.FC<IUsersProps> = () => {
           showTeamModal={showTeamModal}
           openTeamModal={openTeamModal}
           closeTeamModal={closeTeamModal}
-          showTeamDetail={showTeamDetail}
-          setShowTeamDetail={setShowTeamDetail}
-          setTeamFlow={setTeamFlow}
-          teamFlow={teamFlow}
-          showAddMemberModal={showAddMemberModal}
-          openAddMemberModal={openAddMemberModal}
-          closeAddMemberModal={closeAddMemberModal}
         />
       ),
       tabAction: user?.role !== Role.Member && (
@@ -139,7 +120,7 @@ const Users: React.FC<IUsersProps> = () => {
     <OrgChart setShowOrgChart={setShowOrgChart} />
   ) : (
     <>
-      {!showTeamDetail.isTeamSelected ? (
+      {true && (
         <Card className="p-8 w-full h-full">
           <Tabs
             tabs={tabs}
@@ -148,20 +129,13 @@ const Users: React.FC<IUsersProps> = () => {
             tabSwitcherClassName="!p-1"
             showUnderline={false}
             itemSpacing={1}
-            activeTabIndex={showTeamDetail.activeTab === 'TEAM' ? 1 : 0} //need to handle the behaviour
+            activeTabIndex={!isUserTab ? 1 : 0} //need to handle the behaviour
             tabContentClassName="mt-8"
+            onTabChange={() => {
+              navigate(isUserTab ? '/teams' : '/users');
+            }}
           />
         </Card>
-      ) : (
-        <TeamDetail
-          setShowTeamDetail={setShowTeamDetail}
-          teamTab={showTeamDetail.activeTab}
-          openModal={openTeamModal}
-          showAddMemberModal={showAddMemberModal}
-          openAddMemberModal={openAddMemberModal}
-          closeAddMemberModal={closeAddMemberModal}
-          {...showTeamDetail.teamDetail}
-        />
       )}
     </>
   );

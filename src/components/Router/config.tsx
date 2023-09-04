@@ -19,6 +19,7 @@ const ResetPassword = React.lazy(() => import('pages/ResetPassword'));
 const Feed = React.lazy(() => import('pages/Feed'));
 const Users = React.lazy(() => import('pages/Users'));
 const UserDetail = React.lazy(() => import('pages/UserDetail'));
+const TeamDetail = React.lazy(() => import('pages/TeamDetail'));
 const Apps = React.lazy(() => import('pages/Apps'));
 const Discover = React.lazy(() => import('pages/Discover'));
 const Admin = React.lazy(() => import('pages/Admin'));
@@ -62,8 +63,24 @@ const routers = createBrowserRouter(
           }}
         />
         <Route
+          path="/teams"
+          element={<Users />}
+          loader={async () => {
+            // ⬇️ loader fetch data as earlier as possible
+            return '';
+          }}
+        />
+        <Route
           path="/users/:userId"
           element={<UserDetail />}
+          loader={({ params }) => {
+            // ⬇️ loader fetch data as earlier as possible
+            return '';
+          }}
+        />
+        <Route
+          path="/teams/:teamId"
+          element={<TeamDetail />}
           loader={({ params }) => {
             // ⬇️ loader fetch data as earlier as possible
             return '';

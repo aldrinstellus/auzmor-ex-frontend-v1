@@ -18,21 +18,23 @@ import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
+import { useNavigate } from 'react-router-dom';
 export interface IDeleteTeamProps {
   open: boolean;
-  openModal: () => void;
   closeModal: () => void;
-  userId: string;
+  teamId: string;
+  isDetailPage?: boolean;
 }
 
 const DeleteTeam: React.FC<IDeleteTeamProps> = ({
   open,
-  openModal,
   closeModal,
-  userId,
+  teamId,
+  isDetailPage,
 }) => {
+  const navigate = useNavigate();
   const deleteTeamMutation = useMutation({
-    mutationKey: ['delete-team', userId],
+    mutationKey: ['delete-team', teamId],
     mutationFn: deleteTeam,
     onError: (error) => {
       toast(<FailureToast content="Error deleting teams" dataTestId="" />, {
@@ -77,6 +79,7 @@ const DeleteTeam: React.FC<IDeleteTeamProps> = ({
           theme: 'dark',
         },
       );
+      if (isDetailPage) navigate('/teams');
     },
   });
 
@@ -111,7 +114,7 @@ const DeleteTeam: React.FC<IDeleteTeamProps> = ({
         size={Size.Small}
         type={ButtonType.Submit}
         dataTestId="delete-team-delete"
-        onClick={() => deleteTeamMutation.mutate(userId)}
+        onClick={() => deleteTeamMutation.mutate(teamId)}
       />
     </div>
   );

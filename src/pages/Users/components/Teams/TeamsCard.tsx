@@ -9,9 +9,9 @@ import PopupMenu from 'components/PopupMenu';
 import useRole from 'hooks/useRole';
 import DeleteTeam from '../DeleteModals/Team';
 import useModal from 'hooks/useModal';
-import { TeamFlow } from '.';
+import { ITeamDetailState, TeamFlow } from '.';
 import moment from 'moment';
-import { ITeamDetailState } from 'pages/Users';
+import { useNavigate } from 'react-router-dom';
 
 export interface ITeamsCardProps {
   id: string;
@@ -38,6 +38,7 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
   openModal,
   setShowTeamDetail,
 }) => {
+  const navigate = useNavigate();
   const [isHovered, eventHandlers] = useHover();
   const [showDeleteModal, openDeleteModal, closeDeleteModal] = useModal(false);
   const { isAdmin, isMember, isSuperAdmin } = useRole();
@@ -51,7 +52,6 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
         openModal();
         setTeamFlow(TeamFlow.EditTeam);
         setShowTeamDetail({
-          activeTab: 'TEAM',
           isTeamSelected: false,
           teamDetail: {
             id: id,
@@ -126,18 +126,7 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
         <div
           className="flex flex-col items-center"
           onClick={() => {
-            setShowTeamDetail({
-              activeTab: 'TEAM',
-              isTeamSelected: true,
-              teamDetail: {
-                id: id,
-                name: name,
-                description: description,
-                category: category,
-                createdAt: createdAtDate,
-                totalMembers: totalMembers,
-              },
-            });
+            navigate(`/teams/${id}`);
           }}
         >
           {recentMembers?.length !== 0 ? (
@@ -188,9 +177,8 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
 
       <DeleteTeam
         open={showDeleteModal}
-        openModal={openDeleteModal}
         closeModal={closeDeleteModal}
-        userId={id}
+        teamId={id}
       />
     </div>
   );
