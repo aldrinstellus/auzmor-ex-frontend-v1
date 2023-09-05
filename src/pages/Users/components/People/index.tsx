@@ -34,7 +34,7 @@ export interface IPeopleProps {
   showModal: boolean;
   openModal: () => void;
   closeModal: () => void;
-  teamTab?: string;
+  isTeamPeople?: boolean;
   teamId?: string;
 }
 
@@ -47,7 +47,7 @@ const People: React.FC<IPeopleProps> = ({
   showModal,
   openModal,
   closeModal,
-  teamTab,
+  isTeamPeople,
   teamId,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
@@ -99,9 +99,7 @@ const People: React.FC<IPeopleProps> = ({
   };
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    teamTab === EntitySearchModalType.Team && teamId
-      ? getTeamMembersData()
-      : getPeoplesData();
+    isTeamPeople && teamId ? getTeamMembersData() : getPeoplesData();
 
   const roleSelectRef = useRef<any>();
 
@@ -155,7 +153,7 @@ const People: React.FC<IPeopleProps> = ({
       <div>
         <div className="flex justify-between items-center">
           <div className="flex space-x-4">
-            {teamTab !== 'TEAM' && (
+            {!isTeamPeople && (
               <>
                 <Button
                   label="My Teams"
@@ -197,11 +195,7 @@ const People: React.FC<IPeopleProps> = ({
                   Sort by
                 </div>
               }
-              entity={
-                teamTab === EntitySearchModalType.Team
-                  ? EntitySearchModalType.Team
-                  : 'USER'
-              }
+              entity={isTeamPeople ? EntitySearchModalType.Team : 'USER'}
             />
             <div>
               <Layout
@@ -273,19 +267,22 @@ const People: React.FC<IPeopleProps> = ({
             if (usersData && usersData?.length > 0) {
               return (
                 <>
-                  {usersData
-                    ?.filter((userCard: IGetUser) => {
-                      if (role) {
-                        return role?.value === userCard.role;
-                      } else return true;
-                    })
-                    .map((user: any) => (
-                      <PeopleCard
-                        key={user.id}
-                        {...user}
-                        image={getProfileImage(user, 'large')}
-                      />
-                    ))}
+                  {usersData.map((user: any) => (
+                    <PeopleCard
+                      key={user.id}
+                      {...(isTeamPeople
+                        ? {
+                            ...user.member,
+                            id: user.member.userId,
+                            workEmail: user.member.email,
+                          }
+                        : user)}
+                      image={getProfileImage(
+                        isTeamPeople ? user.member : user,
+                        'large',
+                      )}
+                    />
+                  ))}
                   <div className="h-12 w-12">
                     {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
                   </div>
@@ -293,7 +290,7 @@ const People: React.FC<IPeopleProps> = ({
                 </>
               );
             }
-            return teamTab === EntitySearchModalType.Team ? (
+            return isTeamPeople ? (
               <div className="flex flex-col w-full items-center space-y-4">
                 <img
                   src={MemberNotFound}

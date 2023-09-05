@@ -88,7 +88,7 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
     <div className="cursor-pointer" data-testid="" {...eventHandlers}>
       <Card
         shadowOnHover
-        className="relative w-[189.5px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white"
+        className="relative w-[190px] min-h-[217px] border-solid border border-neutral-200 flex flex-col items-center justify-center py-6 px-3 bg-white"
         dataTestId="team-card"
       >
         {isHovered && (
@@ -117,7 +117,7 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
             style={{
               backgroundColor: '#D1FAE5',
             }}
-            className="absolute top-0 left-0 text-primary-500 rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium"
+            className="absolute top-0 left-0 text-primary-500 rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xxs font-medium"
             data-testid="team-badge-recentlyadded"
           >
             Recently added
@@ -145,17 +145,17 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
           <div className="space-y-2">
             <div className="flex flex-col items-center space-y-1">
               <div
-                className="truncate text-neutral-900 text-base font-bold"
+                className="truncate text-neutral-900 text-base font-bold text-center"
                 data-testid={`team-name-${name}`}
               >
                 {truncate(name, {
-                  length: 24,
+                  length: 18,
                   separator: ' ',
                 })}
               </div>
 
               <div
-                className="text-xxs font-semibold rounded-xl py-0.4 px-2 truncate capitalize"
+                className="text-xxs font-semibold rounded-xl py-0.4 px-2 line-clamp-1 capitalize rounded bg-indigo-100 text-indigo-500"
                 data-testid={`team-category-${category?.name?.toLowerCase()}`}
               >
                 {category?.name?.toLowerCase()}
@@ -163,7 +163,13 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
             </div>
 
             <div className="flex items-center justify-center space-x-1">
-              <Icon name="profileUserOutline" size={18} />
+              <Icon
+                name="profileUserOutline"
+                size={16}
+                color="text-neutral-900"
+                strokeWidth="1"
+                hover={false}
+              />
               <div
                 className="text-xs font-normal text-neutral-500"
                 data-testid={`team-no-of-members-${totalMembers}`}

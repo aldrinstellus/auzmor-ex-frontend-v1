@@ -132,11 +132,7 @@ export const useInfiniteTeamMembers = (
 ) => {
   return useInfiniteQuery({
     queryKey: ['team-members', q, teamId],
-
-    // queryFn: (context) => {
-    //   getTeamMembers(context, teamId); # data is not stored in cache
-    // },
-
+    queryFn: (context) => getTeamMembers(context, teamId),
     getNextPageParam: (lastPage: any) => {
       const pageDataLen = lastPage?.data?.result?.data?.length;
       const pageLimit = lastPage?.data?.result?.paging?.limit;

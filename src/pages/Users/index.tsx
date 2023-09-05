@@ -119,25 +119,21 @@ const Users: React.FC<IUsersProps> = () => {
   return showOrgChart ? (
     <OrgChart setShowOrgChart={setShowOrgChart} />
   ) : (
-    <>
-      {true && (
-        <Card className="p-8 w-full h-full">
-          <Tabs
-            tabs={tabs}
-            title={'People Hub'}
-            className="w-fit flex justify-start bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200"
-            tabSwitcherClassName="!p-1"
-            showUnderline={false}
-            itemSpacing={1}
-            activeTabIndex={!isUserTab ? 1 : 0} //need to handle the behaviour
-            tabContentClassName="mt-8"
-            onTabChange={() => {
-              navigate(isUserTab ? '/teams' : '/users');
-            }}
-          />
-        </Card>
-      )}
-    </>
+    <Card className="p-8 px-7 w-full h-full">
+      <Tabs
+        tabs={tabs}
+        title={'People Hub'}
+        className="w-fit flex justify-start bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200"
+        tabSwitcherClassName="!p-1"
+        showUnderline={false}
+        itemSpacing={1}
+        activeTabIndex={!isUserTab ? 1 : 0} //need to handle the behaviour
+        tabContentClassName="mt-8"
+        onTabChange={() => {
+          navigate(isUserTab ? '/teams' : '/users');
+        }}
+      />
+    </Card>
   );
 };
 

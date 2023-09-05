@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import _ from 'lodash';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import useHover from 'hooks/useHover';
@@ -7,11 +6,7 @@ import useRole from 'hooks/useRole';
 import { useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import Icon from 'components/Icon';
-import PopupMenu from 'components/PopupMenu';
 import {
-  EditUserSection,
-  UserEditType,
-  UserRole,
   UserStatus,
   updateRoleToAdmin,
   updateStatus,
@@ -29,6 +24,7 @@ import UserProfileDropdown from 'components/UserProfileDropdown';
 import DeactivatePeople from '../DeactivateModal/Deactivate';
 import ReactivatePeople from '../ReactivateModal/Reactivate';
 import clsx from 'clsx';
+import _ from 'lodash';
 
 export interface IPeopleCardProps {
   id: string;
@@ -36,8 +32,8 @@ export interface IPeopleCardProps {
   fullName: string;
   image?: string;
   designation?: string;
-  department?: string;
-  location?: string;
+  department?: Record<string, any>;
+  workLocation?: Record<string, any>;
   active?: boolean;
   workEmail?: string;
   status?: any;
@@ -66,7 +62,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
   image,
   designation,
   department,
-  location,
+  workLocation,
   active,
   status,
   workEmail,
@@ -141,19 +137,19 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
   });
 
   const leftChipStyle = clsx({
-    'absolute top-0 left-0 text-white rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium':
+    'absolute top-0 left-0 text-white rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xxs font-medium':
       true,
   });
 
   return (
     <div
-      className="cursor-pointer"
+      className="cursor-pointer w-fit"
       data-testid="people-card"
       {...eventHandlers}
     >
       <Card
         shadowOnHover
-        className="relative w-[230px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white"
+        className="relative w-[190px] min-h-[244px] border-solid border border-neutral-200 flex flex-col items-center justify-center py-6 px-3 bg-white"
       >
         <UserProfileDropdown
           id={id}
@@ -200,7 +196,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
           triggerNode={
             <div className="cursor-pointer">
               <Icon
-                name={'dotsHorizontal'}
+                name="moreOutline"
                 className={`absolute top-${
                   status === UserStatus.Inactive ? 6 : 2
                 } right-2`}
@@ -215,13 +211,13 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
           if (status === UserStatus.Inactive) {
             return (
               <div
-                className="absolute top-0 text-[12px] text-[#737373] font-medium py-1 bg-[#F5F5F5] w-full justify-center align-center rounded-t-9xl flex"
+                className="absolute top-0 text-xxs text-[#737373] font-medium py-1 bg-[#F5F5F5] w-full justify-center align-center rounded-t-9xl flex"
                 data-testid="usercard-deactivate-banner"
               >
                 <Icon
                   name="forbidden"
                   color="text-neutral-500"
-                  size={18}
+                  size={16}
                   className="mr-1"
                 ></Icon>
                 Deactivated Account
@@ -266,7 +262,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
         })()}
 
         <div
-          className="my-6 flex flex-col items-center"
+          className="flex flex-col items-center"
           onClick={() => {
             if (id === user?.id) {
               return navigate('/profile');
@@ -276,7 +272,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
         >
           <Avatar
             size={80}
-            name={fullName}
+            name={fullName || workEmail}
             image={image}
             active={active}
             dataTestId="people-card-profile-pic"
@@ -287,38 +283,52 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
             }
           />
           <div
-            className="mt-1 truncate text-neutral-900 text-base font-bold"
-            data-testid={`people-card-name-${fullName}`}
+            className="mt-1 text-neutral-900 text-base font-bold truncate"
+            data-testid={`people-card-name-${fullName || workEmail}`}
           >
-            {_.truncate(fullName, {
-              length: 24,
+            {_.truncate(fullName || workEmail, {
+              length: 18,
               separator: ' ',
             })}
           </div>
           <div
-            className="mt-1 truncate text-neutral-900 text-xs font-normal"
+            className="mt-1 text-neutral-900 text-xs font-normal line-clamp-1"
             data-testid={`people-card-title-${designation || role}`}
           >
             {designation || role}
           </div>
-          <div
-            className="flex justify-center items-center px-3 py-1 mt-2 rounded-xl"
-            data-testid={`people-card-department-${department}`}
-          >
-            <div></div>
-            <div className="text-neutral-900 text-xxs font-medium truncate">
-              {department}
-            </div>
-          </div>
-          <div className="flex space-x-[6px] mt-3">
-            <div></div>
+          {department?.name && (
             <div
-              className="text-neutral-500 text-xs font-normal truncate"
-              data-testid={`people-card-location-${location}`}
+              className="flex justify-center items-center px-3 py-[2px] mt-2 rounded-[4px] gap-1 bg-orange-100"
+              data-testid={`people-card-department-${department?.name}`}
             >
-              {location}
+              <Icon
+                name="briefcase"
+                size={16}
+                hover={false}
+                color="text-neutral-900"
+              />
+              <div className="text-neutral-900 text-xxs font-semibold line-clamp-1">
+                {department?.name}
+              </div>
             </div>
-          </div>
+          )}
+          {workLocation?.name && (
+            <div className="flex gap-1 mt-2">
+              <Icon
+                name="location"
+                size={16}
+                color="text-neutral-900"
+                hover={false}
+              />
+              <div
+                className="text-neutral-500 text-xs font-normal line-clamp-1"
+                data-testid={`people-card-location-${workLocation?.name}`}
+              >
+                {workLocation?.name}
+              </div>
+            </div>
+          )}
         </div>
       </Card>
       <DeletePeople

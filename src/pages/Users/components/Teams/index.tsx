@@ -438,23 +438,27 @@ const Team: React.FC<ITeamProps> = ({
                       <div className="text-sm font-bold text-neutral-900">
                         {data?.fullName}
                       </div>
-                      {/* <div className="flex space-x-[14px] items-center">
-                        <div className="flex space-x-1 items-start">
-                          <Icon name="briefcase" size={16} />
-                          <div className="text-xs font-normal text-neutral-500">
-                            {'Chief Financial officer'}
+                      <div className="flex space-x-[14px] items-center">
+                        {data?.designation && (
+                          <div className="flex space-x-1 items-start">
+                            <Icon name="briefcase" size={16} />
+                            <div className="text-xs font-normal text-neutral-500">
+                              {data?.designation}
+                            </div>
                           </div>
-                        </div>
-
-                        <div className="w-1 h-1 bg-neutral-500 rounded-full" />
-
-                        <div className="flex space-x-1 items-start">
-                          <Icon name="location" size={16} />
-                          <div className="text-xs font-normal text-neutral-500">
-                            {'New York, US.'}
+                        )}
+                        {data?.designation && data?.workLocation?.name && (
+                          <div className="w-1 h-1 bg-neutral-500 rounded-full" />
+                        )}
+                        {data?.workLocation?.name && (
+                          <div className="flex space-x-1 items-start">
+                            <Icon name="location" size={16} />
+                            <div className="text-xs font-normal text-neutral-500">
+                              {data?.workLocation.name}
+                            </div>
                           </div>
-                        </div>
-                      </div> */}
+                        )}
+                      </div>
                     </div>
                     <div className="text-xs font-normal text-neutral-500">
                       {data?.primaryEmail}

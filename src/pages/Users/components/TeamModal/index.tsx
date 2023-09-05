@@ -30,7 +30,6 @@ export interface IAddTeamModalProps {
   setTeamFlow: any;
   team: Record<string, any> | any;
   openAddMemberModal: () => void;
-  isDetailPage?: boolean;
 }
 
 const TeamModal: React.FC<IAddTeamModalProps> = ({
@@ -40,7 +39,6 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
   setTeamFlow,
   team,
   openAddMemberModal,
-  isDetailPage,
 }) => {
   const queryClient = useQueryClient();
 
@@ -157,9 +155,7 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['teams']);
-      if (isDetailPage) {
-        queryClient.invalidateQueries(['team']);
-      }
+      queryClient.invalidateQueries(['team', team?.id]);
       toast(
         <SuccessToast
           content={`Team has been updated`}

@@ -24,6 +24,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import TeamModal from 'pages/Users/components/TeamModal';
 import { TeamFlow } from 'pages/Users/components/Teams';
 import DeleteTeam from 'pages/Users/components/DeleteModals/Team';
+import TeamDetailSkeleton from './components/TeamDetailSkeleton';
 
 export interface ITeamMemberProps {}
 
@@ -72,7 +73,15 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
       );
     },
     onSuccess: (data: any) => {
-      toast(<SuccessToast content={'Members has been added to team'} />, {
+      const membersAddedCount =
+        data?.result?.data?.length - (data.teamMembers || 0);
+      const message =
+        membersAddedCount > 1
+          ? `${membersAddedCount} have been added to the team`
+          : membersAddedCount === 1
+          ? `${membersAddedCount} have been added to the team`
+          : 'Members already exists in the team';
+      toast(<SuccessToast content={message} />, {
         style: {
           border: `1px solid ${twConfig.theme.colors.primary['300']}`,
           borderRadius: '6px',
@@ -90,11 +99,11 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
 
   return (
     <>
-      {teamDetail?.isLoading ? (
-        <div>Loading</div>
-      ) : (
-        <>
-          <Card className="py-8 space-y-6">
+      <Card className="py-8 space-y-6">
+        {teamDetail?.isLoading ? (
+          <TeamDetailSkeleton />
+        ) : (
+          <>
             <div className="flex justify-between items-center px-8">
               <div
                 className="flex space-x-2"
@@ -124,6 +133,8 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
                   className="flex space-x-1"
                   label="Add Members"
                   leftIcon="add"
+                  leftIconClassName="!text-white"
+                  leftIconSize={20}
                   onClick={openAddMemberModal}
                   dataTestId="add-members-btn"
                 />
@@ -131,9 +142,7 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
             </div>
             <div className="w-full bg-purple-50 border-1 border-purple-200 py-4 pl-8 pr-16 flex justify-between">
               <div className="flex flex-col text-neutral-900 space-y-4">
-                <div className="text-2xl font-bold">
-                  {data.name || 'Design Team'}
-                </div>
+                <div className="text-2xl font-bold">{data.name}</div>
                 <div className="text-xs font-normal">{data.description}</div>
               </div>
 
@@ -154,7 +163,7 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
                     {data.teamMembers || 0}
                   </div>
                 </div>
-                <div>
+                <div className="relative">
                   <PopupMenu
                     triggerNode={
                       <div className="cursor-pointer">
@@ -183,96 +192,99 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
                         permissions: [''],
                       },
                     ]}
-                    className=" right-20 w-44"
+                    className="absolute top-10 -right-5 w-44"
                   />
                 </div>
               </div>
             </div>
-            <div className="px-8">
-              <People
-                showModal={false}
-                openModal={() => {}}
-                closeModal={() => {}}
-                teamTab="TEAM"
-                teamId={id}
-              />
-            </div>
-          </Card>
-          {showTeamModal && (
-            <TeamModal
-              open={showTeamModal}
-              isDetailPage
-              closeModal={closeTeamModal}
-              teamFlowMode={TeamFlow.EditTeam}
-              setTeamFlow={() => {}}
-              team={data}
-              openAddMemberModal={openAddMemberModal}
-            />
-          )}
-          {showAddMemberModal && (
-            <EntitySearchModal
-              open={showAddMemberModal}
-              openModal={openAddMemberModal}
-              closeModal={closeAddMemberModal}
-              entityType={EntitySearchModalType.User}
-              entityRenderer={(data: IGetUser) => {
-                return (
-                  <div className="flex space-x-4 w-full">
-                    <Avatar
-                      name={data?.fullName || 'U'}
-                      size={32}
-                      image={getProfileImage(data)}
-                    />
-                    <div className="flex space-x-6 w-full">
-                      <div className="flex flex-col w-full">
-                        <div className="flex justify-between items-center">
-                          <div className="text-sm font-bold text-neutral-900">
-                            {data?.fullName}
+          </>
+        )}
+        <div className="px-8">
+          <People
+            showModal={false}
+            openModal={() => {}}
+            closeModal={() => {}}
+            isTeamPeople
+            teamId={id}
+          />
+        </div>
+      </Card>
+      {showTeamModal && (
+        <TeamModal
+          open={showTeamModal}
+          closeModal={closeTeamModal}
+          teamFlowMode={TeamFlow.EditTeam}
+          setTeamFlow={() => {}}
+          team={data}
+          openAddMemberModal={openAddMemberModal}
+        />
+      )}
+      {showAddMemberModal && (
+        <EntitySearchModal
+          open={showAddMemberModal}
+          openModal={openAddMemberModal}
+          closeModal={closeAddMemberModal}
+          entityType={EntitySearchModalType.User}
+          entityRenderer={(data: IGetUser) => {
+            return (
+              <div className="flex space-x-4 w-full">
+                <Avatar
+                  name={data?.fullName || 'U'}
+                  size={32}
+                  image={getProfileImage(data)}
+                />
+                <div className="flex space-x-6 w-full">
+                  <div className="flex flex-col w-full">
+                    <div className="flex justify-between items-center">
+                      <div className="text-sm font-bold text-neutral-900">
+                        {data?.fullName}
+                      </div>
+                      <div className="flex space-x-[14px] items-center">
+                        {data?.designation && (
+                          <div className="flex space-x-1 items-start">
+                            <Icon name="briefcase" size={16} />
+                            <div className="text-xs font-normal text-neutral-500">
+                              {data?.designation}
+                            </div>
                           </div>
-                          {/* <div className="flex space-x-[14px] items-center">
-                        <div className="flex space-x-1 items-start">
-                          <Icon name="briefcase" size={16} />
-                          <div className="text-xs font-normal text-neutral-500">
-                            {'Chief Financial officer'}
+                        )}
+                        {data?.designation && data?.workLocation?.name && (
+                          <div className="w-1 h-1 bg-neutral-500 rounded-full" />
+                        )}
+                        {data?.workLocation?.name && (
+                          <div className="flex space-x-1 items-start">
+                            <Icon name="location" size={16} />
+                            <div className="text-xs font-normal text-neutral-500">
+                              {data?.workLocation.name}
+                            </div>
                           </div>
-                        </div>
-
-                        <div className="w-1 h-1 bg-neutral-500 rounded-full" />
-
-                        <div className="flex space-x-1 items-start">
-                          <Icon name="location" size={16} />
-                          <div className="text-xs font-normal text-neutral-500">
-                            {'New York, US.'}
-                          </div>
-                        </div>
-                      </div> */}
-                        </div>
-                        <div className="text-xs font-normal text-neutral-500">
-                          {data?.primaryEmail}
-                        </div>
+                        )}
                       </div>
                     </div>
+                    <div className="text-xs font-normal text-neutral-500">
+                      {data?.primaryEmail}
+                    </div>
                   </div>
-                );
-              }}
-              onSubmit={(userIds: string[]) => {
-                addTeamMemberMutation.mutate({ userIds: userIds });
-                closeAddMemberModal();
-              }}
-              title="Add Members"
-              submitButtonText="Add Members"
-              onCancel={closeAddMemberModal}
-              cancelButtonText="Cancel"
-            />
-          )}
-          <DeleteTeam
-            open={showDeleteModal}
-            closeModal={closeDeleteModal}
-            isDetailPage
-            teamId={id || ''}
-          />
-        </>
+                </div>
+              </div>
+            );
+          }}
+          onSubmit={(userIds: string[]) => {
+            addTeamMemberMutation.mutate({ userIds: userIds });
+            closeAddMemberModal();
+          }}
+          title="Add Members"
+          submitButtonText="Add Members"
+          onCancel={closeAddMemberModal}
+          cancelButtonText="Cancel"
+        />
       )}
+      <DeleteTeam
+        open={showDeleteModal}
+        closeModal={closeDeleteModal}
+        isDetailPage
+        teamId={id || ''}
+      />
     </>
   );
 };
