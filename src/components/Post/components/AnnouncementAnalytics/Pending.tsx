@@ -11,11 +11,11 @@ import PageLoader from 'components/PageLoader';
 import Button, { Variant } from 'components/Button';
 
 type AppProps = {
-  id: string;
+  post: Record<string, any>;
   closeModal: () => any;
 };
 
-const Acknowledged: React.FC<AppProps> = ({ id, closeModal }) => {
+const Acknowledged: React.FC<AppProps> = ({ post, closeModal }) => {
   const { ref, inView } = useInView();
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
@@ -31,13 +31,17 @@ const Acknowledged: React.FC<AppProps> = ({ id, closeModal }) => {
     }
   }, [inView]);
 
+  const pendingPercent = Math.ceil(
+    post?.acknowledgementStats?.pending / post?.acknowledgementStats?.audience,
+  );
+
   return (
     <div>
       <div className="w-full max-h-[480px] overflow-y-scroll px-6">
         <div className="flex justify-center items-center py-5 border-b">
           <div style={{ width: 64, height: 64 }}>
             <CircularProgressbarWithChildren
-              value={50}
+              value={pendingPercent}
               className="center"
               strokeWidth={12}
               styles={buildStyles({
@@ -49,12 +53,13 @@ const Acknowledged: React.FC<AppProps> = ({ id, closeModal }) => {
                 trailColor: '#A3A3A3',
               })}
             >
-              <div className="text-sm font-semibold">50%</div>
+              <div className="text-sm font-semibold">{pendingPercent}%</div>
             </CircularProgressbarWithChildren>
           </div>
           <div className="ml-4">
             <div className="text-2xl text-yellow-300 font-semibold">
-              50 out of 100 people
+              {post?.acknowledgementStats?.pending} out of{' '}
+              {post?.acknowledgementStats?.audience} people
             </div>
             <div className="text-sm text-neutral-900">
               did not acknowledge this post

@@ -7,6 +7,7 @@ import { useFeedStore } from 'stores/feedStore';
 import { hasDatePassed } from 'utils/time';
 import { produce } from 'immer';
 import useAuth from 'hooks/useAuth';
+import ProgressBar from 'components/ProgressBar';
 
 export interface IAcknowledgementBannerProps {
   data: any;
@@ -21,8 +22,7 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
 
   const isAnnouncement = data?.isAnnouncement;
 
-  const hasLoggedInUserCreatedAnnouncement =
-    user?.id === data?.announcement?.actor?.userId;
+  const createdByMe = user?.id === data?.announcement?.actor?.userId;
 
   const acknowledgeMutation = useMutation({
     mutationKey: ['acknowledge-announcement'],
@@ -62,7 +62,13 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
               />
               <div className="text-xs font-bold">Announcement</div>
             </div>
-            {!hasLoggedInUserCreatedAnnouncement && (
+            {createdByMe ? (
+              <ProgressBar
+                total={data?.acknowledgementStats?.audience}
+                completed={data?.acknowledgementStats?.acknowledged}
+                suffix="people acknowledged"
+              />
+            ) : (
               <Button
                 className="text-sm font-bold !py-[3px]"
                 label="Mark as read"

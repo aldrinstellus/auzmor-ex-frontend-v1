@@ -10,11 +10,11 @@ import Button, { Variant } from 'components/Button';
 type AppProps = {
   open: boolean;
   closeModal: () => any;
-  id: string;
+  post: Record<string, any>;
 };
 
 const AnnouncementAnalytics: React.FC<AppProps> = ({
-  id,
+  post,
   open,
   closeModal,
 }) => {
@@ -40,18 +40,20 @@ const AnnouncementAnalytics: React.FC<AppProps> = ({
             tabs={[
               {
                 tabLabel: (isActive) => tabLabel('Acknowledged', isActive),
-                tabContent: <Acknowledged id={id} closeModal={closeModal} />,
+                tabContent: (
+                  <Acknowledged post={post} closeModal={closeModal} />
+                ),
               },
               {
                 tabLabel: (isActive) => tabLabel('Pending', isActive),
-                tabContent: <Pending id={id} closeModal={closeModal} />,
+                tabContent: <Pending post={post} closeModal={closeModal} />,
               },
             ]}
           />
           <div
             className="py-4 center cursor-pointer absolute top-2 right-4"
             onClick={() => {
-              window.open(`https://office.com/download/${id}`, '_blank');
+              window.open(`https://office.com/download/${post.id}`, '_blank');
             }}
           >
             <Icon name="download" size={20} color="text-primary-500" />
