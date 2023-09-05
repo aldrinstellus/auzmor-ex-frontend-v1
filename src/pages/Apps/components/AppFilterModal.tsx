@@ -97,9 +97,9 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
               data-testid="app-filter-team-checkbox"
               className="h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 border-2 border-b-bg-neutral-200"
               checked={find(selectedTeams, item)}
-            ></input>
+            />
             <div className="ml-3 w-full text-xs flex justify-between items-center">
-              <div className="flex gap-2 items-center">
+              <div className="flex gap-[7px] items-center">
                 {item.recentMembers?.length !== 0 && (
                   <AvatarList
                     size={24}
@@ -108,7 +108,7 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
                       image: member.profileImage?.medium,
                     }))}
                     moreCount={item.totalMembers}
-                    className=""
+                    className="-space-x-[12px]"
                     dataTestId="teams-people-icon"
                   />
                 )}
@@ -119,7 +119,7 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
               <div className="flex items-center gap-2 text-neutral-500">
                 <div className="truncate">
                   {truncate(item.category?.name, {
-                    length: 12,
+                    length: 10,
                     separator: ' ',
                   })}
                 </div>
