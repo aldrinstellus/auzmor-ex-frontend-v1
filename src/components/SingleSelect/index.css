@@ -2,7 +2,7 @@
   width: theme('width.full') !important;
 }
 
-.async-single-select .ant-select-selector {
+.ant-select-selector {
   border-color: theme('colors.neutral.200') !important;
   border-width: 1px !important;
   border-radius: 32px !important;
@@ -23,11 +23,14 @@
   border-color: theme('colors.primary.500') !important;
 }
 
-.async-single-select .ant-select-selection-item {
+.ant-select-selection-item {
   line-height: theme('lineHeight.normal') !important;
   color: theme('colors.neutral.900') !important;
   display: flex !important;
   align-items: center !important;
+}
+.single-select .ant-select-selection-item {
+  font-weight: theme('fontWeight.bold') !important;
 }
 
 .ant-select-item-option-content {
@@ -35,7 +38,7 @@
   align-items: center !important;
 }
 
-.async-single-select.ant-select-disabled .ant-select-selection-item {
+.single-select.ant-select-disabled .ant-select-selection-item {
   color: theme('colors.neutral.400') !important;
 }
 
@@ -49,14 +52,14 @@
   padding: 0 !important;
 }
 
-.ant-select-item-option {
+.single-select .ant-select-item-option {
   font-weight: theme('fontWeight.medium') !important;
   font-size: theme('fontSize.xs') !important;
   line-height: theme('lineHeight.normal') !important;
   color: theme('colors.neutral.900') !important;
   padding-left: theme('padding.6') !important;
   padding-right: theme('padding.6') !important;
-  padding-top: theme('padding.2') !important;
+  padding-top: theme('padding.3') !important;
   padding-bottom: theme('padding.2') !important;
   border-bottom-width: 1px !important;
   border-bottom-color: theme('colors.neutral.200') !important;

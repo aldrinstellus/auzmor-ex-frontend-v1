@@ -15,12 +15,14 @@ interface IMembersBodyProps {
   entityRenderer?: (data: IGetUser) => ReactNode;
   selectedMemberIds?: string[];
   dataTestId?: string;
+  entitySearchLabel?: string;
 }
 
 const MembersBody: React.FC<IMembersBodyProps> = ({
   entityRenderer,
   selectedMemberIds = [],
   dataTestId,
+  entitySearchLabel,
 }) => {
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
@@ -151,7 +153,7 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
               type: FieldType.Input,
               control,
               name: 'memberSearch',
-              label: 'Select member',
+              label: entitySearchLabel || 'Select member',
               placeholder: 'Add via name or email address',
               isClearable: true,
               dataTestId: `select-${dataTestId}-search`,
@@ -298,7 +300,10 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
                   type: FieldType.Checkbox,
                   name: 'showSelectedMembers',
                   control,
-                  label: 'Show selected members',
+                  label: `Show selected members (${
+                    Object.keys(users).filter((key: string) => !!users[key])
+                      .length
+                  })`,
                   className: 'flex item-center',
                   dataTestId: `select-${dataTestId}-showselected`,
                 },

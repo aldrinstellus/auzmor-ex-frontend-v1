@@ -149,8 +149,8 @@ const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
       name: 'timezone',
       control,
       options: timezones.map((timeZone) => ({
-        label: timeZone.timezoneName,
-        value: timeZone.iana[0],
+        label: getTimezoneNameFromIANA(timeZone.iana),
+        value: timeZone.iana,
         dataTestId: `professional-detail-timezone-${timeZone.iana}`,
       })),
       defaultValue: {

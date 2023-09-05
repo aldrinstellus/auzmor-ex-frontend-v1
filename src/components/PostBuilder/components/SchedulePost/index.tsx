@@ -80,8 +80,8 @@ const SchedulePost: React.FC<ISchedulePost> = ({ closeModal }) => {
       name: 'timezone',
       control,
       options: timezones.map((timeZone) => ({
-        label: timeZone.timezoneName,
-        value: timeZone.iana[0],
+        label: getTimezoneNameFromIANA(timeZone.iana),
+        value: timeZone.iana,
         dataTestId: `scheduledpost-timezone-${timeZone.iana}`,
       })),
       defaultValue:

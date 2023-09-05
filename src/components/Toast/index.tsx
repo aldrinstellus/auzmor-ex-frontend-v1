@@ -38,20 +38,18 @@ const Toast: React.FC<ToastProps> = ({
   //   });
 
   return (
-    <div style={{ width: 640, height: 500 }}>
-      <ToastContainer
-        position="top-right"
-        autoClose={false}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable={false}
-        pauseOnHover
-        theme="light"
-      />
-    </div>
+    <ToastContainer
+      position="top-right"
+      autoClose={false}
+      hideProgressBar
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable={false}
+      pauseOnHover
+      theme="light"
+    />
   );
 };
 

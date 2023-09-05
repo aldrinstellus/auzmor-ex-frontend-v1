@@ -16,6 +16,7 @@ interface IEntitySearchModalBodyProps {
   selectedMemberIds?: string[];
   selectedChannelIds?: string[];
   selectedTeamIds?: string[];
+  entitySearchLabel?: string;
 }
 
 const EntitySearchModalBody: React.FC<IEntitySearchModalBodyProps> = ({
@@ -24,6 +25,7 @@ const EntitySearchModalBody: React.FC<IEntitySearchModalBodyProps> = ({
   selectedMemberIds = [],
   selectedChannelIds = [],
   selectedTeamIds = [],
+  entitySearchLabel,
 }) => {
   switch (entityType) {
     case EntitySearchModalType.User:
@@ -32,6 +34,7 @@ const EntitySearchModalBody: React.FC<IEntitySearchModalBodyProps> = ({
           entityRenderer={entityRenderer}
           selectedMemberIds={selectedMemberIds}
           dataTestId="user"
+          entitySearchLabel={entitySearchLabel}
         />
       );
     case EntitySearchModalType.Team:

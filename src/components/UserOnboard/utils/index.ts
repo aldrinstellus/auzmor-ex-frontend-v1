@@ -1,11 +1,11 @@
-import timezones from 'utils/timezones.json';
 import { OptionType } from '../components/SelectTimezoneScreen';
+import { getTimezoneNameFromIANA } from 'utils/time';
 
 export const getDefaultTimezoneOption = (): OptionType => {
   const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const timeZone = timezones.find((tz) => tz.iana.includes(browserTimezone));
+  const timezoneName = getTimezoneNameFromIANA(browserTimezone);
   return {
-    label: timeZone?.timezoneName || '',
-    value: timeZone?.iana || [],
+    label: timezoneName || '',
+    value: browserTimezone || '',
   };
 };

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import debounce from 'lodash/debounce';
 import * as yup from 'yup';
@@ -103,17 +103,24 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         : null,
     },
   });
+  const [locationLoading, setLocationLoading] = useState(false);
 
   const loadLocations = async (
     inputValue: string,
     callback: (options: any[]) => void,
   ) => {
+    setLocationLoading(true);
     const data = await getGooglePlaces({
       q: inputValue || userDetails?.workLocation?.name || 'a',
     });
     callback(
-      data.map((place: any) => ({ label: place.name, value: place.name })),
+      data.map((place: any) => ({
+        label: place.name,
+        value: place.name,
+        dataTestId: `${dataTestId}-location-${place.name}`,
+      })),
     );
+    setLocationLoading(false);
   };
 
   const formatDepartments = (data: any) => {
@@ -151,7 +158,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       dataTestId: `${dataTestId}-name`,
       disabled: userDetails.freezeEdit?.fullName,
       control,
-      inputClassName: 'py-[9px]',
+      inputClassName: 'py-[11px] !text-sm',
     },
   ];
 
@@ -164,7 +171,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       label: 'Preferred Name',
       dataTestId: `${dataTestId}-perferred-name`,
       control,
-      inputClassName: 'py-[9px]',
+      inputClassName: 'py-[11px] !text-sm',
     },
   ];
 
@@ -179,7 +186,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       label: 'Position title',
       disabled: userDetails.freezeEdit?.designation,
       control,
-      inputClassName: 'py-[9px]',
+      inputClassName: 'py-[11px] !text-sm',
     },
   ];
 
@@ -196,6 +203,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       queryParams: {},
       disabled: userDetails.freezeEdit?.department,
       disableCreate: !isAdmin,
+      getPopupContainer: document.body,
       noOptionsMessage: () => 'No Departments found',
       control,
     },
@@ -208,12 +216,15 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       dataTestId: `${dataTestId}-location`,
       placeholder: 'Select a location',
       label: 'Location',
-      loadOptions: (inputValue: string, callback: (options: any[]) => void) => {
+      loadOptions: (
+        inputValue: string,
+        callback: (options: IOptions[]) => void,
+      ) => {
         debouncedLoadLocations(inputValue, callback);
       },
-      noOptionsMessage: () => 'No locations',
+      noOptionsMessage: 'No locations',
       control,
-      menuPlacement: 'top',
+      isLoading: locationLoading,
     },
   ];
 

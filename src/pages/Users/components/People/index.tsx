@@ -114,8 +114,7 @@ const People: React.FC<IPeopleProps> = ({
     {
       type: FieldType.SingleSelect,
       control,
-      height: '36px',
-      className: 'p-0 w-[160px] font-bold text-sm',
+      height: 36,
       name: 'role',
       placeholder: 'Role',
       size: InputSize.Small,
@@ -170,7 +169,7 @@ const People: React.FC<IPeopleProps> = ({
                   label="All Members"
                   size={Size.Small}
                   variant={Variant.Secondary}
-                  className="!py-2 grow-0"
+                  className="h-9 grow-0"
                   dataTestId="people-view-all-members"
                   onClick={() => customReset()}
                   active={!searchValue && !role}

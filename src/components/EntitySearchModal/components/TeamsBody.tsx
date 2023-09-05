@@ -224,7 +224,10 @@ const TeamsBody: React.FC<ITeamsBodyProps> = ({
                   type: FieldType.Checkbox,
                   name: 'showSelectedMembers',
                   control,
-                  label: 'Show selected members',
+                  label: `Show selected members (${
+                    Object.keys(teams).filter((key: string) => !!teams[key])
+                      .length
+                  })`,
                   className: 'flex item-center',
                   dataTestId: `select-${dataTestId}-showselected`,
                 },

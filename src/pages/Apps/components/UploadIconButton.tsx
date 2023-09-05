@@ -156,7 +156,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
       >
         <label htmlFor="upload-app-icon">
           <div
-            className="flex flex-col items-center justify-evenly h-[176px] gap-y-2"
+            className="flex flex-col items-center justify-evenly h-[186px] gap-y-2"
             onClick={(e) => e.stopPropagation()}
           >
             {!hasIcon && (

@@ -132,7 +132,7 @@ const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
         <div className="w-full">
           <UploadIconButton setValue={setValue} icon={defaultValues()?.icon} />
           <div className="pt-8">
-            <p className="text-neutral-900 font-bold pb-1 text-sm">Audience</p>
+            <p className="text-neutral-900 font-bold pb-2 text-sm">Audience</p>
             {audience.length > 0 ? (
               <div className="flex gap-2">
                 <Button

@@ -105,6 +105,7 @@ const SkillsModal: React.FC<ISkillsModalProps> = ({
       getFormattedData: formatSkills,
       // error: errors.skills?.message,
       dataTestId: 'select-skills',
+      getPopupContainer: document.body,
     },
   ];
 

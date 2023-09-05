@@ -1,16 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
-import {
-  Control,
-  UseFormResetField,
-  UseFormSetValue,
-  UseFormWatch,
-} from 'react-hook-form';
 import EntitySearchModalBody from 'components/EntitySearchModal/components/EntitySearchModalBody';
-import {
-  EntitySearchModalType,
-  IAudienceForm,
-} from 'components/EntitySearchModal';
+import { EntitySearchModalType } from 'components/EntitySearchModal';
 import Icon from 'components/Icon';
 import Avatar from 'components/Avatar';
 import { IGetUser } from 'queries/users';
@@ -25,6 +16,8 @@ interface ShoutoutBodyProps {
   setIsFileAdded: (flag: boolean) => void;
   selectedUserIds: string[];
   users: any[];
+  shoutoutTemplate: any;
+  setShoutoutTemplate?: ({ file, type }: { file: any; type: string }) => void;
 }
 
 const Body: React.FC<ShoutoutBodyProps> = ({
@@ -34,6 +27,8 @@ const Body: React.FC<ShoutoutBodyProps> = ({
   setIsFileAdded,
   selectedUserIds,
   users,
+  shoutoutTemplate,
+  setShoutoutTemplate,
 }) => {
   return (
     <div
@@ -45,6 +40,7 @@ const Body: React.FC<ShoutoutBodyProps> = ({
         <EntitySearchModalBody
           entityType={EntitySearchModalType.User}
           selectedMemberIds={selectedUserIds}
+          entitySearchLabel="Give kudos to:"
           entityRenderer={(data: IGetUser) => {
             return (
               <div className="flex space-x-4 w-full pr-2">
@@ -97,6 +93,8 @@ const Body: React.FC<ShoutoutBodyProps> = ({
           triggerSubmit={triggerSubmit}
           setIsFileAdded={setIsFileAdded}
           users={users}
+          selectedTemplate={shoutoutTemplate}
+          setShoutoutTemplate={setShoutoutTemplate}
         />
       )}
     </div>

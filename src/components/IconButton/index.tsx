@@ -71,6 +71,7 @@ const IconButton = ({
           'border border-solid border-neutral-200 rounded-full hover:border-primary-500':
             borderAround,
         },
+        { 'flex items-center': true },
         {
           [borderAroundClassName]: true,
         },

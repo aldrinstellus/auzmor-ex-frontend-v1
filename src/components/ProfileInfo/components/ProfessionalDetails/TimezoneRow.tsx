@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 import * as yup from 'yup';
 import InfoRow from '../InfoRow';
 import SelectTimeZone from 'components/UserOnboard/components/SelectTimeZone';
-import { OptionType } from 'components/UserOnboard/components/SelectTimezoneScreen';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { getTimezoneNameFromIANA } from 'utils/time';

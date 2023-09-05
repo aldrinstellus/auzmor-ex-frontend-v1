@@ -2,6 +2,7 @@ import React, { ReactNode, createContext, useRef, useState } from 'react';
 import { DeltaStatic } from 'quill';
 import { getBlobUrl, getMediaObj } from 'utils/misc';
 import { IAudience } from 'queries/post';
+import { IGetUser } from 'queries/users';
 
 export interface ICreatePostProviderProps {
   children?: ReactNode;
@@ -93,6 +94,10 @@ export interface ICreatePostContext {
   setAudience: (audience: IAudience[]) => void;
   shoutoutUserIds: string[];
   setShoutoutUserIds: (ids: string[]) => void;
+  shoutoutUsers: Record<string, false | IGetUser>;
+  setShoutoutUsers: (users: Record<string, false | IGetUser>) => void;
+  setShoutoutTemplate: (params: any) => void;
+  shoutoutTemplate: any;
   postType: POST_TYPE | null;
   setPostType: (type: POST_TYPE | null) => void;
 }
@@ -195,6 +200,10 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setAudience: () => {},
   shoutoutUserIds: [],
   setShoutoutUserIds: () => {},
+  shoutoutUsers: {},
+  setShoutoutUsers: () => {},
+  setShoutoutTemplate: () => {},
+  shoutoutTemplate: {},
   postType: null,
   setPostType: () => {},
 });
@@ -231,6 +240,8 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
   const [schedule, setSchedule] = useState<ISchedule | null>(null);
   const [audience, setAudience] = useState<IAudience[]>([]);
   const [shoutoutUserIds, setShoutoutUserIds] = useState<string[]>([]);
+  const [shoutoutUsers, setShoutoutUsers] = useState<any>({});
+  const [shoutoutTemplate, setShoutoutTemplate] = useState<any>({});
   const [postType, setPostType] = useState<POST_TYPE | null>(null);
 
   const setUploads = (uploads: File[], isCoverImage?: boolean) => {
@@ -324,6 +335,8 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     setSchedule(null);
     setAudience([]);
     setShoutoutUserIds([]);
+    setShoutoutUsers({});
+    setShoutoutTemplate({});
     setPostType(null);
   };
 
@@ -442,6 +455,10 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         setAudience,
         shoutoutUserIds,
         setShoutoutUserIds,
+        shoutoutUsers,
+        setShoutoutUsers,
+        setShoutoutTemplate,
+        shoutoutTemplate,
         postType,
         setPostType,
       }}

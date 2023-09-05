@@ -75,7 +75,7 @@ const MarriedRow: React.FC<AppProps> = ({ data }) => {
         },
       ],
       control,
-      menuPlacement: 'top',
+      menuPlacement: 'topLeft',
     },
   ];
 
