@@ -4,6 +4,7 @@ import {
   CreatePostContext,
   CreatePostFlow,
   IPoll,
+  POST_TYPE,
 } from 'contexts/CreatePostContext';
 import Body from './Body';
 import * as yup from 'yup';
@@ -41,13 +42,15 @@ const schema = yup.object({
 });
 
 const CreatePoll: React.FC<CreatePollProps> = ({ closeModal }) => {
-  const { poll, setActiveFlow } = useContext(CreatePostContext);
+  const { poll, setActiveFlow, setPoll, setPostType } =
+    useContext(CreatePostContext);
 
   // Form
   const {
     control,
     formState: { errors, isValid },
     watch,
+    handleSubmit,
     getValues,
     trigger,
   } = useForm<IPoll>({
@@ -84,8 +87,6 @@ const CreatePoll: React.FC<CreatePollProps> = ({ closeModal }) => {
     control,
   });
 
-  const { setPoll } = useContext(CreatePostContext);
-
   const selectedDuration: any = watch('closedAt');
 
   const questionField = [
@@ -111,22 +112,30 @@ const CreatePoll: React.FC<CreatePollProps> = ({ closeModal }) => {
       options: [
         {
           label: '1 Day',
-          value: afterXUnit(1, 'days').toISOString().substring(0, 19) + 'Z',
+          value:
+            afterXUnit(1, 'days').endOf('day').toISOString().substring(0, 19) +
+            'Z',
           dataTestId: 'createpoll-duration-{1day}',
         },
         {
           label: '3 Days',
-          value: afterXUnit(3, 'days').toISOString().substring(0, 19) + 'Z',
+          value:
+            afterXUnit(3, 'days').endOf('day').toISOString().substring(0, 19) +
+            'Z',
           dataTestId: 'createpoll-duration-{3day}',
         },
         {
           label: '1 Week',
-          value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
+          value:
+            afterXUnit(1, 'weeks').endOf('day').toISOString().substring(0, 19) +
+            'Z',
           dataTestId: 'createpoll-duration-{1week}',
         },
         {
           label: '2 Weeks',
-          value: afterXUnit(2, 'weeks').toISOString().substring(0, 19) + 'Z',
+          value:
+            afterXUnit(2, 'weeks').endOf('day').toISOString().substring(0, 19) +
+            'Z',
           dataTestId: 'createpoll-duration-{2week}',
         },
         {
@@ -145,33 +154,32 @@ const CreatePoll: React.FC<CreatePollProps> = ({ closeModal }) => {
       type: FieldType.DatePicker,
       name: 'datepickerValue',
       control,
-      minDate: new Date(afterXUnit(1, 'day').toISOString()),
+      minDate: new Date(afterXUnit(0, 'day').endOf('day').toISOString()),
       dataTestId: 'createpoll-duration-datepicker',
     },
   ];
 
+  function successfulSubmit(data: IPoll) {
+    let closedAt: string | undefined =
+      data.closedAt.value ||
+      afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z';
+    if (selectedDuration?.label === 'Custom Date' && data.datepickerValue) {
+      const selectedDate = new Date(data.datepickerValue);
+      selectedDate.setHours(23, 59, 59, 999);
+      closedAt = selectedDate.toISOString().substring(0, 19) + 'Z';
+    }
+    setPoll({
+      question: data.question,
+      options: data.options,
+      closedAt,
+    });
+    // After setting poll, switch back to create post mode.
+    setActiveFlow(CreatePostFlow.CreatePost);
+    setPostType(POST_TYPE.Poll);
+  }
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        trigger();
-        // If there are no errors
-        if (isValid) {
-          const values = getValues();
-          setPoll({
-            question: values.question,
-            options: values.options,
-            closedAt:
-              selectedDuration?.label === 'Custom Date'
-                ? values.datepickerValue?.toISOString().substring(0, 19) + 'Z'
-                : values.closedAt.value ||
-                  afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
-          });
-          // After setting poll, switch back to create post mode.
-          setActiveFlow(CreatePostFlow.CreatePost);
-        }
-      }}
-    >
+    <form onSubmit={handleSubmit(successfulSubmit)}>
       <Header
         title="Create a poll"
         onBackIconClick={() => setActiveFlow(CreatePostFlow.CreatePost)}

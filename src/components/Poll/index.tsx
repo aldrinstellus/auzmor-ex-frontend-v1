@@ -6,7 +6,7 @@ import {
   CreatePostFlow,
   IPoll,
 } from 'contexts/CreatePostContext';
-import moment from 'moment';
+import { getTimeFromNow } from 'utils/time';
 
 export enum PollMode {
   VIEW = 'VIEW',
@@ -25,13 +25,7 @@ const Poll: React.FC<IPoll & PollProps> = ({
   mode = PollMode.VIEW,
 }) => {
   const [userVoted, setUserVoted] = useState<boolean>(false);
-  const momentClosedAt = moment(new Date(closedAt));
-  const { setPoll, setActiveFlow } = useContext(CreatePostContext);
-
-  // Set thresholds for proper weeks, months, and years calculation.
-  moment.relativeTimeThreshold('d', 7);
-  moment.relativeTimeThreshold('w', 4);
-  moment.relativeTimeThreshold('M', 12);
+  const { setPoll, setActiveFlow, setPostType } = useContext(CreatePostContext);
 
   useEffect(() => {
     if (userVoted) {
@@ -51,6 +45,9 @@ const Poll: React.FC<IPoll & PollProps> = ({
       });
     }
   }, [options, userVoted]);
+
+  const timeLeft = getTimeFromNow(closedAt);
+  console.log(timeLeft);
 
   return (
     <div className="bg-neutral-100 py-4 px-8 rounded-9xl w-full">
@@ -72,7 +69,10 @@ const Poll: React.FC<IPoll & PollProps> = ({
             />
             <IconButton
               icon="close"
-              onClick={() => setPoll(null)}
+              onClick={() => {
+                setPoll(null);
+                setPostType(null);
+              }}
               variant={Variant.Secondary}
               size={Size.Medium}
               borderAround
@@ -118,7 +118,7 @@ const Poll: React.FC<IPoll & PollProps> = ({
           className="text-orange-500 text-xs leading-normal font-bold"
           data-testid="createpost-poll-expiry"
         >
-          {momentClosedAt.fromNow(true) + ' left'}
+          {`${timeLeft || 'No Time'} left`}
         </p>
       </div>
     </div>
