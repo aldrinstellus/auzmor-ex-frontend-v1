@@ -277,6 +277,7 @@ const People: React.FC<IPeopleProps> = ({
                             ...user.member,
                             id: user.member.userId,
                             workEmail: user.member.email,
+                            department: { name: user.member.department },
                           }
                         : user)}
                       image={getProfileImage(
