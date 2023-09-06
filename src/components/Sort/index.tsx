@@ -32,7 +32,7 @@ const Sort: React.FC<ISortProps> = ({
           variant={Variant.Secondary}
           size={Size.Medium}
           borderAround
-          className="bg-white"
+          className="bg-white !p-[10px]"
           dataTestId="teams-sort"
         />
       }

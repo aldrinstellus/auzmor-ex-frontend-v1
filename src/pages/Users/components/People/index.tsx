@@ -183,7 +183,7 @@ const People: React.FC<IPeopleProps> = ({
               variant={IconVariant.Secondary}
               size={IconSize.Medium}
               borderAround
-              className="bg-white"
+              className="bg-white !p-[10px]"
               dataTestId="people-filter"
             />
             <Sort
@@ -211,6 +211,8 @@ const People: React.FC<IPeopleProps> = ({
                     placeholder: 'Search members',
                     error: errors.search?.message,
                     dataTestId: 'people-search-members',
+                    inputClassName: 'py-[7px] !text-sm',
+                    className: '!h-9 -mt-1',
                     isClearable: true,
                   },
                 ]}

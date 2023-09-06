@@ -26,6 +26,7 @@ import EntitySearchModal, {
 import { IGetUser } from 'queries/users';
 import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
+import useAuth from 'hooks/useAuth';
 interface IForm {
   search?: string;
 }
@@ -34,6 +35,12 @@ export enum TeamFlow {
   CreateTeam = 'CREATE_TEAM',
   EditTeam = 'EDIT_TEAM',
 }
+
+export enum TeamTab {
+  MyTeams = 'MY_TEAMS',
+  AllTeams = 'ALL_TEAMS',
+}
+
 export interface ITeamDetailState {
   isTeamSelected: boolean;
   teamDetail: Record<string, any> | null;
@@ -65,17 +72,20 @@ const Team: React.FC<ITeamProps> = ({
   openTeamModal,
   closeTeamModal,
 }) => {
+  const { user } = useAuth();
   const [teamFlow, setTeamFlow] = useState<TeamFlow>(TeamFlow.CreateTeam); // to context
-
   const [showTeamDetail, setShowTeamDetail] = useState<ITeamDetailState>({
     isTeamSelected: false,
     teamDetail: {},
   });
+  const [sortByFilter, setSortByFilter] = useState<string>('');
+  const [filters, setFilters] = useState<any>({
+    categories: [],
+  });
+  const [tab, setTab] = useState<TeamTab>(TeamTab.AllTeams);
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
-  const [sortByFilter, setSortByFilter] = useState<string>('');
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
-  useModal();
 
   const { ref, inView } = useInView();
 
@@ -91,15 +101,13 @@ const Team: React.FC<ITeamProps> = ({
 
   const searchValue = watch('search');
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
-  const [filters, setFilters] = useState<any>({
-    categories: [],
-  });
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteTeams(
       isFiltersEmpty({
         q: debouncedSearchValue,
         sort: sortByFilter,
+        userId: tab === TeamTab.MyTeams ? user?.id : undefined,
         category:
           filters.categories.length > 0
             ? filters.categories
@@ -196,17 +204,19 @@ const Team: React.FC<ITeamProps> = ({
             label="My Teams"
             size={Size.Small}
             variant={Variant.Secondary}
-            className="cursor-not-allowed h-9 grow-0"
+            className="h-9 grow-0"
             dataTestId="my-teams"
-            disabled
+            active={tab === TeamTab.MyTeams}
+            onClick={() => setTab(TeamTab.MyTeams)}
           />
           <Button
             label="All Teams"
             size={Size.Small}
             variant={Variant.Secondary}
-            className="!py-2 grow-0"
+            className="h-9 grow-0"
             dataTestId="all-teams"
-            active={!searchValue}
+            active={tab === TeamTab.AllTeams}
+            onClick={() => setTab(TeamTab.AllTeams)}
           />
         </div>
         <div className="flex space-x-2 justify-center items-center">
@@ -216,7 +226,7 @@ const Team: React.FC<ITeamProps> = ({
             variant={IconVariant.Secondary}
             size={IconSize.Medium}
             borderAround
-            className="bg-white"
+            className="bg-white !p-[10px]"
             dataTestId="teams-filter"
           />
           <Sort
@@ -244,6 +254,8 @@ const Team: React.FC<ITeamProps> = ({
                   placeholder: 'Search teams',
                   error: errors.search?.message,
                   dataTestId: 'teams-search',
+                  inputClassName: 'py-[7px] !text-sm',
+                  className: '!h-9 -mt-1',
                   isClearable: true,
                 },
               ]}
