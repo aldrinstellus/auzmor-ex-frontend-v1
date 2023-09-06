@@ -41,7 +41,7 @@ const AvatarList: React.FC<AvatarListProps> = ({
           );
         })
         .slice(0, 2)}
-      {users.length > 2 && (
+      {moreCount > 2 && (
         <Avatar
           size={size}
           name={`+${moreCount - 2}`}
