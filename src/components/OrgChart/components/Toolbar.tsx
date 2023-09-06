@@ -10,7 +10,6 @@ import { useForm } from 'react-hook-form';
 import { OrgChartMode } from '..';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
 import Tooltip from 'components/Tooltip';
 import { OrgChart } from 'd3-org-chart';
 
