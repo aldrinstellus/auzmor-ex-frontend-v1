@@ -1,17 +1,37 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { IGetUser } from 'queries/users';
 import Avatar from 'components/Avatar';
 import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
+import { clsx } from 'clsx';
 
 interface IUserRowProps {
   user: IGetUser;
+  className?: string;
+  dataTestId?: string;
+  onClick?: (user: IGetUser) => void;
 }
 
-const UserRow: React.FC<IUserRowProps> = ({ user }) => {
+const UserRow: React.FC<IUserRowProps> = ({
+  user,
+  className = '',
+  dataTestId = '',
+  onClick = () => {},
+}) => {
+  const styles = useMemo(
+    () =>
+      clsx({
+        'flex justify-between py-5 border-b-1 border-neutral-100 cursor-pointer px-6 hover:bg-primary-50':
+          true,
+        [className]: true,
+      }),
+    [],
+  );
   return (
     <div
-      className="flex justify-between py-5 border-b-1 border-neutral-100 cursor-pointer px-6 hover:bg-primary-50"
-      onClick={() => {}}
+      className={styles}
+      onClick={() => onClick(user)}
+      key={`user-row-${user.id}`}
+      data-testid={dataTestId}
     >
       <div className="flex w-1/2 items-center">
         <div className="mr-4">
@@ -24,10 +44,10 @@ const UserRow: React.FC<IUserRowProps> = ({ user }) => {
         </div>
         <div className="flex flex-col truncate w-full">
           <div className="text-neutral-900 font-bold text-sm truncate">
-            {user ? getFullName(user) : ''}
+            {getFullName(user) || 'Field not specified'}
           </div>
           <div className="text-neutral-500 text-xs truncate">
-            {user.workEmail || ''}
+            {user.workEmail || 'Field not specified'}
           </div>
         </div>
       </div>

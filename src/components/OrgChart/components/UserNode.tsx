@@ -58,7 +58,7 @@ const UserNode: React.FC<IUserNode> = ({ node }) => {
   return (
     <div className="flex flex-col rounded-9xl bg-white w-full h-full relative">
       <div className="mt-4 mb-1 flex justify-center h-8">
-        <Logo />
+        <Logo className="!h-8" />
       </div>
       <Divider />
       <div className="flex justify-center my-1 font-extrabold text-sm text-neutral-900">

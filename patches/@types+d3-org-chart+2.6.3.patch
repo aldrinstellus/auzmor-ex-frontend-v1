@@ -1,0 +1,12 @@
+diff --git a/node_modules/@types/d3-org-chart/index.d.ts b/node_modules/@types/d3-org-chart/index.d.ts
+index 18614b4..56a4a17 100755
+--- a/node_modules/@types/d3-org-chart/index.d.ts
++++ b/node_modules/@types/d3-org-chart/index.d.ts
+@@ -83,6 +83,7 @@ export interface StatePublic<Datum> {
+     layout: Layout;
+     buttonContent: (params: { node: HierarchyNode<Datum>; state: State<Datum>; }) => string;
+     layoutBindings: Record<Layout, LayoutBinding<Datum>>;
++    hoverCardContent: (data: any) => void;
+ }
+ 
+ /**

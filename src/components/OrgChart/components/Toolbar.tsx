@@ -6,52 +6,49 @@ import IconButton, {
 import useModal from 'hooks/useModal';
 import FilterModal from 'pages/Users/components/FilterModals/PeopleFilterModal';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { OrgChartMode } from '..';
+import { Control, UseFormResetField, UseFormWatch } from 'react-hook-form';
+import { IForm, OrgChartMode } from '..';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
-import {
-  getAvatarColor,
-  getFullName,
-  getProfileImage,
-  twConfig,
-} from 'utils/misc';
 import Tooltip from 'components/Tooltip';
 import { OrgChart } from 'd3-org-chart';
 import Popover from 'components/Popover';
-import { IGetUser, useInfiniteUsers } from 'queries/users';
+import { IGetUser, useInfiniteUsers, useOrgChart } from 'queries/users';
 import { useDebounce } from 'hooks/useDebounce';
-import Avatar from 'components/Avatar';
 import Spinner from 'components/Spinner';
 import { useInView } from 'react-intersection-observer';
 import UserRow from 'components/UserRow';
-
-interface IForm {
-  memberSearch: string;
-  specificPersonSearch: string;
-}
+import { IOption } from 'components/AsyncSingleSelect';
+import useAuth from 'hooks/useAuth';
 
 interface IToolbar {
   activeMode: OrgChartMode;
   setActiveMode: (activeMode: OrgChartMode) => void;
   chartRef: React.MutableRefObject<OrgChart<any> | null>;
+  control: Control<IForm, any>;
+  watch: UseFormWatch<IForm>;
+  userStatus: string;
+  setUserStatus: (userStatus: string) => void;
+  resetField: UseFormResetField<IForm>;
 }
 
 const Toolbar: React.FC<IToolbar> = ({
   activeMode,
   setActiveMode,
   chartRef,
+  control,
+  watch,
+  userStatus,
+  setUserStatus,
+  resetField,
 }) => {
-  const { control, watch } = useForm<IForm>();
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
-  const [userStatus, setUserStatus] = useState<string>('');
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [isSpotlightActive, setIsSpotlightActive] = useState(false);
+  const [memberSearchString, setMemberSearchString] = useState<string>('');
+  const [specificPersonSearch] = watch(['specificPersonSearch']);
 
-  const [memberSearch, specificPersonSearch] = watch([
-    'memberSearch',
-    'specificPersonSearch',
-  ]);
+  const { user } = useAuth();
 
   // fetch users on start with specific user
   const debouncedPersonSearchValue = useDebounce(
@@ -70,39 +67,22 @@ const Toolbar: React.FC<IToolbar> = ({
     },
     { enabled: debouncedPersonSearchValue !== '' },
   );
-  const personData = fetchedPersons?.pages.flatMap((page) => {
-    return page?.data?.result?.data.map((person: IGetUser) => {
-      try {
-        return person;
-      } catch (e) {
-        console.log('Error', { person });
-      }
-    });
-  });
+  const personData = fetchedPersons?.pages.flatMap((page) =>
+    page?.data?.result?.data.map((person: IGetUser) => person),
+  );
 
   // fetch members on search
-  const debouncedMemberSearchValue = useDebounce(memberSearch || '', 300);
-  const {
-    data: fetchedMembers,
-    isFetchingNextPage,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-  } = useInfiniteUsers(
-    {
-      q: debouncedMemberSearchValue,
-    },
-    { enabled: debouncedMemberSearchValue !== '' },
-  );
-  const memberData = fetchedMembers?.pages.flatMap((page) => {
-    return page?.data?.result?.data.map((member: IGetUser) => {
-      try {
-        return member;
-      } catch (e) {
-        console.log('Error', { member });
-      }
-    });
+  const debouncedMemberSearchValue = useDebounce(memberSearchString || '', 300);
+  const { data: fetchedMembers, isLoading: isFetching } = useOrgChart({
+    q: debouncedMemberSearchValue,
   });
+  const userData = useMemo(
+    () =>
+      (fetchedMembers as any)?.result?.data.users.filter(
+        (user: any) => user.id !== 'root',
+      ) || [],
+    [fetchedMembers],
+  );
 
   const { ref: personInviewRef, inView } = useInView();
   useEffect(() => {
@@ -112,13 +92,52 @@ const Toolbar: React.FC<IToolbar> = ({
   }, [inView]);
   const memberSearchfields = [
     {
-      type: FieldType.Input,
+      type: FieldType.AsyncSingleSelect,
       control,
-      name: 'memberSearch',
-      className: 'mr-2',
+      name: 'userSearch',
+      className: 'mr-2 min-w-[245px]',
       placeholder: 'Search members',
-      dataTestId: 'global-search',
-      leftIcon: 'search',
+      suffixIcon: <></>,
+      clearIcon: (
+        <Icon name="closeCircle" size={16} className="-mt-0.5 !mr-4" />
+      ),
+      isClearable: true,
+      isLoading: isFetching,
+      options: userData?.map(
+        (member: IGetUser) =>
+          ({
+            value: member.userName,
+            label: member.userName,
+            disabled: false,
+            dataTestId: member.id,
+            rowData: member,
+          } as IOption),
+      ),
+      onSearch: (searchString: string) => setMemberSearchString(searchString),
+      optionRenderer: (option: IOption) => (
+        <UserRow
+          user={{
+            ...option.rowData,
+            profileImage: { original: option.rowData.profileImage },
+            fullName: option.rowData.userName,
+          }}
+          dataTestId={option.dataTestId}
+          className="w-full"
+          onClick={(user) => {
+            chartRef.current?.clearHighlighting();
+            setIsSpotlightActive(false);
+            chartRef.current
+              ?.setUpToTheRootHighlighted(user?.id || '')
+              .render()
+              .fit();
+            chartRef.current?.setCentered(user.id).render();
+          }}
+        />
+      ),
+      onClear: () => {
+        chartRef.current?.clearHighlighting();
+      },
+      // dataTestId: 'member-search',
     },
   ];
   const specificPersonSearchFields = [
@@ -132,7 +151,6 @@ const Toolbar: React.FC<IToolbar> = ({
       className: 'px-6',
     },
   ];
-
   const overallClassName = useMemo(
     () =>
       clsx({
@@ -158,7 +176,7 @@ const Toolbar: React.FC<IToolbar> = ({
       <div className="mt-7 px-4 py-3 mb-8 w-full shadow-lg rounded-9xl bg-white flex justify-between items-center">
         <div className="flex items-center">
           <Layout fields={memberSearchfields} />
-          <div className="flex">
+          <div className="flex items-center justify-center w-9 h-9">
             <IconButton
               onClick={openFilterModal}
               icon="filterLinear"
@@ -276,14 +294,14 @@ const Toolbar: React.FC<IToolbar> = ({
                   name="focus"
                   color="text-neutral-900"
                   onClick={() => {
-                    if (isSpotlightActive) {
-                      chartRef.current?.clearHighlighting();
-                    } else {
+                    chartRef.current?.clearHighlighting();
+                    resetField('userSearch');
+                    if (!isSpotlightActive) {
                       chartRef.current
-                        ?.setUpToTheRootHighlighted('n6')
+                        ?.setUpToTheRootHighlighted(user?.id || '')
                         .render()
                         .fit();
-                      chartRef.current?.setCentered('n6').render();
+                      chartRef.current?.setCentered(user?.id || '').render();
                     }
                     setIsSpotlightActive(!isSpotlightActive);
                   }}

@@ -10,6 +10,7 @@ import isDarkColor from 'is-dark-color';
 import { getInitials } from 'utils/misc';
 import Spinner from 'components/Spinner';
 import { PRIMARY_COLOR } from 'utils/constants';
+import BlurImg from 'components/Image/components/BlurImg';
 
 export type AvatarProps = {
   name?: string;
@@ -25,6 +26,7 @@ export type AvatarProps = {
   loading?: boolean;
   dataTestId?: string;
   disable?: boolean;
+  blurhash?: string;
 };
 
 const Avatar: React.FC<AvatarProps> = ({
@@ -41,6 +43,7 @@ const Avatar: React.FC<AvatarProps> = ({
   loading = false,
   dataTestId = '',
   disable = false,
+  blurhash = '',
 }) => {
   const containerStyles = useMemo(
     () =>
@@ -109,6 +112,15 @@ const Avatar: React.FC<AvatarProps> = ({
     { 'flex items-center': true },
   );
 
+  const blurImageProps = {
+    src: image,
+    className: imgStyles,
+    key: name,
+    alt: name,
+    blurhash: blurhash,
+    dataTestid: `${dataTestId}-avatar-img`,
+  };
+
   return (
     <div
       className={containerStyles}
@@ -117,12 +129,13 @@ const Avatar: React.FC<AvatarProps> = ({
       data-testid={dataTestId}
     >
       {!!image && !loading ? (
-        <img
-          className={imgStyles}
-          style={{ ...divStyle, pointerEvents: disable ? 'none' : 'auto' }}
-          src={image}
-          alt={name}
-        />
+        // <img
+        //   className={imgStyles}
+        //   style={{ ...divStyle, pointerEvents: disable ? 'none' : 'auto' }}
+        //   src={image}
+        //   alt={name}
+        // />
+        <BlurImg {...blurImageProps} />
       ) : (
         <span className={textStyles} style={{ fontSize: `${size * 0.45}px` }}>
           {loading && <Spinner color={PRIMARY_COLOR} />}
