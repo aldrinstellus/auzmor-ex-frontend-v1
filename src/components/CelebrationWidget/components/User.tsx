@@ -116,7 +116,7 @@ const User: React.FC<UserProps> = ({
   return showSendWishRTELayout ? (
     <div className="flex gap-2 w-full">
       <Avatar
-        name={getFullName(data.featuredUser)}
+        name={getFullName(featuredUser)}
         size={48}
         className="min-w-[48px] mt-2"
       />
@@ -131,13 +131,13 @@ const User: React.FC<UserProps> = ({
                 isBirthday ? 'birthday' : 'anniversaries'
               }-profile-name`}
             >
-              {getFullName(data.featuredUser)}
+              {getFullName(featuredUser)}
             </p>
-            {data.featuredUser.designation && (
+            {featuredUser.designation && (
               <>
                 <div className="rounded w-1 h-1 bg-neutral-500" />
                 <p className="text-xs line-clamp-1 text-neutral-500">
-                  {data.featuredUser.designation}
+                  {featuredUser.designation}
                 </p>
               </>
             )}
@@ -157,7 +157,7 @@ const User: React.FC<UserProps> = ({
           wishesSent
         ) : (
           <CommentsRTE
-            entityId={data.featuredUser.userId}
+            entityId={post?.id}
             entityType="post"
             className="w-full"
             mode={PostCommentMode.SendWish}
@@ -234,7 +234,7 @@ const User: React.FC<UserProps> = ({
       <div className="flex items-center gap-2 w-full justify-between">
         <div className="flex items-center gap-2">
           <Avatar
-            name={getFullName(data.featuredUser)}
+            name={getFullName(featuredUser)}
             size={32}
             className="min-w-[32px]"
           />
@@ -245,11 +245,11 @@ const User: React.FC<UserProps> = ({
                 isBirthday ? 'birthday' : 'anniversaries'
               }-profile-name`}
             >
-              {getFullName(data.featuredUser)}
+              {getFullName(featuredUser)}
             </p>
-            {data.featuredUser.designation && (
+            {featuredUser.designation && (
               <p className="text-xs line-clamp-1 text-neutral-500">
-                {data.featuredUser.designation}
+                {featuredUser.designation}
               </p>
             )}
           </div>
@@ -290,4 +290,4 @@ const User: React.FC<UserProps> = ({
   );
 };
 
-export default User;
+export default React.memo(User);

@@ -199,11 +199,13 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
           })()}
         </div>
       </div>
-      <UpcomingCelebrationModal
-        open={openUpcoming}
-        closeModal={closeUpcomingModal}
-        type={type}
-      />
+      {openUpcoming && (
+        <UpcomingCelebrationModal
+          open={openUpcoming}
+          closeModal={closeUpcomingModal}
+          type={type}
+        />
+      )}
     </Card>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import momentTz from 'moment-timezone';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
@@ -9,6 +9,8 @@ import { useCelebrations } from 'queries/post';
 import SkeletonLoader from './SkeletonLoader';
 import { AuthContext } from 'contexts/AuthContext';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
+import Spinner from 'components/Spinner';
+import { useInView } from 'react-intersection-observer';
 
 interface UpcomingCelebrationModalProps {
   open: boolean;
@@ -24,13 +26,33 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
   const { user } = useContext(AuthContext);
   const { currentTimezone } = useCurrentTimezone();
   const userTimezone = user?.timezone || currentTimezone || 'Asia/Kolkata';
-  const { data, isLoading } = useCelebrations();
   const currentDate = momentTz().tz(userTimezone);
   const isBirthday = type === CELEBRATION_TYPE.Birthday;
+  const monthRef = useRef<any>(null);
+  const thisMonthRef = useRef<any>(null);
+  const monthCounterRef = useRef<any>(null);
+  const { ref, inView } = useInView();
+  const [stopScroll, setStopScroll] = useState(false);
+
+  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    useCelebrations();
 
   const formattedData = data?.pages.flatMap((page: any) => {
     return page?.data?.result?.data.map((celebration: any) => {
       try {
+        const celebrationDate = momentTz(
+          isBirthday ? celebration.dateOfBirth : celebration.joinDate,
+        ).tz(userTimezone);
+        if (monthCounterRef.current === null) {
+          monthCounterRef.current = celebrationDate.month();
+        }
+        if (
+          monthCounterRef.current !== null &&
+          celebrationDate.month() > monthCounterRef.current + 1 &&
+          !stopScroll
+        ) {
+          setStopScroll(true);
+        }
         return celebration;
       } catch (e) {
         console.log('Error', { celebration });
@@ -38,12 +60,41 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
     });
   });
 
+  const todaysCelebration = formattedData
+    ? formattedData.filter((item) => {
+        const itemDate = momentTz(
+          isBirthday ? item.dateOfBirth : item.joinDate,
+        ).tz(userTimezone);
+        if (
+          itemDate.month() === currentDate.month() &&
+          itemDate.date() === currentDate.date() &&
+          itemDate.format('MM-DD') >= currentDate.format('MM-DD')
+        ) {
+          if (thisMonthRef.current === null) {
+            thisMonthRef.current = itemDate.month();
+          }
+          return true;
+        }
+        return false;
+      })
+    : [];
+
   const thisMonthCelebration = formattedData
     ? formattedData.filter((item) => {
         const itemDate = momentTz(
           isBirthday ? item.dateOfBirth : item.joinDate,
         ).tz(userTimezone);
-        return itemDate.month() === currentDate.month();
+        if (
+          itemDate.month() === currentDate.month() &&
+          itemDate.date() !== currentDate.date() &&
+          itemDate.format('MM-DD') >= currentDate.format('MM-DD')
+        ) {
+          if (thisMonthRef.current === null) {
+            thisMonthRef.current = itemDate.month();
+          }
+          return true;
+        }
+        return false;
       })
     : [];
 
@@ -52,7 +103,35 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
         const itemDate = momentTz(
           isBirthday ? item.dateOfBirth : item.joinDate,
         ).tz(userTimezone);
-        return itemDate.month() >= currentDate.month() + 1;
+
+        // if there was data for this month found, then just check for next month data
+        if (thisMonthRef.current !== null) {
+          return (
+            itemDate.month() === currentDate.month() + 1 &&
+            itemDate.format('MM-DD') >= currentDate.format('MM-DD')
+          );
+        } else {
+          // whenever a new celebration is found for a month, keep track of it
+          if (
+            monthRef.current === null &&
+            itemDate.format('MM-DD') >= currentDate.format('MM-DD')
+          ) {
+            monthRef.current = itemDate.month();
+            return true;
+          }
+
+          // then filter out the data for next 2 months
+          if (
+            monthRef.current !== null &&
+            itemDate.format('MM-DD') >= currentDate.format('MM-DD') &&
+            (itemDate.month() === monthRef.current ||
+              itemDate.month() === monthRef.current + 1)
+          ) {
+            return true;
+          }
+        }
+
+        return false;
       })
     : [];
 
@@ -60,6 +139,13 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
     type === CELEBRATION_TYPE.Birthday
       ? 'Upcoming birthdays 🎂'
       : 'Upcoming work anniversaries 🎉';
+
+  useEffect(() => {
+    if (inView && !stopScroll) {
+      fetchNextPage();
+    }
+  }, [inView]);
+
   return (
     <Modal open={open} closeModal={closeModal} className="max-w-[648px]">
       <Header title={modalTitle} onClose={closeModal} />
@@ -76,12 +162,32 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
               </>
             );
           }
-          if (formattedData && formattedData.length > 0) {
+          if (
+            todaysCelebration.length > 0 ||
+            thisMonthCelebration.length > 0 ||
+            upcomingMonthCelebration.length > 0
+          ) {
             return (
               <>
+                {/* Todays celebration */}
+                {todaysCelebration.length > 0 &&
+                  (upcomingMonthCelebration.length > 0 ||
+                    thisMonthCelebration.length > 0) && (
+                    <div className="text-sm font-semibold px-2 mt-4">Today</div>
+                  )}
+                {todaysCelebration.map((celebration) => (
+                  <div
+                    className="py-4 border-b border-neutral-200"
+                    key={celebration.featuredUser.userId}
+                  >
+                    <User type={type} data={celebration} isModalView />
+                  </div>
+                ))}
+
                 {/* This month celebration */}
                 {thisMonthCelebration.length > 0 &&
-                  upcomingMonthCelebration.length > 0 && (
+                  (upcomingMonthCelebration.length > 0 ||
+                    todaysCelebration.length > 0) && (
                     <div className="text-sm font-semibold px-2 mt-4">
                       This Month
                     </div>
@@ -96,23 +202,33 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
                 ))}
 
                 {/* Upcoming Month celebration */}
-                {upcomingMonthCelebration.length > 0 && (
-                  <>
-                    {thisMonthCelebration.length > 0 &&
-                      upcomingMonthCelebration.length > 0 && (
-                        <div className="text-sm font-semibold px-2 mt-4">
-                          Upcoming Month
-                        </div>
-                      )}
-                    {upcomingMonthCelebration.map((celebration) => (
-                      <div
-                        className="py-4"
-                        key={celebration.featuredUser.userId}
-                      >
-                        <User type={type} data={celebration} isModalView />
-                      </div>
-                    ))}
-                  </>
+                {upcomingMonthCelebration.length > 0 &&
+                  (thisMonthCelebration.length > 0 ||
+                    todaysCelebration.length > 0) && (
+                    <div className="text-sm font-semibold px-2 mt-4">
+                      Next Month
+                    </div>
+                  )}
+                {upcomingMonthCelebration.map((celebration) => (
+                  <div
+                    className="py-4 border-b border-neutral-200"
+                    key={celebration.featuredUser.userId}
+                  >
+                    <User type={type} data={celebration} isModalView />
+                  </div>
+                ))}
+
+                {hasNextPage && !stopScroll && !isFetchingNextPage && (
+                  <div className="h-12 w-12">
+                    <div ref={ref} />
+                  </div>
+                )}
+                {isFetchingNextPage && (
+                  <div className="flex justify-center w-full">
+                    <div className="w-5 h-5">
+                      <Spinner />
+                    </div>
+                  </div>
                 )}
               </>
             );
