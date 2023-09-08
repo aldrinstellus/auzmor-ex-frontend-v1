@@ -27,6 +27,7 @@ interface UserProps {
   isModalView?: boolean;
   data: Record<string, any>;
   onSendWish?: () => void;
+  closeModal?: () => void;
 }
 
 const User: React.FC<UserProps> = ({
@@ -34,6 +35,7 @@ const User: React.FC<UserProps> = ({
   isModalView = false,
   data,
   onSendWish,
+  closeModal,
 }) => {
   const { featuredUser, post } = data;
   const navigate = useNavigate();
@@ -135,7 +137,10 @@ const User: React.FC<UserProps> = ({
             data-testid={`view-${
               isBirthday ? 'birthday' : 'anniversaries'
             }-post`}
-            onClick={() => navigate(`/posts/${post.id}`)}
+            onClick={() => {
+              closeModal && closeModal();
+              navigate(`/posts/${post.id}`);
+            }}
           >
             Visit post
             <Icon name="arrowRightUp" size={12} color="text-primary-500" />

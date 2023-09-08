@@ -186,7 +186,12 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
                 <div className="divide-y divide-neutral-200">
                   {todaysCelebration.map((celebration) => (
                     <div className="py-4" key={celebration.featuredUser.userId}>
-                      <User type={type} data={celebration} isModalView />
+                      <User
+                        type={type}
+                        data={celebration}
+                        closeModal={closeModal}
+                        isModalView
+                      />
                     </div>
                   ))}
                 </div>
@@ -202,7 +207,12 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
                 <div className="divide-y divide-neutral-200">
                   {thisMonthCelebration.map((celebration) => (
                     <div className="py-4" key={celebration.featuredUser.userId}>
-                      <User type={type} data={celebration} isModalView />
+                      <User
+                        type={type}
+                        data={celebration}
+                        closeModal={closeModal}
+                        isModalView
+                      />
                     </div>
                   ))}
                 </div>
@@ -218,7 +228,12 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
                 <div className="divide-y divide-neutral-200">
                   {upcomingMonthCelebration.map((celebration) => (
                     <div className="py-4" key={celebration.featuredUser.userId}>
-                      <User type={type} data={celebration} isModalView />
+                      <User
+                        type={type}
+                        data={celebration}
+                        closeModal={closeModal}
+                        isModalView
+                      />
                     </div>
                   ))}
                 </div>
