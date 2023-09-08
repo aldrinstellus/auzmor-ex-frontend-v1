@@ -11,7 +11,6 @@ import { IComment } from 'components/Comments';
 import { Metadata } from 'components/PreviewLink/types';
 import { useFeedStore } from 'stores/feedStore';
 import _ from 'lodash';
-import { string } from 'yargs';
 import { ITeam } from './teams';
 import { IGetUser } from './users';
 
@@ -320,6 +319,34 @@ export const useAnnouncementsWidget = (
     queryFn: () => fetchAnnouncement('ANNOUNCEMENT', limit),
     staleTime: 15 * 60 * 1000,
   });
+
+const fetchCelebrations = async ({
+  pageParam = null,
+  queryKey,
+}: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
+  if (pageParam === null) {
+    return await apiService.get('/organizations/occasions', queryKey[1]);
+  } else return await apiService.get(pageParam);
+};
+
+export const useCelebrations = (q?: Record<string, any>) => {
+  return useInfiniteQuery({
+    queryKey: ['celebrations', q],
+    queryFn: fetchCelebrations,
+    getNextPageParam: (lastPage: any) => {
+      const pageDataLen = lastPage?.data?.result?.data?.length;
+      const pageLimit = lastPage?.data?.result?.paging?.limit;
+      if (pageDataLen < pageLimit) {
+        return null;
+      }
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+};
 
 export const announcementRead = async (postId: string) => {
   const data = await apiService.post(`/posts/${postId}/acknowledge`);

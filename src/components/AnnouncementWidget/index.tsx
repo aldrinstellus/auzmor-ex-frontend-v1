@@ -11,12 +11,17 @@ import RenderQuillContent from 'components/RenderQuillContent';
 import { Link } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import { getFullName, getProfileImage } from 'utils/misc';
+import EmptyState from './components/EmptyState';
 
 export interface IAnnouncementCardProps {
   postId?: string;
+  openModal?: () => void;
 }
 
-const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
+const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({
+  postId,
+  openModal,
+}) => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
@@ -59,7 +64,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
     user?.id === postData?.announcement?.actor?.userId;
 
   return (
-    <div className="min-w-[240px] sticky top-24">
+    <div className="min-w-[240px]">
       <div className="flex justify-between items-center ">
         <div className="text-base font-bold">Announcements</div>
         {/* <div className="text-sm font-bold">View All</div> */}
@@ -110,11 +115,13 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
                             {humanizeTime(postData?.createdAt)}
                           </div>
                           <div className="bg-neutral-500 rounded-full w-1 h-1" />
-                          <Icon
-                            name="globalOutline"
-                            size={16}
-                            className="p-0.5"
-                          />
+                          <div className="p-0.5">
+                            <Icon
+                              name="globalOutline"
+                              size={16}
+                              hover={false}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -143,10 +150,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({ postId }) => {
                   )}
                 </div>
               ) : (
-                <div className="flex text-sm justify-center items-center p-6">
-                  No pending announcements
-                </div>
-                // replace with empty widget
+                <EmptyState openModal={openModal} />
               )}
             </div>
           )}
