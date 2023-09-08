@@ -40,15 +40,16 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
   const formattedData = data?.pages.flatMap((page: any) => {
     return page?.data?.result?.data.map((celebration: any) => {
       try {
-        const celebrationDate = momentTz(
-          isBirthday ? celebration.dateOfBirth : celebration.joinDate,
-        ).tz(userTimezone);
+        const celebrationDate = momentTz(celebration.nextOcassionDateTime).tz(
+          userTimezone,
+        );
         if (monthCounterRef.current === null) {
           monthCounterRef.current = celebrationDate.month();
         }
         if (
           monthCounterRef.current !== null &&
-          celebrationDate.month() > monthCounterRef.current + 1 &&
+          (celebrationDate.month() > monthCounterRef.current + 1 ||
+            celebrationDate.year() > currentDate.year()) &&
           !stopScroll
         ) {
           setStopScroll(true);
@@ -63,13 +64,12 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
   const todaysCelebrationWithNoPost: any[] = [];
   let todaysCelebration = formattedData
     ? formattedData.filter((item) => {
-        const itemDate = momentTz(
-          isBirthday ? item.dateOfBirth : item.joinDate,
-        ).tz(userTimezone);
+        const itemDate = momentTz(item.nextOcassionDateTime).tz(userTimezone);
         if (
           itemDate.month() === currentDate.month() &&
           itemDate.date() === currentDate.date() &&
-          itemDate.format('MM-DD') >= currentDate.format('MM-DD')
+          itemDate.format('MM-DD') >= currentDate.format('MM-DD') &&
+          itemDate.year() === currentDate.year()
         ) {
           if (thisMonthRef.current === null) {
             thisMonthRef.current = itemDate.month();
@@ -87,13 +87,12 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
 
   const thisMonthCelebration = formattedData
     ? formattedData.filter((item) => {
-        const itemDate = momentTz(
-          isBirthday ? item.dateOfBirth : item.joinDate,
-        ).tz(userTimezone);
+        const itemDate = momentTz(item.nextOcassionDateTime).tz(userTimezone);
         if (
           itemDate.month() === currentDate.month() &&
           itemDate.date() !== currentDate.date() &&
-          itemDate.format('MM-DD') >= currentDate.format('MM-DD')
+          itemDate.format('MM-DD') >= currentDate.format('MM-DD') &&
+          itemDate.year() === currentDate.year()
         ) {
           if (thisMonthRef.current === null) {
             thisMonthRef.current = itemDate.month();
@@ -106,22 +105,19 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
 
   const upcomingMonthCelebration = formattedData
     ? formattedData.filter((item) => {
-        const itemDate = momentTz(
-          isBirthday ? item.dateOfBirth : item.joinDate,
-        ).tz(userTimezone);
-
+        const itemDate = momentTz(item.nextOcassionDateTime).tz(userTimezone);
+        const isSameYearAndSameorLaterMonth =
+          itemDate.year() === currentDate.year() &&
+          itemDate.format('MM-DD') >= currentDate.format('MM-DD');
         // if there was data for this month found, then just check for next month data
         if (thisMonthRef.current !== null) {
           return (
             itemDate.month() === currentDate.month() + 1 &&
-            itemDate.format('MM-DD') >= currentDate.format('MM-DD')
+            isSameYearAndSameorLaterMonth
           );
         } else {
           // whenever a new celebration is found for a month, keep track of it
-          if (
-            monthRef.current === null &&
-            itemDate.format('MM-DD') >= currentDate.format('MM-DD')
-          ) {
+          if (monthRef.current === null && isSameYearAndSameorLaterMonth) {
             monthRef.current = itemDate.month();
             return true;
           }
@@ -129,7 +125,7 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
           // then filter out the data for next 2 months
           if (
             monthRef.current !== null &&
-            itemDate.format('MM-DD') >= currentDate.format('MM-DD') &&
+            isSameYearAndSameorLaterMonth &&
             (itemDate.month() === monthRef.current ||
               itemDate.month() === monthRef.current + 1)
           ) {

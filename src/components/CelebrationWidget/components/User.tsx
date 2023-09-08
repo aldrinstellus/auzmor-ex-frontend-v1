@@ -56,22 +56,19 @@ const User: React.FC<UserProps> = ({
 
   const userTimezone = user?.timezone || currentTimezone || 'Asia/Kolkata';
   const anniversaryYears = calculateWorkAnniversaryYears(
-    data.joinDate,
+    data.nextOcassionDateTime,
     userTimezone,
   );
   const isBirthday = type === CELEBRATION_TYPE.Birthday;
   const celebrationDate = isBirthday
-    ? formatDate(data.dateOfBirth, userTimezone)
+    ? formatDate(data.nextOcassionDateTime, userTimezone)
     : `${anniversaryYears} ${getNouns('yr', anniversaryYears)} (${formatDate(
-        data.joinDate,
+        data.nextOcassionDateTime,
         userTimezone,
       )})`;
 
   const showSendWishBtn =
-    isCelebrationToday(
-      isBirthday ? data.dateOfBirth : data.joinDate,
-      userTimezone,
-    ) &&
+    isCelebrationToday(data.nextOcassionDateTime, userTimezone) &&
     post?.id &&
     !isModalView;
 
@@ -81,10 +78,7 @@ const User: React.FC<UserProps> = ({
   const showSendWishRTELayout =
     isModalView &&
     post?.id &&
-    (isCelebrationToday(
-      isBirthday ? data.dateOfBirth : data.joinDate,
-      userTimezone,
-    ) ||
+    (isCelebrationToday(data.nextOcassionDateTime, userTimezone) ||
       alreadyWished);
 
   const dateStyles = useMemo(
@@ -116,7 +110,7 @@ const User: React.FC<UserProps> = ({
   return showSendWishRTELayout ? (
     <div className="flex gap-2 w-full">
       <Avatar
-        name={getFullName(featuredUser)}
+        name={getFullName(featuredUser) || featuredUser.email}
         size={48}
         className="min-w-[48px] mt-2"
       />
@@ -131,7 +125,7 @@ const User: React.FC<UserProps> = ({
                 isBirthday ? 'birthday' : 'anniversaries'
               }-profile-name`}
             >
-              {getFullName(featuredUser)}
+              {getFullName(featuredUser) || featuredUser.email}
             </p>
             {featuredUser.designation && (
               <>

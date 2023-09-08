@@ -34,9 +34,10 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
 
   const isBirthday = type === CELEBRATION_TYPE.Birthday;
 
-  const { data, isLoading } = useCelebrations(
+  const { data, isLoading, hasNextPage } = useCelebrations(
     isFiltersEmpty({
       limit: 3,
+      type: isBirthday ? 'BIRTHDAY' : 'WORK_ANNIVERSARY',
     }),
   );
 
@@ -53,11 +54,10 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
   const todaysCelebrationWithNoPost: any[] = [];
   let thisMonthCelebration = formattedData
     ? formattedData.filter((item) => {
-        const itemDate = momentTz(
-          isBirthday ? item.dateOfBirth : item.joinDate,
-        ).tz(userTimezone);
+        const itemDate = momentTz(item.nextOcassionDateTime).tz(userTimezone);
         if (
           itemDate.month() === currentDate.month() &&
+          itemDate.year() === currentDate.year() &&
           itemDate.format('MM-DD') >= currentDate.format('MM-DD')
         ) {
           if (thisMonthRef.current === null) {
@@ -80,22 +80,20 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
 
   const upcomingMonthCelebration = formattedData
     ? formattedData.filter((item) => {
-        const itemDate = momentTz(
-          isBirthday ? item.dateOfBirth : item.joinDate,
-        ).tz(userTimezone);
+        const itemDate = momentTz(item.nextOcassionDateTime).tz(userTimezone);
+        const isSameYearAndSameorLaterMonth =
+          itemDate.year() === currentDate.year() &&
+          itemDate.format('MM-DD') >= currentDate.format('MM-DD');
 
         // if there was data for this month found, then just check for next month data
         if (thisMonthRef.current !== null) {
           return (
             itemDate.month() === currentDate.month() + 1 &&
-            itemDate.format('MM-DD') >= currentDate.format('MM-DD')
+            isSameYearAndSameorLaterMonth
           );
         } else {
           // whenever a new celebration is found for a month, keep track of it
-          if (
-            monthRef.current === null &&
-            itemDate.format('MM-DD') >= currentDate.format('MM-DD')
-          ) {
+          if (monthRef.current === null && isSameYearAndSameorLaterMonth) {
             monthRef.current = itemDate.month();
             return true;
           }
@@ -103,7 +101,7 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
           // then filter out the data for next 2 months
           if (
             monthRef.current !== null &&
-            itemDate.format('MM-DD') >= currentDate.format('MM-DD') &&
+            isSameYearAndSameorLaterMonth &&
             (itemDate.month() === monthRef.current ||
               itemDate.month() === monthRef.current + 1)
           ) {
@@ -192,16 +190,18 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
                       ))}
                     </>
                   )}
-                  <Button
-                    variant={Variant.Secondary}
-                    size={Size.Small}
-                    className="py-[7px]"
-                    label={buttonLabel}
-                    dataTestId={`upcoming-${
-                      isBirthday ? 'birthday' : 'anniversaries'
-                    }`}
-                    onClick={openUpcomingModal}
-                  />
+                  {hasNextPage && (
+                    <Button
+                      variant={Variant.Secondary}
+                      size={Size.Small}
+                      className="py-[7px]"
+                      label={buttonLabel}
+                      dataTestId={`upcoming-${
+                        isBirthday ? 'birthday' : 'anniversaries'
+                      }`}
+                      onClick={openUpcomingModal}
+                    />
+                  )}
                 </>
               );
             }
