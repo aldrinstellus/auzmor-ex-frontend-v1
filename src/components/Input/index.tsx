@@ -115,7 +115,7 @@ const Input: React.FC<InputProps> = ({
           'bg-neutral-100 text-neutral-400': disabled,
         },
         {
-          'w-full rounded-19xl border border-neutral-200 focus:outline-none':
+          'w-full h-[44px] rounded-19xl border border-neutral-200 focus:outline-none':
             true,
         },
       ),

@@ -9,6 +9,9 @@ module.exports = {
       backgroundImage: {
         'welcome-to-office': "url('images/welcomeToOffice.png')",
       },
+      screens: {
+        '3xl': { min: '1840px' },
+      },
       colors: {
         'black-white': { black: '#000000', white: '#ffffff' },
         primary: {

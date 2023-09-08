@@ -111,15 +111,13 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
   ];
 
   return (
-    <div className="w-full max-w-[440px] h-full">
-      <div className="font-extrabold text-neutral-900 text-4xl mt-20">
-        Signin
-      </div>
+    <div className="w-full max-w-[414px]">
+      <div className="font-extrabold text-neutral-900 text-4xl">Signin</div>
       <div className="text-neutral-900 text-sm font-normal mt-4">
         Hello! Welcome back <span>👋</span>
       </div>
       <form
-        className="mt-16"
+        className="mt-10"
         onSubmit={handleSubmit(onSubmit)}
         data-testid="signin-form"
       >
@@ -142,7 +140,9 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
           data-testId="signin-forgot-password"
         >
           <Link to="/forgot-password">
-            <div className="font-bold text-sm">Forgot Password?</div>
+            <div className="font-bold text-xs leading-[18px]">
+              Forgot Password?
+            </div>
           </Link>
         </div>
         <Button
@@ -171,7 +171,7 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
             label={'Sign In via SSO'}
             variant={ButtonVariant.Secondary}
             size={Size.Large}
-            className="w-full mt-8"
+            className="w-full mt-8 h-[44px]"
             disabled={loginMutation.isLoading}
             onClick={() => {
               if (domain) {

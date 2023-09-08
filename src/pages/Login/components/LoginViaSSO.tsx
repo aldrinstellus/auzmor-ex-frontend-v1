@@ -88,7 +88,7 @@ const LoginViaSSO: React.FC<ILoginViaSSOProps> = ({ setViaSSO }) => {
     },
   ];
   return (
-    <div className="w-full max-w-[440px] relative h-full">
+    <div className="w-full max-w-[414px] relative">
       <div className="font-extrabold text-neutral-900 text-4xl mt-20">
         Sign In via SSO
       </div>
