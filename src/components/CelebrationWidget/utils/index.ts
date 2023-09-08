@@ -34,13 +34,3 @@ export const isCelebrationToday = (
 
   return false;
 };
-
-export const calculateWorkAnniversaryYears = (
-  workAnniversaryDate: string,
-  userTimezone: string,
-): number => {
-  const anniversary = momentTz(workAnniversaryDate).tz(userTimezone);
-  const currentDate = momentTz().tz(userTimezone);
-
-  return currentDate.diff(anniversary, 'years');
-};

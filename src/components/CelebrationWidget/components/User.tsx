@@ -3,11 +3,7 @@ import Avatar from 'components/Avatar';
 import { CELEBRATION_TYPE } from '..';
 import clsx from 'clsx';
 import Button, { Size } from 'components/Button';
-import {
-  calculateWorkAnniversaryYears,
-  formatDate,
-  isCelebrationToday,
-} from '../utils';
+import { formatDate, isCelebrationToday } from '../utils';
 import { getFullName, getNouns } from 'utils/misc';
 import { AuthContext } from 'contexts/AuthContext';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
@@ -55,11 +51,8 @@ const User: React.FC<UserProps> = ({
   const [isCreateCommentLoading, setIsCreateCommentLoading] = useState(false);
 
   const userTimezone = user?.timezone || currentTimezone || 'Asia/Kolkata';
-  const anniversaryYears = calculateWorkAnniversaryYears(
-    data.nextOcassionDateTime,
-    userTimezone,
-  );
   const isBirthday = type === CELEBRATION_TYPE.Birthday;
+  const anniversaryYears = data.diffInYears;
   const celebrationDate = isBirthday
     ? formatDate(data.nextOcassionDateTime, userTimezone)
     : `${anniversaryYears} ${getNouns('yr', anniversaryYears)} (${formatDate(
