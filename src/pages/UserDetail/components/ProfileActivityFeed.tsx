@@ -34,7 +34,7 @@ const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
 
     const feedIds = (
       (myProfileFeed?.pages.flatMap((page) =>
-        page.data?.result?.data.map((post: { id: string }) => post),
+        page.data?.result?.data?.map((post: { id: string }) => post),
       ) as { id: string }[]) || []
     )
       ?.filter(({ id }) => !!feed[id])

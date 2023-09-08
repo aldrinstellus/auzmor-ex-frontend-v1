@@ -84,7 +84,7 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({
             <SkeletonLoader />
           ) : (
             <div className="w-full px-6">
-              {itemCount && isAcknowledged ? (
+              {itemCount && !isAcknowledged ? (
                 <div className="flex flex-col items-start">
                   <div className="mt-4">
                     <div className="flex space-x-4">
