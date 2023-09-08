@@ -643,3 +643,44 @@ export const deleteBookmark = async (id: string) => {
   const { data } = await apiService.delete(`/posts/${id}/bookmark`);
   return data;
 };
+
+export const getAcknowledgements = async (
+  id: string,
+  {
+    pageParam = null,
+    queryKey,
+  }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>,
+) => {
+  if (pageParam === null) {
+    return await apiService.get(`/posts/${id}/acknowledgements`, queryKey[2]);
+  } else return await apiService.get(pageParam);
+};
+
+export const useInfiniteAcknowledgements = (
+  id: string,
+  q?: Record<string, any>,
+) => {
+  return useInfiniteQuery({
+    queryKey: ['acknowledgements', id, q],
+    queryFn: (np: any) => getAcknowledgements(id, np),
+    getNextPageParam: (lastPage: any) => {
+      const pageDataLen = lastPage?.data?.result?.data?.length;
+      const pageLimit = lastPage?.data?.result?.paging?.limit;
+      if (pageDataLen < pageLimit) {
+        return null;
+      }
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const downloadAcknowledgementReport = async (id: string) => {
+  const { data } = await apiService.get(
+    `/posts/${id}/downloadAcknowledgementReport`,
+  );
+  return data;
+};
