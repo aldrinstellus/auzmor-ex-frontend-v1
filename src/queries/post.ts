@@ -11,8 +11,6 @@ import { IComment } from 'components/Comments';
 import { Metadata } from 'components/PreviewLink/types';
 import { useFeedStore } from 'stores/feedStore';
 import _ from 'lodash';
-import { string } from 'yargs';
-import { celebrations } from 'mocks/feed';
 import { ITeam } from './teams';
 import { IGetUser } from './users';
 
@@ -328,24 +326,6 @@ const fetchCelebrations = async ({
 }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
   if (pageParam === null) {
     return await apiService.get('/organizations/occasions', queryKey[1]);
-    // return new Promise((resolve, reject) => {
-    //   setTimeout(() => {
-    //     resolve({
-    //       message: 'Successful',
-    //       code: 200,
-    //       data: {
-    //         result: {
-    //           data: celebrations,
-    //           paging: {
-    //             prev: 'https://office-dev.api.auzmor.com/api/v1/categories',
-    //             next: 'https://office-dev.api.auzmor.com/api/v1/categories',
-    //             limit: 30,
-    //           },
-    //         },
-    //       },
-    //     });
-    //   }, 1000);
-    // });
   } else return await apiService.get(pageParam);
 };
 

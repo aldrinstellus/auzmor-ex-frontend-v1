@@ -11,6 +11,7 @@ import { AuthContext } from 'contexts/AuthContext';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import Spinner from 'components/Spinner';
 import { useInView } from 'react-intersection-observer';
+import { isFiltersEmpty } from 'utils/misc';
 
 interface UpcomingCelebrationModalProps {
   open: boolean;
@@ -35,7 +36,12 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
   const [stopScroll, setStopScroll] = useState(false);
 
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useCelebrations();
+    useCelebrations(
+      isFiltersEmpty({
+        limit: 10,
+        type: isBirthday ? 'BIRTHDAY' : 'WORK_ANNIVERSARY',
+      }),
+    );
 
   const formattedData = data?.pages.flatMap((page: any) => {
     return page?.data?.result?.data.map((celebration: any) => {
