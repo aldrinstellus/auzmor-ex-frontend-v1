@@ -51,8 +51,7 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
     });
   });
 
-  const todaysCelebrationWithNoPost: any[] = [];
-  let thisMonthCelebration = formattedData
+  const thisMonthCelebration = formattedData
     ? formattedData.filter((item) => {
         const itemDate = momentTz(item.nextOcassionDateTime).tz(userTimezone);
         if (
@@ -64,7 +63,6 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
             thisMonthRef.current = itemDate.month();
           }
           if (itemDate.date() === currentDate.date() && !item.post.id) {
-            todaysCelebrationWithNoPost.push(item);
             return false;
           }
           return true;
@@ -72,11 +70,6 @@ const CelebrationWidget: React.FC<CelebrationWidgetProps> = ({ type }) => {
         return false;
       })
     : [];
-
-  thisMonthCelebration = [
-    ...thisMonthCelebration,
-    ...todaysCelebrationWithNoPost,
-  ];
 
   const upcomingMonthCelebration = formattedData
     ? formattedData.filter((item) => {
