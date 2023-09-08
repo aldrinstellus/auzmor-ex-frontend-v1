@@ -60,7 +60,8 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
     });
   });
 
-  const todaysCelebration = formattedData
+  const todaysCelebrationWithNoPost: any[] = [];
+  let todaysCelebration = formattedData
     ? formattedData.filter((item) => {
         const itemDate = momentTz(
           isBirthday ? item.dateOfBirth : item.joinDate,
@@ -73,11 +74,16 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
           if (thisMonthRef.current === null) {
             thisMonthRef.current = itemDate.month();
           }
+          if (!item.post.id) {
+            todaysCelebrationWithNoPost.push(item);
+            return false;
+          }
           return true;
         }
         return false;
       })
     : [];
+  todaysCelebration = [...todaysCelebration, ...todaysCelebrationWithNoPost];
 
   const thisMonthCelebration = formattedData
     ? formattedData.filter((item) => {
@@ -149,12 +155,12 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
   return (
     <Modal open={open} closeModal={closeModal} className="max-w-[648px]">
       <Header title={modalTitle} onClose={closeModal} />
-      <div className="max-h-[390px] overflow-y-auto px-6 w-full">
+      <div className="max-h-[390px] min-h-[390px] overflow-y-auto px-6 w-full">
         {(() => {
           if (isLoading) {
             return (
               <>
-                {[...Array(3)].map((element) => (
+                {[...Array(5)].map((element) => (
                   <div key={element} className="py-4">
                     <SkeletonLoader />
                   </div>
@@ -175,48 +181,45 @@ const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
                     thisMonthCelebration.length > 0) && (
                     <div className="text-sm font-semibold px-2 mt-4">Today</div>
                   )}
-                {todaysCelebration.map((celebration) => (
-                  <div
-                    className="py-4 border-b border-neutral-200"
-                    key={celebration.featuredUser.userId}
-                  >
-                    <User type={type} data={celebration} isModalView />
-                  </div>
-                ))}
+                <div className="divide-y divide-neutral-200">
+                  {todaysCelebration.map((celebration) => (
+                    <div className="py-4" key={celebration.featuredUser.userId}>
+                      <User type={type} data={celebration} isModalView />
+                    </div>
+                  ))}
+                </div>
 
                 {/* This month celebration */}
                 {thisMonthCelebration.length > 0 &&
                   (upcomingMonthCelebration.length > 0 ||
                     todaysCelebration.length > 0) && (
-                    <div className="text-sm font-semibold px-2 mt-4">
+                    <div className="text-sm font-semibold px-2 pt-4 border-t border-neutral-200">
                       This Month
                     </div>
                   )}
-                {thisMonthCelebration.map((celebration) => (
-                  <div
-                    className="py-4 border-b border-neutral-200"
-                    key={celebration.featuredUser.userId}
-                  >
-                    <User type={type} data={celebration} isModalView />
-                  </div>
-                ))}
+                <div className="divide-y divide-neutral-200">
+                  {thisMonthCelebration.map((celebration) => (
+                    <div className="py-4" key={celebration.featuredUser.userId}>
+                      <User type={type} data={celebration} isModalView />
+                    </div>
+                  ))}
+                </div>
 
                 {/* Upcoming Month celebration */}
                 {upcomingMonthCelebration.length > 0 &&
                   (thisMonthCelebration.length > 0 ||
                     todaysCelebration.length > 0) && (
-                    <div className="text-sm font-semibold px-2 mt-4">
+                    <div className="text-sm font-semibold px-2 pt-4 border-t border-neutral-200">
                       Next Month
                     </div>
                   )}
-                {upcomingMonthCelebration.map((celebration) => (
-                  <div
-                    className="py-4 border-b border-neutral-200"
-                    key={celebration.featuredUser.userId}
-                  >
-                    <User type={type} data={celebration} isModalView />
-                  </div>
-                ))}
+                <div className="divide-y divide-neutral-200">
+                  {upcomingMonthCelebration.map((celebration) => (
+                    <div className="py-4" key={celebration.featuredUser.userId}>
+                      <User type={type} data={celebration} isModalView />
+                    </div>
+                  ))}
+                </div>
 
                 {hasNextPage && !stopScroll && !isFetchingNextPage && (
                   <div className="h-12 w-12">

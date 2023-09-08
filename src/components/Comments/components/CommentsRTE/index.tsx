@@ -96,6 +96,14 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
       console.log(error);
     },
     onSuccess: async (data: any, variables, context) => {
+      if (mode === PostCommentMode.SendWish) {
+        queryClient.invalidateQueries(['celebrations'], {
+          exact: false,
+        });
+        queryClient.invalidateQueries(['get-post', entityId], {
+          exact: false,
+        });
+      }
       quillRef.current?.setEditorContents(quillRef.current?.getEditor(), '');
       removeMedia();
       await queryClient.setQueryData(

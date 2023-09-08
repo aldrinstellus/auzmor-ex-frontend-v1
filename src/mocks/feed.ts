@@ -54,7 +54,7 @@ export const feeds = [
 export const celebrations = [
   {
     type: 'BIRTHDAY/WORK_ANNIVERSARY/NEW_JOINEE',
-    dateOfBirth: '1997-09-06T18:45:09.703Z',
+    dateOfBirth: '1997-09-07T18:45:09.703Z',
     joinDate: '2020-09-10T18:45:09.703Z',
     //Add more field from posts payload,
     featuredUser: {
@@ -74,14 +74,11 @@ export const celebrations = [
         blurHash: 'ABCD1234',
       },
     },
-    post: {
-      id: '64f98e49eb37fde8109b7c99',
-      myCommentsOnPost: [],
-    },
+    post: {},
   },
   {
     type: 'BIRTHDAY/WORK_ANNIVERSARY/NEW_JOINEE',
-    dateOfBirth: '1990-10-07T18:45:09.703Z',
+    dateOfBirth: '1997-09-07T18:45:09.703Z',
     joinDate: '2021-10-20T18:45:09.703Z',
     //Add more field from posts payload,
     featuredUser: {
@@ -101,10 +98,14 @@ export const celebrations = [
         blurHash: 'ABCD1234',
       },
     },
+    post: {
+      id: '64f1dfc2df4828836af7f3a',
+      myCommentsOnPost: [],
+    },
   },
   {
     type: 'BIRTHDAY/WORK_ANNIVERSARY/NEW_JOINEE',
-    dateOfBirth: '2023-10-10T18:45:09.703Z',
+    dateOfBirth: '1997-09-07T18:45:09.703Z',
     joinDate: '2010-10-31T18:45:09.703Z',
     //Add more field from posts payload,
     featuredUser: {
@@ -123,6 +124,10 @@ export const celebrations = [
         large: 'https://example.com/images/user1_large.jpg',
         blurHash: 'ABCD1234',
       },
+    },
+    post: {
+      id: '64f1dfc2df4828836af7ff3a',
+      myCommentsOnPost: [],
     },
   },
   {
