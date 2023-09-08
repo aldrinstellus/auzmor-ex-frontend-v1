@@ -34,6 +34,7 @@ const Notification: React.FC<NotificationCardProps> = ({
     target,
     actor,
   );
+  console.log(isRead);
 
   const markNotificationAsReadMutation = useMutation({
     mutationKey: ['mark-notification-as-read'],
@@ -123,7 +124,9 @@ const Notification: React.FC<NotificationCardProps> = ({
             </div>
             {/* Unread indicator (orange dot) */}
             <div className="w-2 h-2 mt-2">
-              {!isRead && <div className="bg-orange-400 rounded-full" />}
+              {!isRead && (
+                <div className="bg-orange-400 w-2 h-2 rounded-full" />
+              )}
             </div>
           </div>
         </div>
