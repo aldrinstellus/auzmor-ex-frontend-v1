@@ -20,9 +20,9 @@ import queryClient from 'utils/queryClient';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import useModal from 'hooks/useModal';
 import People from 'pages/Users/components/People';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import TeamModal from 'pages/Users/components/TeamModal';
-import { TeamFlow } from 'pages/Users/components/Teams';
+import { TeamFlow, TeamTab } from 'pages/Users/components/Teams';
 import DeleteTeam from 'pages/Users/components/DeleteModals/Team';
 import TeamDetailSkeleton from './components/TeamDetailSkeleton';
 
@@ -30,6 +30,8 @@ export interface ITeamMemberProps {}
 
 const TeamDetail: React.FC<ITeamMemberProps> = () => {
   const params = useParams();
+  const { state } = useLocation();
+  const { prevRoute } = state || {};
   const navigate = useNavigate();
   const { teamId: id } = params;
 
@@ -77,9 +79,9 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
         data?.result?.data?.length - (data.teamMembers || 0);
       const message =
         membersAddedCount > 1
-          ? `${membersAddedCount} have been added to the team`
+          ? `${membersAddedCount} members have been added to the team`
           : membersAddedCount === 1
-          ? `${membersAddedCount} have been added to the team`
+          ? `${membersAddedCount} member has been added to the team`
           : 'Members already exists in the team';
       toast(<SuccessToast content={message} />, {
         style: {
@@ -92,10 +94,17 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
         transition: slideInAndOutTop,
         theme: 'dark',
       });
-      queryClient.invalidateQueries(['categories']);
-      queryClient.invalidateQueries(['team-members']);
+      queryClient.invalidateQueries(['get-team-members']);
     },
   });
+
+  const handleGoBack = () => {
+    if (prevRoute) {
+      navigate(`/teams?tab=${prevRoute}`);
+    } else {
+      navigate(`/teams`);
+    }
+  };
 
   return (
     <>
@@ -105,13 +114,10 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
         ) : (
           <>
             <div className="flex justify-between items-center px-8">
-              <div
-                className="flex space-x-2"
-                onClick={() => navigate('/teams')}
-              >
+              <div className="flex space-x-2" onClick={handleGoBack}>
                 <Icon name="linearLeftArrowOutline" size={20} />
                 <div className="text-base font-bold text-neutral-900">
-                  My Team
+                  {prevRoute === TeamTab.MyTeams ? 'My Team' : 'All Team'}
                 </div>
               </div>
               <Tooltip

@@ -9,9 +9,9 @@ import PopupMenu from 'components/PopupMenu';
 import useRole from 'hooks/useRole';
 import DeleteTeam from '../DeleteModals/Team';
 import useModal from 'hooks/useModal';
-import { ITeamDetailState, TeamFlow } from '.';
+import { TeamFlow } from '.';
 import moment from 'moment';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export interface ITeamsCardProps {
   id: string;
@@ -23,7 +23,7 @@ export interface ITeamsCardProps {
   recentMembers: any;
   setTeamFlow: (mode: string) => void;
   openModal: () => void;
-  setShowTeamDetail: (detail: ITeamDetailState) => void;
+  setShowTeamDetail: (detail: Record<string, any> | null) => void;
 }
 
 const TeamsCard: React.FC<ITeamsCardProps> = ({
@@ -38,6 +38,7 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
   openModal,
   setShowTeamDetail,
 }) => {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [isHovered, eventHandlers] = useHover();
   const [showDeleteModal, openDeleteModal, closeDeleteModal] = useModal(false);
@@ -52,15 +53,12 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
         openModal();
         setTeamFlow(TeamFlow.EditTeam);
         setShowTeamDetail({
-          isTeamSelected: false,
-          teamDetail: {
-            id: id,
-            name: name,
-            description: description,
-            category: category,
-            createdAt: createdAtDate,
-            totalMembers: totalMembers,
-          },
+          id: id,
+          name: name,
+          description: description,
+          category: category,
+          createdAt: createdAtDate,
+          totalMembers: totalMembers,
         });
       },
       dataTestId: 'team-edit',
@@ -127,7 +125,9 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
         <div
           className="flex flex-col items-center"
           onClick={() => {
-            navigate(`/teams/${id}`);
+            navigate(`/teams/${id}`, {
+              state: { prevRoute: searchParams.get('tab') },
+            });
           }}
         >
           {recentMembers?.length !== 0 ? (

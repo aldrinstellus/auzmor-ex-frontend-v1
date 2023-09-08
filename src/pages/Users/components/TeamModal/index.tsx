@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import Icon from 'components/Icon';
-import { ITeamDetails, TeamFlow } from '../Teams';
+import { TeamFlow } from '../Teams';
 
 export interface ITeamForm {
   name: string;
@@ -30,6 +30,7 @@ export interface IAddTeamModalProps {
   setTeamFlow: any;
   team: Record<string, any> | any;
   openAddMemberModal: () => void;
+  setShowTeamDetail?: (detail: Record<string, any> | null) => void;
 }
 
 const TeamModal: React.FC<IAddTeamModalProps> = ({
@@ -39,6 +40,7 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
   setTeamFlow,
   team,
   openAddMemberModal,
+  setShowTeamDetail,
 }) => {
   const queryClient = useQueryClient();
 
@@ -102,6 +104,7 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
       );
     },
     onSuccess: (data: any) => {
+      setShowTeamDetail && setShowTeamDetail(data.result);
       queryClient.invalidateQueries(['teams']);
       toast(<SuccessToast content={'Team Created Successfully'} />, {
         style: {

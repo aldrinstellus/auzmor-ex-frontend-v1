@@ -13,8 +13,8 @@ import { useForm } from 'react-hook-form';
 import { useDebounce } from 'hooks/useDebounce';
 import TeamFilterModal from '../FilterModals/TeamFilterModal';
 import TeamModal from '../TeamModal';
-import { useInfiniteTeams } from 'queries/teams';
-import { getProfileImage, isFiltersEmpty } from 'utils/misc';
+import { addTeamMember, useInfiniteTeams } from 'queries/teams';
+import { getProfileImage, isFiltersEmpty, twConfig } from 'utils/misc';
 import PageLoader from 'components/PageLoader';
 import TeamNotFound from 'images/TeamNotFound.svg';
 import TeamsSkeleton from '../Skeletons/TeamsSkeleton';
@@ -28,6 +28,13 @@ import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
 import useAuth from 'hooks/useAuth';
 import { useSearchParams } from 'react-router-dom';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { toast } from 'react-toastify';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import queryClient from 'utils/queryClient';
+import { slideInAndOutTop } from 'utils/react-toastify';
+import FailureToast from 'components/Toast/variants/FailureToast';
+import { useMutation } from '@tanstack/react-query';
 interface IForm {
   search?: string;
 }
@@ -38,13 +45,8 @@ export enum TeamFlow {
 }
 
 export enum TeamTab {
-  MyTeams = 'myteams',
-  AllTeams = 'allteams',
-}
-
-export interface ITeamDetailState {
-  isTeamSelected: boolean;
-  teamDetail: Record<string, any> | null;
+  MyTeams = 'myTeams',
+  AllTeams = 'allTeams',
 }
 
 export interface ITeamCategory {
@@ -77,10 +79,10 @@ const Team: React.FC<ITeamProps> = ({
 
   const { user } = useAuth();
   const [teamFlow, setTeamFlow] = useState<TeamFlow>(TeamFlow.CreateTeam); // to context
-  const [showTeamDetail, setShowTeamDetail] = useState<ITeamDetailState>({
-    isTeamSelected: false,
-    teamDetail: {},
-  });
+  const [showTeamDetail, setShowTeamDetail] = useState<Record<
+    string,
+    any
+  > | null>({});
   const [sortByFilter, setSortByFilter] = useState<string>('');
   const [filters, setFilters] = useState<any>({
     categories: [],
@@ -122,6 +124,62 @@ const Team: React.FC<ITeamProps> = ({
       }),
     );
 
+  const teamId = showTeamDetail?.id;
+
+  const addTeamMemberMutation = useMutation({
+    mutationKey: ['add-team-member', teamId],
+    mutationFn: (payload: any) => {
+      return addTeamMember(teamId || '', payload);
+    },
+    onError: (error: any) => {
+      toast(
+        <FailureToast
+          content={`Error Adding Team Members`}
+          dataTestId="team-create-error-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              color={twConfig.theme.colors.red['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+    },
+    onSuccess: (data: any) => {
+      const membersAddedCount =
+        data?.result?.data?.length - (data.teamMembers || 0);
+      const message =
+        membersAddedCount > 1
+          ? `${membersAddedCount} members have been added to the team`
+          : membersAddedCount === 1
+          ? `${membersAddedCount} member has been added to the team`
+          : 'Members already exists in the team';
+      toast(<SuccessToast content={message} />, {
+        style: {
+          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+        },
+        autoClose: TOAST_AUTOCLOSE_TIME,
+        transition: slideInAndOutTop,
+        theme: 'dark',
+      });
+    },
+  });
+
   useEffect(() => {
     if (inView) {
       fetchNextPage();
@@ -150,6 +208,7 @@ const Team: React.FC<ITeamProps> = ({
       categories: [],
     });
   };
+  console.log(showTeamDetail);
 
   return (
     <div className="relative pb-8">
@@ -161,7 +220,7 @@ const Team: React.FC<ITeamProps> = ({
             variant={Variant.Secondary}
             className="h-9 grow-0"
             dataTestId="my-teams"
-            active={tab === TeamTab.MyTeams}
+            active={tab === TeamTab.MyTeams && !searchValue}
             onClick={() => {
               setSearchParams((params) => {
                 params.set('tab', TeamTab.MyTeams);
@@ -176,7 +235,7 @@ const Team: React.FC<ITeamProps> = ({
             variant={Variant.Secondary}
             className="h-9 grow-0"
             dataTestId="all-teams"
-            active={tab === TeamTab.AllTeams}
+            active={tab === TeamTab.AllTeams && !searchValue}
             onClick={() => {
               setSearchParams((params) => {
                 params.set('tab', TeamTab.AllTeams);
@@ -388,12 +447,9 @@ const Team: React.FC<ITeamProps> = ({
           closeModal={closeTeamModal}
           teamFlowMode={teamFlow}
           setTeamFlow={setTeamFlow}
-          team={
-            teamFlow === TeamFlow.EditTeam
-              ? showTeamDetail.teamDetail
-              : undefined
-          }
+          team={teamFlow === TeamFlow.EditTeam ? showTeamDetail : undefined}
           openAddMemberModal={openAddMemberModal}
+          setShowTeamDetail={setShowTeamDetail}
         />
       )}
 
@@ -403,7 +459,7 @@ const Team: React.FC<ITeamProps> = ({
           openModal={openAddMemberModal}
           closeModal={closeAddMemberModal}
           onBackPress={openTeamModal}
-          entityType={EntitySearchModalType.Team}
+          entityType={EntitySearchModalType.User}
           entityRenderer={(data: IGetUser) => {
             return (
               <div className="flex space-x-4 w-full">
@@ -449,6 +505,7 @@ const Team: React.FC<ITeamProps> = ({
             );
           }}
           onSubmit={(userIds: string[]) => {
+            addTeamMemberMutation.mutate({ userIds: userIds });
             closeAddMemberModal();
           }}
           onCancel={closeAddMemberModal}

@@ -225,8 +225,7 @@ const People: React.FC<IPeopleProps> = ({
         </div>
 
         <div className="text-neutral-500 mt-6 mb-6">
-          Showing {!isLoading && data?.pages[0]?.data?.result?.totalCount}{' '}
-          results
+          Showing {!isLoading && usersData?.length} results
         </div>
 
         {userStatus && (

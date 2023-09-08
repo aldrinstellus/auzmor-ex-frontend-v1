@@ -137,7 +137,7 @@ export const useInfiniteTeamMembers = (
   q?: Record<string, any>,
 ) => {
   return useInfiniteQuery({
-    queryKey: ['team-members', q, teamId],
+    queryKey: ['get-team-members', q, teamId],
     queryFn: (context) => getTeamMembers(context, teamId),
     getNextPageParam: (lastPage: any) => {
       const pageDataLen = lastPage?.data?.result?.data?.length;

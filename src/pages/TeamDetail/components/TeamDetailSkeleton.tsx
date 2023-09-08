@@ -15,12 +15,7 @@ const TeamDetailSkeleton = () => {
           borderRadius={40}
         />
       </div>
-      <div className="w-full mt-6 px-8">
-        <Skeleton
-          className="h-[98px] rounded-full leading-none"
-          borderRadius={10}
-        />
-      </div>
+      <Skeleton className="h-[97.78px] leading-none mt-6" />
     </>
   );
 };
