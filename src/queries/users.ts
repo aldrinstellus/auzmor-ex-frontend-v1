@@ -5,6 +5,8 @@ import {
   useQuery,
 } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
+import { IDepartment } from './department';
+import { ILocation } from './location';
 
 // for future filters
 export enum PeopleFilterKeys {
@@ -105,6 +107,8 @@ export interface IGetUser {
   timeZone?: string;
   workLocation?: Record<string, string>;
   designation?: string;
+  department?: IDepartment;
+  location?: ILocation;
 }
 
 export const getAllUser = async ({

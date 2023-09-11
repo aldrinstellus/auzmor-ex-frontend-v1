@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import Icon from 'components/Icon';
 import {
+  IGetUser,
   UserStatus,
   updateRoleToAdmin,
   updateStatus,
@@ -14,7 +15,12 @@ import {
 } from 'queries/users';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
-import { getEditSection, titleCase, twConfig } from 'utils/misc';
+import {
+  getEditSection,
+  getProfileImage,
+  titleCase,
+  twConfig,
+} from 'utils/misc';
 import { PRIMARY_COLOR, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import useModal from 'hooks/useModal';
@@ -28,16 +34,7 @@ import _ from 'lodash';
 import RemoveTeamMember from '../DeleteModals/TeamMember';
 
 export interface IPeopleCardProps {
-  id: string;
-  role: any;
-  fullName: string;
-  image?: string;
-  designation?: string;
-  department?: Record<string, any>;
-  workLocation?: Record<string, any>;
-  active?: boolean;
-  workEmail?: string;
-  status?: any;
+  userData: IGetUser;
   teamId?: string;
   isTeamPeople?: boolean;
 }
@@ -59,19 +56,20 @@ const statusColorMap: Record<string, string> = {
 };
 
 const PeopleCard: React.FC<IPeopleCardProps> = ({
-  id,
-  role,
-  fullName,
-  image,
-  designation,
-  department,
-  workLocation,
-  active,
-  status,
-  workEmail,
+  userData,
   teamId,
   isTeamPeople,
 }) => {
+  const {
+    id,
+    role,
+    fullName,
+    designation,
+    status,
+    department,
+    workLocation,
+    workEmail,
+  } = userData;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -241,7 +239,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
               UserStatus.Invited,
               UserStatus.Created,
               UserStatus.Attempted,
-            ].includes(status)
+            ].includes(status as UserStatus)
           ) {
             return (
               <div
@@ -256,7 +254,11 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
             );
           }
 
-          if ([Status.ADMIN, Status.SUPERADMIN].includes(role)) {
+          if (
+            [Status.ADMIN, Status.SUPERADMIN].includes(
+              role as unknown as Status,
+            )
+          ) {
             return (
               <div
                 style={{
@@ -285,8 +287,8 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
           <Avatar
             size={80}
             name={fullName || workEmail}
-            image={image}
-            active={active}
+            image={getProfileImage(userData, 'large')}
+            active={status === UserStatus.Active}
             dataTestId="people-card-profile-pic"
             showActiveIndicator
             disable={(status as any) === UserStatus.Inactive}

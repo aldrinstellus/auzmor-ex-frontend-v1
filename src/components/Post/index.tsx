@@ -107,7 +107,7 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
           theme: 'dark',
         },
       );
-      await queryClient.invalidateQueries(['bookmarks']);
+      await queryClient.invalidateQueries(['bookmarks'], { exact: false });
     },
   });
 

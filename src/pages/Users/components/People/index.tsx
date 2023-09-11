@@ -276,18 +276,17 @@ const People: React.FC<IPeopleProps> = ({
                       key={user.id}
                       teamId={teamId}
                       isTeamPeople={isTeamPeople}
-                      {...(isTeamPeople
-                        ? {
-                            ...user.member,
-                            id: user.member.userId,
-                            workEmail: user.member.email,
-                            department: { name: user.member.department },
-                          }
-                        : user)}
-                      image={getProfileImage(
-                        isTeamPeople ? user.member : user,
-                        'large',
-                      )}
+                      {...{
+                        userData: isTeamPeople
+                          ? {
+                              ...user.member,
+                              id: user.member.userId,
+                              workEmail: user.member.email,
+                              workLocation: { name: user.member.workLocation },
+                              department: { name: user.member.department },
+                            }
+                          : user,
+                      }}
                     />
                   ))}
                   <div className="h-12 w-12">

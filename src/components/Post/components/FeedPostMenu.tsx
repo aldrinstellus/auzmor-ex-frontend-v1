@@ -232,7 +232,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
         />
         {data?.id && analytics && (
           <AnnouncementAnalytics
-            id={data.id}
+            post={data}
             open={analytics}
             closeModal={closeAnalytics}
           />

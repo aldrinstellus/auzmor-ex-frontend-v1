@@ -27,33 +27,31 @@ const PostPage: React.FC = () => {
   return (
     <>
       <div className="mb-12 space-x-8 flex w-full">
-        <div className="sticky top-10 z-10 w-1/4">
+        <div className="sticky top-10 z-10 min-w-[293px] max-w-[293px]">
           <UserCard />
         </div>
         <div className="w-1/2">
-          <div className="mt-4">
-            <Post
-              post={post}
-              customNode={
-                post?.comment && (
-                  <div className="mt-6">
-                    <Comment
-                      comment={post.comment}
-                      customNode={
-                        post?.comment?.comment ? (
-                          <div className="mt-4">
-                            <Reply comment={post?.comment?.comment} />
-                          </div>
-                        ) : null
-                      }
-                    />
-                  </div>
-                )
-              }
-            />
-          </div>
+          <Post
+            post={post}
+            customNode={
+              post?.comment && (
+                <div className="mt-6">
+                  <Comment
+                    comment={post.comment}
+                    customNode={
+                      post?.comment?.comment ? (
+                        <div className="mt-4">
+                          <Reply comment={post?.comment?.comment} />
+                        </div>
+                      ) : null
+                    }
+                  />
+                </div>
+              )
+            }
+          />
         </div>
-        <div className="w-1/4">
+        <div className="min-w-[293px] max-w-[293px]">
           <AnnouncementCard postId={post.id} />
         </div>
       </div>
