@@ -90,7 +90,7 @@ const AsyncSingleSelect = React.forwardRef(
     const [asyncOptions, setAsyncOptions] = useState<IOptions[]>(options);
 
     useEffect(() => {
-      if (defaultValue.label) {
+      if (defaultValue?.label) {
         loadOptions(defaultValue.label, setAsyncOptions);
       }
     }, []);

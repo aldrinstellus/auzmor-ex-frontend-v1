@@ -4,6 +4,7 @@ import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import { IPostPayload, updatePost } from 'queries/post';
+import ErrorWarningPng from 'images/error-warning-line.png';
 import React from 'react';
 import { useFeedStore } from 'stores/feedStore';
 import { produce } from 'immer';
@@ -54,18 +55,13 @@ const ChangeToRegularPostModal: React.FC<AppProps> = ({
         <Icon
           name="close"
           onClick={closeModal}
-          disabled={true}
+          size={16}
           dataTestId="changeto-regularpost-closemodal"
         />
       </div>
       <Divider />
       <div className="flex flex-col gap-y-4 items-center justify-center text-neutral-900 text-base p-6">
-        <Icon
-          name="infoCircle"
-          color="text-[#3F83F8]"
-          size={66}
-          disabled={true}
-        />
+        <img src={ErrorWarningPng} width={66} height={66} />
         <p className="font-semibold">
           Are you sure you want to change this announcement to a regular post?
         </p>

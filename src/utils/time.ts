@@ -22,6 +22,11 @@ export const humanizeTime = (time: string) => {
   return moment(new Date(time)).fromNow();
 };
 
+export const getBrwoserTimezone = () => {
+  const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  return browserTimezone === 'Asia/Calcutta' ? 'Asia/Kolkata' : browserTimezone;
+};
+
 export const getTimezoneNameFromIANA = (
   iana: string,
   dateString?: string,
