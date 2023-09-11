@@ -1,5 +1,8 @@
-import IconButton, { Size, Variant } from 'components/IconButton';
-import React, { useContext, useEffect, useState } from 'react';
+import IconButton, {
+  Size as IconButtonSize,
+  Variant as IconButtonVariant,
+} from 'components/IconButton';
+import React, { Fragment, useContext, useEffect, useState } from 'react';
 import './styles.css';
 import {
   CreatePostContext,
@@ -7,6 +10,15 @@ import {
   IPoll,
 } from 'contexts/CreatePostContext';
 import { getTimeFromNow } from 'utils/time';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { IPost, pollVote } from 'queries/post';
+import { useFeedStore } from 'stores/feedStore';
+import { produce } from 'immer';
+import Button, {
+  Type as ButtonType,
+  Variant as ButtonVariant,
+  Size as ButtonSize,
+} from 'components/Button';
 
 export enum PollMode {
   VIEW = 'VIEW',
@@ -15,39 +27,98 @@ export enum PollMode {
 
 type PollProps = {
   mode: PollMode;
+  myVote?: { optionId: string };
+  postId?: string;
 };
+
+function animateOption(optionId: string, width: string, justify: string): void {
+  const optionProgress = document.getElementById(`option-progress-${optionId}`);
+  optionProgress?.animate(
+    {
+      width: ['0%', width],
+      easing: ['ease-out', 'ease-out'],
+    },
+    500,
+  );
+  optionProgress?.setAttribute('style', `width: ${width}`);
+
+  const optionText = document.getElementById(`option-text-${optionId}`);
+  optionText?.animate(
+    {
+      justifyContent: ['unset', justify],
+      easing: ['ease-out', 'ease-out'],
+    },
+    500,
+  );
+  optionText?.setAttribute('style', `justify-content: ${justify}`);
+}
+
+function getVotePercent(total: number, votes?: number) {
+  return total ? `${((votes || 0) / total) * 100}%` : '0%';
+}
 
 const Poll: React.FC<IPoll & PollProps> = ({
   question,
   options,
-  total,
   closedAt,
+  myVote,
+  postId,
   mode = PollMode.VIEW,
 }) => {
-  const [userVoted, setUserVoted] = useState<boolean>(false);
+  const queryClient = useQueryClient();
+  const [showResults, setShowResults] = useState(false);
+  const { feed, updateFeed } = useFeedStore();
   const { setPoll, setActiveFlow, setPostType } = useContext(CreatePostContext);
 
+  const voteMutation = useMutation({
+    mutationKey: ['poll-vote'],
+    mutationFn: pollVote,
+    onMutate: ({ postId, optionId }) => {
+      const previousPost = feed[postId];
+      updateFeed(
+        postId,
+        produce(feed[postId], (draft: IPost) => {
+          draft.pollContext?.options.forEach((option) => {
+            if (option._id === optionId) option.votes = (option.votes || 0) + 1;
+            if (option._id === previousPost?.myVote?.optionId && option.votes)
+              option.votes -= 1;
+          });
+          draft.myVote = { optionId };
+        }),
+      );
+      return { previousPost };
+    },
+    onError: (error, variables, context) => {
+      updateFeed(context!.previousPost.id!, context!.previousPost!);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['feed-post']);
+    },
+  });
+
+  const total = options
+    .map((option) => option.votes)
+    .reduce((s: number, a) => s + (a || 0), 0);
+
   useEffect(() => {
-    if (userVoted) {
-      options.forEach((option) => {
-        if (option.id && total) {
-          const element = document.getElementById(option.id);
-          const widthPercent = ((option.votes || 0) / total) * 100;
-          element?.animate(
-            {
-              width: ['0%', `${widthPercent}%`],
-              easing: ['ease-out', 'ease-out'],
-            },
-            500,
-          );
-          element?.setAttribute('style', `width: ${widthPercent}%`);
-        }
-      });
-    }
-  }, [options, userVoted]);
+    options.forEach((option) => {
+      if (!option._id) return;
+      if (showResults || (myVote && myVote.optionId)) {
+        animateOption(
+          option._id,
+          getVotePercent(total, option.votes),
+          'space-between',
+        );
+      } else {
+        animateOption(option._id, '0%', 'center');
+      }
+    });
+  }, [options, myVote, showResults]);
 
   const timeLeft = getTimeFromNow(closedAt);
-  console.log(timeLeft);
+
+  const showTotal = mode === PollMode.VIEW;
+  const showViewResults = mode === PollMode.VIEW;
 
   return (
     <div className="bg-neutral-100 py-4 px-8 rounded-9xl w-full">
@@ -59,8 +130,8 @@ const Poll: React.FC<IPoll & PollProps> = ({
             <IconButton
               icon="edit"
               onClick={() => setActiveFlow(CreatePostFlow.CreatePoll)}
-              variant={Variant.Secondary}
-              size={Size.Medium}
+              variant={IconButtonVariant.Secondary}
+              size={IconButtonSize.Medium}
               borderAround
               color="text-black"
               className="bg-white !rounded-7xl"
@@ -73,8 +144,8 @@ const Poll: React.FC<IPoll & PollProps> = ({
                 setPoll(null);
                 setPostType(null);
               }}
-              variant={Variant.Secondary}
-              size={Size.Medium}
+              variant={IconButtonVariant.Secondary}
+              size={IconButtonSize.Medium}
               borderAround
               color="text-black"
               className="bg-white !rounded-7xl"
@@ -92,34 +163,66 @@ const Poll: React.FC<IPoll & PollProps> = ({
             className={`grid ${
               mode === PollMode.VIEW ? 'cursor-pointer' : 'cursor-default'
             }`}
-            key={option.id}
-            onClick={() => setUserVoted(true)}
+            key={option._id}
+            onClick={() =>
+              mode === PollMode.VIEW &&
+              postId &&
+              option._id &&
+              voteMutation.mutate({ postId, optionId: option._id })
+            }
           >
             {/* The white background that contains the option */}
             <div className="grid-area w-full bg-white rounded-19xl" />
             {/* The progress bar that fills up the background */}
             <div
               className={`grid-area w-0 ${
-                option.id === 'ghi' ? 'bg-emerald-600' : 'bg-green-100'
+                option._id === myVote?.optionId
+                  ? 'bg-emerald-600'
+                  : 'bg-green-100'
               } rounded-19xl`}
-              id={option.id}
+              id={`option-progress-${option._id}`}
             />
             {/* The option itself */}
-            <div className="grid-area flex items-center justify-center w-full px-5 py-3 text-neutral-900 font-medium">
-              {option.text}
+            <div
+              className="grid-area flex items-center justify-center w-full px-5 py-3 text-neutral-900 font-medium border-1 border-black"
+              id={`option-text-${option._id}`}
+            >
+              <span>{option.text}</span>
+
+              <span>
+                {showResults ? getVotePercent(total, option.votes) : ''}
+              </span>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Time left */}
-      <div>
+      <div className="flex flex-row gap-3 items-center text-xs leading-normal">
         <p
-          className="text-orange-500 text-xs leading-normal font-bold"
+          className="text-orange-500  font-bold"
           data-testid="createpost-poll-expiry"
         >
-          {`${timeLeft || 'No Time'} left`}
+          {timeLeft ? `${timeLeft} left` : 'Poll closed'}
         </p>
+        {showTotal && (
+          <Fragment>
+            <div className="bg-neutral-500 rounded-full w-1 h-1" />
+            <p className="text-neutral-500 font-normal">{`${total} votes`}</p>
+          </Fragment>
+        )}
+        {showViewResults && (
+          <Fragment>
+            <div className="bg-neutral-500 rounded-full w-1 h-1" />
+            <Button
+              size={ButtonSize.ExtraSmall}
+              variant={ButtonVariant.Tertiary}
+              className="!p-0 !bg-transparent"
+              label={showResults ? 'Undo' : 'View results'}
+              labelClassName="text-primary-500 font-bold leading-normal"
+              onClick={() => setShowResults(!showResults)}
+            />
+          </Fragment>
+        )}
       </div>
     </div>
   );

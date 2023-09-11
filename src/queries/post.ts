@@ -95,6 +95,9 @@ export interface IPost {
     type: string;
     id: string;
   };
+  myVote?: {
+    optionId: string;
+  };
   link?: Metadata | string;
   myReaction?: {
     createdBy?: ICreatedBy;
@@ -323,6 +326,17 @@ export const useAnnouncementsWidget = (
 
 export const announcementRead = async (postId: string) => {
   const data = await apiService.post(`/posts/${postId}/acknowledge`);
+  return data;
+};
+
+export const pollVote = async ({
+  postId,
+  optionId,
+}: {
+  postId: string;
+  optionId: string;
+}) => {
+  const data = await apiService.post(`/posts/${postId}/votes`, { optionId });
   return data;
 };
 

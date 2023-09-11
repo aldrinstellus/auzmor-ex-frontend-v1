@@ -32,6 +32,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
   const link = (data as IPost)?.link;
   const media = (data as IPost)?.files;
   const poll = (data as IPost)?.pollContext;
+  const myVote = (data as IPost)?.myVote;
   const postType = (data as IPost)?.type;
 
   const isEmpty = useMemo(
@@ -126,10 +127,10 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
   );
 
   return (
-    <div>
+    <div className="text-sm">
       {!isEmpty && (
         <span
-          className="line-clamp-3 paragraph pt-px text-sm"
+          className="line-clamp-3 paragraph pt-px"
           id={`${data?.id}-content`}
           data-testid={isComment ? 'comment-content' : 'feed-post-content'}
         >
@@ -166,6 +167,8 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
             question={poll.question}
             closedAt={poll.closedAt}
             options={poll.options}
+            myVote={myVote}
+            postId={data.id}
             mode={PollMode.VIEW}
           />
         </div>
