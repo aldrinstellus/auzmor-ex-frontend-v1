@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Logo } from 'components/Logo';
-import WelcomeOffice from 'images/welcomeToOffice.png';
 import LoginViaCred from './components/LoginViaCred';
 import LoginViaSSO from './components/LoginViaSSO';
 import useAuth from 'hooks/useAuth';
