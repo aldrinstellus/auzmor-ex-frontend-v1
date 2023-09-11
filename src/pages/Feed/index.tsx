@@ -252,7 +252,7 @@ const Feed: React.FC<IFeedProps> = () => {
                     <>
                       <div
                         key={filter}
-                        className="border border-neutral-200 rounded-[8px] px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1"
+                        className="border border-neutral-200 rounded-[8px] px-3 h-[32px] flex bg-white capitalize text-sm font-medium items-center mr-1"
                       >
                         <div className="mr-1 text-base text-primary-500 font-bold whitespace-nowrap">
                           {filterKeyMap[filter]}
@@ -272,7 +272,7 @@ const Feed: React.FC<IFeedProps> = () => {
 
               {getAppliedFiltersCount() > 0 && (
                 <div
-                  className="flex items-center cursor-pointer font-medium text-neutral-500 rounded-[8px] border border-neutral-200 px-3 py-1 whitespace-nowrap"
+                  className="flex items-center cursor-pointer font-medium text-neutral-500 rounded-[8px] border border-neutral-200 px-3 h-[32px] whitespace-nowrap"
                   onClick={clearAppliedFilters}
                 >
                   Clear filters

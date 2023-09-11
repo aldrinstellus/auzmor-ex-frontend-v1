@@ -35,10 +35,16 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
   const myVote = (data as IPost)?.myVote;
   const postType = (data as IPost)?.type;
 
-  const isEmpty = useMemo(
-    () => data.content.text === '\n' || data.content.text === '',
-    [data],
-  );
+  const isEmpty = useMemo(() => {
+    const ops = data.content.editor.ops || [];
+
+    for (const op of ops) {
+      if (op.insert && op.insert.emoji) {
+        return false; // If an emoji is found, return false
+      }
+    }
+    return data.content.text === '\n' || data.content.text === '';
+  }, [data]);
 
   useEffect(() => {
     const element = document.getElementById(`${data?.id}-content`);
@@ -127,7 +133,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
   );
 
   return (
-    <div className="text-sm">
+    <div className="w-full text-sm">
       {!isEmpty && (
         <span
           className="line-clamp-3 paragraph pt-px"
@@ -173,21 +179,23 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
           />
         </div>
       )}
-      {data?.shoutoutRecipients && data?.shoutoutRecipients.length > 0 && (
-        <div className="mt-4 flex flex-col gap-2">
-          <p
-            className="text-xs text-neutral-500"
-            data-testid="feed-post-shoutoutto-list"
-          >
-            Shoutout to:
-          </p>
-          <AvatarChips
-            users={data.shoutoutRecipients}
-            showCount={3}
-            dataTestId="feed-post-shoutoutto-"
-          />
-        </div>
-      )}
+      {data?.shoutoutRecipients &&
+        data?.shoutoutRecipients.length > 0 &&
+        !isAnnouncementWidgetPreview && (
+          <div className="mt-4 flex flex-col gap-2">
+            <p
+              className="text-xs text-neutral-500"
+              data-testid="feed-post-shoutoutto-list"
+            >
+              Shoutout to:
+            </p>
+            <AvatarChips
+              users={data.shoutoutRecipients}
+              showCount={3}
+              dataTestId="feed-post-shoutoutto-"
+            />
+          </div>
+        )}
     </div>
   );
 };
