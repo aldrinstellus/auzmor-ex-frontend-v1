@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Logo } from 'components/Logo';
-import WelcomeOffice from 'images/welcomeToOffice.png';
 import { Success } from 'components/Logo';
 import Layout, { FieldType } from 'components/Form';
 import Button, { Size, Type } from 'components/Button';
@@ -67,60 +66,63 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
   return (
     <div className="flex h-screen w-screen">
       <div
-        className=" w-[710px] bg-welcome-to-office"
+        className="w-[49.3vw] h-full bg-welcome-to-office bg-no-repeat bg-cover bg-bottom"
         data-testid="forgot-password-cover-image"
       />
 
       <div className="flex-1 h-full flex justify-center relative bg-white overflow-y-auto">
         <div
-          className="absolute top-8 right-8"
+          className="absolute top-[4.55vh] right-[3.5vw]"
           data-testid="forgot-password-logo-image"
         >
           <Logo />
         </div>
-        <div className="w-full max-w-[440px] ">
-          {forgotPasswordMutation.isSuccess ? (
-            <div className="h-full flex flex-col justify-center">
-              <div
-                className="text-center flex justify-center items-center flex-col space-y-9"
-                data-testid="forgot-password-success-message"
-              >
-                <Success />
-                <div>
-                  Email has been sent to <b>{getValues().email}</b> with
-                  instructions on resetting your password.
+        <div className="pt-[6.5px] 3xl:pt-[63px] mr-[60px] ml-[8.5px] w-[414px] h-full">
+          <div className="w-full max-w-[414px]">
+            {forgotPasswordMutation.isSuccess ? (
+              <div className="h-full pt-[270px] flex flex-col justify-center">
+                <div
+                  className="text-center flex justify-center items-center flex-col space-y-9"
+                  data-testid="forgot-password-success-message"
+                >
+                  <Success />
+                  <div>
+                    Email has been sent to
+                    <b>{getValues().email}</b> with instructions on resetting
+                    your password.
+                  </div>
                 </div>
-              </div>
-              <Button
-                label={'Back to Sign In'}
-                className="w-full mt-8"
-                onClick={() => navigate('/login')}
-                size={Size.Large}
-              />
-            </div>
-          ) : (
-            <div className="mt-20">
-              <div className="font-extrabold text-neutral-900 text-4xl">
-                Forgot Password
-              </div>
-              <form
-                className="mt-24"
-                onSubmit={handleSubmit(onSubmit)}
-                data-testid="forgot-password-form"
-              >
-                <Layout fields={fields} />
                 <Button
-                  type={Type.Submit}
-                  label={'Reset Via Email'}
-                  loading={forgotPasswordMutation.isLoading}
+                  label={'Back to Sign In'}
                   className="w-full mt-8"
+                  onClick={() => navigate('/login')}
                   size={Size.Large}
-                  disabled={!isValid}
-                  data-testid="forgot-password-submit"
                 />
-              </form>
-            </div>
-          )}
+              </div>
+            ) : (
+              <div className="mt-20">
+                <div className="font-extrabold text-neutral-900 text-4xl">
+                  Forgot Password
+                </div>
+                <form
+                  className="mt-32"
+                  onSubmit={handleSubmit(onSubmit)}
+                  data-testid="forgot-password-form"
+                >
+                  <Layout fields={fields} />
+                  <Button
+                    type={Type.Submit}
+                    label={'Reset Via Email'}
+                    loading={forgotPasswordMutation.isLoading}
+                    className="w-full mt-8"
+                    size={Size.Large}
+                    disabled={!isValid}
+                    data-testid="forgot-password-submit"
+                  />
+                </form>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
