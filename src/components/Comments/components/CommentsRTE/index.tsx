@@ -34,6 +34,7 @@ import Banner, { Variant as BannerVariant } from 'components/Banner';
 export enum PostCommentMode {
   Create = 'CREATE',
   Edit = 'EDIT',
+  SendWish = 'SEND_WISH',
 }
 
 interface CommentFormProps {
@@ -95,6 +96,14 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
       console.log(error);
     },
     onSuccess: async (data: any, variables, context) => {
+      if (mode === PostCommentMode.SendWish) {
+        queryClient.invalidateQueries(['celebrations'], {
+          exact: false,
+        });
+        queryClient.invalidateQueries(['get-post', entityId], {
+          exact: false,
+        });
+      }
       quillRef.current?.setEditorContents(quillRef.current?.getEditor(), '');
       removeMedia();
       await queryClient.setQueryData(
@@ -218,7 +227,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
       const uploadedMedia = await uploadMedia(files, EntityType.Comment);
       fileIds = uploadedMedia.map((media: IMedia) => media.id);
     }
-    if (mode === PostCommentMode.Create) {
+    if (mode === PostCommentMode.Create || mode === PostCommentMode.SendWish) {
       setIsCreateCommentLoading(true);
       let fileIds: string[] = [];
       if (files.length) {
@@ -306,11 +315,15 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
 
   return (
     <div className={`flex flex-row ${className} `}>
-      <div className="flex flex-col items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full">
+      <div className="flex flex-col items-center py-[7px] gap-2 border border-neutral-200 rounded-19xl border-solid w-full">
         <RichTextEditor
           toolbarId={`toolbar-${entityId}`}
           defaultValue={commentData?.content?.editor}
-          placeholder="Leave a comment..."
+          placeholder={
+            mode === PostCommentMode.SendWish
+              ? 'Wish them now...'
+              : 'Leave a comment...'
+          }
           className="max-h-18 min-w-[70%] relative"
           ref={quillRef}
           dataTestId="postcomment-textbox"
@@ -336,10 +349,14 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
                 className="flex mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
                 size={SizeVariant.Large}
                 variant={IconVariant.Primary}
-                dataTestId="postcomment-mediacta"
+                dataTestId={
+                  mode === PostCommentMode.SendWish
+                    ? 'send-image'
+                    : 'postcomment-mediacta'
+                }
                 onClick={() => inputRef && inputRef?.current?.click()}
               />
-              <button className="ql-emoji" />
+              <button className="ql-emoji" data-testid="send-gif" />
               <IconButton
                 icon={'send'}
                 className="flex mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
@@ -350,7 +367,11 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
                     onSubmit();
                   }
                 }}
-                dataTestId="postcomment-sendcta"
+                dataTestId={
+                  mode === PostCommentMode.SendWish
+                    ? 'send-wishes-cta'
+                    : 'postcomment-sendcta'
+                }
                 disabled={mediaValidationErrors.length > 0}
               />
             </div>

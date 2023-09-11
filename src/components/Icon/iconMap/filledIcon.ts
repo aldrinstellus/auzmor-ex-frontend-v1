@@ -81,6 +81,7 @@ import SvgHomeFilled from '../components/Home/HomeFilled';
 import SvgExploreFilled from '../components/Explore/ExploreFilled';
 import SvgLauncherFilled from '../components/Launcher/LauncherFilled';
 import SvgFeedFilled from '../components/Feed/FeedFilled';
+import PostBookMarkFilled from '../components/PostBookmark/PostBookmarkFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -166,4 +167,5 @@ export const filledIcon = {
   videoFilled: SvgVideoFilled,
   zoomInFilled: SvgZoomInFilled,
   zoomOutFilled: SvgZoomOutFilled,
+  postBookmarkFilled: PostBookMarkFilled,
 };

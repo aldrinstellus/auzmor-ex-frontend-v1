@@ -279,12 +279,8 @@ const People: React.FC<IPeopleProps> = ({
                         return role?.value === userCard.role;
                       } else return true;
                     })
-                    .map((user: any) => (
-                      <PeopleCard
-                        key={user.id}
-                        {...user}
-                        image={getProfileImage(user, 'large')}
-                      />
+                    .map((user: IGetUser) => (
+                      <PeopleCard key={user.id} userData={user} />
                     ))}
                   <div className="h-12 w-12">
                     {hasNextPage && !isFetchingNextPage && <div ref={ref} />}

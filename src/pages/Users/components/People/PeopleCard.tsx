@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import _ from 'lodash';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
@@ -7,11 +7,8 @@ import useRole from 'hooks/useRole';
 import { useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import Icon from 'components/Icon';
-import PopupMenu from 'components/PopupMenu';
 import {
-  EditUserSection,
-  UserEditType,
-  UserRole,
+  IGetUser,
   UserStatus,
   updateRoleToAdmin,
   updateStatus,
@@ -19,7 +16,12 @@ import {
 } from 'queries/users';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
-import { getEditSection, titleCase, twConfig } from 'utils/misc';
+import {
+  getEditSection,
+  getProfileImage,
+  titleCase,
+  twConfig,
+} from 'utils/misc';
 import { PRIMARY_COLOR, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import useModal from 'hooks/useModal';
@@ -29,18 +31,10 @@ import UserProfileDropdown from 'components/UserProfileDropdown';
 import DeactivatePeople from '../DeactivateModal/Deactivate';
 import ReactivatePeople from '../ReactivateModal/Reactivate';
 import clsx from 'clsx';
+import { IDepartment } from 'queries/department';
 
 export interface IPeopleCardProps {
-  id: string;
-  role: any;
-  fullName: string;
-  image?: string;
-  designation?: string;
-  department?: string;
-  location?: string;
-  active?: boolean;
-  workEmail?: string;
-  status?: any;
+  userData: IGetUser;
 }
 
 export enum Status {
@@ -59,18 +53,9 @@ const statusColorMap: Record<string, string> = {
   [Status.SUPERADMIN]: PRIMARY_COLOR,
 };
 
-const PeopleCard: React.FC<IPeopleCardProps> = ({
-  id,
-  role,
-  fullName,
-  image,
-  designation,
-  department,
-  location,
-  active,
-  status,
-  workEmail,
-}) => {
+const PeopleCard: React.FC<IPeopleCardProps> = ({ userData }) => {
+  const { id, role, fullName, designation, status, department, location } =
+    userData;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -233,7 +218,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
               UserStatus.Invited,
               UserStatus.Created,
               UserStatus.Attempted,
-            ].includes(status)
+            ].includes(status as UserStatus)
           ) {
             return (
               <div
@@ -248,7 +233,11 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
             );
           }
 
-          if ([Status.ADMIN, Status.SUPERADMIN].includes(role)) {
+          if (
+            [Status.ADMIN, Status.SUPERADMIN].includes(
+              role as unknown as Status,
+            )
+          ) {
             return (
               <div
                 style={{
@@ -277,8 +266,8 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
           <Avatar
             size={80}
             name={fullName}
-            image={image}
-            active={active}
+            image={getProfileImage(userData, 'large')}
+            active={status === UserStatus.Active}
             dataTestId="people-card-profile-pic"
             showActiveIndicator
             disable={(status as any) === UserStatus.Inactive}
@@ -303,20 +292,20 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
           </div>
           <div
             className="flex justify-center items-center px-3 py-1 mt-2 rounded-xl"
-            data-testid={`people-card-department-${department}`}
+            data-testid={`people-card-department-${department?.name}`}
           >
             <div></div>
             <div className="text-neutral-900 text-xxs font-medium truncate">
-              {department}
+              {department?.name}
             </div>
           </div>
           <div className="flex space-x-[6px] mt-3">
             <div></div>
             <div
               className="text-neutral-500 text-xs font-normal truncate"
-              data-testid={`people-card-location-${location}`}
+              data-testid={`people-card-location-${location?.name}`}
             >
-              {location}
+              {location?.name}
             </div>
           </div>
         </div>

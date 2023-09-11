@@ -226,7 +226,7 @@ export const hideEmojiPalette = (id = 'emoji-close-div') => {
 };
 
 export const getNouns = (label: string, count: number) => {
-  if (count <= 1) {
+  if (count === 1) {
     return label;
   } else {
     return label + 's';
