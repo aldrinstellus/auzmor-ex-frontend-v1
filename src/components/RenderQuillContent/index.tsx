@@ -55,10 +55,16 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
     closedAt: '2023-10-23T05:45:35Z',
   };
 
-  const isEmpty = useMemo(
-    () => data.content.text === '\n' || data.content.text === '',
-    [data],
-  );
+  const isEmpty = useMemo(() => {
+    const ops = data.content.editor.ops || [];
+
+    for (const op of ops) {
+      if (op.insert && op.insert.emoji) {
+        return false; // If an emoji is found, return false
+      }
+    }
+    return data.content.text === '\n' || data.content.text === '';
+  }, [data]);
 
   useEffect(() => {
     const element = document.getElementById(`${data?.id}-content`);
