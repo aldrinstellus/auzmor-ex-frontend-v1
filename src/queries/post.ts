@@ -75,6 +75,7 @@ export interface IPost {
   audience: IAudience[];
   isAnnouncement: boolean;
   announcement: {
+    actor?: Record<string, any>;
     end: string;
   };
   id?: string;
@@ -117,7 +118,7 @@ export interface IPost {
 
 export interface IPostPayload {
   id?: string;
-  content: {
+  content?: {
     text: string;
     html: string;
     editor: DeltaStatic;
@@ -136,18 +137,18 @@ export interface IPostPayload {
     userId?: string;
     workLocation?: string;
   };
-  hashtags: string[] | [];
+  hashtags?: string[] | [];
   files?: string[] | IMedia[];
   type: string;
-  audience: IAudience[];
+  audience?: IAudience[];
   shoutoutRecipients?: string[] | IShoutoutRecipient[];
-  isAnnouncement: boolean;
-  announcement: {
+  isAnnouncement?: boolean;
+  announcement?: {
     end: string;
   };
   pollContext?: IPoll;
   link?: Metadata | string;
-  schedule: {
+  schedule?: {
     dateTime: string;
     timeZone: string;
   } | null;
