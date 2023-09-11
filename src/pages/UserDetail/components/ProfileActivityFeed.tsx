@@ -34,7 +34,7 @@ const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
 
     const feedIds = (
       (myProfileFeed?.pages.flatMap((page) =>
-        page.data?.result?.data.map((post: { id: string }) => post),
+        page.data?.result?.data?.map((post: { id: string }) => post),
       ) as { id: string }[]) || []
     )
       ?.filter(({ id }) => !!feed[id])
@@ -46,13 +46,15 @@ const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
 
     const announcementFeedIds = feedIds
       ? feedIds.filter(
-          (post: { id: string }) => !!feed[post.id]?.announcement?.end,
+          (post: { id: string }) =>
+            !!feed[post.id]?.announcement?.end && !feed[post.id]?.acknowledged,
         )
       : [];
 
     const regularFeedIds = feedIds
       ? feedIds.filter(
-          (post: { id: string }) => !!!feed[post.id]?.announcement?.end,
+          (post: { id: string }) =>
+            !!!feed[post.id]?.announcement?.end || feed[post.id]?.acknowledged,
         )
       : [];
 
@@ -104,13 +106,15 @@ const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
 
     const announcementFeedIds = feedIds
       ? feedIds.filter(
-          (post: { id: string }) => !!feed[post.id]?.announcement?.end,
+          (post: { id: string }) =>
+            !!feed[post.id]?.announcement?.end && !feed[post.id]?.acknowledged,
         )
       : [];
 
     const regularFeedIds = feedIds
       ? feedIds.filter(
-          (post: { id: string }) => !!!feed[post.id]?.announcement?.end,
+          (post: { id: string }) =>
+            !!!feed[post.id]?.announcement?.end || feed[post.id]?.acknowledged,
         )
       : [];
 

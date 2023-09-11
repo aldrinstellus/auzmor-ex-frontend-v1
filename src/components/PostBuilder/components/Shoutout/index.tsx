@@ -26,10 +26,12 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
     setActiveFlow,
     setUploads,
     setShoutoutUserIds,
-    shoutoutUserIds,
     setPostType,
     removeAllMedia,
-    media,
+    shoutoutUsers,
+    setShoutoutUsers,
+    setShoutoutTemplate,
+    shoutoutTemplate,
   } = useContext(CreatePostContext);
   const { form, setForm } = useEntitySearchFormStore();
   const users = form ? form!.watch('users') : {};
@@ -37,15 +39,7 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
     defaultValues: {
       showSelectedMembers: false,
       selectAll: false,
-      users: {
-        ...shoutoutUserIds.reduce(
-          (obj, value) =>
-            Object.assign(obj, {
-              [value]: true,
-            }),
-          {},
-        ),
-      },
+      users: shoutoutUsers,
     },
   });
   const [step, setStep] = useState<SHOUTOUT_STEPS>(SHOUTOUT_STEPS.UserSelect);
@@ -80,6 +74,7 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
       });
       setSelectedUsers(_users);
       setShoutoutUserIds(ids);
+      setShoutoutUsers(users);
       setStep(SHOUTOUT_STEPS.ImageSelect);
     } else {
       setIsLoading(true);
@@ -137,6 +132,8 @@ const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
         getFile={getFile}
         setIsFileAdded={setIsFileAdded}
         users={selectedUsers}
+        shoutoutTemplate={shoutoutTemplate}
+        setShoutoutTemplate={setShoutoutTemplate}
         selectedUserIds={Object.keys(users).filter((key: string) => users[key])}
       />
       <div className="bg-blue-50 flex items-center justify-end p-3 gap-x-3 rounded-9xl w-full">

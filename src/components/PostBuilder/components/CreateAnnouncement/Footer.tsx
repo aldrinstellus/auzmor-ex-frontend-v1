@@ -14,6 +14,8 @@ import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
+import { useFeedStore } from 'stores/feedStore';
+import { produce } from 'immer';
 
 export interface IFooterProps {
   handleSubmit: UseFormHandleSubmit<FieldValues>;
@@ -32,6 +34,7 @@ const Footer: React.FC<IFooterProps> = ({
   data,
   getFormValues,
 }) => {
+  const { feed, updateFeed } = useFeedStore();
   const { setAnnouncement, setActiveFlow, announcement } =
     useContext(CreatePostContext);
 
@@ -71,12 +74,34 @@ const Footer: React.FC<IFooterProps> = ({
               : [],
         });
     },
-    onError: () => {},
+    onMutate: (variables) => {
+      const previousPost = feed[data!.id!];
+      const formData = getFormValues();
+      const expiryDate = formData?.date.toISOString().substring(0, 19) + 'Z';
+      if (data?.id) {
+        updateFeed(
+          data.id,
+          produce(feed[data.id], (draft) => {
+            (draft.announcement = {
+              end:
+                expiryDate ||
+                formData?.expiryOption?.value ||
+                afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
+            }),
+              (draft.isAnnouncement = true),
+              (draft.acknowledged = false);
+          }),
+        );
+      }
+      return { previousPost };
+    },
+    onError: (error, variables, context) => {
+      updateFeed(context!.previousPost.id!, context!.previousPost!);
+    },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['feed']);
       toast(
         <SuccessToast
-          content="Your announcement was converted to a post"
+          content="Your post  was converted to an announcement"
           data-testid="notification-announcement-to-post"
         />,
         {
@@ -95,6 +120,10 @@ const Footer: React.FC<IFooterProps> = ({
         },
       );
       closeModal();
+      await queryClient.invalidateQueries([
+        'feed-announcements-widget',
+        'post-announcements-widget',
+      ]);
     },
   });
   return (

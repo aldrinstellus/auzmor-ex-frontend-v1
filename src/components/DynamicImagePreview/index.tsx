@@ -5,22 +5,31 @@ import ImagePreview from './components/ImagePreview';
 import { toBlob } from 'html-to-image';
 
 interface IDynamicImagePreview {
-  onSubmit: (param: any) => void;
+  onSubmit: (file: any) => void;
   setIsFileAdded: (flag: boolean) => void;
   triggerSubmit: boolean;
   users?: any[];
+  selectedTemplate?: any;
+  setShoutoutTemplate?: ({ file, type }: { file: any; type: string }) => void;
+  file?: any;
 }
 
 const DynamicImagePreview: React.FC<IDynamicImagePreview> = ({
   onSubmit,
   triggerSubmit,
   setIsFileAdded,
+  selectedTemplate = {},
+  setShoutoutTemplate,
   users,
 }) => {
   const templateImageRef = useRef<HTMLInputElement>(null);
   const imageUploaderRef = useRef<HTMLInputElement>(null);
-  const [imageFile, setImageFile] = useState<any>(null);
-  const [selectedTemplateImage, setSelectedTemplateImage] = useState<any>(null);
+  const [imageFile, setImageFile] = useState<any>(
+    selectedTemplate.type === 'image' ? selectedTemplate.file || null : null,
+  );
+  const [selectedTemplateImage, setSelectedTemplateImage] = useState<any>(
+    selectedTemplate.type === 'template' ? selectedTemplate.file || null : null,
+  );
 
   const getFile = async () => {
     if (selectedTemplateImage && templateImageRef.current) {
@@ -59,6 +68,16 @@ const DynamicImagePreview: React.FC<IDynamicImagePreview> = ({
       setIsFileAdded(true);
     } else {
       setIsFileAdded(false);
+    }
+    if (selectedTemplateImage && selectedTemplateImage.id) {
+      setShoutoutTemplate!({ file: selectedTemplateImage, type: 'template' });
+    } else if (imageFile) {
+      setShoutoutTemplate!({
+        file: new File([imageFile], 'kudos.png', { type: imageFile.type }),
+        type: 'image',
+      });
+    } else {
+      setShoutoutTemplate!({ file: null, type: '' });
     }
   }, [selectedTemplateImage, imageFile]);
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
-import Button, { Variant as ButtonVariant } from 'components/Button';
+import Button, { Variant as ButtonVariant, Size } from 'components/Button';
 import { IAvatarUser } from 'components/AvatarChip';
 import UserRow from './UserRow';
 
@@ -21,7 +21,7 @@ const UserListModal: React.FC<IUserListModalProps> = ({
   return (
     <Modal
       open={open}
-      closeModal={close}
+      closeModal={closeModal}
       className="max-w-[638px]"
       dataTestId={`${dataTestId}modal`}
     >
@@ -46,8 +46,9 @@ const UserListModal: React.FC<IUserListModalProps> = ({
         <Button
           label="Close"
           variant={ButtonVariant.Secondary}
+          size={Size.Small}
+          className="py-[7px]"
           onClick={closeModal}
-          dataTestId={`${dataTestId}closecta`}
         />
       </div>
     </Modal>

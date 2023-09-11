@@ -107,7 +107,7 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
           theme: 'dark',
         },
       );
-      await queryClient.invalidateQueries(['bookmarks']);
+      await queryClient.invalidateQueries(['bookmarks'], { exact: false });
     },
   });
 
@@ -176,6 +176,7 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
             createdBy={post?.createdBy}
             audience={post.audience}
             dataTestId="feedpage-activity-username"
+            entityId={post.id}
             postType={post.type}
           />
           <div className="relative flex space-x-4 mr-6">
@@ -186,7 +187,7 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
               tooltipPosition="top"
             >
               <Icon
-                name="postBookmark"
+                name={post.bookmarked ? 'postBookmarkFilled' : 'postBookmark'}
                 size={24}
                 dataTestId="feed-post-bookmark"
                 onClick={() => handleBookmarkClick(post)}

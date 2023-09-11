@@ -5,6 +5,8 @@ import {
   useQuery,
 } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
+import { IDepartment } from './department';
+import { ILocation } from './location';
 
 // for future filters
 export enum PeopleFilterKeys {
@@ -103,7 +105,8 @@ export interface IGetUser {
   createdAt: string;
   status: string;
   timeZone?: string;
-  workLocation?: { id: string; name: string };
+  workLocation?: ILocation;
+  department?: IDepartment;
   designation?: string;
   coverImage?: { blurHash: string; id: string; original: string };
   freezeEdit?: {
