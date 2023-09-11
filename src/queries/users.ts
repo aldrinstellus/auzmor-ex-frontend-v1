@@ -108,7 +108,6 @@ export interface IGetUser {
   workLocation?: Record<string, string>;
   designation?: string;
   department?: IDepartment;
-  location?: ILocation;
 }
 
 export const getAllUser = async ({
