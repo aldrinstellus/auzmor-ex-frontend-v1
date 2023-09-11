@@ -37,8 +37,10 @@ const TeamsBody: React.FC<ITeamsBodyProps> = ({
   const debouncedSearchValue = useDebounce(teamSearch || '', 500);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteTeams({
-      q: debouncedSearchValue,
-      category: selectedCategories,
+      q: {
+        q: debouncedSearchValue,
+        category: selectedCategories,
+      },
     });
   const teamsData = data?.pages
     .flatMap((page) => {

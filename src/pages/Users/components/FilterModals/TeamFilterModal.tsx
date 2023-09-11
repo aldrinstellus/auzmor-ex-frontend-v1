@@ -5,24 +5,20 @@ import Button, { Variant as ButtonVariant, Type } from 'components/Button';
 import { useForm } from 'react-hook-form';
 import Divider from 'components/Divider';
 import { CategoryType, useInfiniteCategories } from 'queries/apps';
-import { useDebounce } from 'hooks/useDebounce';
 import InfiniteFilterList from 'components/InfiniteFilterList';
-import { find } from 'lodash';
 
 export interface ITeamFilterModalProps {
   open: boolean;
-  openModal: () => void;
   closeModal: () => void;
   filters: { categories: [] };
-  setFilters: (param: any) => void;
+  onApply: (param: any) => void;
 }
 
 const TeamFilterModal: React.FC<ITeamFilterModalProps> = ({
   open,
-  openModal,
   closeModal,
   filters,
-  setFilters,
+  onApply,
 }) => {
   const { handleSubmit } = useForm({
     mode: 'onChange',
@@ -30,10 +26,17 @@ const TeamFilterModal: React.FC<ITeamFilterModalProps> = ({
   const [selectedCategories, setSelectedCategories] = useState<any>([]);
 
   const onSubmit = () => {
-    setFilters({
-      categories: selectedCategories,
+    onApply({
+      categories: selectedCategories.map((category: any) => ({
+        id: category.id,
+        name: category.name,
+      })),
     });
     closeModal();
+  };
+
+  const isChecked = (selectedItems: any, item: any) => {
+    return selectedItems.some((_item: any) => _item.id === item.id);
   };
 
   useEffect(() => {
@@ -62,7 +65,7 @@ const TeamFilterModal: React.FC<ITeamFilterModalProps> = ({
               type="checkbox"
               data-testid={`select-'${item.name}'`}
               className="h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 outline-neutral-500"
-              checked={find(selectedCategories, item)}
+              checked={isChecked(selectedCategories, item)}
             />
             <span className="ml-3 text-xs font-medium">{item?.name}</span>
           </>
@@ -121,7 +124,7 @@ const TeamFilterModal: React.FC<ITeamFilterModalProps> = ({
             variant={ButtonVariant.Secondary}
             onClick={() => {
               setSelectedCategories([]);
-              setFilters({ categories: [] });
+              onApply({ categories: [] });
               closeModal();
             }}
             className="mr-4"

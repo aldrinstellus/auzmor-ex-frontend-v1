@@ -113,7 +113,13 @@ export const getTeam = async (id: string) => {
 
 // ------------------ React Query -----------------------
 
-export const useInfiniteTeams = (q?: Record<string, any>) => {
+export const useInfiniteTeams = ({
+  startFetching = true,
+  q,
+}: {
+  startFetching?: boolean;
+  q?: Record<string, any>;
+}) => {
   return useInfiniteQuery({
     queryKey: ['teams', q],
     queryFn: getAllTeams,
@@ -129,6 +135,7 @@ export const useInfiniteTeams = (q?: Record<string, any>) => {
       return currentPage?.data?.result?.paging?.prev;
     },
     staleTime: 5 * 60 * 1000,
+    enabled: startFetching,
   });
 };
 

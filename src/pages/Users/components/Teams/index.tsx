@@ -35,6 +35,7 @@ import queryClient from 'utils/queryClient';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { useMutation } from '@tanstack/react-query';
+import useURLParams from 'hooks/useURLParams';
 interface IForm {
   search?: string;
 }
@@ -75,7 +76,13 @@ const Team: React.FC<ITeamProps> = ({
   openTeamModal,
   closeTeamModal,
 }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const {
+    searchParams,
+    updateParam,
+    deleteParam,
+    serializeFilter,
+    parseParams,
+  } = useURLParams();
 
   const { user } = useAuth();
   const [teamFlow, setTeamFlow] = useState<TeamFlow>(TeamFlow.CreateTeam); // to context
@@ -90,6 +97,7 @@ const Team: React.FC<ITeamProps> = ({
   const [tab, setTab] = useState<TeamTab | string>(
     searchParams.get('tab') || TeamTab.AllTeams,
   );
+  const [startFetching, setStartFetching] = useState(false);
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
@@ -110,8 +118,9 @@ const Team: React.FC<ITeamProps> = ({
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteTeams(
-      isFiltersEmpty({
+    useInfiniteTeams({
+      startFetching,
+      q: isFiltersEmpty({
         q: debouncedSearchValue,
         sort: sortByFilter,
         userId: tab === TeamTab.MyTeams ? user?.id : undefined,
@@ -122,7 +131,7 @@ const Team: React.FC<ITeamProps> = ({
                 .join(', ')
             : undefined,
       }),
-    );
+    });
 
   const teamId = showTeamDetail?.id;
 
@@ -197,18 +206,42 @@ const Team: React.FC<ITeamProps> = ({
   });
 
   const handleRemoveFilters = (key: any, id: any) => {
+    const updatedFilter = filters[key].filter((item: any) => item.id !== id);
+    const serializedFilters = serializeFilter(updatedFilter);
+    if (updatedFilter.length === 0) {
+      deleteParam(key);
+    } else {
+      updateParam(key, serializedFilters);
+    }
     setFilters((prevFilters: any) => ({
       ...prevFilters,
-      [key]: prevFilters[key].filter((item: any) => item.id !== id),
+      [key]: updatedFilter,
     }));
   };
 
+  const onApplyFilter = (filter: any) => {
+    setFilters(filter);
+    const serializedCategories = serializeFilter(filter.categories);
+    updateParam('categories', serializedCategories);
+  };
+
   const clearFilters = () => {
+    deleteParam('categories');
     setFilters({
       categories: [],
     });
   };
-  console.log(showTeamDetail);
+
+  useEffect(() => {
+    const parsedCategories = parseParams('categories');
+    if (parsedCategories) {
+      setFilters((prevFilters: any) => ({
+        ...prevFilters,
+        categories: parsedCategories,
+      }));
+    }
+    setStartFetching(true);
+  }, []);
 
   return (
     <div className="relative pb-8">
@@ -222,10 +255,7 @@ const Team: React.FC<ITeamProps> = ({
             dataTestId="my-teams"
             active={tab === TeamTab.MyTeams && !searchValue}
             onClick={() => {
-              setSearchParams((params) => {
-                params.set('tab', TeamTab.MyTeams);
-                return params;
-              });
+              updateParam('tab', TeamTab.MyTeams);
               setTab(TeamTab.MyTeams);
             }}
           />
@@ -237,10 +267,7 @@ const Team: React.FC<ITeamProps> = ({
             dataTestId="all-teams"
             active={tab === TeamTab.AllTeams && !searchValue}
             onClick={() => {
-              setSearchParams((params) => {
-                params.set('tab', TeamTab.AllTeams);
-                return params;
-              });
+              updateParam('tab', TeamTab.AllTeams);
               setTab(TeamTab.AllTeams);
             }}
           />
@@ -516,10 +543,9 @@ const Team: React.FC<ITeamProps> = ({
 
       <TeamFilterModal
         open={showFilterModal}
-        openModal={openFilterModal}
         closeModal={closeFilterModal}
         filters={filters}
-        setFilters={setFilters}
+        onApply={onApplyFilter}
       />
     </div>
   );
