@@ -153,7 +153,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
   );
 
   return (
-    <div>
+    <div className="w-full">
       {!isEmpty && (
         <span
           className="line-clamp-3 paragraph pt-px text-sm"
@@ -197,21 +197,23 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
           />
         </div>
       )} */}
-      {data?.shoutoutRecipients && data?.shoutoutRecipients.length > 0 && (
-        <div className="mt-4 flex flex-col gap-2">
-          <p
-            className="text-xs text-neutral-500"
-            data-testid="feed-post-shoutoutto-list"
-          >
-            Shoutout to:
-          </p>
-          <AvatarChips
-            users={data.shoutoutRecipients}
-            showCount={3}
-            dataTestId="feed-post-shoutoutto-"
-          />
-        </div>
-      )}
+      {data?.shoutoutRecipients &&
+        data?.shoutoutRecipients.length > 0 &&
+        !isAnnouncementWidgetPreview && (
+          <div className="mt-4 flex flex-col gap-2">
+            <p
+              className="text-xs text-neutral-500"
+              data-testid="feed-post-shoutoutto-list"
+            >
+              Shoutout to:
+            </p>
+            <AvatarChips
+              users={data.shoutoutRecipients}
+              showCount={3}
+              dataTestId="feed-post-shoutoutto-"
+            />
+          </div>
+        )}
     </div>
   );
 };
