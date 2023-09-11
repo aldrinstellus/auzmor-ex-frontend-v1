@@ -26,7 +26,7 @@ const SkillsRow: React.FC<AppProps> = ({ data }) => {
         canEdit={false}
         value={
           <div className="flex items-center flex-wrap">
-            {data?.personal?.skills.map((skill: string, index: number) => (
+            {data?.personal?.skills?.map((skill: string, index: number) => (
               <div
                 key={skill}
                 data-testid={`personal-details-skill-${skill}`}

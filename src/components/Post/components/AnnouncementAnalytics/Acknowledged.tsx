@@ -9,17 +9,18 @@ import AvatarRowSkeleton from './AvatarRowSkeleton';
 import AvatarRow from './AvatarRow';
 import PageLoader from 'components/PageLoader';
 import Button, { Variant } from 'components/Button';
+import { useInfiniteAcknowledgements } from 'queries/post';
 
 type AppProps = {
-  id: string;
+  post: Record<string, any>;
   closeModal: () => any;
 };
 
-const Acknowledged: React.FC<AppProps> = ({ id, closeModal }) => {
+const Acknowledged: React.FC<AppProps> = ({ post, closeModal }) => {
   const { ref, inView } = useInView();
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteUsers({});
+    useInfiniteAcknowledgements(post.id, { acknowledged: true });
 
   const usersData = data?.pages.flatMap((page) =>
     page?.data?.result?.data.map((user: any) => user),
@@ -31,13 +32,19 @@ const Acknowledged: React.FC<AppProps> = ({ id, closeModal }) => {
     }
   }, [inView]);
 
+  const completePercent =
+    Math.ceil(
+      post?.acknowledgementStats?.acknowledged /
+        post?.acknowledgementStats?.audience,
+    ) * 100;
+
   return (
     <div>
       <div className="w-full max-h-[480px] overflow-y-scroll px-6">
         <div className="flex justify-center items-center py-5 border-b">
           <div style={{ width: 64, height: 64 }}>
             <CircularProgressbarWithChildren
-              value={50}
+              value={completePercent}
               className="center"
               strokeWidth={12}
               styles={buildStyles({
@@ -49,12 +56,13 @@ const Acknowledged: React.FC<AppProps> = ({ id, closeModal }) => {
                 trailColor: '#A3A3A3',
               })}
             >
-              <div className="text-sm font-semibold">50%</div>
+              <div className="text-sm font-semibold">{completePercent}%</div>
             </CircularProgressbarWithChildren>
           </div>
           <div className="ml-4">
             <div className="text-2xl text-primary-500 font-semibold">
-              50 out of 100 people
+              {post?.acknowledgementStats?.acknowledged} out of{' '}
+              {post?.acknowledgementStats?.audience} people
             </div>
             <div className="text-sm text-neutral-900">
               marked this post as &apos;read&apos;
@@ -83,6 +91,7 @@ const Acknowledged: React.FC<AppProps> = ({ id, closeModal }) => {
             label="Close"
             onClick={closeModal}
             variant={Variant.Secondary}
+            dataTestId="acknowledgement-report-close"
           />
         </div>
       </div>
