@@ -367,6 +367,17 @@ export const pollVote = async ({
   return data;
 };
 
+export const deletePollVote = async ({
+  postId,
+  optionId,
+}: {
+  postId: string;
+  optionId: string;
+}) => {
+  const data = await apiService.delete(`/posts/${postId}/votes/${optionId}`);
+  return data;
+};
+
 export const myProfileFeed = async (
   context: QueryFunctionContext<
     (string | Record<string, any> | undefined)[],

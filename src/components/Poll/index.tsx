@@ -11,14 +11,14 @@ import {
 } from 'contexts/CreatePostContext';
 import { getTimeFromNow } from 'utils/time';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { IPost, pollVote } from 'queries/post';
+import { IPost, deletePollVote, pollVote } from 'queries/post';
 import { useFeedStore } from 'stores/feedStore';
 import { produce } from 'immer';
 import Button, {
-  Type as ButtonType,
   Variant as ButtonVariant,
   Size as ButtonSize,
 } from 'components/Button';
+import clsx from 'clsx';
 
 export enum PollMode {
   VIEW = 'VIEW',
@@ -27,30 +27,37 @@ export enum PollMode {
 
 type PollProps = {
   mode: PollMode;
-  myVote?: { optionId: string };
   postId?: string;
+  myVote?: { optionId: string };
 };
 
-function animateOption(optionId: string, width: string, justify: string): void {
-  const optionProgress = document.getElementById(`option-progress-${optionId}`);
+function animateOption(
+  postId: string,
+  index: number,
+  width: string,
+  flexGrow: string,
+): void {
+  const optionProgress = document.getElementById(
+    `option-progress-${postId}-${index}`,
+  );
   optionProgress?.animate(
     {
       width: ['0%', width],
       easing: ['ease-out', 'ease-out'],
     },
-    500,
+    200,
   );
   optionProgress?.setAttribute('style', `width: ${width}`);
 
-  const optionText = document.getElementById(`option-text-${optionId}`);
+  const optionText = document.getElementById(`option-text-${postId}-${index}`);
   optionText?.animate(
     {
-      justifyContent: ['unset', justify],
+      flexGrow: ['1', flexGrow],
       easing: ['ease-out', 'ease-out'],
     },
-    500,
+    200,
   );
-  optionText?.setAttribute('style', `justify-content: ${justify}`);
+  optionText?.setAttribute('style', `flex-grow: ${flexGrow}`);
 }
 
 function getVotePercent(total: number, votes?: number) {
@@ -62,7 +69,7 @@ const Poll: React.FC<IPoll & PollProps> = ({
   options,
   closedAt,
   myVote,
-  postId,
+  postId = '',
   mode = PollMode.VIEW,
 }) => {
   const queryClient = useQueryClient();
@@ -80,10 +87,32 @@ const Poll: React.FC<IPoll & PollProps> = ({
         produce(feed[postId], (draft: IPost) => {
           draft.pollContext?.options.forEach((option) => {
             if (option._id === optionId) option.votes = (option.votes || 0) + 1;
-            if (option._id === previousPost?.myVote?.optionId && option.votes)
-              option.votes -= 1;
           });
           draft.myVote = { optionId };
+        }),
+      );
+      return { previousPost };
+    },
+    onError: (error, variables, context) => {
+      updateFeed(context!.previousPost.id!, context!.previousPost!);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['feed-post']);
+    },
+  });
+
+  const deleteVoteMutation = useMutation({
+    mutationKey: ['delete-poll-vote'],
+    mutationFn: deletePollVote,
+    onMutate: ({ postId, optionId }) => {
+      const previousPost = feed[postId];
+      updateFeed(
+        postId,
+        produce(feed[postId], (draft: IPost) => {
+          draft.pollContext?.options.forEach((option) => {
+            if (option._id === optionId && option.votes) option.votes -= 1;
+          });
+          draft.myVote = undefined;
         }),
       );
       return { previousPost };
@@ -100,25 +129,20 @@ const Poll: React.FC<IPoll & PollProps> = ({
     .map((option) => option.votes)
     .reduce((s: number, a) => s + (a || 0), 0);
 
+  const timeLeft = getTimeFromNow(closedAt);
+  const showTotal = mode === PollMode.VIEW;
+  const showViewResults = mode === PollMode.VIEW && !myVote?.optionId;
+
   useEffect(() => {
-    options.forEach((option) => {
-      if (!option._id) return;
-      if (showResults || (myVote && myVote.optionId)) {
-        animateOption(
-          option._id,
-          getVotePercent(total, option.votes),
-          'space-between',
-        );
+    if (mode === PollMode.EDIT) return;
+    options.forEach((option, index) => {
+      if (showResults || (myVote && myVote.optionId) || !timeLeft) {
+        animateOption(postId, index, getVotePercent(total, option.votes), '0');
       } else {
-        animateOption(option._id, '0%', 'center');
+        animateOption(postId, index, '0%', '1');
       }
     });
-  }, [options, myVote, showResults]);
-
-  const timeLeft = getTimeFromNow(closedAt);
-
-  const showTotal = mode === PollMode.VIEW;
-  const showViewResults = mode === PollMode.VIEW;
+  }, [mode, options, myVote, showResults, timeLeft]);
 
   return (
     <div className="bg-neutral-100 py-4 px-8 rounded-9xl w-full">
@@ -158,43 +182,68 @@ const Poll: React.FC<IPoll & PollProps> = ({
 
       {/* Options */}
       <div className="pb-6 flex flex-col gap-2">
-        {options.map((option) => (
-          <div
-            className={`grid ${
-              mode === PollMode.VIEW ? 'cursor-pointer' : 'cursor-default'
-            }`}
-            key={option._id}
-            onClick={() =>
-              mode === PollMode.VIEW &&
-              postId &&
-              option._id &&
-              voteMutation.mutate({ postId, optionId: option._id })
-            }
-          >
-            {/* The white background that contains the option */}
-            <div className="grid-area w-full bg-white rounded-19xl" />
-            {/* The progress bar that fills up the background */}
+        {options.map((option, index) => {
+          const cursorDefault =
+            mode === PollMode.EDIT || showResults || !postId || !option._id;
+          const isLoading =
+            voteMutation.isLoading || deleteVoteMutation.isLoading;
+          const votedAnotherOption =
+            myVote?.optionId && myVote.optionId !== option._id;
+          const cursorNotAllowed = !timeLeft || isLoading || votedAnotherOption;
+          const cursorPointer = !cursorDefault && !cursorNotAllowed;
+          const cursorClass = clsx({
+            'cursor-default': cursorDefault,
+            'cursor-not-allowed': cursorNotAllowed,
+            'cursor-pointer': cursorPointer,
+          });
+          return (
             <div
-              className={`grid-area w-0 ${
-                option._id === myVote?.optionId
-                  ? 'bg-emerald-600'
-                  : 'bg-green-100'
-              } rounded-19xl`}
-              id={`option-progress-${option._id}`}
-            />
-            {/* The option itself */}
-            <div
-              className="grid-area flex items-center justify-center w-full px-5 py-3 text-neutral-900 font-medium border-1 border-black"
-              id={`option-text-${option._id}`}
+              className={`grid ${cursorClass}`}
+              key={option._id}
+              onClick={() => {
+                if (cursorPointer && postId && option._id) {
+                  if (myVote?.optionId && myVote.optionId === option._id) {
+                    deleteVoteMutation.mutate({ postId, optionId: option._id });
+                  }
+                  if (!myVote?.optionId) {
+                    voteMutation.mutate({ postId, optionId: option._id });
+                  }
+                }
+              }}
             >
-              <span>{option.text}</span>
+              {/* The white background that contains the option */}
+              <div className="grid-area w-full bg-white rounded-19xl" />
+              {/* The progress bar that fills up the background */}
+              <div
+                className={`grid-area w-0 ${
+                  option._id === myVote?.optionId
+                    ? 'bg-emerald-600'
+                    : 'bg-green-100'
+                } rounded-19xl`}
+                id={`option-progress-${postId}-${index}`}
+              />
+              {/* The option itself */}
+              <div className="grid-area flex items-center justify-between w-full px-5 py-3 text-neutral-900 font-medium">
+                <span
+                  className={`text-center grow ${
+                    option._id && option._id === myVote?.optionId
+                      ? 'text-white'
+                      : 'text-inherit'
+                  }`}
+                  id={`option-text-${postId}-${index}`}
+                >
+                  {option.text}
+                </span>
 
-              <span>
-                {showResults ? getVotePercent(total, option.votes) : ''}
-              </span>
+                <span>
+                  {showResults || (myVote && myVote.optionId) || !timeLeft
+                    ? getVotePercent(total, option.votes)
+                    : ''}
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="flex flex-row gap-3 items-center text-xs leading-normal">
