@@ -6,3 +6,10 @@
 .ql-snow .ql-toolbar button {
   padding: 0px;
 }
+
+.ql-editor {
+  color: #171717;
+  font-size: 14px !important;
+  line-height: 19.6px !important;
+  font-weight: 400;
+}

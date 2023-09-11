@@ -1,23 +1,31 @@
 import React, { LegacyRef, ReactNode, memo, useContext, useState } from 'react';
 import ReactQuill, { Quill, UnprivilegedEditor } from 'react-quill';
 import { DeltaStatic, Sources } from 'quill';
+import moment from 'moment';
+
+// styles
 import 'react-quill/dist/quill.snow.css';
 import 'quill-emoji/dist/quill-emoji.css';
 import './mentions/quill.mention';
 import './mentions/quill.mention.css';
+import './styles.css';
 
+// blots
 import { MentionBlot } from './mentions/blots/mentions';
 import { LinkBlot } from './blots/link';
-import AutoLinks from './autoLinks';
 import EmojiBlot from './blots/emoji';
+import AutoLinks from './autoLinks';
 import EmojiToolbar from './emoji';
+
 import { mention, previewLinkRegex } from './config';
+
+// components
 import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
-import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import moment from 'moment';
 import MediaPreview, { Mode } from 'components/MediaPreview';
-import './styles.css';
+
+// context
+import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
+
 import { hasDatePassed } from 'utils/time';
 
 export interface IEditorContentChanged {

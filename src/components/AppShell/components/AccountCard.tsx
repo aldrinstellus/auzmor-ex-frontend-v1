@@ -37,12 +37,15 @@ const AccountCard = () => {
     <>
       <Popover
         triggerNode={
-          <Avatar
-            dataTestId="my-profile-avatar"
-            name={user?.name || 'U'}
-            size={32}
-            image={user?.profileImage}
-          />
+          <div className="flex gap-1 items-center">
+            <Avatar
+              dataTestId="my-profile-avatar"
+              name={user?.name || 'U'}
+              size={32}
+              image={user?.profileImage}
+            />
+            <Icon name="arrowDownOutline" size={16} />
+          </div>
         }
         className="-right-2 top-[52px] rounded-9xl"
         contentRenderer={(close) => (

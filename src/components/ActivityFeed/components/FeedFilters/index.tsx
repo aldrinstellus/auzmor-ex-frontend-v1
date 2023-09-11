@@ -1,5 +1,5 @@
 import { Popover, Transition } from '@headlessui/react';
-import Button, { Variant } from 'components/Button';
+import Button, { Size, Variant } from 'components/Button';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
@@ -250,10 +250,10 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
   };
 
   return (
-    <Popover className="z-40 mr-4">
+    <Popover className="z-40">
       <Tooltip tooltipContent="Filters" tooltipPosition="top">
         <Popover.Button
-          className="box-border font-bold flex flex-row justify-center items-center p-1 border-none relative"
+          className="box-border font-bold flex flex-row justify-center items-center border-none relative"
           onClick={() => {
             setShowFeedFilter(!showFeedFilter);
             setHaveFiltersBeenModified(false);
@@ -278,9 +278,9 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
         leaveTo="transform scale-95 opacity-0"
       >
         <Popover.Panel static>
-          <Card className="bg-white rounded-3xl top-full min-w-full w-max shadow-md z-10 mt-1 absolute">
+          <Card className="bg-white rounded-3xl top-full min-w-[250px] shadow-md z-10 mt-1 absolute right-0">
             <div
-              className="flex flex-row justify-center items-center py-2 px-4 gap-40"
+              className="flex justify-between items-center py-3 px-6"
               onClick={() => {
                 setShowFeedFilter(false);
                 setHaveFiltersBeenModified(true);
@@ -295,27 +295,22 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
               />
             </div>
             <div>
-              <ul className="text-left border rounded-md space-y-1">
+              <ul className="text-left">
                 {feedFilterOptions.map((option) => (
                   <div
                     key={option?.value}
                     onClick={() =>
                       !option.isDisabled && updateFeedFilters(option)
                     }
-                    className={`${
-                      option.isDisabled
-                        ? 'cursor-default text-neutral-400'
-                        : 'cursor-pointer'
-                    }`}
                     data-testid={option.dataTestId}
                   >
                     <li
                       className={
                         option?.type === FeedFilterContentType.Section
-                          ? 'bg-blue-50 text-gray-600 font-medium text-sm px-4 py-2 rounded-md min-w-full'
-                          : `bg-white font-medium text-sm px-4 py-2 rounded-md min-w-full overflow ${
+                          ? 'bg-blue-50 font-medium text-xs pl-6 py-1 min-w-full text-neutral-500 cursor-default'
+                          : `bg-white font-medium text-xs px-6 py-2 min-w-full text-neutral-900 overflow ${
                               isOptionSelected(option) && 'bg-green-50'
-                            } hover:bg-green-50 flex items-center`
+                            } hover:bg-green-50 flex items-center gap-[10px] border-b cursor-pointer`
                       }
                       value={option?.value}
                     >
@@ -324,7 +319,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
                         className={
                           option?.type === FeedFilterContentType.Section
                             ? 'hidden'
-                            : 'block px-2 mr-2 accent-emerald-600 '
+                            : 'block accent-emerald-600 '
                         }
                         disabled={option.isDisabled}
                         checked={isOptionSelected(option)}
@@ -335,9 +330,9 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
                 ))}
               </ul>
             </div>
-            <div className="flex items-center justify-around mt-3 mb-2">
+            <div className="flex items-center justify-between py-2 px-6">
               <button
-                className={`box-border border-none px-4 ${
+                className={`text-sm font-bold ${
                   isFeelFiltersEmpty() ? 'text-gray-400' : 'text-gray-900'
                 }`}
                 onClick={clearFeedFilters}
@@ -349,6 +344,7 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
               <Button
                 label="Apply"
                 variant={Variant.Primary}
+                size={Size.Small}
                 disabled={!haveFiltersBeenModified}
                 onClick={() => {
                   onApplyFilters && onApplyFilters(feedFilters);

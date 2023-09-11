@@ -41,7 +41,7 @@ const AvatarChips: React.FC<IAvatarChipsProps> = ({
         {users.length > showCount && (
           <div
             className={`flex items-center w-fit gap-1 rounded-[24px] border-1 border-neutral-200 bg-neutral-100
-      px-2 py-3 text-primary-500 text-semibold text-sm 
+      px-3 py-2 text-primary-500 text-semibold text-sm 
       hover:border-primary-500 transition cursor-pointer ${avatarClassName}`}
             onClick={openModal}
             data-testid={`${dataTestId}morecta`}

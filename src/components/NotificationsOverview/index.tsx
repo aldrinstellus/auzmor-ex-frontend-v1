@@ -70,9 +70,9 @@ const NotificationsOverview: React.FC = () => {
   return (
     <Popover
       triggerNode={
-        <div className="font-bold flex flex-row justify-center items-center p-1 gap-4 border-none relative">
+        <div className="font-bold flex flex-row justify-center items-center p-3 border-none relative">
           {!isLoading && !isError && data?.data?.result?.unread > 0 && (
-            <div className="absolute rounded-full bg-red-600 text-white antialiased text-sm -top-1 -right-1.5 flex w-5 h-5 items-center justify-center">
+            <div className="absolute rounded-full bg-red-600 border border-white text-white antialiased text-xs font-bold leading-4 top-2 right-2.5 flex w-4 h-4 items-center justify-center">
               {/* Get unread notif count here */}
               {(data.data.result.unread > 10
                 ? '9+'
@@ -80,19 +80,19 @@ const NotificationsOverview: React.FC = () => {
             </div>
           )}
           {isLoading && (
-            <Spinner className="absolute -top-1 -right-1.5 fill-red-600 !w-4 !h-4 !m-0" />
+            <Spinner className="absolute top-1.5 right-2.5 fill-red-600 !w-4 !h-4 !m-0" />
           )}
 
           <Icon
             name="notification"
-            size={26}
+            size={25}
             dataTestId="office-notification-page"
           />
         </div>
       }
       ref={viewAllRef}
     >
-      <Card className="absolute w-[455px] right-0 top-6 ">
+      <Card className="absolute w-[455px] right-0 top-4 border border-neutral-200">
         {/* Header */}
         <div className="px-6 py-4 flex items-center justify-between">
           <p className="text-gray-900 font-extrabold text-base">

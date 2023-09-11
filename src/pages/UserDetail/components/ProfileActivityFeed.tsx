@@ -60,11 +60,7 @@ const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
 
     return (
       <div>
-        <CreatePostCard
-          open={open}
-          openModal={openModal}
-          closeModal={closeModal}
-        />
+        <CreatePostCard openModal={openModal} />
         <PostBuilder
           open={open}
           openModal={openModal}

@@ -135,22 +135,22 @@ const Footer: React.FC<IFooterProps> = ({
           setActiveFlow(CreatePostFlow.CreateShoutout);
         },
       },
-      {
-        id: 3,
-        label: 'Events',
-        icon: (
-          <Icon
-            name="calendarFilledTwo"
-            size={16}
-            color={'text-neutral-900'}
-            disabled
-            dataTestId="feed-createpost-events"
-          />
-        ),
-        menuItems: [],
-        divider: <Divider variant={DividerVariant.Vertical} />,
-        disabled: true,
-      },
+      // {
+      //   id: 3,
+      //   label: 'Events',
+      //   icon: (
+      //     <Icon
+      //       name="calendarFilledTwo"
+      //       size={16}
+      //       color={'text-neutral-900'}
+      //       disabled
+      //       dataTestId="feed-createpost-events"
+      //     />
+      //   ),
+      //   menuItems: [],
+      //   divider: <Divider variant={DividerVariant.Vertical} />,
+      //   disabled: true,
+      // },
       {
         id: 4,
         label: 'Polls',
@@ -178,7 +178,7 @@ const Footer: React.FC<IFooterProps> = ({
         icon: (
           <Icon
             name="moreOutline"
-            color="text-[#292D32]"
+            color="stroke-[#292D32]"
             dataTestId="feed-createpost-ellipsis-icon"
           />
         ),
@@ -214,13 +214,13 @@ const Footer: React.FC<IFooterProps> = ({
 
   return (
     <div className="flex justify-between items-center px-6 py-4 bg-blue-50 rounded-b-9xl">
-      <div className="flex relative">
+      <div className="flex relative gap-4">
         {postMenuItems.map(
           (postMenuItem) =>
             !postMenuItem.hidden && (
               <div
                 key={postMenuItem.id}
-                className="flex mr-4 items-center"
+                className="flex items-center"
                 onClick={() => {
                   if (!postMenuItem.disabled && postMenuItem.onClick) {
                     postMenuItem.onClick();
@@ -269,9 +269,9 @@ const Footer: React.FC<IFooterProps> = ({
           className="!h-8 bg-neutral-200"
         />
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center gap-3">
         {canSchedule && (
-          <div className="mr-4">
+          <div>
             <Tooltip tooltipContent="Schedule" className="cursor-pointer">
               <Icon
                 name="clockOutline"

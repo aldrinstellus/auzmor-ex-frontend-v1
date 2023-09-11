@@ -1,34 +1,42 @@
 import React, { ReactNode, useEffect, useRef } from 'react';
+import clsx from 'clsx';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
+import moment from 'moment';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+// components
 import Card from 'components/Card';
 import Actor from 'components/Actor';
+import Tooltip from 'components/Tooltip';
 import { VIEW_POST } from 'components/Actor/constant';
 import CommentCard from 'components/Comments/index';
 import Likes, { ReactionType } from 'components/Reactions';
-import FeedPostMenu from './components/FeedPostMenu';
-import { IPost, createBookmark, deleteBookmark } from 'queries/post';
 import Icon from 'components/Icon';
+import RenderQuillContent from 'components/RenderQuillContent';
 import Button, { Size, Variant } from 'components/Button';
-import clsx from 'clsx';
-import { getTimeInScheduleFormat, humanizeTime } from 'utils/time';
+import Divider from 'components/Divider';
+import FeedPostMenu from './components/FeedPostMenu';
 import AcknowledgementBanner from './components/AcknowledgementBanner';
 import ReactionModal from './components/ReactionModal';
-import RenderQuillContent from 'components/RenderQuillContent';
-import { getNouns, twConfig } from 'utils/misc';
-import Divider from 'components/Divider';
-import useModal from 'hooks/useModal';
 import PublishPostModal from './components/PublishPostModal';
 import EditSchedulePostModal from './components/EditSchedulePostModal';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useFeedStore } from 'stores/feedStore';
-import Tooltip from 'components/Tooltip';
-import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
+
+// queries
+import { IPost, createBookmark, deleteBookmark } from 'queries/post';
+
+// utils
+import { getTimeInScheduleFormat, humanizeTime } from 'utils/time';
+import { getNouns, twConfig } from 'utils/misc';
 import { slideInAndOutTop } from 'utils/react-toastify';
-import moment from 'moment';
-import _ from 'lodash';
-import { useNavigate } from 'react-router';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+
+// hooks
+import useModal from 'hooks/useModal';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
+
+import { useFeedStore } from 'stores/feedStore';
 
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
@@ -167,19 +175,20 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
 
   return (
     <>
-      <Card className="mb-6 pb-6">
+      <Card className="flex flex-col">
         <AcknowledgementBanner data={post} />
-        <div className="flex justify-between items-center">
-          <Actor
-            contentMode={VIEW_POST}
-            createdTime={humanizeTime(post.createdAt!)}
-            createdBy={post?.createdBy}
-            audience={post.audience}
-            dataTestId="feedpage-activity-username"
-            entityId={post.id}
-            postType={post.type}
-          />
-          <div className="relative flex space-x-4 mr-6">
+        <div className="post-content p-6 flex flex-col gap-4">
+          <div className="flex gap-4 justify-between items-start p-1">
+            <Actor
+              contentMode={VIEW_POST}
+              createdTime={humanizeTime(post.createdAt!)}
+              createdBy={post?.createdBy}
+              audience={post.audience}
+              dataTestId="feedpage-activity-username"
+              entityId={post.id}
+              postType={post.type}
+            />
+
             <Tooltip
               tooltipContent={
                 post.bookmarked ? 'Remove from bookmark' : 'Bookmark post'
@@ -194,20 +203,15 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
                 isActive={post.bookmarked}
               />
             </Tooltip>
-            <FeedPostMenu data={post as unknown as IPost} />
+            <div className="relative">
+              <FeedPostMenu data={post as unknown as IPost} />
+            </div>
           </div>
-        </div>
-        {post?.schedule && (
-          <div className="flex mx-6 items-center bg-primary-50 px-3 py-2 justify-between mb-4">
-            <div className="flex">
-              <div className="mr-2">
-                <Icon
-                  name="calendarOutline"
-                  size={16}
-                  color="text-neutral-900"
-                />
-              </div>
-              <div className="text-xs font-medium text-neutral-600">
+
+          {post?.schedule && (
+            <div className="flex items-center gap-2 bg-primary-50 justify-between px-3 py-2">
+              <Icon name="calendarOutline" size={16} color="text-neutral-900" />
+              <div className="text-xs font-medium text-neutral-600 flex-1">
                 Post scheduled for{' '}
                 {getTimeInScheduleFormat(
                   new Date(post?.schedule.dateTime),
@@ -216,95 +220,87 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
                   currentTimezone,
                 )}
               </div>
-            </div>
-            <div className="flex items-center">
-              <div className="group mr-4">
+              <div className="flex items-center gap-4">
                 <Icon
                   name="editOutline"
                   size={16}
                   color="text-neutral-900"
                   onClick={openEditSchedulePostModal}
                 />
-              </div>
-              <div
-                className="text-xs font-bold whitespace-nowrap text-neutral-900 
-                underline cursor-pointer hover:text-primary-500 decoration-neutral-400"
-                onClick={openPublishModal}
-                data-testid="scheduledpost-tab-publishnow"
-              >
-                Publish now
+                <div
+                  className="text-xs font-bold whitespace-nowrap text-neutral-900 
+                underline cursor-pointer hover:text-primary-500 decoration-neutral-400 hover:decoration-primary-400"
+                  onClick={openPublishModal}
+                  data-testid="scheduledpost-tab-publishnow"
+                >
+                  Publish now
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <div className="mx-6">
           <RenderQuillContent data={post} />
           {/* Reaction Count */}
 
           {(totalCount > 0 || post?.commentsCount > 0) && !!!post.schedule && (
-            <>
-              <Divider className="mt-4" />
-              <div className="flex flex-row justify-between my-3">
-                <div
-                  className={`flex flex-row items-center space-x-1 group`}
-                  data-testid="feed-post-reactioncount"
-                  onClick={() => openReactionModal()}
-                >
-                  {totalCount > 0 && (
-                    <div className="flex">
-                      {Object.keys(post.reactionsCount)
-                        .filter(
-                          (key) =>
-                            !!post.reactionsCount[key] &&
-                            post.reactionsCount[key] > 0,
-                        )
-                        .slice(0, 3)
-                        .map((key, i) => (
-                          <div
-                            className={`${
-                              i > 0 ? 'p-[1px] -ml-[8px] z-1' : 'p-[1px]'
-                            }`}
-                            key={key}
-                          >
-                            <Icon name={`${key}Reaction`} size={20} />
-                          </div>
-                        ))}
-                    </div>
-                  )}
-                  {totalCount > 0 && (
-                    <div
-                      className={`flex text-xs font-normal text-neutral-500 cursor-pointer group-hover:text-primary-500`}
-                    >
-                      {totalCount} reacted
-                    </div>
-                  )}
-                </div>
-                {post?.commentsCount > 0 && (
-                  <div className="flex flex-row text-xs font-normal text-neutral-500 space-x-7 items-center cursor-pointer hover:text-primary-500">
-                    <div
-                      onClick={() => {
-                        if (showComments) {
-                          closeComments();
-                        } else {
-                          openComments();
-                        }
-                      }}
-                      data-testid="feed-post-commentscount"
-                    >
-                      {post.commentsCount || 0}{' '}
-                      {getNouns('comment', post?.commentsCount || 0)}
-                    </div>
-                    {/* <div data-testid="feed-post-repostcount">0 reposts</div> */}
+            <div className="flex flex-row justify-between py-3 border-y-1 border-y-neutral-100">
+              <div
+                className={`flex flex-row items-center space-x-1 group`}
+                data-testid="feed-post-reactioncount"
+                onClick={() => openReactionModal()}
+              >
+                {totalCount > 0 && (
+                  <div className="flex">
+                    {Object.keys(post.reactionsCount)
+                      .filter(
+                        (key) =>
+                          !!post.reactionsCount[key] &&
+                          post.reactionsCount[key] > 0,
+                      )
+                      .slice(0, 3)
+                      .map((key, i) => (
+                        <div
+                          className={`${
+                            i > 0 ? 'p-[1px] -ml-[8px] z-1' : 'p-[1px]'
+                          }`}
+                          key={key}
+                        >
+                          <Icon name={`${key}Reaction`} size={20} />
+                        </div>
+                      ))}
+                  </div>
+                )}
+                {totalCount > 0 && (
+                  <div
+                    className={`flex text-xs font-normal text-neutral-500 cursor-pointer group-hover:text-primary-500`}
+                  >
+                    {totalCount} reacted
                   </div>
                 )}
               </div>
-              <Divider className="mt-3" />
-            </>
+              {post?.commentsCount > 0 && (
+                <div className="flex flex-row text-xs font-normal text-neutral-500 space-x-7 items-center cursor-pointer hover:text-primary-500">
+                  <div
+                    onClick={() => {
+                      if (showComments) {
+                        closeComments();
+                      } else {
+                        openComments();
+                      }
+                    }}
+                    data-testid="feed-post-commentscount"
+                  >
+                    {post.commentsCount || 0}{' '}
+                    {getNouns('comment', post?.commentsCount || 0)}
+                  </div>
+                  {/* <div data-testid="feed-post-repostcount">0 reposts</div> */}
+                </div>
+              )}
+            </div>
           )}
 
           {!!!post.schedule && (
-            <div className="flex justify-between pt-4">
+            <div className="flex justify-between">
               <div className="flex space-x-6">
                 {/* this is for post */}
                 <Likes
@@ -341,15 +337,16 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
               </div> */}
             </div>
           )}
-          {/* Comments */}
-          {showComments ? (
-            <div className="mt-6">
-              <CommentCard entityId={post?.id || ''} />
-            </div>
-          ) : (
-            !previousShowComment.current && customNode
-          )}
         </div>
+
+        {/* Comments */}
+        {showComments ? (
+          <div className="pb-3 px-3">
+            <CommentCard entityId={post?.id || ''} />
+          </div>
+        ) : (
+          !previousShowComment.current && customNode
+        )}
       </Card>
       {showReactionModal && (
         <ReactionModal

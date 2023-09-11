@@ -35,8 +35,8 @@ const Body: React.FC<PollBodyProps> = ({
   datePickerField,
 }) => {
   return (
-    <div className="px-4 py-6 max-h-[510px] overflow-y-auto">
-      <Layout fields={questionField} className="mb-5" />
+    <div className="p-6 max-h-[510px] overflow-y-auto flex flex-col gap-6">
+      <Layout fields={questionField} />
       {fields.map((field, index) => (
         <OptionRow
           key={field.id}
@@ -45,7 +45,6 @@ const Body: React.FC<PollBodyProps> = ({
           index={index}
           control={control}
           remove={remove}
-          className="mb-6"
         />
       ))}
       <Button

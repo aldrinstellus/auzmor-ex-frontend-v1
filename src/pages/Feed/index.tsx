@@ -1,17 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { Link, useSearchParams, useLocation } from 'react-router-dom';
+
+// components
 import PostBuilder from 'components/PostBuilder';
 import UserCard from 'components/UserWidget';
 import AnnouncementCard from 'components/AnnouncementWidget';
-import NoPosts from 'images/NoPostsFound.png';
-import {
-  IPostFilters,
-  PostFilterKeys,
-  PostType,
-  useInfiniteFeed,
-} from 'queries/post';
 import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
 import Post from 'components/Post';
-import { useInView } from 'react-intersection-observer';
 import FeedFilter, {
   filterKeyMap,
 } from 'components/ActivityFeed/components/FeedFilters';
@@ -19,12 +15,7 @@ import Divider from 'components/Divider';
 import SortByDropdown from 'components/ActivityFeed/components/SortByDropdown';
 import Icon from 'components/Icon';
 import PageLoader from 'components/PageLoader';
-import useScrollTop from 'hooks/useScrollTop';
 import SkeletonLoader from './components/SkeletonLoader';
-import { useFeedStore } from 'stores/feedStore';
-import useModal from 'hooks/useModal';
-import { Link, useSearchParams, useLocation } from 'react-router-dom';
-
 import MyTeamWidget from 'components/MyTeamWidget';
 import HashtagFeedHeader from './components/HashtagFeedHeader';
 import BookmarkFeedHeader from './components/BookmarkFeedHeader';
@@ -33,7 +24,27 @@ import Tooltip from 'components/Tooltip';
 import CelebrationWidget, {
   CELEBRATION_TYPE,
 } from 'components/CelebrationWidget';
+
+// styles
 import './index.css';
+
+// hooks
+import useScrollTop from 'hooks/useScrollTop';
+import useModal from 'hooks/useModal';
+
+// queries
+import {
+  IPostFilters,
+  PostFilterKeys,
+  PostType,
+  useInfiniteFeed,
+} from 'queries/post';
+
+// store
+import { useFeedStore } from 'stores/feedStore';
+
+// misc
+import NoPosts from 'images/NoPostsFound.png';
 
 interface IFeedProps {}
 
@@ -74,20 +85,8 @@ const Feed: React.FC<IFeedProps> = () => {
   });
   const { feed } = useFeedStore();
 
-  useEffect(() => {
-    if (hashtag) {
-      setAppliedFeedFilters({ hashtags: [hashtag] });
-    }
-  }, [hashtag]);
-
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteFeed(pathname, appliedFeedFilters);
-
-  useEffect(() => {
-    if (inView) {
-      fetchNextPage();
-    }
-  }, [inView]);
 
   const feedIds = (
     (data?.pages.flatMap((page) =>
@@ -203,131 +202,149 @@ const Feed: React.FC<IFeedProps> = () => {
       );
     } else {
       return (
-        <>
-          <CreatePostCard
-            open={open}
-            openModal={openModal}
-            closeModal={closeModal}
-          />
-          <div className="flex flex-row items-center mt-8">
-            <div className="flex items-center">
-              <FeedFilter
-                appliedFeedFilters={appliedFeedFilters}
-                onApplyFilters={(filters: IPostFilters) => {
-                  setAppliedFeedFilters(filters);
-                }}
-                dataTestId="filters-dropdown"
-              />
-
-              <div className="mr-4">
-                <Tooltip
-                  tooltipContent="My Scheduled Posts"
-                  tooltipPosition="top"
-                >
-                  <Link to="/scheduledPosts">
-                    <Icon name="clock" size={24} />
-                  </Link>
-                </Tooltip>
+        <div className="flex flex-col gap-6">
+          <CreatePostCard openModal={openModal} />
+          <div className=" flex flex-col">
+            <div className="flex flex-row items-center gap-6 mb-2">
+              <div className="flex items-center gap-4">
+                <div className="">
+                  <Tooltip
+                    tooltipContent="My Scheduled Posts"
+                    tooltipPosition="top"
+                  >
+                    <Link to="/scheduledPosts">
+                      <Icon name="clock" size={24} />
+                    </Link>
+                  </Tooltip>
+                </div>
+                <div className="">
+                  <Tooltip tooltipContent="My Bookmarks" tooltipPosition="top">
+                    <Link to="/bookmarks" data-testid="feed-page-mybookmarks">
+                      <Icon name="postBookmark" size={24} />
+                    </Link>
+                  </Tooltip>
+                </div>
               </div>
-              <div className="mr-4">
-                <Tooltip tooltipContent="My Bookmarks" tooltipPosition="top">
-                  <Link to="/bookmarks" data-testid="feed-page-mybookmarks">
-                    <Icon name="postBookmark" size={24} />
-                  </Link>
-                </Tooltip>
+              <Divider className="bg-neutral-200 flex-1" />
+              <div className="flex items-center gap-3">
+                {getAppliedFiltersCount() > 0 && (
+                  <div
+                    className="flex items-center gap-1 cursor-pointer text-sm font-bold text-primary-600 bg-transparent"
+                    onClick={clearAppliedFilters}
+                  >
+                    <Icon
+                      name="deleteOutline"
+                      color="text-primary-600"
+                      className="cursor-pointer"
+                      size={16}
+                    />
+                    Clear All Filters
+                  </div>
+                )}
+                <FeedFilter
+                  appliedFeedFilters={appliedFeedFilters}
+                  onApplyFilters={(filters: IPostFilters) => {
+                    setAppliedFeedFilters(filters);
+                  }}
+                  dataTestId="filters-dropdown"
+                />
+                {/* <SortByDropdown /> */}
               </div>
             </div>
-            <Divider className="bg-neutral-200" />
-            <SortByDropdown />
-          </div>
 
-          {getAppliedFiltersCount() > 0 && (
-            <div className="flex w-full items-center justify-between overflow-y-auto mt-2 space-x-2">
-              <div className="flex items-center space-x-2">
-                <div className="text-base font-medium text-neutral-500 whitespace-nowrap">
+            {getAppliedFiltersCount() > 0 && (
+              <div className="flex w-full flex-wrap items-center gap-1">
+                {/* <div className="text-base font-medium text-neutral-500 whitespace-nowrap">
                   Filter By
-                </div>
+                </div> */}
                 {appliedFeedFilters[PostFilterKeys.PostType]?.map(
                   (filter: PostType) => (
-                    <>
-                      <div
-                        key={filter}
-                        className="border border-neutral-200 rounded-[8px] px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1"
-                      >
-                        <div className="mr-1 text-base text-primary-500 font-bold whitespace-nowrap">
-                          {filterKeyMap[filter]}
-                        </div>
-                        <Icon
-                          name="closeOutline"
-                          color="text-neutral-900"
-                          className="cursor-pointer"
-                          size={16}
-                          onClick={() => removePostTypeFilter(filter)}
-                        />
+                    <div
+                      key={filter}
+                      className="border border-neutral-200 rounded-[24px] px-3 py-1 bg-white items-center flex gap-2"
+                    >
+                      <div className="text-sm font-medium whitespace-nowrap text-neutral-900">
+                        {filterKeyMap[filter]}
                       </div>
-                    </>
+                      <Icon
+                        name="closeCircleOutline"
+                        color="text-neutral-900"
+                        className="cursor-pointer"
+                        size={16}
+                        onClick={() => removePostTypeFilter(filter)}
+                      />
+                    </div>
                   ),
                 )}
               </div>
-
-              {getAppliedFiltersCount() > 0 && (
-                <div
-                  className="flex items-center cursor-pointer font-medium text-neutral-500 rounded-[8px] border border-neutral-200 px-3 py-1 whitespace-nowrap"
-                  onClick={clearAppliedFilters}
-                >
-                  Clear filters
-                </div>
-              )}
-            </div>
-          )}
-        </>
+            )}
+          </div>
+        </div>
       );
     }
   }, [hashtag, feedIds, bookmarks, scheduled]);
 
-  return (
-    <>
-      <div className="mb-12 gap-x-[52px] flex w-full">
-        <div className="z-10 min-w-[293px] max-w-[293px] sticky top-24 space-y-6">
-          <UserCard />
-          <MyTeamWidget />
-        </div>
-        <div className="w-1/2">
-          {FeedHeader}
-          {isLoading ? (
-            <SkeletonLoader />
-          ) : feedIds?.length === 0 ? (
-            getEmptyFeedComponent()
-          ) : (
-            <div className="mt-4">
-              {announcementFeedIds?.map((feedId, index) => (
-                <div data-testid={`feed-post-${index}`} key={feedId.id}>
-                  <Post post={feed[feedId.id!]} />
-                </div>
-              ))}
-              {regularFeedIds?.map((feedId, index) => (
-                <div data-testid={`feed-post-${index}`} key={feedId.id}>
-                  <Post post={feed[feedId.id!]} />
-                </div>
-              ))}
-            </div>
-          )}
+  useEffect(() => {
+    if (hashtag) {
+      setAppliedFeedFilters({ hashtags: [hashtag] });
+    }
+  }, [hashtag]);
 
-          <div className="h-12 w-12">
-            {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
+
+  return (
+    <div className="mb-12 gap-[52px] flex justify-between ">
+      <div className="z-10 min-w-[293px] max-w-[293px] flex flex-col gap-6 sticky top-28 overflow-y-auto max-h-[calc(100vh-120px)] widget-hide-scroll">
+        <UserCard />
+        <MyTeamWidget />
+      </div>
+      <div className="w-1/2 flex flex-col gap-[26px]">
+        {FeedHeader}
+        {isLoading ? (
+          <SkeletonLoader />
+        ) : feedIds?.length === 0 ? (
+          getEmptyFeedComponent()
+        ) : (
+          <div className="flex flex-col gap-6">
+            {announcementFeedIds?.map((feedId, index) => (
+              <div
+                data-testid={`feed-post-${index}`}
+                className="flex flex-col gap-6"
+                key={feedId.id}
+              >
+                <Post post={feed[feedId.id!]} />
+              </div>
+            ))}
+            {regularFeedIds?.map((feedId, index) => (
+              <div
+                data-testid={`feed-post-${index}`}
+                className="flex flex-col gap-6"
+                key={feedId.id}
+              >
+                <Post post={feed[feedId.id!]} />
+              </div>
+            ))}
           </div>
-          {isFetchingNextPage && <PageLoader />}
+        )}
+
+        <div className="h-12 w-12">
+          {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
         </div>
-        <div className="min-w-[293px] max-w-[293px]">
-          <div className="flex flex-col gap-6 sticky top-24 overflow-y-auto max-h-[calc(100vh-120px)] widget-hide-scroll">
-            <CelebrationWidget type={CELEBRATION_TYPE.Birthday} />
-            <CelebrationWidget type={CELEBRATION_TYPE.WorkAnniversary} />
-            <AnnouncementCard openModal={openModal} />
-          </div>
+        {isFetchingNextPage && <PageLoader />}
+      </div>
+      <div className="min-w-[293px] max-w-[293px]">
+        <div className="flex flex-col gap-6 sticky top-28 overflow-y-auto max-h-[calc(100vh-120px)] widget-hide-scroll">
+          <CelebrationWidget type={CELEBRATION_TYPE.Birthday} />
+          <CelebrationWidget type={CELEBRATION_TYPE.WorkAnniversary} />
+          <AnnouncementCard openModal={openModal} />
         </div>
       </div>
       <PostBuilder open={open} openModal={openModal} closeModal={closeModal} />
-    </>
+    </div>
   );
 };
 

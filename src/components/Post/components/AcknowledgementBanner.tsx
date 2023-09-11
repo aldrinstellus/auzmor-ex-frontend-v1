@@ -47,46 +47,38 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
     },
   });
 
-  return (
-    <div>
-      {isAnnouncement &&
-        !(data?.acknowledged || hasDatePassed(data?.announcement?.end)) && (
-          <div
-            className={`flex justify-between items-center bg-blue-700 px-6 py-2 rounded-t-9xl min-h-[42px]`}
-            data-testid="announcement-header"
-          >
-            <div className="flex justify-center items-center text-white text-xs font-bold space-x-3">
-              <Icon
-                name="flashIcon"
-                size={16}
-                className="text-white"
-                hover={false}
-              />
-              <div className="text-xs font-bold">Announcement</div>
-            </div>
-            {createdByMe ? (
-              <ProgressBar
-                total={data?.acknowledgementStats?.audience}
-                completed={data?.acknowledgementStats?.acknowledged}
-                suffix="people acknowledged"
-              />
-            ) : (
-              <Button
-                className="text-sm font-bold !py-[3px]"
-                label="Mark as read"
-                size={Size.Small}
-                variant={Variant.Tertiary}
-                loading={acknowledgeMutation.isLoading}
-                onClick={() => {
-                  acknowledgeMutation.mutate(data?.id);
-                }}
-                dataTestId="announcment-markasreadcta"
-              />
-            )}
-          </div>
-        )}
+  return isAnnouncement &&
+    !(data?.acknowledged || hasDatePassed(data?.announcement?.end)) ? (
+    <div
+      className={`flex justify-between items-center bg-blue-700 px-6 py-2 rounded-t-9xl min-h-[42px]`}
+      data-testid="announcement-header"
+    >
+      <div className="flex justify-center items-center text-white text-xs font-bold space-x-3">
+        <Icon name="flashIcon" size={16} className="text-white" hover={false} />
+        <div className="text-xs font-bold">Announcement</div>
+      </div>
+      {createdByMe ? (
+        <ProgressBar
+          total={data?.acknowledgementStats?.audience}
+          completed={data?.acknowledgementStats?.acknowledged}
+          suffix="people acknowledged"
+        />
+      ) : (
+        <Button
+          className="text-sm font-bold !py-[3px]"
+          label="Mark as read"
+          size={Size.Small}
+          variant={Variant.Tertiary}
+          loading={acknowledgeMutation.isLoading}
+          onClick={() => {
+            acknowledgeMutation.mutate(data?.id);
+          }}
+          dataTestId="announcment-markasreadcta"
+        />
+      )}
     </div>
+  ) : (
+    <></>
   );
 };
-
 export default AcknowledgementBanner;

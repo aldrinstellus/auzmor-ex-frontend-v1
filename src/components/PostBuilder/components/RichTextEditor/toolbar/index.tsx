@@ -38,23 +38,23 @@ const Toolbar: React.FC<IToolbarProps> = ({
             </div>
           </div>
         )}
-        <div className="flex justify-between items-center h-14 pl-5 pr-6 border-t-1 py-4">
+        <div className="flex justify-between items-center px-6 py-4 border-t-1">
           <div className="flex items-center">
-            <span className="flex items-center gap-[6px]">
+            <span className="flex items-center gap-4">
               <button
-                className="ql-bold ql-bold-button !h-[16px] !w-[16px]"
+                className="ql-bold ql-bold-button !h-[16px] !w-[16px] !m-0"
                 data-testid={`${dataTestId}-content-bold`}
               />
               <button
-                className="ql-italic ql-italic-button !h-[16px] !w-[16px]"
+                className="ql-italic ql-italic-button !h-[16px] !w-[16px] !m-0"
                 data-testid={`${dataTestId}-content-italic`}
               />
               <button
-                className="ql-underline ql-underline-button !h-[16px] !w-[16px]"
+                className="ql-underline ql-underline-button !h-[16px] !w-[16px] !m-0"
                 data-testid={`${dataTestId}-content-underline`}
               />
               <button
-                className="ql-emoji mt-[2px] text-neutral-900"
+                className="ql-emoji mt-[2px] text-neutral-900 !h-[16px] !w-[16px] !mr-0"
                 data-testid={`${dataTestId}-content-emoji`}
               />
             </span>

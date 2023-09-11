@@ -31,10 +31,6 @@ const Actor: React.FC<ActorProps> = ({
 }) => {
   const { user } = useAuth();
 
-  const actorStyles = clsx({
-    'flex justify-between items-center mx-6 mt-6 mb-4': true,
-  });
-
   const actionLabel = useMemo(() => {
     if (postType === 'BIRTHDAY') {
       return 'is celebrating their birthday';
@@ -52,9 +48,28 @@ const Actor: React.FC<ActorProps> = ({
   }, [postType]);
 
   return (
-    <div className={actorStyles}>
-      <div className="flex items-center space-x-4">
-        <div>
+    <div className="flex items-center gap-4 flex-1">
+      <div>
+        <Link
+          to={`${
+            createdBy?.userId && createdBy.userId !== user?.id
+              ? '/users/' + createdBy.userId
+              : '/profile'
+          }`}
+        >
+          <Avatar
+            name={getFullName(createdBy) || 'U'}
+            size={32}
+            image={getProfileImage(createdBy)}
+            bgColor={getAvatarColor(createdBy)}
+          />
+        </Link>
+      </div>
+      <div className="flex flex-col flex-1">
+        <div
+          className="font-bold text-sm text-neutral-900 flex gap-1"
+          data-testid={dataTestId}
+        >
           <Link
             to={`${
               createdBy?.userId && createdBy.userId !== user?.id
@@ -62,49 +77,25 @@ const Actor: React.FC<ActorProps> = ({
                 : '/profile'
             }`}
           >
-            <Avatar
-              name={getFullName(createdBy) || 'U'}
-              size={32}
-              image={getProfileImage(createdBy)}
-              bgColor={getAvatarColor(createdBy)}
-            />
+            {createdBy ? getFullName(createdBy) : user ? getFullName(user) : ''}
           </Link>
+          <span className="text-sm font-normal text-neutral-900">
+            {actionLabel}
+          </span>
         </div>
-        <div>
-          <Link
-            to={`${
-              createdBy?.userId && createdBy.userId !== user?.id
-                ? '/users/' + createdBy.userId
-                : '/profile'
-            }`}
-          >
+        {/* </Link> */}
+        {contentMode === VIEW_POST ? (
+          <div className="flex items-center gap-2">
             <div
-              className="font-bold text-sm text-neutral-900"
-              data-testid={dataTestId}
+              className="text-xs font-normal text-neutral-500"
+              data-testid="feed-post-time"
             >
-              {createdBy
-                ? getFullName(createdBy)
-                : user
-                ? getFullName(user)
-                : ''}
-              <span className="ml-1 text-sm font-normal text-neutral-900">
-                {actionLabel}
-              </span>
+              {createdTime}
             </div>
-          </Link>
-          {contentMode === VIEW_POST ? (
-            <div className="flex items-center space-x-2">
-              <div
-                className="text-xs font-normal text-neutral-500"
-                data-testid="feed-post-time"
-              >
-                {createdTime}
-              </div>
-              <div className="bg-neutral-500 rounded-full w-1 h-1" />
-              <AudiencePopup entityId={entityId} audience={audience} />
-            </div>
-          ) : null}
-        </div>
+            <div className="bg-neutral-500 rounded-full w-1 h-1" />
+            <AudiencePopup entityId={entityId} audience={audience} />
+          </div>
+        ) : null}
       </div>
     </div>
   );

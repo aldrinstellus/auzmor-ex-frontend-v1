@@ -16,7 +16,10 @@ export interface INavbarMenuItemProps {
 
 const NavbarMenuItem: React.FC<INavbarMenuItemProps> = ({ nav }) => {
   return nav.disabled ? (
-    <div className="flex flex-col items-center" data-testid={nav.dataTestId}>
+    <div
+      className="flex flex-col items-center p-2"
+      data-testid={nav.dataTestId}
+    >
       <Icon name={nav.icon} size={nav.iconSize} disabled />
       <div className="text-sm text-neutral-200 cursor-default">{nav.label}</div>
     </div>
@@ -24,7 +27,7 @@ const NavbarMenuItem: React.FC<INavbarMenuItemProps> = ({ nav }) => {
     <NavLink
       to={nav.linkTo}
       className={({ isActive }) =>
-        `${isActive ? 'text-primary-500' : 'text-neutral-500'} group`
+        `${isActive ? 'text-primary-500' : 'text-neutral-500'} group p-2`
       }
     >
       {({ isActive }) => (
