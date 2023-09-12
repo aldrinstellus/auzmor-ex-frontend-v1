@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Logo } from 'components/Logo';
-import WelcomeOffice from 'images/welcomeToOffice.png';
 import LoginViaCred from './components/LoginViaCred';
 import LoginViaSSO from './components/LoginViaSSO';
 import useAuth from 'hooks/useAuth';
@@ -53,19 +52,24 @@ const Login: React.FC<ILoginProps> = () => {
   return (
     <div className="flex h-screen w-screen">
       <div
-        className="w-[710px] bg-welcome-to-office"
+        className="w-[49.3vw] h-full bg-welcome-to-office bg-no-repeat bg-cover bg-bottom"
         data-testid="signin-cover-image"
       />
 
       <div className="flex-1 h-full flex justify-center items-center relative bg-white overflow-y-auto">
-        <div className="absolute top-8 right-8" data-testid="signin-logo-image">
+        <div
+          className="absolute top-[4.55vh] right-[3.5vw]"
+          data-testid="signin-logo-image"
+        >
           <Logo />
         </div>
-        {viaSSO ? (
-          <LoginViaSSO setViaSSO={setViaSSO} />
-        ) : (
-          <LoginViaCred setViaSSO={setViaSSO} />
-        )}
+        <div className="pt-[86px] 3xl:pt-[154px] mr-[60px] w-[414px] h-full">
+          {viaSSO ? (
+            <LoginViaSSO setViaSSO={setViaSSO} />
+          ) : (
+            <LoginViaCred setViaSSO={setViaSSO} />
+          )}
+        </div>
       </div>
     </div>
   );

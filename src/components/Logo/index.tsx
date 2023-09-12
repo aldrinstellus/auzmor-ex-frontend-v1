@@ -9,7 +9,7 @@ export const Logo = () => {
 };
 
 export const Success = () => {
-  return <img src={SuccessLogo} alt="Success Logo" />;
+  return <img src={SuccessLogo} alt="Success Logo" className="h-[50px]" />;
 };
 
 export const Info = () => {
