@@ -19,8 +19,10 @@ const useURLParams = (): UseURLParamsHook => {
   };
 
   const deleteParam = (key: string) => {
-    searchParams.delete(key);
-    setSearchParams(searchParams);
+    if (searchParams.get(key)) {
+      searchParams.delete(key);
+      setSearchParams(searchParams);
+    }
   };
 
   const serializeFilter = (filter: any) => {
