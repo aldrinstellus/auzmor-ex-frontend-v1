@@ -280,8 +280,6 @@ const People: React.FC<IPeopleProps> = ({
                               ...user.member,
                               id: user.member.userId,
                               workEmail: user.member.email,
-                              workLocation: { name: user.member.workLocation },
-                              department: { name: user.member.department },
                             }
                           : user,
                       }}

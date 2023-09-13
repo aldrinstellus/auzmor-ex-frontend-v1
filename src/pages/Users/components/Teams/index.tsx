@@ -36,6 +36,7 @@ import { slideInAndOutTop } from 'utils/react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { useMutation } from '@tanstack/react-query';
 import useURLParams from 'hooks/useURLParams';
+import { Role } from 'utils/enum';
 interface IForm {
   search?: string;
 }
@@ -408,7 +409,7 @@ const Team: React.FC<ITeamProps> = ({
                       src={TeamNotFound}
                       alt="Team Not Found"
                       height={140}
-                      width={165}
+                      width={162}
                     />
                     <div
                       className="text-lg font-bold"
@@ -418,17 +419,25 @@ const Team: React.FC<ITeamProps> = ({
                     </div>
                   </div>
                   <div className="flex space-x-1 text-xs font-normal">
-                    <div className="text-neutral-500">
-                      There are no teams found in your organization right now.
-                      Be the first to
-                    </div>
-                    <div
-                      className="text-blue-500 cursor-pointer"
-                      onClick={() => openTeamModal()}
-                      data-testid="create-one-team"
-                    >
-                      create one
-                    </div>
+                    {user?.role !== Role.Member ? (
+                      <>
+                        <div className="text-neutral-500">
+                          There are no teams found in your organization right
+                          now. Be the first to
+                        </div>
+                        <div
+                          className="text-blue-500 cursor-pointer font-bold"
+                          onClick={() => openTeamModal()}
+                          data-testid="create-one-team"
+                        >
+                          create one
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-neutral-500">
+                        You are not a part of any team. Join a team now
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : (
