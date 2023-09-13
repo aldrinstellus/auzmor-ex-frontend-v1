@@ -79,9 +79,10 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 bg-white shadow h-16 w-full py-[2px]">
       <div className="bg-white h-full w-full max-w-[1440px] flex items-center justify-center py-0.5 px-8 gap-[60px] mx-auto">
-        <Link to="/feed" data-testid="auzmor-office" className="flex-1">
+        <Link to="/feed" data-testid="auzmor-office">
           <Logo />
         </Link>
+        <div className="flex-1" />
         {/* <div className="flex-1">
           <Layout
             fields={[
