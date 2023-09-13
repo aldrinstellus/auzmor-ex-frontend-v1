@@ -13,51 +13,6 @@ import NavbarMenuItem from './NavbarMenuItem';
 // hooks
 import useRole from 'hooks/useRole';
 
-const navigations = [
-  // {
-  //   label: 'Home',
-  //   icon: 'homeOutline',
-  //   hoverIcon: 'homeFilled',
-  //   linkTo: '/home',
-  //   dataTestId: 'office-home-page',
-  //   iconSize: 24,
-  //   disabled: true,
-  // },
-  {
-    label: 'Feed',
-    icon: 'feedOutline',
-    hoverIcon: 'feedFilled',
-    linkTo: '/feed',
-    dataTestId: 'office-feed-page',
-    iconSize: 24,
-  },
-  {
-    label: 'People',
-    icon: 'peopleOutline',
-    hoverIcon: 'peopleFilled',
-    linkTo: '/users',
-    dataTestId: 'office-people-page',
-    iconSize: 24,
-  },
-  {
-    label: 'Apps',
-    icon: 'launcherOutline',
-    hoverIcon: 'launcherFilled',
-    linkTo: '/apps',
-    dataTestId: 'office-apps-page',
-    iconSize: 24,
-  },
-  // {
-  //   label: 'Discover',
-  //   icon: 'exploreOutline',
-  //   hoverIcon: 'exploreFilled',
-  //   linkTo: '/discover',
-  //   dataTestId: 'office-discover-page',
-  //   iconSize: 26,
-  //   disabled: true,
-  // },
-];
-
 const adminNavigations = [
   {
     label: 'Admin',
@@ -75,6 +30,54 @@ const Navbar = () => {
   const { control } = useForm({
     mode: 'onChange',
   });
+
+  const navigations = [
+    // {
+    //   label: 'Home',
+    //   icon: 'homeOutline',
+    //   hoverIcon: 'homeFilled',
+    //   linkTo: '/home',
+    //   dataTestId: 'office-home-page',
+    //   iconSize: 24,
+    //   disabled: true,
+    // },
+    {
+      label: 'Feed',
+      icon: 'feedOutline',
+      hoverIcon: 'feedFilled',
+      linkTo: '/feed',
+      dataTestId: 'office-feed-page',
+      iconSize: 24,
+    },
+    {
+      label: 'People',
+      icon: 'peopleOutline',
+      hoverIcon: 'peopleFilled',
+      linkTo: '/users',
+      dataTestId: 'office-people-page',
+      iconSize: 24,
+      isActive:
+        location.pathname.includes('users') ||
+        location.pathname.includes('teams'),
+    },
+    {
+      label: 'Apps',
+      icon: 'launcherOutline',
+      hoverIcon: 'launcherFilled',
+      linkTo: '/apps',
+      dataTestId: 'office-apps-page',
+      iconSize: 24,
+    },
+    // {
+    //   label: 'Discover',
+    //   icon: 'exploreOutline',
+    //   hoverIcon: 'exploreFilled',
+    //   linkTo: '/discover',
+    //   dataTestId: 'office-discover-page',
+    //   iconSize: 26,
+    //   disabled: true,
+    // },
+  ];
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow h-16 w-full py-[2px]">
