@@ -300,12 +300,12 @@ const Likes: React.FC<LikesProps> = ({
   }: IReaction) => {
     return (
       <div className="space-x-0 relative [&_span]:hover:visible">
-        <span className="invisible absolute rounded-7xl bg-black opacity-70 text-white text-xs p-2 -mt-10">
+        <span className="invisible absolute rounded-7xl bg-black text-white text-xs py-1 px-2 -mt-10">
           {name}
         </span>
         <Icon
           name={icon}
-          className="hover:scale-150"
+          className="hover:scale-150 transition-all"
           onClick={() => {
             handleReaction(type);
             setShowTooltip(false);
@@ -326,10 +326,10 @@ const Likes: React.FC<LikesProps> = ({
       {showTooltip ? (
         <span
           ref={tooltipRef}
-          className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition text-white p-1 rounded absolute  bottom-full  whitespace-nowrap"
+          className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition text-white p-1 rounded absolute bottom-full whitespace-nowrap"
         >
           <div
-            className={`h-[42px] flex flex-row items-center bg-white rounded-7xl shadow-lg py-2 px-3 space-x-4 mb-3.5 -ml-1`}
+            className={`h-[42px] flex items-center bg-white rounded-7xl shadow-lg py-2 px-3 gap-4 mb-4`}
             data-testid={dataTestIdPrefix}
           >
             <Reactions

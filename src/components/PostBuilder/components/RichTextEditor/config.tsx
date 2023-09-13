@@ -8,6 +8,7 @@ import {
 import { renderToString } from 'react-dom/server';
 import ReactionSkeleton from 'components/Post/components/ReactionSkeleton';
 import { extractFirstWord } from 'utils/misc';
+import Skeleton from 'react-loading-skeleton';
 
 interface IOrg {
   id: string;
@@ -89,24 +90,37 @@ export const mention = {
       renderItem(listItem, searchTerm);
     });
     // Loaders =
-    //   mentionChar === '@' ? (
-    //     <ReactionSkeleton />
-    //   ) : (
-    //     <div>
-    //       {[...Array(4)].map((value, index) => (
-    //         <div className="flex gap-x-2 items-start py-5" key={index}>
-    //           <Skeleton className="!w-56 h-3" count={1} borderRadius={100} />
-    //         </div>
-    //       ))}
-    //     </div>
-    //   );
+    // mentionChar === '@' ? (
+    //   <ReactionSkeleton />
+    // ) : (
+    //   <div>
+    //     {[...Array(4)].map((value, index) => (
+    //       <div className="flex gap-x-2 items-start py-5" key={index}>
+    //         <Skeleton className="!w-56 h-3" count={1} borderRadius={100} />
+    //       </div>
+    //     ))}
+    //   </div>
+    // );
   },
   dataAttributes: ['id'],
   showDenotationChar: true,
   onOpen: () => {},
   onclose: () => {},
-  renderLoading: () => {
-    return renderToString(<ReactionSkeleton />);
+  renderLoading: (mentionChar: string) => {
+    console.log({ mentionChar });
+    return renderToString(
+      mentionChar === '@' ? (
+        <ReactionSkeleton />
+      ) : (
+        <div>
+          {[...Array(4)].map((value, index) => (
+            <div className="flex items-start px-6 py-3" key={index}>
+              <Skeleton className="!w-24 h-3" count={1} borderRadius={100} />
+            </div>
+          ))}
+        </div>
+      ),
+    );
   },
   renderItem: (item: any, searchItem: any) => {
     if (item?.charDenotation === '@') {

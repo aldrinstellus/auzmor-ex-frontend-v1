@@ -59,8 +59,8 @@ const Body = React.forwardRef(
     };
     return (
       <div className="text-sm text-neutral-900">
-        <div className="max-h-[75vh] overflow-y-auto">
-          <div className="flex justify-between items-center">
+        <div className="max-h-[75vh] overflow-y-auto flex flex-col gap-2">
+          <div className="flex justify-between gap-3 items-center pt-6 px-6">
             <Actor
               contentMode={CREATE_POST}
               dataTestId={`${dataTestId}-creatorname`}
@@ -72,7 +72,7 @@ const Body = React.forwardRef(
                 }
               }
             />
-            <div className="flex items-center mr-6 cursor-pointer">
+            <div className="flex items-center cursor-pointer">
               {audience.length > 0 ? (
                 <div className="flex gap-2">
                   <Button
@@ -125,23 +125,22 @@ const Body = React.forwardRef(
             </div>
           </div>
           {schedule && (
-            <div className="px-3 py-2 bg-primary-50 flex justify-between mx-4 mb-4">
-              <div className="flex">
-                <div className="mr-2">
-                  <Icon name="calendarTwo" size={16} />
-                </div>
-                <div>
-                  Post scheduled for{' '}
-                  {getTimeInScheduleFormat(
-                    new Date(schedule.date),
-                    schedule.time,
-                    schedule.timezone,
-                    currentTimezone,
-                  )}
-                </div>
+            <div className="px-3 py-2 bg-primary-50 flex items-center gap-2 mx-6 my-2">
+              <div>
+                <Icon name="calendarTwo" size={16} />
               </div>
-              <div className="flex">
-                <div className="mr-4">
+              <div className="flex-1">
+                Post scheduled for{' '}
+                {getTimeInScheduleFormat(
+                  new Date(schedule.date),
+                  schedule.time,
+                  schedule.timezone,
+                  currentTimezone,
+                )}
+              </div>
+
+              <div className="flex gap-2">
+                <div>
                   <Icon
                     name="edit"
                     size={16}

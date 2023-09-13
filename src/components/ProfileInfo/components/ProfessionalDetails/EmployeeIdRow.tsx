@@ -1,25 +1,22 @@
 import React, { useRef } from 'react';
 import InfoRow from '../InfoRow';
-import moment from 'moment';
 import * as yup from 'yup';
 import 'moment-timezone';
 import useRole from 'hooks/useRole';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateCurrentUser } from 'queries/users';
-import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
-import { toastConfig } from '../utils';
+import { updateCurrentUser, updateUserById } from 'queries/users';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Layout, { FieldType } from 'components/Form';
-import useAuth from 'hooks/useAuth';
 import { useParams } from 'react-router-dom';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 
 type AppProps = {
   data: any;
 };
 
 const EmployeeIdRow: React.FC<AppProps> = ({ data }) => {
+  const { userId = '' } = useParams();
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);
   const { isAdmin } = useRole();
@@ -29,19 +26,19 @@ const EmployeeIdRow: React.FC<AppProps> = ({ data }) => {
   });
 
   const updateUserEmployeeIdMutation = useMutation({
-    mutationFn: updateCurrentUser,
+    mutationFn: userId
+      ? (data: any) => updateUserById(userId, data)
+      : updateCurrentUser,
     mutationKey: ['update-user-employeeId-mutation'],
     onError: (error: any) => {},
     onSuccess: async (response: any) => {
-      toastConfig(
-        <Icon
-          name="closeCircleOutline"
-          color={twConfig.theme.colors.primary['500']}
-          size={20}
-        />,
-      );
+      successToastConfig();
       ref?.current?.setEditMode(false);
-      await queryClient.invalidateQueries(['current-user-me']);
+      if (userId) {
+        await queryClient.invalidateQueries(['user', userId]);
+      } else {
+        await queryClient.invalidateQueries(['current-user-me']);
+      }
     },
   });
 
@@ -75,7 +72,7 @@ const EmployeeIdRow: React.FC<AppProps> = ({ data }) => {
         bgColor: 'bg-teal-50',
       }}
       label="Employee ID"
-      value={data?.employeeId}
+      value={data?.employeeId || data?.id}
       canEdit={isAdmin}
       dataTestId="professional-details-employee-id"
       editNode={

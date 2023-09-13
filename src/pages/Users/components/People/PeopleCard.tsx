@@ -145,7 +145,6 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({ userData }) => {
           loggedInUserId={user?.id}
           role={role}
           status={status}
-          isAdmin={isAdmin}
           isHovered={isHovered}
           onDeleteClick={openDeleteModal}
           onEditClick={() =>

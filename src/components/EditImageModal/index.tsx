@@ -12,7 +12,7 @@ import queryClient from 'utils/queryClient';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import useAuth from 'hooks/useAuth';
-import { updateCurrentUser } from 'queries/users';
+import { updateCurrentUser, updateUserById } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
 import Footer from './Footer';
 import ImageCropper from 'components/ImageCropper';
@@ -34,6 +34,7 @@ export interface IEditImageModalProps {
   imageFile?: IUpdateProfileImage | Record<string, any>;
   onBoardImageFile?: File;
   openOnBoardModal?: () => void;
+  userId?: string;
 }
 
 export enum Shape {
@@ -55,6 +56,7 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
   userCoverImageRef,
   fileEntityType,
   openOnBoardModal = () => {},
+  userId,
 }) => {
   const { updateUser } = useAuth();
 
@@ -93,57 +95,66 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
   }, []);
 
   const updateUsersPictureMutation = useMutation({
-    mutationFn: updateCurrentUser,
+    mutationFn: userId
+      ? (data: any) => updateUserById(userId, data)
+      : updateCurrentUser,
     mutationKey: ['update-users-mutation'],
     onError: (error: any) => {
       console.log('API call resulted in error: ', error);
     },
     onSuccess: async (response: Record<string, any>) => {
-      const userUpdateResponse = response?.result?.data;
-      updateUser({
-        name: userUpdateResponse?.fullName,
-        id: userUpdateResponse?.id,
-        email: userUpdateResponse?.primaryEmail,
-        role: userUpdateResponse?.role,
-        organization: {
-          id: userUpdateResponse?.org?.id,
-          domain: userUpdateResponse?.org?.domain,
-        },
-        profileImage: userUpdateResponse?.profileImage?.original,
-        coverImage: userUpdateResponse?.coverImage?.original,
-      });
-      setImageFile && setImageFile({});
-      toast(
-        <SuccessToast
-          content={`${
-            fileEntityType === EntityType.UserProfileImage
-              ? 'Profile Picture'
-              : 'Cover Picture'
-          } Updated Successfully`}
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
+      if (!userId) {
+        const userUpdateResponse = response?.result?.data;
+        updateUser({
+          name: userUpdateResponse?.fullName,
+          id: userUpdateResponse?.id,
+          email: userUpdateResponse?.primaryEmail,
+          role: userUpdateResponse?.role,
+          organization: {
+            id: userUpdateResponse?.org?.id,
+            domain: userUpdateResponse?.org?.domain,
           },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+          profileImage: userUpdateResponse?.profileImage?.original,
+          coverImage: userUpdateResponse?.coverImage?.original,
+        });
+        setImageFile && setImageFile({});
+        toast(
+          <SuccessToast
+            content={`${
+              fileEntityType === EntityType.UserProfileImage
+                ? 'Profile Picture'
+                : 'Cover Picture'
+            } Updated Successfully`}
+          />,
+          {
+            closeButton: (
+              <Icon
+                name="closeCircleOutline"
+                color="text-primary-500"
+                size={20}
+              />
+            ),
+            style: {
+              border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+              borderRadius: '6px',
+              display: 'flex',
+              alignItems: 'center',
+            },
+            autoClose: TOAST_AUTOCLOSE_TIME,
+            transition: slideInAndOutTop,
+            theme: 'dark',
+          },
+        );
+      }
+
       closeEditImageModal();
       openEditProfileModal();
       setBlob(null);
-      await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
+      if (userId) {
+        await queryClient.invalidateQueries({ queryKey: ['user', userId] });
+      } else {
+        await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
+      }
     },
   });
 

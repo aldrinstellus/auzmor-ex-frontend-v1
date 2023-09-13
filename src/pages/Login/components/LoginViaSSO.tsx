@@ -88,8 +88,8 @@ const LoginViaSSO: React.FC<ILoginViaSSOProps> = ({ setViaSSO }) => {
     },
   ];
   return (
-    <div className="w-full max-w-[440px] relative h-full">
-      <div className="font-extrabold text-neutral-900 text-4xl mt-20">
+    <div className="w-full max-w-[414px] relative h-full">
+      <div className="font-extrabold text-neutral-900 text-4xl leading-[40px]">
         Sign In via SSO
       </div>
       <form
@@ -102,14 +102,14 @@ const LoginViaSSO: React.FC<ILoginViaSSOProps> = ({ setViaSSO }) => {
         <Button
           dataTestId="sso-signin-btn"
           label={'Sign In'}
-          className="w-full mt-16"
+          className="w-full mt-8"
           disabled={!isValid || isFetching}
           size={Size.Large}
           type={ButtonType.Submit}
         />
       </form>
-      <div className="absolute bottom-4 flex justify-center w-full">
-        <div>
+      <div className="absolute bottom-16 flex justify-center w-full">
+        <div className="text-sm font-normal">
           <span
             className="text-primary-500 font-bold cursor-pointer"
             onClick={() => setViaSSO(false)}
@@ -117,7 +117,7 @@ const LoginViaSSO: React.FC<ILoginViaSSOProps> = ({ setViaSSO }) => {
           >
             Sign In
           </span>{' '}
-          using Email and Password
+          with Email and Password
         </div>
       </div>
     </div>

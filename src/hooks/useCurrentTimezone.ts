@@ -1,6 +1,11 @@
 import { useCurrentUser } from 'queries/users';
+import { getBrwoserTimezone } from 'utils/time';
 
 export const useCurrentTimezone = () => {
   const { data, isLoading } = useCurrentUser();
-  return { isLoading, currentTimezone: data?.data?.result?.data?.timeZone };
+  const browserTimezone = getBrwoserTimezone();
+  return {
+    isLoading,
+    currentTimezone: data?.data?.result?.data?.timeZone || browserTimezone,
+  };
 };

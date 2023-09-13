@@ -26,7 +26,7 @@ const PopupMenuItem: React.FC<PopupMenuItemProps> = ({
           'flex px-6 py-3 items-center hover:bg-primary-50 cursor-pointer space-x-3 group':
             true,
         },
-        { 'border-b-1': border },
+        { 'border-b-1 border-b-neutral-200': border },
         { '!cursor-default': menuItem.disabled },
       )}
       onClick={() => {

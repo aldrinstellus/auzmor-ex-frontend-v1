@@ -1,7 +1,10 @@
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import Icon from 'components/Icon';
 import React, { ReactNode } from 'react';
+import { toast } from 'react-toastify';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { twConfig } from 'utils/misc';
+import { slideInAndOutTop } from 'utils/react-toastify';
 
 export interface ISuccessToastProps {
   content?: string | ReactNode;
@@ -44,3 +47,19 @@ const SuccessToast: React.FC<ISuccessToastProps> = ({
 };
 
 export default SuccessToast;
+
+export const successToastConfig = (message = 'Your changes have been saved') =>
+  toast(<SuccessToast content={message} />, {
+    closeButton: (
+      <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
+    ),
+    style: {
+      border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+      borderRadius: '6px',
+      display: 'flex',
+      alignItems: 'center',
+    },
+    autoClose: TOAST_AUTOCLOSE_TIME,
+    transition: slideInAndOutTop,
+    theme: 'dark',
+  });

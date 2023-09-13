@@ -263,9 +263,8 @@ class Mention {
     if (hasLinkValue) {
       this.mentionList.childNodes[
         this.itemIndex
-      ].dataset.value = `<a href="${link}" target=${
-        itemTarget || this.options.linkTarget
-      }>${this.mentionList.childNodes[this.itemIndex].dataset.value}`;
+      ].dataset.value = `<a href="${link}" target=${itemTarget || this.options.linkTarget
+        }>${this.mentionList.childNodes[this.itemIndex].dataset.value}`;
     }
     return this.mentionList.childNodes[this.itemIndex].dataset;
   }
@@ -363,8 +362,8 @@ class Mention {
     e.stopImmediatePropagation();
   }
 
-  renderLoading() {
-    const renderedLoading = this.options.renderLoading();
+  renderLoading(mentionChar) {
+    const renderedLoading = this.options.renderLoading(mentionChar);
     if (!renderedLoading) {
       return;
     }
@@ -380,7 +379,7 @@ class Mention {
     this.mentionList.innerHTML = '';
     const loadingDiv = document.createElement('div');
     loadingDiv.className = 'ql-mention-loading';
-    loadingDiv.innerHTML = this.options.renderLoading();
+    loadingDiv.innerHTML = this.options.renderLoading(mentionChar);
     this.mentionList.append(loadingDiv);
     this.showMentionList();
   }
@@ -761,7 +760,7 @@ class Mention {
         if (this.existingSourceExecutionToken) {
           this.existingSourceExecutionToken.abandoned = true;
         }
-        this.renderLoading();
+        this.renderLoading(mentionChar);
         const sourceRequestToken = {
           abandoned: false,
         };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
@@ -6,7 +6,6 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Button, { Size, Type as ButtonType } from 'components/Button';
 import { Logo } from 'components/Logo';
-import WelcomeOffice from 'images/welcomeToOffice.png';
 import { useMutation } from '@tanstack/react-query';
 import { redirectWithToken } from 'utils/misc';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
@@ -158,20 +157,19 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
 
   return (
     <div className="flex h-screen w-screen">
-      <img
-        src={WelcomeOffice}
-        className="h-full w-[48%]"
-        alt="Welcome to Auzmor Office"
+      <div
+        className="w-[49.3vw] h-full bg-welcome-to-office bg-no-repeat bg-cover bg-bottom"
+        data-testid="signup-cover-image"
       />
-      <div className="w-[52%] flex justify-center items-center relative bg-white h-full overflow-y-auto">
-        <div className="absolute top-8 right-8">
+      <div className="flex-1 flex justify-center items-center relative bg-white h-full overflow-y-auto">
+        <div className="absolute top-[4.55vh] right-[3.5vw]">
           <Logo />
         </div>
-        <div className="w-full max-w-[440px]">
+        <div className="pt-[86px] 3xl:pt-[154px] mr-[60px] w-full max-w-[414px] h-full">
           <div className="font-extrabold text-neutral-900 text-4xl">
             Sign Up
           </div>
-          <form className="mt-12" onSubmit={handleSubmit(onSubmit)}>
+          <form className="mt-14" onSubmit={handleSubmit(onSubmit)}>
             {!!acceptInviteMutation.isError && (
               <div className="mb-8">
                 <Banner

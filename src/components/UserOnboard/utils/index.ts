@@ -1,8 +1,8 @@
 import { OptionType } from '../components/SelectTimezoneScreen';
-import { getTimezoneNameFromIANA } from 'utils/time';
+import { getBrwoserTimezone, getTimezoneNameFromIANA } from 'utils/time';
 
 export const getDefaultTimezoneOption = (): OptionType => {
-  const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const browserTimezone = getBrwoserTimezone();
   const timezoneName = getTimezoneNameFromIANA(browserTimezone);
   return {
     label: timezoneName || '',

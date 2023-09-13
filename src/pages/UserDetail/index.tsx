@@ -121,12 +121,7 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
       {userDetail?.isLoading ? (
         <UserDetailSkeleton />
       ) : (
-        <ProfileCoverSection
-          userDetails={data}
-          canEdit={editType === UserEditType.COMPLETE}
-          setSearchParams={setSearchParams}
-          searchParams={searchParams}
-        />
+        <ProfileCoverSection userDetails={data} />
       )}
 
       <div className="mb-32 flex w-full">

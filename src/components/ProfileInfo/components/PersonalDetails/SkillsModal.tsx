@@ -144,10 +144,11 @@ const SkillsModal: React.FC<ISkillsModalProps> = ({
       />
     </div>
   );
+
   return (
     <Modal
       open={open}
-      className="max-w-md top-36"
+      className="max-w-2xl top-36"
       dataTestId="add-skills-modal"
     >
       <Header />

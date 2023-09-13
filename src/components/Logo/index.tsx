@@ -21,16 +21,8 @@ export const Logo = ({ className = '' }: IProps) => {
   return <img src={OfficeLogoSvg} alt="Office Logo" className={style} />;
 };
 
-export const Success = ({ className = '' }: IProps) => {
-  const style = useMemo(
-    () =>
-      clsx({
-        'h-[68px]': true,
-        [className]: true,
-      }),
-    [className],
-  );
-  return <img src={SuccessLogo} alt="Success Logo" className={style} />;
+export const Success = () => {
+  return <img src={SuccessLogo} alt="Success Logo" className="h-[50px]" />;
 };
 
 export const Info = ({ className = '' }: IProps) => {

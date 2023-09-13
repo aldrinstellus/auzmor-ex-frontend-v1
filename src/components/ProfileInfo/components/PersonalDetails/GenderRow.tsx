@@ -3,36 +3,41 @@ import InfoRow from '../InfoRow';
 import 'moment-timezone';
 import useRole from 'hooks/useRole';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateCurrentUser } from 'queries/users';
+import { updateCurrentUser, updateUserById } from 'queries/users';
 import Icon from 'components/Icon';
 import { convertUpperCaseToPascalCase, twConfig } from 'utils/misc';
 import { toastConfig } from '../utils';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
+import { useParams } from 'react-router-dom';
+import useAuth from 'hooks/useAuth';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 
 type AppProps = {
   data: any;
 };
 
 const GenderRow: React.FC<AppProps> = ({ data }) => {
+  const { userId = '' } = useParams();
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);
-  const { isAdmin } = useRole();
+  const { user } = useAuth();
+  const { isOwnerOrAdmin } = useRole({ userId: userId || user?.id });
 
   const updateUserGenderMutation = useMutation({
-    mutationFn: updateCurrentUser,
+    mutationFn: userId
+      ? (data: any) => updateUserById(userId, data)
+      : updateCurrentUser,
     mutationKey: ['update-user-gender-mutation'],
     onError: (error: any) => {},
     onSuccess: async (response: any) => {
-      toastConfig(
-        <Icon
-          name="closeCircleOutline"
-          color={twConfig.theme.colors.primary['500']}
-          size={20}
-        />,
-      );
+      successToastConfig();
       ref?.current?.setEditMode(false);
-      await queryClient.invalidateQueries(['current-user-me']);
+      if (userId) {
+        await queryClient.invalidateQueries(['user', userId]);
+      } else {
+        await queryClient.invalidateQueries(['current-user-me']);
+      }
     },
   });
 
@@ -87,6 +92,7 @@ const GenderRow: React.FC<AppProps> = ({ data }) => {
         bgColor: 'bg-pink-50',
       }}
       label="Gender"
+      canEdit={isOwnerOrAdmin}
       value={
         data?.personal?.gender?.charAt(0)?.toUpperCase() +
         data?.personal?.gender?.slice(1)?.toLowerCase()

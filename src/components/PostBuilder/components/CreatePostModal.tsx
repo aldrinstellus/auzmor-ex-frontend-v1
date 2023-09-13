@@ -155,6 +155,26 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     onError: (error) => {
       clearPostContext();
       closeModal();
+      toast(
+        <FailureToast
+          content={`Error while trying to create post`}
+          dataTestId="comment-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
       console.log(error);
     },
     onSuccess: async ({

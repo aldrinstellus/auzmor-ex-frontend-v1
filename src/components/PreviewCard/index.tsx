@@ -30,7 +30,7 @@ const PreviewCard: React.FC<PreviewCardProps> = ({
     } else if (metaData?.favicon) {
       return (
         <Card
-          className={`${className} cursor-pointer bg-[#F7F8FB] h-[166px] rounded-7xl`}
+          className={`${className} cursor-pointer !bg-[#F7F8FB] h-[180px] !shadow-none rounded-7xl`}
         >
           <IconPreview
             metaData={metaData}

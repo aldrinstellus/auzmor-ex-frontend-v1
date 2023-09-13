@@ -4,14 +4,20 @@ import 'moment-timezone';
 import Button, { Size, Variant } from 'components/Button';
 import useModal from 'hooks/useModal';
 import SkillsModal from './SkillsModal';
+import { useParams } from 'react-router-dom';
+import useRole from 'hooks/useRole';
+import useAuth from 'hooks/useAuth';
 
 type AppProps = {
   data: any;
 };
 
 const SkillsRow: React.FC<AppProps> = ({ data }) => {
+  const { userId = '' } = useParams();
   const ref = useRef<any>(null);
   const [openSkills, openSkillsModal, closeSkillsModal] = useModal();
+  const { user } = useAuth();
+  const { isOwnerOrAdmin } = useRole({ userId: userId || user?.id });
 
   return (
     <>
@@ -35,16 +41,18 @@ const SkillsRow: React.FC<AppProps> = ({ data }) => {
                 {skill}
               </div>
             ))}
-            <div>
-              <Button
-                label="Add Skills"
-                variant={Variant.Secondary}
-                size={Size.ExtraSmall}
-                leftIcon="add"
-                leftIconSize={16}
-                onClick={openSkillsModal}
-              />
-            </div>
+            {isOwnerOrAdmin && (
+              <div>
+                <Button
+                  label="Add Skills"
+                  variant={Variant.Secondary}
+                  size={Size.ExtraSmall}
+                  leftIcon="add"
+                  leftIconSize={16}
+                  onClick={openSkillsModal}
+                />
+              </div>
+            )}
           </div>
         }
         dataTestId="added-skills"

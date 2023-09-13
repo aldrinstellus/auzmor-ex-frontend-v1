@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Logo } from 'components/Logo';
-import WelcomeOffice from 'images/welcomeToOffice.png';
 import { Success } from 'components/Logo';
 import Layout, { FieldType } from 'components/Form';
 import Button, { Size, Type } from 'components/Button';
@@ -66,9 +65,9 @@ const ResetPassword = () => {
       type: FieldType.Password,
       InputVariant: InputVariant.Password,
       className: 'w-full mt-8',
-      placeholder: 'New password',
+      placeholder: 'Enter password',
       name: 'newPassword',
-      label: 'Enter New Password',
+      label: 'New Password',
       rightIcon: 'people',
       error: errors.newPassword?.message,
       setError,
@@ -106,17 +105,22 @@ const ResetPassword = () => {
   const resetPasswordContainerStyles = clsx(
     { 'w-full': true },
     { 'max-w-[440px]': !!data },
+    { 'h-full': true },
+    { 'pt-[80px]': true },
+    { 'mr-6': !!data },
   );
 
   return (
     <div className="flex h-screen w-screen">
-      <img
-        src={WelcomeOffice}
-        className="h-full w-[48%]"
-        alt="Welcome to Auzmor Office"
+      <div
+        className="w-[49.3vw] h-full bg-welcome-to-office bg-no-repeat bg-cover bg-bottom"
+        data-testid="reset-password-cover-image"
       />
-      <div className="w-[52%] h-full flex justify-center items-center relative bg-white overflow-y-auto">
-        <div className="absolute top-8 right-8">
+      <div className="h-full flex flex-1 justify-center items-center relative bg-white overflow-y-auto">
+        <div
+          className="absolute top-[4.55vh] right-[3.5vw]"
+          data-testid="reset-password-logo-image"
+        >
           <Logo />
         </div>
         <div className={resetPasswordContainerStyles}>
@@ -125,14 +129,12 @@ const ResetPassword = () => {
           ) : (
             <>
               {!!data ? (
-                <>
+                <div className="w-[414px] h-full pt-2">
                   {resetPasswordMutation.isSuccess ? (
-                    <>
-                      <div className="text-center flex justify-center items-center flex-col space-y-9">
-                        <Success />
-                        <div className="text-neutral-900">
-                          Password has been successfully reset
-                        </div>
+                    <div className="text-center flex flex-col space-y-8 h-full justify-center items-center mt-[-110px]">
+                      <Success />
+                      <div className="text-neutral-900 font-bold">
+                        Password has been successfully reset
                       </div>
                       <Button
                         label={'Sign In Now'}
@@ -140,29 +142,27 @@ const ResetPassword = () => {
                         size={Size.Large}
                         onClick={() => navigate('/login')}
                       />
-                    </>
+                    </div>
                   ) : (
                     <>
                       <div className="font-extrabold text-neutral-900 text-4xl">
                         Reset Password
                       </div>
-                      <form className="mt-16" onSubmit={handleSubmit(onSubmit)}>
-                        <>
-                          <Layout fields={passwordField} className="mb-4" />
-                          <Layout fields={confirmPasswordField} />
-                          <Button
-                            type={Type.Submit}
-                            label={'Reset Password'}
-                            className="w-full mt-8"
-                            loading={resetPasswordMutation.isLoading}
-                            disabled={!isValid || !!errors?.password?.type}
-                            size={Size.Large}
-                          />
-                        </>
+                      <form className="mt-9" onSubmit={handleSubmit(onSubmit)}>
+                        <Layout fields={passwordField} className="mb-4" />
+                        <Layout fields={confirmPasswordField} />
+                        <Button
+                          type={Type.Submit}
+                          label={'Reset Password'}
+                          className="w-full mt-8"
+                          loading={resetPasswordMutation.isLoading}
+                          disabled={!isValid || !!errors?.password?.type}
+                          size={Size.Large}
+                        />
                       </form>
                     </>
                   )}
-                </>
+                </div>
               ) : (
                 <PasswordExpiry />
               )}

@@ -1,20 +1,26 @@
 import React, { ReactElement, useEffect, useMemo } from 'react';
 import { DeltaOperation } from 'quill';
+import clsx from 'clsx';
+
+// components
 import Mention from './components/Mentions';
 import Hashtag from './components/Hashtag';
 import Emoji from './components/Emoji';
 import { Text } from './components/Text';
 import MediaPreview, { Mode } from 'components/MediaPreview';
-import { IPost } from 'queries/post';
-import { getMentionProps } from './utils';
 import PreviewCard from 'components/PreviewCard';
-import { quillHashtagConversion, removeElementsByClass } from 'utils/misc';
 import { IComment } from 'components/Comments';
 import { IMedia } from 'contexts/CreatePostContext';
 import { Metadata } from 'components/PreviewLink/types';
-import clsx from 'clsx';
-import Poll, { PollMode } from 'components/Poll';
 import AvatarChips from 'components/AvatarChips';
+
+// queries
+import { IPost } from 'queries/post';
+
+// utils
+import { getMentionProps } from './utils';
+import { quillHashtagConversion, removeElementsByClass } from 'utils/misc';
+// import Poll, { PollMode } from 'components/Poll';
 
 type RenderQuillContent = {
   data: IPost | IComment;
@@ -55,10 +61,16 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
     closedAt: '2023-10-23T05:45:35Z',
   };
 
-  const isEmpty = useMemo(
-    () => data.content.text === '\n' || data.content.text === '',
-    [data],
-  );
+  const isEmpty = useMemo(() => {
+    const ops = data.content.editor.ops || [];
+
+    for (const op of ops) {
+      if (op.insert && op.insert.emoji) {
+        return false; // If an emoji is found, return false
+      }
+    }
+    return data.content.text === '\n' || data.content.text === '';
+  }, [data]);
 
   useEffect(() => {
     const element = document.getElementById(`${data?.id}-content`);
@@ -72,6 +84,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
       button.setAttribute('id', `${data?.id}-expand-collapse-button`);
       button.setAttribute('data-testid', 'feed-post-seemore');
       button.type = 'button';
+      button.style.alignSelf = 'start';
       button.classList.add(
         'showMoreLess',
         'read-more-button',
@@ -133,7 +146,6 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
     () =>
       clsx({
         'w-full flex justify-start': isComment,
-        'mt-4': true,
       }),
     [],
   );
@@ -147,7 +159,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
   );
 
   return (
-    <div>
+    <div className="w-full flex flex-col gap-4">
       {!isEmpty && (
         <span
           className="line-clamp-3 paragraph pt-px text-sm"
@@ -158,11 +170,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
         </span>
       )}
 
-      {link && (
-        <div className="mt-4">
-          <PreviewCard metaData={link as Metadata} className="my-2" />
-        </div>
-      )}
+      {link && <PreviewCard metaData={link as Metadata} className="" />}
       {media && media.length > 0 && (
         <div
           className={containerStyle}
@@ -182,7 +190,7 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
         </div>
       )}
       {/* {poll && (
-        <div className="mt-4">
+        <div className="">
           <Poll
             question={poll.question}
             closedAt={poll.closedAt}
@@ -191,21 +199,23 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
           />
         </div>
       )} */}
-      {data?.shoutoutRecipients && data?.shoutoutRecipients.length > 0 && (
-        <div className="mt-4 flex flex-col gap-2">
-          <p
-            className="text-xs text-neutral-500"
-            data-testid="feed-post-shoutoutto-list"
-          >
-            Shoutout to:
-          </p>
-          <AvatarChips
-            users={data.shoutoutRecipients}
-            showCount={3}
-            dataTestId="feed-post-shoutoutto-"
-          />
-        </div>
-      )}
+      {data?.shoutoutRecipients &&
+        data?.shoutoutRecipients.length > 0 &&
+        !isAnnouncementWidgetPreview && (
+          <div className="flex flex-col gap-2">
+            <p
+              className="text-xs text-neutral-500"
+              data-testid="feed-post-shoutoutto-list"
+            >
+              Shoutout to:
+            </p>
+            <AvatarChips
+              users={data.shoutoutRecipients}
+              showCount={3}
+              dataTestId="feed-post-shoutoutto-"
+            />
+          </div>
+        )}
     </div>
   );
 };

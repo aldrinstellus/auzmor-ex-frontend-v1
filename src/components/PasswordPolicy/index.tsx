@@ -29,7 +29,7 @@ const PasswordPolicy: React.FC<IPasswordPolicyProps> = ({
           'bg-red-500': !isChecked,
         },
         {
-          'border border-2 border-neutral-50': !isChecked,
+          'border-neutral-50': !isChecked,
         },
       ),
     [isChecked],
@@ -41,7 +41,7 @@ const PasswordPolicy: React.FC<IPasswordPolicyProps> = ({
         {isChecked ? (
           <Check />
         ) : (
-          <Icon name="closeCircle" size={24} color="text-white" />
+          <Icon name="closeCircle" size={24} color="text-white" hover={false} />
         )}
       </div>
       <div>{policyName}</div>

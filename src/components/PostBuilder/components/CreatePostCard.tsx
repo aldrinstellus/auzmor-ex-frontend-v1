@@ -1,17 +1,21 @@
 import React from 'react';
-import Avatar from 'components/Avatar';
-import Card from 'components/Card';
-import useAuth from 'hooks/useAuth';
-import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
 import clsx from 'clsx';
-import { IPostMenu } from './CreatePostModal';
 import { Link } from 'react-router-dom';
 
+// components
+import Avatar from 'components/Avatar';
+import Card from 'components/Card';
+import Icon from 'components/Icon';
+
+// types
+import { IPostMenu } from './CreatePostModal';
+
+// hooks
+import useAuth from 'hooks/useAuth';
+import Divider, { Variant } from 'components/Divider';
+
 export interface ICreatePostCardProps {
-  open: boolean;
   openModal: () => void;
-  closeModal: () => void;
 }
 
 export const postTypeMapIcons: IPostMenu[] = [
@@ -75,13 +79,13 @@ export const postTypeMapIcons: IPostMenu[] = [
     menuItems: [],
     divider: true,
   },
-  {
-    id: 3,
-    label: 'Events',
-    icon: <Icon name="calendarFilledTwo" color="text-neutral-500" size={14} />,
-    menuItems: [],
-    divider: true,
-  },
+  // {
+  //   id: 3,
+  //   label: 'Events',
+  //   icon: <Icon name="calendarFilledTwo" color="text-neutral-500" size={14} />,
+  //   menuItems: [],
+  //   divider: true,
+  // },
   {
     id: 4,
     label: 'Polls',
@@ -90,11 +94,7 @@ export const postTypeMapIcons: IPostMenu[] = [
   },
 ];
 
-const CreatePostCard: React.FC<ICreatePostCardProps> = ({
-  open,
-  openModal,
-  closeModal,
-}) => {
+const CreatePostCard: React.FC<ICreatePostCardProps> = ({ openModal }) => {
   const { user } = useAuth();
 
   const tabStyle = (hasDivider = false) =>
@@ -109,8 +109,8 @@ const CreatePostCard: React.FC<ICreatePostCardProps> = ({
     );
 
   return (
-    <Card className="bg-white px-2">
-      <div className="flex items-center px-4 pt-6 pb-4">
+    <Card className="bg-white px-6 pt-6 flex flex-col gap-4">
+      <div className="flex items-center gap-4">
         <Link to="/profile">
           <Avatar
             size={32}
@@ -121,23 +121,29 @@ const CreatePostCard: React.FC<ICreatePostCardProps> = ({
         </Link>
         <input
           type="input"
-          className="w-full h-11 border border-neutral-200 rounded-19xl ml-3 px-5 py-3 text-sm font-medium outline-none text-neutral-500"
+          className="w-full h-11 border border-neutral-200 rounded-19xl text-sm font-medium outline-none text-neutral-500 flex-1 px-5 py-3 cursor-pointer hover:bg-neutral-100 transition-colors"
           readOnly
           onClick={openModal}
           placeholder="What's on your mind?"
           data-testid="activityfeed-whatsonurmind"
         />
       </div>
-      <div className="flex flex-wrap justify-between border-t border-neutral-100 mx-8.5">
-        {postTypeMapIcons.map((type) => (
-          <div key={type.id} className={tabStyle(type.divider)}>
-            <div className="mt-3 mb-3 flex justify-center items-center py-3 rounded-7xl border-1 border-neutral-200 bg-neutral-200 w-8 h-8">
-              {type.icon}
+      <div className="flex flex-wrap border-t border-neutral-100 justify-between w-full px-10">
+        {postTypeMapIcons.map((type, ind) => (
+          <>
+            <div key={type.id} className="flex gap-3 items-center py-3">
+              <div className="flex justify-center items-center rounded-7xl border-1 border-neutral-200 bg-neutral-100 p-2">
+                {type.icon}
+              </div>
+              <div className="text-xs font-normal text-neutral-500">
+                {type.label}
+              </div>
             </div>
-            <div className="ml-3 text-xs font-normal text-neutral-500">
-              {type.label}
-            </div>
-          </div>
+
+            {ind !== postTypeMapIcons.length - 1 && (
+              <Divider className="w-1 h-auto" variant={Variant.Vertical} />
+            )}
+          </>
         ))}
       </div>
     </Card>

@@ -3,12 +3,12 @@ import _ from 'lodash';
 import useAuth from 'hooks/useAuth';
 import PopupMenu from 'components/PopupMenu';
 import { UserRole, UserStatus } from 'queries/users';
+import useRole from 'hooks/useRole';
 
 export interface IUserDropdownProps {
   id: string;
   role: string;
   status: string | undefined;
-  isAdmin: boolean;
   isHovered?: boolean;
   parentIsUserProfile?: boolean;
   onEditClick?: any;
@@ -27,7 +27,6 @@ const UserProfileDropdown: React.FC<IUserDropdownProps> = ({
   id,
   role,
   status,
-  isAdmin,
   isHovered,
   onEditClick,
   onPromoteClick,
@@ -40,7 +39,7 @@ const UserProfileDropdown: React.FC<IUserDropdownProps> = ({
   className,
 }) => {
   const { user } = useAuth();
-
+  const { isAdmin } = useRole();
   const _options = [];
 
   if (

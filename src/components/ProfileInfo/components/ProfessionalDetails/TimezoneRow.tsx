@@ -5,42 +5,47 @@ import SelectTimeZone from 'components/UserOnboard/components/SelectTimeZone';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { getTimezoneNameFromIANA } from 'utils/time';
-import { updateCurrentUser } from 'queries/users';
+import { updateCurrentUser, updateUserById } from 'queries/users';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
 import { getDefaultTimezoneOption } from 'components/UserOnboard/utils';
 import { toastConfig } from '../utils';
+import { useParams } from 'react-router-dom';
+import useRole from 'hooks/useRole';
+import useAuth from 'hooks/useAuth';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 
 type AppProps = {
   data: any;
 };
 
 const TimezoneRow: React.FC<AppProps> = ({ data }) => {
+  const { userId = '' } = useParams();
   const queryClient = useQueryClient();
   const defaultTimezone = getDefaultTimezoneOption();
   const ref = useRef<any>(null);
+  const { user } = useAuth();
+  const { isOwnerOrAdmin } = useRole({ userId: userId || user?.id });
 
   const schema = yup.object({
     timeZone: yup.object(),
   });
 
   const updateUserTimezoneMutation = useMutation({
-    mutationFn: updateCurrentUser,
+    mutationFn: userId
+      ? (data: any) => updateUserById(userId, data)
+      : updateCurrentUser,
     mutationKey: ['update-user-timeZone-mutation'],
     onError: (error: any) => {},
     onSuccess: async (response: any) => {
-      toastConfig(
-        <Icon
-          name="closeCircleOutline"
-          color={twConfig.theme.colors.primary['500']}
-          size={20}
-        />,
-      );
+      successToastConfig();
       ref?.current?.setEditMode(false);
-      await queryClient.invalidateQueries(['current-user-me']);
+      if (userId) {
+        await queryClient.invalidateQueries(['user', userId]);
+      } else {
+        await queryClient.invalidateQueries(['current-user-me']);
+      }
     },
   });
 
@@ -52,9 +57,9 @@ const TimezoneRow: React.FC<AppProps> = ({ data }) => {
   const onSubmit = () => {
     const selectedTimezone = getValues();
     const timezoneValue =
-      selectedTimezone.timeZone?.value[0] ||
+      selectedTimezone.timeZone?.value ||
       data?.timeZone ||
-      defaultTimezone.value[0];
+      defaultTimezone.value;
     updateUserTimezoneMutation.mutate({
       timeZone: timezoneValue,
     });
@@ -72,6 +77,7 @@ const TimezoneRow: React.FC<AppProps> = ({ data }) => {
       ref={ref}
       label="Timezone"
       value={userTimezone}
+      canEdit={isOwnerOrAdmin}
       dataTestId="professional-details-timezone"
       border={false}
       editNode={

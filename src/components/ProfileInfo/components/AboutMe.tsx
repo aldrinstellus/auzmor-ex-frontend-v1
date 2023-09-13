@@ -9,7 +9,9 @@ import Layout, { FieldType } from 'components/Form';
 import queryClient from 'utils/queryClient';
 import { EditUserSection, updateCurrentUser } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import SuccessToast, {
+  successToastConfig,
+} from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import { twConfig } from 'utils/misc';
 import Icon from 'components/Icon';
@@ -46,7 +48,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({
       mode: 'onSubmit',
       defaultValues: {
         personal: {
-          about: aboutMeData?.personal?.about || 'Field not specified',
+          about: aboutMeData?.personal?.about || '',
         },
       },
     });
@@ -73,7 +75,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({
     {
       type: FieldType.TextArea,
       name: 'personal.about',
-      placeholder: 'write here',
+      placeholder: 'Write here',
       defaultValue: getValues()?.personal?.about,
       dataTestId: 'about-me-edit-text',
       control,
@@ -89,20 +91,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({
     mutationKey: ['update-user-personal-details-mutation'],
     onError: (error: any) => {},
     onSuccess: (response: any) => {
-      toast(<SuccessToast content={'User Profile Updated Successfully'} />, {
-        closeButton: (
-          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
-        ),
-        style: {
-          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
-        },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
-      });
+      successToastConfig();
       setIsEditable(false);
     },
   });
