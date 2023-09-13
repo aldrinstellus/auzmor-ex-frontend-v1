@@ -433,7 +433,11 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({ userDetails }) => {
         </div>
       )}
       {socialLink && (
-        <SocialLinksModal open={socialLink} closeModal={closeSocialLinks} />
+        <SocialLinksModal
+          open={socialLink}
+          closeModal={closeSocialLinks}
+          socialLinks={{}}
+        />
       )}
       <DeletePeople
         open={openDelete}

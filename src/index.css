@@ -30,6 +30,7 @@ body {
 /* Width of the vertical scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 /* Background color of the scrollbar track */

@@ -26,13 +26,13 @@ const ImagePreview: React.FC<IImagePreviewProps> = ({
     const count = users.length;
     const showNames = users
       .slice(0, _showNameCount - 1)
-      .map((user) => user.fullName)
+      .map((user) => user.firstName || user.fullName)
       .join(', ');
     if (count === 1) {
-      return users[0].fullName;
+      return users[0].firstName || users[0].fullName;
     }
     if (_showNameCount === count) {
-      return `${showNames} and ${users[count - 1].fullName}`;
+      return `${showNames} and ${users[count - 1].firstName || users[count - 1].fullName}`;
     } else {
       return `${showNames} and ${count - _showNameCount + 1} others`;
     }
@@ -46,7 +46,8 @@ const ImagePreview: React.FC<IImagePreviewProps> = ({
       let count = 0;
 
       for (let i = 0; i < users.length; i++) {
-        const nameWidth = users[i].fullName.length * 12; // Adjust this multiplier as needed
+        const nameWidth =
+          (users[i].firstName?.length || users[i].fullName.length) * 12; // Adjust this multiplier as needed
         totalWidth += nameWidth;
 
         if (totalWidth > containerWidth) {

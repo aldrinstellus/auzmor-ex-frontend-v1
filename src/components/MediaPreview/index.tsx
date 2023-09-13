@@ -193,7 +193,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
     } else if (media.length === 4) {
       return (
         <div
-          className={`grid grid-rows-2 grid-flow-row auto-cols-auto w-full ${mediaHeight} ${
+          className={`grid grid-rows-2 grid-cols-2 grid-flow-row auto-cols-auto w-full ${mediaHeight} ${
             isAnnouncementWidgetPreview ? 'gap-2' : 'gap-4'
           }`}
         >
@@ -429,7 +429,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
   };
 
   return (
-    <div className={`${className} relative w-full`}>
+    <div className={`${className} relative`}>
       {getLayout()}
       {mode === Mode.Edit && (
         <div className="flex justify-between absolute p-4 top-0 w-full">

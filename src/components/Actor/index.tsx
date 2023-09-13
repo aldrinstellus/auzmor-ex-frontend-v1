@@ -41,6 +41,9 @@ const Actor: React.FC<ActorProps> = ({
     if (postType === 'NEW_JOINEE') {
       return 'is a new joinee';
     }
+    if (postType === 'POLL') {
+      return 'shared a poll';
+    }
     if (contentMode === VIEW_POST) {
       return 'shared a post';
     }

@@ -88,3 +88,47 @@ export const getTimeInScheduleFormat = (
   );
   return `${moment(targetDate).format('ddd, MMM DD')} at ${targetTime}`;
 };
+
+// Returns time from now till given date in human friendly format
+export const getTimeFromNow = (dateStr: string) => {
+  const finalDate = moment(new Date(dateStr));
+  const currentDate = moment();
+  let monthsLeft = 0;
+  let weeksLeft = 0;
+  let daysLeft = 0;
+  let hoursLeft = 0;
+  let minutesLeft = 0;
+
+  monthsLeft = finalDate.diff(currentDate, 'months');
+  finalDate.subtract(monthsLeft, 'month');
+
+  // Show weeks only if time left is < 1 month
+  if (monthsLeft <= 0) {
+    weeksLeft = finalDate.diff(currentDate, 'weeks');
+    finalDate.subtract(weeksLeft, 'week');
+  }
+
+  daysLeft = finalDate.diff(currentDate, 'days');
+  finalDate.subtract(daysLeft, 'day');
+
+  // Show hours and minutes if time left is less than a day
+  if (monthsLeft <= 0 && weeksLeft <= 0 && daysLeft <= 0) {
+    hoursLeft = finalDate.diff(currentDate, 'hours');
+    finalDate.subtract(hoursLeft, 'hour');
+    minutesLeft = finalDate.diff(currentDate, 'minutes');
+  }
+
+  return [
+    monthsLeft > 0
+      ? `${monthsLeft} ${monthsLeft === 1 ? 'month' : 'months'}`
+      : null,
+    weeksLeft > 0 ? `${weeksLeft} ${weeksLeft === 1 ? 'week' : 'weeks'}` : null,
+    daysLeft > 0 ? `${daysLeft} ${daysLeft === 1 ? 'day' : 'days'}` : null,
+    hoursLeft > 0 ? `${hoursLeft} ${hoursLeft === 1 ? 'hour' : 'hours'}` : null,
+    minutesLeft > 0
+      ? `${minutesLeft} ${minutesLeft === 1 ? 'minute' : 'minutes'}`
+      : null,
+  ]
+    .filter(Boolean)
+    .join(', ');
+};

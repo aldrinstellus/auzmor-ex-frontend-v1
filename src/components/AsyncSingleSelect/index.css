@@ -26,6 +26,7 @@
 .async-single-select .ant-select-selection-item {
   line-height: theme('lineHeight.normal') !important;
   color: theme('colors.neutral.900') !important;
+  font-weight: theme('fontWeight.medium') !important;
   display: flex !important;
   align-items: center !important;
 }

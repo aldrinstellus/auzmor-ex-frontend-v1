@@ -6,7 +6,7 @@ import {
 } from '@tanstack/react-query';
 import { DeltaStatic } from 'quill';
 import { isValidUrl } from 'utils/misc';
-import { IMedia, IPoll } from 'contexts/CreatePostContext';
+import { IMedia, IPoll, POST_TYPE } from 'contexts/CreatePostContext';
 import { IComment } from 'components/Comments';
 import { Metadata } from 'components/PreviewLink/types';
 import { useFeedStore } from 'stores/feedStore';
@@ -71,7 +71,7 @@ export interface IPost {
   hashtags: string[] | [];
   files?: string[] | IMedia[];
   pollContext?: IPoll;
-  type: string;
+  type: POST_TYPE;
   audience: IAudience[];
   isAnnouncement: boolean;
   announcement: {
@@ -94,6 +94,9 @@ export interface IPost {
     type: string;
     id: string;
   };
+  myVote?: {
+    optionId: string;
+  }[];
   link?: Metadata | string;
   myReaction?: {
     createdBy?: ICreatedBy;
@@ -350,6 +353,28 @@ export const useCelebrations = (q?: Record<string, any>) => {
 
 export const announcementRead = async (postId: string) => {
   const data = await apiService.post(`/posts/${postId}/acknowledge`);
+  return data;
+};
+
+export const pollVote = async ({
+  postId,
+  optionId,
+}: {
+  postId: string;
+  optionId: string;
+}) => {
+  const data = await apiService.post(`/posts/${postId}/votes`, { optionId });
+  return data;
+};
+
+export const deletePollVote = async ({
+  postId,
+  optionId,
+}: {
+  postId: string;
+  optionId: string;
+}) => {
+  const data = await apiService.delete(`/posts/${postId}/votes/${optionId}`);
   return data;
 };
 
