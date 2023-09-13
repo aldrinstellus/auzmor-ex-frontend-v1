@@ -304,7 +304,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
               (status as any) === UserStatus.Inactive ? '#ffffff' : undefined
             }
           />
-          <div className="flex flex-col items-center gap-2 justify-center flex-1">
+          <div className="flex flex-col items-center gap-2 justify-start flex-1">
             <div className="flex flex-col items-center gap-1">
               <div
                 className="text-neutral-900 text-base font-bold truncate"
