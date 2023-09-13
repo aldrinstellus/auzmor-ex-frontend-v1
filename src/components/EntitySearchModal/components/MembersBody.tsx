@@ -50,9 +50,11 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
   const debouncedSearchValue = useDebounce(memberSearch || '', 500);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteUsers({
-      q: debouncedSearchValue,
-      department: selectedDepartments,
-      location: selectedLocations,
+      q: {
+        q: debouncedSearchValue,
+        department: selectedDepartments,
+        location: selectedLocations,
+      },
     });
   const usersData = data?.pages
     .flatMap((page) => {

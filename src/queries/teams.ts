@@ -139,10 +139,15 @@ export const useInfiniteTeams = ({
   });
 };
 
-export const useInfiniteTeamMembers = (
-  teamId: string,
-  q?: Record<string, any>,
-) => {
+export const useInfiniteTeamMembers = ({
+  teamId,
+  q,
+  startFetching,
+}: {
+  teamId: string;
+  q?: Record<string, any>;
+  startFetching?: boolean;
+}) => {
   return useInfiniteQuery({
     queryKey: ['get-team-members', q, teamId],
     queryFn: (context) => getTeamMembers(context, teamId),
@@ -158,6 +163,7 @@ export const useInfiniteTeamMembers = (
       return currentPage?.data?.result?.paging?.prev;
     },
     staleTime: 5 * 60 * 1000,
+    enabled: startFetching,
   });
 };
 

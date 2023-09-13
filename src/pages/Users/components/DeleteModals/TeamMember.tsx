@@ -110,7 +110,7 @@ const RemoveTeamMember: React.FC<IRemoveTeamMemberProps> = ({
         onClick={() =>
           onRemoveTeamMember.mutate({
             teamId: teamId || '',
-            params: { userIds: [userId] },
+            params: { userIds: userId },
           })
         }
       />

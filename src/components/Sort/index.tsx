@@ -14,6 +14,7 @@ export interface ISortProps {
   title: ReactElement;
   entity: string;
   permission?: string[];
+  selectedValue?: string;
 }
 
 const Sort: React.FC<ISortProps> = ({
@@ -23,6 +24,7 @@ const Sort: React.FC<ISortProps> = ({
   title,
   entity,
   permission,
+  selectedValue,
 }) => {
   return (
     <PopupMenu
@@ -45,6 +47,8 @@ const Sort: React.FC<ISortProps> = ({
             setFilter(`${filterKey.createdAt}:${filterValue.desc}`);
           },
           dataTestId: `${entity}-sortby-dateadded`,
+          isActive:
+            selectedValue === `${filterKey.createdAt}:${filterValue.desc}`,
           permissions: permission,
         },
         {
@@ -53,6 +57,7 @@ const Sort: React.FC<ISortProps> = ({
           onClick: () => {
             setFilter(`${filterKey.aToZ}:${filterValue.asc}`);
           },
+          isActive: selectedValue === `${filterKey.aToZ}:${filterValue.asc}`,
           dataTestId: `${entity}-sortBy-asc`,
           permissions: [''],
         },
@@ -63,6 +68,7 @@ const Sort: React.FC<ISortProps> = ({
             setFilter(`${filterKey.aToZ}:${filterValue.desc}`);
           },
           dataTestId: `${entity}-sortBy-desc`,
+          isActive: selectedValue === `${filterKey.aToZ}:${filterValue.desc}`,
           permissions: permission,
         },
       ]}

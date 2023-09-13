@@ -29,6 +29,7 @@ import PeopleFilterModal from '../FilterModals/PeopleFilterModal';
 import { useInfiniteTeamMembers } from 'queries/teams';
 import { EntitySearchModalType } from 'components/EntitySearchModal';
 import Sort from 'components/Sort';
+import useURLParams from 'hooks/useURLParams';
 
 export interface IPeopleProps {
   showModal: boolean;
@@ -50,6 +51,14 @@ const People: React.FC<IPeopleProps> = ({
   isTeamPeople,
   teamId,
 }) => {
+  const {
+    searchParams,
+    updateParam,
+    deleteParam,
+    serializeFilter,
+    parseParams,
+  } = useURLParams();
+  const [startFetching, setStartFetching] = useState(false);
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const [userStatus, setUserStatus] = useState<string>('');
   const [filterSortBy, setFilterSortBy] = useState<string>('');
@@ -77,26 +86,28 @@ const People: React.FC<IPeopleProps> = ({
 
   // get the conditional data
   const getPeoplesData = () => {
-    return useInfiniteUsers(
-      isFiltersEmpty({
-        status: userStatus,
+    return useInfiniteUsers({
+      startFetching,
+      q: isFiltersEmpty({
+        status: userStatus === 'ALL' ? undefined : userStatus,
         role: role?.value,
         sort: filterSortBy,
         q: debouncedSearchValue,
       }),
-    );
+    });
   };
 
   const getTeamMembersData = () => {
-    return useInfiniteTeamMembers(
-      teamId || '',
-      isFiltersEmpty({
-        status: userStatus,
+    return useInfiniteTeamMembers({
+      startFetching,
+      teamId: teamId || '',
+      q: isFiltersEmpty({
+        status: userStatus === 'ALL' ? undefined : userStatus,
         role: role?.value,
         sort: filterSortBy,
         q: debouncedSearchValue,
       }),
-    );
+    });
   };
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
@@ -149,6 +160,34 @@ const People: React.FC<IPeopleProps> = ({
     });
   });
 
+  const handleSetUserStatus = (status: string) => {
+    setUserStatus(status);
+    if (status) {
+      const serializedStatus = serializeFilter(status);
+      updateParam('status', serializedStatus);
+    } else {
+      deleteParam('status');
+    }
+  };
+
+  const handleSetSortFilter = (sortValue: any) => {
+    setFilterSortBy(sortValue);
+    const serializedSort = serializeFilter(sortValue);
+    updateParam('sort', serializedSort);
+  };
+
+  useEffect(() => {
+    const parsedStatus = parseParams('status');
+    const parsedSort = parseParams('sort');
+    if (parsedStatus) {
+      setUserStatus(parsedStatus);
+    }
+    if (parsedSort) {
+      setFilterSortBy(parsedSort);
+    }
+    setStartFetching(true);
+  }, []);
+
   return (
     <div className="relative pb-8">
       <div className="flex flex-col gap-6">
@@ -188,8 +227,9 @@ const People: React.FC<IPeopleProps> = ({
               dataTestId="people-filter"
             />
             <Sort
-              setFilter={setFilterSortBy}
+              setFilter={handleSetSortFilter}
               filterKey={{ createdAt: 'createdAt', aToZ: 'name' }}
+              selectedValue={filterSortBy}
               filterValue={{ asc: 'ASC', desc: 'DESC' }}
               title={
                 <div className="bg-blue-50 flex px-6 py-2 font-xs font-medium text-neutral-500">
@@ -239,14 +279,20 @@ const People: React.FC<IPeopleProps> = ({
                   size={16}
                   color="text-neutral-900"
                   className="cursor-pointer"
-                  onClick={() => setUserStatus('')}
+                  onClick={() => {
+                    deleteParam('status');
+                    setUserStatus('');
+                  }}
                   dataTestId={`people-filterby-close-${userStatus}`}
                 />
               </div>
             </div>
             <div
               className="text-neutral-500 border px-3 py-1 rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
-              onClick={() => setUserStatus('')}
+              onClick={() => {
+                deleteParam('status');
+                setUserStatus('');
+              }}
             >
               Clear Filters
             </div>
@@ -347,7 +393,7 @@ const People: React.FC<IPeopleProps> = ({
       />
 
       <PeopleFilterModal
-        setUserStatus={setUserStatus}
+        setUserStatus={handleSetUserStatus}
         userStatus={userStatus}
         open={showFilterModal}
         openModal={openFilterModal}

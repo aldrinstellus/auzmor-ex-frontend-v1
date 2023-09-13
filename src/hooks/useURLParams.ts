@@ -5,7 +5,7 @@ interface UseURLParamsHook {
   updateParam: (key: string, value: string) => void;
   deleteParam: (key: string) => void;
   parseParams: (key: string) => any;
-  serializeFilter: (filter: { categories: any[] }) => string;
+  serializeFilter: (filter: any) => string;
 }
 
 const useURLParams = (): UseURLParamsHook => {

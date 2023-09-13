@@ -125,11 +125,9 @@ const Team: React.FC<ITeamProps> = ({
         q: debouncedSearchValue,
         sort: sortByFilter,
         userId: tab === TeamTab.MyTeams ? user?.id : undefined,
-        category:
+        categoryId:
           filters.categories.length > 0
-            ? filters.categories
-                .map((category: any) => category?.name?.toUpperCase())
-                .join(', ')
+            ? filters.categories.map((category: any) => category?.id).join(',')
             : undefined,
       }),
     });
@@ -226,6 +224,12 @@ const Team: React.FC<ITeamProps> = ({
     updateParam('categories', serializedCategories);
   };
 
+  const handleSetSortFilter = (sortValue: any) => {
+    setSortByFilter(sortValue);
+    const serializedSort = serializeFilter(sortValue);
+    updateParam('sort', serializedSort);
+  };
+
   const clearFilters = () => {
     deleteParam('categories');
     setFilters({
@@ -235,11 +239,15 @@ const Team: React.FC<ITeamProps> = ({
 
   useEffect(() => {
     const parsedCategories = parseParams('categories');
+    const parsedSort = parseParams('sort');
     if (parsedCategories) {
       setFilters((prevFilters: any) => ({
         ...prevFilters,
         categories: parsedCategories,
       }));
+    }
+    if (parsedSort) {
+      setSortByFilter(parsedSort);
     }
     setStartFetching(true);
   }, []);
@@ -284,8 +292,9 @@ const Team: React.FC<ITeamProps> = ({
             dataTestId="teams-filter"
           />
           <Sort
-            setFilter={setSortByFilter}
+            setFilter={handleSetSortFilter}
             filterKey={{ createdAt: 'createdAt', aToZ: 'name' }}
+            selectedValue={sortByFilter}
             filterValue={{ asc: 'ASC', desc: 'DESC' }}
             title={
               <div className="bg-blue-50 flex px-6 py-2 font-xs font-medium text-neutral-500">
