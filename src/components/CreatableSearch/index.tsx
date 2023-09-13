@@ -181,7 +181,7 @@ const CreatableSearch = React.forwardRef(
                   onChange={(_, option) => {
                     field.onChange(option);
                   }}
-                  suffixIcon={<Icon name="arrowDown" size={18} />}
+                  suffixIcon={<Icon name="arrowDown" size={16} />}
                   className="creatable-search"
                 >
                   {(options || []).map((option) => (

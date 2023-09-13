@@ -10,12 +10,14 @@ import { useInView } from 'react-intersection-observer';
 import UserRow from './UserRow';
 import InfiniteSearch from 'components/InfiniteSearch';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
+import useAuth from 'hooks/useAuth';
 
 interface IMembersBodyProps {
   entityRenderer?: (data: IGetUser) => ReactNode;
   selectedMemberIds?: string[];
   dataTestId?: string;
   entitySearchLabel?: string;
+  hideCurrentUser?: boolean;
 }
 
 const MembersBody: React.FC<IMembersBodyProps> = ({
@@ -23,7 +25,9 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
   selectedMemberIds = [],
   dataTestId,
   entitySearchLabel,
+  hideCurrentUser,
 }) => {
+  const { user: currentUser } = useAuth();
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const { form } = useEntitySearchFormStore();
@@ -65,6 +69,9 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
       });
     })
     .filter((user: IGetUser) => {
+      if (hideCurrentUser && user.id === currentUser!.id) {
+        return false;
+      }
       if (showSelectedMembers) {
         return !!users[user.id];
       }

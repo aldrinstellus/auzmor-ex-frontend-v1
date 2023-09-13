@@ -117,7 +117,7 @@ const Footer: React.FC<IFooterProps> = ({
       },
       {
         id: 2,
-        label: 'Shoutout',
+        label: 'Give kudos',
         icon: (
           <Icon
             name="magicStarFilled"
