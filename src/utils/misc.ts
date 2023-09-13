@@ -51,7 +51,7 @@ export const getCoverImage = (user: any) => {
 
 export const getFullName = (user: any) => {
   if (user?.status === UserStatus.Inactive) {
-    return `${user?.fullName} (deactivated)`;
+    return `${user?.fullName || user?.email || user?.workEmail} (deactivated)`;
   }
   return user?.fullName;
 };
