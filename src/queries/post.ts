@@ -96,7 +96,7 @@ export interface IPost {
   };
   myVote?: {
     optionId: string;
-  };
+  }[];
   link?: Metadata | string;
   myReaction?: {
     createdBy?: ICreatedBy;

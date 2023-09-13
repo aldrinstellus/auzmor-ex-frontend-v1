@@ -109,12 +109,12 @@ export const getTimeFromNow = (dateStr: string) => {
   }
 
   daysLeft = finalDate.diff(currentDate, 'days');
-  finalDate.subtract(daysLeft);
+  finalDate.subtract(daysLeft, 'day');
 
   // Show hours and minutes if time left is less than a day
   if (monthsLeft <= 0 && weeksLeft <= 0 && daysLeft <= 0) {
     hoursLeft = finalDate.diff(currentDate, 'hours');
-    finalDate.subtract(hoursLeft);
+    finalDate.subtract(hoursLeft, 'hour');
     minutesLeft = finalDate.diff(currentDate, 'minutes');
   }
 

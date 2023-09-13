@@ -19,6 +19,7 @@ import Button, {
   Size as ButtonSize,
 } from 'components/Button';
 import clsx from 'clsx';
+import useRole from 'hooks/useRole';
 
 export enum PollMode {
   VIEW = 'VIEW',
@@ -28,7 +29,7 @@ export enum PollMode {
 type PollProps = {
   mode: PollMode;
   postId?: string;
-  myVote?: { optionId: string };
+  myVote?: { optionId: string }[];
 };
 
 function animateOption(
@@ -74,6 +75,7 @@ const Poll: React.FC<IPoll & PollProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const [showResults, setShowResults] = useState(false);
+  const { isAdmin } = useRole();
   const { feed, updateFeed } = useFeedStore();
   const { setPoll, setActiveFlow, setPostType } = useContext(CreatePostContext);
 
@@ -88,7 +90,7 @@ const Poll: React.FC<IPoll & PollProps> = ({
           draft.pollContext?.options.forEach((option) => {
             if (option._id === optionId) option.votes = (option.votes || 0) + 1;
           });
-          draft.myVote = { optionId };
+          draft.myVote = [{ optionId }];
         }),
       );
       return { previousPost };
@@ -131,18 +133,19 @@ const Poll: React.FC<IPoll & PollProps> = ({
 
   const timeLeft = getTimeFromNow(closedAt);
   const showTotal = mode === PollMode.VIEW;
-  const showViewResults = mode === PollMode.VIEW && !myVote?.optionId;
+  const voted = !!myVote?.length;
+  const showViewResults = mode === PollMode.VIEW && isAdmin && !voted;
 
   useEffect(() => {
     if (mode === PollMode.EDIT) return;
     options.forEach((option, index) => {
-      if (showResults || (myVote && myVote.optionId) || !timeLeft) {
+      if (showResults || voted || !timeLeft) {
         animateOption(postId, index, getVotePercent(total, option.votes), '0');
       } else {
         animateOption(postId, index, '0%', '1');
       }
     });
-  }, [mode, options, myVote, showResults, timeLeft]);
+  }, [mode, options, voted, showResults, timeLeft]);
 
   return (
     <div className="bg-neutral-100 py-4 px-8 rounded-9xl w-full">
@@ -187,8 +190,12 @@ const Poll: React.FC<IPoll & PollProps> = ({
             mode === PollMode.EDIT || showResults || !postId || !option._id;
           const isLoading =
             voteMutation.isLoading || deleteVoteMutation.isLoading;
-          const votedAnotherOption =
-            myVote?.optionId && myVote.optionId !== option._id;
+          const votedThisOption =
+            voted &&
+            myVote?.some(
+              (vote) => vote.optionId && vote.optionId === option._id,
+            );
+          const votedAnotherOption = voted && !votedThisOption;
           const cursorNotAllowed = !timeLeft || isLoading || votedAnotherOption;
           const cursorPointer = !cursorDefault && !cursorNotAllowed;
           const cursorClass = clsx({
@@ -202,10 +209,10 @@ const Poll: React.FC<IPoll & PollProps> = ({
               key={option._id}
               onClick={() => {
                 if (cursorPointer && postId && option._id) {
-                  if (myVote?.optionId && myVote.optionId === option._id) {
+                  if (votedThisOption) {
                     deleteVoteMutation.mutate({ postId, optionId: option._id });
                   }
-                  if (!myVote?.optionId) {
+                  if (!voted) {
                     voteMutation.mutate({ postId, optionId: option._id });
                   }
                 }
@@ -216,9 +223,7 @@ const Poll: React.FC<IPoll & PollProps> = ({
               {/* The progress bar that fills up the background */}
               <div
                 className={`grid-area w-0 ${
-                  option._id === myVote?.optionId
-                    ? 'bg-emerald-600'
-                    : 'bg-green-100'
+                  votedThisOption ? 'bg-emerald-600' : 'bg-green-100'
                 } rounded-19xl`}
                 id={`option-progress-${postId}-${index}`}
               />
@@ -226,9 +231,7 @@ const Poll: React.FC<IPoll & PollProps> = ({
               <div className="grid-area flex items-center justify-between w-full px-5 py-3 text-neutral-900 font-medium">
                 <span
                   className={`text-center grow ${
-                    option._id && option._id === myVote?.optionId
-                      ? 'text-white'
-                      : 'text-inherit'
+                    votedThisOption ? 'text-white' : 'text-inherit'
                   }`}
                   id={`option-text-${postId}-${index}`}
                 >
@@ -236,7 +239,7 @@ const Poll: React.FC<IPoll & PollProps> = ({
                 </span>
 
                 <span>
-                  {showResults || (myVote && myVote.optionId) || !timeLeft
+                  {showResults || voted || !timeLeft
                     ? getVotePercent(total, option.votes)
                     : ''}
                 </span>
