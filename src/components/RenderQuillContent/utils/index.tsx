@@ -18,7 +18,7 @@ export const getStyles = (attributes: any) => {
     draft += 'italic ';
   }
   if (attributes?.underline) {
-    draft += 'underline-offset-auto	';
+    draft += 'underline underline-offset-auto';
   }
   return draft;
 };
