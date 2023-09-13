@@ -130,6 +130,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       errorDataTestId: 'change-password-error',
       showChecks: false,
       disabled: isLoading || data?.result?.data?.sso?.active,
+      inputClassName: 'h-[44px]',
     },
     {
       type: FieldType.Password,
@@ -146,6 +147,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       dataTestId: 'change-password-new-password',
       errorDataTestId: 'change-password-error',
       disabled: isLoading || data?.result?.data?.sso?.active,
+      inputClassName: 'h-[44px]',
     },
   ];
 
@@ -166,6 +168,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
       errorDataTestId: 'change-password-error',
       showChecks: false,
       disabled: isLoading || data?.result?.data?.sso?.active,
+      inputClassName: 'h-[44px]',
     },
   ];
 

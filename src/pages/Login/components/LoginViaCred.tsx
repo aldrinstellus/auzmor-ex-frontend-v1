@@ -96,6 +96,7 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
       dataTestId: 'signin-email',
       errorDataTestId: 'signin-invalid-email-format-msg',
       control,
+      inputClassName: 'h-[44px]',
     },
     {
       type: FieldType.Password,
@@ -107,6 +108,7 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
       dataTestId: 'signin-password',
       control,
       showChecks: false,
+      inputClassName: 'h-[44px]',
     },
   ];
 

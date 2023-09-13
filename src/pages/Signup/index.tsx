@@ -119,6 +119,7 @@ const Signup: React.FC<ISignupProps> = () => {
       dataTestId: 'sign-up-fullname',
       errorDataTestId: 'signup-error-msg',
       control,
+      inputClassName: 'h-[44px]',
     },
     {
       type: FieldType.Input,
@@ -130,6 +131,7 @@ const Signup: React.FC<ISignupProps> = () => {
       dataTestId: 'sign-up-email',
       errorDataTestId: 'signup-error-msg',
       control,
+      inputClassName: 'h-[44px]',
     },
     {
       type: FieldType.Input,
@@ -149,6 +151,7 @@ const Signup: React.FC<ISignupProps> = () => {
       dataTestId: 'sign-up-domain',
       errorDataTestId: 'signup-error-msg',
       control,
+      inputClassName: 'h-[44px]',
     },
     {
       type: FieldType.Password,
@@ -164,6 +167,7 @@ const Signup: React.FC<ISignupProps> = () => {
       control,
       getValues,
       onChange: () => {},
+      inputClassName: 'h-[44px]',
     },
     {
       type: FieldType.Password,
@@ -176,6 +180,7 @@ const Signup: React.FC<ISignupProps> = () => {
       control,
       showChecks: false,
       errorDataTestId: 'signup-error-msg',
+      inputClassName: 'h-[44px]',
     },
     {
       type: FieldType.Checkbox,
