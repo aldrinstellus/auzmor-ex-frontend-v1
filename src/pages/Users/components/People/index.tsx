@@ -179,14 +179,28 @@ const People: React.FC<IPeopleProps> = ({
   useEffect(() => {
     const parsedStatus = parseParams('status');
     const parsedSort = parseParams('sort');
+    const parsedRole = parseParams('role');
     if (parsedStatus) {
       setUserStatus(parsedStatus);
     }
     if (parsedSort) {
       setFilterSortBy(parsedSort);
     }
+    if (parsedRole) {
+      setValue('role', parsedRole);
+    }
     setStartFetching(true);
   }, []);
+
+  useEffect(() => {
+    if (role) {
+      const serializedRole = serializeFilter({
+        value: role.value,
+        label: role.label,
+      });
+      updateParam('role', serializedRole);
+    }
+  }, [role]);
 
   return (
     <div className="relative pb-8">
