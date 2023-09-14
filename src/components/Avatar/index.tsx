@@ -65,7 +65,7 @@ const Avatar: React.FC<AvatarProps> = ({
   const imgStyles = useMemo(
     () =>
       clsx(
-        { 'object-cover': true },
+        { 'object-cover h-full w-full': true },
         {
           'rounded-full': round,
         },
@@ -144,4 +144,4 @@ const Avatar: React.FC<AvatarProps> = ({
   );
 };
 
-export default Avatar;
+export default React.memo(Avatar);
