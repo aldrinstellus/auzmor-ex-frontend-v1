@@ -111,7 +111,7 @@ const TeamsBody: React.FC<ITeamsBodyProps> = ({
     !!!teamsData?.length && debouncedSearchValue !== '';
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col min-h-[489px]">
       <div className="flex flex-col py-4 px-6">
         <Layout
           fields={[
