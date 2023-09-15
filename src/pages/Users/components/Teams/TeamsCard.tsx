@@ -61,13 +61,13 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
           totalMembers: totalMembers,
         });
       },
-      dataTestId: 'team-edit',
+      dataTestId: 'ellipsis-edit-team',
       enabled: isAdmin || isSuperAdmin,
     },
     {
       icon: 'shareForwardOutline',
       label: 'Share',
-      dataTestId: 'team-share',
+      dataTestId: 'ellipsis-share-team',
       enabled: isAdmin || isSuperAdmin || isMember,
     },
     {
@@ -76,7 +76,7 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
       labelClassName: 'text-red-500',
       iconClassName: '!text-red-500',
       onClick: () => openDeleteModal(),
-      dataTestId: 'team-remove',
+      dataTestId: 'ellipsis-delete-team',
       enabled: isAdmin || isSuperAdmin,
     },
   ];
@@ -135,7 +135,7 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
               size={80}
               users={recentMembers || []}
               moreCount={totalMembers}
-              dataTestId="teams-people-icon"
+              dataTestId="teams-icon"
             />
           ) : (
             <div className="p-[18px] bg-neutral-200 rounded-full">

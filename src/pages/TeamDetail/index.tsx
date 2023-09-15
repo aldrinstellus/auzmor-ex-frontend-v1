@@ -83,17 +83,28 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
           : membersAddedCount === 1
           ? `${membersAddedCount} member has been added to the team`
           : 'Members already exists in the team';
-      toast(<SuccessToast content={message} />, {
-        style: {
-          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
+      toast(
+        <SuccessToast content={message} dataTestId="team-detail-toaster" />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              color="text-white"
+              size={20}
+              dataTestId="team-detail-toaster-close"
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
         },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
-      });
+      );
       queryClient.invalidateQueries(['get-team-members']);
     },
   });
@@ -114,7 +125,11 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
         ) : (
           <>
             <div className="flex justify-between items-center px-8">
-              <div className="flex space-x-2" onClick={handleGoBack}>
+              <div
+                className="flex space-x-2"
+                onClick={handleGoBack}
+                data-testid="my-team-back"
+              >
                 <Icon name="linearLeftArrowOutline" size={20} />
                 <div className="text-base font-bold text-neutral-900">
                   {prevRoute === TeamTab.MyTeams ? 'My Team' : 'All Team'}
@@ -122,7 +137,10 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
               </div>
               <Tooltip
                 tooltipContent={
-                  <div className="space-y-[6px] w-[231px]">
+                  <div
+                    className="space-y-[6px] w-[231px]"
+                    data-testid="team-tooltip"
+                  >
                     <div className="text-sm font-medium text-white">
                       Invite members
                     </div>
@@ -142,14 +160,24 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
                   leftIconClassName="!text-white"
                   leftIconSize={20}
                   onClick={openAddMemberModal}
-                  dataTestId="add-members-btn"
+                  dataTestId="team-add-members"
                 />
               </Tooltip>
             </div>
             <div className="w-full bg-purple-50 border-1 border-purple-200 py-4 pl-8 pr-16 flex justify-between">
               <div className="flex flex-col text-neutral-900 space-y-4">
-                <div className="text-2xl font-bold">{data.name}</div>
-                <div className="text-xs font-normal">{data.description}</div>
+                <div
+                  className="text-2xl font-bold"
+                  data-testid="team-details-name"
+                >
+                  {data.name}
+                </div>
+                <div
+                  className="text-xs font-normal"
+                  data-testid="team-details-description"
+                >
+                  {data.description}
+                </div>
               </div>
 
               <div className="flex items-center space-x-20 ">
@@ -157,7 +185,10 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
                   <div className="text-sm font-semibold text-purple-700">
                     Team type
                   </div>
-                  <div className="text-xl font-semibold">
+                  <div
+                    className="text-xl font-semibold"
+                    data-testid="team-details-category"
+                  >
                     {data.category?.name || 'category'}
                   </div>
                 </div>
@@ -165,7 +196,10 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
                   <div className="text-sm font-semibold text-purple-700">
                     No. of people
                   </div>
-                  <div className="text-xl font-semibold">
+                  <div
+                    className="text-xl font-semibold"
+                    data-testid="tem-details-people-count"
+                  >
                     {data.teamMembers || 0}
                   </div>
                 </div>
@@ -173,7 +207,11 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
                   <PopupMenu
                     triggerNode={
                       <div className="cursor-pointer">
-                        <Icon name="setting" color="text-neutral-900" />
+                        <Icon
+                          name="setting"
+                          color="text-neutral-900"
+                          dataTestId="team-settings"
+                        />
                       </div>
                     }
                     menuItems={[
@@ -181,20 +219,22 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
                         icon: 'edit',
                         label: 'Edit',
                         onClick: () => openTeamModal(),
-                        dataTestId: 'team-edit',
+                        dataTestId: 'team-setting-edit',
                         permissions: [''],
                       },
                       {
                         icon: 'shareForwardOutline',
                         label: 'Share',
-                        dataTestId: 'team-share',
+                        dataTestId: 'team-setting-share',
                         permissions: [''],
                       },
                       {
                         icon: 'cancel',
                         label: 'Remove',
                         onClick: () => openDeleteModal(),
-                        dataTestId: 'team-remove',
+                        dataTestId: 'team-setting-remove',
+                        labelClassName: 'text-red-500',
+                        iconClassName: '!text-red-500',
                         permissions: [''],
                       },
                     ]}
@@ -208,8 +248,8 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
         <div className="px-8">
           <People
             showModal={false}
-            openModal={() => {}}
-            closeModal={() => {}}
+            openModal={openAddMemberModal}
+            closeModal={closeAddMemberModal}
             isTeamPeople
             teamId={id}
           />
@@ -279,7 +319,7 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
             addTeamMemberMutation.mutate({ userIds: userIds });
             closeAddMemberModal();
           }}
-          title="Add Members"
+          title="Add team members"
           submitButtonText="Add Members"
           onCancel={closeAddMemberModal}
           cancelButtonText="Cancel"

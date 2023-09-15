@@ -195,7 +195,7 @@ const CreatableSearch = React.forwardRef(
                       {option.isNew ? (
                         <div
                           className="flex items-center justify-start"
-                          data-testid={addItemDataTestId}
+                          data-testid={`addItemDataTestId-${option.label}`}
                         >
                           <Icon name="add" size={16} color="text-neutral-900" />
                           <span className="ml-[10px] mr-[6px]">Add</span>

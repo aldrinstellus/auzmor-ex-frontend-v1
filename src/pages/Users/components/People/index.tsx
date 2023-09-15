@@ -178,8 +178,12 @@ const People: React.FC<IPeopleProps> = ({
 
   const handleSetSortFilter = (sortValue: any) => {
     setFilterSortBy(sortValue);
-    const serializedSort = serializeFilter(sortValue);
-    updateParam('sort', serializedSort);
+    if (sortValue) {
+      const serializedSort = serializeFilter(sortValue);
+      updateParam('sort', serializedSort);
+    } else {
+      deleteParam('sort');
+    }
   };
 
   // parse the persisted filters from the URL on page load
@@ -259,11 +263,6 @@ const People: React.FC<IPeopleProps> = ({
               filterKey={{ createdAt: 'createdAt', aToZ: 'name' }}
               selectedValue={filterSortBy}
               filterValue={{ asc: 'ASC', desc: 'DESC' }}
-              title={
-                <div className="bg-blue-50 flex px-6 py-2 font-xs font-medium text-neutral-500">
-                  Sort by
-                </div>
-              }
               entity={isTeamPeople ? EntitySearchModalType.Team : 'USER'}
             />
             <div>
@@ -373,7 +372,10 @@ const People: React.FC<IPeopleProps> = ({
                 />
                 <div className="w-full flex flex-col items-center">
                   <div className="flex items-center flex-col space-y-1">
-                    <div className="text-lg font-bold text-neutral-900">
+                    <div
+                      className="text-lg font-bold text-neutral-900"
+                      data-testid="teams-no-members-yet"
+                    >
                       No members yet
                     </div>
                     <div className="text-base font-medium text-neutral-500">
@@ -384,10 +386,13 @@ const People: React.FC<IPeopleProps> = ({
                 <Button
                   label={'Add members'}
                   variant={Variant.Secondary}
-                  className="space-x-1"
+                  className="space-x-1 rounded-[24px]"
                   size={Size.Large}
-                  dataTestId="no-result-add-team-cta"
+                  dataTestId="team-add-members-cta"
                   leftIcon={'addCircle'}
+                  leftIconClassName="text-neutral-900"
+                  leftIconSize={20}
+                  onClick={openModal}
                 />
               </div>
             ) : (

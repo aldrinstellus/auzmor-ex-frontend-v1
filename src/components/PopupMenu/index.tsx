@@ -24,7 +24,10 @@ export interface IPopupMenuProps {
   menuItems: IMenuItem[];
   className?: string;
   title?: ReactNode;
+  footer?: ReactNode;
   disabled?: boolean;
+  controlled?: boolean;
+  isOpen?: boolean;
 }
 
 const PopupMenu: React.FC<IPopupMenuProps> = ({
@@ -32,43 +35,54 @@ const PopupMenu: React.FC<IPopupMenuProps> = ({
   menuItems,
   className,
   title,
+  footer,
   disabled = false,
+  controlled,
+  isOpen,
 }) => {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   return (
     <Menu>
-      <Menu.Button as="div" ref={menuButtonRef} disabled={disabled}>
+      <Menu.Button
+        as="div"
+        ref={menuButtonRef}
+        disabled={disabled}
+      >
         {triggerNode}
       </Menu.Button>
-      <Menu.Items
-        className={`bg-white rounded-9xl shadow-lg absolute z-[99999] overflow-hidden ${className}`}
-      >
-        {title && title}
-        {menuItems.map((menuItem: IMenuItem, idx: number) => (
-          <>
-            {!menuItem.disabled && (
-              <Menu.Item key={`menu-item-${idx}`} as={menuItem.as}>
-                {(() => {
-                  if (menuItem.renderNode) {
-                    const menuItemWithDataTestId = React.cloneElement(
-                      menuItem.renderNode,
-                      { 'data-testid': menuItem.dataTestId },
+      {(controlled ? isOpen : true) && (
+        <Menu.Items
+          static={controlled}
+          className={`bg-white rounded-9xl shadow-lg absolute z-[99999] overflow-hidden ${className}`}
+        >
+          {title && title}
+          {menuItems.map((menuItem: IMenuItem, idx: number) => (
+            <>
+              {!menuItem.disabled && (
+                <Menu.Item key={`menu-item-${idx}`} as={menuItem.as}>
+                  {(() => {
+                    if (menuItem.renderNode) {
+                      const menuItemWithDataTestId = React.cloneElement(
+                        menuItem.renderNode,
+                        { 'data-testid': menuItem.dataTestId },
+                      );
+                      return menuItemWithDataTestId;
+                    }
+                    return (
+                      <PopupMenuItem
+                        menuItem={menuItem}
+                        menuButtonRef={menuButtonRef}
+                        border={idx !== menuItems?.length - 1}
+                      />
                     );
-                    return menuItemWithDataTestId;
-                  }
-                  return (
-                    <PopupMenuItem
-                      menuItem={menuItem}
-                      menuButtonRef={menuButtonRef}
-                      border={idx !== menuItems?.length - 1}
-                    />
-                  );
-                })()}
-              </Menu.Item>
-            )}
-          </>
-        ))}
-      </Menu.Items>
+                  })()}
+                </Menu.Item>
+              )}
+            </>
+          ))}
+          {footer && footer}
+        </Menu.Items>
+      )}
     </Menu>
   );
 };

@@ -34,7 +34,7 @@ const AddTeams: React.FC<IAddTeamsProps> = ({
         label: category?.name,
         type: category?.type,
         id: category?.id,
-        dataTestId: `category-option-${category?.type?.toLowerCase()}-${
+        dataTestId: `team-category-${category?.type?.toLowerCase()}-${
           category?.name
         }`,
       }),
@@ -58,6 +58,7 @@ const AddTeams: React.FC<IAddTeamsProps> = ({
       dataTestId: 'add-team-name',
       showCounter: true,
       maxLength: 100,
+      errorDataTestId: 'team-name-error-message',
     },
   ];
   const teamCategory = [
@@ -75,6 +76,7 @@ const AddTeams: React.FC<IAddTeamsProps> = ({
       getFormattedData: formatCategories,
       error: errors.category?.message,
       dataTestId: 'select-team-category',
+      addItemDataTestId: 'add-new-category',
     },
   ];
   const teamDescription = [
@@ -83,13 +85,14 @@ const AddTeams: React.FC<IAddTeamsProps> = ({
       name: 'description',
       label: 'Team description',
       placeholder: 'What is the purpose of this team',
-      dataTestId: 'adding-team-description',
+      dataTestId: 'add-team-description',
       control,
       defaultValue: defaultValues()?.description || '',
       className: 'resize-none rounded-19xl',
       rows: 4,
       maxLength: 200,
       showCounter: true,
+      errorDataTestId: 'team-description-error-message',
     },
   ];
   return (
