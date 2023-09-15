@@ -24,6 +24,7 @@ import {
   CreatePostContext,
   IEditorValue,
   IMedia,
+  POST_TYPE,
 } from 'contexts/CreatePostContext';
 import { PostBuilderMode } from '..';
 import { EntityType } from 'queries/files';
@@ -392,7 +393,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           html: content?.html || editorValue.html,
           editor: content?.json || editorValue.json,
         },
-        type: postType || 'UPDATE',
+        type: postType && postType !== POST_TYPE.Media ? postType : 'UPDATE',
         files: fileIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],
@@ -449,7 +450,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           html: content?.html || editorValue.html,
           editor: content?.json || editorValue.json,
         },
-        type: postType || 'UPDATE',
+        type: postType && postType !== POST_TYPE.Media ? postType : 'UPDATE',
         files: sortedIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],

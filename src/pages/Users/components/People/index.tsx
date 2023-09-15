@@ -425,13 +425,15 @@ const People: React.FC<IPeopleProps> = ({
         closeModal={closeModal}
       />
 
-      <PeopleFilterModal
-        setUserStatus={handleSetUserStatus}
-        userStatus={userStatus}
-        open={showFilterModal}
-        openModal={openFilterModal}
-        closeModal={closeFilterModal}
-      />
+      {showFilterModal && (
+        <PeopleFilterModal
+          setUserStatus={handleSetUserStatus}
+          userStatus={userStatus}
+          open={showFilterModal}
+          openModal={openFilterModal}
+          closeModal={closeFilterModal}
+        />
+      )}
     </div>
   );
 };

@@ -21,7 +21,7 @@ export enum CreatePostFlow {
 export enum POST_TYPE {
   Media = 'MEDIA',
   Poll = 'POLL',
-  Shoutout = 'SHOUTOUT',
+  Shoutout = 'SHOUT_OUT',
 }
 
 export interface IAnnouncement {

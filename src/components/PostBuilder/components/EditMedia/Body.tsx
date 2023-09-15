@@ -23,6 +23,7 @@ const Body: React.FC<IBodyProps> = ({
     getCoverImageBlobURL,
     mediaOpenIndex,
     setMediaOpenIndex,
+    setPostType,
   } = useContext(CreatePostContext);
   return (
     <Carousel
@@ -32,6 +33,7 @@ const Body: React.FC<IBodyProps> = ({
         removeMedia(index, () => {
           if (media.length === 1) {
             setActiveFlow(CreatePostFlow.CreatePost);
+            setPostType(null);
           } else if (media.length - 1 === currentIndex) {
             nextSlide();
           }
