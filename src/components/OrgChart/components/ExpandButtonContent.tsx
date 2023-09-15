@@ -9,7 +9,7 @@ interface IExpandButtonContent {
 const ExpandButtonContent: React.FC<IExpandButtonContent> = ({ node }) => {
   return (
     <div className="text-right text-sm text-neutral-500 mt-2 absolute right-0 bottom-0 flex items-center">
-      <div>{node.data._directSubordinates} direct reports</div>{' '}
+      <div>{node.data.directReportees} direct reports</div>{' '}
       <div className="ml-2">
         {node?.children ? (
           <Icon name="arrowUp" size={16} />

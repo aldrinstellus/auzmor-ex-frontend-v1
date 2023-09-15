@@ -221,7 +221,7 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
             teamFlowMode === TeamFlow.CreateTeam ? 'Add New' : 'Edit'
           } Team`}
           onClose={onCloseReset}
-          closeBtnDataTestId="team-close"
+          closeBtnDataTestId="add-team-close"
         />
         <AddTeams control={control} errors={errors} defaultValues={getValues} />
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">

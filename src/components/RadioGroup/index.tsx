@@ -3,74 +3,66 @@ import Divider from 'components/Divider';
 import React, { useMemo } from 'react';
 import { Control, useController } from 'react-hook-form';
 
+export interface IRadioListOption {
+  data: Record<string, any>;
+  dataTestId: string;
+}
+
 type RadioButtonProps = {
   name: string;
-  id?: string;
-  disabled?: boolean;
-  error?: string;
-  helpText?: string;
+  control: Control<Record<string, any>>;
+  radioList: IRadioListOption[];
+  labelRenderer: (option: IRadioListOption) => React.ReactNode;
   className?: string;
-  dataTestId?: string;
-  control?: Control<Record<string, any>>;
-  options?: Record<string, any>;
-  radioList?: Array<Record<string, any>>;
+  rowClassName?: string;
 };
 
 const RadioGroup: React.FC<RadioButtonProps> = ({
   name,
-  id,
-  disabled = false,
-  dataTestId = '',
-  error,
   control,
-  options,
-  radioList,
+  radioList = [],
+  labelRenderer,
+  className = '',
+  rowClassName = '',
 }) => {
   const { field } = useController({
     name,
     control,
   });
-
-  const radioStyles = useMemo(
+  const style = useMemo(
+    () => clsx({ 'flex flex-col': true, [className]: true }),
+    [],
+  );
+  const rowStyle = useMemo(
     () =>
       clsx({
-        'border-1 border-neutral-200 focus:outline-none cursor-pointer': true,
+        'flex items-center': true,
+        [rowClassName]: true,
       }),
-    [error],
+    [],
   );
-
   return (
-    <>
-      <div className="pt-3">
-        <div className="flex flex-col">
-          {radioList?.map((item, index) => (
-            <>
-              <div key={index} className=" space-x-4 pb-2 pt-2 pl-6">
-                <input
-                  id={id}
-                  name={name}
-                  type="radio"
-                  className={radioStyles}
-                  disabled={disabled}
-                  data-testid={`${name}-${item?.name}`}
-                  ref={field.ref}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                  value={item?.options?.value}
-                  checked={
-                    item?.isChecked || field.value === item?.options.value
-                  }
-                />
-                <label htmlFor={item?.options?.label}>
-                  {item?.options?.label}
-                </label>
-              </div>
-              <Divider />
-            </>
-          ))}
-        </div>
-      </div>
-    </>
+    <div className={style}>
+      {radioList?.map((option, index) => (
+        <>
+          <div key={index} className={rowStyle}>
+            <input
+              id={option.data.id}
+              type="radio"
+              data-testid={option.dataTestId}
+              className="w-5 h-5 accent-primary-600"
+              onChange={(e) => {
+                field.onChange(option);
+              }}
+              name={name}
+              value={field?.value?.data?.id}
+              checked={option.data.id === field?.value?.data?.id}
+            />
+            <label htmlFor={option.data.id}>{labelRenderer(option)}</label>
+          </div>
+        </>
+      ))}
+    </div>
   );
 };
 

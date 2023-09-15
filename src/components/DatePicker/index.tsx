@@ -16,12 +16,14 @@ export interface IDatePickerInputProps {
   defaultValue?: string;
   dataTestId?: string;
   onDateChange?: (date: any) => void;
+  disabled?: boolean;
 }
 
 const DatePickerInput: React.FC<IDatePickerInputProps> = ({
   control,
   name,
   label = '',
+  disabled = false,
   minDate,
   maxDate,
   className,
@@ -85,7 +87,13 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
             ? dayjs(getDateInMMDDYYYY(minDate), 'MM/DD/YYYY')
             : undefined
         }
-        className={`flex border relative rounded-19xl w-full px-5 py-2.5 focus:!border-primary-500 hover:border-primary-500 ${className}`}
+        className={clsx(
+          `flex border relative rounded-19xl w-full px-5 py-2.5 focus:!border-primary-500 hover:border-primary-500`,
+          { 'cursor-not-allowed': disabled },
+          {
+            [`${className}`]: true,
+          },
+        )}
         onChange={(date) => {
           // Set all time components to 0
           date?.set('hour', 0);
@@ -103,6 +111,7 @@ const DatePickerInput: React.FC<IDatePickerInputProps> = ({
           (minDate ? d.isBefore(minDate) : false) ||
           (maxDate ? d.isAfter(maxDate) : false)
         }
+        disabled={disabled}
         showToday={
           minDate
             ? dayjs(minDate).isBefore(new Date().setHours(0, 0, 0, 0))

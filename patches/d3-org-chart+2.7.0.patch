@@ -111,10 +111,10 @@ index fe34324..a278e83 100644
 - 
 \ No newline at end of file
 diff --git a/node_modules/d3-org-chart/src/d3-org-chart.js b/node_modules/d3-org-chart/src/d3-org-chart.js
-index 871f2d8..7221f97 100644
+index 871f2d8..1d1684b 100644
 --- a/node_modules/d3-org-chart/src/d3-org-chart.js
 +++ b/node_modules/d3-org-chart/src/d3-org-chart.js
-@@ -1,104 +1,147 @@
+@@ -1,104 +1,148 @@
 -import { selection, select } from "d3-selection";
 -import { max, min, sum, cumsum } from "d3-array";
 -import { tree, stratify } from "d3-hierarchy";
@@ -126,6 +126,7 @@ index 871f2d8..7221f97 100644
 +import { zoom, zoomIdentity } from 'd3-zoom';
  import { flextree } from 'd3-flextree';
  import { linkHorizontal } from 'd3-shape';
++import apiService from "../../../src/utils/apiService"
  
  const d3 = {
 -    selection,
@@ -353,7 +354,7 @@ index 871f2d8..7221f97 100644
              <code>chart<br/>
              &nbsp;.nodeContent({data}=>{ <br/>
               &nbsp;&nbsp;&nbsp;&nbsp;return '' // Custom HTML <br/>
-@@ -107,928 +150,1235 @@ export class OrgChart {
+@@ -107,928 +151,1253 @@ export class OrgChart {
               Or check different <a href="https://github.com/bumbeishvili/org-chart#jump-to-examples" target="_blank">layout examples</a>
               
               </div>`,
@@ -827,8 +828,8 @@ index 871f2d8..7221f97 100644
 +        console.log(d, data);
 +      },
 +      highlightedNodeId: '',
-+      hoverCardContent: (d) => `<div>Tooltip</div>`
-+
++      hoverCardContent: (d) => `<div>Tooltip</div>`,
++      tooltipData: {},
 +    };
 +
 +    this.getChartState = () => attrs;
@@ -1220,26 +1221,22 @@ index 871f2d8..7221f97 100644
 -            console.log(`ORG CHART - REMOVE - Node with id "${nodeId}" not found in the tree`);
 -            return this;
 -        }
--
++    attrs.chart = chart;
+ 
 -        // Remove all node childs
 -        // Retrieve all children nodes ids (including current node itself)
 -        node.descendants()
 -            .forEach(d => d.data._filteredOut = true)
-+    attrs.chart = chart;
- 
--        const descendants = this.getNodeChildren(node, [], attrs.nodeId);
--        descendants.forEach(d => d._filtered = true)
 +    // Display tree contenrs
 +    this.update(attrs.root);
  
--        // Filter out retrieved nodes and reassign data
--        attrs.data = attrs.data.filter(d => !d._filtered);
+-        const descendants = this.getNodeChildren(node, [], attrs.nodeId);
+-        descendants.forEach(d => d._filtered = true)
 +    //#########################################  UTIL FUNCS ##################################
 +    // This function restyles foreign object elements ()
  
--        const updateNodesState = this.updateNodesState.bind(this);
--        // Update state of nodes and redraw graph
--        updateNodesState();
+-        // Filter out retrieved nodes and reassign data
+-        attrs.data = attrs.data.filter(d => !d._filtered);
 +    d3.select(window).on(`resize.${attrs.id}`, () => {
 +      const containerRect = d3
 +        .select(attrs.container)
@@ -1248,6 +1245,10 @@ index 871f2d8..7221f97 100644
 +      attrs.svg.attr('width', containerRect.width);
 +    });
  
+-        const updateNodesState = this.updateNodesState.bind(this);
+-        // Update state of nodes and redraw graph
+-        updateNodesState();
+-
 -        return this;
 +    if (attrs.firstDraw) {
 +      attrs.firstDraw = false;
@@ -2082,7 +2083,17 @@ index 871f2d8..7221f97 100644
 -                    return 1;
 -                }
 -                return 0;
--            });
++        attrs.onNodeClick(data);
++      })
++      .on('mouseenter', (e, {data}) => {
++        if(!attrs.tooltipData[data.id]){
++          if(data.id !== 'root'){
++            apiService.get(`/users/${data.id}`).then((reponse) => {
++              try{
++                attrs.tooltipData[data.id] = reponse.data.result.data
++                div.innerHTML = attrs.hoverCardContent.bind(this)({nodeData: data, userData: attrs.tooltipData[data.id]})
++              }catch(e){}
+             });
 -
 -        // Restyle node button circle
 -        nodeUpdate
@@ -2129,14 +2140,21 @@ index 871f2d8..7221f97 100644
 -        nodes.forEach((d) => {
 -            d.x0 = d.x;
 -            d.y0 = d.y;
-+        attrs.onNodeClick(data);
++          }
++        }
 +      })
 +      .on('mouseover', (e, { data }) => {
 +        const div = document.createElement('div');
 +          div.setAttribute('id', `${data.id}-tooltip`);
 +          div.setAttribute('class', 'absolute org-chart-tooltip');
 +          let attrs = this.getChartState();
-+          div.innerHTML = attrs.hoverCardContent.bind(this)(data);
++          if(attrs.tooltipData[data.id]){
++            div.innerHTML = attrs.hoverCardContent.bind(this)({nodeData: data, userData: attrs.tooltipData[data.id]})
++          }else{
++            if(data.id !== 'root'){
++              div.innerHTML = "<div>Loading...</div>"
++            }
++          }
 +          document.getElementById('org-chart-container').appendChild(div);
 +          div.setAttribute(
 +            'style',
@@ -2464,7 +2482,7 @@ index 871f2d8..7221f97 100644
                    M ${mx} ${my}
                    L ${mx} ${y}
                    L ${x} ${y}
-@@ -1042,544 +1392,626 @@ export class OrgChart {
+@@ -1042,544 +1411,626 @@ export class OrgChart {
                      ${ex - w * xrvs}  ${ey}
                    L ${ex} ${ey}
         `;
@@ -2597,16 +2615,14 @@ index 871f2d8..7221f97 100644
 -            d.data._centered = true;
 -            d.data._centeredWithDescendants = true;
 -        }
-+    // Redraw Graph
-+    this.update(d);
- 
+-
 -        // If childrens are expanded
 -        if (d.children) {
 -            //Collapse them
 -            d._children = d.children;
 -            d.children = null;
-+    attrs.onExpandCollapseClick(d, attrs.data);
-+  }
++    // Redraw Graph
++    this.update(d);
  
 -            // Set descendants expanded property to false
 -            this.setExpansionFlagToChildren(d, false);
@@ -2614,17 +2630,19 @@ index 871f2d8..7221f97 100644
 -            // Expand children
 -            d.children = d._children;
 -            d._children = null;
-+  // This function changes `expanded` property to descendants
-+  setExpansionFlagToChildren({ data, children, _children }, flag) {
-+    // Set flag to the current property
-+    data._expanded = flag;
++    attrs.onExpandCollapseClick(d, attrs.data);
++  }
  
 -            // Set each children as expanded
 -            if (d.children) {
 -                d.children.forEach(({ data }) => (data._expanded = true));
 -            }
 -        }
--
++  // This function changes `expanded` property to descendants
++  setExpansionFlagToChildren({ data, children, _children }, flag) {
++    // Set flag to the current property
++    data._expanded = flag;
+ 
 -        // Redraw Graph
 -        this.update(d);
 +    // Loop over and recursively update expanded children's descendants
@@ -2764,10 +2782,7 @@ index 871f2d8..7221f97 100644
 -            // Then only expand nodes, which have expanded proprty set to true
 -            [attrs.root].forEach((ch) => this.expandSomeNodes(ch));
 -        }
-+    // Recursivelly do the same for expanded nodes
-+    if (d.children) {
-+      d.children.forEach((ch) => this.expandSomeNodes(ch));
-     }
+-    }
 -
 -    // Function which collapses passed node and it's descendants
 -    collapse(d) {
@@ -2775,6 +2790,38 @@ index 871f2d8..7221f97 100644
 -            d._children = d.children;
 -            d._children.forEach((ch) => this.collapse(ch));
 -            d.children = null;
+-        }
+-    }
+-
+-    // Function which expands passed node and it's descendants
+-    expand(d) {
+-        if (d._children) {
+-            d.children = d._children;
+-            d.children.forEach((ch) => this.expand(ch));
+-            d._children = null;
+-        }
++    // Recursivelly do the same for expanded nodes
++    if (d.children) {
++      d.children.forEach((ch) => this.expandSomeNodes(ch));
+     }
+-
+-    // Zoom handler function
+-    zoomed(event, d) {
+-        const attrs = this.getChartState();
+-        const chart = attrs.chart;
+-
+-        // Get d3 event's transform object
+-        const transform = event.transform;
+-
+-        // Store it
+-        attrs.lastTransform = transform;
+-
+-        // Reposition and rescale chart accordingly
+-        chart.attr("transform", transform);
+-
+-        // Apply new styles to the foreign object element
+-        if (this.isEdge()) {
+-            this.restyleForeignObjectElements();
 -        }
 +  }
 +
@@ -2833,13 +2880,16 @@ index 871f2d8..7221f97 100644
 +      [attrs.root].forEach((ch) => this.expandSomeNodes(ch));
      }
 -
--    // Function which expands passed node and it's descendants
--    expand(d) {
--        if (d._children) {
--            d.children = d._children;
--            d.children.forEach((ch) => this.expand(ch));
--            d._children = null;
--        }
+-    zoomTreeBounds({ x0, x1, y0, y1, params = { animate: true, scale: true } }) {
+-        const { centerG, svgWidth: w, svgHeight: h, svg, zoomBehavior, duration, lastTransform } = this.getChartState()
+-        let scaleVal = Math.min(8, 0.9 / Math.max((x1 - x0) / w, (y1 - y0) / h));
+-        let identity = d3.zoomIdentity.translate(w / 2, h / 2)
+-        identity = identity.scale(params.scale ? scaleVal : lastTransform.k)
+-
+-        identity = identity.translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
+-        // Transition zoom wrapper component into specified bounds
+-        svg.transition().duration(params.animate ? duration : 0).call(zoomBehavior.transform, identity);
+-        centerG.transition().duration(params.animate ? duration : 0).attr('transform', 'translate(0,0)')
 +  }
 +
 +  // Function which collapses passed node and it's descendants
@@ -2850,53 +2900,6 @@ index 871f2d8..7221f97 100644
 +      d.children = null;
      }
 -
--    // Zoom handler function
--    zoomed(event, d) {
--        const attrs = this.getChartState();
--        const chart = attrs.chart;
--
--        // Get d3 event's transform object
--        const transform = event.transform;
--
--        // Store it
--        attrs.lastTransform = transform;
--
--        // Reposition and rescale chart accordingly
--        chart.attr("transform", transform);
--
--        // Apply new styles to the foreign object element
--        if (this.isEdge()) {
--            this.restyleForeignObjectElements();
--        }
-+  }
-+
-+  // Function which expands passed node and it's descendants
-+  expand(d) {
-+    if (d._children) {
-+      d.children = d._children;
-+      d.children.forEach((ch) => this.expand(ch));
-+      d._children = null;
-     }
-+  }
- 
--    zoomTreeBounds({ x0, x1, y0, y1, params = { animate: true, scale: true } }) {
--        const { centerG, svgWidth: w, svgHeight: h, svg, zoomBehavior, duration, lastTransform } = this.getChartState()
--        let scaleVal = Math.min(8, 0.9 / Math.max((x1 - x0) / w, (y1 - y0) / h));
--        let identity = d3.zoomIdentity.translate(w / 2, h / 2)
--        identity = identity.scale(params.scale ? scaleVal : lastTransform.k)
-+  // Zoom handler function
-+  zoomed(event, d) {
-+    const attrs = this.getChartState();
-+    const chart = attrs.chart;
- 
--        identity = identity.translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
--        // Transition zoom wrapper component into specified bounds
--        svg.transition().duration(params.animate ? duration : 0).call(zoomBehavior.transform, identity);
--        centerG.transition().duration(params.animate ? duration : 0).attr('transform', 'translate(0,0)')
--    }
-+    // Get d3 event's transform object
-+    const transform = event.transform;
- 
 -    fit({ animate = true, nodes, scale = true } = {}) {
 -        const attrs = this.getChartState();
 -        const { root } = attrs;
@@ -2914,18 +2917,29 @@ index 871f2d8..7221f97 100644
 -            y1: maxY + 50,
 -        });
 -        return this;
--    }
--
++  }
++
++  // Function which expands passed node and it's descendants
++  expand(d) {
++    if (d._children) {
++      d.children = d._children;
++      d.children.forEach((ch) => this.expand(ch));
++      d._children = null;
+     }
++  }
+ 
 -    // This function can be invoked via chart.setExpanded API, it expands or collapses particular node
 -    setExpanded(id, expandedFlag = true) {
-+    // Store it
-+    attrs.lastTransform = transform;
++  // Zoom handler function
++  zoomed(event, d) {
++    const attrs = this.getChartState();
++    const chart = attrs.chart;
  
 -        const attrs = this.getChartState();
 -        // Retrieve node by node Id
 -        const node = attrs.allNodes.filter(({ data }) => attrs.nodeId(data) == id)[0];
-+    // Reposition and rescale chart accordingly
-+    chart.attr('transform', transform);
++    // Get d3 event's transform object
++    const transform = event.transform;
  
 -        if (!node) {
 -            console.log(`ORG CHART - ${expandedFlag ? "EXPAND" : "COLLAPSE"} - Node with id (${id})  not found in the tree`)
@@ -2933,11 +2947,10 @@ index 871f2d8..7221f97 100644
 -        }
 -        node.data._expanded = expandedFlag;
 -        return this;
-+    // Apply new styles to the foreign object element
-+    if (this.isEdge()) {
-+      this.restyleForeignObjectElements();
-     }
--
+-    }
++    // Store it
++    attrs.lastTransform = transform;
+ 
 -    setCentered(nodeId) {
 -        const attrs = this.getChartState();
 -        // this.setExpanded(nodeId)
@@ -2949,6 +2962,46 @@ index 871f2d8..7221f97 100644
 -        node.data._centered = true;
 -        node.data._expanded = true;
 -        return this;
+-    }
++    // Reposition and rescale chart accordingly
++    chart.attr('transform', transform);
+ 
+-    setHighlighted(nodeId) {
+-        const attrs = this.getChartState();
+-        const node = attrs.allNodes.filter(d => attrs.nodeId(d.data) === nodeId)[0];
+-        if (!node) {
+-            console.log(`ORG CHART - HIGHLIGHT - Node with id (${nodeId})  not found in the tree`);
+-            return this
+-        }
+-        node.data._highlighted = true;
+-        node.data._expanded = true;
+-        node.data._centered = true;
+-        return this;
+-    }
+-
+-    setUpToTheRootHighlighted(nodeId) {
+-        const attrs = this.getChartState();
+-        const node = attrs.allNodes.filter(d => attrs.nodeId(d.data) === nodeId)[0];
+-        if (!node) {
+-            console.log(`ORG CHART - HIGHLIGHTROOT - Node with id (${nodeId}) not found in the tree`)
+-            return this;
+-        }
+-        node.data._upToTheRootHighlighted = true;
+-        node.data._expanded = true;
+-        node.ancestors().forEach(d => d.data._upToTheRootHighlighted = true)
+-        return this;
++    // Apply new styles to the foreign object element
++    if (this.isEdge()) {
++      this.restyleForeignObjectElements();
+     }
+-
+-    clearHighlighting() {
+-        const attrs = this.getChartState();
+-        attrs.allNodes.forEach(d => {
+-            d.data._highlighted = false;
+-            d.data._upToTheRootHighlighted = false;
+-        })
+-        this.update(attrs.root)
 +  }
 +
 +  zoomTreeBounds({ x0, x1, y0, y1, params = { animate: true, scale: true } }) {
@@ -3025,87 +3078,6 @@ index 871f2d8..7221f97 100644
 +      return this;
      }
 -
--    setHighlighted(nodeId) {
--        const attrs = this.getChartState();
--        const node = attrs.allNodes.filter(d => attrs.nodeId(d.data) === nodeId)[0];
--        if (!node) {
--            console.log(`ORG CHART - HIGHLIGHT - Node with id (${nodeId})  not found in the tree`);
--            return this
--        }
--        node.data._highlighted = true;
--        node.data._expanded = true;
--        node.data._centered = true;
--        return this;
-+    node.data._expanded = expandedFlag;
-+    return this;
-+  }
-+
-+  setCentered(nodeId) {
-+    const attrs = this.getChartState();
-+    // this.setExpanded(nodeId)
-+    const node = attrs.allNodes.filter(
-+      (d) => attrs.nodeId(d.data) === nodeId,
-+    )[0];
-+    if (!node) {
-+      console.log(
-+        `ORG CHART - CENTER - Node with id (${nodeId}) not found in the tree`,
-+      );
-+      return this;
-     }
--
--    setUpToTheRootHighlighted(nodeId) {
--        const attrs = this.getChartState();
--        const node = attrs.allNodes.filter(d => attrs.nodeId(d.data) === nodeId)[0];
--        if (!node) {
--            console.log(`ORG CHART - HIGHLIGHTROOT - Node with id (${nodeId}) not found in the tree`)
--            return this;
--        }
--        node.data._upToTheRootHighlighted = true;
--        node.data._expanded = true;
--        node.ancestors().forEach(d => d.data._upToTheRootHighlighted = true)
--        return this;
-+    node.data._centered = true;
-+    node.data._expanded = true;
-+    return this;
-+  }
-+
-+  setHighlighted(nodeId) {
-+    const attrs = this.getChartState();
-+    const node = attrs.allNodes.filter(
-+      (d) => attrs.nodeId(d.data) === nodeId,
-+    )[0];
-+    if (!node) {
-+      console.log(
-+        `ORG CHART - HIGHLIGHT - Node with id (${nodeId})  not found in the tree`,
-+      );
-+      return this;
-     }
--
--    clearHighlighting() {
--        const attrs = this.getChartState();
--        attrs.allNodes.forEach(d => {
--            d.data._highlighted = false;
--            d.data._upToTheRootHighlighted = false;
--        })
--        this.update(attrs.root)
-+    node.data._highlighted = true;
-+    node.data._expanded = true;
-+    node.data._centered = true;
-+    return this;
-+  }
-+
-+  setUpToTheRootHighlighted(nodeId) {
-+    const attrs = this.getChartState();
-+    const node = attrs.allNodes.filter(
-+      (d) => attrs.nodeId(d.data) === nodeId,
-+    )[0];
-+    if (!node) {
-+      console.log(
-+        `ORG CHART - HIGHLIGHTROOT - Node with id (${nodeId}) not found in the tree`,
-+      );
-+      return this;
-     }
--
 -    // It can take selector which would go fullscreen
 -    fullscreen(elem) {
 -        const attrs = this.getChartState();
@@ -3131,6 +3103,78 @@ index 871f2d8..7221f97 100644
 -        } else if (el.msRequestFullscreen) {
 -            el.msRequestFullscreen();
 -        }
++    node.data._expanded = expandedFlag;
++    return this;
++  }
++
++  setCentered(nodeId) {
++    const attrs = this.getChartState();
++    // this.setExpanded(nodeId)
++    const node = attrs.allNodes.filter(
++      (d) => attrs.nodeId(d.data) === nodeId,
++    )[0];
++    if (!node) {
++      console.log(
++        `ORG CHART - CENTER - Node with id (${nodeId}) not found in the tree`,
++      );
++      return this;
+     }
+-
+-    // Zoom in exposed method
+-    zoomIn() {
+-        const { svg, zoomBehavior } = this.getChartState();
+-        svg.transition().call(zoomBehavior.scaleBy, 1.3);
++    node.data._centered = true;
++    node.data._expanded = true;
++    return this;
++  }
++
++  setHighlighted(nodeId) {
++    const attrs = this.getChartState();
++    const node = attrs.allNodes.filter(
++      (d) => attrs.nodeId(d.data) === nodeId,
++    )[0];
++    if (!node) {
++      console.log(
++        `ORG CHART - HIGHLIGHT - Node with id (${nodeId})  not found in the tree`,
++      );
++      return this;
+     }
+-
+-    // Zoom out exposed method
+-    zoomOut() {
+-        const { svg, zoomBehavior } = this.getChartState();
+-        svg.transition().call(zoomBehavior.scaleBy, 0.78);
++    node.data._highlighted = true;
++    node.data._expanded = true;
++    node.data._centered = true;
++    return this;
++  }
++
++  setUpToTheRootHighlighted(nodeId) {
++    const attrs = this.getChartState();
++    const node = attrs.allNodes.filter(
++      (d) => attrs.nodeId(d.data) === nodeId,
++    )[0];
++    if (!node) {
++      console.log(
++        `ORG CHART - HIGHLIGHTROOT - Node with id (${nodeId}) not found in the tree`,
++      );
++      return this;
+     }
+-
+-    toDataURL(url, callback) {
+-        var xhr = new XMLHttpRequest();
+-        xhr.onload = function () {
+-            var reader = new FileReader();
+-            reader.onloadend = function () {
+-                callback(reader.result);
+-            }
+-            reader.readAsDataURL(xhr.response);
+-        };
+-        xhr.open('GET', url);
+-        xhr.responseType = 'blob';
+-        xhr.send();
 +    node.data._upToTheRootHighlighted = true;
 +    node.data._upToTheRootHighlightedNode = true;
 +    node.data._expanded = true;
@@ -3176,32 +3220,6 @@ index 871f2d8..7221f97 100644
 +    } else if (el.msRequestFullscreen) {
 +      el.msRequestFullscreen();
      }
--
--    // Zoom in exposed method
--    zoomIn() {
--        const { svg, zoomBehavior } = this.getChartState();
--        svg.transition().call(zoomBehavior.scaleBy, 1.3);
--    }
--
--    // Zoom out exposed method
--    zoomOut() {
--        const { svg, zoomBehavior } = this.getChartState();
--        svg.transition().call(zoomBehavior.scaleBy, 0.78);
--    }
--
--    toDataURL(url, callback) {
--        var xhr = new XMLHttpRequest();
--        xhr.onload = function () {
--            var reader = new FileReader();
--            reader.onloadend = function () {
--                callback(reader.result);
--            }
--            reader.readAsDataURL(xhr.response);
--        };
--        xhr.open('GET', url);
--        xhr.responseType = 'blob';
--        xhr.send();
--    }
 -
 -    exportImg({ full = false, scale = 3, onLoad = d => d, save = true } = {}) {
 -        const that = this;
@@ -3312,14 +3330,6 @@ index 871f2d8..7221f97 100644
 -        }
 -
 -
--    }
--
--
--
--    exportSvg() {
--        const { svg } = this.getChartState();
--        this.downloadImage({ node: svg.node(), scale: 3, isSvg: true })
--        return this;
 +          }
 +        });
 +      });
@@ -3327,10 +3337,11 @@ index 871f2d8..7221f97 100644
 +      exportImage();
      }
 -
--    expandAll() {
--        const { allNodes, root } = this.getChartState();
--        allNodes.forEach(d => d.data._expanded = true);
--        this.render()
+-
+-
+-    exportSvg() {
+-        const { svg } = this.getChartState();
+-        this.downloadImage({ node: svg.node(), scale: 3, isSvg: true })
 -        return this;
 +  }
 +
@@ -3378,11 +3389,10 @@ index 871f2d8..7221f97 100644
 +      return;
      }
 -
--    collapseAll() {
+-    expandAll() {
 -        const { allNodes, root } = this.getChartState();
--        allNodes.forEach(d => d.data._expanded = false);
--        this.expandLevel(0)
--        this.render();
+-        allNodes.forEach(d => d.data._expanded = true);
+-        this.render()
 -        return this;
 +    // Get image quality index (basically,  index you can zoom in)
 +    const quality = scale;
@@ -3439,6 +3449,14 @@ index 871f2d8..7221f97 100644
 +      }
      }
 -
+-    collapseAll() {
+-        const { allNodes, root } = this.getChartState();
+-        allNodes.forEach(d => d.data._expanded = false);
+-        this.expandLevel(0)
+-        this.render();
+-        return this;
+-    }
+-
 -    downloadImage({ node, scale = 2, isSvg = false, save = true, onAlreadySerialized = d => { }, onLoad = d => { } }) {
 -        // Retrieve svg node
 -        const svgNode = node;
@@ -3452,25 +3470,7 @@ index 871f2d8..7221f97 100644
 -            saveAs(url, "graph.svg");
 -            onAlreadySerialized()
 -            return;
-+    // This function serializes SVG and sets all necessary attributes
-+    function serializeString(svg) {
-+      const xmlns = 'http://www.w3.org/2000/xmlns/';
-+      const xlinkns = 'http://www.w3.org/1999/xlink';
-+      const svgns = 'http://www.w3.org/2000/svg';
-+      svg = svg.cloneNode(true);
-+      const fragment = window.location.href + '#';
-+      const walker = document.createTreeWalker(
-+        svg,
-+        NodeFilter.SHOW_ELEMENT,
-+        null,
-+        false,
-+      );
-+      while (walker.nextNode()) {
-+        for (const attr of walker.currentNode.attributes) {
-+          if (attr.value.includes(fragment)) {
-+            attr.value = attr.value.replace(fragment, '#');
-+          }
-         }
+-        }
 -        // Get image quality index (basically,  index you can zoom in)
 -        const quality = scale
 -        // Create image
@@ -3517,7 +3517,25 @@ index 871f2d8..7221f97 100644
 -            } else {
 -                location.replace(uri);
 -            }
--        }
++    // This function serializes SVG and sets all necessary attributes
++    function serializeString(svg) {
++      const xmlns = 'http://www.w3.org/2000/xmlns/';
++      const xlinkns = 'http://www.w3.org/1999/xlink';
++      const svgns = 'http://www.w3.org/2000/svg';
++      svg = svg.cloneNode(true);
++      const fragment = window.location.href + '#';
++      const walker = document.createTreeWalker(
++        svg,
++        NodeFilter.SHOW_ELEMENT,
++        null,
++        false,
++      );
++      while (walker.nextNode()) {
++        for (const attr of walker.currentNode.attributes) {
++          if (attr.value.includes(fragment)) {
++            attr.value = attr.value.replace(fragment, '#');
++          }
+         }
 -        // This function serializes SVG and sets all necessary attributes
 -        function serializeString(svg) {
 -            const xmlns = 'http://www.w3.org/2000/xmlns/';

@@ -1,14 +1,11 @@
 import React from 'react';
 import Dropdown from 'components/Dropdown';
 import Button, { Variant, Size } from 'components/Button';
-import { twConfig } from 'utils/misc';
 
 const SortByDropdown: React.FC = ({}) => {
   return (
     <div className="flex items-center ml-6">
-      <div className="whitespace-nowrap mr-6 text-sm font-bold mr-4">
-        Sort by
-      </div>
+      <div className="whitespace-nowrap text-sm font-bold mr-4">Sort by</div>
       <div className="relative">
         <Dropdown
           options={[

@@ -28,7 +28,10 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
   const [teams, channels, users] = form!.watch(['teams', 'channels', 'users']);
 
   useEffect(() => {
-    if (!isAdmin && !!data?.adminSettings?.postingControls.limitGlobalPosting) {
+    if (
+      !isAdmin &&
+      !!data?.adminSettings?.postingControls?.limitGlobalPosting
+    ) {
       setIsEveryoneSelected(false);
     }
   }, [data]);
@@ -41,7 +44,7 @@ const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
       subTitle: 'Anyone who is a part of this organisation can see this post.',
       onClick: () => setIsEveryoneSelected(true),
       isHidden:
-        data?.adminSettings?.postingControls.limitGlobalPosting && !isAdmin,
+        data?.adminSettings?.postingControls?.limitGlobalPosting && !isAdmin,
       isSelected: isEveryoneSelected,
       selectedCount: 0,
       dataTestId: 'audience-selection-everyone',

@@ -27,10 +27,11 @@ import SuccessToast from 'components/Toast/variants/SuccessToast';
 import Icon from 'components/Icon';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
-import { getGooglePlaces } from 'queries/location';
+import { useGooglePlaces } from 'queries/location';
 import { IDepartment, useInfiniteDepartments } from 'queries/department';
 import useRole from 'hooks/useRole';
 import { IDesignation, useInfiniteDesignations } from 'queries/designation';
+import { useDebounce } from 'hooks/useDebounce';
 
 interface IOptions {
   value: string;
@@ -109,25 +110,6 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         : null,
     },
   });
-  const [locationLoading, setLocationLoading] = useState(false);
-
-  const loadLocations = async (
-    inputValue: string,
-    callback: (options: any[]) => void,
-  ) => {
-    setLocationLoading(true);
-    const data = await getGooglePlaces({
-      q: inputValue || userDetails?.workLocation?.name || 'a',
-    });
-    callback(
-      data.map((place: any) => ({
-        label: place.name,
-        value: place.name,
-        dataTestId: `${dataTestId}-location-${place.name}`,
-      })),
-    );
-    setLocationLoading(false);
-  };
 
   const formatCreatableOptions = (data: any, dataTestId: string) => {
     const optionsData = data?.pages.flatMap((page: any) => {
@@ -150,8 +132,17 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
     return transformedOption;
   };
 
-  // Declare a debounced version of loadLocations
-  const debouncedLoadLocations = debounce(loadLocations, 500);
+  const [locationSearchString, setLocationSearchString] = useState<string>('');
+
+  // fetch members on search
+  const debouncedLocationSearchValue = useDebounce(
+    locationSearchString || 'a',
+    300,
+  );
+  const { data: fetchedLocations, isLoading: isLocationsLoading } =
+    useGooglePlaces({
+      q: debouncedLocationSearchValue,
+    });
 
   const nameField = [
     {
@@ -228,21 +219,22 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
   const locationField = [
     {
       type: FieldType.AsyncSingleSelect,
+      control,
       name: 'workLocation',
       defaultValue: getValues().workLocation,
       dataTestId: `${dataTestId}-location`,
       placeholder: 'Select a location',
       label: 'Location',
-      loadOptions: (
-        inputValue: string,
-        callback: (options: IOptions[]) => void,
-      ) => {
-        debouncedLoadLocations(inputValue, callback);
-      },
+      options:
+        fetchedLocations?.map((location: any) => ({
+          value: location.name.description,
+          label: location.name.description,
+          dataTestId: `${dataTestId}-location-${location.name.description}`,
+        })) || [],
+      onSearch: (searchString: string) => setLocationSearchString(searchString),
       noOptionsMessage: 'No locations',
-      control,
       height: 40,
-      isLoading: locationLoading,
+      isLoading: isLocationsLoading,
       getPopupContainer: document.body,
       menuPlacement: 'topLeft',
     },

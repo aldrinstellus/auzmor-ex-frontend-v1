@@ -15,20 +15,18 @@ import Layout, { FieldType } from 'components/Form';
 import Button, { Size, Variant } from 'components/Button';
 import { Variant as InputVariant } from 'components/Input';
 import UsersSkeleton from '../Skeletons/UsersSkeleton';
-import { IGetUser, UserRole, useInfiniteUsers } from 'queries/users';
-import {
-  getProfileImage,
-  isFiltersEmpty,
-  titleCase,
-  twConfig,
-} from 'utils/misc';
+import { UserRole, useInfiniteUsers } from 'queries/users';
+import { isFiltersEmpty, titleCase } from 'utils/misc';
 
 import PeopleCard from './PeopleCard';
 import InviteUserModal from '../InviteUserModal';
-import PeopleFilterModal from '../FilterModals/PeopleFilterModal';
 import { useInfiniteTeamMembers } from 'queries/teams';
 import { EntitySearchModalType } from 'components/EntitySearchModal';
 import Sort from 'components/Sort';
+import FilterModal, {
+  IAppliedFilters,
+  UserStatus,
+} from 'components/FilterModal';
 import useURLParams from 'hooks/useURLParams';
 
 export interface IPeopleProps {
@@ -60,7 +58,9 @@ const People: React.FC<IPeopleProps> = ({
   } = useURLParams();
   const [startFetching, setStartFetching] = useState(false);
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
-  const [userStatus, setUserStatus] = useState<string>('');
+  const [appliedFilters, setAppliedFilters] = useState<IAppliedFilters>({
+    status: null,
+  });
   const [filterSortBy, setFilterSortBy] = useState<string>('');
   const { ref, inView } = useInView();
 
@@ -95,7 +95,10 @@ const People: React.FC<IPeopleProps> = ({
     return useInfiniteUsers({
       startFetching,
       q: isFiltersEmpty({
-        status: userStatus === 'ALL' ? undefined : userStatus,
+        status:
+          appliedFilters.status?.value === UserStatus.All
+            ? undefined
+            : appliedFilters.status?.value,
         role: role?.value,
         sort: filterSortBy,
         q: debouncedSearchValue,
@@ -108,7 +111,10 @@ const People: React.FC<IPeopleProps> = ({
       startFetching,
       teamId: teamId || '',
       q: isFiltersEmpty({
-        status: userStatus === 'ALL' ? undefined : userStatus,
+        status:
+          appliedFilters.status?.value === UserStatus.All
+            ? undefined
+            : appliedFilters.status?.value,
         role: role?.value,
         sort: filterSortBy,
         q: debouncedSearchValue,
@@ -166,20 +172,31 @@ const People: React.FC<IPeopleProps> = ({
     });
   });
 
-  const handleSetUserStatus = (status: string) => {
-    setUserStatus(status);
-    if (status) {
-      const serializedStatus = serializeFilter(status);
+  const clearFilters = () => {
+    deleteParam('status');
+    setAppliedFilters({
+      status: null,
+    });
+    closeFilterModal();
+  };
+
+  const onApplyFilter = (appliedFilters: IAppliedFilters) => {
+    setAppliedFilters(appliedFilters);
+    if (appliedFilters.status?.value !== UserStatus.All) {
+      const serializedStatus = serializeFilter(appliedFilters.status?.label);
       updateParam('status', serializedStatus);
-    } else {
-      deleteParam('status');
     }
+    closeFilterModal();
   };
 
   const handleSetSortFilter = (sortValue: any) => {
     setFilterSortBy(sortValue);
-    const serializedSort = serializeFilter(sortValue);
-    updateParam('sort', serializedSort);
+    if (sortValue) {
+      const serializedSort = serializeFilter(sortValue);
+      updateParam('sort', serializedSort);
+    } else {
+      deleteParam('sort');
+    }
   };
 
   // parse the persisted filters from the URL on page load
@@ -187,7 +204,10 @@ const People: React.FC<IPeopleProps> = ({
     const parsedStatus = parseParams('status');
     const parsedSort = parseParams('sort');
     if (parsedStatus) {
-      setUserStatus(parsedStatus);
+      setAppliedFilters({
+        ...appliedFilters,
+        status: { value: parsedStatus, label: titleCase(parsedStatus) },
+      });
     }
     if (parsedSort) {
       setFilterSortBy(parsedSort);
@@ -259,11 +279,6 @@ const People: React.FC<IPeopleProps> = ({
               filterKey={{ createdAt: 'createdAt', aToZ: 'name' }}
               selectedValue={filterSortBy}
               filterValue={{ asc: 'ASC', desc: 'DESC' }}
-              title={
-                <div className="bg-blue-50 flex px-6 py-2 font-xs font-medium text-neutral-500">
-                  Sort by
-                </div>
-              }
               entity={isTeamPeople ? EntitySearchModalType.Team : 'USER'}
             />
             <div>
@@ -293,39 +308,45 @@ const People: React.FC<IPeopleProps> = ({
           Showing {!isLoading && usersData?.length} results
         </div>
 
-        {userStatus && (
-          <div className="flex justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="text-base text-neutral-500">Filter By</div>
-              <div
-                className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1"
-                data-testid={`people-filterby-${userStatus}`}
-              >
-                <div className="mr-1">{titleCase(userStatus)}</div>
-                <Icon
-                  name="close"
-                  size={16}
-                  color="text-neutral-900"
-                  className="cursor-pointer"
+        {appliedFilters.status &&
+          appliedFilters.status.value !== UserStatus.All && (
+            <div className="flex justify-between">
+              <div className="flex items-center space-x-2">
+                <div className="text-base text-neutral-500">Filter By</div>
+                <div
+                  className="text-neutral-500 border px-3 py-1 rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer flex items-center group"
                   onClick={() => {
                     deleteParam('status');
-                    setUserStatus('');
+                    setAppliedFilters({ ...appliedFilters, status: null });
                   }}
-                  dataTestId={`people-filterby-close-${userStatus}`}
-                />
+                >
+                  <div className="mr-1">
+                    {titleCase(appliedFilters.status.label)}
+                  </div>
+                  <Icon
+                    name="close"
+                    size={16}
+                    color="text-neutral-900"
+                    className="cursor-pointer"
+                    onClick={() => {
+                      deleteParam('status');
+                      setAppliedFilters({ ...appliedFilters, status: null });
+                    }}
+                    dataTestId={`people-filterby-close-${appliedFilters.status.label}`}
+                  />
+                </div>
+              </div>
+              <div
+                className="text-neutral-500 border px-3 py-1 rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
+                onClick={() => {
+                  deleteParam('status');
+                  setAppliedFilters({ ...appliedFilters, status: null });
+                }}
+              >
+                Clear Filters
               </div>
             </div>
-            <div
-              className="text-neutral-500 border px-3 py-1 rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
-              onClick={() => {
-                deleteParam('status');
-                setUserStatus('');
-              }}
-            >
-              Clear Filters
-            </div>
-          </div>
-        )}
+          )}
 
         <div className="flex flex-wrap gap-6">
           {(() => {
@@ -373,7 +394,10 @@ const People: React.FC<IPeopleProps> = ({
                 />
                 <div className="w-full flex flex-col items-center">
                   <div className="flex items-center flex-col space-y-1">
-                    <div className="text-lg font-bold text-neutral-900">
+                    <div
+                      className="text-lg font-bold text-neutral-900"
+                      data-testid="teams-no-members-yet"
+                    >
                       No members yet
                     </div>
                     <div className="text-base font-medium text-neutral-500">
@@ -384,10 +408,13 @@ const People: React.FC<IPeopleProps> = ({
                 <Button
                   label={'Add members'}
                   variant={Variant.Secondary}
-                  className="space-x-1"
+                  className="space-x-1 rounded-[24px]"
                   size={Size.Large}
-                  dataTestId="no-result-add-team-cta"
+                  dataTestId="team-add-members-cta"
                   leftIcon={'addCircle'}
+                  leftIconClassName="text-neutral-900"
+                  leftIconSize={20}
+                  onClick={openModal}
                 />
               </div>
             ) : (
@@ -420,13 +447,15 @@ const People: React.FC<IPeopleProps> = ({
         closeModal={closeModal}
       />
 
-      <PeopleFilterModal
-        setUserStatus={handleSetUserStatus}
-        userStatus={userStatus}
-        open={showFilterModal}
-        openModal={openFilterModal}
-        closeModal={closeFilterModal}
-      />
+      {showFilterModal && (
+        <FilterModal
+          open={showFilterModal}
+          closeModal={closeFilterModal}
+          appliedFilters={appliedFilters}
+          onApply={onApplyFilter}
+          onClear={clearFilters}
+        />
+      )}
     </div>
   );
 };

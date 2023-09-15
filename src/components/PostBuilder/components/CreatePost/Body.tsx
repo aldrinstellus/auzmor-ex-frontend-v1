@@ -5,7 +5,7 @@ import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import useAuth from 'hooks/useAuth';
 import { IPost } from 'queries/post';
 import { DeltaStatic } from 'quill';
-import React, { ForwardedRef, Ref, useContext } from 'react';
+import React, { ForwardedRef, useContext } from 'react';
 import ReactQuill from 'react-quill';
 import RichTextEditor from '../RichTextEditor';
 import Toolbar from '../RichTextEditor/toolbar';

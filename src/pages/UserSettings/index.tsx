@@ -2,9 +2,10 @@ import React, { ReactNode, useState } from 'react';
 import Card from 'components/Card';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
-import AccountSecurity from './AccountSecurity';
+import AccountSecurity from './components/AccountSecurity';
 import clsx from 'clsx';
-interface IUserSettingsProps {}
+import BasicSettings from './components/BasicSettings';
+import NotificationSettings from './components/NotificationSettings';
 
 interface ISetting {
   label: string;
@@ -16,72 +17,45 @@ interface ISetting {
   dataTestId?: string;
 }
 
-const UserSettings: React.FC<IUserSettingsProps> = () => {
+const UserSettings = () => {
   const [isHeaderVisible, setIsHeaderVisible] = useState(false);
 
   const settings = [
     {
-      label: 'My Settings',
+      label: 'Basic Settings',
       icon: 'gear',
-      key: 'my-settings',
-      component: <div>My Settings Page</div>,
+      key: 'basic-settings',
+      component: <BasicSettings />,
       disabled: false,
       hidden: false,
-      dataTestId: 'settings-my-settings',
-    },
-    {
-      label: 'General',
-      icon: 'userManagement',
-      key: 'user-management-settings',
-      component: <div>General Settings Page</div>,
-      disabled: false,
-      hidden: false,
-      dataTestId: 'settings-general',
-    },
-    {
-      label: 'Profile Settings',
-      icon: 'branding',
-      key: 'branding-settings',
-      component: <div>Profile Settings Page</div>,
-      disabled: false,
-      hidden: false,
-      dataTestId: 'settings-profile',
-    },
-    {
-      label: 'Out of Office',
-      icon: 'link',
-      key: 'single-sign-on-settings',
-      component: <div>Out of Office Settings Page</div>,
-      disabled: false,
-      hidden: false,
-      dataTestId: 'settings-out-of-office',
-    },
-    {
-      label: 'Account',
-      icon: 'marketplace',
-      key: 'marketplace-settings',
-      component: <div>Account Settings Page</div>,
-      disabled: false,
-      hidden: false,
-      dataTestId: 'settings-account',
-    },
-    {
-      label: 'Account Security',
-      icon: 'notification',
-      key: 'account-security-settings',
-      component: <AccountSecurity setIsHeaderVisible={setIsHeaderVisible} />,
-      disabled: false,
-      hidden: false,
-      dataTestId: 'settings-account-security',
+      dataTestId: 'settings-basic-settings',
     },
     {
       label: 'Notifications',
       icon: 'notification',
       key: 'notifications-settings',
-      component: <div>Notifications Settings Page</div>,
+      component: <NotificationSettings />,
       disabled: false,
       hidden: false,
       dataTestId: 'settings-notifications',
+    },
+    {
+      label: 'Integration',
+      icon: 'integration',
+      key: 'integration-settings',
+      component: <div>Integration</div>,
+      disabled: true,
+      hidden: false,
+      dataTestId: 'settings-profile',
+    },
+    {
+      label: 'Sign in & Security',
+      icon: 'security',
+      key: 'account-security-settings',
+      component: <AccountSecurity setIsHeaderVisible={setIsHeaderVisible} />,
+      disabled: false,
+      hidden: false,
+      dataTestId: 'settings-account-security',
     },
   ];
 
@@ -89,17 +63,13 @@ const UserSettings: React.FC<IUserSettingsProps> = () => {
     settings[0],
   );
 
-  const componentStyle = clsx({
-    'border-1 border-neutral-100 p-6 rounded-3xl w-[100%]': !isHeaderVisible,
-  });
-
   return (
     <div
       className="flex justify-between w-full gap-x-14"
       data-testid="admin-settings"
     >
       <Card
-        className="w-[25%] max-h-[400px]"
+        className="w-[25%] max-h-[284px]"
         dataTestId="admin-settings-controls"
       >
         <p className="text-neutral-900 text-base font-bold p-4">
@@ -110,12 +80,14 @@ const UserSettings: React.FC<IUserSettingsProps> = () => {
           {settings.map((item, index) => (
             <div
               key={item.key}
-              className={`hover:bg-primary-50 cursor-pointer ${
-                item.key === activeSettingsPage.key
-                  ? 'bg-primary-50'
-                  : 'bg-white'
-              }`}
-              onClick={() => setActiveSettingsPage(item)}
+              className={clsx(
+                'hover:bg-primary-50 cursor-pointer bg-white',
+                {
+                  '!bg-primary-50': item.key === activeSettingsPage.key,
+                },
+                { '!bg-gray-100 !cursor-not-allowed': item.disabled },
+              )}
+              onClick={() => !item.disabled && setActiveSettingsPage(item)}
               data-testid={item.dataTestId}
             >
               <div
@@ -140,19 +112,7 @@ const UserSettings: React.FC<IUserSettingsProps> = () => {
           ))}
         </div>
       </Card>
-      <div className="flex flex-col w-[75%] gap-y-4">
-        <Card className="py-4 px-6 space-y-4">
-          {!isHeaderVisible && (
-            <>
-              <div className="text-neutral-900 text-base font-bold">
-                {activeSettingsPage.label}
-              </div>
-              <Divider />
-            </>
-          )}
-          <div className={componentStyle}>{activeSettingsPage.component}</div>
-        </Card>
-      </div>
+      <div className="w-[75%]">{activeSettingsPage.component}</div>
     </div>
   );
 };

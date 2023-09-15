@@ -10,6 +10,7 @@ import TelephoneInput from 'components/TelephoneInput';
 import TimePicker from 'components/TimePicker';
 import CreatableSearch from 'components/CreatableSearch';
 import AsyncSingleSelect from 'components/AsyncSingleSelect';
+import CheckboxList from 'components/CheckboxList';
 
 export enum FieldType {
   Input = 'INPUT',
@@ -24,6 +25,7 @@ export enum FieldType {
   TelephoneInput = 'TELEPHONE_INPUT',
   TimePicker = 'TIMEPICKER',
   CreatableSearch = 'CREATABLE_SEARCH',
+  CheckboxList = 'CheckboxList',
 }
 
 const fieldMap: Record<string, any> = {
@@ -38,6 +40,7 @@ const fieldMap: Record<string, any> = {
   [FieldType.TimePicker]: TimePicker,
   [FieldType.CreatableSearch]: CreatableSearch,
   [FieldType.AsyncSingleSelect]: AsyncSingleSelect,
+  [FieldType.CheckboxList]: CheckboxList,
 };
 
 export type LayoutProps = {

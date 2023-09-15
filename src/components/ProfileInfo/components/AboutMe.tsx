@@ -43,8 +43,6 @@ const AboutMe: React.FC<IAboutMeProps> = ({
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [isHovered, eventHandlers] = useHover();
 
-  console.log({ isHovered });
-
   const { control, handleSubmit, getValues, watch, reset } =
     useForm<IUpdateAboutMe>({
       mode: 'onSubmit',

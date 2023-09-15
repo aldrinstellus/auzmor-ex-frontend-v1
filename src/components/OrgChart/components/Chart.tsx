@@ -1,10 +1,15 @@
 import { OrgChart } from 'd3-org-chart';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { renderToString } from 'react-dom/server';
 import './index.css';
 import UserNode from './UserNode';
 import ExpandButtonContent from './ExpandButtonContent';
 import UserCard from 'components/UserCard';
+import { getOrgChart } from 'queries/users';
+import Spinner from 'components/Spinner';
+import clsx from 'clsx';
+import { QueryFunctionContext } from '@tanstack/react-query';
+import Button, { Variant } from 'components/Button';
 
 export interface INode {
   id: string;
@@ -27,102 +32,27 @@ export interface INode {
 
 interface IChart {
   orgChartRef: React.MutableRefObject<OrgChart<any> | null>;
+  isLoading: boolean;
+  data: INode[];
+  isFilterApplied: boolean;
+  onClearFilter: () => void;
 }
 
-const Chart: React.FC<IChart> = ({ orgChartRef }) => {
+const Chart: React.FC<IChart> = ({
+  orgChartRef,
+  data,
+  isLoading,
+  isFilterApplied,
+  onClearFilter,
+}) => {
   const chartRef = useRef(null);
   let chart: OrgChart<any> | null = null;
   useEffect(() => {
     if (chartRef.current) {
-      if (!chart) {
+      if (!chart && data.length) {
         chart = new OrgChart()
           .container(chartRef.current)
-          .data([
-            {
-              id: 'n1',
-              parentId: '',
-            },
-            {
-              id: 'n2',
-              parentId: 'n1',
-              profileImage:
-                'https://office-dev-cdn.auzmor.com/6465d142c62ae5de85d33b81/public/users/64919c3b6e270d84db1bb642/profile/1687760512603-original.jpg',
-              userName: 'Owner',
-              jobTitle: 'CEO',
-              location: { id: '', name: 'United States' },
-              department: { id: '', name: 'Marketing' },
-              directReportees: 1,
-              matchesCriteria: false,
-            },
-            {
-              id: 'n3',
-              parentId: 'n2',
-              profileImage:
-                'https://office-dev-cdn.auzmor.com/6465d142c62ae5de85d33b81/public/users/64919c3b6e270d84db1bb642/profile/1687760512603-original.jpg',
-              userName: 'Sub owner',
-              jobTitle: 'CEO',
-              location: { id: '', name: 'United States' },
-              department: { id: '', name: 'Sales' },
-              directReportees: 1,
-              matchesCriteria: false,
-            },
-            {
-              id: 'n4',
-              parentId: 'n3',
-              profileImage: '',
-              userName: 'Node 4',
-              jobTitle: 'CEO',
-              location: { id: '', name: 'United States' },
-              department: { id: '', name: '' },
-              directReportees: 1,
-              matchesCriteria: false,
-            },
-            {
-              id: 'n5',
-              parentId: 'n4',
-              profileImage: '',
-              userName: 'Node 5',
-              jobTitle: 'CEO',
-              location: { id: '', name: 'United States' },
-              department: { id: '', name: '' },
-              directReportees: 1,
-              matchesCriteria: false,
-            },
-            {
-              id: 'n6',
-              parentId: 'n5',
-              profileImage:
-                'https://dhruvinmodi.com/static/media/person.a5a3c610.jpg',
-              userName: 'Dhruvin',
-              jobTitle: 'CEO',
-              location: { id: '', name: 'United States' },
-              department: { id: '', name: 'Development' },
-              directReportees: 0,
-              matchesCriteria: false,
-            },
-            {
-              id: 'n7',
-              parentId: 'n5',
-              profileImage: '',
-              userName: 'Jhonny Depp',
-              jobTitle: 'CEO',
-              location: { id: '', name: 'United States' },
-              department: { id: '', name: 'QA' },
-              directReportees: 1,
-              matchesCriteria: false,
-            },
-            {
-              id: 'n8',
-              parentId: 'n5',
-              profileImage: '',
-              userName: 'Will smith',
-              jobTitle: 'CEO',
-              location: { id: '', name: 'United States' },
-              department: { id: '', name: 'CI/CD' },
-              directReportees: 1,
-              matchesCriteria: false,
-            },
-          ])
+          .data(data)
           .nodeHeight((d: any) => 128)
           .nodeWidth((d: any) => 256)
           .compact(false)
@@ -138,21 +68,25 @@ const Chart: React.FC<IChart> = ({ orgChartRef }) => {
           .nodeContent((node: any, i: any, arr: any, state: any) => {
             return renderToString(<UserNode node={node} />);
           })
-          // .hoverCardContent(() => renderToString(<UserCard />))
-          // .onExpandCollapseClick((d: any, data: any) => {
-          //   if (
-          //     d.children?.length &&
-          //     !(d.children[0].children || d.children[0]._children)
-          //   ) {
-          //     getOrgChart(chart, {
-          //       ids: [...d.children.map((child: any) => child.id)],
-          //       limit: 5,
-          //       offset: 0,
-          //     });
-          //   } else {
-          //     chart.update(d);
-          //   }
-          // })
+          .hoverCardContent((d) => {
+            return renderToString(<UserCard user={d.userData} />);
+          })
+          .onExpandCollapseClick((d: any, data: any) => {
+            if (d.data.directReportees > 0 && !!d.children) {
+              getOrgChart({
+                queryKey: [
+                  'organization-chart',
+                  { root: d.data.id, expand: 1 },
+                ],
+              } as QueryFunctionContext<any>).then((response: any) => {
+                response.result.data.users.forEach((node: INode) =>
+                  chart?.addNode(node),
+                );
+              });
+            } else {
+              chart?.update(d);
+            }
+          })
           // .onNodeClick((node: any) => {
           //   if (node.type === NodeType.Count) {
           //     getOrgChart(chart, {
@@ -173,10 +107,61 @@ const Chart: React.FC<IChart> = ({ orgChartRef }) => {
     }
   }, [chartRef.current]);
 
+  const loaderStyle = useMemo(
+    () =>
+      clsx({
+        'flex w-full justify-center items-center h-full': true,
+        block: isLoading,
+        hidden: !isLoading,
+      }),
+    [isLoading],
+  );
+
+  const orgChartContainerStyle = useMemo(
+    () =>
+      clsx({
+        relative: true,
+        'opacity-0': isLoading,
+        'opacity-100': !isLoading,
+      }),
+    [isLoading],
+  );
+
+  console.log(!!!data?.length);
+
   return (
-    <div id="org-chart-container" className="relative">
-      <div ref={chartRef} className="h-[calc(100vh-290px)]" />
-    </div>
+    <>
+      <div className={loaderStyle}>
+        <Spinner />
+      </div>
+      {!!!data?.length && !!!isLoading && (
+        <div className="flex flex-col w-full h-full items-center justify-center bg-white rounded-9xl p-8">
+          <div className="mt-8 mb-4">
+            <img src={require('images/noResult.png')} />
+          </div>
+          <div className="text-neutral-900 text-lg font-bold mb-4">
+            No result found
+          </div>
+          <div className="text-neutral-500 text-xs">
+            Sorry we can’t find the member you are looking for.
+          </div>
+          <div className="text-neutral-500 text-xs">
+            Please check the spelling or try again.
+          </div>
+          {isFilterApplied && (
+            <Button
+              label="Clear filter"
+              onClick={onClearFilter}
+              className="mt-6"
+              variant={Variant.Secondary}
+            />
+          )}
+        </div>
+      )}
+      <div id="org-chart-container" className={orgChartContainerStyle}>
+        <div ref={chartRef} className="h-[calc(100vh-290px)]" />
+      </div>
+    </>
   );
 };
 

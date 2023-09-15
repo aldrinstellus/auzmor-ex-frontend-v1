@@ -105,9 +105,46 @@ export interface IGetUser {
   createdAt: string;
   status: string;
   timeZone?: string;
-  workLocation?: Record<string, string>;
-  designation?: string;
+  workLocation?: ILocation;
   department?: IDepartment;
+  designation?: string;
+  coverImage?: { blurHash: string; id: string; original: string };
+  freezeEdit?: {
+    department?: boolean;
+    designation?: boolean;
+    firstName?: boolean;
+    fullName?: boolean;
+    joinDate?: boolean;
+    lastName?: boolean;
+    manager?: boolean;
+    middleName?: boolean;
+  };
+  manager?: {
+    designation: string;
+    fullName: string;
+    profileImage: {
+      id: string;
+      original: string;
+      blurHash: string;
+    };
+    userId: string;
+    workLocation: string;
+    status: string;
+    department: string;
+  };
+  permissions?: string[];
+  workPhone?: string | null;
+}
+
+interface IGetOrgChartPayload {
+  q?: string;
+  root?: string;
+  target?: string;
+  departments?: string[];
+  locations?: string[];
+  status?: string; // Active, Invited, Inactive
+  expand?: number; // +/- integer. Expand -> root +/- number levels
+  expandAll?: boolean;
 }
 
 export const getAllUser = async ({
@@ -174,6 +211,18 @@ export const useDomainExists = (domain: string) => {
   });
 };
 
+const getNotificationSettings = async () => {
+  const { data } = await apiService.get('/notifications/settings');
+  return data;
+};
+
+export const useNotificationSettings = () =>
+  useQuery({
+    queryKey: ['notification-settings'],
+    queryFn: getNotificationSettings,
+    staleTime: 15 * 60 * 1000,
+  });
+
 // verify invite
 export const verifyInviteLink = async (q: Record<string, any>) => {
   const { data } = await apiService.get('/users/invite/verify', q);
@@ -222,6 +271,111 @@ export const inviteUsers = async (payload: IPostUsers) => {
 
 export const acceptInviteSetPassword = async (q: Record<string, any>) => {
   return await apiService.put('/users/invite/reset-password', q);
+};
+
+export const getOrgChart = async ({ queryKey }: QueryFunctionContext<any>) => {
+  return await apiService.get('/users/chart', queryKey[1]);
+  // return await new Promise((resolve, reject) => {
+  //   setTimeout(() => {
+  //     resolve({
+  //       result: {
+  //         data: {
+  //           totalLevels: 10,
+  //           users: [
+  //             {
+  //               id: 'root',
+  //               parentId: '',
+  //             },
+  //             {
+  //               id: '64919c3b6e270d84db1bb642',
+  //               parentId: 'root',
+  //               profileImage:
+  //                 'https://office-dev-cdn.auzmor.com/6465d142c62ae5de85d33b81/public/users/64919c3b6e270d84db1bb642/profile/1687760512603-original.jpg',
+  //               userName: 'Owner',
+  //               jobTitle: 'CEO',
+  //               location: { id: '', name: 'United States' },
+  //               department: { id: '', name: 'Marketing' },
+  //               directReportees: 1,
+  //               matchesCriteria: true,
+  //             },
+  //             {
+  //               id: '6465d142c62ae5de85d33b83',
+  //               parentId: '64919c3b6e270d84db1bb642',
+  //               profileImage:
+  //                 'https://office-dev-cdn.auzmor.com/6465d142c62ae5de85d33b81/public/users/64919c3b6e270d84db1bb642/profile/1687760512603-original.jpg',
+  //               userName: 'Sub owner',
+  //               jobTitle: 'CEO',
+  //               location: { id: '', name: 'United States' },
+  //               department: { id: '', name: 'Sales' },
+  //               directReportees: 1,
+  //               matchesCriteria: true,
+  //             },
+  //             {
+  //               id: '64a6680d78819d040d08a535',
+  //               parentId: '6465d142c62ae5de85d33b83',
+  //               profileImage: '',
+  //               userName: 'Node 4',
+  //               jobTitle: 'CEO',
+  //               location: { id: '', name: 'United States' },
+  //               department: { id: '', name: '' },
+  //               directReportees: 1,
+  //               matchesCriteria: true,
+  //             },
+  //             {
+  //               id: '64d8827142c17768ac9d047e',
+  //               parentId: '64a6680d78819d040d08a535',
+  //               profileImage: '',
+  //               userName: 'Node 5',
+  //               jobTitle: 'CEO',
+  //               location: { id: '', name: 'United States' },
+  //               department: { id: '', name: '' },
+  //               directReportees: 1,
+  //               matchesCriteria: true,
+  //             },
+  //             {
+  //               id: '644913f229483de956f6ffbc',
+  //               parentId: '64d8827142c17768ac9d047e',
+  //               profileImage:
+  //                 'https://dhruvinmodi.com/static/media/person.a5a3c610.jpg',
+  //               userName: 'Dhruvin',
+  //               jobTitle: 'CEO',
+  //               location: { id: '', name: 'United States' },
+  //               department: { id: '', name: 'Development' },
+  //               directReportees: 0,
+  //               matchesCriteria: true,
+  //             },
+  //             {
+  //               id: '649239816e270d84db1e8edb',
+  //               parentId: '64d8827142c17768ac9d047e',
+  //               profileImage: '',
+  //               userName: 'Jhonny Depp',
+  //               jobTitle: 'CEO',
+  //               location: { id: '', name: 'United States' },
+  //               department: { id: '', name: 'QA' },
+  //               directReportees: 1,
+  //               matchesCriteria: true,
+  //             },
+  //             {
+  //               id: '64ad517fdaf6c632e79d462b',
+  //               parentId: '64d8827142c17768ac9d047e',
+  //               profileImage: '',
+  //               userName: 'Will smith',
+  //               jobTitle: 'CEO',
+  //               location: { id: '', name: 'United States' },
+  //               department: { id: '', name: 'CI/CD' },
+  //               directReportees: 1,
+  //               matchesCriteria: false,
+  //             },
+  //           ],
+  //           // users: [],
+  //         },
+  //       },
+  //       code: 200,
+  //       message: 'OK',
+  //     });
+  //   }, 1000);
+  // });
+  // return await apiService.get('/users/chart', queryKey[1]);
 };
 
 /* REACT QUERY */
@@ -296,5 +450,17 @@ export const useIsUserExistAuthenticated = (email = '') => {
     queryKey: ['user-exist-auth', email],
     queryFn: () => isUserExistAuthenticated({ email }),
     staleTime: 1000,
+  });
+};
+
+export const useOrgChart = (
+  payload?: IGetOrgChartPayload,
+  rest?: Record<string, any>,
+) => {
+  return useQuery({
+    queryKey: ['organization-chart', payload],
+    queryFn: getOrgChart,
+    staleTime: 5 * 60 * 1000,
+    ...rest,
   });
 };

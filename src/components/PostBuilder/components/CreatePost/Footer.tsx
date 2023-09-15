@@ -62,14 +62,11 @@ const Footer: React.FC<IFooterProps> = ({
 
   const isMediaDisabled =
     operatorXOR(isPreviewRemoved, !!previewUrl) ||
-    !!(postType && postType !== POST_TYPE.Media) ||
-    mode === PostBuilderMode.Edit;
+    !!(postType && postType !== POST_TYPE.Media);
   const isShoutoutDisabled =
     operatorXOR(isPreviewRemoved, !!previewUrl) ||
-    (postType && postType !== POST_TYPE.Shoutout) ||
-    mode === PostBuilderMode.Edit;
-  const isPollDisabled =
-    (postType && postType !== POST_TYPE.Poll) || mode === PostBuilderMode.Edit;
+    (!!postType && postType !== POST_TYPE.Shoutout);
+  const isPollDisabled = !!postType && postType !== POST_TYPE.Poll;
 
   const postMenuItems = useMemo(
     () => [
@@ -115,6 +112,7 @@ const Footer: React.FC<IFooterProps> = ({
             disabled: true,
           },
         ],
+        hidden: mode === PostBuilderMode.Edit,
         divider: <Divider variant={DividerVariant.Vertical} />,
       },
       {
@@ -130,6 +128,7 @@ const Footer: React.FC<IFooterProps> = ({
           />
         ),
         menuItems: [],
+        hidden: mode === PostBuilderMode.Edit,
         divider: <Divider variant={DividerVariant.Vertical} />,
         disabled: isShoutoutDisabled,
         onClick: () => {
@@ -157,7 +156,6 @@ const Footer: React.FC<IFooterProps> = ({
         id: 4,
         label: 'Polls',
         menuItems: [],
-        hidden: false,
         dataTestId: 'createpost-poll',
         icon: (
           <Icon
@@ -169,6 +167,7 @@ const Footer: React.FC<IFooterProps> = ({
           />
         ),
         disabled: isPollDisabled,
+        hidden: mode === PostBuilderMode.Edit,
         onClick: () => {
           updateContext();
           setActiveFlow(CreatePostFlow.CreatePoll);
@@ -218,55 +217,57 @@ const Footer: React.FC<IFooterProps> = ({
   return (
     <div className="flex justify-between items-center px-6 py-4 bg-blue-50 rounded-b-9xl">
       <div className="flex relative gap-4">
-        {postMenuItems.map(
-          (postMenuItem) =>
-            !postMenuItem.hidden && (
-              <div
-                key={postMenuItem.id}
-                className="flex items-center"
-                onClick={() => {
-                  if (!postMenuItem.disabled && postMenuItem.onClick) {
-                    postMenuItem.onClick();
-                  }
-                }}
-              >
-                <PopupMenu
-                  triggerNode={
-                    postMenuItem?.disabled ? (
-                      <div
-                        className={`flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl ${
-                          postMenuItem.disabled
-                            ? 'cursor-not-allowed'
-                            : 'cursor-default'
-                        }`}
-                        data-testid={postMenuItem?.dataTestId}
-                      >
-                        {postMenuItem.icon}
-                      </div>
-                    ) : (
-                      <Tooltip
-                        tooltipContent={postMenuItem.label}
-                        className="cursor-pointer"
-                      >
-                        {postMenuItem.label !== 'More' ? (
-                          <div
-                            className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl"
-                            data-testid={postMenuItem?.dataTestId}
-                          >
-                            {postMenuItem.icon}
-                          </div>
-                        ) : (
-                          postMenuItem.icon
-                        )}
-                      </Tooltip>
-                    )
-                  }
-                  menuItems={postMenuItem.menuItems}
-                  className="bottom-full"
-                />
-              </div>
-            ),
-        )}
+        {postMenuItems
+          .filter((menuItem) => !menuItem.hidden)
+          .map(
+            (postMenuItem) =>
+              !postMenuItem.hidden && (
+                <div
+                  key={postMenuItem.id}
+                  className="flex items-center"
+                  onClick={() => {
+                    if (!postMenuItem.disabled && postMenuItem.onClick) {
+                      postMenuItem.onClick();
+                    }
+                  }}
+                >
+                  <PopupMenu
+                    triggerNode={
+                      postMenuItem?.disabled ? (
+                        <div
+                          className={`flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl ${
+                            postMenuItem.disabled
+                              ? 'cursor-not-allowed'
+                              : 'cursor-default'
+                          }`}
+                          data-testid={postMenuItem?.dataTestId}
+                        >
+                          {postMenuItem.icon}
+                        </div>
+                      ) : (
+                        <Tooltip
+                          tooltipContent={postMenuItem.label}
+                          className="cursor-pointer"
+                        >
+                          {postMenuItem.label !== 'More' ? (
+                            <div
+                              className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl"
+                              data-testid={postMenuItem?.dataTestId}
+                            >
+                              {postMenuItem.icon}
+                            </div>
+                          ) : (
+                            postMenuItem.icon
+                          )}
+                        </Tooltip>
+                      )
+                    }
+                    menuItems={postMenuItem.menuItems}
+                    className="bottom-full"
+                  />
+                </div>
+              ),
+          )}
         <Divider
           variant={DividerVariant.Vertical}
           className="!h-8 bg-neutral-200"

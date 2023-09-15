@@ -1,37 +1,43 @@
 import Avatar from 'components/Avatar';
 import Button from 'components/Button';
 import Divider from 'components/Divider';
-import { getUser, useSingleUser } from 'queries/users';
+import { IGetUser, getUser } from 'queries/users';
 import React from 'react';
+import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
 
-interface IUserCard {}
+interface IUserCardProp {
+  user?: IGetUser;
+}
 
-const UserCard: React.FC = () => {
+const UserCard: React.FC<IUserCardProp> = ({ user }) => {
   return (
     <div className="flex flex-col shadow-xl rounded-9xl bg-white min-w-[600px] overflow-hidden">
       <div className="flex"></div>
       <div className="flex flex-col px-6 py-4">
         <div className="flex">
           <div className="mr-4">
-            <Avatar size={144} />
+            <Avatar
+              size={144}
+              name={getFullName(user) || 'U'}
+              image={getProfileImage(user)}
+              bgColor={getAvatarColor(user)}
+            />
           </div>
           <div className="flex flex-col py-4">
             <div className="text-lg font-bold text-neutral-900 truncate mb-2">
-              Ava James
+              {user?.fullName || 'Field not specified'}
             </div>
             <div className="text-sm font-normal text-neutral-500 truncate mb-2">
-              Jr. Marketing Executive
+              {user?.designation || 'Field not specified'}
             </div>
             <div className="flex items-center mb-2">
-              {/* <div><Icon /></div> */}
               <div className="text-xs font-normal text-neutral-500 truncate">
-                Marketing
+                {user?.role || 'Field not specified'}
               </div>
             </div>
             <div className="flex items-center mb-2">
-              {/* <div><Icon /></div> */}
               <div className="text-xs font-normal text-neutral-500 truncate">
-                San Francisco
+                {user?.workLocation?.name || 'Field not specified'}
               </div>
             </div>
           </div>
@@ -43,10 +49,14 @@ const UserCard: React.FC = () => {
               Information
             </div>
             <div className="flex justify-between mb-4">
-              <div className="truncate">james.ava@auzmoroffice.com</div>
+              <div className="truncate">
+                {user?.workEmail || 'Field not specified'}
+              </div>
             </div>
             <div className="flex">
-              <div className="truncate">+918469057446</div>
+              <div className="truncate">
+                {user?.workPhone || 'Field not specified'}
+              </div>
             </div>
           </div>
           <div className="flex flex-col w-1/2">
@@ -55,14 +65,19 @@ const UserCard: React.FC = () => {
             </div>
             <div className="flex">
               <div className="mr-4">
-                <Avatar size={32} />
+                <Avatar
+                  size={32}
+                  name={getFullName(user?.manager) || 'U'}
+                  image={getProfileImage(user?.manager)}
+                  bgColor={getAvatarColor(user?.manager)}
+                />
               </div>
               <div className="flex flex-col justify-between">
                 <div className="text-sm font-bold text-neutral-900">
-                  Megan Berry
+                  {user?.manager?.fullName || 'Field not specified'}
                 </div>
                 <div className="text-xs font-normal text-neutral-500">
-                  Marketing Executive
+                  {user?.manager?.designation || 'Field not specified'}
                 </div>
               </div>
             </div>

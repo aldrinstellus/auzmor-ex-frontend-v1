@@ -67,7 +67,7 @@ const Admin: React.FC<IAdminProps> = () => {
                       })
                     }
                     defaultValue={
-                      !!data?.adminSettings?.postingControls.limitGlobalPosting
+                      !!data?.adminSettings?.postingControls?.limitGlobalPosting
                     }
                     dataTestId="postingcontrols-globalposting-cta"
                   />

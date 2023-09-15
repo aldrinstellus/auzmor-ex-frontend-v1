@@ -33,6 +33,8 @@ export interface ISingleSelectProps {
   getPopupContainer?: any;
   noOptionsMessage?: string;
   suffixIcon?: React.ReactNode | null;
+  clearIcon?: React.ReactNode | null;
+  isClearable?: boolean;
 }
 
 const SingleSelect = React.forwardRef(
@@ -55,6 +57,8 @@ const SingleSelect = React.forwardRef(
       getPopupContainer = null,
       noOptionsMessage = 'No options',
       suffixIcon = null,
+      clearIcon = null,
+      isClearable = false,
     }: ISingleSelectProps,
     ref?: any,
   ) => {
@@ -147,7 +151,9 @@ const SingleSelect = React.forwardRef(
                   onSearch={() => setOpen(true)}
                   className={`single-select ${selectClassName}`}
                   suffixIcon={suffixIcon || <Icon name="arrowDown" size={18} />}
+                  clearIcon={clearIcon}
                   ref={ref}
+                  allowClear={isClearable}
                 >
                   {(options || []).map((option) => (
                     <Option
