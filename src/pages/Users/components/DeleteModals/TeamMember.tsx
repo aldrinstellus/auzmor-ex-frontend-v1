@@ -8,7 +8,6 @@ import Button, {
   Type as ButtonType,
 } from 'components/Button';
 import Modal from 'components/Modal';
-import { deleteTeam } from 'queries/teams';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
@@ -18,31 +17,31 @@ import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
-import { useNavigate } from 'react-router-dom';
-export interface IDeleteTeamProps {
+import { removeTeamMember } from 'queries/teams';
+export interface IRemoveTeamMemberProps {
   open: boolean;
   closeModal: () => void;
   teamId: string;
-  isDetailPage?: boolean;
+  userId: string;
 }
 
-const DeleteTeam: React.FC<IDeleteTeamProps> = ({
+const RemoveTeamMember: React.FC<IRemoveTeamMemberProps> = ({
   open,
   closeModal,
   teamId,
-  isDetailPage,
+  userId,
 }) => {
-  const navigate = useNavigate();
-  const deleteTeamMutation = useMutation({
-    mutationKey: ['delete-team', teamId],
-    mutationFn: deleteTeam,
-    onError: (error) => {
-      toast(<FailureToast content="Error deleting teams" dataTestId="" />, {
+  const onRemoveTeamMember = useMutation({
+    mutationFn: removeTeamMember,
+    mutationKey: ['remove-team-member'],
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['team', teamId] });
+      toast(<SuccessToast content={`Successfully removed one member`} />, {
         closeButton: (
-          <Icon name="closeCircleOutline" color="text-red-500" size={20} />
+          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
         ),
         style: {
-          border: `1px solid ${twConfig.theme.colors.red['300']}`,
+          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
           borderRadius: '6px',
           display: 'flex',
           alignItems: 'center',
@@ -52,24 +51,19 @@ const DeleteTeam: React.FC<IDeleteTeamProps> = ({
         theme: 'dark',
       });
     },
-    onSuccess: (data, variables, context) => {
+    onError: () => {
       closeModal();
-      queryClient.invalidateQueries({ queryKey: ['teams'] });
       toast(
-        <SuccessToast
-          content="Team has been deleted successfully"
-          dataTestId="team-toaster"
+        <FailureToast
+          content="Error removing the member"
+          dataTestId="comment-toaster"
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
           ),
           style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
             borderRadius: '6px',
             display: 'flex',
             alignItems: 'center',
@@ -79,19 +73,18 @@ const DeleteTeam: React.FC<IDeleteTeamProps> = ({
           theme: 'dark',
         },
       );
-      if (isDetailPage) navigate('/teams');
     },
   });
 
   const Header: React.FC = () => (
     <div className="flex flex-wrap border-b-1 border-neutral-200 items-center">
       <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
-        Delete Team?
+        Remove user?
       </div>
       <IconButton
         onClick={closeModal}
         icon={'close'}
-        dataTestId="close-team-modal"
+        dataTestId="delete-user-close"
         className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"
         variant={IconVariant.Primary}
       />
@@ -104,17 +97,22 @@ const DeleteTeam: React.FC<IDeleteTeamProps> = ({
         variant={ButtonVariant.Secondary}
         size={Size.Small}
         label={'Cancel'}
-        dataTestId="delete-team-cancel"
+        dataTestId="delete-user-cancel"
         onClick={closeModal}
       />
       <Button
         label={'Delete'}
         className="!bg-red-500 !text-white flex"
-        loading={deleteTeamMutation.isLoading}
+        loading={onRemoveTeamMember.isLoading}
         size={Size.Small}
         type={ButtonType.Submit}
-        dataTestId="delete-team-delete"
-        onClick={() => deleteTeamMutation.mutate(teamId)}
+        dataTestId="delete-user-delete"
+        onClick={() =>
+          onRemoveTeamMember.mutate({
+            teamId: teamId || '',
+            params: { userIds: userId },
+          })
+        }
       />
     </div>
   );
@@ -122,12 +120,11 @@ const DeleteTeam: React.FC<IDeleteTeamProps> = ({
     <Modal open={open} className="max-w-sm">
       <Header />
       <div className="text-sm font-medium text-neutral-500 mx-6 mt-6 mb-8">
-        Are you sure you want to delete this team?
-        <br /> This cannot be undone.
+        Are you sure you want to rremove this member from the team?
       </div>
       <Footer />
     </Modal>
   );
 };
 
-export default DeleteTeam;
+export default RemoveTeamMember;

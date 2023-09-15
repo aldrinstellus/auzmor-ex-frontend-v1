@@ -60,10 +60,10 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
   const tabStyles = (active: boolean) =>
     clsx(
       {
-        'font-bold px-4 cursor-pointer py-1': true,
+        'font-medium px-6 cursor-pointer py-1': true,
       },
       {
-        'bg-primary-500 rounded-6xl text-white': active,
+        '!font-bold bg-primary-500 rounded-6xl text-white': active,
       },
       {
         'bg-neutral-50 rounded-lg': !active,
@@ -112,12 +112,16 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
       ),
       title: 'Recognitions',
       dataTestId: 'user-recognitions-tab',
-      tabContent: <NoDataCard user={data?.fullName} />,
+      tabContent: (
+        <div className="pt-2">
+          <NoDataCard user={data?.fullName} dataType="recognition" />
+        </div>
+      ),
     },
   ];
 
   return (
-    <div className="flex flex-col space-y-9 w-full">
+    <div className="flex flex-col space-y-10 w-full">
       {userDetail?.isLoading ? (
         <UserDetailSkeleton />
       ) : (
@@ -125,7 +129,7 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
       )}
 
       <div className="mb-32 flex w-full">
-        <div className="w-1/4 pr-12">
+        <div className="w-1/4 pr-10">
           {userDetail?.isLoading ? (
             <ContactSkeleton />
           ) : (
@@ -135,14 +139,14 @@ const UserDetail: React.FC<IUserDetailProps> = () => {
             />
           )}
         </div>
-        <div className="w-1/2">
+        <div className="w-1/2 px-3">
           <Tabs
             tabs={tabs}
-            className="w-fit flex justify-start bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200"
+            className="w-fit flex justify-start bg-neutral-50 rounded-8xl border-solid border-1 border-neutral-200"
             tabSwitcherClassName="!p-1"
             showUnderline={false}
-            itemSpacing={1}
-            tabContentClassName="mt-8"
+            itemSpacing={0}
+            tabContentClassName="mt-5"
           />
         </div>
         <div className="w-1/4 pl-12"></div>

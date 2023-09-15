@@ -93,6 +93,8 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
     setAudience,
     shoutoutUserIds,
     setShoutoutUserIds,
+    postType,
+    setPostType,
   } = useContext(CreatePostContext);
 
   const mediaRef = useRef<IMedia[]>([]);
@@ -119,6 +121,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
   useEffect(() => {
     if (data) {
       setEditorValue(data.content.editor);
+      setPostType(data.type);
       if (data.isAnnouncement) {
         setAnnouncement({ label: 'Custom Date', value: data.announcement.end });
       }
@@ -389,7 +392,7 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
           html: content?.html || editorValue.html,
           editor: content?.json || editorValue.json,
         },
-        type: 'UPDATE',
+        type: postType || 'UPDATE',
         files: fileIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],
@@ -439,13 +442,14 @@ const CreatePostModal: React.FC<ICreatePostModal> = ({
       mediaRef.current = sortedIds.map(
         (id: string) => mediaRef.current.find((media) => media.id === id)!,
       );
+      console.log({ postType });
       updatePostMutation.mutate({
         content: {
           text: content?.text || editorValue.text,
           html: content?.html || editorValue.html,
           editor: content?.json || editorValue.json,
         },
-        type: 'UPDATE',
+        type: postType || 'UPDATE',
         files: sortedIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],

@@ -348,7 +348,7 @@ const Apps: React.FC<IAppsProps> = () => {
                 ))}
               </div>
               <div
-                className="text-neutral-500 border px-3 py-1  mt-2 whitespace-nowrap rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
+                className="text-neutral-500 border px-3 py-[3px] whitespace-nowrap rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
                 onClick={clearFilters}
                 data-testid="teams-clear-filters"
               >

@@ -1,4 +1,8 @@
-import { QueryFunctionContext, useInfiniteQuery } from '@tanstack/react-query';
+import {
+  QueryFunctionContext,
+  useInfiniteQuery,
+  useQuery,
+} from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 import { ICategory } from './category';
 
@@ -88,16 +92,34 @@ export const addTeamMember = async (
   });
 };
 
-export const removeTeamMember = async (teamId: string) => {
-  const data = await apiService.delete(`/teams/members/${teamId}`);
+export const removeTeamMember = async ({
+  teamId,
+  params,
+}: {
+  teamId: string;
+  params: any;
+}) => {
+  const data = await apiService.delete(`/teams/members/${teamId}`, params);
   return new Promise((res) => {
     res(data);
   });
 };
 
+// get team by id -> teams/:id
+export const getTeam = async (id: string) => {
+  const data = await apiService.get(`/teams/${id}`, {});
+  return data;
+};
+
 // ------------------ React Query -----------------------
 
-export const useInfiniteTeams = (q?: Record<string, any>) => {
+export const useInfiniteTeams = ({
+  startFetching = true,
+  q,
+}: {
+  startFetching?: boolean;
+  q?: Record<string, any>;
+}) => {
   return useInfiniteQuery({
     queryKey: ['teams', q],
     queryFn: getAllTeams,
@@ -113,20 +135,22 @@ export const useInfiniteTeams = (q?: Record<string, any>) => {
       return currentPage?.data?.result?.paging?.prev;
     },
     staleTime: 5 * 60 * 1000,
+    enabled: startFetching,
   });
 };
 
-export const useInfiniteTeamMembers = (
-  teamId: string,
-  q?: Record<string, any>,
-) => {
+export const useInfiniteTeamMembers = ({
+  teamId,
+  q,
+  startFetching,
+}: {
+  teamId: string;
+  q?: Record<string, any>;
+  startFetching?: boolean;
+}) => {
   return useInfiniteQuery({
-    queryKey: ['team-members', q, teamId],
-
-    // queryFn: (context) => {
-    //   getTeamMembers(context, teamId); # data is not stored in cache
-    // },
-
+    queryKey: ['get-team-members', q, teamId],
+    queryFn: (context) => getTeamMembers(context, teamId),
     getNextPageParam: (lastPage: any) => {
       const pageDataLen = lastPage?.data?.result?.data?.length;
       const pageLimit = lastPage?.data?.result?.paging?.limit;
@@ -139,5 +163,14 @@ export const useInfiniteTeamMembers = (
       return currentPage?.data?.result?.paging?.prev;
     },
     staleTime: 5 * 60 * 1000,
+    enabled: startFetching,
+  });
+};
+
+export const useSingleTeam = (teamId: string) => {
+  return useQuery({
+    queryKey: ['team', teamId],
+    queryFn: () => getTeam(teamId),
+    staleTime: 15 * 60 * 1000,
   });
 };

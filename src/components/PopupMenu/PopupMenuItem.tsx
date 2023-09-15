@@ -28,6 +28,7 @@ const PopupMenuItem: React.FC<PopupMenuItemProps> = ({
         },
         { 'border-b-1 border-b-neutral-200': border },
         { '!cursor-default': menuItem.disabled },
+        { 'bg-primary-50': menuItem.isActive },
       )}
       onClick={() => {
         menuButtonRef.current?.click();
@@ -37,21 +38,28 @@ const PopupMenuItem: React.FC<PopupMenuItemProps> = ({
       data-testid={menuItem.dataTestId}
     >
       {menuItem.icon && (
-        <IconWrapper className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl">
+        <div className={menuItem.iconWrapperClassName}>
           <Icon
             name={menuItem.icon}
             size={16}
+            color={
+              menuItem.isActive
+                ? 'text-primary-500'
+                : (menuItem.disabled && 'text-neutral-200') || menuItem.stroke
+            }
             className={menuItem.iconClassName}
-            color={(menuItem.disabled && 'text-neutral-200') || menuItem.stroke}
             hover={hovered}
             disabled={menuItem.disabled}
           />
-        </IconWrapper>
+        </div>
       )}
       <div
         className={clsx(
           { 'text-sm text-neutral-900 font-medium whitespace-nowrap': true },
-          { 'text-primary-500': !menuItem.disabled && hovered },
+          {
+            'text-primary-500':
+              !menuItem.disabled && (hovered || menuItem.isActive),
+          },
           { '!text-neutral-400': menuItem.disabled },
           { [`${menuItem.labelClassName}`]: true },
         )}

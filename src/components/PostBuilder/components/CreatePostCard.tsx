@@ -22,7 +22,14 @@ export const postTypeMapIcons: IPostMenu[] = [
   {
     id: 1,
     label: 'Media',
-    icon: <Icon name="imageFilled" color="text-neutral-500" size={14} />,
+    icon: (
+      <Icon
+        name="imageFilled"
+        color="!text-neutral-500"
+        size={14}
+        hover={false}
+      />
+    ),
     menuItems: [
       {
         renderNode: (
@@ -75,7 +82,14 @@ export const postTypeMapIcons: IPostMenu[] = [
   {
     id: 2,
     label: 'Shoutout',
-    icon: <Icon name="magicStarFilled" color="text-neutral-500" size={14} />,
+    icon: (
+      <Icon
+        name="magicStarFilled"
+        color="!text-neutral-500"
+        size={14}
+        hover={false}
+      />
+    ),
     menuItems: [],
     divider: true,
   },
@@ -89,7 +103,14 @@ export const postTypeMapIcons: IPostMenu[] = [
   {
     id: 4,
     label: 'Polls',
-    icon: <Icon name="chartFilled" color="text-neutral-500" size={14} />,
+    icon: (
+      <Icon
+        name="chartFilled"
+        color="!text-neutral-500"
+        size={14}
+        hover={false}
+      />
+    ),
     menuItems: [],
   },
 ];

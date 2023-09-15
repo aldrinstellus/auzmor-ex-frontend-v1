@@ -43,14 +43,15 @@ const OptionRow: React.FC<OptionRowProps> = ({
             error: errors.options
               ? errors.options?.[index]?.text?.message
               : undefined,
+            inputClassName: 'py-3 text-sm font-medium',
             customLabelRightElement:
               index > 1 ? (
                 <button
-                  className="font-medium text-neutral-500 text-sm"
+                  className="font-normal text-neutral-500 text-sm"
                   onClick={() => remove(index)}
                   data-testid={`createpoll-option${index + 1}-remove`}
                 >
-                  Remove
+                  remove
                 </button>
               ) : undefined,
           },

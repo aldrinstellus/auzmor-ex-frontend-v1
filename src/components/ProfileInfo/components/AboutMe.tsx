@@ -43,6 +43,8 @@ const AboutMe: React.FC<IAboutMeProps> = ({
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [isHovered, eventHandlers] = useHover();
 
+  console.log({ isHovered });
+
   const { control, handleSubmit, getValues, watch, reset } =
     useForm<IUpdateAboutMe>({
       mode: 'onSubmit',
@@ -67,7 +69,8 @@ const AboutMe: React.FC<IAboutMeProps> = ({
   }, [isEditable]);
 
   const onHoverStyles = useMemo(
-    () => clsx({ '': true }, { 'shadow-xl': isHovered && canEdit }),
+    () =>
+      clsx({ 'shadow-lg': isHovered && canEdit }, { 'transition-all': true }),
     [isHovered],
   );
 
@@ -140,11 +143,11 @@ const AboutMe: React.FC<IAboutMeProps> = ({
   };
 
   return (
-    <div {...eventHandlers}>
+    <>
       <Header
-        title={isEditable ? 'About Me' : 'About'}
+        title={canEdit ? 'About Me' : 'About'}
         dataTestId="about-me"
-        isHovered={isHovered}
+        isHovered={isHovered && canEdit}
         // isEditable={isEditable}
         setIsEditable={setIsEditable}
         canEdit={false}
@@ -153,53 +156,55 @@ const AboutMe: React.FC<IAboutMeProps> = ({
         isLoading={updateUserAboutMeMutation.isLoading}
         reset={reset}
       />
-      <Card className={onHoverStyles}>
-        <div className="text-neutral-900 text-sm font-normal px-4 pb-4">
-          {!isEditable ? (
-            <div
-              className="whitespace-pre-wrap relative pt-4"
-              data-testid="aboutme-description"
-            >
-              {canEdit && isHovered && (
-                <div className="absolute right-0 top-4">
-                  <Icon
-                    name="edit"
-                    size={16}
-                    onClick={() => setIsEditable(!isEditable)}
-                    dataTestId="edit-about-me"
-                  />
-                </div>
-              )}
-              {renderContentWithLinks(aboutMeData?.personal?.about) ||
-                'Field not specified'}
-            </div>
-          ) : (
-            <div className="relative pt-2">
-              <Layout fields={textAreaField} />
-              <div className="flex justify-end mt-2">
-                <IconWrapper
-                  type={Type.Circle}
-                  className="!p-2 mr-2"
-                  onClick={() => {
-                    setIsEditable(false);
-                    reset();
-                  }}
-                >
-                  <Icon name="close" size={16} color="text-neutral-900" />
-                </IconWrapper>
-                <IconWrapper
-                  type={Type.Circle}
-                  className="bg-primary-500 !p-2"
-                  onClick={handleSubmit(onSubmit)}
-                >
-                  <Icon name="check" size={16} color="text-white" />
-                </IconWrapper>
+      <div {...eventHandlers}>
+        <Card shadowOnHover={canEdit}>
+          <div className="text-neutral-900 text-sm font-normal px-4 pb-4">
+            {!isEditable ? (
+              <div
+                className="whitespace-pre-wrap relative pt-4"
+                data-testid="aboutme-description"
+              >
+                {canEdit && isHovered && (
+                  <div className="absolute right-0 top-4">
+                    <Icon
+                      name="edit"
+                      size={16}
+                      onClick={() => setIsEditable(!isEditable)}
+                      dataTestId="edit-about-me"
+                    />
+                  </div>
+                )}
+                {renderContentWithLinks(aboutMeData?.personal?.about) ||
+                  'Field not specified'}
               </div>
-            </div>
-          )}
-        </div>
-      </Card>
-    </div>
+            ) : (
+              <div className="relative pt-2">
+                <Layout fields={textAreaField} />
+                <div className="flex justify-end mt-2">
+                  <IconWrapper
+                    type={Type.Circle}
+                    className="!p-2 mr-2"
+                    onClick={() => {
+                      setIsEditable(false);
+                      reset();
+                    }}
+                  >
+                    <Icon name="close" size={16} color="text-neutral-900" />
+                  </IconWrapper>
+                  <IconWrapper
+                    type={Type.Circle}
+                    className="bg-primary-500 !p-2"
+                    onClick={handleSubmit(onSubmit)}
+                  >
+                    <Icon name="check" size={16} color="text-white" />
+                  </IconWrapper>
+                </div>
+              </div>
+            )}
+          </div>
+        </Card>
+      </div>
+    </>
   );
 };
 

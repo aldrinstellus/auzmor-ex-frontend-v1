@@ -23,13 +23,15 @@
   border-color: theme('colors.primary.500') !important;
 }
 
-.ant-select-selection-item {
+.single-select .ant-select-selection-item {
   line-height: theme('lineHeight.normal') !important;
   color: theme('colors.neutral.900') !important;
+  font-weight: theme('fontWeight.medium') !important;
   display: flex !important;
   align-items: center !important;
 }
-.single-select .ant-select-selection-item {
+
+.single-select-bold .ant-select-selection-item {
   font-weight: theme('fontWeight.bold') !important;
 }
 

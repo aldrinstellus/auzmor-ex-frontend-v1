@@ -179,6 +179,7 @@ const AsyncSingleSelect = React.forwardRef(
                     field.onChange(option);
                   }}
                   optionLabelProp="label"
+                  suffixIcon={<Icon name="arrowDown" size={16} />}
                   className="async-single-select"
                   clearIcon={clearIcon}
                   suffixIcon={suffixIcon || <Icon name="arrowDown" size={18} />}

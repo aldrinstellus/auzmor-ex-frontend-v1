@@ -100,14 +100,14 @@ const InfiniteFilterList: React.FC<IInfiniteFilterListProps> = ({
             {selectedItems.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center gap-1 rounded-[24px] border-2 border-b-bg-neutral-200 py-2 px-3 text-sm"
+                className="flex items-center gap-1 rounded-[24px] border border-neutral-200 bg-neutral-100 py-[7px] px-3 text-sm text-primary-500"
               >
                 <span className="whitespace-nowrap">{item.name}</span>
                 <Icon
                   name="closeCircleOutline"
-                  size={20}
+                  size={16}
                   className="cursor-pointer"
-                  color="text-black"
+                  color="text-neutral-900"
                   onClick={() => onSelectItem(item)}
                   dataTestId={`chip-close-'${item.name}'`}
                 />
@@ -136,7 +136,7 @@ const InfiniteFilterList: React.FC<IInfiniteFilterListProps> = ({
                 {flattenData.map((item: any) => (
                   <li
                     key={item.id}
-                    className={`px-6 py-3 border-b-1 border-b-bg-neutral-200 flex items-center ${itemClassName}`}
+                    className={`px-5 py-3 border-b-1 border-b-bg-neutral-200 flex items-center ${itemClassName}`}
                     onClick={() => onSelectItem(item)}
                   >
                     {renderItem(item)}

@@ -88,18 +88,16 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({
                 <div className="flex flex-col items-start">
                   <div className="mt-4">
                     <div className="flex space-x-4">
-                      <div className="!min-w-[32px] !max-h-[32px]">
-                        <Avatar
-                          name={
-                            postData?.createdBy
-                              ? getFullName(postData?.createdBy)
-                              : 'U'
-                          }
-                          image={getProfileImage(postData?.createdBy)}
-                          size={32}
-                          className="border-2 border-white !h-full !w-full"
-                        />
-                      </div>
+                      <Avatar
+                        name={
+                          postData?.createdBy
+                            ? getFullName(postData?.createdBy)
+                            : 'U'
+                        }
+                        image={getProfileImage(postData?.createdBy)}
+                        size={32}
+                        className="border-2 border-white"
+                      />
 
                       <div>
                         <div className="flex space-x-1 text-sm">

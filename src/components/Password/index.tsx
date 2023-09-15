@@ -156,7 +156,7 @@ const Password: React.FC<PasswordProps> = ({
           'bg-neutral-100': disabled,
         },
         {
-          'w-full h-[44px] rounded-19xl border border-neutral-200 focus:outline-none pl-5 pr-11':
+          'w-full rounded-19xl border border-neutral-200 focus:outline-none pl-5 pr-11':
             true,
         },
       ),

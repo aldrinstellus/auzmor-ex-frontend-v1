@@ -11,6 +11,7 @@ export interface INavbarMenuItemProps {
     dataTestId: string;
     iconSize: number;
     disabled?: boolean;
+    isActive?: any;
   };
 }
 
@@ -27,32 +28,37 @@ const NavbarMenuItem: React.FC<INavbarMenuItemProps> = ({ nav }) => {
     <NavLink
       to={nav.linkTo}
       className={({ isActive }) =>
-        `${isActive ? 'text-primary-500' : 'text-neutral-500'} group p-2`
+        `${
+          isActive || nav.isActive ? 'text-primary-500' : 'text-neutral-500'
+        } group p-2`
       }
     >
-      {({ isActive }) => (
-        <div
-          className="flex flex-col items-center"
-          data-testid={nav.dataTestId}
-        >
-          <Icon
-            name={nav.hoverIcon}
-            size={nav.iconSize}
-            isActive={isActive}
-            className={!isActive ? 'hidden group-hover:block' : ''}
-          />
-          <Icon
-            name={nav.icon}
-            size={nav.iconSize}
-            isActive={isActive}
-            className={isActive ? 'hidden' : 'group-hover:hidden'}
-          />
+      {({ isActive: navLinkIsActive }) => {
+        const isActive = navLinkIsActive || nav.isActive;
+        return (
+          <div
+            className="flex flex-col items-center"
+            data-testid={nav.dataTestId}
+          >
+            <Icon
+              name={nav.hoverIcon}
+              size={nav.iconSize}
+              isActive={isActive}
+              className={!isActive ? 'hidden group-hover:block' : ''}
+            />
+            <Icon
+              name={nav.icon}
+              size={nav.iconSize}
+              isActive={isActive}
+              className={isActive ? 'hidden' : 'group-hover:hidden'}
+            />
 
-          <div className="text-sm group-hover:text-primary-500">
-            {nav.label}
+            <div className="text-sm group-hover:text-primary-500">
+              {nav.label}
+            </div>
           </div>
-        </div>
-      )}
+        );
+      }}
     </NavLink>
   );
 };

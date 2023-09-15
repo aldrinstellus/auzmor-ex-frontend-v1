@@ -20,7 +20,7 @@ import { IPost } from 'queries/post';
 // utils
 import { getMentionProps } from './utils';
 import { quillHashtagConversion, removeElementsByClass } from 'utils/misc';
-// import Poll, { PollMode } from 'components/Poll';
+import Poll, { PollMode } from 'components/Poll';
 
 type RenderQuillContent = {
   data: IPost | IComment;
@@ -37,29 +37,9 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
   const mentions = data?.mentions ? data.mentions : [];
   const link = (data as IPost)?.link;
   const media = (data as IPost)?.files;
-  // const poll = (data as IPost)?.pollContext;
-  const poll = {
-    question: 'Update poll test',
-    options: [
-      {
-        text: 'whassup',
-        id: 'whassup-id',
-      },
-      {
-        text: 'whassup2',
-        id: 'whassup2-id',
-      },
-      {
-        text: 'whassup3',
-        id: 'whassup3-id',
-      },
-      {
-        text: 'whassup4',
-        id: 'whassup4-id',
-      },
-    ],
-    closedAt: '2023-10-23T05:45:35Z',
-  };
+  const poll = (data as IPost)?.pollContext;
+  const myVote = (data as IPost)?.myVote;
+  const postType = (data as IPost)?.type;
 
   const isEmpty = useMemo(() => {
     const ops = data.content.editor.ops || [];
@@ -159,10 +139,10 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
   );
 
   return (
-    <div className="w-full flex flex-col gap-4">
+    <div className="w-full text-sm flex flex-col gap-4">
       {!isEmpty && (
         <span
-          className="line-clamp-3 paragraph pt-px text-sm"
+          className="line-clamp-3 paragraph pt-px"
           id={`${data?.id}-content`}
           data-testid={isComment ? 'comment-content' : 'feed-post-content'}
         >
@@ -189,16 +169,18 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
           />
         </div>
       )}
-      {/* {poll && (
-        <div className="">
+      {poll && postType === 'POLL' && (
+        <div className="mt-4">
           <Poll
             question={poll.question}
             closedAt={poll.closedAt}
             options={poll.options}
+            myVote={myVote}
+            postId={data.id}
             mode={PollMode.VIEW}
           />
         </div>
-      )} */}
+      )}
       {data?.shoutoutRecipients &&
         data?.shoutoutRecipients.length > 0 &&
         !isAnnouncementWidgetPreview && (

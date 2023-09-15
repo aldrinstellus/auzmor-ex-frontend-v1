@@ -95,6 +95,7 @@ const Footer: React.FC<IFooterProps> = ({
               inputImgRef?.current && inputImgRef?.current?.click();
             },
             disabled: isMediaDisabled,
+            iconWrapperClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
             dataTestId: 'feed-createpost-uploadphoto-menuitem',
           },
           {
@@ -105,6 +106,7 @@ const Footer: React.FC<IFooterProps> = ({
               inputVideoRef?.current && inputVideoRef?.current?.click();
             },
             disabled: isMediaDisabled,
+            iconWrapperClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
             dataTestId: 'feed-createpost-uploadvideo-menuitem',
           },
           {
@@ -117,7 +119,7 @@ const Footer: React.FC<IFooterProps> = ({
       },
       {
         id: 2,
-        label: 'Shoutout',
+        label: 'Give kudos',
         icon: (
           <Icon
             name="magicStarFilled"
@@ -192,6 +194,7 @@ const Footer: React.FC<IFooterProps> = ({
               setActiveFlow(CreatePostFlow.CreateAnnouncement);
             },
             disabled: isMember,
+            iconWrapperClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
             dataTestId: 'feed-createpost-shareasannouncement',
           },
           {

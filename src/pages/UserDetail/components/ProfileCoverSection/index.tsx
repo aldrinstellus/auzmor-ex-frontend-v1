@@ -213,7 +213,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({ userDetails }) => {
           )}
         </div>
 
-        <div className="absolute left-8 bottom-4">
+        <div className="absolute left-8 bottom-3">
           <Avatar
             name={getFullName(userDetails)}
             image={getProfileImage(userDetails, 'large')}
@@ -234,11 +234,11 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({ userDetails }) => {
             >
               {getFullName(userDetails)}
             </div>
-            <div className="flex space-x-4">
+            <div className="flex space-x-2 mt-[-2px]">
               <Button
                 className="flex"
-                leftIconClassName="mr-1"
                 label={'Follow'}
+                labelClassName={'text-sm'}
                 leftIcon={'addCircle'}
                 size={ButtonSize.Small}
                 variant={ButtonVariant.Secondary}
@@ -248,7 +248,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({ userDetails }) => {
               <UserProfileDropdown
                 triggerNode={
                   <div
-                    className="rounded-[24px] font-bold border py-[8px] px-[16px] border-[#e5e5e5] cursor-pointer"
+                    className="rounded-[24px] font-bold border py-[7.5px] px-[16px] text-sm border-[#e5e5e5] cursor-pointer"
                     data-testid="profile-more-cta"
                   >
                     More
@@ -293,10 +293,13 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({ userDetails }) => {
               />
             </div>
           </div>
-          <div className="flex space-x-6 items-center">
+          <div className="flex space-x-3 items-center mt-[4px]">
             <div className="flex space-x-2 items-center">
-              <IconWrapper type={Type.Square} className="cursor-pointer">
-                <Icon name="briefcase" size={16} color="text-primary-500" />
+              <IconWrapper
+                type={Type.Square}
+                className="cursor-pointer rounded-6xl"
+              >
+                <Icon name="userRole" size={15} color="text-primary-500" />
               </IconWrapper>
               <div
                 className="text-sm font-normal text-neutral-400"
@@ -305,10 +308,13 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({ userDetails }) => {
                 {userDetails?.designation || '-'}
               </div>
             </div>
-            <Divider variant={DividerVariant.Vertical} className="h-8" />
+            <Divider variant={DividerVariant.Vertical} className="!h-6" />
             <div className="flex space-x-2 items-center">
-              <IconWrapper type={Type.Square} className="cursor-pointer">
-                <Icon name="briefcase" size={16} color="text-primary-500" />
+              <IconWrapper
+                type={Type.Square}
+                className="cursor-pointer rounded-6xl"
+              >
+                <Icon name="briefcase" size={15} color="text-primary-500" />
               </IconWrapper>
               <div
                 className="text-sm font-normal text-neutral-400"
@@ -317,10 +323,13 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({ userDetails }) => {
                 {userDetails?.department?.name || '-'}
               </div>
             </div>
-            <Divider variant={DividerVariant.Vertical} className="h-8" />
+            <Divider variant={DividerVariant.Vertical} className="!h-6" />
             <div className="flex space-x-2 items-center">
-              <IconWrapper type={Type.Square} className="cursor-pointer">
-                <Icon name="location" size={16} color="text-primary-500" />
+              <IconWrapper
+                type={Type.Square}
+                className="cursor-pointer rounded-6xl"
+              >
+                <Icon name="location" size={15} color="text-primary-500" />
               </IconWrapper>
               <div
                 className="text-sm font-normal text-neutral-400"
@@ -331,7 +340,7 @@ const ProfileCoverSection: React.FC<IProfileCoverProps> = ({ userDetails }) => {
             </div>
           </div>
           <div
-            className="mt-3 flex items-center space-x-2 cursor-pointer"
+            className="mt-[10px] flex items-center space-x-2 cursor-pointer"
             onClick={(e) => {
               if (isOwner) {
                 e.preventDefault();

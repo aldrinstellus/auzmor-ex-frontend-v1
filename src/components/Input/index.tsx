@@ -89,7 +89,7 @@ const Input: React.FC<InputProps> = ({
           'focus:border-primary-500 focus:ring-primary-500': !error,
         },
         {
-          'border-red-500 focus:border-red-500 focus:ring-red-500 text-red-500':
+          'border-red-500 focus:border-red-500 focus:ring-red-500 text-red-500 placeholder-red-500 bg-red-50':
             error,
         },
         {
@@ -117,7 +117,7 @@ const Input: React.FC<InputProps> = ({
           'bg-neutral-100 text-neutral-400': disabled,
         },
         {
-          'w-full h-[44px] rounded-19xl border border-neutral-200 focus:outline-none':
+          'w-full rounded-19xl border border-neutral-200 focus:outline-none':
             true,
         },
       ),
@@ -155,19 +155,21 @@ const Input: React.FC<InputProps> = ({
 
   return (
     <div className={`relative ${className}`}>
-      <div className="flex items-center justify-between">
-        <div className={labelStyle}>
-          {label}
-          <span className="text-red-500">{required && '*'}</span>
-        </div>
-        {showCounter && (
-          <div className="text-sm text-neutral-500">
-            {inputRef?.current?.value.length || defaultValue.length || 0}/
-            {maxLength}
+      {(label || showCounter || customLabelRightElement) && (
+        <div className="flex items-center justify-between">
+          <div className={labelStyle}>
+            {label}
+            <span className="text-red-500">{required && '*'}</span>
           </div>
-        )}
-        {customLabelRightElement && customLabelRightElement}
-      </div>
+          {showCounter && (
+            <div className="text-sm text-neutral-500">
+              {inputRef?.current?.value.length || defaultValue.length || 0}/
+              {maxLength}
+            </div>
+          )}
+          {customLabelRightElement && customLabelRightElement}
+        </div>
+      )}
       <label
         className={`flex justify-between flex-1 relative items-center my-1 w-full`}
         htmlFor={id}

@@ -34,7 +34,7 @@ export const VIDEO_FILE_SIZE_LIMIT = 2; //GB
 export const MEDIA_LIMIT = 10; // number of media can be uploaded
 
 export interface IPollOption {
-  id?: string;
+  _id?: string; //Has to be reverted to id once BE is fixed
   text: string;
   votes?: number;
 }

@@ -7,6 +7,7 @@ export type AvatarListProps = {
   moreCount?: number;
   size?: number;
   className?: string;
+  avatarClassName?: string;
   onClick?: () => null;
   dataTestId?: string;
 };
@@ -21,6 +22,7 @@ const AvatarList: React.FC<AvatarListProps> = ({
   users,
   moreCount = 0,
   className = '',
+  avatarClassName = '',
   size = 48,
   onClick = () => {},
   dataTestId = '',
@@ -37,16 +39,19 @@ const AvatarList: React.FC<AvatarListProps> = ({
               name={user?.name}
               image={user?.image}
               active={false}
+              className={`border-[2px] border-white ${avatarClassName}`}
             />
           );
         })
         .slice(0, 2)}
-      {users.length > 2 && (
+      {moreCount > 2 && (
         <Avatar
           size={size}
           name={`+${moreCount - 2}`}
           onClick={onClick}
           active={false}
+          className={`border-[2px] border-white ${avatarClassName}`}
+          isCounter
         />
       )}
     </div>

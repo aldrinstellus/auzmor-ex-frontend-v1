@@ -87,6 +87,7 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
       className:
         'text-neutral-400 disabled:border-none disabled:bg-neutral-200',
       defaultValue: data?.result?.data?.email,
+      inputClassName: 'h-[44px]',
     },
     {
       type: FieldType.Password,
@@ -97,6 +98,7 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
       error: errors.password?.message,
       dataTestId: 'signup-work-password',
       control,
+      inputClassName: 'h-[44px]',
     },
     {
       type: FieldType.Password,
@@ -108,6 +110,7 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
       dataTestId: 'signup-work-re-password',
       control,
       showChecks: false,
+      inputClassName: 'h-[44px]',
     },
     {
       type: FieldType.Checkbox,

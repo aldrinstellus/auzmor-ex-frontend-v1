@@ -11,7 +11,7 @@ import DeleteTeam from '../DeleteModals/Team';
 import useModal from 'hooks/useModal';
 import { TeamFlow } from '.';
 import moment from 'moment';
-import { ITeamDetailState } from 'pages/Users';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export interface ITeamsCardProps {
   id: string;
@@ -23,7 +23,7 @@ export interface ITeamsCardProps {
   recentMembers: any;
   setTeamFlow: (mode: string) => void;
   openModal: () => void;
-  setShowTeamDetail: (detail: ITeamDetailState) => void;
+  setShowTeamDetail: (detail: Record<string, any> | null) => void;
 }
 
 const TeamsCard: React.FC<ITeamsCardProps> = ({
@@ -38,6 +38,8 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
   openModal,
   setShowTeamDetail,
 }) => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [isHovered, eventHandlers] = useHover();
   const [showDeleteModal, openDeleteModal, closeDeleteModal] = useModal(false);
   const { isAdmin, isMember, isSuperAdmin } = useRole();
@@ -51,16 +53,12 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
         openModal();
         setTeamFlow(TeamFlow.EditTeam);
         setShowTeamDetail({
-          activeTab: 'TEAM',
-          isTeamSelected: false,
-          teamDetail: {
-            id: id,
-            name: name,
-            description: description,
-            category: category,
-            createdAt: createdAtDate,
-            totalMembers: totalMembers,
-          },
+          id: id,
+          name: name,
+          description: description,
+          category: category,
+          createdAt: createdAtDate,
+          totalMembers: totalMembers,
         });
       },
       dataTestId: 'team-edit',
@@ -76,6 +74,7 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
       icon: 'cancel',
       label: 'Remove',
       labelClassName: 'text-red-500',
+      iconClassName: '!text-red-500',
       onClick: () => openDeleteModal(),
       dataTestId: 'team-remove',
       enabled: isAdmin || isSuperAdmin,
@@ -88,7 +87,7 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
     <div className="cursor-pointer" data-testid="" {...eventHandlers}>
       <Card
         shadowOnHover
-        className="relative w-[189.5px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white"
+        className="relative w-[190px] h-[217px] border-solid border border-neutral-200 flex flex-col items-center justify-center py-6 px-3 bg-white"
         dataTestId="team-card"
       >
         {isHovered && (
@@ -117,26 +116,17 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
             style={{
               backgroundColor: '#D1FAE5',
             }}
-            className="absolute top-0 left-0 text-primary-500 rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium"
+            className="absolute top-0 left-0 text-primary-500 rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xxs font-medium"
             data-testid="team-badge-recentlyadded"
           >
             Recently added
           </div>
         )}
         <div
-          className="flex flex-col items-center"
+          className="flex flex-col items-center gap-4 justify-between"
           onClick={() => {
-            setShowTeamDetail({
-              activeTab: 'TEAM',
-              isTeamSelected: true,
-              teamDetail: {
-                id: id,
-                name: name,
-                description: description,
-                category: category,
-                createdAt: createdAtDate,
-                totalMembers: totalMembers,
-              },
+            navigate(`/teams/${id}`, {
+              state: { prevRoute: searchParams.get('tab') },
             });
           }}
         >
@@ -145,36 +135,42 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
               size={80}
               users={recentMembers || []}
               moreCount={totalMembers}
-              className="mb-4 mt-1"
               dataTestId="teams-people-icon"
             />
           ) : (
-            <div className="p-[18px] bg-neutral-200 rounded-full mb-4 mt-1">
+            <div className="p-[18px] bg-neutral-200 rounded-full">
               <img src={TeamWork} height={44} width={44} />
             </div>
           )}
-          <div className="space-y-2">
-            <div className="flex flex-col items-center space-y-1">
+          <div className="flex-1 flex flex-col gap-2">
+            <div className="flex flex-col items-center gap-1">
               <div
-                className="truncate text-neutral-900 text-base font-bold"
+                className="truncate text-neutral-900 text-base font-bold text-center"
                 data-testid={`team-name-${name}`}
               >
                 {truncate(name, {
-                  length: 24,
+                  length: 18,
                   separator: ' ',
                 })}
               </div>
 
               <div
-                className="text-xxs font-semibold rounded-xl py-0.4 px-2 truncate capitalize"
+                // different colors for category
+                className="text-xxs font-semibold py-[2px] px-2 line-clamp-1 capitalize rounded bg-indigo-100 text-indigo-500"
                 data-testid={`team-category-${category?.name?.toLowerCase()}`}
               >
                 {category?.name?.toLowerCase()}
               </div>
             </div>
 
-            <div className="flex items-center justify-center space-x-1">
-              <Icon name="profileUserOutline" size={18} />
+            <div className="flex items-center justify-center gap-1">
+              <Icon
+                name="profileUserOutline"
+                size={16}
+                color="text-neutral-900"
+                strokeWidth="1"
+                hover={false}
+              />
               <div
                 className="text-xs font-normal text-neutral-500"
                 data-testid={`team-no-of-members-${totalMembers}`}
@@ -188,9 +184,8 @@ const TeamsCard: React.FC<ITeamsCardProps> = ({
 
       <DeleteTeam
         open={showDeleteModal}
-        openModal={openDeleteModal}
         closeModal={closeDeleteModal}
-        userId={id}
+        teamId={id}
       />
     </div>
   );

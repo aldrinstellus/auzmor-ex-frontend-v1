@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import Icon from 'components/Icon';
-import { ITeamDetails, TeamFlow } from '../Teams';
+import { TeamFlow } from '../Teams';
 
 export interface ITeamForm {
   name: string;
@@ -25,22 +25,22 @@ export interface ITeamForm {
 
 export interface IAddTeamModalProps {
   open: boolean;
-  openModal: () => void;
   closeModal: () => void;
   teamFlowMode: string;
   setTeamFlow: any;
   team: Record<string, any> | any;
   openAddMemberModal: () => void;
+  setShowTeamDetail?: (detail: Record<string, any> | null) => void;
 }
 
 const TeamModal: React.FC<IAddTeamModalProps> = ({
   open,
-  openModal,
   closeModal,
   teamFlowMode,
   setTeamFlow,
   team,
   openAddMemberModal,
+  setShowTeamDetail,
 }) => {
   const queryClient = useQueryClient();
 
@@ -104,6 +104,7 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
       );
     },
     onSuccess: (data: any) => {
+      setShowTeamDetail && setShowTeamDetail(data.result);
       queryClient.invalidateQueries(['teams']);
       toast(<SuccessToast content={'Team Created Successfully'} />, {
         style: {
@@ -116,8 +117,8 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
         transition: slideInAndOutTop,
         theme: 'dark',
       });
-      closeModal();
       openAddMemberModal();
+      closeModal();
       queryClient.invalidateQueries(['categories']);
     },
   });
@@ -157,6 +158,7 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['teams']);
+      queryClient.invalidateQueries(['team', team?.id]);
       toast(
         <SuccessToast
           content={`Team has been updated`}
@@ -192,7 +194,7 @@ const TeamModal: React.FC<IAddTeamModalProps> = ({
     if (data?.category?.type === 'TEAM') {
       categoryValue = data?.category?.value;
     } else {
-      categoryValue = data?.category?.value?.toUpperCase();
+      categoryValue = data?.category?.value;
     }
     const payload = {
       name: data?.name,

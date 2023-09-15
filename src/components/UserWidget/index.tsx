@@ -18,7 +18,7 @@ const UserCard: React.FC<IUserCardProps> = ({ className }) => {
 
   return (
     <div className={className}>
-      <Card className="pb-3 pt-0 rounded-9xl">
+      <Card className="pb-3 pt-0 rounded-9xl min-h-[216px]">
         <div className="flex flex-col items-center gap-2 relative px-12">
           <div className="bg-blue-500 w-full h-[89px] absolute top-0 rounded-t-9xl"></div>
           <Link to="/profile">
@@ -38,17 +38,26 @@ const UserCard: React.FC<IUserCardProps> = ({ className }) => {
               {userDetails?.fullName}
             </div>
 
-            <div
-              className="text-xs font-normal truncate w-full text-center"
-              data-testid="profilecard-designation"
-            >
-              {userDetails?.designation || 'NA'}
-            </div>
+            {userDetails?.designation && (
+              <div
+                className="text-xs font-normal truncate w-full text-center text-neutral-500"
+                data-testid="profilecard-designation"
+              >
+                {userDetails?.designation}
+              </div>
+            )}
 
-            <div className="text-xxs leading-[15px] font-normal truncate w-full text-center flex gap-1 justify-center items-center">
-              <Icon name="location" size={16} />
-              {userDetails?.workLocation?.name}
-            </div>
+            {userDetails?.workLocation?.name && (
+              <div className="text-xxs text-neutral-500 leading-[15px] font-normal truncate w-full text-center flex gap-1 justify-center items-center">
+                <Icon
+                  name="location"
+                  size={16}
+                  color="text-neutral-500"
+                  hover={false}
+                />
+                {userDetails?.workLocation?.name}
+              </div>
+            )}
           </Link>
         </div>
       </Card>

@@ -8,18 +8,17 @@ import Tabs from 'components/Tabs';
 import OrgChart from 'components/OrgChart';
 import People from './components/People';
 import { Role } from 'utils/enum';
-import Team, { TeamFlow } from './components/Teams';
-import TeamDetail from './components/TeamDetail';
-
-export interface ITeamDetailState {
-  isTeamSelected: boolean;
-  teamDetail: Record<string, any> | null;
-  activeTab: string;
-}
+import Team from './components/Teams';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface IUsersProps {}
 
 const Users: React.FC<IUsersProps> = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentPathname = location.pathname;
+  const isUserTab = currentPathname.includes('users');
+
   const [showOrgChart, setShowOrgChart] = useState<boolean>(false);
   const [showAddUserModal, openAddUserModal, closeAddUserModal] = useModal(
     undefined,
@@ -28,18 +27,7 @@ const Users: React.FC<IUsersProps> = () => {
   const [showTeamModal, openTeamModal, closeTeamModal] = useModal(
     undefined,
     false,
-  );
-
-  const [teamFlow, setTeamFlow] = useState<TeamFlow>(TeamFlow.CreateTeam); // to context
-
-  const [showTeamDetail, setShowTeamDetail] = useState<ITeamDetailState>({
-    isTeamSelected: false,
-    teamDetail: {},
-    activeTab: '',
-  }); // to context
-
-  const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
-    useModal(false);
+  ); // to context
 
   const { user } = useAuth();
 
@@ -78,18 +66,18 @@ const Users: React.FC<IUsersProps> = () => {
       tabAction: (
         <div className="flex space-x-2">
           <Button
-            className="flex space-x-[6px] group"
+            className="flex space-x-[6px] group px-6 py-[10px] rounded-[24px]"
             label="View Organization Chart"
             variant={Variant.Secondary}
             leftIcon="groupOutline"
-            leftIconSize={20}
+            leftIconSize={16}
             dataTestId="people-org-chart"
             iconColor="text-black"
             onClick={() => setShowOrgChart(true)}
           />
           {user?.role !== Role.Member && (
             <Button
-              className="flex space-x-1"
+              className="flex space-x-1 px-6 py-[10px] rounded-[24px]"
               label="Add Members"
               leftIcon="add"
               leftIconClassName="!text-white"
@@ -112,25 +100,20 @@ const Users: React.FC<IUsersProps> = () => {
           showTeamModal={showTeamModal}
           openTeamModal={openTeamModal}
           closeTeamModal={closeTeamModal}
-          showTeamDetail={showTeamDetail}
-          setShowTeamDetail={setShowTeamDetail}
-          setTeamFlow={setTeamFlow}
-          teamFlow={teamFlow}
-          showAddMemberModal={showAddMemberModal}
-          openAddMemberModal={openAddMemberModal}
-          closeAddMemberModal={closeAddMemberModal}
         />
       ),
       tabAction: user?.role !== Role.Member && (
-        <Button
-          className="flex space-x-1"
-          label="Add Teams"
-          leftIcon="add"
-          leftIconClassName="!text-white"
-          leftIconSize={20}
-          onClick={openTeamModal}
-          dataTestId="add-teams-btn"
-        />
+        <div className="flex space-x-2">
+          <Button
+            className="flex space-x-1 px-6 py-[10px] rounded-[24px]"
+            label="Add Teams"
+            leftIcon="add"
+            leftIconClassName="!text-white"
+            leftIconSize={20}
+            onClick={openTeamModal}
+            dataTestId="add-teams-btn"
+          />
+        </div>
       ),
     },
   ];
@@ -138,32 +121,21 @@ const Users: React.FC<IUsersProps> = () => {
   return showOrgChart ? (
     <OrgChart setShowOrgChart={setShowOrgChart} />
   ) : (
-    <>
-      {!showTeamDetail.isTeamSelected ? (
-        <Card className="p-8 w-full h-full">
-          <Tabs
-            tabs={tabs}
-            title={'People Hub'}
-            className="w-fit flex justify-start bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200"
-            tabSwitcherClassName="!p-1"
-            showUnderline={false}
-            itemSpacing={1}
-            activeTabIndex={showTeamDetail.activeTab === 'TEAM' ? 1 : 0} //need to handle the behaviour
-            tabContentClassName="mt-8"
-          />
-        </Card>
-      ) : (
-        <TeamDetail
-          setShowTeamDetail={setShowTeamDetail}
-          teamTab={showTeamDetail.activeTab}
-          openModal={openTeamModal}
-          showAddMemberModal={showAddMemberModal}
-          openAddMemberModal={openAddMemberModal}
-          closeAddMemberModal={closeAddMemberModal}
-          {...showTeamDetail.teamDetail}
-        />
-      )}
-    </>
+    <Card className="p-8 px-7 w-full h-full">
+      <Tabs
+        tabs={tabs}
+        title={'People Hub'}
+        className="w-fit flex justify-start bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200"
+        tabSwitcherClassName="!p-1"
+        showUnderline={false}
+        itemSpacing={1}
+        activeTabIndex={!isUserTab ? 1 : 0} //need to handle the behaviour
+        tabContentClassName="mt-6"
+        onTabChange={() => {
+          navigate(isUserTab ? '/teams' : '/users');
+        }}
+      />
+    </Card>
   );
 };
 

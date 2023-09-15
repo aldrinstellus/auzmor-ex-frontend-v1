@@ -12,6 +12,7 @@ export interface IMenuItem {
   label?: ReactNode;
   labelClassName?: string;
   iconClassName?: string;
+  iconWrapperClassName?: string;
   stroke?: string;
   fill?: string;
   onClick?: () => any;

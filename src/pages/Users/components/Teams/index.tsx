@@ -18,7 +18,6 @@ import PageLoader from 'components/PageLoader';
 import TeamNotFound from 'images/TeamNotFound.svg';
 import TeamsSkeleton from '../Skeletons/TeamsSkeleton';
 import Skeleton from 'react-loading-skeleton';
-import { ITeamDetailState } from 'pages/Users';
 import Sort from 'components/Sort';
 import EntitySearchModal, {
   EntitySearchModalType,
@@ -31,7 +30,20 @@ import FilterModal, {
   IAppliedFilters,
 } from 'components/FilterModal';
 import { ICategory } from 'queries/category';
+import { addTeamMember, useSingleTeam } from 'queries/teams';
 
+import useAuth from 'hooks/useAuth';
+import { useSearchParams } from 'react-router-dom';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { toast } from 'react-toastify';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import queryClient from 'utils/queryClient';
+import { slideInAndOutTop } from 'utils/react-toastify';
+import FailureToast from 'components/Toast/variants/FailureToast';
+import { useMutation } from '@tanstack/react-query';
+import useURLParams from 'hooks/useURLParams';
+import { Role } from 'utils/enum';
+import useRole from 'hooks/useRole';
 interface IForm {
   search?: string;
 }
@@ -39,6 +51,11 @@ interface IForm {
 export enum TeamFlow {
   CreateTeam = 'CREATE_TEAM',
   EditTeam = 'EDIT_TEAM',
+}
+
+export enum TeamTab {
+  MyTeams = 'myTeams',
+  AllTeams = 'allTeams',
 }
 
 export interface ITeamCategory {
@@ -60,31 +77,38 @@ export interface ITeamProps {
   showTeamModal: boolean;
   openTeamModal: () => void;
   closeTeamModal: () => void;
-  // stored one team detail
-  showTeamDetail: ITeamDetailState;
-  setShowTeamDetail: (detail: ITeamDetailState) => void;
-  // set team flow
-  setTeamFlow: any;
-  teamFlow: string;
-  // show add members modal
-  showAddMemberModal: boolean;
-  openAddMemberModal: () => void;
-  closeAddMemberModal: () => void;
 }
 
 const Team: React.FC<ITeamProps> = ({
   showTeamModal,
   openTeamModal,
   closeTeamModal,
-  showTeamDetail,
-  setShowTeamDetail,
-  setTeamFlow,
-  teamFlow,
-  showAddMemberModal,
-  openAddMemberModal,
-  closeAddMemberModal,
 }) => {
+  const {
+    searchParams,
+    updateParam,
+    deleteParam,
+    serializeFilter,
+    parseParams,
+  } = useURLParams();
+
+  const { user } = useAuth();
+  const { isAdmin } = useRole();
+  const [teamFlow, setTeamFlow] = useState<TeamFlow>(TeamFlow.CreateTeam); // to context
+  const [showTeamDetail, setShowTeamDetail] = useState<Record<
+    string,
+    any
+  > | null>({});
   const [sortByFilter, setSortByFilter] = useState<string>('');
+  const [filters, setFilters] = useState<any>({
+    categories: [],
+  });
+  const [tab, setTab] = useState<TeamTab | string>(
+    searchParams.get('tab') || isAdmin ? TeamTab.AllTeams : TeamTab.MyTeams,
+  );
+  const [startFetching, setStartFetching] = useState(false);
+  const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
+    useModal(false);
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const [appliedFilters, setAppliedFilters] = useState<IAppliedFilters>({
     category: [],
@@ -100,24 +124,85 @@ const Team: React.FC<ITeamProps> = ({
     formState: { errors },
   } = useForm<IForm>({
     mode: 'onChange',
+    defaultValues: {
+      search: searchParams.get('teamSearch'),
+    },
   });
 
   const searchValue = watch('search');
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteTeams(
-      isFiltersEmpty({
+    useInfiniteTeams({
+      startFetching,
+      q: isFiltersEmpty({
         q: debouncedSearchValue,
         sort: sortByFilter,
-        category:
-          appliedFilters?.category?.length || 0 > 0
+        userId: tab === TeamTab.MyTeams ? user?.id : undefined,
+        categoryId:
+          appliedFilters.category!.length > 0
             ? appliedFilters?.category
-                ?.map((category: ICategory) => category?.name?.toUpperCase())
-                .join(', ')
+                ?.map((category: ICategory) => category?.id)
+                .join(',')
             : undefined,
       }),
-    );
+    });
+
+  const teamId = showTeamDetail?.id;
+
+  const addTeamMemberMutation = useMutation({
+    mutationKey: ['add-team-member', teamId],
+    mutationFn: (payload: any) => {
+      return addTeamMember(teamId || '', payload);
+    },
+    onError: (error: any) => {
+      toast(
+        <FailureToast
+          content={`Error Adding Team Members`}
+          dataTestId="team-create-error-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              color={twConfig.theme.colors.red['500']}
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+    },
+    onSuccess: (data: any) => {
+      const membersAddedCount =
+        data?.result?.data?.length - (data.teamMembers || 0);
+      const message =
+        membersAddedCount > 1
+          ? `${membersAddedCount} members have been added to the team`
+          : membersAddedCount === 1
+          ? `${membersAddedCount} member has been added to the team`
+          : 'Members already exists in the team';
+      toast(<SuccessToast content={message} />, {
+        style: {
+          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+        },
+        autoClose: TOAST_AUTOCLOSE_TIME,
+        transition: slideInAndOutTop,
+        theme: 'dark',
+      });
+    },
+  });
 
   useEffect(() => {
     if (inView) {
@@ -135,55 +220,63 @@ const Team: React.FC<ITeamProps> = ({
     });
   });
 
-  // const teamId = showTeamDetail?.teamDetail?.id;
+  const handleRemoveFilters = (key: any, id: any) => {
+    const updatedFilter = filters[key].filter((item: any) => item.id !== id);
+    const serializedFilters = serializeFilter(updatedFilter);
+    if (updatedFilter.length === 0) {
+      deleteParam(key);
+    } else {
+      updateParam(key, serializedFilters);
+    }
+    setFilters((prevFilters: any) => ({
+      ...prevFilters,
+      [key]: updatedFilter,
+    }));
+  };
 
-  // const addTeamMemberMutation = useMutation({
-  //   mutationKey: ['add-team-member', teamId],
-  //   mutationFn: (payload: any) => {
-  //     return addTeamMember(teamId || '', payload);
-  //   },
-  //   onError: (error: any) => {
-  //     toast(
-  //       <FailureToast
-  //         content={`Error Adding Team Members`}
-  //         dataTestId="team-create-error-toaster"
-  //       />,
-  //       {
-  //         closeButton: (
-  //           <Icon
-  //             name="closeCircleOutline"
-  //             color="text-red-500"
-  //             size={20}
-  //           />
-  //         ),
-  //         style: {
-  //           border: `1px solid ${twConfig.theme.colors.red['300']}`,
-  //           borderRadius: '6px',
-  //           display: 'flex',
-  //           alignItems: 'center',
-  //         },
-  //         autoClose: TOAST_AUTOCLOSE_TIME,
-  //         transition: slideInAndOutTop,
-  //         theme: 'dark',
-  //       },
-  //     );
-  //   },
-  //   onSuccess: (data: any) => {
-  //     toast(<SuccessToast content={'Members has been added to team'} />, {
-  //       style: {
-  //         border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-  //         borderRadius: '6px',
-  //         display: 'flex',
-  //         alignItems: 'center',
-  //       },
-  //       autoClose: TOAST_AUTOCLOSE_TIME,
-  //       transition: slideInAndOutTop,
-  //       theme: 'dark',
-  //     });
-  //     queryClient.invalidateQueries(['categories']);
-  //     queryClient.invalidateQueries(['team-members']);
-  //   },
-  // });
+  const onApplyFilter = (filter: any) => {
+    setFilters(filter);
+    const serializedCategories = serializeFilter(filter.categories);
+    updateParam('categories', serializedCategories);
+  };
+
+  const handleSetSortFilter = (sortValue: any) => {
+    setSortByFilter(sortValue);
+    const serializedSort = serializeFilter(sortValue);
+    updateParam('sort', serializedSort);
+  };
+
+  const clearFilters = () => {
+    deleteParam('categories');
+    setFilters({
+      categories: [],
+    });
+  };
+
+  // parse the persisted filters from the URL on page load
+  useEffect(() => {
+    const parsedCategories = parseParams('categories');
+    const parsedSort = parseParams('sort');
+    if (parsedCategories) {
+      setFilters((prevFilters: any) => ({
+        ...prevFilters,
+        categories: parsedCategories,
+      }));
+    }
+    if (parsedSort) {
+      setSortByFilter(parsedSort);
+    }
+    setStartFetching(true);
+  }, []);
+
+  // Change URL params for search filters
+  useEffect(() => {
+    if (debouncedSearchValue) {
+      updateParam('teamSearch', debouncedSearchValue);
+    } else {
+      deleteParam('teamSearch');
+    }
+  }, [debouncedSearchValue]);
 
   return (
     <div className="relative pb-8">
@@ -193,18 +286,28 @@ const Team: React.FC<ITeamProps> = ({
             label="My Teams"
             size={Size.Small}
             variant={Variant.Secondary}
-            className="cursor-not-allowed h-9 grow-0"
+            className={`h-9 grow-0 ${!isAdmin && 'pointer-events-none'}`}
             dataTestId="my-teams"
-            disabled
+            active={tab === TeamTab.MyTeams && !searchValue}
+            onClick={() => {
+              updateParam('tab', TeamTab.MyTeams);
+              setTab(TeamTab.MyTeams);
+            }}
           />
-          <Button
-            label="All Teams"
-            size={Size.Small}
-            variant={Variant.Secondary}
-            className="!py-2 grow-0"
-            dataTestId="all-teams"
-            active={!searchValue}
-          />
+          {isAdmin && (
+            <Button
+              label="All Teams"
+              size={Size.Small}
+              variant={Variant.Secondary}
+              className="h-9 grow-0"
+              dataTestId="all-teams"
+              active={tab === TeamTab.AllTeams && !searchValue}
+              onClick={() => {
+                updateParam('tab', TeamTab.AllTeams);
+                setTab(TeamTab.AllTeams);
+              }}
+            />
+          )}
         </div>
         <div className="flex space-x-2 justify-center items-center">
           <IconButton
@@ -213,12 +316,13 @@ const Team: React.FC<ITeamProps> = ({
             variant={IconVariant.Secondary}
             size={IconSize.Medium}
             borderAround
-            className="bg-white"
+            className="bg-white !p-[10px]"
             dataTestId="teams-filter"
           />
           <Sort
-            setFilter={setSortByFilter}
-            filterKey="createdAt"
+            setFilter={handleSetSortFilter}
+            filterKey={{ createdAt: 'createdAt', aToZ: 'name' }}
+            selectedValue={sortByFilter}
             filterValue={{ asc: 'ASC', desc: 'DESC' }}
             title={
               <div className="bg-blue-50 flex px-6 py-2 font-xs font-medium text-neutral-500">
@@ -241,6 +345,7 @@ const Team: React.FC<ITeamProps> = ({
                   placeholder: 'Search teams',
                   error: errors.search?.message,
                   dataTestId: 'teams-search',
+                  inputClassName: 'py-[7px] !text-sm !h-9',
                   isClearable: true,
                 },
               ]}
@@ -301,10 +406,8 @@ const Team: React.FC<ITeamProps> = ({
             ))}
           </div>
           <div
-            className="text-neutral-500 border px-3 py-1  mt-2 whitespace-nowrap rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
-            onClick={() =>
-              setAppliedFilters({ ...appliedFilters, category: [] })
-            }
+            className="text-neutral-500 border px-3 py-[3px] whitespace-nowrap rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
+            onClick={clearFilters}
           >
             Clear Filters
           </div>
@@ -351,7 +454,7 @@ const Team: React.FC<ITeamProps> = ({
                       src={TeamNotFound}
                       alt="Team Not Found"
                       height={140}
-                      width={165}
+                      width={162}
                     />
                     <div
                       className="text-lg font-bold"
@@ -361,17 +464,25 @@ const Team: React.FC<ITeamProps> = ({
                     </div>
                   </div>
                   <div className="flex space-x-1 text-xs font-normal">
-                    <div className="text-neutral-500">
-                      There are no teams found in your organization right now.
-                      Be the first to
-                    </div>
-                    <div
-                      className="text-blue-500 cursor-pointer"
-                      onClick={() => openTeamModal()}
-                      data-testid="create-one-team"
-                    >
-                      create one
-                    </div>
+                    {isAdmin ? (
+                      <>
+                        <div className="text-neutral-500">
+                          There are no teams found in your organization right
+                          now. Be the first to
+                        </div>
+                        <div
+                          className="text-blue-500 cursor-pointer font-bold"
+                          onClick={() => openTeamModal()}
+                          data-testid="create-one-team"
+                        >
+                          create one
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-neutral-500">
+                        You are not a part of any team. Join a team now
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -384,7 +495,8 @@ const Team: React.FC<ITeamProps> = ({
                       className="mt-8 text-lg font-bold"
                       data-testid="teams-noresult-found"
                     >
-                      No result found for &apos;{searchValue}&apos;
+                      {`No result found`}
+                      {searchValue && ` for '${searchValue}'`}
                     </div>
                     <div className="text-sm text-gray-500 mt-2">
                       Sorry we can&apos;t find the team you are looking for.
@@ -412,16 +524,12 @@ const Team: React.FC<ITeamProps> = ({
       {showTeamModal && (
         <TeamModal
           open={showTeamModal}
-          openModal={openTeamModal}
           closeModal={closeTeamModal}
           teamFlowMode={teamFlow}
           setTeamFlow={setTeamFlow}
-          team={
-            teamFlow === TeamFlow.EditTeam
-              ? showTeamDetail.teamDetail
-              : undefined
-          }
+          team={teamFlow === TeamFlow.EditTeam ? showTeamDetail : undefined}
           openAddMemberModal={openAddMemberModal}
+          setShowTeamDetail={setShowTeamDetail}
         />
       )}
 
@@ -431,7 +539,7 @@ const Team: React.FC<ITeamProps> = ({
           openModal={openAddMemberModal}
           closeModal={closeAddMemberModal}
           onBackPress={openTeamModal}
-          entityType={EntitySearchModalType.Team}
+          entityType={EntitySearchModalType.User}
           entityRenderer={(data: IGetUser) => {
             return (
               <div className="flex space-x-4 w-full">
@@ -446,23 +554,27 @@ const Team: React.FC<ITeamProps> = ({
                       <div className="text-sm font-bold text-neutral-900">
                         {data?.fullName}
                       </div>
-                      {/* <div className="flex space-x-[14px] items-center">
-                        <div className="flex space-x-1 items-start">
-                          <Icon name="briefcase" size={16} />
-                          <div className="text-xs font-normal text-neutral-500">
-                            {'Chief Financial officer'}
+                      <div className="flex space-x-[14px] items-center">
+                        {data?.designation && (
+                          <div className="flex space-x-1 items-start">
+                            <Icon name="briefcase" size={16} />
+                            <div className="text-xs font-normal text-neutral-500">
+                              {data?.designation}
+                            </div>
                           </div>
-                        </div>
-
-                        <div className="w-1 h-1 bg-neutral-500 rounded-full" />
-
-                        <div className="flex space-x-1 items-start">
-                          <Icon name="location" size={16} />
-                          <div className="text-xs font-normal text-neutral-500">
-                            {'New York, US.'}
+                        )}
+                        {data?.designation && data?.workLocation?.name && (
+                          <div className="w-1 h-1 bg-neutral-500 rounded-full" />
+                        )}
+                        {data?.workLocation?.name && (
+                          <div className="flex space-x-1 items-start">
+                            <Icon name="location" size={16} />
+                            <div className="text-xs font-normal text-neutral-500">
+                              {data?.workLocation.name}
+                            </div>
                           </div>
-                        </div>
-                      </div> */}
+                        )}
+                      </div>
                     </div>
                     <div className="text-xs font-normal text-neutral-500">
                       {data?.primaryEmail}
@@ -473,6 +585,7 @@ const Team: React.FC<ITeamProps> = ({
             );
           }}
           onSubmit={(userIds: string[]) => {
+            addTeamMemberMutation.mutate({ userIds: userIds });
             closeAddMemberModal();
           }}
           onCancel={closeAddMemberModal}

@@ -18,6 +18,11 @@
   color: #e5e7eb !important;
 }
 
+.ant-picker-input > input {
+  line-height: theme('lineHeight.normal') !important;
+  font-family: 'Manrope' !important;
+}
+
 .ant-picker-focused {
   border-color: #10b981 !important;
   box-shadow: 0 0 0 1px #10b981 !important;

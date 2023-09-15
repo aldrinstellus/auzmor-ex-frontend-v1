@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Card from 'components/Card';
-import useHover from 'hooks/useHover';
 import clsx from 'clsx';
 import 'moment-timezone';
 import Header from '../Header';
@@ -23,7 +22,6 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
   setSearchParams,
   searchParams,
 }) => {
-  const [isHovered, eventHandlers] = useHover();
   const [isEditable, setIsEditable] = useState<boolean>(false);
 
   useEffect(() => {
@@ -33,15 +31,12 @@ const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
     }
   }, [isEditable]);
 
-  const onHoverStyles = useMemo(
-    () => clsx({ 'mb-8': true }, { 'shadow-xl': isHovered && canEdit }),
-    [isHovered],
-  );
+  const onHoverStyles = clsx({ 'mb-8': true });
 
   return (
-    <div {...eventHandlers}>
+    <div>
       <Header title="Professional Details" dataTestId="professional-details" />
-      <Card className={onHoverStyles}>
+      <Card className={onHoverStyles} shadowOnHover={canEdit}>
         <div className="px-4">
           <EmployeeIdRow data={professionalDetails} />
           <DateOfJoiningRow data={professionalDetails} />

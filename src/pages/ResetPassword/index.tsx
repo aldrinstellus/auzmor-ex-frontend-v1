@@ -76,6 +76,7 @@ const ResetPassword = () => {
         const value = e.target.value;
       },
       dataTestId: 'new-password',
+      inputClassName: 'h-[44px]',
     },
   ];
 
@@ -92,6 +93,7 @@ const ResetPassword = () => {
       control,
       dataTestId: 'confirm-password',
       showChecks: false,
+      inputClassName: 'h-[44px]',
     },
   ];
 

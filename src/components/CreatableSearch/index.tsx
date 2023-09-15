@@ -102,7 +102,9 @@ const CreatableSearch = React.forwardRef(
     );
 
     const isOptionContains = (searchValue: string) =>
-      (transformedOptions || []).find((option) => searchValue === option.label);
+      (transformedOptions || []).find(
+        (option) => searchValue.toLowerCase() === option.label.toLowerCase(),
+      );
 
     const addOptionObject =
       !disableCreate &&
@@ -181,7 +183,7 @@ const CreatableSearch = React.forwardRef(
                   onChange={(_, option) => {
                     field.onChange(option);
                   }}
-                  suffixIcon={<Icon name="arrowDown" size={18} />}
+                  suffixIcon={<Icon name="arrowDown" size={16} />}
                   className="creatable-search"
                 >
                   {(options || []).map((option) => (

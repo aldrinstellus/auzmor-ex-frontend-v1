@@ -1,5 +1,4 @@
-import React from 'react';
-import _ from 'lodash';
+import React, { useState } from 'react';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import useHover from 'hooks/useHover';
@@ -31,10 +30,13 @@ import UserProfileDropdown from 'components/UserProfileDropdown';
 import DeactivatePeople from '../DeactivateModal/Deactivate';
 import ReactivatePeople from '../ReactivateModal/Reactivate';
 import clsx from 'clsx';
-import { IDepartment } from 'queries/department';
+import _ from 'lodash';
+import RemoveTeamMember from '../DeleteModals/TeamMember';
 
 export interface IPeopleCardProps {
   userData: IGetUser;
+  teamId?: string;
+  isTeamPeople?: boolean;
 }
 
 export enum Status {
@@ -53,15 +55,32 @@ const statusColorMap: Record<string, string> = {
   [Status.SUPERADMIN]: PRIMARY_COLOR,
 };
 
-const PeopleCard: React.FC<IPeopleCardProps> = ({ userData }) => {
-  const { id, role, fullName, designation, status, department, workLocation } =
-    userData;
+const PeopleCard: React.FC<IPeopleCardProps> = ({
+  userData,
+  teamId,
+  isTeamPeople,
+}) => {
+  const {
+    id,
+    role,
+    fullName,
+    designation,
+    status,
+    department,
+    workLocation,
+    workEmail,
+  } = userData;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { isAdmin } = useRole();
   const [isHovered, eventHandlers] = useHover();
   const [openDelete, openDeleteModal, closeDeleteModal] = useModal();
+  const [
+    openRemoveTeamMember,
+    openRemoveTeamMemberModal,
+    closeRemoveTeamMemberModal,
+  ] = useModal();
   const [openReactivate, openReactivateModal, closeReactivateModal] =
     useModal();
   const [openDeactivate, openDeactivateModal, closeDeactivateModal] =
@@ -126,19 +145,59 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({ userData }) => {
   });
 
   const leftChipStyle = clsx({
-    'absolute top-0 left-0 text-white rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xs font-medium':
+    'absolute top-0 left-0 text-white rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xxs font-medium':
+      true,
+  });
+  const rightChipStyle = clsx({
+    'absolute top-0 right-0 rounded-bl-[12px] rounded-tr-[12px] px-3 py-1 text-xxs font-medium':
       true,
   });
 
+  const RenderRightChip = () => {
+    if (
+      [UserStatus.Invited, UserStatus.Created, UserStatus.Attempted].includes(
+        status as UserStatus,
+      )
+    ) {
+      return (
+        <div
+          className={`${rightChipStyle} bg-amber-100 text-orange-600`}
+          data-testid={`people-card-role-${role}`}
+        >
+          Pending
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const RenderLeftChip = () => {
+    if ([Status.ADMIN, Status.SUPERADMIN].includes(role as unknown as Status)) {
+      return (
+        <div
+          style={{
+            backgroundColor: statusColorMap[role],
+          }}
+          className={leftChipStyle}
+          data-testid={`people-card-role-${role}`}
+        >
+          {titleCase(role)}
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div
-      className="cursor-pointer"
+      className="cursor-pointer w-fit"
       data-testid="people-card"
       {...eventHandlers}
     >
       <Card
         shadowOnHover
-        className="relative w-[230px] border-solid border border-neutral-200 flex flex-col items-center justify-center p-6 bg-white"
+        className="relative w-[190px] h-[244px] border-solid border rounded-9xl border-neutral-200 bg-white"
       >
         <UserProfileDropdown
           id={id}
@@ -147,6 +206,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({ userData }) => {
           status={status}
           isHovered={isHovered}
           onDeleteClick={openDeleteModal}
+          isTeamPeople={isTeamPeople}
           onEditClick={() =>
             navigate(
               `/users/${id}?edit=${getEditSection(
@@ -160,7 +220,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({ userData }) => {
           onReactivateClick={openReactivateModal}
           onPromoteClick={() => updateUserRoleMutation.mutate({ id })}
           onDeactivateClick={openDeactivateModal}
-          onResendInviteClick={() => () => {
+          onResendInviteClick={() => {
             toast(<SuccessToast content="Invitation has been sent" />, {
               closeButton: (
                 <Icon
@@ -181,11 +241,12 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({ userData }) => {
             });
             resendInviteMutation.mutate(id);
           }}
+          onRemoveTeamMember={openRemoveTeamMemberModal}
           triggerNode={
             <div className="cursor-pointer">
               <Icon
-                name={'dotsHorizontal'}
-                className={`absolute top-${
+                name="moreOutline"
+                className={`absolute z-10 top-${
                   status === UserStatus.Inactive ? 6 : 2
                 } right-2`}
                 dataTestId="people-card-ellipsis"
@@ -195,66 +256,35 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({ userData }) => {
           showOnHover={true}
           className="right-0 top-8 border border-[#e5e5e5]"
         />
-        {(() => {
-          if (status === UserStatus.Inactive) {
-            return (
-              <div
-                className="absolute top-0 text-[12px] text-[#737373] font-medium py-1 bg-[#F5F5F5] w-full justify-center align-center rounded-t-9xl flex"
-                data-testid="usercard-deactivate-banner"
-              >
-                <Icon
-                  name="forbidden"
-                  color="text-neutral-500"
-                  size={18}
-                  className="mr-1"
-                ></Icon>
-                Deactivated Account
-              </div>
-            );
-          }
-          if (
-            [
-              UserStatus.Invited,
-              UserStatus.Created,
-              UserStatus.Attempted,
-            ].includes(status as UserStatus)
-          ) {
-            return (
-              <div
-                style={{
-                  backgroundColor: '#EA580C',
-                }}
-                className={leftChipStyle}
-                data-testid={`people-card-role-${role}`}
-              >
-                Pending
-              </div>
-            );
-          }
 
-          if (
-            [Status.ADMIN, Status.SUPERADMIN].includes(
-              role as unknown as Status,
-            )
-          ) {
-            return (
-              <div
-                style={{
-                  backgroundColor: statusColorMap[role],
-                }}
-                className={leftChipStyle}
-                data-testid={`people-card-role-${role}`}
-              >
-                {titleCase(role)}
-              </div>
-            );
-          }
-
-          return null;
-        })()}
+        {status === UserStatus.Inactive ? (
+          <div
+            className="absolute top-0 text-xxs text-[#737373] font-medium py-1 bg-[#F5F5F5] w-full justify-center align-center rounded-t-9xl flex"
+            data-testid="usercard-deactivate-banner"
+          >
+            <Icon
+              name="forbidden"
+              color="text-neutral-500"
+              size={16}
+              className="mr-1"
+            ></Icon>
+            Deactivated Account
+          </div>
+        ) : (
+          <div
+            className={clsx({
+              'transition-all': true,
+              'opacity-0 z-0': isHovered,
+              'opacity-100': !isHovered,
+            })}
+          >
+            <RenderLeftChip />
+            <RenderRightChip />
+          </div>
+        )}
 
         <div
-          className="my-6 flex flex-col items-center"
+          className="flex flex-col gap-4 items-center z-10 py-6 justify-between h-full"
           onClick={() => {
             if (id === user?.id) {
               return navigate('/profile');
@@ -264,7 +294,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({ userData }) => {
         >
           <Avatar
             size={80}
-            name={fullName}
+            name={fullName || workEmail}
             image={getProfileImage(userData, 'large')}
             active={status === UserStatus.Active}
             dataTestId="people-card-profile-pic"
@@ -274,38 +304,58 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({ userData }) => {
               (status as any) === UserStatus.Inactive ? '#ffffff' : undefined
             }
           />
-          <div
-            className="mt-1 truncate text-neutral-900 text-base font-bold"
-            data-testid={`people-card-name-${fullName}`}
-          >
-            {_.truncate(fullName, {
-              length: 24,
-              separator: ' ',
-            })}
-          </div>
-          <div
-            className="mt-1 truncate text-neutral-900 text-xs font-normal"
-            data-testid={`people-card-title-${designation || role}`}
-          >
-            {designation || role}
-          </div>
-          <div
-            className="flex justify-center items-center px-3 py-1 mt-2 rounded-xl"
-            data-testid={`people-card-department-${department?.name}`}
-          >
-            <div></div>
-            <div className="text-neutral-900 text-xxs font-medium truncate">
-              {department?.name}
+          <div className="flex flex-col items-center gap-2 justify-start flex-1">
+            <div className="flex flex-col items-center gap-1">
+              <div
+                className="text-neutral-900 text-base font-bold truncate"
+                data-testid={`people-card-name-${fullName || workEmail}`}
+              >
+                {_.truncate(fullName || workEmail, {
+                  length: 18,
+                  separator: ' ',
+                })}
+              </div>
+              {designation && (
+                <div
+                  className="text-neutral-900 text-xs font-normal line-clamp-1"
+                  data-testid={`people-card-title-${designation}`}
+                >
+                  {designation}
+                </div>
+              )}
             </div>
-          </div>
-          <div className="flex space-x-[6px] mt-3">
-            <div></div>
-            <div
-              className="text-neutral-500 text-xs font-normal truncate"
-              data-testid={`people-card-location-${workLocation?.name}`}
-            >
-              {workLocation?.name}
-            </div>
+            {department?.name && (
+              <div
+                className="flex justify-center items-center px-3 py-[2px] rounded-[4px] gap-1 bg-orange-100"
+                data-testid={`people-card-department-${department?.name}`}
+              >
+                <Icon
+                  name="briefcase"
+                  size={16}
+                  hover={false}
+                  color="text-neutral-900"
+                />
+                <div className="text-neutral-900 text-xxs font-semibold line-clamp-1">
+                  {department?.name}
+                </div>
+              </div>
+            )}
+            {workLocation?.name && (
+              <div className="flex gap-1">
+                <Icon
+                  name="location"
+                  size={16}
+                  color="text-neutral-900"
+                  hover={false}
+                />
+                <div
+                  className="text-neutral-500 text-xs font-normal line-clamp-1"
+                  data-testid={`people-card-location-${workLocation?.name}`}
+                >
+                  {workLocation?.name}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </Card>
@@ -314,6 +364,12 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({ userData }) => {
         openModal={openDeleteModal}
         closeModal={closeDeleteModal}
         userId={id}
+      />
+      <RemoveTeamMember
+        open={openRemoveTeamMember}
+        closeModal={closeRemoveTeamMemberModal}
+        userId={id}
+        teamId={teamId || ''}
       />
       <DeactivatePeople
         open={openDeactivate}

@@ -156,10 +156,13 @@ export const getAllUser = async ({
   } else return await apiService.get(pageParam);
 };
 
-export const useInfiniteUsers = (
-  q?: Record<string, any>,
-  rest?: Record<string, any>,
-) => {
+export const useInfiniteUsers = ({
+  startFetching = true,
+  q,
+}: {
+  startFetching?: boolean;
+  q?: Record<string, any>;
+}) => {
   return useInfiniteQuery({
     queryKey: ['users', q],
     queryFn: getAllUser,
@@ -175,7 +178,7 @@ export const useInfiniteUsers = (
       return currentPage?.data?.result?.paging?.prev;
     },
     staleTime: 5 * 60 * 1000,
-    ...rest,
+    enabled: startFetching,
   });
 };
 

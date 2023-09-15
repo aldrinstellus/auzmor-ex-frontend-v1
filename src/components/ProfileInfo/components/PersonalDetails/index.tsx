@@ -35,17 +35,12 @@ const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
   personalDetails,
   canEdit,
 }) => {
-  const [isHovered, eventHandlers] = useHover();
-
-  const onHoverStyles = useMemo(
-    () => clsx({ 'mb-8': true }, { 'shadow-xl': isHovered && canEdit }),
-    [isHovered],
-  );
+  const onHoverStyles = clsx({ 'mb-8': true });
 
   return (
-    <div {...eventHandlers}>
+    <div>
       <Header title="Personal Details" dataTestId="personal-details" />
-      <Card className={onHoverStyles}>
+      <Card className={onHoverStyles} shadowOnHover={canEdit}>
         <div className="px-4">
           <DateOfBirthRow data={personalDetails} />
           <GenderRow data={personalDetails} />

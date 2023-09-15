@@ -193,7 +193,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
     } else if (media.length === 4) {
       return (
         <div
-          className={`grid grid-rows-2 grid-flow-row auto-cols-auto w-full ${mediaHeight} ${
+          className={`grid grid-rows-2 grid-cols-2 grid-flow-row auto-cols-auto w-full ${mediaHeight} ${
             isAnnouncementWidgetPreview ? 'gap-2' : 'gap-4'
           }`}
         >
@@ -429,7 +429,7 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
   };
 
   return (
-    <div className={`${className} relative w-full`}>
+    <div className={`${className} relative`}>
       {getLayout()}
       {mode === Mode.Edit && (
         <div className="flex justify-between absolute p-4 top-0 w-full">
@@ -450,27 +450,21 @@ const MediaPreview: React.FC<IMediaPreviewProps> = ({
           </div>
           <div className="flex items-center">
             {showEditButton && (
-              <div onClick={onEditButtonClick}>
-                <IconWrapper className="p-2 border border-neutral-200 rounded-7xl bg-white cursor-pointer group mr-2">
-                  <Icon
-                    name="edit"
-                    size={16}
-                    dataTestId={`${dataTestId}-editicon`}
-                    color="text-neutral-900"
-                  />
-                </IconWrapper>
+              <div
+                onClick={onEditButtonClick}
+                data-testid={`${dataTestId}-editicon`}
+                className="p-2 rounded-7xl mr-2 bg-white cursor-pointer"
+              >
+                <Icon name="edit" size={16} color="text-neutral-900" />
               </div>
             )}
             {showCloseButton && (
-              <div onClick={onCloseButtonClick}>
-                <IconWrapper className="p-2 border border-neutral-200 rounded-7xl bg-white cursor-pointer group">
-                  <Icon
-                    name="close"
-                    size={16}
-                    color="text-neutral-900"
-                    dataTestId={`${dataTestId}-remove-image`}
-                  />
-                </IconWrapper>
+              <div
+                onClick={onCloseButtonClick}
+                className="p-2 rounded-7xl bg-white cursor-pointer"
+                data-testid={`${dataTestId}-remove-image`}
+              >
+                <Icon name="close" size={16} color="text-neutral-900" />
               </div>
             )}
           </div>

@@ -1,4 +1,5 @@
-import React, { ReactNode, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import truncate from 'lodash/truncate';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import Button, { Variant as ButtonVariant, Type } from 'components/Button';
@@ -43,92 +44,104 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
     setSelectedTeams(filters.teams);
   }, [filters]);
 
-  const CategoryFilterComponent = () => (
-    <InfiniteFilterList
-      apiCall={useInfiniteCategories} // Provide the API call function
-      apiCallParams={{
-        type: CategoryType.APP,
-        limit: 10,
-      }} // Provide the API call parameters
-      searchProps={{
-        placeholder: 'Search',
-        dataTestId: 'teams-category-search',
-        isClearable: true,
-      }}
-      setSelectedItems={setSelectedCategories}
-      selectedItems={selectedCategories}
-      showSelectedFilterPill
-      renderItem={(item) => (
-        <>
-          <input
-            type="checkbox"
-            data-testid="app-filter-category-checkbox"
-            className="h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 outline-neutral-500"
-            checked={find(selectedCategories, item)}
-          ></input>
-          <span className="ml-3 text-xs font-medium">{item?.name}</span>
-        </>
-      )}
-    />
+  const CategoryFilterComponent = useMemo(
+    () => (
+      <InfiniteFilterList
+        apiCall={useInfiniteCategories} // Provide the API call function
+        apiCallParams={{
+          type: CategoryType.APP,
+          limit: 10,
+        }} // Provide the API call parameters
+        searchProps={{
+          placeholder: 'Search',
+          dataTestId: 'teams-category-search',
+          isClearable: true,
+        }}
+        setSelectedItems={setSelectedCategories}
+        selectedItems={selectedCategories}
+        showSelectedFilterPill
+        renderItem={(item) => (
+          <>
+            <input
+              type="checkbox"
+              data-testid="app-filter-category-checkbox"
+              className="h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 outline-neutral-500"
+              checked={find(selectedCategories, item)}
+            ></input>
+            <span className="ml-3 text-xs font-medium">{item?.name}</span>
+          </>
+        )}
+      />
+    ),
+    [selectedCategories],
   );
 
-  const TeamFilterComponent = () => (
-    <InfiniteFilterList
-      apiCall={useInfiniteTeams} // Provide the API call function
-      apiCallParams={{
-        limit: 10,
-      }} // Provide the API call parameters
-      searchProps={{
-        placeholder: 'Search',
-        dataTestId: 'app-filter-team-search',
-        isClearable: true,
-      }}
-      setSelectedItems={setSelectedTeams}
-      selectedItems={selectedTeams}
-      renderItem={(item) => (
-        <>
-          <input
-            type="checkbox"
-            data-testid="app-filter-team-checkbox"
-            className="h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 border-2 border-b-bg-neutral-200"
-            checked={find(selectedTeams, item)}
-          ></input>
-          <div className="ml-3 w-full text-xs flex justify-between items-center">
-            <div className="flex gap-2 items-center">
-              {item.recentMembers?.length !== 0 && (
-                <AvatarList
-                  size={24}
-                  users={item.recentMembers.map((member: any) => ({
-                    ...member,
-                    image: member.profileImage?.medium,
-                  }))}
-                  moreCount={item.totalMembers}
-                  className=""
-                  dataTestId="teams-people-icon"
-                />
-              )}
-              <span className="font-bold text-sm line-clamp-1">
-                {item?.name}
-              </span>
-            </div>
-            <div className="flex items-center gap-2 text-neutral-500">
-              <div>{item.category?.name}</div>
-              <div className="bg-neutral-500 rounded-full w-1 h-1" />
-              <div className="flex items-center justify-center space-x-1">
-                <Icon name="profileUserOutline" hover={false} size={16} />
-                <div
-                  className="text-xs font-normal whitespace-nowrap"
-                  data-testid={`team-no-of-members-${item.totalMembers}`}
-                >
-                  {item.totalMembers} members
+  const TeamFilterComponent = useMemo(
+    () => (
+      <InfiniteFilterList
+        apiCall={useInfiniteTeams} // Provide the API call function
+        apiCallParams={{
+          limit: 10,
+        }} // Provide the API call parameters
+        searchProps={{
+          placeholder: 'Search',
+          dataTestId: 'app-filter-team-search',
+          isClearable: true,
+        }}
+        setSelectedItems={setSelectedTeams}
+        selectedItems={selectedTeams}
+        renderItem={(item) => (
+          <>
+            <input
+              type="checkbox"
+              data-testid="app-filter-team-checkbox"
+              className="h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 border-2 border-b-bg-neutral-200"
+              checked={find(selectedTeams, item)}
+            />
+            <div className="ml-3 w-full text-xs flex justify-between items-center">
+              <div className="flex gap-[7px] items-center">
+                {item.recentMembers?.length !== 0 && (
+                  <AvatarList
+                    size={24}
+                    users={item.recentMembers.map((member: any) => ({
+                      ...member,
+                      image: member.profileImage?.medium,
+                    }))}
+                    avatarClassName="!b-[1px]"
+                    moreCount={item.totalMembers}
+                    className="-space-x-[12px]"
+                    dataTestId="teams-people-icon"
+                  />
+                )}
+                <span className="font-bold text-sm truncate">
+                  {truncate(item?.name, { length: 16, separator: '' })}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-neutral-500">
+                <div className="truncate">
+                  {truncate(item.category?.name, {
+                    length: 10,
+                    separator: ' ',
+                  })}
+                </div>
+                <div className="bg-neutral-500 rounded-full w-1 h-1" />
+                <div className="flex items-center justify-center space-x-1">
+                  <Icon name="profileUserOutline" hover={false} size={16} />
+                  <div
+                    className="text-xs font-normal whitespace-nowrap"
+                    data-testid={`team-no-of-members-${item.totalMembers}`}
+                  >
+                    {item.totalMembers} members
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </>
-      )}
-      noResultsMessage="No Teams Found"
-    />
+          </>
+        )}
+        noResultsMessage="No Teams Found"
+      />
+    ),
+    [selectedTeams],
   );
 
   const filterNavigation = [
@@ -184,11 +197,9 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
             ))}
           </div>
           <div className="w-2/3 py-4 px-2">
-            {activeFilter.key === 'category-filters' ? (
-              <CategoryFilterComponent />
-            ) : (
-              <TeamFilterComponent />
-            )}
+            {activeFilter.key === 'category-filters'
+              ? CategoryFilterComponent
+              : TeamFilterComponent}
           </div>
         </div>
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
