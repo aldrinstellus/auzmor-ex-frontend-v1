@@ -369,7 +369,7 @@ const Team: React.FC<ITeamProps> = ({
       {/* CATEGORY FILTER */}
 
       {appliedFilters?.categories && appliedFilters?.categories?.length > 0 && (
-        <div className="flex justify-between items-start">
+        <div className="flex justify-between items-start mb-6">
           <div className="flex items-center space-x-2 flex-wrap gap-y-2">
             <div className="text-base text-neutral-500 whitespace-nowrap">
               Filter By

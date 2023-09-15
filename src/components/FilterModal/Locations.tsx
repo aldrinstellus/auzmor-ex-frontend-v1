@@ -116,6 +116,11 @@ const Locations: React.FC<ILocationsProps> = ({ control, watch, setValue }) => {
         <div className="overflow-y-scroll max-h-96">
           <Layout fields={locationFields} />
           {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+          {isFetchingNextPage && (
+            <div className="w-full flex items-center justify-center p-8">
+              <Spinner />
+            </div>
+          )}
         </div>
       )}
     </div>

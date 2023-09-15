@@ -85,46 +85,53 @@ const Departments: React.FC<IDepartmentsProps> = ({
   return (
     <div className="px-2 py-4">
       <Layout fields={searchField} />
-      {!!departmentCheckbox?.length && (
-        <div className="flex mt-2 mb-3 overflow-x-auto">
-          {departmentCheckbox.map((location: ICheckboxListOption) => (
-            <div
-              key={location.data.id}
-              className="flex items-center px-3 py-2 bg-neutral-100 rounded-17xl border border-neutral-200 mr-2"
-            >
-              <div className="text-primary-500 text-sm font-medium">
-                {location.data.name}
+      <div className="max-h-96 overflow-y-auto">
+        {!!departmentCheckbox?.length && (
+          <div className="flex mt-2 mb-3">
+            {departmentCheckbox.map((location: ICheckboxListOption) => (
+              <div
+                key={location.data.id}
+                className="flex items-center px-3 py-2 bg-neutral-100 rounded-17xl border border-neutral-200 mr-2 my-1"
+              >
+                <div className="text-primary-500 text-sm font-medium">
+                  {location.data.name}
+                </div>
+                <div className="ml-1">
+                  <Icon
+                    name="closeCircle"
+                    size={16}
+                    color="text-neutral-900"
+                    onClick={() =>
+                      setValue(
+                        'departmentCheckbox',
+                        departmentCheckbox.filter(
+                          (selectedLocation: ICheckboxListOption) =>
+                            selectedLocation.data.id !== location.data.id,
+                        ),
+                      )
+                    }
+                  />
+                </div>
               </div>
-              <div className="ml-1">
-                <Icon
-                  name="closeCircle"
-                  size={16}
-                  color="text-neutral-900"
-                  onClick={() =>
-                    setValue(
-                      'departmentCheckbox',
-                      departmentCheckbox.filter(
-                        (selectedLocation: ICheckboxListOption) =>
-                          selectedLocation.data.id !== location.data.id,
-                      ),
-                    )
-                  }
-                />
+            ))}
+          </div>
+        )}
+        {isLoading ? (
+          <div className="w-full flex items-center justify-center p-10">
+            <Spinner />
+          </div>
+        ) : (
+          <div>
+            <Layout fields={departmentFields} />
+            {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+            {isFetchingNextPage && (
+              <div className="w-full flex items-center justify-center p-8">
+                <Spinner />
               </div>
-            </div>
-          ))}
-        </div>
-      )}
-      {isLoading ? (
-        <div className="w-full flex items-center justify-center p-10">
-          <Spinner />
-        </div>
-      ) : (
-        <div className="overflow-y-scroll max-h-96">
-          <Layout fields={departmentFields} />
-          {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
-        </div>
-      )}
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
