@@ -154,11 +154,11 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
     startFetching: !!showJobTitleFilter,
   });
   const designationData = fetchedDesignations?.pages.flatMap((page) => {
-    return page.data.result.data.map((location: ILocation) => {
+    return page.data.result.data.map((designation: IDesignation) => {
       try {
-        return location;
+        return designation;
       } catch (e) {
-        console.log('Error', { location });
+        console.log('Error', { designation });
       }
     });
   });
