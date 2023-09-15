@@ -145,7 +145,7 @@ export interface IMedia {
   size: string;
   thumbnailUrl: string;
   type: 'IMAGE' | 'VIDEO';
-  coverImage?: { original: string } | null;
+  coverImage?: { original: string; blurhash?: string } | null;
   transcodedData?: { image: ITranscodedData };
 }
 

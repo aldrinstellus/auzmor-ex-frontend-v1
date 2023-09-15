@@ -54,6 +54,7 @@ const Carousel: React.FC<ICarouselProps> = ({
   });
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [canPlay, setCanPlay] = useState<boolean>(true);
   const getFormatedTime = (time: number) => {
     if (time === Infinity) {
       return '00:00';
@@ -85,29 +86,44 @@ const Carousel: React.FC<ICarouselProps> = ({
   useEffect(() => {
     if (videoRef.current && autoplayIndex > -1) {
       resetAutoplayIndex();
-      videoRef.current.play();
+      if (canPlay) {
+        videoRef.current.play();
+      }
     }
-  }, [videoRef.current, autoplayIndex]);
+  }, [videoRef.current, autoplayIndex, canPlay]);
+
+  useEffect(() => {
+    setCanPlay(
+      !!(
+        videoRef.current &&
+        videoRef.current.canPlayType(media[currentIndex].contentType)
+      ),
+    );
+  }, [videoRef.current, media[currentIndex]]);
+
   return (
     <div className={style}>
       {media[currentIndex].type === 'IMAGE' ? (
         <img src={media[currentIndex].original} />
       ) : coverImageUrl ? (
         <video
+          key={media[currentIndex].original}
           src={media[currentIndex].original}
           ref={videoRef}
           onTimeUpdate={() => {
-            setProgress({
-              currentTime: videoRef.current!.currentTime,
-              duration: videoRef.current!.duration,
-              progress:
+            if (canPlay) {
+              setProgress({
+                currentTime: videoRef.current!.currentTime,
+                duration: videoRef.current!.duration,
+                progress:
+                  (videoRef.current!.currentTime / videoRef.current!.duration) *
+                  100,
+              });
+              progressbarRef.current!.value = (
                 (videoRef.current!.currentTime / videoRef.current!.duration) *
-                100,
-            });
-            progressbarRef.current!.value = (
-              (videoRef.current!.currentTime / videoRef.current!.duration) *
-              100
-            ).toString();
+                100
+              ).toString();
+            }
           }}
           onEnded={() => setIsPlaying(false)}
           onPlay={() => setIsPlaying(true)}
@@ -123,20 +139,23 @@ const Carousel: React.FC<ICarouselProps> = ({
         />
       ) : (
         <video
+          key={media[currentIndex].original}
           src={media[currentIndex].original}
           ref={videoRef}
           onTimeUpdate={() => {
-            setProgress({
-              currentTime: videoRef.current!.currentTime,
-              duration: videoRef.current!.duration,
-              progress:
+            if (canPlay) {
+              setProgress({
+                currentTime: videoRef.current!.currentTime,
+                duration: videoRef.current!.duration,
+                progress:
+                  (videoRef.current!.currentTime / videoRef.current!.duration) *
+                  100,
+              });
+              progressbarRef.current!.value = (
                 (videoRef.current!.currentTime / videoRef.current!.duration) *
-                100,
-            });
-            progressbarRef.current!.value = (
-              (videoRef.current!.currentTime / videoRef.current!.duration) *
-              100
-            ).toString();
+                100
+              ).toString();
+            }
           }}
           onEnded={() => setIsPlaying(false)}
           onPlay={() => setIsPlaying(true)}
@@ -150,7 +169,7 @@ const Carousel: React.FC<ICarouselProps> = ({
           autoPlay={autoplayIndex === currentIndex}
         />
       )}
-      {media[currentIndex].type !== 'IMAGE' && (
+      {media[currentIndex].type !== 'IMAGE' && canPlay && (
         <div className="bg-neutral-700 px-6 py-2.5 flex justify-between items-center">
           {isPlaying ? (
             <div
@@ -195,6 +214,7 @@ const Carousel: React.FC<ICarouselProps> = ({
                 videoRef.current!.currentTime = mappedCurrentTime;
               }}
               ref={progressbarRef}
+              key={media[currentIndex].original}
               className="accent-white"
             />
             <div className="text-sm text-white ml-2 w-10 text-center">
@@ -266,14 +286,20 @@ const Carousel: React.FC<ICarouselProps> = ({
           >
             <Icon name="arrowLeft" size={16} />
           </div>
-          {media[currentIndex].type === 'VIDEO' && (
-            <div
-              onClick={() => videoRef.current!.play()}
-              className="cursor-pointer"
-            >
-              <Icon name="playFilled" color="text-white" size={46} />
-            </div>
-          )}
+          {media[currentIndex].type === 'VIDEO' &&
+            (canPlay ? (
+              <div
+                onClick={() => videoRef.current!.play()}
+                className="cursor-pointer"
+              >
+                <Icon name="playFilled" color="text-white" size={46} />
+              </div>
+            ) : (
+              <div className="text-sm font-semibold">
+                Unable to play the video. Seems like an unsupported video
+                format.
+              </div>
+            ))}
 
           <div
             onClick={nextSlide}
