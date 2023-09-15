@@ -3,6 +3,7 @@ import Button from 'components/Button';
 import Divider from 'components/Divider';
 import { IGetUser, getUser } from 'queries/users';
 import React from 'react';
+import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
 
 interface IUserCardProp {
   user?: IGetUser;
@@ -17,9 +18,9 @@ const UserCard: React.FC<IUserCardProp> = ({ user }) => {
           <div className="mr-4">
             <Avatar
               size={144}
-              image={user?.profileImage?.original}
-              name={user?.fullName}
-              blurhash={user?.profileImage?.blurHash}
+              name={getFullName(user) || 'U'}
+              image={getProfileImage(user)}
+              bgColor={getAvatarColor(user)}
             />
           </div>
           <div className="flex flex-col py-4">
@@ -66,8 +67,9 @@ const UserCard: React.FC<IUserCardProp> = ({ user }) => {
               <div className="mr-4">
                 <Avatar
                   size={32}
-                  image={user?.manager?.profileImage?.original}
-                  name={user?.manager?.fullName}
+                  name={getFullName(user?.manager) || 'U'}
+                  image={getProfileImage(user?.manager)}
+                  bgColor={getAvatarColor(user?.manager)}
                 />
               </div>
               <div className="flex flex-col justify-between">
