@@ -101,7 +101,7 @@ const Team: React.FC<ITeamProps> = ({
   > | null>({});
   const [sortByFilter, setSortByFilter] = useState<string>('');
   const [tab, setTab] = useState<TeamTab | string>(
-    searchParams.get('tab') || isAdmin ? TeamTab.AllTeams : TeamTab.MyTeams,
+    searchParams.get('tab') || (isAdmin ? TeamTab.AllTeams : TeamTab.MyTeams),
   );
   const [startFetching, setStartFetching] = useState(false);
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =

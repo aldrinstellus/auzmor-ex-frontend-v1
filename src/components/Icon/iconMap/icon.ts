@@ -137,6 +137,7 @@ import CheckIcon from '../components/Check';
 import DownloadIcon from '../components/Download';
 import Integration from '../components/Integration';
 import Security from '../components/Security';
+import VideoSlash from '../components/VideoSlash';
 
 export const icon = {
   add: Add,
@@ -278,4 +279,5 @@ export const icon = {
   video: VideoIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
+  videoSlash: VideoSlash,
 };

@@ -25,6 +25,7 @@ export interface IAsyncSingleSelectProps {
   disabled?: boolean;
   error?: string;
   className?: string;
+  selectClassName?: string;
   dataTestId?: string;
   control?: Control<Record<string, any>>;
   label?: string;
@@ -57,6 +58,7 @@ const AsyncSingleSelect = React.forwardRef(
     {
       name,
       className = '',
+      selectClassName = '',
       disabled = false,
       dataTestId = '',
       error,
@@ -179,7 +181,7 @@ const AsyncSingleSelect = React.forwardRef(
                     field.onChange(option);
                   }}
                   optionLabelProp="label"
-                  className="async-single-select"
+                  className={`async-single-select ${selectClassName}`}
                   clearIcon={clearIcon}
                   suffixIcon={suffixIcon || <Icon name="arrowDown" size={18} />}
                   onClear={onClear}

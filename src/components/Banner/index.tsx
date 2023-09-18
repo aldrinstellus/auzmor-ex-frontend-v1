@@ -10,6 +10,7 @@ export enum Variant {
   Warning = 'WARNING',
   Info = 'INFO',
   Error = 'ERROR',
+  Grey = 'GREY',
 }
 
 export type BannerProps = {
@@ -50,6 +51,10 @@ const Banner: React.FC<BannerProps> = ({
             variant === Variant.Warning,
         },
         {
+          'border-1 bg-neutral-100 border-neutral-300 rounded-md':
+            variant === Variant.Grey,
+        },
+        {
           'flex items-center text-sm shadow-sm p-2 gap-x-3 justify-between':
             true,
         },
@@ -74,6 +79,9 @@ const Banner: React.FC<BannerProps> = ({
         },
         {
           'text-orange-500': variant === Variant.Warning,
+        },
+        {
+          'text-neutral-500': variant === Variant.Grey,
         },
         {
           'text-xs': true,
@@ -133,6 +141,8 @@ const Banner: React.FC<BannerProps> = ({
       case Variant.Info:
         return '#3b82f6';
       case Variant.Warning:
+        return '#f97316';
+      case Variant.Grey:
         return '#f97316';
     }
   };

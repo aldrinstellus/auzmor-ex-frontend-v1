@@ -114,6 +114,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
       control,
       name: 'userSearch',
       className: 'mr-2 min-w-[245px]',
+      selectClassName: 'org-select',
       placeholder: 'Search members',
       suffixIcon: <></>,
       clearIcon: (

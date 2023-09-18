@@ -14,15 +14,15 @@
 .node-rect {
   cursor: default !important;
 }
-.ant-select-selector {
+.org-select .ant-select-selector {
   height: 36px !important;
 }
-.ant-select-selection-search-input {
+.org-select .ant-select-selection-search-input {
   height: 34px !important;
 }
-.ant-select-dropdown {
+.org-select .ant-select-dropdown {
   width: 520px !important;
 }
-.ant-select-item.ant-select-item-option {
+.org-select .ant-select-item.ant-select-item-option {
   padding: 0px !important;
 }
