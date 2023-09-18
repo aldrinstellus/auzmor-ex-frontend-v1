@@ -63,7 +63,8 @@ const InfiniteSearch: React.FC<IInfiniteSearchProps> = ({
           type: FieldType.Checkbox,
           name: `${optionsName}.${option.id}`,
           control,
-          className: 'flex item-center mr-4',
+          className: 'flex item-center mr-[10px]',
+          inputClassName: '!h-4 !w-4',
         },
       ];
     },
@@ -78,6 +79,7 @@ const InfiniteSearch: React.FC<IInfiniteSearchProps> = ({
       placeholder: 'Search',
       isClearable: true,
       leftIcon: 'search',
+      inputClassName: 'text-sm py-[7px]',
       dataTestId: `${dataTestId}-search`,
     },
   ];
@@ -85,7 +87,7 @@ const InfiniteSearch: React.FC<IInfiniteSearchProps> = ({
   const triggeredNodeStyle = useMemo(
     () =>
       clsx({
-        'flex items-center ml-2 px-3 py-1 border border-neutral-200 rounded-17xl':
+        'flex items-center ml-2 px-3 py-[3px] border border-neutral-200 rounded-17xl ':
           true,
         'border-none bg-primary-50 text-primary-500': !!selectionCount,
         'cursor-pointer': !disabled,
@@ -101,7 +103,7 @@ const InfiniteSearch: React.FC<IInfiniteSearchProps> = ({
           <div className="mr-1">{title}</div>
           {selectionCount > 0 && (
             <div
-              className="flex items-center justify-center rounded-full bg-red-500 text-white w-6 h-6 mx-1"
+              className="flex items-center justify-center rounded-full text-xs bg-red-500 text-white w-4 h-4 mx-1"
               data-testid={`${dataTestId}-count`}
             >
               {selectionCount}
@@ -119,20 +121,20 @@ const InfiniteSearch: React.FC<IInfiniteSearchProps> = ({
           renderNode: (
             <div className="flex flex-col">
               <div onClick={(e) => e.preventDefault()}>
-                <Layout fields={searchField} className="mx-3 mt-3 mb-2" />
+                <Layout fields={searchField} className="mx-3 mt-3" />
               </div>
               {isLoading ? (
                 <div className="w-full flex items-center justify-center p-10">
                   <Spinner />
                 </div>
               ) : (
-                <div className="max-h-[128px] overflow-y-scroll">
+                <div className="max-h-[128px] my-2 overflow-y-scroll">
                   {options.map((option: IOption) =>
                     itemRenderer ? (
                       itemRenderer(option)
                     ) : (
                       <div
-                        className="px-6 py-2 flex items-center"
+                        className="px-6 py-2 text-xs flex items-center"
                         key={option.id}
                         onClick={(e) => e.stopPropagation()}
                         data-testid={`${dataTestId}-${option.label}`}

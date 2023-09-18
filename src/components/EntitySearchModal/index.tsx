@@ -37,6 +37,8 @@ export interface IAudienceForm {
   departments: Record<string, boolean | undefined>;
   locationSearch: string;
   locations: Record<string, boolean | undefined>;
+  designationSearch: string;
+  designations: Record<string, boolean | undefined>;
   selectAll: boolean;
   showSelectedMembers: boolean;
   privacy: { value: string; label: string };

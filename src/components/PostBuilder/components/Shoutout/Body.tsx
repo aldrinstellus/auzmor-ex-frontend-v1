@@ -42,6 +42,7 @@ const Body: React.FC<ShoutoutBodyProps> = ({
           selectedMemberIds={selectedUserIds}
           entitySearchLabel="Give kudos to:"
           hideCurrentUser
+          showJobTitleFilter
           entityRenderer={(data: IGetUser) => {
             return (
               <div className="flex space-x-4 w-full pr-2">

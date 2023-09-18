@@ -30,6 +30,7 @@ import { slideInAndOutTop } from 'utils/react-toastify';
 import { useGooglePlaces } from 'queries/location';
 import { IDepartment, useInfiniteDepartments } from 'queries/department';
 import useRole from 'hooks/useRole';
+import { IDesignation, useInfiniteDesignations } from 'queries/designation';
 import { useDebounce } from 'hooks/useDebounce';
 
 interface IOptions {
@@ -39,7 +40,7 @@ interface IOptions {
 
 export interface IUpdateProfileForm {
   fullName: string;
-  designation: IOptions;
+  designation: IOptions | null;
   department: IOptions | null;
   preferredName: string;
   workLocation: IOptions | null;
@@ -89,7 +90,12 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
     defaultValues: {
       fullName: userDetails?.fullName,
       preferredName: userDetails?.preferredName,
-      designation: userDetails?.designation,
+      designation: userDetails?.designation
+        ? {
+            value: userDetails?.designation,
+            label: userDetails?.designation,
+          }
+        : null,
       workLocation: userDetails?.workLocation?.name
         ? {
             value: userDetails?.workLocation?.name,
@@ -105,22 +111,22 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
     },
   });
 
-  const formatDepartments = (data: any) => {
-    const departmentsData = data?.pages.flatMap((page: any) => {
-      return page?.data?.result?.data.map((department: any) => {
+  const formatCreatableOptions = (data: any, dataTestId: string) => {
+    const optionsData = data?.pages.flatMap((page: any) => {
+      return page?.data?.result?.data.map((option: any) => {
         try {
-          return { ...department, label: department.name };
+          return { ...option, label: option.name };
         } catch (e) {
-          console.log('Error', { department });
+          console.log('Error', { option });
         }
       });
     });
-    const transformedOption = departmentsData?.map(
-      (department: IDepartment) => ({
-        value: department?.id,
-        label: department?.name,
-        id: department?.id,
-        dataTestId: `dept-option-${department?.name}`,
+    const transformedOption = optionsData?.map(
+      (option: IDepartment | IDesignation) => ({
+        value: option?.id,
+        label: option?.name,
+        id: option?.id,
+        dataTestId: `${dataTestId}-${option?.name}`,
       }),
     );
     return transformedOption;
@@ -169,7 +175,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
 
   const positionTitlefields = [
     {
-      type: FieldType.Input,
+      type: FieldType.CreatableSearch,
       variant: InputVariant.Text,
       name: 'designation',
       defaultValue: getValues().designation,
@@ -178,7 +184,15 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       label: 'Position title',
       disabled: userDetails.freezeEdit?.designation,
       control,
-      inputClassName: 'h-[40px] !text-sm',
+      fetchQuery: (q: any) =>
+        useInfiniteDesignations({ q, startFetching: true }),
+      getFormattedData: (data: any) =>
+        formatCreatableOptions(data, 'designation-option'),
+      queryParams: {},
+      disableCreate: !isAdmin,
+      getPopupContainer: document.body,
+      noOptionsMessage: 'No Designations found',
+      height: 40,
     },
   ];
 
@@ -191,12 +205,13 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       label: 'Department',
       dataTestId: `${dataTestId}-department`,
       fetchQuery: useInfiniteDepartments,
-      getFormattedData: formatDepartments,
+      getFormattedData: (data: any) =>
+        formatCreatableOptions(data, 'dept-option'),
       queryParams: {},
       disabled: userDetails.freezeEdit?.department,
       disableCreate: !isAdmin,
       getPopupContainer: document.body,
-      noOptionsMessage: () => 'No Departments found',
+      noOptionsMessage: 'No Departments found',
       height: 40,
       control,
     },
@@ -324,7 +339,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
   const onSubmit = async (user: IUpdateProfileForm) => {
     updateUsersMutation.mutate({
       fullName: user.fullName,
-      designation: user?.designation,
+      designation: user?.designation?.label,
       preferredName: user?.preferredName,
       department: user?.department?.label,
       workLocation: user?.workLocation?.label,
