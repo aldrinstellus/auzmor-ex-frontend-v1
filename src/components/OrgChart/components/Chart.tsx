@@ -68,25 +68,25 @@ const Chart: React.FC<IChart> = ({
           .nodeContent((node: any, i: any, arr: any, state: any) => {
             return renderToString(<UserNode node={node} />);
           })
-          .hoverCardContent((d) => {
-            return renderToString(<UserCard user={d.userData} />);
-          })
-          .onExpandCollapseClick((d: any, data: any) => {
-            if (d.data.directReportees > 0 && !!d.children) {
-              getOrgChart({
-                queryKey: [
-                  'organization-chart',
-                  { root: d.data.id, expand: 1 },
-                ],
-              } as QueryFunctionContext<any>).then((response: any) => {
-                response.result.data.users.forEach((node: INode) =>
-                  chart?.addNode(node),
-                );
-              });
-            } else {
-              chart?.update(d);
-            }
-          })
+          // .hoverCardContent((d) => {
+          //   return renderToString(<UserCard user={d.userData} />);
+          // })
+          // .onExpandCollapseClick((d: any, data: any) => {
+          //   if (d.data.directReportees > 0 && !!d.children) {
+          //     getOrgChart({
+          //       queryKey: [
+          //         'organization-chart',
+          //         { root: d.data.id, expand: 1 },
+          //       ],
+          //     } as QueryFunctionContext<any>).then((response: any) => {
+          //       response.result.data.users.forEach((node: INode) =>
+          //         chart?.addNode(node),
+          //       );
+          //     });
+          //   } else {
+          //     chart?.update(d);
+          //   }
+          // })
           // .onNodeClick((node: any) => {
           //   if (node.type === NodeType.Count) {
           //     getOrgChart(chart, {
