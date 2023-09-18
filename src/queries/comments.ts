@@ -6,7 +6,7 @@ import {
 import { IComment } from 'components/Comments';
 import { useCommentStore } from 'stores/commentStore';
 import apiService from 'utils/apiService';
-import _ from 'lodash';
+import chain from 'lodash/chain';
 
 interface IContent {
   html: string;
@@ -43,7 +43,7 @@ export const getComments = async (
     response = await apiService.get('/comments', context.queryKey[1]);
     setComment({
       ...comment,
-      ..._.chain(response.data.result.data).keyBy('id').value(),
+      ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
       (eachPost: IComment) => ({ id: eachPost.id }),
@@ -53,7 +53,7 @@ export const getComments = async (
     response = await apiService.get(context.pageParam);
     setComment({
       ...comment,
-      ..._.chain(response.data.result.data).keyBy('id').value(),
+      ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
       (eachPost: IComment) => ({ id: eachPost.id }),

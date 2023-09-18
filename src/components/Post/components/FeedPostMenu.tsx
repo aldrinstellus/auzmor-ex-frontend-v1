@@ -10,7 +10,7 @@ import useAuth from 'hooks/useAuth';
 import useRole from 'hooks/useRole';
 import { canPerform, twConfig } from 'utils/misc';
 import { useFeedStore } from 'stores/feedStore';
-import _ from 'lodash';
+import omit from 'lodash/omit';
 import { CreatePostFlow, POST_TYPE } from 'contexts/CreatePostContext';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
@@ -50,7 +50,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
     mutationFn: deletePost,
     onMutate: (variables) => {
       const previousFeed = feedRef.current;
-      setFeed({ ..._.omit(feedRef.current, [variables]) });
+      setFeed({ ...omit(feedRef.current, [variables]) });
       closeConfirm();
       return { previousFeed };
     },

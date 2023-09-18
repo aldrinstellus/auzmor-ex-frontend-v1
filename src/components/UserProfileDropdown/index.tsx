@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-import _ from 'lodash';
 import useAuth from 'hooks/useAuth';
 import PopupMenu from 'components/PopupMenu';
 import { UserRole, UserStatus } from 'queries/users';

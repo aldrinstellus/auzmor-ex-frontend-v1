@@ -30,7 +30,7 @@ import UserProfileDropdown from 'components/UserProfileDropdown';
 import DeactivatePeople from '../DeactivateModal/Deactivate';
 import ReactivatePeople from '../ReactivateModal/Reactivate';
 import clsx from 'clsx';
-import _ from 'lodash';
+import truncate from 'lodash/truncate';
 import RemoveTeamMember from '../DeleteModals/TeamMember';
 
 export interface IPeopleCardProps {
@@ -310,7 +310,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
                 className="text-neutral-900 text-base font-bold truncate"
                 data-testid={`people-card-name-${fullName || workEmail}`}
               >
-                {_.truncate(fullName || workEmail, {
+                {truncate(fullName || workEmail, {
                   length: 18,
                   separator: ' ',
                 })}

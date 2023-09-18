@@ -15,7 +15,7 @@ import ReactionModal from 'components/Post/components/ReactionModal';
 // import { IReactionsCount } from 'queries/post';
 import RenderQuillContent from 'components/RenderQuillContent';
 import { useCommentStore } from 'stores/commentStore';
-import _ from 'lodash';
+import omit from 'lodash/omit';
 import { IComment } from 'components/Comments';
 import {
   getAvatarColor,
@@ -60,7 +60,7 @@ export const Reply: React.FC<ReplyProps> = ({ comment }) => {
         },
       );
       setComment({
-        ..._.omit(storedComments, [variables]),
+        ...omit(storedComments, [variables]),
         [storedComments[variables].entityId]: { ...updatedComment },
       });
       closeConfirm();
