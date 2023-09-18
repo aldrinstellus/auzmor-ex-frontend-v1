@@ -77,17 +77,18 @@ const Poll: React.FC<IPoll & PollProps> = ({
 }) => {
   const [showResults, setShowResults] = useState(false);
   const { isAdmin } = useRole();
-  const { feed, updateFeed } = useFeedStore();
+  const getPost = useFeedStore((state) => state.getPost);
+  const updateFeed = useFeedStore((state) => state.updateFeed);
   const { setPoll, setActiveFlow, setPostType } = useContext(CreatePostContext);
 
   const voteMutation = useMutation({
     mutationKey: ['poll-vote'],
     mutationFn: pollVote,
     onMutate: ({ postId, optionId }) => {
-      const previousPost = feed[postId];
+      const previousPost = getPost(postId);
       updateFeed(
         postId,
-        produce(feed[postId], (draft: IPost) => {
+        produce(getPost(postId), (draft: IPost) => {
           draft.pollContext?.options.forEach((option) => {
             if (option._id === optionId) option.votes = (option.votes || 0) + 1;
             if (
@@ -112,10 +113,10 @@ const Poll: React.FC<IPoll & PollProps> = ({
     mutationKey: ['delete-poll-vote'],
     mutationFn: deletePollVote,
     onMutate: ({ postId, optionId }) => {
-      const previousPost = feed[postId];
+      const previousPost = getPost(postId);
       updateFeed(
         postId,
-        produce(feed[postId], (draft: IPost) => {
+        produce(getPost(postId), (draft: IPost) => {
           draft.pollContext?.options.forEach((option) => {
             if (option._id === optionId && option.votes) option.votes -= 1;
           });

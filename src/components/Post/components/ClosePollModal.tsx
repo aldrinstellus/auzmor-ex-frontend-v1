@@ -20,7 +20,8 @@ type AppProps = {
 };
 
 const ClosePollModal: React.FC<AppProps> = ({ open, closeModal, data }) => {
-  const { getPost, updateFeed } = useFeedStore();
+  const getPost = useFeedStore((state) => state.getPost);
+  const updateFeed = useFeedStore((state) => state.updateFeed);
 
   const closePollMutation = useMutation({
     mutationKey: ['closePoll', data.id],

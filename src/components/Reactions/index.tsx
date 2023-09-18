@@ -58,7 +58,8 @@ const Likes: React.FC<LikesProps> = ({
   queryKey,
   dataTestIdPrefix,
 }) => {
-  const { feed, updateFeed } = useFeedStore();
+  const getPost = useFeedStore((state) => state.getPost);
+  const updateFeed = useFeedStore((state) => state.updateFeed);
   const { comment, updateComment } = useCommentStore();
   const [showTooltip, setShowTooltip] = useState(true);
 
@@ -100,10 +101,10 @@ const Likes: React.FC<LikesProps> = ({
     mutationFn: createReaction,
     onMutate: (variables) => {
       if (variables.entityType === 'post') {
-        const previousPost = feed[variables.entityId];
+        const previousPost = getPost(variables.entityId);
         updateFeed(
           variables.entityId,
-          produce(feed[variables.entityId], (draft) => {
+          produce(getPost(variables.entityId), (draft) => {
             (draft.reactionsCount =
               draft.reactionsCount &&
               Object.keys(draft.reactionsCount).length > 0
@@ -187,7 +188,7 @@ const Likes: React.FC<LikesProps> = ({
       if (variables.entityType === 'post') {
         updateFeed(
           variables.entityId,
-          produce(feed[variables.entityId], (draft) => {
+          produce(getPost(variables.entityId), (draft) => {
             draft.myReaction = {
               ...draft.myReaction,
               createdBy: data.createdBy,
@@ -228,16 +229,16 @@ const Likes: React.FC<LikesProps> = ({
         return;
       }
       if (variables.entityType === 'post') {
-        const previousPost = feed[variables.entityId];
+        const previousPost = getPost(variables.entityId);
         updateFeed(
           variables.entityId,
-          produce(feed[variables.entityId], (draft) => {
+          produce(getPost(variables.entityId), (draft) => {
             (draft.myReaction = undefined),
               (draft.reactionsCount = {
-                ...feed[variables.entityId].reactionsCount,
-                [feed[variables.entityId]!.myReaction!.reaction!]:
-                  feed[variables.entityId].reactionsCount[
-                    feed[variables.entityId]!.myReaction!.reaction!
+                ...getPost(variables.entityId).reactionsCount,
+                [getPost(variables.entityId)!.myReaction!.reaction!]:
+                  getPost(variables.entityId).reactionsCount[
+                    getPost(variables.entityId)!.myReaction!.reaction!
                   ] - 1,
               });
           }),
@@ -382,7 +383,7 @@ const Likes: React.FC<LikesProps> = ({
         className="flex items-center space-x-1"
         onClick={() => {
           switch (true) {
-            case !feed[entityId]?.myReaction && queryKey === 'feed':
+            case !getPost(entityId)?.myReaction && queryKey === 'feed':
               handleReaction('like');
               break;
             case !comment[entityId]?.myReaction && queryKey === 'comments':

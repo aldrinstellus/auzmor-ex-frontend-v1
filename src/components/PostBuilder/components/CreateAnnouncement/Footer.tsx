@@ -34,7 +34,8 @@ const Footer: React.FC<IFooterProps> = ({
   data,
   getFormValues,
 }) => {
-  const { feed, updateFeed } = useFeedStore();
+  const getPost = useFeedStore((state) => state.getPost);
+  const updateFeed = useFeedStore((state) => state.updateFeed);
   const { setAnnouncement, setActiveFlow, announcement } =
     useContext(CreatePostContext);
 
@@ -75,13 +76,13 @@ const Footer: React.FC<IFooterProps> = ({
         });
     },
     onMutate: (variables) => {
-      const previousPost = feed[data!.id!];
+      const previousPost = getPost(data!.id!);
       const formData = getFormValues();
       const expiryDate = formData?.date.toISOString().substring(0, 19) + 'Z';
       if (data?.id) {
         updateFeed(
           data.id,
-          produce(feed[data.id], (draft) => {
+          produce(getPost(data!.id || ''), (draft) => {
             (draft.announcement = {
               end:
                 expiryDate ||

@@ -84,7 +84,8 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
     setComment,
     updateComment: updateStoredComment,
   } = useCommentStore();
-  const { feed, updateFeed } = useFeedStore();
+  const getPost = useFeedStore((state) => state.getPost);
+  const updateFeed = useFeedStore((state) => state.updateFeed);
   const queryClient = useQueryClient();
   const quillRef = useRef<ReactQuill>(null);
   const { uploadMedia } = useUpload();
@@ -118,9 +119,10 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
       );
       if (entityType === 'post' && entityId) {
         setComment({ ...comment, [data.id]: { ...data } });
+        const post = getPost(entityId);
         updateFeed(
           entityId,
-          produce(feed[entityId], (draft) => {
+          produce(post, (draft) => {
             draft.commentsCount = draft.commentsCount + 1;
           }),
         );

@@ -21,16 +21,17 @@ const ChangeToRegularPostModal: React.FC<AppProps> = ({
   data,
 }) => {
   const queryClient = useQueryClient();
-  const { feed, setFeed, updateFeed } = useFeedStore();
+  const getPost = useFeedStore((state) => state.getPost);
+  const updateFeed = useFeedStore((state) => state.updateFeed);
 
   const removeAnnouncementMutation = useMutation({
     mutationKey: ['removeAnnouncementMutation', data.id],
     mutationFn: (payload: any) => updatePost(payload.id || '', payload),
     onMutate: (variables) => {
-      const previousPost = feed[variables.id!];
+      const previousPost = getPost(variables.id);
       updateFeed(
         variables.id!,
-        produce(feed[variables.id!], (draft) => {
+        produce(getPost(variables.id), (draft) => {
           (draft.announcement = { end: '' }), (draft.isAnnouncement = false);
         }),
       );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -29,6 +29,7 @@ export interface IFeedPostMenuProps {
 const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
   const { user } = useAuth();
   const { isMember } = useRole();
+  const feedRef = useRef(useFeedStore.getState().feed);
   const [confirm, showConfirm, closeConfirm] = useModal();
   const [analytics, showAnalytics, closeAnalytics] = useModal();
   const [removeAnnouncement, showRemoveAnnouncement, closeRemoveAnnouncement] =
@@ -41,15 +42,15 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
   );
 
   const queryClient = useQueryClient();
-  const { feed, setFeed, updateFeed } = useFeedStore();
+  const setFeed = useFeedStore((state) => state.setFeed);
   const { isAdmin } = useRole();
 
   const deletePostMutation = useMutation({
     mutationKey: ['deletePostMutation', data.id],
     mutationFn: deletePost,
     onMutate: (variables) => {
-      const previousFeed = feed;
-      setFeed({ ..._.omit(feed, [variables]) });
+      const previousFeed = feedRef.current;
+      setFeed({ ..._.omit(feedRef.current, [variables]) });
       closeConfirm();
       return { previousFeed };
     },
@@ -211,6 +212,11 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
       }
       return true;
     });
+
+  useEffect(
+    () => useFeedStore.subscribe((state) => (feedRef.current = state.feed)),
+    [],
+  );
 
   if (postOptions.length) {
     return (

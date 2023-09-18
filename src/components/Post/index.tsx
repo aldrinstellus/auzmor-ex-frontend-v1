@@ -79,7 +79,8 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
     (total, count) => total + count,
     0,
   );
-  const { feed, updateFeed } = useFeedStore();
+  const getPost = useFeedStore((state) => state.getPost);
+  const updateFeed = useFeedStore((state) => state.updateFeed);
   const previousShowComment = useRef<boolean>(false);
   const { currentTimezone } = useCurrentTimezone();
 
@@ -87,10 +88,10 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
     mutationKey: ['create-bookmark-mutation'],
     mutationFn: createBookmark,
     onMutate: (id) => {
-      updateFeed(id, { ...feed[id], bookmarked: true });
+      updateFeed(id, { ...getPost(id), bookmarked: true });
     },
     onError: (error, variables, context) => {
-      updateFeed(variables, { ...feed[variables], bookmarked: false });
+      updateFeed(variables, { ...getPost(variables), bookmarked: false });
     },
     onSuccess: async (data, variables) => {
       toast(
@@ -123,10 +124,10 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
     mutationKey: ['delete-bookmark-mutation'],
     mutationFn: deleteBookmark,
     onMutate: (variables) => {
-      updateFeed(variables, { ...feed[variables], bookmarked: false });
+      updateFeed(variables, { ...getPost(variables), bookmarked: false });
     },
     onError: (error, variables, context) => {
-      updateFeed(variables, { ...feed[variables], bookmarked: true });
+      updateFeed(variables, { ...getPost(variables), bookmarked: true });
     },
     onSuccess: async (data, variables) => {
       toast(

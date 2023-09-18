@@ -48,7 +48,8 @@ export const Comment: React.FC<CommentProps> = ({
   comment,
   customNode = null,
 }) => {
-  const { feed, updateFeed } = useFeedStore();
+  const getPost = useFeedStore((state) => state.getPost);
+  const updateFeed = useFeedStore((state) => state.updateFeed);
   const { comment: storedcomments, setComment } = useCommentStore();
   const [showReactionModal, setShowReactionModal] = useState(false);
   const [confirm, showConfirm, closeConfirm] = useModal();
@@ -82,9 +83,10 @@ export const Comment: React.FC<CommentProps> = ({
     mutationFn: deleteComment,
     onMutate: (variables) => {
       const previousData = storedcomments;
+      const post = getPost(storedcomments[variables].entityId);
       updateFeed(
-        feed[storedcomments[variables].entityId].id!,
-        produce(feed[storedcomments[variables].entityId], (draft) => {
+        post.id!,
+        produce(post, (draft) => {
           draft.commentsCount = draft.commentsCount - 1;
         }),
       );

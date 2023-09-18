@@ -45,16 +45,17 @@ const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
   post,
 }) => {
   const [timezoneFieldVisible, setTimezoneFieldVisible] = useState(false);
-  const { feed, updateFeed } = useFeedStore();
+  const getPost = useFeedStore((state) => state.getPost);
+  const updateFeed = useFeedStore((state) => state.updateFeed);
   const updatePostMutation = useMutation({
     mutationKey: ['updatePostMutation'],
     mutationFn: (payload: IPostPayload) =>
       updatePost(payload.id || '', payload as IPostPayload),
     onMutate: (variables) => {
       if (variables?.id) {
-        const previousData = feed[variables.id];
+        const previousData = getPost(variables.id);
         updateFeed(variables.id, {
-          ...feed[variables.id],
+          ...getPost(variables.id),
           ...variables,
         } as IPost);
         closeModal && closeModal();

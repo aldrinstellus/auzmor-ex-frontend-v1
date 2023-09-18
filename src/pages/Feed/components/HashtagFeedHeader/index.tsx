@@ -54,4 +54,4 @@ const HashtagFeedHeader: React.FC<IHashtagFeedHeaderProps> = ({
   );
 };
 
-export default HashtagFeedHeader;
+export default React.memo(HashtagFeedHeader);

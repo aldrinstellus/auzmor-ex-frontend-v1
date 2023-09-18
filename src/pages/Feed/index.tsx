@@ -348,7 +348,13 @@ const Feed: React.FC<IFeedProps> = () => {
           <AnnouncementCard openModal={openModal} />
         </div>
       </div>
-      <PostBuilder open={open} openModal={openModal} closeModal={closeModal} />
+      {open && (
+        <PostBuilder
+          open={open}
+          openModal={openModal}
+          closeModal={closeModal}
+        />
+      )}
     </div>
   );
 };

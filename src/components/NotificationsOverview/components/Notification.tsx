@@ -34,7 +34,6 @@ const Notification: React.FC<NotificationCardProps> = ({
     target,
     actor,
   );
-  console.log(isRead);
 
   const markNotificationAsReadMutation = useMutation({
     mutationKey: ['mark-notification-as-read'],

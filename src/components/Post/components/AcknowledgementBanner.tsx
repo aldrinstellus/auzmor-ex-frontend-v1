@@ -16,7 +16,8 @@ export interface IAcknowledgementBannerProps {
 const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
   data,
 }) => {
-  const { feed, updateFeed } = useFeedStore();
+  const getPost = useFeedStore((state) => state.getPost);
+  const updateFeed = useFeedStore((state) => state.updateFeed);
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
@@ -28,10 +29,10 @@ const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
     mutationKey: ['acknowledge-announcement'],
     mutationFn: announcementRead,
     onMutate: (postId) => {
-      const previousPost = feed[postId];
+      const previousPost = getPost(postId);
       updateFeed(
         postId,
-        produce(feed[postId], (draft) => {
+        produce(getPost(postId), (draft) => {
           (draft.announcement = { end: '' }),
             (draft.isAnnouncement = false),
             (draft.acknowledged = true);

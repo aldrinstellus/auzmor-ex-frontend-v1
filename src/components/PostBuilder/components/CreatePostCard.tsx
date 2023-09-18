@@ -171,4 +171,4 @@ const CreatePostCard: React.FC<ICreatePostCardProps> = ({ openModal }) => {
   );
 };
 
-export default CreatePostCard;
+export default React.memo(CreatePostCard);
