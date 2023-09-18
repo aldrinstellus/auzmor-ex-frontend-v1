@@ -16,7 +16,7 @@ import Icon from 'components/Icon';
 import { Link } from 'react-router-dom';
 import RenderQuillContent from 'components/RenderQuillContent';
 import ReactionModal from 'components/Post/components/ReactionModal';
-import _ from 'lodash';
+import omit from 'lodash/omit';
 import useModal from 'hooks/useModal';
 import {
   getAvatarColor,
@@ -90,7 +90,7 @@ export const Comment: React.FC<CommentProps> = ({
           draft.commentsCount = draft.commentsCount - 1;
         }),
       );
-      setComment({ ..._.omit(storedcomments, [variables]) });
+      setComment({ ...omit(storedcomments, [variables]) });
       closeConfirm();
       return { previousData };
     },
