@@ -191,7 +191,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       queryParams: {},
       disableCreate: !isAdmin,
       getPopupContainer: document.body,
-      noOptionsMessage: () => 'No Departments found',
+      noOptionsMessage: 'No Designations found',
       height: 40,
     },
   ];
@@ -211,7 +211,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       disabled: userDetails.freezeEdit?.department,
       disableCreate: !isAdmin,
       getPopupContainer: document.body,
-      noOptionsMessage: () => 'No Departments found',
+      noOptionsMessage: 'No Departments found',
       height: 40,
       control,
     },
