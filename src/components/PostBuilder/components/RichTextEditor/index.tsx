@@ -356,6 +356,7 @@ const RichTextEditor = React.forwardRef(
               total={poll.total}
               closedAt={poll.closedAt}
               mode={PollMode.EDIT}
+              isDeletable={mode === PostBuilderMode.Create}
             />
           </div>
         )}

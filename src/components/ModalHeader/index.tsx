@@ -1,8 +1,8 @@
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 export interface IHeaderProps {
-  title: string;
+  title: string | ReactNode;
   onClose?: () => void;
   onBackIconClick?: () => void;
   closeBtnDataTestId?: string;

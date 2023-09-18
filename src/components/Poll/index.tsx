@@ -10,7 +10,7 @@ import {
   IPoll,
 } from 'contexts/CreatePostContext';
 import { getTimeFromNow } from 'utils/time';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { IPost, deletePollVote, pollVote } from 'queries/post';
 import { useFeedStore } from 'stores/feedStore';
 import { produce } from 'immer';
@@ -29,6 +29,7 @@ export enum PollMode {
 type PollProps = {
   mode: PollMode;
   postId?: string;
+  isDeletable?: boolean;
   myVote?: { optionId: string }[];
 };
 
@@ -72,8 +73,8 @@ const Poll: React.FC<IPoll & PollProps> = ({
   myVote,
   postId = '',
   mode = PollMode.VIEW,
+  isDeletable = false,
 }) => {
-  const queryClient = useQueryClient();
   const [showResults, setShowResults] = useState(false);
   const { isAdmin } = useRole();
   const { feed, updateFeed } = useFeedStore();
@@ -89,6 +90,13 @@ const Poll: React.FC<IPoll & PollProps> = ({
         produce(feed[postId], (draft: IPost) => {
           draft.pollContext?.options.forEach((option) => {
             if (option._id === optionId) option.votes = (option.votes || 0) + 1;
+            if (
+              previousPost.myVote?.some(
+                (vote) => option._id === vote.optionId,
+              ) &&
+              option.votes
+            )
+              option.votes -= 1;
           });
           draft.myVote = [{ optionId }];
         }),
@@ -149,31 +157,35 @@ const Poll: React.FC<IPoll & PollProps> = ({
         <p className="text-neutral-900 font-bold flex-auto pb-6">{question}</p>
         {mode === PollMode.EDIT && (
           <div className="flex gap-x-2 -mr-4">
-            <IconButton
-              icon="edit"
-              onClick={() => setActiveFlow(CreatePostFlow.CreatePoll)}
-              variant={IconButtonVariant.Secondary}
-              size={IconButtonSize.Medium}
-              borderAround
-              color="text-black"
-              className="bg-white !rounded-7xl"
-              borderAroundClassName="!rounded-7xl"
-              dataTestId="createpost-edit-poll"
-            />
-            <IconButton
-              icon="close"
-              onClick={() => {
-                setPoll(null);
-                setPostType(null);
-              }}
-              variant={IconButtonVariant.Secondary}
-              size={IconButtonSize.Medium}
-              borderAround
-              color="text-black"
-              className="bg-white !rounded-7xl"
-              borderAroundClassName="!rounded-7xl"
-              dataTestId="createpost-remove-poll"
-            />
+            {timeLeft && (
+              <IconButton
+                icon="edit"
+                onClick={() => setActiveFlow(CreatePostFlow.CreatePoll)}
+                variant={IconButtonVariant.Secondary}
+                size={IconButtonSize.Medium}
+                borderAround
+                color="text-black"
+                className="bg-white !rounded-7xl"
+                borderAroundClassName="!rounded-7xl"
+                dataTestId="createpost-edit-poll"
+              />
+            )}
+            {isDeletable && (
+              <IconButton
+                icon="close"
+                onClick={() => {
+                  setPoll(null);
+                  setPostType(null);
+                }}
+                variant={IconButtonVariant.Secondary}
+                size={IconButtonSize.Medium}
+                borderAround
+                color="text-black"
+                className="bg-white !rounded-7xl"
+                borderAroundClassName="!rounded-7xl"
+                dataTestId="createpost-remove-poll"
+              />
+            )}
           </div>
         )}
       </div>
@@ -183,18 +195,16 @@ const Poll: React.FC<IPoll & PollProps> = ({
         {options.map((option, index) => {
           const votedThisOption =
             voted && myVote?.some((vote) => vote.optionId === option._id);
-          const votedAnotherOption = voted && !votedThisOption;
           const cursorDefault =
             mode === PollMode.EDIT ||
             showResults ||
             isLoading ||
+            !timeLeft ||
             !postId ||
             !option._id;
-          const cursorNotAllowed = !timeLeft || votedAnotherOption;
-          const cursorPointer = !cursorDefault && !cursorNotAllowed;
+          const cursorPointer = !cursorDefault;
           const cursorClass = clsx({
             'cursor-default': cursorDefault,
-            'cursor-not-allowed': cursorNotAllowed,
             'cursor-pointer': cursorPointer,
           });
           return (
@@ -205,8 +215,7 @@ const Poll: React.FC<IPoll & PollProps> = ({
                 if (cursorPointer && !isLoading && postId && option._id) {
                   if (votedThisOption) {
                     deleteVoteMutation.mutate({ postId, optionId: option._id });
-                  }
-                  if (!voted) {
+                  } else {
                     voteMutation.mutate({ postId, optionId: option._id });
                   }
                 }

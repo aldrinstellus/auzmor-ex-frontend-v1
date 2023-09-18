@@ -135,6 +135,7 @@ import NoteFavouriteIcon from '../components/NoteFavourite';
 import EmployeeTagIcon from '../components/EmployeeTag';
 import CheckIcon from '../components/Check';
 import DownloadIcon from '../components/Download';
+import WarningCircleIcon from '../components/WarningCircle';
 import Integration from '../components/Integration';
 import Security from '../components/Security';
 import VideoSlash from '../components/VideoSlash';
@@ -277,6 +278,7 @@ export const icon = {
   userRemove: UserRemove,
   users: UsersIcon,
   video: VideoIcon,
+  warningCircle: WarningCircleIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
   videoSlash: VideoSlash,
