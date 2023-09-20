@@ -91,10 +91,14 @@ const AppList: FC<IAppListProps> = ({
                   ?.filter(({ id }: any) => !!apps[id])
                   ?.map(({ id }: any) => apps[id])}
               />
-              <div className="h-12 w-12">
-                {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
-              </div>
-              {isFetchingNextPage && <PageLoader />}
+              {hasNextPage && !isFetchingNextPage && (
+                <div ref={ref} className="h-12 w-12" />
+              )}
+              {isFetchingNextPage && (
+                <div className="h-12">
+                  <PageLoader />
+                </div>
+              )}
             </>
           );
         }
@@ -103,6 +107,8 @@ const AppList: FC<IAppListProps> = ({
           return (
             <>
               {(queryParams.q === undefined || queryParams.q === '') &&
+              (queryParams.categoryId || []).length === 0 &&
+              (queryParams.teamId || []).length === 0 &&
               (!appIds || appIds?.length === 0) ? (
                 <div className="flex flex-col space-y-3 items-center w-full">
                   <div className="flex flex-col space-y-6 items-center">

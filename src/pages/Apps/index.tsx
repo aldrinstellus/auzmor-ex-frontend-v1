@@ -364,7 +364,7 @@ const Apps: FC<IAppsProps> = () => {
                 setAppsLoading={setIsFeaturedAppLoading}
               />
               {featuredAppsCount > 0 && !isFeauturedAppLoading && (
-                <div className="text-xl font-bold">All Apps</div>
+                <div className="text-xl font-bold mt-6">All Apps</div>
               )}
             </div>
           )}
