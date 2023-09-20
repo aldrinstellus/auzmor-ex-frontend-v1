@@ -8,6 +8,7 @@ import Header from 'components/ModalHeader';
 import Button, { Variant } from 'components/Button';
 import PageLoader from 'components/PageLoader';
 import AppCard from './AppCard';
+import TeamNotFound from 'images/TeamNotFound.svg';
 
 import { App, useInfiniteApps } from 'queries/apps';
 import { useAppStore } from 'stores/appStore';
@@ -66,7 +67,10 @@ const SelectAppModal: FC<ISelectAppModalProps> = ({
       />
 
       <div className="flex flex-col w-full max-h-[400px] p-6 gap-6 overflow-y-auto">
-        <div className="font-bold">Choose apps for widget (upto 3)</div>
+        {(isLoading || (appIds || []).length > 0) && (
+          <div className="font-bold">Choose apps for widget (upto 3)</div>
+        )}
+
         {(() => {
           if (isLoading) {
             return (
@@ -98,7 +102,24 @@ const SelectAppModal: FC<ISelectAppModalProps> = ({
               </div>
             );
           }
-          return <div></div>;
+          return (
+            <div className="flex flex-col space-y-3 items-center w-full">
+              <div className="flex flex-col space-y-6 items-center">
+                <img
+                  src={TeamNotFound}
+                  alt="Apps Not Found"
+                  height={140}
+                  width={165}
+                />
+                <div className="text-lg font-bold" data-testid="no-app-found">
+                  No Apps found to be selected
+                </div>
+              </div>
+              <div className="flex space-x-1 text-xs font-normal text-neutral-500">
+                There is no app found in your organization right now.
+              </div>
+            </div>
+          );
         })()}
         <div className="h-12 w-12">
           {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
