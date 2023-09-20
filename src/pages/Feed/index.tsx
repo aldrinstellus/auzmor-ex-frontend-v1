@@ -320,7 +320,6 @@ const Feed: FC<IFeedProps> = () => {
                 <Post post={feed[feedId.id!]} />
               </div>
             ))}
-
             {regularFeedIds?.map((feedId, index) => (
               <div
                 data-testid={`feed-post-${index}`}
