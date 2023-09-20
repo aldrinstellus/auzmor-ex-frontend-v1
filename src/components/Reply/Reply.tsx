@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FC, useState } from 'react';
 import Likes from 'components/Reactions';
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import Avatar from 'components/Avatar';
@@ -41,7 +41,7 @@ interface ReplyProps {
   className?: string;
 }
 
-export const Reply: React.FC<ReplyProps> = ({ comment }) => {
+export const Reply: FC<ReplyProps> = ({ comment }) => {
   const { user } = useAuth();
   const [confirm, showConfirm, closeConfirm] = useModal();
   const [showReactionModal, setShowReactionModal] = useState(false);

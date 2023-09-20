@@ -1,6 +1,5 @@
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
-import React from 'react';
 import ErrorWarningPng from 'images/error-warning-line.png';
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import { useMutation } from '@tanstack/react-query';
@@ -13,16 +12,14 @@ import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { FC } from 'react';
 
 interface PublishPostModalProps {
   post: IPost;
   closeModal?: () => void;
 }
 
-const PublishPostModal: React.FC<PublishPostModalProps> = ({
-  closeModal,
-  post,
-}) => {
+const PublishPostModal: FC<PublishPostModalProps> = ({ closeModal, post }) => {
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
   const updatePostMutation = useMutation({

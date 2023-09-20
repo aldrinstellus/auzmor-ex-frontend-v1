@@ -1,17 +1,17 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import Avatar from 'components/Avatar';
 import { IAvatarUser } from 'components/AvatarChip';
 import Icon from 'components/Icon';
 import useAuth from 'hooks/useAuth';
 import { getFullName, getProfileImage } from 'utils/misc';
+import { FC } from 'react';
 
 interface IUserRowProps {
   user: IAvatarUser;
   dataTestId?: string;
 }
 
-const UserRow: React.FC<IUserRowProps> = ({ user, dataTestId }) => {
+const UserRow: FC<IUserRowProps> = ({ user, dataTestId }) => {
   const { user: currentUser } = useAuth();
   return (
     <div className="flex items-center justify-between w-full group hover:bg-primary-50 transition py-1">

@@ -1,6 +1,6 @@
 import Avatar from 'components/Avatar';
 // import Card from 'components/Card';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 // import CircularBorder from './CircularBorder';
 // import Icon from 'components/Icon';
 
@@ -11,7 +11,7 @@ type MentionUserCardProps = {
   email?: string;
 };
 
-const UserCard: React.FC<MentionUserCardProps> = ({
+const UserCard: FC<MentionUserCardProps> = ({
   fullName,
   image,
   active,

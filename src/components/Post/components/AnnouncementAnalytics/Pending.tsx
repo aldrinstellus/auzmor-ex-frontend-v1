@@ -2,7 +2,7 @@ import {
   CircularProgressbarWithChildren,
   buildStyles,
 } from 'react-circular-progressbar';
-import React, { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 // import { useInfiniteUsers } from 'queries/users';
 import AvatarRowSkeleton from './AvatarRowSkeleton';
@@ -24,7 +24,7 @@ type AppProps = {
   closeModal: () => any;
 };
 
-const Pending: React.FC<AppProps> = ({ post, closeModal }) => {
+const Pending: FC<AppProps> = ({ post, closeModal }) => {
   const { ref, inView } = useInView();
 
   const reminderMutation = useMutation(

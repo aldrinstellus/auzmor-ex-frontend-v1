@@ -1,7 +1,7 @@
 import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
 import { IGetUser } from 'queries/users';
-import React from 'react';
+import { FC } from 'react';
 import { getProfileImage } from 'utils/misc';
 
 interface IUserRowProps {
@@ -9,7 +9,7 @@ interface IUserRowProps {
   onClick?: () => void;
 }
 
-const UserRow: React.FC<IUserRowProps> = ({ user, onClick }) => {
+const UserRow: FC<IUserRowProps> = ({ user, onClick }) => {
   return (
     <div
       className="flex items-center justify-between w-full pr-6 cursor-pointer"

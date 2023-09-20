@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useMemo } from 'react';
+import { FC, ReactElement, useEffect, useMemo } from 'react';
 import { DeltaOperation } from 'quill';
 import clsx from 'clsx';
 
@@ -28,7 +28,7 @@ type RenderQuillContent = {
   isAnnouncementWidgetPreview?: boolean;
 };
 
-const RenderQuillContent: React.FC<RenderQuillContent> = ({
+const RenderQuillContent: FC<RenderQuillContent> = ({
   data,
   isComment = false,
   isAnnouncementWidgetPreview = false,

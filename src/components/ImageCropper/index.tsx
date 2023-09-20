@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { RefObject, useMemo } from 'react';
 import './index.css';
 import clsx from 'clsx';
 import {
@@ -17,7 +17,7 @@ export type ImageCropperProps = {
   src: string;
   shape?: Shape;
   className?: string;
-  cropperRef: React.RefObject<CropperRef>;
+  cropperRef: RefObject<CropperRef>;
   aspectRatio?: number;
   // customHeight: number;
   // customWidth: number;

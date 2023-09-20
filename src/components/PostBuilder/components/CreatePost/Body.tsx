@@ -5,7 +5,7 @@ import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import useAuth from 'hooks/useAuth';
 import { IPost } from 'queries/post';
 import { DeltaStatic } from 'quill';
-import React, { ForwardedRef, useContext } from 'react';
+import { ForwardedRef, RefObject, forwardRef, useContext } from 'react';
 import ReactQuill from 'react-quill';
 import RichTextEditor from '../RichTextEditor';
 import Toolbar from '../RichTextEditor/toolbar';
@@ -18,11 +18,11 @@ import Button, { Size, Variant } from 'components/Button';
 export interface IBodyProps {
   data?: IPost;
   dataTestId?: string;
-  quillRef: React.RefObject<ReactQuill>;
+  quillRef: RefObject<ReactQuill>;
   mode: PostBuilderMode;
 }
 
-const Body = React.forwardRef(
+const Body = forwardRef(
   (
     { data, dataTestId, quillRef, mode }: IBodyProps,
     ref: ForwardedRef<ReactQuill>,
@@ -40,19 +40,19 @@ const Body = React.forwardRef(
     const { currentTimezone } = useCurrentTimezone();
     const updateContext = () => {
       setEditorValue({
-        text: (ref as React.RefObject<ReactQuill>)
+        text: (ref as RefObject<ReactQuill>)
           .current!.makeUnprivilegedEditor(
-            (ref as React.RefObject<ReactQuill>).current!.getEditor(),
+            (ref as RefObject<ReactQuill>).current!.getEditor(),
           )
           .getText(),
-        html: (ref as React.RefObject<ReactQuill>).current
+        html: (ref as RefObject<ReactQuill>).current
           ?.makeUnprivilegedEditor(
-            (ref as React.RefObject<ReactQuill>)!.current!.getEditor(),
+            (ref as RefObject<ReactQuill>)!.current!.getEditor(),
           )
           .getHTML(),
-        json: (ref as React.RefObject<ReactQuill>).current
+        json: (ref as RefObject<ReactQuill>).current
           ?.makeUnprivilegedEditor(
-            (ref as React.RefObject<ReactQuill>)!.current!.getEditor(),
+            (ref as RefObject<ReactQuill>)!.current!.getEditor(),
           )
           .getContents(),
       });

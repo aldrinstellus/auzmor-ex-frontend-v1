@@ -1,6 +1,6 @@
 import Button, { Variant as ButtonVariant, Type } from 'components/Button';
-import React from 'react';
 import { AudienceFlow } from './Audience';
+import { FC } from 'react';
 
 interface IFooterProps {
   isValid: boolean;
@@ -8,7 +8,7 @@ interface IFooterProps {
   audienceFlow: AudienceFlow;
 }
 
-const Footer: React.FC<IFooterProps> = ({
+const Footer: FC<IFooterProps> = ({
   isValid,
   handleBackButtonClick,
   audienceFlow,

@@ -1,6 +1,5 @@
 import Button from 'components/Button';
 import Icon from 'components/Icon';
-import React from 'react';
 import Card from 'components/Card';
 import EntitySearchModal, {
   EntitySearchModalType,
@@ -25,10 +24,11 @@ import TeamModal from 'pages/Users/components/TeamModal';
 import { TeamFlow, TeamTab } from 'pages/Users/components/Teams';
 import DeleteTeam from 'pages/Users/components/DeleteModals/Team';
 import TeamDetailSkeleton from './components/TeamDetailSkeleton';
+import { FC } from 'react';
 
 export interface ITeamMemberProps {}
 
-const TeamDetail: React.FC<ITeamMemberProps> = () => {
+const TeamDetail: FC<ITeamMemberProps> = () => {
   const params = useParams();
   const { state } = useLocation();
   const { prevRoute } = state || {};

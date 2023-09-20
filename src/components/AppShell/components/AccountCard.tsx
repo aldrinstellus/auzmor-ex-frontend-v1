@@ -1,4 +1,3 @@
-import React from 'react';
 import Avatar from 'components/Avatar';
 import useAuth from 'hooks/useAuth';
 import Popover from 'components/Popover';

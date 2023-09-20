@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 // import Divider from 'components/Divider';
-import React, { useMemo } from 'react';
+import { FC, ReactNode, useMemo } from 'react';
 import { Control, useController } from 'react-hook-form';
 
 export interface IRadioListOption {
@@ -12,12 +12,12 @@ type RadioButtonProps = {
   name: string;
   control: Control<Record<string, any>>;
   radioList: IRadioListOption[];
-  labelRenderer: (option: IRadioListOption) => React.ReactNode;
+  labelRenderer: (option: IRadioListOption) => ReactNode;
   className?: string;
   rowClassName?: string;
 };
 
-const RadioGroup: React.FC<RadioButtonProps> = ({
+const RadioGroup: FC<RadioButtonProps> = ({
   name,
   control,
   radioList = [],

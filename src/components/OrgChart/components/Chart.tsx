@@ -1,5 +1,5 @@
 import { OrgChart } from 'd3-org-chart';
-import React, { useEffect, useMemo, useRef } from 'react';
+import { FC, MutableRefObject, useEffect, useMemo, useRef } from 'react';
 import { renderToString } from 'react-dom/server';
 import './index.css';
 import UserNode from './UserNode';
@@ -31,14 +31,14 @@ export interface INode {
 }
 
 interface IChart {
-  orgChartRef: React.MutableRefObject<OrgChart<any> | null>;
+  orgChartRef: MutableRefObject<OrgChart<any> | null>;
   isLoading: boolean;
   data: INode[];
   isFilterApplied: boolean;
   onClearFilter: () => void;
 }
 
-const Chart: React.FC<IChart> = ({
+const Chart: FC<IChart> = ({
   orgChartRef,
   data,
   isLoading,

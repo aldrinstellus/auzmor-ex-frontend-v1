@@ -1,17 +1,17 @@
 import Icon from 'components/Icon';
-import React, { useEffect, useRef, useState } from 'react';
+import { FC, RefObject, useEffect, useRef, useState } from 'react';
 import { getBlobUrl } from 'utils/misc';
 
 interface IImagePreviewProps {
   selectedTemplate: any;
   imageFile: any;
-  templateImageRef: React.RefObject<HTMLInputElement>;
-  imageUploaderRef: React.RefObject<HTMLInputElement>;
+  templateImageRef: RefObject<HTMLInputElement>;
+  imageUploaderRef: RefObject<HTMLInputElement>;
   users: any[];
   onRemove: () => void;
 }
 
-const ImagePreview: React.FC<IImagePreviewProps> = ({
+const ImagePreview: FC<IImagePreviewProps> = ({
   selectedTemplate,
   imageFile,
   templateImageRef,

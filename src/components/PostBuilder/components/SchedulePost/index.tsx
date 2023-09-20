@@ -1,6 +1,6 @@
 import Header from 'components/ModalHeader';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import React, { useContext, useState } from 'react';
+import { FC, useContext, useState } from 'react';
 import timezones from 'utils/timezones.json';
 import Footer from './Footer';
 import { useForm } from 'react-hook-form';
@@ -26,7 +26,7 @@ export interface IForm {
   time: string;
 }
 
-const SchedulePost: React.FC<ISchedulePost> = ({ closeModal }) => {
+const SchedulePost: FC<ISchedulePost> = ({ closeModal }) => {
   const [timezoneFieldVisible, setTimezoneFieldVisible] = useState(false);
   const { setActiveFlow, clearPostContext, setSchedule, schedule } =
     useContext(CreatePostContext);

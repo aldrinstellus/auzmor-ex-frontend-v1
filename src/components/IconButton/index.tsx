@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useMemo } from 'react';
+import { MouseEventHandler, useMemo } from 'react';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 

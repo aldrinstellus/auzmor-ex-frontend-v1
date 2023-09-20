@@ -1,5 +1,5 @@
 /* Comment RTE - Post Level Comment Editor */
-import React, { useState } from 'react';
+import { FC, useState } from 'react';
 import { Comment } from './components/Comment';
 import { useInfiniteComments } from 'queries/comments';
 import { DeltaStatic } from 'quill';
@@ -57,7 +57,7 @@ export interface IComment {
   shoutoutRecipients?: IShoutoutRecipient[];
 }
 
-const Comments: React.FC<CommentsProps> = ({ entityId }) => {
+const Comments: FC<CommentsProps> = ({ entityId }) => {
   const { user } = useAuth();
   const {
     inputRef,

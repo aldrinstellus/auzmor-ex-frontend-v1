@@ -4,7 +4,7 @@ import Icon from 'components/Icon';
 import { AudienceFlow } from 'components/PostBuilder/components/Audience';
 import useRole from 'hooks/useRole';
 import { useOrganization } from 'queries/organization';
-import React, { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 
 interface IAudienceSelectorProps {
@@ -14,7 +14,7 @@ interface IAudienceSelectorProps {
   setIsEveryoneSelected: (value: boolean) => void;
 }
 
-const AudienceSelector: React.FC<IAudienceSelectorProps> = ({
+const AudienceSelector: FC<IAudienceSelectorProps> = ({
   audienceFlow,
   setAudienceFlow,
   isEveryoneSelected,

@@ -1,4 +1,3 @@
-import React from 'react';
 // import _ from 'lodash';
 import {
   Control,
@@ -13,6 +12,7 @@ import Icon from 'components/Icon';
 import useHover from 'hooks/useHover';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import InviteFormRow from './InviteFormRow';
+import { FC } from 'react';
 
 export interface IAddUsersProps {
   fields: FieldArrayWithId<IUserForm, 'members', 'id'>[];
@@ -27,7 +27,7 @@ export interface IAddUsersProps {
 
 const FIELD_LIMIT = 20;
 
-const AddUsers: React.FC<IAddUsersProps> = ({
+const AddUsers: FC<IAddUsersProps> = ({
   fields,
   appendMembers,
   control,

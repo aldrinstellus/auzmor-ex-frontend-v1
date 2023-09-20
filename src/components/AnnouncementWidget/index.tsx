@@ -1,4 +1,3 @@
-import React from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Card from 'components/Card';
 import { announcementRead, useAnnouncementsWidget } from 'queries/post';
@@ -12,13 +11,14 @@ import { Link } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import { getFullName, getProfileImage } from 'utils/misc';
 import EmptyState from './components/EmptyState';
+import { FC, memo } from 'react';
 
 export interface IAnnouncementCardProps {
   postId?: string;
   openModal?: () => void;
 }
 
-const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({
+const AnnouncementCard: FC<IAnnouncementCardProps> = ({
   postId,
   openModal,
 }) => {
@@ -158,4 +158,4 @@ const AnnouncementCard: React.FC<IAnnouncementCardProps> = ({
   );
 };
 
-export default React.memo(AnnouncementCard);
+export default memo(AnnouncementCard);

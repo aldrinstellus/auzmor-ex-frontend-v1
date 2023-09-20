@@ -4,7 +4,7 @@ import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import { IDepartment } from 'queries/department';
 import { ILocation } from 'queries/location';
-import React, { useState } from 'react';
+import { FC, ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Locations from './Locations';
 import Departments from './Departments';
@@ -67,11 +67,11 @@ interface IFilterModalProps {
 interface IFilters {
   key: string;
   isHidden: boolean;
-  label: () => React.ReactNode;
-  component: () => React.ReactNode;
+  label: () => ReactNode;
+  component: () => ReactNode;
 }
 
-const FilterModal: React.FC<IFilterModalProps> = ({
+const FilterModal: FC<IFilterModalProps> = ({
   open,
   closeModal,
   appliedFilters = {

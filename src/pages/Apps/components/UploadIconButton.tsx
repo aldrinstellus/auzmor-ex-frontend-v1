@@ -1,6 +1,13 @@
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  FC,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { twConfig } from 'utils/misc';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'react-toastify';
@@ -16,10 +23,7 @@ type UploadIconButtonProps = {
   icon?: AppIcon;
 };
 
-const UploadIconButton: React.FC<UploadIconButtonProps> = ({
-  setValue,
-  icon,
-}) => {
+const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
   const [error, setError] = useState('');
   // Callback function to handle file upload
   const handleIconUpload = (file: File) => {
@@ -86,7 +90,7 @@ const UploadIconButton: React.FC<UploadIconButtonProps> = ({
   const [currentIcon, setCurrentIcon] = useState<AppIcon | undefined>(icon);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const clearInput = (e: React.MouseEvent<HTMLDivElement>) => {
+  const clearInput = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     setValue('icon', undefined);
     setCurrentIcon(undefined);

@@ -1,10 +1,4 @@
-import React, {
-  ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import { FC, ReactNode, useContext, useEffect, useMemo, useRef } from 'react';
 import Modal from 'components/Modal';
 import CreatePost from 'components/PostBuilder/components/CreatePost';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -64,7 +58,7 @@ interface ICreatePostModal {
   customActiveFlow?: CreatePostFlow;
 }
 
-const CreatePostModal: React.FC<ICreatePostModal> = ({
+const CreatePostModal: FC<ICreatePostModal> = ({
   open,
   closeModal,
   data,

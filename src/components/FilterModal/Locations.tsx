@@ -4,7 +4,7 @@ import Icon from 'components/Icon';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
 import { ILocation, useInfiniteLocations } from 'queries/location';
-import React, { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
 import { IFilterForm } from '.';
@@ -15,7 +15,7 @@ interface ILocationsProps {
   setValue: UseFormSetValue<IFilterForm>;
 }
 
-const Locations: React.FC<ILocationsProps> = ({ control, watch, setValue }) => {
+const Locations: FC<ILocationsProps> = ({ control, watch, setValue }) => {
   const { ref, inView } = useInView();
   useEffect(() => {
     if (inView) {

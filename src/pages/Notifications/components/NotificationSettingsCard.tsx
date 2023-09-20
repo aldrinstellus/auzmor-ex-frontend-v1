@@ -1,9 +1,9 @@
 import Button, { Variant } from 'components/Button';
 import Card from 'components/Card';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import NotificationBell from 'images/bell.png';
 
-const NotificationSettingsCard: React.FC = (): ReactElement => {
+const NotificationSettingsCard: FC = (): ReactElement => {
   return (
     <Card className="flex flex-col p-4 gap-y-4 items-center max-w-sm">
       <p className="text-neutral-900 font-bold text-base">

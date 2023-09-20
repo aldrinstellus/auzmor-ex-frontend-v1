@@ -1,9 +1,9 @@
 import Card from 'components/Card';
 import Divider from 'components/Divider';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
-const AboutMe: React.FC = (): ReactElement => {
+const AboutMe: FC = (): ReactElement => {
   return (
     <Card>
       <div className="p-6">

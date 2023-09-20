@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useMemo } from 'react';
+import { FC, MouseEventHandler, useMemo } from 'react';
 import clsx from 'clsx';
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import { ReactNode } from 'react';
@@ -23,7 +23,7 @@ export type BannerProps = {
   dataTestId?: string;
 };
 
-const Banner: React.FC<BannerProps> = ({
+const Banner: FC<BannerProps> = ({
   title,
   variant = Variant.Success,
   // icon = '',

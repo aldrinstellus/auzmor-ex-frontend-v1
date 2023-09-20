@@ -1,4 +1,3 @@
-import React from 'react';
 import IconButton, {
   Size,
   Variant as IconVariant,
@@ -18,6 +17,7 @@ import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
+import { FC } from 'react';
 export interface IReactivatePeopleProps {
   open: boolean;
   openModal: () => void;
@@ -25,7 +25,7 @@ export interface IReactivatePeopleProps {
   userId: string;
 }
 
-const DeactivatePeople: React.FC<IReactivatePeopleProps> = ({
+const DeactivatePeople: FC<IReactivatePeopleProps> = ({
   open,
   // openModal,
   closeModal,
@@ -55,7 +55,7 @@ const DeactivatePeople: React.FC<IReactivatePeopleProps> = ({
     },
   });
 
-  const Header: React.FC = () => (
+  const Header: FC = () => (
     <div className="flex flex-wrap items-center">
       <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
         Deactivate User?
@@ -70,7 +70,7 @@ const DeactivatePeople: React.FC<IReactivatePeopleProps> = ({
     </div>
   );
 
-  const Footer: React.FC = () => (
+  const Footer: FC = () => (
     <div className="flex justify-end space-x-3 items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
       <Button
         variant={ButtonVariant.Secondary}

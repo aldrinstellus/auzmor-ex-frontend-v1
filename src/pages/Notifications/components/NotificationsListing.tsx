@@ -3,7 +3,7 @@ import Notification from 'components/NotificationsOverview/components/Notificati
 import Spinner from 'components/Spinner';
 import { IMedia } from 'contexts/CreatePostContext';
 import { useInfiniteNotifications } from 'queries/notifications';
-import React, { ReactElement, useEffect } from 'react';
+import { FC, ReactElement, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import NotificationSkeleton from './SkeletonLoader';
 
@@ -61,7 +61,7 @@ export type NotificationProps = {
   interactionCount?: number;
 };
 
-const NotificationsListing: React.FC<NotificationsListing> = ({
+const NotificationsListing: FC<NotificationsListing> = ({
   mentions = false,
   className,
 }): ReactElement => {

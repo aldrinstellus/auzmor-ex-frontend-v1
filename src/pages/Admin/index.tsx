@@ -9,7 +9,7 @@ import {
   useOrganization,
   useUpdateLimitGlobalPostingMutation,
 } from 'queries/organization';
-import React, { useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import queryClient from 'utils/queryClient';
 interface IAdminProps {}
 
@@ -23,7 +23,7 @@ interface IAdminProps {}
 //   dataTestId?: string;
 // }
 
-const Admin: React.FC<IAdminProps> = () => {
+const Admin: FC<IAdminProps> = () => {
   const updateLimitPostingControlsMutation =
     useUpdateLimitGlobalPostingMutation();
   const { data, isLoading } = useOrganization();

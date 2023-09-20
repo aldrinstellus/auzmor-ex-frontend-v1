@@ -1,18 +1,18 @@
-import React, { useMemo } from 'react';
+import { FC, SetStateAction, useMemo } from 'react';
 import clsx from 'clsx';
 import ReactPaginate from 'react-paginate';
 import Icon from 'components/Icon';
 
 export type TablePaginationProps = {
   page?: number;
-  onPageChange: (value: React.SetStateAction<any>) => void;
+  onPageChange: (value: SetStateAction<any>) => void;
   total: number;
   limit?: number;
   className?: string;
   dataTestIdPrefix?: string;
 };
 
-const TablePagination: React.FC<TablePaginationProps> = ({
+const TablePagination: FC<TablePaginationProps> = ({
   page = 1,
   onPageChange,
   total,

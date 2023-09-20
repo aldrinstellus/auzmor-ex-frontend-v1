@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { ReactNode, forwardRef, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { Control, useController, Controller } from 'react-hook-form';
 import { Select, ConfigProvider } from 'antd';
@@ -39,10 +39,10 @@ export interface IAsyncSingleSelectProps {
   height?: number;
   fontSize?: number;
   getPopupContainer?: any;
-  clearIcon?: React.ReactNode | null;
+  clearIcon?: ReactNode | null;
   showSearch?: boolean;
-  suffixIcon?: React.ReactNode | null;
-  optionRenderer?: null | ((option: IOption) => React.ReactNode);
+  suffixIcon?: ReactNode | null;
+  optionRenderer?: null | ((option: IOption) => ReactNode);
   isFetchingNextPage?: boolean;
   fetchNextPage?:
     | ((
@@ -53,7 +53,7 @@ export interface IAsyncSingleSelectProps {
   onClear?: () => void;
 }
 
-const AsyncSingleSelect = React.forwardRef(
+const AsyncSingleSelect = forwardRef(
   (
     {
       name,

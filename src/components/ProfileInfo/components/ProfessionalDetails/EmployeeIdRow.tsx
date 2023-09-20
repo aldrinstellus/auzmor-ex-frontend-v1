@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { FC, useRef } from 'react';
 import InfoRow from '../InfoRow';
 import * as yup from 'yup';
 import 'moment-timezone';
@@ -15,7 +15,7 @@ type AppProps = {
   data: any;
 };
 
-const EmployeeIdRow: React.FC<AppProps> = ({ data }) => {
+const EmployeeIdRow: FC<AppProps> = ({ data }) => {
   const { userId = '' } = useParams();
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);

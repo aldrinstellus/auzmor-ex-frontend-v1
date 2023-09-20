@@ -1,5 +1,5 @@
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
-import React, { ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 
 export interface IHeaderProps {
   title: string | ReactNode;
@@ -9,7 +9,7 @@ export interface IHeaderProps {
   titleDataTestId?: string;
 }
 
-const Header: React.FC<IHeaderProps> = ({
+const Header: FC<IHeaderProps> = ({
   title,
   onClose,
   onBackIconClick,

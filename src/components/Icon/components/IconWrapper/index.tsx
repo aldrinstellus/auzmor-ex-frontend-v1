@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { ReactNode, useMemo } from 'react';
+import { FC, ReactNode, useMemo } from 'react';
 
 export enum Type {
   Square = 'SQUARE',
@@ -15,7 +15,7 @@ export interface IIconWrapperProps {
   onClick?: () => any;
 }
 
-const IconWrapper: React.FC<IIconWrapperProps> = ({
+const IconWrapper: FC<IIconWrapperProps> = ({
   type = Type.Square,
   className = '',
   children,

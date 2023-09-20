@@ -2,7 +2,7 @@ import Divider, { Variant as DividerVariant } from 'components/Divider';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
 import Modal from 'components/Modal';
-import React, { ReactElement, ReactNode, useRef, useState } from 'react';
+import { FC, ReactElement, ReactNode, useRef, useState } from 'react';
 import ConnectionSettings from './ConnectionSettings';
 import UserFieldsMapping from './UserFieldsMapping';
 import GroupFieldsMapping from './GroupFieldsMapping';
@@ -83,7 +83,7 @@ const groupFieldMappingSchema = yup.object({
   groupObjectFilter: yup.string(),
 });
 
-const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
+const ConfigureLDAP: FC<ConfigureLDAPProps> = ({
   open,
   closeModal,
   ssoSetting,

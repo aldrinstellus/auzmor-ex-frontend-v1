@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { IFilterForm } from '.';
 import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
@@ -15,11 +15,7 @@ interface ICategoriesProps {
   setValue: UseFormSetValue<IFilterForm>;
 }
 
-const Categories: React.FC<ICategoriesProps> = ({
-  control,
-  watch,
-  setValue,
-}) => {
+const Categories: FC<ICategoriesProps> = ({ control, watch, setValue }) => {
   const { ref, inView } = useInView();
   useEffect(() => {
     if (inView) {

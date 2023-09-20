@@ -2,20 +2,18 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Button, { Size, Variant } from 'components/Button';
 import Icon from 'components/Icon';
 import { announcementRead } from 'queries/post';
-import React from 'react';
 import { useFeedStore } from 'stores/feedStore';
 import { hasDatePassed } from 'utils/time';
 import { produce } from 'immer';
 import useAuth from 'hooks/useAuth';
 import ProgressBar from 'components/ProgressBar';
+import { FC } from 'react';
 
 export interface IAcknowledgementBannerProps {
   data: any;
 }
 
-const AcknowledgementBanner: React.FC<IAcknowledgementBannerProps> = ({
-  data,
-}) => {
+const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({ data }) => {
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
   const queryClient = useQueryClient();

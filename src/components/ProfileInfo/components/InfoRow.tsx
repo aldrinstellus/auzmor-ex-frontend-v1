@@ -2,7 +2,13 @@ import clsx from 'clsx';
 import Icon from 'components/Icon';
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 import useHover from 'hooks/useHover';
-import React, { useImperativeHandle, useState } from 'react';
+import {
+  ForwardedRef,
+  ReactNode,
+  forwardRef,
+  useImperativeHandle,
+  useState,
+} from 'react';
 
 interface IIcon {
   name: string;
@@ -12,10 +18,10 @@ interface IIcon {
 
 type AppProps = {
   icon: IIcon;
-  label: string | React.ReactNode;
-  value: string | React.ReactNode;
+  label: string | ReactNode;
+  value: string | ReactNode;
   canEdit?: boolean;
-  editNode?: React.ReactNode;
+  editNode?: ReactNode;
   dataTestId?: string;
   bgColor?: string;
   border?: boolean;
@@ -24,7 +30,7 @@ type AppProps = {
   onSave?: (...args: any) => any;
 };
 
-const InfoRow = React.forwardRef(
+const InfoRow = forwardRef(
   (
     {
       icon,
@@ -38,7 +44,7 @@ const InfoRow = React.forwardRef(
       onCancel = () => null,
       onSave = () => null,
     }: AppProps,
-    ref: React.ForwardedRef<any>,
+    ref: ForwardedRef<any>,
   ) => {
     const [isHovered, eventHandlers] = useHover();
     const [editMode, setEditMode] = useState(false);

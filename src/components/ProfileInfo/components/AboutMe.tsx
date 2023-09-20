@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { FC, Fragment, useEffect, useState } from 'react';
 // import clsx from 'clsx';
 import Card from 'components/Card';
 // import Divider from 'components/Divider';
@@ -31,7 +31,7 @@ export interface IAboutMeProps {
   searchParams?: any;
 }
 
-const AboutMe: React.FC<IAboutMeProps> = ({
+const AboutMe: FC<IAboutMeProps> = ({
   aboutMeData,
   canEdit,
   editSection,
@@ -108,7 +108,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({
       const beforeText = text?.substring(lastIndex, startIndex);
       const linkText = match;
       elements.push(
-        <React.Fragment key={index}>
+        <Fragment key={index}>
           {beforeText}
           <a
             href={match}
@@ -118,7 +118,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({
           >
             {linkText}
           </a>
-        </React.Fragment>,
+        </Fragment>,
       );
 
       lastIndex = endIndex;

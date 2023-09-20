@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { SVGProps } from 'react';
 
 const SvgArrowSwapFilled = (props: SVGProps<SVGSVGElement>) => (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import Button, { Type } from 'components/Button';
 import Divider from 'components/Divider';
@@ -43,9 +43,7 @@ const schema = yup.object({
     .oneOf([yup.ref('newPassword')], 'Passwords do not match'),
 });
 
-const AccountSecurity: React.FC<IAccountSecurity> = ({
-  setIsHeaderVisible,
-}) => {
+const AccountSecurity: FC<IAccountSecurity> = ({ setIsHeaderVisible }) => {
   const [err, setErr] = useState(false);
 
   const domain = getSubDomain(window.location.host);

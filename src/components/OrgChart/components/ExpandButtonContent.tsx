@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { INode } from './Chart';
 import Icon from 'components/Icon';
 
@@ -6,7 +6,7 @@ interface IExpandButtonContent {
   node: { data: INode; children?: any };
 }
 
-const ExpandButtonContent: React.FC<IExpandButtonContent> = ({ node }) => {
+const ExpandButtonContent: FC<IExpandButtonContent> = ({ node }) => {
   return (
     <div className="text-right text-sm text-neutral-500 mt-2 absolute right-0 bottom-0 flex items-center">
       <div>{node.data.directReportees} direct reports</div>{' '}

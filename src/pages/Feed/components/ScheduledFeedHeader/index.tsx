@@ -1,5 +1,5 @@
 import Icon from 'components/Icon';
-import React from 'react';
+import { FC } from 'react';
 import { Link } from 'react-router-dom';
 // import { twConfig } from 'utils/misc';
 
@@ -7,7 +7,7 @@ interface IScheduledFeedHeaderProps {
   setAppliedFeedFilters: (appliedFeedFilters: Record<string, any>) => void;
 }
 
-const ScheduledFeedHeader: React.FC<IScheduledFeedHeaderProps> = (
+const ScheduledFeedHeader: FC<IScheduledFeedHeaderProps> = (
   {
     // setAppliedFeedFilters,
   },

@@ -1,6 +1,5 @@
 // import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 // import axios from 'axios';
-import React from 'react';
 // import { useLoaderData } from 'react-router-dom';
 // import { removeAllItems } from 'utils/persist';
 // import { useNavigate } from 'react-router-dom';

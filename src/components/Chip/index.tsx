@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { MouseEventHandler, useMemo } from 'react';
+import { FC, MouseEventHandler, useMemo } from 'react';
 import Icon from 'components/Icon';
 
 export type ChipsProps = {
@@ -10,7 +10,7 @@ export type ChipsProps = {
   onClick?: MouseEventHandler<Element>;
 };
 
-const Chip: React.FC<ChipsProps> = ({
+const Chip: FC<ChipsProps> = ({
   icon = '>',
   label,
   className = '',

@@ -1,6 +1,6 @@
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
-import React, { ReactNode, useEffect } from 'react';
+import { FC, ReactNode, useEffect } from 'react';
 import Footer from './components/Footer';
 import EntitySearchModalBody from './components/EntitySearchModalBody';
 import { useForm } from 'react-hook-form';
@@ -47,7 +47,7 @@ export interface IAudienceForm {
   users: Record<string, IGetUser | false>;
 }
 
-const EntitySearchModal: React.FC<IEntitySearchModalProps> = ({
+const EntitySearchModal: FC<IEntitySearchModalProps> = ({
   open,
   closeModal,
   title = 'Add team members',

@@ -1,9 +1,9 @@
-import React from 'react';
+import { FC } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
 export interface IItemSkeletonProps {}
 
-const ItemSkeleton: React.FC<IItemSkeletonProps> = () => {
+const ItemSkeleton: FC<IItemSkeletonProps> = () => {
   return (
     <div className="w-full">
       <div className="flex">

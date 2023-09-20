@@ -1,6 +1,5 @@
 import AvatarList from 'components/AvatarList';
 import Card from 'components/Card';
-import React from 'react';
 import useHover from 'hooks/useHover';
 import truncate from 'lodash/truncate';
 import Icon from 'components/Icon';
@@ -12,6 +11,7 @@ import useModal from 'hooks/useModal';
 import { TeamFlow } from '.';
 import moment from 'moment';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { FC } from 'react';
 
 export interface ITeamsCardProps {
   id: string;
@@ -26,7 +26,7 @@ export interface ITeamsCardProps {
   setShowTeamDetail: (detail: Record<string, any> | null) => void;
 }
 
-const TeamsCard: React.FC<ITeamsCardProps> = ({
+const TeamsCard: FC<ITeamsCardProps> = ({
   id,
   name,
   description,

@@ -1,6 +1,6 @@
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import React, { useContext } from 'react';
+import { FC, useContext } from 'react';
 import { FieldValues, UseFormHandleSubmit } from 'react-hook-form';
 import { afterXUnit } from 'utils/time';
 import { CreateAnnouncementMode } from '.';
@@ -26,7 +26,7 @@ export interface IFooterProps {
   getFormValues?: any;
 }
 
-const Footer: React.FC<IFooterProps> = ({
+const Footer: FC<IFooterProps> = ({
   handleSubmit,
   isValid,
   mode,

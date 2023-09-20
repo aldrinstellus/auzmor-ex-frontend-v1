@@ -1,10 +1,10 @@
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
-import React from 'react';
 import Tabs from 'components/Tabs';
 import PollOptionTab from './PollOptionTab';
 import { IPost } from 'queries/post';
+import { FC } from 'react';
 
 export interface IPollVotesModalProps {
   closeModal?: () => void;
@@ -12,7 +12,7 @@ export interface IPollVotesModalProps {
   post: IPost;
 }
 
-const PollVotesModal: React.FC<IPollVotesModalProps> = ({
+const PollVotesModal: FC<IPollVotesModalProps> = ({
   closeModal,
   open,
   post,

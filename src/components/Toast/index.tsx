@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -11,7 +11,7 @@ export type ToastProps = {
   button?: string;
 };
 
-const Toast: React.FC<ToastProps> = (
+const Toast: FC<ToastProps> = (
   {
     // notificationIcon = null,
     // toastBody = '',

@@ -1,4 +1,3 @@
-import React from 'react';
 import clsx from 'clsx';
 import EntitySearchModalBody from 'components/EntitySearchModal/components/EntitySearchModalBody';
 import { EntitySearchModalType } from 'components/EntitySearchModal';
@@ -8,6 +7,7 @@ import { IGetUser } from 'queries/users';
 import DynamicImagePreview from 'components/DynamicImagePreview';
 import { SHOUTOUT_STEPS } from '.';
 import { getProfileImage } from 'utils/misc';
+import { FC } from 'react';
 
 interface ShoutoutBodyProps {
   step: SHOUTOUT_STEPS;
@@ -20,7 +20,7 @@ interface ShoutoutBodyProps {
   setShoutoutTemplate?: ({ file, type }: { file: any; type: string }) => void;
 }
 
-const Body: React.FC<ShoutoutBodyProps> = ({
+const Body: FC<ShoutoutBodyProps> = ({
   step,
   triggerSubmit,
   getFile,

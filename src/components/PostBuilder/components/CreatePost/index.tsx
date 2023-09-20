@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import { FC, useContext, useEffect, useRef } from 'react';
 import {
   CreatePostContext,
   IEditorValue,
@@ -26,7 +26,7 @@ interface ICreatePostProps {
   mode: PostBuilderMode;
 }
 
-const CreatePost: React.FC<ICreatePostProps> = ({
+const CreatePost: FC<ICreatePostProps> = ({
   data,
   closeModal,
   handleSubmitPost,

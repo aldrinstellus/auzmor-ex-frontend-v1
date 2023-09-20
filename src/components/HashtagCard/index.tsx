@@ -1,6 +1,6 @@
 import Card from 'components/Card';
 import Icon from 'components/Icon';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import { getTextByCount } from './helper';
 
 type HashtagCardProps = {
@@ -8,10 +8,7 @@ type HashtagCardProps = {
   count: number;
 };
 
-const HashtagCard: React.FC<HashtagCardProps> = (
-  hashtag,
-  count,
-): ReactElement => {
+const HashtagCard: FC<HashtagCardProps> = (hashtag, count): ReactElement => {
   return (
     <Card className="!bg-orange-50 mb-6">
       <div className="flex flex-row items-center justify-between m-6">

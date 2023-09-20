@@ -9,7 +9,7 @@ import {
   PostFilterKeys,
   PostType,
 } from 'queries/post';
-import React, { ReactElement, useEffect, useState } from 'react';
+import { FC, ReactElement, memo, useEffect, useState } from 'react';
 
 export enum FeedFilterContentType {
   Filter = 'FILTER',
@@ -140,7 +140,7 @@ export const filterKeyMap: Record<string | PostType, string> = {
   [ActivityType.Bookemarked]: 'Bookmark by me',
 };
 
-const FeedFilter: React.FC<FeedFilterProps> = ({
+const FeedFilter: FC<FeedFilterProps> = ({
   // disabled = false,
   dataTestId = '',
   appliedFeedFilters = {},
@@ -360,4 +360,4 @@ const FeedFilter: React.FC<FeedFilterProps> = ({
   );
 };
 
-export default React.memo(FeedFilter);
+export default memo(FeedFilter);

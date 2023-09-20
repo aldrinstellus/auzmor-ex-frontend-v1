@@ -1,12 +1,12 @@
 import { formatText, getStyles } from 'components/RenderQuillContent/utils';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 
 type TextProps = {
   value: string;
   attributes: any;
   isLink: boolean;
 };
-export const Text: React.FC<TextProps> = ({
+export const Text: FC<TextProps> = ({
   value,
   attributes,
   isLink,

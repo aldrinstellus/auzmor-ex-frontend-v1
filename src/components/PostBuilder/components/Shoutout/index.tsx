@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Header from 'components/ModalHeader';
 import {
@@ -21,7 +21,7 @@ export enum SHOUTOUT_STEPS {
   ImageSelect = 'IMAGE_SELECT',
 }
 
-const CreateShoutout: React.FC<ICreateShoutoutProps> = ({ closeModal }) => {
+const CreateShoutout: FC<ICreateShoutoutProps> = ({ closeModal }) => {
   const {
     setActiveFlow,
     setUploads,

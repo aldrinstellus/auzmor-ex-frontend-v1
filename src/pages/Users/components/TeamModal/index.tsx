@@ -1,4 +1,3 @@
-import React from 'react';
 import * as yup from 'yup';
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import Modal from 'components/Modal';
@@ -16,6 +15,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import Icon from 'components/Icon';
 import { TeamFlow } from '../Teams';
+import { FC } from 'react';
 
 export interface ITeamForm {
   name: string;
@@ -33,7 +33,7 @@ export interface IAddTeamModalProps {
   setShowTeamDetail?: (detail: Record<string, any> | null) => void;
 }
 
-const TeamModal: React.FC<IAddTeamModalProps> = ({
+const TeamModal: FC<IAddTeamModalProps> = ({
   open,
   closeModal,
   teamFlowMode,

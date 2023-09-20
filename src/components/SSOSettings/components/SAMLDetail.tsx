@@ -1,5 +1,5 @@
 import Icon from 'components/Icon';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { twConfig } from 'utils/misc';
@@ -11,10 +11,7 @@ type SAMLDetailProps = {
   value: string;
 };
 
-const SAMLDetail: React.FC<SAMLDetailProps> = ({
-  prop,
-  value,
-}): ReactElement => {
+const SAMLDetail: FC<SAMLDetailProps> = ({ prop, value }): ReactElement => {
   return (
     <div className="flex items-center space-x-4">
       <p className="font-normal text-xs text-neutral-500 w-[121px]">{prop}</p>

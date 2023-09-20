@@ -1,4 +1,4 @@
-import React, { ReactElement, useMemo, useEffect, useState } from 'react';
+import { ReactElement, useMemo, useEffect, useState, FC } from 'react';
 import SSOCard from './components/SSOCard';
 import ActiveDirectory from 'images/activeDirectory.png';
 import MicrosoftAD from 'images/microsoftAd.svg';
@@ -38,7 +38,7 @@ type SSOConfig = {
   active: boolean;
 };
 
-const SSOSettings: React.FC = (): ReactElement => {
+const SSOSettings: FC = (): ReactElement => {
   // 1. GET list of SSO configs
   // 2. If there are any of them that are active, show the activated chip and the three dot menu beside them
   // 3. If the user tries to activate any other SSO while one of them is active, show the error message.

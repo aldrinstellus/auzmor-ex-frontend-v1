@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
@@ -36,7 +36,7 @@ const schema = yup.object({
 
 export interface IAcceptInviteProps {}
 
-const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
+const AcceptInvite: FC<IAcceptInviteProps> = () => {
   const [searchParams, _] = useSearchParams();
   const token = searchParams.get('token');
   const orgId = searchParams.get('orgId');

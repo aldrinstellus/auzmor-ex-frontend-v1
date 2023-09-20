@@ -1,12 +1,12 @@
 import clsx from 'clsx';
 import SwitchToggle from 'components/SwitchToggle';
-import React from 'react';
+import { FC } from 'react';
 
 type AppProps = {
   data: Record<string, any>;
 };
 
-const MentionsControl: React.FC<AppProps> = ({ data: _data }) => {
+const MentionsControl: FC<AppProps> = ({ data: _data }) => {
   const settings = [
     {
       label: 'Someone mentions me in a post',

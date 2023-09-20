@@ -1,7 +1,7 @@
 import Icon from 'components/Icon';
-import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import HashtagIcon from 'images/hashtag.svg';
+import { FC, memo } from 'react';
 // import { twConfig } from 'utils/misc';
 
 interface IHashtagFeedHeaderProps {
@@ -12,7 +12,7 @@ interface IHashtagFeedHeaderProps {
   setAppliedFeedFilters: (appliedFeedFilters: Record<string, any>) => void;
 }
 
-const HashtagFeedHeader: React.FC<IHashtagFeedHeaderProps> = ({
+const HashtagFeedHeader: FC<IHashtagFeedHeaderProps> = ({
   hashtag,
   feedIds,
   setAppliedFeedFilters,
@@ -54,4 +54,4 @@ const HashtagFeedHeader: React.FC<IHashtagFeedHeaderProps> = ({
   );
 };
 
-export default React.memo(HashtagFeedHeader);
+export default memo(HashtagFeedHeader);

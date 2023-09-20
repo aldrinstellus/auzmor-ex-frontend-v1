@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { FC, memo } from 'react';
 import Card from 'components/Card';
 import clsx from 'clsx';
 // import useHover from 'hooks/useHover';
@@ -31,7 +31,7 @@ type IPersonalDetailsProps = {
   canEdit?: boolean;
 };
 
-const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
+const PersonalDetails: FC<IPersonalDetailsProps> = ({
   personalDetails,
   canEdit,
 }) => {

@@ -1,4 +1,3 @@
-import React from 'react';
 import apiService from 'utils/apiService';
 import {
   createMentionsList,

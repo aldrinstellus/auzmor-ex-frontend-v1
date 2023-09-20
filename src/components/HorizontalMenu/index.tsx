@@ -1,5 +1,5 @@
 import useCarousel from 'hooks/useCarousel';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 
 type MenuItem = {
   label: string;
@@ -12,7 +12,7 @@ type HorizontalMenuProps = {
   onChange: (id: any) => void;
 };
 
-const HorizontalMenu: React.FC<HorizontalMenuProps> = ({
+const HorizontalMenu: FC<HorizontalMenuProps> = ({
   items,
   onChange = (_id: any) => {},
 }): ReactElement => {

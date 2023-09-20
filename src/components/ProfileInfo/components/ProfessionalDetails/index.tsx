@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import Card from 'components/Card';
 import clsx from 'clsx';
 import 'moment-timezone';
@@ -15,7 +15,7 @@ export interface IProfessionalDetailsProps {
   searchParams?: any;
 }
 
-const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
+const ProfessionalDetails: FC<IProfessionalDetailsProps> = ({
   professionalDetails,
   canEdit,
   // editSection,

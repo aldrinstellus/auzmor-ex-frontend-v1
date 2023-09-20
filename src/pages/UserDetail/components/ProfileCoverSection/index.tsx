@@ -1,5 +1,5 @@
 import Card from 'components/Card';
-import React, { useRef, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import Avatar from 'components/Avatar';
 import Divider, { Variant as DividerVariant } from 'components/Divider';
 import Button, {
@@ -59,7 +59,7 @@ export interface IProfileCoverProps {
   userDetails: Record<string, any>;
 }
 
-const ProfileCoverSection: React.FC<IProfileCoverProps> = ({ userDetails }) => {
+const ProfileCoverSection: FC<IProfileCoverProps> = ({ userDetails }) => {
   const [file, setFile] = useState<IUpdateProfileImage | Record<string, any>>(
     {},
   );

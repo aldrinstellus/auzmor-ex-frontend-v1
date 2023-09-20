@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useState, useEffect } from 'react';
+import { ReactNode, createContext, useState, useEffect, FC } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { getItem, removeAllItems, setItem } from 'utils/persist';
 import { fetchMe } from 'queries/account';
@@ -45,7 +45,7 @@ export const AuthContext = createContext<IAuthContext>({
   updateUser: () => {},
 });
 
-const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
+const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const queryClient = useQueryClient();
   const [showOnboard, setShowOnboard] = useState<boolean>(false);

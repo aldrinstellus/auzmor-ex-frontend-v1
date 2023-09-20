@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { FC, useRef } from 'react';
 import InfoRow from '../InfoRow';
 import moment from 'moment';
 import 'moment-timezone';
@@ -15,7 +15,7 @@ type AppProps = {
   data: any;
 };
 
-const DateOfBirthRow: React.FC<AppProps> = ({ data }) => {
+const DateOfBirthRow: FC<AppProps> = ({ data }) => {
   const { userId = '' } = useParams();
   const { user } = useAuth();
   const queryClient = useQueryClient();

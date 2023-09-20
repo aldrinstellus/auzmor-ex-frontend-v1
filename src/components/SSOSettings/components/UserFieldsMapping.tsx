@@ -4,7 +4,7 @@ import Button, {
 } from 'components/Button';
 import Layout, { FieldType } from 'components/Form';
 import { Variant } from 'components/Input';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import { IUserFieldsMappingForm } from './ConfigureLDAP';
 
 type UserFieldsMappingProps = {
@@ -17,7 +17,7 @@ type UserFieldsMappingProps = {
   isError: boolean;
 };
 
-const UserFieldsMapping: React.FC<UserFieldsMappingProps> = ({
+const UserFieldsMapping: FC<UserFieldsMappingProps> = ({
   userFieldsMappingData,
   userFieldMappingControl,
   userFieldMappingFormState,

@@ -1,4 +1,3 @@
-import React from 'react';
 import { renderToString } from 'react-dom/server';
 import ReactionSkeleton from 'components/Post/components/ReactionSkeleton';
 import apiService from 'utils/apiService';

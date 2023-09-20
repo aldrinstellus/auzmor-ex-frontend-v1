@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
 import { useDebounce } from 'hooks/useDebounce';
@@ -42,7 +42,7 @@ interface IForm {
   role?: { value: string; label: string };
 }
 
-const People: React.FC<IPeopleProps> = ({
+const People: FC<IPeopleProps> = ({
   showModal,
   openModal,
   closeModal,

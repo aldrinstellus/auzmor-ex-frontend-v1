@@ -1,9 +1,9 @@
-import React from 'react';
+import { FC } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
 export interface IAppBannerSkeletonProps {}
 
-const AppBannerSkeleton: React.FC<IAppBannerSkeletonProps> = () => {
+const AppBannerSkeleton: FC<IAppBannerSkeletonProps> = () => {
   return (
     <div className="w-full py-6">
       <Skeleton

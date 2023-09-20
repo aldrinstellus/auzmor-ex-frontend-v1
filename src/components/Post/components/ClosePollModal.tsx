@@ -4,7 +4,6 @@ import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import { IPost, updatePost } from 'queries/post';
-import React from 'react';
 import { useFeedStore } from 'stores/feedStore';
 import { toast } from 'react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
@@ -12,6 +11,7 @@ import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { FC } from 'react';
 
 type AppProps = {
   open: boolean;
@@ -19,7 +19,7 @@ type AppProps = {
   data: IPost;
 };
 
-const ClosePollModal: React.FC<AppProps> = ({ open, closeModal, data }) => {
+const ClosePollModal: FC<AppProps> = ({ open, closeModal, data }) => {
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
 

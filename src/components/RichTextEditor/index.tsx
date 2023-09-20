@@ -1,4 +1,11 @@
-import React, { LegacyRef, ReactNode, memo, useContext, useState } from 'react';
+import {
+  LegacyRef,
+  ReactNode,
+  forwardRef,
+  memo,
+  useContext,
+  useState,
+} from 'react';
 import ReactQuill, { Quill, UnprivilegedEditor } from 'react-quill';
 import { DeltaStatic, Sources } from 'quill';
 import moment from 'moment';
@@ -90,7 +97,7 @@ fill="none"
 />
 </svg>`;
 
-const RichTextEditor = React.forwardRef(
+const RichTextEditor = forwardRef(
   (
     {
       toolbarId,

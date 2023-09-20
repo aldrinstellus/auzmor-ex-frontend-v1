@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
@@ -63,7 +63,7 @@ export interface IValidationErrors {
   isLoading: boolean;
 }
 
-const Signup: React.FC<ISignupProps> = () => {
+const Signup: FC<ISignupProps> = () => {
   const signupMutation = useMutation(
     (formData: IForm) =>
       signup({ ...formData, domain: formData.domain.toLowerCase() }),

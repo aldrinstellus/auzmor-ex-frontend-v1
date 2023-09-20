@@ -1,5 +1,4 @@
 import { IMention } from 'queries/post';
-import React from 'react';
 
 export const formatText = (text: string) => {
   return text

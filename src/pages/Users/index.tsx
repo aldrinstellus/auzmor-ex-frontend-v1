@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FC, useState } from 'react';
 import clsx from 'clsx';
 import useModal from 'hooks/useModal';
 import useAuth from 'hooks/useAuth';
@@ -13,7 +13,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 interface IUsersProps {}
 
-const Users: React.FC<IUsersProps> = () => {
+const Users: FC<IUsersProps> = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const currentPathname = location.pathname;

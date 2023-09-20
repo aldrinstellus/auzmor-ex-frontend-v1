@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { Metadata } from '../types';
 
 type IconPreviewProps = {
@@ -6,7 +6,7 @@ type IconPreviewProps = {
   dataTestId?: string;
 };
 
-const IconPreview: React.FC<IconPreviewProps> = ({ metaData, dataTestId }) => {
+const IconPreview: FC<IconPreviewProps> = ({ metaData, dataTestId }) => {
   return (
     <a
       href={metaData?.url}

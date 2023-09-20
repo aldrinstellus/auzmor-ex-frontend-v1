@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import { FC, ReactNode, useEffect, useRef, useState } from 'react';
 import Likes from 'components/Reactions';
 import IconButton, {
   Variant as IconVariant,
@@ -44,10 +44,7 @@ interface CommentProps {
   customNode?: ReactNode;
 }
 
-export const Comment: React.FC<CommentProps> = ({
-  comment,
-  customNode = null,
-}) => {
+export const Comment: FC<CommentProps> = ({ comment, customNode = null }) => {
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
   const { comment: storedcomments, setComment } = useCommentStore();

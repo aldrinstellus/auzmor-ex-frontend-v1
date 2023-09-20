@@ -3,7 +3,7 @@ import Button, {
   Size as ButtonSize,
 } from 'components/Button';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import React, { useContext, useRef } from 'react';
+import { FC, useContext, useRef } from 'react';
 import { getBlobUrl, isVideo } from 'utils/misc';
 import useCarousel from 'hooks/useCarousel';
 // import SwitchToggle from 'components/SwitchToggle';
@@ -16,7 +16,7 @@ export interface IEditMediaProps {
   closeModal: () => void;
 }
 
-const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
+const EditMedia: FC<IEditMediaProps> = ({ closeModal }) => {
   const {
     setActiveFlow,
     media,

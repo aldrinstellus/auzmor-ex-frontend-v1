@@ -1,12 +1,12 @@
 import clsx from 'clsx';
 import SwitchToggle from 'components/SwitchToggle';
-import React from 'react';
+import { FC } from 'react';
 
 type AppProps = {
   data: Record<string, any>;
 };
 
-const PostsControl: React.FC<AppProps> = ({ data: _data }) => {
+const PostsControl: FC<AppProps> = ({ data: _data }) => {
   const settings = [
     {
       label: 'Someone comments on my posts',

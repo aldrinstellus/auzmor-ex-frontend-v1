@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createReaction, deleteReaction } from 'queries/reaction';
 import clsx from 'clsx';
@@ -50,7 +50,7 @@ const reactionNameMap: Record<string, string> = {
   [ReactionType.Insightful]: 'Insightful',
 };
 
-const Likes: React.FC<LikesProps> = ({
+const Likes: FC<LikesProps> = ({
   reaction,
   entityId,
   entityType,

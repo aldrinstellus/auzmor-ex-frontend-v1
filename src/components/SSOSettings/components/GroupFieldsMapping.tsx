@@ -3,7 +3,7 @@ import Button, {
   Type as ButtonType,
 } from 'components/Button';
 import Layout, { FieldType } from 'components/Form';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { Variant } from 'components/Input';
 import { IGroupFieldsMappingForm } from './ConfigureLDAP';
@@ -18,7 +18,7 @@ type GroupFieldsMappingProps = {
   isLoading: boolean;
 };
 
-const GroupFieldsMapping: React.FC<GroupFieldsMappingProps> = ({
+const GroupFieldsMapping: FC<GroupFieldsMappingProps> = ({
   groupFieldsMappingData,
   groupFieldMappingControl,
   handleSubmit,

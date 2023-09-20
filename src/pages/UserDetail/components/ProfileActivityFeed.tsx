@@ -1,4 +1,3 @@
-import React from 'react';
 import Post from 'components/Post';
 import {
   useInfiniteMyProfileFeed,
@@ -9,6 +8,7 @@ import NoDataCard from './NoDataCard';
 import PostBuilder from 'components/PostBuilder';
 import SkeletonLoader from 'pages/Feed/components/SkeletonLoader';
 import { useFeedStore } from 'stores/feedStore';
+import { FC } from 'react';
 
 export interface IProfileActivityFeedProps {
   data: any;
@@ -19,7 +19,7 @@ export interface IProfileActivityFeedProps {
   pathname?: string;
 }
 
-const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
+const ProfileActivityFeed: FC<IProfileActivityFeedProps> = ({
   data,
   pathname,
   userId,

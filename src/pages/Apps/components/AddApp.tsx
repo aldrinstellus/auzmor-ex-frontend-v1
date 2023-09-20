@@ -2,7 +2,7 @@ import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import Tabs from 'components/Tabs';
-import React, { useEffect, useState } from 'react';
+import { FC, FormEvent, MouseEvent, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import AppDetailsForm from './AppDetailsForm';
 import clsx from 'clsx';
@@ -71,7 +71,7 @@ const AddAppFormSchema = yup.object({
   relayState: yup.string(),
 });
 
-const AddApp: React.FC<AddAppProps> = ({
+const AddApp: FC<AddAppProps> = ({
   open,
   closeModal,
   data,
@@ -246,7 +246,7 @@ const AddApp: React.FC<AddAppProps> = ({
     },
   ];
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     trigger();
     if (!errors.url && !errors.label && !errors.description) {
@@ -288,7 +288,7 @@ const AddApp: React.FC<AddAppProps> = ({
     }
   };
 
-  const handleNextTab = (e: React.MouseEvent<Element, MouseEvent>) => {
+  const handleNextTab = (e: MouseEvent<Element>) => {
     e.preventDefault();
     trigger();
     if (isValid) {

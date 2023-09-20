@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import TeamsCard from './TeamsCard';
 import Button, { Size, Variant } from 'components/Button';
 import Layout, { FieldType } from 'components/Form';
@@ -79,7 +79,7 @@ export interface ITeamProps {
   closeTeamModal: () => void;
 }
 
-const Team: React.FC<ITeamProps> = ({
+const Team: FC<ITeamProps> = ({
   showTeamModal,
   openTeamModal,
   closeTeamModal,

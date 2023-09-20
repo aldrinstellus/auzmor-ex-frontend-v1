@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { FC, useRef } from 'react';
 import clsx from 'clsx';
 import Kudos1 from 'images/kudos1.png';
 import Kudos2 from 'images/kudos2.png';
@@ -68,10 +68,7 @@ export interface IImagePickerProps {
   selectedTemplate?: any;
 }
 
-const ImagePicker: React.FC<IImagePickerProps> = ({
-  selectedTemplate,
-  onSelect,
-}) => {
+const ImagePicker: FC<IImagePickerProps> = ({ selectedTemplate, onSelect }) => {
   const _imageRef = useRef<HTMLInputElement>(null);
   const handleSelectTemplate = (item: any) => {
     if (selectedTemplate?.id === item.id) {
@@ -88,7 +85,7 @@ const ImagePicker: React.FC<IImagePickerProps> = ({
           <div
             key={item.id}
             className={clsx(
-              'relative cursor-pointer max-w-[269px] max-h-[182px] min-h-[183px] max-w-[270px] border-1 border-neutral-200 w-full h-full rounded-[12px] overflow-hidden',
+              'relative cursor-pointer max-h-[182px] min-h-[183px] max-w-[270px] border-1 border-neutral-200 w-full h-full rounded-[12px] overflow-hidden',
               { 'border-primary-500': item.id === selectedTemplate?.id },
             )}
             onClick={() => handleSelectTemplate(item)}

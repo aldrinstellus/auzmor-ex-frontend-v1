@@ -1,6 +1,6 @@
 import clsx from 'clsx';
-import React from 'react';
 import { iconMap } from './iconMap/index';
+import { FC } from 'react';
 
 export type IconProps = {
   name: string;
@@ -16,7 +16,7 @@ export type IconProps = {
   hoverColor?: string;
 };
 
-const Icon: React.FC<IconProps> = ({
+const Icon: FC<IconProps> = ({
   name,
   size = 24,
   onClick = null,

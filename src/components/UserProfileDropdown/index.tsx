@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 import useAuth from 'hooks/useAuth';
 import PopupMenu from 'components/PopupMenu';
 import { UserRole, UserStatus } from 'queries/users';
@@ -24,7 +24,7 @@ export interface IUserDropdownProps {
   isTeamPeople?: boolean;
 }
 
-const UserProfileDropdown: React.FC<IUserDropdownProps> = ({
+const UserProfileDropdown: FC<IUserDropdownProps> = ({
   id,
   role,
   status,

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 
@@ -24,7 +24,7 @@ export type ConfirmationBoxProps = {
   dataTestId?: string;
 };
 
-const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({
+const ConfirmationBox: FC<ConfirmationBoxProps> = ({
   onClose,
   open,
   title,

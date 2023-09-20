@@ -1,6 +1,5 @@
 import IconButton, { Variant } from 'components/IconButton';
 import Modal from 'components/Modal';
-import React from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {
@@ -17,6 +16,7 @@ import Button, {
   Size,
   Type as ButtonType,
 } from 'components/Button';
+import { FC } from 'react';
 
 type AppProps = {
   open: boolean;
@@ -32,11 +32,7 @@ interface IForm {
   web: string;
 }
 
-const SocialLinksModal: React.FC<AppProps> = ({
-  open,
-  closeModal,
-  socialLinks,
-}) => {
+const SocialLinksModal: FC<AppProps> = ({ open, closeModal, socialLinks }) => {
   const schema = yup.object({
     linkedin: yup.string().url(),
     instagram: yup.string().url(),

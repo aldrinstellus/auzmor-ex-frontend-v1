@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import Avatar from 'components/Avatar';
-import React from 'react';
+import { FC } from 'react';
 
 export type AvatarListProps = {
   users: any;
@@ -18,7 +18,7 @@ interface IUser {
   image: string;
 }
 
-const AvatarList: React.FC<AvatarListProps> = ({
+const AvatarList: FC<AvatarListProps> = ({
   users,
   moreCount = 0,
   className = '',

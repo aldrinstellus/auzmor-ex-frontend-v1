@@ -1,5 +1,4 @@
 /* eslint-disable react/no-unknown-property */
-import * as React from 'react';
 import { SVGProps } from 'react';
 
 const SvgBookmarkOutline = (props: SVGProps<SVGSVGElement>) => (

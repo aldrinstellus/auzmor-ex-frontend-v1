@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, ReactElement, useMemo } from 'react';
+import { MouseEventHandler, ReactElement, useMemo } from 'react';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 import Spinner from 'components/Spinner';

@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useMemo } from 'react';
+import { FC, ReactNode, useMemo } from 'react';
 import { Control, FieldValues, useController } from 'react-hook-form';
 
 export interface ICheckboxListOption {
@@ -11,12 +11,12 @@ interface ICheckboxListProps {
   control: Control<FieldValues, any>;
   name: string;
   options: ICheckboxListOption[];
-  labelRenderer: (option: ICheckboxListOption) => React.ReactNode;
+  labelRenderer: (option: ICheckboxListOption) => ReactNode;
   className?: string;
   rowClassName?: string;
 }
 
-const CheckboxList: React.FC<ICheckboxListProps> = ({
+const CheckboxList: FC<ICheckboxListProps> = ({
   control,
   name,
   options,

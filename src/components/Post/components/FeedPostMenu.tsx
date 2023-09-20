@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -26,7 +26,7 @@ export interface IFeedPostMenuProps {
   data: IPost;
 }
 
-const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
+const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
   const { user } = useAuth();
   const { isMember } = useRole();
   const feedRef = useRef(useFeedStore.getState().feed);

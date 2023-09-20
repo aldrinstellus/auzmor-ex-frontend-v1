@@ -1,6 +1,6 @@
 import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
-import React from 'react';
+import { FC } from 'react';
 
 type AppProps = {
   profileImage: Record<string, string>;
@@ -10,7 +10,7 @@ type AppProps = {
   workLocation: Record<string, string>;
 };
 
-const AvatarRow: React.FC<AppProps> = ({
+const AvatarRow: FC<AppProps> = ({
   fullName,
   workEmail,
   profileImage,

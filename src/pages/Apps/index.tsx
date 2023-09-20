@@ -1,6 +1,6 @@
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import Card from 'components/Card';
-import React, { useState } from 'react';
+import { FC, useState } from 'react';
 import AppsBanner from 'images/appsBanner.png';
 import IconButton, {
   Variant as IconVariant,
@@ -38,7 +38,7 @@ enum AppGroup {
   FEATURED = 'Featured',
 }
 
-const Apps: React.FC<IAppsProps> = () => {
+const Apps: FC<IAppsProps> = () => {
   // Form for searching apps
   const {
     control,

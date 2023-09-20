@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import { FC, ReactNode, useEffect, useState } from 'react';
 import './styles.css';
 
 interface ITab {
@@ -22,7 +22,7 @@ export interface ITabsProps {
   onTabChange?: (param: any) => void;
 }
 
-const Tabs: React.FC<ITabsProps> = ({
+const Tabs: FC<ITabsProps> = ({
   tabs,
   title,
   activeTabIndex = 0,

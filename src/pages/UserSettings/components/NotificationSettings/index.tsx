@@ -1,6 +1,5 @@
 import Card from 'components/Card';
 // import Tabs from 'components/Tabs';
-import React from 'react';
 import GeneralSetting from './GeneralSettings';
 // import clsx from 'clsx';
 // import ChannelSetting from './ChannelSettings';

@@ -2,14 +2,14 @@ import Avatar from 'components/Avatar';
 import Button from 'components/Button';
 import Divider from 'components/Divider';
 import { IGetUser } from 'queries/users';
-import React from 'react';
+import { FC } from 'react';
 import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
 
 interface IUserCardProp {
   user?: IGetUser;
 }
 
-const UserCard: React.FC<IUserCardProp> = ({ user }) => {
+const UserCard: FC<IUserCardProp> = ({ user }) => {
   return (
     <div className="flex flex-col shadow-xl rounded-9xl bg-white min-w-[600px] overflow-hidden">
       <div className="flex"></div>

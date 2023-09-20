@@ -1,8 +1,8 @@
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const SkeletonLoader: React.FC = (): ReactElement => {
+const SkeletonLoader: FC = (): ReactElement => {
   return (
     <div className="w-full">
       <div className="flex gap-x-2">

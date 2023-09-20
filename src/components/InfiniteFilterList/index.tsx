@@ -1,4 +1,4 @@
-import React, { useEffect, ReactNode } from 'react';
+import { useEffect, ReactNode, FC } from 'react';
 import { useDebounce } from 'hooks/useDebounce';
 import { useForm } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
@@ -25,7 +25,7 @@ interface IInfiniteFilterListProps {
   showSelectedFilterPill?: boolean;
 }
 
-const InfiniteFilterList: React.FC<IInfiniteFilterListProps> = ({
+const InfiniteFilterList: FC<IInfiniteFilterListProps> = ({
   setSelectedItems,
   selectedItems,
   renderItem,

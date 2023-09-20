@@ -1,7 +1,7 @@
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import ProfileCoverSectionSkeleton from '../ProfileCoverSection/ProfileCoverSectionSkeleton';
 
-const UserDetailSkeleton: React.FC = (): ReactElement => {
+const UserDetailSkeleton: FC = (): ReactElement => {
   return <ProfileCoverSectionSkeleton />;
 };
 

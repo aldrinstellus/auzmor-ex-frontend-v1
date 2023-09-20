@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { FC, useRef } from 'react';
 import * as yup from 'yup';
 import InfoRow from '../InfoRow';
 import SelectTimeZone from 'components/UserOnboard/components/SelectTimeZone';
@@ -20,7 +20,7 @@ type AppProps = {
   data: any;
 };
 
-const TimezoneRow: React.FC<AppProps> = ({ data }) => {
+const TimezoneRow: FC<AppProps> = ({ data }) => {
   const { userId = '' } = useParams();
   const queryClient = useQueryClient();
   const defaultTimezone = getDefaultTimezoneOption();

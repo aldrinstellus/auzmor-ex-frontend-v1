@@ -1,7 +1,7 @@
 import Button, { Variant as ButtonVariant } from 'components/Button';
-import React from 'react';
 import { UseFormHandleSubmit } from 'react-hook-form';
 import { EntitySearchModalType, IAudienceForm } from '..';
+import { FC } from 'react';
 
 interface IFooter {
   handleSubmit: UseFormHandleSubmit<IAudienceForm>;
@@ -12,7 +12,7 @@ interface IFooter {
   cancelButtonText: string;
 }
 
-const Footer: React.FC<IFooter> = ({
+const Footer: FC<IFooter> = ({
   handleSubmit,
   entityType,
   onSubmit,

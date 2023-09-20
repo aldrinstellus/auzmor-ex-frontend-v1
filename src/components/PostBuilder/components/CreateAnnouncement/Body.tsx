@@ -1,7 +1,7 @@
 import Layout from 'components/Form';
 import Icon from 'components/Icon';
 import { CreatePostContext } from 'contexts/CreatePostContext';
-import React, { useContext } from 'react';
+import { FC, useContext } from 'react';
 
 export interface IBodyProps {
   expiryFields: Array<Record<string, any>>;
@@ -9,7 +9,7 @@ export interface IBodyProps {
   selecetedExpiry: any;
 }
 
-const Body: React.FC<IBodyProps> = ({
+const Body: FC<IBodyProps> = ({
   expiryFields,
   selecetedExpiry,
   datepickerFields,

@@ -1,12 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import Layout, { FieldType } from 'components/Form';
 import { useLoginViaSSO } from 'queries/auth';
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { Variant as InputVariant } from 'components/Input';
 import Button, { Type as ButtonType, Size } from 'components/Button';
 import 'utils/custom-yup-validators/email/validateEmail';
+import { FC } from 'react';
 
 export interface ILoginViaSSOProps {
   setViaSSO: (flag: boolean) => void;
@@ -20,7 +20,7 @@ const schema = yup.object({
   email: yup.string().required('Required field').validateEmail(),
 });
 
-const LoginViaSSO: React.FC<ILoginViaSSOProps> = ({ setViaSSO }) => {
+const LoginViaSSO: FC<ILoginViaSSOProps> = ({ setViaSSO }) => {
   const {
     watch,
     control,

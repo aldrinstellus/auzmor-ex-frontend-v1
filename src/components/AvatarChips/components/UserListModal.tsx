@@ -1,9 +1,9 @@
-import React from 'react';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import Button, { Variant as ButtonVariant, Size } from 'components/Button';
 import { IAvatarUser } from 'components/AvatarChip';
 import UserRow from './UserRow';
+import { FC } from 'react';
 
 export interface IUserListModalProps {
   open: boolean;
@@ -12,7 +12,7 @@ export interface IUserListModalProps {
   dataTestId?: string;
 }
 
-const UserListModal: React.FC<IUserListModalProps> = ({
+const UserListModal: FC<IUserListModalProps> = ({
   open,
   closeModal,
   users,

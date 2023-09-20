@@ -7,7 +7,7 @@ import Modal from 'components/Modal';
 import useHover from 'hooks/useHover';
 import useModal from 'hooks/useModal';
 import { IdentityProvider, deleteSSO } from 'queries/organization';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import queryClient from 'utils/queryClient';
 
 type SSOCardMenuProps = {
@@ -16,7 +16,7 @@ type SSOCardMenuProps = {
   onClick: any;
 };
 
-const SSOCardMenu: React.FC<SSOCardMenuProps> = ({
+const SSOCardMenu: FC<SSOCardMenuProps> = ({
   idp,
   name,
   onClick,

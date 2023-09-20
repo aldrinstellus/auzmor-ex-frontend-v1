@@ -1,6 +1,6 @@
 import Icon from 'components/Icon';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import { toast } from 'react-toastify';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { twConfig } from 'utils/misc';
@@ -12,7 +12,7 @@ type CopyButtonProps = {
   className?: string;
 };
 
-const CopyButton: React.FC<CopyButtonProps> = ({
+const CopyButton: FC<CopyButtonProps> = ({
   content,
   dataTestId,
   className,

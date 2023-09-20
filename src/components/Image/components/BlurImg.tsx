@@ -1,9 +1,16 @@
 import useBlurhash from 'hooks/useBlurhash';
-import React, { useState, useCallback, ReactElement } from 'react';
+import {
+  useState,
+  useCallback,
+  ReactElement,
+  FC,
+  DetailedHTMLProps,
+  ImgHTMLAttributes,
+} from 'react';
 import { useInView } from 'react-intersection-observer';
 
-type Props = React.DetailedHTMLProps<
-  React.ImgHTMLAttributes<HTMLImageElement>,
+type Props = DetailedHTMLProps<
+  ImgHTMLAttributes<HTMLImageElement>,
   HTMLImageElement
 > & { blurhash?: string | null; dataTestId?: string };
 
@@ -11,7 +18,7 @@ type Props = React.DetailedHTMLProps<
 // Renders a blurhash value to a blob when it about to appear on screen.
 // Only renders the blurhash when the image hasn't loaded yet.
 // Removes the blob once the image has finished loading.
-const BlurImg: React.FC = (allProps: Props): ReactElement => {
+const BlurImg: FC = (allProps: Props): ReactElement => {
   const { loading = 'lazy', blurhash, style, ...props } = allProps;
 
   const [imgLoaded, setImgLoaded] = useState(false);

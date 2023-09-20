@@ -1,4 +1,3 @@
-import React from 'react';
 import IconButton, {
   Size,
   Variant as IconVariant,
@@ -19,6 +18,7 @@ import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { FC } from 'react';
 export interface IDeleteTeamProps {
   open: boolean;
   closeModal: () => void;
@@ -26,7 +26,7 @@ export interface IDeleteTeamProps {
   isDetailPage?: boolean;
 }
 
-const DeleteTeam: React.FC<IDeleteTeamProps> = ({
+const DeleteTeam: FC<IDeleteTeamProps> = ({
   open,
   closeModal,
   teamId,
@@ -86,7 +86,7 @@ const DeleteTeam: React.FC<IDeleteTeamProps> = ({
     },
   });
 
-  const Header: React.FC = () => (
+  const Header: FC = () => (
     <div className="flex flex-wrap border-b-1 border-neutral-200 items-center">
       <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
         Delete Team?
@@ -101,7 +101,7 @@ const DeleteTeam: React.FC<IDeleteTeamProps> = ({
     </div>
   );
 
-  const Footer: React.FC = () => (
+  const Footer: FC = () => (
     <div className="flex justify-end space-x-3 items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
       <Button
         variant={ButtonVariant.Secondary}

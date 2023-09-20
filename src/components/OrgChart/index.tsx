@@ -1,5 +1,5 @@
 import Button, { Variant } from 'components/Button';
-import React, { useRef, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import Toolbar from './components/Toolbar';
 import Chart from './components/Chart';
 import { OrgChart } from 'd3-org-chart';
@@ -22,7 +22,7 @@ interface IOrgChart {
   setShowOrgChart: (showOrgChart: boolean) => void;
 }
 
-const OrganizationChart: React.FC<IOrgChart> = ({ setShowOrgChart }) => {
+const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
   const [activeMode, setActiveMode] = useState<OrgChartMode>(
     OrgChartMode.Overall,
   );

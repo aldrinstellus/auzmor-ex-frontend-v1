@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
 import { login } from 'queries/account';
-import React from 'react';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
@@ -22,6 +21,7 @@ import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useGetSSOFromDomain } from 'queries/organization';
 import { useLoginViaSSO } from 'queries/auth';
 import 'utils/custom-yup-validators/email/validateEmail';
+import { FC } from 'react';
 
 export interface ILoginViaCredProps {
   setViaSSO: (flag: boolean) => void;
@@ -44,7 +44,7 @@ const schema = yup.object({
   domain: yup.string(),
 });
 
-const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
+const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
   const loginMutation = useMutation((formData: IForm) => login(formData), {
     onSuccess: (data) =>
       redirectWithToken({

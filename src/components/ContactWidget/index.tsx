@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FC, useState } from 'react';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
 import Button, { Variant, Type as ButtonType } from 'components/Button';
@@ -28,10 +28,7 @@ type IContactCardProps = {
   canEdit: boolean;
 };
 
-const ContactWidget: React.FC<IContactCardProps> = ({
-  contactCardData,
-  canEdit,
-}) => {
+const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [isHovered, eventHandlers] = useHover();
 

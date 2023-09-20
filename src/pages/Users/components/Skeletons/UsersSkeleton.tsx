@@ -1,8 +1,8 @@
 import Card from 'components/Card';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
-const UsersSkeleton: React.FC = (): ReactElement => {
+const UsersSkeleton: FC = (): ReactElement => {
   return (
     <Card className="w-[190px] min-h-[244px] border-solid border border-neutral-200 flex flex-col">
       <Skeleton

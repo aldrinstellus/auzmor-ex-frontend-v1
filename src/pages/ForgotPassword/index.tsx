@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { ChangeEvent, FC, useEffect } from 'react';
 import { Logo } from 'components/Logo';
 import { Success } from 'components/Logo';
 import Layout, { FieldType } from 'components/Form';
@@ -22,7 +22,7 @@ const schema = yup.object({
   email: yup.string().required().validateEmail(),
 });
 
-const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
+const ForgotPassword: FC<IForgotPasswordProps> = () => {
   const navigate = useNavigate();
 
   const forgotPasswordMutation = useMutation((formData: any) =>
@@ -55,7 +55,7 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
       error: errors.email?.message,
       control,
       getValues,
-      onChange: (_data: string, _e: React.ChangeEvent) => {},
+      onChange: (_data: string, _e: ChangeEvent) => {},
     },
   ];
 

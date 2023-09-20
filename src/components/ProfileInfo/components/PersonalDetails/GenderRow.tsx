@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { FC, useRef } from 'react';
 import InfoRow from '../InfoRow';
 import 'moment-timezone';
 import useRole from 'hooks/useRole';
@@ -17,7 +17,7 @@ type AppProps = {
   data: any;
 };
 
-const GenderRow: React.FC<AppProps> = ({ data }) => {
+const GenderRow: FC<AppProps> = ({ data }) => {
   const { userId = '' } = useParams();
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);

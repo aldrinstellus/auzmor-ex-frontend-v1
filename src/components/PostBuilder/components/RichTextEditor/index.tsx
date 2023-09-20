@@ -1,6 +1,8 @@
-import React, {
+import {
+  ForwardedRef,
   LegacyRef,
   ReactNode,
+  forwardRef,
   memo,
   useCallback,
   useContext,
@@ -58,7 +60,7 @@ export interface IQuillEditorProps {
   mode: PostBuilderMode;
 }
 
-const RichTextEditor = React.forwardRef(
+const RichTextEditor = forwardRef(
   (
     {
       className,
@@ -70,7 +72,7 @@ const RichTextEditor = React.forwardRef(
       dataTestId,
       mode,
     }: IQuillEditorProps,
-    ref: React.ForwardedRef<ReactQuill>,
+    ref: ForwardedRef<ReactQuill>,
   ) => {
     const {
       announcement,

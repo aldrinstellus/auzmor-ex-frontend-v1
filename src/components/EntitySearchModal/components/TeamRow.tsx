@@ -2,14 +2,14 @@ import TeamWork from 'images/teamwork.svg';
 import AvatarList from 'components/AvatarList';
 import Icon from 'components/Icon';
 import { ITeam } from 'queries/teams';
-import React from 'react';
+import { FC } from 'react';
 
 interface ITeamRowProps {
   team: ITeam;
   onClick?: () => void;
 }
 
-const TeamRow: React.FC<ITeamRowProps> = ({ team, onClick }) => {
+const TeamRow: FC<ITeamRowProps> = ({ team, onClick }) => {
   return (
     <div
       className="flex items-center justify-between w-full pr-6 cursor-pointer"

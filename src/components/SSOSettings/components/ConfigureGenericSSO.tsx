@@ -2,7 +2,7 @@ import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
 import Modal from 'components/Modal';
-import React, { ReactElement, useRef, useState } from 'react';
+import { FC, ReactElement, useRef, useState } from 'react';
 import SAMLDetail from './SAMLDetail';
 import Collapse from 'components/Collapse';
 import Button, { Type, Variant } from 'components/Button';
@@ -36,7 +36,7 @@ const schema = yup.object({
   allowOnlyExistingUser: yup.boolean().default(false),
 });
 
-const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
+const ConfigureGenericSSO: FC<ConfigureGenericSSOProps> = ({
   open,
   closeModal,
   ssoSetting,

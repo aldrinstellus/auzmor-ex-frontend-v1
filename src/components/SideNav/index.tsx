@@ -1,10 +1,10 @@
-import React from 'react';
+import { FC } from 'react';
 
 export interface ISideNavProps {}
 
 // component for sidenav
 
-const SideNav: React.FC<ISideNavProps> = () => {
+const SideNav: FC<ISideNavProps> = () => {
   return <></>;
 };
 

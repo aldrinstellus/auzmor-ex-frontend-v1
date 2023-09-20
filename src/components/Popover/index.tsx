@@ -1,15 +1,18 @@
 /* eslint-disable react/display-name */
-import React, {
+import {
+  ForwardedRef,
   Fragment,
   JSXElementConstructor,
   ReactElement,
+  ReactNode,
+  forwardRef,
   memo,
 } from 'react';
 import { Popover as HUIPopover, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 
 type AppProps = {
-  triggerNode: React.ReactNode;
+  triggerNode: ReactNode;
   children?: ReactElement<any, string | JSXElementConstructor<any>>;
   className?: string;
   contentRenderer?: (
@@ -17,10 +20,10 @@ type AppProps = {
   ) => ReactElement<any, string | JSXElementConstructor<any>>;
 };
 
-const Popover = React.forwardRef(
+const Popover = forwardRef(
   (
     { triggerNode, children, className = 'right-0', contentRenderer }: AppProps,
-    ref: React.ForwardedRef<HTMLButtonElement>,
+    ref: ForwardedRef<HTMLButtonElement>,
   ) => {
     const styles = clsx(
       { 'absolute z-10 bg-white': true },

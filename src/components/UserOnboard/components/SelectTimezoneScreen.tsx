@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect } from 'react';
+import { FC, ReactElement, useEffect } from 'react';
 import timezones from 'utils/timezones.json';
 import OnboardTimezone from 'images/onboard-timezone.png';
 import Layout, { FieldType } from 'components/Form';
@@ -27,7 +27,7 @@ export type OptionType = {
   value: string;
 };
 
-const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
+const SelectTimezoneScreen: FC<SelectTimezoneScreenProps> = ({
   next,
   setDisableClose,
   dataTestId,

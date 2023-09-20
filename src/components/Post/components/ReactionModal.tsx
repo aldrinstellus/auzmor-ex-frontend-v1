@@ -1,10 +1,10 @@
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
-import React from 'react';
 import Tabs from 'components/Tabs';
 import ReactionTab from './ReactionTab';
 import { IReactionsCount } from 'queries/post';
+import { FC } from 'react';
 
 export interface IReactionModalProps {
   closeModal?: () => void;
@@ -13,7 +13,7 @@ export interface IReactionModalProps {
   entityType: string;
 }
 
-const ReactionModal: React.FC<IReactionModalProps> = ({
+const ReactionModal: FC<IReactionModalProps> = ({
   closeModal,
   reactionCounts,
   postId,

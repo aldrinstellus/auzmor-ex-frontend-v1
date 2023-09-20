@@ -1,6 +1,6 @@
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import Icon from 'components/Icon';
-import React, { ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 // import { twConfig } from 'utils/misc';
 
 export interface IFailureToastProps {
@@ -10,7 +10,7 @@ export interface IFailureToastProps {
   dataTestId?: string;
 }
 
-const FailureToast: React.FC<IFailureToastProps> = ({
+const FailureToast: FC<IFailureToastProps> = ({
   content,
   actionLabel,
   action,

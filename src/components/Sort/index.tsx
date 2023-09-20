@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import IconButton, { Size, Variant } from 'components/IconButton';
 import PopupMenu from 'components/PopupMenu';
 import useModal from 'hooks/useModal';
@@ -21,7 +21,7 @@ export interface ISortProps {
   dataTestId?: string;
 }
 
-const Sort: React.FC<ISortProps> = ({
+const Sort: FC<ISortProps> = ({
   setFilter,
   filterKey,
   filterValue,

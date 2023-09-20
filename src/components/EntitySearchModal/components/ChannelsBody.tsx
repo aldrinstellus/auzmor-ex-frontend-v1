@@ -4,7 +4,7 @@ import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
 import { useInfiniteDepartments } from 'queries/department';
 import { IGetUser } from 'queries/users';
-import React, { ReactNode, useEffect } from 'react';
+import { FC, ReactNode, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useInfiniteChannels } from 'queries/channel';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
@@ -15,7 +15,7 @@ interface IChannelsBodyProps {
   dataTestId?: string;
 }
 
-const ChannelsBody: React.FC<IChannelsBodyProps> = ({
+const ChannelsBody: FC<IChannelsBodyProps> = ({
   entityRenderer,
   selectedChannelIds = [],
 }) => {

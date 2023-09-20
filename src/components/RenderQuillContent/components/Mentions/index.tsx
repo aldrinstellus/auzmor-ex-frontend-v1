@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 // import useHover from 'hooks/useHover';
 import { Link } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
@@ -15,7 +15,7 @@ type MentionProps = {
   userId?: string;
 };
 
-const Mention: React.FC<MentionProps> = ({
+const Mention: FC<MentionProps> = ({
   value,
   fullName,
   image,

@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 import useModal from 'hooks/useModal';
-import React, { ReactElement, ReactNode, useMemo } from 'react';
+import { FC, ReactElement, ReactNode, useMemo } from 'react';
 
 type CollapseProps = {
   label: string;
@@ -12,7 +12,7 @@ type CollapseProps = {
   dataTestId?: string;
 };
 
-const Collapse: React.FC<CollapseProps> = ({
+const Collapse: FC<CollapseProps> = ({
   label,
   children,
   className,

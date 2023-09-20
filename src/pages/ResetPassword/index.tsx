@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Logo } from 'components/Logo';
 import { Success } from 'components/Logo';
 import Layout, { FieldType } from 'components/Form';

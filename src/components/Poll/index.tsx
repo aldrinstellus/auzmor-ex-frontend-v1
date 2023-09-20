@@ -2,7 +2,7 @@ import IconButton, {
   Size as IconButtonSize,
   Variant as IconButtonVariant,
 } from 'components/IconButton';
-import React, { Fragment, useContext, useEffect, useState } from 'react';
+import { FC, Fragment, useContext, useEffect, useState } from 'react';
 import './styles.css';
 import {
   CreatePostContext,
@@ -66,7 +66,7 @@ function getVotePercent(total: number, votes?: number) {
   return total ? `${((votes || 0) / total) * 100}%` : '0%';
 }
 
-const Poll: React.FC<IPoll & PollProps> = ({
+const Poll: FC<IPoll & PollProps> = ({
   question,
   options,
   closedAt,

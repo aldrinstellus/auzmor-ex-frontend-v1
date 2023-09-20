@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FC, RefObject, useState } from 'react';
 import Icon from 'components/Icon';
 import { clearInputValue, getBlobUrl, twConfig } from 'utils/misc';
 import useModal from 'hooks/useModal';
@@ -13,11 +13,11 @@ import { IMG_FILE_SIZE_LIMIT } from 'contexts/CreatePostContext';
 export interface IImageUploaderProps {
   setImageFile: (file: any) => void;
   imageFile?: any;
-  imageUploaderRef: React.RefObject<HTMLInputElement>;
+  imageUploaderRef: RefObject<HTMLInputElement>;
   isImageAdded: boolean;
 }
 
-const ImageUploader: React.FC<IImageUploaderProps> = ({
+const ImageUploader: FC<IImageUploaderProps> = ({
   setImageFile,
   imageUploaderRef,
   isImageAdded,

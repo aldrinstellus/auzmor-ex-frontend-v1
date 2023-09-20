@@ -1,13 +1,13 @@
-import React from 'react';
 import NoAnnouncement from 'images/NoAnnouncement.svg';
 import useRole from 'hooks/useRole';
 import Button, { Size, Variant } from 'components/Button';
+import { FC } from 'react';
 
 interface EmptyStateProps {
   openModal?: () => void;
 }
 
-const EmptyState: React.FC<EmptyStateProps> = ({ openModal }) => {
+const EmptyState: FC<EmptyStateProps> = ({ openModal }) => {
   const { isAdmin } = useRole();
   const showCreateAnnouncement = isAdmin && !!openModal;
 

@@ -1,11 +1,11 @@
 import { IPostUsersResponse } from 'queries/users';
-import React from 'react';
+import { FC } from 'react';
 
 export interface IInvitedUsersListProps {
   invitedUsersResponse: IPostUsersResponse[];
 }
 
-const InvitedUsersList: React.FC<IInvitedUsersListProps> = ({
+const InvitedUsersList: FC<IInvitedUsersListProps> = ({
   invitedUsersResponse,
 }) => {
   return (

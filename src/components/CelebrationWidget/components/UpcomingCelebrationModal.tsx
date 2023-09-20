@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import { FC, useContext, useEffect, useRef, useState } from 'react';
 import momentTz from 'moment-timezone';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
@@ -19,7 +19,7 @@ interface UpcomingCelebrationModalProps {
   type: CELEBRATION_TYPE;
 }
 
-const UpcomingCelebrationModal: React.FC<UpcomingCelebrationModalProps> = ({
+const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
   open,
   closeModal,
   type,

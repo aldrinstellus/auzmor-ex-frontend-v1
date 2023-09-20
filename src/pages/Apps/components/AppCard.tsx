@@ -1,4 +1,3 @@
-import React from 'react';
 import PopupMenu from 'components/PopupMenu';
 import Badge from 'components/Badge';
 import Card from 'components/Card';
@@ -17,12 +16,13 @@ import { slideInAndOutTop } from 'utils/react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useRole from 'hooks/useRole';
+import { FC } from 'react';
 
 type AppCardProps = {
   app: App;
 };
 
-const AppCard: React.FC<AppCardProps> = ({ app }) => {
+const AppCard: FC<AppCardProps> = ({ app }) => {
   const { isAdmin } = useRole();
   const [appCardHovered, appCardEventHandlers] = useHover();
   // const [menuHovered, menuEventHandlers] = useHover();

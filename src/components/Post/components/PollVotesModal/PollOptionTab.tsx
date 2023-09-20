@@ -1,11 +1,11 @@
-import React from 'react';
+import { FC } from 'react';
 
 interface IPollOptionTabProps {
   postId: string;
   optionId?: string;
 }
 
-const PollOptionTab: React.FC<IPollOptionTabProps> = ({ postId, optionId }) => {
+const PollOptionTab: FC<IPollOptionTabProps> = ({ postId, optionId }) => {
   console.log({ postId, optionId });
   return <div />;
 };

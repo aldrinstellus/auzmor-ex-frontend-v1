@@ -1,12 +1,12 @@
 import Icon from 'components/Icon';
 import { Logo } from 'components/Logo';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 
 interface IInviteLinkExpiredProps {
   message?: string;
 }
 
-const InviteLinkExpired: React.FC<IInviteLinkExpiredProps> = ({
+const InviteLinkExpired: FC<IInviteLinkExpiredProps> = ({
   message,
 }: IInviteLinkExpiredProps): ReactElement => {
   return (

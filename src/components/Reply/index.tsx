@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FC, useState } from 'react';
 import { useInfiniteReplies } from 'queries/reaction';
 /* Comment Level RTE - Comment on the comment level 2 */
 // import { useInfiniteComments } from 'queries/comments';
@@ -32,7 +32,7 @@ export interface activeCommentsDataType {
   type: string;
 }
 
-const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
+const Comments: FC<CommentsProps> = ({ entityId, className }) => {
   const { user } = useAuth();
   const {
     inputRef,

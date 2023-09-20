@@ -1,4 +1,3 @@
-import React from 'react';
 import IconButton, {
   Size,
   Variant as IconVariant,
@@ -19,17 +18,14 @@ import Icon from 'components/Icon';
 import { updateCurrentUser } from 'queries/users';
 import { twConfig } from 'utils/misc';
 import { toastConfig } from '../utils';
+import { FC } from 'react';
 export interface ISkillsModalProps {
   open: boolean;
   closeModal: () => void;
   skills: ISkillsOption[];
 }
 
-const SkillsModal: React.FC<ISkillsModalProps> = ({
-  open,
-  closeModal,
-  skills,
-}) => {
+const SkillsModal: FC<ISkillsModalProps> = ({ open, closeModal, skills }) => {
   const queryClient = useQueryClient();
 
   const updateUserSkillsMutation = useMutation({
@@ -109,7 +105,7 @@ const SkillsModal: React.FC<ISkillsModalProps> = ({
     },
   ];
 
-  const Header: React.FC = () => (
+  const Header: FC = () => (
     <div className="flex flex-wrap items-center p-4 space-x-3 border-neutral-100 border-b-1">
       <div className="text-lg text-neutral-900 font-extrabold flex-auto">
         Add your skills
@@ -125,7 +121,7 @@ const SkillsModal: React.FC<ISkillsModalProps> = ({
     </div>
   );
 
-  const Footer: React.FC = () => (
+  const Footer: FC = () => (
     <div className="flex justify-end space-x-3 items-center h-16 p-6 bg-blue-50 rounded-b-9xl border-neutral-100 border-t-1">
       <Button
         variant={ButtonVariant.Secondary}

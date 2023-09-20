@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import { FC, useMemo, useRef } from 'react';
 import { Control, useController } from 'react-hook-form';
 import clsx from 'clsx';
 
@@ -23,7 +23,7 @@ export type TextAreaProps = {
   disableMaxLength?: boolean;
 };
 
-const TextArea: React.FC<TextAreaProps> = ({
+const TextArea: FC<TextAreaProps> = ({
   defaultValue = '',
   label = '',
   disabled = false,

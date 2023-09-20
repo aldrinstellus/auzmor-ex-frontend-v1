@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { FC, RefObject, useRef } from 'react';
 import IconButton, {
   Variant as IconVariant,
   Size as SizeVariant,
@@ -44,7 +44,7 @@ interface CommentFormProps {
   mode?: PostCommentMode;
   setEditComment?: (edit: boolean) => void;
   commentData?: IComment;
-  inputRef?: React.RefObject<HTMLInputElement> | null;
+  inputRef?: RefObject<HTMLInputElement> | null;
   media?: IMedia[];
   removeMedia?: () => void;
   files?: File[];
@@ -63,7 +63,7 @@ interface IUpdateCommentPayload {
   files: string[];
 }
 
-export const CommentsRTE: React.FC<CommentFormProps> = ({
+export const CommentsRTE: FC<CommentFormProps> = ({
   className = '',
   entityId,
   entityType,

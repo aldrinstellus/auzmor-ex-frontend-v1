@@ -1,4 +1,3 @@
-import React from 'react';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import useHover from 'hooks/useHover';
@@ -32,6 +31,7 @@ import ReactivatePeople from '../ReactivateModal/Reactivate';
 import clsx from 'clsx';
 import truncate from 'lodash/truncate';
 import RemoveTeamMember from '../DeleteModals/TeamMember';
+import { FC } from 'react';
 
 export interface IPeopleCardProps {
   userData: IGetUser;
@@ -55,7 +55,7 @@ const statusColorMap: Record<string, string> = {
   [Status.SUPERADMIN]: PRIMARY_COLOR,
 };
 
-const PeopleCard: React.FC<IPeopleCardProps> = ({
+const PeopleCard: FC<IPeopleCardProps> = ({
   userData,
   teamId,
   isTeamPeople,

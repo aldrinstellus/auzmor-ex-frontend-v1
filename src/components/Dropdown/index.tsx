@@ -1,5 +1,5 @@
 import { Listbox, Transition } from '@headlessui/react';
-import React, { Fragment, ReactElement, ReactNode, useState } from 'react';
+import { FC, Fragment, ReactElement, ReactNode, useState } from 'react';
 
 export type DropdownProps = {
   options: Record<string, any>[];
@@ -15,7 +15,7 @@ export type DropdownProps = {
   selectedIndex?: number;
 };
 
-const Dropdown: React.FC<DropdownProps> = ({
+const Dropdown: FC<DropdownProps> = ({
   options,
   triggerNode,
   optionRenderer,

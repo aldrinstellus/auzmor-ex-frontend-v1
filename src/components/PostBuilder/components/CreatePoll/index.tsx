@@ -1,5 +1,5 @@
 import Header from 'components/ModalHeader';
-import React, { useContext } from 'react';
+import { FC, useContext } from 'react';
 import {
   CreatePostContext,
   CreatePostFlow,
@@ -43,7 +43,7 @@ const schema = yup.object({
   ),
 });
 
-const CreatePoll: React.FC<CreatePollProps> = ({ closeModal }) => {
+const CreatePoll: FC<CreatePollProps> = ({ closeModal }) => {
   const { poll, setActiveFlow, setPoll, setPostType } =
     useContext(CreatePostContext);
 

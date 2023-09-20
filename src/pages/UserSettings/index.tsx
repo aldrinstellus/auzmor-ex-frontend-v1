@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import Card from 'components/Card';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';

@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { Control, useController, Controller } from 'react-hook-form';
 import Select from 'react-select';
 
@@ -16,7 +16,7 @@ export type SingleSelectProps = {
   options: any[];
 };
 
-const SingleSelect: React.FC<SingleSelectProps> = ({
+const SingleSelect: FC<SingleSelectProps> = ({
   name,
   className = '',
   // disabled = false,

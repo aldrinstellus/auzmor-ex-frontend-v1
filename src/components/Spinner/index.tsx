@@ -1,11 +1,11 @@
-import React from 'react';
+import { FC } from 'react';
 
 type SpinnerProps = {
   color?: string;
   className?: string;
 };
 
-const Spinner: React.FC<SpinnerProps> = ({
+const Spinner: FC<SpinnerProps> = ({
   className = 'w-6 h-6 ml-2 text-gray-200  dark:text-gray-600 fill-primary-500',
 }) => {
   return (

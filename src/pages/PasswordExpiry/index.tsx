@@ -1,10 +1,10 @@
 import { Info } from 'components/Logo';
-import React from 'react';
+import { FC } from 'react';
 import { Link } from 'react-router-dom';
 
 export interface IPasswordExpiryProps {}
 
-const PasswordExpiry: React.FC<IPasswordExpiryProps> = () => {
+const PasswordExpiry: FC<IPasswordExpiryProps> = () => {
   return (
     <div className="mr-[42px] h-full flex justify-center items-center relative">
       <div className="flex relative h-[362px]">
