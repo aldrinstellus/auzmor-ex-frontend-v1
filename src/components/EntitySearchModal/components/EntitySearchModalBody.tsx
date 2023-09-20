@@ -18,6 +18,7 @@ interface IEntitySearchModalBodyProps {
   selectedTeamIds?: string[];
   entitySearchLabel?: string;
   hideCurrentUser?: boolean;
+  showJobTitleFilter?: boolean;
 }
 
 const EntitySearchModalBody: React.FC<IEntitySearchModalBodyProps> = ({
@@ -28,6 +29,7 @@ const EntitySearchModalBody: React.FC<IEntitySearchModalBodyProps> = ({
   selectedTeamIds = [],
   entitySearchLabel,
   hideCurrentUser,
+  showJobTitleFilter,
 }) => {
   switch (entityType) {
     case EntitySearchModalType.User:
@@ -36,6 +38,7 @@ const EntitySearchModalBody: React.FC<IEntitySearchModalBodyProps> = ({
           entityRenderer={entityRenderer}
           selectedMemberIds={selectedMemberIds}
           hideCurrentUser={hideCurrentUser}
+          showJobTitleFilter={showJobTitleFilter}
           dataTestId="user"
           entitySearchLabel={entitySearchLabel}
         />

@@ -11,6 +11,7 @@ import UserRow from './UserRow';
 import InfiniteSearch from 'components/InfiniteSearch';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 import useAuth from 'hooks/useAuth';
+import { IDesignation, useInfiniteDesignations } from 'queries/designation';
 
 interface IMembersBodyProps {
   entityRenderer?: (data: IGetUser) => ReactNode;
@@ -18,6 +19,7 @@ interface IMembersBodyProps {
   dataTestId?: string;
   entitySearchLabel?: string;
   hideCurrentUser?: boolean;
+  showJobTitleFilter?: boolean;
 }
 
 const MembersBody: React.FC<IMembersBodyProps> = ({
@@ -26,10 +28,14 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
   dataTestId,
   entitySearchLabel,
   hideCurrentUser,
+  showJobTitleFilter,
 }) => {
   const { user: currentUser } = useAuth();
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+  const [selectedDesignations, setSelectedDesignations] = useState<string[]>(
+    [],
+  );
   const { form } = useEntitySearchFormStore();
   const { watch, setValue, control } = form!;
   const [
@@ -40,6 +46,8 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
     departments,
     locationSearch,
     locations,
+    designationSearch,
+    designations,
   ] = watch([
     'memberSearch',
     'showSelectedMembers',
@@ -48,6 +56,8 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
     'departments',
     'locationSearch',
     'locations',
+    'designationSearch',
+    'designations',
   ]);
 
   // fetch users from search input
@@ -58,6 +68,7 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
         q: debouncedSearchValue,
         department: selectedDepartments,
         location: selectedLocations,
+        designation: selectedDesignations,
       },
     });
   const usersData = data?.pages
@@ -125,6 +136,33 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
     });
   });
 
+  // fetch designation from search input
+  const debouncedDesignationSearchValue = useDebounce(
+    designationSearch || '',
+    500,
+  );
+  const {
+    data: fetchedDesignations,
+    isLoading: designationLoading,
+    isFetchingNextPage: isFetchingNextDesignationPage,
+    fetchNextPage: fetchNextDesignationPage,
+    hasNextPage: hasNextDesignationPage,
+  } = useInfiniteDesignations({
+    q: {
+      q: debouncedDesignationSearchValue,
+    },
+    startFetching: !!showJobTitleFilter,
+  });
+  const designationData = fetchedDesignations?.pages.flatMap((page) => {
+    return page.data.result.data.map((designation: IDesignation) => {
+      try {
+        return designation;
+      } catch (e) {
+        console.log('Error', { designation });
+      }
+    });
+  });
+
   const { ref, inView } = useInView();
   useEffect(() => {
     if (inView) {
@@ -154,7 +192,7 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
     !!!usersData?.length && debouncedSearchValue !== '';
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col min-h-[489px]">
       <div className="flex flex-col py-4 px-6">
         <Layout
           fields={[
@@ -166,13 +204,14 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
               placeholder: 'Add via name or email address',
               isClearable: true,
               dataTestId: `select-${dataTestId}-search`,
+              inputClassName: 'text-sm py-[9px]',
             },
           ]}
           className="pb-4"
         />
         <div className="flex items-center justify-between">
           <div
-            className={`flex items-center text-neutral-500 font-medium ${
+            className={`flex items-center text-neutral-500 font-medium text-sm ${
               isControlsDisabled && 'opacity-50 pointer-events-none'
             }`}
           >
@@ -249,9 +288,47 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
                 dataTestId={`locationfilter`}
               />
             </div>
+            {showJobTitleFilter && (
+              <div className="relative">
+                <InfiniteSearch
+                  title="Job Title"
+                  control={control}
+                  options={
+                    designationData?.map((designation: IDesignation) => ({
+                      label: designation.name,
+                      value: designation,
+                      id: designation.id,
+                    })) || []
+                  }
+                  searchName={'designationSearch'}
+                  optionsName={'designations'}
+                  isLoading={designationLoading}
+                  isFetchingNextPage={isFetchingNextDesignationPage}
+                  fetchNextPage={fetchNextDesignationPage}
+                  hasNextPage={hasNextDesignationPage}
+                  onApply={() =>
+                    setSelectedDesignations([
+                      ...Object.keys(designations).filter(
+                        (key: string) => !!designations[key],
+                      ),
+                    ])
+                  }
+                  onReset={() => {
+                    setSelectedDesignations([]);
+                    if (designations) {
+                      Object.keys(designations).forEach((key: string) =>
+                        setValue(`designations.${key}`, false),
+                      );
+                    }
+                  }}
+                  selectionCount={selectedDesignations.length}
+                  dataTestId={`jobTitlefilter`}
+                />
+              </div>
+            )}
           </div>
           <div
-            className={`cursor-pointer text-neutral-500 font-medium hover:underline ${
+            className={`cursor-pointer text-neutral-500 text-sm font-medium hover:underline ${
               isControlsDisabled && 'opacity-50 pointer-events-none'
             }`}
             onClick={() => {
