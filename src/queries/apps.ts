@@ -182,7 +182,13 @@ export const fetchFeaturedApps = async (
   }
 };
 
-export const useInfiniteFeaturedApps = (q?: Record<string, any>) => {
+export const useInfiniteFeaturedApps = ({
+  q,
+  startFetching = true,
+}: {
+  q?: Record<string, any>;
+  startFetching?: boolean;
+}) => {
   const { featuredApps, setFeaturedApp } = useAppStore();
   return {
     ...useInfiniteQuery({
@@ -201,12 +207,19 @@ export const useInfiniteFeaturedApps = (q?: Record<string, any>) => {
         return currentPage?.data?.result?.paging?.prev;
       },
       staleTime: 5 * 60 * 1000,
+      enabled: startFetching,
     }),
     featuredApps,
   };
 };
 
-export const useInfiniteApps = (q?: Record<string, any>) => {
+export const useInfiniteApps = ({
+  q,
+  startFetching = true,
+}: {
+  q?: Record<string, any>;
+  startFetching?: boolean;
+}) => {
   const { apps, setApp } = useAppStore();
   return {
     ...useInfiniteQuery({
@@ -224,6 +237,7 @@ export const useInfiniteApps = (q?: Record<string, any>) => {
         return currentPage?.data?.result?.paging?.prev;
       },
       staleTime: 5 * 60 * 1000,
+      enabled: startFetching,
     }),
     apps,
   };

@@ -27,7 +27,7 @@ const SelectAppModal: FC<ISelectAppModalProps> = ({
   const { ref, inView } = useInView();
   const { apps } = useAppStore();
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteApps();
+    useInfiniteApps({});
   const [selectedApps, setSelectedApps] = useState<App[]>(widgetApps || []);
 
   const appIds = data?.pages.flatMap((page: any) => {

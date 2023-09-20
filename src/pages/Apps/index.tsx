@@ -1,6 +1,6 @@
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import Card from 'components/Card';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import AppsBanner from 'images/appsBanner.png';
 import IconButton, {
   Variant as IconVariant,
@@ -26,6 +26,7 @@ import AppBannerSkeleton from './components/Skeletons/AppBannerSkeleton';
 import useRole from 'hooks/useRole';
 import Skeleton from 'react-loading-skeleton';
 import Sort from 'components/Sort';
+import useURLParams from 'hooks/useURLParams';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -33,12 +34,19 @@ interface IAppSearchForm {
 }
 
 enum AppGroup {
-  MY_APPS = 'My apps',
-  ALL_APPS = 'All apps',
-  FEATURED = 'Featured',
+  MY_APPS = 'myApps',
+  ALL_APPS = 'allApps',
+  FEATURED = 'featured',
 }
 
 const Apps: FC<IAppsProps> = () => {
+  const {
+    searchParams,
+    updateParam,
+    deleteParam,
+    serializeFilter,
+    parseParams,
+  } = useURLParams();
   // Form for searching apps
   const {
     control,
@@ -48,13 +56,16 @@ const Apps: FC<IAppsProps> = () => {
     formState: { errors },
   } = useForm<IAppSearchForm>({
     mode: 'onChange',
+    defaultValues: {
+      search: searchParams.get('search'),
+    },
   });
 
   const { apps, featuredApps } = useAppStore();
   const { isAdmin } = useRole();
   // State to store apps group
   const [selectedAppGroup, setSelectedAppGroup] = useState<AppGroup>(
-    AppGroup.ALL_APPS,
+    searchParams.get('tab') || AppGroup.ALL_APPS,
   );
 
   // Add apps modal
@@ -70,6 +81,7 @@ const Apps: FC<IAppsProps> = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFeauturedAppLoading, setIsFeaturedAppLoading] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
+  const [startFetching, setStartFetching] = useState(false);
 
   const selectedButtonClassName = '!bg-primary-50 text-primary-500 text-sm';
   const regularButtonClassName = '!text-neutral-500 text-sm';
@@ -101,10 +113,17 @@ const Apps: FC<IAppsProps> = () => {
   });
 
   const handleRemoveFilters = (key: any, id: any) => {
-    setAppFilters({
+    const updatedFilter = {
       ...appFilters,
       [key]: appFilters[key].filter((item: any) => item.id !== id),
-    });
+    };
+    if (updatedFilter[key].length === 0) {
+      deleteParam(key);
+    } else {
+      const serializedFilters = serializeFilter(updatedFilter[key]);
+      updateParam(key, serializedFilters);
+    }
+    setAppFilters(updatedFilter);
   };
 
   const clearFilters = () => {
@@ -112,12 +131,23 @@ const Apps: FC<IAppsProps> = () => {
       categories: [],
       teams: [],
     });
+    deleteParam('categories');
+    deleteParam('teams');
   };
 
   const onApplyFilter = (filters: any) => {
     setAppFilters(filters);
     if (filters.categories.length > 0) {
+      const serializedCategories = serializeFilter(filters.categories);
+      updateParam('categories', serializedCategories);
+    }
+    if (filters.teams.length > 0) {
+      const serializedTeams = serializeFilter(filters.teams);
+      updateParam('teams', serializedTeams);
+    }
+    if (filters.categories.length > 0) {
       setSelectedAppGroup(AppGroup.ALL_APPS);
+      deleteParam('tab');
     }
   };
 
@@ -127,7 +157,42 @@ const Apps: FC<IAppsProps> = () => {
 
   const handleTabChange = (tab: AppGroup) => {
     setSelectedAppGroup(tab);
+    updateParam('tab', tab);
   };
+
+  const handleQuickCategorySelect = (category: any) => {
+    setSelectedAppGroup(category.id);
+    updateParam('tab', category.id);
+    setAppFilters((prevFilters: any) => ({
+      ...prevFilters,
+      categories: [],
+    }));
+  };
+
+  // parse the persisted filters from the URL on page load
+  useEffect(() => {
+    const parsedCategories = parseParams('categories');
+    const parsedTeams = parseParams('teams');
+    const parsedSort = parseParams('sort');
+    setAppFilters({
+      ...appFilters,
+      ...(parsedCategories && { categories: parsedCategories }),
+      ...(parsedTeams && { teams: parsedTeams }),
+    });
+    if (parsedSort) {
+      setSortByFilter(parsedSort);
+    }
+    setStartFetching(true);
+  }, []);
+
+  // Change URL params for search filters
+  useEffect(() => {
+    if (debouncedSearchValue) {
+      updateParam('search', debouncedSearchValue);
+    } else {
+      deleteParam('search');
+    }
+  }, [debouncedSearchValue]);
 
   return (
     <div>
@@ -160,7 +225,7 @@ const Apps: FC<IAppsProps> = () => {
             {isAdmin && (
               <Button
                 variant={ButtonVariant.Secondary}
-                label={AppGroup.MY_APPS}
+                label="My apps"
                 dataTestId="my-apps"
                 className={`${
                   selectedAppGroup === AppGroup.MY_APPS
@@ -172,7 +237,7 @@ const Apps: FC<IAppsProps> = () => {
             )}
             <Button
               variant={ButtonVariant.Secondary}
-              label={AppGroup.ALL_APPS}
+              label="All apps"
               className={
                 selectedAppGroup === AppGroup.ALL_APPS
                   ? selectedButtonClassName
@@ -183,7 +248,7 @@ const Apps: FC<IAppsProps> = () => {
             />
             <Button
               variant={ButtonVariant.Secondary}
-              label={AppGroup.FEATURED}
+              label="Featured"
               dataTestId="featured-apps"
               className={
                 selectedAppGroup === AppGroup.FEATURED
@@ -204,13 +269,7 @@ const Apps: FC<IAppsProps> = () => {
                         ? selectedButtonClassName
                         : regularButtonClassName
                     }
-                    onClick={() => {
-                      setSelectedAppGroup(category.id);
-                      setAppFilters((prevFilters: any) => ({
-                        ...prevFilters,
-                        categories: [],
-                      }));
-                    }}
+                    onClick={() => handleQuickCategorySelect(category)}
                   />
                 </div>
               ))}
@@ -333,7 +392,7 @@ const Apps: FC<IAppsProps> = () => {
                   <div className="text-xl font-bold">Featured</div>
                   <div
                     className="text-base font-semibold text-primary-500 cursor-pointer"
-                    onClick={() => setSelectedAppGroup(AppGroup.FEATURED)}
+                    onClick={() => handleTabChange(AppGroup.FEATURED)}
                   >
                     View all featured
                   </div>
@@ -362,6 +421,7 @@ const Apps: FC<IAppsProps> = () => {
                 showEmptyState={false}
                 setAppsCount={setFeaturedAppsCount}
                 setAppsLoading={setIsFeaturedAppLoading}
+                startFetching={startFetching}
               />
               {featuredAppsCount > 0 && !isFeauturedAppLoading && (
                 <div className="text-xl font-bold mt-6">All Apps</div>
@@ -401,6 +461,7 @@ const Apps: FC<IAppsProps> = () => {
             setAppsLoading={setIsLoading}
             openAddAppModal={openModal}
             resetField={resetField}
+            startFetching={startFetching}
           />
         </div>
       </Card>

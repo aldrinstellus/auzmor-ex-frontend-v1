@@ -20,6 +20,7 @@ interface IAppListProps {
   setAppsCount?: (params: any) => void;
   setAppsLoading?: (params: any) => void;
   resetField?: (key: any, param: any) => void;
+  startFetching: boolean;
 }
 
 const AppList: FC<IAppListProps> = ({
@@ -33,14 +34,16 @@ const AppList: FC<IAppListProps> = ({
   resetField,
   setAppsCount,
   setAppsLoading,
+  startFetching,
 }) => {
   const { ref, inView } = useInView();
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    fetchQuery(
-      isFiltersEmpty({
+    fetchQuery({
+      q: isFiltersEmpty({
         ...queryParams,
       }),
-    );
+      startFetching,
+    });
 
   const appIds = data?.pages.flatMap((page: any) => {
     return page.data?.result?.data.map((apps: any) => {
