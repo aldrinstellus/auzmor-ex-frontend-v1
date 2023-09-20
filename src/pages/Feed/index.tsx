@@ -44,6 +44,7 @@ import { useFeedStore } from 'stores/feedStore';
 
 // misc
 import NoPosts from 'images/NoPostsFound.png';
+import AppLauncher from 'components/AppLauncher';
 
 interface IFeedProps {}
 
@@ -301,6 +302,7 @@ const Feed: FC<IFeedProps> = () => {
     <div className="mb-12 gap-[52px] flex justify-between ">
       <div className="z-10 min-w-[293px] max-w-[293px] flex flex-col gap-6 sticky top-28 overflow-y-auto max-h-[calc(100vh-120px)] widget-hide-scroll">
         <UserCard />
+        <AppLauncher />
         <MyTeamWidget />
       </div>
       <div className="w-1/2 flex flex-col gap-[26px]">

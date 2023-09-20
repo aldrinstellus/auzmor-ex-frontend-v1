@@ -125,7 +125,11 @@ const CelebrationWidget: FC<CelebrationWidgetProps> = ({ type }) => {
         onClick={toggleModal}
       >
         <div className="font-bold">{widgetTitle}</div>
-        <Icon name={open ? 'arrowUp' : 'arrowDown'} size={20} />
+        <Icon
+          name={open ? 'arrowUp' : 'arrowDown'}
+          size={20}
+          color="text-neutral-900"
+        />
       </div>
       <div
         className={`transition-max-h duration-300 ease-in-out overflow-hidden ${

@@ -8,6 +8,7 @@ import useRole from 'hooks/useRole';
 import { App } from 'queries/apps';
 import AppDetailSVG from './../../../images/appDetails.svg';
 import { FC } from 'react';
+import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 
 type AppDetailModalProps = {
   app: App;
@@ -35,11 +36,13 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between p-4">
           <div className="flex gap-x-3 items-center">
-            {app?.icon?.original && (
-              <div className="p-1 bg-neutral-100 rounded-xl">
-                <img src={app?.icon?.original} height={20} width={20} />
-              </div>
-            )}
+            <div className="p-1 bg-neutral-100 rounded-xl">
+              <img
+                src={app?.icon?.original || DefaultAppIcon}
+                height={20}
+                width={20}
+              />
+            </div>
             <p className="text-neutral-900 text-lg font-extrabold">
               {app.label}
             </p>
@@ -88,16 +91,14 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
               <div className="pb-8">
                 {/* The icon, name and description */}
                 <div className="flex px-6 pt-4 gap-x-6">
-                  {app?.icon?.original && (
-                    <div className="min-w-[100px] min-h-[100px]">
-                      <img
-                        src={app?.icon?.original}
-                        className="p-1 rounded-xl"
-                        height={100}
-                        width={100}
-                      />
-                    </div>
-                  )}
+                  <div className="min-w-[100px] min-h-[100px]">
+                    <img
+                      src={app?.icon?.original || DefaultAppIcon}
+                      className="p-1 rounded-xl"
+                      height={100}
+                      width={100}
+                    />
+                  </div>
                   <div>
                     <p
                       className="text-3xl text-neutral-900 font-semibold"

@@ -41,7 +41,7 @@ const Icon: FC<IconProps> = ({
   const disabledClass = `text-neutral-200 cursor-not-allowed pointer-events-none`;
 
   const styles = clsx({
-    'text-neutral-500 hover:text-primary-500 group-hover:text-primary-500 hover:cursor-pointer':
+    'text-neutral-500 hover:text-primary-500 group-hover:text-primary-500 hover:cursor-pointer transition-colors ease-out duration-default':
       !disabled,
     'cursor-pointer': !!onClick && !disabled,
     [colorClass]: color && !disabled,
