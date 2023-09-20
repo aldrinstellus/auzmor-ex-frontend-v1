@@ -1,7 +1,6 @@
 import { IPost } from 'queries/post';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-// import _ from 'lodash';
 
 export interface IFeedStore {
   feed: { [key: string]: IPost };
