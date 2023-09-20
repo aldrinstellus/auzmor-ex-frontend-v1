@@ -1,44 +1,50 @@
 import React, { ReactElement } from 'react';
-import useHover from 'hooks/useHover';
 import { Link } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import Tooltip, { Variant } from 'components/Tooltip';
 import './index.css';
-import UserCard from '../UserCard';
+import UserCard from 'components/UserCard';
+import { ILocation } from 'queries/location';
 
 type MentionProps = {
   value: string;
   fullName: string;
-  image?: string;
+  profileImage?: { blurHash: string; id: string; original: string };
   active?: boolean;
   email?: string;
   userId?: string;
+  location?: ILocation;
 };
 
 const Mention: React.FC<MentionProps> = ({
   value,
   fullName,
-  image,
+  profileImage,
   active,
   email,
   userId,
+  location,
 }): ReactElement => {
   const { user } = useAuth();
   return (
     <Tooltip
       tooltipContent={
         <UserCard
-          fullName={fullName}
-          email={email}
-          image={image}
-          active={active}
+          user={{
+            id: userId || '',
+            fullName,
+            workEmail: email,
+            workLocation: location,
+            profileImage,
+          }}
         />
       }
       variant={Variant.Light}
-      className="shadow-md top rounded-9xl"
+      className="!p-4 !shadow-md !rounded-9xl !z-[999]"
     >
       <Link
         to={userId && userId !== user?.id ? '/users/' + userId : '/profile'}
+        className="hover:underline hover:text-primary-500"
       >
         <span
           className="cursor-pointer mention"

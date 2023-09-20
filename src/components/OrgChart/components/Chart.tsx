@@ -4,7 +4,7 @@ import { renderToString } from 'react-dom/server';
 import './index.css';
 import UserNode from './UserNode';
 import ExpandButtonContent from './ExpandButtonContent';
-import UserCard from 'components/UserCard';
+import UserCard, { UsercardVariant } from 'components/UserCard';
 import { getOrgChart } from 'queries/users';
 import Spinner from 'components/Spinner';
 import clsx from 'clsx';
@@ -69,7 +69,9 @@ const Chart: React.FC<IChart> = ({
             return renderToString(<UserNode node={node} />);
           })
           // .hoverCardContent((d) => {
-          //   return renderToString(<UserCard user={d.userData} />);
+          //   return renderToString(
+          //     <UserCard user={d.userData} variant={UsercardVariant.Large} />,
+          //   );
           // })
           // .onExpandCollapseClick((d: any, data: any) => {
           //   if (d.data.directReportees > 0 && !!d.children) {

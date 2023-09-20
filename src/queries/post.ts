@@ -13,6 +13,7 @@ import { useFeedStore } from 'stores/feedStore';
 import _ from 'lodash';
 import { ITeam } from './teams';
 import { IGetUser } from './users';
+import { ILocation } from './location';
 
 export interface IReactionsCount {
   [key: string]: number;
@@ -24,6 +25,7 @@ export interface IMention {
   entityType: string;
   image?: string;
   email?: string;
+  location?: ILocation;
 }
 
 export enum AudienceEntityType {
