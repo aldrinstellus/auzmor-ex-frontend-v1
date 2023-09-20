@@ -4,7 +4,6 @@ import {
 } from 'react-circular-progressbar';
 import { FC, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-// import { useInfiniteUsers } from 'queries/users';
 import AvatarRowSkeleton from './AvatarRowSkeleton';
 import AvatarRow from './AvatarRow';
 import PageLoader from 'components/PageLoader';

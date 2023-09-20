@@ -1,5 +1,4 @@
 import { MouseEventHandler, ReactNode } from 'react';
-// import clsx from 'clsx';
 import { PlacesType, Tooltip as ReactTooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 

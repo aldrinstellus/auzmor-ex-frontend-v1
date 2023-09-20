@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import { ReactNode } from 'react';
 import Icon from 'components/Icon';
-// import { twConfig } from 'utils/misc';
 
 export enum Variant {
   Success = 'SUCCESS',

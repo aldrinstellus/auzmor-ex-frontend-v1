@@ -1,16 +1,7 @@
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 import isDate from 'lodash/isDate';
-// import moment from 'moment';
-import {
-  FC,
-  MouseEvent,
-  ReactElement,
-  // useEffect,
-  useMemo,
-  // useRef,
-  useState,
-} from 'react';
+import { FC, MouseEvent, ReactElement, useMemo, useState } from 'react';
 import {
   Control,
   UseFormClearErrors,

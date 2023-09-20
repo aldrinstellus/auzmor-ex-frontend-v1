@@ -4,9 +4,9 @@ import 'moment-timezone';
 import useRole from 'hooks/useRole';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateCurrentUser, updateUserById } from 'queries/users';
-// import Icon from 'components/Icon';
+
 import { convertUpperCaseToPascalCase } from 'utils/misc';
-// import { toastConfig } from '../utils';
+
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import { useParams } from 'react-router-dom';

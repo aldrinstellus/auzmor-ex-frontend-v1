@@ -33,16 +33,13 @@ import { ICategory } from 'queries/category';
 import { addTeamMember } from 'queries/teams';
 
 import useAuth from 'hooks/useAuth';
-// import { useSearchParams } from 'react-router-dom';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-// import queryClient from 'utils/queryClient';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { useMutation } from '@tanstack/react-query';
 import useURLParams from 'hooks/useURLParams';
-// import { Role } from 'utils/enum';
 import useRole from 'hooks/useRole';
 interface IForm {
   search?: string;

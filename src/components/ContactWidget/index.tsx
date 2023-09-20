@@ -5,7 +5,6 @@ import Button, { Variant, Type as ButtonType } from 'components/Button';
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 import { Size } from 'components/Button';
 import useHover from 'hooks/useHover';
-// import clsx from 'clsx';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import { useMutation } from '@tanstack/react-query';

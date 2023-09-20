@@ -6,7 +6,6 @@ import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import { FC, useContext, useRef } from 'react';
 import { getBlobUrl, isVideo } from 'utils/misc';
 import useCarousel from 'hooks/useCarousel';
-// import SwitchToggle from 'components/SwitchToggle';
 import Header from 'components/ModalHeader';
 import Body from './Body';
 import Footer from './Footer';

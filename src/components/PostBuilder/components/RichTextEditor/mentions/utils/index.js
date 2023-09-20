@@ -1,5 +1,3 @@
-// import { getEmoji } from "../../EmojiBlot";
-
 function attachDataValues(element, data, dataAttributes) {
   const mention = element;
   Object.keys(data).forEach((key) => {

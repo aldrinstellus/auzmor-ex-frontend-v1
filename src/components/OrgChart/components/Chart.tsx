@@ -4,11 +4,8 @@ import { renderToString } from 'react-dom/server';
 import './index.css';
 import UserNode from './UserNode';
 import ExpandButtonContent from './ExpandButtonContent';
-// import UserCard from 'components/UserCard';
-// import { getOrgChart } from 'queries/users';
 import Spinner from 'components/Spinner';
 import clsx from 'clsx';
-// import { QueryFunctionContext } from '@tanstack/react-query';
 import Button, { Variant } from 'components/Button';
 
 export interface INode {

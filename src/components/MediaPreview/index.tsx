@@ -2,13 +2,11 @@ import { FC, MouseEvent, MouseEventHandler, useMemo, useState } from 'react';
 import Carousel from 'components/Carousel';
 import MediaRender from './components/MediaRender';
 import Button, { Variant as ButtonVariant, Size } from 'components/Button';
-// import { twConfig } from 'utils/misc';
 import Icon from 'components/Icon';
 import { ICoverImageMap, IMedia } from 'contexts/CreatePostContext';
 import useModal from 'hooks/useModal';
 import './index.css';
 import Modal from 'components/Modal';
-// import IconWrapper from 'components/Icon/components/IconWrapper';
 
 export enum Mode {
   View = 'VIEW',

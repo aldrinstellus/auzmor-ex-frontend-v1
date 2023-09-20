@@ -1,7 +1,6 @@
 import { IMedia } from 'contexts/CreatePostContext';
 import { Mode } from '..';
 import Icon from 'components/Icon';
-// import { twConfig } from 'utils/misc';
 import BlurImg from 'components/Image/components/BlurImg';
 import { FC, MouseEventHandler } from 'react';
 

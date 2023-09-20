@@ -1,6 +1,5 @@
 import { FC, ReactElement } from 'react';
 import NotSupported from 'images/unsupported.png';
-// import GreenLogo from 'images/greenLogo.png';
 import { Logo } from 'components/Logo';
 
 const Unsupported: FC = (): ReactElement => {

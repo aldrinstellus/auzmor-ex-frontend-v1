@@ -1,4 +1,3 @@
-// import Card from 'components/Card';
 import Skeleton from 'react-loading-skeleton';
 
 const TeamDetailSkeleton = () => {

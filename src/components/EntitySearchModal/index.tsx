@@ -5,7 +5,6 @@ import Footer from './components/Footer';
 import EntitySearchModalBody from './components/EntitySearchModalBody';
 import { useForm } from 'react-hook-form';
 import { IGetUser } from 'queries/users';
-// import { ITeam } from 'queries/teams';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 
 export enum EntitySearchModalType {

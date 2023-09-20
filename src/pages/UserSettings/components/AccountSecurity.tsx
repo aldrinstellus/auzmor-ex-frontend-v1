@@ -5,7 +5,6 @@ import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
 import { changePassword } from 'queries/account';
-// import { Link } from 'react-router-dom';
 import { Variant as InputVariant } from 'components/Input';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';

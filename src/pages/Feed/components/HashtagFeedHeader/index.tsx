@@ -2,8 +2,6 @@ import Icon from 'components/Icon';
 import { useSearchParams } from 'react-router-dom';
 import HashtagIcon from 'images/hashtag.svg';
 import { FC, memo } from 'react';
-// import { twConfig } from 'utils/misc';
-
 interface IHashtagFeedHeaderProps {
   hashtag: string;
   feedIds: {

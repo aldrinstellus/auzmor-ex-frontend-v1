@@ -1,12 +1,6 @@
 import { FC, ReactNode } from 'react';
 import { EntitySearchModalType } from '..';
 import MembersBody from './MembersBody';
-// import {
-//   Control,
-//   UseFormResetField,
-//   UseFormSetValue,
-//   UseFormWatch,
-// } from 'react-hook-form';
 import TeamsBody from './TeamsBody';
 import ChannelsBody from './ChannelsBody';
 

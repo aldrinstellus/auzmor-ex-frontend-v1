@@ -7,10 +7,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { getTimezoneNameFromIANA } from 'utils/time';
 import { updateCurrentUser, updateUserById } from 'queries/users';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-// import Icon from 'components/Icon';
-// import { twConfig } from 'utils/misc';
+
 import { getDefaultTimezoneOption } from 'components/UserOnboard/utils';
-// import { toastConfig } from '../utils';
+
 import { useParams } from 'react-router-dom';
 import useRole from 'hooks/useRole';
 import useAuth from 'hooks/useAuth';

@@ -1,4 +1,3 @@
-// import Avatar from 'components/Avatar';
 import { FC } from 'react';
 import Skeleton from 'react-loading-skeleton';
 

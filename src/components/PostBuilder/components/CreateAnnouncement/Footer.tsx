@@ -7,7 +7,6 @@ import { CreateAnnouncementMode } from '.';
 import { useMutation } from '@tanstack/react-query';
 import { IPost, updatePost } from 'queries/post';
 import queryClient from 'utils/queryClient';
-// import { Dayjs } from 'dayjs';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import Icon from 'components/Icon';

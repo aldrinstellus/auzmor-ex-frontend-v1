@@ -4,7 +4,6 @@ import {
   Navigate,
   Route,
 } from 'react-router-dom';
-// import { loader as homeLoader } from 'pages/Home';
 import RequireAuth from 'components/RequireAuth';
 import Notifications from 'pages/Notifications';
 import { lazy } from 'react';

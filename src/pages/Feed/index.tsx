@@ -12,7 +12,6 @@ import FeedFilter, {
   filterKeyMap,
 } from 'components/ActivityFeed/components/FeedFilters';
 import Divider from 'components/Divider';
-// import SortByDropdown from 'components/ActivityFeed/components/SortByDropdown';
 import Icon from 'components/Icon';
 import PageLoader from 'components/PageLoader';
 import SkeletonLoader from './components/SkeletonLoader';

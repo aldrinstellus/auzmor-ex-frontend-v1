@@ -3,7 +3,6 @@ import Banner, { Variant } from 'components/Banner';
 import Icon from 'components/Icon';
 import { IMedia } from 'contexts/CreatePostContext';
 import { FC, MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
-// import { twConfig } from 'utils/misc';
 
 const MIN = 0;
 const MAX = 100;

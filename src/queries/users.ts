@@ -7,7 +7,6 @@ import {
 import apiService from 'utils/apiService';
 import { IDepartment } from './department';
 import { ILocation } from './location';
-// import { ILocation } from './location';
 
 // for future filters
 export enum PeopleFilterKeys {

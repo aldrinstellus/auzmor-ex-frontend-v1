@@ -1,7 +1,5 @@
 import { FC, Fragment, useEffect, useState } from 'react';
-// import clsx from 'clsx';
 import Card from 'components/Card';
-// import Divider from 'components/Divider';
 import useHover from 'hooks/useHover';
 import Header from './Header';
 import { useForm } from 'react-hook-form';
@@ -10,11 +8,7 @@ import queryClient from 'utils/queryClient';
 import { EditUserSection, updateCurrentUser } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
-// import { toast } from 'react-toastify';
-// import { twConfig } from 'utils/misc';
 import Icon from 'components/Icon';
-// import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-// import { slideInAndOutTop } from 'utils/react-toastify';
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 
 interface IAboutMe {

@@ -19,7 +19,6 @@ import {
   IMediaValidationError,
   MediaValidationError,
 } from 'contexts/CreatePostContext';
-// import { getMediaObj } from 'utils/misc';
 import { useUploadState } from 'hooks/useUploadState';
 
 export const validImageTypesForComments = [

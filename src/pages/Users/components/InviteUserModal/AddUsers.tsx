@@ -6,7 +6,6 @@ import {
   UseFieldArrayRemove,
 } from 'react-hook-form';
 import { IEmailValidationErrors, IUserForm, roleOptions } from '.';
-// import { twConfig } from 'utils/misc';
 import Icon from 'components/Icon';
 import useHover from 'hooks/useHover';
 import Banner, { Variant as BannerVariant } from 'components/Banner';

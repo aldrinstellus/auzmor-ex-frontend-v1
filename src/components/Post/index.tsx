@@ -15,7 +15,6 @@ import Likes, { ReactionType } from 'components/Reactions';
 import Icon from 'components/Icon';
 import RenderQuillContent from 'components/RenderQuillContent';
 import Button, { Size, Variant } from 'components/Button';
-// import Divider from 'components/Divider';
 import FeedPostMenu from './components/FeedPostMenu';
 import AcknowledgementBanner from './components/AcknowledgementBanner';
 import ReactionModal from './components/ReactionModal';

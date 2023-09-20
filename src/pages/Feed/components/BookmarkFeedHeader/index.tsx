@@ -1,7 +1,6 @@
 import Icon from 'components/Icon';
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
-// import { twConfig } from 'utils/misc';
 
 interface IBookmarkFeedHeaderProps {
   setAppliedFeedFilters: (appliedFeedFilters: Record<string, any>) => void;

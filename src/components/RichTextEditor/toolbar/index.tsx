@@ -1,7 +1,5 @@
 import Icon from 'components/Icon';
 import { FC } from 'react';
-// import { twConfig } from 'utils/misc';
-
 interface IToolbarProps {
   isCharLimit: boolean;
 }

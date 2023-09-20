@@ -1,4 +1,3 @@
-// import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 
 // components
@@ -162,7 +161,10 @@ const CreatePostCard: FC<ICreatePostCardProps> = ({ openModal }) => {
             </div>
 
             {ind !== postTypeMapIcons.length - 1 && (
-              <Divider className="w-1 h-auto" variant={Variant.Vertical} />
+              <Divider
+                className="w-1 h-auto !bg-neutral-100"
+                variant={Variant.Vertical}
+              />
             )}
           </>
         ))}
