@@ -5,12 +5,11 @@ import {
   useQuery,
 } from '@tanstack/react-query';
 import { DeltaStatic } from 'quill';
-import { isValidUrl } from 'utils/misc';
+import { isValidUrl, chain } from 'utils/misc';
 import { IMedia, IPoll, POST_TYPE } from 'contexts/CreatePostContext';
 import { IComment } from 'components/Comments';
 import { Metadata } from 'components/PreviewLink/types';
 import { useFeedStore } from 'stores/feedStore';
-import _ from 'lodash';
 import { ITeam } from './teams';
 import { IGetUser } from './users';
 
@@ -205,12 +204,12 @@ export interface ICreatedBy {
   workLocation?: string;
 }
 
-interface IAnnounce {
-  entityId: string;
-  entityType: string;
-  type: string;
-  reaction: string;
-}
+// interface IAnnounce {
+//   entityId: string;
+//   entityType: string;
+//   type: string;
+//   reaction: string;
+// }
 
 export enum PostType {
   Update = 'UPDATE',
@@ -393,7 +392,7 @@ export const myProfileFeed = async (
     response = await apiService.get('/posts/my-profile', context.queryKey[1]);
     setFeed({
       ...feed,
-      ..._.chain(response.data.result.data).keyBy('id').value(),
+      ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
       (eachPost: IPost) => ({ id: eachPost.id }),
@@ -403,7 +402,7 @@ export const myProfileFeed = async (
     response = await apiService.get(context.pageParam, context.queryKey[1]);
     setFeed({
       ...feed,
-      ..._.chain(response.data.result.data).keyBy('id').value(),
+      ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
       (eachPost: IPost) => ({ id: eachPost.id }),
@@ -454,7 +453,7 @@ export const peopleProfileFeed = async (
     );
     setFeed({
       ...feed,
-      ..._.chain(response.data.result.data).keyBy('id').value(),
+      ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
       (eachPost: IPost) => ({ id: eachPost.id }),
@@ -464,7 +463,7 @@ export const peopleProfileFeed = async (
     response = await apiService.get(context.pageParam, context.queryKey[1]);
     setFeed({
       ...feed,
-      ..._.chain(response.data.result.data).keyBy('id').value(),
+      ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
       (eachPost: IPost) => ({ id: eachPost.id }),
@@ -514,7 +513,7 @@ export const fetchFeed = async (
     response = await apiService.get('/posts', context.queryKey[1]);
     setFeed({
       ...feed,
-      ..._.chain(response.data.result.data).keyBy('id').value(),
+      ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
       (eachPost: IPost) => ({ id: eachPost.id }),
@@ -524,7 +523,7 @@ export const fetchFeed = async (
     response = await apiService.get(context.pageParam, context.queryKey[1]);
     setFeed({
       ...feed,
-      ..._.chain(response.data.result.data).keyBy('id').value(),
+      ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
       (eachPost: IPost) => ({ id: eachPost.id }),
@@ -548,7 +547,7 @@ export const fetchScheduledPosts = async (
     response = await apiService.get('/posts/scheduled');
     setFeed({
       ...feed,
-      ..._.chain(response.data.result.data).keyBy('id').value(),
+      ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
       (eachPost: IPost) => ({ id: eachPost.id }),
@@ -558,7 +557,7 @@ export const fetchScheduledPosts = async (
     response = await apiService.get(context.pageParam, context.queryKey[1]);
     setFeed({
       ...feed,
-      ..._.chain(response.data.result.data).keyBy('id').value(),
+      ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
       (eachPost: IPost) => ({ id: eachPost.id }),
@@ -582,7 +581,7 @@ export const fetchBookmarks = async (
     response = await apiService.get('/posts/my-bookmarks');
     setFeed({
       ...feed,
-      ..._.chain(response.data.result.data).keyBy('id').value(),
+      ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
       (eachPost: IPost) => ({ id: eachPost.id }),
@@ -592,7 +591,7 @@ export const fetchBookmarks = async (
     response = await apiService.get(context.pageParam, context.queryKey[1]);
     setFeed({
       ...feed,
-      ..._.chain(response.data.result.data).keyBy('id').value(),
+      ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
       (eachPost: IPost) => ({ id: eachPost.id }),

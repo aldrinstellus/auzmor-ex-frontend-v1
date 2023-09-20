@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import _ from 'lodash';
 import { App } from 'queries/apps';
 
 export interface IAppsStore {

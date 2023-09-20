@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { Control, useController } from 'react-hook-form';
 import { DatePicker } from 'antd';
 import './index.css';
@@ -19,7 +19,7 @@ export interface IDatePickerInputProps {
   disabled?: boolean;
 }
 
-const DatePickerInput: React.FC<IDatePickerInputProps> = ({
+const DatePickerInput: FC<IDatePickerInputProps> = ({
   control,
   name,
   label = '',

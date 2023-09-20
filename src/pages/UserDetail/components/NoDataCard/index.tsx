@@ -1,6 +1,6 @@
 import Card from 'components/Card';
-import React from 'react';
 import EmptyBanner from '../../../../images/EmptyBanner.png';
+import { FC } from 'react';
 
 export interface INoDataCardProps {
   user: string;
@@ -16,7 +16,7 @@ const typeMap: IDataTypeMap = {
   recognition: 'Recognitions',
 };
 
-const NoDataCard: React.FC<INoDataCardProps> = ({ user, dataType }) => {
+const NoDataCard: FC<INoDataCardProps> = ({ user, dataType }) => {
   return (
     <div className="pb-8">
       <Card className="p-6 space-y-2">

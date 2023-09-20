@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import Card from 'components/Card';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
@@ -18,7 +18,7 @@ interface ISetting {
 }
 
 const UserSettings = () => {
-  const [isHeaderVisible, setIsHeaderVisible] = useState(false);
+  const [_, setIsHeaderVisible] = useState(false);
 
   const settings = [
     {

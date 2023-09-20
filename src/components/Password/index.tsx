@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import {
   Control,
   UseFormSetError,
@@ -35,7 +35,7 @@ export type PasswordProps = {
   showChecks?: boolean;
 };
 
-const Password: React.FC<PasswordProps> = ({
+const Password: FC<PasswordProps> = ({
   name,
   id,
   size = Size.Medium,

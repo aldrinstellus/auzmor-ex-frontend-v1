@@ -3,21 +3,21 @@ import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import { IUpdateProfileImage } from 'pages/UserDetail';
 import { UploadStatus } from 'hooks/useUpload';
-import React, { useRef } from 'react';
+import { FC, RefObject, useRef } from 'react';
 import { CropperRef } from 'react-advanced-cropper';
 
 export interface IFooterProps {
-  userProfileImageRef: React.RefObject<HTMLInputElement> | null;
-  userCoverImageRef?: React.RefObject<HTMLInputElement> | null;
+  userProfileImageRef: RefObject<HTMLInputElement> | null;
+  userCoverImageRef?: RefObject<HTMLInputElement> | null;
   imageFile?: IUpdateProfileImage | Record<string, any>;
   uploadStatus: UploadStatus;
   isLoading: boolean;
   onSubmit: any;
-  cropperRef: React.RefObject<CropperRef>;
+  cropperRef: RefObject<CropperRef>;
   dataTestId?: string;
 }
 
-const Footer: React.FC<IFooterProps> = ({
+const Footer: FC<IFooterProps> = ({
   userProfileImageRef,
   userCoverImageRef,
   imageFile,

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { forwardRef, useMemo, useState } from 'react';
 import { Control, Controller, useController } from 'react-hook-form';
 import clsx from 'clsx';
 import { Select, ConfigProvider } from 'antd';
@@ -35,14 +35,14 @@ export interface ICreatableSearch {
   getPopupContainer?: any;
 }
 
-const CreatableSearch = React.forwardRef(
+const CreatableSearch = forwardRef(
   (
     {
       name,
       className = '',
       disabled = false,
       dataTestId = '',
-      addItemDataTestId = '',
+      // addItemDataTestId = '',
       error,
       control,
       label = '',

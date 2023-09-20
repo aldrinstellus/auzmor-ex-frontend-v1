@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { FC, RefObject, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import debounce from 'lodash/debounce';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -53,8 +52,8 @@ interface IEditProfileModal {
   openEditImageModal: () => void;
   imageFile: IUpdateProfileImage | Record<string, any>;
   setImageFile?: (file: IUpdateProfileImage | Record<string, any>) => void;
-  userProfileImageRef: React.RefObject<HTMLInputElement> | null;
-  userCoverImageRef: React.RefObject<HTMLInputElement> | null;
+  userProfileImageRef: RefObject<HTMLInputElement> | null;
+  userCoverImageRef: RefObject<HTMLInputElement> | null;
   dataTestId?: string;
   isCoverImageRemoved?: boolean;
   setIsCoverImageRemoved?: (flag: boolean) => void;
@@ -64,7 +63,7 @@ const EditProfileSchema = yup.object({
   fullName: yup.string().required('This field cannot be empty'),
 });
 
-const EditProfileModal: React.FC<IEditProfileModal> = ({
+const EditProfileModal: FC<IEditProfileModal> = ({
   userDetails,
   openEditProfile,
   closeEditProfileModal,

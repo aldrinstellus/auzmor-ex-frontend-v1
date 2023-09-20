@@ -1,4 +1,3 @@
-import React from 'react';
 import AnnouncementCard from 'components/AnnouncementWidget';
 import { Comment } from 'components/Comments/components/Comment';
 import PageLoader from 'components/PageLoader';
@@ -6,9 +5,10 @@ import Post from 'components/Post';
 import { Reply } from 'components/Reply/Reply';
 import UserCard from 'components/UserWidget';
 import { IPost, useGetPost } from 'queries/post';
+import { FC } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 
-const PostPage: React.FC = () => {
+const PostPage: FC = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const commentId = searchParams.get('commentId') || undefined;

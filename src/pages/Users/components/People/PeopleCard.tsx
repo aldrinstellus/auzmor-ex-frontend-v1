@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import useHover from 'hooks/useHover';
@@ -10,7 +9,7 @@ import {
   IGetUser,
   UserStatus,
   updateRoleToAdmin,
-  updateStatus,
+  // updateStatus,
   useResendInvitation,
 } from 'queries/users';
 import { toast } from 'react-toastify';
@@ -30,8 +29,9 @@ import UserProfileDropdown from 'components/UserProfileDropdown';
 import DeactivatePeople from '../DeactivateModal/Deactivate';
 import ReactivatePeople from '../ReactivateModal/Reactivate';
 import clsx from 'clsx';
-import _ from 'lodash';
+import truncate from 'lodash/truncate';
 import RemoveTeamMember from '../DeleteModals/TeamMember';
+import { FC } from 'react';
 
 export interface IPeopleCardProps {
   userData: IGetUser;
@@ -55,7 +55,7 @@ const statusColorMap: Record<string, string> = {
   [Status.SUPERADMIN]: PRIMARY_COLOR,
 };
 
-const PeopleCard: React.FC<IPeopleCardProps> = ({
+const PeopleCard: FC<IPeopleCardProps> = ({
   userData,
   teamId,
   isTeamPeople,
@@ -87,40 +87,40 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
     useModal();
 
   const resendInviteMutation = useResendInvitation();
-  const updateUserStatusMutation = useMutation({
-    mutationFn: updateStatus,
-    mutationKey: ['update-user-status'],
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
-      toast(
-        <SuccessToast
-          content={`User has been ${
-            (status as any) === UserStatus.Inactive
-              ? 'reactivated'
-              : 'deactivated'
-          }`}
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-    },
-  });
+  // const updateUserStatusMutation = useMutation({
+  //   mutationFn: updateStatus,
+  //   mutationKey: ['update-user-status'],
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ['users'] });
+  //     toast(
+  //       <SuccessToast
+  //         content={`User has been ${
+  //           (status as any) === UserStatus.Inactive
+  //             ? 'reactivated'
+  //             : 'deactivated'
+  //         }`}
+  //       />,
+  //       {
+  //         closeButton: (
+  //           <Icon
+  //             name="closeCircleOutline"
+  //             color="text-primary-500"
+  //             size={20}
+  //           />
+  //         ),
+  //         style: {
+  //           border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+  //           borderRadius: '6px',
+  //           display: 'flex',
+  //           alignItems: 'center',
+  //         },
+  //         autoClose: TOAST_AUTOCLOSE_TIME,
+  //         transition: slideInAndOutTop,
+  //         theme: 'dark',
+  //       },
+  //     );
+  //   },
+  // });
 
   const updateUserRoleMutation = useMutation({
     mutationFn: updateRoleToAdmin,
@@ -310,7 +310,7 @@ const PeopleCard: React.FC<IPeopleCardProps> = ({
                 className="text-neutral-900 text-base font-bold truncate"
                 data-testid={`people-card-name-${fullName || workEmail}`}
               >
-                {_.truncate(fullName || workEmail, {
+                {truncate(fullName || workEmail, {
                   length: 18,
                   separator: ' ',
                 })}

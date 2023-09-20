@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import {
   Control,
   FieldArrayWithId,
@@ -25,7 +25,7 @@ export interface IInviteFormRowProps {
   member: { fullName: string; workEmail: string; role: IRoleOption };
 }
 
-const InviteFormRow: React.FC<IInviteFormRowProps> = ({
+const InviteFormRow: FC<IInviteFormRowProps> = ({
   errors,
   index,
   field,

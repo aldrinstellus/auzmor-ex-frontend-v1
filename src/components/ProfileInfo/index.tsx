@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import AboutMe from './components/AboutMe';
 import AboutMeSkeleton from './components/Skeletons/AboutMe';
 import ProfessionalDetails from './components/ProfessionalDetails';
@@ -8,6 +7,7 @@ import PersonalDetailsSkeleton from './components/Skeletons/PersonalDetails';
 
 import useScrollTop from 'hooks/useScrollTop';
 import { UserEditType } from 'queries/users';
+import { FC } from 'react';
 
 export interface IProfileInfoProps {
   profileDetails: any;
@@ -18,7 +18,7 @@ export interface IProfileInfoProps {
   searchParams?: any;
 }
 
-const ProfileInfo: React.FC<IProfileInfoProps> = ({
+const ProfileInfo: FC<IProfileInfoProps> = ({
   profileDetails,
   isLoading,
   editSection,

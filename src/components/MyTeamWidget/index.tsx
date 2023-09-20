@@ -1,5 +1,5 @@
-import React from 'react';
 import Card from 'components/Card';
+import { memo } from 'react';
 
 const MyTeamWidget = () => {
   return (
@@ -11,4 +11,4 @@ const MyTeamWidget = () => {
   );
 };
 
-export default React.memo(MyTeamWidget);
+export default memo(MyTeamWidget);

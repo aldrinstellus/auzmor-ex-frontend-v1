@@ -1,6 +1,6 @@
-import Button, { Variant as ButtonVariant, Variant } from 'components/Button';
+import Button, { Variant as ButtonVariant } from 'components/Button';
 import Card from 'components/Card';
-import React, { useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import AppsBanner from 'images/appsBanner.png';
 import IconButton, {
   Variant as IconVariant,
@@ -19,7 +19,7 @@ import {
 import { useAppStore } from 'stores/appStore';
 import PopupMenu from 'components/PopupMenu';
 import { useDebounce } from 'hooks/useDebounce';
-import { isFiltersEmpty, twConfig } from 'utils/misc';
+import { isFiltersEmpty } from 'utils/misc';
 import AppFilterModal from './components/AppFilterModal';
 import AppList from './components/AppList';
 import Icon from 'components/Icon';
@@ -39,7 +39,7 @@ enum AppGroup {
   FEATURED = 'Featured',
 }
 
-const Apps: React.FC<IAppsProps> = () => {
+const Apps: FC<IAppsProps> = () => {
   // Form for searching apps
   const {
     control,

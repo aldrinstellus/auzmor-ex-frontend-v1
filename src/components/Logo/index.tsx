@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import OfficeLogoSvg from './images/OfficeLogo.svg';
 import SuccessLogo from './images/Vector.svg';
 import InfoLogo from './images/InfoCircle.svg';

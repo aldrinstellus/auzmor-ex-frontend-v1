@@ -1,5 +1,5 @@
 import Icon from 'components/Icon';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 
 type CircularBorder = {
   name: string;
@@ -7,7 +7,7 @@ type CircularBorder = {
   size?: number;
 };
 
-const CircularBorder: React.FC<CircularBorder> = ({
+const CircularBorder: FC<CircularBorder> = ({
   name,
   className,
   size,

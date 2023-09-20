@@ -1,10 +1,4 @@
-import React, {
-  MouseEventHandler,
-  ReactElement,
-  ReactNode,
-  useEffect,
-  useMemo,
-} from 'react';
+import { FC, MouseEventHandler, ReactNode, memo, useMemo } from 'react';
 import clsx from 'clsx';
 import isDarkColor from 'is-dark-color';
 import { getInitials } from 'utils/misc';
@@ -31,7 +25,7 @@ export type AvatarProps = {
   fontSize?: number;
 };
 
-const Avatar: React.FC<AvatarProps> = ({
+const Avatar: FC<AvatarProps> = ({
   name = 'U',
   className = '',
   round = true,
@@ -151,4 +145,4 @@ const Avatar: React.FC<AvatarProps> = ({
   );
 };
 
-export default React.memo(Avatar);
+export default memo(Avatar);

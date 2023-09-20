@@ -2,7 +2,7 @@ import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
 import Modal from 'components/Modal';
-import React, { ReactElement, useRef, useState } from 'react';
+import { FC, ReactElement, useRef, useState } from 'react';
 import SAMLDetail from './SAMLDetail';
 import Collapse from 'components/Collapse';
 import Button, { Type, Variant } from 'components/Button';
@@ -17,7 +17,6 @@ import apiService from 'utils/apiService';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import queryClient from 'utils/queryClient';
 import useAuth from 'hooks/useAuth';
-import { PRIMARY_COLOR } from 'utils/constants';
 
 type ConfigureGenericSSOProps = {
   open: boolean;
@@ -36,7 +35,7 @@ const schema = yup.object({
   allowOnlyExistingUser: yup.boolean().default(false),
 });
 
-const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
+const ConfigureGenericSSO: FC<ConfigureGenericSSOProps> = ({
   open,
   closeModal,
   ssoSetting,

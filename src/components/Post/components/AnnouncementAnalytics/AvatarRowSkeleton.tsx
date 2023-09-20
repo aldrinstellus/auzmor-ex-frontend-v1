@@ -1,12 +1,11 @@
-import Avatar from 'components/Avatar';
-import React from 'react';
+import { FC } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
 type AppProps = {
   count?: number;
 };
 
-const AvatarRowSkeleton: React.FC<AppProps> = ({ count = 4 }) => {
+const AvatarRowSkeleton: FC<AppProps> = ({ count = 4 }) => {
   const renderLoaderRow = () => (
     <div className="flex justify-between py-4">
       <div className="flex items-center space-x-4">

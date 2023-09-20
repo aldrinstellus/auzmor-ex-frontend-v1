@@ -1,4 +1,3 @@
-import React from 'react';
 import LogoutScreen from 'images/LogoutScreen.png';
 import Button from 'components/Button';
 import { Link, useNavigate } from 'react-router-dom';

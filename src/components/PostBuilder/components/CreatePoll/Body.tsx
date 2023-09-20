@@ -1,5 +1,4 @@
 import Layout from 'components/Form';
-import React from 'react';
 import OptionRow from './Option';
 import {
   Control,
@@ -10,6 +9,7 @@ import {
 } from 'react-hook-form';
 import Button, { Size, Variant } from 'components/Button';
 import { IPoll } from 'contexts/CreatePostContext';
+import { FC } from 'react';
 
 type PollBodyProps = {
   questionField: Record<string, any>[];
@@ -23,7 +23,7 @@ type PollBodyProps = {
   datePickerField: any;
 };
 
-const Body: React.FC<PollBodyProps> = ({
+const Body: FC<PollBodyProps> = ({
   questionField,
   fields,
   errors,

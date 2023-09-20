@@ -1,7 +1,7 @@
-import React from 'react';
 import CreatePostProvider, { CreatePostFlow } from 'contexts/CreatePostContext';
 import CreatePostModal from './components/CreatePostModal';
 import { IPost } from 'queries/post';
+import { FC } from 'react';
 
 export enum PostBuilderMode {
   Create = 'CREATE',
@@ -17,7 +17,7 @@ export interface IPostBuilderProps {
   customActiveFlow?: CreatePostFlow;
 }
 
-const PostBuilder: React.FC<IPostBuilderProps> = ({
+const PostBuilder: FC<IPostBuilderProps> = ({
   data,
   mode = PostBuilderMode.Create,
   open,

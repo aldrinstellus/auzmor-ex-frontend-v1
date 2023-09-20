@@ -1,6 +1,6 @@
-import React, { SVGProps } from 'react';
+import { SVGProps } from 'react';
 
-const FacebookIcon = (props: SVGProps<SVGSVGElement>) => {
+const FacebookIcon = (_props: SVGProps<SVGSVGElement>) => {
   return (
     <svg
       width="24"

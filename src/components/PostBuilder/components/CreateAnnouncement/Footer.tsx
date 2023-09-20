@@ -1,13 +1,12 @@
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import React, { useContext } from 'react';
+import { FC, useContext } from 'react';
 import { FieldValues, UseFormHandleSubmit } from 'react-hook-form';
 import { afterXUnit } from 'utils/time';
 import { CreateAnnouncementMode } from '.';
 import { useMutation } from '@tanstack/react-query';
 import { IPost, updatePost } from 'queries/post';
 import queryClient from 'utils/queryClient';
-import { Dayjs } from 'dayjs';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import Icon from 'components/Icon';
@@ -26,7 +25,7 @@ export interface IFooterProps {
   getFormValues?: any;
 }
 
-const Footer: React.FC<IFooterProps> = ({
+const Footer: FC<IFooterProps> = ({
   handleSubmit,
   isValid,
   mode,
@@ -75,7 +74,7 @@ const Footer: React.FC<IFooterProps> = ({
               : [],
         });
     },
-    onMutate: (variables) => {
+    onMutate: (_variables) => {
       const previousPost = getPost(data!.id!);
       const formData = getFormValues();
       const expiryDate = formData?.date.toISOString().substring(0, 19) + 'Z';

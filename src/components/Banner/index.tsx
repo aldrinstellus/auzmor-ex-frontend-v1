@@ -1,9 +1,8 @@
-import React, { MouseEventHandler, useMemo } from 'react';
+import { FC, MouseEventHandler, useMemo } from 'react';
 import clsx from 'clsx';
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import { ReactNode } from 'react';
 import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
 
 export enum Variant {
   Success = 'SUCCESS',
@@ -23,10 +22,10 @@ export type BannerProps = {
   dataTestId?: string;
 };
 
-const Banner: React.FC<BannerProps> = ({
+const Banner: FC<BannerProps> = ({
   title,
   variant = Variant.Success,
-  icon = '',
+  // icon = '',
   action = null,
   onClose = null,
   className = '',
@@ -132,20 +131,20 @@ const Banner: React.FC<BannerProps> = ({
     return 'infoCircleOutline';
   }, [variant]);
 
-  const getStroke = (variant: Variant): string => {
-    switch (variant) {
-      case Variant.Success:
-        return '#171717';
-      case Variant.Error:
-        return '#ef4444';
-      case Variant.Info:
-        return '#3b82f6';
-      case Variant.Warning:
-        return '#f97316';
-      case Variant.Grey:
-        return '#f97316';
-    }
-  };
+  // const getStroke = (variant: Variant): string => {
+  //   switch (variant) {
+  //     case Variant.Success:
+  //       return '#171717';
+  //     case Variant.Error:
+  //       return '#ef4444';
+  //     case Variant.Info:
+  //       return '#3b82f6';
+  //     case Variant.Warning:
+  //       return '#f97316';
+  //     case Variant.Grey:
+  //       return '#f97316';
+  //   }
+  // };
 
   return (
     <div className={containerStyles} data-testid={dataTestId}>

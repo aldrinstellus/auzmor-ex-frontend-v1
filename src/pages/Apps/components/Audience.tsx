@@ -1,5 +1,5 @@
 import Header from 'components/ModalHeader';
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import AudienceSelector from 'components/AudienceSelector';
 import { useForm } from 'react-hook-form';
 import { IAudienceForm } from 'components/EntitySearchModal';
@@ -22,7 +22,7 @@ export enum AudienceFlow {
   ChannelSelect = 'CHANNEL_SELECT',
 }
 
-const Audience: React.FC<IAudienceProps> = ({
+const Audience: FC<IAudienceProps> = ({
   audience,
   setAudience,
   setActiveFlow,

@@ -1,7 +1,7 @@
 import Card from 'components/Card';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
-import React, { useRef } from 'react';
+import { FC, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import Spinner from 'components/Spinner';
 import Popover from 'components/Popover';
@@ -18,7 +18,7 @@ export enum NotificationType {
   MENTIONS = 'Mentions',
 }
 
-const NotificationsOverview: React.FC = () => {
+const NotificationsOverview: FC = () => {
   const { data, isLoading, isError } = useGetUnreadNotificationsCount();
   const viewAllRef = useRef<HTMLButtonElement>(null);
   const queryClient = useQueryClient();

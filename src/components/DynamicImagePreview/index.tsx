@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import ImageUploader from './components/ImageUploader';
 import ImagePicker from './components/ImagePicker';
 import ImagePreview from './components/ImagePreview';
@@ -14,7 +14,7 @@ interface IDynamicImagePreview {
   file?: any;
 }
 
-const DynamicImagePreview: React.FC<IDynamicImagePreview> = ({
+const DynamicImagePreview: FC<IDynamicImagePreview> = ({
   onSubmit,
   triggerSubmit,
   setIsFileAdded,

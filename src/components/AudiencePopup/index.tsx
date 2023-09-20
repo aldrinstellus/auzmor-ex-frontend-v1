@@ -5,7 +5,7 @@ import Spinner from 'components/Spinner';
 import { useAudience } from 'queries/audience';
 import { IAudience } from 'queries/post';
 import { ITeam } from 'queries/teams';
-import React, { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import TeamWork from 'images/teamwork.svg';
 import { useInView } from 'react-intersection-observer';
 
@@ -15,7 +15,7 @@ interface IAudiencePopupProps {
   title?: string;
 }
 
-const AudiencePopup: React.FC<IAudiencePopupProps> = ({
+const AudiencePopup: FC<IAudiencePopupProps> = ({
   entityId,
   audience,
   title = 'Posted to:',

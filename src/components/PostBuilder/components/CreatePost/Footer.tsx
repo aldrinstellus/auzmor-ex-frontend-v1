@@ -11,20 +11,20 @@ import {
 } from 'contexts/CreatePostContext';
 import useRole from 'hooks/useRole';
 import { DeltaStatic } from 'quill';
-import React, { useContext, useMemo } from 'react';
+import { FC, RefObject, useContext, useMemo } from 'react';
 import ReactQuill from 'react-quill';
 import { convert } from 'html-to-text';
-import { operatorXOR, twConfig } from 'utils/misc';
+import { operatorXOR } from 'utils/misc';
 import { PostBuilderMode } from 'components/PostBuilder';
 
 export interface IFooterProps {
   isLoading: boolean;
-  quillRef: React.RefObject<ReactQuill>;
+  quillRef: RefObject<ReactQuill>;
   handleSubmitPost: (content: IEditorValue, files: File[]) => void;
   mode: PostBuilderMode;
 }
 
-const Footer: React.FC<IFooterProps> = ({
+const Footer: FC<IFooterProps> = ({
   isLoading,
   quillRef,
   handleSubmitPost,

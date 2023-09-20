@@ -1,8 +1,8 @@
-import React from 'react';
+import { FC } from 'react';
 
 interface IRegisterationProps {}
 
-const Registration: React.FC<IRegisterationProps> = () => {
+const Registration: FC<IRegisterationProps> = () => {
   return <div>Registeration Page</div>;
 };
 

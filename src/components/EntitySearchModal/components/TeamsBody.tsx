@@ -2,7 +2,7 @@ import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
-import React, { ReactNode, useEffect, useState } from 'react';
+import { ChangeEvent, FC, ReactNode, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { ITeam, useInfiniteTeams } from 'queries/teams';
 import TeamRow from './TeamRow';
@@ -16,7 +16,7 @@ interface ITeamsBodyProps {
   dataTestId?: string;
 }
 
-const TeamsBody: React.FC<ITeamsBodyProps> = ({
+const TeamsBody: FC<ITeamsBodyProps> = ({
   entityRenderer,
   selectedTeamIds = [],
   dataTestId,
@@ -208,7 +208,7 @@ const TeamsBody: React.FC<ITeamsBodyProps> = ({
                     input: (value: boolean) => {
                       return value;
                     },
-                    output: (e: React.ChangeEvent<HTMLInputElement>) => {
+                    output: (e: ChangeEvent<HTMLInputElement>) => {
                       if (e.target.checked) {
                         selectAllEntity();
                       } else {
@@ -270,7 +270,7 @@ const TeamsBody: React.FC<ITeamsBodyProps> = ({
                             updateSelectAll();
                             return !!value;
                           },
-                          output: (e: React.ChangeEvent<HTMLInputElement>) => {
+                          output: (e: ChangeEvent<HTMLInputElement>) => {
                             if (e.target.checked) return team;
                             return false;
                           },

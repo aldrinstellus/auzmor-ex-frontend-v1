@@ -1,25 +1,23 @@
-import React, { memo, useMemo } from 'react';
+import { FC, memo } from 'react';
 import Card from 'components/Card';
 import clsx from 'clsx';
-import useHover from 'hooks/useHover';
 import Header from '../Header';
-import { OptionType } from 'components/UserOnboard/components/SelectTimeZone';
 import DateOfBirthRow from './DateOfBirthRow';
 import GenderRow from './GenderRow';
 import MarriedRow from './MarriedRow';
 import SkillsRow from './SkillsRow';
 
-interface IPersonalDetails {
-  birthDate: Date | string;
-  gender: OptionType;
-  permanentLocation: string;
-  maritalStatus: OptionType;
-  skills: string[];
-}
-interface IPersonalDetailsForm {
-  personal: IPersonalDetails;
-  skills: string;
-}
+// interface IPersonalDetails {
+//   birthDate: Date | string;
+//   gender: OptionType;
+//   permanentLocation: string;
+//   maritalStatus: OptionType;
+//   skills: string[];
+// }
+// interface IPersonalDetailsForm {
+//   personal: IPersonalDetails;
+//   skills: string;
+// }
 
 export interface ISkillsOption {
   id: string;
@@ -31,7 +29,7 @@ type IPersonalDetailsProps = {
   canEdit?: boolean;
 };
 
-const PersonalDetails: React.FC<IPersonalDetailsProps> = ({
+const PersonalDetails: FC<IPersonalDetailsProps> = ({
   personalDetails,
   canEdit,
 }) => {

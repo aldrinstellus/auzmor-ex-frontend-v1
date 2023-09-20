@@ -1,4 +1,11 @@
-import React, { ReactNode, createContext, useRef, useState } from 'react';
+import {
+  FC,
+  ReactNode,
+  RefObject,
+  createContext,
+  useRef,
+  useState,
+} from 'react';
 import { DeltaStatic } from 'quill';
 import { getBlobUrl, getMediaObj } from 'utils/misc';
 import { IAudience } from 'queries/post';
@@ -58,8 +65,8 @@ export interface ICreatePostContext {
   files: File[];
   setFiles: (files: File[]) => void;
   setMedia: (media: IMedia[]) => void;
-  inputImgRef: React.RefObject<HTMLInputElement> | null;
-  inputVideoRef: React.RefObject<HTMLInputElement> | null;
+  inputImgRef: RefObject<HTMLInputElement> | null;
+  inputVideoRef: RefObject<HTMLInputElement> | null;
   setUploads: (uploads: File[], isCoverImage?: boolean) => void;
   replaceMedia: (index: number, data: File) => void;
   removeMedia: (index: number, callback?: () => void) => void;
@@ -208,9 +215,7 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setPostType: () => {},
 });
 
-const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
-  children,
-}) => {
+const CreatePostProvider: FC<ICreatePostProviderProps> = ({ children }) => {
   const [activeFlow, setActiveFlow] = useState(CreatePostFlow.CreatePost);
   const [announcement, setAnnouncement] = useState<null | IAnnouncement>(null);
   const [editorValue, setEditorValue] = useState<IEditorValue>({

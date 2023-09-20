@@ -1,10 +1,10 @@
-import React from 'react';
 import Divider from 'components/Divider';
 import { useGetNotifications } from 'queries/notifications';
 import NotificationProps from './Notification';
 import Notification from './Notification';
 import { IMedia } from 'contexts/CreatePostContext';
 import NotificationsOverviewSkeleton from './NotificationsOverviewSkeleton';
+import { forwardRef } from 'react';
 
 type NotificationsList = {
   mentions?: boolean;
@@ -62,7 +62,7 @@ export type NotificationProps = {
   interactionCount?: number;
 };
 
-const NotificationsList = React.forwardRef(
+const NotificationsList = forwardRef(
   ({ mentions, className }: NotificationsList, ref: any) => {
     const { data, isLoading, isError } = useGetNotifications(mentions);
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import Button, {
   Variant as ButtonVariant,
   Size as ButtonSize,
@@ -12,6 +11,7 @@ import {
 } from 'react-hook-form';
 import './styles.css';
 import { IUpdateAboutMe } from './AboutMe';
+import { FC } from 'react';
 
 export type HeaderProps = {
   title: string;
@@ -27,15 +27,15 @@ export type HeaderProps = {
   reset?: UseFormReset<IUpdateAboutMe>;
 };
 
-const Header: React.FC<HeaderProps> = ({
+const Header: FC<HeaderProps> = ({
   title,
   dataTestId,
   isHovered = false,
   isEditable = false,
   setIsEditable = () => null,
   canEdit = false,
-  onSubmit,
-  handleSubmit = () => null,
+  // onSubmit,
+  // handleSubmit = () => null,
   setInitialSkills,
   isLoading,
   reset,

@@ -1,6 +1,5 @@
-import Button, { Variant as ButtonVariant } from 'components/Button';
 import Icon from 'components/Icon';
-import React, { ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 import { toast } from 'react-toastify';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { twConfig } from 'utils/misc';
@@ -14,7 +13,7 @@ export interface ISuccessToastProps {
   actionClassName?: string;
 }
 
-const SuccessToast: React.FC<ISuccessToastProps> = ({
+const SuccessToast: FC<ISuccessToastProps> = ({
   content,
   actionLabel,
   action,

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -10,7 +10,7 @@ import useAuth from 'hooks/useAuth';
 import useRole from 'hooks/useRole';
 import { canPerform, twConfig } from 'utils/misc';
 import { useFeedStore } from 'stores/feedStore';
-import _ from 'lodash';
+import omit from 'lodash/omit';
 import { CreatePostFlow, POST_TYPE } from 'contexts/CreatePostContext';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
@@ -26,7 +26,7 @@ export interface IFeedPostMenuProps {
   data: IPost;
 }
 
-const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
+const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
   const { user } = useAuth();
   const { isMember } = useRole();
   const feedRef = useRef(useFeedStore.getState().feed);
@@ -50,7 +50,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
     mutationFn: deletePost,
     onMutate: (variables) => {
       const previousFeed = feedRef.current;
-      setFeed({ ..._.omit(feedRef.current, [variables]) });
+      setFeed({ ...omit(feedRef.current, [variables]) });
       closeConfirm();
       return { previousFeed };
     },
@@ -79,7 +79,7 @@ const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
         setFeed(context?.previousFeed);
       }
     },
-    onSuccess: async (data, variables, context) => {
+    onSuccess: async (_data, _variables, _context) => {
       toast(
         <SuccessToast
           content="Post deleted successfully"

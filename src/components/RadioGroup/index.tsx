@@ -1,6 +1,5 @@
 import clsx from 'clsx';
-import Divider from 'components/Divider';
-import React, { useMemo } from 'react';
+import { FC, ReactNode, useMemo } from 'react';
 import { Control, useController } from 'react-hook-form';
 
 export interface IRadioListOption {
@@ -12,12 +11,12 @@ type RadioButtonProps = {
   name: string;
   control: Control<Record<string, any>>;
   radioList: IRadioListOption[];
-  labelRenderer: (option: IRadioListOption) => React.ReactNode;
+  labelRenderer: (option: IRadioListOption) => ReactNode;
   className?: string;
   rowClassName?: string;
 };
 
-const RadioGroup: React.FC<RadioButtonProps> = ({
+const RadioGroup: FC<RadioButtonProps> = ({
   name,
   control,
   radioList = [],
@@ -51,7 +50,7 @@ const RadioGroup: React.FC<RadioButtonProps> = ({
               type="radio"
               data-testid={option.dataTestId}
               className="w-5 h-5 accent-primary-600"
-              onChange={(e) => {
+              onChange={(_e) => {
                 field.onChange(option);
               }}
               name={name}

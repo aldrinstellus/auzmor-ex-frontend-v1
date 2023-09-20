@@ -1,8 +1,8 @@
 import Card from 'components/Card';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
-const ContactSkeleton: React.FC = (): ReactElement => {
+const ContactSkeleton: FC = (): ReactElement => {
   return (
     <div>
       <Card>

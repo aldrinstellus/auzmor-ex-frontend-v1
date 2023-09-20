@@ -1,5 +1,4 @@
-import React, { MouseEventHandler, ReactNode, useMemo } from 'react';
-import clsx from 'clsx';
+import { MouseEventHandler, ReactNode } from 'react';
 import { PlacesType, Tooltip as ReactTooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 

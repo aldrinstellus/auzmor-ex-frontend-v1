@@ -4,7 +4,7 @@ import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import { IDepartment } from 'queries/department';
 import { ILocation } from 'queries/location';
-import React, { useState } from 'react';
+import { FC, ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Locations from './Locations';
 import Departments from './Departments';
@@ -67,11 +67,11 @@ interface IFilterModalProps {
 interface IFilters {
   key: string;
   isHidden: boolean;
-  label: () => React.ReactNode;
-  component: () => React.ReactNode;
+  label: () => ReactNode;
+  component: () => ReactNode;
 }
 
-const FilterModal: React.FC<IFilterModalProps> = ({
+const FilterModal: FC<IFilterModalProps> = ({
   open,
   closeModal,
   appliedFilters = {
@@ -84,42 +84,41 @@ const FilterModal: React.FC<IFilterModalProps> = ({
   onClear,
   variant = FilterModalVariant.People,
 }) => {
-  const { control, handleSubmit, watch, setValue, reset } =
-    useForm<IFilterForm>({
-      mode: 'onChange',
-      defaultValues: {
-        status: appliedFilters.status
-          ? {
-              data: {
-                ...appliedFilters.status,
-                id: `userstatus-${appliedFilters.status.label.toLowerCase()}`,
-              },
-              dataTestId: `userstatus-${appliedFilters.status.label.toLowerCase()}`,
-            }
-          : {
-              data: {
-                value: UserStatus.All,
-                label: 'All',
-                id: 'userstatus-all',
-              },
-              dataTestId: 'userstatus-all',
+  const { control, handleSubmit, watch, setValue } = useForm<IFilterForm>({
+    mode: 'onChange',
+    defaultValues: {
+      status: appliedFilters.status
+        ? {
+            data: {
+              ...appliedFilters.status,
+              id: `userstatus-${appliedFilters.status.label.toLowerCase()}`,
             },
-        locationCheckbox: (appliedFilters.location || []).map((location) => ({
-          data: location,
-          dataTestId: `location-${location.name}`,
-        })),
-        departmentCheckbox: (appliedFilters.departments || []).map(
-          (department) => ({
-            data: department,
-            dataTestId: `department-${department.name}`,
-          }),
-        ),
-        categoryCheckbox: (appliedFilters.categories || []).map((category) => ({
-          data: category,
-          dataTestId: `category-${category.name}`,
-        })),
-      },
-    });
+            dataTestId: `userstatus-${appliedFilters.status.label.toLowerCase()}`,
+          }
+        : {
+            data: {
+              value: UserStatus.All,
+              label: 'All',
+              id: 'userstatus-all',
+            },
+            dataTestId: 'userstatus-all',
+          },
+      locationCheckbox: (appliedFilters.location || []).map((location) => ({
+        data: location,
+        dataTestId: `location-${location.name}`,
+      })),
+      departmentCheckbox: (appliedFilters.departments || []).map(
+        (department) => ({
+          data: department,
+          dataTestId: `department-${department.name}`,
+        }),
+      ),
+      categoryCheckbox: (appliedFilters.categories || []).map((category) => ({
+        data: category,
+        dataTestId: `category-${category.name}`,
+      })),
+    },
+  });
 
   const [locationCheckbox, departmentCheckbox, categoryCheckbox] = watch([
     'locationCheckbox',

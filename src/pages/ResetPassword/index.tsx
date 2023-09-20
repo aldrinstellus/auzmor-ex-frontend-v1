@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Logo } from 'components/Logo';
 import { Success } from 'components/Logo';
 import Layout, { FieldType } from 'components/Form';
@@ -72,8 +72,8 @@ const ResetPassword = () => {
       error: errors.newPassword?.message,
       setError,
       control,
-      onChange: (e: any) => {
-        const value = e.target.value;
+      onChange: (_e: any) => {
+        // const value = e.target.value;
       },
       dataTestId: 'new-password',
       inputClassName: 'h-[44px]',

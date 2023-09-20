@@ -1,5 +1,5 @@
 import PageLoader from 'components/PageLoader';
-import React, { LegacyRef, ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 import useVirtual, { MeasureRef, OnScroll } from 'react-cool-virtual';
 
 export type InfiniteScrollProps = {
@@ -15,7 +15,7 @@ export type InfiniteScrollProps = {
   onScroll?: OnScroll;
 };
 
-export const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
+export const InfiniteScroll: FC<InfiniteScrollProps> = ({
   itemCount,
   isLoading,
   loadingComponent,

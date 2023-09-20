@@ -54,9 +54,9 @@ function findElementByClass(pathList: string | any[], customClassName: string) {
   return false;
 }
 
-function hasClass(element: { className: any }, className: any) {
-  return ` ${element.className} `.indexOf(` ${className} `) > -1;
-}
+// function hasClass(element: { className: any }, className: any) {
+//   return ` ${element.className} `.indexOf(` ${className} `) > -1;
+// }
 
 function fn_close() {
   const ele_emoji_plate = document.getElementById('emoji-palette');

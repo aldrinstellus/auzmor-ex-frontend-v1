@@ -4,7 +4,7 @@ import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
 import Spinner from 'components/Spinner';
-import React, { useCallback, useEffect, ReactNode, useMemo } from 'react';
+import { useCallback, useEffect, ReactNode, useMemo, FC } from 'react';
 import { Control } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
 
@@ -32,7 +32,7 @@ interface IInfiniteSearchProps {
   dataTestId?: string;
 }
 
-const InfiniteSearch: React.FC<IInfiniteSearchProps> = ({
+const InfiniteSearch: FC<IInfiniteSearchProps> = ({
   title,
   options,
   control,

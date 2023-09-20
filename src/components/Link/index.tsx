@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { Link as LinkTo } from 'react-router-dom';
 
 export type LinkProps = {
@@ -7,11 +7,7 @@ export type LinkProps = {
   fontClass?: string;
 };
 
-const Link: React.FC<LinkProps> = ({
-  to,
-  label,
-  fontClass = 'text-medium',
-}) => {
+const Link: FC<LinkProps> = ({ to, label, fontClass = 'text-medium' }) => {
   const isAbsolute = (to: string) => {
     return to.indexOf('://') > 0 || to.indexOf('//') === 0;
   };

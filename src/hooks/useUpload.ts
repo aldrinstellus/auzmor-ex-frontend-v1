@@ -127,7 +127,7 @@ export const useUpload = () => {
         audience: [],
       });
     });
-    files.forEach((file: IFile, index: number) => {
+    files.forEach((file: IFile, _index: number) => {
       createFilePromises.push(createFile(file, entityType));
     });
 

@@ -4,7 +4,7 @@ import IconButton, {
   Size as IconSize,
 } from 'components/IconButton';
 import useModal from 'hooks/useModal';
-import React, { useEffect, useMemo, useState } from 'react';
+import { FC, MutableRefObject, useEffect, useMemo, useState } from 'react';
 import { Control, UseFormResetField, UseFormWatch } from 'react-hook-form';
 import { IForm, OrgChartMode } from '..';
 import clsx from 'clsx';
@@ -31,7 +31,7 @@ import { INode } from './Chart';
 interface IToolbarProps {
   activeMode: OrgChartMode;
   setActiveMode: (activeMode: OrgChartMode) => void;
-  chartRef: React.MutableRefObject<OrgChart<any> | null>;
+  chartRef: MutableRefObject<OrgChart<any> | null>;
   control: Control<IForm, any>;
   watch: UseFormWatch<IForm>;
   resetField: UseFormResetField<IForm>;
@@ -44,7 +44,7 @@ interface IToolbarProps {
   setParentId: (parentId: string | null) => void;
 }
 
-const Toolbar: React.FC<IToolbarProps> = ({
+const Toolbar: FC<IToolbarProps> = ({
   activeMode,
   setActiveMode,
   chartRef,

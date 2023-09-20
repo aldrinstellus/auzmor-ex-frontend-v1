@@ -4,13 +4,8 @@ import Icon from 'components/Icon';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
 import { IDepartment, useInfiniteDepartments } from 'queries/department';
-import React, { useEffect } from 'react';
-import {
-  Control,
-  FieldValues,
-  UseFormSetValue,
-  UseFormWatch,
-} from 'react-hook-form';
+import { FC, useEffect } from 'react';
+import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
 import { IFilterForm } from '.';
 
@@ -20,11 +15,7 @@ interface IDepartmentsProps {
   setValue: UseFormSetValue<IFilterForm>;
 }
 
-const Departments: React.FC<IDepartmentsProps> = ({
-  control,
-  watch,
-  setValue,
-}) => {
+const Departments: FC<IDepartmentsProps> = ({ control, watch, setValue }) => {
   const { ref, inView } = useInView();
   useEffect(() => {
     if (inView) {

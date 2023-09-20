@@ -1,5 +1,4 @@
-import React, { ReactElement } from 'react';
-import useHover from 'hooks/useHover';
+import { FC, ReactElement } from 'react';
 import { Link } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import Tooltip, { Variant } from 'components/Tooltip';
@@ -15,7 +14,7 @@ type MentionProps = {
   userId?: string;
 };
 
-const Mention: React.FC<MentionProps> = ({
+const Mention: FC<MentionProps> = ({
   value,
   fullName,
   image,

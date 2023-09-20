@@ -1,5 +1,5 @@
 import Avatar from 'components/Avatar';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import NotificationCard from './NotificationCard';
 import {
   getNotificationMessage,
@@ -15,7 +15,7 @@ import { getProfileImage } from 'utils/misc';
 
 type NotificationCardProps = NotificationProps;
 
-const Notification: React.FC<NotificationCardProps> = ({
+const Notification: FC<NotificationCardProps> = ({
   actor,
   action,
   target,

@@ -1,6 +1,5 @@
 import Layout, { FieldType } from 'components/Form';
 import { Variant as InputVariant } from 'components/Input';
-import React from 'react';
 import {
   Control,
   FieldErrors,
@@ -11,12 +10,13 @@ import { ADD_APP_FLOW, IAddAppForm } from './AddApp';
 import UploadIconButton from './UploadIconButton';
 import Button, { Size, Variant } from 'components/Button';
 import {
-  App,
+  // App,
   CategoryType,
   IAudience,
   useInfiniteCategories,
 } from 'queries/apps';
 import { ICategoryDetail } from 'queries/category';
+import { FC } from 'react';
 
 type AppDetailsFormProps = {
   control: Control<IAddAppForm, any>;
@@ -27,7 +27,7 @@ type AppDetailsFormProps = {
   audience: IAudience[];
 };
 
-const AppDetailsForm: React.FC<AppDetailsFormProps> = ({
+const AppDetailsForm: FC<AppDetailsFormProps> = ({
   control,
   errors,
   defaultValues,

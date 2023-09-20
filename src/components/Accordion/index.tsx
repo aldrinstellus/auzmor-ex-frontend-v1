@@ -1,18 +1,14 @@
 import Card from 'components/Card';
 import Icon from 'components/Icon';
-import React, { useState } from 'react';
+import { FC, ReactNode, useState } from 'react';
 
 type AppProps = {
   title: string;
-  content: React.ReactNode;
+  content: ReactNode;
   initialOpen?: boolean;
 };
 
-const Accordion: React.FC<AppProps> = ({
-  title,
-  content,
-  initialOpen = true,
-}) => {
+const Accordion: FC<AppProps> = ({ title, content, initialOpen = true }) => {
   const [open, setOpen] = useState(initialOpen);
 
   return (

@@ -1,10 +1,9 @@
-import React from 'react';
-import Icon from 'components/Icon';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import { twConfig } from 'utils/misc';
+import { ReactNode } from 'react';
 
-export const toastConfig = (closeButton: React.ReactNode) => ({
+export const toastConfig = (closeButton: ReactNode) => ({
   closeButton,
   style: {
     border: `1px solid ${twConfig.theme.colors.primary['300']}`,

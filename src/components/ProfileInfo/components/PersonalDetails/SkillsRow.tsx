@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { FC, useRef } from 'react';
 import InfoRow from '../InfoRow';
 import 'moment-timezone';
 import Button, { Size, Variant } from 'components/Button';
@@ -12,7 +12,7 @@ type AppProps = {
   data: any;
 };
 
-const SkillsRow: React.FC<AppProps> = ({ data }) => {
+const SkillsRow: FC<AppProps> = ({ data }) => {
   const { userId = '' } = useParams();
   const ref = useRef<any>(null);
   const [openSkills, openSkillsModal, closeSkillsModal] = useModal();
@@ -32,7 +32,7 @@ const SkillsRow: React.FC<AppProps> = ({ data }) => {
         canEdit={false}
         value={
           <div className="flex items-center flex-wrap">
-            {data?.personal?.skills?.map((skill: string, index: number) => (
+            {data?.personal?.skills?.map((skill: string, _index: number) => (
               <div
                 key={skill}
                 data-testid={`personal-details-skill-${skill}`}

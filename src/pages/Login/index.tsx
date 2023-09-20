@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Logo } from 'components/Logo';
 import LoginViaCred from './components/LoginViaCred';
 import LoginViaSSO from './components/LoginViaSSO';
@@ -10,7 +10,7 @@ import { getSubDomain } from 'utils/misc';
 
 interface ILoginProps {}
 
-const Login: React.FC<ILoginProps> = () => {
+const Login: FC<ILoginProps> = () => {
   const [viaSSO, setViaSSO] = useState(false);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();

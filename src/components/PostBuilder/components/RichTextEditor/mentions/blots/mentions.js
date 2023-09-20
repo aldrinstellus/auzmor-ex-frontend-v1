@@ -14,7 +14,7 @@ export class MentionBlot extends Embed {
     this.mounted = false;
   }
 
-  static showUserProfileCard(e) {
+  static showUserProfileCard(_e) {
     // write javascript code
   }
 

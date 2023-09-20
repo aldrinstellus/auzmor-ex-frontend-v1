@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useMemo } from 'react';
+import { FC, ReactElement, useEffect, useMemo } from 'react';
 import { DeltaOperation } from 'quill';
 import clsx from 'clsx';
 
@@ -7,7 +7,7 @@ import Mention from './components/Mentions';
 import Hashtag from './components/Hashtag';
 import Emoji from './components/Emoji';
 import { Text } from './components/Text';
-import MediaPreview, { Mode } from 'components/MediaPreview';
+import MediaPreview from 'components/MediaPreview';
 import PreviewCard from 'components/PreviewCard';
 import { IComment } from 'components/Comments';
 import { IMedia } from 'contexts/CreatePostContext';
@@ -28,7 +28,7 @@ type RenderQuillContent = {
   isAnnouncementWidgetPreview?: boolean;
 };
 
-const RenderQuillContent: React.FC<RenderQuillContent> = ({
+const RenderQuillContent: FC<RenderQuillContent> = ({
   data,
   isComment = false,
   isAnnouncementWidgetPreview = false,

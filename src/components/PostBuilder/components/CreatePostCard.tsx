@@ -1,5 +1,3 @@
-import React from 'react';
-import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 
 // components
@@ -13,6 +11,7 @@ import { IPostMenu } from './CreatePostModal';
 // hooks
 import useAuth from 'hooks/useAuth';
 import Divider, { Variant } from 'components/Divider';
+import { FC, memo } from 'react';
 
 export interface ICreatePostCardProps {
   openModal: () => void;
@@ -115,19 +114,19 @@ export const postTypeMapIcons: IPostMenu[] = [
   },
 ];
 
-const CreatePostCard: React.FC<ICreatePostCardProps> = ({ openModal }) => {
+const CreatePostCard: FC<ICreatePostCardProps> = ({ openModal }) => {
   const { user } = useAuth();
 
-  const tabStyle = (hasDivider = false) =>
-    clsx(
-      { 'flex justify-center items-center group': true },
-      {
-        'border-r border-neutral-100': hasDivider && window.innerWidth >= 1480,
-      },
-      {
-        'mx-2 px-4': window.innerWidth >= 1480,
-      },
-    );
+  // const tabStyle = (hasDivider = false) =>
+  //   clsx(
+  //     { 'flex justify-center items-center group': true },
+  //     {
+  //       'border-r border-neutral-100': hasDivider && window.innerWidth >= 1480,
+  //     },
+  //     {
+  //       'mx-2 px-4': window.innerWidth >= 1480,
+  //     },
+  //   );
 
   return (
     <Card className="bg-white px-6 pt-6 flex flex-col gap-4">
@@ -162,7 +161,10 @@ const CreatePostCard: React.FC<ICreatePostCardProps> = ({ openModal }) => {
             </div>
 
             {ind !== postTypeMapIcons.length - 1 && (
-              <Divider className="w-1 h-auto" variant={Variant.Vertical} />
+              <Divider
+                className="w-1 h-auto !bg-neutral-100"
+                variant={Variant.Vertical}
+              />
             )}
           </>
         ))}
@@ -171,4 +173,4 @@ const CreatePostCard: React.FC<ICreatePostCardProps> = ({ openModal }) => {
   );
 };
 
-export default React.memo(CreatePostCard);
+export default memo(CreatePostCard);

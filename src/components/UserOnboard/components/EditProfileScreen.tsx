@@ -1,9 +1,7 @@
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import { FC, ReactElement, RefObject, useEffect } from 'react';
 import Button from 'components/Button';
-import UpdateProfileImage from 'components/UpdateProfileImage';
 import Banner, { Variant } from 'components/Banner';
 import Avatar from 'components/Avatar';
-import EditIcon from 'components/Icon/components/Edit';
 import Icon from 'components/Icon';
 import useAuth from 'hooks/useAuth';
 
@@ -11,12 +9,12 @@ type EditProfileScreenProps = {
   next: () => void;
   setDisableClose: (disableClose: boolean) => void;
   dataTestId?: string;
-  profilePictureRef?: React.RefObject<HTMLInputElement> | null;
+  profilePictureRef?: RefObject<HTMLInputElement> | null;
   error?: boolean;
   loading?: boolean;
 };
 
-const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
+const EditProfileScreen: FC<EditProfileScreenProps> = ({
   next,
   setDisableClose,
   dataTestId,

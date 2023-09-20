@@ -1,7 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import clsx from 'clsx';
+import { FC, Fragment, useEffect, useState } from 'react';
 import Card from 'components/Card';
-import Divider from 'components/Divider';
 import useHover from 'hooks/useHover';
 import Header from './Header';
 import { useForm } from 'react-hook-form';
@@ -9,14 +7,8 @@ import Layout, { FieldType } from 'components/Form';
 import queryClient from 'utils/queryClient';
 import { EditUserSection, updateCurrentUser } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
-import SuccessToast, {
-  successToastConfig,
-} from 'components/Toast/variants/SuccessToast';
-import { toast } from 'react-toastify';
-import { twConfig } from 'utils/misc';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import Icon from 'components/Icon';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 
 interface IAboutMe {
@@ -33,7 +25,7 @@ export interface IAboutMeProps {
   searchParams?: any;
 }
 
-const AboutMe: React.FC<IAboutMeProps> = ({
+const AboutMe: FC<IAboutMeProps> = ({
   aboutMeData,
   canEdit,
   editSection,
@@ -43,15 +35,14 @@ const AboutMe: React.FC<IAboutMeProps> = ({
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [isHovered, eventHandlers] = useHover();
 
-  const { control, handleSubmit, getValues, watch, reset } =
-    useForm<IUpdateAboutMe>({
-      mode: 'onSubmit',
-      defaultValues: {
-        personal: {
-          about: aboutMeData?.personal?.about || '',
-        },
+  const { control, handleSubmit, getValues, reset } = useForm<IUpdateAboutMe>({
+    mode: 'onSubmit',
+    defaultValues: {
+      personal: {
+        about: aboutMeData?.personal?.about || '',
       },
-    });
+    },
+  });
 
   useEffect(() => {
     if (editSection === EditUserSection.ABOUT && canEdit) {
@@ -66,11 +57,11 @@ const AboutMe: React.FC<IAboutMeProps> = ({
     }
   }, [isEditable]);
 
-  const onHoverStyles = useMemo(
-    () =>
-      clsx({ 'shadow-lg': isHovered && canEdit }, { 'transition-all': true }),
-    [isHovered],
-  );
+  // const onHoverStyles = useMemo(
+  //   () =>
+  //     clsx({ 'shadow-lg': isHovered && canEdit }, { 'transition-all': true }),
+  //   [isHovered],
+  // );
 
   const textAreaField = [
     {
@@ -90,8 +81,8 @@ const AboutMe: React.FC<IAboutMeProps> = ({
   const updateUserAboutMeMutation = useMutation({
     mutationFn: updateCurrentUser,
     mutationKey: ['update-user-personal-details-mutation'],
-    onError: (error: any) => {},
-    onSuccess: (response: any) => {
+    onError: (_error: any) => {},
+    onSuccess: (_response: any) => {
       successToastConfig();
       setIsEditable(false);
     },
@@ -111,7 +102,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({
       const beforeText = text?.substring(lastIndex, startIndex);
       const linkText = match;
       elements.push(
-        <React.Fragment key={index}>
+        <Fragment key={index}>
           {beforeText}
           <a
             href={match}
@@ -121,7 +112,7 @@ const AboutMe: React.FC<IAboutMeProps> = ({
           >
             {linkText}
           </a>
-        </React.Fragment>,
+        </Fragment>,
       );
 
       lastIndex = endIndex;

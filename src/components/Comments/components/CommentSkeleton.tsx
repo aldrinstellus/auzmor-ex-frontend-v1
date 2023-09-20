@@ -1,8 +1,8 @@
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const CommentSkeleton: React.FC = (): ReactElement => {
+const CommentSkeleton: FC = (): ReactElement => {
   return (
     <div>
       <div className="flex gap-x-2 items-center">

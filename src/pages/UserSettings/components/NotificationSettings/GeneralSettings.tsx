@@ -1,5 +1,4 @@
 import Accordion from 'components/Accordion';
-import React from 'react';
 import PostsControl from './PostsControl';
 import MentionsControl from './MentionsControl';
 import EventsControl from './EventsControl';

@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import Button, { Type } from 'components/Button';
 import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
 import { changePassword } from 'queries/account';
-import { Link } from 'react-router-dom';
 import { Variant as InputVariant } from 'components/Input';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -43,9 +42,7 @@ const schema = yup.object({
     .oneOf([yup.ref('newPassword')], 'Passwords do not match'),
 });
 
-const AccountSecurity: React.FC<IAccountSecurity> = ({
-  setIsHeaderVisible,
-}) => {
+const AccountSecurity: FC<IAccountSecurity> = ({ setIsHeaderVisible }) => {
   const [err, setErr] = useState(false);
 
   const domain = getSubDomain(window.location.host);
@@ -63,7 +60,7 @@ const AccountSecurity: React.FC<IAccountSecurity> = ({
           });
         }
       },
-      onSuccess: (data) => {
+      onSuccess: (_data) => {
         reset();
         toast(<SuccessToast content={'Password updated successfully'} />, {
           closeButton: (

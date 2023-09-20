@@ -2,7 +2,7 @@ import Divider, { Variant as DividerVariant } from 'components/Divider';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
 import Modal from 'components/Modal';
-import React, { ReactElement, ReactNode, useRef, useState } from 'react';
+import { FC, ReactElement, ReactNode, useRef, useState } from 'react';
 import ConnectionSettings from './ConnectionSettings';
 import UserFieldsMapping from './UserFieldsMapping';
 import GroupFieldsMapping from './GroupFieldsMapping';
@@ -83,12 +83,12 @@ const groupFieldMappingSchema = yup.object({
   groupObjectFilter: yup.string(),
 });
 
-const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
+const ConfigureLDAP: FC<ConfigureLDAPProps> = ({
   open,
   closeModal,
   ssoSetting,
 }): ReactElement => {
-  const [currentScreen, prev, next, setCurrentScreen] = useCarousel(0, 3);
+  const [currentScreen, _prev, next, setCurrentScreen] = useCarousel(0, 3);
   const [connectionSettingsError, setConnectionSettingsError] =
     useState<boolean>(false);
   const [userFieldsMappingError, setUserFieldsMappingError] =
@@ -181,7 +181,7 @@ const ConfigureLDAP: React.FC<ConfigureLDAPProps> = ({
   // -----------------------------------------------------------------------
 
   // FORM 2: GROUP FIELD MAPPING FORM
-  const [groupFieldsMappingData, setGroupFieldsMappingData] =
+  const [groupFieldsMappingData, _setGroupFieldsMappingData] =
     useState<IGroupFieldsMappingForm>({
       groupName: groupFieldMapConfig?.groupName,
       groupMemberUID: groupFieldMapConfig?.groupMemberUID,

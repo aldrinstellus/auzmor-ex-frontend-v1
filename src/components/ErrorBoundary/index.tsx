@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import {
   Navigate,
   isRouteErrorResponse,
@@ -7,7 +7,7 @@ import {
 
 interface IErrorBoundaryProps {}
 
-const ErrorBoundary: React.FC<IErrorBoundaryProps> = () => {
+const ErrorBoundary: FC<IErrorBoundaryProps> = () => {
   const error = useRouteError() as Error;
   if (isRouteErrorResponse(error)) {
     if (error.status === 403) {

@@ -4,7 +4,6 @@ import {
   useQuery,
 } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
-import { ICategory } from './category';
 
 export interface ITeamPayload {
   name: string;

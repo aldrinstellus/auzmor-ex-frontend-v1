@@ -2,9 +2,9 @@ import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
-import { IDepartment, useInfiniteDepartments } from 'queries/department';
+import { useInfiniteDepartments } from 'queries/department';
 import { IGetUser } from 'queries/users';
-import React, { ReactNode, useEffect } from 'react';
+import { FC, ReactNode, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useInfiniteChannels } from 'queries/channel';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
@@ -15,7 +15,7 @@ interface IChannelsBodyProps {
   dataTestId?: string;
 }
 
-const ChannelsBody: React.FC<IChannelsBodyProps> = ({
+const ChannelsBody: FC<IChannelsBodyProps> = ({
   entityRenderer,
   selectedChannelIds = [],
 }) => {
@@ -46,7 +46,7 @@ const ChannelsBody: React.FC<IChannelsBodyProps> = ({
       return true;
     });
   // const { data: privacy, isLoading: privacyLoading } = useGetLocations('');
-  const { data: category, isLoading: categoryLoading } =
+  const { data: _category, isLoading: categoryLoading } =
     useInfiniteDepartments();
 
   useEffect(() => {
@@ -91,12 +91,12 @@ const ChannelsBody: React.FC<IChannelsBodyProps> = ({
   //   }));
   // };
 
-  const getDepartmentOptions = (departments: IDepartment[]) => {
-    return departments.map((department: IDepartment) => ({
-      label: department.name,
-      value: department.id,
-    }));
-  };
+  // const getDepartmentOptions = (departments: IDepartment[]) => {
+  //   return departments.map((department: IDepartment) => ({
+  //     label: department.name,
+  //     value: department.id,
+  //   }));
+  // };
   return (
     <div className="flex flex-col">
       <div className="flex flex-col py-4 px-6">

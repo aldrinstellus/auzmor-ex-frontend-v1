@@ -2,8 +2,7 @@ import clsx from 'clsx';
 import Banner, { Variant } from 'components/Banner';
 import Icon from 'components/Icon';
 import { IMedia } from 'contexts/CreatePostContext';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { twConfig } from 'utils/misc';
+import { FC, MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 
 const MIN = 0;
 const MAX = 100;
@@ -13,7 +12,7 @@ export interface ICarouselProps {
   media: IMedia[];
   className?: string;
   onClose?: (
-    e: React.MouseEvent<HTMLDivElement>,
+    e: MouseEvent<HTMLDivElement>,
     media: IMedia,
     currentIndex: number,
   ) => void;
@@ -33,7 +32,7 @@ interface IProgress {
   progress: number;
 }
 
-const Carousel: React.FC<ICarouselProps> = ({
+const Carousel: FC<ICarouselProps> = ({
   media,
   className = '',
   currentIndex = 0,

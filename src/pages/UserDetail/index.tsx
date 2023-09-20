@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import ContactWidget from 'components/ContactWidget';
 import {
   UserEditType,
@@ -7,7 +6,6 @@ import {
   useSingleUser,
 } from 'queries/users';
 import ProfileInfo from 'components/ProfileInfo';
-import Spinner from 'components/Spinner';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import ProfileActivityFeed from './components/ProfileActivityFeed';
 import useAuth from 'hooks/useAuth';
@@ -19,6 +17,7 @@ import UserDetailSkeleton from './components/UserDetailSkeleton';
 import ContactSkeleton from 'components/ContactWidget/components/Skeletons';
 import useModal from 'hooks/useModal';
 import useRole from 'hooks/useRole';
+import { FC } from 'react';
 
 export interface IUpdateProfileImage {
   profileImage: File;
@@ -27,7 +26,7 @@ export interface IUpdateProfileImage {
 
 interface IUserDetailProps {}
 
-const UserDetail: React.FC<IUserDetailProps> = () => {
+const UserDetail: FC<IUserDetailProps> = () => {
   const [open, openModal, closeModal] = useModal(undefined, false);
   const { user } = useAuth();
   const { isAdmin } = useRole();

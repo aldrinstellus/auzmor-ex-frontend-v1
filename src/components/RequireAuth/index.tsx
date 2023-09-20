@@ -1,20 +1,20 @@
 import AppShell from 'components/AppShell';
 import PageLoader from 'components/PageLoader';
 import useAuth from 'hooks/useAuth';
-import React from 'react';
+import { FC, Suspense } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { setItem } from 'utils/persist';
 
 interface IRequireAuthProps {}
 
-const RequireAuth: React.FC<IRequireAuthProps> = () => {
+const RequireAuth: FC<IRequireAuthProps> = () => {
   const { user } = useAuth();
   const location = useLocation();
 
   if (user) {
     return (
       <AppShell>
-        <React.Suspense
+        <Suspense
           fallback={
             <div className="w-full h-screen">
               <PageLoader />
@@ -22,7 +22,7 @@ const RequireAuth: React.FC<IRequireAuthProps> = () => {
           }
         >
           <Outlet />
-        </React.Suspense>
+        </Suspense>
       </AppShell>
     );
   }

@@ -1,4 +1,5 @@
-import React, {
+import {
+  FC,
   MouseEventHandler,
   ReactElement,
   useEffect,
@@ -72,7 +73,7 @@ export const fetchFile = (url: string) => {
     });
 };
 
-const Carousel: React.FC<CarouselProps> = ({
+const Carousel: FC<CarouselProps> = ({
   media,
   index,
   closeModal,

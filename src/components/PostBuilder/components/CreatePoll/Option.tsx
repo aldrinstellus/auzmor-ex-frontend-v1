@@ -1,7 +1,7 @@
 import Layout, { FieldType } from 'components/Form';
 import { Variant } from 'components/Input';
 import { IPoll } from 'contexts/CreatePostContext';
-import React from 'react';
+import { FC } from 'react';
 import {
   Control,
   FieldArrayWithId,
@@ -17,7 +17,7 @@ export type OptionRowProps = {
   remove: UseFieldArrayRemove;
   className?: string;
 };
-const OptionRow: React.FC<OptionRowProps> = ({
+const OptionRow: FC<OptionRowProps> = ({
   field,
   errors,
   index,

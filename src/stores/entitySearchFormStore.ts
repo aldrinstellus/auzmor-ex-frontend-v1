@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import _ from 'lodash';
 import { UseFormReturn } from 'react-hook-form';
 import { IAudienceForm } from 'components/EntitySearchModal';
 

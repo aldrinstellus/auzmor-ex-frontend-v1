@@ -6,9 +6,8 @@ import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import useRole from 'hooks/useRole';
 import { App } from 'queries/apps';
-import React from 'react';
-import { twConfig } from 'utils/misc';
 import AppDetailSVG from './../../../images/appDetails.svg';
+import { FC } from 'react';
 
 type AppDetailModalProps = {
   app: App;
@@ -18,7 +17,7 @@ type AppDetailModalProps = {
   openDeleteAppModal: () => void;
 };
 
-const AppDetailModal: React.FC<AppDetailModalProps> = ({
+const AppDetailModal: FC<AppDetailModalProps> = ({
   app,
   open,
   closeModal,

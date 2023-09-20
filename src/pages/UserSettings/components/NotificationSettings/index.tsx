@@ -1,14 +1,7 @@
 import Card from 'components/Card';
-import Tabs from 'components/Tabs';
-import React from 'react';
 import GeneralSetting from './GeneralSettings';
-import clsx from 'clsx';
-import ChannelSetting from './ChannelSettings';
-import { useNotificationSettings } from 'queries/users';
 
 const NotificationSettings = () => {
-  const { data, isLoading } = useNotificationSettings();
-
   return (
     <div className="space-y-4">
       <Card className="!px-6 !py-4">

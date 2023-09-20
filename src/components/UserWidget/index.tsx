@@ -3,14 +3,14 @@ import Card from 'components/Card';
 import Icon from 'components/Icon';
 import useAuth from 'hooks/useAuth';
 import { useCurrentUser } from 'queries/users';
-import React from 'react';
+import { FC, memo } from 'react';
 import { Link } from 'react-router-dom';
 
 export interface IUserCardProps {
   className?: string;
 }
 
-const UserCard: React.FC<IUserCardProps> = ({ className }) => {
+const UserCard: FC<IUserCardProps> = ({ className }) => {
   const { user } = useAuth();
   const { data } = useCurrentUser();
 
@@ -65,4 +65,4 @@ const UserCard: React.FC<IUserCardProps> = ({ className }) => {
   );
 };
 
-export default React.memo(UserCard);
+export default memo(UserCard);

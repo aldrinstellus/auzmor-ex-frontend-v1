@@ -5,7 +5,7 @@ import { useDebounce } from 'hooks/useDebounce';
 import { IDepartment, useInfiniteDepartments } from 'queries/department';
 import { ILocation, useInfiniteLocations } from 'queries/location';
 import { IGetUser, useInfiniteUsers } from 'queries/users';
-import React, { ReactNode, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, ReactNode, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import UserRow from './UserRow';
 import InfiniteSearch from 'components/InfiniteSearch';
@@ -22,7 +22,7 @@ interface IMembersBodyProps {
   showJobTitleFilter?: boolean;
 }
 
-const MembersBody: React.FC<IMembersBodyProps> = ({
+const MembersBody: FC<IMembersBodyProps> = ({
   entityRenderer,
   selectedMemberIds = [],
   dataTestId,
@@ -367,7 +367,7 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
                     input: (value: boolean) => {
                       return value;
                     },
-                    output: (e: React.ChangeEvent<HTMLInputElement>) => {
+                    output: (e: ChangeEvent<HTMLInputElement>) => {
                       if (e.target.checked) {
                         selectAllEntity();
                       } else {
@@ -429,7 +429,7 @@ const MembersBody: React.FC<IMembersBodyProps> = ({
                             updateSelectAll();
                             return !!value;
                           },
-                          output: (e: React.ChangeEvent<HTMLInputElement>) => {
+                          output: (e: ChangeEvent<HTMLInputElement>) => {
                             if (e.target.checked) return user;
                             return false;
                           },

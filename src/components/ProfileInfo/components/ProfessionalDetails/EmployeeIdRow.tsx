@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { FC, useRef } from 'react';
 import InfoRow from '../InfoRow';
 import * as yup from 'yup';
 import 'moment-timezone';
@@ -15,7 +15,7 @@ type AppProps = {
   data: any;
 };
 
-const EmployeeIdRow: React.FC<AppProps> = ({ data }) => {
+const EmployeeIdRow: FC<AppProps> = ({ data }) => {
   const { userId = '' } = useParams();
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);
@@ -30,8 +30,8 @@ const EmployeeIdRow: React.FC<AppProps> = ({ data }) => {
       ? (data: any) => updateUserById(userId, data)
       : updateCurrentUser,
     mutationKey: ['update-user-employeeId-mutation'],
-    onError: (error: any) => {},
-    onSuccess: async (response: any) => {
+    onError: (_error: any) => {},
+    onSuccess: async (_response: any) => {
       successToastConfig();
       ref?.current?.setEditMode(false);
       if (userId) {

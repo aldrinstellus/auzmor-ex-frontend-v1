@@ -1,4 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import {
+  FC,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { CropperRef } from 'react-advanced-cropper';
 import 'react-advanced-cropper/dist/style.css';
 import { IUpdateProfileImage } from 'pages/UserDetail';
@@ -25,8 +32,8 @@ export interface IEditImageModalProps {
   openEditImage: boolean;
   openEditProfileModal?: () => void;
   closeEditImageModal?: () => void;
-  userProfileImageRef: React.RefObject<HTMLInputElement>;
-  userCoverImageRef?: React.RefObject<HTMLInputElement> | null;
+  userProfileImageRef: RefObject<HTMLInputElement>;
+  userCoverImageRef?: RefObject<HTMLInputElement> | null;
   image: string;
   imageName: string;
   fileEntityType: EntityType;
@@ -42,7 +49,7 @@ export enum Shape {
   Rectangle = 'rectangle',
 }
 
-const EditImageModal: React.FC<IEditImageModalProps> = ({
+const EditImageModal: FC<IEditImageModalProps> = ({
   title,
   openEditImage,
   image,
@@ -77,7 +84,7 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
     const img = new Image();
 
     img.onload = () => {
-      const getWidthFactor = (width: number): number => {
+      const _getWidthFactor = (width: number): number => {
         // Need better algorithm here
         let factor = 0.6;
         if (width > 3000) factor = 0.7;
@@ -206,7 +213,7 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
   const onSubmit = async () => {
     cropperRef?.current
       ?.getCanvas()
-      ?.toBlob((blobImage: React.SetStateAction<Blob | null>) => {
+      ?.toBlob((blobImage: SetStateAction<Blob | null>) => {
         if (blobImage) {
           setBlob(blobImage);
         }

@@ -83,7 +83,7 @@ export const patchLimitGlobalPosting = async (
   id: string,
   limitGlobalPosting: boolean,
 ) => {
-  const data = await apiService.patch(`/organizations/${id}`, {
+  await apiService.patch(`/organizations/${id}`, {
     limitGlobalPosting,
   });
 };

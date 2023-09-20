@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef } from 'react';
+import { FC, ReactNode, memo, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
@@ -15,7 +15,6 @@ import Likes, { ReactionType } from 'components/Reactions';
 import Icon from 'components/Icon';
 import RenderQuillContent from 'components/RenderQuillContent';
 import Button, { Size, Variant } from 'components/Button';
-import Divider from 'components/Divider';
 import FeedPostMenu from './components/FeedPostMenu';
 import AcknowledgementBanner from './components/AcknowledgementBanner';
 import ReactionModal from './components/ReactionModal';
@@ -68,7 +67,7 @@ type PostProps = {
   customNode?: ReactNode;
 };
 
-const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
+const Post: FC<PostProps> = ({ post, customNode = null }) => {
   const [showComments, openComments, closeComments] = useModal(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -90,10 +89,10 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
     onMutate: (id) => {
       updateFeed(id, { ...getPost(id), bookmarked: true });
     },
-    onError: (error, variables, context) => {
+    onError: (_error, variables, _context) => {
       updateFeed(variables, { ...getPost(variables), bookmarked: false });
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async (_data, _variables) => {
       toast(
         <SuccessToast
           content="Post has been bookmarked successfully!"
@@ -126,10 +125,10 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
     onMutate: (variables) => {
       updateFeed(variables, { ...getPost(variables), bookmarked: false });
     },
-    onError: (error, variables, context) => {
+    onError: (_error, variables, _context) => {
       updateFeed(variables, { ...getPost(variables), bookmarked: true });
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async (_data, _variables) => {
       toast(
         <SuccessToast
           content="Post removed from your bookmarks"
@@ -371,4 +370,4 @@ const Post: React.FC<PostProps> = ({ post, customNode = null }) => {
   );
 };
 
-export default React.memo(Post);
+export default memo(Post);

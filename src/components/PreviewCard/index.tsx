@@ -2,7 +2,7 @@ import Card from 'components/Card';
 import IconPreview from 'components/PreviewLink/components/IconPreview';
 import ImagePreview from 'components/PreviewLink/components/ImagePreview';
 import { Metadata } from 'components/PreviewLink/types';
-import React, { useMemo } from 'react';
+import { FC, useMemo } from 'react';
 
 type PreviewCardProps = {
   metaData: Metadata;
@@ -11,7 +11,7 @@ type PreviewCardProps = {
   isError?: boolean;
 };
 
-const PreviewCard: React.FC<PreviewCardProps> = ({
+const PreviewCard: FC<PreviewCardProps> = ({
   metaData,
   className,
   isLoading,

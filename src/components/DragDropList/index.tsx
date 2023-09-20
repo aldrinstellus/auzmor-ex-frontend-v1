@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   DragDropContext,
   Droppable,
@@ -7,6 +6,7 @@ import {
 } from 'react-beautiful-dnd';
 import ItemList from './components/ItemList';
 import { ISkillsOption } from 'components/ProfileInfo/components/PersonalDetails';
+import { FC } from 'react';
 
 type DragDropListProps = {
   draggableItems: ISkillsOption[];
@@ -15,7 +15,7 @@ type DragDropListProps = {
   dataTestIdDelete?: string;
 };
 
-const DragDropList: React.FC<DragDropListProps> = ({
+const DragDropList: FC<DragDropListProps> = ({
   draggableItems,
   setDraggableItems,
   dataTestIdEdit,

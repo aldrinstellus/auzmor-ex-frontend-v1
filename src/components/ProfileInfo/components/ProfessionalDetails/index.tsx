@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import Card from 'components/Card';
 import clsx from 'clsx';
 import 'moment-timezone';
@@ -15,14 +15,14 @@ export interface IProfessionalDetailsProps {
   searchParams?: any;
 }
 
-const ProfessionalDetails: React.FC<IProfessionalDetailsProps> = ({
+const ProfessionalDetails: FC<IProfessionalDetailsProps> = ({
   professionalDetails,
   canEdit,
-  editSection,
+  // editSection,
   setSearchParams,
   searchParams,
 }) => {
-  const [isEditable, setIsEditable] = useState<boolean>(false);
+  const [isEditable, _setIsEditable] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isEditable && searchParams.has('edit')) {

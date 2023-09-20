@@ -1,11 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import { FC, useState } from 'react';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
 import Button, { Variant, Type as ButtonType } from 'components/Button';
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 import { Size } from 'components/Button';
 import useHover from 'hooks/useHover';
-import clsx from 'clsx';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import { useMutation } from '@tanstack/react-query';
@@ -28,10 +27,7 @@ type IContactCardProps = {
   canEdit: boolean;
 };
 
-const ContactWidget: React.FC<IContactCardProps> = ({
-  contactCardData,
-  canEdit,
-}) => {
+const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [isHovered, eventHandlers] = useHover();
 
@@ -73,8 +69,8 @@ const ContactWidget: React.FC<IContactCardProps> = ({
   const updateUserContactDetailMutation = useMutation({
     mutationFn: updateCurrentUser,
     mutationKey: ['update-user-contact-detail-mutation'],
-    onError: (error: any) => {},
-    onSuccess: (response: any) => {
+    onError: (_error: any) => {},
+    onSuccess: (_response: any) => {
       toast(<SuccessToast content={'User Profile Updated Successfully'} />, {
         closeButton: (
           <Icon name="closeCircleOutline" color="text-primary-500" size={20} />

@@ -1,5 +1,5 @@
 import {
-  QueryFunction,
+  // QueryFunction,
   QueryFunctionContext,
   useInfiniteQuery,
   useQuery,

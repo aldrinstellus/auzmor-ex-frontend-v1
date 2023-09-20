@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { IGetUser } from 'queries/users';
 import Avatar from 'components/Avatar';
 import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
@@ -11,7 +11,7 @@ interface IUserRowProps {
   onClick?: (user: IGetUser) => void;
 }
 
-const UserRow: React.FC<IUserRowProps> = ({
+const UserRow: FC<IUserRowProps> = ({
   user,
   className = '',
   dataTestId = '',

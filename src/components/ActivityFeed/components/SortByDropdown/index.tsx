@@ -1,8 +1,8 @@
-import React from 'react';
 import Dropdown from 'components/Dropdown';
 import Button, { Variant, Size } from 'components/Button';
+import { FC } from 'react';
 
-const SortByDropdown: React.FC = ({}) => {
+const SortByDropdown: FC = ({}) => {
   return (
     <div className="flex items-center ml-6">
       <div className="whitespace-nowrap text-sm font-bold mr-4">Sort by</div>

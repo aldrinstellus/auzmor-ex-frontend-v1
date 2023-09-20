@@ -1,21 +1,20 @@
 import { IMedia } from 'contexts/CreatePostContext';
-import React from 'react';
 import { Mode } from '..';
 import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
 import BlurImg from 'components/Image/components/BlurImg';
+import { FC, MouseEventHandler } from 'react';
 
 export interface IMediaRenderProps {
   data: IMedia;
   overlayCount?: number;
   localClassName?: string;
   mode?: Mode;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  onClick?: MouseEventHandler<HTMLDivElement>;
   coverImageUrl?: string;
   isAnnouncementWidgetPreview?: boolean;
 }
 
-const MediaRender: React.FC<IMediaRenderProps> = ({
+const MediaRender: FC<IMediaRenderProps> = ({
   data,
   overlayCount = -1,
   localClassName,

@@ -1,22 +1,21 @@
-import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import React from 'react';
-import { useLoaderData } from 'react-router-dom';
-import { removeAllItems } from 'utils/persist';
-import { useNavigate } from 'react-router-dom';
-import { logout } from 'queries/account';
-import Button from 'components/Button';
+// import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
+// import axios from 'axios';
+// import { useLoaderData } from 'react-router-dom';
+// import { removeAllItems } from 'utils/persist';
+// import { useNavigate } from 'react-router-dom';
+// import { logout } from 'queries/account';
+// import Button from 'components/Button';
 
 interface IHomeProps {}
 
-interface IPostODT {
-  id: number;
-  userId: number;
-  reactions: number;
-  body: string;
-  tags: string[];
-  title: string;
-}
+// interface IPostODT {
+//   id: number;
+//   userId: number;
+//   reactions: number;
+//   body: string;
+//   tags: string[];
+//   title: string;
+// }
 
 // const forbiddenErrorUrl = 'https://httpstat.us/403';
 // const serverErrorUrl = 'https://httpstat.us/500';
@@ -57,7 +56,7 @@ interface IPostODT {
 //   // return queryClient.ensureQueryData(query);
 // };
 
-const Home = (props: IHomeProps) => {
+const Home = (_props: IHomeProps) => {
   // const navigate = useNavigate();
   // ⬇️ use hook to get the data from react query client using useQuery
   // const initialData = useLoaderData() as Awaited<

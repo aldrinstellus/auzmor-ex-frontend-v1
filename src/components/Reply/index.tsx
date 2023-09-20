@@ -1,7 +1,5 @@
-import React, { useRef, useState } from 'react';
+import { FC, useState } from 'react';
 import { useInfiniteReplies } from 'queries/reaction';
-/* Comment Level RTE - Comment on the comment level 2 */
-import { useInfiniteComments } from 'queries/comments';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import { Reply } from 'components/Reply/Reply';
@@ -14,11 +12,9 @@ import { CommentsRTE } from 'components/Comments/components/CommentsRTE';
 import { EntityType } from 'queries/files';
 import {
   IMG_FILE_SIZE_LIMIT,
-  IMedia,
   IMediaValidationError,
   MediaValidationError,
 } from 'contexts/CreatePostContext';
-import { getMediaObj } from 'utils/misc';
 import { validImageTypesForComments } from 'components/Comments';
 import { useUploadState } from 'hooks/useUploadState';
 
@@ -32,7 +28,7 @@ export interface activeCommentsDataType {
   type: string;
 }
 
-const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
+const Comments: FC<CommentsProps> = ({ entityId, className }) => {
   const { user } = useAuth();
   const {
     inputRef,

@@ -1,4 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import {
+  FC,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { CropperRef } from 'react-advanced-cropper';
 import 'react-advanced-cropper/dist/style.css';
 import Header from 'components/ModalHeader';
@@ -11,7 +18,7 @@ export interface IImageResositionProps {
   title: string;
   openEditImage: boolean;
   closeEditImageModal?: () => void;
-  imageRef: React.RefObject<HTMLInputElement>;
+  imageRef: RefObject<HTMLInputElement>;
   image: string;
   setImageFile: (file: any) => void;
   imageFile?: any;
@@ -21,7 +28,7 @@ export enum Shape {
   Rectangle = 'rectangle',
 }
 
-const ImageResosition: React.FC<IImageResositionProps> = ({
+const ImageResosition: FC<IImageResositionProps> = ({
   title,
   openEditImage,
   image,
@@ -38,7 +45,7 @@ const ImageResosition: React.FC<IImageResositionProps> = ({
     const img = new Image();
 
     img.onload = () => {
-      const getWidthFactor = (width: number): number => {
+      const _getWidthFactor = (width: number): number => {
         // Need better algorithm here
         let factor = 0.6;
         if (width > 3000) factor = 0.7;
@@ -53,7 +60,7 @@ const ImageResosition: React.FC<IImageResositionProps> = ({
   const onSubmit = async () => {
     cropperRef?.current
       ?.getCanvas()
-      ?.toBlob((blobImage: React.SetStateAction<Blob | null>) => {
+      ?.toBlob((blobImage: SetStateAction<Blob | null>) => {
         if (blobImage) {
           setImageFile(blobImage);
         }

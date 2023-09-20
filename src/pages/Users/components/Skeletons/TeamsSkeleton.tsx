@@ -1,10 +1,10 @@
 import Card from 'components/Card';
-import React from 'react';
+import { FC } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
 export interface ITeamsSkeletonProps {}
 
-const TeamsSkeleton: React.FC<ITeamsSkeletonProps> = () => {
+const TeamsSkeleton: FC<ITeamsSkeletonProps> = () => {
   return (
     <Card className="w-[189.5px] border-solid border border-neutral-200 flex flex-col">
       <Skeleton

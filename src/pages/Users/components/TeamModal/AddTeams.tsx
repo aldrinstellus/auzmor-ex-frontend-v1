@@ -1,10 +1,10 @@
-import React from 'react';
 import { Control, FieldErrors, UseFormGetValues } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import { Variant as InputVariant } from 'components/Input';
 import { ITeamForm } from '.';
 import { CategoryType, useInfiniteCategories } from 'queries/apps';
 import { ICategoryDetail } from 'queries/category';
+import { FC } from 'react';
 
 export interface IAddTeamsProps {
   control: Control<ITeamForm, any>;
@@ -12,11 +12,7 @@ export interface IAddTeamsProps {
   defaultValues: UseFormGetValues<ITeamForm>;
 }
 
-const AddTeams: React.FC<IAddTeamsProps> = ({
-  control,
-  errors,
-  defaultValues,
-}) => {
+const AddTeams: FC<IAddTeamsProps> = ({ control, errors, defaultValues }) => {
   const formatCategories = (data: any) => {
     const categoriesData = data?.pages.flatMap((page: any) => {
       return page?.data?.result?.data.map((category: any) => {

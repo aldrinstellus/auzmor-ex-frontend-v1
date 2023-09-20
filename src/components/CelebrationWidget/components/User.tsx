@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react';
+import { FC, memo, useContext, useMemo, useState } from 'react';
 import truncate from 'lodash/truncate';
 import Avatar from 'components/Avatar';
 import { CELEBRATION_TYPE } from '..';
@@ -30,7 +30,7 @@ interface UserProps {
   closeModal?: () => void;
 }
 
-const User: React.FC<UserProps> = ({
+const User: FC<UserProps> = ({
   type,
   isModalView = false,
   data,
@@ -289,4 +289,4 @@ const User: React.FC<UserProps> = ({
   );
 };
 
-export default React.memo(User);
+export default memo(User);

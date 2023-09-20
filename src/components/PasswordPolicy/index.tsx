@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { FC, useMemo } from 'react';
 import { Check } from '../Logo/';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
@@ -10,10 +10,10 @@ export interface IPasswordPolicyProps {
   dataTestId?: string;
 }
 
-const PasswordPolicy: React.FC<IPasswordPolicyProps> = ({
+const PasswordPolicy: FC<IPasswordPolicyProps> = ({
   policyName,
   isChecked,
-  className,
+  // className,
   dataTestId,
 }) => {
   const checkStyles = useMemo(

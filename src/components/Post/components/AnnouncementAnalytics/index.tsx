@@ -2,7 +2,6 @@ import clsx from 'clsx';
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import Tabs from 'components/Tabs';
-import React from 'react';
 import Acknowledged from './Acknowledged';
 import Pending from './Pending';
 import { useMutation } from '@tanstack/react-query';
@@ -13,6 +12,7 @@ import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import Spinner from 'components/Spinner';
+import { FC } from 'react';
 
 type AppProps = {
   open: boolean;
@@ -20,11 +20,7 @@ type AppProps = {
   post: Record<string, any>;
 };
 
-const AnnouncementAnalytics: React.FC<AppProps> = ({
-  post,
-  open,
-  closeModal,
-}) => {
+const AnnouncementAnalytics: FC<AppProps> = ({ post, open, closeModal }) => {
   const tabLabel = (label: string, isActive: boolean) => {
     return <span className={clsx({ 'font-bold': isActive })}>{label}</span>;
   };

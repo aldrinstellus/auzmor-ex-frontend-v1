@@ -1,4 +1,3 @@
-import React from 'react';
 import apiService from 'utils/apiService';
 import {
   createMentionsList,
@@ -10,29 +9,29 @@ import ReactionSkeleton from 'components/Post/components/ReactionSkeleton';
 import { extractFirstWord } from 'utils/misc';
 import Skeleton from 'react-loading-skeleton';
 
-interface IOrg {
-  id: string;
-  name: string;
-}
-interface IFlags {
-  isDeactivated: string;
-  isReported: string;
-}
-interface IUserMentions {
-  id: string;
-  charDenotation: string;
-  fullName: string;
-  firstName: string;
-  middleName?: string;
-  lastName: string;
-  primaryEmail: string;
-  org: IOrg;
-  workEmail: string;
-  role: string;
-  flags: IFlags;
-  createdAt: string;
-  status: string;
-}
+// interface IOrg {
+//   id: string;
+//   name: string;
+// }
+// interface IFlags {
+//   isDeactivated: string;
+//   isReported: string;
+// }
+// interface IUserMentions {
+//   id: string;
+//   charDenotation: string;
+//   fullName: string;
+//   firstName: string;
+//   middleName?: string;
+//   lastName: string;
+//   primaryEmail: string;
+//   org: IOrg;
+//   workEmail: string;
+//   role: string;
+//   flags: IFlags;
+//   createdAt: string;
+//   status: string;
+// }
 
 interface IHashtags {
   id: string;
@@ -122,7 +121,7 @@ export const mention = {
       ),
     );
   },
-  renderItem: (item: any, searchItem: any) => {
+  renderItem: (item: any, _searchItem: any) => {
     if (item?.charDenotation === '@') {
       return `
               <div class="user-container">

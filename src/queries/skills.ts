@@ -15,11 +15,11 @@ export interface ISkillDetail {
 
 const getAllSkills = async ({
   pageParam = null,
-  queryKey,
-}: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
+}: // queryKey,
+QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
   if (pageParam === null) {
     // return await apiService.get('/skills', queryKey[1]);
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
           message: 'Successful',

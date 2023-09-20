@@ -1,7 +1,7 @@
 import {
   QueryFunctionContext,
   useInfiniteQuery,
-  useQuery,
+  // useQuery,
 } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 

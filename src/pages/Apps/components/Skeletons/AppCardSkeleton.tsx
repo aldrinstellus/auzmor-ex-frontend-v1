@@ -1,10 +1,10 @@
 import Card from 'components/Card';
-import React from 'react';
+import { FC } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
 export interface IAppCardSkeletonProps {}
 
-const AppCardSkeleton: React.FC<IAppCardSkeletonProps> = () => {
+const AppCardSkeleton: FC<IAppCardSkeletonProps> = () => {
   return (
     <Card className="min-w-[234px] max-w-[234px] min-h-[148px] max-h-[148px] border-1 flex flex-col">
       <div className="p-4 flex flex-col">

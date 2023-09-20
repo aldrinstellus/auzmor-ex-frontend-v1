@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { FC, useRef } from 'react';
 import InfoRow from '../InfoRow';
 import moment from 'moment';
 import 'moment-timezone';
@@ -15,7 +15,7 @@ type AppProps = {
   data: any;
 };
 
-const DateOfBirthRow: React.FC<AppProps> = ({ data }) => {
+const DateOfBirthRow: FC<AppProps> = ({ data }) => {
   const { userId = '' } = useParams();
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -27,8 +27,8 @@ const DateOfBirthRow: React.FC<AppProps> = ({ data }) => {
       ? (data: any) => updateUserById(userId, data)
       : updateCurrentUser,
     mutationKey: ['update-user-joinDate-mutation'],
-    onError: (error: any) => {},
-    onSuccess: async (response: any) => {
+    onError: (_error: any) => {},
+    onSuccess: async (_response: any) => {
       successToastConfig();
       ref?.current?.setEditMode(false);
       if (userId) {

@@ -390,7 +390,11 @@ export const useSingleUser = (userId: string) => {
 };
 
 export const updateUserAPI = async (user: IUserUpdate) => {
-  const { id, ...rest } = user;
+  const {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    id,
+    ...rest
+  } = user;
   const data = await apiService.patch(`/users/${user.id}`, { ...rest });
   return data;
 };

@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import { FC, ReactNode, useEffect, useRef, useState } from 'react';
 import Likes from 'components/Reactions';
 import IconButton, {
   Variant as IconVariant,
@@ -9,14 +9,13 @@ import { useMutation } from '@tanstack/react-query';
 import Popover from 'components/Popover';
 import clsx from 'clsx';
 import { humanizeTime } from 'utils/time';
-import { iconsStyle } from 'components/Post';
 import useAuth from 'hooks/useAuth';
 import Reply from '../../Reply';
 import Icon from 'components/Icon';
 import { Link } from 'react-router-dom';
 import RenderQuillContent from 'components/RenderQuillContent';
 import ReactionModal from 'components/Post/components/ReactionModal';
-import _ from 'lodash';
+import omit from 'lodash/omit';
 import useModal from 'hooks/useModal';
 import {
   getAvatarColor,
@@ -37,17 +36,13 @@ import { useFeedStore } from 'stores/feedStore';
 import { useCommentStore } from 'stores/commentStore';
 import { produce } from 'immer';
 import Divider, { Variant } from 'components/Divider';
-import MediaPreview from 'components/MediaPreview';
 
 interface CommentProps {
   comment: IComment;
   customNode?: ReactNode;
 }
 
-export const Comment: React.FC<CommentProps> = ({
-  comment,
-  customNode = null,
-}) => {
+export const Comment: FC<CommentProps> = ({ comment, customNode = null }) => {
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
   const { comment: storedcomments, setComment } = useCommentStore();
@@ -90,7 +85,7 @@ export const Comment: React.FC<CommentProps> = ({
           draft.commentsCount = draft.commentsCount - 1;
         }),
       );
-      setComment({ ..._.omit(storedcomments, [variables]) });
+      setComment({ ...omit(storedcomments, [variables]) });
       closeConfirm();
       return { previousData };
     },

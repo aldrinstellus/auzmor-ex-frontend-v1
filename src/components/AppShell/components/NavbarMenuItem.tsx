@@ -1,5 +1,5 @@
 import Icon from 'components/Icon';
-import React from 'react';
+import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
 
 export interface INavbarMenuItemProps {
@@ -15,7 +15,7 @@ export interface INavbarMenuItemProps {
   };
 }
 
-const NavbarMenuItem: React.FC<INavbarMenuItemProps> = ({ nav }) => {
+const NavbarMenuItem: FC<INavbarMenuItemProps> = ({ nav }) => {
   return nav.disabled ? (
     <div
       className="flex flex-col items-center p-2"

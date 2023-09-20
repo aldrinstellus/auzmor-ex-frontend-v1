@@ -1,16 +1,16 @@
-import React from 'react';
 import { INode } from './Chart';
 import Avatar from 'components/Avatar';
 import { Logo } from 'components/Logo';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import clsx from 'clsx';
+import { FC } from 'react';
 
 interface IUserNode {
   node: { data: INode };
 }
 
-const UserNode: React.FC<IUserNode> = ({ node }) => {
+const UserNode: FC<IUserNode> = ({ node }) => {
   const departmentStyle = clsx({
     'bg-neutral-100': true,
     'bg-pink-100 text-pink-500':

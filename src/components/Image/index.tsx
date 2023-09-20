@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
 import { IMedia } from 'contexts/CreatePostContext';
 import BlurImg from './components/BlurImg';
+import { FC } from 'react';
 
 export type ImageProps = {
   image: IMedia;
 };
 
-const Image: React.FC<ImageProps> = ({
+const Image: FC<ImageProps> = ({
   image = { blurhash: '', name: '', original: '', type: '' },
 }) => {
   const imgProps = {

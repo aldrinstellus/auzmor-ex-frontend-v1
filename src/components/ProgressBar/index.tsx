@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 
 type AppProps = {
   total?: number;
@@ -6,7 +6,7 @@ type AppProps = {
   suffix?: string;
 };
 
-const ProgressBar: React.FC<AppProps> = ({
+const ProgressBar: FC<AppProps> = ({
   suffix = '',
   total = 0,
   completed = 0,

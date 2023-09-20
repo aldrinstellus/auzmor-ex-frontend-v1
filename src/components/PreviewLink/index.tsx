@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { FC, useContext } from 'react';
 
 import { usePreviewLink } from 'queries/post';
 import { useDebounce } from 'hooks/useDebounce';
@@ -24,9 +24,9 @@ export type PreviewLinkProps = {
   setIsPreviewRemove?: (isPreviewRemove: boolean) => void;
 };
 
-const PreviewLink: React.FC<PreviewLinkProps> = ({
+const PreviewLink: FC<PreviewLinkProps> = ({
   previewUrl = '',
-  setPreviewUrl = () => {},
+  // setPreviewUrl = () => {},
   setIsPreviewRemove = () => {},
 }) => {
   const { media } = useContext(CreatePostContext);

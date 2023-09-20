@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { Switch } from '@headlessui/react';
 
 type SwitchToggleProps = {
@@ -9,7 +9,7 @@ type SwitchToggleProps = {
   dataTestId?: string;
 };
 
-const SwitchToggle: React.FC<SwitchToggleProps> = ({
+const SwitchToggle: FC<SwitchToggleProps> = ({
   defaultValue = false,
   color = 'bg-primary-500',
   disabled = false,

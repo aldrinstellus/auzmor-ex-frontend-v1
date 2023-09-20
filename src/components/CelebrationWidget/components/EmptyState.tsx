@@ -1,13 +1,13 @@
-import React from 'react';
 import Birthday from 'images/Birthday.svg';
 import WorkAnniversary from 'images/Workanniversary.svg';
 import { CELEBRATION_TYPE } from '..';
+import { FC } from 'react';
 
 interface EmptyStateProps {
   type: CELEBRATION_TYPE;
 }
 
-const EmptyState: React.FC<EmptyStateProps> = ({ type }) => {
+const EmptyState: FC<EmptyStateProps> = ({ type }) => {
   const image = type === CELEBRATION_TYPE.Birthday ? Birthday : WorkAnniversary;
   const label =
     type === CELEBRATION_TYPE.Birthday

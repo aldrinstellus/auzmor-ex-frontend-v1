@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useMemo } from 'react';
+import { FC, useMemo } from 'react';
 
 type BadgeProps = {
   text: string;
@@ -8,7 +8,7 @@ type BadgeProps = {
   dataTestId?: string;
 };
 
-const Badge: React.FC<BadgeProps> = ({
+const Badge: FC<BadgeProps> = ({
   text,
   bgClassName = '',
   textClassName = '',

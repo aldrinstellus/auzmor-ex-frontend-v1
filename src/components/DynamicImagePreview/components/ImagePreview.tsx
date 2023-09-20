@@ -1,17 +1,17 @@
 import Icon from 'components/Icon';
-import React, { useEffect, useRef, useState } from 'react';
-import { getBlobUrl, twConfig } from 'utils/misc';
+import { FC, RefObject, useEffect, useRef, useState } from 'react';
+import { getBlobUrl } from 'utils/misc';
 
 interface IImagePreviewProps {
   selectedTemplate: any;
   imageFile: any;
-  templateImageRef: React.RefObject<HTMLInputElement>;
-  imageUploaderRef: React.RefObject<HTMLInputElement>;
+  templateImageRef: RefObject<HTMLInputElement>;
+  imageUploaderRef: RefObject<HTMLInputElement>;
   users: any[];
   onRemove: () => void;
 }
 
-const ImagePreview: React.FC<IImagePreviewProps> = ({
+const ImagePreview: FC<IImagePreviewProps> = ({
   selectedTemplate,
   imageFile,
   templateImageRef,
@@ -32,7 +32,9 @@ const ImagePreview: React.FC<IImagePreviewProps> = ({
       return users[0].firstName || users[0].fullName;
     }
     if (_showNameCount === count) {
-      return `${showNames} and ${users[count - 1].firstName || users[count - 1].fullName}`;
+      return `${showNames} and ${
+        users[count - 1].firstName || users[count - 1].fullName
+      }`;
     } else {
       return `${showNames} and ${count - _showNameCount + 1} others`;
     }

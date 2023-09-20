@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { Link, useSearchParams, useLocation } from 'react-router-dom';
 
@@ -12,7 +12,6 @@ import FeedFilter, {
   filterKeyMap,
 } from 'components/ActivityFeed/components/FeedFilters';
 import Divider from 'components/Divider';
-import SortByDropdown from 'components/ActivityFeed/components/SortByDropdown';
 import Icon from 'components/Icon';
 import PageLoader from 'components/PageLoader';
 import SkeletonLoader from './components/SkeletonLoader';
@@ -69,7 +68,7 @@ export interface IMyReactions {
   createdBy?: ICreated;
 }
 
-const Feed: React.FC<IFeedProps> = () => {
+const Feed: FC<IFeedProps> = () => {
   useScrollTop();
   const [searchParams] = useSearchParams();
   const { pathname } = useLocation();

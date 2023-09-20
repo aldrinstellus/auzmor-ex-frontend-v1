@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import clsx from 'clsx';
-import React, { ReactElement } from 'react';
+import { ChangeEvent, FC, ReactElement } from 'react';
 import { useController } from 'react-hook-form';
 
 export type CheckboxProps = {
@@ -16,12 +17,12 @@ export type CheckboxProps = {
   labelDescription?: string;
   transform?: {
     input: (value: any) => boolean;
-    output: (e: React.ChangeEvent<HTMLInputElement>) => any;
+    output: (e: ChangeEvent<HTMLInputElement>) => any;
   };
   defaultChecked?: boolean;
 };
 
-const Checkbox: React.FC<CheckboxProps> = ({
+const Checkbox: FC<CheckboxProps> = ({
   name,
   className = '',
   dataTestId = '',

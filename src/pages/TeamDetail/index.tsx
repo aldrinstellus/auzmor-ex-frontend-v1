@@ -1,6 +1,5 @@
 import Button from 'components/Button';
 import Icon from 'components/Icon';
-import React, { useState } from 'react';
 import Card from 'components/Card';
 import EntitySearchModal, {
   EntitySearchModalType,
@@ -25,10 +24,11 @@ import TeamModal from 'pages/Users/components/TeamModal';
 import { TeamFlow, TeamTab } from 'pages/Users/components/Teams';
 import DeleteTeam from 'pages/Users/components/DeleteModals/Team';
 import TeamDetailSkeleton from './components/TeamDetailSkeleton';
+import { FC } from 'react';
 
 export interface ITeamMemberProps {}
 
-const TeamDetail: React.FC<ITeamMemberProps> = () => {
+const TeamDetail: FC<ITeamMemberProps> = () => {
   const params = useParams();
   const { state } = useLocation();
   const { prevRoute } = state || {};
@@ -52,7 +52,7 @@ const TeamDetail: React.FC<ITeamMemberProps> = () => {
     mutationFn: (payload: any) => {
       return addTeamMember(id || '', payload);
     },
-    onError: (error: any) => {
+    onError: (_error: any) => {
       toast(
         <FailureToast
           content={`Error Adding Team Members`}

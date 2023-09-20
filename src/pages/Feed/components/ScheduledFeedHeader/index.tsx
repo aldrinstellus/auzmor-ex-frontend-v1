@@ -1,16 +1,17 @@
 import Icon from 'components/Icon';
-import React from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import { twConfig } from 'utils/misc';
+import { FC } from 'react';
+import { Link } from 'react-router-dom';
 
 interface IScheduledFeedHeaderProps {
   setAppliedFeedFilters: (appliedFeedFilters: Record<string, any>) => void;
 }
 
-const ScheduledFeedHeader: React.FC<IScheduledFeedHeaderProps> = ({
-  setAppliedFeedFilters,
-}) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+const ScheduledFeedHeader: FC<IScheduledFeedHeaderProps> = (
+  {
+    // setAppliedFeedFilters,
+  },
+) => {
+  // const [searchParams, setSearchParams] = useSearchParams();
 
   const btnStyle =
     'min-w-[106px] inline-flex py-2 px-4 justify-center align-center rounded-full text-sm font-bold';

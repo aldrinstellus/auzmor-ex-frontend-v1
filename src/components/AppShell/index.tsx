@@ -1,13 +1,13 @@
-import * as React from 'react';
+import { FC, ReactNode } from 'react';
 
 // components
 import Navbar from './components/Navbar';
 
 export interface IAppShellProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-const AppShell: React.FC<IAppShellProps> = ({ children }) => {
+const AppShell: FC<IAppShellProps> = ({ children }) => {
   return (
     <div className="bg-neutral-100 h-screen pb-8 overflow-y-auto">
       <Navbar />

@@ -1,8 +1,8 @@
-import React, { useEffect, ReactNode } from 'react';
+import { useEffect, ReactNode, FC } from 'react';
 import { useDebounce } from 'hooks/useDebounce';
 import { useForm } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
-import { isFiltersEmpty, twConfig } from 'utils/misc';
+import { isFiltersEmpty } from 'utils/misc';
 import find from 'lodash/find';
 import Layout, { FieldType } from 'components/Form';
 import { Size as InputSize, Variant as InputVariant } from 'components/Input';
@@ -25,7 +25,7 @@ interface IInfiniteFilterListProps {
   showSelectedFilterPill?: boolean;
 }
 
-const InfiniteFilterList: React.FC<IInfiniteFilterListProps> = ({
+const InfiniteFilterList: FC<IInfiniteFilterListProps> = ({
   setSelectedItems,
   selectedItems,
   renderItem,

@@ -9,7 +9,7 @@ import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import moment from 'moment';
 import { IPost, IPostPayload, updatePost } from 'queries/post';
-import React, { useState } from 'react';
+import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { useFeedStore } from 'stores/feedStore';
@@ -39,7 +39,7 @@ export interface IForm {
   time: string;
 }
 
-const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
+const EditSchedulePostModal: FC<EditSchedulePostModalProp> = ({
   closeModal,
   schedule,
   post,
@@ -119,7 +119,7 @@ const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
   });
   const userTimezone = getTimezoneNameFromIANA(schedule.timeZone);
   const { currentTimezone } = useCurrentTimezone();
-  const onSubmit = (data: IForm) => {
+  const onSubmit = (_data: IForm) => {
     // console.log(data);
   };
   const {

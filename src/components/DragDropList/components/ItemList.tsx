@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import Icon from 'components/Icon';
 import { ISkillsOption } from 'components/ProfileInfo/components/PersonalDetails';
 
@@ -11,7 +11,7 @@ export interface IItemListProps {
   isDragging: boolean;
 }
 
-const ItemList: React.FC<IItemListProps> = ({
+const ItemList: FC<IItemListProps> = ({
   item,
   dataTestIdEdit,
   dataTestIdDelete,

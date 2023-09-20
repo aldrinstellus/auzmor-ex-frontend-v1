@@ -3,11 +3,11 @@ import Button, { Variant } from 'components/Button';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
-import { IPostPayload, updatePost } from 'queries/post';
+import { updatePost } from 'queries/post';
 import ErrorWarningPng from 'images/error-warning-line.png';
-import React from 'react';
 import { useFeedStore } from 'stores/feedStore';
 import { produce } from 'immer';
+import { FC } from 'react';
 
 type AppProps = {
   open: boolean;
@@ -15,11 +15,7 @@ type AppProps = {
   data: Record<string, any>;
 };
 
-const ChangeToRegularPostModal: React.FC<AppProps> = ({
-  open,
-  closeModal,
-  data,
-}) => {
+const ChangeToRegularPostModal: FC<AppProps> = ({ open, closeModal, data }) => {
   const queryClient = useQueryClient();
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);

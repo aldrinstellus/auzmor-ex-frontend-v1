@@ -1,20 +1,18 @@
 import Button, { Size, Variant } from 'components/Button';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
-import { IUpdateProfileImage } from 'pages/UserDetail';
-import { UploadStatus } from 'hooks/useUpload';
-import React, { useRef } from 'react';
+import { FC, RefObject, useRef } from 'react';
 import { CropperRef } from 'react-advanced-cropper';
 
 export interface IFooterProps {
-  imageRef: React.RefObject<HTMLInputElement>;
+  imageRef: RefObject<HTMLInputElement>;
   imageFile?: any;
   onSubmit: any;
-  cropperRef: React.RefObject<CropperRef>;
+  cropperRef: RefObject<CropperRef>;
   dataTestId?: string;
 }
 
-const Footer: React.FC<IFooterProps> = ({
+const Footer: FC<IFooterProps> = ({
   imageRef,
   imageFile,
   onSubmit,

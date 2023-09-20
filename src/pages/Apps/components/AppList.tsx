@@ -1,5 +1,5 @@
 import Button, { Variant } from 'components/Button';
-import React, { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { isFiltersEmpty } from 'utils/misc';
 import AppCardSkeleton from './Skeletons/AppCardSkeleton';
 import AppGrid from './AppGrid';
@@ -22,7 +22,7 @@ interface IAppListProps {
   resetField?: (key: any, param: any) => void;
 }
 
-const AppList: React.FC<IAppListProps> = ({
+const AppList: FC<IAppListProps> = ({
   fetchQuery,
   queryParams,
   apps,

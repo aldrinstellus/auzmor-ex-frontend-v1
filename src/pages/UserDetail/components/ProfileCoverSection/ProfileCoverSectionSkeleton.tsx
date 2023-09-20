@@ -1,9 +1,9 @@
 import Card from 'components/Card';
 import Divider, { Variant as DividerVariant } from 'components/Divider';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
-const ProfileCoverSectionSkeleton: React.FC = (): ReactElement => {
+const ProfileCoverSectionSkeleton: FC = (): ReactElement => {
   return (
     <Card className="pb-1 h-80 leading-none">
       <Skeleton

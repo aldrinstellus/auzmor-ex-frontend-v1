@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import truncate from 'lodash/truncate';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
@@ -19,7 +19,7 @@ export interface ITeamFilterModalProps {
   filters: any;
 }
 
-const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
+const AppFilterModal: FC<ITeamFilterModalProps> = ({
   open,
   closeModal,
   setFilters,
@@ -31,7 +31,7 @@ const AppFilterModal: React.FC<ITeamFilterModalProps> = ({
   const [selectedCategories, setSelectedCategories] = useState<any>([]);
   const [selectedTeams, setSelectedTeams] = useState<any>([]);
 
-  const onSubmit = (value: any) => {
+  const onSubmit = (_value: any) => {
     closeModal();
     setFilters({
       categories: selectedCategories,

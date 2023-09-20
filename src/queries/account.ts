@@ -18,9 +18,9 @@ interface IChange {
   confirmPassword: string;
 }
 
-interface IMailExpiry {
-  token: string;
-}
+// interface IMailExpiry {
+//   token: string;
+// }
 
 export const checkLogin = async () => {
   const data = await apiService.get('/login');
@@ -80,5 +80,5 @@ export const fetchMe = async () => {
 };
 
 export const logout = async () => {
-  const data = await apiService.post('/logout');
+  await apiService.post('/logout');
 };

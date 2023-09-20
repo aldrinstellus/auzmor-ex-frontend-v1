@@ -1,7 +1,7 @@
 import AvatarChip, { IAvatarUser } from 'components/AvatarChip';
 import useModal from 'hooks/useModal';
-import React from 'react';
 import UserListModal from './components/UserListModal';
+import { FC } from 'react';
 
 interface IAvatarChipsProps {
   users: IAvatarUser[];
@@ -12,7 +12,7 @@ interface IAvatarChipsProps {
   dataTestId?: string;
 }
 
-const AvatarChips: React.FC<IAvatarChipsProps> = ({
+const AvatarChips: FC<IAvatarChipsProps> = ({
   users,
   showCount,
   className,

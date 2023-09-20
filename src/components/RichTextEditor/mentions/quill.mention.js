@@ -264,7 +264,7 @@ class Mention {
       this.mentionList.childNodes[
         this.itemIndex
       ].dataset.value = `<a href="${link}" target=${itemTarget || this.options.linkTarget
-        }>${this.mentionList.childNodes[this.itemIndex].dataset.value}`;
+      }>${this.mentionList.childNodes[this.itemIndex].dataset.value}`;
     }
     return this.mentionList.childNodes[this.itemIndex].dataset;
   }
@@ -337,7 +337,7 @@ class Mention {
     }
   }
 
-  onDisabledItemMouseEnter(e) {
+  onDisabledItemMouseEnter(_e) {
     if (this.suspendMouseEnter) {
       return;
     }

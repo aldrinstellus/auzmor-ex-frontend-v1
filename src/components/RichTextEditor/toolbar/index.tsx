@@ -1,12 +1,10 @@
 import Icon from 'components/Icon';
-import React from 'react';
-import { twConfig } from 'utils/misc';
-
+import { FC } from 'react';
 interface IToolbarProps {
   isCharLimit: boolean;
 }
 
-const Toolbar: React.FC<IToolbarProps> = ({ isCharLimit }) => {
+const Toolbar: FC<IToolbarProps> = ({ isCharLimit }) => {
   return (
     <div id="toolbar">
       <div className="relative">

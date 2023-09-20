@@ -1,5 +1,12 @@
 import clsx from 'clsx';
-import React, { ReactElement, useMemo, useRef } from 'react';
+import {
+  FC,
+  MouseEvent,
+  ReactElement,
+  ReactNode,
+  useMemo,
+  useRef,
+} from 'react';
 import { Control, useController } from 'react-hook-form';
 import Icon from 'components/Icon';
 
@@ -19,7 +26,7 @@ export type InputProps = {
   id?: string;
   variant?: Variant;
   size?: Size;
-  fieldIcon?: React.ReactNode;
+  fieldIcon?: ReactNode;
   rightIcon?: string;
   rightElement?: ReactElement;
   leftIcon?: string;
@@ -36,8 +43,8 @@ export type InputProps = {
   errorDataTestId?: string;
   control?: Control<Record<string, any>>;
   label?: string;
-  onLeftIconClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-  onRightIconClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onLeftIconClick?: (e: MouseEvent<HTMLDivElement>) => void;
+  onRightIconClick?: (e: MouseEvent<HTMLDivElement>) => void;
   onEnter?: any;
   customLabelRightElement?: ReactElement;
   isClearable?: boolean;
@@ -46,7 +53,7 @@ export type InputProps = {
   maxLength?: number;
 };
 
-const Input: React.FC<InputProps> = ({
+const Input: FC<InputProps> = ({
   name,
   id,
   variant = Variant.Text,

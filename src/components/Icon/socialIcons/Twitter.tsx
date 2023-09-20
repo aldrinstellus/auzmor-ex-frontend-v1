@@ -1,6 +1,6 @@
-import React, { SVGProps } from 'react';
+import { SVGProps } from 'react';
 
-const TwitterIcon = (props: SVGProps<SVGSVGElement>) => {
+const TwitterIcon = (_props: SVGProps<SVGSVGElement>) => {
   return (
     <svg
       width="24"

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
@@ -13,7 +13,7 @@ import { signup } from 'queries/account';
 import { useDebounce } from 'hooks/useDebounce';
 import { useDomainExists, useIsUserExistOpen } from 'queries/users';
 import 'utils/custom-yup-validators/email/validateEmail';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 interface IForm {
   fullName: string;
@@ -63,7 +63,7 @@ export interface IValidationErrors {
   isLoading: boolean;
 }
 
-const Signup: React.FC<ISignupProps> = () => {
+const Signup: FC<ISignupProps> = () => {
   const signupMutation = useMutation(
     (formData: IForm) =>
       signup({ ...formData, domain: formData.domain.toLowerCase() }),
@@ -74,7 +74,7 @@ const Signup: React.FC<ISignupProps> = () => {
           token: data.result.data.uat,
           showOnboard: true,
         }),
-      onError: (data: any) => {},
+      onError: (_data: any) => {},
     },
   );
 

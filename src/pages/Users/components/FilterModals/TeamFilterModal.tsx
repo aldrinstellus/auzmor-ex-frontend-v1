@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import Button, { Variant as ButtonVariant, Type } from 'components/Button';
@@ -14,7 +14,7 @@ export interface ITeamFilterModalProps {
   onApply: (param: any) => void;
 }
 
-const TeamFilterModal: React.FC<ITeamFilterModalProps> = ({
+const TeamFilterModal: FC<ITeamFilterModalProps> = ({
   open,
   closeModal,
   filters,

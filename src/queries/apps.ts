@@ -1,9 +1,9 @@
 import {
   QueryFunctionContext,
   useInfiniteQuery,
-  useQuery,
+  // useQuery,
 } from '@tanstack/react-query';
-import _ from 'lodash';
+import { chain } from 'utils/misc';
 import { useAppStore } from 'stores/appStore';
 import apiService from 'utils/apiService';
 
@@ -129,7 +129,7 @@ export const fetchApps = async (
     response = await apiService.get('/apps', context.queryKey[1]);
     setApp({
       ...apps,
-      ..._.chain(response.data.result.data).keyBy('id').value(),
+      ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
       (eachApp: App) => ({ id: eachApp.id }),
@@ -139,7 +139,7 @@ export const fetchApps = async (
     response = await apiService.get(context.pageParam, context.queryKey[1]);
     setApp({
       ...apps,
-      ..._.chain(response.data.result.data).keyBy('id').value(),
+      ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
       (eachApp: App) => ({ id: eachApp.id }),
@@ -163,7 +163,7 @@ export const fetchFeaturedApps = async (
     response = await apiService.get('/apps', context.queryKey[1]);
     setFeaturedApp({
       ...featuredApps,
-      ..._.chain(response.data.result.data).keyBy('id').value(),
+      ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
       (eachApp: App) => ({ id: eachApp.id }),
@@ -173,7 +173,7 @@ export const fetchFeaturedApps = async (
     response = await apiService.get(context.pageParam, context.queryKey[1]);
     setFeaturedApp({
       ...featuredApps,
-      ..._.chain(response.data.result.data).keyBy('id').value(),
+      ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
       (eachApp: App) => ({ id: eachApp.id }),
