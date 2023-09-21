@@ -7,7 +7,7 @@ import PostBuilder from 'components/PostBuilder';
 import UserCard from 'components/UserWidget';
 import AnnouncementCard from 'components/AnnouncementWidget';
 import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
-import Post from 'components/Post';
+import VirtualisedPost from 'components/VirtualisedPost';
 import FeedFilter, {
   filterKeyMap,
 } from 'components/ActivityFeed/components/FeedFilters';
@@ -298,8 +298,8 @@ const Feed: FC<IFeedProps> = () => {
   }, [inView]);
 
   return (
-    <div className="mb-12 gap-[52px] flex justify-between ">
-      <div className="z-10 min-w-[293px] max-w-[293px] flex flex-col gap-6 sticky top-28 overflow-y-auto max-h-[calc(100vh-120px)] widget-hide-scroll">
+    <div className="pb-6 gap-[52px] flex justify-between ">
+      <div className="z-10 min-w-[293px] max-w-[293px] flex flex-col gap-6 sticky top-28 overflow-y-auto max-h-[calc(100vh-140px)] widget-hide-scroll">
         <UserCard />
         <MyTeamWidget />
       </div>
@@ -317,7 +317,7 @@ const Feed: FC<IFeedProps> = () => {
                 className="flex flex-col gap-6"
                 key={feedId.id}
               >
-                <Post post={feed[feedId.id!]} />
+                <VirtualisedPost post={feed[feedId.id!]} />
               </div>
             ))}
             {regularFeedIds?.map((feedId, index) => (
@@ -326,7 +326,7 @@ const Feed: FC<IFeedProps> = () => {
                 className="flex flex-col gap-6"
                 key={feedId.id}
               >
-                <Post post={feed[feedId.id!]} />
+                <VirtualisedPost post={feed[feedId.id!]} />
               </div>
             ))}
           </div>
