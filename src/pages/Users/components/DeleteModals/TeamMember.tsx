@@ -36,6 +36,7 @@ const RemoveTeamMember: FC<IRemoveTeamMemberProps> = ({
     mutationKey: ['remove-team-member'],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['team', teamId] });
+      closeModal();
       toast(<SuccessToast content={`Successfully removed one member`} />, {
         closeButton: (
           <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
