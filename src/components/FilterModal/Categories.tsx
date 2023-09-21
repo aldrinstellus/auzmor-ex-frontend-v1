@@ -8,6 +8,7 @@ import { ICategory, useInfiniteCategories } from 'queries/category';
 import { ICheckboxListOption } from 'components/CheckboxList';
 import Spinner from 'components/Spinner';
 import Icon from 'components/Icon';
+import ItemSkeleton from './ItemSkeleton';
 
 interface ICategoriesProps {
   control: Control<IFilterForm, any>;
@@ -40,17 +41,17 @@ const Categories: FC<ICategoriesProps> = ({ control, watch, setValue }) => {
   ]);
 
   // fetch category from search input
-  const debouncedDepartmentSearchValue = useDebounce(categorySearch || '', 300);
+  const debouncedCategorySearchValue = useDebounce(categorySearch || '', 300);
   const {
-    data: fetchedDepartments,
+    data: fetchedDCategory,
     isLoading,
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
   } = useInfiniteCategories({
-    q: debouncedDepartmentSearchValue,
+    q: debouncedCategorySearchValue,
   });
-  const categoryData = fetchedDepartments?.pages.flatMap((page) => {
+  const categoryData = fetchedDCategory?.pages.flatMap((page) => {
     return page.data.result.data.map((category: ICategory) => category);
   });
 
@@ -64,7 +65,7 @@ const Categories: FC<ICategoriesProps> = ({ control, watch, setValue }) => {
         datatestId: `category-${category.name}`,
       })),
       labelRenderer: (option: ICheckboxListOption) => (
-        <div className="ml-2.5 cursor-pointer">{option.data.name}</div>
+        <div className="ml-2.5 cursor-pointer text-xs">{option.data.name}</div>
       ),
       rowClassName: 'px-6 py-3 border-b border-neutral-200',
     },
@@ -73,16 +74,16 @@ const Categories: FC<ICategoriesProps> = ({ control, watch, setValue }) => {
   return (
     <div className="px-2 py-4">
       <Layout fields={searchField} />
-      <div className="max-h-96 overflow-y-auto">
+      <div className="max-h-[330px] min-h-[330px] overflow-y-auto">
         {!!categoryCheckbox?.length && (
           <div className="flex mt-2 mb-3 flex-wrap">
-            {categoryCheckbox.map((location: ICheckboxListOption) => (
+            {categoryCheckbox.map((category: ICheckboxListOption) => (
               <div
-                key={location.data.id}
+                key={category.data.id}
                 className="flex items-center px-3 py-2 bg-neutral-100 rounded-17xl border border-neutral-200 mr-2 my-1"
               >
-                <div className="text-primary-500 text-sm font-medium">
-                  {location.data.name}
+                <div className="text-primary-500 text-sm font-medium whitespace-nowrap">
+                  {category.data.name}
                 </div>
                 <div className="ml-1">
                   <Icon
@@ -93,8 +94,8 @@ const Categories: FC<ICategoriesProps> = ({ control, watch, setValue }) => {
                       setValue(
                         'categoryCheckbox',
                         categoryCheckbox.filter(
-                          (selectedLocation: ICheckboxListOption) =>
-                            selectedLocation.data.id !== location.data.id,
+                          (selectedCategory: ICheckboxListOption) =>
+                            selectedCategory.data.id !== category.data.id,
                         ),
                       )
                     }
@@ -104,21 +105,52 @@ const Categories: FC<ICategoriesProps> = ({ control, watch, setValue }) => {
             ))}
           </div>
         )}
-        {isLoading ? (
-          <div className="w-full flex items-center justify-center p-10">
-            <Spinner />
-          </div>
-        ) : (
-          <div>
-            <Layout fields={categoryFields} />
-            {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
-            {isFetchingNextPage && (
-              <div className="w-full flex items-center justify-center p-8">
-                <Spinner />
+        {(() => {
+          if (isLoading) {
+            return (
+              <>
+                {[...Array(10)].map((element) => (
+                  <div
+                    key={element}
+                    className={`px-6 py-3 border-b-1 border-b-bg-neutral-200 flex items-center`}
+                  >
+                    <ItemSkeleton />
+                  </div>
+                ))}
+              </>
+            );
+          }
+          if ((categoryData || []).length > 0) {
+            return (
+              <div>
+                <Layout fields={categoryFields} />
+                {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+                {isFetchingNextPage && (
+                  <div className="w-full flex items-center justify-center p-8">
+                    <Spinner />
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        )}
+            );
+          }
+          return (
+            <>
+              {(debouncedCategorySearchValue === undefined ||
+                debouncedCategorySearchValue === '') &&
+              categoryData?.length === 0 ? (
+                <div className="flex items-center w-full text-lg font-bold">
+                  No Categories found
+                </div>
+              ) : (
+                <div className="py-16 w-full text-lg font-bold text-center">
+                  {`No result found`}
+                  {debouncedCategorySearchValue &&
+                    ` for '${debouncedCategorySearchValue}'`}
+                </div>
+              )}
+            </>
+          );
+        })()}
       </div>
     </div>
   );

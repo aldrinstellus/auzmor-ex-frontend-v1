@@ -58,7 +58,7 @@ const AppLauncher = () => {
       >
         <div className="font-bold">App Launcher</div>
         <div className="flex items-center gap-2">
-          {(appIds || []).length > 0 && (
+          {(appIds || []).length > 0 && isAdmin && (
             <Icon
               name="edit"
               size={20}

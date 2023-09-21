@@ -19,7 +19,6 @@ import {
 import { useAppStore } from 'stores/appStore';
 import { useDebounce } from 'hooks/useDebounce';
 import { isFiltersEmpty } from 'utils/misc';
-import AppFilterModal from './components/AppFilterModal';
 import AppList from './components/AppList';
 import Icon from 'components/Icon';
 import AppBannerSkeleton from './components/Skeletons/AppBannerSkeleton';
@@ -27,6 +26,7 @@ import useRole from 'hooks/useRole';
 import Skeleton from 'react-loading-skeleton';
 import Sort from 'components/Sort';
 import useURLParams from 'hooks/useURLParams';
+import FilterModal, { FilterModalVariant } from 'components/FilterModal';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -138,17 +138,28 @@ const Apps: FC<IAppsProps> = () => {
   const onApplyFilter = (filters: any) => {
     setAppFilters(filters);
     if (filters.categories.length > 0) {
-      const serializedCategories = serializeFilter(filters.categories);
+      const serializedCategories = serializeFilter(
+        filters.categories.map((category: any) => ({
+          id: category.id,
+          name: category.name,
+        })),
+      );
       updateParam('categories', serializedCategories);
     }
     if (filters.teams.length > 0) {
-      const serializedTeams = serializeFilter(filters.teams);
+      const serializedTeams = serializeFilter(
+        filters.teams.map((team: any) => ({
+          id: team.id,
+          name: team.name,
+        })),
+      );
       updateParam('teams', serializedTeams);
     }
     if (filters.categories.length > 0) {
       setSelectedAppGroup(AppGroup.ALL_APPS);
       deleteParam('tab');
     }
+    closeFilterModal();
   };
 
   const handleSetSortFilter = (sortValue: any) => {
@@ -340,7 +351,7 @@ const Apps: FC<IAppsProps> = () => {
                   >
                     <div className="mr-1 text-neutral-500 whitespace-nowrap">
                       Category{' '}
-                      <span className="text-primary-500">L{category.name}</span>
+                      <span className="text-primary-500">{category.name}</span>
                     </div>
                     <Icon
                       name="close"
@@ -361,8 +372,7 @@ const Apps: FC<IAppsProps> = () => {
                     data-testid={`people-filterby`}
                   >
                     <div className="mr-1 text-neutral-500">
-                      Team{' '}
-                      <span className="text-primary-500">L{team.name}</span>
+                      Team <span className="text-primary-500">{team.name}</span>
                     </div>
                     <Icon
                       name="close"
@@ -466,12 +476,25 @@ const Apps: FC<IAppsProps> = () => {
         </div>
       </Card>
       <AddApp open={open} closeModal={closeModal} />
-      {showFilterModal && (
+      {/* {showFilterModal && (
         <AppFilterModal
           open={showFilterModal}
           filters={appFilters}
           closeModal={closeFilterModal}
           setFilters={onApplyFilter}
+        />
+      )} */}
+      {showFilterModal && (
+        <FilterModal
+          open={showFilterModal}
+          closeModal={closeFilterModal}
+          appliedFilters={appFilters}
+          variant={FilterModalVariant.App}
+          onApply={onApplyFilter}
+          onClear={() => {
+            clearFilters();
+            closeFilterModal();
+          }}
         />
       )}
     </div>

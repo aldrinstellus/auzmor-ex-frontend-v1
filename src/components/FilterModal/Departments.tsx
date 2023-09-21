@@ -8,6 +8,7 @@ import { FC, useEffect } from 'react';
 import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
 import { IFilterForm } from '.';
+import ItemSkeleton from './ItemSkeleton';
 
 interface IDepartmentsProps {
   control: Control<IFilterForm, any>;
@@ -67,7 +68,7 @@ const Departments: FC<IDepartmentsProps> = ({ control, watch, setValue }) => {
         datatestId: `department-${department.name}`,
       })),
       labelRenderer: (option: ICheckboxListOption) => (
-        <div className="ml-2.5 cursor-pointer">{option.data.name}</div>
+        <div className="ml-2.5 cursor-pointer text-xs">{option.data.name}</div>
       ),
       rowClassName: 'px-6 py-3 border-b border-neutral-200',
     },
@@ -76,16 +77,16 @@ const Departments: FC<IDepartmentsProps> = ({ control, watch, setValue }) => {
   return (
     <div className="px-2 py-4">
       <Layout fields={searchField} />
-      <div className="max-h-96 overflow-y-auto">
+      <div className="max-h-[330px] min-h-[330px] overflow-y-auto">
         {!!departmentCheckbox?.length && (
-          <div className="flex mt-2 mb-3">
-            {departmentCheckbox.map((location: ICheckboxListOption) => (
+          <div className="flex mt-2 mb-3 flex-wrap">
+            {departmentCheckbox.map((department: ICheckboxListOption) => (
               <div
-                key={location.data.id}
+                key={department.data.id}
                 className="flex items-center px-3 py-2 bg-neutral-100 rounded-17xl border border-neutral-200 mr-2 my-1"
               >
-                <div className="text-primary-500 text-sm font-medium">
-                  {location.data.name}
+                <div className="text-primary-500 text-sm font-medium whitespace-nowrap">
+                  {department.data.name}
                 </div>
                 <div className="ml-1">
                   <Icon
@@ -96,8 +97,8 @@ const Departments: FC<IDepartmentsProps> = ({ control, watch, setValue }) => {
                       setValue(
                         'departmentCheckbox',
                         departmentCheckbox.filter(
-                          (selectedLocation: ICheckboxListOption) =>
-                            selectedLocation.data.id !== location.data.id,
+                          (selectedDepartment: ICheckboxListOption) =>
+                            selectedDepartment.data.id !== department.data.id,
                         ),
                       )
                     }
@@ -107,21 +108,52 @@ const Departments: FC<IDepartmentsProps> = ({ control, watch, setValue }) => {
             ))}
           </div>
         )}
-        {isLoading ? (
-          <div className="w-full flex items-center justify-center p-10">
-            <Spinner />
-          </div>
-        ) : (
-          <div>
-            <Layout fields={departmentFields} />
-            {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
-            {isFetchingNextPage && (
-              <div className="w-full flex items-center justify-center p-8">
-                <Spinner />
+        {(() => {
+          if (isLoading) {
+            return (
+              <>
+                {[...Array(10)].map((element) => (
+                  <div
+                    key={element}
+                    className={`px-6 py-3 border-b-1 border-b-bg-neutral-200 flex items-center`}
+                  >
+                    <ItemSkeleton />
+                  </div>
+                ))}
+              </>
+            );
+          }
+          if ((departmentData || []).length > 0) {
+            return (
+              <div>
+                <Layout fields={departmentFields} />
+                {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+                {isFetchingNextPage && (
+                  <div className="w-full flex items-center justify-center p-8">
+                    <Spinner />
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        )}
+            );
+          }
+          return (
+            <>
+              {(debouncedDepartmentSearchValue === undefined ||
+                debouncedDepartmentSearchValue === '') &&
+              departmentData?.length === 0 ? (
+                <div className="flex items-center w-full text-lg font-bold">
+                  No Categories found
+                </div>
+              ) : (
+                <div className="py-16 w-full text-lg font-bold text-center">
+                  {`No result found`}
+                  {debouncedDepartmentSearchValue &&
+                    ` for '${debouncedDepartmentSearchValue}'`}
+                </div>
+              )}
+            </>
+          );
+        })()}
       </div>
     </div>
   );

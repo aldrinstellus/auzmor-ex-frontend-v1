@@ -14,6 +14,7 @@ interface ICheckboxListProps {
   labelRenderer: (option: ICheckboxListOption) => ReactNode;
   className?: string;
   rowClassName?: string;
+  inputClassName?: string;
 }
 
 const CheckboxList: FC<ICheckboxListProps> = ({
@@ -23,6 +24,7 @@ const CheckboxList: FC<ICheckboxListProps> = ({
   labelRenderer,
   className = '',
   rowClassName = '',
+  inputClassName = '',
 }) => {
   const { field } = useController({ control, name });
   const style = useMemo(
@@ -45,7 +47,7 @@ const CheckboxList: FC<ICheckboxListProps> = ({
           key={`checkbox-list-option-key-${option.data.id}`}
         >
           <input
-            className="h-5 w-5 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600"
+            className={`h-4 w-4 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 ${inputClassName}`}
             onChange={(e) => {
               let newValues: ICheckboxListOption[] = [];
               if (e.target.checked) {
@@ -68,7 +70,9 @@ const CheckboxList: FC<ICheckboxListProps> = ({
             }
             data-testid={option.datatestId}
           />
-          <label htmlFor={option.data.id}>{labelRenderer(option)}</label>
+          <label htmlFor={option.data.id} className="w-full">
+            {labelRenderer(option)}
+          </label>
         </div>
       ))}
     </div>

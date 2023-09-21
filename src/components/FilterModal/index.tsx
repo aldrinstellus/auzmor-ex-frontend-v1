@@ -13,15 +13,19 @@ import Status from './Status';
 import { ICheckboxListOption } from 'components/CheckboxList';
 import Categories from './Categories';
 import { ICategory } from 'queries/category';
+import { ITeam } from 'queries/teams';
+import Teams from './Teams';
 
 export interface IFilterForm {
   status: IRadioListOption;
   locationCheckbox: ICheckboxListOption[];
   departmentCheckbox: ICheckboxListOption[];
   categoryCheckbox: ICheckboxListOption[];
+  teamCheckbox: ICheckboxListOption[];
   locationSearch: string;
   departmentSearch: string;
   categorySearch: string;
+  teamSearch: string;
 }
 
 export interface IStatus {
@@ -39,6 +43,7 @@ export enum FilterModalVariant {
   Orgchart = 'ORGCHART',
   People = 'PEOPLE',
   Team = 'TEAM',
+  App = 'APP',
 }
 
 export interface IAppliedFilters {
@@ -46,6 +51,7 @@ export interface IAppliedFilters {
   departments?: IDepartment[];
   status?: IStatus | null;
   categories?: ICategory[];
+  teams?: ITeam[];
 }
 
 export enum FilterNavigationOption {
@@ -117,14 +123,20 @@ const FilterModal: FC<IFilterModalProps> = ({
         data: category,
         dataTestId: `category-${category.name}`,
       })),
+      teamCheckbox: (appliedFilters.teams || []).map((team) => ({
+        data: team,
+        dataTestId: `team-${team.name}`,
+      })),
     },
   });
 
-  const [locationCheckbox, departmentCheckbox, categoryCheckbox] = watch([
-    'locationCheckbox',
-    'departmentCheckbox',
-    'categoryCheckbox',
-  ]);
+  const [locationCheckbox, departmentCheckbox, categoryCheckbox, teamCheckbox] =
+    watch([
+      'locationCheckbox',
+      'departmentCheckbox',
+      'categoryCheckbox',
+      'teamCheckbox',
+    ]);
 
   const onSubmit = (formData: IFilterForm) => {
     onApply({
@@ -137,6 +149,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       categories: formData.categoryCheckbox.map(
         (category) => category.data,
       ) as ICategory[],
+      teams: formData.teamCheckbox.map((team) => team.data) as ITeam[],
       status: formData.status.data as IStatus,
     } as unknown as IAppliedFilters);
   };
@@ -157,9 +170,11 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <Locations control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: [FilterModalVariant.Team, FilterModalVariant.People].includes(
-        variant,
-      ),
+      isHidden: [
+        FilterModalVariant.Team,
+        FilterModalVariant.People,
+        FilterModalVariant.App,
+      ].includes(variant),
       dataTestId: 'filterby-location',
     },
     {
@@ -177,9 +192,11 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <Departments control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: [FilterModalVariant.Team, FilterModalVariant.People].includes(
-        variant,
-      ),
+      isHidden: [
+        FilterModalVariant.Team,
+        FilterModalVariant.People,
+        FilterModalVariant.App,
+      ].includes(variant),
       dataTestId: 'filterby-department',
     },
     {
@@ -204,10 +221,34 @@ const FilterModal: FC<IFilterModalProps> = ({
       dataTestId: 'filterby-categories',
     },
     {
+      label: () => (
+        <div className="flex items-center">
+          <div>Team</div>
+          {!!teamCheckbox.length && (
+            <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
+              {teamCheckbox.length}
+            </div>
+          )}
+        </div>
+      ),
+      key: 'team-filters',
+      component: () => (
+        <Teams control={control} watch={watch} setValue={setValue} />
+      ),
+      isHidden: [
+        FilterModalVariant.People,
+        FilterModalVariant.Orgchart,
+        FilterModalVariant.Team,
+      ].includes(variant),
+      dataTestId: 'filterby-location',
+    },
+    {
       label: () => 'Status',
       key: 'status-filters',
       component: () => <Status control={control} />,
-      isHidden: [FilterModalVariant.Team].includes(variant),
+      isHidden: [FilterModalVariant.Team, FilterModalVariant.App].includes(
+        variant,
+      ),
       dataTestId: 'filterby-status',
     },
   ].filter((filter) => !filter.isHidden);
@@ -262,7 +303,6 @@ const FilterModal: FC<IFilterModalProps> = ({
           label="Apply"
           variant={ButtonVariant.Primary}
           onClick={handleSubmit(onSubmit)}
-          className="mr-4"
           dataTestId="apply-filter"
         />
       </div>

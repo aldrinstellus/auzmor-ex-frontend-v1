@@ -45,7 +45,7 @@ const Status: FC<IUserStatusProps> = ({ control }) => {
     },
   ];
   return (
-    <div className="px-2 py-4">
+    <div className="px-2 py-4 max-h-[330px] min-h-[330px]">
       <Layout fields={userStatusfields} />
     </div>
   );
