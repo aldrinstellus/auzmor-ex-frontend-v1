@@ -18,6 +18,7 @@ interface IAppListProps {
   showEmptyState?: boolean;
   openAddAppModal?: () => void;
   setAppsCount?: (params: any) => void;
+  setTotalAppsCount?: (params: any) => void;
   setAppsLoading?: (params: any) => void;
   resetField?: (key: any, param: any) => void;
   startFetching: boolean;
@@ -34,6 +35,7 @@ const AppList: FC<IAppListProps> = ({
   openAddAppModal,
   resetField,
   setAppsCount,
+  setTotalAppsCount,
   setAppsLoading,
   startFetching,
   myApp,
@@ -61,6 +63,9 @@ const AppList: FC<IAppListProps> = ({
   useEffect(() => {
     if (setAppsCount && appIds) {
       setAppsCount(appIds.length);
+    }
+    if (setTotalAppsCount && appIds) {
+      setTotalAppsCount(data?.pages[0]?.data?.result?.paging.totalCount);
     }
   }, [appIds]);
 

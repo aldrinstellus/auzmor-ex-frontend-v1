@@ -327,7 +327,7 @@ const Apps: FC<IAppsProps> = () => {
         <div className="flex flex-col gap-6">
           {!isLoading ? (
             <div className="text-neutral-500">
-              Showing {!isLoading && !!appsCount && appsCount} results
+              Showing {!isLoading && appsCount} results
             </div>
           ) : (
             <Skeleton
@@ -470,7 +470,7 @@ const Apps: FC<IAppsProps> = () => {
                         : undefined,
                   }),
             }}
-            setAppsCount={setAppsCount}
+            setTotalAppsCount={setAppsCount}
             setAppsLoading={setIsLoading}
             openAddAppModal={openModal}
             resetField={resetField}
