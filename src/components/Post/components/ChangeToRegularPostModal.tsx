@@ -58,7 +58,9 @@ const ChangeToRegularPostModal: FC<AppProps> = ({ open, closeModal, data }) => {
       </div>
       <Divider />
       <div className="flex flex-col gap-y-4 items-center justify-center text-neutral-900 text-base p-6">
-        <img src={ErrorWarningPng} width={66} height={66} />
+        <div className="flex justify-center">
+          <img src={ErrorWarningPng} width={80} height={80} />
+        </div>
         <p className="font-semibold">
           Are you sure you want to change this announcement to a regular post?
         </p>

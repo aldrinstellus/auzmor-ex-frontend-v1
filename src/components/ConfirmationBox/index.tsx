@@ -1,6 +1,7 @@
 import { FC, ReactNode } from 'react';
 import Modal from 'components/Modal';
-import Button from 'components/Button';
+import Button, { Variant } from 'components/Button';
+import Header from 'components/ModalHeader';
 
 export interface Discard {
   label: string;
@@ -45,17 +46,15 @@ const ConfirmationBox: FC<ConfirmationBoxProps> = ({
       className="max-w-md"
     >
       <div data-testid={`${dataTestId}-confirmation-window`}>
-        <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
-          {title}
-        </div>
-        <div className="font-medium text-sm text-neutral-500 not-italic px-4">
+        <Header title={title} onClose={onClose} />
+        <div className="font-normal text-sm text-neutral-900 not-italic p-6 mb-8">
           {description}
         </div>
-        <div className="flex flex-row-reverse px-4 pt-6 pb-4">
+        <div className="flex flex-row-reverse px-4 pt-6 pb-4 bg-blue-50 rounded-b-9xl">
           <Button
             onClick={success.onSubmit}
             label={success.label}
-            className={`!rounded-6 !px-4 !py-2 !${success.className}`}
+            variant={Variant.Danger}
             loading={isLoading}
             dataTestId={`${dataTestId}-delete`}
           />
@@ -63,8 +62,9 @@ const ConfirmationBox: FC<ConfirmationBoxProps> = ({
             onClick={discard.onCancel}
             label={discard.label}
             disabled={isLoading}
-            className={`!rounded-17xl !px-4 !py-2 !mr-3 !border-2 !border-neutral-200 !${discard.className}`}
+            variant={Variant.Secondary}
             dataTestId={`${dataTestId}-close`}
+            className="mr-3"
           />
         </div>
       </div>
