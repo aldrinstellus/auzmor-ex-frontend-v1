@@ -130,6 +130,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                       </div>
                       {app.audience.length > 1 && (
                         <AudiencePopup
+                          title="Audience:"
                           triggerBtn={
                             <div
                               className={`${audienceChipStyle} cursor-pointer`}
