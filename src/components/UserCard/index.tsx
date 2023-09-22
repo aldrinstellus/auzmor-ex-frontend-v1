@@ -87,7 +87,7 @@ const UserCard: FC<IUserCardProp> = ({
                   className="text-sm font-normal text-neutral-500 truncate mb-2"
                   data-testid="usercard-position"
                 >
-                  {user?.designation || 'Field not specified'}
+                  {user?.designation?.name || 'Field not specified'}
                 </div>
                 <div className="flex items-center mb-2">
                   <IconWrapper className="rounded-6xl p-[3px] mr-3">

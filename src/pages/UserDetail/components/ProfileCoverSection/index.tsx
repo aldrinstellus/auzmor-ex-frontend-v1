@@ -306,7 +306,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({ userDetails }) => {
                 className="text-sm font-normal text-neutral-400"
                 data-testid="user-designation"
               >
-                {userDetails?.designation || '-'}
+                {userDetails?.designation?.name || '-'}
               </div>
             </div>
             <Divider variant={DividerVariant.Vertical} className="!h-6" />

@@ -7,6 +7,7 @@ import {
 import apiService from 'utils/apiService';
 import { IDepartment } from './department';
 import { ILocation } from './location';
+import { IDesignation } from './designation';
 
 // for future filters
 export enum PeopleFilterKeys {
@@ -107,7 +108,7 @@ export interface IGetUser {
   timeZone?: string;
   workLocation?: ILocation;
   department?: IDepartment;
-  designation?: string;
+  designation?: IDesignation;
   coverImage?: { blurHash: string; id: string; original: string };
   freezeEdit?: {
     department?: boolean;

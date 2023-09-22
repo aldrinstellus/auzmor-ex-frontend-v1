@@ -38,12 +38,12 @@ const UserCard: FC<IUserCardProps> = ({ className }) => {
               {userDetails?.fullName}
             </div>
 
-            {userDetails?.designation && (
+            {userDetails?.designation?.name && (
               <div
                 className="text-xs font-normal truncate w-full text-center text-neutral-500"
                 data-testid="profilecard-designation"
               >
-                {userDetails?.designation}
+                {userDetails?.designation?.name}
               </div>
             )}
 

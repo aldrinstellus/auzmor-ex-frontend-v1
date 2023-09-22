@@ -54,7 +54,7 @@ const UserRow: FC<IUserRowProps> = ({
       <div className="flex flex-col w-1/2">
         <div className="flex flex-row w-full justify-end">
           <div className={`text-neutral-500 text-xs truncate mr-6`}>
-            {user.designation || 'Field not specified'}
+            {user.designation?.name || 'Field not specified'}
           </div>
           <div className={`mr-6 flex items-center`}>
             <div className="w-1 h-1 bg-neutral-500 rounded-full"></div>
