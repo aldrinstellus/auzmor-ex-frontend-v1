@@ -241,6 +241,9 @@ const CreatePostModal: FC<ICreatePostModal> = ({
             theme: 'dark',
           },
         );
+        await queryClient.invalidateQueries(['scheduledPosts'], {
+          exact: false,
+        });
       }
       await queryClient.invalidateQueries(['feed-announcements-widget']);
       await queryClient.invalidateQueries(['post-announcements-widget']);
