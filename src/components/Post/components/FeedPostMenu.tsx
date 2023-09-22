@@ -246,8 +246,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
           title="Delete"
           description={
             <span>
-              Are you sure you want to delete this post?
-              <br /> This cannot be undone.
+              Are you sure you want to delete this post? This cannot be undone
             </span>
           }
           success={{

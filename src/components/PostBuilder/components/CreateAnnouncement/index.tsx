@@ -110,12 +110,12 @@ const CreateAnnouncement: FC<ICreateAnnouncementProps> = ({
   return (
     <>
       <Header
-        title={'Create an announcement'}
-        onBackIconClick={
-          mode === CreateAnnouncementMode.POST_BUILDER
-            ? () => setActiveFlow(CreatePostFlow.CreatePost)
-            : undefined
+        title={
+          mode === CreateAnnouncementMode.DIRECT
+            ? 'Edit announcement expiry'
+            : 'Create an announcement'
         }
+        onBackIconClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
         onClose={() => {
           clearPostContext();
           closeModal();

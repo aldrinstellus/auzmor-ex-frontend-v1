@@ -436,7 +436,6 @@ const CreatePostModal: FC<ICreatePostModal> = ({
       mediaRef.current = sortedIds.map(
         (id: string) => mediaRef.current.find((media) => media.id === id)!,
       );
-      console.log({ postType });
       updatePostMutation.mutate({
         content: {
           text: content?.text || editorValue.text,
