@@ -44,7 +44,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                 width={20}
               />
             </div>
-            <p className="text-neutral-900 text-lg font-extrabold">
+            <p className="text-neutral-900 text-lg font-extrabold line-clamp-1">
               {app.label}
             </p>
           </div>
@@ -108,7 +108,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                       {app.label}
                     </p>
                     <p
-                      className="pt-1 text-neutral-900 font-normal line-clamp-3"
+                      className="pt-1 text-neutral-900 font-normal"
                       data-testid="app-details-description"
                     >
                       {app.description}
