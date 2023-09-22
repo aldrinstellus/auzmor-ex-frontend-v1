@@ -66,7 +66,9 @@ const Chart: FC<IChart> = ({
             return renderToString(<UserNode node={node} />);
           })
           // .hoverCardContent((d) => {
-          //   return renderToString(<UserCard user={d.userData} />);
+          //   return renderToString(
+          //     <UserCard user={d.userData} variant={UsercardVariant.Large} />,
+          //   );
           // })
           // .onExpandCollapseClick((d: any, data: any) => {
           //   if (d.data.directReportees > 0 && !!d.children) {

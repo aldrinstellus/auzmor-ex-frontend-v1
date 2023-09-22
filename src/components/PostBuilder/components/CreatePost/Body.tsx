@@ -68,7 +68,11 @@ const Body = forwardRef(
               createdBy={
                 data?.createdBy || {
                   fullName: user?.name,
-                  profileImage: { id: '', original: user?.profileImage || '' },
+                  profileImage: {
+                    id: '',
+                    original: user?.profileImage || '',
+                    blurHash: '',
+                  },
                 }
               }
             />

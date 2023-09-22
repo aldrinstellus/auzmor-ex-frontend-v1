@@ -5,8 +5,13 @@ import { useInfiniteComments } from 'queries/comments';
 import { DeltaStatic } from 'quill';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
-import { ICreated, IMyReactions } from 'pages/Feed';
-import { IMention, IReactionsCount, IShoutoutRecipient } from 'queries/post';
+import { IMyReactions } from 'pages/Feed';
+import {
+  ICreatedBy,
+  IMention,
+  IReactionsCount,
+  IShoutoutRecipient,
+} from 'queries/post';
 import Spinner from 'components/Spinner';
 import { PRIMARY_COLOR } from 'utils/constants';
 import LoadMore from './components/LoadMore';
@@ -46,7 +51,7 @@ export interface IComment {
   orgId: string;
   createdAt: string;
   updatedAt: string;
-  createdBy: ICreated;
+  createdBy: ICreatedBy;
   id: string;
   myReaction?: IMyReactions;
   reactionsCount: IReactionsCount;

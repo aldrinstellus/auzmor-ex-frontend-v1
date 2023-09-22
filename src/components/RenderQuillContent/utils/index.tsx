@@ -25,8 +25,7 @@ export const getStyles = (attributes: any) => {
 export const getMentionProps = (mentions: IMention[], mention: any) => {
   const result = mentions.find((item) => item?.entityId === mention.id);
   return {
+    ...result,
     fullName: result?.name || mention.value,
-    email: result?.email,
-    image: result?.image,
   };
 };

@@ -6,6 +6,8 @@ import { IAudience, ICreatedBy } from 'queries/post';
 import { Link } from 'react-router-dom';
 import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
 import AudiencePopup from 'components/AudiencePopup';
+import Tooltip, { Variant } from 'components/Tooltip';
+import UserCard from 'components/UserCard';
 
 type ActorProps = {
   contentMode?: string;
@@ -72,15 +74,40 @@ const Actor: FC<ActorProps> = ({
           className="font-bold text-sm text-neutral-900 flex gap-1"
           data-testid={dataTestId}
         >
-          <Link
-            to={`${
-              createdBy?.userId && createdBy.userId !== user?.id
-                ? '/users/' + createdBy.userId
-                : '/profile'
-            }`}
+          <Tooltip
+            tooltipContent={
+              <UserCard
+                user={{
+                  id: createdBy?.userId || '',
+                  fullName: createdBy?.fullName || 'Field not specified',
+                  workEmail: createdBy?.email || 'Field not specified',
+                  workLocation: {
+                    id: '',
+                    name: createdBy?.workLocation || 'Field not specified',
+                  },
+                  profileImage: createdBy?.profileImage,
+                }}
+              />
+            }
+            variant={Variant.Light}
+            className="!p-4 !shadow-md !rounded-9xl !z-[999]"
           >
-            {createdBy ? getFullName(createdBy) : user ? getFullName(user) : ''}
-          </Link>
+            <Link
+              to={`${
+                createdBy?.userId && createdBy.userId !== user?.id
+                  ? '/users/' + createdBy.userId
+                  : '/profile'
+              }`}
+              className="hover:text-primary-500 hover:underline"
+            >
+              {createdBy
+                ? getFullName(createdBy)
+                : user
+                ? getFullName(user)
+                : ''}
+            </Link>
+          </Tooltip>
+
           <span className="text-sm font-normal text-neutral-900">
             {actionLabel}
           </span>

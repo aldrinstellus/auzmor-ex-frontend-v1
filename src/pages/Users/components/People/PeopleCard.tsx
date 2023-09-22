@@ -176,12 +176,12 @@ const PeopleCard: FC<IPeopleCardProps> = ({
       return (
         <div
           style={{
-            backgroundColor: statusColorMap[role],
+            backgroundColor: statusColorMap[role || ''],
           }}
           className={leftChipStyle}
           data-testid={`people-card-role-${role}`}
         >
-          {titleCase(role)}
+          {titleCase(role || '')}
         </div>
       );
     }
@@ -202,7 +202,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
         <UserProfileDropdown
           id={id}
           loggedInUserId={user?.id}
-          role={role}
+          role={role || ''}
           status={status}
           isHovered={isHovered}
           onDeleteClick={openDeleteModal}

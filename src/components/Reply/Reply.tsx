@@ -32,6 +32,9 @@ import {
   CommentsRTE,
   PostCommentMode,
 } from 'components/Comments/components/CommentsRTE';
+import Tooltip, { Variant as TooltipVariant } from 'components/Tooltip';
+import UserCard from 'components/UserCard';
+import { Link } from 'react-router-dom';
 
 interface ReplyProps {
   comment: IComment;
@@ -138,9 +141,41 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
                 />
               </div>
               <div className="flex flex-col items-start p-0 w-64">
-                <div className="text-neutral-900 font-bold text-sm">
-                  {getFullName(comment?.createdBy)}
-                </div>
+                <Tooltip
+                  tooltipContent={
+                    <UserCard
+                      user={{
+                        id: comment?.createdBy?.userId || '',
+                        fullName:
+                          comment?.createdBy?.fullName || 'Field not specified',
+                        workEmail:
+                          comment?.createdBy?.email || 'Field not specified',
+                        workLocation: {
+                          id: '',
+                          name:
+                            comment?.createdBy?.workLocation ||
+                            'Field not specified',
+                        },
+                        profileImage: comment?.createdBy?.profileImage,
+                      }}
+                    />
+                  }
+                  variant={TooltipVariant.Light}
+                  className="!p-4 !shadow-md !rounded-9xl !z-[999]"
+                >
+                  <Link
+                    to={
+                      comment?.createdBy?.userId &&
+                      comment.createdBy.userId !== user?.id
+                        ? '/users/' + comment.createdBy.userId
+                        : '/profile'
+                    }
+                  >
+                    <div className="text-neutral-900 font-bold text-sm hover:text-primary-500 hover:underline">
+                      {getFullName(comment?.createdBy)}
+                    </div>
+                  </Link>
+                </Tooltip>
                 <div className="font-normal text-neutral-500 text-xs">
                   {comment?.createdBy?.designation}
                 </div>

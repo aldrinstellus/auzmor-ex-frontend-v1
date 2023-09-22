@@ -3,14 +3,16 @@ import { getFullName, getProfileImage } from 'utils/misc';
 import useAuth from 'hooks/useAuth';
 import { Link } from 'react-router-dom';
 import Tooltip, { Variant } from 'components/Tooltip';
-import ProfileCard from './components/ProfileCard';
 import { FC } from 'react';
+import UserCard from 'components/UserCard';
+import { ILocation } from 'queries/location';
+import { IProfileImage } from 'queries/post';
 
 export interface IAvatarUser {
   fullName: string;
-  profileImage: object;
+  profileImage: IProfileImage;
   status: string;
-  workLocation?: Record<string, string>;
+  workLocation?: ILocation;
   designation?: string;
   userId: string;
   email?: string;
@@ -33,9 +35,19 @@ const AvatarChip: FC<IAvatarChipProps> = ({
 
   return (
     <Tooltip
-      tooltipContent={<ProfileCard user={user} />}
+      tooltipContent={
+        <UserCard
+          user={{
+            id: user.userId,
+            profileImage: user.profileImage,
+            fullName: user.fullName,
+            workEmail: user.email,
+            workLocation: user.workLocation,
+          }}
+        />
+      }
       variant={Variant.Light}
-      className="shadow-md top !rounded-[12px] !p-4"
+      className="!p-4 !shadow-md !rounded-9xl !z-[999]"
     >
       <Link
         to={
