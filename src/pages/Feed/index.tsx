@@ -303,7 +303,7 @@ const Feed: FC<IFeedProps> = () => {
         <UserCard />
         <MyTeamWidget />
       </div>
-      <div className="w-1/2 flex flex-col gap-[26px]">
+      <div className="flex-grow w-0 flex flex-col gap-[26px]">
         {FeedHeader}
         {isLoading ? (
           <SkeletonLoader />

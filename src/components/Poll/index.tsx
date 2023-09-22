@@ -63,7 +63,7 @@ function animateOption(
 }
 
 function getVotePercent(total: number, votes?: number) {
-  return total ? `${((votes || 0) / total) * 100}%` : '0%';
+  return total ? `${Math.round(((votes || 0) / total) * 100)}%` : '0%';
 }
 
 const Poll: FC<IPoll & PollProps> = ({
@@ -155,7 +155,9 @@ const Poll: FC<IPoll & PollProps> = ({
     <div className="bg-neutral-100 py-4 px-8 rounded-9xl w-full">
       {/* Header */}
       <div className="flex items-start gap-4">
-        <p className="text-neutral-900 font-bold flex-auto pb-6">{question}</p>
+        <p className="text-neutral-900 font-bold flex-auto pb-6 break-normal [overflow-wrap:anywhere]">
+          {question}
+        </p>
         {mode === PollMode.EDIT && (
           <div className="flex gap-x-2 -mr-4">
             {timeLeft && (

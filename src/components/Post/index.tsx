@@ -334,7 +334,7 @@ const Post: FC<PostProps> = ({ post, customNode = null, setHasChanges }) => {
         </div>
         {/* Comments */}
         {showComments ? (
-          <div className="pb-3 px-3">
+          <div className="pb-3 px-6">
             <CommentCard entityId={post?.id || ''} />
           </div>
         ) : (

@@ -337,7 +337,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
 
   return (
     <div className={`flex flex-row ${className} `}>
-      <div className="flex flex-col items-center py-[7px] gap-2 border border-neutral-200 rounded-19xl border-solid w-full">
+      <div className="flex flex-col items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full">
         <RichTextEditor
           toolbarId={`toolbar-${entityId}`}
           defaultValue={commentData?.content?.editor}
@@ -346,30 +346,28 @@ export const CommentsRTE: FC<CommentFormProps> = ({
               ? 'Wish them now...'
               : 'Leave a comment...'
           }
-          className="max-h-18 min-w-[70%] relative"
+          className="max-w-full flex-grow text-sm"
           ref={quillRef}
           dataTestId="postcomment-textbox"
           onChangeEditor={onChangeEditor}
           renderToolbar={() => (
             <div
-              className="flex flex-row items-center z-10 -ml-32 absolute top-0 right-2 quill-toolbar quill-toolbar-icons"
+              className="z-10 quill-toolbar quill-toolbar-icons !relative gap-4 ml-auto"
               id={`toolbar-${entityId}-toolbar`}
             >
-              <div className="mr-6">
-                {mode === PostCommentMode.Edit && (
-                  <Button
-                    label={'Cancel'}
-                    size={Size.Small}
-                    variant={Variant.Secondary}
-                    className="text-sm"
-                    dataTestId="cancel-edit-comment"
-                    onClick={() => setEditComment && setEditComment(false)}
-                  />
-                )}
-              </div>
+              {mode === PostCommentMode.Edit && (
+                <Button
+                  label={'Cancel'}
+                  size={Size.Small}
+                  variant={Variant.Secondary}
+                  className="text-sm !mx-0 !w-auto"
+                  dataTestId="cancel-edit-comment"
+                  onClick={() => setEditComment && setEditComment(false)}
+                />
+              )}
               <IconButton
                 icon="image"
-                className="flex mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
+                className="!flex justify-center !mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
                 size={SizeVariant.Large}
                 variant={IconVariant.Primary}
                 dataTestId={
@@ -379,10 +377,13 @@ export const CommentsRTE: FC<CommentFormProps> = ({
                 }
                 onClick={() => inputRef && inputRef?.current?.click()}
               />
-              <button className="ql-emoji" data-testid="send-gif" />
+              <button
+                className="ql-emoji !mx-0 h-6 w-6"
+                data-testid="send-gif"
+              />
               <IconButton
                 icon={'send'}
-                className="flex mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
+                className="!flex justify-center !mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
                 size={SizeVariant.Large}
                 variant={IconVariant.Primary}
                 onClick={() => {
