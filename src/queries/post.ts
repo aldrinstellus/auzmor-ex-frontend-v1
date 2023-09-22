@@ -252,8 +252,6 @@ export enum PostFilterKeys {
   PostType = 'type',
   ActorId = 'actorId',
   ActivityType = 'activityType',
-  MyPosts = 'myPosts',
-  MentionedInPost = 'mentionedInPost',
   Limit = 'limit',
   Hashtags = 'hashtags',
   Sort = 'sort',
@@ -261,23 +259,27 @@ export enum PostFilterKeys {
   Next = 'next',
   Prev = 'prev',
   Bookmarks = 'bookmarks',
-  BookmarkedByMe = 'bookmarkedbyme',
   Scheduled = 'scheduled',
+  PostPreference = 'preference',
+}
+
+export enum PostFilterPreference {
+  BookmarkedByMe = 'bookmarkedbyme',
+  MyPosts = 'myPosts',
+  MentionedInPost = 'mentionedInPost',
 }
 
 export interface IPostFilters {
   [PostFilterKeys.PostType]?: PostType[];
+  [PostFilterKeys.PostPreference]?: PostFilterPreference[];
   [PostFilterKeys.ActorId]?: string;
   [PostFilterKeys.ActivityType]?: ActivityType;
-  [PostFilterKeys.MyPosts]?: boolean;
-  [PostFilterKeys.MentionedInPost]?: boolean;
   [PostFilterKeys.Limit]?: number;
   [PostFilterKeys.Hashtags]?: string[];
   [PostFilterKeys.Sort]?: { createdAt: 'ASC' | 'DESC' };
   [PostFilterKeys.Feed]?: FeedType;
   [PostFilterKeys.Next]?: number;
   [PostFilterKeys.Prev]?: number;
-  [PostFilterKeys.BookmarkedByMe]?: boolean;
 }
 
 export const createPost = async (payload: IPostPayload) => {

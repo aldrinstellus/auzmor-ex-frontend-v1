@@ -45,7 +45,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
 
   const teamDetail = useSingleTeam(id || '');
 
-  const data = teamDetail?.data?.data?.result;
+  const data = teamDetail?.data?.data?.result.data;
 
   const addTeamMemberMutation = useMutation({
     mutationKey: ['add-team-member', id],

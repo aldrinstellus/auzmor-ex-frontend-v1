@@ -42,6 +42,7 @@ const Footer: FC<IFooterProps> = ({
     previewUrl,
     schedule,
     postType,
+    isEmpty,
   } = useContext(CreatePostContext);
   const { isMember } = useRole();
   const canSchedule = !(!!!schedule && mode === PostBuilderMode.Edit);
@@ -292,7 +293,12 @@ const Footer: FC<IFooterProps> = ({
         )}
         <Button
           label={schedule ? 'Schedule' : 'Post'}
-          disabled={isLoading || isCharLimit || !!mediaValidationErrors?.length}
+          disabled={
+            isLoading ||
+            isCharLimit ||
+            isEmpty ||
+            !!mediaValidationErrors?.length
+          }
           labelClassName="text-sm leadind-snug"
           onClick={() => {
             updateContext();

@@ -35,6 +35,7 @@ import useModal from 'hooks/useModal';
 import {
   IPostFilters,
   PostFilterKeys,
+  PostFilterPreference,
   PostType,
   useInfiniteFeed,
 } from 'queries/post';
@@ -81,11 +82,23 @@ const Feed: FC<IFeedProps> = () => {
   const [open, openModal, closeModal] = useModal(undefined, false);
   const [appliedFeedFilters, setAppliedFeedFilters] = useState<IPostFilters>({
     [PostFilterKeys.PostType]: [],
+    [PostFilterKeys.PostPreference]: [],
   });
   const { feed } = useFeedStore();
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteFeed(pathname, appliedFeedFilters);
+    useInfiniteFeed(pathname, {
+      [PostFilterKeys.PostType]: appliedFeedFilters[PostFilterKeys.PostType],
+      ...(appliedFeedFilters[PostFilterKeys.PostPreference]?.includes(
+        PostFilterPreference.BookmarkedByMe,
+      ) && { [PostFilterPreference.BookmarkedByMe]: true }),
+      ...(appliedFeedFilters[PostFilterKeys.PostPreference]?.includes(
+        PostFilterPreference.MentionedInPost,
+      ) && { [PostFilterPreference.MentionedInPost]: true }),
+      ...(appliedFeedFilters[PostFilterKeys.PostPreference]?.includes(
+        PostFilterPreference.MyPosts,
+      ) && { [PostFilterPreference.MyPosts]: true }),
+    });
 
   const feedIds = (
     (data?.pages.flatMap((page) =>
@@ -126,16 +139,19 @@ const Feed: FC<IFeedProps> = () => {
     setAppliedFeedFilters({
       ...appliedFeedFilters,
       [PostFilterKeys.PostType]: [],
-      [PostFilterKeys.MyPosts]: false,
-      [PostFilterKeys.MentionedInPost]: false,
+      [PostFilterKeys.PostPreference]: [],
     });
   };
 
   const getAppliedFiltersCount = () => {
-    return appliedFeedFilters[PostFilterKeys.PostType]?.length || 0;
+    return (
+      appliedFeedFilters[PostFilterKeys.PostType]?.length ||
+      appliedFeedFilters[PostFilterKeys.PostPreference]?.length ||
+      0
+    );
   };
 
-  const removePostTypeFilter = (filter: PostType) => {
+  const removePostTypeFilter = (filter: PostType | PostFilterPreference) => {
     if (appliedFeedFilters[PostFilterKeys.PostType]) {
       setAppliedFeedFilters({
         ...appliedFeedFilters,
@@ -185,6 +201,30 @@ const Feed: FC<IFeedProps> = () => {
       return <></>;
     }
   };
+
+  const FilterPill = ({
+    name,
+    onClick,
+  }: {
+    name: string;
+    onClick: () => void;
+  }) => (
+    <div
+      key={name}
+      className="border border-neutral-200 rounded-[24px] px-3 py-1 bg-white items-center flex gap-2"
+    >
+      <div className="text-sm font-medium whitespace-nowrap text-neutral-900">
+        {name}
+      </div>
+      <Icon
+        name="closeCircleOutline"
+        color="text-neutral-900"
+        className="cursor-pointer"
+        size={16}
+        onClick={onClick}
+      />
+    </div>
+  );
 
   const FeedHeader = useMemo(() => {
     if (hashtag) {
@@ -260,21 +300,20 @@ const Feed: FC<IFeedProps> = () => {
                 </div> */}
                 {appliedFeedFilters[PostFilterKeys.PostType]?.map(
                   (filter: PostType) => (
-                    <div
+                    <FilterPill
                       key={filter}
-                      className="border border-neutral-200 rounded-[24px] px-3 py-1 bg-white items-center flex gap-2"
-                    >
-                      <div className="text-sm font-medium whitespace-nowrap text-neutral-900">
-                        {filterKeyMap[filter]}
-                      </div>
-                      <Icon
-                        name="closeCircleOutline"
-                        color="text-neutral-900"
-                        className="cursor-pointer"
-                        size={16}
-                        onClick={() => removePostTypeFilter(filter)}
-                      />
-                    </div>
+                      name={filterKeyMap[filter]}
+                      onClick={() => removePostTypeFilter(filter)}
+                    />
+                  ),
+                )}
+                {appliedFeedFilters[PostFilterKeys.PostPreference]?.map(
+                  (filter: PostFilterPreference) => (
+                    <FilterPill
+                      key={filter}
+                      name={filterKeyMap[filter]}
+                      onClick={() => removePostTypeFilter(filter)}
+                    />
                   ),
                 )}
               </div>

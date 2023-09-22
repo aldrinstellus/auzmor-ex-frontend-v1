@@ -6,6 +6,7 @@ import {
   memo,
   useCallback,
   useContext,
+  useEffect,
 } from 'react';
 import ReactQuill, { Quill, UnprivilegedEditor } from 'react-quill';
 import { DeltaStatic, Sources } from 'quill';
@@ -22,7 +23,7 @@ import EmojiBlot from './blots/emoji';
 import EmojiToolbar from './emoji';
 import { mention, previewLinkRegex } from './config';
 import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
+import { isEmptyEditor, twConfig } from 'utils/misc';
 import {
   CreatePostContext,
   CreatePostFlow,
@@ -84,6 +85,7 @@ const RichTextEditor = forwardRef(
       isPreviewRemoved,
       isCharLimit,
       setIsCharLimit,
+      setIsEmpty,
       setIsPreviewRemoved,
       removeAllMedia,
       coverImageMap,
@@ -160,6 +162,9 @@ const RichTextEditor = forwardRef(
           setPreviewUrl('');
         }
       }
+      setIsEmpty(
+        isEmptyEditor(editor.getText(), editor.getContents().ops || []),
+      );
     };
 
     const updateContext = () => {
@@ -274,6 +279,19 @@ const RichTextEditor = forwardRef(
     };
 
     const [confirm, showConfirm, closeConfirm] = useModal();
+
+    useEffect(() => {
+      if (ref && ((ref as any).current as ReactQuill)) {
+        const ops =
+          ((ref as any).current as ReactQuill).getEditor().getContents().ops ||
+          [];
+        const content = ((ref as any).current as ReactQuill)
+          .getEditor()
+          .getText();
+
+        setIsEmpty(isEmptyEditor(content, ops));
+      }
+    }, []);
 
     return (
       <div data-testid={`${dataTestId}-content`}>

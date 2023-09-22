@@ -1,4 +1,4 @@
-import { FC, RefObject, useRef } from 'react';
+import { FC, RefObject, useEffect, useRef, useState } from 'react';
 import IconButton, {
   Variant as IconVariant,
   Size as SizeVariant,
@@ -9,7 +9,7 @@ import { createComment, updateComment } from 'queries/comments';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
 import { toast } from 'react-toastify';
-import { quillHashtagConversion, twConfig } from 'utils/misc';
+import { isEmptyEditor, quillHashtagConversion, twConfig } from 'utils/misc';
 import { produce } from 'immer';
 import { useCommentStore } from 'stores/commentStore';
 import { useFeedStore } from 'stores/feedStore';
@@ -89,6 +89,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
   const queryClient = useQueryClient();
   const quillRef = useRef<ReactQuill>(null);
   const { uploadMedia } = useUpload();
+  const [isEmpty, setIsEmpty] = useState(true);
 
   const createCommentMutation = useMutation({
     mutationKey: ['create-comment'],
@@ -303,6 +304,11 @@ export const CommentsRTE: FC<CommentFormProps> = ({
     }
   };
 
+  const onChangeEditor = (content: any) => {
+    const ops = content.json.ops || [];
+    setIsEmpty(isEmptyEditor(content.text, ops));
+  };
+
   const getDataTestIdForErrors = (errorType: MediaValidationError) => {
     switch (errorType) {
       case MediaValidationError.MediaLengthExceed:
@@ -315,6 +321,19 @@ export const CommentsRTE: FC<CommentFormProps> = ({
         return 'createpost-filetypenotsupported-error';
     }
   };
+
+  useEffect(() => {
+    if (quillRef.current) {
+      onChangeEditor({
+        text: quillRef.current
+          ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
+          .getText(),
+        json: quillRef.current
+          ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
+          .getContents(),
+      });
+    }
+  }, []);
 
   return (
     <div className={`flex flex-row ${className} `}>
@@ -330,6 +349,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
           className="max-w-full flex-grow text-sm"
           ref={quillRef}
           dataTestId="postcomment-textbox"
+          onChangeEditor={onChangeEditor}
           renderToolbar={() => (
             <div
               className="z-10 quill-toolbar quill-toolbar-icons !relative gap-4 ml-auto"
@@ -376,7 +396,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
                     ? 'send-wishes-cta'
                     : 'postcomment-sendcta'
                 }
-                disabled={mediaValidationErrors.length > 0}
+                disabled={mediaValidationErrors.length > 0 || isEmpty}
               />
             </div>
           )}
