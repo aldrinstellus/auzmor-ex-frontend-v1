@@ -239,13 +239,13 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
           {totalCount > 0 && (
             <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
           )}
-          <div className="flex cursor-pointer">
+          <div className="flex items-center cursor-pointer">
             <div
-              className={`flex flex-row`}
+              className={`flex items-center`}
               onClick={() => setShowReactionModal(true)}
             >
               {totalCount > 0 && (
-                <div className="mr-2 flex flex-row">
+                <div className="flex">
                   {Object.keys(comment?.reactionsCount || {})
                     .filter(
                       (key) =>
@@ -261,6 +261,14 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
                         <Icon name={`${key}Reaction`} size={20} />
                       </div>
                     ))}
+                </div>
+              )}
+              {totalCount > 0 && (
+                <div
+                  className={`flex text-xs font-normal text-neutral-500`}
+                  data-testid="comment-reaction-count"
+                >
+                  {totalCount}
                 </div>
               )}
             </div>

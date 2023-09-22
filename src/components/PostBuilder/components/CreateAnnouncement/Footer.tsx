@@ -15,6 +15,7 @@ import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import { useFeedStore } from 'stores/feedStore';
 import { produce } from 'immer';
+import useAuth from 'hooks/useAuth';
 
 export interface IFooterProps {
   handleSubmit: UseFormHandleSubmit<FieldValues>;
@@ -37,6 +38,7 @@ const Footer: FC<IFooterProps> = ({
   const updateFeed = useFeedStore((state) => state.updateFeed);
   const { setAnnouncement, setActiveFlow, announcement } =
     useContext(CreatePostContext);
+  const { user } = useAuth();
 
   const onSubmit = (data: any) => {
     setAnnouncement({
@@ -53,26 +55,26 @@ const Footer: FC<IFooterProps> = ({
 
   const makePostAnnouncementMutation = useMutation({
     mutationKey: ['makePostAnnouncementMutation', data?.id],
-    mutationFn: async () => {
+    mutationFn: () => {
       const formData = getFormValues();
       const expiryDate = formData?.date.toISOString().substring(0, 19) + 'Z';
       const fileIds = data?.files?.map((file: any) => file.id);
-      if (data?.id)
-        await updatePost(data?.id, {
-          ...data,
-          files: fileIds,
-          isAnnouncement: true,
-          announcement: {
-            end:
-              expiryDate ||
-              formData?.expiryOption?.value ||
-              afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
-          },
-          shoutoutRecipients:
-            data.shoutoutRecipients && data.shoutoutRecipients.length > 0
-              ? data.shoutoutRecipients.map((user) => user.userId)
-              : [],
-        });
+      return updatePost(data!.id!, {
+        ...data,
+        files: fileIds,
+        type: 'UPDATE',
+        isAnnouncement: true,
+        announcement: {
+          end:
+            expiryDate ||
+            formData?.expiryOption?.value ||
+            afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
+        },
+        shoutoutRecipients:
+          data?.shoutoutRecipients && data?.shoutoutRecipients.length > 0
+            ? data.shoutoutRecipients.map((user) => user.userId)
+            : [],
+      });
     },
     onMutate: (_variables) => {
       const previousPost = getPost(data!.id!);
@@ -83,6 +85,10 @@ const Footer: FC<IFooterProps> = ({
           data.id,
           produce(getPost(data!.id || ''), (draft) => {
             (draft.announcement = {
+              actor: {
+                userId: user?.id,
+                ...user,
+              },
               end:
                 expiryDate ||
                 formData?.expiryOption?.value ||
