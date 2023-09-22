@@ -151,7 +151,7 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
                         workEmail:
                           comment?.createdBy?.email || 'Field not specified',
                         workLocation: {
-                          id: '',
+                          locationId: '',
                           name:
                             comment?.createdBy?.workLocation ||
                             'Field not specified',

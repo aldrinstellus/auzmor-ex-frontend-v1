@@ -27,9 +27,9 @@ import Icon from 'components/Icon';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import { useGooglePlaces } from 'queries/location';
-import { IDepartment, useInfiniteDepartments } from 'queries/department';
+import { useInfiniteDepartments } from 'queries/department';
 import useRole from 'hooks/useRole';
-import { IDesignation, useInfiniteDesignations } from 'queries/designation';
+import { useInfiniteDesignations } from 'queries/designation';
 import { useDebounce } from 'hooks/useDebounce';
 
 interface IOptions {
@@ -89,10 +89,10 @@ const EditProfileModal: FC<IEditProfileModal> = ({
     defaultValues: {
       fullName: userDetails?.fullName,
       preferredName: userDetails?.preferredName,
-      designation: userDetails?.designation
+      designation: userDetails?.designation?.name
         ? {
-            value: userDetails?.designation,
-            label: userDetails?.designation,
+            value: userDetails?.designation?.name,
+            label: userDetails?.designation?.name,
           }
         : null,
       workLocation: userDetails?.workLocation?.name
@@ -120,14 +120,12 @@ const EditProfileModal: FC<IEditProfileModal> = ({
         }
       });
     });
-    const transformedOption = optionsData?.map(
-      (option: IDepartment | IDesignation) => ({
-        value: option?.id,
-        label: option?.name,
-        id: option?.id,
-        dataTestId: `${dataTestId}-${option?.name}`,
-      }),
-    );
+    const transformedOption = optionsData?.map((option: any) => ({
+      value: option?.departmentId || option?.designationId,
+      label: option?.name,
+      id: option?.departmentId || option?.designationId,
+      dataTestId: `${dataTestId}-${option?.name}`,
+    }));
     return transformedOption;
   };
 

@@ -175,7 +175,7 @@ export const Comment: FC<CommentProps> = ({ comment, customNode = null }) => {
                       workEmail:
                         comment?.createdBy?.email || 'Field not specified',
                       workLocation: {
-                        id: '',
+                        locationId: '',
                         name:
                           comment?.createdBy?.workLocation ||
                           'Field not specified',

@@ -286,11 +286,11 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                         {data?.fullName}
                       </div>
                       <div className="flex space-x-[14px] items-center">
-                        {data?.designation && (
+                        {data?.designation?.name && (
                           <div className="flex space-x-1 items-start">
                             <Icon name="briefcase" size={16} />
                             <div className="text-xs font-normal text-neutral-500">
-                              {data?.designation}
+                              {data?.designation?.name}
                             </div>
                           </div>
                         )}
