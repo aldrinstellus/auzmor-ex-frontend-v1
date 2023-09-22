@@ -94,6 +94,7 @@ import SvgLauncherOutline from '../components/Launcher/LauncherOutline';
 import SvgExploreOutline from '../components/Explore/ExploreOutline';
 import SvgUserRoleOutline from '../components/UserRole/UserRole';
 import SvgWarningCircleOutline from '../components/WarningCircle/WarningCircleOutline';
+import SvgCheckboxOutline from '../components/Checkbox/CheckboxOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -192,4 +193,5 @@ export const outlineIcon = {
   warningCirlceOutline: SvgWarningCircleOutline,
   zoomInOutline: SvgZoomInOutline,
   zoomOutOutline: SvgZoomOutOutline,
+  checkboxOutline: SvgCheckboxOutline,
 };
