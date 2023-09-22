@@ -92,10 +92,11 @@ const Toolbar: FC<IToolbarProps> = ({
   const debouncedMemberSearchValue = useDebounce(memberSearchString || '', 300);
   const { data: fetchedMembers, isLoading: isFetching } = useOrgChart({
     q: debouncedMemberSearchValue,
+    expandAll: true,
   });
   const userData = useMemo(
     () =>
-      (fetchedMembers as any)?.result?.data.users.filter(
+      fetchedMembers?.data.result?.data.filter(
         (user: any) => user.id !== 'root',
       ) || [],
     [fetchedMembers],

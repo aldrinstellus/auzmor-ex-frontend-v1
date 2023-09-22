@@ -100,7 +100,6 @@ const DatePickerInput: FC<IDatePickerInputProps> = ({
           date?.set('minute', 0);
           date?.set('second', 0);
           date?.set('millisecond', 0);
-
           // Call onChange functions
           field.onChange(date);
           if (date) onDateChange?.(date);

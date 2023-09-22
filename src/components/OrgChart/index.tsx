@@ -44,7 +44,10 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
       locations: appliedFilters?.location?.map((location) => location.id) || [],
       departments:
         appliedFilters?.departments?.map((department) => department.id) || [],
-      status: appliedFilters.status?.value,
+      status:
+        appliedFilters.status?.value === 'ALL'
+          ? undefined
+          : appliedFilters.status?.value,
       expand: activeMode === OrgChartMode.Team ? 2 : 0,
     }),
   );
@@ -81,7 +84,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
       />
       <Chart
         orgChartRef={chartRef}
-        data={(data as any)?.result?.data.users || []}
+        data={data?.data.result.data || []}
         isLoading={isLoading}
         onClearFilter={() => {
           setAppliedFilters({

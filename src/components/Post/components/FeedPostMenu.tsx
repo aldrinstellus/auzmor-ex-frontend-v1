@@ -54,7 +54,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
       closeConfirm();
       return { previousFeed };
     },
-    onError: (error, variables, context) => {
+    onError: (_error, _variables, context) => {
       toast(
         <FailureToast
           content="Error deleting post"

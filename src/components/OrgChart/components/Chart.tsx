@@ -118,7 +118,7 @@ const Chart: FC<IChart> = ({
     () =>
       clsx({
         relative: true,
-        'opacity-0': isLoading,
+        'opacity-0': isLoading || !!!data?.length,
         'opacity-100': !isLoading,
       }),
     [isLoading],

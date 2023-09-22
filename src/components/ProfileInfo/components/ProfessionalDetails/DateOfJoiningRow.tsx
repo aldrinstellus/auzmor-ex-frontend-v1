@@ -50,7 +50,9 @@ const DateOfJoiningRow: FC<AppProps> = ({ data }) => {
 
   const onSubmit = () => {
     const { joinDate } = getValues();
-    updateUserJoinDateMutation.mutate({ joinDate: joinDate.toISOString() });
+    updateUserJoinDateMutation.mutate({
+      joinDate: joinDate.format('YYYY-MM-DD'),
+    });
   };
 
   const fields = [

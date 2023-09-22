@@ -388,7 +388,7 @@ const People: FC<IPeopleProps> = ({
               <div className="flex flex-col w-full items-center space-y-4">
                 <img
                   src={MemberNotFound}
-                  width={176}
+                  width={220}
                   height={144}
                   alt="No Member Found"
                 />
