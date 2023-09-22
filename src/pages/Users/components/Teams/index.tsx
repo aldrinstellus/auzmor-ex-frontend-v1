@@ -351,8 +351,7 @@ const Team: FC<ITeamProps> = ({
 
       {!isLoading ? (
         <div className="text-neutral-500 mt-6 mb-6">
-          Showing{' '}
-          {!isLoading && data?.pages[0]?.data?.result?.paging?.totalCount}{' '}
+          Showing {!isLoading && data?.pages[0]?.data?.result?.totalCount}{' '}
           results
         </div>
       ) : (

@@ -305,8 +305,7 @@ const People: FC<IPeopleProps> = ({
         </div>
 
         <div className="text-neutral-500">
-          Showing{' '}
-          {!isLoading && data?.pages[0]?.data?.result?.paging?.totalCount}{' '}
+          Showing {!isLoading && data?.pages[0]?.data?.result?.totalCount}{' '}
           results
         </div>
 
