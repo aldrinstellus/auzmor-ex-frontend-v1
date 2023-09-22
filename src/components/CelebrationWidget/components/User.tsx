@@ -158,6 +158,7 @@ const User: FC<UserProps> = ({
             entityId={post?.id}
             entityType="post"
             className="w-full"
+            wrapperClassName="!py-[7px]"
             mode={PostCommentMode.SendWish}
             inputRef={inputRef}
             media={media}

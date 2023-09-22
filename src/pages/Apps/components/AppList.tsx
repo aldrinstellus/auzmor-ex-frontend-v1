@@ -65,7 +65,7 @@ const AppList: FC<IAppListProps> = ({
       setAppsCount(appIds.length);
     }
     if (setTotalAppsCount && appIds) {
-      setTotalAppsCount(data?.pages[0]?.data?.result?.paging.totalCount);
+      setTotalAppsCount(data?.pages[0]?.data?.result?.totalCount);
     }
   }, [appIds]);
 

@@ -39,6 +39,7 @@ export enum PostCommentMode {
 
 interface CommentFormProps {
   className?: string;
+  wrapperClassName?: string;
   entityId?: string;
   entityType: string;
   mode?: PostCommentMode;
@@ -65,6 +66,7 @@ interface IUpdateCommentPayload {
 
 export const CommentsRTE: FC<CommentFormProps> = ({
   className = '',
+  wrapperClassName = '',
   entityId,
   entityType,
   mode = PostCommentMode.Create,
@@ -94,8 +96,29 @@ export const CommentsRTE: FC<CommentFormProps> = ({
   const createCommentMutation = useMutation({
     mutationKey: ['create-comment'],
     mutationFn: createComment,
-    onError: (error: any) => {
-      console.log(error);
+    onError: () => {
+      toast(
+        <FailureToast
+          content={`Error adding ${
+            entityType === 'post' ? 'Comment' : 'Reply'
+          }`}
+          dataTestId="comment-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
     },
     onSuccess: async (data: any, _variables, _context) => {
       if (mode === PostCommentMode.SendWish) {
@@ -337,7 +360,9 @@ export const CommentsRTE: FC<CommentFormProps> = ({
 
   return (
     <div className={`flex flex-row ${className} `}>
-      <div className="flex flex-col items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full">
+      <div
+        className={`flex flex-col items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full ${wrapperClassName}`}
+      >
         <RichTextEditor
           toolbarId={`toolbar-${entityId}`}
           defaultValue={commentData?.content?.editor}
