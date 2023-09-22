@@ -302,3 +302,15 @@ export const chain = <T>(input: T): Chainable<T> => ({
       }, {}),
     ),
 });
+
+export const isEmptyEditor = (content: string, ops: any) => {
+  for (const op of ops) {
+    if (op.insert && op.insert.emoji) {
+      return false;
+    }
+  }
+  if (content === '\n' || content === '') {
+    return true;
+  }
+  return false;
+};
