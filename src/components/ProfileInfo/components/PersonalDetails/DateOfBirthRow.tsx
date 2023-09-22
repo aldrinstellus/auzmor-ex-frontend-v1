@@ -54,7 +54,7 @@ const DateOfBirthRow: FC<AppProps> = ({ data }) => {
     const { personal } = getValues();
     updateUserJoinDateMutation.mutate({
       personal: {
-        birthDate: personal.birthDate,
+        birthDate: personal.birthDate?.format('YYYY-MM-DD'),
       },
     });
   };
