@@ -8,7 +8,11 @@ import Tooltip from 'components/Tooltip';
 import PopupMenu from 'components/PopupMenu';
 import { IGetUser } from 'queries/users';
 import Avatar from 'components/Avatar';
-import { addTeamMember, useSingleTeam } from 'queries/teams';
+import {
+  addTeamMember,
+  useInfiniteMembers,
+  useSingleTeam,
+} from 'queries/teams';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { toast } from 'react-toastify';
 import { useMutation } from '@tanstack/react-query';
@@ -280,6 +284,8 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
           openModal={openAddMemberModal}
           closeModal={closeAddMemberModal}
           entityType={EntitySearchModalType.User}
+          fetchUsers={useInfiniteMembers}
+          usersQueryParams={{ entityType: 'team', entityId: data.id }}
           entityRenderer={(data: IGetUser) => {
             return (
               <div className="flex space-x-4 w-full">
@@ -333,7 +339,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
             addTeamMemberMutation.mutate({ userIds: userIds });
             closeAddMemberModal();
           }}
-          disableKey="designation"
+          disableKey="isPresent"
           title="Add team members"
           submitButtonText="Add Members"
           onCancel={closeAddMemberModal}

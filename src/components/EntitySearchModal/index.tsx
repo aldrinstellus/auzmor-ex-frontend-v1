@@ -13,6 +13,8 @@ export enum EntitySearchModalType {
   Channel = 'CHANNEL',
 }
 
+type ApiCallFunction = (queryParams: any) => any;
+
 interface IEntitySearchModalProps {
   open: boolean;
   openModal: () => void;
@@ -27,6 +29,8 @@ interface IEntitySearchModalProps {
   onSubmit?: (data: string[]) => void;
   onCancel?: () => void;
   disableKey?: string;
+  fetchUsers?: ApiCallFunction;
+  usersQueryParams?: Record<string, any>;
 }
 
 export interface IAudienceForm {
@@ -61,6 +65,8 @@ const EntitySearchModal: FC<IEntitySearchModalProps> = ({
   entityRenderer = (_data: any) => <></>,
   selectedMemberIds = [],
   disableKey,
+  fetchUsers,
+  usersQueryParams,
 }) => {
   const audienceForm = useForm<any>({
     defaultValues: {
@@ -92,6 +98,8 @@ const EntitySearchModal: FC<IEntitySearchModalProps> = ({
           selectedMemberIds={selectedMemberIds}
           entityRenderer={entityRenderer}
           disableKey={disableKey}
+          fetchUsers={fetchUsers}
+          usersQueryParams={usersQueryParams}
         />
         <Footer
           handleSubmit={form.handleSubmit}

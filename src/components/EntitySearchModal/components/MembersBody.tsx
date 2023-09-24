@@ -13,6 +13,7 @@ import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 import useAuth from 'hooks/useAuth';
 import { IDesignationAPI, useInfiniteDesignations } from 'queries/designation';
 
+type ApiCallFunction = (queryParams: any) => any;
 interface IMembersBodyProps {
   entityRenderer?: (data: IGetUser) => ReactNode;
   selectedMemberIds?: string[];
@@ -21,6 +22,8 @@ interface IMembersBodyProps {
   hideCurrentUser?: boolean;
   showJobTitleFilter?: boolean;
   disableKey?: string;
+  fetchUsers?: ApiCallFunction;
+  usersQueryParams?: Record<string, any>;
 }
 
 const MembersBody: FC<IMembersBodyProps> = ({
@@ -31,6 +34,8 @@ const MembersBody: FC<IMembersBodyProps> = ({
   hideCurrentUser,
   showJobTitleFilter,
   disableKey,
+  fetchUsers = useInfiniteUsers,
+  usersQueryParams = {},
 }) => {
   const { user: currentUser } = useAuth();
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
@@ -65,7 +70,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
   // fetch users from search input
   const debouncedSearchValue = useDebounce(memberSearch || '', 500);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteUsers({
+    fetchUsers({
       q: {
         q: debouncedSearchValue,
         departments:
@@ -80,10 +85,12 @@ const MembersBody: FC<IMembersBodyProps> = ({
           selectedDesignations.length > 0
             ? selectedDesignations.join(',')
             : undefined,
+        ...usersQueryParams,
       },
     });
+
   const usersData = data?.pages
-    .flatMap((page) => {
+    .flatMap((page: any) => {
       return page?.data?.result?.data.map((user: IGetUser) => {
         try {
           return user;
@@ -429,7 +436,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
               <Spinner />
             </div>
           ) : usersData?.length ? (
-            usersData?.map((user, index) => (
+            usersData?.map((user:any, index:any) => (
               <div
                 key={user.id}
                 className={`${

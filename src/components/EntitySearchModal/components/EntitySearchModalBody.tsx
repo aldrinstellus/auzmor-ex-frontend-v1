@@ -4,6 +4,7 @@ import MembersBody from './MembersBody';
 import TeamsBody from './TeamsBody';
 import ChannelsBody from './ChannelsBody';
 
+type ApiCallFunction = (queryParams: any) => any;
 interface IEntitySearchModalBodyProps {
   entityType: EntitySearchModalType;
   entityRenderer?: (data: any) => ReactNode;
@@ -14,6 +15,8 @@ interface IEntitySearchModalBodyProps {
   hideCurrentUser?: boolean;
   showJobTitleFilter?: boolean;
   disableKey?: string;
+  fetchUsers?: ApiCallFunction;
+  usersQueryParams?: Record<string, any>;
 }
 
 const EntitySearchModalBody: FC<IEntitySearchModalBodyProps> = ({
@@ -26,6 +29,8 @@ const EntitySearchModalBody: FC<IEntitySearchModalBodyProps> = ({
   hideCurrentUser,
   showJobTitleFilter,
   disableKey,
+  fetchUsers,
+  usersQueryParams,
 }) => {
   switch (entityType) {
     case EntitySearchModalType.User:
@@ -38,6 +43,8 @@ const EntitySearchModalBody: FC<IEntitySearchModalBodyProps> = ({
           dataTestId="user"
           disableKey={disableKey}
           entitySearchLabel={entitySearchLabel}
+          fetchUsers={fetchUsers}
+          usersQueryParams={usersQueryParams}
         />
       );
     case EntitySearchModalType.Team:
