@@ -17,11 +17,13 @@ export enum ActionType {
   MENTION = 'MENTION',
   SCHEDULE_POST = 'SCHEDULE_POST',
   SHOUTOUT = 'SHOUT_OUT',
+  NEW_MEMBERS_TO_TEAM = 'NEW_MEMBERS_TO_TEAM',
 }
 
 export enum TargetType {
   POST = 'POST',
   COMMENT = 'COMMENT',
+  TEAM = 'TEAM',
 }
 
 export type Actor = {
@@ -49,6 +51,7 @@ export type Target = {
   type: string;
   content: string;
   entityId: string;
+  entityName?: string;
   image?: IMedia;
 };
 

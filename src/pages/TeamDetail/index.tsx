@@ -19,7 +19,12 @@ import queryClient from 'utils/queryClient';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import useModal from 'hooks/useModal';
 import People from 'pages/Users/components/People';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import TeamModal from 'pages/Users/components/TeamModal';
 import { TeamFlow, TeamTab } from 'pages/Users/components/Teams';
 import DeleteTeam from 'pages/Users/components/DeleteModals/Team';
@@ -45,7 +50,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
 
   const teamDetail = useSingleTeam(id || '');
 
-  const data = teamDetail?.data?.data?.result;
+  const data = teamDetail?.data?.data?.result.data;
 
   const addTeamMemberMutation = useMutation({
     mutationKey: ['add-team-member', id],
@@ -116,6 +121,10 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
       navigate(`/teams`);
     }
   };
+
+  if (!teamDetail?.isLoading && !data) {
+    return <Navigate to="/404" />;
+  }
 
   return (
     <>
@@ -286,7 +295,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                         {data?.fullName}
                       </div>
                       <div className="flex space-x-[14px] items-center">
-                        {data?.designation && (
+                        {data?.designation?.name && (
                           <div className="flex space-x-1 items-start">
                             <Icon name="briefcase" size={16} />
                             <div className="text-xs font-normal text-neutral-500">

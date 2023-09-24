@@ -2,8 +2,8 @@ import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
-import { IDepartment, useInfiniteDepartments } from 'queries/department';
-import { ILocation, useInfiniteLocations } from 'queries/location';
+import { IDepartmentAPI, useInfiniteDepartments } from 'queries/department';
+import { ILocationAPI, useInfiniteLocations } from 'queries/location';
 import { IGetUser, useInfiniteUsers } from 'queries/users';
 import { ChangeEvent, FC, ReactNode, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -11,7 +11,7 @@ import UserRow from './UserRow';
 import InfiniteSearch from 'components/InfiniteSearch';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 import useAuth from 'hooks/useAuth';
-import { IDesignation, useInfiniteDesignations } from 'queries/designation';
+import { IDesignationAPI, useInfiniteDesignations } from 'queries/designation';
 
 interface IMembersBodyProps {
   entityRenderer?: (data: IGetUser) => ReactNode;
@@ -66,9 +66,18 @@ const MembersBody: FC<IMembersBodyProps> = ({
     useInfiniteUsers({
       q: {
         q: debouncedSearchValue,
-        department: selectedDepartments,
-        location: selectedLocations,
-        designation: selectedDesignations,
+        departments:
+          selectedDepartments.length > 0
+            ? selectedDepartments.join(',')
+            : undefined,
+        locations:
+          selectedLocations.length > 0
+            ? selectedLocations.join(',')
+            : undefined,
+        designations:
+          selectedDesignations.length > 0
+            ? selectedDesignations.join(',')
+            : undefined,
       },
     });
   const usersData = data?.pages
@@ -106,7 +115,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
     q: debouncedDepartmentSearchValue,
   });
   const departmentData = fetchedDepartments?.pages.flatMap((page) => {
-    return page?.data?.result?.data.map((department: IDepartment) => {
+    return page?.data?.result?.data.map((department: IDepartmentAPI) => {
       try {
         return department;
       } catch (e) {
@@ -127,7 +136,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
     q: debouncedLocationSearchValue,
   });
   const locationData = fetchedLocations?.pages.flatMap((page) => {
-    return page.data.result.data.map((location: ILocation) => {
+    return page.data.result.data.map((location: ILocationAPI) => {
       try {
         return location;
       } catch (e) {
@@ -154,7 +163,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
     startFetching: !!showJobTitleFilter,
   });
   const designationData = fetchedDesignations?.pages.flatMap((page) => {
-    return page.data.result.data.map((designation: IDesignation) => {
+    return page.data.result.data.map((designation: IDesignationAPI) => {
       try {
         return designation;
       } catch (e) {
@@ -221,7 +230,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
                 title="Department"
                 control={control}
                 options={
-                  departmentData?.map((department: IDepartment) => ({
+                  departmentData?.map((department: IDepartmentAPI) => ({
                     label: department.name,
                     value: department,
                     id: department.id,
@@ -257,7 +266,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
                 title="Location"
                 control={control}
                 options={
-                  locationData?.map((location: ILocation) => ({
+                  locationData?.map((location: ILocationAPI) => ({
                     label: location.name,
                     value: location,
                     id: location.id,
@@ -294,7 +303,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
                   title="Job Title"
                   control={control}
                   options={
-                    designationData?.map((designation: IDesignation) => ({
+                    designationData?.map((designation: IDesignationAPI) => ({
                       label: designation.name,
                       value: designation,
                       id: designation.id,
@@ -334,11 +343,15 @@ const MembersBody: FC<IMembersBodyProps> = ({
             onClick={() => {
               setSelectedDepartments([]);
               setSelectedLocations([]);
-              Object.keys(departments).forEach((key: string) =>
+              setSelectedDesignations([]);
+              Object.keys(departments || {}).forEach((key: string) =>
                 setValue(`departments.${key}`, false),
               );
-              Object.keys(locations).forEach((key: string) =>
+              Object.keys(locations || {}).forEach((key: string) =>
                 setValue(`locations.${key}`, false),
+              );
+              Object.keys(designations || {}).forEach((key: string) =>
+                setValue(`designations.${key}`, false),
               );
             }}
             data-testid={`select-${dataTestId}-clearfilter`}

@@ -1,4 +1,4 @@
-import { FC, RefObject, useRef } from 'react';
+import { FC, RefObject, useEffect, useRef, useState } from 'react';
 import IconButton, {
   Variant as IconVariant,
   Size as SizeVariant,
@@ -9,7 +9,7 @@ import { createComment, updateComment } from 'queries/comments';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
 import { toast } from 'react-toastify';
-import { quillHashtagConversion, twConfig } from 'utils/misc';
+import { isEmptyEditor, quillHashtagConversion, twConfig } from 'utils/misc';
 import { produce } from 'immer';
 import { useCommentStore } from 'stores/commentStore';
 import { useFeedStore } from 'stores/feedStore';
@@ -89,6 +89,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
   const queryClient = useQueryClient();
   const quillRef = useRef<ReactQuill>(null);
   const { uploadMedia } = useUpload();
+  const [isEmpty, setIsEmpty] = useState(true);
 
   const createCommentMutation = useMutation({
     mutationKey: ['create-comment'],
@@ -303,6 +304,11 @@ export const CommentsRTE: FC<CommentFormProps> = ({
     }
   };
 
+  const onChangeEditor = (content: any) => {
+    const ops = content.json.ops || [];
+    setIsEmpty(isEmptyEditor(content.text, ops));
+  };
+
   const getDataTestIdForErrors = (errorType: MediaValidationError) => {
     switch (errorType) {
       case MediaValidationError.MediaLengthExceed:
@@ -316,9 +322,22 @@ export const CommentsRTE: FC<CommentFormProps> = ({
     }
   };
 
+  useEffect(() => {
+    if (quillRef.current) {
+      onChangeEditor({
+        text: quillRef.current
+          ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
+          .getText(),
+        json: quillRef.current
+          ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
+          .getContents(),
+      });
+    }
+  }, []);
+
   return (
     <div className={`flex flex-row ${className} `}>
-      <div className="flex flex-col items-center py-[7px] gap-2 border border-neutral-200 rounded-19xl border-solid w-full">
+      <div className="flex flex-col items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full">
         <RichTextEditor
           toolbarId={`toolbar-${entityId}`}
           defaultValue={commentData?.content?.editor}
@@ -327,29 +346,28 @@ export const CommentsRTE: FC<CommentFormProps> = ({
               ? 'Wish them now...'
               : 'Leave a comment...'
           }
-          className="max-h-18 min-w-[70%] relative"
+          className="max-w-full flex-grow text-sm"
           ref={quillRef}
           dataTestId="postcomment-textbox"
+          onChangeEditor={onChangeEditor}
           renderToolbar={() => (
             <div
-              className="flex flex-row items-center z-10 -ml-32 absolute top-0 right-2 quill-toolbar quill-toolbar-icons"
+              className="z-10 quill-toolbar quill-toolbar-icons !relative gap-4 ml-auto"
               id={`toolbar-${entityId}-toolbar`}
             >
-              <div className="mr-6">
-                {mode === PostCommentMode.Edit && (
-                  <Button
-                    label={'Cancel'}
-                    size={Size.Small}
-                    variant={Variant.Secondary}
-                    className="text-sm"
-                    dataTestId="cancel-edit-comment"
-                    onClick={() => setEditComment && setEditComment(false)}
-                  />
-                )}
-              </div>
+              {mode === PostCommentMode.Edit && (
+                <Button
+                  label={'Cancel'}
+                  size={Size.Small}
+                  variant={Variant.Secondary}
+                  className="text-sm !mx-0 !w-auto"
+                  dataTestId="cancel-edit-comment"
+                  onClick={() => setEditComment && setEditComment(false)}
+                />
+              )}
               <IconButton
                 icon="image"
-                className="flex mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
+                className="!flex justify-center !mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
                 size={SizeVariant.Large}
                 variant={IconVariant.Primary}
                 dataTestId={
@@ -359,10 +377,13 @@ export const CommentsRTE: FC<CommentFormProps> = ({
                 }
                 onClick={() => inputRef && inputRef?.current?.click()}
               />
-              <button className="ql-emoji" data-testid="send-gif" />
+              <button
+                className="ql-emoji !mx-0 h-6 w-6"
+                data-testid="send-gif"
+              />
               <IconButton
                 icon={'send'}
-                className="flex mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
+                className="!flex justify-center !mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
                 size={SizeVariant.Large}
                 variant={IconVariant.Primary}
                 onClick={() => {
@@ -375,7 +396,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
                     ? 'send-wishes-cta'
                     : 'postcomment-sendcta'
                 }
-                disabled={mediaValidationErrors.length > 0}
+                disabled={mediaValidationErrors.length > 0 || isEmpty}
               />
             </div>
           )}

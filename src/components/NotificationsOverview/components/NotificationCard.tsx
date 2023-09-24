@@ -59,7 +59,7 @@ const NotificationCard: FC<NotificationCardProps> = ({
     <div>
       {TopCardContent && (
         <p
-          className="my-2 text-sm text-neutral-900 font-medium"
+          className="text-sm text-neutral-900 font-medium"
           dangerouslySetInnerHTML={{
             __html: TopCardContent,
           }}

@@ -195,7 +195,10 @@ const RichTextEditor = forwardRef(
     };
 
     return (
-      <div className="w-full relative" data-testid={dataTestId}>
+      <div
+        className="w-full relative flex flex-wrap gap-2"
+        data-testid={dataTestId}
+      >
         <ReactQuill
           id="quill"
           className={className}

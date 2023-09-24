@@ -43,6 +43,9 @@ const AvatarChip: FC<IAvatarChipProps> = ({
             fullName: user.fullName,
             workEmail: user.email,
             workLocation: user.workLocation,
+            designation: user.designation
+              ? { designationId: '', name: user.designation }
+              : undefined,
           }}
         />
       }

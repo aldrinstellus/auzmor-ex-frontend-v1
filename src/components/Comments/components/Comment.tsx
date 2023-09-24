@@ -145,9 +145,47 @@ export const Comment: FC<CommentProps> = ({ comment, customNode = null }) => {
   return (
     <div className="flex flex-col">
       <div className="bg-neutral-100 p-3 rounded-9xl mb-4">
-        <div className="flex justify-between">
-          <div className="flex">
-            <div className="mr-4">
+        <div className="flex flex-row justify-between gap-4">
+          <div>
+            <Link
+              to={
+                comment?.createdBy?.userId &&
+                comment.createdBy.userId !== user?.id
+                  ? '/users/' + comment.createdBy.userId
+                  : '/profile'
+              }
+            >
+              <Avatar
+                name={comment?.createdBy?.fullName}
+                size={32}
+                image={getProfileImage(comment?.createdBy)}
+                bgColor={getAvatarColor(comment?.createdBy)}
+              />
+            </Link>
+          </div>
+          <div className="flex flex-col items-start p-0 flex-grow w-0">
+            <Tooltip
+              tooltipContent={
+                <UserCard
+                  user={{
+                    id: comment?.createdBy?.userId || '',
+                    fullName:
+                      comment?.createdBy?.fullName || 'Field not specified',
+                    workEmail:
+                      comment?.createdBy?.email || 'Field not specified',
+                    workLocation: {
+                      locationId: '',
+                      name:
+                        comment?.createdBy?.workLocation ||
+                        'Field not specified',
+                    },
+                    profileImage: comment?.createdBy?.profileImage,
+                  }}
+                />
+              }
+              variant={TooltipVariant.Light}
+              className="!p-4 !shadow-md !rounded-9xl !z-[999]"
+            >
               <Link
                 to={
                   comment?.createdBy?.userId &&
@@ -156,117 +194,75 @@ export const Comment: FC<CommentProps> = ({ comment, customNode = null }) => {
                     : '/profile'
                 }
               >
-                <Avatar
-                  name={comment?.createdBy?.fullName}
-                  size={32}
-                  image={getProfileImage(comment?.createdBy)}
-                  bgColor={getAvatarColor(comment?.createdBy)}
-                />
+                <div className="text-neutral-900 font-bold text-sm hover:text-primary-500 hover:underline">
+                  {getFullName(comment?.createdBy)}
+                </div>
               </Link>
-            </div>
-            <div className="flex flex-col items-start p-0 w-64">
-              <Tooltip
-                tooltipContent={
-                  <UserCard
-                    user={{
-                      id: comment?.createdBy?.userId || '',
-                      fullName:
-                        comment?.createdBy?.fullName || 'Field not specified',
-                      workEmail:
-                        comment?.createdBy?.email || 'Field not specified',
-                      workLocation: {
-                        id: '',
-                        name:
-                          comment?.createdBy?.workLocation ||
-                          'Field not specified',
-                      },
-                      profileImage: comment?.createdBy?.profileImage,
-                    }}
-                  />
-                }
-                variant={TooltipVariant.Light}
-                className="!p-4 !shadow-md !rounded-9xl !z-[999]"
-              >
-                <Link
-                  to={
-                    comment?.createdBy?.userId &&
-                    comment.createdBy.userId !== user?.id
-                      ? '/users/' + comment.createdBy.userId
-                      : '/profile'
-                  }
-                >
-                  <div className="text-neutral-900 font-bold text-sm hover:text-primary-500 hover:underline">
-                    {getFullName(comment?.createdBy)}
-                  </div>
-                </Link>
-              </Tooltip>
-              <div className="font-normal text-neutral-500 text-xs">
-                {comment?.createdBy?.designation}
-              </div>
+            </Tooltip>
+            <div className="font-normal text-neutral-500 text-xs">
+              {comment?.createdBy?.designation}
             </div>
           </div>
-          <div className="flex">
-            <div className="text-neutral-500 font-normal text-xs mt-1">
-              {humanizeTime(comment.updatedAt)}
-            </div>
-            <div className="ml-4">
-              {user?.id === comment?.createdBy?.userId && (
-                <Popover
-                  triggerNode={
-                    <IconButton
-                      icon={'more'}
-                      className="!p-0 !bg-inherit"
-                      variant={IconVariant.Primary}
-                      size={Size.Large}
-                      dataTestId="comment-ellipsis"
-                    />
-                  }
-                  ref={closePopOver}
-                  className="left-0 rounded-9xl"
-                >
-                  <div>
-                    {!editComment && (
-                      <div className="w-48">
-                        <div
-                          className={`${menuItemStyle} rounded-t-9xl`}
-                          onClick={() => {
-                            setEditComment(true);
-                            closePopOver?.current?.click();
-                          }}
-                          data-testid="post-ellipsis-edit-comment"
-                        >
-                          <Icon
-                            name={'edit'}
-                            size={16}
-                            color="text-neutral-200"
-                          />
-                          <div className="text-sm font-medium text-neutral-900">
-                            Edit comment
-                          </div>
-                        </div>
-                        <div
-                          className={`${menuItemStyle} rounded-b-9xl`}
-                          onClick={() => {
-                            showConfirm();
-                          }}
-                        >
-                          <Icon
-                            name={'delete'}
-                            size={16}
-                            color="text-neutral-200"
-                          />
-                          <div
-                            className={`text-sm font-medium text-neutral-900 `}
-                          >
-                            Delete comment
-                          </div>
+          <div className="text-neutral-500 font-normal text-xs mt-1">
+            {humanizeTime(comment.updatedAt)}
+          </div>
+          <div>
+            {user?.id === comment?.createdBy?.userId && (
+              <Popover
+                triggerNode={
+                  <IconButton
+                    icon={'more'}
+                    className="!p-0 !bg-inherit"
+                    variant={IconVariant.Primary}
+                    size={Size.Large}
+                    dataTestId="comment-ellipsis"
+                  />
+                }
+                ref={closePopOver}
+                className="left-0 rounded-9xl"
+              >
+                <div>
+                  {!editComment && (
+                    <div className="w-48">
+                      <div
+                        className={`${menuItemStyle} rounded-t-9xl`}
+                        onClick={() => {
+                          setEditComment(true);
+                          closePopOver?.current?.click();
+                        }}
+                        data-testid="post-ellipsis-edit-comment"
+                      >
+                        <Icon
+                          name={'edit'}
+                          size={16}
+                          color="text-neutral-200"
+                        />
+                        <div className="text-sm font-medium text-neutral-900">
+                          Edit comment
                         </div>
                       </div>
-                    )}
-                  </div>
-                </Popover>
-              )}
-            </div>
+                      <div
+                        className={`${menuItemStyle} rounded-b-9xl`}
+                        onClick={() => {
+                          showConfirm();
+                        }}
+                      >
+                        <Icon
+                          name={'delete'}
+                          size={16}
+                          color="text-neutral-200"
+                        />
+                        <div
+                          className={`text-sm font-medium text-neutral-900 `}
+                        >
+                          Delete comment
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Popover>
+            )}
           </div>
         </div>
         {/* Comment Edit at Post level type Post */}

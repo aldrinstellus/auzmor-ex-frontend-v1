@@ -99,8 +99,8 @@ const Comments: FC<CommentsProps> = ({ entityId }) => {
 
   return (
     <div>
-      <div className="flex flex-row items-center justify-between p-0">
-        <div className="flex-none grow-0 order-none pr-2">
+      <div className="flex flex-row items-center justify-between p-0 gap-2">
+        <div>
           <Avatar
             name={user?.name || 'U'}
             size={32}
@@ -108,7 +108,7 @@ const Comments: FC<CommentsProps> = ({ entityId }) => {
           />
         </div>
         <CommentsRTE
-          className="w-full"
+          className="w-0 flex-grow"
           entityId={entityId}
           entityType="post"
           inputRef={inputRef}

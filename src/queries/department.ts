@@ -2,6 +2,10 @@ import { QueryFunctionContext, useInfiniteQuery } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 
 export interface IDepartment {
+  departmentId: string;
+  name: string;
+}
+export interface IDepartmentAPI {
   id: string;
   name: string;
 }

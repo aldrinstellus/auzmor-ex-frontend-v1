@@ -69,8 +69,8 @@ const Comments: FC<CommentsProps> = ({ entityId, className }) => {
         </div>
       ) : (
         <div className="ml-8">
-          <div className="flex flex-row items-center justify-between mb-4">
-            <div className="flex-none grow-0 order-none pr-2">
+          <div className="flex flex-row items-center justify-between mb-4 gap-2">
+            <div>
               <Avatar
                 name={user?.name || 'U'}
                 size={32}
@@ -78,7 +78,7 @@ const Comments: FC<CommentsProps> = ({ entityId, className }) => {
               />
             </div>
             <CommentsRTE
-              className="w-full py-1"
+              className="w-0 flex-grow py-1"
               entityId={entityId}
               entityType={EntityType.Comment.toLocaleLowerCase()}
               inputRef={inputRef}

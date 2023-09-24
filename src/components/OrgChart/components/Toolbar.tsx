@@ -457,7 +457,7 @@ const Toolbar: FC<IToolbarProps> = ({
                     {appliedFilters.location.map((location, index) => (
                       <>
                         <span
-                          key={location.id}
+                          key={location.locationId}
                           className="text-primary-500 font-bold text-sm"
                         >
                           {location.name}
@@ -499,7 +499,7 @@ const Toolbar: FC<IToolbarProps> = ({
                     {appliedFilters.departments.map((department, index) => (
                       <>
                         <span
-                          key={department.id}
+                          key={department.departmentId}
                           className="text-primary-500 font-bold text-sm"
                         >
                           {department.name}

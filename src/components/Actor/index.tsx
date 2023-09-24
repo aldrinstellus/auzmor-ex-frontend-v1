@@ -82,7 +82,7 @@ const Actor: FC<ActorProps> = ({
                   fullName: createdBy?.fullName || 'Field not specified',
                   workEmail: createdBy?.email || 'Field not specified',
                   workLocation: {
-                    id: '',
+                    locationId: '',
                     name: createdBy?.workLocation || 'Field not specified',
                   },
                   profileImage: createdBy?.profileImage,

@@ -41,9 +41,12 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
     isFiltersEmpty({
       root: parentId || startWithSpecificUser?.id,
       expandAll: isExpandAll,
-      locations: appliedFilters?.location?.map((location) => location.id) || [],
+      locations:
+        appliedFilters?.location?.map((location) => location.locationId) || [],
       departments:
-        appliedFilters?.departments?.map((department) => department.id) || [],
+        appliedFilters?.departments?.map(
+          (department) => department.departmentId,
+        ) || [],
       status:
         appliedFilters.status?.value === 'ALL'
           ? undefined

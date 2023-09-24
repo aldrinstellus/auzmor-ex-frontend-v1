@@ -6,7 +6,12 @@ import {
   useSingleUser,
 } from 'queries/users';
 import ProfileInfo from 'components/ProfileInfo';
-import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import {
+  Navigate,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import ProfileActivityFeed from './components/ProfileActivityFeed';
 import useAuth from 'hooks/useAuth';
 import NoDataCard from './components/NoDataCard';
@@ -118,6 +123,10 @@ const UserDetail: FC<IUserDetailProps> = () => {
       ),
     },
   ];
+
+  if (!userDetail?.isLoading && !data) {
+    return <Navigate to="/404" />;
+  }
 
   return (
     <div className="flex flex-col space-y-10 w-full">

@@ -29,7 +29,7 @@ const Notification: FC<NotificationCardProps> = ({
     interactionCount,
   );
 
-  const { cardContent, redirect } = getNotificationElementContent(
+  const { cardContent, redirect, showActor } = getNotificationElementContent(
     action,
     target,
     actor,
@@ -64,6 +64,8 @@ const Notification: FC<NotificationCardProps> = ({
           <span className="font-bold">! 🎉🥳</span>
         </>
       );
+    } else if (action.type === ActionType.NEW_MEMBERS_TO_TEAM) {
+      return <span className="font-bold">{notificationMessage}</span>;
     } else {
       return (
         <>
@@ -82,12 +84,7 @@ const Notification: FC<NotificationCardProps> = ({
   };
 
   return (
-    <Link
-      to={`/posts/${redirect?.postId}${
-        redirect?.commentId ? '?commentId=' + redirect?.commentId : ''
-      }`}
-      onClick={handleOnClick}
-    >
+    <Link to={redirect} onClick={handleOnClick}>
       <div
         className={`${
           !isRead ? 'bg-orange-50' : 'bg-white'
@@ -96,13 +93,15 @@ const Notification: FC<NotificationCardProps> = ({
       >
         <div className="flex gap-x-2">
           {/* Avatar of the actor with indicator */}
-          <div className="w-fit">
-            <Avatar
-              name={actor.fullName}
-              image={getProfileImage(actor)}
-              size={32}
-            />
-          </div>
+          {showActor && (
+            <div className="w-fit">
+              <Avatar
+                name={actor.fullName}
+                image={getProfileImage(actor)}
+                size={32}
+              />
+            </div>
+          )}
           {/* Content */}
           <div className="flex items-start justify-between gap-x-2 w-full mr-4">
             <div className="flex flex-col gap-y-2 w-full">

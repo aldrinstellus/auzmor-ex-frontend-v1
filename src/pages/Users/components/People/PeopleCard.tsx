@@ -36,6 +36,7 @@ import { FC } from 'react';
 export interface IPeopleCardProps {
   userData: IGetUser;
   teamId?: string;
+  teamMemberId?: string;
   isTeamPeople?: boolean;
 }
 
@@ -58,6 +59,7 @@ const statusColorMap: Record<string, string> = {
 const PeopleCard: FC<IPeopleCardProps> = ({
   userData,
   teamId,
+  teamMemberId,
   isTeamPeople,
 }) => {
   const {
@@ -315,12 +317,12 @@ const PeopleCard: FC<IPeopleCardProps> = ({
                   separator: ' ',
                 })}
               </div>
-              {designation && (
+              {designation?.name && (
                 <div
                   className="text-neutral-900 text-xs font-normal line-clamp-1"
                   data-testid={`people-card-title-${designation.designationId}`}
                 >
-                  {designation.name}
+                  {designation?.name}
                 </div>
               )}
             </div>
@@ -368,7 +370,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
       <RemoveTeamMember
         open={openRemoveTeamMember}
         closeModal={closeRemoveTeamMemberModal}
-        userId={id}
+        userId={teamMemberId || ''}
         teamId={teamId || ''}
       />
       <DeactivatePeople

@@ -82,7 +82,9 @@ const Avatar: FC<AvatarProps> = ({
   const divStyle = useMemo(
     () => ({
       height: `${size}px`,
+      minHeight: `${size}px`,
       width: `${size}px`,
+      minWidth: `${size}px`,
       backgroundColor: bgColor,
     }),
     [size, bgColor],

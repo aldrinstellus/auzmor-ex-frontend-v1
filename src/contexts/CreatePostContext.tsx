@@ -78,6 +78,8 @@ export interface ICreatePostContext {
   setIsPreviewRemoved: (flag: boolean) => void;
   isCharLimit: boolean;
   setIsCharLimit: (flag: boolean) => void;
+  isEmpty: boolean;
+  setIsEmpty: (flag: boolean) => void;
   coverImageMap: ICoverImageMap[];
   setCoverImageMap: (coverImage: ICoverImageMap[]) => void;
   updateCoverImageMap: (map: ICoverImageMap) => void;
@@ -186,6 +188,8 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setIsPreviewRemoved: () => {},
   isCharLimit: false,
   setIsCharLimit: () => {},
+  isEmpty: false,
+  setIsEmpty: () => {},
   coverImageMap: [],
   setCoverImageMap: () => {},
   updateCoverImageMap: () => {},
@@ -230,6 +234,7 @@ const CreatePostProvider: FC<ICreatePostProviderProps> = ({ children }) => {
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isPreviewRemoved, setIsPreviewRemoved] = useState<boolean>(false);
   const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
+  const [isEmpty, setIsEmpty] = useState<boolean>(true);
   const [coverImageMap, setCoverImageMap] = useState<ICoverImageMap[]>([]);
   const [removedCoverimageFileIds, setRemovedCoverimageFileIds] = useState<
     string[]
@@ -332,6 +337,7 @@ const CreatePostProvider: FC<ICreatePostProviderProps> = ({ children }) => {
     setIsPreviewRemoved(false);
     setPreviewUrl('');
     setIsCharLimit(false);
+    setIsEmpty(true);
     setCoverImageMap([]);
     setRemovedCoverimageFileIds([]);
     setShowFullscreenVideo(false);
@@ -439,6 +445,8 @@ const CreatePostProvider: FC<ICreatePostProviderProps> = ({ children }) => {
         setIsPreviewRemoved,
         isCharLimit,
         setIsCharLimit,
+        isEmpty,
+        setIsEmpty,
         coverImageMap,
         setCoverImageMap,
         updateCoverImageMap,

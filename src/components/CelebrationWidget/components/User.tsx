@@ -111,7 +111,11 @@ const User: FC<UserProps> = ({
         className="min-w-[48px]"
       />
       <div
-        className={clsx('flex flex-col gap-3 w-full', '!gap-2', alreadyWished)}
+        className={clsx(
+          'flex flex-col gap-3 flex-grow w-0',
+          '!gap-2',
+          alreadyWished,
+        )}
       >
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2">

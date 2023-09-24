@@ -129,20 +129,26 @@ const InfiniteSearch: FC<IInfiniteSearchProps> = ({
                 </div>
               ) : (
                 <div className="max-h-[128px] my-2 overflow-y-scroll">
-                  {options.map((option: IOption) =>
-                    itemRenderer ? (
-                      itemRenderer(option)
-                    ) : (
-                      <div
-                        className="px-6 py-2 text-xs flex items-center"
-                        key={option.id}
-                        onClick={(e) => e.stopPropagation()}
-                        data-testid={`${dataTestId}-${option.label}`}
-                      >
-                        <Layout fields={checkboxField(option)} />
-                        <div>{option.label}</div>
-                      </div>
-                    ),
+                  {options.length > 0 ? (
+                    options.map((option: IOption) =>
+                      itemRenderer ? (
+                        itemRenderer(option)
+                      ) : (
+                        <div
+                          className="px-6 py-2 text-xs flex items-center"
+                          key={option.id}
+                          onClick={(e) => e.stopPropagation()}
+                          data-testid={`${dataTestId}-${option.label}`}
+                        >
+                          <Layout fields={checkboxField(option)} />
+                          <div>{option.label}</div>
+                        </div>
+                      ),
+                    )
+                  ) : (
+                    <div className="px-6 py-2 flex items-center">
+                      No data found
+                    </div>
                   )}
                   {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
                 </div>
