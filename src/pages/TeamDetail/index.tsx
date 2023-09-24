@@ -12,7 +12,7 @@ import { addTeamMember, useSingleTeam } from 'queries/teams';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { toast } from 'react-toastify';
 import { useMutation } from '@tanstack/react-query';
-import { getProfileImage, twConfig } from 'utils/misc';
+import { getFullName, getProfileImage, twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import queryClient from 'utils/queryClient';
@@ -284,15 +284,15 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
             return (
               <div className="flex space-x-4 w-full">
                 <Avatar
-                  name={data?.fullName || 'U'}
+                  name={getFullName(data) || 'U'}
                   size={32}
                   image={getProfileImage(data)}
                 />
                 <div className="flex space-x-6 w-full">
                   <div className="flex flex-col w-full">
                     <div className="flex justify-between items-center">
-                      <div className="text-sm font-bold text-neutral-900">
-                        {data?.fullName}
+                      <div className="text-sm font-bold text-neutral-900 whitespace-nowrap line-clamp-1">
+                        {getFullName(data)}
                       </div>
                       <div className="flex space-x-[14px] items-center">
                         {data?.designation?.name && (
@@ -309,15 +309,20 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                         {data?.workLocation?.name && (
                           <div className="flex space-x-1 items-start">
                             <Icon name="location" size={16} />
-                            <div className="text-xs font-normal text-neutral-500">
+                            <div className="text-xs font-normal text-neutral-500 whitespace-nowrap">
                               {data?.workLocation.name}
                             </div>
                           </div>
                         )}
                       </div>
                     </div>
-                    <div className="text-xs font-normal text-neutral-500">
-                      {data?.primaryEmail}
+                    <div className="flex items-center gap-1">
+                      <div className="text-xs font-normal text-neutral-500">
+                        {data?.primaryEmail}
+                      </div>
+                      <div className="text-xs font-semibold text-neutral-500">
+                        Already a member
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -328,6 +333,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
             addTeamMemberMutation.mutate({ userIds: userIds });
             closeAddMemberModal();
           }}
+          disableKey="designation"
           title="Add team members"
           submitButtonText="Add Members"
           onCancel={closeAddMemberModal}

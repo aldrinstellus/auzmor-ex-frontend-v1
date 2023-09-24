@@ -26,6 +26,7 @@ interface IEntitySearchModalProps {
   entityRenderer?: (data: IGetUser) => ReactNode;
   onSubmit?: (data: string[]) => void;
   onCancel?: () => void;
+  disableKey?: string;
 }
 
 export interface IAudienceForm {
@@ -59,6 +60,7 @@ const EntitySearchModal: FC<IEntitySearchModalProps> = ({
   cancelButtonText = 'Back',
   entityRenderer = (_data: any) => <></>,
   selectedMemberIds = [],
+  disableKey,
 }) => {
   const audienceForm = useForm<any>({
     defaultValues: {
@@ -89,6 +91,7 @@ const EntitySearchModal: FC<IEntitySearchModalProps> = ({
           entityType={EntitySearchModalType.User}
           selectedMemberIds={selectedMemberIds}
           entityRenderer={entityRenderer}
+          disableKey={disableKey}
         />
         <Footer
           handleSubmit={form.handleSubmit}

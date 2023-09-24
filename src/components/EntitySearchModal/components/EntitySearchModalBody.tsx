@@ -13,6 +13,7 @@ interface IEntitySearchModalBodyProps {
   entitySearchLabel?: string;
   hideCurrentUser?: boolean;
   showJobTitleFilter?: boolean;
+  disableKey?: string;
 }
 
 const EntitySearchModalBody: FC<IEntitySearchModalBodyProps> = ({
@@ -24,6 +25,7 @@ const EntitySearchModalBody: FC<IEntitySearchModalBodyProps> = ({
   entitySearchLabel,
   hideCurrentUser,
   showJobTitleFilter,
+  disableKey,
 }) => {
   switch (entityType) {
     case EntitySearchModalType.User:
@@ -34,6 +36,7 @@ const EntitySearchModalBody: FC<IEntitySearchModalBodyProps> = ({
           hideCurrentUser={hideCurrentUser}
           showJobTitleFilter={showJobTitleFilter}
           dataTestId="user"
+          disableKey={disableKey}
           entitySearchLabel={entitySearchLabel}
         />
       );

@@ -20,6 +20,7 @@ interface IMembersBodyProps {
   entitySearchLabel?: string;
   hideCurrentUser?: boolean;
   showJobTitleFilter?: boolean;
+  disableKey?: string;
 }
 
 const MembersBody: FC<IMembersBodyProps> = ({
@@ -29,6 +30,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
   entitySearchLabel,
   hideCurrentUser,
   showJobTitleFilter,
+  disableKey,
 }) => {
   const { user: currentUser } = useAuth();
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
@@ -428,7 +430,12 @@ const MembersBody: FC<IMembersBodyProps> = ({
             </div>
           ) : usersData?.length ? (
             usersData?.map((user, index) => (
-              <div key={user.id}>
+              <div
+                key={user.id}
+                className={`${
+                  user[disableKey || ''] && 'opacity-50 pointer-events-none'
+                }`}
+              >
                 <div className="py-2 flex items-center">
                   <Layout
                     fields={[
