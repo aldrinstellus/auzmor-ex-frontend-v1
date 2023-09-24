@@ -51,7 +51,7 @@ const AudiencePopup: FC<IAudiencePopupProps> = ({
             <Icon name="noteFavourite" size={16} />
           </Menu.Button>
           <Menu.Items
-            className={`bg-white rounded-9xl shadow-lg absolute z-[99999] overflow-hidden min-w-[256px] border border-neutral-200`}
+            className={`bg-white rounded-9xl shadow-lg absolute z-[99999] overflow-hidden min-w-[256px] border border-neutral-200 focus-visible:outline-none`}
           >
             {({ open }) => {
               if (!data && open && !error) {
@@ -64,32 +64,23 @@ const AudiencePopup: FC<IAudiencePopupProps> = ({
                   <div className="px-6 py-3 text-sm text-neutral-900 font-medium">
                     {title}
                   </div>
-                  <div className="max-h-80 overflow-scroll">
-                    {/* <div className="bg-blue-50 px-6 py-1 text-neutral-500 text-xs font-medium">
-                    Channels
+                  <div className="bg-blue-50 px-6 py-1 text-neutral-500 text-xs font-medium">
+                    Teams
                   </div>
-                  <div className="flex items-center px-6 py-3 border-b border-neutral-200">
-                    <div className="w-4 h-4 rounded-full bg-blue-500 mr-2.5"></div>
-                    <div className="text-xs font-medium text-neutral-900">
-                      HR updates
-                    </div>
-                  </div> */}
-
-                    <div className="bg-blue-50 px-6 py-1 text-neutral-500 text-xs font-medium">
-                      Teams
-                    </div>
+                  <div className="max-h-80 overflow-scroll">
                     {audienceData?.map((eachTeam: ITeam) => (
                       <Menu.Item key={eachTeam.id}>
-                        <div className="flex items-center px-6 py-3 border-b border-neutral-200">
+                        <div className="flex items-center px-6 py-4 border-b border-neutral-200">
                           {eachTeam.recentMembers.length > 0 ? (
                             <AvatarList
                               size={16}
                               users={eachTeam.recentMembers || []}
                               moreCount={eachTeam.totalMembers}
-                              className="mr-2 -space-x-2"
+                              className="-space-x-[8px] mr-2.5"
+                              avatarClassName="!b-[1px]"
                             />
                           ) : (
-                            <div className="w-4 h-4 bg-neutral-200 rounded-full mr-2">
+                            <div className="w-4 h-4 bg-neutral-200 rounded-full mr-2.5">
                               <img src={TeamWork} height={16} width={16} />
                             </div>
                           )}

@@ -320,7 +320,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
               {designation?.name && (
                 <div
                   className="text-neutral-900 text-xs font-normal line-clamp-1"
-                  data-testid={`people-card-title-${designation}`}
+                  data-testid={`people-card-title-${designation.designationId}`}
                 >
                   {designation?.name}
                 </div>
