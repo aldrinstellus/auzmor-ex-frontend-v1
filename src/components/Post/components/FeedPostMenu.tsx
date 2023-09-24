@@ -228,7 +228,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
             </div>
           }
           menuItems={postOptions}
-          className="mt-1 right-0 border-1 border-neutral-200"
+          className="mt-1 right-0 border-1 border-neutral-200 focus-visible:outline-none"
         />
         {open && (
           <PostBuilder

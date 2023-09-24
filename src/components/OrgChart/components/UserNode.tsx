@@ -21,7 +21,7 @@ const UserNode: FC<IUserNode> = ({ node }) => {
     'flex flex-col rounded-9xl pt-3 px-2 pb-2 bg-white w-full h-full relative':
       true,
   });
-  if (node.data.parentId !== '') {
+  if (node.data.parentId !== '' || node.data.id !== 'root') {
     return (
       <div
         id={node.data.id}
@@ -37,9 +37,11 @@ const UserNode: FC<IUserNode> = ({ node }) => {
           <Avatar name={node.data.userName} image={node.data.profileImage} />
           <div className="flex flex-col ml-4">
             <div className="text-sm font-bold">
-              {node.data.userName || 'Isabel Marcado'}
+              {node.data.userName || 'Field not specified'}
             </div>
-            <div className="text-sm my-1">Sales Director</div>
+            <div className="text-sm my-1">
+              {node.data.jobTitle || 'Field not specified'}
+            </div>
             <div className="flex items-center">
               <div className="mr-1">
                 <Icon
@@ -49,7 +51,9 @@ const UserNode: FC<IUserNode> = ({ node }) => {
                   hover={false}
                 />
               </div>
-              <div className="text-sm text-neutral-500">San Francisco</div>
+              <div className="text-sm text-neutral-500">
+                {node.data.jobTitle || 'Field not specified'}
+              </div>
             </div>
           </div>
         </div>

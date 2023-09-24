@@ -154,7 +154,7 @@ export const fetchMyApps = async (
 ) => {
   let response = null;
   if (!!!context.pageParam) {
-    response = await apiService.get('/apps', context.queryKey[1]);
+    response = await apiService.get('/apps/me', context.queryKey[1]);
     setApp({
       ...apps,
       ...chain(response.data.result.data).keyBy('id').value(),
@@ -221,7 +221,7 @@ export const fetchMyFeaturedApps = async (
 ) => {
   let response = null;
   if (!!!context.pageParam) {
-    response = await apiService.get('/apps', context.queryKey[1]);
+    response = await apiService.get('/apps/me', context.queryKey[1]);
     setFeaturedApp({
       ...featuredApps,
       ...chain(response.data.result.data).keyBy('id').value(),
@@ -325,7 +325,7 @@ export const fetchWidgetApps = async (
 ) => {
   let response = null;
   if (!!!context.pageParam) {
-    response = await apiService.get('/apps', context.queryKey[1]);
+    response = await apiService.get('/apps/widget', context.queryKey[1]);
     setApp({
       ...apps,
       ...chain(response.data.result.data).keyBy('id').value(),
@@ -352,7 +352,7 @@ export const useInfiniteWidgetApps = (q?: Record<string, any>) => {
   return {
     ...useInfiniteQuery({
       queryKey: ['apps', q],
-      queryFn: (context) => fetchApps(context, widgetApps, setWidgetApp),
+      queryFn: (context) => fetchWidgetApps(context, widgetApps, setWidgetApp),
       getNextPageParam: (lastPage: any) => {
         const pageDataLen = lastPage?.data?.result?.data?.length;
         const pageLimit = lastPage?.data?.result?.paging?.limit;

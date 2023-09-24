@@ -7,6 +7,9 @@ import ExpandButtonContent from './ExpandButtonContent';
 import Spinner from 'components/Spinner';
 import clsx from 'clsx';
 import Button, { Variant } from 'components/Button';
+import UserCard, { UsercardVariant } from 'components/UserCard';
+import { getOrgChart } from 'queries/users';
+import { QueryFunctionContext } from '@tanstack/react-query';
 
 export interface INode {
   id: string;
@@ -65,27 +68,27 @@ const Chart: FC<IChart> = ({
           .nodeContent((node: any, _i: any, _arr: any, _state: any) => {
             return renderToString(<UserNode node={node} />);
           })
-          // .hoverCardContent((d) => {
-          //   return renderToString(
-          //     <UserCard user={d.userData} variant={UsercardVariant.Large} />,
-          //   );
-          // })
-          // .onExpandCollapseClick((d: any, data: any) => {
-          //   if (d.data.directReportees > 0 && !!d.children) {
-          //     getOrgChart({
-          //       queryKey: [
-          //         'organization-chart',
-          //         { root: d.data.id, expand: 1 },
-          //       ],
-          //     } as QueryFunctionContext<any>).then((response: any) => {
-          //       response.result.data.users.forEach((node: INode) =>
-          //         chart?.addNode(node),
-          //       );
-          //     });
-          //   } else {
-          //     chart?.update(d);
-          //   }
-          // })
+          .hoverCardContent((d) => {
+            return renderToString(
+              <UserCard user={d.userData} variant={UsercardVariant.Large} />,
+            );
+          })
+          .onExpandCollapseClick((d: any, _data: any) => {
+            if (d.data.directReportees > 0 && !!d.children) {
+              getOrgChart({
+                queryKey: [
+                  'organization-chart',
+                  { root: d.data.id, expand: 0 },
+                ],
+              } as QueryFunctionContext<any>).then((response: any) => {
+                response.result.data.users.forEach((node: INode) =>
+                  chart?.addNode(node),
+                );
+              });
+            } else {
+              chart?.update(d);
+            }
+          })
           // .onNodeClick((node: any) => {
           //   if (node.type === NodeType.Count) {
           //     getOrgChart(chart, {
@@ -104,7 +107,7 @@ const Chart: FC<IChart> = ({
         return;
       }
     }
-  }, [chartRef.current]);
+  }, [chartRef.current, data]);
 
   const loaderStyle = useMemo(
     () =>
@@ -125,8 +128,6 @@ const Chart: FC<IChart> = ({
       }),
     [isLoading],
   );
-
-  console.log(!!!data?.length);
 
   return (
     <>

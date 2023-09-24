@@ -56,7 +56,7 @@ const PopupMenu: FC<IPopupMenuProps> = ({
       {(controlled ? isOpen : true) && (
         <Menu.Items
           static={controlled}
-          className={`bg-white rounded-9xl shadow-lg absolute z-[99999] overflow-hidden ${className}`}
+          className={`bg-white rounded-9xl shadow-lg absolute z-[99999] overflow-hidden focus-visible:outline-none ${className}`}
         >
           {title && title}
           {menuItems.map((menuItem: IMenuItem, idx: number) => (
