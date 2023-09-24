@@ -7,7 +7,7 @@ import ExpandButtonContent from './ExpandButtonContent';
 import Spinner from 'components/Spinner';
 import clsx from 'clsx';
 import Button, { Variant } from 'components/Button';
-import UserCard from 'components/UserCard';
+import UserCard, { UsercardVariant } from 'components/UserCard';
 import { getOrgChart } from 'queries/users';
 import { QueryFunctionContext } from '@tanstack/react-query';
 
@@ -69,7 +69,9 @@ const Chart: FC<IChart> = ({
             return renderToString(<UserNode node={node} />);
           })
           .hoverCardContent((d) => {
-            return renderToString(<UserCard user={d.userData} />);
+            return renderToString(
+              <UserCard user={d.userData} variant={UsercardVariant.Large} />,
+            );
           })
           .onExpandCollapseClick((d: any, _data: any) => {
             if (d.data.directReportees > 0 && !!d.children) {
