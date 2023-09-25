@@ -50,24 +50,26 @@ const Chart: FC<IChart> = ({
   useEffect(() => {
     if (chartRef.current) {
       if (!chart && data.length) {
-        chart = new OrgChart()
-          .container(chartRef.current)
-          .data(data)
-          .nodeHeight((_d: any) => 128)
-          .nodeWidth((_d: any) => 256)
-          .compact(false)
-          .childrenMargin((_d: any) => 50)
-          .compactMarginBetween((_d: any) => 25)
-          .compactMarginPair((_d: any) => 50)
-          .neightbourMargin((_a: any, _b: any) => 25)
-          .siblingsMargin((_d: any) => 25)
-          .svgHeight(window.innerHeight - 290)
-          .buttonContent(({ node, _state }: any) => {
-            return renderToString(<ExpandButtonContent node={node} />);
-          })
-          .nodeContent((node: any, _i: any, _arr: any, _state: any) => {
-            return renderToString(<UserNode node={node} />);
-          })
+        chart = (
+          new OrgChart()
+            .container(chartRef.current)
+            .data(data)
+            .nodeHeight((_d: any) => 128)
+            .nodeWidth((_d: any) => 256)
+            .compact(false)
+            .childrenMargin((_d: any) => 50)
+            .compactMarginBetween((_d: any) => 25)
+            .compactMarginPair((_d: any) => 50)
+            .neightbourMargin((_a: any, _b: any) => 25)
+            .siblingsMargin((_d: any) => 25)
+            .svgHeight(window.innerHeight - 290)
+            .buttonContent(({ node, _state }: any) => {
+              return renderToString(<ExpandButtonContent node={node} />);
+            })
+            .nodeContent((node: any, _i: any, _arr: any, _state: any) => {
+              return renderToString(<UserNode node={node} />);
+            }) as any
+        )
           .hoverCardContent((d) => {
             return renderToString(
               <UserCard user={d.userData} variant={UsercardVariant.Large} />,
