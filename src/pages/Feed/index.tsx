@@ -152,8 +152,14 @@ const Feed: FC<IFeedProps> = () => {
     );
   };
 
-  const removePostTypeFilter = (filter: PostType | PostFilterPreference) => {
-    if (appliedFeedFilters[PostFilterKeys.PostType]) {
+  const removePostTypeFilter = (
+    filter: PostType | PostFilterPreference,
+    type: PostFilterKeys.PostType | PostFilterKeys.PostPreference,
+  ) => {
+    if (
+      type === PostFilterKeys.PostType &&
+      appliedFeedFilters[PostFilterKeys.PostType]
+    ) {
       setAppliedFeedFilters({
         ...appliedFeedFilters,
         [PostFilterKeys.PostType]: appliedFeedFilters[
@@ -161,7 +167,10 @@ const Feed: FC<IFeedProps> = () => {
         ].filter((each) => each !== filter),
       });
     }
-    if (appliedFeedFilters[PostFilterKeys.PostPreference]) {
+    if (
+      type === PostFilterKeys.PostPreference &&
+      appliedFeedFilters[PostFilterKeys.PostPreference]
+    ) {
       setAppliedFeedFilters({
         ...appliedFeedFilters,
         [PostFilterKeys.PostPreference]: appliedFeedFilters[
@@ -312,7 +321,9 @@ const Feed: FC<IFeedProps> = () => {
                     <FilterPill
                       key={filter}
                       name={filterKeyMap[filter]}
-                      onClick={() => removePostTypeFilter(filter)}
+                      onClick={() =>
+                        removePostTypeFilter(filter, PostFilterKeys.PostType)
+                      }
                     />
                   ),
                 )}
@@ -321,7 +332,12 @@ const Feed: FC<IFeedProps> = () => {
                     <FilterPill
                       key={filter}
                       name={filterKeyMap[filter]}
-                      onClick={() => removePostTypeFilter(filter)}
+                      onClick={() =>
+                        removePostTypeFilter(
+                          filter,
+                          PostFilterKeys.PostPreference,
+                        )
+                      }
                     />
                   ),
                 )}
