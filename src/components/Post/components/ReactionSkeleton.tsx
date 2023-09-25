@@ -1,9 +1,8 @@
-import Divider, { Variant } from 'components/Divider';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const ReactionSkeleton: React.FC = (): ReactElement => {
+const ReactionSkeleton: FC = (): ReactElement => {
   return (
     <div>
       {[...Array(4)].map((value, index) => (

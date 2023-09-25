@@ -1,8 +1,8 @@
 import Layout, { FieldType } from 'components/Form';
 import { Variant as InputVariant } from 'components/Input';
-import React from 'react';
 import { Control, FieldErrors } from 'react-hook-form';
 import { IAddAppForm } from './AddApp';
+import { FC } from 'react';
 
 type AppCredentialsFormProps = {
   control: Control<IAddAppForm, any>;
@@ -10,7 +10,7 @@ type AppCredentialsFormProps = {
   defaultValues?: IAddAppForm;
 };
 
-const AppCredentialsForm: React.FC<AppCredentialsFormProps> = ({
+const AppCredentialsForm: FC<AppCredentialsFormProps> = ({
   control,
   errors,
   defaultValues,

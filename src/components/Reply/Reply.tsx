@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FC, useState } from 'react';
 import Likes from 'components/Reactions';
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import Avatar from 'components/Avatar';
@@ -6,16 +6,13 @@ import { deleteComment } from 'queries/comments';
 import { useMutation } from '@tanstack/react-query';
 import Popover from 'components/Popover';
 import clsx from 'clsx';
-import queryClient from 'utils/queryClient';
 import { humanizeTime } from 'utils/time';
-import { iconsStyle } from 'components/Post';
 import useAuth from 'hooks/useAuth';
 import Icon from 'components/Icon';
 import ReactionModal from 'components/Post/components/ReactionModal';
-import { IReactionsCount } from 'queries/post';
 import RenderQuillContent from 'components/RenderQuillContent';
 import { useCommentStore } from 'stores/commentStore';
-import _ from 'lodash';
+import omit from 'lodash/omit';
 import { IComment } from 'components/Comments';
 import {
   getAvatarColor,
@@ -35,13 +32,16 @@ import {
   CommentsRTE,
   PostCommentMode,
 } from 'components/Comments/components/CommentsRTE';
+import Tooltip, { Variant as TooltipVariant } from 'components/Tooltip';
+import UserCard from 'components/UserCard';
+import { Link } from 'react-router-dom';
 
 interface ReplyProps {
   comment: IComment;
   className?: string;
 }
 
-export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
+export const Reply: FC<ReplyProps> = ({ comment }) => {
   const { user } = useAuth();
   const [confirm, showConfirm, closeConfirm] = useModal();
   const [showReactionModal, setShowReactionModal] = useState(false);
@@ -60,13 +60,13 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
         },
       );
       setComment({
-        ..._.omit(storedComments, [variables]),
+        ...omit(storedComments, [variables]),
         [storedComments[variables].entityId]: { ...updatedComment },
       });
       closeConfirm();
       return { previousData };
     },
-    onError: (error: any) => {
+    onError: (_error: any) => {
       toast(
         <FailureToast
           content="Error deleting reply"
@@ -74,11 +74,7 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              stroke={twConfig.theme.colors.red['500']}
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
           ),
           style: {
             border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -102,7 +98,7 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
             />
           ),
@@ -145,10 +141,42 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
                 />
               </div>
               <div className="flex flex-col items-start p-0 w-64">
-                <div className="text-neutral-900 font-bold text-sm">
-                  {getFullName(comment?.createdBy)}
-                </div>
-                <div className="font-normal text-neutral-500 text-sm ">
+                <Tooltip
+                  tooltipContent={
+                    <UserCard
+                      user={{
+                        id: comment?.createdBy?.userId || '',
+                        fullName:
+                          comment?.createdBy?.fullName || 'Field not specified',
+                        workEmail:
+                          comment?.createdBy?.email || 'Field not specified',
+                        workLocation: {
+                          locationId: '',
+                          name:
+                            comment?.createdBy?.workLocation ||
+                            'Field not specified',
+                        },
+                        profileImage: comment?.createdBy?.profileImage,
+                      }}
+                    />
+                  }
+                  variant={TooltipVariant.Light}
+                  className="!p-4 !shadow-md !rounded-9xl !z-[999]"
+                >
+                  <Link
+                    to={
+                      comment?.createdBy?.userId &&
+                      comment.createdBy.userId !== user?.id
+                        ? '/users/' + comment.createdBy.userId
+                        : '/profile'
+                    }
+                  >
+                    <div className="text-neutral-900 font-bold text-sm hover:text-primary-500 hover:underline">
+                      {getFullName(comment?.createdBy)}
+                    </div>
+                  </Link>
+                </Tooltip>
+                <div className="font-normal text-neutral-500 text-xs">
                   {comment?.createdBy?.designation}
                 </div>
               </div>
@@ -183,8 +211,7 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
                             <Icon
                               name={'edit'}
                               size={16}
-                              fill={twConfig.theme.colors.primary['500']}
-                              stroke={twConfig.theme.colors.neutral['200']}
+                              color="text-neutral-200"
                             />
                             <div className="text-sm font-medium text-neutral-900">
                               Edit reply
@@ -199,8 +226,7 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
                             <Icon
                               name={'delete'}
                               size={16}
-                              fill={twConfig.theme.colors.primary['500']}
-                              stroke={twConfig.theme.colors.neutral['200']}
+                              color="text-neutral-200"
                             />
                             <div className="text-sm font-medium text-neutral-900">
                               Delete reply
@@ -248,13 +274,13 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
           {totalCount > 0 && (
             <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
           )}
-          <div className="flex cursor-pointer">
+          <div className="flex items-center cursor-pointer">
             <div
-              className={`flex flex-row`}
+              className={`flex items-center`}
               onClick={() => setShowReactionModal(true)}
             >
               {totalCount > 0 && (
-                <div className="mr-2 flex flex-row">
+                <div className="flex">
                   {Object.keys(comment?.reactionsCount || {})
                     .filter(
                       (key) =>
@@ -270,6 +296,14 @@ export const Reply: React.FC<ReplyProps> = ({ comment, className }) => {
                         <Icon name={`${key}Reaction`} size={20} />
                       </div>
                     ))}
+                </div>
+              )}
+              {totalCount > 0 && (
+                <div
+                  className={`flex text-xs font-normal text-neutral-500`}
+                  data-testid="comment-reaction-count"
+                >
+                  {totalCount}
                 </div>
               )}
             </div>

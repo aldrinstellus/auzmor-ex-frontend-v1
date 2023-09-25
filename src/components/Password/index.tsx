@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import {
   Control,
   UseFormSetError,
@@ -35,7 +35,7 @@ export type PasswordProps = {
   showChecks?: boolean;
 };
 
-const Password: React.FC<PasswordProps> = ({
+const Password: FC<PasswordProps> = ({
   name,
   id,
   size = Size.Medium,
@@ -211,7 +211,8 @@ const Password: React.FC<PasswordProps> = ({
                 data-testid={dataTestId}
                 defaultValue={defaultValue}
                 {...field}
-                onChange={(e: any) => {
+                onChange={(e) => {
+                  e.target.value = e.target.value?.trim();
                   field.onChange(e);
                   onChange && onChange(e);
                 }}

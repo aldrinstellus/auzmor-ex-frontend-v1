@@ -1,9 +1,9 @@
-import React from 'react';
 import Card from 'components/Card';
 import Notification from './Notification';
 import NotificationMedia from './NotificationMedia';
+import { FC } from 'react';
 
-const SkeletonLoader: React.FC = () => {
+const SkeletonLoader: FC = () => {
   return (
     <Card>
       <Notification />

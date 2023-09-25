@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import OnboardWelcome from 'images/onboard-welcome.png';
 import Button from 'components/Button';
 
@@ -7,7 +7,7 @@ type WelcomeScreenProps = {
   dataTestId?: string;
 };
 
-const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
+const WelcomeScreen: FC<WelcomeScreenProps> = ({
   next,
   dataTestId,
 }): ReactElement => {

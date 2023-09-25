@@ -1,7 +1,7 @@
 import Avatar from 'components/Avatar';
 import useAuth from 'hooks/useAuth';
 import { IGetReaction } from 'queries/reaction';
-import React from 'react';
+import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
 
@@ -10,7 +10,7 @@ export interface IReactionRowProps {
   isLoading?: boolean;
 }
 
-const ReactionRow: React.FC<IReactionRowProps> = ({
+const ReactionRow: FC<IReactionRowProps> = ({
   reaction,
   isLoading = false,
 }) => {

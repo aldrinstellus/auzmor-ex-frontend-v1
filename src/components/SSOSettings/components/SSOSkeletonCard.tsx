@@ -1,9 +1,9 @@
 import Card from 'components/Card';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const SSOSkeletonCard: React.FC = (): ReactElement => {
+const SSOSkeletonCard: FC = (): ReactElement => {
   return (
     <Card className="w-96 h-60">
       <div className="p-6">

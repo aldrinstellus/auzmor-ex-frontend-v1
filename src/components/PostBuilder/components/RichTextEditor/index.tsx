@@ -1,9 +1,12 @@
-import React, {
+import {
+  ForwardedRef,
   LegacyRef,
   ReactNode,
+  forwardRef,
   memo,
   useCallback,
   useContext,
+  useEffect,
 } from 'react';
 import ReactQuill, { Quill, UnprivilegedEditor } from 'react-quill';
 import { DeltaStatic, Sources } from 'quill';
@@ -20,18 +23,22 @@ import EmojiBlot from './blots/emoji';
 import EmojiToolbar from './emoji';
 import { mention, previewLinkRegex } from './config';
 import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
+import { isEmptyEditor, twConfig } from 'utils/misc';
 import {
   CreatePostContext,
   CreatePostFlow,
   IMediaValidationError,
   MediaValidationError,
+  POST_TYPE,
 } from 'contexts/CreatePostContext';
 import moment from 'moment';
 import MediaPreview, { Mode } from 'components/MediaPreview';
 import Banner, { Variant } from 'components/Banner';
 import { hasDatePassed } from 'utils/time';
-import Poll from 'components/Poll';
+import Poll, { PollMode } from 'components/Poll';
+import { PostBuilderMode } from 'components/PostBuilder';
+import useModal from 'hooks/useModal';
+import ConfirmationBox from 'components/ConfirmationBox';
 
 export interface IEditorContentChanged {
   text: string;
@@ -51,9 +58,10 @@ export interface IQuillEditorProps {
     setIsPreviewRemove: (isPreviewRemove: boolean) => void,
   ) => ReactNode;
   dataTestId?: string;
+  mode: PostBuilderMode;
 }
 
-const RichTextEditor = React.forwardRef(
+const RichTextEditor = forwardRef(
   (
     {
       className,
@@ -63,11 +71,13 @@ const RichTextEditor = React.forwardRef(
       renderToolbar = () => <div id="toolbar"></div>,
       renderPreviewLink,
       dataTestId,
+      mode,
     }: IQuillEditorProps,
-    ref: React.ForwardedRef<ReactQuill>,
+    ref: ForwardedRef<ReactQuill>,
   ) => {
     const {
       announcement,
+      setAnnouncement,
       setActiveFlow,
       setEditorValue,
       media,
@@ -75,6 +85,7 @@ const RichTextEditor = React.forwardRef(
       isPreviewRemoved,
       isCharLimit,
       setIsCharLimit,
+      setIsEmpty,
       setIsPreviewRemoved,
       removeAllMedia,
       coverImageMap,
@@ -84,7 +95,10 @@ const RichTextEditor = React.forwardRef(
       previewUrl,
       setPreviewUrl,
       poll,
-      setPoll,
+      // setPoll,
+      setShoutoutUserIds,
+      postType,
+      setPostType,
     } = useContext(CreatePostContext);
 
     const formats = [
@@ -148,6 +162,9 @@ const RichTextEditor = React.forwardRef(
           setPreviewUrl('');
         }
       }
+      setIsEmpty(
+        isEmptyEditor(editor.getText(), editor.getContents().ops || []),
+      );
     };
 
     const updateContext = () => {
@@ -245,6 +262,37 @@ const RichTextEditor = React.forwardRef(
       }
     };
 
+    const onRemoveMedia = () => {
+      removeAllMedia();
+      setShoutoutUserIds([]);
+      setPostType(null);
+      closeConfirm();
+    };
+
+    const onMediaEdit = () => {
+      updateContext();
+      if (postType === POST_TYPE.Shoutout) {
+        setActiveFlow(CreatePostFlow.CreateShoutout);
+      } else {
+        setActiveFlow(CreatePostFlow.EditMedia);
+      }
+    };
+
+    const [confirm, showConfirm, closeConfirm] = useModal();
+
+    useEffect(() => {
+      if (ref && ((ref as any).current as ReactQuill)) {
+        const ops =
+          ((ref as any).current as ReactQuill).getEditor().getContents().ops ||
+          [];
+        const content = ((ref as any).current as ReactQuill)
+          .getEditor()
+          .getText();
+
+        setIsEmpty(isEmptyEditor(content, ops));
+      }
+    }, []);
+
     return (
       <div data-testid={`${dataTestId}-content`}>
         <ReactQuill
@@ -258,17 +306,59 @@ const RichTextEditor = React.forwardRef(
           onChange={onChangeEditorContent}
           defaultValue={defaultValue}
         />
+        {announcement?.label && !hasDatePassed(announcement.value) && (
+          <div className="flex justify-between bg-blue-50 px-4 py-2 m-4">
+            <div className="flex items-center">
+              <Icon
+                name="micOutline"
+                hover={false}
+                size={16}
+                color="text-neutral-900"
+              />
+              <div
+                className="ml-2.5"
+                data-testid="announcement-scheduled-toaster"
+              >
+                Announcement will expire on{' '}
+                {moment(new Date(announcement.value)).format(
+                  'ddd, MMM DD [at] h:mm a',
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div
+                className="cursor-pointer"
+                onClick={() => {
+                  updateContext();
+                  setActiveFlow(CreatePostFlow.CreateAnnouncement);
+                }}
+                data-testid="announcement-toaster-editicon"
+              >
+                <Icon name="editOutline" size={12} color="text-neutral-900" />
+              </div>
+              <div
+                className="cursor-pointer"
+                onClick={() => setAnnouncement(null)}
+                data-testid="announcement-toaster-closeicon"
+              >
+                <Icon name="close" size={12} color="text-neutral-900" />
+              </div>
+            </div>
+          </div>
+        )}
         {media.length > 0 && (
           <MediaPreview
             media={media}
             className="m-6"
-            mode={Mode.Edit}
+            mode={mode === PostBuilderMode.Create ? Mode.Edit : Mode.View}
             onAddButtonClick={() => inputImgRef?.current?.click()}
-            onCloseButtonClick={removeAllMedia}
-            onEditButtonClick={() => {
-              updateContext();
-              setActiveFlow(CreatePostFlow.EditMedia);
-            }}
+            onCloseButtonClick={media.length > 1 ? showConfirm : onRemoveMedia}
+            showEditButton={mode === PostBuilderMode.Create}
+            showCloseButton={mode === PostBuilderMode.Create}
+            showAddMediaButton={
+              mode === PostBuilderMode.Create && postType !== POST_TYPE.Shoutout
+            }
+            onEditButtonClick={onMediaEdit}
             coverImageMap={coverImageMap}
             dataTestId={dataTestId}
             onClick={(e, index) => {
@@ -285,44 +375,9 @@ const RichTextEditor = React.forwardRef(
               options={poll.options}
               total={poll.total}
               closedAt={poll.closedAt}
+              mode={PollMode.EDIT}
+              isDeletable={mode === PostBuilderMode.Create}
             />
-          </div>
-        )}
-        {announcement?.label && !hasDatePassed(announcement.value) && (
-          <div className="flex justify-between bg-blue-50 px-4 py-2 m-4">
-            <div className="flex items-center">
-              <Icon
-                name="micOutline"
-                size={16}
-                stroke={twConfig.theme.colors.neutral['900']}
-              />
-              <div
-                className="ml-2.5"
-                data-testid="announcement-scheduled-toaster"
-              >
-                Announcement will expire on{' '}
-                {moment(new Date(announcement.value)).format(
-                  'ddd, MMM DD [at] h:mm a',
-                )}
-              </div>
-            </div>
-            <div
-              className="flex items-center cursor-pointer"
-              onClick={() => {
-                updateContext();
-                setActiveFlow(CreatePostFlow.CreateAnnouncement);
-              }}
-              data-testId="announcement-toaster-editicon"
-            >
-              <Icon
-                name="editOutline"
-                size={12}
-                stroke={twConfig.theme.colors.neutral['900']}
-              />
-              <div className="ml-1 text-xs font-bold text-neutral-900">
-                Edit
-              </div>
-            </div>
           </div>
         )}
         {getMediaValidationErrors().map((error, index) => (
@@ -346,6 +401,26 @@ const RichTextEditor = React.forwardRef(
           renderPreviewLink &&
           renderPreviewLink(previewUrl, setPreviewUrl, setIsPreviewRemoved)}
         {renderToolbar && renderToolbar(isCharLimit)}
+        <ConfirmationBox
+          open={confirm}
+          onClose={closeConfirm}
+          title="Delete media?"
+          description={
+            <span>
+              Are you sure you want to delete the media? This cannot be undone
+            </span>
+          }
+          success={{
+            label: 'Delete',
+            className: 'bg-red-500 text-white ',
+            onSubmit: onRemoveMedia,
+          }}
+          discard={{
+            label: 'Cancel',
+            className: 'text-neutral-900 bg-white ',
+            onCancel: closeConfirm,
+          }}
+        />
       </div>
     );
   },

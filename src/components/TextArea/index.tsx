@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import { FC, useMemo, useRef } from 'react';
 import { Control, useController } from 'react-hook-form';
 import clsx from 'clsx';
 
@@ -7,6 +7,8 @@ export type TextAreaProps = {
   label?: string;
   disabled?: boolean;
   error?: string;
+  errorDataTestId?: string;
+  helpText?: string;
   className?: string;
   dataTestId?: string;
   control?: Control<Record<string, any>>;
@@ -18,13 +20,16 @@ export type TextAreaProps = {
   maxLength?: number; // max character allowed
   readOnly?: boolean; // not edit access
   showCounter?: boolean; // show char counter
+  disableMaxLength?: boolean;
 };
 
-const TextArea: React.FC<TextAreaProps> = ({
+const TextArea: FC<TextAreaProps> = ({
   defaultValue = '',
   label = '',
   disabled = false,
   error,
+  errorDataTestId,
+  helpText,
   className = '',
   dataTestId = '',
   control,
@@ -36,6 +41,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   maxLength,
   readOnly,
   showCounter,
+  disableMaxLength = false,
 }) => {
   const { field } = useController({
     name,
@@ -44,8 +50,12 @@ const TextArea: React.FC<TextAreaProps> = ({
 
   const textAreaStyle = clsx(
     {
-      'bg-red-400 text-sm font-medium text-neutral-900 bg-white border border-solid px-5 py-3 focus:outline-none':
+      'bg-red-400 text-sm font-medium text-neutral-900 placeholder:text-neutral-500 bg-white border border-solid px-5 !pt-2 pb-2 focus:outline-none !rounded-19xl':
         true,
+    },
+    {
+      'border-red-500 focus:border-red-500 focus:ring-red-500 text-red-500':
+        error,
     },
     {
       [className]: true,
@@ -65,18 +75,23 @@ const TextArea: React.FC<TextAreaProps> = ({
     [error],
   );
 
+  const helpTextStyles = useMemo(
+    () =>
+      clsx(
+        {
+          'text-red-500': error,
+        },
+        { 'text-neutral-500': helpText },
+      ),
+    [error, helpText],
+  );
+
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   return (
-    <div className="flex flex-col gap-y-1">
-      <div className="flex items-center justify-between">
+    <div className="relative flex flex-col gap-y-1">
+      <div>
         <div className={labelStyle}>{label}</div>
-        {showCounter && (
-          <div className="flex w-full justify-end text-sm text-neutral-500">
-            {textAreaRef.current?.value.length || defaultValue.length || 0}/
-            {maxLength}
-          </div>
-        )}
       </div>
       <textarea
         ref={textAreaRef}
@@ -86,15 +101,26 @@ const TextArea: React.FC<TextAreaProps> = ({
         cols={cols}
         rows={rows}
         placeholder={placeholder}
-        maxLength={maxLength}
+        maxLength={disableMaxLength ? undefined : maxLength}
         disabled={disabled}
         readOnly={readOnly}
         required={required}
         className={textAreaStyle}
         data-testid={dataTestId}
+        defaultValue={defaultValue}
+      />
+      {showCounter && (
+        <div className="flex mt-1 w-full justify-end text-xs text-neutral-500">
+          {textAreaRef.current?.value.length || defaultValue.length || 0}/
+          {maxLength}
+        </div>
+      )}
+      <div
+        className={`absolute -bottom-4 text-xs truncate leading-tight ${helpTextStyles}`}
+        data-testid={errorDataTestId}
       >
-        {defaultValue}
-      </textarea>
+        {error || helpText || ''}
+      </div>
     </div>
   );
 };

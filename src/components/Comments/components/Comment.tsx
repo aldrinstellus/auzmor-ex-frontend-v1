@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import { FC, ReactNode, useEffect, useRef, useState } from 'react';
 import Likes from 'components/Reactions';
 import IconButton, {
   Variant as IconVariant,
@@ -9,14 +9,13 @@ import { useMutation } from '@tanstack/react-query';
 import Popover from 'components/Popover';
 import clsx from 'clsx';
 import { humanizeTime } from 'utils/time';
-import { iconsStyle } from 'components/Post';
 import useAuth from 'hooks/useAuth';
 import Reply from '../../Reply';
 import Icon from 'components/Icon';
 import { Link } from 'react-router-dom';
 import RenderQuillContent from 'components/RenderQuillContent';
 import ReactionModal from 'components/Post/components/ReactionModal';
-import _ from 'lodash';
+import omit from 'lodash/omit';
 import useModal from 'hooks/useModal';
 import {
   getAvatarColor,
@@ -37,18 +36,17 @@ import { useFeedStore } from 'stores/feedStore';
 import { useCommentStore } from 'stores/commentStore';
 import { produce } from 'immer';
 import Divider, { Variant } from 'components/Divider';
-import MediaPreview from 'components/MediaPreview';
+import Tooltip, { Variant as TooltipVariant } from 'components/Tooltip';
+import UserCard from 'components/UserCard';
 
 interface CommentProps {
   comment: IComment;
   customNode?: ReactNode;
 }
 
-export const Comment: React.FC<CommentProps> = ({
-  comment,
-  customNode = null,
-}) => {
-  const { feed, updateFeed } = useFeedStore();
+export const Comment: FC<CommentProps> = ({ comment, customNode = null }) => {
+  const getPost = useFeedStore((state) => state.getPost);
+  const updateFeed = useFeedStore((state) => state.updateFeed);
   const { comment: storedcomments, setComment } = useCommentStore();
   const [showReactionModal, setShowReactionModal] = useState(false);
   const [confirm, showConfirm, closeConfirm] = useModal();
@@ -82,13 +80,14 @@ export const Comment: React.FC<CommentProps> = ({
     mutationFn: deleteComment,
     onMutate: (variables) => {
       const previousData = storedcomments;
+      const post = getPost(storedcomments[variables].entityId);
       updateFeed(
-        feed[storedcomments[variables].entityId].id!,
-        produce(feed[storedcomments[variables].entityId], (draft) => {
+        post.id!,
+        produce(post, (draft) => {
           draft.commentsCount = draft.commentsCount - 1;
         }),
       );
-      setComment({ ..._.omit(storedcomments, [variables]) });
+      setComment({ ...omit(storedcomments, [variables]) });
       closeConfirm();
       return { previousData };
     },
@@ -101,11 +100,7 @@ export const Comment: React.FC<CommentProps> = ({
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              stroke={twConfig.theme.colors.red['500']}
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
           ),
           style: {
             border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -129,7 +124,7 @@ export const Comment: React.FC<CommentProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
             />
           ),
@@ -150,26 +145,47 @@ export const Comment: React.FC<CommentProps> = ({
   return (
     <div className="flex flex-col">
       <div className="bg-neutral-100 p-3 rounded-9xl mb-4">
-        <div className="flex justify-between">
-          <div className="flex">
-            <div className="mr-4">
-              <Link
-                to={
-                  comment?.createdBy?.userId &&
-                  comment.createdBy.userId !== user?.id
-                    ? '/users/' + comment.createdBy.userId
-                    : '/profile'
-                }
-              >
-                <Avatar
-                  name={comment?.createdBy?.fullName}
-                  size={32}
-                  image={getProfileImage(comment?.createdBy)}
-                  bgColor={getAvatarColor(comment?.createdBy)}
+        <div className="flex flex-row justify-between gap-4">
+          <div>
+            <Link
+              to={
+                comment?.createdBy?.userId &&
+                comment.createdBy.userId !== user?.id
+                  ? '/users/' + comment.createdBy.userId
+                  : '/profile'
+              }
+            >
+              <Avatar
+                name={comment?.createdBy?.fullName}
+                size={32}
+                image={getProfileImage(comment?.createdBy)}
+                bgColor={getAvatarColor(comment?.createdBy)}
+              />
+            </Link>
+          </div>
+          <div className="flex flex-col items-start p-0 flex-grow w-0">
+            <Tooltip
+              tooltipContent={
+                <UserCard
+                  user={{
+                    id: comment?.createdBy?.userId || '',
+                    fullName:
+                      comment?.createdBy?.fullName || 'Field not specified',
+                    workEmail:
+                      comment?.createdBy?.email || 'Field not specified',
+                    workLocation: {
+                      locationId: '',
+                      name:
+                        comment?.createdBy?.workLocation ||
+                        'Field not specified',
+                    },
+                    profileImage: comment?.createdBy?.profileImage,
+                  }}
                 />
-              </Link>
-            </div>
-            <div className="flex flex-col items-start p-0 w-64">
+              }
+              variant={TooltipVariant.Light}
+              className="!p-4 !shadow-md !rounded-9xl !z-[999]"
+            >
               <Link
                 to={
                   comment?.createdBy?.userId &&
@@ -178,79 +194,75 @@ export const Comment: React.FC<CommentProps> = ({
                     : '/profile'
                 }
               >
-                <div className="text-neutral-900 font-bold text-sm">
+                <div className="text-neutral-900 font-bold text-sm hover:text-primary-500 hover:underline">
                   {getFullName(comment?.createdBy)}
                 </div>
               </Link>
-              <div className="font-normal text-neutral-500 text-sm ">
-                {comment?.createdBy?.designation}
-              </div>
+            </Tooltip>
+            <div className="font-normal text-neutral-500 text-xs">
+              {comment?.createdBy?.designation}
             </div>
           </div>
-          <div className="flex">
-            <div className="text-neutral-500 font-normal text-xs mt-1">
-              {humanizeTime(comment.updatedAt)}
-            </div>
-            <div className="ml-4">
-              {user?.id === comment?.createdBy?.userId && (
-                <Popover
-                  triggerNode={
-                    <IconButton
-                      icon={'more'}
-                      className="!p-0 !bg-inherit"
-                      variant={IconVariant.Primary}
-                      size={Size.Large}
-                      dataTestId="comment-ellipsis"
-                    />
-                  }
-                  ref={closePopOver}
-                  className="left-0 rounded-9xl"
-                >
-                  <div>
-                    {!editComment && (
-                      <div className="w-48">
-                        <div
-                          className={`${menuItemStyle} rounded-t-9xl`}
-                          onClick={() => {
-                            setEditComment(true);
-                            closePopOver?.current?.click();
-                          }}
-                          data-testid="post-ellipsis-edit-comment"
-                        >
-                          <Icon
-                            name={'edit'}
-                            size={16}
-                            fill={twConfig.theme.colors.primary['500']}
-                            stroke={twConfig.theme.colors.neutral['200']}
-                          />
-                          <div className="text-sm font-medium text-neutral-900">
-                            Edit comment
-                          </div>
-                        </div>
-                        <div
-                          className={`${menuItemStyle} rounded-b-9xl`}
-                          onClick={() => {
-                            showConfirm();
-                          }}
-                        >
-                          <Icon
-                            name={'delete'}
-                            size={16}
-                            fill={twConfig.theme.colors.primary['500']}
-                            stroke={twConfig.theme.colors.neutral['200']}
-                          />
-                          <div
-                            className={`text-sm font-medium text-neutral-900 `}
-                          >
-                            Delete comment
-                          </div>
+          <div className="text-neutral-500 font-normal text-xs mt-1">
+            {humanizeTime(comment.updatedAt)}
+          </div>
+          <div>
+            {user?.id === comment?.createdBy?.userId && (
+              <Popover
+                triggerNode={
+                  <IconButton
+                    icon={'more'}
+                    className="!p-0 !bg-inherit"
+                    variant={IconVariant.Primary}
+                    size={Size.Large}
+                    dataTestId="comment-ellipsis"
+                  />
+                }
+                ref={closePopOver}
+                className="left-0 rounded-9xl"
+              >
+                <div>
+                  {!editComment && (
+                    <div className="w-48">
+                      <div
+                        className={`${menuItemStyle} rounded-t-9xl`}
+                        onClick={() => {
+                          setEditComment(true);
+                          closePopOver?.current?.click();
+                        }}
+                        data-testid="post-ellipsis-edit-comment"
+                      >
+                        <Icon
+                          name={'edit'}
+                          size={16}
+                          color="text-neutral-200"
+                        />
+                        <div className="text-sm font-medium text-neutral-900">
+                          Edit comment
                         </div>
                       </div>
-                    )}
-                  </div>
-                </Popover>
-              )}
-            </div>
+                      <div
+                        className={`${menuItemStyle} rounded-b-9xl`}
+                        onClick={() => {
+                          showConfirm();
+                        }}
+                      >
+                        <Icon
+                          name={'delete'}
+                          size={16}
+                          color="text-neutral-200"
+                        />
+                        <div
+                          className={`text-sm font-medium text-neutral-900 `}
+                        >
+                          Delete comment
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Popover>
+            )}
           </div>
         </div>
         {/* Comment Edit at Post level type Post */}
@@ -273,7 +285,7 @@ export const Comment: React.FC<CommentProps> = ({
       </div>
 
       {/* Replies */}
-      <div className="flex items-center mb-4">
+      <div className="flex items-center">
         <div className="flex items-center space-x-2">
           <Likes
             reaction={comment?.myReaction?.reaction || ''}
@@ -286,10 +298,10 @@ export const Comment: React.FC<CommentProps> = ({
           {/* ellipse */}
           <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
           {/* Show Reaction */}
-          {totalCount > 0 && (
+          {totalCount > 0 ? (
             <div className="flex justify-between cursor-pointer">
               <div
-                className="flex space-x-1 items-center mr-2"
+                className="flex items-center"
                 onClick={() => setShowReactionModal(true)}
               >
                 {totalCount > 0 && (
@@ -319,22 +331,27 @@ export const Comment: React.FC<CommentProps> = ({
                     {totalCount}
                   </div>
                 )}
+                <Divider
+                  variant={Variant.Vertical}
+                  className="bg-neutral-200 mx-4"
+                />
               </div>
             </div>
+          ) : (
+            <div />
           )}
-          <Divider variant={Variant.Vertical} />
         </div>
 
         <div className="flex items-center space-x-2">
           <div
-            className="flex space-x-1 cursor-pointer"
+            className="flex space-x-1 cursor-pointer group"
             onClick={() => {
               setShowReplies(!showReplies);
             }}
           >
             <Icon name="comment" size={16} />
             <div
-              className="text-xs font-normal text-neutral-500 ml-1.5"
+              className="text-xs font-normal text-neutral-500 ml-1.5 group-hover:text-primary-500"
               data-testid="comment-replies-count"
             >
               Reply
@@ -346,18 +363,18 @@ export const Comment: React.FC<CommentProps> = ({
               {/* ellipse */}
               <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
               <div
-                className="flex items-center cursor-pointer"
+                className="flex items-center cursor-pointer group"
                 data-testid="replyto-commentcta"
                 onClick={() => {
                   setShowReplies(!showReplies);
                 }}
               >
                 <div
-                  className="text-xs font-normal text-neutral-500"
+                  className="text-xs font-normal text-neutral-500 group-hover:text-primary-500"
                   data-testid="comment-replies-count"
                 >
                   {comment?.repliesCount}
-                  {comment?.repliesCount > 0 ? ' Replies' : ' Reply'}
+                  {comment?.repliesCount > 1 ? ' Replies' : ' Reply'}
                 </div>
               </div>
             </>
@@ -366,7 +383,9 @@ export const Comment: React.FC<CommentProps> = ({
       </div>
 
       {showReplies ? (
-        <Reply entityId={comment.id} />
+        <div className="mt-4">
+          <Reply entityId={comment.id} />
+        </div>
       ) : (
         !previousShowReply.current && customNode
       )}

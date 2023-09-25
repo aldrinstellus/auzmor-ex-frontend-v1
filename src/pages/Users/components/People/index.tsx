@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
 import { useDebounce } from 'hooks/useDebounce';
@@ -7,36 +7,34 @@ import IconButton, {
   Variant as IconVariant,
   Size as IconSize,
 } from 'components/IconButton';
+import MemberNotFound from 'images/MemberNotFound.svg';
 import Icon from 'components/Icon';
 import PageLoader from 'components/PageLoader';
 import { Size as InputSize } from 'components/Input';
 import Layout, { FieldType } from 'components/Form';
 import Button, { Size, Variant } from 'components/Button';
 import { Variant as InputVariant } from 'components/Input';
-
 import UsersSkeleton from '../Skeletons/UsersSkeleton';
-import DeactivatedUser from 'images/DeactivatedUser.png';
-import {
-  IGetUser,
-  UserRole,
-  UserStatus,
-  useInfiniteUsers,
-} from 'queries/users';
-import {
-  getProfileImage,
-  isFiltersEmpty,
-  titleCase,
-  twConfig,
-} from 'utils/misc';
+import { UserRole, useInfiniteUsers } from 'queries/users';
+import { isFiltersEmpty, titleCase } from 'utils/misc';
 
 import PeopleCard from './PeopleCard';
 import InviteUserModal from '../InviteUserModal';
-import PeopleFilterModal from '../FilterModals/PeopleFilterModal';
+import { useInfiniteTeamMembers } from 'queries/teams';
+import { EntitySearchModalType } from 'components/EntitySearchModal';
+import Sort from 'components/Sort';
+import FilterModal, {
+  IAppliedFilters,
+  UserStatus,
+} from 'components/FilterModal';
+import useURLParams from 'hooks/useURLParams';
 
 export interface IPeopleProps {
   showModal: boolean;
   openModal: () => void;
   closeModal: () => void;
+  isTeamPeople?: boolean;
+  teamId?: string;
 }
 
 interface IForm {
@@ -44,22 +42,42 @@ interface IForm {
   role?: { value: string; label: string };
 }
 
-const People: React.FC<IPeopleProps> = ({
+const People: FC<IPeopleProps> = ({
   showModal,
   openModal,
   closeModal,
+  isTeamPeople,
+  teamId,
 }) => {
+  const {
+    searchParams,
+    updateParam,
+    deleteParam,
+    serializeFilter,
+    parseParams,
+  } = useURLParams();
+  const [startFetching, setStartFetching] = useState(false);
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
-  const [userStatus, setUserStatus] = useState<string>('');
+  const [appliedFilters, setAppliedFilters] = useState<IAppliedFilters>({
+    status: null,
+  });
+  const [filterSortBy, setFilterSortBy] = useState<string>('');
   const { ref, inView } = useInView();
+
+  const parsedRole = parseParams('role');
 
   const {
     control,
     watch,
     getValues,
+    setValue,
     formState: { errors },
   } = useForm<IForm>({
     mode: 'onChange',
+    defaultValues: {
+      role: parsedRole,
+      search: searchParams.get('peopleSearch'),
+    },
   });
 
   useEffect(() => {
@@ -72,32 +90,57 @@ const People: React.FC<IPeopleProps> = ({
   const role = watch('role');
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
 
-  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteUsers(
-      isFiltersEmpty({
-        status: userStatus,
+  // get the conditional data
+  const getPeoplesData = () => {
+    return useInfiniteUsers({
+      startFetching,
+      q: isFiltersEmpty({
+        status:
+          appliedFilters.status?.value === UserStatus.All
+            ? undefined
+            : appliedFilters.status?.value,
         role: role?.value,
+        sort: filterSortBy,
         q: debouncedSearchValue,
       }),
-    );
+    });
+  };
+
+  const getTeamMembersData = () => {
+    return useInfiniteTeamMembers({
+      startFetching,
+      teamId: teamId || '',
+      q: isFiltersEmpty({
+        status:
+          appliedFilters.status?.value === UserStatus.All
+            ? undefined
+            : appliedFilters.status?.value,
+        role: role?.value,
+        sort: filterSortBy,
+        q: debouncedSearchValue,
+      }),
+    });
+  };
+
+  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
+    isTeamPeople && teamId ? getTeamMembersData() : getPeoplesData();
 
   const roleSelectRef = useRef<any>();
 
   const customReset = () => {
-    if (roleSelectRef && roleSelectRef.current)
-      roleSelectRef.current.setValue('');
+    if (roleSelectRef && roleSelectRef.current) setValue('role', undefined);
   };
 
   const roleFields = [
     {
       type: FieldType.SingleSelect,
       control,
-      height: '36px',
-      className: 'p-0 w-44',
+      height: 36,
       name: 'role',
       placeholder: 'Role',
       size: InputSize.Small,
       dataTestId: 'filterby-role',
+      selectClassName: 'single-select-bold',
       ref: roleSelectRef,
       options: [
         {
@@ -129,27 +172,96 @@ const People: React.FC<IPeopleProps> = ({
     });
   });
 
+  const clearFilters = () => {
+    deleteParam('status');
+    setAppliedFilters({
+      status: null,
+    });
+    closeFilterModal();
+  };
+
+  const onApplyFilter = (appliedFilters: IAppliedFilters) => {
+    setAppliedFilters(appliedFilters);
+    if (appliedFilters.status?.value !== UserStatus.All) {
+      const serializedStatus = serializeFilter(appliedFilters.status?.label);
+      updateParam('status', serializedStatus);
+    }
+    closeFilterModal();
+  };
+
+  const handleSetSortFilter = (sortValue: any) => {
+    setFilterSortBy(sortValue);
+    if (sortValue) {
+      const serializedSort = serializeFilter(sortValue);
+      updateParam('sort', serializedSort);
+    } else {
+      deleteParam('sort');
+    }
+  };
+
+  // parse the persisted filters from the URL on page load
+  useEffect(() => {
+    const parsedStatus = parseParams('status');
+    const parsedSort = parseParams('sort');
+    if (parsedStatus) {
+      setAppliedFilters({
+        ...appliedFilters,
+        status: { value: parsedStatus, label: titleCase(parsedStatus) },
+      });
+    }
+    if (parsedSort) {
+      setFilterSortBy(parsedSort);
+    }
+    setStartFetching(true);
+  }, []);
+
+  // Change URL params for search filters
+  useEffect(() => {
+    if (debouncedSearchValue) {
+      updateParam('peopleSearch', debouncedSearchValue);
+    } else {
+      deleteParam('peopleSearch');
+    }
+  }, [debouncedSearchValue]);
+
+  useEffect(() => {
+    if (role) {
+      const serializedRole = serializeFilter({
+        value: role.value,
+        label: role.label,
+      });
+      updateParam('role', serializedRole);
+    } else {
+      deleteParam('role');
+    }
+  }, [role]);
+
   return (
     <div className="relative pb-8">
-      <div>
+      <div className="flex flex-col gap-6">
         <div className="flex justify-between items-center">
           <div className="flex space-x-4">
-            <Button
-              label="My Teams"
-              size={Size.Small}
-              variant={Variant.Secondary}
-              className="cursor-not-allowed h-9 grow-0"
-              dataTestId="people-view-my-teams"
-            />
-            <Button
-              label="All Members"
-              size={Size.Small}
-              variant={Variant.Secondary}
-              className="!py-2 grow-0"
-              dataTestId="people-view-all-members"
-              onClick={() => customReset()}
-              active={!searchValue && !role}
-            />
+            {!isTeamPeople && (
+              <>
+                <Button
+                  label="My Teams"
+                  size={Size.Small}
+                  disabled
+                  variant={Variant.Secondary}
+                  className="cursor-not-allowed h-9 grow-0"
+                  dataTestId="people-view-my-teams"
+                />
+                <Button
+                  label="All Members"
+                  size={Size.Small}
+                  variant={Variant.Secondary}
+                  className="h-9 grow-0"
+                  dataTestId="people-view-all-members"
+                  onClick={() => customReset()}
+                  active={!searchValue && !role}
+                />
+              </>
+            )}
             <Layout fields={roleFields} />
           </div>
           <div className="flex space-x-2 justify-center items-center">
@@ -159,16 +271,15 @@ const People: React.FC<IPeopleProps> = ({
               variant={IconVariant.Secondary}
               size={IconSize.Medium}
               borderAround
-              className="bg-white"
+              className="bg-white !p-[10px]"
               dataTestId="people-filter"
             />
-            <IconButton
-              icon="arrowSwap"
-              variant={IconVariant.Secondary}
-              size={IconSize.Medium}
-              borderAround
-              className="bg-white"
-              dataTestId="people-sort"
+            <Sort
+              setFilter={handleSetSortFilter}
+              filterKey={{ createdAt: 'createdAt', aToZ: 'name' }}
+              selectedValue={filterSortBy}
+              filterValue={{ asc: 'ASC', desc: 'DESC' }}
+              entity={isTeamPeople ? EntitySearchModalType.Team : 'USER'}
             />
             <div>
               <Layout
@@ -184,6 +295,7 @@ const People: React.FC<IPeopleProps> = ({
                     placeholder: 'Search members',
                     error: errors.search?.message,
                     dataTestId: 'people-search-members',
+                    inputClassName: 'py-[7px] !text-sm !h-9',
                     isClearable: true,
                   },
                 ]}
@@ -192,41 +304,51 @@ const People: React.FC<IPeopleProps> = ({
           </div>
         </div>
 
-        <div className="text-neutral-500 mt-6 mb-6">
+        <div className="text-neutral-500">
           Showing {!isLoading && data?.pages[0]?.data?.result?.totalCount}{' '}
           results
         </div>
 
-        {userStatus && (
-          <div className="flex justify-between  mb-6">
-            <div className="flex items-center space-x-2">
-              <div className="text-base text-neutral-500">Filter By</div>
+        {appliedFilters.status &&
+          appliedFilters.status.value !== UserStatus.All && (
+            <div className="flex justify-between">
+              <div className="flex items-center space-x-2">
+                <div className="text-base text-neutral-500">Filter By</div>
+                <div
+                  className="text-neutral-500 border px-3 py-1 rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer flex items-center group"
+                  onClick={() => {
+                    deleteParam('status');
+                    setAppliedFilters({ ...appliedFilters, status: null });
+                  }}
+                >
+                  <div className="mr-1">
+                    {titleCase(appliedFilters.status.label)}
+                  </div>
+                  <Icon
+                    name="close"
+                    size={16}
+                    color="text-neutral-900"
+                    className="cursor-pointer"
+                    onClick={() => {
+                      deleteParam('status');
+                      setAppliedFilters({ ...appliedFilters, status: null });
+                    }}
+                    dataTestId={`people-filterby-close-${appliedFilters.status.label}`}
+                  />
+                </div>
+              </div>
               <div
-                className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1"
-                data-testid={`people-filterby-${userStatus}`}
+                className="text-neutral-500 border px-3 py-1 rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
+                onClick={() => {
+                  deleteParam('status');
+                  setAppliedFilters({ ...appliedFilters, status: null });
+                }}
               >
-                <div className="mr-1">{titleCase(userStatus)}</div>
-                <Icon
-                  name="close"
-                  size={16}
-                  stroke={twConfig.theme.colors.neutral['900']}
-                  className="cursor-pointer"
-                  onClick={() => setUserStatus('')}
-                  dataTestId={`people-filterby-close-${userStatus}`}
-                />
+                Clear Filters
               </div>
             </div>
-            <div
-              className="text-neutral-500 border px-3 py-1 rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
-              onClick={() => setUserStatus('')}
-            >
-              Clear Filters
-            </div>
-          </div>
-        )}
-      </div>
+          )}
 
-      <div>
         <div className="flex flex-wrap gap-6">
           {(() => {
             if (isLoading) {
@@ -240,19 +362,23 @@ const People: React.FC<IPeopleProps> = ({
             if (usersData && usersData?.length > 0) {
               return (
                 <>
-                  {usersData
-                    ?.filter((userCard: IGetUser) => {
-                      if (role) {
-                        return role?.value === userCard.role;
-                      } else return true;
-                    })
-                    .map((user: any) => (
-                      <PeopleCard
-                        key={user.id}
-                        {...user}
-                        image={getProfileImage(user)}
-                      />
-                    ))}
+                  {usersData.map((user: any) => (
+                    <PeopleCard
+                      key={user.id}
+                      teamId={teamId}
+                      isTeamPeople={isTeamPeople}
+                      teamMemberId={user.id}
+                      {...{
+                        userData: isTeamPeople
+                          ? {
+                              ...user.member,
+                              id: user.member.userId,
+                              workEmail: user.member.email,
+                            }
+                          : user,
+                      }}
+                    />
+                  ))}
                   <div className="h-12 w-12">
                     {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
                   </div>
@@ -260,7 +386,40 @@ const People: React.FC<IPeopleProps> = ({
                 </>
               );
             }
-            return (
+            return isTeamPeople ? (
+              <div className="flex flex-col w-full items-center space-y-4">
+                <img
+                  src={MemberNotFound}
+                  width={220}
+                  height={144}
+                  alt="No Member Found"
+                />
+                <div className="w-full flex flex-col items-center">
+                  <div className="flex items-center flex-col space-y-1">
+                    <div
+                      className="text-lg font-bold text-neutral-900"
+                      data-testid="teams-no-members-yet"
+                    >
+                      No members yet
+                    </div>
+                    <div className="text-base font-medium text-neutral-500">
+                      {"Let's get started by adding some members!"}
+                    </div>
+                  </div>
+                </div>
+                <Button
+                  label={'Add members'}
+                  variant={Variant.Secondary}
+                  className="space-x-1 rounded-[24px]"
+                  size={Size.Large}
+                  dataTestId="team-add-members-cta"
+                  leftIcon={'addCircle'}
+                  leftIconClassName="text-neutral-900"
+                  leftIconSize={20}
+                  onClick={openModal}
+                />
+              </div>
+            ) : (
               <div className="py-16 w-full">
                 <div className="flex w-full justify-center">
                   <img src={require('images/noResult.png')} />
@@ -270,7 +429,8 @@ const People: React.FC<IPeopleProps> = ({
                     className="mt-8 text-lg font-bold"
                     data-testid="no-result-found"
                   >
-                    No result found for &apos;{searchValue}&apos;
+                    {`No result found`}
+                    {!!searchValue && ` for '${searchValue}'`}
                   </div>
                   <div className="text-sm text-gray-500 mt-2">
                     Sorry we can&apos;t find the profile you are looking for.
@@ -289,13 +449,15 @@ const People: React.FC<IPeopleProps> = ({
         closeModal={closeModal}
       />
 
-      <PeopleFilterModal
-        setUserStatus={setUserStatus}
-        userStatus={userStatus}
-        open={showFilterModal}
-        openModal={openFilterModal}
-        closeModal={closeFilterModal}
-      />
+      {showFilterModal && (
+        <FilterModal
+          open={showFilterModal}
+          closeModal={closeFilterModal}
+          appliedFilters={appliedFilters}
+          onApply={onApplyFilter}
+          onClear={clearFilters}
+        />
+      )}
     </div>
   );
 };

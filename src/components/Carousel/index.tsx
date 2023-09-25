@@ -1,6 +1,8 @@
-import React, {
+import {
+  FC,
   MouseEventHandler,
   ReactElement,
+  useEffect,
   useRef,
   useState,
 } from 'react';
@@ -17,6 +19,7 @@ import { toast } from 'react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
+import Banner, { Variant } from 'components/Banner';
 
 export type CarouselProps = {
   media: IMedia[];
@@ -37,11 +40,7 @@ export const fetchFile = (url: string) => {
       aTag.click();
       toast(<SuccessToast content={'Download successful'} />, {
         closeButton: (
-          <Icon
-            name="closeCircleOutline"
-            stroke={twConfig.theme.colors.primary['500']}
-            size={20}
-          />
+          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
         ),
         style: {
           border: `1px solid ${twConfig.theme.colors.primary['300']}`,
@@ -59,11 +58,7 @@ export const fetchFile = (url: string) => {
     .catch(() => {
       toast(<FailureToast content={'Download failed'} />, {
         closeButton: (
-          <Icon
-            name="closeCircleOutline"
-            stroke={twConfig.theme.colors.red['500']}
-            size={20}
-          />
+          <Icon name="closeCircleOutline" color="text-red-500" size={20} />
         ),
         style: {
           border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -78,7 +73,7 @@ export const fetchFile = (url: string) => {
     });
 };
 
-const Carousel: React.FC<CarouselProps> = ({
+const Carousel: FC<CarouselProps> = ({
   media,
   index,
   closeModal,
@@ -92,9 +87,9 @@ const Carousel: React.FC<CarouselProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-
+  const [canPlay, setCanPlay] = useState<boolean>(true);
   const containerStyles = clsx({
-    'm-auto w-full h-full relative group rounded-xl': true,
+    'm-auto w-full h-full relative rounded-xl': true,
   });
 
   const mediaDivStyles = clsx({
@@ -128,6 +123,14 @@ const Carousel: React.FC<CarouselProps> = ({
     { hidden: isPlaying },
   );
 
+  useEffect(() => {
+    if (videoRef.current) {
+      setCanPlay(
+        !!videoRef.current.canPlayType(media[currentIndex].contentType),
+      );
+    }
+  }, [videoRef.current, media[currentIndex]]);
+
   if (media.length > 0) {
     return (
       <div className={containerStyles}>
@@ -135,7 +138,7 @@ const Carousel: React.FC<CarouselProps> = ({
           {media[currentIndex].type === 'IMAGE' ? (
             <Image image={media[currentIndex]} />
           ) : (
-            <div className="w-full h-full flex items-center ">
+            <div className="w-full h-full flex items-center flex-col gap-2">
               <video
                 className="w-full h-full"
                 src={media[currentIndex].original}
@@ -146,6 +149,14 @@ const Carousel: React.FC<CarouselProps> = ({
                 onPause={() => setIsPlaying(false)}
                 autoPlay={index > -1}
               />
+              {!canPlay && (
+                <div className="w-full">
+                  <Banner
+                    title="Incompatible video format, but you can download it"
+                    variant={Variant.Grey}
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -154,39 +165,40 @@ const Carousel: React.FC<CarouselProps> = ({
           {currentIndex + 1} of {Object.keys(media).length}
         </div>
         {media?.length > 1 && (
-          <Icon
-            name="carouselLeft"
-            onClick={prevSlide}
-            className={leftArrowIconStyles}
-            size={36}
-          />
+          <div className={leftArrowIconStyles}>
+            <Icon name="carouselLeft" onClick={prevSlide} size={36} />
+          </div>
         )}
         {media?.length > 1 && (
-          <Icon
-            name="carouselRight"
-            onClick={nextSlide}
-            className={rightArrowIconStyles}
-            size={36}
-          />
+          <div className={rightArrowIconStyles}>
+            <Icon name="carouselRight" onClick={nextSlide} size={36} />
+          </div>
         )}
-        <Icon
-          name="import"
-          className={downloadBtnStyle}
-          size={16}
-          disabled={true}
-          stroke={twConfig.theme.colors.neutral['900']}
-          onClick={() => fetchFile(media[currentIndex].original)}
-        />
-        {media[currentIndex].type !== 'IMAGE' && (
+        <div className={downloadBtnStyle}>
           <Icon
-            name="playFilled"
-            className={playBtnStyle}
-            fill="white"
-            size={32}
-            onClick={() => {
-              isPlaying ? videoRef.current?.pause() : videoRef.current?.play();
-            }}
+            name="import"
+            size={16}
+            color="text-neutral-900"
+            onClick={() => fetchFile(media[currentIndex].original)}
           />
+        </div>
+        {media[currentIndex].type !== 'IMAGE' && (
+          <div className={playBtnStyle}>
+            {canPlay ? (
+              <Icon
+                name="playFilled"
+                color="text-white"
+                size={32}
+                onClick={() => {
+                  isPlaying
+                    ? videoRef.current?.pause()
+                    : videoRef.current?.play();
+                }}
+              />
+            ) : (
+              <Icon name="videoSlash" size={50} hover={false} />
+            )}
+          </div>
         )}
       </div>
     );

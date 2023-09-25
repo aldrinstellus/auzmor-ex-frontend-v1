@@ -1,18 +1,28 @@
 import Card from 'components/Card';
-import React from 'react';
 import EmptyBanner from '../../../../images/EmptyBanner.png';
+import { FC } from 'react';
 
 export interface INoDataCardProps {
   user: string;
+  dataType: string;
 }
 
-const NoDataCard: React.FC<INoDataCardProps> = ({ user }) => {
+export interface IDataTypeMap {
+  [key: string]: any;
+}
+
+const typeMap: IDataTypeMap = {
+  activity: 'Activities',
+  recognition: 'Recognitions',
+};
+
+const NoDataCard: FC<INoDataCardProps> = ({ user, dataType }) => {
   return (
     <div className="pb-8">
       <Card className="p-6 space-y-2">
         <div className="text-2xl font-bold">Nothing to show</div>
         <div className="text-sm font-normal">
-          Activities for {user} will appear here
+          {typeMap[dataType] || typeMap.activity} for {user} will appear here
         </div>
         <div className="flex justify-center items-center w-full">
           <img src={EmptyBanner} alt="empty-banner-image" />

@@ -1,32 +1,32 @@
-import React from 'react';
 import {
   createBrowserRouter,
   createRoutesFromElements,
   Navigate,
   Route,
 } from 'react-router-dom';
-// import { loader as homeLoader } from 'pages/Home';
 import RequireAuth from 'components/RequireAuth';
 import Notifications from 'pages/Notifications';
+import { lazy } from 'react';
 
-const ErrorBoundary = React.lazy(() => import('components/ErrorBoundary'));
-const Login = React.lazy(() => import('pages/Login'));
-const Signup = React.lazy(() => import('pages/Signup'));
-const Registration = React.lazy(() => import('pages/Registration'));
-const ForgotPassword = React.lazy(() => import('pages/ForgotPassword'));
-const UserSettings = React.lazy(() => import('pages/UserSettings'));
-const ResetPassword = React.lazy(() => import('pages/ResetPassword'));
-const Feed = React.lazy(() => import('pages/Feed'));
-const Users = React.lazy(() => import('pages/Users'));
-const UserDetail = React.lazy(() => import('pages/UserDetail'));
-const Apps = React.lazy(() => import('pages/Apps'));
-const Discover = React.lazy(() => import('pages/Discover'));
-const Admin = React.lazy(() => import('pages/Admin'));
-const AcceptInvite = React.lazy(() => import('pages/AcceptInvite'));
-const PageNotFound = React.lazy(() => import('pages/PageNotFound'));
-const ServerErrorPage = React.lazy(() => import('pages/ServerErrorPage'));
-const PostPage = React.lazy(() => import('pages/Post'));
-const Logout = React.lazy(() => import('pages/Logout'));
+const ErrorBoundary = lazy(() => import('components/ErrorBoundary'));
+const Login = lazy(() => import('pages/Login'));
+const Signup = lazy(() => import('pages/Signup'));
+const Registration = lazy(() => import('pages/Registration'));
+const ForgotPassword = lazy(() => import('pages/ForgotPassword'));
+const UserSettings = lazy(() => import('pages/UserSettings'));
+const ResetPassword = lazy(() => import('pages/ResetPassword'));
+const Feed = lazy(() => import('pages/Feed'));
+const Users = lazy(() => import('pages/Users'));
+const UserDetail = lazy(() => import('pages/UserDetail'));
+const TeamDetail = lazy(() => import('pages/TeamDetail'));
+const Apps = lazy(() => import('pages/Apps'));
+const Discover = lazy(() => import('pages/Discover'));
+const Admin = lazy(() => import('pages/Admin'));
+const AcceptInvite = lazy(() => import('pages/AcceptInvite'));
+const PageNotFound = lazy(() => import('pages/PageNotFound'));
+const ServerErrorPage = lazy(() => import('pages/ServerErrorPage'));
+const PostPage = lazy(() => import('pages/Post'));
+const Logout = lazy(() => import('pages/Logout'));
 
 const routers = createBrowserRouter(
   createRoutesFromElements(
@@ -62,9 +62,25 @@ const routers = createBrowserRouter(
           }}
         />
         <Route
+          path="/teams"
+          element={<Users />}
+          loader={async () => {
+            // ⬇️ loader fetch data as earlier as possible
+            return '';
+          }}
+        />
+        <Route
           path="/users/:userId"
           element={<UserDetail />}
-          loader={({ params }) => {
+          loader={({}) => {
+            // ⬇️ loader fetch data as earlier as possible
+            return '';
+          }}
+        />
+        <Route
+          path="/teams/:teamId"
+          element={<TeamDetail />}
+          loader={({}) => {
             // ⬇️ loader fetch data as earlier as possible
             return '';
           }}

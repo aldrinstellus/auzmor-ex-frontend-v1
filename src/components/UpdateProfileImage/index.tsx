@@ -1,5 +1,5 @@
 import Avatar from 'components/Avatar';
-import React, { ReactElement, useEffect, useState } from 'react';
+import { FC, ReactElement, useEffect, useState } from 'react';
 import EditIcon from './components/EditIcon';
 import useAuth from 'hooks/useAuth';
 import { UploadStatus, useUpload } from 'hooks/useUpload';
@@ -14,7 +14,7 @@ type UpdateProfileImageProps = {
   dataTestId?: string;
 };
 
-const UpdateProfileImage: React.FC<UpdateProfileImageProps> = ({
+const UpdateProfileImage: FC<UpdateProfileImageProps> = ({
   setLoading,
   setError,
   dataTestId,

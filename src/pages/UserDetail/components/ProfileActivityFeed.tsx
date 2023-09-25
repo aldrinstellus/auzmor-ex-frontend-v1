@@ -1,4 +1,3 @@
-import React from 'react';
 import Post from 'components/Post';
 import {
   useInfiniteMyProfileFeed,
@@ -8,6 +7,8 @@ import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
 import NoDataCard from './NoDataCard';
 import PostBuilder from 'components/PostBuilder';
 import SkeletonLoader from 'pages/Feed/components/SkeletonLoader';
+import { useFeedStore } from 'stores/feedStore';
+import { FC } from 'react';
 
 export interface IProfileActivityFeedProps {
   data: any;
@@ -18,7 +19,7 @@ export interface IProfileActivityFeedProps {
   pathname?: string;
 }
 
-const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
+const ProfileActivityFeed: FC<IProfileActivityFeedProps> = ({
   data,
   pathname,
   userId,
@@ -26,34 +27,61 @@ const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
   openModal,
   closeModal,
 }) => {
+  const { feed } = useFeedStore();
   if (pathname === '/profile') {
     const { data: myProfileFeed, isLoading: myProfileFeedLoading } =
       useInfiniteMyProfileFeed();
 
+    const feedIds = (
+      (myProfileFeed?.pages.flatMap((page) =>
+        page.data?.result?.data?.map((post: { id: string }) => post),
+      ) as { id: string }[]) || []
+    )
+      ?.filter(({ id }) => !!feed[id])
+      .sort(
+        (a, b) =>
+          new Date(feed[b.id].createdAt).getTime() -
+          new Date(feed[a.id].createdAt).getTime(),
+      );
+
+    const announcementFeedIds = feedIds
+      ? feedIds.filter(
+          (post: { id: string }) =>
+            !!feed[post.id]?.announcement?.end && !feed[post.id]?.acknowledged,
+        )
+      : [];
+
+    const regularFeedIds = feedIds
+      ? feedIds.filter(
+          (post: { id: string }) =>
+            !!!feed[post.id]?.announcement?.end || feed[post.id]?.acknowledged,
+        )
+      : [];
+
     return (
-      <div>
-        <CreatePostCard
-          open={open}
-          openModal={openModal}
-          closeModal={closeModal}
-        />
+      <div className="pt-2">
+        <CreatePostCard openModal={openModal} />
         <PostBuilder
           open={open}
           openModal={openModal}
           closeModal={closeModal}
         />
-        {myProfileFeedLoading && <SkeletonLoader />}
-        <div className="mt-4">
-          {myProfileFeed?.pages?.[0].data?.result?.data.length === 0 ? (
-            <NoDataCard user={data?.fullName} />
+        <div className="pt-6">
+          {myProfileFeedLoading ? (
+            <SkeletonLoader />
+          ) : feedIds.length === 0 ? (
+            <div className="mt-[-0.5rem]">
+              <NoDataCard user={data?.fullName} dataType={'activity'} />
+            </div>
           ) : (
-            <>
-              {myProfileFeed?.pages?.[0].data?.result?.data?.map(
-                (post: any) => (
-                  <Post post={post} key={post.id} />
-                ),
-              )}
-            </>
+            <div className="flex flex-col gap-6">
+              {announcementFeedIds.map((post: { id: string }) => (
+                <Post post={feed[post.id]} key={post.id} />
+              ))}
+              {regularFeedIds.map((post: { id: string }) => (
+                <Post post={feed[post.id]} key={post.id} />
+              ))}
+            </div>
           )}
         </div>
       </div>
@@ -62,20 +90,51 @@ const ProfileActivityFeed: React.FC<IProfileActivityFeedProps> = ({
     const { data: peopleProfileFeed, isLoading: isPeopleProfileFeedLoading } =
       useInfinitePeopleProfileFeed(userId, {});
 
+    const feedIds = (
+      (peopleProfileFeed?.pages.flatMap((page) =>
+        page.data?.result?.data.map((post: { id: string }) => post),
+      ) as { id: string }[]) || []
+    )
+      ?.filter(({ id }) => !!feed[id])
+      .sort(
+        (a, b) =>
+          new Date(feed[b.id].createdAt).getTime() -
+          new Date(feed[a.id].createdAt).getTime(),
+      );
+
+    const announcementFeedIds = feedIds
+      ? feedIds.filter(
+          (post: { id: string }) =>
+            !!feed[post.id]?.announcement?.end && !feed[post.id]?.acknowledged,
+        )
+      : [];
+
+    const regularFeedIds = feedIds
+      ? feedIds.filter(
+          (post: { id: string }) =>
+            !!!feed[post.id]?.announcement?.end || feed[post.id]?.acknowledged,
+        )
+      : [];
+
     return (
-      <div>
+      <div className="pt-2">
         {isPeopleProfileFeedLoading && <SkeletonLoader />}
-        <div className="mt-4">
-          {peopleProfileFeed?.pages?.[0].data?.result?.data.length === 0 ? (
-            <NoDataCard user={data?.fullName} />
+        <div className="pt-2">
+          {isPeopleProfileFeedLoading ? (
+            <SkeletonLoader />
+          ) : feedIds.length === 0 ? (
+            <div className="mt-[-0.5rem]">
+              <NoDataCard user={data?.fullName} dataType={'activity'} />
+            </div>
           ) : (
-            <>
-              {peopleProfileFeed?.pages?.[0].data?.result?.data?.map(
-                (post: any) => (
-                  <Post post={post} key={post.id} />
-                ),
-              )}
-            </>
+            <div className="flex flex-col gap-6">
+              {announcementFeedIds.map((post: { id: string }) => (
+                <Post post={feed[post.id]} key={post.id} />
+              ))}
+              {regularFeedIds.map((post: { id: string }) => (
+                <Post post={feed[post.id]} key={post.id} />
+              ))}
+            </div>
           )}
         </div>
       </div>

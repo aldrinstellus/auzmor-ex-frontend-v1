@@ -1,8 +1,5 @@
 import Avatar from 'components/Avatar';
-import Card from 'components/Card';
-import React, { ReactElement } from 'react';
-import CircularBorder from './CircularBorder';
-import Icon from 'components/Icon';
+import { FC, ReactElement } from 'react';
 
 type MentionUserCardProps = {
   fullName: string;
@@ -11,7 +8,7 @@ type MentionUserCardProps = {
   email?: string;
 };
 
-const UserCard: React.FC<MentionUserCardProps> = ({
+const UserCard: FC<MentionUserCardProps> = ({
   fullName,
   image,
   active,
@@ -24,7 +21,7 @@ const UserCard: React.FC<MentionUserCardProps> = ({
         <div className="text-base text-neutral-900 font-bold">{fullName}</div>
         <div className="text-sm font-normal text-neutral-500">{email}</div>
         {/* <div className="flex items-center gap-x-2">
-          <Icon name="location" fill="#171717" />
+          <Icon name="location" color="text-neutral-900" />
           <div className="text-sm font-normal text-neutral-500">
             New York, USA
           </div>

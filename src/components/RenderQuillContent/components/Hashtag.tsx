@@ -1,11 +1,11 @@
-import React, { ReactElement, useContext, useEffect, useRef } from 'react';
+import { FC, ReactElement, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 type HashtagProps = {
   value: string;
 };
 
-const Hashtag: React.FC<HashtagProps> = ({ value }): ReactElement => {
+const Hashtag: FC<HashtagProps> = ({ value }): ReactElement => {
   const hashtagRef = useRef<HTMLElement>(null);
   const navigate = useNavigate();
 

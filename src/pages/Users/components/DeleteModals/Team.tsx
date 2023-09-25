@@ -1,4 +1,3 @@
-import React from 'react';
 import IconButton, {
   Size,
   Variant as IconVariant,
@@ -8,7 +7,7 @@ import Button, {
   Type as ButtonType,
 } from 'components/Button';
 import Modal from 'components/Modal';
-import { deleteTeam, deleteUser } from 'queries/users';
+import { deleteTeam } from 'queries/teams';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
@@ -18,30 +17,30 @@ import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
+import { useNavigate } from 'react-router-dom';
+import { FC } from 'react';
 export interface IDeleteTeamProps {
   open: boolean;
-  openModal: () => void;
   closeModal: () => void;
-  userId: string;
+  teamId: string;
+  isDetailPage?: boolean;
 }
 
-const DeleteTeam: React.FC<IDeleteTeamProps> = ({
+const DeleteTeam: FC<IDeleteTeamProps> = ({
   open,
-  openModal,
   closeModal,
-  userId,
+  teamId,
+  isDetailPage,
 }) => {
+  const navigate = useNavigate();
   const deleteTeamMutation = useMutation({
-    mutationKey: ['delete-team', userId],
+    mutationKey: ['delete-team', teamId],
     mutationFn: deleteTeam,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onError: (error) => {
       toast(<FailureToast content="Error deleting teams" dataTestId="" />, {
         closeButton: (
-          <Icon
-            name="closeCircleOutline"
-            stroke={twConfig.theme.colors.red['500']}
-            size={20}
-          />
+          <Icon name="closeCircleOutline" color="text-red-500" size={20} />
         ),
         style: {
           border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -54,20 +53,22 @@ const DeleteTeam: React.FC<IDeleteTeamProps> = ({
         theme: 'dark',
       });
     },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: (data, variables, context) => {
       closeModal();
       queryClient.invalidateQueries({ queryKey: ['teams'] });
       toast(
         <SuccessToast
           content="Team has been deleted successfully"
-          dataTestId="team-toaster"
+          dataTestId="team-toaster-message"
         />,
         {
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
+              dataTestId="team-toaster-close"
             />
           ),
           style: {
@@ -81,10 +82,11 @@ const DeleteTeam: React.FC<IDeleteTeamProps> = ({
           theme: 'dark',
         },
       );
+      if (isDetailPage) navigate('/teams');
     },
   });
 
-  const Header: React.FC = () => (
+  const Header: FC = () => (
     <div className="flex flex-wrap border-b-1 border-neutral-200 items-center">
       <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
         Delete Team?
@@ -92,14 +94,14 @@ const DeleteTeam: React.FC<IDeleteTeamProps> = ({
       <IconButton
         onClick={closeModal}
         icon={'close'}
-        dataTestId="close-team-modal"
+        dataTestId="delete-team-close"
         className="!flex-[0] !text-right !p-1 !mx-4 !my-3 !bg-inherit !text-neutral-900"
         variant={IconVariant.Primary}
       />
     </div>
   );
 
-  const Footer: React.FC = () => (
+  const Footer: FC = () => (
     <div className="flex justify-end space-x-3 items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
       <Button
         variant={ButtonVariant.Secondary}
@@ -114,8 +116,8 @@ const DeleteTeam: React.FC<IDeleteTeamProps> = ({
         loading={deleteTeamMutation.isLoading}
         size={Size.Small}
         type={ButtonType.Submit}
-        dataTestId="delete-team-delete"
-        onClick={() => deleteTeamMutation.mutate(userId)}
+        dataTestId="delete-team-cta"
+        onClick={() => deleteTeamMutation.mutate(teamId)}
       />
     </div>
   );

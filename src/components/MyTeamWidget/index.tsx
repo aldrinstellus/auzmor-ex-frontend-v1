@@ -1,9 +1,9 @@
-import React from 'react';
 import Card from 'components/Card';
+import { memo } from 'react';
 
 const MyTeamWidget = () => {
   return (
-    <div className="min-w-[290px]">
+    <div className="min-w-full">
       <Card className="p-10 rounded-9xl">
         <div>My Teams</div>
       </Card>
@@ -11,4 +11,4 @@ const MyTeamWidget = () => {
   );
 };
 
-export default MyTeamWidget;
+export default memo(MyTeamWidget);

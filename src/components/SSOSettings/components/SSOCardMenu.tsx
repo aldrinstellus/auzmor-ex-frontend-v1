@@ -7,7 +7,7 @@ import Modal from 'components/Modal';
 import useHover from 'hooks/useHover';
 import useModal from 'hooks/useModal';
 import { IdentityProvider, deleteSSO } from 'queries/organization';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import queryClient from 'utils/queryClient';
 
 type SSOCardMenuProps = {
@@ -16,7 +16,7 @@ type SSOCardMenuProps = {
   onClick: any;
 };
 
-const SSOCardMenu: React.FC<SSOCardMenuProps> = ({
+const SSOCardMenu: FC<SSOCardMenuProps> = ({
   idp,
   name,
   onClick,
@@ -66,7 +66,7 @@ const SSOCardMenu: React.FC<SSOCardMenuProps> = ({
       <Modal open={open}>
         <div className="flex items-center justify-between p-4">
           <p className="font-bold text-lg text-gray-900">Deactivate?</p>
-          <Icon name="close" hover={false} onClick={closeModal} />
+          <Icon name="close" onClick={closeModal} />
         </div>
         <Divider />
         <p className="p-4">Do you wish to deactivate {name}?</p>

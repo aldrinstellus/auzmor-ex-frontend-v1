@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { RefObject, useMemo } from 'react';
 import './index.css';
 import clsx from 'clsx';
 import {
@@ -17,7 +17,8 @@ export type ImageCropperProps = {
   src: string;
   shape?: Shape;
   className?: string;
-  cropperRef: React.RefObject<CropperRef>;
+  cropperRef: RefObject<CropperRef>;
+  aspectRatio?: number;
   // customHeight: number;
   // customWidth: number;
   // customTop: number;
@@ -29,6 +30,7 @@ const ImageCropper = ({
   shape = Shape.Circle,
   className = '',
   cropperRef,
+  aspectRatio = 7.38,
 }: // customHeight,
 // customWidth,
 // customTop,
@@ -70,7 +72,7 @@ ImageCropperProps) => {
           src={src}
           ref={cropperRef}
           stencilProps={{
-            aspectRatio: 7.38 / 1,
+            aspectRatio: aspectRatio / 1,
             handlers: {
               north: false,
               eastNorth: false,

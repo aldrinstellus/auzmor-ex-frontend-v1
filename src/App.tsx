@@ -1,4 +1,3 @@
-import React from 'react';
 import './App.css';
 import Router from './components/Router';
 import AuthProvider from 'contexts/AuthContext';

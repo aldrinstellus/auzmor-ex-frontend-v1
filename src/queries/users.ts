@@ -5,6 +5,9 @@ import {
   useQuery,
 } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
+import { IDepartment } from './department';
+import { ILocation } from './location';
+import { IDesignation } from './designation';
 
 // for future filters
 export enum PeopleFilterKeys {
@@ -53,12 +56,6 @@ export interface IPostUsers {
   users: IPostUser[];
 }
 
-export interface ITeamPayload {
-  name: string;
-  category: string;
-  description?: string;
-}
-
 export enum UserStatus {
   Created = 'CREATED',
   Invited = 'INVITED',
@@ -94,43 +91,80 @@ export interface IGetUser {
   lastName?: string;
   userName?: string;
   primaryEmail?: string;
-  org: {
+  org?: {
     id: string;
     name?: string;
     domain: string;
   };
-  workEmail: string;
+  workEmail?: string;
   profileImage?: { blurHash: string; id: string; original: string };
-  role: UserRole;
-  flags: {
+  role?: UserRole;
+  flags?: {
     isDeactivated: boolean;
     isReported: boolean;
   };
-  createdAt: string;
-  status: string;
+  createdAt?: string;
+  status?: string;
   timeZone?: string;
-  workLocation?: string;
+  workLocation?: ILocation;
+  department?: IDepartment;
+  designation?: IDesignation;
+  coverImage?: { blurHash: string; id: string; original: string };
+  freezeEdit?: {
+    department?: boolean;
+    designation?: boolean;
+    firstName?: boolean;
+    fullName?: boolean;
+    joinDate?: boolean;
+    lastName?: boolean;
+    manager?: boolean;
+    middleName?: boolean;
+  };
+  manager?: {
+    designation: string;
+    fullName: string;
+    profileImage: {
+      id: string;
+      original: string;
+      blurHash: string;
+    };
+    userId: string;
+    workLocation: string;
+    status: string;
+    department: string;
+  };
+  permissions?: string[];
+  workPhone?: string | null;
+  isPresent?: boolean;
 }
 
-export const getAllUser = ({
+interface IGetOrgChartPayload {
+  q?: string;
+  root?: string;
+  target?: string;
+  departments?: string[];
+  locations?: string[];
+  status?: string; // Active, Invited, Inactive
+  expand?: number; // +/- integer. Expand -> root +/- number levels
+  expandAll?: boolean;
+}
+
+export const getAllUser = async ({
   pageParam = null,
   queryKey,
 }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
   if (pageParam === null) {
-    if (typeof queryKey[1] === 'object') {
-      if (!queryKey[1]?.status || queryKey[1]?.status === 'ALL') {
-        return apiService.get('/users', {
-          q: queryKey[1]?.q,
-          role: queryKey[1]?.role,
-        });
-      } else {
-        return apiService.get('/users', queryKey[1]);
-      }
-    }
-  } else return apiService.get(pageParam);
+    return await apiService.get('/users', queryKey[1]);
+  } else return await apiService.get(pageParam);
 };
 
-export const useInfiniteUsers = (q?: Record<string, any>) => {
+export const useInfiniteUsers = ({
+  startFetching = true,
+  q,
+}: {
+  startFetching?: boolean;
+  q?: Record<string, any>;
+}) => {
   return useInfiniteQuery({
     queryKey: ['users', q],
     queryFn: getAllUser,
@@ -146,6 +180,7 @@ export const useInfiniteUsers = (q?: Record<string, any>) => {
       return currentPage?.data?.result?.paging?.prev;
     },
     staleTime: 5 * 60 * 1000,
+    enabled: startFetching,
   });
 };
 
@@ -177,6 +212,18 @@ export const useDomainExists = (domain: string) => {
     staleTime: 1000,
   });
 };
+
+const getNotificationSettings = async () => {
+  const { data } = await apiService.get('/notifications/settings');
+  return data;
+};
+
+export const useNotificationSettings = () =>
+  useQuery({
+    queryKey: ['notification-settings'],
+    queryFn: getNotificationSettings,
+    staleTime: 15 * 60 * 1000,
+  });
 
 // verify invite
 export const verifyInviteLink = async (q: Record<string, any>) => {
@@ -228,32 +275,8 @@ export const acceptInviteSetPassword = async (q: Record<string, any>) => {
   return await apiService.put('/users/invite/reset-password', q);
 };
 
-export const getAllTeams = async ({
-  pageParam = null,
-  queryKey,
-}: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
-  if (pageParam === null) {
-    return apiService.get('/teams', queryKey[1]);
-  } else return apiService.get(pageParam);
-};
-
-export const createTeams = async (payload: ITeamPayload) => {
-  const data = await apiService.post('/teams', payload);
-  return new Promise((res) => {
-    res(data);
-  });
-};
-
-export const updateTeam = async (id: string, payload: ITeamPayload) => {
-  await apiService.put(`/teams/${id}`, payload);
-};
-
-// delete team by id -> teams/:id
-export const deleteTeam = async (id: string) => {
-  const data = await apiService.delete(`/teams/${id}`);
-  return new Promise((res) => {
-    res(data);
-  });
+export const getOrgChart = async ({ queryKey }: QueryFunctionContext<any>) => {
+  return await apiService.get('/users/chart', queryKey[1]);
 };
 
 /* REACT QUERY */
@@ -268,7 +291,11 @@ export const useSingleUser = (userId: string) => {
 };
 
 export const updateUserAPI = async (user: IUserUpdate) => {
-  const { id, ...rest } = user;
+  const {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    id,
+    ...rest
+  } = user;
   const data = await apiService.patch(`/users/${user.id}`, { ...rest });
   return data;
 };
@@ -331,21 +358,14 @@ export const useIsUserExistAuthenticated = (email = '') => {
   });
 };
 
-export const useInfiniteTeams = (q?: Record<string, any>) => {
-  return useInfiniteQuery({
-    queryKey: ['teams', q],
-    queryFn: getAllTeams,
-    getNextPageParam: (lastPage: any) => {
-      const pageDataLen = lastPage?.data?.result?.data?.length;
-      const pageLimit = lastPage?.data?.result?.paging?.limit;
-      if (pageDataLen < pageLimit) {
-        return null;
-      }
-      return lastPage?.data?.result?.paging?.next;
-    },
-    getPreviousPageParam: (currentPage: any) => {
-      return currentPage?.data?.result?.paging?.prev;
-    },
+export const useOrgChart = (
+  payload?: IGetOrgChartPayload,
+  rest?: Record<string, any>,
+) => {
+  return useQuery({
+    queryKey: ['organization-chart', payload],
+    queryFn: getOrgChart,
     staleTime: 5 * 60 * 1000,
+    ...rest,
   });
 };

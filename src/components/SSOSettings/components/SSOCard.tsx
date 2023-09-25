@@ -1,6 +1,6 @@
 import Button from 'components/Button';
 import Card from 'components/Card';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import SSOCardMenu from './SSOCardMenu';
 import { IdentityProvider } from 'queries/organization';
 import { ISSOSetting } from '..';
@@ -18,7 +18,7 @@ export type SSOCardProps = {
   dataTestId?: string;
 };
 
-const SSOCard: React.FC<SSOCardProps> = ({
+const SSOCard: FC<SSOCardProps> = ({
   logo,
   description,
   id,

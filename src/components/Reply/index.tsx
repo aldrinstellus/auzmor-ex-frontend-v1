@@ -1,7 +1,5 @@
-import React, { useRef, useState } from 'react';
+import { FC, useState } from 'react';
 import { useInfiniteReplies } from 'queries/reaction';
-/* Comment Level RTE - Comment on the comment level 2 */
-import { useInfiniteComments } from 'queries/comments';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import { Reply } from 'components/Reply/Reply';
@@ -14,11 +12,9 @@ import { CommentsRTE } from 'components/Comments/components/CommentsRTE';
 import { EntityType } from 'queries/files';
 import {
   IMG_FILE_SIZE_LIMIT,
-  IMedia,
   IMediaValidationError,
   MediaValidationError,
 } from 'contexts/CreatePostContext';
-import { getMediaObj } from 'utils/misc';
 import { validImageTypesForComments } from 'components/Comments';
 import { useUploadState } from 'hooks/useUploadState';
 
@@ -32,7 +28,7 @@ export interface activeCommentsDataType {
   type: string;
 }
 
-const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
+const Comments: FC<CommentsProps> = ({ entityId, className }) => {
   const { user } = useAuth();
   const {
     inputRef,
@@ -73,8 +69,8 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
         </div>
       ) : (
         <div className="ml-8">
-          <div className="flex flex-row items-center justify-between mb-4">
-            <div className="flex-none grow-0 order-none pr-2">
+          <div className="flex flex-row items-center justify-between mb-4 gap-2">
+            <div>
               <Avatar
                 name={user?.name || 'U'}
                 size={32}
@@ -82,7 +78,7 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
               />
             </div>
             <CommentsRTE
-              className="w-full py-1"
+              className="w-0 flex-grow py-1"
               entityId={entityId}
               entityType={EntityType.Comment.toLocaleLowerCase()}
               inputRef={inputRef}
@@ -102,15 +98,17 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
           {replyIds && replyIds.length > 0 && (
             <div>
               {isCreateCommentLoading && <CommentSkeleton />}
-              {replyIds
-                .filter(({ id }) => !!comment[id])
-                .map(({ id }) => (
-                  <Reply
-                    // handleClick={handleClick}
-                    comment={comment[id]}
-                    key={id}
-                  />
-                ))}
+              <div className="flex flex-col gap-4">
+                {replyIds
+                  .filter(({ id }) => !!comment[id])
+                  .map(({ id }) => (
+                    <Reply
+                      // handleClick={handleClick}
+                      comment={comment[id]}
+                      key={id}
+                    />
+                  ))}
+              </div>
               {hasNextPage && !isFetchingNextPage && (
                 <LoadMore onClick={fetchNextPage} label="Load more replies" />
               )}

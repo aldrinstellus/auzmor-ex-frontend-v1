@@ -1,19 +1,21 @@
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import React, { useContext } from 'react';
+import { FC, useContext } from 'react';
 import { FieldValues, UseFormHandleSubmit } from 'react-hook-form';
 import { afterXUnit } from 'utils/time';
 import { CreateAnnouncementMode } from '.';
 import { useMutation } from '@tanstack/react-query';
 import { IPost, updatePost } from 'queries/post';
 import queryClient from 'utils/queryClient';
-import { Dayjs } from 'dayjs';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
+import { useFeedStore } from 'stores/feedStore';
+import { produce } from 'immer';
+import useAuth from 'hooks/useAuth';
 
 export interface IFooterProps {
   handleSubmit: UseFormHandleSubmit<FieldValues>;
@@ -24,7 +26,7 @@ export interface IFooterProps {
   getFormValues?: any;
 }
 
-const Footer: React.FC<IFooterProps> = ({
+const Footer: FC<IFooterProps> = ({
   handleSubmit,
   isValid,
   mode,
@@ -32,8 +34,11 @@ const Footer: React.FC<IFooterProps> = ({
   data,
   getFormValues,
 }) => {
+  const getPost = useFeedStore((state) => state.getPost);
+  const updateFeed = useFeedStore((state) => state.updateFeed);
   const { setAnnouncement, setActiveFlow, announcement } =
     useContext(CreatePostContext);
+  const { user } = useAuth();
 
   const onSubmit = (data: any) => {
     setAnnouncement({
@@ -50,40 +55,64 @@ const Footer: React.FC<IFooterProps> = ({
 
   const makePostAnnouncementMutation = useMutation({
     mutationKey: ['makePostAnnouncementMutation', data?.id],
-    mutationFn: async () => {
+    mutationFn: () => {
       const formData = getFormValues();
-      const expiryDate =
-        (formData?.date as Dayjs)?.toDate().toISOString().substring(0, 19) +
-        'Z';
+      const expiryDate = formData?.date.toISOString().substring(0, 19) + 'Z';
       const fileIds = data?.files?.map((file: any) => file.id);
-      if (data?.id)
-        await updatePost(data?.id, {
-          ...data,
-          files: fileIds,
-          isAnnouncement: true,
-          announcement: {
-            end:
-              expiryDate ||
-              formData?.expiryOption?.value ||
-              afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
-          },
-        });
+      return updatePost(data!.id!, {
+        ...data,
+        files: fileIds,
+        type: 'UPDATE',
+        isAnnouncement: true,
+        announcement: {
+          end:
+            expiryDate ||
+            formData?.expiryOption?.value ||
+            afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
+        },
+        shoutoutRecipients:
+          data?.shoutoutRecipients && data?.shoutoutRecipients.length > 0
+            ? data.shoutoutRecipients.map((user) => user.userId)
+            : [],
+      });
     },
-    onError: () => {},
+    onMutate: (_variables) => {
+      const previousPost = getPost(data!.id!);
+      const formData = getFormValues();
+      const expiryDate = formData?.date.toISOString().substring(0, 19) + 'Z';
+      if (data?.id) {
+        updateFeed(
+          data.id,
+          produce(getPost(data!.id || ''), (draft) => {
+            (draft.announcement = {
+              actor: {
+                userId: user?.id,
+                ...user,
+              },
+              end:
+                expiryDate ||
+                formData?.expiryOption?.value ||
+                afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
+            }),
+              (draft.isAnnouncement = true),
+              (draft.acknowledged = false);
+          }),
+        );
+      }
+      return { previousPost };
+    },
+    onError: (error, variables, context) => {
+      updateFeed(context!.previousPost.id!, context!.previousPost!);
+    },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['feed']);
       toast(
         <SuccessToast
-          content="Your announcement was converted to a post"
+          content="Your post  was converted to an announcement"
           data-testid="notification-announcement-to-post"
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              stroke={twConfig.theme.colors['black-white'].white}
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-white" size={20} />
           ),
           style: {
             border: `1px solid ${twConfig.theme.colors.primary['300']}`,
@@ -97,12 +126,16 @@ const Footer: React.FC<IFooterProps> = ({
         },
       );
       closeModal();
+      await queryClient.invalidateQueries([
+        'feed-announcements-widget',
+        'post-announcements-widget',
+      ]);
     },
   });
   return (
     <div>
       {mode === CreateAnnouncementMode.POST_BUILDER && (
-        <div className="flex justify-between items-center h-16 p-6 bg-blue-50">
+        <div className="flex justify-between items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
             variant={ButtonVariant.Secondary}
             label="Clear"
@@ -130,7 +163,7 @@ const Footer: React.FC<IFooterProps> = ({
         </div>
       )}
       {mode === CreateAnnouncementMode.DIRECT && (
-        <div className="flex justify-between items-center h-16 p-6 bg-blue-50">
+        <div className="flex justify-between items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
             variant={ButtonVariant.Secondary}
             label="Cancel"

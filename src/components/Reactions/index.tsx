@@ -1,9 +1,5 @@
-import React, { useRef, useState } from 'react';
-import IconButton, {
-  Variant as IconVariant,
-  Size as SizeVariant,
-} from 'components/IconButton';
-import { useMutation } from '@tanstack/react-query';
+import { FC, useRef, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createReaction, deleteReaction } from 'queries/reaction';
 import clsx from 'clsx';
 import { useFeedStore } from 'stores/feedStore';
@@ -54,7 +50,7 @@ const reactionNameMap: Record<string, string> = {
   [ReactionType.Insightful]: 'Insightful',
 };
 
-const Likes: React.FC<LikesProps> = ({
+const Likes: FC<LikesProps> = ({
   reaction,
   entityId,
   entityType,
@@ -62,7 +58,8 @@ const Likes: React.FC<LikesProps> = ({
   queryKey,
   dataTestIdPrefix,
 }) => {
-  const { feed, updateFeed } = useFeedStore();
+  const getPost = useFeedStore((state) => state.getPost);
+  const updateFeed = useFeedStore((state) => state.updateFeed);
   const { comment, updateComment } = useCommentStore();
   const [showTooltip, setShowTooltip] = useState(true);
 
@@ -75,37 +72,39 @@ const Likes: React.FC<LikesProps> = ({
 
   const nameStyle = clsx(
     {
-      'text-[#3F83F8]': reaction === 'like',
+      'text-blue-900': reaction === 'like',
     },
 
     {
-      'text-[#F98080]': reaction === 'love',
+      'text-orange-500': reaction === 'love',
     },
     {
-      'text-[#FDBA74]': reaction === 'celebrate',
+      'text-yellow-500': reaction === 'celebrate',
     },
     {
-      'text-[#FB923C]': reaction === 'support',
+      'text-red-500': reaction === 'support',
     },
     {
-      'text-[#8DA2FB]': reaction === 'funny',
+      'text-yellow-500': reaction === 'funny',
     },
     {
-      'text-yellow-400': reaction === 'insightful',
+      'text-yellow-500': reaction === 'insightful',
     },
   );
 
   const nameIcon = reactionIconMap[reaction];
+  const queryClient = useQueryClient();
 
   const name = reactionNameMap[reaction];
   const createReactionMutation = useMutation({
     mutationKey: ['create-reaction-mutation'],
     mutationFn: createReaction,
-    onSuccess: (data, variables) => {
+    onMutate: (variables) => {
       if (variables.entityType === 'post') {
+        const previousPost = getPost(variables.entityId);
         updateFeed(
           variables.entityId,
-          produce(feed[variables.entityId], (draft) => {
+          produce(getPost(variables.entityId), (draft) => {
             (draft.reactionsCount =
               draft.reactionsCount &&
               Object.keys(draft.reactionsCount).length > 0
@@ -137,14 +136,14 @@ const Likes: React.FC<LikesProps> = ({
                     }
                 : { [variables.reaction as string]: 1 }),
               (draft.myReaction = {
-                reaction: data.reaction,
-                createdBy: data.createdBy,
-                id: data.id,
-                type: data.type,
+                reaction: variables.reaction,
+                type: variables.entityType,
               }); // if reactions count does not exist at all
           }),
         );
+        return { previousPost };
       } else if (variables.entityType === 'comment') {
+        const previousComment = comment[variables.entityId];
         updateComment(
           variables.entityId,
           produce(comment[variables.entityId], (draft) => {
@@ -177,13 +176,44 @@ const Likes: React.FC<LikesProps> = ({
                     }
                 : { [variables.reaction as string]: 1 }),
               (draft.myReaction = {
-                reaction: data.reaction,
-                createdBy: data.createdBy,
-                id: data.id,
-                type: data.type,
+                reaction: variables.reaction,
+                type: variables.entityType,
               });
           }),
         );
+        return { previousComment };
+      }
+    },
+    onSuccess: (data, variables) => {
+      if (variables.entityType === 'post') {
+        updateFeed(
+          variables.entityId,
+          produce(getPost(variables.entityId), (draft) => {
+            draft.myReaction = {
+              ...draft.myReaction,
+              createdBy: data.createdBy,
+              id: data.id,
+            }; // if reactions count does not exist at all
+          }),
+        );
+      } else if (variables.entityType === 'comment') {
+        updateComment(
+          variables.entityId,
+          produce(comment[variables.entityId], (draft) => {
+            draft.myReaction = {
+              ...draft.myReaction,
+              createdBy: data.createdBy,
+              id: data.id,
+            };
+          }),
+        );
+      }
+    },
+    onError: (error, variables, context) => {
+      if (variables.entityType === 'post') {
+        updateFeed(context!.previousPost!.id!, context!.previousPost!);
+      } else if (variables.entityType === 'comment') {
+        updateComment(context!.previousComment!.id!, context!.previousComment!);
       }
     },
   });
@@ -192,17 +222,23 @@ const Likes: React.FC<LikesProps> = ({
     mutationKey: ['delete-reaction-mutation'],
     mutationFn: deleteReaction,
     onMutate: (variables) => {
+      if (variables.id === '') {
+        queryClient.cancelQueries({
+          queryKey: ['create-reaction-mutation', 'delete-reaction-mutation'],
+        });
+        return;
+      }
       if (variables.entityType === 'post') {
-        const previousPost = feed[variables.entityId];
+        const previousPost = getPost(variables.entityId);
         updateFeed(
           variables.entityId,
-          produce(feed[variables.entityId], (draft) => {
+          produce(getPost(variables.entityId), (draft) => {
             (draft.myReaction = undefined),
               (draft.reactionsCount = {
-                ...feed[variables.entityId].reactionsCount,
-                [feed[variables.entityId]!.myReaction!.reaction!]:
-                  feed[variables.entityId].reactionsCount[
-                    feed[variables.entityId]!.myReaction!.reaction!
+                ...getPost(variables.entityId).reactionsCount,
+                [getPost(variables.entityId)!.myReaction!.reaction!]:
+                  getPost(variables.entityId).reactionsCount[
+                    getPost(variables.entityId)!.myReaction!.reaction!
                   ] - 1,
               });
           }),
@@ -265,12 +301,12 @@ const Likes: React.FC<LikesProps> = ({
   }: IReaction) => {
     return (
       <div className="space-x-0 relative [&_span]:hover:visible">
-        <span className="invisible absolute rounded-7xl bg-black opacity-70 text-white text-xs p-2 -mt-10">
+        <span className="invisible absolute rounded-7xl bg-black text-white text-xs py-1 px-2 -mt-10">
           {name}
         </span>
         <Icon
           name={icon}
-          className="hover:scale-150"
+          className="hover:scale-150 transition-all"
           onClick={() => {
             handleReaction(type);
             setShowTooltip(false);
@@ -291,10 +327,10 @@ const Likes: React.FC<LikesProps> = ({
       {showTooltip ? (
         <span
           ref={tooltipRef}
-          className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition text-white p-1 rounded absolute  bottom-full  whitespace-nowrap"
+          className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition text-white p-1 rounded absolute bottom-full whitespace-nowrap"
         >
           <div
-            className={`h-[42px] flex flex-row items-center bg-white rounded-7xl shadow-lg py-2 px-3 space-x-4 mb-3.5 -ml-1`}
+            className={`h-[42px] flex items-center bg-white rounded-7xl shadow-lg py-2 px-3 gap-4 mb-4`}
             data-testid={dataTestIdPrefix}
           >
             <Reactions
@@ -347,7 +383,7 @@ const Likes: React.FC<LikesProps> = ({
         className="flex items-center space-x-1"
         onClick={() => {
           switch (true) {
-            case !feed[entityId]?.myReaction && queryKey === 'feed':
+            case !getPost(entityId)?.myReaction && queryKey === 'feed':
               handleReaction('like');
               break;
             case !comment[entityId]?.myReaction && queryKey === 'comments':
@@ -363,7 +399,7 @@ const Likes: React.FC<LikesProps> = ({
         <Icon name={nameIcon ? nameIcon : 'likeIcon'} size={16} />
         <div
           className={`text-xs font-normal ${
-            name ? nameStyle : 'text-neutral-500 '
+            name ? nameStyle : 'text-neutral-500 group-hover:text-primary-500'
           } `}
         >
           {name ? name : 'Like'}

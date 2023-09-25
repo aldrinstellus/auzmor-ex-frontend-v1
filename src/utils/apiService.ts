@@ -1,5 +1,8 @@
 import qs from 'qs';
-import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import axios, {
+  AxiosInstance,
+  // InternalAxiosRequestConfig
+} from 'axios';
 
 import { getItem } from './persist';
 

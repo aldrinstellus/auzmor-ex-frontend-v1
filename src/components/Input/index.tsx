@@ -1,5 +1,12 @@
 import clsx from 'clsx';
-import React, { ReactElement, useMemo, useRef } from 'react';
+import {
+  FC,
+  MouseEvent,
+  ReactElement,
+  ReactNode,
+  useMemo,
+  useRef,
+} from 'react';
 import { Control, useController } from 'react-hook-form';
 import Icon from 'components/Icon';
 
@@ -19,6 +26,7 @@ export type InputProps = {
   id?: string;
   variant?: Variant;
   size?: Size;
+  fieldIcon?: ReactNode;
   rightIcon?: string;
   rightElement?: ReactElement;
   leftIcon?: string;
@@ -35,8 +43,8 @@ export type InputProps = {
   errorDataTestId?: string;
   control?: Control<Record<string, any>>;
   label?: string;
-  onLeftIconClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-  onRightIconClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onLeftIconClick?: (e: MouseEvent<HTMLDivElement>) => void;
+  onRightIconClick?: (e: MouseEvent<HTMLDivElement>) => void;
   onEnter?: any;
   customLabelRightElement?: ReactElement;
   isClearable?: boolean;
@@ -45,13 +53,14 @@ export type InputProps = {
   maxLength?: number;
 };
 
-const Input: React.FC<InputProps> = ({
+const Input: FC<InputProps> = ({
   name,
   id,
   variant = Variant.Text,
   size = Size.Medium,
   rightIcon = null,
   leftIcon = null,
+  fieldIcon = null,
   rightElement,
   defaultValue = '',
   placeholder = '',
@@ -87,7 +96,7 @@ const Input: React.FC<InputProps> = ({
           'focus:border-primary-500 focus:ring-primary-500': !error,
         },
         {
-          'border-red-500 focus:border-red-500 focus:ring-red-500 text-red-500':
+          'border-red-500 focus:border-red-500 focus:ring-red-500 text-red-500 placeholder-red-500 bg-red-50':
             error,
         },
         {
@@ -112,7 +121,7 @@ const Input: React.FC<InputProps> = ({
           'py-3': size === Size.Large,
         },
         {
-          'bg-neutral-100': disabled,
+          'bg-neutral-100 text-neutral-400': disabled,
         },
         {
           'w-full rounded-19xl border border-neutral-200 focus:outline-none':
@@ -153,19 +162,21 @@ const Input: React.FC<InputProps> = ({
 
   return (
     <div className={`relative ${className}`}>
-      <div className="flex items-center justify-between">
-        <div className={labelStyle}>
-          {label}
-          <span className="text-red-500">{required && '*'}</span>
-        </div>
-        {showCounter && (
-          <div className="text-sm text-neutral-500">
-            {inputRef?.current?.value.length || defaultValue.length || 0}/
-            {maxLength}
+      {(label || showCounter || customLabelRightElement) && (
+        <div className="flex items-center justify-between">
+          <div className={labelStyle}>
+            {label}
+            <span className="text-red-500">{required && '*'}</span>
           </div>
-        )}
-        {customLabelRightElement && customLabelRightElement}
-      </div>
+          {showCounter && (
+            <div className="text-sm text-neutral-500">
+              {inputRef?.current?.value.length || defaultValue.length || 0}/
+              {maxLength}
+            </div>
+          )}
+          {customLabelRightElement && customLabelRightElement}
+        </div>
+      )}
       <label
         className={`flex justify-between flex-1 relative items-center my-1 w-full`}
         htmlFor={id}
@@ -173,9 +184,15 @@ const Input: React.FC<InputProps> = ({
         <div className="flex relative items-center w-full">
           {leftIcon && (
             <div className="absolute ml-5" onClick={onLeftIconClick}>
-              <Icon disabled name={leftIcon} size={16} />
+              <Icon
+                disabled
+                name={leftIcon}
+                size={16}
+                className="text-neutral-500"
+              />
             </div>
           )}
+          {fieldIcon}
           <input
             id={id}
             name={field.name}
@@ -186,17 +203,18 @@ const Input: React.FC<InputProps> = ({
             data-testid={dataTestId}
             defaultValue={defaultValue}
             value={field.value}
-            ref={field.ref}
+            ref={inputRef}
+            maxLength={maxLength}
             onChange={field.onChange}
             onKeyDown={onEnter}
             onBlur={field.onBlur}
           />
           {isClearable && !!field.value && (
-            <div className="absolute right-2">
+            <div className="absolute right-2 p-2">
               <Icon
                 name="close"
                 size={16}
-                className="p-2 rounded-7xl bg-white"
+                className="rounded-7xl bg-white"
                 onClick={() => field.onChange('')}
               />
             </div>

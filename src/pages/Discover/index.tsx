@@ -1,7 +1,8 @@
-import React from 'react';
+import { FC } from 'react';
+
 interface IDiscoverProps {}
 
-const Discover: React.FC<IDiscoverProps> = () => {
+const Discover: FC<IDiscoverProps> = () => {
   return <div>Discover Page</div>;
 };
 

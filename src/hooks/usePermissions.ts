@@ -1,8 +1,8 @@
 import useAuth from './useAuth';
 
-const usePermissions = (scope: string) => {
+const usePermissions = (_scope: string) => {
   const { user } = useAuth();
-  return {};
+  return { user };
 };
 
 export default usePermissions;

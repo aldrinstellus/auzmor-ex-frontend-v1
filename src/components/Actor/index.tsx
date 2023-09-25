@@ -1,138 +1,130 @@
-import React from 'react';
+import { FC, useMemo } from 'react';
 import Avatar from 'components/Avatar';
-import { CREATE_POST, VIEW_POST } from './constant';
+import { VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
-import { ICreatedBy } from 'queries/post';
+import { IAudience, ICreatedBy } from 'queries/post';
 import { Link } from 'react-router-dom';
-import clsx from 'clsx';
-import Icon from 'components/Icon';
 import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
+import AudiencePopup from 'components/AudiencePopup';
+import Tooltip, { Variant } from 'components/Tooltip';
+import UserCard from 'components/UserCard';
 
 type ActorProps = {
-  visibility: string;
   contentMode?: string;
   createdTime?: string;
   createdBy?: ICreatedBy;
   dataTestId?: string;
   disabled?: boolean;
+  audience?: IAudience[];
+  entityId?: string;
+  postType?: string;
 };
 
-const Actor: React.FC<ActorProps> = ({
-  visibility,
+const Actor: FC<ActorProps> = ({
   contentMode,
   createdTime,
   createdBy,
   dataTestId,
-  disabled = false,
+  postType,
+  // disabled = false,
+  entityId,
+  audience,
 }) => {
   const { user } = useAuth();
 
-  const actorStyles = clsx({
-    'flex justify-between items-center mx-6 mt-6 mb-4': true,
-  });
-
-  const postVisibilityStylesContainer = clsx(
-    {
-      'text-neutral-900 rounded-17xl hover:rounded-17xl': disabled,
-    },
-    {
-      'cursor-pointer': !disabled,
-    },
-  );
-
-  const postVisibilityStyles = clsx({
-    'flex justify-between items-center border border-neutral-300 rounded-17xl py-1.5 px-3':
-      true,
-  });
-
-  const iconStyle = clsx({
-    'text-neutral-400': disabled,
-  });
-
-  const visibilityStyle = clsx(
-    {
-      'text-xxs text-neutral-900 font-medium ml-1.5': true,
-    },
-    {
-      'text-neutral-400': disabled,
-    },
-  );
+  const actionLabel = useMemo(() => {
+    if (postType === 'BIRTHDAY') {
+      return 'is celebrating their birthday';
+    }
+    if (postType === 'WORK_ANNIVERSARY') {
+      return 'is celebrating their work anniversary';
+    }
+    if (postType === 'NEW_JOINEE') {
+      return 'is a new joinee';
+    }
+    if (postType === 'POLL') {
+      return 'shared a poll';
+    }
+    if (contentMode === VIEW_POST) {
+      return 'shared a post';
+    }
+    return '';
+  }, [postType]);
 
   return (
-    <div className={actorStyles}>
-      <div className="flex items-center space-x-4">
-        <div>
-          <Link
-            to={`${
-              createdBy?.userId && createdBy.userId !== user?.id
-                ? '/users/' + createdBy.userId
-                : '/profile'
-            }`}
+    <div className="flex items-center gap-4 flex-1">
+      <div>
+        <Link
+          to={`${
+            createdBy?.userId && createdBy.userId !== user?.id
+              ? '/users/' + createdBy.userId
+              : '/profile'
+          }`}
+        >
+          <Avatar
+            name={getFullName(createdBy) || 'U'}
+            size={32}
+            image={getProfileImage(createdBy)}
+            bgColor={getAvatarColor(createdBy)}
+          />
+        </Link>
+      </div>
+      <div className="flex flex-col flex-1">
+        <div
+          className="font-bold text-sm text-neutral-900 flex gap-1"
+          data-testid={dataTestId}
+        >
+          <Tooltip
+            tooltipContent={
+              <UserCard
+                user={{
+                  id: createdBy?.userId || '',
+                  fullName: createdBy?.fullName || 'Field not specified',
+                  workEmail: createdBy?.email || 'Field not specified',
+                  workLocation: {
+                    locationId: '',
+                    name: createdBy?.workLocation || 'Field not specified',
+                  },
+                  profileImage: createdBy?.profileImage,
+                }}
+              />
+            }
+            variant={Variant.Light}
+            className="!p-4 !shadow-md !rounded-9xl !z-[999]"
           >
-            <Avatar
-              name={getFullName(createdBy) || 'U'}
-              size={32}
-              image={
-                createdBy
-                  ? getProfileImage(createdBy)
-                  : user
-                  ? getProfileImage(user)
-                  : ''
-              }
-              bgColor={getAvatarColor(createdBy)}
-            />
-          </Link>
-        </div>
-        <div>
-          <Link
-            to={`${
-              createdBy?.userId && createdBy.userId !== user?.id
-                ? '/users/' + createdBy.userId
-                : '/profile'
-            }`}
-          >
-            <div
-              className="font-bold text-sm text-neutral-900"
-              data-testid={dataTestId}
+            <Link
+              to={`${
+                createdBy?.userId && createdBy.userId !== user?.id
+                  ? '/users/' + createdBy.userId
+                  : '/profile'
+              }`}
+              className="hover:text-primary-500 hover:underline"
             >
               {createdBy
                 ? getFullName(createdBy)
                 : user
                 ? getFullName(user)
                 : ''}
-              {contentMode === VIEW_POST ? (
-                <span className="ml-1 text-sm font-normal text-neutral-900">
-                  shared a post
-                </span>
-              ) : null}
-            </div>
-          </Link>
-          {contentMode === VIEW_POST ? (
-            <div className="flex items-center space-x-2">
-              <div
-                className="text-xs font-normal text-neutral-500"
-                data-testid="feed-post-time"
-              >
-                {createdTime}
-              </div>
-              <div className="bg-neutral-500 rounded-full w-2 h-2" />
-              <Icon name="globalOutline" size={16} />
-            </div>
-          ) : null}
+            </Link>
+          </Tooltip>
+
+          <span className="text-sm font-normal text-neutral-900">
+            {actionLabel}
+          </span>
         </div>
-      </div>
-      <div className={postVisibilityStylesContainer}>
-        {contentMode === CREATE_POST && (
-          <div
-            className={postVisibilityStyles}
-            data-testid={`feed-createpost-visibility-${visibility.toLowerCase()}`}
-          >
-            <div className={iconStyle}>
-              <Icon name="globalOutline" size={16} />
+        {/* </Link> */}
+        {contentMode === VIEW_POST ? (
+          <div className="flex items-center gap-2">
+            <div
+              className="text-xs font-normal text-neutral-500"
+              data-testid="feed-post-time"
+            >
+              {createdTime}
             </div>
-            <div className={visibilityStyle}>{visibility}</div>
+            <div className="bg-neutral-500 rounded-full w-1 h-1" />
+            <AudiencePopup entityId={entityId} audience={audience} />
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   );

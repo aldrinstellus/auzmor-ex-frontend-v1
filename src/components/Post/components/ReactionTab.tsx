@@ -1,5 +1,5 @@
 import { IGetReaction, useInfiniteReactions } from 'queries/reaction';
-import React, { memo, useEffect } from 'react';
+import { FC, memo, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import ReactionRow from './ReactionRow';
 import ReactionSkeleton from './ReactionSkeleton';
@@ -15,7 +15,7 @@ export interface IReactionTabProps {
   getReactionQuery: IGetReactionQuery;
 }
 
-const ReactionTab: React.FC<IReactionTabProps> = ({ getReactionQuery }) => {
+const ReactionTab: FC<IReactionTabProps> = ({ getReactionQuery }) => {
   const { ref, inView } = useInView();
 
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import {
   Control,
   FieldArrayWithId,
@@ -25,7 +25,7 @@ export interface IInviteFormRowProps {
   member: { fullName: string; workEmail: string; role: IRoleOption };
 }
 
-const InviteFormRow: React.FC<IInviteFormRowProps> = ({
+const InviteFormRow: FC<IInviteFormRowProps> = ({
   errors,
   index,
   field,
@@ -60,6 +60,7 @@ const InviteFormRow: React.FC<IInviteFormRowProps> = ({
               type: FieldType.Input,
               InputVariant: InputVariant.Text,
               className: 'w-[37.5%] mr-1.5',
+              inputClassName: 'text-sm !py-[9px]',
               placeholder: 'Enter name',
               name: `members.${index}.fullName`,
               label: 'Full Name',
@@ -71,6 +72,7 @@ const InviteFormRow: React.FC<IInviteFormRowProps> = ({
               type: FieldType.Input,
               variant: InputVariant.Text,
               className: 'w-[37.5%] mx-1.5',
+              inputClassName: 'text-sm !py-[9px]',
               placeholder: 'Add via email',
               name: `members.${index}.workEmail`,
               label: 'Email Address',
@@ -84,9 +86,11 @@ const InviteFormRow: React.FC<IInviteFormRowProps> = ({
               control,
               label: 'Role',
               className: 'w-[25%] ml-1.5',
+              height: 40,
               options: roleOptions,
               defautValue: field.role,
               dataTestId: 'invite-people-role',
+              getPopupContainer: document.body,
             },
           ]}
         />

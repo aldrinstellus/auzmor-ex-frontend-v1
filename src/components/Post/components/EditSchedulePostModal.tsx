@@ -1,21 +1,27 @@
 import { useMutation } from '@tanstack/react-query';
-import Button, { Variant as ButtonVariant } from 'components/Button';
+import Button, { Variant as ButtonVariant, Size } from 'components/Button';
 import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import moment from 'moment';
 import { IPost, IPostPayload, updatePost } from 'queries/post';
-import React from 'react';
+import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { useFeedStore } from 'stores/feedStore';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { twConfig } from 'utils/misc';
 import { slideInAndOutTop } from 'utils/react-toastify';
-import { afterXUnit, beforeXUnit, getTimezoneNameFromIANA } from 'utils/time';
+import {
+  afterXUnit,
+  beforeXUnit,
+  getTimeInScheduleFormat,
+  getTimezoneNameFromIANA,
+} from 'utils/time';
 import timezones from 'utils/timezones.json';
 
 interface EditSchedulePostModalProp {
@@ -28,26 +34,28 @@ interface EditSchedulePostModalProp {
 }
 
 export interface IForm {
-  timeZone: { value: string; label: string };
+  timezone: { value: string; label: string };
   date: Date;
   time: string;
 }
 
-const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
+const EditSchedulePostModal: FC<EditSchedulePostModalProp> = ({
   closeModal,
   schedule,
   post,
 }) => {
-  const { feed, updateFeed } = useFeedStore();
+  const [timezoneFieldVisible, setTimezoneFieldVisible] = useState(false);
+  const getPost = useFeedStore((state) => state.getPost);
+  const updateFeed = useFeedStore((state) => state.updateFeed);
   const updatePostMutation = useMutation({
     mutationKey: ['updatePostMutation'],
     mutationFn: (payload: IPostPayload) =>
       updatePost(payload.id || '', payload as IPostPayload),
     onMutate: (variables) => {
       if (variables?.id) {
-        const previousData = feed[variables.id];
+        const previousData = getPost(variables.id);
         updateFeed(variables.id, {
-          ...feed[variables.id],
+          ...getPost(variables.id),
           ...variables,
         } as IPost);
         closeModal && closeModal();
@@ -65,11 +73,7 @@ const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              stroke={twConfig.theme.colors.red['500']}
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
           ),
           style: {
             border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -94,7 +98,7 @@ const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
             />
           ),
@@ -114,8 +118,9 @@ const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
     },
   });
   const userTimezone = getTimezoneNameFromIANA(schedule.timeZone);
-  const onSubmit = (data: IForm) => {
-    console.log(data);
+  const { currentTimezone } = useCurrentTimezone();
+  const onSubmit = (_data: IForm) => {
+    // console.log(data);
   };
   const {
     handleSubmit,
@@ -128,7 +133,7 @@ const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
     formState: { errors, isValid },
   } = useForm<IForm>({
     defaultValues: {
-      timeZone: {
+      timezone: {
         value: schedule.timeZone,
         label: userTimezone,
       },
@@ -137,15 +142,15 @@ const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
     },
   });
 
-  const { date, time, timeZone } = watch();
-  const fields = [
+  const { date, time, timezone } = watch();
+  let fields = [
     {
       type: FieldType.SingleSelect,
       label: 'Timezone',
       name: 'timezone',
       control,
       options: timezones.map((timeZone) => ({
-        label: timeZone.timezoneName,
+        label: getTimezoneNameFromIANA(timeZone.iana),
         value: timeZone.iana,
         dataTestId: `professional-detail-timezone-${timeZone.iana}`,
       })),
@@ -183,15 +188,39 @@ const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
     },
   ];
 
+  if (!timezoneFieldVisible) {
+    fields = fields.filter((field) => field.name != 'timezone');
+  }
+
   return (
     <Modal open={true} closeModal={closeModal} className="max-w-2xl">
       <Header title="Schedule a post" onClose={closeModal} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-6 flex flex-col">
           <div className="px-3 py-2 bg-primary-50 mb-4">
-            {moment(new Date(date)).format('ddd, MMM DD')} at {time} based on
-            your profile timezone.
+            {getTimeInScheduleFormat(
+              date,
+              time,
+              timezone.value,
+              currentTimezone,
+            )}{' '}
+            based on your profile timezone.
           </div>
+          {!timezoneFieldVisible ? (
+            <div className="flex flex-row space-x-2 text-sm items-end leading-5 pb-4">
+              <div>{userTimezone}</div>
+              <Button
+                label="Edit"
+                variant={ButtonVariant.Tertiary}
+                size={Size.Small}
+                rightIcon="edit"
+                onClick={() => setTimezoneFieldVisible(true)}
+                className="px-0 !py-0 mx-1"
+                labelClassName="text-primary-500 text-xs leading-normal"
+                rightIconClassName="mx-0.5 text-primary-500"
+              />
+            </div>
+          ) : null}
           <Layout fields={fields} />
         </div>
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-19xl">
@@ -218,7 +247,7 @@ const EditSchedulePostModal: React.FC<EditSchedulePostModalProp> = ({
                     dateTime: new Date(
                       new Date(date).setHours(hours, min),
                     ).toISOString(),
-                    timeZone: timeZone.value,
+                    timeZone: timezone.value,
                   },
                 });
               }}

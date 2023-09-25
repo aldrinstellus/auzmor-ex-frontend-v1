@@ -1,21 +1,50 @@
-import React from 'react';
+import { useMemo } from 'react';
 import OfficeLogoSvg from './images/OfficeLogo.svg';
 import SuccessLogo from './images/Vector.svg';
 import InfoLogo from './images/InfoCircle.svg';
 import CheckboxImage from './images/check.svg';
+import clsx from 'clsx';
 
-export const Logo = () => {
-  return <img src={OfficeLogoSvg} alt="Office Logo" className="h-[68px]" />;
+interface IProps {
+  className?: string;
+}
+
+export const Logo = ({ className = '' }: IProps) => {
+  const style = useMemo(
+    () =>
+      clsx({
+        'h-[68px]': true,
+        [className]: true,
+      }),
+    [className],
+  );
+  return <img src={OfficeLogoSvg} alt="Office Logo" className={style} />;
 };
 
 export const Success = () => {
-  return <img src={SuccessLogo} alt="Success Logo" />;
+  return <img src={SuccessLogo} alt="Success Logo" className="h-[50px]" />;
 };
 
-export const Info = () => {
-  return <img src={InfoLogo} alt="Info Logo" />;
+export const Info = ({ className = '' }: IProps) => {
+  const style = useMemo(
+    () =>
+      clsx({
+        'h-[68px]': true,
+        [className]: true,
+      }),
+    [className],
+  );
+  return <img src={InfoLogo} alt="Info Logo" className={style} />;
 };
 
-export const Check = () => {
-  return <img src={CheckboxImage} alt="Checkbox image" />;
+export const Check = ({ className = '' }: IProps) => {
+  const style = useMemo(
+    () =>
+      clsx({
+        'h-[68px]': true,
+        [className]: true,
+      }),
+    [className],
+  );
+  return <img src={CheckboxImage} alt="Checkbox image" className={style} />;
 };

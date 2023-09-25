@@ -1,0 +1,77 @@
+.ant-select {
+  width: theme('width.full') !important;
+}
+
+.ant-select-selector {
+  border-color: theme('colors.neutral.200') !important;
+  border-width: 1px !important;
+  border-radius: 32px !important;
+  padding: 0 20px !important;
+  align-items: center !important;
+}
+
+.ant-select-selection-placeholder {
+  color: theme('colors.neutral.500') !important;
+}
+
+.ant-select-selection-search-input {
+  padding: 0 10px !important;
+  padding-right: 20px !important;
+}
+
+.ant-select-selector:hover {
+  border-color: theme('colors.primary.500') !important;
+}
+
+.single-select .ant-select-selection-item {
+  line-height: theme('lineHeight.normal') !important;
+  color: theme('colors.neutral.900') !important;
+  font-weight: theme('fontWeight.medium') !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.single-select-bold .ant-select-selection-item {
+  font-weight: theme('fontWeight.bold') !important;
+}
+
+.ant-select-item-option-content {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.single-select.ant-select-disabled .ant-select-selection-item {
+  color: theme('colors.neutral.400') !important;
+}
+
+.ant-select-dropdown {
+  background-color: theme('colors.white') !important;
+  border-color: theme('colors.neutral.200') !important;
+  border-width: 1px !important;
+  border-radius: 12px !important;
+  box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.05),
+    0px 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+  padding: 0 !important;
+}
+
+.single-select .ant-select-item-option {
+  font-weight: theme('fontWeight.medium') !important;
+  font-size: theme('fontSize.xs') !important;
+  line-height: theme('lineHeight.normal') !important;
+  color: theme('colors.neutral.900') !important;
+  padding-left: theme('padding.6') !important;
+  padding-right: theme('padding.6') !important;
+  padding-top: theme('padding.3') !important;
+  padding-bottom: theme('padding.2') !important;
+  border-bottom-width: 1px !important;
+  border-bottom-color: theme('colors.neutral.200') !important;
+  border-radius: 0 !important;
+}
+
+.ant-select-item-option-active {
+  background-color: theme('colors.primary.50') !important;
+}
+
+.ant-select-item-option-selected {
+  background-color: theme('colors.primary.50') !important;
+}

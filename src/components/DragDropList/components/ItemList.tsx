@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import Icon from 'components/Icon';
 import { ISkillsOption } from 'components/ProfileInfo/components/PersonalDetails';
 
@@ -11,7 +11,7 @@ export interface IItemListProps {
   isDragging: boolean;
 }
 
-const ItemList: React.FC<IItemListProps> = ({
+const ItemList: FC<IItemListProps> = ({
   item,
   dataTestIdEdit,
   dataTestIdDelete,
@@ -72,9 +72,7 @@ const ItemList: React.FC<IItemListProps> = ({
           <div data-testid={`${dataTestIdDelete}-${item.value}`}>
             <Icon
               name="delete"
-              stroke="#F05252"
-              hover={false}
-              fill="#F05252"
+              color="text-[#F05252]"
               size={20}
               onClick={() => {
                 const updatedValues = draggableItems.filter(

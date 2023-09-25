@@ -1,27 +1,5 @@
-import useHover from 'hooks/useHover';
-import React from 'react';
 import SvgPhoneOutline from './PhoneOutline';
 
-type IBookmarkProps = {
-  size?: number;
-  className?: string;
-  hover?: boolean;
-  disabled?: boolean;
-  onClick?: () => void;
-};
+const Phone = SvgPhoneOutline;
 
-const Bookmark: React.FC<IBookmarkProps> = ({
-  hover = true,
-  onClick,
-  className = '',
-  disabled,
-  ...props
-}) => {
-  return (
-    <div onClick={onClick} className={className}>
-      <SvgPhoneOutline {...props} />
-    </div>
-  );
-};
-
-export default Bookmark;
+export default Phone;

@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useMemo } from 'react';
+import { MouseEventHandler, useMemo } from 'react';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 
@@ -22,8 +22,7 @@ export type IconButtonProps = {
   className?: string;
   borderAround?: boolean;
   borderAroundClassName?: string;
-  fill?: string;
-  stroke?: string;
+  color?: string;
   dataTestId?: string;
 };
 
@@ -36,25 +35,27 @@ const IconButton = ({
   borderAround = false,
   borderAroundClassName = '',
   onClick = () => {},
-  fill,
-  stroke,
+  color,
   dataTestId,
 }: IconButtonProps) => {
   const styles = useMemo(
     () =>
       clsx(
         {
-          'bg-primary-500 text-white rounded-17xl hover:bg-primary-600 active:bg-primary-700 disabled:bg-neutral-200':
+          'bg-primary-500 text-white rounded-full hover:bg-primary-600 active:bg-primary-700 disabled:bg-neutral-200':
             variant === Variant.Primary,
         },
         {
-          'rounded-17xl disabled:bg-neutral-200': variant === Variant.Secondary,
+          'rounded-full disabled:bg-neutral-200': variant === Variant.Secondary,
         },
         {
-          'p-2.5': size === Size.Small || size === Size.Medium,
+          'p-2': size === Size.Small || size === Size.Medium,
         },
         {
           'p-3': size === Size.Large,
+        },
+        {
+          group: true,
         },
         {
           [className]: true,
@@ -67,9 +68,10 @@ const IconButton = ({
     () =>
       clsx(
         {
-          'border border-solid border-neutral-200 rounded-17xl hover:border-primary-500':
+          'border border-solid border-neutral-200 rounded-full hover:border-primary-500':
             borderAround,
         },
+        { 'flex items-center': true },
         {
           [borderAroundClassName]: true,
         },
@@ -97,13 +99,7 @@ const IconButton = ({
         onClick={onClick}
         data-testid={dataTestId}
       >
-        <Icon
-          name={icon}
-          size={getSize()}
-          fill={fill}
-          stroke={stroke}
-          disabled={disabled}
-        />
+        <Icon name={icon} size={getSize()} color={color} disabled={disabled} />
       </button>
     </div>
   );

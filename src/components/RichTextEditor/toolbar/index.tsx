@@ -1,12 +1,10 @@
 import Icon from 'components/Icon';
-import React from 'react';
-import { twConfig } from 'utils/misc';
-
+import { FC } from 'react';
 interface IToolbarProps {
   isCharLimit: boolean;
 }
 
-const Toolbar: React.FC<IToolbarProps> = ({ isCharLimit }) => {
+const Toolbar: FC<IToolbarProps> = ({ isCharLimit }) => {
   return (
     <div id="toolbar">
       <div className="relative">
@@ -16,7 +14,7 @@ const Toolbar: React.FC<IToolbarProps> = ({ isCharLimit }) => {
               <Icon
                 name="infoCircleOutline"
                 size={32}
-                stroke={twConfig.theme.colors.red['500']}
+                color="text-red-500"
                 className="p-1.5 bg-red-100 rounded-7xl mr-2"
               />
               <div className="truncate text-red-500 text-sm">

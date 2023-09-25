@@ -1,9 +1,9 @@
 import Card from 'components/Card';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const MultipleMediaPostSkeleton: React.FC = (): ReactElement => {
+const MultipleMediaPostSkeleton: FC = (): ReactElement => {
   return (
     <Card>
       <div className="px-6">

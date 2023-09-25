@@ -5,24 +5,26 @@ import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import useAuth from 'hooks/useAuth';
 import { IPost } from 'queries/post';
 import { DeltaStatic } from 'quill';
-import React, { ForwardedRef, Ref, useContext } from 'react';
+import { ForwardedRef, RefObject, forwardRef, useContext } from 'react';
 import ReactQuill from 'react-quill';
 import RichTextEditor from '../RichTextEditor';
 import Toolbar from '../RichTextEditor/toolbar';
 import Icon from 'components/Icon';
-import moment from 'moment';
-import { twConfig } from 'utils/misc';
-import Button from 'components/Button';
+import { PostBuilderMode } from 'components/PostBuilder';
+import { getTimeInScheduleFormat } from 'utils/time';
+import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
+import Button, { Size, Variant } from 'components/Button';
 
 export interface IBodyProps {
   data?: IPost;
   dataTestId?: string;
-  quillRef: React.RefObject<ReactQuill>;
+  quillRef: RefObject<ReactQuill>;
+  mode: PostBuilderMode;
 }
 
-const Body = React.forwardRef(
+const Body = forwardRef(
   (
-    { data, dataTestId, quillRef }: IBodyProps,
+    { data, dataTestId, quillRef, mode }: IBodyProps,
     ref: ForwardedRef<ReactQuill>,
   ) => {
     const {
@@ -31,60 +33,123 @@ const Body = React.forwardRef(
       setSchedule,
       setEditorValue,
       setActiveFlow,
+      media,
+      audience,
     } = useContext(CreatePostContext);
     const { user } = useAuth();
+    const { currentTimezone } = useCurrentTimezone();
+    const updateContext = () => {
+      setEditorValue({
+        text: (ref as RefObject<ReactQuill>)
+          .current!.makeUnprivilegedEditor(
+            (ref as RefObject<ReactQuill>).current!.getEditor(),
+          )
+          .getText(),
+        html: (ref as RefObject<ReactQuill>).current
+          ?.makeUnprivilegedEditor(
+            (ref as RefObject<ReactQuill>)!.current!.getEditor(),
+          )
+          .getHTML(),
+        json: (ref as RefObject<ReactQuill>).current
+          ?.makeUnprivilegedEditor(
+            (ref as RefObject<ReactQuill>)!.current!.getEditor(),
+          )
+          .getContents(),
+      });
+    };
     return (
       <div className="text-sm text-neutral-900">
-        <div className="max-h-[75vh] overflow-y-auto">
-          <Actor
-            visibility="Everyone"
-            contentMode={CREATE_POST}
-            dataTestId={`${dataTestId}-creatorname`}
-            disabled={true}
-            createdBy={
-              data?.createdBy || {
-                fullName: user?.name,
-                profileImage: { id: '', original: user?.profileImage || '' },
+        <div className="max-h-[75vh] overflow-y-auto flex flex-col gap-2">
+          <div className="flex justify-between gap-3 items-center pt-6 px-6">
+            <Actor
+              contentMode={CREATE_POST}
+              dataTestId={`${dataTestId}-creatorname`}
+              disabled={true}
+              createdBy={
+                data?.createdBy || {
+                  fullName: user?.name,
+                  profileImage: {
+                    id: '',
+                    original: user?.profileImage || '',
+                    blurHash: '',
+                  },
+                }
               }
-            }
-          />
+            />
+            <div className="flex items-center cursor-pointer">
+              {audience.length > 0 ? (
+                <div className="flex gap-2">
+                  <Button
+                    key={audience[0].entityId}
+                    leftIcon="noteFavourite"
+                    leftIconSize={16}
+                    leftIconClassName="mr-1"
+                    size={Size.Small}
+                    variant={Variant.Secondary}
+                    label={(audience[0]?.entity as any)?.name || 'Team Name'}
+                    onClick={() => {
+                      updateContext();
+                      setActiveFlow(CreatePostFlow.Audience);
+                    }}
+                    className="group"
+                    labelClassName="text-xss text-neutral-900 font-medium group-hover:text-primary-500"
+                    dataTestId="createpost-selected-audience-list"
+                  />
+                  {audience.length > 1 && (
+                    <Button
+                      key={audience[0].entityId}
+                      variant={Variant.Secondary}
+                      size={Size.Small}
+                      label={`+ ${audience.length - 1} more`}
+                      onClick={() => {
+                        updateContext();
+                        setActiveFlow(CreatePostFlow.Audience);
+                      }}
+                      className="group"
+                      labelClassName="text-xss text-neutral-900 font-medium group-hover:text-primary-500"
+                      dataTestId="createpost-more-audience"
+                    />
+                  )}
+                </div>
+              ) : (
+                <Button
+                  variant={Variant.Secondary}
+                  leftIcon={'profileUser'}
+                  label="Audience"
+                  size={Size.Small}
+                  onClick={() => {
+                    updateContext();
+                    setActiveFlow(CreatePostFlow.Audience);
+                  }}
+                  className="group"
+                  labelClassName="text-xss text-neutral-900 font-medium group-hover:text-primary-500"
+                  dataTestId={`createpost-audience`}
+                />
+              )}
+            </div>
+          </div>
           {schedule && (
-            <div className="px-3 py-2 bg-primary-50 flex justify-between mx-4 mb-4">
-              <div className="flex">
-                <div className="mr-2">
-                  <Icon name="calendarTwo" size={16} />
-                </div>
-                <div>
-                  Post scheduled for{' '}
-                  {moment(new Date(schedule.date)).format('ddd, MMM DD')} at{' '}
-                  {schedule.time} , based on your profile timezone.
-                </div>
+            <div className="px-3 py-2 bg-primary-50 flex items-center gap-2 mx-6 my-2">
+              <div>
+                <Icon name="calendarTwo" size={16} />
               </div>
-              <div className="flex">
-                <div className="mr-4">
+              <div className="flex-1">
+                Post scheduled for{' '}
+                {getTimeInScheduleFormat(
+                  new Date(schedule.date),
+                  schedule.time,
+                  schedule.timezone,
+                  currentTimezone,
+                )}
+              </div>
+
+              <div className="flex gap-2">
+                <div>
                   <Icon
                     name="edit"
                     size={16}
                     onClick={() => {
-                      setEditorValue({
-                        text: (ref as React.RefObject<ReactQuill>)
-                          .current!.makeUnprivilegedEditor(
-                            (
-                              ref as React.RefObject<ReactQuill>
-                            ).current!.getEditor(),
-                          )
-                          .getText(),
-                        html: (ref as React.RefObject<ReactQuill>).current
-                          ?.makeUnprivilegedEditor(
-                            (ref as React.RefObject<ReactQuill>)!.current!.getEditor(),
-                          )
-                          .getHTML(),
-                        json: (ref as React.RefObject<ReactQuill>).current
-                          ?.makeUnprivilegedEditor(
-                            (ref as React.RefObject<ReactQuill>)!.current!.getEditor(),
-                          )
-                          .getContents(),
-                      });
+                      updateContext();
                       setActiveFlow(CreatePostFlow.SchedulePost);
                     }}
                     dataTestId="createpost-scheduledpost-editicon"
@@ -103,11 +168,14 @@ const Body = React.forwardRef(
           )}
           <RichTextEditor
             placeholder="What’s on your mind?"
-            className="max-h-64 overflow-y-auto min-h-[128px]"
+            className={`max-h-64 overflow-y-auto ${
+              !media.length && 'min-h-[128px]'
+            }`}
             defaultValue={
               data?.content?.editor || (editorValue.json as DeltaStatic)
             }
             ref={ref}
+            mode={mode}
             renderToolbar={(isCharLimit: boolean) => {
               return (
                 <Toolbar

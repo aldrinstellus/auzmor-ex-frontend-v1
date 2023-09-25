@@ -7,26 +7,29 @@ import {
   CreatePostContext,
   CreatePostFlow,
   IEditorValue,
+  POST_TYPE,
 } from 'contexts/CreatePostContext';
 import useRole from 'hooks/useRole';
 import { DeltaStatic } from 'quill';
-import React, { useContext, useMemo } from 'react';
+import { FC, RefObject, useContext, useMemo } from 'react';
 import ReactQuill from 'react-quill';
 import { convert } from 'html-to-text';
-import { operatorXOR, twConfig } from 'utils/misc';
+import { operatorXOR } from 'utils/misc';
+import { PostBuilderMode } from 'components/PostBuilder';
 
 export interface IFooterProps {
   isLoading: boolean;
-  quillRef: React.RefObject<ReactQuill>;
+  quillRef: RefObject<ReactQuill>;
   handleSubmitPost: (content: IEditorValue, files: File[]) => void;
+  mode: PostBuilderMode;
 }
 
-const Footer: React.FC<IFooterProps> = ({
+const Footer: FC<IFooterProps> = ({
   isLoading,
   quillRef,
   handleSubmitPost,
+  mode,
 }) => {
-  const { isMember } = useRole();
   const {
     setActiveFlow,
     setEditorValue,
@@ -38,7 +41,11 @@ const Footer: React.FC<IFooterProps> = ({
     isPreviewRemoved,
     previewUrl,
     schedule,
+    postType,
+    isEmpty,
   } = useContext(CreatePostContext);
+  const { isMember } = useRole();
+  const canSchedule = !(!!!schedule && mode === PostBuilderMode.Edit);
 
   const updateContext = () => {
     setEditorValue({
@@ -54,24 +61,25 @@ const Footer: React.FC<IFooterProps> = ({
     });
   };
 
-  const isMediaDisabled = operatorXOR(isPreviewRemoved, !!previewUrl);
+  const isMediaDisabled =
+    operatorXOR(isPreviewRemoved, !!previewUrl) ||
+    !!(postType && postType !== POST_TYPE.Media);
+  const isShoutoutDisabled =
+    operatorXOR(isPreviewRemoved, !!previewUrl) ||
+    (!!postType && postType !== POST_TYPE.Shoutout);
+  const isPollDisabled = !!postType && postType !== POST_TYPE.Poll;
+
   const postMenuItems = useMemo(
     () => [
       {
         id: 1,
         label: 'Media',
-        icon: isMediaDisabled ? (
+        icon: (
           <Icon
             name="imageFilled"
-            fill="#737373"
+            color={isMediaDisabled ? 'text-neutral-200' : 'text-neutral-900'}
             size={14}
-            dataTestId="feed-createpost-media"
-          />
-        ) : (
-          <Icon
-            name="imageFilled"
-            fill="#000000"
-            size={14}
+            disabled={isMediaDisabled}
             dataTestId="feed-createpost-media"
           />
         ),
@@ -85,7 +93,7 @@ const Footer: React.FC<IFooterProps> = ({
               inputImgRef?.current && inputImgRef?.current?.click();
             },
             disabled: isMediaDisabled,
-            iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
+            iconWrapperClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
             dataTestId: 'feed-createpost-uploadphoto-menuitem',
           },
           {
@@ -96,59 +104,71 @@ const Footer: React.FC<IFooterProps> = ({
               inputVideoRef?.current && inputVideoRef?.current?.click();
             },
             disabled: isMediaDisabled,
-            iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
+            iconWrapperClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
             dataTestId: 'feed-createpost-uploadvideo-menuitem',
           },
           {
             label: 'Share a document',
             icon: 'document',
-            iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
             disabled: true,
           },
         ],
+        hidden: mode === PostBuilderMode.Edit,
         divider: <Divider variant={DividerVariant.Vertical} />,
       },
       {
         id: 2,
-        label: 'Shoutout',
+        label: 'Give kudos',
         icon: (
           <Icon
             name="magicStarFilled"
             size={14}
+            color={isShoutoutDisabled ? 'text-neutral-200' : 'text-neutral-900'}
+            disabled={isShoutoutDisabled}
             dataTestId="feed-createpost-shoutout"
           />
         ),
         menuItems: [],
+        hidden: mode === PostBuilderMode.Edit,
         divider: <Divider variant={DividerVariant.Vertical} />,
-        disabled: true,
+        disabled: isShoutoutDisabled,
+        onClick: () => {
+          updateContext();
+          setActiveFlow(CreatePostFlow.CreateShoutout);
+        },
       },
-      {
-        id: 3,
-        label: 'Events',
-        icon: (
-          <Icon
-            name="calendarFilledTwo"
-            size={14}
-            dataTestId="feed-createpost-events"
-          />
-        ),
-        menuItems: [],
-        divider: <Divider variant={DividerVariant.Vertical} />,
-        disabled: true,
-      },
+      // {
+      //   id: 3,
+      //   label: 'Events',
+      //   icon: (
+      //     <Icon
+      //       name="calendarFilledTwo"
+      //       size={16}
+      //       color={'text-neutral-900'}
+      //       disabled
+      //       dataTestId="feed-createpost-events"
+      //     />
+      //   ),
+      //   menuItems: [],
+      //   divider: <Divider variant={DividerVariant.Vertical} />,
+      //   disabled: true,
+      // },
       {
         id: 4,
         label: 'Polls',
+        menuItems: [],
+        dataTestId: 'createpost-poll',
         icon: (
           <Icon
             name="chartFilled"
             size={14}
+            disabled={isPollDisabled}
             dataTestId="feed-createpost-polls"
-            fill="#000000"
+            color={'text-neutral-900'}
           />
         ),
-        menuItems: [],
-        hidden: false,
+        disabled: isPollDisabled,
+        hidden: mode === PostBuilderMode.Edit,
         onClick: () => {
           updateContext();
           setActiveFlow(CreatePostFlow.CreatePoll);
@@ -160,7 +180,7 @@ const Footer: React.FC<IFooterProps> = ({
         icon: (
           <Icon
             name="moreOutline"
-            stroke="#000000"
+            color="stroke-[#292D32]"
             dataTestId="feed-createpost-ellipsis-icon"
           />
         ),
@@ -174,86 +194,112 @@ const Footer: React.FC<IFooterProps> = ({
               setActiveFlow(CreatePostFlow.CreateAnnouncement);
             },
             disabled: isMember,
-            iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
+            iconWrapperClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
             dataTestId: 'feed-createpost-shareasannouncement',
           },
           {
             label: 'Save as drafts',
             icon: 'draft',
-            iconClassName: 'p-2 rounded-7xl border mr-2.5 bg-white',
             disabled: true,
             dataTestId: 'feed-createpost-saveasdraft',
           },
         ],
       },
     ],
-    [isPreviewRemoved, previewUrl],
+    [
+      isPreviewRemoved,
+      previewUrl,
+      isMediaDisabled,
+      isPollDisabled,
+      isShoutoutDisabled,
+    ],
   );
 
   return (
-    <div className="flex justify-between items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
-      <div className="flex relative">
-        {postMenuItems.map(
-          (postMenuItem) =>
-            !postMenuItem.hidden && (
-              <div
-                key={postMenuItem.id}
-                className="flex mr-4 items-center"
-                onClick={postMenuItem?.onClick}
-              >
-                <PopupMenu
-                  triggerNode={
-                    postMenuItem?.disabled ? (
-                      <div
-                        className={`flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl ${
-                          isPreviewRemoved || !!previewUrl
-                            ? 'cursor-not-allowed'
-                            : 'cursor-default'
-                        }`}
-                      >
-                        {postMenuItem.icon}
-                      </div>
-                    ) : (
-                      <Tooltip
-                        tooltipContent={postMenuItem.label}
-                        className="cursor-pointer"
-                      >
-                        {postMenuItem.label !== 'More' ? (
-                          <div className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl">
-                            {postMenuItem.icon}
-                          </div>
-                        ) : (
-                          postMenuItem.icon
-                        )}
-                      </Tooltip>
-                    )
-                  }
-                  menuItems={postMenuItem.menuItems}
-                  className="bottom-full"
-                />
-              </div>
-            ),
-        )}
-        <Divider variant={DividerVariant.Vertical} className="!h-8" />
+    <div className="flex justify-between items-center px-6 py-4 bg-blue-50 rounded-b-9xl">
+      <div className="flex relative gap-4">
+        {postMenuItems
+          .filter((menuItem) => !menuItem.hidden)
+          .map(
+            (postMenuItem) =>
+              !postMenuItem.hidden && (
+                <div
+                  key={postMenuItem.id}
+                  className="flex items-center"
+                  onClick={() => {
+                    if (!postMenuItem.disabled && postMenuItem.onClick) {
+                      postMenuItem.onClick();
+                    }
+                  }}
+                >
+                  <PopupMenu
+                    triggerNode={
+                      postMenuItem?.disabled ? (
+                        <div
+                          className={`flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl ${
+                            postMenuItem.disabled
+                              ? 'cursor-not-allowed'
+                              : 'cursor-default'
+                          }`}
+                          data-testid={postMenuItem?.dataTestId}
+                        >
+                          {postMenuItem.icon}
+                        </div>
+                      ) : (
+                        <Tooltip
+                          tooltipContent={postMenuItem.label}
+                          className="cursor-pointer"
+                        >
+                          {postMenuItem.label !== 'More' ? (
+                            <div
+                              className="flex justify-center items-center w-8 h-8 bg-white border border-neutral-200 rounded-7xl"
+                              data-testid={postMenuItem?.dataTestId}
+                            >
+                              {postMenuItem.icon}
+                            </div>
+                          ) : (
+                            postMenuItem.icon
+                          )}
+                        </Tooltip>
+                      )
+                    }
+                    menuItems={postMenuItem.menuItems}
+                    className="bottom-full"
+                  />
+                </div>
+              ),
+          )}
+        <Divider
+          variant={DividerVariant.Vertical}
+          className="!h-8 bg-neutral-200"
+        />
       </div>
-      <div className="flex items-center">
-        <div className="mr-4">
-          <Tooltip tooltipContent="Schedule" className="cursor-pointer">
-            <Icon
-              name="clockOutline"
-              size={16}
-              stroke={twConfig.theme.colors.neutral[900]}
-              onClick={() => {
-                updateContext();
-                setActiveFlow(CreatePostFlow.SchedulePost);
-              }}
-              dataTestId="createpost-clock-icon"
-            />
-          </Tooltip>
-        </div>
+      <div className="flex items-center gap-3">
+        {canSchedule && (
+          <div>
+            <Tooltip tooltipContent="Schedule" className="cursor-pointer">
+              <Icon
+                name="clockOutline"
+                size={16}
+                color="text-neutral-900"
+                onClick={() => {
+                  updateContext();
+                  setActiveFlow(CreatePostFlow.SchedulePost);
+                }}
+                dataTestId="createpost-clock-icon"
+              />
+            </Tooltip>
+          </div>
+        )}
         <Button
           label={schedule ? 'Schedule' : 'Post'}
-          disabled={isLoading || isCharLimit || !!mediaValidationErrors?.length}
+          disabled={
+            isLoading ||
+            isCharLimit ||
+            isEmpty ||
+            !!mediaValidationErrors?.length
+          }
+          labelClassName="text-sm leadind-snug"
           onClick={() => {
             updateContext();
             handleSubmitPost(

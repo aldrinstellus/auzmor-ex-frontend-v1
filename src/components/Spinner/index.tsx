@@ -1,18 +1,18 @@
-import React from 'react';
+import { FC } from 'react';
 
 type SpinnerProps = {
   color?: string;
   className?: string;
 };
 
-const Spinner: React.FC<SpinnerProps> = ({
-  className = 'dark:text-gray-600 fill-primary-500',
+const Spinner: FC<SpinnerProps> = ({
+  className = 'w-6 h-6 ml-2 text-gray-200  dark:text-gray-600 fill-primary-500',
 }) => {
   return (
     <div role="status">
       <svg
         aria-hidden="true"
-        className={`w-6 h-6 ml-2 text-gray-200 animate-spin ${className} `}
+        className={`animate-spin ${className} `}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

@@ -1,12 +1,12 @@
 import { formatText, getStyles } from 'components/RenderQuillContent/utils';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 
 type TextProps = {
   value: string;
   attributes: any;
   isLink: boolean;
 };
-export const Text: React.FC<TextProps> = ({
+export const Text: FC<TextProps> = ({
   value,
   attributes,
   isLink,
@@ -19,7 +19,6 @@ export const Text: React.FC<TextProps> = ({
           target="_blank"
           role="button"
           className={`${getStyles(attributes)} underline text-[#06c]`}
-          contentEditable="false"
           rel="noreferrer"
         >
           {formatText(value)}

@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import OnboardFinish from 'images/onboard-finish.png';
 import Button from 'components/Button';
 
@@ -6,7 +6,7 @@ type AllDoneScreenProps = {
   closeModal: any;
 };
 
-const AllDoneScreen: React.FC<AllDoneScreenProps> = ({
+const AllDoneScreen: FC<AllDoneScreenProps> = ({
   closeModal,
 }): ReactElement => {
   return (

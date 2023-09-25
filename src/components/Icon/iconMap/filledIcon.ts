@@ -75,18 +75,26 @@ import SvgRepostFilled from '../components/Repost/RepostFilled';
 import SvgCalendarFilled from '../components/Calendar/CalendarFilled';
 import SvgMicFilled from '../components/Mic/MicFilled';
 import SvgGearFilled from '../components/Gear/GearFilled';
+import SvgNoteFavouriteFilled from '../components/NoteFavourite/NoteFavouriteFilled';
+import SvgAdminFilled from '../components/Admin/AdminFilled';
+import SvgHomeFilled from '../components/Home/HomeFilled';
+import SvgExploreFilled from '../components/Explore/ExploreFilled';
+import SvgLauncherFilled from '../components/Launcher/LauncherFilled';
+import SvgFeedFilled from '../components/Feed/FeedFilled';
+import PostBookMarkFilled from '../components/PostBookmark/PostBookmarkFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
   addFilled: SvgAddFilled,
+  adminFilled: SvgAdminFilled,
   arrowLeftFilled: SvgArrowLeftFilled,
   arrowRightFilled: SvgArrowRightFilled,
+  calendarFilled: SvgCalendarFilled,
   calendarFilledTwo: SvgCalendarFilledTwo,
   carouselCloseFilled: SvgCarouselCloseFilled,
   carouselLeftFilled: SvgCarouselLeftFilled,
   carouselRightFilled: SvgCarouselRightFilled,
   celebrateFilled: SvgCelebrateFilled,
-  calendarFilled: SvgCalendarFilled,
   chartFilled: SvgChartFilled,
   clipboardFilled: SvgClipboardCloseFilled,
   clockFilled: SvgClockFilled,
@@ -108,22 +116,27 @@ export const filledIcon = {
   editReceiptFilled: SvgEditReceiptFilled,
   emojiHappyFilled: SvgEmojiHappyFilled,
   expandFilled: SvgExpandFilled,
+  exploreFilled: SvgExploreFilled,
   exportFilled: SvgExportFilled,
   eyeFilled: SvgEyeFilled,
   eyeSlashFilled: SvgEyeSlashFilled,
+  feedFilled: SvgFeedFilled,
   filterFilled: SvgFilterFilled,
   filterLinearFilled: SvgFilterLinearFilled,
   focusFilled: SvgFocusFilled,
   fullScreenFilled: SvgFullScreenFilled,
   funnyFilled: SvgFunnyFilled,
+  gearFilled: SvgGearFilled,
   globalFilled: SvgGlobalFilled,
   groupFilled: SvgGroupFilled,
   hashtagFilled: SvgOrangeHashtagFilled,
+  homeFilled: SvgHomeFilled,
   iconLinearFilled: SvgIconLinearFilled,
   imageFilled: SvgImageFilled,
   importFilled: SvgImportFilled,
   infoCircleFilled: SvgInfoCircleFilled,
   insightfulFilled: SvgInsightfulFilled,
+  launcherFilled: SvgLauncherFilled,
   likeFilled: SvgLikeFilled,
   likeIconFilled: SvgLikeIconFilled,
   linearLeftArrowFilled: SvgLinearLeftArrowFilled,
@@ -131,7 +144,9 @@ export const filledIcon = {
   loveFilled: SvgLoveFilled,
   magicStarFilled: SvgMagicStarFilled,
   maximizeFilled: SvgMaximizeFilled,
+  micFilled: SvgMicFilled,
   moreFilled: SvgMoreFilled,
+  noteFavouriteFilled: SvgNoteFavouriteFilled,
   peopleFilled: SvgPeopleFilled,
   playFilled: SvgPlayFilled,
   profileFilled: SvgProfileFilled,
@@ -152,6 +167,5 @@ export const filledIcon = {
   videoFilled: SvgVideoFilled,
   zoomInFilled: SvgZoomInFilled,
   zoomOutFilled: SvgZoomOutFilled,
-  micFilled: SvgMicFilled,
-  gearFilled: SvgGearFilled,
+  postBookmarkFilled: PostBookMarkFilled,
 };

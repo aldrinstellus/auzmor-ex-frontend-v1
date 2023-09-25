@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { FC, RefObject, useEffect, useRef, useState } from 'react';
 import IconButton, {
   Variant as IconVariant,
   Size as SizeVariant,
@@ -9,7 +9,7 @@ import { createComment, updateComment } from 'queries/comments';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
 import { toast } from 'react-toastify';
-import { quillHashtagConversion, twConfig } from 'utils/misc';
+import { isEmptyEditor, quillHashtagConversion, twConfig } from 'utils/misc';
 import { produce } from 'immer';
 import { useCommentStore } from 'stores/commentStore';
 import { useFeedStore } from 'stores/feedStore';
@@ -34,16 +34,18 @@ import Banner, { Variant as BannerVariant } from 'components/Banner';
 export enum PostCommentMode {
   Create = 'CREATE',
   Edit = 'EDIT',
+  SendWish = 'SEND_WISH',
 }
 
 interface CommentFormProps {
   className?: string;
+  wrapperClassName?: string;
   entityId?: string;
   entityType: string;
   mode?: PostCommentMode;
   setEditComment?: (edit: boolean) => void;
   commentData?: IComment;
-  inputRef?: React.RefObject<HTMLInputElement> | null;
+  inputRef?: RefObject<HTMLInputElement> | null;
   media?: IMedia[];
   removeMedia?: () => void;
   files?: File[];
@@ -62,8 +64,9 @@ interface IUpdateCommentPayload {
   files: string[];
 }
 
-export const CommentsRTE: React.FC<CommentFormProps> = ({
+export const CommentsRTE: FC<CommentFormProps> = ({
   className = '',
+  wrapperClassName = '',
   entityId,
   entityType,
   mode = PostCommentMode.Create,
@@ -83,18 +86,49 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
     setComment,
     updateComment: updateStoredComment,
   } = useCommentStore();
-  const { feed, updateFeed } = useFeedStore();
+  const getPost = useFeedStore((state) => state.getPost);
+  const updateFeed = useFeedStore((state) => state.updateFeed);
   const queryClient = useQueryClient();
   const quillRef = useRef<ReactQuill>(null);
   const { uploadMedia } = useUpload();
+  const [isEmpty, setIsEmpty] = useState(true);
 
   const createCommentMutation = useMutation({
     mutationKey: ['create-comment'],
     mutationFn: createComment,
-    onError: (error: any) => {
-      console.log(error);
+    onError: () => {
+      toast(
+        <FailureToast
+          content={`Error adding ${
+            entityType === 'post' ? 'Comment' : 'Reply'
+          }`}
+          dataTestId="comment-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
     },
-    onSuccess: async (data: any, variables, context) => {
+    onSuccess: async (data: any, _variables, _context) => {
+      if (mode === PostCommentMode.SendWish) {
+        queryClient.invalidateQueries(['celebrations'], {
+          exact: false,
+        });
+        queryClient.invalidateQueries(['get-post', entityId], {
+          exact: false,
+        });
+      }
       quillRef.current?.setEditorContents(quillRef.current?.getEditor(), '');
       removeMedia();
       await queryClient.setQueryData(
@@ -109,9 +143,10 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
       );
       if (entityType === 'post' && entityId) {
         setComment({ ...comment, [data.id]: { ...data } });
+        const post = getPost(entityId);
         updateFeed(
           entityId,
-          produce(feed[entityId], (draft) => {
+          produce(post, (draft) => {
             draft.commentsCount = draft.commentsCount + 1;
           }),
         );
@@ -166,11 +201,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              stroke={twConfig.theme.colors.red['500']}
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
           ),
           style: {
             border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -184,7 +215,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
         },
       );
     },
-    onSuccess: (data: any) => {
+    onSuccess: (_data: any) => {
       toast(
         <SuccessToast
           content={`${
@@ -196,7 +227,7 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
             />
           ),
@@ -220,9 +251,10 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
     const hashtagList: string[] = [];
     if (files.length) {
       const uploadedMedia = await uploadMedia(files, EntityType.Comment);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       fileIds = uploadedMedia.map((media: IMedia) => media.id);
     }
-    if (mode === PostCommentMode.Create) {
+    if (mode === PostCommentMode.Create || mode === PostCommentMode.SendWish) {
       setIsCreateCommentLoading(true);
       let fileIds: string[] = [];
       if (files.length) {
@@ -295,6 +327,11 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
     }
   };
 
+  const onChangeEditor = (content: any) => {
+    const ops = content.json.ops || [];
+    setIsEmpty(isEmptyEditor(content.text, ops));
+  };
+
   const getDataTestIdForErrors = (errorType: MediaValidationError) => {
     switch (errorType) {
       case MediaValidationError.MediaLengthExceed:
@@ -308,46 +345,70 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
     }
   };
 
+  useEffect(() => {
+    if (quillRef.current) {
+      onChangeEditor({
+        text: quillRef.current
+          ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
+          .getText(),
+        json: quillRef.current
+          ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
+          .getContents(),
+      });
+    }
+  }, []);
+
   return (
     <div className={`flex flex-row ${className} `}>
-      <div className="flex flex-col items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full">
+      <div
+        className={`flex flex-col items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full ${wrapperClassName}`}
+      >
         <RichTextEditor
           toolbarId={`toolbar-${entityId}`}
           defaultValue={commentData?.content?.editor}
-          placeholder="Leave a comment..."
-          className="max-h-18 min-w-[70%] relative"
+          placeholder={
+            mode === PostCommentMode.SendWish
+              ? 'Wish them now...'
+              : 'Leave a comment...'
+          }
+          className="max-w-full flex-grow text-sm"
           ref={quillRef}
           dataTestId="postcomment-textbox"
+          onChangeEditor={onChangeEditor}
           renderToolbar={() => (
             <div
-              className="flex flex-row items-center z-10 -ml-32 absolute top-0 right-2 quill-toolbar quill-toolbar-icons"
+              className="z-10 quill-toolbar quill-toolbar-icons !relative gap-4 ml-auto"
               id={`toolbar-${entityId}-toolbar`}
             >
-              <div className="mr-6">
-                {mode === PostCommentMode.Edit && (
-                  <Button
-                    label={'Cancel'}
-                    size={Size.Small}
-                    variant={Variant.Secondary}
-                    className="text-sm"
-                    dataTestId="cancel-edit-comment"
-                    onClick={() => setEditComment && setEditComment(false)}
-                  />
-                )}
-              </div>
+              {mode === PostCommentMode.Edit && (
+                <Button
+                  label={'Cancel'}
+                  size={Size.Small}
+                  variant={Variant.Secondary}
+                  className="text-sm !mx-0 !w-auto"
+                  dataTestId="cancel-edit-comment"
+                  onClick={() => setEditComment && setEditComment(false)}
+                />
+              )}
               <IconButton
                 icon="image"
-                className="flex mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
+                className="!flex justify-center !mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
                 size={SizeVariant.Large}
                 variant={IconVariant.Primary}
-                dataTestId="postcomment-mediacta"
+                dataTestId={
+                  mode === PostCommentMode.SendWish
+                    ? 'send-image'
+                    : 'postcomment-mediacta'
+                }
                 onClick={() => inputRef && inputRef?.current?.click()}
-                fill={twConfig.theme.colors.primary['500']}
               />
-              <button className="ql-emoji" />
+              <button
+                className="ql-emoji !mx-0 h-6 w-6"
+                data-testid="send-gif"
+              />
               <IconButton
                 icon={'send'}
-                className="flex mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
+                className="!flex justify-center !mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
                 size={SizeVariant.Large}
                 variant={IconVariant.Primary}
                 onClick={() => {
@@ -355,9 +416,12 @@ export const CommentsRTE: React.FC<CommentFormProps> = ({
                     onSubmit();
                   }
                 }}
-                dataTestId="postcomment-sendcta"
-                fill={twConfig.theme.colors.primary['500']}
-                disabled={mediaValidationErrors.length > 0}
+                dataTestId={
+                  mode === PostCommentMode.SendWish
+                    ? 'send-wishes-cta'
+                    : 'postcomment-sendcta'
+                }
+                disabled={mediaValidationErrors.length > 0 || isEmpty}
               />
             </div>
           )}

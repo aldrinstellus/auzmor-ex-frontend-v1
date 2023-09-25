@@ -8,12 +8,12 @@ import {
   ITransformedOp,
   TransformedQuillDelta,
 } from 'components/PostBuilder/components/RichTextEditor/mentions/types';
-import { useSearchParams } from 'react-router-dom';
 import DeactivatedCoverImage from 'images/deactivatedCoverPhoto.png';
 import DefaultCoverImage from 'images/png/CoverImage.png';
-import { capitalize } from 'lodash';
+import capitalize from 'lodash/capitalize';
 import DeactivatedUser from 'images/DeactivatedUser.png';
 import { EditUserSection, UserRole, UserStatus } from 'queries/users';
+import { MouseEvent, MouseEventHandler } from 'react';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -29,9 +29,9 @@ export const getInitials = (name: string) => {
     .toLocaleUpperCase();
 };
 
-export const getProfileImage = (user: any) => {
+export const getProfileImage = (user: any, preferredKey = 'small') => {
   if (user?.status !== UserStatus.Inactive) {
-    return user?.profileImage?.original;
+    return user?.profileImage?.[preferredKey] || user?.profileImage?.original;
   }
   return DeactivatedUser;
 };
@@ -52,7 +52,7 @@ export const getCoverImage = (user: any) => {
 
 export const getFullName = (user: any) => {
   if (user?.status === UserStatus.Inactive) {
-    return `${user?.fullName} (deactivated)`;
+    return `${user?.fullName || user?.email || user?.workEmail} (deactivated)`;
   }
   return user?.fullName;
 };
@@ -200,8 +200,8 @@ export const isFiltersEmpty = <T extends Record<string, any>>(
   return filteredValues;
 };
 
-export const clearInputValue = (
-  event: React.MouseEvent<HTMLInputElement, MouseEvent>,
+export const clearInputValue: MouseEventHandler<HTMLElement> = (
+  event: MouseEvent<HTMLInputElement>,
 ) => {
   const element = event.target as HTMLInputElement;
   element.value = '';
@@ -227,7 +227,7 @@ export const hideEmojiPalette = (id = 'emoji-close-div') => {
 };
 
 export const getNouns = (label: string, count: number) => {
-  if (count <= 1) {
+  if (count === 1) {
     return label;
   } else {
     return label + 's';
@@ -279,3 +279,38 @@ export const extractFirstWord = (str: string) => {
 
 export const padZero = (num: number, places: number) =>
   String(num).padStart(places, '0');
+
+export const convertUpperCaseToPascalCase = (value: string) => {
+  if (!value) {
+    return '';
+  }
+  return value[0] + value.substring(1, value.length).toLowerCase();
+};
+
+type Chainable<T> = {
+  value: () => T;
+  keyBy: (key: string) => Chainable<{ [key: string]: any }>;
+};
+
+export const chain = <T>(input: T): Chainable<T> => ({
+  value: () => input,
+  keyBy: (key: string) =>
+    chain(
+      (input as any[]).reduce((acc: { [key: string]: any }, item: any) => {
+        acc[item[key]] = item;
+        return acc;
+      }, {}),
+    ),
+});
+
+export const isEmptyEditor = (content: string, ops: any) => {
+  for (const op of ops) {
+    if (op.insert && op.insert.emoji) {
+      return false;
+    }
+  }
+  if (content === '\n' || content === '') {
+    return true;
+  }
+  return false;
+};

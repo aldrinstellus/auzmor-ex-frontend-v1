@@ -1,7 +1,7 @@
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import AddUsers from './AddUsers';
 import * as yup from 'yup';
@@ -49,7 +49,7 @@ export interface IEmailValidationErrors {
   [index: number]: { isError: boolean; isLoading: boolean };
 }
 
-const InviteUserModal: React.FC<IInviteUserModalProps> = ({
+const InviteUserModal: FC<IInviteUserModalProps> = ({
   open,
   openModal,
   closeModal,
@@ -143,7 +143,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
               dataTestId="people-invite-toaster-close"
             />

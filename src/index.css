@@ -15,17 +15,22 @@ body {
   background-color: #f5f5f5;
   color: #171717;
   overflow: hidden;
+  --rt-opacity: 1;
 }
 
 @layer utilities {
   .center {
     @apply flex justify-center items-center;
   }
+  .apart {
+    @apply flex justify-between items-center;
+  }
 }
 
 /* Width of the vertical scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 /* Background color of the scrollbar track */
@@ -128,4 +133,15 @@ body {
 
 .Toastify__toast-container {
   width: auto !important;
+}
+
+.top-arrow::after {
+  content: ' ';
+  position: absolute;
+  bottom: 100%; /* At the top of the tooltip */
+  left: 50%;
+  margin-left: -16px;
+  border-width: 16px;
+  border-style: solid;
+  border-color: transparent transparent white transparent;
 }

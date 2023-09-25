@@ -66,7 +66,7 @@ import TickCircleIcon from '../components/TickCircle';
 import CloseCircleIcon from '../components/CloseCircle';
 import FilterLinear from '../components/FilterLinear';
 import ArrowSwap from '../components/ArrowSwap';
-import dotsVerticalIcon from '../components/DotsVertical';
+import DotsVerticalIcon from '../components/DotsVertical';
 import Redo from '../components/Redo';
 import UserRemove from '../components/UserRemove';
 import ExportIcon from '../components/Export';
@@ -125,30 +125,47 @@ import ReactivateUser from '../components/ReactivateUser';
 import Forbidden from '../components/Forbidden';
 import PromoteUserIcon from '../components/Promote';
 import MicIcon from '../components/Mic';
+import AnnouncementChartIcon from '../components/AnnouncementChart';
+import dotsHorizontalIcon from '../components/DotsHorizontal';
+import Tag from '../components/Tag';
+import ArrowRightUp from '../components/ArrowRightUp';
+import GalleryExport from '../components/GalleryExport';
+import FolderOpen from '../components/FolderOpen';
+import NoteFavouriteIcon from '../components/NoteFavourite';
+import EmployeeTagIcon from '../components/EmployeeTag';
+import CheckIcon from '../components/Check';
+import DownloadIcon from '../components/Download';
+import WarningCircleIcon from '../components/WarningCircle';
+import Integration from '../components/Integration';
+import Security from '../components/Security';
+import VideoSlash from '../components/VideoSlash';
 
 export const icon = {
   add: Add,
   addCircle: AddCircle,
   admin: AdminIcon,
+  announcementChart: AnnouncementChartIcon,
   arrowDown: ArrowDown,
   arrowLeft: ArrowLeftIcon,
   arrowRight: ArrowRightIcon,
+  arrowRightUp: ArrowRightUp,
   arrowSwap: ArrowSwap,
   arrowUp: ArrowUp,
   bookmarkOutline: BookmarkOutline,
   branding: Branding,
   briefcase: BriefcaseIcon,
   cake: CakeIcon,
+  calendar: Calendar,
   calendarTwo: CalendarIconTwo,
   call: Call,
   cancel: Cancel,
   carouselClose: CarouselCloseIcon,
-  calendar: Calendar,
   carouselLeft: CarouselLeftIcon,
   carouselRight: CarouselRightIcon,
   celebrate: Celebrate,
   celebrateReaction: CelebrateReaction,
   chart: ChartIcon,
+  check: CheckIcon,
   clipboardClose: ClipboardCloseIcon,
   clock: ClockIcon,
   close: CloseIcon,
@@ -161,16 +178,20 @@ export const icon = {
   copyLink: CopyLink,
   crossCircle: CrossCircle,
   cyclicArrow: CyclicArrow,
+  deactivateUser: DeactivateUser,
   delete: DeleteIcon,
   deleteCross: DeleteCrossIcon,
   document: DocumentIcon,
   documentUpload: DocumentUpload,
-  dotsVertical: dotsVerticalIcon,
+  dotsHorizontal: dotsHorizontalIcon,
+  dotsVertical: DotsVerticalIcon,
+  download: DownloadIcon,
   draft: DraftIcon,
   edit: EditIcon,
   editReceipt: EditReceipt,
   email: EmailIcon,
   emojiHappy: EmojiHappy,
+  'employee-tag': EmployeeTagIcon,
   expand: ExpandIcon,
   explore: ExploreIcon,
   export: ExportIcon,
@@ -183,9 +204,12 @@ export const icon = {
   flashIcon: FlashIcon,
   focus: FocusIcon,
   folderConnection: FolderConnectionIcon,
+  folderOpen: FolderOpen,
+  forbidden: Forbidden,
   fullScreen: FullScreenIcon,
   funny: Funny,
   funnyReaction: FunnyReaction,
+  galleryExport: GalleryExport,
   gear: Gear,
   global: Global,
   group: GroupIcon,
@@ -196,6 +220,7 @@ export const icon = {
   infoCircle: InfoCircleIcon,
   insightful: Insightful,
   insightfulReaction: InsightfulReaction,
+  integration: Integration,
   launcher: LauncherIcon,
   like: Like,
   likeIcon: LikeIcon,
@@ -212,9 +237,11 @@ export const icon = {
   marketplace: Marketplace,
   marriedIcon: MarriedIcon,
   maximize: MaximizeIcon,
+  mic: MicIcon,
   minus: Minus,
   more: MoreIcon,
   mute: MuteIcon,
+  noteFavourite: NoteFavouriteIcon,
   notification: NotificationIcon,
   orangeHashtag: OrangeHashtagIcon,
   outOfOfficeIcon: OutOfOfficeIcon,
@@ -225,12 +252,15 @@ export const icon = {
   postBookmark: PostBookmarkIcon,
   profile: ProfileIcon,
   profileUser: ProfileUser,
+  promoteUser: PromoteUserIcon,
+  reactivateUser: ReactivateUser,
   redo: Redo,
   reorder: Reorder,
   reply: Reply,
   repost: Repost,
   rotateLeft: RotateLeft,
   search: Search,
+  security: Security,
   seekForward: SeekForwardIcon,
   send: Send,
   setting: SettingIcon,
@@ -240,6 +270,7 @@ export const icon = {
   speaker: SpeakerIcon,
   support: Support,
   supportReaction: SupportReaction,
+  tag: Tag,
   threeDots: ThreeDots,
   tickCircle: TickCircleIcon,
   trash: Trash,
@@ -247,11 +278,8 @@ export const icon = {
   userRemove: UserRemove,
   users: UsersIcon,
   video: VideoIcon,
+  warningCircle: WarningCircleIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
-  deactivateUser: DeactivateUser,
-  reactivateUser: ReactivateUser,
-  forbidden: Forbidden,
-  promoteUser: PromoteUserIcon,
-  mic: MicIcon,
+  videoSlash: VideoSlash,
 };

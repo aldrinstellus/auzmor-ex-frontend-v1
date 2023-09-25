@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 export enum Variant {
   Vertical = 'VERTICAL',
@@ -24,7 +24,7 @@ const Divider = ({
         {
           'h-full w-px': variant === Variant.Vertical,
         },
-        { 'bg-neutral-100': true },
+        { 'bg-neutral-200': true },
         { [className]: true },
       ),
     [variant, className],

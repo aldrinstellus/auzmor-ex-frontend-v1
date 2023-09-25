@@ -1,10 +1,10 @@
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import Card from 'components/Card';
 import Skeleton from 'react-loading-skeleton';
 import Divider from 'components/Divider';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const NotificationMedia: React.FC = (): ReactElement => {
+const NotificationMedia: FC = (): ReactElement => {
   return (
     <div className="py-4 px-6">
       <div className="flex gap-x-4">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const useModal = (
   initialState = false,
@@ -6,9 +6,9 @@ const useModal = (
 ): [boolean, () => any, () => any] => {
   const [open, setOpen] = useState<boolean>(initialState);
 
-  const openModal = () => setOpen(true);
+  const openModal = useCallback(() => setOpen(true), []);
 
-  const closeModal = () => setOpen(false);
+  const closeModal = useCallback(() => setOpen(false), []);
 
   const handleKeyArrowBind = (event: any) => {
     if (event?.key === 'Escape' && closeOnEscape) {

@@ -1,17 +1,17 @@
 import Button, { Variant as ButtonVariant, Size } from 'components/Button';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import { UploadStatus, useUpload } from 'hooks/useUpload';
-import React, { useContext } from 'react';
+import { FC, RefObject, useContext } from 'react';
 import { isVideo } from 'utils/misc';
 
 export interface IFooterProps {
   currentIndex: number;
-  changeInputImgRef: React.RefObject<HTMLInputElement>;
-  changeInputVideoRef: React.RefObject<HTMLInputElement>;
+  changeInputImgRef: RefObject<HTMLInputElement>;
+  changeInputVideoRef: RefObject<HTMLInputElement>;
   dataTestId?: string;
 }
 
-const Footer: React.FC<IFooterProps> = ({
+const Footer: FC<IFooterProps> = ({
   currentIndex,
   changeInputImgRef,
   changeInputVideoRef,

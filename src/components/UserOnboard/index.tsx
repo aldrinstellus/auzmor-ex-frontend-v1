@@ -1,4 +1,5 @@
-import React, {
+import {
+  FC,
   ReactElement as ReactNode,
   useEffect,
   useRef,
@@ -23,10 +24,10 @@ export type IScreen = {
   cardText?: string;
 };
 
-const UserOnboard: React.FC = (): ReactNode => {
+const UserOnboard: FC = (): ReactNode => {
   const [file, setFile] = useState<File>();
   const [open, openModal, closeModal] = useModal(true);
-  const [currentScreen, prev, next] = useCarousel(0, 5);
+  const [currentScreen, _, next] = useCarousel(0, 5);
   const [disableClose, setDisableClose] = useState<boolean>(false);
   const [openEditImage, openEditImageModal, closeEditImageModal] =
     useModal(false);
@@ -82,9 +83,8 @@ const UserOnboard: React.FC = (): ReactNode => {
                   disableClose ? 'cursor-not-allowed' : 'cursor-pointer'
                 }`}
                 name="close"
-                fill="#000000"
+                color="text-black"
                 onClick={disableClose ? undefined : closeModal}
-                hover={false}
                 size={20}
               />
             </div>

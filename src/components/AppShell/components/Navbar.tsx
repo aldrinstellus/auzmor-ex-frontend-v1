@@ -1,136 +1,121 @@
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
+// components
 import { Logo } from 'components/Logo';
-import Icon from 'components/Icon';
 import Divider, { Variant } from 'components/Divider';
-import AccountCard from './AccountCard';
 import NotificationsOverview from 'components/NotificationsOverview';
-import useRole from 'hooks/useRole';
-import Layout, { FieldType } from 'components/Form';
-import { useForm } from 'react-hook-form';
-import { twConfig } from 'utils/misc';
+import AccountCard from './AccountCard';
 import NavbarMenuItem from './NavbarMenuItem';
 
-const navigations = [
+// hooks
+import useRole from 'hooks/useRole';
+
+const adminNavigations = [
   {
-    label: 'Home',
-    icon: 'home',
-    linkTo: '/home',
-    dataTestId: 'office-home-page',
+    label: 'Admin',
+    icon: 'adminOutline',
+    hoverIcon: 'adminFilled',
+    linkTo: '/admin',
+    dataTestId: 'office-admin-page',
     iconSize: 24,
-    disabled: true,
-  },
-  {
-    label: 'Feed',
-    icon: 'feed',
-    linkTo: '/feed',
-    dataTestId: 'office-feed-page',
-    iconSize: 24,
-  },
-  {
-    label: 'People',
-    icon: 'people',
-    linkTo: '/users',
-    dataTestId: 'office-people-page',
-    iconSize: 24,
-  },
-  {
-    label: 'Apps',
-    icon: 'launcher',
-    linkTo: '/apps',
-    dataTestId: 'office-apps-page',
-    iconSize: 24,
-  },
-  {
-    label: 'Discover',
-    icon: 'explore',
-    linkTo: '/discover',
-    dataTestId: 'office-discover-page',
-    iconSize: 26,
-    disabled: true,
   },
 ];
 
 const Navbar = () => {
   const { isAdmin } = useRole();
 
-  const { control } = useForm({
-    mode: 'onChange',
-  });
+  // const { control } = useForm({
+  //   mode: 'onChange',
+  // });
+
+  const navigations = [
+    // {
+    //   label: 'Home',
+    //   icon: 'homeOutline',
+    //   hoverIcon: 'homeFilled',
+    //   linkTo: '/home',
+    //   dataTestId: 'office-home-page',
+    //   iconSize: 24,
+    //   disabled: true,
+    // },
+    {
+      label: 'Feed',
+      icon: 'feedOutline',
+      hoverIcon: 'feedFilled',
+      linkTo: '/feed',
+      dataTestId: 'office-feed-page',
+      iconSize: 24,
+    },
+    {
+      label: 'People',
+      icon: 'peopleOutline',
+      hoverIcon: 'peopleFilled',
+      linkTo: '/users',
+      dataTestId: 'office-people-page',
+      iconSize: 24,
+      isActive:
+        location.pathname.includes('/users') ||
+        location.pathname.includes('/teams'),
+    },
+    {
+      label: 'Apps',
+      icon: 'launcherOutline',
+      hoverIcon: 'launcherFilled',
+      linkTo: '/apps',
+      dataTestId: 'office-apps-page',
+      iconSize: 24,
+    },
+    // {
+    //   label: 'Discover',
+    //   icon: 'exploreOutline',
+    //   hoverIcon: 'exploreFilled',
+    //   linkTo: '/discover',
+    //   dataTestId: 'office-discover-page',
+    //   iconSize: 26,
+    //   disabled: true,
+    // },
+  ];
 
   return (
-    <header className="sticky top-0 z-50">
-      <div className="bg-white shadow h-16 w-full flex items-center justify-center px-8">
+    <header className="sticky top-0 z-50 bg-white shadow h-16 w-full py-[2px]">
+      <div className="bg-white h-full w-full max-w-[1440px] flex items-center py-0.5 px-8 mx-auto justify-between">
         <Link to="/feed" data-testid="auzmor-office">
           <Logo />
         </Link>
-        <div className="mx-8 w-[40%]">
+        <div className="flex-1" />
+        {/* <div className="flex-1">
           <Layout
             fields={[
               {
                 type: FieldType.Input,
                 control,
                 name: 'globalSearch',
-                className: '',
+                className: 'px-5 py-3',
                 placeholder: 'Search name, channel, page, document etc.,',
                 dataTestId: 'global-search',
-                disabled: true,
+                disabled: false,
               },
             ]}
           />
-        </div>
-        <div className="flex items-center space-x-8">
-          {navigations.map((nav) =>
-            nav.disabled ? (
-              <div
-                className="flex flex-col items-center"
-                data-testid={nav.dataTestId}
-                key={nav.label}
-              >
-                <Icon
-                  name={nav.icon}
-                  size={nav.iconSize}
-                  stroke={twConfig.theme.colors.neutral['200']}
-                  disabled
-                />
-                <div className="text-sm text-neutral-200 cursor-default">
-                  {nav.label}
-                </div>
-              </div>
-            ) : (
+        </div> */}
+        <div className="flex items-center gap-[60px] h-full">
+          <div className="flex items-center gap-10">
+            {navigations.map((nav) => (
               <NavbarMenuItem nav={nav} key={nav.label} />
-            ),
-          )}
-        </div>
-        <div className="mx-8 h-full py-2">
-          <Divider variant={Variant.Vertical} />
-        </div>
-        <div className="flex items-center space-x-8">
-          {isAdmin && (
-            <NavLink
-              to="/admin"
-              className={({ isActive }) =>
-                `${isActive ? 'text-primary-500' : 'text-neutral-500'} group`
-              }
-            >
-              {({ isActive }) => (
-                <div
-                  className="flex flex-col items-center"
-                  data-testid="office-admin-page"
-                >
-                  <Icon name="admin" size={24} isActive={isActive} />
-                  <div className="text-sm mt-[1px] group-hover:text-primary-500">
-                    Admin
-                  </div>
-                </div>
-              )}
-            </NavLink>
-          )}
-          <div>
-            <NotificationsOverview />
+            ))}
           </div>
-          <div>
-            <AccountCard />
+          <Divider className="h-full" variant={Variant.Vertical} />
+          <div className="flex items-center gap-10">
+            {isAdmin &&
+              adminNavigations.map((nav) => (
+                <NavbarMenuItem nav={nav} key={nav.label} />
+              ))}
+            <div>
+              <NotificationsOverview />
+            </div>
+            <div className="p-2">
+              <AccountCard />
+            </div>
           </div>
         </div>
       </div>

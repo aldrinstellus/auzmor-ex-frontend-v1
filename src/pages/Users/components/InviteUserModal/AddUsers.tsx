@@ -1,5 +1,3 @@
-import React from 'react';
-import _ from 'lodash';
 import {
   Control,
   FieldArrayWithId,
@@ -7,12 +5,12 @@ import {
   UseFieldArrayAppend,
   UseFieldArrayRemove,
 } from 'react-hook-form';
-import { IEmailValidationErrors, IRoleOption, IUserForm, roleOptions } from '.';
-import { twConfig } from 'utils/misc';
+import { IEmailValidationErrors, IUserForm, roleOptions } from '.';
 import Icon from 'components/Icon';
 import useHover from 'hooks/useHover';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import InviteFormRow from './InviteFormRow';
+import { FC } from 'react';
 
 export interface IAddUsersProps {
   fields: FieldArrayWithId<IUserForm, 'members', 'id'>[];
@@ -27,7 +25,7 @@ export interface IAddUsersProps {
 
 const FIELD_LIMIT = 20;
 
-const AddUsers: React.FC<IAddUsersProps> = ({
+const AddUsers: FC<IAddUsersProps> = ({
   fields,
   appendMembers,
   control,
@@ -86,12 +84,12 @@ const AddUsers: React.FC<IAddUsersProps> = ({
             <Icon
               name="addCircleOutline"
               size={16}
-              stroke={
+              color={
                 fields.length >= FIELD_LIMIT
-                  ? twConfig.theme.colors.neutral['400']
+                  ? 'text-neutral-400'
                   : isHovered
-                  ? twConfig.theme.colors.primary['700']
-                  : twConfig.theme.colors.primary['500']
+                  ? 'text-primary-700'
+                  : 'text-primary-500'
               }
             />
           </div>

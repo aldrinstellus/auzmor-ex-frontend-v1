@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 import './styles.css';
 import { CSSTransition } from 'react-transition-group';
@@ -14,7 +14,7 @@ export type ModalProps = {
   dataTestId?: string;
 };
 
-const Modal: React.FC<ModalProps> = ({
+const Modal: FC<ModalProps> = ({
   open,
   closeModal,
   children,
@@ -50,7 +50,7 @@ const Modal: React.FC<ModalProps> = ({
                   <Icon
                     name="close"
                     className="absolute -top-6 -right-6"
-                    fill={'#fff'}
+                    color="text-white"
                     onClick={closeModal}
                   />
                 </div>

@@ -1,4 +1,3 @@
-import React from 'react';
 import apiService from 'utils/apiService';
 import {
   createMentionsList,
@@ -8,30 +7,31 @@ import {
 import { renderToString } from 'react-dom/server';
 import ReactionSkeleton from 'components/Post/components/ReactionSkeleton';
 import { extractFirstWord } from 'utils/misc';
+import Skeleton from 'react-loading-skeleton';
 
-interface IOrg {
-  id: string;
-  name: string;
-}
-interface IFlags {
-  isDeactivated: string;
-  isReported: string;
-}
-interface IUserMentions {
-  id: string;
-  charDenotation: string;
-  fullName: string;
-  firstName: string;
-  middleName?: string;
-  lastName: string;
-  primaryEmail: string;
-  org: IOrg;
-  workEmail: string;
-  role: string;
-  flags: IFlags;
-  createdAt: string;
-  status: string;
-}
+// interface IOrg {
+//   id: string;
+//   name: string;
+// }
+// interface IFlags {
+//   isDeactivated: string;
+//   isReported: string;
+// }
+// interface IUserMentions {
+//   id: string;
+//   charDenotation: string;
+//   fullName: string;
+//   firstName: string;
+//   middleName?: string;
+//   lastName: string;
+//   primaryEmail: string;
+//   org: IOrg;
+//   workEmail: string;
+//   role: string;
+//   flags: IFlags;
+//   createdAt: string;
+//   status: string;
+// }
 
 interface IHashtags {
   id: string;
@@ -89,26 +89,39 @@ export const mention = {
       renderItem(listItem, searchTerm);
     });
     // Loaders =
-    //   mentionChar === '@' ? (
-    //     <ReactionSkeleton />
-    //   ) : (
-    //     <div>
-    //       {[...Array(4)].map((value, index) => (
-    //         <div className="flex gap-x-2 items-start py-5" key={index}>
-    //           <Skeleton className="!w-56 h-3" count={1} borderRadius={100} />
-    //         </div>
-    //       ))}
-    //     </div>
-    //   );
+    // mentionChar === '@' ? (
+    //   <ReactionSkeleton />
+    // ) : (
+    //   <div>
+    //     {[...Array(4)].map((value, index) => (
+    //       <div className="flex gap-x-2 items-start py-5" key={index}>
+    //         <Skeleton className="!w-56 h-3" count={1} borderRadius={100} />
+    //       </div>
+    //     ))}
+    //   </div>
+    // );
   },
   dataAttributes: ['id'],
   showDenotationChar: true,
   onOpen: () => {},
   onclose: () => {},
-  renderLoading: () => {
-    return renderToString(<ReactionSkeleton />);
+  renderLoading: (mentionChar: string) => {
+    console.log({ mentionChar });
+    return renderToString(
+      mentionChar === '@' ? (
+        <ReactionSkeleton />
+      ) : (
+        <div>
+          {[...Array(4)].map((value, index) => (
+            <div className="flex items-start px-6 py-3" key={index}>
+              <Skeleton className="!w-24 h-3" count={1} borderRadius={100} />
+            </div>
+          ))}
+        </div>
+      ),
+    );
   },
-  renderItem: (item: any, searchItem: any) => {
+  renderItem: (item: any, _searchItem: any) => {
     if (item?.charDenotation === '@') {
       return `
               <div class="user-container">

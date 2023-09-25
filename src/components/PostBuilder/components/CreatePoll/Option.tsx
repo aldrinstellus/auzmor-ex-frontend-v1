@@ -1,7 +1,7 @@
 import Layout, { FieldType } from 'components/Form';
 import { Variant } from 'components/Input';
 import { IPoll } from 'contexts/CreatePostContext';
-import React from 'react';
+import { FC } from 'react';
 import {
   Control,
   FieldArrayWithId,
@@ -17,7 +17,7 @@ export type OptionRowProps = {
   remove: UseFieldArrayRemove;
   className?: string;
 };
-const OptionRow: React.FC<OptionRowProps> = ({
+const OptionRow: FC<OptionRowProps> = ({
   field,
   errors,
   index,
@@ -37,18 +37,21 @@ const OptionRow: React.FC<OptionRowProps> = ({
             name: `options.${index}.text`,
             defaultValue: field.text,
             control,
-            dataTestId: 'poll-option-text',
+            dataTestId: `createpoll-option${index + 1}`,
+            errorDataTestId: `createpoll-option${index + 1}-error`,
             label: `Option ${index + 1}`,
             error: errors.options
               ? errors.options?.[index]?.text?.message
               : undefined,
+            inputClassName: 'py-3 text-sm font-medium',
             customLabelRightElement:
               index > 1 ? (
                 <button
-                  className="font-medium text-neutral-500 text-sm"
+                  className="font-normal text-neutral-500 text-sm"
                   onClick={() => remove(index)}
+                  data-testid={`createpoll-option${index + 1}-remove`}
                 >
-                  Remove
+                  remove
                 </button>
               ) : undefined,
           },

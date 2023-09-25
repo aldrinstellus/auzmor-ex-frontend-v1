@@ -1,13 +1,13 @@
-import React from 'react';
+import { Suspense } from 'react';
 import routers from './config';
 
 import { RouterProvider } from 'react-router-dom';
 
 const Routers = () => {
   return (
-    <React.Suspense>
+    <Suspense>
       <RouterProvider router={routers} />
-    </React.Suspense>
+    </Suspense>
   );
 };
 

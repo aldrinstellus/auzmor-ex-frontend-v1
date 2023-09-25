@@ -1,8 +1,6 @@
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import Icon from 'components/Icon';
-import React, { ReactNode } from 'react';
-import { twConfig } from 'utils/misc';
-
+import { FC, ReactNode } from 'react';
 export interface IFailureToastProps {
   content?: string | ReactNode;
   action?: () => void;
@@ -10,7 +8,7 @@ export interface IFailureToastProps {
   dataTestId?: string;
 }
 
-const FailureToast: React.FC<IFailureToastProps> = ({
+const FailureToast: FC<IFailureToastProps> = ({
   content,
   actionLabel,
   action,
@@ -23,7 +21,7 @@ const FailureToast: React.FC<IFailureToastProps> = ({
           <Icon
             className="p-1.5 bg-red-100 rounded-7xl mr-2.5"
             name="infoCircleOutline"
-            stroke={twConfig.theme.colors.red['500']}
+            color="text-red-500"
             size={32}
           />
         </div>
