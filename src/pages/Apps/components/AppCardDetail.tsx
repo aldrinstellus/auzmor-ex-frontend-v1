@@ -141,6 +141,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                             </div>
                           }
                           entityId={app.id}
+                          entity="apps"
                           audience={app.audience}
                         />
                       )}

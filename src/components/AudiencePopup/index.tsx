@@ -14,6 +14,7 @@ interface IAudiencePopupProps {
   audience?: IAudience[];
   title?: string;
   triggerBtn?: ReactNode;
+  entity?: string;
 }
 
 const AudiencePopup: FC<IAudiencePopupProps> = ({
@@ -21,6 +22,7 @@ const AudiencePopup: FC<IAudiencePopupProps> = ({
   audience,
   title = 'Posted to:',
   triggerBtn,
+  entity = 'posts',
 }) => {
   if (audience && audience.length && entityId) {
     const {
@@ -31,7 +33,7 @@ const AudiencePopup: FC<IAudiencePopupProps> = ({
       fetchNextPage,
       hasNextPage,
       isFetchingNextPage,
-    } = useAudience(entityId, {
+    } = useAudience(entity, entityId, {
       enabled: false,
     });
 
