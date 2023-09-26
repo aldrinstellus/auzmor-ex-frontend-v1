@@ -10,9 +10,10 @@ import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
 
 interface IUserNode {
   node: { data: INode };
+  isFilterApplied: boolean;
 }
 
-const UserNode: FC<IUserNode> = ({ node }) => {
+const UserNode: FC<IUserNode> = ({ node, isFilterApplied }) => {
   const departmentStyle = clsx({
     'bg-neutral-100': true,
     'bg-pink-100 text-pink-500':
@@ -26,11 +27,17 @@ const UserNode: FC<IUserNode> = ({ node }) => {
   const classNane = clsx({
     'flex flex-col rounded-9xl pt-3 px-2 pb-2 bg-white w-full h-full relative':
       true,
-    'opacity-1': node?.data.matchesCriteria,
-    'opacity-0.5':
-      !!!node?.data.matchesCriteria ||
-      node?.data?.status === UserStatus.Inactive,
   });
+  const getOpacity = () => {
+    if (!isFilterApplied) return '1';
+    if (
+      node?.data?.status === UserStatus.Inactive ||
+      !!!node?.data.matchesCriteria
+    ) {
+      return '0.5';
+    }
+    return '1';
+  };
   if (node.data.parentId !== '' || node.data.id !== 'root') {
     return (
       <div
@@ -40,6 +47,7 @@ const UserNode: FC<IUserNode> = ({ node }) => {
           backgroundColor: !!node?.data?._upToTheRootHighlightedNode
             ? '#F0F8FF'
             : 'white',
+          opacity: getOpacity(),
         }}
       >
         <div className="flex overflow-hidden">

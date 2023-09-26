@@ -70,7 +70,9 @@ const Chart: FC<IChart> = ({
               return renderToString(<ExpandButtonContent node={node} />);
             })
             .nodeContent((node: any, _i: any, _arr: any, _state: any) => {
-              return renderToString(<UserNode node={node} />);
+              return renderToString(
+                <UserNode node={node} isFilterApplied={isFilterApplied} />,
+              );
             }) as any
         )
           .hoverCardContent((d: any) => {
@@ -113,7 +115,7 @@ const Chart: FC<IChart> = ({
         return;
       }
     }
-  }, [chartRef.current, data]);
+  }, [chartRef.current, data, isFilterApplied]);
 
   const loaderStyle = useMemo(
     () =>
