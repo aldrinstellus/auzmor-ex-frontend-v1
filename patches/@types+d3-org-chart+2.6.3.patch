@@ -1,5 +1,5 @@
 diff --git a/node_modules/@types/d3-org-chart/index.d.ts b/node_modules/@types/d3-org-chart/index.d.ts
-index 18614b4..c35d2d2 100755
+index 18614b4..0e103c4 100755
 --- a/node_modules/@types/d3-org-chart/index.d.ts
 +++ b/node_modules/@types/d3-org-chart/index.d.ts
 @@ -83,6 +83,8 @@ export interface StatePublic<Datum> {
@@ -11,3 +11,11 @@ index 18614b4..c35d2d2 100755
  }
  
  /**
+@@ -168,6 +170,7 @@ export class OrgChart<Datum> {
+     getNodeChildren(args: HierarchyNode<Datum>, nodeStore: Datum[]): Datum[];
+     render(): this;
+     addNode(node: Datum): this;
++    addNodes(nodes: Datum[]): this;
+     removeNode(nodeId: NodeId): this;
+     calculateCompactFlexDimensions(root: HierarchyNode<Datum>): void;
+     calculateCompactFlexPositions(root: HierarchyNode<Datum>): void;

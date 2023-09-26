@@ -67,7 +67,6 @@ const NotificationsOverview: FC = () => {
       dataTestId: 'notifications-mentions',
     },
   ];
-  console.log(data?.data?.result?.unread);
   return (
     <Popover
       triggerNode={
