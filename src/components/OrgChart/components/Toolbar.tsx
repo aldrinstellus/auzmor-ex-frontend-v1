@@ -204,6 +204,15 @@ const Toolbar: FC<IToolbarProps> = ({
     resetField('userSearch');
     chartRef.current?.clearHighlighting();
   };
+  const getParentId = () => {
+    const id =
+      chartRef!.current!.data()?.find((node: INode) => node.id === user?.id)
+        .parentId || user?.id;
+    if (id === 'root') {
+      return user?.id;
+    }
+    return id;
+  };
   return (
     <>
       <div className="flex flex-col mt-7 px-4 py-3 mb-8 w-full shadow-lg rounded-9xl bg-white">
@@ -227,11 +236,7 @@ const Toolbar: FC<IToolbarProps> = ({
               className={teamClassName}
               onClick={() => {
                 setActiveMode(OrgChartMode.Team);
-                setParentId(
-                  chartRef!
-                    .current!.data()
-                    ?.find((node: INode) => node.id === user?.id).parentId,
-                );
+                setParentId(getParentId());
               }}
             >
               My Team
