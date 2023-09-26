@@ -117,7 +117,7 @@ const Chart: FC<IChart> = ({
         return;
       }
     }
-  }, [chartRef.current, isFilterApplied]);
+  }, [chartRef.current, data, isFilterApplied]);
 
   const loaderStyle = useMemo(
     () =>
