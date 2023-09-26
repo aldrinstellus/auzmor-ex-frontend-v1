@@ -8,7 +8,7 @@ import Spinner from 'components/Spinner';
 import clsx from 'clsx';
 import Button, { Variant } from 'components/Button';
 import UserCard, { UsercardVariant } from 'components/UserCard';
-import { UserStatus, getOrgChart } from 'queries/users';
+import { IGetUser, UserStatus, getOrgChart } from 'queries/users';
 import { QueryFunctionContext } from '@tanstack/react-query';
 import { IDesignation } from 'queries/designation';
 import { IProfileImage } from 'queries/post';
@@ -39,6 +39,7 @@ interface IChart {
   data: INode[];
   isFilterApplied: boolean;
   onClearFilter: () => void;
+  startWithSpecificUser: IGetUser | null;
 }
 
 const Chart: FC<IChart> = ({
@@ -47,6 +48,7 @@ const Chart: FC<IChart> = ({
   isLoading,
   isFilterApplied,
   onClearFilter,
+  startWithSpecificUser,
 }) => {
   const chartRef = useRef(null);
   let chart: any | null = null;
@@ -71,7 +73,10 @@ const Chart: FC<IChart> = ({
             })
             .nodeContent((node: any, _i: any, _arr: any, _state: any) => {
               return renderToString(
-                <UserNode node={node} isFilterApplied={isFilterApplied} />,
+                <UserNode
+                  node={node}
+                  isFilterApplied={isFilterApplied && !!!startWithSpecificUser}
+                />,
               );
             }) as any
         )

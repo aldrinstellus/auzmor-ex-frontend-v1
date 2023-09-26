@@ -207,7 +207,7 @@ const Toolbar: FC<IToolbarProps> = ({
   const getParentId = () => {
     const id =
       chartRef!.current!.data()?.find((node: INode) => node.id === user?.id)
-        .parentId || user?.id;
+        ?.parentId || user?.id;
     if (id === 'root') {
       return user?.id;
     }

@@ -103,6 +103,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
           !!appliedFilters?.location?.length ||
           !!startWithSpecificUser
         }
+        startWithSpecificUser={startWithSpecificUser}
       />
     </div>
   );
