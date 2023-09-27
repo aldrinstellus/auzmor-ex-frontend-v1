@@ -3,7 +3,7 @@ import EntitySearchModalBody from 'components/EntitySearchModal/components/Entit
 import { EntitySearchModalType } from 'components/EntitySearchModal';
 import Icon from 'components/Icon';
 import Avatar from 'components/Avatar';
-import { IGetUser } from 'queries/users';
+import { IGetUser, UserStatus } from 'queries/users';
 import DynamicImagePreview from 'components/DynamicImagePreview';
 import { SHOUTOUT_STEPS } from '.';
 import { getProfileImage } from 'utils/misc';
@@ -87,6 +87,7 @@ const Body: FC<ShoutoutBodyProps> = ({
               </div>
             );
           }}
+          usersQueryParams={{ status: [UserStatus.Active] }}
         />
       )}
       {step === SHOUTOUT_STEPS.ImageSelect && (
