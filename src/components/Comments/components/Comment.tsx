@@ -21,6 +21,7 @@ import {
   getAvatarColor,
   getFullName,
   getProfileImage,
+  getUserCardTooltipProps,
   twConfig,
 } from 'utils/misc';
 import { IComment } from '..';
@@ -166,22 +167,7 @@ export const Comment: FC<CommentProps> = ({ comment, customNode = null }) => {
           <div className="flex flex-col items-start p-0 flex-grow w-0">
             <Tooltip
               tooltipContent={
-                <UserCard
-                  user={{
-                    id: comment?.createdBy?.userId || '',
-                    fullName:
-                      comment?.createdBy?.fullName || 'Field not specified',
-                    workEmail:
-                      comment?.createdBy?.email || 'Field not specified',
-                    workLocation: {
-                      locationId: '',
-                      name:
-                        comment?.createdBy?.workLocation ||
-                        'Field not specified',
-                    },
-                    profileImage: comment?.createdBy?.profileImage,
-                  }}
-                />
+                <UserCard user={getUserCardTooltipProps(comment?.createdBy)} />
               }
               variant={TooltipVariant.Light}
               className="!p-4 !shadow-md !rounded-9xl !z-[999]"

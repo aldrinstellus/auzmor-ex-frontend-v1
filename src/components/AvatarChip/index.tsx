@@ -1,5 +1,9 @@
 import Avatar from 'components/Avatar';
-import { getFullName, getProfileImage } from 'utils/misc';
+import {
+  getFullName,
+  getProfileImage,
+  getUserCardTooltipProps,
+} from 'utils/misc';
 import useAuth from 'hooks/useAuth';
 import { Link } from 'react-router-dom';
 import Tooltip, { Variant } from 'components/Tooltip';
@@ -35,20 +39,7 @@ const AvatarChip: FC<IAvatarChipProps> = ({
 
   return (
     <Tooltip
-      tooltipContent={
-        <UserCard
-          user={{
-            id: user.userId,
-            profileImage: user.profileImage,
-            fullName: user.fullName,
-            workEmail: user.email,
-            workLocation: user.workLocation,
-            designation: user.designation
-              ? { designationId: '', name: user.designation }
-              : undefined,
-          }}
-        />
-      }
+      tooltipContent={<UserCard user={getUserCardTooltipProps(user)} />}
       variant={Variant.Light}
       className="!p-4 !shadow-md !rounded-9xl !z-[999]"
     >

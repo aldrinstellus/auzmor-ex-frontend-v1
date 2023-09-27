@@ -22,7 +22,10 @@ const AppWidgetCard: FC<IAppWidgetCardProps> = ({ data }) => {
     dataTestid: `app-icon`,
   };
   return (
-    <Link to={data.url} target="_blank">
+    <Link
+      to={`${window.location.origin}/apps/${data.id}/launch`}
+      target="_blank"
+    >
       <div
         className="flex flex-col items-center gap-2"
         data-testid="app-launcher-app"

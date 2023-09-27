@@ -384,3 +384,8 @@ export const deleteApp = async (id: string) => {
   const data = await apiService.delete(`/apps/${id}`);
   return data;
 };
+
+export const launchApp = async (id: string) => {
+  const { result } = await apiService.post(`/apps/${id}/launch`);
+  return result.data;
+};

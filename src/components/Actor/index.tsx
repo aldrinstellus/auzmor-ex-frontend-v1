@@ -4,7 +4,12 @@ import { VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
 import { IAudience, ICreatedBy } from 'queries/post';
 import { Link } from 'react-router-dom';
-import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
+import {
+  getAvatarColor,
+  getFullName,
+  getProfileImage,
+  getUserCardTooltipProps,
+} from 'utils/misc';
 import AudiencePopup from 'components/AudiencePopup';
 import Tooltip, { Variant } from 'components/Tooltip';
 import UserCard from 'components/UserCard';
@@ -76,18 +81,7 @@ const Actor: FC<ActorProps> = ({
         >
           <Tooltip
             tooltipContent={
-              <UserCard
-                user={{
-                  id: createdBy?.userId || '',
-                  fullName: createdBy?.fullName || 'Field not specified',
-                  workEmail: createdBy?.email || 'Field not specified',
-                  workLocation: {
-                    locationId: '',
-                    name: createdBy?.workLocation || 'Field not specified',
-                  },
-                  profileImage: createdBy?.profileImage,
-                }}
-              />
+              <UserCard user={getUserCardTooltipProps(createdBy)} />
             }
             variant={Variant.Light}
             className="!p-4 !shadow-md !rounded-9xl !z-[999]"

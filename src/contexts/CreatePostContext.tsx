@@ -290,7 +290,9 @@ const CreatePostProvider: FC<ICreatePostProviderProps> = ({ children }) => {
     //Update files
     setFiles([
       ...files.filter(
-        (file: File) => file.name !== fileName || file.name !== coverImageName,
+        (file: File) =>
+          file.name !== fileName ||
+          (coverImageName && file.name !== coverImageName),
       ),
     ]);
 

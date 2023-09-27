@@ -18,6 +18,7 @@ import {
   getAvatarColor,
   getFullName,
   getProfileImage,
+  getUserCardTooltipProps,
   twConfig,
 } from 'utils/misc';
 import { produce } from 'immer';
@@ -144,20 +145,7 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
                 <Tooltip
                   tooltipContent={
                     <UserCard
-                      user={{
-                        id: comment?.createdBy?.userId || '',
-                        fullName:
-                          comment?.createdBy?.fullName || 'Field not specified',
-                        workEmail:
-                          comment?.createdBy?.email || 'Field not specified',
-                        workLocation: {
-                          locationId: '',
-                          name:
-                            comment?.createdBy?.workLocation ||
-                            'Field not specified',
-                        },
-                        profileImage: comment?.createdBy?.profileImage,
-                      }}
+                      user={getUserCardTooltipProps(comment?.createdBy)}
                     />
                   }
                   variant={TooltipVariant.Light}

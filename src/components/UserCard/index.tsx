@@ -36,7 +36,7 @@ const UserCard: FC<IUserCardProp> = ({
           </div>
           <div className="flex flex-col justify-between h-full">
             <div className="text-base font-bold text-neutral-900 truncate">
-              {user?.fullName || 'Field not specified'}
+              {getFullName(user) || 'Field not specified'}
             </div>
             <div className="text-sm font-normal text-neutral-500 truncate">
               {user?.workEmail || 'Field not specified'}
@@ -81,7 +81,7 @@ const UserCard: FC<IUserCardProp> = ({
                   className="text-lg font-bold text-neutral-900 truncate mb-2"
                   data-testid="usercard-name"
                 >
-                  {user?.fullName || 'Field not specified'}
+                  {getFullName(user) || 'Field not specified'}
                 </div>
                 <div
                   className="text-sm font-normal text-neutral-500 truncate mb-2"

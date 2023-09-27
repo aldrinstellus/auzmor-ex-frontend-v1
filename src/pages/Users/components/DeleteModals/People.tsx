@@ -61,6 +61,7 @@ const DeletePeople: FC<IDeletePeopleProps> = ({
     onSuccess: (data, variables, context) => {
       closeModal();
       queryClient.invalidateQueries({ queryKey: ['users'] });
+      queryClient.invalidateQueries(['feed'], { exact: false });
       toast(
         <SuccessToast
           content="Member has been deleted"
