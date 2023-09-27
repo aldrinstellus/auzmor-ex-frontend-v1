@@ -120,6 +120,8 @@ const Avatar: FC<AvatarProps> = ({
     dataTestid: `${dataTestId}-avatar-img`,
   };
 
+  const avatarName = name && !isCounter ? getInitials(name) : name;
+
   return (
     <div
       className={containerStyles}
@@ -137,7 +139,7 @@ const Avatar: FC<AvatarProps> = ({
           }}
         >
           {loading && <Spinner color={PRIMARY_COLOR} />}
-          {!loading && name && getInitials(name)}
+          {!loading && avatarName}
         </span>
       )}
       {!!indicatorIcon && !loading

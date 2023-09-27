@@ -241,6 +241,7 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
           <div
             className="cursor-pointer text-neutral-500 font-semibold hover:underline"
             onClick={() => {
+              deselectAll();
               setValue('selectAll', false);
               setValue('showSelectedMembers', false);
             }}

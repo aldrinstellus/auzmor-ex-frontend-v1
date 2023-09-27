@@ -103,7 +103,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
   useMemo(() => {
     if (customActiveFlow === CreatePostFlow.CreateAnnouncement) {
       setAnnouncement({
-        label: '1 week',
+        label: data?.announcement?.end ? 'Custom Date' : '1 week',
         value:
           data?.announcement?.end ||
           afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
