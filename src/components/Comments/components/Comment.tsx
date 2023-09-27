@@ -180,6 +180,7 @@ export const Comment: FC<CommentProps> = ({ comment, customNode = null }) => {
                         'Field not specified',
                     },
                     profileImage: comment?.createdBy?.profileImage,
+                    status: comment?.createdBy?.status,
                   }}
                 />
               }

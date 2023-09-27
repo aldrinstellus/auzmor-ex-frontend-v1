@@ -86,6 +86,7 @@ const Actor: FC<ActorProps> = ({
                     name: createdBy?.workLocation || 'Field not specified',
                   },
                   profileImage: createdBy?.profileImage,
+                  status: createdBy?.status,
                 }}
               />
             }

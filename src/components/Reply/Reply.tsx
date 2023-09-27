@@ -157,6 +157,7 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
                             'Field not specified',
                         },
                         profileImage: comment?.createdBy?.profileImage,
+                        status: comment?.createdBy?.status,
                       }}
                     />
                   }

@@ -5,6 +5,7 @@ import Tooltip, { Variant } from 'components/Tooltip';
 import './index.css';
 import UserCard from 'components/UserCard';
 import { ILocation } from 'queries/location';
+import { UserStatus } from 'queries/users';
 
 type MentionProps = {
   value: string;
@@ -14,6 +15,7 @@ type MentionProps = {
   email?: string;
   userId?: string;
   location?: ILocation;
+  status?: UserStatus;
 };
 
 const Mention: FC<MentionProps> = ({
@@ -23,6 +25,7 @@ const Mention: FC<MentionProps> = ({
   email,
   userId,
   location,
+  status,
 }): ReactElement => {
   const { user } = useAuth();
   return (
@@ -35,6 +38,7 @@ const Mention: FC<MentionProps> = ({
             workEmail: email,
             workLocation: location,
             profileImage,
+            status,
           }}
         />
       }
