@@ -644,17 +644,24 @@ export const useInfiniteFeed = (pathname: string, q?: Record<string, any>) => {
   };
 };
 
-const getPost = async (id: string, commentId?: string) => {
-  const data = await apiService.get(
+const getPost = async (
+  id: string,
+  updateFeed: (id: string, post: IPost) => void,
+  commentId?: string,
+) => {
+  const response = await apiService.get(
     `/posts/${id}${commentId ? '?commentId=' + commentId : ''}`,
   );
-  return data;
+  updateFeed(id, response.data.result.data);
+  response.data.result.data = { id: response.data.result.data.id };
+  return response;
 };
 
 export const useGetPost = (id: string, commentId?: string) => {
+  const updateFeed = useFeedStore((state) => state.updateFeed);
   return useQuery({
     queryKey: ['posts', id, commentId],
-    queryFn: () => getPost(id, commentId),
+    queryFn: () => getPost(id, updateFeed, commentId),
   });
 };
 

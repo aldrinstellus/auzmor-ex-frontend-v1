@@ -213,7 +213,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                     className="text-xl font-semibold"
                     data-testid="tem-details-people-count"
                   >
-                    {data.teamMembers || 0}
+                    {data.totalMembers || 0}
                   </div>
                 </div>
                 <div className="relative">

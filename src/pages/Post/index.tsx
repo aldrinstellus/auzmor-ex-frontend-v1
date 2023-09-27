@@ -4,9 +4,10 @@ import PageLoader from 'components/PageLoader';
 import Post from 'components/Post';
 import { Reply } from 'components/Reply/Reply';
 import UserCard from 'components/UserWidget';
-import { IPost, useGetPost } from 'queries/post';
+import { useGetPost } from 'queries/post';
 import { FC } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
+import { useFeedStore } from 'stores/feedStore';
 
 const PostPage: FC = () => {
   const { id } = useParams();
@@ -16,14 +17,17 @@ const PostPage: FC = () => {
     return <div>Error</div>;
   }
 
-  const { data, isLoading, isError } = useGetPost(id, commentId);
+  const { isLoading, isError } = useGetPost(id, commentId);
+  const { getPost } = useFeedStore();
 
   if (isLoading) {
     return <PageLoader />;
   } else if (isError) {
     return <div>Error...</div>;
   }
-  const post = data.data?.result?.data as IPost;
+
+  const post = getPost(id);
+
   return (
     <>
       <div className="mb-12 space-x-8 flex w-full">
