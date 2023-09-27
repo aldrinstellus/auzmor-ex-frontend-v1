@@ -4,9 +4,10 @@ import PageLoader from 'components/PageLoader';
 import Post from 'components/Post';
 import { Reply } from 'components/Reply/Reply';
 import UserCard from 'components/UserWidget';
-import { IPost, useGetPost } from 'queries/post';
+import { useGetPost } from 'queries/post';
 import { FC } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
+import { useFeedStore } from 'stores/feedStore';
 
 const PostPage: FC = () => {
   const { id } = useParams();
@@ -16,14 +17,14 @@ const PostPage: FC = () => {
     return <div>Error</div>;
   }
 
-  const { data, isLoading, isError } = useGetPost(id, commentId);
+  const { isLoading, isError } = useGetPost(id, commentId);
+  const { feed } = useFeedStore();
 
   if (isLoading) {
     return <PageLoader />;
   } else if (isError) {
     return <div>Error...</div>;
   }
-  const post = data.data?.result?.data as IPost;
   return (
     <>
       <div className="mb-12 space-x-8 flex w-full">
@@ -32,16 +33,16 @@ const PostPage: FC = () => {
         </div>
         <div className="w-1/2">
           <Post
-            post={post}
+            post={feed[id]}
             customNode={
-              post?.comment && (
+              feed[id]?.comment && (
                 <div className="mt-6">
                   <Comment
-                    comment={post.comment}
+                    comment={feed[id].comment}
                     customNode={
-                      post?.comment?.comment ? (
+                      feed[id]?.comment?.comment ? (
                         <div className="mt-4">
-                          <Reply comment={post?.comment?.comment} />
+                          <Reply comment={feed[id]?.comment?.comment} />
                         </div>
                       ) : null
                     }
@@ -52,7 +53,7 @@ const PostPage: FC = () => {
           />
         </div>
         <div className="min-w-[293px] max-w-[293px]">
-          <AnnouncementCard postId={post.id} />
+          <AnnouncementCard postId={feed[id].id} />
         </div>
       </div>
     </>
