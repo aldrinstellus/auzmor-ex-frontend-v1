@@ -337,7 +337,7 @@ export const getUserCardTooltipProps = (user: any) => {
   return {
     id: user?.id || user?.userId || '',
     fullName:
-      user.fullName || user.userName || user.name || 'Field not specified',
+      user?.fullName || user?.userName || user?.name || 'Field not specified',
     workEmail: user?.email || user?.workEmail || 'Field not specified',
     workLocation: workLocation,
     designation: designation,
