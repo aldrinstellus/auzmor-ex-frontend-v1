@@ -108,7 +108,6 @@ export const mention = {
   onOpen: () => {},
   onclose: () => {},
   renderLoading: (mentionChar: string) => {
-    console.log({ mentionChar });
     return renderToString(
       mentionChar === '@' ? (
         <ReactionSkeleton />
