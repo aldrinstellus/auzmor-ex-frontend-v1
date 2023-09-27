@@ -125,7 +125,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
         queryClient.invalidateQueries(['celebrations'], {
           exact: false,
         });
-        queryClient.invalidateQueries(['get-post', entityId], {
+        queryClient.invalidateQueries(['posts', entityId], {
           exact: false,
         });
       }

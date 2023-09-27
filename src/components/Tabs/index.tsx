@@ -56,10 +56,6 @@ const Tabs: FC<ITabsProps> = ({
     }
   }, [activeTab, previousTab]);
 
-  useEffect(() => {
-    setActiveTab(activeTabIndex);
-  }, [activeTabIndex]);
-
   const isActive = (index: number) => activeTab === index;
   return (
     <div>
@@ -87,7 +83,7 @@ const Tabs: FC<ITabsProps> = ({
                 onClick={() => {
                   setPreviousTab(activeTab);
                   !tab?.disabled && setActiveTab(index);
-                  !tab?.disabled && onTabChange && onTabChange(index);
+                  !tab?.disabled && onTabChange?.(index);
                 }}
                 key={index}
                 data-testid={tab.dataTestId}

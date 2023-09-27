@@ -653,7 +653,7 @@ const getPost = async (id: string, commentId?: string) => {
 
 export const useGetPost = (id: string, commentId?: string) => {
   return useQuery({
-    queryKey: ['get-post', id, commentId],
+    queryKey: ['posts', id, commentId],
     queryFn: () => getPost(id, commentId),
   });
 };
