@@ -1,8 +1,8 @@
 import { FC, useEffect } from 'react';
 import { launchApp } from 'queries/apps';
-import Skeleton from 'react-loading-skeleton';
 import { useParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
+import PageLoader from 'components/PageLoader';
 
 interface IAppLaunchProps {}
 
@@ -22,12 +22,8 @@ const AppLaunchPage: FC<IAppLaunchProps> = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-6">
-      <Skeleton
-        className="!w-32"
-        containerClassName="flex-1"
-        borderRadius={100}
-      />
+    <div className="flex h-full justify-center">
+      <PageLoader />
     </div>
   );
 };
