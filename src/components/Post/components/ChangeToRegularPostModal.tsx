@@ -8,6 +8,7 @@ import ErrorWarningPng from 'images/error-warning-line.png';
 import { useFeedStore } from 'stores/feedStore';
 import { produce } from 'immer';
 import { FC } from 'react';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 
 type AppProps = {
   open: boolean;
@@ -40,6 +41,7 @@ const ChangeToRegularPostModal: FC<AppProps> = ({ open, closeModal, data }) => {
     onSuccess: async () => {
       await queryClient.invalidateQueries(['feed-announcements-widget']);
       await queryClient.invalidateQueries(['post-announcements-widget']);
+      successToastConfig('Announcement changed to a regular post');
     },
   });
 

@@ -39,7 +39,7 @@ const EditProfileScreen: FC<EditProfileScreenProps> = ({
               <Icon
                 name="edit"
                 size={20}
-                className="absolute bg-primary-500 border-1 border-white rounded-full p-2 cursor-pointer top-0 right-1"
+                className="absolute bg-primary-500 border-1 border-white rounded-full p-1 cursor-pointer top-0 right-1"
                 color="text-white"
                 onClick={() => profilePictureRef?.current?.click()}
                 dataTestId="edit-profilepic"

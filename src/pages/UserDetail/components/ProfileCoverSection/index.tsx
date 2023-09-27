@@ -266,7 +266,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({ userDetails }) => {
                 onPromoteClick={() =>
                   updateUserRoleMutation.mutate({ id: userDetails?.id })
                 }
-                onDeactivateClick={() => openDeactivateModal}
+                onDeactivateClick={openDeactivateModal}
                 onEditClick={() => {
                   openEditProfileModal();
                 }}

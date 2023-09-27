@@ -74,11 +74,10 @@ const Pending: FC<AppProps> = ({ post, closeModal }) => {
     }
   }, [inView]);
 
-  const pendingPercent =
-    Math.ceil(
-      post?.acknowledgementStats?.pending /
-        post?.acknowledgementStats?.audience,
-    ) * 100;
+  const pendingPercent = Math.round(
+    (post?.acknowledgementStats?.pending * 100) /
+      post?.acknowledgementStats?.audience,
+  );
 
   return (
     <div>

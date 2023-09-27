@@ -60,7 +60,9 @@ const Notification: FC<NotificationCardProps> = ({
       return (
         <>
           <span className="font-bold">{notificationMessage}&nbsp;</span>
-          <span className="font-bold text-primary-500">{actor.fullName}</span>
+          <span className="font-bold text-primary-500">
+            {actor.fullName} {actor.status === 'INACTIVE' && '(deactivated)'}
+          </span>
           <span className="font-bold">! 🎉🥳</span>
         </>
       );
@@ -69,7 +71,10 @@ const Notification: FC<NotificationCardProps> = ({
     } else {
       return (
         <>
-          <span className="font-bold">{actor.fullName}&nbsp;</span>
+          <span className="font-bold">
+            {actor.fullName} {actor.status === 'INACTIVE' && '(deactivated)'}
+            &nbsp;
+          </span>
           {notificationMessage}
         </>
       );

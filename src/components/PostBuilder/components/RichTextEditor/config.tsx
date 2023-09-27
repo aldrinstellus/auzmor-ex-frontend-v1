@@ -8,6 +8,7 @@ import { renderToString } from 'react-dom/server';
 import ReactionSkeleton from 'components/Post/components/ReactionSkeleton';
 import { extractFirstWord } from 'utils/misc';
 import Skeleton from 'react-loading-skeleton';
+import { UserStatus } from 'queries/users';
 
 // interface IOrg {
 //   id: string;
@@ -48,6 +49,7 @@ const mentionEntityFetch = async (character: string, searchTerm: string) => {
   if (character === '@' && !isContainWhiteSpace) {
     const { data: mentions } = await apiService.get('/users', {
       q: searchTerm,
+      status: [UserStatus.Active],
     });
     const mentionList = mentions?.result?.data;
     return createMentionsList(mentionList, character);

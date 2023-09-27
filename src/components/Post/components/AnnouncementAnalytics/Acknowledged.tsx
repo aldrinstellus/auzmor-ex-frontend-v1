@@ -31,11 +31,10 @@ const Acknowledged: FC<AppProps> = ({ post, closeModal }) => {
     }
   }, [inView]);
 
-  const completePercent =
-    Math.ceil(
-      post?.acknowledgementStats?.acknowledged /
-        post?.acknowledgementStats?.audience,
-    ) * 100;
+  const completePercent = Math.round(
+    (post?.acknowledgementStats?.acknowledged * 100) /
+      post?.acknowledgementStats?.audience,
+  );
 
   return (
     <div>
