@@ -6,6 +6,7 @@ import './index.css';
 import UserCard from 'components/UserCard';
 import { ILocation } from 'queries/location';
 import { UserStatus } from 'queries/users';
+import { getUserCardTooltipProps } from 'utils/misc';
 
 type MentionProps = {
   value: string;
@@ -32,14 +33,14 @@ const Mention: FC<MentionProps> = ({
     <Tooltip
       tooltipContent={
         <UserCard
-          user={{
-            id: userId || '',
+          user={getUserCardTooltipProps({
+            userId,
             fullName,
-            workEmail: email,
+            email,
             workLocation: location,
             profileImage,
             status,
-          }}
+          })}
         />
       }
       variant={Variant.Light}

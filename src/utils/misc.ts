@@ -14,6 +14,8 @@ import capitalize from 'lodash/capitalize';
 import DeactivatedUser from 'images/DeactivatedUser.png';
 import { EditUserSection, UserRole, UserStatus } from 'queries/users';
 import { MouseEvent, MouseEventHandler } from 'react';
+import { ILocation } from 'queries/location';
+import { IDesignation } from 'queries/designation';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -313,4 +315,33 @@ export const isEmptyEditor = (content: string, ops: any) => {
     return true;
   }
   return false;
+};
+
+export const getUserCardTooltipProps = (user: any) => {
+  let workLocation: ILocation = { locationId: '', name: 'Field not specified' };
+  if (typeof user?.workLocation === 'string') {
+    workLocation.name = user?.workLocation;
+  } else if (typeof user?.workLocation === 'object') {
+    workLocation = user?.workLocation;
+  }
+
+  let designation: IDesignation = {
+    designationId: '',
+    name: 'Field not specified',
+  };
+  if (typeof user?.designation === 'string') {
+    designation.name = user?.designation;
+  } else if (typeof user?.designation === 'object') {
+    designation = user?.designation;
+  }
+  return {
+    id: user?.id || user?.userId || '',
+    fullName:
+      user.fullName || user.userName || user.name || 'Field not specified',
+    workEmail: user?.email || user?.workEmail || 'Field not specified',
+    workLocation: workLocation,
+    designation: designation,
+    profileImage: user?.profileImage,
+    status: user?.status,
+  };
 };
