@@ -658,7 +658,7 @@ const getPost = async (
 };
 
 export const useGetPost = (id: string, commentId?: string) => {
-  const { updateFeed } = useFeedStore();
+  const updateFeed = useFeedStore((state) => state.updateFeed);
   return useQuery({
     queryKey: ['posts', id, commentId],
     queryFn: () => getPost(id, updateFeed, commentId),

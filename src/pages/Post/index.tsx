@@ -18,7 +18,7 @@ const PostPage: FC = () => {
   }
 
   const { isLoading, isError } = useGetPost(id, commentId);
-  const { getPost } = useFeedStore();
+  const getPost = useFeedStore((state) => state.getPost);
 
   if (isLoading) {
     return <PageLoader />;
