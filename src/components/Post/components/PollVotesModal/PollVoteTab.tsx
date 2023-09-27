@@ -3,17 +3,13 @@ import { FC, memo, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import PollVoteRow from './PollVoteRow';
 import PollVoteSkeleton from './PollVoteSkeleton';
-interface IPollOptionTabProps {
+interface IPollVoteTabProps {
   postId: string;
   optionId?: string;
   limit: number;
 }
 
-const PollOptionTab: FC<IPollOptionTabProps> = ({
-  postId,
-  optionId,
-  limit,
-}) => {
+const PollVoteTab: FC<IPollVoteTabProps> = ({ postId, optionId, limit }) => {
   console.log({ postId, optionId });
   const { ref, inView } = useInView();
 
@@ -60,4 +56,4 @@ const PollOptionTab: FC<IPollOptionTabProps> = ({
   );
 };
 
-export default memo(PollOptionTab);
+export default memo(PollVoteTab);

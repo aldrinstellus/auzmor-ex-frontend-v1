@@ -20,6 +20,7 @@ const Users = lazy(() => import('pages/Users'));
 const UserDetail = lazy(() => import('pages/UserDetail'));
 const TeamDetail = lazy(() => import('pages/TeamDetail'));
 const Apps = lazy(() => import('pages/Apps'));
+const AppLaunchPage = lazy(() => import('pages/AppLaunchPage'));
 const Discover = lazy(() => import('pages/Discover'));
 const Admin = lazy(() => import('pages/Admin'));
 const AcceptInvite = lazy(() => import('pages/AcceptInvite'));
@@ -97,6 +98,7 @@ const routers = createBrowserRouter(
         <Route path="/feed" element={<Feed />} />
         <Route path="/settings" element={<UserSettings />} />
         <Route path="/apps" element={<Apps />} />
+        <Route path="/apps/:id/launch" element={<AppLaunchPage />} />
         <Route path="/discover" element={<Discover />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/posts/:id" element={<PostPage />} />
