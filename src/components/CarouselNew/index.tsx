@@ -255,7 +255,7 @@ const Carousel: FC<ICarouselProps> = ({
           </div>
         )}
 
-        <div className="top-0 absolute p-4 justify-between flex w-full">
+        <div className="top-0 absolute p-4 justify-between flex w-full items-center">
           {!isPlaying ? (
             <div className="px-4 py-2 text-sm font-bold bg-white rounded-17xl">
               {currentIndex + 1} of {media.length}
@@ -270,7 +270,7 @@ const Carousel: FC<ICarouselProps> = ({
                 ? 'discardphoto'
                 : 'discardvideo'
             }`}
-            className="p-2 bg-white rounded-7xl cursor-pointer"
+            className="p-2 bg-white rounded-7xl cursor-pointer group"
           >
             <Icon name="close" size={16} />
           </div>

@@ -430,7 +430,7 @@ const MediaPreview: FC<IMediaPreviewProps> = ({
     <div className={`${className} relative`}>
       {getLayout()}
       {mode === Mode.Edit && (
-        <div className="flex justify-between absolute p-4 top-0 w-full">
+        <div className="flex justify-between absolute p-4 top-0 w-full items-center">
           <div>
             {showAddMediaButton && (
               <Button
