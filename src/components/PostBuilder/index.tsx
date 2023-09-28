@@ -26,7 +26,7 @@ const PostBuilder: FC<IPostBuilderProps> = ({
   customActiveFlow = CreatePostFlow.CreatePost,
 }) => {
   return (
-    <CreatePostProvider>
+    <CreatePostProvider data={data}>
       <CreatePostModal
         open={open}
         openModal={openModal}

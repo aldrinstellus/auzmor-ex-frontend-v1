@@ -175,7 +175,7 @@ const RichTextEditor = forwardRef(
         html: (ref as any).current
           ?.makeUnprivilegedEditor((ref as any).current?.getEditor())
           .getHTML(),
-        json: (ref as any).current
+        editor: (ref as any).current
           ?.makeUnprivilegedEditor((ref as any).current?.getEditor())
           .getContents(),
       });

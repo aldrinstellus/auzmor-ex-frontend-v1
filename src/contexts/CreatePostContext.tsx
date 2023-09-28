@@ -8,10 +8,11 @@ import {
 } from 'react';
 import { DeltaStatic } from 'quill';
 import { getBlobUrl, getMediaObj } from 'utils/misc';
-import { IAudience } from 'queries/post';
+import { IAudience, IPost } from 'queries/post';
 import { IGetUser } from 'queries/users';
 
 export interface ICreatePostProviderProps {
+  data?: IPost;
   children?: ReactNode;
 }
 
@@ -127,7 +128,7 @@ export interface IMediaValidationError {
 export interface IEditorValue {
   text: string;
   html: string;
-  json: DeltaStatic;
+  editor: DeltaStatic;
 }
 
 export interface ITranscodedData {
@@ -169,7 +170,7 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setActiveFlow: () => {},
   announcement: null,
   setAnnouncement: () => {},
-  editorValue: { html: '', json: {} as DeltaStatic, text: '' },
+  editorValue: { html: '', editor: {} as DeltaStatic, text: '' },
   setEditorValue: () => {},
   media: [],
   setMedia: () => {},
@@ -219,15 +220,20 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setPostType: () => {},
 });
 
-const CreatePostProvider: FC<ICreatePostProviderProps> = ({ children }) => {
+const CreatePostProvider: FC<ICreatePostProviderProps> = ({
+  children,
+  data,
+}) => {
   const [activeFlow, setActiveFlow] = useState(CreatePostFlow.CreatePost);
   const [announcement, setAnnouncement] = useState<null | IAnnouncement>(null);
-  const [editorValue, setEditorValue] = useState<IEditorValue>({
-    html: '',
-    json: {} as DeltaStatic,
-    text: '',
-  });
-  const [media, setMedia] = useState<IMedia[]>([]);
+  const [editorValue, setEditorValue] = useState<IEditorValue>(
+    data?.content || {
+      html: '',
+      editor: {} as DeltaStatic,
+      text: '',
+    },
+  );
+  const [media, setMedia] = useState<IMedia[]>((data?.files as IMedia[]) || []);
   const inputImgRef = useRef<HTMLInputElement>(null);
   const inputVideoRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<File[]>([]);
@@ -248,11 +254,13 @@ const CreatePostProvider: FC<ICreatePostProviderProps> = ({ children }) => {
   const [mediaOpenIndex, setMediaOpenIndex] = useState<number>(-1);
   const [poll, setPoll] = useState<IPoll | null>(null);
   const [schedule, setSchedule] = useState<ISchedule | null>(null);
-  const [audience, setAudience] = useState<IAudience[]>([]);
+  const [audience, setAudience] = useState<IAudience[]>(data?.audience || []);
   const [shoutoutUserIds, setShoutoutUserIds] = useState<string[]>([]);
   const [shoutoutUsers, setShoutoutUsers] = useState<any>({});
   const [shoutoutTemplate, setShoutoutTemplate] = useState<any>({});
-  const [postType, setPostType] = useState<POST_TYPE | null>(null);
+  const [postType, setPostType] = useState<POST_TYPE | null>(
+    data?.type || null,
+  );
 
   const setUploads = (uploads: File[], isCoverImage?: boolean) => {
     if (!isCoverImage) {
@@ -331,7 +339,7 @@ const CreatePostProvider: FC<ICreatePostProviderProps> = ({ children }) => {
     setAnnouncement(null);
     setEditorValue({
       html: '',
-      json: {} as DeltaStatic,
+      editor: {} as DeltaStatic,
       text: '',
     });
     setFiles([]);

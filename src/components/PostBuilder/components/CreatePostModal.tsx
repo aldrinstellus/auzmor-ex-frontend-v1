@@ -77,9 +77,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     announcement,
     editorValue,
     setAnnouncement,
-    setEditorValue,
     isPreviewRemoved,
-    setMedia,
     media,
     clearPostContext,
     coverImageMap,
@@ -90,11 +88,9 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     poll,
     setPoll,
     audience,
-    setAudience,
     shoutoutUserIds,
     setShoutoutUserIds,
     postType,
-    setPostType,
   } = useContext(CreatePostContext);
 
   const mediaRef = useRef<IMedia[]>([]);
@@ -128,13 +124,8 @@ const CreatePostModal: FC<ICreatePostModal> = ({
 
   useEffect(() => {
     if (data) {
-      setEditorValue(data.content.editor);
-      setPostType(data.type);
       if (data.isAnnouncement) {
         setAnnouncement({ label: 'Custom Date', value: data.announcement.end });
-      }
-      if (data?.files?.length) {
-        setMedia(data?.files as IMedia[]);
       }
       if (data?.schedule) {
         setSchedule({
@@ -156,7 +147,6 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         );
         setShoutoutUserIds(recipientIds);
       }
-      setAudience(data?.audience || []);
     }
   }, []);
 
@@ -382,7 +372,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         .map((media: IMedia) => media.id);
     }
 
-    quillHashtagConversion(content?.json)?.ops?.forEach(
+    quillHashtagConversion(content?.editor)?.ops?.forEach(
       (op: Record<string, any>) => {
         if (op?.insert && op?.insert.mention) {
           mentionList.push(op.insert.mention.id);
@@ -401,7 +391,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         content: {
           text: content?.text || editorValue.text,
           html: content?.html || editorValue.html,
-          editor: content?.json || editorValue.json,
+          editor: content?.editor || editorValue.editor,
         },
         type: postType && postType !== POST_TYPE.Media ? postType : 'UPDATE',
         files: fileIds,
@@ -457,7 +447,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         content: {
           text: content?.text || editorValue.text,
           html: content?.html || editorValue.html,
-          editor: content?.json || editorValue.json,
+          editor: content?.editor || editorValue.editor,
         },
         type: postType && postType !== POST_TYPE.Media ? postType : 'UPDATE',
         files: sortedIds,
