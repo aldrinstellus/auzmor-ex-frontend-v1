@@ -4,7 +4,6 @@ import PreviewLink from 'components/PreviewLink';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import useAuth from 'hooks/useAuth';
 import { IPost } from 'queries/post';
-import { DeltaStatic } from 'quill';
 import { ForwardedRef, RefObject, forwardRef, useContext } from 'react';
 import ReactQuill from 'react-quill';
 import RichTextEditor from '../RichTextEditor';
@@ -54,7 +53,7 @@ const Body = forwardRef(
             (ref as RefObject<ReactQuill>)!.current!.getEditor(),
           )
           .getHTML(),
-        json: (ref as RefObject<ReactQuill>).current
+        editor: (ref as RefObject<ReactQuill>).current
           ?.makeUnprivilegedEditor(
             (ref as RefObject<ReactQuill>)!.current!.getEditor(),
           )
@@ -178,9 +177,7 @@ const Body = forwardRef(
               !poll &&
               'min-h-[128px]'
             }`}
-            defaultValue={
-              data?.content?.editor || (editorValue.json as DeltaStatic)
-            }
+            defaultValue={editorValue.editor}
             ref={ref}
             mode={mode}
             renderToolbar={(isCharLimit: boolean) => {

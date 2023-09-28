@@ -55,7 +55,7 @@ const Footer: FC<IFooterProps> = ({
       html: quillRef.current
         ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
         .getHTML(),
-      json: quillRef.current
+      editor: quillRef.current
         ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
         .getContents(),
     });
@@ -318,7 +318,7 @@ const Footer: FC<IFooterProps> = ({
                   quillRef.current
                     ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
                     .getHTML() || '',
-                json: quillRef.current
+                editor: quillRef.current
                   ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
                   .getContents() as DeltaStatic,
               },
