@@ -36,7 +36,7 @@ const RemoveTeamMember: FC<IRemoveTeamMemberProps> = ({
     mutationKey: ['remove-team-member'],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['team', teamId] });
-      queryClient.invalidateQueries(['get-team-members'], {
+      queryClient.invalidateQueries(['team-members'], {
         exact: false,
       });
       queryClient.invalidateQueries(['feed'], { exact: false });
@@ -125,7 +125,7 @@ const RemoveTeamMember: FC<IRemoveTeamMemberProps> = ({
     <Modal open={open} className="max-w-sm">
       <Header />
       <div className="text-sm font-medium text-neutral-500 mx-6 mt-6 mb-8">
-        Are you sure you want to rremove this member from the team?
+        Are you sure you want to remove this member from the team?
       </div>
       <Footer />
     </Modal>

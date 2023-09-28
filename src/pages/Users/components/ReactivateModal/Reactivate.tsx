@@ -37,6 +37,7 @@ const ReactivatePeople: FC<IReactivatePeopleProps> = ({
       queryClient.invalidateQueries(['user', userId]);
       queryClient.invalidateQueries(['users']);
       queryClient.invalidateQueries(['feed'], { exact: false });
+      queryClient.invalidateQueries(['team-members']);
       toast(<SuccessToast content={`User has been reactivated`} />, {
         closeButton: (
           <Icon name="closeCircleOutline" color="text-primary-500" size={20} />

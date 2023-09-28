@@ -114,7 +114,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
           theme: 'dark',
         },
       );
-      queryClient.invalidateQueries(['get-team-members']);
+      queryClient.invalidateQueries(['team-members']);
     },
   });
 

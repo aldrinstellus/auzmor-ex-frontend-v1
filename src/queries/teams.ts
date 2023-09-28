@@ -158,7 +158,7 @@ export const useInfiniteTeamMembers = ({
   startFetching?: boolean;
 }) => {
   return useInfiniteQuery({
-    queryKey: ['get-team-members', q, teamId],
+    queryKey: ['team-members', q, teamId],
     queryFn: (context) => getTeamMembers(context, teamId),
     getNextPageParam: (lastPage: any) => {
       const pageDataLen = lastPage?.data?.result?.data?.length;
@@ -183,7 +183,7 @@ export const useInfiniteMembers = ({
   startFetching?: boolean;
 }) => {
   return useInfiniteQuery({
-    queryKey: ['get-team-members', q],
+    queryKey: ['team-members', q],
     queryFn: (context) => getMembers(context),
     getNextPageParam: (lastPage: any) => {
       const pageDataLen = lastPage?.data?.result?.data?.length;
