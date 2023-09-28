@@ -2,11 +2,14 @@ import { FC, MouseEvent, MouseEventHandler, useMemo, useState } from 'react';
 import Carousel from 'components/Carousel';
 import MediaRender from './components/MediaRender';
 import Button, { Variant as ButtonVariant, Size } from 'components/Button';
-import Icon from 'components/Icon';
 import { ICoverImageMap, IMedia } from 'contexts/CreatePostContext';
 import useModal from 'hooks/useModal';
 import './index.css';
 import Modal from 'components/Modal';
+import IconButton, {
+  Variant as IconButtonVariant,
+  Size as IconButtonSize,
+} from 'components/IconButton';
 
 export enum Mode {
   View = 'VIEW',
@@ -446,24 +449,32 @@ const MediaPreview: FC<IMediaPreviewProps> = ({
               />
             )}
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             {showEditButton && (
-              <div
+              <IconButton
+                icon="edit"
                 onClick={onEditButtonClick}
-                data-testid={`${dataTestId}-editicon`}
-                className="p-2 rounded-7xl mr-2 bg-white cursor-pointer"
-              >
-                <Icon name="edit" size={16} color="text-neutral-900" />
-              </div>
+                variant={IconButtonVariant.Secondary}
+                size={IconButtonSize.Medium}
+                borderAround
+                color="text-black"
+                className="bg-white !rounded-7xl"
+                borderAroundClassName="!rounded-7xl"
+                dataTestId={`${dataTestId}-editicon`}
+              />
             )}
             {showCloseButton && (
-              <div
+              <IconButton
+                icon="close"
                 onClick={onCloseButtonClick}
-                className="p-2 rounded-7xl bg-white cursor-pointer"
-                data-testid={`${dataTestId}-remove-image`}
-              >
-                <Icon name="close" size={16} color="text-neutral-900" />
-              </div>
+                variant={IconButtonVariant.Secondary}
+                size={IconButtonSize.Medium}
+                borderAround
+                color="text-black"
+                className="bg-white !rounded-7xl"
+                borderAroundClassName="!rounded-7xl"
+                dataTestId={`${dataTestId}-remove-image`}
+              />
             )}
           </div>
         </div>

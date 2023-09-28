@@ -3,7 +3,7 @@ import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import ConfirmationBox from 'components/ConfirmationBox';
-import { IPost, deletePost } from 'queries/post';
+import { IPost, PostType, deletePost } from 'queries/post';
 import PostBuilder, { PostBuilderMode } from 'components/PostBuilder';
 import useModal from 'hooks/useModal';
 import useAuth from 'hooks/useAuth';
@@ -11,7 +11,7 @@ import useRole from 'hooks/useRole';
 import { canPerform, isRegularPost, twConfig } from 'utils/misc';
 import { useFeedStore } from 'stores/feedStore';
 import omit from 'lodash/omit';
-import { CreatePostFlow, POST_TYPE } from 'contexts/CreatePostContext';
+import { CreatePostFlow } from 'contexts/CreatePostContext';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
@@ -165,7 +165,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
       dataTestId: 'post-ellipsis-close-poll',
       permissions: ['UPDATE_MY_POSTS', 'CLOSE_POLLS'],
       enabled:
-        data.type === POST_TYPE.Poll &&
+        data.type === PostType.Poll &&
         data.pollContext?.closedAt > currentDate &&
         (isAdmin || data.createdBy?.userId === user?.id),
     },
@@ -187,7 +187,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
       dataTestId: 'post-ellipsis-see-poll-votes',
       permissions: [],
       enabled:
-        data.type === POST_TYPE.Poll &&
+        data.type === PostType.Poll &&
         (isAdmin || data.createdBy?.userId === user?.id),
     },
     {

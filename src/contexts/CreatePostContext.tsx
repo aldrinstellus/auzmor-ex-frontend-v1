@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { DeltaStatic } from 'quill';
 import { getBlobUrl, getMediaObj } from 'utils/misc';
-import { IAudience, IPost } from 'queries/post';
+import { IAudience, IPost, PostType } from 'queries/post';
 import { IGetUser } from 'queries/users';
 
 export interface ICreatePostProviderProps {
@@ -24,12 +24,6 @@ export enum CreatePostFlow {
   SchedulePost = 'SCHEDULE_POST',
   Audience = 'AUDIENCE',
   CreateShoutout = 'CREATE_SHOUTOUT',
-}
-
-export enum POST_TYPE {
-  Media = 'MEDIA',
-  Poll = 'POLL',
-  Shoutout = 'SHOUT_OUT',
 }
 
 export interface IAnnouncement {
@@ -108,8 +102,8 @@ export interface ICreatePostContext {
   setShoutoutUsers: (users: Record<string, false | IGetUser>) => void;
   setShoutoutTemplate: (params: any) => void;
   shoutoutTemplate: any;
-  postType: POST_TYPE | null;
-  setPostType: (type: POST_TYPE | null) => void;
+  postType: PostType | null;
+  setPostType: (type: PostType) => void;
 }
 
 export enum MediaValidationError {
@@ -216,7 +210,7 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setShoutoutUsers: () => {},
   setShoutoutTemplate: () => {},
   shoutoutTemplate: {},
-  postType: null,
+  postType: PostType.Update,
   setPostType: () => {},
 });
 
@@ -258,8 +252,8 @@ const CreatePostProvider: FC<ICreatePostProviderProps> = ({
   const [shoutoutUserIds, setShoutoutUserIds] = useState<string[]>([]);
   const [shoutoutUsers, setShoutoutUsers] = useState<any>({});
   const [shoutoutTemplate, setShoutoutTemplate] = useState<any>({});
-  const [postType, setPostType] = useState<POST_TYPE | null>(
-    data?.type || null,
+  const [postType, setPostType] = useState<PostType>(
+    data?.type || PostType.Update,
   );
 
   const setUploads = (uploads: File[], isCoverImage?: boolean) => {
@@ -358,7 +352,7 @@ const CreatePostProvider: FC<ICreatePostProviderProps> = ({
     setShoutoutUserIds([]);
     setShoutoutUsers({});
     setShoutoutTemplate({});
-    setPostType(null);
+    setPostType(PostType.Update);
   };
 
   const updateCoverImageMap = (map: ICoverImageMap) => {

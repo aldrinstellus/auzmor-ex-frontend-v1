@@ -64,7 +64,7 @@ const feedFilterOptions: FeedFilterOption[] = [
   },
   {
     label: 'Shoutouts',
-    value: PostType.ShoutOut,
+    value: PostType.Shoutout,
     filterKey: PostFilterKeys.PostType,
     type: FeedFilterContentType.Filter,
     dataTestId: 'filterby-shoutouts',
@@ -130,7 +130,7 @@ export const filterKeyMap: Record<string | PostType, string> = {
   [PostType.Update]: 'Updates',
   [PostType.Event]: 'Events',
   [PostType.Document]: 'Documents',
-  [PostType.ShoutOut]: 'Shoutouts',
+  [PostType.Shoutout]: 'Shoutouts',
   [PostType.Birthday]: 'Birthdays',
   [PostType.WorkAniversary]: 'Work anniversary',
   [PostType.WelcomNewHire]: 'Welcome new hire',

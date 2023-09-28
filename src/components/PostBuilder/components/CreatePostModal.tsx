@@ -6,6 +6,7 @@ import {
   IMention,
   IPost,
   IPostPayload,
+  PostType,
   createPost,
   updatePost,
 } from 'queries/post';
@@ -17,7 +18,6 @@ import {
   CreatePostContext,
   IEditorValue,
   IMedia,
-  POST_TYPE,
 } from 'contexts/CreatePostContext';
 import { PostBuilderMode } from '..';
 import { EntityType } from 'queries/files';
@@ -393,7 +393,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
           html: content?.html || editorValue.html,
           editor: content?.editor || editorValue.editor,
         },
-        type: postType && postType !== POST_TYPE.Media ? postType : 'UPDATE',
+        type: postType || PostType.Update,
         files: fileIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],
@@ -449,7 +449,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
           html: content?.html || editorValue.html,
           editor: content?.editor || editorValue.editor,
         },
-        type: postType && postType !== POST_TYPE.Media ? postType : 'UPDATE',
+        type: postType || PostType.Update,
         files: sortedIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],

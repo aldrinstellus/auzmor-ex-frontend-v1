@@ -1,5 +1,6 @@
 import Carousel from 'components/CarouselNew';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
+import { PostType } from 'queries/post';
 import { FC, useContext } from 'react';
 export interface IBodyProps {
   currentIndex: number;
@@ -32,7 +33,7 @@ const Body: FC<IBodyProps> = ({
         removeMedia(index, () => {
           if (media.length === 1) {
             setActiveFlow(CreatePostFlow.CreatePost);
-            setPostType(null);
+            setPostType(PostType.Update);
           } else if (media.length - 1 === currentIndex) {
             nextSlide();
           }

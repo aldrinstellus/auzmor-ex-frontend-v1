@@ -7,7 +7,6 @@ import {
   CreatePostContext,
   CreatePostFlow,
   IEditorValue,
-  POST_TYPE,
 } from 'contexts/CreatePostContext';
 import useRole from 'hooks/useRole';
 import { DeltaStatic } from 'quill';
@@ -16,6 +15,7 @@ import ReactQuill from 'react-quill';
 import { convert } from 'html-to-text';
 import { operatorXOR } from 'utils/misc';
 import { PostBuilderMode } from 'components/PostBuilder';
+import { PostType } from 'queries/post';
 
 export interface IFooterProps {
   isLoading: boolean;
@@ -62,14 +62,13 @@ const Footer: FC<IFooterProps> = ({
   };
 
   const isMediaDisabled =
-    operatorXOR(isPreviewRemoved, !!previewUrl) ||
-    (!!postType && postType !== POST_TYPE.Media);
+    operatorXOR(isPreviewRemoved, !!previewUrl) || postType !== PostType.Update;
   const isShoutoutDisabled =
     operatorXOR(isPreviewRemoved, !!previewUrl) ||
-    (!!postType && postType !== POST_TYPE.Shoutout);
+    (postType !== PostType.Shoutout && postType !== PostType.Update);
   const isPollDisabled =
     operatorXOR(isPreviewRemoved, !!previewUrl) ||
-    (!!postType && postType !== POST_TYPE.Poll);
+    (postType !== PostType.Poll && postType !== PostType.Update);
 
   const postMenuItems = useMemo(
     () => [
@@ -115,7 +114,9 @@ const Footer: FC<IFooterProps> = ({
             disabled: true,
           },
         ],
-        hidden: mode === PostBuilderMode.Edit,
+        hidden: [PostType.Poll, PostType.Shoutout].includes(
+          postType || PostType.Update,
+        ),
         divider: <Divider variant={DividerVariant.Vertical} />,
       },
       {

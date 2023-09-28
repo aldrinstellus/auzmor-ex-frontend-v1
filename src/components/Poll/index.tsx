@@ -11,7 +11,7 @@ import {
 } from 'contexts/CreatePostContext';
 import { getTimeFromNow } from 'utils/time';
 import { useMutation } from '@tanstack/react-query';
-import { IPost, deletePollVote, pollVote } from 'queries/post';
+import { IPost, PostType, deletePollVote, pollVote } from 'queries/post';
 import { useFeedStore } from 'stores/feedStore';
 import { produce } from 'immer';
 import Button, {
@@ -178,7 +178,7 @@ const Poll: FC<IPoll & PollProps> = ({
                 icon="close"
                 onClick={() => {
                   setPoll(null);
-                  setPostType(null);
+                  setPostType(PostType.Update);
                 }}
                 variant={IconButtonVariant.Secondary}
                 size={IconButtonSize.Medium}
