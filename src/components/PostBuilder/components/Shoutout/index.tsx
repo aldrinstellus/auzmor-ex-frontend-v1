@@ -1,16 +1,13 @@
 import { FC, useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Header from 'components/ModalHeader';
-import {
-  CreatePostContext,
-  CreatePostFlow,
-  POST_TYPE,
-} from 'contexts/CreatePostContext';
+import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import Body from './Body';
 import Button from 'components/Button';
 import { Variant as ButtonVariant } from 'components/Button';
 import { IAudienceForm } from 'components/EntitySearchModal';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
+import { PostType } from 'queries/post';
 
 interface ICreateShoutoutProps {
   closeModal: () => void;
@@ -58,7 +55,7 @@ const CreateShoutout: FC<ICreateShoutoutProps> = ({ closeModal }) => {
   };
 
   const onSubmit = () => {
-    setPostType(POST_TYPE.Shoutout);
+    setPostType(PostType.Shoutout);
     setActiveFlow(CreatePostFlow.CreatePost);
   };
 

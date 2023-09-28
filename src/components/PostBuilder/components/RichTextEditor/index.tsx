@@ -29,7 +29,6 @@ import {
   CreatePostFlow,
   IMediaValidationError,
   MediaValidationError,
-  POST_TYPE,
 } from 'contexts/CreatePostContext';
 import moment from 'moment';
 import MediaPreview, { Mode } from 'components/MediaPreview';
@@ -39,6 +38,7 @@ import Poll, { PollMode } from 'components/Poll';
 import { PostBuilderMode } from 'components/PostBuilder';
 import useModal from 'hooks/useModal';
 import ConfirmationBox from 'components/ConfirmationBox';
+import { PostType } from 'queries/post';
 
 export interface IEditorContentChanged {
   text: string;
@@ -265,13 +265,13 @@ const RichTextEditor = forwardRef(
     const onRemoveMedia = () => {
       removeAllMedia();
       setShoutoutUserIds([]);
-      setPostType(null);
+      setPostType(PostType.Update);
       closeConfirm();
     };
 
     const onMediaEdit = () => {
       updateContext();
-      if (postType === POST_TYPE.Shoutout) {
+      if (postType === PostType.Shoutout) {
         setActiveFlow(CreatePostFlow.CreateShoutout);
       } else {
         setActiveFlow(CreatePostFlow.EditMedia);
@@ -354,8 +354,8 @@ const RichTextEditor = forwardRef(
             onAddButtonClick={() => inputImgRef?.current?.click()}
             onCloseButtonClick={media.length > 1 ? showConfirm : onRemoveMedia}
             showEditButton
-            showCloseButton
-            showAddMediaButton={postType !== POST_TYPE.Shoutout}
+            showCloseButton={postType !== PostType.Shoutout}
+            showAddMediaButton={postType !== PostType.Shoutout}
             onEditButtonClick={onMediaEdit}
             coverImageMap={coverImageMap}
             dataTestId={dataTestId}
