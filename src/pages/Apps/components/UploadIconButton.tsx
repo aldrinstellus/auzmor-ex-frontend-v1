@@ -16,11 +16,10 @@ import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import { UseFormSetValue } from 'react-hook-form';
 import { IAddAppForm } from './AddApp';
-import { AppIcon } from 'queries/apps';
 
 type UploadIconButtonProps = {
   setValue: UseFormSetValue<IAddAppForm>;
-  icon?: AppIcon;
+  icon?: IAddAppForm['icon'];
 };
 
 const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
@@ -57,12 +56,11 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
       }
       // If the image has supported dimensions, then call setAppIcon
       else if (!isError) {
-        setValue('icon', file);
-        setAppIcon(Array.prototype.slice.call([file]));
-
-        const iconElement = document.getElementById('icon') as HTMLImageElement;
-
+        const iconElement = document.getElementById(
+          'add-app-icon',
+        ) as HTMLImageElement;
         iconElement.src = objectURL;
+        setValue('icon', { id: '', original: '', file });
       }
       URL.revokeObjectURL(objectURL);
     };
@@ -86,25 +84,28 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
       },
     });
 
-  const [appIcon, setAppIcon] = useState<File[]>();
-  const [currentIcon, setCurrentIcon] = useState<AppIcon | undefined>(icon);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const clearInput = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     setValue('icon', undefined);
-    setCurrentIcon(undefined);
-    setAppIcon([]);
   };
 
   // Edit flow prefill icon
   useEffect(() => {
+    let src = '';
     if (icon) {
-      setCurrentIcon(icon);
-      const iconElement = document.getElementById('icon') as HTMLImageElement;
-
-      iconElement.src = icon.original;
+      if (icon.file) {
+        src = URL.createObjectURL(icon.file);
+      } else if (icon.original) src = icon.original;
+      const iconElement = document.getElementById(
+        'add-app-icon',
+      ) as HTMLImageElement;
+      iconElement.src = src;
     }
+    return () => {
+      if (icon?.file) URL.revokeObjectURL(src);
+    };
   }, []);
 
   const showErrorToast = (message: string) => {
@@ -124,7 +125,7 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
     });
   };
 
-  const hasIcon = currentIcon?.id || (appIcon && appIcon.length > 0);
+  const hasIcon = !!icon?.original || icon?.file;
 
   return (
     <div>
@@ -260,7 +261,7 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
                 />
               </div>
               <img
-                id="icon"
+                id="add-app-icon"
                 className="h-[52px] w-auto group-hover:opacity-50 transition-opacity duration-100"
               />
             </div>

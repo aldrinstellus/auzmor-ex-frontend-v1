@@ -374,6 +374,7 @@ const People: FC<IPeopleProps> = ({
                               ...user.member,
                               id: user.member.userId,
                               workEmail: user.member.email,
+                              createdAt: user.createdAt,
                             }
                           : user,
                       }}

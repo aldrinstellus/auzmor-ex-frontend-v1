@@ -12,7 +12,7 @@ import { TOAST_AUTOCLOSE_TIME, URL_REGEX } from 'utils/constants';
 import { UploadStatus, useUpload } from 'hooks/useUpload';
 import { EntityType } from 'queries/files';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { App, IAudience, createApp, editApp } from 'queries/apps';
+import { App, AppIcon, IAudience, createApp, editApp } from 'queries/apps';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import { twConfig } from 'utils/misc';
@@ -43,7 +43,7 @@ export interface IAddAppForm {
   description?: string;
   category?: any;
   audience?: IAudience[];
-  icon?: any;
+  icon?: AppIcon & { file: File };
   acsUrl?: string;
   entityId?: string;
   relayState?: string;
@@ -82,6 +82,7 @@ const AddApp: FC<AddAppProps> = ({
     trigger,
     setValue,
     getValues,
+    watch,
     reset,
   } = useForm<IAddAppForm>({
     resolver: yupResolver(AddAppFormSchema),
@@ -257,8 +258,11 @@ const AddApp: FC<AddAppProps> = ({
       let uploadedFile;
       if (formData?.icon?.id) {
         uploadedFile = [{ id: formData?.icon.id }];
-      } else if (formData.icon) {
-        uploadedFile = await uploadMedia([formData.icon], EntityType.AppIcon);
+      } else if (formData.icon?.file) {
+        uploadedFile = await uploadMedia(
+          [formData.icon?.file],
+          EntityType.AppIcon,
+        );
       }
 
       // Construct request body
@@ -302,9 +306,12 @@ const AddApp: FC<AddAppProps> = ({
   useEffect(() => {
     if (!open) {
       reset();
+      setAudience([]);
       // setActiveTab(0);
     }
   }, [open]);
+
+  const icon = watch('icon');
 
   return (
     <Modal
@@ -339,6 +346,7 @@ const AddApp: FC<AddAppProps> = ({
                 setValue={setValue}
                 defaultValues={getValues}
                 setActiveFlow={setActiveFlow}
+                icon={icon}
                 audience={audience}
               />
             </div>

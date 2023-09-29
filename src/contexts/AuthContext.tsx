@@ -6,6 +6,8 @@ import UserOnboard from 'components/UserOnboard';
 import { Role } from 'utils/enum';
 import PageLoader from 'components/PageLoader';
 import { userChannel } from 'utils/misc';
+import { ILocation } from 'queries/location';
+import { IDepartment } from 'queries/department';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -22,10 +24,10 @@ export interface IUser {
   email: string;
   role: Role;
   organization: IOrganization;
-  workLocation?: Record<string, string>;
+  workLocation?: ILocation;
   preferredName?: string;
   designation?: string;
-  department?: Record<string, string>;
+  department?: IDepartment;
   location?: string;
   profileImage?: string;
   coverImage?: string;
@@ -90,6 +92,8 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
             data?.profileImage?.small || data?.profileImage?.original,
           permissions: data?.permissions,
           timezone: data?.timeZone,
+          department: data?.department,
+          workLocation: data?.workLocation,
         });
       } catch (e: any) {
         if (e?.response?.status === 401) {

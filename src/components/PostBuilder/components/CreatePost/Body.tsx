@@ -76,6 +76,8 @@ const Body = forwardRef(
                     original: user?.profileImage || '',
                     blurHash: '',
                   },
+                  email: user?.email,
+                  workLocation: user?.workLocation?.name,
                 }
               }
             />

@@ -24,6 +24,7 @@ type AppDetailsFormProps = {
   defaultValues: UseFormGetValues<IAddAppForm>;
   setValue: UseFormSetValue<IAddAppForm>;
   setActiveFlow: (param: ADD_APP_FLOW) => void;
+  icon?: IAddAppForm['icon'];
   audience: IAudience[];
 };
 
@@ -33,6 +34,7 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
   defaultValues,
   setValue,
   setActiveFlow,
+  icon,
   audience,
 }) => {
   const urlField = [
@@ -133,7 +135,7 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
       <div className="flex justify-between gap-x-6 pt-6">
         <Layout fields={appFields} className="w-full flex flex-col gap-y-6" />
         <div className="w-full">
-          <UploadIconButton setValue={setValue} icon={defaultValues()?.icon} />
+          <UploadIconButton setValue={setValue} icon={icon} />
           <div className="pt-8">
             <p className="text-neutral-900 font-bold pb-2 text-sm">Audience</p>
             {audience.length > 0 ? (

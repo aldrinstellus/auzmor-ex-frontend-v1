@@ -639,6 +639,7 @@ export const useInfiniteFeed = (pathname: string, q?: Record<string, any>) => {
         return currentPage?.data?.result?.paging?.prev;
       },
       staleTime: 5 * 60 * 1000,
+      refetchOnMount: 'always',
     }),
     feed,
   };

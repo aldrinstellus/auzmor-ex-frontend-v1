@@ -83,7 +83,12 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                 </div>
                 <div
                   className="cursor-pointer text-primary-500 text-lg font-medium flex items-center gap-1"
-                  onClick={() => window.open(app.url, '_target')}
+                  onClick={() =>
+                    window.open(
+                      `${window.location.origin}/apps/${app.id}/launch`,
+                      '_target',
+                    )
+                  }
                 >
                   <span>Visit app</span>
                   <Icon name="arrowRightUp" className="text-primary-500" />

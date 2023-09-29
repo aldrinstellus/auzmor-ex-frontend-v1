@@ -10,11 +10,11 @@ import apiService from 'utils/apiService';
 export type AppIcon = {
   id: string;
   original: string;
-  thumbnail: string;
-  small: string;
-  medium: string;
-  large: string;
-  blurHash: string;
+  thumbnail?: string;
+  small?: string;
+  medium?: string;
+  large?: string;
+  blurHash?: string;
 };
 
 export type AppCredentials = {
