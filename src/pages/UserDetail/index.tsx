@@ -23,6 +23,7 @@ import ContactSkeleton from 'components/ContactWidget/components/Skeletons';
 import useModal from 'hooks/useModal';
 import useRole from 'hooks/useRole';
 import { FC } from 'react';
+import ManagerWidget from 'components/ManagerWidget';
 
 export interface IUpdateProfileImage {
   profileImage: File;
@@ -41,7 +42,6 @@ const UserDetail: FC<IUserDetailProps> = () => {
   let editType = UserEditType.NONE;
 
   let userDetail;
-
   if (pathname === '/profile') {
     userDetail = useCurrentUser();
   } else {
@@ -137,15 +137,20 @@ const UserDetail: FC<IUserDetailProps> = () => {
       )}
 
       <div className="mb-32 flex w-full">
-        <div className="w-1/4 pr-10">
-          {userDetail?.isLoading ? (
-            <ContactSkeleton />
-          ) : (
-            <ContactWidget
-              contactCardData={data}
-              canEdit={pathname === '/profile'}
-            />
-          )}
+        <div className="w-1/4 pr-10 space-y-6">
+          <div>
+            {userDetail?.isLoading ? (
+              <ContactSkeleton />
+            ) : (
+              <ContactWidget
+                contactCardData={data}
+                canEdit={pathname === '/profile'}
+              />
+            )}
+          </div>
+          <div>
+            <ManagerWidget data={data} canEdit={isAdmin} />
+          </div>
         </div>
         <div className="w-1/2 px-3">
           <Tabs

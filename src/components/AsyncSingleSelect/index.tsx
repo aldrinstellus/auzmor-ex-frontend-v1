@@ -33,7 +33,7 @@ export interface IAsyncSingleSelectProps {
   options: IOption[];
   menuPlacement: SelectCommonPlacement;
   isLoading?: boolean;
-  onSearch: (inputValue: string) => void;
+  onSearch?: (inputValue: string) => void;
   noOptionsMessage?: string;
   isClearable?: boolean;
   height?: number;
@@ -169,7 +169,7 @@ const AsyncSingleSelect = forwardRef(
                     }
                     return triggerNode.parentElement;
                   }}
-                  onSearch={(q) => onSearch(q)}
+                  onSearch={onSearch ? (q) => onSearch(q) : undefined}
                   notFoundContent={noContentFound()}
                   onInputKeyDown={() => setOpen(true)}
                   allowClear={isClearable}
