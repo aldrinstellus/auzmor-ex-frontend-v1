@@ -42,7 +42,6 @@ import { useMutation } from '@tanstack/react-query';
 import useURLParams from 'hooks/useURLParams';
 import useRole from 'hooks/useRole';
 import queryClient from 'utils/queryClient';
-import { produce } from 'immer';
 interface IForm {
   search?: string;
 }
@@ -197,17 +196,7 @@ const Team: FC<ITeamProps> = ({
         transition: slideInAndOutTop,
         theme: 'dark',
       });
-      queryClient.setQueryData(['team', teamId], (oldData: any) => {
-        try {
-          const newData = produce(oldData, (draft: any) => {
-            draft.data.result.data.totalMembers =
-              draft.data.result.data.totalMembers + membersAddedCount;
-          });
-          return newData;
-        } catch (e) {
-          return oldData;
-        }
-      });
+      queryClient.invalidateQueries(['team', teamId]);
     },
   });
 
