@@ -57,6 +57,7 @@ const Chart: FC<IChart> = ({
       if (!chart && data.length) {
         chart = (
           new OrgChart()
+            .scaleExtent([0.2, 5])
             .container(chartRef.current)
             .data(data)
             .nodeHeight((_d: any) => 128)
@@ -86,7 +87,11 @@ const Chart: FC<IChart> = ({
             );
           })
           .onExpandCollapseClick((d: any, _data: any) => {
-            if (d.data.directReporteesCount > 0 && !!d.children) {
+            if (
+              d.data.directReporteesCount > 0 &&
+              !!!d.children &&
+              !!!d._children
+            ) {
               getOrgChart({
                 queryKey: [
                   'organization-chart',
@@ -94,6 +99,12 @@ const Chart: FC<IChart> = ({
                 ],
               } as QueryFunctionContext<any>).then((response: any) => {
                 chart?.addNodes(response.data.result.data);
+                try {
+                  const ele = document.getElementById(
+                    `expand-btn-${d.data.id}`,
+                  );
+                  ele?.dispatchEvent(new Event('click'));
+                } catch (e) {}
               });
             } else {
               chart?.update(d);

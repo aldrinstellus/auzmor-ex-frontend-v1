@@ -111,7 +111,7 @@ index fe34324..a278e83 100644
 - 
 \ No newline at end of file
 diff --git a/node_modules/d3-org-chart/src/d3-org-chart.js b/node_modules/d3-org-chart/src/d3-org-chart.js
-index 871f2d8..e16be4b 100644
+index 871f2d8..aa4eeb5 100644
 --- a/node_modules/d3-org-chart/src/d3-org-chart.js
 +++ b/node_modules/d3-org-chart/src/d3-org-chart.js
 @@ -1,104 +1,148 @@
@@ -354,7 +354,7 @@ index 871f2d8..e16be4b 100644
              <code>chart<br/>
              &nbsp;.nodeContent({data}=>{ <br/>
               &nbsp;&nbsp;&nbsp;&nbsp;return '' // Custom HTML <br/>
-@@ -107,928 +151,1271 @@ export class OrgChart {
+@@ -107,928 +151,1278 @@ export class OrgChart {
               Or check different <a href="https://github.com/bumbeishvili/org-chart#jump-to-examples" target="_blank">layout examples</a>
               
               </div>`,
@@ -862,6 +862,7 @@ index 871f2d8..e16be4b 100644
 +      var selector = params.selector;
 +      var elementTag = params.tag;
 +      var data = params.data || [selector];
++      var id = params.id;
 +
 +      // Pattern in action
 +      var selection = container.selectAll('.' + selector).data(data, (d, i) => {
@@ -878,6 +879,7 @@ index 871f2d8..e16be4b 100644
 +      selection.exit().remove();
 +      selection = selection.enter().append(elementTag).merge(selection);
 +      selection.attr('class', selector);
++      selection.attr('id', id)
 +      return selection;
 +    };
 +  }
@@ -1221,22 +1223,26 @@ index 871f2d8..e16be4b 100644
 -            console.log(`ORG CHART - REMOVE - Node with id "${nodeId}" not found in the tree`);
 -            return this;
 -        }
-+    attrs.chart = chart;
- 
+-
 -        // Remove all node childs
 -        // Retrieve all children nodes ids (including current node itself)
 -        node.descendants()
 -            .forEach(d => d.data._filteredOut = true)
-+    // Display tree contenrs
-+    this.update(attrs.root);
++    attrs.chart = chart;
  
 -        const descendants = this.getNodeChildren(node, [], attrs.nodeId);
 -        descendants.forEach(d => d._filtered = true)
-+    //#########################################  UTIL FUNCS ##################################
-+    // This function restyles foreign object elements ()
++    // Display tree contenrs
++    this.update(attrs.root);
  
 -        // Filter out retrieved nodes and reassign data
 -        attrs.data = attrs.data.filter(d => !d._filtered);
++    //#########################################  UTIL FUNCS ##################################
++    // This function restyles foreign object elements ()
+ 
+-        const updateNodesState = this.updateNodesState.bind(this);
+-        // Update state of nodes and redraw graph
+-        updateNodesState();
 +    d3.select(window).on(`resize.${attrs.id}`, () => {
 +      const containerRect = d3
 +        .select(attrs.container)
@@ -1245,10 +1251,6 @@ index 871f2d8..e16be4b 100644
 +      attrs.svg.attr('width', containerRect.width);
 +    });
  
--        const updateNodesState = this.updateNodesState.bind(this);
--        // Update state of nodes and redraw graph
--        updateNodesState();
--
 -        return this;
 +    if (attrs.firstDraw) {
 +      attrs.firstDraw = false;
@@ -2025,7 +2027,17 @@ index 871f2d8..e16be4b 100644
 -                if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
 -                    this.onButtonClick(event, d)
 -                }
--            });
++        attrs.onNodeClick(data);
++      })
++      .on('mouseenter', (e, {data}) => {
++        if(!attrs.tooltipData[data.id]){
++          if(data.id !== 'root'){
++            apiService.get(`/users/${data.id}`).then((reponse) => {
++              try{
++                attrs.tooltipData[data.id] = reponse.data.result.data
++                div.innerHTML = attrs.hoverCardContent.bind(this)({nodeData: data, userData: attrs.tooltipData[data.id]})
++              }catch(e){}
+             });
 -
 -        nodeButtonGroups.patternify({
 -            tag: 'rect',
@@ -2101,17 +2113,7 @@ index 871f2d8..e16be4b 100644
 -                    return 1;
 -                }
 -                return 0;
-+        attrs.onNodeClick(data);
-+      })
-+      .on('mouseenter', (e, {data}) => {
-+        if(!attrs.tooltipData[data.id]){
-+          if(data.id !== 'root'){
-+            apiService.get(`/users/${data.id}`).then((reponse) => {
-+              try{
-+                attrs.tooltipData[data.id] = reponse.data.result.data
-+                div.innerHTML = attrs.hoverCardContent.bind(this)({nodeData: data, userData: attrs.tooltipData[data.id]})
-+              }catch(e){}
-             });
+-            });
 -
 -        // Restyle node button circle
 -        nodeUpdate
@@ -2158,8 +2160,22 @@ index 871f2d8..e16be4b 100644
 -        nodes.forEach((d) => {
 -            d.x0 = d.x;
 -            d.y0 = d.y;
+-        });
+-
+-        // CHECK FOR CENTERING
+-        const centeredNode = attrs.allNodes.filter(d => d.data._centered)[0]
+-        if (centeredNode) {
+-            const centeredNodes = centeredNode.data._centeredWithDescendants ? centeredNode.descendants().filter((d, i) => i < 7) : [centeredNode]
+-            centeredNode.data._centeredWithDescendants = null;
+-            centeredNode.data._centered = null;
+-            this.fit({
+-                animate: true,
+-                scale: false,
+-                nodes: centeredNodes
+-            })
 +          }
-+        }
+         }
+-
 +      })
 +      .on('mouseover', (e, { data }) => {
 +        const div = document.createElement('div');
@@ -2258,6 +2274,7 @@ index 871f2d8..e16be4b 100644
 +        tag: 'g',
 +        selector: 'node-button-g',
 +        data: (d) => [d],
++        id: (d) => `expand-btn-${d.data.id}`,
 +      })
 +      .on('click', (event, d) => this.onButtonClick(event, d))
 +      .on('keydown', (event, d) => {
@@ -2278,10 +2295,11 @@ index 871f2d8..e16be4b 100644
 +      })
 +      .attr('opacity', 0)
 +      .attr('pointer-events', 'all')
-+      .attr('width', 40)
++      .attr('width', 130)
 +      .attr('height', 40)
 +      .attr('x', -20)
-+      .attr('y', -20);
++      .attr('y', -20)
++      .attr('style', "width:130px !important;");
 +
 +    // Add expand collapse button content
 +    const nodeFo = nodeButtonGroups
@@ -2290,7 +2308,7 @@ index 871f2d8..e16be4b 100644
 +        selector: 'node-button-foreign-object',
 +        data: (d) => [d],
 +      })
-+      .attr('width', 40)
++      .attr('width', 130)
 +      .attr('height', 40)
 +      .attr('x', -20)
 +      .attr('y', -20)
@@ -2303,7 +2321,8 @@ index 871f2d8..e16be4b 100644
 +      .style('pointer-events', 'none')
 +      .style('display', 'flex')
 +      .style('width', '100%')
-+      .style('height', '100%');
++      .style('height', '100%')
++      .attr('style', "width:130px !important;");
 +
 +    // Transition to the proper position for the node
 +    nodeUpdate
@@ -2316,19 +2335,7 @@ index 871f2d8..e16be4b 100644
 +          y,
 +          width,
 +          height,
-         });
--
--        // CHECK FOR CENTERING
--        const centeredNode = attrs.allNodes.filter(d => d.data._centered)[0]
--        if (centeredNode) {
--            const centeredNodes = centeredNode.data._centeredWithDescendants ? centeredNode.descendants().filter((d, i) => i < 7) : [centeredNode]
--            centeredNode.data._centeredWithDescendants = null;
--            centeredNode.data._centered = null;
--            this.fit({
--                animate: true,
--                scale: false,
--                nodes: centeredNodes
--            })
++        });
 +      })
 +      .attr('opacity', 1);
 +
@@ -2352,15 +2359,16 @@ index 871f2d8..e16be4b 100644
 +        return `translate(${x},${y})`;
 +      })
 +      .attr('display', ({ data }) => {
-+        return data._directSubordinates > 0 ? null : 'none';
++        // return data._directSubordinates > 0 ? null : 'none';
++        return data.directReporteesCount > 0 ? null : 'none';
 +      })
-+      .attr('opacity', ({ children, _children }) => {
-+        if (children || _children) {
-+          return 1;
-         }
--
-+        return 0;
-+      });
++      .attr('opacity', () => {return 1})
++      // .attr('opacity', ({ children, _children }) => {
++      //   if (children || _children) {
++      //     return 1;
++      //   }
++      //   return 0;
++      // });
 +
 +    // Restyle node button circle
 +    nodeUpdate
@@ -2500,7 +2508,7 @@ index 871f2d8..e16be4b 100644
                    M ${mx} ${my}
                    L ${mx} ${y}
                    L ${x} ${y}
-@@ -1042,544 +1429,626 @@ export class OrgChart {
+@@ -1042,544 +1436,626 @@ export class OrgChart {
                      ${ex - w * xrvs}  ${ey}
                    L ${ex} ${ey}
         `;
