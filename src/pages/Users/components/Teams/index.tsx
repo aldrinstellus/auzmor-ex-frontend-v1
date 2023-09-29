@@ -41,6 +41,7 @@ import FailureToast from 'components/Toast/variants/FailureToast';
 import { useMutation } from '@tanstack/react-query';
 import useURLParams from 'hooks/useURLParams';
 import useRole from 'hooks/useRole';
+import queryClient from 'utils/queryClient';
 interface IForm {
   search?: string;
 }
@@ -195,6 +196,7 @@ const Team: FC<ITeamProps> = ({
         transition: slideInAndOutTop,
         theme: 'dark',
       });
+      queryClient.invalidateQueries(['team', teamId]);
     },
   });
 
