@@ -360,7 +360,6 @@ const People: FC<IPeopleProps> = ({
               return loaders;
             }
             if (usersData && usersData?.length > 0) {
-              console.log(usersData);
               return (
                 <>
                   {usersData.map((user: any) => (

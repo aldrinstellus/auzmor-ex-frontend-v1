@@ -365,7 +365,6 @@ export const isNewEntity = (
 ) => {
   if (createdAt) {
     const duration = moment.duration(moment(createdAt).diff(moment()));
-    console.log(duration.asMilliseconds, limit);
     return duration.asMilliseconds() > limit;
   }
   return false;
