@@ -13,6 +13,7 @@ import useAuth from 'hooks/useAuth';
 import { isFiltersEmpty } from 'utils/misc';
 import { useOrganization } from 'queries/organization';
 import useRole from 'hooks/useRole';
+import { CategoryType } from 'queries/apps';
 
 interface ITeamsBodyProps {
   entityRenderer?: (data: ITeam) => ReactNode;
@@ -81,6 +82,7 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
     hasNextPage: hasNextCategoryPage,
   } = useInfiniteCategories({
     q: debouncedCategorySearchValue,
+    type: CategoryType.TEAM,
   });
   const categoryData = fetchedCategories?.pages.flatMap((page) => {
     return page?.data?.result?.data.map((category: ICategory) => {

@@ -190,15 +190,9 @@ const TeamModal: FC<IAddTeamModalProps> = ({
   });
 
   const onSubmit = (data: any) => {
-    let categoryValue;
-    if (data?.category?.type === 'TEAM') {
-      categoryValue = data?.category?.value;
-    } else {
-      categoryValue = data?.category?.value;
-    }
     const payload = {
       name: data?.name,
-      category: categoryValue,
+      category: data?.category?.label,
       description: data?.description,
     };
     if (teamFlowMode === TeamFlow.CreateTeam)

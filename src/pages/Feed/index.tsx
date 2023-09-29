@@ -364,8 +364,8 @@ const Feed: FC<IFeedProps> = () => {
   }, [inView]);
 
   return (
-    <div className="pb-6 flex justify-between ">
-      <div className="z-10 w-[293px] flex flex-col gap-6 sticky top-28 overflow-y-auto max-h-[calc(100vh-140px)] widget-hide-scroll">
+    <div className="pb-6 flex justify-between">
+      <div className="z-10 w-[293px] flex flex-col gap-6 sticky overflow-y-auto max-h-[calc(100vh-140px)] widget-hide-scroll">
         <UserCard />
         <AppLauncher />
         {/* <MyTeamWidget /> */}
@@ -408,7 +408,7 @@ const Feed: FC<IFeedProps> = () => {
         )}
       </div>
       <div className="w-[293px]">
-        <div className="flex flex-col gap-6 sticky top-28 overflow-y-auto max-h-[calc(100vh-120px)] widget-hide-scroll">
+        <div className="flex flex-col gap-6 sticky overflow-y-auto max-h-[calc(100vh-120px)] widget-hide-scroll">
           <CelebrationWidget type={CELEBRATION_TYPE.Birthday} />
           <CelebrationWidget type={CELEBRATION_TYPE.WorkAnniversary} />
           <AnnouncementCard openModal={openModal} />
