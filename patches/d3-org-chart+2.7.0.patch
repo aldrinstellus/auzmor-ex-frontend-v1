@@ -111,7 +111,7 @@ index fe34324..a278e83 100644
 - 
 \ No newline at end of file
 diff --git a/node_modules/d3-org-chart/src/d3-org-chart.js b/node_modules/d3-org-chart/src/d3-org-chart.js
-index 871f2d8..aa4eeb5 100644
+index 871f2d8..3069b06 100644
 --- a/node_modules/d3-org-chart/src/d3-org-chart.js
 +++ b/node_modules/d3-org-chart/src/d3-org-chart.js
 @@ -1,104 +1,148 @@
@@ -354,7 +354,7 @@ index 871f2d8..aa4eeb5 100644
              <code>chart<br/>
              &nbsp;.nodeContent({data}=>{ <br/>
               &nbsp;&nbsp;&nbsp;&nbsp;return '' // Custom HTML <br/>
-@@ -107,928 +151,1278 @@ export class OrgChart {
+@@ -107,928 +151,1280 @@ export class OrgChart {
               Or check different <a href="https://github.com/bumbeishvili/org-chart#jump-to-examples" target="_blank">layout examples</a>
               
               </div>`,
@@ -830,6 +830,7 @@ index 871f2d8..aa4eeb5 100644
 +      highlightedNodeId: '',
 +      hoverCardContent: (d) => `<div>Tooltip</div>`,
 +      tooltipData: {},
++      onZoom: (zoomScale, range) => {}
 +    };
 +
 +    this.getChartState = () => attrs;
@@ -1065,6 +1066,7 @@ index 871f2d8..aa4eeb5 100644
 +        .on('zoom', (event, d) => {
 +          this.zoomed(event, d);
 +          this.getOutOfViewportNodes();
++          attrs.onZoom(event.transform.k, attrs.scaleExtent);
          })
 +        .scaleExtent(attrs.scaleExtent);
 +      attrs.zoomBehavior = behaviors.zoom;
@@ -2508,7 +2510,7 @@ index 871f2d8..aa4eeb5 100644
                    M ${mx} ${my}
                    L ${mx} ${y}
                    L ${x} ${y}
-@@ -1042,544 +1436,626 @@ export class OrgChart {
+@@ -1042,544 +1438,626 @@ export class OrgChart {
                      ${ex - w * xrvs}  ${ey}
                    L ${ex} ${ey}
         `;

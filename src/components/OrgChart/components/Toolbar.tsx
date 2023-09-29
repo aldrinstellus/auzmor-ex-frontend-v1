@@ -6,7 +6,7 @@ import IconButton, {
 import useModal from 'hooks/useModal';
 import { FC, MutableRefObject, useEffect, useMemo, useState } from 'react';
 import { Control, UseFormResetField, UseFormWatch } from 'react-hook-form';
-import { IForm, OrgChartMode } from '..';
+import { IForm, IZoom, OrgChartMode } from '..';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
@@ -27,6 +27,7 @@ import FilterModal, {
   FilterModalVariant,
 } from 'components/FilterModal';
 import { INode } from './Chart';
+import { mapRanges } from 'utils/misc';
 
 interface IToolbarProps {
   activeMode: OrgChartMode;
@@ -42,6 +43,7 @@ interface IToolbarProps {
   appliedFilters: IAppliedFilters;
   setAppliedFilters: (appliedFilters: IAppliedFilters) => void;
   setParentId: (parentId: string | null) => void;
+  zoom: IZoom;
 }
 
 const Toolbar: FC<IToolbarProps> = ({
@@ -58,6 +60,7 @@ const Toolbar: FC<IToolbarProps> = ({
   appliedFilters,
   setAppliedFilters,
   setParentId,
+  zoom,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const [isSpotlightActive, setIsSpotlightActive] = useState(false);
@@ -373,7 +376,7 @@ const Toolbar: FC<IToolbarProps> = ({
                 </Tooltip>
               </div>
               <div className="mr-4 ml-2 bg-neutral-200 h-6 w-px" />
-              <div className="group mr-8">
+              <div className="group">
                 <Tooltip tooltipContent="Zoom out" tooltipPosition="bottom">
                   <Icon
                     name="zoomOutOutline"
@@ -384,6 +387,12 @@ const Toolbar: FC<IToolbarProps> = ({
                     size={16}
                   />
                 </Tooltip>
+              </div>
+              <div className="text-neutral-900 font-bold text-sm mx-4">
+                {Math.round(
+                  mapRanges(zoom.range[0], zoom.range[1], 0, 100, zoom.zoom),
+                )}
+                %
               </div>
               <div className="group">
                 <Tooltip tooltipContent="Zoom in" tooltipPosition="bottom">

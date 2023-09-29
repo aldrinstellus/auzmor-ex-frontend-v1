@@ -12,6 +12,7 @@ import { IGetUser, UserStatus, getOrgChart } from 'queries/users';
 import { QueryFunctionContext } from '@tanstack/react-query';
 import { IDesignation } from 'queries/designation';
 import { IProfileImage } from 'queries/post';
+import { IZoom, MAX_ZOOM, MIN_ZOOM } from '..';
 
 export interface INode {
   id: string;
@@ -40,6 +41,7 @@ interface IChart {
   isFilterApplied: boolean;
   onClearFilter: () => void;
   startWithSpecificUser: IGetUser | null;
+  setZoom: (zoom: IZoom) => void;
 }
 
 const Chart: FC<IChart> = ({
@@ -49,6 +51,7 @@ const Chart: FC<IChart> = ({
   isFilterApplied,
   onClearFilter,
   startWithSpecificUser,
+  setZoom,
 }) => {
   const chartRef = useRef(null);
   let chart: any | null = null;
@@ -57,7 +60,7 @@ const Chart: FC<IChart> = ({
       if (!chart && data.length) {
         chart = (
           new OrgChart()
-            .scaleExtent([0.2, 5])
+            .scaleExtent([MIN_ZOOM, MAX_ZOOM])
             .container(chartRef.current)
             .data(data)
             .nodeHeight((_d: any) => 128)
@@ -72,6 +75,9 @@ const Chart: FC<IChart> = ({
             .buttonContent(({ node, _state }: any) => {
               return renderToString(<ExpandButtonContent node={node} />);
             })
+            .onZoom((zoomScale: number, range: number[]) =>
+              setZoom({ zoom: zoomScale, range }),
+            )
             .nodeContent((node: any, _i: any, _arr: any, _state: any) => {
               return renderToString(
                 <UserNode

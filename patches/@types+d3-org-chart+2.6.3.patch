@@ -1,17 +1,18 @@
 diff --git a/node_modules/@types/d3-org-chart/index.d.ts b/node_modules/@types/d3-org-chart/index.d.ts
-index 18614b4..0e103c4 100755
+index 18614b4..1486a48 100755
 --- a/node_modules/@types/d3-org-chart/index.d.ts
 +++ b/node_modules/@types/d3-org-chart/index.d.ts
-@@ -83,6 +83,8 @@ export interface StatePublic<Datum> {
+@@ -83,6 +83,9 @@ export interface StatePublic<Datum> {
      layout: Layout;
      buttonContent: (params: { node: HierarchyNode<Datum>; state: State<Datum>; }) => string;
      layoutBindings: Record<Layout, LayoutBinding<Datum>>;
 +    hoverCardContent: (data: any) => void;
-+    onExpandCollapseClick: (d: any, allNodes: any) => void
++    onExpandCollapseClick: (d: any, allNodes: any) => void;
++    onZoom: (zoomScale: number, range: number[]) => void;
  }
  
  /**
-@@ -168,6 +170,7 @@ export class OrgChart<Datum> {
+@@ -168,6 +171,7 @@ export class OrgChart<Datum> {
      getNodeChildren(args: HierarchyNode<Datum>, nodeStore: Datum[]): Datum[];
      render(): this;
      addNode(node: Datum): this;
