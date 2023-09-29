@@ -118,3 +118,7 @@ mention denotation char class
   cursor: pointer;
   font-weight: 700;
 } */
+
+.ql-mention-list-container {
+  max-height: 256px !important;
+}
