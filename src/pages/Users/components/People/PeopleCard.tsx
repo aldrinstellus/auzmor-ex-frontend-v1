@@ -17,6 +17,7 @@ import SuccessToast from 'components/Toast/variants/SuccessToast';
 import {
   getEditSection,
   getProfileImage,
+  isNewEntity,
   titleCase,
   twConfig,
 } from 'utils/misc';
@@ -71,6 +72,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     department,
     workLocation,
     workEmail,
+    createdAt,
   } = userData;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -167,6 +169,16 @@ const PeopleCard: FC<IPeopleCardProps> = ({
           data-testid={`people-card-role-${role}`}
         >
           Pending
+        </div>
+      );
+    }
+    if (isNewEntity(createdAt)) {
+      return (
+        <div
+          className={`${rightChipStyle} bg-primary-100 text-primary-600`}
+          data-testid={`member-badge`}
+        >
+          New joinee
         </div>
       );
     }

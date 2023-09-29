@@ -17,6 +17,7 @@ import { MouseEvent, MouseEventHandler } from 'react';
 import { ILocation } from 'queries/location';
 import { IDesignation } from 'queries/designation';
 import { IPost } from 'queries/post';
+import moment from 'moment';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -356,4 +357,15 @@ export const getUserCardTooltipProps = (user: any) => {
     profileImage: user?.profileImage,
     status: user?.status,
   };
+};
+
+export const isNewEntity = (
+  createdAt?: string,
+  limit = -1000 * 60 * 60 * 24 * 7,
+) => {
+  if (createdAt) {
+    const duration = moment.duration(moment(createdAt).diff(moment()));
+    return duration.asMilliseconds() > limit;
+  }
+  return false;
 };

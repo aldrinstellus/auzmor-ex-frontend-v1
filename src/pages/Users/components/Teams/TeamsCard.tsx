@@ -9,16 +9,16 @@ import useRole from 'hooks/useRole';
 import DeleteTeam from '../DeleteModals/Team';
 import useModal from 'hooks/useModal';
 import { TeamFlow } from '.';
-import moment from 'moment';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FC } from 'react';
+import { isNewEntity } from 'utils/misc';
 
 export interface ITeamsCardProps {
   id: string;
   name: string;
   category: Record<string, any>;
   description: string;
-  createdAtDate: string;
+  createdAt: string;
   totalMembers: number;
   recentMembers: any;
   setTeamFlow: (mode: string) => void;
@@ -31,7 +31,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
   name,
   description,
   category,
-  createdAtDate,
+  createdAt,
   totalMembers,
   recentMembers = [],
   setTeamFlow,
@@ -43,7 +43,6 @@ const TeamsCard: FC<ITeamsCardProps> = ({
   const [isHovered, eventHandlers] = useHover();
   const [showDeleteModal, openDeleteModal, closeDeleteModal] = useModal(false);
   const { isAdmin, isMember, isSuperAdmin } = useRole();
-  const currentDate = moment();
 
   const teamAllOption = [
     {
@@ -57,7 +56,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
           name: name,
           description: description,
           category: category,
-          createdAt: createdAtDate,
+          createdAt: createdAt,
           totalMembers: totalMembers,
         });
       },
@@ -106,12 +105,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
             className="-right-36 w-44 top-8"
           />
         )}
-        {moment(createdAtDate)?.isBetween(
-          moment().subtract(7, 'days'),
-          currentDate,
-          null,
-          '[]',
-        ) && (
+        {isNewEntity(createdAt) && (
           <div
             style={{
               backgroundColor: '#D1FAE5',
