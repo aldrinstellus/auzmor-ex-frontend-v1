@@ -6,10 +6,10 @@ const ReactionSkeleton: FC = (): ReactElement => {
   return (
     <div>
       {[...Array(4)].map((value, index) => (
-        <div className="flex gap-x-2 items-start py-5" key={index}>
+        <div className="flex gap-x-2 items-start py-5 w-full px-2" key={index}>
           <Skeleton circle className="!h-8 !w-8" />
           <div className="flex-1 flex-col">
-            <Skeleton className="!w-56 h-3" count={2} borderRadius={100} />
+            <Skeleton className="!w-full h-3" count={2} borderRadius={100} />
           </div>
         </div>
       ))}
