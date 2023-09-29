@@ -3,7 +3,12 @@ import Header from 'components/ModalHeader';
 import ErrorWarningPng from 'images/error-warning-line.png';
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import { useMutation } from '@tanstack/react-query';
-import { IPost, IPostPayload, updatePost } from 'queries/post';
+import {
+  IPost,
+  IPostPayload,
+  IShoutoutRecipient,
+  updatePost,
+} from 'queries/post';
 import { useFeedStore } from 'stores/feedStore';
 import { toast } from 'react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
@@ -13,6 +18,7 @@ import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { FC } from 'react';
+import { IMedia } from 'contexts/CreatePostContext';
 
 interface PublishPostModalProps {
   post: IPost;
@@ -25,7 +31,13 @@ const PublishPostModal: FC<PublishPostModalProps> = ({ closeModal, post }) => {
   const updatePostMutation = useMutation({
     mutationKey: ['updatePostMutation'],
     mutationFn: (payload: IPostPayload) =>
-      updatePost(payload.id || '', payload as IPostPayload),
+      updatePost(payload.id || '', {
+        ...payload,
+        files: payload.files?.map((file) => (file as IMedia).id),
+        shoutoutRecipients: payload?.shoutoutRecipients?.map(
+          (receipient) => (receipient as IShoutoutRecipient).userId,
+        ),
+      } as IPostPayload),
     onMutate: (variables) => {
       if (variables?.id) {
         const previousData = getPost(variables.id);
