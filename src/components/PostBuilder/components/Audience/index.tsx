@@ -24,7 +24,7 @@ const Audience: FC<IAudienceProps> = ({ closeModal, dataTestId }) => {
   const { setActiveFlow, clearPostContext, audience, setAudience } =
     useContext(CreatePostContext);
   const [isEveryoneSelected, setIsEveryoneSelected] = useState<boolean>(
-    !!!audience.length,
+    audience && audience.length === 0 ? true : false,
   );
   const [audienceFlow, setAudienceFlow] = useState(AudienceFlow.EntitySelect);
   const { form, setForm } = useEntitySearchFormStore();
@@ -34,7 +34,7 @@ const Audience: FC<IAudienceProps> = ({ closeModal, dataTestId }) => {
       showSelectedMembers: false,
       selectAll: false,
       teams: {
-        ...audience
+        ...(audience || [])
           .filter(
             (value: IAudience) => value.entityType === AudienceEntityType.Team,
           )
@@ -47,7 +47,7 @@ const Audience: FC<IAudienceProps> = ({ closeModal, dataTestId }) => {
           ),
       },
       channels: {
-        ...audience
+        ...(audience || [])
           .filter(
             (value: IAudience) =>
               value.entityType === AudienceEntityType.Channel,
@@ -61,7 +61,7 @@ const Audience: FC<IAudienceProps> = ({ closeModal, dataTestId }) => {
           ),
       },
       users: {
-        ...audience
+        ...(audience || [])
           .filter(
             (value: IAudience) => value.entityType === AudienceEntityType.User,
           )

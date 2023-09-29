@@ -82,7 +82,7 @@ const Body = forwardRef(
               }
             />
             <div className="flex items-center cursor-pointer">
-              {audience.length > 0 ? (
+              {audience && audience.length > 0 ? (
                 <div className="flex gap-2">
                   <Button
                     key={audience[0].entityId}
@@ -100,7 +100,7 @@ const Body = forwardRef(
                     labelClassName="text-xss text-neutral-900 font-medium group-hover:text-primary-500"
                     dataTestId="createpost-selected-audience-list"
                   />
-                  {audience.length > 1 && (
+                  {audience && audience.length > 1 && (
                     <Button
                       key={audience[0].entityId}
                       variant={Variant.Secondary}
@@ -116,6 +116,20 @@ const Body = forwardRef(
                     />
                   )}
                 </div>
+              ) : audience && audience.length === 0 ? (
+                <Button
+                  variant={Variant.Secondary}
+                  leftIcon={'profileUser'}
+                  label="Everyone"
+                  size={Size.Small}
+                  onClick={() => {
+                    updateContext();
+                    setActiveFlow(CreatePostFlow.Audience);
+                  }}
+                  className="group"
+                  labelClassName="text-xss text-neutral-900 font-medium group-hover:text-primary-500"
+                  dataTestId={`createpost-audience`}
+                />
               ) : (
                 <Button
                   variant={Variant.Secondary}

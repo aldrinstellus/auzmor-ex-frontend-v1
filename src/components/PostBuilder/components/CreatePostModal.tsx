@@ -397,7 +397,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         files: fileIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],
-        audience,
+        audience: audience || [],
         shoutoutRecipients: shoutoutUserIds || [],
         isAnnouncement: !!announcement,
         announcement: {
@@ -453,7 +453,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         files: sortedIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],
-        audience,
+        audience: audience || [],
         shoutoutRecipients: shoutoutUserIds || [],
         isAnnouncement: !!announcement,
         announcement: {
