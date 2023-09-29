@@ -102,6 +102,7 @@ const Feed: FC<IFeedProps> = () => {
       ...(appliedFeedFilters[PostFilterKeys.PostPreference]?.includes(
         PostFilterPreference.MyPosts,
       ) && { [PostFilterPreference.MyPosts]: true }),
+      hashtags: [hashtag],
     });
 
   const feedIds = (
