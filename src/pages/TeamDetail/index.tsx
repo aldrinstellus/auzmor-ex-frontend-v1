@@ -34,6 +34,7 @@ import { TeamFlow, TeamTab } from 'pages/Users/components/Teams';
 import DeleteTeam from 'pages/Users/components/DeleteModals/Team';
 import TeamDetailSkeleton from './components/TeamDetailSkeleton';
 import { FC } from 'react';
+import { produce } from 'immer';
 
 export interface ITeamMemberProps {}
 
@@ -115,6 +116,18 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
         },
       );
       queryClient.invalidateQueries(['team-members']);
+      queryClient.setQueryData(['team', id], (oldData: any) => {
+        try {
+          const newData = produce(oldData, (draft: any) => {
+            draft.data.result.data.totalMembers =
+              draft.data.result.data.totalMembers + membersAddedCount;
+          });
+          return newData;
+        } catch (e) {
+          console.log(e);
+          return oldData;
+        }
+      });
     },
   });
 
