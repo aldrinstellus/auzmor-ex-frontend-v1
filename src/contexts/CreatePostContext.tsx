@@ -94,8 +94,8 @@ export interface ICreatePostContext {
   setPoll: (pollContext: IPoll | null) => void;
   schedule: ISchedule | null;
   setSchedule: (schedule: ISchedule | null) => void;
-  audience: IAudience[];
-  setAudience: (audience: IAudience[]) => void;
+  audience: IAudience[] | null;
+  setAudience: (audience: IAudience[] | null) => void;
   shoutoutUserIds: string[];
   setShoutoutUserIds: (ids: string[]) => void;
   shoutoutUsers: Record<string, false | IGetUser>;
@@ -202,7 +202,7 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setPoll: () => {},
   schedule: null,
   setSchedule: () => {},
-  audience: [],
+  audience: null,
   setAudience: () => {},
   shoutoutUserIds: [],
   setShoutoutUserIds: () => {},
@@ -248,7 +248,9 @@ const CreatePostProvider: FC<ICreatePostProviderProps> = ({
   const [mediaOpenIndex, setMediaOpenIndex] = useState<number>(-1);
   const [poll, setPoll] = useState<IPoll | null>(null);
   const [schedule, setSchedule] = useState<ISchedule | null>(null);
-  const [audience, setAudience] = useState<IAudience[]>(data?.audience || []);
+  const [audience, setAudience] = useState<IAudience[] | null>(
+    data?.audience || null,
+  );
   const [shoutoutUserIds, setShoutoutUserIds] = useState<string[]>([]);
   const [shoutoutUsers, setShoutoutUsers] = useState<any>({});
   const [shoutoutTemplate, setShoutoutTemplate] = useState<any>({});
@@ -348,7 +350,7 @@ const CreatePostProvider: FC<ICreatePostProviderProps> = ({
     setMediaValidationErrors([]);
     setPoll(null);
     setSchedule(null);
-    setAudience([]);
+    setAudience(null);
     setShoutoutUserIds([]);
     setShoutoutUsers({});
     setShoutoutTemplate({});

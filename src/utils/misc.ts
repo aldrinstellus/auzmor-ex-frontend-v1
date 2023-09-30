@@ -241,6 +241,25 @@ export const hideEmojiPalette = (id = 'emoji-close-div') => {
   ele?.click();
 };
 
+export const hideMentionHashtagPalette = () => {
+  try {
+    const mentionElements = document.getElementsByClassName(
+      'ql-mention-list-container',
+    );
+    for (const ele of mentionElements) {
+      ele.remove();
+    }
+    const hashtagElements = document.getElementsByClassName(
+      'ql-hash-list-container',
+    );
+    for (const ele of hashtagElements) {
+      ele.remove();
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 export const getNouns = (label: string, count: number) => {
   if (count === 1) {
     return label;
@@ -368,4 +387,14 @@ export const isNewEntity = (
     return duration.asMilliseconds() > limit;
   }
   return false;
+};
+
+export const mapRanges = (
+  oldMin: number,
+  oldMax: number,
+  newMin: number,
+  newMax: number,
+  value: number,
+) => {
+  return newMin + ((newMax - newMin) / (oldMax - oldMin)) * (value - oldMin);
 };

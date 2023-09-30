@@ -4,6 +4,7 @@ import {
   forwardRef,
   memo,
   useContext,
+  useEffect,
   useState,
 } from 'react';
 import ReactQuill, { Quill, UnprivilegedEditor } from 'react-quill';
@@ -34,6 +35,7 @@ import MediaPreview, { Mode } from 'components/MediaPreview';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 
 import { hasDatePassed } from 'utils/time';
+import { hideMentionHashtagPalette } from 'utils/misc';
 
 export interface IEditorContentChanged {
   text: string;
@@ -193,6 +195,8 @@ const RichTextEditor = forwardRef(
           .getContents(),
       });
     };
+
+    useEffect(() => () => hideMentionHashtagPalette(), []);
 
     return (
       <div

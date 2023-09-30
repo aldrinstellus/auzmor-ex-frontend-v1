@@ -1,5 +1,5 @@
 import Button, { Variant } from 'components/Button';
-import { FC, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import Toolbar from './components/Toolbar';
 import Chart from './components/Chart';
 import { OrgChart } from 'd3-org-chart';
@@ -7,6 +7,11 @@ import { useForm } from 'react-hook-form';
 import { IGetUser, useOrgChart } from 'queries/users';
 import { IAppliedFilters } from 'components/FilterModal';
 import { isFiltersEmpty } from 'utils/misc';
+import { useOrgChartStore } from 'stores/orgChartStore';
+
+export const MIN_ZOOM = 0.2;
+export const MAX_ZOOM = 5;
+export const FOCUS_ZOOM = 18; //range 0 to 100
 
 export enum OrgChartMode {
   Team = 'TEAM',
@@ -20,6 +25,11 @@ export interface IForm {
 
 interface IOrgChart {
   setShowOrgChart: (showOrgChart: boolean) => void;
+}
+
+export interface IZoom {
+  zoom: number;
+  range: number[];
 }
 
 const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
@@ -54,10 +64,21 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
       expand: activeMode === OrgChartMode.Team ? 1 : undefined,
     }),
   );
+  const [zoom, setZoom] = useState<IZoom>({
+    zoom: MIN_ZOOM,
+    range: [MIN_ZOOM, MAX_ZOOM],
+  });
+
+  const { setIsOrgChartMounted } = useOrgChartStore();
+
+  useEffect(() => {
+    setIsOrgChartMounted(true);
+    return () => setIsOrgChartMounted(false);
+  }, []);
 
   return (
-    <div className="flex flex-col w-full h-full">
-      <div className="flex justify-between w-full">
+    <div className="flex flex-col w-full h-full items-center">
+      <div className="flex justify-between w-full max-w-[1440px]">
         <div className="text-2xl font-bold">Organization Chart</div>
         <Button
           className="flex space-x-[6px] group"
@@ -84,6 +105,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
         appliedFilters={appliedFilters}
         setAppliedFilters={setAppliedFilters}
         setParentId={setParentId}
+        zoom={zoom}
       />
       <Chart
         orgChartRef={chartRef}
@@ -104,6 +126,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
           !!startWithSpecificUser
         }
         startWithSpecificUser={startWithSpecificUser}
+        setZoom={setZoom}
       />
     </div>
   );

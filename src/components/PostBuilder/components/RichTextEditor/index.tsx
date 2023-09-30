@@ -23,7 +23,7 @@ import EmojiBlot from './blots/emoji';
 import EmojiToolbar from './emoji';
 import { mention, previewLinkRegex } from './config';
 import Icon from 'components/Icon';
-import { isEmptyEditor, twConfig } from 'utils/misc';
+import { hideMentionHashtagPalette, isEmptyEditor, twConfig } from 'utils/misc';
 import {
   CreatePostContext,
   CreatePostFlow,
@@ -292,6 +292,8 @@ const RichTextEditor = forwardRef(
         setIsEmpty(isEmptyEditor(content, ops));
       }
     }, []);
+
+    useEffect(() => () => hideMentionHashtagPalette(), []);
 
     return (
       <div data-testid={`${dataTestId}-content`}>

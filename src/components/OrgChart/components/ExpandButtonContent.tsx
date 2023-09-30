@@ -8,7 +8,7 @@ interface IExpandButtonContent {
 
 const ExpandButtonContent: FC<IExpandButtonContent> = ({ node }) => {
   return (
-    <div className="text-right text-sm text-neutral-500 mt-2 absolute right-0 bottom-0 flex items-center">
+    <div className="text-right text-sm text-neutral-500 flex items-center">
       <div>{node.data.directReporteesCount} direct reports</div>{' '}
       <div className="ml-2">
         {node?.children ? (
