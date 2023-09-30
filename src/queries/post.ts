@@ -87,6 +87,7 @@ export interface IPost {
     end: string;
   };
   id?: string;
+  acknowledgementStats?: Record<string, any>;
   myAcknowledgement?: {
     // createdBy: {
     //   department?: string;
@@ -306,7 +307,8 @@ export const usePreviewLink = (previewUrl: string) => {
 };
 
 export const updatePost = async (id: string, payload: IPostPayload) => {
-  await apiService.put(`/posts/${id}`, payload);
+  const data = await apiService.put(`/posts/${id}`, payload);
+  return data;
 };
 
 export const deletePost = async (id: string) => {

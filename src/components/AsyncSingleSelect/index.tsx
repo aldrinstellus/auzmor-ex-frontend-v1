@@ -185,7 +185,6 @@ const AsyncSingleSelect = forwardRef(
                   showSearch={showSearch}
                   disabled={disabled}
                   placeholder={placeholder}
-                  defaultValue={defaultValue}
                   placement={menuPlacement ? menuPlacement : undefined}
                   onPopupScroll={onPopupScroll}
                   getPopupContainer={(triggerNode) => {
@@ -211,10 +210,10 @@ const AsyncSingleSelect = forwardRef(
                   clearIcon={clearIcon}
                   suffixIcon={suffixIcon || <Icon name="arrowDown" size={18} />}
                   onClear={() => {
+                    field.onChange(null);
                     if (onClear) {
                       onClear();
                     }
-                    field.onChange(undefined);
                   }}
                   searchValue={search}
                 >
