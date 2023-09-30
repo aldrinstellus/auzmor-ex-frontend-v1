@@ -68,7 +68,7 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
   });
 
   const onSubmit = async (data: any) => {
-    await updateMutation.mutateAsync({ manager: data?.manager?.value });
+    await updateMutation.mutateAsync({ manager: data?.manager?.value || null });
     await queryClient.invalidateQueries(['current-user-me']);
     setIsEditable(false);
   };

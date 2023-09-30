@@ -210,7 +210,12 @@ const AsyncSingleSelect = forwardRef(
                   className={`async-single-select ${selectClassName}`}
                   clearIcon={clearIcon}
                   suffixIcon={suffixIcon || <Icon name="arrowDown" size={18} />}
-                  onClear={onClear}
+                  onClear={() => {
+                    if (onClear) {
+                      onClear();
+                    }
+                    field.onChange(undefined);
+                  }}
                   searchValue={search}
                 >
                   {(options || []).map((option) => {
