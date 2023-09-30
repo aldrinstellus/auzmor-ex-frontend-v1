@@ -48,7 +48,6 @@ const CreatableSearch = forwardRef(
       label = '',
       required = false,
       placeholder = '',
-      defaultValue,
       menuPlacement = 'bottomLeft',
       fetchQuery,
       queryParams,
@@ -61,6 +60,11 @@ const CreatableSearch = forwardRef(
     }: ICreatableSearch,
     ref?: any,
   ) => {
+    const { field } = useController({
+      name,
+      control,
+    });
+
     const [searchValue, setSearchValue] = useState<string>('');
     const debouncedSearchValue = useDebounce(searchValue || '', 500);
     const { data, isLoading } = fetchQuery(
@@ -72,11 +76,6 @@ const CreatableSearch = forwardRef(
     );
 
     const transformedOptions = getFormattedData(data);
-
-    const { field } = useController({
-      name,
-      control,
-    });
 
     const [open, setOpen] = useState<boolean>(false);
 
@@ -163,7 +162,6 @@ const CreatableSearch = forwardRef(
                   showSearch
                   disabled={disabled}
                   placeholder={placeholder}
-                  defaultValue={defaultValue}
                   placement={menuPlacement ? menuPlacement : undefined}
                   getPopupContainer={(triggerNode) => {
                     if (getPopupContainer) {
@@ -176,7 +174,8 @@ const CreatableSearch = forwardRef(
                   filterOption={false}
                   notFoundContent={noContentFound()}
                   onInputKeyDown={() => setOpen(true)}
-                  {...field}
+                  value={field.value}
+                  defaultActiveFirstOption={false}
                   ref={ref}
                   onBlur={() => setOpen(false)}
                   optionLabelProp="label"

@@ -3,6 +3,7 @@ import Banner, { Variant } from 'components/Banner';
 import Icon from 'components/Icon';
 import { IMedia } from 'contexts/CreatePostContext';
 import { FC, MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { mapRanges } from 'utils/misc';
 
 const MIN = 0;
 const MAX = 100;
@@ -73,15 +74,6 @@ const Carousel: FC<ICarouselProps> = ({
       }),
     [],
   );
-  const mapRanges = (
-    oldMin: number,
-    oldMax: number,
-    newMin: number,
-    newMax: number,
-    value: number,
-  ) => {
-    return newMin + ((newMax - newMin) / (oldMax - oldMin)) * (value - oldMin);
-  };
 
   useEffect(() => {
     if (videoRef.current && autoplayIndex > -1) {

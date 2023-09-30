@@ -9,14 +9,21 @@ import { ICheckboxListOption } from 'components/CheckboxList';
 import Spinner from 'components/Spinner';
 import Icon from 'components/Icon';
 import ItemSkeleton from './ItemSkeleton';
+import { CategoryType } from 'queries/apps';
 
 interface ICategoriesProps {
   control: Control<IFilterForm, any>;
   watch: UseFormWatch<IFilterForm>;
   setValue: UseFormSetValue<IFilterForm>;
+  type: CategoryType;
 }
 
-const Categories: FC<ICategoriesProps> = ({ control, watch, setValue }) => {
+const Categories: FC<ICategoriesProps> = ({
+  control,
+  watch,
+  setValue,
+  type,
+}) => {
   const { ref, inView } = useInView();
   useEffect(() => {
     if (inView) {
@@ -50,6 +57,7 @@ const Categories: FC<ICategoriesProps> = ({ control, watch, setValue }) => {
     hasNextPage,
   } = useInfiniteCategories({
     q: debouncedCategorySearchValue,
+    type,
   });
   const categoryData = fetchedDCategory?.pages.flatMap((page) => {
     return page.data.result.data.map((category: ICategory) => category);

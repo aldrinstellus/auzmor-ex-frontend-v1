@@ -16,7 +16,7 @@ import { Variant as InputVariant } from 'components/Input';
 import { getProfileImage, twConfig } from 'utils/misc';
 import { IUpdateProfileImage } from 'pages/UserDetail';
 import { useMutation } from '@tanstack/react-query';
-import { updateCurrentUser } from 'queries/users';
+import { updateCurrentUser, updateUserById } from 'queries/users';
 import useAuth from 'hooks/useAuth';
 import queryClient from 'utils/queryClient';
 import Header from 'components/ModalHeader';
@@ -31,6 +31,7 @@ import { useInfiniteDepartments } from 'queries/department';
 import useRole from 'hooks/useRole';
 import { useInfiniteDesignations } from 'queries/designation';
 import { useDebounce } from 'hooks/useDebounce';
+import { useParams } from 'react-router-dom';
 
 interface IOptions {
   value: string;
@@ -77,6 +78,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
   setIsCoverImageRemoved = () => {},
 }) => {
   const { isAdmin } = useRole();
+  const { userId = '' } = useParams();
   const {
     control,
     handleSubmit,
@@ -120,6 +122,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
         }
       });
     });
+    console.log('OPTIONS DATA FLAT >>>>>', optionsData);
     const transformedOption = optionsData?.map((option: any) => ({
       value: option?.departmentId || option?.designationId,
       label: option?.name,
@@ -213,6 +216,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
       control,
     },
   ];
+
   const locationField = [
     {
       type: FieldType.AsyncSingleSelect,
@@ -288,30 +292,35 @@ const EditProfileModal: FC<IEditProfileModal> = ({
   );
 
   const updateUsersMutation = useMutation({
-    mutationFn: updateCurrentUser,
+    mutationFn: userId
+      ? (data: any) => updateUserById(userId, data)
+      : updateCurrentUser,
     mutationKey: ['update-users-mutation'],
     onError: (error: any) => {
       console.log('API call resulted in error: ', error);
     },
     onSuccess: async (response: Record<string, any>) => {
       const userUpdateResponse = response?.result?.data;
-      updateUser({
-        name: userUpdateResponse.fullName,
-        id: userUpdateResponse.id,
-        email: userUpdateResponse.primaryEmail,
-        role: userUpdateResponse.role,
-        organization: {
-          id: userUpdateResponse.org?.id,
-          domain: userUpdateResponse.org?.domain,
-        },
-        workLocation: userUpdateResponse.workLocation,
-        preferredName: userUpdateResponse.preferredName,
-        designation: userUpdateResponse.designation,
-        department: userUpdateResponse.department,
-        location: userUpdateResponse.location,
-        profileImage: userUpdateResponse.profileImage?.original,
-        coverImage: userUpdateResponse.profileImage?.original,
-      });
+      if (!userId) {
+        updateUser({
+          name: userUpdateResponse.fullName,
+          id: userUpdateResponse.id,
+          email: userUpdateResponse.primaryEmail,
+          role: userUpdateResponse.role,
+          organization: {
+            id: userUpdateResponse.org?.id,
+            domain: userUpdateResponse.org?.domain,
+          },
+          workLocation: userUpdateResponse.workLocation,
+          preferredName: userUpdateResponse.preferredName,
+          designation: userUpdateResponse.designation,
+          department: userUpdateResponse.department,
+          location: userUpdateResponse.location,
+          profileImage: userUpdateResponse.profileImage?.original,
+          coverImage: userUpdateResponse.profileImage?.original,
+        });
+      }
+
       toast(<SuccessToast content={'User Profile Updated Successfully'} />, {
         closeButton: (
           <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
@@ -329,7 +338,11 @@ const EditProfileModal: FC<IEditProfileModal> = ({
       reset();
       closeEditProfileModal();
       await queryClient.invalidateQueries({ queryKey: ['departments'] });
-      await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
+      if (userId) {
+        await queryClient.invalidateQueries(['user', userId]);
+      } else {
+        await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
+      }
     },
   });
 

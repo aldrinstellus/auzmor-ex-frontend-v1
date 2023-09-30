@@ -388,3 +388,13 @@ export const isNewEntity = (
   }
   return false;
 };
+
+export const mapRanges = (
+  oldMin: number,
+  oldMax: number,
+  newMin: number,
+  newMax: number,
+  value: number,
+) => {
+  return newMin + ((newMax - newMin) / (oldMax - oldMin)) * (value - oldMin);
+};

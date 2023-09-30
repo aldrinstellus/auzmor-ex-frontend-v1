@@ -12,6 +12,9 @@ import { IGetUser, UserStatus, getOrgChart } from 'queries/users';
 import { QueryFunctionContext } from '@tanstack/react-query';
 import { IDesignation } from 'queries/designation';
 import { IProfileImage } from 'queries/post';
+import { FOCUS_ZOOM, IZoom, MAX_ZOOM, MIN_ZOOM } from '..';
+import useAuth from 'hooks/useAuth';
+import { mapRanges } from 'utils/misc';
 
 export interface INode {
   id: string;
@@ -40,6 +43,7 @@ interface IChart {
   isFilterApplied: boolean;
   onClearFilter: () => void;
   startWithSpecificUser: IGetUser | null;
+  setZoom: (zoom: IZoom) => void;
 }
 
 const Chart: FC<IChart> = ({
@@ -49,14 +53,17 @@ const Chart: FC<IChart> = ({
   isFilterApplied,
   onClearFilter,
   startWithSpecificUser,
+  setZoom,
 }) => {
   const chartRef = useRef(null);
   let chart: any | null = null;
+  const { user } = useAuth();
   useEffect(() => {
     if (chartRef.current) {
       if (!chart && data.length) {
         chart = (
           new OrgChart()
+            .scaleExtent([MIN_ZOOM, MAX_ZOOM])
             .container(chartRef.current)
             .data(data)
             .nodeHeight((_d: any) => 128)
@@ -71,6 +78,9 @@ const Chart: FC<IChart> = ({
             .buttonContent(({ node, _state }: any) => {
               return renderToString(<ExpandButtonContent node={node} />);
             })
+            .onZoom((zoomScale: number, range: number[]) =>
+              setZoom({ zoom: zoomScale, range }),
+            )
             .nodeContent((node: any, _i: any, _arr: any, _state: any) => {
               return renderToString(
                 <UserNode
@@ -86,7 +96,11 @@ const Chart: FC<IChart> = ({
             );
           })
           .onExpandCollapseClick((d: any, _data: any) => {
-            if (d.data.directReporteesCount > 0 && !!d.children) {
+            if (
+              d.data.directReporteesCount > 0 &&
+              !!!d.children &&
+              !!!d._children
+            ) {
               getOrgChart({
                 queryKey: [
                   'organization-chart',
@@ -94,6 +108,12 @@ const Chart: FC<IChart> = ({
                 ],
               } as QueryFunctionContext<any>).then((response: any) => {
                 chart?.addNodes(response.data.result.data);
+                try {
+                  const ele = document.getElementById(
+                    `expand-btn-${d.data.id}`,
+                  );
+                  ele?.dispatchEvent(new Event('click'));
+                } catch (e) {}
               });
             } else {
               chart?.update(d);
@@ -111,8 +131,17 @@ const Chart: FC<IChart> = ({
           //   }
           // })
           .render()
+          .setUpToTheRootHighlighted(user?.id || '')
           .expandAll()
-          .fit();
+          .setCentered(user?.id)
+          .render();
+        setTimeout(
+          () =>
+            chart
+              .setZoom(mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM))
+              .render(),
+          400,
+        );
         orgChartRef.current = chart;
         return;
       }
@@ -132,7 +161,7 @@ const Chart: FC<IChart> = ({
   const orgChartContainerStyle = useMemo(
     () =>
       clsx({
-        relative: true,
+        'relative w-full': true,
         'opacity-0': isLoading || !!!data?.length,
         'opacity-100': !isLoading,
       }),

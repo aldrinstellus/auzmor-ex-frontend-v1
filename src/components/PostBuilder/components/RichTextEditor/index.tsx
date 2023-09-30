@@ -355,7 +355,7 @@ const RichTextEditor = forwardRef(
             mode={Mode.Edit}
             onAddButtonClick={() => inputImgRef?.current?.click()}
             onCloseButtonClick={media.length > 1 ? showConfirm : onRemoveMedia}
-            showEditButton
+            showEditButton={postType !== PostType.Shoutout}
             showCloseButton={postType !== PostType.Shoutout}
             showAddMediaButton={postType !== PostType.Shoutout}
             onEditButtonClick={onMediaEdit}
@@ -363,8 +363,10 @@ const RichTextEditor = forwardRef(
             dataTestId={dataTestId}
             onClick={(e, index) => {
               updateContext();
-              setMediaOpenIndex(index - 1);
-              setActiveFlow(CreatePostFlow.EditMedia);
+              if (postType !== PostType.Shoutout) {
+                setMediaOpenIndex(index - 1);
+                setActiveFlow(CreatePostFlow.EditMedia);
+              }
             }}
           />
         )}

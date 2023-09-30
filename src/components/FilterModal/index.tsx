@@ -15,6 +15,7 @@ import Categories from './Categories';
 import { ICategory } from 'queries/category';
 import { ITeam } from 'queries/teams';
 import Teams from './Teams';
+import { CategoryType } from 'queries/apps';
 
 export interface IFilterForm {
   status: IRadioListOption;
@@ -212,7 +213,16 @@ const FilterModal: FC<IFilterModalProps> = ({
       ),
       key: 'categories-filters',
       component: () => (
-        <Categories control={control} watch={watch} setValue={setValue} />
+        <Categories
+          control={control}
+          watch={watch}
+          setValue={setValue}
+          type={
+            variant === FilterModalVariant.App
+              ? CategoryType.APP
+              : CategoryType.TEAM
+          }
+        />
       ),
       isHidden: [
         FilterModalVariant.Orgchart,
