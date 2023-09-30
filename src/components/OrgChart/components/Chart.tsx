@@ -44,6 +44,7 @@ interface IChart {
   onClearFilter: () => void;
   startWithSpecificUser: IGetUser | null;
   setZoom: (zoom: IZoom) => void;
+  isSpotlightActive: boolean;
 }
 
 const Chart: FC<IChart> = ({
@@ -54,6 +55,7 @@ const Chart: FC<IChart> = ({
   onClearFilter,
   startWithSpecificUser,
   setZoom,
+  isSpotlightActive,
 }) => {
   const chartRef = useRef(null);
   let chart: any | null = null;
@@ -130,18 +132,25 @@ const Chart: FC<IChart> = ({
           //     });
           //   }
           // })
-          .render()
-          .setUpToTheRootHighlighted(user?.id || '')
-          .expandAll()
-          .setCentered(user?.id)
           .render();
-        setTimeout(
-          () =>
-            chart
-              .setZoom(mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM))
-              .render(),
-          400,
-        );
+        if (isSpotlightActive) {
+          chart
+            .setUpToTheRootHighlighted(user?.id || '')
+            .expandAll()
+            .setCentered(user?.id)
+            .render();
+          setTimeout(
+            () =>
+              chart
+                .setZoom(mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM))
+                .render(),
+            400,
+          );
+        } else if (startWithSpecificUser) {
+          chart.fit();
+        } else {
+          chart.fit();
+        }
         orgChartRef.current = chart;
         return;
       }

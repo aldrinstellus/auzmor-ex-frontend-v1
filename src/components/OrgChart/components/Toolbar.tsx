@@ -12,7 +12,12 @@ import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
 import { OrgChart } from 'd3-org-chart';
 import Popover from 'components/Popover';
-import { IGetUser, useInfiniteUsers, useOrgChart } from 'queries/users';
+import {
+  IGetUser,
+  getOrgChart,
+  useInfiniteUsers,
+  useOrgChart,
+} from 'queries/users';
 import { useDebounce } from 'hooks/useDebounce';
 import Spinner from 'components/Spinner';
 import { useInView } from 'react-intersection-observer';
@@ -28,6 +33,7 @@ import FilterModal, {
 } from 'components/FilterModal';
 import { INode } from './Chart';
 import { mapRanges } from 'utils/misc';
+import { QueryFunctionContext } from '@tanstack/react-query';
 
 interface IToolbarProps {
   activeMode: OrgChartMode;
@@ -44,6 +50,9 @@ interface IToolbarProps {
   setAppliedFilters: (appliedFilters: IAppliedFilters) => void;
   setParentId: (parentId: string | null) => void;
   zoom: IZoom;
+  parentId: string | null;
+  isSpotlightActive: boolean;
+  setIsSpotlightActive: (flag: boolean) => void;
 }
 
 const Toolbar: FC<IToolbarProps> = ({
@@ -61,9 +70,11 @@ const Toolbar: FC<IToolbarProps> = ({
   setAppliedFilters,
   setParentId,
   zoom,
+  parentId,
+  isSpotlightActive,
+  setIsSpotlightActive,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
-  const [isSpotlightActive, setIsSpotlightActive] = useState(true);
   const [memberSearchString, setMemberSearchString] = useState<string>('');
   const [specificPersonSearch] = watch(['specificPersonSearch']);
 
@@ -319,17 +330,44 @@ const Toolbar: FC<IToolbarProps> = ({
               <div className="mx-4 bg-neutral-200 h-6 w-px" />
               <div className="mr-4 group">
                 <Tooltip
-                  tooltipContent={isExpandAll ? 'Expand all' : 'Collapse all'}
+                  tooltipContent={isExpandAll ? 'Collapse all' : 'Expand all'}
                   tooltipPosition="bottom"
                 >
                   <Icon
-                    name={isExpandAll ? 'expandOutline' : 'collapseOutline'}
+                    name={isExpandAll ? 'collapseOutline' : 'expandOutline'}
                     color="text-neutral-900"
                     onClick={() => {
                       if (isExpandAll) {
-                        chartRef.current?.expandAll();
+                        chartRef.current?.collapseAll().fit();
                       } else {
-                        chartRef.current?.collapseAll();
+                        getOrgChart({
+                          queryKey: [
+                            'organization-chart',
+                            {
+                              expandAll: true,
+                              root: parentId || startWithSpecificUser?.id,
+                              locations:
+                                appliedFilters?.location?.map(
+                                  (location) => (location as any).id,
+                                ) || [],
+                              departments:
+                                appliedFilters?.departments?.map(
+                                  (department) => (department as any).id,
+                                ) || [],
+                              status:
+                                appliedFilters.status?.value === 'ALL'
+                                  ? undefined
+                                  : appliedFilters.status?.value,
+                            },
+                          ],
+                        } as QueryFunctionContext<any>).then(
+                          (response: any) => {
+                            chartRef.current?.addNodes(
+                              response.data.result.data,
+                            );
+                            chartRef.current?.expandAll().fit();
+                          },
+                        );
                       }
                       setIsExpandAll(!isExpandAll);
                     }}
