@@ -86,11 +86,13 @@ const AsyncSingleSelect = forwardRef(
     }: IAsyncSingleSelectProps,
     ref?: any,
   ) => {
+    const [search, setSearch] = useState('');
     const { ref: loadMoreRef, inView } = useInView();
     const { field } = useController({
       name,
       control,
     });
+
     const labelStyle = useMemo(
       () =>
         clsx(
@@ -138,6 +140,16 @@ const AsyncSingleSelect = forwardRef(
       }
     };
 
+    const handleSearch = (q: string) => {
+      if (onSearch) {
+        onSearch(q);
+      }
+      setSearch(q);
+    };
+
+    const filterOption = (input: any, option: any) =>
+      (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+
     return (
       <ConfigProvider
         theme={{
@@ -182,12 +194,13 @@ const AsyncSingleSelect = forwardRef(
                     }
                     return triggerNode.parentElement;
                   }}
-                  onSearch={onSearch ? (q) => onSearch(q) : undefined}
+                  onSearch={handleSearch}
+                  filterOption={filterOption}
                   notFoundContent={noContentFound()}
                   onInputKeyDown={() => setOpen(true)}
                   allowClear={isClearable}
                   loading={isLoading}
-                  {...field}
+                  value={field.value}
                   ref={ref}
                   onBlur={() => setOpen(false)}
                   onChange={(_, option) => {
@@ -198,6 +211,7 @@ const AsyncSingleSelect = forwardRef(
                   clearIcon={clearIcon}
                   suffixIcon={suffixIcon || <Icon name="arrowDown" size={18} />}
                   onClear={onClear}
+                  searchValue={search}
                 >
                   {(options || []).map((option) => {
                     return (
