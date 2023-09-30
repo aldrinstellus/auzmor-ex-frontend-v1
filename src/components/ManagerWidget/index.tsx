@@ -7,6 +7,7 @@ import Icon from 'components/Icon';
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useHover from 'hooks/useHover';
+import { isEmpty } from 'lodash';
 import {
   updateCurrentUser,
   updateUserById,
@@ -161,6 +162,10 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
               {isEditable ? (
                 <div>
                   <Layout fields={fields} />
+                </div>
+              ) : isEmpty(data?.manager) ? (
+                <div className="text-sm text-neutral-500">
+                  No manager assigned
                 </div>
               ) : (
                 <div className="flex items-center space-x-2">
