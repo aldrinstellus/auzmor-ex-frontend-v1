@@ -106,13 +106,13 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
       isLoading: isFetching,
       options: usersData
         ?.map((member: any) => ({
-          value: member.id,
+          value: member?.id,
           label: member.fullName,
           disabled: false,
-          dataTestId: member.id,
+          dataTestId: member?.id,
           rowData: member,
         }))
-        .filter((member) => member.value !== data.id),
+        .filter((member) => member.value !== data?.id),
       isFetchingNextPage,
       fetchNextPage,
       hasNextPage,
