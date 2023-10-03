@@ -5,7 +5,7 @@ import { FieldValues, UseFormHandleSubmit } from 'react-hook-form';
 import { afterXUnit } from 'utils/time';
 import { CreateAnnouncementMode } from '.';
 import { useMutation } from '@tanstack/react-query';
-import { IPost, updatePost } from 'queries/post';
+import { IPost, PostType, updatePost } from 'queries/post';
 import queryClient from 'utils/queryClient';
 import { toast } from 'react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
@@ -58,11 +58,9 @@ const Footer: FC<IFooterProps> = ({
     mutationFn: () => {
       const formData = getFormValues();
       const expiryDate = formData?.date.toISOString().substring(0, 19) + 'Z';
-      const fileIds = data?.files?.map((file: any) => file.id);
       return updatePost(data!.id!, {
         ...data,
-        files: fileIds,
-        type: 'UPDATE',
+        type: data?.type || PostType.Update,
         isAnnouncement: true,
         announcement: {
           end:
@@ -70,10 +68,6 @@ const Footer: FC<IFooterProps> = ({
             formData?.expiryOption?.value ||
             afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
         },
-        shoutoutRecipients:
-          data?.shoutoutRecipients && data?.shoutoutRecipients.length > 0
-            ? data.shoutoutRecipients.map((user) => user.userId)
-            : [],
       });
     },
     onMutate: (_variables) => {

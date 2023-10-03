@@ -118,10 +118,8 @@ const ClosePollModal: FC<AppProps> = ({ open, closeModal, data }) => {
           variant={Variant.Primary}
           label="Close Poll"
           onClick={() => {
-            const fileIds = data.files?.map((file: any) => file.id);
             const payload = {
               ...data,
-              files: fileIds,
               pollContext: {
                 ...data.pollContext,
                 closedAt: new Date().toISOString(),

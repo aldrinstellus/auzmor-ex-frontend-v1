@@ -82,10 +82,8 @@ const ChangeToRegularPostModal: FC<AppProps> = ({ open, closeModal, data }) => {
           variant={Variant.Primary}
           label="Yes"
           onClick={() => {
-            const fileIds = data.files?.map((file: any) => file.id);
             const payload = {
               ...data,
-              files: fileIds,
               isAnnouncement: false,
               announcement: {
                 end: '',

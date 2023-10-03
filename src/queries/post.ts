@@ -307,7 +307,24 @@ export const usePreviewLink = (previewUrl: string) => {
 };
 
 export const updatePost = async (id: string, payload: IPostPayload) => {
-  const data = await apiService.put(`/posts/${id}`, payload);
+  const fileIds = payload.files
+    ? payload.files.map((file) => (typeof file === 'string' ? file : file.id))
+    : payload.files;
+  const shoutoutRecipentIds = payload.shoutoutRecipients
+    ? payload.shoutoutRecipients.map((recipient) =>
+        typeof recipient === 'string' ? recipient : recipient.userId,
+      )
+    : payload.shoutoutRecipients;
+  const link =
+    !payload.link || typeof payload.link === 'string'
+      ? payload.link
+      : payload.link.url;
+  const data = await apiService.put(`/posts/${id}`, {
+    ...payload,
+    files: fileIds,
+    shoutoutRecipients: shoutoutRecipentIds,
+    link: link,
+  });
   return data;
 };
 

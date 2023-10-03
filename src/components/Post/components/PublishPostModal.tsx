@@ -13,8 +13,6 @@ import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { FC } from 'react';
-import { IMedia } from 'contexts/CreatePostContext';
-import { Metadata } from 'components/PreviewLink/types';
 
 interface PublishPostModalProps {
   post: IPost;
@@ -123,11 +121,6 @@ const PublishPostModal: FC<PublishPostModalProps> = ({ closeModal, post }) => {
               updatePostMutation.mutate({
                 ...post,
                 schedule: null,
-                files: post.files?.map((file) => (file as IMedia).id),
-                shoutoutRecipients: post.shoutoutRecipients?.map(
-                  (recipients) => recipients.userId,
-                ),
-                link: (post.link as Metadata).url,
               });
             }}
           />
