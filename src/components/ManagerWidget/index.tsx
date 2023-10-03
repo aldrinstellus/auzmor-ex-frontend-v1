@@ -70,7 +70,9 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
   });
 
   useEffect(() => {
-    reset({ manager: data?.manager?.userId });
+    reset({
+      manager: { value: data?.manager?.userId, label: data?.manager?.fullName },
+    });
   }, [data]);
 
   const onSubmit = async (data: any) => {
