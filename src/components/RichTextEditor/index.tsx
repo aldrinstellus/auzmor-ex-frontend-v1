@@ -1,24 +1,41 @@
-import React, { LegacyRef, ReactNode, memo, useContext, useState } from 'react';
+import {
+  LegacyRef,
+  ReactNode,
+  forwardRef,
+  memo,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import ReactQuill, { Quill, UnprivilegedEditor } from 'react-quill';
 import { DeltaStatic, Sources } from 'quill';
+import moment from 'moment';
+
+// styles
 import 'react-quill/dist/quill.snow.css';
 import 'quill-emoji/dist/quill-emoji.css';
 import './mentions/quill.mention';
 import './mentions/quill.mention.css';
+import './styles.css';
 
+// blots
 import { MentionBlot } from './mentions/blots/mentions';
 import { LinkBlot } from './blots/link';
-import AutoLinks from './autoLinks';
 import EmojiBlot from './blots/emoji';
+import AutoLinks from './autoLinks';
 import EmojiToolbar from './emoji';
+
 import { mention, previewLinkRegex } from './config';
+
+// components
 import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
-import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import moment from 'moment';
 import MediaPreview, { Mode } from 'components/MediaPreview';
-import './styles.css';
+
+// context
+import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
+
 import { hasDatePassed } from 'utils/time';
+import { hideMentionHashtagPalette } from 'utils/misc';
 
 export interface IEditorContentChanged {
   text: string;
@@ -82,7 +99,7 @@ fill="none"
 />
 </svg>`;
 
-const RichTextEditor = React.forwardRef(
+const RichTextEditor = forwardRef(
   (
     {
       toolbarId,
@@ -173,14 +190,19 @@ const RichTextEditor = React.forwardRef(
         html: (ref as any).current
           ?.makeUnprivilegedEditor((ref as any).current?.getEditor())
           .getHTML(),
-        json: (ref as any).current
+        editor: (ref as any).current
           ?.makeUnprivilegedEditor((ref as any).current?.getEditor())
           .getContents(),
       });
     };
 
+    useEffect(() => () => hideMentionHashtagPalette(), []);
+
     return (
-      <div className="w-full relative" data-testid={dataTestId}>
+      <div
+        className="w-full relative flex flex-wrap gap-2"
+        data-testid={dataTestId}
+      >
         <ReactQuill
           id="quill"
           className={className}
@@ -211,7 +233,7 @@ const RichTextEditor = React.forwardRef(
               <Icon
                 name="calendarOutlineTwo"
                 size={16}
-                stroke={twConfig.theme.colors.neutral['900']}
+                color="text-neutral-900"
               />
               <div className="ml-2.5">
                 Announcement will expire on{' '}
@@ -227,11 +249,7 @@ const RichTextEditor = React.forwardRef(
                 setActiveFlow(CreatePostFlow.CreateAnnouncement);
               }}
             >
-              <Icon
-                name="editOutline"
-                size={12}
-                stroke={twConfig.theme.colors.neutral['900']}
-              />
+              <Icon name="editOutline" size={12} color="text-neutral-900" />
               <div className="ml-1 text-xs font-bold text-neutral-900">
                 Edit
               </div>

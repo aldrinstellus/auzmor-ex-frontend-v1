@@ -1,18 +1,19 @@
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
-import React from 'react';
 import Tabs from 'components/Tabs';
 import ReactionTab from './ReactionTab';
+import { IReactionsCount } from 'queries/post';
+import { FC } from 'react';
 
 export interface IReactionModalProps {
   closeModal?: () => void;
-  reactionCounts: Record<string, number>;
+  reactionCounts: IReactionsCount;
   postId: string;
   entityType: string;
 }
 
-const ReactionModal: React.FC<IReactionModalProps> = ({
+const ReactionModal: FC<IReactionModalProps> = ({
   closeModal,
   reactionCounts,
   postId,
@@ -35,10 +36,10 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
     <Modal open={true} closeModal={closeModal} className="max-w-2xl">
       <Header title="Reactions" onClose={closeModal} />
       <Tabs
-        tabContentClassName="px-6 h-[482px] overflow-y-auto" // update style
+        tabContentClassName=""
         tabs={[
           {
-            tabLable: (isActive: boolean) => (
+            tabLabel: (isActive: boolean) => (
               <div className={getClassName(isActive)}>
                 {`All (${Object.values(reactionCounts).reduce(
                   (a, b) => a + b,
@@ -48,16 +49,14 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
             ),
             tabContent: (
               <ReactionTab
-                getReactionQuery={{
-                  entityId: postId,
-                  entityType,
-                  limit: 5,
-                }}
+                entityId={postId}
+                entityType={entityType}
+                limit={30}
               />
             ),
           },
           {
-            tabLable: (isActive: boolean) => (
+            tabLabel: (isActive: boolean) => (
               <>
                 <div className="mr-3">
                   <Icon name="like" />
@@ -69,17 +68,15 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
             ),
             tabContent: (
               <ReactionTab
-                getReactionQuery={{
-                  entityId: postId,
-                  reaction: 'like',
-                  entityType,
-                  limit: 5,
-                }}
+                entityId={postId}
+                reaction="like"
+                entityType={entityType}
+                limit={30}
               />
             ),
           },
           {
-            tabLable: (isActive: boolean) => (
+            tabLabel: (isActive: boolean) => (
               <>
                 <div className="mr-3">
                   <Icon name="love" />
@@ -91,17 +88,15 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
             ),
             tabContent: (
               <ReactionTab
-                getReactionQuery={{
-                  entityId: postId,
-                  reaction: 'love',
-                  entityType,
-                  limit: 5,
-                }}
+                entityId={postId}
+                reaction="love"
+                entityType={entityType}
+                limit={30}
               />
             ),
           },
           {
-            tabLable: (isActive: boolean) => (
+            tabLabel: (isActive: boolean) => (
               <>
                 <div className="mr-3">
                   <Icon name="funny" />
@@ -113,17 +108,15 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
             ),
             tabContent: (
               <ReactionTab
-                getReactionQuery={{
-                  entityId: postId,
-                  reaction: 'funny',
-                  entityType,
-                  limit: 5,
-                }}
+                entityId={postId}
+                reaction="funny"
+                entityType={entityType}
+                limit={30}
               />
             ),
           },
           {
-            tabLable: (isActive: boolean) => (
+            tabLabel: (isActive: boolean) => (
               <>
                 <div className="mr-3">
                   <Icon name="celebrate" />
@@ -135,17 +128,15 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
             ),
             tabContent: (
               <ReactionTab
-                getReactionQuery={{
-                  entityId: postId,
-                  reaction: 'celebrate',
-                  entityType,
-                  limit: 5,
-                }}
+                entityId={postId}
+                reaction="celebrate"
+                entityType={entityType}
+                limit={30}
               />
             ),
           },
           {
-            tabLable: (isActive: boolean) => (
+            tabLabel: (isActive: boolean) => (
               <>
                 <div className="mr-3">
                   <Icon name="insightful" />
@@ -157,17 +148,15 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
             ),
             tabContent: (
               <ReactionTab
-                getReactionQuery={{
-                  entityId: postId,
-                  reaction: 'insightful',
-                  entityType,
-                  limit: 5,
-                }}
+                entityId={postId}
+                reaction="insightful"
+                entityType={entityType}
+                limit={30}
               />
             ),
           },
           {
-            tabLable: (isActive: boolean) => (
+            tabLabel: (isActive: boolean) => (
               <>
                 <div className="mr-3">
                   <Icon name="support" />
@@ -179,12 +168,10 @@ const ReactionModal: React.FC<IReactionModalProps> = ({
             ),
             tabContent: (
               <ReactionTab
-                getReactionQuery={{
-                  entityId: postId,
-                  reaction: 'support',
-                  entityType,
-                  limit: 5,
-                }}
+                entityId={postId}
+                reaction="support"
+                entityType={entityType}
+                limit={30}
               />
             ),
           },

@@ -1,42 +1,49 @@
-import React from 'react';
 import Button, {
   Variant as ButtonVariant,
   Size as ButtonSize,
 } from 'components/Button';
 import Icon from 'components/Icon';
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
-import { FieldValues, UseFormHandleSubmit } from 'react-hook-form';
+import {
+  FieldValues,
+  UseFormHandleSubmit,
+  UseFormReset,
+} from 'react-hook-form';
 import './styles.css';
+import { IUpdateAboutMe } from './AboutMe';
+import { FC } from 'react';
 
 export type HeaderProps = {
   title: string;
   dataTestId?: string;
-  isHovered: boolean;
-  isEditable: boolean;
-  setIsEditable: (hide: boolean) => void;
+  isHovered?: boolean;
+  isEditable?: boolean;
+  setIsEditable?: (hide: boolean) => void;
   canEdit?: boolean;
   onSubmit?: any;
-  handleSubmit: UseFormHandleSubmit<FieldValues>;
+  handleSubmit?: UseFormHandleSubmit<FieldValues>;
   setInitialSkills?: () => void;
   isLoading?: boolean;
+  reset?: UseFormReset<IUpdateAboutMe>;
 };
 
-const Header: React.FC<HeaderProps> = ({
+const Header: FC<HeaderProps> = ({
   title,
   dataTestId,
-  isHovered,
-  isEditable,
-  setIsEditable,
-  canEdit,
-  onSubmit,
-  handleSubmit,
+  isHovered = false,
+  isEditable = false,
+  setIsEditable = () => null,
+  canEdit = false,
+  // onSubmit,
+  // handleSubmit = () => null,
   setInitialSkills,
   isLoading,
+  reset,
 }) => {
   return (
-    <div className="flex justify-between items-center px-6">
+    <div className="flex justify-between items-center mb-3">
       <div
-        className="text-neutral-900 font-bold text-base pt-6 pb-4"
+        className="text-neutral-900 font-bold text-lg"
         data-testid={dataTestId}
       >
         {title}
@@ -63,13 +70,14 @@ const Header: React.FC<HeaderProps> = ({
               onClick={() => {
                 setInitialSkills && setInitialSkills();
                 setIsEditable(false);
+                reset && reset();
               }}
               dataTestId={`${dataTestId}-cancel`}
             />
             <Button
               label={'Save'}
               size={ButtonSize.Small}
-              onClick={handleSubmit(onSubmit)}
+              // onClick={handleSubmit(onSubmit)}
               dataTestId={`${dataTestId}-save`}
               loading={isLoading}
             />

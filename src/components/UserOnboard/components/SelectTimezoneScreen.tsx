@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect } from 'react';
+import { FC, ReactElement, useEffect } from 'react';
 import timezones from 'utils/timezones.json';
 import OnboardTimezone from 'images/onboard-timezone.png';
 import Layout, { FieldType } from 'components/Form';
@@ -10,6 +10,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { getDefaultTimezoneOption } from '../utils/';
 import Banner, { Variant } from 'components/Banner';
+import { getTimezoneNameFromIANA } from 'utils/time';
 
 type SelectTimezoneScreenProps = {
   next: () => void;
@@ -23,10 +24,10 @@ interface IForm {
 
 export type OptionType = {
   label: string;
-  value: string[];
+  value: string;
 };
 
-const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
+const SelectTimezoneScreen: FC<SelectTimezoneScreenProps> = ({
   next,
   setDisableClose,
   dataTestId,
@@ -57,9 +58,9 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
     const selectedTimezone = getValues();
     let timezoneValue;
     if (selectedTimezone.timeZone === undefined) {
-      timezoneValue = defaultTimezone.value[0];
+      timezoneValue = defaultTimezone.value;
     } else {
-      timezoneValue = selectedTimezone.timeZone.value[0];
+      timezoneValue = selectedTimezone.timeZone.value;
     }
     await updateUserTimezoneMutation.mutateAsync({
       timeZone: timezoneValue,
@@ -77,12 +78,11 @@ const SelectTimezoneScreen: React.FC<SelectTimezoneScreenProps> = ({
       name: 'timeZone',
       control,
       options: timezones.map((timeZone) => ({
-        label: timeZone.timezoneName,
+        label: getTimezoneNameFromIANA(timeZone.iana),
         value: timeZone.iana,
       })),
       dataTestId: dataTestId,
       defaultValue: defaultTimezone,
-      menuPlacement: 'top',
     },
   ];
 

@@ -1,16 +1,19 @@
-import React, {
+import {
+  ForwardedRef,
   LegacyRef,
   ReactNode,
+  forwardRef,
   memo,
   useCallback,
   useContext,
-  useState,
+  useEffect,
 } from 'react';
 import ReactQuill, { Quill, UnprivilegedEditor } from 'react-quill';
-import { DeltaStatic, Sources, Delta } from 'quill';
+import { DeltaStatic, Sources } from 'quill';
 import 'react-quill/dist/quill.snow.css';
 import 'quill-emoji/dist/quill-emoji.css';
-import './mentions/quill.mention';
+
+// Issue Identitfied - in this folder quill mention does not applied
 import './mentions/quill.mention.css';
 
 import { MentionBlot } from './mentions/blots/mentions';
@@ -20,7 +23,7 @@ import EmojiBlot from './blots/emoji';
 import EmojiToolbar from './emoji';
 import { mention, previewLinkRegex } from './config';
 import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
+import { hideMentionHashtagPalette, isEmptyEditor, twConfig } from 'utils/misc';
 import {
   CreatePostContext,
   CreatePostFlow,
@@ -31,6 +34,11 @@ import moment from 'moment';
 import MediaPreview, { Mode } from 'components/MediaPreview';
 import Banner, { Variant } from 'components/Banner';
 import { hasDatePassed } from 'utils/time';
+import Poll, { PollMode } from 'components/Poll';
+import { PostBuilderMode } from 'components/PostBuilder';
+import useModal from 'hooks/useModal';
+import ConfirmationBox from 'components/ConfirmationBox';
+import { PostType } from 'queries/post';
 
 export interface IEditorContentChanged {
   text: string;
@@ -50,9 +58,10 @@ export interface IQuillEditorProps {
     setIsPreviewRemove: (isPreviewRemove: boolean) => void,
   ) => ReactNode;
   dataTestId?: string;
+  mode: PostBuilderMode;
 }
 
-const RichTextEditor = React.forwardRef(
+const RichTextEditor = forwardRef(
   (
     {
       className,
@@ -62,11 +71,13 @@ const RichTextEditor = React.forwardRef(
       renderToolbar = () => <div id="toolbar"></div>,
       renderPreviewLink,
       dataTestId,
+      mode,
     }: IQuillEditorProps,
-    ref: React.ForwardedRef<ReactQuill>,
+    ref: ForwardedRef<ReactQuill>,
   ) => {
     const {
       announcement,
+      setAnnouncement,
       setActiveFlow,
       setEditorValue,
       media,
@@ -74,6 +85,7 @@ const RichTextEditor = React.forwardRef(
       isPreviewRemoved,
       isCharLimit,
       setIsCharLimit,
+      setIsEmpty,
       setIsPreviewRemoved,
       removeAllMedia,
       coverImageMap,
@@ -82,6 +94,11 @@ const RichTextEditor = React.forwardRef(
       setMediaOpenIndex,
       previewUrl,
       setPreviewUrl,
+      poll,
+      // setPoll,
+      setShoutoutUserIds,
+      postType,
+      setPostType,
     } = useContext(CreatePostContext);
 
     const formats = [
@@ -145,6 +162,9 @@ const RichTextEditor = React.forwardRef(
           setPreviewUrl('');
         }
       }
+      setIsEmpty(
+        isEmptyEditor(editor.getText(), editor.getContents().ops || []),
+      );
     };
 
     const updateContext = () => {
@@ -155,7 +175,7 @@ const RichTextEditor = React.forwardRef(
         html: (ref as any).current
           ?.makeUnprivilegedEditor((ref as any).current?.getEditor())
           .getHTML(),
-        json: (ref as any).current
+        editor: (ref as any).current
           ?.makeUnprivilegedEditor((ref as any).current?.getEditor())
           .getContents(),
       });
@@ -242,6 +262,39 @@ const RichTextEditor = React.forwardRef(
       }
     };
 
+    const onRemoveMedia = () => {
+      removeAllMedia();
+      setShoutoutUserIds([]);
+      setPostType(PostType.Update);
+      closeConfirm();
+    };
+
+    const onMediaEdit = () => {
+      updateContext();
+      if (postType === PostType.Shoutout) {
+        setActiveFlow(CreatePostFlow.CreateShoutout);
+      } else {
+        setActiveFlow(CreatePostFlow.EditMedia);
+      }
+    };
+
+    const [confirm, showConfirm, closeConfirm] = useModal();
+
+    useEffect(() => {
+      if (ref && ((ref as any).current as ReactQuill)) {
+        const ops =
+          ((ref as any).current as ReactQuill).getEditor().getContents().ops ||
+          [];
+        const content = ((ref as any).current as ReactQuill)
+          .getEditor()
+          .getText();
+
+        setIsEmpty(isEmptyEditor(content, ops));
+      }
+    }, []);
+
+    useEffect(() => () => hideMentionHashtagPalette(), []);
+
     return (
       <div data-testid={`${dataTestId}-content`}>
         <ReactQuill
@@ -255,33 +308,14 @@ const RichTextEditor = React.forwardRef(
           onChange={onChangeEditorContent}
           defaultValue={defaultValue}
         />
-        {media.length > 0 && (
-          <MediaPreview
-            media={media}
-            className="m-6"
-            mode={Mode.Edit}
-            onAddButtonClick={() => inputImgRef?.current?.click()}
-            onCloseButtonClick={removeAllMedia}
-            onEditButtonClick={() => {
-              updateContext();
-              setActiveFlow(CreatePostFlow.EditMedia);
-            }}
-            coverImageMap={coverImageMap}
-            dataTestId={dataTestId}
-            onClick={(e, index) => {
-              updateContext();
-              setMediaOpenIndex(index - 1);
-              setActiveFlow(CreatePostFlow.EditMedia);
-            }}
-          />
-        )}
         {announcement?.label && !hasDatePassed(announcement.value) && (
-          <div className="flex justify-between bg-primary-100 px-4 py-2 m-4">
+          <div className="flex justify-between bg-blue-50 px-4 py-2 m-4">
             <div className="flex items-center">
               <Icon
-                name="calendarOutlineTwo"
+                name="micOutline"
+                hover={false}
                 size={16}
-                stroke={twConfig.theme.colors.neutral['900']}
+                color="text-neutral-900"
               />
               <div
                 className="ml-2.5"
@@ -293,23 +327,59 @@ const RichTextEditor = React.forwardRef(
                 )}
               </div>
             </div>
-            <div
-              className="flex items-center cursor-pointer"
-              onClick={() => {
-                updateContext();
-                setActiveFlow(CreatePostFlow.CreateAnnouncement);
-              }}
-              data-testId="announcement-toaster-editicon"
-            >
-              <Icon
-                name="editOutline"
-                size={12}
-                stroke={twConfig.theme.colors.neutral['900']}
-              />
-              <div className="ml-1 text-xs font-bold text-neutral-900">
-                Edit
+            <div className="flex items-center gap-4">
+              <div
+                className="cursor-pointer"
+                onClick={() => {
+                  updateContext();
+                  setActiveFlow(CreatePostFlow.CreateAnnouncement);
+                }}
+                data-testid="announcement-toaster-editicon"
+              >
+                <Icon name="editOutline" size={12} color="text-neutral-900" />
+              </div>
+              <div
+                className="cursor-pointer"
+                onClick={() => setAnnouncement(null)}
+                data-testid="announcement-toaster-closeicon"
+              >
+                <Icon name="close" size={12} color="text-neutral-900" />
               </div>
             </div>
+          </div>
+        )}
+        {media.length > 0 && (
+          <MediaPreview
+            media={media}
+            className="m-6"
+            mode={Mode.Edit}
+            onAddButtonClick={() => inputImgRef?.current?.click()}
+            onCloseButtonClick={media.length > 1 ? showConfirm : onRemoveMedia}
+            showEditButton={postType !== PostType.Shoutout}
+            showCloseButton={postType !== PostType.Shoutout}
+            showAddMediaButton={postType !== PostType.Shoutout}
+            onEditButtonClick={onMediaEdit}
+            coverImageMap={coverImageMap}
+            dataTestId={dataTestId}
+            onClick={(e, index) => {
+              updateContext();
+              if (postType !== PostType.Shoutout) {
+                setMediaOpenIndex(index - 1);
+                setActiveFlow(CreatePostFlow.EditMedia);
+              }
+            }}
+          />
+        )}
+        {poll && (
+          <div className="px-2 py-2 m-4">
+            <Poll
+              question={poll.question}
+              options={poll.options}
+              total={poll.total}
+              closedAt={poll.closedAt}
+              mode={PollMode.EDIT}
+              isDeletable={mode === PostBuilderMode.Create}
+            />
           </div>
         )}
         {getMediaValidationErrors().map((error, index) => (
@@ -333,6 +403,26 @@ const RichTextEditor = React.forwardRef(
           renderPreviewLink &&
           renderPreviewLink(previewUrl, setPreviewUrl, setIsPreviewRemoved)}
         {renderToolbar && renderToolbar(isCharLimit)}
+        <ConfirmationBox
+          open={confirm}
+          onClose={closeConfirm}
+          title="Delete media?"
+          description={
+            <span>
+              Are you sure you want to delete the media? This cannot be undone
+            </span>
+          }
+          success={{
+            label: 'Delete',
+            className: 'bg-red-500 text-white ',
+            onSubmit: onRemoveMedia,
+          }}
+          discard={{
+            label: 'Cancel',
+            className: 'text-neutral-900 bg-white ',
+            onCancel: closeConfirm,
+          }}
+        />
       </div>
     );
   },

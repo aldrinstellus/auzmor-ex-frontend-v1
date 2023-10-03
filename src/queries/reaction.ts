@@ -1,5 +1,9 @@
 import { useInfiniteQuery, QueryFunctionContext } from '@tanstack/react-query';
+import { IComment } from 'components/Comments';
+import { useCommentStore } from 'stores/commentStore';
 import apiService from 'utils/apiService';
+import { chain } from 'utils/misc';
+import { IComments } from './comments';
 
 export interface IReactions {
   entityId: string;
@@ -77,29 +81,58 @@ export const deleteComment = async (id: string) => {
   await apiService.delete(`/comments/${id}`);
 };
 
-export const fetchComments = ({
-  pageParam = null,
-  queryKey,
-}: QueryFunctionContext<(string | Record<string, any> | undefined)[], any>) => {
-  if (pageParam === null) return apiService.get('/comments', queryKey[1]);
-  else return apiService.get(pageParam);
+export const getComments = async (
+  context: QueryFunctionContext<
+    (string | Record<string, any> | undefined)[],
+    any
+  >,
+  comment: {
+    [key: string]: IComment;
+  },
+  setComment: (feed: { [key: string]: IComment }) => void,
+) => {
+  let response = null;
+  if (!!!context.pageParam) {
+    response = await apiService.get('/comments', context.queryKey[1]);
+    setComment({
+      ...comment,
+      ...chain(response.data.result.data).keyBy('id').value(),
+    });
+    response.data.result.data = response.data.result.data.map(
+      (eachPost: IComment) => ({ id: eachPost.id }),
+    );
+    return response;
+  } else {
+    response = await apiService.get(context.pageParam);
+    setComment({
+      ...comment,
+      ...chain(response.data.result.data).keyBy('id').value(),
+    });
+    response.data.result.data = response.data.result.data.map(
+      (eachPost: IComment) => ({ id: eachPost.id }),
+    );
+    return response;
+  }
 };
 
-export const useInfiniteComments = (q?: Record<string, any>) => {
-  return useInfiniteQuery({
-    queryKey: ['comments', q],
-    queryFn: fetchComments,
-    getNextPageParam: (lastPage: any) => {
-      const pageDataLen = lastPage?.data?.result?.data?.length;
-      const pageLimit = lastPage?.data?.result?.paging?.limit;
-      if (pageDataLen < pageLimit) {
-        return null;
-      }
-      return lastPage?.data?.result?.paging?.next;
-    },
-    getPreviousPageParam: (currentPage: any) => {
-      return currentPage?.data?.result?.paging?.prev;
-    },
-    staleTime: 5 * 60 * 1000,
-  });
+export const useInfiniteReplies = (q: IComments) => {
+  const { comment, setComment } = useCommentStore();
+  return {
+    ...useInfiniteQuery({
+      queryKey: ['comments', q],
+      queryFn: (context) => getComments(context, comment, setComment),
+      getNextPageParam: (lastPage: any) => {
+        const pageDataLen = lastPage?.data?.result?.data?.length;
+        const pageLimit = lastPage?.data?.result?.paging?.limit;
+        if (pageDataLen < pageLimit) {
+          return null;
+        }
+        return lastPage?.data?.result?.paging?.next;
+      },
+      getPreviousPageParam: (currentPage: any) => {
+        return currentPage?.data?.result?.paging?.prev;
+      },
+    }),
+    comment,
+  };
 };

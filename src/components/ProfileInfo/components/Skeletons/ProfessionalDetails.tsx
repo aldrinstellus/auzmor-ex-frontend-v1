@@ -1,11 +1,11 @@
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import Card from 'components/Card';
 import Divider from 'components/Divider';
 import Skeleton from 'react-loading-skeleton';
 
-const ProfessionalDetails: React.FC = (): ReactElement => {
+const ProfessionalDetails: FC = (): ReactElement => {
   return (
-    <Card className="mb-8">
+    <Card>
       <div className="p-6">
         <Skeleton borderRadius={100} className="!w-24" />
       </div>

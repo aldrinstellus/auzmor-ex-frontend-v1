@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { FC, useMemo } from 'react';
 import { Check } from '../Logo/';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
@@ -10,10 +10,10 @@ export interface IPasswordPolicyProps {
   dataTestId?: string;
 }
 
-const PasswordPolicy: React.FC<IPasswordPolicyProps> = ({
+const PasswordPolicy: FC<IPasswordPolicyProps> = ({
   policyName,
   isChecked,
-  className,
+  // className,
   dataTestId,
 }) => {
   const checkStyles = useMemo(
@@ -29,7 +29,7 @@ const PasswordPolicy: React.FC<IPasswordPolicyProps> = ({
           'bg-red-500': !isChecked,
         },
         {
-          'border border-2 border-neutral-50': !isChecked,
+          'border-neutral-50': !isChecked,
         },
       ),
     [isChecked],
@@ -41,7 +41,7 @@ const PasswordPolicy: React.FC<IPasswordPolicyProps> = ({
         {isChecked ? (
           <Check />
         ) : (
-          <Icon name="closeCircle" size={24} stroke="white" />
+          <Icon name="closeCircle" size={24} color="text-white" hover={false} />
         )}
       </div>
       <div>{policyName}</div>

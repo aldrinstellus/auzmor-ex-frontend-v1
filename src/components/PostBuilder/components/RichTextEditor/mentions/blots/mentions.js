@@ -14,7 +14,7 @@ export class MentionBlot extends Embed {
     this.mounted = false;
   }
 
-  static showUserProfileCard(e) {
+  static showUserProfileCard(_e) {
     // write javascript code
   }
 
@@ -51,12 +51,10 @@ export class MentionBlot extends Embed {
 
   attach() {
     super.attach();
-
     if (!this.mounted) {
       this.mounted = true;
       this.clickHandler = this.getClickHandler();
       this.hoverHandler = this.getHoverHandler();
-
       this.domNode.addEventListener('click', this.clickHandler, false);
       this.domNode.addEventListener('mouseenter', this.hoverHandler, false);
     }
@@ -99,5 +97,5 @@ export class MentionBlot extends Embed {
 }
 
 MentionBlot.blotName = 'mention';
-MentionBlot.tagName = 'span'; // finally found the issue (main node of mention tag)
+MentionBlot.tagName = 'span';
 MentionBlot.className = 'mention';

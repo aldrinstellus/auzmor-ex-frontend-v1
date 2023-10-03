@@ -1,4 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import {
+  FC,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { CropperRef } from 'react-advanced-cropper';
 import 'react-advanced-cropper/dist/style.css';
 import { IUpdateProfileImage } from 'pages/UserDetail';
@@ -6,12 +13,13 @@ import Header from 'components/ModalHeader';
 import Icon from 'components/Icon';
 import { BlobToFile, twConfig } from 'utils/misc';
 import Modal from 'components/Modal';
-import { EntityType, UploadStatus, useUpload } from 'queries/files';
+import { EntityType } from 'queries/files';
+import { UploadStatus, useUpload } from 'hooks/useUpload';
 import queryClient from 'utils/queryClient';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import useAuth from 'hooks/useAuth';
-import { updateCurrentUser } from 'queries/users';
+import { updateCurrentUser, updateUserById } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
 import Footer from './Footer';
 import ImageCropper from 'components/ImageCropper';
@@ -19,13 +27,13 @@ import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import PageLoader from 'components/PageLoader';
 
-export interface IEditImageModalProps {
+export interface AppProps {
   title: string;
   openEditImage: boolean;
   openEditProfileModal?: () => void;
   closeEditImageModal?: () => void;
-  userProfileImageRef: React.RefObject<HTMLInputElement>;
-  userCoverImageRef?: React.RefObject<HTMLInputElement> | null;
+  userProfileImageRef: RefObject<HTMLInputElement>;
+  userCoverImageRef?: RefObject<HTMLInputElement> | null;
   image: string;
   imageName: string;
   fileEntityType: EntityType;
@@ -33,6 +41,7 @@ export interface IEditImageModalProps {
   imageFile?: IUpdateProfileImage | Record<string, any>;
   onBoardImageFile?: File;
   openOnBoardModal?: () => void;
+  userId?: string;
 }
 
 export enum Shape {
@@ -40,7 +49,7 @@ export enum Shape {
   Rectangle = 'rectangle',
 }
 
-const EditImageModal: React.FC<IEditImageModalProps> = ({
+const EditImageModal: FC<AppProps> = ({
   title,
   openEditImage,
   image,
@@ -54,6 +63,7 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
   userCoverImageRef,
   fileEntityType,
   openOnBoardModal = () => {},
+  userId,
 }) => {
   const { updateUser } = useAuth();
 
@@ -63,10 +73,10 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
 
   const [blob, setBlob] = useState<Blob | null>(null);
 
-  const [height, setHeight] = useState<number>(1000);
-  const [width, setWidth] = useState<number>(1000);
-  const [top, setTop] = useState<number>(0);
-  const [left, setLeft] = useState<number>(0);
+  // const [height, setHeight] = useState<number>(1000);
+  // const [width, setWidth] = useState<number>(1000);
+  // const [top, setTop] = useState<number>(0);
+  // const [left, setLeft] = useState<number>(0);
   const [isImageLoading, setIsImageLoading] = useState<boolean>(true);
 
   // To determine the custom visible area in the image cropper
@@ -74,17 +84,17 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
     const img = new Image();
 
     img.onload = () => {
-      const getWidthFactor = (width: number): number => {
+      const _getWidthFactor = (width: number): number => {
         // Need better algorithm here
         let factor = 0.6;
         if (width > 3000) factor = 0.7;
         return factor;
       };
 
-      setHeight(img.height * 0.8);
-      setWidth(img.width * getWidthFactor(img.width));
-      setTop(img.height / 4);
-      setLeft(img.width / 4);
+      // setHeight(img.height * 0.8);
+      // setWidth(img.width * getWidthFactor(img.width));
+      // setTop(img.height / 4);
+      // setLeft(img.width / 4);
       setIsImageLoading(false);
     };
 
@@ -92,56 +102,66 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
   }, []);
 
   const updateUsersPictureMutation = useMutation({
-    mutationFn: updateCurrentUser,
+    mutationFn: userId
+      ? (data: any) => updateUserById(userId, data)
+      : updateCurrentUser,
     mutationKey: ['update-users-mutation'],
     onError: (error: any) => {
       console.log('API call resulted in error: ', error);
     },
     onSuccess: async (response: Record<string, any>) => {
-      const userUpdateResponse = response?.result?.data;
-      updateUser({
-        name: userUpdateResponse?.fullName,
-        id: userUpdateResponse?.id,
-        email: userUpdateResponse?.primaryEmail,
-        role: userUpdateResponse?.role,
-        organization: {
-          id: userUpdateResponse?.org?.id,
-          domain: userUpdateResponse?.org?.domain,
-        },
-        profileImage: userUpdateResponse?.profileImage?.original,
-        coverImage: userUpdateResponse?.coverImage?.original,
-      });
-      setImageFile && setImageFile({});
-      toast(
-        <SuccessToast
-          content={`${
-            fileEntityType === EntityType.UserProfileImage
-              ? 'Profile Picture'
-              : 'Cover Picture'
-          } Updated Successfully`}
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
+      if (!userId) {
+        const userUpdateResponse = response?.result?.data;
+        updateUser({
+          name: userUpdateResponse?.fullName,
+          id: userUpdateResponse?.id,
+          email: userUpdateResponse?.primaryEmail,
+          role: userUpdateResponse?.role,
+          organization: {
+            id: userUpdateResponse?.org?.id,
+            domain: userUpdateResponse?.org?.domain,
           },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-        },
-      );
+          profileImage: userUpdateResponse?.profileImage?.original,
+          coverImage: userUpdateResponse?.coverImage?.original,
+        });
+        setImageFile && setImageFile({});
+        toast(
+          <SuccessToast
+            content={`${
+              fileEntityType === EntityType.UserProfileImage
+                ? 'Profile Picture'
+                : 'Cover Picture'
+            } Updated Successfully`}
+          />,
+          {
+            closeButton: (
+              <Icon
+                name="closeCircleOutline"
+                color="text-primary-500"
+                size={20}
+              />
+            ),
+            style: {
+              border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+              borderRadius: '6px',
+              display: 'flex',
+              alignItems: 'center',
+            },
+            autoClose: TOAST_AUTOCLOSE_TIME,
+            transition: slideInAndOutTop,
+            theme: 'dark',
+          },
+        );
+      }
+
       closeEditImageModal();
       openEditProfileModal();
       setBlob(null);
-      await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
+      if (userId) {
+        await queryClient.invalidateQueries({ queryKey: ['user', userId] });
+      } else {
+        await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
+      }
     },
   });
 
@@ -193,7 +213,7 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
   const onSubmit = async () => {
     cropperRef?.current
       ?.getCanvas()
-      ?.toBlob((blobImage: React.SetStateAction<Blob | null>) => {
+      ?.toBlob((blobImage: SetStateAction<Blob | null>) => {
         if (blobImage) {
           setBlob(blobImage);
         }
@@ -217,10 +237,14 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
   return (
     <Modal
       open={openEditImage}
-      closeModal={disableClosed}
+      closeModal={() => {
+        if (imageFile) {
+          return null;
+        }
+      }}
       className={
         !imageFile?.profileImage
-          ? 'max-w-5xl flex flex-col justify-between'
+          ? 'max-w-[648px] flex flex-col justify-between'
           : undefined
       }
     >
@@ -246,10 +270,10 @@ const EditImageModal: React.FC<IEditImageModalProps> = ({
               ? Shape.Circle
               : Shape.Rectangle
           }
-          customHeight={height}
-          customWidth={width}
-          customLeft={left}
-          customTop={top}
+          // customHeight={height}
+          // customWidth={width}
+          // customLeft={left}
+          // customTop={top}
         />
       )}
       <Footer

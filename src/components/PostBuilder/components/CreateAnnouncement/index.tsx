@@ -1,12 +1,27 @@
-import Layout, { FieldType } from 'components/Form';
-import React, { useContext, useEffect } from 'react';
+import { FieldType } from 'components/Form';
+import { FC, useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import { afterXUnit, parseDate } from 'utils/time';
+import {
+  CreatePostContext,
+  CreatePostFlow,
+  IAnnouncement,
+} from 'contexts/CreatePostContext';
+import { afterXUnit } from 'utils/time';
 import Header from 'components/ModalHeader';
 import Footer from './Footer';
 import Body from './Body';
 import { IPost } from 'queries/post';
+
+interface IAnnouncementForm {
+  date?: Date;
+  expiryOption:
+    | {
+        label: string;
+        value: string;
+        dataTestId: string;
+      }
+    | IAnnouncement;
+}
 
 export enum CreateAnnouncementMode {
   POST_BUILDER,
@@ -19,7 +34,7 @@ export interface ICreateAnnouncementProps {
   data?: IPost;
 }
 
-const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
+const CreateAnnouncement: FC<ICreateAnnouncementProps> = ({
   closeModal,
   mode,
   data,
@@ -27,31 +42,28 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
   const { setActiveFlow, announcement, clearPostContext } =
     useContext(CreatePostContext);
 
-  const { control, handleSubmit, watch, setValue, getValues } = useForm({
-    mode: 'onChange',
-  });
-
-  const selecetedExpiry = watch('expityOption');
-
-  useEffect(() => {
-    if (announcement?.value) {
-      setValue('date', parseDate(announcement?.value));
-    }
-    setValue(
-      'expityOption',
-      announcement || {
-        label: '1 Week',
-        value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
-        dataTestId: 'announcement-expiry-1week',
+  const { control, handleSubmit, watch, getValues } =
+    useForm<IAnnouncementForm>({
+      mode: 'onChange',
+      defaultValues: {
+        date: announcement?.value
+          ? new Date(announcement?.value)
+          : new Date(afterXUnit(1, 'day').toISOString()),
+        expiryOption: announcement || {
+          label: '1 Week',
+          value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
+          dataTestId: 'announcement-expiry-1week',
+        },
       },
-    );
-  }, []);
+    });
+
+  const selecetedExpiry = watch('expiryOption');
 
   const expiryFields = [
     {
       type: FieldType.SingleSelect,
       label: 'Announcement Expiry',
-      name: 'expityOption',
+      name: 'expiryOption',
       control,
       options: [
         {
@@ -81,11 +93,6 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
         },
       ],
       placeholder: 'Select Announcement Expiry',
-      // defaultValue: announcement || {
-      //   label: '1 Week',
-      //   value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
-      //   dataTestId: 'announcement-expiry-1week',
-      // },
       dataTestId: 'announcement-expiry-dropdown',
     },
   ];
@@ -95,7 +102,7 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
       type: FieldType.DatePicker,
       name: 'date',
       control,
-      minDate: new Date(afterXUnit(1, 'day').toISOString()),
+      minDate: new Date(),
       dataTestId: 'custom-date-calendar',
     },
   ];
@@ -103,12 +110,12 @@ const CreateAnnouncement: React.FC<ICreateAnnouncementProps> = ({
   return (
     <>
       <Header
-        title={'Create an announcement'}
-        onBackIconClick={
-          mode === CreateAnnouncementMode.POST_BUILDER
-            ? () => setActiveFlow(CreatePostFlow.CreatePost)
-            : undefined
+        title={
+          mode === CreateAnnouncementMode.DIRECT
+            ? 'Edit announcement expiry'
+            : 'Create an announcement'
         }
+        onBackIconClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
         onClose={() => {
           clearPostContext();
           closeModal();

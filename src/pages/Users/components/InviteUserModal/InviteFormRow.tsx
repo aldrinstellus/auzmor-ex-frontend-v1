@@ -1,17 +1,16 @@
-import React, { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import {
   Control,
   FieldArrayWithId,
   FieldErrors,
   UseFieldArrayRemove,
-  UseFormGetValues,
 } from 'react-hook-form';
 import { IEmailValidationErrors, IRoleOption, IUserForm, roleOptions } from '.';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import Layout, { FieldType } from 'components/Form';
 import { Variant as InputVariant } from 'components/Input';
 import Icon from 'components/Icon';
-import { useIsUserExist } from 'queries/users';
+import { useIsUserExistAuthenticated } from 'queries/users';
 import { useDebounce } from 'hooks/useDebounce';
 
 export interface IInviteFormRowProps {
@@ -26,7 +25,7 @@ export interface IInviteFormRowProps {
   member: { fullName: string; workEmail: string; role: IRoleOption };
 }
 
-const InviteFormRow: React.FC<IInviteFormRowProps> = ({
+const InviteFormRow: FC<IInviteFormRowProps> = ({
   errors,
   index,
   field,
@@ -38,13 +37,13 @@ const InviteFormRow: React.FC<IInviteFormRowProps> = ({
   member,
 }) => {
   const debouncedValue = useDebounce(member.workEmail, 500);
-  const { isLoading, data } = useIsUserExist(debouncedValue);
+  const { isLoading, data } = useIsUserExistAuthenticated(debouncedValue);
 
   useEffect(() => {
     setErrorValidationErrors({
       ...emailValidationErrors,
       [index]: {
-        isError: data ? !!data.result.data.userExists : false,
+        isError: data ? !!data?.result?.data?.userExists : false,
         isLoading,
       },
     });
@@ -61,6 +60,7 @@ const InviteFormRow: React.FC<IInviteFormRowProps> = ({
               type: FieldType.Input,
               InputVariant: InputVariant.Text,
               className: 'w-[37.5%] mr-1.5',
+              inputClassName: 'text-sm !py-[9px]',
               placeholder: 'Enter name',
               name: `members.${index}.fullName`,
               label: 'Full Name',
@@ -72,6 +72,7 @@ const InviteFormRow: React.FC<IInviteFormRowProps> = ({
               type: FieldType.Input,
               variant: InputVariant.Text,
               className: 'w-[37.5%] mx-1.5',
+              inputClassName: 'text-sm !py-[9px]',
               placeholder: 'Add via email',
               name: `members.${index}.workEmail`,
               label: 'Email Address',
@@ -85,9 +86,11 @@ const InviteFormRow: React.FC<IInviteFormRowProps> = ({
               control,
               label: 'Role',
               className: 'w-[25%] ml-1.5',
+              height: 40,
               options: roleOptions,
               defautValue: field.role,
               dataTestId: 'invite-people-role',
+              getPopupContainer: document.body,
             },
           ]}
         />

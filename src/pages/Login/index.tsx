@@ -1,20 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Logo } from 'components/Logo';
-import WelcomeOffice from 'images/welcomeToOffice.png';
 import LoginViaCred from './components/LoginViaCred';
 import LoginViaSSO from './components/LoginViaSSO';
 import useAuth from 'hooks/useAuth';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { checkLogin } from 'queries/account';
 import { getSubDomain } from 'utils/misc';
 
 interface ILoginProps {}
 
-const Login: React.FC<ILoginProps> = () => {
+const Login: FC<ILoginProps> = () => {
   const [viaSSO, setViaSSO] = useState(false);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
   const { user } = useAuth();
 
   const domain = getSubDomain(window.location.host);
@@ -44,7 +42,7 @@ const Login: React.FC<ILoginProps> = () => {
   }, [domain, user]);
 
   if (user) {
-    return <Navigate to="/" />;
+    return <Navigate to="/feed" />;
   }
 
   if (loading) {
@@ -53,21 +51,25 @@ const Login: React.FC<ILoginProps> = () => {
 
   return (
     <div className="flex h-screen w-screen">
-      <img
-        src={WelcomeOffice}
-        className="h-full w-[48%]"
+      <div
+        className="w-[49.3vw] h-full bg-welcome-to-office bg-no-repeat bg-cover bg-bottom"
         data-testid="signin-cover-image"
-        alt="Welcome to Auzmor Office"
       />
-      <div className="w-[52%] h-full flex justify-center items-center relative bg-white overflow-y-auto">
-        <div className="absolute top-8 right-8" data-testid="signin-logo-image">
+
+      <div className="flex-1 h-full flex justify-center items-center relative bg-white overflow-y-auto">
+        <div
+          className="absolute top-[4.55vh] right-[3.5vw]"
+          data-testid="signin-logo-image"
+        >
           <Logo />
         </div>
-        {viaSSO ? (
-          <LoginViaSSO setViaSSO={setViaSSO} />
-        ) : (
-          <LoginViaCred setViaSSO={setViaSSO} />
-        )}
+        <div className="pt-[86px] 3xl:pt-[154px] mr-[60px] w-[414px] h-full">
+          {viaSSO ? (
+            <LoginViaSSO setViaSSO={setViaSSO} />
+          ) : (
+            <LoginViaCred setViaSSO={setViaSSO} />
+          )}
+        </div>
       </div>
     </div>
   );

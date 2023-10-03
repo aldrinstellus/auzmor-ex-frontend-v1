@@ -15,12 +15,39 @@ body {
   background-color: #f5f5f5;
   color: #171717;
   overflow: hidden;
+  --rt-opacity: 1;
 }
 
 @layer utilities {
   .center {
     @apply flex justify-center items-center;
   }
+  .apart {
+    @apply flex justify-between items-center;
+  }
+}
+
+/* Width of the vertical scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+/* Background color of the scrollbar track */
+/* 
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+} */
+
+/* Color of the scrollbar thumb */
+::-webkit-scrollbar-thumb {
+  background-color: #737373;
+  border-radius: 100px;
+}
+
+/* Color of the scrollbar thumb on hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #e5e5e5;
 }
 
 /* This will change the style of placeholder to our product*/
@@ -46,7 +73,7 @@ body {
 .quill-toolbar {
   border: none !important;
   /* padding: 0px 24px 0px 28px; */
-  background-color: white !important;
+  /* background-color: white !important; */
 }
 
 .ql-toolbar.ql-snow .ql-formats {
@@ -55,6 +82,14 @@ body {
 
 .ql-toolbar.ql-snow {
   padding: 0px !important;
+}
+
+.quill-toolbar-icons {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  align-items: flex-end;
 }
 
 .ql-snow .ql-formats {
@@ -98,4 +133,15 @@ body {
 
 .Toastify__toast-container {
   width: auto !important;
+}
+
+.top-arrow::after {
+  content: ' ';
+  position: absolute;
+  bottom: 100%; /* At the top of the tooltip */
+  left: 50%;
+  margin-left: -16px;
+  border-width: 16px;
+  border-style: solid;
+  border-color: transparent transparent white transparent;
 }

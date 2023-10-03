@@ -1,5 +1,8 @@
 import qs from 'qs';
-import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import axios, {
+  AxiosInstance,
+  // InternalAxiosRequestConfig
+} from 'axios';
 
 import { getItem } from './persist';
 
@@ -37,7 +40,7 @@ class ApiService {
   };
 
   async get(url: string, params = {}) {
-    const _params = qs.stringify(params, { arrayFormat: 'repeat' });
+    const _params = qs.stringify(params, { arrayFormat: 'comma' });
     let _url = url;
     if (_params) {
       _url += `?${_params}`;

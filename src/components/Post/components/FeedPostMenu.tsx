@@ -1,221 +1,299 @@
-import React, { useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import ConfirmationBox from 'components/ConfirmationBox';
-import { IPost, deletePost, updatePost } from 'queries/post';
+import { IPost, PostType, deletePost } from 'queries/post';
 import PostBuilder, { PostBuilderMode } from 'components/PostBuilder';
 import useModal from 'hooks/useModal';
 import useAuth from 'hooks/useAuth';
 import useRole from 'hooks/useRole';
-import { isSubset } from 'utils/misc';
+import { canPerform, isRegularPost, twConfig } from 'utils/misc';
+import { useFeedStore } from 'stores/feedStore';
+import omit from 'lodash/omit';
 import { CreatePostFlow } from 'contexts/CreatePostContext';
-import Modal from 'components/Modal';
-import Divider from 'components/Divider';
-import Button, { Variant } from 'components/Button';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
+import { toast } from 'react-toastify';
+import FailureToast from 'components/Toast/variants/FailureToast';
+import ClosePollModal from './ClosePollModal';
+import PollVotesModal from './PollVotesModal';
+import ChangeToRegularPostModal from './ChangeToRegularPostModal';
+import AnnouncementAnalytics from './AnnouncementAnalytics';
 
 export interface IFeedPostMenuProps {
   data: IPost;
 }
 
-const FeedPostMenu: React.FC<IFeedPostMenuProps> = ({ data }) => {
+const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
   const { user } = useAuth();
   const { isMember } = useRole();
+  const feedRef = useRef(useFeedStore.getState().feed);
   const [confirm, showConfirm, closeConfirm] = useModal();
+  const [analytics, showAnalytics, closeAnalytics] = useModal();
   const [removeAnnouncement, showRemoveAnnouncement, closeRemoveAnnouncement] =
     useModal();
-  const [showModal, setShowModal] = useState(false);
+  const [closePoll, showClosePoll, closeClosePoll] = useModal();
+  const [pollVotes, showPollVotes, closePollVotes] = useModal();
+  const [open, openModal, closeModal] = useModal(undefined, false);
   const [customActiveFlow, setCustomActiveFlow] = useState<CreatePostFlow>(
     CreatePostFlow.CreatePost,
   );
 
   const queryClient = useQueryClient();
+  const setFeed = useFeedStore((state) => state.setFeed);
+  const { isAdmin } = useRole();
+  const currentDate = new Date().toISOString();
 
   const deletePostMutation = useMutation({
     mutationKey: ['deletePostMutation', data.id],
     mutationFn: deletePost,
-    onError: (error) => console.log(error),
-    onSuccess: async (data, variables, context) => {
-      await queryClient.invalidateQueries(['feed']);
-      await queryClient.invalidateQueries(['announcements-widget']);
-      await queryClient.invalidateQueries(['my-profile-feed']);
-      await queryClient.invalidateQueries(['people-profile-feed']);
+    onMutate: (variables) => {
+      const previousFeed = feedRef.current;
+      setFeed({ ...omit(feedRef.current, [variables]) });
       closeConfirm();
+      return { previousFeed };
     },
-  });
-
-  const removeAnnouncementMutation = useMutation({
-    mutationKey: ['removeAnnouncementMutation', data.id],
-    mutationFn: async () => {
-      const fileIds = data.files?.map((file: any) => file.id);
-      const payload = {
-        ...data,
-        files: fileIds,
-        isAnnouncement: false,
-        announcement: {
-          end: '',
+    onError: (_error, _variables, context) => {
+      toast(
+        <FailureToast
+          content="Error deleting post"
+          dataTestId="post-delete-toaster-failure"
+        />,
+        {
+          closeButton: (
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
         },
-      };
-      if (payload.id) await updatePost(payload.id, payload);
+      );
+      if (context?.previousFeed) {
+        setFeed(context?.previousFeed);
+      }
     },
-    onError: (error) => console.log(error),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['feed']);
-      closeRemoveAnnouncement();
+    onSuccess: async (_data, _variables, _context) => {
+      toast(
+        <SuccessToast
+          content="Post deleted successfully"
+          dataTestId="post-delete-toaster-success"
+        />,
+        {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              color="text-primary-500"
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+      await queryClient.invalidateQueries(['feed-announcements-widget']);
+      await queryClient.invalidateQueries(['post-announcements-widget']);
+      await queryClient.invalidateQueries(['my-bookmarks']);
     },
   });
 
-  const { isLoading: removeAnnouncementLoading } = removeAnnouncementMutation;
-
-  const postOptions = [
+  const allOptions = [
     {
       icon: 'cyclicArrow',
       label: 'Promote to announcement',
       onClick: () => {
         setCustomActiveFlow(CreatePostFlow.CreateAnnouncement);
-        setShowModal(true);
+        openModal();
       },
+      stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-promote-to-announcement',
       permissions: ['CREATE_ANNOUNCEMENTS'],
-      disabled: data.isAnnouncement,
+      enabled: isRegularPost(data, currentDate, isAdmin),
     },
     {
       icon: 'editReceipt',
       label: 'Edit announcement',
       onClick: () => {
         setCustomActiveFlow(CreatePostFlow.CreateAnnouncement);
-        setShowModal(true);
+        openModal();
       },
+      stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-edit-announcement',
       permissions: ['UPDATE_ANNOUNCEMENTS'],
-      disabled: !data.isAnnouncement,
+      enabled: !isRegularPost(data, currentDate, isAdmin),
     },
     {
       icon: 'cyclicArrow',
       label: 'Change to regular post',
       onClick: () => showRemoveAnnouncement(),
+      stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-changeto-regularpost',
       permissions: ['UPDATE_ANNOUNCEMENTS'],
-      disabled: !data.isAnnouncement,
+      enabled: !isRegularPost(data, currentDate, isAdmin),
     },
     {
       icon: 'edit',
       label: 'Edit post',
       onClick: () => {
         setCustomActiveFlow(CreatePostFlow.CreatePost);
-        setShowModal(true);
+        openModal();
       },
+      stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-edit-post',
       permissions: ['UPDATE_MY_POSTS'],
-      disabled: data.createdBy?.userId !== user?.id,
+      enabled: data.createdBy?.userId === user?.id,
+    },
+    {
+      icon: 'closeCircle',
+      label: 'Close Poll',
+      onClick: () => showClosePoll(),
+      stroke: 'text-neutral-900',
+      dataTestId: 'post-ellipsis-close-poll',
+      permissions: ['UPDATE_MY_POSTS', 'CLOSE_POLLS'],
+      enabled:
+        data.type === PostType.Poll &&
+        data.pollContext?.closedAt > currentDate &&
+        (isAdmin || data.createdBy?.userId === user?.id),
     },
     {
       icon: 'delete',
       label: 'Delete post',
       onClick: () => showConfirm(),
+      iconClassName: '!text-red-500',
+      labelClassName: '!text-red-500',
       dataTestId: 'post-ellipsis-delete-post',
-      permissions: ['DELETE_MY_POSTS'],
-      disabled: data.createdBy?.userId !== user?.id,
+      permissions: ['DELETE_MY_POSTS', 'DELETE_POSTS'],
+      enabled: isAdmin || data.createdBy?.userId === user?.id,
     },
-  ].filter((menuItem) => {
-    if (
-      menuItem.permissions &&
-      !isSubset(menuItem.permissions, user?.permissions) &&
-      isMember
-    ) {
-      return false;
-    }
-    return true;
-  });
+    {
+      icon: 'chartOutline',
+      label: 'See who voted',
+      onClick: () => showPollVotes(),
+      stroke: 'text-neutral-900',
+      dataTestId: 'post-ellipsis-see-poll-votes',
+      permissions: [],
+      enabled:
+        data.type === PostType.Poll &&
+        (isAdmin || data.createdBy?.userId === user?.id),
+    },
+    {
+      icon: 'announcementChart',
+      label: 'View acknowledgement report',
+      onClick: () => showAnalytics(),
+      stroke: 'text-neutral-900',
+      dataTestId: 'post-ellipsis-view-acknowledgement-report',
+      permissions: ['CREATE_ANNOUNCEMENTS', 'UPDATE_ANNOUNCEMENTS'],
+      enabled: !isRegularPost(data, currentDate, isAdmin),
+    },
+  ];
 
-  return postOptions.filter((postOption) => !postOption.disabled).length > 0 ? (
-    <>
-      <PopupMenu
-        triggerNode={
-          <div className="cursor-pointer p-2" data-testid="feed-post-ellipsis">
-            <Icon name="more" />
-          </div>
-        }
-        menuItems={postOptions}
-      />
-      {showModal && (
-        <PostBuilder
-          data={data}
-          showModal={showModal}
-          setShowModal={() => setShowModal(false)}
-          mode={PostBuilderMode.Edit}
-          customActiveFlow={customActiveFlow}
-        />
-      )}
-      <ConfirmationBox
-        open={confirm}
-        onClose={closeConfirm}
-        title="Delete"
-        description={
-          <span>
-            Are you sure you want to delete this post?
-            <br /> This cannot be undone.
-          </span>
-        }
-        success={{
-          label: 'Delete',
-          className: 'bg-red-500 text-white ',
-          onSubmit: async () => {
-            deletePostMutation.mutate(data?.id || '');
-            await queryClient.invalidateQueries(['feed']);
-            await queryClient.invalidateQueries(['announcements-widget']);
-          },
-        }}
-        discard={{
-          label: 'Cancel',
-          className: 'text-neutral-900 bg-white ',
-          onCancel: closeConfirm,
-        }}
-        isLoading={deletePostMutation.isLoading}
-      />
-      <Modal open={removeAnnouncement} className="w-max">
-        <div className="flex items-center justify-between p-4">
-          <p className="font-bold text-lg text-gray-900">
-            Change to regular post?
-          </p>
-          <Icon
-            name="close"
-            onClick={closeRemoveAnnouncement}
-            disabled={true}
-            dataTestId="changeto-regularpost-closemodal"
-          />
-        </div>
-        <Divider />
-        <div className="flex flex-col gap-y-4 items-center justify-center text-neutral-900 text-base p-6">
-          <Icon name="infoCircle" stroke="#3F83F8" size={66} disabled={true} />
-          <p className="font-semibold">
-            Are you sure you want to change this announcement to a regular post?
-          </p>
-          <p>
-            You can change it back to announcements by clicking on promote to
-            announcements
-          </p>
-        </div>
-        <div className="flex min-w-full items-center justify-end gap-x-3 p-4 bg-blue-50">
-          <Button
-            variant={Variant.Secondary}
-            label="Cancel"
-            onClick={closeRemoveAnnouncement}
-            dataTestId="changeto-regularpost-cancel"
-          />
-          <Button
-            variant={Variant.Primary}
-            label="Yes"
-            onClick={() => removeAnnouncementMutation.mutate()}
-            loading={removeAnnouncementLoading}
-            dataTestId="changeto-regularpost-accept"
-          />
-        </div>
-      </Modal>
-    </>
-  ) : (
-    <></>
+  const postOptions = allOptions
+    .filter((option) => option.enabled)
+    .filter((menuItem) => {
+      if (
+        menuItem.permissions &&
+        !canPerform(menuItem.permissions, user?.permissions) &&
+        isMember
+      ) {
+        return false;
+      }
+      return true;
+    });
+
+  useEffect(
+    () => useFeedStore.subscribe((state) => (feedRef.current = state.feed)),
+    [],
   );
+
+  if (postOptions.length) {
+    return (
+      <>
+        <PopupMenu
+          triggerNode={
+            <div className="cursor-pointer" data-testid="feed-post-ellipsis">
+              <Icon name="more" />
+            </div>
+          }
+          menuItems={postOptions}
+          className="mt-1 right-0 border-1 border-neutral-200 focus-visible:outline-none"
+        />
+        {open && (
+          <PostBuilder
+            data={data}
+            open={open}
+            openModal={openModal}
+            closeModal={closeModal}
+            mode={PostBuilderMode.Edit}
+            customActiveFlow={customActiveFlow}
+          />
+        )}
+        <ConfirmationBox
+          open={confirm}
+          onClose={closeConfirm}
+          title="Delete"
+          description={
+            <span>
+              Are you sure you want to delete this post? This cannot be undone
+            </span>
+          }
+          success={{
+            label: 'Delete',
+            className: 'bg-red-500 text-white ',
+            onSubmit: () => deletePostMutation.mutate(data?.id || ''),
+          }}
+          discard={{
+            label: 'Cancel',
+            className: 'text-neutral-900 bg-white ',
+            onCancel: closeConfirm,
+          }}
+          isLoading={deletePostMutation.isLoading}
+          dataTestId="post-deletepost"
+        />
+        <ChangeToRegularPostModal
+          open={removeAnnouncement}
+          closeModal={closeRemoveAnnouncement}
+          data={data}
+        />
+        {closePoll && (
+          <ClosePollModal
+            open={closePoll}
+            closeModal={closeClosePoll}
+            data={data}
+          />
+        )}
+        {pollVotes && (
+          <PollVotesModal
+            post={data}
+            open={pollVotes}
+            closeModal={closePollVotes}
+          />
+        )}
+        {data?.id && analytics && (
+          <AnnouncementAnalytics
+            post={data}
+            open={analytics}
+            closeModal={closeAnalytics}
+          />
+        )}
+      </>
+    );
+  }
+
+  return null;
 };
 
 export default FeedPostMenu;

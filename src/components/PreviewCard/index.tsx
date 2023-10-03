@@ -2,7 +2,7 @@ import Card from 'components/Card';
 import IconPreview from 'components/PreviewLink/components/IconPreview';
 import ImagePreview from 'components/PreviewLink/components/ImagePreview';
 import { Metadata } from 'components/PreviewLink/types';
-import React, { useMemo } from 'react';
+import { FC, useMemo } from 'react';
 
 type PreviewCardProps = {
   metaData: Metadata;
@@ -11,7 +11,7 @@ type PreviewCardProps = {
   isError?: boolean;
 };
 
-const PreviewCard: React.FC<PreviewCardProps> = ({
+const PreviewCard: FC<PreviewCardProps> = ({
   metaData,
   className,
   isLoading,
@@ -30,7 +30,7 @@ const PreviewCard: React.FC<PreviewCardProps> = ({
     } else if (metaData?.favicon) {
       return (
         <Card
-          className={`${className} cursor-pointer bg-[#F7F8FB] h-[166px] rounded-7xl`}
+          className={`${className} cursor-pointer !bg-[#F7F8FB] h-[180px] !shadow-none rounded-7xl`}
         >
           <IconPreview
             metaData={metaData}

@@ -1,29 +1,5 @@
-import React from 'react';
-import useHover from 'hooks/useHover';
-import { default as CarouselRightFilled } from './CarouselRightFilled';
+import CarouselRightFilled from './CarouselRightFilled';
 
-type IconProps = {
-  size?: number;
-  className?: string;
-  hover?: boolean;
-  disabled?: boolean;
-  onClick?: () => void;
-};
-
-const CarouselRightIcon: React.FC<IconProps> = ({
-  hover,
-  onClick,
-  className = '',
-  disabled,
-  ...props
-}) => {
-  const [isHovered, eventHandlers] = useHover();
-
-  return (
-    <div onClick={onClick} className={className} {...eventHandlers}>
-      <CarouselRightFilled {...props} />
-    </div>
-  );
-};
+const CarouselRightIcon = CarouselRightFilled;
 
 export default CarouselRightIcon;

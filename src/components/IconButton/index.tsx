@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useMemo } from 'react';
+import { MouseEventHandler, useMemo } from 'react';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 
@@ -14,15 +14,15 @@ export enum Size {
 }
 
 export type IconButtonProps = {
+  icon: string;
   variant?: Variant;
   size?: Size;
   disabled?: boolean;
-  icon: string;
   onClick?: MouseEventHandler<Element>;
   className?: string;
   borderAround?: boolean;
-  fill?: string;
-  stroke?: string;
+  borderAroundClassName?: string;
+  color?: string;
   dataTestId?: string;
 };
 
@@ -33,26 +33,29 @@ const IconButton = ({
   icon = '',
   className = '',
   borderAround = false,
+  borderAroundClassName = '',
   onClick = () => {},
-  fill,
-  stroke,
+  color,
   dataTestId,
 }: IconButtonProps) => {
   const styles = useMemo(
     () =>
       clsx(
         {
-          'bg-primary-500 text-white rounded-17xl hover:bg-primary-600 active:bg-primary-700 disabled:bg-neutral-200':
+          'bg-primary-500 text-white rounded-full hover:bg-primary-600 active:bg-primary-700 disabled:bg-neutral-200':
             variant === Variant.Primary,
         },
         {
-          'rounded-17xl disabled:bg-neutral-200': variant === Variant.Secondary,
+          'rounded-full disabled:bg-neutral-200': variant === Variant.Secondary,
         },
         {
-          'p-2.5': size === Size.Small || size === Size.Medium,
+          'p-2': size === Size.Small || size === Size.Medium,
         },
         {
           'p-3': size === Size.Large,
+        },
+        {
+          group: true,
         },
         {
           [className]: true,
@@ -63,9 +66,16 @@ const IconButton = ({
 
   const borderStyle = useMemo(
     () =>
-      clsx({
-        'border border-solid border-neutral-200 rounded-17xl': borderAround,
-      }),
+      clsx(
+        {
+          'border border-solid border-neutral-200 rounded-full hover:border-primary-500':
+            borderAround,
+        },
+        { 'flex items-center': true },
+        {
+          [borderAroundClassName]: true,
+        },
+      ),
     [],
   );
 
@@ -89,7 +99,7 @@ const IconButton = ({
         onClick={onClick}
         data-testid={dataTestId}
       >
-        <Icon name={icon} size={getSize()} fill={fill} stroke={stroke} />
+        <Icon name={icon} size={getSize()} color={color} disabled={disabled} />
       </button>
     </div>
   );

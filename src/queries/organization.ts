@@ -1,4 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import useAuth from 'hooks/useAuth';
 import apiService from 'utils/apiService';
 
 export enum IdentityProvider {
@@ -12,6 +13,17 @@ export enum IdentityProvider {
 export interface IUpdateSSO {
   idp: IdentityProvider;
   formData: FormData;
+}
+
+export interface IOrganization {
+  id: string;
+  domain: string;
+  createdAt: string;
+  adminSettings?: {
+    postingControls: {
+      limitGlobalPosting: boolean;
+    };
+  };
 }
 
 export const updateSso = async (params: IUpdateSSO) => {
@@ -51,5 +63,35 @@ export const useGetSSOFromDomain = (domain: string, enabled?: boolean) => {
     queryKey: ['get-sso-from-domain'],
     queryFn: () => fetchSSOFromDomain(domain),
     enabled,
+  });
+};
+
+const getOrganization = async (domain: string) => {
+  const data = await apiService.get(`/organizations/${domain}`);
+  return data.data.result.data as IOrganization;
+};
+
+export const useOrganization = (domain?: string) => {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ['organization', domain || user?.organization.domain],
+    queryFn: () => getOrganization(domain || user?.organization.domain || ''),
+  });
+};
+
+export const patchLimitGlobalPosting = async (
+  id: string,
+  limitGlobalPosting: boolean,
+) => {
+  await apiService.patch(`/organizations/${id}`, {
+    limitGlobalPosting,
+  });
+};
+
+export const useUpdateLimitGlobalPostingMutation = () => {
+  const { user } = useAuth();
+  return useMutation({
+    mutationFn: (limitGlobalPosting: boolean, id?: string) =>
+      patchLimitGlobalPosting(id || user!.organization.id, limitGlobalPosting),
   });
 };

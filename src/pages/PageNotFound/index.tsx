@@ -1,11 +1,11 @@
-import React from 'react';
+import { FC } from 'react';
 
 interface IPageNotFoundProps {
   statusCode: number | string;
   message: string;
 }
 
-const PageNotFound: React.FC<IPageNotFoundProps> = (props) => {
+const PageNotFound: FC<IPageNotFoundProps> = (props) => {
   return (
     <div className="flex items-center flex-col">
       <div className="text-red text-lg font-bold">{props.statusCode}</div>

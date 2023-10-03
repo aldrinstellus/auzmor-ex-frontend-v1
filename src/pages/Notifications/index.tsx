@@ -1,5 +1,5 @@
 import UserCard from 'components/UserWidget';
-import React, { ReactElement, ReactNode, useState } from 'react';
+import { FC, ReactElement, ReactNode, useState } from 'react';
 import NotificationSettingsCard from './components/NotificationSettingsCard';
 import Card from 'components/Card';
 import Button, { Variant } from 'components/Button';
@@ -29,11 +29,11 @@ const buttonGroup = [
     label: 'Mentions',
     type: NotificationType.MENTIONS,
     component: <NotificationsListing mentions />,
-    disabled: true,
+    disabled: false,
   },
 ];
 
-const Notifications: React.FC = (): ReactElement => {
+const Notifications: FC = (): ReactElement => {
   const [notificationsList, setNotificationsList] =
     useState<NotificationButtonGroup>(buttonGroup[0]);
 

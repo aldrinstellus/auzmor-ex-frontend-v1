@@ -1,6 +1,7 @@
-import React from 'react';
 import timezones from 'utils/timezones.json';
 import Layout, { FieldType } from 'components/Form';
+import { getTimezoneNameFromIANA } from 'utils/time';
+import { FC } from 'react';
 
 export type OptionType = {
   label: string;
@@ -13,36 +14,41 @@ export type SelectTimeZoneProps = {
   defaultTimezone: OptionType;
   placeholder?: string;
   dataTestId?: string;
+  label?: string;
+  name?: string;
 };
 
-const SelectTimeZone: React.FC<SelectTimeZoneProps> = ({
+const SelectTimeZone: FC<SelectTimeZoneProps> = ({
   control,
   className,
   defaultTimezone,
   placeholder,
   dataTestId,
+  label = '',
+  name = 'timeZone',
 }) => {
   const fields = [
     {
       type: FieldType.SingleSelect,
-      name: 'timeZone',
+      label,
+      name: name,
       control: control,
       options: timezones.map((timeZone) => ({
-        label: timeZone.timezoneName,
+        label: getTimezoneNameFromIANA(timeZone.iana),
         value: timeZone.iana,
-        dataTestId: `professional-detail-timezone-${timeZone.iana}`,
       })),
       defaultValue: defaultTimezone || '',
-      menuPlacement: 'top',
       placeholder: placeholder,
       dataTestId: dataTestId,
     },
   ];
 
   return (
-    <form>
-      <Layout className={className} fields={fields} />
-    </form>
+    <div className="w-full">
+      <form>
+        <Layout className={className} fields={fields} />
+      </form>
+    </div>
   );
 };
 

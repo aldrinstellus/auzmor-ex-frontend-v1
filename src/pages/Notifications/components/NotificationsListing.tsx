@@ -3,7 +3,7 @@ import Notification from 'components/NotificationsOverview/components/Notificati
 import Spinner from 'components/Spinner';
 import { IMedia } from 'contexts/CreatePostContext';
 import { useInfiniteNotifications } from 'queries/notifications';
-import React, { ReactElement, useEffect } from 'react';
+import { FC, ReactElement, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import NotificationSkeleton from './SkeletonLoader';
 
@@ -29,7 +29,7 @@ export type Actor = {
     blurHash?: string;
     original?: string;
   };
-  workLocation?: string;
+  workLocation?: Record<string, string>;
   userId?: string;
   department?: string;
   designation?: string;
@@ -58,9 +58,10 @@ export type NotificationProps = {
   isRead: boolean;
   createdAt: string;
   id: string;
+  interactionCount?: number;
 };
 
-const NotificationsListing: React.FC<NotificationsListing> = ({
+const NotificationsListing: FC<NotificationsListing> = ({
   mentions = false,
   className,
 }): ReactElement => {
@@ -113,6 +114,7 @@ const NotificationsListing: React.FC<NotificationsListing> = ({
                     target={notification.target}
                     isRead={notification.isRead}
                     createdAt={notification.createdAt}
+                    interactionCount={notification.interactionCount}
                     id={notification.id}
                   />
                   <Divider className="bg-gray-200" />

@@ -1,27 +1,5 @@
-import useHover from 'hooks/useHover';
-import React from 'react';
 import SvgEmailOutline from './EmailOutline';
 
-type IBookmarkProps = {
-  size?: number;
-  className?: string;
-  hover?: boolean;
-  disabled?: boolean;
-  onClick?: () => void;
-};
+const Email = SvgEmailOutline;
 
-const Bookmark: React.FC<IBookmarkProps> = ({
-  hover = true,
-  onClick,
-  className = '',
-  disabled,
-  ...props
-}) => {
-  return (
-    <div onClick={onClick} className={className}>
-      <SvgEmailOutline {...props} />
-    </div>
-  );
-};
-
-export default Bookmark;
+export default Email;

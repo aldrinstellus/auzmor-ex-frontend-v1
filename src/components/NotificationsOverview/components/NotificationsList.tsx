@@ -1,10 +1,10 @@
-import React from 'react';
 import Divider from 'components/Divider';
 import { useGetNotifications } from 'queries/notifications';
 import NotificationProps from './Notification';
 import Notification from './Notification';
 import { IMedia } from 'contexts/CreatePostContext';
 import NotificationsOverviewSkeleton from './NotificationsOverviewSkeleton';
+import { forwardRef } from 'react';
 
 type NotificationsList = {
   mentions?: boolean;
@@ -15,11 +15,16 @@ export enum ActionType {
   REACTION = 'REACTION',
   COMMENT = 'COMMENT',
   MENTION = 'MENTION',
+  SCHEDULE_POST = 'SCHEDULE_POST',
+  SHOUTOUT = 'SHOUT_OUT',
+  NEW_MEMBERS_TO_TEAM = 'NEW_MEMBERS_TO_TEAM',
+  ACKNOWLEDGEMENT_REMINDER = 'ACKNOWLEDGEMENT_REMINDER',
 }
 
 export enum TargetType {
   POST = 'POST',
   COMMENT = 'COMMENT',
+  TEAM = 'TEAM',
 }
 
 export type Actor = {
@@ -28,7 +33,7 @@ export type Actor = {
     blurHash?: string;
     original?: string;
   };
-  workLocation?: string;
+  workLocation?: Record<string, string>;
   userId?: string;
   department?: string;
   designation?: string;
@@ -47,6 +52,7 @@ export type Target = {
   type: string;
   content: string;
   entityId: string;
+  entityName?: string;
   image?: IMedia;
 };
 
@@ -57,10 +63,11 @@ export type NotificationProps = {
   isRead: boolean;
   createdAt: string;
   id: string;
+  interactionCount?: number;
 };
 
-const NotificationsList = React.forwardRef(
-  ({ mentions = false, className }: NotificationsList, ref: any) => {
+const NotificationsList = forwardRef(
+  ({ mentions, className }: NotificationsList, ref: any) => {
     const { data, isLoading, isError } = useGetNotifications(mentions);
 
     return (
@@ -77,8 +84,9 @@ const NotificationsList = React.forwardRef(
                     isRead={notification.isRead}
                     createdAt={notification.createdAt}
                     id={notification.id}
+                    interactionCount={notification.interactionCount}
                   />
-                  <Divider className="bg-gray-200" />
+                  <Divider className="bg-neutral-200" />
                 </div>
               ),
             )}

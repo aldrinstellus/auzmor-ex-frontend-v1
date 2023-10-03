@@ -1,10 +1,13 @@
-import React, { ReactNode, createContext, useState, useEffect } from 'react';
+import { ReactNode, createContext, useState, useEffect, FC } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { getItem, removeAllItems, setItem } from 'utils/persist';
 import { fetchMe } from 'queries/account';
 import UserOnboard from 'components/UserOnboard';
 import { Role } from 'utils/enum';
 import PageLoader from 'components/PageLoader';
+import { userChannel } from 'utils/misc';
+import { ILocation } from 'queries/location';
+import { IDepartment } from 'queries/department';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -21,14 +24,15 @@ export interface IUser {
   email: string;
   role: Role;
   organization: IOrganization;
-  workLocation?: string;
+  workLocation?: ILocation;
   preferredName?: string;
   designation?: string;
-  // department?: string;
+  department?: IDepartment;
   location?: string;
   profileImage?: string;
   coverImage?: string;
   permissions?: [];
+  timezone?: string;
 }
 
 interface IAuthContext {
@@ -43,7 +47,7 @@ export const AuthContext = createContext<IAuthContext>({
   updateUser: () => {},
 });
 
-const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
+const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const queryClient = useQueryClient();
   const [showOnboard, setShowOnboard] = useState<boolean>(false);
@@ -84,8 +88,12 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
             id: data?.org.id,
             domain: data?.org.domain,
           },
-          profileImage: data?.profileImage?.original,
+          profileImage:
+            data?.profileImage?.small || data?.profileImage?.original,
           permissions: data?.permissions,
+          timezone: data?.timeZone,
+          department: data?.department,
+          workLocation: data?.workLocation,
         });
       } catch (e: any) {
         if (e?.response?.status === 401) {
@@ -106,6 +114,15 @@ const AuthProvider: React.FC<AuthContextProps> = ({ children }) => {
     queryClient.clear();
     removeAllItems();
   };
+
+  useEffect(() => {
+    userChannel.onmessage = (data: any) => {
+      if (data?.data?.payload?.type === 'SIGN_OUT') {
+        reset();
+        return window.location.replace(`${window.location.origin}/logout`);
+      }
+    };
+  }, []);
 
   const updateUser = (user: IUser) => setUser((u) => ({ ...u, ...user }));
 

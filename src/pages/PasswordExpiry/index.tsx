@@ -1,19 +1,18 @@
 import { Info } from 'components/Logo';
-import React from 'react';
+import { FC } from 'react';
 import { Link } from 'react-router-dom';
 
 export interface IPasswordExpiryProps {}
 
-const PasswordExpiry: React.FC<IPasswordExpiryProps> = () => {
+const PasswordExpiry: FC<IPasswordExpiryProps> = () => {
   return (
-    <>
-      <div className="bg-[url(images/welcomeToAuzmor.png)] w-1/2 h-full bg-no-repeat bg-cover" />
-      <div className="h-full flex justify-center items-center relative">
+    <div className="mr-[42px] h-full flex justify-center items-center relative">
+      <div className="flex relative h-[362px]">
         <div className="w-full">
           <>
             <div className="text-center flex justify-center items-center flex-col">
               <Info />
-              <div className="text-neutral-900 text-2xl font-extrabold mt-9">
+              <div className="text-neutral-900 text-2xl font-extrabold mt-3">
                 RESET PASSWORD LINK HAS EXPIRED
               </div>
             </div>
@@ -21,7 +20,7 @@ const PasswordExpiry: React.FC<IPasswordExpiryProps> = () => {
               To protect your account, password reset link expires after 10
               mins.
             </div>
-            <div className="mt-12 text-neutral-500 text-sm font-bold text-center">
+            <div className="mt-12 text-neutral-500 text-sm font-normal text-center">
               Need a new account activation link?{' '}
               <Link
                 to="/forgot-password"
@@ -30,16 +29,18 @@ const PasswordExpiry: React.FC<IPasswordExpiryProps> = () => {
                 Resend
               </Link>
             </div>
-            <div className="mt-60 text-neutral-900 text-sm font-bold text-center">
-              Remeber Password?{' '}
-              <Link to="/login" className="text-primary-500 text-sm font-bold">
-                Sign In
-              </Link>
-            </div>
           </>
         </div>
       </div>
-    </>
+      <div className="absolute bottom-20 flex w-full justify-center">
+        <div className="text-neutral-900 text-sm font-normal text-center">
+          Remember Password?{' '}
+          <Link to="/login" className="text-primary-500 font-bold">
+            Sign In
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 };
 

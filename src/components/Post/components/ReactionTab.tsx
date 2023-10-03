@@ -1,25 +1,29 @@
 import { IGetReaction, useInfiniteReactions } from 'queries/reaction';
-import React, { memo, useEffect } from 'react';
+import { FC, memo, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import ReactionRow from './ReactionRow';
 import ReactionSkeleton from './ReactionSkeleton';
-
-interface IGetReactionQuery {
+export interface IReactionTabProps {
   entityId: string;
   entityType: string;
   reaction?: string;
   limit: number;
 }
 
-export interface IReactionTabProps {
-  getReactionQuery: IGetReactionQuery;
-}
-
-const ReactionTab: React.FC<IReactionTabProps> = ({ getReactionQuery }) => {
-  const { ref, inView } = useInView();
+const ReactionTab: FC<IReactionTabProps> = ({
+  entityId,
+  entityType,
+  reaction,
+  limit,
+}) => {
+  const rootId = `${entityId}-${entityType}-${reaction}`;
+  const { ref, inView } = useInView({
+    root: document.getElementById(rootId),
+    rootMargin: '20%',
+  });
 
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    useInfiniteReactions(getReactionQuery);
+    useInfiniteReactions({ entityId, entityType, reaction, limit });
 
   useEffect(() => {
     if (inView) {
@@ -42,7 +46,7 @@ const ReactionTab: React.FC<IReactionTabProps> = ({ getReactionQuery }) => {
   }) as IGetReaction[];
 
   return (
-    <>
+    <div id={rootId} className="px-6 h-[482px] overflow-y-auto">
       {isLoading ? (
         <ReactionSkeleton />
       ) : (
@@ -57,7 +61,7 @@ const ReactionTab: React.FC<IReactionTabProps> = ({ getReactionQuery }) => {
         {hasNextPage && isFetchingNextPage && <ReactionRow isLoading={true} />}
         {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
       </div>
-    </>
+    </div>
   );
 };
 

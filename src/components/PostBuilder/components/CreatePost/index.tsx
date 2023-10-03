@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import { FC, useContext, useEffect, useRef } from 'react';
 import {
   CreatePostContext,
   IEditorValue,
@@ -8,12 +8,13 @@ import {
   VIDEO_FILE_SIZE_LIMIT,
 } from 'contexts/CreatePostContext';
 import ReactQuill from 'react-quill';
-import { IPost } from 'queries/post';
+import { IPost, PostType } from 'queries/post';
 import Header from 'components/ModalHeader';
 import Body from './Body';
 import Footer from './Footer';
 import { validImageTypes, validVideoTypes } from 'queries/files';
 import { hideEmojiPalette } from 'utils/misc';
+import { PostBuilderMode } from 'components/PostBuilder';
 
 interface ICreatePostProps {
   closeModal: () => void;
@@ -21,14 +22,16 @@ interface ICreatePostProps {
   data?: IPost;
   isLoading?: boolean;
   dataTestId?: string;
+  mode: PostBuilderMode;
 }
 
-const CreatePost: React.FC<ICreatePostProps> = ({
+const CreatePost: FC<ICreatePostProps> = ({
   data,
   closeModal,
   handleSubmitPost,
   isLoading = false,
   dataTestId,
+  mode,
 }) => {
   const quillRef = useRef<ReactQuill>(null);
   const {
@@ -39,6 +42,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
     media,
     setMediaValidationErrors,
     mediaValidationErrors,
+    setPostType,
   } = useContext(CreatePostContext);
 
   useEffect(() => () => hideEmojiPalette());
@@ -66,10 +70,17 @@ const CreatePost: React.FC<ICreatePostProps> = ({
         }}
         closeBtnDataTestId={`${dataTestId}-closeicon`}
       />
-      <Body data={data} ref={quillRef} dataTestId={dataTestId} />
+      <Body
+        data={data}
+        ref={quillRef}
+        quillRef={quillRef}
+        dataTestId={dataTestId}
+        mode={mode}
+      />
       <Footer
         isLoading={isLoading}
         quillRef={quillRef}
+        mode={mode}
         handleSubmitPost={handleSubmitPost}
       />
       <input
@@ -93,6 +104,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
                 errorType: MediaValidationError.MediaLengthExceed,
               });
             }
+            setPostType(PostType.Update);
             setUploads(
               Array.prototype.slice
                 .call(e.target.files)
@@ -155,7 +167,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
         type="file"
         className="hidden"
         ref={inputVideoRef}
-        accept="video/*"
+        accept={validVideoTypes.join(',')}
         onChange={(e) => {
           const mediaErrors = [...mediaValidationErrors];
 
@@ -173,6 +185,7 @@ const CreatePost: React.FC<ICreatePostProps> = ({
                 errorType: MediaValidationError.MediaLengthExceed,
               });
             }
+            setPostType(PostType.Update);
             setUploads(
               Array.prototype.slice
                 .call(e.target.files)

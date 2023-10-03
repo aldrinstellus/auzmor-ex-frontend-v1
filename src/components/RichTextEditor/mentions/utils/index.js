@@ -1,5 +1,3 @@
-// import { getEmoji } from "../../EmojiBlot";
-
 function attachDataValues(element, data, dataAttributes) {
   const mention = element;
   Object.keys(data).forEach((key) => {
@@ -51,7 +49,6 @@ function hasValidMentionCharIndex(mentionCharIndex, text, isolateChar) {
 
 // create user mention list with the require props
 function createMentionsList(mentionsList, character) {
-  console.log('char', character);
   const atValues = [];
   // eslint-disable-next-line array-callback-return
   mentionsList &&
@@ -82,6 +79,18 @@ function createHashtagsList(hashtagsList, character) {
         value: val,
       });
     });
+  return atValues;
+}
+
+function newHashtags(hashtag, character) {
+  const atValues = [];
+  const val = hashtag.name;
+  atValues.push({
+    ...hashtag,
+    charDenotation: character,
+    name: val,
+    value: val,
+  });
   return atValues;
 }
 
@@ -213,6 +222,7 @@ export {
   hasValidMentionCharIndex,
   createMentionsList,
   createHashtagsList,
+  newHashtags,
   parseMentionData,
   generatePlainText,
 };

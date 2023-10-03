@@ -1,25 +1,20 @@
-import React, {
-  MouseEventHandler,
-  ReactElement,
-  ReactNode,
-  useMemo,
-} from 'react';
-import clsx from 'clsx';
+import { MouseEventHandler, ReactNode } from 'react';
 import { PlacesType, Tooltip as ReactTooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 
 export enum Variant {
-  Dark = 'DARK',
-  Light = 'LIGHT',
+  Dark = 'dark',
+  Light = 'light',
 }
 
 export type TooltipProps = {
-  tooltipContent: string | ReactNode;
+  tooltipContent?: string | ReactNode;
   children: ReactNode;
   variant?: Variant;
   className?: string;
   onClick?: MouseEventHandler<Element>;
   tooltipPosition?: PlacesType;
+  showTooltip?: boolean;
 };
 
 const Tooltip = ({
@@ -29,45 +24,36 @@ const Tooltip = ({
   className = '',
   onClick = () => {},
   tooltipPosition = 'top',
+  showTooltip = true,
 }: TooltipProps) => {
-  const tooltipPlacement = useMemo(
-    () =>
-      clsx(
-        {
-          'bg-white text-black shadow-lg': variant === Variant.Light,
-        },
-        {
-          'bg-black text-white shadow-lg': variant === Variant.Dark,
-        },
-        {
-          [className]: true,
-        },
-      ),
-    [className, variant],
-  );
+  const id = Math.random().toString(16).slice(2);
   return (
-    <div className={`text-center ${className}`} onClick={onClick}>
-      <ReactTooltip
-        className={tooltipPlacement}
-        id="my-tooltip"
-        react-tooltip-arrow
-        anchorSelect=".my-anchor-element"
-        clickable
-      >
-        <div>{tooltipContent}</div>
-      </ReactTooltip>
+    <span onClick={onClick}>
+      {showTooltip && (
+        <ReactTooltip
+          className={className}
+          id={`tooltip-${id}`}
+          react-tooltip-arrow
+          anchorSelect={`#anchor-${id}`}
+          clickable
+        >
+          {tooltipContent}
+        </ReactTooltip>
+      )}
       <a
+        id={`anchor-${id}`}
         href="#"
-        className="my-anchor-element cursor-default mt-10"
-        data-tooltip-id="my-tooltip"
+        className="cursor-default mt-10"
+        data-tooltip-id={`tooltip-${id}`}
         data-tooltip-content={`${
           typeof tooltipContent === 'string' ? tooltipContent : ''
         }`}
+        data-tooltip-variant={variant}
         data-tooltip-place={`${tooltipPosition}`}
       >
-        <div className={`${className}`}>{children}</div>
+        <span>{children}</span>
       </a>
-    </div>
+    </span>
   );
 };
 

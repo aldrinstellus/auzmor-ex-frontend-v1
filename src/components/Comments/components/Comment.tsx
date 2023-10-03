@@ -1,24 +1,29 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import { FC, ReactNode, useEffect, useRef, useState } from 'react';
 import Likes from 'components/Reactions';
 import IconButton, {
   Variant as IconVariant,
   Size,
 } from 'components/IconButton';
 import Avatar from 'components/Avatar';
-import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import Popover from 'components/Popover';
 import clsx from 'clsx';
 import { humanizeTime } from 'utils/time';
-import { iconsStyle } from 'components/Post';
-import { MyObjectType } from 'queries/post';
 import useAuth from 'hooks/useAuth';
 import Reply from '../../Reply';
 import Icon from 'components/Icon';
 import { Link } from 'react-router-dom';
 import RenderQuillContent from 'components/RenderQuillContent';
 import ReactionModal from 'components/Post/components/ReactionModal';
+import omit from 'lodash/omit';
 import useModal from 'hooks/useModal';
-import { twConfig } from 'utils/misc';
+import {
+  getAvatarColor,
+  getFullName,
+  getProfileImage,
+  getUserCardTooltipProps,
+  twConfig,
+} from 'utils/misc';
 import { IComment } from '..';
 import { CommentsRTE, PostCommentMode } from './CommentsRTE';
 import ConfirmationBox from 'components/ConfirmationBox';
@@ -28,17 +33,22 @@ import { toast } from 'react-toastify';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import { deleteComment } from 'queries/comments';
+import { useFeedStore } from 'stores/feedStore';
+import { useCommentStore } from 'stores/commentStore';
+import { produce } from 'immer';
+import Divider, { Variant } from 'components/Divider';
+import Tooltip, { Variant as TooltipVariant } from 'components/Tooltip';
+import UserCard from 'components/UserCard';
 
 interface CommentProps {
   comment: IComment;
   customNode?: ReactNode;
 }
 
-export const Comment: React.FC<CommentProps> = ({
-  comment,
-  customNode = null,
-}) => {
-  const queryClient = useQueryClient();
+export const Comment: FC<CommentProps> = ({ comment, customNode = null }) => {
+  const getPost = useFeedStore((state) => state.getPost);
+  const updateFeed = useFeedStore((state) => state.updateFeed);
+  const { comment: storedcomments, setComment } = useCommentStore();
   const [showReactionModal, setShowReactionModal] = useState(false);
   const [confirm, showConfirm, closeConfirm] = useModal();
   const [editComment, setEditComment] = useState(false);
@@ -51,14 +61,11 @@ export const Comment: React.FC<CommentProps> = ({
   const { user } = useAuth();
 
   const menuItemStyle = clsx({
-    'flex flex-row items-center py-3 px-6 gap-2.5 border-b text-sm hover:bg-primary-50 cursor-pointer':
+    'flex flex-row items-center py-3 px-6 gap-2.5 border-b text-sm hover:bg-primary-50 cursor-pointer rounded-b-9xl':
       true,
   });
 
-  const reactionCount: MyObjectType = comment?.reactionsCount || {};
-
-  const keys = Object.keys(reactionCount).length;
-  const totalCount = Object.values(reactionCount).reduce(
+  const totalCount = Object.values(comment?.reactionsCount || {}).reduce(
     (total, count) => total + count,
     0,
   );
@@ -69,9 +76,22 @@ export const Comment: React.FC<CommentProps> = ({
     }
   }, [showReplies]);
 
-  const deleteReactionMutation = useMutation({
+  const deleteCommentMutation = useMutation({
     mutationKey: ['delete-comment-mutation'],
     mutationFn: deleteComment,
+    onMutate: (variables) => {
+      const previousData = storedcomments;
+      const post = getPost(storedcomments[variables].entityId);
+      updateFeed(
+        post.id!,
+        produce(post, (draft) => {
+          draft.commentsCount = draft.commentsCount - 1;
+        }),
+      );
+      setComment({ ...omit(storedcomments, [variables]) });
+      closeConfirm();
+      return { previousData };
+    },
     onError: (error: any) => {
       console.log(error);
       toast(
@@ -81,11 +101,7 @@ export const Comment: React.FC<CommentProps> = ({
         />,
         {
           closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              stroke={twConfig.theme.colors.red['500']}
-              size={20}
-            />
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
           ),
           style: {
             border: `1px solid ${twConfig.theme.colors.red['300']}`,
@@ -95,11 +111,11 @@ export const Comment: React.FC<CommentProps> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comments'] });
       toast(
         <SuccessToast
           content="Comment has been deleted"
@@ -109,7 +125,7 @@ export const Comment: React.FC<CommentProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
             />
           ),
@@ -121,206 +137,245 @@ export const Comment: React.FC<CommentProps> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
     },
   });
 
   return (
-    <div key={comment.id}>
-      <div className={`flex flex-col mt-4`}>
-        <div className="bg-neutral-100 p-3 rounded-9xl">
-          <div className="flex justify-between p-0">
-            <div className="flex">
-              <div className="mr-4">
-                <Link
-                  to={
-                    comment?.createdBy?.userId &&
-                    comment.createdBy.userId !== user?.id
-                      ? '/users/' + comment.createdBy.userId
-                      : '/profile'
-                  }
-                >
-                  <Avatar
-                    name={comment?.createdBy?.fullName}
-                    size={32}
-                    image={comment?.createdBy?.profileImage?.original}
-                  />
-                </Link>
-              </div>
-              <div className="flex flex-col items-start p-0 w-64">
-                <Link
-                  to={
-                    comment?.createdBy?.userId &&
-                    comment.createdBy.userId !== user?.id
-                      ? '/users/' + comment.createdBy.userId
-                      : '/profile'
-                  }
-                >
-                  <div className="text-neutral-900 font-bold text-sm">
-                    {comment?.createdBy?.fullName}
-                  </div>
-                </Link>
-                <div className="font-normal text-neutral-500 text-sm ">
-                  {comment?.createdBy?.designation}
-                </div>
-              </div>
-            </div>
-            <div className="flex">
-              <div className="text-neutral-500 font-normal text-xs mt-1">
-                {humanizeTime(comment.updatedAt)}
-              </div>
-              <div className="ml-4">
-                {user?.id === comment?.createdBy?.userId && (
-                  <Popover
-                    triggerNode={
-                      <IconButton
-                        icon={'more'}
-                        className="!p-0 !bg-inherit"
-                        variant={IconVariant.Primary}
-                        size={Size.Large}
-                        dataTestId="comment-ellipsis"
-                      />
-                    }
-                    ref={closePopOver}
-                    className="left-0 rounded-9xl"
-                  >
-                    <div>
-                      {!editComment && (
-                        <div className="w-48">
-                          <div
-                            className={`${menuItemStyle} rounded-t-9xl`}
-                            onClick={() => {
-                              setEditComment(true);
-                              closePopOver?.current?.click();
-                            }}
-                            data-testid="post-ellipsis-edit-comment"
-                          >
-                            <Icon
-                              name={'edit'}
-                              size={16}
-                              fill={twConfig.theme.colors.primary['500']}
-                              stroke={twConfig.theme.colors.neutral['200']}
-                            />
-                            <div className="text-sm font-medium text-neutral-900">
-                              Edit comment
-                            </div>
-                          </div>
-                          <div
-                            className={`${menuItemStyle} rounded-b-9xl`}
-                            onClick={() => {
-                              showConfirm();
-                            }}
-                          >
-                            <Icon
-                              name={'delete'}
-                              size={16}
-                              fill={twConfig.theme.colors.primary['500']}
-                              stroke={twConfig.theme.colors.neutral['200']}
-                            />
-                            <div
-                              className={`text-sm font-medium text-neutral-900 `}
-                            >
-                              Delete comment
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </Popover>
-                )}
-              </div>
-            </div>
-          </div>
-          {/* Comment Edit at Post level type Post */}
-          {editComment ? (
-            <div className="mt-4">
-              <CommentsRTE
-                entityId={comment?.id}
-                entityType="post"
-                mode={PostCommentMode.Edit}
-                setEditComment={setEditComment}
-                commentData={comment}
-                className="bg-white rounded-19xl"
-              />
-            </div>
-          ) : (
-            <div className="text-neutral-900 font-normal text-sm mt-4">
-              <RenderQuillContent data={comment} />
-            </div>
-          )}
-        </div>
-        <div className="flex flex-row justify-between mt-4 cursor-pointer">
-          <div className={`flex flex-row`}>
-            {keys > 0 && (
-              <div className="mr-2 flex flex-row">
-                {Object.keys(reactionCount)
-                  .slice(0, 3)
-                  .map((key, i) => (
-                    <div className={` ${i > 0 ? '-ml-2 z-1' : ''}  `} key={key}>
-                      <Icon
-                        name={key}
-                        size={12}
-                        className={`p-0.5 rounded-17xl cursor-pointer border-white border border-solid ${iconsStyle(
-                          key,
-                        )}`}
-                      />
-                    </div>
-                  ))}
-              </div>
-            )}
-
-            <div
-              className={`flex text-sm font-normal text-neutral-500`}
-              data-testid="comment-reaction-count"
-              onClick={() => setShowReactionModal(true)}
+    <div className="flex flex-col">
+      <div className="bg-neutral-100 p-3 rounded-9xl mb-4">
+        <div className="flex flex-row justify-between gap-4">
+          <div>
+            <Link
+              to={
+                comment?.createdBy?.userId &&
+                comment.createdBy.userId !== user?.id
+                  ? '/users/' + comment.createdBy.userId
+                  : '/profile'
+              }
             >
-              {totalCount} reacted
-            </div>
-          </div>
-        </div>
-        <div className="flex justify-between mt-4 pb-3 cursor-pointer">
-          <div className="flex items-center">
-            <Likes
-              reaction={comment?.myReaction?.reaction || ''}
-              entityId={comment.id}
-              entityType="comment"
-              reactionId={comment?.myReaction?.id || ''}
-              queryKey="comments"
-              dataTestIdPrefix="comment-reaction"
-            />
-            <div
-              className="flex items-center ml-7"
-              onClick={() => {
-                setShowReplies(!showReplies);
-              }}
-              data-testid="replyto-commentcta"
-            >
-              <IconButton
-                icon={'reply'}
-                className="!p-0 !bg-inherit"
-                variant={IconVariant.Primary}
+              <Avatar
+                name={comment?.createdBy?.fullName}
+                size={32}
+                image={getProfileImage(comment?.createdBy)}
+                bgColor={getAvatarColor(comment?.createdBy)}
               />
-              <div
-                className="text-xs font-normal text-neutral-500 ml-1.5"
-                data-testid="comment-replies-count"
+            </Link>
+          </div>
+          <div className="flex flex-col items-start p-0 flex-grow w-0">
+            <Tooltip
+              tooltipContent={
+                <UserCard user={getUserCardTooltipProps(comment?.createdBy)} />
+              }
+              variant={TooltipVariant.Light}
+              className="!p-4 !shadow-md !rounded-9xl !z-[999]"
+            >
+              <Link
+                to={
+                  comment?.createdBy?.userId &&
+                  comment.createdBy.userId !== user?.id
+                    ? '/users/' + comment.createdBy.userId
+                    : '/profile'
+                }
               >
-                {comment?.repliesCount}
-                {comment?.repliesCount > 0 ? ' Replies' : ' Reply'}
-              </div>
+                <div className="text-neutral-900 font-bold text-sm hover:text-primary-500 hover:underline">
+                  {getFullName(comment?.createdBy)}
+                </div>
+              </Link>
+            </Tooltip>
+            <div className="font-normal text-neutral-500 text-xs">
+              {comment?.createdBy?.designation}
             </div>
           </div>
-          <div></div>
+          <div className="text-neutral-500 font-normal text-xs mt-1">
+            {humanizeTime(comment.updatedAt)}
+          </div>
+          <div>
+            {user?.id === comment?.createdBy?.userId && (
+              <Popover
+                triggerNode={
+                  <IconButton
+                    icon={'more'}
+                    className="!p-0 !bg-inherit"
+                    variant={IconVariant.Primary}
+                    size={Size.Large}
+                    dataTestId="comment-ellipsis"
+                  />
+                }
+                ref={closePopOver}
+                className="left-0 rounded-9xl"
+              >
+                <div>
+                  {!editComment && (
+                    <div className="w-48">
+                      <div
+                        className={`${menuItemStyle} rounded-t-9xl`}
+                        onClick={() => {
+                          setEditComment(true);
+                          closePopOver?.current?.click();
+                        }}
+                        data-testid="post-ellipsis-edit-comment"
+                      >
+                        <Icon
+                          name={'edit'}
+                          size={16}
+                          color="text-neutral-200"
+                        />
+                        <div className="text-sm font-medium text-neutral-900">
+                          Edit comment
+                        </div>
+                      </div>
+                      <div
+                        className={`${menuItemStyle} rounded-b-9xl`}
+                        onClick={() => {
+                          showConfirm();
+                        }}
+                      >
+                        <Icon
+                          name={'delete'}
+                          size={16}
+                          color="text-neutral-200"
+                        />
+                        <div
+                          className={`text-sm font-medium text-neutral-900 `}
+                        >
+                          Delete comment
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Popover>
+            )}
+          </div>
         </div>
-        {showReplies ? (
-          <Reply
-            entityId={comment.id}
-            className={`${comment.repliesCount > 0 ? '' : 'mb-5'}`}
-          />
+        {/* Comment Edit at Post level type Post */}
+        {editComment ? (
+          <div className="mt-4">
+            <CommentsRTE
+              entityId={comment?.id}
+              entityType="post"
+              mode={PostCommentMode.Edit}
+              setEditComment={setEditComment}
+              commentData={comment}
+              className="bg-white rounded-19xl"
+            />
+          </div>
         ) : (
-          !previousShowReply.current && customNode
+          <div className="text-neutral-900 font-normal text-sm mt-2">
+            <RenderQuillContent data={comment} isComment />
+          </div>
         )}
       </div>
+
+      {/* Replies */}
+      <div className="flex items-center">
+        <div className="flex items-center space-x-2">
+          <Likes
+            reaction={comment?.myReaction?.reaction || ''}
+            entityId={comment.id}
+            entityType="comment"
+            reactionId={comment?.myReaction?.id || ''}
+            queryKey="comments"
+            dataTestIdPrefix="comment-reaction"
+          />
+          {/* ellipse */}
+          <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
+          {/* Show Reaction */}
+          {totalCount > 0 ? (
+            <div className="flex justify-between cursor-pointer">
+              <div
+                className="flex items-center"
+                onClick={() => setShowReactionModal(true)}
+              >
+                {totalCount > 0 && (
+                  <div className="flex ">
+                    {Object.keys(comment.reactionsCount)
+                      .filter(
+                        (key) =>
+                          !!comment.reactionsCount[key] &&
+                          comment.reactionsCount[key] > 0,
+                      )
+                      .slice(0, 3)
+                      .map((react, i) => (
+                        <div
+                          className={` ${i > 0 ? '-ml-2 z-1' : ''}  `}
+                          key={react}
+                        >
+                          <Icon name={`${react}Reaction`} size={20} />
+                        </div>
+                      ))}
+                  </div>
+                )}
+                {totalCount > 0 && (
+                  <div
+                    className={`flex text-xs font-normal text-neutral-500`}
+                    data-testid="comment-reaction-count"
+                  >
+                    {totalCount}
+                  </div>
+                )}
+                <Divider
+                  variant={Variant.Vertical}
+                  className="bg-neutral-200 mx-4"
+                />
+              </div>
+            </div>
+          ) : (
+            <div />
+          )}
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <div
+            className="flex space-x-1 cursor-pointer group"
+            onClick={() => {
+              setShowReplies(!showReplies);
+            }}
+          >
+            <Icon name="comment" size={16} />
+            <div
+              className="text-xs font-normal text-neutral-500 ml-1.5 group-hover:text-primary-500"
+              data-testid="comment-replies-count"
+            >
+              Reply
+            </div>
+          </div>
+
+          {comment?.repliesCount > 0 && (
+            <>
+              {/* ellipse */}
+              <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
+              <div
+                className="flex items-center cursor-pointer group"
+                data-testid="replyto-commentcta"
+                onClick={() => {
+                  setShowReplies(!showReplies);
+                }}
+              >
+                <div
+                  className="text-xs font-normal text-neutral-500 group-hover:text-primary-500"
+                  data-testid="comment-replies-count"
+                >
+                  {comment?.repliesCount}
+                  {comment?.repliesCount > 1 ? ' Replies' : ' Reply'}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {showReplies ? (
+        <div className="mt-4">
+          <Reply entityId={comment.id} />
+        </div>
+      ) : (
+        !previousShowReply.current && customNode
+      )}
+
       {showReactionModal && (
         <ReactionModal
           closeModal={() => setShowReactionModal(false)}
@@ -329,6 +384,7 @@ export const Comment: React.FC<CommentProps> = ({
           entityType="comment"
         />
       )}
+
       <ConfirmationBox
         open={confirm}
         onClose={closeConfirm}
@@ -343,7 +399,7 @@ export const Comment: React.FC<CommentProps> = ({
           label: 'Delete',
           className: 'bg-red-500 text-white ',
           onSubmit: () => {
-            deleteReactionMutation.mutate(comment?.id || '');
+            deleteCommentMutation.mutate(comment?.id || '');
           },
         }}
         discard={{
@@ -351,7 +407,7 @@ export const Comment: React.FC<CommentProps> = ({
           className: 'text-neutral-900 bg-white ',
           onCancel: closeConfirm,
         }}
-        isLoading={deleteReactionMutation?.isLoading}
+        isLoading={deleteCommentMutation?.isLoading}
       />
     </div>
   );

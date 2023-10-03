@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from 'react';
+import { FC, ReactNode, useMemo } from 'react';
 import clsx from 'clsx';
 import useHover from 'hooks/useHover';
 
@@ -9,7 +9,7 @@ export type CardProps = {
   shadowOnHover?: boolean;
 };
 
-const Card: React.FC<CardProps> = ({
+const Card: FC<CardProps> = ({
   children,
   className = '',
   dataTestId = '',

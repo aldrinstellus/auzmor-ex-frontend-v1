@@ -1,14 +1,22 @@
-/* Comment Level RTE - Comment on the comment level 2 */
-import React, { useState } from 'react';
-import { useInfiniteComments } from 'queries/comments';
+import { FC, useState } from 'react';
+import { useInfiniteReplies } from 'queries/reaction';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import { Reply } from 'components/Reply/Reply';
 import Spinner from 'components/Spinner';
 import { PRIMARY_COLOR } from 'utils/constants';
 import LoadMore from 'components/Comments/components/LoadMore';
+import { useCommentStore } from 'stores/commentStore';
 import CommentSkeleton from 'components/Comments/components/CommentSkeleton';
 import { CommentsRTE } from 'components/Comments/components/CommentsRTE';
+import { EntityType } from 'queries/files';
+import {
+  IMG_FILE_SIZE_LIMIT,
+  IMediaValidationError,
+  MediaValidationError,
+} from 'contexts/CreatePostContext';
+import { validImageTypesForComments } from 'components/Comments';
+import { useUploadState } from 'hooks/useUploadState';
 
 interface CommentsProps {
   entityId: string;
@@ -20,27 +28,38 @@ export interface activeCommentsDataType {
   type: string;
 }
 
-const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
+const Comments: FC<CommentsProps> = ({ entityId, className }) => {
   const { user } = useAuth();
+  const {
+    inputRef,
+    media,
+    setMedia,
+    files,
+    setFiles,
+    mediaValidationErrors,
+    setMediaValidationErrors,
+    setUploads,
+  } = useUploadState();
+  const [isCreateCommentLoading, setIsCreateCommentLoading] = useState(false);
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteComments({
+    useInfiniteReplies({
       entityId: entityId,
       entityType: 'comment',
-      // Limit here is arbitrary, need to check with product team.
-      // Linkedin loads 2 by default and then 10 each time you click 'Load more'
       limit: 4,
     });
 
-  const replies = data?.pages.flatMap((page) => {
-    return page?.result?.data.map((comment: any) => {
+  const { comment } = useCommentStore();
+
+  const replyIds = data?.pages.flatMap((page) => {
+    return page.data?.result?.data.map((reply: { id: string }) => {
       try {
-        return comment;
+        return reply;
       } catch (e) {
-        console.log('Error', { comment });
+        console.log('Error', { reply });
       }
     });
-  });
+  }) as { id: string }[];
 
   return (
     <div className={className}>
@@ -50,8 +69,8 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
         </div>
       ) : (
         <div className="ml-8">
-          <div className="flex flex-row items-center justify-between p-0">
-            <div className="flex-none grow-0 order-none pr-2">
+          <div className="flex flex-row items-center justify-between mb-4 gap-2">
+            <div>
               <Avatar
                 name={user?.name || 'U'}
                 size={32}
@@ -59,16 +78,37 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
               />
             </div>
             <CommentsRTE
-              className="w-full py-1"
+              className="w-0 flex-grow py-1"
               entityId={entityId}
-              entityType="comment"
+              entityType={EntityType.Comment.toLocaleLowerCase()}
+              inputRef={inputRef}
+              media={media}
+              removeMedia={() => {
+                setMedia([]);
+                setFiles([]);
+                setMediaValidationErrors([]);
+              }}
+              files={files}
+              mediaValidationErrors={mediaValidationErrors}
+              setIsCreateCommentLoading={setIsCreateCommentLoading}
+              setMediaValidationErrors={setMediaValidationErrors}
+              isCreateCommentLoading={isCreateCommentLoading}
             />
           </div>
-          {replies && replies.length > 0 && (
+          {replyIds && replyIds.length > 0 && (
             <div>
-              {replies.map((reply: any) => (
-                <Reply comment={reply} key={reply.id} />
-              ))}
+              {isCreateCommentLoading && <CommentSkeleton />}
+              <div className="flex flex-col gap-4">
+                {replyIds
+                  .filter(({ id }) => !!comment[id])
+                  .map(({ id }) => (
+                    <Reply
+                      // handleClick={handleClick}
+                      comment={comment[id]}
+                      key={id}
+                    />
+                  ))}
+              </div>
               {hasNextPage && !isFetchingNextPage && (
                 <LoadMore onClick={fetchNextPage} label="Load more replies" />
               )}
@@ -81,6 +121,56 @@ const Comments: React.FC<CommentsProps> = ({ entityId, className }) => {
           )}
         </div>
       )}
+      <input
+        type="file"
+        className="hidden"
+        ref={inputRef}
+        accept={validImageTypesForComments.join(',')}
+        onChange={(e) => {
+          const mediaErrors: IMediaValidationError[] = [];
+          if (e.target.files?.length) {
+            setUploads(
+              Array.prototype.slice
+                .call(e.target.files)
+                .filter((eachFile: File) => {
+                  if (
+                    !!![...validImageTypesForComments].includes(eachFile.type)
+                  ) {
+                    mediaErrors.push({
+                      errorMsg: `File (${eachFile.name}) type not supported. Upload a supported file content`,
+                      errorType: MediaValidationError.FileTypeNotSupported,
+                      fileName: eachFile.name,
+                    });
+                    return false;
+                  }
+                  if (eachFile.type.match('image')) {
+                    if (eachFile.size > IMG_FILE_SIZE_LIMIT * 1024 * 1024) {
+                      mediaErrors.push({
+                        errorType: MediaValidationError.ImageSizeExceed,
+                        errorMsg: `The file “${eachFile.name}” you are trying to upload exceeds the 5MB attachment limit. Try uploading a smaller file`,
+                        fileName: eachFile.name,
+                      });
+                      return false;
+                    }
+                    return true;
+                  }
+                })
+                .map(
+                  (eachFile: File) =>
+                    new File(
+                      [eachFile],
+                      `id-${Math.random().toString(16).slice(2)}-${
+                        eachFile.name
+                      }`,
+                      { type: eachFile.type },
+                    ),
+                ),
+            );
+            setMediaValidationErrors([...mediaErrors]);
+          }
+        }}
+        data-testid="reply-uploadphoto"
+      />
     </div>
   );
 };

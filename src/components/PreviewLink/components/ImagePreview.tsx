@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { Metadata } from '../types';
 
 type ImagePreviewProps = {
@@ -6,10 +6,7 @@ type ImagePreviewProps = {
   dataTestId?: string;
 };
 
-const ImagePreview: React.FC<ImagePreviewProps> = ({
-  metaData,
-  dataTestId,
-}) => {
+const ImagePreview: FC<ImagePreviewProps> = ({ metaData, dataTestId }) => {
   return (
     <a
       href={metaData.url}
@@ -20,7 +17,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
       <img
         src={metaData?.image}
         alt={metaData?.title}
-        className="w-full h-[180px] rounded-9xl object-cover"
+        className="w-full h-[180px] object-cover rounded-t-9xl"
         data-testid="createpost-sharedlink-img"
       />
       <div className="flex flex-col bg-neutral-50 p-4 rounded-s-9xl">

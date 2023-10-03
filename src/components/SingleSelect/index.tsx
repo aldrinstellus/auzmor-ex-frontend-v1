@@ -1,8 +1,19 @@
-import React, { useMemo, useRef, useState } from 'react';
+import { ReactNode, forwardRef, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { Control, useController, Controller } from 'react-hook-form';
-import Select, { MenuPlacement, components } from 'react-select';
-import { twConfig } from 'utils/misc';
+import { Select, ConfigProvider } from 'antd';
+import './index.css';
+
+import { SelectCommonPlacement } from 'antd/es/_util/motion';
+import Icon from 'components/Icon';
+
+const { Option } = Select;
+interface IOptions {
+  value: string;
+  label: string;
+  disabled: boolean;
+  dataTestId?: string;
+}
 
 export interface ISingleSelectProps {
   name: string;
@@ -10,30 +21,44 @@ export interface ISingleSelectProps {
   disabled?: boolean;
   error?: string;
   className?: string;
+  selectClassName?: string;
   dataTestId?: string;
   control?: Control<Record<string, any>>;
   label?: string;
   placeholder?: string;
-  height?: string;
-  options: any;
-  menuPlacement: MenuPlacement;
+  height?: number;
+  fontSize?: number;
+  options: IOptions[];
+  menuPlacement: SelectCommonPlacement;
+  getPopupContainer?: any;
+  noOptionsMessage?: string;
+  suffixIcon?: ReactNode | null;
+  clearIcon?: ReactNode | null;
+  isClearable?: boolean;
 }
 
-const SingleSelect = React.forwardRef(
+const SingleSelect = forwardRef(
   (
     {
       name,
       className = '',
+      selectClassName = '',
       disabled = false,
       dataTestId = '',
       error,
       control,
       label = '',
       placeholder = '',
-      height = '44px',
       options,
       defaultValue,
-      menuPlacement = 'bottom',
+      height = 44,
+      fontSize = 14,
+      menuPlacement = 'bottomLeft',
+      getPopupContainer = null,
+      noOptionsMessage = 'No options',
+      suffixIcon = null,
+      clearIcon = null,
+      isClearable = false,
     }: ISingleSelectProps,
     ref?: any,
   ) => {
@@ -65,116 +90,92 @@ const SingleSelect = React.forwardRef(
       [error],
     );
 
-    const selectStyle = {
-      control: (styles: any) => {
-        return {
-          ...styles,
-          backgroundColor: '#fff',
-          border: '1px solid #E5E5E5',
-          borderRadius: '32px',
-          height,
-          padding: '0px 6px', // change style here because it breaking 2px
-          '&:hover': { borderColor: twConfig.theme.colors.primary['600'] },
-          borderColor: twConfig.theme.colors.primary['500'],
-          boxShadow: styles.boxShadow
-            ? `0 0 0 1px ${twConfig.theme.colors.primary['500']}`
-            : undefined,
-        };
-      },
-    };
-
-    const uniqueClassName = 'select_' + Math.random().toFixed(5).slice(2);
-    const menuListRef = useRef<HTMLDivElement>(null);
-
-    const getHeightOfMenu = () => {
-      if (menuListRef.current)
-        return getComputedStyle(menuListRef.current).height;
-    };
-
-    const animationStyles = (open: boolean) => ({
-      menu: (provided: any) => ({
-        ...provided,
-        height: open ? getHeightOfMenu() : '0px',
-        opacity: open ? 1 : 0,
-        transition: 'all 300ms ease-in-out',
-        overflow: 'hidden',
-      }),
-    });
+    const noContentFound = () => (
+      <div className="px-6 py-2 text-neutral-500 text-center">
+        {noOptionsMessage}
+      </div>
+    );
 
     const [open, setOpen] = useState<boolean>(false);
 
     return (
-      <div
-        className={clsx(
-          { [`relative ${className}`]: true },
-          { 'cursor-not-allowed': disabled },
-        )}
+      <ConfigProvider
+        theme={{
+          token: {
+            controlHeight: height,
+            fontSize: fontSize,
+            fontFamily: 'Manrope',
+          },
+        }}
       >
-        <div className={labelStyle}>{label}</div>
         <div
-          data-testid={dataTestId}
-          onClick={() => {
-            if (!disabled) {
-              setOpen(!open);
-            }
-          }}
+          className={clsx(
+            { [`relative ${className}`]: true },
+            { 'cursor-not-allowed': disabled },
+          )}
         >
-          {/* remove top margin provide it to parent div if required */}
-          <Controller
-            name={name}
-            control={control}
-            defaultValue={defaultValue}
-            render={() => (
-              <Select
-                isDisabled={disabled}
-                placeholder={placeholder}
-                styles={{
-                  menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                  ...selectStyle,
-                  ...animationStyles(open),
-                }}
-                menuIsOpen
-                options={options}
-                defaultValue={defaultValue}
-                menuPlacement={menuPlacement ? menuPlacement : undefined}
-                menuPortalTarget={document.body}
-                menuPosition="absolute"
-                components={{
-                  Option: ({ innerProps, data, isDisabled, isSelected }) => {
-                    return (
-                      <div
-                        {...innerProps}
-                        className={`px-6 py-3 hover:bg-primary-50 font-medium text-sm ${
-                          isDisabled ? 'cursor-default' : 'cursor-pointer'
-                        } ${isSelected && 'bg-primary-50'}`}
-                        data-testid={data.dataTestId}
-                      >
-                        {data.label}
-                      </div>
-                    );
-                  },
-                  MenuList: (props) => (
-                    <components.MenuList
-                      {...props}
-                      className={uniqueClassName}
-                      innerRef={menuListRef}
-                    ></components.MenuList>
-                  ),
-                }}
-                {...field}
-                onBlur={() => setOpen(false)}
-                ref={ref}
-              />
-            )}
-          />
-        </div>
+          <div className={labelStyle}>{label}</div>
+          <div
+            data-testid={dataTestId}
+            onClick={() => {
+              if (!disabled) {
+                setOpen(!open);
+              }
+            }}
+          >
+            <Controller
+              name={name}
+              control={control}
+              defaultValue={defaultValue}
+              render={() => (
+                <Select
+                  open={open}
+                  showSearch
+                  disabled={disabled}
+                  placeholder={placeholder}
+                  defaultValue={defaultValue}
+                  placement={menuPlacement ? menuPlacement : undefined}
+                  popupMatchSelectWidth={false}
+                  getPopupContainer={(triggerNode) => {
+                    if (getPopupContainer) {
+                      return getPopupContainer;
+                    }
+                    return triggerNode.parentElement;
+                  }}
+                  {...field}
+                  notFoundContent={noContentFound()}
+                  onBlur={() => setOpen(false)}
+                  onChange={(_, option) => {
+                    field.onChange(option);
+                  }}
+                  onSearch={() => setOpen(true)}
+                  className={`single-select ${selectClassName}`}
+                  suffixIcon={suffixIcon || <Icon name="arrowDown" size={18} />}
+                  clearIcon={clearIcon}
+                  ref={ref}
+                  allowClear={isClearable}
+                >
+                  {(options || []).map((option) => (
+                    <Option
+                      key={option.value}
+                      value={option.value}
+                      label={option.label}
+                    >
+                      <div data-testid={option.dataTestId}>{option.label}</div>
+                    </Option>
+                  ))}
+                </Select>
+              )}
+            />
+          </div>
 
-        <div
-          className={`absolute -bottom-4 text-xs truncate leading-tight ${helpTextStyles}`}
-        >
-          {error || ' '}
+          <div
+            className={`absolute -bottom-4 text-xs truncate leading-tight ${helpTextStyles}`}
+          >
+            {error || ' '}
+          </div>
         </div>
-      </div>
+      </ConfigProvider>
     );
   },
 );

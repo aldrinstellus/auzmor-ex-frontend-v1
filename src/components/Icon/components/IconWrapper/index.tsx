@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { ReactNode, useMemo } from 'react';
+import { FC, ReactNode, useMemo } from 'react';
 
 export enum Type {
   Square = 'SQUARE',
@@ -10,30 +10,31 @@ export interface IIconWrapperProps {
   children: ReactNode;
   type?: string;
   className?: string;
-  size?: number;
   dataTestId?: string;
+  border?: boolean;
+  onClick?: () => any;
 }
 
-const IconWrapper: React.FC<IIconWrapperProps> = ({
+const IconWrapper: FC<IIconWrapperProps> = ({
   type = Type.Square,
   className = '',
   children,
-  size = 24,
   dataTestId,
+  border = true,
+  onClick = () => null,
 }) => {
   const styles = useMemo(
     () =>
       clsx(
         {
-          'flex justify-center items-center bg-neutral-50 border-1 border-neutral-200 p-2 rounded-2xl':
+          'flex justify-center items-center bg-neutral-50 p-1 rounded-2xl group':
             true,
         },
-        // {
-        //   'rounded-2xl': type === Type.Square,
-        // },
-        // {
-        //   'rounded-full': type === Type.Circle,
-        // },
+        {
+          'border-1  border-neutral-200': border,
+        },
+        { '!rounded-full': type === Type.Circle },
+        { 'cursor-pointer': !!onClick },
         {
           [className]: true,
         },
@@ -41,16 +42,8 @@ const IconWrapper: React.FC<IIconWrapperProps> = ({
     [type, className],
   );
 
-  const divStyle = useMemo(
-    () => ({
-      height: `${size}px`,
-      width: `${size}px`,
-    }),
-    [size],
-  );
-
   return (
-    <div className={styles} style={divStyle} data-testid={dataTestId}>
+    <div className={styles} data-testid={dataTestId} onClick={onClick}>
       {children}
     </div>
   );

@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { FC, RefObject, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import Layout, { FieldType } from 'components/Form';
 import Modal from 'components/Modal';
@@ -11,10 +13,10 @@ import DefaultCoverImage from 'images/png/CoverImage.png';
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import Avatar from 'components/Avatar';
 import { Variant as InputVariant } from 'components/Input';
-import { twConfig } from 'utils/misc';
+import { getProfileImage, twConfig } from 'utils/misc';
 import { IUpdateProfileImage } from 'pages/UserDetail';
 import { useMutation } from '@tanstack/react-query';
-import { updateCurrentUser } from 'queries/users';
+import { updateCurrentUser, updateUserById } from 'queries/users';
 import useAuth from 'hooks/useAuth';
 import queryClient from 'utils/queryClient';
 import Header from 'components/ModalHeader';
@@ -24,6 +26,12 @@ import SuccessToast from 'components/Toast/variants/SuccessToast';
 import Icon from 'components/Icon';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
+import { useGooglePlaces } from 'queries/location';
+import { useInfiniteDepartments } from 'queries/department';
+import useRole from 'hooks/useRole';
+import { useInfiniteDesignations } from 'queries/designation';
+import { useDebounce } from 'hooks/useDebounce';
+import { useParams } from 'react-router-dom';
 
 interface IOptions {
   value: string;
@@ -32,10 +40,10 @@ interface IOptions {
 
 export interface IUpdateProfileForm {
   fullName: string;
-  designation: IOptions;
-  department: IOptions;
+  designation: IOptions | null;
+  department: IOptions | null;
   preferredName: string;
-  workLocation: IOptions;
+  workLocation: IOptions | null;
 }
 
 interface IEditProfileModal {
@@ -45,14 +53,18 @@ interface IEditProfileModal {
   openEditImageModal: () => void;
   imageFile: IUpdateProfileImage | Record<string, any>;
   setImageFile?: (file: IUpdateProfileImage | Record<string, any>) => void;
-  userProfileImageRef: React.RefObject<HTMLInputElement> | null;
-  userCoverImageRef: React.RefObject<HTMLInputElement> | null;
+  userProfileImageRef: RefObject<HTMLInputElement> | null;
+  userCoverImageRef: RefObject<HTMLInputElement> | null;
   dataTestId?: string;
   isCoverImageRemoved?: boolean;
   setIsCoverImageRemoved?: (flag: boolean) => void;
 }
 
-const EditProfileModal: React.FC<IEditProfileModal> = ({
+const EditProfileSchema = yup.object({
+  fullName: yup.string().required('This field cannot be empty'),
+});
+
+const EditProfileModal: FC<IEditProfileModal> = ({
   userDetails,
   openEditProfile,
   closeEditProfileModal,
@@ -65,40 +77,86 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
   isCoverImageRemoved = false,
   setIsCoverImageRemoved = () => {},
 }) => {
+  const { isAdmin } = useRole();
+  const { userId = '' } = useParams();
   const {
     control,
     handleSubmit,
     getValues,
+    reset,
     formState: { errors, isValid },
   } = useForm<IUpdateProfileForm>({
-    mode: 'onSubmit',
+    resolver: yupResolver(EditProfileSchema),
+    mode: 'onChange',
     defaultValues: {
       fullName: userDetails?.fullName,
       preferredName: userDetails?.preferredName,
-      designation: {
-        value: userDetails?.designation,
-        label: userDetails?.designation,
-      },
-      workLocation: {
-        value: userDetails?.workLocation,
-        label: userDetails?.workLocation,
-      },
-      department: {
-        value: userDetails?.department,
-        label: userDetails?.department,
-      },
+      designation: userDetails?.designation?.name
+        ? {
+            value: userDetails?.designation?.name,
+            label: userDetails?.designation?.name,
+          }
+        : null,
+      workLocation: userDetails?.workLocation?.name
+        ? {
+            value: userDetails?.workLocation?.name,
+            label: userDetails?.workLocation?.name,
+          }
+        : null,
+      department: userDetails?.department?.name
+        ? {
+            value: userDetails?.department?.name,
+            label: userDetails?.department?.name,
+          }
+        : null,
     },
   });
+
+  const formatCreatableOptions = (data: any, dataTestId: string) => {
+    const optionsData = data?.pages.flatMap((page: any) => {
+      return page?.data?.result?.data.map((option: any) => {
+        try {
+          return { ...option, label: option.name };
+        } catch (e) {
+          console.log('Error', { option });
+        }
+      });
+    });
+    console.log('OPTIONS DATA FLAT >>>>>', optionsData);
+    const transformedOption = optionsData?.map((option: any) => ({
+      value: option?.departmentId || option?.designationId,
+      label: option?.name,
+      id: option?.departmentId || option?.designationId,
+      dataTestId: `${dataTestId}-${option?.name}`,
+    }));
+    return transformedOption;
+  };
+
+  const [locationSearchString, setLocationSearchString] = useState<string>('');
+
+  // fetch members on search
+  const debouncedLocationSearchValue = useDebounce(
+    locationSearchString || 'a',
+    300,
+  );
+  const { data: fetchedLocations, isLoading: isLocationsLoading } =
+    useGooglePlaces({
+      q: debouncedLocationSearchValue,
+    });
 
   const nameField = [
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
       defaultValue: getValues().fullName,
+      error: errors.fullName?.message,
       name: 'fullName',
-      label: 'Name*',
+      label: 'Name',
+      required: true,
       dataTestId: `${dataTestId}-name`,
+      disabled: userDetails.freezeEdit?.fullName,
       control,
+      inputClassName: 'h-[40px] !text-sm',
     },
   ];
 
@@ -111,56 +169,75 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       label: 'Preferred Name',
       dataTestId: `${dataTestId}-perferred-name`,
       control,
+      inputClassName: 'h-[40px] !text-sm',
     },
   ];
 
   const positionTitlefields = [
     {
-      type: FieldType.SingleSelect,
+      type: FieldType.CreatableSearch,
+      variant: InputVariant.Text,
       name: 'designation',
       defaultValue: getValues().designation,
-      dataTestId: `${dataTestId}`,
+      placeholder: 'ex. software engineer',
+      dataTestId: `${dataTestId}-title`,
       label: 'Position title',
-      disabled: true,
-      options: [
-        { value: 'Software Engineer', label: 'Software Engineer' },
-        { value: 'Research Analyst', label: 'Research Analyst' },
-      ],
+      disabled: userDetails.freezeEdit?.designation,
       control,
-      menuPlacement: 'top',
+      fetchQuery: (q: any) =>
+        useInfiniteDesignations({ q, startFetching: true }),
+      getFormattedData: (data: any) =>
+        formatCreatableOptions(data, 'designation-option'),
+      queryParams: {},
+      disableCreate: !isAdmin,
+      getPopupContainer: document.body,
+      noOptionsMessage: 'No Designations found',
+      height: 40,
     },
   ];
 
-  // const departmentField = [
-  //   {
-  //     type: FieldType.SingleSelect,
-  //     name: 'department',
-  //     // defaultValue: data?.department,
-  //     // placeholder: 'ex. Engineering',
-  //     label: 'Department',
-  //     dataTestId: `${dataTestId}`,
-  //     options: [
-  //       { value: 'Sales and Marketing', label: 'Sales and Marketing' },
-  //       { value: 'Engineering', label: 'Engineering' },
-  //     ],
-  //     control,
-  //   },
-  // ];
+  const departmentField = [
+    {
+      type: FieldType.CreatableSearch,
+      name: 'department',
+      defaultValue: getValues().department,
+      placeholder: 'ex. engineering',
+      label: 'Department',
+      dataTestId: `${dataTestId}-department`,
+      fetchQuery: useInfiniteDepartments,
+      getFormattedData: (data: any) =>
+        formatCreatableOptions(data, 'dept-option'),
+      queryParams: {},
+      disabled: userDetails.freezeEdit?.department,
+      disableCreate: !isAdmin,
+      getPopupContainer: document.body,
+      noOptionsMessage: 'No Departments found',
+      height: 40,
+      control,
+    },
+  ];
 
   const locationField = [
     {
-      type: FieldType.SingleSelect,
-      name: 'workLocation',
-      disabled: true,
-      defaultValue: getValues().workLocation?.label,
-      dataTestId: `${dataTestId}`,
-      label: 'Location',
-      options: [
-        { value: 'Mumbai, India', label: 'Mumbai, India' },
-        { value: 'Hydrabad, Talangana', label: 'Hydrabad, Talangana' },
-      ],
+      type: FieldType.AsyncSingleSelect,
       control,
-      menuPlacement: 'top',
+      name: 'workLocation',
+      defaultValue: getValues().workLocation,
+      dataTestId: `${dataTestId}-location`,
+      placeholder: 'Select a location',
+      label: 'Location',
+      options:
+        fetchedLocations?.map((location: any) => ({
+          value: location.name.description,
+          label: location.name.description,
+          dataTestId: `${dataTestId}-location-${location.name.description}`,
+        })) || [],
+      onSearch: (searchString: string) => setLocationSearchString(searchString),
+      noOptionsMessage: 'No locations',
+      height: 40,
+      isLoading: isLocationsLoading,
+      getPopupContainer: document.body,
+      menuPlacement: 'topLeft',
     },
   ];
 
@@ -179,6 +256,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
       label: 'Reposition',
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
+        reset();
         openEditImageModal();
         closeEditProfileModal();
       },
@@ -214,37 +292,38 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
   );
 
   const updateUsersMutation = useMutation({
-    mutationFn: updateCurrentUser,
+    mutationFn: userId
+      ? (data: any) => updateUserById(userId, data)
+      : updateCurrentUser,
     mutationKey: ['update-users-mutation'],
     onError: (error: any) => {
       console.log('API call resulted in error: ', error);
     },
     onSuccess: async (response: Record<string, any>) => {
       const userUpdateResponse = response?.result?.data;
-      updateUser({
-        name: userUpdateResponse.fullName,
-        id: userUpdateResponse.id,
-        email: userUpdateResponse.primaryEmail,
-        role: userUpdateResponse.role,
-        organization: {
-          id: userUpdateResponse.org?.id,
-          domain: userUpdateResponse.org?.domain,
-        },
-        workLocation: userUpdateResponse.workLocation,
-        preferredName: userUpdateResponse.preferredName,
-        designation: userUpdateResponse.designation,
-        // department: userUpdateResponse.department,
-        location: userUpdateResponse.location,
-        profileImage: userUpdateResponse.profileImage?.original,
-        coverImage: userUpdateResponse.profileImage?.original,
-      });
+      if (!userId) {
+        updateUser({
+          name: userUpdateResponse.fullName,
+          id: userUpdateResponse.id,
+          email: userUpdateResponse.primaryEmail,
+          role: userUpdateResponse.role,
+          organization: {
+            id: userUpdateResponse.org?.id,
+            domain: userUpdateResponse.org?.domain,
+          },
+          workLocation: userUpdateResponse.workLocation,
+          preferredName: userUpdateResponse.preferredName,
+          designation: userUpdateResponse.designation,
+          department: userUpdateResponse.department,
+          location: userUpdateResponse.location,
+          profileImage: userUpdateResponse.profileImage?.original,
+          coverImage: userUpdateResponse.profileImage?.original,
+        });
+      }
+
       toast(<SuccessToast content={'User Profile Updated Successfully'} />, {
         closeButton: (
-          <Icon
-            name="closeCircleOutline"
-            stroke={twConfig.theme.colors.primary['500']}
-            size={20}
-          />
+          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
         ),
         style: {
           border: `1px solid ${twConfig.theme.colors.primary['300']}`,
@@ -254,19 +333,26 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
         },
         autoClose: TOAST_AUTOCLOSE_TIME,
         transition: slideInAndOutTop,
+        theme: 'dark',
       });
+      reset();
       closeEditProfileModal();
-      await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
+      await queryClient.invalidateQueries({ queryKey: ['departments'] });
+      if (userId) {
+        await queryClient.invalidateQueries(['user', userId]);
+      } else {
+        await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
+      }
     },
   });
 
   const onSubmit = async (user: IUpdateProfileForm) => {
     updateUsersMutation.mutate({
       fullName: user.fullName,
-      designation: user?.designation?.value,
+      designation: user?.designation?.label,
       preferredName: user?.preferredName,
-      // department: user?.department?.value,
-      workLocation: user?.workLocation?.value,
+      department: user?.department?.label,
+      workLocation: user?.workLocation?.label,
       ...(isCoverImageRemoved && {
         coverImage: {
           fileId: '',
@@ -279,12 +365,13 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
     if (updateUsersMutation.isLoading) {
       return null;
     } else {
+      reset();
       return closeEditProfileModal();
     }
   };
 
   return (
-    <Modal open={openEditProfile}>
+    <Modal open={openEditProfile} className="max-w-[638px] max-h-[605px]">
       <form>
         <Header title="Edit Profile" onClose={disableClosed} />
         <div className="relative">
@@ -317,12 +404,12 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
             menuItems={coverImageOption}
           />
         </div>
-        <div className="ml-8 mb-8 flex items-center">
+        <div className="ml-8 flex items-center">
           <div className="-mt-20">
             <div className="relative">
               <Avatar
                 name={userDetails?.fullName}
-                image={userDetails?.profileImage?.original}
+                image={getProfileImage(userDetails)}
                 size={96}
                 className="border-2 border-white overflow-hidden"
               />
@@ -342,14 +429,18 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
             </div>
           </div>
         </div>
-        <div className="mx-4 px-2 mb-10 pb-4 space-y-6 overflow-y-auto">
-          <div className="w-full flex space-x-6">
-            <Layout fields={nameField} className="w-2/4" />
-            <Layout fields={preferredNameField} className="w-2/4" />
+        <div className="max-h-[300px] mr-1 my-[23px] overflow-y-auto">
+          <div className="ml-4 mr-3 px-2 pb-4 space-y-4">
+            <div className="w-full flex space-x-6">
+              <Layout fields={nameField} className="w-2/4" />
+              <Layout fields={preferredNameField} className="w-2/4" />
+            </div>
+            <div className="flex items-center gap-6">
+              <Layout fields={positionTitlefields} className="w-2/4" />
+              <Layout fields={departmentField} className="w-2/4" />
+            </div>
+            <Layout fields={locationField} />
           </div>
-          <Layout fields={positionTitlefields} />
-          {/* <Layout fields={departmentField} className="w-2/4" /> */}
-          <Layout fields={locationField} />
         </div>
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
@@ -358,6 +449,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
             label={'Cancel'}
             className="mr-3"
             onClick={() => {
+              reset();
               closeEditProfileModal();
             }}
             dataTestId={`${dataTestId}-cancel`}
@@ -365,6 +457,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = ({
           <Button
             label={'Save Changes'}
             size={Size.Small}
+            disabled={!isValid}
             onClick={handleSubmit(onSubmit)}
             loading={updateUsersMutation.isLoading}
             dataTestId={`${dataTestId}-savechanges `}

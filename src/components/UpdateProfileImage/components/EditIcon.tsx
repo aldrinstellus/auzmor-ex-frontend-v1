@@ -1,12 +1,12 @@
 import Icon from 'components/Icon';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 
 type EditIconProps = {
   setProfilePicture: (file: File[]) => void;
   dataTestId?: string;
 };
 
-const EditIcon: React.FC<EditIconProps> = ({
+const EditIcon: FC<EditIconProps> = ({
   setProfilePicture,
   dataTestId,
 }): ReactElement => {
@@ -26,8 +26,7 @@ const EditIcon: React.FC<EditIconProps> = ({
       <Icon
         name="edit"
         className="absolute bg-primary-500 border-1 border-white rounded-full p-2 cursor-pointer top-0 right-0"
-        stroke="#ffffff"
-        hover={false}
+        color="text-white"
       />
     </label>
   );

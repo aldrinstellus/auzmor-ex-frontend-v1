@@ -5,7 +5,7 @@ import Button, {
 import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import { Variant } from 'components/Input';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import { IConnectionSettingsForm } from './ConfigureLDAP';
 
 type ConnectionSettingsProps = {
@@ -18,7 +18,7 @@ type ConnectionSettingsProps = {
   isError: boolean;
 };
 
-const ConnectionSettings: React.FC<ConnectionSettingsProps> = ({
+const ConnectionSettings: FC<ConnectionSettingsProps> = ({
   connectionSettingsData,
   connectionSettingsControl,
   connectionSettingsFormState,

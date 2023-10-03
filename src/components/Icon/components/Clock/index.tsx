@@ -1,29 +1,5 @@
-import React from 'react';
-import useHover from 'hooks/useHover';
-import { default as ClockFilled } from './ClockFilled';
+import { default as ClockOutline } from './ClockOutline';
 
-type IconProps = {
-  size?: number;
-  className?: string;
-  hover?: boolean;
-  disabled?: boolean;
-  onClick?: () => void;
-};
-
-const ClockIcon: React.FC<IconProps> = ({
-  hover,
-  onClick,
-  className = '',
-  disabled,
-  ...props
-}) => {
-  const [isHovered, eventHandlers] = useHover();
-
-  return (
-    <div onClick={onClick} className={className} {...eventHandlers}>
-      <ClockFilled {...props} />
-    </div>
-  );
-};
+const ClockIcon = ClockOutline;
 
 export default ClockIcon;

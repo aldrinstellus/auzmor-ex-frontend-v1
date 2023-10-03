@@ -1,12 +1,12 @@
 import Icon from 'components/Icon';
 import { Logo } from 'components/Logo';
-import React, { ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 
 interface IInviteLinkExpiredProps {
   message?: string;
 }
 
-const InviteLinkExpired: React.FC<IInviteLinkExpiredProps> = ({
+const InviteLinkExpired: FC<IInviteLinkExpiredProps> = ({
   message,
 }: IInviteLinkExpiredProps): ReactElement => {
   return (
@@ -15,7 +15,7 @@ const InviteLinkExpired: React.FC<IInviteLinkExpiredProps> = ({
         <Logo />
       </div>
       <div className="w-screen h-screen flex flex-col items-center justify-center gap-y-3">
-        <Icon name="infoCircle" fill="#F05252" hover size={50} />
+        <Icon name="infoCircle" color="text-[#F05252]" hover size={50} />
         {message ? (
           <p className="font-normal text-neutral-900 text-sm">{message}</p>
         ) : (

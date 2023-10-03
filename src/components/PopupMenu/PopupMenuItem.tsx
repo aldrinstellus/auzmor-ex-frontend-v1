@@ -1,48 +1,66 @@
-import React from 'react';
 import { IMenuItem } from '.';
 import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
 import useHover from 'hooks/useHover';
+import clsx from 'clsx';
+import { FC, RefObject } from 'react';
 
 type PopupMenuItemProps = {
   menuItem: IMenuItem;
-  menuButtonRef: React.RefObject<HTMLButtonElement>;
+  menuButtonRef: RefObject<HTMLButtonElement>;
+  border?: boolean;
 };
 
-const PopupMenuItem: React.FC<PopupMenuItemProps> = ({
+const PopupMenuItem: FC<PopupMenuItemProps> = ({
   menuItem,
   menuButtonRef,
+  border = false,
 }) => {
   const [hovered, eventHandlers] = useHover();
+  // const itemRef = useRef<HTMLButtonElement>(null);
   return (
     <div
-      className={`flex px-6 py-3 items-center hover:bg-primary-50 cursor-pointer space-x-3 ${
-        menuItem.disabled && '!cursor-default'
-      }`}
+      className={clsx(
+        {
+          'flex px-6 py-3 items-center hover:bg-primary-50 cursor-pointer space-x-3 group':
+            true,
+        },
+        { 'border-b-1 border-b-neutral-200': border },
+        { '!cursor-default': menuItem.disabled },
+        { 'bg-primary-50': menuItem.isActive },
+      )}
       onClick={() => {
         menuButtonRef.current?.click();
         menuItem?.onClick && menuItem.onClick();
       }}
       {...eventHandlers}
+      data-testid={menuItem.dataTestId}
     >
       {menuItem.icon && (
-        <Icon
-          name={menuItem.icon}
-          size={16}
-          className={menuItem.iconClassName}
-          fill={menuItem.fill || twConfig.theme.colors.primary['500']}
-          stroke={
-            (menuItem.disabled && twConfig.theme.colors.neutral['200']) ||
-            menuItem.stroke
-          }
-          hover={hovered}
-          disabled={menuItem.disabled}
-        />
+        <div className={menuItem.iconWrapperClassName}>
+          <Icon
+            name={menuItem.icon}
+            size={16}
+            color={
+              menuItem.isActive
+                ? 'text-primary-500'
+                : (menuItem.disabled && 'text-neutral-200') || menuItem.stroke
+            }
+            className={menuItem.iconClassName}
+            hover={hovered}
+            disabled={menuItem.disabled}
+          />
+        </div>
       )}
       <div
-        className={`text-sm text-neutral-900 font-medium whitespace-nowrap ${
-          menuItem.disabled && '!text-neutral-400'
-        }`}
+        className={clsx(
+          { 'text-sm text-neutral-900 font-medium whitespace-nowrap': true },
+          {
+            'text-primary-500':
+              !menuItem.disabled && (hovered || menuItem.isActive),
+          },
+          { '!text-neutral-400': menuItem.disabled },
+          { [`${menuItem.labelClassName}`]: true },
+        )}
       >
         {menuItem.label}
       </div>

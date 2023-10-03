@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { checkLogin, login } from 'queries/account';
-import React, { useEffect, useState } from 'react';
+import { login } from 'queries/account';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
@@ -17,11 +16,12 @@ import {
   readFirstAxiosError,
   redirectWithToken,
 } from 'utils/misc';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useGetSSOFromDomain } from 'queries/organization';
 import { useLoginViaSSO } from 'queries/auth';
 import 'utils/custom-yup-validators/email/validateEmail';
+import { FC } from 'react';
 
 export interface ILoginViaCredProps {
   setViaSSO: (flag: boolean) => void;
@@ -44,7 +44,7 @@ const schema = yup.object({
   domain: yup.string(),
 });
 
-const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
+const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
   const loginMutation = useMutation((formData: IForm) => login(formData), {
     onSuccess: (data) =>
       redirectWithToken({
@@ -54,10 +54,7 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
   });
 
   const domain = getSubDomain(window.location.host);
-  const { data, isLoading } = useGetSSOFromDomain(
-    domain,
-    domain !== '' ? true : false,
-  );
+  const { data } = useGetSSOFromDomain(domain, domain !== '' ? true : false);
 
   const { refetch } = useLoginViaSSO(
     { domain },
@@ -85,11 +82,6 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
     loginMutation.mutate({ ...formData, domain });
   };
 
-  // if (user) {
-  //   redirectWithToken({});
-  //   return null;
-  // }
-
   const fields = [
     {
       type: FieldType.Input,
@@ -101,6 +93,7 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
       dataTestId: 'signin-email',
       errorDataTestId: 'signin-invalid-email-format-msg',
       control,
+      inputClassName: 'h-[44px]',
     },
     {
       type: FieldType.Password,
@@ -112,19 +105,18 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
       dataTestId: 'signin-password',
       control,
       showChecks: false,
+      inputClassName: 'h-[44px]',
     },
   ];
 
   return (
-    <div className="w-full max-w-[440px] h-full">
-      <div className="font-extrabold text-neutral-900 text-4xl mt-20">
-        Signin
-      </div>
+    <div className="w-full max-w-[414px]">
+      <div className="font-extrabold text-neutral-900 text-4xl">Signin</div>
       <div className="text-neutral-900 text-sm font-normal mt-4">
         Hello! Welcome back <span>👋</span>
       </div>
       <form
-        className="mt-16"
+        className="mt-10"
         onSubmit={handleSubmit(onSubmit)}
         data-testid="signin-form"
       >
@@ -147,7 +139,9 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
           data-testId="signin-forgot-password"
         >
           <Link to="/forgot-password">
-            <div className="font-bold text-sm">Forgot Password?</div>
+            <div className="font-bold text-xs leading-[18px]">
+              Forgot Password?
+            </div>
           </Link>
         </div>
         <Button
@@ -176,7 +170,7 @@ const LoginViaCred: React.FC<ILoginViaCredProps> = ({ setViaSSO }) => {
             label={'Sign In via SSO'}
             variant={ButtonVariant.Secondary}
             size={Size.Large}
-            className="w-full mt-8"
+            className="w-full mt-8 h-[44px]"
             disabled={loginMutation.isLoading}
             onClick={() => {
               if (domain) {

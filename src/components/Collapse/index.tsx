@@ -1,18 +1,24 @@
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 import useModal from 'hooks/useModal';
-import React, { ReactElement, ReactNode, useMemo } from 'react';
+import { FC, ReactElement, ReactNode, useMemo } from 'react';
 
 type CollapseProps = {
   label: string;
   children: ReactNode;
   className?: string;
+  headerClassName?: string;
+  headerTextClassName?: string;
+  dataTestId?: string;
 };
 
-const Collapse: React.FC<CollapseProps> = ({
+const Collapse: FC<CollapseProps> = ({
   label,
   children,
-  className = '',
+  className,
+  headerClassName = '',
+  headerTextClassName = '',
+  dataTestId,
 }): ReactElement => {
   // If you think about it, modal has similar interactivity as collapse
   const [open, openCollpase, closeCollapse] = useModal();
@@ -21,31 +27,37 @@ const Collapse: React.FC<CollapseProps> = ({
     else openCollpase();
   };
 
-  const styles = useMemo(
+  const headerStyle = useMemo(
     () =>
-      clsx(
-        {
-          'flex flex-col': true,
-        },
-        {
-          [className]: true,
-        },
-      ),
-    [className],
+      clsx({
+        'flex items-center justify-between cursor-pointer': true,
+        [headerClassName]: true,
+      }),
+    [],
+  );
+
+  const headerTextStyle = useMemo(
+    () =>
+      clsx({
+        'text-neutral-500 font-bold text-sm': true,
+        [headerTextClassName]: true,
+      }),
+    [],
   );
 
   return (
-    <div className="">
-      <div
-        className="flex items-center justify-between cursor-pointer pb-5"
-        onClick={toggleModal}
-      >
-        <div className=" text-neutral-500 font-bold text-base">{label}</div>
+    <div className={className} data-testid={dataTestId}>
+      <div className={headerStyle} onClick={toggleModal}>
+        <div className={headerTextStyle}>{label}</div>
         <div>
           <Icon name={open ? 'arrowUp' : 'arrowDown'} />
         </div>
       </div>
-      <div className={`py-0 ${open ? 'max-h-fit' : 'max-h-0'} overflow-hidden`}>
+      <div
+        className={`py-0 ${
+          open ? 'h-full' : 'h-0'
+        } overflow-hidden transition-all duration-300 ease-in-out`}
+      >
         {children}
       </div>
     </div>

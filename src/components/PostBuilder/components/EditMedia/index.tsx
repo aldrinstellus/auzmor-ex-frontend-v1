@@ -3,10 +3,9 @@ import Button, {
   Size as ButtonSize,
 } from 'components/Button';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import React, { useContext, useEffect, useRef } from 'react';
-import { getBlobUrl, isVideo, twConfig } from 'utils/misc';
+import { FC, useContext, useRef } from 'react';
+import { getBlobUrl, isVideo } from 'utils/misc';
 import useCarousel from 'hooks/useCarousel';
-// import SwitchToggle from 'components/SwitchToggle';
 import Header from 'components/ModalHeader';
 import Body from './Body';
 import Footer from './Footer';
@@ -16,7 +15,7 @@ export interface IEditMediaProps {
   closeModal: () => void;
 }
 
-const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
+const EditMedia: FC<IEditMediaProps> = ({ closeModal }) => {
   const {
     setActiveFlow,
     media,
@@ -68,7 +67,7 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
               label="Upload image"
               leftIcon="exportOutline"
               leftIconClassName="mr-1"
-              iconStroke={twConfig.theme.colors.neutral['900']}
+              iconColor="text-neutral-900"
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Small}
               onClick={() => uploadCoverImageRef.current?.click()}
@@ -101,11 +100,7 @@ const EditMedia: React.FC<IEditMediaProps> = ({ closeModal }) => {
                     );
                   }}
                 >
-                  <Icon
-                    name="closeCircle"
-                    size={16}
-                    stroke={twConfig.theme.colors.neutral['900']}
-                  />
+                  <Icon name="closeCircle" size={16} color="text-neutral-900" />
                 </div>
               </div>
             )}

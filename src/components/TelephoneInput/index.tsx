@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import { FC, ReactElement, useEffect, useState } from 'react';
 import { Control, useController } from 'react-hook-form';
 import { usePhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
@@ -18,14 +18,14 @@ type TelephoneInputProps = {
   errorDataTestId?: string;
 };
 
-const TelephoneInput: React.FC<TelephoneInputProps> = ({
+const TelephoneInput: FC<TelephoneInputProps> = ({
   name,
   label,
-  className,
+  // className,
   disabled,
   control,
   dataTestId,
-  errorDataTestId,
+  // errorDataTestId,
 }): ReactElement => {
   const { field } = useController({
     name,
@@ -71,27 +71,24 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
   return (
     <div>
       <p className="text-sm text-neutral-900 font-bold truncate">{label}</p>
-      <div className="flex items-center justify-between relative">
+      <div className="flex items-center justify-between relative my-1">
         <Button
           label={
-            <div className="flex items-center justify-between gap-x-4">
-              <div className="flex items-center gap-x-1">
-                <p className="text-2xl">{selectedCountry.flag}</p>
-                <p className="text-base">{selectedCountry.dialCode}</p>
-              </div>
+            <div className="flex items-center justify-between gap-x-2">
+              <p className="text-sm font-medium">{selectedCountry.dialCode}</p>
               <Icon name={showDropdown ? 'arrowUp' : 'arrowDown'} size={16} />
             </div>
           }
           variant={Variant.Secondary}
           size={Size.Small}
           onClick={() => setShowDropdown(!showDropdown)}
-          className=" min-w-[130px] max-w-[130px] max-h-11"
+          className=" min-w-[77px] max-w-[77px] px-5 py-[9px]"
           disabled={disabled}
           dataTestId={`${dataTestId}-countrycode`}
         />
 
         {showDropdown && (
-          <Card className="absolute left-0 top-12 p-4 w-96 shadow-xl">
+          <Card className="absolute z-50 left-0 top-12 p-4 w-96 shadow-xl">
             <div className="flex relative items-center w-full">
               <div className="absolute ml-5">
                 <Icon name="search" size={16} disabled />
@@ -141,7 +138,7 @@ const TelephoneInput: React.FC<TelephoneInputProps> = ({
             )
           }
           data-testid={`${dataTestId}-number`}
-          className="ml-3 w-full rounded-19xl border border-neutral-200 focus:outline-none h-12 px-4"
+          className="ml-2 w-full rounded-full text-sm font-medium border border-neutral-200 focus:outline-none px-5 py-[9px]"
         />
       </div>
     </div>

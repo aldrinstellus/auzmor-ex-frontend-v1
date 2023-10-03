@@ -1,14 +1,18 @@
-import React, {
-  LegacyRef,
+import {
+  FC,
   ReactNode,
+  RefObject,
   createContext,
   useRef,
   useState,
 } from 'react';
 import { DeltaStatic } from 'quill';
 import { getBlobUrl, getMediaObj } from 'utils/misc';
+import { IAudience, IPost, PostType } from 'queries/post';
+import { IGetUser } from 'queries/users';
 
 export interface ICreatePostProviderProps {
+  data?: IPost;
   children?: ReactNode;
 }
 
@@ -16,6 +20,10 @@ export enum CreatePostFlow {
   CreatePost = 'CREATE_POST',
   CreateAnnouncement = 'CREATE_ANNOUNCEMENT',
   EditMedia = 'EDIT_MEDIA',
+  CreatePoll = 'CREATE_POLL',
+  SchedulePost = 'SCHEDULE_POST',
+  Audience = 'AUDIENCE',
+  CreateShoutout = 'CREATE_SHOUTOUT',
 }
 
 export interface IAnnouncement {
@@ -26,6 +34,20 @@ export interface IAnnouncement {
 export const IMG_FILE_SIZE_LIMIT = 5; //MB
 export const VIDEO_FILE_SIZE_LIMIT = 2; //GB
 export const MEDIA_LIMIT = 10; // number of media can be uploaded
+
+export interface IPollOption {
+  _id?: string; //Has to be reverted to id once BE is fixed
+  text: string;
+  votes?: number;
+}
+
+export interface IPoll {
+  question: string;
+  closedAt: any;
+  total?: number;
+  options: IPollOption[];
+  datepickerValue?: Date;
+}
 
 export interface ICreatePostContext {
   activeFlow: CreatePostFlow;
@@ -38,8 +60,8 @@ export interface ICreatePostContext {
   files: File[];
   setFiles: (files: File[]) => void;
   setMedia: (media: IMedia[]) => void;
-  inputImgRef: React.RefObject<HTMLInputElement> | null;
-  inputVideoRef: React.RefObject<HTMLInputElement> | null;
+  inputImgRef: RefObject<HTMLInputElement> | null;
+  inputVideoRef: RefObject<HTMLInputElement> | null;
   setUploads: (uploads: File[], isCoverImage?: boolean) => void;
   replaceMedia: (index: number, data: File) => void;
   removeMedia: (index: number, callback?: () => void) => void;
@@ -51,6 +73,8 @@ export interface ICreatePostContext {
   setIsPreviewRemoved: (flag: boolean) => void;
   isCharLimit: boolean;
   setIsCharLimit: (flag: boolean) => void;
+  isEmpty: boolean;
+  setIsEmpty: (flag: boolean) => void;
   coverImageMap: ICoverImageMap[];
   setCoverImageMap: (coverImage: ICoverImageMap[]) => void;
   updateCoverImageMap: (map: ICoverImageMap) => void;
@@ -66,6 +90,20 @@ export interface ICreatePostContext {
   ) => void;
   mediaOpenIndex: number;
   setMediaOpenIndex: (index: number) => void;
+  poll: IPoll | null;
+  setPoll: (pollContext: IPoll | null) => void;
+  schedule: ISchedule | null;
+  setSchedule: (schedule: ISchedule | null) => void;
+  audience: IAudience[] | null;
+  setAudience: (audience: IAudience[] | null) => void;
+  shoutoutUserIds: string[];
+  setShoutoutUserIds: (ids: string[]) => void;
+  shoutoutUsers: Record<string, false | IGetUser>;
+  setShoutoutUsers: (users: Record<string, false | IGetUser>) => void;
+  setShoutoutTemplate: (params: any) => void;
+  shoutoutTemplate: any;
+  postType: PostType | null;
+  setPostType: (type: PostType) => void;
 }
 
 export enum MediaValidationError {
@@ -84,13 +122,19 @@ export interface IMediaValidationError {
 export interface IEditorValue {
   text: string;
   html: string;
-  json: DeltaStatic;
+  editor: DeltaStatic;
 }
 
 export interface ITranscodedData {
   l: string;
   m: string;
   s: string;
+}
+
+export interface ISchedule {
+  timezone: string;
+  date: string;
+  time: string;
 }
 
 export interface IMedia {
@@ -120,7 +164,7 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setActiveFlow: () => {},
   announcement: null,
   setAnnouncement: () => {},
-  editorValue: { html: '', json: {} as DeltaStatic, text: '' },
+  editorValue: { html: '', editor: {} as DeltaStatic, text: '' },
   setEditorValue: () => {},
   media: [],
   setMedia: () => {},
@@ -139,6 +183,8 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setIsPreviewRemoved: () => {},
   isCharLimit: false,
   setIsCharLimit: () => {},
+  isEmpty: false,
+  setIsEmpty: () => {},
   coverImageMap: [],
   setCoverImageMap: () => {},
   updateCoverImageMap: () => {},
@@ -152,25 +198,43 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   setMediaValidationErrors: () => {},
   mediaOpenIndex: 0,
   setMediaOpenIndex: () => {},
+  poll: null,
+  setPoll: () => {},
+  schedule: null,
+  setSchedule: () => {},
+  audience: null,
+  setAudience: () => {},
+  shoutoutUserIds: [],
+  setShoutoutUserIds: () => {},
+  shoutoutUsers: {},
+  setShoutoutUsers: () => {},
+  setShoutoutTemplate: () => {},
+  shoutoutTemplate: {},
+  postType: PostType.Update,
+  setPostType: () => {},
 });
 
-const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
+const CreatePostProvider: FC<ICreatePostProviderProps> = ({
   children,
+  data,
 }) => {
   const [activeFlow, setActiveFlow] = useState(CreatePostFlow.CreatePost);
   const [announcement, setAnnouncement] = useState<null | IAnnouncement>(null);
-  const [editorValue, setEditorValue] = useState<IEditorValue>({
-    html: '',
-    json: {} as DeltaStatic,
-    text: '',
-  });
-  const [media, setMedia] = useState<IMedia[]>([]);
+  const [editorValue, setEditorValue] = useState<IEditorValue>(
+    data?.content || {
+      html: '',
+      editor: {} as DeltaStatic,
+      text: '',
+    },
+  );
+  const [media, setMedia] = useState<IMedia[]>((data?.files as IMedia[]) || []);
   const inputImgRef = useRef<HTMLInputElement>(null);
   const inputVideoRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isPreviewRemoved, setIsPreviewRemoved] = useState<boolean>(false);
   const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
+  const [isEmpty, setIsEmpty] = useState<boolean>(true);
   const [coverImageMap, setCoverImageMap] = useState<ICoverImageMap[]>([]);
   const [removedCoverimageFileIds, setRemovedCoverimageFileIds] = useState<
     string[]
@@ -182,12 +246,23 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     IMediaValidationError[]
   >([]);
   const [mediaOpenIndex, setMediaOpenIndex] = useState<number>(-1);
+  const [poll, setPoll] = useState<IPoll | null>(null);
+  const [schedule, setSchedule] = useState<ISchedule | null>(null);
+  const [audience, setAudience] = useState<IAudience[] | null>(
+    data?.audience || null,
+  );
+  const [shoutoutUserIds, setShoutoutUserIds] = useState<string[]>([]);
+  const [shoutoutUsers, setShoutoutUsers] = useState<any>({});
+  const [shoutoutTemplate, setShoutoutTemplate] = useState<any>({});
+  const [postType, setPostType] = useState<PostType>(
+    data?.type || PostType.Update,
+  );
 
   const setUploads = (uploads: File[], isCoverImage?: boolean) => {
     if (!isCoverImage) {
-      setMedia([...media, ...getMediaObj(uploads)]);
+      setMedia((prevMedia) => [...prevMedia, ...getMediaObj(uploads)]);
     }
-    setFiles([...files, ...uploads]);
+    setFiles((prevFiles) => [...prevFiles, ...uploads]);
   };
 
   const replaceMedia = (index: number, data: File) => {
@@ -219,7 +294,9 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     //Update files
     setFiles([
       ...files.filter(
-        (file: File) => file.name !== fileName || file.name !== coverImageName,
+        (file: File) =>
+          file.name !== fileName ||
+          (coverImageName && file.name !== coverImageName),
       ),
     ]);
 
@@ -258,7 +335,7 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     setAnnouncement(null);
     setEditorValue({
       html: '',
-      json: {} as DeltaStatic,
+      editor: {} as DeltaStatic,
       text: '',
     });
     setFiles([]);
@@ -266,10 +343,18 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
     setIsPreviewRemoved(false);
     setPreviewUrl('');
     setIsCharLimit(false);
+    setIsEmpty(true);
     setCoverImageMap([]);
     setRemovedCoverimageFileIds([]);
     setShowFullscreenVideo(false);
     setMediaValidationErrors([]);
+    setPoll(null);
+    setSchedule(null);
+    setAudience(null);
+    setShoutoutUserIds([]);
+    setShoutoutUsers({});
+    setShoutoutTemplate({});
+    setPostType(PostType.Update);
   };
 
   const updateCoverImageMap = (map: ICoverImageMap) => {
@@ -366,6 +451,8 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         setIsPreviewRemoved,
         isCharLimit,
         setIsCharLimit,
+        isEmpty,
+        setIsEmpty,
         coverImageMap,
         setCoverImageMap,
         updateCoverImageMap,
@@ -379,6 +466,20 @@ const CreatePostProvider: React.FC<ICreatePostProviderProps> = ({
         setMediaValidationErrors,
         mediaOpenIndex,
         setMediaOpenIndex,
+        poll,
+        setPoll,
+        schedule,
+        setSchedule,
+        audience,
+        setAudience,
+        shoutoutUserIds,
+        setShoutoutUserIds,
+        shoutoutUsers,
+        setShoutoutUsers,
+        setShoutoutTemplate,
+        shoutoutTemplate,
+        postType,
+        setPostType,
       }}
     >
       {children}

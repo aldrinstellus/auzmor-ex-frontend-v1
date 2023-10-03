@@ -5,6 +5,9 @@ import {
   useQuery,
 } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
+import { IDepartment } from './department';
+import { ILocation } from './location';
+import { IDesignation } from './designation';
 
 // for future filters
 export enum PeopleFilterKeys {
@@ -16,6 +19,17 @@ export enum FilterType {
   Location = 'LOCATION',
   Depratment = 'DEPARTMENT',
   Reporter = 'REPORTER',
+}
+
+export enum UserEditType {
+  COMPLETE = 'complete',
+  PARTIAL = 'partial',
+  NONE = 'none',
+}
+
+export enum EditUserSection {
+  ABOUT = 'about',
+  PROFESSIONAL = 'professional',
 }
 
 export interface IPeopleFilters {
@@ -77,52 +91,80 @@ export interface IGetUser {
   lastName?: string;
   userName?: string;
   primaryEmail?: string;
-  org: {
+  org?: {
     id: string;
     name?: string;
     domain: string;
   };
-  workEmail: string;
+  workEmail?: string;
   profileImage?: { blurHash: string; id: string; original: string };
-  role: UserRole;
-  flags: {
+  role?: UserRole;
+  flags?: {
     isDeactivated: boolean;
     isReported: boolean;
   };
-  createdAt: string;
-  status: string;
-  timeZone?: string;
-  workLocation?: string;
-}
-
-interface UserQueryParams {
-  limit?: number;
-  prev?: number;
-  next?: number;
-  q?: string;
+  createdAt?: string;
   status?: string;
-  role?: string;
+  timeZone?: string;
+  workLocation?: ILocation;
+  department?: IDepartment;
+  designation?: IDesignation;
+  coverImage?: { blurHash: string; id: string; original: string };
+  freezeEdit?: {
+    department?: boolean;
+    designation?: boolean;
+    firstName?: boolean;
+    fullName?: boolean;
+    joinDate?: boolean;
+    lastName?: boolean;
+    manager?: boolean;
+    middleName?: boolean;
+  };
+  manager?: {
+    designation: string;
+    fullName: string;
+    profileImage: {
+      id: string;
+      original: string;
+      blurHash: string;
+    };
+    userId: string;
+    workLocation: string;
+    status: string;
+    department: string;
+  };
+  permissions?: string[];
+  workPhone?: string | null;
+  isPresent?: boolean;
 }
 
-export const getAllUser = ({
+interface IGetOrgChartPayload {
+  q?: string;
+  root?: string;
+  target?: string;
+  departments?: string[];
+  locations?: string[];
+  status?: string; // Active, Invited, Inactive
+  expand?: number; // +/- integer. Expand -> root +/- number levels
+  expandAll?: boolean;
+}
+
+export const getAllUser = async ({
   pageParam = null,
   queryKey,
 }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
   if (pageParam === null) {
-    if (typeof queryKey[1] === 'object') {
-      if (!queryKey[1]?.status || queryKey[1]?.status === 'ALL') {
-        return apiService.get('/users', {
-          q: queryKey[1]?.q,
-          role: queryKey[1]?.role,
-        });
-      } else {
-        return apiService.get('/users', queryKey[1]);
-      }
-    }
-  } else return apiService.get(pageParam);
+    return await apiService.get('/users', queryKey[1]);
+  } else return await apiService.get(pageParam);
 };
 
-export const useInfiniteUsers = (q?: Record<string, any>) => {
+export const useInfiniteUsers = ({
+  startFetching = true,
+  q,
+}: {
+  startFetching?: boolean;
+  q?: Record<string, any>;
+}) => {
   return useInfiniteQuery({
     queryKey: ['users', q],
     queryFn: getAllUser,
@@ -138,12 +180,20 @@ export const useInfiniteUsers = (q?: Record<string, any>) => {
       return currentPage?.data?.result?.paging?.prev;
     },
     staleTime: 5 * 60 * 1000,
+    enabled: startFetching,
   });
 };
 
-export const isUserExist = async (q: { email: string }) => {
+export const isUserExistOpen = async (q: { email: string }) => {
   if (!!q.email) {
     const { data } = await apiService.get('/users/email/exists', q);
+    return data;
+  }
+};
+
+export const isUserExistAuthenticated = async (q: { email: string }) => {
+  if (!!q.email) {
+    const { data } = await apiService.get('/users/exists', q);
     return data;
   }
 };
@@ -162,6 +212,18 @@ export const useDomainExists = (domain: string) => {
     staleTime: 1000,
   });
 };
+
+const getNotificationSettings = async () => {
+  const { data } = await apiService.get('/notifications/settings');
+  return data;
+};
+
+export const useNotificationSettings = () =>
+  useQuery({
+    queryKey: ['notification-settings'],
+    queryFn: getNotificationSettings,
+    staleTime: 15 * 60 * 1000,
+  });
 
 // verify invite
 export const verifyInviteLink = async (q: Record<string, any>) => {
@@ -213,9 +275,11 @@ export const acceptInviteSetPassword = async (q: Record<string, any>) => {
   return await apiService.put('/users/invite/reset-password', q);
 };
 
-{
-  /* REACT QUERY */
-}
+export const getOrgChart = async ({ queryKey }: QueryFunctionContext<any>) => {
+  return await apiService.get('/users/chart', queryKey[1]);
+};
+
+/* REACT QUERY */
 
 // use react query to get single user
 export const useSingleUser = (userId: string) => {
@@ -227,7 +291,11 @@ export const useSingleUser = (userId: string) => {
 };
 
 export const updateUserAPI = async (user: IUserUpdate) => {
-  const { id, ...rest } = user;
+  const {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    id,
+    ...rest
+  } = user;
   const data = await apiService.patch(`/users/${user.id}`, { ...rest });
   return data;
 };
@@ -260,10 +328,49 @@ export const useResendInvitation = () => {
   });
 };
 
-export const useIsUserExist = (email = '') => {
+export const updateStatus = async (payload: { id: string; status: string }) => {
+  const { data } = await apiService.patch(`/users/${payload.id}`, {
+    status: payload.status,
+  });
+  return data;
+};
+
+export const updateRoleToAdmin = async (payload: { id: string }) => {
+  const { data } = await apiService.patch(`/users/${payload.id}`, {
+    role: 'ADMIN',
+  });
+  return data;
+};
+
+export const useIsUserExistOpen = (email = '') => {
   return useQuery({
-    queryKey: ['user-exist', email],
-    queryFn: () => isUserExist({ email }),
+    queryKey: ['user-exist-open', email],
+    queryFn: () => isUserExistOpen({ email }),
     staleTime: 1000,
   });
+};
+
+export const useIsUserExistAuthenticated = (email = '') => {
+  return useQuery({
+    queryKey: ['user-exist-auth', email],
+    queryFn: () => isUserExistAuthenticated({ email }),
+    staleTime: 1000,
+  });
+};
+
+export const useOrgChart = (
+  payload?: IGetOrgChartPayload,
+  rest?: Record<string, any>,
+) => {
+  return useQuery({
+    queryKey: ['organization-chart', payload],
+    queryFn: getOrgChart,
+    staleTime: 5 * 60 * 1000,
+    ...rest,
+  });
+};
+
+export const updateUserSettings = async (payload: Record<string, any>) => {
+  const { data } = await apiService.post('/users/update', payload);
+  return data;
 };

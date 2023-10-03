@@ -1,27 +1,56 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import { FC, ReactElement, useEffect, useMemo } from 'react';
 import { DeltaOperation } from 'quill';
-import Mention from './components/Mention';
+import clsx from 'clsx';
+
+// components
+import Mention from './components/Mentions';
 import Hashtag from './components/Hashtag';
 import Emoji from './components/Emoji';
 import { Text } from './components/Text';
-import MediaPreview, { Mode } from 'components/MediaPreview';
-import { IGetPost } from 'queries/post';
-import { getMentionProps } from './utils';
+import MediaPreview from 'components/MediaPreview';
 import PreviewCard from 'components/PreviewCard';
-import { removeElementsByClass } from 'utils/misc';
 import { IComment } from 'components/Comments';
+import { IMedia } from 'contexts/CreatePostContext';
+import { Metadata } from 'components/PreviewLink/types';
+import AvatarChips from 'components/AvatarChips';
+
+// queries
+import { IPost } from 'queries/post';
+
+// utils
+import { getMentionProps } from './utils';
+import { quillHashtagConversion, removeElementsByClass } from 'utils/misc';
+import Poll, { PollMode } from 'components/Poll';
 
 type RenderQuillContent = {
-  data: IGetPost | IComment;
+  data: IPost | IComment;
+  isComment?: boolean;
+  isAnnouncementWidgetPreview?: boolean;
 };
 
-const RenderQuillContent: React.FC<RenderQuillContent> = ({
+const RenderQuillContent: FC<RenderQuillContent> = ({
   data,
+  isComment = false,
+  isAnnouncementWidgetPreview = false,
 }): ReactElement => {
   const content = data?.content?.editor;
   const mentions = data?.mentions ? data.mentions : [];
-  const link = (data as IGetPost)?.link;
-  const media = (data as IGetPost)?.files;
+  const link = (data as IPost)?.link;
+  const media = (data as IPost)?.files;
+  const poll = (data as IPost)?.pollContext;
+  const myVote = (data as IPost)?.myVote;
+  const postType = (data as IPost)?.type;
+
+  const isEmpty = useMemo(() => {
+    const ops = data?.content.editor.ops || [];
+
+    for (const op of ops) {
+      if (op.insert && op.insert.emoji) {
+        return false; // If an emoji is found, return false
+      }
+    }
+    return data?.content.text === '\n' || data?.content.text === '';
+  }, [data]);
 
   useEffect(() => {
     const element = document.getElementById(`${data?.id}-content`);
@@ -35,11 +64,13 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
       button.setAttribute('id', `${data?.id}-expand-collapse-button`);
       button.setAttribute('data-testid', 'feed-post-seemore');
       button.type = 'button';
+      button.style.alignSelf = 'start';
       button.classList.add(
         'showMoreLess',
         'read-more-button',
         'text-neutral-500',
         'font-bold',
+        'text-sm',
         `${data?.id}-expand-collapse-button`,
       );
       button.textContent = 'See more';
@@ -64,7 +95,9 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
     }
   }, []);
 
-  const postContent = content?.ops?.map((op: DeltaOperation) => {
+  const updatedContent = quillHashtagConversion(content);
+
+  const postContent = updatedContent?.ops?.map((op: DeltaOperation) => {
     switch (true) {
       case op.insert.hasOwnProperty('mention'):
         return (
@@ -89,25 +122,82 @@ const RenderQuillContent: React.FC<RenderQuillContent> = ({
     }
   });
 
+  const containerStyle = useMemo(
+    () =>
+      clsx({
+        'w-full flex justify-start': isComment,
+      }),
+    [],
+  );
+
+  const mediaPreviewStyle = useMemo(
+    () =>
+      clsx({
+        'w-64 h-32 overflow-hidden rounded-9xl': isComment,
+      }),
+    [],
+  );
+
   return (
-    <div>
-      <span
-        className="line-clamp-3 paragraph"
-        id={`${data?.id}-content`}
-        data-testid="feed-post-content"
-      >
-        <span>{postContent}</span>
-      </span>
-      {link && (
-        <div className="mt-4">
-          <PreviewCard metaData={link} className="my-2" />
+    <div className="w-full text-sm flex flex-col gap-4">
+      {!isEmpty && (
+        <span
+          className="line-clamp-3 paragraph pt-px"
+          id={`${data?.id}-content`}
+          data-testid={isComment ? 'comment-content' : 'feed-post-content'}
+        >
+          <span>{postContent}</span>
+        </span>
+      )}
+
+      {link && <PreviewCard metaData={link as Metadata} className="" />}
+      {media && media.length > 0 && (
+        <div
+          className={containerStyle}
+          data-testid={
+            data?.shoutoutRecipients && data?.shoutoutRecipients.length > 0
+              ? 'feed-post-shoutout'
+              : ''
+          }
+        >
+          <MediaPreview
+            className={mediaPreviewStyle}
+            media={media as IMedia[]}
+            showAddMediaButton={false}
+            showEditButton={false}
+            isAnnouncementWidgetPreview={isAnnouncementWidgetPreview}
+          />
         </div>
       )}
-      {media && (
+      {poll && postType === 'POLL' && (
         <div className="mt-4">
-          <MediaPreview media={media} mode={Mode.View} />
+          <Poll
+            question={poll.question}
+            closedAt={poll.closedAt}
+            options={poll.options}
+            myVote={myVote}
+            postId={data.id}
+            mode={PollMode.VIEW}
+          />
         </div>
       )}
+      {data?.shoutoutRecipients &&
+        data?.shoutoutRecipients.length > 0 &&
+        !isAnnouncementWidgetPreview && (
+          <div className="flex flex-col gap-2">
+            <p
+              className="text-xs text-neutral-500"
+              data-testid="feed-post-shoutoutto-list"
+            >
+              Shoutout to:
+            </p>
+            <AvatarChips
+              users={data.shoutoutRecipients}
+              showCount={3}
+              dataTestId="feed-post-shoutoutto-"
+            />
+          </div>
+        )}
     </div>
   );
 };

@@ -2,7 +2,7 @@ import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
 import Modal from 'components/Modal';
-import React, { ReactElement, useRef, useState } from 'react';
+import { FC, ReactElement, useRef, useState } from 'react';
 import SAMLDetail from './SAMLDetail';
 import Collapse from 'components/Collapse';
 import Button, { Type, Variant } from 'components/Button';
@@ -17,7 +17,6 @@ import apiService from 'utils/apiService';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import queryClient from 'utils/queryClient';
 import useAuth from 'hooks/useAuth';
-import { PRIMARY_COLOR } from 'utils/constants';
 
 type ConfigureGenericSSOProps = {
   open: boolean;
@@ -36,7 +35,7 @@ const schema = yup.object({
   allowOnlyExistingUser: yup.boolean().default(false),
 });
 
-const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
+const ConfigureGenericSSO: FC<ConfigureGenericSSOProps> = ({
   open,
   closeModal,
   ssoSetting,
@@ -120,33 +119,31 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
   };
 
   return (
-    <Modal open={open} className="max-w-2xl ">
+    <Modal open={open} className="max-w-2xl">
       {/* Header */}
       <div className="flex items-center justify-between p-4">
         <p className="font-extrabold text-black text-lg">{ssoSetting?.key}</p>
         <Icon
           onClick={closeModalAndClearInput}
           name="close"
-          hover={false}
-          stroke="#000"
-          disabled
+          color="text-black"
+          size={16}
         />
       </div>
-
       <Divider className="!bg-neutral-100" />
-
-      {/* Content */}
+      {/* Body */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mt-4 max-w-full max-h-[450px] overflow-y-visible overflow-hidden">
-          <p className="flex p-4 items-center text-sm font-normal text-neutral-500">
+        <div className="max-w-full max-h-[640px] overflow-y-visible overflow-hidden p-6">
+          <p className="flex items-center text-xs font-normal text-neutral-500 mb-6">
             Seamlessly control access to anyone in your organization.&nbsp;
             <Link label="Learn more." to="#" />
           </p>
-          <p className="text-neutral-900 px-4 text-base font-bold mt-6">
+
+          <p className="text-neutral-900 text-sm font-bold">
             Details necessary to create your SAML application.
           </p>
 
-          <div className="mt-2 px-4 bg-primary-50 rounded-9xl">
+          <div className="bg-primary-50 rounded-9xl p-6 space-y-[14px] mb-8 mt-2">
             <SAMLDetail
               prop="ACS URL"
               value={process.env.REACT_APP_ACS_URL || ''}
@@ -161,17 +158,17 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
             />
           </div>
 
-          <Divider className="!bg-neutral-100 my-8 px-4" />
+          <Divider className="!bg-neutral-100" />
 
-          <div className="flex justify-between items-start px-4">
+          <div className="flex justify-between items-start my-8">
             <div>
-              <p className="font-extrabold text-neutral-900 flex-col tex-base">
+              <p className="font-bold text-neutral-900 flex-col text-sm">
                 Add metadata XML file
               </p>
-              <p className="text-neutral-500 font-normal text-sm mt-1">
+              <p className="text-neutral-500 font-normal text-xs mt-1">
                 This is required to enable SSO in your organization.
               </p>
-              <p className="text-neutral-900 font-normal mt-4 text-sm">
+              <p className="text-neutral-900 font-normal mt-4 text-xs">
                 Important:&nbsp;
                 <span className="font-bold">Upload Your XML File</span>
               </p>
@@ -200,10 +197,16 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
                     }
                   }}
                 />
-                <Icon name="documentUpload" stroke={PRIMARY_COLOR} />
-                <p className="text-primary-500 text-base">
-                  Upload Metadata Xml
-                </p>
+                <div className="flex items-center justify-center space-x-1">
+                  <Icon
+                    name="documentUpload"
+                    color="text-primary-500"
+                    size={16}
+                  />
+                  <p className="text-primary-500 text-sm font-bold">
+                    Upload Metadata Xml
+                  </p>
+                </div>
               </label>
               <div
                 className={`flex ${
@@ -224,20 +227,19 @@ const ConfigureGenericSSO: React.FC<ConfigureGenericSSOProps> = ({
               </div>
             </div>
           </div>
-          <Divider className="!bg-neutral-100 my-8 px-4" />
-
-          <div className="px-4">
+          <Divider className="!bg-neutral-100" />
+          <div className="mt-4">
             <Collapse label="Advanced Settings">
-              <Layout fields={fields} />
+              <Layout fields={fields} className="space-y-6 mt-8" />
             </Collapse>
           </div>
-          <Banner
-            variant={BannerVariant.Error}
-            title={`Failed to integrate with ${ssoSetting?.key}. Please try again.`}
-            className={`min-w-full ${
-              isError && !isLoading ? 'visible' : 'invisible'
-            } mt-4`}
-          />
+          {isError && !isLoading && (
+            <Banner
+              variant={BannerVariant.Error}
+              title={`Failed to integrate with ${ssoSetting?.key}. Please try again.`}
+              className="min-w-full mt-6"
+            />
+          )}
         </div>
         {/* Footer */}
         <div className="bg-blue-50 p-0 rounded-b-9xl">

@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { FC, ReactNode } from 'react';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export type ToastProps = {
@@ -11,14 +11,16 @@ export type ToastProps = {
   button?: string;
 };
 
-const Toast: React.FC<ToastProps> = ({
-  notificationIcon = null,
-  toastBody = '',
-  notificationType = '',
-  onClick = () => {},
-  undo = true,
-  button = '',
-}) => {
+const Toast: FC<ToastProps> = (
+  {
+    // notificationIcon = null,
+    // toastBody = '',
+    // notificationType = '',
+    // onClick = () => {},
+    // undo = true,
+    // button = '',
+  },
+) => {
   // const notify = () =>
   //   toast(() => {
   //     return (
@@ -38,20 +40,18 @@ const Toast: React.FC<ToastProps> = ({
   //   });
 
   return (
-    <div style={{ width: 500, height: 500 }}>
-      <ToastContainer
-        position="top-right"
-        autoClose={false}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable={false}
-        pauseOnHover
-        theme="light"
-      />
-    </div>
+    <ToastContainer
+      position="top-right"
+      autoClose={false}
+      hideProgressBar
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable={false}
+      pauseOnHover
+      theme="light"
+    />
   );
 };
 

@@ -1,7 +1,7 @@
 import Carousel from 'components/CarouselNew';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import React, { useContext, useEffect } from 'react';
-
+import { PostType } from 'queries/post';
+import { FC, useContext } from 'react';
 export interface IBodyProps {
   currentIndex: number;
   nextSlide: () => void;
@@ -9,7 +9,7 @@ export interface IBodyProps {
   dataTestId?: string;
 }
 
-const Body: React.FC<IBodyProps> = ({
+const Body: FC<IBodyProps> = ({
   currentIndex,
   nextSlide,
   prevSlide,
@@ -23,6 +23,7 @@ const Body: React.FC<IBodyProps> = ({
     getCoverImageBlobURL,
     mediaOpenIndex,
     setMediaOpenIndex,
+    setPostType,
   } = useContext(CreatePostContext);
   return (
     <Carousel
@@ -32,6 +33,7 @@ const Body: React.FC<IBodyProps> = ({
         removeMedia(index, () => {
           if (media.length === 1) {
             setActiveFlow(CreatePostFlow.CreatePost);
+            setPostType(PostType.Update);
           } else if (media.length - 1 === currentIndex) {
             nextSlide();
           }

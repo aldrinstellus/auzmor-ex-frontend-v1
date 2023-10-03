@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
@@ -6,7 +6,6 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Button, { Size, Type as ButtonType } from 'components/Button';
 import { Logo } from 'components/Logo';
-import WelcomeOffice from 'images/welcomeToOffice.png';
 import { useMutation } from '@tanstack/react-query';
 import { redirectWithToken } from 'utils/misc';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
@@ -37,7 +36,7 @@ const schema = yup.object({
 
 export interface IAcceptInviteProps {}
 
-const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
+const AcceptInvite: FC<IAcceptInviteProps> = () => {
   const [searchParams, _] = useSearchParams();
   const token = searchParams.get('token');
   const orgId = searchParams.get('orgId');
@@ -88,6 +87,7 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
       className:
         'text-neutral-400 disabled:border-none disabled:bg-neutral-200',
       defaultValue: data?.result?.data?.email,
+      inputClassName: 'h-[44px]',
     },
     {
       type: FieldType.Password,
@@ -98,6 +98,7 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
       error: errors.password?.message,
       dataTestId: 'signup-work-password',
       control,
+      inputClassName: 'h-[44px]',
     },
     {
       type: FieldType.Password,
@@ -109,6 +110,7 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
       dataTestId: 'signup-work-re-password',
       control,
       showChecks: false,
+      inputClassName: 'h-[44px]',
     },
     {
       type: FieldType.Checkbox,
@@ -133,64 +135,69 @@ const AcceptInvite: React.FC<IAcceptInviteProps> = () => {
 
   const onSubmit = (formData: IForm) =>
     acceptInviteMutation.mutate({ password: formData.password, token, orgId });
-  let returnElement = <></>;
 
   // If a redirectUrl is present in the response of the verify invite link API,
   // we must redirect the user to that page because the user needs to get Auth'd by either SSO or LDAP
   if (data?.result?.data?.redirectUrl) {
-    window.location.replace(data.result.data.redirectUrl);
-  } else {
-    returnElement = isLoading ? (
+    return window.location.replace(data.result.data.redirectUrl) as any;
+  }
+
+  if (isLoading) {
+    return (
       <div className="w-screen h-screen">
         <PageLoader />
       </div>
-    ) : isError ? (
+    );
+  }
+
+  if (isError) {
+    return (
       <InviteLinkExpired
         message={(error as any).response.data.errors[0].message}
       />
-    ) : (
-      <div className="flex h-screen w-screen">
-        <img
-          src={WelcomeOffice}
-          className="h-full w-[48%]"
-          alt="Welcome to Auzmor Office"
-        />
-        <div className="w-[52%] flex justify-center items-center relative bg-white h-full overflow-y-auto">
-          <div className="absolute top-8 right-8">
-            <Logo />
-          </div>
-          <div className="w-full max-w-[440px]">
-            <div className="font-extrabold text-neutral-900 text-4xl">
-              Sign Up
-            </div>
-            <form className="mt-12" onSubmit={handleSubmit(onSubmit)}>
-              {!!acceptInviteMutation.isError && (
-                <div className="mb-8">
-                  <Banner
-                    title={
-                      acceptInviteMutation.error?.toString() ||
-                      'Something went wrong'
-                    }
-                    variant={BannerVariant.Error}
-                  />
-                </div>
-              )}
-              <Layout fields={fields} />
-              <Button
-                label={'Sign Up'}
-                disabled={!isValid}
-                className="w-full mt-8"
-                type={ButtonType.Submit}
-                size={Size.Large}
-                loading={acceptInviteMutation.isLoading}
-              />
-            </form>
-          </div>
-        </div>
-      </div>
     );
   }
-  return returnElement;
+
+  return (
+    <div className="flex h-screen w-screen">
+      <div
+        className="w-[49.3vw] h-full bg-welcome-to-office bg-no-repeat bg-cover bg-bottom"
+        data-testid="signup-cover-image"
+      />
+      <div className="flex-1 flex justify-center items-center relative bg-white h-full overflow-y-auto">
+        <div className="absolute top-[4.55vh] right-[3.5vw]">
+          <Logo />
+        </div>
+        <div className="pt-[86px] 3xl:pt-[154px] mr-[60px] w-full max-w-[414px] h-full">
+          <div className="font-extrabold text-neutral-900 text-4xl">
+            Sign Up
+          </div>
+          <form className="mt-14" onSubmit={handleSubmit(onSubmit)}>
+            {!!acceptInviteMutation.isError && (
+              <div className="mb-8">
+                <Banner
+                  title={
+                    acceptInviteMutation.error?.toString() ||
+                    'Something went wrong'
+                  }
+                  variant={BannerVariant.Error}
+                />
+              </div>
+            )}
+            <Layout fields={fields} />
+            <Button
+              label={'Sign Up'}
+              disabled={!isValid}
+              className="w-full mt-8"
+              type={ButtonType.Submit}
+              size={Size.Large}
+              loading={acceptInviteMutation.isLoading}
+            />
+          </form>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default AcceptInvite;

@@ -1,14 +1,15 @@
-import React from 'react';
 import AnnouncementCard from 'components/AnnouncementWidget';
 import { Comment } from 'components/Comments/components/Comment';
 import PageLoader from 'components/PageLoader';
 import Post from 'components/Post';
 import { Reply } from 'components/Reply/Reply';
 import UserCard from 'components/UserWidget';
-import { IGetPost, useGetPost } from 'queries/post';
+import { useGetPost } from 'queries/post';
+import { FC } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
+import { useFeedStore } from 'stores/feedStore';
 
-const PostPage: React.FC = () => {
+const PostPage: FC = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const commentId = searchParams.get('commentId') || undefined;
@@ -16,41 +17,46 @@ const PostPage: React.FC = () => {
     return <div>Error</div>;
   }
 
-  const { data, isLoading, isError } = useGetPost(id, commentId);
+  const { isLoading, isError } = useGetPost(id, commentId);
+  const { getPost } = useFeedStore();
 
   if (isLoading) {
     return <PageLoader />;
   } else if (isError) {
     return <div>Error...</div>;
   }
-  const post = data.data?.result?.data as IGetPost;
+
+  const post = getPost(id);
+
   return (
     <>
       <div className="mb-12 space-x-8 flex w-full">
-        <div className="sticky top-10 z-10 w-1/4">
+        <div className="sticky top-10 z-10 min-w-[293px] max-w-[293px]">
           <UserCard />
         </div>
         <div className="w-1/2">
-          <div className="mt-4">
-            <Post
-              data={post}
-              customNode={
-                post?.comment && (
+          <Post
+            post={post}
+            customNode={
+              post?.comment && (
+                <div className="mx-6 mb-3">
                   <Comment
                     comment={post.comment}
                     customNode={
                       post?.comment?.comment ? (
-                        <Reply comment={post?.comment?.comment} />
+                        <div className="mt-4 ml-8">
+                          <Reply comment={post?.comment?.comment} />
+                        </div>
                       ) : null
                     }
                   />
-                )
-              }
-            />
-          </div>
+                </div>
+              )
+            }
+          />
         </div>
-        <div className="w-1/4">
-          <AnnouncementCard />
+        <div className="min-w-[293px] max-w-[293px]">
+          <AnnouncementCard postId={post.id} />
         </div>
       </div>
     </>

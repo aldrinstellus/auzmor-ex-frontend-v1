@@ -1,7 +1,7 @@
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
-import React, { useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import AddUsers from './AddUsers';
 import * as yup from 'yup';
@@ -24,9 +24,9 @@ import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 
 export interface IInviteUserModalProps {
-  showModal: boolean;
+  open: boolean;
+  openModal: () => void;
   closeModal: () => void;
-  setShowAddUserModal: (flag: boolean) => void;
 }
 
 export interface IRoleOption {
@@ -49,10 +49,10 @@ export interface IEmailValidationErrors {
   [index: number]: { isError: boolean; isLoading: boolean };
 }
 
-const InviteUserModal: React.FC<IInviteUserModalProps> = ({
-  showModal,
+const InviteUserModal: FC<IInviteUserModalProps> = ({
+  open,
+  openModal,
   closeModal,
-  setShowAddUserModal,
 }) => {
   const queryClient = useQueryClient();
   const [showInvitedMembers, setShowInvitedMembers] = useState(false);
@@ -111,7 +111,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
   const inviteUsersMutation = useMutation({
     mutationKey: ['inviteUsersMutation'],
     mutationFn: inviteUsers,
-    onError: (error) => {
+    onError: () => {
       setShowConfirmationModal(true);
     },
     onSuccess: (data: any) => {
@@ -120,7 +120,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
       let invitedCount = 0;
       data.result.data.forEach(
         (eachMember: IPostUsersResponse) =>
-          eachMember.status === UserStatus.Invited && ++invitedCount,
+          eachMember.status !== UserStatus.Failed && ++invitedCount,
       );
 
       const toastString =
@@ -135,7 +135,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
             invitedCount !== data.result.data.length ? 'Show details' : ''
           }
           action={() => {
-            setShowAddUserModal(true);
+            openModal();
             setShowInvitedMembers(true);
           }}
         />,
@@ -143,7 +143,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
           closeButton: (
             <Icon
               name="closeCircleOutline"
-              stroke={twConfig.theme.colors.primary['500']}
+              color="text-primary-500"
               size={20}
               dataTestId="people-invite-toaster-close"
             />
@@ -156,9 +156,10 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
           },
           autoClose: TOAST_AUTOCLOSE_TIME,
           transition: slideInAndOutTop,
+          theme: 'dark',
         },
       );
-      setShowAddUserModal(false);
+      closeModal();
     },
   });
 
@@ -177,6 +178,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
     handleSubmit,
     watch,
     formState: { errors, isValid },
+    reset,
   } = useForm<IUserForm>({
     resolver: yupResolver(schema),
     mode: 'onChange',
@@ -184,6 +186,10 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
       members: [{ fullName: '', workEmail: '', role: roleOptions[0] }],
     },
   });
+
+  useEffect(() => {
+    if (!open) reset();
+  }, [open]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -203,12 +209,11 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
     setInvitedUsersResponse([]);
     setShowInvitedMembers(false);
     remove();
-    append({ fullName: '', workEmail: '', role: roleOptions[0] });
   };
 
   return (
     <>
-      <Modal open={showModal} className="max-w-3xl">
+      <Modal open={open} className="max-w-4xl">
         {/*---------- {<>Header</>} ----------*/}
         <Header
           title={
@@ -297,7 +302,7 @@ const InviteUserModal: React.FC<IInviteUserModalProps> = ({
           className: 'bg-primary-500 text-white ',
           onSubmit: () => {
             setShowConfirmationModal(false);
-            setShowAddUserModal(true);
+            openModal();
           },
         }}
         discard={{

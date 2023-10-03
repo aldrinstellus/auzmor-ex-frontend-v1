@@ -1,11 +1,11 @@
-import React from 'react';
+import { FC } from 'react';
 
 interface IServerErrorPageProps {
   statusCode: number | string;
   message: string;
 }
 
-const ServerErrorPage: React.FC<IServerErrorPageProps> = (props) => {
+const ServerErrorPage: FC<IServerErrorPageProps> = (props) => {
   return (
     <div className="flex items-center flex-col">
       <div className="text-red text-lg font-bold">{props.statusCode}</div>
