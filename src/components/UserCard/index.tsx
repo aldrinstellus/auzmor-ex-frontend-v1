@@ -298,13 +298,6 @@ const UserCard: FC<IUserCardProp> = ({
                     className="w-8 h-8"
                     id={`user-card-${user?.id}-manager-avatar`}
                   >
-                    {/* <Avatar
-                      size={32}
-                      name={getFullName(user?.manager) || 'U'}
-                      image={getProfileImage(user?.manager)}
-                      bgColor={getAvatarColor(user?.manager)}
-                      dataTestId="usercard-manager-profilepic"
-                    /> */}
                     <Spinner color={PRIMARY_COLOR} />
                   </div>
                   <div className="flex flex-col justify-between w-3/4">
