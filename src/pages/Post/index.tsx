@@ -39,12 +39,12 @@ const PostPage: FC = () => {
             post={post}
             customNode={
               post?.comment && (
-                <div className="mt-6">
+                <div className="mx-6 mb-3">
                   <Comment
                     comment={post.comment}
                     customNode={
                       post?.comment?.comment ? (
-                        <div className="mt-4">
+                        <div className="mt-4 ml-8">
                           <Reply comment={post?.comment?.comment} />
                         </div>
                       ) : null
