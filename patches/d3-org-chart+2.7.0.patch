@@ -111,7 +111,7 @@ index fe34324..a278e83 100644
 - 
 \ No newline at end of file
 diff --git a/node_modules/d3-org-chart/src/d3-org-chart.js b/node_modules/d3-org-chart/src/d3-org-chart.js
-index 871f2d8..bacf61e 100644
+index 871f2d8..23c4d85 100644
 --- a/node_modules/d3-org-chart/src/d3-org-chart.js
 +++ b/node_modules/d3-org-chart/src/d3-org-chart.js
 @@ -1,104 +1,148 @@
@@ -354,7 +354,7 @@ index 871f2d8..bacf61e 100644
              <code>chart<br/>
              &nbsp;.nodeContent({data}=>{ <br/>
               &nbsp;&nbsp;&nbsp;&nbsp;return '' // Custom HTML <br/>
-@@ -107,928 +151,1280 @@ export class OrgChart {
+@@ -107,928 +151,1293 @@ export class OrgChart {
               Or check different <a href="https://github.com/bumbeishvili/org-chart#jump-to-examples" target="_blank">layout examples</a>
               
               </div>`,
@@ -1423,6 +1423,14 @@ index 871f2d8..bacf61e 100644
 -
 -        if (attrs.compact) {
 -            this.calculateCompactFlexDimensions(attrs.root);
+-        }
+-
+-        //  Assigns the x and y position for the nodes
+-        const treeData = attrs.flexTreeLayout(attrs.root);
+-
+-        // Reassigns the x and y position for the based on the compact layout
+-        if (attrs.compact) {
+-            this.calculateCompactFlexPositions(attrs.root);
 +    // Remove all node childs
 +    // Retrieve all children nodes ids (including current node itself)
 +    node.descendants().forEach((d) => (d.data._filteredOut = true));
@@ -1541,8 +1549,13 @@ index 871f2d8..bacf61e 100644
 +          compactChildren.forEach((d) => (d.x += offsetX));
          }
  
--        //  Assigns the x and y position for the nodes
--        const treeData = attrs.flexTreeLayout(attrs.root);
+-        const nodes = treeData.descendants();
+-
+-        // console.table(nodes.map(d => ({ x: d.x, y: d.y, width: d.width, height: d.height, flexCompactDim: d.flexCompactDim + "" })))
+-
+-        // Get all links
+-        const links = treeData.descendants().slice(1);
+-        nodes.forEach(attrs.layoutBindings[attrs.layout].swap)
 +        const rowsMapNew = this.groupBy(
 +          compactChildren,
 +          (d) => d.row,
@@ -1565,126 +1578,20 @@ index 871f2d8..bacf61e 100644
 +    });
 +  }
  
--        // Reassigns the x and y position for the based on the compact layout
--        if (attrs.compact) {
--            this.calculateCompactFlexPositions(attrs.root);
--        }
+-        // Connections
+-        const connections = attrs.connections;
+-        const allNodesMap = {};
+-        attrs.allNodes.forEach(d => allNodesMap[attrs.nodeId(d.data)] = d);
 +  // This function basically redraws visible graph, based on nodes state
 +  update({ x0, y0, x = 0, y = 0, width, height }) {
 +    const attrs = this.getChartState();
 +    const calc = attrs.calc;
  
--        const nodes = treeData.descendants();
+-        const visibleNodesMap = {}
+-        nodes.forEach(d => visibleNodesMap[attrs.nodeId(d.data)] = d);
 +    if (attrs.compact) {
 +      this.calculateCompactFlexDimensions(attrs.root);
 +    }
- 
--        // console.table(nodes.map(d => ({ x: d.x, y: d.y, width: d.width, height: d.height, flexCompactDim: d.flexCompactDim + "" })))
-+    //  Assigns the x and y position for the nodes
-+    const treeData = attrs.flexTreeLayout(attrs.root);
- 
--        // Get all links
--        const links = treeData.descendants().slice(1);
--        nodes.forEach(attrs.layoutBindings[attrs.layout].swap)
-+    // Reassigns the x and y position for the based on the compact layout
-+    if (attrs.compact) {
-+      this.calculateCompactFlexPositions(attrs.root);
-+    }
- 
--        // Connections
--        const connections = attrs.connections;
--        const allNodesMap = {};
--        attrs.allNodes.forEach(d => allNodesMap[attrs.nodeId(d.data)] = d);
-+    const nodes = treeData.descendants();
-+
-+    // console.table(nodes.map(d => ({ x: d.x, y: d.y, width: d.width, height: d.height, flexCompactDim: d.flexCompactDim + "" })))
-+
-+    // Get all links
-+    const links = treeData.descendants().slice(1);
-+    nodes.forEach(attrs.layoutBindings[attrs.layout].swap);
-+
-+    // Connections
-+    const connections = attrs.connections;
-+    const allNodesMap = {};
-+    attrs.allNodes.forEach((d) => (allNodesMap[attrs.nodeId(d.data)] = d));
-+
-+    const visibleNodesMap = {};
-+    nodes.forEach((d) => (visibleNodesMap[attrs.nodeId(d.data)] = d));
-+
-+    connections.forEach((connection) => {
-+      const source = allNodesMap[connection.from];
-+      const target = allNodesMap[connection.to];
-+      connection._source = source;
-+      connection._target = target;
-+    });
-+    const visibleConnections = connections.filter(
-+      (d) => visibleNodesMap[d.from] && visibleNodesMap[d.to],
-+    );
-+    const defsString = attrs.defs.bind(this)(attrs, visibleConnections);
-+    const existingString = attrs.defsWrapper.html();
-+    if (defsString !== existingString) {
-+      attrs.defsWrapper.html(defsString);
-+    }
- 
--        const visibleNodesMap = {}
--        nodes.forEach(d => visibleNodesMap[attrs.nodeId(d.data)] = d);
-+    // --------------------------  LINKS ----------------------
-+    // Get links selection
-+    const linkSelection = attrs.linksWrapper
-+      .selectAll('path.link')
-+      .data(links, (d) => attrs.nodeId(d.data));
-+
-+    // Enter any new links at the parent's previous position.
-+    const linkEnter = linkSelection
-+      .enter()
-+      .insert('path', 'g')
-+      .attr('class', 'link')
-+      .attr('d', (d) => {
-+        const xo = attrs.layoutBindings[attrs.layout].linkJoinX({
-+          x: x0,
-+          y: y0,
-+          width,
-+          height,
-+        });
-+        const yo = attrs.layoutBindings[attrs.layout].linkJoinY({
-+          x: x0,
-+          y: y0,
-+          width,
-+          height,
-+        });
-+        const o = { x: xo, y: yo };
-+        return attrs.layoutBindings[attrs.layout].diagonal(o, o, o);
-+      });
-+
-+    // Get links update selection
-+    const linkUpdate = linkEnter.merge(linkSelection);
-+
-+    // Styling links
-+    linkUpdate.attr('fill', 'none');
-+
-+    // Allow external modifications
-+    linkUpdate.each(attrs.linkUpdate);
-+
-+    // Transition back to the parent element position
-+    linkUpdate
-+      .transition()
-+      .duration(attrs.duration)
-+      .attr('d', (d) => {
-+        const n =
-+          attrs.compact && d.flexCompactDim
-+            ? {
-+                x: attrs.layoutBindings[attrs.layout].compactLinkMidX(d, attrs),
-+                y: attrs.layoutBindings[attrs.layout].compactLinkMidY(d, attrs),
-+              }
-+            : {
-+                x: attrs.layoutBindings[attrs.layout].linkX(d),
-+                y: attrs.layoutBindings[attrs.layout].linkY(d),
-+              };
-+
-+        const p = {
-+          x: attrs.layoutBindings[attrs.layout].linkParentX(d),
-+          y: attrs.layoutBindings[attrs.layout].linkParentY(d),
-+        };
  
 -        connections.forEach(connection => {
 -            const source = allNodesMap[connection.from];
@@ -1697,154 +1604,10 @@ index 871f2d8..bacf61e 100644
 -        const existingString = attrs.defsWrapper.html();
 -        if (defsString !== existingString) {
 -            attrs.defsWrapper.html(defsString)
-+        const m =
-+          attrs.compact && d.flexCompactDim
-+            ? {
-+                x: attrs.layoutBindings[attrs.layout].linkCompactXStart(d),
-+                y: attrs.layoutBindings[attrs.layout].linkCompactYStart(d),
-+              }
-+            : n;
-+        return attrs.layoutBindings[attrs.layout].diagonal(n, p, m);
-+      });
-+
-+    // Remove any  links which is exiting after animation
-+    const linkExit = linkSelection
-+      .exit()
-+      .transition()
-+      .duration(attrs.duration)
-+      .attr('d', (d) => {
-+        const xo = attrs.layoutBindings[attrs.layout].linkJoinX({
-+          x,
-+          y,
-+          width,
-+          height,
-+        });
-+        const yo = attrs.layoutBindings[attrs.layout].linkJoinY({
-+          x,
-+          y,
-+          width,
-+          height,
-+        });
-+        const o = { x: xo, y: yo };
-+        return attrs.layoutBindings[attrs.layout].diagonal(o, o);
-+      })
-+      .remove();
-+
-+    // --------------------------  CONNECTIONS ----------------------
-+
-+    const connectionsSel = attrs.connectionsWrapper
-+      .selectAll('path.connection')
-+      .data(visibleConnections);
-+
-+    // Enter any new connections at the parent's previous position.
-+    const connEnter = connectionsSel
-+      .enter()
-+      .insert('path', 'g')
-+      .attr('class', 'connection')
-+      .attr('d', (d) => {
-+        const xo = attrs.layoutBindings[attrs.layout].linkJoinX({
-+          x: x0,
-+          y: y0,
-+          width,
-+          height,
-+        });
-+        const yo = attrs.layoutBindings[attrs.layout].linkJoinY({
-+          x: x0,
-+          y: y0,
-+          width,
-+          height,
-+        });
-+        const o = { x: xo, y: yo };
-+        return attrs.layoutBindings[attrs.layout].diagonal(o, o);
-+      });
-+
-+    // Get connections update selection
-+    const connUpdate = connEnter.merge(connectionsSel);
-+
-+    // Styling connections
-+    connUpdate.attr('fill', 'none');
-+
-+    // Transition back to the parent element position
-+    connUpdate
-+      .transition()
-+      .duration(attrs.duration)
-+      .attr('d', (d) => {
-+        const xs = attrs.layoutBindings[attrs.layout].linkX({
-+          x: d._source.x,
-+          y: d._source.y,
-+          width: d._source.width,
-+          height: d._source.height,
-+        });
-+        const ys = attrs.layoutBindings[attrs.layout].linkY({
-+          x: d._source.x,
-+          y: d._source.y,
-+          width: d._source.width,
-+          height: d._source.height,
-+        });
-+        const xt = attrs.layoutBindings[attrs.layout].linkJoinX({
-+          x: d._target.x,
-+          y: d._target.y,
-+          width: d._target.width,
-+          height: d._target.height,
-+        });
-+        const yt = attrs.layoutBindings[attrs.layout].linkJoinY({
-+          x: d._target.x,
-+          y: d._target.y,
-+          width: d._target.width,
-+          height: d._target.height,
-+        });
-+        return attrs.linkGroupArc({
-+          source: { x: xs, y: ys },
-+          target: { x: xt, y: yt },
-+        });
-+      });
-+
-+    // Allow external modifications
-+    connUpdate.each(attrs.connectionsUpdate);
-+
-+    // Remove any  links which is exiting after animation
-+    const connExit = connectionsSel
-+      .exit()
-+      .transition()
-+      .duration(attrs.duration)
-+      .attr('opacity', 0)
-+      .remove();
-+
-+    // --------------------------  NODES ----------------------
-+    // Get nodes selection
-+    const nodesSelection = attrs.nodesWrapper
-+      .selectAll('g.node')
-+      .data(nodes, ({ data }) => attrs.nodeId(data));
-+
-+    // Enter any new nodes at the parent's previous position.
-+    const nodeEnter = nodesSelection
-+      .enter()
-+      .append('g')
-+      .attr('class', 'node')
-+      .attr('transform', (d) => {
-+        if (d == attrs.root) return `translate(${x0},${y0})`;
-+        const xj = attrs.layoutBindings[attrs.layout].nodeJoinX({
-+          x: x0,
-+          y: y0,
-+          width,
-+          height,
-+        });
-+        const yj = attrs.layoutBindings[attrs.layout].nodeJoinY({
-+          x: x0,
-+          y: y0,
-+          width,
-+          height,
-+        });
-+        return `translate(${xj},${yj})`;
-+      })
-+      .attr('cursor', 'pointer')
-+      .on('click', (event, { data }) => {
-+        if (
-+          [...event.srcElement.classList].includes('node-button-foreign-object')
-+        ) {
-+          return;
-         }
--
+-        }
++    //  Assigns the x and y position for the nodes
++    const treeData = attrs.flexTreeLayout(attrs.root);
+ 
 -        // --------------------------  LINKS ----------------------
 -        // Get links selection
 -        const linkSelection = attrs.linksWrapper
@@ -2007,14 +1770,48 @@ index 871f2d8..bacf61e 100644
 -            data: (d) => [d]
 -        })
 -            .style('overflow', 'visible')
--
++    // Reassigns the x and y position for the based on the compact layout
++    if (attrs.compact) {
++      this.calculateCompactFlexPositions(attrs.root);
++    }
+ 
 -        // Add foreign object
 -        fo.patternify({
 -            tag: "xhtml:div",
 -            selector: "node-foreign-object-div",
 -            data: (d) => [d]
 -        })
--
++    const nodes = treeData.descendants();
++
++    // console.table(nodes.map(d => ({ x: d.x, y: d.y, width: d.width, height: d.height, flexCompactDim: d.flexCompactDim + "" })))
++
++    // Get all links
++    const links = treeData.descendants().slice(1);
++    nodes.forEach(attrs.layoutBindings[attrs.layout].swap);
++
++    // Connections
++    const connections = attrs.connections;
++    const allNodesMap = {};
++    attrs.allNodes.forEach((d) => (allNodesMap[attrs.nodeId(d.data)] = d));
++
++    const visibleNodesMap = {};
++    nodes.forEach((d) => (visibleNodesMap[attrs.nodeId(d.data)] = d));
++
++    connections.forEach((connection) => {
++      const source = allNodesMap[connection.from];
++      const target = allNodesMap[connection.to];
++      connection._source = source;
++      connection._target = target;
++    });
++    const visibleConnections = connections.filter(
++      (d) => visibleNodesMap[d.from] && visibleNodesMap[d.to],
++    );
++    const defsString = attrs.defs.bind(this)(attrs, visibleConnections);
++    const existingString = attrs.defsWrapper.html();
++    if (defsString !== existingString) {
++      attrs.defsWrapper.html(defsString);
++    }
+ 
 -        this.restyleForeignObjectElements();
 -
 -        // Add Node button circle's group (expand-collapse button)
@@ -2029,17 +1826,7 @@ index 871f2d8..bacf61e 100644
 -                if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
 -                    this.onButtonClick(event, d)
 -                }
-+        attrs.onNodeClick(data);
-+      })
-+      .on('mouseenter', (e, {data}) => {
-+        if(!attrs.tooltipData[data.id]){
-+          if(data.id !== 'root'){
-+            apiService.get(`/users/${data.id}`).then((reponse) => {
-+              try{
-+                attrs.tooltipData[data.id] = reponse.data.result.data
-+                div.innerHTML = attrs.hoverCardContent.bind(this)({nodeData: data, userData: attrs.tooltipData[data.id]})
-+              }catch(e){}
-             });
+-            });
 -
 -        nodeButtonGroups.patternify({
 -            tag: 'rect',
@@ -2162,8 +1949,64 @@ index 871f2d8..bacf61e 100644
 -        nodes.forEach((d) => {
 -            d.x0 = d.x;
 -            d.y0 = d.y;
--        });
--
++    // --------------------------  LINKS ----------------------
++    // Get links selection
++    const linkSelection = attrs.linksWrapper
++      .selectAll('path.link')
++      .data(links, (d) => attrs.nodeId(d.data));
++
++    // Enter any new links at the parent's previous position.
++    const linkEnter = linkSelection
++      .enter()
++      .insert('path', 'g')
++      .attr('class', 'link')
++      .attr('d', (d) => {
++        const xo = attrs.layoutBindings[attrs.layout].linkJoinX({
++          x: x0,
++          y: y0,
++          width,
++          height,
+         });
++        const yo = attrs.layoutBindings[attrs.layout].linkJoinY({
++          x: x0,
++          y: y0,
++          width,
++          height,
++        });
++        const o = { x: xo, y: yo };
++        return attrs.layoutBindings[attrs.layout].diagonal(o, o, o);
++      });
++
++    // Get links update selection
++    const linkUpdate = linkEnter.merge(linkSelection);
++
++    // Styling links
++    linkUpdate.attr('fill', 'none');
++
++    // Allow external modifications
++    linkUpdate.each(attrs.linkUpdate);
++
++    // Transition back to the parent element position
++    linkUpdate
++      .transition()
++      .duration(attrs.duration)
++      .attr('d', (d) => {
++        const n =
++          attrs.compact && d.flexCompactDim
++            ? {
++                x: attrs.layoutBindings[attrs.layout].compactLinkMidX(d, attrs),
++                y: attrs.layoutBindings[attrs.layout].compactLinkMidY(d, attrs),
++              }
++            : {
++                x: attrs.layoutBindings[attrs.layout].linkX(d),
++                y: attrs.layoutBindings[attrs.layout].linkY(d),
++              };
++
++        const p = {
++          x: attrs.layoutBindings[attrs.layout].linkParentX(d),
++          y: attrs.layoutBindings[attrs.layout].linkParentY(d),
++        };
+ 
 -        // CHECK FOR CENTERING
 -        const centeredNode = attrs.allNodes.filter(d => d.data._centered)[0]
 -        if (centeredNode) {
@@ -2175,70 +2018,241 @@ index 871f2d8..bacf61e 100644
 -                scale: false,
 -                nodes: centeredNodes
 -            })
-+          }
++        const m =
++          attrs.compact && d.flexCompactDim
++            ? {
++                x: attrs.layoutBindings[attrs.layout].linkCompactXStart(d),
++                y: attrs.layoutBindings[attrs.layout].linkCompactYStart(d),
++              }
++            : n;
++        return attrs.layoutBindings[attrs.layout].diagonal(n, p, m);
++      });
++
++    // Remove any  links which is exiting after animation
++    const linkExit = linkSelection
++      .exit()
++      .transition()
++      .duration(attrs.duration)
++      .attr('d', (d) => {
++        const xo = attrs.layoutBindings[attrs.layout].linkJoinX({
++          x,
++          y,
++          width,
++          height,
++        });
++        const yo = attrs.layoutBindings[attrs.layout].linkJoinY({
++          x,
++          y,
++          width,
++          height,
++        });
++        const o = { x: xo, y: yo };
++        return attrs.layoutBindings[attrs.layout].diagonal(o, o);
++      })
++      .remove();
++
++    // --------------------------  CONNECTIONS ----------------------
++
++    const connectionsSel = attrs.connectionsWrapper
++      .selectAll('path.connection')
++      .data(visibleConnections);
++
++    // Enter any new connections at the parent's previous position.
++    const connEnter = connectionsSel
++      .enter()
++      .insert('path', 'g')
++      .attr('class', 'connection')
++      .attr('d', (d) => {
++        const xo = attrs.layoutBindings[attrs.layout].linkJoinX({
++          x: x0,
++          y: y0,
++          width,
++          height,
++        });
++        const yo = attrs.layoutBindings[attrs.layout].linkJoinY({
++          x: x0,
++          y: y0,
++          width,
++          height,
++        });
++        const o = { x: xo, y: yo };
++        return attrs.layoutBindings[attrs.layout].diagonal(o, o);
++      });
++
++    // Get connections update selection
++    const connUpdate = connEnter.merge(connectionsSel);
++
++    // Styling connections
++    connUpdate.attr('fill', 'none');
++
++    // Transition back to the parent element position
++    connUpdate
++      .transition()
++      .duration(attrs.duration)
++      .attr('d', (d) => {
++        const xs = attrs.layoutBindings[attrs.layout].linkX({
++          x: d._source.x,
++          y: d._source.y,
++          width: d._source.width,
++          height: d._source.height,
++        });
++        const ys = attrs.layoutBindings[attrs.layout].linkY({
++          x: d._source.x,
++          y: d._source.y,
++          width: d._source.width,
++          height: d._source.height,
++        });
++        const xt = attrs.layoutBindings[attrs.layout].linkJoinX({
++          x: d._target.x,
++          y: d._target.y,
++          width: d._target.width,
++          height: d._target.height,
++        });
++        const yt = attrs.layoutBindings[attrs.layout].linkJoinY({
++          x: d._target.x,
++          y: d._target.y,
++          width: d._target.width,
++          height: d._target.height,
++        });
++        return attrs.linkGroupArc({
++          source: { x: xs, y: ys },
++          target: { x: xt, y: yt },
++        });
++      });
++
++    // Allow external modifications
++    connUpdate.each(attrs.connectionsUpdate);
++
++    // Remove any  links which is exiting after animation
++    const connExit = connectionsSel
++      .exit()
++      .transition()
++      .duration(attrs.duration)
++      .attr('opacity', 0)
++      .remove();
++
++    // --------------------------  NODES ----------------------
++    // Get nodes selection
++    const nodesSelection = attrs.nodesWrapper
++      .selectAll('g.node')
++      .data(nodes, ({ data }) => attrs.nodeId(data));
++
++    // Enter any new nodes at the parent's previous position.
++    const nodeEnter = nodesSelection
++      .enter()
++      .append('g')
++      .attr('class', 'node')
++      .attr('transform', (d) => {
++        if (d == attrs.root) return `translate(${x0},${y0})`;
++        const xj = attrs.layoutBindings[attrs.layout].nodeJoinX({
++          x: x0,
++          y: y0,
++          width,
++          height,
++        });
++        const yj = attrs.layoutBindings[attrs.layout].nodeJoinY({
++          x: x0,
++          y: y0,
++          width,
++          height,
++        });
++        return `translate(${xj},${yj})`;
++      })
++      .attr('cursor', 'pointer')
++      .on('click', (event, { data }) => {
++        if (
++          [...event.srcElement.classList].includes('node-button-foreign-object')
++        ) {
++          return;
          }
 -
++        attrs.onNodeClick(data);
 +      })
-+      .on('mouseover', (e, { data }) => {
-+        const div = document.createElement('div');
-+          div.setAttribute('id', `${data.id}-tooltip`);
-+          div.setAttribute('class', 'absolute org-chart-tooltip');
-+          let attrs = this.getChartState();
-+          if(attrs.tooltipData[data.id]){
-+            div.innerHTML = attrs.hoverCardContent.bind(this)({nodeData: data, userData: attrs.tooltipData[data.id]})
-+          }else{
-+            if(data.id !== 'root'){
-+              div.innerHTML = "<div>Loading...</div>"
-+            }
-+          }
-+          document.getElementById('org-chart-container').appendChild(div);
-+          div.setAttribute(
-+            'style',
-+            `top: ${
-+              e.pageY -
-+              document
-+                .getElementById('org-chart-container')
-+                .getBoundingClientRect().y +
-+              40
-+            }px; left:${
-+              e.pageX -
-+              document
-+                .getElementById('org-chart-container')
-+                .getBoundingClientRect().x -
-+              div.getBoundingClientRect().width / 2
-+            }px`,
-+          );
-+      })
-+      .on('mousemove', (e, { data }) => {
-+        try {
-+          document
-+            .getElementById(`${data.id}-tooltip`)
-+            .setAttribute(
-+              'style',
-+              `top: ${
-+                e.pageY -
-+                document
-+                  .getElementById('org-chart-container')
-+                  .getBoundingClientRect().y +
-+                40
-+              }px; left:${
-+                e.pageX -
-+                document
-+                  .getElementById('org-chart-container')
-+                  .getBoundingClientRect().x -
-+                document
-+                  .getElementById(`${data.id}-tooltip`)
-+                  .getBoundingClientRect().width /
-+                  2
-+              }px`,
-+            );
-+        } catch (e) {}
-+      })
-+      .on('mouseout', function (d, { data }) {
-+        document
-+            .querySelectorAll('.org-chart-tooltip')
-+            .forEach((el) => el.remove());
-+      });
++      // .on('mouseenter', (e, {data}) => {
++      //   if(!attrs.tooltipData[data.id]){
++      //     if(data.id !== 'root'){
++      //       apiService.get(`/users/${data.id}`).then((reponse) => {
++      //         try{
++      //           attrs.tooltipData[data.id] = reponse.data.result.data
++      //           div.innerHTML = attrs.hoverCardContent.bind(this)({nodeData: data, userData: attrs.tooltipData[data.id]})
++      //         }catch(e){}
++      //       });
++      //     }
++      //   }
++      // })
++      // .on('mouseover', (e, { data }) => {
++      //   const div = document.createElement('div');
++      //     div.setAttribute('id', `${data.id}-tooltip`);
++      //     div.setAttribute('class', 'absolute org-chart-tooltip');
++      //     let attrs = this.getChartState();
++      //     if(attrs.tooltipData[data.id]){
++      //       div.innerHTML = attrs.hoverCardContent.bind(this)({nodeData: data, userData: attrs.tooltipData[data.id]})
++      //     }else{
++      //       if(data.id !== 'root'){
++      //         div.innerHTML = "<div>Loading...</div>"
++      //       }
++      //     }
++      //     document.getElementById('org-chart-container').appendChild(div);
++      //     console.log(d, `top: ${
++      //       e.pageY -
++      //       document
++      //         .getElementById('org-chart-container')
++      //         .getBoundingClientRect().y +
++      //       40
++      //     }px; left:${
++      //       e.pageX -
++      //       document
++      //         .getElementById('org-chart-container')
++      //         .getBoundingClientRect().x -
++      //       div.getBoundingClientRect().width / 2
++      //     }px`)
++      //     div.setAttribute(
++      //       'style',
++      //       `top: ${
++      //         e.pageY -
++      //         document
++      //           .getElementById('org-chart-container')
++      //           .getBoundingClientRect().y +
++      //         40
++      //       }px; left:${
++      //         e.pageX -
++      //         document
++      //           .getElementById('org-chart-container')
++      //           .getBoundingClientRect().x -
++      //         div.getBoundingClientRect().width / 2
++      //       }px`,
++      //     );
++      // })
++      // .on('mousemove', (e, { data }) => {
++      //   try {
++      //     document
++      //       .getElementById(`${data.id}-tooltip`)
++      //       .setAttribute(
++      //         'style',
++      //         `top: ${
++      //           e.pageY -
++      //           document
++      //             .getElementById('org-chart-container')
++      //             .getBoundingClientRect().y +
++      //           40
++      //         }px; left:${
++      //           e.pageX -
++      //           document
++      //             .getElementById('org-chart-container')
++      //             .getBoundingClientRect().x -
++      //           document
++      //             .getElementById(`${data.id}-tooltip`)
++      //             .getBoundingClientRect().width /
++      //             2
++      //         }px`,
++      //       );
++      //   } catch (e) {}
++      // })
++      // .on('mouseout', function (d, { data }) {
++      //   document
++      //       .querySelectorAll('.org-chart-tooltip')
++      //       .forEach((el) => el.remove());
++      // });
 +
 +    // Add background rectangle for the nodes
 +    nodeEnter.patternify({
@@ -2510,7 +2524,7 @@ index 871f2d8..bacf61e 100644
                    M ${mx} ${my}
                    L ${mx} ${y}
                    L ${x} ${y}
-@@ -1042,544 +1438,633 @@ export class OrgChart {
+@@ -1042,544 +1451,633 @@ export class OrgChart {
                      ${ex - w * xrvs}  ${ey}
                    L ${ex} ${ey}
         `;
@@ -2643,14 +2657,16 @@ index 871f2d8..bacf61e 100644
 -            d.data._centered = true;
 -            d.data._centeredWithDescendants = true;
 -        }
--
++    // Redraw Graph
++    this.update(d);
+ 
 -        // If childrens are expanded
 -        if (d.children) {
 -            //Collapse them
 -            d._children = d.children;
 -            d.children = null;
-+    // Redraw Graph
-+    this.update(d);
++    attrs.onExpandCollapseClick(d, attrs.data);
++  }
  
 -            // Set descendants expanded property to false
 -            this.setExpansionFlagToChildren(d, false);
@@ -2658,19 +2674,17 @@ index 871f2d8..bacf61e 100644
 -            // Expand children
 -            d.children = d._children;
 -            d._children = null;
-+    attrs.onExpandCollapseClick(d, attrs.data);
-+  }
++  // This function changes `expanded` property to descendants
++  setExpansionFlagToChildren({ data, children, _children }, flag) {
++    // Set flag to the current property
++    data._expanded = flag;
  
 -            // Set each children as expanded
 -            if (d.children) {
 -                d.children.forEach(({ data }) => (data._expanded = true));
 -            }
 -        }
-+  // This function changes `expanded` property to descendants
-+  setExpansionFlagToChildren({ data, children, _children }, flag) {
-+    // Set flag to the current property
-+    data._expanded = flag;
- 
+-
 -        // Redraw Graph
 -        this.update(d);
 +    // Loop over and recursively update expanded children's descendants
@@ -2810,7 +2824,10 @@ index 871f2d8..bacf61e 100644
 -            // Then only expand nodes, which have expanded proprty set to true
 -            [attrs.root].forEach((ch) => this.expandSomeNodes(ch));
 -        }
--    }
++    // Recursivelly do the same for expanded nodes
++    if (d.children) {
++      d.children.forEach((ch) => this.expandSomeNodes(ch));
+     }
 -
 -    // Function which collapses passed node and it's descendants
 -    collapse(d) {
@@ -2818,38 +2835,6 @@ index 871f2d8..bacf61e 100644
 -            d._children = d.children;
 -            d._children.forEach((ch) => this.collapse(ch));
 -            d.children = null;
--        }
--    }
--
--    // Function which expands passed node and it's descendants
--    expand(d) {
--        if (d._children) {
--            d.children = d._children;
--            d.children.forEach((ch) => this.expand(ch));
--            d._children = null;
--        }
-+    // Recursivelly do the same for expanded nodes
-+    if (d.children) {
-+      d.children.forEach((ch) => this.expandSomeNodes(ch));
-     }
--
--    // Zoom handler function
--    zoomed(event, d) {
--        const attrs = this.getChartState();
--        const chart = attrs.chart;
--
--        // Get d3 event's transform object
--        const transform = event.transform;
--
--        // Store it
--        attrs.lastTransform = transform;
--
--        // Reposition and rescale chart accordingly
--        chart.attr("transform", transform);
--
--        // Apply new styles to the foreign object element
--        if (this.isEdge()) {
--            this.restyleForeignObjectElements();
 -        }
 +  }
 +
@@ -2908,16 +2893,13 @@ index 871f2d8..bacf61e 100644
 +      [attrs.root].forEach((ch) => this.expandSomeNodes(ch));
      }
 -
--    zoomTreeBounds({ x0, x1, y0, y1, params = { animate: true, scale: true } }) {
--        const { centerG, svgWidth: w, svgHeight: h, svg, zoomBehavior, duration, lastTransform } = this.getChartState()
--        let scaleVal = Math.min(8, 0.9 / Math.max((x1 - x0) / w, (y1 - y0) / h));
--        let identity = d3.zoomIdentity.translate(w / 2, h / 2)
--        identity = identity.scale(params.scale ? scaleVal : lastTransform.k)
--
--        identity = identity.translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
--        // Transition zoom wrapper component into specified bounds
--        svg.transition().duration(params.animate ? duration : 0).call(zoomBehavior.transform, identity);
--        centerG.transition().duration(params.animate ? duration : 0).attr('transform', 'translate(0,0)')
+-    // Function which expands passed node and it's descendants
+-    expand(d) {
+-        if (d._children) {
+-            d.children = d._children;
+-            d.children.forEach((ch) => this.expand(ch));
+-            d._children = null;
+-        }
 +  }
 +
 +  // Function which collapses passed node and it's descendants
@@ -2928,6 +2910,53 @@ index 871f2d8..bacf61e 100644
 +      d.children = null;
      }
 -
+-    // Zoom handler function
+-    zoomed(event, d) {
+-        const attrs = this.getChartState();
+-        const chart = attrs.chart;
+-
+-        // Get d3 event's transform object
+-        const transform = event.transform;
+-
+-        // Store it
+-        attrs.lastTransform = transform;
+-
+-        // Reposition and rescale chart accordingly
+-        chart.attr("transform", transform);
+-
+-        // Apply new styles to the foreign object element
+-        if (this.isEdge()) {
+-            this.restyleForeignObjectElements();
+-        }
++  }
++
++  // Function which expands passed node and it's descendants
++  expand(d) {
++    if (d._children) {
++      d.children = d._children;
++      d.children.forEach((ch) => this.expand(ch));
++      d._children = null;
+     }
++  }
+ 
+-    zoomTreeBounds({ x0, x1, y0, y1, params = { animate: true, scale: true } }) {
+-        const { centerG, svgWidth: w, svgHeight: h, svg, zoomBehavior, duration, lastTransform } = this.getChartState()
+-        let scaleVal = Math.min(8, 0.9 / Math.max((x1 - x0) / w, (y1 - y0) / h));
+-        let identity = d3.zoomIdentity.translate(w / 2, h / 2)
+-        identity = identity.scale(params.scale ? scaleVal : lastTransform.k)
++  // Zoom handler function
++  zoomed(event, d) {
++    const attrs = this.getChartState();
++    const chart = attrs.chart;
+ 
+-        identity = identity.translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
+-        // Transition zoom wrapper component into specified bounds
+-        svg.transition().duration(params.animate ? duration : 0).call(zoomBehavior.transform, identity);
+-        centerG.transition().duration(params.animate ? duration : 0).attr('transform', 'translate(0,0)')
+-    }
++    // Get d3 event's transform object
++    const transform = event.transform;
+ 
 -    fit({ animate = true, nodes, scale = true } = {}) {
 -        const attrs = this.getChartState();
 -        const { root } = attrs;
@@ -2945,29 +2974,18 @@ index 871f2d8..bacf61e 100644
 -            y1: maxY + 50,
 -        });
 -        return this;
-+  }
-+
-+  // Function which expands passed node and it's descendants
-+  expand(d) {
-+    if (d._children) {
-+      d.children = d._children;
-+      d.children.forEach((ch) => this.expand(ch));
-+      d._children = null;
-     }
-+  }
- 
+-    }
+-
 -    // This function can be invoked via chart.setExpanded API, it expands or collapses particular node
 -    setExpanded(id, expandedFlag = true) {
-+  // Zoom handler function
-+  zoomed(event, d) {
-+    const attrs = this.getChartState();
-+    const chart = attrs.chart;
++    // Store it
++    attrs.lastTransform = transform;
  
 -        const attrs = this.getChartState();
 -        // Retrieve node by node Id
 -        const node = attrs.allNodes.filter(({ data }) => attrs.nodeId(data) == id)[0];
-+    // Get d3 event's transform object
-+    const transform = event.transform;
++    // Reposition and rescale chart accordingly
++    chart.attr('transform', transform);
  
 -        if (!node) {
 -            console.log(`ORG CHART - ${expandedFlag ? "EXPAND" : "COLLAPSE"} - Node with id (${id})  not found in the tree`)
@@ -2975,10 +2993,11 @@ index 871f2d8..bacf61e 100644
 -        }
 -        node.data._expanded = expandedFlag;
 -        return this;
--    }
-+    // Store it
-+    attrs.lastTransform = transform;
- 
++    // Apply new styles to the foreign object element
++    if (this.isEdge()) {
++      this.restyleForeignObjectElements();
+     }
+-
 -    setCentered(nodeId) {
 -        const attrs = this.getChartState();
 -        // this.setExpanded(nodeId)
@@ -2990,46 +3009,6 @@ index 871f2d8..bacf61e 100644
 -        node.data._centered = true;
 -        node.data._expanded = true;
 -        return this;
--    }
-+    // Reposition and rescale chart accordingly
-+    chart.attr('transform', transform);
- 
--    setHighlighted(nodeId) {
--        const attrs = this.getChartState();
--        const node = attrs.allNodes.filter(d => attrs.nodeId(d.data) === nodeId)[0];
--        if (!node) {
--            console.log(`ORG CHART - HIGHLIGHT - Node with id (${nodeId})  not found in the tree`);
--            return this
--        }
--        node.data._highlighted = true;
--        node.data._expanded = true;
--        node.data._centered = true;
--        return this;
--    }
--
--    setUpToTheRootHighlighted(nodeId) {
--        const attrs = this.getChartState();
--        const node = attrs.allNodes.filter(d => attrs.nodeId(d.data) === nodeId)[0];
--        if (!node) {
--            console.log(`ORG CHART - HIGHLIGHTROOT - Node with id (${nodeId}) not found in the tree`)
--            return this;
--        }
--        node.data._upToTheRootHighlighted = true;
--        node.data._expanded = true;
--        node.ancestors().forEach(d => d.data._upToTheRootHighlighted = true)
--        return this;
-+    // Apply new styles to the foreign object element
-+    if (this.isEdge()) {
-+      this.restyleForeignObjectElements();
-     }
--
--    clearHighlighting() {
--        const attrs = this.getChartState();
--        attrs.allNodes.forEach(d => {
--            d.data._highlighted = false;
--            d.data._upToTheRootHighlighted = false;
--        })
--        this.update(attrs.root)
 +  }
 +
 +  zoomTreeBounds({ x0, x1, y0, y1, params = { animate: true, scale: true } }) {
@@ -3106,6 +3085,87 @@ index 871f2d8..bacf61e 100644
 +      return this;
      }
 -
+-    setHighlighted(nodeId) {
+-        const attrs = this.getChartState();
+-        const node = attrs.allNodes.filter(d => attrs.nodeId(d.data) === nodeId)[0];
+-        if (!node) {
+-            console.log(`ORG CHART - HIGHLIGHT - Node with id (${nodeId})  not found in the tree`);
+-            return this
+-        }
+-        node.data._highlighted = true;
+-        node.data._expanded = true;
+-        node.data._centered = true;
+-        return this;
++    node.data._expanded = expandedFlag;
++    return this;
++  }
++
++  setCentered(nodeId) {
++    const attrs = this.getChartState();
++    // this.setExpanded(nodeId)
++    const node = attrs.allNodes.filter(
++      (d) => attrs.nodeId(d.data) === nodeId,
++    )[0];
++    if (!node) {
++      console.log(
++        `ORG CHART - CENTER - Node with id (${nodeId}) not found in the tree`,
++      );
++      return this;
+     }
+-
+-    setUpToTheRootHighlighted(nodeId) {
+-        const attrs = this.getChartState();
+-        const node = attrs.allNodes.filter(d => attrs.nodeId(d.data) === nodeId)[0];
+-        if (!node) {
+-            console.log(`ORG CHART - HIGHLIGHTROOT - Node with id (${nodeId}) not found in the tree`)
+-            return this;
+-        }
+-        node.data._upToTheRootHighlighted = true;
+-        node.data._expanded = true;
+-        node.ancestors().forEach(d => d.data._upToTheRootHighlighted = true)
+-        return this;
++    node.data._centered = true;
++    node.data._expanded = true;
++    return this;
++  }
++
++  setHighlighted(nodeId) {
++    const attrs = this.getChartState();
++    const node = attrs.allNodes.filter(
++      (d) => attrs.nodeId(d.data) === nodeId,
++    )[0];
++    if (!node) {
++      console.log(
++        `ORG CHART - HIGHLIGHT - Node with id (${nodeId})  not found in the tree`,
++      );
++      return this;
+     }
+-
+-    clearHighlighting() {
+-        const attrs = this.getChartState();
+-        attrs.allNodes.forEach(d => {
+-            d.data._highlighted = false;
+-            d.data._upToTheRootHighlighted = false;
+-        })
+-        this.update(attrs.root)
++    node.data._highlighted = true;
++    node.data._expanded = true;
++    node.data._centered = true;
++    return this;
++  }
++
++  setUpToTheRootHighlighted(nodeId) {
++    const attrs = this.getChartState();
++    const node = attrs.allNodes.filter(
++      (d) => attrs.nodeId(d.data) === nodeId,
++    )[0];
++    if (!node) {
++      console.log(
++        `ORG CHART - HIGHLIGHTROOT - Node with id (${nodeId}) not found in the tree`,
++      );
++      return this;
+     }
+-
 -    // It can take selector which would go fullscreen
 -    fullscreen(elem) {
 -        const attrs = this.getChartState();
@@ -3131,78 +3191,6 @@ index 871f2d8..bacf61e 100644
 -        } else if (el.msRequestFullscreen) {
 -            el.msRequestFullscreen();
 -        }
-+    node.data._expanded = expandedFlag;
-+    return this;
-+  }
-+
-+  setCentered(nodeId) {
-+    const attrs = this.getChartState();
-+    // this.setExpanded(nodeId)
-+    const node = attrs.allNodes.filter(
-+      (d) => attrs.nodeId(d.data) === nodeId,
-+    )[0];
-+    if (!node) {
-+      console.log(
-+        `ORG CHART - CENTER - Node with id (${nodeId}) not found in the tree`,
-+      );
-+      return this;
-     }
--
--    // Zoom in exposed method
--    zoomIn() {
--        const { svg, zoomBehavior } = this.getChartState();
--        svg.transition().call(zoomBehavior.scaleBy, 1.3);
-+    node.data._centered = true;
-+    node.data._expanded = true;
-+    return this;
-+  }
-+
-+  setHighlighted(nodeId) {
-+    const attrs = this.getChartState();
-+    const node = attrs.allNodes.filter(
-+      (d) => attrs.nodeId(d.data) === nodeId,
-+    )[0];
-+    if (!node) {
-+      console.log(
-+        `ORG CHART - HIGHLIGHT - Node with id (${nodeId})  not found in the tree`,
-+      );
-+      return this;
-     }
--
--    // Zoom out exposed method
--    zoomOut() {
--        const { svg, zoomBehavior } = this.getChartState();
--        svg.transition().call(zoomBehavior.scaleBy, 0.78);
-+    node.data._highlighted = true;
-+    node.data._expanded = true;
-+    node.data._centered = true;
-+    return this;
-+  }
-+
-+  setUpToTheRootHighlighted(nodeId) {
-+    const attrs = this.getChartState();
-+    const node = attrs.allNodes.filter(
-+      (d) => attrs.nodeId(d.data) === nodeId,
-+    )[0];
-+    if (!node) {
-+      console.log(
-+        `ORG CHART - HIGHLIGHTROOT - Node with id (${nodeId}) not found in the tree`,
-+      );
-+      return this;
-     }
--
--    toDataURL(url, callback) {
--        var xhr = new XMLHttpRequest();
--        xhr.onload = function () {
--            var reader = new FileReader();
--            reader.onloadend = function () {
--                callback(reader.result);
--            }
--            reader.readAsDataURL(xhr.response);
--        };
--        xhr.open('GET', url);
--        xhr.responseType = 'blob';
--        xhr.send();
 +    node.data._upToTheRootHighlighted = true;
 +    node.data._upToTheRootHighlightedNode = true;
 +    node.data._expanded = true;
@@ -3248,6 +3236,32 @@ index 871f2d8..bacf61e 100644
 +    } else if (el.msRequestFullscreen) {
 +      el.msRequestFullscreen();
      }
+-
+-    // Zoom in exposed method
+-    zoomIn() {
+-        const { svg, zoomBehavior } = this.getChartState();
+-        svg.transition().call(zoomBehavior.scaleBy, 1.3);
+-    }
+-
+-    // Zoom out exposed method
+-    zoomOut() {
+-        const { svg, zoomBehavior } = this.getChartState();
+-        svg.transition().call(zoomBehavior.scaleBy, 0.78);
+-    }
+-
+-    toDataURL(url, callback) {
+-        var xhr = new XMLHttpRequest();
+-        xhr.onload = function () {
+-            var reader = new FileReader();
+-            reader.onloadend = function () {
+-                callback(reader.result);
+-            }
+-            reader.readAsDataURL(xhr.response);
+-        };
+-        xhr.open('GET', url);
+-        xhr.responseType = 'blob';
+-        xhr.send();
+-    }
 -
 -    exportImg({ full = false, scale = 3, onLoad = d => d, save = true } = {}) {
 -        const that = this;
@@ -3365,6 +3379,14 @@ index 871f2d8..bacf61e 100644
 -        }
 -
 -
+-    }
+-
+-
+-
+-    exportSvg() {
+-        const { svg } = this.getChartState();
+-        this.downloadImage({ node: svg.node(), scale: 3, isSvg: true })
+-        return this;
 +          }
 +        });
 +      });
@@ -3372,11 +3394,10 @@ index 871f2d8..bacf61e 100644
 +      exportImage();
      }
 -
--
--
--    exportSvg() {
--        const { svg } = this.getChartState();
--        this.downloadImage({ node: svg.node(), scale: 3, isSvg: true })
+-    expandAll() {
+-        const { allNodes, root } = this.getChartState();
+-        allNodes.forEach(d => d.data._expanded = true);
+-        this.render()
 -        return this;
 +  }
 +
@@ -3424,10 +3445,11 @@ index 871f2d8..bacf61e 100644
 +      return;
      }
 -
--    expandAll() {
+-    collapseAll() {
 -        const { allNodes, root } = this.getChartState();
--        allNodes.forEach(d => d.data._expanded = true);
--        this.render()
+-        allNodes.forEach(d => d.data._expanded = false);
+-        this.expandLevel(0)
+-        this.render();
 -        return this;
 +    // Get image quality index (basically,  index you can zoom in)
 +    const quality = scale;
@@ -3484,14 +3506,6 @@ index 871f2d8..bacf61e 100644
 +      }
      }
 -
--    collapseAll() {
--        const { allNodes, root } = this.getChartState();
--        allNodes.forEach(d => d.data._expanded = false);
--        this.expandLevel(0)
--        this.render();
--        return this;
--    }
--
 -    downloadImage({ node, scale = 2, isSvg = false, save = true, onAlreadySerialized = d => { }, onLoad = d => { } }) {
 -        // Retrieve svg node
 -        const svgNode = node;
@@ -3505,7 +3519,25 @@ index 871f2d8..bacf61e 100644
 -            saveAs(url, "graph.svg");
 -            onAlreadySerialized()
 -            return;
--        }
++    // This function serializes SVG and sets all necessary attributes
++    function serializeString(svg) {
++      const xmlns = 'http://www.w3.org/2000/xmlns/';
++      const xlinkns = 'http://www.w3.org/1999/xlink';
++      const svgns = 'http://www.w3.org/2000/svg';
++      svg = svg.cloneNode(true);
++      const fragment = window.location.href + '#';
++      const walker = document.createTreeWalker(
++        svg,
++        NodeFilter.SHOW_ELEMENT,
++        null,
++        false,
++      );
++      while (walker.nextNode()) {
++        for (const attr of walker.currentNode.attributes) {
++          if (attr.value.includes(fragment)) {
++            attr.value = attr.value.replace(fragment, '#');
++          }
+         }
 -        // Get image quality index (basically,  index you can zoom in)
 -        const quality = scale
 -        // Create image
@@ -3552,25 +3584,7 @@ index 871f2d8..bacf61e 100644
 -            } else {
 -                location.replace(uri);
 -            }
-+    // This function serializes SVG and sets all necessary attributes
-+    function serializeString(svg) {
-+      const xmlns = 'http://www.w3.org/2000/xmlns/';
-+      const xlinkns = 'http://www.w3.org/1999/xlink';
-+      const svgns = 'http://www.w3.org/2000/svg';
-+      svg = svg.cloneNode(true);
-+      const fragment = window.location.href + '#';
-+      const walker = document.createTreeWalker(
-+        svg,
-+        NodeFilter.SHOW_ELEMENT,
-+        null,
-+        false,
-+      );
-+      while (walker.nextNode()) {
-+        for (const attr of walker.currentNode.attributes) {
-+          if (attr.value.includes(fragment)) {
-+            attr.value = attr.value.replace(fragment, '#');
-+          }
-         }
+-        }
 -        // This function serializes SVG and sets all necessary attributes
 -        function serializeString(svg) {
 -            const xmlns = 'http://www.w3.org/2000/xmlns/';
