@@ -63,19 +63,8 @@ export interface IPost {
   };
   occasionContext?: Record<string, any>;
   mentions?: IMention[];
-  createdBy?: {
-    department?: string;
-    designation?: string;
-    fullName?: string;
-    profileImage: {
-      blurHash: string;
-      id: string;
-      original: string;
-    };
-    status?: string;
-    userId?: string;
-    workLocation?: string;
-  };
+  createdBy?: ICreatedBy;
+  intendedUsers?: ICreatedBy[];
   hashtags: string[] | [];
   files?: string[] | IMedia[];
   pollContext?: IPoll;
