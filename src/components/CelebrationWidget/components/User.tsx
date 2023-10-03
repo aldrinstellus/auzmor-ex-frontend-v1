@@ -304,8 +304,7 @@ const User: FC<UserProps> = ({
         </div>
       ) : null}
       {alreadyWished ||
-      (userIsMe && showSendWishBtn) ||
-      showSendWishRTELayout ? (
+      (userIsMe && (showSendWishBtn || showSendWishRTELayout)) ? (
         <Button
           size={Size.Small}
           className="!bg-primary-50 !text-primary-500 px-4 py-2 rounded-[8px]"
