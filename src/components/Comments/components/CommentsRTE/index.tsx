@@ -121,16 +121,29 @@ export const CommentsRTE: FC<CommentFormProps> = ({
       );
     },
     onSuccess: async (data: any, _variables, _context) => {
+      quillRef.current?.setEditorContents(quillRef.current?.getEditor(), '');
+      removeMedia();
       if (mode === PostCommentMode.SendWish) {
         queryClient.invalidateQueries(['celebrations'], {
           exact: false,
         });
-        queryClient.invalidateQueries(['posts', entityId], {
-          exact: false,
-        });
+        if (entityId) {
+          queryClient.invalidateQueries(['posts', entityId], {
+            exact: false,
+          });
+          const post = getPost(entityId);
+          if (post && post.id)
+            updateFeed(
+              entityId,
+              produce(post, (draft) => {
+                draft.commentsCount = draft.commentsCount
+                  ? draft.commentsCount + 1
+                  : 1;
+              }),
+            );
+        }
+        return;
       }
-      quillRef.current?.setEditorContents(quillRef.current?.getEditor(), '');
-      removeMedia();
       await queryClient.setQueryData(
         ['comments', { entityId, entityType, limit: 4 }],
         (oldData) =>
@@ -147,7 +160,9 @@ export const CommentsRTE: FC<CommentFormProps> = ({
         updateFeed(
           entityId,
           produce(post, (draft) => {
-            draft.commentsCount = draft.commentsCount + 1;
+            draft.commentsCount = draft.commentsCount
+              ? draft.commentsCount + 1
+              : 1;
           }),
         );
       } else if (entityType === 'comment' && entityId) {
