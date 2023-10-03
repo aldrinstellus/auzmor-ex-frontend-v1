@@ -315,7 +315,7 @@ const Apps: FC<IAppsProps> = () => {
                   control,
                   getValues,
                   name: 'search',
-                  placeholder: 'Search members',
+                  placeholder: 'Search apps',
                   error: errors.search?.message,
                   dataTestId: 'app-searchbar',
                   isClearable: true,
