@@ -126,7 +126,6 @@ const AsyncSingleSelect = forwardRef(
       }
     }, [inView]);
 
-    console.log('___>>>', fetchNextPage && hasNextPage && !isFetchingNextPage);
     return (
       <ConfigProvider
         theme={{

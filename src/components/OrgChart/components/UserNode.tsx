@@ -78,7 +78,7 @@ const UserNode: FC<IUserNode> = ({ node, isFilterApplied }) => {
                 <Icon
                   name="location"
                   size={16}
-                  color="text-neutral-900"
+                  color="!text-neutral-900"
                   hover={false}
                 />
               </div>
@@ -100,7 +100,7 @@ const UserNode: FC<IUserNode> = ({ node, isFilterApplied }) => {
           </div>
         )}
         <UserCard
-          className="absolute bottom-full group-hover:visible invisible -translate-x-1/2 ml-32"
+          className="absolute bottom-full group-hover:visible invisible -translate-x-1/2 ml-32 mb-6"
           variant={UsercardVariant.Large}
           user={{
             id: node.data.id,

@@ -135,7 +135,6 @@ const UserCard: FC<IUserCardProp> = ({
               } else {
                 ele.innerHTML = `<div class="w-full h-full rounded-full bg-neutral-800 text-white font-medium flex justify-center items-center text-lg"><div>U</div></div>`;
               }
-              console.log(response?.data?.result.data.manager);
             }
             const copyElement = document.getElementById(
               `user-card-${user?.id}-copy-icon`,
@@ -183,7 +182,11 @@ const UserCard: FC<IUserCardProp> = ({
                 <Avatar
                   size={144}
                   name={getFullName(user) || 'U'}
-                  image={getProfileImage(user)}
+                  image={
+                    (user?.profileImage as any) !== ''
+                      ? getProfileImage(user)
+                      : undefined
+                  }
                   bgColor={getAvatarColor(user)}
                   dataTestId="usercard-profilepic"
                 />
