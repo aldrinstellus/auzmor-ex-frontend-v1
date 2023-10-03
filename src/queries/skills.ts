@@ -19,7 +19,7 @@ const getAllSkills = async ({
 }: // queryKey,
 QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
   if (pageParam === null) {
-    return await apiService.get('/skills', queryKey[1]);
+    return await apiService.get('users/skills', queryKey[1]);
   } else return await apiService.get(pageParam);
 };
 

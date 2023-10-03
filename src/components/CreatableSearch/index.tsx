@@ -33,6 +33,7 @@ export interface ICreatableSearch {
   height?: number;
   fontSize?: number;
   getPopupContainer?: any;
+  multi?: boolean;
 }
 
 const CreatableSearch = forwardRef(
@@ -57,6 +58,7 @@ const CreatableSearch = forwardRef(
       height = 44,
       fontSize = 14,
       getPopupContainer = null,
+      multi = false,
     }: ICreatableSearch,
     ref?: any,
   ) => {
@@ -160,6 +162,7 @@ const CreatableSearch = forwardRef(
                 <Select
                   open={open}
                   showSearch
+                  mode={multi ? 'multiple' : undefined}
                   disabled={disabled}
                   placeholder={placeholder}
                   placement={menuPlacement ? menuPlacement : undefined}

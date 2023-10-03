@@ -62,7 +62,7 @@ const SkillsModal: FC<ISkillsModalProps> = ({ open, closeModal, skills }) => {
 
   const onSubmit = (formData: any) => {
     updateUserSkillsMutation.mutate({
-      personal: { skills: [formData?.skills?.value] },
+      personal: { skills: formData?.skills?.map((s: any) => s.label) },
     });
   };
 
@@ -101,6 +101,7 @@ const SkillsModal: FC<ISkillsModalProps> = ({ open, closeModal, skills }) => {
       // error: errors.skills?.message,
       dataTestId: 'select-skills',
       getPopupContainer: document.body,
+      multi: true,
     },
   ];
 
@@ -152,10 +153,10 @@ const SkillsModal: FC<ISkillsModalProps> = ({ open, closeModal, skills }) => {
           <Layout fields={skillField} />
         </form>
 
-        <div className="flex flex-col space-y-4">
+        {/* <div className="flex flex-col space-y-4">
           <div className="font-bold">Recommeded based on your profile</div>
           <div>Skills List</div>
-        </div>
+        </div> */}
       </div>
       <Footer />
     </Modal>

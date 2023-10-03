@@ -88,7 +88,7 @@ const TelephoneInput: FC<TelephoneInputProps> = ({
         />
 
         {showDropdown && (
-          <Card className="absolute left-0 top-12 p-4 w-96 shadow-xl">
+          <Card className="absolute z-50 left-0 top-12 p-4 w-96 shadow-xl">
             <div className="flex relative items-center w-full">
               <div className="absolute ml-5">
                 <Icon name="search" size={16} disabled />

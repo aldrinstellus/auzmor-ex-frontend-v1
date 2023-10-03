@@ -22,7 +22,7 @@ const MarriedRow: FC<AppProps> = ({ data }) => {
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);
   const { user } = useAuth();
-  const { isOwnerOrAdmin } = useRole({ userId: userId ?? user?.id });
+  const { isOwnerOrAdmin } = useRole({ userId: userId || user?.id });
 
   const updateUserMarriedMutation = useMutation({
     mutationFn: userId
