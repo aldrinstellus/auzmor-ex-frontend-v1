@@ -99,19 +99,23 @@ const UserNode: FC<IUserNode> = ({ node, isFilterApplied }) => {
             <div className="ml-0.5">Deactivated</div>
           </div>
         )}
-        <UserCard
-          className="absolute bottom-full group-hover:visible invisible -translate-x-1/2 ml-32 mb-6"
-          variant={UsercardVariant.Large}
-          user={{
-            id: node.data.id,
-            profileImage: node.data.profileImage,
-            fullName: node.data.userName,
-            department: { departmentId: '', name: node.data.department || '' },
-            designation: node.data.jobTitle,
-            workLocation: { locationId: '', name: node.data.location || '' },
-            status: node.data.status,
-          }}
-        />
+        <div className="absolute bottom-full group-hover:visible invisible -translate-x-1/2 ml-32 pb-5">
+          <UserCard
+            variant={UsercardVariant.Large}
+            user={{
+              id: node.data.id,
+              profileImage: node.data.profileImage,
+              fullName: node.data.userName,
+              department: {
+                departmentId: '',
+                name: node.data.department || '',
+              },
+              designation: node.data.jobTitle,
+              workLocation: { locationId: '', name: node.data.location || '' },
+              status: node.data.status,
+            }}
+          />
+        </div>
       </div>
     );
   }

@@ -33,6 +33,7 @@ export interface IUser {
   coverImage?: string;
   permissions?: [];
   timezone?: string;
+  outOfOffice?: Record<string, any>;
 }
 
 interface IAuthContext {
@@ -94,6 +95,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
           timezone: data?.timeZone,
           department: data?.department,
           workLocation: data?.workLocation,
+          outOfOffice: data?.outOfOffice,
         });
       } catch (e: any) {
         if (e?.response?.status === 401) {

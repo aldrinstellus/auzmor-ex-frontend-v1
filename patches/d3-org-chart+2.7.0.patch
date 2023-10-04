@@ -111,7 +111,7 @@ index fe34324..a278e83 100644
 - 
 \ No newline at end of file
 diff --git a/node_modules/d3-org-chart/src/d3-org-chart.js b/node_modules/d3-org-chart/src/d3-org-chart.js
-index 871f2d8..23c4d85 100644
+index 871f2d8..bbf53fc 100644
 --- a/node_modules/d3-org-chart/src/d3-org-chart.js
 +++ b/node_modules/d3-org-chart/src/d3-org-chart.js
 @@ -1,104 +1,148 @@
@@ -2524,7 +2524,7 @@ index 871f2d8..23c4d85 100644
                    M ${mx} ${my}
                    L ${mx} ${y}
                    L ${x} ${y}
-@@ -1042,544 +1451,633 @@ export class OrgChart {
+@@ -1042,544 +1451,635 @@ export class OrgChart {
                      ${ex - w * xrvs}  ${ey}
                    L ${ex} ${ey}
         `;
@@ -3020,8 +3020,10 @@ index 871f2d8..23c4d85 100644
 +      zoomBehavior,
 +      duration,
 +      lastTransform,
++      scaleExtent
 +    } = this.getChartState();
 +    let scaleVal = Math.min(8, 0.9 / Math.max((x1 - x0) / w, (y1 - y0) / h));
++    if(scaleVal < scaleExtent[0]) { scaleVal = scaleExtent[0]}
 +    let identity = d3.zoomIdentity.translate(w / 2, h / 2);
 +    identity = identity.scale(params.scale ? scaleVal : lastTransform.k);
 +

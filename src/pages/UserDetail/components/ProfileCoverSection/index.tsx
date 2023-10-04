@@ -393,11 +393,31 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({ userDetails }) => {
               }
             }}
           >
-            <LinkedinIcon />
-            <TwitterIcon />
-            <InstagramIcon />
-            <FacebookIcon />
-            <WebIcon />
+            <LinkedinIcon
+              className={clsx({
+                grayscale: !userDetails?.personal?.socialAccounts?.linkedIn,
+              })}
+            />
+            <TwitterIcon
+              className={clsx({
+                grayscale: !userDetails?.personal?.socialAccounts?.twitter,
+              })}
+            />
+            <InstagramIcon
+              className={clsx({
+                grayscale: !userDetails?.personal?.socialAccounts?.instagram,
+              })}
+            />
+            <FacebookIcon
+              className={clsx({
+                grayscale: !userDetails?.personal?.socialAccounts?.facebook,
+              })}
+            />
+            <WebIcon
+              className={clsx({
+                grayscale: !userDetails?.personal?.socialAccounts?.website,
+              })}
+            />
           </div>
         </div>
       </Card>
@@ -490,7 +510,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({ userDetails }) => {
         <SocialLinksModal
           open={socialLink}
           closeModal={closeSocialLinks}
-          socialLinks={{}}
+          socialLinks={userDetails?.personal?.socialAccounts}
         />
       )}
       <DeletePeople

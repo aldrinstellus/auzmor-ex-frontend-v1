@@ -4,6 +4,13 @@ import * as momentTimezone from 'moment-timezone';
 
 export const TIME_PATTERN = /^(0[0-9]|1[0-2]):[0-5][0-9] (am|pm)$/; // it will strictly follow "HH:MM am/pm, HH-> [00-12], MM-> [00->59]"
 
+export const parseDate = (timestring: string) => {
+  if (!timestring) {
+    return null;
+  }
+  return moment(timestring, 'YYYY-MM-DD').toDate();
+};
+
 export const afterXUnit = (
   x: number,
   unit: moment.unitOfTime.DurationConstructor,
