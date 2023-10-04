@@ -44,7 +44,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
     [],
   );
   const { form } = useEntitySearchFormStore();
-  const { watch, setValue, control } = form!;
+  const { watch, setValue, control, unregister } = form!;
   const [
     memberSearch,
     showSelectedMembers,
@@ -89,7 +89,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
       },
     });
 
-  const usersData = data?.pages
+  let usersData = data?.pages
     .flatMap((page: any) => {
       return page?.data?.result?.data.map((user: IGetUser) => {
         try {
@@ -104,7 +104,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
         return false;
       }
       if (showSelectedMembers) {
-        return !!users[user.id];
+        return !!users?.[user.id];
       }
       return true;
     });
@@ -202,16 +202,44 @@ const MembersBody: FC<IMembersBodyProps> = ({
     });
   };
 
-  const userKeys = Object.keys(users);
-  const totalCount = userKeys.length;
-  const selectedCount = userKeys.filter((key) => !!users[key]).length;
+  const userKeys = Object.keys(users || {});
+
+  useEffect(() => {
+    if (!showSelectedMembers) {
+      unregisterUsers();
+    }
+    updateSelectAll();
+  }, [userKeys, usersData, showSelectedMembers]);
+
+  const unregisterUsers = () => {
+    userKeys.forEach((key) => {
+      if (!usersData?.find((user: IGetUser) => user.id === key) && !users[key])
+        unregister(`users.${key}`);
+    });
+  };
+
+  const selectedMembers = userKeys.map((key) => users[key]).filter(Boolean);
+  const selectedCount = selectedMembers.length;
+
   const updateSelectAll = () => {
-    if (totalCount > selectedCount) {
+    if (
+      usersData?.length === 0 ||
+      usersData?.some((user: IGetUser) => !users?.[user.id]) ||
+      showSelectedMembers
+    ) {
       setValue('selectAll', false);
     } else {
       setValue('selectAll', true);
     }
   };
+
+  if (showSelectedMembers) usersData = selectedMembers as IGetUser[];
+
+  usersData?.sort((a: IGetUser, b: IGetUser) => {
+    if (a.fullName! > b.fullName!) return 1;
+    else if (a.fullName! < b.fullName!) return -1;
+    else return 0;
+  });
 
   const isControlsDisabled =
     !!!usersData?.length && debouncedSearchValue !== '';
@@ -405,7 +433,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
                       return e.target.checked;
                     },
                   },
-                  disabled: totalCount === selectedCount || showSelectedMembers,
+                  disabled: showSelectedMembers,
                   dataTestId: `select-${dataTestId}-selectall`,
                 },
               ]}
@@ -418,7 +446,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
                   control,
                   label: `Show selected members (${selectedCount})`,
                   className: 'flex item-center',
-                  disabled: selectedCount === 0,
+                  disabled: selectedCount === 0 && !showSelectedMembers,
                   dataTestId: `select-${dataTestId}-showselected`,
                 },
               ]}
