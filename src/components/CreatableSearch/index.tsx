@@ -182,8 +182,14 @@ const CreatableSearch = forwardRef(
                   ref={ref}
                   onBlur={() => setOpen(false)}
                   optionLabelProp="label"
-                  onChange={(_, option) => {
-                    field.onChange(option);
+                  onChange={(values, option) => {
+                    if (multi) {
+                      field.onChange(
+                        values?.map((v: string) => ({ value: v, label: v })),
+                      );
+                    } else {
+                      field.onChange(option);
+                    }
                   }}
                   suffixIcon={<Icon name="arrowDown" size={16} />}
                   className="creatable-search"

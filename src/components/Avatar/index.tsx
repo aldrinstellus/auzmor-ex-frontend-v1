@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { FC, MouseEventHandler, ReactNode, memo, useMemo } from 'react';
 import clsx from 'clsx';
 import isDarkColor from 'is-dark-color';
@@ -5,6 +6,7 @@ import { getInitials } from 'utils/misc';
 import Spinner from 'components/Spinner';
 import { PRIMARY_COLOR } from 'utils/constants';
 import BlurImg from 'components/Image/components/BlurImg';
+import Icon from 'components/Icon';
 
 export type AvatarProps = {
   name?: string;
@@ -23,6 +25,7 @@ export type AvatarProps = {
   blurhash?: string;
   isCounter?: boolean;
   fontSize?: number;
+  outOfOffice?: boolean;
 };
 
 const Avatar: FC<AvatarProps> = ({
@@ -41,6 +44,7 @@ const Avatar: FC<AvatarProps> = ({
   disable = false,
   blurhash = '',
   isCounter = false,
+  outOfOffice = false,
 }) => {
   const containerStyles = useMemo(
     () =>
@@ -142,9 +146,16 @@ const Avatar: FC<AvatarProps> = ({
           {!loading && avatarName}
         </span>
       )}
-      {!!indicatorIcon && !loading
-        ? indicatorIcon
-        : showActiveIndicator && activeIndicator}
+      {(() => {
+        if (outOfOffice) {
+          return (
+            <div className="absolute -top-1 -right-1">
+              <Icon name="outOfOffice" />
+            </div>
+          );
+        }
+        return null;
+      })()}
     </div>
   );
 };
