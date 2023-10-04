@@ -244,7 +244,7 @@ export const icon = {
   noteFavourite: NoteFavouriteIcon,
   notification: NotificationIcon,
   orangeHashtag: OrangeHashtagIcon,
-  outOfOfficeIcon: OutOfOfficeIcon,
+  outOfOffice: OutOfOfficeIcon,
   pause: PauseIcon,
   people: PeopleIcon,
   play: PlayIcon,
