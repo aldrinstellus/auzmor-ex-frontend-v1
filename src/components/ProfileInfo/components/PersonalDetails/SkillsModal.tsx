@@ -18,7 +18,7 @@ import Icon from 'components/Icon';
 import { updateCurrentUser } from 'queries/users';
 import { twConfig } from 'utils/misc';
 import { toastConfig } from '../utils';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 export interface ISkillsModalProps {
   open: boolean;
   closeModal: () => void;
@@ -45,20 +45,24 @@ const SkillsModal: FC<ISkillsModalProps> = ({ open, closeModal, skills }) => {
     },
   });
 
-  const { handleSubmit, control } = useForm<any>({
+  const { handleSubmit, reset, control } = useForm<any>({
     mode: 'onSubmit',
     defaultValues: {
       personal: {
         skills: skills?.map(
           (skill) =>
             ({
-              label: skill.value,
-              value: skill.id,
+              label: skill,
+              value: skill,
             } || []),
         ),
       },
     },
   });
+
+  useEffect(() => {
+    reset({ skills: skills.map((s) => ({ label: s, value: s })) });
+  }, [skills]);
 
   const onSubmit = (formData: any) => {
     updateUserSkillsMutation.mutate({
@@ -78,7 +82,7 @@ const SkillsModal: FC<ISkillsModalProps> = ({ open, closeModal, skills }) => {
     });
 
     const transformedOption = skillsData?.map((skill: ISkillDetail) => ({
-      value: skill?.id,
+      value: skill?.name,
       label: skill?.name,
       id: skill?.id,
       dataTestId: `skill-option-${skill?.name}`,

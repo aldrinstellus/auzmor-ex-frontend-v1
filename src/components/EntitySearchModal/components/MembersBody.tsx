@@ -44,7 +44,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
     [],
   );
   const { form } = useEntitySearchFormStore();
-  const { watch, setValue, control } = form!;
+  const { watch, setValue, control, unregister } = form!;
   const [
     memberSearch,
     showSelectedMembers,
@@ -89,7 +89,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
       },
     });
 
-  const usersData = data?.pages
+  let usersData = data?.pages
     .flatMap((page: any) => {
       return page?.data?.result?.data.map((user: IGetUser) => {
         try {
@@ -104,7 +104,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
         return false;
       }
       if (showSelectedMembers) {
-        return !!users[user.id];
+        return !!users?.[user.id];
       }
       return true;
     });
@@ -181,7 +181,11 @@ const MembersBody: FC<IMembersBodyProps> = ({
     });
   });
 
-  const { ref, inView } = useInView();
+  const { ref, inView } = useInView({
+    root: document.getElementById('entity-search-members-body'),
+    rootMargin: '20%',
+  });
+
   useEffect(() => {
     if (inView) {
       fetchNextPage();
@@ -198,13 +202,44 @@ const MembersBody: FC<IMembersBodyProps> = ({
     });
   };
 
+  const userKeys = Object.keys(users || {});
+
+  useEffect(() => {
+    if (!showSelectedMembers) {
+      unregisterUsers();
+    }
+    updateSelectAll();
+  }, [userKeys, usersData, showSelectedMembers]);
+
+  const unregisterUsers = () => {
+    userKeys.forEach((key) => {
+      if (!usersData?.find((user: IGetUser) => user.id === key) && !users[key])
+        unregister(`users.${key}`);
+    });
+  };
+
+  const selectedMembers = userKeys.map((key) => users[key]).filter(Boolean);
+  const selectedCount = selectedMembers.length;
+
   const updateSelectAll = () => {
-    if (Object.keys(users).some((key: string) => !!!users[key])) {
+    if (
+      usersData?.length === 0 ||
+      usersData?.some((user: IGetUser) => !users?.[user.id]) ||
+      showSelectedMembers
+    ) {
       setValue('selectAll', false);
     } else {
       setValue('selectAll', true);
     }
   };
+
+  if (showSelectedMembers) usersData = selectedMembers as IGetUser[];
+
+  usersData?.sort((a: IGetUser, b: IGetUser) => {
+    if (a.fullName! > b.fullName!) return 1;
+    else if (a.fullName! < b.fullName!) return -1;
+    else return 0;
+  });
 
   const isControlsDisabled =
     !!!usersData?.length && debouncedSearchValue !== '';
@@ -398,6 +433,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
                       return e.target.checked;
                     },
                   },
+                  disabled: showSelectedMembers,
                   dataTestId: `select-${dataTestId}-selectall`,
                 },
               ]}
@@ -408,11 +444,9 @@ const MembersBody: FC<IMembersBodyProps> = ({
                   type: FieldType.Checkbox,
                   name: 'showSelectedMembers',
                   control,
-                  label: `Show selected members (${
-                    Object.keys(users).filter((key: string) => !!users[key])
-                      .length
-                  })`,
+                  label: `Show selected members (${selectedCount})`,
                   className: 'flex item-center',
+                  disabled: selectedCount === 0 && !showSelectedMembers,
                   dataTestId: `select-${dataTestId}-showselected`,
                 },
               ]}
@@ -431,7 +465,10 @@ const MembersBody: FC<IMembersBodyProps> = ({
             clear all
           </div>
         </div>
-        <div className="flex flex-col max-h-72 overflow-scroll">
+        <div
+          className="flex flex-col max-h-72 overflow-scroll"
+          id="entity-search-members-body"
+        >
           {isLoading ? (
             <div className="flex items-center w-full justify-center p-12">
               <Spinner />
@@ -440,9 +477,11 @@ const MembersBody: FC<IMembersBodyProps> = ({
             usersData?.map((user: any, index: any) => (
               <div
                 key={user.id}
-                className={`${
-                  user[disableKey || ''] && 'opacity-50 pointer-events-none'
-                }`}
+                className={
+                  user[disableKey || '']
+                    ? 'opacity-50 pointer-events-none'
+                    : undefined
+                }
               >
                 <div className="py-2 flex items-center">
                   <Layout
@@ -490,7 +529,14 @@ const MembersBody: FC<IMembersBodyProps> = ({
               </div>
             </div>
           )}
-          {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+          {hasNextPage && !showSelectedMembers && !isFetchingNextPage && (
+            <div ref={ref} />
+          )}
+          {isFetchingNextPage && (
+            <div className="flex items-center w-full justify-center p-12">
+              <Spinner />
+            </div>
+          )}
         </div>
       </div>
     </div>

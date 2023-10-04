@@ -8,12 +8,17 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import timezones from 'utils/timezones.json';
-import { getNow, getTimezoneNameFromIANA, nDaysFromNow } from 'utils/time';
+import {
+  getNow,
+  getTimezoneNameFromIANA,
+  nDaysFromNow,
+  parseDate,
+} from 'utils/time';
 import { oooReasons } from '../data';
 import Button, { Size, Variant } from 'components/Button';
 import SwitchToggle from 'components/SwitchToggle';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateUserById } from 'queries/users';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useAuth from 'hooks/useAuth';
@@ -37,22 +42,16 @@ const schema = yup.object({
 });
 
 const BasicSettings = () => {
-  const [ooo, setOOO] = useState(false);
   const { user } = useAuth();
+  const [ooo, setOOO] = useState(user?.outOfOffice?.outOfOffice);
   const userTimezone = getTimezoneNameFromIANA(user?.timezone || '');
-
-  const updateMutation = useMutation({
-    mutationKey: ['update-user-settings'],
-    mutationFn: (data: any) => updateUserById(user?.id || '', data),
-    onSuccess: async () => {
-      successToastConfig();
-    },
-  });
+  const queryClient = useQueryClient();
 
   const {
     control,
     handleSubmit,
     watch,
+    reset,
     formState: { errors, isDirty },
   } = useForm<IForm>({
     resolver: yupResolver(schema),
@@ -62,8 +61,19 @@ const BasicSettings = () => {
         value: user?.timezone,
         label: userTimezone,
       },
-      'ooo.start': getNow(),
-      'ooo.end': nDaysFromNow(1),
+      'ooo.start': parseDate(user?.outOfOffice?.start) || getNow(),
+      'ooo.end': parseDate(user?.outOfOffice?.end) || nDaysFromNow(1),
+      'ooo.reason': user?.outOfOffice?.otherReason,
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationKey: ['update-user-settings'],
+    mutationFn: (data: any) => updateUserById(user?.id || '', data),
+    onSuccess: async () => {
+      successToastConfig();
+      await queryClient.invalidateQueries(['current-user-me']);
+      reset({}, { keepValues: true });
     },
   });
 
@@ -172,12 +182,14 @@ const BasicSettings = () => {
                   size={Size.Small}
                   variant={Variant.Secondary}
                   dataTestId="basic-settings-cancel"
+                  disabled={updateMutation.isLoading}
                 />
                 <Button
                   label="Save changes"
                   size={Size.Small}
                   onClick={handleSubmit(onSubmit)}
                   dataTestId="basic-settings-save-changes"
+                  loading={updateMutation.isLoading}
                 />
               </div>
             )}
