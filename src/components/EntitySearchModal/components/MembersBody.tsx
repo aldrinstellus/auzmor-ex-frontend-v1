@@ -210,7 +210,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
   const ignoredCount = userKeys.filter(
     (key) =>
       !users[key] &&
-      usersData.find((user: IGetUser) => user.id === key && user.isPresent),
+      usersData?.find((user: IGetUser) => user.id === key && user.isPresent),
   ).length;
 
   const selectableCount = totalCount - ignoredCount;
