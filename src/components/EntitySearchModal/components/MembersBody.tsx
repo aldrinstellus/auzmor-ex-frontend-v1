@@ -193,9 +193,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
   }, [inView]);
 
   const selectAllEntity = () => {
-    usersData?.forEach((user: IGetUser) => {
-      if (!user.isPresent) setValue(`users.${user.id}`, user);
-    });
+    usersData?.forEach((user: IGetUser) => setValue(`users.${user.id}`, user));
   };
 
   const deselectAll = () => {
@@ -207,20 +205,11 @@ const MembersBody: FC<IMembersBodyProps> = ({
   const userKeys = Object.keys(users);
   const totalCount = userKeys.length;
   const selectedCount = userKeys.filter((key) => !!users[key]).length;
-  const ignoredCount = userKeys.filter(
-    (key) =>
-      !users[key] &&
-      usersData?.find((user: IGetUser) => user.id === key && user.isPresent),
-  ).length;
-
-  const selectableCount = totalCount - ignoredCount;
-  const unselectedCount = totalCount - ignoredCount - selectedCount;
-
   const updateSelectAll = () => {
-    if (selectableCount > 0 && unselectedCount === 0) {
-      setValue('selectAll', true);
-    } else {
+    if (totalCount > selectedCount) {
       setValue('selectAll', false);
+    } else {
+      setValue('selectAll', true);
     }
   };
 
@@ -416,7 +405,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
                       return e.target.checked;
                     },
                   },
-                  disabled: selectableCount === 0 || showSelectedMembers,
+                  disabled: totalCount === selectedCount || showSelectedMembers,
                   dataTestId: `select-${dataTestId}-selectall`,
                 },
               ]}
@@ -484,7 +473,6 @@ const MembersBody: FC<IMembersBodyProps> = ({
                             return false;
                           },
                         },
-                        disable: user.isPresent,
                         defaultChecked: selectedMemberIds.includes(user.id),
                       },
                     ]}
