@@ -104,10 +104,25 @@ const Toolbar: FC<IToolbarProps> = ({
 
   // fetch members on search
   const debouncedMemberSearchValue = useDebounce(memberSearchString || '', 300);
-  const { data: fetchedMembers, isLoading: isFetching } = useOrgChart({
-    q: debouncedMemberSearchValue,
-    expandAll: false,
-  });
+  const { data: fetchedMembers, isLoading: isFetching } = useOrgChart(
+    {
+      q: debouncedMemberSearchValue,
+      expandAll: true,
+      locations:
+        appliedFilters?.location?.map((location) => (location as any).id) || [],
+      departments:
+        appliedFilters?.departments?.map(
+          (department) => (department as any).id,
+        ) || [],
+      status:
+        appliedFilters.status?.value === 'ALL'
+          ? undefined
+          : appliedFilters.status?.value,
+    },
+    {
+      enable: debouncedMemberSearchValue !== '',
+    },
+  );
   const userData = useMemo(
     () =>
       fetchedMembers?.data.result?.data.filter(
@@ -160,11 +175,37 @@ const Toolbar: FC<IToolbarProps> = ({
           onClick={(user) => {
             chartRef.current?.clearHighlighting();
             setIsSpotlightActive(false);
-            chartRef.current
-              ?.setUpToTheRootHighlighted(user?.id || '')
-              .render()
-              .fit();
-            chartRef.current?.setCentered(user.id).render();
+            setMemberSearchString(user?.fullName || '');
+            getOrgChart({
+              queryKey: [
+                'organization-chart',
+                {
+                  q: user?.fullName,
+                  expandAll: true,
+                  locations:
+                    appliedFilters?.location?.map(
+                      (location) => (location as any).id,
+                    ) || [],
+                  departments:
+                    appliedFilters?.departments?.map(
+                      (department) => (department as any).id,
+                    ) || [],
+                  status:
+                    appliedFilters.status?.value === 'ALL'
+                      ? undefined
+                      : appliedFilters.status?.value,
+                },
+              ],
+            } as QueryFunctionContext<any>).then((data) => {
+              chartRef.current?.addNodes(data.data.result.data);
+              chartRef.current
+                ?.expandAll()
+                .setUpToTheRootHighlighted(user?.id || '')
+                .setCentered(user?.id)
+                .render()
+                .setZoom(mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM));
+              setIsExpandAll(true);
+            });
           }}
         />
       ),
