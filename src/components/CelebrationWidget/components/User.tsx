@@ -5,7 +5,7 @@ import { CELEBRATION_TYPE } from '..';
 import clsx from 'clsx';
 import Button, { Size } from 'components/Button';
 import { formatDate, isCelebrationToday } from '../utils';
-import { getFullName, getNouns } from 'utils/misc';
+import { getFullName, getNouns, getProfileImage } from 'utils/misc';
 import { AuthContext } from 'contexts/AuthContext';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import Icon from 'components/Icon';
@@ -56,13 +56,15 @@ const User: FC<UserProps> = ({
 
   const userTimezone = user?.timezone || currentTimezone || 'Asia/Kolkata';
   const isBirthday = type === CELEBRATION_TYPE.Birthday;
-  const anniversaryYears = data.diffInYears;
+  const anniversaryYears = data.diffInYears || 0;
   const celebrationDate = isBirthday
     ? formatDate(data.nextOcassionDateTime, userTimezone)
     : `${anniversaryYears} ${getNouns('yr', anniversaryYears)} (${formatDate(
         data.nextOcassionDateTime,
         userTimezone,
       )})`;
+
+  const userIsMe = user?.id === featuredUser.userId;
 
   const showSendWishBtn =
     isCelebrationToday(data.nextOcassionDateTime, userTimezone) &&
@@ -92,22 +94,29 @@ const User: FC<UserProps> = ({
     [type],
   );
 
+  const wishEmoji = isBirthday ? '🎂' : '🎉';
+
   const wishesSent = useMemo(
     () => (
       <div
         data-testid={`${isBirthday ? 'birthday' : 'anniversaries'}-wishes-sent`}
         className={`py-[2px] px-[6px] rounded-[4px] text-xs font-bold flex items-center ${dateStyles} w-fit whitespace-nowrap`}
       >
-        Wishes sent {isBirthday ? '🎂' : '🎉'}
+        Wishes sent {wishEmoji}
       </div>
     ),
     [],
   );
 
+  const wishText = isBirthday
+    ? 'It is your birthday today. Happy birthday! 🎂'
+    : 'It is your Work Anniversary today! Congrats! 🎉';
+
   return showSendWishRTELayout ? (
     <div className="flex gap-2 w-full">
       <Avatar
         name={getFullName(featuredUser) || featuredUser.email}
+        image={getProfileImage(featuredUser)}
         size={48}
         className="min-w-[48px]"
       />
@@ -151,7 +160,11 @@ const User: FC<UserProps> = ({
             <Icon name="arrowRightUp" size={12} color="text-primary-500" />
           </div>
         </div>
-        {alreadyWished ? (
+        {userIsMe ? (
+          <div className="text-neutral-900 text-xs leading-normal font-normal">
+            {wishText}
+          </div>
+        ) : alreadyWished ? (
           wishesSent
         ) : (
           <CommentsRTE
@@ -234,6 +247,7 @@ const User: FC<UserProps> = ({
         <div className="flex items-center gap-2">
           <Avatar
             name={getFullName(featuredUser) || featuredUser.email}
+            image={getProfileImage(featuredUser)}
             size={32}
             className="min-w-[32px]"
           />
@@ -282,11 +296,17 @@ const User: FC<UserProps> = ({
             className={`px-[6px] rounded-[4px] text-xs font-semibold whitespace-nowrap ${dateStyles}`}
             data-testid={`${isBirthday ? 'birthday' : 'anniversaries'}-date`}
           >
-            {celebrationDate}
+            {`${celebrationDate} ${userIsMe ? wishEmoji : ''}`.trim()}
           </div>
         )}
       </div>
-      {alreadyWished ? (
+      {userIsMe && showSendWishBtn ? (
+        <div className="text-neutral-900 text-xs leading-normal font-normal">
+          {wishText}
+        </div>
+      ) : null}
+      {alreadyWished ||
+      (userIsMe && (showSendWishBtn || showSendWishRTELayout)) ? (
         <Button
           size={Size.Small}
           className="!bg-primary-50 !text-primary-500 px-4 py-2 rounded-[8px]"

@@ -189,7 +189,7 @@ const Post: FC<PostProps> = ({ post, customNode = null, setHasChanges }) => {
             <Actor
               contentMode={VIEW_POST}
               createdTime={humanizeTime(post.createdAt!)}
-              createdBy={post?.createdBy}
+              createdBy={post?.createdBy || post?.intendedUsers?.[0]}
               audience={post.audience}
               dataTestId="feedpage-activity-username"
               entityId={post.id}

@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import { FC } from 'react';
 import { UserStatus } from 'queries/users';
 import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
+import UserCard, { UsercardVariant } from 'components/UserCard';
 
 interface IUserNode {
   node: { data: INode };
@@ -25,7 +26,7 @@ const UserNode: FC<IUserNode> = ({ node, isFilterApplied }) => {
       true,
   });
   const classNane = clsx({
-    'flex flex-col rounded-9xl pt-3 px-2 pb-2 bg-white w-full h-full relative':
+    'flex flex-col rounded-9xl pt-3 px-2 pb-2 bg-white w-full h-full relative group':
       true,
   });
   const getOpacity = () => {
@@ -77,7 +78,7 @@ const UserNode: FC<IUserNode> = ({ node, isFilterApplied }) => {
                 <Icon
                   name="location"
                   size={16}
-                  color="text-neutral-900"
+                  color="!text-neutral-900"
                   hover={false}
                 />
               </div>
@@ -98,6 +99,23 @@ const UserNode: FC<IUserNode> = ({ node, isFilterApplied }) => {
             <div className="ml-0.5">Deactivated</div>
           </div>
         )}
+        <div className="absolute bottom-full group-hover:visible invisible -translate-x-1/2 ml-32 pb-5">
+          <UserCard
+            variant={UsercardVariant.Large}
+            user={{
+              id: node.data.id,
+              profileImage: node.data.profileImage,
+              fullName: node.data.userName,
+              department: {
+                departmentId: '',
+                name: node.data.department || '',
+              },
+              designation: node.data.jobTitle,
+              workLocation: { locationId: '', name: node.data.location || '' },
+              status: node.data.status,
+            }}
+          />
+        </div>
       </div>
     );
   }

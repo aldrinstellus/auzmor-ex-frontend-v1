@@ -40,6 +40,9 @@ const DateOfJoiningRow: FC<AppProps> = ({ data }) => {
       } else {
         await queryClient.invalidateQueries(['current-user-me']);
       }
+      await queryClient.invalidateQueries(['celebrations'], {
+        exact: false,
+      });
     },
   });
 
