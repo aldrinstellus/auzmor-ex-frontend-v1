@@ -76,6 +76,8 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
     return () => setIsOrgChartMounted(false);
   }, []);
 
+  const userSearch = watch('userSearch');
+
   return (
     <div className="flex flex-col w-full h-full items-center">
       <div className="flex justify-between w-full max-w-[1440px]">
@@ -126,7 +128,8 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
         isFilterApplied={
           !!appliedFilters?.departments?.length ||
           !!appliedFilters?.location?.length ||
-          !!startWithSpecificUser
+          !!startWithSpecificUser ||
+          !!userSearch
         }
         startWithSpecificUser={startWithSpecificUser}
         setZoom={setZoom}

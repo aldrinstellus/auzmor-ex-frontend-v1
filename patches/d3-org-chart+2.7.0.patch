@@ -111,7 +111,7 @@ index fe34324..a278e83 100644
 - 
 \ No newline at end of file
 diff --git a/node_modules/d3-org-chart/src/d3-org-chart.js b/node_modules/d3-org-chart/src/d3-org-chart.js
-index 871f2d8..28e1761 100644
+index 871f2d8..13b703b 100644
 --- a/node_modules/d3-org-chart/src/d3-org-chart.js
 +++ b/node_modules/d3-org-chart/src/d3-org-chart.js
 @@ -1,104 +1,148 @@
@@ -354,7 +354,7 @@ index 871f2d8..28e1761 100644
              <code>chart<br/>
              &nbsp;.nodeContent({data}=>{ <br/>
               &nbsp;&nbsp;&nbsp;&nbsp;return '' // Custom HTML <br/>
-@@ -107,928 +151,1321 @@ export class OrgChart {
+@@ -107,928 +151,1322 @@ export class OrgChart {
               Or check different <a href="https://github.com/bumbeishvili/org-chart#jump-to-examples" target="_blank">layout examples</a>
               
               </div>`,
@@ -1387,11 +1387,12 @@ index 871f2d8..28e1761 100644
 +  // This function can be invoked via chart.addNodes API, and it adds node in tree at runtime
 +  addNodes(nodes){
 +    const attrs = this.getChartState();
-+    nodes.forEach((node) => {
++    nodes.forEach((node, index) => {
 +      const nodeFound = attrs.allNodes.filter(
 +        ({ data }) => attrs.nodeId(data) === attrs.nodeId(node),
 +      )[0];
 +      if(nodeFound){
++        attrs.data[index] = node;
 +        return;
 +      }else{
 +        if (node._centered && !node._expanded) node._expanded = true;
@@ -2552,7 +2553,7 @@ index 871f2d8..28e1761 100644
                    M ${mx} ${my}
                    L ${mx} ${y}
                    L ${x} ${y}
-@@ -1042,544 +1479,635 @@ export class OrgChart {
+@@ -1042,544 +1480,635 @@ export class OrgChart {
                      ${ex - w * xrvs}  ${ey}
                    L ${ex} ${ey}
         `;
