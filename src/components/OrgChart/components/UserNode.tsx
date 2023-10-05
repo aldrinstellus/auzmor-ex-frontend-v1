@@ -48,10 +48,9 @@ const UserNode: FC<IUserNode> = ({ node, isFilterApplied }) => {
           backgroundColor: !!node?.data?._upToTheRootHighlightedNode
             ? '#F0F8FF'
             : 'white',
-          opacity: getOpacity(),
         }}
       >
-        <div className="flex overflow-hidden">
+        <div className="flex overflow-hidden" style={{ opacity: getOpacity() }}>
           <Avatar
             name={
               getFullName({ ...node?.data, fullName: node?.data.userName }) ||
@@ -89,12 +88,12 @@ const UserNode: FC<IUserNode> = ({ node, isFilterApplied }) => {
           </div>
         </div>
         {node.data?.department && (
-          <div className={departmentStyle}>
+          <div className={departmentStyle} style={{ opacity: getOpacity() }}>
             <div>{node.data.department}</div>
           </div>
         )}
         {node?.data?.status && node?.data?.status === UserStatus.Inactive && (
-          <div className={userStatusStyle}>
+          <div className={userStatusStyle} style={{ opacity: getOpacity() }}>
             <Icon name="cancel" size={12} />{' '}
             <div className="ml-0.5">Deactivated</div>
           </div>

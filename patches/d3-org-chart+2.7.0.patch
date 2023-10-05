@@ -111,7 +111,7 @@ index fe34324..a278e83 100644
 - 
 \ No newline at end of file
 diff --git a/node_modules/d3-org-chart/src/d3-org-chart.js b/node_modules/d3-org-chart/src/d3-org-chart.js
-index 871f2d8..30988aa 100644
+index 871f2d8..5c35000 100644
 --- a/node_modules/d3-org-chart/src/d3-org-chart.js
 +++ b/node_modules/d3-org-chart/src/d3-org-chart.js
 @@ -1,104 +1,148 @@
@@ -1387,12 +1387,12 @@ index 871f2d8..30988aa 100644
 +  // This function can be invoked via chart.addNodes API, and it adds node in tree at runtime
 +  addNodes(nodes){
 +    const attrs = this.getChartState();
-+    nodes.forEach((node, index) => {
-+      const nodeFound = attrs.allNodes.filter(
++    nodes.forEach((node) => {
++      const idx = attrs.allNodes.findIndex(
 +        ({ data }) => attrs.nodeId(data) === attrs.nodeId(node),
-+      )[0];
-+      if(nodeFound){
-+        attrs.data[index] = node;
++      );
++      if(idx > -1){
++        attrs.data[idx] = {...attrs.data[idx], ...node};
 +        return;
 +      }else{
 +        if (node._centered && !node._expanded) node._expanded = true;

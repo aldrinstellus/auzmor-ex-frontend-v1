@@ -108,7 +108,11 @@ const Chart: FC<IChart> = ({
                   { root: d.data.id, expand: 0 },
                 ],
               } as QueryFunctionContext<any>).then((response: any) => {
-                chart?.addNodes(response.data.result.data);
+                chart?.addNodes(
+                  response.data.result.data.filter(
+                    (node: any) => node.parentId !== '',
+                  ),
+                );
                 try {
                   const ele = document.getElementById(
                     `expand-btn-${d.data.id}`,

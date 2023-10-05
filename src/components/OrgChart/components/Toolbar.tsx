@@ -200,10 +200,10 @@ const Toolbar: FC<IToolbarProps> = ({
               chartRef.current?.addNodes(data.data.result.data);
               chartRef.current
                 ?.expandAll()
-                .setUpToTheRootHighlighted(user?.id || '')
-                .setCentered(user?.id)
-                .render()
-                .setZoom(mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM));
+                ?.setFocus(
+                  user?.id,
+                  mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM),
+                );
               setIsExpandAll(true);
             });
           }}
@@ -410,7 +410,9 @@ const Toolbar: FC<IToolbarProps> = ({
                           },
                         );
                       }
+                      chartRef.current?.clearHighlighting();
                       setIsExpandAll(!isExpandAll);
+                      setIsSpotlightActive(false);
                     }}
                     size={16}
                   />
