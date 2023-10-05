@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import Avatar from 'components/Avatar';
 import { FC } from 'react';
+import { getProfileImage } from 'utils/misc';
 
 export type AvatarListProps = {
   users: any;
@@ -37,7 +38,7 @@ const AvatarList: FC<AvatarListProps> = ({
               size={size}
               key={`${user.id}`}
               name={user?.name}
-              image={user?.image}
+              image={user?.image || getProfileImage(user)}
               active={false}
               className={`border-[2px] border-white ${avatarClassName}`}
             />

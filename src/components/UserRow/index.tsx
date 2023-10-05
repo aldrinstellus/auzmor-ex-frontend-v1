@@ -1,7 +1,12 @@
 import { FC, useMemo } from 'react';
 import { IGetUser } from 'queries/users';
 import Avatar from 'components/Avatar';
-import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
+import {
+  getAvatarColor,
+  getFullName,
+  getProfileImage,
+  getUserCardTooltipProps,
+} from 'utils/misc';
 import { clsx } from 'clsx';
 
 interface IUserRowProps {
@@ -26,6 +31,8 @@ const UserRow: FC<IUserRowProps> = ({
       }),
     [],
   );
+  const { workLocation, designation, department } =
+    getUserCardTooltipProps(user);
   return (
     <div
       className={styles}
@@ -47,20 +54,20 @@ const UserRow: FC<IUserRowProps> = ({
             {getFullName(user) || 'Field not specified'}
           </div>
           <div className="text-neutral-500 text-xs truncate">
-            {user.workEmail || 'Field not specified'}
+            {user.workEmail || department.name || 'Field not specified'}
           </div>
         </div>
       </div>
       <div className="flex flex-col w-1/2">
         <div className="flex flex-row w-full justify-end">
           <div className={`text-neutral-500 text-xs truncate mr-6`}>
-            {user.designation?.name || 'Field not specified'}
+            {designation?.name || 'Field not specified'}
           </div>
           <div className={`mr-6 flex items-center`}>
             <div className="w-1 h-1 bg-neutral-500 rounded-full"></div>
           </div>
           <div className={`text-neutral-500 text-xs truncate`}>
-            {user?.workLocation?.name || 'Field not specified'}
+            {workLocation?.name || 'Field not specified'}
           </div>
         </div>
         <div></div>

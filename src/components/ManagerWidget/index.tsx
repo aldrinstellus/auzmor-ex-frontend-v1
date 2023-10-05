@@ -16,7 +16,11 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
-import { getFullName, getProfileImage } from 'utils/misc';
+import {
+  getFullName,
+  getProfileImage,
+  getUserCardTooltipProps,
+} from 'utils/misc';
 
 type AppProps = {
   data: Record<string, any>;
@@ -124,6 +128,8 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
     },
   ];
 
+  const managerDetails = getUserCardTooltipProps(data?.manager || {});
+
   return (
     <div>
       <div {...eventHandlers}>
@@ -194,7 +200,7 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
                       {data?.manager?.fullName}
                     </div>
                     <div className="text-neutral-500 text-xs">
-                      {data?.manager?.designation?.name ||
+                      {managerDetails.designation?.name ||
                         'field not specified'}
                     </div>
                   </div>
