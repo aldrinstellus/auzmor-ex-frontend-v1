@@ -13,7 +13,10 @@ const AppLaunchPage: FC<IAppLaunchProps> = () => {
     mutationKey: ['launch-app', id],
     mutationFn: launchApp,
     onSuccess: (data: any) => {
-      window.location.replace(data?.redirectUrl);
+      const redirectUrl = data?.redirectUrl.startsWith('http')
+        ? data?.redirectUrl
+        : `https://${data?.redirectUrl}`;
+      window.location.replace(redirectUrl);
     },
   });
 

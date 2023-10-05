@@ -441,24 +441,9 @@ const Toolbar: FC<IToolbarProps> = ({
                       chartRef.current?.clearHighlighting();
                       if (!isSpotlightActive) {
                         clearAllFilters();
-                        chartRef.current
-                          ?.setUpToTheRootHighlighted(user?.id || '')
-                          .setCentered(user?.id || '')
-                          .render();
-                        setTimeout(
-                          () =>
-                            chartRef.current
-                              ?.setZoom(
-                                mapRanges(
-                                  0,
-                                  100,
-                                  MIN_ZOOM,
-                                  MAX_ZOOM,
-                                  FOCUS_ZOOM,
-                                ),
-                              )
-                              .render(),
-                          400,
+                        chartRef.current?.setFocus(
+                          user?.id || '',
+                          mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM),
                         );
                       }
                       setIsSpotlightActive(!isSpotlightActive);

@@ -12,6 +12,7 @@ import useAuth from 'hooks/useAuth';
 import { getFullName, getProfileImage } from 'utils/misc';
 import EmptyState from './components/EmptyState';
 import { FC, memo } from 'react';
+import { isEmpty } from 'lodash';
 
 export interface IAnnouncementCardProps {
   postId?: string;
@@ -48,7 +49,6 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
   const { data, isLoading } = useAnnouncementsWidget(limit, queryKey);
 
   const result = data?.data?.result?.data;
-  const itemCount = result?.length;
 
   // By default, postData will be result[0].
   // If postId is defined and result[0].id === postId, then set postData = result[1]
@@ -63,6 +63,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
   const hasLoggedInUserCreatedAnnouncement =
     user?.id === postData?.announcement?.actor?.userId;
 
+  const itemCount = isEmpty(postData) ? 0 : result?.length;
   return (
     <div className="min-w-[240px]">
       <div className="flex justify-between items-center ">
