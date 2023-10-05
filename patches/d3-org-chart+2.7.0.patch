@@ -111,7 +111,7 @@ index fe34324..a278e83 100644
 - 
 \ No newline at end of file
 diff --git a/node_modules/d3-org-chart/src/d3-org-chart.js b/node_modules/d3-org-chart/src/d3-org-chart.js
-index 871f2d8..13b703b 100644
+index 871f2d8..b11eafc 100644
 --- a/node_modules/d3-org-chart/src/d3-org-chart.js
 +++ b/node_modules/d3-org-chart/src/d3-org-chart.js
 @@ -1,104 +1,148 @@
@@ -1995,13 +1995,13 @@ index 871f2d8..13b703b 100644
 +          y: y0,
 +          width,
 +          height,
-+        });
+         });
 +        const yo = attrs.layoutBindings[attrs.layout].linkJoinY({
 +          x: x0,
 +          y: y0,
 +          width,
 +          height,
-         });
++        });
 +        const o = { x: xo, y: yo };
 +        return attrs.layoutBindings[attrs.layout].diagonal(o, o, o);
 +      });
@@ -2553,7 +2553,7 @@ index 871f2d8..13b703b 100644
                    M ${mx} ${my}
                    L ${mx} ${y}
                    L ${x} ${y}
-@@ -1042,544 +1480,635 @@ export class OrgChart {
+@@ -1042,544 +1480,696 @@ export class OrgChart {
                      ${ex - w * xrvs}  ${ey}
                    L ${ex} ${ey}
         `;
@@ -2703,17 +2703,17 @@ index 871f2d8..13b703b 100644
 -            // Expand children
 -            d.children = d._children;
 -            d._children = null;
-+  // This function changes `expanded` property to descendants
-+  setExpansionFlagToChildren({ data, children, _children }, flag) {
-+    // Set flag to the current property
-+    data._expanded = flag;
- 
+-
 -            // Set each children as expanded
 -            if (d.children) {
 -                d.children.forEach(({ data }) => (data._expanded = true));
 -            }
 -        }
--
++  // This function changes `expanded` property to descendants
++  setExpansionFlagToChildren({ data, children, _children }, flag) {
++    // Set flag to the current property
++    data._expanded = flag;
+ 
 -        // Redraw Graph
 -        this.update(d);
 +    // Loop over and recursively update expanded children's descendants
@@ -2771,6 +2771,11 @@ index 871f2d8..13b703b 100644
 -        // Recursivelly do the same for collapsed nodes
 -        if (d._children) {
 -            d._children.forEach((ch) => this.expandSomeNodes(ch));
+-        }
+-
+-        // Recursivelly do the same for expanded nodes
+-        if (d.children) {
+-            d.children.forEach((ch) => this.expandSomeNodes(ch));
 +  }
 +
 +  // Method which only expands nodes, which have property set "expanded=true"
@@ -2786,17 +2791,12 @@ index 871f2d8..13b703b 100644
 +        if (parent._children) {
 +          parent.children = parent._children;
          }
- 
--        // Recursivelly do the same for expanded nodes
--        if (d.children) {
--            d.children.forEach((ch) => this.expandSomeNodes(ch));
--        }
 -    }
 -
 -    // This function updates nodes state and redraws graph, usually after data change
 -    updateNodesState() {
 -        const attrs = this.getChartState();
--
+ 
 -        this.setLayouts({ expandNodesFirst: true });
 -
 -        // Redraw Graphs
@@ -3001,14 +3001,16 @@ index 871f2d8..13b703b 100644
  
 -    // This function can be invoked via chart.setExpanded API, it expands or collapses particular node
 -    setExpanded(id, expandedFlag = true) {
--
--        const attrs = this.getChartState();
--        // Retrieve node by node Id
--        const node = attrs.allNodes.filter(({ data }) => attrs.nodeId(data) == id)[0];
 +  // Zoom handler function
 +  zoomed(event, d) {
 +    const attrs = this.getChartState();
 +    const chart = attrs.chart;
+ 
+-        const attrs = this.getChartState();
+-        // Retrieve node by node Id
+-        const node = attrs.allNodes.filter(({ data }) => attrs.nodeId(data) == id)[0];
++    // Get d3 event's transform object
++    const transform = event.transform;
  
 -        if (!node) {
 -            console.log(`ORG CHART - ${expandedFlag ? "EXPAND" : "COLLAPSE"} - Node with id (${id})  not found in the tree`)
@@ -3017,8 +3019,8 @@ index 871f2d8..13b703b 100644
 -        node.data._expanded = expandedFlag;
 -        return this;
 -    }
-+    // Get d3 event's transform object
-+    const transform = event.transform;
++    // Store it
++    attrs.lastTransform = transform;
  
 -    setCentered(nodeId) {
 -        const attrs = this.getChartState();
@@ -3032,8 +3034,8 @@ index 871f2d8..13b703b 100644
 -        node.data._expanded = true;
 -        return this;
 -    }
-+    // Store it
-+    attrs.lastTransform = transform;
++    // Reposition and rescale chart accordingly
++    chart.attr('transform', transform);
  
 -    setHighlighted(nodeId) {
 -        const attrs = this.getChartState();
@@ -3046,10 +3048,11 @@ index 871f2d8..13b703b 100644
 -        node.data._expanded = true;
 -        node.data._centered = true;
 -        return this;
--    }
-+    // Reposition and rescale chart accordingly
-+    chart.attr('transform', transform);
- 
++    // Apply new styles to the foreign object element
++    if (this.isEdge()) {
++      this.restyleForeignObjectElements();
+     }
+-
 -    setUpToTheRootHighlighted(nodeId) {
 -        const attrs = this.getChartState();
 -        const node = attrs.allNodes.filter(d => attrs.nodeId(d.data) === nodeId)[0];
@@ -3061,18 +3064,6 @@ index 871f2d8..13b703b 100644
 -        node.data._expanded = true;
 -        node.ancestors().forEach(d => d.data._upToTheRootHighlighted = true)
 -        return this;
-+    // Apply new styles to the foreign object element
-+    if (this.isEdge()) {
-+      this.restyleForeignObjectElements();
-     }
--
--    clearHighlighting() {
--        const attrs = this.getChartState();
--        attrs.allNodes.forEach(d => {
--            d.data._highlighted = false;
--            d.data._upToTheRootHighlighted = false;
--        })
--        this.update(attrs.root)
 +  }
 +
 +  zoomTreeBounds({ x0, x1, y0, y1, params = { animate: true, scale: true } }) {
@@ -3151,6 +3142,30 @@ index 871f2d8..13b703b 100644
 +      return this;
      }
 -
+-    clearHighlighting() {
+-        const attrs = this.getChartState();
+-        attrs.allNodes.forEach(d => {
+-            d.data._highlighted = false;
+-            d.data._upToTheRootHighlighted = false;
+-        })
+-        this.update(attrs.root)
++    node.data._expanded = expandedFlag;
++    return this;
++  }
++
++  setCentered(nodeId) {
++    const attrs = this.getChartState();
++    // this.setExpanded(nodeId)
++    const node = attrs.allNodes.filter(
++      (d) => attrs.nodeId(d.data) === nodeId,
++    )[0];
++    if (!node) {
++      console.log(
++        `ORG CHART - CENTER - Node with id (${nodeId}) not found in the tree`,
++      );
++      return this;
+     }
+-
 -    // It can take selector which would go fullscreen
 -    fullscreen(elem) {
 -        const attrs = this.getChartState();
@@ -3176,13 +3191,13 @@ index 871f2d8..13b703b 100644
 -        } else if (el.msRequestFullscreen) {
 -            el.msRequestFullscreen();
 -        }
-+    node.data._expanded = expandedFlag;
++    node.data._centered = true;
++    node.data._expanded = true;
 +    return this;
 +  }
 +
-+  setCentered(nodeId) {
++  setFocus(nodeId, zoomScale = 1){
 +    const attrs = this.getChartState();
-+    // this.setExpanded(nodeId)
 +    const node = attrs.allNodes.filter(
 +      (d) => attrs.nodeId(d.data) === nodeId,
 +    )[0];
@@ -3199,6 +3214,51 @@ index 871f2d8..13b703b 100644
 -        svg.transition().call(zoomBehavior.scaleBy, 1.3);
 +    node.data._centered = true;
 +    node.data._expanded = true;
++    node.data._upToTheRootHighlighted = true;
++    node.data._upToTheRootHighlightedNode = true;
++    node.ancestors().forEach((d) => (d.data._upToTheRootHighlighted = true));
++    this.update(attrs.root);
++
++    const { root } = attrs;
++    let descendants = root.descendants();
++    const x0 = d3.min(
++      descendants,
++      (d) => d.x + attrs.layoutBindings[attrs.layout].nodeLeftX(d),
++    );
++    const x1 = d3.max(
++      descendants,
++      (d) => d.x + attrs.layoutBindings[attrs.layout].nodeRightX(d),
++    );
++    const y0 = d3.min(
++      descendants,
++      (d) => d.y + attrs.layoutBindings[attrs.layout].nodeTopY(d),
++    );
++    const y1 = d3.max(
++      descendants,
++      (d) => d.y + attrs.layoutBindings[attrs.layout].nodeBottomY(d),
++    );
++
++    const {
++      centerG,
++      svgWidth: w,
++      svgHeight: h,
++      svg,
++      zoomBehavior,
++      duration,
++    } = this.getChartState();
++    let identity = d3.zoomIdentity.translate(w / 2, h / 2);
++    identity = identity.scale(zoomScale);
++
++    identity = identity.translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
++    // Transition zoom wrapper component into specified bounds
++    svg
++      .transition()
++      .duration(duration)
++      .call(zoomBehavior.transform, identity);
++    centerG
++      .transition()
++      .duration(duration)
++      .attr('transform', 'translate(0,0)');
 +    return this;
 +  }
 +
