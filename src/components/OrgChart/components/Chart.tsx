@@ -142,6 +142,7 @@ const Chart: FC<IChart> = ({
           //   }
           // })
           .render()
+          .expandAll()
           .fit();
         if (autoSpotlight) {
           chart

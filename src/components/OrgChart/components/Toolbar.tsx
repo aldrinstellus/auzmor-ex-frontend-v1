@@ -637,6 +637,7 @@ const Toolbar: FC<IToolbarProps> = ({
           appliedFilters={appliedFilters}
           variant={FilterModalVariant.Orgchart}
           onApply={(appliedFilters: IAppliedFilters) => {
+            clearSpotlight();
             setAppliedFilters(appliedFilters);
             closeFilterModal();
           }}
