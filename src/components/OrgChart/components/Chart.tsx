@@ -1,5 +1,12 @@
 import { OrgChart } from 'd3-org-chart';
-import { FC, MutableRefObject, useEffect, useMemo, useRef } from 'react';
+import {
+  FC,
+  MutableRefObject,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { renderToString } from 'react-dom/server';
 import './index.css';
 import UserNode from './UserNode';
@@ -43,7 +50,6 @@ interface IChart {
   onClearFilter: () => void;
   startWithSpecificUser: IGetUser | null;
   setZoom: (zoom: IZoom) => void;
-  isSpotlightActive: boolean;
 }
 
 const Chart: FC<IChart> = ({
@@ -54,11 +60,11 @@ const Chart: FC<IChart> = ({
   onClearFilter,
   startWithSpecificUser,
   setZoom,
-  isSpotlightActive,
 }) => {
   const chartRef = useRef(null);
   let chart: any | null = null;
   const { user } = useAuth();
+  const [autoSpotlight, setAutoSpotlight] = useState<boolean>(true);
   useEffect(() => {
     if (chartRef.current) {
       if (!chart && data.length) {
@@ -108,7 +114,11 @@ const Chart: FC<IChart> = ({
                   { root: d.data.id, expand: 0 },
                 ],
               } as QueryFunctionContext<any>).then((response: any) => {
-                chart?.addNodes(response.data.result.data);
+                chart?.addNodes(
+                  response.data.result.data.filter(
+                    (node: any) => node.parentId !== '',
+                  ),
+                );
                 try {
                   const ele = document.getElementById(
                     `expand-btn-${d.data.id}`,
@@ -131,22 +141,18 @@ const Chart: FC<IChart> = ({
           //     });
           //   }
           // })
-          .render();
-        if (isSpotlightActive) {
+          .render()
+          .expandAll()
+          .fit();
+        if (autoSpotlight) {
           chart
-            .setUpToTheRootHighlighted(user?.id || '')
             .expandAll()
-            .setCentered(user?.id)
-            .render();
-          setTimeout(
-            () =>
-              chart
-                .setZoom(mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM))
-                .render(),
-            400,
-          );
-        } else if (startWithSpecificUser) {
-          chart.fit();
+            .render()
+            .setFocus(
+              user?.id,
+              mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM),
+            );
+          setAutoSpotlight(false);
         } else {
           chart.fit();
         }

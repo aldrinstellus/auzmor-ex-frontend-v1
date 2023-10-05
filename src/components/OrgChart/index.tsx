@@ -47,7 +47,6 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
     status: null,
   });
   const [parentId, setParentId] = useState<string | null>(null);
-  const [isSpotlightActive, setIsSpotlightActive] = useState(true);
   const { data, isLoading } = useOrgChart(
     isFiltersEmpty({
       root: parentId || startWithSpecificUser?.id,
@@ -75,6 +74,8 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
     setIsOrgChartMounted(true);
     return () => setIsOrgChartMounted(false);
   }, []);
+
+  const userSearch = watch('userSearch');
 
   return (
     <div className="flex flex-col w-full h-full items-center">
@@ -107,8 +108,6 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
         setParentId={setParentId}
         zoom={zoom}
         parentId={parentId}
-        isSpotlightActive={isSpotlightActive}
-        setIsSpotlightActive={setIsSpotlightActive}
       />
       <Chart
         orgChartRef={chartRef}
@@ -126,11 +125,11 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
         isFilterApplied={
           !!appliedFilters?.departments?.length ||
           !!appliedFilters?.location?.length ||
-          !!startWithSpecificUser
+          !!startWithSpecificUser ||
+          !!userSearch
         }
         startWithSpecificUser={startWithSpecificUser}
         setZoom={setZoom}
-        isSpotlightActive={isSpotlightActive}
       />
     </div>
   );

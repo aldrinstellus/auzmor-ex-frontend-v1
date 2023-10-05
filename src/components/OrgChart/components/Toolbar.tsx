@@ -51,8 +51,6 @@ interface IToolbarProps {
   setParentId: (parentId: string | null) => void;
   zoom: IZoom;
   parentId: string | null;
-  isSpotlightActive: boolean;
-  setIsSpotlightActive: (flag: boolean) => void;
 }
 
 const Toolbar: FC<IToolbarProps> = ({
@@ -71,8 +69,6 @@ const Toolbar: FC<IToolbarProps> = ({
   setParentId,
   zoom,
   parentId,
-  isSpotlightActive,
-  setIsSpotlightActive,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const [memberSearchString, setMemberSearchString] = useState<string>('');
@@ -102,12 +98,31 @@ const Toolbar: FC<IToolbarProps> = ({
     page?.data?.result?.data.map((person: IGetUser) => person),
   );
 
+  const clearSpotlight = () => {
+    chartRef.current?.clearHighlighting();
+  };
+
   // fetch members on search
   const debouncedMemberSearchValue = useDebounce(memberSearchString || '', 300);
-  const { data: fetchedMembers, isLoading: isFetching } = useOrgChart({
-    q: debouncedMemberSearchValue,
-    expandAll: false,
-  });
+  const { data: fetchedMembers, isLoading: isFetching } = useOrgChart(
+    {
+      q: debouncedMemberSearchValue,
+      expandAll: true,
+      locations:
+        appliedFilters?.location?.map((location) => (location as any).id) || [],
+      departments:
+        appliedFilters?.departments?.map(
+          (department) => (department as any).id,
+        ) || [],
+      status:
+        appliedFilters.status?.value === 'ALL'
+          ? undefined
+          : appliedFilters.status?.value,
+    },
+    {
+      enable: debouncedMemberSearchValue !== '',
+    },
+  );
   const userData = useMemo(
     () =>
       fetchedMembers?.data.result?.data.filter(
@@ -158,13 +173,38 @@ const Toolbar: FC<IToolbarProps> = ({
           dataTestId={option.dataTestId}
           className="w-full"
           onClick={(user) => {
-            chartRef.current?.clearHighlighting();
-            setIsSpotlightActive(false);
-            chartRef.current
-              ?.setUpToTheRootHighlighted(user?.id || '')
-              .render()
-              .fit();
-            chartRef.current?.setCentered(user.id).render();
+            clearSpotlight();
+            setMemberSearchString(user?.fullName || '');
+            getOrgChart({
+              queryKey: [
+                'organization-chart',
+                {
+                  q: user?.fullName,
+                  expandAll: true,
+                  locations:
+                    appliedFilters?.location?.map(
+                      (location) => (location as any).id,
+                    ) || [],
+                  departments:
+                    appliedFilters?.departments?.map(
+                      (department) => (department as any).id,
+                    ) || [],
+                  status:
+                    appliedFilters.status?.value === 'ALL'
+                      ? undefined
+                      : appliedFilters.status?.value,
+                },
+              ],
+            } as QueryFunctionContext<any>).then((data) => {
+              chartRef.current?.addNodes(data.data.result.data);
+              chartRef.current
+                ?.expandAll()
+                ?.setFocus(
+                  user?.id,
+                  mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM),
+                );
+              setIsExpandAll(true);
+            });
           }}
         />
       ),
@@ -305,7 +345,7 @@ const Toolbar: FC<IToolbarProps> = ({
                             key={member.id}
                             onClick={() => {
                               clearAllFilters();
-                              setIsSpotlightActive(false);
+                              clearSpotlight();
                               setStartWithSpecificUser(member);
                               close();
                             }}
@@ -370,6 +410,7 @@ const Toolbar: FC<IToolbarProps> = ({
                         );
                       }
                       setIsExpandAll(!isExpandAll);
+                      clearSpotlight();
                     }}
                     size={16}
                   />
@@ -385,6 +426,7 @@ const Toolbar: FC<IToolbarProps> = ({
                     color="text-neutral-900"
                     className="flex items-center"
                     onClick={() => {
+                      clearSpotlight();
                       chartRef.current?.fit();
                     }}
                     size={16}
@@ -397,32 +439,13 @@ const Toolbar: FC<IToolbarProps> = ({
                     name="focus"
                     color="text-neutral-900"
                     onClick={() => {
-                      chartRef.current?.clearHighlighting();
-                      if (!isSpotlightActive) {
-                        clearAllFilters();
-                        chartRef.current
-                          ?.setUpToTheRootHighlighted(user?.id || '')
-                          .setCentered(user?.id || '')
-                          .render();
-                        setTimeout(
-                          () =>
-                            chartRef.current
-                              ?.setZoom(
-                                mapRanges(
-                                  0,
-                                  100,
-                                  MIN_ZOOM,
-                                  MAX_ZOOM,
-                                  FOCUS_ZOOM,
-                                ),
-                              )
-                              .render(),
-                          400,
-                        );
-                      }
-                      setIsSpotlightActive(!isSpotlightActive);
+                      clearSpotlight();
+                      clearAllFilters();
+                      chartRef.current?.setFocus(
+                        user?.id || '',
+                        mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM),
+                      );
                     }}
-                    isActive={isSpotlightActive}
                     size={24}
                   />
                 </Tooltip>
@@ -614,6 +637,7 @@ const Toolbar: FC<IToolbarProps> = ({
           appliedFilters={appliedFilters}
           variant={FilterModalVariant.Orgchart}
           onApply={(appliedFilters: IAppliedFilters) => {
+            clearSpotlight();
             setAppliedFilters(appliedFilters);
             closeFilterModal();
           }}

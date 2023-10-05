@@ -131,7 +131,9 @@ const CreateShoutout: FC<ICreateShoutoutProps> = ({ closeModal }) => {
         users={selectedUsers}
         shoutoutTemplate={shoutoutTemplate}
         setShoutoutTemplate={setShoutoutTemplate}
-        selectedUserIds={Object.keys(users).filter((key: string) => users[key])}
+        selectedUserIds={Object.keys(users || {}).filter(
+          (key: string) => users[key],
+        )}
       />
       <div className="bg-blue-50 flex items-center justify-end p-3 gap-x-3 rounded-9xl w-full">
         <Button
