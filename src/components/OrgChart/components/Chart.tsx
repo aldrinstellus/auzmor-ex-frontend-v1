@@ -1,5 +1,12 @@
 import { OrgChart } from 'd3-org-chart';
-import { FC, MutableRefObject, useEffect, useMemo, useRef } from 'react';
+import {
+  FC,
+  MutableRefObject,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { renderToString } from 'react-dom/server';
 import './index.css';
 import UserNode from './UserNode';
@@ -43,7 +50,6 @@ interface IChart {
   onClearFilter: () => void;
   startWithSpecificUser: IGetUser | null;
   setZoom: (zoom: IZoom) => void;
-  isSpotlightActive: boolean;
 }
 
 const Chart: FC<IChart> = ({
@@ -54,11 +60,11 @@ const Chart: FC<IChart> = ({
   onClearFilter,
   startWithSpecificUser,
   setZoom,
-  isSpotlightActive,
 }) => {
   const chartRef = useRef(null);
   let chart: any | null = null;
   const { user } = useAuth();
+  const [autoSpotlight, setAutoSpotlight] = useState<boolean>(true);
   useEffect(() => {
     if (chartRef.current) {
       if (!chart && data.length) {
@@ -135,8 +141,9 @@ const Chart: FC<IChart> = ({
           //     });
           //   }
           // })
-          .render();
-        if (isSpotlightActive) {
+          .render()
+          .fit();
+        if (autoSpotlight) {
           chart
             .expandAll()
             .render()
@@ -144,8 +151,7 @@ const Chart: FC<IChart> = ({
               user?.id,
               mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM),
             );
-        } else if (startWithSpecificUser) {
-          chart.fit();
+          setAutoSpotlight(false);
         } else {
           chart.fit();
         }

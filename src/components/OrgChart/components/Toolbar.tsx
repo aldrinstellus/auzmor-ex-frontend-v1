@@ -51,8 +51,6 @@ interface IToolbarProps {
   setParentId: (parentId: string | null) => void;
   zoom: IZoom;
   parentId: string | null;
-  isSpotlightActive: boolean;
-  setIsSpotlightActive: (flag: boolean) => void;
 }
 
 const Toolbar: FC<IToolbarProps> = ({
@@ -71,8 +69,6 @@ const Toolbar: FC<IToolbarProps> = ({
   setParentId,
   zoom,
   parentId,
-  isSpotlightActive,
-  setIsSpotlightActive,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const [memberSearchString, setMemberSearchString] = useState<string>('');
@@ -101,6 +97,10 @@ const Toolbar: FC<IToolbarProps> = ({
   const personData = fetchedPersons?.pages.flatMap((page) =>
     page?.data?.result?.data.map((person: IGetUser) => person),
   );
+
+  const clearSpotlight = () => {
+    chartRef.current?.clearHighlighting();
+  };
 
   // fetch members on search
   const debouncedMemberSearchValue = useDebounce(memberSearchString || '', 300);
@@ -173,8 +173,7 @@ const Toolbar: FC<IToolbarProps> = ({
           dataTestId={option.dataTestId}
           className="w-full"
           onClick={(user) => {
-            chartRef.current?.clearHighlighting();
-            setIsSpotlightActive(false);
+            clearSpotlight();
             setMemberSearchString(user?.fullName || '');
             getOrgChart({
               queryKey: [
@@ -346,7 +345,7 @@ const Toolbar: FC<IToolbarProps> = ({
                             key={member.id}
                             onClick={() => {
                               clearAllFilters();
-                              setIsSpotlightActive(false);
+                              clearSpotlight();
                               setStartWithSpecificUser(member);
                               close();
                             }}
@@ -410,9 +409,8 @@ const Toolbar: FC<IToolbarProps> = ({
                           },
                         );
                       }
-                      chartRef.current?.clearHighlighting();
                       setIsExpandAll(!isExpandAll);
-                      setIsSpotlightActive(false);
+                      clearSpotlight();
                     }}
                     size={16}
                   />
@@ -428,6 +426,7 @@ const Toolbar: FC<IToolbarProps> = ({
                     color="text-neutral-900"
                     className="flex items-center"
                     onClick={() => {
+                      clearSpotlight();
                       chartRef.current?.fit();
                     }}
                     size={16}
@@ -440,17 +439,13 @@ const Toolbar: FC<IToolbarProps> = ({
                     name="focus"
                     color="text-neutral-900"
                     onClick={() => {
-                      chartRef.current?.clearHighlighting();
-                      if (!isSpotlightActive) {
-                        clearAllFilters();
-                        chartRef.current?.setFocus(
-                          user?.id || '',
-                          mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM),
-                        );
-                      }
-                      setIsSpotlightActive(!isSpotlightActive);
+                      clearSpotlight();
+                      clearAllFilters();
+                      chartRef.current?.setFocus(
+                        user?.id || '',
+                        mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM),
+                      );
                     }}
-                    isActive={isSpotlightActive}
                     size={24}
                   />
                 </Tooltip>
