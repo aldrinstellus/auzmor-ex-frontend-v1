@@ -15,6 +15,7 @@ import DeactivatedUser from 'images/DeactivatedUser.png';
 import { EditUserSection, UserRole, UserStatus } from 'queries/users';
 import { MouseEvent, MouseEventHandler } from 'react';
 import { ILocation } from 'queries/location';
+import { IDepartment } from 'queries/department';
 import { IDesignation } from 'queries/designation';
 import { IPost } from 'queries/post';
 import moment from 'moment';
@@ -355,6 +356,8 @@ export const getUserCardTooltipProps = (user: any) => {
     workLocation.name = user?.workLocation;
   } else if (typeof user?.workLocation === 'object') {
     workLocation = user?.workLocation;
+  } else if (typeof user?.location === 'string') {
+    workLocation.name = user?.location;
   }
 
   let designation: IDesignation = {
@@ -365,7 +368,20 @@ export const getUserCardTooltipProps = (user: any) => {
     designation.name = user?.designation;
   } else if (typeof user?.designation === 'object') {
     designation = user?.designation;
+  } else if (typeof user?.jobTitle === 'object') {
+    designation = user?.jobTitle;
   }
+
+  let department: IDepartment = {
+    departmentId: '',
+    name: 'Field not specified',
+  };
+  if (typeof user?.department === 'string') {
+    department.name = user?.department;
+  } else if (typeof user?.department === 'object') {
+    department = user?.department;
+  }
+
   return {
     id: user?.id || user?.userId || '',
     fullName:
@@ -373,6 +389,7 @@ export const getUserCardTooltipProps = (user: any) => {
     workEmail: user?.email || user?.workEmail || 'Field not specified',
     workLocation: workLocation,
     designation: designation,
+    department: department,
     profileImage: user?.profileImage,
     status: user?.status,
   };
