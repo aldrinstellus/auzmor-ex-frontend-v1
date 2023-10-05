@@ -134,17 +134,12 @@ const Chart: FC<IChart> = ({
           .render();
         if (isSpotlightActive) {
           chart
-            .setUpToTheRootHighlighted(user?.id || '')
             .expandAll()
-            .setCentered(user?.id)
-            .render();
-          setTimeout(
-            () =>
-              chart
-                .setZoom(mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM))
-                .render(),
-            400,
-          );
+            .render()
+            .setFocus(
+              user?.id,
+              mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM),
+            );
         } else if (startWithSpecificUser) {
           chart.fit();
         } else {
