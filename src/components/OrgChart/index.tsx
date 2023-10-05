@@ -47,7 +47,6 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
     status: null,
   });
   const [parentId, setParentId] = useState<string | null>(null);
-  const [isSpotlightActive, setIsSpotlightActive] = useState(true);
   const { data, isLoading } = useOrgChart(
     isFiltersEmpty({
       root: parentId || startWithSpecificUser?.id,
@@ -109,8 +108,6 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
         setParentId={setParentId}
         zoom={zoom}
         parentId={parentId}
-        isSpotlightActive={isSpotlightActive}
-        setIsSpotlightActive={setIsSpotlightActive}
       />
       <Chart
         orgChartRef={chartRef}
@@ -133,7 +130,6 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
         }
         startWithSpecificUser={startWithSpecificUser}
         setZoom={setZoom}
-        isSpotlightActive={isSpotlightActive}
       />
     </div>
   );
