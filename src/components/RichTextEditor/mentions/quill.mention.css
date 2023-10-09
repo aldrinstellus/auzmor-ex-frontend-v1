@@ -21,6 +21,7 @@
   overflow-y: scroll;
   border-radius: 12px;
   background: #fff;
+  max-width: 512px;
 }
 
 .mention {
