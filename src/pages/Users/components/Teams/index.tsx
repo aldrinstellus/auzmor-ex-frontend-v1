@@ -196,7 +196,9 @@ const Team: FC<ITeamProps> = ({
         transition: slideInAndOutTop,
         theme: 'dark',
       });
+      queryClient.invalidateQueries(['team-members']);
       queryClient.invalidateQueries(['team', teamId]);
+      queryClient.invalidateQueries(['teams'], { exact: false });
     },
   });
 

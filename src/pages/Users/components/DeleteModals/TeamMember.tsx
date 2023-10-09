@@ -39,6 +39,7 @@ const RemoveTeamMember: FC<IRemoveTeamMemberProps> = ({
       queryClient.invalidateQueries(['team-members'], {
         exact: false,
       });
+      queryClient.invalidateQueries(['teams'], { exact: false });
       queryClient.invalidateQueries(['feed'], { exact: false });
       closeModal();
       toast(<SuccessToast content={`Successfully removed one member`} />, {

@@ -14,12 +14,12 @@ import Icon from 'components/Icon';
 import useCarousel from 'hooks/useCarousel';
 import { IMedia } from 'contexts/CreatePostContext';
 import { twConfig } from 'utils/misc';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import Banner, { Variant } from 'components/Banner';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
 
 export type CarouselProps = {
   media: IMedia[];
@@ -29,7 +29,9 @@ export type CarouselProps = {
 };
 
 export const fetchFile = (url: string) => {
-  fetch(url)
+  fetch(url, {
+    credentials: 'include',
+  })
     .then((res) => res.blob())
     .then((file) => {
       const tempUrl = URL.createObjectURL(file);

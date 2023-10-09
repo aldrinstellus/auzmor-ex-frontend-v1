@@ -4,6 +4,7 @@ import PageLoader from 'components/PageLoader';
 import Post from 'components/Post';
 import { Reply } from 'components/Reply/Reply';
 import UserCard from 'components/UserWidget';
+import PageNotFound from 'pages/PageNotFound';
 import { useGetPost } from 'queries/post';
 import { FC } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -23,12 +24,12 @@ const PostPage: FC = () => {
   if (isLoading) {
     return <PageLoader />;
   } else if (isError) {
-    return <div>Error...</div>;
+    return <PageNotFound statusCode={404} message={'Post not Found'} />;
   }
 
   const post = getPost(id);
 
-  return (
+  return post ? (
     <>
       <div className="mb-12 space-x-8 flex w-full">
         <div className="sticky top-10 z-10 min-w-[293px] max-w-[293px]">
@@ -60,6 +61,8 @@ const PostPage: FC = () => {
         </div>
       </div>
     </>
+  ) : (
+    <PageNotFound statusCode={404} message={'Post not Found'} />
   );
 };
 

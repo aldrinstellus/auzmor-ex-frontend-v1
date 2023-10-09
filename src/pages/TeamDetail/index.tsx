@@ -116,6 +116,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
       );
       queryClient.invalidateQueries(['team-members']);
       queryClient.invalidateQueries(['team', id]);
+      queryClient.invalidateQueries(['teams'], { exact: false });
     },
   });
 
