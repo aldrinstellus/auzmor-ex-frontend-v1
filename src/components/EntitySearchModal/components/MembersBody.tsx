@@ -197,7 +197,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
   };
 
   const deselectAll = () => {
-    Object.keys(users).forEach((key) => {
+    Object.keys(users || {}).forEach((key) => {
       setValue(`users.${key}`, false);
     });
   };
