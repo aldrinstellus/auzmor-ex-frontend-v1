@@ -8,7 +8,6 @@ import { FC, ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Locations from './Locations';
 import Departments from './Departments';
-import { IRadioListOption } from 'components/RadioGroup';
 import Status from './Status';
 import { ICheckboxListOption } from 'components/CheckboxList';
 import Categories from './Categories';
@@ -16,9 +15,10 @@ import { ICategory } from 'queries/category';
 import { ITeam } from 'queries/teams';
 import Teams from './Teams';
 import { CategoryType } from 'queries/apps';
+import { UserStatus } from 'queries/users';
 
 export interface IFilterForm {
-  status: IRadioListOption;
+  statusCheckbox: ICheckboxListOption[];
   locationCheckbox: ICheckboxListOption[];
   departmentCheckbox: ICheckboxListOption[];
   categoryCheckbox: ICheckboxListOption[];
@@ -27,17 +27,12 @@ export interface IFilterForm {
   departmentSearch: string;
   categorySearch: string;
   teamSearch: string;
+  statusSearch: string;
 }
 
 export interface IStatus {
-  value: UserStatus;
-  label: string;
-  id?: string;
-}
-export enum UserStatus {
-  Invited = 'INVITED',
-  Active = 'ACTIVE',
-  All = 'ALL',
+  id: UserStatus;
+  name: string;
 }
 
 export enum FilterModalVariant {
@@ -50,7 +45,7 @@ export enum FilterModalVariant {
 export interface IAppliedFilters {
   location?: ILocation[];
   departments?: IDepartment[];
-  status?: IStatus | null;
+  status?: IStatus[];
   categories?: ICategory[];
   teams?: ITeam[];
 }
@@ -85,7 +80,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     location: [],
     departments: [],
     categories: [],
-    status: null,
+    status: [],
   },
   onApply,
   onClear,
@@ -94,22 +89,10 @@ const FilterModal: FC<IFilterModalProps> = ({
   const { control, handleSubmit, watch, setValue } = useForm<IFilterForm>({
     mode: 'onChange',
     defaultValues: {
-      status: appliedFilters.status
-        ? {
-            data: {
-              ...appliedFilters.status,
-              id: `userstatus-${appliedFilters.status.label.toLowerCase()}`,
-            },
-            dataTestId: `userstatus-${appliedFilters.status.label.toLowerCase()}`,
-          }
-        : {
-            data: {
-              value: UserStatus.All,
-              label: 'All',
-              id: 'userstatus-all',
-            },
-            dataTestId: 'userstatus-all',
-          },
+      statusCheckbox: (appliedFilters.status || []).map((status) => ({
+        data: status,
+        dataTestId: `status-${status.name}`,
+      })),
       locationCheckbox: (appliedFilters.location || []).map((location) => ({
         data: location,
         dataTestId: `location-${location.name}`,
@@ -131,13 +114,19 @@ const FilterModal: FC<IFilterModalProps> = ({
     },
   });
 
-  const [locationCheckbox, departmentCheckbox, categoryCheckbox, teamCheckbox] =
-    watch([
-      'locationCheckbox',
-      'departmentCheckbox',
-      'categoryCheckbox',
-      'teamCheckbox',
-    ]);
+  const [
+    locationCheckbox,
+    departmentCheckbox,
+    categoryCheckbox,
+    teamCheckbox,
+    statusCheckbox,
+  ] = watch([
+    'locationCheckbox',
+    'departmentCheckbox',
+    'categoryCheckbox',
+    'teamCheckbox',
+    'statusCheckbox',
+  ]);
 
   const onSubmit = (formData: IFilterForm) => {
     onApply({
@@ -151,7 +140,9 @@ const FilterModal: FC<IFilterModalProps> = ({
         (category) => category.data,
       ) as ICategory[],
       teams: formData.teamCheckbox.map((team) => team.data) as ITeam[],
-      status: formData.status.data as IStatus,
+      status: formData.statusCheckbox.map(
+        (category) => category.data,
+      ) as IStatus[],
     } as unknown as IAppliedFilters);
   };
 
@@ -253,9 +244,20 @@ const FilterModal: FC<IFilterModalProps> = ({
       dataTestId: 'filterby-location',
     },
     {
-      label: () => 'Status',
+      label: () => (
+        <div className="flex items-center">
+          <div>Status</div>
+          {!!statusCheckbox.length && (
+            <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
+              {statusCheckbox.length}
+            </div>
+          )}
+        </div>
+      ),
       key: 'status-filters',
-      component: () => <Status control={control} />,
+      component: () => (
+        <Status control={control} watch={watch} setValue={setValue} />
+      ),
       isHidden: [FilterModalVariant.Team, FilterModalVariant.App].includes(
         variant,
       ),

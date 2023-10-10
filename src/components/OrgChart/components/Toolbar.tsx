@@ -28,7 +28,6 @@ import Divider from 'components/Divider';
 import Avatar from 'components/Avatar';
 import FilterModal, {
   IAppliedFilters,
-  UserStatus,
   FilterModalVariant,
 } from 'components/FilterModal';
 import { INode } from './Chart';
@@ -78,7 +77,9 @@ const Toolbar: FC<IToolbarProps> = ({
   const { user } = useAuth();
 
   const isFilterApplied =
-    !!appliedFilters?.departments?.length || !!appliedFilters?.location?.length;
+    !!appliedFilters?.departments?.length ||
+    !!appliedFilters?.location?.length ||
+    !!appliedFilters?.status?.length;
 
   // fetch users on start with specific user
   const debouncedPersonSearchValue = useDebounce(
@@ -116,9 +117,8 @@ const Toolbar: FC<IToolbarProps> = ({
           (department) => (department as any).id,
         ) || [],
       status:
-        appliedFilters.status?.value === 'ALL'
-          ? undefined
-          : appliedFilters.status?.value,
+        appliedFilters?.status?.map((eachStatus) => (eachStatus as any).id) ||
+        [],
     },
     {
       enable: debouncedMemberSearchValue !== '',
@@ -191,9 +191,9 @@ const Toolbar: FC<IToolbarProps> = ({
                       (department) => (department as any).id,
                     ) || [],
                   status:
-                    appliedFilters.status?.value === 'ALL'
-                      ? undefined
-                      : appliedFilters.status?.value,
+                    appliedFilters.status?.map(
+                      (eachStatus) => (eachStatus as any).id,
+                    ) || [],
                 },
               ],
             } as QueryFunctionContext<any>).then((data) => {
@@ -264,7 +264,7 @@ const Toolbar: FC<IToolbarProps> = ({
     setAppliedFilters({
       location: [],
       departments: [],
-      status: { value: UserStatus.All, label: 'all' },
+      status: [],
     });
   };
   const clearAllFilters = () => {
@@ -410,9 +410,9 @@ const Toolbar: FC<IToolbarProps> = ({
                                   (department) => (department as any).id,
                                 ) || [],
                               status:
-                                appliedFilters.status?.value === 'ALL'
-                                  ? undefined
-                                  : appliedFilters.status?.value,
+                                appliedFilters.status?.map(
+                                  (eachStatus) => (eachStatus as any).id,
+                                ) || [],
                             },
                           ],
                         } as QueryFunctionContext<any>).then(
@@ -627,6 +627,51 @@ const Toolbar: FC<IToolbarProps> = ({
                         setAppliedFilters({
                           ...appliedFilters,
                           departments: [],
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              )}
+              {!!appliedFilters?.status?.length && (
+                <div
+                  className="flex px-3 py-2 text-primary-500 text-sm font-medium border border-neutral-200 rounded-7xl justify-between mr-2 hover:border-primary-600 group cursor-pointer"
+                  onClick={() =>
+                    setAppliedFilters({
+                      ...appliedFilters,
+                      status: [],
+                    })
+                  }
+                >
+                  <div className="font-medium text-sm text-neutral-900 mr-1">
+                    Status{' '}
+                    {appliedFilters.status.map((eachStatus, index) => (
+                      <>
+                        <span
+                          key={eachStatus.id}
+                          className="text-primary-500 font-bold text-sm"
+                        >
+                          {eachStatus.name}
+                        </span>
+                        {appliedFilters?.status &&
+                          index !== appliedFilters?.status?.length - 1 && (
+                            <span>
+                              {appliedFilters?.status?.length === 2
+                                ? ' and '
+                                : ', '}
+                            </span>
+                          )}
+                      </>
+                    ))}
+                  </div>
+                  <div className="flex items-center">
+                    <Icon
+                      name="close"
+                      size={16}
+                      onClick={() =>
+                        setAppliedFilters({
+                          ...appliedFilters,
+                          status: [],
                         })
                       }
                     />

@@ -8,7 +8,7 @@ import IconButton, {
   Size as IconSize,
 } from 'components/IconButton';
 import MemberNotFound from 'images/MemberNotFound.svg';
-import Icon from 'components/Icon';
+// import Icon from 'components/Icon';
 import PageLoader from 'components/PageLoader';
 import { Size as InputSize } from 'components/Input';
 import Layout, { FieldType } from 'components/Form';
@@ -23,10 +23,7 @@ import InviteUserModal from '../InviteUserModal';
 import { useInfiniteTeamMembers } from 'queries/teams';
 import { EntitySearchModalType } from 'components/EntitySearchModal';
 import Sort from 'components/Sort';
-import FilterModal, {
-  IAppliedFilters,
-  UserStatus,
-} from 'components/FilterModal';
+import FilterModal, { IAppliedFilters } from 'components/FilterModal';
 import useURLParams from 'hooks/useURLParams';
 import NoDataFound from 'components/NoDataFound';
 
@@ -60,7 +57,7 @@ const People: FC<IPeopleProps> = ({
   const [startFetching, setStartFetching] = useState(false);
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const [appliedFilters, setAppliedFilters] = useState<IAppliedFilters>({
-    status: null,
+    status: [],
   });
   const [filterSortBy, setFilterSortBy] = useState<string>('');
   const { ref, inView } = useInView();
@@ -96,10 +93,7 @@ const People: FC<IPeopleProps> = ({
     return useInfiniteUsers({
       startFetching,
       q: isFiltersEmpty({
-        status:
-          appliedFilters.status?.value === UserStatus.All
-            ? undefined
-            : appliedFilters.status?.value,
+        status: appliedFilters?.status?.map((eachStatus) => eachStatus.id),
         role: role?.value,
         sort: filterSortBy,
         q: debouncedSearchValue,
@@ -112,10 +106,7 @@ const People: FC<IPeopleProps> = ({
       startFetching,
       teamId: teamId || '',
       q: isFiltersEmpty({
-        status:
-          appliedFilters.status?.value === UserStatus.All
-            ? undefined
-            : appliedFilters.status?.value,
+        status: appliedFilters.status,
         role: role?.value,
         sort: filterSortBy,
         q: debouncedSearchValue,
@@ -176,17 +167,17 @@ const People: FC<IPeopleProps> = ({
   const clearFilters = () => {
     deleteParam('status');
     setAppliedFilters({
-      status: null,
+      status: [],
     });
     closeFilterModal();
   };
 
   const onApplyFilter = (appliedFilters: IAppliedFilters) => {
     setAppliedFilters(appliedFilters);
-    if (appliedFilters.status?.value !== UserStatus.All) {
-      const serializedStatus = serializeFilter(appliedFilters.status?.label);
-      updateParam('status', serializedStatus);
-    }
+    const serializedStatus = serializeFilter(
+      appliedFilters.status?.map((value) => value.id),
+    );
+    updateParam('status', serializedStatus);
     closeFilterModal();
   };
 
@@ -207,7 +198,10 @@ const People: FC<IPeopleProps> = ({
     if (parsedStatus) {
       setAppliedFilters({
         ...appliedFilters,
-        status: { value: parsedStatus, label: titleCase(parsedStatus) },
+        status: parsedStatus.map((eachStatus: string) => ({
+          id: eachStatus,
+          name: titleCase(eachStatus),
+        })),
       });
     }
     if (parsedSort) {
@@ -310,8 +304,8 @@ const People: FC<IPeopleProps> = ({
           results
         </div>
 
-        {appliedFilters.status &&
-          appliedFilters.status.value !== UserStatus.All && (
+        {/* {appliedFilters.status &&
+          appliedFilters.status?.length < 1 && (
             <div className="flex justify-between">
               <div className="flex items-center space-x-2">
                 <div className="text-base text-neutral-500">Filter By</div>
@@ -319,11 +313,11 @@ const People: FC<IPeopleProps> = ({
                   className="text-neutral-500 border px-3 py-1 rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer flex items-center group"
                   onClick={() => {
                     deleteParam('status');
-                    setAppliedFilters({ ...appliedFilters, status: null });
+                    setAppliedFilters({ ...appliedFilters, status: [] });
                   }}
                 >
                   <div className="mr-1">
-                    {titleCase(appliedFilters.status.label)}
+                    {titleCase(appliedFilters.status.name)}
                   </div>
                   <Icon
                     name="close"
@@ -332,9 +326,9 @@ const People: FC<IPeopleProps> = ({
                     className="cursor-pointer"
                     onClick={() => {
                       deleteParam('status');
-                      setAppliedFilters({ ...appliedFilters, status: null });
+                      setAppliedFilters({ ...appliedFilters, status: [] });
                     }}
-                    dataTestId={`people-filterby-close-${appliedFilters.status.label}`}
+                    dataTestId={`people-filterby-close-${appliedFilters.status.}`}
                   />
                 </div>
               </div>
@@ -348,7 +342,7 @@ const People: FC<IPeopleProps> = ({
                 Clear Filters
               </div>
             </div>
-          )}
+          )} */}
 
         <div className="flex flex-wrap gap-6">
           {(() => {

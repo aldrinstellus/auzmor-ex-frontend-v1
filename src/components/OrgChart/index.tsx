@@ -44,7 +44,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
   const [appliedFilters, setAppliedFilters] = useState<IAppliedFilters>({
     location: [],
     departments: [],
-    status: null,
+    status: [],
   });
   const [parentId, setParentId] = useState<string | null>(null);
   const { data, isLoading } = useOrgChart(
@@ -57,9 +57,8 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
           (department) => (department as any).id,
         ) || [],
       status:
-        appliedFilters.status?.value === 'ALL'
-          ? undefined
-          : appliedFilters.status?.value,
+        appliedFilters.status?.map((eachStatus) => (eachStatus as any).id) ||
+        [],
       expand: activeMode === OrgChartMode.Team ? 1 : undefined,
     }),
   );
@@ -117,7 +116,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
           setAppliedFilters({
             location: [],
             departments: [],
-            status: null,
+            status: [],
           });
           setStartWithSpecificUser(null);
           resetField('userSearch');

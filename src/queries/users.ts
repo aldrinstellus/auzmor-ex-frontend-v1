@@ -144,7 +144,7 @@ interface IGetOrgChartPayload {
   target?: string;
   departments?: string[];
   locations?: string[];
-  status?: string; // Active, Invited, Inactive
+  status?: string[]; // Active, Invited, Inactive
   expand?: number; // +/- integer. Expand -> root +/- number levels
   expandAll?: boolean;
 }
