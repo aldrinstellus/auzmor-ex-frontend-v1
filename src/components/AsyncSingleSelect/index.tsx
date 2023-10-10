@@ -220,7 +220,7 @@ const AsyncSingleSelect = forwardRef(
                   {(options || []).map((option) => {
                     return (
                       <Option
-                        key={option.value}
+                        key={`${option.value}-${Math.random()}`}
                         value={option.value}
                         label={option.label}
                       >

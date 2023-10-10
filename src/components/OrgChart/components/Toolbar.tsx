@@ -168,8 +168,10 @@ const Toolbar: FC<IToolbarProps> = ({
         <UserRow
           user={{
             ...option.rowData,
-            profileImage: { original: option.rowData.profileImage },
             fullName: option.rowData.userName,
+            profileImage: !!!option.rowData.profileImage
+              ? undefined
+              : option.rowData.profileImage,
           }}
           dataTestId={option.dataTestId}
           className="w-full"
