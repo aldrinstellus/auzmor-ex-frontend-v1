@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Card from 'components/Card';
 import Divider from 'components/Divider';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import timezones from 'utils/timezones.json';
 import {
+  beforeXUnit,
   getNow,
   getTimezoneNameFromIANA,
   nDaysFromNow,
@@ -77,6 +78,16 @@ const BasicSettings = () => {
     },
   });
 
+  useEffect(() => {
+    if (!ooo) {
+      updateMutation.mutate({
+        outOfOffice: {
+          outOfOffice: false,
+        },
+      });
+    }
+  }, [ooo]);
+
   const oooReason: any = watch('ooo.reason');
 
   const timezoneField: any = [
@@ -105,7 +116,7 @@ const BasicSettings = () => {
       name: 'ooo.start',
       label: 'Start date',
       className: '',
-      minDate: new Date(),
+      minDate: beforeXUnit(1, 'days').toDate(),
       control,
       dataTestId: 'ooo-startdate',
       disabled: !ooo,
@@ -158,8 +169,8 @@ const BasicSettings = () => {
         ...payload,
         outOfOffice: {
           outOfOffice: true,
-          start: data?.ooo?.start?.toISOString(),
-          end: data?.ooo?.end?.toISOString(),
+          start: data?.ooo?.start?.format('YYYY-MM-DD'),
+          end: data?.ooo?.end?.format('YYYY-MM-DD'),
           otherReason: data?.ooo?.reason?.key,
         },
       };
