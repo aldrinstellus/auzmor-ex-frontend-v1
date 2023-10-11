@@ -32,18 +32,19 @@ const NoDataFound: FC<INoDataFoundProps> = ({
           className="mt-8 text-lg font-bold text-neutral-900"
           data-testid={`${dataTestId}-noresult-found`}
         >
-          {`No result found ${!!searchString && `for '${searchString}'`}`}
+          {`No result found ${!!searchString ? `for '${searchString}'` : ''}`}
         </div>
         <div className="text-sm text-gray-500 mt-2">{message}</div>
       </div>
 
       {!hideClearBtn && (
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center mt-6 group">
           <Button
             label={clearBtnLabel}
             variant={Variant.Secondary}
             onClick={onClearSearch}
             dataTestId={`${dataTestId}-clear-applied-filter`}
+            labelClassName="text-neutral-500 group-hover:text-primary-600"
           />
         </div>
       )}

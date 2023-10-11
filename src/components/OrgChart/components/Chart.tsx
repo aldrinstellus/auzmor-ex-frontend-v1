@@ -172,15 +172,11 @@ const Chart: FC<IChart> = ({
     [isLoading],
   );
 
-  const orgChartContainerStyle = useMemo(
-    () =>
-      clsx({
-        'relative w-full': true,
-        'opacity-100': !isLoading,
-        'opacity-0': isLoading || !!!data?.length,
-      }),
-    [isLoading],
-  );
+  const orgChartContainerStyle = clsx({
+    'relative w-full': true,
+    'opacity-100': !isLoading,
+    '!opacity-0': isLoading || !!!data?.length,
+  });
 
   return (
     <>
@@ -189,7 +185,7 @@ const Chart: FC<IChart> = ({
       </div>
       {!!!data?.length && !!!isLoading && (
         <NoDataFound
-          className="py-4 w-full"
+          className="p-8 w-full bg-white max-w-[1440px] rounded-9xl"
           onClearSearch={onClearFilter}
           message={
             <p>

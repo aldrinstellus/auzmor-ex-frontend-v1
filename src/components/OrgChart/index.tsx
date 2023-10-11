@@ -1,7 +1,7 @@
 import Button, { Variant } from 'components/Button';
 import { FC, useEffect, useRef, useState } from 'react';
 import Toolbar from './components/Toolbar';
-import Chart from './components/Chart';
+import Chart, { INode } from './components/Chart';
 import { OrgChart } from 'd3-org-chart';
 import { useForm } from 'react-hook-form';
 import { IGetUser, useOrgChart } from 'queries/users';
@@ -76,6 +76,18 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
 
   const userSearch = watch('userSearch');
 
+  const getNodes = () => {
+    if (
+      (!!appliedFilters?.departments?.length ||
+        !!appliedFilters?.location?.length ||
+        !!appliedFilters?.status?.length) &&
+      data &&
+      !!!data?.data.result.data.some((node: INode) => node.matchesCriteria)
+    ) {
+      return [];
+    } else return data?.data.result.data || [];
+  };
+
   return (
     <div className="flex flex-col w-full h-full items-center">
       <div className="flex justify-between w-full max-w-[1440px]">
@@ -110,7 +122,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
       />
       <Chart
         orgChartRef={chartRef}
-        data={data?.data.result.data || []}
+        data={getNodes()}
         isLoading={isLoading}
         onClearFilter={() => {
           setAppliedFilters({
@@ -124,6 +136,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
         isFilterApplied={
           !!appliedFilters?.departments?.length ||
           !!appliedFilters?.location?.length ||
+          !!appliedFilters?.status?.length ||
           !!startWithSpecificUser ||
           !!userSearch
         }
