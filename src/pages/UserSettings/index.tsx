@@ -36,7 +36,7 @@ const UserSettings = () => {
       key: 'notifications-settings',
       component: <NotificationSettings />,
       disabled: true,
-      hidden: false,
+      hidden: true,
       dataTestId: 'settings-notifications',
     },
     {
@@ -45,7 +45,7 @@ const UserSettings = () => {
       key: 'integration-settings',
       component: <div>Integration</div>,
       disabled: true,
-      hidden: false,
+      hidden: true,
       dataTestId: 'settings-profile',
     },
     {
@@ -59,8 +59,10 @@ const UserSettings = () => {
     },
   ];
 
+  const visibleSettings = settings.filter((item) => !item.hidden);
+
   const [activeSettingsPage, setActiveSettingsPage] = useState<ISetting>(
-    settings[0],
+    visibleSettings[0],
   );
 
   return (
@@ -68,16 +70,13 @@ const UserSettings = () => {
       className="flex justify-between w-full gap-x-14"
       data-testid="admin-settings"
     >
-      <Card
-        className="w-[25%] max-h-[284px]"
-        dataTestId="admin-settings-controls"
-      >
+      <Card className="w-[25%] h-full" dataTestId="admin-settings-controls">
         <p className="text-neutral-900 text-base font-bold p-4">
           User Settings
         </p>
         <Divider className="border-neutral-500" />
         <div className="flex flex-col">
-          {settings.map((item, index) => (
+          {visibleSettings.map((item, index) => (
             <div
               key={item.key}
               className={clsx(
@@ -86,6 +85,7 @@ const UserSettings = () => {
                   '!bg-primary-50': item.key === activeSettingsPage.key,
                 },
                 { '!bg-gray-100 !cursor-not-allowed': item.disabled },
+                { 'rounded-b-9xl': index === visibleSettings.length - 1 },
               )}
               onClick={() => !item.disabled && setActiveSettingsPage(item)}
               data-testid={item.dataTestId}
@@ -107,7 +107,7 @@ const UserSettings = () => {
                 />
                 {item.label}
               </div>
-              {index !== settings.length - 1 && <Divider />}
+              {index !== visibleSettings.length - 1 && <Divider />}
             </div>
           ))}
         </div>

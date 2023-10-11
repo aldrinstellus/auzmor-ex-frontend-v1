@@ -35,6 +35,7 @@ const Admin: FC<IAdminProps> = () => {
         key: 'general-settings',
         component: (
           <Collapse
+            defaultOpen
             label="Posting controls"
             className="rounded-9xl overflow-hidden"
             headerClassName="px-4 py-2 bg-blue-50"
@@ -86,7 +87,7 @@ const Admin: FC<IAdminProps> = () => {
         key: 'user-management-settings',
         component: <div>User Management Settings Page</div>,
         disabled: false,
-        hidden: false,
+        hidden: true,
         dataTestId: 'settings-user-management',
       },
       {
@@ -95,7 +96,7 @@ const Admin: FC<IAdminProps> = () => {
         key: 'branding-settings',
         component: <div>Branding Settings Page</div>,
         disabled: false,
-        hidden: false,
+        hidden: true,
         dataTestId: 'settings-branding',
       },
       {
@@ -113,7 +114,7 @@ const Admin: FC<IAdminProps> = () => {
         key: 'marketplace-settings',
         component: <div>Marketplace Settings Page</div>,
         disabled: false,
-        hidden: false,
+        hidden: true,
         dataTestId: 'settings-marketplace',
       },
       {
@@ -122,7 +123,7 @@ const Admin: FC<IAdminProps> = () => {
         key: 'notifications-settings',
         component: <div>Notifications Settings Page</div>,
         disabled: false,
-        hidden: false,
+        hidden: true,
         dataTestId: 'settings-notifications',
       },
     ],
@@ -131,13 +132,15 @@ const Admin: FC<IAdminProps> = () => {
 
   const [activeSettingsIndex, setActiveSettingsIndex] = useState<number>(0);
 
+  const visibleSettings = settings.filter((item) => !item.hidden);
+
   return (
     <div
       className="flex justify-between w-full gap-x-14"
       data-testid="admin-settings"
     >
       <Card
-        className="min-w-[300px] max-h-[400px]"
+        className="min-w-[300px] h-full"
         dataTestId="admin-settings-controls"
       >
         <p className="text-neutral-900 text-base font-bold p-4">
@@ -145,40 +148,42 @@ const Admin: FC<IAdminProps> = () => {
         </p>
         <Divider className="border-neutral-500" />
         <div className="flex flex-col">
-          {settings.map((item, index) => (
+          {visibleSettings.map((item, index) => (
             <div
               key={item.key}
               className={`hover:bg-primary-50 cursor-pointer ${
-                item.key === settings[activeSettingsIndex].key
+                item.key === visibleSettings[activeSettingsIndex].key
                   ? 'bg-primary-50'
                   : 'bg-white'
-              }`}
+              } ${index === visibleSettings.length - 1 ? 'rounded-b-9xl' : ''}`}
               onClick={() => setActiveSettingsIndex(index)}
               data-testid={item.dataTestId}
             >
               <div
                 className={`${
-                  item.key === settings[activeSettingsIndex].key
+                  item.key === visibleSettings[activeSettingsIndex].key
                     ? 'text-primary-500'
                     : 'text-neutral-500'
                 } text-sm font-medium p-4 flex items-center gap-x-3`}
               >
                 <Icon
                   name={item.icon}
-                  isActive={settings[activeSettingsIndex].key === item.key}
+                  isActive={
+                    visibleSettings[activeSettingsIndex].key === item.key
+                  }
                 />
                 {item.label}
               </div>
-              {index !== settings.length - 1 && <Divider />}
+              {index !== visibleSettings.length - 1 && <Divider />}
             </div>
           ))}
         </div>
       </Card>
       <div className="flex flex-col w-full gap-y-4">
         <Card className="max-h-14 text-neutral-900 text-base font-bold py-4 pl-6">
-          {settings[activeSettingsIndex].label}
+          {visibleSettings[activeSettingsIndex].label}
         </Card>
-        {settings[activeSettingsIndex].component}
+        {visibleSettings[activeSettingsIndex].component}
       </div>
     </div>
   );
