@@ -103,7 +103,9 @@ const Tabs: FC<ITabsProps> = ({
         )}
       </div>
       <div className={`${tabContentClassName}`}>
-        <div id={`tab-${activeTab}-content`}>{tabs[activeTab].tabContent}</div>
+        <div key={`tab-${activeTab}`} id={`tab-${activeTab}-content`}>
+          {tabs[activeTab].tabContent}
+        </div>
       </div>
     </div>
   );

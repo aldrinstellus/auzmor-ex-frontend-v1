@@ -33,23 +33,23 @@ const EditProfileScreen: FC<AppProps> = ({
           <div className="text-2xl font-bold text-neutral-900">
             {user?.name}
           </div>
-          <Avatar
-            size={144}
-            indicatorIcon={
-              <div className="absolute bg-primary-500 border-2 border-white rounded-full p-1.5 cursor-pointer top-0 right-1">
-                <Icon
-                  name="edit"
-                  size={16}
-                  color="text-white"
-                  onClick={() => profilePictureRef?.current?.click()}
-                  dataTestId="edit-profilepic"
-                />
-              </div>
-            }
-            name={user?.name}
-            image={user?.profileImage}
-            bgColor="#DBEAFE"
-          />
+          <div className="relative">
+            <Avatar
+              size={144}
+              name={user?.name}
+              image={user?.profileImage}
+              bgColor="#DBEAFE"
+            />
+            <div className="absolute bg-primary-500 border-2 border-white rounded-full p-1.5 cursor-pointer top-0 right-1">
+              <Icon
+                name="edit"
+                size={16}
+                color="text-white"
+                onClick={() => profilePictureRef?.current?.click()}
+                dataTestId="edit-profilepic"
+              />
+            </div>
+          </div>
 
           <div className="flex flex-col items-center mt-4 gap-y-6">
             <div className="flex flex-col items-center gap-y-1">

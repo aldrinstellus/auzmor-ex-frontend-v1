@@ -226,20 +226,18 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({ userDetails }) => {
                 : '#343434'
             }
             dataTestId={profileImageName || 'edit-profile-pic'}
-            indicatorIcon={
-              isOwnerOrAdmin && (
-                <div className="absolute bg-white rounded-full p-[5px] cursor-pointer top-1 right-1">
-                  <Icon
-                    name="edit"
-                    size={15}
-                    color="text-black"
-                    onClick={() => userProfileImageRef?.current?.click()}
-                    dataTestId="edit-profilepic"
-                  />
-                </div>
-              )
-            }
           />
+          {isOwnerOrAdmin && (
+            <div className="absolute bg-white rounded-full p-[5px] cursor-pointer top-1 right-1">
+              <Icon
+                name="edit"
+                size={15}
+                color="text-black"
+                onClick={() => userProfileImageRef?.current?.click()}
+                dataTestId="edit-profilepic"
+              />
+            </div>
+          )}
         </div>
         <div className="ml-[192px] mr-6 mt-2.5">
           <div className="flex justify-between">

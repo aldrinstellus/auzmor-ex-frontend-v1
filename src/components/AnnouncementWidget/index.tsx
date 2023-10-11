@@ -100,14 +100,15 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
                         className="border-2 border-white"
                       />
 
-                      <div>
-                        <div className="flex space-x-1 text-sm">
-                          <span className="text-neutral-900 font-bold">
-                            {getFullName(postData?.createdBy)}
+                      <div className="w-full">
+                        <div className="flex w-full space-x-1 text-sm">
+                          <span className="text-neutral-900">
+                            <b>{getFullName(postData?.createdBy)}</b> shared a
+                            post
                           </span>
-                          <span className="text-neutral-900 font-normal">
+                          {/* <span className="text-neutral-900 font-normal bg-yellow-100">
                             shared a post
-                          </span>
+                          </span> */}
                         </div>
                         <div className="flex space-x-2 items-center">
                           <div className="text-xs text-gray-500">
