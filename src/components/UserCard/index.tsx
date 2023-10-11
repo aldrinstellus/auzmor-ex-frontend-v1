@@ -325,7 +325,7 @@ const UserCard: FC<IUserCardProp> = ({
               </div>
             </div>
           </div>
-          <div className="flex px-6 py-6 justify-between bg-blue-50">
+          <div className="flex px-6 py-4 justify-between bg-blue-50">
             <div></div>
             <div id={`user-card-${user?.id}-view-profile-btn`}>
               <Button
