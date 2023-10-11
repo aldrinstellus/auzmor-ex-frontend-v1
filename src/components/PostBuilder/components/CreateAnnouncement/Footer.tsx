@@ -32,7 +32,6 @@ const Footer: FC<IFooterProps> = ({
   mode,
   closeModal,
   data,
-  getFormValues,
 }) => {
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
@@ -40,8 +39,8 @@ const Footer: FC<IFooterProps> = ({
     useContext(CreatePostContext);
   const { user } = useAuth();
 
-  const onSubmit = (data: any) => {
-    setAnnouncement({
+  const getSelectedAnnouncement = (data: any) => {
+    return {
       label: data?.expiryOption?.label || announcement?.label || '1 Week',
       value:
         data?.expiryOption?.label === 'Custom Date'
@@ -49,44 +48,42 @@ const Footer: FC<IFooterProps> = ({
           : data?.expiryOption?.value ||
             announcement?.value ||
             afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
-    });
+    };
+  };
+
+  const onSubmit = (data: any) => {
+    setAnnouncement(getSelectedAnnouncement(data));
     setActiveFlow(CreatePostFlow.CreatePost);
+  };
+
+  const onDirectSubmit = (data: any) => {
+    makePostAnnouncementMutation.mutate(getSelectedAnnouncement(data).value);
   };
 
   const makePostAnnouncementMutation = useMutation({
     mutationKey: ['makePostAnnouncementMutation', data?.id],
-    mutationFn: () => {
-      const formData = getFormValues();
-      const expiryDate = formData?.date.toISOString().substring(0, 19) + 'Z';
+    mutationFn: (endDate: string) => {
       return updatePost(data!.id!, {
         ...data,
         type: data?.type || PostType.Update,
         isAnnouncement: true,
         announcement: {
-          end:
-            expiryDate ||
-            formData?.expiryOption?.value ||
-            afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
+          end: endDate,
         },
       });
     },
-    onMutate: (_variables) => {
+    onMutate: (endDate) => {
       const previousPost = getPost(data!.id!);
-      const formData = getFormValues();
-      const expiryDate = formData?.date.toISOString().substring(0, 19) + 'Z';
       if (data?.id) {
         updateFeed(
           data.id,
-          produce(getPost(data!.id || ''), (draft) => {
+          produce(previousPost, (draft) => {
             (draft.announcement = {
               actor: {
                 userId: user?.id,
                 ...user,
               },
-              end:
-                expiryDate ||
-                formData?.expiryOption?.value ||
-                afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
+              end: endDate,
             }),
               (draft.isAnnouncement = true),
               (draft.acknowledged = false);
@@ -95,7 +92,7 @@ const Footer: FC<IFooterProps> = ({
       }
       return { previousPost };
     },
-    onError: (error, variables, context) => {
+    onError: (_error, _variables, context) => {
       updateFeed(context!.previousPost.id!, context!.previousPost!);
     },
     onSuccess: async (res: any) => {
@@ -178,7 +175,7 @@ const Footer: FC<IFooterProps> = ({
           <Button
             label={'Done'}
             loading={makePostAnnouncementMutation.isLoading}
-            onClick={() => makePostAnnouncementMutation.mutate()}
+            onClick={handleSubmit(onDirectSubmit)}
             dataTestId="promote-to-announcement-done"
             disabled={!isValid}
           />

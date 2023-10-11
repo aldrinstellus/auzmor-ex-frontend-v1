@@ -31,6 +31,9 @@ interface IUserCardProp {
   className?: string;
 }
 
+let handleCopyRef = () => {};
+let emailRef = '';
+
 const UserCard: FC<IUserCardProp> = ({
   user,
   variant = UsercardVariant.Small,
@@ -82,6 +85,28 @@ const UserCard: FC<IUserCardProp> = ({
       );
     }
     case UsercardVariant.Large: {
+      handleCopyRef = () => {
+        navigator.clipboard.writeText(emailRef);
+        toast(<SuccessToast content={'Copied to clipboard'} />, {
+          closeButton: (
+            <Icon
+              name="closeCircleOutline"
+              color="text-primary-500"
+              size={20}
+            />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          position: 'bottom-center',
+          transition: slideInAndOutBottom,
+          theme: 'dark',
+        });
+      };
       const style = clsx({
         'flex flex-col shadow-xl rounded-9xl bg-white min-w-[600px] overflow-hidden':
           true,
@@ -96,6 +121,7 @@ const UserCard: FC<IUserCardProp> = ({
             if (ele) {
               ele.innerHTML =
                 response?.data?.result.data.workEmail || 'Field not specified';
+              emailRef = response?.data?.result.data.workEmail;
             }
             ele = document.getElementById(`user-card-${user?.id}-workPhone`);
             if (ele) {
@@ -139,29 +165,8 @@ const UserCard: FC<IUserCardProp> = ({
             const copyElement = document.getElementById(
               `user-card-${user?.id}-copy-icon`,
             );
-            copyElement?.removeEventListener('click', () => {});
-            copyElement?.addEventListener('click', () => {
-              navigator.clipboard.writeText('content');
-              toast(<SuccessToast content={'Copied to clipboard'} />, {
-                closeButton: (
-                  <Icon
-                    name="closeCircleOutline"
-                    color="text-primary-500"
-                    size={20}
-                  />
-                ),
-                style: {
-                  border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-                  borderRadius: '6px',
-                  display: 'flex',
-                  alignItems: 'center',
-                },
-                autoClose: TOAST_AUTOCLOSE_TIME,
-                position: 'bottom-center',
-                transition: slideInAndOutBottom,
-                theme: 'dark',
-              });
-            });
+            copyElement?.removeEventListener('click', handleCopyRef, true);
+            copyElement?.addEventListener('click', handleCopyRef, true);
           });
         });
 
@@ -320,7 +325,7 @@ const UserCard: FC<IUserCardProp> = ({
               </div>
             </div>
           </div>
-          <div className="flex px-6 py-6 justify-between bg-blue-50">
+          <div className="flex px-6 py-4 justify-between bg-blue-50">
             <div></div>
             <div id={`user-card-${user?.id}-view-profile-btn`}>
               <Button

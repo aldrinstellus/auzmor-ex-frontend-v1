@@ -79,7 +79,7 @@ const AppLauncher = () => {
         </div>
       </div>
       <div
-        className={`transition-max-h px-4 duration-300 ease-in-out overflow-hidden ${
+        className={`transition-max-h px-6 mt-4 duration-300 ease-in-out overflow-hidden ${
           open ? 'max-h-[500px]' : 'max-h-[0]'
         }`}
       >
@@ -87,7 +87,7 @@ const AppLauncher = () => {
           if (isLoading) {
             return (
               <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-8 w-full">
+                <div className="flex items-center justify-between gap-8 w-full">
                   {[...Array(3)].map((element) => (
                     <div className="flex flex-col gap-2" key={element}>
                       <Skeleton
@@ -104,8 +104,8 @@ const AppLauncher = () => {
           }
           if (appIds.length > 0) {
             return (
-              <div className="flex flex-col gap-4 mt-4">
-                <div className="flex items-center gap-8 w-full">
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between gap-8 w-full">
                   {appIds?.map(({ id }: any) => (
                     <AppWidgetCard data={widgetApps[id]} key={id} />
                   ))}

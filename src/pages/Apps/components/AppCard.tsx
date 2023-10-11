@@ -260,7 +260,7 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
               )}
             </div>
           </div>
-          <div className="pb-8">
+          <div className="pb-8" onClick={openAppDetailModal}>
             <div className="flex items-center justify-between">
               <div className="p-1 bg-neutral-100 rounded-xl">
                 <img

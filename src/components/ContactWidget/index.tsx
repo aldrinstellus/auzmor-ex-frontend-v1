@@ -143,7 +143,7 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
                 )
               )}
             </div>
-            <div className="pt-2 pb-4 space-y-6">
+            <div className="pt-4 pb-2 space-y-6">
               <div className="space-y-4">
                 {!isEditable ? (
                   <div className="flex flex-col gap-y-4">
@@ -153,7 +153,7 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
                           <Icon name="email" hover={false} size={16} />
                         </IconWrapper>
                         <div
-                          className="text-xs font-normal text-neutral-900"
+                          className="text-sm font-normal text-neutral-900"
                           data-testid="user-contact-widget-email"
                         >
                           {contactCardData?.primaryEmail || '-'}
@@ -171,7 +171,7 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
                           <Icon name="call" hover={false} size={16} />
                         </IconWrapper>
                         <div
-                          className="text-xs font-normal text-neutral-900"
+                          className="text-sm font-normal text-neutral-900"
                           data-testid="user-contact-widget-number"
                         >
                           {phoneValue || '-'}

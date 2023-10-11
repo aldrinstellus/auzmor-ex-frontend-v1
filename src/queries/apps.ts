@@ -130,7 +130,7 @@ export const fetchApps = async (
     );
     return response;
   } else {
-    response = await apiService.get(context.pageParam, context.queryKey[1]);
+    response = await apiService.get(context.pageParam);
     setApp({
       ...apps,
       ...chain(response.data.result.data).keyBy('id').value(),
@@ -164,7 +164,7 @@ export const fetchMyApps = async (
     );
     return response;
   } else {
-    response = await apiService.get(context.pageParam, context.queryKey[1]);
+    response = await apiService.get(context.pageParam);
     setApp({
       ...apps,
       ...chain(response.data.result.data).keyBy('id').value(),
@@ -198,7 +198,7 @@ export const fetchFeaturedApps = async (
     );
     return response;
   } else {
-    response = await apiService.get(context.pageParam, context.queryKey[1]);
+    response = await apiService.get(context.pageParam);
     setFeaturedApp({
       ...featuredApps,
       ...chain(response.data.result.data).keyBy('id').value(),
@@ -231,7 +231,7 @@ export const fetchMyFeaturedApps = async (
     );
     return response;
   } else {
-    response = await apiService.get(context.pageParam, context.queryKey[1]);
+    response = await apiService.get(context.pageParam);
     setFeaturedApp({
       ...featuredApps,
       ...chain(response.data.result.data).keyBy('id').value(),
