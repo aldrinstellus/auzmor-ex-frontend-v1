@@ -69,7 +69,7 @@ const UserNode: FC<IUserNode> = ({ node, isFilterApplied }) => {
             <div className="text-sm font-bold">
               {node.data.userName || 'Field not specified'}
             </div>
-            <div className="text-sm my-1">
+            <div className="text-xs my-1">
               {node.data.jobTitle?.name || 'Field not specified'}
             </div>
             <div className="flex items-center">
@@ -81,7 +81,7 @@ const UserNode: FC<IUserNode> = ({ node, isFilterApplied }) => {
                   hover={false}
                 />
               </div>
-              <div className="text-sm text-neutral-500 truncate">
+              <div className="text-xs text-neutral-500 truncate">
                 {node?.data?.location || 'Field not specified'}
               </div>
             </div>
