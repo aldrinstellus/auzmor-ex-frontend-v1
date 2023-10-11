@@ -102,7 +102,6 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
       name: 'manager',
       label: 'Select Manager',
       className: '',
-      selectClassName: 'org-select',
       placeholder: 'Select Manager',
       suffixIcon: <></>,
       clearIcon: (
