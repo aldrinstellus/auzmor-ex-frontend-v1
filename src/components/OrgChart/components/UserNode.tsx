@@ -16,10 +16,8 @@ interface IUserNode {
 
 const UserNode: FC<IUserNode> = ({ node, isFilterApplied }) => {
   const departmentStyle = clsx({
-    'bg-neutral-100': true,
-    'bg-pink-100 text-pink-500':
-      node.data?.department?.toLowerCase() === 'marketing',
-    'absolute bottom-2 flex px-2 py-0.5 text-xxs font-semibold rounded': true,
+    'bg-orange-100': true,
+    'absolute bottom-2 flex px-2 py-1 text-xxs font-semibold rounded': true,
   });
   const userStatusStyle = clsx({
     'absolute top-1 right-1 text-xxs font-medium flex bg-neutral-100 px-1.5 rounded-xl items-center text-neutral-500 py-0.5':
@@ -69,7 +67,7 @@ const UserNode: FC<IUserNode> = ({ node, isFilterApplied }) => {
             <div className="text-sm font-bold">
               {node.data.userName || 'Field not specified'}
             </div>
-            <div className="text-sm my-1">
+            <div className="text-xs my-1">
               {node.data.jobTitle?.name || 'Field not specified'}
             </div>
             <div className="flex items-center">
@@ -81,7 +79,7 @@ const UserNode: FC<IUserNode> = ({ node, isFilterApplied }) => {
                   hover={false}
                 />
               </div>
-              <div className="text-sm text-neutral-500 truncate">
+              <div className="text-xs text-neutral-500 truncate">
                 {node?.data?.location || 'Field not specified'}
               </div>
             </div>

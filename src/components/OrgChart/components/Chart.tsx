@@ -73,7 +73,7 @@ const Chart: FC<IChart> = ({
             .scaleExtent([MIN_ZOOM, MAX_ZOOM])
             .container(chartRef.current)
             .data(data)
-            .nodeHeight((_d: any) => 128)
+            .nodeHeight((_d: any) => 111)
             .nodeWidth((_d: any) => 256)
             .compact(false)
             .childrenMargin((_d: any) => 50)
