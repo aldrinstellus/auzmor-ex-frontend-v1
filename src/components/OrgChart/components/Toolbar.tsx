@@ -110,7 +110,7 @@ const Toolbar: FC<IToolbarProps> = ({
     isFiltersEmpty({
       q: debouncedMemberSearchValue,
       root: parentId || undefined,
-      expandAll: false,
+      expand: parentId ? 1 : undefined,
       locations:
         appliedFilters?.location?.map((location) => (location as any).id) || [],
       departments:
@@ -176,49 +176,74 @@ const Toolbar: FC<IToolbarProps> = ({
           }}
           dataTestId={option.dataTestId}
           className="w-full"
-          onClick={(user) => {
+          onClick={(user: any) => {
             clearSpotlight();
             setMemberSearchString(user?.fullName || '');
-            getOrgChart({
-              queryKey: [
-                'organization-chart',
-                {
-                  q: user?.fullName,
-                  expandAll: true,
-                  locations:
-                    appliedFilters?.location?.map(
-                      (location) => (location as any).id,
-                    ) || [],
-                  departments:
-                    appliedFilters?.departments?.map(
-                      (department) => (department as any).id,
-                    ) || [],
-                  status:
-                    appliedFilters.status?.map(
-                      (eachStatus) => (eachStatus as any).id,
-                    ) || [],
-                },
-              ],
-            } as QueryFunctionContext<any>).then((data) => {
-              if (!parentId) {
-                // dont append if its my team
-                if (
-                  // dont append if node is already there.
-                  !chartRef.current
-                    ?.data()
-                    ?.some((node) => node.id === user?.id)
-                ) {
-                  chartRef.current?.addNodes(data.data.result.data);
-                }
-              }
+            if (
+              chartRef.current?.data()?.some((node) => node.id === user?.id)
+            ) {
+              // if node already in the chart
               chartRef.current
                 ?.expandAll()
                 ?.setFocus(
                   user?.id,
                   mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM),
                 );
-              setIsExpandAll(true);
-            });
+            } else {
+              // fetch missing nodes.
+              getOrgChart({
+                queryKey: [
+                  'organization-chart',
+                  {
+                    locations:
+                      appliedFilters?.location?.map(
+                        (location) => (location as any).id,
+                      ) || [],
+                    departments:
+                      appliedFilters?.departments?.map(
+                        (department) => (department as any).id,
+                      ) || [],
+                    status:
+                      appliedFilters.status?.map(
+                        (eachStatus) => (eachStatus as any).id,
+                      ) || [],
+                    target: user?.id,
+                  },
+                ],
+              } as QueryFunctionContext<any>).then((data) => {
+                chartRef.current?.addNodes(data.data.result.data);
+                getOrgChart({
+                  queryKey: [
+                    'organization-chart',
+                    {
+                      root: user?.parentId,
+                      locations:
+                        appliedFilters?.location?.map(
+                          (location) => (location as any).id,
+                        ) || [],
+                      departments:
+                        appliedFilters?.departments?.map(
+                          (department) => (department as any).id,
+                        ) || [],
+                      status:
+                        appliedFilters.status?.map(
+                          (eachStatus) => (eachStatus as any).id,
+                        ) || [],
+                      expand: 0,
+                    },
+                  ],
+                } as QueryFunctionContext<any>).then((data) => {
+                  chartRef.current?.addNodes(data.data.result.data);
+                  chartRef.current
+                    ?.expandAll()
+                    ?.setFocus(
+                      user?.id,
+                      mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM),
+                    );
+                  setIsExpandAll(true);
+                });
+              });
+            }
           }}
         />
       ),
