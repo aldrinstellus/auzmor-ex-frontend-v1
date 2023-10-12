@@ -397,6 +397,8 @@ const Toolbar: FC<IToolbarProps> = ({
                             user={member}
                             key={member.id}
                             onClick={() => {
+                              setParentId(null);
+                              setActiveMode(OrgChartMode.Overall);
                               clearAllFilters();
                               clearSpotlight();
                               setStartWithSpecificUser(member);
