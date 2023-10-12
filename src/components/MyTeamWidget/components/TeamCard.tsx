@@ -12,7 +12,6 @@ interface ITeamCard {
 }
 
 const TeamCard: React.FC<ITeamCard> = ({
-  id,
   name,
   category,
   totalMembers,
