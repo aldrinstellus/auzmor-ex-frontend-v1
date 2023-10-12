@@ -16,6 +16,7 @@ import { slideInAndOutTop } from 'utils/react-toastify';
 import { useFeedStore } from 'stores/feedStore';
 import { produce } from 'immer';
 import useAuth from 'hooks/useAuth';
+import { isEmpty } from 'lodash';
 
 export interface IFooterProps {
   handleSubmit: UseFormHandleSubmit<FieldValues>;
@@ -108,7 +109,11 @@ const Footer: FC<IFooterProps> = ({
 
       toast(
         <SuccessToast
-          content="Your post  was converted to an announcement"
+          content={
+            isEmpty(data.announcement)
+              ? 'Your post  was converted to an announcement'
+              : 'Your announcement was updated successfully'
+          }
           data-testid="notification-announcement-to-post"
         />,
         {

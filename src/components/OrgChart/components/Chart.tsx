@@ -49,6 +49,7 @@ interface IChart {
   isFilterApplied: boolean;
   onClearFilter: () => void;
   setZoom: (zoom: IZoom) => void;
+  isMyTeam: boolean;
 }
 
 const Chart: FC<IChart> = ({
@@ -58,6 +59,7 @@ const Chart: FC<IChart> = ({
   isFilterApplied,
   onClearFilter,
   setZoom,
+  isMyTeam,
 }) => {
   const chartRef = useRef(null);
   let chart: any | null = null;
@@ -148,6 +150,13 @@ const Chart: FC<IChart> = ({
               mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM),
             );
           setAutoSpotlight(false);
+        } else if (isMyTeam) {
+          chart
+            .expandAll()
+            .setFocus(
+              user?.id,
+              mapRanges(0, 100, MIN_ZOOM, MAX_ZOOM, FOCUS_ZOOM),
+            );
         } else {
           chart.fit();
         }
