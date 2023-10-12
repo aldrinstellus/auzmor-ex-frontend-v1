@@ -13,12 +13,11 @@ const ScheduledFeedHeader: FC<IScheduledFeedHeaderProps> = (
 ) => {
   // const [searchParams, setSearchParams] = useSearchParams();
 
-  const btnStyle =
-    'min-w-[106px] inline-flex py-2 px-4 justify-center align-center rounded-full text-sm font-bold';
+  // const btnStyle = 'min-w-[106px] inline-flex py-2 px-4 justify-center align-center rounded-full text-sm font-bold';
 
   return (
     <div
-      className="bg-blue-50 shadow-md rounded-9xl h-32 px-6 py-4"
+      className="bg-blue-50 shadow-md rounded-9xl px-6 py-7"
       data-testid="scheduled-tab"
     >
       <div className="flex justify-between items-center">
@@ -33,7 +32,7 @@ const ScheduledFeedHeader: FC<IScheduledFeedHeaderProps> = (
               </span>
             </div>
           </div>
-          <div className="flex gap-4 mt-6">
+          {/* <div className="flex gap-4 mt-6">
             <div
               className={`${btnStyle} border-1 border-neutral-200 bg-white`}
               data-testid="scheduledpost-tab-all"
@@ -58,7 +57,7 @@ const ScheduledFeedHeader: FC<IScheduledFeedHeaderProps> = (
             >
               Shoutouts
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
