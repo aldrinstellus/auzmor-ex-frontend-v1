@@ -32,10 +32,7 @@ export const getNotificationElementContent = (
   let redirect = '';
 
   // If the action performed is a REACTION
-  if (
-    action.type === ActionType.REACTION ||
-    action.type === ActionType.MENTION
-  ) {
+  if (action.type === ActionType.REACTION) {
     // If the target has only one element, it means the reaction has been made on a POST
     if (target.length === 1) {
       const post = target[0];
@@ -91,7 +88,10 @@ export const getNotificationElementContent = (
   }
 
   // If the action performed is a COMMENT
-  else if (action.type === ActionType.COMMENT) {
+  else if (
+    action.type === ActionType.COMMENT ||
+    action.type === ActionType.MENTION
+  ) {
     // If the target has only one element, it means the comment was made on a POST
     if (target.length === 1) {
       const comment = action;
@@ -122,7 +122,11 @@ export const getNotificationElementContent = (
   }
 
   // If the action performed is a SCHEDULE_POST
-  else if (action.type === ActionType.SCHEDULE_POST) {
+  else if (
+    action.type === ActionType.SCHEDULE_POST ||
+    action.type === ActionType.SCHEDULE_POST_PUBLISH ||
+    action.type === ActionType.POST_PRE_PUBLISH
+  ) {
     // If target length is 1
     if (target.length === 1) {
       const post = target[0];
@@ -173,6 +177,10 @@ export const getNotificationMessage = (
       message = 'You Received a Shout Out From';
     } else if (actionType === ActionType.ACKNOWLEDGEMENT_REMINDER) {
       message = 'shared an announcement';
+    } else if (actionType === ActionType.SCHEDULE_POST_PUBLISH) {
+      message = 'Your scheduled post is published';
+    } else if (actionType === ActionType.POST_PRE_PUBLISH) {
+      message = 'Your scheduled post is pre published';
     }
   } else if (targetType === TargetType[TargetType.TEAM]) {
     if (actionType === ActionType[ActionType.NEW_MEMBERS_TO_TEAM]) {
