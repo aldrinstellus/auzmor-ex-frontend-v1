@@ -74,8 +74,6 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
     return () => setIsOrgChartMounted(false);
   }, []);
 
-  const userSearch = watch('userSearch');
-
   const getNodes = () => {
     if (
       (!!appliedFilters?.departments?.length ||
@@ -136,11 +134,8 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
         isFilterApplied={
           !!appliedFilters?.departments?.length ||
           !!appliedFilters?.location?.length ||
-          !!appliedFilters?.status?.length ||
-          !!startWithSpecificUser ||
-          !!userSearch
+          !!appliedFilters?.status?.length
         }
-        startWithSpecificUser={startWithSpecificUser}
         setZoom={setZoom}
       />
     </div>
