@@ -5,7 +5,7 @@ import {
   newHashtags,
 } from './mentions/utils';
 import { renderToString } from 'react-dom/server';
-import ReactionSkeleton from 'components/Post/components/ReactionSkeleton';
+import ReactionSkeleton from 'components/Post/components/ReactionModal/ReactionSkeleton';
 import { extractFirstWord } from 'utils/misc';
 import Skeleton from 'react-loading-skeleton';
 import { UserStatus } from 'queries/users';
