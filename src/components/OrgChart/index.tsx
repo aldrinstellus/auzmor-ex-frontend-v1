@@ -137,6 +137,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
           !!appliedFilters?.status?.length
         }
         setZoom={setZoom}
+        isMyTeam={!!parentId}
       />
     </div>
   );
