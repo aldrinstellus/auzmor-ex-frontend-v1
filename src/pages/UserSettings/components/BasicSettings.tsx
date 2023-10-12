@@ -43,7 +43,7 @@ const schema = yup.object({
 });
 
 const BasicSettings = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [ooo, setOOO] = useState(user?.outOfOffice?.outOfOffice);
   const userTimezone = getTimezoneNameFromIANA(user?.timezone || '');
   const queryClient = useQueryClient();
@@ -71,7 +71,9 @@ const BasicSettings = () => {
   const updateMutation = useMutation({
     mutationKey: ['update-user-settings'],
     mutationFn: (data: any) => updateUserById(user?.id || '', data),
-    onSuccess: async () => {
+    onSuccess: async (res: any) => {
+      // @ts-ignore
+      updateUser({ outOfOffice: res?.result?.data?.outOfOffice });
       successToastConfig();
       await queryClient.invalidateQueries(['current-user-me']);
       reset({}, { keepValues: true });

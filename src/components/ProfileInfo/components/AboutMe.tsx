@@ -68,7 +68,6 @@ const AboutMe: FC<IAboutMeProps> = ({
       type: FieldType.TextArea,
       name: 'personal.about',
       placeholder: 'Write here',
-      defaultValue: getValues()?.personal?.about,
       dataTestId: 'about-me-edit-text',
       control,
       className: 'w-full rounded-9xl',
@@ -167,7 +166,7 @@ const AboutMe: FC<IAboutMeProps> = ({
                   'Field not specified'}
               </div>
             ) : (
-              <div className="relative pt-2">
+              <div className="relative pt-2" key={aboutMeData?.id}>
                 <Layout fields={textAreaField} />
                 <div className="flex justify-end mt-2">
                   <IconWrapper

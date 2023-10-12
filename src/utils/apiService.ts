@@ -41,6 +41,7 @@ class ApiService {
       (error: any) => {
         if (
           !window.location.hostname?.startsWith('office') &&
+          !window.location.pathname?.includes('logout') &&
           error?.response?.status === 401
         ) {
           window.location.href = '/login';

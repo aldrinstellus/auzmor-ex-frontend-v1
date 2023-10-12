@@ -72,7 +72,7 @@ const EmployeeIdRow: FC<AppProps> = ({ data }) => {
         bgColor: 'bg-teal-50',
       }}
       label="Employee ID"
-      value={data?.employeeId || data?.id}
+      value={data?.employeeId}
       canEdit={isAdmin}
       dataTestId="professional-details-employee-id"
       editNode={
