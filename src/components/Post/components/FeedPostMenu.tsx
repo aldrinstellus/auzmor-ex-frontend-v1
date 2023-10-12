@@ -85,7 +85,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
         setFeed(context?.previousFeed);
       }
     },
-    onSuccess: async (_data, _variables, _context) => {
+    onSuccess: async (_data, variables, _context) => {
       toast(
         <SuccessToast
           content="Post deleted successfully"
@@ -116,6 +116,9 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
       await queryClient.invalidateQueries(['post-announcements-widget']);
       await queryClient.invalidateQueries(['bookmarks']);
       await queryClient.invalidateQueries(['scheduledPosts']);
+      await queryClient.invalidateQueries(['posts', variables], {
+        exact: false,
+      });
     },
   });
 

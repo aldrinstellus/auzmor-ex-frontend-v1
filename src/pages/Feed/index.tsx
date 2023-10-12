@@ -45,6 +45,7 @@ import { useFeedStore } from 'stores/feedStore';
 // misc
 import NoPosts from 'images/NoPostsFound.png';
 import AppLauncher from 'components/AppLauncher';
+import MyTeamWidget from 'components/MyTeamWidget';
 import useRole from 'hooks/useRole';
 import { isRegularPost } from 'utils/misc';
 
@@ -369,7 +370,7 @@ const Feed: FC<IFeedProps> = () => {
       <div className="z-10 w-[293px] flex flex-col gap-6 sticky overflow-y-auto max-h-[calc(100vh-140px)] widget-hide-scroll">
         <UserCard />
         <AppLauncher />
-        {/* <MyTeamWidget /> */}
+        <MyTeamWidget />
       </div>
       <div className="flex-grow w-0 flex flex-col gap-[26px] px-12">
         {FeedHeader}
