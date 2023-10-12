@@ -1,5 +1,5 @@
 import { renderToString } from 'react-dom/server';
-import ReactionSkeleton from 'components/Post/components/ReactionSkeleton';
+import ReactionSkeleton from 'components/Post/components/ReactionModal/ReactionSkeleton';
 import apiService from 'utils/apiService';
 import {
   createMentionsList,

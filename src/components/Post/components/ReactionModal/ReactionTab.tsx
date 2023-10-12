@@ -3,6 +3,7 @@ import { FC, memo, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import ReactionRow from './ReactionRow';
 import ReactionSkeleton from './ReactionSkeleton';
+import ReactionRowSkeleton from './ReactionRowSkeleton';
 export interface IReactionTabProps {
   entityId: string;
   entityType: string;
@@ -25,6 +26,8 @@ const ReactionTab: FC<IReactionTabProps> = ({
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useInfiniteReactions({ entityId, entityType, reaction, limit });
 
+  console.log({ data });
+
   useEffect(() => {
     if (inView) {
       fetchNextPage();
@@ -45,20 +48,22 @@ const ReactionTab: FC<IReactionTabProps> = ({
     }
   }) as IGetReaction[];
 
+  console.log({ reactions });
+
   return (
     <div id={rootId} className="px-6 h-[482px] overflow-y-auto">
       {isLoading ? (
         <ReactionSkeleton />
       ) : (
         reactions &&
-        reactions?.map((reaction: IGetReaction) => (
+        reactions?.filter(Boolean).map((reaction: IGetReaction) => (
           <div key={reaction?.id} className="">
             <ReactionRow reaction={reaction} />
           </div>
         ))
       )}
       <div>
-        {hasNextPage && isFetchingNextPage && <ReactionRow isLoading={true} />}
+        {hasNextPage && isFetchingNextPage && <ReactionRowSkeleton />}
         {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
       </div>
     </div>
