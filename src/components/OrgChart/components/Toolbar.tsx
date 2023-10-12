@@ -31,7 +31,7 @@ import FilterModal, {
   FilterModalVariant,
 } from 'components/FilterModal';
 import { INode } from './Chart';
-import { mapRanges } from 'utils/misc';
+import { isFiltersEmpty, mapRanges } from 'utils/misc';
 import { QueryFunctionContext } from '@tanstack/react-query';
 import NoDataFound from 'components/NoDataFound';
 
@@ -107,9 +107,10 @@ const Toolbar: FC<IToolbarProps> = ({
   // fetch members on search
   const debouncedMemberSearchValue = useDebounce(memberSearchString || '', 300);
   const { data: fetchedMembers, isLoading: isFetching } = useOrgChart(
-    {
+    isFiltersEmpty({
       q: debouncedMemberSearchValue,
-      expandAll: true,
+      root: parentId || undefined,
+      expandAll: false,
       locations:
         appliedFilters?.location?.map((location) => (location as any).id) || [],
       departments:
@@ -119,7 +120,7 @@ const Toolbar: FC<IToolbarProps> = ({
       status:
         appliedFilters?.status?.map((eachStatus) => (eachStatus as any).id) ||
         [],
-    },
+    }),
     {
       enable: debouncedMemberSearchValue !== '',
     },
@@ -199,7 +200,17 @@ const Toolbar: FC<IToolbarProps> = ({
                 },
               ],
             } as QueryFunctionContext<any>).then((data) => {
-              chartRef.current?.addNodes(data.data.result.data);
+              if (!parentId) {
+                // dont append if its my team
+                if (
+                  // dont append if node is already there.
+                  !chartRef.current
+                    ?.data()
+                    ?.some((node) => node.id === user?.id)
+                ) {
+                  chartRef.current?.addNodes(data.data.result.data);
+                }
+              }
               chartRef.current
                 ?.expandAll()
                 ?.setFocus(

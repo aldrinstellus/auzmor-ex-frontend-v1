@@ -13,7 +13,7 @@ import UserNode from './UserNode';
 import ExpandButtonContent from './ExpandButtonContent';
 import Spinner from 'components/Spinner';
 import clsx from 'clsx';
-import { IGetUser, UserStatus, getOrgChart } from 'queries/users';
+import { UserStatus, getOrgChart } from 'queries/users';
 import { QueryFunctionContext } from '@tanstack/react-query';
 import { IDesignation } from 'queries/designation';
 import { IProfileImage } from 'queries/post';
@@ -48,7 +48,6 @@ interface IChart {
   data: INode[];
   isFilterApplied: boolean;
   onClearFilter: () => void;
-  startWithSpecificUser: IGetUser | null;
   setZoom: (zoom: IZoom) => void;
 }
 
@@ -58,7 +57,6 @@ const Chart: FC<IChart> = ({
   isLoading,
   isFilterApplied,
   onClearFilter,
-  startWithSpecificUser,
   setZoom,
 }) => {
   const chartRef = useRef(null);
@@ -90,10 +88,7 @@ const Chart: FC<IChart> = ({
             )
             .nodeContent((node: any, _i: any, _arr: any, _state: any) => {
               return renderToString(
-                <UserNode
-                  node={node}
-                  isFilterApplied={isFilterApplied && !!!startWithSpecificUser}
-                />,
+                <UserNode node={node} isFilterApplied={isFilterApplied} />,
               );
             }) as any
         )
