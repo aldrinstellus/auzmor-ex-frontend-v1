@@ -54,7 +54,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
     isFetching: isDataFetching,
   } = useOrgChart(
     isFiltersEmpty({
-      root: parentId || startWithSpecificUser?.id,
+      root: startWithSpecificUser?.id || parentId || undefined,
       locations:
         appliedFilters?.location?.map((location) => (location as any).id) || [],
       departments:
