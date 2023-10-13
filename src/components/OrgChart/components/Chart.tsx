@@ -117,7 +117,7 @@ const Chart: FC<IChart> = ({
                 const attrs = chart.getChartState();
                 if (attrs.setActiveNodeCentered) {
                   d.data._centered = true;
-                  d.data._centeredWithDescendants = true;
+                  // d.data._centeredWithDescendants = true;
                 }
                 // If childrens are expanded
                 if (newNode.children) {
@@ -145,7 +145,7 @@ const Chart: FC<IChart> = ({
               const attrs = chart.getChartState();
               if (attrs.setActiveNodeCentered) {
                 d.data._centered = true;
-                d.data._centeredWithDescendants = true;
+                // d.data._centeredWithDescendants = true;
               }
 
               // If childrens are expanded
