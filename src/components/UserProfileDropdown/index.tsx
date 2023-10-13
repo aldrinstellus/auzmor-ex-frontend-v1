@@ -45,14 +45,16 @@ const UserProfileDropdown: FC<IUserDropdownProps> = ({
   const { isAdmin } = useRole();
   const _options = [];
 
-  if (isTeamPeople && isAdmin) {
-    _options.push({
-      icon: 'forbidden',
-      label: <div className="text-red-500">Remove</div>,
-      dataTestId: 'people-card-ellipsis-remove-member',
-      onClick: onRemoveTeamMember,
-      iconClassName: '!text-red-500',
-    });
+  if (isTeamPeople) {
+    if (isAdmin) {
+      _options.push({
+        icon: 'forbidden',
+        label: <div className="text-red-500">Remove</div>,
+        dataTestId: 'people-card-ellipsis-remove-member',
+        onClick: onRemoveTeamMember,
+        iconClassName: '!text-red-500',
+      });
+    }
   } else {
     if (
       isAdmin &&
