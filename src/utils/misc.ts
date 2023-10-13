@@ -12,7 +12,7 @@ import DeactivatedCoverImage from 'images/deactivatedCoverPhoto.png';
 import DefaultCoverImage from 'images/png/CoverImage.png';
 import capitalize from 'lodash/capitalize';
 import DeactivatedUser from 'images/DeactivatedUser.png';
-import { EditUserSection, UserRole, UserStatus } from 'queries/users';
+import { EditUserSection, UserStatus } from 'queries/users';
 import { MouseEvent, MouseEventHandler } from 'react';
 import { ILocation } from 'queries/location';
 import { IDepartment } from 'queries/department';
@@ -66,13 +66,8 @@ export const getEditSection = (
   userId: any,
   loggedInUserId: any,
   isAdmin: any,
-  role: any,
 ) => {
-  return userId === loggedInUserId
-    ? EditUserSection.ABOUT
-    : isAdmin && role === UserRole.Member
-    ? EditUserSection.PROFESSIONAL
-    : '';
+  return userId === loggedInUserId || isAdmin ? EditUserSection.PROFILE : '';
 };
 
 export const isValidUrl = (url: string) => {

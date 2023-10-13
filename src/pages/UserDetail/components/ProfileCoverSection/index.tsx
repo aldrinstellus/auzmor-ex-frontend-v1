@@ -28,6 +28,7 @@ import { EntityType } from 'queries/files';
 import PopupMenu from 'components/PopupMenu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
+  EditUserSection,
   UserStatus,
   updateCurrentUser,
   updateRoleToAdmin,
@@ -58,9 +59,13 @@ import clsx from 'clsx';
 
 export interface IProfileCoverProps {
   userDetails: Record<string, any>;
+  editSection?: string;
 }
 
-const ProfileCoverSection: FC<IProfileCoverProps> = ({ userDetails }) => {
+const ProfileCoverSection: FC<IProfileCoverProps> = ({
+  userDetails,
+  editSection,
+}) => {
   const [file, setFile] = useState<IUpdateProfileImage | Record<string, any>>(
     {},
   );
@@ -70,7 +75,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({ userDetails }) => {
   const canEdit = isOwnerOrAdmin;
   const queryClient = useQueryClient();
   const [openEditProfile, openEditProfileModal, closeEditProfileModal] =
-    useModal(undefined, false);
+    useModal(editSection === EditUserSection.PROFILE, false);
   const [openEditImage, openEditImageModal, closeEditImageModal] = useModal(
     undefined,
     false,

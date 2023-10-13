@@ -222,12 +222,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
           isTeamPeople={isTeamPeople}
           onEditClick={() =>
             navigate(
-              `/users/${id}?edit=${getEditSection(
-                id,
-                user?.id,
-                isAdmin,
-                role,
-              )}`,
+              `/users/${id}?edit=${getEditSection(id, user?.id, isAdmin)}`,
             )
           }
           onReactivateClick={openReactivateModal}

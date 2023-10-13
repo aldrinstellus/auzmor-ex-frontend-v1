@@ -56,6 +56,15 @@ const UserProfileDropdown: FC<IUserDropdownProps> = ({
       });
     }
   } else {
+    if (id === user?.id || isAdmin) {
+      _options.push({
+        icon: 'edit',
+        label: `Edit`,
+        dataTestId: 'user-edit',
+        onClick: onEditClick,
+      });
+    }
+
     if (
       isAdmin &&
       [UserStatus.Invited, UserStatus.Created].includes(status as any)
@@ -65,15 +74,6 @@ const UserProfileDropdown: FC<IUserDropdownProps> = ({
         label: 'Resend Invite',
         dataTestId: 'people-card-ellipsis-resend-invite',
         onClick: onResendInviteClick,
-      });
-    }
-
-    if (id === user?.id) {
-      _options.push({
-        icon: 'edit',
-        label: `Edit`,
-        dataTestId: 'user-edit',
-        onClick: onEditClick,
       });
     }
 
