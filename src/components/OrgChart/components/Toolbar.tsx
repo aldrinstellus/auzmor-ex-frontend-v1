@@ -51,6 +51,7 @@ interface IToolbarProps {
   setParentId: (parentId: string | null) => void;
   zoom: IZoom;
   parentId: string | null;
+  setShowLoader: (flag: boolean) => void;
 }
 
 const Toolbar: FC<IToolbarProps> = ({
@@ -69,6 +70,7 @@ const Toolbar: FC<IToolbarProps> = ({
   setParentId,
   zoom,
   parentId,
+  setShowLoader,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const [memberSearchString, setMemberSearchString] = useState<string>('');
@@ -435,6 +437,7 @@ const Toolbar: FC<IToolbarProps> = ({
                       if (isExpandAll) {
                         chartRef.current?.collapseAll().fit();
                       } else {
+                        setShowLoader(true);
                         getOrgChart({
                           queryKey: [
                             'organization-chart',
@@ -457,6 +460,7 @@ const Toolbar: FC<IToolbarProps> = ({
                           ],
                         } as QueryFunctionContext<any>).then(
                           (response: any) => {
+                            setShowLoader(false);
                             chartRef.current?.addNodes(
                               response.data.result.data,
                             );
