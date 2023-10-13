@@ -15,7 +15,7 @@ type MentionProps = {
   active?: boolean;
   email?: string;
   userId?: string;
-  location?: ILocation;
+  workLocation?: ILocation;
   status?: UserStatus;
 };
 
@@ -25,7 +25,7 @@ const Mention: FC<MentionProps> = ({
   profileImage,
   email,
   userId,
-  location,
+  workLocation,
   status,
 }): ReactElement => {
   const { user } = useAuth();
@@ -37,7 +37,7 @@ const Mention: FC<MentionProps> = ({
             userId,
             fullName,
             email,
-            workLocation: location,
+            workLocation,
             profileImage,
             status,
           })}
