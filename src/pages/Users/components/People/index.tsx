@@ -26,6 +26,7 @@ import Sort from 'components/Sort';
 import FilterModal, { IAppliedFilters } from 'components/FilterModal';
 import useURLParams from 'hooks/useURLParams';
 import NoDataFound from 'components/NoDataFound';
+import useRole from 'hooks/useRole';
 
 export interface IPeopleProps {
   showModal: boolean;
@@ -61,6 +62,7 @@ const People: FC<IPeopleProps> = ({
   });
   const [filterSortBy, setFilterSortBy] = useState<string>('');
   const { ref, inView } = useInView();
+  const { isAdmin } = useRole();
 
   const parsedRole = parseParams('role');
 
@@ -382,7 +384,10 @@ const People: FC<IPeopleProps> = ({
                 </>
               );
             }
-            return isTeamPeople ? (
+            return isTeamPeople &&
+              !debouncedSearchValue &&
+              !role?.value &&
+              !appliedFilters.status?.length ? (
               <div className="flex flex-col w-full items-center space-y-4">
                 <img
                   src={MemberNotFound}
@@ -398,22 +403,26 @@ const People: FC<IPeopleProps> = ({
                     >
                       No members yet
                     </div>
-                    <div className="text-base font-medium text-neutral-500">
-                      {"Let's get started by adding some members!"}
-                    </div>
+                    {isAdmin ? (
+                      <div className="text-base font-medium text-neutral-500">
+                        {"Let's get started by adding some members!"}
+                      </div>
+                    ) : null}
                   </div>
                 </div>
-                <Button
-                  label={'Add members'}
-                  variant={Variant.Secondary}
-                  className="space-x-1 rounded-[24px]"
-                  size={Size.Large}
-                  dataTestId="team-add-members-cta"
-                  leftIcon={'addCircle'}
-                  leftIconClassName="text-neutral-900"
-                  leftIconSize={20}
-                  onClick={openModal}
-                />
+                {isAdmin ? (
+                  <Button
+                    label={'Add members'}
+                    variant={Variant.Secondary}
+                    className="space-x-1 rounded-[24px]"
+                    size={Size.Large}
+                    dataTestId="team-add-members-cta"
+                    leftIcon={'addCircle'}
+                    leftIconClassName="text-neutral-900"
+                    leftIconSize={20}
+                    onClick={openModal}
+                  />
+                ) : null}
               </div>
             ) : (
               <NoDataFound
