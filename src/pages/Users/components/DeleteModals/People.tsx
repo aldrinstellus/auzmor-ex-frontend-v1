@@ -69,6 +69,7 @@ const DeletePeople: FC<IDeletePeopleProps> = ({
       queryClient.invalidateQueries(['scheduledPosts']);
       queryClient.invalidateQueries(['posts'], { exact: false });
       queryClient.invalidateQueries(['team-members']);
+      queryClient.invalidateQueries(['organization-chart'], { exact: false });
       toast(
         <SuccessToast
           content="Member has been deleted"
