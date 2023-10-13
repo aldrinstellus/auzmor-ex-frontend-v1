@@ -565,7 +565,7 @@ const Toolbar: FC<IToolbarProps> = ({
                         size={16}
                       />
                       <div className="mx-1">
-                        {startWithSpecificUser.fullName}
+                        {startWithSpecificUser.userName}
                       </div>
                     </div>
                     <div className="flex items-center">
