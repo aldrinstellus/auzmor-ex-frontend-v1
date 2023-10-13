@@ -1,6 +1,7 @@
 import { MouseEventHandler, useMemo } from 'react';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
+import Spinner from 'components/Spinner';
 
 export enum Variant {
   Primary = 'PRIMARY',
@@ -18,6 +19,7 @@ export type IconButtonProps = {
   variant?: Variant;
   size?: Size;
   disabled?: boolean;
+  loading?: boolean;
   onClick?: MouseEventHandler<Element>;
   className?: string;
   borderAround?: boolean;
@@ -30,6 +32,7 @@ const IconButton = ({
   variant = Variant.Primary,
   size = Size.Medium,
   disabled = false,
+  loading = false,
   icon = '',
   className = '',
   borderAround = false,
@@ -95,11 +98,17 @@ const IconButton = ({
       <button
         type="button"
         className={styles}
-        disabled={disabled}
+        disabled={disabled || loading}
         onClick={onClick}
         data-testid={dataTestId}
       >
-        <Icon name={icon} size={getSize()} color={color} disabled={disabled} />
+        <Icon
+          name={icon}
+          size={getSize()}
+          color={color}
+          disabled={disabled || loading}
+        />
+        {loading && <Spinner />}
       </button>
     </div>
   );

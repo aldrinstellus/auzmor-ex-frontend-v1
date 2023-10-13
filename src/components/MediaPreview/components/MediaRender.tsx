@@ -4,11 +4,18 @@ import Icon from 'components/Icon';
 import BlurImg from 'components/Image/components/BlurImg';
 import { FC, MouseEventHandler } from 'react';
 
+export enum PreferredSize {
+  Small = 's',
+  Medium = 'm',
+  Large = 'l',
+}
+
 export interface IMediaRenderProps {
   data: IMedia;
   overlayCount?: number;
   localClassName?: string;
   mode?: Mode;
+  preferredSize?: PreferredSize;
   onClick?: MouseEventHandler<HTMLDivElement>;
   coverImageUrl?: string;
   isAnnouncementWidgetPreview?: boolean;
@@ -19,12 +26,13 @@ const MediaRender: FC<IMediaRenderProps> = ({
   overlayCount = -1,
   localClassName,
   mode = Mode.View,
+  preferredSize = PreferredSize.Medium,
   onClick,
   coverImageUrl,
   isAnnouncementWidgetPreview = false,
 }) => {
   const blurImgProps = {
-    src: data?.transcodedData?.image?.m || data.original,
+    src: data?.transcodedData?.image?.[preferredSize] || data.original,
     className: 'object-cover w-full h-full',
     key: data?.name,
     alt: data?.name,

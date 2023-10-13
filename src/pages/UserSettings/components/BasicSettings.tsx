@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Card from 'components/Card';
 import Divider from 'components/Divider';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -47,6 +47,7 @@ const BasicSettings = () => {
   const [ooo, setOOO] = useState(user?.outOfOffice?.outOfOffice);
   const userTimezone = getTimezoneNameFromIANA(user?.timezone || '');
   const queryClient = useQueryClient();
+  const firstUpdate = useRef(true);
 
   const {
     control,
@@ -79,16 +80,6 @@ const BasicSettings = () => {
       reset({}, { keepValues: true });
     },
   });
-
-  useEffect(() => {
-    if (!ooo) {
-      updateMutation.mutate({
-        outOfOffice: {
-          outOfOffice: false,
-        },
-      });
-    }
-  }, [ooo]);
 
   const oooReason: any = watch('ooo.reason');
 
@@ -239,7 +230,16 @@ const BasicSettings = () => {
             <div>
               <SwitchToggle
                 defaultValue={ooo}
-                onChange={(checked) => setOOO(checked)}
+                onChange={(checked) => {
+                  setOOO(checked);
+                  if (!checked) {
+                    updateMutation.mutate({
+                      outOfOffice: {
+                        outOfOffice: checked,
+                      },
+                    });
+                  }
+                }}
                 dataTestId="ooo-toggle"
               />
             </div>

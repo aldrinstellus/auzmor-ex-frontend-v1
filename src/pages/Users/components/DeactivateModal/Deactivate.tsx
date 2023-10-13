@@ -37,7 +37,13 @@ const DeactivatePeople: FC<IReactivatePeopleProps> = ({
       queryClient.invalidateQueries(['user', userId]);
       queryClient.invalidateQueries(['users']);
       queryClient.invalidateQueries(['feed'], { exact: false });
+      queryClient.invalidateQueries(['feed-announcements-widget']);
+      queryClient.invalidateQueries(['post-announcements-widget']);
+      queryClient.invalidateQueries(['bookmarks']);
+      queryClient.invalidateQueries(['scheduledPosts']);
+      queryClient.invalidateQueries(['posts'], { exact: false });
       queryClient.invalidateQueries(['team-members']);
+      queryClient.invalidateQueries(['organization-chart'], { exact: false });
       toast(<SuccessToast content={`User has been deactivated`} />, {
         closeButton: (
           <Icon name="closeCircleOutline" color="text-primary-500" size={20} />

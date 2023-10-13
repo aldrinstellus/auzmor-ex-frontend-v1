@@ -34,6 +34,7 @@ import { TeamFlow, TeamTab } from 'pages/Users/components/Teams';
 import DeleteTeam from 'pages/Users/components/DeleteModals/Team';
 import TeamDetailSkeleton from './components/TeamDetailSkeleton';
 import { FC } from 'react';
+import useRole from 'hooks/useRole';
 
 export interface ITeamMemberProps {}
 
@@ -43,6 +44,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
   const { prevRoute } = state || {};
   const navigate = useNavigate();
   const { teamId: id } = params;
+  const { isAdmin } = useRole();
 
   const [showTeamModal, openTeamModal, closeTeamModal] = useModal(
     undefined,
@@ -150,34 +152,36 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                   {prevRoute === TeamTab.MyTeams ? 'My Team' : 'All Team'}
                 </div>
               </div>
-              <Tooltip
-                tooltipContent={
-                  <div
-                    className="space-y-[6px] w-[231px]"
-                    data-testid="team-tooltip"
-                  >
-                    <div className="text-sm font-medium text-white">
-                      Invite members
+              {isAdmin ? (
+                <Tooltip
+                  tooltipContent={
+                    <div
+                      className="space-y-[6px] w-[231px]"
+                      data-testid="team-tooltip"
+                    >
+                      <div className="text-sm font-medium text-white">
+                        Invite members
+                      </div>
+                      <div className="text-sm font-normal text-neutral-400">
+                        {
+                          "Don't forget to add members to the team. Click on the 'Add Members' button to get started."
+                        }
+                      </div>
                     </div>
-                    <div className="text-sm font-normal text-neutral-400">
-                      {
-                        "Don't forget to add members to the team. Click on the 'Add Members' button to get started."
-                      }
-                    </div>
-                  </div>
-                }
-                tooltipPosition="left"
-              >
-                <Button
-                  className="flex space-x-1 px-6 py-[10px] rounded-[24px]"
-                  label="Add Members"
-                  leftIcon="add"
-                  leftIconClassName="!text-white"
-                  leftIconSize={20}
-                  onClick={openAddMemberModal}
-                  dataTestId="team-add-members"
-                />
-              </Tooltip>
+                  }
+                  tooltipPosition="left"
+                >
+                  <Button
+                    className="flex space-x-1 px-6 py-[10px] rounded-[24px]"
+                    label="Add Members"
+                    leftIcon="add"
+                    leftIconClassName="!text-white"
+                    leftIconSize={20}
+                    onClick={openAddMemberModal}
+                    dataTestId="team-add-members"
+                  />
+                </Tooltip>
+              ) : null}
             </div>
             <div className="w-full bg-purple-50 border-1 border-purple-200 py-4 pl-8 pr-16 flex justify-between">
               <div className="flex flex-col text-neutral-900 space-y-4">

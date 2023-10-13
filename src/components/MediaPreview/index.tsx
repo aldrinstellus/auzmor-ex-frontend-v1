@@ -1,6 +1,6 @@
 import { FC, MouseEvent, MouseEventHandler, useMemo, useState } from 'react';
 import Carousel from 'components/Carousel';
-import MediaRender from './components/MediaRender';
+import MediaRender, { PreferredSize } from './components/MediaRender';
 import Button, { Variant as ButtonVariant, Size } from 'components/Button';
 import { ICoverImageMap, IMedia } from 'contexts/CreatePostContext';
 import useModal from 'hooks/useModal';
@@ -84,6 +84,7 @@ const MediaPreview: FC<IMediaPreviewProps> = ({
       return (
         <MediaRender
           data={media[0]}
+          preferredSize={PreferredSize.Large}
           onClick={(e: MouseEvent<HTMLDivElement>) => {
             if (mode === Mode.View) {
               setIndexAndOpenCarousel(0);

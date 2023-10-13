@@ -52,6 +52,8 @@ interface IChart {
   isMyTeam: boolean;
 }
 
+let chart: any | null = null;
+
 const Chart: FC<IChart> = ({
   orgChartRef,
   data,
@@ -62,12 +64,11 @@ const Chart: FC<IChart> = ({
   isMyTeam,
 }) => {
   const chartRef = useRef(null);
-  let chart: any | null = null;
   const { user } = useAuth();
   const [autoSpotlight, setAutoSpotlight] = useState<boolean>(true);
   useEffect(() => {
     if (chartRef.current) {
-      if (!chart && data.length) {
+      if (data.length) {
         chart = (
           new OrgChart()
             .scaleExtent([MIN_ZOOM, MAX_ZOOM])
@@ -111,19 +112,62 @@ const Chart: FC<IChart> = ({
                   { root: d.data.id, expand: 0 },
                 ],
               } as QueryFunctionContext<any>).then((response: any) => {
-                chart?.addNodes(
-                  response.data.result.data.filter(
-                    (node: any) => node.parentId !== '',
-                  ),
-                );
-                try {
-                  const ele = document.getElementById(
-                    `expand-btn-${d.data.id}`,
-                  );
-                  ele?.dispatchEvent(new Event('click'));
-                } catch (e) {}
+                chart?.addNodes(response.data.result.data);
+                const newNode = chart.getNodeData(d.data.id);
+                const attrs = chart.getChartState();
+                if (attrs.setActiveNodeCentered) {
+                  d.data._centered = true;
+                  // d.data._centeredWithDescendants = true;
+                }
+                // If childrens are expanded
+                if (newNode.children) {
+                  //Collapse them
+                  newNode._children = newNode.children;
+                  newNode.children = null;
+
+                  // Set descendants expanded property to false
+                  chart.setExpansionFlagToChildren(newNode, false);
+                } else {
+                  // Expand children
+                  newNode.children = newNode._children;
+                  newNode._children = null;
+
+                  // Set each children as expanded
+                  if (newNode.children) {
+                    newNode.children.forEach(
+                      ({ data }: any) => (data._expanded = true),
+                    );
+                  }
+                }
+                chart?.update(newNode);
               });
             } else {
+              const attrs = chart.getChartState();
+              if (attrs.setActiveNodeCentered) {
+                d.data._centered = true;
+                // d.data._centeredWithDescendants = true;
+              }
+
+              // If childrens are expanded
+              if (d.children) {
+                //Collapse them
+                d._children = d.children;
+                d.children = null;
+
+                // Set descendants expanded property to false
+                chart.setExpansionFlagToChildren(d, false);
+              } else {
+                // Expand children
+                d.children = d._children;
+                d._children = null;
+
+                // Set each children as expanded
+                if (d.children) {
+                  d.children.forEach(
+                    ({ data }: any) => (data._expanded = true),
+                  );
+                }
+              }
               chart?.update(d);
             }
           })

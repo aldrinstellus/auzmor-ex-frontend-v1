@@ -27,7 +27,7 @@ import {
   MediaValidationError,
 } from 'contexts/CreatePostContext';
 import { EntityType } from 'queries/files';
-import { useUpload } from 'hooks/useUpload';
+import { UploadStatus, useUpload } from 'hooks/useUpload';
 import { IMention } from 'queries/post';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 
@@ -79,7 +79,6 @@ export const CommentsRTE: FC<CommentFormProps> = ({
   mediaValidationErrors = [],
   setIsCreateCommentLoading = () => {},
   setMediaValidationErrors = () => {},
-  isCreateCommentLoading,
 }) => {
   const {
     comment,
@@ -90,7 +89,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
   const updateFeed = useFeedStore((state) => state.updateFeed);
   const queryClient = useQueryClient();
   const quillRef = useRef<ReactQuill>(null);
-  const { uploadMedia } = useUpload();
+  const { uploadMedia, uploadStatus } = useUpload();
   const [isEmpty, setIsEmpty] = useState(true);
 
   const createCommentMutation = useMutation({
@@ -264,13 +263,13 @@ export const CommentsRTE: FC<CommentFormProps> = ({
     let fileIds: string[] = [];
     const mentionList: IMention[] = [];
     const hashtagList: string[] = [];
+    setIsCreateCommentLoading(true);
     if (files.length) {
       const uploadedMedia = await uploadMedia(files, EntityType.Comment);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       fileIds = uploadedMedia.map((media: IMedia) => media.id);
     }
     if (mode === PostCommentMode.Create || mode === PostCommentMode.SendWish) {
-      setIsCreateCommentLoading(true);
       let fileIds: string[] = [];
       if (files.length) {
         const uploadedMedia = await uploadMedia(files, EntityType.Comment);
@@ -373,6 +372,11 @@ export const CommentsRTE: FC<CommentFormProps> = ({
     }
   }, []);
 
+  const loading =
+    createCommentMutation.isLoading ||
+    updateCommentMutation.isLoading ||
+    uploadStatus === UploadStatus.Uploading;
+
   return (
     <div className={`flex flex-row ${className} `}>
       <div
@@ -423,14 +427,11 @@ export const CommentsRTE: FC<CommentFormProps> = ({
               />
               <IconButton
                 icon={'send'}
+                loading={loading}
                 className="!flex justify-center !mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
                 size={SizeVariant.Large}
                 variant={IconVariant.Primary}
-                onClick={() => {
-                  if (!isCreateCommentLoading) {
-                    onSubmit();
-                  }
-                }}
+                onClick={onSubmit}
                 dataTestId={
                   mode === PostCommentMode.SendWish
                     ? 'send-wishes-cta'

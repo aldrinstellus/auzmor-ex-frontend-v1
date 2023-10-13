@@ -133,7 +133,7 @@ const UserDetail: FC<IUserDetailProps> = () => {
       {userDetail?.isLoading ? (
         <UserDetailSkeleton />
       ) : (
-        <ProfileCoverSection userDetails={data} />
+        <ProfileCoverSection userDetails={data} editSection={editSection} />
       )}
 
       <div className="mb-32 flex w-full">

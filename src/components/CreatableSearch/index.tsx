@@ -187,6 +187,7 @@ const CreatableSearch = forwardRef(
                       field.onChange(
                         values?.map((v: string) => ({ value: v, label: v })),
                       );
+                      setSearchValue('');
                     } else {
                       field.onChange(option);
                     }

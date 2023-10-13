@@ -30,6 +30,7 @@ export enum UserEditType {
 export enum EditUserSection {
   ABOUT = 'about',
   PROFESSIONAL = 'professional',
+  PROFILE = 'profile',
 }
 
 export interface IPeopleFilters {

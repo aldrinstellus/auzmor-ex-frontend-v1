@@ -4,7 +4,7 @@ import IconButton, {
   Size as IconSize,
 } from 'components/IconButton';
 import useModal from 'hooks/useModal';
-import { FC, MutableRefObject, useEffect, useMemo, useState } from 'react';
+import { FC, MutableRefObject, useMemo, useState } from 'react';
 import { Control, UseFormResetField, UseFormWatch } from 'react-hook-form';
 import { FOCUS_ZOOM, IForm, IZoom, MAX_ZOOM, MIN_ZOOM, OrgChartMode } from '..';
 import clsx from 'clsx';
@@ -12,15 +12,9 @@ import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
 import { OrgChart } from 'd3-org-chart';
 import Popover from 'components/Popover';
-import {
-  IGetUser,
-  getOrgChart,
-  useInfiniteUsers,
-  useOrgChart,
-} from 'queries/users';
+import { IGetUser, getOrgChart, useOrgChart } from 'queries/users';
 import { useDebounce } from 'hooks/useDebounce';
 import Spinner from 'components/Spinner';
-import { useInView } from 'react-intersection-observer';
 import UserRow from 'components/UserRow';
 import { IOption } from 'components/AsyncSingleSelect';
 import useAuth from 'hooks/useAuth';
@@ -51,6 +45,7 @@ interface IToolbarProps {
   setParentId: (parentId: string | null) => void;
   zoom: IZoom;
   parentId: string | null;
+  setShowLoader: (flag: boolean) => void;
 }
 
 const Toolbar: FC<IToolbarProps> = ({
@@ -69,6 +64,7 @@ const Toolbar: FC<IToolbarProps> = ({
   setParentId,
   zoom,
   parentId,
+  setShowLoader,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const [memberSearchString, setMemberSearchString] = useState<string>('');
@@ -86,18 +82,32 @@ const Toolbar: FC<IToolbarProps> = ({
     specificPersonSearch || '',
     300,
   );
-  const {
-    data: fetchedPersons,
-    isFetchingNextPage: isFetchingNextPersons,
-    fetchNextPage: fetchNextPersons,
-    hasNextPage: hasNextPersons,
-    isFetching: isPersonFetching,
-  } = useInfiniteUsers({
-    q: { q: debouncedPersonSearchValue },
-    startFetching: debouncedPersonSearchValue !== '',
-  });
-  const personData = fetchedPersons?.pages.flatMap((page) =>
-    page?.data?.result?.data.map((person: IGetUser) => person),
+  const { data: fetchedPersons, isFetching: isPersonFetching } = useOrgChart(
+    isFiltersEmpty({
+      q: debouncedPersonSearchValue,
+      root: parentId || undefined,
+      expand: parentId ? 1 : undefined,
+      locations:
+        appliedFilters?.location?.map((location) => (location as any).id) || [],
+      departments:
+        appliedFilters?.departments?.map(
+          (department) => (department as any).id,
+        ) || [],
+      status:
+        appliedFilters?.status?.map((eachStatus) => (eachStatus as any).id) ||
+        [],
+    }),
+    {
+      enable: debouncedPersonSearchValue !== '',
+    },
+  );
+
+  const personData = useMemo(
+    () =>
+      fetchedPersons?.data.result?.data
+        .filter((user: any) => user.id !== 'root')
+        .filter((user: any) => !!user?.matchesCriteria) || [],
+    [fetchedPersons],
   );
 
   const clearSpotlight = () => {
@@ -132,13 +142,6 @@ const Toolbar: FC<IToolbarProps> = ({
       ) || [],
     [fetchedMembers],
   );
-
-  const { ref: personInviewRef, inView } = useInView();
-  useEffect(() => {
-    if (inView) {
-      fetchNextPersons();
-    }
-  }, [inView]);
 
   const memberSearchfields = [
     {
@@ -344,6 +347,7 @@ const Toolbar: FC<IToolbarProps> = ({
               onClick={() => {
                 setActiveMode(OrgChartMode.Team);
                 setParentId(getParentId());
+                setStartWithSpecificUser(null);
               }}
             >
               My Team
@@ -392,13 +396,17 @@ const Toolbar: FC<IToolbarProps> = ({
                           <Spinner />
                         </div>
                       ) : personData && personData?.length > 0 ? (
-                        personData?.map((member: IGetUser) => (
+                        personData?.map((member: any) => (
                           <UserRow
-                            user={member}
+                            user={{
+                              ...member,
+                              fullName: member.userName,
+                              profileImage: !!!member.profileImage
+                                ? undefined
+                                : member.profileImage,
+                            }}
                             key={member.id}
                             onClick={() => {
-                              setParentId(null);
-                              setActiveMode(OrgChartMode.Overall);
                               clearAllFilters();
                               clearSpotlight();
                               setStartWithSpecificUser(member);
@@ -413,9 +421,6 @@ const Toolbar: FC<IToolbarProps> = ({
                         </div>
                       ) : (
                         <></>
-                      )}
-                      {hasNextPersons && !isFetchingNextPersons && (
-                        <div ref={personInviewRef} />
                       )}
                     </div>
                   </>
@@ -435,6 +440,7 @@ const Toolbar: FC<IToolbarProps> = ({
                       if (isExpandAll) {
                         chartRef.current?.collapseAll().fit();
                       } else {
+                        setShowLoader(true);
                         getOrgChart({
                           queryKey: [
                             'organization-chart',
@@ -457,6 +463,7 @@ const Toolbar: FC<IToolbarProps> = ({
                           ],
                         } as QueryFunctionContext<any>).then(
                           (response: any) => {
+                            setShowLoader(false);
                             chartRef.current?.addNodes(
                               response.data.result.data,
                             );
@@ -558,7 +565,7 @@ const Toolbar: FC<IToolbarProps> = ({
                         size={16}
                       />
                       <div className="mx-1">
-                        {startWithSpecificUser.fullName}
+                        {startWithSpecificUser.userName}
                       </div>
                     </div>
                     <div className="flex items-center">

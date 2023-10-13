@@ -47,9 +47,14 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
     status: [],
   });
   const [parentId, setParentId] = useState<string | null>(null);
-  const { data, isLoading } = useOrgChart(
+  const [showLoader, setShowLoader] = useState(false);
+  const {
+    data,
+    isLoading: isDataLoading,
+    isFetching: isDataFetching,
+  } = useOrgChart(
     isFiltersEmpty({
-      root: parentId || startWithSpecificUser?.id,
+      root: startWithSpecificUser?.id || parentId || undefined,
       locations:
         appliedFilters?.location?.map((location) => (location as any).id) || [],
       departments:
@@ -86,6 +91,8 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
     } else return data?.data.result.data || [];
   };
 
+  const isLoading = isDataLoading || isDataFetching || showLoader;
+
   return (
     <div className="flex flex-col w-full h-full items-center">
       <div className="flex justify-between w-full max-w-[1440px]">
@@ -117,6 +124,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
         setParentId={setParentId}
         zoom={zoom}
         parentId={parentId}
+        setShowLoader={setShowLoader}
       />
       <Chart
         orgChartRef={chartRef}

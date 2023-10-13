@@ -28,6 +28,7 @@ import { EntityType } from 'queries/files';
 import PopupMenu from 'components/PopupMenu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
+  EditUserSection,
   UserStatus,
   updateCurrentUser,
   updateRoleToAdmin,
@@ -58,19 +59,23 @@ import clsx from 'clsx';
 
 export interface IProfileCoverProps {
   userDetails: Record<string, any>;
+  editSection?: string;
 }
 
-const ProfileCoverSection: FC<IProfileCoverProps> = ({ userDetails }) => {
+const ProfileCoverSection: FC<IProfileCoverProps> = ({
+  userDetails,
+  editSection,
+}) => {
   const [file, setFile] = useState<IUpdateProfileImage | Record<string, any>>(
     {},
   );
   const { userId = '' } = useParams();
   const { user } = useAuth();
-  const { isOwner, isOwnerOrAdmin } = useRole({ userId: userId || user?.id });
+  const { isOwnerOrAdmin } = useRole({ userId: userId || user?.id });
   const canEdit = isOwnerOrAdmin;
   const queryClient = useQueryClient();
   const [openEditProfile, openEditProfileModal, closeEditProfileModal] =
-    useModal(undefined, false);
+    useModal(editSection === EditUserSection.PROFILE, false);
   const [openEditImage, openEditImageModal, closeEditImageModal] = useModal(
     undefined,
     false,
@@ -218,7 +223,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({ userDetails }) => {
         <div className="absolute left-8 bottom-3">
           <Avatar
             name={getFullName(userDetails)}
-            image={getProfileImage(userDetails, 'large')}
+            image={getProfileImage(userDetails, 'medium')}
             size={144}
             bgColor={
               userDetails?.status === UserStatus.Inactive
@@ -385,37 +390,107 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({ userDetails }) => {
           <div
             className="mt-[10px] flex items-center space-x-2 cursor-pointer"
             onClick={(e) => {
-              if (isOwner) {
+              if (isOwnerOrAdmin) {
                 e.preventDefault();
                 showSocialLinks();
               }
             }}
           >
-            <LinkedinIcon
-              className={clsx({
-                grayscale: !userDetails?.personal?.socialAccounts?.linkedIn,
-              })}
-            />
-            <TwitterIcon
-              className={clsx({
-                grayscale: !userDetails?.personal?.socialAccounts?.twitter,
-              })}
-            />
-            <InstagramIcon
-              className={clsx({
-                grayscale: !userDetails?.personal?.socialAccounts?.instagram,
-              })}
-            />
-            <FacebookIcon
-              className={clsx({
-                grayscale: !userDetails?.personal?.socialAccounts?.facebook,
-              })}
-            />
-            <WebIcon
-              className={clsx({
-                grayscale: !userDetails?.personal?.socialAccounts?.website,
-              })}
-            />
+            <div
+              onClick={() => {
+                if (
+                  !isOwnerOrAdmin &&
+                  userDetails?.personal?.socialAccounts?.linkedIn
+                ) {
+                  window.open(
+                    userDetails?.personal?.socialAccounts?.linkedIn,
+                    '_blank',
+                  );
+                }
+              }}
+            >
+              <LinkedinIcon
+                className={clsx({
+                  grayscale: !userDetails?.personal?.socialAccounts?.linkedIn,
+                })}
+              />
+            </div>
+            <div
+              onClick={() => {
+                if (
+                  !isOwnerOrAdmin &&
+                  !userDetails?.personal?.socialAccounts?.twitter
+                ) {
+                  window.open(
+                    userDetails?.personal?.socialAccounts?.twitter,
+                    '_blank',
+                  );
+                }
+              }}
+            >
+              <TwitterIcon
+                className={clsx({
+                  grayscale: !userDetails?.personal?.socialAccounts?.twitter,
+                })}
+              />
+            </div>
+            <div
+              onClick={() => {
+                if (
+                  !isOwnerOrAdmin &&
+                  userDetails?.personal?.socialAccounts?.instagram
+                ) {
+                  window.open(
+                    userDetails?.personal?.socialAccounts?.instagram,
+                    '_blank',
+                  );
+                }
+              }}
+            >
+              <InstagramIcon
+                className={clsx({
+                  grayscale: !userDetails?.personal?.socialAccounts?.instagram,
+                })}
+              />
+            </div>
+            <div
+              onClick={() => {
+                if (
+                  !isOwnerOrAdmin &&
+                  userDetails?.personal?.socialAccounts?.facebook
+                ) {
+                  window.open(
+                    userDetails?.personal?.socialAccounts?.facebook,
+                    '_blank',
+                  );
+                }
+              }}
+            >
+              <FacebookIcon
+                className={clsx({
+                  grayscale: !userDetails?.personal?.socialAccounts?.facebook,
+                })}
+              />
+            </div>
+            <div
+              onClick={() => {
+                if (
+                  !isOwnerOrAdmin &&
+                  userDetails?.personal?.socialAccounts?.website
+                ) {
+                  window.open(
+                    userDetails?.personal?.socialAccounts?.website,
+                    '_blank',
+                  );
+                }
+              }}
+            >
+              <WebIcon
+                className={clsx({
+                  grayscale: !userDetails?.personal?.socialAccounts?.website,
+                })}
+              />
+            </div>
           </div>
         </div>
       </Card>

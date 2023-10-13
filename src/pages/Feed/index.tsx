@@ -191,7 +191,7 @@ const Feed: FC<IFeedProps> = () => {
   const getEmptyFeedComponent = () => {
     if (bookmarks) {
       return (
-        <div className="bg-white mt-4 p-6 flex flex-col rounded-9xl">
+        <div className="bg-white p-6 flex flex-col rounded-9xl">
           <div className="h-220 bg-blue-50 flex justify-center rounded-9xl">
             <img src={NoPosts} data-testid="mybookmark-tab-nopost"></img>
           </div>
@@ -205,7 +205,7 @@ const Feed: FC<IFeedProps> = () => {
       );
     } else if (scheduled) {
       return (
-        <div className="bg-white mt-4 p-6 flex flex-col rounded-9xl">
+        <div className="bg-white p-6 flex flex-col rounded-9xl">
           <div className="h-220 bg-blue-50 flex justify-center rounded-9xl">
             <img src={NoPosts} data-testid="mybookmark-tab-nopost"></img>
           </div>
@@ -272,7 +272,7 @@ const Feed: FC<IFeedProps> = () => {
           <div className=" flex flex-col">
             <div className="flex flex-row items-center gap-6 mb-2">
               <div className="flex items-center gap-4">
-                <div className="">
+                <div className="z-20">
                   <Tooltip
                     tooltipContent="My Scheduled Posts"
                     tooltipPosition="top"
