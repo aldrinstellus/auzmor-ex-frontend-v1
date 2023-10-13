@@ -182,7 +182,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
       placeholder: 'ex. software engineer',
       dataTestId: `${dataTestId}-title`,
       label: 'Position title',
-      disabled: userDetails.freezeEdit?.designation,
+      disabled: !isAdmin && userDetails.freezeEdit?.designation,
       control,
       fetchQuery: (q: any) =>
         useInfiniteDesignations({ q, startFetching: true }),
@@ -208,7 +208,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
       getFormattedData: (data: any) =>
         formatCreatableOptions(data, 'dept-option'),
       queryParams: {},
-      disabled: userDetails.freezeEdit?.department,
+      disabled: !isAdmin && userDetails.freezeEdit?.department,
       disableCreate: !isAdmin,
       getPopupContainer: document.body,
       noOptionsMessage: 'No Departments found',
