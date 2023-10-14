@@ -177,10 +177,12 @@ export const getNotificationMessage = (
       message = 'You Received a Shout Out From';
     } else if (actionType === ActionType.ACKNOWLEDGEMENT_REMINDER) {
       message = 'shared an announcement';
+    } else if (actionType === ActionType.SCHEDULE_POST) {
+      message = 'Your post is scheduled';
     } else if (actionType === ActionType.SCHEDULE_POST_PUBLISH) {
-      message = 'Your scheduled post is published';
+      message = 'Your scheduled post is live';
     } else if (actionType === ActionType.POST_PRE_PUBLISH) {
-      message = 'Your scheduled post is pre published';
+      message = 'Your post is about to go live';
     }
   } else if (targetType === TargetType[TargetType.TEAM]) {
     if (actionType === ActionType[ActionType.NEW_MEMBERS_TO_TEAM]) {
