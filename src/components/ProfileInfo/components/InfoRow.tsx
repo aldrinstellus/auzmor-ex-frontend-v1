@@ -84,6 +84,7 @@ const InfoRow = forwardRef(
                     setEditMode(false);
                     onCancel?.();
                   }}
+                  dataTestId={`cancel-${dataTestId}`}
                 >
                   <Icon name="close" size={12} color="text-neutral-900" />
                 </IconWrapper>
@@ -91,6 +92,7 @@ const InfoRow = forwardRef(
                   type={Type.Circle}
                   className="w-8 h-8 rounded-full bg-primary-500"
                   onClick={onSave}
+                  dataTestId={`save-${dataTestId}`}
                 >
                   <Icon name="check" size={16} color="text-white" />
                 </IconWrapper>
@@ -104,7 +106,12 @@ const InfoRow = forwardRef(
         </div>
         {!editMode && canEdit && isHovered && (
           <div className="absolute right-0 top-7">
-            <Icon name="edit" size={16} onClick={() => setEditMode(true)} />
+            <Icon
+              name="edit"
+              size={16}
+              onClick={() => setEditMode(true)}
+              dataTestId={`edit-${dataTestId}`}
+            />
           </div>
         )}
       </div>
