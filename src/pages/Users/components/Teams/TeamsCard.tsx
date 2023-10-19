@@ -97,7 +97,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
                   name="moreOutline"
                   color="text-black"
                   className="absolute top-2 right-2"
-                  dataTestId="people-card-ellipsis"
+                  dataTestId="team-card-ellipsis"
                 />
               </div>
             }
