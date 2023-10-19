@@ -389,7 +389,7 @@ const Apps: FC<IAppsProps> = () => {
                   <div
                     key={category.id}
                     className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1"
-                    data-testid={`applied-filterby-category`}
+                    data-testid={`apps-filterby-category`}
                   >
                     <div className="mr-1 text-neutral-500 whitespace-nowrap">
                       Category{' '}
@@ -414,7 +414,7 @@ const Apps: FC<IAppsProps> = () => {
                   <div
                     key={team.id}
                     className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1"
-                    data-testid={`teams-filterby`}
+                    data-testid={`apps-filterby-team`}
                   >
                     <div className="mr-1 text-neutral-500">
                       Team <span className="text-primary-500">{team.name}</span>
@@ -427,7 +427,7 @@ const Apps: FC<IAppsProps> = () => {
                       onClick={() =>
                         handleRemoveFilters(AppFilterKey.teams, team.id)
                       }
-                      dataTestId={`teams-filterby-close`}
+                      dataTestId={`applied-filter-close`}
                     />
                   </div>
                 ))}

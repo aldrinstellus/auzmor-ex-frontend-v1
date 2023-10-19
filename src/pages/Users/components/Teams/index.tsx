@@ -379,7 +379,7 @@ const Team: FC<ITeamProps> = ({
               <div
                 key={category.id}
                 className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
-                data-testid={`category-filterby`}
+                data-testid={`teams-filterby`}
                 onClick={() => handleRemoveFilters('categories', category.id)}
               >
                 <div className="mr-1 text-neutral-500 whitespace-nowrap">
@@ -392,7 +392,7 @@ const Team: FC<ITeamProps> = ({
                   color="text-neutral-900"
                   className="cursor-pointer"
                   onClick={() => handleRemoveFilters('categories', category.id)}
-                  dataTestId={`category-filterby-close`}
+                  dataTestId={`applied-filter-close`}
                 />
               </div>
             ))}
