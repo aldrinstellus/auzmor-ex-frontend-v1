@@ -11,17 +11,20 @@ import { Link } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import { getFullName, getProfileImage } from 'utils/misc';
 import EmptyState from './components/EmptyState';
-import { FC, memo } from 'react';
+import { FC, memo, useMemo } from 'react';
 import { isEmpty } from 'lodash';
+import clsx from 'clsx';
 
 export interface IAnnouncementCardProps {
   postId?: string;
   openModal?: () => void;
+  className?: string;
 }
 
 const AnnouncementCard: FC<IAnnouncementCardProps> = ({
   postId,
   openModal,
+  className = '',
 }) => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -64,8 +67,13 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
     user?.id === postData?.announcement?.actor?.userId;
 
   const itemCount = isEmpty(postData) ? 0 : result?.length;
+
+  const style = useMemo(
+    () => clsx({ 'min-w-[240px]': true, [className]: true }),
+    [className],
+  );
   return (
-    <div className="min-w-[240px]">
+    <div className={style}>
       <div className="flex justify-between items-center ">
         <div className="text-base font-bold">Announcements</div>
         {/* <div className="text-sm font-bold">View All</div> */}

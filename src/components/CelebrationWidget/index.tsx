@@ -1,4 +1,4 @@
-import { FC, memo, useContext, useRef } from 'react';
+import { FC, memo, useContext, useMemo, useRef } from 'react';
 import momentTz from 'moment-timezone';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
@@ -12,6 +12,7 @@ import SkeletonLoader from './components/SkeletonLoader';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import { AuthContext } from 'contexts/AuthContext';
 import { isFiltersEmpty } from 'utils/misc';
+import clsx from 'clsx';
 
 export enum CELEBRATION_TYPE {
   Birthday = 'BIRTHDAY',
@@ -20,9 +21,13 @@ export enum CELEBRATION_TYPE {
 
 interface CelebrationWidgetProps {
   type: CELEBRATION_TYPE;
+  className?: string;
 }
 
-const CelebrationWidget: FC<CelebrationWidgetProps> = ({ type }) => {
+const CelebrationWidget: FC<CelebrationWidgetProps> = ({
+  type,
+  className = '',
+}) => {
   const { user } = useContext(AuthContext);
   const { currentTimezone } = useCurrentTimezone();
   const userTimezone = user?.timezone || currentTimezone || 'Asia/Kolkata';
@@ -117,8 +122,17 @@ const CelebrationWidget: FC<CelebrationWidgetProps> = ({ type }) => {
     else openCollpase();
   };
 
+  const style = useMemo(
+    () =>
+      clsx({
+        'py-6 flex flex-col rounded-9xl': true,
+        [className]: true,
+      }),
+    [className],
+  );
+
   return (
-    <Card className="py-6 flex flex-col rounded-9xl">
+    <Card className={style}>
       <div
         className="px-6 flex items-center justify-between cursor-pointer"
         data-testid={`collapse-${isBirthday ? 'birthday' : 'anniversaries'}`}
