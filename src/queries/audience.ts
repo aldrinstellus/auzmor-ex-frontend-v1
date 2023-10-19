@@ -27,7 +27,7 @@ const getAudience = async ({
 export const useAudience = (
   entity: string,
   entityId: string,
-  rest: Record<string, any>,
+  rest?: Record<string, any>,
 ) => {
   return useInfiniteQuery({
     queryKey: ['audience', entity, entityId],
