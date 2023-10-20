@@ -32,7 +32,7 @@ const UserCard: FC<IUserCardProps> = ({ className }) => {
           </Link>
           <Link to="/profile" className="flex flex-col gap-2">
             <div
-              className="text-base font-bold truncate w-full text-center"
+              className="text-lg font-bold truncate w-full text-center"
               data-testid="profilecard-username"
             >
               {userDetails?.fullName}
@@ -40,7 +40,7 @@ const UserCard: FC<IUserCardProps> = ({ className }) => {
 
             {userDetails?.designation?.name && (
               <div
-                className="text-xs font-normal truncate w-full text-center text-neutral-500"
+                className="text-sm font-normal truncate w-full text-center text-neutral-500"
                 data-testid="profilecard-designation"
               >
                 {userDetails?.designation?.name}
@@ -48,7 +48,7 @@ const UserCard: FC<IUserCardProps> = ({ className }) => {
             )}
 
             {userDetails?.workLocation?.name && (
-              <div className="text-xxs text-neutral-500 leading-[15px] font-normal truncate w-full text-center flex gap-1 justify-center items-center">
+              <div className="text-sm text-neutral-500 leading-[15px] font-normal truncate w-full text-center flex gap-1 justify-center items-center">
                 <Icon
                   name="location"
                   size={16}

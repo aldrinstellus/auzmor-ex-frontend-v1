@@ -1,18 +1,25 @@
-import { FC } from 'react';
+import clsx from 'clsx';
+import { FC, useMemo } from 'react';
 
 type SpinnerProps = {
   color?: string;
   className?: string;
 };
 
-const Spinner: FC<SpinnerProps> = ({
-  className = 'w-6 h-6 ml-2 text-gray-200  dark:text-gray-600 fill-primary-500',
-}) => {
+const Spinner: FC<SpinnerProps> = ({ className = '' }) => {
+  const style = useMemo(
+    () =>
+      clsx({
+        'w-6 h-6 ml-2 text-gray-200  dark:text-gray-600 fill-primary-500': true,
+        [className]: true,
+      }),
+    [className],
+  );
   return (
     <div role="status">
       <svg
         aria-hidden="true"
-        className={`animate-spin ${className} `}
+        className={`animate-spin ${style} `}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

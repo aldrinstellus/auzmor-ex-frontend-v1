@@ -83,6 +83,7 @@ const Departments: FC<IDepartmentsProps> = ({ control, watch, setValue }) => {
             {departmentCheckbox.map((department: ICheckboxListOption) => (
               <div
                 key={department.data.id}
+                data-testid="filter-options"
                 className="flex items-center px-3 py-2 bg-neutral-100 rounded-17xl border border-neutral-200 mr-2 my-1"
               >
                 <div className="text-primary-500 text-sm font-medium whitespace-nowrap">

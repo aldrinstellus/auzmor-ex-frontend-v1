@@ -45,6 +45,7 @@ const SkillsRow: FC<AppProps> = ({ data }) => {
               <div>
                 <Button
                   label="Add Skills"
+                  dataTestId="add-skills"
                   variant={Variant.Secondary}
                   size={Size.ExtraSmall}
                   leftIcon="add"

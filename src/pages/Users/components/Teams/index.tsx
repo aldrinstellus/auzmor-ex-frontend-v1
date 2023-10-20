@@ -135,7 +135,7 @@ const Team: FC<ITeamProps> = ({
         q: debouncedSearchValue,
         sort: sortByFilter,
         userId: tab === TeamTab.MyTeams ? user?.id : undefined,
-        categoryId:
+        categoryIds:
           appliedFilters.categories && appliedFilters.categories.length > 0
             ? appliedFilters?.categories
                 ?.map((category: ICategory) => category?.id)

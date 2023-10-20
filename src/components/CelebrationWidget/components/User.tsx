@@ -94,15 +94,13 @@ const User: FC<UserProps> = ({
     [type],
   );
 
-  const wishEmoji = isBirthday ? '🎂' : '🎉';
-
   const wishesSent = useMemo(
     () => (
       <div
         data-testid={`${isBirthday ? 'birthday' : 'anniversaries'}-wishes-sent`}
         className={`py-[2px] px-[6px] rounded-[4px] text-xs font-bold flex items-center ${dateStyles} w-fit whitespace-nowrap`}
       >
-        Wishes sent {wishEmoji}
+        Wishes sent
       </div>
     ),
     [],
@@ -256,7 +254,7 @@ const User: FC<UserProps> = ({
               tooltipContent={getFullName(featuredUser) || featuredUser.email}
               showTooltip={
                 (getFullName(featuredUser) || featuredUser.email).length >
-                (isModalView ? 40 : 14)
+                (isModalView ? 40 : 26)
               }
             >
               <p
@@ -266,7 +264,7 @@ const User: FC<UserProps> = ({
                 }-profile-name`}
               >
                 {truncate(getFullName(featuredUser) || featuredUser.email, {
-                  length: isModalView ? 40 : 14,
+                  length: isModalView ? 40 : 26,
                   separator: '',
                 })}
               </p>
@@ -276,12 +274,12 @@ const User: FC<UserProps> = ({
               <Tooltip
                 tooltipContent={featuredUser.designation}
                 showTooltip={
-                  featuredUser.designation.length > (isModalView ? 40 : 14)
+                  featuredUser.designation.length > (isModalView ? 40 : 22)
                 }
               >
                 <p className="text-xs truncate text-neutral-500">
                   {truncate(featuredUser.designation, {
-                    length: isModalView ? 40 : 14,
+                    length: isModalView ? 40 : 26,
                     separator: '',
                   })}
                 </p>
@@ -296,7 +294,7 @@ const User: FC<UserProps> = ({
             className={`px-[6px] rounded-[4px] text-xs font-semibold whitespace-nowrap ${dateStyles}`}
             data-testid={`${isBirthday ? 'birthday' : 'anniversaries'}-date`}
           >
-            {`${celebrationDate} ${userIsMe ? wishEmoji : ''}`.trim()}
+            {`${celebrationDate}`.trim()}
           </div>
         )}
       </div>

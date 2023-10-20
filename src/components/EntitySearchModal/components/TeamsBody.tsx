@@ -48,7 +48,10 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
     useInfiniteTeams({
       q: isFiltersEmpty({
         q: debouncedSearchValue,
-        category: selectedCategories,
+        categoryIds:
+          selectedCategories && selectedCategories.length
+            ? selectedCategories.join(',')
+            : undefined,
         userId:
           organization?.adminSettings?.postingControls?.limitGlobalPosting &&
           !isAdmin

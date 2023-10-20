@@ -13,6 +13,7 @@ import {
 import AudiencePopup from 'components/AudiencePopup';
 import Tooltip, { Variant } from 'components/Tooltip';
 import UserCard from 'components/UserCard';
+import Icon from 'components/Icon';
 
 type ActorProps = {
   contentMode?: string;
@@ -116,7 +117,21 @@ const Actor: FC<ActorProps> = ({
               {createdTime}
             </div>
             <div className="bg-neutral-500 rounded-full w-1 h-1" />
-            <AudiencePopup entityId={entityId} audience={audience} />
+
+            <Tooltip
+              tooltipContent={
+                <AudiencePopup entityId={entityId} audience={audience} />
+              }
+              variant={Variant.Light}
+              tooltipPosition="bottom"
+              className="!p-0 border shadow-lg border-neutral-200 !rounded-9xl overflow-hidden min-w-[222px] z-[999]"
+              showTooltip={!!(audience && audience.length)}
+            >
+              <Icon
+                name={audience && audience.length ? 'noteFavourite' : 'global'}
+                size={16}
+              />
+            </Tooltip>
           </div>
         ) : null}
       </div>

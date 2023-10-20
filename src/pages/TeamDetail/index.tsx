@@ -217,7 +217,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                   </div>
                   <div
                     className="text-xl font-semibold"
-                    data-testid="tem-details-people-count"
+                    data-testid="team-details-people-count"
                   >
                     {data.totalMembers || 0}
                   </div>

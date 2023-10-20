@@ -30,6 +30,7 @@ import {
   hideEmojiPalette,
   isRegularPost,
   quillHashtagConversion,
+  removeEmptyLines,
   twConfig,
 } from 'utils/misc';
 import { useFeedStore } from 'stores/feedStore';
@@ -389,11 +390,11 @@ const CreatePostModal: FC<ICreatePostModal> = ({
 
     if (mode === PostBuilderMode.Create) {
       createPostMutation.mutate({
-        content: {
+        content: removeEmptyLines({
           text: content?.text || editorValue.text,
           html: content?.html || editorValue.html,
           editor: content?.editor || editorValue.editor,
-        },
+        }),
         type: postType || PostType.Update,
         files: fileIds,
         mentions: mentionList || [],
@@ -445,11 +446,11 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         (id: string) => mediaRef.current.find((media) => media.id === id)!,
       );
       updatePostMutation.mutate({
-        content: {
+        content: removeEmptyLines({
           text: content?.text || editorValue.text,
           html: content?.html || editorValue.html,
           editor: content?.editor || editorValue.editor,
-        },
+        }),
         type: postType || PostType.Update,
         files: sortedIds,
         mentions: mentionList || [],

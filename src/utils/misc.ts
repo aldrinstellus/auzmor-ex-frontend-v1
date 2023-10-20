@@ -19,6 +19,7 @@ import { IDepartment } from 'queries/department';
 import { IDesignation } from 'queries/designation';
 import { IPost } from 'queries/post';
 import moment from 'moment';
+import { EMPTY_REGEX } from './constants';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -343,6 +344,24 @@ export const isEmptyEditor = (content: string, ops: any) => {
     return true;
   }
   return false;
+};
+
+export const removeEmptyLines = (content: {
+  text: string;
+  html: string;
+  editor: any;
+}) => {
+  for (const op of content.editor.ops) {
+    if (op.insert) {
+      op.insert = op.insert.replaceAll(EMPTY_REGEX, '\n').trim();
+    }
+  }
+
+  content.text = content.text.replaceAll(EMPTY_REGEX, '\n').trim();
+
+  content.html = content.html.replaceAll('<p><br></p>', '').trim();
+
+  return content;
 };
 
 export const getUserCardTooltipProps = (user: any) => {

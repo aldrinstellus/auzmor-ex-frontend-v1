@@ -47,7 +47,7 @@ function animateOption(
       width: ['0%', width],
       easing: ['ease-out', 'ease-out'],
     },
-    200,
+    400,
   );
   optionProgress?.setAttribute('style', `width: ${width}`);
 
@@ -57,7 +57,7 @@ function animateOption(
       flexGrow: ['1', flexGrow],
       easing: ['ease-out', 'ease-out'],
     },
-    200,
+    400,
   );
   optionText?.setAttribute('style', `flex-grow: ${flexGrow}`);
 }

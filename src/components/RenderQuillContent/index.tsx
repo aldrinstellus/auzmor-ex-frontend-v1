@@ -64,7 +64,6 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
       button.setAttribute('id', `${data?.id}-expand-collapse-button`);
       button.setAttribute('data-testid', 'feed-post-seemore');
       button.type = 'button';
-      button.style.alignSelf = 'start';
       button.classList.add(
         'showMoreLess',
         'read-more-button',
@@ -82,15 +81,8 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
     if (button) {
       button.addEventListener('click', () => {
         const paragraph = button.previousElementSibling;
-        if (paragraph && paragraph.classList.contains('line-clamp-none')) {
-          button.textContent = 'See more';
-          paragraph.classList.remove('line-clamp-none');
-        } else {
-          if (paragraph) {
-            button.textContent = 'See less';
-            paragraph.classList.add('line-clamp-none');
-          }
-        }
+        paragraph?.classList.add('line-clamp-none');
+        button.remove();
       });
     }
   }, []);

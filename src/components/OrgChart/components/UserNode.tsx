@@ -96,7 +96,10 @@ const UserNode: FC<IUserNode> = ({ node, isFilterApplied }) => {
             <div className="ml-0.5">Deactivated</div>
           </div>
         )}
-        <div className="absolute bottom-full group-hover:visible invisible -translate-x-1/2 ml-32 pb-5">
+        <div
+          data-testid="hover-user-card"
+          className="absolute bottom-full group-hover:visible invisible -translate-x-1/2 ml-32 pb-5"
+        >
           <UserCard
             variant={UsercardVariant.Large}
             user={{

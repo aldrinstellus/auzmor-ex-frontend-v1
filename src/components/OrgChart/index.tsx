@@ -103,7 +103,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
           variant={Variant.Secondary}
           leftIcon="peopleOutline"
           leftIconSize={20}
-          dataTestId="people-org-chart"
+          dataTestId="view-peoplehub-cta"
           iconColor="text-black"
           onClick={() => setShowOrgChart(false)}
         />
