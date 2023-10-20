@@ -1,0 +1,55 @@
+import PageLoader from 'components/PageLoader';
+import { FC, ReactNode } from 'react';
+import useVirtual, { MeasureRef, OnScroll } from 'react-cool-virtual';
+
+export type InfiniteScrollProps = {
+  itemCount: number;
+  isLoading?: boolean;
+  loadingComponent?: ReactNode;
+  isFetchingNextPage?: boolean;
+  outerClassName?: string;
+  innerClassName?: string;
+  prependElement?: ReactNode;
+  itemRenderer: (index: number, measureRef: MeasureRef) => ReactNode;
+  loadMore: () => void;
+  onScroll?: OnScroll;
+};
+
+export const InfiniteScroll: FC<InfiniteScrollProps> = ({
+  itemCount,
+  isLoading,
+  loadingComponent,
+  isFetchingNextPage = false,
+  outerClassName,
+  innerClassName,
+  prependElement: prependElement,
+  itemRenderer,
+  loadMore = () => {},
+  onScroll = () => {},
+}) => {
+  const { outerRef, innerRef, items } = useVirtual<any>({
+    itemCount,
+    onScroll: (event) => {
+      if (
+        event.visibleStopIndex === event.overscanStopIndex &&
+        !isFetchingNextPage
+      ) {
+        loadMore();
+      }
+      onScroll(event);
+    },
+  });
+
+  return (
+    <div ref={outerRef} className={outerClassName}>
+      <div ref={innerRef} className={innerClassName}>
+        {prependElement}
+        {isLoading
+          ? loadingComponent || <PageLoader />
+          : items.map(({ index, measureRef }) => {
+              return itemRenderer(index, measureRef);
+            })}
+      </div>
+    </div>
+  );
+};

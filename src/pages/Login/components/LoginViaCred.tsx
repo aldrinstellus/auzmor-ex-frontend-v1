@@ -1,0 +1,189 @@
+import { useMutation } from '@tanstack/react-query';
+import { login } from 'queries/account';
+import { Variant as InputVariant } from 'components/Input';
+import { useForm } from 'react-hook-form';
+import Layout, { FieldType } from 'components/Form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import Button, {
+  Variant as ButtonVariant,
+  Type as ButtonType,
+  Size,
+} from 'components/Button';
+import Divider from 'components/Divider';
+import {
+  getSubDomain,
+  readFirstAxiosError,
+  redirectWithToken,
+} from 'utils/misc';
+import { Link } from 'react-router-dom';
+import Banner, { Variant as BannerVariant } from 'components/Banner';
+import { useGetSSOFromDomain } from 'queries/organization';
+import { useLoginViaSSO } from 'queries/auth';
+import 'utils/custom-yup-validators/email/validateEmail';
+import { FC } from 'react';
+
+export interface ILoginViaCredProps {
+  setViaSSO: (flag: boolean) => void;
+}
+
+interface IForm {
+  email: string;
+  password: string;
+  domain?: string;
+}
+
+const schema = yup.object({
+  email: yup
+    .string()
+    .required('Required field')
+    .validateEmail(
+      'Invalid email address. Please enter a valid email address.',
+    ),
+  password: yup.string().required('Required field'),
+  domain: yup.string(),
+});
+
+const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
+  const loginMutation = useMutation((formData: IForm) => login(formData), {
+    onSuccess: (data) =>
+      redirectWithToken({
+        redirectUrl: data.result.data.redirectUrl,
+        token: data.result.data.uat,
+      }),
+  });
+
+  const domain = getSubDomain(window.location.host);
+  const { data } = useGetSSOFromDomain(domain, domain !== '' ? true : false);
+
+  const { refetch } = useLoginViaSSO(
+    { domain },
+    {
+      enabled: false,
+      onSuccess: (data: any) => {
+        if (data && data.redirectUrl) {
+          window.location = data.redirectUrl;
+        }
+      },
+    },
+  );
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<IForm>({
+    resolver: yupResolver(schema),
+    defaultValues: { domain },
+    mode: 'onChange',
+  });
+
+  const onSubmit = (formData: IForm) => {
+    loginMutation.mutate({ ...formData, domain });
+  };
+
+  const fields = [
+    {
+      type: FieldType.Input,
+      variant: InputVariant.Text,
+      placeholder: 'Enter your email address / username',
+      name: 'email',
+      label: 'Work Email / Username',
+      error: errors.email?.message || loginMutation.isError,
+      dataTestId: 'signin-email',
+      errorDataTestId: 'signin-invalid-email-format-msg',
+      control,
+      inputClassName: 'h-[44px]',
+    },
+    {
+      type: FieldType.Password,
+      placeholder: 'Enter password',
+      name: 'password',
+      label: 'Password',
+      rightIcon: 'people',
+      error: errors.password?.message || loginMutation.isError,
+      dataTestId: 'signin-password',
+      control,
+      showChecks: false,
+      inputClassName: 'h-[44px]',
+    },
+  ];
+
+  return (
+    <div className="w-full max-w-[414px]">
+      <div className="font-extrabold text-neutral-900 text-4xl">Signin</div>
+      <div className="text-neutral-900 text-sm font-normal mt-4">
+        Hello! Welcome back <span>👋</span>
+      </div>
+      <form
+        className="mt-10"
+        onSubmit={handleSubmit(onSubmit)}
+        data-testid="signin-form"
+      >
+        {!!loginMutation.isError && (
+          <div className="mb-8">
+            <Banner
+              dataTestId="signin-error-message"
+              title={
+                readFirstAxiosError(loginMutation.error) ||
+                'Email address or password is incorrect'
+              }
+              variant={BannerVariant.Error}
+            />
+          </div>
+        )}
+
+        <Layout fields={fields} />
+        <div
+          className="flex justify-end mt-4"
+          data-testId="signin-forgot-password"
+        >
+          <Link to="/forgot-password">
+            <div className="font-bold text-xs leading-[18px]">
+              Forgot Password?
+            </div>
+          </Link>
+        </div>
+        <Button
+          dataTestId="signin-btn"
+          label={'Sign In'}
+          className="w-full mt-8"
+          disabled={!isValid}
+          size={Size.Large}
+          type={ButtonType.Submit}
+          loading={loginMutation.isLoading}
+        />
+      </form>
+      {((data?.result?.data?.sso?.active &&
+        data?.result?.data?.sso?.idp !== 'CUSTOM_LDAP') ||
+        !!!domain) && (
+        <>
+          <div className="flex items-center mt-8">
+            <Divider />
+            <div className="rounded-full border text-sm mx-6 px-2.5 py-1.5">
+              or
+            </div>
+            <Divider />
+          </div>
+          <Button
+            dataTestId="signin-sso-cta"
+            label={'Sign In via SSO'}
+            variant={ButtonVariant.Secondary}
+            size={Size.Large}
+            className="w-full mt-8 h-[44px]"
+            disabled={loginMutation.isLoading}
+            onClick={() => {
+              if (domain) {
+                refetch();
+              } else {
+                setViaSSO(true);
+              }
+            }}
+          />
+        </>
+      )}
+    </div>
+  );
+};
+
+export default LoginViaCred;

@@ -1,0 +1,28 @@
+.node-button-g {
+  transform: translate(32px, 82px) !important;
+}
+.node-button-rect {
+  display: none;
+}
+.node-button-foreign-object {
+  width: 120px !important;
+  height: 16px !important;
+  transform: translate(108px, 26px) !important;
+  cursor: pointer;
+}
+.node,
+.node-rect {
+  cursor: default !important;
+}
+.org-select .ant-select-selector {
+  height: 36px !important;
+}
+.org-select .ant-select-selection-search-input {
+  height: 34px !important;
+}
+.org-select .ant-select-dropdown {
+  width: 520px !important;
+}
+.org-select .ant-select-item.ant-select-item-option {
+  padding: 0px !important;
+}

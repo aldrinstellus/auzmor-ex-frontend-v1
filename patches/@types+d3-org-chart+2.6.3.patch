@@ -1,0 +1,30 @@
+diff --git a/node_modules/@types/d3-org-chart/index.d.ts b/node_modules/@types/d3-org-chart/index.d.ts
+index 18614b4..0160170 100755
+--- a/node_modules/@types/d3-org-chart/index.d.ts
++++ b/node_modules/@types/d3-org-chart/index.d.ts
+@@ -83,6 +83,9 @@ export interface StatePublic<Datum> {
+     layout: Layout;
+     buttonContent: (params: { node: HierarchyNode<Datum>; state: State<Datum>; }) => string;
+     layoutBindings: Record<Layout, LayoutBinding<Datum>>;
++    hoverCardContent: (data: any) => void;
++    onExpandCollapseClick: (d: any, allNodes: any) => void;
++    onZoom: (zoomScale: number, range: number[]) => void;
+ }
+ 
+ /**
+@@ -168,6 +171,7 @@ export class OrgChart<Datum> {
+     getNodeChildren(args: HierarchyNode<Datum>, nodeStore: Datum[]): Datum[];
+     render(): this;
+     addNode(node: Datum): this;
++    addNodes(nodes: Datum[]): this;
+     removeNode(nodeId: NodeId): this;
+     calculateCompactFlexDimensions(root: HierarchyNode<Datum>): void;
+     calculateCompactFlexPositions(root: HierarchyNode<Datum>): void;
+@@ -218,4 +222,7 @@ export class OrgChart<Datum> {
+         text: string,
+         params: { fontSize?: number; fontWeight?: number; defaultFont?: string; ctx: CanvasRenderingContext2D; },
+     ): number;
++    setZoom(zoomScale: number): this;
++    setData(nodes: Datum[], id: string): this;
++    setFocus(nodeId: string, zoomScale: number): this;
+ }
