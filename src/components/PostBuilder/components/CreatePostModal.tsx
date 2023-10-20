@@ -48,6 +48,8 @@ import CreateShoutout from './Shoutout';
 import { afterXUnit } from 'utils/time';
 import useRole from 'hooks/useRole';
 import { useCreatePostUtilityStore } from 'stores/createPostUtilityStore';
+import useModal from 'hooks/useModal';
+import ConfirmationBox from 'components/ConfirmationBox';
 
 export interface IPostMenu {
   id: number;
@@ -95,6 +97,8 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     postType,
     inputImgRef,
   } = useContext(CreatePostContext);
+
+  const [confirm, showConfirm, closeConfirm] = useModal();
 
   const preventMultipleClickRef = useRef<boolean>(true);
 
@@ -510,9 +514,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     <>
       <Modal
         open={open}
-        closeModal={() => {
-          clearPostContext();
-        }}
+        closeModal={showConfirm}
         dataTestId={
           activeFlow === CreatePostFlow.SchedulePost
             ? 'createpost-scheduledpost-modal'
@@ -528,7 +530,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
                 return null;
               }
               hideEmojiPalette();
-              return closeModal();
+              return showConfirm();
             }}
             handleSubmitPost={handleSubmitPost}
             isLoading={loading}
@@ -538,10 +540,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         )}
         {activeFlow === CreatePostFlow.CreateAnnouncement && (
           <CreateAnnouncement
-            closeModal={() => {
-              clearPostContext();
-              closeModal();
-            }}
+            closeModal={showConfirm}
             mode={
               customActiveFlow === CreatePostFlow.CreateAnnouncement
                 ? CreateAnnouncementMode.DIRECT
@@ -551,47 +550,21 @@ const CreatePostModal: FC<ICreatePostModal> = ({
           />
         )}
         {activeFlow === CreatePostFlow.EditMedia && (
-          <EditMedia
-            closeModal={() => {
-              clearPostContext();
-              closeModal();
-            }}
-          />
+          <EditMedia closeModal={showConfirm} />
         )}
         {activeFlow === CreatePostFlow.CreatePoll && (
           <div data-testid="createpost-createpoll-modal">
-            <CreatePoll
-              closeModal={() => {
-                closeModal();
-                clearPostContext();
-              }}
-            />
+            <CreatePoll closeModal={showConfirm} />
           </div>
         )}
         {activeFlow === CreatePostFlow.CreateShoutout && (
-          <CreateShoutout
-            closeModal={() => {
-              closeModal();
-              clearPostContext();
-            }}
-          />
+          <CreateShoutout closeModal={showConfirm} />
         )}
         {activeFlow === CreatePostFlow.SchedulePost && (
-          <SchedulePost
-            closeModal={() => {
-              closeModal();
-              clearPostContext();
-            }}
-          />
+          <SchedulePost closeModal={showConfirm} />
         )}
         {activeFlow === CreatePostFlow.Audience && (
-          <Audience
-            closeModal={() => {
-              closeModal();
-              clearPostContext();
-            }}
-            dataTestId="audience-selection"
-          />
+          <Audience closeModal={showConfirm} dataTestId="audience-selection" />
         )}
       </Modal>
       {!!showFullscreenVideo && (
@@ -610,6 +583,29 @@ const CreatePostModal: FC<ICreatePostModal> = ({
           />
         </Modal>
       )}
+      <ConfirmationBox
+        open={confirm}
+        onClose={closeConfirm}
+        title="Delete"
+        description={
+          <span>
+            Are you sure you want to delete this post? This cannot be undone
+          </span>
+        }
+        success={{
+          label: 'Delete',
+          className: 'bg-red-500 text-white ',
+          onSubmit: () => {
+            closeModal();
+            clearPostContext();
+          },
+        }}
+        discard={{
+          label: 'Cancel',
+          className: 'text-neutral-900 bg-white ',
+          onCancel: closeConfirm,
+        }}
+      />
     </>
   );
 };
