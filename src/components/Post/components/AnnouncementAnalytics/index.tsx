@@ -38,24 +38,30 @@ const AnnouncementAnalytics: FC<AppProps> = ({ post, open, closeModal }) => {
         a.setAttribute('download', 'download.csv');
         document.body.appendChild(a);
         a.click();
-        toast(<SuccessToast content={'Report exported successfully'} />, {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
+        toast(
+          <SuccessToast
+            content={'Report exported successfully'}
+            dataTestId="acknowledgement-report-export-toast-message"
+          />,
+          {
+            closeButton: (
+              <Icon
+                name="closeCircleOutline"
+                color="text-primary-500"
+                size={20}
+              />
+            ),
+            style: {
+              border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+              borderRadius: '6px',
+              display: 'flex',
+              alignItems: 'center',
+            },
+            autoClose: TOAST_AUTOCLOSE_TIME,
+            transition: slideInAndOutTop,
+            theme: 'dark',
           },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        });
+        );
       },
     },
   );

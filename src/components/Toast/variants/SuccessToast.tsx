@@ -47,8 +47,11 @@ const SuccessToast: FC<ISuccessToastProps> = ({
 
 export default SuccessToast;
 
-export const successToastConfig = (message = 'Your changes have been saved') =>
-  toast(<SuccessToast content={message} />, {
+export const successToastConfig = (
+  message = 'Your changes have been saved',
+  dataTestId?: string,
+) =>
+  toast(<SuccessToast content={message} dataTestId={dataTestId} />, {
     closeButton: (
       <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
     ),

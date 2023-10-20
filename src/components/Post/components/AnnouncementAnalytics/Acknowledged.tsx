@@ -60,7 +60,10 @@ const Acknowledged: FC<AppProps> = ({ post, closeModal }) => {
             </CircularProgressbarWithChildren>
           </div>
           <div className="ml-4">
-            <div className="text-2xl text-primary-500 font-semibold">
+            <div
+              className="text-2xl text-primary-500 font-semibold"
+              data-testid="acknowledged-count"
+            >
               {post?.acknowledgementStats?.acknowledged} out of{' '}
               {post?.acknowledgementStats?.audience} people
             </div>

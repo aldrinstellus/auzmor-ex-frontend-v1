@@ -176,7 +176,7 @@ const AboutMe: FC<IAboutMeProps> = ({
                       setIsEditable(false);
                       reset();
                     }}
-                    dataTestId="save-bio"
+                    dataTestId="cancel-bio"
                   >
                     <Icon name="close" size={16} color="text-neutral-900" />
                   </IconWrapper>
@@ -184,7 +184,7 @@ const AboutMe: FC<IAboutMeProps> = ({
                     type={Type.Circle}
                     className="bg-primary-500 !p-2"
                     onClick={handleSubmit(onSubmit)}
-                    dataTestId="cancel-bio"
+                    dataTestId="save-bio"
                   >
                     <Icon name="check" size={16} color="text-white" />
                   </IconWrapper>

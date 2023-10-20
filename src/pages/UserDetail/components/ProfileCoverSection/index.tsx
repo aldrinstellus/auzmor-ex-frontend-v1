@@ -326,6 +326,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
               <IconWrapper
                 type={Type.Square}
                 className="cursor-pointer rounded-6xl"
+                dataTestId="edit-user-role"
               >
                 <Icon name="userRole" size={15} color="text-primary-500" />
               </IconWrapper>
@@ -351,6 +352,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
               <IconWrapper
                 type={Type.Square}
                 className="cursor-pointer rounded-6xl"
+                dataTestId="edit-user-department"
               >
                 <Icon name="briefcase" size={15} color="text-primary-500" />
               </IconWrapper>
@@ -376,6 +378,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
               <IconWrapper
                 type={Type.Square}
                 className="cursor-pointer rounded-6xl"
+                dataTestId="edit-user-location"
               >
                 <Icon name="location" size={15} color="text-primary-500" />
               </IconWrapper>
@@ -408,6 +411,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                   );
                 }
               }}
+              data-testid="edit-linkedin"
             >
               <LinkedinIcon
                 className={clsx({
@@ -427,6 +431,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                   );
                 }
               }}
+              data-testid="edit-twitter"
             >
               <TwitterIcon
                 className={clsx({
@@ -446,6 +451,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                   );
                 }
               }}
+              data-testid="edit-instagram"
             >
               <InstagramIcon
                 className={clsx({
@@ -465,6 +471,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                   );
                 }
               }}
+              data-testid="edit-facebook"
             >
               <FacebookIcon
                 className={clsx({
@@ -484,6 +491,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                   );
                 }
               }}
+              data-testid="edit-webpage"
             >
               <WebIcon
                 className={clsx({
