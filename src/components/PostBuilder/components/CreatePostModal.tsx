@@ -47,6 +47,7 @@ import Audience from './Audience';
 import CreateShoutout from './Shoutout';
 import { afterXUnit } from 'utils/time';
 import useRole from 'hooks/useRole';
+import { useCreatePostUtilityStore } from 'stores/createPostUtilityStore';
 
 export interface IPostMenu {
   id: number;
@@ -92,7 +93,10 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     shoutoutUserIds,
     setShoutoutUserIds,
     postType,
+    inputImgRef,
   } = useContext(CreatePostContext);
+
+  const preventMultipleClickRef = useRef<boolean>(true);
 
   const mediaRef = useRef<IMedia[]>([]);
 
@@ -103,6 +107,23 @@ const CreatePostModal: FC<ICreatePostModal> = ({
   const { uploadMedia, uploadStatus, useUploadCoverImage } = useUpload();
 
   const { isAdmin } = useRole();
+
+  const openCreatePostWithMedia = useCreatePostUtilityStore(
+    (state) => state.openCreatePostWithMedia,
+  );
+  const reset = useCreatePostUtilityStore((state) => state.reset);
+
+  useEffect(() => {
+    if (
+      openCreatePostWithMedia &&
+      inputImgRef?.current &&
+      preventMultipleClickRef.current
+    ) {
+      preventMultipleClickRef.current = false;
+      inputImgRef?.current && inputImgRef?.current?.click();
+    }
+    reset();
+  }, []);
 
   // When we need to show create announcement modal directly
   useMemo(() => {

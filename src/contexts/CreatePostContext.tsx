@@ -10,6 +10,7 @@ import { DeltaStatic } from 'quill';
 import { getBlobUrl, getMediaObj } from 'utils/misc';
 import { IAudience, IPost, PostType } from 'queries/post';
 import { IGetUser } from 'queries/users';
+import { useCreatePostUtilityStore } from 'stores/createPostUtilityStore';
 
 export interface ICreatePostProviderProps {
   data?: IPost;
@@ -218,7 +219,19 @@ const CreatePostProvider: FC<ICreatePostProviderProps> = ({
   children,
   data,
 }) => {
-  const [activeFlow, setActiveFlow] = useState(CreatePostFlow.CreatePost);
+  const openCreatePostWithPolls = useCreatePostUtilityStore(
+    (state) => state.openCreatePostWithPolls,
+  );
+  const openCreatePostWithShoutout = useCreatePostUtilityStore(
+    (state) => state.openCreatePostWithShoutout,
+  );
+  const [activeFlow, setActiveFlow] = useState(
+    openCreatePostWithPolls
+      ? CreatePostFlow.CreatePoll
+      : openCreatePostWithShoutout
+      ? CreatePostFlow.CreateShoutout
+      : CreatePostFlow.CreatePost,
+  );
   const [announcement, setAnnouncement] = useState<null | IAnnouncement>(null);
   const [editorValue, setEditorValue] = useState<IEditorValue>(
     data?.content || {
