@@ -23,6 +23,7 @@ export interface IUserDropdownProps {
   className: string;
   loggedInUserId?: string;
   isTeamPeople?: boolean;
+  showDirectOption?: boolean;
 }
 
 const UserProfileDropdown: FC<IUserDropdownProps> = ({
@@ -41,6 +42,7 @@ const UserProfileDropdown: FC<IUserDropdownProps> = ({
   showOnHover,
   isTeamPeople,
   className,
+  showDirectOption = false,
 }) => {
   const { user } = useAuth();
   const { isAdmin } = useRole();
@@ -123,7 +125,7 @@ const UserProfileDropdown: FC<IUserDropdownProps> = ({
     }
   }
 
-  if (_options.length === 1) {
+  if (showDirectOption && _options.length === 1) {
     const option = _options[0];
     return (
       <div

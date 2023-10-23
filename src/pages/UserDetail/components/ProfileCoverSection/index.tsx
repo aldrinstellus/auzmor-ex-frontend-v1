@@ -266,6 +266,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                 />
               )}
               <UserProfileDropdown
+                showDirectOption
                 triggerNode={
                   <div
                     className="rounded-[24px] font-bold border py-[7.5px] px-[16px] text-sm border-[#e5e5e5] cursor-pointer"
