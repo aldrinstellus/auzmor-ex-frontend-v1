@@ -95,7 +95,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
             <div className="w-full px-6">
               {itemCount && !isAcknowledged ? (
                 <div className="flex flex-col items-start">
-                  <div className="mt-4">
+                  <div className="mt-4 w-full">
                     <div className="flex space-x-4">
                       <Avatar
                         name={

@@ -9,6 +9,7 @@ type PreviewCardProps = {
   className?: string;
   isLoading?: boolean;
   isError?: boolean;
+  isAnnouncementWidgetPreview?: boolean;
 };
 
 const PreviewCard: FC<PreviewCardProps> = ({
@@ -16,6 +17,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
   className,
   isLoading,
   isError,
+  isAnnouncementWidgetPreview,
 }) =>
   useMemo(() => {
     if (metaData?.image) {
@@ -23,6 +25,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
         <Card className={`${className} cursor-pointer`}>
           <ImagePreview
             metaData={metaData}
+            isAnnouncementWidgetPreview={isAnnouncementWidgetPreview}
             dataTestId="feed-createpost-linkpreview"
           />
         </Card>
@@ -30,7 +33,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
     } else if (metaData?.favicon) {
       return (
         <Card
-          className={`${className} cursor-pointer !bg-[#F7F8FB] h-[180px] !shadow-none rounded-7xl`}
+          className={`${className} cursor-pointer !bg-[#F7F8FB] max-h-[180px] !shadow-none rounded-7xl`}
         >
           <IconPreview
             metaData={metaData}

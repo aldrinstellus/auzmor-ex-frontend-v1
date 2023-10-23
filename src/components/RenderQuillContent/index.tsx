@@ -142,7 +142,13 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
         </span>
       )}
 
-      {link && <PreviewCard metaData={link as Metadata} className="" />}
+      {link && (
+        <PreviewCard
+          metaData={link as Metadata}
+          className=""
+          isAnnouncementWidgetPreview={isAnnouncementWidgetPreview}
+        />
+      )}
       {media && media.length > 0 && (
         <div
           className={containerStyle}
@@ -162,16 +168,15 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
         </div>
       )}
       {poll && postType === 'POLL' && (
-        <div className="mt-4">
-          <Poll
-            question={poll.question}
-            closedAt={poll.closedAt}
-            options={poll.options}
-            myVote={myVote}
-            postId={data.id}
-            mode={PollMode.VIEW}
-          />
-        </div>
+        <Poll
+          question={poll.question}
+          closedAt={poll.closedAt}
+          options={poll.options}
+          myVote={myVote}
+          postId={data.id}
+          mode={PollMode.VIEW}
+          isAnnouncementWidgetPreview={isAnnouncementWidgetPreview}
+        />
       )}
       {data?.shoutoutRecipients &&
         data?.shoutoutRecipients.length > 0 &&
