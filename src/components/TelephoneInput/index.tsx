@@ -97,6 +97,7 @@ const TelephoneInput: FC<TelephoneInputProps> = ({
                 placeholder="Country or code"
                 onChange={(e) => setSearchValue(e.target.value)}
                 className="w-full rounded-19xl border border-neutral-200 focus:outline-none h-12 pl-11"
+                data-testid="countrycode-search"
               />
             </div>
             <div className="max-h-72 overflow-y-auto">
@@ -118,6 +119,7 @@ const TelephoneInput: FC<TelephoneInputProps> = ({
                       );
                       setShowDropdown(false);
                     }}
+                    data-testid={`countrycode-${item.dialCode}`}
                   >
                     <div className="flex items-center gap-x-2 px-2">
                       <p>{item.flag}</p>
