@@ -36,7 +36,7 @@ const SkillsRow: FC<AppProps> = ({ data }) => {
               <div
                 key={skill}
                 data-testid={`personal-details-skill-${skill}`}
-                className="bg-primary-50 text-primary-500 flex justify-center items-center px-2 py-2 text-xs rounded-16xl mr-2"
+                className="bg-primary-50 text-primary-500 flex justify-center items-center px-2.5 py-1.5 text-xs rounded-16xl mr-2 shadow-md mb-2"
               >
                 {skill}
               </div>
@@ -51,6 +51,7 @@ const SkillsRow: FC<AppProps> = ({ data }) => {
                   leftIcon="add"
                   leftIconSize={16}
                   onClick={openSkillsModal}
+                  className="shadow-md"
                 />
               </div>
             )}

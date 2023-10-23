@@ -737,3 +737,128 @@ export const downloadAcknowledgementReport = async (id: string) => {
   );
   return data;
 };
+
+export const myRecognitionFeed = async (
+  context: QueryFunctionContext<
+    (string | Record<string, any> | undefined)[],
+    any
+  >,
+  feed: {
+    [key: string]: IPost;
+  },
+  setFeed: (feed: { [key: string]: IPost }) => void,
+) => {
+  let response = null;
+  if (!!!context.pageParam) {
+    response = await apiService.get(
+      'posts/recognitions/me',
+      context.queryKey[1],
+    );
+    setFeed({
+      ...feed,
+      ...chain(response.data.result.data).keyBy('id').value(),
+    });
+    response.data.result.data = response.data.result.data.map(
+      (eachPost: IPost) => ({ id: eachPost.id }),
+    );
+    return response;
+  } else {
+    response = await apiService.get(context.pageParam, context.queryKey[1]);
+    setFeed({
+      ...feed,
+      ...chain(response.data.result.data).keyBy('id').value(),
+    });
+    response.data.result.data = response.data.result.data.map(
+      (eachPost: IPost) => ({ id: eachPost.id }),
+    );
+    return response;
+  }
+};
+
+export const useInfiniteMyRecognitionFeed = (q?: Record<string, any>) => {
+  const { feed, setFeed } = useFeedStore();
+  return {
+    ...useInfiniteQuery({
+      queryKey: ['my-recognition-feed', q],
+      queryFn: (context) => myRecognitionFeed(context, feed, setFeed),
+      getNextPageParam: (lastPage: any) => {
+        const pageDataLen = lastPage?.data?.result?.data?.length;
+        const pageLimit = lastPage?.data?.result?.paging?.limit;
+        if (pageDataLen < pageLimit) {
+          return null;
+        }
+        return lastPage?.data?.result?.paging?.next;
+      },
+      getPreviousPageParam: (currentPage: any) => {
+        return currentPage?.data?.result?.paging?.prev;
+      },
+      staleTime: 5 * 60 * 1000,
+    }),
+    feed,
+  };
+};
+
+export const peopleProfileRecognitionFeed = async (
+  context: QueryFunctionContext<
+    (string | Record<string, any> | undefined)[],
+    any
+  >,
+  feed: {
+    [key: string]: IPost;
+  },
+  setFeed: (feed: { [key: string]: IPost }) => void,
+  userId: string,
+) => {
+  let response = null;
+  if (!!!context.pageParam) {
+    response = await apiService.get(
+      `/posts/recognitions/${userId}`,
+      context.queryKey[1],
+    );
+    setFeed({
+      ...feed,
+      ...chain(response.data.result.data).keyBy('id').value(),
+    });
+    response.data.result.data = response.data.result.data.map(
+      (eachPost: IPost) => ({ id: eachPost.id }),
+    );
+    return response;
+  } else {
+    response = await apiService.get(context.pageParam, context.queryKey[1]);
+    setFeed({
+      ...feed,
+      ...chain(response.data.result.data).keyBy('id').value(),
+    });
+    response.data.result.data = response.data.result.data.map(
+      (eachPost: IPost) => ({ id: eachPost.id }),
+    );
+    return response;
+  }
+};
+
+export const useInfinitePeopleProfileRecognitionFeed = (
+  userId: string,
+  q?: Record<string, any>,
+) => {
+  const { feed, setFeed } = useFeedStore();
+  return {
+    ...useInfiniteQuery({
+      queryKey: ['people-profile-recognition-feed', q, userId],
+      queryFn: (context) =>
+        peopleProfileRecognitionFeed(context, feed, setFeed, userId),
+      getNextPageParam: (lastPage: any) => {
+        const pageDataLen = lastPage?.data?.result?.data?.length;
+        const pageLimit = lastPage?.data?.result?.paging?.limit;
+        if (pageDataLen < pageLimit) {
+          return null;
+        }
+        return lastPage?.data?.result?.paging?.next;
+      },
+      getPreviousPageParam: (currentPage: any) => {
+        return currentPage?.data?.result?.paging?.prev;
+      },
+      staleTime: 5 * 60 * 1000,
+    }),
+    feed,
+  };
+};

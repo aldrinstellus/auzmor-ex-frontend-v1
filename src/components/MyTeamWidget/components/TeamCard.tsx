@@ -2,6 +2,7 @@ import AvatarList from 'components/AvatarList';
 import Icon from 'components/Icon';
 import React from 'react';
 import { truncate } from 'lodash';
+import { useNavigate } from 'react-router-dom';
 
 interface ITeamCard {
   id: string;
@@ -12,23 +13,30 @@ interface ITeamCard {
 }
 
 const TeamCard: React.FC<ITeamCard> = ({
+  id,
   name,
   category,
   totalMembers,
   recentMembers,
 }) => {
+  const navigate = useNavigate();
   return (
     <div className="flex items-center gap-2">
-      <AvatarList
-        size={32}
-        users={recentMembers}
-        moreCount={totalMembers}
-        avatarClassName="!b-[1px]"
-        className="-space-x-[16px]"
-        dataTestId="teams-icon"
-      />
+      <div onClick={() => navigate(`/teams/${id}`)}>
+        <AvatarList
+          size={32}
+          users={recentMembers}
+          moreCount={totalMembers}
+          avatarClassName="!b-[1px] cursor-pointer"
+          className="-space-x-[16px]"
+          dataTestId="teams-icon"
+        />
+      </div>
       <div className="flex flex-col gap-1">
-        <div className="text-sm font-bold truncate">
+        <div
+          className="text-sm font-bold truncate cursor-pointer"
+          onClick={() => navigate(`/teams/${id}`)}
+        >
           {truncate(name, {
             length: 26,
             separator: ' ',

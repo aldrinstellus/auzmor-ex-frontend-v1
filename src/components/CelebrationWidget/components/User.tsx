@@ -24,6 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import Tooltip from 'components/Tooltip';
 
 interface UserProps {
+  id: string;
   type: CELEBRATION_TYPE;
   isModalView?: boolean;
   data: Record<string, any>;
@@ -32,6 +33,7 @@ interface UserProps {
 }
 
 const User: FC<UserProps> = ({
+  id,
   type,
   isModalView = false,
   data,
@@ -116,7 +118,8 @@ const User: FC<UserProps> = ({
         name={getFullName(featuredUser) || featuredUser.email}
         image={getProfileImage(featuredUser)}
         size={48}
-        className="min-w-[48px]"
+        className="min-w-[48px] cursor-pointer"
+        onClick={() => navigate(`/users/${id}`)}
       />
       <div
         className={clsx(
@@ -128,10 +131,11 @@ const User: FC<UserProps> = ({
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2">
             <p
-              className="text-sm font-bold line-clamp-1"
+              className="text-sm font-bold line-clamp-1 cursor-pointer"
               data-testid={`${
                 isBirthday ? 'birthday' : 'anniversaries'
               }-profile-name`}
+              onClick={() => navigate(`/users/${id}`)}
             >
               {getFullName(featuredUser) || featuredUser.email}
             </p>

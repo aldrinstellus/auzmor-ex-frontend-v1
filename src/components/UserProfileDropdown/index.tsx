@@ -3,6 +3,7 @@ import useAuth from 'hooks/useAuth';
 import PopupMenu from 'components/PopupMenu';
 import { UserRole, UserStatus } from 'queries/users';
 import useRole from 'hooks/useRole';
+import Icon from 'components/Icon';
 
 export interface IUserDropdownProps {
   id: string;
@@ -120,6 +121,20 @@ const UserProfileDropdown: FC<IUserDropdownProps> = ({
         iconClassName: '!text-red-500',
       });
     }
+  }
+
+  if (_options.length === 1) {
+    const option = _options[0];
+    return (
+      <div
+        className="rounded-[24px] font-bold border py-[7.5px] px-4 text-sm border-[#e5e5e5] cursor-pointer flex items-center space-x-1"
+        data-testid="profile-more-cta"
+        onClick={option?.onClick}
+      >
+        <Icon name={option?.icon} size={16} />
+        <span>{option?.label}</span>
+      </div>
+    );
   }
 
   if (((showOnHover && isHovered) || !showOnHover) && _options.length > 0) {

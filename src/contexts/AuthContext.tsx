@@ -8,6 +8,7 @@ import PageLoader from 'components/PageLoader';
 import { userChannel } from 'utils/misc';
 import { ILocation } from 'queries/location';
 import { IDepartment } from 'queries/department';
+import Smartlook from 'smartlook-client';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -26,7 +27,7 @@ export interface IUser {
   organization: IOrganization;
   workLocation?: ILocation;
   preferredName?: string;
-  designation?: string;
+  designation?: Record<string, any>;
   department?: IDepartment;
   location?: string;
   profileImage?: string;
@@ -107,7 +108,28 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
     setLoading(false);
   };
 
+  const initSmartlook = () => {
+    if (process.env.REACT_APP_APP_ENV !== 'development') {
+      Smartlook.init(process.env.REACT_APP_SMARTLOOK_KEY as string);
+    }
+  };
+
+  const setupSmartlookIdentity = () => {
+    if (process.env.REACT_APP_APP_ENV !== 'development' && user) {
+      Smartlook.identify(user.id, {
+        uid: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        designation: user.designation?.name,
+        department: user.department?.name as any,
+        timezone: user.timezone as any,
+      });
+    }
+  };
+
   useEffect(() => {
+    initSmartlook();
     setupSession();
   }, []);
 
@@ -125,6 +147,12 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      setupSmartlookIdentity();
+    }
+  }, [user]);
 
   const updateUser = (user: IUser) => setUser((u) => ({ ...u, ...user }));
 

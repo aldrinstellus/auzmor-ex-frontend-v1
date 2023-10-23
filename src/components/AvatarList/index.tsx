@@ -9,7 +9,7 @@ export type AvatarListProps = {
   size?: number;
   className?: string;
   avatarClassName?: string;
-  onClick?: () => null;
+  onClick?: () => any;
   dataTestId?: string;
 };
 

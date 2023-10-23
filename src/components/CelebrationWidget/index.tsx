@@ -176,6 +176,7 @@ const CelebrationWidget: FC<CelebrationWidgetProps> = ({
                     )}
                   {thisMonthCelebration.map((celebration) => (
                     <User
+                      id={celebration.featuredUser.userId}
                       type={type}
                       key={celebration.featuredUser.userId}
                       data={celebration}
@@ -194,6 +195,7 @@ const CelebrationWidget: FC<CelebrationWidgetProps> = ({
                         )}
                       {upcomingMonthCelebration.map((celebration) => (
                         <User
+                          id={celebration.featuredUser.userId}
                           type={type}
                           data={celebration}
                           key={celebration.featuredUser.userId}

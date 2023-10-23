@@ -353,7 +353,9 @@ export const removeEmptyLines = (content: {
 }) => {
   for (const op of content.editor.ops) {
     if (op.insert) {
-      op.insert = op.insert.replaceAll(EMPTY_REGEX, '\n').trim();
+      try {
+        op.insert = op.insert?.replaceAll(EMPTY_REGEX, '\n').trim();
+      } catch (e) {}
     }
   }
 
@@ -401,6 +403,7 @@ export const getUserCardTooltipProps = (user: any) => {
     fullName:
       user?.fullName || user?.userName || user?.name || 'Field not specified',
     workEmail: user?.email || user?.workEmail || 'Field not specified',
+    email: user?.email || user?.workEmail || 'Field not specified',
     workLocation: workLocation,
     designation: designation,
     department: department,

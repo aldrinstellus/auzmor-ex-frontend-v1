@@ -253,16 +253,18 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
               {getFullName(userDetails)}
             </div>
             <div className="flex space-x-2 mt-[-2px]">
-              <Button
-                className="flex"
-                label={'Follow'}
-                labelClassName={'text-sm'}
-                leftIcon={'addCircle'}
-                size={ButtonSize.Small}
-                variant={ButtonVariant.Secondary}
-                dataTestId={'follow'}
-                disabled
-              />
+              {!!userId && (
+                <Button
+                  className="flex"
+                  label={'Follow'}
+                  labelClassName={'text-sm'}
+                  leftIcon={'addCircle'}
+                  size={ButtonSize.Small}
+                  variant={ButtonVariant.Secondary}
+                  dataTestId={'follow'}
+                  disabled
+                />
+              )}
               <UserProfileDropdown
                 triggerNode={
                   <div
