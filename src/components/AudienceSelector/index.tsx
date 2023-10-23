@@ -2,6 +2,7 @@ import { EntitySearchModalType } from 'components/EntitySearchModal';
 import EntitySearchModalBody from 'components/EntitySearchModal/components/EntitySearchModalBody';
 import Icon from 'components/Icon';
 import { AudienceFlow } from 'components/PostBuilder/components/Audience';
+import Spinner from 'components/Spinner';
 import useRole from 'hooks/useRole';
 import { useOrganization } from 'queries/organization';
 import { FC, useEffect } from 'react';
@@ -23,7 +24,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
   infoText = 'Your post will appear in Feed, on your profile and in search results. You can change the audience of this specific post.',
 }) => {
   const { isAdmin } = useRole();
-  const { data } = useOrganization();
+  const { data, isLoading } = useOrganization();
   const { form } = useEntitySearchFormStore();
 
   const [teams, channels, users] = form!.watch(['teams', 'channels', 'users']);
@@ -93,57 +94,61 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
               {infoText}
             </div>
           </div>
-          {audienceEntity.map((entity) => (
-            <div
-              key={entity.key}
-              className="flex p-4 border border-neutral-200 rounded-22xl mb-4 hover:shadow-xl group cursor-pointer justify-between items-center"
-              onClick={entity.onClick}
-              data-testid={entity.dataTestId}
-            >
-              <div className="flex items-center">
-                <div
-                  className={`rounded-full w-12 h-12 flex items-center justify-center bg-primary-50 group-hover:bg-primary-500 ${
-                    entity.isSelected && 'bg-primary-500'
-                  }`}
-                >
-                  <Icon
-                    name={entity.icon}
-                    className={`text-neutral-500 group-hover:text-white ${
-                      entity.isSelected && 'text-white'
+          {isLoading ? (
+            <Spinner className="w-full m-10" />
+          ) : (
+            audienceEntity.map((entity) => (
+              <div
+                key={entity.key}
+                className="flex p-4 border border-neutral-200 rounded-22xl mb-4 hover:shadow-xl group cursor-pointer justify-between items-center"
+                onClick={entity.onClick}
+                data-testid={entity.dataTestId}
+              >
+                <div className="flex items-center">
+                  <div
+                    className={`rounded-full w-12 h-12 flex items-center justify-center bg-primary-50 group-hover:bg-primary-500 ${
+                      entity.isSelected && 'bg-primary-500'
                     }`}
-                  />
-                </div>
-                <div className="ml-3 flex flex-col justify-between">
-                  <div className="text-neutral-900 text-sm font-bold">
-                    {entity.title}
-                  </div>
-                  <div className="text-neutral-500 text-xs font-base">
-                    {entity.subTitle}
-                  </div>
-                </div>
-              </div>
-              {entity.selectedCount ? (
-                <div
-                  className="flex border rounded-17xl px-3 py-1 items-center bg-primary-50 h-6"
-                  data-testid="audience-selection-selectedmsg"
-                >
-                  <div>
+                  >
                     <Icon
-                      name="tickCircle"
-                      size={16}
-                      className="mr-1"
-                      color="text-primary-500"
+                      name={entity.icon}
+                      className={`text-neutral-500 group-hover:text-white ${
+                        entity.isSelected && 'text-white'
+                      }`}
                     />
                   </div>
-                  <div className="text-xxs text-primary-500">
-                    {entity.selectedCount} selected
+                  <div className="ml-3 flex flex-col justify-between">
+                    <div className="text-neutral-900 text-sm font-bold">
+                      {entity.title}
+                    </div>
+                    <div className="text-neutral-500 text-xs font-base">
+                      {entity.subTitle}
+                    </div>
                   </div>
                 </div>
-              ) : (
-                <></>
-              )}
-            </div>
-          ))}
+                {entity.selectedCount ? (
+                  <div
+                    className="flex border rounded-17xl px-3 py-1 items-center bg-primary-50 h-6"
+                    data-testid="audience-selection-selectedmsg"
+                  >
+                    <div>
+                      <Icon
+                        name="tickCircle"
+                        size={16}
+                        className="mr-1"
+                        color="text-primary-500"
+                      />
+                    </div>
+                    <div className="text-xxs text-primary-500">
+                      {entity.selectedCount} selected
+                    </div>
+                  </div>
+                ) : (
+                  <></>
+                )}
+              </div>
+            ))
+          )}
         </div>
       );
     }
