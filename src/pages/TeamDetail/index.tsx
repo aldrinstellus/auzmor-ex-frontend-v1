@@ -5,7 +5,6 @@ import EntitySearchModal, {
   EntitySearchModalType,
 } from 'components/EntitySearchModal';
 import Tooltip from 'components/Tooltip';
-import PopupMenu from 'components/PopupMenu';
 import { IGetUser } from 'queries/users';
 import Avatar from 'components/Avatar';
 import {
@@ -31,10 +30,10 @@ import {
 } from 'react-router-dom';
 import TeamModal from 'pages/Users/components/TeamModal';
 import { TeamFlow, TeamTab } from 'pages/Users/components/Teams';
-import DeleteTeam from 'pages/Users/components/DeleteModals/Team';
 import TeamDetailSkeleton from './components/TeamDetailSkeleton';
 import { FC } from 'react';
 import useRole from 'hooks/useRole';
+import TeamOptions from 'components/TeamOptions';
 
 export interface ITeamMemberProps {}
 
@@ -52,7 +51,6 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
   );
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
-  const [showDeleteModal, openDeleteModal, closeDeleteModal] = useModal(false);
 
   const teamDetail = useSingleTeam(id || '');
 
@@ -223,41 +221,15 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                   </div>
                 </div>
                 <div className="relative">
-                  <PopupMenu
-                    triggerNode={
-                      <div className="cursor-pointer">
-                        <Icon
-                          name="setting"
-                          color="text-neutral-900"
-                          dataTestId="team-settings"
-                        />
-                      </div>
-                    }
-                    menuItems={[
-                      {
-                        icon: 'edit',
-                        label: 'Edit',
-                        onClick: () => openTeamModal(),
-                        dataTestId: 'team-setting-edit',
-                        permissions: [''],
-                      },
-                      {
-                        icon: 'shareForwardOutline',
-                        label: 'Share',
-                        dataTestId: 'team-setting-share',
-                        permissions: [''],
-                      },
-                      {
-                        icon: 'cancel',
-                        label: 'Remove',
-                        onClick: () => openDeleteModal(),
-                        dataTestId: 'team-setting-remove',
-                        labelClassName: 'text-red-500',
-                        iconClassName: '!text-red-500',
-                        permissions: [''],
-                      },
-                    ]}
-                    className="absolute top-10 -right-5 w-44"
+                  <TeamOptions
+                    id={id || ''}
+                    onEdit={openTeamModal}
+                    triggerIcon="setting"
+                    dataTestId="team-settings"
+                    dataTestIdPrefix="team-settings"
+                    isDetailPage
+                    className="absolute top-5 -right-5 w-44"
+                    iconColor="text-neutral-900"
                   />
                 </div>
               </div>
@@ -354,12 +326,6 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
           cancelButtonText="Cancel"
         />
       )}
-      <DeleteTeam
-        open={showDeleteModal}
-        closeModal={closeDeleteModal}
-        isDetailPage
-        teamId={id || ''}
-      />
     </>
   );
 };

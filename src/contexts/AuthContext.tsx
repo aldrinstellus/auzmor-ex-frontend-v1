@@ -110,7 +110,10 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
 
   const initSmartlook = () => {
     // @ts-ignores
-    Smartlook.init(process.env.REACT_APP_SMARTLOOK_KEY);
+    if (['production', 'staging', 'qa'].includes(process.env.REACT_APP_ENV)) {
+      // @ts-ignores
+      Smartlook.init(process.env.REACT_APP_SMARTLOOK_KEY);
+    }
   };
 
   const setupSmartlookIdentity = () => {
