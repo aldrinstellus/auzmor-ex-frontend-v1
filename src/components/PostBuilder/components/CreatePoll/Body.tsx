@@ -64,6 +64,7 @@ const Body: FC<PollBodyProps> = ({
             // Show error message
           }
         }}
+        className="max-w-max"
       />
       <Layout fields={durationFields} />
       {selectedDuration && selectedDuration.label === 'Custom Date' && (

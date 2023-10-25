@@ -109,21 +109,20 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   };
 
   const initSmartlook = () => {
-    if (process.env.REACT_APP_APP_ENV !== 'development') {
-      Smartlook.init(process.env.REACT_APP_SMARTLOOK_KEY as string);
+    // @ts-ignores
+    if (['production', 'staging', 'qa'].includes(process.env.REACT_APP_ENV)) {
+      // @ts-ignores
+      Smartlook.init(process.env.REACT_APP_SMARTLOOK_KEY);
     }
   };
 
   const setupSmartlookIdentity = () => {
-    if (process.env.REACT_APP_APP_ENV !== 'development' && user) {
+    if (user) {
       Smartlook.identify(user.id, {
         uid: user.id,
         name: user.name,
         email: user.email,
         role: user.role,
-        designation: user.designation?.name,
-        department: user.department?.name as any,
-        timezone: user.timezone as any,
       });
     }
   };

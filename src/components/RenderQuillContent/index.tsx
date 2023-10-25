@@ -134,7 +134,7 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
     <div className="w-full text-sm flex flex-col gap-4">
       {!isEmpty && (
         <span
-          className="line-clamp-3 paragraph pt-px"
+          className="line-clamp-3 paragraph pt-px break-normal [overflow-wrap:anywhere]"
           id={`${data?.id}-content`}
           data-testid={isComment ? 'comment-content' : 'feed-post-content'}
         >

@@ -233,6 +233,7 @@ const Team: FC<ITeamProps> = ({
   };
 
   const onApplyFilter = (appliedFilters: IAppliedFilters) => {
+    console.log;
     setAppliedFilters(appliedFilters);
     const serializedCategories = serializeFilter(appliedFilters.categories);
     updateParam('categories', serializedCategories);

@@ -42,7 +42,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
     useState<IGetUser | null>(null);
   const [isExpandAll, setIsExpandAll] = useState<boolean>(false);
   const [appliedFilters, setAppliedFilters] = useState<IAppliedFilters>({
-    location: [],
+    locations: [],
     departments: [],
     status: [],
   });
@@ -56,7 +56,8 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
     isFiltersEmpty({
       root: startWithSpecificUser?.id || parentId || undefined,
       locations:
-        appliedFilters?.location?.map((location) => (location as any).id) || [],
+        appliedFilters?.locations?.map((location) => (location as any).id) ||
+        [],
       departments:
         appliedFilters?.departments?.map(
           (department) => (department as any).id,
@@ -82,7 +83,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
   const getNodes = () => {
     if (
       (!!appliedFilters?.departments?.length ||
-        !!appliedFilters?.location?.length ||
+        !!appliedFilters?.locations?.length ||
         !!appliedFilters?.status?.length) &&
       data &&
       !!!data?.data.result.data.some((node: INode) => node.matchesCriteria)
@@ -132,7 +133,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
         isLoading={isLoading}
         onClearFilter={() => {
           setAppliedFilters({
-            location: [],
+            locations: [],
             departments: [],
             status: [],
           });
@@ -141,7 +142,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
         }}
         isFilterApplied={
           !!appliedFilters?.departments?.length ||
-          !!appliedFilters?.location?.length ||
+          !!appliedFilters?.locations?.length ||
           !!appliedFilters?.status?.length
         }
         setZoom={setZoom}

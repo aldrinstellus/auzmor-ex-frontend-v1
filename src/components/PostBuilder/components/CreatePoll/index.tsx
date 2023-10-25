@@ -214,7 +214,7 @@ const CreatePoll: FC<CreatePollProps> = ({ closeModal }) => {
         />
         <Button
           label="Next"
-          variant={ButtonVariant.Secondary}
+          variant={ButtonVariant.Primary}
           size={ButtonSize.Small}
           type={Type.Submit}
           dataTestId="createpoll-next"

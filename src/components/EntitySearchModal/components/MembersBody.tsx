@@ -45,7 +45,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
     [],
   );
   const { form } = useEntitySearchFormStore();
-  const { watch, setValue, control, unregister } = form!;
+  const { watch, setValue, control, unregister, getValues } = form!;
   const [
     memberSearch,
     showSelectedMembers,
@@ -506,9 +506,20 @@ const MembersBody: FC<IMembersBodyProps> = ({
                       },
                     ]}
                   />
-                  {(entityRenderer && entityRenderer(user)) || (
-                    <UserRow user={user} />
-                  )}
+
+                  <div
+                    className="w-full cursor-pointer"
+                    onClick={() => {
+                      setValue(
+                        `users.${user.id}`,
+                        !!getValues(`users.${user.id}`) ? false : user,
+                      );
+                    }}
+                  >
+                    {(entityRenderer && entityRenderer(user)) || (
+                      <UserRow user={user} />
+                    )}
+                  </div>
                 </div>
                 {index !== usersData.length - 1 && <Divider />}
               </div>

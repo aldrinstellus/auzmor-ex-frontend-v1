@@ -23,10 +23,13 @@ import InviteUserModal from '../InviteUserModal';
 import { useInfiniteTeamMembers } from 'queries/teams';
 import { EntitySearchModalType } from 'components/EntitySearchModal';
 import Sort from 'components/Sort';
-import FilterModal, { IAppliedFilters } from 'components/FilterModal';
+import FilterModal, { IStatus } from 'components/FilterModal';
 import useURLParams from 'hooks/useURLParams';
 import NoDataFound from 'components/NoDataFound';
 import useRole from 'hooks/useRole';
+import Icon from 'components/Icon';
+import { IDepartmentAPI } from 'queries/department';
+import { ILocationAPI } from 'queries/location';
 
 export interface IPeopleProps {
   showModal: boolean;
@@ -36,10 +39,33 @@ export interface IPeopleProps {
   teamId?: string;
 }
 
+interface IRole {
+  value: UserRole;
+  label: string;
+}
+
+interface IPeopleFilters {
+  departments?: IDepartmentAPI[];
+  locations?: ILocationAPI[];
+  status?: IStatus[];
+}
+
+enum PeopleFilterKey {
+  departments = 'departments',
+  locations = 'locations',
+  status = 'status',
+}
+
 interface IForm {
   search?: string;
-  role?: { value: string; label: string };
+  role?: IRole | null;
 }
+
+const defaultFilters: IPeopleFilters = {
+  status: [],
+  departments: [],
+  locations: [],
+};
 
 const People: FC<IPeopleProps> = ({
   showModal,
@@ -57,8 +83,8 @@ const People: FC<IPeopleProps> = ({
   } = useURLParams();
   const [startFetching, setStartFetching] = useState(false);
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
-  const [appliedFilters, setAppliedFilters] = useState<IAppliedFilters>({
-    status: [],
+  const [appliedFilters, setAppliedFilters] = useState<IPeopleFilters>({
+    ...defaultFilters,
   });
   const [filterSortBy, setFilterSortBy] = useState<string>('');
   const { ref, inView } = useInView();
@@ -95,7 +121,19 @@ const People: FC<IPeopleProps> = ({
     return useInfiniteUsers({
       startFetching,
       q: isFiltersEmpty({
-        status: appliedFilters?.status?.map((eachStatus) => eachStatus.id),
+        status: appliedFilters.status?.length
+          ? appliedFilters?.status?.map((eachStatus) => eachStatus.id).join(',')
+          : undefined,
+        departmentIds: appliedFilters.departments?.length
+          ? appliedFilters.departments
+              ?.map((eachDepartment) => eachDepartment.id)
+              .join(',')
+          : undefined,
+        locationIds: appliedFilters.locations?.length
+          ? appliedFilters.locations
+              ?.map((eachLocation) => eachLocation.id)
+              .join(',')
+          : undefined,
         role: role?.value,
         sort: filterSortBy,
         q: debouncedSearchValue,
@@ -108,7 +146,19 @@ const People: FC<IPeopleProps> = ({
       startFetching,
       teamId: teamId || '',
       q: isFiltersEmpty({
-        status: appliedFilters.status,
+        status: appliedFilters.status?.length
+          ? appliedFilters?.status?.map((eachStatus) => eachStatus.id).join(',')
+          : undefined,
+        departmentIds: appliedFilters.departments?.length
+          ? appliedFilters.departments
+              ?.map((eachDepartment) => eachDepartment.id)
+              .join(',')
+          : undefined,
+        locationIds: appliedFilters.locations?.length
+          ? appliedFilters.locations
+              ?.map((eachLocation) => eachLocation.id)
+              .join(',')
+          : undefined,
         role: role?.value,
         sort: filterSortBy,
         q: debouncedSearchValue,
@@ -122,7 +172,7 @@ const People: FC<IPeopleProps> = ({
   const roleSelectRef = useRef<any>();
 
   const customReset = () => {
-    if (roleSelectRef && roleSelectRef.current) setValue('role', undefined);
+    if (roleSelectRef && roleSelectRef.current) setValue('role', null);
   };
 
   const roleFields = [
@@ -168,19 +218,43 @@ const People: FC<IPeopleProps> = ({
 
   const clearFilters = () => {
     deleteParam('status');
+    deleteParam('departments');
+    deleteParam('locations');
     setAppliedFilters({
+      ...appliedFilters,
       status: [],
+      departments: [],
+      locations: [],
     });
-    closeFilterModal();
   };
 
-  const onApplyFilter = (appliedFilters: IAppliedFilters) => {
-    setAppliedFilters(appliedFilters);
-    const serializedStatus = serializeFilter(
-      appliedFilters.status?.map((value) => value.id),
+  const handleRemoveFilters = (key: PeopleFilterKey, id: any) => {
+    const updatedFilter = appliedFilters[key]!.filter(
+      (item: any) => item.id !== id,
     );
-    updateParam('status', serializedStatus);
-    closeFilterModal();
+    const serializedFilters = serializeFilter(updatedFilter);
+    if (updatedFilter.length === 0) {
+      deleteParam(key);
+    } else {
+      updateParam(key, serializedFilters);
+    }
+    setAppliedFilters({ ...appliedFilters, [key]: updatedFilter });
+  };
+
+  const onApplyFilter = (appliedFilters: IPeopleFilters) => {
+    setAppliedFilters(appliedFilters);
+    if (appliedFilters.status?.length) {
+      const serializedStatus = serializeFilter(appliedFilters.status);
+      updateParam('status', serializedStatus);
+    } else deleteParam('status');
+    if (appliedFilters.locations?.length) {
+      const serializedLocations = serializeFilter(appliedFilters.locations);
+      updateParam('locations', serializedLocations);
+    } else deleteParam('locations');
+    if (appliedFilters.departments?.length) {
+      const serializedDepartments = serializeFilter(appliedFilters.departments);
+      updateParam('departments', serializedDepartments);
+    } else deleteParam('departments');
   };
 
   const handleSetSortFilter = (sortValue: any) => {
@@ -196,16 +270,32 @@ const People: FC<IPeopleProps> = ({
   // parse the persisted filters from the URL on page load
   useEffect(() => {
     const parsedStatus = parseParams('status');
+    const parsedDepartments = parseParams('departments');
+    const parsedLocations = parseParams('locations');
     const parsedSort = parseParams('sort');
-    if (parsedStatus) {
-      setAppliedFilters({
-        ...appliedFilters,
-        status: parsedStatus.map((eachStatus: string) => ({
-          id: eachStatus,
-          name: titleCase(eachStatus),
+    onApplyFilter({
+      ...defaultFilters,
+      ...(parsedStatus && {
+        status: parsedStatus.map((eachStatus: IStatus) => ({
+          id: eachStatus.id,
+          name: titleCase(eachStatus.name),
         })),
-      });
-    }
+      }),
+      ...(parsedDepartments && {
+        departments: parsedDepartments.map(
+          (eachDepartment: IDepartmentAPI) => ({
+            id: eachDepartment.id,
+            name: titleCase(eachDepartment.name),
+          }),
+        ),
+      }),
+      ...(parsedLocations && {
+        locations: parsedLocations.map((eachLocation: ILocationAPI) => ({
+          id: eachLocation.id,
+          name: titleCase(eachLocation.name),
+        })),
+      }),
+    });
     if (parsedSort) {
       setFilterSortBy(parsedSort);
     }
@@ -224,13 +314,11 @@ const People: FC<IPeopleProps> = ({
   useEffect(() => {
     if (role) {
       const serializedRole = serializeFilter({
-        value: role.value,
         label: role.label,
+        value: role.value,
       });
       updateParam('role', serializedRole);
-    } else {
-      deleteParam('role');
-    }
+    } else deleteParam('role');
   }, [role]);
 
   return (
@@ -306,45 +394,112 @@ const People: FC<IPeopleProps> = ({
           results
         </div>
 
-        {/* {appliedFilters.status &&
-          appliedFilters.status?.length < 1 && (
-            <div className="flex justify-between">
-              <div className="flex items-center space-x-2">
-                <div className="text-base text-neutral-500">Filter By</div>
+        {appliedFilters?.status?.length ||
+        appliedFilters?.departments?.length ||
+        appliedFilters?.locations?.length ? (
+          <div className="flex justify-between items-start mb-6">
+            <div className="flex items-center space-x-2 flex-wrap gap-y-2">
+              <div className="text-base text-neutral-500 whitespace-nowrap">
+                Filter By
+              </div>
+              {appliedFilters?.status?.map((status: IStatus) => (
                 <div
-                  className="text-neutral-500 border px-3 py-1 rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer flex items-center group"
-                  onClick={() => {
-                    deleteParam('status');
-                    setAppliedFilters({ ...appliedFilters, status: [] });
-                  }}
+                  key={status.id}
+                  className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
+                  data-testid={`teams-filterby`}
+                  onClick={() =>
+                    handleRemoveFilters(PeopleFilterKey.status, status.id)
+                  }
                 >
-                  <div className="mr-1">
-                    {titleCase(appliedFilters.status.name)}
+                  <div className="mr-1 text-neutral-500 whitespace-nowrap">
+                    Status{' '}
+                    <span className="text-primary-500">{status.name}</span>
                   </div>
                   <Icon
                     name="close"
                     size={16}
                     color="text-neutral-900"
                     className="cursor-pointer"
-                    onClick={() => {
-                      deleteParam('status');
-                      setAppliedFilters({ ...appliedFilters, status: [] });
-                    }}
-                    dataTestId={`people-filterby-close-${appliedFilters.status.}`}
+                    onClick={() =>
+                      handleRemoveFilters(PeopleFilterKey.status, status.id)
+                    }
+                    dataTestId={`applied-filter-close`}
                   />
                 </div>
-              </div>
-              <div
-                className="text-neutral-500 border px-3 py-1 rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
-                onClick={() => {
-                  deleteParam('status');
-                  setAppliedFilters({ ...appliedFilters, status: null });
-                }}
-              >
-                Clear Filters
-              </div>
+              ))}
+              {appliedFilters?.departments?.map(
+                (department: IDepartmentAPI) => (
+                  <div
+                    key={department.id}
+                    className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
+                    data-testid={`teams-filterby`}
+                    onClick={() =>
+                      handleRemoveFilters(
+                        PeopleFilterKey.departments,
+                        department.id,
+                      )
+                    }
+                  >
+                    <div className="mr-1 text-neutral-500 whitespace-nowrap">
+                      Department{' '}
+                      <span className="text-primary-500">
+                        {department.name}
+                      </span>
+                    </div>
+                    <Icon
+                      name="close"
+                      size={16}
+                      color="text-neutral-900"
+                      className="cursor-pointer"
+                      onClick={() =>
+                        handleRemoveFilters(
+                          PeopleFilterKey.departments,
+                          department.id,
+                        )
+                      }
+                      dataTestId={`applied-filter-close`}
+                    />
+                  </div>
+                ),
+              )}
+              {appliedFilters?.locations?.map((location: ILocationAPI) => (
+                <div
+                  key={location.id}
+                  className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
+                  data-testid={`teams-filterby`}
+                  onClick={() =>
+                    handleRemoveFilters(PeopleFilterKey.locations, location.id)
+                  }
+                >
+                  <div className="mr-1 text-neutral-500 whitespace-nowrap">
+                    Location{' '}
+                    <span className="text-primary-500">{location.name}</span>
+                  </div>
+                  <Icon
+                    name="close"
+                    size={16}
+                    color="text-neutral-900"
+                    className="cursor-pointer"
+                    onClick={() =>
+                      handleRemoveFilters(
+                        PeopleFilterKey.locations,
+                        location.id,
+                      )
+                    }
+                    dataTestId={`applied-filter-close`}
+                  />
+                </div>
+              ))}
             </div>
-          )} */}
+            <div
+              className="text-neutral-500 border px-3 py-[3px] whitespace-nowrap rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
+              onClick={clearFilters}
+              data-testid={`people-clear-filters`}
+            >
+              Clear Filters
+            </div>
+          </div>
+        ) : null}
 
         <div className="flex flex-wrap gap-6">
           {(() => {
@@ -387,7 +542,9 @@ const People: FC<IPeopleProps> = ({
             return isTeamPeople &&
               !debouncedSearchValue &&
               !role?.value &&
-              !appliedFilters.status?.length ? (
+              !appliedFilters.status?.length &&
+              !appliedFilters.departments?.length &&
+              !appliedFilters.locations?.length ? (
               <div className="flex flex-col w-full items-center space-y-4">
                 <img
                   src={MemberNotFound}
@@ -453,8 +610,14 @@ const People: FC<IPeopleProps> = ({
           open={showFilterModal}
           closeModal={closeFilterModal}
           appliedFilters={appliedFilters}
-          onApply={onApplyFilter}
-          onClear={clearFilters}
+          onApply={(filters) => {
+            onApplyFilter({ ...appliedFilters, ...filters });
+            closeFilterModal();
+          }}
+          onClear={() => {
+            clearFilters();
+            closeFilterModal();
+          }}
         />
       )}
     </div>

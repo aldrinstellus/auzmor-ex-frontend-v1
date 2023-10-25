@@ -396,7 +396,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
           <div
             className="mt-[10px] flex items-center space-x-2 cursor-pointer"
             onClick={(e) => {
-              if (isOwnerOrAdmin) {
+              if (!userId || userId === user?.id) {
                 e.preventDefault();
                 showSocialLinks();
               }
@@ -405,7 +405,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
             <div
               onClick={() => {
                 if (
-                  !isOwnerOrAdmin &&
+                  userId !== user?.id &&
                   userDetails?.personal?.socialAccounts?.linkedIn
                 ) {
                   window.open(
@@ -425,7 +425,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
             <div
               onClick={() => {
                 if (
-                  !isOwnerOrAdmin &&
+                  userId !== user?.id &&
                   !userDetails?.personal?.socialAccounts?.twitter
                 ) {
                   window.open(
@@ -445,7 +445,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
             <div
               onClick={() => {
                 if (
-                  !isOwnerOrAdmin &&
+                  userId !== user?.id &&
                   userDetails?.personal?.socialAccounts?.instagram
                 ) {
                   window.open(
@@ -465,7 +465,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
             <div
               onClick={() => {
                 if (
-                  !isOwnerOrAdmin &&
+                  userId !== user?.id &&
                   userDetails?.personal?.socialAccounts?.facebook
                 ) {
                   window.open(
@@ -485,7 +485,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
             <div
               onClick={() => {
                 if (
-                  !isOwnerOrAdmin &&
+                  userId !== user?.id &&
                   userDetails?.personal?.socialAccounts?.website
                 ) {
                   window.open(

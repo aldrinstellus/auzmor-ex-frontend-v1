@@ -47,10 +47,10 @@ const ConfirmationBox: FC<ConfirmationBoxProps> = ({
     >
       <div data-testid={`${dataTestId}-confirmation-window`}>
         <Header title={title} onClose={onClose} />
-        <div className="font-normal text-sm text-neutral-900 not-italic p-6 mb-8">
+        <div className="font-normal text-sm text-neutral-900 not-italic p-6">
           {description}
         </div>
-        <div className="flex flex-row-reverse px-4 pt-6 pb-4 bg-blue-50 rounded-b-9xl">
+        <div className="flex flex-row-reverse px-6 py-4 bg-blue-50 rounded-b-9xl">
           <Button
             onClick={success.onSubmit}
             label={success.label}

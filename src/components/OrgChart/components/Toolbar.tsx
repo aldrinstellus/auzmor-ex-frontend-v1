@@ -74,7 +74,7 @@ const Toolbar: FC<IToolbarProps> = ({
 
   const isFilterApplied =
     !!appliedFilters?.departments?.length ||
-    !!appliedFilters?.location?.length ||
+    !!appliedFilters?.locations?.length ||
     !!appliedFilters?.status?.length;
 
   // fetch users on start with specific user
@@ -88,7 +88,8 @@ const Toolbar: FC<IToolbarProps> = ({
       root: parentId || undefined,
       expand: parentId ? 1 : undefined,
       locations:
-        appliedFilters?.location?.map((location) => (location as any).id) || [],
+        appliedFilters?.locations?.map((location) => (location as any).id) ||
+        [],
       departments:
         appliedFilters?.departments?.map(
           (department) => (department as any).id,
@@ -122,7 +123,8 @@ const Toolbar: FC<IToolbarProps> = ({
       root: parentId || undefined,
       expand: parentId ? 1 : undefined,
       locations:
-        appliedFilters?.location?.map((location) => (location as any).id) || [],
+        appliedFilters?.locations?.map((location) => (location as any).id) ||
+        [],
       departments:
         appliedFilters?.departments?.map(
           (department) => (department as any).id,
@@ -200,7 +202,7 @@ const Toolbar: FC<IToolbarProps> = ({
                   'organization-chart',
                   {
                     locations:
-                      appliedFilters?.location?.map(
+                      appliedFilters?.locations?.map(
                         (location) => (location as any).id,
                       ) || [],
                     departments:
@@ -222,7 +224,7 @@ const Toolbar: FC<IToolbarProps> = ({
                     {
                       root: user?.parentId,
                       locations:
-                        appliedFilters?.location?.map(
+                        appliedFilters?.locations?.map(
                           (location) => (location as any).id,
                         ) || [],
                       departments:
@@ -304,7 +306,7 @@ const Toolbar: FC<IToolbarProps> = ({
   );
   const resetAppliedFilters = () => {
     setAppliedFilters({
-      location: [],
+      locations: [],
       departments: [],
       status: [],
     });
@@ -457,7 +459,7 @@ const Toolbar: FC<IToolbarProps> = ({
                                   : true,
                               root: parentId || startWithSpecificUser?.id,
                               locations:
-                                appliedFilters?.location?.map(
+                                appliedFilters?.locations?.map(
                                   (location) => (location as any).id,
                                 ) || [],
                               departments:
@@ -616,27 +618,27 @@ const Toolbar: FC<IToolbarProps> = ({
               <div className="text-neutral-900 font-bold text-sm mr-2">
                 Filter by:
               </div>
-              {!!appliedFilters?.location?.length && (
+              {!!appliedFilters?.locations?.length && (
                 <div
                   className="flex px-3 py-2 text-primary-500 text-sm font-medium border border-neutral-200 rounded-7xl justify-between mr-2 hover:border-primary-600 group cursor-pointer"
                   onClick={() =>
-                    setAppliedFilters({ ...appliedFilters, location: [] })
+                    setAppliedFilters({ ...appliedFilters, locations: [] })
                   }
                 >
                   <div className="font-medium text-sm text-neutral-900 mr-1">
                     Location{' '}
-                    {appliedFilters.location.map((location, index) => (
+                    {appliedFilters.locations.map((location, index) => (
                       <>
                         <span
-                          key={location.locationId}
+                          key={location.id}
                           className="text-primary-500 font-bold text-sm"
                         >
                           {location.name}
                         </span>
-                        {appliedFilters?.location &&
-                          index !== appliedFilters?.location?.length - 1 && (
+                        {appliedFilters?.locations &&
+                          index !== appliedFilters?.locations?.length - 1 && (
                             <span>
-                              {appliedFilters?.location?.length === 2
+                              {appliedFilters?.locations?.length === 2
                                 ? ' and '
                                 : ', '}
                             </span>
@@ -649,7 +651,7 @@ const Toolbar: FC<IToolbarProps> = ({
                       name="close"
                       size={16}
                       onClick={() =>
-                        setAppliedFilters({ ...appliedFilters, location: [] })
+                        setAppliedFilters({ ...appliedFilters, locations: [] })
                       }
                       dataTestId="filter-options-close"
                     />
@@ -671,7 +673,7 @@ const Toolbar: FC<IToolbarProps> = ({
                     {appliedFilters.departments.map((department, index) => (
                       <>
                         <span
-                          key={department.departmentId}
+                          key={department.id}
                           className="text-primary-500 font-bold text-sm"
                         >
                           {department.name}
