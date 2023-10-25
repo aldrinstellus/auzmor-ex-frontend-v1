@@ -2,8 +2,8 @@ import Button, { Variant as ButtonVariant } from 'components/Button';
 import Divider from 'components/Divider';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
-import { IDepartment } from 'queries/department';
-import { ILocation } from 'queries/location';
+import { IDepartmentAPI } from 'queries/department';
+import { ILocationAPI } from 'queries/location';
 import { FC, ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Locations from './Locations';
@@ -43,8 +43,8 @@ export enum FilterModalVariant {
 }
 
 export interface IAppliedFilters {
-  location?: ILocation[];
-  departments?: IDepartment[];
+  locations?: ILocationAPI[];
+  departments?: IDepartmentAPI[];
   status?: IStatus[];
   categories?: ICategory[];
   teams?: ITeam[];
@@ -77,7 +77,7 @@ const FilterModal: FC<IFilterModalProps> = ({
   open,
   closeModal,
   appliedFilters = {
-    location: [],
+    locations: [],
     departments: [],
     categories: [],
     status: [],
@@ -93,7 +93,7 @@ const FilterModal: FC<IFilterModalProps> = ({
         data: status,
         dataTestId: `status-${status.name}`,
       })),
-      locationCheckbox: (appliedFilters.location || []).map((location) => ({
+      locationCheckbox: (appliedFilters.locations || []).map((location) => ({
         data: location,
         dataTestId: `location-${location.name}`,
       })),
@@ -130,12 +130,12 @@ const FilterModal: FC<IFilterModalProps> = ({
 
   const onSubmit = (formData: IFilterForm) => {
     onApply({
-      location: formData.locationCheckbox.map(
+      locations: formData.locationCheckbox.map(
         (location) => location.data,
-      ) as ILocation[],
+      ) as ILocationAPI[],
       departments: formData.departmentCheckbox.map(
         (department) => department.data,
-      ) as IDepartment[],
+      ) as IDepartmentAPI[],
       categories: formData.categoryCheckbox.map(
         (category) => category.data,
       ) as ICategory[],
@@ -158,15 +158,13 @@ const FilterModal: FC<IFilterModalProps> = ({
           )}
         </div>
       ),
-      key: 'location-filters',
+      key: 'locations-filters',
       component: () => (
         <Locations control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: [
-        FilterModalVariant.Team,
-        FilterModalVariant.People,
-        FilterModalVariant.App,
-      ].includes(variant),
+      isHidden: [FilterModalVariant.Team, FilterModalVariant.App].includes(
+        variant,
+      ),
       dataTestId: 'filterby-location',
     },
     {
@@ -184,11 +182,9 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <Departments control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: [
-        FilterModalVariant.Team,
-        FilterModalVariant.People,
-        FilterModalVariant.App,
-      ].includes(variant),
+      isHidden: [FilterModalVariant.Team, FilterModalVariant.App].includes(
+        variant,
+      ),
       dataTestId: 'filterby-department',
     },
     {
@@ -241,7 +237,7 @@ const FilterModal: FC<IFilterModalProps> = ({
         FilterModalVariant.Orgchart,
         FilterModalVariant.Team,
       ].includes(variant),
-      dataTestId: 'filterby-location',
+      dataTestId: 'filterby-teams',
     },
     {
       label: () => (

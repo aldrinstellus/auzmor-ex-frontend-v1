@@ -140,7 +140,7 @@ const Locations: FC<ILocationsProps> = ({ control, watch, setValue }) => {
                 debouncedLocationSearchValue === '') &&
               locationData?.length === 0 ? (
                 <div className="flex items-center w-full text-lg font-bold">
-                  No Categories found
+                  No Locations found
                 </div>
               ) : (
                 <div className="py-16 w-full text-lg font-bold text-center">
