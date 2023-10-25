@@ -29,7 +29,7 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { form } = useEntitySearchFormStore();
-  const { watch, setValue, control } = form!;
+  const { watch, setValue, control, getValues } = form!;
   const { user } = useAuth();
   const { isAdmin } = useRole();
   const { data: organization } = useOrganization();
@@ -298,9 +298,19 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
                       },
                     ]}
                   />
-                  {(entityRenderer && entityRenderer(team)) || (
-                    <TeamRow team={team} />
-                  )}
+                  <div
+                    className="w-full cursor-pointer"
+                    onClick={() => {
+                      setValue(
+                        `teams.${team.id}`,
+                        !!getValues(`teams.${team.id}`) ? false : team,
+                      );
+                    }}
+                  >
+                    {(entityRenderer && entityRenderer(team)) || (
+                      <TeamRow team={team} />
+                    )}
+                  </div>
                 </div>
                 {index !== teamsData.length - 1 && <Divider />}
               </div>
