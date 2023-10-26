@@ -31,20 +31,26 @@ const DeleteApp: FC<IDeleteAppProps> = ({ open, closeModal, appId }) => {
     mutationFn: deleteApp,
     onError: (_error) => {
       closeModal(true);
-      toast(<FailureToast content="Error deleting the app" dataTestId="" />, {
-        closeButton: (
-          <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-        ),
-        style: {
-          border: `1px solid ${twConfig.theme.colors.red['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
+      toast(
+        <FailureToast
+          content="Error deleting the app"
+          dataTestId="delete-app-error-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
         },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
-      });
+      );
     },
     onSuccess: (_data, _variables, _context) => {
       closeModal(true);
@@ -53,7 +59,7 @@ const DeleteApp: FC<IDeleteAppProps> = ({ open, closeModal, appId }) => {
       toast(
         <SuccessToast
           content="App has been deleted successfully"
-          dataTestId="app-toaster"
+          dataTestId="delete-app-toaster"
         />,
         {
           closeButton: (

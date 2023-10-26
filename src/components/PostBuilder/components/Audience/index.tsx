@@ -189,6 +189,7 @@ const Audience: FC<IAudienceProps> = ({ closeModal, dataTestId }) => {
           setAudienceFlow={setAudienceFlow}
           isEveryoneSelected={isEveryoneSelected}
           setIsEveryoneSelected={setIsEveryoneSelected}
+          dataTestId="select"
         />
         <Footer
           isValid

@@ -6,6 +6,7 @@ import { FC } from 'react';
 interface IFooter {
   handleSubmit: UseFormHandleSubmit<IAudienceForm>;
   entityType: EntitySearchModalType;
+  dataTestId: string;
   onSubmit: (ids: string[]) => void;
   onCancel: () => void;
   submitButtonText: string;
@@ -15,6 +16,7 @@ interface IFooter {
 const Footer: FC<IFooter> = ({
   handleSubmit,
   entityType,
+  dataTestId,
   onSubmit,
   onCancel,
   submitButtonText,
@@ -28,11 +30,11 @@ const Footer: FC<IFooter> = ({
           label={cancelButtonText}
           className="mr-3"
           onClick={onCancel}
-          dataTestId="scheduledpost-back"
+          dataTestId={`${dataTestId}-${cancelButtonText.toLowerCase()}`}
         />
         <Button
           label={submitButtonText}
-          dataTestId="scheduledpost-next"
+          dataTestId={`${dataTestId}-cta`}
           onClick={handleSubmit((formData) => {
             if (entityType === EntitySearchModalType.User) {
               const ids: string[] = [];

@@ -124,12 +124,12 @@ const People: FC<IPeopleProps> = ({
         status: appliedFilters.status?.length
           ? appliedFilters?.status?.map((eachStatus) => eachStatus.id).join(',')
           : undefined,
-        departmentIds: appliedFilters.departments?.length
+        departments: appliedFilters.departments?.length
           ? appliedFilters.departments
               ?.map((eachDepartment) => eachDepartment.id)
               .join(',')
           : undefined,
-        locationIds: appliedFilters.locations?.length
+        locations: appliedFilters.locations?.length
           ? appliedFilters.locations
               ?.map((eachLocation) => eachLocation.id)
               .join(',')
@@ -149,12 +149,12 @@ const People: FC<IPeopleProps> = ({
         status: appliedFilters.status?.length
           ? appliedFilters?.status?.map((eachStatus) => eachStatus.id).join(',')
           : undefined,
-        departmentIds: appliedFilters.departments?.length
+        departments: appliedFilters.departments?.length
           ? appliedFilters.departments
               ?.map((eachDepartment) => eachDepartment.id)
               .join(',')
           : undefined,
-        locationIds: appliedFilters.locations?.length
+        locations: appliedFilters.locations?.length
           ? appliedFilters.locations
               ?.map((eachLocation) => eachLocation.id)
               .join(',')

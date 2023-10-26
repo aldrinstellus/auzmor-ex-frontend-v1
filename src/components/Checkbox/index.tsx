@@ -52,6 +52,7 @@ const Checkbox: FC<CheckboxProps> = ({
         name={field.name}
         ref={field.ref}
         disabled={loading || disabled}
+        data-testid={dataTestId}
         onChange={(e) =>
           field.onChange(transform?.output ? transform?.output(e) : e)
         }
@@ -62,7 +63,7 @@ const Checkbox: FC<CheckboxProps> = ({
         }
         {...rest}
       />
-      <label className={styles} data-testid={dataTestId}>
+      <label className={styles}>
         {label && (
           <div className="pl-2">
             <div className="font-semibold text-sm cursor-pointer">{label}</div>

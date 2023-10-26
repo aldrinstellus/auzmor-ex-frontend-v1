@@ -140,7 +140,7 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
               label: 'Search for a team',
               placeholder: 'Search via team name',
               isClearable: true,
-              dataTestId: `select-${dataTestId}-search`,
+              dataTestId: `${dataTestId}-search`,
               inputClassName: 'text-sm py-[9px]',
             },
           ]}
@@ -186,7 +186,7 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
                   }
                 }}
                 selectionCount={selectedCategories.length}
-                dataTestId={`categoryfilter`}
+                dataTestId={`${dataTestId}-filter-category`}
               />
             </div>
           </div>
@@ -200,7 +200,7 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
                 setValue(`categories.${key}`, false),
               );
             }}
-            data-testid={`select-${dataTestId}-clearfilter`}
+            data-testid={`${dataTestId}-clearfilter`}
           >
             Clear filters
           </div>
@@ -235,7 +235,7 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
                       return e.target.checked;
                     },
                   },
-                  dataTestId: `select-${dataTestId}-selectall`,
+                  dataTestId: `${dataTestId}-selectall`,
                 },
               ]}
             />
@@ -250,7 +250,7 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
                       .length
                   })`,
                   className: 'flex item-center',
-                  dataTestId: `select-${dataTestId}-showselected`,
+                  dataTestId: `${dataTestId}-showselected`,
                 },
               ]}
               className="ml-4"
@@ -263,12 +263,15 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
               setValue('selectAll', false);
               setValue('showSelectedMembers', false);
             }}
-            data-testid={`select-${dataTestId}-clearall`}
+            data-testid={`${dataTestId}-clearall`}
           >
             clear all
           </div>
         </div>
-        <div className="flex flex-col max-h-72 overflow-scroll">
+        <div
+          className="flex flex-col max-h-72 overflow-scroll"
+          data-testid={`${dataTestId}-list`}
+        >
           {isLoading ? (
             <div className="flex items-center w-full justify-center p-12">
               <Spinner />
@@ -295,6 +298,7 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
                           },
                         },
                         defaultChecked: selectedTeamIds.includes(team.id),
+                        dataTestId: `${dataTestId}-select-${team.id}`,
                       },
                     ]}
                   />
@@ -327,10 +331,17 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
                 </p>
               }
               hideClearBtn
-              dataTestId="team"
+              dataTestId={`${dataTestId}-noresult`}
             />
           )}
-          {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+          {hasNextPage && !showSelectedMembers && !isFetchingNextPage && (
+            <div ref={ref} />
+          )}
+          {isFetchingNextPage && (
+            <div className="flex items-center w-full justify-center p-12">
+              <Spinner />
+            </div>
+          )}
         </div>
       </div>
     </div>
