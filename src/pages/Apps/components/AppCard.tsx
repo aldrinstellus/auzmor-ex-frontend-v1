@@ -46,7 +46,7 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
       toast(
         <SuccessToast
           content={`App has been added to featured apps`}
-          dataTestId="app-updated-success-toaster"
+          dataTestId="feature-app-toaster"
         />,
         {
           closeButton: (
@@ -72,7 +72,7 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
       toast(
         <FailureToast
           content={`Error while adding app to featured apps`}
-          dataTestId="app-create-error-toaster"
+          dataTestId="feature-app-error-toaster"
         />,
         {
           closeButton: (
@@ -102,8 +102,8 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
       queryClient.invalidateQueries(['my-featured-apps']);
       toast(
         <SuccessToast
-          content={`App has been removed featured apps`}
-          dataTestId="app-updated-success-toaster"
+          content={`App has been removed from featured apps`}
+          dataTestId="unfeature-app-toaster"
         />,
         {
           closeButton: (
@@ -129,7 +129,7 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
       toast(
         <FailureToast
           content={`Error while removing app from featured apps`}
-          dataTestId="app-create-error-toaster"
+          dataTestId="unfeature-app-error-toaster"
         />,
         {
           closeButton: (

@@ -14,6 +14,7 @@ interface IAudienceSelectorProps {
   isEveryoneSelected: boolean;
   setIsEveryoneSelected: (value: boolean) => void;
   infoText?: string;
+  dataTestId?: string;
 }
 
 const AudienceSelector: FC<IAudienceSelectorProps> = ({
@@ -21,6 +22,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
   setAudienceFlow,
   isEveryoneSelected,
   setIsEveryoneSelected,
+  dataTestId,
   infoText = 'Your post will appear in Feed, on your profile and in search results. You can change the audience of this specific post.',
 }) => {
   const { isAdmin } = useRole();
@@ -156,7 +158,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
       return (
         <EntitySearchModalBody
           entityType={EntitySearchModalType.User}
-          dataTestId="user"
+          dataTestId={`${dataTestId}-user`}
           selectedMemberIds={Object.keys(users).filter(
             (key: string) => users[key],
           )}
@@ -167,7 +169,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
       return (
         <EntitySearchModalBody
           entityType={EntitySearchModalType.Channel}
-          dataTestId="channel"
+          dataTestId={`${dataTestId}-channel`}
           selectedChannelIds={Object.keys(channels).filter(
             (key: string) => channels[key],
           )}
@@ -178,7 +180,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
       return (
         <EntitySearchModalBody
           entityType={EntitySearchModalType.Team}
-          dataTestId="team"
+          dataTestId={`${dataTestId}-team`}
           selectedTeamIds={Object.keys(teams).filter(
             (key: string) => teams[key],
           )}

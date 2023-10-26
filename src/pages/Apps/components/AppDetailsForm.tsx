@@ -149,6 +149,7 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
                   variant={Variant.Secondary}
                   label={audience[0].name || 'Team Name'}
                   onClick={() => setActiveFlow(ADD_APP_FLOW.AudienceSelector)}
+                  dataTestId="app-audience-name"
                 />
                 {audience.length > 1 && (
                   <Button
@@ -157,6 +158,7 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
                     size={Size.Small}
                     label={`+ ${audience.length - 1} more`}
                     onClick={() => setActiveFlow(ADD_APP_FLOW.AudienceSelector)}
+                    dataTestId="app-audience-more"
                   />
                 )}
               </div>

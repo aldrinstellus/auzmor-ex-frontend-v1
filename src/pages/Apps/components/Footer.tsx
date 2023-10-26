@@ -20,13 +20,13 @@ const Footer: FC<IFooterProps> = ({
           variant={ButtonVariant.Secondary}
           label="Back"
           onClick={handleBackButtonClick}
-          dataTestId="scheduledpost-back"
+          dataTestId="add-audience-back"
         />
         {audienceFlow === AudienceFlow.EntitySelect && (
           <Button
             label={'Save changes'}
             type={Type.Submit}
-            dataTestId="scheduledpost-next"
+            dataTestId="add-audience-save"
             disabled={!isValid}
             className="ml-3"
           />
@@ -35,7 +35,7 @@ const Footer: FC<IFooterProps> = ({
           <Button
             label={'Next'}
             type={Type.Submit}
-            dataTestId="scheduledpost-next"
+            dataTestId="add-audience-next"
             disabled={!isValid}
             className="ml-3"
           />

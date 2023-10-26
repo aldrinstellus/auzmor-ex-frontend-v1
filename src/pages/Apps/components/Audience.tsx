@@ -157,6 +157,7 @@ const Audience: FC<IAudienceProps> = ({
           setAudienceFlow={setAudienceFlow}
           isEveryoneSelected={isEveryoneSelected}
           setIsEveryoneSelected={setIsEveryoneSelected}
+          dataTestId="add-app"
           infoText="The app will be visible to the audience selected. You can change the
             audience of this specific app."
         />
