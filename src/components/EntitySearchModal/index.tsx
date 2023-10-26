@@ -24,6 +24,7 @@ interface IEntitySearchModalProps {
   submitButtonText?: string;
   cancelButtonText?: string;
   entityType?: EntitySearchModalType;
+  dataTestId?: string;
   selectedMemberIds?: string[];
   entityRenderer?: (data: IGetUser) => ReactNode;
   onSubmit?: (data: string[]) => void;
@@ -58,6 +59,7 @@ const EntitySearchModal: FC<IEntitySearchModalProps> = ({
   closeModal,
   title = 'Add team members',
   entityType = EntitySearchModalType.User,
+  dataTestId = 'add-members',
   onSubmit = () => {},
   onCancel = () => {},
   submitButtonText = 'Next',
@@ -91,12 +93,14 @@ const EntitySearchModal: FC<IEntitySearchModalProps> = ({
         <Header
           title={title || ''}
           onBackIconClick={() => {}}
+          closeBtnDataTestId={`${dataTestId}-close`}
           onClose={closeModal}
         />
         <EntitySearchModalBody
           entityType={EntitySearchModalType.User}
           selectedMemberIds={selectedMemberIds}
           entityRenderer={entityRenderer}
+          dataTestId={dataTestId}
           disableKey={disableKey}
           fetchUsers={fetchUsers}
           usersQueryParams={usersQueryParams}
@@ -104,6 +108,7 @@ const EntitySearchModal: FC<IEntitySearchModalProps> = ({
         <Footer
           handleSubmit={form.handleSubmit}
           entityType={entityType}
+          dataTestId={dataTestId}
           onSubmit={onSubmit}
           onCancel={onCancel}
           cancelButtonText={cancelButtonText}

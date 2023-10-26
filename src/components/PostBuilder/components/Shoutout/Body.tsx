@@ -42,6 +42,7 @@ const Body: FC<ShoutoutBodyProps> = ({
         <EntitySearchModalBody
           entityType={EntitySearchModalType.User}
           selectedMemberIds={selectedUserIds}
+          dataTestId="kudos"
           entitySearchLabel="Give kudos to:"
           hideCurrentUser
           showJobTitleFilter

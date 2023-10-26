@@ -257,7 +257,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
               label: entitySearchLabel || 'Select member',
               placeholder: 'Add via name or email address',
               isClearable: true,
-              dataTestId: `select-${dataTestId}-search`,
+              dataTestId: `${dataTestId}-search`,
               inputClassName: 'text-sm py-[9px]',
             },
           ]}
@@ -303,7 +303,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
                   }
                 }}
                 selectionCount={selectedDepartments.length}
-                dataTestId={`departmentfilter`}
+                dataTestId={`${dataTestId}-filter-department`}
               />
             </div>
             <div className="relative">
@@ -339,7 +339,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
                   }
                 }}
                 selectionCount={selectedLocations.length}
-                dataTestId={`locationfilter`}
+                dataTestId={`${dataTestId}-filter-location`}
               />
             </div>
             {showJobTitleFilter && (
@@ -376,7 +376,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
                     }
                   }}
                   selectionCount={selectedDesignations.length}
-                  dataTestId={`jobTitlefilter`}
+                  dataTestId={`${dataTestId}-filter-jobtitle`}
                 />
               </div>
             )}
@@ -399,7 +399,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
                 setValue(`designations.${key}`, false),
               );
             }}
-            data-testid={`select-${dataTestId}-clearfilter`}
+            data-testid={`${dataTestId}-clearfilter`}
           >
             Clear filters
           </div>
@@ -435,7 +435,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
                     },
                   },
                   disabled: showSelectedMembers,
-                  dataTestId: `select-${dataTestId}-selectall`,
+                  dataTestId: `${dataTestId}-selectall`,
                 },
               ]}
             />
@@ -448,7 +448,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
                   label: `Show selected members (${selectedCount})`,
                   className: 'flex item-center',
                   disabled: selectedCount === 0 && !showSelectedMembers,
-                  dataTestId: `select-${dataTestId}-showselected`,
+                  dataTestId: `${dataTestId}-showselected`,
                 },
               ]}
               className="ml-4"
@@ -461,7 +461,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
               setValue('selectAll', false);
               setValue('showSelectedMembers', false);
             }}
-            data-testid={`select-${dataTestId}-clearall`}
+            data-testid={`${dataTestId}-clearall`}
           >
             clear all
           </div>
@@ -469,6 +469,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
         <div
           className="flex flex-col max-h-72 overflow-scroll"
           id="entity-search-members-body"
+          data-testid={`${dataTestId}-list`}
         >
           {isLoading ? (
             <div className="flex items-center w-full justify-center p-12">
@@ -503,6 +504,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
                           },
                         },
                         defaultChecked: selectedMemberIds.includes(user.id),
+                        dataTestId: `${dataTestId}-select-${user.id}`,
                       },
                     ]}
                   />
@@ -535,7 +537,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
                 </p>
               }
               hideClearBtn
-              dataTestId="user"
+              dataTestId={`${dataTestId}-noresult`}
             />
           )}
           {hasNextPage && !showSelectedMembers && !isFetchingNextPage && (

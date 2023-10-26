@@ -46,7 +46,7 @@ const UserCard: FC<IUserCardProp> = ({
         [className]: true,
       });
       return (
-        <div className={style}>
+        <div className={style} data-testid="usercard">
           <div className="mr-4">
             <Avatar
               size={80}
@@ -179,7 +179,7 @@ const UserCard: FC<IUserCardProp> = ({
         });
       }, 0);
       return (
-        <div className={style}>
+        <div className={style} data-testid="usercard">
           <div className="flex"></div>
           <div className="flex flex-col px-6 py-4">
             <div className="flex">

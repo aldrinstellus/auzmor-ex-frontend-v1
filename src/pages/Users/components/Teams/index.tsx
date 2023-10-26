@@ -519,6 +519,7 @@ const Team: FC<ITeamProps> = ({
           closeModal={closeAddMemberModal}
           onBackPress={openTeamModal}
           entityType={EntitySearchModalType.User}
+          dataTestId="add-members"
           entityRenderer={(data: IGetUser) => {
             return (
               <div className="flex space-x-4 w-full">
@@ -526,36 +527,49 @@ const Team: FC<ITeamProps> = ({
                   name={data?.fullName || 'U'}
                   size={32}
                   image={getProfileImage(data)}
+                  dataTestId="member-profile-pic"
                 />
                 <div className="flex space-x-6 w-full">
                   <div className="flex flex-col w-full">
                     <div className="flex justify-between items-center">
-                      <div className="text-sm font-bold text-neutral-900">
+                      <div
+                        className="text-sm font-bold text-neutral-900"
+                        data-testid="member-name"
+                      >
                         {data?.fullName}
                       </div>
                       <div className="flex space-x-[14px] items-center">
-                        {data?.designation?.name && (
+                        {data?.department?.name && (
                           <div className="flex space-x-1 items-start">
                             <Icon name="briefcase" size={16} />
-                            <div className="text-xs font-normal text-neutral-500">
-                              {data?.designation?.name}
+                            <div
+                              className="text-xs font-normal text-neutral-500"
+                              data-testid="member-department"
+                            >
+                              {data?.department?.name}
                             </div>
                           </div>
                         )}
-                        {data?.designation && data?.workLocation?.name && (
+                        {data?.department && data?.workLocation?.name && (
                           <div className="w-1 h-1 bg-neutral-500 rounded-full" />
                         )}
                         {data?.workLocation?.name && (
                           <div className="flex space-x-1 items-start">
                             <Icon name="location" size={16} />
-                            <div className="text-xs font-normal text-neutral-500">
+                            <div
+                              className="text-xs font-normal text-neutral-500"
+                              data-testid="member-location"
+                            >
                               {data?.workLocation.name}
                             </div>
                           </div>
                         )}
                       </div>
                     </div>
-                    <div className="text-xs font-normal text-neutral-500">
+                    <div
+                      className="text-xs font-normal text-neutral-500"
+                      data-testid="member-email"
+                    >
                       {data?.primaryEmail}
                     </div>
                   </div>

@@ -262,6 +262,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
           openModal={openAddMemberModal}
           closeModal={closeAddMemberModal}
           entityType={EntitySearchModalType.User}
+          dataTestId="add-members"
           fetchUsers={useInfiniteMembers}
           usersQueryParams={{ entityType: 'TEAM', entityId: data.id }}
           entityRenderer={(data: IGetUser) => {
@@ -271,29 +272,39 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                   name={getFullName(data) || 'U'}
                   size={32}
                   image={getProfileImage(data)}
+                  dataTestId="member-profile-pic"
                 />
                 <div className="flex space-x-6 w-full">
                   <div className="flex flex-col w-full">
                     <div className="flex justify-between items-center">
-                      <div className="text-sm font-bold text-neutral-900 whitespace-nowrap line-clamp-1">
+                      <div
+                        className="text-sm font-bold text-neutral-900 whitespace-nowrap line-clamp-1"
+                        data-testid="member-name"
+                      >
                         {getFullName(data)}
                       </div>
                       <div className="flex space-x-[14px] items-center">
-                        {data?.designation?.name && (
+                        {data?.department?.name && (
                           <div className="flex space-x-1 items-start">
                             <Icon name="briefcase" size={16} />
-                            <div className="text-xs font-normal text-neutral-500">
-                              {data?.designation.name}
+                            <div
+                              className="text-xs font-normal text-neutral-500"
+                              data-testid="member-department"
+                            >
+                              {data?.department.name}
                             </div>
                           </div>
                         )}
-                        {data?.designation && data?.workLocation?.name && (
+                        {data?.department && data?.workLocation?.name && (
                           <div className="w-1 h-1 bg-neutral-500 rounded-full" />
                         )}
                         {data?.workLocation?.name && (
                           <div className="flex space-x-1 items-start">
                             <Icon name="location" size={16} />
-                            <div className="text-xs font-normal text-neutral-500 whitespace-nowrap">
+                            <div
+                              className="text-xs font-normal text-neutral-500 whitespace-nowrap"
+                              data-testid="member-location"
+                            >
                               {data?.workLocation.name}
                             </div>
                           </div>
@@ -301,7 +312,10 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
-                      <div className="text-xs font-normal text-neutral-500">
+                      <div
+                        className="text-xs font-normal text-neutral-500"
+                        data-testid="member-email"
+                      >
                         {data?.primaryEmail}
                       </div>
                       {data?.isPresent && (

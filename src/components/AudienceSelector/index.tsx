@@ -156,6 +156,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
       return (
         <EntitySearchModalBody
           entityType={EntitySearchModalType.User}
+          dataTestId="user"
           selectedMemberIds={Object.keys(users).filter(
             (key: string) => users[key],
           )}
@@ -166,6 +167,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
       return (
         <EntitySearchModalBody
           entityType={EntitySearchModalType.Channel}
+          dataTestId="channel"
           selectedChannelIds={Object.keys(channels).filter(
             (key: string) => channels[key],
           )}
@@ -176,6 +178,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
       return (
         <EntitySearchModalBody
           entityType={EntitySearchModalType.Team}
+          dataTestId="team"
           selectedTeamIds={Object.keys(teams).filter(
             (key: string) => teams[key],
           )}
