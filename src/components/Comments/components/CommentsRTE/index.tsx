@@ -58,6 +58,7 @@ interface CommentFormProps {
   setIsCreateCommentLoading?: (state: boolean) => void;
   setMediaValidationErrors?: (errors: IMediaValidationError[]) => void;
   isCreateCommentLoading?: boolean;
+  suggestions?: string;
 }
 
 interface IUpdateCommentPayload {
@@ -84,6 +85,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
   mediaValidationErrors = [],
   setIsCreateCommentLoading = () => {},
   setMediaValidationErrors = () => {},
+  suggestions,
 }) => {
   const {
     comment,
@@ -263,6 +265,15 @@ export const CommentsRTE: FC<CommentFormProps> = ({
       );
     },
   });
+
+  useEffect(() => {
+    if (suggestions && quillRef.current) {
+      quillRef.current?.setEditorContents(
+        quillRef.current?.getEditor(),
+        suggestions,
+      );
+    }
+  }, [suggestions]);
 
   const onSubmit = async () => {
     let fileIds: string[] = [];

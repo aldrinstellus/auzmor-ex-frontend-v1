@@ -25,6 +25,7 @@ import {
   MediaValidationError,
 } from 'contexts/CreatePostContext';
 import { useUploadState } from 'hooks/useUploadState';
+import { useFeedStore } from 'stores/feedStore';
 
 export const validImageTypesForComments = [
   'image/png',
@@ -36,6 +37,18 @@ export const validImageTypesForComments = [
 interface CommentsProps {
   entityId: string;
 }
+
+const WORK_ANNIVERSARY_SUGGESTIONS = [
+  'Happy work anniversary! 🎉',
+  'Congratulations! 🎉',
+  'Great work 🎉',
+];
+
+const BIRTHDAY_SUGGESTIONS = [
+  'Happy birthday 🎂',
+  'Many many happy returns of the day 🎂',
+  'Wishes to you 🎂',
+];
 
 export interface IComment {
   content: {
@@ -86,6 +99,8 @@ const Comments: FC<CommentsProps> = ({ entityId }) => {
     limit: 4,
   });
   const [isCreateCommentLoading, setIsCreateCommentLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState<string>('');
+  const getPost = useFeedStore((state) => state.getPost);
 
   const commentIds = data?.pages.flatMap((page) => {
     return page.data?.result?.data.map((comment: { id: string }) => {
@@ -124,8 +139,37 @@ const Comments: FC<CommentsProps> = ({ entityId }) => {
           setIsCreateCommentLoading={setIsCreateCommentLoading}
           setMediaValidationErrors={setMediaValidationErrors}
           isCreateCommentLoading={isCreateCommentLoading}
+          suggestions={suggestions}
         />
       </div>
+      {getPost(entityId)?.occasionContext?.type === 'WORK_ANNIVERSARY' && (
+        <div className="flex mt-2 w-full justify-center">
+          {WORK_ANNIVERSARY_SUGGESTIONS.map((suggestions: string) => (
+            <div
+              className="px-3 py-1.5 rounded-17xl border border-neutral-200 mx-2 text-xxs font-medium cursor-pointer"
+              onClick={() => setSuggestions(suggestions)}
+              key={suggestions}
+            >
+              {suggestions}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {getPost(entityId)?.occasionContext?.type === 'BIRTHDAY' && (
+        <div className="flex mt-2 w-full justify-center">
+          {BIRTHDAY_SUGGESTIONS.map((suggestions: string) => (
+            <div
+              className="px-3 py-1.5 rounded-17xl border border-neutral-200 mx-2 text-xxs font-medium cursor-pointer"
+              onClick={() => setSuggestions(suggestions)}
+              key={suggestions}
+            >
+              {suggestions}
+            </div>
+          ))}
+        </div>
+      )}
+
       {isLoading ? (
         <div>
           <Divider className="my-4" />

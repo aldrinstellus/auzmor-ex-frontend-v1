@@ -408,7 +408,7 @@ const Team: FC<ITeamProps> = ({
         </div>
       )}
 
-      <div className="flex flex-wrap gap-6">
+      <div className="grid grid-cols-6 gap-6 justify-items-center lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
         {(() => {
           if (isLoading) {
             const loaders = [...Array(30)].map((element) => (

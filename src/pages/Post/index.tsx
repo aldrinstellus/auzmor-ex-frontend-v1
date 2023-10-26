@@ -4,6 +4,7 @@ import PageLoader from 'components/PageLoader';
 import Post from 'components/Post';
 import { Reply } from 'components/Reply/Reply';
 import UserCard from 'components/UserWidget';
+import useMediaQuery from 'hooks/useMediaQuery';
 import PageNotFound from 'pages/PageNotFound';
 import { useGetPost } from 'queries/post';
 import { FC } from 'react';
@@ -11,6 +12,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { useFeedStore } from 'stores/feedStore';
 
 const PostPage: FC = () => {
+  const isLargeScreen = useMediaQuery('(min-width: 1300px)');
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const commentId = searchParams.get('commentId') || undefined;
@@ -29,13 +31,15 @@ const PostPage: FC = () => {
 
   const post = getPost(id);
 
+  const getRightWidgets = () => <AnnouncementCard postId={post.id} />;
   return post ? (
     <>
       <div className="mb-12 space-x-8 flex w-full">
-        <div className="sticky top-10 z-10 min-w-[293px] max-w-[293px]">
+        <div className="z-10 w-[293px] flex flex-col gap-6">
           <UserCard />
+          {!isLargeScreen && getRightWidgets()}
         </div>
-        <div className="w-1/2">
+        <div className="flex-grow flex flex-col">
           <Post
             post={post}
             customNode={
@@ -56,9 +60,11 @@ const PostPage: FC = () => {
             }
           />
         </div>
-        <div className="min-w-[293px] max-w-[293px]">
-          <AnnouncementCard postId={post.id} />
-        </div>
+        {isLargeScreen && (
+          <div className="z-10 w-[293px] flex flex-col gap-6">
+            {getRightWidgets()}
+          </div>
+        )}
       </div>
     </>
   ) : (
