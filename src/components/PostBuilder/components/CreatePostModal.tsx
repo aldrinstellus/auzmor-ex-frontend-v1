@@ -510,11 +510,18 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     updatePostMutation.isLoading ||
     uploadStatus === UploadStatus.Uploading;
 
+  const handleOnClose = () => {
+    closeModal();
+    clearPostContext();
+  };
+
   return (
     <>
       <Modal
         open={open}
-        closeModal={showConfirm}
+        closeModal={
+          mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+        }
         dataTestId={
           activeFlow === CreatePostFlow.SchedulePost
             ? 'createpost-scheduledpost-modal'
@@ -530,7 +537,9 @@ const CreatePostModal: FC<ICreatePostModal> = ({
                 return null;
               }
               hideEmojiPalette();
-              return showConfirm();
+              return mode === PostBuilderMode.Create
+                ? showConfirm()
+                : handleOnClose();
             }}
             handleSubmitPost={handleSubmitPost}
             isLoading={loading}
@@ -540,7 +549,9 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         )}
         {activeFlow === CreatePostFlow.CreateAnnouncement && (
           <CreateAnnouncement
-            closeModal={showConfirm}
+            closeModal={
+              mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+            }
             mode={
               customActiveFlow === CreatePostFlow.CreateAnnouncement
                 ? CreateAnnouncementMode.DIRECT
@@ -550,21 +561,42 @@ const CreatePostModal: FC<ICreatePostModal> = ({
           />
         )}
         {activeFlow === CreatePostFlow.EditMedia && (
-          <EditMedia closeModal={showConfirm} />
+          <EditMedia
+            closeModal={
+              mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+            }
+          />
         )}
         {activeFlow === CreatePostFlow.CreatePoll && (
           <div data-testid="createpost-createpoll-modal">
-            <CreatePoll closeModal={showConfirm} />
+            <CreatePoll
+              closeModal={
+                mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+              }
+            />
           </div>
         )}
         {activeFlow === CreatePostFlow.CreateShoutout && (
-          <CreateShoutout closeModal={showConfirm} />
+          <CreateShoutout
+            closeModal={
+              mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+            }
+          />
         )}
         {activeFlow === CreatePostFlow.SchedulePost && (
-          <SchedulePost closeModal={showConfirm} />
+          <SchedulePost
+            closeModal={
+              mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+            }
+          />
         )}
         {activeFlow === CreatePostFlow.Audience && (
-          <Audience closeModal={showConfirm} dataTestId="audience-selection" />
+          <Audience
+            closeModal={
+              mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+            }
+            dataTestId="audience-selection"
+          />
         )}
       </Modal>
       {!!showFullscreenVideo && (
@@ -586,19 +618,16 @@ const CreatePostModal: FC<ICreatePostModal> = ({
       <ConfirmationBox
         open={confirm}
         onClose={closeConfirm}
-        title="Delete"
+        title="Discard"
         description={
           <span>
-            Are you sure you want to delete this post? This cannot be undone
+            Are you sure you want to discard this post? This cannot be undone
           </span>
         }
         success={{
-          label: 'Delete',
+          label: 'Discard',
           className: 'bg-red-500 text-white ',
-          onSubmit: () => {
-            closeModal();
-            clearPostContext();
-          },
+          onSubmit: handleOnClose,
         }}
         discard={{
           label: 'Cancel',
