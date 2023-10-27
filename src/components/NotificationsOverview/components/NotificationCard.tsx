@@ -26,7 +26,9 @@ const NotificationCard: FC<NotificationCardProps> = ({
       {TopCardContent && (
         <div>
           <p
-            className="my-2 mx-4 text-sm text-neutral-900 font-medium line-clamp-1"
+            className={`py-2 px-4 text-sm text-neutral-900 font-medium line-clamp-1 relative ${
+              TopCardContent === 'Announcement' && 'bg-blue-700 text-white'
+            }`}
             dangerouslySetInnerHTML={{
               __html: TopCardContent,
             }}

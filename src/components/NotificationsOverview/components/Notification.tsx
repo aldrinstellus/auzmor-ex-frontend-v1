@@ -91,45 +91,43 @@ const Notification: FC<NotificationCardProps> = ({
   return (
     <Link to={redirect} onClick={handleOnClick}>
       <div
-        className={`${
-          !isRead ? 'bg-orange-50' : 'bg-white'
-        } py-4 pl-6 cursor-pointer`}
+        className={`${!isRead ? 'bg-blue-50' : 'bg-white'} p-4 cursor-pointer`}
         data-testid={`notification-all-row`}
       >
-        <div className="flex gap-x-2">
-          {/* Avatar of the actor with indicator */}
-          {showActor && (
-            <div className="w-fit">
-              <Avatar
-                name={actor.fullName}
-                image={getProfileImage(actor)}
-                size={32}
-              />
-            </div>
-          )}
-          {/* Content */}
-          <div className="flex items-start justify-between gap-x-2 w-full mr-4">
-            <div className="flex flex-col gap-y-2 w-full">
-              <div className="flex flex-col">
-                <p className="text-neutral-900 text-sm">
-                  {getNotificationHeaderMessage()}
-                </p>
-                <p className="text-xs text-neutral-500 font-normal">
-                  {humanizeTime(action.actedAt)}
-                </p>
+        <div className="flex flex-col gap-y-2">
+          <div className="flex gap-x-2">
+            {/* Avatar of the actor */}
+            {showActor && (
+              <div className="w-fit">
+                <Avatar
+                  name={actor.fullName}
+                  image={getProfileImage(actor)}
+                  size={32}
+                />
               </div>
+            )}
+            <div className="flex flex-col">
+              <p className="text-neutral-900 text-sm">
+                {getNotificationHeaderMessage()}
+              </p>
+              <p className="text-xs text-neutral-500 font-normal">
+                {humanizeTime(action.actedAt)}
+              </p>
+            </div>
+          </div>
+          {/* Content */}
+          <div className="flex items-center justify-between w-full mr-4">
+            {/* Unread indicator (blue dot) */}
+            <div className="w-2 h-2 mr-8">
+              {!isRead && <div className="bg-blue-500 w-2 h-2 rounded-full" />}
+            </div>
+            <div className="flex flex-col gap-y-2 w-full">
               <NotificationCard
                 TopCardContent={cardContent?.TopCardContent}
                 BottomCardContent={cardContent?.BottomCardContent}
                 image={cardContent?.image}
                 type={cardContent?.type}
               />
-            </div>
-            {/* Unread indicator (orange dot) */}
-            <div className="w-2 h-2 mt-2">
-              {!isRead && (
-                <div className="bg-orange-400 w-2 h-2 rounded-full" />
-              )}
             </div>
           </div>
         </div>
