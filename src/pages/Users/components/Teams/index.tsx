@@ -283,6 +283,12 @@ const Team: FC<ITeamProps> = ({
     }
   }, [debouncedSearchValue]);
 
+  const showGrid = isLoading || teamsData?.length;
+  const isDataFiltered =
+    debouncedSearchValue || appliedFilters?.categories?.length;
+  const showNoTeams = !showGrid && !isDataFiltered;
+  const showNoDataFound = !showGrid && !showNoTeams;
+
   return (
     <div className="relative pb-8">
       <div className="flex justify-between items-center">
@@ -370,7 +376,7 @@ const Team: FC<ITeamProps> = ({
 
       {/* CATEGORY FILTER */}
 
-      {appliedFilters?.categories && appliedFilters?.categories?.length > 0 && (
+      {appliedFilters?.categories?.length ? (
         <div className="flex justify-between items-start mb-6">
           <div className="flex items-center space-x-2 flex-wrap gap-y-2">
             <div className="text-base text-neutral-500 whitespace-nowrap">
@@ -406,20 +412,19 @@ const Team: FC<ITeamProps> = ({
             Clear Filters
           </div>
         </div>
-      )}
+      ) : null}
 
-      <div className="grid grid-cols-6 gap-6 justify-items-center lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-        {(() => {
-          if (isLoading) {
-            const loaders = [...Array(30)].map((element) => (
-              <div key={element}>
-                <TeamsSkeleton />
-              </div>
-            ));
-            return loaders;
-          }
-          if (teamsData && teamsData?.length > 0) {
-            return (
+      <div>
+        {showGrid ? (
+          <div className="grid grid-cols-6 gap-6 justify-items-center lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+            {isLoading
+              ? [...Array(30)].map((element) => (
+                  <div key={element}>
+                    <TeamsSkeleton />
+                  </div>
+                ))
+              : null}
+            {teamsData?.length ? (
               <>
                 {teamsData?.map((team: any) => (
                   <TeamsCard
@@ -435,69 +440,61 @@ const Team: FC<ITeamProps> = ({
                 </div>
                 {isFetchingNextPage && <PageLoader />}
               </>
-            );
-          }
-          return (
-            <>
-              {(debouncedSearchValue === undefined ||
-                debouncedSearchValue === '') &&
-              teamsData?.length === 0 ? (
-                <div className="flex flex-col space-y-3 items-center w-full">
-                  <div className="flex flex-col space-y-6 items-center">
-                    <img
-                      src={TeamNotFound}
-                      alt="Team Not Found"
-                      height={140}
-                      width={162}
-                    />
-                    <div
-                      className="text-lg font-bold"
-                      data-testid="no-teams-found"
-                    >
-                      No teams found
-                    </div>
+            ) : null}
+          </div>
+        ) : null}
+        {showNoTeams ? (
+          <div className="flex flex-col space-y-3 items-center w-full">
+            <div className="flex flex-col space-y-6 items-center">
+              <img
+                src={TeamNotFound}
+                alt="Team Not Found"
+                height={140}
+                width={162}
+              />
+              <div className="text-lg font-bold" data-testid="no-teams-found">
+                No teams found
+              </div>
+            </div>
+            <div className="flex space-x-1 text-xs font-normal">
+              {isAdmin && tab === TeamTab.AllTeams ? (
+                <>
+                  <div className="text-neutral-500">
+                    There are no teams found in your organization right now. Be
+                    the first to
                   </div>
-                  <div className="flex space-x-1 text-xs font-normal">
-                    {isAdmin ? (
-                      <>
-                        <div className="text-neutral-500">
-                          There are no teams found in your organization right
-                          now. Be the first to
-                        </div>
-                        <div
-                          className="text-blue-500 cursor-pointer font-bold"
-                          onClick={() => openTeamModal()}
-                          data-testid="create-one-team"
-                        >
-                          create one
-                        </div>
-                      </>
-                    ) : (
-                      <div className="text-neutral-500">
-                        You are not a part of any team. Join a team now
-                      </div>
-                    )}
+                  <div
+                    className="text-blue-500 cursor-pointer font-bold"
+                    onClick={() => openTeamModal()}
+                    data-testid="create-one-team"
+                  >
+                    create one
                   </div>
-                </div>
+                </>
               ) : (
-                <NoDataFound
-                  className="py-4 w-full"
-                  searchString={searchValue}
-                  message={
-                    <p>
-                      Sorry we can&apos;t find the team you are looking for.
-                      <br /> Please try using different filters.
-                    </p>
-                  }
-                  onClearSearch={() => {
-                    resetField('search', { defaultValue: '' });
-                  }}
-                  dataTestId="team"
-                />
+                <div className="text-neutral-500">
+                  You are not a part of any team. Join a team now
+                </div>
               )}
-            </>
-          );
-        })()}
+            </div>
+          </div>
+        ) : null}
+        {showNoDataFound ? (
+          <NoDataFound
+            className="py-4 w-full"
+            searchString={searchValue}
+            message={
+              <p>
+                Sorry we can&apos;t find the team you are looking for.
+                <br /> Please try using different filters.
+              </p>
+            }
+            onClearSearch={() => {
+              resetField('search', { defaultValue: '' });
+            }}
+            dataTestId="team"
+          />
+        ) : null}
       </div>
 
       {showTeamModal && (

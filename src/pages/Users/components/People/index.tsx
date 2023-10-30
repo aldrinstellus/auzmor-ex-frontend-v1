@@ -321,6 +321,16 @@ const People: FC<IPeopleProps> = ({
     } else deleteParam('role');
   }, [role]);
 
+  const showGrid = isLoading || usersData?.length;
+  const isDataFiltered =
+    debouncedSearchValue ||
+    role?.value ||
+    appliedFilters.status?.length ||
+    appliedFilters.departments?.length ||
+    appliedFilters.locations?.length;
+  const showNoMembers = isTeamPeople && !showGrid && !isDataFiltered;
+  const showNoDataFound = !showGrid && !showNoMembers;
+
   return (
     <div className="relative pb-8">
       <div className="flex flex-col gap-6">
@@ -501,18 +511,18 @@ const People: FC<IPeopleProps> = ({
           </div>
         ) : null}
 
-        <div className="grid grid-cols-6 gap-6 justify-items-center lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-          {(() => {
-            if (isLoading) {
-              const loaders = [...Array(30)].map((element) => (
-                <div key={element}>
-                  <UsersSkeleton />
-                </div>
-              ));
-              return loaders;
-            }
-            if (usersData && usersData?.length > 0) {
-              return (
+        <div>
+          {showGrid ? (
+            <div className="grid grid-cols-6 gap-6 justify-items-center lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+              {isLoading
+                ? [...Array(30)].map((element) => (
+                    <div key={element}>
+                      <UsersSkeleton />
+                    </div>
+                  ))
+                : null}
+
+              {usersData?.length ? (
                 <>
                   {usersData.map((user: any) => (
                     <PeopleCard
@@ -537,65 +547,63 @@ const People: FC<IPeopleProps> = ({
                   </div>
                   {isFetchingNextPage && <PageLoader />}
                 </>
-              );
-            }
-            return isTeamPeople &&
-              !debouncedSearchValue &&
-              !role?.value &&
-              !appliedFilters.status?.length &&
-              !appliedFilters.departments?.length &&
-              !appliedFilters.locations?.length ? (
-              <div className="flex flex-col w-full items-center space-y-4">
-                <img
-                  src={MemberNotFound}
-                  width={220}
-                  height={144}
-                  alt="No Member Found"
-                />
-                <div className="w-full flex flex-col items-center">
-                  <div className="flex items-center flex-col space-y-1">
-                    <div
-                      className="text-lg font-bold text-neutral-900"
-                      data-testid="teams-no-members-yet"
-                    >
-                      No members yet
-                    </div>
-                    {isAdmin ? (
-                      <div className="text-base font-medium text-neutral-500">
-                        {"Let's get started by adding some members!"}
-                      </div>
-                    ) : null}
-                  </div>
-                </div>
-                {isAdmin ? (
-                  <Button
-                    label={'Add members'}
-                    variant={Variant.Secondary}
-                    className="space-x-1 rounded-[24px]"
-                    size={Size.Large}
-                    dataTestId="team-add-members-cta"
-                    leftIcon={'addCircle'}
-                    leftIconClassName="text-neutral-900"
-                    leftIconSize={20}
-                    onClick={openModal}
-                  />
-                ) : null}
-              </div>
-            ) : (
-              <NoDataFound
-                className="py-4 w-full"
-                searchString={searchValue}
-                message={
-                  <p>
-                    Sorry we can&apos;t find the profile you are looking for.
-                    <br /> Please check the spelling or try again.
-                  </p>
-                }
-                hideClearBtn
-                dataTestId="people"
+              ) : null}
+            </div>
+          ) : null}
+
+          {showNoMembers ? (
+            <div className="flex flex-col w-full items-center space-y-4">
+              <img
+                src={MemberNotFound}
+                width={220}
+                height={144}
+                alt="No Member Found"
               />
-            );
-          })()}
+              <div className="w-full flex flex-col items-center">
+                <div className="flex items-center flex-col space-y-1">
+                  <div
+                    className="text-lg font-bold text-neutral-900"
+                    data-testid="teams-no-members-yet"
+                  >
+                    No members yet
+                  </div>
+                  {isAdmin ? (
+                    <div className="text-base font-medium text-neutral-500">
+                      {"Let's get started by adding some members!"}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+              {isAdmin ? (
+                <Button
+                  label={'Add members'}
+                  variant={Variant.Secondary}
+                  className="space-x-1 rounded-[24px]"
+                  size={Size.Large}
+                  dataTestId="team-add-members-cta"
+                  leftIcon={'addCircle'}
+                  leftIconClassName="text-neutral-900"
+                  leftIconSize={20}
+                  onClick={openModal}
+                />
+              ) : null}
+            </div>
+          ) : null}
+
+          {showNoDataFound ? (
+            <NoDataFound
+              className="py-4 w-full"
+              searchString={searchValue}
+              message={
+                <p>
+                  Sorry we can&apos;t find the profile you are looking for.
+                  <br /> Please check the spelling or try again.
+                </p>
+              }
+              hideClearBtn
+              dataTestId="people"
+            />
+          ) : null}
         </div>
       </div>
 
