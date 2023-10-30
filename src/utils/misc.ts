@@ -354,7 +354,7 @@ export const removeEmptyLines = (content: {
   for (const op of content.editor.ops) {
     if (op.insert) {
       try {
-        op.insert = op.insert?.replaceAll(EMPTY_REGEX, '\n').trim();
+        op.insert = op.insert?.trim();
       } catch (e) {}
     }
   }
