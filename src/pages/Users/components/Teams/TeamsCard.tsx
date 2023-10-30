@@ -20,7 +20,7 @@ export interface ITeamsCardProps {
   recentMembers: any;
   setTeamFlow: (mode: string) => void;
   openModal: () => void;
-  setShowTeamDetail: (detail: Record<string, any> | null) => void;
+  setTeamDetails: (detail: Record<string, any> | null) => void;
 }
 
 const TeamsCard: FC<ITeamsCardProps> = ({
@@ -33,7 +33,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
   recentMembers = [],
   setTeamFlow,
   openModal,
-  setShowTeamDetail,
+  setTeamDetails,
 }) => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -52,7 +52,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
             onEdit={() => {
               openModal();
               setTeamFlow(TeamFlow.EditTeam);
-              setShowTeamDetail({
+              setTeamDetails({
                 id: id,
                 name: name,
                 description: description,

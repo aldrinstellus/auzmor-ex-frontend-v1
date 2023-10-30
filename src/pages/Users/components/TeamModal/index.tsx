@@ -16,6 +16,7 @@ import FailureToast from 'components/Toast/variants/FailureToast';
 import Icon from 'components/Icon';
 import { TeamFlow } from '../Teams';
 import { FC } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export interface ITeamForm {
   name: string;
@@ -29,8 +30,6 @@ export interface IAddTeamModalProps {
   teamFlowMode: string;
   setTeamFlow: any;
   team: Record<string, any> | any;
-  openAddMemberModal: () => void;
-  setShowTeamDetail?: (detail: Record<string, any> | null) => void;
 }
 
 const TeamModal: FC<IAddTeamModalProps> = ({
@@ -39,10 +38,10 @@ const TeamModal: FC<IAddTeamModalProps> = ({
   teamFlowMode,
   setTeamFlow,
   team,
-  openAddMemberModal,
-  setShowTeamDetail,
 }) => {
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const schema = yup.object({
     name: yup.string().required('Please enter team name'),
@@ -104,7 +103,6 @@ const TeamModal: FC<IAddTeamModalProps> = ({
       );
     },
     onSuccess: (data: any) => {
-      setShowTeamDetail && setShowTeamDetail(data.result);
       queryClient.invalidateQueries(['teams']);
       toast(<SuccessToast content={'Team Created Successfully'} />, {
         style: {
@@ -117,8 +115,10 @@ const TeamModal: FC<IAddTeamModalProps> = ({
         transition: slideInAndOutTop,
         theme: 'dark',
       });
-      openAddMemberModal();
       closeModal();
+      navigate(`/teams/${data.result.id}?addMembers=true`, {
+        state: { prevRoute: searchParams.get('tab') },
+      });
       queryClient.invalidateQueries(['categories']);
     },
   });
@@ -184,7 +184,6 @@ const TeamModal: FC<IAddTeamModalProps> = ({
         },
       );
       closeModal();
-      openAddMemberModal();
       queryClient.invalidateQueries(['categories']);
     },
   });

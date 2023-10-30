@@ -19,7 +19,6 @@ import { IDepartment } from 'queries/department';
 import { IDesignation } from 'queries/designation';
 import { IPost } from 'queries/post';
 import moment from 'moment';
-import { EMPTY_REGEX } from './constants';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -354,14 +353,12 @@ export const removeEmptyLines = (content: {
   for (const op of content.editor.ops) {
     if (op.insert) {
       try {
-        op.insert = op.insert?.replaceAll(EMPTY_REGEX, '\n').trim();
+        op.insert = op.insert?.trim();
       } catch (e) {}
     }
   }
 
-  content.text = content.text.replaceAll(EMPTY_REGEX, '\n').trim();
-
-  content.html = content.html.replaceAll('<p><br></p>', '').trim();
+  content.text = content.text?.trim();
 
   return content;
 };
