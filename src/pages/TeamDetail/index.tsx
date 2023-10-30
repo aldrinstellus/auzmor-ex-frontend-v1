@@ -27,11 +27,12 @@ import {
   useLocation,
   useNavigate,
   useParams,
+  useSearchParams,
 } from 'react-router-dom';
 import TeamModal from 'pages/Users/components/TeamModal';
 import { TeamFlow, TeamTab } from 'pages/Users/components/Teams';
 import TeamDetailSkeleton from './components/TeamDetailSkeleton';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import useRole from 'hooks/useRole';
 import TeamOptions from 'components/TeamOptions';
 
@@ -39,6 +40,7 @@ export interface ITeamMemberProps {}
 
 const TeamDetail: FC<ITeamMemberProps> = () => {
   const params = useParams();
+  const [searchParams] = useSearchParams();
   const { state } = useLocation();
   const { prevRoute } = state || {};
   const navigate = useNavigate();
@@ -50,7 +52,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
     false,
   );
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
-    useModal(false);
+    useModal(searchParams.get('addMembers') === 'true', false);
 
   const teamDetail = useSingleTeam(id || '');
 
@@ -127,6 +129,12 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
       navigate(`/teams`);
     }
   };
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('addMembers');
+    history.replaceState({}, '', url);
+  }, []);
 
   if (!teamDetail?.isLoading && !data) {
     return <Navigate to="/404" />;
@@ -253,7 +261,6 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
           teamFlowMode={TeamFlow.EditTeam}
           setTeamFlow={() => {}}
           team={data}
-          openAddMemberModal={openAddMemberModal}
         />
       )}
       {showAddMemberModal && (
@@ -264,7 +271,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
           entityType={EntitySearchModalType.User}
           dataTestId="add-members"
           fetchUsers={useInfiniteMembers}
-          usersQueryParams={{ entityType: 'TEAM', entityId: data.id }}
+          usersQueryParams={{ entityType: 'TEAM', entityId: id }}
           entityRenderer={(data: IGetUser) => {
             return (
               <div className="flex space-x-4 w-full">
