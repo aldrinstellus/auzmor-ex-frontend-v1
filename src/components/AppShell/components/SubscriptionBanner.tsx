@@ -1,6 +1,8 @@
 import Button, { Size } from 'components/Button';
+import ContactSales from 'components/ContactSales';
 import Icon from 'components/Icon';
 import useAuth from 'hooks/useAuth';
+import useModal from 'hooks/useModal';
 import React from 'react';
 
 type AppProps = {
@@ -11,6 +13,7 @@ const SubscriptionBanner: React.FC<AppProps> = ({ closeBanner }) => {
   const { user } = useAuth();
   const daysRemaining = user?.subscription?.daysRemaining || 0;
   const subscriptionType = user?.subscription?.type || 'TRIAL';
+  const [sales, showSales, closeSales] = useModal();
 
   if (subscriptionType !== 'TRIAL') {
     return null;
@@ -32,23 +35,31 @@ const SubscriptionBanner: React.FC<AppProps> = ({ closeBanner }) => {
         }
         if (daysRemaining > 0) {
           return (
-            <span>
+            <div className="flex items-center justify-center space-x-1">
+              <Icon name="warningCircle" className="text-white" />
               <span className="text-primary-500">
                 {user?.subscription?.daysRemaining} days left
               </span>
               &nbsp; for your free Auzmor Office trial
-            </span>
+            </div>
           );
         }
         return (
-          <span>
-            Your subscription has expired. Please contact sales to continue
-            using Auzmor Office
-          </span>
+          <div className="flex items-center justify-center space-x-1">
+            <Icon name="warningCircle" className="text-white" />
+            <span>
+              Your subscription has expired. Please contact sales to continue
+              using Auzmor Office
+            </span>
+          </div>
         );
       })()}
       <div className="pl-6">
-        <Button label="Contact Sales" size={Size.ExtraSmall} />
+        <Button
+          label="Contact Sales"
+          size={Size.ExtraSmall}
+          onClick={showSales}
+        />
       </div>
       <div className="absolute right-8">
         <Icon
@@ -58,6 +69,13 @@ const SubscriptionBanner: React.FC<AppProps> = ({ closeBanner }) => {
           onClick={closeBanner}
         />
       </div>
+      {sales && (
+        <ContactSales
+          open={sales}
+          closeModal={closeSales}
+          title="Your free trial is active. Contact our sales team for questions or to upgrade to full subscription"
+        />
+      )}
     </div>
   );
 };

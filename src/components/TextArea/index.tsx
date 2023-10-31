@@ -20,6 +20,7 @@ export type TextAreaProps = {
   maxLength?: number; // max character allowed
   readOnly?: boolean; // not edit access
   showCounter?: boolean; // show char counter
+  counterPosition?: string;
   disableMaxLength?: boolean;
 };
 
@@ -41,6 +42,7 @@ const TextArea: FC<TextAreaProps> = ({
   maxLength,
   readOnly,
   showCounter,
+  counterPosition = 'bottom',
   disableMaxLength = false,
 }) => {
   const { field } = useController({
@@ -88,10 +90,18 @@ const TextArea: FC<TextAreaProps> = ({
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
+  const counterNode = (
+    <div className="flex mt-1 w-full justify-end text-xs text-neutral-500">
+      {textAreaRef.current?.value.length || defaultValue.length || 0}/
+      {maxLength}
+    </div>
+  );
+
   return (
     <div className="relative flex flex-col gap-y-1">
-      <div>
+      <div className="flex justify-between items-center">
         <div className={labelStyle}>{label}</div>
+        {showCounter && counterPosition === 'top' && counterNode}
       </div>
       <textarea
         ref={textAreaRef}
@@ -109,12 +119,7 @@ const TextArea: FC<TextAreaProps> = ({
         data-testid={dataTestId}
         defaultValue={defaultValue}
       />
-      {showCounter && (
-        <div className="flex mt-1 w-full justify-end text-xs text-neutral-500">
-          {textAreaRef.current?.value.length || defaultValue.length || 0}/
-          {maxLength}
-        </div>
-      )}
+      {showCounter && counterPosition === 'bottom' && counterNode}
       <div
         className={`absolute -bottom-4 text-xs truncate leading-tight ${helpTextStyles}`}
         data-testid={errorDataTestId}

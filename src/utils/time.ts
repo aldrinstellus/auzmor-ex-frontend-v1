@@ -101,7 +101,7 @@ export const getTimeInScheduleFormat = (
 };
 
 export const getRemainingTime = (t1: string) => {
-  return moment(t1, 'YYYY-MM-DD').diff(moment(), 'days');
+  return moment(t1, 'YYYY-MM-DD').diff(moment(), 'days') + 1;
 };
 
 // Returns time from now till given date in human friendly format

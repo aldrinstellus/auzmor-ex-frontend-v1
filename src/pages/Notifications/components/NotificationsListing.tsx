@@ -6,6 +6,7 @@ import { useInfiniteNotifications } from 'queries/notifications';
 import { FC, ReactElement, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import NotificationSkeleton from './SkeletonLoader';
+import NoNotification from 'images/noNotification.svg';
 
 type NotificationsListing = {
   mentions?: boolean;
@@ -99,35 +100,48 @@ const NotificationsListing: FC<NotificationsListing> = ({
     });
   }) as NotificationProps[];
 
-  return (
-    <div>
-      {!isLoading && !isError && (
-        <div className={`flex flex-col overflow-y-auto ${className}`}>
-          {notifications?.length > 0 &&
-            notifications[0] !== undefined &&
-            notifications.map(
-              (notification: NotificationProps, index: number) => (
-                <div key={index}>
-                  <Notification
-                    action={notification.action}
-                    actor={notification.actor}
-                    target={notification.target}
-                    isRead={notification.isRead}
-                    createdAt={notification.createdAt}
-                    interactionCount={notification.interactionCount}
-                    id={notification.id}
-                  />
-                  <Divider className="bg-gray-200" />
-                </div>
-              ),
-            )}
-          <Divider />
-          <div className="text-neutral-500 text-sm font-normal flex justify-center py-4">
-            That&apos;s all for now
+  return isLoading ? (
+    <NotificationSkeleton />
+  ) : (
+    <>
+      {!isError &&
+        (notifications?.length ? (
+          <div className={`flex flex-col overflow-y-auto ${className}`}>
+            {notifications?.length > 0 &&
+              notifications[0] !== undefined &&
+              notifications.map(
+                (notification: NotificationProps, index: number) => (
+                  <div key={index}>
+                    <Notification
+                      action={notification.action}
+                      actor={notification.actor}
+                      target={notification.target}
+                      isRead={notification.isRead}
+                      createdAt={notification.createdAt}
+                      interactionCount={notification.interactionCount}
+                      id={notification.id}
+                    />
+                    <Divider className="bg-gray-200" />
+                  </div>
+                ),
+              )}
+            <Divider />
+            <div className="text-neutral-500 text-sm font-normal flex justify-center py-4">
+              That&apos;s all for now
+            </div>
           </div>
-        </div>
-      )}
-      {isLoading && <NotificationSkeleton />}
+        ) : (
+          <div className="w-full flex flex-col justify-center">
+            <div className="flex">
+              <img
+                src={NoNotification}
+                alt="Apps Not Found"
+                height={140}
+                width={165}
+              />
+            </div>
+          </div>
+        ))}
       {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
       {isFetchingNextPage && (
         <div className="flex items-center justify-center p-6">
@@ -139,7 +153,7 @@ const NotificationsListing: FC<NotificationsListing> = ({
           Error loading notifications
         </div>
       )}
-    </div>
+    </>
   );
 };
 

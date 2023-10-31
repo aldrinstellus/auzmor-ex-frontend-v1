@@ -375,3 +375,8 @@ export const updateUserSettings = async (payload: Record<string, any>) => {
   const { data } = await apiService.post('/users/update', payload);
   return data;
 };
+
+export const contactSales = async (payload: Record<string, any>) => {
+  const { data } = await apiService.post('/users/contact-sales', payload);
+  return data;
+};
