@@ -14,11 +14,9 @@ const EmptyState: FC<EmptyStateProps> = ({ type }) => {
       ? 'Upcoming birthdays will show here'
       : 'Upcoming work anniversaries will show here';
   return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="h-[180px]">
-        <img src={image} height={180} />
-      </div>
-      <p className="text-sm font-semibold text-neutral-500 text-center px-2">
+    <div className="flex flex-col items-center gap-2">
+      <img src={image} height={150} />
+      <p className="text-xs leading-normal font-semibold text-neutral-500 text-center">
         {label}
       </p>
     </div>

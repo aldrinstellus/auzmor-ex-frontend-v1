@@ -138,7 +138,7 @@ const CelebrationWidget: FC<CelebrationWidgetProps> = ({
         data-testid={`collapse-${isBirthday ? 'birthday' : 'anniversaries'}`}
         onClick={toggleModal}
       >
-        <div className="font-bold">{widgetTitle}</div>
+        <div className="font-bold text-base">{widgetTitle}</div>
         <Icon
           name={open ? 'arrowUp' : 'arrowDown'}
           size={20}
