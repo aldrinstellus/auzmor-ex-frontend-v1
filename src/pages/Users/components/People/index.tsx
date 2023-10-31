@@ -376,6 +376,7 @@ const People: FC<IPeopleProps> = ({
               selectedValue={filterSortBy}
               filterValue={{ asc: 'ASC', desc: 'DESC' }}
               entity={isTeamPeople ? EntitySearchModalType.Team : 'USER'}
+              dataTestId="people-sort"
             />
             <div>
               <Layout
