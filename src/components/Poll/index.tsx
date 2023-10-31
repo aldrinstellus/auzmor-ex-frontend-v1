@@ -31,6 +31,7 @@ type PollProps = {
   postId?: string;
   isDeletable?: boolean;
   myVote?: { optionId: string }[];
+  isAnnouncementWidgetPreview?: boolean;
 };
 
 function animateOption(
@@ -47,7 +48,7 @@ function animateOption(
       width: ['0%', width],
       easing: ['ease-out', 'ease-out'],
     },
-    200,
+    400,
   );
   optionProgress?.setAttribute('style', `width: ${width}`);
 
@@ -57,7 +58,7 @@ function animateOption(
       flexGrow: ['1', flexGrow],
       easing: ['ease-out', 'ease-out'],
     },
-    200,
+    400,
   );
   optionText?.setAttribute('style', `flex-grow: ${flexGrow}`);
 }
@@ -74,6 +75,7 @@ const Poll: FC<IPoll & PollProps> = ({
   postId = '',
   mode = PollMode.VIEW,
   isDeletable = false,
+  isAnnouncementWidgetPreview,
 }) => {
   const [showResults, setShowResults] = useState(false);
   const { isAdmin } = useRole();
@@ -151,6 +153,38 @@ const Poll: FC<IPoll & PollProps> = ({
     });
   }, [mode, options, voted, showResults, timeLeft]);
 
+  if (isAnnouncementWidgetPreview) {
+    return (
+      <div className="bg-neutral-100 py-3 px-2 rounded-9xl w-full flex flex-col gap-3">
+        <p className="text-neutral-900 font-bold break-normal [overflow-wrap:anywhere] line-clamp-2">
+          {question}
+        </p>
+        <div className="flex flex-row gap-3 items-center text-xs leading-normal">
+          <p
+            className="text-orange-500  font-bold"
+            data-testid="createpost-poll-expiry"
+          >
+            {timeLeft ? `${timeLeft} left` : 'Poll closed'}
+          </p>
+          {showTotal && (
+            <Fragment>
+              <div className="bg-neutral-500 rounded-full w-1 h-1" />
+              <p
+                className="text-neutral-500 font-normal"
+                data-testid="feed-post-poll-votes"
+              >{`${total} votes`}</p>
+            </Fragment>
+          )}
+        </div>
+        <Button
+          label={voted || !timeLeft ? 'View Results' : 'Vote Now'}
+          size={ButtonSize.Small}
+          className="py-[6px]"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="bg-neutral-100 py-4 px-8 rounded-9xl w-full">
       {/* Header */}
@@ -214,6 +248,7 @@ const Poll: FC<IPoll & PollProps> = ({
             <div
               className={`grid ${cursorClass}`}
               key={option._id}
+              data-testid={`feed-post-poll-ans${index + 1}`}
               onClick={() => {
                 if (cursorPointer && !isLoading && postId && option._id) {
                   if (votedThisOption) {
@@ -265,7 +300,10 @@ const Poll: FC<IPoll & PollProps> = ({
         {showTotal && (
           <Fragment>
             <div className="bg-neutral-500 rounded-full w-1 h-1" />
-            <p className="text-neutral-500 font-normal">{`${total} votes`}</p>
+            <p
+              className="text-neutral-500 font-normal"
+              data-testid="feed-post-poll-votes"
+            >{`${total} votes`}</p>
           </Fragment>
         )}
         {showViewResults && (
@@ -278,6 +316,9 @@ const Poll: FC<IPoll & PollProps> = ({
               label={showResults ? 'Undo' : 'View results'}
               labelClassName="text-primary-500 font-bold leading-normal"
               onClick={() => setShowResults(!showResults)}
+              dataTestId={`feed-post-poll-${
+                showResults ? 'undo' : 'viewresult'
+              }`}
             />
           </Fragment>
         )}

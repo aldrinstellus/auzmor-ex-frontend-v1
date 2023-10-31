@@ -9,6 +9,10 @@ import NavbarMenuItem from './NavbarMenuItem';
 
 // hooks
 import useRole from 'hooks/useRole';
+import useAuth from 'hooks/useAuth';
+import { useState } from 'react';
+import SubscriptionBanner from './SubscriptionBanner';
+// import { useState } from 'react';
 
 const adminNavigations = [
   {
@@ -23,6 +27,11 @@ const adminNavigations = [
 
 const Navbar = () => {
   const { isAdmin } = useRole();
+  const { user } = useAuth();
+  const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(
+    user?.subscription?.type === 'TRIAL' &&
+      user?.subscription?.daysRemaining > -1,
+  );
 
   // const { control } = useForm({
   //   mode: 'onChange',
@@ -77,13 +86,14 @@ const Navbar = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow h-16 w-full py-[2px]">
-      <div className="bg-white h-full w-full max-w-[1440px] flex items-center py-0.5 px-8 mx-auto justify-between">
-        <Link to="/feed" data-testid="auzmor-office">
-          <Logo />
-        </Link>
-        <div className="flex-1" />
-        {/* <div className="flex-1">
+    <div className="w-full">
+      <div className="sticky top-0 z-50 bg-white shadow h-16 w-full py-[2px]">
+        <div className="bg-white h-full w-full max-w-[1440px] flex items-center py-0.5 px-8 mx-auto justify-between">
+          <Link to="/feed" data-testid="auzmor-office">
+            <Logo />
+          </Link>
+          <div className="flex-1" />
+          {/* <div className="flex-1">
           <Layout
             fields={[
               {
@@ -98,28 +108,34 @@ const Navbar = () => {
             ]}
           />
         </div> */}
-        <div className="flex items-center gap-[60px] h-full">
-          <div className="flex items-center gap-10">
-            {navigations.map((nav) => (
-              <NavbarMenuItem nav={nav} key={nav.label} />
-            ))}
-          </div>
-          <Divider className="h-full" variant={Variant.Vertical} />
-          <div className="flex items-center gap-10">
-            {isAdmin &&
-              adminNavigations.map((nav) => (
+          <div className="flex items-center gap-[60px] h-full">
+            <div className="flex items-center gap-10">
+              {navigations.map((nav) => (
                 <NavbarMenuItem nav={nav} key={nav.label} />
               ))}
-            <div>
-              <NotificationsOverview />
             </div>
-            <div className="p-2">
-              <AccountCard />
+            <Divider className="h-full" variant={Variant.Vertical} />
+            <div className="flex items-center gap-10">
+              {isAdmin &&
+                adminNavigations.map((nav) => (
+                  <NavbarMenuItem nav={nav} key={nav.label} />
+                ))}
+              <div>
+                <NotificationsOverview />
+              </div>
+              <div className="p-2">
+                <AccountCard />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </header>
+      {showSubscriptionBanner && (
+        <SubscriptionBanner
+          closeBanner={() => setShowSubscriptionBanner(false)}
+        />
+      )}
+    </div>
   );
 };
 

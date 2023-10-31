@@ -23,9 +23,6 @@ import CelebrationWidget, {
   CELEBRATION_TYPE,
 } from 'components/CelebrationWidget';
 
-// styles
-import './index.css';
-
 // hooks
 import useScrollTop from 'hooks/useScrollTop';
 import useModal from 'hooks/useModal';
@@ -48,6 +45,7 @@ import AppLauncher from 'components/AppLauncher';
 import MyTeamWidget from 'components/MyTeamWidget';
 import useRole from 'hooks/useRole';
 import { isRegularPost } from 'utils/misc';
+import useMediaQuery from 'hooks/useMediaQuery';
 
 interface IFeedProps {}
 
@@ -73,6 +71,7 @@ export interface IMyReactions {
 }
 
 const Feed: FC<IFeedProps> = () => {
+  const isLargeScreen = useMediaQuery('(min-width: 1300px)');
   useScrollTop();
   const [searchParams] = useSearchParams();
   const { pathname } = useLocation();
@@ -365,12 +364,22 @@ const Feed: FC<IFeedProps> = () => {
     }
   }, [inView]);
 
+  const getRightWidgets = () => (
+    <>
+      <CelebrationWidget type={CELEBRATION_TYPE.Birthday} />
+      <CelebrationWidget type={CELEBRATION_TYPE.WorkAnniversary} />
+      <AnnouncementCard openModal={openModal} className="sticky top-24" />
+    </>
+  );
+
   return (
     <div className="pb-6 flex justify-between">
-      <div className="z-10 w-[293px] flex flex-col gap-6 sticky overflow-y-auto max-h-[calc(100vh-140px)] widget-hide-scroll">
+      <div className="z-10 w-[293px] flex flex-col gap-6">
         <UserCard />
         <AppLauncher />
-        <MyTeamWidget />
+        {isLargeScreen && <MyTeamWidget className="sticky top-24" />}
+        {!isLargeScreen && <MyTeamWidget />}
+        {!isLargeScreen && getRightWidgets()}
       </div>
       <div className="flex-grow w-0 flex flex-col gap-[26px] px-12">
         {FeedHeader}
@@ -409,13 +418,9 @@ const Feed: FC<IFeedProps> = () => {
           <div className="h-12 w-12">{hasNextPage && <div ref={ref} />}</div>
         )}
       </div>
-      <div className="w-[293px]">
-        <div className="flex flex-col gap-6 sticky overflow-y-auto max-h-[calc(100vh-120px)] widget-hide-scroll">
-          <CelebrationWidget type={CELEBRATION_TYPE.Birthday} />
-          <CelebrationWidget type={CELEBRATION_TYPE.WorkAnniversary} />
-          <AnnouncementCard openModal={openModal} />
-        </div>
-      </div>
+      {isLargeScreen && (
+        <div className="w-[293px] flex flex-col gap-6">{getRightWidgets()}</div>
+      )}
       {open && (
         <PostBuilder
           open={open}

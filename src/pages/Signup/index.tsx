@@ -18,6 +18,7 @@ import { Navigate } from 'react-router-dom';
 interface IForm {
   fullName: string;
   workEmail: string;
+  orgName: string;
   domain: string;
   password: string;
   confirmPassword: string;
@@ -31,10 +32,15 @@ const schema = yup.object({
     .string()
     .required('Required field')
     .validateEmail('The email address you entered is invalid'),
+  orgName: yup
+    .string()
+    .required('Required field')
+    .min(3, 'The minimum length required is 3 characters for company name')
+    .max(63, 'The maximum length allowed is 100 characters for company name'),
   domain: yup
     .string()
     .min(3, 'The minimum length required is 3 characters for domain name')
-    .max(63, 'The maximum length required is 63 characters for domain name')
+    .max(63, 'The maximum length allowed is 63 characters for domain name')
     .matches(
       /^(?!-)(?!.*-$)/,
       'Hyphens cannot be used at the beginning and the end of a domain name',
@@ -90,6 +96,7 @@ const Signup: FC<ISignupProps> = () => {
     defaultValues: {
       fullName: '',
       workEmail: '',
+      orgName: '',
       password: '',
       confirmPassword: '',
       domain: '',
@@ -102,6 +109,7 @@ const Signup: FC<ISignupProps> = () => {
   }, [
     watch('fullName'),
     watch('workEmail'),
+    watch('orgName'),
     watch('domain'),
     watch('password'),
     watch('confirmPassword'),
@@ -129,6 +137,18 @@ const Signup: FC<ISignupProps> = () => {
       label: 'Work Email*',
       error: errors.workEmail?.message || errors.workEmail?.types?.exists,
       dataTestId: 'sign-up-email',
+      errorDataTestId: 'signup-error-msg',
+      control,
+      inputClassName: 'h-[44px]',
+    },
+    {
+      type: FieldType.Input,
+      variant: InputVariant.Text,
+      placeholder: 'Enter your Company name',
+      name: 'orgName',
+      label: 'Company Name*',
+      error: errors.orgName?.message,
+      dataTestId: 'sign-up-orgname',
       errorDataTestId: 'signup-error-msg',
       control,
       inputClassName: 'h-[44px]',

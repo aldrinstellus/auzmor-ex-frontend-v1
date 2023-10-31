@@ -36,6 +36,10 @@ class ApiService {
 
     this.instance.interceptors.response.use(
       (response: any) => {
+        if (response.headers?.['x-user-status'] === 'SUBSCRIPTION_IS_EXPIRED') {
+          window.document.dispatchEvent(new Event('session_expired'));
+        }
+
         return response;
       },
       (error: any) => {

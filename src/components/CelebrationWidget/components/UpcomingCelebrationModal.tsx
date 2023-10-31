@@ -187,6 +187,7 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
                   {todaysCelebration.map((celebration) => (
                     <div className="py-4" key={celebration.featuredUser.userId}>
                       <User
+                        id={celebration.featuredUser.userId}
                         type={type}
                         data={celebration}
                         closeModal={closeModal}
@@ -208,6 +209,7 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
                   {thisMonthCelebration.map((celebration) => (
                     <div className="py-4" key={celebration.featuredUser.userId}>
                       <User
+                        id={celebration.featuredUser.userId}
                         type={type}
                         data={celebration}
                         closeModal={closeModal}
@@ -229,6 +231,7 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
                   {upcomingMonthCelebration.map((celebration) => (
                     <div className="py-4" key={celebration.featuredUser.userId}>
                       <User
+                        id={celebration.featuredUser.userId}
                         type={type}
                         data={celebration}
                         closeModal={closeModal}

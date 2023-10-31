@@ -8,6 +8,9 @@ import PageLoader from 'components/PageLoader';
 import { userChannel } from 'utils/misc';
 import { ILocation } from 'queries/location';
 import { IDepartment } from 'queries/department';
+import Smartlook from 'smartlook-client';
+import { getRemainingTime } from 'utils/time';
+import SubscriptionExpired from 'components/SubscriptionExpired';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -18,15 +21,21 @@ interface IOrganization {
   domain: string;
 }
 
+interface ISubscription {
+  type: string;
+  daysRemaining: number;
+}
+
 export interface IUser {
   id: string;
   name: string;
   email: string;
   role: Role;
   organization: IOrganization;
+  subscription?: ISubscription;
   workLocation?: ILocation;
   preferredName?: string;
-  designation?: string;
+  designation?: Record<string, any>;
   department?: IDepartment;
   location?: string;
   profileImage?: string;
@@ -38,12 +47,14 @@ export interface IUser {
 
 interface IAuthContext {
   user: IUser | null;
+  sessionExpired: boolean;
   reset: () => void;
   updateUser: (user: IUser) => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({
   user: null,
+  sessionExpired: false,
   reset: () => {},
   updateUser: () => {},
 });
@@ -53,6 +64,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   const queryClient = useQueryClient();
   const [showOnboard, setShowOnboard] = useState<boolean>(false);
   const [user, setUser] = useState<IUser | null>(null);
+  const [sessionExpired, setSessionExpired] = useState(false);
 
   const setupSession = async () => {
     const query = new URLSearchParams(window.location.search.substring(1));
@@ -80,6 +92,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
       try {
         const userData = await fetchMe();
         const data = userData?.result?.data;
+
         setUser({
           id: data?.id,
           name: data?.fullName,
@@ -96,6 +109,13 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
           department: data?.department,
           workLocation: data?.workLocation,
           outOfOffice: data?.outOfOffice,
+          subscription: {
+            type: data?.org?.subscription.type,
+            daysRemaining: Math.max(
+              getRemainingTime(data?.org?.subscription?.subscriptionExpiresAt),
+              0,
+            ),
+          },
         });
       } catch (e: any) {
         if (e?.response?.status === 401) {
@@ -107,8 +127,38 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
     setLoading(false);
   };
 
+  const initSmartlook = () => {
+    // @ts-ignores
+    if (['production', 'staging', 'qa'].includes(process.env.REACT_APP_ENV)) {
+      // @ts-ignores
+      Smartlook.init(process.env.REACT_APP_SMARTLOOK_KEY);
+    }
+  };
+
+  const setupSmartlookIdentity = () => {
+    if (user) {
+      Smartlook.identify(user.id, {
+        uid: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      });
+    }
+  };
+
+  const sessionExpiredCallback = () => setSessionExpired(true);
+
   useEffect(() => {
+    initSmartlook();
     setupSession();
+    window.document.addEventListener('session_expired', sessionExpiredCallback);
+
+    return () => {
+      window.document.removeEventListener(
+        'session_expired',
+        sessionExpiredCallback,
+      );
+    };
   }, []);
 
   const reset = () => {
@@ -126,6 +176,12 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      setupSmartlookIdentity();
+    }
+  }, [user]);
+
   const updateUser = (user: IUser) => setUser((u) => ({ ...u, ...user }));
 
   if (loading) {
@@ -137,9 +193,10 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, reset, updateUser }}>
+    <AuthContext.Provider value={{ user, sessionExpired, reset, updateUser }}>
       {children}
       {showOnboard && <UserOnboard />}
+      {sessionExpired && user?.id && <SubscriptionExpired />}
     </AuthContext.Provider>
   );
 };

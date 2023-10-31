@@ -20,10 +20,14 @@ const UserRow: FC<IUserRowProps> = ({ user, onClick }) => {
           name={user?.fullName || ''}
           size={32}
           image={getProfileImage(user)}
+          dataTestId="user-profile-pic"
         />
         <div className="flex flex-col justify-between ml-4 truncate">
-          <div>{user?.fullName || ''}</div>
-          <div className="truncate text-neutral-500 text-xs">
+          <div data-testid="user-name">{user?.fullName || ''}</div>
+          <div
+            data-testid="user-email"
+            className="truncate text-neutral-500 text-xs"
+          >
             {user.workEmail || ''}
           </div>
         </div>
@@ -36,7 +40,10 @@ const UserRow: FC<IUserRowProps> = ({ user, onClick }) => {
         <div className="mx-6 w-1 h-1 bg-neutral-500 rounded-full" />
         <div className="flex">
           <Icon name="location" size={16} />
-          <div className="text-neutral-500 text-xs ml-1">
+          <div
+            data-testid="user-location"
+            className="text-neutral-500 text-xs ml-1"
+          >
             {user.workLocation?.name || 'NA'}
           </div>
         </div>

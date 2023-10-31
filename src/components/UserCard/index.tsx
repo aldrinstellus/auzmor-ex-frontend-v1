@@ -46,7 +46,7 @@ const UserCard: FC<IUserCardProp> = ({
         [className]: true,
       });
       return (
-        <div className={style}>
+        <div className={style} data-testid="usercard">
           <div className="mr-4">
             <Avatar
               size={80}
@@ -57,10 +57,16 @@ const UserCard: FC<IUserCardProp> = ({
             />
           </div>
           <div className="flex flex-col justify-between h-full">
-            <div className="text-base font-bold text-neutral-900 truncate">
+            <div
+              className="text-base font-bold text-neutral-900 truncate"
+              data-testid="usercard-name"
+            >
               {getFullName(user) || 'Field not specified'}
             </div>
-            <div className="text-sm font-normal text-neutral-500 truncate">
+            <div
+              className="text-sm font-normal text-neutral-500 truncate"
+              data-testid="usercard-email"
+            >
               {user?.workEmail || 'Field not specified'}
             </div>
             <div className="flex items-center">
@@ -179,7 +185,7 @@ const UserCard: FC<IUserCardProp> = ({
         });
       }, 0);
       return (
-        <div className={style}>
+        <div className={style} data-testid="usercard">
           <div className="flex"></div>
           <div className="flex flex-col px-6 py-4">
             <div className="flex">
@@ -193,19 +199,19 @@ const UserCard: FC<IUserCardProp> = ({
                       : undefined
                   }
                   bgColor={getAvatarColor(user)}
-                  dataTestId="usercard-profilepic"
+                  dataTestId={`usercard-${user?.id}-profilepic`}
                 />
               </div>
               <div className="flex flex-col py-4">
                 <div
                   className="text-lg font-bold text-neutral-900 truncate mb-2"
-                  data-testid="usercard-name"
+                  data-testid={`usercard-${user?.id}-name`}
                 >
                   {getFullName(user) || 'Field not specified'}
                 </div>
                 <div
                   className="text-sm font-normal text-neutral-500 truncate mb-2"
-                  data-testid="usercard-position"
+                  data-testid={`usercard-${user?.id}-position`}
                 >
                   {user?.designation?.name || 'Field not specified'}
                 </div>
@@ -221,7 +227,7 @@ const UserCard: FC<IUserCardProp> = ({
                   <div className="flex items-center">
                     <div
                       className="text-xs font-normal text-neutral-500 truncate"
-                      data-testid="usercard-department"
+                      data-testid={`usercard-${user?.id}-department`}
                     >
                       {user?.department?.name || 'Field not specified'}
                     </div>
@@ -239,7 +245,7 @@ const UserCard: FC<IUserCardProp> = ({
                   <div className="flex items-center">
                     <div
                       className="text-xs font-normal text-neutral-500 truncate"
-                      data-testid="usercard-location"
+                      data-testid={`usercard-${user?.id}-location`}
                     >
                       {user?.workLocation?.name || 'Field not specified'}
                     </div>
@@ -264,7 +270,7 @@ const UserCard: FC<IUserCardProp> = ({
                   </IconWrapper>
                   <div
                     className="truncate w-full"
-                    data-testid="usercard-email"
+                    data-testid={`usercard-${user?.id}-email`}
                     id={`user-card-${user?.id}-email`}
                   >
                     <Skeleton className="w-full" />
@@ -287,7 +293,7 @@ const UserCard: FC<IUserCardProp> = ({
                   </IconWrapper>
                   <div
                     className="truncate w-full"
-                    data-testid="usercard-number"
+                    data-testid={`usercard-${user?.id}-number`}
                     id={`user-card-${user?.id}-workPhone`}
                   >
                     <Skeleton className="w-full" />

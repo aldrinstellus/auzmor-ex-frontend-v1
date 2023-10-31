@@ -64,7 +64,6 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
       button.setAttribute('id', `${data?.id}-expand-collapse-button`);
       button.setAttribute('data-testid', 'feed-post-seemore');
       button.type = 'button';
-      button.style.alignSelf = 'start';
       button.classList.add(
         'showMoreLess',
         'read-more-button',
@@ -82,15 +81,8 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
     if (button) {
       button.addEventListener('click', () => {
         const paragraph = button.previousElementSibling;
-        if (paragraph && paragraph.classList.contains('line-clamp-none')) {
-          button.textContent = 'See more';
-          paragraph.classList.remove('line-clamp-none');
-        } else {
-          if (paragraph) {
-            button.textContent = 'See less';
-            paragraph.classList.add('line-clamp-none');
-          }
-        }
+        paragraph?.classList.add('line-clamp-none');
+        button.remove();
       });
     }
   }, []);
@@ -142,7 +134,7 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
     <div className="w-full text-sm flex flex-col gap-4">
       {!isEmpty && (
         <span
-          className="line-clamp-3 paragraph pt-px"
+          className="line-clamp-3 paragraph pt-px break-normal [overflow-wrap:anywhere]"
           id={`${data?.id}-content`}
           data-testid={isComment ? 'comment-content' : 'feed-post-content'}
         >
@@ -150,7 +142,13 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
         </span>
       )}
 
-      {link && <PreviewCard metaData={link as Metadata} className="" />}
+      {link && (
+        <PreviewCard
+          metaData={link as Metadata}
+          className=""
+          isAnnouncementWidgetPreview={isAnnouncementWidgetPreview}
+        />
+      )}
       {media && media.length > 0 && (
         <div
           className={containerStyle}
@@ -170,16 +168,15 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
         </div>
       )}
       {poll && postType === 'POLL' && (
-        <div className="mt-4">
-          <Poll
-            question={poll.question}
-            closedAt={poll.closedAt}
-            options={poll.options}
-            myVote={myVote}
-            postId={data.id}
-            mode={PollMode.VIEW}
-          />
-        </div>
+        <Poll
+          question={poll.question}
+          closedAt={poll.closedAt}
+          options={poll.options}
+          myVote={myVote}
+          postId={data.id}
+          mode={PollMode.VIEW}
+          isAnnouncementWidgetPreview={isAnnouncementWidgetPreview}
+        />
       )}
       {data?.shoutoutRecipients &&
         data?.shoutoutRecipients.length > 0 &&

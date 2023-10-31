@@ -8,7 +8,7 @@ type AppGridProps = {
 
 const AppGrid: FC<AppGridProps> = ({ apps }) => {
   return (
-    <div className="flex flex-wrap gap-6">
+    <div className="grid grid-cols-5 gap-6 justify-items-center lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
       {apps.map((app) => (
         <AppCard app={app} key={app.id} />
       ))}

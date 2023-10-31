@@ -9,7 +9,12 @@ import { createComment, updateComment } from 'queries/comments';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
 import { toast } from 'react-toastify';
-import { isEmptyEditor, quillHashtagConversion, twConfig } from 'utils/misc';
+import {
+  isEmptyEditor,
+  quillHashtagConversion,
+  removeEmptyLines,
+  twConfig,
+} from 'utils/misc';
 import { produce } from 'immer';
 import { useCommentStore } from 'stores/commentStore';
 import { useFeedStore } from 'stores/feedStore';
@@ -53,6 +58,7 @@ interface CommentFormProps {
   setIsCreateCommentLoading?: (state: boolean) => void;
   setMediaValidationErrors?: (errors: IMediaValidationError[]) => void;
   isCreateCommentLoading?: boolean;
+  suggestions?: string;
 }
 
 interface IUpdateCommentPayload {
@@ -79,6 +85,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
   mediaValidationErrors = [],
   setIsCreateCommentLoading = () => {},
   setMediaValidationErrors = () => {},
+  suggestions,
 }) => {
   const {
     comment,
@@ -259,6 +266,15 @@ export const CommentsRTE: FC<CommentFormProps> = ({
     },
   });
 
+  useEffect(() => {
+    if (suggestions && quillRef.current) {
+      quillRef.current?.setEditorContents(
+        quillRef.current?.getEditor(),
+        suggestions,
+      );
+    }
+  }, [suggestions]);
+
   const onSubmit = async () => {
     let fileIds: string[] = [];
     const mentionList: IMention[] = [];
@@ -275,7 +291,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
         const uploadedMedia = await uploadMedia(files, EntityType.Comment);
         fileIds = uploadedMedia.map((media: IMedia) => media.id);
       }
-      const commentContent = {
+      const commentContent = removeEmptyLines({
         text:
           quillRef.current
             ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
@@ -287,7 +303,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
         editor: quillRef.current
           ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
           .getContents() as DeltaStatic,
-      };
+      });
       quillHashtagConversion(commentContent?.editor)?.ops?.forEach(
         (op: Record<string, any>) => {
           if (op?.insert && op?.insert.mention) {
@@ -307,7 +323,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
       };
       createCommentMutation.mutate(data);
     } else if (mode === PostCommentMode.Edit) {
-      const commentContent = {
+      const commentContent = removeEmptyLines({
         text:
           quillRef.current
             ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
@@ -319,7 +335,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
         editor: quillRef.current
           ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
           .getContents() as DeltaStatic,
-      };
+      });
       quillHashtagConversion(commentContent?.editor)?.ops?.forEach(
         (op: Record<string, any>) => {
           if (op?.insert && op?.insert.mention) {
@@ -342,8 +358,14 @@ export const CommentsRTE: FC<CommentFormProps> = ({
   };
 
   const onChangeEditor = (content: any) => {
-    const ops = content.json.ops || [];
-    setIsEmpty(isEmptyEditor(content.text, ops));
+    const refinedContent = removeEmptyLines({
+      editor: content.json,
+      text: content.text,
+      html: content.html,
+    });
+    setIsEmpty(
+      isEmptyEditor(refinedContent.text, refinedContent.editor.ops || []),
+    );
   };
 
   const getDataTestIdForErrors = (errorType: MediaValidationError) => {
@@ -368,6 +390,9 @@ export const CommentsRTE: FC<CommentFormProps> = ({
         json: quillRef.current
           ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
           .getContents(),
+        html: quillRef.current
+          ?.makeUnprivilegedEditor(quillRef.current?.getEditor())
+          .getHTML(),
       });
     }
   }, []);

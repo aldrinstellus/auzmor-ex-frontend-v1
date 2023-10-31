@@ -8,6 +8,8 @@ import DynamicImagePreview from 'components/DynamicImagePreview';
 import { SHOUTOUT_STEPS } from '.';
 import { getProfileImage } from 'utils/misc';
 import { FC } from 'react';
+import { truncate } from 'lodash';
+import Tooltip from 'components/Tooltip';
 
 interface ShoutoutBodyProps {
   step: SHOUTOUT_STEPS;
@@ -40,12 +42,13 @@ const Body: FC<ShoutoutBodyProps> = ({
         <EntitySearchModalBody
           entityType={EntitySearchModalType.User}
           selectedMemberIds={selectedUserIds}
+          dataTestId="kudos"
           entitySearchLabel="Give kudos to:"
           hideCurrentUser
           showJobTitleFilter
           entityRenderer={(data: IGetUser) => {
             return (
-              <div className="flex space-x-4 w-full pr-2">
+              <div className="flex space-x-4 w-full pr-5">
                 <Avatar
                   name={data?.fullName || 'U'}
                   size={32}
@@ -61,9 +64,16 @@ const Body: FC<ShoutoutBodyProps> = ({
                         {data?.designation?.name && (
                           <div className="flex space-x-1 items-start">
                             <Icon name="briefcase" size={16} />
-                            <div className="text-xs font-normal text-neutral-500">
-                              {data?.designation.name}
-                            </div>
+                            <Tooltip
+                              tooltipContent={data?.designation.name}
+                              showTooltip={data?.designation.name.length > 24}
+                            >
+                              <div className="text-xs font-normal text-neutral-500 max-w-[128px]">
+                                {truncate(data?.designation.name, {
+                                  length: 22,
+                                })}
+                              </div>
+                            </Tooltip>
                           </div>
                         )}
                         {data?.designation && data?.workLocation?.name && (
@@ -72,9 +82,16 @@ const Body: FC<ShoutoutBodyProps> = ({
                         {data?.workLocation?.name && (
                           <div className="flex space-x-1 items-start">
                             <Icon name="location" size={16} />
-                            <div className="text-xs font-normal text-neutral-500">
-                              {data?.workLocation.name}
-                            </div>
+                            <Tooltip
+                              tooltipContent={data?.workLocation.name}
+                              showTooltip={data?.workLocation.name.length > 24}
+                            >
+                              <div className="text-xs font-normal text-neutral-500 max-w-[128px]">
+                                {truncate(data?.workLocation.name, {
+                                  length: 22,
+                                })}
+                              </div>
+                            </Tooltip>
                           </div>
                         )}
                       </div>

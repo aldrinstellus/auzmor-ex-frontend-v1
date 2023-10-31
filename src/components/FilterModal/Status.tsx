@@ -23,7 +23,7 @@ const Status: FC<IStatusProps> = ({ control, watch, setValue }) => {
       placeholder: 'Search',
       isClearable: true,
       leftIcon: 'search',
-      dataTestId: `location-search`,
+      dataTestId: `status-search`,
     },
   ];
 
@@ -66,6 +66,7 @@ const Status: FC<IStatusProps> = ({ control, watch, setValue }) => {
             {statusCheckbox.map((status: ICheckboxListOption) => (
               <div
                 key={status.data.id}
+                data-testid="filter-options"
                 className="flex items-center px-3 py-2 bg-neutral-100 rounded-17xl border border-neutral-200 mr-2 my-1"
               >
                 <div className="text-primary-500 text-sm font-medium whitespace-nowrap">

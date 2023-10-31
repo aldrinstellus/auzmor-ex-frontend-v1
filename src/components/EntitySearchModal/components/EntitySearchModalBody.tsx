@@ -15,6 +15,7 @@ interface IEntitySearchModalBodyProps {
   hideCurrentUser?: boolean;
   showJobTitleFilter?: boolean;
   disableKey?: string;
+  dataTestId?: string;
   fetchUsers?: ApiCallFunction;
   usersQueryParams?: Record<string, any>;
 }
@@ -28,6 +29,7 @@ const EntitySearchModalBody: FC<IEntitySearchModalBodyProps> = ({
   entitySearchLabel,
   hideCurrentUser,
   showJobTitleFilter,
+  dataTestId,
   disableKey,
   fetchUsers,
   usersQueryParams,
@@ -40,7 +42,7 @@ const EntitySearchModalBody: FC<IEntitySearchModalBodyProps> = ({
           selectedMemberIds={selectedMemberIds}
           hideCurrentUser={hideCurrentUser}
           showJobTitleFilter={showJobTitleFilter}
-          dataTestId="user"
+          dataTestId={dataTestId || 'user'}
           disableKey={disableKey}
           entitySearchLabel={entitySearchLabel}
           fetchUsers={fetchUsers}
@@ -52,7 +54,7 @@ const EntitySearchModalBody: FC<IEntitySearchModalBodyProps> = ({
         <TeamsBody
           entityRenderer={entityRenderer}
           selectedTeamIds={selectedTeamIds}
-          dataTestId="team"
+          dataTestId={dataTestId || 'team'}
         />
       );
     case EntitySearchModalType.Channel:
@@ -60,7 +62,7 @@ const EntitySearchModalBody: FC<IEntitySearchModalBodyProps> = ({
         <ChannelsBody
           entityRenderer={entityRenderer}
           selectedChannelIds={selectedChannelIds}
-          dataTestId="channel"
+          dataTestId={dataTestId || 'channel'}
         />
       );
     default:

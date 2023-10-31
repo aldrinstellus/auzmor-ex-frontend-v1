@@ -36,7 +36,10 @@ const Pending: FC<AppProps> = ({ post, closeModal }) => {
       onError: () => {},
       onSuccess: () => {
         toast(
-          <SuccessToast content={'Reminder has been sent to all unreads'} />,
+          <SuccessToast
+            content={'Reminder has been sent to all unreads'}
+            dataTestId="acknowledgement-reminder-toast-message"
+          />,
           {
             closeButton: (
               <Icon
@@ -103,7 +106,10 @@ const Pending: FC<AppProps> = ({ post, closeModal }) => {
             </CircularProgressbarWithChildren>
           </div>
           <div className="ml-4">
-            <div className="text-2xl text-yellow-300 font-semibold">
+            <div
+              className="text-2xl text-yellow-300 font-semibold"
+              data-testid="acknowledge-pending-count"
+            >
               {post?.acknowledgementStats?.pending} out of{' '}
               {post?.acknowledgementStats?.audience} people
             </div>

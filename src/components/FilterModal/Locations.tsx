@@ -80,6 +80,7 @@ const Locations: FC<ILocationsProps> = ({ control, watch, setValue }) => {
             {locationCheckbox.map((location: ICheckboxListOption) => (
               <div
                 key={location.data.id}
+                data-testid="filter-options"
                 className="flex items-center px-3 py-2 bg-neutral-100 rounded-17xl border border-neutral-200 mr-2 my-1"
               >
                 <div className="text-primary-500 text-sm font-medium whitespace-nowrap">
@@ -139,7 +140,7 @@ const Locations: FC<ILocationsProps> = ({ control, watch, setValue }) => {
                 debouncedLocationSearchValue === '') &&
               locationData?.length === 0 ? (
                 <div className="flex items-center w-full text-lg font-bold">
-                  No Categories found
+                  No Locations found
                 </div>
               ) : (
                 <div className="py-16 w-full text-lg font-bold text-center">

@@ -5,129 +5,50 @@ import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
 
-// types
-import { IPostMenu } from './CreatePostModal';
-
 // hooks
 import useAuth from 'hooks/useAuth';
-import Divider, { Variant } from 'components/Divider';
 import { FC, memo } from 'react';
+import { useCreatePostUtilityStore } from 'stores/createPostUtilityStore';
 
 export interface ICreatePostCardProps {
   openModal: () => void;
 }
 
-export const postTypeMapIcons: IPostMenu[] = [
-  {
-    id: 1,
-    label: 'Media',
-    icon: (
-      <Icon
-        name="imageFilled"
-        color="!text-neutral-500"
-        size={14}
-        hover={false}
-      />
-    ),
-    menuItems: [
-      {
-        renderNode: (
-          <div className="flex px-6 py-3 items-center hover:bg-primary-50">
-            <Icon
-              name="image"
-              size={16}
-              className="p-2 rounded-7xl border mr-2.5 bg-white"
-              color="text-primary-500"
-            />
-            <div className="text-sm text-neutral-900 font-medium">
-              Upload a photo
-            </div>
-          </div>
-        ),
-      },
-      {
-        renderNode: (
-          <div className="flex px-6 py-3 items-center hover:bg-primary-50">
-            <Icon
-              name="video"
-              size={16}
-              className="p-2 rounded-7xl border mr-2.5 bg-white"
-              color="text-primary-500"
-            />
-            <div className="text-sm text-neutral-900 font-medium">
-              Upload a video
-            </div>
-          </div>
-        ),
-      },
-      {
-        renderNode: (
-          <div className="flex px-6 py-3 items-center hover:bg-primary-50">
-            <Icon
-              name="document"
-              size={16}
-              className="p-2 rounded-7xl border mr-2.5 bg-white"
-              color="text-primary-500"
-            />
-            <div className="text-sm text-neutral-900 font-medium">
-              Share a document
-            </div>
-          </div>
-        ),
-      },
-    ],
-    divider: true,
-  },
-  {
-    id: 2,
-    label: 'Shoutout',
-    icon: (
-      <Icon
-        name="magicStarFilled"
-        color="!text-neutral-500"
-        size={14}
-        hover={false}
-      />
-    ),
-    menuItems: [],
-    divider: true,
-  },
-  // {
-  //   id: 3,
-  //   label: 'Events',
-  //   icon: <Icon name="calendarFilledTwo" color="text-neutral-500" size={14} />,
-  //   menuItems: [],
-  //   divider: true,
-  // },
-  {
-    id: 4,
-    label: 'Polls',
-    icon: (
-      <Icon
-        name="chartFilled"
-        color="!text-neutral-500"
-        size={14}
-        hover={false}
-      />
-    ),
-    menuItems: [],
-  },
-];
-
 const CreatePostCard: FC<ICreatePostCardProps> = ({ openModal }) => {
   const { user } = useAuth();
-
-  // const tabStyle = (hasDivider = false) =>
-  //   clsx(
-  //     { 'flex justify-center items-center group': true },
-  //     {
-  //       'border-r border-neutral-100': hasDivider && window.innerWidth >= 1480,
-  //     },
-  //     {
-  //       'mx-2 px-4': window.innerWidth >= 1480,
-  //     },
-  //   );
-
+  const {
+    setOpenCreatePostWithMedia,
+    setOpenCreatePostWithShoutout,
+    setOpenCreatePostWithPolls,
+  } = useCreatePostUtilityStore();
+  const handleOnClick = (callback: (flag: boolean) => void) => {
+    return () => {
+      callback(true);
+      openModal();
+    };
+  };
+  const postTypeMapIcons = [
+    {
+      id: 1,
+      label: 'Media',
+      icon: <Icon name="imageFilled" color="text-neutral-500" size={14} />,
+      divider: true,
+      onClick: handleOnClick(setOpenCreatePostWithMedia),
+    },
+    {
+      id: 2,
+      label: 'Shoutout',
+      icon: <Icon name="magicStarFilled" color="text-neutral-500" size={14} />,
+      divider: true,
+      onClick: handleOnClick(setOpenCreatePostWithShoutout),
+    },
+    {
+      id: 3,
+      label: 'Polls',
+      icon: <Icon name="chartFilled" color="text-neutral-500" size={14} />,
+      onClick: handleOnClick(setOpenCreatePostWithPolls),
+    },
+  ];
   return (
     <Card className="bg-white px-6 pt-6 flex flex-col gap-4">
       <div className="flex items-center gap-4">
@@ -148,25 +69,22 @@ const CreatePostCard: FC<ICreatePostCardProps> = ({ openModal }) => {
           data-testid="activityfeed-whatsonurmind"
         />
       </div>
-      <div className="flex flex-wrap border-t border-neutral-100 justify-between w-full px-10">
-        {postTypeMapIcons.map((type, ind) => (
-          <>
-            <div key={type.id} className="flex gap-3 items-center py-3">
-              <div className="flex justify-center items-center rounded-7xl border-1 border-neutral-200 bg-neutral-100 p-2">
-                {type.icon}
-              </div>
-              <div className="text-xs font-normal text-neutral-500">
-                {type.label}
-              </div>
+      <div className="flex border-t border-neutral-100 w-full">
+        {postTypeMapIcons.map((type, idx) => (
+          <div
+            key={type.id}
+            className={`flex gap-3 items-center py-3 grow justify-center cursor-pointer group ${
+              idx !== postTypeMapIcons.length - 1 && 'border-r'
+            }`}
+            onClick={type.onClick}
+          >
+            <div className="flex justify-center items-center rounded-7xl border-1 border-neutral-200 bg-neutral-100 p-2">
+              {type.icon}
             </div>
-
-            {ind !== postTypeMapIcons.length - 1 && (
-              <Divider
-                className="w-1 h-auto !bg-neutral-100"
-                variant={Variant.Vertical}
-              />
-            )}
-          </>
+            <div className="text-xs font-normal text-neutral-500">
+              {type.label}
+            </div>
+          </div>
         ))}
       </div>
     </Card>

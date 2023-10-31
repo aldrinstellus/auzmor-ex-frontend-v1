@@ -98,7 +98,7 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
   return (
     <div>
       <div {...eventHandlers}>
-        <Card shadowOnHover={canEdit}>
+        <Card shadowOnHover={canEdit} dataTestId="contactinfo-card">
           <form onSubmit={handleSubmit(onSubmit)} className="p-6">
             <div className="flex items-center justify-between">
               <p

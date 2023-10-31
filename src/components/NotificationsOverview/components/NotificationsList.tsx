@@ -5,6 +5,7 @@ import Notification from './Notification';
 import { IMedia } from 'contexts/CreatePostContext';
 import NotificationsOverviewSkeleton from './NotificationsOverviewSkeleton';
 import { forwardRef } from 'react';
+import NoNotification from 'images/noNotification.svg';
 
 type NotificationsList = {
   mentions?: boolean;
@@ -72,9 +73,11 @@ const NotificationsList = forwardRef(
   ({ mentions, className }: NotificationsList, ref: any) => {
     const { data, isLoading, isError } = useGetNotifications(mentions);
 
-    return (
+    return isLoading ? (
+      <NotificationsOverviewSkeleton />
+    ) : (
       <div>
-        {!isLoading && !isError && (
+        {!isError && data.data?.result?.data?.length ? (
           <div className={`flex flex-col overflow-y-auto ${className}`}>
             {data.data?.result?.data?.map(
               (notification: NotificationProps, index: number) => (
@@ -97,8 +100,24 @@ const NotificationsList = forwardRef(
               That&apos;s all for now
             </div>
           </div>
+        ) : (
+          <div className="w-full flex flex-col items-center py-12">
+            <div className="flex">
+              <img
+                src={NoNotification}
+                alt="Apps Not Found"
+                height={140}
+                width={165}
+              />
+            </div>
+            <p className="text-neutral-900 font-semibold text-lg mt-2">
+              No Notifications yet
+            </p>
+            <p className="text-neutral-500 text-sm font-medium text-center mt-2.5">
+              We will notify you once we have <br /> something for you
+            </p>
+          </div>
         )}
-        {isLoading && <NotificationsOverviewSkeleton />}
         {isError && (
           <div className="flex items-center justify-center p-6">
             Error loading notifications

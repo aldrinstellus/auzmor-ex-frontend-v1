@@ -4,11 +4,11 @@ import * as momentTimezone from 'moment-timezone';
 
 export const TIME_PATTERN = /^(0[0-9]|1[0-2]):[0-5][0-9] (am|pm)$/; // it will strictly follow "HH:MM am/pm, HH-> [00-12], MM-> [00->59]"
 
-export const parseDate = (timestring: string) => {
+export const parseDate = (timestring: string, format = 'YYYY-MM-DD') => {
   if (!timestring) {
     return null;
   }
-  return moment(timestring, 'YYYY-MM-DD').toDate();
+  return moment(timestring, format).toDate();
 };
 
 export const afterXUnit = (
@@ -98,6 +98,10 @@ export const getTimeInScheduleFormat = (
     targetTimezone,
   );
   return `${moment(targetDate).format('ddd, MMM DD')} at ${targetTime}`;
+};
+
+export const getRemainingTime = (t1: string) => {
+  return moment(t1, 'YYYY-MM-DD').diff(moment(), 'days') + 1;
 };
 
 // Returns time from now till given date in human friendly format

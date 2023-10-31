@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import truncate from 'lodash/truncate';
 import { Link } from 'react-router-dom';
 
 import BlurImg from 'components/Image/components/BlurImg';
@@ -30,19 +29,10 @@ const AppWidgetCard: FC<IAppWidgetCardProps> = ({ data }) => {
         className="flex flex-col items-center gap-2"
         data-testid="app-launcher-app"
       >
-        <div className="flex items-center justify-center p-2 rounded-full border border-neutral-200 h-[60px] w-[60px]">
-          <BlurImg {...blurImageProps} />
-        </div>
-        <Tooltip
-          tooltipContent={data.label}
-          showTooltip={data.label.length > 12}
-        >
-          <p className="text-xs truncate" data-tip={data.label}>
-            {truncate(data.label, {
-              length: 12,
-              separator: '',
-            })}
-          </p>
+        <Tooltip tooltipContent={data.label}>
+          <div className="flex items-center justify-center p-2 rounded-9xl border border-neutral-200 h-[60px] w-[60px] cursor-pointer">
+            <BlurImg {...blurImageProps} />
+          </div>
         </Tooltip>
       </div>
     </Link>

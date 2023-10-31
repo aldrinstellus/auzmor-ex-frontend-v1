@@ -9,9 +9,14 @@ import Button, { Size, Variant } from 'components/Button';
 import { useNavigate } from 'react-router-dom';
 import SkeletonLoader from './components/SkeletonLoader';
 import TeamNotFound from 'images/TeamNotFound.svg';
-import { memo } from 'react';
+import { memo, FC, useMemo } from 'react';
+import clsx from 'clsx';
 
-const MyTeamWidget = () => {
+interface IMyTeamWidgetProps {
+  className?: string;
+}
+
+const MyTeamWidget: FC<IMyTeamWidgetProps> = ({ className = '' }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [open, openCollpase, closeCollapse] = useModal(true, false);
@@ -38,8 +43,13 @@ const MyTeamWidget = () => {
     else openCollpase();
   };
 
+  const style = useMemo(
+    () => clsx({ 'py-6 rounded-9xl': true, [className]: true }),
+    [className],
+  );
+
   return (
-    <Card className="py-6 rounded-9xl">
+    <Card className={style}>
       <div
         className="px-6 flex items-center justify-between cursor-pointer"
         onClick={toggleModal}

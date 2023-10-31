@@ -5,7 +5,6 @@ import EntitySearchModal, {
   EntitySearchModalType,
 } from 'components/EntitySearchModal';
 import Tooltip from 'components/Tooltip';
-import PopupMenu from 'components/PopupMenu';
 import { IGetUser } from 'queries/users';
 import Avatar from 'components/Avatar';
 import {
@@ -28,18 +27,20 @@ import {
   useLocation,
   useNavigate,
   useParams,
+  useSearchParams,
 } from 'react-router-dom';
 import TeamModal from 'pages/Users/components/TeamModal';
 import { TeamFlow, TeamTab } from 'pages/Users/components/Teams';
-import DeleteTeam from 'pages/Users/components/DeleteModals/Team';
 import TeamDetailSkeleton from './components/TeamDetailSkeleton';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import useRole from 'hooks/useRole';
+import TeamOptions from 'components/TeamOptions';
 
 export interface ITeamMemberProps {}
 
 const TeamDetail: FC<ITeamMemberProps> = () => {
   const params = useParams();
+  const [searchParams] = useSearchParams();
   const { state } = useLocation();
   const { prevRoute } = state || {};
   const navigate = useNavigate();
@@ -51,8 +52,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
     false,
   );
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
-    useModal(false);
-  const [showDeleteModal, openDeleteModal, closeDeleteModal] = useModal(false);
+    useModal(searchParams.get('addMembers') === 'true', false);
 
   const teamDetail = useSingleTeam(id || '');
 
@@ -129,6 +129,12 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
       navigate(`/teams`);
     }
   };
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('addMembers');
+    history.replaceState({}, '', url);
+  }, []);
 
   if (!teamDetail?.isLoading && !data) {
     return <Navigate to="/404" />;
@@ -217,47 +223,21 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                   </div>
                   <div
                     className="text-xl font-semibold"
-                    data-testid="tem-details-people-count"
+                    data-testid="team-details-people-count"
                   >
                     {data.totalMembers || 0}
                   </div>
                 </div>
                 <div className="relative">
-                  <PopupMenu
-                    triggerNode={
-                      <div className="cursor-pointer">
-                        <Icon
-                          name="setting"
-                          color="text-neutral-900"
-                          dataTestId="team-settings"
-                        />
-                      </div>
-                    }
-                    menuItems={[
-                      {
-                        icon: 'edit',
-                        label: 'Edit',
-                        onClick: () => openTeamModal(),
-                        dataTestId: 'team-setting-edit',
-                        permissions: [''],
-                      },
-                      {
-                        icon: 'shareForwardOutline',
-                        label: 'Share',
-                        dataTestId: 'team-setting-share',
-                        permissions: [''],
-                      },
-                      {
-                        icon: 'cancel',
-                        label: 'Remove',
-                        onClick: () => openDeleteModal(),
-                        dataTestId: 'team-setting-remove',
-                        labelClassName: 'text-red-500',
-                        iconClassName: '!text-red-500',
-                        permissions: [''],
-                      },
-                    ]}
-                    className="absolute top-10 -right-5 w-44"
+                  <TeamOptions
+                    id={id || ''}
+                    onEdit={openTeamModal}
+                    triggerIcon="setting"
+                    dataTestId="team-settings"
+                    dataTestIdPrefix="team-settings"
+                    isDetailPage
+                    className="absolute top-5 -right-5 w-44"
+                    iconColor="text-neutral-900"
                   />
                 </div>
               </div>
@@ -281,7 +261,6 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
           teamFlowMode={TeamFlow.EditTeam}
           setTeamFlow={() => {}}
           team={data}
-          openAddMemberModal={openAddMemberModal}
         />
       )}
       {showAddMemberModal && (
@@ -290,8 +269,9 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
           openModal={openAddMemberModal}
           closeModal={closeAddMemberModal}
           entityType={EntitySearchModalType.User}
+          dataTestId="add-members"
           fetchUsers={useInfiniteMembers}
-          usersQueryParams={{ entityType: 'TEAM', entityId: data.id }}
+          usersQueryParams={{ entityType: 'TEAM', entityId: id }}
           entityRenderer={(data: IGetUser) => {
             return (
               <div className="flex space-x-4 w-full">
@@ -299,29 +279,39 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                   name={getFullName(data) || 'U'}
                   size={32}
                   image={getProfileImage(data)}
+                  dataTestId="member-profile-pic"
                 />
                 <div className="flex space-x-6 w-full">
                   <div className="flex flex-col w-full">
                     <div className="flex justify-between items-center">
-                      <div className="text-sm font-bold text-neutral-900 whitespace-nowrap line-clamp-1">
+                      <div
+                        className="text-sm font-bold text-neutral-900 whitespace-nowrap line-clamp-1"
+                        data-testid="member-name"
+                      >
                         {getFullName(data)}
                       </div>
                       <div className="flex space-x-[14px] items-center">
-                        {data?.designation?.name && (
+                        {data?.department?.name && (
                           <div className="flex space-x-1 items-start">
                             <Icon name="briefcase" size={16} />
-                            <div className="text-xs font-normal text-neutral-500">
-                              {data?.designation.name}
+                            <div
+                              className="text-xs font-normal text-neutral-500"
+                              data-testid="member-department"
+                            >
+                              {data?.department.name}
                             </div>
                           </div>
                         )}
-                        {data?.designation && data?.workLocation?.name && (
+                        {data?.department && data?.workLocation?.name && (
                           <div className="w-1 h-1 bg-neutral-500 rounded-full" />
                         )}
                         {data?.workLocation?.name && (
                           <div className="flex space-x-1 items-start">
                             <Icon name="location" size={16} />
-                            <div className="text-xs font-normal text-neutral-500 whitespace-nowrap">
+                            <div
+                              className="text-xs font-normal text-neutral-500 whitespace-nowrap"
+                              data-testid="member-location"
+                            >
                               {data?.workLocation.name}
                             </div>
                           </div>
@@ -329,7 +319,10 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
-                      <div className="text-xs font-normal text-neutral-500">
+                      <div
+                        className="text-xs font-normal text-neutral-500"
+                        data-testid="member-email"
+                      >
                         {data?.primaryEmail}
                       </div>
                       {data?.isPresent && (
@@ -354,12 +347,6 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
           cancelButtonText="Cancel"
         />
       )}
-      <DeleteTeam
-        open={showDeleteModal}
-        closeModal={closeDeleteModal}
-        isDetailPage
-        teamId={id || ''}
-      />
     </>
   );
 };

@@ -58,19 +58,9 @@ export const getTeamMembers = async (
   }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>,
   id: string,
 ) => {
-  if (pageParam === null) {
-    if (typeof queryKey[1] === 'object') {
-      if (!queryKey[1]?.status || queryKey[1]?.status === 'ALL') {
-        return apiService.get(`/teams/members/${id}`, {
-          q: queryKey[1]?.q,
-          role: queryKey[1]?.role,
-          sort: queryKey[1]?.sort,
-        });
-      } else {
-        return apiService.get(`/teams/members/${id}`, queryKey[1]);
-      }
-    }
-  } else return apiService.get(pageParam);
+  if (pageParam === null)
+    return apiService.get(`/teams/members/${id}`, queryKey[1]);
+  else return apiService.get(pageParam);
 };
 
 // delete team by id -> teams/:id
@@ -183,7 +173,7 @@ export const useInfiniteMembers = ({
   startFetching?: boolean;
 }) => {
   return useInfiniteQuery({
-    queryKey: ['team-members', q],
+    queryKey: ['search-team-members', q],
     queryFn: (context) => getMembers(context),
     getNextPageParam: (lastPage: any) => {
       const pageDataLen = lastPage?.data?.result?.data?.length;

@@ -15,12 +15,14 @@ import {
 } from 'queries/users';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   getFullName,
   getProfileImage,
   getUserCardTooltipProps,
 } from 'utils/misc';
+import Tooltip, { Variant as TooltipVariant } from 'components/Tooltip';
+import UserCard from 'components/UserCard';
 
 type AppProps = {
   data: Record<string, any>;
@@ -37,6 +39,7 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
   const [search, setSearch] = useState('');
   const queryClient = useQueryClient();
   const { userId = '' } = useParams();
+  const navigate = useNavigate();
   const {
     data: users,
     isFetchingNextPage,
@@ -187,23 +190,34 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
                   No manager assigned
                 </div>
               ) : (
-                <div className="flex items-center space-x-2">
-                  <Avatar
-                    name={getFullName(data?.manager) || data?.manager?.email}
-                    image={getProfileImage(data?.manager)}
-                    size={32}
-                    className="min-w-[48px]"
-                  />
-                  <div>
-                    <div className="text-sm text-neutral-900 font-bold">
-                      {data?.manager?.fullName}
-                    </div>
-                    <div className="text-neutral-500 text-xs">
-                      {managerDetails.designation?.name ||
-                        'field not specified'}
+                <Tooltip
+                  tooltipContent={
+                    <UserCard user={getUserCardTooltipProps(data?.manager)} />
+                  }
+                  variant={TooltipVariant.Light}
+                  className="!p-4 !shadow-md !rounded-9xl !z-[999]"
+                >
+                  <div
+                    className="flex items-center space-x-2 cursor-pointer"
+                    onClick={() => navigate(`/users/${data?.manager?.userId}`)}
+                  >
+                    <Avatar
+                      name={getFullName(data?.manager) || data?.manager?.email}
+                      image={getProfileImage(data?.manager)}
+                      size={32}
+                      className="min-w-[48px]"
+                    />
+                    <div>
+                      <div className="text-sm text-neutral-900 font-bold">
+                        {data?.manager?.fullName}
+                      </div>
+                      <div className="text-neutral-500 text-xs">
+                        {managerDetails.designation?.name ||
+                          'field not specified'}
+                      </div>
                     </div>
                   </div>
-                </div>
+                </Tooltip>
               )}
             </div>
           </form>

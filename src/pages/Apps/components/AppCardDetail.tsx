@@ -10,6 +10,7 @@ import AppDetailSVG from './../../../images/appDetails.svg';
 import { FC } from 'react';
 import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 import AudiencePopup from 'components/AudiencePopup';
+import Tooltip, { Variant as TooltipVariant } from 'components/Tooltip';
 
 type AppDetailModalProps = {
   app: App;
@@ -134,21 +135,27 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                         </span>
                       </div>
                       {app.audience.length > 1 && (
-                        <AudiencePopup
-                          title="Audience:"
-                          triggerBtn={
-                            <div
-                              className={`${audienceChipStyle} cursor-pointer`}
-                            >
-                              <span className={audienceLabelStyle}>
-                                {`+ ${app.audience.length - 1} more`}
-                              </span>
-                            </div>
+                        <Tooltip
+                          tooltipContent={
+                            <AudiencePopup
+                              entityId={app.id}
+                              audience={app.audience}
+                              entity="apps"
+                              title="Audience:"
+                            />
                           }
-                          entityId={app.id}
-                          entity="apps"
-                          audience={app.audience}
-                        />
+                          variant={TooltipVariant.Light}
+                          tooltipPosition="bottom"
+                          className="!p-0 border shadow-lg border-neutral-200 !rounded-9xl overflow-hidden min-w-[222px] z-[999]"
+                        >
+                          <div
+                            className={`${audienceChipStyle} cursor-pointer`}
+                          >
+                            <span className={audienceLabelStyle}>
+                              {`+ ${app.audience.length - 1} more`}
+                            </span>
+                          </div>
+                        </Tooltip>
                       )}
                     </div>
                   ) : (

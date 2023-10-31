@@ -26,6 +26,7 @@ export const getMentionProps = (mentions: IMention[], mention: any) => {
   const result = mentions.find(
     (item) => ((item as any)?.userId || item?.entityId) === mention.id,
   );
+
   return {
     ...result,
     fullName: result?.name || mention.value,

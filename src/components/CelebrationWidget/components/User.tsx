@@ -24,6 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import Tooltip from 'components/Tooltip';
 
 interface UserProps {
+  id: string;
   type: CELEBRATION_TYPE;
   isModalView?: boolean;
   data: Record<string, any>;
@@ -32,6 +33,7 @@ interface UserProps {
 }
 
 const User: FC<UserProps> = ({
+  id,
   type,
   isModalView = false,
   data,
@@ -94,15 +96,13 @@ const User: FC<UserProps> = ({
     [type],
   );
 
-  const wishEmoji = isBirthday ? '🎂' : '🎉';
-
   const wishesSent = useMemo(
     () => (
       <div
         data-testid={`${isBirthday ? 'birthday' : 'anniversaries'}-wishes-sent`}
         className={`py-[2px] px-[6px] rounded-[4px] text-xs font-bold flex items-center ${dateStyles} w-fit whitespace-nowrap`}
       >
-        Wishes sent {wishEmoji}
+        Wishes sent
       </div>
     ),
     [],
@@ -118,7 +118,8 @@ const User: FC<UserProps> = ({
         name={getFullName(featuredUser) || featuredUser.email}
         image={getProfileImage(featuredUser)}
         size={48}
-        className="min-w-[48px]"
+        className="min-w-[48px] cursor-pointer"
+        onClick={() => navigate(`/users/${id}`)}
       />
       <div
         className={clsx(
@@ -130,10 +131,11 @@ const User: FC<UserProps> = ({
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2">
             <p
-              className="text-sm font-bold line-clamp-1"
+              className="text-sm font-bold line-clamp-1 cursor-pointer"
               data-testid={`${
                 isBirthday ? 'birthday' : 'anniversaries'
               }-profile-name`}
+              onClick={() => navigate(`/users/${id}`)}
             >
               {getFullName(featuredUser) || featuredUser.email}
             </p>
@@ -256,7 +258,7 @@ const User: FC<UserProps> = ({
               tooltipContent={getFullName(featuredUser) || featuredUser.email}
               showTooltip={
                 (getFullName(featuredUser) || featuredUser.email).length >
-                (isModalView ? 40 : 14)
+                (isModalView ? 40 : 26)
               }
             >
               <p
@@ -266,7 +268,7 @@ const User: FC<UserProps> = ({
                 }-profile-name`}
               >
                 {truncate(getFullName(featuredUser) || featuredUser.email, {
-                  length: isModalView ? 40 : 14,
+                  length: isModalView ? 40 : 26,
                   separator: '',
                 })}
               </p>
@@ -276,12 +278,12 @@ const User: FC<UserProps> = ({
               <Tooltip
                 tooltipContent={featuredUser.designation}
                 showTooltip={
-                  featuredUser.designation.length > (isModalView ? 40 : 14)
+                  featuredUser.designation.length > (isModalView ? 40 : 22)
                 }
               >
                 <p className="text-xs truncate text-neutral-500">
                   {truncate(featuredUser.designation, {
-                    length: isModalView ? 40 : 14,
+                    length: isModalView ? 40 : 26,
                     separator: '',
                   })}
                 </p>
@@ -296,7 +298,7 @@ const User: FC<UserProps> = ({
             className={`px-[6px] rounded-[4px] text-xs font-semibold whitespace-nowrap ${dateStyles}`}
             data-testid={`${isBirthday ? 'birthday' : 'anniversaries'}-date`}
           >
-            {`${celebrationDate} ${userIsMe ? wishEmoji : ''}`.trim()}
+            {`${celebrationDate}`.trim()}
           </div>
         )}
       </div>

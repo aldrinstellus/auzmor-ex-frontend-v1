@@ -19,6 +19,7 @@ import { IDepartment } from 'queries/department';
 import { IDesignation } from 'queries/designation';
 import { IPost } from 'queries/post';
 import moment from 'moment';
+import { EMPTY_REGEX } from './constants';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -345,6 +346,32 @@ export const isEmptyEditor = (content: string, ops: any) => {
   return false;
 };
 
+export const removeEmptyLines = (content: {
+  text: string;
+  html: string;
+  editor: any;
+}) => {
+  for (const op of content.editor.ops) {
+    if (op.insert) {
+      try {
+        // replace more than 2 empty lines with 2 empty lines
+        op.insert = op.insert?.replaceAll(EMPTY_REGEX, '\n\n');
+      } catch (e) {}
+    }
+  }
+
+  // replace more than 2 empty lines with 2 empty lines
+  content.html = content.html.replaceAll(
+    /(<p><br><\/p>){3,}/gm,
+    '<p><br/></p><p><br/></p>',
+  );
+
+  // replace more than 2 empty lines with 2 empty lines
+  content.text = content.text?.replaceAll(EMPTY_REGEX, '\n\n');
+
+  return content;
+};
+
 export const getUserCardTooltipProps = (user: any) => {
   let workLocation: ILocation = { locationId: '', name: 'Field not specified' };
   if (typeof user?.workLocation === 'string') {
@@ -382,6 +409,7 @@ export const getUserCardTooltipProps = (user: any) => {
     fullName:
       user?.fullName || user?.userName || user?.name || 'Field not specified',
     workEmail: user?.email || user?.workEmail || 'Field not specified',
+    email: user?.email || user?.workEmail || 'Field not specified',
     workLocation: workLocation,
     designation: designation,
     department: department,

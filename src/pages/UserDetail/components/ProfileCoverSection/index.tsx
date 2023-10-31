@@ -253,17 +253,20 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
               {getFullName(userDetails)}
             </div>
             <div className="flex space-x-2 mt-[-2px]">
-              <Button
-                className="flex"
-                label={'Follow'}
-                labelClassName={'text-sm'}
-                leftIcon={'addCircle'}
-                size={ButtonSize.Small}
-                variant={ButtonVariant.Secondary}
-                dataTestId={'follow'}
-                disabled
-              />
+              {!!userId && (
+                <Button
+                  className="flex"
+                  label={'Follow'}
+                  labelClassName={'text-sm'}
+                  leftIcon={'addCircle'}
+                  size={ButtonSize.Small}
+                  variant={ButtonVariant.Secondary}
+                  dataTestId={'follow'}
+                  disabled
+                />
+              )}
               <UserProfileDropdown
+                showDirectOption
                 triggerNode={
                   <div
                     className="rounded-[24px] font-bold border py-[7.5px] px-[16px] text-sm border-[#e5e5e5] cursor-pointer"
@@ -326,6 +329,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
               <IconWrapper
                 type={Type.Square}
                 className="cursor-pointer rounded-6xl"
+                dataTestId="edit-user-role"
               >
                 <Icon name="userRole" size={15} color="text-primary-500" />
               </IconWrapper>
@@ -351,6 +355,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
               <IconWrapper
                 type={Type.Square}
                 className="cursor-pointer rounded-6xl"
+                dataTestId="edit-user-department"
               >
                 <Icon name="briefcase" size={15} color="text-primary-500" />
               </IconWrapper>
@@ -376,6 +381,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
               <IconWrapper
                 type={Type.Square}
                 className="cursor-pointer rounded-6xl"
+                dataTestId="edit-user-location"
               >
                 <Icon name="location" size={15} color="text-primary-500" />
               </IconWrapper>
@@ -390,7 +396,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
           <div
             className="mt-[10px] flex items-center space-x-2 cursor-pointer"
             onClick={(e) => {
-              if (isOwnerOrAdmin) {
+              if (!userId || userId === user?.id) {
                 e.preventDefault();
                 showSocialLinks();
               }
@@ -399,7 +405,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
             <div
               onClick={() => {
                 if (
-                  !isOwnerOrAdmin &&
+                  userId !== user?.id &&
                   userDetails?.personal?.socialAccounts?.linkedIn
                 ) {
                   window.open(
@@ -408,6 +414,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                   );
                 }
               }}
+              data-testid="edit-linkedin"
             >
               <LinkedinIcon
                 className={clsx({
@@ -418,7 +425,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
             <div
               onClick={() => {
                 if (
-                  !isOwnerOrAdmin &&
+                  userId !== user?.id &&
                   !userDetails?.personal?.socialAccounts?.twitter
                 ) {
                   window.open(
@@ -427,6 +434,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                   );
                 }
               }}
+              data-testid="edit-twitter"
             >
               <TwitterIcon
                 className={clsx({
@@ -437,7 +445,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
             <div
               onClick={() => {
                 if (
-                  !isOwnerOrAdmin &&
+                  userId !== user?.id &&
                   userDetails?.personal?.socialAccounts?.instagram
                 ) {
                   window.open(
@@ -446,6 +454,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                   );
                 }
               }}
+              data-testid="edit-instagram"
             >
               <InstagramIcon
                 className={clsx({
@@ -456,7 +465,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
             <div
               onClick={() => {
                 if (
-                  !isOwnerOrAdmin &&
+                  userId !== user?.id &&
                   userDetails?.personal?.socialAccounts?.facebook
                 ) {
                   window.open(
@@ -465,6 +474,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                   );
                 }
               }}
+              data-testid="edit-facebook"
             >
               <FacebookIcon
                 className={clsx({
@@ -475,7 +485,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
             <div
               onClick={() => {
                 if (
-                  !isOwnerOrAdmin &&
+                  userId !== user?.id &&
                   userDetails?.personal?.socialAccounts?.website
                 ) {
                   window.open(
@@ -484,6 +494,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                   );
                 }
               }}
+              data-testid="edit-webpage"
             >
               <WebIcon
                 className={clsx({

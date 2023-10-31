@@ -23,7 +23,12 @@ import EmojiBlot from './blots/emoji';
 import EmojiToolbar from './emoji';
 import { mention, previewLinkRegex } from './config';
 import Icon from 'components/Icon';
-import { hideMentionHashtagPalette, isEmptyEditor, twConfig } from 'utils/misc';
+import {
+  hideMentionHashtagPalette,
+  isEmptyEditor,
+  removeEmptyLines,
+  twConfig,
+} from 'utils/misc';
 import {
   CreatePostContext,
   CreatePostFlow,
@@ -162,8 +167,14 @@ const RichTextEditor = forwardRef(
           setPreviewUrl('');
         }
       }
+
+      const refinedContent = removeEmptyLines({
+        editor: editor.getContents(),
+        text: editor.getText(),
+        html: editor.getHTML(),
+      });
       setIsEmpty(
-        isEmptyEditor(editor.getText(), editor.getContents().ops || []),
+        isEmptyEditor(refinedContent.text, refinedContent.editor.ops || []),
       );
     };
 
@@ -282,14 +293,15 @@ const RichTextEditor = forwardRef(
 
     useEffect(() => {
       if (ref && ((ref as any).current as ReactQuill)) {
-        const ops =
-          ((ref as any).current as ReactQuill).getEditor().getContents().ops ||
-          [];
-        const content = ((ref as any).current as ReactQuill)
-          .getEditor()
-          .getText();
-
-        setIsEmpty(isEmptyEditor(content, ops));
+        const editor = ((ref as any).current as ReactQuill).getEditor();
+        const refinedContent = removeEmptyLines({
+          editor: editor.getContents(),
+          text: editor.getText(),
+          html: editor.getText(),
+        });
+        setIsEmpty(
+          isEmptyEditor(refinedContent.text, refinedContent.editor.ops || []),
+        );
       }
     }, []);
 

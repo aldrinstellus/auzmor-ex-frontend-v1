@@ -80,7 +80,23 @@ export const getNotificationElementContent = (
   else if (action.type === ActionType.NEW_MEMBERS_TO_TEAM) {
     cardContent.TopCardContent = `You've been added to the <span class="font-bold">${
       target[0].entityName || ''
-    }</span> team. Welcome aboard! Get ready to collaborate and achieve great things together.`;
+    }</span> team. Welcome aboard! Get ready to collaborate and achieve great things together. 
+    <button class=" flex items-center mt-3 px-2 py-1 bg-white rounded-9xl border border-neutral-200 font-bold text-xs hover:text-primary-500 active:text-primary-600">
+      Explore team 
+      <svg
+        width={16}
+        height={16}
+        viewBox="0 0 20 21"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-4 h-4"
+      >
+        <path
+          d="M13.3367 8.345L6.16417 15.5175L4.98584 14.3392L12.1575 7.16667H5.83667V5.5H15.0033V14.6667H13.3367V8.345Z"
+          fill="currentColor"
+        />
+      </svg>
+    </button>`;
     cardContent.type = NOTIFICATION_CARD_TYPE.Content;
 
     redirect = `/teams/${target[0].entityId}`;
@@ -97,8 +113,7 @@ export const getNotificationElementContent = (
       const comment = action;
       const post = target[0];
 
-      cardContent.TopCardContent = comment.content;
-      cardContent.BottomCardContent = post.content;
+      cardContent.BottomCardContent = `<span class="text-neutral-900">${post.content}</span>`;
       cardContent.image = post?.image?.thumbnailUrl || undefined;
 
       redirect = `/posts/${post.entityId}${
@@ -112,8 +127,8 @@ export const getNotificationElementContent = (
       const post = target[0];
       const comment = target[1];
 
-      cardContent.TopCardContent = reply.content;
-      cardContent.BottomCardContent = comment.content;
+      cardContent.BottomCardContent = `<span class="text-neutral-900">${comment.content}</span>`;
+      cardContent.image = comment?.image?.thumbnailUrl || undefined;
 
       redirect = `/posts/${post.entityId}${
         reply.entityId ? '?commentId=' + reply.entityId : ''
@@ -142,6 +157,7 @@ export const getNotificationElementContent = (
     // If target length is 1
     if (target.length === 1) {
       const post = target[0];
+      cardContent.TopCardContent = `Announcement`;
       cardContent.BottomCardContent = post.content;
       cardContent.image = post?.image?.thumbnailUrl || undefined;
 

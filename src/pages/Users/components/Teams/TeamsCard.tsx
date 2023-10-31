@@ -4,14 +4,11 @@ import useHover from 'hooks/useHover';
 import truncate from 'lodash/truncate';
 import Icon from 'components/Icon';
 import TeamWork from 'images/teamwork.svg';
-import PopupMenu from 'components/PopupMenu';
-import useRole from 'hooks/useRole';
-import DeleteTeam from '../DeleteModals/Team';
-import useModal from 'hooks/useModal';
 import { TeamFlow } from '.';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FC } from 'react';
 import { isNewEntity } from 'utils/misc';
+import TeamOptions from 'components/TeamOptions';
 
 export interface ITeamsCardProps {
   id: string;
@@ -23,7 +20,7 @@ export interface ITeamsCardProps {
   recentMembers: any;
   setTeamFlow: (mode: string) => void;
   openModal: () => void;
-  setShowTeamDetail: (detail: Record<string, any> | null) => void;
+  setTeamDetails: (detail: Record<string, any> | null) => void;
 }
 
 const TeamsCard: FC<ITeamsCardProps> = ({
@@ -36,51 +33,11 @@ const TeamsCard: FC<ITeamsCardProps> = ({
   recentMembers = [],
   setTeamFlow,
   openModal,
-  setShowTeamDetail,
+  setTeamDetails,
 }) => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [isHovered, eventHandlers] = useHover();
-  const [showDeleteModal, openDeleteModal, closeDeleteModal] = useModal(false);
-  const { isAdmin, isMember, isSuperAdmin } = useRole();
-
-  const teamAllOption = [
-    {
-      icon: 'edit',
-      label: 'Edit',
-      onClick: () => {
-        openModal();
-        setTeamFlow(TeamFlow.EditTeam);
-        setShowTeamDetail({
-          id: id,
-          name: name,
-          description: description,
-          category: category,
-          createdAt: createdAt,
-          totalMembers: totalMembers,
-        });
-      },
-      dataTestId: 'ellipsis-edit-team',
-      enabled: isAdmin || isSuperAdmin,
-    },
-    {
-      icon: 'shareForwardOutline',
-      label: 'Share',
-      dataTestId: 'ellipsis-share-team',
-      enabled: isAdmin || isSuperAdmin || isMember,
-    },
-    {
-      icon: 'cancel',
-      label: 'Remove',
-      labelClassName: 'text-red-500',
-      iconClassName: '!text-red-500',
-      onClick: () => openDeleteModal(),
-      dataTestId: 'ellipsis-delete-team',
-      enabled: isAdmin || isSuperAdmin,
-    },
-  ];
-
-  const teamOption = teamAllOption.filter((option) => option?.enabled);
 
   return (
     <div className="cursor-pointer" data-testid="" {...eventHandlers}>
@@ -90,19 +47,25 @@ const TeamsCard: FC<ITeamsCardProps> = ({
         dataTestId="team-card"
       >
         {isHovered && (
-          <PopupMenu
-            triggerNode={
-              <div className="cursor-pointer">
-                <Icon
-                  name="moreOutline"
-                  color="text-black"
-                  className="absolute top-2 right-2"
-                  dataTestId="people-card-ellipsis"
-                />
-              </div>
-            }
-            menuItems={teamOption}
+          <TeamOptions
+            id={id}
+            onEdit={() => {
+              openModal();
+              setTeamFlow(TeamFlow.EditTeam);
+              setTeamDetails({
+                id: id,
+                name: name,
+                description: description,
+                category: category,
+                createdAt: createdAt,
+                totalMembers: totalMembers,
+              });
+            }}
             className="-right-36 w-44 top-8"
+            dataTestId="team-card-ellipsis"
+            dataTestIdPrefix="ellipsis-"
+            iconColor="text-black"
+            iconClassName="absolute top-2 right-2"
           />
         )}
         {isNewEntity(createdAt) && (
@@ -175,12 +138,6 @@ const TeamsCard: FC<ITeamsCardProps> = ({
           </div>
         </div>
       </Card>
-
-      <DeleteTeam
-        open={showDeleteModal}
-        closeModal={closeDeleteModal}
-        teamId={id}
-      />
     </div>
   );
 };

@@ -63,7 +63,9 @@ const CreatePost: FC<ICreatePostProps> = ({
       }}
     >
       <Header
-        title="Create a post"
+        title={
+          mode === PostBuilderMode.Create ? 'Create a post' : 'Edit a post'
+        }
         onClose={() => {
           clearPostContext();
           closeModal && closeModal();

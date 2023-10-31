@@ -43,7 +43,7 @@ const CreatableSearch = forwardRef(
       className = '',
       disabled = false,
       dataTestId = '',
-      // addItemDataTestId = '',
+      addItemDataTestId = '',
       error,
       control,
       label = '',
@@ -204,7 +204,7 @@ const CreatableSearch = forwardRef(
                       {option.isNew ? (
                         <div
                           className="flex items-center justify-start"
-                          data-testid={`addItemDataTestId-${option.label}`}
+                          data-testid={`${addItemDataTestId}-${option.label}`}
                         >
                           <Icon name="add" size={16} color="text-neutral-900" />
                           <span className="ml-[10px] mr-[6px]">Add</span>

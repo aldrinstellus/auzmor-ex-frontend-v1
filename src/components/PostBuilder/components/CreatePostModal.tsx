@@ -30,6 +30,7 @@ import {
   hideEmojiPalette,
   isRegularPost,
   quillHashtagConversion,
+  removeEmptyLines,
   twConfig,
 } from 'utils/misc';
 import { useFeedStore } from 'stores/feedStore';
@@ -46,6 +47,9 @@ import Audience from './Audience';
 import CreateShoutout from './Shoutout';
 import { afterXUnit } from 'utils/time';
 import useRole from 'hooks/useRole';
+import { useCreatePostUtilityStore } from 'stores/createPostUtilityStore';
+import useModal from 'hooks/useModal';
+import ConfirmationBox from 'components/ConfirmationBox';
 
 export interface IPostMenu {
   id: number;
@@ -91,7 +95,12 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     shoutoutUserIds,
     setShoutoutUserIds,
     postType,
+    inputImgRef,
   } = useContext(CreatePostContext);
+
+  const [confirm, showConfirm, closeConfirm] = useModal();
+
+  const preventMultipleClickRef = useRef<boolean>(true);
 
   const mediaRef = useRef<IMedia[]>([]);
 
@@ -102,6 +111,23 @@ const CreatePostModal: FC<ICreatePostModal> = ({
   const { uploadMedia, uploadStatus, useUploadCoverImage } = useUpload();
 
   const { isAdmin } = useRole();
+
+  const openCreatePostWithMedia = useCreatePostUtilityStore(
+    (state) => state.openCreatePostWithMedia,
+  );
+  const reset = useCreatePostUtilityStore((state) => state.reset);
+
+  useEffect(() => {
+    if (
+      openCreatePostWithMedia &&
+      inputImgRef?.current &&
+      preventMultipleClickRef.current
+    ) {
+      preventMultipleClickRef.current = false;
+      inputImgRef?.current && inputImgRef?.current?.click();
+    }
+    reset();
+  }, []);
 
   // When we need to show create announcement modal directly
   useMemo(() => {
@@ -389,11 +415,11 @@ const CreatePostModal: FC<ICreatePostModal> = ({
 
     if (mode === PostBuilderMode.Create) {
       createPostMutation.mutate({
-        content: {
+        content: removeEmptyLines({
           text: content?.text || editorValue.text,
           html: content?.html || editorValue.html,
           editor: content?.editor || editorValue.editor,
-        },
+        }),
         type: postType || PostType.Update,
         files: fileIds,
         mentions: mentionList || [],
@@ -445,11 +471,11 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         (id: string) => mediaRef.current.find((media) => media.id === id)!,
       );
       updatePostMutation.mutate({
-        content: {
+        content: removeEmptyLines({
           text: content?.text || editorValue.text,
           html: content?.html || editorValue.html,
           editor: content?.editor || editorValue.editor,
-        },
+        }),
         type: postType || PostType.Update,
         files: sortedIds,
         mentions: mentionList || [],
@@ -484,13 +510,18 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     updatePostMutation.isLoading ||
     uploadStatus === UploadStatus.Uploading;
 
+  const handleOnClose = () => {
+    closeModal();
+    clearPostContext();
+  };
+
   return (
     <>
       <Modal
         open={open}
-        closeModal={() => {
-          clearPostContext();
-        }}
+        closeModal={
+          mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+        }
         dataTestId={
           activeFlow === CreatePostFlow.SchedulePost
             ? 'createpost-scheduledpost-modal'
@@ -506,7 +537,9 @@ const CreatePostModal: FC<ICreatePostModal> = ({
                 return null;
               }
               hideEmojiPalette();
-              return closeModal();
+              return mode === PostBuilderMode.Create
+                ? showConfirm()
+                : handleOnClose();
             }}
             handleSubmitPost={handleSubmitPost}
             isLoading={loading}
@@ -516,10 +549,9 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         )}
         {activeFlow === CreatePostFlow.CreateAnnouncement && (
           <CreateAnnouncement
-            closeModal={() => {
-              clearPostContext();
-              closeModal();
-            }}
+            closeModal={
+              mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+            }
             mode={
               customActiveFlow === CreatePostFlow.CreateAnnouncement
                 ? CreateAnnouncementMode.DIRECT
@@ -530,44 +562,39 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         )}
         {activeFlow === CreatePostFlow.EditMedia && (
           <EditMedia
-            closeModal={() => {
-              clearPostContext();
-              closeModal();
-            }}
+            closeModal={
+              mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+            }
           />
         )}
         {activeFlow === CreatePostFlow.CreatePoll && (
           <div data-testid="createpost-createpoll-modal">
             <CreatePoll
-              closeModal={() => {
-                closeModal();
-                clearPostContext();
-              }}
+              closeModal={
+                mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+              }
             />
           </div>
         )}
         {activeFlow === CreatePostFlow.CreateShoutout && (
           <CreateShoutout
-            closeModal={() => {
-              closeModal();
-              clearPostContext();
-            }}
+            closeModal={
+              mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+            }
           />
         )}
         {activeFlow === CreatePostFlow.SchedulePost && (
           <SchedulePost
-            closeModal={() => {
-              closeModal();
-              clearPostContext();
-            }}
+            closeModal={
+              mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+            }
           />
         )}
         {activeFlow === CreatePostFlow.Audience && (
           <Audience
-            closeModal={() => {
-              closeModal();
-              clearPostContext();
-            }}
+            closeModal={
+              mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+            }
             dataTestId="audience-selection"
           />
         )}
@@ -588,6 +615,26 @@ const CreatePostModal: FC<ICreatePostModal> = ({
           />
         </Modal>
       )}
+      <ConfirmationBox
+        open={confirm}
+        onClose={closeConfirm}
+        title="Discard"
+        description={
+          <span>
+            Are you sure you want to discard this post? This cannot be undone
+          </span>
+        }
+        success={{
+          label: 'Discard',
+          className: 'bg-red-500 text-white ',
+          onSubmit: handleOnClose,
+        }}
+        discard={{
+          label: 'Cancel',
+          className: 'text-neutral-900 bg-white ',
+          onCancel: closeConfirm,
+        }}
+      />
     </>
   );
 };
