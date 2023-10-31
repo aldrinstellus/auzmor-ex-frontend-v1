@@ -97,6 +97,7 @@ const People: FC<IPeopleProps> = ({
     watch,
     getValues,
     setValue,
+    resetField,
     formState: { errors },
   } = useForm<IForm>({
     mode: 'onChange',
@@ -600,7 +601,12 @@ const People: FC<IPeopleProps> = ({
                   <br /> Please check the spelling or try again.
                 </p>
               }
-              hideClearBtn
+              clearBtnLabel={searchValue ? 'Clear Search' : 'Clear Filters'}
+              onClearSearch={() => {
+                searchValue && resetField
+                  ? resetField('search', { defaultValue: '' })
+                  : clearFilters();
+              }}
               dataTestId="people"
             />
           ) : null}
