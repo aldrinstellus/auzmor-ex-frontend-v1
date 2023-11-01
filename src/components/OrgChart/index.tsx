@@ -1,4 +1,3 @@
-import Button, { Variant } from 'components/Button';
 import { FC, useEffect, useRef, useState } from 'react';
 import Toolbar from './components/Toolbar';
 import Chart, { INode } from './components/Chart';
@@ -96,19 +95,6 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
 
   return (
     <div className="flex flex-col w-full h-full items-center">
-      <div className="flex justify-between w-full max-w-[1440px]">
-        <div className="text-2xl font-bold">Organization Chart</div>
-        <Button
-          className="flex space-x-[6px] group"
-          label="View People Hub"
-          variant={Variant.Secondary}
-          leftIcon="peopleOutline"
-          leftIconSize={20}
-          dataTestId="view-peoplehub-cta"
-          iconColor="text-black"
-          onClick={() => setShowOrgChart(false)}
-        />
-      </div>
       <Toolbar
         activeMode={activeMode}
         setActiveMode={setActiveMode}
@@ -126,6 +112,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
         zoom={zoom}
         parentId={parentId}
         setShowLoader={setShowLoader}
+        setShowOrgChart={setShowOrgChart}
       />
       <Chart
         orgChartRef={chartRef}

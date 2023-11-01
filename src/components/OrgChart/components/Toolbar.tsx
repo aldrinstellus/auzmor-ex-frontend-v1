@@ -28,6 +28,7 @@ import { INode } from './Chart';
 import { isFiltersEmpty, mapRanges } from 'utils/misc';
 import { QueryFunctionContext } from '@tanstack/react-query';
 import NoDataFound from 'components/NoDataFound';
+import Button, { Variant } from 'components/Button';
 
 interface IToolbarProps {
   activeMode: OrgChartMode;
@@ -46,6 +47,7 @@ interface IToolbarProps {
   zoom: IZoom;
   parentId: string | null;
   setShowLoader: (flag: boolean) => void;
+  setShowOrgChart: (flag: boolean) => void;
 }
 
 const Toolbar: FC<IToolbarProps> = ({
@@ -65,6 +67,7 @@ const Toolbar: FC<IToolbarProps> = ({
   zoom,
   parentId,
   setShowLoader,
+  setShowOrgChart,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const [memberSearchString, setMemberSearchString] = useState<string>('');
@@ -328,9 +331,10 @@ const Toolbar: FC<IToolbarProps> = ({
   };
   return (
     <>
-      <div className="flex flex-col mt-7 px-4 py-3 mb-8 w-full shadow-lg rounded-9xl bg-white max-w-[1440px]">
+      <div className="flex flex-col px-4 py-3 w-full shadow-lg rounded-9xl bg-white max-w-[1440px]">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
+            <div className="text-2xl font-bold mr-4">Organization Chart</div>
             <Layout fields={memberSearchfields} />
             <div className="flex items-center justify-center w-9 h-9">
               <IconButton
@@ -560,6 +564,16 @@ const Toolbar: FC<IToolbarProps> = ({
                 </Tooltip>
               </div>
             </div>
+            <Button
+              className="flex space-x-[6px] group ml-2"
+              label="View People Hub"
+              variant={Variant.Secondary}
+              leftIcon="peopleOutline"
+              leftIconSize={20}
+              dataTestId="view-peoplehub-cta"
+              iconColor="text-black"
+              onClick={() => setShowOrgChart(false)}
+            />
           </div>
         </div>
         {!!startWithSpecificUser && <Divider className="my-2" />}

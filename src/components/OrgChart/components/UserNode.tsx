@@ -1,7 +1,5 @@
 import { INode } from './Chart';
 import Avatar from 'components/Avatar';
-import { Logo } from 'components/Logo';
-import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import clsx from 'clsx';
 import { FC } from 'react';
@@ -12,9 +10,10 @@ import UserCard, { UsercardVariant } from 'components/UserCard';
 interface IUserNode {
   node: { data: INode };
   isFilterApplied: boolean;
+  orgName: string;
 }
 
-const UserNode: FC<IUserNode> = ({ node, isFilterApplied }) => {
+const UserNode: FC<IUserNode> = ({ node, isFilterApplied, orgName }) => {
   const departmentStyle = clsx({
     'bg-orange-100': true,
     'absolute bottom-2 flex px-2 py-1 text-xxs font-semibold rounded': true,
@@ -120,15 +119,10 @@ const UserNode: FC<IUserNode> = ({ node, isFilterApplied }) => {
     );
   }
   return (
-    <div className="flex flex-col rounded-9xl bg-white w-full h-full relative">
-      <div className="mt-4 mb-1 flex justify-center h-8">
-        <Logo className="!h-8" />
-      </div>
-      <Divider />
-      <div className="flex justify-center my-1 font-extrabold text-sm text-neutral-900">
-        Auzmor Office
-      </div>
-      <Divider />
+    <div className="flex rounded-9xl bg-white w-full h-full relative text-center justify-center items-center">
+      <p className="font-extrabold text-base text-neutral-900 text-center">
+        {orgName}
+      </p>
     </div>
   );
 };

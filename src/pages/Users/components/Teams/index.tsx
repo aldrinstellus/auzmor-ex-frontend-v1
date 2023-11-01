@@ -287,7 +287,7 @@ const Team: FC<ITeamProps> = ({
       </div>
 
       {!isLoading ? (
-        <div className="text-neutral-500 mt-6 mb-6">
+        <div className="text-neutral-500 my-4">
           Showing {!isLoading && data?.pages[0]?.data?.result?.totalCount}{' '}
           results
         </div>

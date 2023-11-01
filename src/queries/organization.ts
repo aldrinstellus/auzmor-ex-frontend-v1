@@ -18,6 +18,7 @@ export interface IUpdateSSO {
 export interface IOrganization {
   id: string;
   domain: string;
+  name?: string;
   createdAt: string;
   adminSettings?: {
     postingControls: {
