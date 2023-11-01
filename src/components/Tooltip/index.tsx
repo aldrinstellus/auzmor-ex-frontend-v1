@@ -40,9 +40,8 @@ const Tooltip = ({
           {tooltipContent}
         </ReactTooltip>
       )}
-      <a
+      <div
         id={`anchor-${id}`}
-        href="#"
         className="cursor-default mt-10"
         data-tooltip-id={`tooltip-${id}`}
         data-tooltip-content={`${
@@ -52,7 +51,7 @@ const Tooltip = ({
         data-tooltip-place={`${tooltipPosition}`}
       >
         <span>{children}</span>
-      </a>
+      </div>
     </span>
   );
 };
