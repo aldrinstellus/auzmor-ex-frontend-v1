@@ -6,29 +6,23 @@ export interface IAppCardSkeletonProps {}
 
 const AppCardSkeleton: FC<IAppCardSkeletonProps> = () => {
   return (
-    <Card className="min-w-[234px] max-w-[234px] min-h-[148px] max-h-[148px] border-1 flex flex-col">
-      <div className="p-4 flex flex-col">
-        <Skeleton className="!h-6 !w-6" />
-        <div className="mt-0.5 flex">
-          <Skeleton
-            containerClassName="flex-1"
-            borderRadius={100}
-            className="!h-3"
-          />
+    <Card className="relative border-1 p-3 flex gap-2" shadowOnHover>
+      {/* App logo */}
+      <Skeleton className="p-2 rounded-xl min-w-[60px] min-h-[60px]" />
+
+      {/* App details */}
+      <div className="flex flex-col gap-1 w-full">
+        {/* App name */}
+        <div className="overflow-hidden h-4 rounded">
+          <Skeleton />
         </div>
-        <div className="mt-2 flex">
-          <Skeleton
-            containerClassName="flex-1"
-            borderRadius={100}
-            className="!h-3"
-          />
+        {/* App category */}
+        <div className="overflow-hidden h-4 rounded">
+          <Skeleton />
         </div>
-        <div className="mt-0.5 flex">
-          <Skeleton
-            containerClassName="flex-1"
-            borderRadius={100}
-            className="!h-3"
-          />
+        {/* App description */}
+        <div className="overflow-hidden h-4 rounded">
+          <Skeleton />
         </div>
       </div>
     </Card>

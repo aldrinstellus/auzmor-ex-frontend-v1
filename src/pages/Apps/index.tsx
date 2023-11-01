@@ -269,12 +269,12 @@ const Apps: FC<IAppsProps> = () => {
         <img
           src={AppsBanner}
           alt="Apps Banner"
-          className={`w-full py-6 ${imageLoading ? 'hidden' : ''}`}
+          className={`w-full py-4 ${imageLoading ? 'hidden' : ''}`}
           onLoad={() => setImageLoading(false)}
         />
         {imageLoading && <AppBannerSkeleton />}
         {/* App groups and sort/filter/search */}
-        <div className="flex justify-between pb-6">
+        <div className="flex justify-between pb-4">
           <div className="flex items-center gap-x-4">
             {isAdmin && (
               <Button
@@ -365,7 +365,7 @@ const Apps: FC<IAppsProps> = () => {
             />
           </div>
         </div>
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           {!isLoading ? (
             <div className="text-neutral-500">
               Showing {!isLoading && appsCount} results
@@ -445,7 +445,7 @@ const Apps: FC<IAppsProps> = () => {
           {!appFilters.featured && (
             <div>
               {featuredAppsCount > 0 && !isFeauturedAppLoading && (
-                <div className="flex justify-between mb-6">
+                <div className="flex justify-between mb-4">
                   <div className="text-xl font-bold">Featured</div>
                   <div
                     className="text-base font-semibold text-primary-500 cursor-pointer"
@@ -482,7 +482,7 @@ const Apps: FC<IAppsProps> = () => {
                 myApp={appFilters.myApp || !isAdmin}
               />
               {featuredAppsCount > 0 && !isFeauturedAppLoading && (
-                <div className="text-xl font-bold mt-6">All Apps</div>
+                <div className="text-xl font-bold mt-4">All Apps</div>
               )}
             </div>
           )}

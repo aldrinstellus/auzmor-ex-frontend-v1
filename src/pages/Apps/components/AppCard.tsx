@@ -230,61 +230,60 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
   };
 
   return (
-    <div {...appCardEventHandlers} data-testid="app-card">
+    <div {...appCardEventHandlers} data-testid="app-card" className="w-full">
       {/* <Link to={app.url} target="_blank"> */}
-      <Card
-        className="relative min-w-[234px] max-w-[234px] min-h-[148px] max-h-[148px] border-1 px-4 py-6"
-        shadowOnHover
-      >
-        <div>
-          <div className="absolute top-2 right-2 flex flex-col items-end">
-            {app.category && (
+      <Card className="relative border-1 p-3 flex gap-2" shadowOnHover>
+        {/* App logo */}
+        <div className="p-2 bg-neutral-100 rounded-xl min-w-[60px] min-h-[60px]">
+          <img
+            src={app?.icon?.original || DefaultAppIcon}
+            height={44}
+            width={44}
+          />
+        </div>
+
+        {/* App details */}
+        <div className="flex flex-col gap-1">
+          {/* App name */}
+          <div
+            className="text-sm font-bold text-neutral-900 line-clamp-1"
+            data-testid="app-name"
+          >
+            {app.label}
+          </div>
+          {/* App category */}
+          {app.category && (
+            <div className="flex">
               <Badge
                 text={app.category.name}
-                textClassName="text-blue-500"
+                textClassName="text-blue-500 text-xxs py-0 leading-2"
                 bgClassName="bg-blue-100 border-1 border-blue-300"
                 dataTestId="app-category"
               />
-            )}
-            <div className="relative mr-2">
-              {appCardHovered && (
-                <PopupMenu
-                  triggerNode={
-                    <div className="cursor-pointer">
-                      <Icon name="threeDots" dataTestId="app-card-ellipsis" />
-                    </div>
-                  }
-                  menuItems={appCardMenu.filter((item) => !item.hidden)}
-                  className="-right-36 w-fit top-6"
-                />
-              )}
             </div>
-          </div>
-          <div className="pb-8" onClick={openAppDetailModal}>
-            <div className="flex items-center justify-between">
-              <div className="p-1 bg-neutral-100 rounded-xl">
-                <img
-                  src={app?.icon?.original || DefaultAppIcon}
-                  height={20}
-                  width={20}
-                />
-              </div>
-            </div>
-            <div className="py-2">
-              <p
-                className="text-neutral-900 font-bold text-sm line-clamp-1"
-                data-testid="app-name"
-              >
-                {app.label}
-              </p>
-            </div>
-            <p
-              className="text-neutral-500 line-clamp-3 text-xs"
-              data-testid="app-description"
-            >
-              {app.description}
-            </p>
-          </div>
+          )}
+          {/* App description */}
+          <p
+            className="text-neutral-500 line-clamp-1 text-xxs"
+            data-testid="app-description"
+          >
+            {app.description}
+          </p>
+        </div>
+
+        {/* App menu popover */}
+        <div className="absolute top-0 right-3">
+          {appCardHovered && (
+            <PopupMenu
+              triggerNode={
+                <div className="cursor-pointer">
+                  <Icon name="threeDots" dataTestId="app-card-ellipsis" />
+                </div>
+              }
+              menuItems={appCardMenu.filter((item) => !item.hidden)}
+              className="-right-36 w-fit top-6"
+            />
+          )}
         </div>
       </Card>
       {/* </Link> */}

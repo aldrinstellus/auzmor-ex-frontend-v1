@@ -10,7 +10,9 @@ module.exports = {
         'welcome-to-office': "url('images/welcomeToOffice.png')",
       },
       screens: {
-        '3xl': { min: '1840px' },
+        '3xl': '1840px',
+        '1.5xl': '1440px',
+        '1.5lg': '1200px',
       },
       colors: {
         'black-white': { black: '#000000', white: '#ffffff' },

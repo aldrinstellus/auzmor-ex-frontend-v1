@@ -70,6 +70,7 @@ const AboutMe: FC<IAboutMeProps> = ({
       placeholder: 'Write here',
       dataTestId: 'bio-edit-text',
       control,
+      defaultValue: getValues('personal.about') || '',
       className: 'w-full rounded-9xl',
       rows: 8,
       maxLength: 2000,
