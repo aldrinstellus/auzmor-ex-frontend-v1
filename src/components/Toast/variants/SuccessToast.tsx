@@ -23,7 +23,6 @@ const SuccessToast: FC<ISuccessToastProps> = ({
   actionClassName,
   variant = 'default',
 }) => {
-  console.log('::>>>", variant', variant);
   return (
     <div className="flex justify-between items-center" data-testid={dataTestId}>
       <div className="flex items-center">
