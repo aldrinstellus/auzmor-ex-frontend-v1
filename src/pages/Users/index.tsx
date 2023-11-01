@@ -133,7 +133,7 @@ const Users: FC<IUsersProps> = () => {
         showUnderline={false}
         itemSpacing={1}
         activeTabIndex={!isUserTab ? 1 : 0} //need to handle the behaviour
-        tabContentClassName="mt-6"
+        tabContentClassName="mt-4"
         onTabChange={() => {
           navigate(isUserTab ? '/teams' : '/users');
         }}

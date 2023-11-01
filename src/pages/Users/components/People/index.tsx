@@ -334,7 +334,7 @@ const People: FC<IPeopleProps> = ({
 
   return (
     <div className="relative pb-8">
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <div className="flex space-x-4">
             {!isTeamPeople && (

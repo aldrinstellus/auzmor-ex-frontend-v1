@@ -10,6 +10,9 @@
   transform: translate(108px, 26px) !important;
   cursor: pointer;
 }
+.root-node-button {
+  transform: translate(108px, -4px) !important;
+}
 .node,
 .node-rect {
   cursor: default !important;

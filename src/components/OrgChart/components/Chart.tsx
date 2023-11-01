@@ -21,6 +21,7 @@ import { FOCUS_ZOOM, IZoom, MAX_ZOOM, MIN_ZOOM } from '..';
 import useAuth from 'hooks/useAuth';
 import { mapRanges } from 'utils/misc';
 import NoDataFound from 'components/NoDataFound';
+import { useOrganization } from 'queries/organization';
 
 export interface INode {
   id: string;
@@ -63,6 +64,7 @@ const Chart: FC<IChart> = ({
   setZoom,
   isMyTeam,
 }) => {
+  const { data: organization } = useOrganization();
   const chartRef = useRef(null);
   const { user } = useAuth();
   const [autoSpotlight, setAutoSpotlight] = useState<boolean>(true);
@@ -74,7 +76,7 @@ const Chart: FC<IChart> = ({
             .scaleExtent([MIN_ZOOM, MAX_ZOOM])
             .container(chartRef.current)
             .data(data)
-            .nodeHeight((_d: any) => 111)
+            .nodeHeight((_d: any) => (_d.data.id === 'root' ? 80 : 111))
             .nodeWidth((_d: any) => 256)
             .compact(false)
             .childrenMargin((_d: any) => 50)
@@ -82,7 +84,7 @@ const Chart: FC<IChart> = ({
             .compactMarginPair((_d: any) => 50)
             .neightbourMargin((_a: any, _b: any) => 25)
             .siblingsMargin((_d: any) => 25)
-            .svgHeight(window.innerHeight - 290)
+            .svgHeight(window.innerHeight - 158)
             .buttonContent(({ node, _state }: any) => {
               return renderToString(<ExpandButtonContent node={node} />);
             })
@@ -91,7 +93,15 @@ const Chart: FC<IChart> = ({
             )
             .nodeContent((node: any, _i: any, _arr: any, _state: any) => {
               return renderToString(
-                <UserNode node={node} isFilterApplied={isFilterApplied} />,
+                <UserNode
+                  node={node}
+                  isFilterApplied={isFilterApplied}
+                  orgName={
+                    organization?.name ||
+                    organization?.domain ||
+                    'Auzmor office'
+                  }
+                />,
               );
             }) as any
         )
@@ -213,7 +223,7 @@ const Chart: FC<IChart> = ({
   const loaderStyle = useMemo(
     () =>
       clsx({
-        'flex w-full justify-center items-center h-full': true,
+        'flex w-full justify-center items-center p-64': true,
         block: isLoading,
         hidden: !isLoading,
       }),
@@ -246,7 +256,7 @@ const Chart: FC<IChart> = ({
         />
       )}
       <div id="org-chart-container" className={orgChartContainerStyle}>
-        <div ref={chartRef} className="h-[calc(100vh-290px)]" />
+        <div ref={chartRef} className="h-[calc(100vh-158px)]" />
       </div>
     </>
   );
