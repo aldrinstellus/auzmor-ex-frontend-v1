@@ -41,7 +41,8 @@ const Icon: FC<IconProps> = ({
   const disabledClass = `text-neutral-200 cursor-not-allowed pointer-events-none`;
 
   const styles = clsx({
-    'text-neutral-500 hover:text-primary-500 group-hover:text-primary-500 hover:cursor-pointer transition-colors ease-out duration-default':
+    [className]: true,
+    'text-neutral-500 hover:text-primary-500 group-hover:text-primary-500 cursor-pointer transition-colors ease-out duration-default':
       !disabled,
     'cursor-pointer': !!onClick && !disabled,
     [colorClass]: color && !disabled,
@@ -49,8 +50,8 @@ const Icon: FC<IconProps> = ({
     [isActiveClass]: (isActive || hover) && !disabled,
     [isActiveHoverColorClass]: (isActive || hover) && hoverColor && !disabled,
     [disabledClass]: disabled,
-    [className]: true,
-    'pointer-events-none': hover === false,
+    'pointer-events-none !hover:text-white group-!hover:text-white':
+      hover === false,
   });
 
   return (

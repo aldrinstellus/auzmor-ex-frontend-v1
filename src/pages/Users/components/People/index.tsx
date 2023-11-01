@@ -596,6 +596,7 @@ const People: FC<IPeopleProps> = ({
             <NoDataFound
               className="py-4 w-full"
               searchString={searchValue}
+              illustration="noResultAlt"
               message={
                 <p>
                   Sorry we can&apos;t find the profile you are looking for.

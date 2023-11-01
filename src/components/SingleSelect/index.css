@@ -15,8 +15,12 @@
 }
 
 .ant-select-selection-search-input {
-  padding: 0 0px !important;
+  padding: 0px 0px !important;
   padding-right: 0px !important;
+}
+
+.single-select .ant-select-selection-search-input {
+  padding-left: 8px !important;
 }
 
 .ant-select-selector:hover {

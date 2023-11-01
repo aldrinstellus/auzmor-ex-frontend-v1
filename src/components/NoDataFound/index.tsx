@@ -10,7 +10,13 @@ interface INoDataFoundProps {
   className?: string;
   hideClearBtn?: boolean;
   clearBtnLabel?: string;
+  illustration?: string;
 }
+
+const illustrationMap: Record<string, any> = {
+  noResult: require('images/noResult.png'),
+  noResultAlt: require('images/noResultAlt.png'),
+};
 
 const NoDataFound: FC<INoDataFoundProps> = ({
   searchString,
@@ -20,12 +26,13 @@ const NoDataFound: FC<INoDataFoundProps> = ({
   className = '',
   hideClearBtn = false,
   clearBtnLabel = 'Clear search',
+  illustration = 'noResult',
 }) => {
   const style = clsx({ [className]: true });
   return (
     <div className={style}>
       <div className="flex w-full justify-center">
-        <img src={require('images/noResult.png')} />
+        <img src={illustrationMap[illustration]} />
       </div>
       <div className="text-center">
         <div

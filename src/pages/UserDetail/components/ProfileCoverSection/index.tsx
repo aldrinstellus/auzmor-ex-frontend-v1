@@ -45,17 +45,11 @@ import { slideInAndOutTop } from 'utils/react-toastify';
 import DeletePeople from 'pages/Users/components/DeleteModals/People';
 import ReactivatePeople from 'pages/Users/components/ReactivateModal/Reactivate';
 import DeactivatePeople from 'pages/Users/components/DeactivateModal/Deactivate';
-import {
-  FacebookIcon,
-  InstagramIcon,
-  LinkedinIcon,
-  TwitterIcon,
-  WebIcon,
-} from 'components/Icon/socialIcons';
 import { useParams } from 'react-router-dom';
 import SocialLinksModal from 'components/ProfileInfo/components/SocialLinksModal';
 import useAuth from 'hooks/useAuth';
 import clsx from 'clsx';
+import SocialIcon from './SocialIcon';
 
 export interface IProfileCoverProps {
   userDetails: Record<string, any>;
@@ -402,106 +396,11 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
               }
             }}
           >
-            <div
-              onClick={() => {
-                if (
-                  userId !== user?.id &&
-                  userDetails?.personal?.socialAccounts?.linkedIn
-                ) {
-                  window.open(
-                    userDetails?.personal?.socialAccounts?.linkedIn,
-                    '_blank',
-                  );
-                }
-              }}
-              data-testid="edit-linkedin"
-            >
-              <LinkedinIcon
-                className={clsx({
-                  grayscale: !userDetails?.personal?.socialAccounts?.linkedIn,
-                })}
-              />
-            </div>
-            <div
-              onClick={() => {
-                if (
-                  userId !== user?.id &&
-                  !userDetails?.personal?.socialAccounts?.twitter
-                ) {
-                  window.open(
-                    userDetails?.personal?.socialAccounts?.twitter,
-                    '_blank',
-                  );
-                }
-              }}
-              data-testid="edit-twitter"
-            >
-              <TwitterIcon
-                className={clsx({
-                  grayscale: !userDetails?.personal?.socialAccounts?.twitter,
-                })}
-              />
-            </div>
-            <div
-              onClick={() => {
-                if (
-                  userId !== user?.id &&
-                  userDetails?.personal?.socialAccounts?.instagram
-                ) {
-                  window.open(
-                    userDetails?.personal?.socialAccounts?.instagram,
-                    '_blank',
-                  );
-                }
-              }}
-              data-testid="edit-instagram"
-            >
-              <InstagramIcon
-                className={clsx({
-                  grayscale: !userDetails?.personal?.socialAccounts?.instagram,
-                })}
-              />
-            </div>
-            <div
-              onClick={() => {
-                if (
-                  userId !== user?.id &&
-                  userDetails?.personal?.socialAccounts?.facebook
-                ) {
-                  window.open(
-                    userDetails?.personal?.socialAccounts?.facebook,
-                    '_blank',
-                  );
-                }
-              }}
-              data-testid="edit-facebook"
-            >
-              <FacebookIcon
-                className={clsx({
-                  grayscale: !userDetails?.personal?.socialAccounts?.facebook,
-                })}
-              />
-            </div>
-            <div
-              onClick={() => {
-                if (
-                  userId !== user?.id &&
-                  userDetails?.personal?.socialAccounts?.website
-                ) {
-                  window.open(
-                    userDetails?.personal?.socialAccounts?.website,
-                    '_blank',
-                  );
-                }
-              }}
-              data-testid="edit-webpage"
-            >
-              <WebIcon
-                className={clsx({
-                  grayscale: !userDetails?.personal?.socialAccounts?.website,
-                })}
-              />
-            </div>
+            {['linkedIn', 'twitter', 'instagram', 'facebook', 'website'].map(
+              (s) => (
+                <SocialIcon key={s} userDetails={userDetails} socialLink={s} />
+              ),
+            )}
           </div>
         </div>
       </Card>
