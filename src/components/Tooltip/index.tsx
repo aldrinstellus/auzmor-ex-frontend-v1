@@ -40,7 +40,7 @@ const Tooltip = ({
           {tooltipContent}
         </ReactTooltip>
       )}
-      <div
+      <span
         id={`anchor-${id}`}
         data-tooltip-id={`tooltip-${id}`}
         data-tooltip-content={`${
@@ -50,8 +50,8 @@ const Tooltip = ({
         data-tooltip-place={`${tooltipPosition}`}
         className="inline"
       >
-        <span>{children}</span>
-      </div>
+        {children}
+      </span>
     </span>
   );
 };
