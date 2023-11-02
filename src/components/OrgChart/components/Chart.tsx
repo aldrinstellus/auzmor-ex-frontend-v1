@@ -84,7 +84,7 @@ const Chart: FC<IChart> = ({
             .compactMarginPair((_d: any) => 50)
             .neightbourMargin((_a: any, _b: any) => 25)
             .siblingsMargin((_d: any) => 25)
-            .svgHeight(window.innerHeight - 158)
+            .svgHeight(window.innerHeight - 64)
             .buttonContent(({ node, _state }: any) => {
               return renderToString(<ExpandButtonContent node={node} />);
             })
@@ -256,7 +256,7 @@ const Chart: FC<IChart> = ({
         />
       )}
       <div id="org-chart-container" className={orgChartContainerStyle}>
-        <div ref={chartRef} className="h-[calc(100vh-158px)]" />
+        <div ref={chartRef} className="h-[calc(100vh-64px)]" />
       </div>
     </>
   );

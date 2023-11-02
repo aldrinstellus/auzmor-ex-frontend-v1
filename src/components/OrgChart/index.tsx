@@ -92,9 +92,9 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
   };
 
   const isLoading = isDataLoading || isDataFetching || showLoader;
-
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
   return (
-    <div className="flex flex-col w-full h-full items-center">
+    <div className="flex flex-col w-full h-full items-center relative">
       <Toolbar
         activeMode={activeMode}
         setActiveMode={setActiveMode}
@@ -113,28 +113,35 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
         parentId={parentId}
         setShowLoader={setShowLoader}
         setShowOrgChart={setShowOrgChart}
+        isSafari={isSafari}
       />
-      <Chart
-        orgChartRef={chartRef}
-        data={getNodes()}
-        isLoading={isLoading}
-        onClearFilter={() => {
-          setAppliedFilters({
-            locations: [],
-            departments: [],
-            status: [],
-          });
-          setStartWithSpecificUser(null);
-          resetField('userSearch');
-        }}
-        isFilterApplied={
-          !!appliedFilters?.departments?.length ||
-          !!appliedFilters?.locations?.length ||
-          !!appliedFilters?.status?.length
-        }
-        setZoom={setZoom}
-        isMyTeam={!!parentId}
-      />
+      {isSafari ? (
+        <div className="flex flex-col gap-6 items-center justify-center absolute top-0 left-0 w-screen h-screen z-0">
+          <p>Safari does not support Organization chart.</p>
+        </div>
+      ) : (
+        <Chart
+          orgChartRef={chartRef}
+          data={getNodes()}
+          isLoading={isLoading}
+          onClearFilter={() => {
+            setAppliedFilters({
+              locations: [],
+              departments: [],
+              status: [],
+            });
+            setStartWithSpecificUser(null);
+            resetField('userSearch');
+          }}
+          isFilterApplied={
+            !!appliedFilters?.departments?.length ||
+            !!appliedFilters?.locations?.length ||
+            !!appliedFilters?.status?.length
+          }
+          setZoom={setZoom}
+          isMyTeam={!!parentId}
+        />
+      )}
     </div>
   );
 };
