@@ -40,7 +40,7 @@ const Tooltip = ({
           {tooltipContent}
         </ReactTooltip>
       )}
-      <div
+      <span
         id={`anchor-${id}`}
         data-tooltip-id={`tooltip-${id}`}
         data-tooltip-content={`${
@@ -49,8 +49,8 @@ const Tooltip = ({
         data-tooltip-variant={variant}
         data-tooltip-place={`${tooltipPosition}`}
       >
-        <span>{children}</span>
-      </div>
+        {children}
+      </span>
     </span>
   );
 };
