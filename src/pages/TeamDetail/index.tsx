@@ -93,7 +93,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
           ? `${membersAddedCount} members have been added to the team`
           : membersAddedCount === 1
           ? `${membersAddedCount} member has been added to the team`
-          : 'Members already exists in the team';
+          : 'Members already exist in the team';
       toast(
         <SuccessToast content={message} dataTestId="team-detail-toaster" />,
         {
@@ -116,6 +116,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
           theme: 'dark',
         },
       );
+      queryClient.invalidateQueries(['search-team-members'], { exact: false });
       queryClient.invalidateQueries(['team-members']);
       queryClient.invalidateQueries(['team', id]);
       queryClient.invalidateQueries(['teams'], { exact: false });
