@@ -251,7 +251,10 @@ const User: FC<UserProps> = ({
             name={getFullName(featuredUser) || featuredUser.email}
             image={getProfileImage(featuredUser)}
             size={32}
-            className="min-w-[32px]"
+            className="min-w-[32px] cursor-pointer"
+            onClick={() =>
+              navigate(id === user?.id ? '/profile' : `/users/${id}`)
+            }
           />
           <div className="flex flex-col">
             <Tooltip
