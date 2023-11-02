@@ -117,7 +117,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
       />
       {isSafari ? (
         <div className="flex flex-col gap-6 items-center justify-center absolute top-0 left-0 w-screen h-screen z-0">
-          <p>Safari does support Organization chart.</p>
+          <p>Safari does not support Organization chart.</p>
         </div>
       ) : (
         <Chart
