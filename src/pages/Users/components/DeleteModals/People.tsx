@@ -68,8 +68,10 @@ const DeletePeople: FC<IDeletePeopleProps> = ({
       queryClient.invalidateQueries(['bookmarks']);
       queryClient.invalidateQueries(['scheduledPosts']);
       queryClient.invalidateQueries(['posts'], { exact: false });
+      queryClient.invalidateQueries(['comments'], { exact: false });
       queryClient.invalidateQueries(['team-members']);
       queryClient.invalidateQueries(['organization-chart'], { exact: false });
+      queryClient.invalidateQueries(['celebrations'], { exact: false });
       toast(
         <SuccessToast
           content="Member has been deleted"
