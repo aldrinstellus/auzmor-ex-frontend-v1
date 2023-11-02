@@ -236,7 +236,8 @@ export const CommentsRTE: FC<CommentFormProps> = ({
         },
       );
     },
-    onSuccess: (_data: any) => {
+    onSuccess: (data: any, variables) => {
+      updateStoredComment(variables.entityId!, { ...data });
       toast(
         <SuccessToast
           content={`${

@@ -111,7 +111,7 @@ index fe34324..a278e83 100644
 - 
 \ No newline at end of file
 diff --git a/node_modules/d3-org-chart/src/d3-org-chart.js b/node_modules/d3-org-chart/src/d3-org-chart.js
-index 871f2d8..a2f3d14 100644
+index 871f2d8..f708465 100644
 --- a/node_modules/d3-org-chart/src/d3-org-chart.js
 +++ b/node_modules/d3-org-chart/src/d3-org-chart.js
 @@ -1,104 +1,148 @@
@@ -354,7 +354,7 @@ index 871f2d8..a2f3d14 100644
              <code>chart<br/>
              &nbsp;.nodeContent({data}=>{ <br/>
               &nbsp;&nbsp;&nbsp;&nbsp;return '' // Custom HTML <br/>
-@@ -107,928 +151,1325 @@ export class OrgChart {
+@@ -107,928 +151,1326 @@ export class OrgChart {
               Or check different <a href="https://github.com/bumbeishvili/org-chart#jump-to-examples" target="_blank">layout examples</a>
               
               </div>`,
@@ -2356,6 +2356,7 @@ index 871f2d8..a2f3d14 100644
 +        selector: 'node-button-foreign-object',
 +        data: (d) => [d],
 +      })
++      .attr('class', (d) => d.data.id === 'root' ? 'node-button-foreign-object root-node-button' : 'node-button-foreign-object')
 +      .attr('width', 130)
 +      .attr('height', 40)
 +      .attr('x', -20)
@@ -2556,7 +2557,7 @@ index 871f2d8..a2f3d14 100644
                    M ${mx} ${my}
                    L ${mx} ${y}
                    L ${x} ${y}
-@@ -1042,544 +1483,693 @@ export class OrgChart {
+@@ -1042,544 +1484,693 @@ export class OrgChart {
                      ${ex - w * xrvs}  ${ey}
                    L ${ex} ${ey}
         `;

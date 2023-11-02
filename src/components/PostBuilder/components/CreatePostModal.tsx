@@ -328,7 +328,10 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         },
       );
     },
-    onSuccess: async () => {
+    onSuccess: async (data, variables) => {
+      updateFeed(variables.id!, {
+        ...data.result.data,
+      } as IPost);
       toast(
         <SuccessToast
           content="Post updated successfully"

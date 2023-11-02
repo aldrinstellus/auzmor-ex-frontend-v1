@@ -2,7 +2,7 @@ import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
 import Modal from 'components/Modal';
-import { FC, ReactElement, useRef, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, useRef, useState } from 'react';
 import SAMLDetail from './SAMLDetail';
 import Collapse from 'components/Collapse';
 import Button, { Type, Variant } from 'components/Button';
@@ -43,10 +43,12 @@ const ConfigureGenericSSO: FC<ConfigureGenericSSOProps> = ({
   const { user } = useAuth();
   const [xmlFile, setXmlFile] = useState<File[]>();
   const inputRef = useRef<HTMLInputElement>(null);
-  const { control, handleSubmit, getValues } = useForm<IForm>({
+  const { control, handleSubmit, getValues, watch } = useForm<IForm>({
     resolver: yupResolver(schema),
     mode: 'onSubmit',
   });
+  const allowFallback = watch('allowFallback');
+  const allowOnlyExistingUser = watch('allowOnlyExistingUser');
   const fields = [
     {
       type: FieldType.Checkbox,
@@ -55,7 +57,15 @@ const ConfigureGenericSSO: FC<ConfigureGenericSSOProps> = ({
         'When the LDAP is down, Auzmor Office can authenticate the user. Organization Primary Admin can control this behavior by enabling/disabling the flag.',
       name: 'allowFallback',
       control,
-      defaultValue: ssoSetting?.allowFallback,
+      transform: {
+        input: (value: boolean) => value,
+        output: (e: ChangeEvent<HTMLInputElement>) => {
+          if (e.target.checked) return true;
+          return false;
+        },
+      },
+      defaultChecked:
+        allowFallback !== undefined ? allowFallback : ssoSetting?.allowFallback,
     },
     {
       type: FieldType.Checkbox,
@@ -64,7 +74,17 @@ const ConfigureGenericSSO: FC<ConfigureGenericSSOProps> = ({
         'Enable this option when you do NOT want SSO to create a new user and strictly allow only existing users to login.',
       name: 'allowOnlyExistingUser',
       control,
-      defaultValue: ssoSetting?.allowOnlyExistingUser,
+      transform: {
+        input: (value: boolean) => value,
+        output: (e: ChangeEvent<HTMLInputElement>) => {
+          if (e.target.checked) return true;
+          return false;
+        },
+      },
+      defaultChecked:
+        allowOnlyExistingUser !== undefined
+          ? allowOnlyExistingUser
+          : ssoSetting?.allowOnlyExistingUser,
     },
   ];
 
@@ -230,7 +250,7 @@ const ConfigureGenericSSO: FC<ConfigureGenericSSOProps> = ({
           <Divider className="!bg-neutral-100" />
           <div className="mt-4">
             <Collapse label="Advanced Settings">
-              <Layout fields={fields} className="space-y-6 mt-8" />
+              {open && <Layout fields={fields} className="space-y-6 mt-8" />}
             </Collapse>
           </div>
           {isError && !isLoading && (

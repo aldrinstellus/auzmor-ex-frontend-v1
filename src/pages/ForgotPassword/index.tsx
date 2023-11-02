@@ -87,9 +87,8 @@ const ForgotPassword: FC<IForgotPasswordProps> = () => {
                 >
                   <Success />
                   <div>
-                    Email has been sent to
-                    <b>{getValues().email}</b> with instructions on resetting
-                    your password.
+                    Email has been sent to <b>{getValues().email}</b> with
+                    instructions on resetting your password.
                   </div>
                 </div>
                 <Button

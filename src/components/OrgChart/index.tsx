@@ -1,4 +1,3 @@
-import Button, { Variant } from 'components/Button';
 import { FC, useEffect, useRef, useState } from 'react';
 import Toolbar from './components/Toolbar';
 import Chart, { INode } from './components/Chart';
@@ -10,8 +9,10 @@ import { isFiltersEmpty } from 'utils/misc';
 import { useOrgChartStore } from 'stores/orgChartStore';
 
 export const MIN_ZOOM = 0.2;
-export const MAX_ZOOM = 5;
-export const FOCUS_ZOOM = 18; //range 0 to 100
+export const MAX_ZOOM = 2;
+export const FOCUS_ZOOM = 100; //range 18 to 200
+export const MAX_ZOOM_PERCENTAGE = 200;
+export const MIN_ZOOM_PERCENTAGE = 18;
 
 export enum OrgChartMode {
   Team = 'TEAM',
@@ -93,22 +94,9 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
   };
 
   const isLoading = isDataLoading || isDataFetching || showLoader;
-
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
   return (
-    <div className="flex flex-col w-full h-full items-center">
-      <div className="flex justify-between w-full max-w-[1440px]">
-        <div className="text-2xl font-bold">Organization Chart</div>
-        <Button
-          className="flex space-x-[6px] group"
-          label="View People Hub"
-          variant={Variant.Secondary}
-          leftIcon="peopleOutline"
-          leftIconSize={20}
-          dataTestId="view-peoplehub-cta"
-          iconColor="text-black"
-          onClick={() => setShowOrgChart(false)}
-        />
-      </div>
+    <div className="flex flex-col w-full h-full items-center relative">
       <Toolbar
         activeMode={activeMode}
         setActiveMode={setActiveMode}
@@ -126,28 +114,36 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
         zoom={zoom}
         parentId={parentId}
         setShowLoader={setShowLoader}
+        setShowOrgChart={setShowOrgChart}
+        isSafari={isSafari}
       />
-      <Chart
-        orgChartRef={chartRef}
-        data={getNodes()}
-        isLoading={isLoading}
-        onClearFilter={() => {
-          setAppliedFilters({
-            locations: [],
-            departments: [],
-            status: [],
-          });
-          setStartWithSpecificUser(null);
-          resetField('userSearch');
-        }}
-        isFilterApplied={
-          !!appliedFilters?.departments?.length ||
-          !!appliedFilters?.locations?.length ||
-          !!appliedFilters?.status?.length
-        }
-        setZoom={setZoom}
-        isMyTeam={!!parentId}
-      />
+      {isSafari ? (
+        <div className="flex flex-col gap-6 items-center justify-center absolute top-0 left-0 w-screen h-screen z-0">
+          <p>Safari does not support Organization chart.</p>
+        </div>
+      ) : (
+        <Chart
+          orgChartRef={chartRef}
+          data={getNodes()}
+          isLoading={isLoading}
+          onClearFilter={() => {
+            setAppliedFilters({
+              locations: [],
+              departments: [],
+              status: [],
+            });
+            setStartWithSpecificUser(null);
+            resetField('userSearch');
+          }}
+          isFilterApplied={
+            !!appliedFilters?.departments?.length ||
+            !!appliedFilters?.locations?.length ||
+            !!appliedFilters?.status?.length
+          }
+          setZoom={setZoom}
+          isMyTeam={!!parentId}
+        />
+      )}
     </div>
   );
 };

@@ -45,31 +45,36 @@ const ContactSales: React.FC<AppProps> = ({
     },
   });
 
-  const { handleSubmit, control, watch, getValues } = useForm<any>({
+  const { handleSubmit, control, watch, getValues, setValue } = useForm<any>({
     resolver: yupResolver(schema),
     mode: 'onSubmit',
   });
 
-  const _subject = watch('subject');
   const _body = watch('body');
 
   const postMutation = useMutation((formData: any) => contactSales(formData), {
     onError: () => {},
     onSuccess: () => {
-      successToastConfig('Sales team will get in touch with you.');
-      closeModal?.();
+      successToastConfig(
+        'Your message has been successfully sent to sales team',
+        '',
+        'bottom',
+      );
+      setValue('subject', '');
+      setValue('body', '');
     },
   });
 
   const onSubmit = () => {
-    postMutation.mutate(getValues());
+    const { subject, body } = getValues();
+    postMutation.mutate({ subject: subject || 'No Subject Provided', body });
   };
 
   const fields = [
     {
       name: 'subject',
       label: 'Subject',
-      placeholder: 'Subject',
+      placeholder: 'Subject (Optional)',
       type: FieldType.TextArea,
       control,
       className: '',
@@ -122,17 +127,31 @@ const ContactSales: React.FC<AppProps> = ({
           <Layout fields={fields} className="space-y-6" />
           <div className="text-neutral-900 flex justify-between mt-6 px-10">
             <div className="font-bold">Contact us at:</div>
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-4">
               <Icon name="email" size={18} />
               <a className="text-sm" href="mailto:support@auzmor.com">
                 support@auzmor.com
               </a>
+              <Icon
+                name="copy"
+                size={16}
+                onClick={() => {
+                  navigator.clipboard.writeText('support@auzmor.com');
+                }}
+              />
             </div>
-            <div className="flex items-center space-x-1">
-              <Icon name="email" size={18} />
+            <div className="flex items-center space-x-4">
+              <Icon name="call" size={18} />
               <a className="text-sm" href="tel:515-974-6704">
                 515-974-6704
               </a>
+              <Icon
+                name="copy"
+                size={16}
+                onClick={() => {
+                  navigator.clipboard.writeText('515-974-6704');
+                }}
+              />
             </div>
           </div>
         </div>
@@ -163,7 +182,7 @@ const ContactSales: React.FC<AppProps> = ({
               label="Submit"
               size={Size.Small}
               onClick={() => onSubmit()}
-              disabled={!(_subject && _body)}
+              disabled={!_body}
               loading={postMutation.isLoading}
             />
           </div>

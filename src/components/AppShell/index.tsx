@@ -12,8 +12,8 @@ export interface IAppShellProps {
 const AppShell: FC<IAppShellProps> = ({ children }) => {
   const { isOrgChartMounted } = useOrgChartStore();
   const wraperStyle = clsx({
-    'pt-10 flex w-full justify-center min-h-[calc(100%-64px)]': true,
-    'px-14': !isOrgChartMounted,
+    'flex w-full justify-center min-h-[calc(100%-64px)]': true,
+    'px-14 pt-6': !isOrgChartMounted,
   });
   const containerStyle = clsx({
     'w-full': true,

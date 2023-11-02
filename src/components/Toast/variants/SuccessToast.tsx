@@ -1,9 +1,10 @@
+import clsx from 'clsx';
 import Icon from 'components/Icon';
 import { FC, ReactNode } from 'react';
 import { toast } from 'react-toastify';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { twConfig } from 'utils/misc';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { slideInAndOutBottom, slideInAndOutTop } from 'utils/react-toastify';
 
 export interface ISuccessToastProps {
   content?: string | ReactNode;
@@ -11,6 +12,7 @@ export interface ISuccessToastProps {
   actionLabel?: string;
   dataTestId?: string;
   actionClassName?: string;
+  variant?: string;
 }
 
 const SuccessToast: FC<ISuccessToastProps> = ({
@@ -19,6 +21,7 @@ const SuccessToast: FC<ISuccessToastProps> = ({
   action,
   dataTestId,
   actionClassName,
+  variant = 'default',
 }) => {
   return (
     <div className="flex justify-between items-center" data-testid={dataTestId}>
@@ -31,7 +34,15 @@ const SuccessToast: FC<ISuccessToastProps> = ({
             size={32}
           />
         </div>
-        <span className="text-white text-sm min-w-[256px]">{content}</span>
+        <span
+          className={clsx(
+            { 'text-sm min-w-[256px]': true },
+            { 'text-white': variant === 'default' },
+            { 'text-neutral-900': variant !== 'default' },
+          )}
+        >
+          {content}
+        </span>
       </div>
       {actionLabel && (
         <div
@@ -50,18 +61,28 @@ export default SuccessToast;
 export const successToastConfig = (
   message = 'Your changes have been saved',
   dataTestId?: string,
+  variant = 'default',
 ) =>
-  toast(<SuccessToast content={message} dataTestId={dataTestId} />, {
-    closeButton: (
-      <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
-    ),
-    style: {
-      border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-      borderRadius: '6px',
-      display: 'flex',
-      alignItems: 'center',
+  toast(
+    <SuccessToast
+      content={message}
+      dataTestId={dataTestId}
+      variant={variant}
+    />,
+    {
+      closeButton: (
+        <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
+      ),
+      style: {
+        border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+        borderRadius: '6px',
+        display: 'flex',
+        alignItems: 'center',
+      },
+      autoClose: TOAST_AUTOCLOSE_TIME,
+      position: variant === 'default' ? 'top-right' : 'bottom-center',
+      transition:
+        variant === 'default' ? slideInAndOutTop : slideInAndOutBottom,
+      theme: variant === 'default' ? 'dark' : 'light',
     },
-    autoClose: TOAST_AUTOCLOSE_TIME,
-    transition: slideInAndOutTop,
-    theme: 'dark',
-  });
+  );
