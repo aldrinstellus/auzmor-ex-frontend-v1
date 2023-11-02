@@ -39,7 +39,7 @@ const SocialIcon: React.FC<AppProps> = ({ userDetails, socialLink }) => {
           window.open(iconValue, '_blank');
         }
       }}
-      data-testid={`edit-${socialLink}`}
+      data-testid={`edit-${socialLink.toLowerCase()}`}
       {...hoverEvents}
     >
       {isSelf && isHovered ? (

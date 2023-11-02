@@ -155,7 +155,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
               >
                 <Icon name="linearLeftArrowOutline" size={20} />
                 <div className="text-base font-bold text-neutral-900">
-                  {prevRoute === TeamTab.MyTeams ? 'My Team' : 'All Team'}
+                  {prevRoute === TeamTab.MyTeams ? 'My Teams' : 'All Teams'}
                 </div>
               </div>
               {isAdmin ? (
