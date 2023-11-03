@@ -139,6 +139,7 @@ import WarningCircleIcon from '../components/WarningCircle';
 import Integration from '../components/Integration';
 import Security from '../components/Security';
 import VideoSlash from '../components/VideoSlash';
+import SvgInfoIcon from '../components/Info';
 
 export const icon = {
   add: Add,
@@ -218,6 +219,7 @@ export const icon = {
   image: ImageIcon,
   import: ImportIcon,
   infoCircle: InfoCircleIcon,
+  info: SvgInfoIcon,
   insightful: Insightful,
   insightfulReaction: InsightfulReaction,
   integration: Integration,

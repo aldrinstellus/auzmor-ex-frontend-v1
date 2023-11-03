@@ -36,7 +36,12 @@ class ApiService {
 
     this.instance.interceptors.response.use(
       (response: any) => {
-        if (response.headers?.['x-user-status'] === 'SUBSCRIPTION_IS_EXPIRED') {
+        const userStatus = response.headers?.['x-user-status'];
+        if (userStatus === 'USER_IS_DELETED') {
+          window.location.href = '/login';
+        } else if (userStatus === 'USER_IS_DEACTIVATED') {
+          window.document.dispatchEvent(new Event('account_deactivated'));
+        } else if (userStatus === 'SUBSCRIPTION_IS_EXPIRED') {
           window.document.dispatchEvent(new Event('session_expired'));
         }
 
