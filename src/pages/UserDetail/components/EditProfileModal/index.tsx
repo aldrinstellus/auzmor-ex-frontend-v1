@@ -122,7 +122,6 @@ const EditProfileModal: FC<IEditProfileModal> = ({
         }
       });
     });
-    console.log('OPTIONS DATA FLAT >>>>>', optionsData);
     const transformedOption = optionsData?.map((option: any) => ({
       value: option?.name,
       label: option?.name,
@@ -144,6 +143,12 @@ const EditProfileModal: FC<IEditProfileModal> = ({
       q: debouncedLocationSearchValue,
     });
 
+  const fieldDisabledMap = {
+    fullName: userDetails.freezeEdit?.fullName,
+    designation: !isAdmin && userDetails.freezeEdit?.designation,
+    department: !isAdmin && userDetails.freezeEdit?.department,
+  };
+
   const nameField = [
     {
       type: FieldType.Input,
@@ -154,7 +159,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
       label: 'Name',
       required: true,
       dataTestId: `${dataTestId}-name`,
-      disabled: userDetails.freezeEdit?.fullName,
+      disabled: fieldDisabledMap.fullName,
       control,
       inputClassName: 'h-[40px] !text-sm',
     },
@@ -182,7 +187,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
       placeholder: 'ex. software engineer',
       dataTestId: `${dataTestId}-title`,
       label: 'Position title',
-      disabled: !isAdmin && userDetails.freezeEdit?.designation,
+      disabled: fieldDisabledMap.designation,
       control,
       fetchQuery: (q: any) =>
         useInfiniteDesignations({ q, startFetching: true }),
@@ -208,7 +213,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
       getFormattedData: (data: any) =>
         formatCreatableOptions(data, 'dept-option'),
       queryParams: {},
-      disabled: !isAdmin && userDetails.freezeEdit?.department,
+      disabled: fieldDisabledMap.department,
       disableCreate: !isAdmin,
       getPopupContainer: document.body,
       noOptionsMessage: 'No Departments found',
@@ -347,18 +352,29 @@ const EditProfileModal: FC<IEditProfileModal> = ({
   });
 
   const onSubmit = async (user: IUpdateProfileForm) => {
-    updateUsersMutation.mutate({
-      fullName: user.fullName,
-      designation: user?.designation?.label,
+    const payload: Record<string, any> = {
       preferredName: user?.preferredName,
-      department: user?.department?.label,
       workLocation: user?.workLocation?.label,
       ...(isCoverImageRemoved && {
         coverImage: {
           fileId: '',
         },
       }),
-    });
+    };
+
+    if (!fieldDisabledMap.fullName) {
+      payload['fullName'] = user.fullName;
+    }
+
+    if (!fieldDisabledMap.designation) {
+      payload['designation'] = user?.designation?.label;
+    }
+
+    if (!fieldDisabledMap.department) {
+      payload['department'] = user?.department?.label;
+    }
+
+    updateUsersMutation.mutate(payload);
   };
 
   const disableClosed = () => {
