@@ -372,7 +372,7 @@ export const removeEmptyLines = (content: {
   return content;
 };
 
-export const getUserCardTooltipProps = (user: any) => {
+export const getWorkLocation = (user: any) => {
   let workLocation: ILocation = { locationId: '', name: 'Field not specified' };
   if (typeof user?.workLocation === 'string') {
     workLocation.name = user?.workLocation;
@@ -380,8 +380,13 @@ export const getUserCardTooltipProps = (user: any) => {
     workLocation = user?.workLocation;
   } else if (typeof user?.location === 'string') {
     workLocation.name = user?.location;
+  } else if (typeof user?.location === 'object') {
+    workLocation = user?.location;
   }
+  return workLocation;
+};
 
+export const getDesignation = (user: any) => {
   let designation: IDesignation = {
     designationId: '',
     name: 'Field not specified',
@@ -393,7 +398,10 @@ export const getUserCardTooltipProps = (user: any) => {
   } else if (typeof user?.jobTitle === 'object') {
     designation = user?.jobTitle;
   }
+  return designation;
+};
 
+export const getDepartment = (user: any) => {
   let department: IDepartment = {
     departmentId: '',
     name: 'Field not specified',
@@ -403,6 +411,13 @@ export const getUserCardTooltipProps = (user: any) => {
   } else if (typeof user?.department === 'object') {
     department = user?.department;
   }
+  return department;
+};
+
+export const getUserCardTooltipProps = (user: any) => {
+  const workLocation = getWorkLocation(user);
+  const designation = getDesignation(user);
+  const department = getDepartment(user);
 
   return {
     id: user?.id || user?.userId || '',

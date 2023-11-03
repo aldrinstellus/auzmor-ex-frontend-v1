@@ -35,6 +35,7 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
 }): ReactElement => {
   const content = data?.content?.editor;
   const mentions = data?.mentions ? data.mentions : [];
+  const intendedUsers = (data as IPost)?.intendedUsers || [];
   const link = (data as IPost)?.link;
   const media = (data as IPost)?.files;
   const poll = (data as IPost)?.pollContext;
@@ -95,7 +96,7 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
         return (
           <Mention
             value={op.insert.mention?.value}
-            {...getMentionProps(mentions, op.insert.mention)}
+            {...getMentionProps(mentions, intendedUsers, op.insert.mention)}
             userId={op.insert.mention.id}
           />
         );

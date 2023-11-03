@@ -1,4 +1,5 @@
-import { IMention } from 'queries/post';
+import { ICreatedBy, IMention } from 'queries/post';
+import { getUserCardTooltipProps } from 'utils/misc';
 
 export const formatText = (text: string) => {
   return text
@@ -22,13 +23,16 @@ export const getStyles = (attributes: any) => {
   return draft;
 };
 
-export const getMentionProps = (mentions: IMention[], mention: any) => {
-  const result = mentions.find(
+export const getMentionProps = (
+  mentions: IMention[],
+  intendedUsers: ICreatedBy[],
+  mention: any,
+) => {
+  let result: IMention | ICreatedBy | undefined;
+  result = mentions.find(
     (item) => ((item as any)?.userId || item?.entityId) === mention.id,
   );
-
-  return {
-    ...result,
-    fullName: result?.name || mention.value,
-  };
+  if (!result)
+    result = intendedUsers.find((item) => item?.userId === mention.id);
+  return getUserCardTooltipProps(result);
 };
