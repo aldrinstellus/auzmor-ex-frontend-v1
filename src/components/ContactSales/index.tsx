@@ -155,7 +155,7 @@ const ContactSales: React.FC<AppProps> = ({
             </div>
           </div>
         </div>
-        <div className="px-6 py-4 bg-blue-50 flex justify-between">
+        <div className="px-6 py-4 bg-blue-50 flex justify-between rounded-b-9xl">
           <div>
             {!defaultVariant && (
               <div

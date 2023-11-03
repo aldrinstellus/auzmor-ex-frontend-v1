@@ -8,7 +8,7 @@ import { setItem } from 'utils/persist';
 interface IRequireAuthProps {}
 
 const RequireAuth: FC<IRequireAuthProps> = () => {
-  const { user } = useAuth();
+  const { user, loggedIn } = useAuth();
   const location = useLocation();
 
   if (user) {
@@ -28,7 +28,7 @@ const RequireAuth: FC<IRequireAuthProps> = () => {
   }
 
   setItem('redirect_post_login_to', location.pathname);
-  return <Navigate to="/login" />;
+  return <Navigate to={loggedIn ? '/logout' : '/login'} />;
 };
 
 export default RequireAuth;
