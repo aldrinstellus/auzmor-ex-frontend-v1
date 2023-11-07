@@ -110,9 +110,9 @@ const Feed: FC<IFeedProps> = () => {
       page.data?.result?.data
         .filter((post: { id: string }) => {
           if (bookmarks) {
-            return !!feed[post.id].bookmarked;
+            return !!feed[post.id]?.bookmarked;
           } else if (scheduled) {
-            return !!feed[post.id].schedule;
+            return !!feed[post.id]?.schedule;
           }
           return true;
         })
