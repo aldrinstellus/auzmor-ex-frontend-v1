@@ -22,7 +22,6 @@ const SubscriptionExpired = () => {
           type: 'SIGN_OUT',
         },
       });
-      window.location.href = '/logout';
     },
   });
 
