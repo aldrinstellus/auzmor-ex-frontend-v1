@@ -41,7 +41,6 @@ const ContactSales: React.FC<AppProps> = ({
           type: 'SIGN_OUT',
         },
       });
-      window.location.href = '/logout';
     },
   });
 
