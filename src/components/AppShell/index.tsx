@@ -5,10 +5,7 @@ import Navbar from './components/Navbar';
 import { useOrgChartStore } from 'stores/orgChartStore';
 import clsx from 'clsx';
 import { useLocation } from 'react-router-dom';
-import {
-  // ProgressTemplateViewDetails,
-  UploadProgress,
-} from 'components/UploadProgress';
+import { UploadProgress } from 'components/UploadProgress';
 import { useUploadProgressStore } from 'stores/uploadProgressStore';
 
 export interface IAppShellProps {
