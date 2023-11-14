@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Modal from 'components/Modal';
 import UploadFileStep from './UploadFileStep';
 import ImportingFileStep from './ImportingFileStep';
 import SelectSheetStep from './SelectSheetStep';
@@ -27,16 +26,12 @@ const stepMap = {
   [StepEnum.Confirmation]: ConfirmationStep,
 };
 
-const ImportUsers: React.FC<AppProps> = ({ open }) => {
+const ImportUsers: React.FC<AppProps> = ({ open, closeModal }) => {
   const [step, setStep] = useState(StepEnum.Upload);
 
   const Component: any = stepMap[step];
 
-  return (
-    <Modal open={open}>
-      <Component setStep={setStep} />
-    </Modal>
-  );
+  return <Component open={open} setStep={setStep} closeModal={closeModal} />;
 };
 
 export default ImportUsers;
