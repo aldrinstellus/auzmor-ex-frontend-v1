@@ -6,11 +6,10 @@ import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import useModal from 'hooks/useModal';
 import { FC } from 'react';
-import { useUploadProgressStore } from 'stores/uploadProgressStore';
+import { useJobStore } from 'stores/jobStore';
 
-export const UploadProgress: FC = () => {
-  const { progress, heading, content, setShowUploadProgress } =
-    useUploadProgressStore();
+export const JobProgress: FC = () => {
+  const { progress, heading, content, setShowJobProgress } = useJobStore();
   const [open, openCollpase, closeCollapse] = useModal(true);
   return (
     <div className="fixed w-full bottom-0 flex justify-center px-14 z-50">
@@ -39,7 +38,7 @@ export const UploadProgress: FC = () => {
                 />
                 <Icon
                   name="close"
-                  onClick={() => setShowUploadProgress(false)}
+                  onClick={() => setShowJobProgress(false)}
                   hoverColor="text-white"
                   color="!text-white"
                   size={20}

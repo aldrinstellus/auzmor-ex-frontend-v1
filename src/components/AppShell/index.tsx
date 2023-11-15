@@ -5,8 +5,8 @@ import Navbar from './components/Navbar';
 import { useOrgChartStore } from 'stores/orgChartStore';
 import clsx from 'clsx';
 import { useLocation } from 'react-router-dom';
-import { UploadProgress } from 'components/UploadProgress';
-import { useUploadProgressStore } from 'stores/uploadProgressStore';
+import { JobProgress } from 'components/JobProgress';
+import { useJobStore } from 'stores/jobStore';
 
 export interface IAppShellProps {
   children: ReactNode;
@@ -27,9 +27,7 @@ const AppShell: FC<IAppShellProps> = ({ children }) => {
   const showNavbar =
     !pathname.startsWith('/apps') || !pathname.endsWith('/launch');
 
-  const showUploadProgress = useUploadProgressStore(
-    (state) => state.showUploadProgress,
-  );
+  const showJobProgress = useJobStore((state) => state.showJobProgress);
 
   return (
     <div className="bg-neutral-100 h-screen overflow-y-auto">
@@ -37,7 +35,7 @@ const AppShell: FC<IAppShellProps> = ({ children }) => {
       <div className={wraperStyle}>
         <div className={containerStyle}>{children}</div>
       </div>
-      {showUploadProgress && <UploadProgress />}
+      {showJobProgress && <JobProgress />}
       {/* <div className="pt-8 px-14 flex w-full justify-center">{children}</div> */}
     </div>
   );
