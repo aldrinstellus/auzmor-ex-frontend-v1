@@ -4,13 +4,15 @@ import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import { useDropzone } from 'react-dropzone';
 import Button, { Size, Variant } from 'components/Button';
+import { StepEnum } from './utils';
 
 type AppProps = {
   open: boolean;
   closeModal: () => any;
+  setStep: (...args: any) => any;
 };
 
-const UploadFileStep: React.FC<AppProps> = ({ open, closeModal }) => {
+const UploadFileStep: React.FC<AppProps> = ({ open, closeModal, setStep }) => {
   const onDrop = useCallback((acceptedFiles: any) => {
     console.log('>>>>', acceptedFiles);
     // Do something with the files
@@ -69,7 +71,12 @@ const UploadFileStep: React.FC<AppProps> = ({ open, closeModal }) => {
           onClick={closeModal}
           dataTestId="mport-people-cancel"
         />
-        <Button label="Next" size={Size.Small} dataTestId="mport-people-next" />
+        <Button
+          label="Next"
+          size={Size.Small}
+          dataTestId="mport-people-next"
+          onClick={() => setStep(StepEnum.Importing)}
+        />
       </div>
     </Modal>
   );

@@ -626,7 +626,7 @@ const People: FC<IPeopleProps> = ({
         closeModal={closeModal}
       />
 
-      <ImportUsers open={showImport} closeModal={closeImport} />
+      {showImport && <ImportUsers open={showImport} closeModal={closeImport} />}
 
       {showFilterModal && (
         <FilterModal
