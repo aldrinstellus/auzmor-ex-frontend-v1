@@ -10,7 +10,7 @@ import { ILocation } from 'queries/location';
 import { IDepartment } from 'queries/department';
 import Smartlook from 'smartlook-client';
 import { getRemainingTime } from 'utils/time';
-import SubscriptionExpired from 'components/SubscriptionExpired';
+// import SubscriptionExpired from 'components/SubscriptionExpired';
 import AccountDeactivated from 'components/AccountDeactivated';
 
 type AuthContextProps = {
@@ -219,7 +219,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
     >
       {children}
       {showOnboard && <UserOnboard />}
-      {sessionExpired && user?.id && <SubscriptionExpired />}
+      {/* {sessionExpired && user?.id && <SubscriptionExpired />} */}
       {accountDeactivated && user?.id && <AccountDeactivated />}
     </AuthContext.Provider>
   );

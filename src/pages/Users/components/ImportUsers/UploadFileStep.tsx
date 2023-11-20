@@ -5,6 +5,8 @@ import Modal from 'components/Modal';
 import { useDropzone } from 'react-dropzone';
 import Button, { Size, Variant } from 'components/Button';
 import { StepEnum } from './utils';
+import { UploadStatus, useUpload } from 'hooks/useUpload';
+import { EntityType } from 'queries/files';
 
 type AppProps = {
   open: boolean;
@@ -13,9 +15,18 @@ type AppProps = {
 };
 
 const UploadFileStep: React.FC<AppProps> = ({ open, closeModal, setStep }) => {
-  const onDrop = useCallback((acceptedFiles: any) => {
-    console.log('>>>>', acceptedFiles);
-    // Do something with the files
+  const { uploadMedia, uploadStatus } = useUpload();
+
+  const onDrop = useCallback(async (acceptedFiles: any) => {
+    const uploadedMedia = await uploadMedia(
+      acceptedFiles,
+      EntityType.UserImport,
+    );
+    const fileIds = uploadedMedia.map((media: any) => media.id);
+    const payload = {
+      files: fileIds,
+    };
+    console.log('TO upload to /job trigger api', payload);
   }, []);
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
@@ -70,12 +81,14 @@ const UploadFileStep: React.FC<AppProps> = ({ open, closeModal, setStep }) => {
           className="mr-4"
           onClick={closeModal}
           dataTestId="mport-people-cancel"
+          disabled={uploadStatus === UploadStatus.Uploading}
         />
         <Button
           label="Next"
           size={Size.Small}
           dataTestId="mport-people-next"
           onClick={() => setStep(StepEnum.Importing)}
+          loading={uploadStatus === UploadStatus.Uploading}
         />
       </div>
     </Modal>
