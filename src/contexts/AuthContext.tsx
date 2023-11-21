@@ -12,6 +12,7 @@ import Smartlook from 'smartlook-client';
 import { getRemainingTime } from 'utils/time';
 import SubscriptionExpired from 'components/SubscriptionExpired';
 import AccountDeactivated from 'components/AccountDeactivated';
+import { useBrandingStore } from 'stores/branding';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -46,6 +47,21 @@ export interface IUser {
   outOfOffice?: Record<string, any>;
 }
 
+export interface IBranding {
+  primaryColor?: string;
+  secondaryColor?: string;
+  pageTitle?: string;
+  favicon?: string;
+  logo?: string;
+  loginConfig: {
+    layout: 'LEFT' | 'CENTER' | 'RIGHT'; // default: RIGHT
+    backgroundType: 'IMAGE' | 'VIDEO' | 'COLOR'; // default: IMAGE
+    image?: string;
+    video?: string;
+    color?: string;
+  };
+}
+
 interface IAuthContext {
   user: IUser | null;
   loggedIn: boolean;
@@ -72,6 +88,8 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [sessionExpired, setSessionExpired] = useState(false);
   const [accountDeactivated, setAccountDeactivated] = useState(false);
+
+  const setBranding = useBrandingStore((state) => state.setBranding);
 
   const setupSession = async () => {
     const query = new URLSearchParams(window.location.search.substring(1));
@@ -124,6 +142,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
             ),
           },
         });
+        setBranding(data.branding);
       } catch (e: any) {
         if (e?.response?.status === 401) {
           removeAllItems();

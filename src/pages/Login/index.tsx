@@ -7,6 +7,9 @@ import { Navigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { checkLogin } from 'queries/account';
 import { getSubDomain } from 'utils/misc';
+import { useGetSSOFromDomain } from 'queries/organization';
+import { useBrandingStore } from 'stores/branding';
+import clsx from 'clsx';
 
 interface ILoginProps {}
 
@@ -16,8 +19,13 @@ const Login: FC<ILoginProps> = () => {
   const { user } = useAuth();
 
   const domain = getSubDomain(window.location.host);
+  const { isFetching: isDomainInfoLoading } = useGetSSOFromDomain(
+    domain,
+    domain !== '' ? true : false,
+  );
+  const branding = useBrandingStore((state) => state.branding);
 
-  const checkLoginMutation = useMutation(() => checkLogin(), {
+  const checkLoginMutation = useMutation(checkLogin, {
     onSuccess: (data) => {
       if (data?.data?.code === 200) {
         return window.location.replace(data?.data?.result?.data?.redirectUrl);
@@ -45,18 +53,70 @@ const Login: FC<ILoginProps> = () => {
     return <Navigate to="/feed" />;
   }
 
-  if (loading) {
+  if (loading || isDomainInfoLoading) {
     return null;
   }
 
-  return (
-    <div className="flex h-screen w-screen">
+  const getLoginBackground = () => {
+    const defaultBackground = (
       <div
-        className="w-[49.3vw] h-full bg-welcome-to-office bg-no-repeat bg-cover bg-bottom"
+        className="w-[50vw] h-full bg-welcome-to-office bg-no-repeat bg-cover bg-bottom"
         data-testid="signin-cover-image"
       />
+    );
+    if (branding?.loginConfig) {
+      switch (branding?.loginConfig?.backgroundType) {
+        case 'IMAGE':
+          if (branding?.loginConfig?.image) {
+            return (
+              <div
+                className="w-full h-full absolute top-0 left-0 bg-no-repeat bg-cover"
+                style={{
+                  backgroundImage: `url(${branding?.loginConfig?.image})`,
+                }}
+              ></div>
+            );
+          } else {
+            return defaultBackground;
+          }
+        case 'VIDEO':
+          if (branding?.loginConfig?.video) {
+            return (
+              <div className="w-full h-full absolute top-0 left-0 bg-no-repeat bg-cover">
+                <video autoPlay muted loop className="h-full w-full">
+                  <source src={branding?.loginConfig?.video} type="video/mp4" />
+                </video>
+              </div>
+            );
+          } else {
+            return defaultBackground;
+          }
+        case 'COLOR':
+          if (branding?.loginConfig?.color) {
+            return (
+              <div
+                className="w-full h-full absolute top-0 left-0"
+                style={{ backgroundColor: branding?.loginConfig?.color }}
+              />
+            );
+          } else {
+            return defaultBackground;
+          }
+        default:
+          return defaultBackground;
+      }
+    } else {
+      return defaultBackground;
+    }
+  };
 
-      <div className="flex-1 h-full flex justify-center items-center relative bg-white overflow-y-auto">
+  const getLoginForm = () => {
+    return (
+      <div
+        className={`flex justify-center items-center relative bg-white overflow-y-auto w-[50vw] h-full ${
+          branding?.loginConfig?.layout === 'CENTER' && 'h-[94vh] rounded-9xl'
+        }`}
+      >
         <div
           className="absolute top-[4.55vh] right-[3.5vw]"
           data-testid="signin-logo-image"
@@ -71,8 +131,26 @@ const Login: FC<ILoginProps> = () => {
           )}
         </div>
       </div>
-    </div>
-  );
+    );
+  };
+
+  const setLoginForm = () => {
+    return (
+      <>
+        {getLoginBackground()}
+        {getLoginForm()}
+      </>
+    );
+  };
+
+  const containerStyle = clsx({
+    'flex h-screen w-screen relative': true,
+    'justify-center items-center': branding?.loginConfig?.layout === 'CENTER',
+    'justify-end': branding?.loginConfig?.layout === 'RIGHT',
+    'justify-start': branding?.loginConfig?.layout === 'LEFT',
+  });
+
+  return <div className={containerStyle}>{setLoginForm()}</div>;
 };
 
 export default Login;
