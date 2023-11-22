@@ -35,8 +35,8 @@ const UserSettings = () => {
       icon: 'notification',
       key: 'notifications-settings',
       component: <NotificationSettings />,
-      disabled: true,
-      hidden: true,
+      disabled: false,
+      hidden: false,
       dataTestId: 'settings-notifications',
     },
     {
