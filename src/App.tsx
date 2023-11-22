@@ -14,12 +14,12 @@ let counter = 0;
 let faviconInterval: any = null;
 (() => {
   faviconInterval = setInterval(() => {
-    counter %= 3;
+    counter %= 4;
     document
       .querySelector('link[rel="icon"]')
-      ?.setAttribute('href', `/loading-${counter + 1}.png`);
+      ?.setAttribute('href', `/loading-${counter + 1}.svg`);
     counter += 1;
-  }, 500);
+  }, 300);
 })();
 export const clearFaviconInterval = () => {
   clearInterval(faviconInterval);

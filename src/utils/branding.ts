@@ -92,7 +92,7 @@ export const applyBranding = (branding: IBranding) => {
   const root = document.querySelector(':root') as HTMLElement;
   clearFaviconInterval();
   if (root) {
-    if (branding.primaryColor) {
+    if (branding?.primaryColor) {
       // set primary color
       const primaryColorPalette = getPalette(
         branding.primaryColor,
@@ -102,7 +102,7 @@ export const applyBranding = (branding: IBranding) => {
         root.style.setProperty(key, primaryColorPalette[key]);
       });
     }
-    if (branding.secondaryColor) {
+    if (branding?.secondaryColor) {
       // set secondary color
       const secondaryColorPalette = getPalette(
         branding.secondaryColor,
@@ -112,11 +112,11 @@ export const applyBranding = (branding: IBranding) => {
         root.style.setProperty(key, secondaryColorPalette[key]);
       });
     }
-    if (branding.pageTitle) {
+    if (branding?.pageTitle) {
       // set page title
       document.querySelector('title')!.innerHTML = branding.pageTitle;
     }
-    if (branding.favicon) {
+    if (branding?.favicon) {
       // use brand favicon
       document
         .querySelector('link[rel="icon"]')

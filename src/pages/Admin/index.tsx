@@ -1,10 +1,11 @@
 import Card from 'components/Card';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
-import SSOSettings from 'components/SSOSettings';
+import SSOSettings from 'pages/Admin/SSOSettings';
 import { useOrganization } from 'queries/organization';
 import { FC, useMemo, useState } from 'react';
 import GeneralSettings from './GeneralSettings';
+import BrandingSettings from './BrandingSettings';
 
 const Admin: FC = () => {
   const { data, isLoading } = useOrganization();
@@ -17,6 +18,7 @@ const Admin: FC = () => {
         component: <GeneralSettings />,
         disabled: false,
         hidden: false,
+        hideDefaultLabelCard: false,
         dataTestId: 'adminsettings-generalsetting',
       },
       {
@@ -26,15 +28,17 @@ const Admin: FC = () => {
         component: <div>User Management Settings Page</div>,
         disabled: false,
         hidden: true,
+        hideDefaultLabelCard: false,
         dataTestId: 'settings-user-management',
       },
       {
         label: 'Branding',
         icon: 'branding',
         key: 'branding-settings',
-        component: <div>Branding Settings Page</div>,
+        component: <BrandingSettings />,
         disabled: false,
         hidden: false,
+        hideDefaultLabelCard: true,
         dataTestId: 'settings-branding',
       },
       {
@@ -44,6 +48,7 @@ const Admin: FC = () => {
         component: <SSOSettings />,
         disabled: false,
         hidden: false,
+        hideDefaultLabelCard: false,
         dataTestId: 'settings-sso',
       },
       {
@@ -53,6 +58,7 @@ const Admin: FC = () => {
         component: <div>Marketplace Settings Page</div>,
         disabled: false,
         hidden: true,
+        hideDefaultLabelCard: false,
         dataTestId: 'settings-marketplace',
       },
       {
@@ -62,15 +68,14 @@ const Admin: FC = () => {
         component: <div>Notifications Settings Page</div>,
         disabled: false,
         hidden: true,
+        hideDefaultLabelCard: false,
         dataTestId: 'settings-notifications',
       },
     ],
     [data, isLoading],
-  );
+  ).filter((item) => !item.hidden);
 
   const [activeSettingsIndex, setActiveSettingsIndex] = useState<number>(0);
-
-  const visibleSettings = settings.filter((item) => !item.hidden);
 
   return (
     <div
@@ -86,42 +91,42 @@ const Admin: FC = () => {
         </p>
         <Divider className="border-neutral-500" />
         <div className="flex flex-col">
-          {visibleSettings.map((item, index) => (
+          {settings.map((item, index) => (
             <div
               key={item.key}
               className={`hover:bg-primary-50 cursor-pointer ${
-                item.key === visibleSettings[activeSettingsIndex].key
+                item.key === settings[activeSettingsIndex].key
                   ? 'bg-primary-50'
                   : 'bg-white'
-              } ${index === visibleSettings.length - 1 ? 'rounded-b-9xl' : ''}`}
+              } ${index === settings.length - 1 ? 'rounded-b-9xl' : ''}`}
               onClick={() => setActiveSettingsIndex(index)}
               data-testid={item.dataTestId}
             >
               <div
                 className={`${
-                  item.key === visibleSettings[activeSettingsIndex].key
+                  item.key === settings[activeSettingsIndex].key
                     ? 'text-primary-500'
                     : 'text-neutral-900'
                 } text-sm font-medium p-4 flex items-center gap-x-3`}
               >
                 <Icon
                   name={item.icon}
-                  isActive={
-                    visibleSettings[activeSettingsIndex].key === item.key
-                  }
+                  isActive={settings[activeSettingsIndex].key === item.key}
                 />
                 {item.label}
               </div>
-              {index !== visibleSettings.length - 1 && <Divider />}
+              {index !== settings.length - 1 && <Divider />}
             </div>
           ))}
         </div>
       </Card>
       <div className="flex flex-col w-full gap-y-4">
-        <Card className="max-h-14 text-neutral-900 text-base font-bold py-4 pl-6">
-          {visibleSettings[activeSettingsIndex].label}
-        </Card>
-        {visibleSettings[activeSettingsIndex].component}
+        {!!!settings[activeSettingsIndex]?.hideDefaultLabelCard && (
+          <Card className="text-neutral-900 text-base font-bold p-6">
+            {settings[activeSettingsIndex].label}
+          </Card>
+        )}
+        {settings[activeSettingsIndex].component}
       </div>
     </div>
   );

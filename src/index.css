@@ -170,3 +170,9 @@ body {
   border-style: solid;
   border-color: transparent transparent white transparent;
 }
+
+@keyframes favicon-animation {
+  100% {
+    transform: rotate(360deg);
+  }
+}
