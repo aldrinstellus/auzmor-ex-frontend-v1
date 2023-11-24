@@ -16,7 +16,7 @@ import {
 import { MB } from 'utils/constants';
 
 const BrandingSettings: FC = () => {
-  const { control } = useForm();
+  const { control, setValue } = useForm();
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
   const [selectedFavicon, setSelectedFavicon] = useState<File | null>(null);
   const [logoValidation, setLogoValidation] = useState<IMediaValidationError[]>(
@@ -323,7 +323,7 @@ const BrandingSettings: FC = () => {
       <Collapse
         defaultOpen
         label="Colour theme"
-        className="rounded-9xl overflow-hidden"
+        className="rounded-9xl"
         headerClassName="px-6 py-4 bg-white"
         headerTextClassName="text-base font-bold text-neutral-900"
         dataTestId="brandingsetting-colour-theme"
@@ -337,11 +337,12 @@ const BrandingSettings: FC = () => {
                   {
                     name: 'primaryColor',
                     label: 'Primary/action colour',
-                    type: FieldType.Input,
+                    type: FieldType.ColorPicker,
                     control,
                     className: '',
                     dataTestId: 'primary-color',
-                    defaultValue: 'Auzmor Office',
+                    defaultValue: '#FFFFFF',
+                    setValue,
                   },
                 ]}
               />
@@ -351,11 +352,12 @@ const BrandingSettings: FC = () => {
                     {
                       name: 'secondaryColor',
                       label: 'Secondary/action colour',
-                      type: FieldType.Input,
+                      type: FieldType.ColorPicker,
                       control,
                       className: '',
                       dataTestId: 'secondary-color',
-                      defaultValue: 'Auzmor Office',
+                      defaultValue: '#FFFFFF',
+                      setValue,
                     },
                   ]}
                 />

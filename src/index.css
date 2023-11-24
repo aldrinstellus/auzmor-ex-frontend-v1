@@ -171,6 +171,17 @@ body {
   border-color: transparent transparent white transparent;
 }
 
+.bottom-arrow::after {
+  content: ' ';
+  position: absolute;
+  top: 100%; /* At the bottom of the tooltip */
+  left: 50%;
+  margin-left: -12px;
+  border-width: 12px;
+  border-style: solid;
+  border-color: white transparent transparent transparent;
+}
+
 @keyframes favicon-animation {
   100% {
     transform: rotate(360deg);
