@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
+import { BRANDING } from 'utils/constants';
 
 interface ILogin {
   email: string;
@@ -76,6 +77,7 @@ export const signup = async (payload: IOrganization) => {
 
 export const fetchMe = async () => {
   const { data } = await apiService.get('/users/me');
+  data.result.data.branding = BRANDING;
   return data;
 };
 

@@ -13,7 +13,6 @@ import {
   IShoutoutRecipient,
 } from 'queries/post';
 import Spinner from 'components/Spinner';
-import { PRIMARY_COLOR } from 'utils/constants';
 import LoadMore from './components/LoadMore';
 import CommentSkeleton from './components/CommentSkeleton';
 import { CommentsRTE } from './components/CommentsRTE';
@@ -198,7 +197,7 @@ const Comments: FC<CommentsProps> = ({ entityId }) => {
               )}
               {isFetchingNextPage && (
                 <div className="flex justify-center items-center py-10">
-                  <Spinner color={PRIMARY_COLOR} />
+                  <Spinner />
                 </div>
               )}
             </div>

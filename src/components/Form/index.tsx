@@ -11,6 +11,7 @@ import CreatableSearch from 'components/CreatableSearch';
 import AsyncSingleSelect from 'components/AsyncSingleSelect';
 import CheckboxList from 'components/CheckboxList';
 import { FC } from 'react';
+import ColorPicker from 'components/ColorPicker';
 
 export enum FieldType {
   Input = 'INPUT',
@@ -26,6 +27,7 @@ export enum FieldType {
   TimePicker = 'TIMEPICKER',
   CreatableSearch = 'CREATABLE_SEARCH',
   CheckboxList = 'CheckboxList',
+  ColorPicker = 'ColorPicker',
 }
 
 const fieldMap: Record<string, any> = {
@@ -41,6 +43,7 @@ const fieldMap: Record<string, any> = {
   [FieldType.CreatableSearch]: CreatableSearch,
   [FieldType.AsyncSingleSelect]: AsyncSingleSelect,
   [FieldType.CheckboxList]: CheckboxList,
+  [FieldType.ColorPicker]: ColorPicker,
 };
 
 export type LayoutProps = {

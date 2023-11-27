@@ -112,6 +112,7 @@ export enum MediaValidationError {
   VideoSizeExceed = 'VIDEO_SIZE_EXCEED',
   MediaLengthExceed = 'MEDIA_LENGTH_EXCEED',
   FileTypeNotSupported = 'FILE_TYPE_NOT_SUPPORTED',
+  IncorrectDimension = 'INCORRECT_DIMENSION',
 }
 
 export interface IMediaValidationError {

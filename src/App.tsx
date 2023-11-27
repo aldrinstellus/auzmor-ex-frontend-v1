@@ -9,6 +9,22 @@ import Toast from 'components/Toast';
 import useMediaQuery from 'hooks/useMediaQuery';
 import Unsupported from 'pages/Unsupported';
 
+// favicon loading animations
+let counter = 0;
+let faviconInterval: any = null;
+(() => {
+  faviconInterval = setInterval(() => {
+    counter %= 4;
+    document
+      .querySelector('link[rel="icon"]')
+      ?.setAttribute('href', `/loading-${counter + 1}.svg`);
+    counter += 1;
+  }, 300);
+})();
+export const clearFaviconInterval = () => {
+  clearInterval(faviconInterval);
+};
+
 function App() {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   return isDesktop ? (

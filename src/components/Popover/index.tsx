@@ -18,21 +18,32 @@ type AppProps = {
   contentRenderer?: (
     close: any,
   ) => ReactElement<any, string | JSXElementConstructor<any>>;
+  triggerNodeClassName?: string;
 };
 
 const Popover = forwardRef(
   (
-    { triggerNode, children, className = 'right-0', contentRenderer }: AppProps,
+    {
+      triggerNode,
+      children,
+      className = 'right-0',
+      contentRenderer,
+      triggerNodeClassName = '',
+    }: AppProps,
     ref: ForwardedRef<HTMLButtonElement>,
   ) => {
     const styles = clsx(
       { 'absolute z-10 bg-white': true },
       { [className]: true },
     );
+    const triggerNodeStyle = clsx({
+      'outline-none': true,
+      [triggerNodeClassName]: true,
+    });
 
     return (
       <HUIPopover className="relative">
-        <HUIPopover.Button className="outline-none" ref={ref}>
+        <HUIPopover.Button className={triggerNodeStyle} ref={ref}>
           {triggerNode}
         </HUIPopover.Button>
         <Transition

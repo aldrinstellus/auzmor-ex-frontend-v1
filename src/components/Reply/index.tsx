@@ -4,7 +4,6 @@ import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import { Reply } from 'components/Reply/Reply';
 import Spinner from 'components/Spinner';
-import { PRIMARY_COLOR } from 'utils/constants';
 import LoadMore from 'components/Comments/components/LoadMore';
 import { useCommentStore } from 'stores/commentStore';
 import CommentSkeleton from 'components/Comments/components/CommentSkeleton';
@@ -114,7 +113,7 @@ const Comments: FC<CommentsProps> = ({ entityId, className }) => {
               )}
               {isFetchingNextPage && (
                 <div className="flex justify-center items-center py-10">
-                  <Spinner color={PRIMARY_COLOR} />
+                  <Spinner />
                 </div>
               )}
             </div>

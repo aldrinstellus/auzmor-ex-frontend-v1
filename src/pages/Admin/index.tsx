@@ -1,31 +1,13 @@
 import Card from 'components/Card';
-import Collapse from 'components/Collapse';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
-import SSOSettings from 'components/SSOSettings';
-import Spinner from 'components/Spinner';
-import SwitchToggle from 'components/SwitchToggle';
-import {
-  useOrganization,
-  useUpdateLimitGlobalPostingMutation,
-} from 'queries/organization';
+import SSOSettings from 'pages/Admin/SSOSettings';
+import { useOrganization } from 'queries/organization';
 import { FC, useMemo, useState } from 'react';
-import queryClient from 'utils/queryClient';
-interface IAdminProps {}
+import GeneralSettings from './GeneralSettings';
+import BrandingSettings from './BrandingSettings';
 
-// interface ISetting {
-//   label: string;
-//   icon: string;
-//   key: string;
-//   component: ReactNode;
-//   disabled: boolean;
-//   hidden: boolean;
-//   dataTestId?: string;
-// }
-
-const Admin: FC<IAdminProps> = () => {
-  const updateLimitPostingControlsMutation =
-    useUpdateLimitGlobalPostingMutation();
+const Admin: FC = () => {
   const { data, isLoading } = useOrganization();
   const settings = useMemo(
     () => [
@@ -33,52 +15,10 @@ const Admin: FC<IAdminProps> = () => {
         label: 'General settings',
         icon: 'gearOutline',
         key: 'general-settings',
-        component: (
-          <Collapse
-            defaultOpen
-            label="Posting controls"
-            className="rounded-9xl overflow-hidden"
-            headerClassName="px-4 py-2 bg-blue-50"
-            headerTextClassName="text-base font-bold text-neutral-900"
-            dataTestId="generalsetting-postingcontrols"
-          >
-            <div className="bg-white">
-              <div className="px-6 py-4 flex justify-between">
-                <div className="flex flex-col">
-                  <div className="text-neutral-900 font-semibold text-sm">
-                    Limit global posting
-                  </div>
-                  <div
-                    className="text-xs text-neutral-900"
-                    data-testid="globalposting-helpnote"
-                  >
-                    When Global Posting is ON, end users can&apos;t post to
-                    everyone, only to their Team(s) or permitted Channels.
-                  </div>
-                </div>
-                {isLoading ? (
-                  <Spinner />
-                ) : (
-                  <SwitchToggle
-                    onChange={(checked: boolean, setChecked) =>
-                      updateLimitPostingControlsMutation.mutate(checked, {
-                        onError: () => setChecked(!checked),
-                        onSuccess: () =>
-                          queryClient.invalidateQueries(['organization']),
-                      })
-                    }
-                    defaultValue={
-                      !!data?.adminSettings?.postingControls?.limitGlobalPosting
-                    }
-                    dataTestId="postingcontrols-globalposting-cta"
-                  />
-                )}
-              </div>
-            </div>
-          </Collapse>
-        ),
+        component: <GeneralSettings />,
         disabled: false,
         hidden: false,
+        hideDefaultLabelCard: false,
         dataTestId: 'adminsettings-generalsetting',
       },
       {
@@ -88,15 +28,17 @@ const Admin: FC<IAdminProps> = () => {
         component: <div>User Management Settings Page</div>,
         disabled: false,
         hidden: true,
+        hideDefaultLabelCard: false,
         dataTestId: 'settings-user-management',
       },
       {
         label: 'Branding',
         icon: 'branding',
         key: 'branding-settings',
-        component: <div>Branding Settings Page</div>,
+        component: <BrandingSettings />,
         disabled: false,
-        hidden: true,
+        hidden: false,
+        hideDefaultLabelCard: true,
         dataTestId: 'settings-branding',
       },
       {
@@ -106,6 +48,7 @@ const Admin: FC<IAdminProps> = () => {
         component: <SSOSettings />,
         disabled: false,
         hidden: false,
+        hideDefaultLabelCard: false,
         dataTestId: 'settings-sso',
       },
       {
@@ -115,6 +58,7 @@ const Admin: FC<IAdminProps> = () => {
         component: <div>Marketplace Settings Page</div>,
         disabled: false,
         hidden: true,
+        hideDefaultLabelCard: false,
         dataTestId: 'settings-marketplace',
       },
       {
@@ -124,15 +68,14 @@ const Admin: FC<IAdminProps> = () => {
         component: <div>Notifications Settings Page</div>,
         disabled: false,
         hidden: true,
+        hideDefaultLabelCard: false,
         dataTestId: 'settings-notifications',
       },
     ],
     [data, isLoading],
-  );
+  ).filter((item) => !item.hidden);
 
   const [activeSettingsIndex, setActiveSettingsIndex] = useState<number>(0);
-
-  const visibleSettings = settings.filter((item) => !item.hidden);
 
   return (
     <div
@@ -148,42 +91,42 @@ const Admin: FC<IAdminProps> = () => {
         </p>
         <Divider className="border-neutral-500" />
         <div className="flex flex-col">
-          {visibleSettings.map((item, index) => (
+          {settings.map((item, index) => (
             <div
               key={item.key}
               className={`hover:bg-primary-50 cursor-pointer ${
-                item.key === visibleSettings[activeSettingsIndex].key
+                item.key === settings[activeSettingsIndex].key
                   ? 'bg-primary-50'
                   : 'bg-white'
-              } ${index === visibleSettings.length - 1 ? 'rounded-b-9xl' : ''}`}
+              } ${index === settings.length - 1 ? 'rounded-b-9xl' : ''}`}
               onClick={() => setActiveSettingsIndex(index)}
               data-testid={item.dataTestId}
             >
               <div
                 className={`${
-                  item.key === visibleSettings[activeSettingsIndex].key
+                  item.key === settings[activeSettingsIndex].key
                     ? 'text-primary-500'
-                    : 'text-neutral-500'
+                    : 'text-neutral-900'
                 } text-sm font-medium p-4 flex items-center gap-x-3`}
               >
                 <Icon
                   name={item.icon}
-                  isActive={
-                    visibleSettings[activeSettingsIndex].key === item.key
-                  }
+                  isActive={settings[activeSettingsIndex].key === item.key}
                 />
                 {item.label}
               </div>
-              {index !== visibleSettings.length - 1 && <Divider />}
+              {index !== settings.length - 1 && <Divider />}
             </div>
           ))}
         </div>
       </Card>
       <div className="flex flex-col w-full gap-y-4">
-        <Card className="max-h-14 text-neutral-900 text-base font-bold py-4 pl-6">
-          {visibleSettings[activeSettingsIndex].label}
-        </Card>
-        {visibleSettings[activeSettingsIndex].component}
+        {!!!settings[activeSettingsIndex]?.hideDefaultLabelCard && (
+          <Card className="text-neutral-900 text-base font-bold p-6">
+            {settings[activeSettingsIndex].label}
+          </Card>
+        )}
+        {settings[activeSettingsIndex].component}
       </div>
     </div>
   );

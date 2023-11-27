@@ -4,12 +4,14 @@ import SuccessLogo from './images/Vector.svg';
 import InfoLogo from './images/InfoCircle.svg';
 import CheckboxImage from './images/check.svg';
 import clsx from 'clsx';
+import { useBrandingStore } from 'stores/branding';
 
 interface IProps {
   className?: string;
 }
 
 export const Logo = ({ className = '' }: IProps) => {
+  const branding = useBrandingStore((state) => state.branding);
   const style = useMemo(
     () =>
       clsx({
@@ -18,7 +20,13 @@ export const Logo = ({ className = '' }: IProps) => {
       }),
     [className],
   );
-  return <img src={OfficeLogoSvg} alt="Office Logo" className={style} />;
+  return (
+    <img
+      src={branding?.logo || OfficeLogoSvg}
+      alt="Office Logo"
+      className={style}
+    />
+  );
 };
 
 export const Success = () => {

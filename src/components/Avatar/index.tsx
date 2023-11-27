@@ -4,7 +4,6 @@ import clsx from 'clsx';
 import isDarkColor from 'is-dark-color';
 import { getInitials } from 'utils/misc';
 import Spinner from 'components/Spinner';
-import { PRIMARY_COLOR } from 'utils/constants';
 import BlurImg from 'components/Image/components/BlurImg';
 import Icon from 'components/Icon';
 
@@ -142,7 +141,7 @@ const Avatar: FC<AvatarProps> = ({
             fontSize: isCounter ? `${size * 0.3}px` : `${size * 0.375}px`,
           }}
         >
-          {loading && <Spinner color={PRIMARY_COLOR} />}
+          {loading && <Spinner />}
           {!loading && avatarName}
         </span>
       )}

@@ -93,15 +93,15 @@ const UserSettings = () => {
               <div
                 className={`${
                   item.key === activeSettingsPage.key
-                    ? 'text-neutral-900'
-                    : 'text-neutral-500'
+                    ? 'text-primary-500'
+                    : 'text-neutral-900'
                 } text-sm font-medium p-4 flex items-center gap-x-3`}
               >
                 <Icon
                   name={item.icon}
                   color={
                     item.key === activeSettingsPage.key
-                      ? 'text-neutral-900'
+                      ? 'text-primary-500'
                       : undefined
                   }
                 />

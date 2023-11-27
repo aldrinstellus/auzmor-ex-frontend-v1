@@ -80,7 +80,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
       </div>
       <div className="mt-2">
         <Card className="pb-6 flex flex-col rounded-9xl max-h-[386px]">
-          <div className="rounded-t-9xl bg-blue-700 text-white py-3 w-full flex justify-start space-x-3 px-3">
+          <div className="rounded-t-9xl bg-secondary-500 text-white py-3 w-full flex justify-start space-x-3 px-3">
             <Icon
               name="flashIcon"
               className="text-white"

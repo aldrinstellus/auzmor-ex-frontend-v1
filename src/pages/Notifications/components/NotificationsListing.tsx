@@ -145,7 +145,7 @@ const NotificationsListing: FC<NotificationsListing> = ({
       {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
       {isFetchingNextPage && (
         <div className="flex items-center justify-center p-6">
-          <Spinner color="#059669" />
+          <Spinner />
         </div>
       )}
       {isError && (
