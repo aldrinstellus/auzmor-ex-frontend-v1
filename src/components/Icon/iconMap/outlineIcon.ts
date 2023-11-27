@@ -95,6 +95,7 @@ import SvgExploreOutline from '../components/Explore/ExploreOutline';
 import SvgUserRoleOutline from '../components/UserRole/UserRole';
 import SvgWarningCircleOutline from '../components/WarningCircle/WarningCircleOutline';
 import SvgCheckboxOutline from '../components/Checkbox/CheckboxOutline';
+import SvgCloudAddOutline from '../components/CloudAdd/CloudAddOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -111,10 +112,12 @@ export const outlineIcon = {
   callOutline: SvgCallOutline,
   celebrateOutline: SvgCelebrateOutline,
   chartOutline: SvgChartOutline,
+  checkboxOutline: SvgCheckboxOutline,
   clipboardOutline: SvgClipboardCloseOutline,
   clockOutline: SvgClockOutline,
   closeCircleOutline: SvgCloseCircleOutline,
   closeOutline: SvgCloseOutline,
+  cloudAddOutline: SvgCloudAddOutline,
   collapseOutline: SvgCollapseOutline,
   commentOutline: SvgCommentOutline,
   connectionOutline: SvgConnectionFolderOutline,
@@ -193,5 +196,4 @@ export const outlineIcon = {
   warningCirlceOutline: SvgWarningCircleOutline,
   zoomInOutline: SvgZoomInOutline,
   zoomOutOutline: SvgZoomOutOutline,
-  checkboxOutline: SvgCheckboxOutline,
 };

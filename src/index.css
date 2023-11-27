@@ -50,6 +50,9 @@ body {
   .apart {
     @apply flex justify-between items-center;
   }
+  .v-center {
+    @apply flex items-center space-x-1;
+  }
 }
 
 /* Width of the vertical scrollbar */
@@ -169,6 +172,34 @@ body {
   border-width: 16px;
   border-style: solid;
   border-color: transparent transparent white transparent;
+}
+
+.rdg {
+  border: 1px solid #e5e5e5;
+  border-top-right-radius: 12px;
+  border-top-left-radius: 12px;
+}
+.react-grid-HeaderCell,
+.react-grid-Cell {
+  box-sizing: border-box !important;
+}
+
+.rdg-cell {
+  box-sizing: border-box !important;
+  outline: 1px solid #e5e5e5;
+}
+
+.rdg-selected {
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+}
+
+.rdg-header-row {
+  background-color: #f0f8ff;
+  font-size: 14px;
+  color: #737373;
+  font-weight: 500;
 }
 
 .bottom-arrow::after {

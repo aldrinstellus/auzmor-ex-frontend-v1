@@ -82,6 +82,7 @@ import SvgExploreFilled from '../components/Explore/ExploreFilled';
 import SvgLauncherFilled from '../components/Launcher/LauncherFilled';
 import SvgFeedFilled from '../components/Feed/FeedFilled';
 import PostBookMarkFilled from '../components/PostBookmark/PostBookmarkFilled';
+import SvgCloudAddFilled from '../components/CloudAdd/CloudAddFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -100,6 +101,7 @@ export const filledIcon = {
   clockFilled: SvgClockFilled,
   closeCircleFilled: SvgCloseCircleFilled,
   closeFilled: SvgCloseFilled,
+  cloudAddFilled: SvgCloudAddFilled,
   collapseFilled: SvgCollapseFilled,
   commentFilled: SvgCommentFilled,
   convertShapeFilled: SvgConvertShapeFilled,
@@ -149,6 +151,7 @@ export const filledIcon = {
   noteFavouriteFilled: SvgNoteFavouriteFilled,
   peopleFilled: SvgPeopleFilled,
   playFilled: SvgPlayFilled,
+  postBookmarkFilled: PostBookMarkFilled,
   profileFilled: SvgProfileFilled,
   profileUserFilled: SvgProfileUserFilled,
   replyFilled: SvgReplyFilled,
@@ -167,5 +170,4 @@ export const filledIcon = {
   videoFilled: SvgVideoFilled,
   zoomInFilled: SvgZoomInFilled,
   zoomOutFilled: SvgZoomOutFilled,
-  postBookmarkFilled: PostBookMarkFilled,
 };
