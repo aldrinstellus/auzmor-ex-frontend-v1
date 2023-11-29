@@ -52,7 +52,7 @@ export interface IBranding {
   secondaryColor?: string;
   pageTitle?: string;
   favicon?: { blurHash?: string; id: string; original: string };
-  logo?: string;
+  logo?: { blurHash?: string; id: string; original: string };
   loginConfig: {
     layout: 'LEFT' | 'CENTER' | 'RIGHT'; // default: RIGHT
     backgroundType: 'IMAGE' | 'VIDEO' | 'COLOR'; // default: IMAGE

@@ -52,27 +52,25 @@ const RadioGroup: FC<RadioButtonProps> = ({
   return (
     <div className={style}>
       {radioList?.map((option, index) => (
-        <>
-          <div key={index} className={rowStyle}>
-            <input
-              data-testid={option.dataTestId}
-              className="w-5 h-5 accent-primary-600"
-              {...field}
-              id={option.data.value}
-              value={option.data?.value}
-              onChange={(e) =>
-                field.onChange(transform?.output ? transform?.output(e) : e)
-              }
-              checked={
-                transform?.input
-                  ? transform?.input(field.value)
-                  : field.value === option.data.value
-              }
-              type="radio"
-            />
-            <label htmlFor={option.data.value}>{labelRenderer(option)}</label>
-          </div>
-        </>
+        <div key={index} className={rowStyle}>
+          <input
+            data-testid={option.dataTestId}
+            className="w-5 h-5 accent-primary-600"
+            {...field}
+            id={option.data.value}
+            value={option.data?.value}
+            onChange={(e) =>
+              field.onChange(transform?.output ? transform?.output(e) : e)
+            }
+            checked={
+              transform?.input
+                ? transform?.input(field.value)
+                : field.value === option.data.value
+            }
+            type="radio"
+          />
+          <label htmlFor={option.data.value}>{labelRenderer(option)}</label>
+        </div>
       ))}
     </div>
   );

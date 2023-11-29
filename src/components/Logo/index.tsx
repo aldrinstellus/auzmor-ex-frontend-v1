@@ -22,7 +22,7 @@ export const Logo = ({ className = '' }: IProps) => {
   );
   return (
     <img
-      src={branding?.logo || OfficeLogoSvg}
+      src={branding?.logo?.original || OfficeLogoSvg}
       alt="Office Logo"
       className={style}
     />

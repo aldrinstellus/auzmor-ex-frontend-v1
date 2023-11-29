@@ -8,7 +8,13 @@ import { FC, ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import NoAnnouncement from 'images/NoAnnouncement.svg';
 import { useDropzone } from 'react-dropzone';
-import { getBlobUrl, getMediaObj, getMimeType, titleCase } from 'utils/misc';
+import {
+  BlobToFile,
+  getBlobUrl,
+  getMediaObj,
+  getMimeType,
+  titleCase,
+} from 'utils/misc';
 import { MB } from 'utils/constants';
 import { IRadioListOption } from 'components/RadioGroup';
 import { useUpdateBrandingMutation } from 'queries/organization';
@@ -16,6 +22,9 @@ import { useBrandingStore } from 'stores/branding';
 import { IBranding } from 'contexts/AuthContext';
 import useModal from 'hooks/useModal';
 import ImageResosition from 'components/DynamicImagePreview/components/ImageReposition';
+import clsx from 'clsx';
+import { useUpload } from 'hooks/useUpload';
+import { EntityType } from 'queries/files';
 
 interface IBrandingSettingsProps {
   branding?: IBranding;
@@ -27,39 +36,55 @@ const Preview: FC<{
   isVideo?: boolean;
   title?: string;
   description?: ReactNode;
-  onRemove?: () => void;
-}> = ({ file, url, title, description, onRemove = () => {}, isVideo }) => {
+  onCustomRemove?: () => void;
+  onBrandingRemove?: () => void;
+  imgClassName?: string;
+  videoClassName?: string;
+  className?: string;
+}> = ({
+  file,
+  url,
+  title,
+  description,
+  onCustomRemove = () => {},
+  onBrandingRemove = () => {},
+  isVideo,
+  imgClassName,
+  videoClassName,
+  className = '',
+}) => {
   const [removePreview, setRemovePreview] = useState(false);
+  const style = clsx({
+    'max-h-full max-w-full relative': true,
+    [className]: true,
+  });
   return file ? (
-    <div className="max-h-full max-w-full relative">
+    <div className={style}>
       {isVideo ? (
         <video
           src={getMediaObj([file])[0].original}
-          className="max-h-full max-w-full"
+          className={videoClassName}
         />
       ) : (
-        <img
-          src={getMediaObj([file])[0].original}
-          className="max-h-full max-w-full"
-        />
+        <img src={getMediaObj([file])[0].original} className={imgClassName} />
       )}
 
       <div
         className="absolute -right-3 -top-3 w-6 h-6 rounded-full flex items-center justify-center bg-black group"
         onClick={(e) => {
           e.stopPropagation();
-          onRemove();
+          onCustomRemove();
         }}
       >
         <Icon name="close" size={16} color="text-white" />
       </div>
     </div>
   ) : url && !removePreview ? (
-    <div className="max-h-full max-w-full relative">
+    <div className={style}>
       {isVideo ? (
-        <video src={url} className="max-h-full max-w-full" />
+        <video src={url} className={videoClassName} />
       ) : (
-        <img src={url} className="object-contain" />
+        <img src={url} className={imgClassName} />
       )}
 
       <div
@@ -67,6 +92,7 @@ const Preview: FC<{
         onClick={(e) => {
           e.stopPropagation();
           setRemovePreview(true);
+          onBrandingRemove();
         }}
       >
         <Icon name="close" size={16} color="text-white" />
@@ -119,14 +145,22 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
   const [layoutAlignment, setLayoutAlignment] = useState<
     'CENTER' | 'LEFT' | 'RIGHT'
   >(branding?.loginConfig?.layout || 'RIGHT');
+  const [removedMedia, setRemovedMedia] = useState<{
+    logo: boolean;
+    favicon: boolean;
+    bg: boolean;
+    bgVideo: boolean;
+  }>({ logo: false, favicon: false, bg: false, bgVideo: false });
+  const [isSaving, setIsSaving] = useState(false);
 
-  const [primaryColor, secondaryColor, backgroundType, color, pageTitle] =
+  const [primaryColor, secondaryColor, backgroundType, color, pageTitle, text] =
     watch([
       'primaryColor',
       'secondaryColor',
       'backgroundType',
       'color',
       'pageTitle',
+      'text',
     ]);
 
   const [isEditLogoModalOpen, openEditLogoModal, closeEditLogoModal] =
@@ -134,6 +168,8 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
   const [isEditFaviconModalOpen, openEditFaviconModal, closeEditFaviconModal] =
     useModal();
   const [isEditBGModalOpen, openEditBGModal, closeEditBGModal] = useModal();
+
+  const { uploadMedia } = useUpload();
 
   const updateBranding = useUpdateBrandingMutation();
 
@@ -281,23 +317,93 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
               <Button label="Cancel" variant={Variant.Secondary} />
               <Button
                 label="Save changes"
-                onClick={() => {
-                  setBranding({
+                loading={isSaving}
+                onClick={async () => {
+                  setIsSaving(true);
+                  let uploadedLogo = null;
+                  if (selectedLogo) {
+                    uploadedLogo = await uploadMedia(
+                      [
+                        BlobToFile(
+                          selectedLogo,
+                          `id-${Math.random().toString(16).slice(2)}`,
+                        ),
+                      ],
+                      EntityType.OrgLogo,
+                    );
+                  } else if (!removedMedia.logo && branding?.logo?.original) {
+                    uploadedLogo = [branding?.logo];
+                  }
+                  let uploadedFavicon = null;
+                  if (selectedFavicon) {
+                    uploadedFavicon = await uploadMedia(
+                      [
+                        BlobToFile(
+                          selectedFavicon,
+                          `id-${Math.random().toString(16).slice(2)}`,
+                        ),
+                      ],
+                      EntityType.OrgFavicon,
+                    );
+                  } else if (
+                    !removedMedia.favicon &&
+                    branding?.favicon?.original
+                  ) {
+                    uploadedFavicon = [branding?.favicon];
+                  }
+                  let uploadedBG = null;
+                  if (selectedBG) {
+                    uploadedBG = await uploadMedia(
+                      [
+                        BlobToFile(
+                          selectedBG,
+                          `id-${Math.random().toString(16).slice(2)}`,
+                        ),
+                      ],
+                      EntityType.OrgBanner,
+                    );
+                  } else if (
+                    !removedMedia.bg &&
+                    branding?.loginConfig?.image?.original
+                  ) {
+                    uploadedBG = [branding?.loginConfig?.image];
+                  }
+                  let uploadedBGVideo = null;
+                  if (selectedBGVideo) {
+                    uploadedBGVideo = await uploadMedia(
+                      [
+                        BlobToFile(
+                          selectedBGVideo,
+                          `id-${Math.random().toString(16).slice(2)}`,
+                        ),
+                      ],
+                      EntityType.OrgLoginVideo,
+                    );
+                  } else if (
+                    !removedMedia.bgVideo &&
+                    branding?.loginConfig?.video?.original
+                  ) {
+                    uploadedBGVideo = [branding?.loginConfig?.video];
+                  }
+                  const newBranding = {
                     primaryColor,
                     secondaryColor,
                     pageTitle,
+                    logo: uploadedLogo ? uploadedLogo[0] : undefined,
+                    favicon: uploadedFavicon ? uploadedFavicon[0] : undefined,
                     loginConfig: {
                       layout: layoutAlignment,
                       backgroundType: backgroundType.toLocaleUpperCase() as any,
+                      text,
+                      color,
+                      image: uploadedBG ? uploadedBG[0] : undefined,
+                      video: uploadedBGVideo ? uploadedBGVideo[0] : undefined,
                     },
-                  });
-                  updateBranding.mutate({
-                    primaryColor,
-                    secondaryColor,
-                    pageTitle,
-                    loginConfig: {
-                      layout: layoutAlignment,
-                      backgroundType: backgroundType.toLocaleUpperCase() as any,
+                  };
+                  setBranding(newBranding);
+                  updateBranding.mutate(newBranding, {
+                    onSettled: () => {
+                      setIsSaving(false);
                     },
                   });
                 }}
@@ -338,7 +444,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                 <input {...getInputPropsLogo()} />
                 <Preview
                   file={selectedLogo}
-                  url={branding?.logo}
+                  url={branding?.logo?.original}
                   title="Upload Image"
                   description={
                     <span>
@@ -346,7 +452,10 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                       image size: 150 x 65 px
                     </span>
                   }
-                  onRemove={() => setSelectedLogo(null)}
+                  onCustomRemove={() => setSelectedLogo(null)}
+                  onBrandingRemove={() =>
+                    setRemovedMedia({ ...removedMedia, logo: true })
+                  }
                 />
               </div>
               <p className="text-xxs text-neutral-500">Max file size 5mb</p>
@@ -368,9 +477,10 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                       image size: 32 x 32 px
                     </span>
                   }
-                  onRemove={() => {
-                    setSelectedFavicon(null);
-                  }}
+                  onCustomRemove={() => setSelectedFavicon(null)}
+                  onBrandingRemove={() =>
+                    setRemovedMedia({ ...removedMedia, favicon: true })
+                  }
                 />
               </div>
               <p className="text-xxs text-neutral-500">Max file size 5mb</p>
@@ -552,7 +662,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                   </p>
                   <div
                     {...getRootPropsBG()}
-                    className="border border-dashed border-neutral-200 rounded-9xl p-6 w-[420px] h-[186px] flex justify-center items-center cursor-pointer"
+                    className="border border-dashed border-neutral-200 rounded-9xl px-5 py-2.5 w-[420px] h-[186px] flex justify-center items-center cursor-pointer"
                   >
                     <input {...getInputPropsBG()} />
                     <Preview
@@ -565,9 +675,11 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                           Ideal image size: 1920 x 860 px
                         </span>
                       }
-                      onRemove={() => {
-                        setSelectedBG(null);
-                      }}
+                      onCustomRemove={() => setSelectedBG(null)}
+                      onBrandingRemove={() =>
+                        setRemovedMedia({ ...removedMedia, bg: true })
+                      }
+                      imgClassName="w-[321px] h-[166px] rounded-7xl"
                     />
                   </div>
                   <p className="text-xxs text-neutral-500">Max file size 5mb</p>
@@ -593,9 +705,10 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                           Ideal video size: 1920 x 860 px
                         </span>
                       }
-                      onRemove={() => {
-                        setSelectedBGVideo(null);
-                      }}
+                      onCustomRemove={() => setSelectedBGVideo(null)}
+                      onBrandingRemove={() =>
+                        setRemovedMedia({ ...removedMedia, bgVideo: true })
+                      }
                       isVideo
                     />
                   </div>
