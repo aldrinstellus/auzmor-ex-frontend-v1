@@ -459,3 +459,25 @@ export const mapRanges = (
 ) => {
   return newMin + ((newMax - newMin) / (oldMax - oldMin)) * (value - oldMin);
 };
+
+export const getMimeType = (fileName: string): string | undefined => {
+  const extensionIndex = fileName.lastIndexOf('.');
+  if (extensionIndex === -1) {
+    return undefined;
+  }
+
+  const extension = fileName.substring(extensionIndex + 1);
+  const mimeTypes: { [key: string]: string } = {
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    png: 'image/png',
+    svg: 'image/svg+xml',
+    ico: 'image/x-icon',
+    gif: 'image/gif',
+    pdf: 'application/pdf',
+    txt: 'text/plain',
+    // Add more extensions and MIME types as needed
+  };
+
+  return mimeTypes[extension.toLowerCase()];
+};

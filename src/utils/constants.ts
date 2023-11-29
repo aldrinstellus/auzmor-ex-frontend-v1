@@ -24,6 +24,7 @@ export const BRANDING = {
       'https://images.hdqwalls.com/download/reindeer-silhouette-grazing-in-the-field-4n-3840x2160.jpg',
     video:
       'https://media.istockphoto.com/id/1222958227/video/big-sur-bixby-bridge-route-1-california-state-route-atlantic-ocean-aerial-drone.mp4?s=mp4-640x640-is&k=20&c=UslDy-nOXnXWubMOzXV3Ya3p7xMJbuA2W71X-oyNArM=',
+    text: 'Welcome to auzmor office',
     color: '#123456',
   },
 };

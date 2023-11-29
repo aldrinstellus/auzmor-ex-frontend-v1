@@ -3,7 +3,6 @@ import { IBranding } from 'contexts/AuthContext';
 import useAuth from 'hooks/useAuth';
 import { useBrandingStore } from 'stores/branding';
 import apiService from 'utils/apiService';
-import { BRANDING } from 'utils/constants';
 
 export enum IdentityProvider {
   CUSTOM_LDAP,
@@ -60,7 +59,6 @@ export const deleteSSO = async (idp: IdentityProvider) => {
 };
 const fetchSSOFromDomain = async (domain: string) => {
   const { data } = await apiService.get(`/organizations/${domain}`);
-  data.result.data.branding = BRANDING;
   return data;
 };
 
@@ -76,7 +74,6 @@ export const useGetSSOFromDomain = (domain: string, enabled?: boolean) => {
 
 const getOrganization = async (domain: string) => {
   const data = await apiService.get(`/organizations/${domain}`);
-  data.data.result.data.branding = BRANDING;
   return data.data.result.data as IOrganization;
 };
 
@@ -104,5 +101,18 @@ export const useUpdateLimitGlobalPostingMutation = () => {
   return useMutation({
     mutationFn: (limitGlobalPosting: boolean, id?: string) =>
       patchLimitGlobalPosting(id || user!.organization.id, limitGlobalPosting),
+  });
+};
+
+export const patchBranding = async (branding: IBranding) => {
+  const { data } = await apiService.patch(`/organizations/configuration`, {
+    branding,
+  });
+  return data;
+};
+
+export const useUpdateBrandingMutation = () => {
+  return useMutation({
+    mutationFn: (branding: IBranding) => patchBranding(branding),
   });
 };

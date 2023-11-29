@@ -4,117 +4,282 @@ import Collapse from 'components/Collapse';
 import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
-import { FC, useState } from 'react';
+import { FC, ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import NoAnnouncement from 'images/NoAnnouncement.svg';
 import { useDropzone } from 'react-dropzone';
-import { getMediaObj } from 'utils/misc';
 import {
-  IMediaValidationError,
-  MediaValidationError,
-} from 'contexts/CreatePostContext';
-import { MB } from 'utils/constants';
+  BlobToFile,
+  getBlobUrl,
+  getMediaObj,
+  getMimeType,
+  titleCase,
+  twConfig,
+} from 'utils/misc';
+import { MB, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { IRadioListOption } from 'components/RadioGroup';
+import { useUpdateBrandingMutation } from 'queries/organization';
+import { useBrandingStore } from 'stores/branding';
+import { IBranding } from 'contexts/AuthContext';
+import useModal from 'hooks/useModal';
+import ImageResosition from 'components/DynamicImagePreview/components/ImageReposition';
+import clsx from 'clsx';
+import { useUpload } from 'hooks/useUpload';
+import { EntityType } from 'queries/files';
+import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { toast } from 'react-toastify';
+import { slideInAndOutTop } from 'utils/react-toastify';
+import Tooltip from 'components/Tooltip';
 
-const BrandingSettings: FC = () => {
-  const { control, setValue, watch } = useForm();
+interface IBrandingSettingsProps {
+  branding?: IBranding;
+}
+
+const Preview: FC<{
+  file: File | null;
+  url?: string;
+  isVideo?: boolean;
+  title?: string;
+  description?: ReactNode;
+  onCustomRemove?: () => void;
+  onBrandingRemove?: () => void;
+  imgClassName?: string;
+  videoClassName?: string;
+  className?: string;
+  dataTestId?: string;
+}> = ({
+  file,
+  url,
+  title,
+  description,
+  onCustomRemove = () => {},
+  onBrandingRemove = () => {},
+  isVideo,
+  imgClassName,
+  videoClassName,
+  className = '',
+  dataTestId,
+}) => {
+  const [removePreview, setRemovePreview] = useState(false);
+  const style = clsx({
+    'max-h-full max-w-full relative': true,
+    [className]: true,
+  });
+  return file ? (
+    <div className={style}>
+      {isVideo ? (
+        <video
+          src={getMediaObj([file])[0].original}
+          className={videoClassName}
+          data-testid={`branding-uploaded-${dataTestId}`}
+        />
+      ) : (
+        <img
+          src={getMediaObj([file])[0].original}
+          className={imgClassName}
+          data-testid={`branding-uploaded-${dataTestId}`}
+        />
+      )}
+
+      <div
+        className="absolute -right-3 -top-3 w-6 h-6 rounded-full flex items-center justify-center bg-black group"
+        onClick={(e) => {
+          e.stopPropagation();
+          onCustomRemove();
+        }}
+      >
+        <Icon
+          name="close"
+          size={16}
+          color="text-white"
+          dataTestId={`branding-remove-${dataTestId}`}
+        />
+      </div>
+    </div>
+  ) : url && !removePreview ? (
+    <div className={style}>
+      {isVideo ? (
+        <video
+          src={url}
+          className={videoClassName}
+          data-testid={`branding-uploaded-${dataTestId}`}
+        />
+      ) : (
+        <img
+          src={url}
+          className={imgClassName}
+          data-testid={`branding-uploaded-${dataTestId}`}
+        />
+      )}
+
+      <div
+        className="absolute -right-3 -top-3 w-6 h-6 rounded-full flex items-center justify-center bg-black group"
+        onClick={(e) => {
+          e.stopPropagation();
+          setRemovePreview(true);
+          onBrandingRemove();
+        }}
+      >
+        <Icon
+          name="close"
+          size={16}
+          color="text-white"
+          dataTestId={`branding-remove-${dataTestId}`}
+        />
+      </div>
+    </div>
+  ) : (
+    <div className="flex flex-col justify-center items-center gap-2">
+      <Icon name="documentUpload" color="text-neutral-900" hover={false} />
+      <div
+        className="text-neutral-900 font-medium"
+        data-testid={`branding-upload${dataTestId}`}
+      >
+        {title}
+      </div>
+      <div
+        className="mt-1 text-neutral-500 text-xs text-center"
+        data-testid={`branding-upload${dataTestId}-msg`}
+      >
+        {description}
+      </div>
+    </div>
+  );
+};
+
+const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
+  const backgroundOption: IRadioListOption[] = [
+    {
+      data: { value: 'Color' },
+      dataTestId: 'branding-background-as-color',
+    },
+    {
+      data: { value: 'Video' },
+      dataTestId: 'branding-background-as-video',
+    },
+    {
+      data: { value: 'Image' },
+      dataTestId: 'branding-background-as-image',
+    },
+  ];
+  const { control, setValue, watch, reset } = useForm({
+    defaultValues: {
+      primaryColor: branding?.primaryColor || '#10B981',
+      secondaryColor: branding?.secondaryColor || '#1d4ed8',
+      backgroundType:
+        titleCase(branding?.loginConfig?.backgroundType || '') ||
+        titleCase(backgroundOption[2].data.value),
+      color: branding?.loginConfig?.color || '#777777',
+      pageTitle: branding?.pageTitle || 'Auzmor Office',
+      text: branding?.loginConfig?.text,
+    },
+  });
+  const setBranding = useBrandingStore((state) => state.setBranding);
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
   const [selectedFavicon, setSelectedFavicon] = useState<File | null>(null);
   const [selectedBG, setSelectedBG] = useState<File | null>(null);
-  const [logoValidation, setLogoValidation] = useState<IMediaValidationError[]>(
-    [],
-  );
-  const [faviconValidation, setFaviconValidation] = useState<
-    IMediaValidationError[]
-  >([]);
-  const [bgValidation, setBGValidation] = useState<IMediaValidationError[]>([]);
+  const [selectedBGVideo, setSelectedBGVideo] = useState<File | null>(null);
   const [showSecondaryColor, setShowSecondaryColor] = useState(false);
   const [layoutAlignment, setLayoutAlignment] = useState<
     'CENTER' | 'LEFT' | 'RIGHT'
-  >('RIGHT');
+  >(branding?.loginConfig?.layout || 'RIGHT');
+  const [removedMedia, setRemovedMedia] = useState<{
+    logo: boolean;
+    favicon: boolean;
+    bg: boolean;
+    bgVideo: boolean;
+  }>({ logo: false, favicon: false, bg: false, bgVideo: false });
+  const [isSaving, setIsSaving] = useState(false);
 
-  const [primaryColor, secondaryColor, loginBackgroundType] = watch([
-    'primaryColor',
-    'secondaryColor',
-    'loginBackgroundType',
-  ]);
+  const [primaryColor, secondaryColor, backgroundType, color, pageTitle, text] =
+    watch([
+      'primaryColor',
+      'secondaryColor',
+      'backgroundType',
+      'color',
+      'pageTitle',
+      'text',
+    ]);
 
-  console.log(loginBackgroundType);
+  const [isEditLogoModalOpen, openEditLogoModal, closeEditLogoModal] =
+    useModal();
+  const [isEditFaviconModalOpen, openEditFaviconModal, closeEditFaviconModal] =
+    useModal();
+  const [isEditBGModalOpen, openEditBGModal, closeEditBGModal] = useModal();
 
-  const { getRootProps: getRootPropsLogo, getInputProps: getInputPropsLogo } =
-    useDropzone({
-      onDrop: (acceptedFiles) => {
+  const { uploadMedia } = useUpload();
+
+  const updateBranding = useUpdateBrandingMutation();
+
+  const [validationErrors, setValidationErrors] = useState<{
+    logo: string | null;
+    favicon: string | null;
+    bg: string | null;
+    bgVideo: string | null;
+  }>({ logo: null, favicon: null, bg: null, bgVideo: null });
+
+  const {
+    getRootProps: getRootPropsLogo,
+    getInputProps: getInputPropsLogo,
+    inputRef: logoInputRef,
+  } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      if (acceptedFiles.length > 0) {
         setSelectedLogo(acceptedFiles[0]);
-      },
-      onDropRejected: (rejection) => {
-        // extension validation
-        const error = rejection[0].errors[0];
-        const fimeName = rejection[0].file.name;
-        if (error.code === 'file-invalid-type') {
-          setLogoValidation([
-            ...logoValidation.filter(
-              (error) =>
-                error.errorType !== MediaValidationError.FileTypeNotSupported,
-            ),
-            {
-              errorMsg: `File type must be .png, .jpg, .jpeg, .svg`,
-              errorType: MediaValidationError.IncorrectDimension,
-              fileName: fimeName,
-            },
-          ]);
-        }
-      },
-      maxFiles: 1,
-      accept: {
-        'image/png': ['.png'],
-        'image/svg': ['.svg'],
-        'image/jpeg': ['.jpg', '.jpeg'],
-      },
-      validator: (file) => {
-        // size validation
-        if (file.size > 1 * MB) {
-          setLogoValidation([
-            ...logoValidation.filter(
-              (error) =>
-                error.errorType !== MediaValidationError.ImageSizeExceed,
-            ),
-            {
-              errorMsg: `Max file size 5mb`,
-              errorType: MediaValidationError.ImageSizeExceed,
-              fileName: file.name,
-            },
-          ]);
-        }
-
-        // dimension validation
-        const image = new Image();
-        image.src = getMediaObj([file])[0].original;
-        image.onload = () => {
-          const { height, width } = image;
-          console.log(width, height);
-          if (height != 30 || width != 150) {
-            setLogoValidation([
-              ...logoValidation.filter(
-                (error) =>
-                  error.errorType !== MediaValidationError.IncorrectDimension,
-              ),
-              {
-                errorMsg: `Dimension should be 150 x 30 px`,
-                errorType: MediaValidationError.IncorrectDimension,
-                fileName: file.name,
-              },
-            ]);
-          }
+        openEditLogoModal();
+        setValidationErrors({ ...validationErrors, logo: null });
+      } else {
+        setSelectedLogo(null);
+        closeEditLogoModal();
+      }
+    },
+    onDropRejected: (rejection) => {
+      // extension validation
+      const error = rejection[0].errors[0];
+      if (error.code === 'file-invalid-type') {
+        setValidationErrors({
+          ...validationErrors,
+          logo: 'Invalid file type.',
+        });
+        return;
+      }
+      if (error.code === 'file-size-exceed') {
+        setValidationErrors({ ...validationErrors, logo: error.message });
+        return;
+      }
+    },
+    maxFiles: 1,
+    accept: {
+      'image/png': ['.png'],
+      'image/svg': ['.svg'],
+      'image/jpeg': ['.jpg', '.jpeg'],
+    },
+    validator: (file) => {
+      // size validation
+      if (file.size > 5 * MB) {
+        return {
+          code: 'file-size-exceed',
+          message: 'The file size exceeds the limit',
         };
-        return null;
-      },
-    });
+      }
+      return null;
+    },
+  });
+
   const {
     getRootProps: getRootPropsFavicon,
     getInputProps: getInputPropsFavicon,
+    inputRef: faviconInputRef,
   } = useDropzone({
     onDrop: (acceptedFiles) => {
-      setSelectedFavicon(acceptedFiles[0]);
+      if (acceptedFiles.length > 0) {
+        setSelectedFavicon(acceptedFiles[0]);
+        openEditFaviconModal();
+        setValidationErrors({ ...validationErrors, favicon: null });
+      } else {
+        setSelectedFavicon(null);
+        closeEditFaviconModal();
+      }
     },
     maxFiles: 1,
     accept: {
@@ -126,135 +291,244 @@ const BrandingSettings: FC = () => {
     onDropRejected: (rejection) => {
       // extension validation
       const error = rejection[0].errors[0];
-      const fimeName = rejection[0].file.name;
       if (error.code === 'file-invalid-type') {
-        setFaviconValidation([
-          ...faviconValidation.filter(
-            (error) =>
-              error.errorType !== MediaValidationError.FileTypeNotSupported,
-          ),
-          {
-            errorMsg: `File type must be .png, .jpg, .jpeg, .svg, .ico`,
-            errorType: MediaValidationError.IncorrectDimension,
-            fileName: fimeName,
-          },
-        ]);
+        setValidationErrors({
+          ...validationErrors,
+          favicon: 'Invalid file type.',
+        });
+        return;
+      }
+      if (error.code === 'file-size-exceed') {
+        setValidationErrors({ ...validationErrors, favicon: error.message });
+        return;
       }
     },
     validator: (file) => {
       // size validation
       if (file.size > 5 * MB) {
-        setFaviconValidation([
-          ...faviconValidation.filter(
-            (error) => error.errorType !== MediaValidationError.ImageSizeExceed,
-          ),
-          {
-            errorMsg: `Max file size 5mb`,
-            errorType: MediaValidationError.ImageSizeExceed,
-            fileName: file.name,
-          },
-        ]);
+        return {
+          code: 'file-size-exceed',
+          message: 'The file size exceeds the limit',
+        };
       }
-
-      // dimension validation
-      const image = new Image();
-      image.src = getMediaObj([file])[0].original;
-      image.onload = () => {
-        const { height, width } = image;
-        if (height !== 32 || width !== 32) {
-          setFaviconValidation([
-            ...logoValidation.filter(
-              (error) =>
-                error.errorType !== MediaValidationError.IncorrectDimension,
-            ),
-            {
-              errorMsg: `Dimension should be 32 x 32 px`,
-              errorType: MediaValidationError.IncorrectDimension,
-              fileName: file.name,
-            },
-          ]);
-        }
-      };
       return null;
     },
   });
 
-  const { getRootProps: getRootPropsBG, getInputProps: getInputPropsBG } =
-    useDropzone({
-      onDrop: (acceptedFiles) => {
+  const {
+    getRootProps: getRootPropsBG,
+    getInputProps: getInputPropsBG,
+    inputRef: bgInputRef,
+  } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      if (acceptedFiles.length > 0) {
         setSelectedBG(acceptedFiles[0]);
-      },
-      maxFiles: 1,
-      accept: {
-        'image/png': ['.png'],
-        'image/svg': ['.svg'],
-        'image/jpeg': ['.jpg', '.jpeg'],
-      },
-      onDropRejected: (rejection) => {
-        // extension validation
-        const error = rejection[0].errors[0];
-        const fimeName = rejection[0].file.name;
-        if (error.code === 'file-invalid-type') {
-          setBGValidation([
-            ...faviconValidation.filter(
-              (error) =>
-                error.errorType !== MediaValidationError.FileTypeNotSupported,
-            ),
-            {
-              errorMsg: `File type must be .png, .jpg, .jpeg, .svg, .ico`,
-              errorType: MediaValidationError.IncorrectDimension,
-              fileName: fimeName,
-            },
-          ]);
-        }
-      },
-      validator: (file) => {
-        // size validation
-        if (file.size > 1 * MB) {
-          setBGValidation([
-            ...faviconValidation.filter(
-              (error) =>
-                error.errorType !== MediaValidationError.ImageSizeExceed,
-            ),
-            {
-              errorMsg: `Max file size 5mb`,
-              errorType: MediaValidationError.ImageSizeExceed,
-              fileName: file.name,
-            },
-          ]);
-        }
-
-        // dimension validation
-        const image = new Image();
-        image.src = getMediaObj([file])[0].original;
-        image.onload = () => {
-          const { height, width } = image;
-          if (height !== 32 || width !== 32) {
-            setBGValidation([
-              ...logoValidation.filter(
-                (error) =>
-                  error.errorType !== MediaValidationError.IncorrectDimension,
-              ),
-              {
-                errorMsg: `Dimension should be 32 x 32 px`,
-                errorType: MediaValidationError.IncorrectDimension,
-                fileName: file.name,
-              },
-            ]);
-          }
+        openEditBGModal();
+        setValidationErrors({ ...validationErrors, bg: null });
+      } else {
+        setSelectedBG(null);
+        closeEditBGModal();
+      }
+    },
+    maxFiles: 1,
+    accept: {
+      'image/png': ['.png'],
+      'image/jpeg': ['.jpg', '.jpeg'],
+    },
+    onDropRejected: (rejection) => {
+      // extension validation
+      const error = rejection[0].errors[0];
+      if (error.code === 'file-invalid-type') {
+        setValidationErrors({
+          ...validationErrors,
+          bg: 'Invalid file type.',
+        });
+        return;
+      }
+      if (error.code === 'file-size-exceed') {
+        setValidationErrors({ ...validationErrors, bg: error.message });
+        return;
+      }
+    },
+    validator: (file) => {
+      // size validation
+      if (file.size > 5 * MB) {
+        return {
+          code: 'file-size-exceed',
+          message: 'The file size exceeds the limit',
         };
-        return null;
+      }
+      return null;
+    },
+  });
+
+  const {
+    getRootProps: getRootPropsBGVideo,
+    getInputProps: getInputPropsBGVideo,
+  } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      if (acceptedFiles.length > 0) {
+        setSelectedBGVideo(acceptedFiles[0]);
+        setValidationErrors({ ...validationErrors, bgVideo: null });
+      } else {
+        setSelectedBGVideo(null);
+      }
+    },
+    maxFiles: 1,
+    accept: {
+      'video/mp4': ['.mp4'],
+      'video/webm': ['.webm'],
+    },
+    onDropRejected: (rejection) => {
+      // extension validation
+      const error = rejection[0].errors[0];
+      if (error.code === 'file-invalid-type') {
+        setValidationErrors({
+          ...validationErrors,
+          bgVideo: 'Invalid file type.',
+        });
+        return;
+      }
+      if (error.code === 'file-size-exceed') {
+        setValidationErrors({ ...validationErrors, bgVideo: error.message });
+        return;
+      }
+    },
+    validator: (file) => {
+      // size validation
+      if (file.size > 5 * MB) {
+        return {
+          code: 'file-size-exceed',
+          message: 'The file size exceeds the limit',
+        };
+      }
+      return null;
+    },
+  });
+
+  const handleSaveChanges = async () => {
+    setIsSaving(true);
+    let uploadedLogo = null;
+    if (selectedLogo) {
+      uploadedLogo = await uploadMedia(
+        [BlobToFile(selectedLogo, `id-${Math.random().toString(16).slice(2)}`)],
+        EntityType.OrgLogo,
+      );
+    } else if (!removedMedia.logo && branding?.logo?.original) {
+      uploadedLogo = [branding?.logo];
+    }
+    let uploadedFavicon = null;
+    if (selectedFavicon) {
+      uploadedFavicon = await uploadMedia(
+        [
+          BlobToFile(
+            selectedFavicon,
+            `id-${Math.random().toString(16).slice(2)}`,
+          ),
+        ],
+        EntityType.OrgFavicon,
+      );
+    } else if (!removedMedia.favicon && branding?.favicon?.original) {
+      uploadedFavicon = [branding?.favicon];
+    }
+    let uploadedBG = null;
+    if (selectedBG) {
+      uploadedBG = await uploadMedia(
+        [BlobToFile(selectedBG, `id-${Math.random().toString(16).slice(2)}`)],
+        EntityType.OrgBanner,
+      );
+    } else if (!removedMedia.bg && branding?.loginConfig?.image?.original) {
+      uploadedBG = [branding?.loginConfig?.image];
+    }
+    let uploadedBGVideo = null;
+    if (selectedBGVideo) {
+      uploadedBGVideo = await uploadMedia(
+        [
+          BlobToFile(
+            selectedBGVideo,
+            `id-${Math.random().toString(16).slice(2)}`,
+          ),
+        ],
+        EntityType.OrgLoginVideo,
+      );
+    } else if (
+      !removedMedia.bgVideo &&
+      branding?.loginConfig?.video?.original
+    ) {
+      uploadedBGVideo = [branding?.loginConfig?.video];
+    }
+    const newBranding = {
+      primaryColor,
+      secondaryColor,
+      pageTitle,
+      logo: uploadedLogo ? uploadedLogo[0] : undefined,
+      favicon: uploadedFavicon ? uploadedFavicon[0] : undefined,
+      loginConfig: {
+        layout: layoutAlignment,
+        backgroundType: backgroundType.toLocaleUpperCase() as any,
+        text,
+        color,
+        image: uploadedBG ? uploadedBG[0] : undefined,
+        video: uploadedBGVideo ? uploadedBGVideo[0] : undefined,
+      },
+    };
+    setBranding(newBranding);
+    updateBranding.mutate(newBranding, {
+      onSuccess: () => {
+        toast(
+          <SuccessToast
+            content={'Changes you made have been saved'}
+            dataTestId="branding-changes-saved-toaster"
+          />,
+          {
+            closeButton: (
+              <Icon
+                name="closeCircleOutline"
+                color="text-primary-500"
+                size={20}
+              />
+            ),
+            style: {
+              border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+              borderRadius: '6px',
+              display: 'flex',
+              alignItems: 'center',
+            },
+            autoClose: TOAST_AUTOCLOSE_TIME,
+            transition: slideInAndOutTop,
+            theme: 'dark',
+          },
+        );
+      },
+      onSettled: () => {
+        setIsSaving(false);
       },
     });
+  };
 
-  const resetValidationError = (type: 'LOGO' | 'FAVICON' | 'BG') => {
-    switch (type) {
-      case 'LOGO':
-        setLogoValidation([]);
-        return;
-      case 'FAVICON':
-        setFaviconValidation([]);
-    }
+  const validationErrorTemplate = (
+    message: string,
+    onClick: () => void,
+    dataTestId?: string,
+  ) => {
+    return (
+      <div
+        className="w-full h-full flex flex-col items-center justify-center"
+        onClick={onClick}
+      >
+        <Icon name="infoCircle" color="text-red-500" size={32} />
+        <p
+          className="text-red-500 font-medium text-sm mt-2"
+          data-testid={`branding-${dataTestId}-failed`}
+        >
+          Oops! Upload failed
+        </p>
+        <p className="text-neutral-500 text-xs font-medium mt-3">
+          {message}{' '}
+          <span className="text-primary-500 font-bold">Try again</span>
+        </p>
+      </div>
+    );
   };
 
   return (
@@ -263,14 +537,25 @@ const BrandingSettings: FC = () => {
         <div className="flex justify-between w-full">
           <div className="flex flex-col gap-4">
             <p className="text-neutral-900 text-base font-bold">Branding</p>
-            <p className="text-neutral-500 text-sm">
+            <p className="text-neutral-500 text-sm" data-testid="branding-note">
               Branding Options for a Personalized Experience
             </p>
           </div>
           <div className="flex flex-col">
             <div className="flex gap-2">
-              <Button label="Cancel" variant={Variant.Secondary} />
-              <Button label="Save changes" />
+              <Button
+                label="Cancel"
+                variant={Variant.Secondary}
+                onClick={() => reset()}
+                disabled={isSaving}
+                dataTestId="branding-cancelcta"
+              />
+              <Button
+                label="Save changes"
+                loading={isSaving}
+                onClick={handleSaveChanges}
+                dataTestId="branding-savechangescta"
+              />
             </div>
             <div></div>
           </div>
@@ -279,12 +564,11 @@ const BrandingSettings: FC = () => {
       <Collapse
         defaultOpen
         label="Page settings"
-        className="rounded-9xl overflow-hidden"
-        headerClassName="px-6 py-4 bg-white"
         headerTextClassName="text-base font-bold text-neutral-900"
         dataTestId="brandingsetting-pagesettings"
+        height={413}
       >
-        <div className="flex flex-col gap-4 bg-white px-6 pb-4">
+        <div className="flex flex-col gap-4 bg-white px-6 pb-4 rounded-b-9xl">
           <Divider />
           <Layout
             fields={[
@@ -294,8 +578,11 @@ const BrandingSettings: FC = () => {
                 type: FieldType.Input,
                 control,
                 className: '',
-                dataTestId: 'page-title',
-                defaultValue: 'Auzmor Office',
+                dataTestId: 'branding-pagetitle',
+                helpText:
+                  branding?.pageTitle === 'Auzmor office'
+                    ? `Replace 'Auzmor office' name from UI with your own name`
+                    : '',
               },
             ]}
           />
@@ -304,95 +591,85 @@ const BrandingSettings: FC = () => {
               <div>Logo</div>
               <div
                 {...getRootPropsLogo()}
-                className="border border-dashed border-neutral-200 rounded-9xl p-6 w-full h-[186px] flex justify-center items-center"
+                className="border border-dashed border-neutral-200 rounded-9xl p-6 w-full h-[186px] flex justify-center items-center cursor-pointer"
               >
-                <input {...getInputPropsLogo()} />
-                {selectedLogo && !!!logoValidation?.length ? (
-                  <div className="max-h-full max-w-full relative">
-                    <img
-                      src={getMediaObj([selectedLogo])[0].original}
-                      className="max-h-full max-w-full"
-                    />
-                    <div
-                      className="absolute -right-3 -top-3 w-6 h-6 rounded-full flex items-center justify-center bg-black group"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedLogo(null);
-                        resetValidationError('LOGO');
-                      }}
-                    >
-                      <Icon name="close" size={16} color="text-white" />
-                    </div>
-                  </div>
+                <input {...getInputPropsLogo()} data-testid="upload-logo" />
+                {validationErrors.logo ? (
+                  validationErrorTemplate(
+                    validationErrors.logo,
+                    () => {
+                      setValidationErrors({ ...validationErrors, logo: null });
+                    },
+                    'logo',
+                  )
                 ) : (
-                  <div className="flex flex-col justify-center items-center gap-2">
-                    <Icon
-                      name="documentUpload"
-                      color="text-neutral-900"
-                      hover={false}
-                    />
-                    <div className="text-neutral-900 font-medium">
-                      Upload Logo
-                    </div>
-                    <div className="mt-1 text-neutral-500 text-xs text-center">
-                      Drag and drop or click here to upload file. <br /> Ideal
-                      image size: 150 x 30 px
-                    </div>
-                  </div>
+                  <Preview
+                    file={selectedLogo}
+                    url={branding?.logo?.original}
+                    title="Upload Image"
+                    description={
+                      <span>
+                        Drag and drop or{' '}
+                        <span className="text-primary-500 font-bold">
+                          click here
+                        </span>{' '}
+                        to upload file. <br /> Ideal image size: 150 x 65 px
+                      </span>
+                    }
+                    onCustomRemove={() => setSelectedLogo(null)}
+                    onBrandingRemove={() =>
+                      setRemovedMedia({ ...removedMedia, logo: true })
+                    }
+                    dataTestId="logo"
+                  />
                 )}
               </div>
-              {logoValidation?.length > 0 && (
-                <p className="text-xxs text-neutral-500">
-                  {logoValidation[0].errorMsg}
-                </p>
-              )}
+              <p className="text-xxs text-neutral-500">Max file size 5mb</p>
             </div>
             <div className="flex flex-col w-1/2 gap-1">
               <div>Favicon</div>
               <div
                 {...getRootPropsFavicon()}
-                className="border border-dashed border-neutral-200 rounded-9xl p-6 w-full h-[186px] flex justify-center items-center"
+                className="border border-dashed border-neutral-200 rounded-9xl p-6 w-full h-[186px] flex justify-center items-center cursor-pointer"
               >
-                <input {...getInputPropsFavicon()} />
-                {selectedFavicon && !!!faviconValidation?.length ? (
-                  <div className="max-h-full max-w-full relative">
-                    <img
-                      src={getMediaObj([selectedFavicon])[0].original}
-                      className="max-h-full max-w-full"
-                    />
-                    <div
-                      className="absolute -right-3 -top-3 w-6 h-6 rounded-full flex items-center justify-center bg-black group"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedFavicon(null);
-                        resetValidationError('FAVICON');
-                      }}
-                    >
-                      <Icon name="close" size={16} color="text-white" />
-                    </div>
-                  </div>
+                <input
+                  {...getInputPropsFavicon()}
+                  data-testid="upload-favicon"
+                />
+                {validationErrors.favicon ? (
+                  validationErrorTemplate(
+                    validationErrors.favicon,
+                    () => {
+                      setValidationErrors({
+                        ...validationErrors,
+                        favicon: null,
+                      });
+                    },
+                    'favicon',
+                  )
                 ) : (
-                  <div className="flex flex-col justify-center items-center gap-2">
-                    <Icon
-                      name="documentUpload"
-                      color="text-neutral-900"
-                      hover={false}
-                    />
-                    <div className="text-neutral-900 font-medium">
-                      Upload Icon
-                    </div>
-                    <div className="mt-1 text-neutral-500 text-xs text-center">
-                      Drag and drop or click here to upload file. <br /> Ideal
-                      image size: 32 x 32 px
-                    </div>
-                  </div>
+                  <Preview
+                    file={selectedFavicon}
+                    url={branding?.favicon?.original}
+                    title="Upload Icon"
+                    description={
+                      <span>
+                        Drag and drop or{' '}
+                        <span className="text-primary-500 font-bold">
+                          click here
+                        </span>{' '}
+                        to upload file. <br /> Ideal image size: 32 x 32 px
+                      </span>
+                    }
+                    onCustomRemove={() => setSelectedFavicon(null)}
+                    onBrandingRemove={() =>
+                      setRemovedMedia({ ...removedMedia, favicon: true })
+                    }
+                    dataTestId="icon"
+                  />
                 )}
               </div>
-              {faviconValidation?.length > 0 && (
-                <p className="text-xxs text-neutral-500">
-                  {faviconValidation[0].errorMsg}
-                </p>
-              )}
+              <p className="text-xxs text-neutral-500">Max file size 5mb</p>
             </div>
           </div>
         </div>
@@ -400,12 +677,11 @@ const BrandingSettings: FC = () => {
       <Collapse
         defaultOpen
         label="Colour theme"
-        className="rounded-9xl"
-        headerClassName="px-6 py-4 bg-white"
         headerTextClassName="text-base font-bold text-neutral-900"
         dataTestId="brandingsetting-colour-theme"
+        height={333}
       >
-        <div className="flex flex-col gap-4 bg-white px-6 pb-4">
+        <div className="flex flex-col gap-4 bg-white px-6 pb-4 rounded-b-9xl">
           <Divider />
           <div className="flex w-full items-center gap-[160px]">
             <div className="w-2/5 flex flex-col gap-4">
@@ -417,9 +693,20 @@ const BrandingSettings: FC = () => {
                     type: FieldType.ColorPicker,
                     control,
                     className: '',
-                    dataTestId: 'primary-color',
-                    defaultValue: '#10B981',
+                    dataTestId: 'branding-select-primary-color',
                     setValue,
+                    customLabelRightElement: (
+                      <Tooltip
+                        tooltipContent={
+                          <p className="text-center text-sm font-medium">
+                            It is used in CTA&apos;s, Links,
+                            <br /> Icons, etc.
+                          </p>
+                        }
+                      >
+                        <Icon name="infoCircle" size={16} hover={false} />
+                      </Tooltip>
+                    ),
                   },
                 ]}
               />
@@ -433,8 +720,19 @@ const BrandingSettings: FC = () => {
                       control,
                       className: '',
                       dataTestId: 'secondary-color',
-                      defaultValue: '#1d4ed8',
                       setValue,
+                      customLabelRightElement: (
+                        <Tooltip
+                          tooltipContent={
+                            <p className="text-center text-sm font-medium">
+                              It is used in secondary <br />
+                              buttons, highlights, etc.
+                            </p>
+                          }
+                        >
+                          <Icon name="infoCircle" size={16} hover={false} />
+                        </Tooltip>
+                      ),
                     },
                   ]}
                 />
@@ -442,6 +740,7 @@ const BrandingSettings: FC = () => {
                 <div
                   className="flex text-primary-500 group cursor-pointer group-hover:text-primary-700 text-base font-bold"
                   onClick={() => setShowSecondaryColor(true)}
+                  data-testid="branding-add-secondary-color"
                 >
                   <Icon name="add" color="text-primary-500" />
                   <p>Add secondary colour</p>
@@ -451,7 +750,7 @@ const BrandingSettings: FC = () => {
             <div className="w-[182px] flex flex-col rounded-7xl overflow-hidden gap-1 border border-neutral-200 shadow-sm">
               <div
                 className="p-3 flex gap-2 px-2.5"
-                style={{ backgroundColor: secondaryColor || '#1d4ed8' }}
+                style={{ backgroundColor: secondaryColor }}
               >
                 <Icon
                   name="flashIcon"
@@ -471,7 +770,7 @@ const BrandingSettings: FC = () => {
 
               <div
                 className="flex items-center justify-center text-white rounded-19xl px-2.5 py-2 mx-2.5 text-sm font-bold"
-                style={{ backgroundColor: primaryColor || '#10B981' }}
+                style={{ backgroundColor: primaryColor }}
               >
                 Primary
               </div>
@@ -485,14 +784,14 @@ const BrandingSettings: FC = () => {
       <Collapse
         defaultOpen
         label="Login"
-        className="rounded-9xl overflow-hidden"
-        headerClassName="px-6 py-4 bg-white"
         headerTextClassName="text-base font-bold text-neutral-900"
         dataTestId="brandingsetting-login"
+        height={511}
+        className="mb-16"
       >
-        <div className="flex flex-col gap-4 bg-white px-6 pb-4">
+        <div className="flex flex-col gap-4 bg-white px-6 pb-4 rounded-b-9xl">
           <Divider />
-          <div className="flex justify-between w-full items-center">
+          <div className="flex w-full gap-[120px]">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-3">
                 <p className="text-sm font-bold text-neutral-900">
@@ -502,6 +801,7 @@ const BrandingSettings: FC = () => {
                   <div
                     className="flex flex-col items-center gap-2"
                     onClick={() => setLayoutAlignment('LEFT')}
+                    data-testid="branding-select-left-alignment"
                   >
                     <div
                       className={`w-[100px] h-[60px] bg-neutral-100 relative border border-neutral-200 rounded-7xl ${
@@ -516,6 +816,7 @@ const BrandingSettings: FC = () => {
                   <div
                     className="flex flex-col items-center gap-2"
                     onClick={() => setLayoutAlignment('CENTER')}
+                    data-testid="branding-select-center-alignment"
                   >
                     <div
                       className={`w-[100px] h-[60px] bg-neutral-100 flex justify-center border border-neutral-200 rounded-7xl ${
@@ -532,6 +833,7 @@ const BrandingSettings: FC = () => {
                   <div
                     className="flex flex-col items-center gap-2"
                     onClick={() => setLayoutAlignment('RIGHT')}
+                    data-testid="branding-select-right-alignment"
                   >
                     <div
                       className={`w-[100px] h-[60px] bg-neutral-100 relative border border-neutral-200 rounded-7xl ${
@@ -555,83 +857,227 @@ const BrandingSettings: FC = () => {
                   fields={[
                     {
                       type: FieldType.Radio,
-                      name: 'loginBackgroundType',
+                      name: 'backgroundType',
                       className: 'flex !flex-row gap-4',
                       control,
-                      radioList: [
-                        { data: { type: 'Color' }, dataTestId: 'color' },
-                        { data: { type: 'Video' }, dataTestId: 'video' },
-                        { data: { type: 'Image' }, dataTestId: 'image' },
-                      ],
+                      radioList: backgroundOption,
                       labelRenderer: (option: IRadioListOption) => {
                         return (
-                          <p className="pl-1 text-sm">{option.data.type}</p>
+                          <p className="pl-1 text-sm">{option.data.value}</p>
                         );
                       },
                     },
                   ]}
                 />
               </div>
-              <div className="flex flex-col gap-3">
-                <p className="text-sm font-bold text-neutral-900">
-                  Upload Image
-                </p>
-                <div
-                  {...getRootPropsBG()}
-                  className="border border-dashed border-neutral-200 rounded-9xl p-6 w-full h-[186px] flex justify-center items-center"
-                >
-                  <input {...getInputPropsBG()} />
-                  {selectedBG && !!!bgValidation?.length ? (
-                    <div className="max-h-full max-w-full relative">
-                      <img
-                        src={getMediaObj([selectedBG])[0].original}
-                        className="max-h-full max-w-full"
-                      />
-                      <div
-                        className="absolute -right-3 -top-3 w-6 h-6 rounded-full flex items-center justify-center bg-black group"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedBG(null);
-                          resetValidationError('BG');
-                        }}
-                      >
-                        <Icon name="close" size={16} color="text-white" />
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col justify-center items-center gap-2">
-                      <Icon
-                        name="documentUpload"
-                        color="text-neutral-900"
-                        hover={false}
-                      />
-                      <div className="text-neutral-900 font-medium">
-                        Upload Image
-                      </div>
-                      <div className="mt-1 text-neutral-500 text-xs text-center">
-                        Drag and drop or click here to upload file. <br /> Ideal
-                        image size: 1920 x 860 px
-                      </div>
-                    </div>
-                  )}
-                </div>
-                {bgValidation?.length > 0 && (
-                  <p className="text-xxs text-neutral-500">
-                    {bgValidation[0].errorMsg}
+              {backgroundType === 'Image' && (
+                <div className="flex flex-col gap-3">
+                  <p className="text-sm font-bold text-neutral-900">
+                    Upload Image
                   </p>
-                )}
-              </div>
+                  <div
+                    {...getRootPropsBG()}
+                    className="border border-dashed border-neutral-200 rounded-9xl px-5 py-2.5 w-[420px] h-[186px] flex justify-center items-center cursor-pointer"
+                  >
+                    <input
+                      {...getInputPropsBG()}
+                      data-testid="upload-background"
+                    />
+                    {validationErrors.bg ? (
+                      validationErrorTemplate(validationErrors.bg, () => {
+                        setValidationErrors({ ...validationErrors, bg: null });
+                      })
+                    ) : (
+                      <Preview
+                        file={selectedBG}
+                        url={branding?.loginConfig?.image?.original}
+                        title="Upload Image"
+                        description={
+                          <span>
+                            Drag and drop or{' '}
+                            <span className="text-primary-500 font-bold">
+                              click here
+                            </span>{' '}
+                            to upload file. <br /> Ideal image size: 1920 x 860
+                            px
+                          </span>
+                        }
+                        onCustomRemove={() => setSelectedBG(null)}
+                        onBrandingRemove={() =>
+                          setRemovedMedia({ ...removedMedia, bg: true })
+                        }
+                        imgClassName="w-[321px] h-[166px] rounded-7xl"
+                      />
+                    )}
+                  </div>
+                  <p className="text-xxs text-neutral-500">Max file size 5mb</p>
+                </div>
+              )}
+              {backgroundType === 'Video' && (
+                <div className="flex flex-col gap-3">
+                  <p className="text-sm font-bold text-neutral-900">
+                    Upload Video
+                  </p>
+                  <div
+                    {...getRootPropsBGVideo()}
+                    className="border border-dashed border-neutral-200 rounded-9xl px-5 py-2.5 w-[420px] h-[186px] flex justify-center items-center"
+                  >
+                    <input
+                      {...getInputPropsBGVideo()}
+                      data-testid="upload-background-video"
+                    />
+                    {validationErrors.bgVideo ? (
+                      validationErrorTemplate(validationErrors.bgVideo, () => {
+                        setValidationErrors({
+                          ...validationErrors,
+                          bgVideo: null,
+                        });
+                      })
+                    ) : (
+                      <Preview
+                        file={selectedBGVideo}
+                        url={branding?.loginConfig?.video?.original}
+                        title="Upload Video"
+                        description={
+                          <span>
+                            Drag and drop or{' '}
+                            <span className="text-primary-500 font-bold">
+                              click here
+                            </span>{' '}
+                            to upload file. <br /> Ideal video size: 1920 x 860
+                            px
+                          </span>
+                        }
+                        onCustomRemove={() => setSelectedBGVideo(null)}
+                        onBrandingRemove={() =>
+                          setRemovedMedia({ ...removedMedia, bgVideo: true })
+                        }
+                        isVideo
+                        videoClassName="w-[321px] h-[166px] rounded-7xl object-cover"
+                      />
+                    )}
+                  </div>
+                  <p className="text-xxs text-neutral-500">Max file size 5mb</p>
+                </div>
+              )}
+              {backgroundType === 'Color' && (
+                <>
+                  <Layout
+                    fields={[
+                      {
+                        name: 'color',
+                        label: 'primary/action colour',
+                        type: FieldType.ColorPicker,
+                        control,
+                        className: '',
+                        dataTestId: 'select-background-color',
+                        setValue,
+                      },
+                    ]}
+                  />
+                  {layoutAlignment !== 'CENTER' && (
+                    <Layout
+                      fields={[
+                        {
+                          name: 'text',
+                          label: 'Add text',
+                          type: FieldType.Input,
+                          control,
+                          className: '',
+                          dataTestId: 'input-background-text',
+                          placeholder: 'ex. welcome to auzmor',
+                          maxLength: 50,
+                          customLabelRightElement: (
+                            <span className="text-neutral-500 text-sm">
+                              {text?.length} / 50
+                            </span>
+                          ),
+                        },
+                      ]}
+                    />
+                  )}
+                </>
+              )}
             </div>
-            <div className="flex">
-              <iframe
-                width={400}
-                height={180}
-                src="https://office.auzmor.com"
-              />
+            <div className="flex relative">
+              <div
+                className={`w-[360px] h-[205px] flex items-center relative top-0 right-0 rounded-9xl overflow-hidden bg-neutral-200 object-cover ${
+                  layoutAlignment === 'RIGHT' && 'justify-end'
+                }   ${layoutAlignment === 'LEFT' && 'justify-start'}  ${
+                  layoutAlignment === 'CENTER' && 'justify-center'
+                }`}
+                style={{
+                  backgroundColor:
+                    backgroundType === 'Color'
+                      ? color
+                      : twConfig.theme.colors.neutral[200],
+                  backgroundImage: `url(${
+                    backgroundType === 'Image' && selectedBG
+                      ? getBlobUrl(selectedBG)
+                      : backgroundType === 'Image' &&
+                        branding?.loginConfig?.image?.original
+                      ? branding?.loginConfig?.image?.original
+                      : backgroundType === 'Image' && removedMedia.bg
+                      ? undefined
+                      : undefined
+                  })`,
+                }}
+              >
+                <div
+                  className={`bg-neutral-50 pt-5 pl-8 pr-[47px] pb-2 relative ${
+                    layoutAlignment === 'CENTER'
+                      ? 'h-[191px] rounded-xl w-[159px]'
+                      : 'h-full w-3/5'
+                  }`}
+                ></div>
+              </div>
             </div>
           </div>
         </div>
       </Collapse>
+      {isEditLogoModalOpen && (
+        <ImageResosition
+          title="Reposition"
+          openEditImage={isEditLogoModalOpen}
+          closeEditImageModal={closeEditLogoModal}
+          image={getBlobUrl(selectedLogo!)}
+          imageRef={logoInputRef}
+          setImageFile={setSelectedLogo}
+          imageFile={selectedLogo}
+          aspectRatio={150 / 65}
+          width={150}
+          height={65}
+          mimeType={getMimeType(selectedLogo?.name || '')}
+        />
+      )}
+      {isEditFaviconModalOpen && (
+        <ImageResosition
+          title="Reposition"
+          openEditImage={isEditFaviconModalOpen}
+          closeEditImageModal={closeEditFaviconModal}
+          image={getBlobUrl(selectedFavicon!)}
+          imageRef={faviconInputRef}
+          setImageFile={setSelectedFavicon}
+          imageFile={selectedFavicon}
+          aspectRatio={32 / 32}
+          width={32}
+          height={32}
+          mimeType={getMimeType(selectedFavicon?.name || '')}
+        />
+      )}
+      {isEditBGModalOpen && (
+        <ImageResosition
+          title="Reposition"
+          openEditImage={isEditBGModalOpen}
+          closeEditImageModal={closeEditBGModal}
+          image={getBlobUrl(selectedBG!)}
+          imageRef={bgInputRef}
+          setImageFile={setSelectedBG}
+          imageFile={selectedBG}
+          aspectRatio={1920 / 860}
+          mimeType={getMimeType(selectedBG?.name || '')}
+        />
+      )}
     </>
   );
 };

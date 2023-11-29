@@ -1,9 +1,13 @@
 import clsx from 'clsx';
-import { FC, ReactNode, useMemo } from 'react';
+import { ChangeEvent, FC, ReactNode, useMemo } from 'react';
 import { Control, useController } from 'react-hook-form';
 
+export interface IRadioListOptionData {
+  value: string;
+  [key: string]: any;
+}
 export interface IRadioListOption {
-  data: Record<string, any>;
+  data: IRadioListOptionData;
   dataTestId: string;
 }
 
@@ -14,6 +18,10 @@ type RadioButtonProps = {
   labelRenderer: (option: IRadioListOption) => ReactNode;
   className?: string;
   rowClassName?: string;
+  transform?: {
+    input: (value: any) => boolean;
+    output: (e: ChangeEvent<HTMLInputElement>) => any;
+  };
 };
 
 const RadioGroup: FC<RadioButtonProps> = ({
@@ -23,6 +31,7 @@ const RadioGroup: FC<RadioButtonProps> = ({
   labelRenderer,
   className = '',
   rowClassName = '',
+  transform,
 }) => {
   const { field } = useController({
     name,
@@ -43,23 +52,25 @@ const RadioGroup: FC<RadioButtonProps> = ({
   return (
     <div className={style}>
       {radioList?.map((option, index) => (
-        <>
-          <div key={index} className={rowStyle}>
-            <input
-              id={option.data.id}
-              type="radio"
-              data-testid={option.dataTestId}
-              className="w-5 h-5 accent-primary-600"
-              onChange={(_e) => {
-                field.onChange(option);
-              }}
-              name={name}
-              value={field?.value?.data?.id}
-              checked={option.data.id === field?.value?.data?.id}
-            />
-            <label htmlFor={option.data.id}>{labelRenderer(option)}</label>
-          </div>
-        </>
+        <div key={index} className={rowStyle}>
+          <input
+            data-testid={option.dataTestId}
+            className="w-5 h-5 accent-primary-600"
+            {...field}
+            id={option.data.value}
+            value={option.data?.value}
+            onChange={(e) =>
+              field.onChange(transform?.output ? transform?.output(e) : e)
+            }
+            checked={
+              transform?.input
+                ? transform?.input(field.value)
+                : field.value === option.data.value
+            }
+            type="radio"
+          />
+          <label htmlFor={option.data.value}>{labelRenderer(option)}</label>
+        </div>
       ))}
     </div>
   );

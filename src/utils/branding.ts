@@ -120,7 +120,7 @@ export const applyBranding = (branding: IBranding) => {
       // use brand favicon
       document
         .querySelector('link[rel="icon"]')
-        ?.setAttribute('href', branding.favicon);
+        ?.setAttribute('href', branding.favicon?.original);
     } else {
       // use default favicon
       document

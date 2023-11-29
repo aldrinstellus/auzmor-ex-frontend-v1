@@ -35,11 +35,11 @@ const Admin: FC = () => {
         label: 'Branding',
         icon: 'branding',
         key: 'branding-settings',
-        component: <BrandingSettings />,
+        component: <BrandingSettings branding={data?.branding} />,
         disabled: false,
         hidden: false,
         hideDefaultLabelCard: true,
-        dataTestId: 'settings-branding',
+        dataTestId: 'generalsettings-branding',
       },
       {
         label: 'Single Sign-on',

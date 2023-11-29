@@ -7,6 +7,7 @@ import {
   useUpdateLimitGlobalPostingMutation,
 } from 'queries/organization';
 import queryClient from 'utils/queryClient';
+import Divider from 'components/Divider';
 
 const GeneralSettings: FC = () => {
   const updateLimitPostingControlsMutation =
@@ -16,13 +17,13 @@ const GeneralSettings: FC = () => {
     <Collapse
       defaultOpen
       label="Posting controls"
-      className="rounded-9xl overflow-hidden"
-      headerClassName="px-4 py-2 bg-blue-50"
       headerTextClassName="text-base font-bold text-neutral-900"
       dataTestId="generalsetting-postingcontrols"
+      height={125}
     >
-      <div className="bg-white">
-        <div className="px-6 py-4 flex justify-between">
+      <div className="bg-white rounded-b-9xl px-6">
+        <Divider />
+        <div className="py-4 flex justify-between">
           <div className="flex flex-col">
             <div className="text-neutral-900 font-semibold text-sm">
               Limit global posting
