@@ -15,18 +15,22 @@ const settings = {
     {
       label: 'Someone comments on my posts',
       key: 'myPostComment',
+      dataTestId: 'comments-mypost',
     },
     {
       label: 'Someone reacts on my posts',
       key: 'myPostReact',
+      dataTestId: 'reacts-mypost',
     },
     {
       label: 'Someone gives me a kudos',
       key: 'myPostKudos',
+      dataTestId: 'kudos',
     },
     {
       label: 'Someone comments on a post I am subscribed to',
       key: 'postSubscribedComment',
+      dataTestId: 'post-comments-subscribe',
     },
   ],
 
@@ -34,14 +38,17 @@ const settings = {
     {
       label: 'Someone mentions me in a post',
       key: 'mentionPost',
+      dataTestId: 'post-mentions',
     },
     {
       label: 'Someone mentions me in a comment',
       key: 'mentionComment',
+      dataTestId: 'comment-mentions',
     },
     {
       label: 'Someone comments on a post I am subscribed to',
       key: 'mentionSubscribedComment',
+      dataTestId: 'mentions-comments-subs',
     },
   ],
 };
@@ -92,7 +99,7 @@ const NotificationSettingsList: FC<AppProps> = ({
               }}
               disabled={isLoading}
               defaultValue={!!data?.[settingsKey]?.app?.[setting.key]}
-              dataTestId={`notificationSettings-${settingsKey}-app-${setting.key}`}
+              dataTestId={`${setting.dataTestId}-inapp-toggle`}
             />
             <SwitchToggle
               onChange={(
@@ -115,7 +122,7 @@ const NotificationSettingsList: FC<AppProps> = ({
               }}
               disabled={isLoading}
               defaultValue={!!data?.[settingsKey]?.email?.[setting.key]}
-              dataTestId={`notificationSettings-${settingsKey}-email-${setting.key}`}
+              dataTestId={`${setting.dataTestId}-email-toggle`}
             />
           </div>
         </div>

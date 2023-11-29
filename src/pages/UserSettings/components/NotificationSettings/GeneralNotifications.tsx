@@ -9,7 +9,7 @@ import {
 import useAuth from 'hooks/useAuth';
 import { useMutation } from '@tanstack/react-query';
 
-const GeneralSetting = () => {
+const GeneralNotifications = () => {
   const { user, updateUser } = useAuth();
 
   const updateMutation = useMutation({
@@ -43,6 +43,7 @@ const GeneralSetting = () => {
     <div className="space-y-4">
       <Accordion
         title="Posts"
+        dataTestId="posts-notifications"
         content={
           <NotificationSettingsList
             settingsKey="post"
@@ -54,6 +55,7 @@ const GeneralSetting = () => {
       />
       <Accordion
         title="Mentions"
+        dataTestId="mentions-notifications"
         content={
           <NotificationSettingsList
             settingsKey="mentions"
@@ -67,4 +69,4 @@ const GeneralSetting = () => {
   );
 };
 
-export default GeneralSetting;
+export default GeneralNotifications;
