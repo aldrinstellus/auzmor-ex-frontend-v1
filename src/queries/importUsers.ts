@@ -21,6 +21,11 @@ export const startCreatingUsers = async (importId: string) => {
   return data;
 };
 
+export const getImportDataStatus = async (importId: string) => {
+  const data = await apiService.get(`/users/import/${importId}/validate`);
+  console.log('>>>', data);
+};
+
 export const getImportData = async ({
   importId,
   pageParam = null,
@@ -37,7 +42,9 @@ export const getImportData = async ({
 export const useInfiniteImportData = ({
   importId,
   q = {},
+  startFetching = false,
 }: {
+  startFetching: boolean;
   importId: string;
   q?: Record<string, any>;
 }) => {
@@ -57,5 +64,6 @@ export const useInfiniteImportData = ({
       return currentPage?.data?.result?.paging?.prev;
     },
     staleTime: 30 * 60 * 1000,
+    enabled: startFetching,
   });
 };

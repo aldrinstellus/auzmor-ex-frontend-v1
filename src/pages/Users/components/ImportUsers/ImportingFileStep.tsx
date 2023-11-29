@@ -15,6 +15,7 @@ type AppProps = {
   closeModal: () => any;
   importId: string;
   meta: Record<string, any>;
+  setMeta: (...args: any) => any;
 };
 
 const ImportingFileStep: React.FC<AppProps> = ({
@@ -23,8 +24,13 @@ const ImportingFileStep: React.FC<AppProps> = ({
   closeModal,
   importId,
   meta,
+  setMeta,
 }) => {
-  const parseMutation = useMutation(() => parseImport(importId));
+  const parseMutation = useMutation(() => parseImport(importId), {
+    onSuccess: () => {
+      setMeta((m: any) => ({ ...m, parsed: true }));
+    },
+  });
 
   const validateUserMutation = useMutation(() => validateImport(importId), {
     onError: () => {},
@@ -34,7 +40,9 @@ const ImportingFileStep: React.FC<AppProps> = ({
   });
 
   useEffect(() => {
-    parseMutation.mutate();
+    if (!meta.parsed) {
+      parseMutation.mutate();
+    }
   }, []);
 
   const renderForExcel = () => {
@@ -51,18 +59,18 @@ const ImportingFileStep: React.FC<AppProps> = ({
     );
   };
 
+  const _isSuccess = meta?.parsed || parseMutation.isSuccess;
   const renderForCsv = () => {
     return (
       <div>
         <Header
           title={
             <div className="v-center">
-              {parseMutation.isSuccess && (
+              {_isSuccess && (
                 <Icon name="boldTick" className="text-primary-500" />
               )}
               <span>
-                {parseMutation.isSuccess ? 'Imported' : 'Importing'}{' '}
-                {meta?.file?.name} file
+                {_isSuccess ? 'Imported' : 'Importing'} {meta?.file?.name} file
               </span>
             </div>
           }
@@ -88,7 +96,7 @@ const ImportingFileStep: React.FC<AppProps> = ({
               </div>
             );
           }
-          if (parseMutation.isSuccess) {
+          if (_isSuccess) {
             return (
               <div className="p-6 space-y-4">
                 <div className="v-center">
@@ -158,7 +166,13 @@ const ImportingFileStep: React.FC<AppProps> = ({
             label="Confirm"
             size={Size.Small}
             dataTestId="import-people-next"
-            onClick={() => validateUserMutation.mutate()}
+            onClick={() => {
+              if (meta?.parsed) {
+                setStep(StepEnum.Review);
+              } else {
+                validateUserMutation.mutate();
+              }
+            }}
             disabled={validateUserMutation.isLoading}
             loading={validateUserMutation.isLoading}
           />

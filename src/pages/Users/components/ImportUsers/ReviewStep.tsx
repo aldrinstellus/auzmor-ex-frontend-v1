@@ -10,6 +10,8 @@ import 'react-data-grid/lib/styles.css';
 import DataGrid, { RenderRowProps, Row } from 'react-data-grid';
 import SwitchToggle from 'components/SwitchToggle';
 import { useInfiniteImportData } from 'queries/importUsers';
+import usePoller from './usePoller';
+import Spinner from 'components/Spinner';
 
 type AppProps = {
   open: boolean;
@@ -24,9 +26,10 @@ const ReviewStep: React.FC<AppProps> = ({
   closeModal,
   setStep,
 }) => {
+  const { ready, loading } = usePoller(importId, 'validate');
   const [showOnlyError, setShowOnlyError] = useState(false);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteImportData({ importId });
+    useInfiniteImportData({ importId, startFetching: ready });
 
   const flatData: any[] = (
     data?.pages.flatMap((page) => {
@@ -236,8 +239,10 @@ const ReviewStep: React.FC<AppProps> = ({
           <span className="text-primary-700 font-bold text-lg">&gt;</span>{' '}
           <span className="text-primary-500">Review</span>
         </div>
-        {isLoading ? (
-          <div>Loader...</div>
+        {isLoading || loading ? (
+          <div className="p-12 flex justify-center items-center">
+            <Spinner />
+          </div>
         ) : (
           <div className="bg-white">
             <div className="px-6">
@@ -277,7 +282,7 @@ const ReviewStep: React.FC<AppProps> = ({
           variant={Variant.Secondary}
           size={Size.Small}
           className="mr-4"
-          onClick={() => setStep(StepEnum.SelectSheet)}
+          onClick={() => setStep(StepEnum.Importing)}
           dataTestId="mport-people-cancel"
         />
         <div className="v-center">
@@ -290,7 +295,7 @@ const ReviewStep: React.FC<AppProps> = ({
             dataTestId="mport-people-cancel"
           />
           <Button
-            label="Confirm"
+            label="Review"
             size={Size.Small}
             dataTestId="mport-people-next"
             onClick={() => setStep(StepEnum.Confirmation)}

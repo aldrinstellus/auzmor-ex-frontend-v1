@@ -4,13 +4,36 @@ import Header from 'components/ModalHeader';
 import React from 'react';
 import { StepEnum } from './utils';
 import Button, { Size, Variant } from 'components/Button';
+import { useMutation } from '@tanstack/react-query';
+import { startCreatingUsers } from 'queries/importUsers';
+import { useJobStore } from 'stores/jobStore';
 
 type AppProps = {
+  closeModal: () => any;
+  importId: string;
   open: boolean;
   setStep: (...args: any) => any;
 };
 
-const ConfirmationStep: React.FC<AppProps> = ({ open, setStep }) => {
+const ConfirmationStep: React.FC<AppProps> = ({
+  importId,
+  open,
+  closeModal,
+  setStep,
+}) => {
+  const { setShowJobProgress } = useJobStore();
+
+  const startCreatingUserMutation = useMutation(
+    () => startCreatingUsers(importId),
+    {
+      onError: () => {},
+      onSuccess: (res: any) => {
+        closeModal();
+        setShowJobProgress(true);
+      },
+    },
+  );
+
   return (
     <Modal open={open} className="max-w-md">
       <Header
@@ -29,12 +52,14 @@ const ConfirmationStep: React.FC<AppProps> = ({ open, setStep }) => {
           className="mr-4"
           onClick={() => setStep(StepEnum.Review)}
           dataTestId="mport-people-cancel"
+          disabled={startCreatingUserMutation.isLoading}
         />
         <Button
           label="Confirm"
           size={Size.Small}
           dataTestId="mport-people-next"
-          onClick={() => setStep(StepEnum.Review)}
+          loading={startCreatingUserMutation.isLoading}
+          onClick={() => startCreatingUserMutation.mutate()}
         />
       </div>
     </Modal>
