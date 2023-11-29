@@ -31,7 +31,7 @@ export enum EntityType {
   UserProfileImage = 'USER_PROFILE_IMAGE',
   UserCoverImage = 'USER_COVER_IMAGE',
   OrgLogo = 'ORG_LOGO',
-  OrgBanner = 'ORG_BANNER',
+  OrgLoginImage = 'ORG_LOGIN_IMAGE',
   OrgFavicon = 'ORG_FAVICON',
   OrgLoginVideo = 'ORG_LOGIN_VIDEO',
   AppIcon = 'APP_ICON',

@@ -435,7 +435,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
     if (selectedBG) {
       uploadedBG = await uploadMedia(
         [BlobToFile(selectedBG, `id-${Math.random().toString(16).slice(2)}`)],
-        EntityType.OrgBanner,
+        EntityType.OrgLoginImage,
       );
     } else if (!removedMedia.bg && branding?.loginConfig?.image?.original) {
       uploadedBG = [branding?.loginConfig?.image];
