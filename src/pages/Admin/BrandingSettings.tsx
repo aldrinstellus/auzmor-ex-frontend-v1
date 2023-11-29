@@ -14,6 +14,7 @@ import {
   getMediaObj,
   getMimeType,
   titleCase,
+  twConfig,
 } from 'utils/misc';
 import { MB } from 'utils/constants';
 import { IRadioListOption } from 'components/RadioGroup';
@@ -173,19 +174,41 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
 
   const updateBranding = useUpdateBrandingMutation();
 
+  const [validationErrors, setValidationErrors] = useState<{
+    logo: string | null;
+    favicon: string | null;
+    bg: string | null;
+    bgVideo: string | null;
+  }>({ logo: null, favicon: null, bg: null, bgVideo: null });
+
   const {
     getRootProps: getRootPropsLogo,
     getInputProps: getInputPropsLogo,
     inputRef: logoInputRef,
   } = useDropzone({
     onDrop: (acceptedFiles) => {
-      setSelectedLogo(acceptedFiles[0]);
-      openEditLogoModal();
+      if (acceptedFiles.length > 0) {
+        setSelectedLogo(acceptedFiles[0]);
+        openEditLogoModal();
+        setValidationErrors({ ...validationErrors, logo: null });
+      } else {
+        setSelectedLogo(null);
+        closeEditLogoModal();
+      }
     },
     onDropRejected: (rejection) => {
       // extension validation
       const error = rejection[0].errors[0];
-      if (error.code === 'invalid-file-type') {
+      if (error.code === 'file-invalid-type') {
+        setValidationErrors({
+          ...validationErrors,
+          logo: 'Invalid file type.',
+        });
+        return;
+      }
+      if (error.code === 'file-size-exceed') {
+        setValidationErrors({ ...validationErrors, logo: error.message });
+        return;
       }
     },
     maxFiles: 1,
@@ -212,8 +235,14 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
     inputRef: faviconInputRef,
   } = useDropzone({
     onDrop: (acceptedFiles) => {
-      setSelectedFavicon(acceptedFiles[0]);
-      openEditFaviconModal();
+      if (acceptedFiles.length > 0) {
+        setSelectedFavicon(acceptedFiles[0]);
+        openEditFaviconModal();
+        setValidationErrors({ ...validationErrors, favicon: null });
+      } else {
+        setSelectedFavicon(null);
+        closeEditFaviconModal();
+      }
     },
     maxFiles: 1,
     accept: {
@@ -226,6 +255,15 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
       // extension validation
       const error = rejection[0].errors[0];
       if (error.code === 'file-invalid-type') {
+        setValidationErrors({
+          ...validationErrors,
+          favicon: 'Invalid file type.',
+        });
+        return;
+      }
+      if (error.code === 'file-size-exceed') {
+        setValidationErrors({ ...validationErrors, favicon: error.message });
+        return;
       }
     },
     validator: (file) => {
@@ -246,8 +284,14 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
     inputRef: bgInputRef,
   } = useDropzone({
     onDrop: (acceptedFiles) => {
-      setSelectedBG(acceptedFiles[0]);
-      openEditBGModal();
+      if (acceptedFiles.length > 0) {
+        setSelectedBG(acceptedFiles[0]);
+        openEditBGModal();
+        setValidationErrors({ ...validationErrors, bg: null });
+      } else {
+        setSelectedBG(null);
+        closeEditBGModal();
+      }
     },
     maxFiles: 1,
     accept: {
@@ -258,6 +302,15 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
       // extension validation
       const error = rejection[0].errors[0];
       if (error.code === 'file-invalid-type') {
+        setValidationErrors({
+          ...validationErrors,
+          bg: 'Invalid file type.',
+        });
+        return;
+      }
+      if (error.code === 'file-size-exceed') {
+        setValidationErrors({ ...validationErrors, bg: error.message });
+        return;
       }
     },
     validator: (file) => {
@@ -277,7 +330,12 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
     getInputProps: getInputPropsBGVideo,
   } = useDropzone({
     onDrop: (acceptedFiles) => {
-      setSelectedBGVideo(acceptedFiles[0]);
+      if (acceptedFiles.length > 0) {
+        setSelectedBGVideo(acceptedFiles[0]);
+        setValidationErrors({ ...validationErrors, bgVideo: null });
+      } else {
+        setSelectedBGVideo(null);
+      }
     },
     maxFiles: 1,
     accept: {
@@ -288,6 +346,15 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
       // extension validation
       const error = rejection[0].errors[0];
       if (error.code === 'file-invalid-type') {
+        setValidationErrors({
+          ...validationErrors,
+          bgVideo: 'Invalid file type.',
+        });
+        return;
+      }
+      if (error.code === 'file-size-exceed') {
+        setValidationErrors({ ...validationErrors, bgVideo: error.message });
+        return;
       }
     },
     validator: (file) => {
@@ -301,6 +368,98 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
       return null;
     },
   });
+
+  const handleSaveChanges = async () => {
+    setIsSaving(true);
+    let uploadedLogo = null;
+    if (selectedLogo) {
+      uploadedLogo = await uploadMedia(
+        [BlobToFile(selectedLogo, `id-${Math.random().toString(16).slice(2)}`)],
+        EntityType.OrgLogo,
+      );
+    } else if (!removedMedia.logo && branding?.logo?.original) {
+      uploadedLogo = [branding?.logo];
+    }
+    let uploadedFavicon = null;
+    if (selectedFavicon) {
+      uploadedFavicon = await uploadMedia(
+        [
+          BlobToFile(
+            selectedFavicon,
+            `id-${Math.random().toString(16).slice(2)}`,
+          ),
+        ],
+        EntityType.OrgFavicon,
+      );
+    } else if (!removedMedia.favicon && branding?.favicon?.original) {
+      uploadedFavicon = [branding?.favicon];
+    }
+    let uploadedBG = null;
+    if (selectedBG) {
+      uploadedBG = await uploadMedia(
+        [BlobToFile(selectedBG, `id-${Math.random().toString(16).slice(2)}`)],
+        EntityType.OrgBanner,
+      );
+    } else if (!removedMedia.bg && branding?.loginConfig?.image?.original) {
+      uploadedBG = [branding?.loginConfig?.image];
+    }
+    let uploadedBGVideo = null;
+    if (selectedBGVideo) {
+      uploadedBGVideo = await uploadMedia(
+        [
+          BlobToFile(
+            selectedBGVideo,
+            `id-${Math.random().toString(16).slice(2)}`,
+          ),
+        ],
+        EntityType.OrgLoginVideo,
+      );
+    } else if (
+      !removedMedia.bgVideo &&
+      branding?.loginConfig?.video?.original
+    ) {
+      uploadedBGVideo = [branding?.loginConfig?.video];
+    }
+    const newBranding = {
+      primaryColor,
+      secondaryColor,
+      pageTitle,
+      logo: uploadedLogo ? uploadedLogo[0] : undefined,
+      favicon: uploadedFavicon ? uploadedFavicon[0] : undefined,
+      loginConfig: {
+        layout: layoutAlignment,
+        backgroundType: backgroundType.toLocaleUpperCase() as any,
+        text,
+        color,
+        image: uploadedBG ? uploadedBG[0] : undefined,
+        video: uploadedBGVideo ? uploadedBGVideo[0] : undefined,
+      },
+    };
+    setBranding(newBranding);
+    updateBranding.mutate(newBranding, {
+      onSettled: () => {
+        setIsSaving(false);
+      },
+    });
+  };
+
+  const validationErrorTemplate = (message: string, onClick: () => void) => {
+    return (
+      <div
+        className="w-full h-full flex flex-col items-center justify-center"
+        onClick={onClick}
+      >
+        <Icon name="infoCircle" color="text-red-500" size={32} />
+        <p className="text-red-500 font-medium text-sm mt-2">
+          Oops! Upload failed
+        </p>
+        <p className="text-neutral-500 text-xs font-medium mt-3">
+          {message}{' '}
+          <span className="text-primary-500 font-bold">Try again</span>
+        </p>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -318,95 +477,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
               <Button
                 label="Save changes"
                 loading={isSaving}
-                onClick={async () => {
-                  setIsSaving(true);
-                  let uploadedLogo = null;
-                  if (selectedLogo) {
-                    uploadedLogo = await uploadMedia(
-                      [
-                        BlobToFile(
-                          selectedLogo,
-                          `id-${Math.random().toString(16).slice(2)}`,
-                        ),
-                      ],
-                      EntityType.OrgLogo,
-                    );
-                  } else if (!removedMedia.logo && branding?.logo?.original) {
-                    uploadedLogo = [branding?.logo];
-                  }
-                  let uploadedFavicon = null;
-                  if (selectedFavicon) {
-                    uploadedFavicon = await uploadMedia(
-                      [
-                        BlobToFile(
-                          selectedFavicon,
-                          `id-${Math.random().toString(16).slice(2)}`,
-                        ),
-                      ],
-                      EntityType.OrgFavicon,
-                    );
-                  } else if (
-                    !removedMedia.favicon &&
-                    branding?.favicon?.original
-                  ) {
-                    uploadedFavicon = [branding?.favicon];
-                  }
-                  let uploadedBG = null;
-                  if (selectedBG) {
-                    uploadedBG = await uploadMedia(
-                      [
-                        BlobToFile(
-                          selectedBG,
-                          `id-${Math.random().toString(16).slice(2)}`,
-                        ),
-                      ],
-                      EntityType.OrgBanner,
-                    );
-                  } else if (
-                    !removedMedia.bg &&
-                    branding?.loginConfig?.image?.original
-                  ) {
-                    uploadedBG = [branding?.loginConfig?.image];
-                  }
-                  let uploadedBGVideo = null;
-                  if (selectedBGVideo) {
-                    uploadedBGVideo = await uploadMedia(
-                      [
-                        BlobToFile(
-                          selectedBGVideo,
-                          `id-${Math.random().toString(16).slice(2)}`,
-                        ),
-                      ],
-                      EntityType.OrgLoginVideo,
-                    );
-                  } else if (
-                    !removedMedia.bgVideo &&
-                    branding?.loginConfig?.video?.original
-                  ) {
-                    uploadedBGVideo = [branding?.loginConfig?.video];
-                  }
-                  const newBranding = {
-                    primaryColor,
-                    secondaryColor,
-                    pageTitle,
-                    logo: uploadedLogo ? uploadedLogo[0] : undefined,
-                    favicon: uploadedFavicon ? uploadedFavicon[0] : undefined,
-                    loginConfig: {
-                      layout: layoutAlignment,
-                      backgroundType: backgroundType.toLocaleUpperCase() as any,
-                      text,
-                      color,
-                      image: uploadedBG ? uploadedBG[0] : undefined,
-                      video: uploadedBGVideo ? uploadedBGVideo[0] : undefined,
-                    },
-                  };
-                  setBranding(newBranding);
-                  updateBranding.mutate(newBranding, {
-                    onSettled: () => {
-                      setIsSaving(false);
-                    },
-                  });
-                }}
+                onClick={handleSaveChanges}
               />
             </div>
             <div></div>
@@ -442,21 +513,27 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                 className="border border-dashed border-neutral-200 rounded-9xl p-6 w-full h-[186px] flex justify-center items-center cursor-pointer"
               >
                 <input {...getInputPropsLogo()} />
-                <Preview
-                  file={selectedLogo}
-                  url={branding?.logo?.original}
-                  title="Upload Image"
-                  description={
-                    <span>
-                      Drag and drop or click here to upload file. <br /> Ideal
-                      image size: 150 x 65 px
-                    </span>
-                  }
-                  onCustomRemove={() => setSelectedLogo(null)}
-                  onBrandingRemove={() =>
-                    setRemovedMedia({ ...removedMedia, logo: true })
-                  }
-                />
+                {validationErrors.logo ? (
+                  validationErrorTemplate(validationErrors.logo, () => {
+                    setValidationErrors({ ...validationErrors, logo: null });
+                  })
+                ) : (
+                  <Preview
+                    file={selectedLogo}
+                    url={branding?.logo?.original}
+                    title="Upload Image"
+                    description={
+                      <span>
+                        Drag and drop or click here to upload file. <br /> Ideal
+                        image size: 150 x 65 px
+                      </span>
+                    }
+                    onCustomRemove={() => setSelectedLogo(null)}
+                    onBrandingRemove={() =>
+                      setRemovedMedia({ ...removedMedia, logo: true })
+                    }
+                  />
+                )}
               </div>
               <p className="text-xxs text-neutral-500">Max file size 5mb</p>
             </div>
@@ -467,21 +544,27 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                 className="border border-dashed border-neutral-200 rounded-9xl p-6 w-full h-[186px] flex justify-center items-center cursor-pointer"
               >
                 <input {...getInputPropsFavicon()} />
-                <Preview
-                  file={selectedFavicon}
-                  url={branding?.favicon?.original}
-                  title="Upload Icon"
-                  description={
-                    <span>
-                      Drag and drop or click here to upload file. <br /> Ideal
-                      image size: 32 x 32 px
-                    </span>
-                  }
-                  onCustomRemove={() => setSelectedFavicon(null)}
-                  onBrandingRemove={() =>
-                    setRemovedMedia({ ...removedMedia, favicon: true })
-                  }
-                />
+                {validationErrors.favicon ? (
+                  validationErrorTemplate(validationErrors.favicon, () => {
+                    setValidationErrors({ ...validationErrors, favicon: null });
+                  })
+                ) : (
+                  <Preview
+                    file={selectedFavicon}
+                    url={branding?.favicon?.original}
+                    title="Upload Icon"
+                    description={
+                      <span>
+                        Drag and drop or click here to upload file. <br /> Ideal
+                        image size: 32 x 32 px
+                      </span>
+                    }
+                    onCustomRemove={() => setSelectedFavicon(null)}
+                    onBrandingRemove={() =>
+                      setRemovedMedia({ ...removedMedia, favicon: true })
+                    }
+                  />
+                )}
               </div>
               <p className="text-xxs text-neutral-500">Max file size 5mb</p>
             </div>
@@ -665,22 +748,28 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                     className="border border-dashed border-neutral-200 rounded-9xl px-5 py-2.5 w-[420px] h-[186px] flex justify-center items-center cursor-pointer"
                   >
                     <input {...getInputPropsBG()} />
-                    <Preview
-                      file={selectedBG}
-                      url={branding?.loginConfig?.image?.original}
-                      title="Upload Image"
-                      description={
-                        <span>
-                          Drag and drop or click here to upload file. <br />{' '}
-                          Ideal image size: 1920 x 860 px
-                        </span>
-                      }
-                      onCustomRemove={() => setSelectedBG(null)}
-                      onBrandingRemove={() =>
-                        setRemovedMedia({ ...removedMedia, bg: true })
-                      }
-                      imgClassName="w-[321px] h-[166px] rounded-7xl"
-                    />
+                    {validationErrors.bg ? (
+                      validationErrorTemplate(validationErrors.bg, () => {
+                        setValidationErrors({ ...validationErrors, bg: null });
+                      })
+                    ) : (
+                      <Preview
+                        file={selectedBG}
+                        url={branding?.loginConfig?.image?.original}
+                        title="Upload Image"
+                        description={
+                          <span>
+                            Drag and drop or click here to upload file. <br />{' '}
+                            Ideal image size: 1920 x 860 px
+                          </span>
+                        }
+                        onCustomRemove={() => setSelectedBG(null)}
+                        onBrandingRemove={() =>
+                          setRemovedMedia({ ...removedMedia, bg: true })
+                        }
+                        imgClassName="w-[321px] h-[166px] rounded-7xl"
+                      />
+                    )}
                   </div>
                   <p className="text-xxs text-neutral-500">Max file size 5mb</p>
                 </div>
@@ -695,6 +784,31 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                     className="border border-dashed border-neutral-200 rounded-9xl p-6 w-[420px] h-[186px] flex justify-center items-center"
                   >
                     <input {...getInputPropsBGVideo()} />
+                    {validationErrors.bgVideo ? (
+                      validationErrorTemplate(validationErrors.bgVideo, () => {
+                        setValidationErrors({
+                          ...validationErrors,
+                          bgVideo: null,
+                        });
+                      })
+                    ) : (
+                      <Preview
+                        file={selectedBGVideo}
+                        url={branding?.loginConfig?.video?.original}
+                        title="Upload Video"
+                        description={
+                          <span>
+                            Drag and drop or click here to upload file. <br />{' '}
+                            Ideal video size: 1920 x 860 px
+                          </span>
+                        }
+                        onCustomRemove={() => setSelectedBGVideo(null)}
+                        onBrandingRemove={() =>
+                          setRemovedMedia({ ...removedMedia, bgVideo: true })
+                        }
+                        isVideo
+                      />
+                    )}
                     <Preview
                       file={selectedBGVideo}
                       url={branding?.loginConfig?.video?.original}
@@ -743,21 +857,33 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
             </div>
             <div className="flex relative">
               <div
-                className={`w-[360px] h-[205px] flex items-center relative top-0 right-0 rounded-9xl border border-neutral-200 overflow-hidden ${
+                className={`w-[360px] h-[205px] flex items-center relative top-0 right-0 rounded-9xl overflow-hidden bg-neutral-200 object-cover ${
                   layoutAlignment === 'RIGHT' && 'justify-end'
                 }   ${layoutAlignment === 'LEFT' && 'justify-start'}  ${
                   layoutAlignment === 'CENTER' && 'justify-center'
                 }`}
                 style={{
                   backgroundColor:
-                    backgroundType === 'Color' ? color : '#ffffff',
+                    backgroundType === 'Color'
+                      ? color
+                      : twConfig.theme.colors.neutral[200],
+                  backgroundImage: `url(${
+                    backgroundType === 'Image' && selectedBG
+                      ? getBlobUrl(selectedBG)
+                      : backgroundType === 'Image' &&
+                        branding?.loginConfig?.image?.original
+                      ? branding?.loginConfig?.image?.original
+                      : backgroundType === 'Image' && removedMedia.bg
+                      ? undefined
+                      : undefined
+                  })`,
                 }}
               >
                 <div
                   className={`bg-white pt-5 pl-8 pr-[47px] pb-2 relative ${
                     layoutAlignment === 'CENTER'
                       ? 'h-[191px] rounded-xl w-[159px]'
-                      : 'h-full w-1/2'
+                      : 'h-full w-3/5'
                   }`}
                 ></div>
               </div>
