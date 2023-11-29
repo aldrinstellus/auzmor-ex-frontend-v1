@@ -9,21 +9,28 @@ import { useInView } from 'react-intersection-observer';
 import 'react-data-grid/lib/styles.css';
 import DataGrid, { RenderRowProps, Row } from 'react-data-grid';
 import SwitchToggle from 'components/SwitchToggle';
+import { useInfiniteImportData } from 'queries/importUsers';
 
 type AppProps = {
   open: boolean;
   closeModal: () => any;
   setStep: (...args: any) => any;
+  importId: string;
 };
 
-const ReviewStep: React.FC<AppProps> = ({ open, closeModal, setStep }) => {
+const ReviewStep: React.FC<AppProps> = ({
+  open,
+  importId,
+  closeModal,
+  setStep,
+}) => {
   const [showOnlyError, setShowOnlyError] = useState(false);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteUsers({});
+    useInfiniteImportData({ importId });
 
   const flatData: any[] = (
     data?.pages.flatMap((page) => {
-      return page?.data?.result?.data.map((user: any) => ({
+      return page?.data?.result?.data?.info.map((user: any) => ({
         ...user,
         department: user?.department?.name,
         location: user?.workLocation?.name,
@@ -34,21 +41,170 @@ const ReviewStep: React.FC<AppProps> = ({ open, closeModal, setStep }) => {
   const columns = [
     { key: 'idx', name: '', width: 40 },
     {
-      key: 'firstName',
-      name: 'First Name',
+      key: 'name',
+      name: 'Name',
+      resizable: true,
+      width: 200,
+      renderCell: ({ row, tabIndex }: any) => {
+        return row.rowData.name.value;
+      },
       cellClass: (row: any) => {
-        if (row.fullName?.includes('ah')) {
+        if (!row.rowData.name.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
       },
     },
-    { key: 'lastName', name: 'Last Name' },
-    { key: 'primaryEmail', name: 'Personal Email' },
-    { key: 'role', name: 'Job title' },
-    { key: 'createdAt', name: 'Start Date' },
-    { key: 'department', name: 'Department' },
-    { key: 'location', name: 'Location' },
+    {
+      key: 'email',
+      name: 'Email',
+      resizable: true,
+      width: 220,
+      renderCell: ({ row, tabIndex }: any) => {
+        return row.rowData.email.value;
+      },
+      cellClass: (row: any) => {
+        if (!row.rowData.email.isValid) {
+          return 'text-red-500 bg-red-50';
+        }
+        return '';
+      },
+    },
+    {
+      key: 'managerEmail',
+      name: 'Manager Email',
+      resizable: true,
+      width: 220,
+      renderCell: ({ row, tabIndex }: any) => {
+        return row.rowData.managerEmail.value;
+      },
+      cellClass: (row: any) => {
+        if (!row.rowData.managerEmail.isValid) {
+          return 'text-red-500 bg-red-50';
+        }
+        return '';
+      },
+    },
+    {
+      key: 'designation',
+      name: 'Designation',
+      resizable: true,
+      width: 180,
+      renderCell: ({ row, tabIndex }: any) => {
+        return row.rowData.designation.value;
+      },
+      cellClass: (row: any) => {
+        if (!row.rowData.designation.isValid) {
+          return 'text-red-500 bg-red-50';
+        }
+        return '';
+      },
+    },
+    {
+      key: 'department',
+      name: 'Department',
+      resizable: true,
+      width: 220,
+      renderCell: ({ row, tabIndex }: any) => {
+        return row.rowData.department.value;
+      },
+      cellClass: (row: any) => {
+        if (!row.rowData.department.isValid) {
+          return 'text-red-500 bg-red-50';
+        }
+        return '';
+      },
+    },
+    {
+      key: 'location',
+      name: 'Location',
+      resizable: true,
+      width: 220,
+      renderCell: ({ row, tabIndex }: any) => {
+        return row.rowData.location.value;
+      },
+      cellClass: (row: any) => {
+        if (!row.rowData.location.isValid) {
+          return 'text-red-500 bg-red-50';
+        }
+        return '';
+      },
+    },
+    {
+      key: 'employeeId',
+      name: 'Employee ID',
+      resizable: true,
+      width: 120,
+      renderCell: ({ row, tabIndex }: any) => {
+        return row.rowData.employeeId.value;
+      },
+      cellClass: (row: any) => {
+        if (!row.rowData.employeeId.isValid) {
+          return 'text-red-500 bg-red-50';
+        }
+        return '';
+      },
+    },
+    {
+      key: 'phoneNumber',
+      name: 'Phone',
+      resizable: true,
+      width: 120,
+      renderCell: ({ row, tabIndex }: any) => {
+        return row.rowData.phoneNumber.value;
+      },
+      cellClass: (row: any) => {
+        if (!row.rowData.phoneNumber.isValid) {
+          return 'text-red-500 bg-red-50';
+        }
+        return '';
+      },
+    },
+    {
+      key: 'dateOfBirth',
+      name: 'Date of Birth',
+      resizable: true,
+      width: 140,
+      renderCell: ({ row, tabIndex }: any) => {
+        return row.rowData.dateOfBirth.value;
+      },
+      cellClass: (row: any) => {
+        if (!row.rowData.dateOfBirth.isValid) {
+          return 'text-red-500 bg-red-50';
+        }
+        return '';
+      },
+    },
+    {
+      key: 'dateOfJoining',
+      name: 'Date of Joining',
+      resizable: true,
+      width: 140,
+      renderCell: ({ row, tabIndex }: any) => {
+        return row.rowData.dateOfJoining.value;
+      },
+      cellClass: (row: any) => {
+        if (!row.rowData.dateOfJoining.isValid) {
+          return 'text-red-500 bg-red-50';
+        }
+        return '';
+      },
+    },
+    {
+      key: 'maritalStatus',
+      name: 'Marital Status',
+      resizable: true,
+      width: 120,
+      renderCell: ({ row, tabIndex }: any) => {
+        return row.rowData.maritalStatus.value;
+      },
+      cellClass: (row: any) => {
+        if (!row.rowData.maritalStatus.isValid) {
+          return 'text-red-500 bg-red-50';
+        }
+        return '';
+      },
+    },
   ];
 
   const rowKeyGetter = (row: any) => row.id;
@@ -103,7 +259,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, closeModal, setStep }) => {
                 rowKeyGetter={rowKeyGetter}
                 rowHeight={32}
                 headerRowHeight={36}
-                className="text-xs rdg-light h-[65vh]"
+                className="text-xs rdg-light h-[65vh] w-auto"
                 onScroll={handleScroll}
               />
               {isFetchingNextPage && (

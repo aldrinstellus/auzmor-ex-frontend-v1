@@ -2,7 +2,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 
 export const startImportUser = async (payload: Record<string, any>) => {
-  const { data } = await apiService.post(`/users/import`, payload);
+  const data = await apiService.post('/users/import', payload);
   return data;
 };
 
@@ -27,15 +27,18 @@ export const getImportData = async ({
   queryKey,
 }: any) => {
   if (pageParam === null) {
-    return await apiService.get(`/users/import/${importId}`, queryKey[1]);
+    return await apiService.get(
+      `/users/import/${importId}/validate`,
+      queryKey[1],
+    );
   } else return await apiService.get(pageParam);
 };
 
 export const useInfiniteImportData = ({
   importId,
-  q,
+  q = {},
 }: {
-  importId?: string;
+  importId: string;
   q?: Record<string, any>;
 }) => {
   return useInfiniteQuery({
@@ -53,6 +56,6 @@ export const useInfiniteImportData = ({
     getPreviousPageParam: (currentPage: any) => {
       return currentPage?.data?.result?.paging?.prev;
     },
-    staleTime: 15 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
   });
 };

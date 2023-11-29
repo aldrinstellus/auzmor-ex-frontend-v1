@@ -12,13 +12,23 @@ type AppProps = {
   open: boolean;
   closeModal: () => any;
   setStep: (...args: any) => any;
+  importId: string;
+  meta: Record<string, any>;
+  setMeta: (...args: any) => any;
 };
 
 interface IForm {
   sheet: any;
 }
 
-const SelectSheetStep: React.FC<AppProps> = ({ open, closeModal, setStep }) => {
+const SelectSheetStep: React.FC<AppProps> = ({
+  open,
+  closeModal,
+  setStep,
+  importId,
+  meta,
+  setMeta,
+}) => {
   const { handleSubmit, control, reset } = useForm<IForm>({
     mode: 'onSubmit',
   });

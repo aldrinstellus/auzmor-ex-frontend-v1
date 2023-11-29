@@ -141,6 +141,7 @@ import Security from '../components/Security';
 import VideoSlash from '../components/VideoSlash';
 import SvgInfoIcon from '../components/Info';
 import CloudAddIcon from '../components/CloudAdd';
+import BoldTick from '../components/BoldTick';
 
 export const icon = {
   add: Add,
@@ -153,6 +154,7 @@ export const icon = {
   arrowRightUp: ArrowRightUp,
   arrowSwap: ArrowSwap,
   arrowUp: ArrowUp,
+  boldTick: BoldTick,
   bookmarkOutline: BookmarkOutline,
   branding: Branding,
   briefcase: BriefcaseIcon,

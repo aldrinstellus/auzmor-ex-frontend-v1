@@ -23,6 +23,8 @@ export const validVideoTypes = [
   'video/3gpp2',
 ];
 
+export const validDocumentFileTypes = ['text/csv'];
+
 export enum EntityType {
   Post = 'POST',
   Comment = 'COMMENT',
@@ -33,5 +35,5 @@ export enum EntityType {
   OrgFavicon = 'ORG_FAVICON',
   OrgLoginVideo = 'ORG_LOGIN_VIDEO',
   AppIcon = 'APP_ICON',
-  UserImport = 'USER_IMPORT',
+  UserImport = 'DOCUMENT',
 }
