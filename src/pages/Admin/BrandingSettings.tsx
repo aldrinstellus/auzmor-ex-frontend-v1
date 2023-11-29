@@ -29,6 +29,7 @@ import { EntityType } from 'queries/files';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import { slideInAndOutTop } from 'utils/react-toastify';
+import Tooltip from 'components/Tooltip';
 
 interface IBrandingSettingsProps {
   branding?: IBranding;
@@ -694,6 +695,18 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                     className: '',
                     dataTestId: 'branding-select-primary-color',
                     setValue,
+                    customLabelRightElement: (
+                      <Tooltip
+                        tooltipContent={
+                          <p className="text-center text-sm font-medium">
+                            It is used in CTA&apos;s, Links,
+                            <br /> Icons, etc.
+                          </p>
+                        }
+                      >
+                        <Icon name="infoCircle" size={16} hover={false} />
+                      </Tooltip>
+                    ),
                   },
                 ]}
               />
@@ -708,6 +721,18 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                       className: '',
                       dataTestId: 'secondary-color',
                       setValue,
+                      customLabelRightElement: (
+                        <Tooltip
+                          tooltipContent={
+                            <p className="text-center text-sm font-medium">
+                              It is used in secondary <br />
+                              buttons, highlights, etc.
+                            </p>
+                          }
+                        >
+                          <Icon name="infoCircle" size={16} hover={false} />
+                        </Tooltip>
+                      ),
                     },
                   ]}
                 />
@@ -935,34 +960,42 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                 </div>
               )}
               {backgroundType === 'Color' && (
-                <Layout
-                  fields={[
-                    {
-                      name: 'color',
-                      label: 'primary/action colour',
-                      type: FieldType.ColorPicker,
-                      control,
-                      className: '',
-                      dataTestId: 'select-background-color',
-                      setValue,
-                    },
-                    {
-                      name: 'text',
-                      label: 'Add text',
-                      type: FieldType.Input,
-                      control,
-                      className: '',
-                      dataTestId: 'input-background-text',
-                      placeholder: 'ex. welcome to auzmor',
-                      maxLength: 50,
-                      customLabelRightElement: (
-                        <span className="text-neutral-500 text-sm">
-                          {text?.length} / 50
-                        </span>
-                      ),
-                    },
-                  ]}
-                />
+                <>
+                  <Layout
+                    fields={[
+                      {
+                        name: 'color',
+                        label: 'primary/action colour',
+                        type: FieldType.ColorPicker,
+                        control,
+                        className: '',
+                        dataTestId: 'select-background-color',
+                        setValue,
+                      },
+                    ]}
+                  />
+                  {layoutAlignment !== 'CENTER' && (
+                    <Layout
+                      fields={[
+                        {
+                          name: 'text',
+                          label: 'Add text',
+                          type: FieldType.Input,
+                          control,
+                          className: '',
+                          dataTestId: 'input-background-text',
+                          placeholder: 'ex. welcome to auzmor',
+                          maxLength: 50,
+                          customLabelRightElement: (
+                            <span className="text-neutral-500 text-sm">
+                              {text?.length} / 50
+                            </span>
+                          ),
+                        },
+                      ]}
+                    />
+                  )}
+                </>
               )}
             </div>
             <div className="flex relative">
