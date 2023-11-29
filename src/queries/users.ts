@@ -85,6 +85,21 @@ export interface IPostUsersResponse {
   workEmail: string;
 }
 
+export interface INotificationSettings {
+  post?: {
+    app?: Record<string, boolean>;
+    email?: Record<string, boolean>;
+  };
+  mentions?: {
+    app?: Record<string, boolean>;
+    email?: Record<string, boolean>;
+  };
+}
+
+export interface IUserSettings {
+  notificationSettings: INotificationSettings;
+}
+
 export interface IGetUser {
   id: string;
   fullName?: string;
@@ -134,6 +149,7 @@ export interface IGetUser {
     status: string;
     department: string;
   };
+  notificationSettings?: INotificationSettings;
   permissions?: string[];
   workPhone?: string | null;
   isPresent?: boolean;
@@ -371,8 +387,8 @@ export const useOrgChart = (
   });
 };
 
-export const updateUserSettings = async (payload: Record<string, any>) => {
-  const { data } = await apiService.post('/users/update', payload);
+export const updateUserSettings = async (payload: IUserSettings) => {
+  const { data } = await apiService.patch('/users/me', payload);
   return data;
 };
 

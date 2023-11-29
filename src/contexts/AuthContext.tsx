@@ -13,6 +13,7 @@ import { getRemainingTime } from 'utils/time';
 // import SubscriptionExpired from 'components/SubscriptionExpired';
 import AccountDeactivated from 'components/AccountDeactivated';
 import { useBrandingStore } from 'stores/branding';
+import { INotificationSettings } from 'queries/users';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -45,6 +46,7 @@ export interface IUser {
   permissions?: [];
   timezone?: string;
   outOfOffice?: Record<string, any>;
+  notificationSettings?: INotificationSettings;
 }
 
 export interface IBranding {
@@ -134,6 +136,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
           department: data?.department,
           workLocation: data?.workLocation,
           outOfOffice: data?.outOfOffice,
+          notificationSettings: data?.notificationSettings,
           subscription: {
             type: data?.org?.subscription.type,
             daysRemaining: Math.max(
