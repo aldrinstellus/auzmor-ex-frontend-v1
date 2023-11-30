@@ -5,7 +5,7 @@ import Navbar from './components/Navbar';
 import { useOrgChartStore } from 'stores/orgChartStore';
 import clsx from 'clsx';
 import { useLocation } from 'react-router-dom';
-import { JobProgress } from 'components/JobProgress';
+import JobProgress from 'components/JobProgress';
 import { useJobStore } from 'stores/jobStore';
 
 export interface IAppShellProps {

@@ -21,7 +21,7 @@ const ConfirmationStep: React.FC<AppProps> = ({
   closeModal,
   setStep,
 }) => {
-  const { setShowJobProgress } = useJobStore();
+  const { setShowJobProgress, setImportId, setTotal } = useJobStore();
 
   const startCreatingUserMutation = useMutation(
     () => startCreatingUsers(importId),
@@ -29,7 +29,9 @@ const ConfirmationStep: React.FC<AppProps> = ({
       onError: () => {},
       onSuccess: (res: any) => {
         closeModal();
+        setImportId(importId);
         setShowJobProgress(true);
+        setTotal(res.result?.totalCount || 100);
       },
     },
   );

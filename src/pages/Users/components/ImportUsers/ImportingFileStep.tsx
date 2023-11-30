@@ -40,7 +40,6 @@ const ImportingFileStep: React.FC<AppProps> = ({
   });
 
   useEffect(() => {
-    console.log('>>>>', meta);
     if (!meta.parsed) {
       parseMutation.mutate();
     }

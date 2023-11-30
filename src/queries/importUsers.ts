@@ -17,7 +17,7 @@ export const validateImport = async (importId: string) => {
 };
 
 export const startCreatingUsers = async (importId: string) => {
-  const { data } = await apiService.post(`/users/import/${importId}/create`);
+  const data = await apiService.post(`/users/import/${importId}/create`);
   return data;
 };
 

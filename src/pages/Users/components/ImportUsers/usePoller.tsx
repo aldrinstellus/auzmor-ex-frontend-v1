@@ -5,6 +5,7 @@ import apiService from 'utils/apiService';
 const usePoller = (importId: string, action: string) => {
   const [ready, setReady] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<any>({});
 
   const [intervalId, setIntervalId] = useState<any>(null);
 
@@ -16,10 +17,19 @@ const usePoller = (importId: string, action: string) => {
     const { data } = await apiService.get(
       `/users/import/${importId}/${action}`,
     );
-    const status = data.result.data.status;
-    if (status !== 'TODO') {
+
+    setData(data);
+    let status = '';
+    if (action === 'validate') {
+      status = data.result.data.status;
+    } else {
+      status = data.status;
+    }
+
+    if (status === 'COMPLETED') {
       setLoading(false);
       setReady(true);
+      clearInterval(intervalId);
     }
   };
 
@@ -30,7 +40,7 @@ const usePoller = (importId: string, action: string) => {
     return () => clearInterval(ts);
   }, []);
 
-  return { loading, ready };
+  return { loading, ready, data };
 };
 
 export default usePoller;

@@ -34,7 +34,6 @@ const SelectSheetStep: React.FC<AppProps> = ({
   });
 
   const onSubmit = async (data: any) => {
-    console.log('::>>>', data);
     setStep(StepEnum.Review);
   };
 
