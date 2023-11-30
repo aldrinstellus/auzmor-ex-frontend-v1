@@ -26,9 +26,21 @@ const ImportingFileStep: React.FC<AppProps> = ({
   meta,
   setMeta,
 }) => {
+  const isCsv = meta?.file?.name?.includes('.csv');
+
   const parseMutation = useMutation(() => parseImport(importId), {
-    onSuccess: () => {
+    onSuccess: (res: any) => {
       setMeta((m: any) => ({ ...m, parsed: true }));
+      if (!isCsv) {
+        setMeta((m: any) => ({
+          ...m,
+          sheetOptions: res.result?.data?.info?.sheets?.map((s: any) => ({
+            value: s.index,
+            label: s.name,
+          })),
+        }));
+        setStep(StepEnum.SelectSheet);
+      }
     },
   });
 
@@ -145,8 +157,6 @@ const ImportingFileStep: React.FC<AppProps> = ({
       </div>
     );
   };
-
-  const isCsv = meta?.file?.name?.includes('.csv');
 
   return (
     <Modal open={open} className="max-w-2xl">

@@ -52,7 +52,7 @@ const UploadFileStep: React.FC<AppProps> = ({
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: { 'text/*': ['.csv'] },
+    accept: { 'text/*': ['.csv', '.xls', '.xlsx'] },
   });
 
   return (

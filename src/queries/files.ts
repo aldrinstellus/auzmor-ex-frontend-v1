@@ -23,7 +23,11 @@ export const validVideoTypes = [
   'video/3gpp2',
 ];
 
-export const validDocumentFileTypes = ['text/csv'];
+export const validDocumentFileTypes = [
+  'text/csv',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.ms-excel',
+];
 
 export enum EntityType {
   Post = 'POST',

@@ -49,10 +49,10 @@ const ReviewStep: React.FC<AppProps> = ({
       resizable: true,
       width: 200,
       renderCell: ({ row, tabIndex }: any) => {
-        return row.rowData.name.value;
+        return row.rowData?.name?.value || row.rowData?.fullName?.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.name.isValid) {
+        if (!row.rowData.name?.isValid || !row.rowData?.name?.value) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -67,7 +67,7 @@ const ReviewStep: React.FC<AppProps> = ({
         return row.rowData.email.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.email.isValid) {
+        if (!row.rowData.email?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -82,7 +82,7 @@ const ReviewStep: React.FC<AppProps> = ({
         return row.rowData.managerEmail.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.managerEmail.isValid) {
+        if (!row.rowData.managerEmail?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -97,7 +97,7 @@ const ReviewStep: React.FC<AppProps> = ({
         return row.rowData.designation.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.designation.isValid) {
+        if (!row.rowData.designation?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -112,7 +112,7 @@ const ReviewStep: React.FC<AppProps> = ({
         return row.rowData.department.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.department.isValid) {
+        if (!row.rowData.department?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -127,7 +127,7 @@ const ReviewStep: React.FC<AppProps> = ({
         return row.rowData.location.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.location.isValid) {
+        if (!row.rowData.location?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -142,7 +142,7 @@ const ReviewStep: React.FC<AppProps> = ({
         return row.rowData.employeeId.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.employeeId.isValid) {
+        if (!row.rowData.employeeId?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -157,7 +157,7 @@ const ReviewStep: React.FC<AppProps> = ({
         return row.rowData.phoneNumber.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.phoneNumber.isValid) {
+        if (!row.rowData.phoneNumber?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -172,7 +172,7 @@ const ReviewStep: React.FC<AppProps> = ({
         return row.rowData.dateOfBirth.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.dateOfBirth.isValid) {
+        if (!row.rowData.dateOfBirth?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -187,7 +187,7 @@ const ReviewStep: React.FC<AppProps> = ({
         return row.rowData.dateOfJoining.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.dateOfJoining.isValid) {
+        if (!row.rowData.dateOfJoining?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -202,7 +202,7 @@ const ReviewStep: React.FC<AppProps> = ({
         return row.rowData.maritalStatus.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.maritalStatus.isValid) {
+        if (!row.rowData.maritalStatus?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';

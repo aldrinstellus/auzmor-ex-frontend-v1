@@ -7,7 +7,18 @@ export const startImportUser = async (payload: Record<string, any>) => {
 };
 
 export const parseImport = async (importId: string) => {
-  const { data } = await apiService.post(`/users/import/${importId}/parse`);
+  const data = await apiService.post(`/users/import/${importId}/parse`);
+  return data;
+};
+
+export const updateParseImport = async (
+  importId: string,
+  payload: Record<string, any>,
+) => {
+  const data = await apiService.patch(
+    `/users/import/${importId}/parse`,
+    payload,
+  );
   return data;
 };
 
