@@ -8,6 +8,7 @@ module.exports = {
     extend: {
       backgroundImage: {
         'welcome-to-office': "url('images/welcomeToOffice.png')",
+        'welcome-to-office-large': "url('images/welcomeToOfficeLarge.png')",
       },
       screens: {
         '3xl': '1840px',

@@ -1044,9 +1044,9 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
           imageRef={logoInputRef}
           setImageFile={setSelectedLogo}
           imageFile={selectedLogo}
-          aspectRatio={150 / 65}
-          width={150}
-          height={65}
+          aspectRatio={250 / 150}
+          width={250}
+          height={150}
           mimeType={getMimeType(selectedLogo?.name || '')}
         />
       )}
