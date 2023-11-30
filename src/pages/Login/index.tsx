@@ -67,10 +67,10 @@ const Login: FC<ILoginProps> = () => {
         data-testid="signin-cover-image"
       >
         {branding?.loginConfig?.layout === 'LEFT' && (
-          <div className="w-1/2 float-right bg-welcome-to-office h-full"></div>
+          <div className="w-1/2 float-right bg-welcome-to-office h-full bg-no-repeat bg-cover bg-bottom"></div>
         )}
         {branding?.loginConfig?.layout === 'RIGHT' && (
-          <div className="w-1/2 float-left bg-welcome-to-office h-full"></div>
+          <div className="w-1/2 float-left bg-welcome-to-office h-full bg-no-repeat bg-cover bg-bottom"></div>
         )}
       </div>
     );
