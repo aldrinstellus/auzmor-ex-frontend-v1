@@ -88,28 +88,32 @@ const LoginViaSSO: FC<ILoginViaSSOProps> = ({ setViaSSO }) => {
     },
   ];
   return (
-    <div className="w-full max-w-[414px] relative h-full">
-      <div className="font-extrabold text-neutral-900 text-4xl leading-[40px]">
+    <div className="w-full max-w-[440px] relative h-full">
+      <div className="font-extrabold text-neutral-900 text-2xl leading-[40px]">
         Sign In via SSO
       </div>
+      <p className="text-neutral-500 font-medium text-xs mt-1">
+        Hi, enter your details to get signed in to your account
+      </p>
       <form
-        className="mt-32"
+        className="mt-5"
         onSubmit={handleSubmit(onSubmit)}
         data-testid="sso-signin-form"
       >
-        <Layout fields={fields} />
+        <Layout fields={fields} className="space-y-5" />
 
         <Button
           dataTestId="sso-signin-btn"
           label={'Sign In'}
-          className="w-full mt-8"
+          className="w-full mt-5 rounded-7xl"
           disabled={!isValid || isFetching}
           size={Size.Large}
           type={ButtonType.Submit}
         />
       </form>
-      <div className="absolute bottom-16 flex justify-center w-full">
+      <div className="absolute bottom-0 flex justify-center w-full">
         <div className="text-sm font-normal">
+          Remember Password?&nbsp;
           <span
             className="text-primary-500 font-bold cursor-pointer"
             onClick={() => setViaSSO(false)}
@@ -117,7 +121,6 @@ const LoginViaSSO: FC<ILoginViaSSOProps> = ({ setViaSSO }) => {
           >
             Sign In
           </span>{' '}
-          with Email and Password
         </div>
       </div>
     </div>

@@ -8,7 +8,13 @@ interface IBrandingStore {
 }
 
 export const useBrandingStore = create<IBrandingStore>((set) => ({
-  branding: null,
+  branding: {
+    pageTitle: 'Auzmor Office',
+    loginConfig: {
+      layout: 'RIGHT',
+      backgroundType: 'IMAGE',
+    },
+  },
   setBranding: (branding) => {
     applyBranding(branding);
     set(() => ({ branding }));

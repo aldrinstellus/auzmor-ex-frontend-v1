@@ -30,6 +30,9 @@ import SuccessToast from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import Tooltip from 'components/Tooltip';
+import { Logo } from 'components/Logo';
+import welcomeToOffice from 'images/welcomeToOffice.png';
+import welcomeToOfficeLarge from 'images/welcomeToOfficeLarge.png';
 
 interface IBrandingSettingsProps {
   branding?: IBranding;
@@ -323,6 +326,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
     onDrop: (acceptedFiles) => {
       if (acceptedFiles.length > 0) {
         setSelectedBG(acceptedFiles[0]);
+        setSelectedBGVideo(null);
         openEditBGModal();
         setValidationErrors({ ...validationErrors, bg: null });
       } else {
@@ -369,6 +373,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
     onDrop: (acceptedFiles) => {
       if (acceptedFiles.length > 0) {
         setSelectedBGVideo(acceptedFiles[0]);
+        setSelectedBG(null);
         setValidationErrors({ ...validationErrors, bgVideo: null });
       } else {
         setSelectedBGVideo(null);
@@ -506,6 +511,11 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
     });
   };
 
+  const handleCancel = () => {
+    reset();
+    setRemovedMedia({ logo: false, favicon: false, bg: false, bgVideo: false });
+  };
+
   const validationErrorTemplate = (
     message: string,
     onClick: () => void,
@@ -531,6 +541,130 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
     );
   };
 
+  const getBackgroundImg = () => {
+    if (layoutAlignment === 'CENTER') {
+      if (removedMedia.bg) {
+        return (
+          <img
+            className="absolute top-0 left-0 object-cover h-full w-full"
+            src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOfficeLarge}
+          />
+        );
+      } else {
+        if (branding?.loginConfig?.image?.original) {
+          return (
+            <img
+              className="absolute top-0 left-0 object-cover h-full w-full"
+              src={
+                selectedBG
+                  ? getBlobUrl(selectedBG)
+                  : branding?.loginConfig?.image?.original
+              }
+            />
+          );
+        } else {
+          return (
+            <img
+              className="absolute top-0 left-0 object-cover h-full w-full"
+              src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOfficeLarge}
+            />
+          );
+        }
+      }
+    } else {
+      if (layoutAlignment === 'LEFT') {
+        if (removedMedia.bg) {
+          return (
+            <img
+              className={`absolute top-0 right-0 object-cover h-full ${
+                selectedBG ? 'w-full' : 'w-1/2'
+              }`}
+              src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
+            />
+          );
+        } else {
+          if (branding?.loginConfig?.image?.original) {
+            return (
+              <img
+                className="absolute top-0 right-0 object-cover h-full w-full"
+                src={
+                  selectedBG
+                    ? getBlobUrl(selectedBG)
+                    : branding?.loginConfig?.image?.original
+                }
+              />
+            );
+          } else {
+            return (
+              <img
+                className={`absolute top-0 right-0 object-cover h-full ${
+                  selectedBG ? 'w-full' : 'w-1/2'
+                }`}
+                src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
+              />
+            );
+          }
+        }
+      } else {
+        if (removedMedia.bg) {
+          return (
+            <img
+              className={`absolute top-0 left-0 object-cover h-full ${
+                selectedBG ? 'w-full' : 'w-1/2'
+              }`}
+              src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
+            />
+          );
+        } else {
+          if (branding?.loginConfig?.image?.original) {
+            return (
+              <img
+                className="absolute top-0 left-0 object-cover h-full w-full"
+                src={
+                  selectedBG
+                    ? getBlobUrl(selectedBG)
+                    : branding?.loginConfig?.image?.original
+                }
+              />
+            );
+          } else {
+            return (
+              <img
+                className={`absolute top-0 left-0 object-cover h-full ${
+                  selectedBG ? 'w-full' : 'w-1/2'
+                }`}
+                src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
+              />
+            );
+          }
+        }
+      }
+    }
+  };
+
+  const getBackgroundVideo = () => {
+    if (selectedBGVideo) {
+      return (
+        <video
+          className={`absolute top-0 right-0 object-cover h-full w-full`}
+          src={getBlobUrl(selectedBGVideo)}
+        />
+      );
+    } else if (
+      branding?.loginConfig?.video?.original &&
+      !removedMedia.bgVideo
+    ) {
+      return (
+        <video
+          className={`absolute top-0 right-0 object-cover h-full w-full`}
+          src={branding?.loginConfig?.video?.original}
+        />
+      );
+    } else {
+      return <></>;
+    }
+  };
+
   return (
     <>
       <Card className="p-6">
@@ -546,7 +680,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
               <Button
                 label="Cancel"
                 variant={Variant.Secondary}
-                onClick={() => reset()}
+                onClick={handleCancel}
                 disabled={isSaving}
                 dataTestId="branding-cancelcta"
               />
@@ -613,7 +747,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                         <span className="text-primary-500 font-bold">
                           click here
                         </span>{' '}
-                        to upload file. <br /> Ideal image size: 150 x 65 px
+                        to upload file. <br /> Ideal image size: 250 x 150 px
                       </span>
                     }
                     onCustomRemove={() => setSelectedLogo(null)}
@@ -799,7 +933,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                 </p>
                 <div className="flex gap-[60px]">
                   <div
-                    className="flex flex-col items-center gap-2"
+                    className="flex flex-col items-center gap-2 cursor-pointer"
                     onClick={() => setLayoutAlignment('LEFT')}
                     data-testid="branding-select-left-alignment"
                   >
@@ -814,7 +948,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                     <p className="text-neutral-900 font-medium text-sm">Left</p>
                   </div>
                   <div
-                    className="flex flex-col items-center gap-2"
+                    className="flex flex-col items-center gap-2 cursor-pointer"
                     onClick={() => setLayoutAlignment('CENTER')}
                     data-testid="branding-select-center-alignment"
                   >
@@ -831,7 +965,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                     </p>
                   </div>
                   <div
-                    className="flex flex-col items-center gap-2"
+                    className="flex flex-col items-center gap-2 cursor-pointer"
                     onClick={() => setLayoutAlignment('RIGHT')}
                     data-testid="branding-select-right-alignment"
                   >
@@ -1011,25 +1145,95 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
                     backgroundType === 'Color'
                       ? color
                       : twConfig.theme.colors.neutral[200],
-                  backgroundImage: `url(${
-                    backgroundType === 'Image' && selectedBG
-                      ? getBlobUrl(selectedBG)
-                      : backgroundType === 'Image' &&
-                        branding?.loginConfig?.image?.original
-                      ? branding?.loginConfig?.image?.original
-                      : backgroundType === 'Image' && removedMedia.bg
-                      ? undefined
-                      : undefined
-                  })`,
                 }}
               >
+                {backgroundType === 'Image' && getBackgroundImg()}
+                {backgroundType === 'Video' && getBackgroundVideo()}
+                {(selectedBGVideo ||
+                  branding?.loginConfig?.video?.original) && (
+                  <video
+                    src={
+                      selectedBGVideo
+                        ? getBlobUrl(selectedBGVideo)
+                        : branding?.loginConfig?.video?.original
+                    }
+                    className="absolute top-0 left-0"
+                  />
+                )}
+                {layoutAlignment !== 'CENTER' &&
+                  backgroundType === 'Color' &&
+                  layoutAlignment === 'RIGHT' && (
+                    <div className="flex h-full w-1/2 items-center pl-2">
+                      <p className="text-xs font-extrabold text-white">
+                        {text}
+                      </p>
+                    </div>
+                  )}
                 <div
-                  className={`bg-neutral-50 pt-5 pl-8 pr-[47px] pb-2 relative ${
+                  className={`bg-neutral-50 pt-5 relative flex flex-col items-center gap-1 ${
                     layoutAlignment === 'CENTER'
                       ? 'h-[191px] rounded-xl w-[159px]'
-                      : 'h-full w-3/5'
+                      : 'h-full w-1/2'
                   }`}
-                ></div>
+                >
+                  <div className="flex justify-center w-full h-[12px]">
+                    {selectedLogo ? (
+                      <img
+                        src={getBlobUrl(selectedLogo)}
+                        className="h-full object-cover"
+                      />
+                    ) : (
+                      <Logo className="h-[12px]" />
+                    )}
+                  </div>
+                  <div className="w-[110px] p-[5px] h-full flex flex-col gap-1">
+                    <div className="flex flex-col gap-[1px]">
+                      <p className="text-[6px] text-neutral-900 font-bold">
+                        Signin
+                      </p>
+                      <p className="text-[3px] font-medium text-neutral-500">
+                        Hi, enter your details to get signed in to your account
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-[1px]">
+                      <p className="text-[4px] text-neutral-900 font-bold">
+                        Work Email / Username
+                      </p>
+                      <div className="w-full rounded-7xl border-[0.25px] border-neutral-200 text-neutral-500 px-[5px] py-[3px] text-[4px]">
+                        Enter your email address / username
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-[1px]">
+                      <p className="text-[4px] text-neutral-900 font-bold">
+                        Password
+                      </p>
+                      <div className="w-full rounded-7xl border-[0.25px] border-neutral-200 text-neutral-500 px-[5px] py-[3px] text-[4px]">
+                        Enter password
+                      </div>
+                      <p className="text-[4px] text-neutral-900 font-bold text-right">
+                        Forgot Password?
+                      </p>
+                    </div>
+                    <div
+                      className="w-full rounded-default px-6 py-[2.5px] text-white text-[4px] text-center font-bold"
+                      style={{ backgroundColor: primaryColor }}
+                    >
+                      Sign In
+                    </div>
+                    <div className="w-full rounded-default px-6 py-[2.5px] text-neutral-900 text-[4px] text-center font-bold bg-neutral-100">
+                      Sign in with SSO
+                    </div>
+                  </div>
+                </div>
+                {layoutAlignment !== 'CENTER' &&
+                  backgroundType === 'Color' &&
+                  layoutAlignment === 'LEFT' && (
+                    <div className="flex h-full w-1/2 items-center pl-2">
+                      <p className="text-xs font-extrabold text-white">
+                        {text}
+                      </p>
+                    </div>
+                  )}
               </div>
             </div>
           </div>
@@ -1044,9 +1248,9 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
           imageRef={logoInputRef}
           setImageFile={setSelectedLogo}
           imageFile={selectedLogo}
-          aspectRatio={150 / 65}
-          width={150}
-          height={65}
+          aspectRatio={250 / 150}
+          width={250}
+          height={150}
           mimeType={getMimeType(selectedLogo?.name || '')}
         />
       )}
