@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import apiService from 'utils/apiService';
 
 const usePoller = (importId: string, action: string) => {
-  const [ready, setReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>({});
+  const readyRef = useRef(false);
 
   const [intervalId, setIntervalId] = useState<any>(null);
 
   const callFn = async () => {
-    if (ready) {
+    if (readyRef.current) {
       clearInterval(intervalId);
       return;
     }
@@ -19,16 +19,10 @@ const usePoller = (importId: string, action: string) => {
     );
 
     setData(data);
-    let status = '';
-    if (action === 'validate') {
-      status = data.result.data.status;
-    } else {
-      status = data.status;
-    }
-
+    const status = data.result.data.status;
     if (status === 'COMPLETED') {
       setLoading(false);
-      setReady(true);
+      readyRef.current = true;
       clearInterval(intervalId);
     }
   };
@@ -40,7 +34,7 @@ const usePoller = (importId: string, action: string) => {
     return () => clearInterval(ts);
   }, []);
 
-  return { loading, ready, data };
+  return { loading, ready: readyRef.current, data };
 };
 
 export default usePoller;

@@ -33,8 +33,7 @@ export const startCreatingUsers = async (importId: string) => {
 };
 
 export const getImportDataStatus = async (importId: string) => {
-  const data = await apiService.get(`/users/import/${importId}/validate`);
-  console.log('>>>', data);
+  await apiService.get(`/users/import/${importId}/validate`);
 };
 
 export const getImportData = async ({

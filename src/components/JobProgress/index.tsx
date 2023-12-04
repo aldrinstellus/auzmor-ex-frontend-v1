@@ -32,11 +32,12 @@ const Processing: React.FC = () => {
               if (!complete) {
                 return (
                   <div className="px-10">
-                    Uploading {data?.info?.total} out of {total} memebers...
+                    Uploading {data?.result?.data?.info?.total} out of {total}{' '}
+                    memebers...
                   </div>
                 );
               }
-              if (data?.info?.total === total) {
+              if (data?.result?.data?.info?.total === total) {
                 return (
                   <div className="px-10 v-center space-x-1">
                     <Icon name="boldTick" className="text-primary-500" />
@@ -48,8 +49,8 @@ const Processing: React.FC = () => {
                 <div className="v-center space-x-1">
                   <Icon name="boldTick" className="text-primary-500" />
                   <span>
-                    {data?.info?.total} out of {total} memebers uploaded
-                    successfully
+                    {data?.result?.data?.info?.total} out of {total} memebers
+                    uploaded successfully
                   </span>
                 </div>
               );

@@ -12,6 +12,7 @@ type AppProps = {
 };
 
 const Details: React.FC<AppProps> = ({ open, closeModal, data }) => {
+  const info = data?.result?.data?.info || {};
   return (
     <Modal open={open}>
       <Header onClose={closeModal} title="Enrolled Users-Details" />
@@ -36,27 +37,27 @@ const Details: React.FC<AppProps> = ({ open, closeModal, data }) => {
           </div>
           <div className="w-1/2 pl-6 flex flex-col gap-6">
             <div className="flex w-full items-center gap-2">
-              <span className="w-9">{data?.info?.total}</span>
+              <span className="w-9">{info?.total}</span>
               <span className="font-semibold cursor-pointer text-neutral-500">
                 view details
               </span>
             </div>
             <div className="flex w-full items-center gap-2">
-              <span className="w-9 text-primary-500">{data?.info?.valid}</span>
+              <span className="w-9 text-primary-500">{info?.valid}</span>
               <span className="font-semibold cursor-pointer text-neutral-500">
                 view details
               </span>
             </div>
             <div className="flex w-full items-center gap-2">
               <span className="w-9 text-yellow-300">
-                {data?.info?.addedWithMissingValues}
+                {info?.addedWithMissingValues}
               </span>
               <span className="font-semibold cursor-pointer text-neutral-500">
                 view details
               </span>
             </div>
             <div className="flex w-full items-center gap-2">
-              <span className="w-9 text-red-500">{data?.info?.error}</span>
+              <span className="w-9 text-red-500">{info?.error}</span>
               <span className="font-semibold cursor-pointer text-neutral-500">
                 view details
               </span>
