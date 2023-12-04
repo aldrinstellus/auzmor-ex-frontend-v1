@@ -96,7 +96,14 @@ const Processing: React.FC = () => {
           )}
         </div>
       </div>
-      {open && <Details open={open} closeModal={closeModal} data={data} />}
+      {open && (
+        <Details
+          open={open}
+          closeModal={closeModal}
+          data={data}
+          importId={importId}
+        />
+      )}
     </div>
   );
 };
