@@ -18,7 +18,10 @@ import {
 } from 'utils/misc';
 import { MB, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { IRadioListOption } from 'components/RadioGroup';
-import { useUpdateBrandingMutation } from 'queries/organization';
+import {
+  useOrganization,
+  useUpdateBrandingMutation,
+} from 'queries/organization';
 import { useBrandingStore } from 'stores/branding';
 import { IBranding } from 'contexts/AuthContext';
 import useModal from 'hooks/useModal';
@@ -152,7 +155,9 @@ const Preview: FC<{
   );
 };
 
-const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
+const BrandingSettings: FC<IBrandingSettingsProps> = () => {
+  const { data } = useOrganization();
+  const branding = data?.branding;
   const backgroundOption: IRadioListOption[] = [
     {
       data: { value: 'Color' },
