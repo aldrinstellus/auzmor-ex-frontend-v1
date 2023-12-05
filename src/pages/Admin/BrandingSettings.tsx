@@ -813,6 +813,12 @@ const BrandingSettings: FC<IBrandingSettingsProps> = () => {
                   branding?.pageTitle === 'Auzmor office'
                     ? `Replace 'Auzmor office' name from UI with your own name`
                     : '',
+                maxLenght: 50,
+                customLabelRightElement: (
+                  <span className="text-neutral-500 text-sm">
+                    {text?.length} / 50
+                  </span>
+                ),
               },
             ]}
           />
