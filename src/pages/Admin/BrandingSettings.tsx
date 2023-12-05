@@ -96,13 +96,9 @@ const Preview: FC<{
           e.stopPropagation();
           onCustomRemove();
         }}
+        data-testid={`branding-remove-${dataTestId}`}
       >
-        <Icon
-          name="close"
-          size={16}
-          color="text-white"
-          dataTestId={`branding-remove-${dataTestId}`}
-        />
+        <Icon name="close" size={16} color="text-white" />
       </div>
     </div>
   ) : url && !showPreview ? (
@@ -127,13 +123,9 @@ const Preview: FC<{
           e.stopPropagation();
           onBrandingRemove();
         }}
+        data-testid={`branding-remove-${dataTestId}`}
       >
-        <Icon
-          name="close"
-          size={16}
-          color="text-white"
-          dataTestId={`branding-remove-${dataTestId}`}
-        />
+        <Icon name="close" size={16} color="text-white" />
       </div>
     </div>
   ) : (
@@ -605,6 +597,10 @@ const BrandingSettings: FC<IBrandingSettingsProps> = () => {
       pageTitle: branding?.pageTitle || 'Auzmor Office',
       text: branding?.loginConfig?.text,
     });
+    setSelectedLogo(null);
+    setSelectedFavicon(null);
+    setSelectedBG(null);
+    setSelectedBGVideo(null);
     setLayoutAlignment(branding?.loginConfig?.layout || 'RIGHT');
     setRemovedMedia({ logo: false, favicon: false, bg: false, bgVideo: false });
   };
@@ -1171,7 +1167,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = () => {
                   >
                     <input
                       {...getInputPropsBGVideo()}
-                      data-testid="upload-background-video"
+                      data-testid="upload-background"
                     />
                     {validationErrors.bgVideo ? (
                       validationErrorTemplate(validationErrors.bgVideo, () => {
