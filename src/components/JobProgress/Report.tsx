@@ -3,43 +3,26 @@ import Button, { Size, Variant } from 'components/Button';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import React, { useEffect, useMemo, useState } from 'react';
-import { StepEnum } from './utils';
-import { useInfiniteUsers } from 'queries/users';
-import { useInView } from 'react-intersection-observer';
 import 'react-data-grid/lib/styles.css';
 import DataGrid, { RenderRowProps, Row } from 'react-data-grid';
 import SwitchToggle from 'components/SwitchToggle';
-import { useInfiniteImportData } from 'queries/importUsers';
-import usePoller from './usePoller';
+import { useInfiniteImportResultData } from 'queries/importUsers';
 import Spinner from 'components/Spinner';
 import apiService from 'utils/apiService';
 import useModal from 'hooks/useModal';
 import Icon from 'components/Icon';
 
 type AppProps = {
-  open: boolean;
-  closeModal: () => any;
-  setStep: (...args: any) => any;
   importId: string;
+  status: string;
 };
 
-const ReviewStep: React.FC<AppProps> = ({
-  open,
-  importId,
-  closeModal,
-  setStep,
-}) => {
-  const { ready, loading } = usePoller(importId, 'validate');
-  const [showOnlyError, setShowOnlyError] = useState(false);
-  const [inProgress, setInProgress] = useState(false);
-  const [errorCount, setErrorCount] = useState(0);
-  const [errorConfirm, showConfirm, closeConfirm] = useModal();
-
+const Report: React.FC<AppProps> = ({ importId, status }) => {
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteImportData({
+    useInfiniteImportResultData({
       importId,
-      startFetching: ready,
-      q: { includeOnlyErrors: showOnlyError || undefined },
+      startFetching: true,
+      q: { status },
     });
 
   const flatData: any[] = (
@@ -232,52 +215,16 @@ const ReviewStep: React.FC<AppProps> = ({
     }
   };
 
-  const handleClick = async () => {
-    setInProgress(true);
-    const { data } = await apiService.get(
-      `/users/import/${importId}/validate?includeOnlyErrors=true`,
-    );
-    if (data.result.totalCount) {
-      setErrorCount(data.result.totalCount || 0);
-      showConfirm();
-    } else {
-      setStep(StepEnum.Confirmation);
-    }
-    setInProgress(false);
-  };
-
   return (
-    <Modal open={open} className="max-w-[1350px]">
-      <Header
-        onBackIconClick={() => null}
-        title="Bulk Add User info"
-        onClose={closeModal}
-        closeBtnDataTestId="import-people-close"
-      />
-      <div className="bg-purple-50 pt-4">
-        <div className="bg-white rounded-7xl mb-4 mx-4 px-4 py-3 shadow-sm">
-          <span className="text-primary-700 font-bold">Importing File </span>{' '}
-          <span className="text-primary-700 font-bold text-lg">&gt;</span>{' '}
-          <span className="text-primary-500">Review</span>
-        </div>
-        {isLoading || loading ? (
+    <div>
+      <div className="pt-4">
+        {isLoading ? (
           <div className="p-12 flex justify-center items-center">
             <Spinner />
           </div>
         ) : (
           <div className="bg-white">
             <div className="px-6">
-              <div className="py-4 text-sm text-neutral-900 v-center space-x-2">
-                <SwitchToggle
-                  className="!h-5 !w-10"
-                  defaultValue={showOnlyError}
-                  onChange={(c) => {
-                    setShowOnlyError(c);
-                  }}
-                />
-                <span className="text-sm">Only show rows with problem</span>
-              </div>
-
               {flatData?.length ? (
                 <DataGrid
                   enableVirtualization
@@ -306,71 +253,8 @@ const ReviewStep: React.FC<AppProps> = ({
           </div>
         )}
       </div>
-      <div className="flex justify-between items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
-        <Button
-          label="Go Back"
-          variant={Variant.Secondary}
-          size={Size.Small}
-          className="mr-4"
-          onClick={() => setStep(StepEnum.Importing)}
-          dataTestId="mport-people-cancel"
-        />
-        <div className="v-center">
-          <Button
-            label="Cancel"
-            variant={Variant.Secondary}
-            size={Size.Small}
-            className="mr-4"
-            onClick={closeModal}
-            dataTestId="mport-people-cancel"
-          />
-          <Button
-            label="Review"
-            size={Size.Small}
-            dataTestId="mport-people-next"
-            onClick={handleClick}
-            loading={inProgress}
-          />
-        </div>
-      </div>
-      {errorConfirm && (
-        <Modal open={errorConfirm}>
-          <Header
-            title="Unresolved errors"
-            onClose={closeConfirm}
-            closeBtnDataTestId="import-people-close"
-          />
-          <div className="flex flex-col justify-center items-center p-4">
-            <Icon name="warningCircle" className="text-red-500" size={80} />
-            <div className="text-lg font-bold text-neutral-700 pt-4">
-              You have {errorCount} rows with unresolved issue
-            </div>
-            <div className="text-center mt-4 px-6">
-              We will ignore the entire row if you wish to proceed or you can
-              modify your file
-            </div>
-          </div>
-          <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
-            <Button
-              label="Go back"
-              variant={Variant.Secondary}
-              size={Size.Small}
-              className="mr-4"
-              onClick={closeConfirm}
-              dataTestId="mport-people-cancel"
-            />
-            <Button
-              label="Proceed"
-              size={Size.Small}
-              dataTestId="mport-people-next"
-              onClick={() => setStep(StepEnum.Confirmation)}
-              loading={inProgress}
-            />
-          </div>
-        </Modal>
-      )}
-    </Modal>
+    </div>
   );
 };
 
-export default ReviewStep;
+export default Report;

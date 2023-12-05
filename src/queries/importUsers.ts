@@ -33,8 +33,7 @@ export const startCreatingUsers = async (importId: string) => {
 };
 
 export const getImportDataStatus = async (importId: string) => {
-  const data = await apiService.get(`/users/import/${importId}/validate`);
-  console.log('>>>', data);
+  await apiService.get(`/users/import/${importId}/validate`);
 };
 
 export const getImportData = async ({
@@ -63,6 +62,48 @@ export const useInfiniteImportData = ({
     queryKey: ['csv-import', q],
     queryFn: ({ pageParam, queryKey }) =>
       getImportData({ importId, pageParam, queryKey }),
+    getNextPageParam: (lastPage: any) => {
+      const pageDataLen = lastPage?.data?.result?.data?.info?.length;
+      const pageLimit = lastPage?.data?.result?.paging?.limit;
+      if (pageDataLen < pageLimit) {
+        return null;
+      }
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
+    staleTime: 30 * 60 * 1000,
+    enabled: startFetching,
+  });
+};
+
+export const getImportResultData = async ({
+  importId,
+  pageParam = null,
+  queryKey,
+}: any) => {
+  if (pageParam === null) {
+    return await apiService.get(
+      `/users/import/${importId}/report`,
+      queryKey[1],
+    );
+  } else return await apiService.get(pageParam);
+};
+
+export const useInfiniteImportResultData = ({
+  importId,
+  q = {},
+  startFetching = false,
+}: {
+  startFetching: boolean;
+  importId: string;
+  q?: Record<string, any>;
+}) => {
+  return useInfiniteQuery({
+    queryKey: ['csv-import', q],
+    queryFn: ({ pageParam, queryKey }) =>
+      getImportResultData({ importId, pageParam, queryKey }),
     getNextPageParam: (lastPage: any) => {
       const pageDataLen = lastPage?.data?.result?.data?.info?.length;
       const pageLimit = lastPage?.data?.result?.paging?.limit;

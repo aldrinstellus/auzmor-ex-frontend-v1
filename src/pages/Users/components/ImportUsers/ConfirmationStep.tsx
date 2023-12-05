@@ -7,6 +7,7 @@ import Button, { Size, Variant } from 'components/Button';
 import { useMutation } from '@tanstack/react-query';
 import { startCreatingUsers } from 'queries/importUsers';
 import { useJobStore } from 'stores/jobStore';
+import apiService from 'utils/apiService';
 
 type AppProps = {
   closeModal: () => any;
@@ -27,11 +28,14 @@ const ConfirmationStep: React.FC<AppProps> = ({
     () => startCreatingUsers(importId),
     {
       onError: () => {},
-      onSuccess: (res: any) => {
+      onSuccess: async (res: any) => {
         closeModal();
         setImportId(importId);
+        const { data } = await apiService.get(
+          `/users/import/${importId}/validate`,
+        );
+        setTotal(data.result.totalCount);
         setShowJobProgress(true);
-        setTotal(res.result?.totalCount || 100);
       },
     },
   );

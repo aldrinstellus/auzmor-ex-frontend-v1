@@ -2,82 +2,86 @@ import Card from 'components/Card';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import SSOSettings from 'pages/Admin/SSOSettings';
-import { useOrganization } from 'queries/organization';
-import { FC, useMemo, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import GeneralSettings from './GeneralSettings';
 import BrandingSettings from './BrandingSettings';
 import { useBrandingStore } from 'stores/branding';
+import useURLParams from 'hooks/useURLParams';
+import { useOrganization } from 'queries/organization';
 
 const Admin: FC = () => {
-  const { data, isLoading } = useOrganization();
+  useOrganization();
   const branding = useBrandingStore((state) => state.branding);
-  const settings = useMemo(
-    () => [
-      {
-        label: 'General settings',
-        icon: 'gearOutline',
-        key: 'general-settings',
-        component: <GeneralSettings />,
-        disabled: false,
-        hidden: false,
-        hideDefaultLabelCard: false,
-        dataTestId: 'adminsettings-generalsetting',
-      },
-      {
-        label: 'User Management',
-        icon: 'userManagement',
-        key: 'user-management-settings',
-        component: <div>User Management Settings Page</div>,
-        disabled: false,
-        hidden: true,
-        hideDefaultLabelCard: false,
-        dataTestId: 'settings-user-management',
-      },
-      {
-        label: 'Branding',
-        icon: 'branding',
-        key: 'branding-settings',
-        component: <BrandingSettings branding={branding!} />,
-        disabled: false,
-        hidden: false,
-        hideDefaultLabelCard: true,
-        dataTestId: 'generalsettings-branding',
-      },
-      {
-        label: 'Single Sign-on',
-        icon: 'link',
-        key: 'single-sign-on-settings',
-        component: <SSOSettings />,
-        disabled: false,
-        hidden: false,
-        hideDefaultLabelCard: false,
-        dataTestId: 'settings-sso',
-      },
-      {
-        label: 'Marketplace',
-        icon: 'marketplace',
-        key: 'marketplace-settings',
-        component: <div>Marketplace Settings Page</div>,
-        disabled: false,
-        hidden: true,
-        hideDefaultLabelCard: false,
-        dataTestId: 'settings-marketplace',
-      },
-      {
-        label: 'Notifications',
-        icon: 'notification',
-        key: 'notifications-settings',
-        component: <div>Notifications Settings Page</div>,
-        disabled: false,
-        hidden: true,
-        hideDefaultLabelCard: false,
-        dataTestId: 'settings-notifications',
-      },
-    ],
-    [data, isLoading],
-  ).filter((item) => !item.hidden);
-
+  const { updateParam, searchParams } = useURLParams();
   const [activeSettingsIndex, setActiveSettingsIndex] = useState<number>(0);
+  const parsedTab = searchParams.get('tab');
+  const settings = [
+    {
+      label: 'General settings',
+      icon: 'gearOutline',
+      key: 'general-settings',
+      component: <GeneralSettings />,
+      disabled: false,
+      hidden: false,
+      hideDefaultLabelCard: false,
+      dataTestId: 'adminsettings-generalsetting',
+    },
+    {
+      label: 'User Management',
+      icon: 'userManagement',
+      key: 'user-management-settings',
+      component: <div>User Management Settings Page</div>,
+      disabled: false,
+      hidden: true,
+      hideDefaultLabelCard: false,
+      dataTestId: 'settings-user-management',
+    },
+    {
+      label: 'Branding',
+      icon: 'branding',
+      key: 'branding-settings',
+      component: <BrandingSettings branding={branding!} />,
+      disabled: false,
+      hidden: false,
+      hideDefaultLabelCard: true,
+      dataTestId: 'generalsettings-branding',
+    },
+    {
+      label: 'Single Sign-on',
+      icon: 'link',
+      key: 'single-sign-on-settings',
+      component: <SSOSettings />,
+      disabled: false,
+      hidden: false,
+      hideDefaultLabelCard: false,
+      dataTestId: 'settings-sso',
+    },
+    {
+      label: 'Marketplace',
+      icon: 'marketplace',
+      key: 'marketplace-settings',
+      component: <div>Marketplace Settings Page</div>,
+      disabled: false,
+      hidden: true,
+      hideDefaultLabelCard: false,
+      dataTestId: 'settings-marketplace',
+    },
+    {
+      label: 'Notifications',
+      icon: 'notification',
+      key: 'notifications-settings',
+      component: <div>Notifications Settings Page</div>,
+      disabled: false,
+      hidden: true,
+      hideDefaultLabelCard: false,
+      dataTestId: 'settings-notifications',
+    },
+  ].filter((item) => !item.hidden);
+
+  useEffect(() => {
+    const parsedTabIndex = settings.findIndex((item) => item.key === parsedTab);
+    if (parsedTabIndex !== -1) setActiveSettingsIndex(parsedTabIndex);
+  }, [parsedTab]);
 
   return (
     <div
@@ -101,7 +105,10 @@ const Admin: FC = () => {
                   ? 'bg-primary-50'
                   : 'bg-white'
               } ${index === settings.length - 1 ? 'rounded-b-9xl' : ''}`}
-              onClick={() => setActiveSettingsIndex(index)}
+              onClick={() => {
+                setActiveSettingsIndex(index);
+                updateParam('tab', item.key, true);
+              }}
               data-testid={item.dataTestId}
             >
               <div

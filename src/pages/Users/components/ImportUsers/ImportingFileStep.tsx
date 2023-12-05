@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Spinner from 'components/Spinner';
 import Modal from 'components/Modal';
 import { StepEnum } from './utils';
@@ -12,6 +11,7 @@ import {
   validateImport,
 } from 'queries/importUsers';
 import Button, { Size, Variant } from 'components/Button';
+import ImportingForExcel from './ImportingForExcel';
 
 type AppProps = {
   open: boolean;
@@ -37,26 +37,15 @@ const ImportingFileStep: React.FC<AppProps> = ({
   );
 
   const parseMutation = useMutation(() => parseImport(importId), {
-    onSuccess: async (res: any) => {
+    onSuccess: async () => {
       setMeta((m: any) => ({ ...m, parsed: true }));
-      if (isCsv) {
-        await updateParseMutation.mutateAsync();
-      } else {
-        setMeta((m: any) => ({
-          ...m,
-          sheetOptions: res.result?.data?.info?.sheets?.map((s: any) => ({
-            value: s.index,
-            label: s.name,
-          })),
-        }));
-        setStep(StepEnum.SelectSheet);
-      }
+      await updateParseMutation.mutateAsync();
     },
   });
 
   const validateUserMutation = useMutation(() => validateImport(importId), {
     onError: () => {},
-    onSuccess: (res: any) => {
+    onSuccess: () => {
       setStep(StepEnum.Review);
     },
   });
@@ -68,16 +57,23 @@ const ImportingFileStep: React.FC<AppProps> = ({
   }, []);
 
   const renderForExcel = () => {
-    return (
-      <div className="p-6 flex flex-col items-center justify-center">
-        <Spinner className="!h-[100px] !w-[100px]" />
-        <div
-          onClick={() => setStep(StepEnum.SelectSheet)}
-          className="text-lg text-neutral-900 font-bold mt-4"
-        >
-          Importing {meta?.file?.name}
+    if (parseMutation.isLoading) {
+      return (
+        <div className="p-6 flex flex-col items-center justify-center">
+          <Spinner className="!h-[100px] !w-[100px]" />
+          <div className="text-lg text-neutral-900 font-bold mt-4">
+            Importing {meta?.file?.name}
+          </div>
         </div>
-      </div>
+      );
+    }
+    return (
+      <ImportingForExcel
+        importId={importId}
+        fileName={meta?.file?.name}
+        setMeta={setMeta}
+        setStep={setStep}
+      />
     );
   };
 
@@ -165,6 +161,29 @@ const ImportingFileStep: React.FC<AppProps> = ({
           }
           return null;
         })()}
+        {!_isLoading && (
+          <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
+            <Button
+              label="Cancel"
+              variant={Variant.Secondary}
+              size={Size.Small}
+              className="mr-4"
+              onClick={closeModal}
+              dataTestId="import-people-cancel"
+              disabled={validateUserMutation.isLoading}
+            />
+            <Button
+              label="Confirm"
+              size={Size.Small}
+              dataTestId="import-people-next"
+              onClick={() => {
+                validateUserMutation.mutate();
+              }}
+              disabled={validateUserMutation.isLoading}
+              loading={validateUserMutation.isLoading}
+            />
+          </div>
+        )}
       </div>
     );
   };
@@ -172,29 +191,6 @@ const ImportingFileStep: React.FC<AppProps> = ({
   return (
     <Modal open={open} className="max-w-2xl">
       {isCsv ? renderForCsv() : renderForExcel()}
-      {!_isLoading && (
-        <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
-          <Button
-            label="Cancel"
-            variant={Variant.Secondary}
-            size={Size.Small}
-            className="mr-4"
-            onClick={closeModal}
-            dataTestId="import-people-cancel"
-            disabled={validateUserMutation.isLoading}
-          />
-          <Button
-            label="Confirm"
-            size={Size.Small}
-            dataTestId="import-people-next"
-            onClick={() => {
-              validateUserMutation.mutate();
-            }}
-            disabled={validateUserMutation.isLoading}
-            loading={validateUserMutation.isLoading}
-          />
-        </div>
-      )}
     </Modal>
   );
 };
