@@ -592,6 +592,10 @@ const BrandingSettings: FC<IBrandingSettingsProps> = ({ branding }) => {
       pageTitle: branding?.pageTitle || 'Auzmor Office',
       text: branding?.loginConfig?.text,
     });
+    setSelectedLogo(null);
+    setSelectedFavicon(null);
+    setSelectedBG(null);
+    setSelectedBGVideo(null);
     setLayoutAlignment(branding?.loginConfig?.layout || 'RIGHT');
     setRemovedMedia({ logo: false, favicon: false, bg: false, bgVideo: false });
   };
