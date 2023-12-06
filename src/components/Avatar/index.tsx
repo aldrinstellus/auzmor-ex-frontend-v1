@@ -120,7 +120,7 @@ const Avatar: FC<AvatarProps> = ({
     key: name,
     alt: name,
     blurhash: blurhash,
-    dataTestid: `${dataTestId}-avatar-img`,
+    'data-testid': `${dataTestId}-avatar-img`,
   };
 
   const avatarName = name && !isCounter ? getInitials(name) : name;

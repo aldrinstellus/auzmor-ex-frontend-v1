@@ -220,6 +220,7 @@ const ColorPicker: FC<ColorPickerProps> = ({
                         onClick={() => {
                           setValue(name, color);
                           setLastValidHex(color);
+                          field.onChange(color);
                           close();
                         }}
                         data-testid="palette-select-color"
