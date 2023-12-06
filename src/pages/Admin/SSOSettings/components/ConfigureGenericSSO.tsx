@@ -249,8 +249,8 @@ const ConfigureGenericSSO: FC<ConfigureGenericSSOProps> = ({
           </div>
           <Divider className="!bg-neutral-100" />
           <div className="mt-4">
-            <Collapse label="Advanced Settings">
-              {open && <Layout fields={fields} className="space-y-6 mt-8" />}
+            <Collapse label="Advanced Settings" height={184}>
+              {open && <Layout fields={fields} className="space-y-6" />}
             </Collapse>
           </div>
           {isError && !isLoading && (

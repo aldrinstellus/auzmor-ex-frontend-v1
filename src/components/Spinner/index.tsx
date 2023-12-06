@@ -2,7 +2,6 @@ import clsx from 'clsx';
 import { FC, useMemo } from 'react';
 
 type SpinnerProps = {
-  color?: string;
   className?: string;
 };
 

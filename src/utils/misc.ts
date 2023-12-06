@@ -1,7 +1,7 @@
 import resolveConfig from 'tailwindcss/resolveConfig';
 import tailwindConfig from 'components/../../tailwind.config.js';
 import { IMedia } from 'contexts/CreatePostContext';
-import { validImageTypes } from 'queries/files';
+import { validDocumentFileTypes, validImageTypes } from 'queries/files';
 import { getItem, removeItem } from './persist';
 import { DeltaStatic } from 'quill';
 import {
@@ -109,7 +109,13 @@ export const getBlobUrl = (file: File) => {
 };
 
 export const getType = (type: string) => {
-  return validImageTypes.indexOf(type) > -1 ? 'IMAGE' : 'VIDEO';
+  if (validImageTypes.indexOf(type) > -1) {
+    return 'IMAGE';
+  }
+  if (validDocumentFileTypes.indexOf(type) > -1) {
+    return 'DOCUMENT';
+  }
+  return 'VIDEO';
 };
 
 export const getMediaObj = (files: File[]): IMedia[] => {
@@ -452,4 +458,26 @@ export const mapRanges = (
   value: number,
 ) => {
   return newMin + ((newMax - newMin) / (oldMax - oldMin)) * (value - oldMin);
+};
+
+export const getMimeType = (fileName: string): string | undefined => {
+  const extensionIndex = fileName.lastIndexOf('.');
+  if (extensionIndex === -1) {
+    return undefined;
+  }
+
+  const extension = fileName.substring(extensionIndex + 1);
+  const mimeTypes: { [key: string]: string } = {
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    png: 'image/png',
+    svg: 'image/svg+xml',
+    ico: 'image/x-icon',
+    gif: 'image/gif',
+    pdf: 'application/pdf',
+    txt: 'text/plain',
+    // Add more extensions and MIME types as needed
+  };
+
+  return mimeTypes[extension.toLowerCase()];
 };

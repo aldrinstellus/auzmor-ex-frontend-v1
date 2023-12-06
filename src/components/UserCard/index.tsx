@@ -9,7 +9,7 @@ import { IGetUser, getUser } from 'queries/users';
 import { FC } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { toast } from 'react-toastify';
-import { PRIMARY_COLOR, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import {
   getAvatarColor,
   getCoverImage,
@@ -327,7 +327,7 @@ const UserCard: FC<IUserCardProp> = ({
                 className="w-8 h-8"
                 id={`user-card-${user?.id}-manager-avatar`}
               >
-                <Spinner color={PRIMARY_COLOR} />
+                <Spinner />
               </div>
               <div className="flex flex-col justify-between w-3/4">
                 <div

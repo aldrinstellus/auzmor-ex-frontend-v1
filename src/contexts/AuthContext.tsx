@@ -12,6 +12,8 @@ import Smartlook from 'smartlook-client';
 import { getRemainingTime } from 'utils/time';
 import SubscriptionExpired from 'components/SubscriptionExpired';
 import AccountDeactivated from 'components/AccountDeactivated';
+import { useBrandingStore } from 'stores/branding';
+import { INotificationSettings } from 'queries/users';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -44,6 +46,23 @@ export interface IUser {
   permissions?: [];
   timezone?: string;
   outOfOffice?: Record<string, any>;
+  notificationSettings?: INotificationSettings;
+}
+
+export interface IBranding {
+  primaryColor?: string;
+  secondaryColor?: string;
+  pageTitle?: string;
+  favicon?: { blurHash?: string; id: string; original: string };
+  logo?: { blurHash?: string; id: string; original: string };
+  loginConfig: {
+    layout: 'LEFT' | 'CENTER' | 'RIGHT'; // default: RIGHT
+    backgroundType: 'IMAGE' | 'VIDEO' | 'COLOR'; // default: IMAGE
+    image?: { blurHash?: string; id: string; original: string };
+    video?: { blurHash?: string; id: string; original: string };
+    text?: string;
+    color?: string;
+  };
 }
 
 interface IAuthContext {
@@ -72,6 +91,8 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [sessionExpired, setSessionExpired] = useState(false);
   const [accountDeactivated, setAccountDeactivated] = useState(false);
+
+  const setBranding = useBrandingStore((state) => state.setBranding);
 
   const setupSession = async () => {
     const query = new URLSearchParams(window.location.search.substring(1));
@@ -116,6 +137,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
           department: data?.department,
           workLocation: data?.workLocation,
           outOfOffice: data?.outOfOffice,
+          notificationSettings: data?.notificationSettings,
           subscription: {
             type: data?.org?.subscription.type,
             daysRemaining: Math.max(
@@ -124,6 +146,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
             ),
           },
         });
+        setBranding(data.branding);
       } catch (e: any) {
         if (e?.response?.status === 401) {
           removeAllItems();

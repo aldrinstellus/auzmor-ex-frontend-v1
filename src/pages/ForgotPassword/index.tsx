@@ -1,5 +1,5 @@
 import { ChangeEvent, FC, useEffect } from 'react';
-import { Logo } from 'components/Logo';
+import OfficeLogoSvg from 'components/Logo/images/OfficeLogo.svg';
 import { Success } from 'components/Logo';
 import Layout, { FieldType } from 'components/Form';
 import Button, { Size, Type } from 'components/Button';
@@ -11,6 +11,10 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { forgotPassword } from 'queries/account';
 import 'utils/custom-yup-validators/email/validateEmail';
+import { useBrandingStore } from 'stores/branding';
+import { getSubDomain } from 'utils/misc';
+import { useGetSSOFromDomain } from 'queries/organization';
+import clsx from 'clsx';
 
 interface IForgotPasswordProps {}
 
@@ -63,24 +67,108 @@ const ForgotPassword: FC<IForgotPasswordProps> = () => {
     forgotPasswordMutation.mutate(formData);
   };
 
-  return (
-    <div className="flex h-screen w-screen">
-      <div
-        className="w-[49.3vw] h-full bg-welcome-to-office bg-no-repeat bg-cover bg-bottom"
-        data-testid="forgot-password-cover-image"
-      />
+  const domain = getSubDomain(window.location.host);
+  const { isFetching } = useGetSSOFromDomain(
+    domain,
+    domain !== '' ? true : false,
+  );
+  const branding = useBrandingStore((state) => state.branding);
 
-      <div className="flex-1 h-full flex justify-center relative bg-white overflow-y-auto">
+  if (isFetching) {
+    return null;
+  }
+
+  const getBackground = () => {
+    const defaultBackground = (
+      <div
+        className={`w-screen h-full absolute top-0 left-0 ${
+          branding?.loginConfig?.layout === 'CENTER' &&
+          'bg-welcome-to-office-large'
+        } bg-no-repeat bg-cover bg-bottom`}
+        data-testid="signin-cover-image"
+      >
+        {branding?.loginConfig?.layout === 'LEFT' && (
+          <div className="w-1/2 float-right bg-welcome-to-office h-full"></div>
+        )}
+        {branding?.loginConfig?.layout === 'RIGHT' && (
+          <div className="w-1/2 float-left bg-welcome-to-office h-full"></div>
+        )}
+      </div>
+    );
+    if (branding?.loginConfig) {
+      switch (branding?.loginConfig?.backgroundType) {
+        case 'IMAGE':
+          if (branding?.loginConfig?.image?.original) {
+            return (
+              <div
+                className="w-full h-full absolute top-0 left-0 bg-no-repeat bg-cover"
+                style={{
+                  backgroundImage: `url(${branding?.loginConfig?.image?.original})`,
+                }}
+              ></div>
+            );
+          } else {
+            return defaultBackground;
+          }
+        case 'VIDEO':
+          if (branding?.loginConfig?.video?.original) {
+            return (
+              <div className="w-full h-full absolute top-0 left-0 bg-no-repeat bg-cover">
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  className="h-full w-full object-cover"
+                >
+                  <source src={branding?.loginConfig?.video?.original} />
+                </video>
+              </div>
+            );
+          } else {
+            return defaultBackground;
+          }
+        case 'COLOR':
+          if (branding?.loginConfig?.color) {
+            return (
+              <div
+                className="w-full h-full absolute top-0 left-0"
+                style={{ backgroundColor: branding?.loginConfig?.color }}
+              />
+            );
+          } else {
+            return defaultBackground;
+          }
+        default:
+          return defaultBackground;
+      }
+    } else {
+      return defaultBackground;
+    }
+  };
+
+  const getForgotPasswordForm = () => {
+    return (
+      <>
+        {branding?.loginConfig?.layout === 'RIGHT' && getBannerText()}
         <div
-          className="absolute top-[4.55vh] right-[3.5vw]"
-          data-testid="forgot-password-logo-image"
+          className={`flex flex-col items-center bg-neutral-50 overflow-y-auto w-[50vw] h-full z-10 gap-12 py-[100px] ${
+            branding?.loginConfig?.layout === 'CENTER' &&
+            'min-h-[660px] !h-auto rounded-16xl w-[600px] !py-20'
+          }`}
+          data-testid={getDataTestId()}
         >
-          <Logo />
-        </div>
-        <div className="pt-[6.5px] 3xl:pt-[63px] mr-[60px] ml-[8.5px] w-[414px] h-full">
-          <div className="w-full max-w-[414px]">
+          <div
+            className="flex justify-center items-center max-w-[250px] max-h-[150px]"
+            data-testid="signin-logo-image"
+          >
+            <img
+              src={branding?.logo?.original || OfficeLogoSvg}
+              alt="Office Logo"
+            />
+          </div>
+          <div className="w-full max-w-[440px]">
             {forgotPasswordMutation.isSuccess ? (
-              <div className="h-full pt-[270px] flex flex-col justify-center">
+              <div className="h-full flex flex-col justify-center">
                 <div
                   className="text-center flex justify-center items-center flex-col space-y-9"
                   data-testid="forgot-password-success-message"
@@ -93,39 +181,83 @@ const ForgotPassword: FC<IForgotPasswordProps> = () => {
                 </div>
                 <Button
                   label={'Back to Sign In'}
-                  className="w-full mt-8"
+                  className="w-full mt-5 rounded-7xl"
                   onClick={() => navigate('/login')}
                   size={Size.Large}
                 />
               </div>
             ) : (
-              <div className="mt-20">
-                <div className="font-extrabold text-neutral-900 text-4xl">
+              <>
+                <div className="font-bold text-neutral-900 text-2xl">
                   Forgot Password
                 </div>
                 <form
-                  className="mt-32"
+                  className="mt-5"
                   onSubmit={handleSubmit(onSubmit)}
                   data-testid="forgot-password-form"
                 >
-                  <Layout fields={fields} />
+                  <Layout fields={fields} className="space-y-5" />
                   <Button
                     type={Type.Submit}
                     label={'Reset Via Email'}
                     loading={forgotPasswordMutation.isLoading}
-                    className="w-full mt-8"
+                    className="w-full mt-5 rounded-7xl"
                     size={Size.Large}
                     disabled={!isValid}
                     data-testid="forgot-password-submit"
                   />
                 </form>
-              </div>
+              </>
             )}
           </div>
         </div>
-      </div>
-    </div>
-  );
+        {branding?.loginConfig?.layout === 'LEFT' && getBannerText()}
+      </>
+    );
+  };
+
+  const getBannerText = () => {
+    if (
+      !!branding?.loginConfig?.text &&
+      branding?.loginConfig?.backgroundType === 'COLOR' &&
+      branding?.loginConfig?.layout !== 'CENTER'
+    ) {
+      return (
+        <div className="w-[50vw] flex items-center px-14">
+          <p
+            className="text-white text-6xl font-extrabold z-10 leading-[72px]"
+            data-testid={`${getDataTestId()}-message`}
+          >
+            {branding?.loginConfig?.text}
+          </p>
+        </div>
+      );
+    } else {
+      return <></>;
+    }
+  };
+
+  const setForgotPasswordForm = () => {
+    return (
+      <>
+        {getBackground()}
+        {getForgotPasswordForm()}
+      </>
+    );
+  };
+
+  const containerStyle = clsx({
+    'flex h-screen w-screen relative': true,
+    'justify-center items-center': branding?.loginConfig?.layout === 'CENTER',
+    'justify-end': branding?.loginConfig?.layout === 'RIGHT',
+    'justify-start': branding?.loginConfig?.layout === 'LEFT',
+  });
+
+  const getDataTestId = () => {
+    return `${branding?.loginConfig?.layout?.toLowerCase()}-align-${branding?.loginConfig?.backgroundType?.toLowerCase()}`;
+  };
+
+  return <div className={containerStyle}>{setForgotPasswordForm()}</div>;
 };
 
 export default ForgotPassword;

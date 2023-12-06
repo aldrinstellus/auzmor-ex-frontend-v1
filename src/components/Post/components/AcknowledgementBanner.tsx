@@ -55,7 +55,7 @@ const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({ data }) => {
 
   return !isRegularPost(data, currentDate, isAdmin) ? (
     <div
-      className={`flex justify-between items-center bg-blue-700 px-6 py-2 rounded-t-9xl min-h-[42px]`}
+      className={`flex justify-between items-center bg-secondary-500 px-6 py-2 rounded-t-9xl min-h-[42px]`}
       data-testid="announcement-header"
     >
       <div className="flex justify-center items-center text-white text-xs font-bold space-x-3">

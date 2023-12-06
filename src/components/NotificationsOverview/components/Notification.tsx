@@ -23,9 +23,15 @@ const Notification: FC<NotificationCardProps> = ({
   id,
   interactionCount,
 }): ReactElement => {
+  // By Default, target is the last element in the array
+  let targetType = target[target.length - 1].type;
+  // For comment notifications, target is the last but 1 element because the newly created comment is also part of the array
+  if (action.type === ActionType.COMMENT && target.length > 1)
+    targetType = target[target.length - 2].type;
+
   const notificationMessage = getNotificationMessage(
     action.type,
-    target[target.length - 1].type,
+    targetType,
     interactionCount,
   );
 

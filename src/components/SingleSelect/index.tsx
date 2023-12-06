@@ -35,6 +35,7 @@ export interface ISingleSelectProps {
   suffixIcon?: ReactNode | null;
   clearIcon?: ReactNode | null;
   isClearable?: boolean;
+  showSearch?: boolean;
 }
 
 const SingleSelect = forwardRef(
@@ -59,6 +60,7 @@ const SingleSelect = forwardRef(
       suffixIcon = null,
       clearIcon = null,
       isClearable = false,
+      showSearch = true,
     }: ISingleSelectProps,
     ref?: any,
   ) => {
@@ -130,7 +132,7 @@ const SingleSelect = forwardRef(
               render={() => (
                 <Select
                   open={open}
-                  showSearch
+                  showSearch={showSearch}
                   disabled={disabled}
                   placeholder={placeholder}
                   defaultValue={defaultValue}

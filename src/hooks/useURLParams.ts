@@ -2,7 +2,7 @@ import { useSearchParams } from 'react-router-dom';
 
 interface UseURLParamsHook {
   searchParams: any;
-  updateParam: (key: string, value: string) => void;
+  updateParam: (key: string, value: string, replace?: boolean) => void;
   deleteParam: (key: string) => void;
   parseParams: (key: string) => any;
   serializeFilter: (filter: any) => string;
@@ -11,11 +11,14 @@ interface UseURLParamsHook {
 const useURLParams = (): UseURLParamsHook => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const updateParam = (key: string, value: string) => {
-    setSearchParams((params) => {
-      params.set(key, value);
-      return params;
-    });
+  const updateParam = (key: string, value: string, replace = false) => {
+    setSearchParams(
+      (params) => {
+        params.set(key, value);
+        return params;
+      },
+      { replace },
+    );
   };
 
   const deleteParam = (key: string) => {

@@ -22,6 +22,10 @@ export interface IImageResositionProps {
   image: string;
   setImageFile: (file: any) => void;
   imageFile?: any;
+  aspectRatio?: number;
+  width?: number;
+  height?: number;
+  mimeType?: string;
 }
 
 export enum Shape {
@@ -36,6 +40,10 @@ const ImageResosition: FC<IImageResositionProps> = ({
   setImageFile,
   closeEditImageModal = () => {},
   imageRef,
+  aspectRatio = 3,
+  width,
+  height,
+  mimeType = 'image/jpeg',
 }) => {
   const cropperRef = useRef<CropperRef>(null);
   const [isImageLoading, setIsImageLoading] = useState<boolean>(true);
@@ -64,7 +72,7 @@ const ImageResosition: FC<IImageResositionProps> = ({
         if (blobImage) {
           setImageFile(blobImage);
         }
-      }, 'image/jpeg');
+      }, mimeType);
     closeEditImageModal();
   };
 
@@ -92,7 +100,11 @@ const ImageResosition: FC<IImageResositionProps> = ({
           src={image}
           cropperRef={cropperRef}
           shape={Shape.Rectangle}
-          aspectRatio={3}
+          aspectRatio={aspectRatio}
+          minH={height}
+          maxH={height}
+          minW={width}
+          maxW={width}
         />
       )}
       <Footer

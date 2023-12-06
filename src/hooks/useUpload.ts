@@ -45,7 +45,7 @@ interface IUploadToGcpResposne {
 export interface IFile {
   name: string;
   contentType: string;
-  type: 'IMAGE' | 'VIDEO';
+  type: 'IMAGE' | 'VIDEO' | 'DOCUMENT';
   altText: 'no image';
   size: string;
   audience: any;
