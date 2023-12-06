@@ -336,6 +336,7 @@ const ReviewStep: React.FC<AppProps> = ({
             dataTestId="review-cta"
             onClick={handleClick}
             loading={inProgress}
+            disabled={isLoading || loading}
           />
         </div>
       </div>

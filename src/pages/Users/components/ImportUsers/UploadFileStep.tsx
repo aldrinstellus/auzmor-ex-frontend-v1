@@ -11,6 +11,9 @@ import { useMutation } from '@tanstack/react-query';
 import { startImportUser } from 'queries/importUsers';
 import Spinner from 'components/Spinner';
 
+const IMPORT_FORMAT =
+  'Name,Email,Manager Email,Designation,Department,Location,Employee Id,Phone Number,Date of Birth,Date of Joining,Marital Status';
+
 type AppProps = {
   open: boolean;
   closeModal: () => any;
@@ -55,6 +58,17 @@ const UploadFileStep: React.FC<AppProps> = ({
     accept: { 'text/*': ['.csv', '.xls', '.xlsx'] },
   });
 
+  const downloadFormat = () => {
+    const blob = new Blob([IMPORT_FORMAT], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', 'download.csv');
+    document.body.appendChild(a);
+    a.click();
+  };
+
   return (
     <Modal open={open} className="max-w-2xl">
       <Header
@@ -75,6 +89,7 @@ const UploadFileStep: React.FC<AppProps> = ({
           <div
             className="text-primary-600 font-bold text-sm cursor-pointer"
             data-testid="download-format-cta"
+            onClick={downloadFormat}
           >
             Download format
           </div>
