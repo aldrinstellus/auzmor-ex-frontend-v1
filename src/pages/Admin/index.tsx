@@ -5,13 +5,9 @@ import SSOSettings from 'pages/Admin/SSOSettings';
 import { FC, useEffect, useState } from 'react';
 import GeneralSettings from './GeneralSettings';
 import BrandingSettings from './BrandingSettings';
-import { useBrandingStore } from 'stores/branding';
 import useURLParams from 'hooks/useURLParams';
-import { useOrganization } from 'queries/organization';
 
 const Admin: FC = () => {
-  useOrganization();
-  const branding = useBrandingStore((state) => state.branding);
   const { updateParam, searchParams } = useURLParams();
   const [activeSettingsIndex, setActiveSettingsIndex] = useState<number>(0);
   const parsedTab = searchParams.get('tab');
@@ -40,7 +36,7 @@ const Admin: FC = () => {
       label: 'Branding',
       icon: 'branding',
       key: 'branding-settings',
-      component: <BrandingSettings branding={branding!} />,
+      component: <BrandingSettings />,
       disabled: false,
       hidden: false,
       hideDefaultLabelCard: true,
