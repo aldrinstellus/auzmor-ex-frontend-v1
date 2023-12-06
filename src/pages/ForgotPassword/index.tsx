@@ -146,7 +146,7 @@ const ForgotPassword: FC<IForgotPasswordProps> = () => {
     }
   };
 
-  const getLoginForm = () => {
+  const getForgotPasswordForm = () => {
     return (
       <>
         {branding?.loginConfig?.layout === 'RIGHT' && getBannerText()}
@@ -155,6 +155,7 @@ const ForgotPassword: FC<IForgotPasswordProps> = () => {
             branding?.loginConfig?.layout === 'CENTER' &&
             'min-h-[660px] !h-auto rounded-16xl w-[600px] !py-20'
           }`}
+          data-testid={getDataTestId()}
         >
           <div
             className="flex justify-center items-center max-w-[250px] max-h-[150px]"
@@ -223,7 +224,10 @@ const ForgotPassword: FC<IForgotPasswordProps> = () => {
     ) {
       return (
         <div className="w-[50vw] flex items-center px-14">
-          <p className="text-white text-6xl font-extrabold z-10 leading-[72px]">
+          <p
+            className="text-white text-6xl font-extrabold z-10 leading-[72px]"
+            data-testid={`${getDataTestId()}-message`}
+          >
             {branding?.loginConfig?.text}
           </p>
         </div>
@@ -237,7 +241,7 @@ const ForgotPassword: FC<IForgotPasswordProps> = () => {
     return (
       <>
         {getBackground()}
-        {getLoginForm()}
+        {getForgotPasswordForm()}
       </>
     );
   };
@@ -248,6 +252,10 @@ const ForgotPassword: FC<IForgotPasswordProps> = () => {
     'justify-end': branding?.loginConfig?.layout === 'RIGHT',
     'justify-start': branding?.loginConfig?.layout === 'LEFT',
   });
+
+  const getDataTestId = () => {
+    return `${branding?.loginConfig?.layout?.toLowerCase()}-align-${branding?.loginConfig?.backgroundType?.toLowerCase()}`;
+  };
 
   return <div className={containerStyle}>{setForgotPasswordForm()}</div>;
 };

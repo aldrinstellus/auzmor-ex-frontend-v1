@@ -792,7 +792,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = () => {
                 maxLenght: 50,
                 customLabelRightElement: (
                   <span className="text-neutral-500 text-sm">
-                    {text?.length} / 50
+                    {pageTitle?.length || 0} / 50
                   </span>
                 ),
               },
