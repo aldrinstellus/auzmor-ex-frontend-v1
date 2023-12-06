@@ -174,7 +174,7 @@ const ColorPicker: FC<ColorPickerProps> = ({
             className={`${inputStyles} ${inputClassName}`}
             disabled={loading || disabled}
             placeholder={placeholder}
-            data-testid={dataTestId}
+            data-testid={`${dataTestId}-color-input`}
             defaultValue={defaultValue}
             value={field.value}
             ref={inputRef}
@@ -196,6 +196,7 @@ const ColorPicker: FC<ColorPickerProps> = ({
               <div
                 className="w-4 h-4 rounded-full absolute top-1 right-5 border border-neutral-200"
                 style={{ backgroundColor: field.value || defaultValue }}
+                data-testid={`${dataTestId}-color-palette`}
               ></div>
             }
             triggerNodeClassName="w-full"
@@ -251,7 +252,7 @@ const ColorPicker: FC<ColorPickerProps> = ({
                         setValue(name, lastValidHex);
                         field.onBlur();
                       }}
-                      data-testid={`${dataTestId}`}
+                      data-testid={`${dataTestId}-color-input-popup`}
                     />
                   </div>
                 </div>

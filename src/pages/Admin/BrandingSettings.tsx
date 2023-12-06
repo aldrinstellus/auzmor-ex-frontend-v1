@@ -911,7 +911,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = () => {
                     type: FieldType.ColorPicker,
                     control,
                     className: '',
-                    dataTestId: 'primary-color-palette',
+                    dataTestId: 'primary',
                     setValue,
                     customLabelRightElement: (
                       <Tooltip
@@ -945,7 +945,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = () => {
                         type: FieldType.ColorPicker,
                         control,
                         className: '',
-                        dataTestId: 'secondary-color-palette',
+                        dataTestId: 'secondary',
                         setValue,
                         customLabelRightElement: (
                           <Tooltip
@@ -1232,7 +1232,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = () => {
                         type: FieldType.ColorPicker,
                         control,
                         className: '',
-                        dataTestId: 'login-color-palette',
+                        dataTestId: 'login',
                         setValue,
                       },
                     ]}
