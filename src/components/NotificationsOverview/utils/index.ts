@@ -103,14 +103,23 @@ export const getNotificationElementContent = (
     showActor = false;
   }
 
-  // If the action performed is a COMMENT
+  // If the action performed is a COMMENT OR MENTION
   else if (
     action.type === ActionType.COMMENT ||
     action.type === ActionType.MENTION
   ) {
     const [post, comment, reply] = target;
+
+    // If the target has only post, it means the mention was made on a POST
+    if (post && !comment && !reply) {
+      cardContent.BottomCardContent = `<span class="text-neutral-900">${post.content}</span>`;
+      cardContent.image = post?.image?.thumbnailUrl || undefined;
+
+      redirect = `/posts/${post.entityId}`;
+    }
+
     // If the target has only post and comment, it means the comment was made on a POST
-    if (post && comment && !reply) {
+    else if (post && comment && !reply) {
       cardContent.TopCardContent = `<span class="text-neutral-900">${comment.content}</span>`;
       cardContent.BottomCardContent = `<span class="text-neutral-900">${post.content}</span>`;
       cardContent.image = post?.image?.thumbnailUrl || undefined;
