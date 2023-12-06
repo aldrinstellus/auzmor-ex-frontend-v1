@@ -39,6 +39,9 @@ import welcomeToOfficeLarge from 'images/welcomeToOfficeLarge.png';
 import { getTintVariantColor } from 'utils/branding';
 import queryClient from 'utils/queryClient';
 
+const PRIMARY_COLOR = '#10B981';
+const SECONDARY_COLOR = '#1D4ED8FF';
+
 interface IBrandingSettingsProps {
   branding?: IBranding;
 }
@@ -158,8 +161,8 @@ const BrandingSettings: FC<IBrandingSettingsProps> = () => {
   const branding = data?.branding;
   useEffect(() => {
     reset({
-      primaryColor: branding?.primaryColor || '#10B981',
-      secondaryColor: branding?.secondaryColor || '#1d4ed8',
+      primaryColor: branding?.primaryColor || PRIMARY_COLOR,
+      secondaryColor: branding?.secondaryColor || SECONDARY_COLOR,
       backgroundType:
         titleCase(branding?.loginConfig?.backgroundType || '') ||
         titleCase(backgroundOption[2].data.value),
@@ -184,8 +187,8 @@ const BrandingSettings: FC<IBrandingSettingsProps> = () => {
   ];
   const { control, setValue, watch, reset, formState } = useForm({
     defaultValues: {
-      primaryColor: branding?.primaryColor || '#10B981',
-      secondaryColor: branding?.secondaryColor || '#1d4ed8',
+      primaryColor: branding?.primaryColor || PRIMARY_COLOR,
+      secondaryColor: branding?.secondaryColor || SECONDARY_COLOR,
       backgroundType:
         titleCase(branding?.loginConfig?.backgroundType || '') ||
         titleCase(backgroundOption[2].data.value),
@@ -221,7 +224,6 @@ const BrandingSettings: FC<IBrandingSettingsProps> = () => {
       'pageTitle',
       'text',
     ]);
-
   const [isEditLogoModalOpen, openEditLogoModal, closeEditLogoModal] =
     useModal();
   const [isEditFaviconModalOpen, openEditFaviconModal, closeEditFaviconModal] =
@@ -248,8 +250,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = () => {
       removedMedia.logo ||
       removedMedia.favicon ||
       removedMedia.bg ||
-      removedMedia.bgVideo ||
-      layoutAlignment !== branding?.loginConfig?.layout
+      removedMedia.bgVideo
     ) {
       setShowSaveChanges(true);
     }
@@ -504,7 +505,8 @@ const BrandingSettings: FC<IBrandingSettingsProps> = () => {
     }
     const newBranding = {
       primaryColor,
-      secondaryColor,
+      secondaryColor:
+        secondaryColor === SECONDARY_COLOR ? undefined : secondaryColor,
       pageTitle,
       logo: uploadedLogo ? uploadedLogo[0] : undefined,
       favicon: uploadedFavicon ? uploadedFavicon[0] : undefined,
@@ -556,8 +558,8 @@ const BrandingSettings: FC<IBrandingSettingsProps> = () => {
   const handleCancel = () => {
     setShowSaveChanges(false);
     reset({
-      primaryColor: branding?.primaryColor || '#10B981',
-      secondaryColor: branding?.secondaryColor || '#1d4ed8',
+      primaryColor: branding?.primaryColor || PRIMARY_COLOR,
+      secondaryColor: branding?.secondaryColor || SECONDARY_COLOR,
       backgroundType:
         titleCase(branding?.loginConfig?.backgroundType || '') ||
         titleCase(backgroundOption[2].data.value),
@@ -926,7 +928,7 @@ const BrandingSettings: FC<IBrandingSettingsProps> = () => {
                   },
                 ]}
               />
-              {showSecondaryColor ? (
+              {branding?.secondaryColor || showSecondaryColor ? (
                 <Layout
                   fields={[
                     {
@@ -1026,7 +1028,12 @@ const BrandingSettings: FC<IBrandingSettingsProps> = () => {
                 <div className="flex gap-[60px]">
                   <div
                     className="flex flex-col items-center gap-2 cursor-pointer"
-                    onClick={() => setLayoutAlignment('LEFT')}
+                    onClick={() => {
+                      setLayoutAlignment('LEFT');
+                      if (layoutAlignment !== 'LEFT') {
+                        setShowSaveChanges(true);
+                      }
+                    }}
                     data-testid="branding-select-left-alignment"
                   >
                     <div
@@ -1041,7 +1048,12 @@ const BrandingSettings: FC<IBrandingSettingsProps> = () => {
                   </div>
                   <div
                     className="flex flex-col items-center gap-2 cursor-pointer"
-                    onClick={() => setLayoutAlignment('CENTER')}
+                    onClick={() => {
+                      setLayoutAlignment('CENTER');
+                      if (layoutAlignment !== 'CENTER') {
+                        setShowSaveChanges(true);
+                      }
+                    }}
                     data-testid="branding-select-center-alignment"
                   >
                     <div
@@ -1058,7 +1070,12 @@ const BrandingSettings: FC<IBrandingSettingsProps> = () => {
                   </div>
                   <div
                     className="flex flex-col items-center gap-2 cursor-pointer"
-                    onClick={() => setLayoutAlignment('RIGHT')}
+                    onClick={() => {
+                      setLayoutAlignment('RIGHT');
+                      if (layoutAlignment !== 'RIGHT') {
+                        setShowSaveChanges(true);
+                      }
+                    }}
                     data-testid="branding-select-right-alignment"
                   >
                     <div
