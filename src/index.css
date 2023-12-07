@@ -187,6 +187,12 @@ body {
 .rdg-cell {
   box-sizing: border-box !important;
   outline: 1px solid #e5e5e5;
+  padding: 4px 12px !important;
+  line-height: 18px !important;
+}
+
+.rdg-cell[role='columnheader'] {
+  line-height: 20px !important;
 }
 
 .rdg-selected {

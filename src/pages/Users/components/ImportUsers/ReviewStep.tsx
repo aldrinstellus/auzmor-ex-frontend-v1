@@ -259,7 +259,7 @@ const ReviewStep: React.FC<AppProps> = ({
         <div className="bg-white rounded-7xl mb-4 mx-4 px-4 py-3 shadow-sm">
           <span className="text-primary-700 font-bold">Importing File </span>{' '}
           <span className="text-primary-700 font-bold text-lg">&gt;</span>{' '}
-          <span className="text-primary-500">Review</span>
+          <span className="text-primary-500 font-medium text-base">Review</span>
         </div>
         {isLoading || loading ? (
           <div className="p-12 flex justify-center items-center">
@@ -286,8 +286,8 @@ const ReviewStep: React.FC<AppProps> = ({
                   columns={columns}
                   rows={flatData}
                   rowKeyGetter={rowKeyGetter}
-                  rowHeight={32}
-                  headerRowHeight={36}
+                  rowHeight={26}
+                  headerRowHeight={28}
                   className="text-xs rdg-light h-[65vh] w-auto"
                   onScroll={handleScroll}
                   data-testid="value-row"
