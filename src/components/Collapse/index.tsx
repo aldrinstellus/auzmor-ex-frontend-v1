@@ -33,7 +33,7 @@ const Collapse: FC<CollapseProps> = ({
   height = 256,
 }): ReactElement => {
   // If you think about it, modal has similar interactivity as collapse
-  const [open, openCollpase, closeCollapse] = useModal(defaultOpen);
+  const [open, openCollpase, closeCollapse] = useModal(defaultOpen, false);
   const toggleModal = () => {
     if (open) closeCollapse();
     else openCollpase();

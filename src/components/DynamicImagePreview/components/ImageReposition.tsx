@@ -90,7 +90,11 @@ const ImageResosition: FC<IImageResositionProps> = ({
           : undefined
       }
     >
-      <Header title={title} closeBtnDataTestId={'kudos-custombanner-close'} />
+      <Header
+        title={title}
+        closeBtnDataTestId={'kudos-custombanner-close'}
+        onClose={closeEditImageModal}
+      />
       {isImageLoading ? (
         <div className="w-full h-full">
           <PageLoader />

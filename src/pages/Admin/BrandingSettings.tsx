@@ -177,6 +177,7 @@ const BrandingSettings: FC = () => {
       text: branding?.loginConfig?.text,
     },
   });
+  const [tempfile, setTempFile] = useState<File | null>(null);
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
   const [selectedFavicon, setSelectedFavicon] = useState<File | null>(null);
   const [selectedBG, setSelectedBG] = useState<File | null>(null);
@@ -248,7 +249,7 @@ const BrandingSettings: FC = () => {
   } = useDropzone({
     onDrop: (acceptedFiles) => {
       if (acceptedFiles.length > 0) {
-        setSelectedLogo(acceptedFiles[0]);
+        setTempFile(acceptedFiles[0]);
         openEditLogoModal();
         setValidationErrors({ ...validationErrors, logo: null });
       } else {
@@ -296,7 +297,7 @@ const BrandingSettings: FC = () => {
   } = useDropzone({
     onDrop: (acceptedFiles) => {
       if (acceptedFiles.length > 0) {
-        setSelectedFavicon(acceptedFiles[0]);
+        setTempFile(acceptedFiles[0]);
         openEditFaviconModal();
         setValidationErrors({ ...validationErrors, favicon: null });
       } else {
@@ -345,7 +346,7 @@ const BrandingSettings: FC = () => {
   } = useDropzone({
     onDrop: (acceptedFiles) => {
       if (acceptedFiles.length > 0) {
-        setSelectedBG(acceptedFiles[0]);
+        setTempFile(acceptedFiles[0]);
         setSelectedBGVideo(null);
         openEditBGModal();
         setValidationErrors({ ...validationErrors, bg: null });
@@ -776,7 +777,7 @@ const BrandingSettings: FC = () => {
                 <Button
                   label="Cancel"
                   variant={Variant.Secondary}
-                  onClick={handleCancel}
+                  onClick={(_e) => handleCancel()}
                   disabled={isSaving}
                   dataTestId="branding-cancelcta"
                 />
@@ -953,8 +954,7 @@ const BrandingSettings: FC = () => {
                   },
                 ]}
               />
-              {(primaryColor.toLocaleUpperCase() === '#FFF' ||
-                primaryColor.toLocaleUpperCase() === '#FFFFFF') && (
+              {primaryColor?.toUpperCase() === '#FFFFFF' && (
                 <p
                   className="text-xs text-yellow-400 -mt-4"
                   data-testid="readability-warning"
@@ -990,8 +990,7 @@ const BrandingSettings: FC = () => {
                       },
                     ]}
                   />
-                  {(secondaryColor.toLocaleUpperCase() === '#FFF' ||
-                    secondaryColor.toLocaleUpperCase() === '#FFFFFF') && (
+                  {secondaryColor?.toUpperCase() === '#FFFFFF' && (
                     <p
                       className="text-xs text-yellow-400 -mt-4"
                       data-testid="readability-warning"
@@ -1392,14 +1391,14 @@ const BrandingSettings: FC = () => {
           title="Reposition"
           openEditImage={isEditLogoModalOpen}
           closeEditImageModal={closeEditLogoModal}
-          image={getBlobUrl(selectedLogo!)}
+          image={getBlobUrl(tempfile!)}
           imageRef={logoInputRef}
           setImageFile={setSelectedLogo}
-          imageFile={selectedLogo}
+          imageFile={tempfile}
           aspectRatio={250 / 150}
           width={250}
           height={150}
-          mimeType={getMimeType(selectedLogo?.name || '')}
+          mimeType={getMimeType(tempfile?.name || '')}
         />
       )}
       {isEditFaviconModalOpen && (
@@ -1407,14 +1406,14 @@ const BrandingSettings: FC = () => {
           title="Reposition"
           openEditImage={isEditFaviconModalOpen}
           closeEditImageModal={closeEditFaviconModal}
-          image={getBlobUrl(selectedFavicon!)}
+          image={getBlobUrl(tempfile!)}
           imageRef={faviconInputRef}
           setImageFile={setSelectedFavicon}
-          imageFile={selectedFavicon}
+          imageFile={tempfile}
           aspectRatio={32 / 32}
           width={32}
           height={32}
-          mimeType={getMimeType(selectedFavicon?.name || '')}
+          mimeType={getMimeType(tempfile?.name || '')}
         />
       )}
       {isEditBGModalOpen && (
@@ -1422,12 +1421,12 @@ const BrandingSettings: FC = () => {
           title="Reposition"
           openEditImage={isEditBGModalOpen}
           closeEditImageModal={closeEditBGModal}
-          image={getBlobUrl(selectedBG!)}
+          image={getBlobUrl(tempfile!)}
           imageRef={bgInputRef}
           setImageFile={setSelectedBG}
-          imageFile={selectedBG}
+          imageFile={tempfile}
           aspectRatio={1920 / 860}
-          mimeType={getMimeType(selectedBG?.name || '')}
+          mimeType={getMimeType(tempfile?.name || '')}
         />
       )}
     </>
