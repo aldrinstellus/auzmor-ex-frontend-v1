@@ -122,7 +122,7 @@ export const useInfiniteImportResultData = ({
 
 export const downloadReport = async (importId: string, status: string) => {
   const { data } = await apiService.get(
-    `/users/import/${importId}/reports/download?status=${status}`,
+    `/users/import/${importId}/report/download?status=${status}`,
   );
   return data;
 };
