@@ -35,6 +35,8 @@ import welcomeToOfficeLarge from 'images/welcomeToOfficeLarge.png';
 import { getTintVariantColor } from 'utils/branding';
 import queryClient from 'utils/queryClient';
 import FailureToast from 'components/Toast/variants/FailureToast';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 const PRIMARY_COLOR = '#10B981';
 const SECONDARY_COLOR = '#1D4ED8FF';
@@ -165,7 +167,22 @@ const BrandingSettings: FC = () => {
       dataTestId: 'branding-background-as-image',
     },
   ];
+
+  const schema = yup.object({
+    text: yup
+      .string()
+      .trim()
+      .min(3, 'Atleast 3 characters required')
+      .max(50, 'Less than 50 characters should be used'),
+    pageTitle: yup
+      .string()
+      .trim()
+      .min(3, 'Atleast 3 characters required')
+      .max(50, 'Less than 50 characters should be used'),
+  });
   const { control, setValue, watch, reset, formState } = useForm({
+    mode: 'onChange',
+    resolver: yupResolver(schema),
     defaultValues: {
       primaryColor: branding?.primaryColor || PRIMARY_COLOR,
       secondaryColor: branding?.secondaryColor || SECONDARY_COLOR,
@@ -778,7 +795,7 @@ const BrandingSettings: FC = () => {
                   label="Cancel"
                   variant={Variant.Secondary}
                   onClick={(_e) => handleCancel()}
-                  disabled={isSaving}
+                  disabled={isSaving || !formState.isValid}
                   dataTestId="branding-cancelcta"
                 />
                 <Button
@@ -786,6 +803,7 @@ const BrandingSettings: FC = () => {
                   loading={isSaving}
                   onClick={handleSaveChanges}
                   dataTestId="branding-savechangescta"
+                  disabled={!formState.isValid}
                 />
               </div>
             )}
@@ -811,13 +829,19 @@ const BrandingSettings: FC = () => {
                 control,
                 className: '',
                 dataTestId: 'branding-pagetitle',
+                error: formState?.errors?.pageTitle?.message,
                 helpText:
                   branding?.pageTitle === 'Auzmor office'
                     ? `Replace 'Auzmor office' name from UI with your own name`
                     : '',
-                maxLenght: 50,
                 customLabelRightElement: (
-                  <span className="text-neutral-500 text-sm">
+                  <span
+                    className={`text-sm ${
+                      formState?.errors?.pageTitle?.message
+                        ? 'text-red-500'
+                        : 'text-neutral-500'
+                    }`}
+                  >
                     {pageTitle?.length || 0} / 50
                   </span>
                 ),
@@ -1278,9 +1302,15 @@ const BrandingSettings: FC = () => {
                           className: '',
                           dataTestId: 'input-background-text',
                           placeholder: 'ex. welcome to auzmor',
-                          maxLength: 50,
+                          error: formState?.errors?.text?.message,
                           customLabelRightElement: (
-                            <span className="text-neutral-500 text-sm">
+                            <span
+                              className={`text-sm ${
+                                formState?.errors?.text?.message
+                                  ? 'text-red-500'
+                                  : 'text-neutral-500'
+                              }`}
+                            >
                               {text?.length} / 50
                             </span>
                           ),
