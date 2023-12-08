@@ -29,12 +29,12 @@ const SwitchToggle: FC<SwitchToggleProps> = ({
       }}
       className={`${
         checked ? color : 'bg-gray-200'
-      } relative inline-flex h-6 w-11 items-center rounded-full ${className}`}
+      } relative inline-flex h-5 w-10 items-center rounded-full ${className}`}
       disabled={disabled}
     >
       <span
         className={`${
-          checked ? 'translate-x-6' : 'translate-x-1'
+          checked ? 'translate-x-5' : 'translate-x-1'
         } inline-block h-4 w-4 transform rounded-full bg-white transition`}
       />
     </Switch>

@@ -270,7 +270,6 @@ const ReviewStep: React.FC<AppProps> = ({
             <div className="px-6">
               <div className="py-4 text-sm text-neutral-900 v-center space-x-2">
                 <SwitchToggle
-                  className="!h-5 !w-10"
                   defaultValue={showOnlyError}
                   onChange={(c) => {
                     setShowOnlyError(c);
