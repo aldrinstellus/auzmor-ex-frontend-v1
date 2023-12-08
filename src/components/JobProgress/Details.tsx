@@ -105,7 +105,7 @@ const Details: React.FC<AppProps> = ({ open, closeModal, data, importId }) => {
                 }}
                 data-testid="attempted-viewdetails"
               >
-                view details
+                View details
               </span>
             </div>
             <div className="flex w-full items-center gap-2">
@@ -122,7 +122,7 @@ const Details: React.FC<AppProps> = ({ open, closeModal, data, importId }) => {
                 }}
                 data-testid="success-viewdetails"
               >
-                view details
+                View details
               </span>
             </div>
             <div className="flex w-full items-center gap-2">
@@ -136,7 +136,7 @@ const Details: React.FC<AppProps> = ({ open, closeModal, data, importId }) => {
                 }}
                 data-testid="missing-viewdetails"
               >
-                view details
+                View details
               </span>
             </div>
             <div className="flex w-full items-center gap-2">
@@ -150,7 +150,7 @@ const Details: React.FC<AppProps> = ({ open, closeModal, data, importId }) => {
                 }}
                 data-testid="skipped-viewdetails"
               >
-                view details
+                View details
               </span>
             </div>
           </div>
