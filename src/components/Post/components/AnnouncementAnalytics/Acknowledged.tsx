@@ -9,6 +9,7 @@ import AvatarRow from './AvatarRow';
 import PageLoader from 'components/PageLoader';
 import Button, { Variant } from 'components/Button';
 import { useInfiniteAcknowledgements } from 'queries/post';
+import { twConfig } from 'utils/misc';
 
 type AppProps = {
   post: Record<string, any>;
@@ -42,14 +43,14 @@ const Acknowledged: FC<AppProps> = ({ post, closeModal }) => {
         <div className="flex justify-center items-center py-5 border-b">
           <div style={{ width: 64, height: 64 }}>
             <CircularProgressbarWithChildren
-              value={completePercent || 0}
+              value={50}
               className="center"
               strokeWidth={12}
               styles={buildStyles({
                 // Text size
                 textSize: '32px',
                 // Colors
-                pathColor: '#10b981',
+                pathColor: twConfig.theme.colors.primary[500],
                 textColor: '#000000',
                 trailColor: '#A3A3A3',
               })}

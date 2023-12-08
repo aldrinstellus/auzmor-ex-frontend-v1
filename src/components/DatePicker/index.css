@@ -4,7 +4,7 @@
 .ant-picker-header-super-next-btn,
 .ant-picker-decade-btn,
 .ant-picker-header {
-  background-color: #10b981 !important;
+  background-color: var(--primary-500) !important;
   color: white !important;
 }
 
@@ -24,24 +24,24 @@
 }
 
 .ant-picker-focused {
-  border-color: #10b981 !important;
-  box-shadow: 0 0 0 1px #10b981 !important;
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 0 1px var(--primary-500) !important;
 }
 
 .ant-picker:hover {
-  border-color: #10b981 !important;
+  border-color: var(--primary-500) !important;
 }
 
 .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner {
-  background-color: #10b981 !important;
+  background-color: var(--primary-500) !important;
 }
 
 .ant-picker-today-btn {
-  color: #10b981 !important;
+  color: var(--primary-500) !important;
 }
 
 .ant-picker-today-btn:hover {
-  color: #059669 !important;
+  color: var(--primary-500) !important;
 }
 
 .anticon-close-circle > svg,

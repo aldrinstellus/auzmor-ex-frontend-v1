@@ -1,5 +1,5 @@
 .ql-emoji:hover .path-stroke {
-  stroke: #10b981;
+  stroke: var(--primary-500);
 }
 
 .ql-snow.ql-toolbar button,

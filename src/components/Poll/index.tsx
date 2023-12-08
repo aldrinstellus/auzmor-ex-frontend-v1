@@ -264,7 +264,7 @@ const Poll: FC<IPoll & PollProps> = ({
               {/* The progress bar that fills up the background */}
               <div
                 className={`grid-area w-0 ${
-                  votedThisOption ? 'bg-emerald-600' : 'bg-green-100'
+                  votedThisOption ? 'bg-primary-600' : 'bg-primary-100'
                 } rounded-19xl`}
                 id={`option-progress-${postId}-${index}`}
               />
