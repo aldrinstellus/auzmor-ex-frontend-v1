@@ -190,9 +190,9 @@ const Details: React.FC<AppProps> = ({ open, closeModal, data, importId }) => {
             {exportMutation.isLoading ? (
               <Spinner />
             ) : (
-              <Icon name="download" size={16} className="text-primary-500" />
+              <Icon name="download" size={20} className="text-primary-500" />
             )}
-            <div className="text-xs">export report</div>
+            <div className="text-xs font-bold">export report</div>
           </div>
           <Button
             label="Back"
