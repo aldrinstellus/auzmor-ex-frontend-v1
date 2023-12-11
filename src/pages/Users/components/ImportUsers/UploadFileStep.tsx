@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Header from 'components/ModalHeader';
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
@@ -10,6 +10,7 @@ import { EntityType } from 'queries/files';
 import { useMutation } from '@tanstack/react-query';
 import { startImportUser } from 'queries/importUsers';
 import Spinner from 'components/Spinner';
+import Banner, { Variant as BannerVariant } from 'components/Banner';
 
 const IMPORT_FORMAT =
   'Name,Email,Manager Email,Designation,Department,Location,Employee Id,Phone Number,Date of Birth,Date of Joining,Marital Status';
@@ -29,8 +30,15 @@ const UploadFileStep: React.FC<AppProps> = ({
   setImportId,
   setMeta,
 }) => {
-  const { uploadMedia, uploadStatus } = useUpload();
+  const { error: uploadError, uploadMedia, uploadStatus } = useUpload();
   const [fileObj, setFileObj] = useState<any>({});
+  const [fileError, setFileError] = useState('');
+
+  useEffect(() => {
+    if (uploadError) {
+      setFileObj({});
+    }
+  }, [uploadError]);
 
   const triggerUserImportMutation = useMutation(
     () => startImportUser({ fileId: fileObj.id }),
@@ -45,17 +53,28 @@ const UploadFileStep: React.FC<AppProps> = ({
     },
   );
 
-  const onDrop = useCallback(async (acceptedFiles: any) => {
-    const uploadedMedia = await uploadMedia(
-      acceptedFiles,
-      EntityType.UserImport,
-    );
-    setFileObj(uploadedMedia[0]);
-  }, []);
+  const onDrop = useCallback(
+    async (acceptedFiles: any, fileRejections: any[]) => {
+      if (fileRejections?.length) {
+        const reason =
+          fileRejections[0]?.errors?.[0].message || 'Something went wrong';
+        setFileError(reason);
+      } else {
+        setFileError('');
+        const uploadedMedia = await uploadMedia(
+          acceptedFiles,
+          EntityType.UserImport,
+        );
+        setFileObj(uploadedMedia[0]);
+      }
+    },
+    [],
+  );
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: { 'text/*': ['.csv', '.xls', '.xlsx'] },
+    maxSize: 5000000,
   });
 
   const downloadFormat = () => {
@@ -84,7 +103,7 @@ const UploadFileStep: React.FC<AppProps> = ({
             given format
           </div>
           <div className="text-xs text-neutral-500">
-            File must be in csv, xls or xlsx format and must not exceed 100mb
+            File must be in csv, xls or xlsx format and must not exceed 5mb
           </div>
           <div
             className="text-primary-600 font-bold text-sm cursor-pointer"
@@ -94,6 +113,14 @@ const UploadFileStep: React.FC<AppProps> = ({
             Download format
           </div>
         </div>
+        {(!!uploadError || !!fileError) && (
+          <div className="mt-4">
+            <Banner
+              variant={BannerVariant.Error}
+              title={uploadError || fileError}
+            />
+          </div>
+        )}
         <div className="mt-4">
           <div
             {...getRootProps()}
@@ -109,7 +136,7 @@ const UploadFileStep: React.FC<AppProps> = ({
                   </div>
                 );
               }
-              if (uploadStatus === UploadStatus.Finished) {
+              if (uploadStatus === UploadStatus.Finished && !uploadError) {
                 return (
                   <div className="flex flex-col justify-center items-center py-6">
                     <Icon name="document" size={52} />
@@ -157,6 +184,7 @@ const UploadFileStep: React.FC<AppProps> = ({
           dataTestId="import-next-cta"
           onClick={() => triggerUserImportMutation.mutate()}
           disabled={
+            !!uploadError ||
             uploadStatus === UploadStatus.YetToStart ||
             uploadStatus === UploadStatus.Uploading
           }

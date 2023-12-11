@@ -3,6 +3,7 @@ import 'react-data-grid/lib/styles.css';
 import DataGrid from 'react-data-grid';
 import { useInfiniteImportResultData } from 'queries/importUsers';
 import Spinner from 'components/Spinner';
+import { titleCase } from 'utils/misc';
 
 type AppProps = {
   importId: string;
@@ -46,7 +47,7 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       resizable: true,
       width: 220,
       renderCell: ({ row }: any) => {
-        return row.rowData.email.value;
+        return row.rowData.email?.value;
       },
       cellClass: (row: any) => {
         if (!row.rowData.email?.isValid) {
@@ -61,7 +62,7 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       resizable: true,
       width: 220,
       renderCell: ({ row }: any) => {
-        return row.rowData.managerEmail.value;
+        return row.rowData.managerEmail?.value;
       },
       cellClass: (row: any) => {
         if (!row.rowData.managerEmail?.isValid) {
@@ -76,7 +77,7 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       resizable: true,
       width: 180,
       renderCell: ({ row }: any) => {
-        return row.rowData.designation.value;
+        return row.rowData.designation?.value;
       },
       cellClass: (row: any) => {
         if (!row.rowData.designation?.isValid) {
@@ -91,7 +92,7 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       resizable: true,
       width: 220,
       renderCell: ({ row }: any) => {
-        return row.rowData.department.value;
+        return row.rowData.department?.value;
       },
       cellClass: (row: any) => {
         if (!row.rowData.department?.isValid) {
@@ -106,7 +107,7 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       resizable: true,
       width: 220,
       renderCell: ({ row }: any) => {
-        return row.rowData.location.value;
+        return row.rowData.location?.value;
       },
       cellClass: (row: any) => {
         if (!row.rowData.location?.isValid) {
@@ -121,7 +122,7 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       resizable: true,
       width: 120,
       renderCell: ({ row }: any) => {
-        return row.rowData.employeeId.value;
+        return row.rowData.employeeId?.value;
       },
       cellClass: (row: any) => {
         if (!row.rowData.employeeId?.isValid) {
@@ -136,7 +137,7 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       resizable: true,
       width: 120,
       renderCell: ({ row }: any) => {
-        return row.rowData.phoneNumber.value;
+        return row.rowData.phoneNumber?.value;
       },
       cellClass: (row: any) => {
         if (!row.rowData.phoneNumber?.isValid) {
@@ -151,7 +152,7 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       resizable: true,
       width: 140,
       renderCell: ({ row }: any) => {
-        return row.rowData.dateOfBirth.value;
+        return row.rowData.dateOfBirth?.value;
       },
       cellClass: (row: any) => {
         if (!row.rowData.dateOfBirth?.isValid) {
@@ -166,7 +167,7 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       resizable: true,
       width: 140,
       renderCell: ({ row }: any) => {
-        return row.rowData.dateOfJoining.value;
+        return row.rowData.dateOfJoining?.value;
       },
       cellClass: (row: any) => {
         if (!row.rowData.dateOfJoining?.isValid) {
@@ -181,7 +182,7 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       resizable: true,
       width: 120,
       renderCell: ({ row }: any) => {
-        return row.rowData.maritalStatus.value;
+        return row.rowData.maritalStatus?.value;
       },
       cellClass: (row: any) => {
         if (!row.rowData.maritalStatus?.isValid) {
@@ -192,7 +193,25 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
     },
   ];
 
-  const rowKeyGetter = (row: any) => row.id;
+  if (['PARTIAL', 'FAILED'].includes(status)) {
+    columns.push({
+      key: 'error',
+      name: 'Error',
+      resizable: true,
+      width: 160,
+      renderCell: ({ row }: any) => {
+        return titleCase(row.error?.split('_').join(' '));
+      },
+      cellClass: (row: any) => {
+        if (row.error) {
+          return 'text-red-500 bg-red-50';
+        }
+        return '';
+      },
+    });
+  }
+
+  const rowKeyGetter = (row: any) => row.id || row.idx;
 
   const handleScroll = (event: any) => {
     if (hasNextPage && !isFetchingNextPage) {
