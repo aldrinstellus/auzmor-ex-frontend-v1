@@ -1033,6 +1033,15 @@ const BrandingSettings: FC = () => {
                       },
                     ]}
                   />
+                  {primaryColor === secondaryColor && (
+                    <p
+                      className="text-xs text-yellow-400 -mt-4"
+                      data-testid="readability-warning"
+                    >
+                      <span className="font-semibold">Readability Alert:</span>{' '}
+                      It is advised not to use same primary and secondary colour
+                    </p>
+                  )}
                   {secondaryColor?.toUpperCase() === '#FFFFFF' && (
                     <p
                       className="text-xs text-yellow-400 -mt-4"
