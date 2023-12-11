@@ -452,15 +452,25 @@ const BrandingSettings: FC = () => {
 
   const handleSaveChanges = async () => {
     setIsSaving(true);
+
+    // upload logo file if exist
     let uploadedLogo = null;
     if (selectedLogo) {
       uploadedLogo = await uploadMedia(
-        [BlobToFile(selectedLogo, `id-${Math.random().toString(16).slice(2)}`)],
+        [
+          BlobToFile(
+            selectedLogo,
+            `id-${Math.random().toString(16).slice(2)}`,
+            getMimeType(selectedLogo.name),
+          ),
+        ],
         EntityType.OrgLogo,
       );
     } else if (!removedMedia.logo && branding?.logo?.original) {
       uploadedLogo = [branding?.logo];
     }
+
+    // upload favicon file if exist
     let uploadedFavicon = null;
     if (selectedFavicon) {
       uploadedFavicon = await uploadMedia(
@@ -468,6 +478,7 @@ const BrandingSettings: FC = () => {
           BlobToFile(
             selectedFavicon,
             `id-${Math.random().toString(16).slice(2)}`,
+            getMimeType(selectedFavicon.name),
           ),
         ],
         EntityType.OrgFavicon,
@@ -475,22 +486,33 @@ const BrandingSettings: FC = () => {
     } else if (!removedMedia.favicon && branding?.favicon?.original) {
       uploadedFavicon = [branding?.favicon];
     }
+
+    // upload background file if exist
     let uploadedBG = null;
     if (selectedBG) {
       uploadedBG = await uploadMedia(
-        [BlobToFile(selectedBG, `id-${Math.random().toString(16).slice(2)}`)],
+        [
+          BlobToFile(
+            selectedBG,
+            `id-${Math.random().toString(16).slice(2)}`,
+            getMimeType(selectedBG.name),
+          ),
+        ],
         EntityType.OrgLoginImage,
       );
     } else if (!removedMedia.bg && branding?.loginConfig?.image?.original) {
       uploadedBG = [branding?.loginConfig?.image];
     }
+
+    // upload background exist
     let uploadedBGVideo = null;
     if (selectedBGVideo) {
       uploadedBGVideo = await uploadMedia(
         [
           BlobToFile(
             selectedBGVideo,
-            `id-${Math.random().toString(16).slice(2)}`,
+            `id-${Math.random().toString(16).slice(2)}-${selectedBGVideo.name}`,
+            getMimeType(selectedBGVideo.name),
           ),
         ],
         EntityType.OrgLoginVideo,
@@ -501,6 +523,8 @@ const BrandingSettings: FC = () => {
     ) {
       uploadedBGVideo = [branding?.loginConfig?.video];
     }
+
+    // new branding object
     const newBranding = {
       primaryColor,
       secondaryColor:

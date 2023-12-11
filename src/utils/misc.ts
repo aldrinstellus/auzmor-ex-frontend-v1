@@ -200,8 +200,12 @@ export const downloadURI = (uri: string, name: string) => {
   link.click();
 };
 
-export const BlobToFile = (blob: Blob, fileName: string): File => {
-  const file = new File([blob], fileName, { type: 'image/jpeg' });
+export const BlobToFile = (
+  blob: Blob,
+  fileName: string,
+  mimeType?: string,
+): File => {
+  const file = new File([blob], fileName, { type: mimeType || 'image/jpeg' });
   return file;
 };
 
@@ -476,6 +480,8 @@ export const getMimeType = (fileName: string): string | undefined => {
     gif: 'image/gif',
     pdf: 'application/pdf',
     txt: 'text/plain',
+    mp4: 'video/mp4',
+    webm: 'video/webm',
     // Add more extensions and MIME types as needed
   };
 
