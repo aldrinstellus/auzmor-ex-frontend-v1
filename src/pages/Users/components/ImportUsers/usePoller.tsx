@@ -32,7 +32,7 @@ const usePoller = ({
 
     setData(data);
     const status = data.result.data.status;
-    if (status === statusCheck) {
+    if (status === statusCheck || status === 'COMPLETED') {
       setLoading(false);
       readyRef.current = true;
       clearInterval(intervalId);
@@ -41,6 +41,7 @@ const usePoller = ({
 
   useEffect(() => {
     let ts: any = null;
+    callFn();
     if (enabled) {
       callFn();
       ts = setInterval(() => callFn(), 5000);
