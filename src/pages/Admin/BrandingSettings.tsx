@@ -4,7 +4,7 @@ import Collapse from 'components/Collapse';
 import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
-import { FC, ReactNode, useEffect, useState } from 'react';
+import { FC, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import NoAnnouncement from 'images/NoAnnouncement.svg';
 import { useDropzone } from 'react-dropzone';
@@ -797,6 +797,28 @@ const BrandingSettings: FC = () => {
     }
   };
 
+  const getSavingButtons = useMemo(
+    () => (
+      <div className="flex gap-2">
+        <Button
+          label="Cancel"
+          variant={Variant.Secondary}
+          onClick={(_e) => handleCancel()}
+          disabled={isSaving || !formState.isValid}
+          dataTestId="branding-cancelcta"
+        />
+        <Button
+          label="Save changes"
+          loading={isSaving}
+          onClick={handleSaveChanges}
+          dataTestId="branding-savechangescta"
+          disabled={!formState.isValid}
+        />
+      </div>
+    ),
+    [isSaving, formState],
+  );
+
   return (
     <>
       <Card className="p-6">
@@ -808,24 +830,7 @@ const BrandingSettings: FC = () => {
             </p>
           </div>
           <div className="flex flex-col">
-            {(formState.isDirty || showSaveChanges) && (
-              <div className="flex gap-2">
-                <Button
-                  label="Cancel"
-                  variant={Variant.Secondary}
-                  onClick={(_e) => handleCancel()}
-                  disabled={isSaving || !formState.isValid}
-                  dataTestId="branding-cancelcta"
-                />
-                <Button
-                  label="Save changes"
-                  loading={isSaving}
-                  onClick={handleSaveChanges}
-                  dataTestId="branding-savechangescta"
-                  disabled={!formState.isValid}
-                />
-              </div>
-            )}
+            {(formState.isDirty || showSaveChanges) && getSavingButtons}
             <div></div>
           </div>
         </div>
