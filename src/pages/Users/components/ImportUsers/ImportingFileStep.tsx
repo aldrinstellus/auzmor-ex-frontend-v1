@@ -13,6 +13,7 @@ import {
 import Button, { Size, Variant } from 'components/Button';
 import ImportingForExcel from './ImportingForExcel';
 import usePoller from './usePoller';
+import ValidateHeaders from './ValidateHeaders';
 
 type AppProps = {
   open: boolean;
@@ -112,71 +113,12 @@ const ImportingFileStep: React.FC<AppProps> = ({
           onClose={closeModal}
           closeBtnDataTestId="import-people-close"
         />
-        {(() => {
-          if (_isLoading) {
-            return (
-              <div className="p-6 space-y-4">
-                <div className="v-center">
-                  <Spinner className="!h-5 !w-5" />
-                  <div className="text-sm text-neutral-900 pl-1">
-                    Checking for headers
-                  </div>
-                </div>
-                <div className="v-center">
-                  <Spinner className="!h-5 !w-5" />
-                  <div className="text-sm text-neutral-900 pl-1">
-                    Mapping Columns
-                  </div>
-                </div>
-              </div>
-            );
-          }
-          if (_isSuccess) {
-            return (
-              <div className="p-6 space-y-4">
-                <div className="v-center">
-                  <Icon
-                    name="boldTick"
-                    size={20}
-                    className="text-primary-500"
-                  />
-                  <div className="text-sm text-neutral-900">
-                    Checking for headers
-                  </div>
-                </div>
-                <div className="v-center">
-                  <Icon
-                    name="boldTick"
-                    size={20}
-                    className="text-primary-500"
-                  />
-                  <div className="text-sm text-neutral-900">
-                    Mapping Columns
-                  </div>
-                </div>
-              </div>
-            );
-          }
-          if (parseMutation.isError) {
-            return (
-              <div className="p-6 space-y-4">
-                <div className="v-center">
-                  <Spinner className="!h-5 !w-5" />
-                  <div className="text-sm text-neutral-900 pl-1">
-                    Checking for headers
-                  </div>
-                </div>
-                <div className="v-center">
-                  <Spinner className="!h-5 !w-5" />
-                  <div className="text-sm text-neutral-900 pl-1">
-                    Mapping Columns
-                  </div>
-                </div>
-              </div>
-            );
-          }
-          return null;
-        })()}
+        <ValidateHeaders
+          isLoading={_isLoading}
+          isSuccess={_isSuccess}
+          isError={parseMutation.isError}
+        />
+
         {!_isLoading && (
           <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
             <Button

@@ -4,7 +4,7 @@ import Collapse from 'components/Collapse';
 import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
-import { FC, ReactNode, useEffect, useState } from 'react';
+import { FC, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import NoAnnouncement from 'images/NoAnnouncement.svg';
 import { useDropzone } from 'react-dropzone';
@@ -452,15 +452,25 @@ const BrandingSettings: FC = () => {
 
   const handleSaveChanges = async () => {
     setIsSaving(true);
+
+    // upload logo file if exist
     let uploadedLogo = null;
     if (selectedLogo) {
       uploadedLogo = await uploadMedia(
-        [BlobToFile(selectedLogo, `id-${Math.random().toString(16).slice(2)}`)],
+        [
+          BlobToFile(
+            selectedLogo,
+            `id-${Math.random().toString(16).slice(2)}`,
+            selectedLogo.type,
+          ),
+        ],
         EntityType.OrgLogo,
       );
     } else if (!removedMedia.logo && branding?.logo?.original) {
       uploadedLogo = [branding?.logo];
     }
+
+    // upload favicon file if exist
     let uploadedFavicon = null;
     if (selectedFavicon) {
       uploadedFavicon = await uploadMedia(
@@ -468,6 +478,7 @@ const BrandingSettings: FC = () => {
           BlobToFile(
             selectedFavicon,
             `id-${Math.random().toString(16).slice(2)}`,
+            selectedFavicon.type,
           ),
         ],
         EntityType.OrgFavicon,
@@ -475,24 +486,29 @@ const BrandingSettings: FC = () => {
     } else if (!removedMedia.favicon && branding?.favicon?.original) {
       uploadedFavicon = [branding?.favicon];
     }
+
+    // upload background file if exist
     let uploadedBG = null;
     if (selectedBG) {
       uploadedBG = await uploadMedia(
-        [BlobToFile(selectedBG, `id-${Math.random().toString(16).slice(2)}`)],
+        [
+          BlobToFile(
+            selectedBG,
+            `id-${Math.random().toString(16).slice(2)}`,
+            selectedBG.type,
+          ),
+        ],
         EntityType.OrgLoginImage,
       );
     } else if (!removedMedia.bg && branding?.loginConfig?.image?.original) {
       uploadedBG = [branding?.loginConfig?.image];
     }
+
+    // upload background exist
     let uploadedBGVideo = null;
     if (selectedBGVideo) {
       uploadedBGVideo = await uploadMedia(
-        [
-          BlobToFile(
-            selectedBGVideo,
-            `id-${Math.random().toString(16).slice(2)}`,
-          ),
-        ],
+        [selectedBGVideo],
         EntityType.OrgLoginVideo,
       );
     } else if (
@@ -501,6 +517,8 @@ const BrandingSettings: FC = () => {
     ) {
       uploadedBGVideo = [branding?.loginConfig?.video];
     }
+
+    // new branding object
     const newBranding = {
       primaryColor,
       secondaryColor:
@@ -779,6 +797,28 @@ const BrandingSettings: FC = () => {
     }
   };
 
+  const getSavingButtons = useMemo(
+    () => (
+      <div className="flex gap-2">
+        <Button
+          label="Cancel"
+          variant={Variant.Secondary}
+          onClick={(_e) => handleCancel()}
+          disabled={isSaving || !formState.isValid}
+          dataTestId="branding-cancelcta"
+        />
+        <Button
+          label="Save changes"
+          loading={isSaving}
+          onClick={handleSaveChanges}
+          dataTestId="branding-savechangescta"
+          disabled={!formState.isValid}
+        />
+      </div>
+    ),
+    [isSaving, formState],
+  );
+
   return (
     <>
       <Card className="p-6">
@@ -790,24 +830,7 @@ const BrandingSettings: FC = () => {
             </p>
           </div>
           <div className="flex flex-col">
-            {(formState.isDirty || showSaveChanges) && (
-              <div className="flex gap-2">
-                <Button
-                  label="Cancel"
-                  variant={Variant.Secondary}
-                  onClick={(_e) => handleCancel()}
-                  disabled={isSaving || !formState.isValid}
-                  dataTestId="branding-cancelcta"
-                />
-                <Button
-                  label="Save changes"
-                  loading={isSaving}
-                  onClick={handleSaveChanges}
-                  dataTestId="branding-savechangescta"
-                  disabled={!formState.isValid}
-                />
-              </div>
-            )}
+            {(formState.isDirty || showSaveChanges) && getSavingButtons}
             <div></div>
           </div>
         </div>
@@ -1015,6 +1038,15 @@ const BrandingSettings: FC = () => {
                       },
                     ]}
                   />
+                  {primaryColor === secondaryColor && (
+                    <p
+                      className="text-xs text-yellow-400 -mt-4"
+                      data-testid="readability-warning"
+                    >
+                      <span className="font-semibold">Readability Alert:</span>{' '}
+                      It is advised not to use same primary and secondary colour
+                    </p>
+                  )}
                   {secondaryColor?.toUpperCase() === '#FFFFFF' && (
                     <p
                       className="text-xs text-yellow-400 -mt-4"

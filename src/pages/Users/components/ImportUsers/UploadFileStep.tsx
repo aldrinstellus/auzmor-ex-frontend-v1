@@ -55,10 +55,21 @@ const UploadFileStep: React.FC<AppProps> = ({
 
   const onDrop = useCallback(
     async (acceptedFiles: any, fileRejections: any[]) => {
+      if (acceptedFiles?.[0]?.size === 0) {
+        setFileError('Empty file are not supported');
+        return;
+      }
       if (fileRejections?.length) {
         const reason =
           fileRejections[0]?.errors?.[0].message || 'Something went wrong';
-        setFileError(reason);
+
+        if (reason.includes('is larger')) {
+          setFileError(
+            'File size cannot exceed 5mb. Please try uploading a smaller file size.',
+          );
+        } else {
+          setFileError(reason);
+        }
       } else {
         setFileError('');
         const uploadedMedia = await uploadMedia(

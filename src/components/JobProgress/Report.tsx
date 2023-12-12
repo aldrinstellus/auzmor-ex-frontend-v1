@@ -24,7 +24,7 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
     }) || []
   ).map((f, idx) => ({ idx: idx + 1, ...f }));
 
-  const columns = [
+  const columns: any[] = [
     { key: 'idx', name: '', width: 40 },
     {
       key: 'name',
@@ -34,12 +34,12 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       renderCell: ({ row }: any) => {
         return row.rowData?.fullName?.value;
       },
-      cellClass: (row: any) => {
-        if (!row.rowData?.fullName?.value) {
-          return 'text-red-500 bg-red-50';
-        }
-        return '';
-      },
+      // cellClass: (row: any) => {
+      //   if (!row.rowData?.fullName?.value) {
+      //     return 'text-red-500 bg-red-50';
+      //   }
+      //   return '';
+      // },
     },
     {
       key: 'email',
@@ -49,12 +49,12 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       renderCell: ({ row }: any) => {
         return row.rowData.email?.value;
       },
-      cellClass: (row: any) => {
-        if (!row.rowData.email?.isValid) {
-          return 'text-red-500 bg-red-50';
-        }
-        return '';
-      },
+      // cellClass: (row: any) => {
+      //   if (!row.rowData.email?.isValid) {
+      //     return 'text-red-500 bg-red-50';
+      //   }
+      //   return '';
+      // },
     },
     {
       key: 'managerEmail',
@@ -64,12 +64,12 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       renderCell: ({ row }: any) => {
         return row.rowData.managerEmail?.value;
       },
-      cellClass: (row: any) => {
-        if (!row.rowData.managerEmail?.isValid) {
-          return 'text-red-500 bg-red-50';
-        }
-        return '';
-      },
+      // cellClass: (row: any) => {
+      //   if (!row.rowData.managerEmail?.isValid) {
+      //     return 'text-red-500 bg-red-50';
+      //   }
+      //   return '';
+      // },
     },
     {
       key: 'designation',
@@ -79,12 +79,12 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       renderCell: ({ row }: any) => {
         return row.rowData.designation?.value;
       },
-      cellClass: (row: any) => {
-        if (!row.rowData.designation?.isValid) {
-          return 'text-red-500 bg-red-50';
-        }
-        return '';
-      },
+      // cellClass: (row: any) => {
+      //   if (!row.rowData.designation?.isValid) {
+      //     return 'text-red-500 bg-red-50';
+      //   }
+      //   return '';
+      // },
     },
     {
       key: 'department',
@@ -94,12 +94,12 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       renderCell: ({ row }: any) => {
         return row.rowData.department?.value;
       },
-      cellClass: (row: any) => {
-        if (!row.rowData.department?.isValid) {
-          return 'text-red-500 bg-red-50';
-        }
-        return '';
-      },
+      // cellClass: (row: any) => {
+      //   if (!row.rowData.department?.isValid) {
+      //     return 'text-red-500 bg-red-50';
+      //   }
+      //   return '';
+      // },
     },
     {
       key: 'location',
@@ -109,12 +109,12 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       renderCell: ({ row }: any) => {
         return row.rowData.location?.value;
       },
-      cellClass: (row: any) => {
-        if (!row.rowData.location?.isValid) {
-          return 'text-red-500 bg-red-50';
-        }
-        return '';
-      },
+      // cellClass: (row: any) => {
+      //   if (!row.rowData.location?.isValid) {
+      //     return 'text-red-500 bg-red-50';
+      //   }
+      //   return '';
+      // },
     },
     {
       key: 'employeeId',
@@ -124,12 +124,12 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       renderCell: ({ row }: any) => {
         return row.rowData.employeeId?.value;
       },
-      cellClass: (row: any) => {
-        if (!row.rowData.employeeId?.isValid) {
-          return 'text-red-500 bg-red-50';
-        }
-        return '';
-      },
+      // cellClass: (row: any) => {
+      //   if (!row.rowData.employeeId?.isValid) {
+      //     return 'text-red-500 bg-red-50';
+      //   }
+      //   return '';
+      // },
     },
     {
       key: 'phoneNumber',
@@ -139,12 +139,12 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       renderCell: ({ row }: any) => {
         return row.rowData.phoneNumber?.value;
       },
-      cellClass: (row: any) => {
-        if (!row.rowData.phoneNumber?.isValid) {
-          return 'text-red-500 bg-red-50';
-        }
-        return '';
-      },
+      // cellClass: (row: any) => {
+      //   if (!row.rowData.phoneNumber?.isValid) {
+      //     return 'text-red-500 bg-red-50';
+      //   }
+      //   return '';
+      // },
     },
     {
       key: 'dateOfBirth',
@@ -154,12 +154,12 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       renderCell: ({ row }: any) => {
         return row.rowData.dateOfBirth?.value;
       },
-      cellClass: (row: any) => {
-        if (!row.rowData.dateOfBirth?.isValid) {
-          return 'text-red-500 bg-red-50';
-        }
-        return '';
-      },
+      // cellClass: (row: any) => {
+      //   if (!row.rowData.dateOfBirth?.isValid) {
+      //     return 'text-red-500 bg-red-50';
+      //   }
+      //   return '';
+      // },
     },
     {
       key: 'dateOfJoining',
@@ -169,12 +169,12 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       renderCell: ({ row }: any) => {
         return row.rowData.dateOfJoining?.value;
       },
-      cellClass: (row: any) => {
-        if (!row.rowData.dateOfJoining?.isValid) {
-          return 'text-red-500 bg-red-50';
-        }
-        return '';
-      },
+      // cellClass: (row: any) => {
+      //   if (!row.rowData.dateOfJoining?.isValid) {
+      //     return 'text-red-500 bg-red-50';
+      //   }
+      //   return '';
+      // },
     },
     {
       key: 'maritalStatus',
@@ -184,12 +184,12 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       renderCell: ({ row }: any) => {
         return row.rowData.maritalStatus?.value;
       },
-      cellClass: (row: any) => {
-        if (!row.rowData.maritalStatus?.isValid) {
-          return 'text-red-500 bg-red-50';
-        }
-        return '';
-      },
+      // cellClass: (row: any) => {
+      //   if (!row.rowData.maritalStatus?.isValid) {
+      //     return 'text-red-500 bg-red-50';
+      //   }
+      //   return '';
+      // },
     },
   ];
 

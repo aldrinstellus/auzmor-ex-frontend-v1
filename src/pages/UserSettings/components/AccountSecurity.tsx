@@ -210,10 +210,7 @@ const AccountSecurity = () => {
                     className="text-primary-500 text-base font-bold"
                     data-testId="forgot-password-cta"
                   >
-                    <a
-                      href={`${process.env.REACT_APP_BASE_URL}/forgot-password`}
-                      className="text-primary-500"
-                    >
+                    <a href={`/forgot-password`} className="text-primary-500">
                       Forgot Password
                     </a>
                   </div>
