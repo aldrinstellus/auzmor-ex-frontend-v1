@@ -356,7 +356,7 @@ const Signup: FC<ISignupProps> = () => {
   const getSignupForm = () => {
     return (
       <>
-        {branding?.loginConfig?.layout === 'RIGHT' && getLoginText()}
+        {branding?.loginConfig?.layout === 'RIGHT' && getBannerText()}
         <div
           className={`flex flex-col items-center bg-neutral-50 overflow-y-auto w-[50vw] h-full z-10 gap-12 py-[100px] ${
             branding?.loginConfig?.layout === 'CENTER' &&
@@ -397,12 +397,12 @@ const Signup: FC<ISignupProps> = () => {
             </form>
           </div>
         </div>
-        {branding?.loginConfig?.layout === 'LEFT' && getLoginText()}
+        {branding?.loginConfig?.layout === 'LEFT' && getBannerText()}
       </>
     );
   };
 
-  const getLoginText = () => {
+  const getBannerText = () => {
     if (
       !!branding?.loginConfig?.text &&
       branding?.loginConfig?.backgroundType === 'COLOR' &&
@@ -411,7 +411,7 @@ const Signup: FC<ISignupProps> = () => {
       return (
         <div className="w-[50vw] flex items-center px-14">
           <p
-            className={`text-white text-6xl font-extrabold z-10 leading-[72px] ${
+            className={`text-6xl font-extrabold z-10 leading-[72px] ${
               isDark(branding?.loginConfig?.color || '#777777')
                 ? 'text-white'
                 : 'text-neutral-900'

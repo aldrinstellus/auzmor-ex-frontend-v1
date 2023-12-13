@@ -12,7 +12,7 @@ import { useMutation } from '@tanstack/react-query';
 import { forgotPassword } from 'queries/account';
 import 'utils/custom-yup-validators/email/validateEmail';
 import { useBrandingStore } from 'stores/branding';
-import { getSubDomain } from 'utils/misc';
+import { getSubDomain, isDark } from 'utils/misc';
 import { useGetSSOFromDomain } from 'queries/organization';
 import clsx from 'clsx';
 
@@ -225,7 +225,11 @@ const ForgotPassword: FC<IForgotPasswordProps> = () => {
       return (
         <div className="w-[50vw] flex items-center px-14">
           <p
-            className="text-white text-6xl font-extrabold z-10 leading-[72px]"
+            className={`text-6xl font-extrabold z-10 leading-[72px] ${
+              isDark(branding?.loginConfig?.color || '#777777')
+                ? 'text-white'
+                : 'text-neutral-900'
+            }`}
             data-testid={`${getDataTestId()}-message`}
           >
             {branding?.loginConfig?.text}
