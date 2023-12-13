@@ -34,9 +34,7 @@ const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({ data }) => {
         postId,
         produce(getPost(postId), (draft) => {
           if (draft) {
-            (draft.announcement = { end: '' }),
-              (draft.isAnnouncement = false),
-              (draft.acknowledged = true);
+            draft.acknowledged = true;
           }
         }),
       );

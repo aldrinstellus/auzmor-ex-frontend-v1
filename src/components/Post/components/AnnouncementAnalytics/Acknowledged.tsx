@@ -43,7 +43,7 @@ const Acknowledged: FC<AppProps> = ({ post, closeModal }) => {
         <div className="flex justify-center items-center py-5 border-b">
           <div style={{ width: 64, height: 64 }}>
             <CircularProgressbarWithChildren
-              value={50}
+              value={completePercent || 0}
               className="center"
               strokeWidth={12}
               styles={buildStyles({
