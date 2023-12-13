@@ -18,7 +18,7 @@ export const Text: FC<TextProps> = ({
           href={value}
           target="_blank"
           role="button"
-          className={`${getStyles(attributes)} underline text-[#06c]`}
+          className={`${getStyles(attributes)} underline text-primary-500`}
           rel="noreferrer"
         >
           {formatText(value)}
