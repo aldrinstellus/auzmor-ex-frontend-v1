@@ -174,12 +174,12 @@ const BrandingSettings: FC = () => {
       .string()
       .trim()
       .min(3, 'Atleast 3 characters required')
-      .max(50, 'Less than 50 characters should be used'),
+      .max(50, 'Character limit exceeded'),
     pageTitle: yup
       .string()
       .trim()
       .min(3, 'Atleast 3 characters required')
-      .max(50, 'Less than 50 characters should be used'),
+      .max(50, 'Character limit exceeded'),
   });
   const { control, setValue, watch, reset, formState } = useForm({
     mode: 'onChange',
