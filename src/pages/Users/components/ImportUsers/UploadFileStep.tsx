@@ -56,7 +56,9 @@ const UploadFileStep: React.FC<AppProps> = ({
   const onDrop = useCallback(
     async (acceptedFiles: any, fileRejections: any[]) => {
       if (acceptedFiles?.[0]?.size === 0) {
-        setFileError('Empty file are not supported');
+        setFileError(
+          'Cannot import an empty file. Please ensure the file contains valid content before importing.',
+        );
         return;
       }
       if (fileRejections?.length) {
@@ -67,6 +69,8 @@ const UploadFileStep: React.FC<AppProps> = ({
           setFileError(
             'File size cannot exceed 5mb. Please try uploading a smaller file size.',
           );
+        } else if (reason.includes('file type')) {
+          setFileError('File type not supported. Upload a supported file type');
         } else {
           setFileError(reason);
         }
