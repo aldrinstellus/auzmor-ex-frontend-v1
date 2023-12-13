@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import apiService from 'utils/apiService';
 import axios from 'axios';
 import { useState } from 'react';
@@ -55,6 +56,7 @@ export const useUpload = () => {
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>(
     UploadStatus.YetToStart,
   );
+  const [error, setError] = useState('');
   const chunksize = 1048576 * 8; // 8 MB
 
   const createFile = async (payload: IFile, entityType: EntityType) =>
@@ -147,8 +149,12 @@ export const useUpload = () => {
                 )!,
               ),
             );
+            setError('');
           } else {
-            console.log(promiseRes);
+            setError(
+              promiseRes?.reason?.response?.data?.errors?.[0]?.message ||
+                'Something went wrong',
+            );
             console.log('create file failed');
             // setUploadStatus(UploadStatus.Error);
           }
@@ -242,5 +248,11 @@ export const useUpload = () => {
     setUploadStatus(UploadStatus.Finished);
   };
 
-  return { uploadMedia, uploadStatus, useUploadCoverImage, removeCoverImage };
+  return {
+    error,
+    uploadMedia,
+    uploadStatus,
+    useUploadCoverImage,
+    removeCoverImage,
+  };
 };

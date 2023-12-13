@@ -4,7 +4,7 @@ import Collapse from 'components/Collapse';
 import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
-import { FC, ReactNode, useEffect, useState } from 'react';
+import { FC, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import NoAnnouncement from 'images/NoAnnouncement.svg';
 import { useDropzone } from 'react-dropzone';
@@ -461,7 +461,7 @@ const BrandingSettings: FC = () => {
           BlobToFile(
             selectedLogo,
             `id-${Math.random().toString(16).slice(2)}`,
-            getMimeType(selectedLogo.name),
+            selectedLogo.type,
           ),
         ],
         EntityType.OrgLogo,
@@ -478,7 +478,7 @@ const BrandingSettings: FC = () => {
           BlobToFile(
             selectedFavicon,
             `id-${Math.random().toString(16).slice(2)}`,
-            getMimeType(selectedFavicon.name),
+            selectedFavicon.type,
           ),
         ],
         EntityType.OrgFavicon,
@@ -495,7 +495,7 @@ const BrandingSettings: FC = () => {
           BlobToFile(
             selectedBG,
             `id-${Math.random().toString(16).slice(2)}`,
-            getMimeType(selectedBG.name),
+            selectedBG.type,
           ),
         ],
         EntityType.OrgLoginImage,
@@ -508,13 +508,7 @@ const BrandingSettings: FC = () => {
     let uploadedBGVideo = null;
     if (selectedBGVideo) {
       uploadedBGVideo = await uploadMedia(
-        [
-          BlobToFile(
-            selectedBGVideo,
-            `id-${Math.random().toString(16).slice(2)}-${selectedBGVideo.name}`,
-            getMimeType(selectedBGVideo.name),
-          ),
-        ],
+        [selectedBGVideo],
         EntityType.OrgLoginVideo,
       );
     } else if (
@@ -523,9 +517,6 @@ const BrandingSettings: FC = () => {
     ) {
       uploadedBGVideo = [branding?.loginConfig?.video];
     }
-
-    console.log(selectedBGVideo);
-    console.log(uploadedBGVideo);
 
     // new branding object
     const newBranding = {
@@ -806,6 +797,28 @@ const BrandingSettings: FC = () => {
     }
   };
 
+  const getSavingButtons = useMemo(
+    () => (
+      <div className="flex gap-2">
+        <Button
+          label="Cancel"
+          variant={Variant.Secondary}
+          onClick={(_e) => handleCancel()}
+          disabled={isSaving || !formState.isValid}
+          dataTestId="branding-cancelcta"
+        />
+        <Button
+          label="Save changes"
+          loading={isSaving}
+          onClick={handleSaveChanges}
+          dataTestId="branding-savechangescta"
+          disabled={!formState.isValid}
+        />
+      </div>
+    ),
+    [isSaving, formState],
+  );
+
   return (
     <>
       <Card className="p-6">
@@ -817,24 +830,7 @@ const BrandingSettings: FC = () => {
             </p>
           </div>
           <div className="flex flex-col">
-            {(formState.isDirty || showSaveChanges) && (
-              <div className="flex gap-2">
-                <Button
-                  label="Cancel"
-                  variant={Variant.Secondary}
-                  onClick={(_e) => handleCancel()}
-                  disabled={isSaving || !formState.isValid}
-                  dataTestId="branding-cancelcta"
-                />
-                <Button
-                  label="Save changes"
-                  loading={isSaving}
-                  onClick={handleSaveChanges}
-                  dataTestId="branding-savechangescta"
-                  disabled={!formState.isValid}
-                />
-              </div>
-            )}
+            {(formState.isDirty || showSaveChanges) && getSavingButtons}
             <div></div>
           </div>
         </div>
@@ -1042,6 +1038,15 @@ const BrandingSettings: FC = () => {
                       },
                     ]}
                   />
+                  {primaryColor === secondaryColor && (
+                    <p
+                      className="text-xs text-yellow-400 -mt-4"
+                      data-testid="readability-warning"
+                    >
+                      <span className="font-semibold">Readability Alert:</span>{' '}
+                      It is advised not to use same primary and secondary colour
+                    </p>
+                  )}
                   {secondaryColor?.toUpperCase() === '#FFFFFF' && (
                     <p
                       className="text-xs text-yellow-400 -mt-4"

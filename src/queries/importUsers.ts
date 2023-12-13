@@ -115,7 +115,7 @@ export const useInfiniteImportResultData = ({
     getPreviousPageParam: (currentPage: any) => {
       return currentPage?.data?.result?.paging?.prev;
     },
-    staleTime: 30 * 60 * 1000,
+    staleTime: 0,
     enabled: startFetching,
   });
 };

@@ -24,12 +24,14 @@ const ImportingForExcel: React.FC<AppProps> = ({
 
   useEffect(() => {
     if (ready) {
+      const options = data.result?.data?.info?.sheets?.map((s: any) => ({
+        value: s.index,
+        label: s.name,
+      }));
       setMeta((m: any) => ({
         ...m,
-        sheetOptions: data.result?.data?.info?.sheets?.map((s: any) => ({
-          value: s.index,
-          label: s.name,
-        })),
+        sheetOptions: options,
+        parsedData: data,
       }));
       setStep(StepEnum.SelectSheet);
     }

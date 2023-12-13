@@ -11,6 +11,7 @@ import { useMutation } from '@tanstack/react-query';
 import { updateParseImport, validateImport } from 'queries/importUsers';
 import { truncate } from 'lodash';
 import Spinner from 'components/Spinner';
+import ValidateHeaders from './ValidateHeaders';
 
 type AppProps = {
   open: boolean;
@@ -43,11 +44,17 @@ const SelectSheetStep: React.FC<AppProps> = ({
     updateParseImport(importId, formData),
   );
 
-  const { control, getValues, watch } = useForm<IForm>({
+  const { control, getValues, setValue, watch } = useForm<IForm>({
     mode: 'onSubmit',
   });
 
   const _sheet = watch('sheet');
+
+  useEffect(() => {
+    if (meta.sheetOptions?.length === 1) {
+      setValue('sheet', meta.sheetOptions[0].value);
+    }
+  }, [meta.sheetOptions]);
 
   useEffect(() => {
     if (_sheet) {
@@ -83,67 +90,27 @@ const SelectSheetStep: React.FC<AppProps> = ({
         onClose={closeModal}
         closeBtnDataTestId="close-modal"
       />
-      <div className="px-6 pt-4 pb-6">
-        <Layout fields={fields} />
-      </div>
+      {meta.sheetOptions?.length > 1 && (
+        <div className="px-6 pt-4 pb-6">
+          <Layout fields={fields} />
+        </div>
+      )}
 
-      {(() => {
-        if (parseMutation.isLoading) {
-          return (
-            <div className="px-6 pt-2 pb-4 space-y-4">
-              <div className="v-center">
-                <Spinner className="!h-5 !w-5" />
-                <div className="text-sm text-neutral-900 pl-1">
-                  Checking for headers
-                </div>
-              </div>
-              <div className="v-center">
-                <Spinner className="!h-5 !w-5" />
-                <div className="text-sm text-neutral-900 pl-1">
-                  Mapping Columns
-                </div>
-              </div>
-            </div>
-          );
+      <ValidateHeaders
+        isLoading={parseMutation.isLoading}
+        isSuccess={parseMutation.isSuccess}
+        isError={parseMutation.isError}
+        meta={meta}
+        mutation={validateUserMutation}
+        closeModal={closeModal}
+        disableSubmit={meta.sheetOptions?.length != 1 ? !_sheet : false}
+        selectedSheet={
+          meta.sheetOptions?.length === 1 ? meta.sheetOptions[0] : _sheet?.value
         }
-        if (parseMutation.isSuccess) {
-          return (
-            <div className="px-6 pt-2 pb-4 space-y-4">
-              <div className="v-center">
-                <Icon name="boldTick" size={20} className="text-primary-500" />
-                <div className="text-sm text-neutral-900">
-                  Checking for headers
-                </div>
-              </div>
-              <div className="v-center">
-                <Icon name="boldTick" size={20} className="text-primary-500" />
-                <div className="text-sm text-neutral-900">Mapping Columns</div>
-              </div>
-            </div>
-          );
-        }
-        if (parseMutation.isError) {
-          return (
-            <div className="px-6 pt-2 pb-4 space-y-4">
-              <div className="v-center">
-                <Spinner className="!h-5 !w-5" />
-                <div className="text-sm text-neutral-900 pl-1">
-                  Checking for headers
-                </div>
-              </div>
-              <div className="v-center">
-                <Spinner className="!h-5 !w-5" />
-                <div className="text-sm text-neutral-900 pl-1">
-                  Mapping Columns
-                </div>
-              </div>
-            </div>
-          );
-        }
-        return null;
-      })()}
+        isCsv={false}
+      />
 
-      <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
+      {/* <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
         <Button
           label="Cancel"
           variant={Variant.Secondary}
@@ -160,10 +127,10 @@ const SelectSheetStep: React.FC<AppProps> = ({
           onClick={() => {
             validateUserMutation.mutate();
           }}
-          disabled={parseMutation.isLoading}
+          disabled={!_sheet || parseMutation.isLoading}
           loading={validateUserMutation.isLoading}
         />
-      </div>
+      </div> */}
     </Modal>
   );
 };
