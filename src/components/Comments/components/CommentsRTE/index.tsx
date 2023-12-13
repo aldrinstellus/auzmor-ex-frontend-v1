@@ -406,7 +406,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
   return (
     <div className={`flex flex-row ${className} `}>
       <div
-        className={`flex flex-col items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full ${wrapperClassName}`}
+        className={`flex flex-col items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full focus-within:border-primary-500 ${wrapperClassName}`}
       >
         <RichTextEditor
           toolbarId={`toolbar-${entityId}`}

@@ -151,10 +151,18 @@ export const useUpload = () => {
             );
             setError('');
           } else {
-            setError(
+            const reason =
               promiseRes?.reason?.response?.data?.errors?.[0]?.message ||
-                'Something went wrong',
-            );
+              'Something went wrong';
+            if (reason.includes('File type')) {
+              setError('File type not supported. Upload a supported file type');
+            } else {
+              setError(
+                promiseRes?.reason?.response?.data?.errors?.[0]?.message ||
+                  'Something went wrong',
+              );
+            }
+
             console.log('create file failed');
             // setUploadStatus(UploadStatus.Error);
           }

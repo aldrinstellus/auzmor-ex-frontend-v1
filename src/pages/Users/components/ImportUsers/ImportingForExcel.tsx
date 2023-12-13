@@ -31,6 +31,7 @@ const ImportingForExcel: React.FC<AppProps> = ({
       setMeta((m: any) => ({
         ...m,
         sheetOptions: options,
+        parsedData: data,
       }));
       setStep(StepEnum.SelectSheet);
     }

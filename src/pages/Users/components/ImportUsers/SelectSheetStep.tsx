@@ -49,7 +49,6 @@ const SelectSheetStep: React.FC<AppProps> = ({
   });
 
   const _sheet = watch('sheet');
-  console.log('>>>>>>>>', _sheet);
 
   useEffect(() => {
     if (meta.sheetOptions?.length === 1) {
@@ -101,9 +100,17 @@ const SelectSheetStep: React.FC<AppProps> = ({
         isLoading={parseMutation.isLoading}
         isSuccess={parseMutation.isSuccess}
         isError={parseMutation.isError}
+        meta={meta}
+        mutation={validateUserMutation}
+        closeModal={closeModal}
+        disableSubmit={meta.sheetOptions?.length != 1 ? !_sheet : false}
+        selectedSheet={
+          meta.sheetOptions?.length === 1 ? meta.sheetOptions[0] : _sheet?.value
+        }
+        isCsv={false}
       />
 
-      <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
+      {/* <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
         <Button
           label="Cancel"
           variant={Variant.Secondary}
@@ -123,7 +130,7 @@ const SelectSheetStep: React.FC<AppProps> = ({
           disabled={!_sheet || parseMutation.isLoading}
           loading={validateUserMutation.isLoading}
         />
-      </div>
+      </div> */}
     </Modal>
   );
 };

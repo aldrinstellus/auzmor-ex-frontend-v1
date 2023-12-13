@@ -15,6 +15,7 @@ import Spinner from 'components/Spinner';
 import apiService from 'utils/apiService';
 import useModal from 'hooks/useModal';
 import Icon from 'components/Icon';
+import Tooltip from 'components/Tooltip';
 
 type AppProps = {
   open: boolean;
@@ -184,6 +185,27 @@ const ReviewStep: React.FC<AppProps> = ({
         }
         return '';
       },
+      headerCellClass: flatData.some(
+        (row: any) => !row.rowData.dateOfBirth?.isValid,
+      )
+        ? 'bg-red-50 !overflow-visible'
+        : '',
+      renderHeaderCell: () => {
+        if (flatData.some((row: any) => !row.rowData.dateOfBirth?.isValid)) {
+          return (
+            <div className="w-full flex justify-between items-center text-red-500">
+              <p>Date of Birth</p>
+              <Tooltip
+                tooltipContent="Date format is dd/mm/yyyy"
+                tooltipPosition="bottom"
+              >
+                <Icon name="infoCircle" size={16} color="text-red-500" />
+              </Tooltip>
+            </div>
+          );
+        }
+        return 'Date of Birth';
+      },
     },
     {
       key: 'dateOfJoining',
@@ -198,6 +220,27 @@ const ReviewStep: React.FC<AppProps> = ({
           return 'text-red-500 bg-red-50';
         }
         return '';
+      },
+      headerCellClass: flatData.some(
+        (row: any) => !row.rowData?.dateOfJoining?.isValid,
+      )
+        ? 'bg-red-50 !overflow-visible'
+        : '',
+      renderHeaderCell: () => {
+        if (flatData.some((row: any) => !row.rowData.dateOfJoining?.isValid)) {
+          return (
+            <div className="w-full flex justify-between items-center text-red-500">
+              <p>Date of Joining</p>
+              <Tooltip
+                tooltipContent="Date format is dd/mm/yyyy"
+                tooltipPosition="bottom"
+              >
+                <Icon name="infoCircle" size={16} color="text-red-500" />
+              </Tooltip>
+            </div>
+          );
+        }
+        return 'Date of Birth';
       },
     },
     {
