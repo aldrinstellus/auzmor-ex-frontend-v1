@@ -216,7 +216,7 @@ const ResetPassword = () => {
               <>
                 {!!data ? (
                   <div className="w-[440px]">
-                    {true ? (
+                    {resetPasswordMutation.isSuccess ? (
                       <div className="text-center flex flex-col space-y-5 h-full justify-center items-center">
                         <Success />
                         <div className="text-neutral-900 font-bold">
