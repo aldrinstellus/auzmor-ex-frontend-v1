@@ -9,6 +9,7 @@ import AvatarRow from './AvatarRow';
 import PageLoader from 'components/PageLoader';
 import Button, { Variant } from 'components/Button';
 import { useInfiniteAcknowledgements } from 'queries/post';
+import { twConfig } from 'utils/misc';
 
 type AppProps = {
   post: Record<string, any>;
@@ -49,7 +50,7 @@ const Acknowledged: FC<AppProps> = ({ post, closeModal }) => {
                 // Text size
                 textSize: '32px',
                 // Colors
-                pathColor: '#10b981',
+                pathColor: twConfig.theme.colors.primary[500],
                 textColor: '#000000',
                 trailColor: '#A3A3A3',
               })}

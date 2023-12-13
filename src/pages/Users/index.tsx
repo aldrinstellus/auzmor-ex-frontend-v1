@@ -10,6 +10,7 @@ import People from './components/People';
 import { Role } from 'utils/enum';
 import Team from './components/Teams';
 import { useLocation, useNavigate } from 'react-router-dom';
+import PopupMenu from 'components/PopupMenu';
 
 interface IUsersProps {}
 
@@ -24,6 +25,9 @@ const Users: FC<IUsersProps> = () => {
     undefined,
     false,
   );
+  const [showImportUserModal, openImportUserModal, closeImportUserModal] =
+    useModal(undefined, false);
+
   const [showTeamModal, openTeamModal, closeTeamModal] = useModal(
     undefined,
     false,
@@ -60,11 +64,13 @@ const Users: FC<IUsersProps> = () => {
             showModal={showAddUserModal}
             openModal={openAddUserModal}
             closeModal={closeAddUserModal}
+            showImport={showImportUserModal}
+            closeImport={closeImportUserModal}
           />
         </>
       ),
       tabAction: (
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 relative">
           <Button
             className="flex space-x-[6px] group px-6 py-[10px] rounded-[24px]"
             label="View Organization Chart"
@@ -76,14 +82,32 @@ const Users: FC<IUsersProps> = () => {
             onClick={() => setShowOrgChart(true)}
           />
           {user?.role !== Role.Member && (
-            <Button
-              className="flex space-x-1 px-6 py-[10px] rounded-[24px]"
-              label="Add Members"
-              leftIcon="add"
-              leftIconClassName="!text-white"
-              leftIconSize={20}
-              onClick={openAddUserModal}
-              dataTestId="add-members-btn"
+            <PopupMenu
+              triggerNode={
+                <Button
+                  className="flex space-x-1 px-6 py-[10px] rounded-[24px]"
+                  label="Add Members"
+                  leftIcon="add"
+                  leftIconClassName="!text-white"
+                  leftIconSize={20}
+                  dataTestId="add-members-btn"
+                />
+              }
+              className="absolute right-0 top-10 mt-2 w-44"
+              menuItems={[
+                {
+                  icon: 'addCircle',
+                  label: 'Quick Add',
+                  onClick: openAddUserModal,
+                  dataTestId: 'people-quick-add',
+                },
+                {
+                  icon: 'import',
+                  label: 'Import',
+                  onClick: openImportUserModal,
+                  dataTestId: 'people-bulk-import',
+                },
+              ]}
             />
           )}
         </div>

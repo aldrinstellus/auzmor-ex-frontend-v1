@@ -89,7 +89,7 @@ const Navbar = () => {
     <div className="w-full sticky top-0 z-50">
       <div className="bg-white shadow h-16 w-full py-[2px]">
         <div className="bg-white h-full w-full max-w-[1440px] flex items-center py-0.5 px-8 mx-auto justify-between">
-          <Link to="/feed" data-testid="auzmor-office">
+          <Link to="/feed" data-testid="office-logo">
             <Logo />
           </Link>
           <div className="flex-1" />

@@ -310,7 +310,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
                           ? 'bg-blue-50 font-medium text-xs pl-6 py-1 min-w-full text-neutral-500 cursor-default'
                           : `bg-white font-medium text-xs px-6 py-2 min-w-full text-neutral-900 overflow ${
                               isOptionSelected(option) && 'bg-green-50'
-                            } hover:bg-green-50 flex items-center gap-[10px] border-b cursor-pointer`
+                            } hover:bg-primary-50 flex items-center gap-[10px] border-b cursor-pointer`
                       }
                       value={option?.value}
                     >
@@ -319,7 +319,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
                         className={
                           option?.type === FeedFilterContentType.Section
                             ? 'hidden'
-                            : 'block accent-emerald-600 '
+                            : 'block accent-primary-600 '
                         }
                         disabled={option.isDisabled}
                         checked={isOptionSelected(option)}

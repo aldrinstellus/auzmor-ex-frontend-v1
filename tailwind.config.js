@@ -8,6 +8,7 @@ module.exports = {
     extend: {
       backgroundImage: {
         'welcome-to-office': "url('images/welcomeToOffice.png')",
+        'welcome-to-office-large': "url('images/welcomeToOfficeLarge.png')",
       },
       screens: {
         '3xl': '1840px',
@@ -17,16 +18,28 @@ module.exports = {
       colors: {
         'black-white': { black: '#000000', white: '#ffffff' },
         primary: {
-          50: '#ecfdf5',
-          100: '#d1fae5',
-          200: '#a7f3d0',
-          300: '#6ee7b7',
-          400: '#34d399',
-          500: '#10b981',
-          600: '#059669',
-          700: '#047857',
-          800: '#065f46',
-          900: '#064e3b',
+          50: 'var(--primary-50)',
+          100: 'var(--primary-100)',
+          200: 'var(--primary-200)',
+          300: 'var(--primary-300)',
+          400: 'var(--primary-400)',
+          500: 'var(--primary-500)',
+          600: 'var(--primary-600)',
+          700: 'var(--primary-700)',
+          800: 'var(--primary-800)',
+          900: 'var(--primary-900)',
+        },
+        secondary: {
+          50: 'var(--secondary-50)',
+          100: 'var(--secondary-100)',
+          200: 'var(--secondary-200)',
+          300: 'var(--secondary-300)',
+          400: 'var(--secondary-400)',
+          500: 'var(--secondary-500)',
+          600: 'var(--secondary-600)',
+          700: 'var(--secondary-700)',
+          800: 'var(--secondary-800)',
+          900: 'var(--secondary-900)',
         },
         neutral: {
           50: '#fafafa',

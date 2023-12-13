@@ -30,11 +30,14 @@ import useRole from 'hooks/useRole';
 import Icon from 'components/Icon';
 import { IDepartmentAPI } from 'queries/department';
 import { ILocationAPI } from 'queries/location';
+import ImportUsers from '../ImportUsers';
 
 export interface IPeopleProps {
   showModal: boolean;
+  showImport?: boolean;
   openModal: () => void;
   closeModal: () => void;
+  closeImport?: () => any;
   isTeamPeople?: boolean;
   teamId?: string;
 }
@@ -69,8 +72,10 @@ const defaultFilters: IPeopleFilters = {
 
 const People: FC<IPeopleProps> = ({
   showModal,
+  showImport = false,
   openModal,
   closeModal,
+  closeImport,
   isTeamPeople,
   teamId,
 }) => {
@@ -620,6 +625,8 @@ const People: FC<IPeopleProps> = ({
         openModal={openModal}
         closeModal={closeModal}
       />
+
+      {showImport && <ImportUsers open={showImport} closeModal={closeImport} />}
 
       {showFilterModal && (
         <FilterModal

@@ -18,7 +18,7 @@ const AppWidgetCard: FC<IAppWidgetCardProps> = ({ data }) => {
     key: data.icon?.original,
     alt: 'app-icon',
     blurhash: data.icon?.blurHash,
-    dataTestid: `app-icon`,
+    'data-testid': `app-icon`,
   };
   return (
     <Link

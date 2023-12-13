@@ -1,7 +1,7 @@
 import resolveConfig from 'tailwindcss/resolveConfig';
 import tailwindConfig from 'components/../../tailwind.config.js';
 import { IMedia } from 'contexts/CreatePostContext';
-import { validImageTypes } from 'queries/files';
+import { validDocumentFileTypes, validImageTypes } from 'queries/files';
 import { getItem, removeItem } from './persist';
 import { DeltaStatic } from 'quill';
 import {
@@ -19,7 +19,7 @@ import { IDepartment } from 'queries/department';
 import { IDesignation } from 'queries/designation';
 import { IPost } from 'queries/post';
 import moment from 'moment';
-import { EMPTY_REGEX } from './constants';
+import { EMPTY_REGEX, HEX_REGEX } from './constants';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -109,7 +109,13 @@ export const getBlobUrl = (file: File) => {
 };
 
 export const getType = (type: string) => {
-  return validImageTypes.indexOf(type) > -1 ? 'IMAGE' : 'VIDEO';
+  if (validImageTypes.indexOf(type) > -1) {
+    return 'IMAGE';
+  }
+  if (validDocumentFileTypes.indexOf(type) > -1) {
+    return 'DOCUMENT';
+  }
+  return 'VIDEO';
 };
 
 export const getMediaObj = (files: File[]): IMedia[] => {
@@ -194,8 +200,12 @@ export const downloadURI = (uri: string, name: string) => {
   link.click();
 };
 
-export const BlobToFile = (blob: Blob, fileName: string): File => {
-  const file = new File([blob], fileName, { type: 'image/jpeg' });
+export const BlobToFile = (
+  blob: Blob,
+  fileName: string,
+  mimeType?: string,
+): File => {
+  const file = new File([blob], fileName, { type: mimeType || 'image/jpeg' });
   return file;
 };
 
@@ -452,4 +462,42 @@ export const mapRanges = (
   value: number,
 ) => {
   return newMin + ((newMax - newMin) / (oldMax - oldMin)) * (value - oldMin);
+};
+
+export const getMimeType = (fileName: string): string | undefined => {
+  console.log(fileName);
+  const extensionIndex = fileName.lastIndexOf('.');
+  if (extensionIndex === -1) {
+    return undefined;
+  }
+
+  const extension = fileName.substring(extensionIndex + 1);
+  const mimeTypes: { [key: string]: string } = {
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    png: 'image/png',
+    svg: 'image/svg+xml',
+    ico: 'image/x-icon',
+    gif: 'image/gif',
+    pdf: 'application/pdf',
+    txt: 'text/plain',
+    mp4: 'video/mp4',
+    webm: 'video/webm',
+    // Add more extensions and MIME types as needed
+  };
+
+  return mimeTypes[extension.toLowerCase()];
+};
+
+export const isDark = (hexcode: string) => {
+  if (!(!!hexcode && HEX_REGEX.test(hexcode.toLocaleUpperCase()))) {
+    return false;
+  }
+
+  const hex = hexcode.replace('#', '');
+  const R = parseInt(hex.slice(0, 2), 16);
+  const G = parseInt(hex.slice(2, 4), 16);
+  const B = parseInt(hex.slice(4, 6), 16);
+
+  return 0.2126 * R + 0.7152 * G + 0.0722 * B < 255 / 2;
 };

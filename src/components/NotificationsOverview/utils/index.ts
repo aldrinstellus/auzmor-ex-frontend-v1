@@ -103,16 +103,24 @@ export const getNotificationElementContent = (
     showActor = false;
   }
 
-  // If the action performed is a COMMENT
+  // If the action performed is a COMMENT OR MENTION
   else if (
     action.type === ActionType.COMMENT ||
     action.type === ActionType.MENTION
   ) {
-    // If the target has only one element, it means the comment was made on a POST
-    if (target.length === 1) {
-      const comment = action;
-      const post = target[0];
+    const [post, comment, reply] = target;
 
+    // If the target has only post, it means the mention was made on a POST
+    if (post && !comment && !reply) {
+      cardContent.BottomCardContent = `<span class="text-neutral-900">${post.content}</span>`;
+      cardContent.image = post?.image?.thumbnailUrl || undefined;
+
+      redirect = `/posts/${post.entityId}`;
+    }
+
+    // If the target has only post and comment, it means the comment was made on a POST
+    else if (post && comment && !reply) {
+      cardContent.TopCardContent = `<span class="text-neutral-900">${comment.content}</span>`;
       cardContent.BottomCardContent = `<span class="text-neutral-900">${post.content}</span>`;
       cardContent.image = post?.image?.thumbnailUrl || undefined;
 
@@ -121,12 +129,9 @@ export const getNotificationElementContent = (
       }`;
     }
 
-    // If the target has two elements, it means that the comment is a reply to a COMMENT made on a POST.
-    else if (target.length === 2) {
-      const reply = action;
-      const post = target[0];
-      const comment = target[1];
-
+    // If the target has post, comment and reply, it means that the comment is a reply to a COMMENT made on a POST.
+    else if (post && comment && reply) {
+      cardContent.TopCardContent = `<span class="text-neutral-900">${reply.content}</span>`;
       cardContent.BottomCardContent = `<span class="text-neutral-900">${comment.content}</span>`;
       cardContent.image = comment?.image?.thumbnailUrl || undefined;
 

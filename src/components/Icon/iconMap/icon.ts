@@ -140,6 +140,8 @@ import Integration from '../components/Integration';
 import Security from '../components/Security';
 import VideoSlash from '../components/VideoSlash';
 import SvgInfoIcon from '../components/Info';
+import CloudAddIcon from '../components/CloudAdd';
+import BoldTick from '../components/BoldTick';
 
 export const icon = {
   add: Add,
@@ -152,6 +154,7 @@ export const icon = {
   arrowRightUp: ArrowRightUp,
   arrowSwap: ArrowSwap,
   arrowUp: ArrowUp,
+  boldTick: BoldTick,
   bookmarkOutline: BookmarkOutline,
   branding: Branding,
   briefcase: BriefcaseIcon,
@@ -171,6 +174,7 @@ export const icon = {
   clock: ClockIcon,
   close: CloseIcon,
   closeCircle: CloseCircleIcon,
+  cloudAdd: CloudAddIcon,
   collapse: CollapseIcon,
   comment: CommentIcon,
   connectionFolder: ConnectionFolder,
@@ -218,8 +222,8 @@ export const icon = {
   iconLinear: IconLinear,
   image: ImageIcon,
   import: ImportIcon,
-  infoCircle: InfoCircleIcon,
   info: SvgInfoIcon,
+  infoCircle: InfoCircleIcon,
   insightful: Insightful,
   insightfulReaction: InsightfulReaction,
   integration: Integration,
@@ -280,8 +284,8 @@ export const icon = {
   userRemove: UserRemove,
   users: UsersIcon,
   video: VideoIcon,
+  videoSlash: VideoSlash,
   warningCircle: WarningCircleIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
-  videoSlash: VideoSlash,
 };

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import Button, { Type } from 'components/Button';
 import Divider from 'components/Divider';
@@ -23,10 +23,6 @@ interface IForm {
   confirmPassword: any;
 }
 
-interface IAccountSecurity {
-  setIsHeaderVisible?: any;
-}
-
 const schema = yup.object({
   currentPassword: yup.string().required(),
   newPassword: yup
@@ -42,7 +38,7 @@ const schema = yup.object({
     .oneOf([yup.ref('newPassword')], 'Passwords do not match'),
 });
 
-const AccountSecurity: FC<IAccountSecurity> = ({ setIsHeaderVisible }) => {
+const AccountSecurity = () => {
   const [err, setErr] = useState(false);
 
   const domain = getSubDomain(window.location.host);
@@ -191,10 +187,7 @@ const AccountSecurity: FC<IAccountSecurity> = ({ setIsHeaderVisible }) => {
             <div>Password</div>
             <Button
               label="Change Password"
-              onClick={() => {
-                setIsSettings(true);
-                setIsHeaderVisible(true);
-              }}
+              onClick={() => setIsSettings(true)}
               dataTestId="change-password-btn"
             />
           </div>
@@ -203,10 +196,7 @@ const AccountSecurity: FC<IAccountSecurity> = ({ setIsHeaderVisible }) => {
             <div className="bg-white rounded-9xl w-full">
               <div
                 className="flex mb-4 cursor-pointer"
-                onClick={() => {
-                  setIsSettings(false);
-                  setIsHeaderVisible(false);
-                }}
+                onClick={() => setIsSettings(false)}
               >
                 <Icon className="rotate-90" name={'arrowDown'} />
                 <div className="text-base font-bold">Change Password</div>
@@ -220,10 +210,7 @@ const AccountSecurity: FC<IAccountSecurity> = ({ setIsHeaderVisible }) => {
                     className="text-primary-500 text-base font-bold"
                     data-testId="forgot-password-cta"
                   >
-                    <a
-                      href={`${process.env.REACT_APP_BASE_URL}/forgot-password`}
-                      className="text-primary-500"
-                    >
+                    <a href={`/forgot-password`} className="text-primary-500">
                       Forgot Password
                     </a>
                   </div>

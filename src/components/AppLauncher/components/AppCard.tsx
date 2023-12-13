@@ -26,7 +26,7 @@ const AppCard: FC<IAppCardProps> = ({
     key: data.icon?.original,
     alt: 'app-icon',
     blurhash: data.icon?.blurHash,
-    dataTestid: `app-icon`,
+    'data-testid': `app-icon`,
   };
   const cardStyle = useMemo(
     () =>

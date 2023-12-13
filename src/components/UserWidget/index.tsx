@@ -20,7 +20,7 @@ const UserCard: FC<IUserCardProps> = ({ className }) => {
     <div className={className}>
       <Card className="pb-3 pt-0 rounded-9xl min-h-[216px]">
         <div className="flex flex-col items-center gap-2 relative px-12">
-          <div className="bg-blue-500 w-full h-[89px] absolute top-0 rounded-t-9xl"></div>
+          <div className="bg-secondary-500 w-full h-[89px] absolute top-0 rounded-t-9xl"></div>
           <Link to="/profile">
             <Avatar
               name={userDetails?.fullName || ''}

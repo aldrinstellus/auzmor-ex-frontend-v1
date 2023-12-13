@@ -10,7 +10,6 @@ import Button, {
   Type as ButtonType,
   Size,
 } from 'components/Button';
-import Divider from 'components/Divider';
 import {
   getSubDomain,
   readFirstAxiosError,
@@ -110,18 +109,18 @@ const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
   ];
 
   return (
-    <div className="w-full max-w-[414px]">
-      <div className="font-extrabold text-neutral-900 text-4xl">Signin</div>
-      <div className="text-neutral-900 text-sm font-normal mt-4">
-        Hello! Welcome back <span>👋</span>
+    <div className="w-full max-w-[440px]">
+      <div className="font-extrabold text-neutral-900 text-2xl">Signin</div>
+      <div className="text-neutral-500 text-xs font-medium mt-1">
+        Hi, enter your details to get signed in to your account
       </div>
       <form
-        className="mt-10"
+        className="mt-5"
         onSubmit={handleSubmit(onSubmit)}
         data-testid="signin-form"
       >
         {!!loginMutation.isError && (
-          <div className="mb-8">
+          <div className="mb-5">
             <Banner
               dataTestId="signin-error-message"
               title={
@@ -133,9 +132,9 @@ const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
           </div>
         )}
 
-        <Layout fields={fields} />
+        <Layout fields={fields} className="space-y-5" />
         <div
-          className="flex justify-end mt-4"
+          className="flex justify-end mt-1"
           data-testId="signin-forgot-password"
         >
           <Link to="/forgot-password">
@@ -147,7 +146,7 @@ const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
         <Button
           dataTestId="signin-btn"
           label={'Sign In'}
-          className="w-full mt-8"
+          className="w-full mt-5 !rounded-7xl"
           disabled={!isValid}
           size={Size.Large}
           type={ButtonType.Submit}
@@ -157,30 +156,21 @@ const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
       {((data?.result?.data?.sso?.active &&
         data?.result?.data?.sso?.idp !== 'CUSTOM_LDAP') ||
         !!!domain) && (
-        <>
-          <div className="flex items-center mt-8">
-            <Divider />
-            <div className="rounded-full border text-sm mx-6 px-2.5 py-1.5">
-              or
-            </div>
-            <Divider />
-          </div>
-          <Button
-            dataTestId="signin-sso-cta"
-            label={'Sign In via SSO'}
-            variant={ButtonVariant.Secondary}
-            size={Size.Large}
-            className="w-full mt-8 h-[44px]"
-            disabled={loginMutation.isLoading}
-            onClick={() => {
-              if (domain) {
-                refetch();
-              } else {
-                setViaSSO(true);
-              }
-            }}
-          />
-        </>
+        <Button
+          dataTestId="signin-sso-cta"
+          label={'Sign In via SSO'}
+          variant={ButtonVariant.Secondary}
+          size={Size.Large}
+          className="w-full mt-5 h-[44px] !rounded-7xl"
+          disabled={loginMutation.isLoading}
+          onClick={() => {
+            if (domain) {
+              refetch();
+            } else {
+              setViaSSO(true);
+            }
+          }}
+        />
       )}
     </div>
   );

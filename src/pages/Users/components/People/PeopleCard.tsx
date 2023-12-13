@@ -21,7 +21,7 @@ import {
   titleCase,
   twConfig,
 } from 'utils/misc';
-import { PRIMARY_COLOR, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import useModal from 'hooks/useModal';
 import DeletePeople from '../DeleteModals/People';
@@ -53,7 +53,7 @@ const statusColorMap: Record<string, string> = {
   [Status.PENDING]: '#EA580C',
   [Status.OWNER]: '#171717',
   [Status.MEMBER]: '#c6cc8d',
-  [Status.SUPERADMIN]: PRIMARY_COLOR,
+  [Status.SUPERADMIN]: twConfig.theme.colors.primary['500'],
 };
 
 const PeopleCard: FC<IPeopleCardProps> = ({

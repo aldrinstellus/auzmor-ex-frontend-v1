@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import Card from 'components/Card';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
@@ -6,6 +6,7 @@ import AccountSecurity from './components/AccountSecurity';
 import clsx from 'clsx';
 import BasicSettings from './components/BasicSettings';
 import NotificationSettings from './components/NotificationSettings';
+import useURLParams from 'hooks/useURLParams';
 
 interface ISetting {
   label: string;
@@ -17,53 +18,57 @@ interface ISetting {
   dataTestId?: string;
 }
 
+const settings = [
+  {
+    label: 'Basic Settings',
+    icon: 'gear',
+    key: 'basic',
+    component: <BasicSettings />,
+    disabled: false,
+    hidden: false,
+    dataTestId: 'settings-basic-settings',
+  },
+  {
+    label: 'Notifications',
+    icon: 'notification',
+    key: 'notifications',
+    component: <NotificationSettings />,
+    disabled: false,
+    hidden: false,
+    dataTestId: 'settings-notifications',
+  },
+  {
+    label: 'Integration',
+    icon: 'integration',
+    key: 'integration',
+    component: <div>Integration</div>,
+    disabled: true,
+    hidden: true,
+    dataTestId: 'settings-profile',
+  },
+  {
+    label: 'Sign in & Security',
+    icon: 'security',
+    key: 'security',
+    component: <AccountSecurity />,
+    disabled: false,
+    hidden: false,
+    dataTestId: 'settings-account-security',
+  },
+].filter((item) => !item.hidden);
+
 const UserSettings = () => {
-  const [_, setIsHeaderVisible] = useState(false);
-
-  const settings = [
-    {
-      label: 'Basic Settings',
-      icon: 'gear',
-      key: 'basic-settings',
-      component: <BasicSettings />,
-      disabled: false,
-      hidden: false,
-      dataTestId: 'settings-basic-settings',
-    },
-    {
-      label: 'Notifications',
-      icon: 'notification',
-      key: 'notifications-settings',
-      component: <NotificationSettings />,
-      disabled: true,
-      hidden: true,
-      dataTestId: 'settings-notifications',
-    },
-    {
-      label: 'Integration',
-      icon: 'integration',
-      key: 'integration-settings',
-      component: <div>Integration</div>,
-      disabled: true,
-      hidden: true,
-      dataTestId: 'settings-profile',
-    },
-    {
-      label: 'Sign in & Security',
-      icon: 'security',
-      key: 'account-security-settings',
-      component: <AccountSecurity setIsHeaderVisible={setIsHeaderVisible} />,
-      disabled: false,
-      hidden: false,
-      dataTestId: 'settings-account-security',
-    },
-  ];
-
-  const visibleSettings = settings.filter((item) => !item.hidden);
-
+  const { updateParam, searchParams } = useURLParams();
   const [activeSettingsPage, setActiveSettingsPage] = useState<ISetting>(
-    visibleSettings[0],
+    settings[0],
   );
+
+  const parsedTab = searchParams.get('tab');
+
+  useEffect(() => {
+    const parsedTabIndex = settings.findIndex((item) => item.key === parsedTab);
+    if (parsedTabIndex !== -1) setActiveSettingsPage(settings[parsedTabIndex]);
+  }, [parsedTab]);
 
   return (
     <div
@@ -76,7 +81,7 @@ const UserSettings = () => {
         </p>
         <Divider className="border-neutral-500" />
         <div className="flex flex-col">
-          {visibleSettings.map((item, index) => (
+          {settings.map((item, index) => (
             <div
               key={item.key}
               className={clsx(
@@ -85,29 +90,33 @@ const UserSettings = () => {
                   '!bg-primary-50': item.key === activeSettingsPage.key,
                 },
                 { '!bg-gray-100 !cursor-not-allowed': item.disabled },
-                { 'rounded-b-9xl': index === visibleSettings.length - 1 },
+                { 'rounded-b-9xl': index === settings.length - 1 },
               )}
-              onClick={() => !item.disabled && setActiveSettingsPage(item)}
+              onClick={() => {
+                if (item.disabled) return;
+                setActiveSettingsPage(item);
+                updateParam('tab', item.key, true);
+              }}
               data-testid={item.dataTestId}
             >
               <div
                 className={`${
                   item.key === activeSettingsPage.key
-                    ? 'text-neutral-900'
-                    : 'text-neutral-500'
+                    ? 'text-primary-500'
+                    : 'text-neutral-900'
                 } text-sm font-medium p-4 flex items-center gap-x-3`}
               >
                 <Icon
                   name={item.icon}
                   color={
                     item.key === activeSettingsPage.key
-                      ? 'text-neutral-900'
+                      ? 'text-primary-500'
                       : undefined
                   }
                 />
                 {item.label}
               </div>
-              {index !== visibleSettings.length - 1 && <Divider />}
+              {index !== settings.length - 1 && <Divider />}
             </div>
           ))}
         </div>

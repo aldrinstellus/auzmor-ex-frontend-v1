@@ -5,15 +5,17 @@ import Layout, { FieldType } from 'components/Form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Button, { Size, Type as ButtonType } from 'components/Button';
-import { Logo } from 'components/Logo';
-import WelcomeOffice from 'images/welcomeToOffice.png';
 import { useMutation } from '@tanstack/react-query';
-import { redirectWithToken } from 'utils/misc';
+import { getSubDomain, isDark, redirectWithToken } from 'utils/misc';
 import { signup } from 'queries/account';
 import { useDebounce } from 'hooks/useDebounce';
 import { useDomainExists, useIsUserExistOpen } from 'queries/users';
 import 'utils/custom-yup-validators/email/validateEmail';
 import { Navigate } from 'react-router-dom';
+import { useGetSSOFromDomain } from 'queries/organization';
+import { useBrandingStore } from 'stores/branding';
+import OfficeLogoSvg from 'components/Logo/images/OfficeLogo.svg';
+import clsx from 'clsx';
 
 interface IForm {
   fullName: string;
@@ -115,6 +117,13 @@ const Signup: FC<ISignupProps> = () => {
     watch('confirmPassword'),
     watch('privacyPolicy'),
   ]);
+
+  const domain = getSubDomain(window.location.host);
+  const { isFetching: isDomainInfoLoading } = useGetSSOFromDomain(
+    domain,
+    domain !== '' ? true : false,
+  );
+  const branding = useBrandingStore((state) => state.branding);
 
   const fields = [
     {
@@ -272,44 +281,173 @@ const Signup: FC<ISignupProps> = () => {
     return <Navigate to="/feed" />;
   }
 
-  return (
-    <div className="flex h-screen w-screen">
-      <img
-        src={WelcomeOffice}
-        className="h-full w-[48%]"
-        data-testid="signup-cover-image"
-        alt="Welcome to Auzmor Office"
-      />
-      <div className="w-[52%] h-full flex justify-center items-center relative bg-white overflow-y-auto">
-        <div className="absolute top-8 right-8" data-testid="signup-logo-image">
-          <Logo />
-        </div>
-        <div className="pt-8 w-full h-full max-w-[440px]">
-          <div className="font-extrabold text-neutral-900 text-4xl">
-            Sign Up
-          </div>
-          <form
-            className="mt-12"
-            onSubmit={handleSubmit(onSubmit)}
-            data-testid="signup-form"
-          >
-            <Layout fields={fields} />
-            <Button
-              dataTestId="sign-up-btn"
-              label={'Sign Up'}
-              disabled={
-                !isValid || !!errors?.password?.type || signupMutation.isLoading
-              }
-              className="w-full mt-8"
-              type={ButtonType.Submit}
-              size={Size.Large}
-              loading={signupMutation.isLoading}
-            />
-          </form>
-        </div>
+  if (isDomainInfoLoading) {
+    return null;
+  }
+
+  const getLoginBackground = () => {
+    const defaultBackground = (
+      <div
+        className={`w-screen h-full absolute top-0 left-0 ${
+          branding?.loginConfig?.layout === 'CENTER' &&
+          'bg-welcome-to-office-large'
+        } bg-no-repeat bg-cover bg-bottom`}
+        data-testid="signin-cover-image"
+      >
+        {branding?.loginConfig?.layout === 'LEFT' && (
+          <div className="w-1/2 float-right bg-welcome-to-office h-full"></div>
+        )}
+        {branding?.loginConfig?.layout === 'RIGHT' && (
+          <div className="w-1/2 float-left bg-welcome-to-office h-full"></div>
+        )}
       </div>
-    </div>
-  );
+    );
+    if (branding?.loginConfig) {
+      switch (branding?.loginConfig?.backgroundType) {
+        case 'IMAGE':
+          if (branding?.loginConfig?.image?.original) {
+            return (
+              <div
+                className="w-full h-full absolute top-0 left-0 bg-no-repeat bg-cover"
+                style={{
+                  backgroundImage: `url(${branding?.loginConfig?.image?.original})`,
+                }}
+              ></div>
+            );
+          } else {
+            return defaultBackground;
+          }
+        case 'VIDEO':
+          if (branding?.loginConfig?.video?.original) {
+            return (
+              <div className="w-full h-full absolute top-0 left-0 bg-no-repeat bg-cover">
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  className="h-full w-full object-cover"
+                >
+                  <source src={branding?.loginConfig?.video?.original} />
+                </video>
+              </div>
+            );
+          } else {
+            return defaultBackground;
+          }
+        case 'COLOR':
+          if (branding?.loginConfig?.color) {
+            return (
+              <div
+                className="w-full h-full absolute top-0 left-0"
+                style={{ backgroundColor: branding?.loginConfig?.color }}
+              />
+            );
+          } else {
+            return defaultBackground;
+          }
+        default:
+          return defaultBackground;
+      }
+    } else {
+      return defaultBackground;
+    }
+  };
+
+  const getSignupForm = () => {
+    return (
+      <>
+        {branding?.loginConfig?.layout === 'RIGHT' && getBannerText()}
+        <div
+          className={`flex flex-col items-center bg-neutral-50 overflow-y-auto w-[50vw] h-full z-10 gap-12 py-[100px] ${
+            branding?.loginConfig?.layout === 'CENTER' &&
+            'min-h-[660px] !h-auto rounded-16xl w-[600px] !py-20'
+          }`}
+          data-testid={getDataTestId()}
+        >
+          <div
+            className="flex justify-center items-center max-w-[250px] max-h-[150px]"
+            data-testid="signin-logo-image"
+          >
+            <img
+              src={branding?.logo?.original || OfficeLogoSvg}
+              alt="Office Logo"
+            />
+          </div>
+          <div className="max-w-[440px]">
+            <div className="font-bold text-neutral-900 text-2xl">Sign Up</div>
+            <form
+              className="mt-4"
+              onSubmit={handleSubmit(onSubmit)}
+              data-testid="signup-form"
+            >
+              <Layout fields={fields} className="space-y-4" />
+              <Button
+                dataTestId="sign-up-btn"
+                label={'Sign Up'}
+                disabled={
+                  !isValid ||
+                  !!errors?.password?.type ||
+                  signupMutation.isLoading
+                }
+                className="w-full mt-4 rounded-7xl"
+                type={ButtonType.Submit}
+                size={Size.Large}
+                loading={signupMutation.isLoading}
+              />
+            </form>
+          </div>
+        </div>
+        {branding?.loginConfig?.layout === 'LEFT' && getBannerText()}
+      </>
+    );
+  };
+
+  const getBannerText = () => {
+    if (
+      !!branding?.loginConfig?.text &&
+      branding?.loginConfig?.backgroundType === 'COLOR' &&
+      branding?.loginConfig?.layout !== 'CENTER'
+    ) {
+      return (
+        <div className="w-[50vw] flex items-center px-14">
+          <p
+            className={`text-6xl font-extrabold z-10 leading-[72px] ${
+              isDark(branding?.loginConfig?.color || '#777777')
+                ? 'text-white'
+                : 'text-neutral-900'
+            }`}
+            data-testid={`${getDataTestId()}-message`}
+          >
+            {branding?.loginConfig?.text}
+          </p>
+        </div>
+      );
+    } else {
+      return <></>;
+    }
+  };
+
+  const setLoginForm = () => {
+    return (
+      <>
+        {getLoginBackground()}
+        {getSignupForm()}
+      </>
+    );
+  };
+
+  const containerStyle = clsx({
+    'flex h-screen w-screen relative': true,
+    'justify-center items-center': branding?.loginConfig?.layout === 'CENTER',
+    'justify-end': branding?.loginConfig?.layout === 'RIGHT',
+    'justify-start': branding?.loginConfig?.layout === 'LEFT',
+  });
+
+  const getDataTestId = () => {
+    return `${branding?.loginConfig?.layout?.toLowerCase()}-align-${branding?.loginConfig?.backgroundType?.toLowerCase()}`;
+  };
+
+  return <div className={containerStyle}>{setLoginForm()}</div>;
 };
 
 export default Signup;

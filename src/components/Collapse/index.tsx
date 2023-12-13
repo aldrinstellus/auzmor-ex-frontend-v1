@@ -1,7 +1,15 @@
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 import useModal from 'hooks/useModal';
-import { FC, ReactElement, ReactNode, useMemo } from 'react';
+import {
+  FC,
+  LegacyRef,
+  ReactElement,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 
 type CollapseProps = {
   label: string;
@@ -11,6 +19,7 @@ type CollapseProps = {
   headerTextClassName?: string;
   defaultOpen?: boolean;
   dataTestId?: string;
+  height: number;
 };
 
 const Collapse: FC<CollapseProps> = ({
@@ -21,9 +30,10 @@ const Collapse: FC<CollapseProps> = ({
   headerTextClassName = '',
   defaultOpen = false,
   dataTestId,
+  height = 256,
 }): ReactElement => {
   // If you think about it, modal has similar interactivity as collapse
-  const [open, openCollpase, closeCollapse] = useModal(defaultOpen);
+  const [open, openCollpase, closeCollapse] = useModal(defaultOpen, false);
   const toggleModal = () => {
     if (open) closeCollapse();
     else openCollpase();
@@ -32,7 +42,8 @@ const Collapse: FC<CollapseProps> = ({
   const headerStyle = useMemo(
     () =>
       clsx({
-        'flex items-center justify-between cursor-pointer': true,
+        'flex items-center justify-between cursor-pointer px-6 py-4 bg-white rounded-t-9xl':
+          true,
         [headerClassName]: true,
       }),
     [],
@@ -47,21 +58,33 @@ const Collapse: FC<CollapseProps> = ({
     [],
   );
 
+  const collapseRef: LegacyRef<HTMLDivElement> = useRef(null);
+
+  useEffect(() => {
+    if (open && collapseRef.current) {
+      setTimeout(
+        () => collapseRef.current?.classList.remove('overflow-hidden'),
+        400,
+      );
+    } else {
+      collapseRef.current?.classList.add('overflow-hidden');
+    }
+  }, [open]);
+
   return (
-    <div className={className} data-testid={dataTestId}>
+    <div
+      className={`${className} overflow-hidden rounded-9xl transition-all duration-300 ease-in-out`}
+      style={{ height: open ? `${height}px` : '56px' }}
+      data-testid={dataTestId}
+      ref={collapseRef}
+    >
       <div className={headerStyle} onClick={toggleModal}>
         <div className={headerTextStyle}>{label}</div>
         <div>
           <Icon name={open ? 'arrowUp' : 'arrowDown'} />
         </div>
       </div>
-      <div
-        className={`py-0 ${
-          open ? 'h-full' : 'h-0'
-        } overflow-hidden transition-all duration-300 ease-in-out`}
-      >
-        {children}
-      </div>
+      <div className={`py-0`}>{children}</div>
     </div>
   );
 };

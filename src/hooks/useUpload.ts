@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import apiService from 'utils/apiService';
 import axios from 'axios';
 import { useState } from 'react';
@@ -45,7 +46,7 @@ interface IUploadToGcpResposne {
 export interface IFile {
   name: string;
   contentType: string;
-  type: 'IMAGE' | 'VIDEO';
+  type: 'IMAGE' | 'VIDEO' | 'DOCUMENT';
   altText: 'no image';
   size: string;
   audience: any;
@@ -55,6 +56,7 @@ export const useUpload = () => {
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>(
     UploadStatus.YetToStart,
   );
+  const [error, setError] = useState('');
   const chunksize = 1048576 * 8; // 8 MB
 
   const createFile = async (payload: IFile, entityType: EntityType) =>
@@ -147,8 +149,20 @@ export const useUpload = () => {
                 )!,
               ),
             );
+            setError('');
           } else {
-            console.log(promiseRes);
+            const reason =
+              promiseRes?.reason?.response?.data?.errors?.[0]?.message ||
+              'Something went wrong';
+            if (reason.includes('File type')) {
+              setError('File type not supported. Upload a supported file type');
+            } else {
+              setError(
+                promiseRes?.reason?.response?.data?.errors?.[0]?.message ||
+                  'Something went wrong',
+              );
+            }
+
             console.log('create file failed');
             // setUploadStatus(UploadStatus.Error);
           }
@@ -242,5 +256,11 @@ export const useUpload = () => {
     setUploadStatus(UploadStatus.Finished);
   };
 
-  return { uploadMedia, uploadStatus, useUploadCoverImage, removeCoverImage };
+  return {
+    error,
+    uploadMedia,
+    uploadStatus,
+    useUploadCoverImage,
+    removeCoverImage,
+  };
 };

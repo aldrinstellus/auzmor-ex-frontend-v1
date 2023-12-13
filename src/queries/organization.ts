@@ -1,5 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { IBranding } from 'contexts/AuthContext';
 import useAuth from 'hooks/useAuth';
+import { useBrandingStore } from 'stores/branding';
 import apiService from 'utils/apiService';
 
 export enum IdentityProvider {
@@ -25,6 +27,7 @@ export interface IOrganization {
       limitGlobalPosting: boolean;
     };
   };
+  branding: IBranding;
 }
 
 export const updateSso = async (params: IUpdateSSO) => {
@@ -60,9 +63,11 @@ const fetchSSOFromDomain = async (domain: string) => {
 };
 
 export const useGetSSOFromDomain = (domain: string, enabled?: boolean) => {
+  const setBranding = useBrandingStore((state) => state.setBranding);
   return useQuery({
     queryKey: ['get-sso-from-domain'],
     queryFn: () => fetchSSOFromDomain(domain),
+    onSuccess: (data) => setBranding(data?.result?.data?.branding || null),
     enabled,
   });
 };
@@ -73,10 +78,12 @@ const getOrganization = async (domain: string) => {
 };
 
 export const useOrganization = (domain?: string) => {
+  const setBranding = useBrandingStore((state) => state.setBranding);
   const { user } = useAuth();
   return useQuery({
     queryKey: ['organization', domain || user?.organization.domain],
     queryFn: () => getOrganization(domain || user?.organization.domain || ''),
+    onSuccess: (data) => setBranding(data?.branding || null),
   });
 };
 
@@ -94,5 +101,18 @@ export const useUpdateLimitGlobalPostingMutation = () => {
   return useMutation({
     mutationFn: (limitGlobalPosting: boolean, id?: string) =>
       patchLimitGlobalPosting(id || user!.organization.id, limitGlobalPosting),
+  });
+};
+
+export const patchBranding = async (branding: IBranding) => {
+  const response = await apiService.patch(`/organizations/configuration`, {
+    branding,
+  });
+  return response;
+};
+
+export const useUpdateBrandingMutation = () => {
+  return useMutation({
+    mutationFn: (branding: IBranding) => patchBranding(branding),
   });
 };

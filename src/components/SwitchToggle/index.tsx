@@ -7,6 +7,7 @@ type SwitchToggleProps = {
   disabled?: boolean;
   onChange?: (checked: boolean, setChecked: (checked: boolean) => void) => void;
   dataTestId?: string;
+  className?: string;
 };
 
 const SwitchToggle: FC<SwitchToggleProps> = ({
@@ -15,6 +16,7 @@ const SwitchToggle: FC<SwitchToggleProps> = ({
   disabled = false,
   onChange = () => {},
   dataTestId,
+  className = '',
 }) => {
   const [checked, setChecked] = useState(defaultValue);
   return (
@@ -27,12 +29,12 @@ const SwitchToggle: FC<SwitchToggleProps> = ({
       }}
       className={`${
         checked ? color : 'bg-gray-200'
-      } relative inline-flex h-6 w-11 items-center rounded-full`}
+      } relative inline-flex h-5 w-10 items-center rounded-full ${className}`}
       disabled={disabled}
     >
       <span
         className={`${
-          checked ? 'translate-x-6' : 'translate-x-1'
+          checked ? 'translate-x-5' : 'translate-x-1'
         } inline-block h-4 w-4 transform rounded-full bg-white transition`}
       />
     </Switch>
