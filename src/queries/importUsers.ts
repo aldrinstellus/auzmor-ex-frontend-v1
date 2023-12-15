@@ -105,12 +105,12 @@ export const useInfiniteImportResultData = ({
     queryFn: ({ pageParam, queryKey }) =>
       getImportResultData({ importId, pageParam, queryKey }),
     getNextPageParam: (lastPage: any) => {
-      const pageDataLen = lastPage?.data?.result?.data?.info?.length;
-      const pageLimit = lastPage?.data?.result?.paging?.limit;
+      const pageDataLen = lastPage?.data?.result?.data?.length;
+      const pageLimit = lastPage?.data?.paging?.limit;
       if (pageDataLen < pageLimit) {
         return null;
       }
-      return lastPage?.data?.result?.paging?.next;
+      return lastPage?.data?.paging?.next;
     },
     getPreviousPageParam: (currentPage: any) => {
       return currentPage?.data?.result?.paging?.prev;

@@ -191,6 +191,21 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       //   return '';
       // },
     },
+    {
+      key: 'role',
+      name: 'Role',
+      resizable: true,
+      width: 120,
+      renderCell: ({ row }: any) => {
+        return row.rowData.role?.value;
+      },
+      // cellClass: (row: any) => {
+      //   if (!row.rowData.role?.isValid) {
+      //     return 'text-red-500 bg-red-50';
+      //   }
+      //   return '';
+      // },
+    },
   ];
 
   if (['PARTIAL', 'FAILED'].includes(status)) {

@@ -1374,7 +1374,11 @@ const BrandingSettings: FC = () => {
                   backgroundType === 'Color' &&
                   layoutAlignment === 'RIGHT' && (
                     <div className="flex h-full w-1/2 items-center pl-2">
-                      <p className="text-xs font-extrabold text-white">
+                      <p
+                        className={`text-xs font-extrabold ${
+                          isDark(color) ? 'text-white' : 'text-neutral-900'
+                        } `}
+                      >
                         {text}
                       </p>
                     </div>
