@@ -16,6 +16,7 @@ import apiService from 'utils/apiService';
 import useModal from 'hooks/useModal';
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
+import ConfirmationBox from 'components/ConfirmationBox';
 
 type AppProps = {
   open: boolean;
@@ -35,6 +36,7 @@ const ReviewStep: React.FC<AppProps> = ({
   const [inProgress, setInProgress] = useState(false);
   const [errorCount, setErrorCount] = useState(0);
   const [errorConfirm, showConfirm, closeConfirm] = useModal();
+  const [backConfirm, showBackConfirm, closeBackConfirm] = useModal();
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteImportData({
@@ -72,7 +74,7 @@ const ReviewStep: React.FC<AppProps> = ({
       resizable: true,
       width: 220,
       renderCell: ({ row, tabIndex }: any) => {
-        return row.rowData.email.value;
+        return row.rowData.email?.value;
       },
       cellClass: (row: any) => {
         if (!row.rowData.email?.isValid) {
@@ -87,7 +89,7 @@ const ReviewStep: React.FC<AppProps> = ({
       resizable: true,
       width: 220,
       renderCell: ({ row, tabIndex }: any) => {
-        return row.rowData.managerEmail.value;
+        return row.rowData.managerEmail?.value;
       },
       cellClass: (row: any) => {
         if (!row.rowData.managerEmail?.isValid) {
@@ -102,7 +104,7 @@ const ReviewStep: React.FC<AppProps> = ({
       resizable: true,
       width: 180,
       renderCell: ({ row, tabIndex }: any) => {
-        return row.rowData.designation.value;
+        return row.rowData.designation?.value;
       },
       cellClass: (row: any) => {
         if (!row.rowData.designation?.isValid) {
@@ -117,7 +119,7 @@ const ReviewStep: React.FC<AppProps> = ({
       resizable: true,
       width: 220,
       renderCell: ({ row, tabIndex }: any) => {
-        return row.rowData.department.value;
+        return row.rowData.department?.value;
       },
       cellClass: (row: any) => {
         if (!row.rowData.department?.isValid) {
@@ -127,15 +129,15 @@ const ReviewStep: React.FC<AppProps> = ({
       },
     },
     {
-      key: 'location',
+      key: 'workLocation',
       name: 'Location',
       resizable: true,
       width: 220,
       renderCell: ({ row, tabIndex }: any) => {
-        return row.rowData.location.value;
+        return row.rowData.workLocation?.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.location?.isValid) {
+        if (!row.rowData.workLocation?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -147,7 +149,7 @@ const ReviewStep: React.FC<AppProps> = ({
       resizable: true,
       width: 120,
       renderCell: ({ row, tabIndex }: any) => {
-        return row.rowData.employeeId.value;
+        return row.rowData.employeeId?.value;
       },
       cellClass: (row: any) => {
         if (!row.rowData.employeeId?.isValid) {
@@ -157,41 +159,41 @@ const ReviewStep: React.FC<AppProps> = ({
       },
     },
     {
-      key: 'phoneNumber',
+      key: 'workPhone',
       name: 'Phone',
       resizable: true,
       width: 120,
       renderCell: ({ row, tabIndex }: any) => {
-        return row.rowData.phoneNumber.value;
+        return row.rowData.workPhone?.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.phoneNumber?.isValid) {
+        if (!row.rowData.workPhone?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
       },
     },
     {
-      key: 'dateOfBirth',
+      key: 'birthDate',
       name: 'Date of Birth',
       resizable: true,
       width: 140,
       renderCell: ({ row, tabIndex }: any) => {
-        return row.rowData.dateOfBirth.value;
+        return row.rowData.birthDate?.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.dateOfBirth?.isValid) {
+        if (!row.rowData.birthDate?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
       },
       headerCellClass: flatData.some(
-        (row: any) => !row.rowData.dateOfBirth?.isValid,
+        (row: any) => !row.rowData.birthDate?.isValid,
       )
         ? 'bg-red-50 !overflow-visible'
         : '',
       renderHeaderCell: () => {
-        if (flatData.some((row: any) => !row.rowData.dateOfBirth?.isValid)) {
+        if (flatData.some((row: any) => !row.rowData.birthDate?.isValid)) {
           return (
             <div className="w-full flex justify-between items-center text-red-500">
               <p>Date of Birth</p>
@@ -208,26 +210,26 @@ const ReviewStep: React.FC<AppProps> = ({
       },
     },
     {
-      key: 'dateOfJoining',
+      key: 'joinDate',
       name: 'Date of Joining',
       resizable: true,
       width: 140,
       renderCell: ({ row, tabIndex }: any) => {
-        return row.rowData.dateOfJoining.value;
+        return row.rowData.joinDate?.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.dateOfJoining?.isValid) {
+        if (!row.rowData.joinDate?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
       },
       headerCellClass: flatData.some(
-        (row: any) => !row.rowData?.dateOfJoining?.isValid,
+        (row: any) => !row.rowData?.joinDate?.isValid,
       )
         ? 'bg-red-50 !overflow-visible'
         : '',
       renderHeaderCell: () => {
-        if (flatData.some((row: any) => !row.rowData.dateOfJoining?.isValid)) {
+        if (flatData.some((row: any) => !row.rowData.joinDate?.isValid)) {
           return (
             <div className="w-full flex justify-between items-center text-red-500">
               <p>Date of Joining</p>
@@ -305,138 +307,159 @@ const ReviewStep: React.FC<AppProps> = ({
   };
 
   return (
-    <Modal open={open} className="max-w-[1350px]">
-      <Header
-        onBackIconClick={() => setStep(StepEnum.Importing)}
-        title="Bulk Add User info"
-        onClose={closeModal}
-        titleDataTestId="back-arrow"
-        closeBtnDataTestId="import-people-close"
-      />
-      <div className="bg-purple-50 pt-4">
-        <div className="bg-white rounded-7xl mb-4 mx-4 px-4 py-3 shadow-sm">
-          <span className="text-primary-700 font-bold">Importing File </span>{' '}
-          <span className="text-primary-700 font-bold text-lg">&gt;</span>{' '}
-          <span className="text-primary-500 font-medium text-base">Review</span>
-        </div>
-        {isLoading || loading ? (
-          <div className="p-12 flex justify-center items-center">
-            <Spinner />
-          </div>
-        ) : (
-          <div className="bg-white">
-            <div className="px-6">
-              <div className="py-4 text-sm text-neutral-900 v-center space-x-2">
-                <SwitchToggle
-                  defaultValue={showOnlyError}
-                  onChange={(c) => {
-                    setShowOnlyError(c);
-                  }}
-                  dataTestId="show-problem-rows"
-                />
-                <span className="text-sm">Only show rows with problem</span>
-              </div>
-
-              {flatData?.length ? (
-                <DataGrid
-                  enableVirtualization
-                  columns={columns}
-                  rows={flatData}
-                  rowKeyGetter={rowKeyGetter}
-                  rowHeight={26}
-                  headerRowHeight={28}
-                  className="text-xs rdg-light h-[65vh] w-auto"
-                  onScroll={handleScroll}
-                  data-testid="value-row"
-                />
-              ) : (
-                <div className="flex flex-col justify-center items-center p-4">
-                  <img src={require('./nodata.png')} />
-                  <div
-                    className="pt-4 text-2xl font-bold"
-                    data-testid="no-data-msg"
-                  >
-                    No data to display
-                  </div>
-                </div>
-              )}
-              {isFetchingNextPage && (
-                <div className="text-xs font-bold text-neutral-500 text-center">
-                  Loading...
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-      <div className="flex justify-between items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
-        <Button
-          label="Go Back"
-          variant={Variant.Secondary}
-          size={Size.Small}
-          className="mr-4"
-          onClick={() => setStep(StepEnum.Importing)}
-          dataTestId="go-back-cta"
+    <>
+      <Modal open={open} className="max-w-[1350px]">
+        <Header
+          onBackIconClick={() => setStep(StepEnum.Importing)}
+          title="Bulk Add User info"
+          onClose={closeModal}
+          titleDataTestId="back-arrow"
+          closeBtnDataTestId="import-people-close"
         />
-        <div className="v-center">
+        <div className="bg-purple-50 pt-4">
+          <div className="bg-white rounded-7xl mb-4 mx-4 px-4 py-3 shadow-sm">
+            <span className="text-primary-700 font-bold">Importing File </span>{' '}
+            <span className="text-primary-700 font-bold text-lg">&gt;</span>{' '}
+            <span className="text-primary-500 font-medium text-base">
+              Review
+            </span>
+          </div>
+          {isLoading || loading ? (
+            <div className="p-12 flex justify-center items-center">
+              <Spinner />
+            </div>
+          ) : (
+            <div className="bg-white">
+              <div className="px-6">
+                <div className="py-4 text-sm text-neutral-900 v-center space-x-2">
+                  <SwitchToggle
+                    defaultValue={showOnlyError}
+                    onChange={(c) => {
+                      setShowOnlyError(c);
+                    }}
+                    dataTestId="show-problem-rows"
+                  />
+                  <span className="text-sm">Only show rows with problem</span>
+                </div>
+
+                {flatData?.length ? (
+                  <DataGrid
+                    enableVirtualization
+                    columns={columns}
+                    rows={flatData}
+                    rowKeyGetter={rowKeyGetter}
+                    rowHeight={26}
+                    headerRowHeight={28}
+                    className="text-xs rdg-light h-[65vh] w-auto"
+                    onScroll={handleScroll}
+                    data-testid="value-row"
+                  />
+                ) : (
+                  <div className="flex flex-col justify-center items-center p-4">
+                    <img src={require('./nodata.png')} />
+                    <div
+                      className="pt-4 text-2xl font-bold"
+                      data-testid="no-data-msg"
+                    >
+                      No data to display
+                    </div>
+                  </div>
+                )}
+                {isFetchingNextPage && (
+                  <div className="text-xs font-bold text-neutral-500 text-center">
+                    Loading...
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="flex justify-between items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
-            label="Cancel"
+            label="Go Back"
             variant={Variant.Secondary}
             size={Size.Small}
             className="mr-4"
-            onClick={closeModal}
-            dataTestId="cancel-review-cta"
+            onClick={showBackConfirm}
+            dataTestId="go-back-cta"
           />
-          <Button
-            label="Review"
-            size={Size.Small}
-            dataTestId="review-cta"
-            onClick={handleClick}
-            loading={inProgress}
-            disabled={isLoading || loading || !flatData?.length}
-          />
-        </div>
-      </div>
-      {errorConfirm && (
-        <Modal open={errorConfirm}>
-          <Header
-            title="Unresolved errors"
-            onClose={closeConfirm}
-            closeBtnDataTestId="import-people-close"
-          />
-          <div className="flex flex-col justify-center items-center p-4">
-            <Icon name="warningCircle" className="text-red-500" size={80} />
-            <div
-              className="text-lg font-bold text-neutral-700 pt-4"
-              data-testid="issue-count"
-            >
-              You have {errorCount} rows with unresolved issue
-            </div>
-            <div className="text-center mt-4 px-6">
-              We will ignore the entire row if you wish to proceed or you can
-              modify your file
-            </div>
-          </div>
-          <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
+          <div className="v-center">
             <Button
-              label="Go back"
+              label="Cancel"
               variant={Variant.Secondary}
               size={Size.Small}
               className="mr-4"
-              onClick={closeConfirm}
-              dataTestId="goback-cta"
+              onClick={closeModal}
+              dataTestId="cancel-review-cta"
             />
             <Button
-              label="Proceed"
+              label="Review"
               size={Size.Small}
-              dataTestId="proceed-cta"
-              onClick={() => setStep(StepEnum.Confirmation)}
+              dataTestId="review-cta"
+              onClick={handleClick}
               loading={inProgress}
+              disabled={isLoading || loading || !flatData?.length}
             />
           </div>
-        </Modal>
-      )}
-    </Modal>
+        </div>
+        {errorConfirm && (
+          <Modal open={errorConfirm}>
+            <Header
+              title="Unresolved errors"
+              onClose={closeConfirm}
+              closeBtnDataTestId="import-people-close"
+            />
+            <div className="flex flex-col justify-center items-center p-4">
+              <Icon name="warningCircle" className="text-red-500" size={80} />
+              <div
+                className="text-lg font-bold text-neutral-700 pt-4"
+                data-testid="issue-count"
+              >
+                You have {errorCount} rows with unresolved issue
+              </div>
+              <div className="text-center mt-4 px-6">
+                We will ignore the entire row if you wish to proceed or you can
+                modify your file
+              </div>
+            </div>
+            <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
+              <Button
+                label="Go back"
+                variant={Variant.Secondary}
+                size={Size.Small}
+                className="mr-4"
+                onClick={closeConfirm}
+                dataTestId="goback-cta"
+              />
+              <Button
+                label="Proceed"
+                size={Size.Small}
+                dataTestId="proceed-cta"
+                onClick={() => setStep(StepEnum.Confirmation)}
+                loading={inProgress}
+              />
+            </div>
+          </Modal>
+        )}
+      </Modal>
+      <ConfirmationBox
+        open={backConfirm}
+        onClose={closeConfirm}
+        title="Confirmation"
+        description={
+          <span>
+            Are you sure you want to clear all changes to data in progress in
+            this state?
+          </span>
+        }
+        success={{
+          label: 'Yes',
+          className: '',
+          onSubmit: () => setStep(StepEnum.Importing),
+        }}
+        discard={{ label: 'Cancel', className: '', onCancel: closeBackConfirm }}
+      />
+    </>
   );
 };
 
