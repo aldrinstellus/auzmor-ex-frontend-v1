@@ -8,8 +8,7 @@ import Details from './Details';
 
 const Processing: React.FC = () => {
   const [open, openModal, closeModal] = useModal(false);
-  const { importId, total, setShowJobProgress, complete, setComplete } =
-    useJobStore();
+  const { importId, setShowJobProgress, complete, setComplete } = useJobStore();
   const [collapse, openCollpase, closeCollapse] = useModal(true);
   const { ready, data } = usePoller({ importId, action: 'create' });
 
@@ -18,6 +17,17 @@ const Processing: React.FC = () => {
       setComplete(ready);
     }
   }, [ready]);
+
+  const totalUploaded =
+    (data?.result?.data?.info?.addedWithMissingValues || 0) +
+    (data?.result?.data?.info?.error || 0) +
+    (data?.result?.data?.info?.skipped || 0) +
+    (data?.result?.data?.info?.valid || 0);
+
+  const successfullUploads =
+    (data?.result?.data?.info?.addedWithMissingValues || 0) +
+    (data?.result?.data?.info?.valid || 0);
+  const totalRecords = data?.result?.data?.info?.total;
 
   return (
     <div className="fixed w-full bottom-0 flex justify-center px-14 z-50">
@@ -42,15 +52,13 @@ const Processing: React.FC = () => {
                   if (!complete) {
                     return (
                       <div>
-                        Uploading {data?.result?.data?.info?.total} out of{' '}
-                        {total} members...
+                        Uploading {totalUploaded} out of {totalRecords}{' '}
+                        members...
                       </div>
                     );
                   }
-                  const uploadedSoFar =
-                    data?.result?.data?.info?.addedWithMissingValues +
-                    data?.result?.data?.info?.valid;
-                  if (uploadedSoFar === data?.result?.data?.info?.total) {
+
+                  if (successfullUploads === totalRecords) {
                     return (
                       <div className="v-center space-x-1">
                         <Icon name="boldTick" className="text-primary-500" />
@@ -62,8 +70,8 @@ const Processing: React.FC = () => {
                     <div className="v-center space-x-1">
                       <Icon name="boldTick" className="text-primary-500" />
                       <span>
-                        {uploadedSoFar} out of {total} members uploaded
-                        successfully
+                        {successfullUploads} out of {totalRecords} members
+                        uploaded successfully
                       </span>
                     </div>
                   );
