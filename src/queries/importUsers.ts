@@ -101,7 +101,7 @@ export const useInfiniteImportResultData = ({
   q?: Record<string, any>;
 }) => {
   return useInfiniteQuery({
-    queryKey: ['csv-import', q],
+    queryKey: ['csv-import', 'result', q],
     queryFn: ({ pageParam, queryKey }) =>
       getImportResultData({ importId, pageParam, queryKey }),
     getNextPageParam: (lastPage: any) => {

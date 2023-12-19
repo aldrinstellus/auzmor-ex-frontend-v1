@@ -1,4 +1,4 @@
-import { FC, MouseEventHandler, useMemo } from 'react';
+import React, { FC, MouseEventHandler, useMemo } from 'react';
 import clsx from 'clsx';
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import { ReactNode } from 'react';
@@ -13,7 +13,7 @@ export enum Variant {
 }
 
 export type BannerProps = {
-  title: string;
+  title: string | React.ReactNode;
   variant?: Variant;
   icon?: string;
   action?: ReactNode | null;
@@ -46,7 +46,7 @@ const Banner: FC<BannerProps> = ({
             variant === Variant.Info,
         },
         {
-          'border-1 bg-orange-100 border-orange-300 rounded-md':
+          'border-1 bg-yellow-100 border-yellow-300 rounded-md':
             variant === Variant.Warning,
         },
         {

@@ -51,6 +51,7 @@ const ValidateHeaders: React.FC<AppProps> = ({
   const isColumnMappingValid = sheetRes['isColumnMappingValid'];
   const isHeaderRowPresent = sheetRes['isHeaderRowPresent'];
   const error = sheetRes['error'] || [];
+  const warning = sheetRes['warning'] || [];
   const _disableSubmit =
     disableSubmit || !!error?.length || !isHeaderRowPresent;
 
@@ -64,6 +65,19 @@ const ValidateHeaders: React.FC<AppProps> = ({
             )}
             {!isHeaderRowPresent && (
               <Banner variant={Variant.Error} title="Error mapping header" />
+            )}
+            {!!warning?.length && (
+              <Banner
+                variant={Variant.Warning}
+                title={
+                  <div>
+                    {warning.join(': ')}
+                    {!error?.length && (
+                      <div>Press confirm to ignore these columns.</div>
+                    )}
+                  </div>
+                }
+              />
             )}
 
             <div className="v-center">

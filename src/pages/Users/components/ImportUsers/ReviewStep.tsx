@@ -17,6 +17,7 @@ import useModal from 'hooks/useModal';
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
 import ConfirmationBox from 'components/ConfirmationBox';
+import { useQueryClient } from '@tanstack/react-query';
 
 type AppProps = {
   open: boolean;
@@ -31,6 +32,7 @@ const ReviewStep: React.FC<AppProps> = ({
   closeModal,
   setStep,
 }) => {
+  const queryClient = useQueryClient();
   const { ready, loading } = usePoller({ importId, action: 'validate' });
   const [showOnlyError, setShowOnlyError] = useState(false);
   const [inProgress, setInProgress] = useState(false);
@@ -442,23 +444,32 @@ const ReviewStep: React.FC<AppProps> = ({
           </Modal>
         )}
       </Modal>
-      <ConfirmationBox
-        open={backConfirm}
-        onClose={closeConfirm}
-        title="Confirmation"
-        description={
-          <span>
-            Are you sure you want to clear all changes to data in progress in
-            this state?
-          </span>
-        }
-        success={{
-          label: 'Yes',
-          className: '',
-          onSubmit: () => setStep(StepEnum.Importing),
-        }}
-        discard={{ label: 'Cancel', className: '', onCancel: closeBackConfirm }}
-      />
+      {backConfirm && (
+        <ConfirmationBox
+          open={backConfirm}
+          onClose={() => {
+            queryClient.invalidateQueries(['csv-import']);
+            closeConfirm();
+          }}
+          title="Confirmation"
+          description={
+            <span>
+              Are you sure you want to clear all changes to data in progress in
+              this state?
+            </span>
+          }
+          success={{
+            label: 'Yes',
+            className: '',
+            onSubmit: () => setStep(StepEnum.Importing),
+          }}
+          discard={{
+            label: 'Cancel',
+            className: '',
+            onCancel: closeBackConfirm,
+          }}
+        />
+      )}
     </>
   );
 };
