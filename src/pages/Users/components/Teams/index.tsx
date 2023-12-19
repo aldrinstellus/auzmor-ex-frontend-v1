@@ -158,7 +158,6 @@ const Team: FC<ITeamProps> = ({
   };
 
   const onApplyFilter = (appliedFilters: IAppliedFilters) => {
-    console.log;
     setAppliedFilters(appliedFilters);
     const serializedCategories = serializeFilter(appliedFilters.categories);
     updateParam('categories', serializedCategories);
@@ -216,7 +215,7 @@ const Team: FC<ITeamProps> = ({
 
   return (
     <div className="relative pb-8">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div className="flex space-x-4">
           <Button
             label="My Teams"
@@ -245,7 +244,7 @@ const Team: FC<ITeamProps> = ({
             />
           )}
         </div>
-        <div className="flex space-x-2 justify-center items-center">
+        <div className="flex items-center justify-center space-x-2">
           <IconButton
             icon="filterLinear"
             onClick={openFilterModal}
@@ -287,7 +286,7 @@ const Team: FC<ITeamProps> = ({
       </div>
 
       {!isLoading ? (
-        <div className="text-neutral-500 my-4">
+        <div className="my-4 text-neutral-500">
           Showing {!isLoading && data?.pages[0]?.data?.result?.totalCount}{' '}
           results
         </div>
@@ -302,15 +301,15 @@ const Team: FC<ITeamProps> = ({
       {/* CATEGORY FILTER */}
 
       {appliedFilters?.categories?.length ? (
-        <div className="flex justify-between items-start mb-6">
-          <div className="flex items-center space-x-2 flex-wrap gap-y-2">
+        <div className="flex items-start justify-between mb-6">
+          <div className="flex flex-wrap items-center space-x-2 gap-y-2">
             <div className="text-base text-neutral-500 whitespace-nowrap">
               Filter By
             </div>
             {appliedFilters?.categories?.map((category: ICategory) => (
               <div
                 key={category.id}
-                className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
+                className="flex items-center px-3 py-1 mr-1 text-sm font-medium capitalize bg-white border cursor-pointer border-neutral-200 rounded-7xl hover:text-primary-600 hover:border-primary-600 group"
                 data-testid={`teams-filterby`}
                 onClick={() => handleRemoveFilters('categories', category.id)}
               >
@@ -360,7 +359,7 @@ const Team: FC<ITeamProps> = ({
                     {...team}
                   />
                 ))}
-                <div className="h-12 w-12">
+                <div className="w-12 h-12">
                   {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
                 </div>
                 {isFetchingNextPage && <PageLoader />}
@@ -369,8 +368,8 @@ const Team: FC<ITeamProps> = ({
           </div>
         ) : null}
         {showNoTeams ? (
-          <div className="flex flex-col space-y-3 items-center w-full">
-            <div className="flex flex-col space-y-6 items-center">
+          <div className="flex flex-col items-center w-full space-y-3">
+            <div className="flex flex-col items-center space-y-6">
               <img
                 src={TeamNotFound}
                 alt="Team Not Found"
@@ -389,7 +388,7 @@ const Team: FC<ITeamProps> = ({
                     the first to
                   </div>
                   <div
-                    className="text-blue-500 cursor-pointer font-bold"
+                    className="font-bold text-blue-500 cursor-pointer"
                     onClick={() => openTeamModal()}
                     data-testid="create-one-team"
                   >
@@ -406,7 +405,8 @@ const Team: FC<ITeamProps> = ({
         ) : null}
         {showNoDataFound ? (
           <NoDataFound
-            className="py-4 w-full"
+            hideClearBtn={debouncedSearchValue ? false : true}
+            className="w-full py-4"
             searchString={searchValue}
             message={
               <p>
