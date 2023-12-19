@@ -244,7 +244,7 @@ const ReviewStep: React.FC<AppProps> = ({
             </div>
           );
         }
-        return 'Date of Birth';
+        return 'Date of Joining';
       },
     },
     {
