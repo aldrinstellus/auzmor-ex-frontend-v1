@@ -236,11 +236,8 @@ const EditSchedulePostModal: FC<EditSchedulePostModalProp> = ({
               label={'Save'}
               dataTestId="schedule-post-next-cta"
               onClick={() => {
-                let hours = parseInt(time.split(' ')[0].split(':')[0]);
+                const hours = parseInt(time.split(' ')[0].split(':')[0]);
                 const min = parseInt(time.split(' ')[0].split(':')[1]);
-                if (time.indexOf('pm') > -1) {
-                  hours += 12;
-                }
                 updatePostMutation.mutate({
                   ...post,
                   schedule: {
