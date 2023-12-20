@@ -262,7 +262,7 @@ const Chart: FC<IChart> = ({
       </div>
       {!!!data?.length && !!!isLoading && (
         <NoDataFound
-          className="p-8 w-full bg-white max-w-[1440px] rounded-9xl"
+          className="p-8 w-full bg-white max-w-[1440px] rounded-9xl mt-[182px]"
           onClearSearch={onClearFilter}
           message={
             <p>
