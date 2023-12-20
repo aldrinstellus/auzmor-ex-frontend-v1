@@ -44,7 +44,7 @@ import NoPosts from 'images/NoPostsFound.png';
 import AppLauncher from 'components/AppLauncher';
 import MyTeamWidget from 'components/MyTeamWidget';
 import useRole from 'hooks/useRole';
-import { isRegularPost } from 'utils/misc';
+import { isFiltersEmpty, isRegularPost } from 'utils/misc';
 import useMediaQuery from 'hooks/useMediaQuery';
 
 interface IFeedProps {}
@@ -91,19 +91,22 @@ const Feed: FC<IFeedProps> = () => {
   const currentDate = new Date().toISOString();
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteFeed(pathname, {
-      [PostFilterKeys.PostType]: appliedFeedFilters[PostFilterKeys.PostType],
-      ...(appliedFeedFilters[PostFilterKeys.PostPreference]?.includes(
-        PostFilterPreference.BookmarkedByMe,
-      ) && { [PostFilterPreference.BookmarkedByMe]: true }),
-      ...(appliedFeedFilters[PostFilterKeys.PostPreference]?.includes(
-        PostFilterPreference.MentionedInPost,
-      ) && { [PostFilterPreference.MentionedInPost]: true }),
-      ...(appliedFeedFilters[PostFilterKeys.PostPreference]?.includes(
-        PostFilterPreference.MyPosts,
-      ) && { [PostFilterPreference.MyPosts]: true }),
-      hashtags: [hashtag],
-    });
+    useInfiniteFeed(
+      pathname,
+      isFiltersEmpty({
+        [PostFilterKeys.PostType]: appliedFeedFilters[PostFilterKeys.PostType],
+        ...(appliedFeedFilters[PostFilterKeys.PostPreference]?.includes(
+          PostFilterPreference.BookmarkedByMe,
+        ) && { [PostFilterPreference.BookmarkedByMe]: true }),
+        ...(appliedFeedFilters[PostFilterKeys.PostPreference]?.includes(
+          PostFilterPreference.MentionedInPost,
+        ) && { [PostFilterPreference.MentionedInPost]: true }),
+        ...(appliedFeedFilters[PostFilterKeys.PostPreference]?.includes(
+          PostFilterPreference.MyPosts,
+        ) && { [PostFilterPreference.MyPosts]: true }),
+        [PostFilterKeys.Hashtags]: appliedFeedFilters[PostFilterKeys.Hashtags],
+      }),
+    );
 
   const feedIds = (
     (data?.pages.flatMap((page) =>
