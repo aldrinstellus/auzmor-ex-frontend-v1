@@ -10,7 +10,7 @@ import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import { toast } from 'react-toastify';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { downloadReport } from 'queries/importUsers';
 import Spinner from 'components/Spinner';
 
@@ -31,6 +31,7 @@ const mapStatusLabel: Record<string, string> = {
 
 const Details: React.FC<AppProps> = ({ open, closeModal, data, importId }) => {
   const [status, setStatus] = useState('');
+  const queryClient = useQueryClient();
 
   const info = data?.result?.data?.info || {};
 
@@ -163,7 +164,10 @@ const Details: React.FC<AppProps> = ({ open, closeModal, data, importId }) => {
     <Modal open={open} className={status ? 'max-w-[1350px]' : 'max-w-[638px]'}>
       {status ? (
         <Header
-          onBackIconClick={() => setStatus('')}
+          onBackIconClick={() => {
+            queryClient.invalidateQueries(['csv-import', 'result']);
+            setStatus('');
+          }}
           title={mapStatusLabel[status]}
           closeBtnDataTestId="import-people-close"
           titleDataTestId="modal-header"

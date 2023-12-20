@@ -32,6 +32,7 @@ const SelectSheetStep: React.FC<AppProps> = ({
   setStep,
   importId,
   meta,
+  setMeta,
 }) => {
   const validateUserMutation = useMutation(() => validateImport(importId), {
     onError: () => {},
@@ -59,6 +60,7 @@ const SelectSheetStep: React.FC<AppProps> = ({
   useEffect(() => {
     if (_sheet) {
       parseMutation.mutate({ sheetIndex: _sheet?.value });
+      setMeta((m: any) => ({ ...m, sheetIndex: _sheet?.value }));
     }
   }, [_sheet]);
 
@@ -101,7 +103,7 @@ const SelectSheetStep: React.FC<AppProps> = ({
         isSuccess={parseMutation.isSuccess}
         isError={parseMutation.isError}
         meta={meta}
-        mutation={validateUserMutation}
+        setStep={setStep}
         closeModal={closeModal}
         disableSubmit={meta.sheetOptions?.length != 1 ? !_sheet : false}
         selectedSheet={

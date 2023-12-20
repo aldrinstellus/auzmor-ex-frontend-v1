@@ -86,7 +86,7 @@ export const getImportResultData = async ({
   if (pageParam === null) {
     return await apiService.get(
       `/users/import/${importId}/report`,
-      queryKey[1],
+      queryKey[2],
     );
   } else return await apiService.get(pageParam);
 };
@@ -103,7 +103,7 @@ export const useInfiniteImportResultData = ({
   return useInfiniteQuery({
     queryKey: ['csv-import', 'result', q],
     queryFn: ({ pageParam, queryKey }) =>
-      getImportResultData({ importId, pageParam, queryKey }),
+      getImportResultData({ importId, pageParam, queryKey, ...q }),
     getNextPageParam: (lastPage: any) => {
       const pageDataLen = lastPage?.data?.result?.data?.length;
       const pageLimit = lastPage?.data?.paging?.limit;

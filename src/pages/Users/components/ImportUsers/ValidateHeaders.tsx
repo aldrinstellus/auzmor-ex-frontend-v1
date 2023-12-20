@@ -4,6 +4,7 @@ import Icon from 'components/Icon';
 import Spinner from 'components/Spinner';
 import { find } from 'lodash';
 import React from 'react';
+import { StepEnum } from './utils';
 
 type AppProps = {
   isLoading: boolean;
@@ -11,20 +12,20 @@ type AppProps = {
   isError: boolean;
   meta: Record<string, any>;
   closeModal: () => any;
-  mutation: any;
   disableSubmit?: boolean;
   selectedSheet?: number;
   isCsv?: boolean;
+  setStep: (...args: any) => any;
 };
 
 const ValidateHeaders: React.FC<AppProps> = ({
   isLoading,
   meta,
   closeModal,
-  mutation,
   disableSubmit = false,
   selectedSheet,
   isCsv = true,
+  setStep,
 }) => {
   if (isLoading) {
     return (
@@ -114,17 +115,15 @@ const ValidateHeaders: React.FC<AppProps> = ({
             className="mr-4"
             onClick={closeModal}
             dataTestId="import-people-cancel"
-            disabled={mutation.isLoading}
           />
           <Button
             label="Confirm"
             size={Size.Small}
             dataTestId="import-people-next"
             onClick={() => {
-              mutation.mutate();
+              setStep(StepEnum.Review);
             }}
-            disabled={_disableSubmit || mutation.isLoading}
-            loading={mutation.isLoading}
+            disabled={_disableSubmit}
           />
         </div>
       )}

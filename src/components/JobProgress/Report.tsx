@@ -11,6 +11,7 @@ type AppProps = {
 };
 
 const Report: React.FC<AppProps> = ({ importId, status }) => {
+  console.log('>>>>>>', status);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteImportResultData({
       importId,
@@ -215,7 +216,10 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       resizable: true,
       width: 160,
       renderCell: ({ row }: any) => {
-        return titleCase(row.error?.split('_').join(' '));
+        if (row.error) {
+          return titleCase(row.error?.split('_').join(' '));
+        }
+        return '';
       },
       cellClass: (row: any) => {
         if (row.error) {

@@ -3,14 +3,11 @@ import Button, { Size, Variant } from 'components/Button';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import React, { useEffect, useMemo, useState } from 'react';
-import { StepEnum } from './utils';
-import { useInfiniteUsers } from 'queries/users';
-import { useInView } from 'react-intersection-observer';
+import { StepEnum } from '../utils';
 import 'react-data-grid/lib/styles.css';
 import DataGrid, { RenderRowProps, Row } from 'react-data-grid';
 import SwitchToggle from 'components/SwitchToggle';
 import { useInfiniteImportData } from 'queries/importUsers';
-import usePoller from './usePoller';
 import Spinner from 'components/Spinner';
 import apiService from 'utils/apiService';
 import useModal from 'hooks/useModal';
@@ -18,22 +15,34 @@ import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
 import ConfirmationBox from 'components/ConfirmationBox';
 import { useQueryClient } from '@tanstack/react-query';
+import WaitForParse from './WaitForParse';
+import WaitForValidate from './WaitForValidate';
+import { find } from 'lodash';
 
 type AppProps = {
   open: boolean;
   closeModal: () => any;
   setStep: (...args: any) => any;
   importId: string;
+  meta: any;
 };
+
+enum LoaderStep {
+  Parse = 'parse',
+  Validate = 'validate',
+  Review = 'review',
+}
 
 const ReviewStep: React.FC<AppProps> = ({
   open,
   importId,
   closeModal,
   setStep,
+  meta,
 }) => {
   const queryClient = useQueryClient();
-  const { ready, loading } = usePoller({ importId, action: 'validate' });
+  const [loaderStep, setLoaderStep] = useState(LoaderStep.Parse);
+  // const { ready, loading } = usePoller({ importId, action: 'validate' });
   const [showOnlyError, setShowOnlyError] = useState(false);
   const [inProgress, setInProgress] = useState(false);
   const [errorCount, setErrorCount] = useState(0);
@@ -43,9 +52,12 @@ const ReviewStep: React.FC<AppProps> = ({
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteImportData({
       importId,
-      startFetching: ready,
+      startFetching: loaderStep === LoaderStep.Review,
       q: { includeOnlyErrors: showOnlyError || undefined },
     });
+
+  const _sheet = data?.pages?.[0]?.data?.result?.data?.sheets || {};
+  console.log('SHEET>>>', _sheet);
 
   const flatData: any[] = (
     data?.pages.flatMap((page) => {
@@ -69,6 +81,11 @@ const ReviewStep: React.FC<AppProps> = ({
         }
         return '';
       },
+      headerCellClass:
+        _sheet?.rowCount &&
+        _sheet?.rowCount === _sheet?.columnMapping?.fullName?.errorRowsCount
+          ? 'bg-red-50 text-red-500'
+          : '',
     },
     {
       key: 'email',
@@ -84,6 +101,11 @@ const ReviewStep: React.FC<AppProps> = ({
         }
         return '';
       },
+      headerCellClass:
+        _sheet?.rowCount &&
+        _sheet?.rowCount === _sheet?.columnMapping?.email?.errorRowsCount
+          ? 'bg-red-50 text-red-500'
+          : '',
     },
     {
       key: 'managerEmail',
@@ -99,6 +121,11 @@ const ReviewStep: React.FC<AppProps> = ({
         }
         return '';
       },
+      headerCellClass:
+        _sheet?.rowCount &&
+        _sheet?.rowCount === _sheet?.columnMapping?.managerEmail?.errorRowsCount
+          ? 'bg-red-50 text-red-500'
+          : '',
     },
     {
       key: 'designation',
@@ -114,6 +141,11 @@ const ReviewStep: React.FC<AppProps> = ({
         }
         return '';
       },
+      headerCellClass:
+        _sheet?.rowCount &&
+        _sheet?.rowCount === _sheet?.columnMapping?.designation?.errorRowsCount
+          ? 'bg-red-50 text-red-500'
+          : '',
     },
     {
       key: 'department',
@@ -129,6 +161,11 @@ const ReviewStep: React.FC<AppProps> = ({
         }
         return '';
       },
+      headerCellClass:
+        _sheet?.rowCount &&
+        _sheet?.rowCount === _sheet?.columnMapping?.department?.errorRowsCount
+          ? 'bg-red-50 text-red-500'
+          : '',
     },
     {
       key: 'workLocation',
@@ -144,6 +181,11 @@ const ReviewStep: React.FC<AppProps> = ({
         }
         return '';
       },
+      headerCellClass:
+        _sheet?.rowCount &&
+        _sheet?.rowCount === _sheet?.columnMapping?.workLocation?.errorRowsCount
+          ? 'bg-red-50 text-red-500'
+          : '',
     },
     {
       key: 'employeeId',
@@ -159,6 +201,11 @@ const ReviewStep: React.FC<AppProps> = ({
         }
         return '';
       },
+      headerCellClass:
+        _sheet?.rowCount &&
+        _sheet?.rowCount === _sheet?.columnMapping?.employeeId?.errorRowsCount
+          ? 'bg-red-50 text-red-500'
+          : '',
     },
     {
       key: 'workPhone',
@@ -174,6 +221,11 @@ const ReviewStep: React.FC<AppProps> = ({
         }
         return '';
       },
+      headerCellClass:
+        _sheet?.rowCount &&
+        _sheet?.rowCount === _sheet?.columnMapping?.workPhone?.errorRowsCount
+          ? 'bg-red-50 text-red-500'
+          : '',
     },
     {
       key: 'birthDate',
@@ -261,6 +313,12 @@ const ReviewStep: React.FC<AppProps> = ({
         }
         return '';
       },
+      headerCellClass:
+        _sheet?.rowCount &&
+        _sheet?.rowCount ===
+          _sheet?.columnMapping?.maritalStatus?.errorRowsCount
+          ? 'bg-red-50 text-red-500'
+          : '',
     },
     {
       key: 'role',
@@ -276,6 +334,11 @@ const ReviewStep: React.FC<AppProps> = ({
         }
         return '';
       },
+      headerCellClass:
+        _sheet?.rowCount &&
+        _sheet?.rowCount === _sheet?.columnMapping?.role?.errorRowsCount
+          ? 'bg-red-50 text-red-500'
+          : '',
     },
   ];
 
@@ -326,55 +389,77 @@ const ReviewStep: React.FC<AppProps> = ({
               Review
             </span>
           </div>
-          {isLoading || loading ? (
-            <div className="p-12 flex justify-center items-center">
-              <Spinner />
-            </div>
-          ) : (
-            <div className="bg-white">
-              <div className="px-6">
-                <div className="py-4 text-sm text-neutral-900 v-center space-x-2">
-                  <SwitchToggle
-                    defaultValue={showOnlyError}
-                    onChange={(c) => {
-                      setShowOnlyError(c);
-                    }}
-                    dataTestId="show-problem-rows"
-                  />
-                  <span className="text-sm">Only show rows with problem</span>
+          {(() => {
+            if (loaderStep === LoaderStep.Parse) {
+              return (
+                <WaitForParse
+                  importId={importId}
+                  setNextStep={() => setLoaderStep(LoaderStep.Validate)}
+                />
+              );
+            }
+            if (loaderStep === LoaderStep.Validate) {
+              return (
+                <WaitForValidate
+                  importId={importId}
+                  setNextStep={() => setLoaderStep(LoaderStep.Review)}
+                />
+              );
+            }
+            if (isLoading) {
+              return (
+                <div className="p-12 flex justify-center items-center">
+                  <Spinner />
                 </div>
+              );
+            }
 
-                {flatData?.length ? (
-                  <DataGrid
-                    enableVirtualization
-                    columns={columns}
-                    rows={flatData}
-                    rowKeyGetter={rowKeyGetter}
-                    rowHeight={26}
-                    headerRowHeight={28}
-                    className="text-xs rdg-light h-[65vh] w-auto"
-                    onScroll={handleScroll}
-                    data-testid="value-row"
-                  />
-                ) : (
-                  <div className="flex flex-col justify-center items-center p-4">
-                    <img src={require('./nodata.png')} />
-                    <div
-                      className="pt-4 text-2xl font-bold"
-                      data-testid="no-data-msg"
-                    >
-                      No data to display
+            return (
+              <div className="bg-white">
+                <div className="px-6">
+                  <div className="py-4 text-sm text-neutral-900 v-center space-x-2">
+                    <SwitchToggle
+                      defaultValue={showOnlyError}
+                      onChange={(c) => {
+                        setShowOnlyError(c);
+                      }}
+                      dataTestId="show-problem-rows"
+                    />
+                    <span className="text-sm">Only show rows with problem</span>
+                  </div>
+
+                  {flatData?.length ? (
+                    <DataGrid
+                      enableVirtualization
+                      columns={columns}
+                      rows={flatData}
+                      rowKeyGetter={rowKeyGetter}
+                      rowHeight={26}
+                      headerRowHeight={28}
+                      className="text-xs rdg-light h-[65vh] w-auto"
+                      onScroll={handleScroll}
+                      data-testid="value-row"
+                    />
+                  ) : (
+                    <div className="flex flex-col justify-center items-center p-4">
+                      <img src={require('../nodata.png')} />
+                      <div
+                        className="pt-4 text-2xl font-bold"
+                        data-testid="no-data-msg"
+                      >
+                        No data to display
+                      </div>
                     </div>
-                  </div>
-                )}
-                {isFetchingNextPage && (
-                  <div className="text-xs font-bold text-neutral-500 text-center">
-                    Loading...
-                  </div>
-                )}
+                  )}
+                  {isFetchingNextPage && (
+                    <div className="text-xs font-bold text-neutral-500 text-center">
+                      Loading...
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
         <div className="flex justify-between items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
@@ -400,7 +485,11 @@ const ReviewStep: React.FC<AppProps> = ({
               dataTestId="review-cta"
               onClick={handleClick}
               loading={inProgress}
-              disabled={isLoading || loading || !flatData?.length}
+              disabled={
+                isLoading ||
+                loaderStep !== LoaderStep.Review ||
+                !flatData?.length
+              }
             />
           </div>
         </div>

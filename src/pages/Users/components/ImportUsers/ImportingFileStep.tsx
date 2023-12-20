@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Spinner from 'components/Spinner';
 import Modal from 'components/Modal';
-import { StepEnum } from './utils';
 import Header from 'components/ModalHeader';
 import Icon from 'components/Icon';
 import { useMutation } from '@tanstack/react-query';
-import {
-  parseImport,
-  updateParseImport,
-  validateImport,
-} from 'queries/importUsers';
+import { parseImport, updateParseImport } from 'queries/importUsers';
 import ImportingForExcel from './ImportingForExcel';
 import usePoller from './usePoller';
 import ValidateHeaders from './ValidateHeaders';
@@ -40,8 +35,6 @@ const ImportingFileStep: React.FC<AppProps> = ({
     enabled: isCsv && startPolling,
   });
 
-  console.log('>>> DATA FOR PARSE>>>', data);
-
   const updateParseMutation = useMutation(() =>
     updateParseImport(importId, {}),
   );
@@ -57,13 +50,6 @@ const ImportingFileStep: React.FC<AppProps> = ({
     onSuccess: async () => {
       setMeta((m: any) => ({ ...m, parsed: true }));
       setStartPolling(true);
-    },
-  });
-
-  const validateUserMutation = useMutation(() => validateImport(importId), {
-    onError: () => {},
-    onSuccess: () => {
-      setStep(StepEnum.Review);
     },
   });
 
@@ -121,7 +107,7 @@ const ImportingFileStep: React.FC<AppProps> = ({
           isError={parseMutation.isError}
           meta={meta}
           closeModal={closeModal}
-          mutation={validateUserMutation}
+          setStep={setStep}
         />
       </div>
     );
