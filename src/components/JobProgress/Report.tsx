@@ -11,7 +11,6 @@ type AppProps = {
 };
 
 const Report: React.FC<AppProps> = ({ importId, status }) => {
-  console.log('>>>>>>', status);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteImportResultData({
       importId,
