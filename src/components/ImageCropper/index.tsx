@@ -35,9 +35,9 @@ const ImageCropper = ({
   className = '',
   cropperRef,
   aspectRatio = 7.38,
-  minW,
+  // minW,
   maxW,
-  minH,
+  // minH,
   maxH,
 }: // customHeight,
 // customWidth,
@@ -74,9 +74,9 @@ ImageCropperProps) => {
             overlayClassName: 'overlay',
           }}
           className="cropper"
-          minWidth={minW}
+          // minWidth={minW}
           maxWidth={maxW}
-          minHeight={minH}
+          // minHeight={minH}
           maxHeight={maxH}
         />
       ) : (
@@ -98,9 +98,9 @@ ImageCropperProps) => {
             lines: false,
             resizable: true,
           }}
-          minWidth={minW}
+          // minWidth={minW}
           maxWidth={maxW}
-          minHeight={minH}
+          // minHeight={minH}
           maxHeight={maxH}
           // Modify the width and height to modify the stencil
           // defaultVisibleArea={{

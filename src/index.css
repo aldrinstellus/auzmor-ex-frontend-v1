@@ -301,3 +301,11 @@ body {
 #tab-toolbar .active {
   border-bottom: 3px solid var(--primary-500) !important;
 }
+
+.advanced-cropper-stencil-overlay {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.advanced-cropper-rectangle-stencil__preview {
+  border: 1px solid white;
+}
