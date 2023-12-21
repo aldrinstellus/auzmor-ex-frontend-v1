@@ -3,7 +3,7 @@ import Card from 'components/Card';
 import clsx from 'clsx';
 import Header from '../Header';
 import DateOfBirthRow from './DateOfBirthRow';
-import GenderRow from './GenderRow';
+// import GenderRow from './GenderRow';
 import MarriedRow from './MarriedRow';
 import SkillsRow from './SkillsRow';
 
@@ -41,7 +41,7 @@ const PersonalDetails: FC<IPersonalDetailsProps> = ({
       <Card className={onHoverStyles} shadowOnHover={canEdit}>
         <div className="px-4">
           <DateOfBirthRow data={personalDetails} />
-          <GenderRow data={personalDetails} />
+          {/* <GenderRow data={personalDetails} /> */}
           <MarriedRow data={personalDetails} />
           <SkillsRow data={personalDetails} />
         </div>

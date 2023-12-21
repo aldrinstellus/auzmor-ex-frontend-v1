@@ -13,7 +13,7 @@ import Spinner from 'components/Spinner';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 
 const IMPORT_FORMAT =
-  'Name,Email,Manager Email,Designation,Department,Location,Employee Id,Phone Number,Date of Birth,Date of Joining,Gender,Marital Status,Role';
+  'Name,Email,Manager Email,Designation,Department,Location,Employee Id,Phone Number,Date of Birth,Date of Joining,Marital Status,Role';
 
 type AppProps = {
   open: boolean;
