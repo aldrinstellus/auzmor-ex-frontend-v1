@@ -1,4 +1,3 @@
-import { clearFaviconInterval } from 'App';
 import { IBranding } from 'contexts/AuthContext';
 import { applyBranding } from 'utils/branding';
 import { create } from 'zustand';
@@ -25,7 +24,6 @@ export const useBrandingStore = create<IBrandingStore>((set) => ({
       set(() => ({ branding }));
     } else {
       try {
-        clearFaviconInterval();
         document
           .querySelector('link[rel="icon"]')
           ?.setAttribute('href', '/favicon.ico');
