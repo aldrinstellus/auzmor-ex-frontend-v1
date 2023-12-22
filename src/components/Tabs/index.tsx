@@ -76,7 +76,7 @@ const Tabs: FC<ITabsProps> = ({
                   !tab.disabled
                     ? isActive(index)
                       ? 'cursor-default'
-                      : 'cursor-pointer'
+                      : 'cursor-pointer hover:!text-neutral-900'
                     : 'cursor-not-allowed'
                 } ${index !== tabs.length - 1 && `mr-${itemSpacing}`}
             `}

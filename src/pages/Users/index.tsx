@@ -41,10 +41,11 @@ const Users: FC<IUsersProps> = () => {
         'font-bold px-4 cursor-pointer py-1': true,
       },
       {
-        'bg-primary-500 rounded-6xl text-white': active,
+        'bg-primary-500 rounded-6xl text-white text-neutral-900': active,
       },
       {
-        'bg-neutral-50 rounded-lg': !active,
+        'bg-neutral-50 rounded-lg hover:text-neutral-900 text-neutral-500':
+          !active,
       },
       {
         'bg-opacity-50 text-gray-400': disabled,
