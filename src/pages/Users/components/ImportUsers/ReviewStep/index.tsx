@@ -57,7 +57,6 @@ const ReviewStep: React.FC<AppProps> = ({
     });
 
   const _sheet = data?.pages?.[0]?.data?.result?.data?.sheets || {};
-  console.log('SHEET>>>', _sheet);
 
   const flatData: any[] = (
     data?.pages.flatMap((page) => {

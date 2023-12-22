@@ -11,6 +11,13 @@ export const parseDate = (timestring: string, format = 'YYYY-MM-DD') => {
   return moment(timestring, format).toDate();
 };
 
+export const formatDate = (dt: Date, format = 'YYYY-MM-DD') => {
+  if (!dt) {
+    return null;
+  }
+  return moment(dt).format(format);
+};
+
 export const afterXUnit = (
   x: number,
   unit: moment.unitOfTime.DurationConstructor,
