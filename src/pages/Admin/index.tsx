@@ -6,9 +6,11 @@ import { FC, useEffect, useState } from 'react';
 import GeneralSettings from './GeneralSettings';
 import BrandingSettings from './BrandingSettings';
 import useURLParams from 'hooks/useURLParams';
+import useRole from 'hooks/useRole';
 
 const Admin: FC = () => {
   const { updateParam, searchParams } = useURLParams();
+  const { isAdmin, isSuperAdmin } = useRole({ exact: true });
   const [activeSettingsIndex, setActiveSettingsIndex] = useState<number>(0);
   const parsedTab = searchParams.get('tab');
   const settings = [
@@ -21,6 +23,7 @@ const Admin: FC = () => {
       hidden: false,
       hideDefaultLabelCard: false,
       dataTestId: 'adminsettings-generalsetting',
+      allowOnlySuperAdmin: true,
     },
     {
       label: 'User Management',
@@ -31,6 +34,7 @@ const Admin: FC = () => {
       hidden: true,
       hideDefaultLabelCard: false,
       dataTestId: 'settings-user-management',
+      allowOnlySuperAdmin: false,
     },
     {
       label: 'Branding',
@@ -41,6 +45,7 @@ const Admin: FC = () => {
       hidden: false,
       hideDefaultLabelCard: true,
       dataTestId: 'generalsettings-branding',
+      allowOnlySuperAdmin: true,
     },
     {
       label: 'Single Sign-on',
@@ -51,6 +56,7 @@ const Admin: FC = () => {
       hidden: false,
       hideDefaultLabelCard: false,
       dataTestId: 'settings-sso',
+      allowOnlySuperAdmin: false,
     },
     {
       label: 'Marketplace',
@@ -61,6 +67,7 @@ const Admin: FC = () => {
       hidden: true,
       hideDefaultLabelCard: false,
       dataTestId: 'settings-marketplace',
+      allowOnlySuperAdmin: false,
     },
     {
       label: 'Notifications',
@@ -71,12 +78,20 @@ const Admin: FC = () => {
       hidden: true,
       hideDefaultLabelCard: false,
       dataTestId: 'settings-notifications',
+      allowOnlySuperAdmin: false,
     },
-  ].filter((item) => !item.hidden);
+  ].filter(
+    (item) =>
+      !item.hidden && (isSuperAdmin || (isAdmin && !item.allowOnlySuperAdmin)),
+  );
 
   useEffect(() => {
     const parsedTabIndex = settings.findIndex((item) => item.key === parsedTab);
-    if (parsedTabIndex !== -1) setActiveSettingsIndex(parsedTabIndex);
+    if (parsedTabIndex !== -1) {
+      setActiveSettingsIndex(parsedTabIndex);
+    } else {
+      updateParam('tab', settings[0].key, true);
+    }
   }, [parsedTab]);
 
   return (
