@@ -35,7 +35,9 @@ const NotificationsOverview: FC = () => {
       tabLabel: (isActive: boolean) => (
         <p
           className={`font-bold text-sm pb-2 w-[53px] text-center ${
-            isActive ? 'text-neutral-900' : 'text-neutral-500'
+            isActive
+              ? 'text-neutral-900'
+              : 'text-neutral-500 hover:text-neutral-900'
           }`}
         >
           All
@@ -50,7 +52,9 @@ const NotificationsOverview: FC = () => {
       tabLabel: (isActive: boolean) => (
         <p
           className={`font-bold text-sm pb-2 ${
-            isActive ? 'text-neutral-900' : 'text-neutral-500'
+            isActive
+              ? 'text-neutral-900'
+              : 'text-neutral-500 hover:text-neutral-900'
           }`}
         >
           Mentions

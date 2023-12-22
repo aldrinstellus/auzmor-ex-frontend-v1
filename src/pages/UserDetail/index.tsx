@@ -64,13 +64,14 @@ const UserDetail: FC<IUserDetailProps> = () => {
   const tabStyles = (active: boolean) =>
     clsx(
       {
-        'font-medium px-6 cursor-pointer py-1': true,
+        'font-medium px-6 cursor-pointer py-1 !font-bold': true,
       },
       {
-        '!font-bold bg-primary-500 rounded-6xl text-white': active,
+        'bg-primary-500 rounded-6xl text-white': active,
       },
       {
-        'bg-neutral-50 rounded-lg': !active,
+        'text-neutral-500 bg-neutral-50 rounded-lg hover:text-neutral-900':
+          !active,
       },
     );
 
