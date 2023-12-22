@@ -32,13 +32,13 @@ const ValidateHeaders: React.FC<AppProps> = ({
       <div className="px-6 pt-2 pb-4 space-y-4">
         <div className="v-center">
           <Spinner className="!h-5 !w-5" />
-          <div className="text-sm text-neutral-900 pl-1">
+          <div className="pl-1 text-sm text-neutral-900">
             Checking for headers
           </div>
         </div>
         <div className="v-center">
           <Spinner className="!h-5 !w-5" />
-          <div className="text-sm text-neutral-900 pl-1">Mapping Columns</div>
+          <div className="pl-1 text-sm text-neutral-900">Mapping Columns</div>
         </div>
       </div>
     );
@@ -49,6 +49,7 @@ const ValidateHeaders: React.FC<AppProps> = ({
     (sheets?.length === 1
       ? sheets[0]
       : find(sheets, { index: selectedSheet })) || {};
+
   const isColumnMappingValid = sheetRes['isColumnMappingValid'];
   const isHeaderRowPresent = sheetRes['isHeaderRowPresent'];
   const error = sheetRes['error'] || [];
@@ -61,13 +62,14 @@ const ValidateHeaders: React.FC<AppProps> = ({
       {(isCsv || (!isCsv && selectedSheet)) && (
         <>
           <div className="px-6 pt-2 pb-4 space-y-4">
-            {!!error?.length && (
-              <Banner variant={Variant.Error} title={error.join(': ')} />
-            )}
             {!isHeaderRowPresent && (
               <Banner variant={Variant.Error} title="Error mapping header" />
             )}
-            {!!warning?.length && (
+            {isHeaderRowPresent && !!error?.length && (
+              <Banner variant={Variant.Error} title={error.join(': ')} />
+            )}
+
+            {isHeaderRowPresent && !!warning?.length && (
               <Banner
                 variant={Variant.Warning}
                 title={
@@ -107,7 +109,7 @@ const ValidateHeaders: React.FC<AppProps> = ({
         </>
       )}
       {((isCsv && !isLoading) || !isCsv) && (
-        <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
+        <div className="flex items-center justify-end h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
             label="Cancel"
             variant={BtnVariant.Secondary}
