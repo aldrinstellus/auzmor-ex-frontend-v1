@@ -3,7 +3,7 @@ import Button, { Variant as BtnVariant, Size } from 'components/Button';
 import Icon from 'components/Icon';
 import Spinner from 'components/Spinner';
 import { find } from 'lodash';
-import React from 'react';
+import React, { FC, useState } from 'react';
 import { StepEnum } from './utils';
 
 type AppProps = {
@@ -57,6 +57,42 @@ const ValidateHeaders: React.FC<AppProps> = ({
   const _disableSubmit =
     disableSubmit || !!error?.length || !isHeaderRowPresent;
 
+  const WarningBanner: FC<any> = ({ warning }) => {
+    const [showMore, setShowMore] = useState<boolean>(false);
+    return (
+      <div>
+        {warning[0]}: &nbsp;
+        {showMore ? (
+          <span
+            className="font-bold underline cursor-pointer"
+            onClick={() => setShowMore(false)}
+          >
+            view less
+          </span>
+        ) : (
+          <span
+            className="font-bold underline cursor-pointer"
+            onClick={() => setShowMore(true)}
+          >
+            view details
+          </span>
+        )}
+        {!error?.length && <div>Press confirm to ignore these columns.</div>}
+        {showMore && (
+          <p>
+            <span className="font-bold underline">Columns:</span>
+            <br />
+            {warning[1].split(',').map((column: string) => (
+              <>
+                <span key={column}>{column}</span>
+                <br />
+              </>
+            ))}
+          </p>
+        )}
+      </div>
+    );
+  };
   return (
     <div>
       {(isCsv || (!isCsv && selectedSheet)) && (
@@ -72,14 +108,7 @@ const ValidateHeaders: React.FC<AppProps> = ({
             {isHeaderRowPresent && !!warning?.length && (
               <Banner
                 variant={Variant.Warning}
-                title={
-                  <div>
-                    {warning.join(': ')}
-                    {!error?.length && (
-                      <div>Press confirm to ignore these columns.</div>
-                    )}
-                  </div>
-                }
+                title={<WarningBanner warning={warning} />}
               />
             )}
 
