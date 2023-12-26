@@ -28,7 +28,7 @@ const TeamOptions: React.FC<AppProps> = ({
   iconClassName,
 }) => {
   const [showDeleteModal, openDeleteModal, closeDeleteModal] = useModal(false);
-  const { isAdmin, isMember } = useRole();
+  const { isAdmin } = useRole();
 
   const teamAllOption = [
     {
@@ -38,12 +38,12 @@ const TeamOptions: React.FC<AppProps> = ({
       dataTestId: `${dataTestIdPrefix}edit-team`,
       enabled: isAdmin,
     },
-    {
-      icon: 'shareForwardOutline',
-      label: 'Share',
-      dataTestId: `${dataTestIdPrefix}share-team`,
-      enabled: isAdmin || isMember,
-    },
+    // {
+    //   icon: 'shareForwardOutline',
+    //   label: 'Share',
+    //   dataTestId: `${dataTestIdPrefix}share-team`,
+    //   enabled: isAdmin || isMember,
+    // },
     {
       icon: 'cancel',
       label: 'Remove',
