@@ -158,12 +158,13 @@ const ForgotPassword: FC<IForgotPasswordProps> = () => {
           data-testid={getDataTestId()}
         >
           <div
-            className="flex justify-center items-center max-w-[250px] max-h-[150px]"
+            className="flex justify-center items-center h-[150px] object-contain"
             data-testid="signin-logo-image"
           >
             <img
               src={branding?.logo?.original || OfficeLogoSvg}
               alt="Office Logo"
+              className="h-full"
             />
           </div>
           <div className="w-full max-w-[440px]">

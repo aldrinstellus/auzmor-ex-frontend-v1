@@ -38,6 +38,7 @@ import queryClient from 'utils/queryClient';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Shape } from 'components/ImageCropper';
 
 const PRIMARY_COLOR = '#10B981';
 const SECONDARY_COLOR = '#1D4ED8FF';
@@ -63,15 +64,19 @@ const Preview: FC<{
   onCustomRemove = () => {},
   onBrandingRemove = () => {},
   isVideo,
-  imgClassName,
+  imgClassName = '',
   videoClassName,
   className = '',
   dataTestId,
   showPreview = true,
 }) => {
   const style = clsx({
-    'max-h-full max-w-full relative': true,
+    'max-h-full max-w-full relative h-full': true,
     [className]: true,
+  });
+  const imageStyle = clsx({
+    [imgClassName]: true,
+    'w-full h-full object-contain rounded-7xl': true,
   });
   return file ? (
     <div className={style}>
@@ -87,7 +92,7 @@ const Preview: FC<{
       ) : (
         <img
           src={getMediaObj([file])[0].original}
-          className={imgClassName}
+          className={imageStyle}
           data-testid={`branding-uploaded-${dataTestId}`}
         />
       )}
@@ -117,7 +122,7 @@ const Preview: FC<{
       ) : (
         <img
           src={url}
-          className={imgClassName}
+          className={imageStyle}
           data-testid={`branding-uploaded-${dataTestId}`}
         />
       )}
@@ -1466,9 +1471,6 @@ const BrandingSettings: FC = () => {
           imageRef={logoInputRef}
           setImageFile={setSelectedLogo}
           imageFile={tempfile}
-          aspectRatio={250 / 150}
-          width={250}
-          height={150}
           mimeType={getMimeType(tempfile?.name || '')}
         />
       )}
@@ -1481,9 +1483,7 @@ const BrandingSettings: FC = () => {
           imageRef={faviconInputRef}
           setImageFile={setSelectedFavicon}
           imageFile={tempfile}
-          aspectRatio={32 / 32}
-          width={32}
-          height={32}
+          shape={Shape.Square}
           mimeType={getMimeType(tempfile?.name || '')}
         />
       )}
@@ -1496,7 +1496,6 @@ const BrandingSettings: FC = () => {
           imageRef={bgInputRef}
           setImageFile={setSelectedBG}
           imageFile={tempfile}
-          aspectRatio={1920 / 860}
           mimeType={getMimeType(tempfile?.name || '')}
         />
       )}

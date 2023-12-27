@@ -137,12 +137,13 @@ const Login: FC<ILoginProps> = () => {
           data-testid={getDataTestId()}
         >
           <div
-            className="flex justify-center items-center max-w-[250px] max-h-[150px]"
+            className="flex justify-center items-center h-[150px] object-contain"
             data-testid="signin-logo-image"
           >
             <img
               src={branding?.logo?.original || OfficeLogoSvg}
               alt="Office Logo"
+              className="h-full"
             />
           </div>
           {viaSSO ? (
