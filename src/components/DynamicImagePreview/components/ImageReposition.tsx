@@ -10,7 +10,7 @@ import { CropperRef } from 'react-advanced-cropper';
 import 'react-advanced-cropper/dist/style.css';
 import Header from 'components/ModalHeader';
 import Modal from 'components/Modal';
-import ImageCropper from 'components/ImageCropper';
+import ImageCropper, { Shape } from 'components/ImageCropper';
 import PageLoader from 'components/PageLoader';
 import Footer from './Footer';
 
@@ -26,10 +26,7 @@ export interface IImageResositionProps {
   width?: number;
   height?: number;
   mimeType?: string;
-}
-
-export enum Shape {
-  Rectangle = 'rectangle',
+  shape?: Shape;
 }
 
 const ImageResosition: FC<IImageResositionProps> = ({
@@ -40,10 +37,9 @@ const ImageResosition: FC<IImageResositionProps> = ({
   setImageFile,
   closeEditImageModal = () => {},
   imageRef,
-  aspectRatio = 3,
-  width,
-  height,
+  aspectRatio,
   mimeType = 'image/jpeg',
+  shape = Shape.Rectangle,
 }) => {
   const cropperRef = useRef<CropperRef>(null);
   const [isImageLoading, setIsImageLoading] = useState<boolean>(true);
@@ -103,12 +99,8 @@ const ImageResosition: FC<IImageResositionProps> = ({
         <ImageCropper
           src={image}
           cropperRef={cropperRef}
-          shape={Shape.Rectangle}
+          shape={shape}
           aspectRatio={aspectRatio}
-          minH={height}
-          maxH={height}
-          minW={width}
-          maxW={width}
         />
       )}
       <Footer
