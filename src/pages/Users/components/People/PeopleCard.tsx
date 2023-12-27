@@ -341,7 +341,9 @@ const PeopleCard: FC<IPeopleCardProps> = ({
                   color="text-neutral-900"
                 />
                 <div className="text-neutral-900 text-xxs font-semibold truncate">
-                  {department?.name.substring(0, 22)}
+                  {department?.name.length <= 22
+                    ? department?.name.substring(0, 22)
+                    : department?.name.substring(0, 22) + '..'}
                 </div>
               </div>
             )}
