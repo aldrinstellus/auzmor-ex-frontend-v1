@@ -34,6 +34,10 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
   const { control, handleSubmit, getValues, reset } = useForm<IContactInfoForm>(
     {
       mode: 'onSubmit',
+      defaultValues: {
+        primaryEmail: contactCardData?.primaryEmail,
+        workPhone: contactCardData?.workPhone,
+      },
     },
   );
 
