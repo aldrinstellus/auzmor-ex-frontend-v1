@@ -996,7 +996,7 @@ const BrandingSettings: FC = () => {
                 fields={[
                   {
                     name: 'primaryColor',
-                    label: 'Primary/action colour',
+                    label: 'Primary/action color',
                     type: FieldType.ColorPicker,
                     control,
                     className: '',
@@ -1032,7 +1032,7 @@ const BrandingSettings: FC = () => {
                     fields={[
                       {
                         name: 'secondaryColor',
-                        label: 'Secondary/action colour',
+                        label: 'Secondary/action color',
                         type: FieldType.ColorPicker,
                         control,
                         className: '',
@@ -1059,7 +1059,7 @@ const BrandingSettings: FC = () => {
                       data-testid="readability-warning"
                     >
                       <span className="font-semibold">Readability Alert:</span>{' '}
-                      It is advised not to use same primary and secondary colour
+                      It is advised not to use same primary and secondary color
                     </p>
                   )}
                   {secondaryColor?.toUpperCase() === '#FFFFFF' && (
@@ -1080,7 +1080,7 @@ const BrandingSettings: FC = () => {
                   data-testid="branding-add-secondary-color"
                 >
                   <Icon name="add" color="text-primary-500" />
-                  <p>Add secondary colour</p>
+                  <p>Add secondary color</p>
                 </div>
               )}
             </div>
@@ -1334,7 +1334,7 @@ const BrandingSettings: FC = () => {
                     fields={[
                       {
                         name: 'color',
-                        label: 'primary/action colour',
+                        label: 'primary/action color',
                         type: FieldType.ColorPicker,
                         control,
                         className: '',
