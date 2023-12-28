@@ -74,6 +74,7 @@ export const useInfiniteImportData = ({
       return currentPage?.data?.result?.paging?.prev;
     },
     staleTime: 0,
+    cacheTime: 0,
     enabled: startFetching,
   });
 };
@@ -116,6 +117,7 @@ export const useInfiniteImportResultData = ({
       return currentPage?.data?.result?.paging?.prev;
     },
     staleTime: 0,
+    cacheTime: 0,
     enabled: startFetching,
   });
 };
