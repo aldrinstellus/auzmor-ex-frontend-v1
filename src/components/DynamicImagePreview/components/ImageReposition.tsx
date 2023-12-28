@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { CropperRef } from 'react-advanced-cropper';
+import { CropperRef, CropperState } from 'react-advanced-cropper';
 import 'react-advanced-cropper/dist/style.css';
 import Header from 'components/ModalHeader';
 import Modal from 'components/Modal';
@@ -23,6 +23,10 @@ export interface IImageResositionProps {
   setImageFile: (file: any) => void;
   imageFile?: any;
   aspectRatio?: number;
+  defaultSize?: (cropperState: CropperState) => {
+    width: number;
+    height: number;
+  };
   width?: number;
   height?: number;
   mimeType?: string;
@@ -38,6 +42,7 @@ const ImageResosition: FC<IImageResositionProps> = ({
   closeEditImageModal = () => {},
   imageRef,
   aspectRatio,
+  defaultSize,
   mimeType = 'image/jpeg',
   shape = Shape.Rectangle,
 }) => {
@@ -101,6 +106,7 @@ const ImageResosition: FC<IImageResositionProps> = ({
           cropperRef={cropperRef}
           shape={shape}
           aspectRatio={aspectRatio}
+          defaultSize={defaultSize}
         />
       )}
       <Footer

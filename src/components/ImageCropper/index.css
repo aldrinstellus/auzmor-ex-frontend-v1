@@ -9,4 +9,9 @@
 .cropper {
   height: 600px;
   background: #ddd;
+  padding: 16px;
+}
+
+.advanced-cropper__background-wrapper > img {
+  border: 1px solid #737373;
 }

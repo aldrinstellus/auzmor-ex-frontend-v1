@@ -400,7 +400,7 @@ const BrandingSettings: FC = () => {
     },
     validator: (file) => {
       // size validation
-      if (file.size > 5 * MB) {
+      if (file.size > 50 * MB) {
         return {
           code: 'file-size-exceed',
           message: 'The file size exceeds the limit',
@@ -445,7 +445,7 @@ const BrandingSettings: FC = () => {
     },
     validator: (file) => {
       // size validation
-      if (file.size > 5 * MB) {
+      if (file.size > 500 * MB) {
         return {
           code: 'file-size-exceed',
           message: 'The file size exceeds the limit',
@@ -706,66 +706,76 @@ const BrandingSettings: FC = () => {
       if (layoutAlignment === 'LEFT') {
         if (removedMedia.bg) {
           return (
-            <img
-              className={`absolute top-0 right-0 object-cover h-full ${
-                selectedBG ? 'w-full' : 'w-1/2'
-              }`}
-              src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
-            />
+            <div className={`absolute top-0 right-0 object-cover h-full w-1/2`}>
+              <img
+                className="object-cover h-full"
+                src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
+              />
+            </div>
           );
         } else {
           if (branding?.loginConfig?.image?.original) {
             return (
-              <img
-                className="absolute top-0 right-0 object-cover h-full w-full"
-                src={
-                  selectedBG
-                    ? getBlobUrl(selectedBG)
-                    : branding?.loginConfig?.image?.original
-                }
-              />
+              <div
+                className={`absolute top-0 right-0 object-cover h-full w-1/2`}
+              >
+                <img
+                  className="object-cover h-full"
+                  src={
+                    selectedBG
+                      ? getBlobUrl(selectedBG)
+                      : branding?.loginConfig?.image?.original
+                  }
+                />
+              </div>
             );
           } else {
             return (
-              <img
-                className={`absolute top-0 right-0 object-cover h-full ${
-                  selectedBG ? 'w-full' : 'w-1/2'
-                }`}
-                src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
-              />
+              <div
+                className={`absolute top-0 right-0 object-cover h-full w-1/2`}
+              >
+                <img
+                  className="object-cover h-full"
+                  src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
+                />
+              </div>
             );
           }
         }
       } else {
         if (removedMedia.bg) {
           return (
-            <img
-              className={`absolute top-0 left-0 object-cover h-full ${
-                selectedBG ? 'w-full' : 'w-1/2'
-              }`}
-              src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
-            />
+            <div className={`absolute top-0 left-0 object-cover h-full w-1/2`}>
+              <img
+                className="object-cover h-full"
+                src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
+              />
+            </div>
           );
         } else {
           if (branding?.loginConfig?.image?.original) {
             return (
-              <img
-                className="absolute top-0 left-0 object-cover h-full w-full"
-                src={
-                  selectedBG
-                    ? getBlobUrl(selectedBG)
-                    : branding?.loginConfig?.image?.original
-                }
-              />
+              <div className="absolute top-0 left-0 object-cover h-full w-1/2">
+                <img
+                  className="object-cover h-full"
+                  src={
+                    selectedBG
+                      ? getBlobUrl(selectedBG)
+                      : branding?.loginConfig?.image?.original
+                  }
+                />
+              </div>
             );
           } else {
             return (
-              <img
-                className={`absolute top-0 left-0 object-cover h-full ${
-                  selectedBG ? 'w-full' : 'w-1/2'
-                }`}
-                src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
-              />
+              <div
+                className={`absolute top-0 left-0 object-cover h-full w-1/2`}
+              >
+                <img
+                  className="object-cover h-full"
+                  src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
+                />
+              </div>
             );
           }
         }
@@ -904,7 +914,7 @@ const BrandingSettings: FC = () => {
                         <span className="text-primary-500 font-bold">
                           click here
                         </span>{' '}
-                        to upload file. <br /> Ideal image size: 250 x 150 px
+                        to upload file. <br /> Ideal image size: 225 x 100 px
                       </span>
                     }
                     onCustomRemove={() => {
@@ -986,7 +996,7 @@ const BrandingSettings: FC = () => {
                 fields={[
                   {
                     name: 'primaryColor',
-                    label: 'Primary/action colour',
+                    label: 'Primary/action color',
                     type: FieldType.ColorPicker,
                     control,
                     className: '',
@@ -1022,7 +1032,7 @@ const BrandingSettings: FC = () => {
                     fields={[
                       {
                         name: 'secondaryColor',
-                        label: 'Secondary/action colour',
+                        label: 'Secondary/action color',
                         type: FieldType.ColorPicker,
                         control,
                         className: '',
@@ -1049,7 +1059,7 @@ const BrandingSettings: FC = () => {
                       data-testid="readability-warning"
                     >
                       <span className="font-semibold">Readability Alert:</span>{' '}
-                      It is advised not to use same primary and secondary colour
+                      It is advised not to use same primary and secondary color
                     </p>
                   )}
                   {secondaryColor?.toUpperCase() === '#FFFFFF' && (
@@ -1070,7 +1080,7 @@ const BrandingSettings: FC = () => {
                   data-testid="branding-add-secondary-color"
                 >
                   <Icon name="add" color="text-primary-500" />
-                  <p>Add secondary colour</p>
+                  <p>Add secondary color</p>
                 </div>
               )}
             </div>
@@ -1250,8 +1260,8 @@ const BrandingSettings: FC = () => {
                             <span className="text-primary-500 font-bold">
                               click here
                             </span>{' '}
-                            to upload file. <br /> Ideal image size: 1920 x 860
-                            px
+                            to upload file. <br /> Ideal image size:{' '}
+                            {layoutAlignment === 'CENTER' ? 1440 : 720} x 820 px
                           </span>
                         }
                         onCustomRemove={() => setSelectedBG(null)}
@@ -1263,7 +1273,9 @@ const BrandingSettings: FC = () => {
                       />
                     )}
                   </div>
-                  <p className="text-xxs text-neutral-500">Max file size 5mb</p>
+                  <p className="text-xxs text-neutral-500">
+                    Max file size 50mb
+                  </p>
                 </div>
               )}
               {backgroundType === 'Video' && (
@@ -1297,7 +1309,7 @@ const BrandingSettings: FC = () => {
                             <span className="text-primary-500 font-bold">
                               click here
                             </span>{' '}
-                            to upload file. <br /> Ideal video size: 1920 x 860
+                            to upload file. <br /> Ideal video size: 1440 x 820
                             px
                           </span>
                         }
@@ -1311,7 +1323,9 @@ const BrandingSettings: FC = () => {
                       />
                     )}
                   </div>
-                  <p className="text-xxs text-neutral-500">Max file size 5mb</p>
+                  <p className="text-xxs text-neutral-500">
+                    Max file size 500mb
+                  </p>
                 </div>
               )}
               {backgroundType === 'Color' && (
@@ -1320,7 +1334,7 @@ const BrandingSettings: FC = () => {
                     fields={[
                       {
                         name: 'color',
-                        label: 'primary/action colour',
+                        label: 'primary/action color',
                         type: FieldType.ColorPicker,
                         control,
                         className: '',
@@ -1378,7 +1392,7 @@ const BrandingSettings: FC = () => {
                 {layoutAlignment !== 'CENTER' &&
                   backgroundType === 'Color' &&
                   layoutAlignment === 'RIGHT' && (
-                    <div className="flex h-full w-1/2 items-center pl-2">
+                    <div className="flex h-full w-1/2 items-center justify-center">
                       <p
                         className={`text-xs font-extrabold ${
                           isDark(color) ? 'text-white' : 'text-neutral-900'
@@ -1389,9 +1403,9 @@ const BrandingSettings: FC = () => {
                     </div>
                   )}
                 <div
-                  className={`bg-neutral-50 pt-5 relative flex flex-col items-center gap-1 ${
+                  className={`bg-neutral-50 relative flex flex-col items-center gap-1 justify-center ${
                     layoutAlignment === 'CENTER'
-                      ? 'h-[191px] rounded-xl w-[159px]'
+                      ? 'h-[152px] rounded-xl w-[128px]'
                       : 'h-full w-1/2'
                   }`}
                 >
@@ -1405,7 +1419,7 @@ const BrandingSettings: FC = () => {
                       <Logo className="!h-[12px]" />
                     )}
                   </div>
-                  <div className="w-[110px] p-[5px] h-full flex flex-col gap-1">
+                  <div className="w-[110px] p-[5px] flex flex-col gap-1">
                     <div className="flex flex-col gap-[1px]">
                       <p className="text-[6px] text-neutral-900 font-bold">
                         Signin
@@ -1447,7 +1461,7 @@ const BrandingSettings: FC = () => {
                 {layoutAlignment !== 'CENTER' &&
                   backgroundType === 'Color' &&
                   layoutAlignment === 'LEFT' && (
-                    <div className="flex h-full w-1/2 items-center pl-2">
+                    <div className="flex h-full w-1/2 items-center justify-center">
                       <p
                         className={`text-xs font-extrabold ${
                           isDark(color) ? 'text-white' : 'text-neutral-900'
@@ -1472,6 +1486,22 @@ const BrandingSettings: FC = () => {
           setImageFile={setSelectedLogo}
           imageFile={tempfile}
           mimeType={getMimeType(tempfile?.name || '')}
+          defaultSize={(cropperState) => {
+            const aspectRatio = 153 / 68;
+            const w = cropperState.imageSize.width;
+            const h = cropperState.imageSize.height;
+            const DEFAUTL_MARGIN = 16; // in pixel
+            if (h <= w) {
+              return {
+                width: (h - DEFAUTL_MARGIN) * aspectRatio,
+                height: h - DEFAUTL_MARGIN,
+              };
+            }
+            return {
+              width: w - DEFAUTL_MARGIN,
+              height: (w - DEFAUTL_MARGIN) / aspectRatio,
+            };
+          }}
         />
       )}
       {isEditFaviconModalOpen && (
@@ -1497,6 +1527,23 @@ const BrandingSettings: FC = () => {
           setImageFile={setSelectedBG}
           imageFile={tempfile}
           mimeType={getMimeType(tempfile?.name || '')}
+          defaultSize={(cropperState) => {
+            const aspectRatio =
+              (layoutAlignment === 'CENTER' ? 1440 : 720) / 820;
+            const w = cropperState.imageSize.width;
+            const h = cropperState.imageSize.height;
+            const DEFAUTL_MARGIN = 16; // in pixel
+            if (h <= w) {
+              return {
+                width: (h - DEFAUTL_MARGIN) * aspectRatio,
+                height: h - DEFAUTL_MARGIN,
+              };
+            }
+            return {
+              width: w - DEFAUTL_MARGIN,
+              height: (w - DEFAUTL_MARGIN) / aspectRatio,
+            };
+          }}
         />
       )}
     </>

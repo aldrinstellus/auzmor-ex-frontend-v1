@@ -5,6 +5,7 @@ import {
   CircleStencil,
   Cropper,
   CropperRef,
+  CropperState,
   Priority,
 } from 'react-advanced-cropper';
 
@@ -20,6 +21,10 @@ export type ImageCropperProps = {
   className?: string;
   cropperRef: RefObject<CropperRef>;
   aspectRatio?: number;
+  defaultSize?: (cropperState: CropperState) => {
+    width: number;
+    height: number;
+  };
   handlers?: {
     north: boolean;
     eastNorth: boolean;
@@ -38,10 +43,11 @@ const ImageCropper = ({
   className = '',
   cropperRef,
   aspectRatio,
+  defaultSize,
   handlers,
 }: ImageCropperProps) => {
   const imageWrapperStyle = useMemo(
-    () => clsx({ 'h-[264px]': true }, { [className]: true }),
+    () => clsx({ 'h-[296px]': true }, { [className]: true }),
     [className],
   );
 
@@ -114,6 +120,7 @@ const ImageCropper = ({
             lines: false,
             resizable: true,
           }}
+          defaultSize={defaultSize}
           className="cropper"
           priority={Priority.visibleArea}
         />
