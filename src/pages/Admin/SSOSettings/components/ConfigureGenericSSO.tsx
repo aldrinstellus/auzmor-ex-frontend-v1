@@ -232,9 +232,9 @@ const ConfigureGenericSSO: FC<ConfigureGenericSSOProps> = ({
                 <p className="text-sm cursor-default overflow-hidden text-ellipsis w-fit whitespace-nowrap max-w-[150px]">
                   {xmlFile && xmlFile[0] && xmlFile[0].name
                     ? xmlFile[0].name
-                    : ''}
-
-                  {ssoSetting?.config?.metadataFile ? 'MetaData.xml' : ''}
+                    : ssoSetting?.config?.metadataFile
+                    ? 'MetaData.xml'
+                    : ' '}
                 </p>
                 {xmlFile && xmlFile[0] && xmlFile[0].name && (
                   <Icon

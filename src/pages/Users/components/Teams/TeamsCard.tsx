@@ -9,6 +9,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FC } from 'react';
 import { isNewEntity } from 'utils/misc';
 import TeamOptions from 'components/TeamOptions';
+import useRole from 'hooks/useRole';
 
 export interface ITeamsCardProps {
   id: string;
@@ -38,7 +39,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [isHovered, eventHandlers] = useHover();
-
+  const { isMember } = useRole();
   return (
     <div className="cursor-pointer" data-testid="" {...eventHandlers}>
       <Card
@@ -46,7 +47,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
         className="relative w-[190px] h-[217px] border-solid border border-neutral-200 flex flex-col items-center justify-center py-6 px-3 bg-white"
         dataTestId="team-card"
       >
-        {isHovered && (
+        {!isMember && isHovered && (
           <TeamOptions
             id={id}
             onEdit={() => {
