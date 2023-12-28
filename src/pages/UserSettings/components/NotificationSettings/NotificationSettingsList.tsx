@@ -52,7 +52,7 @@ const NotificationSettingsList: FC<AppProps> = ({
   return (
     <div className="px-6 py-4">
       <div className="flex text-sm font-bold text-neutral-700 mb-4">
-        <div className="flex-1">Actions</div>
+        <div className="flex-1"></div>
         <div className="w-[144px] flex justify-between">
           <div className="">In app</div>
           <div>Email</div>
