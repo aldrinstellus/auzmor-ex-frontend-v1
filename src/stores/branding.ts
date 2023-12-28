@@ -1,5 +1,6 @@
 import { IBranding } from 'contexts/AuthContext';
 import { applyBranding } from 'utils/branding';
+import { setItem } from 'utils/persist';
 import { create } from 'zustand';
 
 interface IBrandingStore {
@@ -22,6 +23,7 @@ export const useBrandingStore = create<IBrandingStore>((set) => ({
     if (!!branding && Object.keys(branding).length > 0) {
       applyBranding(branding);
       set(() => ({ branding }));
+      setItem('favicon', branding.favicon?.original || '');
     } else {
       try {
         document

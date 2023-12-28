@@ -5,10 +5,16 @@ import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import { StrictMode } from 'react';
+import { getItem } from 'utils/persist';
 
 const root = ReactDOM.createRoot(
   document.getElementById('officeApp') as HTMLElement,
 );
+
+// read favicon from loacal storage and replce it in html
+const favicon = getItem('favicon', '');
+document.querySelector('link[rel="icon"]')?.setAttribute('href', favicon);
+
 root.render(
   <StrictMode>
     <App />
