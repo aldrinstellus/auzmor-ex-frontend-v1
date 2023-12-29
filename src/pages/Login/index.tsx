@@ -162,7 +162,7 @@ const Login: FC<ILoginProps> = () => {
           data-testid={getDataTestId()}
         >
           <div
-            className="flex justify-center items-center min-w-[55px] max-w[300px] min-h-[50px] object-contain"
+            className="flex justify-center items-center min-w-[55px] max-w-[300px] min-h-[50px] object-contain"
             data-testid="signin-logo-image"
           >
             <img
