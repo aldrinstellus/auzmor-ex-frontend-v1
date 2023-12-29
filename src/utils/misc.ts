@@ -20,6 +20,7 @@ import { IDesignation } from 'queries/designation';
 import { IPost } from 'queries/post';
 import moment from 'moment';
 import { EMPTY_REGEX, HEX_REGEX } from './constants';
+import { NavigateFunction } from 'react-router-dom';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -78,12 +79,14 @@ export const isValidUrl = (url: string) => {
 };
 
 interface IRedirect {
+  navigate: NavigateFunction;
   redirectUrl?: string;
   token?: string;
   showOnboard?: boolean;
 }
 
 export const redirectWithToken = ({
+  navigate,
   redirectUrl,
   token,
   showOnboard = false,
@@ -100,7 +103,12 @@ export const redirectWithToken = ({
   if (process.env.NODE_ENV === 'development') {
     window.location.replace(`http://localhost:3000${url}`);
   } else {
-    window.location.replace(`${redirectUrl}${url}`);
+    const subDomain = getSubDomain(window.location.host);
+    if (subDomain) {
+      navigate(url);
+    } else {
+      window.location.replace(`${redirectUrl}${url}`);
+    }
   }
 };
 

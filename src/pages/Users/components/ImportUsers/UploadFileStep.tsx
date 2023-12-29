@@ -121,8 +121,7 @@ const UploadFileStep: React.FC<AppProps> = ({
         <div className="flex flex-col justify-center items-center space-y-2">
           <Icon name="folderOpen" className="text-primary-600" size={48} />
           <div className="text-sm text-neutral-900">
-            To invite a list of people, add your csv,xls or xlsx file in the
-            given format
+            To invite a list of people, add your file in the given format
           </div>
           <div className="text-xs text-neutral-500">
             File must be in csv, xls or xlsx format and must not exceed 5mb

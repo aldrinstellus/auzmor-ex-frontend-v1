@@ -251,7 +251,7 @@ const ReviewStep: React.FC<AppProps> = ({
             <div className="w-full flex justify-between items-center text-red-500">
               <p>Date of Birth</p>
               <Tooltip
-                tooltipContent="Date format is dd/mm/yyyy"
+                tooltipContent="Date format should be dd/mm/yyyy"
                 tooltipPosition="bottom"
               >
                 <Icon name="infoCircle" size={16} color="text-red-500" />
@@ -287,7 +287,7 @@ const ReviewStep: React.FC<AppProps> = ({
             <div className="w-full flex justify-between items-center text-red-500">
               <p>Date of Joining</p>
               <Tooltip
-                tooltipContent="Date format is dd/mm/yyyy"
+                tooltipContent="Date format should be dd/mm/yyyy"
                 tooltipPosition="bottom"
               >
                 <Icon name="infoCircle" size={16} color="text-red-500" />
@@ -452,7 +452,7 @@ const ReviewStep: React.FC<AppProps> = ({
                         className="pt-4 text-2xl font-bold"
                         data-testid="no-data-msg"
                       >
-                        No data to display
+                        {showOnlyError ? 'No error detected' : 'No data'}
                       </div>
                     </div>
                   )}
@@ -513,9 +513,10 @@ const ReviewStep: React.FC<AppProps> = ({
               >
                 You have {errorCount} rows with unresolved issue
               </div>
-              <div className="text-center mt-4 px-6">
-                We will ignore the entire row if you wish to proceed or you can
-                modify your file
+              <div className="text-center mt-4 px-6 pb-4">
+                <div>We will ignore the entire row if you wish to proceed</div>
+                <div>or</div>
+                <div> you can modify your file</div>
               </div>
             </div>
             <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
@@ -547,10 +548,7 @@ const ReviewStep: React.FC<AppProps> = ({
           }}
           title="Confirmation"
           description={
-            <span>
-              Are you sure you want to clear all changes to data in progress in
-              this state?
-            </span>
+            <span>Are you sure you want to clear all changes ?</span>
           }
           success={{
             label: 'Yes',

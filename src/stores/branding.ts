@@ -24,11 +24,13 @@ export const useBrandingStore = create<IBrandingStore>((set) => ({
       applyBranding(branding);
       set(() => ({ branding }));
       setItem('favicon', branding.favicon?.original || '');
+      setItem('pageTitle', branding.pageTitle || 'Auzmor Office');
     } else {
       try {
         document
           .querySelector('link[rel="icon"]')
           ?.setAttribute('href', '/favicon.ico');
+        document.querySelector('title')!.innerText = 'Auzmor Office';
       } catch (e) {}
     }
   },

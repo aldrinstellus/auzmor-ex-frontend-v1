@@ -113,6 +113,8 @@ export const applyBranding = (branding: IBranding) => {
     if (branding?.pageTitle) {
       // set page title
       document.querySelector('title')!.innerHTML = branding.pageTitle;
+    } else {
+      document.querySelector('title')!.innerText = 'Auzmor Office';
     }
     if (branding?.favicon) {
       // use brand favicon
@@ -130,5 +132,6 @@ export const applyBranding = (branding: IBranding) => {
     document
       .querySelector('link[rel="icon"]')
       ?.setAttribute('href', '/favicon.ico');
+    document.querySelector('title')!.innerText = 'Auzmor Office';
   }
 };
