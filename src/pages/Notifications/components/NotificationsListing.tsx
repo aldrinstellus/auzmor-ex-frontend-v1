@@ -7,6 +7,7 @@ import { FC, ReactElement, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import NotificationSkeleton from './SkeletonLoader';
 import NoNotification from 'images/noNotification.svg';
+import { Card } from 'antd';
 
 type NotificationsListing = {
   mentions?: boolean;
@@ -131,16 +132,24 @@ const NotificationsListing: FC<NotificationsListing> = ({
             </div>
           </div>
         ) : (
-          <div className="w-full flex flex-col justify-center">
-            <div className="flex">
-              <img
-                src={NoNotification}
-                alt="Apps Not Found"
-                height={140}
-                width={165}
-              />
+          <Card>
+            <div className="w-full flex flex-col items-center py-12">
+              <div className="flex">
+                <img
+                  src={NoNotification}
+                  alt="Apps Not Found"
+                  height={140}
+                  width={165}
+                />
+              </div>
+              <p className="text-neutral-900 font-semibold text-lg mt-2">
+                No Notifications yet
+              </p>
+              <p className="text-neutral-500 text-sm font-medium text-center mt-2.5">
+                We will notify you once we have <br /> something for you
+              </p>
             </div>
-          </div>
+          </Card>
         ))}
       {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
       {isFetchingNextPage && (
