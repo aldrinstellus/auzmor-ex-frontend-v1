@@ -15,7 +15,7 @@ import {
   readFirstAxiosError,
   redirectWithToken,
 } from 'utils/misc';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useGetSSOFromDomain } from 'queries/organization';
 import { useLoginViaSSO } from 'queries/auth';
@@ -44,9 +44,11 @@ const schema = yup.object({
 });
 
 const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
+  const navigate = useNavigate();
   const loginMutation = useMutation((formData: IForm) => login(formData), {
     onSuccess: (data) =>
       redirectWithToken({
+        navigate,
         redirectUrl: data.result.data.redirectUrl,
         token: data.result.data.uat,
       }),
