@@ -11,7 +11,7 @@ import { signup } from 'queries/account';
 import { useDebounce } from 'hooks/useDebounce';
 import { useDomainExists, useIsUserExistOpen } from 'queries/users';
 import 'utils/custom-yup-validators/email/validateEmail';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useGetSSOFromDomain } from 'queries/organization';
 import { useBrandingStore } from 'stores/branding';
 import OfficeLogoSvg from 'components/Logo/images/OfficeLogo.svg';
@@ -72,14 +72,12 @@ export interface IValidationErrors {
 }
 
 const Signup: FC<ISignupProps> = () => {
-  const navigate = useNavigate();
   const signupMutation = useMutation(
     (formData: IForm) =>
       signup({ ...formData, domain: formData.domain.toLowerCase() }),
     {
       onSuccess: (data) =>
         redirectWithToken({
-          navigate,
           redirectUrl: data.result.data.redirectUrl,
           token: data.result.data.uat,
           showOnboard: true,
