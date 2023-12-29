@@ -32,14 +32,8 @@ const SelectSheetStep: React.FC<AppProps> = ({
   setStep,
   importId,
   meta,
+  setMeta,
 }) => {
-  const validateUserMutation = useMutation(() => validateImport(importId), {
-    onError: () => {},
-    onSuccess: (res: any) => {
-      setStep(StepEnum.Review);
-    },
-  });
-
   const parseMutation = useMutation((formData: any) =>
     updateParseImport(importId, formData),
   );
@@ -56,11 +50,20 @@ const SelectSheetStep: React.FC<AppProps> = ({
     }
   }, [meta.sheetOptions]);
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   if (_sheet) {
+  //     parseMutation.mutate({ sheetIndex: _sheet?.value });
+  //     setMeta((m: any) => ({ ...m, sheetIndex: _sheet?.value }));
+  //   }
+  // }, [_sheet]);
+
+  const onSubmit = () => {
     if (_sheet) {
       parseMutation.mutate({ sheetIndex: _sheet?.value });
+      setMeta((m: any) => ({ ...m, sheetIndex: _sheet?.value }));
+      setStep(StepEnum.Review);
     }
-  }, [_sheet]);
+  };
 
   const fields = [
     {
@@ -97,11 +100,16 @@ const SelectSheetStep: React.FC<AppProps> = ({
       )}
 
       <ValidateHeaders
-        isLoading={parseMutation.isLoading}
-        isSuccess={parseMutation.isSuccess}
-        isError={parseMutation.isError}
+        isLoading={false}
+        isSuccess={true}
+        isError={false}
+        // isLoading={parseMutation.isLoading}
+        // isSuccess={parseMutation.isSuccess}
+        // isError={parseMutation.isError}
         meta={meta}
-        mutation={validateUserMutation}
+        onConfirm={() => {
+          onSubmit();
+        }}
         closeModal={closeModal}
         disableSubmit={meta.sheetOptions?.length != 1 ? !_sheet : false}
         selectedSheet={

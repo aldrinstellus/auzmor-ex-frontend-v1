@@ -5,12 +5,14 @@ import {
   CircleStencil,
   Cropper,
   CropperRef,
+  CropperState,
   Priority,
 } from 'react-advanced-cropper';
 
 export enum Shape {
   Circle = 'circle',
   Rectangle = 'rectangle',
+  Square = 'square',
 }
 
 export type ImageCropperProps = {
@@ -19,14 +21,20 @@ export type ImageCropperProps = {
   className?: string;
   cropperRef: RefObject<CropperRef>;
   aspectRatio?: number;
-  minW?: number;
-  maxW?: number;
-  minH?: number;
-  maxH?: number;
-  // customHeight: number;
-  // customWidth: number;
-  // customTop: number;
-  // customLeft: number;
+  defaultSize?: (cropperState: CropperState) => {
+    width: number;
+    height: number;
+  };
+  handlers?: {
+    north: boolean;
+    eastNorth: boolean;
+    westNorth: boolean;
+    east: boolean;
+    west: boolean;
+    south: boolean;
+    westSouth: boolean;
+    eastSouth: boolean;
+  };
 };
 
 const ImageCropper = ({
@@ -34,24 +42,18 @@ const ImageCropper = ({
   shape = Shape.Circle,
   className = '',
   cropperRef,
-  aspectRatio = 7.38,
-  minW,
-  maxW,
-  minH,
-  maxH,
-}: // customHeight,
-// customWidth,
-// customTop,
-// customLeft,
-ImageCropperProps) => {
+  aspectRatio,
+  defaultSize,
+  handlers,
+}: ImageCropperProps) => {
   const imageWrapperStyle = useMemo(
-    () => clsx({ 'h-[264px]': true }, { [className]: true }),
+    () => clsx({ 'h-[296px]': true }, { [className]: true }),
     [className],
   );
 
   return (
     <div className={imageWrapperStyle}>
-      {shape === Shape.Circle ? (
+      {shape === Shape.Circle && (
         <Cropper
           src={src}
           ref={cropperRef}
@@ -74,43 +76,52 @@ ImageCropperProps) => {
             overlayClassName: 'overlay',
           }}
           className="cropper"
-          minWidth={minW}
-          maxWidth={maxW}
-          minHeight={minH}
-          maxHeight={maxH}
         />
-      ) : (
+      )}
+      {shape === Shape.Square && (
         <Cropper
           src={src}
           ref={cropperRef}
           stencilProps={{
-            aspectRatio: aspectRatio / 1,
+            aspectRatio: 1,
             handlers: {
               north: false,
-              eastNorth: false,
-              westNorth: false,
+              eastNorth: true,
+              westNorth: true,
               east: false,
               west: false,
               south: false,
-              westSouth: false,
-              eastSouth: false,
+              westSouth: true,
+              eastSouth: true,
             },
             lines: false,
             resizable: true,
           }}
-          minWidth={minW}
-          maxWidth={maxW}
-          minHeight={minH}
-          maxHeight={maxH}
-          // Modify the width and height to modify the stencil
-          // defaultVisibleArea={{
-          //   width: customWidth,
-          //   height: customHeight,
-          //   top: customTop,
-          //   left: customLeft,
-          // }}
           className="cropper"
-          // maxHeight={180}
+          priority={Priority.visibleArea}
+        />
+      )}
+      {shape === Shape.Rectangle && (
+        <Cropper
+          src={src}
+          ref={cropperRef}
+          stencilProps={{
+            aspectRatio,
+            handlers: handlers || {
+              north: true,
+              eastNorth: true,
+              westNorth: true,
+              east: true,
+              west: true,
+              south: true,
+              westSouth: true,
+              eastSouth: true,
+            },
+            lines: false,
+            resizable: true,
+          }}
+          defaultSize={defaultSize}
+          className="cropper"
           priority={Priority.visibleArea}
         />
       )}

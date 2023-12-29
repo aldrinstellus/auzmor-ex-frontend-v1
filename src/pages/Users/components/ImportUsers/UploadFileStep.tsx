@@ -21,6 +21,7 @@ type AppProps = {
   setStep: (...args: any) => any;
   setImportId: (...args: any) => any;
   setMeta: (...args: any) => any;
+  importId: string;
 };
 
 const UploadFileStep: React.FC<AppProps> = ({
@@ -29,6 +30,7 @@ const UploadFileStep: React.FC<AppProps> = ({
   setStep,
   setImportId,
   setMeta,
+  importId,
 }) => {
   const { error: uploadError, uploadMedia, uploadStatus } = useUpload();
   const [fileObj, setFileObj] = useState<any>({});
@@ -40,6 +42,12 @@ const UploadFileStep: React.FC<AppProps> = ({
     }
   }, [uploadError]);
 
+  useEffect(() => {
+    if (importId) {
+      setStep(StepEnum.Importing);
+    }
+  }, [importId]);
+
   const triggerUserImportMutation = useMutation(
     () => startImportUser({ fileId: fileObj.id }),
     {
@@ -48,7 +56,6 @@ const UploadFileStep: React.FC<AppProps> = ({
         const isCsv = fileObj?.name?.includes('.csv');
         setImportId(res.result.data.id);
         setMeta({ file: fileObj, isCsv });
-        setStep(StepEnum.Importing);
       },
     },
   );

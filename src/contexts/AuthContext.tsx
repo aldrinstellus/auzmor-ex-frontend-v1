@@ -202,6 +202,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
     setUser(null); // set user
     queryClient.clear();
     removeAllItems();
+    setSessionExpired(false);
   };
 
   useEffect(() => {

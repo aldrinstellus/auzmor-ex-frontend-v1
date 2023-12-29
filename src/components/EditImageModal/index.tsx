@@ -270,10 +270,21 @@ const EditImageModal: FC<AppProps> = ({
               ? Shape.Circle
               : Shape.Rectangle
           }
-          // customHeight={height}
-          // customWidth={width}
-          // customLeft={left}
-          // customTop={top}
+          handlers={
+            !(imageFile?.profileImage || onBoardImageFile)
+              ? {
+                  north: false,
+                  eastNorth: false,
+                  westNorth: false,
+                  east: false,
+                  west: false,
+                  south: false,
+                  westSouth: false,
+                  eastSouth: false,
+                }
+              : undefined
+          }
+          aspectRatio={7.38}
         />
       )}
       <Footer

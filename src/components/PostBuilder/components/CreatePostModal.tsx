@@ -331,6 +331,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     onSuccess: async (data, variables) => {
       updateFeed(variables.id!, {
         ...data.result.data,
+        id: variables.id!,
       } as IPost);
       toast(
         <SuccessToast

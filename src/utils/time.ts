@@ -11,6 +11,13 @@ export const parseDate = (timestring: string, format = 'YYYY-MM-DD') => {
   return moment(timestring, format).toDate();
 };
 
+export const formatDate = (dt: Date, format = 'YYYY-MM-DD') => {
+  if (!dt) {
+    return null;
+  }
+  return moment(dt).format(format);
+};
+
 export const afterXUnit = (
   x: number,
   unit: moment.unitOfTime.DurationConstructor,
@@ -69,7 +76,7 @@ export const convertTimezone = (
 ) => {
   try {
     const sourceDatetime = momentTimezone.tz(
-      sourceDate.toISOString().split('T')[0] + ' ' + sourceTime,
+      moment(sourceDate).format('YYYY-MM-DD') + ' ' + sourceTime,
       'YYYY-MM-DD hh:mm a',
       sourceTimezone,
     );
@@ -77,7 +84,6 @@ export const convertTimezone = (
 
     const targetDate = targetDatetime.format('YYYY-MM-DD');
     const targetTime = targetDatetime.format('hh:mm a');
-
     return { targetDate, targetTime };
   } catch (e) {
     console.log(e);

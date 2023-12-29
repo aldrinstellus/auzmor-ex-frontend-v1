@@ -22,7 +22,6 @@ const SAMLDetail: FC<SAMLDetailProps> = ({ prop, value }): ReactElement => {
             className=""
             name="copy"
             size={16}
-            disabled
             onClick={() => {
               navigator.clipboard.writeText(value);
               toast(

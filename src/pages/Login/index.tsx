@@ -57,20 +57,22 @@ const Login: FC<ILoginProps> = () => {
     return null;
   }
 
-  const getLoginBackground = () => {
+  const getBackground = () => {
     const defaultBackground = (
       <div
-        className={`w-screen h-full absolute top-0 left-0 ${
+        className={`w-1/2 h-full absolute top-0 ${
           branding?.loginConfig?.layout === 'CENTER' &&
-          'bg-welcome-to-office-large'
-        } bg-no-repeat bg-cover bg-bottom`}
+          'bg-welcome-to-office-large w-screen'
+        } bg-no-repeat bg-cover bg-bottom ${
+          branding?.loginConfig?.layout === 'LEFT' && 'right-0'
+        } ${branding?.loginConfig?.layout === 'RIGHT' && 'left-0'}`}
         data-testid="signin-cover-image"
       >
         {branding?.loginConfig?.layout === 'LEFT' && (
-          <div className="w-1/2 float-right bg-welcome-to-office h-full bg-no-repeat bg-cover bg-bottom"></div>
+          <div className="w-full float-right bg-welcome-to-office h-full bg-no-repeat bg-cover bg-bottom"></div>
         )}
         {branding?.loginConfig?.layout === 'RIGHT' && (
-          <div className="w-1/2 float-left bg-welcome-to-office h-full bg-no-repeat bg-cover bg-bottom"></div>
+          <div className="w-full float-left bg-welcome-to-office h-full bg-no-repeat bg-cover bg-bottom"></div>
         )}
       </div>
     );
@@ -80,7 +82,14 @@ const Login: FC<ILoginProps> = () => {
           if (branding?.loginConfig?.image?.original) {
             return (
               <div
-                className="w-full h-full absolute top-0 left-0 bg-no-repeat bg-cover"
+                className={`h-full absolute top-0 bg-no-repeat bg-cover ${
+                  branding?.loginConfig?.layout === 'LEFT' && '!right-0 w-1/2'
+                } ${
+                  branding?.loginConfig?.layout === 'RIGHT' && '!left-0 w-1/2'
+                } ${
+                  branding?.loginConfig?.layout === 'CENTER' &&
+                  'w-screen left-0'
+                }`}
                 style={{
                   backgroundImage: `url(${branding?.loginConfig?.image?.original})`,
                 }}
@@ -92,7 +101,16 @@ const Login: FC<ILoginProps> = () => {
         case 'VIDEO':
           if (branding?.loginConfig?.video?.original) {
             return (
-              <div className="w-full h-full absolute top-0 left-0 bg-no-repeat bg-cover">
+              <div
+                className={`h-full absolute top-0 bg-no-repeat bg-cover ${
+                  branding?.loginConfig?.layout === 'LEFT' && '!right-0 w-1/2'
+                } ${
+                  branding?.loginConfig?.layout === 'RIGHT' && '!left-0 w-1/2'
+                } ${
+                  branding?.loginConfig?.layout === 'CENTER' &&
+                  'w-screen left-0'
+                }`}
+              >
                 <video
                   autoPlay
                   muted
@@ -110,7 +128,14 @@ const Login: FC<ILoginProps> = () => {
           if (branding?.loginConfig?.color) {
             return (
               <div
-                className="w-full h-full absolute top-0 left-0"
+                className={`h-full absolute top-0 bg-no-repeat bg-cover ${
+                  branding?.loginConfig?.layout === 'LEFT' && '!right-0 w-1/2'
+                } ${
+                  branding?.loginConfig?.layout === 'RIGHT' && '!left-0 w-1/2'
+                } ${
+                  branding?.loginConfig?.layout === 'CENTER' &&
+                  'w-screen left-0'
+                }`}
                 style={{ backgroundColor: branding?.loginConfig?.color }}
               />
             );
@@ -130,19 +155,20 @@ const Login: FC<ILoginProps> = () => {
       <>
         {branding?.loginConfig?.layout === 'RIGHT' && getBannerText()}
         <div
-          className={`flex flex-col items-center bg-neutral-50 overflow-y-auto w-[50vw] h-full z-10 gap-12 py-[100px] ${
+          className={`flex flex-col items-center justify-center bg-neutral-50 overflow-y-auto w-[50vw] h-full z-10 gap-12 py-[100px] ${
             branding?.loginConfig?.layout === 'CENTER' &&
             'min-h-[660px] !h-auto rounded-16xl w-[600px] !py-20'
           }`}
           data-testid={getDataTestId()}
         >
           <div
-            className="flex justify-center items-center max-w-[250px] max-h-[150px]"
+            className="flex justify-center items-center min-w-[55px] max-w[300px] min-h-[50px] object-contain"
             data-testid="signin-logo-image"
           >
             <img
               src={branding?.logo?.original || OfficeLogoSvg}
               alt="Office Logo"
+              className="h-full"
             />
           </div>
           {viaSSO ? (
@@ -163,7 +189,7 @@ const Login: FC<ILoginProps> = () => {
       branding?.loginConfig?.layout !== 'CENTER'
     ) {
       return (
-        <div className="w-[50vw] flex items-center px-14">
+        <div className="w-[50vw] flex items-center justify-center">
           <p
             className={`text-6xl font-extrabold z-10 leading-[72px] ${
               isDark(branding?.loginConfig?.color || '#777777')
@@ -184,7 +210,7 @@ const Login: FC<ILoginProps> = () => {
   const setLoginForm = () => {
     return (
       <>
-        {getLoginBackground()}
+        {getBackground()}
         {getLoginForm()}
       </>
     );

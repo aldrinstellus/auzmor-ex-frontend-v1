@@ -465,7 +465,6 @@ export const mapRanges = (
 };
 
 export const getMimeType = (fileName: string): string | undefined => {
-  console.log(fileName);
   const extensionIndex = fileName.lastIndexOf('.');
   if (extensionIndex === -1) {
     return undefined;

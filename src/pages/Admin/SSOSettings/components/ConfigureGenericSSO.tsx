@@ -228,22 +228,22 @@ const ConfigureGenericSSO: FC<ConfigureGenericSSOProps> = ({
                   </p>
                 </div>
               </label>
-              <div
-                className={`flex ${
-                  xmlFile && xmlFile[0] && xmlFile[0].name ? 'block' : 'hidden'
-                }`}
-              >
+              <div className={`flex `}>
                 <p className="text-sm cursor-default overflow-hidden text-ellipsis w-fit whitespace-nowrap max-w-[150px]">
                   {xmlFile && xmlFile[0] && xmlFile[0].name
                     ? xmlFile[0].name
-                    : ''}
+                    : ssoSetting?.config?.metadataFile
+                    ? 'MetaData.xml'
+                    : ' '}
                 </p>
-                <Icon
-                  name="deleteCross"
-                  size={18}
-                  className="cursor-pointer"
-                  onClick={clearInput}
-                />
+                {xmlFile && xmlFile[0] && xmlFile[0].name && (
+                  <Icon
+                    name="deleteCross"
+                    size={18}
+                    className="cursor-pointer"
+                    onClick={clearInput}
+                  />
+                )}
               </div>
             </div>
           </div>

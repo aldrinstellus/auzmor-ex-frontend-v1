@@ -42,6 +42,7 @@ const Footer: FC<IFooterProps> = ({
             <Icon
               name="minus"
               size={16}
+              color="text-neutral-900"
               dataTestId={`${dataTestId}-zoom-min`}
               onClick={() => {
                 const sliderValue = parseInt(
@@ -56,7 +57,7 @@ const Footer: FC<IFooterProps> = ({
             />
             <input
               type="range"
-              className="appearance-none w-[136px] h-1 bg-neutral-200 text-red-400 rounded"
+              className="appearance-none w-[136px] h-1 bg-neutral-200 text-red-400 rounded accent-neutral-900"
               min={1}
               max={10}
               defaultValue={0}
@@ -73,6 +74,7 @@ const Footer: FC<IFooterProps> = ({
             <Icon
               name="plus"
               size={16}
+              color="text-neutral-900"
               dataTestId={`${dataTestId}-zoom-max`}
               onClick={() => {
                 const sliderValue = parseInt(
@@ -91,7 +93,7 @@ const Footer: FC<IFooterProps> = ({
           onClick={() => cropperRef?.current?.transformImage({ rotate: -90 })}
           data-testid={`${dataTestId}-tilt`}
         >
-          <Icon name="rotateLeft" />
+          <Icon name="rotateLeft" color="text-neutral-900" />
         </div>
       </div>
       <div className="flex justify-between items-center h-16 p-6 bg-blue-50 rounded-b-9xl">

@@ -152,6 +152,7 @@ const AppList: FC<IAppListProps> = ({
                 <NoDataFound
                   className="py-16 w-full"
                   searchString={queryParams.q}
+                  hideClearBtn={queryParams.q ? false : true}
                   onClearSearch={() => {
                     resetField && resetField('search', { defaultValue: '' });
                   }}

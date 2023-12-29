@@ -541,7 +541,7 @@ export const fetchFeed = async (
     );
     return response;
   } else {
-    response = await apiService.get(context.pageParam, context.queryKey[1]);
+    response = await apiService.get(context.pageParam);
     setFeed({
       ...feed,
       ...chain(response.data.result.data).keyBy('id').value(),
@@ -549,6 +549,9 @@ export const fetchFeed = async (
     response.data.result.data = response.data.result.data.map(
       (eachPost: IPost) => ({ id: eachPost.id }),
     );
+    if (context.pageParam == response.data.result.paging.next) {
+      response.data.result.paging.next = null;
+    }
     return response;
   }
 };
@@ -575,7 +578,7 @@ export const fetchScheduledPosts = async (
     );
     return response;
   } else {
-    response = await apiService.get(context.pageParam, context.queryKey[1]);
+    response = await apiService.get(context.pageParam);
     setFeed({
       ...feed,
       ...chain(response.data.result.data).keyBy('id').value(),
@@ -583,6 +586,9 @@ export const fetchScheduledPosts = async (
     response.data.result.data = response.data.result.data.map(
       (eachPost: IPost) => ({ id: eachPost.id }),
     );
+    if (context.pageParam == response.data.result.paging.next) {
+      response.data.result.paging.next = null;
+    }
     return response;
   }
 };
@@ -609,7 +615,7 @@ export const fetchBookmarks = async (
     );
     return response;
   } else {
-    response = await apiService.get(context.pageParam, context.queryKey[1]);
+    response = await apiService.get(context.pageParam);
     setFeed({
       ...feed,
       ...chain(response.data.result.data).keyBy('id').value(),
@@ -617,6 +623,9 @@ export const fetchBookmarks = async (
     response.data.result.data = response.data.result.data.map(
       (eachPost: IPost) => ({ id: eachPost.id }),
     );
+    if (context.pageParam == response.data.result.paging.next) {
+      response.data.result.paging.next = null;
+    }
     return response;
   }
 };

@@ -44,7 +44,7 @@ const SchedulePost: FC<ISchedulePost> = ({ closeModal }) => {
   const getDate = (date: Date, time: string) => {
     let hours = parseInt(time.split(' ')[0].split(':')[0]);
     const min = parseInt(time.split(' ')[0].split(':')[1]);
-    if (time.indexOf('pm') > -1) {
+    if (time.includes('pm')) {
       hours += 12;
     }
     return new Date(new Date(date).setHours(hours, min)).toISOString();

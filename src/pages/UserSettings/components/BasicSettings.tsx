@@ -10,6 +10,7 @@ import Layout, { FieldType } from 'components/Form';
 import timezones from 'utils/timezones.json';
 import {
   beforeXUnit,
+  formatDate,
   getNow,
   getTimezoneNameFromIANA,
   nDaysFromNow,
@@ -162,8 +163,8 @@ const BasicSettings = () => {
         ...payload,
         outOfOffice: {
           outOfOffice: true,
-          start: data?.ooo?.start?.format('YYYY-MM-DD'),
-          end: data?.ooo?.end?.format('YYYY-MM-DD'),
+          start: formatDate(data?.ooo?.start),
+          end: formatDate(data?.ooo?.end),
           otherReason: data?.ooo?.reason?.key,
         },
       };

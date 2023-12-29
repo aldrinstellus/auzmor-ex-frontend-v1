@@ -150,7 +150,7 @@ const CreatableSearch = forwardRef(
           <div
             data-testid={dataTestId}
             onClick={() => {
-              if (!disabled) {
+              if (!disabled && !open) {
                 setOpen(!open);
               }
             }}

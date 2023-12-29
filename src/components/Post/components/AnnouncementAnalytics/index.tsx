@@ -22,7 +22,17 @@ type AppProps = {
 
 const AnnouncementAnalytics: FC<AppProps> = ({ post, open, closeModal }) => {
   const tabLabel = (label: string, isActive: boolean) => {
-    return <span className={clsx({ 'font-bold': isActive })}>{label}</span>;
+    return (
+      <span
+        className={clsx({
+          'font-bold': true,
+          'text-neutral-900': isActive,
+          'text-neutral-500 hover:text-neutral-900': !isActive,
+        })}
+      >
+        {label}
+      </span>
+    );
   };
 
   const exportMutation = useMutation(

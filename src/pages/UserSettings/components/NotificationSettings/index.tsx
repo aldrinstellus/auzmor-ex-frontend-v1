@@ -10,7 +10,10 @@ const NotificationSettings = () => {
             Notifications
           </div>
         </div>
-        <div
+        <div className="mt-3 text-sm text-neutral-500">
+          Choose how you want notifications to be delivered
+        </div>
+        {/* <div
           className="mt-6 text-sm font-bold pb-3 border-b-2 border-primary-500 max-w-min"
           data-testid="general-notifications"
         >
@@ -18,7 +21,7 @@ const NotificationSettings = () => {
         </div>
         <div className="mt-3 text-sm text-neutral-500">
           Manage your notifications
-        </div>
+        </div> */}
       </Card>
       <GeneralNotifications />
     </div>

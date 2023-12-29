@@ -3,7 +3,7 @@ import useAuth from 'hooks/useAuth';
 import PopupMenu from 'components/PopupMenu';
 import { UserRole, UserStatus } from 'queries/users';
 import useRole from 'hooks/useRole';
-import Icon from 'components/Icon';
+import Button, { Variant, Size } from 'components/Button';
 
 export interface IUserDropdownProps {
   id: string;
@@ -128,14 +128,15 @@ const UserProfileDropdown: FC<IUserDropdownProps> = ({
   if (showDirectOption && _options.length === 1) {
     const option = _options[0];
     return (
-      <div
-        className="rounded-[24px] font-bold border py-[7.5px] px-4 text-sm border-[#e5e5e5] cursor-pointer flex items-center space-x-1"
-        data-testid="profile-more-cta"
+      <Button
+        label={option?.label}
         onClick={option?.onClick}
-      >
-        <Icon name={option?.icon} size={16} />
-        <span>{option?.label}</span>
-      </div>
+        variant={Variant.Secondary}
+        size={Size.Small}
+        leftIcon={option?.icon}
+        leftIconSize={16}
+        dataTestId="profile-more-cta"
+      />
     );
   }
 

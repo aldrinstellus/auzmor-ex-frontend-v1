@@ -1,4 +1,3 @@
-import { clearFaviconInterval } from 'App';
 import { IBranding } from 'contexts/AuthContext';
 
 const tintVariants = {
@@ -90,7 +89,6 @@ export const applyBranding = (branding: IBranding) => {
    * apply branding
    */
   const root = document.querySelector(':root') as HTMLElement;
-  clearFaviconInterval();
   if (root) {
     if (branding?.primaryColor) {
       // set primary color

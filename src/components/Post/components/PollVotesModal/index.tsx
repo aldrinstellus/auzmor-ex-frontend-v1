@@ -18,7 +18,9 @@ const PollVotesModal: FC<IPollVotesModalProps> = ({
   post,
 }) => {
   const getClassName = (isActive: boolean) =>
-    `flex font-extrabold ${isActive ? 'text-neutral-900' : 'text-neutral-500'}`;
+    `flex font-extrabold ${
+      isActive ? 'text-neutral-900' : 'text-neutral-500 hover:text-neutral-900'
+    }`;
 
   const pollOptions = (post.pollContext?.options || [])
     .filter((option) => option.votes)

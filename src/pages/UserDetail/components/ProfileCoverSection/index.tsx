@@ -331,7 +331,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                 className="text-sm font-normal text-neutral-400"
                 data-testid="user-designation"
               >
-                {userDetails?.designation?.name || 'Field not specified'}
+                {userDetails?.designation?.name || 'Add designation'}
               </div>
             </div>
             <Divider variant={DividerVariant.Vertical} className="!h-6" />
@@ -357,7 +357,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                 className="text-sm font-normal text-neutral-400"
                 data-testid="user-department"
               >
-                {userDetails?.department?.name || 'Field not specified'}
+                {userDetails?.department?.name || 'Add department'}
               </div>
             </div>
             <Divider variant={DividerVariant.Vertical} className="!h-6" />
@@ -383,7 +383,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                 className="text-sm font-normal text-neutral-400"
                 data-testid="user-location"
               >
-                {userDetails?.workLocation?.name || 'Field not specified'}
+                {userDetails?.workLocation?.name || 'Add location'}
               </div>
             </div>
           </div>
