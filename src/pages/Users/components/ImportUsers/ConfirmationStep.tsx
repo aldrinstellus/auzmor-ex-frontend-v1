@@ -13,16 +13,14 @@ type AppProps = {
   closeModal: () => any;
   importId: string;
   open: boolean;
-  setStep: (...args: any) => any;
 };
 
 const ConfirmationStep: React.FC<AppProps> = ({
   importId,
   open,
   closeModal,
-  setStep,
 }) => {
-  const { setShowJobProgress, setImportId, setTotal } = useJobStore();
+  const { setShowJobProgress, setImportId, setTotal, setStep } = useJobStore();
 
   const startCreatingUserMutation = useMutation(
     () => startCreatingUsers(importId),

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StepEnum, stepMap } from './utils';
+import { useJobStore } from 'stores/jobStore';
 
 type AppProps = {
   open: boolean;
@@ -7,16 +8,22 @@ type AppProps = {
 };
 
 const ImportUsers: React.FC<AppProps> = ({ open, closeModal }) => {
-  const [step, setStep] = useState(StepEnum.Upload);
   const [importId, setImportId] = useState<string>('');
   const [meta, setMeta] = useState<Record<string, any>>({});
+  const { step, setStep } = useJobStore();
 
   const Component: any = stepMap[step];
 
+  useEffect(() => {
+    return () => {
+      setStep(StepEnum.Upload);
+    };
+  }, []);
+
   return (
     <Component
+      key={step}
       open={open}
-      setStep={setStep}
       closeModal={closeModal}
       importId={importId}
       setImportId={setImportId}

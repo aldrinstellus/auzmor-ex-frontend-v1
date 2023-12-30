@@ -76,7 +76,6 @@ const ImportingFileStep: React.FC<AppProps> = ({
         importId={importId}
         fileName={meta?.file?.name}
         setMeta={setMeta}
-        setStep={setStep}
       />
     );
   };
@@ -105,7 +104,6 @@ const ImportingFileStep: React.FC<AppProps> = ({
         <ValidateHeaders
           isLoading={_isLoading}
           isSuccess={_isSuccess}
-          isError={parseMutation.isError}
           meta={meta}
           closeModal={closeModal}
           onConfirm={() => setStep(StepEnum.Review)}

@@ -41,9 +41,9 @@ const usePoller = ({
 
   useEffect(() => {
     let ts: any = null;
-    callFn();
+    // callFn();
     if (enabled) {
-      callFn();
+      // callFn();
       ts = setInterval(() => callFn(), 5000);
       setIntervalId(ts);
     }
