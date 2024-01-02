@@ -10,6 +10,7 @@ interface INoDataFoundProps {
   className?: string;
   hideClearBtn?: boolean;
   clearBtnLabel?: string;
+  labelHeader?: ReactNode;
   illustration?: string;
 }
 
@@ -21,6 +22,7 @@ const illustrationMap: Record<string, any> = {
 const NoDataFound: FC<INoDataFoundProps> = ({
   searchString,
   message,
+  labelHeader,
   onClearSearch,
   dataTestId,
   className = '',
@@ -39,7 +41,9 @@ const NoDataFound: FC<INoDataFoundProps> = ({
           className="mt-8 text-lg font-bold text-neutral-900"
           data-testid={`${dataTestId}-noresult-found`}
         >
-          {`No result found ${!!searchString ? `for '${searchString}'` : ''}`}
+          {labelHeader}
+          {!labelHeader &&
+            `No result found ${!!searchString ? `for '${searchString}'` : ''}`}
         </div>
         <div className="text-sm text-gray-500 mt-2">{message}</div>
       </div>

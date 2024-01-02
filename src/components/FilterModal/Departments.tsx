@@ -9,6 +9,7 @@ import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
 import { IFilterForm } from '.';
 import ItemSkeleton from './ItemSkeleton';
+import NoDataFound from 'components/NoDataFound';
 
 interface IDepartmentsProps {
   control: Control<IFilterForm, any>;
@@ -143,13 +144,33 @@ const Departments: FC<IDepartmentsProps> = ({ control, watch, setValue }) => {
                 debouncedDepartmentSearchValue === '') &&
               departmentData?.length === 0 ? (
                 <div className="flex items-center w-full text-lg font-bold">
-                  No Categories found
+                  <NoDataFound
+                    illustration="noResultAlt"
+                    className="py-10 w-full"
+                    searchString={''}
+                    onClearSearch={() => {}}
+                    labelHeader={<p> No Departments found</p>}
+                    hideClearBtn
+                    dataTestId={`noresult`}
+                  />
                 </div>
               ) : (
-                <div className="py-16 w-full text-lg font-bold text-center">
-                  {`No result found`}
-                  {debouncedDepartmentSearchValue &&
-                    ` for '${debouncedDepartmentSearchValue}'`}
+                <div className="flex items-center w-full text-lg font-bold ">
+                  <NoDataFound
+                    illustration="noResultAlt"
+                    className="py-10 w-full"
+                    searchString={debouncedDepartmentSearchValue}
+                    onClearSearch={() => {}}
+                    message={
+                      <p>
+                        Sorry we can&apos;t find the department you are looking
+                        for.
+                        <br /> Please try using different filters
+                      </p>
+                    }
+                    hideClearBtn
+                    dataTestId={`noresult`}
+                  />
                 </div>
               )}
             </>

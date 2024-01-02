@@ -10,6 +10,7 @@ import Spinner from 'components/Spinner';
 import Icon from 'components/Icon';
 import ItemSkeleton from './ItemSkeleton';
 import { CategoryType } from 'queries/apps';
+import NoDataFound from 'components/NoDataFound';
 
 interface ICategoriesProps {
   control: Control<IFilterForm, any>;
@@ -148,13 +149,31 @@ const Categories: FC<ICategoriesProps> = ({
                 debouncedCategorySearchValue === '') &&
               categoryData?.length === 0 ? (
                 <div className="flex items-center w-full text-lg font-bold">
-                  No Categories found
+                  <NoDataFound
+                    className="py-12 w-full"
+                    searchString={''}
+                    onClearSearch={() => {}}
+                    labelHeader={<p>No Categories found</p>}
+                    hideClearBtn
+                    dataTestId={`noresult`}
+                  />
                 </div>
               ) : (
-                <div className="py-16 w-full text-lg font-bold text-center">
-                  {`No result found`}
-                  {debouncedCategorySearchValue &&
-                    ` for '${debouncedCategorySearchValue}'`}
+                <div className="flex items-center w-full text-lg font-bold ">
+                  <NoDataFound
+                    className="py-10 w-full"
+                    searchString={debouncedCategorySearchValue}
+                    onClearSearch={() => {}}
+                    message={
+                      <p>
+                        Sorry we can&apos;t find the categories you are looking
+                        for.
+                        <br /> Please try using different filters
+                      </p>
+                    }
+                    hideClearBtn
+                    dataTestId={`noresult`}
+                  />
                 </div>
               )}
             </>
