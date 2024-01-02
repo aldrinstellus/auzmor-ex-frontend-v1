@@ -192,6 +192,7 @@ const People: FC<IPeopleProps> = ({
       dataTestId: 'filterby-role',
       selectClassName: 'single-select-bold',
       ref: roleSelectRef,
+      showSearch: false,
       options: [
         {
           value: UserRole.Admin,
