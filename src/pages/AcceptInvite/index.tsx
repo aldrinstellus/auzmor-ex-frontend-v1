@@ -9,7 +9,7 @@ import { Logo } from 'components/Logo';
 import { useMutation } from '@tanstack/react-query';
 import { redirectWithToken } from 'utils/misc';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { acceptInviteSetPassword, useVerifyInviteLink } from 'queries/users';
 import PageLoader from 'components/PageLoader';
 import InviteLinkExpired from './components/InviteLinkExpired';
@@ -40,7 +40,6 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
   const [searchParams, _] = useSearchParams();
   const token = searchParams.get('token');
   const orgId = searchParams.get('orgId');
-  const navigate = useNavigate();
 
   const { data, isLoading, isError, error } = useVerifyInviteLink({
     token,
@@ -52,7 +51,6 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
     mutationKey: ['accept-invite-mutation'],
     onSuccess: (data) => {
       redirectWithToken({
-        navigate,
         redirectUrl: data.result.data.redirectUrl,
         token: data.result.data.uat,
         showOnboard: true,
