@@ -180,7 +180,10 @@ const CreatableSearch = forwardRef(
                   value={field.value}
                   defaultActiveFirstOption={false}
                   ref={ref}
-                  onBlur={() => setOpen(false)}
+                  onBlur={() => {
+                    setOpen(false);
+                    setSearchValue('');
+                  }}
                   optionLabelProp="label"
                   onChange={(values, option) => {
                     if (multi) {
