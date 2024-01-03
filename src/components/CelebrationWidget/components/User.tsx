@@ -188,6 +188,7 @@ const User: FC<UserProps> = ({
             setIsCreateCommentLoading={setIsCreateCommentLoading}
             setMediaValidationErrors={setMediaValidationErrors}
             isCreateCommentLoading={isCreateCommentLoading}
+            toolbarId={`toolbar-for-${id}`}
           />
         )}
         <input
@@ -196,7 +197,6 @@ const User: FC<UserProps> = ({
           ref={inputRef}
           accept={validImageTypesForComments.join(',')}
           onChange={(e) => {
-            console.log(e);
             const mediaErrors: IMediaValidationError[] = [];
             if (e.target.files?.length) {
               setUploads(

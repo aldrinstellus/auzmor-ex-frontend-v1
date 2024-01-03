@@ -35,7 +35,7 @@ import MediaPreview, { Mode } from 'components/MediaPreview';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 
 import { hasDatePassed } from 'utils/time';
-import { hideMentionHashtagPalette } from 'utils/misc';
+import { hideEmojiPalette, hideMentionHashtagPalette } from 'utils/misc';
 
 export interface IEditorContentChanged {
   text: string;
@@ -213,6 +213,7 @@ const RichTextEditor = forwardRef(
           formats={formats}
           onChange={onChangeEditorContent}
           defaultValue={defaultValue}
+          onBlur={() => setTimeout(() => hideEmojiPalette(), 0)}
         />
         {media.length > 0 && (
           <MediaPreview
