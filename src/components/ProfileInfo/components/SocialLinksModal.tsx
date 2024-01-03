@@ -144,7 +144,18 @@ const SocialLinksModal: FC<AppProps> = ({ open, closeModal, socialLinks }) => {
   ];
 
   const onSubmit = (links: any) => {
-    updateUserMutation.mutate({ personal: { socialAccounts: links } });
+    const payload: Record<string, any> = {};
+    Object.entries(links).map(([k, v]) => {
+      if (v) {
+        payload[k] = v;
+      }
+    });
+
+    updateUserMutation.mutate({
+      personal: {
+        socialAccounts: payload,
+      },
+    });
   };
 
   return (
