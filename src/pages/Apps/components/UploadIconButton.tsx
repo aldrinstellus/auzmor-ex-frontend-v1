@@ -1,21 +1,16 @@
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
-import {
-  FC,
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import { twConfig } from 'utils/misc';
+import { FC, MouseEvent, useCallback, useEffect, useState } from 'react';
+import { BlobToFile, getBlobUrl, getMimeType, twConfig } from 'utils/misc';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { MB, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import { UseFormSetValue } from 'react-hook-form';
 import { IAddAppForm } from './AddApp';
+import useModal from 'hooks/useModal';
+import ImageReposition from 'components/DynamicImagePreview/components/ImageReposition';
 
 type UploadIconButtonProps = {
   setValue: UseFormSetValue<IAddAppForm>;
@@ -23,68 +18,68 @@ type UploadIconButtonProps = {
 };
 
 const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
+  const [isEditIconModalOpen, openEditIconModal, closeEditIconModal] =
+    useModal();
+  const [tempFile, setTempFile] = useState<File | null>(null);
   const [error, setError] = useState('');
   // Callback function to handle file upload
   const handleIconUpload = (file: File) => {
-    let isError = false;
-    // 1. File is of jpeg/jpg, png or svg
-    if (!['image/jpeg', 'image/png', 'image/svg+xml'].includes(file.type)) {
-      isError = true;
-      showErrorToast('Only JPEG/PNG/SVG filetypes are supported!');
-      setError('Unsupported filetypes.');
-    }
+    console.log(file);
 
-    // 2. File is under 8MB
-    if (file.size > 8 * 1024 * 1024) {
-      isError = true;
-      showErrorToast('Uploaded image must be less than 8MB in size!');
-      setError('The file size exceed the limit.');
-    }
-
-    // 3. File is of max 100 x 100 resolution
-    const img = new Image();
-    const objectURL = URL.createObjectURL(file);
-
-    img.onload = () => {
-      // If the image has unsupported dimensions, throw an error
-      if (img.width > 100 || img.height > 100) {
-        isError = true;
-        showErrorToast(
-          'Uploaded image must not be more than 100x100px resolution',
-        );
-        setError('File resolution not matched.');
-      }
-      // If the image has supported dimensions, then call setAppIcon
-      else if (!isError) {
-        const iconElement = document.getElementById(
-          'add-app-icon',
-        ) as HTMLImageElement;
-        iconElement.src = objectURL;
-        setValue('icon', { id: '', original: '', file });
-      }
-      URL.revokeObjectURL(objectURL);
-    };
-    img.src = objectURL;
+    const iconElement = document.getElementById(
+      'add-app-icon',
+    ) as HTMLImageElement;
+    const blobFile = BlobToFile(
+      file,
+      `id-${Math.random().toString(16).slice(2)}`,
+      file.type,
+    );
+    iconElement.src = getBlobUrl(blobFile);
+    setValue('icon', { id: '', original: '', file: blobFile });
   };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     // Do something with the files
     if (acceptedFiles.length) {
-      handleIconUpload(acceptedFiles[0]);
+      openEditIconModal();
+      setTempFile(acceptedFiles[0]);
     }
   }, []);
 
-  const { getRootProps, getInputProps, isDragActive, isDragAccept } =
+  const { getRootProps, getInputProps, isDragActive, isDragAccept, inputRef } =
     useDropzone({
       onDrop,
+      maxFiles: 1,
+      onDropRejected: (rejection) => {
+        // extension validation
+        const error = rejection[0].errors[0];
+        if (error.code === 'file-invalid-type') {
+          showErrorToast('Only JPEG/PNG/SVG filetypes are supported!');
+          setError('Unsupported filetypes.');
+          return;
+        }
+        if (error.code === 'file-size-exceed') {
+          showErrorToast('Uploaded image must be less than 8MB in size!');
+          setError('The file size exceed the limit.');
+          return;
+        }
+      },
       accept: {
         'image/jpeg': ['.jpg', '.jpeg'],
         'image/png': ['.png'],
-        'image/svg+xml': ['.svg', '.xml'],
+        'image/svg': ['.svg'],
+      },
+      validator: (file) => {
+        // size validation
+        if (file.size > 8 * MB) {
+          return {
+            code: 'file-size-exceed',
+            message: 'The file size exceeds the limit',
+          };
+        }
+        return null;
       },
     });
-
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const clearInput = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -138,7 +133,6 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
                 Logo Acceptance:
               </p>
               <p className="text-white">File types: JPG, PNG, SVG</p>
-              <p className="text-white">Resolution: 100 x 100 px</p>
               <p className="text-white">Max size: 8MB</p>
             </div>
           }
@@ -159,34 +153,12 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
         }`}
         {...getRootProps()}
       >
-        <label htmlFor="upload-app-icon">
+        <label htmlFor="upload-app-icon" className="cursor-pointer">
           <div
             className="flex flex-col items-center justify-evenly h-[186px] gap-y-2"
             onClick={(e) => e.stopPropagation()}
           >
-            {!hasIcon && (
-              <input
-                id="upload-app-icon"
-                {...getInputProps()}
-                type="file"
-                ref={inputRef}
-                className="hidden"
-                accept="image/jpeg, image/png, image/svg+xml"
-                onChange={(e) => {
-                  setError('');
-                  if (e.target.files?.length) {
-                    // Check for all three conditions:
-                    const file = e.target.files[0];
-                    handleIconUpload(file);
-                  }
-                }}
-                onClick={() => {
-                  if (inputRef.current) {
-                    inputRef.current.value = '';
-                  }
-                }}
-              />
-            )}
+            <input id="upload-app-icon" {...getInputProps()} />
 
             <div
               className={`${
@@ -268,6 +240,34 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
           </div>
         </label>
       </div>
+      {isEditIconModalOpen && (
+        <ImageReposition
+          title="Reposition"
+          openEditImage={isEditIconModalOpen}
+          closeEditImageModal={closeEditIconModal}
+          image={getBlobUrl(tempFile!)}
+          imageRef={inputRef}
+          setImageFile={handleIconUpload}
+          imageFile={tempFile}
+          mimeType={getMimeType(tempFile?.name || '')}
+          defaultSize={(cropperState) => {
+            const aspectRatio = 1;
+            const w = cropperState.imageSize.width;
+            const h = cropperState.imageSize.height;
+            const DEFAUTL_MARGIN = 8; // in pixel
+            if (h <= w) {
+              return {
+                width: (h - DEFAUTL_MARGIN) * aspectRatio,
+                height: h - DEFAUTL_MARGIN,
+              };
+            }
+            return {
+              width: w - DEFAUTL_MARGIN,
+              height: (w - DEFAUTL_MARGIN) / aspectRatio,
+            };
+          }}
+        />
+      )}
     </div>
   );
 };

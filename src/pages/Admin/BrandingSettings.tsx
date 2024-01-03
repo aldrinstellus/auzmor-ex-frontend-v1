@@ -22,7 +22,7 @@ import { IRadioListOption } from 'components/RadioGroup';
 import { useUpdateBrandingMutation } from 'queries/organization';
 import { useBrandingStore } from 'stores/branding';
 import useModal from 'hooks/useModal';
-import ImageResosition from 'components/DynamicImagePreview/components/ImageReposition';
+import ImageReposition from 'components/DynamicImagePreview/components/ImageReposition';
 import clsx from 'clsx';
 import { useUpload } from 'hooks/useUpload';
 import { EntityType } from 'queries/files';
@@ -71,7 +71,8 @@ const Preview: FC<{
   showPreview = true,
 }) => {
   const style = clsx({
-    'max-h-full max-w-full relative h-full': true,
+    'max-h-full max-w-full relative h-full group/close bg-neutral-100 rounded-xl':
+      true,
     [className]: true,
   });
   const imageStyle = clsx({
@@ -98,7 +99,7 @@ const Preview: FC<{
       )}
 
       <div
-        className="absolute -right-3 -top-3 w-6 h-6 rounded-full flex items-center justify-center bg-black group"
+        className="absolute -right-3 -top-3 w-6 h-6 rounded-full hidden items-center justify-center bg-black group-hover/close:flex"
         onClick={(e) => {
           e.stopPropagation();
           onCustomRemove();
@@ -128,7 +129,7 @@ const Preview: FC<{
       )}
 
       <div
-        className="absolute -right-3 -top-3 w-6 h-6 rounded-full flex items-center justify-center bg-black group"
+        className="absolute -right-3 -top-3 w-6 h-6 rounded-full hidden items-center justify-center bg-black group-hover/close:flex"
         onClick={(e) => {
           e.stopPropagation();
           onBrandingRemove();
@@ -1483,7 +1484,7 @@ const BrandingSettings: FC = () => {
         </div>
       </Collapse>
       {isEditLogoModalOpen && (
-        <ImageResosition
+        <ImageReposition
           title="Reposition"
           openEditImage={isEditLogoModalOpen}
           closeEditImageModal={closeEditLogoModal}
@@ -1511,7 +1512,7 @@ const BrandingSettings: FC = () => {
         />
       )}
       {isEditFaviconModalOpen && (
-        <ImageResosition
+        <ImageReposition
           title="Reposition"
           openEditImage={isEditFaviconModalOpen}
           closeEditImageModal={closeEditFaviconModal}
@@ -1524,7 +1525,7 @@ const BrandingSettings: FC = () => {
         />
       )}
       {isEditBGModalOpen && (
-        <ImageResosition
+        <ImageReposition
           title="Reposition"
           openEditImage={isEditBGModalOpen}
           closeEditImageModal={closeEditBGModal}

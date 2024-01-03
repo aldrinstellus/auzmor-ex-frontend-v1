@@ -1,20 +1,18 @@
-import Spinner from 'components/Spinner';
 import React, { useEffect } from 'react';
-import usePoller from './usePoller';
-import { StepEnum } from './utils';
+import Spinner from 'components/Spinner';
+import usePoller from '../usePoller';
+import { StepEnum } from '../utils';
 import { useJobStore } from 'stores/jobStore';
 
 type AppProps = {
+  open: boolean;
+  closeModal: () => any;
   importId: string;
-  fileName: string;
+  meta: Record<string, any>;
   setMeta: (...args: any) => any;
 };
 
-const ImportingForExcel: React.FC<AppProps> = ({
-  importId,
-  fileName,
-  setMeta,
-}) => {
+const ImportingFileStep: React.FC<AppProps> = ({ importId, meta, setMeta }) => {
   const { setStep } = useJobStore();
   const { ready, data } = usePoller({
     importId,
@@ -41,10 +39,10 @@ const ImportingForExcel: React.FC<AppProps> = ({
     <div className="p-6 flex flex-col items-center justify-center">
       <Spinner className="!h-[100px] !w-[100px]" />
       <div className="text-lg text-neutral-900 font-bold mt-4">
-        Importing {fileName}
+        Importing {meta?.file?.name}
       </div>
     </div>
   );
 };
 
-export default ImportingForExcel;
+export default ImportingFileStep;

@@ -12,7 +12,6 @@
 
 .ant-select-selection-placeholder {
   color: theme('colors.neutral.500') !important;
-  padding-left: 16px !important;
   /* padding-right: 20px !important; */
 }
 
@@ -76,4 +75,12 @@
 
 .ant-select-item-option-selected {
   background-color: theme('colors.primary.50') !important;
+}
+
+:where(.css-dev-only-do-not-override-wl8z4f).ant-select-single
+  .ant-select-selector
+  .ant-select-selection-search {
+  width: 80%;
+  inset-inline-end: unset;
+  inset-inline-start: unset;
 }

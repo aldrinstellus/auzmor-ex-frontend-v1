@@ -1,3 +1,4 @@
+import { StepEnum } from 'pages/Users/components/ImportUsers/utils';
 import { create } from 'zustand';
 
 interface IJobStore {
@@ -9,6 +10,8 @@ interface IJobStore {
   setTotal: (total: number) => void;
   complete: boolean;
   setComplete: (complete: boolean) => void;
+  step: StepEnum;
+  setStep: (step: StepEnum) => void;
 }
 
 export const useJobStore = create<IJobStore>((set) => ({
@@ -20,4 +23,6 @@ export const useJobStore = create<IJobStore>((set) => ({
   setTotal: (total) => set({ total }),
   complete: false,
   setComplete: (complete) => set({ complete }),
+  step: StepEnum.Upload,
+  setStep: (step) => set(() => ({ step })),
 }));

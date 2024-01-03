@@ -9,6 +9,7 @@ import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
 import { IFilterForm } from '.';
 import ItemSkeleton from './ItemSkeleton';
+import NoDataFound from 'components/NoDataFound';
 
 interface ILocationsProps {
   control: Control<IFilterForm, any>;
@@ -140,13 +141,33 @@ const Locations: FC<ILocationsProps> = ({ control, watch, setValue }) => {
                 debouncedLocationSearchValue === '') &&
               locationData?.length === 0 ? (
                 <div className="flex items-center w-full text-lg font-bold">
-                  No Locations found
+                  <NoDataFound
+                    illustration="noResultAlt"
+                    className="py-10 w-full"
+                    searchString={''}
+                    onClearSearch={() => {}}
+                    labelHeader={<p> No Locations found</p>}
+                    hideClearBtn
+                    dataTestId={`noresult`}
+                  />
                 </div>
               ) : (
-                <div className="py-16 w-full text-lg font-bold text-center">
-                  {`No result found`}
-                  {debouncedLocationSearchValue &&
-                    ` for '${debouncedLocationSearchValue}'`}
+                <div className="flex items-center w-full text-lg font-bold ">
+                  <NoDataFound
+                    illustration="noResultAlt"
+                    className="py-10 w-full"
+                    searchString={debouncedLocationSearchValue}
+                    onClearSearch={() => {}}
+                    message={
+                      <p>
+                        Sorry we can&apos;t find the location you are looking
+                        for.
+                        <br /> Please try using different filters
+                      </p>
+                    }
+                    hideClearBtn
+                    dataTestId={`noresult`}
+                  />
                 </div>
               )}
             </>

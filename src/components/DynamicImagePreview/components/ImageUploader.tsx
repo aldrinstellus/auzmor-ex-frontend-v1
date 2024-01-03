@@ -2,7 +2,7 @@ import { FC, RefObject, useState } from 'react';
 import Icon from 'components/Icon';
 import { clearInputValue, getBlobUrl, twConfig } from 'utils/misc';
 import useModal from 'hooks/useModal';
-import ImageResosition from './ImageReposition';
+import ImageReposition from './ImageReposition';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
@@ -82,7 +82,7 @@ const ImageUploader: FC<IImageUploaderProps> = ({
         </div>
         <div className="text-sm">Add your document from the options below</div>
         {openEditImage && (
-          <ImageResosition
+          <ImageReposition
             title="Reposition"
             openEditImage={openEditImage}
             closeEditImageModal={closeEditImageModal}

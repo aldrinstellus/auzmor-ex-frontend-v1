@@ -180,7 +180,10 @@ const CreatableSearch = forwardRef(
                   value={field.value}
                   defaultActiveFirstOption={false}
                   ref={ref}
-                  onBlur={() => setOpen(false)}
+                  onBlur={() => {
+                    setOpen(false);
+                    setSearchValue('');
+                  }}
                   optionLabelProp="label"
                   onChange={(values, option) => {
                     if (multi) {
@@ -190,6 +193,8 @@ const CreatableSearch = forwardRef(
                       setSearchValue('');
                     } else {
                       field.onChange(option);
+                      setSearchValue('');
+                      setOpen(false);
                     }
                   }}
                   suffixIcon={<Icon name="arrowDown" size={16} />}

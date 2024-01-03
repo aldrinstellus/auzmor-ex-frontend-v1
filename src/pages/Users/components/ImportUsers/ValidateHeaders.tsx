@@ -8,7 +8,6 @@ import React, { FC, useState } from 'react';
 type AppProps = {
   isLoading: boolean;
   isSuccess: boolean;
-  isError: boolean;
   meta: Record<string, any>;
   closeModal: () => any;
   disableSubmit?: boolean;

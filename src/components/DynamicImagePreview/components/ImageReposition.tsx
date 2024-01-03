@@ -34,7 +34,7 @@ export interface IImageResositionProps {
   shape?: Shape;
 }
 
-const ImageResosition: FC<IImageResositionProps> = ({
+const ImageReposition: FC<IImageResositionProps> = ({
   title,
   openEditImage,
   image,
@@ -121,4 +121,4 @@ const ImageResosition: FC<IImageResositionProps> = ({
   );
 };
 
-export default memo(ImageResosition);
+export default memo(ImageReposition);

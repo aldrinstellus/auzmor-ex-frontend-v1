@@ -59,6 +59,7 @@ interface CommentFormProps {
   setMediaValidationErrors?: (errors: IMediaValidationError[]) => void;
   isCreateCommentLoading?: boolean;
   suggestions?: string;
+  toolbarId?: string;
 }
 
 interface IUpdateCommentPayload {
@@ -86,6 +87,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
   setIsCreateCommentLoading = () => {},
   setMediaValidationErrors = () => {},
   suggestions,
+  toolbarId,
 }) => {
   const {
     comment,
@@ -409,7 +411,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
         className={`flex flex-col items-center py-3 gap-2 border border-neutral-200 rounded-19xl border-solid w-full focus-within:border-primary-500 ${wrapperClassName}`}
       >
         <RichTextEditor
-          toolbarId={`toolbar-${entityId}`}
+          toolbarId={`toolbar-${toolbarId || entityId}`}
           defaultValue={commentData?.content?.editor}
           placeholder={
             mode === PostCommentMode.SendWish
@@ -423,7 +425,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
           renderToolbar={() => (
             <div
               className="z-10 quill-toolbar quill-toolbar-icons !relative gap-4 ml-auto"
-              id={`toolbar-${entityId}-toolbar`}
+              id={`toolbar-${toolbarId || entityId}-toolbar`}
             >
               {mode === PostCommentMode.Edit && (
                 <Button

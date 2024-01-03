@@ -3,7 +3,7 @@ import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { StepEnum } from './utils';
+import { StepEnum } from '../utils';
 import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
 import Button, { Size, Variant } from 'components/Button';
@@ -11,12 +11,12 @@ import { useMutation } from '@tanstack/react-query';
 import { updateParseImport, validateImport } from 'queries/importUsers';
 import { truncate } from 'lodash';
 import Spinner from 'components/Spinner';
-import ValidateHeaders from './ValidateHeaders';
+import ValidateHeaders from '../ValidateHeaders';
+import { useJobStore } from 'stores/jobStore';
 
 type AppProps = {
   open: boolean;
   closeModal: () => any;
-  setStep: (...args: any) => any;
   importId: string;
   meta: Record<string, any>;
   setMeta: (...args: any) => any;
@@ -29,11 +29,11 @@ interface IForm {
 const SelectSheetStep: React.FC<AppProps> = ({
   open,
   closeModal,
-  setStep,
   importId,
   meta,
   setMeta,
 }) => {
+  const { setStep } = useJobStore();
   const parseMutation = useMutation((formData: any) =>
     updateParseImport(importId, formData),
   );
@@ -49,13 +49,6 @@ const SelectSheetStep: React.FC<AppProps> = ({
       setValue('sheet', meta.sheetOptions[0].value);
     }
   }, [meta.sheetOptions]);
-
-  // useEffect(() => {
-  //   if (_sheet) {
-  //     parseMutation.mutate({ sheetIndex: _sheet?.value });
-  //     setMeta((m: any) => ({ ...m, sheetIndex: _sheet?.value }));
-  //   }
-  // }, [_sheet]);
 
   const onSubmit = () => {
     if (_sheet) {
@@ -102,10 +95,6 @@ const SelectSheetStep: React.FC<AppProps> = ({
       <ValidateHeaders
         isLoading={false}
         isSuccess={true}
-        isError={false}
-        // isLoading={parseMutation.isLoading}
-        // isSuccess={parseMutation.isSuccess}
-        // isError={parseMutation.isError}
         meta={meta}
         onConfirm={() => {
           onSubmit();
@@ -117,28 +106,6 @@ const SelectSheetStep: React.FC<AppProps> = ({
         }
         isCsv={false}
       />
-
-      {/* <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
-        <Button
-          label="Cancel"
-          variant={Variant.Secondary}
-          size={Size.Small}
-          className="mr-4"
-          onClick={closeModal}
-          dataTestId="cancel-cta"
-          disabled={parseMutation.isLoading || validateUserMutation.isLoading}
-        />
-        <Button
-          label="Confirm"
-          size={Size.Small}
-          dataTestId="confirm-cta"
-          onClick={() => {
-            validateUserMutation.mutate();
-          }}
-          disabled={!_sheet || parseMutation.isLoading}
-          loading={validateUserMutation.isLoading}
-        />
-      </div> */}
     </Modal>
   );
 };

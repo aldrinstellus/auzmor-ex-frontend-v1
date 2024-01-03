@@ -1,8 +1,8 @@
 import UploadFileStep from './UploadFileStep';
-import ImportingFileStep from './ImportingFileStep';
-import SelectSheetStep from './SelectSheetStep';
+import SelectSheetStep from './ImportFileStep/SelectSheetStep';
 import ReviewStep from './ReviewStep';
 import ConfirmationStep from './ConfirmationStep';
+import ImportFileStep from './ImportFileStep';
 
 export enum StepEnum {
   Upload = 'upload',
@@ -14,7 +14,7 @@ export enum StepEnum {
 
 export const stepMap = {
   [StepEnum.Upload]: UploadFileStep,
-  [StepEnum.Importing]: ImportingFileStep,
+  [StepEnum.Importing]: ImportFileStep,
   [StepEnum.SelectSheet]: SelectSheetStep,
   [StepEnum.Review]: ReviewStep,
   [StepEnum.Confirmation]: ConfirmationStep,
