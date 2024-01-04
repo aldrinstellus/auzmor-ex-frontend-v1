@@ -83,7 +83,8 @@ interface IRedirect {
   showOnboard?: boolean;
 }
 
-export const redirectWithToken = ({
+// Deprecated. Use navigateWithToken function instead
+export const redirectWithToken = async ({
   redirectUrl,
   token,
   showOnboard = false,

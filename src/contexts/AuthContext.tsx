@@ -72,6 +72,8 @@ interface IAuthContext {
   accountDeactivated: boolean;
   reset: () => void;
   updateUser: (user: IUser) => void;
+  setUser: (user: IUser | null) => void;
+  setShowOnboard: (flag: boolean) => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({
@@ -81,6 +83,8 @@ export const AuthContext = createContext<IAuthContext>({
   accountDeactivated: false,
   reset: () => {},
   updateUser: () => {},
+  setUser: () => {},
+  setShowOnboard: () => {},
 });
 
 const AuthProvider: FC<AuthContextProps> = ({ children }) => {
@@ -97,8 +101,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   const setupSession = async () => {
     const query = new URLSearchParams(window.location.search.substring(1));
     let token = query.get('accessToken');
-    const _showOnboard = query.get('showOnboard');
-    setShowOnboard(!!_showOnboard);
+    setShowOnboard(!!query.get('showOnboard'));
 
     if (token) {
       setItem(process.env.SESSION_KEY || 'uat', token);
@@ -239,6 +242,8 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
         reset,
         loggedIn,
         updateUser,
+        setUser,
+        setShowOnboard,
       }}
     >
       {children}

@@ -6,16 +6,18 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Button, { Size, Type as ButtonType } from 'components/Button';
 import { useMutation } from '@tanstack/react-query';
-import { getSubDomain, isDark, redirectWithToken } from 'utils/misc';
+import { getSubDomain, isDark } from 'utils/misc';
 import { signup } from 'queries/account';
 import { useDebounce } from 'hooks/useDebounce';
 import { useDomainExists, useIsUserExistOpen } from 'queries/users';
 import 'utils/custom-yup-validators/email/validateEmail';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useGetSSOFromDomain } from 'queries/organization';
 import { useBrandingStore } from 'stores/branding';
 import OfficeLogoSvg from 'components/Logo/images/OfficeLogo.svg';
 import clsx from 'clsx';
+import useAuth from 'hooks/useAuth';
+import { useNavigateWithToken } from 'hooks/useNavigateWithToken';
 
 interface IForm {
   fullName: string;
@@ -72,16 +74,21 @@ export interface IValidationErrors {
 }
 
 const Signup: FC<ISignupProps> = () => {
+  const { setUser, setShowOnboard } = useAuth();
+  const navigate = useNavigate();
+  const navigateWithToken = useNavigateWithToken();
   const signupMutation = useMutation(
     (formData: IForm) =>
       signup({ ...formData, domain: formData.domain.toLowerCase() }),
     {
       onSuccess: (data) =>
-        redirectWithToken({
-          redirectUrl: data.result.data.redirectUrl,
-          token: data.result.data.uat,
-          showOnboard: true,
-        }),
+        navigateWithToken(
+          data.result.data.uat,
+          data.result.data.redirectUrl,
+          setUser,
+          navigate,
+          setShowOnboard,
+        ),
       onError: (_data: any) => {},
     },
   );

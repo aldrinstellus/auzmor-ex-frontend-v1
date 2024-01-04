@@ -7,12 +7,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Button, { Size, Type as ButtonType } from 'components/Button';
 import { Logo } from 'components/Logo';
 import { useMutation } from '@tanstack/react-query';
-import { redirectWithToken } from 'utils/misc';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { acceptInviteSetPassword, useVerifyInviteLink } from 'queries/users';
 import PageLoader from 'components/PageLoader';
 import InviteLinkExpired from './components/InviteLinkExpired';
+import useAuth from 'hooks/useAuth';
+import { useNavigateWithToken } from 'hooks/useNavigateWithToken';
 
 interface IForm {
   workEmail: string;
@@ -40,6 +41,9 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
   const [searchParams, _] = useSearchParams();
   const token = searchParams.get('token');
   const orgId = searchParams.get('orgId');
+  const { setUser, setShowOnboard } = useAuth();
+  const navigate = useNavigate();
+  const navigateWithToken = useNavigateWithToken();
 
   const { data, isLoading, isError, error } = useVerifyInviteLink({
     token,
@@ -49,13 +53,14 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
   const acceptInviteMutation = useMutation({
     mutationFn: acceptInviteSetPassword,
     mutationKey: ['accept-invite-mutation'],
-    onSuccess: (data) => {
-      redirectWithToken({
-        redirectUrl: data.result.data.redirectUrl,
-        token: data.result.data.uat,
-        showOnboard: true,
-      });
-    },
+    onSuccess: (data) =>
+      navigateWithToken(
+        data.result.data.uat,
+        data.result.data.redirectUrl,
+        setUser,
+        navigate,
+        setShowOnboard,
+      ),
     onError: () => {},
   });
 
