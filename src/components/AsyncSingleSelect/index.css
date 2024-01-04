@@ -6,12 +6,13 @@
   border-color: theme('colors.neutral.200') !important;
   border-width: 1px !important;
   border-radius: 32px !important;
-  padding: 0 20px !important;
+  padding: 0 12px !important;
   align-items: center !important;
 }
 
 .ant-select-selection-placeholder {
   color: theme('colors.neutral.500') !important;
+  padding: 0 8px !important;
 }
 
 .ant-select-selection-search-input {
