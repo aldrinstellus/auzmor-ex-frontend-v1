@@ -20,7 +20,6 @@ import { IDesignation } from 'queries/designation';
 import { IPost } from 'queries/post';
 import moment from 'moment';
 import { EMPTY_REGEX, HEX_REGEX } from './constants';
-import { NavigateFunction } from 'react-router-dom';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -79,21 +78,13 @@ export const isValidUrl = (url: string) => {
 };
 
 interface IRedirect {
-  setupSession: (
-    token?: string | null,
-    showOnboard?: boolean,
-    url?: string,
-    navigate?: NavigateFunction,
-  ) => Promise<any>;
-  navigate: NavigateFunction;
   redirectUrl?: string;
   token?: string;
   showOnboard?: boolean;
 }
 
+// Deprecated. Use navigateWithToken function instead
 export const redirectWithToken = async ({
-  setupSession,
-  navigate,
   redirectUrl,
   token,
   showOnboard = false,
@@ -101,15 +92,14 @@ export const redirectWithToken = async ({
   let url = getItem('redirect_post_login_to') || '/feed';
   if (url === '/') url = '/feed';
   removeItem('redirect_post_login_to');
-  // if (token) {
-  //   url = `${url}?accessToken=${token}`;
-  // }
-  // if (showOnboard) {
-  //   url += '&showOnboard=true';
-  // }
+  if (token) {
+    url = `${url}?accessToken=${token}`;
+  }
+  if (showOnboard) {
+    url += '&showOnboard=true';
+  }
   if (process.env.NODE_ENV === 'development') {
-    await setupSession(token, showOnboard, url, navigate);
-    // window.location.replace(`http://localhost:3000${url}`);
+    window.location.replace(`http://localhost:3000${url}`);
   } else {
     window.location.replace(`${redirectUrl}${url}`);
   }

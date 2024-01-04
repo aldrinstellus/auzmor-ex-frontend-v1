@@ -10,18 +10,15 @@ import Button, {
   Type as ButtonType,
   Size,
 } from 'components/Button';
-import {
-  getSubDomain,
-  readFirstAxiosError,
-  redirectWithToken,
-} from 'utils/misc';
+import { getSubDomain, readFirstAxiosError } from 'utils/misc';
 import { Link, useNavigate } from 'react-router-dom';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useGetSSOFromDomain } from 'queries/organization';
 import { useLoginViaSSO } from 'queries/auth';
 import 'utils/custom-yup-validators/email/validateEmail';
-import { FC, useContext } from 'react';
-import { AuthContext } from 'contexts/AuthContext';
+import { FC } from 'react';
+import useAuth from 'hooks/useAuth';
+import { useNavigateWithToken } from 'hooks/useNavigateWithToken';
 
 export interface ILoginViaCredProps {
   setViaSSO: (flag: boolean) => void;
@@ -45,16 +42,17 @@ const schema = yup.object({
 });
 
 const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
-  const { setupSession } = useContext(AuthContext);
+  const { setUser } = useAuth();
   const navigate = useNavigate();
+  const navigateWithToken = useNavigateWithToken();
   const loginMutation = useMutation((formData: IForm) => login(formData), {
-    onSuccess: (data) =>
-      redirectWithToken({
-        setupSession,
+    onSuccess: async (data) =>
+      navigateWithToken(
+        data.result.data.uat,
+        data.result.data.redirectUrl,
+        setUser,
         navigate,
-        redirectUrl: data.result.data.redirectUrl,
-        token: data.result.data.uat,
-      }),
+      ),
   });
 
   const domain = getSubDomain(window.location.host);
