@@ -81,6 +81,7 @@ const MarriedRow: FC<AppProps> = ({ data }) => {
       ],
       control,
       menuPlacement: 'topLeft',
+      showSearch: false,
     },
   ];
 

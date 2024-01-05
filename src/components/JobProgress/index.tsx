@@ -8,7 +8,8 @@ import Details from './Details';
 
 const Processing: React.FC = () => {
   const [open, openModal, closeModal] = useModal(false);
-  const { importId, setShowJobProgress, complete, setComplete } = useJobStore();
+  const { importId, setShowJobProgress, complete, setComplete, total } =
+    useJobStore();
   const [collapse, openCollpase, closeCollapse] = useModal(true);
   const { ready, data } = usePoller({ importId, action: 'create' });
 
@@ -27,8 +28,9 @@ const Processing: React.FC = () => {
   const successfullUploads =
     (data?.result?.data?.info?.addedWithMissingValues || 0) +
     (data?.result?.data?.info?.valid || 0);
-  const totalRecords = data?.result?.data?.info?.total;
+  const totalRecords = data?.result?.data?.info?.total || total;
 
+  const progress = data?.result?.data?.progress || 0;
   return (
     <div className="fixed w-full bottom-0 flex justify-center px-14 z-50">
       <div
@@ -42,9 +44,7 @@ const Processing: React.FC = () => {
         >
           <div className="flex space-x-4">
             {!complete && collapse && (
-              <div className="flex flex-col justify-end">
-                {data?.result?.data?.progress}%
-              </div>
+              <div className="flex flex-col justify-end">{progress}%</div>
             )}
             <div className="flex-1">
               <div className="flex justify-between items-center">
@@ -114,7 +114,7 @@ const Processing: React.FC = () => {
                   <div className="w-full rounded-[100px] bg-neutral-400 h-[5px] relative">
                     <div
                       className={`h-full rounded-[100px] bg-primary-500`}
-                      style={{ width: `${data?.result?.data?.progress}%` }}
+                      style={{ width: `${progress}%` }}
                     ></div>
                   </div>
                 </div>

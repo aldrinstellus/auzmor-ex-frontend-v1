@@ -56,7 +56,16 @@ class ApiService {
           !window.location.pathname?.includes('logout') &&
           error?.response?.status === 401
         ) {
-          window.location.href = '/login';
+          const codes =
+            error?.response?.data?.errors?.map(
+              (err: { code: string; message: string; reason: string }) =>
+                err?.code,
+            ) || [];
+
+          // Redirecting to login when error response does not contain INVALID_CREDENTIALS error code. " If " condition will prevent reload on incorrect password.
+          if (!codes.includes('INVALID_CREDENTIALS')) {
+            window.location.href = '/login';
+          }
         }
         return Promise.reject(error);
       },

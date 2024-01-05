@@ -261,11 +261,11 @@ const User: FC<UserProps> = ({
               tooltipContent={getFullName(featuredUser) || featuredUser.email}
               showTooltip={
                 (getFullName(featuredUser) || featuredUser.email).length >
-                (isModalView ? 40 : 26)
+                (isModalView ? 40 : 18)
               }
             >
               <p
-                className="text-sm font-bold truncate cursor-pointer"
+                className="text-sm font-bold truncate cursor-pointer  "
                 data-testid={`${
                   isBirthday ? 'birthday' : 'anniversaries'
                 }-profile-name`}
@@ -274,7 +274,7 @@ const User: FC<UserProps> = ({
                 }
               >
                 {truncate(getFullName(featuredUser) || featuredUser.email, {
-                  length: isModalView ? 40 : 26,
+                  length: isModalView ? 40 : 18,
                   separator: '',
                 })}
               </p>
@@ -284,12 +284,12 @@ const User: FC<UserProps> = ({
               <Tooltip
                 tooltipContent={featuredUser.designation}
                 showTooltip={
-                  featuredUser.designation.length > (isModalView ? 40 : 22)
+                  featuredUser.designation.length > (isModalView ? 40 : 24)
                 }
               >
-                <p className="text-xs truncate text-neutral-500">
+                <p className="text-xs truncate text-neutral-500 ">
                   {truncate(featuredUser.designation, {
-                    length: isModalView ? 40 : 26,
+                    length: isModalView ? 40 : 24,
                     separator: '',
                   })}
                 </p>

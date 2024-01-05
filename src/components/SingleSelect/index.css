@@ -6,13 +6,13 @@
   border-color: theme('colors.neutral.200') !important;
   border-width: 1px !important;
   border-radius: 32px !important;
-  padding: 0 12px !important;
+  padding: 0 16px !important;
   align-items: center !important;
 }
 
 .ant-select-selection-placeholder {
   color: theme('colors.neutral.500') !important;
-  padding: 0 8px !important;
+  padding: 0 12px !important;
 }
 
 .ant-select-selection-search-input {
@@ -21,7 +21,7 @@
 }
 
 .single-select .ant-select-selection-search-input {
-  padding-left: 8px !important;
+  padding-left: 5px !important;
 }
 
 .ant-select-selector:hover {
@@ -79,4 +79,9 @@
 
 .ant-select-item-option-selected {
   background-color: theme('colors.primary.50') !important;
+}
+
+:where(.css-dev-only-do-not-override-qw3grv).ant-select-multiple
+  .ant-select-selection-search {
+  margin-inline-start: unset;
 }
