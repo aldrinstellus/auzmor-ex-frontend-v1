@@ -11,6 +11,7 @@ import { UseFormSetValue } from 'react-hook-form';
 import { IAddAppForm } from './AddApp';
 import useModal from 'hooks/useModal';
 import ImageReposition from 'components/DynamicImagePreview/components/ImageReposition';
+import { Shape } from 'components/ImageCropper';
 
 type UploadIconButtonProps = {
   setValue: UseFormSetValue<IAddAppForm>;
@@ -24,8 +25,6 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
   const [error, setError] = useState('');
   // Callback function to handle file upload
   const handleIconUpload = (file: File) => {
-    console.log(file);
-
     const iconElement = document.getElementById(
       'add-app-icon',
     ) as HTMLImageElement;
@@ -250,22 +249,8 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
           setImageFile={handleIconUpload}
           imageFile={tempFile}
           mimeType={getMimeType(tempFile?.name || '')}
-          defaultSize={(cropperState) => {
-            const aspectRatio = 1;
-            const w = cropperState.imageSize.width;
-            const h = cropperState.imageSize.height;
-            const DEFAUTL_MARGIN = 8; // in pixel
-            if (h <= w) {
-              return {
-                width: (h - DEFAUTL_MARGIN) * aspectRatio,
-                height: h - DEFAUTL_MARGIN,
-              };
-            }
-            return {
-              width: w - DEFAUTL_MARGIN,
-              height: (w - DEFAUTL_MARGIN) / aspectRatio,
-            };
-          }}
+          aspectRatio={1}
+          shape={Shape.Square}
         />
       )}
     </div>

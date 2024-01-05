@@ -46,7 +46,7 @@ const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
   const navigate = useNavigate();
   const navigateWithToken = useNavigateWithToken();
   const loginMutation = useMutation((formData: IForm) => login(formData), {
-    onSuccess: async (data) =>
+    onSuccess: (data) =>
       navigateWithToken(
         data.result.data.uat,
         data.result.data.redirectUrl,
