@@ -12,7 +12,7 @@
 
 .ant-select-selection-placeholder {
   color: theme('colors.neutral.500') !important;
-  padding: 0 8px !important;
+  padding: 0 24px 0 8px !important;
 }
 
 .ant-select-selection-search-input {
