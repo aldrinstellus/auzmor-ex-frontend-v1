@@ -367,14 +367,6 @@ export const removeEmptyLines = (content: {
       try {
         // replace more than 2 empty lines with 2 empty lines
         op.insert = op.insert?.replaceAll(EMPTY_REGEX, '\n\n');
-        if (
-          op.attributes &&
-          op.attributes.link &&
-          op.attributes.color === 'inherit'
-        ) {
-          delete op.attributes.link;
-        }
-        
       } catch (e) {}
     }
   }
