@@ -5,17 +5,19 @@ type TextProps = {
   value: string;
   attributes: any;
   isLink: boolean;
+  link: string;
 };
 export const Text: FC<TextProps> = ({
   value,
   attributes,
   isLink,
+  link,
 }): ReactElement => {
   switch (isLink) {
     case true:
       return (
         <a
-          href={value}
+          href={link}
           target="_blank"
           role="button"
           className={`${getStyles(attributes)} underline text-primary-500`}
