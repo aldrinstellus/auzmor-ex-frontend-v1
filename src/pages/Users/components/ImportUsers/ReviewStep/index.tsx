@@ -84,10 +84,10 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
       resizable: true,
       width: 220,
       renderCell: ({ row }: any) => {
-        return row.rowData.email?.value;
+        return row.rowData?.email?.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.email?.isValid) {
+        if (!row.rowData?.email?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -104,10 +104,10 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
       resizable: true,
       width: 220,
       renderCell: ({ row }: any) => {
-        return row.rowData.managerEmail?.value;
+        return row.rowData?.managerEmail?.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.managerEmail?.isValid) {
+        if (!row.rowData?.managerEmail?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -124,10 +124,10 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
       resizable: true,
       width: 180,
       renderCell: ({ row }: any) => {
-        return row.rowData.designation?.value;
+        return row.rowData?.designation?.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.designation?.isValid) {
+        if (!row.rowData?.designation?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -144,10 +144,10 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
       resizable: true,
       width: 220,
       renderCell: ({ row }: any) => {
-        return row.rowData.department?.value;
+        return row.rowData?.department?.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.department?.isValid) {
+        if (!row.rowData?.department?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -164,10 +164,10 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
       resizable: true,
       width: 220,
       renderCell: ({ row }: any) => {
-        return row.rowData.workLocation?.value;
+        return row.rowData?.workLocation?.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.workLocation?.isValid) {
+        if (!row.rowData?.workLocation?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -184,10 +184,10 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
       resizable: true,
       width: 120,
       renderCell: ({ row }: any) => {
-        return row.rowData.employeeId?.value;
+        return row.rowData?.employeeId?.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.employeeId?.isValid) {
+        if (!row.rowData?.employeeId?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -204,10 +204,10 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
       resizable: true,
       width: 120,
       renderCell: ({ row }: any) => {
-        return row.rowData.workPhone?.value;
+        return row.rowData?.workPhone?.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.workPhone?.isValid) {
+        if (!row.rowData?.workPhone?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -224,21 +224,21 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
       resizable: true,
       width: 140,
       renderCell: ({ row }: any) => {
-        return row.rowData.birthDate?.value;
+        return row.rowData?.birthDate?.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.birthDate?.isValid) {
+        if (!row.rowData?.birthDate?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
       },
       headerCellClass: flatData.some(
-        (row: any) => !row.rowData.birthDate?.isValid,
+        (row: any) => !row.rowData?.birthDate?.isValid,
       )
         ? 'bg-red-50 !overflow-visible'
         : '',
       renderHeaderCell: () => {
-        if (flatData.some((row: any) => !row.rowData.birthDate?.isValid)) {
+        if (flatData.some((row: any) => !row.rowData?.birthDate?.isValid)) {
           return (
             <div className="w-full flex justify-between items-center text-red-500">
               <p>Date of Birth</p>
@@ -260,10 +260,10 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
       resizable: true,
       width: 140,
       renderCell: ({ row }: any) => {
-        return row.rowData.joinDate?.value;
+        return row.rowData?.joinDate?.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.joinDate?.isValid) {
+        if (!row.rowData?.joinDate?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -274,7 +274,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
         ? 'bg-red-50 !overflow-visible'
         : '',
       renderHeaderCell: () => {
-        if (flatData.some((row: any) => !row.rowData.joinDate?.isValid)) {
+        if (flatData.some((row: any) => !row.rowData?.joinDate?.isValid)) {
           return (
             <div className="w-full flex justify-between items-center text-red-500">
               <p>Date of Joining</p>
@@ -296,10 +296,10 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
       resizable: true,
       width: 120,
       renderCell: ({ row }: any) => {
-        return row.rowData.maritalStatus.value;
+        return row.rowData?.maritalStatus?.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.maritalStatus?.isValid) {
+        if (!row.rowData?.maritalStatus?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
@@ -317,10 +317,10 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
       resizable: true,
       width: 120,
       renderCell: ({ row }: any) => {
-        return row.rowData.role.value;
+        return row.rowData?.role?.value;
       },
       cellClass: (row: any) => {
-        if (!row.rowData.role?.isValid) {
+        if (!row.rowData?.role?.isValid) {
           return 'text-red-500 bg-red-50';
         }
         return '';
