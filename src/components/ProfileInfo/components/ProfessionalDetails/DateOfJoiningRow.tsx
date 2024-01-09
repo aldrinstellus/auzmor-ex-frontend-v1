@@ -48,6 +48,10 @@ const DateOfJoiningRow: FC<AppProps> = ({ data }) => {
 
   const { handleSubmit, control, reset, getValues } = useForm<any>({
     mode: 'onSubmit',
+    defaultValues: {
+      joinDate:
+          data?.joinDate && new Date(data?.joinDate),
+    },
     resolver: yupResolver(schema),
   });
 
@@ -64,6 +68,9 @@ const DateOfJoiningRow: FC<AppProps> = ({ data }) => {
       name: 'joinDate',
       control,
       dataTestId: 'date-of-joining',
+      minDate: moment().subtract(100, 'years').toDate(),
+      maxDate: new Date(),
+      defaultValue: getValues()?.joinDate,
     },
   ];
 
