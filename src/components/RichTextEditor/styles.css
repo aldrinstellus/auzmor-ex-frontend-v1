@@ -13,3 +13,7 @@
   line-height: 19.6px !important;
   font-weight: 400;
 }
+
+#emoji-palette {
+  width: 100%;
+}
