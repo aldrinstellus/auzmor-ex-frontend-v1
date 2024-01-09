@@ -58,7 +58,7 @@ const ValidateHeaders: React.FC<AppProps> = ({
   const WarningBanner: FC<any> = ({ warning }) => {
     const [showMore, setShowMore] = useState<boolean>(false);
     return (
-      <div>
+      <div className="w-full max-h-[148px] overflow-y-auto">
         {warning[0]}: &nbsp;
         {showMore ? (
           <span
@@ -108,6 +108,8 @@ const ValidateHeaders: React.FC<AppProps> = ({
               <Banner
                 variant={Variant.Warning}
                 title={<WarningBanner warning={warning} />}
+                headingClassName="w-full"
+                titleClassName="w-full"
               />
             )}
 
@@ -125,13 +127,24 @@ const ValidateHeaders: React.FC<AppProps> = ({
             </div>
             <div className="v-center">
               <Icon
-                name={isColumnMappingValid ? 'boldTick' : 'infoCircle'}
-                size={20}
-                className={
-                  isColumnMappingValid ? 'text-primary-500' : 'text-red-500'
+                name={
+                  isColumnMappingValid && !!!warning?.length
+                    ? 'boldTick'
+                    : 'infoCircleFilled'
                 }
+                hover={false}
+                size={20}
+                className={`${isColumnMappingValid && 'text-primary-500'}  ${
+                  !!warning?.length && 'text-yellow-300'
+                } ${!isColumnMappingValid && '!text-red-500'}`}
               />
-              <div className="text-sm text-neutral-900">Mapping Columns</div>
+              {!!warning?.length ? (
+                <div className="text-sm text-neutral-900">
+                  Columns mapped incorrectly
+                </div>
+              ) : (
+                <div className="text-sm text-neutral-900">Mapping Columns</div>
+              )}
             </div>
           </div>
         </>

@@ -20,6 +20,8 @@ export type BannerProps = {
   onClose?: MouseEventHandler<Element> | null;
   className?: string;
   dataTestId?: string;
+  headingClassName?: string;
+  titleClassName?: string;
 };
 
 const Banner: FC<BannerProps> = ({
@@ -30,6 +32,8 @@ const Banner: FC<BannerProps> = ({
   onClose = null,
   className = '',
   dataTestId = '',
+  headingClassName = '',
+  titleClassName = '',
 }) => {
   const containerStyles = useMemo(
     () =>
@@ -85,8 +89,20 @@ const Banner: FC<BannerProps> = ({
         {
           'text-xs': true,
         },
+        {
+          [titleClassName]: true,
+        },
       ),
-    [variant],
+    [variant, titleClassName],
+  );
+
+  const headingStyles = useMemo(
+    () =>
+      clsx({
+        flex: true,
+        [headingClassName]: true,
+      }),
+    [headingClassName],
   );
 
   const iconButtonStyles = useMemo(
@@ -148,7 +164,7 @@ const Banner: FC<BannerProps> = ({
 
   return (
     <div className={containerStyles} data-testid={dataTestId}>
-      <div className="flex">
+      <div className={headingStyles}>
         <div className="mr-2">
           <Icon
             name={iconName}
