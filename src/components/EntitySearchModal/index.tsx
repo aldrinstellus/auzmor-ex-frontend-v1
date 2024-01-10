@@ -88,7 +88,7 @@ const EntitySearchModal: FC<IEntitySearchModalProps> = ({
     return () => setForm(null);
   }, []);
   return form ? (
-    <Modal open={open} closeModal={closeModal} className="max-w-[638px]">
+    <Modal open={open} className="max-w-[638px]">
       <form onSubmit={(e) => e.preventDefault()}>
         <Header
           title={title || ''}

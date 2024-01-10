@@ -11,7 +11,7 @@ import { AuthContext } from 'contexts/AuthContext';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import Spinner from 'components/Spinner';
 import { useInView } from 'react-intersection-observer';
-import { isFiltersEmpty } from 'utils/misc';
+import { hideEmojiPalette, isFiltersEmpty } from 'utils/misc';
 
 interface UpcomingCelebrationModalProps {
   open: boolean;
@@ -157,7 +157,14 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
   return (
     <Modal open={open} closeModal={closeModal} className="max-w-[648px]">
       <Header title={modalTitle} onClose={closeModal} />
-      <div className="max-h-[390px] min-h-[390px] overflow-y-auto px-6 w-full">
+      <div
+        className="max-h-[390px] min-h-[390px] overflow-y-auto px-6 w-full"
+        onMouseDown={(e) => {
+          if (!!!(e.target as HTMLElement)?.classList?.contains('emoji')) {
+            hideEmojiPalette();
+          }
+        }}
+      >
         {(() => {
           if (isLoading) {
             return (
@@ -183,7 +190,10 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
                     thisMonthCelebration.length > 0) && (
                     <div className="text-sm font-semibold px-2 mt-4">Today</div>
                   )}
-                <div className="divide-y divide-neutral-200">
+                <div
+                  className="divide-y divide-neutral-200"
+                  onMouseDown={(e) => e.stopPropagation()}
+                >
                   {todaysCelebration.map((celebration) => (
                     <div className="py-4" key={celebration.featuredUser.userId}>
                       <User
@@ -205,7 +215,10 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
                       This Month
                     </div>
                   )}
-                <div className="divide-y divide-neutral-200">
+                <div
+                  className="divide-y divide-neutral-200"
+                  onMouseDown={(e) => e.stopPropagation()}
+                >
                   {thisMonthCelebration.map((celebration) => (
                     <div className="py-4" key={celebration.featuredUser.userId}>
                       <User
@@ -227,7 +240,10 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
                       Next Month
                     </div>
                   )}
-                <div className="divide-y divide-neutral-200">
+                <div
+                  className="divide-y divide-neutral-200"
+                  onMouseDown={(e) => e.stopPropagation()}
+                >
                   {upcomingMonthCelebration.map((celebration) => (
                     <div className="py-4" key={celebration.featuredUser.userId}>
                       <User

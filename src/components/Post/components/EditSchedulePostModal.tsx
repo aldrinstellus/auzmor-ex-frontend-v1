@@ -193,7 +193,7 @@ const EditSchedulePostModal: FC<EditSchedulePostModalProp> = ({
   }
 
   return (
-    <Modal open={true} closeModal={closeModal} className="max-w-2xl">
+    <Modal open={true} className="max-w-2xl">
       <Header title="Schedule a post" onClose={closeModal} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-6 flex flex-col">

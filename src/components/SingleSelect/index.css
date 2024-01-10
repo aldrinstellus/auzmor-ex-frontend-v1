@@ -86,6 +86,14 @@
   margin-inline-start: unset;
 }
 
+:where(.css-qw3grv).ant-select-multiple .ant-select-selection-search {
+  margin-inline-start: unset;
+}
+
 :where(.css-dev-only-do-not-override-1ltxb6t).ant-select .ant-select-arrow {
+  inset-inline-end: 10px !important;
+}
+
+:where(.css-1ltxb6t).ant-select .ant-select-arrow {
   inset-inline-end: 10px !important;
 }

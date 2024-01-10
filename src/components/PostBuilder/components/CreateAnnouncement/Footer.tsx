@@ -34,6 +34,7 @@ const Footer: FC<IFooterProps> = ({
   closeModal,
   data,
 }) => {
+  const preIsAnnouncement = data?.isAnnouncement;
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
   const { setAnnouncement, setActiveFlow, announcement } =
@@ -110,9 +111,9 @@ const Footer: FC<IFooterProps> = ({
       toast(
         <SuccessToast
           content={
-            isEmpty(data.announcement)
-              ? 'Your post  was converted to an announcement'
-              : 'Your announcement was updated successfully'
+            preIsAnnouncement
+              ? 'Your announcement was updated successfully'
+              : "You've shared the post as an announcement"
           }
           dataTestId={
             isEmpty(data.announcement)

@@ -110,6 +110,7 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
             value={op.insert}
             attributes={op?.attributes}
             isLink={op?.attributes?.link ? true : false}
+            link={op?.attributes?.link}
           />
         );
     }

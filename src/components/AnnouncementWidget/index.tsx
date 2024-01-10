@@ -7,7 +7,7 @@ import Icon from 'components/Icon';
 import { humanizeTime } from 'utils/time';
 import SkeletonLoader from './components/SkeletonLoader';
 import RenderQuillContent from 'components/RenderQuillContent';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import { getFullName, getProfileImage } from 'utils/misc';
 import EmptyState from './components/EmptyState';
@@ -28,6 +28,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   // Default values for useAnnouncementWidget when postId is undefined
   let limit = 1,
@@ -106,10 +107,26 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
                         image={getProfileImage(postData?.createdBy)}
                         size={32}
                         className="border-2 border-white"
+                        onClick={() =>
+                          navigate(
+                            postData?.createdBy?.userId === user?.id
+                              ? '/profile'
+                              : `/users/${postData?.createdBy?.userId}`,
+                          )
+                        }
                       />
 
                       <div className="w-full">
-                        <div className="flex w-full space-x-1 text-sm">
+                        <div
+                          className="flex w-full space-x-1 text-sm cursor-pointer"
+                          onClick={() =>
+                            navigate(
+                              postData?.createdBy?.userId === user?.id
+                                ? '/profile'
+                                : `/users/${postData?.createdBy?.userId}`,
+                            )
+                          }
+                        >
                           <span className="text-neutral-900">
                             <b>{getFullName(postData?.createdBy)}</b> shared a
                             post
