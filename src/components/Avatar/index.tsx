@@ -55,6 +55,7 @@ const Avatar: FC<AvatarProps> = ({
         {
           'rounded-lg': !round,
         },
+        { 'cursor-pointer': !!onClick && !disable },
         {
           [className]: true,
         },

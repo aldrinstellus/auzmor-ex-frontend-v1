@@ -233,12 +233,14 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
         return '';
       },
       headerCellClass: flatData.some(
-        (row: any) => !row.rowData?.birthDate?.isValid,
+        (row: any) => row.rowData?.birthDate?.isValid === false,
       )
         ? 'bg-red-50 !overflow-visible'
         : '',
       renderHeaderCell: () => {
-        if (flatData.some((row: any) => !row.rowData?.birthDate?.isValid)) {
+        if (
+          flatData.some((row: any) => row.rowData?.birthDate?.isValid === false)
+        ) {
           return (
             <div className="w-full flex justify-between items-center text-red-500">
               <p>Date of Birth</p>
@@ -269,12 +271,14 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
         return '';
       },
       headerCellClass: flatData.some(
-        (row: any) => !row.rowData?.joinDate?.isValid,
+        (row: any) => row.rowData?.joinDate?.isValid === false,
       )
         ? 'bg-red-50 !overflow-visible'
         : '',
       renderHeaderCell: () => {
-        if (flatData.some((row: any) => !row.rowData?.joinDate?.isValid)) {
+        if (
+          flatData.some((row: any) => row.rowData?.joinDate?.isValid === false)
+        ) {
           return (
             <div className="w-full flex justify-between items-center text-red-500">
               <p>Date of Joining</p>
