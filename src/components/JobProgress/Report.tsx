@@ -77,7 +77,7 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       resizable: true,
       width: 220,
       renderCell: ({ row }: any) => {
-        return row.rowData?.workLocation?.value;
+        return row.rowData?.workLocation?.value || row.rowData?.location?.value;
       },
     },
     {
@@ -95,7 +95,7 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       resizable: true,
       width: 120,
       renderCell: ({ row }: any) => {
-        return row.rowData?.workPhone?.value;
+        return row.rowData?.workPhone?.value || row.rowData?.phoneNumber?.value;
       },
     },
     {
@@ -104,7 +104,7 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       resizable: true,
       width: 140,
       renderCell: ({ row }: any) => {
-        return row.rowData?.birthDate?.value;
+        return row.rowData?.birthDate?.value || row.rowData?.dateOfBirth?.value;
       },
     },
     {
@@ -113,7 +113,9 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
       resizable: true,
       width: 140,
       renderCell: ({ row }: any) => {
-        return row.rowData?.joinDate?.value;
+        return (
+          row.rowData?.joinDate?.value || row.rowData?.dateOfJoining?.value
+        );
       },
     },
     {
