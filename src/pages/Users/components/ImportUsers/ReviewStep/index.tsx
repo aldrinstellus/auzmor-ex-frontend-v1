@@ -232,14 +232,15 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
         }
         return '';
       },
-      headerCellClass: flatData.some(
-        (row: any) => row.rowData?.birthDate?.isValid === false,
-      )
-        ? 'bg-red-50 !overflow-visible'
-        : '',
+      headerCellClass:
+        _sheet?.rowCount &&
+        _sheet?.rowCount === _sheet?.columnMapping?.birthDate?.errorRowsCount
+          ? 'bg-red-50 !overflow-visible'
+          : '',
       renderHeaderCell: () => {
         if (
-          flatData.some((row: any) => row.rowData?.birthDate?.isValid === false)
+          _sheet?.rowCount &&
+          _sheet?.rowCount === _sheet?.columnMapping?.birthDate?.errorRowsCount
         ) {
           return (
             <div className="w-full flex justify-between items-center text-red-500">
@@ -270,14 +271,15 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
         }
         return '';
       },
-      headerCellClass: flatData.some(
-        (row: any) => row.rowData?.joinDate?.isValid === false,
-      )
-        ? 'bg-red-50 !overflow-visible'
-        : '',
+      headerCellClass:
+        _sheet?.rowCount &&
+        _sheet?.rowCount === _sheet?.columnMapping?.joinDate?.errorRowsCount
+          ? 'bg-red-50 !overflow-visible'
+          : '',
       renderHeaderCell: () => {
         if (
-          flatData.some((row: any) => row.rowData?.joinDate?.isValid === false)
+          _sheet?.rowCount &&
+          _sheet?.rowCount === _sheet?.columnMapping?.joinDate?.errorRowsCount
         ) {
           return (
             <div className="w-full flex justify-between items-center text-red-500">
