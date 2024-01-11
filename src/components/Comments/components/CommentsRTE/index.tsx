@@ -10,6 +10,8 @@ import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
 import { toast } from 'react-toastify';
 import {
+  hideEmojiPalette,
+  hideMentionHashtagPalette,
   isEmptyEditor,
   quillHashtagConversion,
   removeEmptyLines,
@@ -282,7 +284,11 @@ export const CommentsRTE: FC<CommentFormProps> = ({
     let fileIds: string[] = [];
     const mentionList: IMention[] = [];
     const hashtagList: string[] = [];
+
+    hideMentionHashtagPalette();
+    hideEmojiPalette();
     setIsCreateCommentLoading(true);
+
     if (files.length) {
       const uploadedMedia = await uploadMedia(files, EntityType.Comment);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -447,11 +453,16 @@ export const CommentsRTE: FC<CommentFormProps> = ({
                     ? 'send-image'
                     : 'postcomment-mediacta'
                 }
-                onClick={() => inputRef && inputRef?.current?.click()}
+                onClick={() => {
+                  hideMentionHashtagPalette();
+                  hideEmojiPalette();
+                  inputRef && inputRef?.current?.click();
+                }}
               />
               <button
                 className="ql-emoji !mx-0 h-6 w-6"
                 data-testid="send-gif"
+                onMouseDown={() => hideMentionHashtagPalette()}
               />
               <IconButton
                 icon={'send'}
