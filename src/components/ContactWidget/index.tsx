@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
 import Button, { Variant, Type as ButtonType } from 'components/Button';
@@ -30,7 +30,6 @@ type IContactCardProps = {
 const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [isHovered, eventHandlers] = useHover();
-
   const { control, handleSubmit, getValues, reset } = useForm<IContactInfoForm>(
     {
       mode: 'onSubmit',
@@ -40,6 +39,13 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
       },
     },
   );
+
+  useEffect(() => {
+    reset({
+      primaryEmail: contactCardData?.primaryEmail,
+      workPhone: contactCardData?.workPhone,
+    });
+  }, [contactCardData]);
 
   const phoneValue = contactCardData?.workPhone;
 

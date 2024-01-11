@@ -31,7 +31,10 @@ interface IForm {
 }
 
 const schema = yup.object({
-  fullName: yup.string().required('Required Field'),
+  fullName: yup
+    .string()
+    .required('Required Field')
+    .min(3, 'The minimum length required is 3 characters for full name'),
   workEmail: yup
     .string()
     .required('Required field')

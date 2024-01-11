@@ -8,7 +8,7 @@ import useModal from 'hooks/useModal';
 import AppDetailModal from './AppCardDetail';
 import AddApp, { APP_MODE } from './AddApp';
 import DeleteApp from './DeleteApp';
-import { twConfig } from 'utils/misc';
+import { isNewEntity, twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { toast } from 'react-toastify';
@@ -18,6 +18,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useRole from 'hooks/useRole';
 import { FC } from 'react';
 import DefaultAppIcon from 'images/DefaultAppIcon.svg';
+import clsx from 'clsx';
 
 type AppCardProps = {
   app: App;
@@ -228,11 +229,14 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
     }
     closeDeleteAppModal();
   };
-
+  const leftChipStyle = clsx({
+    'absolute top-0 left-0  rounded-tl-[12px] rounded-br-[12px] px-2  text-xxs font-medium':
+      true,
+  });
   return (
     <div {...appCardEventHandlers} data-testid="app-card" className="w-full">
       {/* <Link to={app.url} target="_blank"> */}
-      <Card className="relative border-1 p-3 " shadowOnHover>
+      <Card className="relative border-1 py-4 px-3  " shadowOnHover>
         <div
           className="flex gap-2"
           onClick={() =>
@@ -242,6 +246,14 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
             )
           }
         >
+          {isNewEntity(app?.createdAt) && (
+            <div
+              className={`${leftChipStyle} bg-primary-600 text-primary-100`}
+              data-testid={`member-badge`}
+            >
+              New
+            </div>
+          )}
           {/* App logo */}
           <div className="p-2 bg-neutral-100 rounded-xl min-w-[60px] min-h-[60px]">
             <img

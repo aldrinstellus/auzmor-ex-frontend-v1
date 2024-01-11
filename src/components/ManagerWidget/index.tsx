@@ -7,7 +7,7 @@ import Icon from 'components/Icon';
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useHover from 'hooks/useHover';
-import { isEmpty } from 'lodash';
+import { isEmpty, omitBy } from 'lodash';
 import {
   updateCurrentUser,
   updateUserById,
@@ -185,7 +185,7 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
                 <div>
                   <Layout fields={fields} />
                 </div>
-              ) : isEmpty(data?.manager) ? (
+              ) : isEmpty(omitBy(data?.manager, isEmpty)) ? (
                 <div className="text-sm text-neutral-500">
                   No manager assigned
                 </div>
