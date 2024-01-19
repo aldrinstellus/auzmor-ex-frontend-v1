@@ -40,6 +40,15 @@ export const getBrwoserTimezone = () => {
   const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   return browserTimezone === 'Asia/Calcutta' ? 'Asia/Kolkata' : browserTimezone;
 };
+export const isOutOfOffice = (startDate: string, endDate: string) => {
+  const start = moment(startDate);
+  const end = moment(endDate);
+  if (!start || !endDate) {
+    return false;
+  }
+  const currentDate = moment();
+  return currentDate.isBetween(start, end, null, '[]'); // '[]' includes both start and end dates
+};
 
 export const getTimezoneNameFromIANA = (
   iana: string,

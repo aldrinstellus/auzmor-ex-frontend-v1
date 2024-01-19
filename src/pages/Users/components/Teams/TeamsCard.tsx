@@ -44,7 +44,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
     <div className="cursor-pointer" data-testid="" {...eventHandlers}>
       <Card
         shadowOnHover
-        className="relative w-[190px] h-[217px] border-solid border border-neutral-200 flex flex-col items-center justify-center py-6 px-3 bg-white"
+        className="relative w-[233px] h-full border-solid border border-neutral-200 flex flex-col items-center justify-center py-6 px-3 bg-white"
         dataTestId="team-card"
       >
         {!isMember && isHovered && (

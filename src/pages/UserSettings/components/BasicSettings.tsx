@@ -158,13 +158,14 @@ const BasicSettings = () => {
     let payload: Record<string, any> = {
       timeZone: data.timezone?.value,
     };
+
     if (ooo) {
       payload = {
         ...payload,
         outOfOffice: {
           outOfOffice: true,
-          start: formatDate(data?.ooo?.start),
-          end: formatDate(data?.ooo?.end),
+          start: formatDate(data?.ooo?.start?.$d),
+          end: formatDate(data?.ooo?.end?.$d),
           otherReason: data?.ooo?.reason?.key,
         },
       };

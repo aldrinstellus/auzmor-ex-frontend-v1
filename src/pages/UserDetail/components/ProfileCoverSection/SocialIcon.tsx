@@ -49,11 +49,11 @@ const SocialIcon: React.FC<AppProps> = ({ userDetails, socialLink }) => {
             className="text-white !hover:text-white !group-hover:text-white"
             hoverColor="text-white"
             hover={false}
-            size={18}
           />
         </div>
       ) : (
         <Component
+          size={18}
           className={clsx({
             grayscale: !iconValue,
           })}

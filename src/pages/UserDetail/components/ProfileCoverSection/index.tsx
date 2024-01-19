@@ -50,6 +50,8 @@ import SocialLinksModal from 'components/ProfileInfo/components/SocialLinksModal
 import useAuth from 'hooks/useAuth';
 import clsx from 'clsx';
 import SocialIcon from './SocialIcon';
+import { isOutOfOffice } from 'utils/time';
+import Chip from 'components/Chip';
 
 export interface IProfileCoverProps {
   userDetails: Record<string, any>;
@@ -214,7 +216,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
           )}
         </div>
 
-        <div className="absolute left-8 bottom-3">
+        <div className="absolute left-8 bottom-6">
           <Avatar
             name={getFullName(userDetails)}
             image={getProfileImage(userDetails, 'medium')}
@@ -226,7 +228,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
             }
             dataTestId={profileImageName || 'edit-profile-pic'}
           />
-          {isOwnerOrAdmin && (
+          {isOwnerOrAdmin ? (
             <div className="absolute bg-white rounded-full p-[5px] cursor-pointer top-1 right-1">
               <Icon
                 name="edit"
@@ -236,17 +238,39 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                 dataTestId="edit-profilepic"
               />
             </div>
+          ) : (
+            isOutOfOffice(
+              userDetails?.outOfOffice?.start,
+              userDetails?.outOfOffice?.end,
+            ) && (
+              <div className="absolute  rounded-full p-[5px]  top-1 right-1">
+                <Icon name="outOfOffice" dataTestId="edit-profilepic" />
+              </div>
+            )
           )}
         </div>
-        <div className="ml-[192px] mr-6 mt-2.5  min-h-[124px]">
-          <div className="flex justify-between">
+        <div className="ml-[192px] mr-6 mt-2.5  min-h-[92px]">
+          <div className="flex ">
             <div
               className="text-2xl font-bold text-neutral-900"
               data-testid="user-name"
             >
               {getFullName(userDetails)}
             </div>
-            <div className="flex space-x-2 mt-[-2px]">
+            {isOutOfOffice(
+              userDetails?.outOfOffice?.start,
+              userDetails?.outOfOffice?.end,
+            ) && (
+              <div className="ml-4 ">
+                <Chip
+                  label={'out of office'}
+                  icon="outOfOffice"
+                  className="bg-red-100 flex space-x-1 px-3 py-1 items-center leading-4 font-medium border-red-200 text-neutral-900"
+                />
+              </div>
+            )}
+
+            <div className="flex  ml-auto space-x-2 mt-[-2px]">
               {!!userId && (
                 <Button
                   className="flex"
@@ -308,7 +332,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
               />
             </div>
           </div>
-          <div className="flex space-x-3 items-center mt-[4px]">
+          <div className=" absolute right-10 flex space-x-3 items-center mt-[8px]">
             <div
               className={clsx(
                 { 'flex space-x-2 items-center': true },
@@ -388,7 +412,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
             </div>
           </div>
           <div
-            className="mt-[10px] flex items-center space-x-2 cursor-pointer"
+            className="mt-[10px] w-fit flex items-center space-x-2 cursor-pointer"
             onClick={(e) => {
               if (!userId || userId === user?.id) {
                 e.preventDefault();
