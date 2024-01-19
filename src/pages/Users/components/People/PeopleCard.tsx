@@ -201,6 +201,18 @@ const PeopleCard: FC<IPeopleCardProps> = ({
 
     return null;
   };
+  const departmentName =
+    department?.name && department?.name.length <= 22
+      ? department?.name
+      : department?.name?.substring(0, 22) + '..';
+  const departmentColor = department?.name
+    ? 'text-neutral-900'
+    : 'text-neutral-300';
+  const departmentText = department?.name ? departmentName : 'Not specified';
+  const workLocationText = workLocation?.name || 'Not specified';
+  const workLocationColor = workLocation?.name
+    ? 'text-neutral-900'
+    : 'text-neutral-300';
 
   return (
     <div
@@ -329,70 +341,38 @@ const PeopleCard: FC<IPeopleCardProps> = ({
                 </div>
               )}
             </div>
-            {department?.name ? (
+
+            <div
+              className={`flex justify-center items-center px-3 py-[4px] gap-1`}
+              data-testid={`people-card-department-${department?.name}`}
+            >
+              <Icon
+                name="briefcase"
+                size={16}
+                hover={false}
+                color={departmentColor}
+              />
               <div
-                className="flex justify-center items-center px-3 py-[4px] gap-1"
-                data-testid={`people-card-department-${department?.name}`}
+                className={`text-xs font-normal truncate ${departmentColor}`}
               >
-                <Icon
-                  name="briefcase"
-                  size={16}
-                  hover={false}
-                  color="text-neutral-900"
-                />
-                <div className="text-neutral-500 text-xs font-normal truncate">
-                  {department?.name.length <= 22
-                    ? department?.name.substring(0, 22)
-                    : department?.name.substring(0, 22) + '..'}
-                </div>
+                {departmentText}
               </div>
-            ) : (
+            </div>
+
+            <div className="flex gap-1">
+              <Icon
+                name="location"
+                size={16}
+                color={workLocationColor}
+                hover={false}
+              />
               <div
-                className="flex justify-center items-center px-3 py-[4px] gap-1"
-                data-testid={`people-card-department-${department?.name}`}
+                className={`text-xs font-normal line-clamp-1 ${workLocationColor}`}
+                data-testid={`people-card-location-${workLocation?.name}`}
               >
-                <Icon
-                  name="briefcase"
-                  size={16}
-                  hover={false}
-                  color="text-neutral-300"
-                />
-                <div className="text-neutral-300 text-xs font-normal ">
-                  Not specified
-                </div>
+                {workLocationText}
               </div>
-            )}
-            {workLocation?.name ? (
-              <div className="flex gap-1">
-                <Icon
-                  name="location"
-                  size={16}
-                  color="text-neutral-900"
-                  hover={false}
-                />
-                <div
-                  className="text-neutral-500 text-xs font-normal line-clamp-1"
-                  data-testid={`people-card-location-${workLocation?.name}`}
-                >
-                  {workLocation?.name}
-                </div>
-              </div>
-            ) : (
-              <div className="flex gap-1">
-                <Icon
-                  name="location"
-                  size={16}
-                  color="text-neutral-300"
-                  hover={false}
-                />
-                <div
-                  className="text-neutral-300 text-xs font-normal line-clamp-1"
-                  data-testid={`people-card-location-${workLocation?.name}`}
-                >
-                  Not specified
-                </div>
-              </div>
-            )}
+            </div>
           </div>
         </div>
       </Card>
