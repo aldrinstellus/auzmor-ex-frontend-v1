@@ -9,11 +9,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import Icon from 'components/Icon';
 import { userChannel } from 'utils/misc';
 import useRole from 'hooks/useRole';
+import { useTranslation } from 'react-i18next';
 
 const AccountCard = () => {
   const navigate = useNavigate();
   const { user, reset } = useAuth();
   const { isAdmin } = useRole();
+  const { t } = useTranslation('navbar');
 
   const logoutMutation = useMutation(logout, {
     onSuccess: async () => {
@@ -73,7 +75,7 @@ const AccountCard = () => {
               <Button
                 dataTestId="user-menu-profile"
                 variant={Variant.Secondary}
-                label="Go to my profile"
+                label={t('account.goToProfile')}
                 onClick={() => {
                   navigate('/profile', { state: { userId: user?.id } });
                   close();

@@ -1,5 +1,6 @@
 import Icon from 'components/Icon';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 interface IScheduledFeedHeaderProps {
@@ -11,6 +12,7 @@ const ScheduledFeedHeader: FC<IScheduledFeedHeaderProps> = (
     // setAppliedFeedFilters,
   },
 ) => {
+  const { t } = useTranslation('feed');
   // const [searchParams, setSearchParams] = useSearchParams();
 
   // const btnStyle = 'min-w-[106px] inline-flex py-2 px-4 justify-center align-center rounded-full text-sm font-bold';
@@ -28,7 +30,7 @@ const ScheduledFeedHeader: FC<IScheduledFeedHeaderProps> = (
             </Link>
             <div className="text-2xl font-bold text-neutral-900">
               <span data-testid={`feedpage-filter-scheduled`}>
-                Scheduled posts
+                {t('scheduledPosts.title')}
               </span>
             </div>
           </div>

@@ -14,6 +14,7 @@ import { getTimeInScheduleFormat } from 'utils/time';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import Button, { Size, Variant } from 'components/Button';
 import { operatorXOR } from 'utils/misc';
+import { useTranslation } from 'react-i18next';
 
 export interface IBodyProps {
   data?: IPost;
@@ -40,6 +41,7 @@ const Body = forwardRef(
       poll,
     } = useContext(CreatePostContext);
     const { user } = useAuth();
+    const { t } = useTranslation('postBuilder');
     const { currentTimezone } = useCurrentTimezone();
     const updateContext = () => {
       setEditorValue({
@@ -186,7 +188,7 @@ const Body = forwardRef(
             </div>
           )}
           <RichTextEditor
-            placeholder="What’s on your mind?"
+            placeholder={t('placeholder')}
             className={`max-h-64 overflow-y-auto ${
               !media.length &&
               !operatorXOR(isPreviewRemoved, !!previewUrl) &&

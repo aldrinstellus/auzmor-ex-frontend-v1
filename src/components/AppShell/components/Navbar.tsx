@@ -12,18 +12,8 @@ import useRole from 'hooks/useRole';
 import useAuth from 'hooks/useAuth';
 import { useState } from 'react';
 import SubscriptionBanner from './SubscriptionBanner';
+import { useTranslation } from 'react-i18next';
 // import { useState } from 'react';
-
-const adminNavigations = [
-  {
-    label: 'Admin',
-    icon: 'adminOutline',
-    hoverIcon: 'adminFilled',
-    linkTo: '/admin',
-    dataTestId: 'office-admin-page',
-    iconSize: 24,
-  },
-];
 
 const Navbar = () => {
   const { isAdmin } = useRole();
@@ -32,6 +22,19 @@ const Navbar = () => {
     user?.subscription?.type === 'TRIAL' &&
       user?.subscription?.daysRemaining > -1,
   );
+
+  const { t } = useTranslation('navbar');
+
+  const adminNavigations = [
+    {
+      label: t('admin'),
+      icon: 'adminOutline',
+      hoverIcon: 'adminFilled',
+      linkTo: '/admin',
+      dataTestId: 'office-admin-page',
+      iconSize: 24,
+    },
+  ];
 
   // const { control } = useForm({
   //   mode: 'onChange',
@@ -48,7 +51,7 @@ const Navbar = () => {
     //   disabled: true,
     // },
     {
-      label: 'Feed',
+      label: t('feed'),
       icon: 'feedOutline',
       hoverIcon: 'feedFilled',
       linkTo: '/feed',
@@ -56,7 +59,7 @@ const Navbar = () => {
       iconSize: 24,
     },
     {
-      label: 'People',
+      label: t('people'),
       icon: 'peopleOutline',
       hoverIcon: 'peopleFilled',
       linkTo: '/users',
@@ -67,7 +70,7 @@ const Navbar = () => {
         location.pathname.includes('/teams'),
     },
     {
-      label: 'Apps',
+      label: t('apps'),
       icon: 'launcherOutline',
       hoverIcon: 'launcherFilled',
       linkTo: '/apps',

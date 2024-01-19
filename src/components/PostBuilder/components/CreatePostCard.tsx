@@ -9,12 +9,14 @@ import Icon from 'components/Icon';
 import useAuth from 'hooks/useAuth';
 import { FC, memo } from 'react';
 import { useCreatePostUtilityStore } from 'stores/createPostUtilityStore';
+import { useTranslation } from 'react-i18next';
 
 export interface ICreatePostCardProps {
   openModal: () => void;
 }
 
 const CreatePostCard: FC<ICreatePostCardProps> = ({ openModal }) => {
+  const { t } = useTranslation('feed');
   const { user } = useAuth();
   const {
     setOpenCreatePostWithMedia,
@@ -30,21 +32,21 @@ const CreatePostCard: FC<ICreatePostCardProps> = ({ openModal }) => {
   const postTypeMapIcons = [
     {
       id: 1,
-      label: 'Media',
+      label: t('whatsInYourMind.shortcuts.media'),
       icon: <Icon name="imageFilled" color="text-neutral-500" size={14} />,
       divider: true,
       onClick: handleOnClick(setOpenCreatePostWithMedia),
     },
     {
       id: 2,
-      label: 'Shoutout',
+      label: t('whatsInYourMind.shortcuts.shoutout'),
       icon: <Icon name="magicStarFilled" color="text-neutral-500" size={14} />,
       divider: true,
       onClick: handleOnClick(setOpenCreatePostWithShoutout),
     },
     {
       id: 3,
-      label: 'Polls',
+      label: t('whatsInYourMind.shortcuts.polls'),
       icon: <Icon name="chartFilled" color="text-neutral-500" size={14} />,
       onClick: handleOnClick(setOpenCreatePostWithPolls),
     },
@@ -65,7 +67,7 @@ const CreatePostCard: FC<ICreatePostCardProps> = ({ openModal }) => {
           className="w-full h-11 border border-neutral-200 rounded-19xl text-sm font-medium outline-none text-neutral-500 flex-1 px-5 py-3 cursor-pointer hover:bg-neutral-100 transition-colors"
           readOnly
           onClick={openModal}
-          placeholder="What's on your mind?"
+          placeholder={t('whatsInYourMind.createPost.placeholder')}
           data-testid="activityfeed-whatsonurmind"
         />
       </div>

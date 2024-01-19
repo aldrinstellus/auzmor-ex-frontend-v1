@@ -1,5 +1,6 @@
 import Icon from 'components/Icon';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 interface IBookmarkFeedHeaderProps {
@@ -11,6 +12,7 @@ const BookmarkFeedHeader: FC<IBookmarkFeedHeaderProps> = (
     // setAppliedFeedFilters,
   },
 ) => {
+  const { t } = useTranslation('feed');
   // const [searchParams, setSearchParams] = useSearchParams();
 
   // const btnStyle = 'min-w-[106px] inline-flex py-2 px-4 justify-center align-center rounded-full text-sm font-bold';
@@ -27,7 +29,9 @@ const BookmarkFeedHeader: FC<IBookmarkFeedHeaderProps> = (
               <Icon name="arrowLeft" color="text-neutral-900" />
             </Link>
             <div className="text-2xl font-bold text-neutral-900">
-              <span data-testid={`feedpage-filter-bookmark`}>My Bookmarks</span>
+              <span data-testid={`feedpage-filter-bookmark`}>
+                {t('bookmark.title')}
+              </span>
             </div>
           </div>
           {/* <div className="flex gap-4 mt-6">

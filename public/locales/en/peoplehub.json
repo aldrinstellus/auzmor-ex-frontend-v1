@@ -1,0 +1,13 @@
+{
+  "title": "People Hub",
+  "people": {
+    "title": "People",
+    "viewOrgChart": "View Organization Chart",
+    "addMembers": "Add Members",
+    "quickAdd": "Quick Add",
+    "import": "Import"
+  },
+  "teams": {
+    "title": "Teams"
+  }
+}

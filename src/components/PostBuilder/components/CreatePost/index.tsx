@@ -15,6 +15,7 @@ import Footer from './Footer';
 import { validImageTypes, validVideoTypes } from 'queries/files';
 import { hideEmojiPalette } from 'utils/misc';
 import { PostBuilderMode } from 'components/PostBuilder';
+import { useTranslation } from 'react-i18next';
 
 interface ICreatePostProps {
   closeModal: () => void;
@@ -34,6 +35,7 @@ const CreatePost: FC<ICreatePostProps> = ({
   mode,
 }) => {
   const quillRef = useRef<ReactQuill>(null);
+  const { t } = useTranslation('postBuilder');
   const {
     inputImgRef,
     inputVideoRef,
@@ -64,7 +66,7 @@ const CreatePost: FC<ICreatePostProps> = ({
     >
       <Header
         title={
-          mode === PostBuilderMode.Create ? 'Create a post' : 'Edit a post'
+          mode === PostBuilderMode.Create ? t('title.create') : t('title.edit')
         }
         onClose={() => {
           clearPostContext();

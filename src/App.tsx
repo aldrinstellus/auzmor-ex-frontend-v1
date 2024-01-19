@@ -9,6 +9,8 @@ import Toast from 'components/Toast';
 import useMediaQuery from 'hooks/useMediaQuery';
 import Unsupported from 'pages/Unsupported';
 
+import './i18n/config';
+
 function App() {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   return isDesktop ? (

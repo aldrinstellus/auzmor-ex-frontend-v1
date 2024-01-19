@@ -1,0 +1,9 @@
+{
+  "feed": "Feed",
+  "people": "People",
+  "apps": "Apps",
+  "admin": "Admin",
+  "account": {
+    "goToProfile": "Go to my profile"
+  }
+}
