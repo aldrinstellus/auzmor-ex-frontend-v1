@@ -1,6 +1,5 @@
 import clsx from 'clsx';
-// import Icon from 'components/Icon';
-import EditIcon from 'components/Icon/components/Edit';
+import { EditIcon2 } from 'components/Icon/components/Edit';
 import {
   FacebookIcon,
   InstagramIcon,
@@ -8,7 +7,6 @@ import {
   TwitterIcon,
   WebIcon,
 } from 'components/Icon/socialIcons';
-// import useHover from 'hooks/useHover';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -24,7 +22,7 @@ const socialIconMap: Record<string, any> = {
   instagram: InstagramIcon,
   facebook: FacebookIcon,
   website: WebIcon,
-  edit: EditIcon,
+  edit: EditIcon2,
 };
 
 const SocialIcon: React.FC<AppProps> = ({
@@ -50,7 +48,7 @@ const SocialIcon: React.FC<AppProps> = ({
         onClick={() => isSelf && socialLink == 'edit' && openModal?.()}
         size={18}
         className={clsx({
-          grayscale: !iconValue,
+          grayscale: !iconValue && socialLink !== 'edit',
         })}
       />
     </div>
