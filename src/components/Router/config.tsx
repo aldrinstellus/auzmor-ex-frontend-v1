@@ -8,6 +8,7 @@ import RequireAuth from 'components/RequireAuth';
 import Notifications from 'pages/Notifications';
 import { lazy } from 'react';
 import RequireAdminAuth from 'components/RequireAdminAuth';
+import { Channels } from 'pages/Channels';
 
 const ErrorBoundary = lazy(() => import('components/ErrorBoundary'));
 const Login = lazy(() => import('pages/Login'));
@@ -101,6 +102,7 @@ const routers = createBrowserRouter(
         <Route path="/apps" element={<Apps />} />
         <Route path="/apps/:id/launch" element={<AppLaunchPage />} />
         <Route path="/discover" element={<Discover />} />
+        <Route path="/channels" element={<Channels />} />
         <Route element={<RequireAdminAuth />}>
           <Route path="/admin" element={<Admin />} />
         </Route>

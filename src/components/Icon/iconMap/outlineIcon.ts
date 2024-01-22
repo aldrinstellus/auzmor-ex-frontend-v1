@@ -96,6 +96,8 @@ import SvgUserRoleOutline from '../components/UserRole/UserRole';
 import SvgWarningCircleOutline from '../components/WarningCircle/WarningCircleOutline';
 import SvgCheckboxOutline from '../components/Checkbox/CheckboxOutline';
 import SvgCloudAddOutline from '../components/CloudAdd/CloudAddOutline';
+import SvgLockOutline from '../components/Lock/LockOutline';
+import SvgStarOutline from '../components/Star/StarOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -158,6 +160,7 @@ export const outlineIcon = {
   likeOutline: SvgLikeOutline,
   linearLeftArrowOutline: SvgLinearLeftArrowOutline,
   linkOutline: SvgLinkOutline,
+  lockOutline: SvgLockOutline,
   logoutOutline: SvgLogoutOutline,
   loveOutline: SvgLoveOutline,
   magicStarOutline: SvgMagicStarOutline,
@@ -184,6 +187,7 @@ export const outlineIcon = {
   sortByAcs: SvgSortByAcsOutline,
   sortByDesc: SvgSortByDescOutline,
   speakerOutline: SvgSpeakerOutline,
+  starOutline: SvgStarOutline,
   supportOutline: SvgSupportOutline,
   threeDotsOutline: SvgThreeDotsOutline,
   tickCircleOutline: SvgTickCircleOutline,
