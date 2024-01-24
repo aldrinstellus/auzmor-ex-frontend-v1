@@ -1,5 +1,33 @@
+import Icon from 'components/Icon';
+
 const Welcome = () => {
-  return <div>Welcome Aboard</div>;
+  return (
+    <div className="bg-white rounded-9xl py-4 mt-6">
+      <div className="flex justify-end px-4">
+        <Icon name="close" size={20} />
+      </div>
+      <div className="flex justify-between p-4">
+        <div>
+          <img
+            src={require('images/channelOnboard.png')}
+            className="h-[210px]"
+          />
+        </div>
+        <div className="flex flex-col items-center flex-1 py-4">
+          <div className="text-2xl font-semibold">Welcome aboard!!</div>
+          <div className="mt-4 font-medium">
+            <div className="text-center text-xs">
+              Join us for an exciting journey of knowledge and inspiration
+            </div>
+            <div className="text-center text-xs mt-6">
+              Connect, engage, and explore with us. Let&apos;s make this space
+              extraordinary together! 🎉🌟
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Welcome;
