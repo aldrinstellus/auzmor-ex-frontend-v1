@@ -98,6 +98,8 @@ import SvgCheckboxOutline from '../components/Checkbox/CheckboxOutline';
 import SvgCloudAddOutline from '../components/CloudAdd/CloudAddOutline';
 import SvgLockOutline from '../components/Lock/LockOutline';
 import SvgStarOutline from '../components/Star/StarOutline';
+import SvgNewsOutline from '../components/News/NewsOutline';
+import SvgWebsiteOutline from '../components/Website/WebsiteOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -200,4 +202,6 @@ export const outlineIcon = {
   warningCirlceOutline: SvgWarningCircleOutline,
   zoomInOutline: SvgZoomInOutline,
   zoomOutOutline: SvgZoomOutOutline,
+  newsOutline: SvgNewsOutline,
+  websiteOutline: SvgWebsiteOutline,
 };

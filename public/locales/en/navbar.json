@@ -3,6 +3,10 @@
   "people": "People",
   "apps": "Apps",
   "admin": "Admin",
+  "discover": {
+    "title": "Discover",
+    "channels": "Channels"
+  },
   "account": {
     "goToProfile": "Go to my profile"
   }

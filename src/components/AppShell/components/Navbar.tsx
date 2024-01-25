@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // components
 import { Logo } from 'components/Logo';
@@ -13,7 +13,8 @@ import useAuth from 'hooks/useAuth';
 import { useState } from 'react';
 import SubscriptionBanner from './SubscriptionBanner';
 import { useTranslation } from 'react-i18next';
-// import { useState } from 'react';
+import Icon from 'components/Icon';
+import PopupMenu from 'components/PopupMenu';
 
 const Navbar = () => {
   const { isAdmin } = useRole();
@@ -22,6 +23,7 @@ const Navbar = () => {
     user?.subscription?.type === 'TRIAL' &&
       user?.subscription?.daysRemaining > -1,
   );
+  const navigate = useNavigate();
 
   const { t } = useTranslation('navbar');
 
@@ -36,9 +38,16 @@ const Navbar = () => {
     },
   ];
 
-  // const { control } = useForm({
-  //   mode: 'onChange',
-  // });
+  const discoverOptions = [
+    {
+      icon: 'news',
+      label: t('discover.channels'),
+      labelClassName: 'text-xs font-medium',
+      onClick: () => {
+        navigate('/channels');
+      },
+    },
+  ];
 
   const navigations = [
     // {
@@ -77,15 +86,30 @@ const Navbar = () => {
       dataTestId: 'office-apps-page',
       iconSize: 24,
     },
-    // {
-    //   label: 'Discover',
-    //   icon: 'exploreOutline',
-    //   hoverIcon: 'exploreFilled',
-    //   linkTo: '/discover',
-    //   dataTestId: 'office-discover-page',
-    //   iconSize: 26,
-    //   disabled: true,
-    // },
+    {
+      label: t('discover.title'),
+      icon: 'exploreOutline',
+      hoverIcon: 'exploreFilled',
+      linkTo: '',
+      dataTestId: '',
+      iconSize: 24,
+      render: function () {
+        return (
+          <PopupMenu
+            triggerNode={
+              <div className=" flex flex-col items-center cursor-pointer">
+                <Icon name={this.icon} size={this.iconSize} />
+                <div className="text-sm group-hover:text-primary-500">
+                  {this.label}
+                </div>
+              </div>
+            }
+            menuItems={discoverOptions}
+            className="mt-14 w-[202px] "
+          />
+        );
+      },
+    },
   ];
 
   return (

@@ -144,6 +144,8 @@ import CloudAddIcon from '../components/CloudAdd';
 import BoldTick from '../components/BoldTick';
 import LockIcon from '../components/Lock';
 import StarIcon from '../components/Star';
+import NewsIcon from '../components/News';
+import WebsiteIcon from '../components/Website';
 
 export const icon = {
   add: Add,
@@ -182,6 +184,7 @@ export const icon = {
   connectionFolder: ConnectionFolder,
   convertShape: ConvertShape,
   copy: CopyIcon,
+  news: NewsIcon,
   copyLink: CopyLink,
   crossCircle: CrossCircle,
   cyclicArrow: CyclicArrow,
@@ -292,4 +295,5 @@ export const icon = {
   warningCircle: WarningCircleIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
+  website: WebsiteIcon,
 };

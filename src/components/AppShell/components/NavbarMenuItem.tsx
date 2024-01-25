@@ -12,10 +12,18 @@ export interface INavbarMenuItemProps {
     iconSize: number;
     disabled?: boolean;
     isActive?: any;
+    render?: () => React.ReactNode;
   };
 }
 
 const NavbarMenuItem: FC<INavbarMenuItemProps> = ({ nav }) => {
+  if (nav.render) {
+    return (
+      <div className={'flex flex-col items-center group p-2'}>
+        {nav?.render?.()}
+      </div>
+    );
+  }
   return nav.disabled ? (
     <div
       className="flex flex-col items-center p-2"
@@ -26,7 +34,7 @@ const NavbarMenuItem: FC<INavbarMenuItemProps> = ({ nav }) => {
     </div>
   ) : (
     <NavLink
-      to={nav.linkTo}
+      to={nav.linkTo ?? ''}
       className={({ isActive }) =>
         `${
           isActive || nav.isActive ? 'text-primary-500' : 'text-neutral-500'
@@ -35,6 +43,7 @@ const NavbarMenuItem: FC<INavbarMenuItemProps> = ({ nav }) => {
     >
       {({ isActive: navLinkIsActive }) => {
         const isActive = navLinkIsActive || nav.isActive;
+
         return (
           <div
             className="flex flex-col items-center"
