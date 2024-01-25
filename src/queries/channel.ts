@@ -1,4 +1,8 @@
-import { QueryFunctionContext, useInfiniteQuery } from '@tanstack/react-query';
+import {
+  QueryFunctionContext,
+  useInfiniteQuery,
+  useQuery,
+} from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 
 export interface IChannelPayload {
@@ -65,6 +69,25 @@ export const removeChannelMember = async (teamId: string) => {
   });
 };
 
+export const getChannelLinks = async (
+  channelId: string,
+): Promise<{ data?: { result?: { links: string[] } } }> => {
+  const data = await apiService.get(`/channels/${channelId}/links`);
+  return new Promise((res) => {
+    res(data);
+  });
+};
+
+export const updateChannelLinks = async (
+  channelId: string,
+  payload: { links: string[] },
+) => {
+  const data = await apiService.put(`/channels/${channelId}/links`, payload);
+  return new Promise((res) => {
+    res(data);
+  });
+};
+
 // ------------------ React Query -----------------------
 
 export const useInfiniteChannels = (q?: Record<string, any>) => {
@@ -107,3 +130,13 @@ export const useInfiniteChannelMembers = (
     staleTime: 5 * 60 * 1000,
   });
 };
+
+export const useChannelLinksWidget = (
+  channelId: string,
+  queryKey = 'channel-links-widget',
+) =>
+  useQuery({
+    queryKey: [queryKey],
+    queryFn: () => getChannelLinks(channelId),
+    staleTime: 15 * 60 * 1000,
+  });
