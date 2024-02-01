@@ -3,6 +3,8 @@ import {
   useInfiniteQuery,
   useQuery,
 } from '@tanstack/react-query';
+import { channelLinks } from 'mocks/Channels';
+import { IChannelLink } from 'stores/channelStore';
 import apiService from 'utils/apiService';
 
 export interface IChannelPayload {
@@ -71,20 +73,22 @@ export const removeChannelMember = async (teamId: string) => {
 
 export const getChannelLinks = async (
   channelId: string,
-): Promise<{ data?: { result?: { links: string[] } } }> => {
-  const data = await apiService.get(`/channels/${channelId}/links`);
-  return new Promise((res) => {
-    res(data);
-  });
+): Promise<IChannelLink[]> => {
+  console.log(channelId);
+  return new Promise((res) => res(channelLinks));
+  // const data = await apiService.get(`/channels/${channelId}/links`);
+  // return new Promise((res) => {
+  //   res(data?.data?.result?.data);
+  // });
 };
 
 export const updateChannelLinks = async (
   channelId: string,
-  payload: { links: string[] },
-) => {
+  payload: { links: IChannelLink[] },
+): Promise<IChannelLink[]> => {
   const data = await apiService.put(`/channels/${channelId}/links`, payload);
   return new Promise((res) => {
-    res(data);
+    res(data?.data?.result?.data);
   });
 };
 

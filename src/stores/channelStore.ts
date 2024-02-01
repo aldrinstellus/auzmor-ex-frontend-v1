@@ -30,6 +30,13 @@ export interface IChannel {
   membersCount: number;
 }
 
+export interface IChannelLink {
+  title: string;
+  url: string;
+  image?: string;
+  favicon?: string;
+}
+
 type State = {
   channels: { [id: string]: IChannel };
 };
