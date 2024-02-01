@@ -33,16 +33,12 @@ export const getComments = async (
     (string | Record<string, any> | undefined)[],
     any
   >,
-  comment: {
-    [key: string]: IComment;
-  },
-  setComment: (feed: { [key: string]: IComment }) => void,
+  appendComments: (comment: { [id: string]: IComment }) => void,
 ) => {
   let response = null;
   if (!!!context.pageParam) {
     response = await apiService.get('/comments', context.queryKey[1]);
-    setComment({
-      ...comment,
+    appendComments({
       ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
@@ -51,8 +47,7 @@ export const getComments = async (
     return response;
   } else {
     response = await apiService.get(context.pageParam);
-    setComment({
-      ...comment,
+    appendComments({
       ...chain(response.data.result.data).keyBy('id').value(),
     });
     response.data.result.data = response.data.result.data.map(
@@ -63,11 +58,11 @@ export const getComments = async (
 };
 
 export const useInfiniteComments = (q: IComments) => {
-  const { comment, setComment } = useCommentStore();
+  const { comment, appendComments } = useCommentStore();
   return {
     ...useInfiniteQuery({
       queryKey: ['comments', q],
-      queryFn: (context) => getComments(context, comment, setComment),
+      queryFn: (context) => getComments(context, appendComments),
       getNextPageParam: (lastPage: any) => {
         const pageDataLen = lastPage?.data?.result?.data?.length;
         const pageLimit = lastPage?.data?.result?.paging?.limit;
