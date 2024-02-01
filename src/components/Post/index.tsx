@@ -69,9 +69,8 @@ type PostProps = {
 };
 
 const Post: FC<PostProps> = ({ post, customNode = null, setHasChanges }) => {
-  const [showComments, openComments, closeComments] = useModal(
-    ['WORK_ANNIVERSARY', 'BIRTHDAY'].includes(post?.occasionContext?.type),
-  );
+  const [showComments, openComments, closeComments] = useModal();
+  // ['WORK_ANNIVERSARY', 'BIRTHDAY'].includes(post?.occasionContext?.type),
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
