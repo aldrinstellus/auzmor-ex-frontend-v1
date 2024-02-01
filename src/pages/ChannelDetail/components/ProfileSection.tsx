@@ -4,7 +4,7 @@ const ProfileSection = () => {
       <div>
         <img
           src={require('images/channelDefaultHero.png')}
-          className="rounded-9xl w-full"
+          className="rounded-9xl w-full object-cover"
         />
       </div>
     </div>

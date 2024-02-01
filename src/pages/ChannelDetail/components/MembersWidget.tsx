@@ -1,5 +1,6 @@
 import AvatarList from 'components/AvatarList';
 import Button, { Size, Variant } from 'components/Button';
+import Card from 'components/Card';
 import Icon from 'components/Icon';
 import { useState } from 'react';
 
@@ -7,20 +8,24 @@ const MembersWidget = () => {
   const [show, setShow] = useState(true);
 
   return (
-    <div className="bg-white p-6 rounded-9xl">
-      <div
-        className="flex items-center justify-between cursor-pointer"
-        onClick={() => setShow((t) => !t)}
-      >
-        <div className="font-bold">23 Members</div>
-        <Icon
-          name={show ? 'arrowUp' : 'arrowDown'}
-          size={20}
-          color="text-neutral-900"
-        />
-      </div>
-      {show ? (
-        <>
+    <Card className="py-6 rounded-9xl" shadowOnHover>
+      <div className="px-6">
+        <div
+          className="flex items-center justify-between cursor-pointer"
+          onClick={() => setShow((t) => !t)}
+        >
+          <div className="font-bold">23 Members</div>
+          <Icon
+            name={show ? 'arrowUp' : 'arrowDown'}
+            size={20}
+            color="text-neutral-900"
+          />
+        </div>
+        <div
+          className={`transition-max-h duration-300 ease-in-out overflow-hidden ${
+            show ? 'max-h-[1000px]' : 'max-h-[0]'
+          }`}
+        >
           <div className="mt-3">
             <AvatarList
               display={8}
@@ -60,9 +65,9 @@ const MembersWidget = () => {
               // onClick={() => navigate('/teams?tab=myTeams')}
             />
           </div>
-        </>
-      ) : null}
-    </div>
+        </div>
+      </div>
+    </Card>
   );
 };
 
