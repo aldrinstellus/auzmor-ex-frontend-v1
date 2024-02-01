@@ -30,6 +30,13 @@ export interface IChannel {
   membersCount: number;
 }
 
+export interface IChannelLink {
+  title: string;
+  url: string;
+  image?: string;
+  favicon?: string;
+}
+
 type State = {
   channels: { [id: string]: IChannel };
 };
@@ -38,6 +45,7 @@ type Actions = {
   getChannel: (id: string) => IChannel;
   getChannels: () => IChannel[];
   setChannel: (channel: IChannel) => void;
+  setChannels: (channels: { [key: string]: IChannel }) => void;
 };
 
 const dummyChannels: { [key: string]: IChannel } = {
@@ -150,5 +158,7 @@ export const useChannelStore = create<State & Actions>()(
     getChannels: () => _.values(get().channels),
     setChannel: (channel: IChannel) =>
       set((state) => (state.channels[channel.id] = channel)),
+    setChannels: (channels: { [key: string]: IChannel }) =>
+      set((state) => (state.channels = { ...state.channels, ...channels })),
   })),
 );
