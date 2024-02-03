@@ -9,22 +9,30 @@ import Button, {
   Variant as ButtonVariant,
 } from 'components/Button';
 import Card from 'components/Card';
-import { ChannelPrivacyEnum, IChannel } from 'stores/channelStore';
+import { ChannelVisibilityEnum, IChannel } from 'stores/channelStore';
 import DefaultCoverImage from 'images/png/CoverImage.png';
 
 interface IChannelCardProps {
   channel: IChannel;
+  showRequestBtn?: boolean;
+  showWithdrawBtn?: boolean;
+  showJoinChannelBtn?: boolean;
 }
 
-const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
+const ChannelCard: FC<IChannelCardProps> = ({
+  channel,
+  showRequestBtn = false,
+  showJoinChannelBtn = false,
+  showWithdrawBtn = false,
+}) => {
   return (
     <Card className="w-full flex flex-col gap-2 relative">
       <div className="w-full h-[80px] bg-slate-500 rounded-t-9xl">
-        {channel.coverImage && channel.coverImage.original ? (
+        {channel.channelBanner && channel.channelBanner.original ? (
           <div className="w-full h-full relative">
             <img
               className="object-cover h-full w-full rounded-t-9xl"
-              src={channel.coverImage.original}
+              src={channel.channelBanner.original}
             />
             <div className="w-full h-full bg-black top-0 left-0 absolute rounded-t-9xl opacity-30"></div>
           </div>
@@ -41,7 +49,8 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
             text={channel.name}
             className="text-sm font-semibold text-neutral-900 max-w-[208px]"
           />
-          {channel.privacy === ChannelPrivacyEnum.Private && (
+          {channel.channelSettings?.visibility ===
+            ChannelVisibilityEnum.Private && (
             <Icon
               name={'lockFilled'}
               size={14}
@@ -52,37 +61,45 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
           )}
         </div>
         <p className="text-xs font-semibold text-neutral-500">
-          {channel.membersCount} members
+          {channel.totalMembers} members
         </p>
         <p className="text-xxs text-neutral-500 line-clamp-2">
           {channel.description}
         </p>
-        <Button
-          label={'Request to join'}
-          size={ButtonSize.ExtraSmall}
-          className="mt-2"
-        />
-        <Button
-          label={'Withdraw request'}
-          size={ButtonSize.ExtraSmall}
-          variant={ButtonVariant.Danger}
-          className="mt-2"
-        />
-        <div className="flex gap-1 w-full mt-2">
+        {showRequestBtn && (
           <Button
-            label="Open channel"
+            label={'Request to join'}
             size={ButtonSize.ExtraSmall}
-            variant={ButtonVariant.Secondary}
-            className="grow"
+            className="mt-2"
           />
+        )}
+        {showWithdrawBtn && (
           <Button
-            label="Join channel"
+            label={'Withdraw request'}
             size={ButtonSize.ExtraSmall}
-            className="grow"
+            variant={ButtonVariant.Danger}
+            className="mt-2"
           />
-        </div>
+        )}
+        {showJoinChannelBtn && (
+          <div className="flex gap-1 w-full mt-2">
+            <Button
+              label="Open channel"
+              size={ButtonSize.ExtraSmall}
+              variant={ButtonVariant.Secondary}
+              className="grow"
+            />
+            <Button
+              label="Join channel"
+              size={ButtonSize.ExtraSmall}
+              className="grow"
+            />
+          </div>
+        )}
       </div>
-      <div className="w-10 h-10 rounded-full absolute left-4 top-[52px] bg-black border border-white z-0" />
+      <div className="w-10 h-10 rounded-full absolute left-4 top-[52px] bg-neutral-300 border border-white z-0 flex justify-center items-center">
+        <Icon name="gallery" size={16} color="text-white" hover={false} />
+      </div>
       {channel.isStarred && (
         <IconWrapper
           type={IconWrapperType.Square}

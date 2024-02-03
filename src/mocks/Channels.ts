@@ -1,3 +1,5 @@
+import { IChannelLink } from 'stores/channelStore';
+
 export const ChannelUser = [
   {
     id: '6516afa8dc958600e4619cdf',
@@ -346,4 +348,20 @@ export const ChannelUser = [
       manager: true,
     },
   },
+];
+
+export const channelLinks: IChannelLink[] = [
+  {
+    title: 'Contracts',
+    url: 'www.twitter.com',
+    favicon:
+      'https://upload.wikimedia.org/wikipedia/commons/6/6f/Logo_of_Twitter.svg',
+  },
+  {
+    title: 'Open Opportunities',
+    url: 'www.office.auzmor.com',
+    favicon: 'https://office.auzmor.com/favicon.ico',
+  },
+  { title: 'Lost Opportunities', url: 'www.auzmor.com/office' },
+  { title: 'Case study - Healthcare', url: 'www.google.com' },
 ];

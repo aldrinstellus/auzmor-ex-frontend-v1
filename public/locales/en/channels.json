@@ -1,0 +1,11 @@
+{
+  "channels": "Channels",
+  "filterCTA": {
+    "myChannels": "My channels",
+    "managed": "Managed",
+    "discoverNewChannels": "Discover new channels",
+    "starred": "Starred",
+    "requested": "Requested"
+  },
+  "createChannelCTA": "Create channel"
+}

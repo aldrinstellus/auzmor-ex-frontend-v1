@@ -117,6 +117,7 @@ import ProfileUser from '../components/ProfileUser';
 import ShareForward from '../components/ShareForward';
 import Cancel from '../components/Cancel';
 import LinearLeftArrow from '../components/LinearLeftArrow';
+import LinearRightArrow from '../components/LinearRightArrow/index';
 import PostBookmarkIcon from '../components/PostBookmark';
 import Repost from '../components/Repost';
 import Calendar from '../components/Calendar';
@@ -146,6 +147,7 @@ import LockIcon from '../components/Lock';
 import StarIcon from '../components/Star';
 import NewsIcon from '../components/News';
 import WebsiteIcon from '../components/Website';
+import GalleryIcon from '../components/Gallery';
 
 export const icon = {
   add: Add,
@@ -184,7 +186,6 @@ export const icon = {
   connectionFolder: ConnectionFolder,
   convertShape: ConvertShape,
   copy: CopyIcon,
-  news: NewsIcon,
   copyLink: CopyLink,
   crossCircle: CrossCircle,
   cyclicArrow: CyclicArrow,
@@ -219,6 +220,7 @@ export const icon = {
   fullScreen: FullScreenIcon,
   funny: Funny,
   funnyReaction: FunnyReaction,
+  gallery: GalleryIcon,
   galleryExport: GalleryExport,
   gear: Gear,
   global: Global,
@@ -237,6 +239,7 @@ export const icon = {
   likeIcon: LikeIcon,
   likeReaction: LikeReaction,
   linearLeftArrow: LinearLeftArrow,
+  linearRightArrow: LinearRightArrow,
   link: Link,
   location: LocationIcon,
   lock: LockIcon,
@@ -253,6 +256,7 @@ export const icon = {
   minus: Minus,
   more: MoreIcon,
   mute: MuteIcon,
+  news: NewsIcon,
   noteFavourite: NoteFavouriteIcon,
   notification: NotificationIcon,
   orangeHashtag: OrangeHashtagIcon,
@@ -293,7 +297,7 @@ export const icon = {
   video: VideoIcon,
   videoSlash: VideoSlash,
   warningCircle: WarningCircleIcon,
+  website: WebsiteIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
-  website: WebsiteIcon,
 };

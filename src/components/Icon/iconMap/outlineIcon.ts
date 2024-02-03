@@ -80,6 +80,7 @@ import SvgGlobalOutline from '../components/Global/GlobalOutline';
 import SvgProfileUserOutline from '../components/ProfileUser/ProfileUserOutline';
 import SvgShareForwardOutline from '../components/ShareForward/ShareForwardOutline';
 import SvgLinearLeftArrowOutline from '../components/LinearLeftArrow/LinearLeftArrowOutline';
+import SvgLinearRightArrowOutline from '../components/LinearRightArrow/LinearRightArrowOutline';
 import SvgRepostOutline from '../components/Repost/RepostOutline';
 import SvgCalendarOutline from '../components/Calendar/CalendarOutline';
 import SvgSortByAcsOutline from '../components/SortByAcs/SortByAcsOutline';
@@ -100,6 +101,7 @@ import SvgLockOutline from '../components/Lock/LockOutline';
 import SvgStarOutline from '../components/Star/StarOutline';
 import SvgNewsOutline from '../components/News/NewsOutline';
 import SvgWebsiteOutline from '../components/Website/WebsiteOutline';
+import SvgGalleryOutline from '../components/Gallery/GalleryOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -148,6 +150,7 @@ export const outlineIcon = {
   focusOutline: SvgFocusOutline,
   fullScreenOutline: SvgFullScreenOutline,
   funnyOutline: SvgFunnyOutline,
+  galleryOutline: SvgGalleryOutline,
   gearOutline: SvgGearOutline,
   globalOutline: SvgGlobalOutline,
   groupOutline: SvgGroupOutline,
@@ -161,6 +164,7 @@ export const outlineIcon = {
   likeIconOutline: SvgLikeIconOutline,
   likeOutline: SvgLikeOutline,
   linearLeftArrowOutline: SvgLinearLeftArrowOutline,
+  linearRightArrowOutline: SvgLinearRightArrowOutline,
   linkOutline: SvgLinkOutline,
   lockOutline: SvgLockOutline,
   logoutOutline: SvgLogoutOutline,
@@ -172,6 +176,7 @@ export const outlineIcon = {
   maximizeOutline: SvgMaximizeOutline,
   micOutline: SvgMicOutline,
   moreOutline: SvgMoreOutline,
+  newsOutline: SvgNewsOutline,
   noteFavouriteOutline: SvgNoteFavouriteOutline,
   peopleOutline: SvgPeopleOutline,
   playOutline: SvgPlayOutline,
@@ -200,8 +205,7 @@ export const outlineIcon = {
   usersOutline: SvgUsersOutline,
   videoOutline: SvgVideoOutline,
   warningCirlceOutline: SvgWarningCircleOutline,
+  websiteOutline: SvgWebsiteOutline,
   zoomInOutline: SvgZoomInOutline,
   zoomOutOutline: SvgZoomOutOutline,
-  newsOutline: SvgNewsOutline,
-  websiteOutline: SvgWebsiteOutline,
 };

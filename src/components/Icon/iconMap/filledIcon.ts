@@ -71,6 +71,7 @@ import SvgProfileFilled from '../components/Profile/ProfileFilled';
 import SvgGlobalFilled from '../components/Global/GlobalFilled';
 import SvgProfileUserFilled from '../components/ProfileUser/ProfileUserFilled';
 import SvgLinearLeftArrowFilled from '../components/LinearLeftArrow/LinearLeftArrowFilled';
+import SvgLinearRightArrowFilled from '../components/LinearRightArrow/LinearRightArrowFilled';
 import SvgRepostFilled from '../components/Repost/RepostFilled';
 import SvgCalendarFilled from '../components/Calendar/CalendarFilled';
 import SvgMicFilled from '../components/Mic/MicFilled';
@@ -85,6 +86,7 @@ import PostBookMarkFilled from '../components/PostBookmark/PostBookmarkFilled';
 import SvgCloudAddFilled from '../components/CloudAdd/CloudAddFilled';
 import SvgLockFilled from '../components/Lock/LockFilled';
 import SvgStarFilled from '../components/Star/StarFilled';
+import SvgGalleryFilled from '../components/Gallery/GalleryFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -130,6 +132,7 @@ export const filledIcon = {
   focusFilled: SvgFocusFilled,
   fullScreenFilled: SvgFullScreenFilled,
   funnyFilled: SvgFunnyFilled,
+  galleryFilled: SvgGalleryFilled,
   gearFilled: SvgGearFilled,
   globalFilled: SvgGlobalFilled,
   groupFilled: SvgGroupFilled,
@@ -144,6 +147,7 @@ export const filledIcon = {
   likeFilled: SvgLikeFilled,
   likeIconFilled: SvgLikeIconFilled,
   linearLeftArrowFilled: SvgLinearLeftArrowFilled,
+  linearRightArrowFilled: SvgLinearRightArrowFilled,
   lockFilled: SvgLockFilled,
   logoutFilled: SvgLogoutFilled,
   loveFilled: SvgLoveFilled,
