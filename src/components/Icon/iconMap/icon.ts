@@ -142,7 +142,7 @@ import VideoSlash from '../components/VideoSlash';
 import SvgInfoIcon from '../components/Info';
 import CloudAddIcon from '../components/CloudAdd';
 import BoldTick from '../components/BoldTick';
-import EditIconV2 from '../components/EditV2';
+import EditIconV2 from '../components/EditGreenOutline';
 import LockIcon from '../components/Lock';
 import StarIcon from '../components/Star';
 
