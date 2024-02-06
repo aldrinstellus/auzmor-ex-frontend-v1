@@ -1,5 +1,7 @@
-const AppLauncher = () => {
-  return <div>App Launcher</div>;
+import AppLauncher from 'components/AppLauncher';
+
+const ChannelAppLauncher = () => {
+  return <AppLauncher />;
 };
 
-export default AppLauncher;
+export default ChannelAppLauncher;
