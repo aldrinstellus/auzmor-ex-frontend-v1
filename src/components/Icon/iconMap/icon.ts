@@ -142,7 +142,7 @@ import VideoSlash from '../components/VideoSlash';
 import SvgInfoIcon from '../components/Info';
 import CloudAddIcon from '../components/CloudAdd';
 import BoldTick from '../components/BoldTick';
-import EditIconV2 from '../components/EditGreenOutline';
+import EditIconGreenOutline from '../components/EditGreenOutline';
 import LockIcon from '../components/Lock';
 import StarIcon from '../components/Star';
 
@@ -196,7 +196,7 @@ export const icon = {
   download: DownloadIcon,
   draft: DraftIcon,
   edit: EditIcon,
-  editv2: EditIconV2,
+  editGreenOutline: EditIconGreenOutline,
   editReceipt: EditReceipt,
   email: EmailIcon,
   emojiHappy: EmojiHappy,
