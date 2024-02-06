@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import Button, { Size } from 'components/Button';
 import Icon from 'components/Icon';
 import React from 'react';
 
@@ -22,7 +23,7 @@ const ProfileSection: React.FC<AppProps> = ({ activeTab, setActiveTab }) => {
   ];
 
   return (
-    <div className="h-[330px] rounded-9xl relative">
+    <div className="h-[330px] rounded-9xl relative mb-4">
       <div className="absolute top-4 left-4">
         <div className="bg-white rounded-7xl px-3 py-1.5 text-xxs text-primary-500 font-medium">
           You own this space
@@ -73,7 +74,18 @@ const ProfileSection: React.FC<AppProps> = ({ activeTab, setActiveTab }) => {
         />
       </div>
       <div className="absolute left-0 right-0 bottom-0 text-white px-6">
-        <div>Channel Name</div>
+        <div className="flex justify-between items-center">
+          <div className="mb-2 flex items-start space-x-6">
+            <div className="h-14 w-14 rounded-full border-2 border-white bg-blue-300 center">
+              <Icon name="chart" className="text-white" size={24} />
+            </div>
+            <div className="space-y-2 text-white">
+              <div className="text-2xl font-bold">Sales</div>
+              <div className="text-xs">This is a private space for sales</div>
+            </div>
+          </div>
+          <Button label="Join Channel" size={Size.Small} />
+        </div>
         <div className="w-full flex justify-between items-center relative top-3">
           <div>
             <div className="flex items-center text-sm space-x-4">
