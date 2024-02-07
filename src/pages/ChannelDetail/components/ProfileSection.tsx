@@ -66,11 +66,11 @@ const ProfileSection: React.FC<AppProps> = ({ activeTab, setActiveTab }) => {
             size={16}
             className="text-neutral-400"
             // onClick={() => userProfileImageRef?.current?.click()}
-            dataTestId="edit-profilepic"
+            dataTestId="channel-editcoverpic-icon"
           />
         </div>
       </div>
-      <div>
+      <div data-testid="channel-uploadedcoverphoto">
         <img
           src={require('images/channelDefaultHero.png')}
           className="rounded-9xl w-full object-cover"
@@ -83,11 +83,19 @@ const ProfileSection: React.FC<AppProps> = ({ activeTab, setActiveTab }) => {
               <Icon name="chart" className="text-white" size={24} />
             </div>
             <div className="space-y-2 text-white">
-              <div className="text-2xl font-bold">Sales</div>
-              <div className="text-xs">This is a private space for sales</div>
+              <div className="text-2xl font-bold" data-testid="channel-name">
+                Sales
+              </div>
+              <div className="text-xs" data-testid="channel-description">
+                This is a private space for sales
+              </div>
             </div>
           </div>
-          <Button label={t('join')} size={Size.Small} />
+          <Button
+            label={t('join')}
+            size={Size.Small}
+            dataTestId="join-channel-cta"
+          />
         </div>
         <div className="w-full flex justify-between items-center relative top-3">
           <div>
@@ -113,19 +121,31 @@ const ProfileSection: React.FC<AppProps> = ({ activeTab, setActiveTab }) => {
               <div className="border border-neutral-600 rounded-7xl p-1">
                 <Icon name="lock" size={16} className="text-white" />
               </div>
-              <div className="text-white text-sm">{t('private')}</div>
+              <div className="text-white text-sm" data-testid="channel-privacy">
+                {t('private')}
+              </div>
             </div>
             <div className="flex items-center space-x-1 border-r px-4 border-neutral-500">
               <div className="border border-neutral-600 rounded-7xl p-1">
                 <Icon name="users" size={16} className="text-white" />
               </div>
-              <div className="text-white text-sm">1 {t('member')}</div>
+              <div
+                className="text-white text-sm"
+                data-testid="channel-membercount"
+              >
+                1 {t('member')}
+              </div>
             </div>
             <div className="flex items-center space-x-1 pl-4">
               <div className="border border-neutral-600 rounded-7xl p-1">
                 <Icon name="chart" size={16} className="text-white" />
               </div>
-              <div className="text-white text-sm">Sales</div>
+              <div
+                className="text-white text-sm"
+                data-testid="channel-category"
+              >
+                Sales
+              </div>
             </div>
           </div>
         </div>

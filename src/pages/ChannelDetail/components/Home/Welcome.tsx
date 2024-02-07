@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next';
 const Welcome = () => {
   const { t } = useTranslation('channelDetail');
   return (
-    <div className="bg-white rounded-9xl py-4 mt-6">
+    <div
+      className="bg-white rounded-9xl py-4 mt-6"
+      data-testid="channel-welcome-abord-post"
+    >
       <div className="flex justify-end px-4">
         <Icon name="close" size={20} />
       </div>
