@@ -2,6 +2,7 @@ import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const admins = [
   {
@@ -29,6 +30,7 @@ const admins = [
 
 const AdminsWidget = () => {
   const [show, setShow] = useState(true);
+  const { t } = useTranslation('channelDetail');
 
   return (
     <Card className="py-6 rounded-9xl" shadowOnHover>
@@ -37,7 +39,7 @@ const AdminsWidget = () => {
           className="flex items-center justify-between cursor-pointer mb-3"
           onClick={() => setShow((t) => !t)}
         >
-          <div className="font-bold">Channel Admins</div>
+          <div className="font-bold">{t('adminsWidget.title')}</div>
           <Icon
             name={show ? 'arrowUp' : 'arrowDown'}
             size={20}
@@ -65,7 +67,7 @@ const AdminsWidget = () => {
                 </div>
                 {admin.isOwner && (
                   <div className="bg-black px-2 py-[2px] rounded-xl text-white font-medium text-xxs">
-                    Owner
+                    {t('adminsWidget.owner')}
                   </div>
                 )}
               </div>

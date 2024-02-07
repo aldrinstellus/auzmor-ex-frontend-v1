@@ -1,29 +1,32 @@
 import Icon from 'components/Icon';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 
 const FinishSetup = () => {
+  const { t } = useTranslation('channelDetail');
+
   const steps = [
     {
       key: 'cover_photo',
-      label: 'Add a cover photo',
+      label: t('setup.cover_photo'),
       completed: false,
       icon: 'image',
     },
     {
       key: 'description',
-      label: 'Add description',
+      label: t('setup.description'),
       completed: true,
       icon: 'image',
     },
     {
       key: 'invite',
-      label: 'Invite members',
+      label: t('setup.invite'),
       completed: false,
       icon: 'image',
     },
     {
       key: 'post',
-      label: 'Create post',
+      label: t('setup.post'),
       completed: false,
       icon: 'image',
     },
@@ -32,15 +35,16 @@ const FinishSetup = () => {
   return (
     <div className="bg-white rounded-9xl p-6 mt-6">
       <div className="flex justify-between">
-        <div className="font-bold text-neutral-900">Finish setting up</div>
+        <div className="font-bold text-neutral-900">{t('setup.title')}</div>
         <Icon name="close" size={20} />
       </div>
       <div>
         <div className="mt-2 text-sm text-neutral-400">
           <span className="!text-primary-500 font-semibold">
-            {steps.filter((s) => s.completed).length} of {steps.length}
+            {steps.filter((s) => s.completed).length} {t('setup.of')}{' '}
+            {steps.length}
           </span>{' '}
-          steps completed
+          {t('setup.steps_completed')}
         </div>
         <div className="mt-2">
           {steps.map((step) => (

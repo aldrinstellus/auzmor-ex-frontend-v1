@@ -1,6 +1,8 @@
 import Icon from 'components/Icon';
+import { useTranslation } from 'react-i18next';
 
 const Welcome = () => {
+  const { t } = useTranslation('channelDetail');
   return (
     <div className="bg-white rounded-9xl py-4 mt-6">
       <div className="flex justify-end px-4">
@@ -14,15 +16,10 @@ const Welcome = () => {
           />
         </div>
         <div className="flex flex-col items-center flex-1 py-4">
-          <div className="text-2xl font-semibold">Welcome aboard!!</div>
+          <div className="text-2xl font-semibold">{t('welcome.title')}</div>
           <div className="mt-4 font-medium">
-            <div className="text-center text-xs">
-              Join us for an exciting journey of knowledge and inspiration
-            </div>
-            <div className="text-center text-xs mt-6">
-              Connect, engage, and explore with us. Let&apos;s make this space
-              extraordinary together! 🎉🌟
-            </div>
+            <div className="text-center text-xs">{t('welcome.line1')}</div>
+            <div className="text-center text-xs mt-6">{t('welcome.line2')}</div>
           </div>
         </div>
       </div>

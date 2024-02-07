@@ -4,10 +4,12 @@ import Card from 'components/Card';
 import Icon from 'components/Icon';
 import useRole from 'hooks/useRole';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const MembersWidget = () => {
   const { isAdmin } = useRole();
   const [show, setShow] = useState(true);
+  const { t } = useTranslation('channelDetail');
 
   return (
     <Card className="py-6 rounded-9xl" shadowOnHover>
@@ -16,7 +18,7 @@ const MembersWidget = () => {
           className="flex items-center justify-between cursor-pointer"
           onClick={() => setShow((t) => !t)}
         >
-          <div className="font-bold">23 Members</div>
+          <div className="font-bold">23 {t('membersWidget.title')}</div>
           <Icon
             name={show ? 'arrowUp' : 'arrowDown'}
             size={20}

@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import Button, { Size } from 'components/Button';
 import Icon from 'components/Icon';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   activeTab: string;
@@ -9,14 +10,16 @@ type AppProps = {
 };
 
 const ProfileSection: React.FC<AppProps> = ({ activeTab, setActiveTab }) => {
+  const { t } = useTranslation('channelDetail');
+
   const tabs = [
     {
-      label: 'Home',
+      label: t('cover.tab_home'),
       key: 'home',
       isActive: activeTab === 'home',
     },
     {
-      label: 'Members',
+      label: t('cover.tab_members'),
       key: 'members',
       isActive: activeTab === 'members',
     },
@@ -26,7 +29,7 @@ const ProfileSection: React.FC<AppProps> = ({ activeTab, setActiveTab }) => {
     <div className="h-[330px] rounded-9xl relative mb-4">
       <div className="absolute top-4 left-4">
         <div className="bg-white rounded-7xl px-3 py-1.5 text-xxs text-primary-500 font-medium">
-          You own this space
+          {t('cover.you_own_this_space')}
         </div>
       </div>
       <div className="absolute top-4 right-4 flex items-center space-x-2">
@@ -84,7 +87,7 @@ const ProfileSection: React.FC<AppProps> = ({ activeTab, setActiveTab }) => {
               <div className="text-xs">This is a private space for sales</div>
             </div>
           </div>
-          <Button label="Join Channel" size={Size.Small} />
+          <Button label={t('join')} size={Size.Small} />
         </div>
         <div className="w-full flex justify-between items-center relative top-3">
           <div>
@@ -110,13 +113,13 @@ const ProfileSection: React.FC<AppProps> = ({ activeTab, setActiveTab }) => {
               <div className="border border-neutral-600 rounded-7xl p-1">
                 <Icon name="lock" size={16} className="text-white" />
               </div>
-              <div className="text-white text-sm">Private</div>
+              <div className="text-white text-sm">{t('private')}</div>
             </div>
             <div className="flex items-center space-x-1 border-r px-4 border-neutral-500">
               <div className="border border-neutral-600 rounded-7xl p-1">
                 <Icon name="users" size={16} className="text-white" />
               </div>
-              <div className="text-white text-sm">1 member</div>
+              <div className="text-white text-sm">1 {t('member')}</div>
             </div>
             <div className="flex items-center space-x-1 pl-4">
               <div className="border border-neutral-600 rounded-7xl p-1">
