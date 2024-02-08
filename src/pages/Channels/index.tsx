@@ -213,7 +213,9 @@ export const Channels: FC<IChannelsProps> = () => {
           ))}
         </div>
       </Card>
-      <ChannelModal isOpen={isModalOpen} closeModal={closeModal} />
+      {isModalOpen && (
+        <ChannelModal isOpen={isModalOpen} closeModal={closeModal} />
+      )}
     </>
   );
 };

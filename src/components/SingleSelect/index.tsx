@@ -13,6 +13,7 @@ interface IOptions {
   label: string;
   disabled: boolean;
   dataTestId?: string;
+  render?: () => ReactNode;
 }
 
 export interface ISingleSelectProps {
@@ -168,7 +169,13 @@ const SingleSelect = forwardRef(
                       value={option.value}
                       label={option.label}
                     >
-                      <div data-testid={option.dataTestId}>{option.label}</div>
+                      {option?.render ? (
+                        option.render()
+                      ) : (
+                        <div data-testid={option.dataTestId}>
+                          {option.label}
+                        </div>
+                      )}
                     </Option>
                   ))}
                 </Select>

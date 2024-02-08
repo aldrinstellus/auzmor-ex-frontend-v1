@@ -11,6 +11,7 @@ import Button, { Variant } from 'components/Button';
 import { IOption } from 'components/AsyncSingleSelect';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import Icon from 'components/Icon';
 
 interface IChannelModalProps {
   isOpen: boolean;
@@ -19,9 +20,9 @@ interface IChannelModalProps {
 
 interface IChannelForm {
   channelName: string;
-  channelCategory?: ICategoryDetail;
-  channelPrivacy?: IOption;
-  channelDescription?: string;
+  channelCategory: ICategoryDetail;
+  channelPrivacy: IOption;
+  channelDescription: string;
 }
 
 const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
@@ -29,16 +30,26 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
   const { t: tc } = useTranslation('common');
 
   const schema = yup.object({
-    channeName: yup.string().required('required'),
-    // channelCategory: yup.object().required(),
-    // channelPrivacy: yup.object().required(),
+    channelName: yup.string().required('required'),
+    channelCategory: yup.object().required(),
+    channelPrivacy: yup.object().required(),
   });
 
   const { control, formState } = useForm<IChannelForm>({
     defaultValues: {
       channelName: '',
       channelPrivacy: {
-        label: 'Public',
+        label: (
+          <div className="flex gap-2 items-center">
+            <Icon
+              name="global"
+              size={16}
+              color="text-neutral-900"
+              hover={false}
+            />
+            <p>{t('public')}</p>
+          </div>
+        ),
         value: ChannelVisibilityEnum.Public,
         dataTestId: 'channel-privacy-public',
       },
@@ -46,8 +57,6 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
-
-  console.log(formState.isValid, formState.errors, formState.defaultValues);
 
   const formatCategory = (data: any) => {
     const skillsData = data?.pages.flatMap((page: any) => {
@@ -70,8 +79,12 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
   };
 
   return (
-    <Modal open={isOpen}>
-      <Header title={t('channelModal.createChannel')} onClose={closeModal} />
+    <Modal open={isOpen} dataTestId="createchannel-modal">
+      <Header
+        title={t('channelModal.createChannel')}
+        onClose={closeModal}
+        closeBtnDataTestId="create-channel-crossicon"
+      />
       <div className="p-6">
         <div className="flex flex-col items-center gap-6">
           <Layout
@@ -83,7 +96,7 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
                 name: 'channelName',
                 label: t('channelModal.channelNameLabel'),
                 placeholder: 'ex. Product and design team',
-                dataTestId: 'channel-name-input',
+                dataTestId: 'create-channel-name',
                 showCounter: true,
                 maxLength: 100,
                 required: true,
@@ -102,11 +115,9 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
                   label: t('channelModal.channelCategoryLabel'),
                   required: true,
                   control,
-                  // defaultValue: defaultValues()?.skills,
                   fetchQuery: useInfiniteCategories,
                   getFormattedData: formatCategory,
-                  // error: errors.skills?.message,
-                  dataTestId: 'select-skills',
+                  dataTestId: 'create-channel-category-dropdown',
                   getPopupContainer: document.body,
                 },
               ]}
@@ -124,14 +135,72 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
                   required: true,
                   options: [
                     {
-                      label: 'Public',
-                      value: ChannelVisibilityEnum.Public,
-                      dataTestId: 'channel-privacy-public',
-                    },
-                    {
-                      label: 'Private',
+                      label: (
+                        <div className="flex gap-2 items-center">
+                          <Icon
+                            name="lock"
+                            size={16}
+                            color="text-neutral-900"
+                            hover={false}
+                          />
+                          <p>{t('private')}</p>
+                        </div>
+                      ),
                       value: ChannelVisibilityEnum.Private,
                       dataTestId: 'channel-privacy-private',
+                      render: () => (
+                        <div className="flex gap-3">
+                          <div className="flex">
+                            <Icon
+                              name="lock"
+                              size={16}
+                              color="text-neutral-900"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <div className="font-medium text-xs text-neutral-900">
+                              {t('private')}
+                            </div>
+                            <p className="text-neutral-500 text-xxs max-w-[224px] whitespace-break-spaces">
+                              {t('privateDescription')}
+                            </p>
+                          </div>
+                        </div>
+                      ),
+                    },
+                    {
+                      label: (
+                        <div className="flex gap-2 items-center">
+                          <Icon
+                            name="global"
+                            size={16}
+                            color="text-neutral-900"
+                            hover={false}
+                          />
+                          <p>{t('public')}</p>
+                        </div>
+                      ),
+                      value: ChannelVisibilityEnum.Public,
+                      dataTestId: 'channel-privacy-public',
+                      render: () => (
+                        <div className="flex gap-3">
+                          <div className="flex">
+                            <Icon
+                              name="global"
+                              size={16}
+                              color="text-neutral-900"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <div className="font-medium text-xs text-neutral-900">
+                              {t('public')}
+                            </div>
+                            <p className="text-neutral-500 text-xxs max-w-[224px] whitespace-break-spaces">
+                              {t('publicDescription')}
+                            </p>
+                          </div>
+                        </div>
+                      ),
                     },
                   ],
                 },
@@ -148,7 +217,7 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
                 name: 'channelDescription',
                 label: t('channelModal.channelDescriptionLabel'),
                 placeholder: t('channelModal.channelDescriptionPlaceholder'),
-                dataTestId: 'channel-name-input',
+                dataTestId: 'create-channel-description',
                 rows: 5,
                 maxLength: 200,
                 showCounter: true,
@@ -166,13 +235,13 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
           variant={Variant.Secondary}
           onClick={closeModal}
           className="mr-4"
-          dataTestId="app-launcher-select-app-back"
+          dataTestId="channel-creation-cancel"
         />
         <Button
           label={tc('create')}
           variant={Variant.Primary}
           // onClick={handleSubmit(onSubmit)}
-          dataTestId="app-launcher-select-cta"
+          dataTestId="channel-creation-create"
           disabled={!formState.isValid}
         />
       </div>
