@@ -36,6 +36,7 @@ export interface ISingleSelectProps {
   clearIcon?: ReactNode | null;
   isClearable?: boolean;
   showSearch?: boolean;
+  required?: boolean;
 }
 
 const SingleSelect = forwardRef(
@@ -61,6 +62,7 @@ const SingleSelect = forwardRef(
       clearIcon = null,
       isClearable = false,
       showSearch = true,
+      required = false,
     }: ISingleSelectProps,
     ref?: any,
   ) => {
@@ -116,7 +118,10 @@ const SingleSelect = forwardRef(
             { 'cursor-not-allowed': disabled },
           )}
         >
-          <div className={labelStyle}>{label}</div>
+          <div className={labelStyle}>
+            {label}
+            <span className="text-red-500">{required && '*'}</span>
+          </div>
           <div
             data-testid={dataTestId}
             onClick={() => {
