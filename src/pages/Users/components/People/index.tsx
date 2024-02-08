@@ -31,6 +31,7 @@ import Icon from 'components/Icon';
 import { IDepartmentAPI } from 'queries/department';
 import { ILocationAPI } from 'queries/location';
 import ImportUsers from '../ImportUsers';
+import { FilterKey } from 'components/FilterMenu';
 
 export interface IPeopleProps {
   showModal: boolean;
@@ -51,12 +52,6 @@ interface IPeopleFilters {
   departments?: IDepartmentAPI[];
   locations?: ILocationAPI[];
   status?: IStatus[];
-}
-
-enum PeopleFilterKey {
-  departments = 'departments',
-  locations = 'locations',
-  status = 'status',
 }
 
 interface IForm {
@@ -235,7 +230,7 @@ const People: FC<IPeopleProps> = ({
     });
   };
 
-  const handleRemoveFilters = (key: PeopleFilterKey, id: any) => {
+  const handleRemoveFilters = (key: FilterKey, id: any) => {
     const updatedFilter = appliedFilters[key]!.filter(
       (item: any) => item.id !== id,
     );
@@ -426,7 +421,7 @@ const People: FC<IPeopleProps> = ({
                   className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
                   data-testid={`teams-filterby`}
                   onClick={() =>
-                    handleRemoveFilters(PeopleFilterKey.status, status.id)
+                    handleRemoveFilters(FilterKey.status, status.id)
                   }
                 >
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
@@ -439,7 +434,7 @@ const People: FC<IPeopleProps> = ({
                     color="text-neutral-900"
                     className="cursor-pointer"
                     onClick={() =>
-                      handleRemoveFilters(PeopleFilterKey.status, status.id)
+                      handleRemoveFilters(FilterKey.status, status.id)
                     }
                     dataTestId={`applied-filter-close`}
                   />
@@ -452,10 +447,7 @@ const People: FC<IPeopleProps> = ({
                     className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
                     data-testid={`teams-filterby`}
                     onClick={() =>
-                      handleRemoveFilters(
-                        PeopleFilterKey.departments,
-                        department.id,
-                      )
+                      handleRemoveFilters(FilterKey.departments, department.id)
                     }
                   >
                     <div className="mr-1 text-neutral-500 whitespace-nowrap">
@@ -471,7 +463,7 @@ const People: FC<IPeopleProps> = ({
                       className="cursor-pointer"
                       onClick={() =>
                         handleRemoveFilters(
-                          PeopleFilterKey.departments,
+                          FilterKey.departments,
                           department.id,
                         )
                       }
@@ -486,7 +478,7 @@ const People: FC<IPeopleProps> = ({
                   className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
                   data-testid={`teams-filterby`}
                   onClick={() =>
-                    handleRemoveFilters(PeopleFilterKey.locations, location.id)
+                    handleRemoveFilters(FilterKey.locations, location.id)
                   }
                 >
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
@@ -499,10 +491,7 @@ const People: FC<IPeopleProps> = ({
                     color="text-neutral-900"
                     className="cursor-pointer"
                     onClick={() =>
-                      handleRemoveFilters(
-                        PeopleFilterKey.locations,
-                        location.id,
-                      )
+                      handleRemoveFilters(FilterKey.locations, location.id)
                     }
                     dataTestId={`applied-filter-close`}
                   />

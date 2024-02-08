@@ -27,6 +27,7 @@ interface IFilterButton {
   onClick: () => void;
   labelClassName: string;
   className: string;
+  dataTestId: string;
 }
 
 export const Channels: FC<IChannelsProps> = () => {
@@ -84,6 +85,7 @@ export const Channels: FC<IChannelsProps> = () => {
         }`,
         className:
           filters?.type === ChannelCardEnum.MyChannels ? 'border-0' : '',
+        dataTestId: 'my-channels-filter',
       },
       {
         label: t('filterCTA.managed'),
@@ -95,6 +97,7 @@ export const Channels: FC<IChannelsProps> = () => {
             : 'font-normal text-neutral-500'
         }`,
         className: filters?.type === ChannelCardEnum.Managed ? 'border-0' : '',
+        dataTestId: 'managed',
       },
       {
         label: t('filterCTA.discoverNewChannels'),
@@ -110,6 +113,7 @@ export const Channels: FC<IChannelsProps> = () => {
           filters?.type === ChannelCardEnum.DiscoverNewChannels
             ? 'border-0'
             : '',
+        dataTestId: 'discover-new-channels-filter',
       },
       {
         label: t('filterCTA.starred'),
@@ -121,6 +125,7 @@ export const Channels: FC<IChannelsProps> = () => {
             : 'font-normal text-neutral-500'
         }`,
         className: filters?.type === ChannelCardEnum.Starred ? 'border-0' : '',
+        dataTestId: 'starred-filter',
       },
       {
         label: t('filterCTA.requested'),
@@ -133,6 +138,7 @@ export const Channels: FC<IChannelsProps> = () => {
         }`,
         className:
           filters?.type === ChannelCardEnum.Requested ? 'border-0' : '',
+        dataTestId: 'requested-filter',
       },
     ],
     [filters],
@@ -147,9 +153,15 @@ export const Channels: FC<IChannelsProps> = () => {
           leftIcon="add"
           leftIconClassName="text-white pointer-events-none group-hover:text-white"
           onClick={() => setFilters({ managed: true })}
+          dataTestId="createchannel-cta"
         />
       </div>
-      <FilterMenu filterForm={filterForm}>
+      <FilterMenu
+        filterForm={filterForm}
+        dataTestIdFilter="channel-filter-icon"
+        dataTestIdSort="channel-sort-icon"
+        dataTestIdSearch="channel-search"
+      >
         <div className="flex gap-2">
           {filterButtons.map((filterButton) => (
             <Button
@@ -160,6 +172,7 @@ export const Channels: FC<IChannelsProps> = () => {
               onClick={filterButton.onClick}
               labelClassName={filterButton.labelClassName}
               className={filterButton.className}
+              dataTestId={filterButton.dataTestId}
             />
           ))}
         </div>
