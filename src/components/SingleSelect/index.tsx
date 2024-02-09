@@ -13,6 +13,7 @@ interface IOptions {
   label: string;
   disabled: boolean;
   dataTestId?: string;
+  render?: () => ReactNode;
 }
 
 export interface ISingleSelectProps {
@@ -36,6 +37,7 @@ export interface ISingleSelectProps {
   clearIcon?: ReactNode | null;
   isClearable?: boolean;
   showSearch?: boolean;
+  required?: boolean;
 }
 
 const SingleSelect = forwardRef(
@@ -61,6 +63,7 @@ const SingleSelect = forwardRef(
       clearIcon = null,
       isClearable = false,
       showSearch = true,
+      required = false,
     }: ISingleSelectProps,
     ref?: any,
   ) => {
@@ -116,7 +119,10 @@ const SingleSelect = forwardRef(
             { 'cursor-not-allowed': disabled },
           )}
         >
-          <div className={labelStyle}>{label}</div>
+          <div className={labelStyle}>
+            {label}
+            <span className="text-red-500">{required && '*'}</span>
+          </div>
           <div
             data-testid={dataTestId}
             onClick={() => {
@@ -163,7 +169,13 @@ const SingleSelect = forwardRef(
                       value={option.value}
                       label={option.label}
                     >
-                      <div data-testid={option.dataTestId}>{option.label}</div>
+                      {option?.render ? (
+                        option.render()
+                      ) : (
+                        <div data-testid={option.dataTestId}>
+                          {option.label}
+                        </div>
+                      )}
                     </Option>
                   ))}
                 </Select>

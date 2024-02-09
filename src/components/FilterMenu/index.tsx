@@ -14,6 +14,7 @@ import useURLParams from 'hooks/useURLParams';
 import Icon from 'components/Icon';
 import { IDepartmentAPI } from 'queries/department';
 import { ILocationAPI } from 'queries/location';
+import { useTranslation } from 'react-i18next';
 
 export enum FilterKey {
   departments = 'departments',
@@ -29,6 +30,7 @@ interface IFilterMenu {
     },
     any
   >;
+  searchPlaceholder?: string;
   dataTestIdSort?: string;
   dataTestIdFilter?: string;
   dataTestIdSearch?: string;
@@ -37,6 +39,7 @@ interface IFilterMenu {
 const FilterMenu: FC<IFilterMenu> = ({
   children,
   filterForm,
+  searchPlaceholder,
   dataTestIdSort,
   dataTestIdFilter,
   dataTestIdSearch,
@@ -46,6 +49,7 @@ const FilterMenu: FC<IFilterMenu> = ({
   const { control, getValues, formState } = filterForm;
   const { parseParams, updateParam, serializeFilter, deleteParam } =
     useURLParams();
+  const { t } = useTranslation('common');
 
   useEffect(() => {
     if (filters) {
@@ -106,7 +110,7 @@ const FilterMenu: FC<IFilterMenu> = ({
   return (
     <>
       <div className="flex flex-col gap-6">
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <div>{children}</div>
           <div className="flex space-x-2 justify-center items-center relative">
             <IconButton
@@ -139,7 +143,7 @@ const FilterMenu: FC<IFilterMenu> = ({
                     control,
                     getValues,
                     name: 'search',
-                    placeholder: 'Search members',
+                    placeholder: searchPlaceholder || t('search'),
                     error: formState.errors.search?.message,
                     dataTestId: dataTestIdSearch,
                     inputClassName: 'py-[7px] !text-sm !h-9',
@@ -153,7 +157,7 @@ const FilterMenu: FC<IFilterMenu> = ({
         {filters?.status?.length ||
         filters?.departments?.length ||
         filters?.locations?.length ? (
-          <div className="flex justify-between items-start mb-6">
+          <div className="flex justify-between items-start">
             <div className="flex items-center space-x-2 flex-wrap gap-y-2">
               <div className="text-base text-neutral-500 whitespace-nowrap">
                 Filter By
