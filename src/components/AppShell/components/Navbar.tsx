@@ -13,8 +13,8 @@ import useAuth from 'hooks/useAuth';
 import { useState } from 'react';
 import SubscriptionBanner from './SubscriptionBanner';
 import { useTranslation } from 'react-i18next';
-import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
+import NavbarMenuButton from './NavbarMenuButton';
 
 const Navbar = () => {
   const { isAdmin } = useRole();
@@ -43,6 +43,7 @@ const Navbar = () => {
       icon: 'news',
       label: t('discover.channels'),
       labelClassName: 'text-xs font-medium',
+      stroke: 'text-neutral-900',
       onClick: () => {
         navigate('/channels');
       },
@@ -84,28 +85,13 @@ const Navbar = () => {
       linkTo: '',
       dataTestId: '',
       iconSize: 24,
+      isActive: location.pathname.includes('/channels'),
       render: function () {
         return (
           <PopupMenu
-            triggerNode={
-              <div className="  flex flex-col items-center group cursor-pointer">
-                <Icon
-                  name={this.hoverIcon}
-                  size={this.iconSize}
-                  className="group-hover:block hidden"
-                />
-                <Icon
-                  name={this.icon}
-                  size={this.iconSize}
-                  className="group-hover:hidden "
-                />
-                <div className="text-sm group-hover:text-primary-500">
-                  {this.label}
-                </div>
-              </div>
-            }
+            triggerNode={<NavbarMenuButton nav={this} />}
             menuItems={discoverOptions}
-            className="mt-14 w-[202px] "
+            className="mt-16 w-[202px] "
           />
         );
       },

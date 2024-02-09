@@ -10,11 +10,11 @@ const SvgNewsOutline = (props: SVGProps<SVGSVGElement>) => (
     {...props}
   >
     <path
-      stroke="#171717"
+      stroke="currentColor"
       d="M10.333 3.667H11a2 2 0 012 2v5.666c0 .737-.597 1.334-1.333 1.334v0h-1.334m0-9v9m0-9v-.334a2 2 0 00-2-2H3a2 2 0 00-2 2v7.334a2 2 0 002 2h7.333"
     ></path>
     <path
-      stroke="#171717"
+      stroke="currentColor"
       strokeLinecap="round"
       d="M3.333 9.667H8M6.667 7h-2a1.333 1.333 0 010-2.667h2a1.333 1.333 0 010 2.667z"
     ></path>
