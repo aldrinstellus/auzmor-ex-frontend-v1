@@ -8,6 +8,7 @@ import { IUserDetails } from 'queries/users';
 export enum ChannelVisibilityEnum {
   Public = 'PUBLIC',
   Private = 'PRIVATE',
+  All = 'ALL',
 }
 export enum CHANNEL_MEMBER_STATUS {
   PENDING = 'PENDING',
@@ -23,7 +24,7 @@ export interface IChannel {
   organizationId?: string;
   createdBy?: IUser;
   channelSettings?: {
-    visibility: ChannelVisibilityEnum;
+    visibility: ChannelVisibilityEnum.Private | ChannelVisibilityEnum.Public;
     restriction: {
       canPost: boolean;
       canComment: boolean;

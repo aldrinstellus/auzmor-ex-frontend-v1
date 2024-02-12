@@ -311,6 +311,10 @@ export const titleCase = (input: string) => {
     .join(' ');
 };
 
+export const enumToTitleCase = (input: string) => {
+  return titleCase(input.replaceAll('_', ' '));
+};
+
 export const extractFirstWord = (str: string) => {
   const words = str.trim().split(' ');
   if (words.length > 0) {
