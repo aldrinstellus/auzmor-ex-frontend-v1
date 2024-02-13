@@ -2,7 +2,6 @@ import { FC, ReactElement } from 'react';
 import IconButton, { Size, Variant } from 'components/IconButton';
 import PopupMenu from 'components/PopupMenu';
 import useModal from 'hooks/useModal';
-import Icon from 'components/Icon';
 
 interface ISortByOption {
   asc: string;
@@ -36,7 +35,7 @@ const Sort: FC<ISortProps> = ({
   return (
     <PopupMenu
       triggerNode={
-        <div className="relative" onClick={openMenu}>
+        <div className="relative" onClick={open ? closeMenu : openMenu}>
           <IconButton
             icon="arrowSwap"
             variant={Variant.Secondary}
@@ -50,7 +49,6 @@ const Sort: FC<ISortProps> = ({
           )}
         </div>
       }
-      controlled
       isOpen={open}
       title={
         title || (
@@ -59,14 +57,13 @@ const Sort: FC<ISortProps> = ({
                 border-b-neutral-200"
           >
             <div>Sort by</div>
-            <Icon name="close" size={16} onClick={closeMenu} />
           </div>
         )
       }
       footer={
         footer || (
           <div
-            className="w-full px-6 py-2 font-sm font-bold text-neutral-400 text-center border-t-1
+            className="w-full px-6 py-2 font-sm font-bold text-neutral-500 hover:text-primary-500 text-center border-t-1
                 border-t-neutral-200 cursor-pointer"
             onClick={() => {
               closeMenu();

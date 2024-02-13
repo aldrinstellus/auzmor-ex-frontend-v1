@@ -16,8 +16,13 @@ import { ITeam } from 'queries/teams';
 import Teams from './Teams';
 import { CategoryType } from 'queries/apps';
 import { UserStatus } from 'queries/users';
+import { ChannelVisibilityEnum } from 'stores/channelStore';
+import Visibility from './Visibility';
+import ChannelType, { ChannelTypeEnum } from './ChannelType';
 
 export interface IFilterForm {
+  visibilityRadio: ChannelVisibilityEnum;
+  channelTypeRadio: ChannelTypeEnum;
   statusCheckbox: ICheckboxListOption[];
   locationCheckbox: ICheckboxListOption[];
   departmentCheckbox: ICheckboxListOption[];
@@ -40,6 +45,7 @@ export enum FilterModalVariant {
   People = 'PEOPLE',
   Team = 'TEAM',
   App = 'APP',
+  ChannelsListing = 'CHANNELS_LISTING',
 }
 
 export interface IAppliedFilters {
@@ -48,13 +54,8 @@ export interface IAppliedFilters {
   status?: IStatus[];
   categories?: ICategory[];
   teams?: ITeam[];
-}
-
-export enum FilterNavigationOption {
-  Locations = 'LOCATIONS',
-  Departments = 'DEPARTMENTS',
-  Categories = 'CATEGORIES',
-  Status = 'STATUS',
+  visibility?: ChannelVisibilityEnum;
+  channelType?: ChannelTypeEnum;
 }
 
 interface IFilterModalProps {
@@ -81,6 +82,9 @@ const FilterModal: FC<IFilterModalProps> = ({
     departments: [],
     categories: [],
     status: [],
+    teams: [],
+    channelType: ChannelTypeEnum.MyChannels,
+    visibility: ChannelVisibilityEnum.All,
   },
   onApply,
   onClear,
@@ -89,6 +93,9 @@ const FilterModal: FC<IFilterModalProps> = ({
   const { control, handleSubmit, watch, setValue } = useForm<IFilterForm>({
     mode: 'onChange',
     defaultValues: {
+      channelTypeRadio:
+        appliedFilters.channelType || ChannelTypeEnum.MyChannels,
+      visibilityRadio: appliedFilters.visibility || ChannelVisibilityEnum.All,
       statusCheckbox: (appliedFilters.status || []).map((status) => ({
         data: status,
         dataTestId: `status-${status.name}`,
@@ -143,10 +150,48 @@ const FilterModal: FC<IFilterModalProps> = ({
       status: formData.statusCheckbox.map(
         (category) => category.data,
       ) as IStatus[],
+      visibility: formData.visibilityRadio,
+      channelType: formData.channelTypeRadio,
     } as unknown as IAppliedFilters);
   };
 
   const filterNavigation = [
+    {
+      label: () => (
+        <div className="flex items-center">
+          <div>Visibility</div>
+        </div>
+      ),
+      key: 'visibility-filters',
+      component: () => (
+        <Visibility control={control} watch={watch} setValue={setValue} />
+      ),
+      isHidden: [
+        FilterModalVariant.Team,
+        FilterModalVariant.App,
+        FilterModalVariant.Orgchart,
+        FilterModalVariant.People,
+      ].includes(variant),
+      dataTestId: 'filterby-visibility',
+    },
+    {
+      label: () => (
+        <div className="flex items-center">
+          <div>Type</div>
+        </div>
+      ),
+      key: 'channel-type-filters',
+      component: () => (
+        <ChannelType control={control} watch={watch} setValue={setValue} />
+      ),
+      isHidden: [
+        FilterModalVariant.Team,
+        FilterModalVariant.App,
+        FilterModalVariant.Orgchart,
+        FilterModalVariant.People,
+      ].includes(variant),
+      dataTestId: 'filterby-channel-type',
+    },
     {
       label: () => (
         <div className="flex items-center">
@@ -162,9 +207,11 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <Locations control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: [FilterModalVariant.Team, FilterModalVariant.App].includes(
-        variant,
-      ),
+      isHidden: [
+        FilterModalVariant.Team,
+        FilterModalVariant.App,
+        FilterModalVariant.ChannelsListing,
+      ].includes(variant),
       dataTestId: 'filterby-location',
     },
     {
@@ -182,9 +229,11 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <Departments control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: [FilterModalVariant.Team, FilterModalVariant.App].includes(
-        variant,
-      ),
+      isHidden: [
+        FilterModalVariant.Team,
+        FilterModalVariant.App,
+        FilterModalVariant.ChannelsListing,
+      ].includes(variant),
       dataTestId: 'filterby-department',
     },
     {
@@ -236,6 +285,7 @@ const FilterModal: FC<IFilterModalProps> = ({
         FilterModalVariant.People,
         FilterModalVariant.Orgchart,
         FilterModalVariant.Team,
+        FilterModalVariant.ChannelsListing,
       ].includes(variant),
       dataTestId: 'filterby-teams',
     },
@@ -254,9 +304,11 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <Status control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: [FilterModalVariant.Team, FilterModalVariant.App].includes(
-        variant,
-      ),
+      isHidden: [
+        FilterModalVariant.Team,
+        FilterModalVariant.App,
+        FilterModalVariant.ChannelsListing,
+      ].includes(variant),
       dataTestId: 'filterby-status',
     },
   ].filter((filter) => !filter.isHidden);

@@ -5,23 +5,19 @@ import ChannelCard from './components/ChannelCard';
 import FilterMenu from 'components/FilterMenu';
 import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
 import { useForm } from 'react-hook-form';
-import useURLParams from 'hooks/useURLParams';
 import { useTranslation } from 'react-i18next';
 import { useInfiniteChannels } from 'queries/channel';
 import { isFiltersEmpty } from 'utils/misc';
 import { ChannelVisibilityEnum } from 'stores/channelStore';
 import useModal from 'hooks/useModal';
 import ChannelModal from './components/ChannelModal';
+import { ChannelTypeEnum } from 'components/FilterModal/ChannelType';
+import ChannelRow from './components/ChannelRow';
+import Divider from 'components/Divider';
+import ChannelRowSkeleton from './components/ChannelRowSkeleton';
+import ChannelCardSkeleton from './components/ChannelCardSkeleton';
 
 interface IChannelsProps {}
-
-enum ChannelCardEnum {
-  MyChannels = 'MY_CHANNELS',
-  Managed = 'MANAGED',
-  DiscoverNewChannels = 'DISCOVER_NEW_CHANNELS',
-  Starred = 'STARRED',
-  Requested = 'REQUESTED',
-}
 
 interface IFilterButton {
   label: string;
@@ -35,9 +31,7 @@ interface IFilterButton {
 export const Channels: FC<IChannelsProps> = () => {
   const { t } = useTranslation('channels');
   const { t: tc } = useTranslation('common');
-  const { filters, setFilters, clearFilters, updateFilter } =
-    useAppliedFiltersStore();
-  const { searchParams } = useURLParams();
+  const { filters, clearFilters, updateFilter } = useAppliedFiltersStore();
   const [isModalOpen, openModal, closeModal] = useModal();
 
   const filterForm = useForm<{
@@ -46,23 +40,21 @@ export const Channels: FC<IChannelsProps> = () => {
     mode: 'onChange',
     defaultValues: { search: '' },
   });
-  useEffect(() => {
-    setFilters({
-      type: searchParams.get('type') || ChannelCardEnum.MyChannels,
-    });
-    return () => clearFilters();
-  }, []);
+  useEffect(() => () => clearFilters(), []);
 
-  const { data, channels } = useInfiniteChannels(
+  const { data, channels, isLoading } = useInfiniteChannels(
     isFiltersEmpty({
       categoryIds: [],
-      visibility: ChannelVisibilityEnum.Private,
-      isStarred: !!(filters?.type === ChannelCardEnum.Starred),
-      isManaged: !!(filters?.type === ChannelCardEnum.Managed),
-      isRequested: !!(filters?.type === ChannelCardEnum.Requested),
-      discover: !!(filters?.type === ChannelCardEnum.DiscoverNewChannels),
+      visibility: filters?.visibility,
+      isStarred: !!(filters?.channelType === ChannelTypeEnum.Starred),
+      isManaged: !!(filters?.channelType === ChannelTypeEnum.Managed),
+      isRequested: !!(filters?.channelType === ChannelTypeEnum.Requested),
+      isArchived: !!(filters?.channelType === ChannelTypeEnum.Archived),
+      discover: !!(
+        filters?.channelType === ChannelTypeEnum.DiscoverNewChannels
+      ),
     }),
-    !!(filters && !!(filters.type === ChannelCardEnum.MyChannels)),
+    !!(filters && !!(filters.channelType === ChannelTypeEnum.MyChannels)),
   );
 
   const channelIds = (
@@ -77,72 +69,79 @@ export const Channels: FC<IChannelsProps> = () => {
         new Date(channels[a.id].createdAt).getTime(),
     );
 
+  const onFilterButtonClick = (type: ChannelTypeEnum) => {
+    return () => {
+      updateFilter('channelType', type);
+    };
+  };
+
   const filterButtons: IFilterButton[] = useMemo(
     () => [
       {
         label: t('filterCTA.myChannels'),
-        isActive: filters?.type === ChannelCardEnum.MyChannels,
-        onClick: () => updateFilter('type', ChannelCardEnum.MyChannels),
+        isActive: filters?.channelType === ChannelTypeEnum.MyChannels,
+        onClick: onFilterButtonClick(ChannelTypeEnum.MyChannels),
         labelClassName: `text-sm ${
-          filters?.type === ChannelCardEnum.MyChannels
+          filters?.channelType === ChannelTypeEnum.MyChannels
             ? 'font-bold text-primary-500'
             : 'font-normal text-neutral-500'
         }`,
         className:
-          filters?.type === ChannelCardEnum.MyChannels ? 'border-0' : '',
+          filters?.channelType === ChannelTypeEnum.MyChannels ? 'border-0' : '',
         dataTestId: 'my-channels-filter',
       },
       {
         label: t('filterCTA.managed'),
-        isActive: filters?.type === ChannelCardEnum.Managed,
-        onClick: () => updateFilter('type', ChannelCardEnum.Managed),
+        isActive: filters?.channelType === ChannelTypeEnum.Managed,
+        onClick: onFilterButtonClick(ChannelTypeEnum.Managed),
         labelClassName: `text-sm ${
-          filters?.type === ChannelCardEnum.Managed
-            ? 'font-bold text-primary-500'
-            : 'font-normal text-neutral-500'
-        }`,
-        className: filters?.type === ChannelCardEnum.Managed ? 'border-0' : '',
-        dataTestId: 'managed',
-      },
-      {
-        label: t('filterCTA.discoverNewChannels'),
-        isActive: filters?.type === ChannelCardEnum.DiscoverNewChannels,
-        onClick: () =>
-          updateFilter('type', ChannelCardEnum.DiscoverNewChannels),
-        labelClassName: `text-sm ${
-          filters?.type === ChannelCardEnum.DiscoverNewChannels
+          filters?.channelType === ChannelTypeEnum.Managed
             ? 'font-bold text-primary-500'
             : 'font-normal text-neutral-500'
         }`,
         className:
-          filters?.type === ChannelCardEnum.DiscoverNewChannels
+          filters?.channelType === ChannelTypeEnum.Managed ? 'border-0' : '',
+        dataTestId: 'managed',
+      },
+      {
+        label: t('filterCTA.discoverNewChannels'),
+        isActive: filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
+        onClick: onFilterButtonClick(ChannelTypeEnum.DiscoverNewChannels),
+        labelClassName: `text-sm ${
+          filters?.channelType === ChannelTypeEnum.DiscoverNewChannels
+            ? 'font-bold text-primary-500'
+            : 'font-normal text-neutral-500'
+        }`,
+        className:
+          filters?.channelType === ChannelTypeEnum.DiscoverNewChannels
             ? 'border-0'
             : '',
         dataTestId: 'discover-new-channels-filter',
       },
       {
         label: t('filterCTA.starred'),
-        isActive: filters?.type === ChannelCardEnum.Starred,
-        onClick: () => updateFilter('type', ChannelCardEnum.Starred),
+        isActive: filters?.channelType === ChannelTypeEnum.Starred,
+        onClick: onFilterButtonClick(ChannelTypeEnum.Starred),
         labelClassName: `text-sm ${
-          filters?.type === ChannelCardEnum.Starred
-            ? 'font-bold text-primary-500'
-            : 'font-normal text-neutral-500'
-        }`,
-        className: filters?.type === ChannelCardEnum.Starred ? 'border-0' : '',
-        dataTestId: 'starred-filter',
-      },
-      {
-        label: t('filterCTA.requested'),
-        isActive: filters?.type === ChannelCardEnum.Requested,
-        onClick: () => updateFilter('type', ChannelCardEnum.Requested),
-        labelClassName: `text-sm ${
-          filters?.type === ChannelCardEnum.Requested
+          filters?.channelType === ChannelTypeEnum.Starred
             ? 'font-bold text-primary-500'
             : 'font-normal text-neutral-500'
         }`,
         className:
-          filters?.type === ChannelCardEnum.Requested ? 'border-0' : '',
+          filters?.channelType === ChannelTypeEnum.Starred ? 'border-0' : '',
+        dataTestId: 'starred-filter',
+      },
+      {
+        label: t('filterCTA.requested'),
+        isActive: filters?.channelType === ChannelTypeEnum.Requested,
+        onClick: onFilterButtonClick(ChannelTypeEnum.Requested),
+        labelClassName: `text-sm ${
+          filters?.channelType === ChannelTypeEnum.Requested
+            ? 'font-bold text-primary-500'
+            : 'font-normal text-neutral-500'
+        }`,
+        className:
+          filters?.channelType === ChannelTypeEnum.Requested ? 'border-0' : '',
         dataTestId: 'requested-filter',
       },
     ],
@@ -187,31 +186,50 @@ export const Channels: FC<IChannelsProps> = () => {
             ))}
           </div>
         </FilterMenu>
-        <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
-          {channelIds.map(({ id }) => (
-            <ChannelCard
-              key={id}
-              channel={channels[id]}
-              showJoinChannelBtn={
-                filters?.type === ChannelCardEnum.DiscoverNewChannels &&
-                channels[id].channelSettings?.visibility ===
-                  ChannelVisibilityEnum.Public
-              }
-              showRequestBtn={
-                filters?.type === ChannelCardEnum.DiscoverNewChannels &&
-                channels[id].channelSettings?.visibility ===
-                  ChannelVisibilityEnum.Private &&
-                !!!channels[id].isRequested
-              }
-              showWithdrawBtn={
-                filters?.type === ChannelCardEnum.DiscoverNewChannels &&
-                channels[id].channelSettings?.visibility ===
-                  ChannelVisibilityEnum.Private &&
-                !!channels[id].isRequested
-              }
-            />
-          ))}
-        </div>
+        {filters?.channelType === ChannelTypeEnum.Archived ? (
+          isLoading ? (
+            [...Array(5)].map((_each, index) => (
+              <ChannelRowSkeleton key={index} />
+            ))
+          ) : (
+            channelIds.map(({ id }) => (
+              <>
+                <ChannelRow key={id} channel={channels[id]} />
+                <Divider />
+              </>
+            ))
+          )
+        ) : (
+          <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
+            {isLoading
+              ? [...Array(5)].map((_each, index) => (
+                  <ChannelCardSkeleton key={index} />
+                ))
+              : channelIds.map(({ id }) => (
+                  <ChannelCard
+                    key={id}
+                    channel={channels[id]}
+                    showJoinChannelBtn={
+                      filters?.type === ChannelTypeEnum.DiscoverNewChannels &&
+                      channels[id].channelSettings?.visibility ===
+                        ChannelVisibilityEnum.Public
+                    }
+                    showRequestBtn={
+                      filters?.type === ChannelTypeEnum.DiscoverNewChannels &&
+                      channels[id].channelSettings?.visibility ===
+                        ChannelVisibilityEnum.Private &&
+                      !!!channels[id].isRequested
+                    }
+                    showWithdrawBtn={
+                      filters?.type === ChannelTypeEnum.DiscoverNewChannels &&
+                      channels[id].channelSettings?.visibility ===
+                        ChannelVisibilityEnum.Private &&
+                      !!channels[id].isRequested
+                    }
+                  />
+                ))}
+          </div>
+        )}
       </Card>
       {isModalOpen && (
         <ChannelModal isOpen={isModalOpen} closeModal={closeModal} />

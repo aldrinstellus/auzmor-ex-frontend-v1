@@ -1,4 +1,7 @@
-import FilterModal, { IStatus } from 'components/FilterModal';
+import FilterModal, {
+  FilterModalVariant,
+  IStatus,
+} from 'components/FilterModal';
 import Layout, { FieldType } from 'components/Form';
 import IconButton, {
   Variant as IconVariant,
@@ -15,6 +18,8 @@ import Icon from 'components/Icon';
 import { IDepartmentAPI } from 'queries/department';
 import { ILocationAPI } from 'queries/location';
 import { useTranslation } from 'react-i18next';
+import { ChannelVisibilityEnum } from 'stores/channelStore';
+import { ChannelTypeEnum } from 'components/FilterModal/ChannelType';
 
 export enum FilterKey {
   departments = 'departments',
@@ -75,6 +80,8 @@ const FilterMenu: FC<IFilterMenu> = ({
       locations: parseParams('locations') || [],
       status: parseParams('status') || [],
       teams: parseParams('teams') || [],
+      visibility: parseParams('visibility') || ChannelVisibilityEnum.All,
+      channelType: parseParams('channelType') || ChannelTypeEnum.MyChannels,
     });
   }, []);
 
@@ -97,6 +104,7 @@ const FilterMenu: FC<IFilterMenu> = ({
     deleteParam('locations');
     deleteParam('teams');
     deleteParam('categories');
+    deleteParam('channelType');
     setFilters({
       ...filters,
       categories: [],
@@ -104,6 +112,8 @@ const FilterMenu: FC<IFilterMenu> = ({
       departments: [],
       locations: [],
       teams: [],
+      visibility: ChannelVisibilityEnum.All,
+      channeType: ChannelTypeEnum.MyChannels,
     });
   };
 
@@ -258,6 +268,8 @@ const FilterMenu: FC<IFilterMenu> = ({
             locations: filters?.locations || [],
             status: filters?.status || [],
             teams: filters?.teams || [],
+            visibility: filters?.visibility || ChannelVisibilityEnum.All,
+            channelType: filters?.channelType || ChannelTypeEnum.MyChannels,
           }}
           onApply={(appliedFilters) => {
             setFilters(appliedFilters);
@@ -270,9 +282,12 @@ const FilterMenu: FC<IFilterMenu> = ({
               locations: [],
               status: [],
               teams: [],
+              visibility: ChannelVisibilityEnum.All,
+              channelType: ChannelTypeEnum.MyChannels,
             });
             closeFilterModal();
           }}
+          variant={FilterModalVariant.ChannelsListing}
         />
       )}
     </>
