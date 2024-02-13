@@ -11,11 +11,7 @@ import { isFiltersEmpty } from 'utils/misc';
 import { ChannelVisibilityEnum } from 'stores/channelStore';
 import useModal from 'hooks/useModal';
 import ChannelModal from './components/ChannelModal';
-import {
-  ChannelTypeEnum,
-  IChannelType,
-  channelTypeOptions,
-} from 'components/FilterModal/ChannelType';
+import { ChannelTypeEnum } from 'components/FilterModal/ChannelType';
 
 interface IChannelsProps {}
 
@@ -68,22 +64,9 @@ export const Channels: FC<IChannelsProps> = () => {
         new Date(channels[a.id].createdAt).getTime(),
     );
 
-  const onFilterButtonClick = (index: number) => {
+  const onFilterButtonClick = (type: ChannelTypeEnum) => {
     return () => {
-      const option = channelTypeOptions[index];
-      if (
-        filters?.channelType?.find(
-          (type: IChannelType) => type.id === option.data.id,
-        )
-      ) {
-        updateFilter('channelType', [
-          ...filters?.channelType.filter(
-            (type: IChannelType) => type.id !== option.data.id,
-          ),
-        ]);
-      } else {
-        updateFilter('channelType', [...filters?.channelType, option.data]);
-      }
+      updateFilter('channelType', type);
     };
   };
 
@@ -91,105 +74,69 @@ export const Channels: FC<IChannelsProps> = () => {
     () => [
       {
         label: t('filterCTA.myChannels'),
-        isActive: filters?.channelType.find(
-          (type: IChannelType) => type.id === ChannelTypeEnum.MyChannels,
-        ),
-        onClick: onFilterButtonClick(0),
+        isActive: filters?.channelType === ChannelTypeEnum.MyChannels,
+        onClick: onFilterButtonClick(ChannelTypeEnum.MyChannels),
         labelClassName: `text-sm ${
-          filters?.channelType.find(
-            (type: IChannelType) => type.id === ChannelTypeEnum.MyChannels,
-          )
+          filters?.channelType === ChannelTypeEnum.MyChannels
             ? 'font-bold text-primary-500'
             : 'font-normal text-neutral-500'
         }`,
-        className: filters?.channelType.find(
-          (type: IChannelType) => type.id === ChannelTypeEnum.MyChannels,
-        )
-          ? 'border-0'
-          : '',
+        className:
+          filters?.channelType === ChannelTypeEnum.MyChannels ? 'border-0' : '',
         dataTestId: 'my-channels-filter',
       },
       {
         label: t('filterCTA.managed'),
-        isActive: filters?.channelType.find(
-          (type: IChannelType) => type.id === ChannelTypeEnum.Managed,
-        ),
-        onClick: onFilterButtonClick(1),
+        isActive: filters?.channelType === ChannelTypeEnum.Managed,
+        onClick: onFilterButtonClick(ChannelTypeEnum.Managed),
         labelClassName: `text-sm ${
-          filters?.channelType.find(
-            (type: IChannelType) => type.id === ChannelTypeEnum.Managed,
-          )
+          filters?.channelType === ChannelTypeEnum.Managed
             ? 'font-bold text-primary-500'
             : 'font-normal text-neutral-500'
         }`,
-        className: filters?.channelType.find(
-          (type: IChannelType) => type.id === ChannelTypeEnum.Managed,
-        )
-          ? 'border-0'
-          : '',
+        className:
+          filters?.channelType === ChannelTypeEnum.Managed ? 'border-0' : '',
         dataTestId: 'managed',
       },
       {
         label: t('filterCTA.discoverNewChannels'),
-        isActive: filters?.channelType.find(
-          (type: IChannelType) =>
-            type.id === ChannelTypeEnum.DiscoverNewChannels,
-        ),
-        onClick: onFilterButtonClick(2),
+        isActive: filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
+        onClick: onFilterButtonClick(ChannelTypeEnum.DiscoverNewChannels),
         labelClassName: `text-sm ${
-          filters?.channelType.find(
-            (type: IChannelType) =>
-              type.id === ChannelTypeEnum.DiscoverNewChannels,
-          )
+          filters?.channelType === ChannelTypeEnum.DiscoverNewChannels
             ? 'font-bold text-primary-500'
             : 'font-normal text-neutral-500'
         }`,
-        className: filters?.channelType.find(
-          (type: IChannelType) =>
-            type.id === ChannelTypeEnum.DiscoverNewChannels,
-        )
-          ? 'border-0'
-          : '',
+        className:
+          filters?.channelType === ChannelTypeEnum.DiscoverNewChannels
+            ? 'border-0'
+            : '',
         dataTestId: 'discover-new-channels-filter',
       },
       {
         label: t('filterCTA.starred'),
-        isActive: filters?.channelType.find(
-          (type: IChannelType) => type.id === ChannelTypeEnum.Starred,
-        ),
-        onClick: onFilterButtonClick(3),
+        isActive: filters?.channelType === ChannelTypeEnum.Starred,
+        onClick: onFilterButtonClick(ChannelTypeEnum.Starred),
         labelClassName: `text-sm ${
-          filters?.channelType.find(
-            (type: IChannelType) => type.id === ChannelTypeEnum.Starred,
-          )
+          filters?.channelType === ChannelTypeEnum.Starred
             ? 'font-bold text-primary-500'
             : 'font-normal text-neutral-500'
         }`,
-        className: filters?.channelType.find(
-          (type: IChannelType) => type.id === ChannelTypeEnum.Starred,
-        )
-          ? 'border-0'
-          : '',
+        className:
+          filters?.channelType === ChannelTypeEnum.Starred ? 'border-0' : '',
         dataTestId: 'starred-filter',
       },
       {
         label: t('filterCTA.requested'),
-        isActive: filters?.channelType.find(
-          (type: IChannelType) => type.id === ChannelTypeEnum.Requested,
-        ),
-        onClick: onFilterButtonClick(4),
+        isActive: filters?.channelType === ChannelTypeEnum.Requested,
+        onClick: onFilterButtonClick(ChannelTypeEnum.Requested),
         labelClassName: `text-sm ${
-          filters?.channelType.find(
-            (type: IChannelType) => type.id === ChannelTypeEnum.Requested,
-          )
+          filters?.channelType === ChannelTypeEnum.Requested
             ? 'font-bold text-primary-500'
             : 'font-normal text-neutral-500'
         }`,
-        className: filters?.channelType.find(
-          (type: IChannelType) => type.id === ChannelTypeEnum.Requested,
-        )
-          ? 'border-0'
-          : '',
+        className:
+          filters?.channelType === ChannelTypeEnum.Requested ? 'border-0' : '',
         dataTestId: 'requested-filter',
       },
     ],

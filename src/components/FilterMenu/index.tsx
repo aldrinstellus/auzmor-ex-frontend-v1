@@ -19,7 +19,7 @@ import { IDepartmentAPI } from 'queries/department';
 import { ILocationAPI } from 'queries/location';
 import { useTranslation } from 'react-i18next';
 import { ChannelVisibilityEnum } from 'stores/channelStore';
-import { channelTypeOptions } from 'components/FilterModal/ChannelType';
+import { ChannelTypeEnum } from 'components/FilterModal/ChannelType';
 
 export enum FilterKey {
   departments = 'departments',
@@ -81,7 +81,7 @@ const FilterMenu: FC<IFilterMenu> = ({
       status: parseParams('status') || [],
       teams: parseParams('teams') || [],
       visibility: parseParams('visibility') || ChannelVisibilityEnum.All,
-      channelType: parseParams('channelType') || [channelTypeOptions[0].data],
+      channelType: parseParams('channelType') || ChannelTypeEnum.MyChannels,
     });
   }, []);
 
@@ -113,7 +113,7 @@ const FilterMenu: FC<IFilterMenu> = ({
       locations: [],
       teams: [],
       visibility: ChannelVisibilityEnum.All,
-      channeType: [channelTypeOptions[0].data],
+      channeType: ChannelTypeEnum.MyChannels,
     });
   };
 
@@ -269,7 +269,7 @@ const FilterMenu: FC<IFilterMenu> = ({
             status: filters?.status || [],
             teams: filters?.teams || [],
             visibility: filters?.visibility || ChannelVisibilityEnum.All,
-            channelType: filters?.channelType || [],
+            channelType: filters?.channelType || ChannelTypeEnum.MyChannels,
           }}
           onApply={(appliedFilters) => {
             setFilters(appliedFilters);
@@ -283,7 +283,7 @@ const FilterMenu: FC<IFilterMenu> = ({
               status: [],
               teams: [],
               visibility: ChannelVisibilityEnum.All,
-              channelType: [channelTypeOptions[0].data],
+              channelType: ChannelTypeEnum.MyChannels,
             });
             closeFilterModal();
           }}

@@ -1,10 +1,9 @@
-import { ICheckboxListOption } from 'components/CheckboxList';
 import Layout, { FieldType } from 'components/Form';
-import Icon from 'components/Icon';
 import { FC } from 'react';
 import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { IFilterForm } from '.';
 import { enumToTitleCase } from 'utils/misc';
+import { IRadioListOption } from 'components/RadioGroup';
 
 export enum ChannelTypeEnum {
   MyChannels = 'MY_CHANNELS',
@@ -21,67 +20,56 @@ interface IChannelTypeProps {
   setValue: UseFormSetValue<IFilterForm>;
 }
 
-export interface IChannelType {
-  id: ChannelTypeEnum;
-  name: string;
-}
-
-export const channelTypeOptions: ICheckboxListOption[] = [
+export const channelTypeOptions: IRadioListOption[] = [
   {
     data: {
-      id: ChannelTypeEnum.MyChannels,
-      name: enumToTitleCase(ChannelTypeEnum.MyChannels),
+      value: ChannelTypeEnum.MyChannels,
     },
-    datatestId: `channel-type-${ChannelTypeEnum.MyChannels.toLowerCase()}`,
+    dataTestId: `channel-type-${ChannelTypeEnum.MyChannels.toLowerCase()}`,
   },
   {
     data: {
-      id: ChannelTypeEnum.Managed,
-      name: enumToTitleCase(ChannelTypeEnum.Managed),
+      value: ChannelTypeEnum.Managed,
     },
-    datatestId: `channel-type-${ChannelTypeEnum.Managed.toLowerCase()}`,
+    dataTestId: `channel-type-${ChannelTypeEnum.Managed.toLowerCase()}`,
   },
   {
     data: {
-      id: ChannelTypeEnum.DiscoverNewChannels,
-      name: enumToTitleCase(ChannelTypeEnum.DiscoverNewChannels),
+      value: ChannelTypeEnum.DiscoverNewChannels,
     },
-    datatestId: `channel-type-${ChannelTypeEnum.DiscoverNewChannels.toLowerCase()}`,
+    dataTestId: `channel-type-${ChannelTypeEnum.DiscoverNewChannels.toLowerCase()}`,
   },
   {
     data: {
-      id: ChannelTypeEnum.Starred,
-      name: enumToTitleCase(ChannelTypeEnum.Starred),
+      value: ChannelTypeEnum.Starred,
     },
-    datatestId: `channel-type-${ChannelTypeEnum.Starred.toLowerCase()}`,
+    dataTestId: `channel-type-${ChannelTypeEnum.Starred.toLowerCase()}`,
   },
   {
     data: {
-      id: ChannelTypeEnum.Requested,
-      name: enumToTitleCase(ChannelTypeEnum.Requested),
+      value: ChannelTypeEnum.Requested,
     },
-    datatestId: `channel-type-${ChannelTypeEnum.Requested.toLowerCase()}`,
+    dataTestId: `channel-type-${ChannelTypeEnum.Requested.toLowerCase()}`,
   },
   {
     data: {
-      id: ChannelTypeEnum.Archived,
-      name: enumToTitleCase(ChannelTypeEnum.Archived),
+      value: ChannelTypeEnum.Archived,
     },
-    datatestId: `channel-type-${ChannelTypeEnum.Archived.toLowerCase()}`,
+    dataTestId: `channel-type-${ChannelTypeEnum.Archived.toLowerCase()}`,
   },
 ];
 
-const ChannelType: FC<IChannelTypeProps> = ({ control, watch, setValue }) => {
-  const [channelTypeCheckbox] = watch(['channelTypeCheckbox']);
-
+const ChannelType: FC<IChannelTypeProps> = ({ control }) => {
   const channelTypeFields = [
     {
-      type: FieldType.CheckboxList,
-      name: 'channelTypeCheckbox',
+      type: FieldType.Radio,
+      name: 'channelTypeRadio',
       control,
-      options: channelTypeOptions,
-      labelRenderer: (option: ICheckboxListOption) => (
-        <div className="ml-2.5 cursor-pointer text-xs">{option.data.name}</div>
+      radioList: channelTypeOptions,
+      labelRenderer: (option: IRadioListOption) => (
+        <div className="ml-2.5 cursor-pointer text-xs">
+          {enumToTitleCase(option.data.value)}
+        </div>
       ),
       rowClassName: 'px-6 py-3 border-b border-neutral-200',
     },
@@ -90,40 +78,7 @@ const ChannelType: FC<IChannelTypeProps> = ({ control, watch, setValue }) => {
   return (
     <div className="px-2 py-4">
       <div className="max-h-[330px] min-h-[330px] overflow-y-auto">
-        {!!channelTypeCheckbox?.length && (
-          <div className="flex mt-2 mb-3 flex-wrap">
-            {channelTypeCheckbox.map((channelType: ICheckboxListOption) => (
-              <div
-                key={channelType.data.id}
-                data-testid="filter-options"
-                className="flex items-center px-3 py-2 bg-neutral-100 rounded-17xl border border-neutral-200 mr-2 my-1"
-              >
-                <div className="text-primary-500 text-sm font-medium whitespace-nowrap">
-                  {channelType.data.name}
-                </div>
-                <div className="ml-1">
-                  <Icon
-                    name="closeCircle"
-                    size={16}
-                    color="text-neutral-900"
-                    onClick={() =>
-                      setValue(
-                        'channelTypeCheckbox',
-                        channelTypeCheckbox.filter(
-                          (selectedChannelType: ICheckboxListOption) =>
-                            selectedChannelType.data.id !== channelType.data.id,
-                        ),
-                      )
-                    }
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-        <div>
-          <Layout fields={channelTypeFields} />
-        </div>
+        <Layout fields={channelTypeFields} />
       </div>
     </div>
   );

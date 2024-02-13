@@ -18,11 +18,11 @@ import { CategoryType } from 'queries/apps';
 import { UserStatus } from 'queries/users';
 import { ChannelVisibilityEnum } from 'stores/channelStore';
 import Visibility from './Visibility';
-import ChannelType, { IChannelType, channelTypeOptions } from './ChannelType';
+import ChannelType, { ChannelTypeEnum } from './ChannelType';
 
 export interface IFilterForm {
   visibilityRadio: ChannelVisibilityEnum;
-  channelTypeCheckbox: ICheckboxListOption[];
+  channelTypeRadio: ChannelTypeEnum;
   statusCheckbox: ICheckboxListOption[];
   locationCheckbox: ICheckboxListOption[];
   departmentCheckbox: ICheckboxListOption[];
@@ -55,7 +55,7 @@ export interface IAppliedFilters {
   categories?: ICategory[];
   teams?: ITeam[];
   visibility?: ChannelVisibilityEnum;
-  channelType?: IChannelType[];
+  channelType?: ChannelTypeEnum;
 }
 
 interface IFilterModalProps {
@@ -83,7 +83,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     categories: [],
     status: [],
     teams: [],
-    channelType: [channelTypeOptions[0].data],
+    channelType: ChannelTypeEnum.MyChannels,
     visibility: ChannelVisibilityEnum.All,
   },
   onApply,
@@ -93,12 +93,8 @@ const FilterModal: FC<IFilterModalProps> = ({
   const { control, handleSubmit, watch, setValue } = useForm<IFilterForm>({
     mode: 'onChange',
     defaultValues: {
-      channelTypeCheckbox: (appliedFilters.channelType || []).map(
-        (channelType) => ({
-          data: channelType,
-          dataTestId: `channel-type-${channelType.name}`,
-        }),
-      ),
+      channelTypeRadio:
+        appliedFilters.channelType || ChannelTypeEnum.MyChannels,
       visibilityRadio: appliedFilters.visibility || ChannelVisibilityEnum.All,
       statusCheckbox: (appliedFilters.status || []).map((status) => ({
         data: status,
@@ -131,14 +127,12 @@ const FilterModal: FC<IFilterModalProps> = ({
     categoryCheckbox,
     teamCheckbox,
     statusCheckbox,
-    channelTypeCheckbox,
   ] = watch([
     'locationCheckbox',
     'departmentCheckbox',
     'categoryCheckbox',
     'teamCheckbox',
     'statusCheckbox',
-    'channelTypeCheckbox',
   ]);
 
   const onSubmit = (formData: IFilterForm) => {
@@ -157,9 +151,7 @@ const FilterModal: FC<IFilterModalProps> = ({
         (category) => category.data,
       ) as IStatus[],
       visibility: formData.visibilityRadio,
-      channelType: (formData.channelTypeCheckbox.map(
-        (channelType) => channelType.data,
-      ) || [channelTypeOptions[0].data]) as IChannelType[],
+      channelType: formData.channelTypeRadio,
     } as unknown as IAppliedFilters);
   };
 
@@ -186,11 +178,6 @@ const FilterModal: FC<IFilterModalProps> = ({
       label: () => (
         <div className="flex items-center">
           <div>Type</div>
-          {!!channelTypeCheckbox.length && (
-            <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
-              {channelTypeCheckbox.length}
-            </div>
-          )}
         </div>
       ),
       key: 'channel-type-filters',
