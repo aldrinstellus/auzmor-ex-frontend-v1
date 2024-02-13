@@ -28,5 +28,9 @@
   "public": "Public",
   "private": "Private",
   "publicDescription": "Anyone can see who’s in the channel and what they post. Anyone can join this channel",
-  "privateDescription": "Only members can see who’s in the channel and what they post. Anyone can ask to join from the Channel discovery."
+  "privateDescription": "Only members can see who’s in the channel and what they post. Anyone can ask to join from the Channel discovery.",
+  "ownedBy": "Owned by",
+  "member": "member",
+  "unarchive": "Unarchive",
+  "permanentlyDelete": "Permanently delete"
 }

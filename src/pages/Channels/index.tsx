@@ -12,6 +12,10 @@ import { ChannelVisibilityEnum } from 'stores/channelStore';
 import useModal from 'hooks/useModal';
 import ChannelModal from './components/ChannelModal';
 import { ChannelTypeEnum } from 'components/FilterModal/ChannelType';
+import ChannelRow from './components/ChannelRow';
+import Divider from 'components/Divider';
+import ChannelRowSkeleton from './components/ChannelRowSkeleton';
+import ChannelCardSkeleton from './components/ChannelCardSkeleton';
 
 interface IChannelsProps {}
 
@@ -38,13 +42,14 @@ export const Channels: FC<IChannelsProps> = () => {
   });
   useEffect(() => () => clearFilters(), []);
 
-  const { data, channels } = useInfiniteChannels(
+  const { data, channels, isLoading } = useInfiniteChannels(
     isFiltersEmpty({
       categoryIds: [],
-      visibility: ChannelVisibilityEnum.Private,
+      visibility: filters?.visibility,
       isStarred: !!(filters?.channelType === ChannelTypeEnum.Starred),
       isManaged: !!(filters?.channelType === ChannelTypeEnum.Managed),
       isRequested: !!(filters?.channelType === ChannelTypeEnum.Requested),
+      isArchived: !!(filters?.channelType === ChannelTypeEnum.Archived),
       discover: !!(
         filters?.channelType === ChannelTypeEnum.DiscoverNewChannels
       ),
@@ -181,31 +186,50 @@ export const Channels: FC<IChannelsProps> = () => {
             ))}
           </div>
         </FilterMenu>
-        <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
-          {channelIds.map(({ id }) => (
-            <ChannelCard
-              key={id}
-              channel={channels[id]}
-              showJoinChannelBtn={
-                filters?.type === ChannelTypeEnum.DiscoverNewChannels &&
-                channels[id].channelSettings?.visibility ===
-                  ChannelVisibilityEnum.Public
-              }
-              showRequestBtn={
-                filters?.type === ChannelTypeEnum.DiscoverNewChannels &&
-                channels[id].channelSettings?.visibility ===
-                  ChannelVisibilityEnum.Private &&
-                !!!channels[id].isRequested
-              }
-              showWithdrawBtn={
-                filters?.type === ChannelTypeEnum.DiscoverNewChannels &&
-                channels[id].channelSettings?.visibility ===
-                  ChannelVisibilityEnum.Private &&
-                !!channels[id].isRequested
-              }
-            />
-          ))}
-        </div>
+        {filters?.channelType === ChannelTypeEnum.Archived ? (
+          isLoading ? (
+            [...Array(5)].map((_each, index) => (
+              <ChannelRowSkeleton key={index} />
+            ))
+          ) : (
+            channelIds.map(({ id }) => (
+              <>
+                <ChannelRow key={id} channel={channels[id]} />
+                <Divider />
+              </>
+            ))
+          )
+        ) : (
+          <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
+            {isLoading
+              ? [...Array(5)].map((_each, index) => (
+                  <ChannelCardSkeleton key={index} />
+                ))
+              : channelIds.map(({ id }) => (
+                  <ChannelCard
+                    key={id}
+                    channel={channels[id]}
+                    showJoinChannelBtn={
+                      filters?.type === ChannelTypeEnum.DiscoverNewChannels &&
+                      channels[id].channelSettings?.visibility ===
+                        ChannelVisibilityEnum.Public
+                    }
+                    showRequestBtn={
+                      filters?.type === ChannelTypeEnum.DiscoverNewChannels &&
+                      channels[id].channelSettings?.visibility ===
+                        ChannelVisibilityEnum.Private &&
+                      !!!channels[id].isRequested
+                    }
+                    showWithdrawBtn={
+                      filters?.type === ChannelTypeEnum.DiscoverNewChannels &&
+                      channels[id].channelSettings?.visibility ===
+                        ChannelVisibilityEnum.Private &&
+                      !!channels[id].isRequested
+                    }
+                  />
+                ))}
+          </div>
+        )}
       </Card>
       {isModalOpen && (
         <ChannelModal isOpen={isModalOpen} closeModal={closeModal} />
