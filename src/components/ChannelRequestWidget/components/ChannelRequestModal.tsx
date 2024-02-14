@@ -20,7 +20,12 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
 
   const modalTitle = `Channel request (${channelRequestCount})`;
   return (
-    <Modal open={open} closeModal={closeModal} className="max-w-[648px] ">
+    <Modal
+      open={open}
+      dataTestId="requestwidget-viewall-request-modal"
+      closeModal={closeModal}
+      className="max-w-[648px] "
+    >
       <Header title={modalTitle} onClose={closeModal} />
       <div className="max-h-[390px]  overflow-y-auto w-full">
         <div className="divide-y divide-neutral-200">
@@ -39,6 +44,7 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
             size={Size.Small}
             className="py-[7px]"
             onClick={closeModal}
+            dataTestId={'requestwidget-viewall-closemodal'}
           />
         </div>
       </div>

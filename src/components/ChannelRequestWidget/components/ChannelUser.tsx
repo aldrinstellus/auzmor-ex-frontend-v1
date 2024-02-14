@@ -11,9 +11,14 @@ interface IUserRowProps {
   user: IUserDetails; // change type to IGetUser
   onClick?: () => void;
   className?: string;
+  channelName?: '';
 }
 
-const ChannelUserRow: FC<IUserRowProps> = ({ user, className = '' }) => {
+const ChannelUserRow: FC<IUserRowProps> = ({
+  user,
+  className = '',
+  channelName = '',
+}) => {
   const styles = useMemo(
     () =>
       clsx(
@@ -68,7 +73,7 @@ const ChannelUserRow: FC<IUserRowProps> = ({ user, className = '' }) => {
           onClick={() => {
             // TODO mutatable api call
           }}
-          dataTestId="decline-Requestcta"
+          dataTestId={`requestwidget-viewall-${channelName}-decline`}
         />
         <Button
           label="Accept"
@@ -77,7 +82,7 @@ const ChannelUserRow: FC<IUserRowProps> = ({ user, className = '' }) => {
           onClick={() => {
             // TODO mutatable api call
           }}
-          dataTestId="accept-Requestcta"
+          dataTestId={`requestwidget-viewall-${channelName}-decline`}
         />
       </div>
     </div>

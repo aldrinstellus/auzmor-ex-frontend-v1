@@ -55,7 +55,7 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({ user, className = '' }) => {
           onClick={() => {
             // TODO mutatable api call
           }}
-          dataTestId="decline-Requestcta"
+          dataTestId={`requestwidget-${user?.fullName}-Decline`}
         />
         <Button
           label="Accept"
@@ -64,7 +64,7 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({ user, className = '' }) => {
           onClick={() => {
             // TODO mutatable api call
           }}
-          dataTestId="accept-Requestcta"
+          dataTestId={`requestwidget-${user?.fullName}-accept`}
         />
       </div>
     </div>

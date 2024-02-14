@@ -42,13 +42,18 @@ const ChannelRequestWidget: FC<ChannelWidgetProps> = ({
 
   const isAllRequestDisplyed = true; // isAllRequestDisplyed;
   return (
-    <Card className={style}>
+    <Card className={style} dataTestId="requestwidget">
       <div
         className=" px-6 flex items-center justify-between cursor-pointer"
         data-testid={`collapse-'channel-request`}
         onClick={toggleModal}
       >
-        <div className="text-base font-bold leading-6 ">{widgetTitle}</div>
+        <div
+          className="text-base font-bold leading-6 "
+          data-test-id={`requestwidget-membercount`}
+        >
+          {widgetTitle}
+        </div>
         <Icon
           name={open ? 'arrowUp' : 'arrowDown'}
           size={20}
@@ -80,7 +85,7 @@ const ChannelRequestWidget: FC<ChannelWidgetProps> = ({
               variant={Variant.Secondary}
               size={Size.Small}
               label={'View all requests'}
-              dataTestId={`view-all-requests`}
+              dataTestId={`requestwidget-viewall-request`}
               onClick={openAllRequestModal}
             />
           )}

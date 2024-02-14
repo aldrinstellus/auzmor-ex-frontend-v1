@@ -24,7 +24,6 @@ const ChannelsWidget: FC<IChannelsProps> = ({}) => {
     <Card className="py-6  flex flex-col rounded-9xl" shadowOnHover>
       <div
         className="px-6 flex items-center justify-between cursor-pointer"
-        data-testid="channel-launcher"
         onClick={toggleModal}
       >
         <div className="font-bold">Channels</div>
@@ -33,7 +32,6 @@ const ChannelsWidget: FC<IChannelsProps> = ({}) => {
             name={open ? 'arrowUp' : 'arrowDown'}
             size={20}
             color="text-neutral-900"
-            dataTestId="app-launcher-collapse"
           />
         </div>
       </div>
@@ -55,7 +53,7 @@ const ChannelsWidget: FC<IChannelsProps> = ({}) => {
                   size={Size.Small}
                   className="py-[7px]"
                   label="View all"
-                  dataTestId="app-launcher-view-all"
+                  dataTestId="channels-view-all"
                   onClick={() => navigate('/channels')}
                 />
               </div>

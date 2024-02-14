@@ -11,33 +11,27 @@ import { useNavigate } from 'react-router-dom';
 interface IChannelBannerProps {
   isChannelRequest?: boolean;
   channelId?: string;
-  dataTestId?: string; // Add dataTestId prop for custom test ids
 }
 
 const PrivateChannelBanner: FC<IChannelBannerProps> = ({
   channelId = '',
   isChannelRequest = true,
-  dataTestId = 'channels-widget', // Initialize dataTestId with empty string as default
 }) => {
   const { t } = useTranslation('channels');
   const { data: admins, isLoading } = useChannelAdmins(channelId);
   const navigate = useNavigate();
   return (
-    <Card data-testid={dataTestId}>
+    <Card>
       <div
         onClick={() => {
           navigate(`channels/${channelId}`);
         }}
         className="flex flex-col items-center justify-center p-8 "
       >
-        <img
-          src={PrivateChannelImage}
-          alt="private channel banner"
-          data-testid={`${dataTestId}-image`}
-        />
+        <img src={PrivateChannelImage} alt="private channel banner" />
         <div
           className="text-2xl font-bold mt-8 mb-4"
-          data-testid={`${dataTestId}-header`}
+          data-testid={'channel--privacynote'}
         >
           {t('privateChannel.bannerHeader')}
         </div>
@@ -49,18 +43,22 @@ const PrivateChannelBanner: FC<IChannelBannerProps> = ({
           }
           variant={isChannelRequest ? Variant.Primary : Variant.Danger}
           onClick={() => {}} // channel send or withdraw  function to call
-          data-testid={`${dataTestId}-button`}
+          data-testid={
+            isChannelRequest
+              ? 'channel-request-to-join'
+              : 'channel--withdraw-request'
+          }
         />
         <div
           className="text-neutral-500 mt-[80px] underline  mb-4 text-sm font-semibold"
-          data-testid={`${dataTestId}-footer`}
+          data-testid={'channel-admin-list'}
         >
           {t('privateChannel.bannerFotter')}
         </div>
         <AvatarChips
           users={admins}
           showCount={7}
-          dataTestId={`${dataTestId}-avatar-chips`}
+          dataTestId={'channel-admin-list-'}
         />
       </div>
     </Card>
