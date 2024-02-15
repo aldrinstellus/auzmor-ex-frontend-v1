@@ -88,7 +88,7 @@ const DateOfBirthRow: FC<AppProps> = ({ data }) => {
       dataTestId="user-dob"
       value={
         data?.personal?.birthDate &&
-        moment(data?.personal?.birthDate).format('DD MMMM YYYY')
+        moment(data?.personal?.birthDate.slice(0, 10)).format('DD MMMM YYYY')
       }
       editNode={
         <div>

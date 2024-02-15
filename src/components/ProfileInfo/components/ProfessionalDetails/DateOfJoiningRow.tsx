@@ -49,8 +49,7 @@ const DateOfJoiningRow: FC<AppProps> = ({ data }) => {
   const { handleSubmit, control, reset, getValues } = useForm<any>({
     mode: 'onSubmit',
     defaultValues: {
-      joinDate:
-          data?.joinDate && new Date(data?.joinDate),
+      joinDate: data?.joinDate && new Date(data?.joinDate),
     },
     resolver: yupResolver(schema),
   });
@@ -85,7 +84,10 @@ const DateOfJoiningRow: FC<AppProps> = ({ data }) => {
       label="Date of Joining"
       canEdit={isAdmin}
       dataTestId="professional-details-joining-date"
-      value={data?.joinDate && moment(data?.joinDate).format('Do MMMM YYYY')}
+      value={
+        data?.joinDate &&
+        moment(data?.joinDate.slice(0, 10)).format('Do MMMM YYYY')
+      }
       editNode={
         <div>
           <form>
