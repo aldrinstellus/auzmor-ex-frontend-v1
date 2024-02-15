@@ -11,6 +11,7 @@ import Button, {
 import Card from 'components/Card';
 import { ChannelVisibilityEnum, IChannel } from 'stores/channelStore';
 import DefaultCoverImage from 'images/png/CoverImage.png';
+import { useNavigate } from 'react-router-dom';
 
 interface IChannelCardProps {
   channel: IChannel;
@@ -25,8 +26,11 @@ const ChannelCard: FC<IChannelCardProps> = ({
   showJoinChannelBtn = false,
   showWithdrawBtn = false,
 }) => {
+  const navigate = useNavigate();
   return (
-    <Card className="w-full flex flex-col gap-2 relative">
+    <div className="w-full cursor-pointer" onClick={() =>
+      navigate(`/channels/${channel.id}`)}>
+    <Card className="flex flex-col gap-2 relative">
       <div className="w-full h-[80px] bg-slate-500 rounded-t-9xl">
         {channel.channelBanner && channel.channelBanner.original ? (
           <div className="w-full h-full relative">
@@ -71,6 +75,7 @@ const ChannelCard: FC<IChannelCardProps> = ({
             label={'Request to join'}
             size={ButtonSize.ExtraSmall}
             className="mt-2"
+            onClick={(e)=>{e.stopPropagation();}}
           />
         )}
         {showWithdrawBtn && (
@@ -79,6 +84,7 @@ const ChannelCard: FC<IChannelCardProps> = ({
             size={ButtonSize.ExtraSmall}
             variant={ButtonVariant.Danger}
             className="mt-2"
+            onClick={(e)=>{e.stopPropagation();}}
           />
         )}
         {showJoinChannelBtn && (
@@ -88,11 +94,13 @@ const ChannelCard: FC<IChannelCardProps> = ({
               size={ButtonSize.ExtraSmall}
               variant={ButtonVariant.Secondary}
               className="grow"
+              onClick={(e)=>{e.stopPropagation();}}
             />
             <Button
               label="Join channel"
               size={ButtonSize.ExtraSmall}
               className="grow"
+              onClick={(e)=>{e.stopPropagation();}}
             />
           </div>
         )}
@@ -110,6 +118,7 @@ const ChannelCard: FC<IChannelCardProps> = ({
         </IconWrapper>
       )}
     </Card>
+    </div>
   );
 };
 

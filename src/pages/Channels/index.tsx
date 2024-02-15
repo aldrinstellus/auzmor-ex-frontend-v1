@@ -210,18 +210,18 @@ export const Channels: FC<IChannelsProps> = () => {
                     key={id}
                     channel={channels[id]}
                     showJoinChannelBtn={
-                      filters?.type === ChannelTypeEnum.DiscoverNewChannels &&
+                      filters?.channelType === ChannelTypeEnum.DiscoverNewChannels &&
                       channels[id].channelSettings?.visibility ===
                         ChannelVisibilityEnum.Public
                     }
                     showRequestBtn={
-                      filters?.type === ChannelTypeEnum.DiscoverNewChannels &&
+                      filters?.channelType === ChannelTypeEnum.DiscoverNewChannels &&
                       channels[id].channelSettings?.visibility ===
                         ChannelVisibilityEnum.Private &&
                       !!!channels[id].isRequested
                     }
                     showWithdrawBtn={
-                      filters?.type === ChannelTypeEnum.DiscoverNewChannels &&
+                      filters?.channelType === ChannelTypeEnum.DiscoverNewChannels &&
                       channels[id].channelSettings?.visibility ===
                         ChannelVisibilityEnum.Private &&
                       !!channels[id].isRequested

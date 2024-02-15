@@ -44,6 +44,7 @@ const Navbar = () => {
       label: t('discover.channels'),
       labelClassName: 'text-xs font-medium',
       stroke: 'text-neutral-900',
+      dataTestId: 'channel-page',
       onClick: () => {
         navigate('/channels');
       },
@@ -83,7 +84,7 @@ const Navbar = () => {
       icon: 'exploreOutline',
       hoverIcon: 'exploreFilled',
       linkTo: '',
-      dataTestId: '',
+      dataTestId: 'discover-page',
       iconSize: 24,
       isActive: location.pathname.includes('/channels'),
       render: function () {
