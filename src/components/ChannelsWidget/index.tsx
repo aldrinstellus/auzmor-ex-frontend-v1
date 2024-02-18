@@ -5,12 +5,14 @@ import Button, { Size, Variant } from 'components/Button';
 import useModal from 'hooks/useModal';
 import { useNavigate } from 'react-router-dom';
 import ChannelRow from './components/ChannelRow';
+import { useTranslation } from 'react-i18next';
 
 interface IChannelsProps {
   channelData?: any;
 }
 
 const ChannelsWidget: FC<IChannelsProps> = ({}) => {
+  const { t } = useTranslation('channels');
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const navigate = useNavigate();
 
@@ -26,12 +28,13 @@ const ChannelsWidget: FC<IChannelsProps> = ({}) => {
         className="px-6 flex items-center justify-between cursor-pointer"
         onClick={toggleModal}
       >
-        <div className="font-bold">Channels</div>
+        <div className="font-bold">{t('channels')}</div>
         <div className="flex items-center gap-2">
           <Icon
             name={open ? 'arrowUp' : 'arrowDown'}
             size={20}
             color="text-neutral-900"
+            dataTestId="channel-launcher-collapse"
           />
         </div>
       </div>
@@ -52,8 +55,8 @@ const ChannelsWidget: FC<IChannelsProps> = ({}) => {
                   variant={Variant.Secondary}
                   size={Size.Small}
                   className="py-[7px]"
-                  label="View all"
-                  dataTestId="channels-view-all"
+                  label={t('explore-channels')}
+                  dataTestId="explore-channels"
                   onClick={() => navigate('/channels')}
                 />
               </div>
