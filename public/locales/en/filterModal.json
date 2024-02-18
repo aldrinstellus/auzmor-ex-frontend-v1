@@ -1,0 +1,13 @@
+{
+  "title": "Filter By",
+  "location": "Location",
+  "department": "Department",
+  "status": "Status",
+  "team": "Team",
+  "channels": "Channels",
+  "visibility": "Visibility",
+  "type": "Type",
+  "category": "Category",
+  "clearFilterCTA": "Clear Filters",
+  "applyFilterCTA": "Apply"
+}

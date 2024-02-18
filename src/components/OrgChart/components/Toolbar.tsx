@@ -38,6 +38,7 @@ import { isFiltersEmpty, mapRanges } from 'utils/misc';
 import { QueryFunctionContext } from '@tanstack/react-query';
 import NoDataFound from 'components/NoDataFound';
 import Button, { Variant } from 'components/Button';
+import { useTranslation } from 'react-i18next';
 
 interface IToolbarProps {
   activeMode: OrgChartMode;
@@ -80,6 +81,7 @@ const Toolbar: FC<IToolbarProps> = ({
   setShowOrgChart,
   isSafari = false,
 }) => {
+  const { t } = useTranslation('orgChart');
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const [memberSearchString, setMemberSearchString] = useState<string>('');
   const [specificPersonSearch] = watch(['specificPersonSearch']);
@@ -167,7 +169,7 @@ const Toolbar: FC<IToolbarProps> = ({
       dataTestId: 'orgChart-search',
       className: `mr-2 min-w-[245px] ${isSafari && 'opacity-50'}`,
       selectClassName: 'org-select',
-      placeholder: 'Search members',
+      placeholder: t('input-search-members'),
       suffixIcon: <></>,
       clearIcon: (
         <Icon name="closeCircle" size={16} className="-mt-0.5 !mr-4" />
@@ -289,15 +291,14 @@ const Toolbar: FC<IToolbarProps> = ({
           searchString={debouncedMemberSearchValue}
           message={
             <p>
-              Sorry we can&apos;t find the member you are looking for.
-              <br /> Please check the spelling or try again.
+              {t('no-data-found.message')}
+              <br /> {t('no-data-found.message-2')}
             </p>
           }
           hideClearBtn
           dataTestId="membersearch"
         />
       ),
-      // dataTestId: 'member-search',
     },
   ];
   const specificPersonSearchFields = [
@@ -306,7 +307,7 @@ const Toolbar: FC<IToolbarProps> = ({
       name: 'specificPersonSearch',
       control,
       leftIcon: 'search',
-      placeholder: 'Search member',
+      placeholder: t('input-search-member'),
       label: 'Start with specific person',
       className: 'px-6',
     },
@@ -358,7 +359,7 @@ const Toolbar: FC<IToolbarProps> = ({
       <div className="absolute flex flex-col px-4 py-3 w-full shadow-lg rounded-9xl bg-white max-w-[1440px] z-10 top-6">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
-            <div className="text-2xl font-bold mr-4">Organization Chart</div>
+            <div className="text-2xl font-bold mr-4">{t('title')}</div>
             <Layout fields={memberSearchfields} />
             <div
               className={`flex items-center justify-center w-9 h-9 ${
@@ -390,7 +391,7 @@ const Toolbar: FC<IToolbarProps> = ({
               }}
               data-testid="orgchart-myteam-cta"
             >
-              My Team
+              {t('myTeam')}
             </div>
             <div
               className={overallClassName}
@@ -400,17 +401,10 @@ const Toolbar: FC<IToolbarProps> = ({
               }}
               data-testid="orgchart-overall-cta"
             >
-              Overall
+              {t('overall')}
             </div>
           </div>
           <div className="flex items-center">
-            {/* <IconButton
-              icon="importOutline"
-              variant={IconVariant.Secondary}
-              className="group"
-              borderAround
-              color="text-neutral-900"
-            /> */}
             <div
               className={`border-neutral-200 border rounded-9xl px-6 py-2 flex items-center ml-4 ${
                 isSafari && 'pointer-events-none opacity-50'
@@ -419,7 +413,9 @@ const Toolbar: FC<IToolbarProps> = ({
               <Popover
                 triggerNode={
                   <Tooltip
-                    tooltipContent="Start with a specific person"
+                    tooltipContent={`${t(
+                      'tool-tip.start-with-specific-person',
+                    )}`}
                     tooltipPosition="bottom"
                   >
                     <div className="group flex items-center">
@@ -464,7 +460,7 @@ const Toolbar: FC<IToolbarProps> = ({
                       ) : personData?.length === 0 &&
                         debouncedPersonSearchValue !== '' ? (
                         <div className="w-full flex items-center justify-center pt-6 text-neutral-500">
-                          No member found
+                          {t('no-data-found.title')}
                         </div>
                       ) : (
                         <></>
@@ -477,7 +473,11 @@ const Toolbar: FC<IToolbarProps> = ({
               <div className="mx-4 bg-neutral-200 h-6 w-px" />
               <div className="mr-4 group">
                 <Tooltip
-                  tooltipContent={isExpandAll ? 'Collapse all' : 'Expand all'}
+                  tooltipContent={
+                    isExpandAll
+                      ? `${t('tool-tip.collapse-all')}`
+                      : `${t('tool-tip.expand-all')}`
+                  }
                   tooltipPosition="bottom"
                 >
                   <Icon
@@ -531,7 +531,7 @@ const Toolbar: FC<IToolbarProps> = ({
               </div>
               <div className="mr-2 group flex items-center pt-1">
                 <Tooltip
-                  tooltipContent="Fit to screen"
+                  tooltipContent={`${t('tool-tip.fit-to-screen')}`}
                   tooltipPosition="bottom"
                 >
                   <Icon
@@ -548,7 +548,10 @@ const Toolbar: FC<IToolbarProps> = ({
                 </Tooltip>
               </div>
               <div className="group">
-                <Tooltip tooltipContent="Spotlight me" tooltipPosition="bottom">
+                <Tooltip
+                  tooltipContent={`${t('tool-tip.spotlight-me')}`}
+                  tooltipPosition="bottom"
+                >
                   <Icon
                     name="focus"
                     color="text-neutral-900"
@@ -573,7 +576,10 @@ const Toolbar: FC<IToolbarProps> = ({
               </div>
               <div className="mr-4 ml-2 bg-neutral-200 h-6 w-px" />
               <div className="group">
-                <Tooltip tooltipContent="Zoom out" tooltipPosition="bottom">
+                <Tooltip
+                  tooltipContent={`${t('tool-tip.zoom-out')}`}
+                  tooltipPosition="bottom"
+                >
                   <Icon
                     name="zoomOutOutline"
                     dataTestId="zoom-out"
@@ -601,7 +607,10 @@ const Toolbar: FC<IToolbarProps> = ({
                 %
               </div>
               <div className="group">
-                <Tooltip tooltipContent="Zoom in" tooltipPosition="bottom">
+                <Tooltip
+                  tooltipContent={`${t('tool-tip.zoom-in')}`}
+                  tooltipPosition="bottom"
+                >
                   <Icon
                     name="zoomInOutline"
                     dataTestId="zoom-in"
@@ -614,7 +623,7 @@ const Toolbar: FC<IToolbarProps> = ({
             </div>
             <Button
               className="flex space-x-[6px] group ml-2"
-              label="View People Hub"
+              label={t('view-people-hubCTA')}
               variant={Variant.Secondary}
               leftIcon="peopleOutline"
               leftIconSize={20}
@@ -634,7 +643,7 @@ const Toolbar: FC<IToolbarProps> = ({
                   data-testid="startwith-search-result"
                 >
                   <div className="flex items-center text-neutral-900 text-sm font-bold mr-1">
-                    Start with specific person:
+                    {t('tool-tip.start-with-specific-person')}
                   </div>
                   <div
                     className="flex px-3 py-2 text-primary-500 text-sm font-medium border border-neutral-200 rounded-7xl justify-between hover:border-primary-600 group cursor-pointer"
@@ -669,7 +678,7 @@ const Toolbar: FC<IToolbarProps> = ({
               }}
               data-testid="startwith-clearfilter-cta"
             >
-              Clear filters
+              {t('filter-by.clear-filters')}
             </div>
           </div>
         )}
@@ -678,7 +687,7 @@ const Toolbar: FC<IToolbarProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <div className="text-neutral-900 font-bold text-sm mr-2">
-                Filter by:
+                {t('filter-by.title')}:
               </div>
               {!!appliedFilters?.locations?.length && (
                 <div
@@ -688,7 +697,7 @@ const Toolbar: FC<IToolbarProps> = ({
                   }
                 >
                   <div className="font-medium text-sm text-neutral-900 mr-1">
-                    Location{' '}
+                    {t('filter-by.location')}{' '}
                     {appliedFilters.locations.map((location, index) => (
                       <>
                         <span
@@ -731,7 +740,7 @@ const Toolbar: FC<IToolbarProps> = ({
                   }
                 >
                   <div className="font-medium text-sm text-neutral-900 mr-1">
-                    Department{' '}
+                    {t('filter-by.department')}{' '}
                     {appliedFilters.departments.map((department, index) => (
                       <>
                         <span
@@ -777,7 +786,7 @@ const Toolbar: FC<IToolbarProps> = ({
                   }
                 >
                   <div className="font-medium text-sm text-neutral-900 mr-1">
-                    Status{' '}
+                    {t('filter-by.status')}{' '}
                     {appliedFilters.status.map((eachStatus, index) => (
                       <>
                         <span
@@ -820,7 +829,7 @@ const Toolbar: FC<IToolbarProps> = ({
               }}
               data-testid="orgchart-clearfilter-cta"
             >
-              Clear filters
+              {t('filter-by.clear-filters')}
             </div>
           </div>
         )}
