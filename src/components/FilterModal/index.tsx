@@ -19,6 +19,7 @@ import { UserStatus } from 'queries/users';
 import { ChannelVisibilityEnum } from 'stores/channelStore';
 import Visibility from './Visibility';
 import ChannelType, { ChannelTypeEnum } from './ChannelType';
+import { useTranslation } from 'react-i18next';
 
 export interface IFilterForm {
   visibilityRadio: ChannelVisibilityEnum;
@@ -90,6 +91,7 @@ const FilterModal: FC<IFilterModalProps> = ({
   onClear,
   variant = FilterModalVariant.People,
 }) => {
+  const { t } = useTranslation('filterModal');
   const { control, handleSubmit, watch, setValue } = useForm<IFilterForm>({
     mode: 'onChange',
     defaultValues: {
@@ -159,7 +161,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     {
       label: () => (
         <div className="flex items-center">
-          <div>Visibility</div>
+          <div>{t('visibility')}</div>
         </div>
       ),
       key: 'visibility-filters',
@@ -177,7 +179,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     {
       label: () => (
         <div className="flex items-center">
-          <div>Type</div>
+          <div>{t('type')}</div>
         </div>
       ),
       key: 'channel-type-filters',
@@ -195,7 +197,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     {
       label: () => (
         <div className="flex items-center">
-          <div>Location</div>
+          <div>{t('location')}</div>
           {!!locationCheckbox.length && (
             <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
               {locationCheckbox.length}
@@ -217,7 +219,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     {
       label: () => (
         <div className="flex items-center">
-          <div>Department</div>
+          <div>{t('department')}</div>
           {!!departmentCheckbox.length && (
             <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
               {departmentCheckbox.length}
@@ -239,7 +241,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     {
       label: () => (
         <div className="flex items-center">
-          <div>Category</div>
+          <div>{t('category')}</div>
           {!!categoryCheckbox.length && (
             <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
               {categoryCheckbox.length}
@@ -269,7 +271,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     {
       label: () => (
         <div className="flex items-center">
-          <div>Team</div>
+          <div>{t('team')}</div>
           {!!teamCheckbox.length && (
             <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
               {teamCheckbox.length}
@@ -292,7 +294,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     {
       label: () => (
         <div className="flex items-center">
-          <div>Status</div>
+          <div>{t('status')}</div>
           {!!statusCheckbox.length && (
             <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
               {statusCheckbox.length}
@@ -318,7 +320,7 @@ const FilterModal: FC<IFilterModalProps> = ({
   return (
     <Modal open={open} closeModal={closeModal} className="max-w-[665px]">
       <Header
-        title="Filter By"
+        title={t('title')}
         onClose={() => closeModal()}
         closeBtnDataTestId="close-filters"
       />
@@ -353,14 +355,14 @@ const FilterModal: FC<IFilterModalProps> = ({
       {/* Footer */}
       <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
         <Button
-          label="Clear Filters"
+          label={t('clearFilterCTA')}
           variant={ButtonVariant.Secondary}
           onClick={onClear}
           className="mr-4"
           dataTestId="clear-filters"
         />
         <Button
-          label="Apply"
+          label={t('applyFilterCTA')}
           variant={ButtonVariant.Primary}
           onClick={handleSubmit(onSubmit)}
           dataTestId="apply-filter"
