@@ -1008,7 +1008,7 @@ const BrandingSettings: FC = () => {
                 fields={[
                   {
                     name: 'primaryColor',
-                    label: 'Primary Brand Color',
+                    label: t('primary-color'),
                     type: FieldType.ColorPicker,
                     control,
                     className: '',
@@ -1044,7 +1044,7 @@ const BrandingSettings: FC = () => {
                     fields={[
                       {
                         name: 'secondaryColor',
-                        label: 'Secondary Brand Color',
+                        label: t('secondary-color'),
                         type: FieldType.ColorPicker,
                         control,
                         className: '',
@@ -1348,7 +1348,7 @@ const BrandingSettings: FC = () => {
                     fields={[
                       {
                         name: 'color',
-                        label: 'primary/action color',
+                        label: t('color-label'),
                         type: FieldType.ColorPicker,
                         control,
                         className: '',
@@ -1362,7 +1362,7 @@ const BrandingSettings: FC = () => {
                       fields={[
                         {
                           name: 'text',
-                          label: 'Add text',
+                          label: t('text-label'),
                           type: FieldType.Input,
                           control,
                           className: '',

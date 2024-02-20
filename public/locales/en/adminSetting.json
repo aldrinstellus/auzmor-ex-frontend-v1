@@ -65,7 +65,9 @@
     "password": "Password",
     "enter-password": "Enter password",
     "forgot-password": "Forgot password?",
-    "sign-in-text": "Hi, enter your details to get signed in to your account"
+    "sign-in-text": "Hi, enter your details to get signed in to your account",
+    "color-label": "primary/action color",
+    "text-label": "Add text    "
   },
   "sso": {
     "title": "Single Sign-on",
