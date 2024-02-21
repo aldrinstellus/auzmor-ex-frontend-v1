@@ -174,10 +174,20 @@ export const getSubDomain = (host: string) => {
 };
 
 export const getProduct: () => ProductEnum = () => {
-  const baseURL = window.location.host;
-  if (baseURL === process.env.REACT_APP_OFFICE_BASE_URL) {
+  const host = window.location.host;
+  if (
+    host.includes(
+      process.env.REACT_APP_OFFICE_BASE_URL?.replace('https://', '') ||
+        'office.auzmor.com',
+    )
+  ) {
     return ProductEnum.Office;
-  } else if (baseURL === process.env.REACT_APP_LXP_BASE_URL) {
+  } else if (
+    host.includes(
+      process.env.REACT_APP_LXP_BASE_URL?.replace('https://', '') ||
+        'lxp.auzmor.com',
+    )
+  ) {
     return ProductEnum.Lxp;
   }
   return ProductEnum.Office;
