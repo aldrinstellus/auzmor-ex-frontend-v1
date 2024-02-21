@@ -5,13 +5,18 @@ import axios, {
 } from 'axios';
 
 import { getItem } from './persist';
+import { ProductEnum } from 'contexts/ProductProvider';
+import { getProduct } from './misc';
 
 class ApiService {
   instance: AxiosInstance;
 
   constructor() {
     this.instance = axios.create({
-      baseURL: process.env.REACT_APP_BACKEND_BASE_URL,
+      baseURL:
+        getProduct() === ProductEnum.Lxp
+          ? process.env.REACT_APP_LXP_BACKEND_BASE_URL
+          : process.env.REACT_APP_OFFICE_BACKEND_BASE_URL,
       withCredentials: true,
     });
 
