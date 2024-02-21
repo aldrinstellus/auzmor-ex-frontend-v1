@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 // components
 import { Logo } from 'components/Logo';
@@ -13,8 +13,6 @@ import useAuth from 'hooks/useAuth';
 import { useState } from 'react';
 import SubscriptionBanner from './SubscriptionBanner';
 import { useTranslation } from 'react-i18next';
-import PopupMenu from 'components/PopupMenu';
-import NavbarMenuButton from './NavbarMenuButton';
 
 const Navbar = () => {
   const { isAdmin } = useRole();
@@ -23,7 +21,7 @@ const Navbar = () => {
     user?.subscription?.type === 'TRIAL' &&
       user?.subscription?.daysRemaining > -1,
   );
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const { t } = useTranslation('navbar');
 
@@ -38,18 +36,18 @@ const Navbar = () => {
     },
   ];
 
-  const discoverOptions = [
-    {
-      icon: 'news',
-      label: t('discover.channels'),
-      labelClassName: 'text-xs font-medium',
-      stroke: 'text-neutral-900',
-      dataTestId: 'channel-page',
-      onClick: () => {
-        navigate('/channels');
-      },
-    },
-  ];
+  // const discoverOptions = [
+  //   {
+  //     icon: 'news',
+  //     label: t('discover.channels'),
+  //     labelClassName: 'text-xs font-medium',
+  //     stroke: 'text-neutral-900',
+  //     dataTestId: 'channel-page',
+  //     onClick: () => {
+  //       navigate('/channels');
+  //     },
+  //   },
+  // ];
 
   const navigations = [
     {
@@ -79,24 +77,24 @@ const Navbar = () => {
       dataTestId: 'office-apps-page',
       iconSize: 24,
     },
-    {
-      label: t('discover.title'),
-      icon: 'exploreOutline',
-      hoverIcon: 'exploreFilled',
-      linkTo: '',
-      dataTestId: 'discover-page',
-      iconSize: 24,
-      isActive: location.pathname.includes('/channels'),
-      render: function () {
-        return (
-          <PopupMenu
-            triggerNode={<NavbarMenuButton nav={this} />}
-            menuItems={discoverOptions}
-            className="mt-16 w-[202px] "
-          />
-        );
-      },
-    },
+    // {
+    //   label: t('discover.title'),
+    //   icon: 'exploreOutline',
+    //   hoverIcon: 'exploreFilled',
+    //   linkTo: '',
+    //   dataTestId: 'discover-page',
+    //   iconSize: 24,
+    //   isActive: location.pathname.includes('/channels'),
+    //   render: function () {
+    //     return (
+    //       <PopupMenu
+    //         triggerNode={<NavbarMenuButton nav={this} />}
+    //         menuItems={discoverOptions}
+    //         className="mt-16 w-[202px] "
+    //       />
+    //     );
+    //   },
+    // },
   ];
 
   return (

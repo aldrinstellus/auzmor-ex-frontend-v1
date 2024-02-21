@@ -8,7 +8,6 @@ import RequireAuth from 'components/RequireAuth';
 import Notifications from 'pages/Notifications';
 import { lazy } from 'react';
 import RequireAdminAuth from 'components/RequireAdminAuth';
-import { Channels } from 'pages/Channels';
 
 const ErrorBoundary = lazy(() => import('components/ErrorBoundary'));
 const Login = lazy(() => import('pages/Login'));
@@ -23,10 +22,10 @@ const UserDetail = lazy(() => import('pages/UserDetail'));
 const TeamDetail = lazy(() => import('pages/TeamDetail'));
 const Apps = lazy(() => import('pages/Apps'));
 const AppLaunchPage = lazy(() => import('pages/AppLaunchPage'));
-const Discover = lazy(() => import('pages/Discover'));
+// const Discover = lazy(() => import('pages/Discover'));
 const Admin = lazy(() => import('pages/Admin'));
 const AcceptInvite = lazy(() => import('pages/AcceptInvite'));
-const ChannelDetail = lazy(() => import('pages/ChannelDetail'));
+// const ChannelDetail = lazy(() => import('pages/ChannelDetail'));
 const PageNotFound = lazy(() => import('pages/PageNotFound'));
 const ServerErrorPage = lazy(() => import('pages/ServerErrorPage'));
 const PostPage = lazy(() => import('pages/Post'));
@@ -102,15 +101,15 @@ const routers = createBrowserRouter(
         <Route path="/settings" element={<UserSettings />} />
         <Route path="/apps" element={<Apps />} />
         <Route path="/apps/:id/launch" element={<AppLaunchPage />} />
-        <Route path="/discover" element={<Discover />} />
-        <Route path="/channels" element={<Channels />} />
-        <Route
+        {/* <Route path="/discover" element={<Discover />} />
+        <Route path="/channels" element={<Channels />} /> */}
+        {/* <Route
           path="/channels/:channelId"
           element={<ChannelDetail />}
           loader={() => {
             return '';
           }}
-        />
+        /> */}
         <Route element={<RequireAdminAuth />}>
           <Route path="/admin" element={<Admin />} />
         </Route>
