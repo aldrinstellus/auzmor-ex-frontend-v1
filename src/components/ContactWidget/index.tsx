@@ -16,6 +16,7 @@ import { toast } from 'react-toastify';
 import CopyButton from './components/CopyButton';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
+import { useTranslation } from 'react-i18next';
 
 export interface IContactInfoForm {
   primaryEmail: string;
@@ -30,6 +31,7 @@ type IContactCardProps = {
 const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [isHovered, eventHandlers] = useHover();
+  const { t } = useTranslation('profile');
   const { control, handleSubmit, getValues, reset } = useForm<IContactInfoForm>(
     {
       mode: 'onSubmit',
@@ -52,7 +54,7 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
   const fields = [
     {
       name: 'primaryEmail',
-      label: 'Primary Email',
+      label: t('contactWidget.primaryEmail'),
       type: FieldType.Input,
       control,
       className: '',
@@ -62,7 +64,7 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
     },
     {
       name: 'workPhone',
-      label: 'Contact No.',
+      label: t('contactWidget.workPhone'),
       type: FieldType.TelephoneInput,
       control,
       inputClassName: 'bg-red-500',
@@ -77,7 +79,7 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
     mutationKey: ['update-user-contact-detail-mutation'],
     onError: (_error: any) => {},
     onSuccess: (_response: any) => {
-      toast(<SuccessToast content={'User Profile Updated Successfully'} />, {
+      toast(<SuccessToast content={t('contactWidget.successToast')} />, {
         closeButton: (
           <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
         ),
@@ -111,7 +113,7 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
                 className="text-neutral-900 font-bold text-base"
                 data-testid="user-contact-details"
               >
-                Contact Info
+                {t('contactWidget.title')}
               </p>
               {canEdit && isHovered && !isEditable ? (
                 <IconWrapper
@@ -130,7 +132,7 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
                   <div className="flex space-x-3">
                     <Button
                       variant={Variant.Secondary}
-                      label={'Cancel'}
+                      label={t('contactWidget.cancelCTA')}
                       size={Size.Small}
                       onClick={() => {
                         setIsEditable(false);
@@ -139,7 +141,7 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
                       dataTestId={`contact-info-cancel`}
                     />
                     <Button
-                      label={'Save'}
+                      label={t('contactWidget.saveCTA')}
                       size={Size.Small}
                       type={ButtonType.Submit}
                       dataTestId={`contact-info-save`}

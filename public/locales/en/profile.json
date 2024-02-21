@@ -1,5 +1,28 @@
 {
-  "profile": {
-    "aboutme": "About Me"
+  "fieldNotSpecified": "field not specified",
+  "tabs": {
+    "profile": "Profile",
+    "activity": "Activity",
+    "recognitions": "Recognitions"
+  },
+  "contactWidget": {
+    "title": "Contact Info",
+    "primaryEmail": "Primary Email",
+    "workPhone": "Contact No.",
+    "successToast": "User Profile Updated Successfully",
+    "cancelCTA": "Cancel",
+    "saveCTA": "Save"
+  },
+  "managerWidget": {
+    "title": "Manager",
+    "selectManager": "Select Manager",
+    "successToast": "Manager updated",
+    "cancelCTA": "Cancel",
+    "saveCTA": "Save",
+    "emptyMessage": "No manager assigned"
+  },
+  "aboutMe": {
+    "titleForSelf": "About Me",
+    "titleForOther": "About"
   }
 }
