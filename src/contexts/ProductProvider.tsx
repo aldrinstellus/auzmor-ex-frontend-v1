@@ -1,5 +1,5 @@
 import React, { FC, ReactNode, createContext, useState } from 'react';
-import { getProductSubdomain } from 'utils/misc';
+import { getProduct } from 'utils/misc';
 
 export enum ProductEnum {
   Lxp = 'lxp',
@@ -26,9 +26,7 @@ interface IProductProviderProps {
 }
 
 const ProductProvider: FC<IProductProviderProps> = ({ children }) => {
-  const [product, setProduct] = useState<ProductEnum | null>(
-    getProductSubdomain(),
-  );
+  const [product, setProduct] = useState<ProductEnum | null>(getProduct());
   return (
     <ProductContext.Provider
       value={{

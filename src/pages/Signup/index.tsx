@@ -286,7 +286,7 @@ const Signup: FC<ISignupProps> = () => {
 
   if (
     process.env.NODE_ENV !== 'development' &&
-    process.env.REACT_APP_BASE_URL !== window.location.origin
+    process.env.REACT_APP_OFFICE_BASE_URL !== window.location.origin
   ) {
     return <Navigate to="/feed" />;
   }

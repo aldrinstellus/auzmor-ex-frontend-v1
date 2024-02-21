@@ -173,15 +173,14 @@ export const getSubDomain = (host: string) => {
   }
 };
 
-export const getProductSubdomain: () => ProductEnum = () => {
-  const domains = window.location.host.split('.');
-  if (domains.length == 4) {
-    return domains[1] as ProductEnum;
-  } else if (domains.length == 3) {
-    return domains[0] as ProductEnum;
-  } else {
+export const getProduct: () => ProductEnum = () => {
+  const baseURL = window.location.host;
+  if (baseURL === process.env.REACT_APP_OFFICE_BASE_URL) {
     return ProductEnum.Office;
+  } else if (baseURL === process.env.REACT_APP_LXP_BASE_URL) {
+    return ProductEnum.Lxp;
   }
+  return ProductEnum.Office;
 };
 
 export const removeElementsByClass = (className: string) => {
