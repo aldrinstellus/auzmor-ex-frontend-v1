@@ -20,6 +20,7 @@ import { IDesignation } from 'queries/designation';
 import { IPost } from 'queries/post';
 import moment from 'moment';
 import { EMPTY_REGEX, HEX_REGEX } from './constants';
+import { ProductEnum } from 'contexts/ProductProvider';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -169,6 +170,17 @@ export const getSubDomain = (host: string) => {
     return domains[0];
   } else {
     return '';
+  }
+};
+
+export const getProductSubdomain: () => ProductEnum = () => {
+  const domains = window.location.host.split('.');
+  if (domains.length == 4) {
+    return domains[1] as ProductEnum;
+  } else if (domains.length == 3) {
+    return domains[0] as ProductEnum;
+  } else {
+    return ProductEnum.Office;
   }
 };
 
