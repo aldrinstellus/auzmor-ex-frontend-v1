@@ -5,7 +5,7 @@ import { fetchMe } from 'queries/account';
 import UserOnboard from 'components/UserOnboard';
 import { Role } from 'utils/enum';
 import PageLoader from 'components/PageLoader';
-import { userChannel } from 'utils/misc';
+import { getSubDomain, userChannel } from 'utils/misc';
 import { ILocation } from 'queries/location';
 import { IDepartment } from 'queries/department';
 import Smartlook from 'smartlook-client';
@@ -14,6 +14,8 @@ import SubscriptionExpired from 'components/SubscriptionExpired';
 import AccountDeactivated from 'components/AccountDeactivated';
 import { useBrandingStore } from 'stores/branding';
 import { INotificationSettings } from 'queries/users';
+import useProduct from 'hooks/useProduct';
+import { ProductEnum } from './ProductProvider';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -95,6 +97,13 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [sessionExpired, setSessionExpired] = useState(false);
   const [accountDeactivated, setAccountDeactivated] = useState(false);
+  const { product } = useProduct();
+
+  if (product === ProductEnum.Lxp && !!!getSubDomain(window.location.host)) {
+    window.location.replace(
+      process.env.REACT_APP_LEARN_BASE_URL || `https://learn.auzmor.com`,
+    );
+  }
 
   const setBranding = useBrandingStore((state) => state.setBranding);
 
