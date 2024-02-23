@@ -15,7 +15,7 @@ import AccountDeactivated from 'components/AccountDeactivated';
 import { useBrandingStore } from 'stores/branding';
 import { INotificationSettings } from 'queries/users';
 import useProduct from 'hooks/useProduct';
-import { ProductEnum } from './ProductProvider';
+import { ProductEnum } from 'utils/apiService';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -99,6 +99,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   const [accountDeactivated, setAccountDeactivated] = useState(false);
   const { product } = useProduct();
 
+  // Redirect to learn if user lands on lxp generic page.
   if (product === ProductEnum.Lxp && !!!getSubDomain(window.location.host)) {
     window.location.replace(
       process.env.REACT_APP_LEARN_BASE_URL || `https://learn.auzmor.com`,
@@ -111,6 +112,11 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
     const query = new URLSearchParams(window.location.search.substring(1));
     let token = query.get('accessToken');
     setShowOnboard(!!query.get('showOnboard'));
+
+    const regionUrl = query.get('regionUrl');
+    if (regionUrl) {
+      setItem('regionUrl', regionUrl);
+    }
 
     if (token) {
       setItem(process.env.SESSION_KEY || 'uat', token);
@@ -164,6 +170,16 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
           removeAllItems();
           queryClient.clear();
         }
+      }
+    } else {
+      if (product === ProductEnum.Lxp && !!getSubDomain(window.location.host)) {
+        const redirectUrl =
+          process.env.REACT_APP_LEARN_BASE_URL || `https://learn.auzmor.com`;
+        window.location.replace(
+          `${redirectUrl.slice(0, 8)}${getSubDomain(
+            window.location.host,
+          )}.${redirectUrl.slice(8)}`,
+        );
       }
     }
     setLoading(false);

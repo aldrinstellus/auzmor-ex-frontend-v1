@@ -13,6 +13,9 @@ import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import { AuthContext } from 'contexts/AuthContext';
 import { isFiltersEmpty } from 'utils/misc';
 import clsx from 'clsx';
+import { useShouldRender } from 'hooks/useShouldRender';
+
+const ID = 'CelebrationWidget';
 
 export enum CELEBRATION_TYPE {
   Birthday = 'BIRTHDAY',
@@ -28,6 +31,10 @@ const CelebrationWidget: FC<CelebrationWidgetProps> = ({
   type,
   className = '',
 }) => {
+  const shouldRender = useShouldRender(ID);
+  if (!shouldRender) {
+    return <></>;
+  }
   const { user } = useContext(AuthContext);
   const { currentTimezone } = useCurrentTimezone();
   const userTimezone = user?.timezone || currentTimezone || 'Asia/Kolkata';

@@ -12,7 +12,7 @@ import useRole from 'hooks/useRole';
 import useAuth from 'hooks/useAuth';
 import { useState } from 'react';
 import SubscriptionBanner from './SubscriptionBanner';
-// import { useState } from 'react';
+import useProduct from 'hooks/useProduct';
 
 const adminNavigations = [
   {
@@ -26,6 +26,7 @@ const adminNavigations = [
 ];
 
 const Navbar = () => {
+  const { isLxp } = useProduct();
   const { isAdmin } = useRole();
   const { user } = useAuth();
   const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(
@@ -73,6 +74,7 @@ const Navbar = () => {
       linkTo: '/apps',
       dataTestId: 'office-apps-page',
       iconSize: 24,
+      hidden: isLxp,
     },
     // {
     //   label: 'Discover',
@@ -83,12 +85,12 @@ const Navbar = () => {
     //   iconSize: 26,
     //   disabled: true,
     // },
-  ];
+  ].filter((each) => !!!each?.hidden);
 
   return (
     <div className="w-full sticky top-0 z-50">
       <div className="bg-white shadow h-16 w-full py-[2px]">
-        <div className="bg-white h-full w-full max-w-[1440px] flex items-center py-0.5 px-8 mx-auto justify-between">
+        <div className="bg-white h-full w-full max-w-[1440px] flex items-center py-0.5 mx-auto justify-between">
           <Link to="/feed" data-testid="office-logo">
             <Logo />
           </Link>
@@ -108,14 +110,14 @@ const Navbar = () => {
             ]}
           />
         </div> */}
-          <div className="flex items-center gap-[60px] h-full">
-            <div className="flex items-center gap-10">
+          <div className="flex items-center gap-8 h-full">
+            <div className="flex items-center gap-6">
               {navigations.map((nav) => (
                 <NavbarMenuItem nav={nav} key={nav.label} />
               ))}
             </div>
             <Divider className="h-full" variant={Variant.Vertical} />
-            <div className="flex items-center gap-10">
+            <div className="flex items-center gap-6">
               {isAdmin &&
                 adminNavigations.map((nav) => (
                   <NavbarMenuItem nav={nav} key={nav.label} />

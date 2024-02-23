@@ -1,9 +1,6 @@
 import React, { FC, ReactNode, createContext, useState } from 'react';
-import { getProduct } from 'utils/misc';
-export enum ProductEnum {
-  Lxp = 'lxp',
-  Office = 'office',
-}
+import { ProductEnum, getProduct } from 'utils/apiService';
+
 interface IProductContextState {
   product: ProductEnum | null;
 }

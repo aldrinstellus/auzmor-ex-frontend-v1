@@ -5,8 +5,31 @@ import axios, {
 } from 'axios';
 
 import { getItem } from './persist';
-import { ProductEnum } from 'contexts/ProductProvider';
-import { getProduct } from './misc';
+
+export enum ProductEnum {
+  Lxp = 'lxp',
+  Office = 'office',
+}
+
+export const getProduct: () => ProductEnum = () => {
+  const host = window.location.host;
+  if (
+    host.includes(
+      process.env.REACT_APP_OFFICE_BASE_URL?.replace('https://', '') ||
+        'office.auzmor.com',
+    )
+  ) {
+    return ProductEnum.Office;
+  } else if (
+    host.includes(
+      process.env.REACT_APP_LXP_BASE_URL?.replace('https://', '') ||
+        'lxp.auzmor.com',
+    )
+  ) {
+    return ProductEnum.Lxp;
+  }
+  return ProductEnum.Office;
+};
 
 class ApiService {
   instance: AxiosInstance;
