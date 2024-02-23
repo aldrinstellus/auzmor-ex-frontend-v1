@@ -9,9 +9,6 @@ const useProduct = () => {
   const [isOffice, setIsOffice] = useState<boolean>(
     product === ProductEnum.Office,
   );
-  // const {branding} = useBrandingStore((state) => state.branding)
-
-  console.log(product);
 
   // Set product flags
   useEffect(() => {
@@ -35,6 +32,9 @@ const useProduct = () => {
         root.style.setProperty(key, secondaryColorPalette[key]);
       });
     }
+    document
+      .querySelector('link[rel="icon"]')
+      ?.setAttribute('href', '/lxp-favicon.svg');
   }
 
   return { product, setProduct, isLxp, isOffice };

@@ -116,6 +116,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
     const regionUrl = query.get('regionUrl');
     if (regionUrl) {
       setItem('regionUrl', regionUrl);
+      query.delete('regionUrl');
     }
 
     if (token) {
