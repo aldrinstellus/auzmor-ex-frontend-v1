@@ -5,7 +5,7 @@ import { fetchMe } from 'queries/account';
 import UserOnboard from 'components/UserOnboard';
 import { Role } from 'utils/enum';
 import PageLoader from 'components/PageLoader';
-import { getSubDomain, userChannel } from 'utils/misc';
+import { getLearnUrl, getSubDomain, userChannel } from 'utils/misc';
 import { ILocation } from 'queries/location';
 import { IDepartment } from 'queries/department';
 import Smartlook from 'smartlook-client';
@@ -174,13 +174,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
       }
     } else {
       if (product === ProductEnum.Lxp && !!getSubDomain(window.location.host)) {
-        const redirectUrl =
-          process.env.REACT_APP_LEARN_BASE_URL || `https://learn.auzmor.com`;
-        window.location.replace(
-          `${redirectUrl.slice(0, 8)}${getSubDomain(
-            window.location.host,
-          )}.${redirectUrl.slice(8)}`,
-        );
+        window.location.replace(getLearnUrl());
       }
     }
     setLoading(false);

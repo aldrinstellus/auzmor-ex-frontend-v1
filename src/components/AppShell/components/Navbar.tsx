@@ -13,6 +13,7 @@ import useAuth from 'hooks/useAuth';
 import { useState } from 'react';
 import SubscriptionBanner from './SubscriptionBanner';
 import useProduct from 'hooks/useProduct';
+import { getLearnUrl } from 'utils/misc';
 
 const adminNavigations = [
   {
@@ -60,7 +61,7 @@ const Navbar = () => {
       label: 'People',
       icon: 'peopleOutline',
       hoverIcon: 'peopleFilled',
-      linkTo: '/users',
+      linkTo: isLxp ? getLearnUrl() : '/users',
       dataTestId: 'office-people-page',
       iconSize: 24,
       isActive:
