@@ -13,6 +13,7 @@ import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import { AuthContext } from 'contexts/AuthContext';
 import { isFiltersEmpty } from 'utils/misc';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 
 export enum CELEBRATION_TYPE {
   Birthday = 'BIRTHDAY',
@@ -28,6 +29,7 @@ const CelebrationWidget: FC<CelebrationWidgetProps> = ({
   type,
   className = '',
 }) => {
+  const { t } = useTranslation('celebrationWidget');
   const { user } = useContext(AuthContext);
   const { currentTimezone } = useCurrentTimezone();
   const userTimezone = user?.timezone || currentTimezone || 'Asia/Kolkata';
@@ -112,10 +114,12 @@ const CelebrationWidget: FC<CelebrationWidgetProps> = ({
     (formattedData || []).length ===
     [...thisMonthCelebration, ...upcomingMonthCelebration].length;
 
-  const widgetTitle = isBirthday ? 'Birthdays 🎂' : 'Work anniversaries 🎉';
+  const widgetTitle = isBirthday
+    ? `${t('birthday')} 🎂`
+    : `${t('work-ann')} 🎉`;
   const buttonLabel = isBirthday
-    ? 'Upcoming Birthdays'
-    : 'Upcoming anniversaries';
+    ? `${t('upcoming-bth')}`
+    : `${t('upcoming-ann')}`;
 
   const toggleModal = () => {
     if (open) closeCollapse();
@@ -171,7 +175,7 @@ const CelebrationWidget: FC<CelebrationWidgetProps> = ({
                   {thisMonthCelebration.length > 0 &&
                     upcomingMonthCelebration.length > 0 && (
                       <div className="text-sm font-semibold px-2">
-                        This Month
+                        {t('this-month')}
                       </div>
                     )}
                   {thisMonthCelebration.map((celebration) => (
@@ -190,7 +194,7 @@ const CelebrationWidget: FC<CelebrationWidgetProps> = ({
                       {thisMonthCelebration.length > 0 &&
                         upcomingMonthCelebration.length > 0 && (
                           <div className="text-sm font-semibold px-2">
-                            Next Month
+                            {t('next-month')}
                           </div>
                         )}
                       {upcomingMonthCelebration.map((celebration) => (

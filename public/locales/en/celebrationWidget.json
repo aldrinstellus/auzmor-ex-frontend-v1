@@ -1,3 +1,21 @@
 {
-  "birthday": "Birthday"
+  "birthday": "Birthday",
+  "work-ann": "Work anniversaries",
+  "visit-post": "Visit post",
+  "wishes-sent": "Wishes sent",
+  "wish-text-bth": "It is your birthday today. Happy birthday! 🎂",
+  "wish-text-ann": "It is your Work Anniversary today! Congrats! 🎉",
+  "send-wishes-cta": "send-wishes-cta",
+  "modal-title-bth": "Upcoming birthdays 🎂",
+  "modal-title-ann": "Upcoming work anniversaries 🎉",
+  "today": "Today",
+  "this-month": "This Month",
+  "next-month": "Next Month",
+  "closeCTA": "Close",
+  "upcoming-bth": "Upcoming Birthdays",
+  "upcoming-ann": "Upcoming anniversaries",
+  "error-state": {
+    "bth": "Upcoming birthdays will show here",
+    "ann": "Upcoming work anniversaries will show here"
+  }
 }

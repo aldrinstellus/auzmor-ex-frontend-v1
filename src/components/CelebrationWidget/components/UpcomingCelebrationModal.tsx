@@ -12,6 +12,7 @@ import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import Spinner from 'components/Spinner';
 import { useInView } from 'react-intersection-observer';
 import { hideEmojiPalette, isFiltersEmpty } from 'utils/misc';
+import { useTranslation } from 'react-i18next';
 
 interface UpcomingCelebrationModalProps {
   open: boolean;
@@ -24,6 +25,7 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
   closeModal,
   type,
 }) => {
+  const { t } = useTranslation('celebrationWidget');
   const { user } = useContext(AuthContext);
   const { currentTimezone } = useCurrentTimezone();
   const userTimezone = user?.timezone || currentTimezone || 'Asia/Kolkata';
@@ -145,8 +147,8 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
 
   const modalTitle =
     type === CELEBRATION_TYPE.Birthday
-      ? 'Upcoming birthdays 🎂'
-      : 'Upcoming work anniversaries 🎉';
+      ? `${t('modal-title-bth')}`
+      : `${t('modal-title-ann')}`;
 
   useEffect(() => {
     if (inView && !stopScroll) {
@@ -188,7 +190,9 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
                 {todaysCelebration.length > 0 &&
                   (upcomingMonthCelebration.length > 0 ||
                     thisMonthCelebration.length > 0) && (
-                    <div className="text-sm font-semibold px-2 mt-4">Today</div>
+                    <div className="text-sm font-semibold px-2 mt-4">
+                      {t('today')}
+                    </div>
                   )}
                 <div
                   className="divide-y divide-neutral-200"
@@ -212,7 +216,7 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
                   (upcomingMonthCelebration.length > 0 ||
                     todaysCelebration.length > 0) && (
                     <div className="text-sm font-semibold px-2 pt-4 border-t border-neutral-200">
-                      This Month
+                      {t('this-month')}
                     </div>
                   )}
                 <div
@@ -237,7 +241,7 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
                   (thisMonthCelebration.length > 0 ||
                     todaysCelebration.length > 0) && (
                     <div className="text-sm font-semibold px-2 pt-4 border-t border-neutral-200">
-                      Next Month
+                      {t('next-month')}
                     </div>
                   )}
                 <div
@@ -277,7 +281,7 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
       </div>
       <div className="flex justify-end items-center h-16 px-6 py-4 bg-blue-50 rounded-b-9xl">
         <Button
-          label="Close"
+          label={t('closeCTA')}
           variant={Variant.Secondary}
           size={Size.Small}
           className="py-[7px]"
