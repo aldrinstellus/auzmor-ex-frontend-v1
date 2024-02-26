@@ -522,7 +522,8 @@ export const getCookieParam = (key = SESSION_ID) => {
   if (process.env.REACT_APP_ENV === 'PRODUCTION') {
     return key;
   }
-  const hostname = window.location.hostname;
-  const [hostName] = hostname.split('.') || [];
-  return `${hostName}-${key}`;
+  const [hostname] =
+    process.env.REACT_APP_LEARN_BASE_URL?.replace('https://', '').split('.') ||
+    [];
+  return `${hostname}-${key}`;
 };
