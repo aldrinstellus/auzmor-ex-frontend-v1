@@ -501,3 +501,15 @@ export const isDark = (hexcode: string) => {
 
   return 0.2126 * R + 0.7152 * G + 0.0722 * B < 255 / 2;
 };
+
+export const insertAt = (str: string, index: number, insertStr: string) => {
+  return `${str.slice(0, index)}${insertStr}${str.slice(index)}`;
+};
+
+export const getLearnUrl = () => {
+  return `${insertAt(
+    process.env.REACT_APP_LEARN_BASE_URL || 'https://learn.auzmor.com',
+    'https://'.length,
+    `${getSubDomain(window.location.host)}.` || '',
+  )}`;
+};

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import OfficeLogoSvg from './images/OfficeLogo.svg';
-import LxpLogoSvg from './images/lxpLogo.svg';
+import LxpLogoSvg from './images/lxpLogo.png';
 import SuccessLogo from './images/Vector.svg';
 import InfoLogo from './images/InfoCircle.svg';
 import CheckboxImage from './images/check.svg';
