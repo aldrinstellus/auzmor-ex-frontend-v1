@@ -39,9 +39,7 @@ const AccountCard = () => {
     if (isLxp) {
       deleteCookie('region_url');
       deleteCookie(getCookieParam());
-      window.location.replace(
-        process.env.REACT_APP_LEARN_BASE_URL || `https://learn.auzmor.com`,
-      );
+      window.location.replace(`${getLearnUrl()}`);
     } else {
       logoutMutation.mutate();
       close();
