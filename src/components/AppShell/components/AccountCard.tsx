@@ -7,13 +7,20 @@ import { useMutation } from '@tanstack/react-query';
 import { logout } from 'queries/account';
 import { Link, useNavigate } from 'react-router-dom';
 import Icon from 'components/Icon';
-import { userChannel } from 'utils/misc';
+import {
+  deleteCookie,
+  getCookieParam,
+  getLearnUrl,
+  userChannel,
+} from 'utils/misc';
 import useRole from 'hooks/useRole';
+import useProduct from 'hooks/useProduct';
 
 const AccountCard = () => {
   const navigate = useNavigate();
   const { user, reset } = useAuth();
   const { isAdmin } = useRole();
+  const { isLxp } = useProduct();
 
   const logoutMutation = useMutation(logout, {
     onSuccess: async () => {
@@ -27,6 +34,17 @@ const AccountCard = () => {
       navigate('/logout');
     },
   });
+
+  const handleSignout = () => {
+    if (isLxp) {
+      deleteCookie('region_url');
+      deleteCookie(getCookieParam());
+      window.location.replace(`${getLearnUrl()}`);
+    } else {
+      logoutMutation.mutate();
+      close();
+    }
+  };
 
   const menuItemStyle = clsx({
     'px-4 py-3 border-t text-sm hover:bg-primary-50 cursor-pointer': true,
@@ -75,15 +93,23 @@ const AccountCard = () => {
                 variant={Variant.Secondary}
                 label="Go to my profile"
                 onClick={() => {
-                  navigate('/profile', { state: { userId: user?.id } });
-                  close();
+                  if (isLxp) {
+                    window.location.replace(
+                      `${getLearnUrl()}/settings/profile`,
+                    );
+                  } else {
+                    navigate('/profile', { state: { userId: user?.id } });
+                    close();
+                  }
                 }}
                 size={Size.Small}
                 className="w-full"
               />
             </div>
             <div className="w-full pt-4">
-              <Link to="/settings">
+              <Link
+                to={isLxp ? `${getLearnUrl()}/settings/profile` : '/settings'}
+              >
                 <div
                   className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
                   data-testid="user-menu-user-settings"
@@ -132,10 +158,7 @@ const AccountCard = () => {
               </Link>
               <div
                 className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
-                onClick={() => {
-                  logoutMutation.mutate();
-                  close();
-                }}
+                onClick={handleSignout}
                 data-testid="user-menu-signout-cta"
               >
                 <Icon

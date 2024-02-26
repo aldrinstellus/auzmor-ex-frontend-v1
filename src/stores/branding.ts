@@ -1,4 +1,5 @@
 import { IBranding } from 'contexts/AuthContext';
+import { ProductEnum, getProduct } from 'utils/apiService';
 import { applyBranding } from 'utils/branding';
 import { setItem } from 'utils/persist';
 import { create } from 'zustand';
@@ -11,8 +12,8 @@ interface IBrandingStore {
 export const useBrandingStore = create<IBrandingStore>((set) => ({
   branding: {
     pageTitle: 'Auzmor Office',
-    primaryColor: '#10B981',
-    secondaryColor: '#1D4ED8',
+    primaryColor: getProduct() === ProductEnum.Lxp ? '#ff3366' : '#10B981',
+    secondaryColor: getProduct() === ProductEnum.Lxp ? '5c5c5c' : '#1D4ED8',
     loginConfig: {
       layout: 'RIGHT',
       backgroundType: 'IMAGE',

@@ -19,7 +19,7 @@ import { IDepartment } from 'queries/department';
 import { IDesignation } from 'queries/designation';
 import { IPost } from 'queries/post';
 import moment from 'moment';
-import { EMPTY_REGEX, HEX_REGEX } from './constants';
+import { EMPTY_REGEX, HEX_REGEX, SESSION_ID } from './constants';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -512,4 +512,17 @@ export const getLearnUrl = () => {
     'https://'.length,
     `${getSubDomain(window.location.host)}.` || '',
   )}`;
+};
+
+export const deleteCookie = (key: string) => {
+  document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+};
+
+export const getCookieParam = (key = SESSION_ID) => {
+  if (process.env.REACT_APP_ENV === 'PRODUCTION') {
+    return key;
+  }
+  const hostname = window.location.hostname;
+  const [hostName] = hostname.split('.') || [];
+  return `${hostName}-${key}`;
 };

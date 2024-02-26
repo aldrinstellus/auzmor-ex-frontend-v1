@@ -58,7 +58,7 @@ const Navbar = () => {
       iconSize: 24,
     },
     {
-      label: 'People',
+      label: isLxp ? 'Learning Hub' : 'People',
       icon: 'peopleOutline',
       hoverIcon: 'peopleFilled',
       linkTo: isLxp ? getLearnUrl() : '/users',
