@@ -164,6 +164,7 @@ export const readFirstAxiosError = (err: any) => {
 };
 
 export const getSubDomain = (host: string) => {
+  return 'lxp-dev-test';
   const domains = host.split('.');
   if (domains.length >= 4) {
     return domains[0];
@@ -515,7 +516,7 @@ export const getLearnUrl = () => {
 };
 
 export const deleteCookie = (key: string) => {
-  document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  document.cookie = ` ${key}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.auzmor.com;`;
 };
 
 export const getCookieParam = (key = SESSION_ID) => {

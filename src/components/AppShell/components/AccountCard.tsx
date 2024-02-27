@@ -39,6 +39,7 @@ const AccountCard = () => {
     if (isLxp) {
       deleteCookie('region_url');
       deleteCookie(getCookieParam());
+      reset();
       window.location.replace(`${getLearnUrl()}`);
     } else {
       logoutMutation.mutate();
