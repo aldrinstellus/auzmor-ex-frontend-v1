@@ -22,6 +22,7 @@ import {
 } from 'contexts/CreatePostContext';
 import { useNavigate } from 'react-router-dom';
 import Tooltip from 'components/Tooltip';
+import { useTranslation } from 'react-i18next';
 
 interface UserProps {
   id: string;
@@ -40,6 +41,7 @@ const User: FC<UserProps> = ({
   onSendWish,
   closeModal,
 }) => {
+  const { t } = useTranslation('celebrationWidget');
   const { featuredUser, post } = data;
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
@@ -102,15 +104,15 @@ const User: FC<UserProps> = ({
         data-testid={`${isBirthday ? 'birthday' : 'anniversaries'}-wishes-sent`}
         className={`py-[2px] px-[6px] rounded-[4px] text-xs font-bold flex items-center ${dateStyles} w-fit whitespace-nowrap`}
       >
-        Wishes sent
+        {t('wishes-sent')}
       </div>
     ),
     [],
   );
 
   const wishText = isBirthday
-    ? 'It is your birthday today. Happy birthday! 🎂'
-    : 'It is your Work Anniversary today! Congrats! 🎉';
+    ? `${t('wish-text-bth')}`
+    : `${t('wish-text-ann')}`;
 
   return showSendWishRTELayout ? (
     <div className="flex gap-2 w-full">
@@ -158,7 +160,7 @@ const User: FC<UserProps> = ({
               navigate(`/posts/${post.id}`);
             }}
           >
-            Visit post
+            ${t('visit-post')}
             <Icon name="arrowRightUp" size={12} color="text-primary-500" />
           </div>
         </div>
@@ -304,7 +306,7 @@ const User: FC<UserProps> = ({
             className={`px-[6px] rounded-[4px] text-xs font-semibold whitespace-nowrap ${dateStyles}`}
             data-testid={`${isBirthday ? 'birthday' : 'anniversaries'}-date`}
           >
-            {`${celebrationDate}`.trim()}
+            {t('celebration-date', { date: `${celebrationDate}`.trim() })}
           </div>
         )}
       </div>
@@ -318,7 +320,7 @@ const User: FC<UserProps> = ({
         <Button
           size={Size.Small}
           className="!bg-primary-50 !text-primary-500 px-4 py-2 rounded-[8px]"
-          label="Visit post"
+          label={t('visit-post')}
           data-testid={`view-${isBirthday ? 'birthday' : 'anniversaries'}-post`}
           onClick={() => navigate(`/posts/${post.id}`)}
         />
@@ -327,7 +329,7 @@ const User: FC<UserProps> = ({
           <Button
             size={Size.Small}
             className="!bg-blue-50 !text-blue-500 px-4 py-2 rounded-[8px]"
-            label="Send them wishes"
+            label="send-wishes-cta"
             dataTestId={`${
               isBirthday ? 'birthday' : 'anniversaries'
             }-send-wishes-cta`}

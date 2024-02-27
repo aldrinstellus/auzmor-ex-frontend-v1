@@ -4,5 +4,6 @@
   "result": "result",
   "search": "Search",
   "cancel": "Cancel",
-  "create": "Create"
+  "create": "Create",
+  "show-results": "Showing {{count}} results"
 }

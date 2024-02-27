@@ -4,6 +4,7 @@ import Button, { Size, Variant } from 'components/Button';
 
 import useRole from 'hooks/useRole';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface IEmptyState {
   openModal: () => void;
@@ -11,30 +12,28 @@ interface IEmptyState {
 
 const EmptyState: FC<IEmptyState> = () => {
   const { isAdmin } = useRole();
-
+  const { t } = useTranslation('appLauncher', { keyPrefix: 'empty-state' });
   return (
     <div className="mt-4 w-full">
       {isAdmin ? (
         <div className="flex flex-col gap-2 text-xs w-full">
-          <p className="text-center">
-            There is no app found in your organization right now.
-          </p>
+          <p className="text-center">{t('empty-state-message')} </p>
           <Link to="/apps" className="w-full">
             <Button
               variant={Variant.Secondary}
               size={Size.Small}
               className="py-[7px] w-full"
-              label="Add Apps"
+              label={t('add-app-CTA')}
               leftIcon="addCircle"
               leftIconClassName="text-neutral-900"
               dataTestId="app-add-app-launcher"
               // onClick={openModal}
             />
           </Link>
-          <p className="text-center">Only admins can see this.</p>
+          <p className="text-center">{t('admin-error')}</p>
         </div>
       ) : (
-        <div>Apps have not been added yet.</div>
+        <div>{t('not-found')}</div>
       )}
     </div>
   );

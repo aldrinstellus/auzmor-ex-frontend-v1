@@ -6,6 +6,7 @@ import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 
 import { App } from 'queries/apps';
 import Icon from 'components/Icon';
+import { useTranslation } from 'react-i18next';
 
 interface IAppCardProps {
   data: App;
@@ -20,6 +21,7 @@ const AppCard: FC<IAppCardProps> = ({
   onSelect,
   disabled,
 }) => {
+  const { t } = useTranslation('appLauncher');
   const blurImageProps = {
     src: data.icon?.original || DefaultAppIcon,
     className: 'rounded-full',
@@ -56,7 +58,7 @@ const AppCard: FC<IAppCardProps> = ({
     >
       {data.featured && (
         <div className="absolute top-0 left-0 bg-blue-500 text-white px-2 py-[2px] text-xxs rounded-br-[8px]">
-          Featured
+          {t('featured')}
         </div>
       )}
       {isSelected && (

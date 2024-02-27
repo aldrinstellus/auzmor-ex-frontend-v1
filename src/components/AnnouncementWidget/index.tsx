@@ -14,6 +14,7 @@ import EmptyState from './components/EmptyState';
 import { FC, memo, useMemo } from 'react';
 import { isEmpty } from 'lodash';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 
 export interface IAnnouncementCardProps {
   postId?: string;
@@ -26,6 +27,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
   openModal,
   className = '',
 }) => {
+  const { t } = useTranslation('announcement');
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -76,7 +78,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
   return (
     <div className={style}>
       <div className="flex justify-between items-center ">
-        <div className="text-base font-bold">Announcements</div>
+        <div className="text-base font-bold">{t('header')}</div>
         {/* <div className="text-sm font-bold">View All</div> */}
       </div>
       <div className="mt-2">
@@ -88,7 +90,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
               hover={false}
               size={16}
             />
-            <div className="text-xs font-bold">Announcement</div>
+            <div className="text-xs font-bold">{t('title')}</div>
           </div>
           {isLoading ? (
             <SkeletonLoader />
@@ -128,8 +130,8 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
                           }
                         >
                           <span className="text-neutral-900">
-                            <b>{getFullName(postData?.createdBy)}</b> shared a
-                            post
+                            <b>{getFullName(postData?.createdBy)}</b>{' '}
+                            {t('share-post')}
                           </span>
                           {/* <span className="text-neutral-900 font-normal bg-yellow-100">
                             shared a post
@@ -162,7 +164,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
                   {!hasLoggedInUserCreatedAnnouncement && (
                     <div className="w-full flex justify-center">
                       <Button
-                        label="Mark as read"
+                        label={t('read-CTA')}
                         variant={Variant.Secondary}
                         size={Size.Small}
                         className="border-2 border-neutral-200 mt-4 w-full"

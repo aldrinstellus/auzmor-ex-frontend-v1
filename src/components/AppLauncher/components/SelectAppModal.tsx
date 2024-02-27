@@ -12,6 +12,7 @@ import TeamNotFound from 'images/TeamNotFound.svg';
 
 import { App, useInfiniteApps } from 'queries/apps';
 import { useAppStore } from 'stores/appStore';
+import { useTranslation } from 'react-i18next';
 
 interface ISelectAppModalProps {
   open: boolean;
@@ -24,6 +25,9 @@ const SelectAppModal: FC<ISelectAppModalProps> = ({
   closeModal,
   widgetApps,
 }) => {
+  const { t } = useTranslation('appLauncher', {
+    keyPrefix: 'select-app-modal',
+  });
   const { ref, inView } = useInView();
   const { apps } = useAppStore();
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
@@ -61,14 +65,14 @@ const SelectAppModal: FC<ISelectAppModalProps> = ({
   return (
     <Modal open={open} closeModal={closeModal} className="max-w-[638px]">
       <Header
-        title="Select apps"
+        title={t('title')}
         onClose={() => closeModal()}
         closeBtnDataTestId="app-launcher-select-app-close"
       />
 
       <div className="flex flex-col w-full max-h-[400px] p-6 gap-6 overflow-y-auto">
         {(isLoading || (appIds || []).length > 0) && (
-          <div className="font-bold">Choose apps for widget (upto 3)</div>
+          <div className="font-bold">{t('choose-app')}</div>
         )}
 
         {(() => {
@@ -112,11 +116,11 @@ const SelectAppModal: FC<ISelectAppModalProps> = ({
                   width={165}
                 />
                 <div className="text-lg font-bold" data-testid="no-app-found">
-                  No Apps found to be selected
+                  {t('not-found')}
                 </div>
               </div>
               <div className="flex space-x-1 text-xs font-normal text-neutral-500">
-                There is no app found in your organization right now.
+                {t('not-found-org')}{' '}
               </div>
             </div>
           );
@@ -130,14 +134,14 @@ const SelectAppModal: FC<ISelectAppModalProps> = ({
       {/* Footer */}
       <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
         <Button
-          label="Back"
+          label={t('back-CTA')}
           variant={Variant.Secondary}
           onClick={closeModal}
           className="mr-4"
           dataTestId="app-launcher-select-app-back"
         />
         <Button
-          label="Select"
+          label={t('select-CTA')}
           variant={Variant.Primary}
           // onClick={handleSubmit(onSubmit)}
           dataTestId="app-launcher-select-cta"
