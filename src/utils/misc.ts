@@ -164,7 +164,6 @@ export const readFirstAxiosError = (err: any) => {
 };
 
 export const getSubDomain = (host: string) => {
-  return 'lxp-dev-test';
   const domains = host.split('.');
   if (domains.length >= 4) {
     return domains[0];
