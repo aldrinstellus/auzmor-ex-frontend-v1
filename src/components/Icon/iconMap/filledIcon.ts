@@ -83,6 +83,7 @@ import SvgLauncherFilled from '../components/Launcher/LauncherFilled';
 import SvgFeedFilled from '../components/Feed/FeedFilled';
 import PostBookMarkFilled from '../components/PostBookmark/PostBookmarkFilled';
 import SvgCloudAddFilled from '../components/CloudAdd/CloudAddFilled';
+import SvgLifeBuoyFilled from '../components/LifeBuoy/LifeBuoyFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -170,4 +171,5 @@ export const filledIcon = {
   videoFilled: SvgVideoFilled,
   zoomInFilled: SvgZoomInFilled,
   zoomOutFilled: SvgZoomOutFilled,
+  lifeBuoyFilled: SvgLifeBuoyFilled,
 };

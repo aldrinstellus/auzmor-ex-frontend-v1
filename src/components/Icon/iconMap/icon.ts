@@ -142,6 +142,7 @@ import VideoSlash from '../components/VideoSlash';
 import SvgInfoIcon from '../components/Info';
 import CloudAddIcon from '../components/CloudAdd';
 import BoldTick from '../components/BoldTick';
+import LifeBuoyIcon from '../components/LifeBuoy';
 
 export const icon = {
   add: Add,
@@ -288,4 +289,5 @@ export const icon = {
   warningCircle: WarningCircleIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
+  lifeBuoy: LifeBuoyIcon,
 };

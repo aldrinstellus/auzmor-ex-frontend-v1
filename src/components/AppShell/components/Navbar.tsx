@@ -58,15 +58,26 @@ const Navbar = () => {
       iconSize: 24,
     },
     {
+      label: 'Teams',
+      icon: 'usersOutline',
+      hoverIcon: 'usersFilled',
+      linkTo: '/teams',
+      dataTestId: 'office-team-page',
+      iconSize: 24,
+      isActive: isLxp && location.pathname.includes('/teams'),
+      hidden: !isLxp,
+    },
+    {
       label: isLxp ? 'Learning Hub' : 'People',
-      icon: 'peopleOutline',
-      hoverIcon: 'peopleFilled',
+      icon: isLxp ? 'lifeBuoyOutline' : 'peopleOutline',
+      hoverIcon: isLxp ? 'lifeBuoyFilled' : 'peopleFilled',
       linkTo: isLxp ? getLearnUrl() : '/users',
       dataTestId: 'office-people-page',
       iconSize: 24,
       isActive:
-        location.pathname.includes('/users') ||
-        location.pathname.includes('/teams'),
+        !isLxp &&
+        (location.pathname.includes('/users') ||
+          location.pathname.includes('/teams')),
     },
     {
       label: 'Apps',
