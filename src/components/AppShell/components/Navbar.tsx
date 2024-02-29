@@ -13,7 +13,7 @@ import useAuth from 'hooks/useAuth';
 import { useState } from 'react';
 import SubscriptionBanner from './SubscriptionBanner';
 import useProduct from 'hooks/useProduct';
-import { getLearnCheckoutUrl, getLearnUrl } from 'utils/misc';
+import { getLearnUrl } from 'utils/misc';
 import Icon from 'components/Icon';
 
 const adminNavigations = [
@@ -37,7 +37,7 @@ const learnNavigations = [
   {
     icon: 'shoppingCartOutline',
     hoverIcon: 'shoppingCartFilled',
-    linkTo: getLearnCheckoutUrl(),
+    linkTo: `${getLearnUrl()}/user/checkout`,
     dataTestId: 'office-admin-page', // need to change
     iconSize: 24,
   },

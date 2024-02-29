@@ -23,7 +23,6 @@ const UserDetail = lazy(() => import('pages/UserDetail'));
 const TeamDetail = lazy(() => import('pages/TeamDetail'));
 const Apps = lazy(() => import('pages/Apps'));
 const AppLaunchPage = lazy(() => import('pages/AppLaunchPage'));
-const Discover = lazy(() => import('pages/Discover'));
 const Admin = lazy(() => import('pages/Admin'));
 const AcceptInvite = lazy(() => import('pages/AcceptInvite'));
 const PageNotFound = lazy(() => import('pages/PageNotFound'));
@@ -56,7 +55,6 @@ const routers = createBrowserRouter(
           // ⬇️ loader fetch data as earlier as possible
           // loader={homeLoader(queryClient)}
         />
-
         <Route element={<RequireOfficeAuth />}>
           <Route // users route  is not required in lxp
             path="/users"
@@ -75,14 +73,16 @@ const routers = createBrowserRouter(
             return '';
           }}
         />
-        <Route
-          path="/users/:userId"
-          element={<UserDetail />}
-          loader={({}) => {
-            // ⬇️ loader fetch data as earlier as possible
-            return '';
-          }}
-        />
+        <Route element={<RequireOfficeAuth />}>
+          <Route // users details route  is not required in lxp
+            path="/users/:userId"
+            element={<UserDetail />}
+            loader={async () => {
+              // ⬇️ loader fetch data as earlier as possible
+              return '';
+            }}
+          />
+        </Route>
         <Route
           path="/teams/:teamId"
           element={<TeamDetail />}
@@ -91,27 +91,34 @@ const routers = createBrowserRouter(
             return '';
           }}
         />
-        <Route
-          path="/profile"
-          element={<UserDetail />}
-          loader={() => {
-            return '';
-          }}
-        />
+        <Route element={<RequireOfficeAuth />}>
+          <Route
+            path="/profile"
+            element={<UserDetail />}
+            loader={() => {
+              return '';
+            }}
+          />
+        </Route>
         <Route element={<RequireOfficeAuth />}>
           <Route // apps route  is not required in lxp
             path="/apps"
             element={<Apps />}
           />
         </Route>
+        <Route element={<RequireOfficeAuth />}>
+          <Route // apps  launch route  is not required in lxp
+            path="/apps/:id/launch"
+            element={<AppLaunchPage />}
+          />
+        </Route>
         <Route path="/scheduledPosts" element={<Feed />} />
         <Route path="/bookmarks" element={<Feed />} />
         <Route path="/feed" element={<Feed />} />
-        <Route path="/settings" element={<UserSettings />} />
-        {/* <Route path="/apps" element={<Apps />} /> */}
-        <Route path="/apps/:id/launch" element={<AppLaunchPage />} />
-        <Route path="/discover" element={<Discover />} />
-        <Route element={<RequireAdminAuth />}>
+        <Route element={<RequireOfficeAuth />}>
+          <Route path="/settings" element={<UserSettings />} />
+        </Route>
+        <Route element={<RequireAdminAuth /> && <RequireOfficeAuth />}>
           <Route path="/admin" element={<Admin />} />
         </Route>
         <Route path="/posts/:id" element={<PostPage />} />

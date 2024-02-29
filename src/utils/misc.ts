@@ -513,14 +513,6 @@ export const getLearnUrl = () => {
     `${getSubDomain(window.location.host)}.` || '',
   )}`;
 };
-export const getLearnCheckoutUrl = () => {
-  return `${insertAt(
-    `${process.env.REACT_APP_LEARN_BASE_URL}/user/checkout` ||
-      'https://learn.auzmor.com/user/checkout',
-    'https://'.length,
-    `${getSubDomain(window.location.host)}.` || '',
-  )}`;
-};
 
 export const deleteCookie = (key: string) => {
   document.cookie = ` ${key}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.auzmor.com;`;
