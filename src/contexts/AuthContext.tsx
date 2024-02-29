@@ -101,9 +101,11 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
 
   // Redirect to learn if user lands on lxp generic page.
   if (product === ProductEnum.Lxp && !!!getSubDomain(window.location.host)) {
-    window.location.replace(
-      process.env.REACT_APP_LEARN_BASE_URL || `https://learn.auzmor.com`,
-    );
+    if (process.env.NODE_ENV !== 'development') {
+      window.location.replace(
+        process.env.REACT_APP_LEARN_BASE_URL || `https://learn.auzmor.com`,
+      );
+    }
   }
 
   const setBranding = useBrandingStore((state) => state.setBranding);

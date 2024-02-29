@@ -38,7 +38,6 @@ const CreatePost: FC<ICreatePostProps> = ({
     inputImgRef,
     inputVideoRef,
     setUploads,
-    clearPostContext,
     media,
     setMediaValidationErrors,
     mediaValidationErrors,
@@ -67,7 +66,6 @@ const CreatePost: FC<ICreatePostProps> = ({
           mode === PostBuilderMode.Create ? 'Create a post' : 'Edit a post'
         }
         onClose={() => {
-          clearPostContext();
           closeModal && closeModal();
         }}
         closeBtnDataTestId={`${dataTestId}-closeicon`}
