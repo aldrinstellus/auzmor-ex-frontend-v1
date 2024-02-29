@@ -14,6 +14,7 @@ import { useState } from 'react';
 import SubscriptionBanner from './SubscriptionBanner';
 import useProduct from 'hooks/useProduct';
 import { getLearnCheckoutUrl, getLearnUrl } from 'utils/misc';
+import Icon from 'components/Icon';
 
 const adminNavigations = [
   {
@@ -156,15 +157,16 @@ const Navbar = () => {
             </div>
             <Divider className="h-full" variant={Variant.Vertical} />
             <div className="flex items-center gap-6">
-              {isLxp &&
-                learnNavigations.map((nav) => (
-                  <NavbarMenuItem nav={nav} key={nav.icon} />
-                ))}
-              {isAdmin &&
+              {!isLxp &&
+                isAdmin &&
                 adminNavigations.map((nav) => (
                   <NavbarMenuItem nav={nav} key={nav.label} />
                 ))}
-              <div>
+              <div className=" flex gap-6 items-center">
+                {isLxp &&
+                  learnNavigations.map((nav) => (
+                    <Icon name={nav.icon} size={nav.iconSize} key={nav.icon} />
+                  ))}
                 <NotificationsOverview />
               </div>
               <div className="p-2">
