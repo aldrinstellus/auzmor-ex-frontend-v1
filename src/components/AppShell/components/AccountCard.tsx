@@ -20,7 +20,7 @@ const AccountCard = () => {
   const navigate = useNavigate();
   const { user, reset } = useAuth();
   const { isAdmin } = useRole();
-  const { isLxp } = useProduct();
+  const { isLxp, isOffice } = useProduct();
 
   const logoutMutation = useMutation(logout, {
     onSuccess: async () => {
@@ -125,7 +125,7 @@ const AccountCard = () => {
                   <div>User Settings</div>
                 </div>
               </Link>
-              {isAdmin && (
+              {isOffice && isAdmin && (
                 <Link to="/admin">
                   <div
                     className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}

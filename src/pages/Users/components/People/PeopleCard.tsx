@@ -32,6 +32,7 @@ import ReactivatePeople from '../ReactivateModal/Reactivate';
 import clsx from 'clsx';
 import RemoveTeamMember from '../DeleteModals/TeamMember';
 import { FC } from 'react';
+import useProduct from 'hooks/useProduct';
 
 export interface IPeopleCardProps {
   userData: IGetUser;
@@ -73,6 +74,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     workEmail,
     createdAt,
   } = userData;
+  const { isLxp } = useProduct();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -294,6 +296,9 @@ const PeopleCard: FC<IPeopleCardProps> = ({
         <div
           className="flex flex-col gap-4 items-center z-10 py-6 px-4 justify-between h-full"
           onClick={() => {
+            if (isLxp) {
+              return null;
+            }
             if (id === user?.id) {
               return navigate('/profile');
             }

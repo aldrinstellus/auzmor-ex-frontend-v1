@@ -1,4 +1,5 @@
 import Icon from 'components/Icon';
+import useProduct from 'hooks/useProduct';
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
 
@@ -16,6 +17,8 @@ export interface INavbarMenuItemProps {
 }
 
 const NavbarMenuItem: FC<INavbarMenuItemProps> = ({ nav }) => {
+  const { isLxp } = useProduct();
+
   return nav.disabled ? (
     <div
       className="flex flex-col items-center p-2"
@@ -37,7 +40,9 @@ const NavbarMenuItem: FC<INavbarMenuItemProps> = ({ nav }) => {
         const isActive = navLinkIsActive || nav.isActive;
         return (
           <div
-            className="flex flex-col items-center"
+            className={`flex ${
+              isLxp ? 'flex-row gap-1' : 'flex-col'
+            }   items-center`}
             data-testid={nav.dataTestId}
           >
             <Icon

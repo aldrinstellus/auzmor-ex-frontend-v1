@@ -96,6 +96,9 @@ import SvgUserRoleOutline from '../components/UserRole/UserRole';
 import SvgWarningCircleOutline from '../components/WarningCircle/WarningCircleOutline';
 import SvgCheckboxOutline from '../components/Checkbox/CheckboxOutline';
 import SvgCloudAddOutline from '../components/CloudAdd/CloudAddOutline';
+import SvgLifeBuoyOutline from '../components/LifeBuoy/LifeBuoyoutline';
+import SvgShoppingCartOutline from '../components/ShoppingCart/ShoppingCartOutline';
+import SvgMessageQuestionOutline from '../components/MessageQuestion/MessageQuestionOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -196,4 +199,7 @@ export const outlineIcon = {
   warningCirlceOutline: SvgWarningCircleOutline,
   zoomInOutline: SvgZoomInOutline,
   zoomOutOutline: SvgZoomOutOutline,
+  lifeBuoyOutline: SvgLifeBuoyOutline,
+  shoppingCartOutline: SvgShoppingCartOutline,
+  messageQuestionOutline: SvgMessageQuestionOutline,
 };

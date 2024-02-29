@@ -14,6 +14,7 @@ import { useState } from 'react';
 import SubscriptionBanner from './SubscriptionBanner';
 import useProduct from 'hooks/useProduct';
 import { getLearnUrl } from 'utils/misc';
+import Icon from 'components/Icon';
 
 const adminNavigations = [
   {
@@ -22,6 +23,22 @@ const adminNavigations = [
     hoverIcon: 'adminFilled',
     linkTo: '/admin',
     dataTestId: 'office-admin-page',
+    iconSize: 24,
+  },
+];
+const learnNavigations = [
+  {
+    icon: 'messageQuestionOutline',
+    hoverIcon: 'messageQuestionFilled',
+    linkTo: '/learn', // its a modal in lms will fix it
+    dataTestId: 'learn-help-support-page',
+    iconSize: 24,
+  },
+  {
+    icon: 'shoppingCartOutline',
+    hoverIcon: 'shoppingCartFilled',
+    linkTo: `${getLearnUrl()}/user/checkout`,
+    dataTestId: 'office-admin-page', // need to change
     iconSize: 24,
   },
 ];
@@ -58,15 +75,36 @@ const Navbar = () => {
       iconSize: 24,
     },
     {
-      label: isLxp ? 'Learning Hub' : 'People',
+      label: 'Teams',
+      icon: 'usersOutline',
+      hoverIcon: 'usersFilled',
+      linkTo: '/teams',
+      dataTestId: 'office-team-page',
+      iconSize: 24,
+      isActive: isLxp && location.pathname.includes('/teams'),
+      hidden: !isLxp,
+    },
+    {
+      label: 'People',
       icon: 'peopleOutline',
       hoverIcon: 'peopleFilled',
-      linkTo: isLxp ? getLearnUrl() : '/users',
+      linkTo: '/users',
       dataTestId: 'office-people-page',
       iconSize: 24,
       isActive:
         location.pathname.includes('/users') ||
         location.pathname.includes('/teams'),
+      hidden: isLxp,
+    },
+    {
+      label: 'Learning Hub',
+      icon: 'lifeBuoyOutline',
+      hoverIcon: 'lifeBuoyFilled',
+      linkTo: getLearnUrl(),
+      dataTestId: 'learn-page', // need to change
+      iconSize: 24,
+      isActive: false, // Since this is for Learning Hub, it's not active by default
+      hidden: !isLxp,
     },
     {
       label: 'Apps',
@@ -119,11 +157,16 @@ const Navbar = () => {
             </div>
             <Divider className="h-full" variant={Variant.Vertical} />
             <div className="flex items-center gap-6">
-              {isAdmin &&
+              {!isLxp &&
+                isAdmin &&
                 adminNavigations.map((nav) => (
                   <NavbarMenuItem nav={nav} key={nav.label} />
                 ))}
-              <div>
+              <div className=" flex gap-6 items-center">
+                {isLxp &&
+                  learnNavigations.map((nav) => (
+                    <Icon name={nav.icon} size={nav.iconSize} key={nav.icon} />
+                  ))}
                 <NotificationsOverview />
               </div>
               <div className="p-2">
