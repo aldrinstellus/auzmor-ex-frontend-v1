@@ -142,6 +142,9 @@ import VideoSlash from '../components/VideoSlash';
 import SvgInfoIcon from '../components/Info';
 import CloudAddIcon from '../components/CloudAdd';
 import BoldTick from '../components/BoldTick';
+import MenuBoardIcon from '../components/MenuBoard';
+import StarIcon from '../components/Star';
+import StarHalfIcon from '../components/StarHalf';
 
 export const icon = {
   add: Add,
@@ -243,6 +246,7 @@ export const icon = {
   marketplace: Marketplace,
   marriedIcon: MarriedIcon,
   maximize: MaximizeIcon,
+  menuBoard: MenuBoardIcon,
   mic: MicIcon,
   minus: Minus,
   more: MoreIcon,
@@ -274,6 +278,8 @@ export const icon = {
   shareForward: ShareForward,
   slack: SlackIcon,
   speaker: SpeakerIcon,
+  star: StarIcon,
+  starHalf: StarHalfIcon,
   support: Support,
   supportReaction: SupportReaction,
   tag: Tag,
