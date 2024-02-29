@@ -638,7 +638,7 @@ const feedFunction: Record<string, any> = {
 
 export const useInfiniteFeed = (pathname: string, q?: Record<string, any>) => {
   const { feed, setFeed } = useFeedStore();
-  const queryKey = pathname.replaceAll('/', '');
+  const queryKey = pathname.replaceAll('/', '') || 'feed';
   const queryFunction = queryKey === '' ? fetchFeed : feedFunction[queryKey];
   return {
     ...useInfiniteQuery({
