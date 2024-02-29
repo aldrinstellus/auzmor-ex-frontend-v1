@@ -46,6 +46,7 @@ import MyTeamWidget from 'components/MyTeamWidget';
 import useRole from 'hooks/useRole';
 import { isFiltersEmpty, isRegularPost } from 'utils/misc';
 import useMediaQuery from 'hooks/useMediaQuery';
+import ProgressTrackerWidget from 'components/ProgressTrackerWidget';
 
 interface IFeedProps {}
 
@@ -401,6 +402,7 @@ const Feed: FC<IFeedProps> = () => {
 
   const getRightWidgets = () => (
     <>
+      <ProgressTrackerWidget />
       <CelebrationWidget type={CELEBRATION_TYPE.Birthday} />
       <CelebrationWidget type={CELEBRATION_TYPE.WorkAnniversary} />
       <AnnouncementCard openModal={openModal} className="sticky top-24" />

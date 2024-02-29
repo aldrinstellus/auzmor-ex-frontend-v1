@@ -83,6 +83,8 @@ import SvgLauncherFilled from '../components/Launcher/LauncherFilled';
 import SvgFeedFilled from '../components/Feed/FeedFilled';
 import PostBookMarkFilled from '../components/PostBookmark/PostBookmarkFilled';
 import SvgCloudAddFilled from '../components/CloudAdd/CloudAddFilled';
+import SvgMenuBoardFilled from '../components/MenuBoard/MenuBoardFilled';
+import SvgStarFilled from '../components/Star/StarFilled';
 import SvgLifeBuoyFilled from '../components/LifeBuoy/LifeBuoyFilled';
 import SvgShoppingCartFilled from '../components/ShoppingCart/ShoppingCartFilled';
 import SvgMessageQuestionFilled from '../components/MessageQuestion/MessageQuestionFilled';
@@ -149,6 +151,7 @@ export const filledIcon = {
   loveFilled: SvgLoveFilled,
   magicStarFilled: SvgMagicStarFilled,
   maximizeFilled: SvgMaximizeFilled,
+  menuBoardFilled: SvgMenuBoardFilled,
   micFilled: SvgMicFilled,
   moreFilled: SvgMoreFilled,
   noteFavouriteFilled: SvgNoteFavouriteFilled,
@@ -166,6 +169,7 @@ export const filledIcon = {
   settingThreeFilled: SvgSettingThreeFilled,
   slackFilled: SvgSlackFilled,
   speakerFilled: SvgSpeakerFilled,
+  starFilled: SvgStarFilled,
   supportFilled: SvgSupportFilled,
   tickCircleFilled: SvgTickCircleFilled,
   trashFilled: SvgTrashFilled,
