@@ -43,7 +43,7 @@ const routers = createBrowserRouter(
       <Route element={<RequireAuth />}>
         <Route
           path="/"
-          element={<Feed />}
+          element={<Navigate to="/feed" replace={true} />}
           // loader={() => {
           //   // ⬇️ loader fetch data as earlier as possible
           //   return '';
