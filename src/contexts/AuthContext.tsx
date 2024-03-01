@@ -121,6 +121,18 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
       query.delete('regionUrl');
     }
 
+    const visitToken = query.get('visitToken');
+    if (visitToken) {
+      setItem('visitToken', visitToken);
+      query.delete('visitToken');
+    }
+
+    const viewAsRole = query.get('role');
+    if (viewAsRole) {
+      setItem('viewAsRole', viewAsRole);
+      query.delete('viewAsRole');
+    }
+
     if (token) {
       setItem(process.env.SESSION_KEY || 'uat', token);
       query.delete('accessToken');
