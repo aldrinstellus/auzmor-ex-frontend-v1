@@ -130,7 +130,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
     const viewAsRole = query.get('role');
     if (viewAsRole) {
       setItem('viewAsRole', viewAsRole);
-      query.delete('viewAsRole');
+      query.delete('role');
     }
 
     if (token) {
