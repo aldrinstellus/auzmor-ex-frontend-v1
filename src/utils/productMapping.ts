@@ -2,4 +2,7 @@ export const HIDDEN_COMPONENTS_FOR_LXP_ONLY = [
   'CelebrationWidget',
   'AppLauncher',
 ];
-export const VISIBLE_COMPONENTS_FOR_LXP_ONLY = ['ProgressTrackerWidget'];
+export const VISIBLE_COMPONENTS_FOR_LXP_ONLY = [
+  'ProgressTrackerWidget',
+  'EventWidget',
+];

@@ -34,13 +34,6 @@ const learnNavigations = [
     dataTestId: 'learn-help-support-page',
     iconSize: 24,
   },
-  {
-    icon: 'shoppingCartOutline',
-    hoverIcon: 'shoppingCartFilled',
-    linkTo: `${getLearnUrl()}/user/checkout`,
-    dataTestId: 'office-admin-page', // need to change
-    iconSize: 24,
-  },
 ];
 
 const Navbar = () => {

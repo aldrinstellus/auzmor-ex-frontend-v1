@@ -148,6 +148,8 @@ import StarHalfIcon from '../components/StarHalf';
 import LifeBuoyIcon from '../components/LifeBuoy';
 import ShopingCartIcon from '../components/ShoppingCart';
 import MessageQuestionIcon from '../components/MessageQuestion';
+import VideoPlayIcon from '../components/VideoPlay';
+import RadarIcon from '../components/Radar';
 
 export const icon = {
   add: Add,
@@ -293,11 +295,13 @@ export const icon = {
   userRemove: UserRemove,
   users: UsersIcon,
   video: VideoIcon,
+  radar: RadarIcon,
   videoSlash: VideoSlash,
   warningCircle: WarningCircleIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
   lifeBuoy: LifeBuoyIcon,
   shoppingCart: ShopingCartIcon,
+  videoPlay: VideoPlayIcon,
   messageQuestion: MessageQuestionIcon,
 };
