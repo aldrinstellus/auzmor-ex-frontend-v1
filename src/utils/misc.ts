@@ -507,11 +507,20 @@ export const insertAt = (str: string, index: number, insertStr: string) => {
 };
 
 export const getLearnUrl = () => {
+  const subdomain = getSubDomain(window.location.host);
   return `${insertAt(
     process.env.REACT_APP_LEARN_BASE_URL || 'https://learn.auzmor.com',
     'https://'.length,
-    `${getSubDomain(window.location.host)}.` || '',
+    subdomain ? `${subdomain}.` : '',
   )}`;
+};
+
+export const getCookieValue = (key: string) => {
+  const cookieValue = document.cookie
+    .split('; ')
+    .find((row) => row.startsWith(`${key}=`))
+    ?.split('=')[1];
+  return cookieValue;
 };
 
 export const deleteCookie = (key: string) => {

@@ -9,7 +9,14 @@ import { getItem } from './persist';
 export enum ProductEnum {
   Lxp = 'lxp',
   Office = 'office',
+  Learn = 'learn',
 }
+
+const productBaseUrlMap: { [key in ProductEnum]: string } = {
+  [ProductEnum.Lxp]: process.env.REACT_APP_LXP_BACKEND_BASE_URL || '',
+  [ProductEnum.Office]: process.env.REACT_APP_OFFICE_BACKEND_BASE_URL || '',
+  [ProductEnum.Learn]: process.env.REACT_APP_LEARN_BACKEND_BASE_URL || '',
+};
 
 export const getProduct: () => ProductEnum = () => {
   if (process.env.NODE_ENV === 'development') {
@@ -34,15 +41,12 @@ export const getProduct: () => ProductEnum = () => {
   return ProductEnum.Office;
 };
 
-class ApiService {
+export class ApiService {
   instance: AxiosInstance;
 
-  constructor() {
+  constructor(product?: ProductEnum) {
     this.instance = axios.create({
-      baseURL:
-        getProduct() === ProductEnum.Lxp
-          ? process.env.REACT_APP_LXP_BACKEND_BASE_URL
-          : process.env.REACT_APP_OFFICE_BACKEND_BASE_URL,
+      baseURL: productBaseUrlMap[product || getProduct()],
       withCredentials: true,
     });
 

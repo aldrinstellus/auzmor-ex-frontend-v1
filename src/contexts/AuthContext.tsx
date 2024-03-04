@@ -15,7 +15,6 @@ import AccountDeactivated from 'components/AccountDeactivated';
 import { useBrandingStore } from 'stores/branding';
 import { INotificationSettings } from 'queries/users';
 import useProduct from 'hooks/useProduct';
-import { ProductEnum } from 'utils/apiService';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -97,7 +96,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [sessionExpired, setSessionExpired] = useState(false);
   const [accountDeactivated, setAccountDeactivated] = useState(false);
-  const { product } = useProduct();
+  const { isLxp } = useProduct();
 
   const setBranding = useBrandingStore((state) => state.setBranding);
 
@@ -178,7 +177,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
         }
       }
     } else {
-      if (product === ProductEnum.Lxp && !!getSubDomain(window.location.host)) {
+      if (isLxp && !!getSubDomain(window.location.host)) {
         window.location.replace(getLearnUrl());
       }
     }
@@ -237,7 +236,11 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
     userChannel.onmessage = (data: any) => {
       if (data?.data?.payload?.type === 'SIGN_OUT') {
         reset();
-        return window.location.replace(`${window.location.origin}/logout`);
+        if (isLxp) {
+          window.location.replace(`${getLearnUrl()}`);
+        } else {
+          window.location.replace(`${window.location.origin}/logout`);
+        }
       }
     };
   }, []);

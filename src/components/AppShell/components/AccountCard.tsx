@@ -15,6 +15,7 @@ import {
 } from 'utils/misc';
 import useRole from 'hooks/useRole';
 import useProduct from 'hooks/useProduct';
+import { learnLogout } from 'queries/learn';
 
 const AccountCard = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const AccountCard = () => {
   const { isAdmin } = useRole();
   const { isLxp, isOffice } = useProduct();
 
-  const logoutMutation = useMutation(logout, {
+  const logoutMutation = useMutation(isLxp ? learnLogout : logout, {
     onSuccess: async () => {
       reset();
       userChannel.postMessage({
@@ -31,20 +32,20 @@ const AccountCard = () => {
           type: 'SIGN_OUT',
         },
       });
-      navigate('/logout');
+      if (isLxp) {
+        deleteCookie('region_url');
+        deleteCookie(getCookieParam());
+        window.location.replace(`${getLearnUrl()}`);
+      }
+      if (isOffice) {
+        navigate('/logout');
+      }
     },
   });
 
   const handleSignout = () => {
-    if (isLxp) {
-      deleteCookie('region_url');
-      deleteCookie(getCookieParam());
-      reset();
-      window.location.replace(`${getLearnUrl()}`);
-    } else {
-      logoutMutation.mutate();
-      close();
-    }
+    logoutMutation.mutate();
+    close();
   };
 
   const menuItemStyle = clsx({
