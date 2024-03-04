@@ -10,7 +10,7 @@ import useMediaQuery from 'hooks/useMediaQuery';
 import Unsupported from 'pages/Unsupported';
 import ProductProvider from 'contexts/ProductProvider';
 import { ProductEnum, getProduct } from 'utils/apiService';
-import { getSubDomain } from 'utils/misc';
+import { getLearnUrl, getSubDomain } from 'utils/misc';
 
 // Redirect to learn if user lands on lxp generic page.
 if (getProduct() === ProductEnum.Lxp && !!!getSubDomain(window.location.host)) {
@@ -23,6 +23,11 @@ if (getProduct() === ProductEnum.Lxp && !!!getSubDomain(window.location.host)) {
 
 function App() {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
+
+  if (getProduct() === ProductEnum.Lxp && !isDesktop && isDesktop !== null) {
+    window.location.replace(getLearnUrl());
+  }
+
   return isDesktop ? (
     <QueryClientProvider client={queryClient}>
       <ProductProvider>
