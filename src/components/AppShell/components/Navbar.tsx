@@ -30,7 +30,7 @@ const learnNavigations = [
   {
     icon: 'messageQuestionOutline',
     hoverIcon: 'messageQuestionFilled',
-    linkTo: '/learn', // its a modal in lms will fix it
+    linkTo: `${getLearnUrl()}?openHelpSupport=true`,
     dataTestId: 'learn-help-support-page',
     iconSize: 24,
   },
@@ -145,7 +145,7 @@ const Navbar = () => {
           <div className="flex items-center gap-8 h-full">
             <div className="flex items-center gap-6">
               {navigations.map((nav) => (
-                <NavbarMenuItem nav={nav} key={nav.label} />
+                <NavbarMenuItem nav={nav} key={nav.dataTestId} />
               ))}
             </div>
             <Divider className="h-full" variant={Variant.Vertical} />
@@ -153,12 +153,19 @@ const Navbar = () => {
               {!isLxp &&
                 isAdmin &&
                 adminNavigations.map((nav) => (
-                  <NavbarMenuItem nav={nav} key={nav.label} />
+                  <NavbarMenuItem nav={nav} key={nav.dataTestId} />
                 ))}
               <div className=" flex gap-6 items-center">
                 {isLxp &&
                   learnNavigations.map((nav) => (
-                    <Icon name={nav.icon} size={nav.iconSize} key={nav.icon} />
+                    <Icon
+                      name={nav.icon}
+                      size={nav.iconSize}
+                      key={nav.dataTestId}
+                      onClick={() => {
+                        window.open(nav.linkTo);
+                      }}
+                    />
                   ))}
                 <NotificationsOverview />
               </div>

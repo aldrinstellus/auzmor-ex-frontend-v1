@@ -12,7 +12,7 @@ const SvgMessageQuestionOutline = (props: SVGProps<SVGSVGElement>) => {
     >
       <g>
         <g
-          stroke="#737373"
+          stroke="currentColor"
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth="1.2"
