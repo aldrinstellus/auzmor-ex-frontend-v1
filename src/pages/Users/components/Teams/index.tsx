@@ -30,6 +30,7 @@ import useAuth from 'hooks/useAuth';
 import useURLParams from 'hooks/useURLParams';
 import useRole from 'hooks/useRole';
 import NoDataFound from 'components/NoDataFound';
+import useProduct from 'hooks/useProduct';
 interface IForm {
   search?: string;
 }
@@ -80,6 +81,7 @@ const Team: FC<ITeamProps> = ({
 
   const { user } = useAuth();
   const { isAdmin } = useRole();
+  const { isLxp } = useProduct();
   const [teamFlow, setTeamFlow] = useState<TeamFlow>(TeamFlow.CreateTeam); // to context
   const [teamDetails, setTeamDetails] = useState<Record<string, any> | null>(
     {},
@@ -245,15 +247,17 @@ const Team: FC<ITeamProps> = ({
           )}
         </div>
         <div className="flex items-center justify-center space-x-2">
-          <IconButton
-            icon="filterLinear"
-            onClick={openFilterModal}
-            variant={IconVariant.Secondary}
-            size={IconSize.Medium}
-            borderAround
-            className="bg-white !p-[10px]"
-            dataTestId="teams-filter"
-          />
+          {!isLxp ? (
+            <IconButton
+              icon="filterLinear"
+              onClick={openFilterModal}
+              variant={IconVariant.Secondary}
+              size={IconSize.Medium}
+              borderAround
+              className="bg-white !p-[10px]"
+              dataTestId="teams-filter"
+            />
+          ) : null}
           <Sort
             setFilter={handleSetSortFilter}
             filterKey={{ createdAt: 'createdAt', aToZ: 'name' }}

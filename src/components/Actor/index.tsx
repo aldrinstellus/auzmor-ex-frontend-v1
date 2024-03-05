@@ -14,6 +14,7 @@ import AudiencePopup from 'components/AudiencePopup';
 import Tooltip, { Variant } from 'components/Tooltip';
 import UserCard from 'components/UserCard';
 import Icon from 'components/Icon';
+import useProduct from 'hooks/useProduct';
 
 type ActorProps = {
   contentMode?: string;
@@ -37,6 +38,7 @@ const Actor: FC<ActorProps> = ({
   audience,
 }) => {
   const { user } = useAuth();
+  const { isLxp } = useProduct();
 
   const actionLabel = useMemo(() => {
     if (postType === 'BIRTHDAY') {
@@ -57,16 +59,18 @@ const Actor: FC<ActorProps> = ({
     return '';
   }, [postType]);
 
+  const profileUrl = isLxp
+    ? ''
+    : `${
+        createdBy?.userId && createdBy.userId !== user?.id
+          ? '/users/' + createdBy.userId
+          : '/profile'
+      }`;
+
   return (
     <div className="flex items-center gap-4 flex-1">
       <div>
-        <Link
-          to={`${
-            createdBy?.userId && createdBy.userId !== user?.id
-              ? '/users/' + createdBy.userId
-              : '/profile'
-          }`}
-        >
+        <Link to={profileUrl}>
           <Avatar
             name={getFullName(createdBy) || 'U'}
             size={32}
@@ -88,11 +92,7 @@ const Actor: FC<ActorProps> = ({
             className="!p-4 !shadow-md !rounded-9xl !z-[999]"
           >
             <Link
-              to={`${
-                createdBy?.userId && createdBy.userId !== user?.id
-                  ? '/users/' + createdBy.userId
-                  : '/profile'
-              }`}
+              to={profileUrl}
               className="hover:text-primary-500 hover:underline"
             >
               {createdBy

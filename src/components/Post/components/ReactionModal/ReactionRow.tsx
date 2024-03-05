@@ -1,5 +1,6 @@
 import Avatar from 'components/Avatar';
 import useAuth from 'hooks/useAuth';
+import useProduct from 'hooks/useProduct';
 import { IGetReaction } from 'queries/reaction';
 import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -16,10 +17,12 @@ const ReactionRow: FC<IReactionRowProps> = ({
 }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { isLxp } = useProduct();
   return (
     <div
       className="flex justify-between py-5 border-b-1 border-neutral-100 cursor-pointer"
       onClick={() => {
+        if (isLxp) return;
         if (reaction?.createdBy.userId === user?.id) {
           return navigate('/profile');
         }

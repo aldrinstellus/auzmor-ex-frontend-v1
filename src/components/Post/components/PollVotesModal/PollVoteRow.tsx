@@ -1,5 +1,6 @@
 import Avatar from 'components/Avatar';
 import useAuth from 'hooks/useAuth';
+import useProduct from 'hooks/useProduct';
 import { IGetPollVote } from 'queries/pollVotes';
 import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,14 +11,16 @@ export interface IPollVoteRowProps {
   isLoading?: boolean;
 }
 
-const ReactionRow: FC<IPollVoteRowProps> = ({ vote, isLoading = false }) => {
+const PollVoteRow: FC<IPollVoteRowProps> = ({ vote, isLoading = false }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { isLxp } = useProduct();
 
   return (
     <div
       className="flex justify-between py-5 border-b-1 border-neutral-100 cursor-pointer"
       onClick={() => {
+        if (isLxp) return;
         if (vote?.id === user?.id) {
           return navigate('/profile');
         }
@@ -43,34 +46,8 @@ const ReactionRow: FC<IPollVoteRowProps> = ({ vote, isLoading = false }) => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col w-1/2">
-        <div className="flex flex-row w-full justify-end">
-          {/* <div
-            className={`text-neutral-500 text-xs truncate mr-6 ${
-              isLoading && 'w-1/3'
-            }`}
-          >
-            {reaction?.createdBy.designation ||
-              (isLoading && <Skeleton />) ||
-              'NA'}
-          </div>
-          <div className="mr-6 flex items-center">
-            <div className="w-1 h-1 bg-neutral-500 rounded-full"></div>
-          </div>
-          <div
-            className={`text-neutral-500 text-xs truncate ${
-              isLoading && 'w-1/3'
-            }`}
-          >
-            {reaction?.createdBy.workLocation ||
-              (isLoading && <Skeleton />) ||
-              'NA'}
-          </div> */}
-        </div>
-        <div></div>
-      </div>
     </div>
   );
 };
 
-export default ReactionRow;
+export default PollVoteRow;

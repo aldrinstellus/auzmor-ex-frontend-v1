@@ -7,6 +7,7 @@ import UserCard from 'components/UserCard';
 import { ILocation } from 'queries/location';
 import { UserStatus } from 'queries/users';
 import { getUserCardTooltipProps } from 'utils/misc';
+import useProduct from 'hooks/useProduct';
 
 type MentionProps = {
   value: string;
@@ -29,6 +30,10 @@ const Mention: FC<MentionProps> = ({
   status,
 }): ReactElement => {
   const { user } = useAuth();
+  const { isLxp } = useProduct();
+  const profileUrl = isLxp
+    ? ''
+    : `${userId && userId !== user?.id ? '/users/' + userId : '/profile'}`;
   return (
     <Tooltip
       tooltipContent={
@@ -46,10 +51,7 @@ const Mention: FC<MentionProps> = ({
       variant={Variant.Light}
       className="!p-4 !shadow-md !rounded-9xl !z-[999]"
     >
-      <Link
-        to={userId && userId !== user?.id ? '/users/' + userId : '/profile'}
-        className="hover:underline hover:text-primary-500"
-      >
+      <Link to={profileUrl} className="hover:underline hover:text-primary-500">
         <span
           className="cursor-pointer mention"
           data-testid={`feedpage-at-${value}`}

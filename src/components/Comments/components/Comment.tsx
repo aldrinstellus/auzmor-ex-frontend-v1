@@ -39,6 +39,7 @@ import { produce } from 'immer';
 import Divider, { Variant } from 'components/Divider';
 import Tooltip, { Variant as TooltipVariant } from 'components/Tooltip';
 import UserCard from 'components/UserCard';
+import useProduct from 'hooks/useProduct';
 
 interface CommentProps {
   comment: IComment;
@@ -59,6 +60,7 @@ export const Comment: FC<CommentProps> = ({ comment, customNode = null }) => {
   const previousShowReply = useRef<boolean>(false);
 
   const { user } = useAuth();
+  const { isLxp } = useProduct();
 
   const menuItemStyle = clsx({
     'flex flex-row items-center py-3 px-6 gap-2.5 border-b text-sm hover:bg-primary-50 cursor-pointer rounded-b-9xl':
@@ -143,19 +145,20 @@ export const Comment: FC<CommentProps> = ({ comment, customNode = null }) => {
     },
   });
 
+  const profileUrl = isLxp
+    ? ''
+    : `${
+        comment?.createdBy?.userId && comment.createdBy.userId !== user?.id
+          ? '/users/' + comment.createdBy.userId
+          : '/profile'
+      }`;
+
   return (
     <div className="flex flex-col">
       <div className="bg-neutral-100 p-3 rounded-9xl mb-4">
         <div className="flex flex-row justify-between gap-4">
           <div>
-            <Link
-              to={
-                comment?.createdBy?.userId &&
-                comment.createdBy.userId !== user?.id
-                  ? '/users/' + comment.createdBy.userId
-                  : '/profile'
-              }
-            >
+            <Link to={profileUrl}>
               <Avatar
                 name={comment?.createdBy?.fullName}
                 size={32}
@@ -172,14 +175,7 @@ export const Comment: FC<CommentProps> = ({ comment, customNode = null }) => {
               variant={TooltipVariant.Light}
               className="!p-4 !shadow-md !rounded-9xl !z-[999]"
             >
-              <Link
-                to={
-                  comment?.createdBy?.userId &&
-                  comment.createdBy.userId !== user?.id
-                    ? '/users/' + comment.createdBy.userId
-                    : '/profile'
-                }
-              >
+              <Link to={profileUrl}>
                 <div className="text-neutral-900 font-bold text-sm hover:text-primary-500 hover:underline">
                   {getFullName(comment?.createdBy)}
                 </div>

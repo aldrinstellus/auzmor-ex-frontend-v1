@@ -48,6 +48,8 @@ import { isFiltersEmpty, isRegularPost } from 'utils/misc';
 import useMediaQuery from 'hooks/useMediaQuery';
 import ProgressTrackerWidget from 'components/ProgressTrackerWidget';
 import EventWidget from 'components/EventWidget';
+import { useGetRecommendation } from 'queries/learn';
+import Recommendation from 'components/Recommendation';
 
 interface IFeedProps {}
 
@@ -78,19 +80,25 @@ const Feed: FC<IFeedProps> = () => {
   const [searchParams] = useSearchParams();
   const { pathname } = useLocation();
   const hashtag = searchParams.get('hashtag') || '';
-
   const bookmarks = pathname === '/bookmarks';
   const scheduled = pathname === '/scheduledPosts';
-
-  const { ref, inView } = useInView();
   const [open, openModal, closeModal] = useModal(undefined, false);
   const [appliedFeedFilters, setAppliedFeedFilters] = useState<IPostFilters>({
     [PostFilterKeys.PostType]: [],
     [PostFilterKeys.PostPreference]: [],
   });
-  const { feed } = useFeedStore();
   const { isAdmin } = useRole();
+  const { feed } = useFeedStore();
+  const { ref, inView } = useInView();
   const currentDate = new Date().toISOString();
+
+  // Learn data
+  const { data: recommendationData, isLoading: recommendationLoading } =
+    useGetRecommendation();
+  const trendingCards =
+    recommendationData?.data?.result?.data?.trending?.trainings || [];
+  const recentlyPublishedCards =
+    recommendationData?.data?.result?.data?.recently_published?.trainings || [];
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteFeed(
@@ -411,6 +419,23 @@ const Feed: FC<IFeedProps> = () => {
     </>
   );
 
+  const trendingContentIndex = useMemo(() => {
+    const totalPosts = announcementFeedIds.length + regularFeedIds.length;
+    if (totalPosts >= 5) {
+      return 4;
+    } else if (totalPosts >= 3 && totalPosts < 5) {
+      return 2;
+    } else return -3;
+  }, [announcementFeedIds, regularFeedIds]);
+
+  const recentlyPublishedIndex = useMemo(() => {
+    if (trendingCards.length > 0) {
+      return trendingContentIndex + 2;
+    } else {
+      return trendingContentIndex;
+    }
+  }, [trendingCards, trendingContentIndex]);
+
   return (
     <div className="pb-6 flex justify-between">
       <div className="z-10 w-[293px] flex flex-col gap-6">
@@ -428,24 +453,33 @@ const Feed: FC<IFeedProps> = () => {
           getEmptyFeedComponent()
         ) : (
           <div className="flex flex-col gap-6">
-            {announcementFeedIds?.map((feedId, index) => (
-              <div
-                data-testid={`feed-post-${index}`}
-                className="flex flex-col gap-6"
-                key={feedId.id}
-              >
-                <VirtualisedPost post={feed[feedId.id!]} />
-              </div>
-            ))}
-            {regularFeedIds?.map((feedId, index) => (
-              <div
-                data-testid={`feed-post-${index}`}
-                className="flex flex-col gap-6"
-                key={feedId.id}
-              >
-                <VirtualisedPost post={feed[feedId.id!]} />
-              </div>
-            ))}
+            {[...announcementFeedIds, ...regularFeedIds]?.map(
+              ({ id }, index) => (
+                <>
+                  <div
+                    data-testid={`feed-post-${index}`}
+                    className="flex flex-col gap-6"
+                    key={id}
+                  >
+                    <VirtualisedPost post={feed[id!]} />
+                  </div>
+                  {index === trendingContentIndex && (
+                    <Recommendation
+                      cards={trendingCards}
+                      title="Trending Content"
+                      isLoading={recommendationLoading}
+                    />
+                  )}
+                  {index === recentlyPublishedIndex && (
+                    <Recommendation
+                      cards={recentlyPublishedCards}
+                      title="Recently Published"
+                      isLoading={recommendationLoading}
+                    />
+                  )}
+                </>
+              ),
+            )}
           </div>
         )}
 
