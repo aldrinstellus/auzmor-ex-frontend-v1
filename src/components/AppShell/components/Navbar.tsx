@@ -93,7 +93,7 @@ const Navbar = () => {
       label: 'Learning Hub',
       icon: 'lifeBuoyOutline',
       hoverIcon: 'lifeBuoyFilled',
-      linkTo: getLearnUrl(),
+      linkTo: `${getLearnUrl()}/user`,
       dataTestId: 'learn-page', // need to change
       iconSize: 24,
       isActive: false, // Since this is for Learning Hub, it's not active by default

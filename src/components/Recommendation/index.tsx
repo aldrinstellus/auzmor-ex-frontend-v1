@@ -3,6 +3,7 @@ import Card from 'components/Card';
 import LearnCard from 'components/LearnCard';
 import { useShouldRender } from 'hooks/useShouldRender';
 import React, { FC } from 'react';
+import { getLearnUrl } from 'utils/misc';
 
 const ID = 'Recommendation';
 
@@ -31,6 +32,7 @@ const Recommendation: FC<IRecommendationProps> = ({
           rightIconSize={12}
           rightIconClassName="text-primary-500"
           size={Size.ExtraSmall}
+          onClick={() => window.location.replace(`${getLearnUrl()}/user`)}
           className="!bg-transparent !text-primary-500 hover:text-primary-600 active:text-primary-700 text-xs font-normal"
         />
       </div>
