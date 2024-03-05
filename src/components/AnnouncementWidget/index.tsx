@@ -14,6 +14,9 @@ import EmptyState from './components/EmptyState';
 import { FC, memo, useMemo } from 'react';
 import { isEmpty } from 'lodash';
 import clsx from 'clsx';
+import { useShouldRender } from 'hooks/useShouldRender';
+
+const ID = 'AnnouncementWidget';
 
 export interface IAnnouncementCardProps {
   postId?: string;
@@ -26,6 +29,10 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
   openModal,
   className = '',
 }) => {
+  const shouldRender = useShouldRender(ID);
+  if (!shouldRender) {
+    return <></>;
+  }
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const navigate = useNavigate();
