@@ -1,8 +1,8 @@
-import { FC, useMemo } from 'react';
+import { FC, ReactNode, useMemo } from 'react';
 import Avatar from 'components/Avatar';
 import { VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
-import { IAudience, ICreatedBy } from 'queries/post';
+import { IAudience, ICreatedBy, PostTitle } from 'queries/post';
 import { Link } from 'react-router-dom';
 import {
   getAvatarColor,
@@ -25,6 +25,7 @@ type ActorProps = {
   audience?: IAudience[];
   entityId?: string;
   postType?: string;
+  title?: PostTitle;
 };
 
 const Actor: FC<ActorProps> = ({
@@ -36,6 +37,7 @@ const Actor: FC<ActorProps> = ({
   // disabled = false,
   entityId,
   audience,
+  title,
 }) => {
   const { user } = useAuth();
   const { isLxp } = useProduct();
@@ -67,6 +69,10 @@ const Actor: FC<ActorProps> = ({
           : '/profile'
       }`;
 
+  const parseTitle: (title: PostTitle) => ReactNode = (_title) => {
+    return <p>This is title</p>;
+  };
+
   return (
     <div className="flex items-center gap-4 flex-1">
       <div>
@@ -80,33 +86,38 @@ const Actor: FC<ActorProps> = ({
         </Link>
       </div>
       <div className="flex flex-col flex-1">
-        <div
-          className="font-bold text-sm text-neutral-900 flex gap-1"
-          data-testid={dataTestId}
-        >
-          <Tooltip
-            tooltipContent={
-              <UserCard user={getUserCardTooltipProps(createdBy)} />
-            }
-            variant={Variant.Light}
-            className="!p-4 !shadow-md !rounded-9xl !z-[999]"
+        {title ? (
+          parseTitle(title)
+        ) : (
+          <div
+            className="font-bold text-sm text-neutral-900 flex gap-1"
+            data-testid={dataTestId}
           >
-            <Link
-              to={profileUrl}
-              className="hover:text-primary-500 hover:underline"
+            <Tooltip
+              tooltipContent={
+                <UserCard user={getUserCardTooltipProps(createdBy)} />
+              }
+              variant={Variant.Light}
+              className="!p-4 !shadow-md !rounded-9xl !z-[999]"
             >
-              {createdBy
-                ? getFullName(createdBy)
-                : user
-                ? getFullName(user)
-                : ''}
-            </Link>
-          </Tooltip>
+              <Link
+                to={profileUrl}
+                className="hover:text-primary-500 hover:underline"
+              >
+                {createdBy
+                  ? getFullName(createdBy)
+                  : user
+                  ? getFullName(user)
+                  : ''}
+              </Link>
+            </Tooltip>
 
-          <span className="text-sm font-normal text-neutral-900">
-            {actionLabel}
-          </span>
-        </div>
+            <span className="text-sm font-normal text-neutral-900">
+              {actionLabel}
+            </span>
+          </div>
+        )}
+
         {/* </Link> */}
         {contentMode === VIEW_POST ? (
           <div className="flex items-center gap-2">
