@@ -3,6 +3,7 @@ import Card from 'components/Card';
 import LearnCard from 'components/LearnCard';
 import { useShouldRender } from 'hooks/useShouldRender';
 import React, { FC } from 'react';
+import { getLearnUrl } from 'utils/misc';
 
 const ID = 'Recommendation';
 
@@ -18,13 +19,13 @@ const Recommendation: FC<IRecommendationProps> = ({
   isLoading,
 }) => {
   const shouldRender = useShouldRender(ID);
-  if (!shouldRender || !cards.length) {
+  if (!shouldRender) {
     return <></>;
   }
   return (
-    <Card className="flex-col gap-4 p-4">
-      <div className="flex justify-between">
-        <p className="text-xs font-bold text-neutral-900">{title}</p>
+    <Card className="flex flex-col gap-4 px-4 pt-4 relative h-[366px]">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-bold text-neutral-900">{title}</p>
         <Button
           label="Show more"
           rightIcon={'arrowRight'}
@@ -32,17 +33,20 @@ const Recommendation: FC<IRecommendationProps> = ({
           rightIconClassName="text-primary-500"
           size={Size.ExtraSmall}
           className="!bg-transparent !text-primary-500 hover:text-primary-600 active:text-primary-700 text-xs font-normal"
+          onClick={() => window.location.replace(`${getLearnUrl()}/user`)}
         />
       </div>
-      <div className="flex gap-4">
-        {cards.map((card: Record<string, any>) => (
-          <LearnCard
-            className="!w-[254px] !h-[290px]"
-            data={card}
-            key={card.id}
-            isLoading={isLoading}
-          />
-        ))}
+      <div className="flex top-8 gap-4 w-full overflow-hidden hover:overflow-x-scroll pb-4">
+        <div className="flex gap-4">
+          {cards.map((card: Record<string, any>) => (
+            <LearnCard
+              className="!w-[254px] !h-[290px]"
+              data={card}
+              key={card.id}
+              isLoading={isLoading}
+            />
+          ))}
+        </div>
       </div>
     </Card>
   );

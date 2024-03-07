@@ -7,6 +7,7 @@ export type CardProps = {
   className?: string;
   dataTestId?: string;
   shadowOnHover?: boolean;
+  onClick?: () => void;
 };
 
 const Card: FC<CardProps> = ({
@@ -14,6 +15,7 @@ const Card: FC<CardProps> = ({
   className = '',
   dataTestId = '',
   shadowOnHover = false,
+  onClick = () => {},
 }) => {
   const [isHovered, hoverEvents] = useHover();
 
@@ -35,7 +37,12 @@ const Card: FC<CardProps> = ({
   );
 
   return (
-    <div className={cardStyle} data-testid={dataTestId} {...hoverEvents}>
+    <div
+      className={cardStyle}
+      data-testid={dataTestId}
+      {...hoverEvents}
+      onClick={onClick}
+    >
       {children}
     </div>
   );
