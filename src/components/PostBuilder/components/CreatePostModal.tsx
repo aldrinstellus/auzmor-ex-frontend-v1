@@ -578,7 +578,9 @@ const CreatePostModal: FC<ICreatePostModal> = ({
           <div data-testid="createpost-createpoll-modal">
             <CreatePoll
               closeModal={
-                mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+                mode === PostBuilderMode.Create && !isEmpty
+                  ? showConfirm
+                  : handleOnClose
               }
             />
           </div>
@@ -586,21 +588,27 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         {activeFlow === CreatePostFlow.CreateShoutout && (
           <CreateShoutout
             closeModal={
-              mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+              mode === PostBuilderMode.Create && !isEmpty
+                ? showConfirm
+                : handleOnClose
             }
           />
         )}
         {activeFlow === CreatePostFlow.SchedulePost && (
           <SchedulePost
             closeModal={
-              mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+              mode === PostBuilderMode.Create && !isEmpty
+                ? showConfirm
+                : handleOnClose
             }
           />
         )}
         {activeFlow === CreatePostFlow.Audience && (
           <Audience
             closeModal={
-              mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+              mode === PostBuilderMode.Create && !isEmpty
+                ? showConfirm
+                : handleOnClose
             }
             dataTestId="audience-selection"
           />
