@@ -6,7 +6,7 @@ import ProgressBar from 'components/ProgressBar';
 import Rating from 'components/Rating';
 import React, { FC, useMemo } from 'react';
 import Skeleton from 'react-loading-skeleton';
-import { titleCase } from 'utils/misc';
+import { getLearnUrl, titleCase } from 'utils/misc';
 import moment from 'moment';
 import useAuth from 'hooks/useAuth';
 
@@ -110,8 +110,26 @@ const LearnCard: FC<ILearnCardProps> = ({
       .format('hh:mm a')}`;
   };
 
+  const handleCardClick = () => {
+    switch (type) {
+      case LearnCardEnum.Course:
+        window.location.replace(
+          `${getLearnUrl()}/user/courses/${data.id}/detail`,
+        );
+        break;
+      case LearnCardEnum.Path:
+        window.location.replace(
+          `${getLearnUrl()}/user/paths/${data.id}/detail`,
+        );
+        break;
+      case LearnCardEnum.Event:
+        window.location.replace(`${getLearnUrl()}/events/${data.id}`);
+        break;
+    }
+  };
+
   return (
-    <Card className={style}>
+    <Card className={style} onClick={handleCardClick}>
       <img
         src={data?.image_url}
         className="w-full h-full object-cover group-hover/card:scale-[1.10]"

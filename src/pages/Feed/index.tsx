@@ -419,22 +419,34 @@ const Feed: FC<IFeedProps> = () => {
     </>
   );
 
-  const trendingContentIndex = useMemo(() => {
+  const recommendationIndex = useMemo(() => {
     const totalPosts = announcementFeedIds.length + regularFeedIds.length;
     if (totalPosts >= 5) {
-      return 4;
+      if (trendingCards.length > 1) {
+        if (recentlyPublishedCards.length > 1) {
+          return { tIndex: 4, rIndex: 9 };
+        } else {
+          return { tIndex: 4, rIndex: -1 };
+        }
+      } else {
+        if (recentlyPublishedCards.length > 1) {
+          return { tIndex: -1, rIndex: 4 };
+        } else {
+          return { tIndex: -1, rIndex: -1 };
+        }
+      }
     } else if (totalPosts >= 3 && totalPosts < 5) {
-      return 2;
-    } else return -3;
+      if (trendingCards.length > 1) {
+        return { tIndex: 2, rIndex: -1 };
+      } else {
+        if (recentlyPublishedCards.length > 1) {
+          return { tIndex: -1, rIndex: 2 };
+        } else {
+          return { tIndex: -1, rIndex: -1 };
+        }
+      }
+    } else return { tIndex: -1, rIndex: -1 };
   }, [announcementFeedIds, regularFeedIds]);
-
-  const recentlyPublishedIndex = useMemo(() => {
-    if (trendingCards.length > 0) {
-      return trendingContentIndex + 2;
-    } else {
-      return trendingContentIndex;
-    }
-  }, [trendingCards, trendingContentIndex]);
 
   return (
     <div className="pb-6 flex justify-between">
@@ -463,14 +475,14 @@ const Feed: FC<IFeedProps> = () => {
                   >
                     <VirtualisedPost post={feed[id!]} />
                   </div>
-                  {index === trendingContentIndex && (
+                  {index === recommendationIndex.tIndex && (
                     <Recommendation
                       cards={trendingCards}
                       title="Trending Content"
                       isLoading={recommendationLoading}
                     />
                   )}
-                  {index === recentlyPublishedIndex && (
+                  {index === recommendationIndex.rIndex && (
                     <Recommendation
                       cards={recentlyPublishedCards}
                       title="Recently Published"

@@ -6,6 +6,7 @@ import { useShouldRender } from 'hooks/useShouldRender';
 import { useProgressTracker } from 'queries/learn';
 import React, { FC, useMemo } from 'react';
 import { getLearnUrl } from 'utils/misc';
+import Tracker from 'images/tracker.svg';
 
 interface IProgressTrackerWidgetProps {
   className?: string;
@@ -45,8 +46,16 @@ const ProgressTrackerWidget: FC<IProgressTrackerWidgetProps> = ({
       </div>
       <div className="mt-2">
         {!isLoading && !!!trackerData.length ? (
-          <Card className="flex items-center justify-center w-full h-[350px]">
-            No E-Learning Trainings Found.
+          <Card className="flex flex-col w-full h-[264px] py-6 items-center gap-4">
+            <p className="text-base font-bold text-neutral-900">
+              Progress tracking
+            </p>
+            <div className="flex flex-col items-center gap-5">
+              <img src={Tracker} />
+              <p className="text-neutral-500 text-xs">
+                Your can track your course, path success here
+              </p>
+            </div>
           </Card>
         ) : (
           <LearnCard
