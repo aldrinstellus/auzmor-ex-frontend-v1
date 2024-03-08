@@ -149,7 +149,7 @@ const LearnCard: FC<ILearnCardProps> = ({
           zIndex: 2,
         }}
       />
-      <div className="absolute top-4 left-4 px-2.5 py-1 text-xs bg-black text-white font-medium rounded">
+      <div className="absolute top-4 left-4 px-2.5 py-1 text-xs bg-primary-500 text-white font-medium rounded">
         {type === LearnCardEnum.Course && titleCase(LearnCardEnum.Course)}
         {type === LearnCardEnum.Event && titleCase(LearnCardEnum.Event)}
         {type === LearnCardEnum.Path && titleCase(LearnCardEnum.Path)}
@@ -187,12 +187,12 @@ const LearnCard: FC<ILearnCardProps> = ({
             />
           )}
         </div>
-        {type !== LearnCardEnum.Event &&
+        {type === LearnCardEnum.Course &&
           data?.dependent_entities?.chapters_count > 0 && (
             <div className="flex gap-2">
               <div className="flex gap-1 items-center">
                 <Icon
-                  name="teacher"
+                  name="videoSquare"
                   size={16}
                   color="text-white"
                   hover={false}
@@ -209,6 +209,23 @@ const LearnCard: FC<ILearnCardProps> = ({
               </div>
             </div>
           )}
+
+        {type === LearnCardEnum.Path && (
+          <div className="flex gap-2">
+            <div className="flex gap-1 items-center">
+              <Icon name="teacher" size={16} color="text-white" hover={false} />
+              <p className="text-xs text-white">
+                {data?.dependent_entities?.courses_count} Course
+              </p>
+            </div>
+            <div className="flex gap-1 items-center">
+              <Icon name="clock" size={16} color="text-white" hover={false} />
+              <p className="text-xs text-white">
+                {getDuration(data?.duration)}
+              </p>
+            </div>
+          </div>
+        )}
 
         {type === LearnCardEnum.Event && (
           <div className="flex gap-2">

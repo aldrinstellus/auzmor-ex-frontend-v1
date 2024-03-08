@@ -152,6 +152,7 @@ import VideoPlayIcon from '../components/VideoPlay';
 import RadarIcon from '../components/Radar';
 import TeacherIcon from '../components/Teacher';
 import MedalStarIcon from '../components/MedalStar';
+import VideoSquareIcon from '../components/VideoSquare';
 
 export const icon = {
   add: Add,
@@ -308,4 +309,5 @@ export const icon = {
   messageQuestion: MessageQuestionIcon,
   teacher: TeacherIcon,
   medalStar: MedalStarIcon,
+  videoSquare: VideoSquareIcon,
 };
