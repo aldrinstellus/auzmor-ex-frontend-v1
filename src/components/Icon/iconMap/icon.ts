@@ -150,6 +150,8 @@ import ShopingCartIcon from '../components/ShoppingCart';
 import MessageQuestionIcon from '../components/MessageQuestion';
 import VideoPlayIcon from '../components/VideoPlay';
 import RadarIcon from '../components/Radar';
+import TeacherIcon from '../components/Teacher';
+import MedalStarIcon from '../components/MedalStar';
 
 export const icon = {
   add: Add,
@@ -304,4 +306,6 @@ export const icon = {
   shoppingCart: ShopingCartIcon,
   videoPlay: VideoPlayIcon,
   messageQuestion: MessageQuestionIcon,
+  teacher: TeacherIcon,
+  medalStar: MedalStarIcon,
 };

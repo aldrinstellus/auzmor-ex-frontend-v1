@@ -99,6 +99,7 @@ import SvgCloudAddOutline from '../components/CloudAdd/CloudAddOutline';
 import SvgLifeBuoyOutline from '../components/LifeBuoy/LifeBuoyoutline';
 import SvgShoppingCartOutline from '../components/ShoppingCart/ShoppingCartOutline';
 import SvgMessageQuestionOutline from '../components/MessageQuestion/MessageQuestionOutline';
+import SvgTeacherOutline from '../components/Teacher/TeacherOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -202,4 +203,5 @@ export const outlineIcon = {
   lifeBuoyOutline: SvgLifeBuoyOutline,
   shoppingCartOutline: SvgShoppingCartOutline,
   messageQuestionOutline: SvgMessageQuestionOutline,
+  teacherOutline: SvgTeacherOutline,
 };

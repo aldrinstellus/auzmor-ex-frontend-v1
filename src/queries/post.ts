@@ -55,6 +55,14 @@ export interface IShoutoutRecipient {
   userId: string;
 }
 
+export type PostTitle = {
+  content: string;
+  target: {
+    link: string;
+    linkText: string;
+  };
+};
+
 export interface IPost {
   content: {
     text: string;
@@ -115,6 +123,41 @@ export interface IPost {
   bookmarked: boolean;
   acknowledged: boolean;
   shoutoutRecipients?: IShoutoutRecipient[];
+  title: PostTitle;
+  linkAttachments: Array<{
+    url: string;
+    title: string;
+    description: string;
+    image: string;
+    favicon: string;
+  }>;
+  cardContext: {
+    resource: string;
+    categories: any[];
+    title: string;
+    avatar: {
+      url: string;
+      text: string;
+    };
+    blockStrings: [
+      {
+        icon: string;
+        text: string;
+      },
+      {
+        icon: string;
+        text: string;
+      },
+    ];
+    image: {
+      url: string;
+      isOverlay: boolean;
+    };
+  };
+  ctaButton: {
+    text: string;
+    url: string;
+  };
 }
 
 export interface IPostPayload {

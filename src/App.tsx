@@ -10,16 +10,7 @@ import useMediaQuery from 'hooks/useMediaQuery';
 import Unsupported from 'pages/Unsupported';
 import ProductProvider from 'contexts/ProductProvider';
 import { ProductEnum, getProduct } from 'utils/apiService';
-import { getLearnUrl, getSubDomain } from 'utils/misc';
-
-// Redirect to learn if user lands on lxp generic page.
-if (getProduct() === ProductEnum.Lxp && !!!getSubDomain(window.location.host)) {
-  if (process.env.NODE_ENV !== 'development') {
-    window.location.replace(
-      process.env.REACT_APP_LEARN_BASE_URL || `https://learn.auzmor.com`,
-    );
-  }
-}
+import { getLearnUrl } from 'utils/misc';
 
 function App() {
   const isDesktop = useMediaQuery('(min-width: 1024px)');

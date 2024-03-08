@@ -15,6 +15,7 @@ import AccountDeactivated from 'components/AccountDeactivated';
 import { useBrandingStore } from 'stores/branding';
 import { INotificationSettings } from 'queries/users';
 import useProduct from 'hooks/useProduct';
+import { ProductEnum, getProduct } from 'utils/apiService';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -176,12 +177,16 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
           queryClient.clear();
         }
       }
-    } else {
-      if (isLxp && !!getSubDomain(window.location.host)) {
-        window.location.replace(getLearnUrl());
-      }
     }
-    setLoading(false);
+    if (
+      !!!token &&
+      getProduct() === ProductEnum.Lxp &&
+      !!getSubDomain(window.location.host)
+    ) {
+      window.location.replace(getLearnUrl());
+    } else {
+      setLoading(false);
+    }
   };
 
   const initSmartlook = () => {

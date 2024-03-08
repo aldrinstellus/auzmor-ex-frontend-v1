@@ -80,11 +80,11 @@ const LearnCard: FC<ILearnCardProps> = ({
     if (sec > 3600) {
       const h = Math.floor(sec / 3600);
       const m = Math.floor((sec / 3600 - h) * 60);
-      return `${h}hrs ${m}mins`;
+      return `${h} h ${m} m`;
     } else {
       const m = Math.floor(sec / 60);
       const s = Math.floor((sec / 60 - m) * 60);
-      return `${m} mins ${s} secs`;
+      return `${m} m ${s} s`;
     }
   };
 
@@ -167,27 +167,22 @@ const LearnCard: FC<ILearnCardProps> = ({
       )}
       <div className="absolute bottom-0 left-0 flex flex-col p-4 z-10 gap-2 w-full">
         <Categories />
-        <Rating rating={4.5} />
+        {data?.average_rating && <Rating rating={data?.average_rating} />}
         <div className="flex-col gap-0.5">
           <div className="text-white font-bold text-base line-clamp-2">
             {data?.title}
           </div>
-          {showProgressInfo && (
-            <p className="text-xxs font-medium text-white">
-              2 out of 3 chapters left
-            </p>
-          )}
-          {showProgressInfo && (
+          {showProgressInfo && data?.my_enrollment?.completed_percentage && (
             <ProgressBar
               total={100}
-              completed={80}
+              completed={data?.my_enrollment?.completed_percentage}
               customLabel={
                 <p className="text-white text-xs font-medium whitespace-nowrap">
-                  80% completed
+                  {data?.my_enrollment?.completed_percentage}% completed
                 </p>
               }
               className="w-full"
-              barClassName="w-[162px]"
+              barClassName="!w-[162px]"
               barFilledClassName="!bg-primary-500"
             />
           )}
@@ -196,7 +191,12 @@ const LearnCard: FC<ILearnCardProps> = ({
           data?.dependent_entities?.chapters_count > 0 && (
             <div className="flex gap-2">
               <div className="flex gap-1 items-center">
-                <Icon name="clock" size={16} color="text-white" hover={false} />
+                <Icon
+                  name="teacher"
+                  size={16}
+                  color="text-white"
+                  hover={false}
+                />
                 <p className="text-xs text-white">
                   {data?.dependent_entities?.chapters_count} Lessons
                 </p>
@@ -239,6 +239,7 @@ const LearnCard: FC<ILearnCardProps> = ({
               }
               image={data?.my_enrollment?.assigned_by?.image_url}
               size={32}
+              bgColor={data?.my_enrollment?.assigned_by?.profile_color}
             />
             <div className="flex-col gap-0.2">
               <div className="text-white text-sm font-medium">
@@ -252,6 +253,11 @@ const LearnCard: FC<ILearnCardProps> = ({
           </div>
         )}
       </div>
+      {data?.certificate && (
+        <div className="flex items-center justify-center h-5 w-5 absolute bottom-4 right-4 bg-primary-500 z-10 rounded">
+          <Icon name="medalStar" size={14} color="text-white" hover={false} />
+        </div>
+      )}
     </Card>
   );
 };
