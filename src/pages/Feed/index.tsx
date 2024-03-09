@@ -50,6 +50,8 @@ import ProgressTrackerWidget from 'components/ProgressTrackerWidget';
 import EventWidget from 'components/EventWidget';
 import { useGetRecommendation } from 'queries/learn';
 import Recommendation from 'components/Recommendation';
+import useProduct from 'hooks/useProduct';
+import { clsx } from 'clsx';
 
 interface IFeedProps {}
 
@@ -91,6 +93,7 @@ const Feed: FC<IFeedProps> = () => {
   const { feed } = useFeedStore();
   const { ref, inView } = useInView();
   const currentDate = new Date().toISOString();
+  const { isLxp } = useProduct();
 
   // Learn data
   const { data: recommendationData, isLoading: recommendationLoading } =
@@ -398,6 +401,12 @@ const Feed: FC<IFeedProps> = () => {
   }, [hashtag, feedIds, bookmarks, scheduled]);
 
   useEffect(() => {
+    if (!searchParams.has('hashtag')) {
+      setAppliedFeedFilters({ hashtags: [''] });
+    }
+  });
+
+  useEffect(() => {
     if (hashtag) {
       setAppliedFeedFilters({ hashtags: [hashtag] });
     }
@@ -411,8 +420,8 @@ const Feed: FC<IFeedProps> = () => {
 
   const getRightWidgets = () => (
     <>
-      <ProgressTrackerWidget className="sticky top-24" />
-      <EventWidget className="sticky top-[510px]" />
+      <ProgressTrackerWidget />
+      <EventWidget />
       <CelebrationWidget type={CELEBRATION_TYPE.Birthday} />
       <CelebrationWidget type={CELEBRATION_TYPE.WorkAnniversary} />
       <AnnouncementCard openModal={openModal} className="sticky top-24" />
@@ -447,6 +456,16 @@ const Feed: FC<IFeedProps> = () => {
       }
     } else return { tIndex: -1, rIndex: -1 };
   }, [announcementFeedIds, regularFeedIds]);
+
+  const rightWidgetStyles = useMemo(
+    () =>
+      clsx({
+        'sticky top-24 w-[293px] flex flex-col gap-6 h-[calc(100vh-104px)] overflow-scroll':
+          isLxp,
+        'w-[293px] flex flex-col gap-6': !isLxp,
+      }),
+    [isLxp],
+  );
 
   return (
     <div className="pb-6 flex justify-between">
@@ -504,7 +523,7 @@ const Feed: FC<IFeedProps> = () => {
         )}
       </div>
       {isLargeScreen && (
-        <div className="w-[293px] flex flex-col gap-6">{getRightWidgets()}</div>
+        <div className={rightWidgetStyles}>{getRightWidgets()}</div>
       )}
       {open && (
         <PostBuilder
