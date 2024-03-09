@@ -52,7 +52,18 @@ export const useProgressTracker = () => {
     enabled: !!isLxp,
   });
 };
+export const eventAttendee: any = async (id: string) => {
+  const data = await learnAPIService.get(`learner/events/${id}/attendees`);
+  return data;
+};
 
+export const useEventAttendee = (eventId: string) => {
+  return useQuery({
+    queryKey: ['event-attendee', eventId],
+    queryFn: () => eventAttendee(eventId),
+    staleTime: 15 * 60 * 1000,
+  });
+};
 export const useGetRecommendation = () => {
   const { isLxp } = useProduct();
   return useQuery({

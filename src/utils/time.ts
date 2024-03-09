@@ -129,9 +129,9 @@ export const getRemainingTime = (t1: string) => {
 };
 
 // Returns time from now till given date in human friendly format
-export const getTimeFromNow = (dateStr: string) => {
-  const finalDate = moment(new Date(dateStr));
-  const currentDate = moment();
+export const getTimeFromNow = (dateStr: string, timezone: string) => {
+  const finalDate = moment.tz(dateStr, timezone);
+  const currentDate = moment().tz(timezone);
   let monthsLeft = 0;
   let weeksLeft = 0;
   let daysLeft = 0;

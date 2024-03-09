@@ -6,22 +6,19 @@ import { formatDate } from 'components/CelebrationWidget/utils';
 import Icon from 'components/Icon';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import { useShouldRender } from 'hooks/useShouldRender';
-import { useInfiniteLearnEvents } from 'queries/learn';
+import { useEventAttendee, useInfiniteLearnEvents } from 'queries/learn';
 import React, { FC, useMemo } from 'react';
 import { getLearnUrl } from 'utils/misc';
 import { getTimeDifference, getTimeFromNow } from 'utils/time';
 import EmptyState from './Component/EmptyState';
+import AvatarList from 'components/AvatarList';
 
 interface IEventWidgetProps {
   className?: string;
-  isLive?: boolean;
 }
 const ID = 'EventWidget';
 
-const EventWidget: FC<IEventWidgetProps> = ({
-  className = '',
-  isLive = false, // will handle this case for ongoing events ..
-}) => {
+const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
   const { currentTimezone } = useCurrentTimezone();
   const style = useMemo(
     () => clsx({ 'min-w-[240px] ': true, [className]: true }),
@@ -31,6 +28,7 @@ const EventWidget: FC<IEventWidgetProps> = ({
   if (!shouldRender) {
     return <></>;
   }
+  const isLive = false;
   const { data: upcomingEvents, isLoading } = useInfiniteLearnEvents({
     q: { limit: 1, filter: 'UPCOMING' },
   });
@@ -38,6 +36,8 @@ const EventWidget: FC<IEventWidgetProps> = ({
     page?.data?.result?.data.map((event: any) => event),
   );
   const event = events?.[0];
+  const { data: attendees } = useEventAttendee(event?.id);
+  const eventsAttendees = attendees?.data?.result?.data;
   const userTimezone = event?.timezone || currentTimezone || 'Asia/Kolkata';
   const startDate = event?.start_date;
   const endDate = event?.end_date;
@@ -62,7 +62,7 @@ const EventWidget: FC<IEventWidgetProps> = ({
             return <EmptyState />;
           } else {
             return (
-              <div className="w-full h-[350px]  relative overflow-hidden group/card ">
+              <div className="w-full h-full  relative overflow-hidden group/card ">
                 <img
                   src={event?.image_url}
                   className="w-full  object-cover group-hover/card:scale-[1.10]"
@@ -73,7 +73,7 @@ const EventWidget: FC<IEventWidgetProps> = ({
                 />
                 {!isLive && (
                   <>
-                    <div className="absolute z-10 flex top-0 left-4 right-4 bottom-32 justify-center z-100 items-center inset-0">
+                    <div className="absolute z-10 flex top-0 left-4 right-4 bottom-40 justify-center z-100 items-center inset-0">
                       <Button
                         label={'Join event'}
                         onClick={() => {
@@ -99,11 +99,11 @@ const EventWidget: FC<IEventWidgetProps> = ({
                       isLive ? 'text-white' : 'text-primary-500'
                     } font-semibold`}
                   >
-                    {`Starts in ${getTimeFromNow(endDate)}`}
+                    {`Starts in ${getTimeFromNow(endDate, userTimezone)}`}
                   </p>
                 </div>
 
-                <div className="absolute  bg-white  bottom-0 left-0 flex flex-col p-4 z-10 gap-2 w-full">
+                <div className="absolute  bg-white   bottom-0 left-0 flex flex-col p-4 z-10 gap-2 w-full">
                   <div className="flex gap-1">
                     {event?.categories?.slice(0, 2)?.map((d: any) => {
                       return (
@@ -160,22 +160,22 @@ const EventWidget: FC<IEventWidgetProps> = ({
                       </p>
                     </div>
                   </div>
-                  {/* <div className="flex items-center gap-2"> // need  attendees info in api.
-                  <AvatarList
-                    size={32}
-                    users={['asd', 'asdas', 'asdasd', 'asdasd']}
-                    moreCount={20}
-                    className="-space-x-[12px]"
-                    avatarClassName="!b-[1px]"
-                  />
-
-                  <div className="text-xs  text-neutral-500 underline font-normal">
-                    More attendees
+                  <div className="flex items-center gap-2">
+                    {' '}
+                    <AvatarList
+                      size={32}
+                      users={eventsAttendees || []}
+                      moreCount={attendees?.data?.result?.total_records || 10}
+                      className="-space-x-[12px]"
+                      avatarClassName="!b-[1px]"
+                    />
+                    <div className="text-xs  text-neutral-500 underline font-normal">
+                      More attendees
+                    </div>
                   </div>
-                </div> */}
-                  {/* {isLive && (
-                  <Button label={'Join event'} className="w-full " />
-                )} */}
+                  {isLive && (
+                    <Button label={'Join event'} className="w-full " />
+                  )}
                 </div>
               </div>
             );

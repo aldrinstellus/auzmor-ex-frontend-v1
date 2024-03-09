@@ -23,7 +23,7 @@ const EmptyState = () => {
           label={'Create an event'}
           className="w-full"
           onClick={() => {
-            window.location.replace(`${getLearnUrl()}events/upcoming`);
+            window.location.replace(`${getLearnUrl()}/events/create`);
           }}
         />
       )}

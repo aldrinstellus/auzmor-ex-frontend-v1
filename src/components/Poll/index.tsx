@@ -20,6 +20,7 @@ import Button, {
 } from 'components/Button';
 import clsx from 'clsx';
 import useRole from 'hooks/useRole';
+import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 
 export enum PollMode {
   VIEW = 'VIEW',
@@ -77,6 +78,9 @@ const Poll: FC<IPoll & PollProps> = ({
   isDeletable = false,
   isAnnouncementWidgetPreview,
 }) => {
+  const { currentTimezone } = useCurrentTimezone();
+  const userTimezone = currentTimezone || 'Asia/Kolkata';
+
   const [showResults, setShowResults] = useState(false);
   const { isAdmin } = useRole();
   const getPost = useFeedStore((state) => state.getPost);
@@ -136,7 +140,7 @@ const Poll: FC<IPoll & PollProps> = ({
     .map((option) => option.votes)
     .reduce((s: number, a) => s + (a || 0), 0);
 
-  const timeLeft = getTimeFromNow(closedAt);
+  const timeLeft = getTimeFromNow(closedAt, userTimezone);
   const showTotal = mode === PollMode.VIEW;
   const voted = !!myVote?.length;
   const isLoading = voteMutation.isLoading || deleteVoteMutation.isLoading;
