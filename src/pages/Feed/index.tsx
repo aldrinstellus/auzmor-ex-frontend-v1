@@ -404,9 +404,6 @@ const Feed: FC<IFeedProps> = () => {
     if (!searchParams.has('hashtag')) {
       setAppliedFeedFilters({ hashtags: [''] });
     }
-  });
-
-  useEffect(() => {
     if (hashtag) {
       setAppliedFeedFilters({ hashtags: [hashtag] });
     }

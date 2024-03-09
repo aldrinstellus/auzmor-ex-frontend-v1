@@ -62,10 +62,14 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
             return <EmptyState />;
           } else {
             return (
-              <div className="w-full h-full  relative overflow-hidden group/card ">
+              <div
+                className={`w-full  ${
+                  isLive ? 'h-[397px]' : 'h-[353px]'
+                } relative overflow-hidden group/card `}
+              >
                 <img
                   src={event?.image_url}
-                  className="w-full  object-cover group-hover/card:scale-[1.10]"
+                  className="w-full h-[160px] object-cover group-hover/card:scale-[1.10]"
                   style={{
                     transition: 'all 0.25s ease-in 0s',
                     animation: '0.15s ease-in 0s 1 normal both running fadeIn',
@@ -99,7 +103,7 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
                       isLive ? 'text-white' : 'text-primary-500'
                     } font-semibold`}
                   >
-                    {`Starts in ${getTimeFromNow(endDate, userTimezone)}`}
+                    {`Starts in ${getTimeFromNow(startDate, userTimezone)}`}
                   </p>
                 </div>
 
