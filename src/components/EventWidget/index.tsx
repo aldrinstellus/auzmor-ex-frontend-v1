@@ -28,16 +28,34 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
   if (!shouldRender) {
     return <></>;
   }
-  const isLive = false;
-  const { data: upcomingEvents, isLoading } = useInfiniteLearnEvents({
-    q: { limit: 1, filter: 'UPCOMING' },
-  });
-  const events = upcomingEvents?.pages?.flatMap((page: any) =>
+  let isLive = true;
+  const { data: ongoingEvents, isLoading: isLoadingOngoing } =
+    useInfiniteLearnEvents({
+      q: { limit: 1, filter: 'ONGOING' },
+    });
+  const { data: upcomingEvents, isLoading: isLoadingUpcoming } =
+    useInfiniteLearnEvents({
+      q: { limit: 1, filter: 'UPCOMING' },
+    });
+  const isLoading = isLoadingOngoing || isLoadingUpcoming;
+  let events = ongoingEvents?.pages?.flatMap((page: any) =>
     page?.data?.result?.data.map((event: any) => event),
   );
+  if (!events) {
+    isLive = false;
+    events = upcomingEvents?.pages?.flatMap((page: any) =>
+      page?.data?.result?.data.map((event: any) => event),
+    );
+  }
   const event = events?.[0];
   const { data: attendees } = useEventAttendee(event?.id);
-  const eventsAttendees = attendees?.data?.result?.data;
+  const eventsAttendees = attendees?.data?.result?.data?.map(
+    (attendee: any) => ({
+      id: attendee.id,
+      name: attendee.full_name,
+      image: attendee.image_url,
+    }),
+  );
   const userTimezone = event?.timezone || currentTimezone || 'Asia/Kolkata';
   const startDate = event?.start_date;
   const endDate = event?.end_date;
@@ -50,7 +68,9 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
           label={'View all'}
           onClick={() => {
             window.location.replace(
-              `${getLearnUrl()}/user/trainings?type=events&tab=UPCOMING`,
+              `${getLearnUrl()}/user/trainings?type=events&tab=${
+                isLive ? 'ONGOING' : 'UPCOMING'
+              }`,
             );
           }}
           className="bg-transparent !text-primary-500 hover:!text-primary-600 hover:!bg-transparent active:!bg-transparent active:!text-primary-700"
@@ -103,7 +123,9 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
                       isLive ? 'text-white' : 'text-primary-500'
                     } font-semibold`}
                   >
-                    {`Starts in ${getTimeFromNow(startDate, userTimezone)}`}
+                    {isLive
+                      ? 'Live'
+                      : `Starts in ${getTimeFromNow(startDate, userTimezone)}`}
                   </p>
                 </div>
 

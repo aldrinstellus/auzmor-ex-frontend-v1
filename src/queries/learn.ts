@@ -62,6 +62,7 @@ export const useEventAttendee = (eventId: string) => {
     queryKey: ['event-attendee', eventId],
     queryFn: () => eventAttendee(eventId),
     staleTime: 15 * 60 * 1000,
+    enabled: !!eventId,
   });
 };
 export const useGetRecommendation = () => {
