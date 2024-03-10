@@ -200,7 +200,13 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
                     </div>
                   </div>
                   {isLive && (
-                    <Button label={'Join event'} className="w-full " />
+                    <Button
+                      label={'Join event'}
+                      className="w-full "
+                      onClick={() => {
+                        window.open(event?.conference_url, '_blank');
+                      }}
+                    />
                   )}
                 </div>
               </div>
