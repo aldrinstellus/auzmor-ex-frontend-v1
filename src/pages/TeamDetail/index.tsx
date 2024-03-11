@@ -161,7 +161,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                   {prevRoute === TeamTab.MyTeams ? 'My Teams' : 'All Teams'}
                 </div>
               </div>
-              {isAdmin ? (
+              {isAdmin && !isLxp ? (
                 <Tooltip
                   tooltipContent={
                     <div

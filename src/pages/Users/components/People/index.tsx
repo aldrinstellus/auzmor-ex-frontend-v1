@@ -579,14 +579,14 @@ const People: FC<IPeopleProps> = ({
                   >
                     No members yet
                   </div>
-                  {isAdmin ? (
+                  {isAdmin && !isLxp ? (
                     <div className="text-base font-medium text-neutral-500">
                       {"Let's get started by adding some members!"}
                     </div>
                   ) : null}
                 </div>
               </div>
-              {isAdmin ? (
+              {isAdmin && !isLxp ? (
                 <Button
                   label={'Add members'}
                   variant={Variant.Secondary}
