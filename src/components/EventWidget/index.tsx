@@ -10,8 +10,9 @@ import { useEventAttendee, useInfiniteLearnEvents } from 'queries/learn';
 import React, { FC, useMemo } from 'react';
 import { getLearnUrl } from 'utils/misc';
 import { getTimeDifference, getTimeFromNow } from 'utils/time';
-import EmptyState from './Component/EmptyState';
 import AvatarList from 'components/AvatarList';
+import Skeleton from 'react-loading-skeleton';
+import EmptyState from './Component/EmptyState';
 
 interface IEventWidgetProps {
   className?: string;
@@ -21,7 +22,7 @@ const ID = 'EventWidget';
 const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
   const { currentTimezone } = useCurrentTimezone();
   const style = useMemo(
-    () => clsx({ 'min-w-[240px] ': true, [className]: true }),
+    () => clsx({ 'min-w-[240px]  ': true, [className]: true }),
     [className],
   );
   const shouldRender = useShouldRender(ID);
@@ -41,7 +42,7 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
   let events = ongoingEvents?.pages?.flatMap((page: any) =>
     page?.data?.result?.data.map((event: any) => event),
   );
-  if (!events) {
+  if (events?.length == 0) {
     isLive = false;
     events = upcomingEvents?.pages?.flatMap((page: any) =>
       page?.data?.result?.data.map((event: any) => event),
@@ -59,7 +60,13 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
   const userTimezone = event?.timezone || currentTimezone || 'Asia/Kolkata';
   const startDate = event?.start_date;
   const endDate = event?.end_date;
-
+  if (isLoading) {
+    return (
+      <Card className="w-full h-[350px] relative overflow-hidden group/card">
+        <Skeleton className="w-full h-full" />
+      </Card>
+    );
+  }
   return (
     <div className={style}>
       <div className="flex justify-between items-center ">
@@ -76,11 +83,9 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
           className="bg-transparent !text-primary-500 hover:!text-primary-600 hover:!bg-transparent active:!bg-transparent active:!text-primary-700"
         />
       </div>
-      <Card className="mt-2 w-full   relative overflow-hidden ">
+      <Card className="mt-2 w-full relative overflow-hidden ">
         {(() => {
-          if (!event && !isLoading) {
-            return <EmptyState />;
-          } else {
+          if (events && events?.length > 0 && !isLoading) {
             return (
               <div
                 className={`w-full  ${
@@ -89,7 +94,7 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
               >
                 <img
                   src={event?.image_url}
-                  className="w-full h-[160px] object-cover group-hover/card:scale-[1.10]"
+                  className="w-full h-[160px]    object-cover group-hover/card:scale-[1.10]"
                   style={{
                     transition: 'all 0.25s ease-in 0s',
                     animation: '0.15s ease-in 0s 1 normal both running fadeIn',
@@ -212,6 +217,7 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
               </div>
             );
           }
+          return <EmptyState />;
         })()}
       </Card>
     </div>
