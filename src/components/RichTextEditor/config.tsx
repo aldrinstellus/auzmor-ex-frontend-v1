@@ -61,7 +61,7 @@ const mentionEntityFetch = async (character: string, searchTerm: string) => {
     const hashtagList = hashtags?.result?.data;
     const isOlderHashtag = hashtagList?.some((hashValue: IHashtags) => {
       if (hashtag) {
-        return hashValue?.name === hashtag;
+        return hashValue?.name?.startsWith(hashtag);
       } else {
         return true;
       }
