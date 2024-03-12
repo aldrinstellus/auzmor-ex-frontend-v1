@@ -424,7 +424,7 @@ const Feed: FC<IFeedProps> = () => {
 
   const recommendationIndex = useMemo(() => {
     const totalPosts = announcementFeedIds.length + regularFeedIds.length;
-    if (totalPosts >= 5) {
+    if (totalPosts > 10) {
       if (trendingCards.length > 1) {
         if (recentlyPublishedCards.length > 1) {
           return { tIndex: 4, rIndex: 9 };
@@ -434,6 +434,20 @@ const Feed: FC<IFeedProps> = () => {
       } else {
         if (recentlyPublishedCards.length > 1) {
           return { tIndex: -1, rIndex: 4 };
+        } else {
+          return { tIndex: -1, rIndex: -1 };
+        }
+      }
+    } else if (totalPosts <= 10 && totalPosts > 3) {
+      if (trendingCards.length > 1) {
+        if (recentlyPublishedCards.length > 1) {
+          return { tIndex: 2, rIndex: 5 };
+        } else {
+          return { tIndex: 2, rIndex: -1 };
+        }
+      } else {
+        if (recentlyPublishedCards.length > 1) {
+          return { tIndex: -1, rIndex: 2 };
         } else {
           return { tIndex: -1, rIndex: -1 };
         }
