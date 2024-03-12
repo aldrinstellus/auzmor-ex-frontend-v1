@@ -36,6 +36,7 @@ import useModal from 'hooks/useModal';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 
 import { useFeedStore } from 'stores/feedStore';
+import Avatar from 'components/Avatar';
 
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
@@ -72,25 +73,35 @@ const Post: FC<PostProps> = ({ post, customNode = null, setHasChanges }) => {
   const [showComments, openComments, closeComments] = useModal(
     ['WORK_ANNIVERSARY', 'BIRTHDAY'].includes(post?.occasionContext?.type),
   );
+  const [showPublishModal, openPublishModal, closePublishModal] = useModal();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-
   const [showReactionModal, openReactionModal, closeReactionModal] =
     useModal(false);
-
   const reaction = post?.myReaction?.reaction;
-
   const totalCount = Object.values(post.reactionsCount || {}).reduce(
     (total, count) => total + count,
     0,
   );
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
-
   const previousShowComment = useRef<boolean>(false);
-
   const { currentTimezone } = useCurrentTimezone();
+  const [
+    showEditSchedulePostModal,
+    openEditSchedulePostModal,
+    closeEditSchedulePostModal,
+  ] = useModal();
 
+  // Effects
+  useEffect(() => {
+    if (showComments) {
+      previousShowComment.current = true;
+    }
+    setHasChanges?.(showComments);
+  }, [showComments]);
+
+  // Mutations
   const createBookmarkMutation = useMutation({
     mutationKey: ['create-bookmark-mutation'],
     mutationFn: createBookmark,
@@ -126,7 +137,6 @@ const Post: FC<PostProps> = ({ post, customNode = null, setHasChanges }) => {
       await queryClient.invalidateQueries(['bookmarks'], { exact: false });
     },
   });
-
   const deleteBookmarkMutation = useMutation({
     mutationKey: ['delete-bookmark-mutation'],
     mutationFn: deleteBookmark,
@@ -160,6 +170,7 @@ const Post: FC<PostProps> = ({ post, customNode = null, setHasChanges }) => {
     },
   });
 
+  // Utility functions
   const handleBookmarkClick = (post: IPost) => {
     if (post.bookmarked) {
       deleteBookmarkMutation.mutate(post.id as string);
@@ -168,19 +179,105 @@ const Post: FC<PostProps> = ({ post, customNode = null, setHasChanges }) => {
     }
   };
 
-  useEffect(() => {
-    if (showComments) {
-      previousShowComment.current = true;
-    }
-    setHasChanges?.(showComments);
-  }, [showComments]);
+  const CustomCard: FC = () => {
+    return (
+      <Card className="w-full h-[350px] relative overflow-hidden group/card">
+        <img
+          src={post?.cardContext?.image?.url}
+          className="w-full h-full object-cover group-hover/card:scale-[1.10]"
+          style={{
+            transition: 'all 0.25s ease-in 0s',
+            animation: '0.15s ease-in 0s 1 normal both running fadeIn',
+          }}
+        />
+        <div
+          className="cursor-pointer rounded-lg absolute"
+          style={{
+            color: 'rgba(0,0,0,.87)',
+            boxSizing: 'inherit',
+            background:
+              'linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 55%, rgb(0, 0, 0) 100%)',
+            inset: '0px',
+            zIndex: 2,
+          }}
+        />
+        <div className="absolute top-4 left-4 px-2.5 py-1 text-xs bg-primary-500 text-white font-medium rounded">
+          {post?.cardContext?.resource}
+        </div>
 
-  const [showPublishModal, openPublishModal, closePublishModal] = useModal();
-  const [
-    showEditSchedulePostModal,
-    openEditSchedulePostModal,
-    closeEditSchedulePostModal,
-  ] = useModal();
+        <div className="absolute bottom-0 left-0 flex flex-col p-4 z-10 gap-2 w-full">
+          {post?.cardContext?.categories?.length && (
+            <div className="flex gap-2">
+              {post?.cardContext?.categories
+                ?.slice(0, 2)
+                ?.map((category: Record<string, any>) => (
+                  <div
+                    key={category?.id}
+                    className="flex px-2 py-1 rounded bg-white border border-white bg-opacity-10 border-opacity-20 max-w-[90px]"
+                  >
+                    <p className="text-xs font-medium truncate text-white">
+                      {category?.title}
+                    </p>
+                  </div>
+                ))}
+              {post?.cardContext?.categories?.length > 2 && (
+                <div className="px-2 py-1 rounded bg-white border border-white flex bg-opacity-10 text-white border-opacity-20 text-xs font-medium">
+                  +{post?.cardContext?.categories?.length - 2}
+                </div>
+              )}
+            </div>
+          )}
+          {post?.cardContext?.title && (
+            <div className="flex-col gap-0.5">
+              <div className="text-white font-bold text-base line-clamp-2">
+                {post?.cardContext?.title}
+              </div>
+            </div>
+          )}
+          {post?.cardContext?.avatar && (
+            <div className="flex items-center gap-2">
+              <Avatar
+                name={post?.cardContext?.avatar?.text || 'U'}
+                image={post?.cardContext?.avatar?.url}
+                size={32}
+              />
+              <div className="text-white text-sm font-medium">
+                {post?.cardContext?.avatar?.text || 'User'}
+              </div>
+            </div>
+          )}
+          {post?.cardContext?.blockStrings?.length && (
+            <div className="flex gap-2">
+              {post?.cardContext?.blockStrings?.map((blockString) => (
+                <div
+                  className="flex gap-1 items-center"
+                  key={blockString?.text}
+                >
+                  <Icon
+                    name={blockString.icon}
+                    size={16}
+                    color="text-white"
+                    hover={false}
+                  />
+                  <p className="text-xs text-white">{blockString?.text}</p>
+                </div>
+              ))}
+            </div>
+          )}
+          {post?.ctaButton?.text && (
+            <div className="flex font">
+              <Button
+                label={post?.ctaButton?.text}
+                onClick={() => window.location.replace(post?.ctaButton?.url)}
+                labelClassName="px-4 font-normal"
+                size={Size.Small}
+              />
+            </div>
+          )}
+        </div>
+      </Card>
+    );
+  };
 
   return (
     <>
@@ -245,6 +342,7 @@ const Post: FC<PostProps> = ({ post, customNode = null, setHasChanges }) => {
             </div>
           )}
           <RenderQuillContent data={post} />
+          {post?.cardContext && <CustomCard />}
           {/* Reaction Count */}
           {(totalCount > 0 || post?.commentsCount > 0) && !!!post.schedule && (
             <div className="flex flex-row justify-between py-3 border-y-1 border-y-neutral-100">
