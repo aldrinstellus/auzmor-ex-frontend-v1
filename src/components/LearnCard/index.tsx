@@ -165,7 +165,7 @@ const LearnCard: FC<ILearnCardProps> = ({
           </p>
         </div>
       )}
-      <div className="absolute bottom-0 left-0 flex flex-col p-4 z-10 gap-2 w-full">
+      <div className="absolute bottom-0 left-0 flex flex-col py-4 pl-4 z-10 gap-2 w-full">
         <Categories />
         {data?.average_rating && <Rating rating={data?.average_rating} />}
         <div className="flex-col gap-0.5">
