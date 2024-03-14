@@ -186,8 +186,8 @@ const Post: FC<PostProps> = ({ post, customNode = null, setHasChanges }) => {
     <>
       <Card className="flex flex-col">
         <AcknowledgementBanner data={post} />
-        <div className="post-content p-6 flex flex-col gap-4">
-          <div className="flex gap-4 justify-between items-start p-1">
+        <div className="post-content px-4 py-3 flex flex-col gap-3">
+          <div className="flex gap-3 justify-between items-start p-1">
             <Actor
               contentMode={VIEW_POST}
               createdTime={humanizeTime(post.createdAt!)}
@@ -227,7 +227,7 @@ const Post: FC<PostProps> = ({ post, customNode = null, setHasChanges }) => {
                   currentTimezone,
                 )}
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <Icon
                   name="editOutline"
                   size={16}

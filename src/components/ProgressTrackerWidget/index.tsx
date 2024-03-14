@@ -51,7 +51,7 @@ const ProgressTrackerWidget: FC<IProgressTrackerWidgetProps> = ({
               Progress tracking
             </p>
             <div className="flex flex-col items-center gap-5">
-              <img src={Tracker} />
+              <img src={Tracker} className="opacity-75" />
               <p className="text-neutral-500 text-xs">
                 Your can track your course, path success here
               </p>

@@ -18,7 +18,7 @@ const AvatarRow: FC<AppProps> = ({
   workLocation,
 }) => {
   return (
-    <div className="pl-6 py-4 flex items-start">
+    <div className="pl-6 py-4 flex items-center">
       <div className="flex items-center w-[260px]">
         <Avatar
           name={fullName}
@@ -37,7 +37,7 @@ const AvatarRow: FC<AppProps> = ({
           {department?.name || '-'}
         </div>
       </div>
-      <div className="h-1 w-1 rounded-full bg-neutral-500 relative top-1.5" />
+      <div className="h-1 w-1 rounded-full bg-neutral-500 relative" />
       <div className="flex items-center space-x-1 pl-3">
         <Icon name="location" size={16} />
         <div className="text-xs text-neutral-500">

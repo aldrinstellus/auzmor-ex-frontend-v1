@@ -133,7 +133,7 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
   );
 
   return (
-    <div className="w-full text-sm flex flex-col gap-4">
+    <div className="w-full text-sm flex flex-col gap-3">
       {!isEmpty && (
         <span
           className="line-clamp-3 paragraph pt-px break-normal [overflow-wrap:anywhere]"
