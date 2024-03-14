@@ -1,4 +1,4 @@
-import { FC, ReactNode, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import Likes from 'components/Reactions';
 import IconButton, {
   Variant as IconVariant,
@@ -10,7 +10,8 @@ import Popover from 'components/Popover';
 import clsx from 'clsx';
 import { humanizeTime } from 'utils/time';
 import useAuth from 'hooks/useAuth';
-import Reply from '../../Reply';
+import ReplyCard from 'components/Reply';
+import { Reply } from 'components/Reply/Reply';
 import Icon from 'components/Icon';
 import { Link } from 'react-router-dom';
 import RenderQuillContent from 'components/RenderQuillContent';
@@ -43,10 +44,10 @@ import useProduct from 'hooks/useProduct';
 
 interface CommentProps {
   comment: IComment;
-  customNode?: ReactNode;
+  replies?: IComment[];
 }
 
-export const Comment: FC<CommentProps> = ({ comment, customNode = null }) => {
+export const Comment: FC<CommentProps> = ({ comment, replies = [] }) => {
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
   const { comment: storedcomments, setComment } = useCommentStore();
@@ -366,11 +367,15 @@ export const Comment: FC<CommentProps> = ({ comment, customNode = null }) => {
 
       {showReplies ? (
         <div className="mt-4">
-          <Reply entityId={comment.id} />
+          <ReplyCard entityId={comment.id} />
         </div>
-      ) : (
-        !previousShowReply.current && customNode
-      )}
+      ) : !previousShowReply.current && replies?.length ? (
+        replies.map((reply) => (
+          <div className="mt-4 ml-8" key={reply.id}>
+            <Reply comment={reply} />
+          </div>
+        ))
+      ) : null}
 
       {showReactionModal && (
         <ReactionModal

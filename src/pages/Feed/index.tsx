@@ -490,7 +490,10 @@ const Feed: FC<IFeedProps> = () => {
                     className="flex flex-col gap-6"
                     key={id}
                   >
-                    <VirtualisedPost post={feed[id!]} />
+                    <VirtualisedPost
+                      post={feed[id!]}
+                      comments={feed[id]?.relevantComments || []}
+                    />
                   </div>
                   {index === recommendationIndex.tIndex && (
                     <Recommendation

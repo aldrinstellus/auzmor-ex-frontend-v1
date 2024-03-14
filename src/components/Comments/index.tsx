@@ -57,7 +57,7 @@ export interface IComment {
   };
   mentions: IMention[];
   hashtags: string[];
-  latestComments: object[];
+  relevantComments: IComment[];
   entityType: string;
   entityId: string;
   orgId: string;
