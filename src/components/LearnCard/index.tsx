@@ -261,12 +261,15 @@ const LearnCard: FC<ILearnCardProps> = ({
             <div className="flex-col gap-0.2">
               <div className="text-white text-sm font-medium">
                 {data?.my_enrollment?.assigned_by?.display_name == user?.name
-                  ? 'self assigned'
+                  ? 'Self Enrolled'
                   : data?.my_enrollment?.assigned_by?.full_name ||
                     data?.my_enrollment?.assigned_by?.first_name ||
                     'User'}
               </div>
-              <div className="text-xs text-white font-light">Assigned by</div>
+              {data?.my_enrollment?.assigned_by?.display_name ==
+              user?.name ? null : (
+                <div className="text-xs text-white font-light">Assigned by</div>
+              )}
             </div>
           </div>
         )}
