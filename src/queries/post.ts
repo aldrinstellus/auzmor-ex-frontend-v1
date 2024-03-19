@@ -119,6 +119,7 @@ export interface IPost {
     type?: string;
     id?: string;
   };
+  relevantComments: IComment[];
   reactionsCount: IReactionsCount;
   commentsCount: number;
   createdAt: string;

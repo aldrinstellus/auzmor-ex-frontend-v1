@@ -1,4 +1,4 @@
-import { FC, ReactNode, memo, useEffect, useRef } from 'react';
+import { FC, memo, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
@@ -10,7 +10,8 @@ import Card from 'components/Card';
 import Actor from 'components/Actor';
 import Tooltip from 'components/Tooltip';
 import { VIEW_POST } from 'components/Actor/constant';
-import CommentCard from 'components/Comments/index';
+import CommentCard, { IComment } from 'components/Comments/index';
+import { Comment } from 'components/Comments/components/Comment';
 import Likes, { ReactionType } from 'components/Reactions';
 import Icon from 'components/Icon';
 import RenderQuillContent from 'components/RenderQuillContent';
@@ -66,14 +67,13 @@ export const iconsStyle = (key: string) => {
 
 type PostProps = {
   post: IPost;
-  customNode?: ReactNode;
+  comments?: IComment[];
   setHasChanges?: (flag: boolean) => any;
 };
 
-const Post: FC<PostProps> = ({ post, customNode = null, setHasChanges }) => {
-  const [showComments, openComments, closeComments] = useModal(
-    ['WORK_ANNIVERSARY', 'BIRTHDAY'].includes(post?.occasionContext?.type),
-  );
+const Post: FC<PostProps> = ({ post, comments = [], setHasChanges }) => {
+  console.log({ comments });
+  const [showComments, openComments, closeComments] = useModal(false);
   const [showPublishModal, openPublishModal, closePublishModal] = useModal();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -442,9 +442,16 @@ const Post: FC<PostProps> = ({ post, customNode = null, setHasChanges }) => {
           <div className="pb-3 px-6">
             <CommentCard entityId={post?.id || ''} />
           </div>
-        ) : (
-          !previousShowComment.current && customNode
-        )}
+        ) : !previousShowComment.current && comments?.length ? (
+          comments.map((comment) => (
+            <div className="mx-6 mb-3" key={comment.id}>
+              <Comment
+                comment={comment}
+                replies={comment?.relevantComments || []}
+              />
+            </div>
+          ))
+        ) : null}
       </Card>
 
       {showReactionModal && (
