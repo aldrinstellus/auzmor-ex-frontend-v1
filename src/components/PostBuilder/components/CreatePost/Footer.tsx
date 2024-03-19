@@ -43,10 +43,10 @@ const Footer: FC<IFooterProps> = ({
     schedule,
     postType,
     isEmpty,
+    media,
   } = useContext(CreatePostContext);
   const { isMember } = useRole();
   const canSchedule = !(!!!schedule && mode === PostBuilderMode.Edit);
-
   const updateContext = () => {
     setEditorValue({
       text: quillRef
@@ -68,7 +68,8 @@ const Footer: FC<IFooterProps> = ({
     (postType !== PostType.Shoutout && postType !== PostType.Update);
   const isPollDisabled =
     operatorXOR(isPreviewRemoved, !!previewUrl) ||
-    (postType !== PostType.Poll && postType !== PostType.Update);
+    (postType !== PostType.Poll && postType !== PostType.Update) ||
+    media.length != 0;
 
   const postMenuItems = useMemo(
     () => [
