@@ -12,7 +12,7 @@ const LinkAttachments: FC<ILinkAttachmentsProps> = ({ attachments }) => {
         <div
           key={each.title}
           onClick={() => window.location.replace(each.title)}
-          className="flex p-2 rounded-9xl border border-neutral-200 w-[173px] justify-center items-center gap-2"
+          className="flex p-2 rounded-9xl border border-neutral-200 w-[173px] justify-center items-center gap-2 cursor-pointer"
         >
           <div className="flex w-6 h-8">
             <img className="object-cover" src={each.image} />

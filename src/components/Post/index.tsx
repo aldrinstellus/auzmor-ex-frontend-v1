@@ -192,7 +192,7 @@ const Post: FC<PostProps> = ({ post, customNode = null, setHasChanges }) => {
           }}
         />
         <div
-          className="cursor-pointer rounded-lg absolute"
+          className="rounded-lg absolute"
           style={{
             color: 'rgba(0,0,0,.87)',
             boxSizing: 'inherit',
