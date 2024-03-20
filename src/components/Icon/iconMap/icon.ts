@@ -89,6 +89,7 @@ import Plus from '../components/Plus';
 import RotateLeft from '../components/RotateLeft';
 import SettingIcon from '../components/Setting';
 import SettingThreeIcon from '../components/SettingThree';
+import UserAdminIcon from '../components/UserAdmin';
 import LogoutIcon from '../components/Logout';
 import ClipboardCloseIcon from '../components/ClipboardClose';
 import SeekForwardIcon from '../components/SeekForward';
@@ -297,6 +298,7 @@ export const icon = {
   userManagement: UserManagement,
   userRemove: UserRemove,
   users: UsersIcon,
+  userAdmin: UserAdminIcon,
   video: VideoIcon,
   radar: RadarIcon,
   videoSlash: VideoSlash,

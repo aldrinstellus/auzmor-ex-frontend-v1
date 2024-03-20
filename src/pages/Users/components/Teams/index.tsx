@@ -66,6 +66,26 @@ export interface ITeamProps {
   closeTeamModal: () => void;
 }
 
+const ShowingCount: FC<{
+  isLoading: boolean;
+  count: number;
+  className?: string;
+}> = ({ isLoading, count, className = '' }) => {
+  return (
+    <div className={className}>
+      {!isLoading ? (
+        <div className="text-neutral-500">Showing {count} results</div>
+      ) : (
+        <Skeleton
+          className="!w-32"
+          containerClassName="flex-1"
+          borderRadius={100}
+        />
+      )}
+    </div>
+  );
+};
+
 const Team: FC<ITeamProps> = ({
   showTeamModal,
   openTeamModal,
@@ -217,35 +237,43 @@ const Team: FC<ITeamProps> = ({
 
   return (
     <div className="relative pb-8">
-      <div className="flex items-center justify-between">
-        <div className="flex space-x-4">
-          <Button
-            label="My Teams"
-            size={Size.Small}
-            variant={Variant.Secondary}
-            className={`h-9 grow-0 ${!isAdmin && 'pointer-events-none'}`}
-            dataTestId="my-teams"
-            active={tab === TeamTab.MyTeams && !searchValue}
-            onClick={() => {
-              updateParam('tab', TeamTab.MyTeams);
-              setTab(TeamTab.MyTeams);
-            }}
+      <div className="flex items-center justify-between mb-4">
+        {isLxp && (
+          <ShowingCount
+            isLoading={isLoading}
+            count={data?.pages[0]?.data?.result?.totalCount}
           />
-          {isAdmin && (
+        )}
+        {!isLxp && (
+          <div className="flex space-x-4">
             <Button
-              label="All Teams"
+              label="My Teams"
               size={Size.Small}
               variant={Variant.Secondary}
-              className="h-9 grow-0"
-              dataTestId="all-teams"
-              active={tab === TeamTab.AllTeams && !searchValue}
+              className={`h-9 grow-0 ${!isAdmin && 'pointer-events-none'}`}
+              dataTestId="my-teams"
+              active={tab === TeamTab.MyTeams && !searchValue}
               onClick={() => {
-                updateParam('tab', TeamTab.AllTeams);
-                setTab(TeamTab.AllTeams);
+                updateParam('tab', TeamTab.MyTeams);
+                setTab(TeamTab.MyTeams);
               }}
             />
-          )}
-        </div>
+            {isAdmin && (
+              <Button
+                label="All Teams"
+                size={Size.Small}
+                variant={Variant.Secondary}
+                className="h-9 grow-0"
+                dataTestId="all-teams"
+                active={tab === TeamTab.AllTeams && !searchValue}
+                onClick={() => {
+                  updateParam('tab', TeamTab.AllTeams);
+                  setTab(TeamTab.AllTeams);
+                }}
+              />
+            )}
+          </div>
+        )}
         <div className="flex items-center justify-center space-x-2">
           {!isLxp ? (
             <IconButton
@@ -289,16 +317,11 @@ const Team: FC<ITeamProps> = ({
         </div>
       </div>
 
-      {!isLoading ? (
-        <div className="my-4 text-neutral-500">
-          Showing {!isLoading && data?.pages[0]?.data?.result?.totalCount}{' '}
-          results
-        </div>
-      ) : (
-        <Skeleton
-          className="!w-32 mt-6 mb-6"
-          containerClassName="flex-1"
-          borderRadius={100}
+      {!isLxp && (
+        <ShowingCount
+          isLoading={isLoading}
+          count={data?.pages[0]?.data?.result?.totalCount}
+          className="mb-4"
         />
       )}
 

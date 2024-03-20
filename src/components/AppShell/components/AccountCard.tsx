@@ -137,6 +137,23 @@ const AccountCard = () => {
                   </div>
                 </Link>
               )}
+              {isLxp && isAdmin && (
+                <Link to={getLearnUrl()}>
+                  <div
+                    className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
+                    data-testid="user-menu-adminview"
+                    onClick={close}
+                  >
+                    <Icon
+                      name="userAdmin"
+                      size={20}
+                      className="mr-2.5"
+                      color="text-neutral-900"
+                    />
+                    <div>Switch to Admin&apos;s View</div>
+                  </div>
+                </Link>
+              )}
               <Link to="/bookmarks">
                 <div
                   className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
@@ -149,26 +166,9 @@ const AccountCard = () => {
                     className="mr-2.5"
                     color="text-neutral-900"
                   />
-                  <div>My bookmarks</div>
+                  <div>My Bookmarks</div>
                 </div>
               </Link>
-              {isLxp && isAdmin && (
-                <Link to={getLearnUrl()}>
-                  <div
-                    className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
-                    data-testid="user-menu-adminview"
-                    onClick={close}
-                  >
-                    <Icon
-                      name="postBookmark"
-                      size={20}
-                      className="mr-2.5"
-                      color="text-neutral-900"
-                    />
-                    <div>Switch to Admin&apos;s View</div>
-                  </div>
-                </Link>
-              )}
               <div
                 className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
                 onClick={handleSignout}
@@ -180,7 +180,7 @@ const AccountCard = () => {
                   className="mr-2.5"
                   color="text-neutral-900"
                 />
-                <div>Sign out</div>
+                <div>Sign Out</div>
               </div>
             </div>
           </div>
