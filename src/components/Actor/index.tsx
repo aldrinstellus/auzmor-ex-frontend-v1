@@ -71,22 +71,14 @@ const Actor: FC<ActorProps> = ({
           : '/profile'
       }`;
 
-  const parseTitle: (title: PostTitle) => ReactNode = (_title) => {
-    return <p>This is title</p>;
+  const parseTitle: (title: PostTitle) => ReactNode = (title) => {
+    return <p className="text-sm font-normal">{title.content}</p>;
   };
 
   return (
     <div className="flex items-center gap-4 flex-1">
       <div>
-        {title ? (
-          <div className="relative flex justify-center items-center rounded-full w-8 h-8 bg-primary-100">
-            <img
-              src={isLxp ? LxpLogoPng : OfficeLogoSvg}
-              alt="Office Logo"
-              className="w-4 h-4"
-            />
-          </div>
-        ) : (
+        {createdBy ? (
           <Link to={profileUrl}>
             <Avatar
               name={getFullName(createdBy) || 'U'}
@@ -95,6 +87,14 @@ const Actor: FC<ActorProps> = ({
               bgColor={getAvatarColor(createdBy)}
             />
           </Link>
+        ) : (
+          <div className="relative flex justify-center items-center rounded-full w-8 h-8 bg-primary-100">
+            <img
+              src={isLxp ? LxpLogoPng : OfficeLogoSvg}
+              alt="Office Logo"
+              className="w-4 h-4"
+            />
+          </div>
         )}
       </div>
       <div className="flex flex-col flex-1">

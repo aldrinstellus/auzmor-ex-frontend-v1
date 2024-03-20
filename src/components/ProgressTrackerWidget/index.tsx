@@ -33,7 +33,7 @@ const ProgressTrackerWidget: FC<IProgressTrackerWidgetProps> = ({
   return (
     <div className={style}>
       <div className="flex justify-between items-center ">
-        <div className="text-base font-bold">Progress tracker</div>
+        <div className="text-base font-bold">Progress Tracker</div>
         <Button
           label={'View all'}
           className="bg-transparent !text-primary-500 hover:!text-primary-600 hover:!bg-transparent active:!bg-transparent active:!text-primary-700"
@@ -53,7 +53,7 @@ const ProgressTrackerWidget: FC<IProgressTrackerWidgetProps> = ({
             <div className="flex flex-col items-center gap-5">
               <img src={Tracker} className="opacity-75" />
               <p className="text-neutral-500 text-xs">
-                Your can track your course, path success here
+                You’re all caught up. No training in progress
               </p>
             </div>
           </Card>

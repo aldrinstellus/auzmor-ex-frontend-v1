@@ -1,8 +1,8 @@
 import EventCalendar from 'images/eventCalendar.svg';
 
 const EmptyState = () => {
-  const header = 'Upcoming events';
-  const footer = 'Upcoming events will appear here';
+  const header = 'Events';
+  const footer = 'No Upcoming Events';
   return (
     <div className="py-6 px-4 flex flex-col items-center gap-2">
       <div className="text-base font-bold line-clamp-2 ">{header}</div>
