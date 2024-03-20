@@ -108,7 +108,8 @@ const Team: FC<ITeamProps> = ({
   );
   const [sortByFilter, setSortByFilter] = useState<string>('');
   const [tab, setTab] = useState<TeamTab | string>(
-    searchParams.get('tab') || (isAdmin ? TeamTab.AllTeams : TeamTab.MyTeams),
+    searchParams.get('tab') ||
+      (isAdmin && !isLxp ? TeamTab.AllTeams : TeamTab.MyTeams),
   );
   const [startFetching, setStartFetching] = useState(false);
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
@@ -424,7 +425,7 @@ const Team: FC<ITeamProps> = ({
                 </>
               ) : (
                 <div className="text-neutral-500">
-                  You are not a part of any team. Join a team now
+                  You&apos;re not part of any team yet
                 </div>
               )}
             </div>

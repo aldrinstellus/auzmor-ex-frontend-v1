@@ -153,7 +153,7 @@ const Users: FC<IUsersProps> = () => {
     <Card className="p-8 px-7 w-full h-full">
       <Tabs
         tabs={tabs}
-        title={isLxp ? 'Teams' : 'People Hub'}
+        title={isLxp ? 'My Teams' : 'People Hub'}
         className={`w-fit   ${
           isLxp ? 'hidden' : 'flex'
         } justify-start bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200`}
