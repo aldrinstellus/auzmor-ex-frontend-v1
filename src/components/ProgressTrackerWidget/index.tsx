@@ -1,12 +1,11 @@
 import { clsx } from 'clsx';
 import Button from 'components/Button';
-import Card from 'components/Card';
 import LearnCard from 'components/LearnCard';
 import { useShouldRender } from 'hooks/useShouldRender';
 import { useProgressTracker } from 'queries/learn';
 import React, { FC, useMemo } from 'react';
 import { getLearnUrl } from 'utils/misc';
-import Tracker from 'images/tracker.svg';
+import EmptyState from './EmptyState';
 
 interface IProgressTrackerWidgetProps {
   className?: string;
@@ -46,17 +45,7 @@ const ProgressTrackerWidget: FC<IProgressTrackerWidgetProps> = ({
       </div>
       <div className="mt-2">
         {!isLoading && !!!trackerData.length ? (
-          <Card className="flex flex-col w-full h-[264px] py-6 items-center gap-4">
-            <p className="text-base font-bold text-neutral-900">
-              Progress tracking
-            </p>
-            <div className="flex flex-col items-center gap-5">
-              <img src={Tracker} className="opacity-75" />
-              <p className="text-neutral-500 text-xs">
-                You’re all caught up. No training in progress
-              </p>
-            </div>
-          </Card>
+          <EmptyState />
         ) : (
           <LearnCard
             showProgressInfo
