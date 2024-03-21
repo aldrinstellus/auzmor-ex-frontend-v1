@@ -43,11 +43,6 @@ const AccountCard = () => {
     },
   });
 
-  const handleSignout = () => {
-    logoutMutation.mutate();
-    close();
-  };
-
   const menuItemStyle = clsx({
     'px-4 py-3 border-t text-sm hover:bg-primary-50 cursor-pointer': true,
   });
@@ -171,7 +166,10 @@ const AccountCard = () => {
               </Link>
               <div
                 className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
-                onClick={handleSignout}
+                onClick={() => {
+                  logoutMutation.mutate();
+                  close();
+                }}
                 data-testid="user-menu-signout-cta"
               >
                 <Icon
