@@ -1,4 +1,4 @@
-import { FC, memo, useEffect, useRef } from 'react';
+import { FC, Fragment, memo, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
@@ -248,20 +248,22 @@ const Post: FC<PostProps> = ({ post, comments = [], setHasChanges }) => {
             </div>
           )}
           {post?.cardContext?.blockStrings?.length && (
-            <div className="flex gap-2">
-              {post?.cardContext?.blockStrings?.map((blockString) => (
-                <div
-                  className="flex gap-1 items-center"
-                  key={blockString?.text}
-                >
-                  <Icon
-                    name={blockString.icon}
-                    size={16}
-                    color="text-white"
-                    hover={false}
-                  />
-                  <p className="text-xs text-white">{blockString?.text}</p>
-                </div>
+            <div className="flex gap-2 items-center">
+              {post?.cardContext?.blockStrings?.map((blockString, index) => (
+                <Fragment key={blockString?.text}>
+                  <div className="flex gap-1 items-center">
+                    <Icon
+                      name={blockString.icon}
+                      size={16}
+                      color="text-white"
+                      hover={false}
+                    />
+                    <p className="text-xs text-white">{blockString?.text}</p>
+                  </div>
+                  {index < post?.cardContext?.blockStrings.length - 1 && (
+                    <div className="w-1 h-1 rounded-full bg-white"></div>
+                  )}
+                </Fragment>
               ))}
             </div>
           )}
