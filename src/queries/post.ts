@@ -69,7 +69,7 @@ export type LinkAttachment = {
   description: string;
   image: string;
   favicon: string;
-}
+};
 
 export interface IPost {
   content: {
@@ -77,6 +77,7 @@ export interface IPost {
     html: string;
     editor: DeltaStatic;
   };
+  isAutomatedPost?: boolean;
   occasionContext?: Record<string, any>;
   mentions?: IMention[];
   createdBy?: ICreatedBy;

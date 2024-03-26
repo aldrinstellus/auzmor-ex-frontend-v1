@@ -166,7 +166,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-edit-post',
       permissions: ['UPDATE_MY_POSTS'],
-      enabled: !data?.cardContext && data.createdBy?.userId === user?.id, // editing of automated post is not allow.
+      enabled: !data?.isAutomatedPost && data.createdBy?.userId === user?.id, // editing of automated post is not allow.
     },
     {
       icon: 'closeCircle',
