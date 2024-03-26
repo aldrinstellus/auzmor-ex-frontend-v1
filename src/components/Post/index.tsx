@@ -180,6 +180,13 @@ const Post: FC<PostProps> = ({ post, comments = [], setHasChanges }) => {
   };
 
   const CustomCard: FC = () => {
+    const iconMap: Record<string, string> = {
+      clock: 'clock',
+      play: 'play',
+      calendar: 'calendar',
+      camera: 'video',
+    };
+
     return (
       <Card className="w-full h-[350px] relative overflow-hidden group/card">
         <img
@@ -252,7 +259,7 @@ const Post: FC<PostProps> = ({ post, comments = [], setHasChanges }) => {
                 <Fragment key={blockString?.text}>
                   <div className="flex gap-1 items-center">
                     <Icon
-                      name={blockString.icon}
+                      name={iconMap[blockString.icon]}
                       size={16}
                       color="text-white"
                       hover={false}
