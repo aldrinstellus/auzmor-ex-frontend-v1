@@ -30,7 +30,10 @@ const AppShell: FC<IAppShellProps> = ({ children }) => {
   const showJobProgress = useJobStore((state) => state.showJobProgress);
 
   return (
-    <div className="bg-neutral-100 h-screen overflow-y-auto">
+    <div
+      className="bg-neutral-100 h-screen overflow-y-auto"
+      id="app-shell-container"
+    >
       {showNavbar && <Navbar />}
       <div className={wraperStyle}>
         <div className={containerStyle}>{children}</div>

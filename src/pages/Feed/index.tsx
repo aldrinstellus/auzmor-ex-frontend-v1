@@ -76,7 +76,6 @@ export interface IMyReactions {
 
 const Feed: FC<IFeedProps> = () => {
   const isLargeScreen = useMediaQuery('(min-width: 1300px)');
-  useScrollTop();
   const [searchParams] = useSearchParams();
   const { pathname } = useLocation();
   const hashtag = searchParams.get('hashtag') || '';
@@ -91,6 +90,33 @@ const Feed: FC<IFeedProps> = () => {
   const { feed } = useFeedStore();
   const { ref, inView } = useInView();
   const currentDate = new Date().toISOString();
+  const { getScrollTop, pauseRecordingScrollTop, resumeRecordingScrollTop } =
+    useScrollTop('app-shell-container');
+
+  //handle scroll
+  useEffect(() => {
+    if (hashtag) {
+      pauseRecordingScrollTop();
+      const ele = document.getElementById('app-shell-container');
+      if (ele) {
+        ele.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth',
+        });
+      }
+    } else {
+      resumeRecordingScrollTop();
+      const ele = document.getElementById('app-shell-container');
+      if (ele) {
+        ele.scrollTo({
+          top: getScrollTop(),
+          left: 0,
+          behavior: 'smooth',
+        });
+      }
+    }
+  }, [hashtag]);
 
   // Learn data
   const { data: recommendationData, isLoading: recommendationLoading } =

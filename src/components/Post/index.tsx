@@ -72,7 +72,6 @@ type PostProps = {
 };
 
 const Post: FC<PostProps> = ({ post, comments = [], setHasChanges }) => {
-  console.log({ comments });
   const [showComments, openComments, closeComments] = useModal(false);
   const [showPublishModal, openPublishModal, closePublishModal] = useModal();
   const queryClient = useQueryClient();
