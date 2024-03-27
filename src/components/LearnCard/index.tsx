@@ -113,17 +113,15 @@ const LearnCard: FC<ILearnCardProps> = ({
   const handleCardClick = () => {
     switch (type) {
       case LearnCardEnum.Course:
-        window.location.replace(
+        window.location.assign(
           `${getLearnUrl()}/user/courses/${data.id}/detail`,
         );
         break;
       case LearnCardEnum.Path:
-        window.location.replace(
-          `${getLearnUrl()}/user/paths/${data.id}/detail`,
-        );
+        window.location.assign(`${getLearnUrl()}/user/paths/${data.id}/detail`);
         break;
       case LearnCardEnum.Event:
-        window.location.replace(`${getLearnUrl()}/events/${data.id}`);
+        window.location.assign(`${getLearnUrl()}/events/${data.id}`);
         break;
     }
   };

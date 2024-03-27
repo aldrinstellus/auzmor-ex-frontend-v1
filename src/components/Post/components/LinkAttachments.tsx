@@ -11,7 +11,7 @@ const LinkAttachments: FC<ILinkAttachmentsProps> = ({ attachments }) => {
       {attachments.map((each) => (
         <div
           key={each.title}
-          onClick={() => window.location.replace(each.title)}
+          onClick={() => window.location.assign(each.title)}
           className="flex p-2 rounded-9xl border border-neutral-200 w-[173px] justify-center items-center gap-2 cursor-pointer hover:shadow-lg transition"
         >
           <div className="flex w-6 h-8">

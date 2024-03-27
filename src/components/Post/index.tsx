@@ -287,7 +287,7 @@ const Post: FC<PostProps> = ({ post, comments = [], setHasChanges }) => {
             <div className="flex font">
               <Button
                 label={post?.ctaButton?.text}
-                onClick={() => window.location.replace(post?.ctaButton?.url)}
+                onClick={() => window.location.assign(post?.ctaButton?.url)}
                 labelClassName="px-4 font-normal"
                 size={Size.Small}
               />

@@ -32,7 +32,7 @@ const UserCard: FC<IUserCardProps> = ({ className = '' }) => {
 
   const handleRedirect = () => {
     if (isLxp) {
-      window.location.replace(`${getLearnUrl()}/user/settings/profile`);
+      window.location.assign(`${getLearnUrl()}/user/settings/profile`);
     } else {
       navigate('/profile');
     }
