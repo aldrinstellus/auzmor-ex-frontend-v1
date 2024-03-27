@@ -46,6 +46,7 @@ const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({ data }) => {
       await Promise.allSettled([
         queryClient.invalidateQueries(['feed-announcements-widget']),
         queryClient.invalidateQueries(['post-announcements-widget']),
+        queryClient.invalidateQueries(['posts', data.id]),
         queryClient.invalidateQueries(['feed']),
       ]);
     },
