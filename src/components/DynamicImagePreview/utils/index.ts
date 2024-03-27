@@ -48,7 +48,7 @@ export const updateEditorValue = (users: any, label: any, hashtag: string) => {
         mention: {
           testid: 'createpost-hashtag-item',
           denotationChar: '#',
-          value: ` ${hashtag}`,
+          value: `${hashtag}`,
         },
       },
     },
