@@ -69,11 +69,11 @@ const CreateShoutout: FC<ICreateShoutoutProps> = ({ closeModal }) => {
     const { text, html, editor } = updateEditorValue(
       _shoutoutUsers,
       shoutoutTemplate?.file?.label,
+      'kudos',
     );
     const previousOps = editorValue?.editor?.ops || [];
     // Combine ops from previous editor value and current editor value
     const mergedOps = [...previousOps, ...editor.ops];
-
     const newContent = {
       text: text,
       html: html,

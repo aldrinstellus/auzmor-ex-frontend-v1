@@ -90,4 +90,29 @@ export const lxpTemplateImages = [
     label: 'Soaring to success!',
     bgColor: 'bg-[#D1FAE5]',
   },
+  {
+    id: 5,
+    image: Kudos1,
+    label: 'Thanks for the Exceptional Effort',
+    bgColor: 'bg-[#FFEDD5]',
+    dataTestId: 'kudos-thanks-banner',
+  },
+  {
+    id: 6,
+    image: Kudos4,
+    label: 'I Appreciate your excellent work!',
+    bgColor: 'bg-[#E5EDFF]',
+  },
+  {
+    id: 7,
+    image: Kudos7,
+    label: 'Thank you for your contributions.',
+    bgColor: 'bg-[#FDFDEA]',
+  },
+  {
+    id: 8,
+    image: Kudos5,
+    label: 'Thank you for your hardwork!',
+    bgColor: 'bg-[#FDFDEA]',
+  },
 ];

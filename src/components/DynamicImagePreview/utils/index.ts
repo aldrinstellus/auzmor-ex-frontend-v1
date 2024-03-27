@@ -1,16 +1,14 @@
-export const updateEditorValue = (users: any, label: any) => {
+export const updateEditorValue = (users: any, label: any, hashtag: string) => {
   const userMentions = users.map((user: any) => ({
     id: user.id,
     value: user.fullName,
     denotationChar: '@',
   }));
 
-  const hashtag = 'kudos';
-
   const text =
-    userMentions.map((mention: any) => `@${mention.value}`).join(' ') +
-    ` #${hashtag} ${label}`;
-
+    userMentions
+      .map((mention: any) => ` ${label} @${mention.value}`)
+      .join(' ') + ` #${hashtag} `;
   const mentionSpans = userMentions
     .map(
       (mention: any) =>
@@ -19,32 +17,42 @@ export const updateEditorValue = (users: any, label: any) => {
     .join(' ');
 
   const html = `<p>${mentionSpans} <span class="mention" data-testid="createpost-hashtag-item"  data-denotation-char="#" data-value="${hashtag}"><span contenteditable="false"><span class="ql-mention-denotation-char">#</span>${hashtag}</span></span> ${label}</p>`;
-
-  const ops = userMentions
-    .map((mention: any) => ({
+  const result = [];
+  for (let i = 0; i < userMentions.length; i++) {
+    if (i == userMentions.length - 1) {
+      result.push({ insert: ' and ' });
+    }
+    result.push({
       insert: {
         mention: {
           testid: 'createpost-at-item',
-          denotationChar: mention.denotationChar,
-          id: mention.id,
-          value: `${mention.value} `,
+          denotationChar: userMentions[i].denotationChar,
+          id: userMentions[i].id,
+          value: `${userMentions[i].value}`,
         },
       },
-    }))
-    .concat([
-      { insert: ' ' },
-      {
-        insert: {
-          mention: {
-            testid: 'createpost-hashtag-item',
-            denotationChar: '#',
-            value: hashtag,
-          },
+    });
+    if (i < userMentions.length - 1 && i != userMentions.length - 2) {
+      result.push({ insert: ',' });
+    }
+  }
+
+  const ops = [
+    { insert: `${label} ` },
+    ...result,
+    {
+      insert: ' \n',
+    },
+    {
+      insert: {
+        mention: {
+          testid: 'createpost-hashtag-item',
+          denotationChar: '#',
+          value: ` ${hashtag}`,
         },
       },
-      { insert: ' ' },
-      { insert: `${label} \n` },
-    ]);
+    },
+  ];
 
   return { text, html, editor: { ops } };
 };
