@@ -126,6 +126,8 @@ const LearnCard: FC<ILearnCardProps> = ({
     }
   };
 
+  const chaptersCount = data?.dependent_entities?.chapters_count;
+  const coursesCount = data?.dependent_entities?.courses_count;
   return (
     <Card className={style} onClick={handleCardClick}>
       <img
@@ -185,36 +187,37 @@ const LearnCard: FC<ILearnCardProps> = ({
             />
           )}
         </div>
-        {type === LearnCardEnum.Course &&
-          data?.dependent_entities?.chapters_count > 0 && (
-            <div className="flex gap-2">
-              <div className="flex gap-1 items-center">
-                <Icon
-                  name="videoSquare"
-                  size={16}
-                  color="text-white"
-                  hover={false}
-                />
-                <p className="text-xs text-white">
-                  {data?.dependent_entities?.chapters_count} Lessons
-                </p>
-              </div>
-              <div className="flex gap-1 items-center">
-                <Icon name="clock" size={16} color="text-white" hover={false} />
-                <p className="text-xs text-white">
-                  {getDuration(data?.duration)}
-                </p>
-              </div>
+        {type === LearnCardEnum.Course && chaptersCount > 0 && (
+          <div className="flex gap-2">
+            <div className="flex gap-1 items-center">
+              <Icon
+                name="videoSquare"
+                size={16}
+                color="text-white"
+                hover={false}
+              />
+              <p className="text-xs text-white">
+                {`${chaptersCount} ${
+                  chaptersCount === 1 ? 'Lesson' : 'Lessons'
+                }`}
+              </p>
             </div>
-          )}
+            <div className="flex gap-1 items-center">
+              <Icon name="clock" size={16} color="text-white" hover={false} />
+              <p className="text-xs text-white">
+                {getDuration(data?.duration)}
+              </p>
+            </div>
+          </div>
+        )}
 
         {type === LearnCardEnum.Path && (
           <div className="flex gap-2">
             <div className="flex gap-1 items-center">
               <Icon name="teacher" size={16} color="text-white" hover={false} />
-              <p className="text-xs text-white">
-                {data?.dependent_entities?.courses_count} Course
-              </p>
+              <p className="text-xs text-white">{`${coursesCount} ${
+                coursesCount === 1 ? 'Course' : 'Courses'
+              }`}</p>
             </div>
             <div className="flex gap-1 items-center">
               <Icon name="clock" size={16} color="text-white" hover={false} />
