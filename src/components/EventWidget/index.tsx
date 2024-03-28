@@ -7,12 +7,14 @@ import Icon from 'components/Icon';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import { useShouldRender } from 'hooks/useShouldRender';
 import { useEventAttendee, useInfiniteLearnEvents } from 'queries/learn';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { getLearnUrl } from 'utils/misc';
 import { getTimeDifference, getTimeFromNow } from 'utils/time';
 import AvatarList from 'components/AvatarList';
 import Skeleton from 'react-loading-skeleton';
 import EmptyState from './Component/EmptyState';
+import moment from 'moment';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface IEventWidgetProps {
   className?: string;
@@ -21,15 +23,16 @@ const ID = 'EventWidget';
 
 const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
   const { currentTimezone } = useCurrentTimezone();
-  const style = useMemo(
-    () => clsx({ 'min-w-[240px]  ': true, [className]: true }),
-    [className],
-  );
   const shouldRender = useShouldRender(ID);
   if (!shouldRender) {
     return <></>;
   }
   let isLive = true;
+  const queryClient = useQueryClient();
+  const style = useMemo(
+    () => clsx({ 'min-w-[240px]  ': true, [className]: true }),
+    [className],
+  );
   const { data: ongoingEvents, isLoading: isLoadingOngoing } =
     useInfiniteLearnEvents({
       q: { limit: 1, filter: 'ONGOING' },
@@ -60,6 +63,53 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
   const userTimezone = event?.timezone || currentTimezone || 'Asia/Kolkata';
   const startDate = event?.start_date;
   const endDate = event?.end_date;
+
+  const [timeLeft, setTimeLeft] = useState<any>(
+    getTimeFromNow(startDate, userTimezone),
+  ); // State to store the time left
+  let interval: NodeJS.Timeout;
+
+  // Function to calculate and update time left
+  const updateTimeLeft = async () => {
+    if (moment(startDate) < moment(endDate)) {
+      const finalDate = moment.tz(1711629000000, userTimezone);
+      const currentDate = moment().tz(userTimezone);
+      // Calculate the difference between finalDate and currentDate
+      const timeDiff = finalDate.diff(currentDate);
+      // console.log('timeDiff :', timeDiff);
+      if (timeDiff == 1) {
+        await queryClient.invalidateQueries(['event-attendee']);
+      }
+      // Check if time left is less than a minute
+      if (timeDiff <= 60000) {
+        // 60000 milliseconds = 1 minute
+        // Re-render every second
+        interval = setInterval(() => {
+          updateTimeLeft();
+        }, 1000);
+      } else if (timeDiff <= 3600000) {
+        // 3600000 milliseconds = 1 hour
+        // Re-render every minute
+        interval = setInterval(() => {
+          updateTimeLeft();
+        }, 60000);
+      } else {
+        // If time left is more than an hour, clear the interval
+        clearInterval(interval);
+      }
+      // Format the time difference
+      const formattedTimeLeft = getTimeFromNow(startDate, userTimezone);
+      setTimeLeft(formattedTimeLeft);
+    }
+  };
+
+  // useEffect hook to update time left on component mount
+  useEffect(() => {
+    updateTimeLeft();
+    // Clean up setInterval on component unmount
+    return () => clearInterval(interval);
+  }, []);
+
   if (isLoading) {
     return (
       <Card className="w-full h-[350px] relative overflow-hidden group/card">
@@ -67,6 +117,7 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
       </Card>
     );
   }
+
   return (
     <div className={style}>
       <div className="flex justify-between items-center ">
@@ -128,9 +179,7 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
                       isLive ? 'text-white' : 'text-primary-500'
                     } font-semibold`}
                   >
-                    {isLive
-                      ? 'Live'
-                      : `Starts in ${getTimeFromNow(startDate, userTimezone)}`}
+                    {isLive ? 'Live' : `Starts in ${timeLeft}`}
                   </p>
                 </div>
 
