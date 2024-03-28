@@ -200,7 +200,7 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
                       className="-space-x-[12px]"
                       avatarClassName="!b-[1px]"
                     />
-                    <div className="text-xs  text-neutral-500 underline font-normal">
+                    <div className="text-xs text-neutral-500 font-normal">
                       More attendees
                     </div>
                   </div>
