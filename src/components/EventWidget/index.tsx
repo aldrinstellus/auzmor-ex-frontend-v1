@@ -185,9 +185,13 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
                     </div>
 
                     <div className="flex ml-auto gap-1 items-center">
-                      <Icon name="video" size={20} color="text-primary-500" />
+                      <Icon
+                        name={event.location ? 'location' : 'video'}
+                        size={20}
+                        color="text-primary-500"
+                      />
                       <p className="text-xs text-neutral-500">
-                        {event?.session_type}
+                        {event?.location || 'Virtual'}
                       </p>
                     </div>
                   </div>

@@ -185,6 +185,7 @@ const Post: FC<PostProps> = ({ post, comments = [], setHasChanges }) => {
       play: 'play',
       calendar: 'calendar',
       camera: 'video',
+      location: 'location',
     };
 
     return (
