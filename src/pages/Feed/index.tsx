@@ -540,7 +540,7 @@ const Feed: FC<IFeedProps> = () => {
                       isLoading={recommendationLoading}
                       onCLick={() =>
                         window.location.replace(
-                          `${getLearnUrl()}/user/trainings`,
+                          `${getLearnUrl()}/user/trainings?type=elearning&tab=PUBLIC&sort=created_at`,
                         )
                       }
                     />
