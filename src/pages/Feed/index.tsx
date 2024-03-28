@@ -539,7 +539,7 @@ const Feed: FC<IFeedProps> = () => {
                       title="Recently Published"
                       isLoading={recommendationLoading}
                       onCLick={() =>
-                        window.location.replace(
+                        window.location.assign(
                           `${getLearnUrl()}/user/trainings?type=elearning&tab=PUBLIC&sort=created_at`,
                         )
                       }
