@@ -74,7 +74,7 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
         <Button
           label={'View all'}
           onClick={() => {
-            window.location.replace(
+            window.location.assign(
               `${getLearnUrl()}/user/trainings?type=events&tab=${
                 isLive ? 'ONGOING' : 'UPCOMING'
               }`,

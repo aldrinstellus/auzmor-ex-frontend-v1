@@ -37,7 +37,7 @@ const ProgressTrackerWidget: FC<IProgressTrackerWidgetProps> = ({
           label={'View all'}
           className="bg-transparent !text-primary-500 hover:!text-primary-600 hover:!bg-transparent active:!bg-transparent active:!text-primary-700"
           onClick={() =>
-            window.location.replace(
+            window.location.assign(
               `${getLearnUrl()}/user/trainings?type=elearning&tab=IN_PROGRESS`,
             )
           }

@@ -44,8 +44,11 @@ const Footer: FC<IFooterProps> = ({
     postType,
     isEmpty,
     media,
+    shoutoutUserIds,
   } = useContext(CreatePostContext);
+
   const { isMember } = useRole();
+
   const canSchedule = !(!!!schedule && mode === PostBuilderMode.Edit);
   const updateContext = () => {
     setEditorValue({
@@ -65,7 +68,8 @@ const Footer: FC<IFooterProps> = ({
     operatorXOR(isPreviewRemoved, !!previewUrl) || postType !== PostType.Update;
   const isShoutoutDisabled =
     operatorXOR(isPreviewRemoved, !!previewUrl) ||
-    (postType !== PostType.Shoutout && postType !== PostType.Update);
+    (postType !== PostType.Shoutout && postType !== PostType.Update) ||
+    (media.length > 0 && shoutoutUserIds.length === 0);
   const isPollDisabled =
     operatorXOR(isPreviewRemoved, !!previewUrl) ||
     (postType !== PostType.Poll && postType !== PostType.Update) ||
@@ -115,9 +119,6 @@ const Footer: FC<IFooterProps> = ({
             disabled: true,
           },
         ],
-        hidden: [PostType.Poll, PostType.Shoutout].includes(
-          postType || PostType.Update,
-        ),
         divider: <Divider variant={DividerVariant.Vertical} />,
       },
       {

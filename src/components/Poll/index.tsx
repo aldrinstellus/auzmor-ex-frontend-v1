@@ -255,7 +255,7 @@ const Poll: FC<IPoll & PollProps> = ({
             <Button
               label={ctaButton?.text || ''}
               onClick={() =>
-                window.location.replace(ctaButton?.url || getLearnUrl())
+                window.location.assign(ctaButton?.url || getLearnUrl())
               }
               labelClassName="px-4 font-normal"
               size={ButtonSize.Small}
