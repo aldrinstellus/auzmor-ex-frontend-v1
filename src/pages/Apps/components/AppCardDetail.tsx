@@ -9,8 +9,8 @@ import { App } from 'queries/apps';
 import AppDetailSVG from './../../../images/appDetails.svg';
 import { FC } from 'react';
 import DefaultAppIcon from 'images/DefaultAppIcon.svg';
-import AudiencePopup from 'components/AudiencePopup';
-import Tooltip, { Variant as TooltipVariant } from 'components/Tooltip';
+import useModal from 'hooks/useModal';
+import AudienceModal, { getAudienceCount } from 'components/AudienceModal';
 
 type AppDetailModalProps = {
   app: App;
@@ -28,6 +28,8 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
   openDeleteAppModal,
 }) => {
   const { isAdmin } = useRole();
+  const [isAudienceModalOpen, openAudienceModal, closeAudienceModal] =
+    useModal(false);
   const audienceChipStyle =
     'py-2 px-3 flex items-center gap-1 border-1 rounded-[24px] border-neutral-200';
   const audienceLabelStyle = 'text-sm font-semibold';
@@ -135,27 +137,14 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                         </span>
                       </div>
                       {app.audience.length > 1 && (
-                        <Tooltip
-                          tooltipContent={
-                            <AudiencePopup
-                              entityId={app.id}
-                              audience={app.audience}
-                              entity="apps"
-                              title="Audience:"
-                            />
-                          }
-                          variant={TooltipVariant.Light}
-                          tooltipPosition="bottom"
-                          className="!p-0 border shadow-lg border-neutral-200 !rounded-9xl overflow-hidden min-w-[222px] z-[999]"
+                        <div
+                          className={`${audienceChipStyle} cursor-pointer`}
+                          onClick={openAudienceModal}
                         >
-                          <div
-                            className={`${audienceChipStyle} cursor-pointer`}
-                          >
-                            <span className={audienceLabelStyle}>
-                              {`+ ${app.audience.length - 1} more`}
-                            </span>
-                          </div>
-                        </Tooltip>
+                          <span className={audienceLabelStyle}>
+                            {`+ ${app.audience.length - 1} more`}
+                          </span>
+                        </div>
                       )}
                     </div>
                   ) : (
@@ -183,6 +172,14 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
               dataTestId="app-details-edit-app"
             />
           </div>
+        )}
+        {isAudienceModalOpen && (
+          <AudienceModal
+            closeModal={closeAudienceModal}
+            entityId={app.id || ''}
+            entity={'apps'}
+            audienceCounts={getAudienceCount(app.audience || [])}
+          />
         )}
       </Card>
     </Modal>

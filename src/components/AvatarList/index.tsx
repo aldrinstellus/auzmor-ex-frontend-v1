@@ -32,18 +32,16 @@ const AvatarList: FC<AvatarListProps> = ({
   return (
     <div className={styles} data-testid={dataTestId}>
       {users
-        .map((user: IUser) => {
-          return (
-            <Avatar
-              size={size}
-              key={`${user.id}`}
-              name={user?.name}
-              image={user?.image || getProfileImage(user)}
-              active={false}
-              className={`border-[2px] border-white ${avatarClassName}`}
-            />
-          );
-        })
+        ?.map((user: IUser) => (
+          <Avatar
+            size={size}
+            key={`${user.id}`}
+            name={user?.name}
+            image={user?.image || getProfileImage(user)}
+            active={false}
+            className={`border-[2px] border-white ${avatarClassName}`}
+          />
+        ))
         .slice(0, 2)}
       {moreCount > 2 && (
         <Avatar

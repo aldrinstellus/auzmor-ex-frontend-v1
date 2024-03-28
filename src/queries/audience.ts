@@ -4,6 +4,26 @@ import {
   // useQuery,
 } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
+import { AudienceEntityType } from './post';
+
+export type User = {
+  id: string;
+  name: string;
+  profileImage: {
+    original: string;
+  };
+};
+
+export interface IAudience {
+  id: string;
+  entityType: AudienceEntityType;
+  name: string;
+  totalMembers: number | null;
+  recentMembers: User[] | null;
+  category: string | null;
+  description?: string;
+  profileImage?: string;
+}
 
 export const getAllUser = async ({
   pageParam = null,
@@ -26,11 +46,11 @@ const getAudience = async ({
   } else return await apiService.get(pageParam);
 };
 
-export const useAudience = (
+export const useInfiniteAudience = (
   entity: string,
   entityId: string,
-  rest?: Record<string, any>,
   params?: Record<string, string>,
+  rest?: Record<string, any>,
 ) => {
   return useInfiniteQuery({
     queryKey: ['audience', entity, entityId, params],
