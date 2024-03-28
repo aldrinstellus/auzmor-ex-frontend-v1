@@ -137,6 +137,7 @@ export const getTimeFromNow = (dateStr: string, timezone: string) => {
   let daysLeft = 0;
   let hoursLeft = 0;
   let minutesLeft = 0;
+  let secondsLeft = 0;
 
   monthsLeft = finalDate.diff(currentDate, 'months');
   finalDate.subtract(monthsLeft, 'month');
@@ -155,6 +156,10 @@ export const getTimeFromNow = (dateStr: string, timezone: string) => {
     hoursLeft = finalDate.diff(currentDate, 'hours');
     finalDate.subtract(hoursLeft, 'hour');
     minutesLeft = finalDate.diff(currentDate, 'minutes');
+    finalDate.subtract(minutesLeft, 'minute');
+    if (minutesLeft <= 0 && hoursLeft <= 0) {
+      secondsLeft = finalDate.diff(currentDate, 'seconds');
+    }
   }
 
   return [
@@ -166,6 +171,9 @@ export const getTimeFromNow = (dateStr: string, timezone: string) => {
     hoursLeft > 0 ? `${hoursLeft} ${hoursLeft === 1 ? 'hour' : 'hours'}` : null,
     minutesLeft > 0
       ? `${minutesLeft} ${minutesLeft === 1 ? 'minute' : 'minutes'}`
+      : null,
+    secondsLeft > 0
+      ? `${secondsLeft} ${secondsLeft === 1 ? 'second' : 'seconds'}`
       : null,
   ]
     .filter(Boolean)

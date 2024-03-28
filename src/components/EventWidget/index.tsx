@@ -9,10 +9,11 @@ import { useShouldRender } from 'hooks/useShouldRender';
 import { useEventAttendee, useInfiniteLearnEvents } from 'queries/learn';
 import React, { FC, useMemo } from 'react';
 import { getLearnUrl } from 'utils/misc';
-import { getTimeDifference, getTimeFromNow } from 'utils/time';
+import { getTimeDifference } from 'utils/time';
 import AvatarList from 'components/AvatarList';
 import Skeleton from 'react-loading-skeleton';
 import EmptyState from './Component/EmptyState';
+import TimeChip from './Component/TimeChip';
 
 interface IEventWidgetProps {
   className?: string;
@@ -21,15 +22,15 @@ const ID = 'EventWidget';
 
 const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
   const { currentTimezone } = useCurrentTimezone();
-  const style = useMemo(
-    () => clsx({ 'min-w-[240px]  ': true, [className]: true }),
-    [className],
-  );
   const shouldRender = useShouldRender(ID);
   if (!shouldRender) {
     return <></>;
   }
   let isLive = true;
+  const style = useMemo(
+    () => clsx({ 'min-w-[240px]  ': true, [className]: true }),
+    [className],
+  );
   const { data: ongoingEvents, isLoading: isLoadingOngoing } =
     useInfiniteLearnEvents({
       q: { limit: 1, filter: 'ONGOING' },
@@ -60,6 +61,7 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
   const userTimezone = event?.timezone || currentTimezone || 'Asia/Kolkata';
   const startDate = event?.start_date;
   const endDate = event?.end_date;
+
   if (isLoading) {
     return (
       <Card className="w-full h-[350px] relative overflow-hidden group/card">
@@ -67,6 +69,7 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
       </Card>
     );
   }
+
   return (
     <div className={style}>
       <div className="flex justify-between items-center ">
@@ -128,12 +131,16 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
                       isLive ? 'text-white' : 'text-primary-500'
                     } font-semibold`}
                   >
-                    {isLive
-                      ? 'Live'
-                      : `Starts in ${getTimeFromNow(startDate, userTimezone)}`}
+                    {isLive ? (
+                      'Live'
+                    ) : (
+                      <TimeChip
+                        startDate={startDate}
+                        userTimeZone={userTimezone}
+                      />
+                    )}
                   </p>
                 </div>
-
                 <div className="absolute  bg-white   bottom-0 left-0 flex flex-col p-4 z-10 gap-2 w-full">
                   <div className="flex gap-1">
                     {event?.categories?.slice(0, 2)?.map((d: any) => {
