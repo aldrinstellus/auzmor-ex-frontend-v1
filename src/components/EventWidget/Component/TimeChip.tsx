@@ -36,7 +36,7 @@ const TimeChip: FC<AppProps> = ({ startDate, userTimeZone }) => {
     return () => clearInterval(interval);
   }, []);
 
-  return <div>{`Start in ${timeLeft}`}</div>;
+  return <div>{`Starts in ${timeLeft}`}</div>;
 };
 
 export default TimeChip;
