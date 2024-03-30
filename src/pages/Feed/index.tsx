@@ -33,6 +33,7 @@ import {
   PostFilterKeys,
   PostFilterPreference,
   PostType,
+  PostTypeMapping,
   useInfiniteFeed,
 } from 'queries/post';
 
@@ -130,7 +131,9 @@ const Feed: FC<IFeedProps> = () => {
     useInfiniteFeed(
       pathname,
       isFiltersEmpty({
-        [PostFilterKeys.PostType]: appliedFeedFilters[PostFilterKeys.PostType],
+        [PostFilterKeys.PostType]: appliedFeedFilters[PostFilterKeys.PostType]
+          ?.map((postType) => (PostTypeMapping as any)[postType] || postType)
+          .flat(),
         ...(appliedFeedFilters[PostFilterKeys.PostPreference]?.includes(
           PostFilterPreference.BookmarkedByMe,
         ) && { [PostFilterPreference.BookmarkedByMe]: true }),

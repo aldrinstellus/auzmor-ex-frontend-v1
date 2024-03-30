@@ -11,6 +11,7 @@ import {
   PostType,
 } from 'queries/post';
 import { FC, ReactElement, memo, useEffect, useState } from 'react';
+import { xor } from 'lodash';
 
 export enum FeedFilterContentType {
   Filter = 'FILTER',
@@ -19,11 +20,11 @@ export enum FeedFilterContentType {
 
 export type FeedFilterOption = {
   label: string;
-  value: string | PostType;
+  value: string | PostType | PostFilterPreference;
   type: FeedFilterContentType;
   filterKey?: PostFilterKeys;
   isDisabled?: boolean;
-  dataTestId?: string;
+  dataTestId: string;
   hidden?: boolean;
 };
 
@@ -37,7 +38,10 @@ export type FeedFilterProps = {
 
 export const filterKeyMap: Record<string | PostType, string> = {
   [PostType.Update]: 'Updates',
-  [PostType.Event]: 'Events',
+  [PostType.Training]: 'Training',
+  [PostType.Event]: 'Event',
+  [PostType.Forum]: 'Forum',
+  [PostType.TrainingAssignment]: 'Training Assignment',
   [PostType.Document]: 'Documents',
   [PostType.Shoutout]: 'Shoutouts',
   [PostType.Birthday]: 'Birthdays',
@@ -109,49 +113,19 @@ const FeedFilter: FC<FeedFilterProps> = ({
   };
 
   const updateFeedFilters = (option: FeedFilterOption) => {
+    const updatedFeedFilters = { ...feedFilters };
     if (option.filterKey === PostFilterKeys.PostType) {
-      if (
-        feedFilters[PostFilterKeys.PostType]?.includes(option.value as PostType)
-      ) {
-        setFeedFilters({
-          ...feedFilters,
-          [PostFilterKeys.PostType]: feedFilters[
-            PostFilterKeys.PostType
-          ].filter((each) => each !== option.value),
-        });
-      } else {
-        setFeedFilters({
-          ...feedFilters,
-          [PostFilterKeys.PostType]: [
-            ...((feedFilters[PostFilterKeys.PostType] as PostType[]) || []),
-            option.value as PostType,
-          ],
-        });
-      }
+      updatedFeedFilters[PostFilterKeys.PostType] = xor(
+        updatedFeedFilters[PostFilterKeys.PostType] || [],
+        [option.value],
+      ) as PostType[];
     } else if (option.filterKey === PostFilterKeys.PostPreference) {
-      if (
-        feedFilters[PostFilterKeys.PostPreference]?.includes(
-          option.value as PostFilterPreference,
-        )
-      ) {
-        setFeedFilters({
-          ...feedFilters,
-          [PostFilterKeys.PostPreference]: feedFilters[
-            PostFilterKeys.PostPreference
-          ].filter((each) => each !== option.value),
-        });
-      } else {
-        setFeedFilters({
-          ...feedFilters,
-          [PostFilterKeys.PostPreference]: [
-            ...((feedFilters[
-              PostFilterKeys.PostPreference
-            ] as PostFilterPreference[]) || []),
-            option.value as PostFilterPreference,
-          ],
-        });
-      }
+      updatedFeedFilters[PostFilterKeys.PostPreference] = xor(
+        updatedFeedFilters[PostFilterKeys.PostPreference] || [],
+        [option.value],
+      ) as PostFilterPreference[];
     }
+    setFeedFilters(updatedFeedFilters);
     setHaveFiltersBeenModified(true);
   };
 
@@ -164,6 +138,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       label: 'Content (type)',
       value: 'content-type',
       type: FeedFilterContentType.Section,
+      dataTestId: 'filterby-content-type-section',
       hidden: false,
     },
     {
@@ -174,24 +149,47 @@ const FeedFilter: FC<FeedFilterProps> = ({
       dataTestId: 'filterby-updates',
       hidden: false,
     },
-    // {
-    //   label: 'Events',
-    //   value: PostType.Event,
-    //   filterKey: PostFilterKeys.PostType,
-    //   type: FeedFilterContentType.Filter,
-    //   isDisabled: true,
-    //   dataTestId: 'filterby-events',
-    //   hidden: false,
-    // },
-    // {
-    //   label: 'Documents',
-    //   value: PostType.Document,
-    //   filterKey: PostFilterKeys.PostType,
-    //   type: FeedFilterContentType.Filter,
-    //   isDisabled: true,
-    //   dataTestId: 'filterby-documents',
-    //   hidden: false,
-    // },
+    {
+      label: 'Training',
+      value: PostType.Training,
+      filterKey: PostFilterKeys.PostType,
+      type: FeedFilterContentType.Filter,
+      dataTestId: 'filterby-training',
+      hidden: !isLxp,
+    },
+    {
+      label: 'Event',
+      value: PostType.Event,
+      filterKey: PostFilterKeys.PostType,
+      type: FeedFilterContentType.Filter,
+      dataTestId: 'filterby-event',
+      hidden: !isLxp,
+    },
+    {
+      label: 'Forum',
+      value: PostType.Forum,
+      filterKey: PostFilterKeys.PostType,
+      type: FeedFilterContentType.Filter,
+      dataTestId: 'filterby-forum',
+      hidden: !isLxp,
+    },
+    {
+      label: 'Training Assignment',
+      value: PostType.TrainingAssignment,
+      filterKey: PostFilterKeys.PostType,
+      type: FeedFilterContentType.Filter,
+      dataTestId: 'filterby-training-assignment',
+      hidden: !isLxp,
+    },
+    {
+      label: 'Documents',
+      value: PostType.Document,
+      filterKey: PostFilterKeys.PostType,
+      type: FeedFilterContentType.Filter,
+      isDisabled: true,
+      dataTestId: 'filterby-documents',
+      hidden: true,
+    },
     {
       label: 'Shoutouts',
       value: PostType.Shoutout,
@@ -216,14 +214,15 @@ const FeedFilter: FC<FeedFilterProps> = ({
       dataTestId: 'filterby-workanniversary',
       hidden: isLxp,
     },
-    // {
-    //   label: 'Welcome new hire',
-    //   value: PostType.WelcomNewHire,
-    //   filterKey: PostFilterKeys.PostType,
-    //   type: FeedFilterContentType.Filter,
-    //   isDisabled: true,
-    //   dataTestId: 'filterby-welcomenewhire',
-    // },
+    {
+      label: 'Welcome new hire',
+      value: PostType.WelcomNewHire,
+      filterKey: PostFilterKeys.PostType,
+      type: FeedFilterContentType.Filter,
+      isDisabled: true,
+      dataTestId: 'filterby-welcomenewhire',
+      hidden: true,
+    },
     {
       label: 'Polls',
       value: PostType.Poll,
@@ -236,6 +235,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       label: 'Preference',
       value: 'preference',
       type: FeedFilterContentType.Section,
+      dataTestId: 'filterby-preference-section',
       hidden: false,
     },
     {
@@ -315,7 +315,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
                   .filter((option) => !option.hidden)
                   .map((option) => (
                     <div
-                      key={option?.value}
+                      key={option.dataTestId}
                       onClick={() =>
                         !option.isDisabled && updateFeedFilters(option)
                       }

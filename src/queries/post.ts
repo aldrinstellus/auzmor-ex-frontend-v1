@@ -264,7 +264,10 @@ export interface ICreatedBy {
 
 export enum PostType {
   Update = 'UPDATE',
+  Training = 'TRAINING',
   Event = 'EVENT',
+  Forum = 'FORUM',
+  TrainingAssignment = 'TRAINING_ASSIGNMENT',
   Document = 'DOCUMENT',
   Poll = 'POLL',
   Shoutout = 'SHOUT_OUT',
@@ -274,6 +277,13 @@ export enum PostType {
   Repost = 'REPOST',
   Scheduled = 'SCHEDULED',
 }
+
+export const PostTypeMapping = {
+  [PostType.Training]: ['PUBLISH_COURSE', 'PUBLISH_PATH'],
+  [PostType.Event]: ['PUBLISH_EVENT', 'ASSIGN_EVENT'],
+  [PostType.Forum]: ['FORUM_UPDATE', 'FORUM_POLL'],
+  [PostType.TrainingAssignment]: ['ASSIGN_COURSE', 'ASSIGN_PATH'],
+};
 
 export enum ActivityType {
   Created = 'CREATED',
