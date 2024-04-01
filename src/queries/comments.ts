@@ -6,7 +6,6 @@ import {
 import { IComment } from 'components/Comments';
 import { useCommentStore } from 'stores/commentStore';
 import apiService from 'utils/apiService';
-import { chain } from 'utils/misc';
 
 interface IContent {
   html: string;
@@ -33,23 +32,19 @@ export const getComments = async (
     (string | Record<string, any> | undefined)[],
     any
   >,
-  appendComments: (comment: { [id: string]: IComment }) => void,
+  appendComments: (comments: IComment[]) => void,
 ) => {
   let response = null;
   if (!!!context.pageParam) {
     response = await apiService.get('/comments', context.queryKey[1]);
-    appendComments({
-      ...chain(response.data.result.data).keyBy('id').value(),
-    });
+    appendComments(response.data.result.data);
     response.data.result.data = response.data.result.data.map(
       (eachPost: IComment) => ({ id: eachPost.id }),
     );
     return response;
   } else {
     response = await apiService.get(context.pageParam);
-    appendComments({
-      ...chain(response.data.result.data).keyBy('id').value(),
-    });
+    appendComments(response.data.result.data);
     response.data.result.data = response.data.result.data.map(
       (eachPost: IComment) => ({ id: eachPost.id }),
     );
