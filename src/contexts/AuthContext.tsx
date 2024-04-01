@@ -49,6 +49,7 @@ export interface IUser {
   timezone?: string;
   outOfOffice?: Record<string, any>;
   notificationSettings?: INotificationSettings;
+  preferences?: Record<string, any>;
 }
 
 export interface IBranding {
@@ -169,6 +170,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
               0,
             ),
           },
+          preferences: data?.preferences,
         });
         setBranding(data.branding, isLxp);
       } catch (e: any) {

@@ -51,6 +51,7 @@ import ProgressTrackerWidget from 'components/ProgressTrackerWidget';
 import EventWidget from 'components/EventWidget';
 import { useGetRecommendation } from 'queries/learn';
 import Recommendation from 'components/Recommendation';
+import useAuth from 'hooks/useAuth';
 
 interface IFeedProps {}
 
@@ -93,6 +94,7 @@ const Feed: FC<IFeedProps> = () => {
   const currentDate = new Date().toISOString();
   const { getScrollTop, pauseRecordingScrollTop, resumeRecordingScrollTop } =
     useScrollTop('app-shell-container');
+  const { user } = useAuth();
 
   //handle scroll
   useEffect(() => {
@@ -494,6 +496,26 @@ const Feed: FC<IFeedProps> = () => {
     } else return { tIndex: -1, rIndex: -1 };
   }, [announcementFeedIds, regularFeedIds]);
 
+  const handleTrendingContent = () => {
+    if (user?.preferences?.learnerViewType === 'MODERN') {
+      window.location.assign(`${getLearnUrl()}/user/trainings`);
+    } else {
+      window.location.assign(`${getLearnUrl()}/user/courses`);
+    }
+  };
+
+  const handleRecentlyPublishContent = () => {
+    if (user?.preferences?.learnerViewType === 'MODERN') {
+      window.location.assign(
+        `${getLearnUrl()}/user/trainings?type=elearning&tab=PUBLIC&sort=created_at`,
+      );
+    } else {
+      window.location.assign(
+        `${getLearnUrl()}/user/courses/shared?sort=created_at&viewAs=Grid`,
+      );
+    }
+  };
+
   return (
     <div className="pb-6 flex justify-between">
       <div className="z-10 w-[293px] flex flex-col gap-6">
@@ -529,11 +551,7 @@ const Feed: FC<IFeedProps> = () => {
                       cards={trendingCards}
                       title="Trending Content"
                       isLoading={recommendationLoading}
-                      onCLick={() =>
-                        window.location.assign(
-                          `${getLearnUrl()}/user/trainings`,
-                        )
-                      }
+                      onCLick={handleTrendingContent}
                     />
                   )}
                   {index === recommendationIndex.rIndex && (
@@ -541,11 +559,7 @@ const Feed: FC<IFeedProps> = () => {
                       cards={recentlyPublishedCards}
                       title="Recently Published"
                       isLoading={recommendationLoading}
-                      onCLick={() =>
-                        window.location.assign(
-                          `${getLearnUrl()}/user/trainings?type=elearning&tab=PUBLIC&sort=created_at`,
-                        )
-                      }
+                      onCLick={handleRecentlyPublishContent}
                     />
                   )}
                 </>
