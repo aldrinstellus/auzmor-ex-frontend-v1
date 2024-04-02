@@ -858,7 +858,7 @@ export const useInfiniteAcknowledgements = (
     getPreviousPageParam: (currentPage: any) => {
       return currentPage?.data?.result?.paging?.prev;
     },
-    staleTime: 5 * 60 * 1000,
+    cacheTime: 0,
   });
 };
 
