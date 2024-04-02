@@ -145,34 +145,43 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
       try {
         const userData = await fetchMe();
         const data = userData?.result?.data;
-        setLoggedIn(true);
-        setUser({
-          id: data?.id,
-          name: data?.fullName,
-          email: data?.workEmail,
-          role: data?.role,
-          organization: {
-            id: data?.org.id,
-            domain: data?.org.domain,
-          },
-          profileImage:
-            data?.profileImage?.small || data?.profileImage?.original,
-          permissions: data?.permissions,
-          timezone: data?.timeZone,
-          department: data?.department,
-          workLocation: data?.workLocation,
-          outOfOffice: data?.outOfOffice,
-          notificationSettings: data?.notificationSettings,
-          subscription: {
-            type: data?.org?.subscription.type,
-            daysRemaining: Math.max(
-              getRemainingTime(data?.org?.subscription?.subscriptionExpiresAt),
-              0,
-            ),
-          },
-          preferences: data?.preferences,
-        });
-        setBranding(data.branding, isLxp);
+        if (
+          getSubDomain(window.location.host) ||
+          process.env.NODE_ENV === 'development'
+        ) {
+          setLoggedIn(true);
+          setUser({
+            id: data?.id,
+            name: data?.fullName,
+            email: data?.workEmail,
+            role: data?.role,
+            organization: {
+              id: data?.org.id,
+              domain: data?.org.domain,
+            },
+            profileImage:
+              data?.profileImage?.small || data?.profileImage?.original,
+            permissions: data?.permissions,
+            timezone: data?.timeZone,
+            department: data?.department,
+            workLocation: data?.workLocation,
+            outOfOffice: data?.outOfOffice,
+            notificationSettings: data?.notificationSettings,
+            subscription: {
+              type: data?.org?.subscription.type,
+              daysRemaining: Math.max(
+                getRemainingTime(
+                  data?.org?.subscription?.subscriptionExpiresAt,
+                ),
+                0,
+              ),
+            },
+            preferences: data?.preferences,
+          });
+          setBranding(data.branding, isLxp);
+        } else {
+          window.location.host = `${data.org.domain}.${window.location.host}`;
+        }
       } catch (e: any) {
         if (e?.response?.status === 401) {
           removeAllItems();
