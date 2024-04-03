@@ -181,16 +181,6 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
         (isAdmin || data.createdBy?.userId === user?.id),
     },
     {
-      icon: 'delete',
-      label: 'Delete post',
-      onClick: () => showConfirm(),
-      iconClassName: '!text-red-500',
-      labelClassName: '!text-red-500',
-      dataTestId: 'post-ellipsis-delete-post',
-      permissions: ['DELETE_MY_POSTS', 'DELETE_POSTS'],
-      enabled: isAdmin || data.createdBy?.userId === user?.id,
-    },
-    {
       icon: 'chartOutline',
       label: 'See who voted',
       onClick: () => showPollVotes(),
@@ -209,6 +199,16 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
       dataTestId: 'post-ellipsis-view-acknowledgement-report',
       permissions: ['CREATE_ANNOUNCEMENTS', 'UPDATE_ANNOUNCEMENTS'],
       enabled: !isRegularPost(data, currentDate, isAdmin),
+    },
+    {
+      icon: 'delete',
+      label: 'Delete post',
+      onClick: () => showConfirm(),
+      iconClassName: '!text-red-500',
+      labelClassName: '!text-red-500',
+      dataTestId: 'post-ellipsis-delete-post',
+      permissions: ['DELETE_MY_POSTS', 'DELETE_POSTS'],
+      enabled: isAdmin || data.createdBy?.userId === user?.id,
     },
   ];
 
