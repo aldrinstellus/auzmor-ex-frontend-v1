@@ -19,8 +19,7 @@ import { IDepartment } from 'queries/department';
 import { IDesignation } from 'queries/designation';
 import { IPost } from 'queries/post';
 import moment from 'moment';
-import { EMPTY_REGEX, HEX_REGEX } from './constants';
-import { ProductEnum } from 'contexts/ProductProvider';
+import { EMPTY_REGEX, HEX_REGEX, SESSION_ID } from './constants';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -171,26 +170,6 @@ export const getSubDomain = (host: string) => {
   } else {
     return '';
   }
-};
-
-export const getProduct: () => ProductEnum = () => {
-  const host = window.location.host;
-  if (
-    host.includes(
-      process.env.REACT_APP_OFFICE_BASE_URL?.replace('https://', '') ||
-        'office.auzmor.com',
-    )
-  ) {
-    return ProductEnum.Office;
-  } else if (
-    host.includes(
-      process.env.REACT_APP_LXP_BASE_URL?.replace('https://', '') ||
-        'lxp.auzmor.com',
-    )
-  ) {
-    return ProductEnum.Lxp;
-  }
-  return ProductEnum.Office;
 };
 
 export const removeElementsByClass = (className: string) => {
@@ -525,4 +504,39 @@ export const isDark = (hexcode: string) => {
   const B = parseInt(hex.slice(4, 6), 16);
 
   return 0.2126 * R + 0.7152 * G + 0.0722 * B < 255 / 2;
+};
+
+export const insertAt = (str: string, index: number, insertStr: string) => {
+  return `${str.slice(0, index)}${insertStr}${str.slice(index)}`;
+};
+
+export const getLearnUrl = () => {
+  const subdomain = getSubDomain(window.location.host);
+  return `${insertAt(
+    process.env.REACT_APP_LEARN_BASE_URL || 'https://learn.auzmor.com',
+    'https://'.length,
+    subdomain ? `${subdomain}.` : '',
+  )}`;
+};
+
+export const getCookieValue = (key: string) => {
+  const cookieValue = document.cookie
+    .split('; ')
+    .find((row) => row.startsWith(`${key}=`))
+    ?.split('=')[1];
+  return cookieValue;
+};
+
+export const deleteCookie = (key: string) => {
+  document.cookie = ` ${key}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.auzmor.com;`;
+};
+
+export const getCookieParam = (key = SESSION_ID) => {
+  if (process.env.REACT_APP_ENV === 'PRODUCTION') {
+    return key;
+  }
+  const [hostname] =
+    process.env.REACT_APP_LEARN_BASE_URL?.replace('https://', '').split('.') ||
+    [];
+  return `${hostname}-${key}`;
 };

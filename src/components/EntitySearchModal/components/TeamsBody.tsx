@@ -15,6 +15,7 @@ import { useOrganization } from 'queries/organization';
 import useRole from 'hooks/useRole';
 import { CategoryType } from 'queries/apps';
 import NoDataFound from 'components/NoDataFound';
+import useProduct from 'hooks/useProduct';
 
 interface ITeamsBodyProps {
   entityRenderer?: (data: ITeam) => ReactNode;
@@ -32,6 +33,7 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
   const { watch, setValue, control, getValues } = form!;
   const { user } = useAuth();
   const { isAdmin } = useRole();
+  const { isLxp } = useProduct();
   const { data: organization } = useOrganization();
   const [teamSearch, showSelectedMembers, teams, categorySearch, categories] =
     watch([
@@ -144,67 +146,68 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
               inputClassName: 'text-sm py-[9px]',
             },
           ]}
-          className="pb-4"
         />
-        <div className="flex items-center justify-between">
-          <div
-            className={`flex items-center text-neutral-500 font-medium text-sm ${
-              isControlsDisabled && 'opacity-50 pointer-events-none'
-            }`}
-          >
-            Quick filters:
-            <div className="relative">
-              <InfiniteSearch
-                title="Category"
-                control={control}
-                options={
-                  categoryData?.map((category) => ({
-                    label: category.name,
-                    value: category,
-                    id: category.id,
-                  })) || []
-                }
-                searchName={'categorySearch'}
-                optionsName={'categories'}
-                isLoading={categoryLoading}
-                isFetchingNextPage={isFetchingNextCategoryPage}
-                fetchNextPage={fetchNextCategoryPage}
-                hasNextPage={hasNextCategoryPage}
-                onApply={() =>
-                  setSelectedCategories([
-                    ...Object.keys(categories).filter(
-                      (key: string) => !!categories[key],
-                    ),
-                  ])
-                }
-                onReset={() => {
-                  setSelectedCategories([]);
-                  if (categories) {
-                    Object.keys(categories).forEach((key: string) =>
-                      setValue(`categories.${key}`, false),
-                    );
+        {!isLxp ? (
+          <div className="flex items-center justify-between pt-4">
+            <div
+              className={`flex items-center text-neutral-500 font-medium text-sm ${
+                isControlsDisabled && 'opacity-50 pointer-events-none'
+              }`}
+            >
+              Quick filters:
+              <div className="relative">
+                <InfiniteSearch
+                  title="Category"
+                  control={control}
+                  options={
+                    categoryData?.map((category) => ({
+                      label: category.name,
+                      value: category,
+                      id: category.id,
+                    })) || []
                   }
-                }}
-                selectionCount={selectedCategories.length}
-                dataTestId={`${dataTestId}-filter-category`}
-              />
+                  searchName={'categorySearch'}
+                  optionsName={'categories'}
+                  isLoading={categoryLoading}
+                  isFetchingNextPage={isFetchingNextCategoryPage}
+                  fetchNextPage={fetchNextCategoryPage}
+                  hasNextPage={hasNextCategoryPage}
+                  onApply={() =>
+                    setSelectedCategories([
+                      ...Object.keys(categories).filter(
+                        (key: string) => !!categories[key],
+                      ),
+                    ])
+                  }
+                  onReset={() => {
+                    setSelectedCategories([]);
+                    if (categories) {
+                      Object.keys(categories).forEach((key: string) =>
+                        setValue(`categories.${key}`, false),
+                      );
+                    }
+                  }}
+                  selectionCount={selectedCategories.length}
+                  dataTestId={`${dataTestId}-filter-category`}
+                />
+              </div>
+            </div>
+            <div
+              className={`cursor-pointer text-neutral-500 text-sm font-medium hover:underline ${
+                isControlsDisabled && 'opacity-50 pointer-events-none'
+              }`}
+              onClick={() => {
+                setSelectedCategories([]);
+                Object.keys(categories).forEach((key: string) =>
+                  setValue(`categories.${key}`, false),
+                );
+              }}
+              data-testid={`${dataTestId}-clearfilter`}
+            >
+              Clear filters
             </div>
           </div>
-          <div
-            className={`cursor-pointer text-neutral-500 text-sm font-medium hover:underline ${
-              isControlsDisabled && 'opacity-50 pointer-events-none'
-            }`}
-            onClick={() => {
-              setSelectedCategories([]);
-              Object.keys(categories).forEach((key: string) =>
-                setValue(`categories.${key}`, false),
-              );
-            }}
-            data-testid={`${dataTestId}-clearfilter`}
-          >
-            Clear filters
-          </div>
-        </div>
+        ) : null}
       </div>
       <Divider className="w-full" />
       <div className="pl-6 flex flex-col">

@@ -3,17 +3,25 @@ import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import useAuth from 'hooks/useAuth';
 import React from 'react';
-import { userChannel } from 'utils/misc';
+import {
+  deleteCookie,
+  getCookieParam,
+  getLearnUrl,
+  userChannel,
+} from 'utils/misc';
 import { logout } from 'queries/account';
 import { useMutation } from '@tanstack/react-query';
 import useModal from 'hooks/useModal';
 import ContactSales from 'components/ContactSales';
+import useProduct from 'hooks/useProduct';
+import { learnLogout } from 'queries/learn';
 
 const SubscriptionExpired = () => {
   const { user, reset } = useAuth();
+  const { isLxp } = useProduct();
   const [sales, showSales, closeSales] = useModal();
 
-  const logoutMutation = useMutation(logout, {
+  const logoutMutation = useMutation(isLxp ? learnLogout : logout, {
     onSuccess: async () => {
       reset();
       userChannel.postMessage({
@@ -22,6 +30,11 @@ const SubscriptionExpired = () => {
           type: 'SIGN_OUT',
         },
       });
+      if (isLxp) {
+        deleteCookie(getCookieParam('region_url'));
+        deleteCookie(getCookieParam());
+        window.location.replace(`${getLearnUrl()}`);
+      }
     },
   });
 

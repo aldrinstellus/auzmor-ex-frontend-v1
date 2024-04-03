@@ -36,6 +36,7 @@ import {
 import Tooltip, { Variant as TooltipVariant } from 'components/Tooltip';
 import UserCard from 'components/UserCard';
 import { Link } from 'react-router-dom';
+import useProduct from 'hooks/useProduct';
 
 interface ReplyProps {
   comment: IComment;
@@ -44,6 +45,7 @@ interface ReplyProps {
 
 export const Reply: FC<ReplyProps> = ({ comment }) => {
   const { user } = useAuth();
+  const { isLxp } = useProduct();
   const [confirm, showConfirm, closeConfirm] = useModal();
   const [showReactionModal, setShowReactionModal] = useState(false);
   const [editReply, setEditReply] = useState<boolean>(false);
@@ -153,10 +155,14 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
                 >
                   <Link
                     to={
-                      comment?.createdBy?.userId &&
-                      comment.createdBy.userId !== user?.id
-                        ? '/users/' + comment.createdBy.userId
-                        : '/profile'
+                      isLxp
+                        ? ''
+                        : `${
+                            comment?.createdBy?.userId &&
+                            comment.createdBy.userId !== user?.id
+                              ? '/users/' + comment.createdBy.userId
+                              : '/profile'
+                          }`
                     }
                   >
                     <div className="text-neutral-900 font-bold text-sm hover:text-primary-500 hover:underline">

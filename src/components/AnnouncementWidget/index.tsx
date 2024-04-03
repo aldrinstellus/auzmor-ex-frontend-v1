@@ -15,6 +15,9 @@ import { FC, memo, useMemo } from 'react';
 import { isEmpty } from 'lodash';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
+import { useShouldRender } from 'hooks/useShouldRender';
+
+const ID = 'AnnouncementWidget';
 
 export interface IAnnouncementCardProps {
   postId?: string;
@@ -28,6 +31,10 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
   className = '',
 }) => {
   const { t } = useTranslation('announcement');
+  const shouldRender = useShouldRender(ID);
+  if (!shouldRender) {
+    return <></>;
+  }
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const navigate = useNavigate();

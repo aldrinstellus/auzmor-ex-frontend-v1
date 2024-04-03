@@ -27,7 +27,7 @@ export const getTintVariantColor = (
   return `color-mix(in srgb, ${color}, ${tintColor} ${intensity * 100}%)`;
 };
 
-const getPalette = (baseColor: string, keyPrefix?: string) => {
+export const getPalette = (baseColor: string, keyPrefix?: string) => {
   /**
    * Returns a color palette of base color ranging from 50 to 900 where base color is being 500.
    * @param baseColor

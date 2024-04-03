@@ -1,8 +1,8 @@
-import { FC, useMemo } from 'react';
+import { FC, Fragment, ReactNode, useMemo } from 'react';
 import Avatar from 'components/Avatar';
 import { VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
-import { IAudience, ICreatedBy } from 'queries/post';
+import { IAudience, ICreatedBy, PostTitle } from 'queries/post';
 import { Link } from 'react-router-dom';
 import {
   getAvatarColor,
@@ -10,10 +10,14 @@ import {
   getProfileImage,
   getUserCardTooltipProps,
 } from 'utils/misc';
-import AudiencePopup from 'components/AudiencePopup';
 import Tooltip, { Variant } from 'components/Tooltip';
 import UserCard from 'components/UserCard';
 import Icon from 'components/Icon';
+import useProduct from 'hooks/useProduct';
+import LxpLogoPng from '../Logo/images/lxpLogo.png';
+import OfficeLogoSvg from '../Logo/images/OfficeLogo.svg';
+import useModal from 'hooks/useModal';
+import AudienceModal, { getAudienceCount } from 'components/AudienceModal';
 
 type ActorProps = {
   contentMode?: string;
@@ -24,6 +28,7 @@ type ActorProps = {
   audience?: IAudience[];
   entityId?: string;
   postType?: string;
+  title?: PostTitle;
 };
 
 const Actor: FC<ActorProps> = ({
@@ -35,8 +40,12 @@ const Actor: FC<ActorProps> = ({
   // disabled = false,
   entityId,
   audience,
+  title,
 }) => {
   const { user } = useAuth();
+  const { isLxp } = useProduct();
+  const [isAudienceModalOpen, openAudienceModal, closeAudienceModal] =
+    useModal(false);
 
   const actionLabel = useMemo(() => {
     if (postType === 'BIRTHDAY') {
@@ -57,85 +66,103 @@ const Actor: FC<ActorProps> = ({
     return '';
   }, [postType]);
 
+  const profileUrl = isLxp
+    ? ''
+    : `${
+        createdBy?.userId && createdBy.userId !== user?.id
+          ? '/users/' + createdBy.userId
+          : '/profile'
+      }`;
+
+  const parseTitle: (title: PostTitle) => ReactNode = (title) => {
+    return <p className="text-sm font-normal">{title.content}</p>;
+  };
+
   return (
-    <div className="flex items-center gap-4 flex-1">
-      <div>
-        <Link
-          to={`${
-            createdBy?.userId && createdBy.userId !== user?.id
-              ? '/users/' + createdBy.userId
-              : '/profile'
-          }`}
-        >
-          <Avatar
-            name={getFullName(createdBy) || 'U'}
-            size={32}
-            image={getProfileImage(createdBy)}
-            bgColor={getAvatarColor(createdBy)}
-          />
-        </Link>
-      </div>
-      <div className="flex flex-col flex-1">
-        <div
-          className="font-bold text-sm text-neutral-900 flex gap-1"
-          data-testid={dataTestId}
-        >
-          <Tooltip
-            tooltipContent={
-              <UserCard user={getUserCardTooltipProps(createdBy)} />
-            }
-            variant={Variant.Light}
-            className="!p-4 !shadow-md !rounded-9xl !z-[999]"
-          >
-            <Link
-              to={`${
-                createdBy?.userId && createdBy.userId !== user?.id
-                  ? '/users/' + createdBy.userId
-                  : '/profile'
-              }`}
-              className="hover:text-primary-500 hover:underline"
-            >
-              {createdBy
-                ? getFullName(createdBy)
-                : user
-                ? getFullName(user)
-                : ''}
+    <Fragment>
+      <div className="flex items-center gap-4 flex-1">
+        <div>
+          {createdBy ? (
+            <Link to={profileUrl}>
+              <Avatar
+                name={getFullName(createdBy) || 'U'}
+                size={32}
+                image={getProfileImage(createdBy)}
+                bgColor={getAvatarColor(createdBy)}
+              />
             </Link>
-          </Tooltip>
-
-          <span className="text-sm font-normal text-neutral-900">
-            {actionLabel}
-          </span>
-        </div>
-        {/* </Link> */}
-        {contentMode === VIEW_POST ? (
-          <div className="flex items-center gap-2">
-            <div
-              className="text-xs font-normal text-neutral-500"
-              data-testid="feed-post-time"
-            >
-              {createdTime}
+          ) : (
+            <div className="relative flex justify-center items-center rounded-full w-8 h-8 bg-primary-100">
+              <img
+                src={isLxp ? LxpLogoPng : OfficeLogoSvg}
+                alt="Office Logo"
+                className="w-4 h-4"
+              />
             </div>
-            <div className="bg-neutral-500 rounded-full w-1 h-1" />
-
-            <Tooltip
-              tooltipContent={
-                <AudiencePopup entityId={entityId} audience={audience} />
-              }
-              variant={Variant.Light}
-              tooltipPosition="bottom"
-              className="!p-0 border shadow-lg border-neutral-200 !rounded-9xl overflow-hidden min-w-[222px] z-[999]"
-              showTooltip={!!(audience && audience.length)}
+          )}
+        </div>
+        <div className="flex flex-col flex-1">
+          {title ? (
+            parseTitle(title)
+          ) : (
+            <div
+              className="font-bold text-sm text-neutral-900 flex gap-1"
+              data-testid={dataTestId}
             >
+              <Tooltip
+                tooltipContent={
+                  <UserCard user={getUserCardTooltipProps(createdBy)} />
+                }
+                variant={Variant.Light}
+                className="!p-4 !shadow-md !rounded-9xl !z-[999]"
+              >
+                <Link
+                  to={profileUrl}
+                  className="hover:text-primary-500 hover:underline"
+                >
+                  {createdBy
+                    ? getFullName(createdBy)
+                    : user
+                    ? getFullName(user)
+                    : ''}
+                </Link>
+              </Tooltip>
+
+              <span className="text-sm font-normal text-neutral-900">
+                {actionLabel}
+              </span>
+            </div>
+          )}
+
+          {contentMode === VIEW_POST ? (
+            <div className="flex items-center gap-2">
+              <div
+                className="text-xs font-normal text-neutral-500"
+                data-testid="feed-post-time"
+              >
+                {createdTime}
+              </div>
+              <div className="bg-neutral-500 rounded-full w-1 h-1" />
               <Icon
                 name={audience && audience.length ? 'noteFavourite' : 'global'}
                 size={16}
+                onClick={
+                  audience && audience.length ? openAudienceModal : () => {}
+                }
               />
-            </Tooltip>
-          </div>
-        ) : null}
+            </div>
+          ) : null}
+        </div>
       </div>
-    </div>
+      {isAudienceModalOpen && (
+        <AudienceModal
+          closeModal={closeAudienceModal}
+          entityId={entityId || ''}
+          entity={'posts'}
+          audienceCounts={getAudienceCount(audience || [])}
+        />
+      )}
+    </Fragment>
   );
 };
 

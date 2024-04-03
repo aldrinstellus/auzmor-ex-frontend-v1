@@ -11,6 +11,7 @@ import { FC } from 'react';
 import UserCard from 'components/UserCard';
 import { ILocation } from 'queries/location';
 import { IProfileImage } from 'queries/post';
+import useProduct from 'hooks/useProduct';
 
 export interface IAvatarUser {
   fullName: string;
@@ -36,6 +37,7 @@ const AvatarChip: FC<IAvatarChipProps> = ({
   dataTestId,
 }) => {
   const { user: currentUser } = useAuth();
+  const { isLxp } = useProduct();
 
   return (
     <Tooltip
@@ -45,9 +47,13 @@ const AvatarChip: FC<IAvatarChipProps> = ({
     >
       <Link
         to={
-          user.userId && user.userId !== currentUser?.id
-            ? '/users/' + user.userId
-            : '/profile'
+          isLxp
+            ? ''
+            : `${
+                user.userId && user.userId !== currentUser?.id
+                  ? '/users/' + user.userId
+                  : '/profile'
+              }`
         }
       >
         <div

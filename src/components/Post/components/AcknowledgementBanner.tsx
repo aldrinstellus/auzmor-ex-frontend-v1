@@ -43,10 +43,11 @@ const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({ data }) => {
     onError: (error, variables, context) =>
       updateFeed(context!.previousPost.id!, context!.previousPost!),
     onSuccess: async (_data, _variables, _context) => {
-      await Promise.all([
+      await Promise.allSettled([
         queryClient.invalidateQueries(['feed-announcements-widget']),
         queryClient.invalidateQueries(['post-announcements-widget']),
         queryClient.invalidateQueries(['posts', data.id]),
+        queryClient.invalidateQueries(['feed']),
       ]);
     },
   });

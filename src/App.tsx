@@ -8,12 +8,19 @@ import queryClient from 'utils/queryClient';
 import Toast from 'components/Toast';
 import useMediaQuery from 'hooks/useMediaQuery';
 import Unsupported from 'pages/Unsupported';
+import ProductProvider from 'contexts/ProductProvider';
+import { ProductEnum, getProduct } from 'utils/apiService';
+import { getLearnUrl } from 'utils/misc';
 
 import './i18n/config';
-import ProductProvider from 'contexts/ProductProvider';
 
 function App() {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
+
+  if (getProduct() === ProductEnum.Lxp && !isDesktop && isDesktop !== null) {
+    window.location.replace(getLearnUrl());
+  }
+
   return isDesktop ? (
     <QueryClientProvider client={queryClient}>
       <ProductProvider>

@@ -102,6 +102,11 @@ import SvgStarOutline from '../components/Star/StarOutline';
 import SvgNewsOutline from '../components/News/NewsOutline';
 import SvgWebsiteOutline from '../components/Website/WebsiteOutline';
 import SvgGalleryOutline from '../components/Gallery/GalleryOutline';
+import SvgLifeBuoyOutline from '../components/LifeBuoy/LifeBuoyoutline';
+import SvgShoppingCartOutline from '../components/ShoppingCart/ShoppingCartOutline';
+import SvgMessageQuestionOutline from '../components/MessageQuestion/MessageQuestionOutline';
+import SvgTeacherOutline from '../components/Teacher/TeacherOutline';
+import SvgVideoSquareOutline from '../components/VideoSquare/VideoSquareOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -208,4 +213,9 @@ export const outlineIcon = {
   websiteOutline: SvgWebsiteOutline,
   zoomInOutline: SvgZoomInOutline,
   zoomOutOutline: SvgZoomOutOutline,
+  lifeBuoyOutline: SvgLifeBuoyOutline,
+  shoppingCartOutline: SvgShoppingCartOutline,
+  messageQuestionOutline: SvgMessageQuestionOutline,
+  teacherOutline: SvgTeacherOutline,
+  videoSquareOutline: SvgVideoSquareOutline,
 };

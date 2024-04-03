@@ -10,6 +10,7 @@ import { FC } from 'react';
 import { isNewEntity } from 'utils/misc';
 import TeamOptions from 'components/TeamOptions';
 import useRole from 'hooks/useRole';
+import useProduct from 'hooks/useProduct';
 
 export interface ITeamsCardProps {
   id: string;
@@ -40,6 +41,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
   const navigate = useNavigate();
   const [isHovered, eventHandlers] = useHover();
   const { isMember } = useRole();
+  const { isLxp } = useProduct();
   return (
     <div className="cursor-pointer" data-testid="" {...eventHandlers}>
       <Card
@@ -71,10 +73,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
         )}
         {isNewEntity(createdAt) && (
           <div
-            style={{
-              backgroundColor: '#D1FAE5',
-            }}
-            className="absolute top-0 left-0 text-primary-500 rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xxs font-medium"
+            className="absolute top-0 left-0 bg-primary-100 text-primary-500 rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xxs font-medium"
             data-testid="team-badge-recentlyadded"
           >
             Recently added
@@ -112,13 +111,15 @@ const TeamsCard: FC<ITeamsCardProps> = ({
                 })}
               </div>
 
-              <div
-                // different colors for category
-                className="text-xxs font-semibold py-[2px] px-2 line-clamp-1 capitalize rounded bg-indigo-100 text-indigo-500"
-                data-testid={`team-category-${category?.name?.toLowerCase()}`}
-              >
-                {category?.name?.toLowerCase()}
-              </div>
+              {!isLxp ? (
+                <div
+                  // different colors for category
+                  className="text-xxs font-semibold py-[2px] px-2 line-clamp-1 capitalize rounded bg-indigo-100 text-indigo-500"
+                  data-testid={`team-category-${category?.name?.toLowerCase()}`}
+                >
+                  {category?.name?.toLowerCase()}
+                </div>
+              ) : null}
             </div>
 
             <div className="flex items-center justify-center gap-1">

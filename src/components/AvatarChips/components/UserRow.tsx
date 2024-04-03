@@ -5,6 +5,7 @@ import Icon from 'components/Icon';
 import useAuth from 'hooks/useAuth';
 import { getFullName, getProfileImage } from 'utils/misc';
 import { FC } from 'react';
+import useProduct from 'hooks/useProduct';
 
 interface IUserRowProps {
   user: IAvatarUser;
@@ -13,6 +14,8 @@ interface IUserRowProps {
 
 const UserRow: FC<IUserRowProps> = ({ user, dataTestId }) => {
   const { user: currentUser } = useAuth();
+  const { isLxp } = useProduct();
+
   return (
     <div className="flex items-center justify-between w-full group hover:bg-primary-50 transition py-1">
       <div className="flex items-center gap-4 flex-1">
@@ -42,23 +45,25 @@ const UserRow: FC<IUserRowProps> = ({ user, dataTestId }) => {
           </div>
         </>
       )}
-      <Link
-        to={
-          user.userId && user.userId !== currentUser?.id
-            ? '/users/' + user.userId
-            : '/profile'
-        }
-      >
-        <div
-          className="text-primary-600 text-sm font-bold cursor-pointer invisible group-hover:visible flex items-center gap-1"
-          data-testid={`${dataTestId}${
-            getFullName(user) || user.email
-          }-gotoprofile`}
+      {!isLxp && (
+        <Link
+          to={
+            user.userId && user.userId !== currentUser?.id
+              ? '/users/' + user.userId
+              : '/profile'
+          }
         >
-          <span>Go to profile</span>
-          <Icon name="arrowRightOutline" size={16} color="text-primary-600" />
-        </div>
-      </Link>
+          <div
+            className="text-primary-600 text-sm font-bold cursor-pointer invisible group-hover:visible flex items-center gap-1"
+            data-testid={`${dataTestId}${
+              getFullName(user) || user.email
+            }-gotoprofile`}
+          >
+            <span>Go to profile</span>
+            <Icon name="arrowRightOutline" size={16} color="text-primary-600" />
+          </div>
+        </Link>
+      )}
     </div>
   );
 };

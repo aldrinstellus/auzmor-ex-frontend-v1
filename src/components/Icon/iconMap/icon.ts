@@ -89,6 +89,7 @@ import Plus from '../components/Plus';
 import RotateLeft from '../components/RotateLeft';
 import SettingIcon from '../components/Setting';
 import SettingThreeIcon from '../components/SettingThree';
+import UserAdminIcon from '../components/UserAdmin';
 import LogoutIcon from '../components/Logout';
 import ClipboardCloseIcon from '../components/ClipboardClose';
 import SeekForwardIcon from '../components/SeekForward';
@@ -149,6 +150,16 @@ import StarIcon from '../components/Star';
 import NewsIcon from '../components/News';
 import WebsiteIcon from '../components/Website';
 import GalleryIcon from '../components/Gallery';
+import MenuBoardIcon from '../components/MenuBoard';
+import StarHalfIcon from '../components/StarHalf';
+import LifeBuoyIcon from '../components/LifeBuoy';
+import ShopingCartIcon from '../components/ShoppingCart';
+import MessageQuestionIcon from '../components/MessageQuestion';
+import VideoPlayIcon from '../components/VideoPlay';
+import RadarIcon from '../components/Radar';
+import TeacherIcon from '../components/Teacher';
+import MedalStarIcon from '../components/MedalStar';
+import VideoSquareIcon from '../components/VideoSquare';
 
 export const icon = {
   add: Add,
@@ -254,6 +265,7 @@ export const icon = {
   marketplace: Marketplace,
   marriedIcon: MarriedIcon,
   maximize: MaximizeIcon,
+  menuBoard: MenuBoardIcon,
   mic: MicIcon,
   minus: Minus,
   more: MoreIcon,
@@ -287,6 +299,7 @@ export const icon = {
   slack: SlackIcon,
   speaker: SpeakerIcon,
   star: StarIcon,
+  starHalf: StarHalfIcon,
   support: Support,
   supportReaction: SupportReaction,
   tag: Tag,
@@ -296,10 +309,19 @@ export const icon = {
   userManagement: UserManagement,
   userRemove: UserRemove,
   users: UsersIcon,
+  userAdmin: UserAdminIcon,
   video: VideoIcon,
+  radar: RadarIcon,
   videoSlash: VideoSlash,
   warningCircle: WarningCircleIcon,
   website: WebsiteIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
+  lifeBuoy: LifeBuoyIcon,
+  shoppingCart: ShopingCartIcon,
+  videoPlay: VideoPlayIcon,
+  messageQuestion: MessageQuestionIcon,
+  teacher: TeacherIcon,
+  medalStar: MedalStarIcon,
+  videoSquare: VideoSquareIcon,
 };

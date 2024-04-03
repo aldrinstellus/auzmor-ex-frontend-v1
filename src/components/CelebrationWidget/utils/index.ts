@@ -1,9 +1,15 @@
 import momentTz from 'moment-timezone';
 
-export const formatDate = (inputDate: string, userTimezone: string): string => {
+export const formatDate = (
+  inputDate: string,
+  userTimezone: string,
+  type?: string,
+): string => {
   const currentDate = momentTz().tz(userTimezone);
   const parsedDate = momentTz(inputDate).tz(userTimezone);
-
+  if (type == 'event') {
+    return parsedDate.format('D MMM YYYY');
+  }
   // Check if the parsed date is today
   if (
     currentDate.month() === parsedDate.month() &&

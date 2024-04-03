@@ -1,8 +1,6 @@
 import AnnouncementCard from 'components/AnnouncementWidget';
-import { Comment } from 'components/Comments/components/Comment';
 import PageLoader from 'components/PageLoader';
 import Post from 'components/Post';
-import { Reply } from 'components/Reply/Reply';
 import UserCard from 'components/UserWidget';
 import useMediaQuery from 'hooks/useMediaQuery';
 import PageNotFound from 'pages/PageNotFound';
@@ -42,21 +40,17 @@ const PostPage: FC = () => {
         <div className="flex-grow flex flex-col">
           <Post
             post={post}
-            customNode={
-              post?.comment && (
-                <div className="mx-6 mb-3">
-                  <Comment
-                    comment={post.comment}
-                    customNode={
-                      post?.comment?.comment ? (
-                        <div className="mt-4 ml-8">
-                          <Reply comment={post?.comment?.comment} />
-                        </div>
-                      ) : null
-                    }
-                  />
-                </div>
-              )
+            comments={
+              post.comment
+                ? [
+                    {
+                      ...post.comment,
+                      relevantComments: post.comment.comment
+                        ? [post.comment.comment]
+                        : [],
+                    },
+                  ]
+                : []
             }
           />
         </div>

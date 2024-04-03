@@ -367,8 +367,8 @@ const RichTextEditor = forwardRef(
             mode={Mode.Edit}
             onAddButtonClick={() => inputImgRef?.current?.click()}
             onCloseButtonClick={media.length > 1 ? showConfirm : onRemoveMedia}
-            showEditButton={postType !== PostType.Shoutout}
-            showCloseButton={postType !== PostType.Shoutout}
+            showEditButton={true}
+            showCloseButton={true}
             showAddMediaButton={postType !== PostType.Shoutout}
             onEditButtonClick={onMediaEdit}
             coverImageMap={coverImageMap}

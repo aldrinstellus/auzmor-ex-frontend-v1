@@ -32,6 +32,7 @@ import ReactivatePeople from '../ReactivateModal/Reactivate';
 import clsx from 'clsx';
 import RemoveTeamMember from '../DeleteModals/TeamMember';
 import { FC } from 'react';
+import useProduct from 'hooks/useProduct';
 
 export interface IPeopleCardProps {
   userData: IGetUser;
@@ -73,6 +74,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     workEmail,
     createdAt,
   } = userData;
+  const { isLxp } = useProduct();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -222,60 +224,64 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     >
       <Card
         shadowOnHover
-        className="relative w-[233px] h-[254px] border-solid border rounded-9xl border-neutral-200 bg-white"
+        className={`relative w-[190px] ${
+          isLxp ? 'h-[190px]' : 'h-[244px]'
+        } border-solid border rounded-9xl border-neutral-200 bg-white`}
       >
-        <UserProfileDropdown
-          id={id}
-          loggedInUserId={user?.id}
-          role={role || ''}
-          status={status}
-          isHovered={isHovered}
-          onDeleteClick={openDeleteModal}
-          isTeamPeople={isTeamPeople}
-          onEditClick={() =>
-            navigate(
-              `/users/${id}?edit=${getEditSection(id, user?.id, isAdmin)}`,
-            )
-          }
-          onReactivateClick={openReactivateModal}
-          onPromoteClick={() => updateUserRoleMutation.mutate({ id })}
-          onDeactivateClick={openDeactivateModal}
-          onResendInviteClick={() => {
-            toast(<SuccessToast content="Invitation has been sent" />, {
-              closeButton: (
+        {!isLxp ? (
+          <UserProfileDropdown
+            id={id}
+            loggedInUserId={user?.id}
+            role={role || ''}
+            status={status}
+            isHovered={isHovered}
+            onDeleteClick={openDeleteModal}
+            isTeamPeople={isTeamPeople}
+            onEditClick={() =>
+              navigate(
+                `/users/${id}?edit=${getEditSection(id, user?.id, isAdmin)}`,
+              )
+            }
+            onReactivateClick={openReactivateModal}
+            onPromoteClick={() => updateUserRoleMutation.mutate({ id })}
+            onDeactivateClick={openDeactivateModal}
+            onResendInviteClick={() => {
+              toast(<SuccessToast content="Invitation has been sent" />, {
+                closeButton: (
+                  <Icon
+                    name="closeCircleOutline"
+                    color="text-primary-500"
+                    size={20}
+                  />
+                ),
+                style: {
+                  border: `1px solid ${twConfig.theme.colors.primary['300']}`,
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                },
+                autoClose: TOAST_AUTOCLOSE_TIME,
+                transition: slideInAndOutTop,
+                theme: 'dark',
+              });
+              resendInviteMutation.mutate(id);
+            }}
+            onRemoveTeamMember={openRemoveTeamMemberModal}
+            triggerNode={
+              <div className="cursor-pointer">
                 <Icon
-                  name="closeCircleOutline"
-                  color="text-primary-500"
-                  size={20}
+                  name="moreOutline"
+                  className={`absolute z-10 top-${
+                    status === UserStatus.Inactive ? 6 : 2
+                  } right-2`}
+                  dataTestId="people-card-ellipsis"
                 />
-              ),
-              style: {
-                border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-                borderRadius: '6px',
-                display: 'flex',
-                alignItems: 'center',
-              },
-              autoClose: TOAST_AUTOCLOSE_TIME,
-              transition: slideInAndOutTop,
-              theme: 'dark',
-            });
-            resendInviteMutation.mutate(id);
-          }}
-          onRemoveTeamMember={openRemoveTeamMemberModal}
-          triggerNode={
-            <div className="cursor-pointer">
-              <Icon
-                name="moreOutline"
-                className={`absolute z-10 top-${
-                  status === UserStatus.Inactive ? 6 : 2
-                } right-2`}
-                dataTestId="people-card-ellipsis"
-              />
-            </div>
-          }
-          showOnHover={true}
-          className="right-0 top-8 border border-[#e5e5e5]"
-        />
+              </div>
+            }
+            showOnHover={true}
+            className="right-0 top-8 border border-[#e5e5e5]"
+          />
+        ) : null}
 
         {status === UserStatus.Inactive ? (
           <div
@@ -306,6 +312,9 @@ const PeopleCard: FC<IPeopleCardProps> = ({
         <div
           className="flex flex-col gap-4 items-center z-10 py-6 px-4 justify-between h-full"
           onClick={() => {
+            if (isLxp) {
+              return null;
+            }
             if (id === user?.id) {
               return navigate('/profile');
             }

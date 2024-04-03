@@ -5,6 +5,7 @@ import Icon from 'components/Icon';
 import IconWrapper from 'components/Icon/components/IconWrapper';
 import Spinner from 'components/Spinner';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
+import useProduct from 'hooks/useProduct';
 import { IGetUser, getUser } from 'queries/users';
 import { FC } from 'react';
 import Skeleton from 'react-loading-skeleton';
@@ -41,6 +42,7 @@ const UserCard: FC<IUserCardProp> = ({
   variant = UsercardVariant.Small,
   className = '',
 }) => {
+  const { isLxp } = useProduct();
   switch (variant) {
     case UsercardVariant.Small: {
       const style = clsx({
@@ -71,23 +73,32 @@ const UserCard: FC<IUserCardProp> = ({
             >
               {user?.workEmail || 'Field not specified'}
             </div>
-            <div className="flex items-center">
-              <Icon
-                name="location"
-                size={16}
-                hover={false}
-                color="text-neutral-900"
-                className="mr-2"
-              />
+            {isLxp ? (
+              <div
+                className="text-sm font-normal text-neutral-500 truncate"
+                data-testid="usercard-designation"
+              >
+                {user?.designation?.name || 'No Designation'}
+              </div>
+            ) : (
               <div className="flex items-center">
-                <div
-                  className="text-xs font-normal text-neutral-500 truncate"
-                  data-testid="usercard-location"
-                >
-                  {user?.workLocation?.name || 'Field not specified'}
+                <Icon
+                  name="location"
+                  size={16}
+                  hover={false}
+                  color="text-neutral-900"
+                  className="mr-2"
+                />
+                <div className="flex items-center">
+                  <div
+                    className="text-xs font-normal text-neutral-500 truncate"
+                    data-testid="usercard-location"
+                  >
+                    {user?.workLocation?.name || 'Field not specified'}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       );

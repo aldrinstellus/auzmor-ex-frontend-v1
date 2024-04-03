@@ -5,7 +5,7 @@ import { fetchMe } from 'queries/account';
 import UserOnboard from 'components/UserOnboard';
 import { Role } from 'utils/enum';
 import PageLoader from 'components/PageLoader';
-import { userChannel } from 'utils/misc';
+import { getLearnUrl, getSubDomain, userChannel } from 'utils/misc';
 import { ILocation } from 'queries/location';
 import { IDepartment } from 'queries/department';
 import Smartlook from 'smartlook-client';
@@ -14,6 +14,8 @@ import SubscriptionExpired from 'components/SubscriptionExpired';
 import AccountDeactivated from 'components/AccountDeactivated';
 import { useBrandingStore } from 'stores/branding';
 import { INotificationSettings } from 'queries/users';
+import useProduct from 'hooks/useProduct';
+import { ProductEnum, getProduct } from 'utils/apiService';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -47,6 +49,7 @@ export interface IUser {
   timezone?: string;
   outOfOffice?: Record<string, any>;
   notificationSettings?: INotificationSettings;
+  preferences?: Record<string, any>;
 }
 
 export interface IBranding {
@@ -95,6 +98,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [sessionExpired, setSessionExpired] = useState(false);
   const [accountDeactivated, setAccountDeactivated] = useState(false);
+  const { isLxp } = useProduct();
 
   const setBranding = useBrandingStore((state) => state.setBranding);
 
@@ -102,6 +106,24 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
     const query = new URLSearchParams(window.location.search.substring(1));
     let token = query.get('accessToken');
     setShowOnboard(!!query.get('showOnboard'));
+
+    const regionUrl = query.get('regionUrl');
+    if (regionUrl) {
+      setItem('regionUrl', regionUrl);
+      query.delete('regionUrl');
+    }
+
+    const visitToken = query.get('visitToken');
+    if (visitToken) {
+      setItem('visitToken', visitToken);
+      query.delete('visitToken');
+    }
+
+    const viewAsRole = query.get('role');
+    if (viewAsRole) {
+      setItem('viewAsRole', viewAsRole);
+      query.delete('role');
+    }
 
     if (token) {
       setItem(process.env.SESSION_KEY || 'uat', token);
@@ -123,33 +145,43 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
       try {
         const userData = await fetchMe();
         const data = userData?.result?.data;
-        setLoggedIn(true);
-        setUser({
-          id: data?.id,
-          name: data?.fullName,
-          email: data?.workEmail,
-          role: data?.role,
-          organization: {
-            id: data?.org.id,
-            domain: data?.org.domain,
-          },
-          profileImage:
-            data?.profileImage?.small || data?.profileImage?.original,
-          permissions: data?.permissions,
-          timezone: data?.timeZone,
-          department: data?.department,
-          workLocation: data?.workLocation,
-          outOfOffice: data?.outOfOffice,
-          notificationSettings: data?.notificationSettings,
-          subscription: {
-            type: data?.org?.subscription.type,
-            daysRemaining: Math.max(
-              getRemainingTime(data?.org?.subscription?.subscriptionExpiresAt),
-              0,
-            ),
-          },
-        });
-        setBranding(data.branding);
+        if (
+          getSubDomain(window.location.host) ||
+          process.env.NODE_ENV === 'development'
+        ) {
+          setLoggedIn(true);
+          setUser({
+            id: data?.id,
+            name: data?.fullName,
+            email: data?.workEmail,
+            role: data?.role,
+            organization: {
+              id: data?.org.id,
+              domain: data?.org.domain,
+            },
+            profileImage:
+              data?.profileImage?.small || data?.profileImage?.original,
+            permissions: data?.permissions,
+            timezone: data?.timeZone,
+            department: data?.department,
+            workLocation: data?.workLocation,
+            outOfOffice: data?.outOfOffice,
+            notificationSettings: data?.notificationSettings,
+            subscription: {
+              type: data?.org?.subscription.type,
+              daysRemaining: Math.max(
+                getRemainingTime(
+                  data?.org?.subscription?.subscriptionExpiresAt,
+                ),
+                0,
+              ),
+            },
+            preferences: data?.preferences,
+          });
+          setBranding(data.branding, isLxp);
+        } else {
+          window.location.host = `${data.org.domain}.${window.location.host}`;
+        }
       } catch (e: any) {
         if (e?.response?.status === 401) {
           removeAllItems();
@@ -157,7 +189,15 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
         }
       }
     }
-    setLoading(false);
+    if (
+      !!!token &&
+      getProduct() === ProductEnum.Lxp &&
+      !!getSubDomain(window.location.host)
+    ) {
+      window.location.replace(getLearnUrl());
+    } else {
+      setLoading(false);
+    }
   };
 
   const initSmartlook = () => {
@@ -212,7 +252,11 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
     userChannel.onmessage = (data: any) => {
       if (data?.data?.payload?.type === 'SIGN_OUT') {
         reset();
-        return window.location.replace(`${window.location.origin}/logout`);
+        if (isLxp) {
+          window.location.replace(`${getLearnUrl()}`);
+        } else {
+          window.location.replace(`${window.location.origin}/logout`);
+        }
       }
     };
   }, []);

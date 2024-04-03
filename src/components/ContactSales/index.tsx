@@ -11,7 +11,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { logout } from 'queries/account';
 import useAuth from 'hooks/useAuth';
-import { userChannel } from 'utils/misc';
+import {
+  deleteCookie,
+  getCookieParam,
+  getLearnUrl,
+  userChannel,
+} from 'utils/misc';
+import { learnLogout } from 'queries/learn';
+import useProduct from 'hooks/useProduct';
 
 type AppProps = {
   open: boolean;
@@ -27,12 +34,13 @@ const ContactSales: React.FC<AppProps> = ({
   variant = 'default',
 }) => {
   const { user, reset } = useAuth();
+  const { isLxp } = useProduct();
   const schema = yup.object({
     subject: yup.string().required(),
     body: yup.string().required(),
   });
 
-  const logoutMutation = useMutation(logout, {
+  const logoutMutation = useMutation(isLxp ? learnLogout : logout, {
     onSuccess: async () => {
       reset();
       userChannel.postMessage({
@@ -41,6 +49,11 @@ const ContactSales: React.FC<AppProps> = ({
           type: 'SIGN_OUT',
         },
       });
+      if (isLxp) {
+        deleteCookie(getCookieParam('region_url'));
+        deleteCookie(getCookieParam());
+        window.location.replace(`${getLearnUrl()}`);
+      }
     },
   });
 

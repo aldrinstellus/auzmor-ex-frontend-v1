@@ -18,13 +18,6 @@ export interface INavbarMenuItemProps {
 }
 
 const NavbarMenuItem: FC<INavbarMenuItemProps> = ({ nav }) => {
-  if (nav.render) {
-    return (
-      <div className="flex flex-col items-center cursor-pointer">
-        {nav?.render?.()}
-      </div>
-    );
-  }
   return nav.disabled ? (
     <div
       className="flex flex-col items-center p-2"

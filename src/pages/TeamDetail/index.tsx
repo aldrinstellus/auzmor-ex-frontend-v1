@@ -35,6 +35,7 @@ import TeamDetailSkeleton from './components/TeamDetailSkeleton';
 import { FC, useEffect } from 'react';
 import useRole from 'hooks/useRole';
 import TeamOptions from 'components/TeamOptions';
+import useProduct from 'hooks/useProduct';
 
 export interface ITeamMemberProps {}
 
@@ -46,6 +47,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
   const navigate = useNavigate();
   const { teamId: id } = params;
   const { isAdmin } = useRole();
+  const { isLxp } = useProduct();
 
   const [showTeamModal, openTeamModal, closeTeamModal] = useModal(
     undefined,
@@ -159,7 +161,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                   {prevRoute === TeamTab.MyTeams ? 'My Teams' : 'All Teams'}
                 </div>
               </div>
-              {isAdmin ? (
+              {isAdmin && !isLxp ? (
                 <Tooltip
                   tooltipContent={
                     <div
@@ -207,17 +209,19 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
               </div>
 
               <div className="flex items-center space-x-20 ">
-                <div className="flex flex-col space-y-2">
-                  <div className="text-sm font-semibold text-purple-700">
-                    Team type
+                {!isLxp ? (
+                  <div className="flex flex-col space-y-2">
+                    <div className="text-sm font-semibold text-purple-700">
+                      Team type
+                    </div>
+                    <div
+                      className="text-xl font-semibold"
+                      data-testid="team-details-category"
+                    >
+                      {data.category?.name || 'category'}
+                    </div>
                   </div>
-                  <div
-                    className="text-xl font-semibold"
-                    data-testid="team-details-category"
-                  >
-                    {data.category?.name || 'category'}
-                  </div>
-                </div>
+                ) : null}
                 <div className="flex flex-col space-y-2">
                   <div className="text-sm font-semibold text-purple-700">
                     No. of people
@@ -229,18 +233,20 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                     {data.totalMembers || 0}
                   </div>
                 </div>
-                <div className="relative">
-                  <TeamOptions
-                    id={id || ''}
-                    onEdit={openTeamModal}
-                    triggerIcon="setting"
-                    dataTestId="team-settings"
-                    dataTestIdPrefix="team-settings"
-                    isDetailPage
-                    className="absolute top-5 -right-5 w-44"
-                    iconColor="text-neutral-900"
-                  />
-                </div>
+                {!isLxp ? (
+                  <div className="relative">
+                    <TeamOptions
+                      id={id || ''}
+                      onEdit={openTeamModal}
+                      triggerIcon="setting"
+                      dataTestId="team-settings"
+                      dataTestIdPrefix="team-settings"
+                      isDetailPage
+                      className="absolute top-5 -right-5 w-44"
+                      iconColor="text-neutral-900"
+                    />
+                  </div>
+                ) : null}
               </div>
             </div>
           </>

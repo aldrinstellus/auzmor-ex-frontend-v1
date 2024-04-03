@@ -13,6 +13,7 @@ import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 import useAuth from 'hooks/useAuth';
 import { IDesignationAPI, useInfiniteDesignations } from 'queries/designation';
 import NoDataFound from 'components/NoDataFound';
+import useProduct from 'hooks/useProduct';
 
 type ApiCallFunction = (queryParams: any) => any;
 interface IMembersBodyProps {
@@ -38,6 +39,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
   fetchUsers = useInfiniteUsers,
   usersQueryParams = {},
 }) => {
+  const { isOffice } = useProduct();
   const { user: currentUser } = useAuth();
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
@@ -261,149 +263,151 @@ const MembersBody: FC<IMembersBodyProps> = ({
               inputClassName: 'text-sm py-[9px]',
             },
           ]}
-          className="pb-4"
+          className={`${isOffice ? 'pb-4' : ''}`}
         />
-        <div className="flex items-center justify-between">
-          <div
-            className={`flex items-center text-neutral-500 font-medium text-sm ${
-              isControlsDisabled && 'opacity-50 pointer-events-none'
-            }`}
-          >
-            Quick filters:
-            <div className="relative">
-              <InfiniteSearch
-                title="Department"
-                control={control}
-                options={
-                  departmentData?.map((department: IDepartmentAPI) => ({
-                    label: department.name,
-                    value: department,
-                    id: department.id,
-                  })) || []
-                }
-                searchName={'departmentSearch'}
-                optionsName={'departments'}
-                isLoading={departmentLoading}
-                isFetchingNextPage={isFetchingNextDepartmentPage}
-                fetchNextPage={fetchNextDepartmentPage}
-                hasNextPage={hasNextDepartmentPage}
-                onApply={() =>
-                  setSelectedDepartments([
-                    ...Object.keys(departments).filter(
-                      (key: string) => !!departments[key],
-                    ),
-                  ])
-                }
-                onReset={() => {
-                  setSelectedDepartments([]);
-                  if (departments) {
-                    Object.keys(departments).forEach((key: string) =>
-                      setValue(`departments.${key}`, false),
-                    );
-                  }
-                }}
-                selectionCount={selectedDepartments.length}
-                dataTestId={`${dataTestId}-filter-department`}
-              />
-            </div>
-            <div className="relative">
-              <InfiniteSearch
-                title="Location"
-                control={control}
-                options={
-                  locationData?.map((location: ILocationAPI) => ({
-                    label: location.name,
-                    value: location,
-                    id: location.id,
-                  })) || []
-                }
-                searchName={'locationSearch'}
-                optionsName={'locations'}
-                isLoading={locationLoading}
-                isFetchingNextPage={isFetchingNextLocationPage}
-                fetchNextPage={fetchNextLocationPage}
-                hasNextPage={hasNextLocationPage}
-                onApply={() =>
-                  setSelectedLocations([
-                    ...Object.keys(locations).filter(
-                      (key: string) => !!locations[key],
-                    ),
-                  ])
-                }
-                onReset={() => {
-                  setSelectedLocations([]);
-                  if (locations) {
-                    Object.keys(locations).forEach((key: string) =>
-                      setValue(`locations.${key}`, false),
-                    );
-                  }
-                }}
-                selectionCount={selectedLocations.length}
-                dataTestId={`${dataTestId}-filter-location`}
-              />
-            </div>
-            {showJobTitleFilter && (
+        {isOffice && (
+          <div className="flex items-center justify-between">
+            <div
+              className={`flex items-center text-neutral-500 font-medium text-sm ${
+                isControlsDisabled && 'opacity-50 pointer-events-none'
+              }`}
+            >
+              Quick filters:
               <div className="relative">
                 <InfiniteSearch
-                  title="Job Title"
+                  title="Department"
                   control={control}
                   options={
-                    designationData?.map((designation: IDesignationAPI) => ({
-                      label: designation.name,
-                      value: designation,
-                      id: designation.id,
+                    departmentData?.map((department: IDepartmentAPI) => ({
+                      label: department.name,
+                      value: department,
+                      id: department.id,
                     })) || []
                   }
-                  searchName={'designationSearch'}
-                  optionsName={'designations'}
-                  isLoading={designationLoading}
-                  isFetchingNextPage={isFetchingNextDesignationPage}
-                  fetchNextPage={fetchNextDesignationPage}
-                  hasNextPage={hasNextDesignationPage}
+                  searchName={'departmentSearch'}
+                  optionsName={'departments'}
+                  isLoading={departmentLoading}
+                  isFetchingNextPage={isFetchingNextDepartmentPage}
+                  fetchNextPage={fetchNextDepartmentPage}
+                  hasNextPage={hasNextDepartmentPage}
                   onApply={() =>
-                    setSelectedDesignations([
-                      ...Object.keys(designations).filter(
-                        (key: string) => !!designations[key],
+                    setSelectedDepartments([
+                      ...Object.keys(departments).filter(
+                        (key: string) => !!departments[key],
                       ),
                     ])
                   }
                   onReset={() => {
-                    setSelectedDesignations([]);
-                    if (designations) {
-                      Object.keys(designations).forEach((key: string) =>
-                        setValue(`designations.${key}`, false),
+                    setSelectedDepartments([]);
+                    if (departments) {
+                      Object.keys(departments).forEach((key: string) =>
+                        setValue(`departments.${key}`, false),
                       );
                     }
                   }}
-                  selectionCount={selectedDesignations.length}
-                  dataTestId={`${dataTestId}-filter-jobtitle`}
+                  selectionCount={selectedDepartments.length}
+                  dataTestId={`${dataTestId}-filter-department`}
                 />
               </div>
-            )}
+              <div className="relative">
+                <InfiniteSearch
+                  title="Location"
+                  control={control}
+                  options={
+                    locationData?.map((location: ILocationAPI) => ({
+                      label: location.name,
+                      value: location,
+                      id: location.id,
+                    })) || []
+                  }
+                  searchName={'locationSearch'}
+                  optionsName={'locations'}
+                  isLoading={locationLoading}
+                  isFetchingNextPage={isFetchingNextLocationPage}
+                  fetchNextPage={fetchNextLocationPage}
+                  hasNextPage={hasNextLocationPage}
+                  onApply={() =>
+                    setSelectedLocations([
+                      ...Object.keys(locations).filter(
+                        (key: string) => !!locations[key],
+                      ),
+                    ])
+                  }
+                  onReset={() => {
+                    setSelectedLocations([]);
+                    if (locations) {
+                      Object.keys(locations).forEach((key: string) =>
+                        setValue(`locations.${key}`, false),
+                      );
+                    }
+                  }}
+                  selectionCount={selectedLocations.length}
+                  dataTestId={`${dataTestId}-filter-location`}
+                />
+              </div>
+              {showJobTitleFilter && (
+                <div className="relative">
+                  <InfiniteSearch
+                    title="Job Title"
+                    control={control}
+                    options={
+                      designationData?.map((designation: IDesignationAPI) => ({
+                        label: designation.name,
+                        value: designation,
+                        id: designation.id,
+                      })) || []
+                    }
+                    searchName={'designationSearch'}
+                    optionsName={'designations'}
+                    isLoading={designationLoading}
+                    isFetchingNextPage={isFetchingNextDesignationPage}
+                    fetchNextPage={fetchNextDesignationPage}
+                    hasNextPage={hasNextDesignationPage}
+                    onApply={() =>
+                      setSelectedDesignations([
+                        ...Object.keys(designations).filter(
+                          (key: string) => !!designations[key],
+                        ),
+                      ])
+                    }
+                    onReset={() => {
+                      setSelectedDesignations([]);
+                      if (designations) {
+                        Object.keys(designations).forEach((key: string) =>
+                          setValue(`designations.${key}`, false),
+                        );
+                      }
+                    }}
+                    selectionCount={selectedDesignations.length}
+                    dataTestId={`${dataTestId}-filter-jobtitle`}
+                  />
+                </div>
+              )}
+            </div>
+            <div
+              className={`cursor-pointer text-neutral-500 text-sm font-medium hover:underline ${
+                isControlsDisabled && 'opacity-50 pointer-events-none'
+              }`}
+              onClick={() => {
+                setSelectedDepartments([]);
+                setSelectedLocations([]);
+                setSelectedDesignations([]);
+                Object.keys(departments || {}).forEach((key: string) =>
+                  setValue(`departments.${key}`, false),
+                );
+                Object.keys(locations || {}).forEach((key: string) =>
+                  setValue(`locations.${key}`, false),
+                );
+                Object.keys(designations || {}).forEach((key: string) =>
+                  setValue(`designations.${key}`, false),
+                );
+              }}
+              data-testid={`${dataTestId}-clearfilter`}
+            >
+              Clear filters
+            </div>
           </div>
-          <div
-            className={`cursor-pointer text-neutral-500 text-sm font-medium hover:underline ${
-              isControlsDisabled && 'opacity-50 pointer-events-none'
-            }`}
-            onClick={() => {
-              setSelectedDepartments([]);
-              setSelectedLocations([]);
-              setSelectedDesignations([]);
-              Object.keys(departments || {}).forEach((key: string) =>
-                setValue(`departments.${key}`, false),
-              );
-              Object.keys(locations || {}).forEach((key: string) =>
-                setValue(`locations.${key}`, false),
-              );
-              Object.keys(designations || {}).forEach((key: string) =>
-                setValue(`designations.${key}`, false),
-              );
-            }}
-            data-testid={`${dataTestId}-clearfilter`}
-          >
-            Clear filters
-          </div>
-        </div>
+        )}
       </div>
       <Divider className="w-full" />
       <div className="pl-6 flex flex-col">

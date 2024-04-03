@@ -1,19 +1,20 @@
-import { FC, useRef, ReactNode, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import VisibilitySensor from 'react-visibility-sensor';
 
 import Post from 'components/Post';
 import { IPost } from 'queries/post';
+import { IComment } from 'components/Comments';
 
 type PostProps = {
   post: IPost;
-  customNode?: ReactNode;
+  comments?: IComment[];
 };
 
 type VisibilityProps = {
   isVisible: boolean;
 };
 
-const VirtualisedPost: FC<PostProps> = ({ post, customNode = null }) => {
+const VirtualisedPost: FC<PostProps> = ({ post, comments = [] }) => {
   const cardRef = useRef<HTMLInputElement>(null);
   const [hasChanges, setHasChanges] = useState(false);
 
@@ -29,7 +30,7 @@ const VirtualisedPost: FC<PostProps> = ({ post, customNode = null }) => {
           isVisible || hasChanges ? (
             <Post
               post={post}
-              customNode={customNode}
+              comments={comments}
               setHasChanges={setHasChanges}
             />
           ) : (

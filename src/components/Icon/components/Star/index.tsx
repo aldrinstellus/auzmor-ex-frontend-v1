@@ -1,5 +1,5 @@
-import SvgStarOutline from './StarOutline';
+import { default as StarFilled } from './StarFilled';
 
-const StarIcon = SvgStarOutline;
+const StarIcon = StarFilled;
 
 export default StarIcon;

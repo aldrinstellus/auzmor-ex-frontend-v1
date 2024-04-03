@@ -133,7 +133,7 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
   );
 
   return (
-    <div className="w-full text-sm flex flex-col gap-4">
+    <div className="w-full text-sm flex flex-col gap-3">
       {!isEmpty && (
         <span
           className="line-clamp-3 paragraph pt-px break-normal [overflow-wrap:anywhere]"
@@ -176,8 +176,9 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
           options={poll.options}
           myVote={myVote}
           postId={data.id}
-          mode={PollMode.VIEW}
+          mode={!!(data as IPost)?.ctaButton?.text ? PollMode.LEARN :PollMode.VIEW}
           isAnnouncementWidgetPreview={isAnnouncementWidgetPreview}
+          ctaButton={(data as IPost)?.ctaButton}
         />
       )}
       {data?.shoutoutRecipients &&

@@ -33,10 +33,7 @@ const AppShell: FC<IAppShellProps> = ({ children }) => {
   return (
     <div
       className="bg-neutral-100 h-screen overflow-y-auto"
-      onScroll={() => {
-        hideMentionHashtagPalette();
-        hideEmojiPalette();
-      }}
+      id="app-shell-container"
     >
       {showNavbar && <Navbar />}
       <div className={wraperStyle}>

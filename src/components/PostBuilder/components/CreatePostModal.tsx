@@ -96,6 +96,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     setShoutoutUserIds,
     postType,
     inputImgRef,
+    isEmpty,
   } = useContext(CreatePostContext);
 
   const [confirm, showConfirm, closeConfirm] = useModal();
@@ -211,44 +212,160 @@ const CreatePostModal: FC<ICreatePostModal> = ({
       message: string;
       result: { data: IPost };
     }) => {
-      if (!!!result.data.schedule) {
-        setFeed({ ...feed, [result.data.id!]: { ...result.data } });
-        queryClient.setQueriesData(
-          {
-            queryKey: ['feed'],
-            exact: false,
-          },
-          (oldData: any) =>
-            produce(oldData, (draft: any) => {
-              draft.pages[0].data.result.data = [
-                { id: result.data.id },
-                ...draft.pages[0].data.result.data,
-              ];
-            }),
-        );
-        queryClient.setQueriesData(
-          {
-            queryKey: ['my-profile-feed'],
-            exact: false,
-          },
-          (oldData: any) =>
-            produce(oldData, (draft: any) => {
-              draft.pages[0].data.result.data = [
-                { id: result.data.id },
-                ...draft.pages[0].data.result.data,
-              ];
-            }),
-        );
+      const newPost: IPost = result?.data;
+      if (!!!newPost.schedule) {
+        setFeed({ ...feed, [newPost.id!]: { ...newPost } });
+        if (isAdmin) {
+          // Update cached query data for admins
+          if (newPost.isAnnouncement) {
+            // push announcement to top of feed for admins
+            queryClient.setQueriesData(
+              {
+                queryKey: ['feed'],
+                exact: false,
+              },
+              (oldData: any) =>
+                produce(oldData, (draft: any) => {
+                  draft.pages[0].data.result.data = [
+                    { id: newPost.id },
+                    ...draft.pages[0].data.result.data,
+                  ];
+                }),
+            );
+            queryClient.setQueriesData(
+              {
+                queryKey: ['my-profile-feed'],
+                exact: false,
+              },
+              (oldData: any) =>
+                produce(oldData, (draft: any) => {
+                  draft.pages[0].data.result.data = [
+                    { id: newPost.id },
+                    ...draft.pages[0].data.result.data,
+                  ];
+                }),
+            );
+          } else {
+            // insert normal post to correct page, Skip insert if all posts are announcement
+            queryClient.setQueriesData(
+              {
+                queryKey: ['feed'],
+                exact: false,
+              },
+              (oldData: any) =>
+                produce(oldData, (draft: any) => {
+                  let pageIndex = 0;
+                  while (draft?.pages && pageIndex < draft?.pages.length) {
+                    if (
+                      draft.pages[pageIndex].data.result.data.some(
+                        ({ id }: { id: string }) => !feed[id].isAnnouncement,
+                      )
+                    ) {
+                      draft.pages[pageIndex].data.result.data = [
+                        { id: newPost.id },
+                        ...draft.pages[pageIndex].data.result.data,
+                      ];
+                      break;
+                    }
+                    pageIndex += 1;
+                  }
+                }),
+            );
+            queryClient.setQueriesData(
+              {
+                queryKey: ['my-profile-feed'],
+                exact: false,
+              },
+              (oldData: any) =>
+                produce(oldData, (draft: any) => {
+                  let pageIndex = 0;
+                  while (draft?.pages && draft?.pages[pageIndex]) {
+                    if (
+                      draft.pages[pageIndex].data.result.data.some(
+                        ({ id }: { id: string }) => !feed[id].isAnnouncement,
+                      )
+                    ) {
+                      draft.pages[pageIndex].data.result.data = [
+                        { id: newPost.id },
+                        ...draft.pages[pageIndex].data.result.data,
+                      ];
+                      break;
+                    }
+                    pageIndex += 1;
+                  }
+                }),
+            );
+          }
+        } else {
+          /**
+           * Update cached query data for members
+           * Members can't create announcement so skipping check for `newPost` is announcement or not. Its normal post only.
+           * Acknowleged announcement behave as normal post for members.
+           * Insert normal post to correct page, Skip insert if posts are announcement and not acknowledged.
+           */
+          queryClient.setQueriesData(
+            {
+              queryKey: ['feed'],
+              exact: false,
+            },
+            (oldData: any) =>
+              produce(oldData, (draft: any) => {
+                let pageIndex = 0;
+                while (draft?.pages && draft?.pages[pageIndex]) {
+                  if (
+                    draft.pages[pageIndex].data.result.data.some(
+                      ({ id }: { id: string }) =>
+                        !feed[id].isAnnouncement ||
+                        (feed[id].isAnnouncement && feed[id].acknowledged),
+                    )
+                  ) {
+                    draft.pages[pageIndex].data.result.data = [
+                      { id: newPost.id },
+                      ...draft.pages[pageIndex].data.result.data,
+                    ];
+                    break;
+                  }
+                  pageIndex += 1;
+                }
+              }),
+          );
+          queryClient.setQueriesData(
+            {
+              queryKey: ['my-profile-feed'],
+              exact: false,
+            },
+            (oldData: any) =>
+              produce(oldData, (draft: any) => {
+                let pageIndex = 0;
+                while (draft?.pages && draft?.pages[pageIndex]) {
+                  if (
+                    draft.pages[pageIndex].data.result.data.some(
+                      ({ id }: { id: string }) =>
+                        !feed[id].isAnnouncement ||
+                        (feed[id].isAnnouncement && feed[id].acknowledged),
+                    )
+                  ) {
+                    draft.pages[pageIndex].data.result.data = [
+                      { id: newPost.id },
+                      ...draft.pages[pageIndex].data.result.data,
+                    ];
+                    break;
+                  }
+                  pageIndex += 1;
+                }
+              }),
+          );
+        }
       }
       clearPostContext();
       closeModal();
-      if (result.data.schedule) {
+      if (newPost.schedule) {
         toast(
           <SuccessToast
             content={`Post scheduled for ${moment(
-              new Date(result.data.schedule.dateTime),
+              new Date(newPost.schedule.dateTime),
             ).format('ddd, MMM DD')} at ${moment(
-              new Date(result.data.schedule.dateTime),
+              new Date(newPost.schedule.dateTime),
             ).format('hh:mm a')}`}
             dataTestId="toast-post-scheduled"
           />,
@@ -524,7 +641,9 @@ const CreatePostModal: FC<ICreatePostModal> = ({
       <Modal
         open={open}
         closeModal={
-          mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+          mode === PostBuilderMode.Create && !isEmpty
+            ? showConfirm
+            : handleOnClose
         }
         dataTestId={
           activeFlow === CreatePostFlow.SchedulePost
@@ -541,7 +660,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
                 return null;
               }
               hideEmojiPalette();
-              return mode === PostBuilderMode.Create
+              return mode === PostBuilderMode.Create && !isEmpty
                 ? showConfirm()
                 : handleOnClose();
             }}
@@ -575,7 +694,9 @@ const CreatePostModal: FC<ICreatePostModal> = ({
           <div data-testid="createpost-createpoll-modal">
             <CreatePoll
               closeModal={
-                mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+                mode === PostBuilderMode.Create && !isEmpty
+                  ? showConfirm
+                  : handleOnClose
               }
             />
           </div>
@@ -583,21 +704,27 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         {activeFlow === CreatePostFlow.CreateShoutout && (
           <CreateShoutout
             closeModal={
-              mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+              mode === PostBuilderMode.Create && !isEmpty
+                ? showConfirm
+                : handleOnClose
             }
           />
         )}
         {activeFlow === CreatePostFlow.SchedulePost && (
           <SchedulePost
             closeModal={
-              mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+              mode === PostBuilderMode.Create && !isEmpty
+                ? showConfirm
+                : handleOnClose
             }
           />
         )}
         {activeFlow === CreatePostFlow.Audience && (
           <Audience
             closeModal={
-              mode === PostBuilderMode.Create ? showConfirm : handleOnClose
+              mode === PostBuilderMode.Create && !isEmpty
+                ? showConfirm
+                : handleOnClose
             }
             dataTestId="audience-selection"
           />

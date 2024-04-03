@@ -48,8 +48,6 @@ const ReactionTab: FC<IReactionTabProps> = ({
     }
   }) as IGetReaction[];
 
-  console.log({ reactions });
-
   return (
     <div id={rootId} className="px-6 h-[482px] overflow-y-auto">
       {isLoading ? (

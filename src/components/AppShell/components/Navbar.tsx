@@ -13,8 +13,22 @@ import useAuth from 'hooks/useAuth';
 import { useState } from 'react';
 import SubscriptionBanner from './SubscriptionBanner';
 import { useTranslation } from 'react-i18next';
+import useProduct from 'hooks/useProduct';
+import { getLearnUrl } from 'utils/misc';
+import Icon from 'components/Icon';
+
+const learnNavigations = [
+  {
+    icon: 'messageQuestionOutline',
+    hoverIcon: 'messageQuestionFilled',
+    linkTo: `${getLearnUrl()}?openHelpSupport=true`,
+    dataTestId: 'learn-help-support-page',
+    iconSize: 24,
+  },
+];
 
 const Navbar = () => {
+  const { isLxp } = useProduct();
   const { isAdmin } = useRole();
   const { user } = useAuth();
   const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(
@@ -59,6 +73,16 @@ const Navbar = () => {
       iconSize: 24,
     },
     {
+      label: t('teams'),
+      icon: 'usersOutline',
+      hoverIcon: 'usersFilled',
+      linkTo: '/teams',
+      dataTestId: 'office-team-page',
+      iconSize: 24,
+      isActive: isLxp && location.pathname.includes('/teams'),
+      hidden: !isLxp,
+    },
+    {
       label: t('people'),
       icon: 'peopleOutline',
       hoverIcon: 'peopleFilled',
@@ -68,6 +92,17 @@ const Navbar = () => {
       isActive:
         location.pathname.includes('/users') ||
         location.pathname.includes('/teams'),
+      hidden: isLxp,
+    },
+    {
+      label: t('learningHub'),
+      icon: 'lifeBuoyOutline',
+      hoverIcon: 'lifeBuoyFilled',
+      linkTo: `${getLearnUrl()}/user`,
+      dataTestId: 'learn-page', // need to change
+      iconSize: 24,
+      isActive: false, // Since this is for Learning Hub, it's not active by default
+      hidden: !isLxp,
     },
     {
       label: t('apps'),
@@ -76,6 +111,7 @@ const Navbar = () => {
       linkTo: '/apps',
       dataTestId: 'office-apps-page',
       iconSize: 24,
+      hidden: isLxp,
     },
     // {
     //   label: t('discover.title'),
@@ -95,12 +131,12 @@ const Navbar = () => {
     //     );
     //   },
     // },
-  ];
+  ].filter((each) => !!!each?.hidden);
 
   return (
     <div className="w-full sticky top-0 z-50">
-      <div className="bg-white shadow h-16 w-full py-[2px]">
-        <div className="bg-white h-full w-full max-w-[1440px] flex items-center py-0.5 px-8 mx-auto justify-between">
+      <div className="bg-white shadow h-16 w-full py-[2px] px-8">
+        <div className="bg-white h-full w-full max-w-[1440px] flex items-center py-0.5 mx-auto justify-between">
           <Link to="/feed" data-testid="office-logo">
             <Logo />
           </Link>
@@ -120,19 +156,31 @@ const Navbar = () => {
             ]}
           />
         </div> */}
-          <div className="flex items-center gap-[60px] h-full">
-            <div className="flex items-center gap-10">
+          <div className="flex items-center gap-8 h-full">
+            <div className="flex items-center gap-6">
               {navigations.map((nav) => (
-                <NavbarMenuItem nav={nav} key={nav.label} />
+                <NavbarMenuItem nav={nav} key={nav.dataTestId} />
               ))}
             </div>
             <Divider className="h-full" variant={Variant.Vertical} />
-            <div className="flex items-center gap-10">
-              {isAdmin &&
+            <div className="flex items-center gap-6">
+              {!isLxp &&
+                isAdmin &&
                 adminNavigations.map((nav) => (
-                  <NavbarMenuItem nav={nav} key={nav.label} />
+                  <NavbarMenuItem nav={nav} key={nav.dataTestId} />
                 ))}
-              <div>
+              <div className=" flex gap-6 items-center">
+                {isLxp &&
+                  learnNavigations.map((nav) => (
+                    <Icon
+                      name={nav.icon}
+                      size={nav.iconSize}
+                      key={nav.dataTestId}
+                      onClick={() => {
+                        window.open(nav.linkTo);
+                      }}
+                    />
+                  ))}
                 <NotificationsOverview />
               </div>
               <div className="p-2">

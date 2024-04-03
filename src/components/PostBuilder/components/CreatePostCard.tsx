@@ -10,6 +10,7 @@ import useAuth from 'hooks/useAuth';
 import { FC, memo } from 'react';
 import { useCreatePostUtilityStore } from 'stores/createPostUtilityStore';
 import { useTranslation } from 'react-i18next';
+import useProduct from 'hooks/useProduct';
 
 export interface ICreatePostCardProps {
   openModal: () => void;
@@ -18,6 +19,7 @@ export interface ICreatePostCardProps {
 const CreatePostCard: FC<ICreatePostCardProps> = ({ openModal }) => {
   const { t } = useTranslation('feed');
   const { user } = useAuth();
+  const { isLxp } = useProduct();
   const {
     setOpenCreatePostWithMedia,
     setOpenCreatePostWithShoutout,
@@ -54,7 +56,7 @@ const CreatePostCard: FC<ICreatePostCardProps> = ({ openModal }) => {
   return (
     <Card className="bg-white px-6 pt-6 flex flex-col gap-4">
       <div className="flex items-center gap-4">
-        <Link to="/profile">
+        <Link to={isLxp ? '' : '/profile'}>
           <Avatar
             size={32}
             name={user?.name}

@@ -11,6 +11,24 @@ export const parseDate = (timestring: string, format = 'YYYY-MM-DD') => {
   return moment(timestring, format).toDate();
 };
 
+export const getTimeDifference = (
+  startDateTimestamp: number,
+  endDateTimestamp: number,
+  timezone: string,
+): string => {
+  // Convert timestamps to Moment.js objects
+  const startDate = moment.tz(startDateTimestamp, timezone);
+  const endDate = moment.tz(endDateTimestamp, timezone);
+
+  // Format start and end times in "hh:mm a" format
+  const startTime = startDate.format('hh:mm a');
+  const endTime = endDate.format('hh:mm a');
+
+  // Concatenate formatted start and end times
+  const timeDifference = `${startTime} - ${endTime}`;
+
+  return timeDifference;
+};
 export const formatDate = (dt: Date, format = 'YYYY-MM-DD') => {
   if (!dt) {
     return null;
@@ -120,14 +138,15 @@ export const getRemainingTime = (t1: string) => {
 };
 
 // Returns time from now till given date in human friendly format
-export const getTimeFromNow = (dateStr: string) => {
-  const finalDate = moment(new Date(dateStr));
-  const currentDate = moment();
+export const getTimeFromNow = (dateStr: string, timezone: string) => {
+  const finalDate = moment.tz(dateStr, timezone);
+  const currentDate = moment().tz(timezone);
   let monthsLeft = 0;
   let weeksLeft = 0;
   let daysLeft = 0;
   let hoursLeft = 0;
   let minutesLeft = 0;
+  let secondsLeft = 0;
 
   monthsLeft = finalDate.diff(currentDate, 'months');
   finalDate.subtract(monthsLeft, 'month');
@@ -146,6 +165,10 @@ export const getTimeFromNow = (dateStr: string) => {
     hoursLeft = finalDate.diff(currentDate, 'hours');
     finalDate.subtract(hoursLeft, 'hour');
     minutesLeft = finalDate.diff(currentDate, 'minutes');
+    finalDate.subtract(minutesLeft, 'minute');
+    if (minutesLeft <= 0 && hoursLeft <= 0) {
+      secondsLeft = finalDate.diff(currentDate, 'seconds');
+    }
   }
 
   return [
@@ -157,6 +180,9 @@ export const getTimeFromNow = (dateStr: string) => {
     hoursLeft > 0 ? `${hoursLeft} ${hoursLeft === 1 ? 'hour' : 'hours'}` : null,
     minutesLeft > 0
       ? `${minutesLeft} ${minutesLeft === 1 ? 'minute' : 'minutes'}`
+      : null,
+    secondsLeft > 0
+      ? `${secondsLeft} ${secondsLeft === 1 ? 'second' : 'seconds'}`
       : null,
   ]
     .filter(Boolean)

@@ -4,6 +4,7 @@ import NotificationSettingsCard from './components/NotificationSettingsCard';
 import Card from 'components/Card';
 import Button, { Variant } from 'components/Button';
 import NotificationsListing from './components/NotificationsListing';
+import { useShouldRender } from 'hooks/useShouldRender';
 
 enum NotificationType {
   ALL = 'ALL',
@@ -37,13 +38,15 @@ const Notifications: FC = (): ReactElement => {
   const [notificationsList, setNotificationsList] =
     useState<NotificationButtonGroup>(buttonGroup[0]);
 
+  const shouldRender = useShouldRender('NotificationSettingsCard');
+
   return (
     <>
       <div className="mb-12 space-x-8 flex w-full">
-        <div className="sticky top-10 z-10 w-1/4">
+        <div className="sticky top-10 z-10 w-[293px]">
           <UserCard />
         </div>
-        <div className="w-1/2">
+        <div className="flex-grow w-0">
           <Card className="p-6">
             <div className="flex flex-col">
               <p className="text-2xl text-neutral-900 font-bold">
@@ -69,9 +72,11 @@ const Notifications: FC = (): ReactElement => {
           </Card>
           <div className="mt-4">{notificationsList.component}</div>
         </div>
-        <div className="w-1/4">
-          <NotificationSettingsCard />
-        </div>
+        {shouldRender && (
+          <div className="w-[293px]">
+            <NotificationSettingsCard />
+          </div>
+        )}
       </div>
     </>
   );

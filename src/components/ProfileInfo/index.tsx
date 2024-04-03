@@ -5,9 +5,8 @@ import ProfessionalDetailsSkeleton from './components/Skeletons/ProfessionalDeta
 import PersonalDetails from './components/PersonalDetails';
 import PersonalDetailsSkeleton from './components/Skeletons/PersonalDetails';
 
-import useScrollTop from 'hooks/useScrollTop';
 import { UserEditType } from 'queries/users';
-import { FC } from 'react';
+import { FC, Fragment } from 'react';
 
 export interface IProfileInfoProps {
   profileDetails: any;
@@ -26,9 +25,8 @@ const ProfileInfo: FC<IProfileInfoProps> = ({
   setSearchParams,
   searchParams,
 }) => {
-  useScrollTop();
   return (
-    <>
+    <Fragment>
       {isLoading ? (
         <AboutMeSkeleton />
       ) : (
@@ -64,7 +62,7 @@ const ProfileInfo: FC<IProfileInfoProps> = ({
           />
         )}
       </div>
-    </>
+    </Fragment>
   );
 };
 

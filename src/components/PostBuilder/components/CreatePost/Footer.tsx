@@ -44,11 +44,14 @@ const Footer: FC<IFooterProps> = ({
     schedule,
     postType,
     isEmpty,
+    media,
+    shoutoutUserIds,
   } = useContext(CreatePostContext);
   const { t } = useTranslation('postBuilder');
-  const { isMember } = useRole();
-  const canSchedule = !(!!!schedule && mode === PostBuilderMode.Edit);
 
+  const { isMember } = useRole();
+
+  const canSchedule = !(!!!schedule && mode === PostBuilderMode.Edit);
   const updateContext = () => {
     setEditorValue({
       text: quillRef
@@ -67,10 +70,12 @@ const Footer: FC<IFooterProps> = ({
     operatorXOR(isPreviewRemoved, !!previewUrl) || postType !== PostType.Update;
   const isShoutoutDisabled =
     operatorXOR(isPreviewRemoved, !!previewUrl) ||
-    (postType !== PostType.Shoutout && postType !== PostType.Update);
+    (postType !== PostType.Shoutout && postType !== PostType.Update) ||
+    (media.length > 0 && shoutoutUserIds.length === 0);
   const isPollDisabled =
     operatorXOR(isPreviewRemoved, !!previewUrl) ||
-    (postType !== PostType.Poll && postType !== PostType.Update);
+    (postType !== PostType.Poll && postType !== PostType.Update) ||
+    media.length != 0;
 
   const postMenuItems = useMemo(
     () => [
@@ -116,9 +121,6 @@ const Footer: FC<IFooterProps> = ({
             disabled: true,
           },
         ],
-        hidden: [PostType.Poll, PostType.Shoutout].includes(
-          postType || PostType.Update,
-        ),
         divider: <Divider variant={DividerVariant.Vertical} />,
       },
       {

@@ -1,6 +1,7 @@
 import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
-import { FC } from 'react';
+import useProduct from 'hooks/useProduct';
+import { FC, Fragment } from 'react';
 
 type AppProps = {
   profileImage: Record<string, string>;
@@ -8,6 +9,7 @@ type AppProps = {
   workEmail: string;
   department: Record<string, string>;
   workLocation: Record<string, string>;
+  designation?: Record<string, string>;
 };
 
 const AvatarRow: FC<AppProps> = ({
@@ -16,9 +18,11 @@ const AvatarRow: FC<AppProps> = ({
   profileImage,
   department,
   workLocation,
+  designation,
 }) => {
+  const { isLxp } = useProduct();
   return (
-    <div className="pl-6 py-4 flex items-start">
+    <div className="pl-6 py-4 flex items-center">
       <div className="flex items-center w-[260px]">
         <Avatar
           name={fullName}
@@ -31,19 +35,27 @@ const AvatarRow: FC<AppProps> = ({
         </div>
       </div>
 
-      <div className="flex items-center space-x-1 w-[150px]">
-        <Icon name="briefcase" size={16} />
+      {isLxp ? (
         <div className="text-xs text-neutral-500">
-          {department?.name || '-'}
+          {designation?.name || '-'}
         </div>
-      </div>
-      <div className="h-1 w-1 rounded-full bg-neutral-500 relative top-1.5" />
-      <div className="flex items-center space-x-1 pl-3">
-        <Icon name="location" size={16} />
-        <div className="text-xs text-neutral-500">
-          {workLocation?.name || '-'}
-        </div>
-      </div>
+      ) : (
+        <Fragment>
+          <div className="flex items-center space-x-1 w-[150px]">
+            <Icon name="briefcase" size={16} />
+            <div className="text-xs text-neutral-500">
+              {department?.name || '-'}
+            </div>
+          </div>
+          <div className="h-1 w-1 rounded-full bg-neutral-500 relative" />
+          <div className="flex items-center space-x-1 pl-3">
+            <Icon name="location" size={16} />
+            <div className="text-xs text-neutral-500">
+              {workLocation?.name || '-'}
+            </div>
+          </div>
+        </Fragment>
+      )}
     </div>
   );
 };

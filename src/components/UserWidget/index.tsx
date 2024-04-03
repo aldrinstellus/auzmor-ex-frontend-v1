@@ -1,36 +1,56 @@
+import { clsx } from 'clsx';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
 import useAuth from 'hooks/useAuth';
+import useProduct from 'hooks/useProduct';
 import { useCurrentUser } from 'queries/users';
-import { FC, memo } from 'react';
-import { Link } from 'react-router-dom';
+import { FC, memo, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getLearnUrl } from 'utils/misc';
 
 export interface IUserCardProps {
   className?: string;
 }
 
-const UserCard: FC<IUserCardProps> = ({ className }) => {
+const UserCard: FC<IUserCardProps> = ({ className = '' }) => {
   const { user } = useAuth();
   const { data } = useCurrentUser();
+  const { isLxp } = useProduct();
+  const navigate = useNavigate();
+
+  const style = useMemo(
+    () =>
+      clsx({
+        [className]: true,
+        'cursor-pointer': true,
+      }),
+    [className],
+  );
 
   const userDetails = data?.data?.result?.data;
 
+  const handleRedirect = () => {
+    if (isLxp) {
+      window.location.assign(`${getLearnUrl()}/user/settings/profile`);
+    } else {
+      navigate('/profile');
+    }
+  };
+
   return (
-    <div className={className}>
+    <div className={style} onClick={handleRedirect}>
       <Card className="pb-3 pt-0 rounded-9xl min-h-[216px]">
         <div className="flex flex-col items-center gap-2 relative px-12">
           <div className="bg-secondary-500 w-full h-[89px] absolute top-0 rounded-t-9xl"></div>
-          <Link to="/profile">
-            <Avatar
-              name={userDetails?.fullName || ''}
-              image={user?.profileImage}
-              size={80}
-              className="border-4 border-white mt-11 overflow-hidden"
-              dataTestId="profilecard-profilepic"
-            />
-          </Link>
-          <Link to="/profile" className="flex flex-col gap-2">
+          <Avatar
+            name={userDetails?.fullName || ''}
+            image={user?.profileImage}
+            size={80}
+            className="border-4 border-white mt-11 overflow-hidden"
+            dataTestId="profilecard-profilepic"
+          />
+          <div className="flex flex-col gap-2">
             <div
               className="text-lg font-bold truncate w-full text-center"
               data-testid="profilecard-username"
@@ -58,7 +78,7 @@ const UserCard: FC<IUserCardProps> = ({ className }) => {
                 {userDetails?.workLocation?.name}
               </div>
             )}
-          </Link>
+          </div>
         </div>
       </Card>
     </div>

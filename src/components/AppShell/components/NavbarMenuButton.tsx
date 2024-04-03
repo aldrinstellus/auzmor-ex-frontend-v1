@@ -1,4 +1,5 @@
 import Icon from 'components/Icon';
+import useProduct from 'hooks/useProduct';
 import { FC } from 'react';
 
 export interface INavbarMenuButtonProps {
@@ -13,9 +14,12 @@ export interface INavbarMenuButtonProps {
 }
 
 const NavbarMenuButton: FC<INavbarMenuButtonProps> = ({ nav }) => {
+  const { isLxp } = useProduct();
   return (
     <div
-      className={`flex flex-col items-center group p-2 ${
+      className={`flex ${
+        isLxp ? 'flex-row gap-1' : 'flex-col'
+      }    items-center group p-2 ${
         nav.isActive ? 'text-primary-500' : 'text-neutral-500'
       }`}
       data-testid={nav.dataTestId}
