@@ -7,7 +7,6 @@ import clsx from 'clsx';
 import { useLocation } from 'react-router-dom';
 import JobProgress from 'components/JobProgress';
 import { useJobStore } from 'stores/jobStore';
-import { hideEmojiPalette, hideMentionHashtagPalette } from 'utils/misc';
 
 export interface IAppShellProps {
   children: ReactNode;
