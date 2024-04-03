@@ -23,7 +23,6 @@ const UserDetail = lazy(() => import('pages/UserDetail'));
 const TeamDetail = lazy(() => import('pages/TeamDetail'));
 const Apps = lazy(() => import('pages/Apps'));
 const AppLaunchPage = lazy(() => import('pages/AppLaunchPage'));
-// const Discover = lazy(() => import('pages/Discover'));
 const Admin = lazy(() => import('pages/Admin'));
 const AcceptInvite = lazy(() => import('pages/AcceptInvite'));
 // const ChannelDetail = lazy(() => import('pages/ChannelDetail'));
@@ -102,15 +101,6 @@ const routers = createBrowserRouter(
             }}
           />
         </Route>
-        {/* <Route path="/discover" element={<Discover />} />
-        <Route path="/channels" element={<Channels />} /> */}
-        {/* <Route
-          path="/channels/:channelId"
-          element={<ChannelDetail />}
-          loader={() => {
-            return '';
-          }}
-        /> */}
         <Route element={<RequireOfficeAuth />}>
           <Route // apps route  is not required in lxp
             path="/apps"

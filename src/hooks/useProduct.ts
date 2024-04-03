@@ -1,5 +1,4 @@
 import { ProductContext } from 'contexts/ProductProvider';
-
 import { useContext, useEffect, useState } from 'react';
 import { ProductEnum } from 'utils/apiService';
 
