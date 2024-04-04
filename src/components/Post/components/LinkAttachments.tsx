@@ -11,14 +11,14 @@ const LinkAttachments: FC<ILinkAttachmentsProps> = ({ attachments }) => {
       {attachments.map((each) => (
         <div
           key={each?._id}
-          onClick={() => window.location.assign(each.url)}
+          onClick={() => window.open(each.url)}
           className="flex p-2 rounded-9xl border border-neutral-200 w-[173px] justify-center items-center gap-2 cursor-pointer hover:shadow-lg transition"
         >
           <div className="flex w-6 h-8">
             <img className="object-cover" src={each.url} />
           </div>
           <p className="text-xs font-medium max-w-[124px] truncate">
-            {each.description}
+            {each.title}
           </p>
         </div>
       ))}
