@@ -200,12 +200,14 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                 >
                   {data.name}
                 </div>
-                <div
-                  className="text-xs font-normal"
-                  data-testid="team-details-description"
-                >
-                  {data.description}
-                </div>
+                {!!data?.description && (
+                  <div
+                    className="text-xs font-normal"
+                    data-testid="team-details-description"
+                  >
+                    {data.description}
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center space-x-20 ">
@@ -222,17 +224,31 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                     </div>
                   </div>
                 ) : null}
-                <div className="flex flex-col space-y-2">
-                  <div className="text-sm font-semibold text-purple-700">
-                    No. of people
+                {isLxp ? (
+                  <div className="flex flex-col space-y-2">
+                    <div className="flex items-center text-sm font-semibold text-purple-700">
+                      <span
+                        className="text-xl font-semibold text-neutral-900"
+                        data-testid="team-details-people-count"
+                      >
+                        {data.totalMembers || 0}
+                      </span>
+                      &nbsp; Members
+                    </div>
                   </div>
-                  <div
-                    className="text-xl font-semibold"
-                    data-testid="team-details-people-count"
-                  >
-                    {data.totalMembers || 0}
+                ) : (
+                  <div className="flex flex-col space-y-2">
+                    <div className="text-sm font-semibold text-purple-700">
+                      No. of people
+                    </div>
+                    <div
+                      className="text-xl font-semibold"
+                      data-testid="team-details-people-count"
+                    >
+                      {data.totalMembers || 0}
+                    </div>
                   </div>
-                </div>
+                )}
                 {!isLxp ? (
                   <div className="relative">
                     <TeamOptions
