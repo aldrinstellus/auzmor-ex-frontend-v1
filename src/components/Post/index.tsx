@@ -189,7 +189,7 @@ const Post: FC<PostProps> = ({ post, comments = [], setHasChanges }) => {
     };
 
     return (
-      <Card className="w-full h-[350px] relative overflow-hidden group/card">
+      <Card className="w-full h-[266px] relative overflow-hidden group/card">
         <img
           src={post?.cardContext?.image?.url}
           className="w-full h-full object-cover group-hover/card:scale-[1.10]"

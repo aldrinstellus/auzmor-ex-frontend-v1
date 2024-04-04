@@ -1,4 +1,3 @@
-import { clsx } from 'clsx';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
@@ -9,6 +8,8 @@ import Skeleton from 'react-loading-skeleton';
 import { getLearnUrl, titleCase } from 'utils/misc';
 import moment from 'moment';
 import useAuth from 'hooks/useAuth';
+import { clsx } from 'clsx';
+import Tooltip, { Variant } from 'components/Tooltip';
 
 export enum LearnCardEnum {
   Course = 'COURSE',
@@ -21,6 +22,7 @@ interface ILearnCardProps {
   className?: string;
   data: Record<string, any>;
   isLoading?: boolean;
+  medalPosition?: 'top' | 'bottom';
 }
 
 const LearnCard: FC<ILearnCardProps> = ({
@@ -28,6 +30,7 @@ const LearnCard: FC<ILearnCardProps> = ({
   className = '',
   data,
   isLoading,
+  medalPosition = 'top',
 }) => {
   const { user } = useAuth();
   const style = useMemo(
@@ -128,6 +131,7 @@ const LearnCard: FC<ILearnCardProps> = ({
 
   const chaptersCount = data?.dependent_entities?.chapters_count;
   const coursesCount = data?.dependent_entities?.courses_count;
+
   return (
     <Card className={style} onClick={handleCardClick}>
       <img
@@ -172,20 +176,21 @@ const LearnCard: FC<ILearnCardProps> = ({
           <div className="text-white font-bold text-base line-clamp-2">
             {data?.title}
           </div>
-          {showProgressInfo && data?.my_enrollment?.completed_percentage && (
-            <ProgressBar
-              total={100}
-              completed={data?.my_enrollment?.completed_percentage}
-              customLabel={
-                <p className="text-white text-xs font-medium whitespace-nowrap">
-                  {data?.my_enrollment?.completed_percentage}% completed
-                </p>
-              }
-              className="w-full"
-              barClassName="!w-[162px]"
-              barFilledClassName="!bg-primary-500"
-            />
-          )}
+          {showProgressInfo &&
+            data?.my_enrollment?.completed_percentage >= 0 && (
+              <ProgressBar
+                total={100}
+                completed={data?.my_enrollment?.completed_percentage}
+                customLabel={
+                  <p className="text-white text-xs font-medium whitespace-nowrap">
+                    {data?.my_enrollment?.completed_percentage}% completed
+                  </p>
+                }
+                className="w-full"
+                barClassName="!w-[162px]"
+                barFilledClassName="!bg-primary-500"
+              />
+            )}
         </div>
         {type === LearnCardEnum.Course && chaptersCount > 0 && (
           <div className="flex gap-2">
@@ -276,8 +281,18 @@ const LearnCard: FC<ILearnCardProps> = ({
         )}
       </div>
       {data?.certificate && (
-        <div className="flex items-center justify-center h-5 w-5 absolute top-4 right-4 bg-primary-500 z-10 rounded">
-          <Icon name="medalStar" size={14} color="text-white" hover={false} />
+        <div
+          className={`flex items-center justify-center h-5 w-5 absolute right-4 bg-primary-500 z-10 rounded cursor-pointer ${
+            medalPosition === 'top' && 'top-4'
+          } ${medalPosition === 'bottom' && 'bottom-4'}`}
+        >
+          <Tooltip
+            tooltipContent={<div className="text-sm">Includes Certificate</div>}
+            variant={Variant.Light}
+            className="!shadow-md !rounded !z-[999] !p-1 border"
+          >
+            <Icon name="medalStar" size={14} color="text-white" hover={false} />
+          </Tooltip>
         </div>
       )}
     </Card>

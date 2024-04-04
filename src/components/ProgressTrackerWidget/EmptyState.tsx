@@ -6,14 +6,12 @@ interface IEmptyStateProps {}
 
 const EmptyState: FC<IEmptyStateProps> = ({}) => {
   return (
-    <Card className="flex flex-col w-full h-[264px] py-6 items-center gap-4">
+    <Card className="flex flex-col w-full py-9 items-center gap-4">
       <img src={Tracker} className="opacity-75" />
       <p className="text-base font-bold text-neutral-900 text-center">
-        Great job! <br /> You have no pending tasks
+        You’re all caught up
       </p>
-      <p className="text-neutral-500 text-xs">
-        Your can track your course, path success here
-      </p>
+      <p className="text-neutral-500 text-xs">No training in progress</p>
     </Card>
   );
 };

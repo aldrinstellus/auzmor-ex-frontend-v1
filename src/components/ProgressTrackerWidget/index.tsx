@@ -51,6 +51,7 @@ const ProgressTrackerWidget: FC<IProgressTrackerWidgetProps> = ({
             showProgressInfo
             data={{ ...trackerData[0] }}
             isLoading={isLoading}
+            medalPosition="bottom"
           />
         )}
       </div>

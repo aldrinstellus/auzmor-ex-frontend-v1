@@ -398,12 +398,7 @@ const Team: FC<ITeamProps> = ({
         {showNoTeams ? (
           <div className="flex flex-col items-center w-full space-y-3">
             <div className="flex flex-col items-center space-y-6">
-              <img
-                src={TeamNotFound}
-                alt="Team Not Found"
-                height={140}
-                width={162}
-              />
+              <img src={TeamNotFound} alt="Team Not Found" width={148} />
               <div className="text-lg font-bold" data-testid="no-teams-found">
                 No teams found
               </div>

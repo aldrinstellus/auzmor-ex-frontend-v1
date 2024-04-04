@@ -340,9 +340,17 @@ const People: FC<IPeopleProps> = ({
   const showNoMembers = isTeamPeople && !showGrid && !isDataFiltered;
   const showNoDataFound = !showGrid && !showNoMembers;
 
+  const ShowResultCount = () => {
+    return (
+      <div className="text-neutral-500">
+        Showing {!isLoading && data?.pages[0]?.data?.result?.totalCount} results
+      </div>
+    );
+  };
+
   return (
     <div className="relative pb-8">
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-6">
         <div className="flex justify-between items-center">
           <div className="flex space-x-4">
             {!isTeamPeople && (
@@ -366,7 +374,7 @@ const People: FC<IPeopleProps> = ({
                 />
               </>
             )}
-            {!isLxp ? <Layout fields={roleFields} /> : null}
+            {!isLxp ? <Layout fields={roleFields} /> : <ShowResultCount />}
           </div>
           <div className="flex space-x-2 justify-center items-center">
             {!isLxp ? (
@@ -411,10 +419,7 @@ const People: FC<IPeopleProps> = ({
           </div>
         </div>
 
-        <div className="text-neutral-500">
-          Showing {!isLoading && data?.pages[0]?.data?.result?.totalCount}{' '}
-          results
-        </div>
+        {!isLxp && <ShowResultCount />}
 
         {appliedFilters?.status?.length ||
         appliedFilters?.departments?.length ||

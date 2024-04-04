@@ -45,8 +45,9 @@ export class ApiService {
   instance: AxiosInstance;
 
   constructor(product?: ProductEnum) {
+    const currentProduct = product || getProduct();
     this.instance = axios.create({
-      baseURL: productBaseUrlMap[product || getProduct()],
+      baseURL: productBaseUrlMap[currentProduct],
       withCredentials: true,
     });
 
@@ -106,6 +107,10 @@ export class ApiService {
       },
     );
   }
+
+  updateBaseUrl = (baseURL: string) => {
+    this.instance.defaults.baseURL = baseURL;
+  };
 
   updateContentType = (contentType: string) => {
     this.instance.defaults.headers.common['Content-Type'] = contentType;

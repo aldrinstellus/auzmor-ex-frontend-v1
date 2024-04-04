@@ -1,18 +1,16 @@
 import { QueryFunctionContext, useInfiniteQuery } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 import useProduct from 'hooks/useProduct';
-import { ApiService, ProductEnum } from 'utils/apiService';
+import learnApiService from 'utils/learnApiService';
 import { getCookieValue, getCookieParam } from 'utils/misc';
 import { getItem } from 'utils/persist';
-
-const learnAPIService = new ApiService(ProductEnum.Learn);
 
 export const learnLogout = async () => {
   const visitToken = getItem('visitToken');
   const authToken = getCookieValue(getCookieParam());
   let url = `/users/logout?auth_token=${authToken}`;
   if (visitToken) url += `&visit_token=${visitToken}`;
-  await learnAPIService.delete(url);
+  await learnApiService.delete(url);
 };
 
 export const getAllEvents = async ({
@@ -20,8 +18,8 @@ export const getAllEvents = async ({
   queryKey,
 }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
   if (pageParam === null) {
-    return await learnAPIService.get('/learner/events', queryKey[1]);
-  } else return await learnAPIService.get(pageParam);
+    return await learnApiService.get('/learner/events', queryKey[1]);
+  } else return await learnApiService.get(pageParam);
 };
 export const useInfiniteLearnEvents = ({ q }: { q?: Record<string, any> }) => {
   return useInfiniteQuery({
@@ -46,14 +44,14 @@ export const useProgressTracker = () => {
   return useQuery({
     queryKey: ['progress-tracker'],
     queryFn: async () =>
-      await learnAPIService.get(
+      await learnApiService.get(
         'learner/libraries?filter=IN_PROGRESS&page=1&limit=1',
       ),
     enabled: !!isLxp,
   });
 };
 export const eventAttendee: any = async (id: string) => {
-  const data = await learnAPIService.get(`learner/events/${id}/attendees`);
+  const data = await learnApiService.get(`learner/events/${id}/attendees`);
   return data;
 };
 
@@ -70,7 +68,7 @@ export const useGetRecommendation = () => {
   return useQuery({
     queryKey: ['recommendation-content'],
     queryFn: async () =>
-      await learnAPIService.get('learner/trainings/recommendations?limit=3'),
+      await learnApiService.get('learner/trainings/recommendations?limit=3'),
     enabled: !!isLxp,
   });
 };
