@@ -46,9 +46,8 @@ export class ApiService {
 
   constructor(product?: ProductEnum) {
     const currentProduct = product || getProduct();
-    const regionURL = getItem(`${currentProduct}RegionUrl`);
     this.instance = axios.create({
-      baseURL: regionURL || productBaseUrlMap[currentProduct],
+      baseURL: productBaseUrlMap[currentProduct],
       withCredentials: true,
     });
 
