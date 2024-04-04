@@ -267,7 +267,6 @@ export enum PostType {
   Training = 'TRAINING',
   Event = 'EVENT',
   Forum = 'FORUM',
-  TrainingAssignment = 'TRAINING_ASSIGNMENT',
   Document = 'DOCUMENT',
   Poll = 'POLL',
   Shoutout = 'SHOUT_OUT',
@@ -279,10 +278,14 @@ export enum PostType {
 }
 
 export const PostTypeMapping = {
-  [PostType.Training]: ['PUBLISH_COURSE', 'PUBLISH_PATH'],
+  [PostType.Training]: [
+    'PUBLISH_COURSE',
+    'PUBLISH_PATH',
+    'ASSIGN_COURSE',
+    'ASSIGN_PATH',
+  ],
   [PostType.Event]: ['PUBLISH_EVENT', 'ASSIGN_EVENT'],
   [PostType.Forum]: ['FORUM_POST', 'FORUM_POLL'],
-  [PostType.TrainingAssignment]: ['ASSIGN_COURSE', 'ASSIGN_PATH'],
 };
 
 export enum ActivityType {

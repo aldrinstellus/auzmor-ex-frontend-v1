@@ -172,20 +172,21 @@ const LearnCard: FC<ILearnCardProps> = ({
           <div className="text-white font-bold text-base line-clamp-2">
             {data?.title}
           </div>
-          {showProgressInfo && data?.my_enrollment?.completed_percentage && (
-            <ProgressBar
-              total={100}
-              completed={data?.my_enrollment?.completed_percentage}
-              customLabel={
-                <p className="text-white text-xs font-medium whitespace-nowrap">
-                  {data?.my_enrollment?.completed_percentage}% completed
-                </p>
-              }
-              className="w-full"
-              barClassName="!w-[162px]"
-              barFilledClassName="!bg-primary-500"
-            />
-          )}
+          {showProgressInfo &&
+            data?.my_enrollment?.completed_percentage >= 0 && (
+              <ProgressBar
+                total={100}
+                completed={data?.my_enrollment?.completed_percentage}
+                customLabel={
+                  <p className="text-white text-xs font-medium whitespace-nowrap">
+                    {data?.my_enrollment?.completed_percentage}% completed
+                  </p>
+                }
+                className="w-full"
+                barClassName="!w-[162px]"
+                barFilledClassName="!bg-primary-500"
+              />
+            )}
         </div>
         {type === LearnCardEnum.Course && chaptersCount > 0 && (
           <div className="flex gap-2">

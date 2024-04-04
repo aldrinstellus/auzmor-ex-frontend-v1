@@ -41,7 +41,6 @@ export const filterKeyMap: Record<string | PostType, string> = {
   [PostType.Training]: 'Training',
   [PostType.Event]: 'Event',
   [PostType.Forum]: 'Forum',
-  [PostType.TrainingAssignment]: 'Training Assignment',
   [PostType.Document]: 'Documents',
   [PostType.Shoutout]: 'Shoutouts',
   [PostType.Birthday]: 'Birthdays',
@@ -142,7 +141,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: false,
     },
     {
-      label: 'Updates',
+      label: 'Update',
       value: PostType.Update,
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
@@ -174,15 +173,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: !isLxp,
     },
     {
-      label: 'Training Assignment',
-      value: PostType.TrainingAssignment,
-      filterKey: PostFilterKeys.PostType,
-      type: FeedFilterContentType.Filter,
-      dataTestId: 'filterby-training-assignment',
-      hidden: !isLxp,
-    },
-    {
-      label: 'Documents',
+      label: 'Document',
       value: PostType.Document,
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
@@ -191,7 +182,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: true,
     },
     {
-      label: 'Shoutouts',
+      label: 'Shoutout',
       value: PostType.Shoutout,
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
@@ -199,7 +190,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: false,
     },
     {
-      label: 'Birthdays',
+      label: 'Birthday',
       value: PostType.Birthday,
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
@@ -224,7 +215,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: true,
     },
     {
-      label: 'Polls',
+      label: 'Poll',
       value: PostType.Poll,
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
