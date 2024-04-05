@@ -12,7 +12,7 @@ interface ILinkAttachmentsProps {
 const LinkAttachments: FC<ILinkAttachmentsProps> = ({ attachments }) => {
   const getAuthLearnUrl = `${
     getItem(`${ProductEnum.Learn}RegionUrl`) ||
-    process?.env.REACT_APP_LEARN_BACKEND_BASE_URL
+    process.env.REACT_APP_LEARN_BACKEND_BASE_URL
   }/attachments/`;
   const isImageRegex = /(?:\.jpg|\.png|\.gif|\.jpeg)$/i;
   const isVideoRegex = /(?:\.avi|\.mp4|\.mov|\.wmv|\.mpg|\.m4v)$/i;
