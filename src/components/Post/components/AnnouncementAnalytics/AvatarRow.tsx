@@ -36,8 +36,11 @@ const AvatarRow: FC<AppProps> = ({
       </div>
 
       {isLxp ? (
-        <div className="text-xs text-neutral-500">
-          {designation?.name || '-'}
+        <div className="flex items-center space-x-1">
+          <Icon name="briefcase" size={16} />
+          <div className="text-xs text-neutral-500">
+            {designation?.name || '-'}
+          </div>
         </div>
       ) : (
         <Fragment>

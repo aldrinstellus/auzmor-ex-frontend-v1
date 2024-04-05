@@ -74,11 +74,20 @@ const UserCard: FC<IUserCardProp> = ({
               {user?.workEmail || 'Field not specified'}
             </div>
             {isLxp ? (
-              <div
-                className="text-sm font-normal text-neutral-500 truncate"
-                data-testid="usercard-designation"
-              >
-                {user?.designation?.name || 'No Designation'}
+              <div className="flex items-center">
+                <Icon
+                  name="briefcase"
+                  size={16}
+                  hover={false}
+                  color="text-neutral-900"
+                  className="mr-2"
+                />
+                <div
+                  className="text-sm font-normal text-neutral-500 truncate"
+                  data-testid="usercard-designation"
+                >
+                  {user?.designation?.name || 'No Designation'}
+                </div>
               </div>
             ) : (
               <div className="flex items-center">

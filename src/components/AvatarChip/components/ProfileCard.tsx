@@ -3,12 +3,14 @@ import Avatar from 'components/Avatar';
 import { getFullName, getProfileImage } from 'utils/misc';
 import Icon from 'components/Icon';
 import { FC } from 'react';
+import useProduct from 'hooks/useProduct';
 
 interface IProfileCardProps {
   user: IAvatarUser;
 }
 
 const ProfileCard: FC<IProfileCardProps> = ({ user }) => {
+  const { isLxp } = useProduct();
   return (
     <div className="flex gap-4 min-w-[200px]">
       <Avatar
@@ -18,7 +20,20 @@ const ProfileCard: FC<IProfileCardProps> = ({ user }) => {
       />
       <div className="flex flex-col gap-2 justify-center">
         <p className="font-bold">{getFullName(user) || user.email}</p>
-        {user.designation && <p className="text-sm">{user.designation}</p>}
+        {!isLxp && user.designation && (
+          <p className="text-sm">{user.designation}</p>
+        )}
+        {isLxp && user.designation && (
+          <div className="flex items-center gap-2">
+            <Icon
+              name="briefcase"
+              color="text-neutral-900"
+              size={16}
+              hover={false}
+            />
+            <p className="text-sm">{user.designation}</p>
+          </div>
+        )}
         {user.workLocation?.name && (
           <div className="flex items-center gap-2">
             <Icon

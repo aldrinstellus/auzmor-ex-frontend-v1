@@ -154,6 +154,9 @@ import RadarIcon from '../components/Radar';
 import TeacherIcon from '../components/Teacher';
 import MedalStarIcon from '../components/MedalStar';
 import VideoSquareIcon from '../components/VideoSquare';
+import PdfIcon from '../components/Pdf';
+import XlsIcon from '../components/Xls';
+import DocIcon from '../components/Doc';
 
 export const icon = {
   add: Add,
@@ -204,6 +207,8 @@ export const icon = {
   dotsVertical: DotsVerticalIcon,
   download: DownloadIcon,
   draft: DraftIcon,
+  doc: DocIcon,
+  docx: DocIcon,
   edit: EditIcon,
   editReceipt: EditReceipt,
   email: EmailIcon,
@@ -272,6 +277,7 @@ export const icon = {
   profile: ProfileIcon,
   profileUser: ProfileUser,
   promoteUser: PromoteUserIcon,
+  pdf: PdfIcon,
   reactivateUser: ReactivateUser,
   redo: Redo,
   reorder: Reorder,
@@ -312,4 +318,5 @@ export const icon = {
   teacher: TeacherIcon,
   medalStar: MedalStarIcon,
   videoSquare: VideoSquareIcon,
+  xls: XlsIcon,
 };

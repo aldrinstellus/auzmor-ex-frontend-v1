@@ -329,7 +329,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
               >
                 {fullName || workEmail}
               </div>
-              {designation?.name && (
+              {!isLxp && designation?.name && (
                 <div
                   className="text-neutral-900 text-xs font-normal line-clamp-1 truncate w-full block text-center"
                   data-testid={`people-card-title-${designation.designationId}`}
@@ -338,6 +338,24 @@ const PeopleCard: FC<IPeopleCardProps> = ({
                 </div>
               )}
             </div>
+            {isLxp && designation?.name && (
+              <div
+                className="flex justify-center items-center gap-1"
+                data-testid={`people-card-title-${designation?.designationId}`}
+              >
+                <Icon
+                  name="briefcase"
+                  size={16}
+                  hover={false}
+                  color="text-neutral-900"
+                />
+                <div className="text-neutral-900 text-xs font-normal line-clamp-1 truncate">
+                  {designation?.name.length <= 22
+                    ? designation?.name.substring(0, 22)
+                    : designation?.name.substring(0, 22) + '..'}
+                </div>
+              </div>
+            )}
             {department?.name && (
               <div
                 className="flex justify-center items-center px-3 py-[2px] rounded-[4px] gap-1 bg-orange-100"

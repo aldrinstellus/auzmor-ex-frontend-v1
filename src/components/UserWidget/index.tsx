@@ -58,11 +58,26 @@ const UserCard: FC<IUserCardProps> = ({ className = '' }) => {
               {userDetails?.fullName}
             </div>
 
-            {userDetails?.designation?.name && (
+            {!isLxp && userDetails?.designation?.name && (
               <div
                 className="text-sm font-normal truncate w-full text-center text-neutral-500"
                 data-testid="profilecard-designation"
               >
+                {userDetails?.designation?.name}
+              </div>
+            )}
+
+            {isLxp && userDetails?.designation?.name && (
+              <div
+                className="text-sm font-normal truncate w-full text-center text-neutral-500 leading-[16px] flex gap-1 justify-center items-center"
+                data-testid="profilecard-designation"
+              >
+                <Icon
+                  name="briefcase"
+                  size={16}
+                  color="text-neutral-500"
+                  hover={false}
+                />
                 {userDetails?.designation?.name}
               </div>
             )}
