@@ -363,6 +363,11 @@ export const updatePost = async (id: string, payload: IPostPayload) => {
   const fileIds = payload.files
     ? payload.files.map((file) => (typeof file === 'string' ? file : file.id))
     : payload.files;
+  const mentionIds = payload.mentions
+    ? payload.mentions.map((mention: any) =>
+        typeof mention === 'string' ? mention : mention?.userId,
+      )
+    : payload.mentions;
   const shoutoutRecipentIds = payload.shoutoutRecipients
     ? payload.shoutoutRecipients.map((recipient) =>
         typeof recipient === 'string' ? recipient : recipient.userId,
@@ -375,6 +380,7 @@ export const updatePost = async (id: string, payload: IPostPayload) => {
   const data = await apiService.put(`/posts/${id}`, {
     ...payload,
     files: fileIds,
+    mentions: mentionIds,
     shoutoutRecipients: shoutoutRecipentIds,
     link: link,
   });
