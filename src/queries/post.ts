@@ -639,9 +639,13 @@ export const fetchFeed = async (
 
   // Fetching data
   if (!!!context.pageParam) {
-    response = await apiService.get('/posts', context.queryKey[1]);
+    response = await apiService.get(
+      '/posts',
+      context.queryKey[1],
+      context.signal,
+    );
   } else {
-    response = await apiService.get(context.pageParam);
+    response = await apiService.get(context.pageParam, context.signal);
   }
 
   // Collecting all comments

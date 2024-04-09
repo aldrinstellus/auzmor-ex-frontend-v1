@@ -1,6 +1,7 @@
 import qs from 'qs';
 import axios, {
   AxiosInstance,
+  GenericAbortSignal,
   // InternalAxiosRequestConfig
 } from 'axios';
 
@@ -116,13 +117,13 @@ export class ApiService {
     this.instance.defaults.headers.common['Content-Type'] = contentType;
   };
 
-  async get(url: string, params = {}) {
+  async get(url: string, params = {}, signal?: GenericAbortSignal) {
     const _params = qs.stringify(params, { arrayFormat: 'comma' });
     let _url = url;
     if (_params) {
       _url += `?${_params}`;
     }
-    return await this.instance.get(_url);
+    return await this.instance.get(_url, { signal });
   }
 
   async put(url: string, data = {}, headers = {}) {
