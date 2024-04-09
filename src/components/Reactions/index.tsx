@@ -322,7 +322,7 @@ const Likes: FC<LikesProps> = ({
     <div
       onMouseEnter={handleMouseEnter}
       ref={container}
-      className="group relative inline-block p-0 cursor-pointer"
+      className="group relative z-20 inline-block p-0 cursor-pointer"
     >
       {showTooltip ? (
         <span

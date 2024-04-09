@@ -49,7 +49,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
         className="relative w-[190px] h-[217px] border-solid border border-neutral-200 flex flex-col items-center justify-center py-6 px-3 bg-white"
         dataTestId="team-card"
       >
-        {!isMember && isHovered && (
+        {!isMember && !isLxp && isHovered && (
           <TeamOptions
             id={id}
             onEdit={() => {
