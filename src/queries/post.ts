@@ -365,7 +365,9 @@ export const updatePost = async (id: string, payload: IPostPayload) => {
     : payload.files;
   const mentionIds = payload.mentions
     ? payload.mentions.map((mention: any) =>
-        typeof mention === 'string' ? mention : mention?.userId,
+        typeof mention === 'string'
+          ? mention
+          : mention?.userId ?? mention?.entityId,
       )
     : payload.mentions;
   const shoutoutRecipentIds = payload.shoutoutRecipients
