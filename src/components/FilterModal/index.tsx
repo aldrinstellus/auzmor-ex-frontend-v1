@@ -16,8 +16,14 @@ import { ITeam } from 'queries/teams';
 import Teams from './Teams';
 import { CategoryType } from 'queries/apps';
 import { UserStatus } from 'queries/users';
+import { ChannelVisibilityEnum } from 'stores/channelStore';
+import Visibility from './Visibility';
+import ChannelType, { ChannelTypeEnum } from './ChannelType';
+import { useTranslation } from 'react-i18next';
 
 export interface IFilterForm {
+  visibilityRadio: ChannelVisibilityEnum;
+  channelTypeRadio: ChannelTypeEnum;
   statusCheckbox: ICheckboxListOption[];
   locationCheckbox: ICheckboxListOption[];
   departmentCheckbox: ICheckboxListOption[];
@@ -40,6 +46,7 @@ export enum FilterModalVariant {
   People = 'PEOPLE',
   Team = 'TEAM',
   App = 'APP',
+  ChannelsListing = 'CHANNELS_LISTING',
 }
 
 export interface IAppliedFilters {
@@ -48,13 +55,8 @@ export interface IAppliedFilters {
   status?: IStatus[];
   categories?: ICategory[];
   teams?: ITeam[];
-}
-
-export enum FilterNavigationOption {
-  Locations = 'LOCATIONS',
-  Departments = 'DEPARTMENTS',
-  Categories = 'CATEGORIES',
-  Status = 'STATUS',
+  visibility?: ChannelVisibilityEnum;
+  channelType?: ChannelTypeEnum;
 }
 
 interface IFilterModalProps {
@@ -81,14 +83,21 @@ const FilterModal: FC<IFilterModalProps> = ({
     departments: [],
     categories: [],
     status: [],
+    teams: [],
+    channelType: ChannelTypeEnum.MyChannels,
+    visibility: ChannelVisibilityEnum.All,
   },
   onApply,
   onClear,
   variant = FilterModalVariant.People,
 }) => {
+  const { t } = useTranslation('filterModal');
   const { control, handleSubmit, watch, setValue } = useForm<IFilterForm>({
     mode: 'onChange',
     defaultValues: {
+      channelTypeRadio:
+        appliedFilters.channelType || ChannelTypeEnum.MyChannels,
+      visibilityRadio: appliedFilters.visibility || ChannelVisibilityEnum.All,
       statusCheckbox: (appliedFilters.status || []).map((status) => ({
         data: status,
         dataTestId: `status-${status.name}`,
@@ -143,6 +152,8 @@ const FilterModal: FC<IFilterModalProps> = ({
       status: formData.statusCheckbox.map(
         (category) => category.data,
       ) as IStatus[],
+      visibility: formData.visibilityRadio,
+      channelType: formData.channelTypeRadio,
     } as unknown as IAppliedFilters);
   };
 
@@ -150,7 +161,43 @@ const FilterModal: FC<IFilterModalProps> = ({
     {
       label: () => (
         <div className="flex items-center">
-          <div>Location</div>
+          <div>{t('visibility')}</div>
+        </div>
+      ),
+      key: 'visibility-filters',
+      component: () => (
+        <Visibility control={control} watch={watch} setValue={setValue} />
+      ),
+      isHidden: [
+        FilterModalVariant.Team,
+        FilterModalVariant.App,
+        FilterModalVariant.Orgchart,
+        FilterModalVariant.People,
+      ].includes(variant),
+      dataTestId: 'filterby-visibility',
+    },
+    {
+      label: () => (
+        <div className="flex items-center">
+          <div>{t('type')}</div>
+        </div>
+      ),
+      key: 'channel-type-filters',
+      component: () => (
+        <ChannelType control={control} watch={watch} setValue={setValue} />
+      ),
+      isHidden: [
+        FilterModalVariant.Team,
+        FilterModalVariant.App,
+        FilterModalVariant.Orgchart,
+        FilterModalVariant.People,
+      ].includes(variant),
+      dataTestId: 'filterby-channel-type',
+    },
+    {
+      label: () => (
+        <div className="flex items-center">
+          <div>{t('location')}</div>
           {!!locationCheckbox.length && (
             <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
               {locationCheckbox.length}
@@ -162,15 +209,17 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <Locations control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: [FilterModalVariant.Team, FilterModalVariant.App].includes(
-        variant,
-      ),
+      isHidden: [
+        FilterModalVariant.Team,
+        FilterModalVariant.App,
+        FilterModalVariant.ChannelsListing,
+      ].includes(variant),
       dataTestId: 'filterby-location',
     },
     {
       label: () => (
         <div className="flex items-center">
-          <div>Department</div>
+          <div>{t('department')}</div>
           {!!departmentCheckbox.length && (
             <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
               {departmentCheckbox.length}
@@ -182,15 +231,17 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <Departments control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: [FilterModalVariant.Team, FilterModalVariant.App].includes(
-        variant,
-      ),
+      isHidden: [
+        FilterModalVariant.Team,
+        FilterModalVariant.App,
+        FilterModalVariant.ChannelsListing,
+      ].includes(variant),
       dataTestId: 'filterby-department',
     },
     {
       label: () => (
         <div className="flex items-center">
-          <div>Category</div>
+          <div>{t('category')}</div>
           {!!categoryCheckbox.length && (
             <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
               {categoryCheckbox.length}
@@ -220,7 +271,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     {
       label: () => (
         <div className="flex items-center">
-          <div>Team</div>
+          <div>{t('team')}</div>
           {!!teamCheckbox.length && (
             <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
               {teamCheckbox.length}
@@ -236,13 +287,14 @@ const FilterModal: FC<IFilterModalProps> = ({
         FilterModalVariant.People,
         FilterModalVariant.Orgchart,
         FilterModalVariant.Team,
+        FilterModalVariant.ChannelsListing,
       ].includes(variant),
       dataTestId: 'filterby-teams',
     },
     {
       label: () => (
         <div className="flex items-center">
-          <div>Status</div>
+          <div>{t('status')}</div>
           {!!statusCheckbox.length && (
             <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
               {statusCheckbox.length}
@@ -254,9 +306,11 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <Status control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: [FilterModalVariant.Team, FilterModalVariant.App].includes(
-        variant,
-      ),
+      isHidden: [
+        FilterModalVariant.Team,
+        FilterModalVariant.App,
+        FilterModalVariant.ChannelsListing,
+      ].includes(variant),
       dataTestId: 'filterby-status',
     },
   ].filter((filter) => !filter.isHidden);
@@ -266,7 +320,7 @@ const FilterModal: FC<IFilterModalProps> = ({
   return (
     <Modal open={open} closeModal={closeModal} className="max-w-[665px]">
       <Header
-        title="Filter By"
+        title={t('title')}
         onClose={() => closeModal()}
         closeBtnDataTestId="close-filters"
       />
@@ -301,14 +355,14 @@ const FilterModal: FC<IFilterModalProps> = ({
       {/* Footer */}
       <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
         <Button
-          label="Clear Filters"
+          label={t('clearFilterCTA')}
           variant={ButtonVariant.Secondary}
           onClick={onClear}
           className="mr-4"
           dataTestId="clear-filters"
         />
         <Button
-          label="Apply"
+          label={t('applyFilterCTA')}
           variant={ButtonVariant.Primary}
           onClick={handleSubmit(onSubmit)}
           dataTestId="apply-filter"

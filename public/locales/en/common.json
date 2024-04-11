@@ -1,0 +1,9 @@
+{
+  "submit": "Submit",
+  "showing": "Showing",
+  "result": "result",
+  "search": "Search",
+  "cancel": "Cancel",
+  "create": "Create",
+  "show-results": "Showing {{count}} results"
+}

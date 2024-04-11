@@ -72,7 +72,25 @@ export enum UserRole {
   Admin = 'ADMIN',
   Superadmin = 'SUPERADMIN',
 }
+export interface IImageDetails {
+  readonly id: string;
+  readonly original: string;
+  readonly small?: string;
+  readonly medium?: string;
+  readonly large?: string;
+  readonly blurHash?: string;
+}
 
+export interface IUserDetails {
+  userId: string;
+  fullName: string;
+  workLocation?: string;
+  email?: string;
+  department?: string;
+  designation?: string;
+  status: UserStatus;
+  profileImage?: IImageDetails;
+}
 export interface IPostUsersResponse {
   id?: string;
   createdAt: string | null;

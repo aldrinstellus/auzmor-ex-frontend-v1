@@ -1,0 +1,32 @@
+{
+  "private": "Private",
+  "member": "Member",
+  "members": "Members",
+  "join": "Join Channel",
+  "cover": {
+    "tab_home": "Home",
+    "tab_members": "Members",
+    "you_own_this_space": "You own this space"
+  },
+  "welcome": {
+    "title": "Welcome aboard!!",
+    "line1": "Join us for an exciting journey of knowledge and inspiration",
+    "line2": "Connect, engage, and explore with us. Let&apos;s make this space extraordinary together! 🎉🌟"
+  },
+  "setup": {
+    "title": "Finish setting up",
+    "of": "of",
+    "steps_completed": "Steps completed",
+    "cover_photo": "Add a cover photo",
+    "description": "Add description",
+    "invite": "Invite members",
+    "post": "Create post"
+  },
+  "adminsWidget": {
+    "title": "Channel Admins",
+    "owner": "Owner"
+  },
+  "membersWidget": {
+    "title": "Members"
+  }
+}
