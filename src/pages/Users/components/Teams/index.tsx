@@ -288,6 +288,7 @@ const Team: FC<ITeamProps> = ({
             />
           ) : null}
           <Sort
+            controlled
             setFilter={handleSetSortFilter}
             filterKey={{ createdAt: 'createdAt', aToZ: 'name' }}
             selectedValue={sortByFilter}
