@@ -1,0 +1,18 @@
+{
+  "title": {
+    "create": "Create a post",
+    "edit": "Edit a post"
+  },
+  "placeholder": "What’s on your mind?",
+  "postMenuItems": {
+    "media": "Media",
+    "uploadPhoto": "Upload a photo",
+    "uploadVideo": "Upload a video",
+    "shareDocument": "Share a document",
+    "giveKudos": "Give Kudos",
+    "polls": "Polls",
+    "more": "More",
+    "shareAsAnnouncement": "Share as an announcement",
+    "saveAsDraft": "Save as drafts"
+  }
+}

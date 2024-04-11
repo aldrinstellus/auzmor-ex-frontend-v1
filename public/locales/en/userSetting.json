@@ -1,0 +1,42 @@
+{
+  "title": "User Settings",
+  "description": "To change your personal setting",
+  "descriptionLink": "go to my profile",
+  "basic-setting": "Basic Settings",
+  "general-settings": "General Settings",
+  "o-o-o": "Out of Office",
+  "integration": "Integration",
+  "o-o-o-reason": "out of office reason",
+  "select-reason": "Select a reason",
+  "notifications": {
+    "title": "Notifications",
+    "description": "Choose how you want notifications to be delivered",
+    "posts": "Posts",
+    "comment-on-my-post": "Someone comment on my post",
+    "react-on-my-post": "Someone react on my post",
+    "kudos-on-my-post": "Someone give me a kudos",
+    "mentions": "Mentions",
+    "mention-me-on-post": "Someone mentions me in a post",
+    "mention-me-on-comment": "Someone mentions me in a comment",
+    "in-app": "In app",
+    "email": "Email"
+  },
+  "sign-in-security": {
+    "title": "Sign in & Security",
+    "newPassword": "New password",
+    "re-enter-password": "Re-enter Password",
+    "confirmPassword": "confirm Password",
+    "password": "Password",
+    "currentPassword": "Current password",
+    "passwordCTA": "Change Password",
+    "changePassword": "Change Password",
+    "forgotPassword": "Forgot Password"
+  },
+  "cancelCTA": "cancel",
+  "saveCTA": "Save changes",
+  "timezone": "Timezone",
+  "start-date": "Start Date",
+  "end-date": "End Date",
+  "message": "Message",
+  "message-placeholder": "ex. family function. will be available through text"
+}

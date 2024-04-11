@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // components
 import { Logo } from 'components/Logo';
@@ -15,17 +15,9 @@ import SubscriptionBanner from './SubscriptionBanner';
 import useProduct from 'hooks/useProduct';
 import { getLearnUrl } from 'utils/misc';
 import Icon from 'components/Icon';
+import PopupMenu from 'components/PopupMenu';
+import NavbarMenuButton from './NavbarMenuButton';
 
-const adminNavigations = [
-  {
-    label: 'Admin',
-    icon: 'adminOutline',
-    hoverIcon: 'adminFilled',
-    linkTo: '/admin',
-    dataTestId: 'office-admin-page',
-    iconSize: 24,
-  },
-];
 const learnNavigations = [
   {
     icon: 'messageQuestionOutline',
@@ -44,21 +36,33 @@ const Navbar = () => {
     user?.subscription?.type === 'TRIAL' &&
       user?.subscription?.daysRemaining > -1,
   );
+  const navigate = useNavigate();
 
-  // const { control } = useForm({
-  //   mode: 'onChange',
-  // });
+  const adminNavigations = [
+    {
+      label: 'Admin',
+      icon: 'adminOutline',
+      hoverIcon: 'adminFilled',
+      linkTo: '/admin',
+      dataTestId: 'office-admin-page',
+      iconSize: 24,
+    },
+  ];
+
+  const discoverOptions = [
+    {
+      icon: 'news',
+      label: 'Channels',
+      labelClassName: 'text-xs font-medium',
+      stroke: 'text-neutral-900',
+      dataTestId: 'channel-page',
+      onClick: () => {
+        navigate('/channels');
+      },
+    },
+  ];
 
   const navigations = [
-    // {
-    //   label: 'Home',
-    //   icon: 'homeOutline',
-    //   hoverIcon: 'homeFilled',
-    //   linkTo: '/home',
-    //   dataTestId: 'office-home-page',
-    //   iconSize: 24,
-    //   disabled: true,
-    // },
     {
       label: 'Feed',
       icon: 'feedOutline',
@@ -108,15 +112,24 @@ const Navbar = () => {
       iconSize: 24,
       hidden: isLxp,
     },
-    // {
-    //   label: 'Discover',
-    //   icon: 'exploreOutline',
-    //   hoverIcon: 'exploreFilled',
-    //   linkTo: '/discover',
-    //   dataTestId: 'office-discover-page',
-    //   iconSize: 26,
-    //   disabled: true,
-    // },
+    {
+      label: 'Discover',
+      icon: 'exploreOutline',
+      hoverIcon: 'exploreFilled',
+      linkTo: '',
+      dataTestId: 'discover-page',
+      iconSize: 24,
+      isActive: location.pathname.includes('/channels'),
+      render: function () {
+        return (
+          <PopupMenu
+            triggerNode={<NavbarMenuButton nav={this} />}
+            menuItems={discoverOptions}
+            className="mt-16 w-[202px] "
+          />
+        );
+      },
+    },
   ].filter((each) => !!!each?.hidden);
 
   return (

@@ -14,7 +14,7 @@ import { useInView } from 'react-intersection-observer';
 const { Option } = Select;
 export interface IOption {
   value: string;
-  label: string;
+  label: string | ReactNode;
   disabled: boolean;
   dataTestId?: string;
   rowData?: any;

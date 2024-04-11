@@ -1,0 +1,65 @@
+{
+  "channels": "Channels",
+  "filterCTA": {
+    "myChannels": "My channels",
+    "managed": "Managed",
+    "discoverNewChannels": "Discover new channels",
+    "starred": "Starred",
+    "requested": "Requested"
+  },
+
+  "manageAccess": {
+    "title": "Manage Channel access",
+    "table": {
+      "fullName": "Full Name",
+      "location": "Location",
+      "email": "Email address",
+      "department": "Department",
+      "role": "Role"
+    }
+  },
+  "members": {
+    "table": {
+      "fullName": "Full Name",
+      "location": "Location",
+      "title": "Title",
+      "department": "Department",
+      "email": "Email address"
+    },
+    "quickFilters": {
+      "allMembers": "All Members",
+      "requests": "Requests",
+      "department": "Department",
+      "location": "Location"
+    },
+    "title": "Members",
+    "addMemberCTA": "Add members"
+  },
+  "privateChannel": {
+    "bannerHeader": "This is a private channel. You must be a member to view the channel content",
+    "bannerFotter": "Space Admins",
+    "joinRequestCTA": "Request to Join",
+    "withdrawRequestCTA": "Withdraw request"
+  },
+  "createChannelCTA": "Create channel",
+  "searchChannels": "Search channels",
+  "channelModal": {
+    "createChannel": "Create channel",
+    "channelNameLabel": "Channel Name",
+    "channelNamePlaceholder": "ex. Product and design team",
+    "channelCategoryLabel": "Channel Category",
+    "channelCategoryPlaceholder": "Search a category",
+    "channelPrivacyLabel": "Channel Privacy",
+    "channelDescriptionLabel": "Channel Description",
+    "channelDescriptionPlaceholder": "What is the purpose of this channel"
+  },
+  "public": "Public",
+  "private": "Private",
+  "publicDescription": "Anyone can see who’s in the channel and what they post. Anyone can join this channel",
+  "privateDescription": "Only members can see who’s in the channel and what they post. Anyone can ask to join from the Channel discovery.",
+  "ownedBy": "Owned by",
+  "member": "member",
+  "unarchive": "Unarchive",
+  "permanentlyDelete": "Permanently delete",
+  "explore-channels": "Explore channels"
+}
