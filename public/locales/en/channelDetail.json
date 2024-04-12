@@ -5,6 +5,7 @@
   "join": "Join Channel",
   "cover": {
     "tab_home": "Home",
+    "tab_document": "Documents",
     "tab_members": "Members",
     "you_own_this_space": "You own this space"
   },

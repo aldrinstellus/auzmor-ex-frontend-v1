@@ -19,6 +19,11 @@ const ProfileSection: React.FC<AppProps> = ({ activeTab, setActiveTab }) => {
       isActive: activeTab === 'home',
     },
     {
+      label: t('cover.tab_document'),
+      key: 'document',
+      isActive: activeTab === 'document',
+    },
+    {
       label: t('cover.tab_members'),
       key: 'members',
       isActive: activeTab === 'members',
@@ -107,7 +112,7 @@ const ProfileSection: React.FC<AppProps> = ({ activeTab, setActiveTab }) => {
                     'text-sm px-1 cursor-pointer': true,
                     'font-bold text-white border-b-2 border-primary-400 pb-2 relative top-1':
                       t.isActive,
-                    '!text-neutral-300': !t.isActive,
+                    '!text-neutral-300 hover:!text-white': !t.isActive,
                   })}
                   onClick={() => setActiveTab(t.key)}
                 >

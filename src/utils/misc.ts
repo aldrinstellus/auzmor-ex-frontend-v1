@@ -540,3 +540,7 @@ export const getCookieParam = (key = SESSION_ID) => {
     [];
   return `${hostname}-${key}`;
 };
+
+export const getSizeInMB: (sizeInBytes: number) => number = (sizeInBytes) => {
+  return sizeInBytes / 8 / 1024;
+};

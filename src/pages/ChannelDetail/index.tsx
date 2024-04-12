@@ -11,7 +11,7 @@ const ChannelDetail = () => {
     <div className="flex flex-col space-y-10 w-full">
       <ProfileSection activeTab={activeTab} setActiveTab={setActiveTab} />
       {activeTab === 'home' && <Home />}
-      {activeTab === 'documents' && <Documents />}
+      {activeTab === 'document' && <Documents />}
       {activeTab === 'members' && <Members />}
     </div>
   );
