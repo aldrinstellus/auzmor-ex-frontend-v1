@@ -47,6 +47,7 @@ const Folder: FC<IFolderProps> = ({ onClick, folder }) => {
           <Truncate text={folder.name} className="max-w-[150px] font-medium" />
           <div className="flex items-center gap-2">
             <p className="text-sm text-neutral-300">3 Files</p>
+            <div className="w-1 h-1 flex rounded-full bg-neutral-300"></div>
             <p className="text-sm text-neutral-300">
               {Math.round(getSizeInMB(folder.size))}MB
             </p>

@@ -1,4 +1,4 @@
-import { FolderType } from 'pages/ChannelDetail/components/Documents/Folder';
+import { FolderType } from 'pages/ChannelDetail/components/Documents/components/Folder';
 
 export const FOLDERS: FolderType[] = [
   { id: 'folder_1', name: 'Knowledge base', size: 2738000 },
