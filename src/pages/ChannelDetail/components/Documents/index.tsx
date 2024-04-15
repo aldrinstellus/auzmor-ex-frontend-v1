@@ -5,16 +5,19 @@ import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import { Variant as InputVariant, Size as InputSize } from 'components/Input';
 import { useTranslation } from 'react-i18next';
-import Folder, { FolderType } from './Folder';
-import Doc, { DocType } from './Doc';
+import Folder, { FolderType } from './components/Folder';
+import Doc, { DocType } from './components/Doc';
 import { FILES } from 'mocks/files';
 import { FOLDERS } from 'mocks/folders';
+import FolderNavigator from './components/FolderNavigator';
+import { useDocumentPath } from 'hooks/useDocumentPath';
 
 interface IDocumentProps {}
 
 const Document: FC<IDocumentProps> = ({}) => {
   const { t } = useTranslation('common');
   const [isConnected, setIsConnected] = useState<boolean>(false);
+  const { path, appendFolder } = useDocumentPath();
   const { control, getValues, formState } = useForm<{
     search: string;
     expiryOption: {
@@ -115,7 +118,7 @@ const Document: FC<IDocumentProps> = ({}) => {
                   dataTestId: 'doc-type-dropdown',
                   height: 32,
                   showSearch: false,
-                  className: 'w-32',
+                  className: 'w-44',
                 },
               ]}
             />
@@ -146,17 +149,27 @@ const Document: FC<IDocumentProps> = ({}) => {
     return <ConnectionCard />;
   }
 
-  return (
-    <Fragment>
-      <FilterMenu />
+  const Folders = () => {
+    return (
       <div className="flex flex-col gap-4">
         <p className="font-bold text-neutral-900 text-lg">Folders</p>
         <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
           {FOLDERS.map((folder: FolderType) => (
-            <Folder key={folder.id} folder={folder} />
+            <Folder
+              key={folder.id}
+              folder={folder}
+              onClick={() =>
+                appendFolder({ id: folder.id || '', label: folder.name })
+              }
+            />
           ))}
         </div>
       </div>
+    );
+  };
+
+  const RecentlyUpdatedFiles = () => {
+    return (
       <div className="flex flex-col gap-4">
         <p className="font-bold text-neutral-900 text-lg">Recently updated</p>
         <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
@@ -165,6 +178,20 @@ const Document: FC<IDocumentProps> = ({}) => {
           ))}
         </div>
       </div>
+    );
+  };
+
+  return (
+    <Fragment>
+      <FilterMenu />
+      {path.length === 1 ? (
+        <Fragment>
+          <Folders />
+          <RecentlyUpdatedFiles />
+        </Fragment>
+      ) : (
+        <FolderNavigator />
+      )}
     </Fragment>
   );
 };

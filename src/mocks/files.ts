@@ -1,4 +1,4 @@
-import { DocType } from 'pages/ChannelDetail/components/Documents/Doc';
+import { DocType } from 'pages/ChannelDetail/components/Documents/components/Doc';
 
 export const FILES: DocType[] = [
   {

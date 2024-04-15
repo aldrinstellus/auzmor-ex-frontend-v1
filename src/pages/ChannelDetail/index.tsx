@@ -3,6 +3,7 @@ import Documents from './components/Documents';
 import Home from './components/Home';
 import ProfileSection from './components/ProfileSection';
 import Members from './components/Members';
+import DocumentPathProvider from 'contexts/DocumentPathContext';
 
 const ChannelDetail = () => {
   const [activeTab, setActiveTab] = useState('home');
@@ -11,7 +12,11 @@ const ChannelDetail = () => {
     <div className="flex flex-col space-y-10 w-full">
       <ProfileSection activeTab={activeTab} setActiveTab={setActiveTab} />
       {activeTab === 'home' && <Home />}
-      {activeTab === 'document' && <Documents />}
+      {activeTab === 'document' && (
+        <DocumentPathProvider>
+          <Documents />
+        </DocumentPathProvider>
+      )}
       {activeTab === 'members' && <Members />}
     </div>
   );
