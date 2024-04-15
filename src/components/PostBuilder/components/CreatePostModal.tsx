@@ -226,10 +226,12 @@ const CreatePostModal: FC<ICreatePostModal> = ({
               },
               (oldData: any) =>
                 produce(oldData, (draft: any) => {
-                  draft.pages[0].data.result.data = [
-                    { id: newPost.id },
-                    ...draft.pages[0].data.result.data,
-                  ];
+                  if (draft?.pages?.length) {
+                    draft.pages[0].data.result.data = [
+                      { id: newPost.id },
+                      ...draft.pages[0].data.result.data,
+                    ];
+                  }
                 }),
             );
             queryClient.setQueriesData(
@@ -239,10 +241,12 @@ const CreatePostModal: FC<ICreatePostModal> = ({
               },
               (oldData: any) =>
                 produce(oldData, (draft: any) => {
-                  draft.pages[0].data.result.data = [
-                    { id: newPost.id },
-                    ...draft.pages[0].data.result.data,
-                  ];
+                  if (draft?.pages?.length) {
+                    draft.pages[0].data.result.data = [
+                      { id: newPost.id },
+                      ...draft.pages[0].data.result.data,
+                    ];
+                  }
                 }),
             );
           } else {
