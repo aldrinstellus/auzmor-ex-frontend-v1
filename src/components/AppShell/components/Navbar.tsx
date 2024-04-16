@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 // components
 import { Logo } from 'components/Logo';
@@ -15,8 +15,8 @@ import SubscriptionBanner from './SubscriptionBanner';
 import useProduct from 'hooks/useProduct';
 import { getLearnUrl } from 'utils/misc';
 import Icon from 'components/Icon';
-import PopupMenu from 'components/PopupMenu';
-import NavbarMenuButton from './NavbarMenuButton';
+// import PopupMenu from 'components/PopupMenu';
+// import NavbarMenuButton from './NavbarMenuButton';
 
 const learnNavigations = [
   {
@@ -36,7 +36,7 @@ const Navbar = () => {
     user?.subscription?.type === 'TRIAL' &&
       user?.subscription?.daysRemaining > -1,
   );
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const adminNavigations = [
     {
@@ -49,18 +49,18 @@ const Navbar = () => {
     },
   ];
 
-  const discoverOptions = [
-    {
-      icon: 'news',
-      label: 'Channels',
-      labelClassName: 'text-xs font-medium',
-      stroke: 'text-neutral-900',
-      dataTestId: 'channel-page',
-      onClick: () => {
-        navigate('/channels');
-      },
-    },
-  ];
+  // const discoverOptions = [
+  //   {
+  //     icon: 'news',
+  //     label: 'Channels',
+  //     labelClassName: 'text-xs font-medium',
+  //     stroke: 'text-neutral-900',
+  //     dataTestId: 'channel-page',
+  //     onClick: () => {
+  //       navigate('/channels');
+  //     },
+  //   },
+  // ];
 
   const navigations = [
     {
@@ -113,22 +113,22 @@ const Navbar = () => {
       hidden: isLxp,
     },
     {
-      label: 'Discover',
+      label: 'Channels',
       icon: 'exploreOutline',
       hoverIcon: 'exploreFilled',
-      linkTo: '',
+      linkTo: '/channels',
       dataTestId: 'discover-page',
       iconSize: 24,
       isActive: location.pathname.includes('/channels'),
-      render: function () {
-        return (
-          <PopupMenu
-            triggerNode={<NavbarMenuButton nav={this} />}
-            menuItems={discoverOptions}
-            className="mt-16 w-[202px] "
-          />
-        );
-      },
+      // render: function () {
+      //   return (
+      //     <PopupMenu
+      //       triggerNode={<NavbarMenuButton nav={this} />}
+      //       menuItems={discoverOptions}
+      //       className="mt-16 w-[202px] "
+      //     />
+      //   );
+      // },
     },
   ].filter((each) => !!!each?.hidden);
 
