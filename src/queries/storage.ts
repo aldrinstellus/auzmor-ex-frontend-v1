@@ -1,7 +1,6 @@
-import { useMutation } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 
-enum IntegrationOptions {
+export enum IntegrationOptionsEnum {
   Box = 'box',
   Dropbox = 'dropbox',
   GoogleDrive = 'google-drive',
@@ -9,13 +8,18 @@ enum IntegrationOptions {
   Sharepoint = 'sharepoint',
 }
 
-export const useConfigureStorageMutation = () => {
-  return useMutation({
-    mutationKey: ['configure-storage'],
-    mutationFn: async () => {
-      return await apiService.post('/storage', {
-        integration: IntegrationOptions.GoogleDrive,
-      });
-    },
+export const getLinkToken = async (
+  IntegrationOption?: IntegrationOptionsEnum,
+  expiresIn?: number,
+) => {
+  return await apiService.post('/storage', {
+    expiresIn: expiresIn || 30,
+    integration: IntegrationOption || IntegrationOptionsEnum.GoogleDrive,
+  });
+};
+
+export const patchConfig = async (id: string, publicToken: string) => {
+  return await apiService.patch(`/storage/${id}`, {
+    publicToken,
   });
 };

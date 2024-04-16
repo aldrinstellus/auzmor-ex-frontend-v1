@@ -42,6 +42,10 @@ export type ButtonProps = {
   labelClassName?: string;
   dataTestId?: string;
   active?: boolean;
+  leftIconHover?: boolean;
+  rightIconHover?: boolean;
+  leftIconHoverColor?: string;
+  rightIconHoverColor?: string;
 };
 
 const Button = ({
@@ -63,6 +67,10 @@ const Button = ({
   labelClassName = '',
   dataTestId = '',
   active = false,
+  leftIconHover = true,
+  rightIconHover = true,
+  leftIconHoverColor = '',
+  rightIconHoverColor = '',
 }: ButtonProps) => {
   const styles = useMemo(
     () =>
@@ -130,6 +138,8 @@ const Button = ({
             disabled={disabled || loading}
             size={leftIconSize || (size === Size.Small ? 16 : 24)}
             isActive={active}
+            hover={leftIconHover}
+            hoverColor={leftIconHoverColor}
           />
         </div>
       )}
@@ -144,6 +154,8 @@ const Button = ({
           disabled={disabled || loading}
           size={rightIconSize || (size === Size.Small ? 16 : 24)}
           isActive={active}
+          hover={rightIconHover}
+          hoverColor={rightIconHoverColor}
         />
       )}
 

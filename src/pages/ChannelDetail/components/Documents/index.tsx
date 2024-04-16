@@ -1,9 +1,8 @@
-import React, { FC, Fragment, useState } from 'react';
+import React, { FC, Fragment, useCallback, useEffect, useState } from 'react';
 import Card from 'components/Card';
-import Button, { Size as ButtonSize } from 'components/Button';
+import Button, { Variant as ButtonVariant } from 'components/Button';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
-import { Variant as InputVariant, Size as InputSize } from 'components/Input';
 import { useTranslation } from 'react-i18next';
 import Folder, { FolderType } from './components/Folder';
 import Doc, { DocType } from './components/Doc';
@@ -11,6 +10,15 @@ import { FILES } from 'mocks/files';
 import { FOLDERS } from 'mocks/folders';
 import FolderNavigator from './components/FolderNavigator';
 import { useDocumentPath } from 'hooks/useDocumentPath';
+import Divider from 'components/Divider';
+import FilterMenu from 'components/FilterMenu';
+import {
+  IntegrationOptionsEnum,
+  getLinkToken,
+  patchConfig,
+} from 'queries/storage';
+import { useMergeLink } from '@mergeapi/react-merge-link';
+import { useMutation } from '@tanstack/react-query';
 
 interface IDocumentProps {}
 
@@ -18,9 +26,37 @@ const Document: FC<IDocumentProps> = ({}) => {
   const { t } = useTranslation('common');
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const { path, appendFolder } = useDocumentPath();
-  const { control, getValues, formState } = useForm<{
+  const [storageConfig, setStorageConfig] = useState<Record<string, string>>();
+
+  const configStorageMutation = useMutation({
+    mutationKey: ['configure-storage'],
+    mutationFn: getLinkToken,
+    onSuccess: (data) => {
+      setStorageConfig(data.result.data);
+    },
+  });
+
+  const onSuccess = useCallback(async (public_token: string) => {
+    await patchConfig(storageConfig?.id || '', public_token);
+  }, []);
+
+  const { open, isReady } = useMergeLink({
+    linkToken: storageConfig?.linkToken,
+    onSuccess,
+    // tenantConfig: {
+    // apiBaseURL: "https://api-eu.merge.dev" /* OR your specified single tenant API base URL */
+    // },
+  });
+
+  useEffect(() => {
+    if (isReady) {
+      open();
+    }
+  }, [isReady]);
+
+  const filterForm = useForm<{
     search: string;
-    expiryOption: {
+    documentType?: {
       label: string;
       value: string;
       dataTestId: string;
@@ -31,62 +67,106 @@ const Document: FC<IDocumentProps> = ({}) => {
   });
 
   const ConnectionCard = () => {
+    const Integrations = [
+      {
+        icon: 'google',
+        label: 'Google drive',
+        integrationValue: IntegrationOptionsEnum.GoogleDrive,
+      },
+    ];
     return (
-      <Card className="flex flex-col w-full items-center justify-center bg-white p-8 gap-6">
-        <p className="test-sm text-neutral-500 text-center">
-          Connection not made yet <br />
-          Please connect document source first...!
+      <div className="flex flex-col w-full items-center justify-center gap-4">
+        <p className="text-2xl text-neutral-900 font-semibold">
+          Enable integrations to view your files
         </p>
-        <Button
-          label="Connect +"
-          onClick={() => {
-            setIsConnected(true);
-          }}
-        />
-      </Card>
+        <Divider />
+        <p className="text-xl text-neutral-900">
+          To view your files here, you need to enable google drive integration.
+        </p>
+        <div className="flex px-2 py-3 border border-dashed rounded-9xl border-primary-400 w-full justify-center">
+          {Integrations.map((each) => {
+            return (
+              <Button
+                variant={ButtonVariant.Secondary}
+                leftIcon={each.icon}
+                key={each.integrationValue}
+                label={each.label}
+                onClick={() => {
+                  configStorageMutation.mutate(each.integrationValue);
+                  setIsConnected(true);
+                }}
+              />
+            );
+          })}
+        </div>
+      </div>
     );
   };
 
-  const FilterMenu = () => {
+  const Folders = () => {
     return (
-      <Card className="flex justify-between items-center p-4 relative">
-        <div className="flex justify-between items-center gap-6">
-          <Layout
-            fields={[
-              {
-                type: FieldType.Input,
-                variant: InputVariant.Text,
-                size: InputSize.Small,
-                leftIcon: 'search',
-                control,
-                getValues,
-                name: 'search',
-                placeholder: 'Search documents' || t('search'),
-                error: formState.errors.search?.message,
-                dataTestId: 'document-search',
-                inputClassName: 'py-[7px] !text-sm !h-9',
-                isClearable: true,
-              },
-            ]}
+      <div className="flex flex-col gap-4">
+        <p className="font-bold text-neutral-900 text-lg">Folders</p>
+        <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
+          {FOLDERS.map((folder: FolderType) => (
+            <Folder
+              key={folder.id}
+              folder={folder}
+              onClick={() =>
+                appendFolder({ id: folder.id || '', label: folder.name })
+              }
+            />
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const RecentlyUpdatedFiles = () => {
+    return (
+      <div className="flex flex-col gap-4">
+        <p className="font-bold text-neutral-900 text-lg">Recently updated</p>
+        <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
+          {FILES.map((file: DocType) => (
+            <Doc key={file.id} file={file} />
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <Card className="flex flex-col gap-6 p-8 w-full justify-center bg-white">
+      <div className="flex justify-between">
+        <p className="font-bold text-2xl text-neutral-900">Documents</p>
+        {isConnected && (
+          <Button
+            label="Add documents"
+            leftIcon="add"
+            leftIconClassName="text-white hover:!text-white"
+            iconColor="text-white"
+            leftIconHover={false}
+            leftIconHoverColor="text-white"
           />
-          <div className="flex items-center gap-4">
-            <div className="flex">
-              <div className="px-4 py-1 rounded-l-16xl border border-neutral-300 bg-neutral-100 text-sm text-neutral-700 w-24 text-center cursor-pointer">
-                Files
-              </div>
-              <div className="px-4 py-1 rounded-r-16xl border border-neutral-300 bg-neutral-100 text-sm text-neutral-700 w-24 text-center cursor-pointer">
-                Folders
-              </div>
-            </div>
-            <div className="px-4 py-1 rounded-16xl border border-neutral-300 bg-neutral-100 text-sm text-neutral-700 w-24 text-center cursor-pointer">
-              Starred
-            </div>
+        )}
+      </div>
+      {!isConnected ? (
+        <ConnectionCard />
+      ) : (
+        <Fragment>
+          <FilterMenu
+            filterForm={filterForm}
+            searchPlaceholder={t('Search documents')}
+            dataTestIdFilter="document-filter-icon"
+            dataTestIdSort="document-sort-icon"
+            dataTestIdSearch="document-search"
+          >
             <Layout
               fields={[
                 {
                   type: FieldType.SingleSelect,
-                  name: 'expiryOption',
-                  control,
+                  name: 'documentType',
+                  control: filterForm.control,
                   options: [
                     {
                       label: 'PDF',
@@ -122,77 +202,18 @@ const Document: FC<IDocumentProps> = ({}) => {
                 },
               ]}
             />
-          </div>
-        </div>
-        <div>
-          <Button label="+ Upload new" size={ButtonSize.Small} />
-        </div>
-        <div className="absolute right-0 -bottom-12">
-          <div className="flex items-center gap-2">
-            <div className="bg-white grid grid-cols-2 place-content-center gap-1 p-2 rounded">
-              <div className="w-2 h-2 border border-primary-500 rounded-sm" />
-              <div className="w-2 h-2 border border-primary-500 rounded-sm" />
-              <div className="w-2 h-2 border border-primary-500 rounded-sm" />
-              <div className="w-2 h-2 border border-primary-500 rounded-sm" />
-            </div>
-            <div className="bg-white flex flex-col p-2 rounded gap-1 hover:shadow-sm cursor-pointer group/col">
-              <div className="w-3 h-2 border-2 border-neutral-500 rounded-lg group-hover/col:border-primary-500" />
-              <div className="w-4 h-2 border-2 border-neutral-500 rounded-lg group-hover/col:border-primary-500" />
-            </div>
-          </div>
-        </div>
-      </Card>
-    );
-  };
-
-  if (!isConnected) {
-    return <ConnectionCard />;
-  }
-
-  const Folders = () => {
-    return (
-      <div className="flex flex-col gap-4">
-        <p className="font-bold text-neutral-900 text-lg">Folders</p>
-        <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
-          {FOLDERS.map((folder: FolderType) => (
-            <Folder
-              key={folder.id}
-              folder={folder}
-              onClick={() =>
-                appendFolder({ id: folder.id || '', label: folder.name })
-              }
-            />
-          ))}
-        </div>
-      </div>
-    );
-  };
-
-  const RecentlyUpdatedFiles = () => {
-    return (
-      <div className="flex flex-col gap-4">
-        <p className="font-bold text-neutral-900 text-lg">Recently updated</p>
-        <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
-          {FILES.map((file: DocType) => (
-            <Doc key={file.id} file={file} />
-          ))}
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    <Fragment>
-      <FilterMenu />
-      {path.length === 1 ? (
-        <Fragment>
-          <Folders />
-          <RecentlyUpdatedFiles />
+          </FilterMenu>
+          {path.length === 1 ? (
+            <Fragment>
+              <Folders />
+              <RecentlyUpdatedFiles />
+            </Fragment>
+          ) : (
+            <FolderNavigator />
+          )}
         </Fragment>
-      ) : (
-        <FolderNavigator />
       )}
-    </Fragment>
+    </Card>
   );
 };
 

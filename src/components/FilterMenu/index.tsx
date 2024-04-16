@@ -32,6 +32,7 @@ interface IFilterMenu {
   filterForm: UseFormReturn<
     {
       search: string;
+      [key: string]: any;
     },
     any
   >;
