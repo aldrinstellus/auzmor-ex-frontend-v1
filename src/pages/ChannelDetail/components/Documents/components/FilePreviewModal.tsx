@@ -11,11 +11,11 @@ interface IFilePreviewProps {
 }
 
 const FilePreview: FC<IFilePreviewProps> = ({ file, open, closeModal }) => {
-  const thumbnailUrl = new URL(file.file_thumbnail_url);
+  const thumbnailUrl = new URL(file.fileThumbnailUrl);
   if (thumbnailUrl.searchParams.has('sz')) {
     thumbnailUrl.searchParams.set('sz', 'w1440');
   }
-  const user = file.created_by;
+  const user = file.createdBy;
 
   return (
     <Modal

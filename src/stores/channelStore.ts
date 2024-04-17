@@ -373,7 +373,8 @@ export const dummyChannels: IChannel[] = [
 export const useChannelStore = create<State & Actions>()(
   immer((set, get) => ({
     channels: {},
-    getChannel: (id: string) => get().channels[id],
+    getChannel: (id: string) =>
+      get().channels[id] || dummyChannels.find((item) => item.id === id),
     getChannels: () => _.values(get().channels),
     setChannel: (channel: IChannel) =>
       set((state) => {

@@ -49,12 +49,12 @@ export type DocType = {
   remote_id?: string;
   created_at?: string;
   modified_at?: string;
-  created_by?: IUser;
+  createdBy?: IUser;
   name: string;
-  file_url: string;
-  file_thumbnail_url: string;
+  fileUrl: string;
+  fileThumbnailUrl: string;
   size: number;
-  mime_type: string;
+  mimeType: string;
   description?: string;
   folder?: string;
   permissions?: Array<Record<string, any>>;

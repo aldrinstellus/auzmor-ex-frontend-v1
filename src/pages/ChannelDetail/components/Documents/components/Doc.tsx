@@ -36,7 +36,7 @@ const Doc: FC<IDocProps> = ({ file }) => {
   );
 
   const [imgSrc, setImgSrc] = useState<string | undefined>(
-    file.file_thumbnail_url,
+    file.fileThumbnailUrl,
   );
   const onError = () => setImgSrc('');
 
@@ -48,13 +48,13 @@ const Doc: FC<IDocProps> = ({ file }) => {
     [],
   );
 
-  const iconName = getIconName(file.mime_type);
+  const iconName = getIconName(file.mimeType);
   return (
     <>
       <Card
         className={style}
         onClick={() =>
-          imgSrc ? openFilePreview() : window.open(file.file_url, '_blank')
+          imgSrc ? openFilePreview() : window.open(file.fileUrl, '_blank')
         }
       >
         <div className="border border-neutral-300 overflow-hidden rounded-7xl w-full h-28">
