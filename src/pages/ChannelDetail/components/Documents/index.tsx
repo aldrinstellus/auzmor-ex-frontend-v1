@@ -21,6 +21,12 @@ import Icon from 'components/Icon';
 import queryClient from 'utils/queryClient';
 import { humanizeTime } from 'utils/time';
 
+export enum FilePickerObjectType {
+  FILE = 'FILE',
+  FOLDER = 'FOLDER',
+  DRIVE = 'DRIVE',
+}
+
 interface IDocumentProps {}
 
 const Document: FC<IDocumentProps> = ({}) => {
@@ -50,14 +56,25 @@ const Document: FC<IDocumentProps> = ({}) => {
 
   const onSuccess = useCallback(
     (public_token: string) => {
-      patchConfig(storageConfig?.id || '', public_token, refetch);
+      patchConfig(
+        { id: storageConfig?.id || '', publicToken: public_token },
+        refetch,
+      );
     },
     [storageConfig],
   );
 
+  const onSubmit = useCallback((output_objects: any) => {
+    patchConfig({ folderId: output_objects[0]?.id }, handleSync);
+  }, []);
+
   const { open, isReady } = useMergeLink({
     linkToken: storageConfig?.linkToken,
     onSuccess,
+    filePickerConfig: {
+      onSubmit,
+      types: [FilePickerObjectType.FOLDER],
+    },
   });
 
   useEffect(() => {
@@ -114,6 +131,17 @@ const Document: FC<IDocumentProps> = ({}) => {
     );
   };
 
+  const handleSync = async () => {
+    await resyncMutation.mutateAsync();
+    await refetch();
+    queryClient.invalidateQueries(['get-storage-files'], {
+      exact: false,
+    });
+    queryClient.invalidateQueries(['get-storage-folders'], {
+      exact: false,
+    });
+  };
+
   const SyncStatus: FC<{ lastSynced: string }> = ({ lastSynced }) => {
     const [syncedAt, setSyncedAt] = useState(
       `Synced ${humanizeTime(lastSynced)}`,
@@ -128,16 +156,7 @@ const Document: FC<IDocumentProps> = ({}) => {
     return (
       <div
         className="flex items-center gap-2 group cursor-pointer border border-neutral-300 px-4 rounded"
-        onClick={async () => {
-          await resyncMutation.mutateAsync();
-          await refetch();
-          queryClient.invalidateQueries(['get-storage-files'], {
-            exact: false,
-          });
-          queryClient.invalidateQueries(['get-storage-folders'], {
-            exact: false,
-          });
-        }}
+        onClick={handleSync}
       >
         <div className={`${isRefetching && 'animate-spin'}`}>
           <Icon name="refresh" size={16} />

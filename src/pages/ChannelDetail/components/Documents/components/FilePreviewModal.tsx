@@ -3,6 +3,7 @@ import { DocType } from 'queries/files';
 import Modal from 'components/Modal';
 import Icon from 'components/Icon';
 import Avatar from 'components/Avatar';
+import { download } from 'queries/storage';
 
 interface IFilePreviewProps {
   file: DocType;
@@ -28,7 +29,11 @@ const FilePreview: FC<IFilePreviewProps> = ({ file, open, closeModal }) => {
           {file.name}
         </span>
         <div className="flex flex-row gap-3 absolute right-4">
-          <Icon name="download" color="text-neutral-800" />
+          <Icon
+            name="download"
+            color="text-neutral-800"
+            onClick={() => download(file.id || '')}
+          />
           <Icon name="postBookmark" color="text-neutral-800" />
           <Icon name="export" color="text-neutral-800" />
         </div>

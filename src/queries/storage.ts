@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
+import { isFiltersEmpty } from 'utils/misc';
 
 export enum IntegrationOptionsEnum {
   Box = 'box',
@@ -20,14 +21,17 @@ export const getLinkToken = async (
 };
 
 export const patchConfig = async (
-  id: string,
-  publicToken: string,
-  onSuccess: () => void,
+  patchData: { id?: string; publicToken?: string; folderId?: string },
+  onSuccess?: () => void,
 ) => {
-  const response = await apiService.patch(`/storage/${id}`, {
-    publicToken,
-  });
-  onSuccess();
+  const response = await apiService.patch(
+    `/storage/${patchData.id}`,
+    isFiltersEmpty({
+      publicToken: patchData?.publicToken,
+      folderId: patchData?.folderId,
+    }),
+  );
+  onSuccess && onSuccess();
   return response;
 };
 
@@ -45,6 +49,10 @@ export const getSyncStatus = async () => {
 
 export const resync = async () => {
   return await apiService.post('/storage/sync');
+};
+
+export const download = (id: string) => {
+  apiService.get(`/storage/files/${id}/download`);
 };
 
 export const useFiles = (q: Record<string, string | null>) => {
