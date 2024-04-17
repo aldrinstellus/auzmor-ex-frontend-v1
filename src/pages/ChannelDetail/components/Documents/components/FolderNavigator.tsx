@@ -1,12 +1,144 @@
-import React, { FC, Fragment } from 'react';
+import React, { FC, Fragment, useCallback } from 'react';
 import Header from './Header';
+import { useDocumentPath } from 'hooks/useDocumentPath';
+import Folder, { FolderType } from './Folder';
+import Doc, { DocType } from './Doc';
+import { useFiles, useFolders } from 'queries/storage';
+import Skeleton from 'react-loading-skeleton';
+import Card from 'components/Card';
+import Button, { Variant } from 'components/Button';
 
 interface IFolderNavigatorProps {}
 
 const FolderNavigator: FC<IFolderNavigatorProps> = ({}) => {
+  const { path, appendFolder } = useDocumentPath();
+
+  const EmptyState = () => {
+    return (
+      <div className="flex flex-col w-full justify-center items-center gap-4">
+        <div className="flex w-full justify-center">
+          <img src={require('images/noResult.png')} />
+        </div>
+        <p className="font-bold text-xl text-neutral-900">No documents found</p>
+        <Button
+          label="Upload now"
+          variant={Variant.Secondary}
+          className="text-base font-semibold !text-neutral-500 hover:!text-primary-500"
+        />
+      </div>
+    );
+  };
+
+  const FolderSkeleton = () => {
+    return (
+      <Card className="p-4 bg-white flex w-64">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12">
+            <Skeleton className="h-full" />
+          </div>
+          <div className="flex flex-col justify-between w-40">
+            <Skeleton />
+            <div className="flex items-center gap-2 w-full">
+              <Skeleton width={32} />
+              <div className="w-1 h-1 flex rounded-full bg-neutral-300"></div>
+              <Skeleton width={32} />
+            </div>
+          </div>
+        </div>
+      </Card>
+    );
+  };
+
+  const FileSkeleton = () => {
+    return (
+      <Card className="p-4 bg-white flex flex-col w-64 gap-4">
+        <div className="border border-neutral-300 overflow-hidden rounded-7xl w-full h-28">
+          <Skeleton className="w-full h-full" height={112} />
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 items-center flex">
+            <Skeleton width={24} height={24} />
+          </div>
+          <Skeleton width={190} />
+        </div>
+      </Card>
+    );
+  };
+
+  const Folders: FC<{ folderId: string }> = ({ folderId }) => {
+    const { data: folderData, isLoading } = useFolders({ folderId });
+    const folders = folderData?.data?.result?.data || [];
+
+    if (!isLoading && !!!folders.length) {
+      return <></>;
+    }
+
+    return (
+      <div className="flex flex-col gap-4">
+        <p className="font-bold text-neutral-900 text-lg">Folders</p>
+        {isLoading ? (
+          <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
+            {[...Array(5)].map((index) => (
+              <FolderSkeleton key={index} />
+            ))}
+          </div>
+        ) : folders?.length > 0 ? (
+          <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
+            {folders.map((folder: FolderType) => (
+              <Folder
+                key={folder.id}
+                folder={folder}
+                onClick={() =>
+                  appendFolder({ id: folder.id || '', label: folder.name })
+                }
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptyState />
+        )}
+      </div>
+    );
+  };
+
+  const Files: FC<{ folderId: string }> = ({ folderId }) => {
+    const { data: fileData, isLoading } = useFiles({ folderId });
+    const files = fileData?.data?.result?.data || [];
+
+    return (
+      <div className="flex flex-col gap-4">
+        <p className="font-bold text-neutral-900 text-lg">Files</p>
+        {isLoading ? (
+          <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
+            {[...Array(5)].map((index) => (
+              <FileSkeleton key={index} />
+            ))}
+          </div>
+        ) : files?.length > 0 ? (
+          <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
+            {files.map((file: DocType) => (
+              <Doc key={file.id} file={file} />
+            ))}
+          </div>
+        ) : (
+          <EmptyState />
+        )}
+      </div>
+    );
+  };
+
+  const getFolderId: () => string = useCallback(() => {
+    if (path.length <= 1) {
+      return 'null';
+    }
+    return path[path.length - 1].id;
+  }, [path]);
+
   return (
     <Fragment>
-      <Header />
+      {path.length > 1 && <Header />}
+      <Folders folderId={getFolderId()} />
+      <Files folderId={getFolderId()} />
     </Fragment>
   );
 };

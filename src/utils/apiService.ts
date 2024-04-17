@@ -122,6 +122,7 @@ export class ApiService {
     let _url = url;
     if (_params) {
       _url += `?${_params}`;
+      console.log(_url);
     }
     return await this.instance.get(_url, { signal });
   }

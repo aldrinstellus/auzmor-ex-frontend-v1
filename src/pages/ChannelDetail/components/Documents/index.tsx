@@ -4,29 +4,27 @@ import Button, { Variant as ButtonVariant } from 'components/Button';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import { useTranslation } from 'react-i18next';
-import Folder, { FolderType } from './components/Folder';
-import Doc, { DocType } from './components/Doc';
-import { FILES } from 'mocks/files';
-import { FOLDERS } from 'mocks/folders';
 import FolderNavigator from './components/FolderNavigator';
-import { useDocumentPath } from 'hooks/useDocumentPath';
 import Divider from 'components/Divider';
 import FilterMenu from 'components/FilterMenu';
 import {
   IntegrationOptionsEnum,
   getLinkToken,
   patchConfig,
+  useSyncStatus,
 } from 'queries/storage';
 import { useMergeLink } from '@mergeapi/react-merge-link';
 import { useMutation } from '@tanstack/react-query';
+import Spinner from 'components/Spinner';
 
 interface IDocumentProps {}
 
 const Document: FC<IDocumentProps> = ({}) => {
   const { t } = useTranslation('common');
-  const [isConnected, setIsConnected] = useState<boolean>(false);
-  const { path, appendFolder } = useDocumentPath();
   const [storageConfig, setStorageConfig] = useState<Record<string, string>>();
+  const { data: syncStatus, isLoading, refetch } = useSyncStatus();
+
+  const isSynced = !!syncStatus?.data?.result?.data?.length;
 
   const configStorageMutation = useMutation({
     mutationKey: ['configure-storage'],
@@ -36,16 +34,17 @@ const Document: FC<IDocumentProps> = ({}) => {
     },
   });
 
-  const onSuccess = useCallback(async (public_token: string) => {
-    await patchConfig(storageConfig?.id || '', public_token);
-  }, []);
+  const onSuccess = useCallback(
+    (public_token: string) => {
+      patchConfig(storageConfig?.id || '', public_token);
+      refetch();
+    },
+    [storageConfig],
+  );
 
   const { open, isReady } = useMergeLink({
     linkToken: storageConfig?.linkToken,
     onSuccess,
-    // tenantConfig: {
-    // apiBaseURL: "https://api-eu.merge.dev" /* OR your specified single tenant API base URL */
-    // },
   });
 
   useEffect(() => {
@@ -93,7 +92,6 @@ const Document: FC<IDocumentProps> = ({}) => {
                 label={each.label}
                 onClick={() => {
                   configStorageMutation.mutate(each.integrationValue);
-                  setIsConnected(true);
                 }}
               />
             );
@@ -103,43 +101,15 @@ const Document: FC<IDocumentProps> = ({}) => {
     );
   };
 
-  const Folders = () => {
-    return (
-      <div className="flex flex-col gap-4">
-        <p className="font-bold text-neutral-900 text-lg">Folders</p>
-        <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
-          {FOLDERS.map((folder: FolderType) => (
-            <Folder
-              key={folder.id}
-              folder={folder}
-              onClick={() =>
-                appendFolder({ id: folder.id || '', label: folder.name })
-              }
-            />
-          ))}
-        </div>
-      </div>
-    );
-  };
-
-  const RecentlyUpdatedFiles = () => {
-    return (
-      <div className="flex flex-col gap-4">
-        <p className="font-bold text-neutral-900 text-lg">Recently updated</p>
-        <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
-          {FILES.map((file: DocType) => (
-            <Doc key={file.id} file={file} />
-          ))}
-        </div>
-      </div>
-    );
-  };
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <Card className="flex flex-col gap-6 p-8 w-full justify-center bg-white">
       <div className="flex justify-between">
         <p className="font-bold text-2xl text-neutral-900">Documents</p>
-        {isConnected && (
+        {isSynced && (
           <Button
             label="Add documents"
             leftIcon="add"
@@ -147,10 +117,11 @@ const Document: FC<IDocumentProps> = ({}) => {
             iconColor="text-white"
             leftIconHover={false}
             leftIconHoverColor="text-white"
+            loading={configStorageMutation.isLoading}
           />
         )}
       </div>
-      {!isConnected ? (
+      {!isSynced ? (
         <ConnectionCard />
       ) : (
         <Fragment>
@@ -203,14 +174,7 @@ const Document: FC<IDocumentProps> = ({}) => {
               ]}
             />
           </FilterMenu>
-          {path.length === 1 ? (
-            <Fragment>
-              <Folders />
-              <RecentlyUpdatedFiles />
-            </Fragment>
-          ) : (
-            <FolderNavigator />
-          )}
+          <FolderNavigator />
         </Fragment>
       )}
     </Card>

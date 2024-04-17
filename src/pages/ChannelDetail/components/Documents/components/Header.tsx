@@ -16,9 +16,9 @@ const Header: FC<IHeaderProps> = ({}) => {
             slicePath(folder.id);
           }}
         >
-          <span className="px-2 font-bold cursor-default">
-            {!!index && '>'}
-          </span>
+          {!!index && (
+            <span className="px-2 font-bold cursor-default">&gt;</span>
+          )}
           <p
             className={`cursor-pointer ${
               index === path.length - 1 && 'font-bold !cursor-default'
