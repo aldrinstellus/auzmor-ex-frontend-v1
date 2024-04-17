@@ -22,6 +22,7 @@ export const getIconName = (mimeType: string) => {
     'application/vnd.ms-powerpoint': 'ppt',
     'application/vnd.openxmlformats-officedocument.presentationml.presentation':
       'ppt',
+    'application/vnd.google-apps.presentation': 'ppt',
     'application/vnd.ms-excel': 'xls',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
     'application/zip': 'zip',

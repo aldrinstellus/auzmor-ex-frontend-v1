@@ -133,8 +133,8 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
       control,
       name: 'search',
       dataTestId: 'docs-search',
-      className: `mr-2 min-w-[245px] '}`,
-      selectClassName: 'org-select',
+      className: `mr-2 min-w-[245px] `,
+      selectClassName: 'docs-select',
       placeholder: 'Search documents',
       suffixIcon: <></>,
       clearIcon: (
@@ -160,12 +160,9 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
       noOptionsMessage: (
         <NoDataFound
           className="py-4 w-full"
-          searchString={debouncedDocumentSearch}
-          message={
-            <p>
-              Sorry we can&apos;t find the member you are looking for.
-              <br /> Please check the spelling or try again.
-            </p>
+          illustration="noDocumentFound"
+          labelHeader={
+            <p>We&apos;re a little lost. Can you give us a hint? </p>
           }
           hideClearBtn
           dataTestId="membersearch"

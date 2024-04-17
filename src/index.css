@@ -309,3 +309,13 @@ body {
 .advanced-cropper-rectangle-stencil__preview {
   border: 1px solid white;
 }
+
+.docs-select .ant-select-selector {
+  height: 40px !important;
+}
+.docs-select .ant-select-selection-search-input {
+  height: 40px !important;
+}
+.docs-select .ant-select-dropdown {
+  width: 600px !important;
+}
