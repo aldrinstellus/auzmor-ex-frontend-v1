@@ -321,6 +321,7 @@ export const icon = {
   medalStar: MedalStarIcon,
   videoSquare: VideoSquareIcon,
   xls: XlsIcon,
+  xlsx: XlsIcon,
   google: GoogleIcon,
   refresh: RefreshIcon,
 };

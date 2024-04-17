@@ -81,13 +81,21 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
           />
         </div>
       </div>
-      <div data-testid="channel-uploadedcoverphoto">
+
+      <div className="w-full h-full relative">
         <img
-          src={require('images/channelDefaultHero.png')}
-          className="rounded-9xl w-full object-cover"
+          id="channel-uploadcoverphoto"
+          data-testid="channel-uploadedcoverphoto"
+          src={
+            channelData.channelBanner?.original ||
+            require('images/channelDefaultHero.png')
+          }
+          className="rounded-9xl w-full h-full object-cover"
         />
+        <div className="w-full h-full bg-gradient-to-b from-transparent to-black top-0 left-0 absolute rounded-t-9xl"></div>
       </div>
-      <div className="absolute left-0 right-0 bottom-0 text-white px-6">
+
+      <div className="absolute left-0 right-0 bottom-4 text-white px-6">
         <div className="flex justify-between items-center">
           <div className="mb-2 flex items-start space-x-6">
             <div className="h-14 w-14 rounded-full border-2 border-white bg-blue-300 center">
@@ -108,7 +116,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
             dataTestId="join-channel-cta"
           />
         </div>
-        <div className="w-full flex justify-between items-center relative top-3">
+        <div className="w-full flex justify-between items-center relative mt-3">
           <div>
             <div className="flex items-center text-sm space-x-4">
               {tabs.map((t) => (
@@ -116,7 +124,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                   key={t.key}
                   className={clsx({
                     'text-sm px-1 cursor-pointer': true,
-                    'font-bold text-white border-b-2 border-primary-400 pb-2 relative top-1':
+                    'font-bold text-white border-b-2 border-primary-400 pb-2 relative mt-1':
                       t.isActive,
                     '!text-neutral-300 hover:!text-white': !t.isActive,
                   })}
