@@ -66,8 +66,10 @@ const FolderNavigator: FC<IFolderNavigatorProps> = ({}) => {
     );
   };
 
-  const Folders: FC<{ folderId: string }> = ({ folderId }) => {
-    const { data: folderData, isLoading } = useFolders({ folderId });
+  const Folders: FC<{ parentFolderId: string }> = ({ parentFolderId }) => {
+    const { data: folderData, isLoading } = useFolders({
+      parentFolderId,
+    });
     const folders = folderData?.data?.result?.data || [];
 
     if (!isLoading && !!!folders.length) {
@@ -138,7 +140,7 @@ const FolderNavigator: FC<IFolderNavigatorProps> = ({}) => {
   return (
     <Fragment>
       {path.length > 1 && <Header />}
-      <Folders folderId={getFolderId()} />
+      <Folders parentFolderId={getFolderId()} />
       <Files folderId={getFolderId()} />
     </Fragment>
   );
