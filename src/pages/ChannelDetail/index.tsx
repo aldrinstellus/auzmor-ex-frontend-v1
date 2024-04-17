@@ -4,13 +4,28 @@ import Home from './components/Home';
 import ProfileSection from './components/ProfileSection';
 import Members from './components/Members';
 import DocumentPathProvider from 'contexts/DocumentPathContext';
+import { useChannelStore } from 'stores/channelStore';
+import { useParams } from 'react-router-dom';
 
 const ChannelDetail = () => {
+  const { channelId } = useParams();
+
   const [activeTab, setActiveTab] = useState('home');
+  const { getChannel } = useChannelStore();
+
+  if (!channelId) {
+    return <div>Error</div>;
+  }
+
+  const channelData = getChannel(channelId);
 
   return (
     <div className="flex flex-col space-y-10 w-full">
-      <ProfileSection activeTab={activeTab} setActiveTab={setActiveTab} />
+      <ProfileSection
+        channelData={channelData}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
       {activeTab === 'home' && <Home />}
       {activeTab === 'document' && (
         <DocumentPathProvider>

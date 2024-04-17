@@ -3,13 +3,19 @@ import Button, { Size } from 'components/Button';
 import Icon from 'components/Icon';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { IChannel } from '../../../stores/channelStore';
 
-type AppProps = {
+type ProfileSectionProps = {
+  channelData: IChannel;
   activeTab: string;
   setActiveTab: (...args: any) => any;
 };
 
-const ProfileSection: React.FC<AppProps> = ({ activeTab, setActiveTab }) => {
+const ProfileSection: React.FC<ProfileSectionProps> = ({
+  channelData,
+  activeTab,
+  setActiveTab,
+}) => {
   const { t } = useTranslation('channelDetail');
 
   const tabs = [
@@ -89,10 +95,10 @@ const ProfileSection: React.FC<AppProps> = ({ activeTab, setActiveTab }) => {
             </div>
             <div className="space-y-2 text-white">
               <div className="text-2xl font-bold" data-testid="channel-name">
-                Sales
+                {channelData.name}
               </div>
               <div className="text-xs" data-testid="channel-description">
-                This is a private space for sales
+                {channelData.description}
               </div>
             </div>
           </div>
