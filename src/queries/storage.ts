@@ -19,14 +19,19 @@ export const getLinkToken = async (
   });
 };
 
-export const patchConfig = async (id: string, publicToken: string) => {
-  return await apiService.patch(`/storage/${id}`, {
+export const patchConfig = async (
+  id: string,
+  publicToken: string,
+  onSuccess: () => void,
+) => {
+  const response = await apiService.patch(`/storage/${id}`, {
     publicToken,
   });
+  onSuccess();
+  return response;
 };
 
 export const getFiles = async (params: Record<string, string | null>) => {
-  console.log(params);
   return await apiService.get('/storage/files', { ...params });
 };
 
@@ -36,6 +41,10 @@ export const getFolders = async (params: Record<string, string | null>) => {
 
 export const getSyncStatus = async () => {
   return await apiService.get('/storage/sync');
+};
+
+export const resync = async () => {
+  return await apiService.post('/storage/sync');
 };
 
 export const useFiles = (q: Record<string, string | null>) => {

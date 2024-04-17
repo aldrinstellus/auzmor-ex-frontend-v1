@@ -1,9 +1,7 @@
 import Card from 'components/Card';
-import React, { FC, Fragment, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import FolderSvg from 'images/folder.svg';
-import Truncate from 'components/Truncate';
 import { clsx } from 'clsx';
-import { getSizeInMB } from 'utils/misc';
 
 export type FolderType = {
   id?: string;
@@ -44,18 +42,9 @@ const Folder: FC<IFolderProps> = ({ onClick, folder }) => {
           <img src={FolderSvg} />
         </div>
         <div className="flex flex-col justify-between w-48">
-          <Truncate text={folder.name} className="max-w-[150px] font-medium" />
-          <div className="flex items-center gap-2">
-            <p className="text-sm text-neutral-300">3 Files</p>
-            {!!folder?.size && (
-              <Fragment>
-                <div className="w-1 h-1 flex rounded-full bg-neutral-300"></div>
-                <p className="text-sm text-neutral-300">
-                  {Math.round(getSizeInMB(folder.size))}MB
-                </p>
-              </Fragment>
-            )}
-          </div>
+          <p className="max-w-[150px] font-medium line-clamp-2">
+            {folder.name}
+          </p>
         </div>
       </div>
     </Card>
