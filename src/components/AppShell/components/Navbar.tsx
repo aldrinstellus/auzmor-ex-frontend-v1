@@ -15,6 +15,7 @@ import SubscriptionBanner from './SubscriptionBanner';
 import useProduct from 'hooks/useProduct';
 import { getLearnUrl } from 'utils/misc';
 import Icon from 'components/Icon';
+import GlobalSearch from './GlobalSearch';
 // import PopupMenu from 'components/PopupMenu';
 // import NavbarMenuButton from './NavbarMenuButton';
 
@@ -139,22 +140,10 @@ const Navbar = () => {
           <Link to="/feed" data-testid="office-logo">
             <Logo />
           </Link>
-          <div className="flex-1" />
-          {/* <div className="flex-1">
-          <Layout
-            fields={[
-              {
-                type: FieldType.Input,
-                control,
-                name: 'globalSearch',
-                className: 'px-5 py-3',
-                placeholder: 'Search name, channel, page, document etc.,',
-                dataTestId: 'global-search',
-                disabled: false,
-              },
-            ]}
-          />
-        </div> */}
+
+          <div className="flex-1">
+            <GlobalSearch />
+          </div>
           <div className="flex items-center gap-8 h-full">
             <div className="flex items-center gap-6">
               {navigations.map((nav) => (
