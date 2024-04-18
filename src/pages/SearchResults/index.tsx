@@ -1,5 +1,7 @@
 import PageLoader from 'components/PageLoader';
-import DocSearchRow from 'pages/ChannelDetail/components/Documents/components/DocSearchRow';
+import DocSearchRow, {
+  Variant,
+} from 'pages/ChannelDetail/components/Documents/components/DocSearchRow';
 import { DocType } from 'queries/files';
 import { useDocument } from 'queries/storage';
 import { FC } from 'react';
@@ -34,11 +36,11 @@ const SearchResults: FC = () => {
   }
   return (
     <>
-      <div className="mb-12 flex flex-col gap-6 w-full">
+      <div className="mb-12 flex flex-col gap-6 w-full h-full">
         <div className="bg-white rounded-[12px] px-6 py-4 text-2xl font-medium">{`Search Results for '${searchQuery}'`}</div>
-        <div className="bg-white rounded-[12px] px-6 py-4">
+        <div className="bg-white rounded-[12px] px-6 py-6 flex flex-col gap-6 flex-auto">
           {documents.map((doc: DocType) => (
-            <DocSearchRow key={doc.id} data={doc} />
+            <DocSearchRow key={doc.id} data={doc} variant={Variant.Large} />
           ))}
         </div>
       </div>

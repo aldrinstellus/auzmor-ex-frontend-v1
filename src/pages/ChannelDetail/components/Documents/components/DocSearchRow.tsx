@@ -1,33 +1,81 @@
 import Icon from 'components/Icon';
-import React, { FC } from 'react';
+import React from 'react';
 import { getIconName } from './Doc';
+import { humanizeTime } from 'utils/time';
 
-type Appprops = {
+export enum Variant {
+  Large = 'LARGE',
+  Small = 'SMALL',
+}
+
+type DocSearchProps = {
   data?: any;
-  fileThumbnailUrl?: string;
-  fileUrl?: string;
-  id?: string;
-  name?: string;
-  mimeType?: string;
-  size?: string;
+  variant?: Variant;
 };
 
-const DocSearchRow: FC<Appprops> = ({ data }) => {
+function humanFileSize(size: number) {
+  if (size === 0) return ' ';
+  const i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
+  return (
+    +(size / Math.pow(1024, i)).toFixed(0) * 1 +
+    ' ' +
+    ['B', 'kB', 'MB', 'GB', 'TB'][i]
+  );
+}
+
+const DocSearchRow = ({ data, variant = Variant.Small }: DocSearchProps) => {
   const iconName = getIconName(data?.raw?.mimeType);
 
-  return (
-    <div
-      className="   flex items-center hover:bg-primary-50 w-full cursor-pointer gap-4"
-      onClick={() => {
-        window.open(data?.raw?.fileUrl, '_blank');
-      }}
-    >
-      <div className="flex gap-2">
-        <Icon name={iconName || 'doc'} size={20} />
-        <div className="text-sm bold text-neutral-950 ">{data?.raw?.name}</div>
+  if (variant === Variant.Small) {
+    return (
+      <div
+        className="   flex items-center hover:bg-primary-50 w-full cursor-pointer gap-4"
+        onClick={() => {
+          window.open(data?.raw?.fileUrl, '_blank');
+        }}
+      >
+        <div className="flex gap-2">
+          <Icon name={iconName || 'doc'} size={20} />
+          <div className="text-sm bold text-neutral-950 ">
+            {data?.raw?.name}
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else if (variant === Variant.Large) {
+    return (
+      <div
+        className="flex items-center hover:bg-primary-50 w-full cursor-pointer gap-4"
+        onClick={() => {
+          window.open(data?.raw?.fileUrl, '_blank');
+        }}
+      >
+        <div className="flex gap-2">
+          <Icon name={iconName || 'doc'} size={56} />
+          <div className="flex flex-col">
+            <div className="text-xxs font-medium text-neutral-500">
+              {iconName === 'folder' ? 'FOLDER' : 'DOCUMENT'}
+            </div>
+            <div className="text-base font-semibold text-neutral-900 ">
+              {data?.raw?.name}
+            </div>
+            <div className="flex items-center justify-start gap-4 text-xs text-neutral-500 font-normal">
+              {data?.raw?.size ? (
+                <div>{humanFileSize(data?.raw?.size || 0)}</div>
+              ) : null}
+              {data?.raw?.size ? (
+                <div className="bg-neutral-500 w-2 h-2 rounded-full" />
+              ) : null}
+              {data?.raw.modifiedAt ? (
+                <div>{`Updated ${humanizeTime(data?.raw?.modifiedAt)}`}</div>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return <></>;
 };
 
 export default DocSearchRow;
