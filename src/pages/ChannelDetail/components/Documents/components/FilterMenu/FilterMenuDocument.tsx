@@ -127,6 +127,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
             raw: doc,
           } as any),
       ),
+      disableFilterOption: true,
       onSearch: (searchString: string) => {
         setDocument(searchString);
       },

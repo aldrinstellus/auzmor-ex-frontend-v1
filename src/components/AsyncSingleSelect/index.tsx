@@ -51,6 +51,7 @@ export interface IAsyncSingleSelectProps {
       ) => Promise<InfiniteQueryObserverResult<any, unknown>>)
     | null;
   hasNextPage?: boolean;
+  disableFilterOption?: boolean;
   onClear?: () => void;
   onEnter?: () => void;
 }
@@ -85,6 +86,7 @@ const AsyncSingleSelect = forwardRef(
       fetchNextPage = null,
       hasNextPage = false,
       onClear = () => {},
+      disableFilterOption = false,
       onEnter,
     }: IAsyncSingleSelectProps,
     ref?: any,
@@ -204,7 +206,7 @@ const AsyncSingleSelect = forwardRef(
                     return triggerNode.parentElement;
                   }}
                   onSearch={handleSearch}
-                  filterOption={filterOption}
+                  filterOption={!disableFilterOption && filterOption}
                   notFoundContent={noContentFound()}
                   onInputKeyDown={(e) => {
                     if (onEnter && e.key === 'Enter') {

@@ -65,7 +65,7 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
       options: options?.map(
         (doc: any) =>
           ({
-            value: doc.name,
+            value: doc.id,
             label: doc.name,
             raw: doc,
           } as any),
@@ -79,8 +79,9 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
         }
       },
       optionRenderer: (option: any) => {
-        return <DocSearchRow data={option} />;
+        return <DocSearchRow key={option.key} data={option} />;
       },
+      disableFilterOption: true,
       onClear: () => {},
       noOptionsMessage: (
         <NoDataFound
