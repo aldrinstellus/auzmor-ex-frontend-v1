@@ -9,9 +9,15 @@ import Card from 'components/Card';
 import Button, { Variant } from 'components/Button';
 import { DocType } from 'queries/files';
 
-interface IFolderNavigatorProps {}
+interface IFolderNavigatorProps {
+  showFiles: boolean;
+  showFolders: boolean;
+}
 
-const FolderNavigator: FC<IFolderNavigatorProps> = ({}) => {
+const FolderNavigator: FC<IFolderNavigatorProps> = ({
+  showFiles,
+  showFolders,
+}) => {
   const { path, appendFolder } = useDocumentPath();
 
   const EmptyState = () => {
@@ -140,8 +146,8 @@ const FolderNavigator: FC<IFolderNavigatorProps> = ({}) => {
   return (
     <Fragment>
       {path.length > 1 && <Header />}
-      <Folders parentFolderId={getFolderId()} />
-      <Files folderId={getFolderId()} />
+      {showFolders && <Folders parentFolderId={getFolderId()} />}
+      {showFiles && <Files folderId={getFolderId()} />}
     </Fragment>
   );
 };
