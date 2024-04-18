@@ -27,6 +27,7 @@ export const getIconName = (mimeType: string) => {
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
     'application/vnd.google-apps.spreadsheet': 'xls',
     'application/vnd.google-apps.document': 'doc',
+    'application/vnd.google-apps.folder': 'folder',
   };
   return MIME_TO_ICON[mimeType] || 'file';
 };

@@ -115,8 +115,13 @@ const ChannelCard: FC<IChannelCardProps> = ({
             </div>
           )}
         </div>
-        <div className="w-10 h-10 rounded-full absolute left-4 top-[52px] bg-neutral-300 border border-white z-0 flex justify-center items-center">
-          <Icon name="gallery" size={16} color="text-white" hover={false} />
+        <div className="w-10 h-10 rounded-full absolute left-4 top-[52px] bg-blue-300 border border-white z-0 flex justify-center items-center">
+          <Icon
+            name={channel.displayIcon || 'chart'}
+            size={16}
+            color="text-white"
+            hover={false}
+          />
         </div>
         {channel.isStarred && (
           <IconWrapper

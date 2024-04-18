@@ -52,6 +52,7 @@ export interface IAsyncSingleSelectProps {
     | null;
   hasNextPage?: boolean;
   onClear?: () => void;
+  onEnter?: () => void;
 }
 
 const AsyncSingleSelect = forwardRef(
@@ -84,6 +85,7 @@ const AsyncSingleSelect = forwardRef(
       fetchNextPage = null,
       hasNextPage = false,
       onClear = () => {},
+      onEnter,
     }: IAsyncSingleSelectProps,
     ref?: any,
   ) => {
@@ -203,7 +205,12 @@ const AsyncSingleSelect = forwardRef(
                   onSearch={handleSearch}
                   filterOption={filterOption}
                   notFoundContent={noContentFound()}
-                  onInputKeyDown={() => setOpen(true)}
+                  onInputKeyDown={(e) => {
+                    if (onEnter && e.key === 'Enter') {
+                      onEnter();
+                      setOpen(false);
+                    } else setOpen(true);
+                  }}
                   allowClear={isClearable}
                   loading={isLoading}
                   value={field.value}

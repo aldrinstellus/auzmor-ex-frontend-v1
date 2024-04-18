@@ -33,6 +33,7 @@ export interface IChannel {
   };
   isStarred?: boolean;
   totalMembers: number;
+  displayIcon?: string;
   displayImage?: { id: string; original: string };
   channelBanner?: { id: string; original: string };
   isRequested?: boolean;

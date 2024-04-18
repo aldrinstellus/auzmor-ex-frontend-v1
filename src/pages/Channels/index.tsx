@@ -30,7 +30,6 @@ interface IFilterButton {
 
 export const Channels: FC<IChannelsProps> = () => {
   const { t } = useTranslation('channels');
-  const { t: tc } = useTranslation('common');
   const { filters, clearFilters, updateFilter } = useAppliedFiltersStore();
   const [isModalOpen, openModal, closeModal] = useModal();
 
@@ -158,6 +157,7 @@ export const Channels: FC<IChannelsProps> = () => {
             leftIconClassName="text-white pointer-events-none group-hover:text-white"
             onClick={openModal}
             dataTestId="createchannel-cta"
+            className="hidden"
           />
         </div>
         <FilterMenu
@@ -169,7 +169,9 @@ export const Channels: FC<IChannelsProps> = () => {
         >
           <div className="flex gap-2 items-center">
             <p className="text-neutral-500 text-base">
-              {tc('showing')} {channelIds.length} {tc('result')}
+              {`Showing ${channelIds.length} ${
+                channelIds.length === 1 ? 'result' : 'results'
+              }`}
             </p>
             {filterButtons.map((filterButton) => (
               <Button
@@ -187,7 +189,7 @@ export const Channels: FC<IChannelsProps> = () => {
         </FilterMenu>
         {filters?.channelType === ChannelTypeEnum.Archived ? (
           isLoading ? (
-            [...Array(5)].map((_each, index) => (
+            [...Array(8)].map((_each, index) => (
               <ChannelRowSkeleton key={index} />
             ))
           ) : (
@@ -201,7 +203,7 @@ export const Channels: FC<IChannelsProps> = () => {
         ) : (
           <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
             {isLoading
-              ? [...Array(5)].map((_each, index) => (
+              ? [...Array(8)].map((_each, index) => (
                   <ChannelCardSkeleton key={index} />
                 ))
               : channelIds.map(({ id }) => (

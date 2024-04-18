@@ -8,6 +8,7 @@ import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { DocType } from 'queries/files';
+import { useNavigate } from 'react-router-dom';
 
 export interface IGlobalSearchProps {}
 
@@ -27,6 +28,8 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
     mode: 'onChange',
     defaultValues: { search: '' },
   });
+
+  const navigate = useNavigate();
 
   const { control } = searchForm;
 
@@ -69,6 +72,11 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
       ),
       onSearch: (searchQuery: string) => {
         setSearchQuery(searchQuery);
+      },
+      onEnter: () => {
+        if (searchQuery) {
+          navigate(`/search?q=${searchQuery}`);
+        }
       },
       optionRenderer: (option: any) => {
         return <DocSearchRow data={option} />;

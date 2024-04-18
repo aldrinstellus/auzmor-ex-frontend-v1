@@ -31,6 +31,7 @@ const PageNotFound = lazy(() => import('pages/PageNotFound'));
 const ServerErrorPage = lazy(() => import('pages/ServerErrorPage'));
 const PostPage = lazy(() => import('pages/Post'));
 const Logout = lazy(() => import('pages/Logout'));
+const SearchResults = lazy(() => import('pages/SearchResults'));
 
 const routers = createBrowserRouter(
   createRoutesFromElements(
@@ -133,6 +134,7 @@ const routers = createBrowserRouter(
             return '';
           }}
         />
+        <Route path="/search" element={<SearchResults />}></Route>
       </Route>
       <Route
         path="/404"

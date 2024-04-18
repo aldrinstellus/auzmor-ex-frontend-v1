@@ -82,10 +82,12 @@ export const useFolders = (q: Record<string, string | null>) => {
     queryFn: () => getFolders(q),
   });
 };
-export const useDocument = (q: Record<any, any | null>) => {
+export const useDocument = (params: Record<any, any | null>) => {
   return useQuery({
-    queryKey: ['get-storage-document', q],
-    queryFn: () => getDocument(q),
+    queryKey: ['get-storage-document', params],
+    queryFn: () => getDocument(params),
+    cacheTime: 0,
+    staleTime: 0,
   });
 };
 

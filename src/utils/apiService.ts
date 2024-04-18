@@ -99,8 +99,9 @@ export class ApiService {
                 err?.code,
             ) || [];
 
-          // Redirecting to login when error response does not contain INVALID_CREDENTIALS error code. " If " condition will prevent reload on incorrect password.
-          if (!codes.includes('INVALID_CREDENTIALS')) {
+          // Redirecting to login when error response does not contain INVALID_CREDENTIALS error code.
+          // " If " condition will prevent reload on incorrect password and 401 of document search.
+          if (!codes.includes('INVALID_CREDENTIALS') && !codes.includes(401)) {
             window.location.href = '/login';
           }
         }

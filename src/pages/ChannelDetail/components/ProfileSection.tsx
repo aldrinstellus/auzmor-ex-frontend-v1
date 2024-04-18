@@ -99,7 +99,11 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         <div className="flex justify-between items-center">
           <div className="mb-2 flex items-start space-x-6">
             <div className="h-14 w-14 rounded-full border-2 border-white bg-blue-300 center">
-              <Icon name="chart" className="text-white" size={24} />
+              <Icon
+                name={channelData.displayIcon || 'chart'}
+                className="text-white"
+                size={24}
+              />
             </div>
             <div className="space-y-2 text-white">
               <div className="text-2xl font-bold" data-testid="channel-name">
