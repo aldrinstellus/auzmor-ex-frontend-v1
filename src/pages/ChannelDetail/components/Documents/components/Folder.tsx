@@ -31,7 +31,7 @@ const Folder: FC<IFolderProps> = ({ onClick, folder }) => {
   const style = useMemo(
     () =>
       clsx({
-        'p-4 bg-white flex w-64 cursor-pointer': true,
+        'p-2 !bg-gray-50 flex w-64 cursor-pointer': true,
       }),
     [],
   );

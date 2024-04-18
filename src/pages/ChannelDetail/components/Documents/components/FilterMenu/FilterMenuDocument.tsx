@@ -7,7 +7,7 @@ import IconButton, {
   Variant as IconVariant,
   Size as IconSize,
 } from 'components/IconButton';
-import Sort from 'components/Sort';
+// import Sort from 'components/Sort';
 import useModal from 'hooks/useModal';
 import { FC, ReactNode, useEffect, useState } from 'react';
 import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
@@ -47,7 +47,7 @@ interface IFilterMenu {
 const FilterMenuDocument: FC<IFilterMenu> = ({
   children,
   filterForm,
-  dataTestIdSort,
+  // dataTestIdSort,
   dataTestIdFilter,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
@@ -187,7 +187,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
               className="bg-white !p-[10px]"
               dataTestId={dataTestIdFilter}
             />
-            <Sort
+            {/* <Sort
               setFilter={(sortValue) => {
                 setFilters({ sort: sortValue });
               }}
@@ -196,7 +196,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
               filterValue={{ asc: 'ASC', desc: 'DESC' }}
               entity={'CHANNEL'}
               dataTestId={dataTestIdSort}
-            />
+            /> */}
             <div>
               <Layout fields={memberSearchfields} />
             </div>

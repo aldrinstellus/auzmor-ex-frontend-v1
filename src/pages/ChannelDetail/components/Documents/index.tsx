@@ -244,7 +244,7 @@ const Document: FC<IDocumentProps> = ({}) => {
 
     return (
       <div
-        className="flex items-center gap-2 group cursor-pointer border border-neutral-300 px-4 rounded"
+        className=" hidden items-center gap-2 group cursor-pointer border border-neutral-300 px-4 rounded"
         onClick={handleSync}
       >
         <div className={`${isRefetching && 'animate-spin'}`}>
@@ -259,7 +259,7 @@ const Document: FC<IDocumentProps> = ({}) => {
 
   return (
     <Fragment>
-      <Card className="flex flex-col gap-6 p-8 w-full justify-center bg-white">
+      <Card className="flex flex-col gap-6 p-8 pb-16 w-full justify-center bg-white">
         <div className="flex justify-between">
           <p className="font-bold text-2xl text-neutral-900">Documents</p>
           {isSynced && !isLoading && (
