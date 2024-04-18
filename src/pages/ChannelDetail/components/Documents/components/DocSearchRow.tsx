@@ -17,7 +17,7 @@ const DocSearchRow: FC<Appprops> = ({ data }) => {
 
   return (
     <div
-      className="   flex items-center hover:bg-primary-50 w-full h-12  cursor-pointer gap-4"
+      className="   flex items-center hover:bg-primary-50 w-full cursor-pointer gap-4"
       onClick={() => {
         window.open(data?.raw?.fileUrl, '_blank');
       }}

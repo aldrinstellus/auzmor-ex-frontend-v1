@@ -195,6 +195,7 @@ const AsyncSingleSelect = forwardRef(
                   disabled={disabled}
                   placeholder={placeholder}
                   placement={menuPlacement ? menuPlacement : undefined}
+                  popupMatchSelectWidth={false}
                   onPopupScroll={onPopupScroll}
                   getPopupContainer={(triggerNode) => {
                     if (getPopupContainer) {

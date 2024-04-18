@@ -136,6 +136,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
       className: `mr-2 min-w-[245px] `,
       selectClassName: 'docs-select',
       placeholder: 'Search documents',
+      placement: 'bottomRight',
       suffixIcon: <></>,
       clearIcon: (
         <Icon name="closeCircle" size={16} className="-mt-0.5 !mr-4" />
