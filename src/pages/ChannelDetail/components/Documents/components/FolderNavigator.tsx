@@ -20,6 +20,25 @@ const FolderNavigator: FC<IFolderNavigatorProps> = ({
 }) => {
   const { path, appendFolder } = useDocumentPath();
 
+  const getFolderId: () => string = useCallback(() => {
+    if (path.length <= 1) {
+      return 'null';
+    }
+    return path[path.length - 1].id;
+  }, [path]);
+
+  // Fetch folder data
+  const { data: folderData, isLoading: folderLoading } = useFolders({
+    parentFolderId: getFolderId(),
+  });
+  const folders = folderData?.data?.result?.data || [];
+
+  // fetch files data
+  const { data: fileData, isLoading: fileLoading } = useFiles({
+    folderId: getFolderId(),
+  });
+  const files = fileData?.data?.result?.data || [];
+
   const EmptyState = () => {
     return (
       <div className="flex flex-col w-full justify-center items-center gap-4">
@@ -36,56 +55,35 @@ const FolderNavigator: FC<IFolderNavigatorProps> = ({
     );
   };
 
-  const FolderSkeleton = () => {
-    return (
-      <Card className="p-4 bg-white flex w-64">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12">
-            <Skeleton className="h-full" />
-          </div>
-          <div className="flex flex-col justify-between w-40">
-            <Skeleton />
-            <div className="flex items-center gap-2 w-full">
-              <Skeleton width={32} />
-              <div className="w-1 h-1 flex rounded-full bg-neutral-300"></div>
-              <Skeleton width={32} />
+  const Folders: FC = () => {
+    const FolderSkeleton = () => {
+      return (
+        <Card className="p-4 bg-white flex w-64">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12">
+              <Skeleton className="h-full" />
+            </div>
+            <div className="flex flex-col justify-between w-40">
+              <Skeleton />
+              <div className="flex items-center gap-2 w-full">
+                <Skeleton width={32} />
+                <div className="w-1 h-1 flex rounded-full bg-neutral-300"></div>
+                <Skeleton width={32} />
+              </div>
             </div>
           </div>
-        </div>
-      </Card>
-    );
-  };
+        </Card>
+      );
+    };
 
-  const FileSkeleton = () => {
-    return (
-      <Card className="p-4 bg-white flex flex-col w-64 gap-4">
-        <div className="border border-neutral-300 overflow-hidden rounded-7xl w-full h-28">
-          <Skeleton className="w-full h-full" height={112} />
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 items-center flex">
-            <Skeleton width={24} height={24} />
-          </div>
-          <Skeleton width={190} />
-        </div>
-      </Card>
-    );
-  };
-
-  const Folders: FC<{ parentFolderId: string }> = ({ parentFolderId }) => {
-    const { data: folderData, isLoading } = useFolders({
-      parentFolderId,
-    });
-    const folders = folderData?.data?.result?.data || [];
-
-    if (!isLoading && !!!folders.length) {
+    if (!folderLoading && folders?.length === 0) {
       return <></>;
     }
 
     return (
       <div className="flex flex-col gap-4">
         <p className="font-bold text-neutral-900 text-lg">Folders</p>
-        {isLoading ? (
+        {folderLoading ? (
           <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
             {[...Array(5)].map((index) => (
               <FolderSkeleton key={index} />
@@ -104,50 +102,61 @@ const FolderNavigator: FC<IFolderNavigatorProps> = ({
             ))}
           </div>
         ) : (
-          <EmptyState />
+          <></>
         )}
       </div>
     );
   };
 
-  const Files: FC<{ folderId: string }> = ({ folderId }) => {
-    const { data: fileData, isLoading } = useFiles({ folderId });
-    const files = fileData?.data?.result?.data || [];
+  const Files: FC = () => {
+    const FileSkeleton = () => {
+      return (
+        <Card className="p-4 bg-white flex flex-col w-64 gap-4">
+          <div className="border border-neutral-300 overflow-hidden rounded-7xl w-full h-28">
+            <Skeleton className="w-full h-full" height={112} />
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 items-center flex">
+              <Skeleton width={24} height={24} />
+            </div>
+            <Skeleton width={190} />
+          </div>
+        </Card>
+      );
+    };
+
+    if (!fileLoading && files?.length === 0) {
+      return <></>;
+    }
 
     return (
       <div className="flex flex-col gap-4">
         <p className="font-bold text-neutral-900 text-lg">Files</p>
-        {isLoading ? (
+        {fileLoading ? (
           <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
             {[...Array(5)].map((index) => (
               <FileSkeleton key={index} />
             ))}
           </div>
-        ) : files?.length > 0 ? (
+        ) : (
           <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
             {files.map((file: DocType) => (
               <Doc key={file.id} file={file} />
             ))}
           </div>
-        ) : (
-          <EmptyState />
         )}
       </div>
     );
   };
 
-  const getFolderId: () => string = useCallback(() => {
-    if (path.length <= 1) {
-      return 'null';
-    }
-    return path[path.length - 1].id;
-  }, [path]);
-
   return (
     <Fragment>
       {path.length > 1 && <Header />}
-      {showFolders && <Folders parentFolderId={getFolderId()} />}
-      {showFiles && <Files folderId={getFolderId()} />}
+      {showFolders && <Folders />}
+      {showFiles && <Files />}
+      {files.length + folders.length <= 0 && !fileLoading && !folderLoading && (
+        <EmptyState />
+      )}
     </Fragment>
   );
 };
