@@ -52,6 +52,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const { filters, setFilters } = useAppliedFiltersStore();
+  console.log('filters :', filters);
   const { control } = filterForm;
 
   const [documentSearch, setDocument] = useState('');
@@ -60,6 +61,10 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
 
   const { data: documentData, isFetching } = useDocument({
     q: debouncedDocumentSearch,
+    mimeType: '',
+    ownerEmail: '',
+    modifiedBefor: '',
+    modifiedAfter: '',
     limit: 4,
   });
   const documents = documentData?.data?.result?.data || [];
@@ -306,6 +311,9 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
             locations: filters?.locations || [],
             status: filters?.status || [],
             teams: filters?.teams || [],
+            docTypeCheckbox: filters?.docTypeCheckbox || [],
+            docPeopleCheckbox: filters?.docPeopleCheckbox || [],
+            docModifiedCheckbox: filters?.docModifiedCheckbox || [],
             visibility: filters?.visibility || ChannelVisibilityEnum.All,
             channelType: filters?.channelType || ChannelTypeEnum.MyChannels,
           }}
@@ -320,12 +328,15 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
               locations: [],
               status: [],
               teams: [],
+              docTypeCheckbox: [],
+              docModifiedCheckbox: [],
+              docPeopleCheckbox: [],
               visibility: ChannelVisibilityEnum.All,
               channelType: ChannelTypeEnum.MyChannels,
             });
             closeFilterModal();
           }}
-          variant={FilterModalVariant.ChannelsListing}
+          variant={FilterModalVariant.Document}
         />
       )}
     </>

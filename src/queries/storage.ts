@@ -9,7 +9,13 @@ export enum IntegrationOptionsEnum {
   Onedrive = 'onedrive',
   Sharepoint = 'sharepoint',
 }
-
+export enum IDocType {
+  DOCUMENT = 'DOCUMENT',
+  FOLDER = 'FOLDER',
+  PDF = 'PDF',
+  FORM = 'FORM',
+  XLS = 'XLS',
+}
 export const getLinkToken = async (
   IntegrationOption?: IntegrationOptionsEnum,
   expiresIn?: number,
@@ -54,6 +60,9 @@ export const getSyncStatus = async () => {
   return await apiService.get('/storage/sync');
 };
 
+export const getStorageUser = async (params: Record<any, any | null>) => {
+  return await apiService.get('/storage/users', { ...params });
+};
 export const resync = async () => {
   return await apiService.post('/storage/sync');
 };
@@ -86,6 +95,12 @@ export const useDocument = (q: Record<any, any | null>) => {
   return useQuery({
     queryKey: ['get-storage-document', q],
     queryFn: () => getDocument(q),
+  });
+};
+export const useGetStorageUser = (q: Record<any, any | null>) => {
+  return useQuery({
+    queryKey: ['get-storage-user', q],
+    queryFn: () => getStorageUser(q),
   });
 };
 
