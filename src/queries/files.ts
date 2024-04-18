@@ -48,7 +48,7 @@ export type DocType = {
   id?: string;
   remote_id?: string;
   created_at?: string;
-  modified_at?: string;
+  modifiedAt?: string;
   createdBy?: IUser;
   name: string;
   fileUrl: string;

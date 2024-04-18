@@ -7,7 +7,7 @@ export type FolderType = {
   id?: string;
   remote_id?: string;
   created_at?: string;
-  modified_at?: string;
+  modifiedAt?: string;
   name: string;
   folder_url?: string;
   size: number;
