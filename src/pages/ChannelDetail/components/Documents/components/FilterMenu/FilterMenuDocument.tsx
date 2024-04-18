@@ -131,7 +131,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
     {
       type: FieldType.AsyncSingleSelect,
       control,
-      name: 'search',
+      name: 'documentSearch',
       dataTestId: 'docs-search',
       className: `mr-2 min-w-[245px] `,
       selectClassName: 'docs-select',
