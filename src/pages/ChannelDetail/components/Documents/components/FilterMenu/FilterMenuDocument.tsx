@@ -10,8 +10,6 @@ import { FC, ReactNode, useEffect, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import useURLParams from 'hooks/useURLParams';
 import Icon from 'components/Icon';
-import { ChannelVisibilityEnum } from 'stores/channelStore';
-import { ChannelTypeEnum } from 'components/FilterModal/ChannelType';
 import { useDebounce } from 'hooks/useDebounce';
 import { useDocument } from 'queries/storage';
 import NoDataFound from 'components/NoDataFound';
@@ -149,21 +147,31 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
     },
   ];
 
+  const isFilterApplied =
+    !!filters?.docTypeCheckbox?.length ||
+    !!filters?.docPeopleCheckbox?.length ||
+    !!filters?.docModifiedCheckbox?.length;
+
   return (
     <>
       <div className="flex flex-col gap-6">
         <div className="flex justify-between items-center">
           <div>{children}</div>
           <div className="flex space-x-2 justify-center items-center relative">
-            <IconButton
-              onClick={openFilterModal}
-              icon="filterLinear"
-              variant={IconVariant.Secondary}
-              size={IconSize.Medium}
-              borderAround
-              className="bg-white !p-[10px]"
-              dataTestId={dataTestIdFilter}
-            />
+            <div className="relative flex">
+              <IconButton
+                onClick={openFilterModal}
+                icon="filterLinear"
+                variant={IconVariant.Secondary}
+                size={IconSize.Medium}
+                borderAround
+                className="bg-white !p-[10px]"
+                dataTestId={dataTestIdFilter}
+              />
+              {isFilterApplied && (
+                <div className="absolute w-2 h-2 rounded-full bg-red-500 top-0.5 right-0" />
+              )}
+            </div>
             {/* <Sort
               setFilter={(sortValue) => {
                 setFilters({ sort: sortValue });
@@ -195,16 +203,9 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
           }}
           onClear={() => {
             setFilters({
-              categories: [],
-              departments: [],
-              locations: [],
-              status: [],
-              teams: [],
               docTypeCheckbox: [],
               docModifiedCheckbox: [],
               docPeopleCheckbox: [],
-              visibility: ChannelVisibilityEnum.All,
-              channelType: ChannelTypeEnum.MyChannels,
             });
             closeFilterModal();
           }}

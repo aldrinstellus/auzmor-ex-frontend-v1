@@ -8,6 +8,7 @@ import Skeleton from 'react-loading-skeleton';
 import Card from 'components/Card';
 import Button, { Variant } from 'components/Button';
 import { DocType } from 'queries/files';
+import { useAppliedFiltersForDoc } from 'stores/appliedFiltersForDoc';
 
 interface IFolderNavigatorProps {
   showFiles: boolean;
@@ -19,6 +20,7 @@ const FolderNavigator: FC<IFolderNavigatorProps> = ({
   showFolders,
 }) => {
   const { path, appendFolder } = useDocumentPath();
+  const { filters } = useAppliedFiltersForDoc();
 
   const getFolderId: () => string = useCallback(() => {
     if (path.length <= 1) {
@@ -37,7 +39,14 @@ const FolderNavigator: FC<IFolderNavigatorProps> = ({
   const { data: fileData, isLoading: fileLoading } = useFiles({
     folderId: getFolderId(),
   });
-  const files = fileData?.data?.result?.data || [];
+  const files = (fileData?.data?.result?.data || []).filter((file: DocType) => {
+    const typeFilters =
+      filters?.docTypeCheckbox?.map((type: any) => type.value)?.flat() || [];
+    if (typeFilters.length > 0) {
+      return typeFilters.includes(file.mimeType);
+    }
+    return true;
+  });
 
   const EmptyState = () => {
     return (

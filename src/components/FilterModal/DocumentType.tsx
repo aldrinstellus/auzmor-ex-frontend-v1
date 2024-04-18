@@ -17,22 +17,29 @@ export const documentOptions: ICheckboxListOption[] = [
   {
     data: {
       id: 'document',
-      value:
+      value: [
+        'application/msword',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.google-apps.document',
+      ],
       label: 'Document',
       icon: 'doc',
     },
     datatestId: `document-${IDocType.DOCUMENT}`,
   },
   {
-    data: { id: 'pdf', value: 'application/pdf', label: 'PDF', icon: 'pdf' },
+    data: { id: 'pdf', value: ['application/pdf'], label: 'PDF', icon: 'pdf' },
     datatestId: `document-${IDocType.PDF}`,
   },
   {
     data: {
-      id: 'xlsx',
-      value: `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`,
-      label: 'XLSX',
+      id: 'xls',
+      value: [
+        `application/vnd.google-apps.spreadsheet`,
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      ],
+      label: 'XLS',
       icon: 'xls',
     },
     datatestId: `document-${IDocType.XLS}`,
@@ -40,7 +47,7 @@ export const documentOptions: ICheckboxListOption[] = [
   {
     data: {
       id: 'form',
-      value: 'application/vnd.google-apps.form',
+      value: ['application/vnd.google-apps.form'],
       label: 'Form',
       icon: 'pdf',
     },
@@ -49,7 +56,7 @@ export const documentOptions: ICheckboxListOption[] = [
   {
     data: {
       id: 'folder',
-      value: 'application/vnd.google-apps.folder',
+      value: ['application/vnd.google-apps.folder'],
       label: 'Folder',
       icon: 'folder',
     },

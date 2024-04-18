@@ -41,6 +41,7 @@ export interface IFilterForm {
   categorySearch: string;
   teamSearch: string;
   statusSearch: string;
+  docUserSearch: string;
 }
 
 export interface IStatus {
