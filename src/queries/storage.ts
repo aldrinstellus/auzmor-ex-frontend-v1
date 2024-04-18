@@ -46,6 +46,9 @@ export const getFiles = async (params: Record<string, string | null>) => {
 export const getFolders = async (params: Record<string, string | null>) => {
   return await apiService.get('/storage/folder', { ...params });
 };
+export const getDocument = async (params: Record<string, string | null>) => {
+  return await apiService.get('/storage/search', { ...params });
+};
 
 export const getSyncStatus = async () => {
   return await apiService.get('/storage/sync');
@@ -77,6 +80,12 @@ export const useFolders = (q: Record<string, string | null>) => {
   return useQuery({
     queryKey: ['get-storage-folders', q],
     queryFn: () => getFolders(q),
+  });
+};
+export const useDocument = (q: Record<any, any | null>) => {
+  return useQuery({
+    queryKey: ['get-storage-document', q],
+    queryFn: () => getDocument(q),
   });
 };
 

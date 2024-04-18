@@ -118,7 +118,7 @@ const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
                     ) : (
                       <Icon name="link" size={16} />
                     )}
-                    <span className="hover:text-blue-500 group-hover:text-blue-500 hover:underline group-hover:underline">
+                    <span className="text-sm hover:text-blue-500 group-hover:text-blue-500 hover:underline group-hover:underline">
                       {link.title}
                     </span>
                   </div>

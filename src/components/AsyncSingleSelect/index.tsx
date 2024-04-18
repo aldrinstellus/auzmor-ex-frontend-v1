@@ -10,6 +10,7 @@ import {
   InfiniteQueryObserverResult,
 } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
+import Spinner from 'components/Spinner';
 
 const { Option } = Select;
 export interface IOption {
@@ -118,7 +119,13 @@ const AsyncSingleSelect = forwardRef(
 
     const noContentFound = () => (
       <div className="px-6 py-2 text-neutral-500 text-center">
-        {isLoading ? 'Loading...' : noOptionsMessage}
+        {isLoading ? (
+          <div className="flex justify-center items-center w-full p-12">
+            <Spinner />
+          </div>
+        ) : (
+          noOptionsMessage
+        )}
       </div>
     );
 

@@ -6,7 +6,6 @@ import Layout, { FieldType } from 'components/Form';
 import { useTranslation } from 'react-i18next';
 import FolderNavigator from './components/FolderNavigator';
 import Divider from 'components/Divider';
-import FilterMenu from 'components/FilterMenu';
 import {
   IntegrationOptionsEnum,
   createFolder,
@@ -18,6 +17,7 @@ import {
 import { useMergeLink } from '@mergeapi/react-merge-link';
 import { useMutation } from '@tanstack/react-query';
 import Spinner from 'components/Spinner';
+import FilterMenuDocument from './components/FilterMenu/FilterMenuDocument';
 import Icon from 'components/Icon';
 import queryClient from 'utils/queryClient';
 import { humanizeTime } from 'utils/time';
@@ -272,7 +272,7 @@ const Document: FC<IDocumentProps> = ({}) => {
           <ConnectionCard />
         ) : (
           <Fragment>
-            <FilterMenu
+            <FilterMenuDocument
               filterForm={filterForm}
               searchPlaceholder={t('Search documents')}
               dataTestIdFilter="document-filter-icon"
@@ -323,7 +323,7 @@ const Document: FC<IDocumentProps> = ({}) => {
                 />
                 <SyncStatus lastSynced={lastSynced} />
               </div>
-            </FilterMenu>
+            </FilterMenuDocument>
             <FolderNavigator />
           </Fragment>
         )}

@@ -11,22 +11,24 @@ interface IDocProps {
   file: DocType;
 }
 
-const getIconName = (mimeType: string) => {
+export const getIconName = (mimeType: string) => {
+  if (mimeType.includes('image/')) return 'imageFile';
+  if (mimeType.includes('video/')) return 'videoFile';
   const MIME_TO_ICON: Record<string, string> = {
     'application/msword': 'doc',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
       'doc',
-    'image/jpeg': 'jpg',
-    'image/png': 'png',
     'application/pdf': 'pdf',
     'application/vnd.ms-powerpoint': 'ppt',
     'application/vnd.openxmlformats-officedocument.presentationml.presentation':
       'ppt',
+    'application/vnd.google-apps.presentation': 'ppt',
     'application/vnd.ms-excel': 'xls',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
-    'application/zip': 'zip',
+    'application/vnd.google-apps.spreadsheet': 'xls',
+    'application/vnd.google-apps.document': 'doc',
   };
-  return MIME_TO_ICON[mimeType];
+  return MIME_TO_ICON[mimeType] || 'file';
 };
 
 const Doc: FC<IDocProps> = ({ file }) => {

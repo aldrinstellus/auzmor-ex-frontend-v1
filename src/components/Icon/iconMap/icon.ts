@@ -157,8 +157,12 @@ import VideoSquareIcon from '../components/VideoSquare';
 import PdfIcon from '../components/Pdf';
 import XlsIcon from '../components/Xls';
 import DocIcon from '../components/Doc';
+import PptIcon from '../components/Ppt';
+import FileIcon from '../components/File';
 import GoogleIcon from '../socialIcons/Google';
 import RefreshIcon from '../components/Refresh';
+import ImageFileIcon from '../components/ImageFile';
+import VideoFileIcon from '../components/VideoFile';
 
 export const icon = {
   add: Add,
@@ -223,6 +227,7 @@ export const icon = {
   eyeSlash: EyeSlashIcon,
   feed: FeedIcon,
   femaleIcon: FemaleIcon,
+  file: FileIcon,
   filter: FilterIcon,
   filterLinear: FilterLinear,
   flashIcon: FlashIcon,
@@ -240,6 +245,7 @@ export const icon = {
   home: HomeIcon,
   iconLinear: IconLinear,
   image: ImageIcon,
+  imageFile: ImageFileIcon,
   import: ImportIcon,
   info: SvgInfoIcon,
   infoCircle: InfoCircleIcon,
@@ -276,6 +282,7 @@ export const icon = {
   play: PlayIcon,
   plus: Plus,
   postBookmark: PostBookmarkIcon,
+  ppt: PptIcon,
   profile: ProfileIcon,
   profileUser: ProfileUser,
   promoteUser: PromoteUserIcon,
@@ -316,11 +323,13 @@ export const icon = {
   lifeBuoy: LifeBuoyIcon,
   shoppingCart: ShopingCartIcon,
   videoPlay: VideoPlayIcon,
+  videoFile: VideoFileIcon,
   messageQuestion: MessageQuestionIcon,
   teacher: TeacherIcon,
   medalStar: MedalStarIcon,
   videoSquare: VideoSquareIcon,
   xls: XlsIcon,
+  xlsx: XlsIcon,
   google: GoogleIcon,
   refresh: RefreshIcon,
 };
