@@ -205,11 +205,11 @@ const Document: FC<IDocumentProps> = ({}) => {
     ];
     return (
       <div className="flex flex-col w-full items-center justify-center gap-4">
-        <p className="text-2xl text-neutral-900 font-semibold">
+        <p className="text-xl text-neutral-900 font-semibold">
           Enable integrations to view your files
         </p>
         <Divider />
-        <p className="text-xl text-neutral-900">
+        <p className="text-base text-neutral-900">
           To view your files here, you need to enable google drive integration.
         </p>
         <div className="flex px-2 py-3 border border-dashed rounded-9xl border-primary-400 w-full justify-center">

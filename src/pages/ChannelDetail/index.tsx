@@ -20,7 +20,7 @@ const ChannelDetail = () => {
   const channelData = getChannel(channelId);
 
   return (
-    <div className="flex flex-col space-y-10 w-full">
+    <div className="flex flex-col space-y-10 w-full mb-16">
       <ProfileSection
         channelData={channelData}
         activeTab={activeTab}
