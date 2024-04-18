@@ -11,7 +11,6 @@ import {
   createFolder,
   getLinkToken,
   patchConfig,
-  resync,
   useSyncStatus,
 } from 'queries/storage';
 import { useMergeLink } from '@mergeapi/react-merge-link';
@@ -47,10 +46,10 @@ const Document: FC<IDocumentProps> = ({}) => {
   const { getCurrentFolder } = useDocumentPath();
 
   // Mutations
-  const resyncMutation = useMutation({
-    mutationKey: ['resync'],
-    mutationFn: resync,
-  });
+  // const resyncMutation = useMutation({
+  //   mutationKey: ['resync'],
+  //   mutationFn: resync,
+  // });
   const configStorageMutation = useMutation({
     mutationKey: ['configure-storage'],
     mutationFn: getLinkToken,
@@ -134,8 +133,6 @@ const Document: FC<IDocumentProps> = ({}) => {
   ]);
 
   const handleSync = async () => {
-    await resyncMutation.mutateAsync();
-    await refetch();
     queryClient.invalidateQueries(['get-storage-files'], {
       exact: false,
     });
