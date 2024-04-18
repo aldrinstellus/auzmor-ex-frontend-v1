@@ -4,6 +4,7 @@ import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { IFilterForm } from '.';
 import { titleCase } from 'utils/misc';
 import { ICheckboxListOption } from 'components/CheckboxList';
+import moment from 'moment';
 
 interface IVisibilityProps {
   control: Control<IFilterForm, any>;
@@ -13,23 +14,47 @@ interface IVisibilityProps {
 
 export const documentOptions: ICheckboxListOption[] = [
   {
-    data: { id: 'today', value: 'Today', label: 'Today' },
+    data: {
+      id: 'today',
+      value: moment(new Date().setHours(0, 0, 0, 0)).toString(),
+      label: 'Today',
+    },
     datatestId: `document-modified-today`,
   },
   {
-    data: { id: 'last7days', value: 'Today', label: 'Last 7 days' },
+    data: {
+      id: 'last7days',
+      value: moment().subtract(7, 'days').toString(),
+      label: 'Last 7 days',
+    },
     datatestId: `document-modified-last7days`,
   },
   {
-    data: { id: 'last30days', value: 'Today', label: 'Last 30 days' },
+    data: {
+      id: 'last30days',
+      value: moment().subtract(30, 'days').toString(),
+      label: 'Last 30 days',
+    },
     datatestId: `document-modified-last30days`,
   },
   {
-    data: { id: 'thisyear', value: 'Today', label: 'This year (2024)' },
+    data: {
+      id: 'thisyear',
+      value: moment(
+        new Date().setFullYear(new Date().getFullYear(), 1, 1),
+      ).toString(),
+      label: `This year (${new Date().getFullYear()})`,
+    },
     datatestId: `document-modified-thisyear`,
   },
   {
-    data: { id: 'lastyear', value: 'Today', label: 'Last year (2023)' },
+    data: {
+      id: 'lastyear',
+      value: moment(
+        new Date().setFullYear(new Date().getFullYear() - 1, 1, 1),
+      ).toString(),
+      label: 'Last year (2023)',
+    },
     datatestId: `document-modified-lastyear`,
   },
 ];
@@ -38,7 +63,7 @@ const DocumentModified: FC<IVisibilityProps> = ({ control }) => {
   const documentFields = [
     {
       type: FieldType.CheckboxList,
-      name: 'documentTypeCheckbox',
+      name: 'documentModifiedCheckbox',
       control,
       options: documentOptions,
       labelRenderer: (option: ICheckboxListOption) => (

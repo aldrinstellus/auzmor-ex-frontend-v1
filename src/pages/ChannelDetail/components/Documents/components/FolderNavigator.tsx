@@ -9,6 +9,7 @@ import Card from 'components/Card';
 import Button, { Variant } from 'components/Button';
 import { DocType } from 'queries/files';
 import { useAppliedFiltersForDoc } from 'stores/appliedFiltersForDoc';
+import moment from 'moment';
 
 interface IFolderNavigatorProps {
   showFiles: boolean;
@@ -33,20 +34,47 @@ const FolderNavigator: FC<IFolderNavigatorProps> = ({
   const { data: folderData, isLoading: folderLoading } = useFolders({
     parentFolderId: getFolderId(),
   });
-  const folders = folderData?.data?.result?.data || [];
+  const folders = (folderData?.data?.result?.data || []).filter(
+    (folder: FolderType) => {
+      if (!!filters?.docModifiedCheckbox?.length) {
+        const dateString = filters.docModifiedCheckbox[0].value;
+        if (moment(folder.modifiedAt).isAfter(dateString)) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    },
+  );
 
   // fetch files data
   const { data: fileData, isLoading: fileLoading } = useFiles({
     folderId: getFolderId(),
   });
-  const files = (fileData?.data?.result?.data || []).filter((file: DocType) => {
-    const typeFilters =
-      filters?.docTypeCheckbox?.map((type: any) => type.value)?.flat() || [];
-    if (typeFilters.length > 0) {
-      return typeFilters.includes(file.mimeType);
-    }
-    return true;
-  });
+  const files = (fileData?.data?.result?.data || [])
+    .filter((file: DocType) => {
+      const typeFilters =
+        filters?.docTypeCheckbox?.map((type: any) => type.value)?.flat() || [];
+      if (typeFilters.length > 0) {
+        return typeFilters.includes(file.mimeType);
+      }
+      return true;
+    })
+    .filter((file: DocType) => {
+      if (!!filters?.docModifiedCheckbox?.length) {
+        const dateString = filters.docModifiedCheckbox[0].value;
+        console.log(dateString, file.modifiedAt);
+        if (moment(file.modifiedAt).isAfter(dateString)) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    });
 
   const EmptyState = () => {
     return (
