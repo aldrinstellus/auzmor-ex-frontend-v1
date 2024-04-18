@@ -9,7 +9,7 @@ import { Role } from 'utils/enum';
 export const userData: IGetUser[] = [
   {
     id: '6516afa8dc958600e4619cdf',
-    fullName: 'Abby Wolff',
+    fullName: 'Sofia Rodriguez',
     firstName: 'Abby',
     lastName: 'Wolff',
     primaryEmail: 'Sim_Kris@hotmail.com',
@@ -27,8 +27,7 @@ export const userData: IGetUser[] = [
     profileImage: {
       id: '653f87281ef0a90b7d1e7b54',
       blurHash: '',
-      original:
-        'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1698662184834-original.jpg',
+      original: 'https://i.pravatar.cc/150?img=10',
     },
 
     flags: {
@@ -50,7 +49,7 @@ export const userData: IGetUser[] = [
   },
   {
     id: '6516afa8dc958600e4619cdf',
-    fullName: 'Abby Wolff',
+    fullName: 'Juan Carlos Martinez',
     firstName: 'Abby',
     lastName: 'Wolff',
     primaryEmail: 'Sim_Kris@hotmail.com',
@@ -69,8 +68,7 @@ export const userData: IGetUser[] = [
     profileImage: {
       id: '653f87281ef0a90b7d1e7b54',
       blurHash: '',
-      original:
-        'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1698662184834-original.jpg',
+      original: 'https://i.pravatar.cc/150?img=39',
     },
 
     flags: {
@@ -434,15 +432,14 @@ export const ChannelUserRequests: IChannelRequest[] = [
     user: {
       userId: '6516afa8dc958600e4619cdf',
       email: 'Sim_Kris@hotmail.com',
-      fullName: 'Abby Wolff',
+      fullName: 'Sofia Rodriguez',
       status: UserStatus.Created,
       designation: 'Quality Assurance',
       department: 'Grocery',
       workLocation: 'South Freeman',
       profileImage: {
         id: '653f87281ef0a90b7d1e7b54',
-        original:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1698662184834-original.jpg',
+        original: 'https://i.pravatar.cc/150?img=10',
         blurHash: '',
       },
     },
@@ -465,7 +462,7 @@ export const ChannelUserRequests: IChannelRequest[] = [
     user: {
       userId: '6516afa8dc958600e4619cdf',
       email: 'Sim_Kris@hotmail.com',
-      fullName: 'Abby Wolff',
+      fullName: 'Elena Ivanova',
       status: UserStatus.Created,
       designation: 'Quality Assurance',
       department: 'Grocery',
@@ -473,8 +470,7 @@ export const ChannelUserRequests: IChannelRequest[] = [
 
       profileImage: {
         id: '653f87281ef0a90b7d1e7b54',
-        original:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1698662184834-original.jpg',
+        original: 'https://i.pravatar.cc/150?img=66',
         blurHash: '',
       },
     },
@@ -498,15 +494,15 @@ export const ChannelUserRequests: IChannelRequest[] = [
     user: {
       userId: '6516afa8dc958600e4619cdf',
       email: 'Sim_Kris@hotmail.com',
-      fullName: 'Abby Wolff',
+      fullName: 'Hiroshi Yamamoto',
       status: UserStatus.Created,
       designation: 'Quality Assurance',
       department: 'Grocery',
       workLocation: 'South Freeman',
       profileImage: {
         id: '653f87281ef0a90b7d1e7b54',
-        original:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1698662184834-original.jpg',
+        original: 'https://i.pravatar.cc/150?img=67',
+
         blurHash: '',
       },
     },

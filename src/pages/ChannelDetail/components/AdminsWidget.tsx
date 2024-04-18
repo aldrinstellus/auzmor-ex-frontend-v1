@@ -7,22 +7,22 @@ import { useTranslation } from 'react-i18next';
 const admins = [
   {
     id: 1,
-    name: 'John Doe',
-    image: 'https://i.pravatar.cc/150?img=30',
+    name: 'Emilia Santos',
+    image: 'https://i.pravatar.cc/150?img=40',
     designation: 'Talent Acquistion Specialist',
     isOwner: true,
   },
   {
     id: 2,
-    name: 'John Doe',
-    image: 'https://i.pravatar.cc/150?img=30',
+    name: 'Andreas Müller',
+    image: 'https://i.pravatar.cc/150?img=41',
     designation: 'Talent Acquistion Specialist',
     isOwner: false,
   },
   {
     id: 3,
-    name: 'John Doe',
-    image: 'https://i.pravatar.cc/150?img=30',
+    name: 'Mei Chen',
+    image: 'https://i.pravatar.cc/150?img=42',
     designation: 'Talent Acquistion Specialist',
     isOwner: false,
   },
