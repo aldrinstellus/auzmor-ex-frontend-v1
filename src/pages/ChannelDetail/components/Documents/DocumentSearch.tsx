@@ -5,14 +5,28 @@ import Icon from 'components/Icon';
 import { getIconName } from './components/Doc';
 import PageLoader from 'components/PageLoader';
 import { humanFileSize } from 'utils/misc';
+import { useAppliedFiltersForDoc } from 'stores/appliedFiltersForDoc';
 
 type DocumentSearchProps = {
   searchQuery?: string;
 };
 
 const DocumentSearch: FC<DocumentSearchProps> = ({ searchQuery = '' }) => {
+  const { filters } = useAppliedFiltersForDoc();
+  console.log(
+    filters?.docTypeCheckbox
+      .map((eachType: Record<string, string>) => eachType.value)
+      .flat(),
+  );
   const { data: documentData, isLoading } = useDocument({
     q: searchQuery,
+    mimeType:
+      filters?.docTypeCheckbox
+        .map((eachType: Record<string, string>) => eachType.value)
+        .flat() || [],
+    ownerEmail: '',
+    modifiedBefor: '',
+    modifiedAfter: filters?.docModifiedRadio,
     limit: 30,
   });
 

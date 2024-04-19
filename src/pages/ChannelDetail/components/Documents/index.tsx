@@ -32,6 +32,7 @@ import { slideInAndOutTop } from 'utils/react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
 import useURLParams from 'hooks/useURLParams';
 import DocumentSearch from './DocumentSearch';
+import { useAppliedFiltersForDoc } from 'stores/appliedFiltersForDoc';
 
 export enum FilePickerObjectType {
   FILE = 'FILE',
@@ -46,9 +47,16 @@ const Document: FC<IDocumentProps> = ({}) => {
   const [storageConfig, setStorageConfig] = useState<Record<string, string>>();
   const [isOpen, openModal, closeModal] = useModal(false, true);
   const { getCurrentFolder } = useDocumentPath();
-
+  const { filters } = useAppliedFiltersForDoc();
   const { searchParams } = useURLParams();
+
   const searchQuery = searchParams.get('search') || undefined;
+  const isFilterApplied =
+    !!filters?.docTypeCheckbox?.length ||
+    !!filters?.docPeopleCheckbox?.length ||
+    !!filters?.docModifiedRadio;
+
+  const showSearchResults = searchQuery || isFilterApplied;
 
   // Mutations
   // const resyncMutation = useMutation({
@@ -361,8 +369,8 @@ const Document: FC<IDocumentProps> = ({}) => {
                 <SyncStatus lastSynced={lastSynced} />
               </div>
             </FilterMenuDocument>
-            {searchQuery && <DocumentSearch searchQuery={searchQuery} />}
-            {!searchQuery && (
+            {showSearchResults && <DocumentSearch searchQuery={searchQuery} />}
+            {!showSearchResults && (
               <FolderNavigator
                 showFiles={!!showFiles}
                 showFolders={!!showFolders}

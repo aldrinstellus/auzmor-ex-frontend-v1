@@ -156,7 +156,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
   const isFilterApplied =
     !!filters?.docTypeCheckbox?.length ||
     !!filters?.docPeopleCheckbox?.length ||
-    !!filters?.docModifiedCheckbox?.length;
+    !!filters?.docModifiedRadio;
 
   return (
     <>
