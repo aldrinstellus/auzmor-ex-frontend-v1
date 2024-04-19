@@ -28,6 +28,7 @@ export const getIconName = (mimeType: string) => {
     'application/vnd.google-apps.spreadsheet': 'xls',
     'application/vnd.google-apps.document': 'doc',
     'application/vnd.google-apps.folder': 'folder',
+    'application/vnd.google-apps.form': 'form',
   };
   return MIME_TO_ICON[mimeType] || 'file';
 };

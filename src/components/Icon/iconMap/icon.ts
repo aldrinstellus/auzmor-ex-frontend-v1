@@ -164,6 +164,7 @@ import RefreshIcon from '../components/Refresh';
 import ImageFileIcon from '../components/ImageFile';
 import VideoFileIcon from '../components/VideoFile';
 import FolderIcon from '../components/Folder';
+import FormIcon from '../components/form';
 
 export const icon = {
   add: Add,
@@ -334,4 +335,5 @@ export const icon = {
   xlsx: XlsIcon,
   google: GoogleIcon,
   refresh: RefreshIcon,
+  form: FormIcon,
 };

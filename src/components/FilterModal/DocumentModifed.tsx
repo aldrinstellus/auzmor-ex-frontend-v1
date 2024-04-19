@@ -2,24 +2,33 @@ import Layout, { FieldType } from 'components/Form';
 import { FC } from 'react';
 import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { IFilterForm } from '.';
-import { titleCase } from 'utils/misc';
-import { ICheckboxListOption } from 'components/CheckboxList';
+import { enumToTitleCase } from 'utils/misc';
+import { IRadioListOption } from 'components/RadioGroup';
 import moment from 'moment';
 
-interface IVisibilityProps {
+export enum ChannelTypeEnum {
+  MyChannels = 'MY_CHANNELS',
+  Managed = 'MANAGED',
+  DiscoverNewChannels = 'DISCOVER_NEW_CHANNELS',
+  Starred = 'STARRED',
+  Requested = 'REQUESTED',
+  Archived = 'ARCHIVED',
+}
+
+interface IChannelTypeProps {
   control: Control<IFilterForm, any>;
   watch: UseFormWatch<IFilterForm>;
   setValue: UseFormSetValue<IFilterForm>;
 }
 
-export const documentOptions: ICheckboxListOption[] = [
+export const documentModifiedOptions: IRadioListOption[] = [
   {
     data: {
       id: 'today',
       value: moment(new Date().setHours(0, 0, 0, 0)).toString(),
       label: 'Today',
     },
-    datatestId: `document-modified-today`,
+    dataTestId: `document-modified-today`,
   },
   {
     data: {
@@ -27,7 +36,7 @@ export const documentOptions: ICheckboxListOption[] = [
       value: moment().subtract(7, 'days').toString(),
       label: 'Last 7 days',
     },
-    datatestId: `document-modified-last7days`,
+    dataTestId: `document-modified-last7days`,
   },
   {
     data: {
@@ -35,7 +44,7 @@ export const documentOptions: ICheckboxListOption[] = [
       value: moment().subtract(30, 'days').toString(),
       label: 'Last 30 days',
     },
-    datatestId: `document-modified-last30days`,
+    dataTestId: `document-modified-last30days`,
   },
   {
     data: {
@@ -45,7 +54,7 @@ export const documentOptions: ICheckboxListOption[] = [
       ).toString(),
       label: `This year (${new Date().getFullYear()})`,
     },
-    datatestId: `document-modified-thisyear`,
+    dataTestId: `document-modified-thisyear`,
   },
   {
     data: {
@@ -55,20 +64,20 @@ export const documentOptions: ICheckboxListOption[] = [
       ).toString(),
       label: 'Last year (2023)',
     },
-    datatestId: `document-modified-lastyear`,
+    dataTestId: `document-modified-lastyear`,
   },
 ];
 
-const DocumentModified: FC<IVisibilityProps> = ({ control }) => {
-  const documentFields = [
+const ChannelType: FC<IChannelTypeProps> = ({ control }) => {
+  const documentModifiedFields = [
     {
-      type: FieldType.CheckboxList,
-      name: 'documentModifiedCheckbox',
+      type: FieldType.Radio,
+      name: 'documentModifiedRadio',
       control,
-      options: documentOptions,
-      labelRenderer: (option: ICheckboxListOption) => (
+      radioList: documentModifiedOptions,
+      labelRenderer: (option: IRadioListOption) => (
         <div className="ml-2.5 cursor-pointer text-xs">
-          {titleCase(option.data.label)}
+          {enumToTitleCase(option.data.label)}
         </div>
       ),
       rowClassName: 'px-6 py-3 border-b border-neutral-200',
@@ -78,10 +87,10 @@ const DocumentModified: FC<IVisibilityProps> = ({ control }) => {
   return (
     <div className="px-2 py-4">
       <div className="max-h-[330px] min-h-[330px] overflow-y-auto">
-        <Layout fields={documentFields} />
+        <Layout fields={documentModifiedFields} />
       </div>
     </div>
   );
 };
 
-export default DocumentModified;
+export default ChannelType;

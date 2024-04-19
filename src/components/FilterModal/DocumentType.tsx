@@ -49,7 +49,7 @@ export const documentOptions: ICheckboxListOption[] = [
       id: 'form',
       value: ['application/vnd.google-apps.form'],
       label: 'Form',
-      icon: 'pdf',
+      icon: 'form',
     },
     datatestId: `document-${IDocType.FORM}`,
   },
