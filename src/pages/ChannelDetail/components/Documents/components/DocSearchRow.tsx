@@ -2,6 +2,7 @@ import Icon from 'components/Icon';
 import React from 'react';
 import { getIconName } from './Doc';
 import { humanizeTime } from 'utils/time';
+import { humanFileSize } from 'utils/misc';
 
 export enum Variant {
   Large = 'LARGE',
@@ -12,16 +13,6 @@ type DocSearchProps = {
   data?: any;
   variant?: Variant;
 };
-
-function humanFileSize(size: number) {
-  if (size === 0) return ' ';
-  const i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
-  return (
-    +(size / Math.pow(1024, i)).toFixed(0) * 1 +
-    ' ' +
-    ['B', 'kB', 'MB', 'GB', 'TB'][i]
-  );
-}
 
 const DocSearchRow = ({ data, variant = Variant.Small }: DocSearchProps) => {
   const iconName = getIconName(data?.raw?.mimeType);

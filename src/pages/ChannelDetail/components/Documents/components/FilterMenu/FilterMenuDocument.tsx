@@ -125,6 +125,11 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
             raw: doc,
           } as any),
       ),
+      onEnter: () => {
+        if (documentSearch) {
+          updateParam(`search`, documentSearch);
+        }
+      },
       disableFilterOption: true,
       onSearch: (searchString: string) => {
         setDocument(searchString);
@@ -151,7 +156,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
   const isFilterApplied =
     !!filters?.docTypeCheckbox?.length ||
     !!filters?.docPeopleCheckbox?.length ||
-    !!filters?.docModifiedCheckbox?.length;
+    !!filters?.docModifiedRadio;
 
   return (
     <>
