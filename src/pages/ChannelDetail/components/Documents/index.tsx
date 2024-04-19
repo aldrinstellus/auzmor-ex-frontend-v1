@@ -30,6 +30,8 @@ import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
+import useURLParams from 'hooks/useURLParams';
+import DocumentSearch from './DocumentSearch';
 
 export enum FilePickerObjectType {
   FILE = 'FILE',
@@ -44,6 +46,9 @@ const Document: FC<IDocumentProps> = ({}) => {
   const [storageConfig, setStorageConfig] = useState<Record<string, string>>();
   const [isOpen, openModal, closeModal] = useModal(false, true);
   const { getCurrentFolder } = useDocumentPath();
+
+  const { searchParams } = useURLParams();
+  const searchQuery = searchParams.get('search') || undefined;
 
   // Mutations
   // const resyncMutation = useMutation({
@@ -356,10 +361,13 @@ const Document: FC<IDocumentProps> = ({}) => {
                 <SyncStatus lastSynced={lastSynced} />
               </div>
             </FilterMenuDocument>
-            <FolderNavigator
-              showFiles={!!showFiles}
-              showFolders={!!showFolders}
-            />
+            {searchQuery && <DocumentSearch searchQuery={searchQuery} />}
+            {!searchQuery && (
+              <FolderNavigator
+                showFiles={!!showFiles}
+                showFolders={!!showFolders}
+              />
+            )}
           </Fragment>
         )}
       </Card>

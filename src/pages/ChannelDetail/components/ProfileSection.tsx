@@ -4,6 +4,7 @@ import Icon from 'components/Icon';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IChannel } from '../../../stores/channelStore';
+import useURLParams from 'hooks/useURLParams';
 
 type ProfileSectionProps = {
   channelData: IChannel;
@@ -17,7 +18,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   setActiveTab,
 }) => {
   const { t } = useTranslation('channelDetail');
-
+  const { updateParam } = useURLParams();
   const tabs = [
     {
       label: t('cover.tab_home'),
@@ -132,7 +133,10 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                       t.isActive,
                     '!text-neutral-300 hover:!text-white': !t.isActive,
                   })}
-                  onClick={() => setActiveTab(t.key)}
+                  onClick={() => {
+                    updateParam(`search`, '');
+                    setActiveTab(t.key);
+                  }}
                 >
                   {t.label}
                 </div>
