@@ -6,27 +6,28 @@ import { getIconName } from './components/Doc';
 import PageLoader from 'components/PageLoader';
 import { humanFileSize } from 'utils/misc';
 import { useAppliedFiltersForDoc } from 'stores/appliedFiltersForDoc';
+import Button, { Variant } from 'components/Button';
 
 type DocumentSearchProps = {
   searchQuery?: string;
 };
 
 const DocumentSearch: FC<DocumentSearchProps> = ({ searchQuery = '' }) => {
-  const { filters } = useAppliedFiltersForDoc();
-  console.log(
-    filters?.docTypeCheckbox
-      .map((eachType: Record<string, string>) => eachType.value)
-      .flat(),
-  );
+  const { filters, clearFilters } = useAppliedFiltersForDoc();
   const { data: documentData, isLoading } = useDocument({
     q: searchQuery,
     mimeType:
       filters?.docTypeCheckbox
         .map((eachType: Record<string, string>) => eachType.value)
         .flat() || [],
-    ownerEmail: '',
+    ownerEmail:
+      filters?.docPeopleCheckbox.map(
+        (eachType: Record<string, string>) => eachType.emailAddress,
+      ) || [],
     modifiedBefor: '',
-    modifiedAfter: filters?.docModifiedRadio,
+    modifiedAfter:
+      filters?.docModifiedRadio &&
+      new Date(filters?.docModifiedRadio).toISOString(),
     limit: 30,
   });
 
@@ -34,6 +35,27 @@ const DocumentSearch: FC<DocumentSearchProps> = ({ searchQuery = '' }) => {
 
   if (isLoading) {
     return <PageLoader />;
+  }
+
+  const EmptyState = () => {
+    return (
+      <div className="flex flex-col w-full justify-center items-center gap-4 pt-8">
+        <div className="flex w-full justify-center">
+          <img src={require('images/noResult.png')} />
+        </div>
+        <p className="font-bold text-xl text-neutral-900">No results found</p>
+        <Button
+          label="Clear filters"
+          variant={Variant.Secondary}
+          className="text-base font-semibold !text-neutral-500 hover:!text-primary-500"
+          onClick={clearFilters}
+        />
+      </div>
+    );
+  };
+
+  if (!isLoading && !!!documents.length) {
+    return <EmptyState />;
   }
 
   return (
