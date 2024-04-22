@@ -16,7 +16,7 @@ const DocumentSearch: FC<DocumentSearchProps> = ({ searchQuery = '' }) => {
   const { filters, clearFilters } = useAppliedFiltersForDoc();
   const { data: documentData, isLoading } = useDocument({
     q: searchQuery,
-    mimeType:
+    mimeTypes:
       filters?.docTypeCheckbox
         .map((eachType: Record<string, string>) => eachType.value)
         .flat() || [],
