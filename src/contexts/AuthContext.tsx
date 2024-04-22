@@ -207,7 +207,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
             },
             preferences: data?.preferences,
           });
-          setBranding(data.branding, isLxp);
+          setBranding(data.branding);
         } else {
           window.location.host = `${data.org.domain}.${window.location.host}`;
         }
