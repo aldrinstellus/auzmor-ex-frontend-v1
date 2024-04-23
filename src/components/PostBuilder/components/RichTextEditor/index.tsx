@@ -147,6 +147,14 @@ const RichTextEditor = forwardRef(
       }
       if (editor.getLength() > charLimit) {
         ((ref as any).current as ReactQuill).getEditor().formatText(
+          0,
+          editor.getLength(),
+          {
+            color: twConfig.theme.colors.neutral['900'],
+          },
+          'silent',
+        );
+        ((ref as any).current as ReactQuill).getEditor().formatText(
           charLimit - 1,
           editor.getLength() - charLimit,
           {
@@ -156,6 +164,14 @@ const RichTextEditor = forwardRef(
         );
         setIsCharLimit(true);
       } else {
+        ((ref as any).current as ReactQuill).getEditor().formatText(
+          0,
+          editor.getLength(),
+          {
+            color: twConfig.theme.colors.neutral['900'],
+          },
+          'silent',
+        );
         setIsCharLimit(false);
       }
 
