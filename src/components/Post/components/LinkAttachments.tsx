@@ -33,7 +33,7 @@ const LinkAttachments: FC<ILinkAttachmentsProps> = ({ attachments }) => {
     const previewUrl = getAuthLearnUrl(attachmentId);
 
     if (isExcelRegex.test(each.title)) {
-      toast(<FailureToast content={'Oops, preview is not supported'} />, {
+      toast(<FailureToast content={'oops, preview is not supported'} />, {
         closeButton: (
           <Icon name="closeCircleOutline" color="text-red-500" size={20} />
         ),
@@ -49,7 +49,7 @@ const LinkAttachments: FC<ILinkAttachmentsProps> = ({ attachments }) => {
       });
     } else {
       if (isImageRegex.test(each.title) || isVideoRegex.test(each.title)) {
-        window.open(previewUrl);
+        window.open(previewUrl, '_blank');
       } else {
         // for pdf,docs and ppt
         const viewerUrl =
