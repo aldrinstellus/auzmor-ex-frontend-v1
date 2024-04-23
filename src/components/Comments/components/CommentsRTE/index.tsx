@@ -104,8 +104,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
   const createCommentMutation = useMutation({
     mutationKey: ['create-comment'],
     mutationFn: createComment,
-    onError: (error) => {
-      console.log(error);
+    onError: () => {
       toast(
         <FailureToast
           content={`Error adding ${
