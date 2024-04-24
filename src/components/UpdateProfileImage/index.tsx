@@ -39,6 +39,7 @@ const UpdateProfileImage: FC<UpdateProfileImageProps> = ({
         organization: {
           id: response?.result?.data?.org?.id,
           domain: response?.result?.data?.org?.domain,
+          name: response?.result?.data?.org?.name,
         },
         profileImage: response?.result?.data?.profileImage?.original,
       });
