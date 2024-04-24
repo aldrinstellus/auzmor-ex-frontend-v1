@@ -1,24 +1,41 @@
-import React, { FC } from 'react';
-import moment from 'moment';
-import { toast } from 'react-toastify';
+import { FC } from 'react';
 import { LinkAttachment } from 'queries/post';
 import { ProductEnum } from 'utils/apiService';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { twConfig } from 'utils/misc';
+
 import { getItem } from 'utils/persist';
-import { slideInAndOutTop } from 'utils/react-toastify';
 import Icon from 'components/Icon';
-import FailureToast from 'components/Toast/variants/FailureToast';
+import moment from 'moment';
 
 interface ILinkAttachmentsProps {
   attachments: LinkAttachment[];
 }
 
-const LinkAttachments: FC<ILinkAttachmentsProps> = ({ attachments }) => {
-  const learnBaseUrl =
-    getItem(`${ProductEnum.Learn}RegionUrl`) ||
-    process.env.REACT_APP_LEARN_BACKEND_BASE_URL;
+const learnBaseUrl =
+  getItem(`${ProductEnum.Learn}RegionUrl`) ||
+  process.env.REACT_APP_LEARN_BACKEND_BASE_URL;
+export const downloadAttachment = (
+  attachmentId = '',
+  name = 'excel',
+  onlyTargetBlank = false,
+) => {
+  const downloadUrl = `${learnBaseUrl}/attachments/${attachmentId}/download?auth_token=${getItem(
+    'uat',
+  )}`;
+  // If IE, fallback to old method
+  // @ts-ignore
+  if (!window.navigator.msSaveOrOpenBlob && !onlyTargetBlank) {
+    // Create anchor tag to enforce download
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.setAttribute('download', name);
+    document.body.appendChild(link);
+    link.click();
+  } else {
+    window.open(downloadUrl, '_blank');
+  }
+};
 
+const LinkAttachments: FC<ILinkAttachmentsProps> = ({ attachments }) => {
   const getAuthLearnUrl = (attachmentId: string) =>
     `${learnBaseUrl}/attachments/${attachmentId}/preview?auth_token=${getItem(
       'uat',
@@ -33,20 +50,10 @@ const LinkAttachments: FC<ILinkAttachmentsProps> = ({ attachments }) => {
     const previewUrl = getAuthLearnUrl(attachmentId);
 
     if (isExcelRegex.test(each.title)) {
-      toast(<FailureToast content={'oops, preview is not supported'} />, {
-        closeButton: (
-          <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-        ),
-        style: {
-          border: `1px solid ${twConfig.theme.colors.red['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
-        },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
-      });
+      downloadAttachment(
+        each.url.split('/attachments/')[1].split('/')[0],
+        each.title.substring(0, each.title.lastIndexOf('.')),
+      );
     } else {
       if (isImageRegex.test(each.title) || isVideoRegex.test(each.title)) {
         window.open(previewUrl, '_blank');
