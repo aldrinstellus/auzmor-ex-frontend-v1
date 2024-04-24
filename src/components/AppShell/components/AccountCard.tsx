@@ -19,14 +19,13 @@ import { learnLogout } from 'queries/learn';
 
 const AccountCard = () => {
   const navigate = useNavigate();
-  const { user, reset } = useAuth();
+  const { user } = useAuth();
   const { isAdmin } = useRole();
   const { isLxp, isOffice } = useProduct();
 
   const logoutMutation = useMutation(isLxp ? learnLogout : logout, {
     onSuccess: async () => {
-      reset();
-      userChannel.postMessage({
+      await userChannel.postMessage({
         userId: user?.id,
         payload: {
           type: 'SIGN_OUT',
