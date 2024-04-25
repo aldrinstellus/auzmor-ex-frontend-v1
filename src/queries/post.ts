@@ -420,6 +420,7 @@ const collectComments = (response: any, comments: IComment[]) => {
     comments.push(...((eachPost?.relevantComments as any as IComment[]) || []));
     comments.forEach((comment, index) => {
       if (comment?.relevantComments) {
+        comments.push(...(comments[index] as any).relevantComments);
         comments[index].relevantComments = (comment?.relevantComments || [])
           .filter((relevantComment) => !!relevantComment)
           .map((relevantComment: any) => relevantComment.id);
