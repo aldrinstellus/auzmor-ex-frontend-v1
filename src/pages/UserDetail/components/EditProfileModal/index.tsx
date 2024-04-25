@@ -315,6 +315,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
           organization: {
             id: userUpdateResponse.org?.id,
             domain: userUpdateResponse.org?.domain,
+            name: userUpdateResponse.org?.name,
           },
           workLocation: userUpdateResponse.workLocation,
           preferredName: userUpdateResponse.preferredName,
