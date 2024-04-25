@@ -7,9 +7,11 @@ export interface ICommentStore {
   setComment: (comment: { [key: string]: IComment }) => void;
   updateComment: (id: string, comment: IComment) => void;
   appendComments: (comments: IComment[]) => void;
+  getComments: (commentIds: string[]) => IComment[];
+  getComment: (commentId: string) => IComment;
 }
 
-export const useCommentStore = create<ICommentStore>((set) => ({
+export const useCommentStore = create<ICommentStore>((set, get) => ({
   comment: {},
   setComment: (comment) =>
     set(() => ({
@@ -23,4 +25,11 @@ export const useCommentStore = create<ICommentStore>((set) => ({
     set(({ comment }: ICommentStore) => ({
       comment: { ...comment, ...chain(comments).keyBy('id').value() },
     })),
+  getComments: (commentIds: string[]) => {
+    const comments: IComment[] = [];
+    const comment = get().comment;
+    commentIds.forEach((id) => comments.push(comment[id]));
+    return comments;
+  },
+  getComment: (commentId: string) => get().comment[commentId],
 }));

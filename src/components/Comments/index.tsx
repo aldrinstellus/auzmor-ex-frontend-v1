@@ -57,7 +57,7 @@ export interface IComment {
   };
   mentions: IMention[];
   hashtags: string[];
-  relevantComments: IComment[];
+  relevantComments: string[];
   entityType: string;
   entityId: string;
   orgId: string;
@@ -68,7 +68,6 @@ export interface IComment {
   myReaction?: IMyReactions;
   reactionsCount: IReactionsCount;
   repliesCount: number;
-  comment: IComment;
   files: IMedia[];
   shoutoutRecipients?: IShoutoutRecipient[];
 }
@@ -185,7 +184,7 @@ const Comments: FC<CommentsProps> = ({ entityId }) => {
                 {commentIds
                   ?.filter(({ id }) => !!comment[id])
                   .map(({ id }, _i: any) => (
-                    <Comment key={id} comment={comment[id]} />
+                    <Comment key={id} commentId={id} />
                   ))}
               </div>
               {hasNextPage && !isFetchingNextPage && (

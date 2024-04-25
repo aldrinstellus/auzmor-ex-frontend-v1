@@ -25,7 +25,6 @@ import {
   getUserCardTooltipProps,
   twConfig,
 } from 'utils/misc';
-import { IComment } from '..';
 import { CommentsRTE, PostCommentMode } from './CommentsRTE';
 import ConfirmationBox from 'components/ConfirmationBox';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
@@ -43,25 +42,30 @@ import UserCard from 'components/UserCard';
 import useProduct from 'hooks/useProduct';
 
 interface CommentProps {
-  comment: IComment;
-  replies?: IComment[];
+  commentId: string;
 }
 
-export const Comment: FC<CommentProps> = ({ comment, replies = [] }) => {
+export const Comment: FC<CommentProps> = ({ commentId }) => {
   const getPost = useFeedStore((state) => state.getPost);
+  const [getComments, storedcomments, setComment] = useCommentStore(
+    ({ getComments, comment, setComment }) => [
+      getComments,
+      comment,
+      setComment,
+    ],
+  );
   const updateFeed = useFeedStore((state) => state.updateFeed);
-  const { comment: storedcomments, setComment } = useCommentStore();
   const [showReactionModal, setShowReactionModal] = useState(false);
   const [confirm, showConfirm, closeConfirm] = useModal();
   const [editComment, setEditComment] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
-
-  const closePopOver = useRef<HTMLButtonElement>(null);
-
-  const previousShowReply = useRef<boolean>(false);
-
   const { user } = useAuth();
   const { isLxp } = useProduct();
+  const closePopOver = useRef<HTMLButtonElement>(null);
+  const previousShowReply = useRef<boolean>(false);
+
+  const comment = storedcomments[commentId];
+  const replies = getComments(comment?.relevantComments || []);
 
   const menuItemStyle = clsx({
     'flex flex-row items-center py-3 px-6 gap-2.5 border-b text-sm hover:bg-primary-50 cursor-pointer rounded-b-9xl':
