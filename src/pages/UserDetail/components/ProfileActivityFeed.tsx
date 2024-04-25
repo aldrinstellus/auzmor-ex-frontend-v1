@@ -79,10 +79,10 @@ const ProfileActivityFeed: FC<IProfileActivityFeedProps> = ({
           ) : (
             <div className="flex flex-col gap-6">
               {announcementFeedIds.map((post: { id: string }) => (
-                <Post post={feed[post.id]} key={post.id} />
+                <Post postId={post.id} key={post.id} />
               ))}
               {regularFeedIds.map((post: { id: string }) => (
-                <Post post={feed[post.id]} key={post.id} />
+                <Post postId={post.id} key={post.id} />
               ))}
             </div>
           )}
@@ -131,10 +131,10 @@ const ProfileActivityFeed: FC<IProfileActivityFeedProps> = ({
           ) : (
             <div className="flex flex-col gap-6">
               {announcementFeedIds.map((post: { id: string }) => (
-                <Post post={feed[post.id]} key={post.id} />
+                <Post postId={post.id} key={post.id} />
               ))}
               {regularFeedIds.map((post: { id: string }) => (
-                <Post post={feed[post.id]} key={post.id} />
+                <Post postId={post.id} key={post.id} />
               ))}
             </div>
           )}

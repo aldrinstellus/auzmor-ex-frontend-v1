@@ -542,8 +542,8 @@ const Feed: FC<IFeedProps> = () => {
                     key={id}
                   >
                     <VirtualisedPost
-                      post={feed[id!]}
-                      comments={feed[id]?.relevantComments || []}
+                      postId={id!}
+                      commentIds={feed[id]?.relevantComments || []}
                     />
                   </div>
                   {index === recommendationIndex.tIndex && (

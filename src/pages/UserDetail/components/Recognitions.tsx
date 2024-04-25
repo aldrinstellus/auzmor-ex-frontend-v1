@@ -48,7 +48,7 @@ const Recognitions: FC<AppProps> = ({ data, pathname, userId }) => {
           ) : (
             <div className="flex flex-col gap-6">
               {feedIds.map((post: { id: string }) => (
-                <Post post={feed[post.id]} key={post.id} />
+                <Post postId={post.id} key={post.id} />
               ))}
             </div>
           )}
@@ -84,7 +84,7 @@ const Recognitions: FC<AppProps> = ({ data, pathname, userId }) => {
           ) : (
             <div className="flex flex-col gap-6">
               {feedIds.map((post: { id: string }) => (
-                <Post post={feed[post.id]} key={post.id} />
+                <Post postId={post.id} key={post.id} />
               ))}
             </div>
           )}

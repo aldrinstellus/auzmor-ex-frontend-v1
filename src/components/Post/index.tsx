@@ -10,7 +10,7 @@ import Card from 'components/Card';
 import Actor from 'components/Actor';
 import Tooltip from 'components/Tooltip';
 import { VIEW_POST } from 'components/Actor/constant';
-import CommentCard, { IComment } from 'components/Comments/index';
+import CommentCard from 'components/Comments/index';
 import { Comment } from 'components/Comments/components/Comment';
 import Likes, { ReactionType } from 'components/Reactions';
 import Icon from 'components/Icon';
@@ -66,25 +66,20 @@ export const iconsStyle = (key: string) => {
 };
 
 type PostProps = {
-  post: IPost;
-  comments?: IComment[];
+  postId: string;
+  commentIds?: string[];
   setHasChanges?: (flag: boolean) => any;
 };
 
-const Post: FC<PostProps> = ({ post, comments = [], setHasChanges }) => {
+const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
+  const [feed, getPost] = useFeedStore((state) => [state.feed, state.getPost]);
+  const updateFeed = useFeedStore((state) => state.updateFeed);
   const [showComments, openComments, closeComments] = useModal(false);
   const [showPublishModal, openPublishModal, closePublishModal] = useModal();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [showReactionModal, openReactionModal, closeReactionModal] =
     useModal(false);
-  const reaction = post?.myReaction?.reaction;
-  const totalCount = Object.values(post.reactionsCount || {}).reduce(
-    (total, count) => total + count,
-    0,
-  );
-  const getPost = useFeedStore((state) => state.getPost);
-  const updateFeed = useFeedStore((state) => state.updateFeed);
   const previousShowComment = useRef<boolean>(false);
   const { currentTimezone } = useCurrentTimezone();
   const [
@@ -92,6 +87,13 @@ const Post: FC<PostProps> = ({ post, comments = [], setHasChanges }) => {
     openEditSchedulePostModal,
     closeEditSchedulePostModal,
   ] = useModal();
+
+  const post = feed[postId];
+  const reaction = post?.myReaction?.reaction;
+  const totalCount = Object.values(post.reactionsCount || {}).reduce(
+    (total, count) => total + count,
+    0,
+  );
 
   // Effects
   useEffect(() => {
@@ -461,13 +463,10 @@ const Post: FC<PostProps> = ({ post, comments = [], setHasChanges }) => {
           <div className="pb-3 px-6">
             <CommentCard entityId={post?.id || ''} />
           </div>
-        ) : !previousShowComment.current && comments?.length ? (
-          comments.map((comment) => (
-            <div className="mx-6 mb-3" key={comment.id}>
-              <Comment
-                comment={comment}
-                replies={comment?.relevantComments || []}
-              />
+        ) : !previousShowComment.current && commentIds?.length ? (
+          commentIds.map((id) => (
+            <div className="mx-6 mb-3" key={id}>
+              <Comment commentId={id} />
             </div>
           ))
         ) : null}
