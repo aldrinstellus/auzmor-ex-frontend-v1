@@ -139,7 +139,7 @@ const CelebrationWidget: FC<CelebrationWidgetProps> = ({
   );
 
   return (
-    <Card className={style}>
+    <Card className={style} shadowOnHover>
       <div
         className="px-6 flex items-center justify-between cursor-pointer"
         data-testid={`collapse-${isBirthday ? 'birthday' : 'anniversaries'}`}

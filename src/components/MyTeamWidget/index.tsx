@@ -49,7 +49,7 @@ const MyTeamWidget: FC<IMyTeamWidgetProps> = ({ className = '' }) => {
   );
 
   return (
-    <Card className={style}>
+    <Card className={style} shadowOnHover>
       <div
         className="px-6 flex items-center justify-between cursor-pointer"
         onClick={toggleModal}
