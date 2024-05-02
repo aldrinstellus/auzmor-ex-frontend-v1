@@ -38,7 +38,10 @@ const PostPage: FC = () => {
           {!isLargeScreen && getRightWidgets()}
         </div>
         <div className="flex-grow flex flex-col">
-          <Post postId={id} commentIds={[(post as any).comment.id] || []} />
+          <Post
+            postId={id}
+            commentIds={[(post as any)?.comment?.id].filter(Boolean)}
+          />
         </div>
         {isLargeScreen && (
           <div className="z-10 w-[293px] flex flex-col gap-6">

@@ -87,7 +87,10 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
         {/* <div className="text-sm font-bold">View All</div> */}
       </div>
       <div className="mt-2">
-        <Card className="pb-6 flex flex-col rounded-9xl max-h-[386px]">
+        <Card
+          className="pb-6 flex flex-col rounded-9xl max-h-[386px]"
+          shadowOnHover
+        >
           <div className="rounded-t-9xl bg-secondary-500 text-white py-3 w-full flex justify-start space-x-3 px-3">
             <Icon
               name="flashIcon"

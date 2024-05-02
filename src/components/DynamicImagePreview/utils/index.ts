@@ -1,7 +1,7 @@
 export const updateEditorValue = (users: any, label: any, hashtag: string) => {
   const userMentions = users.map((user: any) => ({
     id: user.id,
-    value: user.fullName,
+    value: user?.preferredName || user.fullName,
     denotationChar: '@',
   }));
   const result: any =

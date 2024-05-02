@@ -24,6 +24,7 @@ type AuthContextProps = {
 interface IOrganization {
   id: string;
   domain: string;
+  name: string;
 }
 
 interface ISubscription {
@@ -187,6 +188,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
             organization: {
               id: data?.org.id,
               domain: data?.org.domain,
+              name: data?.org.name,
             },
             profileImage:
               data?.profileImage?.small || data?.profileImage?.original,
@@ -207,7 +209,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
             },
             preferences: data?.preferences,
           });
-          setBranding(data.branding, isLxp);
+          setBranding(data.branding);
         } else {
           window.location.host = `${data.org.domain}.${window.location.host}`;
         }
@@ -229,9 +231,36 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
     }
   };
 
+  const replaceSensitiveData = (apiUrl: string) => {
+    const keysToReplace = [
+      'auth_token',
+      'token',
+      'generic_access_token',
+      'public_token',
+      'accessToken',
+      'visitToken',
+    ];
+    const replacement = '[OBSCURED]';
+    const pattern = new RegExp(`(${keysToReplace.join('|')})=([^&]+)`, 'gi');
+    const obscuredUrl = apiUrl.replace(pattern, `$1=${replacement}`);
+
+    return obscuredUrl;
+  };
+
   const initSmartlook = () => {
-    if (process.env.REACT_APP_SMARTLOOK_KEY) {
-      Smartlook.init(process.env.REACT_APP_SMARTLOOK_KEY);
+    if (!isLxp && process.env.REACT_APP_OFFICE_SMARTLOOK_KEY) {
+      Smartlook.init(process.env.REACT_APP_OFFICE_SMARTLOOK_KEY);
+    } else if (isLxp && process.env.REACT_APP_LXP_SMARTLOOK_KEY) {
+      Smartlook.init(process.env.REACT_APP_LXP_SMARTLOOK_KEY, {
+        interceptors: {
+          network: (data) => {
+            data.url = replaceSensitiveData(data.url);
+          },
+          url: (data) => {
+            data.url = replaceSensitiveData(data.url);
+          },
+        },
+      });
     }
   };
 
@@ -242,6 +271,10 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        organisationId: user.organization?.id || '',
+        organisation:
+          user.organization?.name || user.organization?.domain || '',
+        environment: process.env.REACT_APP_ENV || '',
       });
     }
   };

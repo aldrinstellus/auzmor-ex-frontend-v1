@@ -462,7 +462,6 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                 });
                 setProfileImageName(e?.target?.files[0]?.name);
                 openEditImageModal();
-                closeEditProfileModal();
               }
             }}
           />
@@ -483,7 +482,6 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                 });
                 setCoverImageName(e?.target?.files[0]?.name);
                 openEditImageModal();
-                closeEditProfileModal();
               }
             }}
           />

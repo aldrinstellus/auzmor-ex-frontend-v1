@@ -31,10 +31,11 @@ const DEFAULT_LXP_BRANDING: IBranding = {
   },
 };
 
-const addDefaultBranding = (branding: IBranding, isLxp: boolean): IBranding => {
-  const defaultBranding = isLxp
-    ? DEFAULT_LXP_BRANDING
-    : DEFAULT_OFFICE_BRANDING;
+const addDefaultBranding = (branding: IBranding): IBranding => {
+  const defaultBranding =
+    getProduct() === ProductEnum.Lxp
+      ? DEFAULT_LXP_BRANDING
+      : DEFAULT_OFFICE_BRANDING;
   return {
     ...branding,
     pageTitle: branding.pageTitle || defaultBranding.pageTitle,
@@ -56,9 +57,9 @@ export const useBrandingStore = create<IBrandingStore>((set) => ({
     getProduct() === ProductEnum.Lxp
       ? DEFAULT_LXP_BRANDING
       : DEFAULT_OFFICE_BRANDING,
-  setBranding: (branding, isLxp = false) => {
+  setBranding: (branding) => {
     if (!!branding && Object.keys(branding).length > 0) {
-      const productBranding = addDefaultBranding(branding, isLxp);
+      const productBranding = addDefaultBranding(branding);
       applyBranding(productBranding);
       set(() => ({ branding: productBranding }));
       setItem('favicon', productBranding.favicon?.original || '');

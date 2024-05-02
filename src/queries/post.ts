@@ -415,24 +415,16 @@ export const useAnnouncementsWidget = (
   });
 
 const collectComments = (response: any, comments: IComment[]) => {
-  // Collecting all comments
-  response?.data.result.data.forEach((eachPost: IPost, index: number) => {
-    comments.push(...((eachPost?.relevantComments as any as IComment[]) || []));
-    comments.forEach((comment, index) => {
-      if (comment?.relevantComments) {
-        comments.push(...(comments[index] as any).relevantComments);
-        comments[index].relevantComments = (comment?.relevantComments || [])
-          .filter((relevantComment) => !!relevantComment)
-          .map((relevantComment: any) => relevantComment.id);
-      }
+  response?.data.result.data.forEach((eachPost: IPost) => {
+    const postComments = eachPost.relevantComments || [];
+
+    postComments.forEach((comment: any) => {
+      const commentReplies = (comment as any).relevantComments || [];
+      comments.push(comment as any as IComment, ...commentReplies);
+      comment.relevantComments = commentReplies.map((reply: any) => reply.id);
     });
 
-    // Update response
-    response.data.result.data[index].relevantComments = [
-      ...((eachPost?.relevantComments as any as IComment[]) || []).map(
-        (comment) => comment.id,
-      ),
-    ];
+    eachPost.relevantComments = postComments.map((comment: any) => comment.id);
   });
 };
 

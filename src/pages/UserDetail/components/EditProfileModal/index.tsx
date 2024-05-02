@@ -315,6 +315,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
           organization: {
             id: userUpdateResponse.org?.id,
             domain: userUpdateResponse.org?.domain,
+            name: userUpdateResponse.org?.name,
           },
           workLocation: userUpdateResponse.workLocation,
           preferredName: userUpdateResponse.preferredName,
@@ -343,8 +344,11 @@ const EditProfileModal: FC<IEditProfileModal> = ({
       reset();
       closeEditProfileModal();
       await queryClient.invalidateQueries({ queryKey: ['departments'] });
+      await queryClient.invalidateQueries({ queryKey: ['locations'] });
+      await queryClient.invalidateQueries(['users']); // invalidate the all user queries
+
       if (userId) {
-        await queryClient.invalidateQueries(['user', userId]);
+        await queryClient.invalidateQueries(['user', userId]); // single user by id
       } else {
         await queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
       }

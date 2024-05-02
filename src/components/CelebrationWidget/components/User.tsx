@@ -4,7 +4,7 @@ import Avatar from 'components/Avatar';
 import { CELEBRATION_TYPE } from '..';
 import clsx from 'clsx';
 import Button, { Size } from 'components/Button';
-import { formatDate, isCelebrationToday } from '../utils';
+import { isCelebrationToday } from '../utils';
 import { getFullName, getNouns, getProfileImage } from 'utils/misc';
 import { AuthContext } from 'contexts/AuthContext';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
@@ -22,6 +22,7 @@ import {
 } from 'contexts/CreatePostContext';
 import { useNavigate } from 'react-router-dom';
 import Tooltip from 'components/Tooltip';
+import moment from 'moment';
 
 interface UserProps {
   id: string;
@@ -60,11 +61,8 @@ const User: FC<UserProps> = ({
   const isBirthday = type === CELEBRATION_TYPE.Birthday;
   const anniversaryYears = data.diffInYears || 0;
   const celebrationDate = isBirthday
-    ? formatDate(data.nextOcassionDateTime, userTimezone)
-    : `${anniversaryYears} ${getNouns('yr', anniversaryYears)} (${formatDate(
-        data.nextOcassionDateTime,
-        userTimezone,
-      )})`;
+    ? moment(data.nextOcassionDateTime).format("D MMM")
+    : `${anniversaryYears} ${getNouns('yr', anniversaryYears)} (${moment(data.nextOcassionDateTime).format("D MMM")})`;
 
   const userIsMe = user?.id === featuredUser.userId;
 

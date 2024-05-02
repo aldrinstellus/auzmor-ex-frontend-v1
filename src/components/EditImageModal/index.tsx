@@ -120,6 +120,7 @@ const EditImageModal: FC<AppProps> = ({
           organization: {
             id: userUpdateResponse?.org?.id,
             domain: userUpdateResponse?.org?.domain,
+            name: userUpdateResponse?.org?.name,
           },
           profileImage: userUpdateResponse?.profileImage?.original,
           coverImage: userUpdateResponse?.coverImage?.original,
@@ -155,7 +156,6 @@ const EditImageModal: FC<AppProps> = ({
       }
 
       closeEditImageModal();
-      openEditProfileModal();
       setBlob(null);
       if (userId) {
         await queryClient.invalidateQueries({ queryKey: ['user', userId] });

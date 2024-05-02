@@ -25,7 +25,6 @@ const AccountCard = () => {
 
   const logoutMutation = useMutation(isLxp ? learnLogout : logout, {
     onSuccess: async () => {
-      reset();
       userChannel.postMessage({
         userId: user?.id,
         payload: {
@@ -40,6 +39,7 @@ const AccountCard = () => {
       if (isOffice) {
         navigate('/logout');
       }
+      reset();
     },
   });
 
