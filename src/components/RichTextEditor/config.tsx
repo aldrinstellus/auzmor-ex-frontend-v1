@@ -122,10 +122,8 @@ export const mention = {
 
             <div>
               <div class="user-details">
-              <span> ${item.fullName}   </span>
-              <span style="margin-left:16px;">${
-                item.preferredName
-              }</span>              <div>
+              <span> ${item.preferredName}(${item.fullName})   </span>
+                          <div>
                 <div class="user-email">${item.workEmail}</div>
             </div>
 
