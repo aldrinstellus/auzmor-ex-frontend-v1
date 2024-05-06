@@ -40,7 +40,7 @@ const UserCard: FC<IUserCardProps> = ({ className = '' }) => {
 
   return (
     <div className={style} onClick={handleRedirect}>
-      <Card className="pb-3 pt-0 rounded-9xl min-h-[216px]">
+      <Card className="pb-3 pt-0 rounded-9xl min-h-[216px]" shadowOnHover>
         <div className="flex flex-col items-center gap-2 relative px-12">
           <div className="bg-secondary-500 w-full h-[89px] absolute top-0 rounded-t-9xl"></div>
           <Avatar
