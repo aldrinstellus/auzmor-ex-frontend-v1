@@ -16,9 +16,10 @@ import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import useCarousel from 'hooks/useCarousel';
 import EditImageModal from 'components/EditImageModal';
-import { getBlobUrl } from 'utils/misc';
+import { clearInputValue, getBlobUrl } from 'utils/misc';
 import { EntityType } from 'queries/files';
 import useAuth from 'hooks/useAuth';
+import { IUpdateProfileImage } from 'pages/UserDetail';
 
 export type IScreen = {
   screen: ReactNode;
@@ -27,7 +28,9 @@ export type IScreen = {
 
 const UserOnboard: FC = (): ReactNode => {
   const { showOnboard } = useAuth();
-  const [file, setFile] = useState<File>();
+  const [file, setFile] = useState<IUpdateProfileImage | Record<string, any>>(
+    {},
+  );
   const [open, openModal, closeModal] = useModal(true);
   const [currentScreen, _, next] = useCarousel(0, 5);
   const [disableClose, setDisableClose] = useState<boolean>(false);
@@ -106,9 +109,14 @@ const UserOnboard: FC = (): ReactNode => {
         ref={profilePictureRef}
         accept="image/*"
         data-testid="profilepic-upload"
+        multiple={false}
+        onClick={clearInputValue}
         onChange={(e) => {
           if (e.target.files?.length) {
-            setFile(Array.prototype.slice.call(e.target.files)[0]);
+            setFile({
+              ...file,
+              profileImage: Array.prototype.slice.call(e.target.files)[0],
+            });
             openEditImageModal();
           }
         }}
@@ -120,10 +128,10 @@ const UserOnboard: FC = (): ReactNode => {
           openEditProfileModal={openModal}
           closeEditImageModal={closeEditImageModal}
           userProfileImageRef={profilePictureRef}
-          image={getBlobUrl(file)}
-          onBoardImageFile={file}
+          image={getBlobUrl(file?.profileImage)}
+          onBoardImageFile={file?.profileImage}
           imageFile={file}
-          imageName={file?.name}
+          imageName={file?.profileImage?.name}
           fileEntityType={EntityType?.UserProfileImage}
         />
       )}
