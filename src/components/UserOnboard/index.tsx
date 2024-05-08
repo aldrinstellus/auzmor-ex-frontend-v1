@@ -19,7 +19,6 @@ import EditImageModal from 'components/EditImageModal';
 import { clearInputValue, getBlobUrl } from 'utils/misc';
 import { EntityType } from 'queries/files';
 import useAuth from 'hooks/useAuth';
-import { IUpdateProfileImage } from 'pages/UserDetail';
 
 export type IScreen = {
   screen: ReactNode;
