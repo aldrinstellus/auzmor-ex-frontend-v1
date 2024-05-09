@@ -251,16 +251,18 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                 )}
                 {!isLxp ? (
                   <div className="relative">
-                    <TeamOptions
-                      id={id || ''}
-                      onEdit={openTeamModal}
-                      triggerIcon="setting"
-                      dataTestId="team-settings"
-                      dataTestIdPrefix="team-settings"
-                      isDetailPage
-                      className="absolute top-5 -right-5 w-44"
-                      iconColor="text-neutral-900"
-                    />
+                    {isAdmin && (
+                      <TeamOptions
+                        id={id || ''}
+                        onEdit={openTeamModal}
+                        triggerIcon="setting"
+                        dataTestId="team-settings"
+                        dataTestIdPrefix="team-settings"
+                        isDetailPage
+                        className="absolute top-5 -right-5 w-44"
+                        iconColor="text-neutral-900"
+                      />
+                    )}
                   </div>
                 ) : null}
               </div>

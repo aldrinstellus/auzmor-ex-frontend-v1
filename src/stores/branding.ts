@@ -42,6 +42,7 @@ const addDefaultBranding = (branding: IBranding): IBranding => {
     primaryColor: branding.primaryColor || defaultBranding.primaryColor,
     secondaryColor: branding.secondaryColor || defaultBranding.secondaryColor,
     loginConfig: {
+      ...branding.loginConfig,
       layout:
         branding?.loginConfig?.layout || defaultBranding.loginConfig.layout,
       backgroundType:
