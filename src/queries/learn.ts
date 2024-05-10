@@ -75,7 +75,7 @@ export const useGetRecommendation = () => {
 
 export const uploadImage = async (payload: any) => {
   learnApiService.updateContentType('multipart/form-data');
-  const { data } = await learnApiService.post('apps', payload);
+  const data = await learnApiService.post('photos', payload);
   return data;
 };
 
@@ -88,7 +88,6 @@ export const getAllCategory = async ({
   } else return await learnApiService.get(pageParam);
 };
 export const useInfiniteLearnCategory = (q?: Record<string, any>) => {
-  console.log('q :', q);
   return useInfiniteQuery({
     queryKey: ['learnCategory', q],
     queryFn: getAllCategory,
@@ -108,6 +107,6 @@ export const useInfiniteLearnCategory = (q?: Record<string, any>) => {
 };
 
 export const createCatergory = async (payload: any) => {
-  const { data } = await learnApiService.post('categories', payload);
+  const data = await learnApiService.post('categories', payload);
   return data;
 };

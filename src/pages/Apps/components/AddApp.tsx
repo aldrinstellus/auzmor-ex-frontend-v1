@@ -20,7 +20,7 @@ import { slideInAndOutTop } from 'utils/react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import Audience from './Audience';
 import Header from 'components/ModalHeader';
-import { uploadImage } from 'queries/learn';
+import { createCatergory, uploadImage } from 'queries/learn';
 import useProduct from 'hooks/useProduct';
 
 export enum APP_MODE {
@@ -266,6 +266,10 @@ const AddApp: FC<AddAppProps> = ({
         const learnFileObj = formData?.fileObj;
         formPayload.append('url', learnFileObj);
         uploadedFile = await uploadImage(formPayload); // for lxp
+        // upload category to learn
+        if (formData?.category) {
+          await createCatergory({ title: formData?.category?.label });
+        }
       } else {
         if (formData?.icon?.id) {
           uploadedFile = [{ id: formData?.icon.id }];
@@ -276,6 +280,7 @@ const AddApp: FC<AddAppProps> = ({
           );
         }
       }
+
       // Construct request body
       const req = {
         url: formData.url,
@@ -295,9 +300,10 @@ const AddApp: FC<AddAppProps> = ({
         ...(formData.description && { description: formData.description }),
         ...(formData.category &&
           formData.category.label && { category: formData.category.label }),
-        icon: uploadedFile?.data?.url,
+        icon: uploadedFile?.result?.data?.url,
         audience: audience || [],
       };
+
       const credentials: any = {};
       if (formData.acsUrl) {
         credentials.acsUrl = formData.acsUrl;

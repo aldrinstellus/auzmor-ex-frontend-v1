@@ -68,7 +68,6 @@ const Categories: FC<ICategoriesProps> = ({
         q: debouncedCategorySearchValue,
         type,
       });
-
   const categoryData = fetchedDCategory?.pages.flatMap((page) => {
     return page.data.result.data.map((category: ICategory) => category);
   });
@@ -82,7 +81,9 @@ const Categories: FC<ICategoriesProps> = ({
         datatestId: `category-${category.name}`,
       })),
       labelRenderer: (option: ICheckboxListOption) => (
-        <div className="ml-2.5 cursor-pointer text-xs">{option.data.name}</div>
+        <div className="ml-2.5 cursor-pointer text-xs">
+          {option.data.name ?? option?.data?.title}
+        </div>
       ),
       rowClassName: 'px-6 py-3 border-b border-neutral-200',
     },
