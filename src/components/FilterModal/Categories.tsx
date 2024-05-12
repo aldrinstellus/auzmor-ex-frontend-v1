@@ -49,7 +49,7 @@ const Categories: FC<ICategoriesProps> = ({
     'categorySearch',
     'categoryCheckbox',
   ]);
-  const isLxp = useProduct();
+  const { isLxp } = useProduct();
   // fetch category from search input
   const debouncedCategorySearchValue = useDebounce(categorySearch || '', 300);
 
