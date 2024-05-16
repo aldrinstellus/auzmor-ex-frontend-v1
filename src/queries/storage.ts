@@ -22,7 +22,7 @@ export const getLinkToken = async (
 ) => {
   return await apiService.post('/storage', {
     expiresIn: expiresIn || 30,
-    integration: IntegrationOption || IntegrationOptionsEnum.GoogleDrive,
+    // integration: IntegrationOption || IntegrationOptionsEnum.GoogleDrive,
   });
 };
 
@@ -31,6 +31,7 @@ export const patchConfig = async (
     id?: string;
     publicToken?: string;
     allowedFolders?: Record<string, string>[];
+    isAuthorized?: boolean;
   },
   onSuccess?: () => void,
 ) => {
@@ -39,18 +40,19 @@ export const patchConfig = async (
     isFiltersEmpty({
       publicToken: patchData?.publicToken,
       allowedFolders: patchData?.allowedFolders,
+      isAuthorized: patchData?.isAuthorized,
     }),
   );
   onSuccess && onSuccess();
   return response;
 };
 
-export const getFiles = async (params: Record<string, string | null>) => {
-  return await apiService.get('/storage/files', { ...params });
+export const getFiles = async (_params: Record<string, string | null>) => {
+  return await apiService.get('/storage/files');
 };
 
-export const getFolders = async (params: Record<string, string | null>) => {
-  return await apiService.get('/storage/folder', { ...params });
+export const getFolders = async (_params: Record<string, string | null>) => {
+  return await apiService.get('/storage/folder');
 };
 export const getDocument = async (params: Record<string, string | null>) => {
   return await apiService.get('/storage/search', { ...params });
@@ -58,6 +60,10 @@ export const getDocument = async (params: Record<string, string | null>) => {
 
 export const getSyncStatus = async () => {
   return await apiService.get('/storage/sync');
+};
+
+export const getConnectedStatus = async (email: string) => {
+  return await apiService.get(`/storage/user`, { email });
 };
 
 export const getStorageUser = async (params: Record<any, any | null>) => {
@@ -108,4 +114,11 @@ export const useGetStorageUser = (q: Record<any, any | null>) => {
 
 export const useSyncStatus = () => {
   return useQuery({ queryKey: ['get-sync-status'], queryFn: getSyncStatus });
+};
+
+export const useConnectedStatus = (email: string) => {
+  return useQuery({
+    queryKey: ['get-connected-status'],
+    queryFn: () => getConnectedStatus(email),
+  });
 };
