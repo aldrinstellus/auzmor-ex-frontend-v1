@@ -70,7 +70,11 @@ export const getNotificationElementContent = (
 
   // If the action performed is a SHOUTOUT
   else if (action.type === ActionType.SHOUTOUT) {
-    cardContent.TopCardContent = `Congratulations! You have received a shout-out From <span class="font-bold text-primary-500">${actor.fullName}</span>. Your hard work and contributions are being recognized by your colleagues. Keep up the great work!`;
+    cardContent.TopCardContent = `Congratulations! You have received a shoutout${
+      actor?.fullName
+        ? ` from <span class="font-bold text-primary-500">${actor.fullName}</span>`
+        : ''
+    }. Your hard work and contributions are being recognized by your colleagues. Keep up the great work!`;
     cardContent.type = NOTIFICATION_CARD_TYPE.Content;
 
     redirect = `/posts/${target[0].entityId}`;
@@ -195,7 +199,7 @@ export const getNotificationMessage = (
     } else if (actionType === ActionType[ActionType.REACTION]) {
       message += 'reacted to your post';
     } else if (actionType === ActionType.SHOUTOUT) {
-      message = 'You Received a Shout Out From';
+      message = 'You received a shoutout';
     } else if (actionType === ActionType.ACKNOWLEDGEMENT_REMINDER) {
       message = 'shared an announcement';
     } else if (actionType === ActionType.SCHEDULE_POST) {
