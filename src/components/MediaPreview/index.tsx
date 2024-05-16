@@ -58,7 +58,10 @@ const MediaPreview: FC<IMediaPreviewProps> = ({
     if (isAnnouncementWidgetPreview) {
       return '!h-20';
     }
-    if (media.length <= 3) {
+    if (media.length == 1) {
+      return '!max-h-80';
+    }
+    if (media.length > 1 && media.length <= 3) {
       return '!h-64';
     }
     if (media.length > 3) {
