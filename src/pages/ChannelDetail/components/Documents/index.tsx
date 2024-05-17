@@ -87,16 +87,24 @@ const Document: FC<IDocumentProps> = ({}) => {
   };
   const onSubmit = useCallback(
     (output_objects: any) => {
+      const outputFolders = output_objects.filter(
+        (item: any) => item?.type === FilePickerObjectType.FOLDER,
+      );
+      const outputDrives = output_objects.filter(
+        (item: any) => item?.type === FilePickerObjectType.DRIVE,
+      );
       patchConfig(
         {
           id: storageConfig?.id || '',
           publicToken: storageConfig?.public_token,
-          allowedFolders: [
-            {
-              remoteId: output_objects[0]?.id,
-              integrationId: output_objects[0]?.id,
-            },
-          ],
+          allowedFolders: outputFolders.map((folder: any) => ({
+            remoteId: folder.id,
+            integrationId: folder.id,
+          })),
+          allowedDrives: outputDrives.map((drive: any) => ({
+            remoteId: drive.id,
+            integrationId: drive.id,
+          })),
         },
         refetch,
       );
@@ -108,7 +116,7 @@ const Document: FC<IDocumentProps> = ({}) => {
     onSuccess,
     filePickerConfig: {
       onSubmit,
-      types: [FilePickerObjectType.FOLDER],
+      types: [FilePickerObjectType.DRIVE, FilePickerObjectType.FOLDER],
     },
   });
 
