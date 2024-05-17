@@ -42,6 +42,7 @@ export const patchConfig = async (
       publicToken: patchData?.publicToken,
       allowedFolders: patchData?.allowedFolders,
       isAuthorized: patchData?.isAuthorized,
+      allowedDrives: patchData?.allowedDrives,
     }),
   );
   onSuccess && onSuccess();

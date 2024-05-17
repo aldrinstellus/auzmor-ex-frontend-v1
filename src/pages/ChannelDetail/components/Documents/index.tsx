@@ -229,7 +229,7 @@ const Document: FC<IDocumentProps> = ({}) => {
           <div className="flex justify-center items-center w-full p-16">
             <Spinner />
           </div>
-        ) : isSynced ? (
+        ) : !isSynced ? (
           <ConnectionCard />
         ) : (
           <Fragment>
