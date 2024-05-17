@@ -30,6 +30,7 @@ interface IInfiniteSearchProps {
   itemRenderer?: (item: IOption) => ReactNode;
   disabled?: boolean;
   dataTestId?: string;
+  triggerNodeClassName?: string;
 }
 
 const InfiniteSearch: FC<IInfiniteSearchProps> = ({
@@ -48,6 +49,7 @@ const InfiniteSearch: FC<IInfiniteSearchProps> = ({
   itemRenderer,
   disabled = false,
   dataTestId,
+  triggerNodeClassName = '',
 }) => {
   const { ref, inView } = useInView();
   useEffect(() => {
@@ -89,6 +91,7 @@ const InfiniteSearch: FC<IInfiniteSearchProps> = ({
       clsx({
         'flex items-center ml-2 px-3 py-[3px] border border-neutral-200 rounded-17xl ':
           true,
+        [triggerNodeClassName]: true,
         'border-none bg-primary-50 text-primary-500': !!selectionCount,
         'cursor-pointer': !disabled,
         'pointer-events-none opacity-50': disabled,

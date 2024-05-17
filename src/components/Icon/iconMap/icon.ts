@@ -159,8 +159,12 @@ import XlsIcon from '../components/Xls';
 import DocIcon from '../components/Doc';
 import PptIcon from '../components/Ppt';
 import FileIcon from '../components/File';
+import GoogleIcon from '../socialIcons/Google';
+import RefreshIcon from '../components/Refresh';
 import ImageFileIcon from '../components/ImageFile';
 import VideoFileIcon from '../components/VideoFile';
+import FolderIcon from '../components/Folder';
+import FormIcon from '../components/form';
 
 export const icon = {
   add: Add,
@@ -230,6 +234,7 @@ export const icon = {
   filterLinear: FilterLinear,
   flashIcon: FlashIcon,
   focus: FocusIcon,
+  folder: FolderIcon,
   folderConnection: FolderConnectionIcon,
   folderOpen: FolderOpen,
   forbidden: Forbidden,
@@ -328,4 +333,7 @@ export const icon = {
   videoSquare: VideoSquareIcon,
   xls: XlsIcon,
   xlsx: XlsIcon,
+  google: GoogleIcon,
+  refresh: RefreshIcon,
+  form: FormIcon,
 };

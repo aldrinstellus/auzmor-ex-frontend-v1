@@ -1,0 +1,15 @@
+{
+  "feed": "Feed",
+  "people": "People",
+  "apps": "Apps",
+  "admin": "Admin",
+  "teams": "Teams",
+  "learningHub": "Learning Hub",
+  "discover": {
+    "title": "Discover",
+    "channels": "Channels"
+  },
+  "account": {
+    "goToProfile": "Go to my profile"
+  }
+}

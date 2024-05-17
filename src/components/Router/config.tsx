@@ -9,6 +9,7 @@ import Notifications from 'pages/Notifications';
 import { lazy } from 'react';
 import RequireAdminAuth from 'components/RequireAdminAuth';
 import RequireOfficeAuth from 'components/RequireOfficeAuth';
+import { Channels } from 'pages/Channels';
 
 const ErrorBoundary = lazy(() => import('components/ErrorBoundary'));
 const Login = lazy(() => import('pages/Login'));
@@ -25,10 +26,12 @@ const Apps = lazy(() => import('pages/Apps'));
 const AppLaunchPage = lazy(() => import('pages/AppLaunchPage'));
 const Admin = lazy(() => import('pages/Admin'));
 const AcceptInvite = lazy(() => import('pages/AcceptInvite'));
+const ChannelDetail = lazy(() => import('pages/ChannelDetail'));
 const PageNotFound = lazy(() => import('pages/PageNotFound'));
 const ServerErrorPage = lazy(() => import('pages/ServerErrorPage'));
 const PostPage = lazy(() => import('pages/Post'));
 const Logout = lazy(() => import('pages/Logout'));
+const SearchResults = lazy(() => import('pages/SearchResults'));
 
 const routers = createBrowserRouter(
   createRoutesFromElements(
@@ -123,6 +126,15 @@ const routers = createBrowserRouter(
         </Route>
         <Route path="/posts/:id" element={<PostPage />} />
         <Route path="/notifications" element={<Notifications />} />
+        <Route path="/channels" element={<Channels />} />
+        <Route
+          path="/channels/:channelId"
+          element={<ChannelDetail />}
+          loader={() => {
+            return '';
+          }}
+        />
+        <Route path="/search" element={<SearchResults />}></Route>
       </Route>
       <Route
         path="/404"

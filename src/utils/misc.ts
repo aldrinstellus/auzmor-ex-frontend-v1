@@ -25,6 +25,16 @@ export const twConfig: any = resolveConfig(tailwindConfig);
 
 export const userChannel = new BroadcastChannel('user');
 
+export const humanFileSize = (size: number) => {
+  if (size === 0) return ' ';
+  const i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
+  return (
+    +(size / Math.pow(1024, i)).toFixed(0) * 1 +
+    ' ' +
+    ['B', 'kB', 'MB', 'GB', 'TB'][i]
+  );
+};
+
 export const getInitials = (name: string) => {
   return name
     .match(/(^\S\S?|\s\S)?/g)!
@@ -311,6 +321,10 @@ export const titleCase = (input: string) => {
     .join(' ');
 };
 
+export const enumToTitleCase = (input: string) => {
+  return titleCase(input.replaceAll('_', ' '));
+};
+
 export const extractFirstWord = (str: string) => {
   const words = str.trim().split(' ');
   if (words.length > 0) {
@@ -535,4 +549,8 @@ export const getCookieParam = (key = SESSION_ID) => {
     process.env.REACT_APP_LEARN_BASE_URL?.replace('https://', '').split('.') ||
     [];
   return `${hostname}-${key}`;
+};
+
+export const getSizeInMB: (sizeInBytes: number) => number = (sizeInBytes) => {
+  return sizeInBytes / 8 / 1024;
 };

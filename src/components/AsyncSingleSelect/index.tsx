@@ -10,11 +10,12 @@ import {
   InfiniteQueryObserverResult,
 } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
+import Spinner from 'components/Spinner';
 
 const { Option } = Select;
 export interface IOption {
   value: string;
-  label: string;
+  label: string | ReactNode;
   disabled: boolean;
   dataTestId?: string;
   rowData?: any;
@@ -50,7 +51,9 @@ export interface IAsyncSingleSelectProps {
       ) => Promise<InfiniteQueryObserverResult<any, unknown>>)
     | null;
   hasNextPage?: boolean;
+  disableFilterOption?: boolean;
   onClear?: () => void;
+  onEnter?: () => void;
 }
 
 const AsyncSingleSelect = forwardRef(
@@ -83,6 +86,8 @@ const AsyncSingleSelect = forwardRef(
       fetchNextPage = null,
       hasNextPage = false,
       onClear = () => {},
+      disableFilterOption = false,
+      onEnter,
     }: IAsyncSingleSelectProps,
     ref?: any,
   ) => {
@@ -118,7 +123,13 @@ const AsyncSingleSelect = forwardRef(
 
     const noContentFound = () => (
       <div className="px-6 py-2 text-neutral-500 text-center">
-        {isLoading ? 'Loading...' : noOptionsMessage}
+        {isLoading ? (
+          <div className="flex justify-center items-center w-full p-12">
+            <Spinner />
+          </div>
+        ) : (
+          noOptionsMessage
+        )}
       </div>
     );
 
@@ -186,6 +197,7 @@ const AsyncSingleSelect = forwardRef(
                   disabled={disabled}
                   placeholder={placeholder}
                   placement={menuPlacement ? menuPlacement : undefined}
+                  popupMatchSelectWidth={false}
                   onPopupScroll={onPopupScroll}
                   getPopupContainer={(triggerNode) => {
                     if (getPopupContainer) {
@@ -194,9 +206,14 @@ const AsyncSingleSelect = forwardRef(
                     return triggerNode.parentElement;
                   }}
                   onSearch={handleSearch}
-                  filterOption={filterOption}
+                  filterOption={!disableFilterOption && filterOption}
                   notFoundContent={noContentFound()}
-                  onInputKeyDown={() => setOpen(true)}
+                  onInputKeyDown={(e) => {
+                    if (onEnter && e.key === 'Enter') {
+                      onEnter();
+                      setOpen(false);
+                    } else setOpen(true);
+                  }}
                   allowClear={isClearable}
                   loading={isLoading}
                   value={field.value}
