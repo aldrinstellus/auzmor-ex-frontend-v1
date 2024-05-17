@@ -31,6 +31,7 @@ export const patchConfig = async (
     id?: string;
     publicToken?: string;
     allowedFolders?: Record<string, string>[];
+    allowedDrives?: Record<string, string>[];
   },
   onSuccess?: () => void,
 ) => {
