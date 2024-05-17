@@ -88,10 +88,10 @@ const Document: FC<IDocumentProps> = ({}) => {
   const onSubmit = useCallback(
     (output_objects: any) => {
       const outputFolders = output_objects.filter(
-        (item: any) => item?.type === FilePickerObjectType.FOLDER,
+        (item: any) => item?.outputType === FilePickerObjectType.FOLDER,
       );
       const outputDrives = output_objects.filter(
-        (item: any) => item?.type === FilePickerObjectType.DRIVE,
+        (item: any) => item?.outputType === FilePickerObjectType.DRIVE,
       );
       patchConfig(
         {
