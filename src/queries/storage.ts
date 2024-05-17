@@ -40,6 +40,7 @@ export const patchConfig = async (
     isFiltersEmpty({
       publicToken: patchData?.publicToken,
       allowedFolders: patchData?.allowedFolders,
+      allowedDrives: patchData?.allowedDrives,
     }),
   );
   onSuccess && onSuccess();
