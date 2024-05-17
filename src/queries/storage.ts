@@ -48,11 +48,17 @@ export const patchConfig = async (
 };
 
 export const getFiles = async (params: Record<string, string | null>) => {
-  return await apiService.get('/storage/files', { ...params });
+  return await apiService.get(
+    '/storage/files',
+    params?.folderId ? { ...params } : {},
+  );
 };
 
 export const getFolders = async (params: Record<string, string | null>) => {
-  return await apiService.get('/storage/folder', { ...params });
+  return await apiService.get(
+    '/storage/folder',
+    params?.parentFolderId ? { ...params } : {},
+  );
 };
 export const getDocument = async (params: Record<string, string | null>) => {
   return await apiService.get('/storage/search', { ...params });
