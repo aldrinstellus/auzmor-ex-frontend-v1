@@ -165,6 +165,7 @@ import ImageFileIcon from '../components/ImageFile';
 import VideoFileIcon from '../components/VideoFile';
 import FolderIcon from '../components/Folder';
 import FormIcon from '../components/form';
+import SharePoint from '../components/SharePoint';
 
 export const icon = {
   add: Add,
@@ -303,6 +304,7 @@ export const icon = {
   setting: SettingIcon,
   settingThree: SettingThreeIcon,
   shareForward: ShareForward,
+  sharePoint: SharePoint,
   slack: SlackIcon,
   speaker: SpeakerIcon,
   star: StarIcon,
