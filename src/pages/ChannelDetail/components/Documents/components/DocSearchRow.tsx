@@ -14,8 +14,29 @@ type DocSearchProps = {
   variant?: Variant;
 };
 
+function getSummary(summary: string | undefined) {
+  if (!summary || summary.length === 0) return '';
+  try {
+    return (
+      '<p>' +
+      summary
+        ?.split('<ddd/>')
+        .join('...')
+        .split('<c0>')
+        .join('<b>')
+        .split('</c0>')
+        .join('</b>')
+        .slice(0, 70) +
+      '</p>'
+    );
+  } catch {
+    return '';
+  }
+}
+
 const DocSearchRow = ({ data, variant = Variant.Small }: DocSearchProps) => {
   const iconName = getIconName(data?.raw?.mimeType);
+  const summary = getSummary(data?.raw?.summary);
 
   if (variant === Variant.Small) {
     return (
@@ -54,11 +75,17 @@ const DocSearchRow = ({ data, variant = Variant.Small }: DocSearchProps) => {
               {data?.raw?.size ? (
                 <div>{humanFileSize(data?.raw?.size || 0)}</div>
               ) : null}
-              {data?.raw?.size ? (
+              {data?.raw?.size && data?.raw?.modifiedAt ? (
                 <div className="bg-neutral-500 w-2 h-2 rounded-full" />
               ) : null}
-              {data?.raw.modifiedAt ? (
+              {data?.raw?.modifiedAt ? (
                 <div>{`Updated ${humanizeTime(data?.raw?.modifiedAt)}`}</div>
+              ) : null}
+              {(data?.raw?.size || data?.raw?.modifiedAt) && summary ? (
+                <div className="bg-neutral-500 w-2 h-2 rounded-full" />
+              ) : null}
+              {summary ? (
+                <div dangerouslySetInnerHTML={{ __html: summary }}></div>
               ) : null}
             </div>
           </div>

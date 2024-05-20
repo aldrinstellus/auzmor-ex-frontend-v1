@@ -12,9 +12,24 @@ interface IDocProps {
 }
 
 export const getIconName = (mimeType: string) => {
-  if (mimeType.includes('image/')) return 'imageFile';
-  if (mimeType.includes('video/')) return 'videoFile';
+  if (
+    mimeType.includes('image/') ||
+    ['jpeg', 'jpg', 'png', 'svg'].includes(mimeType)
+  )
+    return 'imageFile';
+  if (
+    mimeType.includes('video/') ||
+    ['avi', 'mp4', 'mov', 'wmv', 'mpg', 'm4v'].includes(mimeType)
+  )
+    return 'videoFile';
   const MIME_TO_ICON: Record<string, string> = {
+    doc: 'doc',
+    docx: 'doc',
+    ppt: 'ppt',
+    pptx: 'ppt',
+    xls: 'xls',
+    xlsx: 'xls',
+    pdf: 'pdf',
     'application/msword': 'doc',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
       'doc',
