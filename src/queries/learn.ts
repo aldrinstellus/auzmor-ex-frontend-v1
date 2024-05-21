@@ -83,14 +83,26 @@ export const getAllCategory = async ({
   pageParam = null,
   queryKey,
 }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
+  let transformedData;
   if (pageParam === null) {
-    return await learnApiService.get('/categories', queryKey[1]);
+    const response = await learnApiService.get('/categories', queryKey[1]);
+    const { data } = response;
+
+    transformedData = data?.result?.data?.map((item: any) => {
+      return {
+        name: item.title,
+        type: 'APP',
+        id: item.id,
+      };
+    });
+
+    return { data: { result: { data: transformedData } } };
   } else return await learnApiService.get(pageParam);
 };
 export const useInfiniteLearnCategory = (q?: Record<string, any>) => {
   return useInfiniteQuery({
     queryKey: ['learnCategory', q],
-    queryFn: getAllCategory, // learn api not supported paggination
+    queryFn: getAllCategory,
     staleTime: 5 * 60 * 1000,
   });
 };
