@@ -136,7 +136,9 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
               <p className="font-bold text-white align-middle flex justify-center">
                 Logo Acceptance:
               </p>
-              <p className="text-white">File types: JPG, PNG, SVG</p>
+              <p className="text-white">{`File types: JPG, PNG ${
+                isLxp ? '' : ',SVG'
+              }`}</p>
               <p className="text-white">Max size: 8MB</p>
             </div>
           }
