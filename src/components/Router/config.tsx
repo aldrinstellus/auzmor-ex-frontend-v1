@@ -103,18 +103,9 @@ const routers = createBrowserRouter(
             }}
           />
         </Route>
-        <Route element={<RequireOfficeAuth />}>
-          <Route // apps route  is not required in lxp
-            path="/apps"
-            element={<Apps />}
-          />
-        </Route>
-        <Route element={<RequireOfficeAuth />}>
-          <Route // apps  launch route  is not required in lxp
-            path="/apps/:id/launch"
-            element={<AppLaunchPage />}
-          />
-        </Route>
+        <Route path="/apps" element={<Apps />} />
+        <Route path="/apps/:id/launch" element={<AppLaunchPage />} />
+
         <Route path="/scheduledPosts" element={<Feed />} />
         <Route path="/bookmarks" element={<Feed />} />
         <Route path="/feed" element={<Feed />} />

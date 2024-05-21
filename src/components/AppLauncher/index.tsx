@@ -17,15 +17,8 @@ import { useInfiniteWidgetApps } from 'queries/apps';
 import { useAppStore } from 'stores/appStore';
 
 import { isFiltersEmpty } from 'utils/misc';
-import { useShouldRender } from 'hooks/useShouldRender';
-
-const ID = 'AppLauncher';
 
 const AppLauncher = () => {
-  const shouldRender = useShouldRender(ID);
-  if (!shouldRender) {
-    return <></>;
-  }
   const navigate = useNavigate();
   const { isAdmin } = useRole();
   const widgetApps = useAppStore((state) => state.widgetApps);

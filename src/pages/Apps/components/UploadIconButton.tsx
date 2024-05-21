@@ -12,6 +12,7 @@ import { IAddAppForm } from './AddApp';
 import useModal from 'hooks/useModal';
 import ImageReposition from 'components/DynamicImagePreview/components/ImageReposition';
 import { Shape } from 'components/ImageCropper';
+import useProduct from 'hooks/useProduct';
 
 type UploadIconButtonProps = {
   setValue: UseFormSetValue<IAddAppForm>;
@@ -19,6 +20,7 @@ type UploadIconButtonProps = {
 };
 
 const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
+  const { isLxp } = useProduct();
   const [isEditIconModalOpen, openEditIconModal, closeEditIconModal] =
     useModal();
   const [tempFile, setTempFile] = useState<File | null>(null);
@@ -41,6 +43,7 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
     // Do something with the files
     if (acceptedFiles.length) {
       openEditIconModal();
+      setValue('fileObj', acceptedFiles[0]);
       setTempFile(acceptedFiles[0]);
     }
   }, []);
@@ -53,7 +56,9 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
         // extension validation
         const error = rejection[0].errors[0];
         if (error.code === 'file-invalid-type') {
-          showErrorToast('Only JPEG/PNG/SVG filetypes are supported!');
+          showErrorToast(
+            `Only JPEG/PNG${isLxp ? '' : '/SVG'} filetypes are supported!`,
+          );
           setError('Unsupported filetypes.');
           return;
         }
@@ -66,7 +71,7 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
       accept: {
         'image/jpeg': ['.jpg', '.jpeg'],
         'image/png': ['.png'],
-        'image/svg': ['.svg'],
+        ...(isLxp ? {} : { 'image/svg': ['.svg'] }),
       },
       validator: (file) => {
         // size validation
@@ -131,7 +136,9 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
               <p className="font-bold text-white align-middle flex justify-center">
                 Logo Acceptance:
               </p>
-              <p className="text-white">File types: JPG, PNG, SVG</p>
+              <p className="text-white">{`File types: JPG, PNG ${
+                isLxp ? '' : ',SVG'
+              }`}</p>
               <p className="text-white">Max size: 8MB</p>
             </div>
           }

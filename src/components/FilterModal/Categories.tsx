@@ -11,6 +11,8 @@ import Icon from 'components/Icon';
 import ItemSkeleton from './ItemSkeleton';
 import { CategoryType } from 'queries/apps';
 import NoDataFound from 'components/NoDataFound';
+import { useInfiniteLearnCategory } from 'queries/learn';
+import useProduct from 'hooks/useProduct';
 
 interface ICategoriesProps {
   control: Control<IFilterForm, any>;
@@ -47,23 +49,29 @@ const Categories: FC<ICategoriesProps> = ({
     'categorySearch',
     'categoryCheckbox',
   ]);
-
+  const { isLxp } = useProduct();
   // fetch category from search input
   const debouncedCategorySearchValue = useDebounce(categorySearch || '', 300);
+
+  // hit learn category api for lxp
   const {
     data: fetchedDCategory,
     isLoading,
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-  } = useInfiniteCategories({
-    q: debouncedCategorySearchValue,
-    type,
-  });
-  const categoryData = fetchedDCategory?.pages.flatMap((page) => {
-    return page.data.result.data.map((category: ICategory) => category);
-  });
+  } = isLxp
+    ? useInfiniteLearnCategory({
+        q: debouncedCategorySearchValue,
+      })
+    : useInfiniteCategories({
+        q: debouncedCategorySearchValue,
+        type,
+      });
 
+  const categoryData = fetchedDCategory?.pages.flatMap((page) => {
+    return page.data?.result?.data?.map((category: ICategory) => category);
+  });
   const categoryFields = [
     {
       type: FieldType.CheckboxList,

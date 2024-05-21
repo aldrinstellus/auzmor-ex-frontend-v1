@@ -18,6 +18,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useRole from 'hooks/useRole';
 import { FC } from 'react';
 import DefaultAppIcon from 'images/DefaultAppIcon.svg';
+import { isEmpty } from 'lodash';
 
 type AppCardProps = {
   app: App;
@@ -261,7 +262,7 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
               {app.label}
             </div>
             {/* App category */}
-            {app.category && (
+            {app.category && !isEmpty(app.category) && (
               <div className="flex">
                 <Badge
                   text={app.category.name}
