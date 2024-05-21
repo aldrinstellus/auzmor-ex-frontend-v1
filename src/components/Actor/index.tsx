@@ -18,7 +18,7 @@ import LxpLogoPng from '../Logo/images/lxpLogo.png';
 import OfficeLogoSvg from '../Logo/images/OfficeLogo.svg';
 import useModal from 'hooks/useModal';
 import AudienceModal, { getAudienceCount } from 'components/AudienceModal';
-import ReactMarkdown from 'react-markdown';
+import Markdown from 'markdown-to-jsx';
 import LxpUserCard from 'components/UserCard/lxpUserCard';
 
 type ActorProps = {
@@ -74,15 +74,11 @@ const Actor: FC<ActorProps> = ({
           ? '/users/' + createdBy.userId
           : '/profile'
       }`;
-  // const markdownParseTitle =
-  //   '{Userid:7336|Shoeb khan} and {Userid:7463|Mandeep} posted an update on [General Forum](https://hire.auzmor.com/general)';
-  const markdownParseTitle =
-    '  `Userid:7336|Shoeb khan` and `Userid:7463|Mandeep`  posted an update    on [General Forum](https://hire.auzmor.com/general)';
 
   const CustomStrong = ({ children, className, ...props }: any) => {
     return (
       <strong
-        className={`${className} font-bold text-sm text-neutral-900 hover:text-primary-500 hover:cursor-pointer`}
+        className={`${className} font-bold text-sm text-neutral-900  hover:cursor-pointer`}
         {...props}
       >
         {children}
@@ -93,7 +89,7 @@ const Actor: FC<ActorProps> = ({
   const CustomLink = ({ children, className, ...props }: any) => {
     return (
       <a
-        className={`${className} font-bold text-sm text-primary-500 hover:text-primary-200 hover:cursor-pointer`}
+        className={`${className} font-bold text-sm text-primary-500 hover:text-primary-700 hover:cursor-pointer`}
         target="_blank"
         {...props}
       >
@@ -102,31 +98,26 @@ const Actor: FC<ActorProps> = ({
     );
   };
 
-  const components = {
-    code: ({ ...props }) => {
-      const text = props.children;
-      const pattern = /Userid:(\d+)\|([^\|]+)/;
-      const match = text.match(pattern);
-      const name = match[2];
-      const userId = match[1];
-      return (
-        <>
-          <Tooltip
-            tooltipContent={<LxpUserCard userId={userId} />}
-            variant={Variant.Light}
-            className="!p-4 !shadow-md !rounded-9xl !z-[999]"
-          >
-            <span className="font-bold text-sm text-neutral-900 cursor-pointer">
-              {name}
-            </span>
-          </Tooltip>
-        </>
-      );
-    },
-    Strong: CustomStrong,
-    a: CustomLink,
+  const User = ({ children }: any) => {
+    const pattern = /Userid:(\d+)\|(.+)/;
+    const text = children[0];
+    const match = text.match(pattern);
+    const name = match[2];
+    const userId = match[1];
+    return (
+      <>
+        <Tooltip
+          tooltipContent={<LxpUserCard userId={userId} />}
+          variant={Variant.Light}
+          className="!p-4 !shadow-md !rounded-9xl !z-[999]"
+        >
+          <span className="font-bold text-sm hover:text-primary-500 hover:underline text-neutral-900  cursor-pointer">
+            {name}
+          </span>
+        </Tooltip>
+      </>
+    );
   };
-
   return (
     <Fragment>
       <div className="flex items-center gap-4 flex-1">
@@ -152,9 +143,18 @@ const Actor: FC<ActorProps> = ({
         </div>
         <div className="flex flex-col flex-1">
           {title ? (
-            <ReactMarkdown components={components}>
-              {markdownParseTitle}
-            </ReactMarkdown>
+            <Markdown
+              options={{
+                forceInline: true,
+                overrides: {
+                  User: { component: User },
+                  a: { component: CustomLink },
+                  strong: { component: CustomStrong },
+                },
+              }}
+            >
+              {title?.content}
+            </Markdown>
           ) : (
             <div
               className="font-bold text-sm text-neutral-900 flex gap-1"
