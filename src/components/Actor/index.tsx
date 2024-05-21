@@ -1,4 +1,4 @@
-import { FC, Fragment, ReactNode, useMemo } from 'react';
+import { FC, Fragment, useMemo } from 'react';
 import Avatar from 'components/Avatar';
 import { VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
@@ -18,6 +18,8 @@ import LxpLogoPng from '../Logo/images/lxpLogo.png';
 import OfficeLogoSvg from '../Logo/images/OfficeLogo.svg';
 import useModal from 'hooks/useModal';
 import AudienceModal, { getAudienceCount } from 'components/AudienceModal';
+import ReactMarkdown from 'react-markdown';
+import LxpUserCard from 'components/UserCard/lxpUserCard';
 
 type ActorProps = {
   contentMode?: string;
@@ -46,7 +48,6 @@ const Actor: FC<ActorProps> = ({
   const { isLxp } = useProduct();
   const [isAudienceModalOpen, openAudienceModal, closeAudienceModal] =
     useModal(false);
-
   const actionLabel = useMemo(() => {
     if (postType === 'BIRTHDAY') {
       return 'is celebrating their birthday';
@@ -73,9 +74,57 @@ const Actor: FC<ActorProps> = ({
           ? '/users/' + createdBy.userId
           : '/profile'
       }`;
+  // const markdownParseTitle =
+  //   '{Userid:7336|Shoeb khan} and {Userid:7463|Mandeep} posted an update on [General Forum](https://hire.auzmor.com/general)';
+  const markdownParseTitle =
+    '  `Userid:7336|Shoeb khan` and `Userid:7463|Mandeep`  posted an update    on [General Forum](https://hire.auzmor.com/general)';
 
-  const parseTitle: (title: PostTitle) => ReactNode = (title) => {
-    return <p className="text-sm font-normal">{title.content}</p>;
+  const CustomStrong = ({ children, className, ...props }: any) => {
+    return (
+      <strong
+        className={`${className} font-bold text-sm text-neutral-900 hover:text-primary-500 hover:cursor-pointer`}
+        {...props}
+      >
+        {children}
+      </strong>
+    );
+  };
+
+  const CustomLink = ({ children, className, ...props }: any) => {
+    return (
+      <a
+        className={`${className} font-bold text-sm text-primary-500 hover:text-primary-200 hover:cursor-pointer`}
+        target="_blank"
+        {...props}
+      >
+        {children}
+      </a>
+    );
+  };
+
+  const components = {
+    code: ({ ...props }) => {
+      const text = props.children;
+      const pattern = /Userid:(\d+)\|([^\|]+)/;
+      const match = text.match(pattern);
+      const name = match[2];
+      const userId = match[1];
+      return (
+        <>
+          <Tooltip
+            tooltipContent={<LxpUserCard userId={userId} />}
+            variant={Variant.Light}
+            className="!p-4 !shadow-md !rounded-9xl !z-[999]"
+          >
+            <span className="font-bold text-sm text-neutral-900 cursor-pointer">
+              {name}
+            </span>
+          </Tooltip>
+        </>
+      );
+    },
+    Strong: CustomStrong,
+    a: CustomLink,
   };
 
   return (
@@ -103,7 +152,9 @@ const Actor: FC<ActorProps> = ({
         </div>
         <div className="flex flex-col flex-1">
           {title ? (
-            parseTitle(title)
+            <ReactMarkdown components={components}>
+              {markdownParseTitle}
+            </ReactMarkdown>
           ) : (
             <div
               className="font-bold text-sm text-neutral-900 flex gap-1"

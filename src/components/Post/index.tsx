@@ -39,7 +39,8 @@ import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import { useFeedStore } from 'stores/feedStore';
 import Avatar from 'components/Avatar';
 import LinkAttachments from './components/LinkAttachments';
-
+// import Markdown from 'react-markdown';
+// import remarkGfm from 'remark-gfm';
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
     {
@@ -190,6 +191,20 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
       location: 'location',
     };
 
+    const CustomImg = ({ alt, src, ...props }: any) => {
+      return (
+        <img alt={alt} src={src} className="w-4 h-4 object-cover" {...props} />
+      );
+    };
+
+    const components = {
+      img: CustomImg,
+      p: ({ ...props }: any) => (
+        <p className="flex gap-2 items-center" {...props} />
+      ),
+    };
+    console.log('components :', components);
+
     return (
       <Card className="w-full h-[266px] relative overflow-hidden group/card">
         <img
@@ -266,6 +281,11 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
               </div>
             </div>
           )}
+          {/* <div className="text-sm text-white">
+            <Markdown remarkPlugins={[remarkGfm]} components={components}>
+              {markdownContent}
+            </Markdown>
+          </div> */}
           {post?.cardContext?.blockStrings?.length && (
             <div className="flex gap-2 items-center">
               {post?.cardContext?.blockStrings?.map((blockString, index) => (
