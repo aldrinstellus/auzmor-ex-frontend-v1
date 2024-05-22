@@ -23,7 +23,7 @@ import remarkDirective from 'remark-directive';
 import remarkDirectiveRehype from 'remark-directive-rehype';
 import LxpUserCard from 'components/UserCard/lxpUserCard';
 import { CustomLink, CustomStrong } from './utils';
-
+import remarkGfm from 'remark-gfm';
 type ActorProps = {
   contentMode?: string;
   createdTime?: string;
@@ -33,13 +33,13 @@ type ActorProps = {
   audience?: IAudience[];
   entityId?: string;
   postType?: string;
-  title?: string;
+  title?: any;
 };
 
 const MarkdownTooltip = (props: any) => {
   return (
     <Tooltip
-      tooltipContent={<LxpUserCard userId={props.node.properties.userId} />}
+      tooltipContent={<LxpUserCard userId={props.node.properties.id} />}
       variant={Variant.Light}
       className="!p-4 !shadow-md !rounded-9xl !z-[999]"
     >
@@ -124,9 +124,13 @@ const Actor: FC<ActorProps> = ({
           {title ? (
             <ReactMarkdown
               components={components}
-              remarkPlugins={[remarkDirective, remarkDirectiveRehype]}
+              remarkPlugins={[
+                remarkDirective,
+                remarkDirectiveRehype,
+                remarkGfm,
+              ]}
             >
-              {title}
+              {title?.content ?? title}
             </ReactMarkdown>
           ) : (
             <div
