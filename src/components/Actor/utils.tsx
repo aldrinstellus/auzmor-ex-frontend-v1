@@ -1,10 +1,3 @@
-export function convertUserTags(input: string) {
-  return input.replace(
-    /\{Userid:(\d+)\|([^}]+)\}/g,
-    ':user{userId="$1" name="$2"}',
-  );
-}
-
 export const CustomStrong = ({ children, className, ...props }: any) => {
   return (
     <strong

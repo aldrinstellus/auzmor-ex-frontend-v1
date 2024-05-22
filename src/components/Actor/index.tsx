@@ -2,7 +2,7 @@ import { FC, Fragment, useMemo } from 'react';
 import Avatar from 'components/Avatar';
 import { VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
-import { IAudience, ICreatedBy, PostTitle } from 'queries/post';
+import { IAudience, ICreatedBy } from 'queries/post';
 import { Link } from 'react-router-dom';
 import {
   getAvatarColor,
@@ -22,7 +22,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkDirective from 'remark-directive';
 import remarkDirectiveRehype from 'remark-directive-rehype';
 import LxpUserCard from 'components/UserCard/lxpUserCard';
-import { CustomLink, CustomStrong, convertUserTags } from './utils';
+import { CustomLink, CustomStrong } from './utils';
 
 type ActorProps = {
   contentMode?: string;
@@ -33,7 +33,7 @@ type ActorProps = {
   audience?: IAudience[];
   entityId?: string;
   postType?: string;
-  title?: PostTitle;
+  title?: string;
 };
 
 const MarkdownTooltip = (props: any) => {
@@ -126,7 +126,7 @@ const Actor: FC<ActorProps> = ({
               components={components}
               remarkPlugins={[remarkDirective, remarkDirectiveRehype]}
             >
-              {convertUserTags(title?.content)}
+              {title}
             </ReactMarkdown>
           ) : (
             <div
