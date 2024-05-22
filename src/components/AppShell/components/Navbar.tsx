@@ -111,7 +111,6 @@ const Navbar = () => {
       linkTo: '/apps',
       dataTestId: 'office-apps-page',
       iconSize: 24,
-      hidden: isLxp,
     },
     {
       label: 'Channels',
