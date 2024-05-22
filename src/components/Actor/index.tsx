@@ -98,7 +98,7 @@ const Actor: FC<ActorProps> = ({
   const CustomStrong = ({ children, className, ...props }: any) => {
     return (
       <strong
-        className={`${className} font-bold text-sm text-neutral-900 hover:text-primary-500 hover:cursor-pointer`}
+        className={`${className} font-bold text-sm text-neutral-900  hover:cursor-pointer`}
         {...props}
       >
         {children}
@@ -109,7 +109,7 @@ const Actor: FC<ActorProps> = ({
   const CustomLink = ({ children, className, ...props }: any) => {
     return (
       <a
-        className={`${className} font-bold text-sm text-primary-500 hover:text-primary-200 hover:cursor-pointer`}
+        className={`${className} font-bold text-sm text-primary-500 hover:text-primary-700 hover:cursor-pointer`}
         target="_blank"
         {...props}
       >
@@ -123,7 +123,6 @@ const Actor: FC<ActorProps> = ({
     Strong: CustomStrong,
     a: CustomLink,
   };
-
   return (
     <Fragment>
       <div className="flex items-center gap-4 flex-1">
