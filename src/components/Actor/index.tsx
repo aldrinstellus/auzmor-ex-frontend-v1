@@ -43,7 +43,7 @@ const MarkdownTooltip = (props: any) => {
       variant={Variant.Light}
       className="!p-4 !shadow-md !rounded-9xl !z-[999]"
     >
-      <span className="font-bold text-sm text-neutral-900 cursor-pointer">
+      <span className="font-bold text-sm text-neutral-900 hover:text-primary-500 hover:underline cursor-pointer">
         {props.node.properties.name}
       </span>
     </Tooltip>
