@@ -191,14 +191,14 @@ const CreatableSearch = forwardRef(
                         values?.map((v: string) => ({
                           value: v,
                           label: v,
-                          isNew: option?.key == option?.value,
+                          isNew: option?.value == option?.label,
                         })),
                       );
                       setSearchValue('');
                     } else {
                       field.onChange({
                         ...option,
-                        isNew: option?.key == option?.value,
+                        isNew: option?.value == option?.label,
                       });
                       setSearchValue('');
                       setOpen(false);
