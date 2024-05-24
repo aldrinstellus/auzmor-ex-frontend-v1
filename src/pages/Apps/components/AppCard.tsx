@@ -260,8 +260,8 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
               data-testid="app-name"
             >
               {app.label?.length <= 22
-                ? app.label?.substring(0, 20)
-                : app.label?.substring(0, 20) + '..'}
+                ? app.label?.substring(0, 22)
+                : app.label?.substring(0, 22) + '...'}
             </div>
             {/* App category */}
             {app.category && !isEmpty(app.category) && (
