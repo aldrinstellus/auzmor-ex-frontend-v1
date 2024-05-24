@@ -256,10 +256,12 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
           <div className="flex flex-col gap-1">
             {/* App name */}
             <div
-              className="text-sm font-bold text-neutral-900 line-clamp-1"
+              className="text-sm font-bold text-neutral-900 line-clamp-1 truncate"
               data-testid="app-name"
             >
-              {app.label}
+              {app.label?.length <= 22
+                ? app.label?.substring(0, 22)
+                : app.label?.substring(0, 22) + '...'}
             </div>
             {/* App category */}
             {app.category && !isEmpty(app.category) && (

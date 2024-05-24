@@ -93,6 +93,7 @@ const Actor: FC<ActorProps> = ({
       }`;
 
   const components = {
+    p: ({ ...props }: any) => <p className="text-sm" {...props} />,
     user: MarkdownTooltip,
     Strong: CustomStrong,
     a: CustomLink,

@@ -116,6 +116,7 @@ const AppList: FC<IAppListProps> = ({
           return (
             <>
               {(queryParams.q === undefined || queryParams.q === '') &&
+              !queryParams?.featured &&
               (queryParams.categoryId || []).length === 0 &&
               (queryParams.teamId || []).length === 0 &&
               (!appIds || appIds?.length === 0) ? (
