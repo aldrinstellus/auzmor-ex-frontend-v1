@@ -478,6 +478,7 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
                   size={Size.Small}
                   labelClassName="text-xs font-normal text-neutral-500 hover:text-primary-500"
                   leftIcon="comment"
+                  leftIconHover={false}
                   className="space-x-1 !p-0"
                   onClick={() => {
                     if (showComments) {
