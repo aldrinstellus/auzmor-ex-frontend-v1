@@ -91,7 +91,7 @@ const LxpUserCard = ({ userId, className }: any) => {
             className="mr-2"
           />
           <div
-            className="text-xs font-normal text-neutral-500 w-full pl-2"
+            className="text-xs font-normal text-neutral-500 w-full "
             data-testid="usercard-Lxp-designation"
             id={`user-card-${userId}-Lxp-designation`}
           >
