@@ -98,7 +98,7 @@ const LxpUserCard = ({ userId, className }: any) => {
             {isLoading ? (
               <Skeleton />
             ) : (
-              userData?.department || 'Field not specified'
+              userData?.designation?.name || 'Field not specified'
             )}
           </div>
         </div>
