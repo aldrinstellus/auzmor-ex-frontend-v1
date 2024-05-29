@@ -34,6 +34,7 @@ export interface ICreatableSearch {
   fontSize?: number;
   getPopupContainer?: any;
   multi?: boolean;
+  maxLength?: number;
 }
 
 const CreatableSearch = forwardRef(
@@ -59,6 +60,7 @@ const CreatableSearch = forwardRef(
       fontSize = 14,
       getPopupContainer = null,
       multi = false,
+      maxLength = 250, // default
     }: ICreatableSearch,
     ref?: any,
   ) => {
@@ -110,7 +112,7 @@ const CreatableSearch = forwardRef(
     const addOptionObject =
       !disableCreate &&
       searchValue &&
-      searchValue.length <= 60 &&
+      searchValue.length <= maxLength &&
       !isOptionContains(searchValue) &&
       !isLoading
         ? {

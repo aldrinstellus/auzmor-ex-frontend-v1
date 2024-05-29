@@ -122,6 +122,7 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
       label: 'Category',
       control: control,
       defaultValue: defaultValues()?.category,
+      maxLength: 60,
       menuPlacement: 'topLeft',
       dataTestId: 'add-app-category',
       addItemDataTestId: 'add-app-add-category',
