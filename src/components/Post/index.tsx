@@ -75,8 +75,11 @@ type PostProps = {
 };
 
 const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
-  const [feed, getPost] = useFeedStore((state) => [state.feed, state.getPost]);
-  const updateFeed = useFeedStore((state) => state.updateFeed);
+  const [feed, getPost, updateFeed] = useFeedStore((state) => [
+    state.feed,
+    state.getPost,
+    state.updateFeed,
+  ]);
   const [showComments, openComments, closeComments] = useModal(false);
   const [showPublishModal, openPublishModal, closePublishModal] = useModal();
   const queryClient = useQueryClient();
@@ -102,6 +105,7 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
   useEffect(() => {
     if (showComments) {
       previousShowComment.current = true;
+      updateFeed(postId, { ...feed[postId], relevantComments: [] });
     }
     setHasChanges?.(showComments);
   }, [showComments]);
