@@ -23,9 +23,9 @@ const FolderNavigator: FC<IFolderNavigatorProps> = ({
   const { path, appendFolder } = useDocumentPath();
   const { filters } = useAppliedFiltersForDoc();
 
-  const getFolderId: () => string | null = useCallback(() => {
+  const getFolderId: () => string = useCallback(() => {
     if (path.length <= 1) {
-      return null;
+      return 'null';
     }
     return path[path.length - 1].id;
   }, [path]);
