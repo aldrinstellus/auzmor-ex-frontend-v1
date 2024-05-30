@@ -3,7 +3,7 @@ import Avatar from 'components/Avatar';
 import { VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
 import { IAudience, ICreatedBy } from 'queries/post';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   getAvatarColor,
   getFullName,
@@ -63,6 +63,7 @@ const Actor: FC<ActorProps> = ({
 }) => {
   const { user } = useAuth();
   const { isLxp } = useProduct();
+  const navigate = useNavigate();
   const [isAudienceModalOpen, openAudienceModal, closeAudienceModal] =
     useModal(false);
   const actionLabel = useMemo(() => {
@@ -92,11 +93,22 @@ const Actor: FC<ActorProps> = ({
           : '/profile'
       }`;
 
+  const CustomTeam = (props: any) => {
+    return (
+      <span
+        onClick={() => navigate(`/teams/${props.id}`)}
+        className={` font-bold text-sm text-primary-500 hover:text-primary-700 hover:cursor-pointer`}
+      >
+        {props.name}
+      </span>
+    );
+  };
   const components = {
     p: ({ ...props }: any) => <p className="text-sm" {...props} />,
     user: MarkdownTooltip,
     Strong: CustomStrong,
     a: CustomLink,
+    team: CustomTeam,
   };
   return (
     <Fragment>
