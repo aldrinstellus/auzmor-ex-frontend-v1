@@ -202,7 +202,10 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
       );
     };
     const CustomDate = (props: any) => {
-      const dateString = moment.unix(props.unix).format(props.format);
+      const dateString = moment
+        .unix(props.unix)
+        .tz(currentTimezone)
+        .format(props.format);
       return <span>{dateString}</span>;
     };
 
