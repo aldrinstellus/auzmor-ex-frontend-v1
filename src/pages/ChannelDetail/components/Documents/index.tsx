@@ -66,11 +66,11 @@ const Document: FC<IDocumentProps> = ({}) => {
   const configStorageMutation = useMutation({
     mutationKey: ['configure-storage'],
     mutationFn: getLinkToken,
-    onSuccess: (data, variables) => {
+    onSuccess: (data) => {
       open({
         token: data.result.data.linkToken,
         unifiedApi: 'file-storage',
-        serviceId: variables,
+        serviceId: 'google-drive',
         onReady: () => console.log('ready'),
         onClose: () => console.log('onClose'),
         onConnectionChange: () => {
