@@ -22,7 +22,6 @@ import Audience from './Audience';
 import Header from 'components/ModalHeader';
 import { createCatergory, uploadImage } from 'queries/learn';
 import useProduct from 'hooks/useProduct';
-
 export enum APP_MODE {
   Create = 'CREATE',
   Edit = 'EDIT',
@@ -122,7 +121,7 @@ const AddApp: FC<AddAppProps> = ({
     mutationFn: createApp,
     onSuccess: async () => {
       await queryClient.invalidateQueries(['apps']);
-      queryClient.invalidateQueries(['my-apps']);
+      await queryClient.invalidateQueries(['my-apps']);
       toast(<SuccessToast content={'App added successfully'} />, {
         closeButton: (
           <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
