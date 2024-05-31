@@ -35,8 +35,6 @@ const UserOnboard: FC = (): ReactNode => {
     useModal(false);
   const profilePictureRef = useRef<HTMLInputElement>(null);
 
-  if (!showOnboard) return <></>;
-
   const screens: IScreen[] = [
     {
       screen: <WelcomeScreen next={next} dataTestId="user-welcome-next" />,
@@ -72,6 +70,7 @@ const UserOnboard: FC = (): ReactNode => {
     url.searchParams.delete('showOnboard');
     history.replaceState({}, '', url);
   }, []);
+  if (!showOnboard) return <></>;
 
   return (
     <div>
