@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 
 const RequireNonProdAuth: FC = () => {
-  const isProd = process.env.NODE_ENV == 'production';
+  const isProd = process.env.REACT_APP_ENV === 'PRODUCTION';
   if (!isProd) {
     return <Outlet />;
   }
