@@ -155,11 +155,19 @@ export const getTimeFromNow = (dateStr: string, timezone: string) => {
   if (monthsLeft <= 0 && weeksLeft <= 0 && daysLeft <= 0) {
     hoursLeft = finalDate.diff(currentDate, 'hours');
     finalDate.subtract(hoursLeft, 'hour');
-    minutesLeft = finalDate.diff(currentDate, 'minutes');
-    finalDate.subtract(minutesLeft, 'minute');
-    if (minutesLeft <= 0 && hoursLeft <= 0) {
-      secondsLeft = finalDate.diff(currentDate, 'seconds');
+    if (hoursLeft <= 0) {
+      minutesLeft = finalDate.diff(currentDate, 'minutes');
+      finalDate.subtract(minutesLeft, 'minute');
+      if (minutesLeft <= 0) {
+        secondsLeft = finalDate.diff(currentDate, 'seconds');
+      }
+    } else {
+      hoursLeft += finalDate.diff(currentDate, 'minutes') / 60.0;
+      hoursLeft = Math.round(hoursLeft);
     }
+  } else {
+    daysLeft += finalDate.diff(currentDate, 'hours') / 24.0;
+    daysLeft = Math.round(daysLeft);
   }
 
   return [
