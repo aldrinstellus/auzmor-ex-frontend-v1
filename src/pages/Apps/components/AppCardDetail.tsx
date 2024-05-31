@@ -11,6 +11,7 @@ import { FC } from 'react';
 import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 import useModal from 'hooks/useModal';
 import AudienceModal, { getAudienceCount } from 'components/AudienceModal';
+import { isEmpty } from 'lodash';
 
 type AppDetailModalProps = {
   app: App;
@@ -68,7 +69,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
             <div className="z-10 relative">
               <div className="w-full pt-4 px-5 flex justify-between">
                 <div className="flex gap-2">
-                  {app.category && (
+                  {app.category && !isEmpty(app.category) && (
                     <Badge
                       text={app.category.name}
                       textClassName="text-blue-500 text-base leading-6 font-semibold"

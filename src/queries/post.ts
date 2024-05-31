@@ -57,13 +57,13 @@ export interface IShoutoutRecipient {
   userId: string;
 }
 
-export type PostTitle = {
-  content: string;
-  target: {
-    link: string;
-    linkText: string;
-  };
-};
+// export type PostTitle = {
+//   content: string;
+//   target: {
+//     link: string;
+//     linkText: string;
+//   };
+// };
 
 export type LinkAttachment = {
   url: string;
@@ -135,7 +135,7 @@ export interface IPost {
   bookmarked: boolean;
   acknowledged: boolean;
   shoutoutRecipients?: IShoutoutRecipient[];
-  title: PostTitle;
+  title: string;
   linkAttachments: Array<LinkAttachment>;
   cardContext: {
     resource: string;
@@ -145,6 +145,7 @@ export interface IPost {
       url: string;
       text: string;
     };
+    description: string;
     blockStrings: [
       {
         icon: string;

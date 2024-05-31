@@ -17,6 +17,8 @@ import {
 } from 'queries/apps';
 import { ICategoryDetail } from 'queries/category';
 import { FC } from 'react';
+import useProduct from 'hooks/useProduct';
+import { useInfiniteLearnCategory } from 'queries/learn';
 
 type AppDetailsFormProps = {
   control: Control<IAddAppForm, any>;
@@ -37,6 +39,7 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
   icon,
   audience,
 }) => {
+  const { isLxp } = useProduct();
   const urlField = [
     {
       type: FieldType.Input,
@@ -77,6 +80,7 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
         }`,
       }),
     );
+
     return transformedOption;
   };
 
@@ -118,11 +122,12 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
       label: 'Category',
       control: control,
       defaultValue: defaultValues()?.category,
+      maxLength: 60,
       menuPlacement: 'topLeft',
       dataTestId: 'add-app-category',
       addItemDataTestId: 'add-app-add-category',
-      fetchQuery: useInfiniteCategories,
-      queryParams: { type: CategoryType.APP },
+      fetchQuery: isLxp ? useInfiniteLearnCategory : useInfiniteCategories,
+      queryParams: isLxp ? '' : { type: CategoryType.APP },
       getFormattedData: formatCategories,
     },
   ];

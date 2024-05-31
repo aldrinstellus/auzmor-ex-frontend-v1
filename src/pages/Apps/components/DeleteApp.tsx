@@ -105,7 +105,7 @@ const DeleteApp: FC<IDeleteAppProps> = ({ open, closeModal, appId }) => {
         size={Size.Small}
         label={'Cancel'}
         dataTestId="delete-app-cancel"
-        onClick={closeModal}
+        onClick={() => closeModal()}
       />
       <Button
         label={'Delete'}

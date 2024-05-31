@@ -11,17 +11,18 @@ interface IDocProps {
   file: DocType;
 }
 
-export const getIconName = (mimeType: string) => {
+export const getIconName = (mimeType?: string) => {
   if (
-    mimeType.includes('image/') ||
-    ['jpeg', 'jpg', 'png', 'svg'].includes(mimeType)
+    mimeType?.includes('image/') ||
+    ['jpeg', 'jpg', 'png', 'svg'].includes(mimeType ?? '')
   )
     return 'imageFile';
   if (
-    mimeType.includes('video/') ||
-    ['avi', 'mp4', 'mov', 'wmv', 'mpg', 'm4v'].includes(mimeType)
+    mimeType?.includes('video/') ||
+    ['avi', 'mp4', 'mov', 'wmv', 'mpg', 'm4v'].includes(mimeType ?? '')
   )
     return 'videoFile';
+
   const MIME_TO_ICON: Record<string, string> = {
     doc: 'doc',
     docx: 'doc',
@@ -45,7 +46,7 @@ export const getIconName = (mimeType: string) => {
     'application/vnd.google-apps.folder': 'folder',
     'application/vnd.google-apps.form': 'form',
   };
-  return MIME_TO_ICON[mimeType] || 'file';
+  return MIME_TO_ICON[mimeType ?? ''] || 'file';
 };
 
 const Doc: FC<IDocProps> = ({ file }) => {

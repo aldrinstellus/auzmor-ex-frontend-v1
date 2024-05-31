@@ -111,7 +111,6 @@ const Navbar = () => {
       linkTo: '/apps',
       dataTestId: 'office-apps-page',
       iconSize: 24,
-      hidden: isLxp,
     },
     {
       label: 'Channels',
@@ -121,6 +120,7 @@ const Navbar = () => {
       dataTestId: 'discover-page',
       iconSize: 24,
       isActive: location.pathname.includes('/channels'),
+      hidden: process.env.REACT_APP_ENV === 'PRODUCTION',
       // render: function () {
       //   return (
       //     <PopupMenu
@@ -141,9 +141,11 @@ const Navbar = () => {
             <Logo />
           </Link>
 
-          <div className="flex-1">
-            <GlobalSearch />
-          </div>
+          {process.env.REACT_APP_ENV != 'PRODUCTION' && (
+            <div className="flex-1">
+              <GlobalSearch />
+            </div>
+          )}
           <div className="flex items-center gap-8 h-full">
             <div className="flex items-center gap-6">
               {navigations.map((nav) => (

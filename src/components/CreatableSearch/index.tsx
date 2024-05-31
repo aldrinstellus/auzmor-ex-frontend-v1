@@ -34,6 +34,7 @@ export interface ICreatableSearch {
   fontSize?: number;
   getPopupContainer?: any;
   multi?: boolean;
+  maxLength?: number;
 }
 
 const CreatableSearch = forwardRef(
@@ -59,6 +60,7 @@ const CreatableSearch = forwardRef(
       fontSize = 14,
       getPopupContainer = null,
       multi = false,
+      maxLength = 250, // default
     }: ICreatableSearch,
     ref?: any,
   ) => {
@@ -110,6 +112,7 @@ const CreatableSearch = forwardRef(
     const addOptionObject =
       !disableCreate &&
       searchValue &&
+      searchValue.length <= maxLength &&
       !isOptionContains(searchValue) &&
       !isLoading
         ? {
@@ -185,14 +188,21 @@ const CreatableSearch = forwardRef(
                     setSearchValue('');
                   }}
                   optionLabelProp="label"
-                  onChange={(values, option) => {
+                  onChange={(values, option: any) => {
                     if (multi) {
                       field.onChange(
-                        values?.map((v: string) => ({ value: v, label: v })),
+                        values?.map((v: string) => ({
+                          value: v,
+                          label: v,
+                          isNew: option?.value == option?.label,
+                        })),
                       );
                       setSearchValue('');
                     } else {
-                      field.onChange(option);
+                      field.onChange({
+                        ...option,
+                        isNew: option?.value == option?.label,
+                      });
                       setSearchValue('');
                       setOpen(false);
                     }

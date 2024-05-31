@@ -58,7 +58,7 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
       image: attendee.image_url,
     }),
   );
-  const userTimezone = event?.timezone || currentTimezone || 'Asia/Kolkata';
+  const userTimezone = currentTimezone || 'Asia/Kolkata';
   const startDate = event?.start_date;
   const endDate = event?.end_date;
 

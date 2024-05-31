@@ -29,6 +29,8 @@ import useURLParams from 'hooks/useURLParams';
 import FilterModal, { FilterModalVariant } from 'components/FilterModal';
 import { ICategory } from 'queries/category';
 import { ITeam } from 'queries/teams';
+import useProduct from 'hooks/useProduct';
+import { useInfiniteLearnCategory } from 'queries/learn';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -79,7 +81,7 @@ const Apps: FC<IAppsProps> = () => {
       search: searchParams.get('search'),
     },
   });
-
+  const { isLxp } = useProduct();
   const { apps, featuredApps } = useAppStore();
   const { isAdmin } = useRole();
   const [selectedQuickCategory, setSelectedQuickCategory] =
@@ -105,11 +107,17 @@ const Apps: FC<IAppsProps> = () => {
   const searchValue = watch('search');
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
 
-  const { data: categories } = useInfiniteCategories(
-    isFiltersEmpty({
-      limit: 3,
-    }),
-  );
+  const { data: categories } = isLxp
+    ? useInfiniteLearnCategory(
+        isFiltersEmpty({
+          limit: 3,
+        }),
+      )
+    : useInfiniteCategories(
+        isFiltersEmpty({
+          limit: 3,
+        }),
+      );
 
   const flattenCategories = categories?.pages.flatMap((page: any) => {
     return page?.data?.result?.data.map((category: any) => {
