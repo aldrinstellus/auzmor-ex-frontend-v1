@@ -13,11 +13,20 @@ export interface INavbarMenuItemProps {
     iconSize: number;
     disabled?: boolean;
     isActive?: any;
+    render?: () => React.ReactNode;
   };
 }
 
 const NavbarMenuItem: FC<INavbarMenuItemProps> = ({ nav }) => {
   const { isLxp } = useProduct();
+
+  if (nav.render) {
+    return (
+      <div className="flex flex-col items-center cursor-pointer">
+        {nav?.render?.()}
+      </div>
+    );
+  }
 
   return nav.disabled ? (
     <div

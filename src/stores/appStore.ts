@@ -16,8 +16,8 @@ export const useAppStore = create<IAppsStore>((set) => ({
   featuredApps: {},
   widgetApps: {},
   setApp: (apps) =>
-    set(() => ({
-      apps: { ...apps },
+    set((state) => ({
+      apps: { ...state.apps, ...apps },
     })),
   setFeaturedApp: (apps) =>
     set(() => ({

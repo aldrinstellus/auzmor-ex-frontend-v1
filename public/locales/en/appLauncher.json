@@ -1,0 +1,28 @@
+{
+  "title": "App Launcher",
+  "my-apps": "My apps",
+  "all-apps": "All apps",
+  "featured": "Featured",
+  "add-app-CTA": "Add apps",
+  "view-all": "View all featured",
+  "show-results": "Showing {{count}} results",
+  "filter-by": "Filter By",
+  "category": "Category",
+  "team": "Team",
+  "clear-filters": "Clear filters",
+  "view-All-CTA": "view ALL",
+  "empty-state": {
+    "add-app-CTA": "Add Apps",
+    "empty-state-message": "There is no app found in your organization right now.",
+    "admin-error": "Only admins can see this",
+    "not-found": "Apps have not been added yet"
+  },
+  "select-app-modal": {
+    "title": "Select apps",
+    "choose-app": "Choose apps for widget (upto 3)",
+    "not-found": "No Apps found to be selected",
+    "not-found-org": "There is no app found in your organization right now.",
+    "back-CTA": "Back",
+    "select-CTA": "Select"
+  }
+}

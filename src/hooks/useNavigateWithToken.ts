@@ -13,6 +13,7 @@ export const useNavigateWithToken = () => {
     setUser: (user: IUser | null) => void,
     navigate: NavigateFunction,
     setShowOnboard?: (flag: boolean) => void,
+    showOnboard?: boolean,
   ) => {
     let url = getItem('redirect_post_login_to') || '/feed';
     if (url === '/') url = '/feed';
@@ -20,8 +21,8 @@ export const useNavigateWithToken = () => {
 
     setItem(process.env.SESSION_KEY || 'uat', token);
 
-    if (setShowOnboard) {
-      setShowOnboard(true);
+    if (showOnboard) {
+      setShowOnboard?.(true);
     }
 
     if (process.env.NODE_ENV === 'development') {

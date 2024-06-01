@@ -1,0 +1,33 @@
+{
+  "title": "Useful Links",
+  "showAllLinksCTA": "Show all links",
+  "addLinksCTA": "Add links",
+  "emptyState": {
+    "adminMessage": "Links have not been added yet. Add important links for members to see",
+    "memberMessage": "Links have not been added yet.",
+    "addLinksCTA": "Add links",
+    "footer": "Only admins can see this."
+  },
+  "editLinksModal": {
+    "title": { "viewMode": "Useful Links", "updateMode": "Edit Links" },
+    "addLinkCTA": "Add Link",
+    "cancelCTA": "Cancel",
+    "saveCTA": "Save Changes",
+    "noLinksMessage": "All links have been removed."
+  },
+  "addLinkModal": {
+    "title": { "createMode": "Add Link", "updateMode": "Edit Link" },
+    "urlField": {
+      "label": "URL",
+      "placeholder": "ex: www.abc.com",
+      "invalidUrlError": "Invalid link"
+    },
+    "labelField": {
+      "label": "Label",
+      "placeholder": "ex: New hire checklist",
+      "maxLengthError": "Label cannot contain more than 20 characters"
+    },
+    "cancelCTA": "Cancel",
+    "saveCTA": { "createMode": "Add Link", "updateMode": "Save" }
+  }
+}

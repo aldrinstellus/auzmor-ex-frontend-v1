@@ -11,6 +11,7 @@ export type AvatarListProps = {
   avatarClassName?: string;
   onClick?: () => any;
   dataTestId?: string;
+  display?: number;
 };
 
 interface IUser {
@@ -27,6 +28,7 @@ const AvatarList: FC<AvatarListProps> = ({
   size = 48,
   onClick = () => {},
   dataTestId = '',
+  display = 2,
 }) => {
   const styles = clsx({ 'flex -space-x-8': true }, { [className]: true });
   return (
@@ -46,7 +48,7 @@ const AvatarList: FC<AvatarListProps> = ({
       {moreCount > 2 && (
         <Avatar
           size={size}
-          name={`+${moreCount - 2}`}
+          name={`+${moreCount - display}`}
           onClick={onClick}
           active={false}
           className={`border-[2px] border-white ${avatarClassName}`}

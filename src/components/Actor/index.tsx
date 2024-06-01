@@ -1,9 +1,9 @@
-import { FC, Fragment, ReactNode, useMemo } from 'react';
+import { FC, Fragment, useMemo } from 'react';
 import Avatar from 'components/Avatar';
 import { VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
-import { IAudience, ICreatedBy, PostTitle } from 'queries/post';
-import { Link } from 'react-router-dom';
+import { IAudience, ICreatedBy } from 'queries/post';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   getAvatarColor,
   getFullName,
@@ -18,7 +18,12 @@ import LxpLogoPng from '../Logo/images/lxpLogo.png';
 import OfficeLogoSvg from '../Logo/images/OfficeLogo.svg';
 import useModal from 'hooks/useModal';
 import AudienceModal, { getAudienceCount } from 'components/AudienceModal';
-
+import ReactMarkdown from 'react-markdown';
+import remarkDirective from 'remark-directive';
+import remarkDirectiveRehype from 'remark-directive-rehype';
+import LxpUserCard from 'components/UserCard/lxpUserCard';
+import { CustomLink, CustomStrong } from './utils';
+import remarkGfm from 'remark-gfm';
 type ActorProps = {
   contentMode?: string;
   createdTime?: string;
@@ -28,7 +33,21 @@ type ActorProps = {
   audience?: IAudience[];
   entityId?: string;
   postType?: string;
-  title?: PostTitle;
+  title?: any;
+};
+
+const MarkdownTooltip = (props: any) => {
+  return (
+    <Tooltip
+      tooltipContent={<LxpUserCard userId={props.node.properties.id} />}
+      variant={Variant.Light}
+      className="!p-4 !shadow-md !rounded-9xl !z-[999]"
+    >
+      <span className="font-bold text-sm text-neutral-900 hover:text-primary-500 hover:underline cursor-pointer">
+        {props.node.properties.name}
+      </span>
+    </Tooltip>
+  );
 };
 
 const Actor: FC<ActorProps> = ({
@@ -44,9 +63,9 @@ const Actor: FC<ActorProps> = ({
 }) => {
   const { user } = useAuth();
   const { isLxp } = useProduct();
+  const navigate = useNavigate();
   const [isAudienceModalOpen, openAudienceModal, closeAudienceModal] =
     useModal(false);
-
   const actionLabel = useMemo(() => {
     if (postType === 'BIRTHDAY') {
       return 'is celebrating their birthday';
@@ -74,10 +93,23 @@ const Actor: FC<ActorProps> = ({
           : '/profile'
       }`;
 
-  const parseTitle: (title: PostTitle) => ReactNode = (title) => {
-    return <p className="text-sm font-normal">{title.content}</p>;
+  const CustomTeam = (props: any) => {
+    return (
+      <span
+        onClick={() => navigate(`/teams/${props.id}`)}
+        className={` font-bold text-sm text-primary-500 hover:text-primary-700 hover:cursor-pointer`}
+      >
+        {props.name}
+      </span>
+    );
   };
-
+  const components = {
+    p: ({ ...props }: any) => <p className="text-sm" {...props} />,
+    user: MarkdownTooltip,
+    Strong: CustomStrong,
+    a: CustomLink,
+    team: CustomTeam,
+  };
   return (
     <Fragment>
       <div className="flex items-center gap-4 flex-1">
@@ -103,7 +135,16 @@ const Actor: FC<ActorProps> = ({
         </div>
         <div className="flex flex-col flex-1">
           {title ? (
-            parseTitle(title)
+            <ReactMarkdown
+              components={components}
+              remarkPlugins={[
+                remarkDirective,
+                remarkDirectiveRehype,
+                remarkGfm,
+              ]}
+            >
+              {title?.content ?? title}
+            </ReactMarkdown>
           ) : (
             <div
               className="font-bold text-sm text-neutral-900 flex gap-1"

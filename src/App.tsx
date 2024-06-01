@@ -12,6 +12,7 @@ import ProductProvider from 'contexts/ProductProvider';
 import { ProductEnum, getProduct } from 'utils/apiService';
 import { getLearnUrl } from 'utils/misc';
 import UserOnboard from 'components/UserOnboard';
+import './i18n/config';
 
 function App() {
   const isDesktop = useMediaQuery('(min-width: 1024px)');

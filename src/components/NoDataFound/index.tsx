@@ -17,6 +17,7 @@ interface INoDataFoundProps {
 const illustrationMap: Record<string, any> = {
   noResult: require('images/noResult.png'),
   noResultAlt: require('images/noResultAlt.png'),
+  noDocumentFound: require('images/noDocumentSearch.png'),
 };
 
 const NoDataFound: FC<INoDataFoundProps> = ({

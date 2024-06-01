@@ -11,6 +11,7 @@ import { FC } from 'react';
 import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 import useModal from 'hooks/useModal';
 import AudienceModal, { getAudienceCount } from 'components/AudienceModal';
+import { isEmpty } from 'lodash';
 
 type AppDetailModalProps = {
   app: App;
@@ -31,8 +32,9 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
   const [isAudienceModalOpen, openAudienceModal, closeAudienceModal] =
     useModal(false);
   const audienceChipStyle =
-    'py-2 px-3 flex items-center gap-1 border-1 rounded-[24px] border-neutral-200';
-  const audienceLabelStyle = 'text-sm font-semibold';
+    'py-2 px-3 flex items-center gap-1 border-1 rounded-[24px] border-neutral-200 group cursor-pointer';
+  const audienceLabelStyle =
+    'text-sm font-semibold group-hover:text-primary-500';
 
   return (
     <Modal open={open} className="max-w-[638px]">
@@ -67,7 +69,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
             <div className="z-10 relative">
               <div className="w-full pt-4 px-5 flex justify-between">
                 <div className="flex gap-2">
-                  {app.category && (
+                  {app.category && !isEmpty(app.category) && (
                     <Badge
                       text={app.category.name}
                       textClassName="text-blue-500 text-base leading-6 font-semibold"
@@ -130,8 +132,11 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                   </p>
                   {app.audience && app.audience.length > 0 ? (
                     <div className="flex gap-2">
-                      <div className={audienceChipStyle}>
-                        <Icon name="noteFavourite" size={16} hover={false} />
+                      <div
+                        className={audienceChipStyle}
+                        onClick={openAudienceModal}
+                      >
+                        <Icon name="noteFavourite" size={16} />
                         <span className={audienceLabelStyle}>
                           {app.audience[0].name || 'Team Name'}
                         </span>

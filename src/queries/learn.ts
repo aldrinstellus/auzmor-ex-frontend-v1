@@ -72,3 +72,42 @@ export const useGetRecommendation = () => {
     enabled: !!isLxp,
   });
 };
+
+export const uploadImage = async (payload: any) => {
+  learnApiService.updateContentType('multipart/form-data');
+  const data = await learnApiService.post('photos', payload);
+  return data;
+};
+
+export const getAllCategory = async ({
+  pageParam = null,
+  queryKey,
+}: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
+  let transformedData;
+  if (pageParam === null) {
+    const response = await learnApiService.get('/categories', queryKey[1]);
+    const { data } = response;
+
+    transformedData = data?.result?.data?.map((item: any) => {
+      return {
+        name: item.title,
+        type: 'APP',
+        id: item.id,
+      };
+    });
+
+    return { data: { result: { data: transformedData } } };
+  } else return await learnApiService.get(pageParam);
+};
+export const useInfiniteLearnCategory = (q?: Record<string, any>) => {
+  return useInfiniteQuery({
+    queryKey: ['learnCategory', q],
+    queryFn: getAllCategory,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const createCatergory = async (payload: any) => {
+  const data = await learnApiService.post('categories', payload);
+  return data;
+};
