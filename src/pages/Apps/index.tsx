@@ -326,11 +326,11 @@ const Apps: FC<IAppsProps> = () => {
                   <Button
                     variant={ButtonVariant.Secondary}
                     label={category.name}
-                    className={
+                    className={`capitalize ${
                       selectedTab === category.id
                         ? selectedButtonClassName
                         : regularButtonClassName
-                    }
+                    }`}
                     onClick={() => handleQuickCategorySelect(category)}
                   />
                 </div>
