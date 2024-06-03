@@ -116,7 +116,7 @@ const AppLauncher = () => {
                   label="View all"
                   dataTestId="app-launcher-view-all"
                   onClick={() =>
-                    navigate(isAdmin ? '/apps?tab=myApps' : '/apps')
+                    navigate(isAdmin ? '/apps?myApp=true' : '/apps')
                   }
                 />
               </div>
