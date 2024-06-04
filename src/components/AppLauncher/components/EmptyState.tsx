@@ -31,7 +31,7 @@ const EmptyState: FC<IEmptyState> = () => {
               // onClick={openModal}
             />
           </Link>
-          <p className="text-center">Be the first one to create one.</p>
+          <p className="text-center">Be the first to create one.</p>
         </div>
       ) : (
         <div>Apps have not been added yet.</div>
