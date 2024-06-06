@@ -1,6 +1,5 @@
-import { FC, ReactNode, useMemo } from 'react';
+import { FC, ReactNode } from 'react';
 import clsx from 'clsx';
-import useHover from 'hooks/useHover';
 
 export type CardProps = {
   children?: ReactNode;
@@ -17,32 +16,14 @@ const Card: FC<CardProps> = ({
   shadowOnHover = false,
   onClick = () => {},
 }) => {
-  const [isHovered, hoverEvents] = useHover();
-
-  const cardStyle = useMemo(
-    () =>
-      clsx(
-        { 'bg-white shadow rounded-9xl': true },
-        { [className]: true },
-        {
-          'shadow-xl transition-all duration-300 ease-in-out':
-            isHovered && shadowOnHover,
-        },
-        {
-          'shadow-none transition-all duration-300 ease-out':
-            !isHovered && shadowOnHover,
-        },
-      ),
-    [isHovered],
+  const cardStyle = clsx(
+    'bg-white shadow rounded-9xl',
+    className,
+    shadowOnHover && 'hover:shadow-xl transition-all duration-300 ease-in-out',
   );
 
   return (
-    <div
-      className={cardStyle}
-      data-testid={dataTestId}
-      {...hoverEvents}
-      onClick={onClick}
-    >
+    <div className={cardStyle} data-testid={dataTestId} onClick={onClick}>
       {children}
     </div>
   );

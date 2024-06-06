@@ -37,7 +37,7 @@ const PollVotesModal: FC<IPollVotesModalProps> = ({
         }
         onClose={closeModal}
       />
-      {pollOptions.length && (
+      {pollOptions.length ? (
         <Tabs
           tabContentClassName=""
           tabs={[
@@ -57,6 +57,13 @@ const PollVotesModal: FC<IPollVotesModalProps> = ({
             })),
           ]}
         />
+      ) : (
+        <div className="flex flex-col w-full justify-center items-center gap-4 p-8">
+          <div className="flex w-full justify-center">
+            <img src={require('images/noResultAlt.png')} />
+          </div>
+          <p className="font-bold text-xl text-neutral-900">No data found</p>
+        </div>
       )}
     </Modal>
   );
