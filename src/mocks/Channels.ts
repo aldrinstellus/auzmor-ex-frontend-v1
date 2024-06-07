@@ -34,7 +34,6 @@ export const userData: IGetUser[] = [
       isDeactivated: false,
       isReported: false,
     },
-    createdAt: '2023-09-29T11:06:16.804Z',
     status: 'ACTIVE',
     freezeEdit: {
       firstName: true,
@@ -75,7 +74,6 @@ export const userData: IGetUser[] = [
       isDeactivated: false,
       isReported: false,
     },
-    createdAt: '2023-09-29T11:06:16.804Z',
     status: 'ACTIVE',
     freezeEdit: {
       firstName: true,
@@ -117,7 +115,6 @@ export const userData: IGetUser[] = [
       isDeactivated: false,
       isReported: false,
     },
-    createdAt: '2023-09-29T11:06:16.804Z',
     status: 'ACTIVE',
     freezeEdit: {
       firstName: true,
@@ -160,7 +157,6 @@ export const userData: IGetUser[] = [
       isDeactivated: false,
       isReported: false,
     },
-    createdAt: '2023-09-29T11:06:16.804Z',
     status: 'ACTIVE',
     freezeEdit: {
       firstName: true,
@@ -202,7 +198,6 @@ export const userData: IGetUser[] = [
       isDeactivated: false,
       isReported: false,
     },
-    createdAt: '2023-09-29T11:06:16.804Z',
     status: 'ACTIVE',
     freezeEdit: {
       firstName: true,
@@ -244,7 +239,6 @@ export const userData: IGetUser[] = [
       isDeactivated: false,
       isReported: false,
     },
-    createdAt: '2023-09-29T11:06:16.804Z',
     status: 'ACTIVE',
     freezeEdit: {
       firstName: true,
@@ -286,7 +280,6 @@ export const userData: IGetUser[] = [
       isDeactivated: false,
       isReported: false,
     },
-    createdAt: '2023-09-29T11:06:16.804Z',
     status: 'ACTIVE',
     freezeEdit: {
       firstName: true,
@@ -328,7 +321,6 @@ export const userData: IGetUser[] = [
       isDeactivated: false,
       isReported: false,
     },
-    createdAt: '2023-09-29T11:06:16.804Z',
     status: 'ACTIVE',
     freezeEdit: {
       firstName: true,
@@ -370,7 +362,6 @@ export const userData: IGetUser[] = [
       isDeactivated: false,
       isReported: false,
     },
-    createdAt: '2023-09-29T11:06:16.804Z',
     status: 'ACTIVE',
     freezeEdit: {
       firstName: true,
@@ -412,7 +403,6 @@ export const userData: IGetUser[] = [
       isDeactivated: false,
       isReported: false,
     },
-    createdAt: '2023-09-29T11:06:16.804Z',
     status: 'ACTIVE',
     freezeEdit: {
       firstName: true,
@@ -455,7 +445,6 @@ export const ChannelUserRequests: IChannelRequest[] = [
       },
     },
     status: CHANNEL_MEMBER_STATUS.PENDING,
-    createdAt: '',
     updatedAt: '',
   },
   {
@@ -487,7 +476,6 @@ export const ChannelUserRequests: IChannelRequest[] = [
       },
     },
     status: CHANNEL_MEMBER_STATUS.PENDING,
-    createdAt: '',
     updatedAt: '',
   },
 
@@ -520,7 +508,6 @@ export const ChannelUserRequests: IChannelRequest[] = [
       },
     },
     status: CHANNEL_MEMBER_STATUS.PENDING,
-    createdAt: '',
     updatedAt: '',
   },
 ];
