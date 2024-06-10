@@ -49,8 +49,6 @@ export const channelMemberData = [
         blurHash: 'UDF6wZ01v}t7v$RjX8of_M4:~VWB~VD*?bt7',
       },
     },
-    createdAt: '2024-01-09T14:32:59.381Z',
-    updatedAt: '2024-01-09T14:32:59.381Z',
   },
   {
     id: '659d591b78f1208fd225c590',
@@ -96,8 +94,6 @@ export const channelMemberData = [
         blurHash: 'UDF6wZ01v}t7v$RjX8of_M4:~VWB~VD*?bt7',
       },
     },
-    createdAt: '2024-01-09T14:32:59.389Z',
-    updatedAt: '2024-01-09T14:32:59.389Z',
   },
   {
     id: '659d591b78f1208fd225c59a',
@@ -140,8 +136,6 @@ export const channelMemberData = [
         blurHash: 'UDF6wZ01v}t7v$RjX8of_M4:~VWB~VD*?bt7',
       },
     },
-    createdAt: '2024-01-09T14:32:59.395Z',
-    updatedAt: '2024-01-09T14:32:59.395Z',
   },
   {
     id: '659d591b78f1208fd225c5a6',
@@ -184,7 +178,5 @@ export const channelMemberData = [
         blurHash: 'UDF6wZ01v}t7v$RjX8of_M4:~VWB~VD*?bt7',
       },
     },
-    createdAt: '2024-01-09T14:32:59.402Z',
-    updatedAt: '2024-01-09T14:32:59.402Z',
   },
 ];
