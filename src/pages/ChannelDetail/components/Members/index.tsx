@@ -8,7 +8,6 @@ import FilterMenu from 'components/FilterMenu';
 import Icon from 'components/Icon';
 import InfiniteSearch from 'components/InfiniteSearch';
 import useModal from 'hooks/useModal';
-import { userData } from 'mocks/Channels';
 import PeopleCard from 'pages/Users/components/People/PeopleCard';
 import UsersSkeleton from 'pages/Users/components/Skeletons/UsersSkeleton';
 import { useForm } from 'react-hook-form';
@@ -24,6 +23,7 @@ import PopupMenu from 'components/PopupMenu';
 import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
 import MemberTable from './MemberTable';
 import useRole from 'hooks/useRole';
+import { useParams } from 'react-router-dom';
 
 const Members = () => {
   const { t } = useTranslation('channels');
@@ -41,18 +41,26 @@ const Members = () => {
   const parsedTab = searchParams.get('type');
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
+  const { channelId } = useParams();
 
-  const { data, isLoading } = useInfiniteChannelMembers(
-    isFiltersEmpty({
+  const { data, isLoading } = useInfiniteChannelMembers({
+    channelId: channelId,
+    q: isFiltersEmpty({
       role: filters?.type,
       departments: 'departmentDebounced',
       locations: 'locationDebounced',
       // rest payload
     }),
-    'teamId_424242424242424242424242424242424',
-  );
-
-  const channelMembers = data?.pages; // need to fix data
+  });
+  const users = data?.pages.flatMap((page) => {
+    return page?.data?.result?.data.map((user: any) => {
+      try {
+        return user;
+      } catch (e) {
+        console.log('Error', { user });
+      }
+    });
+  });
 
   const departmentSearch = ''; // add the same debounced value of filters .
   const debouncedDepartmentSearchValue = useDebounce(
@@ -167,7 +175,7 @@ const Members = () => {
         >
           <div className="flex items-center gap-2">
             <div className="text-neutral-500">
-              Showing {channelMembers?.length} results
+              Showing {users?.length} results
               {/*  {!isLoading && data?.pages[0]?.data?.result?.totalCount}{' '} */}
             </div>
             <div className="relative">
@@ -182,7 +190,7 @@ const Members = () => {
                           ? 'All members'
                           : 'Requests'
                       }
-                      rightIcon={'arrowDown'}
+                      rightIcon={`${isAdmin ? 'arrowDown' : ''}`}
                     />
                   }
                   menuItems={requestOptions as any}
@@ -256,7 +264,7 @@ const Members = () => {
           </div>
         </FilterMenu>
         {isGrid ? (
-          <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
+          <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 xl:grid-cols-4 1.5xl:grid-cols-5">
             {isLoading
               ? [...Array(10)].map((element) => (
                   <div key={element}>
@@ -264,13 +272,13 @@ const Members = () => {
                   </div>
                 ))
               : null}
-            {userData.map((user) => (
+            {users?.map((user) => (
               <PeopleCard key={user.id} userData={user} />
             ))}
           </div>
         ) : (
           <MemberTable
-            data={userData}
+            data={users}
             selectAllEntity={selectAllEntity}
             deselectAll={deselectAll}
           />

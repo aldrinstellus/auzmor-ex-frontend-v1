@@ -16,6 +16,7 @@ import ChannelRow from './components/ChannelRow';
 import Divider from 'components/Divider';
 import ChannelRowSkeleton from './components/ChannelRowSkeleton';
 import ChannelCardSkeleton from './components/ChannelCardSkeleton';
+import NoDataFound from 'components/NoDataFound';
 
 interface IChannelsProps {}
 
@@ -44,7 +45,7 @@ export const Channels: FC<IChannelsProps> = () => {
   const { data, channels, isLoading } = useInfiniteChannels(
     isFiltersEmpty({
       categoryIds: [],
-      visibility: filters?.visibility,
+      accessibility: filters?.accessibility,
       isStarred: !!(filters?.channelType === ChannelTypeEnum.Starred),
       isManaged: !!(filters?.channelType === ChannelTypeEnum.Managed),
       isRequested: !!(filters?.channelType === ChannelTypeEnum.Requested),
@@ -158,7 +159,6 @@ export const Channels: FC<IChannelsProps> = () => {
             leftIconClassName="text-white pointer-events-none group-hover:text-white"
             onClick={openModal}
             dataTestId="createchannel-cta"
-            className="hidden"
           />
         </div>
         <FilterMenu
@@ -186,6 +186,17 @@ export const Channels: FC<IChannelsProps> = () => {
             ))}
           </div>
         </FilterMenu>
+        {channelIds.length == 0 && !isLoading && (
+          <NoDataFound
+            illustration="noChannelFound"
+            className="py-4 w-full"
+            onClearSearch={() => {}}
+            labelHeader="No channels yet"
+            message={<p>Channels created will be visible here</p>}
+            hideClearBtn
+            dataTestId={`$channel-noresult`}
+          />
+        )}
         {filters?.channelType === ChannelTypeEnum.Archived ? (
           isLoading ? (
             [...Array(5)].map((_each, index) => (
@@ -212,20 +223,20 @@ export const Channels: FC<IChannelsProps> = () => {
                     showJoinChannelBtn={
                       filters?.channelType ===
                         ChannelTypeEnum.DiscoverNewChannels &&
-                      channels[id].channelSettings?.visibility ===
+                      channels[id].channelSettings?.accessibility ===
                         ChannelVisibilityEnum.Public
                     }
                     showRequestBtn={
                       filters?.channelType ===
                         ChannelTypeEnum.DiscoverNewChannels &&
-                      channels[id].channelSettings?.visibility ===
+                      channels[id].channelSettings?.accessibility ===
                         ChannelVisibilityEnum.Private &&
                       !!!channels[id].isRequested
                     }
                     showWithdrawBtn={
                       filters?.channelType ===
                         ChannelTypeEnum.DiscoverNewChannels &&
-                      channels[id].channelSettings?.visibility ===
+                      channels[id].channelSettings?.accessibility ===
                         ChannelVisibilityEnum.Private &&
                       !!channels[id].isRequested
                     }

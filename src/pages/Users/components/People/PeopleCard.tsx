@@ -224,8 +224,8 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     >
       <Card
         shadowOnHover
-        className={`relative w-[190px] ${
-          isLxp ? 'h-[190px]' : 'h-[244px]'
+        className={`relative  ${
+          isLxp ? 'h-[190px] w-[190px] ' : 'h-[244px] w-[233px]'
         } border-solid border rounded-9xl border-neutral-200 bg-white`}
       >
         {!isLxp ? (

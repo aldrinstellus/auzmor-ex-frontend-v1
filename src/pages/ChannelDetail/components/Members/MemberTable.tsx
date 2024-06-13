@@ -74,7 +74,7 @@ const MemberTable: FC<AppProps> = ({
 
         {!isLoading && (
           <TableBody>
-            {data.map((user: any) => (
+            {data?.map((user: any) => (
               <TableRow key={user.id}>
                 <TableCell className="font-medium">
                   <div className=" flex items-center space-x-4">

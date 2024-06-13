@@ -3,13 +3,32 @@ import Button, { Size, Variant } from 'components/Button';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
 import useRole from 'hooks/useRole';
+import { useInfiniteChannelMembers } from 'queries/channel';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+import { Role } from 'utils/enum';
 
 const MembersWidget = () => {
   const { isAdmin } = useRole();
   const [show, setShow] = useState(true);
   const { t } = useTranslation('channelDetail');
+  const { channelId } = useParams();
+  const { data } = useInfiniteChannelMembers({
+    channelId: channelId,
+    q: {
+      role: Role.Member,
+    },
+  });
+  const users = data?.pages.flatMap((page) => {
+    return page?.data?.result?.data.map((user: any) => {
+      try {
+        return user;
+      } catch (e) {
+        console.log('Error', { user });
+      }
+    });
+  });
 
   return (
     <Card className="py-6 rounded-9xl" shadowOnHover>
@@ -34,29 +53,8 @@ const MembersWidget = () => {
             <AvatarList
               display={8}
               className="!-space-x-5"
-              users={[
-                {
-                  id: 1,
-                  name: 'Yuki Tanaka                  ',
-                  image: 'https://i.pravatar.cc/150?img=30',
-                },
-                {
-                  id: 2,
-                  name: 'Alex kim',
-                  image: 'https://i.pravatar.cc/150?img=31',
-                },
-                {
-                  id: 3,
-                  name: 'winston Smith',
-                  image: 'https://i.pravatar.cc/150?img=32',
-                },
-                {
-                  id: 4,
-                  name: 'david cummins',
-                  image: 'https://i.pravatar.cc/150?img=33',
-                },
-              ]}
-              moreCount={23}
+              users={users || []}
+              moreCount={users?.length}
             />
           </div>
           <div className="mt-3">

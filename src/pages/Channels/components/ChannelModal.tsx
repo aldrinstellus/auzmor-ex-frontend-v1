@@ -12,6 +12,14 @@ import { IOption } from 'components/AsyncSingleSelect';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Icon from 'components/Icon';
+import { createChannel } from 'queries/channel';
+import { toast } from 'react-toastify';
+import { twConfig } from 'utils/misc';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { slideInAndOutTop } from 'utils/react-toastify';
+import FailureToast from 'components/Toast/variants/FailureToast';
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 interface IChannelModalProps {
   isOpen: boolean;
@@ -30,33 +38,39 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
   const { t: tc } = useTranslation('common');
 
   const schema = yup.object({
-    channelName: yup.string().required('required'),
+    channelName: yup
+      .string()
+      .min(2, 'Channels name should have at least 2 characters')
+      .required(),
     channelCategory: yup.object().required(),
     channelPrivacy: yup.object().required(),
   });
+  const navigate = useNavigate();
 
-  const { control, formState } = useForm<IChannelForm>({
-    defaultValues: {
-      channelName: '',
-      channelPrivacy: {
-        label: (
-          <div className="flex gap-2 items-center">
-            <Icon
-              name="global"
-              size={16}
-              color="text-neutral-900"
-              hover={false}
-            />
-            <p>{t('public')}</p>
-          </div>
-        ),
-        value: ChannelVisibilityEnum.Public,
-        dataTestId: 'channel-privacy-public',
+  const { handleSubmit, control, formState, getValues } = useForm<IChannelForm>(
+    {
+      defaultValues: {
+        channelName: '',
+        channelPrivacy: {
+          label: (
+            <div className="flex gap-2 items-center">
+              <Icon
+                name="global"
+                size={16}
+                color="text-neutral-900"
+                hover={false}
+              />
+              <p>{t('public')}</p>
+            </div>
+          ),
+          value: ChannelVisibilityEnum.Public,
+          dataTestId: 'channel-privacy-public',
+        },
       },
+      resolver: yupResolver(schema),
+      mode: 'onChange',
     },
-    resolver: yupResolver(schema),
-    mode: 'onChange',
-  });
+  );
 
   const formatCategory = (data: any) => {
     const skillsData = data?.pages.flatMap((page: any) => {
@@ -76,6 +90,47 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
       dataTestId: `skill-option-${skill?.name}`,
     }));
     return transformedOption;
+  };
+
+  const addChannelMutation = useMutation({
+    mutationKey: ['add-channel-mutation'],
+    mutationFn: createChannel,
+    onSuccess: async (data: any) => {
+      navigate(`/channels/${data?.result?.data?.id}`);
+      closeModal();
+    },
+    onError: async () => {
+      toast(
+        <FailureToast
+          content={`Error creating channel`}
+          dataTestId="channel-create-error-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+    },
+  });
+  const onSubmit = () => {
+    const formData = getValues();
+    const payload = {
+      name: formData?.channelName,
+      description: formData?.channelDescription,
+      accessibility: formData?.channelPrivacy?.value,
+      category: formData?.channelCategory?.value,
+    };
+    addChannelMutation.mutate(payload);
   };
 
   return (
@@ -240,7 +295,7 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
         <Button
           label={tc('create')}
           variant={Variant.Primary}
-          // onClick={handleSubmit(onSubmit)}
+          onClick={handleSubmit(onSubmit)}
           dataTestId="channel-creation-create"
           disabled={!formState.isValid}
         />

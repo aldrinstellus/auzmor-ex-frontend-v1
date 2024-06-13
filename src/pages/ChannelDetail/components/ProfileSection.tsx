@@ -110,7 +110,10 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               <div className="text-2xl font-bold" data-testid="channel-name">
                 {channelData.name}
               </div>
-              <div className="text-xs" data-testid="channel-description">
+              <div
+                className="text-xs line-clamp-2 "
+                data-testid="channel-description"
+              >
                 {channelData.description}
               </div>
             </div>
@@ -119,6 +122,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
             label={t('join')}
             size={Size.Small}
             dataTestId="join-channel-cta"
+            className="min-w-max"
           />
         </div>
         <div className="w-full flex justify-between items-center relative mt-3">

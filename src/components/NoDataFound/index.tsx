@@ -18,6 +18,7 @@ const illustrationMap: Record<string, any> = {
   noResult: require('images/noResult.png'),
   noResultAlt: require('images/noResultAlt.png'),
   noDocumentFound: require('images/noDocumentSearch.png'),
+  noChannelFound: require('images/notFound.png'),
 };
 
 const NoDataFound: FC<INoDataFoundProps> = ({

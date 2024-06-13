@@ -1,29 +1,25 @@
 import Icon from 'components/Icon';
 import React, { FC } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { IChannel } from 'stores/channelStore';
 
 type ChannelRow = {
-  channel: any;
-  isPublic?: boolean;
+  channel: IChannel;
   className?: string;
-  onChannelClick?: () => void;
 };
-
-const ChannelRow: FC<ChannelRow> = ({
-  channel,
-  onChannelClick,
-  isPublic = true,
-}) => {
+const ChannelRow: FC<ChannelRow> = ({ channel }) => {
+  const navigate = useNavigate();
   return (
     <div
-      onClick={() => onChannelClick}
-      className="bg-neutral-100 cursor-pointer flex gap-2 items-center justify-between w-full rounded-[32px] border-solid border-neutral-200 border pt-3 pr-5 pb-3 pl-5  "
+      onClick={() => navigate(`/channels/${channel?.id}`)}
+      className="bg-neutral-100 cursor-pointer flex gap-2 items-center justify-between w-full rounded-[32px] border-solid border-neutral-200 border pt-3 pr-5 pb-3 pl-5 my-4  "
     >
       <div className="text-neutral-900   text-sm font-medium  ">
         {channel?.name || 'dummy channel'}
       </div>
       <div>
         <Icon
-          name={isPublic ? 'website' : 'lock'}
+          name={channel?.channelSettings?.accessibility ? 'website' : 'lock'}
           className="grayscale"
           size={20}
           color="text-neutral-900"

@@ -53,6 +53,7 @@ import EventWidget from 'components/EventWidget';
 import { useGetRecommendation } from 'queries/learn';
 import Recommendation from 'components/Recommendation';
 import useAuth from 'hooks/useAuth';
+import ChannelsWidget from 'components/ChannelsWidget';
 
 interface IFeedProps {}
 
@@ -526,6 +527,8 @@ const Feed: FC<IFeedProps> = () => {
       <div className="z-10 w-[293px] flex flex-col gap-6">
         <UserCard />
         <AppLauncher />
+        <ChannelsWidget />
+
         {isLargeScreen && <MyTeamWidget className="sticky top-24" />}
         {!isLargeScreen && <MyTeamWidget />}
         {!isLargeScreen && getRightWidgets()}

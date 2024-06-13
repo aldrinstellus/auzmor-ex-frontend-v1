@@ -6,6 +6,9 @@ import useModal from 'hooks/useModal';
 import { useNavigate } from 'react-router-dom';
 import ChannelRow from './components/ChannelRow';
 import { useTranslation } from 'react-i18next';
+import { useInfiniteChannels } from 'queries/channel';
+import { isFiltersEmpty } from 'utils/misc';
+import ChannelSkeleton from './components/skeletons/ChannelsWidgetSkeleton';
 
 interface IChannelsProps {
   channelData?: any;
@@ -20,8 +23,41 @@ const ChannelsWidget: FC<IChannelsProps> = ({}) => {
     if (open) closeCollapse();
     else openCollpase();
   };
-  const channels = [1, 2, 3];
+  const { data, channels, isLoading } = useInfiniteChannels(
+    isFiltersEmpty({
+      discover: false,
+      limit: 2,
+    }),
+    false, // myChannels false
+  );
 
+  const channelIds = (
+    (data?.pages.flatMap((page) =>
+      page.data?.result?.data.map((channel: { id: string }) => channel),
+    ) as { id: string }[]) || []
+  )
+    ?.filter(({ id }) => !!channels[id])
+    .sort(
+      (a, b) =>
+        new Date(channels[b.id].createdAt).getTime() -
+        new Date(channels[a.id].createdAt).getTime(),
+    );
+
+  if (channelIds?.length == 0) {
+    return null;
+  }
+
+  if (isLoading) {
+    return (
+      <>
+        {[...Array(2)].map((element) => (
+          <div key={element} className="py-2">
+            <ChannelSkeleton />
+          </div>
+        ))}
+      </>
+    );
+  }
   return (
     <Card className="py-6  flex flex-col rounded-9xl" shadowOnHover>
       <div
@@ -43,26 +79,21 @@ const ChannelsWidget: FC<IChannelsProps> = ({}) => {
           open ? 'max-h-[500px] mt-4' : 'max-h-[0]'
         }`}
       >
-        <div className="my-4">
-          <ChannelRow channel={channels} />
+        {channelIds.slice(0, 2).map(({ id }) => (
+          <>
+            <ChannelRow key={id} channel={channels[id]} />
+          </>
+        ))}
+        <div className="flex flex-col gap-4">
+          <Button
+            variant={Variant.Secondary}
+            size={Size.Small}
+            className="py-[7px]"
+            label={t('explore-channels')}
+            dataTestId="explore-channels"
+            onClick={() => navigate('/channels')}
+          />
         </div>
-        {/* // add skelten in loading state */}
-        {(() => {
-          if (channels.length > 0) {
-            return (
-              <div className="flex flex-col gap-4">
-                <Button
-                  variant={Variant.Secondary}
-                  size={Size.Small}
-                  className="py-[7px]"
-                  label={t('explore-channels')}
-                  dataTestId="explore-channels"
-                  onClick={() => navigate('/channels')}
-                />
-              </div>
-            );
-          }
-        })()}
       </div>
     </Card>
   );

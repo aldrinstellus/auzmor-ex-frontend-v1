@@ -55,7 +55,7 @@ const ChannelCard: FC<IChannelCardProps> = ({
               text={channel.name}
               className="text-sm font-semibold text-neutral-900 max-w-[208px]"
             />
-            {channel.channelSettings?.visibility ===
+            {channel.channelSettings?.accessibility ===
               ChannelVisibilityEnum.Private && (
               <Icon
                 name={'lockFilled'}

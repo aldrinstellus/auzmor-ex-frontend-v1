@@ -10,6 +10,7 @@ export interface ICategoryDetail {
   name: string;
   type: string;
   id: string;
+  value?: string;
 }
 
 const getAllCategories = async ({

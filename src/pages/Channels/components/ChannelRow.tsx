@@ -47,7 +47,7 @@ const ChannelRow: FC<IChannelRowProps> = ({ channel }) => {
                 />
               </IconWrapper>
               <p className="text-xs text-neutral-500">
-                {titleCase(channel.channelSettings?.visibility || '')}
+                {titleCase(channel.channelSettings?.accessibility || '')}
               </p>
             </div>
             <div className="flex gap-3 items-center">

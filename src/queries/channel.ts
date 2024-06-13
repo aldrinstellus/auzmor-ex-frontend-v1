@@ -8,20 +8,24 @@ import {
   IChannel,
   IChannelLink,
   IChannelRequest,
-  dummyChannels,
   useChannelStore,
 } from 'stores/channelStore';
 import {
   ChannelUserRequests,
+  admins,
   channelAdmins,
   channelLinks,
+  dummyChannels,
+  userData,
 } from 'mocks/Channels';
 import apiService from 'utils/apiService';
-import { channelMemberData } from 'mocks/channelMember';
+import { Role } from 'utils/enum';
+// import { channelMemberData } from 'mocks/channelMember';
+// import { channelMemberData } from 'mocks/channelMember';
 
 export interface IChannelPayload {
   name: string;
-  category: string;
+  category?: string;
   description?: string;
 }
 
@@ -71,7 +75,6 @@ export const getAllChannels = async (
   response.data.result.data = response.data.result.data.map(
     (eachChannel: IChannel) => ({ id: eachChannel.id }),
   );
-  console.log('response :', response);
   return response;
 };
 
@@ -96,15 +99,36 @@ export const deleteChannel = async (id: string) => {
 
 // get team members by team id -> /channel/:id/members
 export const getChannelMembers = async (
-  context: QueryFunctionContext<
-    (Record<string, any> | undefined | string)[],
-    any
-  >,
-  channelId: string,
+  {
+    pageParam = null,
+    queryKey,
+  }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>,
+  id: string,
 ) => {
-  console.log(context, channelId);
-
-  return new Promise((res) => res(channelMemberData));
+  let response = null;
+  try {
+    if (pageParam !== null)
+      response = await apiService.get(`/channels/${id}/members`, queryKey[1]);
+    else response = await apiService.get(pageParam);
+  } catch (e) {
+    if ((queryKey[1] as any)?.role == Role.Admin) {
+      response = {
+        data: {
+          result: {
+            data: admins,
+          },
+        },
+      };
+    } else
+      response = {
+        data: {
+          result: {
+            data: userData,
+          },
+        },
+      };
+  }
+  return response;
 };
 // get channel request by channel id -> /channels/:channelId/members/?memberStatus=pending
 
@@ -193,10 +217,13 @@ export const useInfiniteChannels = (
   };
 };
 
-export const useInfiniteChannelMembers = (
-  q?: Record<string, any>,
-  channelId?: any,
-) => {
+export const useInfiniteChannelMembers = ({
+  q,
+  channelId,
+}: {
+  q?: Record<any, any>;
+  channelId: any;
+}) => {
   return useInfiniteQuery({
     queryKey: ['channel-members', q, channelId],
     queryFn: (context) => getChannelMembers(context, channelId), // need fix
