@@ -32,16 +32,15 @@ const ManageAccess = () => {
   const { control } = filterForm;
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
-  const { data, isLoading } = useInfiniteChannelMembers(
-    isFiltersEmpty({
-      role: filters?.role,
+  const { data, isLoading } = useInfiniteChannelMembers({
+    channelId: '2',
+    q: isFiltersEmpty({
+      role: filters?.type,
       departments: 'departmentDebounced',
       locations: 'locationDebounced',
-      status: 'status',
       // rest payload
     }),
-    'teamId_424242424242424242424242424242424',
-  );
+  });
   const channelMembers = data?.pages; // need to fix this  data
 
   const departmentSearch = ''; // add the same debounced value of filters .
