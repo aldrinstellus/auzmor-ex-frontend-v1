@@ -19,7 +19,7 @@ const ChannelRow: FC<ChannelRow> = ({ channel }) => {
       </div>
       <div>
         <Icon
-          name={channel?.channelSettings?.accessibility ? 'website' : 'lock'}
+          name={channel?.channelSettings?.visibility ? 'website' : 'lock'}
           className="grayscale"
           size={20}
           color="text-neutral-900"

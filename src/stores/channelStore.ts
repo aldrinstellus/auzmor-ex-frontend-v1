@@ -25,7 +25,7 @@ export interface IChannel {
   organizationId?: string;
   createdBy?: IUser;
   channelSettings?: {
-    accessibility: ChannelVisibilityEnum.Private | ChannelVisibilityEnum.Public;
+    visibility: ChannelVisibilityEnum.Private | ChannelVisibilityEnum.Public;
     restriction: {
       canPost: boolean;
       canComment: boolean;

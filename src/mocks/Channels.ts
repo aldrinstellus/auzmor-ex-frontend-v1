@@ -54,7 +54,7 @@ export const dummyChannels: IChannel[] = [
       },
     },
     channelSettings: {
-      accessibility: ChannelVisibilityEnum.Public,
+      visibility: ChannelVisibilityEnum.Public,
       restriction: {
         canPost: true,
         canComment: true,
@@ -91,7 +91,7 @@ export const dummyChannels: IChannel[] = [
       },
     },
     channelSettings: {
-      accessibility: ChannelVisibilityEnum.Public,
+      visibility: ChannelVisibilityEnum.Public,
       restriction: {
         canPost: true,
         canComment: true,
@@ -128,7 +128,7 @@ export const dummyChannels: IChannel[] = [
       },
     },
     channelSettings: {
-      accessibility: ChannelVisibilityEnum.Public,
+      visibility: ChannelVisibilityEnum.Public,
       restriction: {
         canPost: true,
         canComment: true,
@@ -166,7 +166,7 @@ export const dummyChannels: IChannel[] = [
       },
     },
     channelSettings: {
-      accessibility: ChannelVisibilityEnum.Private,
+      visibility: ChannelVisibilityEnum.Private,
       restriction: {
         canPost: true,
         canComment: true,
@@ -204,7 +204,7 @@ export const dummyChannels: IChannel[] = [
       },
     },
     channelSettings: {
-      accessibility: ChannelVisibilityEnum.Private,
+      visibility: ChannelVisibilityEnum.Private,
       restriction: {
         canPost: true,
         canComment: true,
@@ -244,7 +244,7 @@ export const dummyChannels: IChannel[] = [
       },
     },
     channelSettings: {
-      accessibility: ChannelVisibilityEnum.Private,
+      visibility: ChannelVisibilityEnum.Private,
       restriction: {
         canPost: true,
         canComment: true,
@@ -284,7 +284,7 @@ export const dummyChannels: IChannel[] = [
       },
     },
     channelSettings: {
-      accessibility: ChannelVisibilityEnum.Private,
+      visibility: ChannelVisibilityEnum.Private,
       restriction: {
         canPost: true,
         canComment: true,
@@ -324,7 +324,7 @@ export const dummyChannels: IChannel[] = [
       },
     },
     channelSettings: {
-      accessibility: ChannelVisibilityEnum.Private,
+      visibility: ChannelVisibilityEnum.Private,
       restriction: {
         canPost: true,
         canComment: true,

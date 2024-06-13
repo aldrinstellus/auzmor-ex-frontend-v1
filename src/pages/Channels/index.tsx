@@ -45,7 +45,7 @@ export const Channels: FC<IChannelsProps> = () => {
   const { data, channels, isLoading } = useInfiniteChannels(
     isFiltersEmpty({
       categoryIds: [],
-      accessibility: filters?.accessibility,
+      visibility: filters?.visibility,
       isStarred: !!(filters?.channelType === ChannelTypeEnum.Starred),
       isManaged: !!(filters?.channelType === ChannelTypeEnum.Managed),
       isRequested: !!(filters?.channelType === ChannelTypeEnum.Requested),
@@ -223,20 +223,20 @@ export const Channels: FC<IChannelsProps> = () => {
                     showJoinChannelBtn={
                       filters?.channelType ===
                         ChannelTypeEnum.DiscoverNewChannels &&
-                      channels[id].channelSettings?.accessibility ===
+                      channels[id].channelSettings?.visibility ===
                         ChannelVisibilityEnum.Public
                     }
                     showRequestBtn={
                       filters?.channelType ===
                         ChannelTypeEnum.DiscoverNewChannels &&
-                      channels[id].channelSettings?.accessibility ===
+                      channels[id].channelSettings?.visibility ===
                         ChannelVisibilityEnum.Private &&
                       !!!channels[id].isRequested
                     }
                     showWithdrawBtn={
                       filters?.channelType ===
                         ChannelTypeEnum.DiscoverNewChannels &&
-                      channels[id].channelSettings?.accessibility ===
+                      channels[id].channelSettings?.visibility ===
                         ChannelVisibilityEnum.Private &&
                       !!channels[id].isRequested
                     }
