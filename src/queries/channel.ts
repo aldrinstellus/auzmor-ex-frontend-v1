@@ -120,7 +120,7 @@ export const getChannelMembers = async (
 ) => {
   let response = null;
   try {
-    if (pageParam !== null)
+    if (pageParam == null)
       response = await apiService.get(`/channels/${id}/members`, queryKey[1]);
     else response = await apiService.get(pageParam);
   } catch (e) {

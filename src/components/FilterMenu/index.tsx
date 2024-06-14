@@ -40,6 +40,7 @@ interface IFilterMenu {
   dataTestIdSort?: string;
   dataTestIdFilter?: string;
   dataTestIdSearch?: string;
+  variant?: FilterModalVariant;
 }
 
 const FilterMenu: FC<IFilterMenu> = ({
@@ -49,6 +50,7 @@ const FilterMenu: FC<IFilterMenu> = ({
   dataTestIdSort,
   dataTestIdFilter,
   dataTestIdSearch,
+  variant,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const { filters, setFilters } = useAppliedFiltersStore();
@@ -288,7 +290,7 @@ const FilterMenu: FC<IFilterMenu> = ({
             });
             closeFilterModal();
           }}
-          variant={FilterModalVariant.ChannelsListing}
+          variant={variant || FilterModalVariant.ChannelsListing}
         />
       )}
     </>

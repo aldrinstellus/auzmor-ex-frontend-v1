@@ -21,6 +21,8 @@ import { useParams } from 'react-router-dom';
 import { UserRole } from 'queries/users';
 import Layout, { FieldType } from 'components/Form';
 import { Size as InputSize } from 'components/Input';
+import { FilterModalVariant } from 'components/FilterModal';
+import useProduct from 'hooks/useProduct';
 
 const ManageAccess = () => {
   const { t } = useTranslation('channels');
@@ -33,7 +35,7 @@ const ManageAccess = () => {
   });
   const { control } = filterForm;
   const { channelId } = useParams();
-
+  const { isLxp } = useProduct();
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
   const { data, isLoading } = useInfiniteChannelMembers({
@@ -126,12 +128,14 @@ const ManageAccess = () => {
           dataTestIdFilter="channel-filter-icon"
           dataTestIdSort="channel-sort-icon"
           dataTestIdSearch="channel-search"
+          variant={FilterModalVariant.ChannelsMangeAcess}
         >
           <div className="flex items-center gap-2">
             <div className="text-neutral-500">
               {!isLoading && <> Showing {channelMembers?.length} results </>}
             </div>
-            <div className="relative">
+
+            <div className={`relative ${isLxp ? 'hidden' : 'block'}`}>
               <InfiniteSearch
                 triggerNodeClassName={'!py-2 !px-4'}
                 title="Departments"
@@ -154,6 +158,7 @@ const ManageAccess = () => {
                 // selectionCount={selectedDepartments.length}
               />
             </div>
+
             <Layout fields={roleFields} />
           </div>
         </FilterMenu>

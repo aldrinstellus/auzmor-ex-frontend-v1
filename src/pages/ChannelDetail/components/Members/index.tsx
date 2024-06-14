@@ -24,6 +24,8 @@ import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
 import MemberTable from './MemberTable';
 import useRole from 'hooks/useRole';
 import { useParams } from 'react-router-dom';
+import { FilterModalVariant } from 'components/FilterModal';
+import useProduct from 'hooks/useProduct';
 
 const Members = () => {
   const { t } = useTranslation('channels');
@@ -42,7 +44,7 @@ const Members = () => {
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
   const { channelId } = useParams();
-
+  const { isLxp } = useProduct();
   const { data, isLoading } = useInfiniteChannelMembers({
     channelId: channelId,
     q: isFiltersEmpty({
@@ -152,6 +154,7 @@ const Members = () => {
     }
     return () => clearFilters();
   }, [parsedTab]);
+
   return (
     <>
       <Card className="p-8 flex flex-col gap-6">
@@ -172,6 +175,7 @@ const Members = () => {
           dataTestIdFilter="channel-filter-icon"
           dataTestIdSort="channel-sort-icon"
           dataTestIdSearch="channel-search"
+          variant={FilterModalVariant.ChannelMember}
         >
           <div className="flex items-center gap-2">
             <div className="text-neutral-500">
@@ -204,7 +208,7 @@ const Members = () => {
                 /> // for end user its a button
               )}
             </div>
-            <div className="relative">
+            <div className={`relative ${isLxp ? 'hidden' : 'block'}`}>
               <InfiniteSearch
                 triggerNodeClassName={'!py-2 !px-4'}
                 title="Departments"
@@ -227,7 +231,7 @@ const Members = () => {
                 // selectionCount={selectedDepartments.length}
               />
             </div>
-            <div className="relative">
+            <div className={`relative ${isLxp ? 'hidden' : 'block'}`}>
               <InfiniteSearch
                 triggerNodeClassName={'!py-2 !px-4'}
                 title="Location"

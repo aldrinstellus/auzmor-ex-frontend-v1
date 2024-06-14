@@ -368,37 +368,41 @@ const PeopleCard: FC<IPeopleCardProps> = ({
                 </div>
               </div>
             )}
-            <div
-              className={`flex justify-center items-center px-3 py-[4px] gap-1`}
-              data-testid={`people-card-department-${department?.name}`}
-            >
-              <Icon
-                name="briefcase"
-                size={16}
-                hover={false}
-                color={departmentColor}
-              />
+            {!isLxp && (
               <div
-                className={`text-xs font-normal truncate ${departmentColor}`}
+                className={`flex justify-center items-center px-3 py-[4px] gap-1`}
+                data-testid={`people-card-department-${department?.name}`}
               >
-                {departmentText}
+                <Icon
+                  name="briefcase"
+                  size={16}
+                  hover={false}
+                  color={departmentColor}
+                />
+                <div
+                  className={`text-xs font-normal truncate ${departmentColor}`}
+                >
+                  {departmentText}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="flex gap-1">
-              <Icon
-                name="location"
-                size={16}
-                color={workLocationColor}
-                hover={false}
-              />
-              <div
-                className={`text-xs font-normal line-clamp-1 ${workLocationColor}`}
-                data-testid={`people-card-location-${workLocation?.name}`}
-              >
-                {workLocationText}
+            {!isLxp && (
+              <div className="flex gap-1">
+                <Icon
+                  name="location"
+                  size={16}
+                  color={workLocationColor}
+                  hover={false}
+                />
+                <div
+                  className={`text-xs font-normal line-clamp-1 ${workLocationColor}`}
+                  data-testid={`people-card-location-${workLocation?.name}`}
+                >
+                  {workLocationText}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </Card>
