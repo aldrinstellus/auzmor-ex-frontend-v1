@@ -5,6 +5,7 @@ import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { contactSales } from 'queries/users';
+import { contactSales as contactLearnSales } from 'queries/learn';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -64,22 +65,31 @@ const ContactSales: React.FC<AppProps> = ({
 
   const _body = watch('body');
 
-  const postMutation = useMutation((formData: any) => contactSales(formData), {
-    onError: () => {},
-    onSuccess: () => {
-      successToastConfig(
-        'Your message has been successfully sent to sales team',
-        '',
-        'bottom',
-      );
-      setValue('subject', '');
-      setValue('body', '');
+  const postMutation = useMutation(
+    (formData: any) =>
+      isLxp ? contactLearnSales(formData) : contactSales(formData),
+    {
+      onError: () => {},
+      onSuccess: () => {
+        successToastConfig(
+          'Your message has been successfully sent to sales team',
+          '',
+          'bottom',
+        );
+        setValue('subject', '');
+        setValue('body', '');
+      },
     },
-  });
+  );
 
   const onSubmit = () => {
     const { subject, body } = getValues();
-    postMutation.mutate({ subject: subject || 'No Subject Provided', body });
+    const payload = {
+      subject: subject || 'No Subject Provided',
+      body,
+      ...(isLxp && { from: user?.email }),
+    };
+    postMutation.mutate(payload);
   };
 
   const fields = [
