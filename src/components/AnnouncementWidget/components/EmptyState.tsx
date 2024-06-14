@@ -20,7 +20,7 @@ const EmptyState: FC<EmptyStateProps> = ({ openModal }) => {
         When announcements are created, they appear on this card
       </p>
       <div className="h-[107px]">
-        <img src={NoAnnouncement} height={107} />
+        <img src={NoAnnouncement} height={107} alt="No Announcement" />
       </div>
       {showCreateAnnouncement && (
         <>

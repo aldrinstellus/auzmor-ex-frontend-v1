@@ -41,7 +41,7 @@ const DocumentSearch: FC<DocumentSearchProps> = ({ searchQuery = '' }) => {
     return (
       <div className="flex flex-col w-full justify-center items-center gap-4 pt-8">
         <div className="flex w-full justify-center">
-          <img src={require('images/noResult.png')} />
+          <img src={require('images/noResult.png')} alt="No Results Found" />
         </div>
         <p className="font-bold text-xl text-neutral-900">No results found</p>
         <Button

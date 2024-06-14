@@ -447,7 +447,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
                     />
                   ) : (
                     <div className="flex flex-col justify-center items-center p-4">
-                      <img src={require('../nodata.png')} />
+                      <img src={require('../nodata.png')} alt="No Data" />
                       <div
                         className="pt-4 text-2xl font-bold"
                         data-testid="no-data-msg"

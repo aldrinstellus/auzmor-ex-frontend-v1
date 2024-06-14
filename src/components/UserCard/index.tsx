@@ -213,6 +213,7 @@ const UserCard: FC<IUserCardProp> = ({
                 src="${response?.data?.result?.data?.manager?.profileImage?.original}"
                 style="border-radius:100%;width:32px;height:32px;"
                 data-testid="user-card-manager-avatar"
+                alt="Manager Profile Picture"
               />`;
               } else if (response?.data?.result?.data?.manager?.fullName) {
                 ele.innerHTML = `<div class="w-full h-full rounded-full bg-neutral-800 text-white font-medium flex justify-center items-center text-lg"><div>${getInitials(
@@ -257,7 +258,7 @@ const UserCard: FC<IUserCardProp> = ({
             id={`user-card-${user?.id}-cover-image`}
             className="object-cover object-center w-full rounded-t-9xl h-[53px]"
             src={getCoverImage({})}
-            alt={'User Cover Picture Profile'}
+            alt={'User cover picture profile'}
             data-testid="user-cover-pic"
           />
           <div className="absolute top-[18px] left-[18px]">

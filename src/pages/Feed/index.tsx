@@ -236,7 +236,11 @@ const Feed: FC<IFeedProps> = () => {
       return (
         <div className="bg-white p-6 flex flex-col rounded-9xl">
           <div className="h-220 bg-blue-50 flex justify-center rounded-9xl">
-            <img src={NoPosts} data-testid="mybookmark-tab-nopost"></img>
+            <img
+              src={NoPosts}
+              data-testid="mybookmark-tab-nopost"
+              alt="No Posts"
+            />
           </div>
           <div className="font-bold text-2xl/[36px] text-center mt-5">
             No posts found
@@ -251,7 +255,11 @@ const Feed: FC<IFeedProps> = () => {
       return (
         <div className="bg-white p-6 flex flex-col rounded-9xl">
           <div className="h-220 bg-blue-50 flex justify-center rounded-9xl">
-            <img src={NoPosts} data-testid="mybookmark-tab-nopost"></img>
+            <img
+              src={NoPosts}
+              data-testid="mybookmark-tab-nopost"
+              alt="No Posts"
+            />
           </div>
           <div data-testid="scheduledpost-tab-nodata">
             <div className="font-bold text-base text-neutral-900 text-center mt-6">
@@ -271,7 +279,11 @@ const Feed: FC<IFeedProps> = () => {
       return (
         <div className="bg-white p-6 flex flex-col rounded-9xl">
           <div className="h-220 bg-blue-50 flex justify-center rounded-9xl">
-            <img src={NoPosts} data-testid="mybookmark-tab-nopost"></img>
+            <img
+              src={NoPosts}
+              data-testid="mybookmark-tab-nopost"
+              alt="No Posts"
+            />
           </div>
           <div className="font-bold text-2xl/[36px] text-center mt-5">
             No posts found
@@ -283,7 +295,11 @@ const Feed: FC<IFeedProps> = () => {
       return (
         <div className="bg-white p-6 flex flex-col rounded-9xl">
           <div className="h-220 bg-blue-50 flex justify-center rounded-9xl">
-            <img src={NoPosts} data-testid="mybookmark-tab-nopost"></img>
+            <img
+              src={NoPosts}
+              data-testid="mybookmark-tab-nopost"
+              alt="No Posts"
+            />
           </div>
           <div data-testid="scheduledpost-tab-nodata">
             <div className="text-neutral-900 font-semibold text-lg mt-6 text-center">

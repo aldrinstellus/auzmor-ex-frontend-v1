@@ -99,7 +99,7 @@ const PublishPostModal: FC<PublishPostModalProps> = ({ closeModal, post }) => {
       />
       <div className="px-6 py-4">
         <div className="flex justify-center mb-4">
-          <img src={ErrorWarningPng} />
+          <img src={ErrorWarningPng} alt="Warning" />
         </div>
         <div className="justify-center w-full flex text-sm">
           Are you sure you want to publish post now?

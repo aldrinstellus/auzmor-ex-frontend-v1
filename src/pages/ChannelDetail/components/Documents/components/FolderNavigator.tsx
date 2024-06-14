@@ -80,7 +80,7 @@ const FolderNavigator: FC<IFolderNavigatorProps> = ({
     return (
       <div className="flex flex-col w-full justify-center items-center gap-4">
         <div className="flex w-full justify-center">
-          <img src={require('images/noResult.png')} />
+          <img src={require('images/noResult.png')} alt="No Result" />
         </div>
         <p className="font-bold text-xl text-neutral-900">No documents found</p>
         <Button

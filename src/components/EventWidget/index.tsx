@@ -102,6 +102,7 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
                     transition: 'all 0.25s ease-in 0s',
                     animation: '0.15s ease-in 0s 1 normal both running fadeIn',
                   }}
+                  alt={`${event?.name} Image`}
                 />
                 {!isLive && event?.conference_url && (
                   <>

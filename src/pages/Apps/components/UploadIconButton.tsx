@@ -240,6 +240,7 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
               <img
                 id="add-app-icon"
                 className="h-[52px] w-auto group-hover:opacity-50 transition-opacity duration-100"
+                alt="App Icon"
               />
             </div>
           </div>

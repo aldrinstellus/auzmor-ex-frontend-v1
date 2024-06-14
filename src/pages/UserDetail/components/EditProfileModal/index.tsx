@@ -400,11 +400,13 @@ const EditProfileModal: FC<IEditProfileModal> = ({
               <img
                 className="object-cover w-full"
                 src={userDetails?.coverImage?.original}
+                alt="Cover Image"
               />
             ) : (
               <img
                 className="object-cover h-full w-full"
                 src={DefaultCoverImage}
+                alt="Cover Image"
               />
             )}
           </div>

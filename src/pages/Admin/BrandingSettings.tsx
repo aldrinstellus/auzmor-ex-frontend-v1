@@ -95,6 +95,7 @@ const Preview: FC<{
           src={getMediaObj([file])[0].original}
           className={imageStyle}
           data-testid={`branding-uploaded-${dataTestId}`}
+          alt="Preview Image"
         />
       )}
 
@@ -125,6 +126,7 @@ const Preview: FC<{
           src={url}
           className={imageStyle}
           data-testid={`branding-uploaded-${dataTestId}`}
+          alt="Image preview"
         />
       )}
 
@@ -680,6 +682,7 @@ const BrandingSettings: FC = () => {
           <img
             className="absolute top-0 left-0 object-cover h-full w-full"
             src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOfficeLarge}
+            alt="Background image preview"
           />
         );
       } else {
@@ -692,6 +695,7 @@ const BrandingSettings: FC = () => {
                   ? getBlobUrl(selectedBG)
                   : branding?.loginConfig?.image?.original
               }
+              alt="Background image preview"
             />
           );
         } else {
@@ -699,6 +703,7 @@ const BrandingSettings: FC = () => {
             <img
               className="absolute top-0 left-0 object-cover h-full w-full"
               src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOfficeLarge}
+              alt="Background image preview"
             />
           );
         }
@@ -711,6 +716,7 @@ const BrandingSettings: FC = () => {
               <img
                 className="object-cover h-full"
                 src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
+                alt="Background image preview"
               />
             </div>
           );
@@ -727,6 +733,7 @@ const BrandingSettings: FC = () => {
                       ? getBlobUrl(selectedBG)
                       : branding?.loginConfig?.image?.original
                   }
+                  alt="Background image preview"
                 />
               </div>
             );
@@ -738,6 +745,7 @@ const BrandingSettings: FC = () => {
                 <img
                   className="object-cover h-full"
                   src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
+                  alt="Background image preview"
                 />
               </div>
             );
@@ -750,6 +758,7 @@ const BrandingSettings: FC = () => {
               <img
                 className="object-cover h-full"
                 src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
+                alt="Background image preview"
               />
             </div>
           );
@@ -764,6 +773,7 @@ const BrandingSettings: FC = () => {
                       ? getBlobUrl(selectedBG)
                       : branding?.loginConfig?.image?.original
                   }
+                  alt="Background image preview"
                 />
               </div>
             );
@@ -775,6 +785,7 @@ const BrandingSettings: FC = () => {
                 <img
                   className="object-cover h-full"
                   src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
+                  alt="Background image preview"
                 />
               </div>
             );
@@ -1112,7 +1123,11 @@ const BrandingSettings: FC = () => {
               <p className="font-normal text-[8px] text-neutral-500 text-center px-2.5">
                 Lorem ipsum dolor si amet. Lorem ipsum dolor si amet
               </p>
-              <img src={NoAnnouncement} className="h-[70px]" />
+              <img
+                src={NoAnnouncement}
+                className="h-[70px]"
+                alt="No announcement"
+              />
 
               <div
                 className="flex items-center justify-center text-white rounded-19xl px-2.5 py-2 mx-2.5 text-sm font-bold"
@@ -1421,6 +1436,7 @@ const BrandingSettings: FC = () => {
                       <img
                         src={getBlobUrl(selectedLogo)}
                         className="h-full object-cover"
+                        alt="Logo preview"
                       />
                     ) : (
                       <Logo className="!h-[12px]" />
