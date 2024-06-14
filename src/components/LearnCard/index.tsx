@@ -141,6 +141,7 @@ const LearnCard: FC<ILearnCardProps> = ({
           transition: 'all 0.25s ease-in 0s',
           animation: '0.15s ease-in 0s 1 normal both running fadeIn',
         }}
+        alt={`${data.title} Image`}
       />
       <div
         className="cursor-pointer rounded-lg absolute"

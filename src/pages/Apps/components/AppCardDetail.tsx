@@ -47,6 +47,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                 src={app?.icon?.original || DefaultAppIcon}
                 height={20}
                 width={20}
+                alt={`${app.label} Image`}
               />
             </div>
             <p className="text-neutral-900 text-lg font-extrabold line-clamp-1">
@@ -65,7 +66,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
         {/* Body */}
         <div className="px-6 py-3">
           <div className="border-orange-300 border-1 rounded-9xl relative">
-            <img src={AppDetailSVG} className="absolute" />
+            <img src={AppDetailSVG} className="absolute" alt="App details" />
             <div className="z-10 relative">
               <div className="w-full pt-4 px-5 flex justify-between">
                 <div className="flex gap-2">
@@ -108,6 +109,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                       className="p-1 rounded-xl"
                       height={100}
                       width={100}
+                      alt="app icon"
                     />
                   </div>
                   <div>

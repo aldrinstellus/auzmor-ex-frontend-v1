@@ -79,7 +79,7 @@ const Doc: FC<IDocProps> = ({ file }) => {
       >
         <div className="border border-neutral-300 overflow-hidden rounded-7xl w-full h-28">
           {imgSrc ? (
-            <img src={imgSrc} onError={onError} />
+            <img src={imgSrc} onError={onError} alt="Image" />
           ) : (
             <div className="flex items-center justify-center h-full">
               <Icon name={iconName} size={56} />

@@ -249,6 +249,7 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
               src={app?.icon?.original || DefaultAppIcon}
               height={44}
               width={44}
+              alt={`${app.label} Image`}
             />
           </div>
 

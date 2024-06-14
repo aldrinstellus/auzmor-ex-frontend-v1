@@ -9,6 +9,7 @@ const EmptyState = () => {
         width={'132px'}
         height={'124px'}
         className="opacity-75"
+        alt="No Events"
       />
       <div className="text-base font-bold line-clamp-2 text-neutral-900">
         {header}

@@ -97,7 +97,7 @@ const Carousel: FC<ICarouselProps> = ({
     <div>
       <div className={style}>
         {media[currentIndex].type === 'IMAGE' ? (
-          <img src={media[currentIndex].original} />
+          <img src={media[currentIndex].original} alt="Media" />
         ) : coverImageUrl ? (
           <video
             key={media[currentIndex].original}

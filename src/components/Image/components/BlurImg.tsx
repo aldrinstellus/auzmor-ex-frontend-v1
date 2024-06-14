@@ -48,6 +48,7 @@ const BlurImg: FC = (allProps: Props): ReactElement => {
       onLoad={handleOnLoad}
       style={newStyle}
       data-testid={allProps?.dataTestId}
+      alt="Image"
     />
   );
 };

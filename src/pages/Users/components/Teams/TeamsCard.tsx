@@ -96,7 +96,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
             />
           ) : (
             <div className="p-[18px] bg-neutral-200 rounded-full">
-              <img src={TeamWork} height={44} width={44} />
+              <img src={TeamWork} height={44} width={44} alt="Team Icon" />
             </div>
           )}
           <div className="flex-1 flex flex-col gap-2">
