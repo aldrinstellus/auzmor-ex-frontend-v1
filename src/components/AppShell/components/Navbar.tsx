@@ -169,6 +169,7 @@ const Navbar = () => {
                       onClick={() => {
                         window.open(nav.linkTo);
                       }}
+                      tabIndex={0}
                     />
                   ))}
                 <NotificationsOverview />

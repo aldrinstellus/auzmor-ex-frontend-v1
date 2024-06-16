@@ -548,11 +548,11 @@ const Feed: FC<IFeedProps> = () => {
         ) : feedIds?.length === 0 ? (
           getEmptyFeedComponent()
         ) : (
-          <div className="flex flex-col gap-6">
+          <ul className="flex flex-col gap-6">
             {[...announcementFeedIds, ...regularFeedIds]?.map(
               ({ id }, index) => (
                 <>
-                  <div
+                  <li
                     data-testid={`feed-post-${index}`}
                     className="flex flex-col gap-6"
                     key={id}
@@ -561,27 +561,31 @@ const Feed: FC<IFeedProps> = () => {
                       postId={id!}
                       commentIds={feed[id]?.relevantComments || []}
                     />
-                  </div>
+                  </li>
                   {index === recommendationIndex.tIndex && (
-                    <Recommendation
-                      cards={trendingCards}
-                      title="Trending Content"
-                      isLoading={recommendationLoading}
-                      onCLick={handleTrendingContent}
-                    />
+                    <li data-testid={`trending-content-post`}>
+                      <Recommendation
+                        cards={trendingCards}
+                        title="Trending Content"
+                        isLoading={recommendationLoading}
+                        onCLick={handleTrendingContent}
+                      />
+                    </li>
                   )}
                   {index === recommendationIndex.rIndex && (
-                    <Recommendation
-                      cards={recentlyPublishedCards}
-                      title="Recently Published"
-                      isLoading={recommendationLoading}
-                      onCLick={handleRecentlyPublishContent}
-                    />
+                    <li data-testid={`recently-published-content-post`}>
+                      <Recommendation
+                        cards={recentlyPublishedCards}
+                        title="Recently Published"
+                        isLoading={recommendationLoading}
+                        onCLick={handleRecentlyPublishContent}
+                      />
+                    </li>
                   )}
                 </>
               ),
             )}
-          </div>
+          </ul>
         )}
 
         {isFetchingNextPage ? (
