@@ -12,6 +12,7 @@ import Team from './components/Teams';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PopupMenu from 'components/PopupMenu';
 import useProduct from 'hooks/useProduct';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 interface IUsersProps {}
 
@@ -20,6 +21,12 @@ const Users: FC<IUsersProps> = () => {
   const navigate = useNavigate();
   const currentPathname = location.pathname;
   const isUserTab = currentPathname.includes('users');
+
+  if (isUserTab) {
+    usePageTitle('users');
+  } else {
+    usePageTitle('teams');
+  }
 
   const [showOrgChart, setShowOrgChart] = useState<boolean>(false);
   const [showAddUserModal, openAddUserModal, closeAddUserModal] = useModal(

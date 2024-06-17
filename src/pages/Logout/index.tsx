@@ -4,8 +4,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Logo } from 'components/Logo';
 import { useCheckLogin } from 'queries/account';
 import PageLoader from 'components/PageLoader';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 const Logout = () => {
+  usePageTitle('logout');
   const { data, isLoading, isError } = useCheckLogin();
   const navigate = useNavigate();
 

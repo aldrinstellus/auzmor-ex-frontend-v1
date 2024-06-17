@@ -7,8 +7,10 @@ import GeneralSettings from './GeneralSettings';
 import BrandingSettings from './BrandingSettings';
 import useURLParams from 'hooks/useURLParams';
 import useRole from 'hooks/useRole';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 const Admin: FC = () => {
+  usePageTitle('admin');
   const { updateParam, searchParams } = useURLParams();
   const { isAdmin, isSuperAdmin } = useRole({ exact: true });
   const [activeSettingsIndex, setActiveSettingsIndex] = useState<number>(0);

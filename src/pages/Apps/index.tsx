@@ -31,6 +31,7 @@ import { ICategory } from 'queries/category';
 import { ITeam } from 'queries/teams';
 import useProduct from 'hooks/useProduct';
 import { useInfiniteLearnCategory } from 'queries/learn';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -61,6 +62,7 @@ const defaultAppFilters: IAppFilters = {
 };
 
 const Apps: FC<IAppsProps> = () => {
+  usePageTitle('apps');
   const {
     searchParams,
     updateParam,

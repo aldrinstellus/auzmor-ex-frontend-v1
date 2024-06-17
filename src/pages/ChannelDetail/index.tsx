@@ -6,8 +6,10 @@ import Members from './components/Members';
 import DocumentPathProvider from 'contexts/DocumentPathContext';
 import { useChannelStore } from 'stores/channelStore';
 import { useParams } from 'react-router-dom';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 const ChannelDetail = () => {
+  usePageTitle('channelDetails');
   const { channelId } = useParams();
 
   const [activeTab, setActiveTab] = useState('home');

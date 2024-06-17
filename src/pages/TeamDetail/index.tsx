@@ -33,10 +33,12 @@ import { FC, useEffect } from 'react';
 import useRole from 'hooks/useRole';
 import TeamOptions from 'components/TeamOptions';
 import useProduct from 'hooks/useProduct';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 export interface ITeamMemberProps {}
 
 const TeamDetail: FC<ITeamMemberProps> = () => {
+  usePageTitle('teamProfile');
   const params = useParams();
   const [searchParams] = useSearchParams();
   const { state } = useLocation();
