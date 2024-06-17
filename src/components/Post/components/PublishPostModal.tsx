@@ -5,12 +5,7 @@ import Button, { Variant as ButtonVariant } from 'components/Button';
 import { useMutation } from '@tanstack/react-query';
 import { IPost, IPostPayload, updatePost } from 'queries/post';
 import { useFeedStore } from 'stores/feedStore';
-import { toast } from 'react-toastify';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { FC } from 'react';
 
@@ -40,31 +35,14 @@ const PublishPostModal: FC<PublishPostModalProps> = ({ closeModal, post }) => {
       if (context?.previousData && variables?.id) {
         updateFeed(variables.id, context?.previousData);
       }
-      toast(
-        <FailureToast
-          content="Error updating post"
-          dataTestId="post-update-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-            backgroundColor: twConfig.theme.colors.neutral[900],
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      failureToastConfig({
+        content: 'Error updating post',
+        dataTestId: 'post-update-toaster',
+      });
     },
     onSuccess: async () =>
       successToastConfig({
-        message: 'Post updated successfully',
+        content: 'Post updated successfully',
         dataTestId: 'post-update-toaster',
       }),
   });

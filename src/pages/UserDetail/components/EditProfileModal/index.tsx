@@ -323,7 +323,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
         });
       }
 
-      successToastConfig({ message: 'User Profile Updated Successfully' });
+      successToastConfig({ content: 'User Profile Updated Successfully' });
       reset();
       closeEditProfileModal();
       await queryClient.invalidateQueries({ queryKey: ['departments'] });

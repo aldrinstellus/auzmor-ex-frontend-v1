@@ -119,7 +119,7 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
     },
     onSuccess: async (_data, _variables) => {
       successToastConfig({
-        message: 'Post has been bookmarked successfully!',
+        content: 'Post has been bookmarked successfully!',
         dataTestId: 'successfully-bookmarked-toast',
         actionLabel: 'View Bookmarks',
         action: () => navigate('/bookmarks'),
@@ -138,7 +138,7 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
     },
     onSuccess: async (_data, _variables) => {
       successToastConfig({
-        message: 'Post removed from your bookmarks',
+        content: 'Post removed from your bookmarks',
         dataTestId: 'removed-bookmark-toast',
       });
     },

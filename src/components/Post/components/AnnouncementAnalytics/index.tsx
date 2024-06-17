@@ -45,7 +45,7 @@ const AnnouncementAnalytics: FC<AppProps> = ({ post, open, closeModal }) => {
         document.body.appendChild(a);
         a.click();
         successToastConfig({
-          message: 'Report exported successfully',
+          content: 'Report exported successfully',
           dataTestId: 'acknowledgement-report-export-toast-message',
         });
       },

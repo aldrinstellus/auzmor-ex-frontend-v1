@@ -59,7 +59,7 @@ const SuccessToast: FC<ISuccessToastProps> = ({
 export default SuccessToast;
 
 interface ISuccessToastConfig {
-  message?: string | ReactNode;
+  content?: string | ReactNode;
   dataTestId?: string;
   variant?: string;
   actionLabel?: string;
@@ -67,7 +67,7 @@ interface ISuccessToastConfig {
 }
 
 export const successToastConfig = ({
-  message = 'Your changes have been saved',
+  content = 'Your changes have been saved',
   dataTestId,
   variant = 'default',
   actionLabel,
@@ -75,7 +75,7 @@ export const successToastConfig = ({
 }: ISuccessToastConfig) =>
   toast(
     <SuccessToast
-      content={message}
+      content={content}
       dataTestId={dataTestId}
       variant={variant}
       actionLabel={actionLabel}

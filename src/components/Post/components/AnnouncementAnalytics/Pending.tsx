@@ -31,7 +31,7 @@ const Pending: FC<AppProps> = ({ post, closeModal }) => {
       onError: () => {},
       onSuccess: () => {
         successToastConfig({
-          message: 'Reminder has been sent to all unreads',
+          content: 'Reminder has been sent to all unreads',
           dataTestId: 'acknowledgement-reminder-toast-message',
         });
         closeModal();

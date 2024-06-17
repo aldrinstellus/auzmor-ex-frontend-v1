@@ -21,7 +21,7 @@ const CopyButton: FC<CopyButtonProps> = ({
         dataTestId={dataTestId}
         onClick={() => {
           navigator.clipboard.writeText(content);
-          successToastConfig({ message: 'Copied to clipboard' });
+          successToastConfig({ content: 'Copied to clipboard' });
         }}
       />
     </div>

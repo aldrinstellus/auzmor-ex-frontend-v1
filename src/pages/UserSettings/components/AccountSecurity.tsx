@@ -55,7 +55,7 @@ const AccountSecurity = () => {
       },
       onSuccess: (_data) => {
         reset();
-        successToastConfig({ message: 'Password updated successfully' });
+        successToastConfig({ content: 'Password updated successfully' });
       },
     },
   );

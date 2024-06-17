@@ -19,13 +19,9 @@ import {
   getFullName,
   getProfileImage,
   getUserCardTooltipProps,
-  twConfig,
 } from 'utils/misc';
 import { produce } from 'immer';
-import { toast } from 'react-toastify';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import ConfirmationBox from 'components/ConfirmationBox';
 import useModal from 'hooks/useModal';
@@ -69,31 +65,14 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
       closeConfirm();
       return { previousData };
     },
-    onError: (_error: any) => {
-      toast(
-        <FailureToast
-          content="Error deleting reply"
-          dataTestId="reply-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-    },
+    onError: () =>
+      failureToastConfig({
+        content: 'Error deleting reply',
+        dataTestId: 'reply-toaster',
+      }),
     onSuccess: () =>
       successToastConfig({
-        message: 'Reply has been deleted',
+        content: 'Reply has been deleted',
         dataTestId: 'comment-toaster',
       }),
   });

@@ -124,7 +124,7 @@ const InviteUserModal: FC<IInviteUserModalProps> = ({
           : `${invitedCount} out of the ${data.result.data.length} users were invited successfully `;
 
       successToastConfig({
-        message: toastString,
+        content: toastString,
         actionLabel:
           invitedCount !== data.result.data.length ? 'Show details' : '',
         action: () => {

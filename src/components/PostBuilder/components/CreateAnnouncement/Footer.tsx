@@ -104,7 +104,7 @@ const Footer: FC<IFooterProps> = ({
       }
 
       successToastConfig({
-        message: preIsAnnouncement
+        content: preIsAnnouncement
           ? 'Your announcement was updated successfully'
           : "You've shared the post as an announcement",
         dataTestId: isEmpty(data.announcement)

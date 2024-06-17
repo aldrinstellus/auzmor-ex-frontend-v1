@@ -68,7 +68,7 @@ const ContactSales: React.FC<AppProps> = ({
     onError: () => {},
     onSuccess: () => {
       successToastConfig({
-        message: 'Your message has been successfully sent to sales team',
+        content: 'Your message has been successfully sent to sales team',
         variant: 'bottom',
       });
       setValue('subject', '');
