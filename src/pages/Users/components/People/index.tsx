@@ -23,7 +23,7 @@ import InviteUserModal from '../InviteUserModal';
 import { useInfiniteTeamMembers } from 'queries/teams';
 import { EntitySearchModalType } from 'components/EntitySearchModal';
 import Sort from 'components/Sort';
-import FilterModal, { IStatus } from 'components/FilterModal';
+import FilterModal, { IAppliedFilters, IStatus } from 'components/FilterModal';
 import useURLParams from 'hooks/useURLParams';
 import NoDataFound from 'components/NoDataFound';
 import useRole from 'hooks/useRole';
@@ -49,19 +49,12 @@ interface IRole {
   label: string;
 }
 
-interface IPeopleFilters {
-  departments?: IDepartmentAPI[];
-  locations?: ILocationAPI[];
-  status?: IStatus[];
-  roles?: any;
-}
-
 interface IForm {
   search?: string;
   role?: IRole | null;
 }
 
-const defaultFilters: IPeopleFilters = {
+const defaultFilters: IAppliedFilters = {
   status: [],
   departments: [],
   locations: [],
@@ -85,7 +78,7 @@ const People: FC<IPeopleProps> = ({
   } = useURLParams();
   const [startFetching, setStartFetching] = useState(false);
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
-  const [appliedFilters, setAppliedFilters] = useState<IPeopleFilters>({
+  const [appliedFilters, setAppliedFilters] = useState<IAppliedFilters>({
     ...defaultFilters,
   });
   const [filterSortBy, setFilterSortBy] = useState<string>('');
@@ -246,7 +239,7 @@ const People: FC<IPeopleProps> = ({
     setAppliedFilters({ ...appliedFilters, [key]: updatedFilter });
   };
 
-  const onApplyFilter = (appliedFilters: IPeopleFilters) => {
+  const onApplyFilter = (appliedFilters: IAppliedFilters) => {
     setAppliedFilters(appliedFilters);
     if (appliedFilters.status?.length) {
       const serializedStatus = serializeFilter(appliedFilters.status);
