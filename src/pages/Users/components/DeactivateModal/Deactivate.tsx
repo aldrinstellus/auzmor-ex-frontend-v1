@@ -9,12 +9,7 @@ import Button, {
 import Modal from 'components/Modal';
 import { UserStatus, updateStatus } from 'queries/users';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import { toast } from 'react-toastify';
-import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { FC } from 'react';
 export interface IReactivatePeopleProps {
   open: boolean;
@@ -46,20 +41,7 @@ const DeactivatePeople: FC<IReactivatePeopleProps> = ({
       queryClient.invalidateQueries(['team-members']);
       queryClient.invalidateQueries(['organization-chart'], { exact: false });
       queryClient.invalidateQueries(['celebrations'], { exact: false });
-      toast(<SuccessToast content={`User has been deactivated`} />, {
-        closeButton: (
-          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
-        ),
-        style: {
-          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
-        },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
-      });
+      successToastConfig({ message: `User has been deactivated` });
     },
   });
 

@@ -21,11 +21,7 @@ import useAuth from 'hooks/useAuth';
 import queryClient from 'utils/queryClient';
 import Header from 'components/ModalHeader';
 import PopupMenu from 'components/PopupMenu';
-import { toast } from 'react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import Icon from 'components/Icon';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useGooglePlaces } from 'queries/location';
 import { useInfiniteDepartments } from 'queries/department';
 import useRole from 'hooks/useRole';
@@ -327,20 +323,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
         });
       }
 
-      toast(<SuccessToast content={'User Profile Updated Successfully'} />, {
-        closeButton: (
-          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
-        ),
-        style: {
-          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
-        },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
-      });
+      successToastConfig({ message: 'User Profile Updated Successfully' });
       reset();
       closeEditProfileModal();
       await queryClient.invalidateQueries({ queryKey: ['departments'] });

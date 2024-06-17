@@ -10,21 +10,17 @@ import { CropperRef } from 'react-advanced-cropper';
 import 'react-advanced-cropper/dist/style.css';
 import { IUpdateProfileImage } from 'pages/UserDetail';
 import Header from 'components/ModalHeader';
-import Icon from 'components/Icon';
-import { BlobToFile, twConfig } from 'utils/misc';
+import { BlobToFile } from 'utils/misc';
 import Modal from 'components/Modal';
 import { EntityType } from 'queries/files';
 import { UploadStatus, useUpload } from 'hooks/useUpload';
 import queryClient from 'utils/queryClient';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import { toast } from 'react-toastify';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useAuth from 'hooks/useAuth';
 import { updateCurrentUser, updateUserById } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
 import Footer from './Footer';
 import ImageCropper from 'components/ImageCropper';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
 import PageLoader from 'components/PageLoader';
 
 export interface AppProps {
@@ -124,33 +120,13 @@ const EditImageModal: FC<AppProps> = ({
           coverImage: userUpdateResponse?.coverImage?.original,
         });
         setImageFile && setImageFile({});
-        toast(
-          <SuccessToast
-            content={`${
-              fileEntityType === EntityType.UserProfileImage
-                ? 'Profile Picture'
-                : 'Cover Picture'
-            } Updated Successfully`}
-          />,
-          {
-            closeButton: (
-              <Icon
-                name="closeCircleOutline"
-                color="text-primary-500"
-                size={20}
-              />
-            ),
-            style: {
-              border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-            },
-            autoClose: TOAST_AUTOCLOSE_TIME,
-            transition: slideInAndOutTop,
-            theme: 'dark',
-          },
-        );
+        successToastConfig({
+          message: `${
+            fileEntityType === EntityType.UserProfileImage
+              ? 'Profile Picture'
+              : 'Cover Picture'
+          } Updated Successfully`,
+        });
       }
 
       closeEditImageModal();

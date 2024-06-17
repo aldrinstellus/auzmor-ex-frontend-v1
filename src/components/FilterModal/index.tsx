@@ -455,9 +455,9 @@ const FilterModal: FC<IFilterModalProps> = ({
       <form>
         <div className="flex w-full">
           <div className="flex flex-col w-1/3 pb-64 border-r-2 border-r-neutral-200">
-            <div className="border-b-2 border-b-bg-neutral-200">
+            <ul className="border-b-2 border-b-bg-neutral-200">
               {filterNavigation.map((item, index) => (
-                <div
+                <li
                   key={item.key}
                   onClick={() => setActiveFilter(item)}
                   data-testid={item?.dataTestId}
@@ -471,9 +471,9 @@ const FilterModal: FC<IFilterModalProps> = ({
                     {item.label()}
                   </div>
                   {index !== filterNavigation.length - 1 && <Divider />}
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
           <div className="w-2/3">{activeFilter.component()}</div>
         </div>

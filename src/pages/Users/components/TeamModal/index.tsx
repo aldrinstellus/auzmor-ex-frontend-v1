@@ -5,7 +5,7 @@ import Header from 'components/ModalHeader';
 import AddTeams from './AddTeams';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createTeams, updateTeam } from 'queries/teams';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import { twConfig } from 'utils/misc';
@@ -104,17 +104,7 @@ const TeamModal: FC<IAddTeamModalProps> = ({
     },
     onSuccess: (data: any) => {
       queryClient.invalidateQueries(['teams']);
-      toast(<SuccessToast content={'Team Created Successfully'} />, {
-        style: {
-          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
-        },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
-      });
+      successToastConfig({ message: 'Team Created Successfully' });
       closeModal();
       navigate(`/teams/${data.result.id}?addMembers=true`, {
         state: { prevRoute: searchParams.get('tab') },
@@ -159,30 +149,10 @@ const TeamModal: FC<IAddTeamModalProps> = ({
     onSuccess: () => {
       queryClient.invalidateQueries(['teams']);
       queryClient.invalidateQueries(['team', team?.id]);
-      toast(
-        <SuccessToast
-          content={`Team has been updated`}
-          dataTestId="team-updated-success-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        message: `Team has been updated`,
+        dataTestId: 'team-updated-success-toaster',
+      });
       closeModal();
       queryClient.invalidateQueries(['categories']);
     },

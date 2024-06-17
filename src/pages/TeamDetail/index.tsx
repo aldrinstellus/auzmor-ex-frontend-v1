@@ -19,7 +19,7 @@ import { getFullName, getProfileImage, twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import queryClient from 'utils/queryClient';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useModal from 'hooks/useModal';
 import People from 'pages/Users/components/People';
 import {
@@ -96,28 +96,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
           : membersAddedCount === 1
           ? `${membersAddedCount} member has been added to the team`
           : 'Members already exist in the team';
-      toast(
-        <SuccessToast content={message} dataTestId="team-detail-toaster" />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-white"
-              size={20}
-              dataTestId="team-detail-toaster-close"
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({ message, dataTestId: 'team-detail-toaster' });
       queryClient.invalidateQueries(['search-team-members'], { exact: false });
       queryClient.invalidateQueries(['team-members']);
       queryClient.invalidateQueries(['team', id]);

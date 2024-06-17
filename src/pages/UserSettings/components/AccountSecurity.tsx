@@ -9,12 +9,9 @@ import { Variant as InputVariant } from 'components/Input';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import { getSubDomain, twConfig } from 'utils/misc';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { getSubDomain } from 'utils/misc';
 import { useGetSSOFromDomain } from 'queries/organization';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
 import Card from 'components/Card';
 
 interface IForm {
@@ -58,24 +55,7 @@ const AccountSecurity = () => {
       },
       onSuccess: (_data) => {
         reset();
-        toast(<SuccessToast content={'Password updated successfully'} />, {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        });
+        successToastConfig({ message: 'Password updated successfully' });
       },
     },
   );

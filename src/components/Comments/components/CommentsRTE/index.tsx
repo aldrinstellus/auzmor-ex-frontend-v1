@@ -22,7 +22,7 @@ import FailureToast from 'components/Toast/variants/FailureToast';
 import Icon from 'components/Icon';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import Button, { Size, Variant } from 'components/Button';
 import { IComment } from 'components/Comments';
 import MediaPreview, { Mode } from 'components/MediaPreview';
@@ -250,32 +250,12 @@ export const CommentsRTE: FC<CommentFormProps> = ({
     },
     onSuccess: (data: any, variables) => {
       updateStoredComment(variables.entityId!, { ...data });
-      toast(
-        <SuccessToast
-          content={`${
-            entityType === 'post' ? 'Comment' : 'Reply'
-          } has been updated`}
-          dataTestId="comment-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        message: `${
+          entityType === 'post' ? 'Comment' : 'Reply'
+        } has been updated`,
+        dataTestId: 'comment-toaster',
+      });
     },
   });
 

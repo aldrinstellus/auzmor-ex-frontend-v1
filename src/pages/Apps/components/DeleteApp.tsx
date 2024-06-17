@@ -9,7 +9,7 @@ import Button, {
 import Modal from 'components/Modal';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { toast } from 'react-toastify';
 import Icon from 'components/Icon';
@@ -56,30 +56,10 @@ const DeleteApp: FC<IDeleteAppProps> = ({ open, closeModal, appId }) => {
       closeModal(true);
       queryClient.invalidateQueries({ queryKey: ['apps'] });
       queryClient.invalidateQueries({ queryKey: ['my-apps'] });
-      toast(
-        <SuccessToast
-          content="App has been deleted successfully"
-          dataTestId="delete-app-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        message: 'App has been deleted successfully',
+        dataTestId: 'delete-app-toaster',
+      });
     },
   });
 

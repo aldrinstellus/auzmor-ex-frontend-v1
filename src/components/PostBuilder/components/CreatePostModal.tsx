@@ -35,7 +35,7 @@ import {
 } from 'utils/misc';
 import { useFeedStore } from 'stores/feedStore';
 import { toast } from 'react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
@@ -382,34 +382,14 @@ const CreatePostModal: FC<ICreatePostModal> = ({
       clearPostContext();
       closeModal();
       if (newPost.schedule) {
-        toast(
-          <SuccessToast
-            content={`Post scheduled for ${moment(
-              new Date(newPost.schedule.dateTime),
-            ).format('ddd, MMM DD')} at ${moment(
-              new Date(newPost.schedule.dateTime),
-            ).format('hh:mm a')}`}
-            dataTestId="toast-post-scheduled"
-          />,
-          {
-            closeButton: (
-              <Icon
-                name="closeCircleOutline"
-                color="text-primary-500"
-                size={20}
-              />
-            ),
-            style: {
-              border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-            },
-            autoClose: TOAST_AUTOCLOSE_TIME,
-            transition: slideInAndOutTop,
-            theme: 'dark',
-          },
-        );
+        successToastConfig({
+          message: `Post scheduled for ${moment(
+            new Date(newPost.schedule.dateTime),
+          ).format('ddd, MMM DD')} at ${moment(
+            new Date(newPost.schedule.dateTime),
+          ).format('hh:mm a')}`,
+          dataTestId: 'toast-post-scheduled',
+        });
         await queryClient.invalidateQueries(['scheduledPosts'], {
           exact: false,
         });
@@ -472,32 +452,10 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         ...data.result.data,
         id: variables.id!,
       } as IPost);
-      toast(
-        <SuccessToast
-          content="Post updated successfully"
-          dataTestId="post-update-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-            backgroundColor: twConfig.theme.colors.neutral[900],
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-
+      successToastConfig({
+        message: 'Post updated successfully',
+        dataTestId: 'post-update-toaster',
+      });
       await queryClient.invalidateQueries(['feed-announcements-widget']);
       await queryClient.invalidateQueries(['post-announcements-widget']);
     },

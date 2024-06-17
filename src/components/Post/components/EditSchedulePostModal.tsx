@@ -5,7 +5,7 @@ import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import FailureToast from 'components/Toast/variants/FailureToast';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import moment from 'moment';
 import { IPost, IPostPayload, updatePost } from 'queries/post';
@@ -88,34 +88,11 @@ const EditSchedulePostModal: FC<EditSchedulePostModalProp> = ({
         },
       );
     },
-    onSuccess: async () => {
-      toast(
-        <SuccessToast
-          content="Post updated successfully"
-          dataTestId="post-update-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-            // backgroundColor: twConfig.theme.colors.neutral[900],
-            color: 'white',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-    },
+    onSuccess: async () =>
+      successToastConfig({
+        message: 'Post updated successfully',
+        dataTestId: 'post-update-toaster',
+      }),
   });
   const userTimezone = getTimezoneNameFromIANA(schedule.timeZone);
   const { currentTimezone } = useCurrentTimezone();

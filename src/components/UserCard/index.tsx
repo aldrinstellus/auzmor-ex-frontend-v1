@@ -4,22 +4,18 @@ import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import IconWrapper from 'components/Icon/components/IconWrapper';
 import Spinner from 'components/Spinner';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useProduct from 'hooks/useProduct';
 import { IGetUser, getUser } from 'queries/users';
 import { FC } from 'react';
 import Skeleton from 'react-loading-skeleton';
-import { toast } from 'react-toastify';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import {
   getAvatarColor,
   getCoverImage,
   getFullName,
   getInitials,
   getProfileImage,
-  twConfig,
 } from 'utils/misc';
-import { slideInAndOutBottom } from 'utils/react-toastify';
 
 export enum UsercardVariant {
   Small = 'SMALL',
@@ -115,46 +111,16 @@ const UserCard: FC<IUserCardProp> = ({
     case UsercardVariant.Large: {
       handleCopyRef = () => {
         navigator.clipboard.writeText(emailRef);
-        toast(<SuccessToast content={'Copied to clipboard'} />, {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          position: 'bottom-center',
-          transition: slideInAndOutBottom,
-          theme: 'dark',
+        successToastConfig({
+          message: 'Copied to clipboard',
+          variant: 'bottom-center',
         });
       };
       handleContactCopyRef = () => {
         navigator.clipboard.writeText(contactRef);
-        toast(<SuccessToast content={'Copied to clipboard'} />, {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          position: 'bottom-center',
-          transition: slideInAndOutBottom,
-          theme: 'dark',
+        successToastConfig({
+          message: 'Copied to clipboard',
+          variant: 'bottom-center',
         });
       };
       const style = clsx({

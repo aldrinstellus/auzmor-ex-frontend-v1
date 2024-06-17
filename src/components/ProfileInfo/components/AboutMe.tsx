@@ -83,7 +83,7 @@ const AboutMe: FC<IAboutMeProps> = ({
     mutationKey: ['update-user-personal-details-mutation'],
     onError: (_error: any) => {},
     onSuccess: (_response: any) => {
-      successToastConfig();
+      successToastConfig({});
       setIsEditable(false);
     },
   });

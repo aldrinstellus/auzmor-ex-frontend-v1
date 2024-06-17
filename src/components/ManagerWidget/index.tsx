@@ -58,7 +58,7 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
     mutationKey: ['update-user-employeeId-mutation'],
     onError: (_error: any) => {},
     onSuccess: async (_response: any) => {
-      successToastConfig('Manager updated');
+      successToastConfig({ message: 'Manager updated' });
       if (userId) {
         await queryClient.invalidateQueries(['user', userId]);
       } else {

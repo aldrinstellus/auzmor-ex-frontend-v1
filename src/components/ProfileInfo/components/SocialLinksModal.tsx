@@ -55,7 +55,7 @@ const SocialLinksModal: FC<AppProps> = ({ open, closeModal, socialLinks }) => {
     mutationKey: ['update-user-social-accounts-mutation'],
     onError: (_error: any) => {},
     onSuccess: async (_response: any) => {
-      successToastConfig();
+      successToastConfig({});
       if (userId) {
         await queryClient.invalidateQueries(['user', userId]);
       } else {

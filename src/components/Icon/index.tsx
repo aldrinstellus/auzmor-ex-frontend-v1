@@ -14,6 +14,7 @@ export type IconProps = {
   dataTestId?: string;
   isActive?: boolean;
   hoverColor?: string;
+  tabIndex?: number;
 };
 
 const Icon: FC<IconProps> = ({
@@ -28,6 +29,7 @@ const Icon: FC<IconProps> = ({
   color,
   hoverColor,
   dataTestId,
+  tabIndex,
 }) => {
   const Component = iconMap[name] || null;
   if (!Component) {
@@ -63,6 +65,7 @@ const Icon: FC<IconProps> = ({
       onClick={!disabled ? onClick : undefined}
       strokeWidth={strokeWidth}
       data-testid={dataTestId}
+      tabIndex={tabIndex}
     />
   );
 };

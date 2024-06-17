@@ -13,7 +13,7 @@ import { UploadStatus, useUpload } from 'hooks/useUpload';
 import { EntityType } from 'queries/files';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { App, AppIcon, IAudience, createApp, editApp } from 'queries/apps';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import { twConfig } from 'utils/misc';
 import { slideInAndOutTop } from 'utils/react-toastify';
@@ -122,20 +122,7 @@ const AddApp: FC<AddAppProps> = ({
     onSuccess: async () => {
       await queryClient.invalidateQueries(['apps']);
       await queryClient.invalidateQueries(['my-apps']);
-      toast(<SuccessToast content={'App added successfully'} />, {
-        closeButton: (
-          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
-        ),
-        style: {
-          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
-        },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
-      });
+      successToastConfig({ message: 'App added successfully' });
       closeModal();
       isLxp
         ? queryClient.invalidateQueries(['learnCategory'])
@@ -173,30 +160,10 @@ const AddApp: FC<AddAppProps> = ({
       queryClient.invalidateQueries(['my-apps']);
       queryClient.invalidateQueries(['featured-apps']);
       queryClient.invalidateQueries(['my-featured-apps']);
-      toast(
-        <SuccessToast
-          content={`App has been updated`}
-          dataTestId="app-updated-success-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        message: `App has been updated`,
+        dataTestId: 'app-updated-success-toaster',
+      });
       closeModal();
       isLxp
         ? queryClient.invalidateQueries(['learnCategory'])

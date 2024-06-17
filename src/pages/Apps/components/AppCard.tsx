@@ -13,7 +13,7 @@ import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { toast } from 'react-toastify';
 import { slideInAndOutTop } from 'utils/react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useRole from 'hooks/useRole';
 import { FC } from 'react';
@@ -44,30 +44,10 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
       queryClient.invalidateQueries(['featured-apps']);
       queryClient.invalidateQueries(['my-apps']);
       queryClient.invalidateQueries(['my-featured-apps']);
-      toast(
-        <SuccessToast
-          content={`App has been added to featured apps`}
-          dataTestId="feature-app-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        message: `App has been added to featured apps`,
+        dataTestId: 'feature-app-toaster',
+      });
     },
     onError: (_error: any) => {
       toast(
@@ -101,30 +81,10 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
       queryClient.invalidateQueries(['featured-apps']);
       queryClient.invalidateQueries(['my-apps']);
       queryClient.invalidateQueries(['my-featured-apps']);
-      toast(
-        <SuccessToast
-          content={`App has been removed from featured apps`}
-          dataTestId="unfeature-app-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        message: `App has been removed from featured apps`,
+        dataTestId: 'unfeature-app-toaster',
+      });
     },
     onError: (_error: any) => {
       toast(

@@ -10,7 +10,7 @@ import Modal from 'components/Modal';
 import { deleteTeam } from 'queries/teams';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { toast } from 'react-toastify';
 import Icon from 'components/Icon';
@@ -57,31 +57,10 @@ const DeleteTeam: FC<IDeleteTeamProps> = ({
     onSuccess: (data, variables, context) => {
       closeModal();
       queryClient.invalidateQueries({ queryKey: ['teams'] });
-      toast(
-        <SuccessToast
-          content="Team has been deleted successfully"
-          dataTestId="team-toaster-message"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-              dataTestId="team-toaster-close"
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        message: 'Team has been deleted successfully',
+        dataTestId: 'team-toaster-message',
+      });
       if (isDetailPage) navigate('/teams');
     },
   });

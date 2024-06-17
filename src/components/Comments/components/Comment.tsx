@@ -27,7 +27,7 @@ import {
 } from 'utils/misc';
 import { CommentsRTE, PostCommentMode } from './CommentsRTE';
 import ConfirmationBox from 'components/ConfirmationBox';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { toast } from 'react-toastify';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
@@ -122,32 +122,11 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
         },
       );
     },
-    onSuccess: () => {
-      toast(
-        <SuccessToast
-          content="Comment has been deleted"
-          dataTestId="comment-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-    },
+    onSuccess: () =>
+      successToastConfig({
+        message: 'Comment has been deleted',
+        dataTestId: 'comment-toaster',
+      }),
   });
 
   const profileUrl = isLxp

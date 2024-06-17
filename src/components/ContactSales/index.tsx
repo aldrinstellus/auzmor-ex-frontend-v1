@@ -67,11 +67,10 @@ const ContactSales: React.FC<AppProps> = ({
   const postMutation = useMutation((formData: any) => contactSales(formData), {
     onError: () => {},
     onSuccess: () => {
-      successToastConfig(
-        'Your message has been successfully sent to sales team',
-        '',
-        'bottom',
-      );
+      successToastConfig({
+        message: 'Your message has been successfully sent to sales team',
+        variant: 'bottom',
+      });
       setValue('subject', '');
       setValue('body', '');
     },

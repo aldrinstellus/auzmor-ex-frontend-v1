@@ -26,7 +26,7 @@ import { toast } from 'react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import ConfirmationBox from 'components/ConfirmationBox';
 import useModal from 'hooks/useModal';
 import {
@@ -91,32 +91,11 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
         },
       );
     },
-    onSuccess: () => {
-      toast(
-        <SuccessToast
-          content="Reply has been deleted"
-          dataTestId="comment-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-    },
+    onSuccess: () =>
+      successToastConfig({
+        message: 'Reply has been deleted',
+        dataTestId: 'comment-toaster',
+      }),
   });
 
   const menuItemStyle = clsx({

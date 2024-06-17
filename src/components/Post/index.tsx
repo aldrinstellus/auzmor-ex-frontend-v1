@@ -1,6 +1,5 @@
 import { FC, Fragment, memo, useEffect, useRef } from 'react';
 import clsx from 'clsx';
-import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import moment from 'moment';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -21,16 +20,14 @@ import AcknowledgementBanner from './components/AcknowledgementBanner';
 import ReactionModal from './components/ReactionModal';
 import PublishPostModal from './components/PublishPostModal';
 import EditSchedulePostModal from './components/EditSchedulePostModal';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 
 // queries
 import { IPost, createBookmark, deleteBookmark } from 'queries/post';
 
 // utils
 import { getTimeInScheduleFormat, humanizeTime } from 'utils/time';
-import { getNouns, twConfig } from 'utils/misc';
-import { slideInAndOutTop } from 'utils/react-toastify';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { getNouns } from 'utils/misc';
 
 // hooks
 import useModal from 'hooks/useModal';
@@ -121,28 +118,12 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
       updateFeed(variables, { ...getPost(variables), bookmarked: false });
     },
     onSuccess: async (_data, _variables) => {
-      toast(
-        <SuccessToast
-          content="Post has been bookmarked successfully!"
-          dataTestId="successfully-bookmarked-toast"
-          actionLabel="View Bookmarks"
-          action={() => navigate('/bookmarks')}
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-white" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        message: 'Post has been bookmarked successfully!',
+        dataTestId: 'successfully-bookmarked-toast',
+        actionLabel: 'View Bookmarks',
+        action: () => navigate('/bookmarks'),
+      });
       await queryClient.invalidateQueries(['bookmarks'], { exact: false });
     },
   });
@@ -156,26 +137,10 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
       updateFeed(variables, { ...getPost(variables), bookmarked: true });
     },
     onSuccess: async (_data, _variables) => {
-      toast(
-        <SuccessToast
-          content="Post removed from your bookmarks"
-          dataTestId="removed-bookmark-toast"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-white" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        message: 'Post removed from your bookmarks',
+        dataTestId: 'removed-bookmark-toast',
+      });
     },
   });
 

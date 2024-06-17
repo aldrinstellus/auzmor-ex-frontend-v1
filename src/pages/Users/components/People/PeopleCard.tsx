@@ -12,8 +12,7 @@ import {
   // updateStatus,
   useResendInvitation,
 } from 'queries/users';
-import { toast } from 'react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import {
   getEditSection,
   getProfileImage,
@@ -21,8 +20,6 @@ import {
   titleCase,
   twConfig,
 } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
 import useModal from 'hooks/useModal';
 import DeletePeople from '../DeleteModals/People';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -132,20 +129,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     mutationKey: ['update-user-role'],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      toast(<SuccessToast content={`User role has been updated to admin`} />, {
-        closeButton: (
-          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
-        ),
-        style: {
-          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
-        },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
-      });
+      successToastConfig({ message: `User role has been updated to admin` });
     },
   });
 
@@ -234,24 +218,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
             onPromoteClick={() => updateUserRoleMutation.mutate({ id })}
             onDeactivateClick={openDeactivateModal}
             onResendInviteClick={() => {
-              toast(<SuccessToast content="Invitation has been sent" />, {
-                closeButton: (
-                  <Icon
-                    name="closeCircleOutline"
-                    color="text-primary-500"
-                    size={20}
-                  />
-                ),
-                style: {
-                  border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-                  borderRadius: '6px',
-                  display: 'flex',
-                  alignItems: 'center',
-                },
-                autoClose: TOAST_AUTOCLOSE_TIME,
-                transition: slideInAndOutTop,
-                theme: 'dark',
-              });
+              successToastConfig({ message: 'Invitation has been sent' });
               resendInviteMutation.mutate(id);
             }}
             onRemoveTeamMember={openRemoveTeamMemberModal}

@@ -14,14 +14,9 @@ import {
   inviteUsers,
 } from 'queries/users';
 import ConfirmationBox from 'components/ConfirmationBox';
-import { toast } from 'react-toastify';
-import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
 import InvitedUsersList from './InvitedUsersList';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import 'utils/custom-yup-validators/email/validateEmail';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
 
 export interface IInviteUserModalProps {
   open: boolean;
@@ -128,37 +123,15 @@ const InviteUserModal: FC<IInviteUserModalProps> = ({
           ? getToastMessage(data.result.data)
           : `${invitedCount} out of the ${data.result.data.length} users were invited successfully `;
 
-      toast(
-        <SuccessToast
-          content={toastString}
-          actionLabel={
-            invitedCount !== data.result.data.length ? 'Show details' : ''
-          }
-          action={() => {
-            openModal();
-            setShowInvitedMembers(true);
-          }}
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-              dataTestId="people-invite-toaster-close"
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
+      successToastConfig({
+        message: toastString,
+        actionLabel:
+          invitedCount !== data.result.data.length ? 'Show details' : '',
+        action: () => {
+          openModal();
+          setShowInvitedMembers(true);
         },
-      );
+      });
       closeModal();
     },
   });

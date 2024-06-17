@@ -104,11 +104,13 @@ const AppLauncher = () => {
           if (appIds.length > 0) {
             return (
               <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-8 w-full">
+                <ul className="flex items-center gap-8 w-full">
                   {appIds?.map(({ id }: any) => (
-                    <AppWidgetCard data={widgetApps[id]} key={id} />
+                    <li key={id}>
+                      <AppWidgetCard data={widgetApps[id]} />
+                    </li>
                   ))}
-                </div>
+                </ul>
                 <Button
                   variant={Variant.Secondary}
                   size={Size.Small}

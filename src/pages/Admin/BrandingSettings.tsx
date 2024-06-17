@@ -26,7 +26,7 @@ import ImageReposition from 'components/DynamicImagePreview/components/ImageRepo
 import clsx from 'clsx';
 import { useUpload } from 'hooks/useUpload';
 import { EntityType } from 'queries/files';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { toast } from 'react-toastify';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import Tooltip from 'components/Tooltip';
@@ -546,30 +546,10 @@ const BrandingSettings: FC = () => {
     updateBranding.mutate(newBranding, {
       onSuccess: async (data, _variables, _context) => {
         const newBranding = data?.result?.data?.branding;
-        toast(
-          <SuccessToast
-            content={'Changes you made have been saved'}
-            dataTestId="branding-changes-saved-toaster"
-          />,
-          {
-            closeButton: (
-              <Icon
-                name="closeCircleOutline"
-                color="text-primary-500"
-                size={20}
-              />
-            ),
-            style: {
-              border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-            },
-            autoClose: TOAST_AUTOCLOSE_TIME,
-            transition: slideInAndOutTop,
-            theme: 'dark',
-          },
-        );
+        successToastConfig({
+          message: 'Changes you made have been saved',
+          dataTestId: 'branding-changes-saved-toaster',
+        });
         await queryClient.refetchQueries(['organization']);
         handleCancel(
           {

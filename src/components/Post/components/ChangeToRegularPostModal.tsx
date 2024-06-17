@@ -41,10 +41,10 @@ const ChangeToRegularPostModal: FC<AppProps> = ({ open, closeModal, data }) => {
     onSuccess: async () => {
       await queryClient.invalidateQueries(['feed-announcements-widget']);
       await queryClient.invalidateQueries(['post-announcements-widget']);
-      successToastConfig(
-        'Announcement changed to a regular post',
-        'convert-to-post-toast',
-      );
+      successToastConfig({
+        message: 'Announcement changed to a regular post',
+        dataTestId: 'convert-to-post-toast',
+      });
     },
   });
 

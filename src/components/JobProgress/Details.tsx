@@ -5,11 +5,7 @@ import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import React, { useState } from 'react';
 import Report from './Report';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import { twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
-import { toast } from 'react-toastify';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { downloadReport } from 'queries/importUsers';
 import Spinner from 'components/Spinner';
@@ -46,30 +42,10 @@ const Details: React.FC<AppProps> = ({ open, closeModal, data, importId }) => {
       a.setAttribute('download', 'download.csv');
       document.body.appendChild(a);
       a.click();
-      toast(
-        <SuccessToast
-          content={'Report exported successfully'}
-          dataTestId="acknowledgement-report-export-toast-message"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        message: 'Report exported successfully',
+        dataTestId: 'acknowledgement-report-export-toast-message',
+      });
     },
   });
 

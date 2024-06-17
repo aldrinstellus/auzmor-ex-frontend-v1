@@ -32,6 +32,7 @@ const NavbarMenuItem: FC<INavbarMenuItemProps> = ({ nav }) => {
     <div
       className="flex flex-col items-center p-2"
       data-testid={nav.dataTestId}
+      tabIndex={0}
     >
       <Icon name={nav.icon} size={nav.iconSize} disabled />
       <div className="text-sm text-neutral-200 cursor-default">{nav.label}</div>
@@ -44,6 +45,7 @@ const NavbarMenuItem: FC<INavbarMenuItemProps> = ({ nav }) => {
           isActive || nav.isActive ? 'text-primary-500' : 'text-neutral-500'
         } group p-2`
       }
+      tabIndex={0}
     >
       {({ isActive: navLinkIsActive }) => {
         const isActive = navLinkIsActive || nav.isActive;
