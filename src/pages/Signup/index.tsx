@@ -18,6 +18,7 @@ import OfficeLogoSvg from 'components/Logo/images/OfficeLogo.svg';
 import clsx from 'clsx';
 import useAuth from 'hooks/useAuth';
 import { useNavigateWithToken } from 'hooks/useNavigateWithToken';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 interface IForm {
   fullName: string;
@@ -74,6 +75,7 @@ export interface IValidationErrors {
 }
 
 const Signup: FC<ISignupProps> = () => {
+  usePageTitle('signup');
   const { setUser, setShowOnboard } = useAuth();
   const navigate = useNavigate();
   const navigateWithToken = useNavigateWithToken();

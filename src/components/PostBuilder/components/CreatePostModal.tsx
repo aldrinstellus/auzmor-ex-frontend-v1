@@ -31,14 +31,10 @@ import {
   isRegularPost,
   quillHashtagConversion,
   removeEmptyLines,
-  twConfig,
 } from 'utils/misc';
 import { useFeedStore } from 'stores/feedStore';
-import { toast } from 'react-toastify';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
-import FailureToast from 'components/Toast/variants/FailureToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { produce } from 'immer';
 import CreatePoll from './CreatePoll';
 import SchedulePost from './SchedulePost';
@@ -180,30 +176,13 @@ const CreatePostModal: FC<ICreatePostModal> = ({
   const createPostMutation = useMutation({
     mutationKey: ['createPostMutation'],
     mutationFn: createPost,
-    onError: (error) => {
+    onError: () => {
       clearPostContext();
       closeModal();
-      toast(
-        <FailureToast
-          content={`Error while trying to create post`}
-          dataTestId="comment-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-      console.log(error);
+      failureToastConfig({
+        content: `Error while trying to create post`,
+        dataTestId: 'comment-toaster',
+      });
     },
     onSuccess: async ({
       result,
@@ -383,7 +362,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
       closeModal();
       if (newPost.schedule) {
         successToastConfig({
-          message: `Post scheduled for ${moment(
+          content: `Post scheduled for ${moment(
             new Date(newPost.schedule.dateTime),
           ).format('ddd, MMM DD')} at ${moment(
             new Date(newPost.schedule.dateTime),
@@ -425,27 +404,10 @@ const CreatePostModal: FC<ICreatePostModal> = ({
       if (context?.previousData && variables?.id) {
         updateFeed(variables.id, context?.previousData);
       }
-      toast(
-        <FailureToast
-          content="Error updating post"
-          dataTestId="post-update-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-            backgroundColor: twConfig.theme.colors.neutral[900],
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      failureToastConfig({
+        content: 'Error updating post',
+        dataTestId: 'post-update-toaster',
+      });
     },
     onSuccess: async (data, variables) => {
       updateFeed(variables.id!, {
@@ -453,7 +415,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         id: variables.id!,
       } as IPost);
       successToastConfig({
-        message: 'Post updated successfully',
+        content: 'Post updated successfully',
         dataTestId: 'post-update-toaster',
       });
       await queryClient.invalidateQueries(['feed-announcements-widget']);

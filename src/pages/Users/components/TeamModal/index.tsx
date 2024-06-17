@@ -6,14 +6,9 @@ import AddTeams from './AddTeams';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createTeams, updateTeam } from 'queries/teams';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
-import { twConfig } from 'utils/misc';
-import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import Icon from 'components/Icon';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { TeamFlow } from '../Teams';
 import { FC } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -81,30 +76,14 @@ const TeamModal: FC<IAddTeamModalProps> = ({
           message: error?.response?.data?.errors[0]?.message,
         });
       }
-      toast(
-        <FailureToast
-          content={`Error Creating Team`}
-          dataTestId="team-create-error-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      failureToastConfig({
+        content: `Error Creating Team`,
+        dataTestId: 'team-create-error-toaster',
+      });
     },
     onSuccess: (data: any) => {
       queryClient.invalidateQueries(['teams']);
-      successToastConfig({ message: 'Team Created Successfully' });
+      successToastConfig({ content: 'Team Created Successfully' });
       closeModal();
       navigate(`/teams/${data.result.id}?addMembers=true`, {
         state: { prevRoute: searchParams.get('tab') },
@@ -125,32 +104,16 @@ const TeamModal: FC<IAddTeamModalProps> = ({
           message: error?.response?.data?.errors[0]?.message,
         });
       }
-      toast(
-        <FailureToast
-          content={`Error Updating Team`}
-          dataTestId="team-update-error-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      failureToastConfig({
+        content: `Error Updating Team`,
+        dataTestId: 'team-update-error-toaster',
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['teams']);
       queryClient.invalidateQueries(['team', team?.id]);
       successToastConfig({
-        message: `Team has been updated`,
+        content: `Team has been updated`,
         dataTestId: 'team-updated-success-toaster',
       });
       closeModal();

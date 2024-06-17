@@ -1,4 +1,3 @@
-import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import { FC, FormEvent, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -8,16 +7,13 @@ import clsx from 'clsx';
 import Button, { Variant as ButtonVariant, Type } from 'components/Button';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { TOAST_AUTOCLOSE_TIME, URL_REGEX } from 'utils/constants';
+import { URL_REGEX } from 'utils/constants';
 import { UploadStatus, useUpload } from 'hooks/useUpload';
 import { EntityType } from 'queries/files';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { App, AppIcon, IAudience, createApp, editApp } from 'queries/apps';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
-import { toast } from 'react-toastify';
-import { twConfig } from 'utils/misc';
-import { slideInAndOutTop } from 'utils/react-toastify';
-import FailureToast from 'components/Toast/variants/FailureToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import Audience from './Audience';
 import Header from 'components/ModalHeader';
 import { createCatergory, uploadImage } from 'queries/learn';
@@ -122,34 +118,17 @@ const AddApp: FC<AddAppProps> = ({
     onSuccess: async () => {
       await queryClient.invalidateQueries(['apps']);
       await queryClient.invalidateQueries(['my-apps']);
-      successToastConfig({ message: 'App added successfully' });
+      successToastConfig({ content: 'App added successfully' });
       closeModal();
       isLxp
         ? queryClient.invalidateQueries(['learnCategory'])
         : queryClient.invalidateQueries(['categories']);
     },
-    onError: async () => {
-      toast(
-        <FailureToast
-          content={`Error Creating App`}
-          dataTestId="app-create-error-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-    },
+    onError: async () =>
+      failureToastConfig({
+        content: `Error Creating App`,
+        dataTestId: 'app-create-error-toaster',
+      }),
   });
 
   const updateAppMutation = useMutation({
@@ -161,7 +140,7 @@ const AddApp: FC<AddAppProps> = ({
       queryClient.invalidateQueries(['featured-apps']);
       queryClient.invalidateQueries(['my-featured-apps']);
       successToastConfig({
-        message: `App has been updated`,
+        content: `App has been updated`,
         dataTestId: 'app-updated-success-toaster',
       });
       closeModal();
@@ -169,28 +148,11 @@ const AddApp: FC<AddAppProps> = ({
         ? queryClient.invalidateQueries(['learnCategory'])
         : queryClient.invalidateQueries(['categories']);
     },
-    onError: (_error: any) => {
-      toast(
-        <FailureToast
-          content={`Error updating the app`}
-          dataTestId="app-create-error-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-    },
+    onError: (_error: any) =>
+      failureToastConfig({
+        content: `Error updating the app`,
+        dataTestId: 'app-create-error-toaster',
+      }),
   });
   const { mutateAsync: uploadImageMutation, isLoading: isUploading } =
     useMutation(uploadImage, {

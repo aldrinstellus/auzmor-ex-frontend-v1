@@ -160,7 +160,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
     mutationKey: ['update-user-role'],
     onSuccess: () => {
       queryClient.invalidateQueries(['user', userDetails?.id]);
-      successToastConfig({ message: `User role has been updated to admin` });
+      successToastConfig({ content: `User role has been updated to admin` });
     },
   });
 
@@ -269,7 +269,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                   openEditProfileModal();
                 }}
                 onResendInviteClick={() => () => {
-                  successToastConfig({ message: 'Invitation has been sent' });
+                  successToastConfig({ content: 'Invitation has been sent' });
                   resendInviteMutation.mutate(userDetails?.id);
                 }}
               />

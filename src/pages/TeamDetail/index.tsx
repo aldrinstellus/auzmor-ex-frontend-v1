@@ -12,12 +12,9 @@ import {
   useInfiniteMembers,
   useSingleTeam,
 } from 'queries/teams';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { toast } from 'react-toastify';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { useMutation } from '@tanstack/react-query';
-import { getFullName, getProfileImage, twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { getFullName, getProfileImage } from 'utils/misc';
 import queryClient from 'utils/queryClient';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useModal from 'hooks/useModal';
@@ -36,10 +33,12 @@ import { FC, useEffect } from 'react';
 import useRole from 'hooks/useRole';
 import TeamOptions from 'components/TeamOptions';
 import useProduct from 'hooks/useProduct';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 export interface ITeamMemberProps {}
 
 const TeamDetail: FC<ITeamMemberProps> = () => {
+  usePageTitle('teamProfile');
   const params = useParams();
   const [searchParams] = useSearchParams();
   const { state } = useLocation();
@@ -65,28 +64,11 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
     mutationFn: (payload: any) => {
       return addTeamMember(id || '', payload);
     },
-    onError: (_error: any) => {
-      toast(
-        <FailureToast
-          content={`Error Adding Team Members`}
-          dataTestId="team-create-error-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-    },
+    onError: () =>
+      failureToastConfig({
+        content: `Error Adding Team Members`,
+        dataTestId: 'team-create-error-toaster',
+      }),
     onSuccess: (data: any) => {
       const membersAddedCount =
         data?.result?.data?.length - (data.teamMembers || 0);
@@ -96,7 +78,10 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
           : membersAddedCount === 1
           ? `${membersAddedCount} member has been added to the team`
           : 'Members already exist in the team';
-      successToastConfig({ message, dataTestId: 'team-detail-toaster' });
+      successToastConfig({
+        content: message,
+        dataTestId: 'team-detail-toaster',
+      });
       queryClient.invalidateQueries(['search-team-members'], { exact: false });
       queryClient.invalidateQueries(['team-members']);
       queryClient.invalidateQueries(['team', id]);

@@ -14,10 +14,7 @@ import { ISkillsOption } from '../PersonalDetails';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import Icon from 'components/Icon';
 import { updateCurrentUser, updateUserById } from 'queries/users';
-import { twConfig } from 'utils/misc';
-import { toastConfig } from '../utils';
 import { FC, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 export interface ISkillsModalProps {
@@ -36,14 +33,7 @@ const SkillsModal: FC<ISkillsModalProps> = ({ open, closeModal, skills }) => {
       : updateCurrentUser,
     mutationKey: ['update-user-skills-mutation'],
     onError: (_error: any) => {},
-    onSuccess: async (_response: any) => {
-      toastConfig(
-        <Icon
-          name="closeCircleOutline"
-          color={twConfig.theme.colors.primary['500']}
-          size={20}
-        />,
-      );
+    onSuccess: async () => {
       closeModal();
       if (userId) {
         await queryClient.invalidateQueries(['user', userId]);

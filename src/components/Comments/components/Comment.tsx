@@ -23,15 +23,11 @@ import {
   getFullName,
   getProfileImage,
   getUserCardTooltipProps,
-  twConfig,
 } from 'utils/misc';
 import { CommentsRTE, PostCommentMode } from './CommentsRTE';
 import ConfirmationBox from 'components/ConfirmationBox';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { toast } from 'react-toastify';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { deleteComment } from 'queries/comments';
 import { useFeedStore } from 'stores/feedStore';
 import { useCommentStore } from 'stores/commentStore';
@@ -99,32 +95,14 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
       closeConfirm();
       return { previousData };
     },
-    onError: (error: any) => {
-      console.log(error);
-      toast(
-        <FailureToast
-          content="Error deleting comment"
-          dataTestId="comment-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-    },
+    onError: () =>
+      failureToastConfig({
+        content: 'Error deleting comment',
+        dataTestId: 'comment-toaster',
+      }),
     onSuccess: () =>
       successToastConfig({
-        message: 'Comment has been deleted',
+        content: 'Comment has been deleted',
         dataTestId: 'comment-toaster',
       }),
   });

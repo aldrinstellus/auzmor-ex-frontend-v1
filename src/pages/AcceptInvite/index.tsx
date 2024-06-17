@@ -14,6 +14,7 @@ import PageLoader from 'components/PageLoader';
 import InviteLinkExpired from './components/InviteLinkExpired';
 import useAuth from 'hooks/useAuth';
 import { useNavigateWithToken } from 'hooks/useNavigateWithToken';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 interface IForm {
   workEmail: string;
@@ -38,6 +39,7 @@ const schema = yup.object({
 export interface IAcceptInviteProps {}
 
 const AcceptInvite: FC<IAcceptInviteProps> = () => {
+  usePageTitle('acceptInvite');
   const [searchParams, _] = useSearchParams();
   const token = searchParams.get('token');
   const orgId = searchParams.get('orgId');

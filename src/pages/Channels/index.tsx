@@ -16,6 +16,7 @@ import ChannelRow from './components/ChannelRow';
 import Divider from 'components/Divider';
 import ChannelRowSkeleton from './components/ChannelRowSkeleton';
 import ChannelCardSkeleton from './components/ChannelCardSkeleton';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 interface IChannelsProps {}
 
@@ -29,6 +30,7 @@ interface IFilterButton {
 }
 
 export const Channels: FC<IChannelsProps> = () => {
+  usePageTitle('channels');
   const { t } = useTranslation('channels');
   const { filters, clearFilters, updateFilter } = useAppliedFiltersStore();
   const [isModalOpen, openModal, closeModal] = useModal();

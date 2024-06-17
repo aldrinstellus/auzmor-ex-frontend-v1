@@ -41,7 +41,7 @@ const DeactivatePeople: FC<IReactivatePeopleProps> = ({
       queryClient.invalidateQueries(['team-members']);
       queryClient.invalidateQueries(['organization-chart'], { exact: false });
       queryClient.invalidateQueries(['celebrations'], { exact: false });
-      successToastConfig({ message: `User has been deactivated` });
+      successToastConfig({ content: `User has been deactivated` });
     },
   });
 

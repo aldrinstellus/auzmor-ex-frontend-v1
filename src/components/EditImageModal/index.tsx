@@ -121,7 +121,7 @@ const EditImageModal: FC<AppProps> = ({
         });
         setImageFile && setImageFile({});
         successToastConfig({
-          message: `${
+          content: `${
             fileEntityType === EntityType.UserProfileImage
               ? 'Profile Picture'
               : 'Cover Picture'

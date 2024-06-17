@@ -10,10 +10,12 @@ import { getSubDomain, isDark } from 'utils/misc';
 import { useGetSSOFromDomain } from 'queries/organization';
 import { useBrandingStore } from 'stores/branding';
 import clsx from 'clsx';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 interface ILoginProps {}
 
 const Login: FC<ILoginProps> = () => {
+  usePageTitle('login');
   const [viaSSO, setViaSSO] = useState(false);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();

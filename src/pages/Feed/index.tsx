@@ -52,6 +52,7 @@ import EventWidget from 'components/EventWidget';
 import { useGetRecommendation } from 'queries/learn';
 import Recommendation from 'components/Recommendation';
 import useAuth from 'hooks/useAuth';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 interface IFeedProps {}
 
@@ -95,6 +96,15 @@ const Feed: FC<IFeedProps> = () => {
   const { getScrollTop, pauseRecordingScrollTop, resumeRecordingScrollTop } =
     useScrollTop('app-shell-container');
   const { user } = useAuth();
+
+  // Set page title
+  if (scheduled) {
+    usePageTitle('scheduledPosts');
+  } else if (bookmarks) {
+    usePageTitle('bookmarks');
+  } else {
+    usePageTitle('feed');
+  }
 
   //handle scroll
   useEffect(() => {

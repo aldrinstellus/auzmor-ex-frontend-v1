@@ -67,7 +67,7 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
     mutationKey: ['update-user-contact-detail-mutation'],
     onError: (_error: any) => {},
     onSuccess: (_response: any) => {
-      successToastConfig({ message: 'User Profile Updated Successfully' });
+      successToastConfig({ content: 'User Profile Updated Successfully' });
       setIsEditable(false);
     },
   });

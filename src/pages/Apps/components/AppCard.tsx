@@ -8,11 +8,7 @@ import useModal from 'hooks/useModal';
 import AppDetailModal from './AppCardDetail';
 import AddApp, { APP_MODE } from './AddApp';
 import DeleteApp from './DeleteApp';
-import { twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { toast } from 'react-toastify';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useRole from 'hooks/useRole';
@@ -45,32 +41,15 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
       queryClient.invalidateQueries(['my-apps']);
       queryClient.invalidateQueries(['my-featured-apps']);
       successToastConfig({
-        message: `App has been added to featured apps`,
+        content: `App has been added to featured apps`,
         dataTestId: 'feature-app-toaster',
       });
     },
-    onError: (_error: any) => {
-      toast(
-        <FailureToast
-          content={`Error while adding app to featured apps`}
-          dataTestId="feature-app-error-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-    },
+    onError: (_error: any) =>
+      failureToastConfig({
+        content: `Error while adding app to featured apps`,
+        dataTestId: 'feature-app-error-toaster',
+      }),
   });
 
   const removeFeaturedAppMutation = useMutation({
@@ -82,32 +61,15 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
       queryClient.invalidateQueries(['my-apps']);
       queryClient.invalidateQueries(['my-featured-apps']);
       successToastConfig({
-        message: `App has been removed from featured apps`,
+        content: `App has been removed from featured apps`,
         dataTestId: 'unfeature-app-toaster',
       });
     },
-    onError: (_error: any) => {
-      toast(
-        <FailureToast
-          content={`Error while removing app from featured apps`}
-          dataTestId="unfeature-app-error-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-    },
+    onError: () =>
+      failureToastConfig({
+        content: `Error while removing app from featured apps`,
+        dataTestId: 'unfeature-app-error-toaster',
+      }),
   });
 
   const toggleAppFeature = (featured: boolean) => {

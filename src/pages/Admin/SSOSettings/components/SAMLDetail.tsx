@@ -21,7 +21,7 @@ const SAMLDetail: FC<SAMLDetailProps> = ({ prop, value }): ReactElement => {
             onClick={() => {
               navigator.clipboard.writeText(value);
               successToastConfig({
-                message: `${prop} has been copied to your clipboard!`,
+                content: `${prop} has been copied to your clipboard!`,
               });
             }}
           />

@@ -129,7 +129,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     mutationKey: ['update-user-role'],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      successToastConfig({ message: `User role has been updated to admin` });
+      successToastConfig({ content: `User role has been updated to admin` });
     },
   });
 
@@ -218,7 +218,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
             onPromoteClick={() => updateUserRoleMutation.mutate({ id })}
             onDeactivateClick={openDeactivateModal}
             onResendInviteClick={() => {
-              successToastConfig({ message: 'Invitation has been sent' });
+              successToastConfig({ content: 'Invitation has been sent' });
               resendInviteMutation.mutate(id);
             }}
             onRemoveTeamMember={openRemoveTeamMemberModal}

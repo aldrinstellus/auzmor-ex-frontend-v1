@@ -112,14 +112,14 @@ const UserCard: FC<IUserCardProp> = ({
       handleCopyRef = () => {
         navigator.clipboard.writeText(emailRef);
         successToastConfig({
-          message: 'Copied to clipboard',
+          content: 'Copied to clipboard',
           variant: 'bottom-center',
         });
       };
       handleContactCopyRef = () => {
         navigator.clipboard.writeText(contactRef);
         successToastConfig({
-          message: 'Copied to clipboard',
+          content: 'Copied to clipboard',
           variant: 'bottom-center',
         });
       };

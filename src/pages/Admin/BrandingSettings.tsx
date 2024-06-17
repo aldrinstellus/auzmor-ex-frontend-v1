@@ -17,7 +17,7 @@ import {
   titleCase,
   twConfig,
 } from 'utils/misc';
-import { MB, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { MB } from 'utils/constants';
 import { IRadioListOption } from 'components/RadioGroup';
 import { useUpdateBrandingMutation } from 'queries/organization';
 import { useBrandingStore } from 'stores/branding';
@@ -27,15 +27,13 @@ import clsx from 'clsx';
 import { useUpload } from 'hooks/useUpload';
 import { EntityType } from 'queries/files';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
-import { toast } from 'react-toastify';
-import { slideInAndOutTop } from 'utils/react-toastify';
 import Tooltip from 'components/Tooltip';
 import { Logo } from 'components/Logo';
 import welcomeToOffice from 'images/welcomeToOffice.png';
 import welcomeToOfficeLarge from 'images/welcomeToOfficeLarge.png';
 import { getTintVariantColor } from 'utils/branding';
 import queryClient from 'utils/queryClient';
-import FailureToast from 'components/Toast/variants/FailureToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Shape } from 'components/ImageCropper';
@@ -547,7 +545,7 @@ const BrandingSettings: FC = () => {
       onSuccess: async (data, _variables, _context) => {
         const newBranding = data?.result?.data?.branding;
         successToastConfig({
-          message: 'Changes you made have been saved',
+          content: 'Changes you made have been saved',
           dataTestId: 'branding-changes-saved-toaster',
         });
         await queryClient.refetchQueries(['organization']);
@@ -565,27 +563,10 @@ const BrandingSettings: FC = () => {
         setBranding(newBranding);
       },
       onError: () => {
-        toast(
-          <FailureToast
-            content="Changes you made may have not been saved"
-            dataTestId="branding-changes-not-saved-toaster"
-          />,
-          {
-            closeButton: (
-              <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-            ),
-            style: {
-              border: `1px solid ${twConfig.theme.colors.red['300']}`,
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              backgroundColor: twConfig.theme.colors.neutral[900],
-            },
-            autoClose: TOAST_AUTOCLOSE_TIME,
-            transition: slideInAndOutTop,
-            theme: 'dark',
-          },
-        );
+        failureToastConfig({
+          content: 'Changes you made may have not been saved',
+          dataTestId: 'branding-changes-not-saved-toaster',
+        });
         handleCancel();
       },
       onSettled: () => {

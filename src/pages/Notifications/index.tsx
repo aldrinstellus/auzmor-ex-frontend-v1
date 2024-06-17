@@ -5,6 +5,7 @@ import Card from 'components/Card';
 import Button, { Variant } from 'components/Button';
 import NotificationsListing from './components/NotificationsListing';
 import { useShouldRender } from 'hooks/useShouldRender';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 enum NotificationType {
   ALL = 'ALL',
@@ -35,6 +36,7 @@ const buttonGroup = [
 ];
 
 const Notifications: FC = (): ReactElement => {
+  usePageTitle('notifications');
   const [notificationsList, setNotificationsList] =
     useState<NotificationButtonGroup>(buttonGroup[0]);
 
