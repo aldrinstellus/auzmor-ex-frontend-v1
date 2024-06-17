@@ -15,14 +15,14 @@ type ProfileSectionProps = {
   channelData: IChannel;
   activeTab: string;
   setActiveTab: (...args: any) => any;
-  setManageAccessTab: (...args: any) => any;
+  setActiveMenu: (...args: any) => any;
 };
 
 const ProfileSection: React.FC<ProfileSectionProps> = ({
   channelData,
   activeTab,
   setActiveTab,
-  setManageAccessTab,
+  setActiveMenu,
 }) => {
   const { t } = useTranslation('channelDetail');
   const { updateParam } = useURLParams();
@@ -57,7 +57,41 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       label: 'Manage access',
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
-        setManageAccessTab(true);
+        setActiveMenu({ accessTab: true, settingTab: false });
+        setActiveTab('');
+      },
+      dataTestId: '',
+    },
+    {
+      icon: 'archive',
+      label: 'Archive',
+      stroke: twConfig.theme.colors.neutral['900'],
+      onClick: () => {},
+      dataTestId: '',
+    },
+    {
+      renderNode: (
+        <div className="text-xs  bg-blue-50 py-2 px-6 font-Medium flex items-center justify-center ">
+          SECURITY & ANALYTICS
+        </div>
+      ),
+    },
+    {
+      icon: 'profileAdd',
+      label: 'Add members',
+      stroke: twConfig.theme.colors.neutral['900'],
+      onClick: () => {
+        setActiveMenu(true);
+        setActiveTab('');
+      },
+      dataTestId: '',
+    },
+    {
+      icon: 'setting',
+      label: 'Setting',
+      stroke: twConfig.theme.colors.neutral['900'],
+      onClick: () => {
+        setActiveMenu({ accessTab: false, settingTab: true });
         setActiveTab('');
       },
       dataTestId: '',
@@ -108,11 +142,6 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               title={
                 <div className="text-xs  bg-blue-50 py-2 px-6 font-Medium flex items-center justify-center ">
                   CHANNEL MANAGEMENT
-                </div>
-              }
-              footer={
-                <div className="text-xs  bg-blue-50 py-2 px-6 font-Medium flex items-center justify-center ">
-                  SECURITY & ANALYTICS
                 </div>
               }
             />
@@ -186,7 +215,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                   onClick={() => {
                     updateParam(`search`, '');
                     setActiveTab(t.key);
-                    setManageAccessTab(false);
+                    setActiveMenu({ accessTab: false, settingTab: false });
                   }}
                 >
                   {t.label}

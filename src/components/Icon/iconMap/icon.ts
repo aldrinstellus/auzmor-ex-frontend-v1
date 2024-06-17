@@ -172,9 +172,12 @@ import VideoFileIcon from '../components/VideoFile';
 import FolderIcon from '../components/Folder';
 import FormIcon from '../components/form';
 import SharePoint from '../components/SharePoint';
+import ProfileAddIcon from '../components/ProfileAdd';
+import ArchiveIcon from '../components/Archive';
 
 export const icon = {
   add: Add,
+  archive: ArchiveIcon,
   addCircle: AddCircle,
   admin: AdminIcon,
   announcementChart: AnnouncementChartIcon,
@@ -302,6 +305,7 @@ export const icon = {
   profileUser: ProfileUser,
   promoteUser: PromoteUserIcon,
   pdf: PdfIcon,
+  profileAdd: ProfileAddIcon,
   reactivateUser: ReactivateUser,
   redo: Redo,
   reorder: Reorder,

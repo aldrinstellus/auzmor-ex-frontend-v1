@@ -13,7 +13,10 @@ const ChannelDetail = () => {
   const { channelId } = useParams();
   const [activeTab, setActiveTab] = useState('home');
   const { getChannel } = useChannelStore();
-  const [isManageAccessTab, setManageAccessTab] = useState(false);
+  const [activeMenu, setActiveMenu] = useState({
+    accessTab: false,
+    settingTab: false,
+  });
 
   if (!channelId) {
     return <div>Error</div>;
@@ -32,6 +35,28 @@ const ChannelDetail = () => {
       });
     }
   }, [channelId]);
+  const renderActiveTab = () => {
+    if (activeMenu.accessTab) {
+      return <ManageAccess />;
+    }
+    if (activeMenu.settingTab) {
+      return <>setting tab</>;
+    }
+    switch (activeTab) {
+      case 'home':
+        return <Home />;
+      case 'document':
+        return (
+          <DocumentPathProvider>
+            <Documents />
+          </DocumentPathProvider>
+        );
+      case 'members':
+        return <Members />;
+      default:
+        return null;
+    }
+  };
 
   const channelData = getChannel(channelId);
   return (
@@ -40,16 +65,9 @@ const ChannelDetail = () => {
         channelData={channelData}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        setManageAccessTab={setManageAccessTab}
+        setActiveMenu={setActiveMenu}
       />
-      {isManageAccessTab && <ManageAccess />}
-      {activeTab === 'home' && <Home />}
-      {activeTab === 'document' && (
-        <DocumentPathProvider>
-          <Documents />
-        </DocumentPathProvider>
-      )}
-      {activeTab === 'members' && <Members />}
+      {renderActiveTab()}
     </div>
   );
 };
