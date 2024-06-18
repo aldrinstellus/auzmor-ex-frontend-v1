@@ -54,6 +54,7 @@ export interface IAsyncSingleSelectProps {
   disableFilterOption?: boolean;
   onClear?: () => void;
   onEnter?: () => void;
+  onSelect?: () => void;
 }
 
 const AsyncSingleSelect = forwardRef(
@@ -88,6 +89,7 @@ const AsyncSingleSelect = forwardRef(
       onClear = () => {},
       disableFilterOption = false,
       onEnter,
+      onSelect,
     }: IAsyncSingleSelectProps,
     ref?: any,
   ) => {
@@ -199,6 +201,7 @@ const AsyncSingleSelect = forwardRef(
                   placement={menuPlacement ? menuPlacement : undefined}
                   popupMatchSelectWidth={false}
                   onPopupScroll={onPopupScroll}
+                  defaultActiveFirstOption={false}
                   getPopupContainer={(triggerNode) => {
                     if (getPopupContainer) {
                       return getPopupContainer;
@@ -222,6 +225,7 @@ const AsyncSingleSelect = forwardRef(
                   onChange={(_, option) => {
                     field.onChange(option);
                   }}
+                  onSelect={onSelect}
                   optionLabelProp="label"
                   className={`async-single-select ${selectClassName}`}
                   clearIcon={clearIcon}
