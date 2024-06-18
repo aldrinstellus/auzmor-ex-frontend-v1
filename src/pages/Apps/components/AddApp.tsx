@@ -294,7 +294,7 @@ const AddApp: FC<AddAppProps> = ({
     <Modal
       open={open}
       className={clsx('max-w-[868px]', {
-        'min-h-[543px] max-h-[543px] ': activeFlow === ADD_APP_FLOW.AddApp,
+        'h-[600px]': activeFlow === ADD_APP_FLOW.AddApp,
         '!max-w-[638px]': activeFlow === ADD_APP_FLOW.AudienceSelector,
       })}
     >
@@ -309,12 +309,6 @@ const AddApp: FC<AddAppProps> = ({
             onSubmit={onSubmit}
             className="flex flex-col justify-between h-full"
           >
-            {/* <Tabs
-              tabs={tabs}
-              disableAnimation={true}
-              activeTabIndex={activeTab}
-              onTabChange={(tab: any) => setActiveTab(tab)}
-            /> */}
             <div className="py-3 px-6">
               <AppDetailsForm
                 control={control}
@@ -344,25 +338,6 @@ const AddApp: FC<AddAppProps> = ({
                   uploadStatus === UploadStatus.Uploading
                 }
               />
-              {/* {activeTab === tabs.length - 1 ? (
-                <Button
-                  label="Save"
-                  type={Type.Submit}
-                  dataTestId="add-app-save"
-                  loading={
-                    addAppMutation?.isLoading ||
-                    updateAppMutation.isLoading ||
-                    uploadStatus === UploadStatus.Uploading
-                  }
-                />
-              ) : (
-                <Button
-                  label="Next"
-                  disabled={!isValid}
-                  onClick={(e) => handleNextTab(e)}
-                  dataTestId="add-app-next-cta"
-                />
-              )} */}
             </div>
           </form>
         </div>

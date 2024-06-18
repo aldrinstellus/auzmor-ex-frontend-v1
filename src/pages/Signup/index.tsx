@@ -416,6 +416,7 @@ const Signup: FC<ISignupProps> = () => {
               data-testid="signup-form"
             >
               <Layout fields={fields} className="space-y-4" />
+              <p className="py-4 text-xs text-neutral-900">* Required field</p>
               <Button
                 dataTestId="sign-up-btn"
                 label={'Sign Up'}
