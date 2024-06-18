@@ -22,7 +22,7 @@ export const getLinkToken = async (
 ) => {
   return await apiService.post('/storage', {
     expiresIn: expiresIn || 30,
-    // integration: IntegrationOption || IntegrationOptionsEnum.GoogleDrive,
+    integration: IntegrationOption || IntegrationOptionsEnum.GoogleDrive,
   });
 };
 
