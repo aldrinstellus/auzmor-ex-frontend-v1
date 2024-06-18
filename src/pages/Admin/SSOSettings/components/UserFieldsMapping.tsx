@@ -99,20 +99,23 @@ const UserFieldsMapping: FC<UserFieldsMappingProps> = ({
       </div>
 
       <div className="bg-blue-50 mt-4 p-0 absolute bottom-0 left-0 right-0 rounded-b-9xl">
-        <div className="p-3 flex items-center justify-end gap-x-3">
-          <Button
-            className="font-bold"
-            label="Cancel"
-            onClick={closeModal}
-            variant={ButtonVariant.Secondary}
-          />
-          <Button
-            className="font-bold"
-            label="Continue"
-            variant={ButtonVariant.Primary}
-            type={ButtonType.Submit}
-            disabled={isError}
-          />
+        <div className="p-3 flex items-center justify-between gap-x-3">
+          <p className="py-4 text-xs text-neutral-900">* Required field</p>
+          <div className="flex gap-3">
+            <Button
+              className="font-bold"
+              label="Cancel"
+              onClick={closeModal}
+              variant={ButtonVariant.Secondary}
+            />
+            <Button
+              className="font-bold"
+              label="Continue"
+              variant={ButtonVariant.Primary}
+              type={ButtonType.Submit}
+              disabled={isError}
+            />
+          </div>
         </div>
       </div>
     </form>

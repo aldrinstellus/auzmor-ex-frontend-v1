@@ -193,6 +193,7 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
               </div>
             )}
             <Layout fields={fields} />
+            <p className="py-4 text-xs text-neutral-900">* Required field</p>
             <Button
               label={'Sign Up'}
               disabled={!isValid}
