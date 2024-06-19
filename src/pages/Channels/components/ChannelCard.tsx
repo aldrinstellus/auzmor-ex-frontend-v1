@@ -12,6 +12,7 @@ import Card from 'components/Card';
 import { ChannelVisibilityEnum, IChannel } from 'stores/channelStore';
 import DefaultCoverImage from 'images/png/CoverImage.png';
 import { useNavigate } from 'react-router-dom';
+import { Variant } from 'components/IconButton';
 
 interface IChannelCardProps {
   channel: IChannel;
@@ -76,7 +77,12 @@ const ChannelCard: FC<IChannelCardProps> = ({
             <Button
               label={'Request to join'}
               size={ButtonSize.ExtraSmall}
+              variant={ButtonVariant.Secondary}
               className="mt-2"
+              leftIcon={'lock'}
+              iconColor={'text-neutal-900'}
+              leftIconSize={16}
+              leftIconHover={false}
               onClick={(e) => {
                 e.stopPropagation();
               }}
@@ -86,7 +92,7 @@ const ChannelCard: FC<IChannelCardProps> = ({
             <Button
               label={'Withdraw request'}
               size={ButtonSize.ExtraSmall}
-              variant={ButtonVariant.Danger}
+              variant={ButtonVariant.Secondary}
               className="mt-2"
               onClick={(e) => {
                 e.stopPropagation();
@@ -94,20 +100,12 @@ const ChannelCard: FC<IChannelCardProps> = ({
             />
           )}
           {showJoinChannelBtn && (
-            <div className="flex gap-1 w-full mt-2">
-              <Button
-                label="Open channel"
-                size={ButtonSize.ExtraSmall}
-                variant={ButtonVariant.Secondary}
-                className="grow"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              />
+            <div className="flex  w-full mt-2">
               <Button
                 label="Join channel"
                 size={ButtonSize.ExtraSmall}
-                className="grow"
+                variant={Variant.Secondary}
+                className="w-full  "
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
