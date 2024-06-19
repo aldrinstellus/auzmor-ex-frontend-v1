@@ -11,6 +11,8 @@ export interface ICategoryDetail {
   type: string;
   id: string;
   value?: string;
+  label?: string;
+  isNew?: boolean;
 }
 
 const getAllCategories = async ({

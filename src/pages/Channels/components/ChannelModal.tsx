@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Variant as InputVariant } from 'components/Input';
 import { ICategoryDetail, useInfiniteCategories } from 'queries/category';
-import { ChannelVisibilityEnum } from 'stores/channelStore';
+import { ChannelVisibilityEnum, useChannelStore } from 'stores/channelStore';
 import Button, { Variant } from 'components/Button';
 import { IOption } from 'components/AsyncSingleSelect';
 import * as yup from 'yup';
@@ -18,8 +18,10 @@ import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import FailureToast from 'components/Toast/variants/FailureToast';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { createCatergory, useInfiniteLearnCategory } from 'queries/learn';
+import useProduct from 'hooks/useProduct';
 
 interface IChannelModalProps {
   isOpen: boolean;
@@ -36,7 +38,7 @@ interface IChannelForm {
 const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
   const { t } = useTranslation('channels');
   const { t: tc } = useTranslation('common');
-
+  const { isLxp } = useProduct();
   const schema = yup.object({
     channelName: yup
       .string()
@@ -46,7 +48,7 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
     channelPrivacy: yup.object().required(),
   });
   const navigate = useNavigate();
-
+  const { setChannels } = useChannelStore();
   const { handleSubmit, control, formState, getValues } = useForm<IChannelForm>(
     {
       defaultValues: {
@@ -73,30 +75,42 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
   );
 
   const formatCategory = (data: any) => {
-    const skillsData = data?.pages.flatMap((page: any) => {
-      return page?.data?.result?.data.map((skill: any) => {
+    const categoriesData = data?.pages.flatMap((page: any) => {
+      return page?.data?.result?.data.map((category: any) => {
         try {
-          return { ...skill, label: skill.name };
+          return { ...category, label: category.name };
         } catch (e) {
-          console.log('Error', { skill });
+          console.log('Error', { category });
         }
       });
     });
 
-    const transformedOption = skillsData?.map((skill: ICategoryDetail) => ({
-      value: skill?.name,
-      label: skill?.name,
-      id: skill?.id,
-      dataTestId: `skill-option-${skill?.name}`,
-    }));
+    const transformedOption = categoriesData?.map(
+      (category: ICategoryDetail) => ({
+        value: category?.id,
+        label: category?.name,
+        type: category?.type,
+        id: category?.id,
+        dataTestId: `category-option-${category?.type?.toLowerCase()}-${
+          category?.name
+        }`,
+      }),
+    );
     return transformedOption;
   };
+  const queryClient = useQueryClient();
 
   const addChannelMutation = useMutation({
     mutationKey: ['add-channel-mutation'],
     mutationFn: createChannel,
-    onSuccess: async (data: any) => {
-      navigate(`/channels/${data?.result?.data?.id}`);
+    onSuccess: async (response: any) => {
+      setChannels({
+        [response?.result?.data?.id]: response?.result?.data,
+      });
+      queryClient.invalidateQueries(['channel']);
+
+      navigate(`/channels/${response?.result?.data?.id}`);
+
       closeModal();
     },
     onError: async () => {
@@ -122,13 +136,25 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
       );
     },
   });
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const formData = getValues();
+    let lxpCategoryId;
+    if (
+      formData?.channelCategory?.isNew &&
+      formData?.channelCategory &&
+      isLxp
+    ) {
+      lxpCategoryId = await createCatergory({
+        title: formData?.channelCategory?.label,
+      });
+      lxpCategoryId = lxpCategoryId?.result?.data?.id;
+    }
+
     const payload = {
       name: formData?.channelName,
       description: formData?.channelDescription,
       visibility: formData?.channelPrivacy?.value,
-      category: formData?.channelCategory?.value,
+      category: lxpCategoryId || formData?.channelCategory?.value,
     };
     addChannelMutation.mutate(payload);
   };
@@ -170,7 +196,9 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
                   label: t('channelModal.channelCategoryLabel'),
                   required: true,
                   control,
-                  fetchQuery: useInfiniteCategories,
+                  fetchQuery: isLxp
+                    ? useInfiniteLearnCategory
+                    : useInfiniteCategories,
                   getFormattedData: formatCategory,
                   dataTestId: 'create-channel-category-dropdown',
                   getPopupContainer: document.body,

@@ -163,7 +163,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
           id="channel-uploadcoverphoto"
           data-testid="channel-uploadedcoverphoto"
           src={
-            channelData.channelBanner?.original ||
+            channelData?.channelBanner?.original ||
             require('images/channelDefaultHero.png')
           }
           className="rounded-9xl w-full h-full object-cover"
@@ -176,20 +176,20 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
           <div className="mb-2 flex items-start space-x-6">
             <div className="h-14 w-14 rounded-full border-2 border-white bg-blue-300 center">
               <Icon
-                name={channelData.displayIcon || 'chart'}
+                name={channelData?.displayIcon || 'chart'}
                 className="text-white"
                 size={24}
               />
             </div>
             <div className="space-y-2 text-white">
               <div className="text-2xl font-bold" data-testid="channel-name">
-                {channelData.name}
+                {channelData?.name}
               </div>
               <div
                 className="text-xs line-clamp-2 "
                 data-testid="channel-description"
               >
-                {channelData.description}
+                {channelData?.description}
               </div>
             </div>
           </div>

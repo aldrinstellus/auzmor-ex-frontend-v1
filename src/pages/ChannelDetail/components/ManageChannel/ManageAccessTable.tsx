@@ -92,7 +92,7 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
 
         {!isLoading && (
           <TableBody>
-            {data.map((user: any) => (
+            {data?.map((user: any) => (
               <TableRow
                 className=" hover:bg-primary-50 font-normal text-base "
                 key={user.id}
@@ -120,9 +120,11 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
                     )}
                   </div>
                 </TableCell>
-                <TableCell>{user?.location || 'dummy location'}</TableCell>
-                <TableCell>{user?.primaryEmail}</TableCell>
-                <TableCell>{user?.designation?.name}</TableCell>
+                <TableCell>{user?.location || 'Not specified'}</TableCell>
+                <TableCell>{user?.email}</TableCell>
+                <TableCell>
+                  {user?.designation?.name || 'Not specified'}
+                </TableCell>
                 <TableCell>
                   <div className="rleative">
                     <PopupMenu
@@ -130,7 +132,7 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
                         <Button
                           variant={Variant.Tertiary}
                           className="!text-sm !font-medium"
-                          label={Role.Admin} // it should come from user data
+                          label={user?.role || Role.Admin}
                           rightIcon={'arrowDown'}
                         />
                       }
@@ -160,7 +162,7 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
                             },
                           },
                         ] as any
-                      } // pass the role options
+                      }
                       className=" w-fit "
                     />
                   </div>

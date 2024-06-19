@@ -6,7 +6,6 @@ import EntitySearchModal, {
 } from 'components/EntitySearchModal';
 import FilterMenu from 'components/FilterMenu';
 import Icon from 'components/Icon';
-import InfiniteSearch from 'components/InfiniteSearch';
 import useModal from 'hooks/useModal';
 import PeopleCard from 'pages/Users/components/People/PeopleCard';
 import UsersSkeleton from 'pages/Users/components/Skeletons/UsersSkeleton';
@@ -15,9 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { getFullName, getProfileImage, isFiltersEmpty } from 'utils/misc';
 import { useEffect, useState } from 'react';
 import { useInfiniteChannelMembers } from 'queries/channel';
-import { IDepartmentAPI, useInfiniteDepartments } from 'queries/department';
-import { useDebounce } from 'hooks/useDebounce';
-import { ILocationAPI, useInfiniteLocations } from 'queries/location';
+
 import useURLParams from 'hooks/useURLParams';
 import PopupMenu from 'components/PopupMenu';
 import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
@@ -25,7 +22,6 @@ import MemberTable from './MemberTable';
 import useRole from 'hooks/useRole';
 import { useParams } from 'react-router-dom';
 import { FilterModalVariant } from 'components/FilterModal';
-import useProduct from 'hooks/useProduct';
 
 const Members = () => {
   const { t } = useTranslation('channels');
@@ -38,17 +34,19 @@ const Members = () => {
     mode: 'onChange',
     defaultValues: { search: '' },
   });
-  const { control } = filterForm;
+  const { watch } = filterForm;
+  const searchValue = watch('search');
+
   const { searchParams } = useURLParams();
   const parsedTab = searchParams.get('type');
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
   useEffect(() => () => clearFilters(), []);
   const { channelId } = useParams();
-  const { isLxp } = useProduct();
   const { data, isLoading } = useInfiniteChannelMembers({
     channelId: channelId,
     q: isFiltersEmpty({
+      q: searchValue,
       status: filters?.status?.length
         ? filters?.status?.map((eachStatus: any) => eachStatus.id).join(',')
         : undefined,
@@ -61,52 +59,6 @@ const Members = () => {
         return user;
       } catch (e) {
         console.log('Error', { user });
-      }
-    });
-  });
-
-  const departmentSearch = ''; // add the same debounced value of filters .
-  const debouncedDepartmentSearchValue = useDebounce(
-    departmentSearch || '',
-    500,
-  );
-  // quick filters api call ..
-  const {
-    data: fetchedDepartments,
-    isLoading: departmentLoading,
-    isFetchingNextPage: isFetchingNextDepartmentPage,
-    fetchNextPage: fetchNextDepartmentPage,
-    hasNextPage: hasNextDepartmentPage,
-  } = useInfiniteDepartments({
-    q: debouncedDepartmentSearchValue,
-  });
-  const departmentData = fetchedDepartments?.pages.flatMap((page) => {
-    return page?.data?.result?.data.map((department: IDepartmentAPI) => {
-      try {
-        return department;
-      } catch (e) {
-        console.log('Error', { department });
-      }
-    });
-  });
-
-  const locationSearch = ''; // add the same debounced value  of filters .
-  const debouncedLocationSearchValue = useDebounce(locationSearch || '', 500);
-  const {
-    data: fetchedLocations,
-    isLoading: locationLoading,
-    isFetchingNextPage: isFetchingNextLocationPage,
-    fetchNextPage: fetchNextLocationPage,
-    hasNextPage: hasNextLocationPage,
-  } = useInfiniteLocations({
-    q: debouncedLocationSearchValue,
-  });
-  const locationData = fetchedLocations?.pages.flatMap((page) => {
-    return page.data.result.data.map((location: ILocationAPI) => {
-      try {
-        return location;
-      } catch (e) {
-        console.log('Error', { location });
       }
     });
   });
@@ -208,63 +160,6 @@ const Members = () => {
                   label={'All members'}
                 /> // for end user its a button
               )}
-            </div>
-            <div className={`relative ${isLxp ? 'hidden' : 'block'}`}>
-              <InfiniteSearch
-                triggerNodeClassName={'!py-2 !px-4'}
-                title="Departments"
-                control={control}
-                options={
-                  departmentData?.map((department: IDepartmentAPI) => ({
-                    label: department.name,
-                    value: department,
-                    id: department.id,
-                  })) || []
-                }
-                searchName={'departmentSearch'}
-                optionsName={'departments'}
-                isLoading={departmentLoading}
-                isFetchingNextPage={isFetchingNextDepartmentPage}
-                fetchNextPage={fetchNextDepartmentPage}
-                hasNextPage={hasNextDepartmentPage}
-                onApply={() => {}}
-                onReset={() => {}}
-                // selectionCount={selectedDepartments.length}
-              />
-            </div>
-            <div className={`relative ${isLxp ? 'hidden' : 'block'}`}>
-              <InfiniteSearch
-                triggerNodeClassName={'!py-2 !px-4'}
-                title="Location"
-                control={control}
-                options={
-                  locationData?.map((location: ILocationAPI) => ({
-                    label: location.name,
-                    value: location,
-                    id: location.id,
-                  })) || []
-                }
-                searchName={'locationSearch'}
-                optionsName={'locations'}
-                isLoading={locationLoading}
-                isFetchingNextPage={isFetchingNextLocationPage}
-                fetchNextPage={fetchNextLocationPage}
-                hasNextPage={hasNextLocationPage}
-                onApply={() =>
-                  // ...Object.keys(locations).filter(
-                  //   (key: string) => !!locations[key],
-                  // ),
-                  {}
-                }
-                onReset={() => {
-                  // if (locations) {
-                  //   Object.keys(locations).forEach((key: string) =>
-                  //     setValue(`locations.${key}`, false),
-                  //   );
-                  // }
-                }}
-                // selectionCount={selectedLocations.length} // will use the filter location global location state
-              />
             </div>
           </div>
         </FilterMenu>

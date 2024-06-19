@@ -1,5 +1,4 @@
 import ManageAccessTable from './ManageAccessTable';
-import InfiniteSearch from 'components/InfiniteSearch';
 import Card from 'components/Card';
 import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
 import { useTranslation } from 'react-i18next';
@@ -9,8 +8,6 @@ import { useForm } from 'react-hook-form';
 import useModal from 'hooks/useModal';
 import Button from 'components/Button';
 import FilterMenu from 'components/FilterMenu';
-import { IDepartmentAPI, useInfiniteDepartments } from 'queries/department';
-import { useDebounce } from 'hooks/useDebounce';
 import Spinner from 'components/Spinner';
 import Icon from 'components/Icon';
 import Avatar from 'components/Avatar';
@@ -22,8 +19,8 @@ import { UserRole } from 'queries/users';
 import Layout, { FieldType } from 'components/Form';
 import { Size as InputSize } from 'components/Input';
 import { FilterModalVariant } from 'components/FilterModal';
-import useProduct from 'hooks/useProduct';
 import { useEffect } from 'react';
+import { ShowingCount } from 'pages/Users/components/Teams';
 
 const ManageAccess = () => {
   const { t } = useTranslation('channels');
@@ -34,16 +31,18 @@ const ManageAccess = () => {
     mode: 'onChange',
     defaultValues: { search: '' },
   });
-  const { control } = filterForm;
   const { channelId } = useParams();
-  const { isLxp } = useProduct();
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
   useEffect(() => () => clearFilters(), []);
 
+  const { watch, control } = filterForm;
+  const searchValue = watch('search');
   const { data, isLoading } = useInfiniteChannelMembers({
     channelId: channelId,
     q: isFiltersEmpty({
+      q: searchValue,
+      sort: filters?.sort,
       role: filters?.roles?.length
         ? filters?.roles?.map((role: any) => role.id).join(',')
         : undefined,
@@ -86,34 +85,9 @@ const ManageAccess = () => {
     },
   ];
 
-  const departmentSearch = ''; // add the same debounced value of filters .
-  const debouncedDepartmentSearchValue = useDebounce(
-    departmentSearch || '',
-    500,
-  );
-  // quick filter
-  const {
-    data: fetchedDepartments,
-    isLoading: departmentLoading,
-    isFetchingNextPage: isFetchingNextDepartmentPage,
-    fetchNextPage: fetchNextDepartmentPage,
-    hasNextPage: hasNextDepartmentPage,
-  } = useInfiniteDepartments({
-    q: debouncedDepartmentSearchValue,
-  });
-  const departmentData = fetchedDepartments?.pages.flatMap((page) => {
-    return page?.data?.result?.data.map((department: IDepartmentAPI) => {
-      try {
-        return department;
-      } catch (e) {
-        console.log('Error', { department });
-      }
-    });
-  });
-
   return (
     <div>
-      <Card className="p-8 flex flex-col gap-6">
+      <Card className="p-8 flex flex-col gap-6  ">
         <div className="flex justify-between items-center">
           <p className="text-2xl font-bold text-neutral-900">
             {t('manageAccess.title')}
@@ -134,33 +108,10 @@ const ManageAccess = () => {
           variant={FilterModalVariant.ChannelsMangeAcess}
         >
           <div className="flex items-center gap-2">
-            <div className="text-neutral-500">
-              {!isLoading && <> Showing {channelMembers?.length} results </>}
-            </div>
-
-            <div className={`relative ${isLxp ? 'hidden' : 'block'}`}>
-              <InfiniteSearch
-                triggerNodeClassName={'!py-2 !px-4'}
-                title="Departments"
-                control={control}
-                options={
-                  departmentData?.map((department: IDepartmentAPI) => ({
-                    label: department.name,
-                    value: department,
-                    id: department.id,
-                  })) || []
-                }
-                searchName={'departmentSearch'}
-                optionsName={'departments'}
-                isLoading={departmentLoading}
-                isFetchingNextPage={isFetchingNextDepartmentPage}
-                fetchNextPage={fetchNextDepartmentPage}
-                hasNextPage={hasNextDepartmentPage}
-                onApply={() => {}}
-                onReset={() => {}}
-                // selectionCount={selectedDepartments.length}
-              />
-            </div>
+            <ShowingCount
+              isLoading={isLoading}
+              count={data?.pages[0]?.data?.result?.totalCount}
+            />
 
             <Layout fields={roleFields} />
           </div>
