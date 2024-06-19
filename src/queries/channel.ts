@@ -12,11 +12,8 @@ import {
 } from 'stores/channelStore';
 import {
   ChannelUserRequests,
-  admins,
   channelAdmins,
   channelLinks,
-  dummyChannels,
-  userData,
 } from 'mocks/Channels';
 import apiService from 'utils/apiService';
 import { Role } from 'utils/enum';
@@ -35,44 +32,17 @@ export const getAllChannels = async (
   setChannels: (channels: { [key: string]: IChannel }) => void,
 ) => {
   let response = null;
-  // response = await new Promise((resolve, _reject) => {
-  //   setTimeout(() => {
-  //     resolve({
-  //       data: {
-  //         result: {
-  //           data: dummyChannels,
-  //         },
-  //       },
-  //     });
-  //   }, 2000);
-  // });
-  // setChannels(chain(dummyChannels).keyBy('id').value());
-  // return response;
+
   try {
     if (!!!context.pageParam) {
-      if ((context.queryKey[2] as { myChannels: boolean })?.myChannels) {
-        response = await apiService.get('/channels/me', context.queryKey[1]);
-      } else {
-        response = await apiService.get('/channels', context.queryKey[1]);
-      }
+      response = await apiService.get('/channels', context.queryKey[1]);
     } else {
       response = await apiService.get(context.pageParam, context.queryKey[1]);
     }
-  } catch (e) {
-    response = {
-      data: {
-        result: {
-          data: dummyChannels,
-        },
-      },
-    };
-  }
+  } catch (e) {}
   setChannels({
-    ...chain(response.data.result.data).keyBy('id').value(),
+    ...chain(response?.data.result.data).keyBy('id').value(),
   });
-  response.data.result.data = response.data.result.data.map(
-    (eachChannel: IChannel) => ({ id: eachChannel.id }),
-  );
   return response;
 };
 
@@ -92,10 +62,9 @@ export const updateMemberRole = async (payload: {
 };
 
 export const createChannel = async (payload: IChannelPayload) => {
-  const data = await apiService.post('/channels', payload);
-  return new Promise((res) => {
-    res(data);
-  });
+  const response = await apiService.post('/channels', payload);
+
+  return response;
 };
 
 export const updateChannel = async (id: string, payload: IChannelPayload) => {
@@ -123,24 +92,7 @@ export const getChannelMembers = async (
     if (pageParam == null)
       response = await apiService.get(`/channels/${id}/members`, queryKey[1]);
     else response = await apiService.get(pageParam);
-  } catch (e) {
-    if ((queryKey[1] as any)?.role == Role.Admin) {
-      response = {
-        data: {
-          result: {
-            data: admins,
-          },
-        },
-      };
-    } else
-      response = {
-        data: {
-          result: {
-            data: userData,
-          },
-        },
-      };
-  }
+  } catch (e) {}
   return response;
 };
 // get channel request by channel id -> /channels/:channelId/members/?memberStatus=pending
@@ -204,14 +156,11 @@ export const updateChannelLinks = async (
 
 // ------------------ React Query -----------------------
 
-export const useInfiniteChannels = (
-  q?: Record<string, any>,
-  myChannels?: boolean,
-) => {
+export const useInfiniteChannels = (q?: Record<string, any>) => {
   const { channels, setChannels } = useChannelStore();
   return {
     ...useInfiniteQuery({
-      queryKey: ['channel', q, { myChannels: !!myChannels }],
+      queryKey: ['channel', q],
       queryFn: (context) => getAllChannels(context, setChannels),
       getNextPageParam: (lastPage: any) => {
         const pageDataLen = lastPage?.data?.result?.data?.length;

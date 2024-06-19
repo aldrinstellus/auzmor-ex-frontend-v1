@@ -67,10 +67,10 @@ const ChannelCard: FC<IChannelCardProps> = ({
             )}
           </div>
           <p className="text-xs font-semibold text-neutral-500">
-            {channel.totalMembers} members
+            {channel?.totalMembers} members
           </p>
           <p className="text-xxs text-neutral-500 line-clamp-2 h-7">
-            {channel.description}
+            {channel?.description}
           </p>
           {showRequestBtn && (
             <Button

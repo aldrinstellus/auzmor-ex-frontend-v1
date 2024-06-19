@@ -120,7 +120,7 @@ const Navbar = () => {
       icon: 'exploreOutline',
       hoverIcon: 'exploreFilled',
       linkTo: '/channels',
-      dataTestId: 'discover-page',
+      dataTestId: 'channels-page',
       iconSize: 24,
       isActive: location.pathname.includes('/channels'),
       hidden: process.env.REACT_APP_ENV === 'PRODUCTION',

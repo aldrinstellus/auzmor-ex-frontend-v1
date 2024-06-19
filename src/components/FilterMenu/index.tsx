@@ -21,12 +21,14 @@ import { ILocationAPI } from 'queries/location';
 import { useTranslation } from 'react-i18next';
 import { ChannelVisibilityEnum } from 'stores/channelStore';
 import { ChannelTypeEnum } from 'components/FilterModal/ChannelType';
+import { ICategory } from 'queries/category';
 
 export enum FilterKey {
   departments = 'departments',
   locations = 'locations',
   status = 'status',
   roles = 'roles',
+  categories = 'categories',
 }
 
 interface IFilterMenu {
@@ -175,6 +177,7 @@ const FilterMenu: FC<IFilterMenu> = ({
         {filters?.status?.length ||
         filters?.roles?.length ||
         filters?.departments?.length ||
+        filters?.categories?.length ||
         filters?.locations?.length ? (
           <div className="flex justify-between items-start">
             <div className="flex items-center space-x-2 flex-wrap gap-y-2">
@@ -248,6 +251,31 @@ const FilterMenu: FC<IFilterMenu> = ({
                     className="cursor-pointer"
                     onClick={() =>
                       handleRemoveFilters(FilterKey.departments, department.id)
+                    }
+                    dataTestId={`applied-filter-close`}
+                  />
+                </div>
+              ))}
+              {filters?.categories?.map((categories: ICategory) => (
+                <div
+                  key={categories.id}
+                  className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
+                  data-testid={`department-filterby-${categories.name}`}
+                  onClick={() =>
+                    handleRemoveFilters(FilterKey.categories, categories.id)
+                  }
+                >
+                  <div className="mr-1 text-neutral-500 whitespace-nowrap">
+                    Category{' '}
+                    <span className="text-primary-500">{categories.name}</span>
+                  </div>
+                  <Icon
+                    name="close"
+                    size={16}
+                    color="text-neutral-900"
+                    className="cursor-pointer"
+                    onClick={() =>
+                      handleRemoveFilters(FilterKey.categories, categories.id)
                     }
                     dataTestId={`applied-filter-close`}
                   />

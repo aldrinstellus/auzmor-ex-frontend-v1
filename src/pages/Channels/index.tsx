@@ -17,6 +17,7 @@ import Divider from 'components/Divider';
 import ChannelRowSkeleton from './components/ChannelRowSkeleton';
 import ChannelCardSkeleton from './components/ChannelCardSkeleton';
 import NoDataFound from 'components/NoDataFound';
+import { ShowingCount } from 'pages/Users/components/Teams';
 
 interface IChannelsProps {}
 
@@ -31,7 +32,6 @@ interface IFilterButton {
 
 export const Channels: FC<IChannelsProps> = () => {
   const { t } = useTranslation('channels');
-  const { t: tc } = useTranslation('common');
   const { filters, clearFilters, updateFilter } = useAppliedFiltersStore();
   const [isModalOpen, openModal, closeModal] = useModal();
 
@@ -41,11 +41,23 @@ export const Channels: FC<IChannelsProps> = () => {
     mode: 'onChange',
     defaultValues: { search: '' },
   });
+
   useEffect(() => () => clearFilters(), []);
+
+  const { watch } = filterForm;
+  const searchValue = watch('search');
+
   const { data, channels, isLoading } = useInfiniteChannels(
     isFiltersEmpty({
-      categoryIds: [],
-      visibility: filters?.visibility,
+      q: searchValue,
+      visiblity:
+        filters?.visibility == ChannelVisibilityEnum.All
+          ? undefined
+          : filters?.visibility,
+      sort: filters?.sort,
+      categoryIds: filters?.categories
+        ?.map((category: any) => category.id)
+        .join(','),
       isStarred: !!(filters?.channelType === ChannelTypeEnum.Starred),
       isManaged: !!(filters?.channelType === ChannelTypeEnum.Managed),
       isRequested: !!(filters?.channelType === ChannelTypeEnum.Requested),
@@ -54,20 +66,12 @@ export const Channels: FC<IChannelsProps> = () => {
         filters?.channelType === ChannelTypeEnum.DiscoverNewChannels
       ),
     }),
-    !!(filters && !!(filters.channelType === ChannelTypeEnum.MyChannels)),
   );
 
-  const channelIds = (
+  const channelIds =
     (data?.pages.flatMap((page) =>
-      page.data?.result?.data.map((channel: { id: string }) => channel),
-    ) as { id: string }[]) || []
-  )
-    ?.filter(({ id }) => !!channels[id])
-    .sort(
-      (a, b) =>
-        new Date(channels[b.id].createdAt).getTime() -
-        new Date(channels[a.id].createdAt).getTime(),
-    );
+      page?.data?.result?.data.map((channel: { id: string }) => channel),
+    ) as { id: string }[]) || [];
 
   const onFilterButtonClick = (type: ChannelTypeEnum) => {
     return () => {
@@ -170,7 +174,10 @@ export const Channels: FC<IChannelsProps> = () => {
         >
           <div className="flex gap-2 items-center">
             <p className="text-neutral-500 text-base">
-              {tc('showing')} {channelIds.length} {tc('result')}
+              <ShowingCount
+                isLoading={isLoading}
+                count={data?.pages[0]?.data?.result?.totalCount}
+              />
             </p>
             {filterButtons.map((filterButton) => (
               <Button
@@ -186,7 +193,7 @@ export const Channels: FC<IChannelsProps> = () => {
             ))}
           </div>
         </FilterMenu>
-        {channelIds.length == 0 && !isLoading && (
+        {channelIds?.length == 0 && !isLoading && (
           <NoDataFound
             illustration="noChannelFound"
             className="py-4 w-full"
@@ -203,20 +210,24 @@ export const Channels: FC<IChannelsProps> = () => {
               <ChannelRowSkeleton key={index} />
             ))
           ) : (
-            channelIds.map(({ id }) => (
-              <>
-                <ChannelRow key={id} channel={channels[id]} />
-                <Divider />
-              </>
-            ))
+            <>
+              {channelIds.map(({ id }) => (
+                <div key={id}>
+                  <ChannelRow channel={channels[id]} />
+                  <Divider />
+                </div>
+              ))}
+            </>
           )
         ) : (
           <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
-            {isLoading
-              ? [...Array(5)].map((_each, index) => (
-                  <ChannelCardSkeleton key={index} />
-                ))
-              : channelIds.map(({ id }) => (
+            {isLoading ? (
+              [...Array(5)].map((_each, index) => (
+                <ChannelCardSkeleton key={index} />
+              ))
+            ) : (
+              <>
+                {channelIds.map(({ id }) => (
                   <ChannelCard
                     key={id}
                     channel={channels[id]}
@@ -242,6 +253,8 @@ export const Channels: FC<IChannelsProps> = () => {
                     }
                   />
                 ))}
+              </>
+            )}
           </div>
         )}
       </Card>

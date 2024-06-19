@@ -1,5 +1,3 @@
-import { dummyChannels } from 'mocks/Channels';
-
 import { IUser } from 'contexts/AuthContext';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
@@ -71,8 +69,7 @@ type Actions = {
 export const useChannelStore = create<State & Actions>()(
   immer((set, get) => ({
     channels: {},
-    getChannel: (id: string) =>
-      get().channels[id] || dummyChannels.find((item) => item.id === id),
+    getChannel: (id: string) => get().channels[id],
     getChannels: () => _.values(get().channels),
     setChannel: (channel: IChannel) =>
       set((state) => {

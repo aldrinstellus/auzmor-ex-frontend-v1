@@ -66,7 +66,7 @@ export interface ITeamProps {
   closeTeamModal: () => void;
 }
 
-const ShowingCount: FC<{
+export const ShowingCount: FC<{
   isLoading: boolean;
   count: number;
   className?: string;

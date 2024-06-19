@@ -25,23 +25,14 @@ const ChannelsWidget: FC<IChannelsProps> = ({}) => {
   };
   const { data, channels, isLoading } = useInfiniteChannels(
     isFiltersEmpty({
-      discover: false,
       limit: 2,
     }),
-    false, // myChannels false
   );
 
-  const channelIds = (
+  const channelIds =
     (data?.pages.flatMap((page) =>
-      page.data?.result?.data.map((channel: { id: string }) => channel),
-    ) as { id: string }[]) || []
-  )
-    ?.filter(({ id }) => !!channels[id])
-    .sort(
-      (a, b) =>
-        new Date(channels[b.id].createdAt).getTime() -
-        new Date(channels[a.id].createdAt).getTime(),
-    );
+      page?.data?.result?.data.map((channel: { id: string }) => channel),
+    ) as { id: string }[]) || [];
 
   if (channelIds?.length == 0) {
     return null;
