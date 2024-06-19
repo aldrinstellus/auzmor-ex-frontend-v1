@@ -28,10 +28,12 @@ const SearchResults: FC = () => {
 
   const { user } = useAuth();
 
-  const { data: syncStatus, isLoading: isStatusLoading } = useConnectedStatus(
-    user?.email || '',
-  );
-  const isSynced = !!syncStatus?.data?.result?.data;
+  const {
+    data: syncStatus,
+    isLoading: isStatusLoading,
+    error,
+  } = useConnectedStatus(user?.email || '');
+  const isSynced = !error && !!syncStatus?.data?.result?.data;
 
   const { data: documentData, isLoading } = useDocument(
     {

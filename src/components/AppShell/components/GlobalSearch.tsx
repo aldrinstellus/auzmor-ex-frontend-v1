@@ -32,9 +32,13 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
 
   const { user } = useAuth();
 
-  const { data: syncStatus, isLoading } = useConnectedStatus(user?.email || '');
+  const {
+    data: syncStatus,
+    isLoading,
+    error,
+  } = useConnectedStatus(user?.email || '');
 
-  const isSynced = !!syncStatus?.data?.result?.data;
+  const isSynced = !error && !!syncStatus?.data?.result?.data;
 
   const navigate = useNavigate();
 
