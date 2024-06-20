@@ -32,13 +32,17 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
 
   const { user } = useAuth();
 
-  const { data: syncStatus, isLoading } = useConnectedStatus(user?.email || '');
+  const {
+    data: syncStatus,
+    isLoading,
+    error,
+  } = useConnectedStatus(user?.email || '');
 
-  const isSynced = !!syncStatus?.data?.result?.data;
+  const isSynced = !error && !!syncStatus?.data?.result?.data;
 
   const navigate = useNavigate();
 
-  const { control } = searchForm;
+  const { control, reset } = searchForm;
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -84,15 +88,26 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
         setSearchQuery(searchQuery);
       },
       onEnter: () => {
+        reset();
+        setSearchQuery('');
         if (searchQuery) {
           navigate(`/search?q=${searchQuery}`);
         }
+      },
+      onSelect: (value: any, option: any) => {
+        reset();
+        setSearchQuery('');
+        const fileUrl = option?.children?.props?.data?.raw?.fileUrl || '';
+        if (fileUrl) window.open(fileUrl, '_blank');
       },
       optionRenderer: (option: any) => {
         return <DocSearchRow key={option.key} data={option} />;
       },
       disableFilterOption: true,
-      onClear: () => {},
+      onClear: () => {
+        reset();
+        setSearchQuery('');
+      },
       noOptionsMessage: (
         <NoDataFound
           className="py-4 w-full"
