@@ -1,4 +1,4 @@
-import React, { FC, Fragment, useCallback, useEffect, useState } from 'react';
+import React, { FC, Fragment } from 'react';
 import Card from 'components/Card';
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import { useForm } from 'react-hook-form';
@@ -11,15 +11,12 @@ import {
   createFolder,
   getLinkToken,
   patchConfig,
-  useSyncStatus,
+  useConnectedStatus,
 } from 'queries/storage';
-import { useMergeLink } from '@mergeapi/react-merge-link';
-import { useMutation } from '@tanstack/react-query';
 import Spinner from 'components/Spinner';
 import FilterMenuDocument from './components/FilterMenu/FilterMenuDocument';
 import Icon from 'components/Icon';
-import queryClient from 'utils/queryClient';
-import { humanizeTime } from 'utils/time';
+import { useMutation } from '@tanstack/react-query';
 import useModal from 'hooks/useModal';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
@@ -33,6 +30,8 @@ import SuccessToast from 'components/Toast/variants/SuccessToast';
 import useURLParams from 'hooks/useURLParams';
 import DocumentSearch from './DocumentSearch';
 import { useAppliedFiltersForDoc } from 'stores/appliedFiltersForDoc';
+import { useVault } from '@apideck/vault-react';
+import useAuth from 'hooks/useAuth';
 
 export enum FilePickerObjectType {
   FILE = 'FILE',
@@ -44,11 +43,12 @@ interface IDocumentProps {}
 
 const Document: FC<IDocumentProps> = ({}) => {
   const { t } = useTranslation('common');
-  const [storageConfig, setStorageConfig] = useState<Record<string, string>>();
   const [isOpen, openModal, closeModal] = useModal(false, true);
   const { getCurrentFolder } = useDocumentPath();
   const { filters } = useAppliedFiltersForDoc();
   const { searchParams } = useURLParams();
+  const { open } = useVault();
+  const { user } = useAuth();
 
   const searchQuery = searchParams.get('search') || undefined;
   const isFilterApplied =
@@ -66,8 +66,17 @@ const Document: FC<IDocumentProps> = ({}) => {
   const configStorageMutation = useMutation({
     mutationKey: ['configure-storage'],
     mutationFn: getLinkToken,
-    onSuccess: (data) => {
-      setStorageConfig(data.result.data);
+    onSuccess: (data, variables) => {
+      open({
+        token: data.result.data.linkToken,
+        unifiedApi: 'file-storage',
+        serviceId: variables,
+        onReady: () => console.log('ready'),
+        onClose: () => console.log('onClose'),
+        onConnectionChange: () => {
+          patchConfig({ isAuthorized: true, id: data.result.data.id }, refetch);
+        },
+      });
     },
   });
   const createFolderMutation = useMutation({
@@ -79,56 +88,9 @@ const Document: FC<IDocumentProps> = ({}) => {
   const {
     data: syncStatus,
     isLoading,
-    isRefetching,
     refetch,
-  } = useSyncStatus();
-  const onSuccess = (public_token: string) => {
-    setStorageConfig({ ...storageConfig, public_token });
-  };
-  const onSubmit = useCallback(
-    (output_objects: any) => {
-      const outputFolders = output_objects.filter(
-        (item: any) => item?.outputType === FilePickerObjectType.FOLDER,
-      );
-      const outputDrives = output_objects.filter(
-        (item: any) => item?.outputType === FilePickerObjectType.DRIVE,
-      );
-      patchConfig(
-        {
-          id: storageConfig?.id || '',
-          publicToken: storageConfig?.public_token,
-          allowedFolders: outputFolders.map((folder: any) => ({
-            remoteId: folder.id,
-            integrationId: folder.id,
-          })),
-          allowedDrives: outputDrives.map((drive: any) => ({
-            remoteId: drive.id,
-            integrationId: drive.id,
-          })),
-        },
-        refetch,
-      );
-    },
-    [storageConfig],
-  );
-  const { open, isReady } = useMergeLink({
-    linkToken: storageConfig?.linkToken,
-    onSuccess,
-    filePickerConfig: {
-      onSubmit,
-      types: [FilePickerObjectType.DRIVE, FilePickerObjectType.FOLDER],
-    },
-  });
-
-  const isSynced = !!syncStatus?.data?.result?.data?.length;
-  const lastSynced = syncStatus?.data?.result?.data[0]?.lastSyncStart;
-
-  useEffect(() => {
-    if (isReady) {
-      open();
-    }
-  }, [isReady]);
-
+  } = useConnectedStatus(user?.email || '');
+  const isSynced = !!syncStatus?.data?.result?.data;
   const filterForm = useForm<{
     search: string;
     documentType?: {
@@ -152,15 +114,6 @@ const Document: FC<IDocumentProps> = ({}) => {
     'showFiles',
     'showFolders',
   ]);
-
-  const handleSync = async () => {
-    queryClient.invalidateQueries(['get-storage-files'], {
-      exact: false,
-    });
-    queryClient.invalidateQueries(['get-storage-folders'], {
-      exact: false,
-    });
-  };
 
   const handleCreateFolder = () =>
     createFolderMutation.mutate(
@@ -207,7 +160,6 @@ const Document: FC<IDocumentProps> = ({}) => {
         },
         onSettled: () => {
           closeModal();
-          handleSync();
         },
       },
     );
@@ -244,39 +196,13 @@ const Document: FC<IDocumentProps> = ({}) => {
                 label={each.label}
                 key={each.integrationValue}
                 className="w-64"
-                onClick={() => {
-                  configStorageMutation.mutate(each.integrationValue);
-                }}
+                onClick={() =>
+                  configStorageMutation.mutate(each.integrationValue)
+                }
               />
             );
           })}
         </div>
-      </div>
-    );
-  };
-
-  const SyncStatus: FC<{ lastSynced: string }> = ({ lastSynced }) => {
-    const [syncedAt, setSyncedAt] = useState(
-      `Synced ${humanizeTime(lastSynced)}`,
-    );
-    useEffect(() => {
-      const updateInterval = setInterval(() => {
-        setSyncedAt(`Synced ${humanizeTime(lastSynced)}`);
-      }, 60000);
-      return () => clearInterval(updateInterval);
-    }, [lastSynced]);
-
-    return (
-      <div
-        className=" hidden items-center gap-2 group cursor-pointer border border-neutral-300 px-4 rounded"
-        onClick={handleSync}
-      >
-        <div className={`${isRefetching && 'animate-spin'}`}>
-          <Icon name="refresh" size={16} />
-        </div>
-        <p className="group-hover:text-primary-500 text-neutral-500">
-          {isRefetching ? 'Syncing...' : syncedAt}
-        </p>
       </div>
     );
   };
@@ -380,7 +306,6 @@ const Document: FC<IDocumentProps> = ({}) => {
                     )}
                   </p>
                 </div>
-                <SyncStatus lastSynced={lastSynced} />
               </div>
             </FilterMenuDocument>
             {showSearchResults && <DocumentSearch searchQuery={searchQuery} />}
