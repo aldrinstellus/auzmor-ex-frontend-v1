@@ -42,6 +42,7 @@ const AvatarList: FC<AvatarListProps> = ({
             image={user?.image || getProfileImage(user)}
             active={false}
             className={`border-[2px] border-white ${avatarClassName}`}
+            ariaLabel={user?.name}
           />
         ))
         .slice(0, 2)}

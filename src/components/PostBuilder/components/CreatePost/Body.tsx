@@ -134,6 +134,8 @@ const Body = forwardRef(
                 <Button
                   variant={Variant.Secondary}
                   leftIcon={'profileUser'}
+                  leftIconClassName="text-neutral-900"
+                  leftIconHover={false}
                   label="Audience"
                   size={Size.Small}
                   onClick={() => {

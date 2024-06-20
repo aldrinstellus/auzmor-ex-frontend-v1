@@ -53,6 +53,13 @@ const MyTeamWidget: FC<IMyTeamWidgetProps> = ({ className = '' }) => {
       <div
         className="px-6 flex items-center justify-between cursor-pointer"
         onClick={toggleModal}
+        onKeyUp={(e) => {
+          if (e.code === 'Enter') toggleModal();
+        }}
+        tabIndex={0}
+        aria-label="teams widget"
+        aria-expanded={open}
+        role="button"
       >
         <div className="font-bold">Teams</div>
         <Icon

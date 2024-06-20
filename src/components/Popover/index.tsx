@@ -37,7 +37,6 @@ const Popover = forwardRef(
       { [className]: true },
     );
     const triggerNodeStyle = clsx({
-      'outline-none': true,
       [triggerNodeClassName]: true,
     });
 

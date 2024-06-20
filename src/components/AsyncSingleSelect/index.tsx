@@ -54,6 +54,7 @@ export interface IAsyncSingleSelectProps {
   disableFilterOption?: boolean;
   onClear?: () => void;
   onEnter?: () => void;
+  ariaLabel?: string;
 }
 
 const AsyncSingleSelect = forwardRef(
@@ -88,6 +89,7 @@ const AsyncSingleSelect = forwardRef(
       onClear = () => {},
       disableFilterOption = false,
       onEnter,
+      ariaLabel = 'search',
     }: IAsyncSingleSelectProps,
     ref?: any,
   ) => {
@@ -233,6 +235,7 @@ const AsyncSingleSelect = forwardRef(
                     }
                   }}
                   searchValue={search}
+                  aria-label={ariaLabel}
                 >
                   {(options || []).map((option) => {
                     return (

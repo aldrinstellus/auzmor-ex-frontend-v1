@@ -48,143 +48,142 @@ const AccountCard = () => {
   });
 
   return (
-    <>
-      <Popover
-        triggerNode={
-          <div className="flex gap-1 items-center">
+    <Popover
+      triggerNode={
+        <div className="flex gap-1 items-center">
+          <Avatar
+            dataTestId="my-profile-avatar"
+            name={user?.name || 'U'}
+            size={32}
+            image={user?.profileImage}
+            ariaLabel="profile image"
+          />
+          <Icon name="arrowDownOutline" size={16} title="Account dropdown" />
+        </div>
+      }
+      className="-right-2 top-[52px] rounded-9xl"
+      contentRenderer={(close) => (
+        <div className="rounded-9xl flex flex-col items-center w-64 shadow overflow-hidden">
+          <div className="px-4 py-5 flex flex-col items-center">
             <Avatar
-              dataTestId="my-profile-avatar"
+              size={80}
               name={user?.name || 'U'}
-              size={32}
               image={user?.profileImage}
+              // showActiveIndicator
             />
-            <Icon name="arrowDownOutline" size={16} />
-          </div>
-        }
-        className="-right-2 top-[52px] rounded-9xl"
-        contentRenderer={(close) => (
-          <div className="rounded-9xl flex flex-col items-center w-64 shadow overflow-hidden">
-            <div className="px-4 py-5 flex flex-col items-center">
-              <Avatar
-                size={80}
-                name={user?.name || 'U'}
-                image={user?.profileImage}
-                // showActiveIndicator
-              />
-              <div
-                className="text-sm font-bold mt-4"
-                data-testid="user-menu-user-name"
-              >
-                {user?.name}
-              </div>
-              <div
-                className="text-neutral-500 text-xs"
-                data-testid="user-menu-user-email"
-              >
-                {user?.email}
-              </div>
+            <div
+              className="text-sm font-bold mt-4"
+              data-testid="user-menu-user-name"
+            >
+              {user?.name}
             </div>
-            {isOffice && (
-              <div className="px-4 pb-4 w-full">
-                <Button
-                  dataTestId="user-menu-profile"
-                  variant={Variant.Secondary}
-                  label="Go to my profile"
-                  onClick={() => {
-                    navigate('/profile', { state: { userId: user?.id } });
-                    close();
-                  }}
-                  size={Size.Small}
-                  className="w-full"
-                />
-              </div>
-            )}
-            <div className="w-full">
-              <Link to={isLxp ? `${getLearnUrl()}/user/settings` : '/settings'}>
-                <div
-                  className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
-                  data-testid="user-menu-user-settings"
-                  onClick={close}
-                >
-                  <Icon
-                    name="settingOutline"
-                    size={20}
-                    className="mr-2.5"
-                    color="text-neutral-900"
-                  />
-                  <div>User Settings</div>
-                </div>
-              </Link>
-              {isOffice && isAdmin && (
-                <Link to="/admin">
-                  <div
-                    className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
-                    data-testid="user-menu-admin-settings"
-                    onClick={close}
-                  >
-                    <Icon
-                      name="settingThreeOutline"
-                      size={20}
-                      className="mr-2.5"
-                      color="text-neutral-900"
-                    />
-                    <div>Admin Settings</div>
-                  </div>
-                </Link>
-              )}
-              {isLxp && isAdmin && (
-                <Link to={getLearnUrl()}>
-                  <div
-                    className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
-                    data-testid="user-menu-adminview"
-                    onClick={close}
-                  >
-                    <Icon
-                      name="userAdmin"
-                      size={20}
-                      className="mr-2.5"
-                      color="text-neutral-900"
-                    />
-                    <div>Switch to Admin&apos;s View</div>
-                  </div>
-                </Link>
-              )}
-              <Link to="/bookmarks">
-                <div
-                  className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
-                  data-testid="user-menu-mybookmarks"
-                  onClick={close}
-                >
-                  <Icon
-                    name="postBookmark"
-                    size={20}
-                    className="mr-2.5"
-                    color="text-neutral-900"
-                  />
-                  <div>My Bookmarks</div>
-                </div>
-              </Link>
-              <div
-                className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
+            <div
+              className="text-neutral-500 text-xs"
+              data-testid="user-menu-user-email"
+            >
+              {user?.email}
+            </div>
+          </div>
+          {isOffice && (
+            <div className="px-4 pb-4 w-full">
+              <Button
+                dataTestId="user-menu-profile"
+                variant={Variant.Secondary}
+                label="Go to my profile"
                 onClick={() => {
-                  logoutMutation.mutate();
+                  navigate('/profile', { state: { userId: user?.id } });
                   close();
                 }}
-                data-testid="user-menu-signout-cta"
+                size={Size.Small}
+                className="w-full"
+              />
+            </div>
+          )}
+          <div className="w-full">
+            <Link to={isLxp ? `${getLearnUrl()}/user/settings` : '/settings'}>
+              <div
+                className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
+                data-testid="user-menu-user-settings"
+                onClick={close}
               >
                 <Icon
-                  name="logoutOutline"
+                  name="settingOutline"
                   size={20}
                   className="mr-2.5"
                   color="text-neutral-900"
                 />
-                <div>Sign Out</div>
+                <div>User Settings</div>
               </div>
+            </Link>
+            {isOffice && isAdmin && (
+              <Link to="/admin">
+                <div
+                  className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
+                  data-testid="user-menu-admin-settings"
+                  onClick={close}
+                >
+                  <Icon
+                    name="settingThreeOutline"
+                    size={20}
+                    className="mr-2.5"
+                    color="text-neutral-900"
+                  />
+                  <div>Admin Settings</div>
+                </div>
+              </Link>
+            )}
+            {isLxp && isAdmin && (
+              <Link to={getLearnUrl()}>
+                <div
+                  className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
+                  data-testid="user-menu-adminview"
+                  onClick={close}
+                >
+                  <Icon
+                    name="userAdmin"
+                    size={20}
+                    className="mr-2.5"
+                    color="text-neutral-900"
+                  />
+                  <div>Switch to Admin&apos;s View</div>
+                </div>
+              </Link>
+            )}
+            <Link to="/bookmarks">
+              <div
+                className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
+                data-testid="user-menu-mybookmarks"
+                onClick={close}
+              >
+                <Icon
+                  name="postBookmark"
+                  size={20}
+                  className="mr-2.5"
+                  color="text-neutral-900"
+                />
+                <div>My Bookmarks</div>
+              </div>
+            </Link>
+            <div
+              className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
+              onClick={() => {
+                logoutMutation.mutate();
+                close();
+              }}
+              data-testid="user-menu-signout-cta"
+            >
+              <Icon
+                name="logoutOutline"
+                size={20}
+                className="mr-2.5"
+                color="text-neutral-900"
+              />
+              <div>Sign Out</div>
             </div>
           </div>
-        )}
-      />
-    </>
+        </div>
+      )}
+    />
   );
 };
 

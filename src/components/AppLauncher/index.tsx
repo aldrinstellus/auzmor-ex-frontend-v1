@@ -55,8 +55,13 @@ const AppLauncher = () => {
         className="px-6 flex items-center justify-between cursor-pointer"
         data-testid="app-launcher"
         onClick={toggleModal}
+        onKeyUp={(e) => (e.code === 'Enter' ? toggleModal() : '')}
+        tabIndex={0}
+        aria-label="app launcher"
+        aria-expanded={open}
+        role="button"
       >
-        <div className="font-bold">App Launcher</div>
+        <p className="font-bold">App Launcher</p>
         <div className="flex items-center gap-2">
           <Icon
             name={open ? 'arrowUp' : 'arrowDown'}

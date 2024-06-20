@@ -108,6 +108,7 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
           dataTestId="globalsearch-noDataFound"
         />
       ),
+      ariaLabel: 'global search',
     },
   ];
 

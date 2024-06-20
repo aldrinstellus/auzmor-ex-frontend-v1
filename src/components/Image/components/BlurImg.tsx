@@ -12,14 +12,14 @@ import { useInView } from 'react-intersection-observer';
 type Props = DetailedHTMLProps<
   ImgHTMLAttributes<HTMLImageElement>,
   HTMLImageElement
-> & { blurhash?: string | null; dataTestId?: string };
+> & { blurhash?: string | null; dataTestId?: string; ariaLabel?: string };
 
 // Uses browser-native `loading="lazy"` to lazy load images
 // Renders a blurhash value to a blob when it about to appear on screen.
 // Only renders the blurhash when the image hasn't loaded yet.
 // Removes the blob once the image has finished loading.
 const BlurImg: FC = (allProps: Props): ReactElement => {
-  const { loading = 'lazy', blurhash, style, ...props } = allProps;
+  const { loading = 'lazy', blurhash, style, ariaLabel, ...props } = allProps;
 
   const [imgLoaded, setImgLoaded] = useState(false);
   const [ref, inView] = useInView({ rootMargin: '110%' });
@@ -49,6 +49,7 @@ const BlurImg: FC = (allProps: Props): ReactElement => {
       style={newStyle}
       data-testid={allProps?.dataTestId}
       alt="Image"
+      aria-label={ariaLabel}
     />
   );
 };
