@@ -6,13 +6,17 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Variant as InputVariant } from 'components/Input';
 import { ICategoryDetail, useInfiniteCategories } from 'queries/category';
-import { ChannelVisibilityEnum, useChannelStore } from 'stores/channelStore';
+import {
+  ChannelVisibilityEnum,
+  IChannel,
+  useChannelStore,
+} from 'stores/channelStore';
 import Button, { Variant } from 'components/Button';
 import { IOption } from 'components/AsyncSingleSelect';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Icon from 'components/Icon';
-import { createChannel } from 'queries/channel';
+import { IChannelPayload, createChannel, updateChannel } from 'queries/channel';
 import { toast } from 'react-toastify';
 import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
@@ -22,12 +26,18 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createCatergory, useInfiniteLearnCategory } from 'queries/learn';
 import useProduct from 'hooks/useProduct';
+import { TFunction } from 'i18next';
 
 interface IChannelModalProps {
   isOpen: boolean;
   closeModal: () => void;
+  channelData?: IChannel;
 }
 
+enum ChannelFlow {
+  CreateChannel = 'CREATE_CHANNEL',
+  EditChannel = 'EDIT_CHANNEL',
+}
 interface IChannelForm {
   channelName: string;
   channelCategory: ICategoryDetail;
@@ -35,7 +45,39 @@ interface IChannelForm {
   channelDescription: string;
 }
 
-const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
+const getChannelPrivacyOption = (
+  visibility: ChannelVisibilityEnum,
+  t: TFunction,
+) => {
+  if (visibility === ChannelVisibilityEnum.Private) {
+    return {
+      label: (
+        <div className="flex gap-2 items-center">
+          <Icon name="lock" size={16} color="text-neutral-900" hover={false} />
+          <p>{t('private')}</p>
+        </div>
+      ),
+      value: ChannelVisibilityEnum.Private,
+      dataTestId: 'channel-privacy-private',
+    };
+  }
+  return {
+    label: (
+      <div className="flex gap-2 items-center">
+        <Icon name="global" size={16} color="text-neutral-900" hover={false} />
+        <p>{t('public')}</p>
+      </div>
+    ),
+    value: ChannelVisibilityEnum.Public,
+    dataTestId: 'channel-privacy-public',
+  };
+};
+
+const ChannelModal: FC<IChannelModalProps> = ({
+  isOpen,
+  closeModal,
+  channelData,
+}) => {
   const { t } = useTranslation('channels');
   const { t: tc } = useTranslation('common');
   const { isLxp } = useProduct();
@@ -46,28 +88,32 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
       .required(),
     channelCategory: yup.object().required(),
     channelPrivacy: yup.object().required(),
+    channelDescription: yup.string(),
   });
+  const channelFlow = channelData?.id
+    ? ChannelFlow.EditChannel
+    : ChannelFlow.CreateChannel;
   const navigate = useNavigate();
   const { setChannels } = useChannelStore();
   const { handleSubmit, control, formState, getValues } = useForm<IChannelForm>(
     {
       defaultValues: {
-        channelName: '',
-        channelPrivacy: {
-          label: (
-            <div className="flex gap-2 items-center">
-              <Icon
-                name="global"
-                size={16}
-                color="text-neutral-900"
-                hover={false}
-              />
-              <p>{t('public')}</p>
-            </div>
-          ),
-          value: ChannelVisibilityEnum.Public,
-          dataTestId: 'channel-privacy-public',
-        },
+        channelName: channelData?.name || '',
+        channelPrivacy: getChannelPrivacyOption(
+          channelData?.settings?.visibility || ChannelVisibilityEnum.Public,
+          t,
+        ),
+        channelCategory:
+          channelData?.categories && channelData?.categories?.length > 0
+            ? channelData.categories
+                .map((category) => ({
+                  value: category?.id,
+                  label: category?.name,
+                  id: category?.id,
+                }))
+                .pop()
+            : undefined,
+        channelDescription: channelData?.description || undefined,
       },
       resolver: yupResolver(schema),
       mode: 'onChange',
@@ -136,6 +182,40 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
       );
     },
   });
+  const updateChannelMutation = useMutation({
+    mutationKey: ['update-channel-mutation'],
+    mutationFn: ({ id, payload }: { id: string; payload: IChannelPayload }) =>
+      updateChannel(id, payload),
+    onSuccess: async (response: any) => {
+      setChannels({
+        [response?.result?.data?.id]: response?.result?.data,
+      });
+      queryClient.invalidateQueries(['channel']);
+      closeModal();
+    },
+    onError: async () => {
+      toast(
+        <FailureToast
+          content={`Error updating channel`}
+          dataTestId="channel-update-error-toaster"
+        />,
+        {
+          closeButton: (
+            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
+          ),
+          style: {
+            border: `1px solid ${twConfig.theme.colors.red['300']}`,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          autoClose: TOAST_AUTOCLOSE_TIME,
+          transition: slideInAndOutTop,
+          theme: 'dark',
+        },
+      );
+    },
+  });
   const onSubmit = async () => {
     const formData = getValues();
     let lxpCategoryId;
@@ -153,18 +233,33 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
     const payload = {
       name: formData?.channelName,
       description: formData?.channelDescription,
-      visibility: formData?.channelPrivacy?.value,
-      category: lxpCategoryId || formData?.channelCategory?.value,
+      settings: {
+        visibility: formData?.channelPrivacy?.value as ChannelVisibilityEnum,
+      },
+      categoryIds: [lxpCategoryId || formData?.channelCategory?.value || '']
+        .filter(Boolean)
+        .map((id) => id.toString()),
     };
-    addChannelMutation.mutate(payload);
+    if (channelFlow === ChannelFlow.EditChannel) {
+      updateChannelMutation.mutate({ id: channelData?.id || '', payload });
+    } else addChannelMutation.mutate(payload);
   };
 
+  const dataTestId =
+    channelFlow === ChannelFlow.CreateChannel
+      ? 'create-channel'
+      : 'edit-channel';
+
   return (
-    <Modal open={isOpen} dataTestId="createchannel-modal">
+    <Modal open={isOpen} dataTestId={`${dataTestId}-modal`}>
       <Header
-        title={t('channelModal.createChannel')}
+        title={
+          channelFlow === ChannelFlow.EditChannel
+            ? t('channelModal.editChannel')
+            : t('channelModal.createChannel')
+        }
         onClose={closeModal}
-        closeBtnDataTestId="create-channel-crossicon"
+        closeBtnDataTestId={`${dataTestId}-crossicon`}
       />
       <div className="p-6">
         <div className="flex flex-col items-center gap-6">
@@ -177,7 +272,7 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
                 name: 'channelName',
                 label: t('channelModal.channelNameLabel'),
                 placeholder: 'ex. Product and design team',
-                dataTestId: 'create-channel-name',
+                dataTestId: `${dataTestId}-name`,
                 showCounter: true,
                 maxLength: 100,
                 required: true,
@@ -200,7 +295,7 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
                     ? useInfiniteLearnCategory
                     : useInfiniteCategories,
                   getFormattedData: formatCategory,
-                  dataTestId: 'create-channel-category-dropdown',
+                  dataTestId: `${dataTestId}-category-dropdown`,
                   getPopupContainer: document.body,
                 },
               ]}
@@ -218,19 +313,10 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
                   required: true,
                   options: [
                     {
-                      label: (
-                        <div className="flex gap-2 items-center">
-                          <Icon
-                            name="lock"
-                            size={16}
-                            color="text-neutral-900"
-                            hover={false}
-                          />
-                          <p>{t('private')}</p>
-                        </div>
+                      ...getChannelPrivacyOption(
+                        ChannelVisibilityEnum.Private,
+                        t,
                       ),
-                      value: ChannelVisibilityEnum.Private,
-                      dataTestId: 'channel-privacy-private',
                       render: () => (
                         <div className="flex gap-3">
                           <div className="flex">
@@ -252,19 +338,10 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
                       ),
                     },
                     {
-                      label: (
-                        <div className="flex gap-2 items-center">
-                          <Icon
-                            name="global"
-                            size={16}
-                            color="text-neutral-900"
-                            hover={false}
-                          />
-                          <p>{t('public')}</p>
-                        </div>
+                      ...getChannelPrivacyOption(
+                        ChannelVisibilityEnum.Public,
+                        t,
                       ),
-                      value: ChannelVisibilityEnum.Public,
-                      dataTestId: 'channel-privacy-public',
                       render: () => (
                         <div className="flex gap-3">
                           <div className="flex">
@@ -300,7 +377,8 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
                 name: 'channelDescription',
                 label: t('channelModal.channelDescriptionLabel'),
                 placeholder: t('channelModal.channelDescriptionPlaceholder'),
-                dataTestId: 'create-channel-description',
+                defaultValue: getValues()?.channelDescription || '',
+                dataTestId: `${dataTestId}-description`,
                 rows: 5,
                 maxLength: 200,
                 showCounter: true,
@@ -318,13 +396,15 @@ const ChannelModal: FC<IChannelModalProps> = ({ isOpen, closeModal }) => {
           variant={Variant.Secondary}
           onClick={closeModal}
           className="mr-4"
-          dataTestId="channel-creation-cancel"
+          dataTestId={`${dataTestId}-cancel`}
         />
         <Button
-          label={tc('create')}
+          label={
+            channelFlow === ChannelFlow.EditChannel ? tc('save') : tc('create')
+          }
           variant={Variant.Primary}
           onClick={handleSubmit(onSubmit)}
-          dataTestId="channel-creation-create"
+          dataTestId={`${dataTestId}-cta`}
           disabled={!formState.isValid}
         />
       </div>

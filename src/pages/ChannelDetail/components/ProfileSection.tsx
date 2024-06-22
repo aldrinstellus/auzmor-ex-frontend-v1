@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import Icon from 'components/Icon';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { IChannel } from '../../../stores/channelStore';
+import { ChannelVisibilityEnum, IChannel } from '../../../stores/channelStore';
 import useURLParams from 'hooks/useURLParams';
 import PopupMenu from 'components/PopupMenu';
 import IconButton, {
@@ -11,6 +11,11 @@ import IconButton, {
 } from 'components/IconButton';
 import Button, { Size as ButtonSize } from 'components/Button';
 import { twConfig } from 'utils/misc';
+import useAuth from 'hooks/useAuth';
+import ChannelModal from 'pages/Channels/components/ChannelModal';
+import useModal from 'hooks/useModal';
+import ChannelArchiveModal from 'pages/Channels/components/ChannelArchiveModal';
+
 type ProfileSectionProps = {
   channelData: IChannel;
   activeTab: string;
@@ -25,7 +30,11 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   setActiveMenu,
 }) => {
   const { t } = useTranslation('channelDetail');
+  const { user } = useAuth();
   const { updateParam } = useURLParams();
+  const [isEditModalOpen, openEditModal, closeEditModal] = useModal();
+  const [isArchiveModalOpen, openArchiveModal, closeArchiveModal] = useModal();
+
   const tabs = [
     {
       label: t('cover.tab_home'),
@@ -44,17 +53,17 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     },
   ];
 
-  const editMenueOptions = [
+  const editMenuOptions = [
     {
       icon: 'edit',
       label: 'Edit',
       stroke: twConfig.theme.colors.neutral['900'],
-      onClick: () => {},
+      onClick: openEditModal,
       dataTestId: '',
     },
     {
       icon: 'adminOutline',
-      label: 'Manage access',
+      label: 'Manage Access',
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         setActiveMenu({ accessTab: true, settingTab: false });
@@ -66,7 +75,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       icon: 'archive',
       label: 'Archive',
       stroke: twConfig.theme.colors.neutral['900'],
-      onClick: () => {},
+      onClick: openArchiveModal,
       dataTestId: '',
     },
     {
@@ -78,7 +87,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     },
     {
       icon: 'profileAdd',
-      label: 'Add members',
+      label: 'Add Members',
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         setActiveMenu(true);
@@ -88,7 +97,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     },
     {
       icon: 'setting',
-      label: 'Setting',
+      label: 'Settings',
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         setActiveMenu({ accessTab: false, settingTab: true });
@@ -97,14 +106,17 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       dataTestId: '',
     },
   ];
+  console.log({ channelData, user });
   return (
     <div className="h-[330px]  rounded-9xl relative mb-4">
       <div className="relative z-30">
-        <div className="absolute top-4 left-4">
-          <div className="bg-white rounded-7xl px-3 py-1.5 text-xxs text-primary-500 font-medium">
-            {t('cover.you_own_this_space')}
+        {channelData?.createdBy?.id === user?.id ? (
+          <div className="absolute top-4 left-4">
+            <div className="bg-white rounded-7xl px-3 py-1.5 text-xxs text-primary-500 font-medium">
+              {t('cover.you_own_this_space')}
+            </div>
           </div>
-        </div>
+        ) : null}
         <div className="absolute top-4 right-4 flex items-center space-x-2">
           <div className="bg-white rounded-full p-2 cursor-pointer">
             <Icon
@@ -138,7 +150,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 </div>
               }
               className="absolute top-12 right-4 w-48"
-              menuItems={editMenueOptions}
+              menuItems={editMenuOptions}
               title={
                 <div className="text-xs  bg-blue-50 py-2 px-6 font-Medium flex items-center justify-center ">
                   CHANNEL MANAGEMENT
@@ -162,10 +174,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         <img
           id="channel-uploadcoverphoto"
           data-testid="channel-uploadedcoverphoto"
-          src={
-            channelData?.channelBanner?.original ||
-            require('images/channelDefaultHero.png')
-          }
+          src={channelData?.banner || require('images/channelDefaultHero.png')}
           className="rounded-9xl w-full h-full object-cover"
         />
         <div className="w-full h-full bg-gradient-to-b from-transparent to-black top-0 left-0 absolute rounded-t-9xl"></div>
@@ -176,7 +185,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
           <div className="mb-2 flex items-start space-x-6">
             <div className="h-14 w-14 rounded-full border-2 border-white bg-blue-300 center">
               <Icon
-                name={channelData?.displayIcon || 'chart'}
+                name={channelData?.displayImage || 'chart'}
                 className="text-white"
                 size={24}
               />
@@ -229,7 +238,10 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 <Icon name="lock" size={16} className="text-white" />
               </div>
               <div className="text-white text-sm" data-testid="channel-privacy">
-                {t('private')}
+                {channelData?.settings?.visibility ===
+                ChannelVisibilityEnum.Private
+                  ? t('private')
+                  : t('public')}
               </div>
             </div>
             <div className="flex items-center space-x-1 border-r px-4 border-neutral-500">
@@ -240,7 +252,9 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 className="text-white text-sm"
                 data-testid="channel-membercount"
               >
-                1 {t('member')}
+                {channelData?.totalMembers === 1
+                  ? `1 ${t('member')}`
+                  : `${channelData.totalMembers} ${t('members')}`}
               </div>
             </div>
             <div className="flex items-center space-x-1 pl-4">
@@ -251,12 +265,29 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 className="text-white text-sm"
                 data-testid="channel-category"
               >
-                Sales
+                {channelData?.categories
+                  ?.map((category) => category.name)
+                  ?.join(', ') || ''}
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {isEditModalOpen && (
+        <ChannelModal
+          isOpen={isEditModalOpen}
+          closeModal={closeEditModal}
+          channelData={channelData}
+        />
+      )}
+      {isArchiveModalOpen && (
+        <ChannelArchiveModal
+          isOpen={isArchiveModalOpen}
+          closeModal={closeArchiveModal}
+          channelId={channelData.id}
+        />
+      )}
     </div>
   );
 };

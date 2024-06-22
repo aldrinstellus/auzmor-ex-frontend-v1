@@ -45,6 +45,7 @@
   "searchChannels": "Search channels",
   "channelModal": {
     "createChannel": "Create channel",
+    "editChannel": "Edit Channel",
     "channelNameLabel": "Channel Name",
     "channelNamePlaceholder": "ex. Product and design team",
     "channelCategoryLabel": "Channel Category",

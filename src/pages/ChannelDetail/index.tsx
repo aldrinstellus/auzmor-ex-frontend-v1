@@ -8,6 +8,8 @@ import { IChannel, useChannelStore } from 'stores/channelStore';
 import { useParams } from 'react-router-dom';
 import useScrollTop from 'hooks/useScrollTop';
 import ManageAccess from './components/ManageChannel';
+import { useChannelDetails } from 'queries/channel';
+import PageLoader from 'components/PageLoader';
 
 const ChannelDetail = () => {
   const { channelId } = useParams();
@@ -18,9 +20,6 @@ const ChannelDetail = () => {
     settingTab: false,
   });
 
-  if (!channelId) {
-    return <div>Error</div>;
-  }
   const { getScrollTop, resumeRecordingScrollTop } = useScrollTop(
     'app-shell-container',
   );
@@ -35,6 +34,7 @@ const ChannelDetail = () => {
       });
     }
   }, [channelId]);
+
   const renderActiveTab = (channelData: IChannel) => {
     if (activeMenu.accessTab) {
       return <ManageAccess channelData={channelData} />;
@@ -58,7 +58,20 @@ const ChannelDetail = () => {
     }
   };
 
-  const channelData = getChannel(channelId);
+  if (!channelId) {
+    return <div>Error</div>;
+  }
+
+  const { data, isLoading } = useChannelDetails(channelId || '');
+
+  const listChannelData: IChannel = getChannel(channelId);
+  const channelData: IChannel =
+    data?.data?.result?.data || listChannelData || null;
+
+  if (isLoading && !channelData) {
+    return <PageLoader />;
+  }
+
   return (
     <div className="flex flex-col space-y-10 w-full mb-16">
       <ProfileSection

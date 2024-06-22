@@ -35,7 +35,7 @@ const ManageAccess: React.FC<{ channelData: IChannel }> = ({ channelData }) => {
   const { watch, control } = filterForm;
   const searchValue = watch('search');
   const { data, isLoading } = useInfiniteChannelMembers({
-    channelId: channelData.id,
+    channelId: channelData?.id,
     q: isFiltersEmpty({
       q: searchValue,
       sort: filters?.sort,

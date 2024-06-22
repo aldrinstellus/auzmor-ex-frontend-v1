@@ -5,6 +5,9 @@ import {
 } from '@tanstack/react-query';
 import { chain } from 'lodash';
 import {
+  CHANNEL_ROLE,
+  CHANNEL_STATUS,
+  ChannelVisibilityEnum,
   IChannel,
   IChannelLink,
   IChannelRequest,
@@ -16,12 +19,13 @@ import {
   channelLinks,
 } from 'mocks/Channels';
 import apiService from 'utils/apiService';
-import { Role } from 'utils/enum';
 
 export interface IChannelPayload {
-  name: string;
-  category?: string;
+  name?: string;
+  categoryIds?: string[];
   description?: string;
+  settings?: { visibility?: ChannelVisibilityEnum };
+  status?: CHANNEL_STATUS;
 }
 
 export const getAllChannels = async (
@@ -50,7 +54,7 @@ export const getAllChannels = async (
 export const updateMemberRole = async (payload: {
   id: string;
   channelId?: string;
-  role: Role;
+  role: CHANNEL_ROLE;
 }) => {
   const { data } = await apiService.patch(
     `channels/${payload?.channelId}/members/${payload?.id}`,
@@ -61,14 +65,19 @@ export const updateMemberRole = async (payload: {
   return data;
 };
 
+// get channel by id -> channels/:id
+export const getChannelDetails = async (id: string) => {
+  const data = await apiService.get(`/channels/${id}`);
+  return data;
+};
+
 export const createChannel = async (payload: IChannelPayload) => {
   const response = await apiService.post('/channels', payload);
-
   return response;
 };
 
 export const updateChannel = async (id: string, payload: IChannelPayload) => {
-  await apiService.put(`/channel/${id}`, payload);
+  await apiService.patch(`/channels/${id}`, payload);
 };
 
 // delete team by id -> channel/:id
@@ -232,3 +241,11 @@ export const useChannelRequests = (
     queryFn: () => getChannelRequests(channelId),
     staleTime: 15 * 60 * 1000,
   });
+
+export const useChannelDetails = (channelId: string) => {
+  return useQuery({
+    queryKey: ['channel', channelId],
+    queryFn: () => getChannelDetails(channelId),
+    staleTime: 15 * 60 * 1000,
+  });
+};

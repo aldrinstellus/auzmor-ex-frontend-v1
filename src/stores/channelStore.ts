@@ -14,27 +14,37 @@ export enum ChannelVisibilityEnum {
   Private = 'PRIVATE',
   All = 'ALL',
 }
+export enum CHANNEL_ROLE {
+  Admin = 'ADMIN',
+  Member = 'MEMBER',
+}
+export enum CHANNEL_STATUS {
+  ACTIVE = 'ACTIVE',
+  ARCHIVED = 'ARCHIVED',
+}
 
 export interface IChannel {
   id: string;
   name: string;
-  category: { name: string; categoryId: string };
+  categories: { name: string; id: string }[];
   description?: string;
   organizationId?: string;
   createdBy?: IUser;
-  channelSettings?: {
-    visibility: ChannelVisibilityEnum.Private | ChannelVisibilityEnum.Public;
+  updatedBy?: IUser;
+  settings?: {
+    visibility: ChannelVisibilityEnum;
     restriction: {
       canPost: boolean;
       canComment: boolean;
       canMakeAnnouncements: boolean;
     };
   };
+  member: { role: CHANNEL_ROLE };
+  joinRequest: { status: CHANNEL_MEMBER_STATUS };
   isStarred?: boolean;
   totalMembers: number;
-  displayIcon?: string;
-  displayImage?: { id: string; original: string };
-  channelBanner?: { id: string; original: string };
+  displayImage?: string;
+  banner?: string;
   isRequested?: boolean;
   createdAt: string;
   updatedAt: string;

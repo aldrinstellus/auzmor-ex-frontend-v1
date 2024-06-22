@@ -8,7 +8,7 @@ export interface ICategory {
 
 export interface ICategoryDetail {
   name: string;
-  type: string;
+  type?: string;
   id: string;
   value?: string;
   label?: string;

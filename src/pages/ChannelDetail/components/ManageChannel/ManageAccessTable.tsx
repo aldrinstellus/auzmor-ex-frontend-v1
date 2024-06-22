@@ -18,7 +18,6 @@ import {
 } from 'components/Table';
 import PopupMenu from 'components/PopupMenu';
 import Button, { Variant } from 'components/Button';
-import { Role } from 'utils/enum';
 import { UserRole } from 'queries/users';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from '@tanstack/react-query';
@@ -29,6 +28,7 @@ import Icon from 'components/Icon';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
 import { useParams } from 'react-router-dom';
+import { CHANNEL_ROLE } from 'stores/channelStore';
 
 type AppProps = {
   isLoading?: boolean;
@@ -100,7 +100,7 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
                 <TableCell>
                   <div className=" flex items-center  space-x-4">
                     <Avatar
-                      name={getFullName(user?.fullName) || 'U'}
+                      name={getFullName(user) || 'U'}
                       size={32}
                       image={getProfileImage(user?.profileImage)}
                       dataTestId="member-profile-pic"
@@ -131,8 +131,8 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
                       triggerNode={
                         <Button
                           variant={Variant.Tertiary}
-                          className="!text-sm !font-medium"
-                          label={user?.role || Role.Admin}
+                          className="!text-sm !font-medium capitalize"
+                          label={user?.role || 'Admin'}
                           rightIcon={'arrowDown'}
                         />
                       }
@@ -145,7 +145,7 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
                               updateMemberRoleMutation.mutate({
                                 id: user?.id,
                                 channelId: channelId,
-                                role: Role.Admin,
+                                role: CHANNEL_ROLE.Admin,
                               });
                             },
                           },
@@ -157,7 +157,7 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
                               updateMemberRoleMutation.mutate({
                                 id: user?.id,
                                 channelId: channelId,
-                                role: Role.Member,
+                                role: CHANNEL_ROLE.Member,
                               });
                             },
                           },

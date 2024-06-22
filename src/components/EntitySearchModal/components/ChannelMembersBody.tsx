@@ -538,7 +538,7 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
                               return false;
                             },
                           },
-                          defaultChecked: selectedMemberIds.includes(team.id),
+                          defaultChecked: selectedTeamIds.includes(team.id),
                           dataTestId: `${dataTestId}-select-${team.id}`,
                         },
                       ]}
@@ -556,13 +556,13 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
                       <TeamRow team={team} />
                     </div>
                   </div>
-                  {index !== usersData.length - 1 && <Divider />}
+                  {index !== teamsData.length - 1 && <Divider />}
                 </div>
               ))
             : null}
           {!userLoading &&
           !teamLoading &&
-          !usersData.length &&
+          !usersData?.length &&
           !teamsData?.length ? (
             <NoDataFound
               className="py-4 w-full"

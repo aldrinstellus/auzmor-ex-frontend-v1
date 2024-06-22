@@ -39,7 +39,7 @@ const Members: React.FC<{ channelData: IChannel }> = ({ channelData }) => {
     useModal(false);
   useEffect(() => () => clearFilters(), []);
   const { data, isLoading } = useInfiniteChannelMembers({
-    channelId: channelData.id,
+    channelId: channelData?.id,
     q: isFiltersEmpty({
       q: searchValue,
       status: filters?.status?.length

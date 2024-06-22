@@ -1,5 +1,6 @@
 {
   "private": "Private",
+  "public": "Public",
   "member": "Member",
   "members": "Members",
   "join": "Join Channel",
