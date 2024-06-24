@@ -76,7 +76,7 @@ const ShowingCount: FC<{
       className={className}
       tabIndex={0}
       role="contentinfo"
-      aria-label={`Showing ${count} results`}
+      title={`Showing ${count} results`}
     >
       {!isLoading ? (
         <div className="text-neutral-500">Showing {count} results</div>
@@ -377,9 +377,8 @@ const Team: FC<ITeamProps> = ({
         {showGrid ? (
           <div
             className="grid grid-cols-6 gap-6 justify-items-center lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6"
-            aria-label="teams-container"
+            title="teams-container"
             tabIndex={0}
-            role="grid"
           >
             {isLoading
               ? [...Array(30)].map((element) => (

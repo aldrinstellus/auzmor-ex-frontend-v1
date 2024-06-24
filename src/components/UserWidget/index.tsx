@@ -43,7 +43,7 @@ const UserCard: FC<IUserCardProps> = ({ className = '' }) => {
       className={style}
       onClick={handleRedirect}
       tabIndex={0}
-      aria-label="user card"
+      title="user card"
     >
       <Card className="pb-3 pt-0 rounded-9xl min-h-[216px]" shadowOnHover>
         <div className="flex flex-col items-center gap-2 relative px-12">

@@ -140,7 +140,7 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
           id={`${data?.id}-content`}
           data-testid={isComment ? 'comment-content' : 'feed-post-content'}
           tabIndex={0}
-          aria-label="post content"
+          title="post content"
         >
           <span>{postContent}</span>
         </span>

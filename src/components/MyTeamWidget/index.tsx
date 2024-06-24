@@ -57,7 +57,7 @@ const MyTeamWidget: FC<IMyTeamWidgetProps> = ({ className = '' }) => {
           if (e.code === 'Enter') toggleModal();
         }}
         tabIndex={0}
-        aria-label="teams widget"
+        title="teams widget"
         aria-expanded={open}
         role="button"
       >

@@ -72,7 +72,7 @@ const Tabs: FC<ITabsProps> = ({
               className="text-2xl font-bold"
               data-testid="people-hub-page-title"
               tabIndex={0}
-              aria-label={title}
+              title={title}
             >
               {title}
             </h1>
@@ -95,7 +95,6 @@ const Tabs: FC<ITabsProps> = ({
                 key={index}
                 data-testid={tab.dataTestId}
                 tabIndex={isActive(index) ? -1 : 0}
-                role="button"
                 aria-hidden={isActive(index)}
               >
                 {tab.tabLabel(activeTab === index)}

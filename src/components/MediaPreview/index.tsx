@@ -109,7 +109,7 @@ const MediaPreview: FC<IMediaPreviewProps> = ({
             isAnnouncementWidgetPreview ? 'gap-2' : 'gap-4'
           }`}
           tabIndex={0}
-          aria-label={`${media.length} media attached to this post`}
+          title={`${media.length} media attached to this post`}
         >
           <MediaRender
             data={media[0]}
@@ -150,7 +150,7 @@ const MediaPreview: FC<IMediaPreviewProps> = ({
             isAnnouncementWidgetPreview ? 'gap-2' : 'gap-4'
           }`}
           tabIndex={0}
-          aria-label={`${media.length} media attached to this post`}
+          title={`${media.length} media attached to this post`}
         >
           <MediaRender
             data={media[0]}
@@ -206,7 +206,7 @@ const MediaPreview: FC<IMediaPreviewProps> = ({
             isAnnouncementWidgetPreview ? 'gap-2' : 'gap-4'
           }`}
           tabIndex={0}
-          aria-label={`${media.length} media attached to this post`}
+          title={`${media.length} media attached to this post`}
         >
           <MediaRender
             data={media[0]}
@@ -273,7 +273,7 @@ const MediaPreview: FC<IMediaPreviewProps> = ({
             isAnnouncementWidgetPreview ? 'gap-2' : 'gap-4'
           }`}
           tabIndex={0}
-          aria-label={`${media.length} media attached to this post`}
+          title={`${media.length} media attached to this post`}
         >
           <MediaRender
             data={media[0]}
@@ -359,7 +359,7 @@ const MediaPreview: FC<IMediaPreviewProps> = ({
             isAnnouncementWidgetPreview ? 'gap-2' : 'gap-4'
           }`}
           tabIndex={0}
-          aria-label={`${media.length} media attached to this post`}
+          title={`${media.length} media attached to this post`}
         >
           <MediaRender
             data={media[0]}

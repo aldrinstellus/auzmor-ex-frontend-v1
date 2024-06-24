@@ -220,7 +220,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
             className="absolute top-0 text-xxs text-[#737373] font-medium py-1 bg-[#F5F5F5] w-full justify-center align-center rounded-t-9xl flex"
             data-testid="usercard-deactivate-banner"
             tabIndex={0}
-            aria-label="Deactivated Account"
+            title="Deactivated Account"
           >
             <Icon
               name="forbidden"
@@ -248,7 +248,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
           onClick={handleProfileClick}
           onKeyUp={(e) => (e.code === 'Enter' ? handleProfileClick() : '')}
           tabIndex={0}
-          aria-label={fullName || workEmail}
+          title={fullName || workEmail}
         >
           <Avatar
             size={80}

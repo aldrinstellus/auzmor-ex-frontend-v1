@@ -14,7 +14,7 @@ const EmptyState = () => {
       <div
         className="text-base font-bold line-clamp-2 text-neutral-900"
         tabIndex={0}
-        aria-details={header}
+        title={header}
       >
         {header}
       </div>

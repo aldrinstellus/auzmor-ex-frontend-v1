@@ -113,12 +113,18 @@ const Navbar = () => {
     <nav className="w-full sticky top-0 z-50">
       <div className="bg-white shadow h-16 w-full py-[2px] px-8">
         <div className="bg-white h-full w-full max-w-[1440px] flex items-center py-0.5 mx-auto justify-between">
-          <Link to="/feed" data-testid="office-logo">
+          <Link
+            to="/feed"
+            data-testid="office-logo"
+            aria-label={`${
+              user?.organization.name || user?.organization.domain
+            } logo`}
+          >
             <Logo />
           </Link>
 
           {process.env.REACT_APP_ENV != 'PRODUCTION' && (
-            <div className="flex-1" aria-label="global search">
+            <div className="flex-1" title="global search">
               <GlobalSearch />
             </div>
           )}

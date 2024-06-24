@@ -23,6 +23,7 @@ interface IAppListProps {
   resetField?: (key: any, param: any) => void;
   startFetching: boolean;
   myApp: boolean;
+  appGridTitle?: string;
 }
 
 const AppList: FC<IAppListProps> = ({
@@ -39,6 +40,7 @@ const AppList: FC<IAppListProps> = ({
   setAppsLoading,
   startFetching,
   myApp,
+  appGridTitle,
 }) => {
   const { ref, inView } = useInView();
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
@@ -101,6 +103,7 @@ const AppList: FC<IAppListProps> = ({
                 apps={appIds
                   ?.filter(({ id }: any) => !!apps[id])
                   ?.map(({ id }: any) => apps[id])}
+                title={appGridTitle}
               />
               {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
               {isFetchingNextPage && (

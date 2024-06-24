@@ -122,7 +122,7 @@ const Avatar: FC<AvatarProps> = ({
       style={{ ...divStyle, pointerEvents: disable ? 'none' : 'auto' }}
       onClick={onClick}
       data-testid={dataTestId}
-      aria-label={ariaLabel}
+      title={ariaLabel}
     >
       {!!image && !loading ? (
         <BlurImg {...blurImageProps} />

@@ -26,7 +26,7 @@ function App() {
       <ProductProvider>
         <AuthProvider>
           {process.env.NODE_ENV === 'development' ? (
-            <section aria-hidden="true">
+            <section tabIndex={-1}>
               <ReactQueryDevtools initialIsOpen={false} />
             </section>
           ) : null}

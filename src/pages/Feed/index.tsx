@@ -553,15 +553,15 @@ const Feed: FC<IFeedProps> = () => {
 
   return (
     <div className="pb-6 flex justify-between">
-      <h1 className="hidden">Your feed page</h1>
-      <div className="z-10 w-[293px] flex flex-col gap-6">
+      <h1 className="fixed top-0 left-0">Your feed page</h1>
+      <section className="z-10 w-[293px] flex flex-col gap-6">
         <UserCard />
         <AppLauncher />
         {isLargeScreen && <MyTeamWidget className="sticky top-24" />}
         {!isLargeScreen && <MyTeamWidget />}
         {!isLargeScreen && getRightWidgets()}
-      </div>
-      <div className="flex-grow w-0 flex flex-col gap-6 px-12">
+      </section>
+      <section className="flex-grow w-0 flex flex-col gap-6 px-12">
         {FeedHeader}
         {isLoading ? (
           <SkeletonLoader />
@@ -577,7 +577,7 @@ const Feed: FC<IFeedProps> = () => {
                     className="flex flex-col gap-6"
                     key={id}
                     tabIndex={0}
-                    aria-label={`post ${index + 1}`}
+                    title={`post ${index + 1}`}
                   >
                     <VirtualisedPost
                       postId={id!}
@@ -588,7 +588,7 @@ const Feed: FC<IFeedProps> = () => {
                     <li
                       data-testid={`trending-content-post`}
                       tabIndex={0}
-                      aria-label="trending content"
+                      title="trending content"
                     >
                       <Recommendation
                         cards={trendingCards}
@@ -602,7 +602,7 @@ const Feed: FC<IFeedProps> = () => {
                     <li
                       data-testid={`recently-published-content-post`}
                       tabIndex={0}
-                      aria-label="recently published"
+                      title="recently published"
                     >
                       <Recommendation
                         cards={recentlyPublishedCards}
@@ -625,9 +625,11 @@ const Feed: FC<IFeedProps> = () => {
         ) : (
           <div className="h-12 w-12">{hasNextPage && <div ref={ref} />}</div>
         )}
-      </div>
+      </section>
       {isLargeScreen && (
-        <div className="w-[293px] flex flex-col gap-6">{getRightWidgets()}</div>
+        <section className="w-[293px] flex flex-col gap-6">
+          {getRightWidgets()}
+        </section>
       )}
       {open && (
         <PostBuilder

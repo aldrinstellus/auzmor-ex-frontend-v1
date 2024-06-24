@@ -59,7 +59,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
               });
             }
           }}
-          aria-label={`${name} with ${totalMembers} members`}
+          title={`${name} with ${totalMembers} members`}
         >
           {!isMember && !isLxp && isHovered && (
             <TeamOptions

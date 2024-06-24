@@ -163,38 +163,6 @@ const AddApp: FC<AddAppProps> = ({
     });
   const { uploadMedia, uploadStatus } = useUpload();
 
-  // const tabStyles = (_active: boolean) =>
-  //   clsx({
-  //     'text-neutral-900 font-bold cursor-pointer': true,
-  //   });
-
-  // const tabs = [
-  //   {
-  //     tabLabel: (isActive: boolean) => (
-  //       <div className={tabStyles(isActive)}>Add apps</div>
-  //     ),
-  //     dataTestId: 'add-app-addapps',
-  //     tabContent: (
-  //       <AppDetailsForm
-  //         control={control}
-  //         errors={errors}
-  //         setValue={setValue}
-  //         defaultValues={getValues}
-  //         setActiveFlow={setActiveFlow}
-  //         audience={audience}
-  //       />
-  //     ),
-  //   },
-  //   {
-  //     tabLabel: (isActive: boolean) => (
-  //       <div className={tabStyles(isActive)}>App credentials</div>
-  //     ),
-  //     disabled: !isValid,
-  //     dataTestId: 'add-app-credentials',
-  //     tabContent: <AppCredentialsForm control={control} errors={errors} />,
-  //   },
-  // ];
-
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     trigger();
@@ -272,19 +240,10 @@ const AddApp: FC<AddAppProps> = ({
     }
   };
 
-  // const handleNextTab = (e: MouseEvent<Element>) => {
-  //   e.preventDefault();
-  //   trigger();
-  //   if (isValid) {
-  //     setActiveTab(activeTab + 1);
-  //   }
-  // };
-
   useEffect(() => {
     if (!open) {
       reset();
       setAudience([]);
-      // setActiveTab(0);
     }
   }, [open]);
 

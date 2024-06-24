@@ -55,6 +55,7 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
       errorDataTestId: 'add-app-url-invalid-error',
       inputClassName:
         errors.url || !defaultValues()?.url ? '' : 'text-blue-500 underline',
+      autofocus: true,
     },
   ];
 

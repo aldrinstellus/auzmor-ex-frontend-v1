@@ -2,7 +2,6 @@ import PopupMenu from 'components/PopupMenu';
 import Badge from 'components/Badge';
 import Card from 'components/Card';
 import { App, editApp } from 'queries/apps';
-import useHover from 'hooks/useHover';
 import Icon from 'components/Icon';
 import useModal from 'hooks/useModal';
 import AppDetailModal from './AppCardDetail';
@@ -15,6 +14,7 @@ import useRole from 'hooks/useRole';
 import { FC } from 'react';
 import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 import { isEmpty } from 'lodash';
+import Truncate from 'components/Truncate';
 
 type AppCardProps = {
   app: App;
@@ -22,11 +22,8 @@ type AppCardProps = {
 
 const AppCard: FC<AppCardProps> = ({ app }) => {
   const { isAdmin } = useRole();
-  const [appCardHovered, appCardEventHandlers] = useHover();
-  // const [menuHovered, menuEventHandlers] = useHover();
 
   const [appDetailModal, openAppDetailModal, closeAppDetailModal] = useModal();
-  // Add apps modal
   const [editAppModal, openEditAppModal, closeEditAppModal] = useModal();
   const [deleteAppModal, openDeleteAppModal, closeDeleteAppModal] = useModal();
 
@@ -152,18 +149,22 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
     closeDeleteAppModal();
   };
 
+  const handleAppLaunch = () => {
+    window.open(`${window.location.origin}/apps/${app.id}/launch`, '_target');
+  };
+
   return (
-    <div {...appCardEventHandlers} data-testid="app-card" className="w-full">
-      {/* <Link to={app.url} target="_blank"> */}
-      <Card className="relative border-1 p-3 " shadowOnHover>
+    <>
+      <Card
+        className="relative border-1 p-3 focus-within:shadow-xl w-full group/app-card"
+        dataTestId="app-card"
+        shadowOnHover
+      >
         <div
-          className="flex gap-2"
-          onClick={() =>
-            window.open(
-              `${window.location.origin}/apps/${app.id}/launch`,
-              '_target',
-            )
-          }
+          className="flex gap-2 outline-none"
+          onClick={handleAppLaunch}
+          onKeyUp={(e) => (e.code === 'Enter' ? handleAppLaunch() : '')}
+          tabIndex={0}
         >
           {/* App logo */}
           <div className="p-2 bg-neutral-100 rounded-xl min-w-[60px] min-h-[60px]">
@@ -178,14 +179,11 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
           {/* App details */}
           <div className="flex flex-col gap-1">
             {/* App name */}
-            <div
-              className="text-sm font-bold text-neutral-900 line-clamp-1 truncate"
-              data-testid="app-name"
-            >
-              {app.label?.length <= 18
-                ? app.label?.substring(0, 18)
-                : app.label?.substring(0, 18) + '..'}
-            </div>
+            <Truncate
+              text={app.label}
+              className="text-sm font-bold text-neutral-900 max-w-[128px]"
+              dataTestId="app-name"
+            />
             {/* App category */}
             {app.category && !isEmpty(app.category) && (
               <div className="flex">
@@ -208,18 +206,20 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
         </div>
 
         {/* App menu popover */}
-        <div className="absolute top-0 right-3">
-          {appCardHovered && (
-            <PopupMenu
-              triggerNode={
-                <div className="cursor-pointer">
-                  <Icon name="threeDots" dataTestId="app-card-ellipsis" />
-                </div>
-              }
-              menuItems={appCardMenu.filter((item) => !item.hidden)}
-              className="-right-3 w-fit top-6"
-            />
-          )}
+        <div className="absolute top-0 right-3 hidden group-hover/app-card:block group-focus-within/app-card:block">
+          <PopupMenu
+            triggerNode={
+              <div className="cursor-pointer">
+                <Icon
+                  name="threeDots"
+                  dataTestId="app-card-ellipsis"
+                  tabIndex={0}
+                />
+              </div>
+            }
+            menuItems={appCardMenu.filter((item) => !item.hidden)}
+            className="-right-3 w-fit top-6"
+          />
         </div>
       </Card>
       {/* </Link> */}
@@ -243,7 +243,7 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
           mode={APP_MODE.Edit}
         />
       )}
-    </div>
+    </>
   );
 };
 

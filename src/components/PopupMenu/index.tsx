@@ -1,4 +1,11 @@
-import { ElementType, FC, ReactElement, ReactNode, cloneElement } from 'react';
+import {
+  ElementType,
+  FC,
+  ReactElement,
+  ReactNode,
+  cloneElement,
+  useEffect,
+} from 'react';
 import { Menu } from '@headlessui/react';
 import PopupMenuItem from './PopupMenuItem';
 
@@ -39,9 +46,17 @@ const PopupMenu: FC<IPopupMenuProps> = ({
   controlled,
   isOpen,
 }) => {
+  useEffect(() => {
+    const triggers = document.getElementsByClassName('menu-trigger');
+    if (triggers.length) {
+      for (const node of triggers) {
+        node.removeAttribute('aria-expanded');
+      }
+    }
+  }, []);
   return (
     <Menu>
-      <Menu.Button as="div" disabled={disabled}>
+      <Menu.Button as="div" disabled={disabled} className={'menu-trigger'}>
         {triggerNode}
       </Menu.Button>
       {(controlled ? isOpen : true) && (

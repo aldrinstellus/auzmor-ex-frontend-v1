@@ -104,7 +104,8 @@ const Apps: FC<IAppsProps> = () => {
   const [startFetching, setStartFetching] = useState(false);
 
   const selectedButtonClassName = '!bg-primary-50 text-primary-500 text-sm';
-  const regularButtonClassName = '!text-neutral-500 text-sm';
+  const regularButtonClassName =
+    '!text-neutral-500 text-sm hover:border hover:border-primary-500 focus:border focus:border-primary-500';
 
   const searchValue = watch('search');
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
@@ -262,7 +263,9 @@ const Apps: FC<IAppsProps> = () => {
     <div>
       <Card className="p-8">
         <div className="flex justify-between">
-          <h1 className="font-bold text-2xl text-black">App Launcher</h1>
+          <h1 className="font-bold text-2xl text-black" tabIndex={0}>
+            App Launcher
+          </h1>
           {isAdmin && (
             <Button
               onClick={openModal}
@@ -275,15 +278,6 @@ const Apps: FC<IAppsProps> = () => {
             />
           )}
         </div>
-        {/* Banner */}
-        {/* <img
-          src={AppsBanner}
-          alt="Apps Banner"
-          className={`w-full py-4 ${imageLoading ? 'hidden' : ''}`}
-          onLoad={() => setImageLoading(false)}
-        /> */}
-        {/* {imageLoading && <AppBannerSkeleton />} */}
-        {/* App groups and sort/filter/search */}
         <div className="flex justify-between py-4">
           <div className="flex items-center gap-x-4">
             {isAdmin && (
@@ -461,6 +455,14 @@ const Apps: FC<IAppsProps> = () => {
                   <div
                     className="text-base font-semibold text-primary-500 cursor-pointer"
                     onClick={() => handleTabChange(AppGroup.FEATURED)}
+                    onKeyUp={(e) =>
+                      e.code === 'Enter'
+                        ? handleTabChange(AppGroup.FEATURED)
+                        : ''
+                    }
+                    role="button"
+                    aria-label="view all featured"
+                    tabIndex={0}
                   >
                     View all featured
                   </div>
@@ -491,6 +493,7 @@ const Apps: FC<IAppsProps> = () => {
                 setAppsLoading={setIsFeaturedAppLoading}
                 startFetching={startFetching}
                 myApp={appFilters.myApp || !isAdmin}
+                appGridTitle="Featured apps"
               />
               {featuredAppsCount > 0 && !isFeauturedAppLoading && (
                 <div className="text-xl font-bold mt-4">All Apps</div>
@@ -521,6 +524,7 @@ const Apps: FC<IAppsProps> = () => {
             resetField={resetField}
             startFetching={startFetching}
             myApp={appFilters.myApp || !isAdmin}
+            appGridTitle="All apps"
           />
         </div>
       </Card>

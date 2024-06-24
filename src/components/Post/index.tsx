@@ -403,7 +403,7 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
                 onClick={openReactionModal}
                 onKeyUp={(e) => (e.code === 'Enter' ? openReactionModal() : '')}
                 tabIndex={0}
-                aria-label={`${totalCount} reacted`}
+                title={`${totalCount} reacted`}
               >
                 {totalCount > 0 && (
                   <div className="flex">

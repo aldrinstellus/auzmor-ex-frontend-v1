@@ -120,7 +120,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                 onClick={handleGoBack}
                 onKeyUp={(e) => (e.code === 'Enter' ? handleGoBack() : '')}
                 role="button"
-                aria-label={`go back to ${
+                title={`go back to ${
                   prevRoute === TeamTab.MyTeams ? 'My Teams' : 'All Teams'
                 }`}
                 tabIndex={0}
@@ -190,9 +190,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                   <div
                     className="flex flex-col space-y-2"
                     role="contentinfo"
-                    aria-label={`team type is ${
-                      data.category?.name || 'category'
-                    }`}
+                    title={`team type is ${data.category?.name || 'category'}`}
                     tabIndex={0}
                   >
                     <div className="text-sm font-semibold text-purple-700">

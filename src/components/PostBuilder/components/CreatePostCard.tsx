@@ -64,13 +64,14 @@ const CreatePostCard: FC<ICreatePostCardProps> = ({ openModal }) => {
         </Link>
         <input
           type="input"
-          className="w-full h-11 border border-neutral-200 rounded-19xl text-sm font-medium outline-none text-neutral-500 flex-1 px-5 py-3 cursor-pointer hover:bg-neutral-100 transition-colors"
+          className="w-full h-11 border border-neutral-200 rounded-19xl text-sm font-medium outline-none text-neutral-500 flex-1 px-5 py-3 cursor-pointer hover:bg-neutral-100 focus:bg-neutral-100 transition-colors"
           readOnly
           onKeyUp={(e) => (e.code === 'Enter' ? openModal() : '')}
           onClick={openModal}
           placeholder="What's on your mind?"
           data-testid="activityfeed-whatsonurmind"
           aria-label="create post"
+          autoComplete="off"
         />
       </div>
       <div className="flex border-t border-neutral-100 w-full">
@@ -82,7 +83,7 @@ const CreatePostCard: FC<ICreatePostCardProps> = ({ openModal }) => {
             }`}
             tabIndex={0}
             role="button"
-            aria-label={`create post with ${type.label}`}
+            title={`create post with ${type.label}`}
             onClick={type.onClick}
             onKeyUp={(e) => (e.code === 'Enter' ? type.onClick() : '')}
           >

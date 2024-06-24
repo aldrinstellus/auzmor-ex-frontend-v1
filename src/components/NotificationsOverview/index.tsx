@@ -108,7 +108,7 @@ const NotificationsOverview: FC = () => {
             <div
               className="flex items-center gap-x-1 cursor-pointer"
               role="button"
-              aria-label="mark all as read"
+              title="mark all as read"
               tabIndex={0}
               onClick={() => markReadMutation.mutate()}
               onKeyUp={(e) =>

@@ -57,7 +57,7 @@ const AppLauncher = () => {
         onClick={toggleModal}
         onKeyUp={(e) => (e.code === 'Enter' ? toggleModal() : '')}
         tabIndex={0}
-        aria-label="app launcher"
+        title="app launcher"
         aria-expanded={open}
         role="button"
       >
