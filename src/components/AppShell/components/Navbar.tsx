@@ -155,7 +155,7 @@ const Navbar = () => {
                         window.open(nav.linkTo);
                       }}
                       ariaLabel="help and support"
-                      className="bg-white hover:bg-white"
+                      className="bg-white hover:bg-white active:bg-white"
                     />
                   </li>
                 ))}
