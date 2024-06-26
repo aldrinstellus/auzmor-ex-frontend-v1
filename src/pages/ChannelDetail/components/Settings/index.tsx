@@ -5,7 +5,7 @@ import PrivacySetting from './components/PrivacySetting';
 import BasicSettingSkeleton from './components/Skeletons/BasicSettingSkeleton';
 
 type AppProps = {
-  channelData?: IChannel;
+  channelData: IChannel;
   isLoading?: boolean;
 };
 

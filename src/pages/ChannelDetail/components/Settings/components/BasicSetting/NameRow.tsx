@@ -1,7 +1,6 @@
 import { FC, useRef } from 'react';
 import * as yup from 'yup';
 import 'moment-timezone';
-import useRole from 'hooks/useRole';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,6 +9,7 @@ import { useParams } from 'react-router-dom';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import InfoRow from 'components/ProfileInfo/components/InfoRow';
 import { updateChannel } from 'queries/channel';
+import useAuth from 'hooks/useAuth';
 
 type AppProps = {
   data: any;
@@ -19,7 +19,9 @@ const NameRow: FC<AppProps> = ({ data }) => {
   const { channelId = '' } = useParams();
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);
-  const { isAdmin } = useRole();
+
+  const { user } = useAuth();
+  const isOwnerOrAdmin = data?.createdBy?.userId == user?.id;
 
   //channel Name
   const schema = yup.object({
@@ -72,7 +74,7 @@ const NameRow: FC<AppProps> = ({ data }) => {
       }}
       label="Name"
       value={data?.name}
-      canEdit={isAdmin}
+      canEdit={isOwnerOrAdmin}
       dataTestId="professional-details-employee-id"
       editNode={
         <div>

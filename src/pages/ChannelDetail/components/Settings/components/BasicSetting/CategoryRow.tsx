@@ -1,6 +1,5 @@
 import { FC, useRef } from 'react';
 import 'moment-timezone';
-import useRole from 'hooks/useRole';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
@@ -22,7 +21,9 @@ const CategoryRow: FC<AppProps> = ({ channelData }) => {
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);
   const { user } = useAuth();
-  const { isOwnerOrAdmin } = useRole({ userId: user?.id });
+
+  const isOwnerOrAdmin = channelData?.createdBy?.userId == user?.id;
+
   const { isLxp } = useProduct();
   const updateChannelMutation = useMutation({
     mutationKey: ['update-channel-mutation'],

@@ -1,24 +1,25 @@
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useParams } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import InfoRow from 'components/ProfileInfo/components/InfoRow';
 import Layout, { FieldType } from 'components/Form';
 import { IRadioListOption } from 'components/RadioGroup';
-import { ChannelVisibilityEnum } from 'stores/channelStore';
+import { ChannelVisibilityEnum, IChannel } from 'stores/channelStore';
 import { updateChannel } from 'queries/channel';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 
 type AppProps = {
-  data: any;
+  data: IChannel;
 };
 
 const PrivacyRow: FC<AppProps> = ({ data }) => {
   const { channelId = '' } = useParams();
   const { user } = useAuth();
   const isOwnerOrAdmin = data?.createdBy?.userId == user?.id;
+  const queryClient = useQueryClient();
 
   const upadteChannelMutation = useMutation({
     mutationKey: ['update-channel-mutation'],
@@ -26,23 +27,16 @@ const PrivacyRow: FC<AppProps> = ({ data }) => {
     onError: (_error: any) => {},
     onSuccess: async (_response: any) => {
       successToastConfig({});
+      await queryClient.invalidateQueries(['channel']);
     },
   });
 
-  const { handleSubmit, control, reset, watch } = useForm<any>({
+  const { control } = useForm<any>({
     mode: 'onSubmit',
     defaultValues: {
       privacySetting: data?.settings?.visibility,
     },
   });
-  const [privacySetting] = watch(['privacySetting']);
-
-  const onSubmit = () => {
-    const newObj = {
-      privacySetting,
-    };
-    upadteChannelMutation.mutate(newObj);
-  };
 
   const handleChange = (visibility: ChannelVisibilityEnum) => {
     upadteChannelMutation.mutate({
@@ -70,7 +64,7 @@ const PrivacyRow: FC<AppProps> = ({ data }) => {
         label: `Anyone in the organization can request to join the channel, and it's visible in the channel discovery.`,
         onChange: handleChange,
       },
-      dataTestId: 'branding-background-as-video',
+      dataTestId: '',
     },
   ];
 
@@ -104,10 +98,9 @@ const PrivacyRow: FC<AppProps> = ({ data }) => {
       isEditButton={false}
       label="Privacy"
       isEditMode={true}
-      value={data?.settings.visibility}
-      canEdit={isOwnerOrAdmin}
+      value={data?.settings?.visibility}
       dataTestId=""
-      border={false}
+      border={true}
       editNode={
         <div>
           <form>
@@ -115,8 +108,6 @@ const PrivacyRow: FC<AppProps> = ({ data }) => {
           </form>
         </div>
       }
-      onCancel={reset}
-      onSave={handleSubmit(onSubmit)}
     />
   );
 };

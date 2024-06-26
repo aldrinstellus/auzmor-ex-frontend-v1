@@ -5,10 +5,10 @@ import React, { FC } from 'react';
 import { IChannel } from 'stores/channelStore';
 
 import PrivacyRow from './PrivacyRow';
-// import RestrictionRow from './RestrictionRow';
+import RestrictionRow from './RestrictionRow';
 
 type AppProps = {
-  channelData?: IChannel;
+  channelData: IChannel;
 };
 
 const PrivacySetting: FC<AppProps> = ({ channelData }) => {
@@ -18,7 +18,7 @@ const PrivacySetting: FC<AppProps> = ({ channelData }) => {
       <Card shadowOnHover={true} className=" px-4">
         <div className="px-4">
           <PrivacyRow data={channelData} />
-          {/* <RestrictionRow data={channelData} /> */}
+          <RestrictionRow data={channelData} />
         </div>
       </Card>
     </div>

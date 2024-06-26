@@ -115,9 +115,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         }
         setIsCoverImageRemoved(true);
         deleteCoverImageMutation.mutate({
-          coverImage: {
-            fileId: '',
-          },
+          bannerUrl: '',
         });
       },
       dataTestId: 'edit-coverpic-deletepost',
