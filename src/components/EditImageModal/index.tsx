@@ -15,9 +15,7 @@ import Modal from 'components/Modal';
 import { EntityType } from 'queries/files';
 import { UploadStatus, useUpload } from 'hooks/useUpload';
 import queryClient from 'utils/queryClient';
-import SuccessToast, {
-  successToastConfig,
-} from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useAuth from 'hooks/useAuth';
 import { updateCurrentUser, updateUserById } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
@@ -26,10 +24,6 @@ import ImageCropper from 'components/ImageCropper';
 import PageLoader from 'components/PageLoader';
 import useProduct from 'hooks/useProduct';
 import { updateChannel } from 'queries/channel';
-import { toast } from 'react-toastify';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
-import Icon from 'components/Icon';
 
 export interface AppProps {
   title: string;
@@ -114,33 +108,14 @@ const EditImageModal: FC<AppProps> = ({
     },
     onSuccess: async (_response: any) => {
       setImageFile && setImageFile({});
-      toast(
-        <SuccessToast
-          content={`${
-            fileEntityType === EntityType.UserCoverImage
-              ? 'Cover Picture'
-              : 'Logo Picture'
-          } Updated Successfully`}
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        content: `${
+          fileEntityType === EntityType.UserCoverImage
+            ? 'Cover Picture'
+            : 'Logo Picture'
+        } Updated Successfully`,
+      });
+
       closeEditImageModal();
       setBlob(null);
       if (channelId) {

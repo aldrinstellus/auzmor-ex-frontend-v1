@@ -2,9 +2,6 @@ import { FC, useRef } from 'react';
 import 'moment-timezone';
 import useRole from 'hooks/useRole';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-
-// import { convertUpperCaseToPascalCase } from 'utils/misc';
-
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import useAuth from 'hooks/useAuth';
@@ -15,12 +12,7 @@ import { Variant as InputVariant } from 'components/Input';
 import useProduct from 'hooks/useProduct';
 import { createCatergory, useInfiniteLearnCategory } from 'queries/learn';
 import { updateChannel } from 'queries/channel';
-import { toast } from 'react-toastify';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 
 type AppProps = {
   channelData: any;
@@ -41,26 +33,7 @@ const CategoryRow: FC<AppProps> = ({ channelData }) => {
       queryClient.invalidateQueries(['channel']);
     },
     onError: async () => {
-      toast(
-        <FailureToast
-          content={`Error updating channel`}
-          dataTestId="channel-update-error-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      failureToastConfig({});
     },
   });
 
