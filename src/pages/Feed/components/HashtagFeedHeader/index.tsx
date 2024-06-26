@@ -45,7 +45,7 @@ const HashtagFeedHeader: FC<IHashtagFeedHeaderProps> = ({
           </div>
         </div>
         <div>
-          <img src={HashtagIcon} />
+          <img src={HashtagIcon} alt="Hashtag" />
         </div>
       </div>
     </div>

@@ -10,6 +10,7 @@ import { useChannelDetails } from 'queries/channel';
 import PageLoader from 'components/PageLoader';
 import clsx from 'clsx';
 import DocumentPathProvider from 'contexts/DocumentPathContext';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 type AppProps = {
   activeTabIndex?: number;
@@ -22,6 +23,7 @@ const ChannelDetail: FC<AppProps> = ({
   isSettingTab,
   isManagedTab,
 }) => {
+  usePageTitle('channelDetails');
   const { channelId } = useParams();
 
   const { getChannel } = useChannelStore();

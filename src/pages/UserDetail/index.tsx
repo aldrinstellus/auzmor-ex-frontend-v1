@@ -25,6 +25,7 @@ import { FC } from 'react';
 import ManagerWidget from 'components/ManagerWidget';
 import Recognitions from './components/Recognitions';
 import { useTranslation } from 'react-i18next';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 export interface IUpdateProfileImage {
   profileImage: File;
@@ -46,8 +47,10 @@ const UserDetail: FC<IUserDetailProps> = () => {
   let userDetail;
   if (pathname === '/profile') {
     userDetail = useCurrentUser();
+    usePageTitle('profile');
   } else {
     userDetail = useSingleUser(params?.userId || '');
+    usePageTitle('userProfile');
   }
 
   const editSection = searchParams.get('edit') || '';

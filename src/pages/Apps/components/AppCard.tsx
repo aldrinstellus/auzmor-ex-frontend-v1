@@ -2,24 +2,21 @@ import PopupMenu from 'components/PopupMenu';
 import Badge from 'components/Badge';
 import Card from 'components/Card';
 import { App, editApp } from 'queries/apps';
-import useHover from 'hooks/useHover';
 import Icon from 'components/Icon';
 import useModal from 'hooks/useModal';
 import AppDetailModal from './AppCardDetail';
 import AddApp, { APP_MODE } from './AddApp';
 import DeleteApp from './DeleteApp';
-import { isNewEntity, twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { toast } from 'react-toastify';
-import { slideInAndOutTop } from 'utils/react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { isNewEntity } from 'utils/misc';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useRole from 'hooks/useRole';
 import { FC } from 'react';
 import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 import { isEmpty } from 'lodash';
 import clsx from 'clsx';
+import Truncate from 'components/Truncate';
 
 type AppCardProps = {
   app: App;
@@ -27,11 +24,8 @@ type AppCardProps = {
 
 const AppCard: FC<AppCardProps> = ({ app }) => {
   const { isAdmin } = useRole();
-  const [appCardHovered, appCardEventHandlers] = useHover();
-  // const [menuHovered, menuEventHandlers] = useHover();
 
   const [appDetailModal, openAppDetailModal, closeAppDetailModal] = useModal();
-  // Add apps modal
   const [editAppModal, openEditAppModal, closeEditAppModal] = useModal();
   const [deleteAppModal, openDeleteAppModal, closeDeleteAppModal] = useModal();
 
@@ -45,53 +39,16 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
       queryClient.invalidateQueries(['featured-apps']);
       queryClient.invalidateQueries(['my-apps']);
       queryClient.invalidateQueries(['my-featured-apps']);
-      toast(
-        <SuccessToast
-          content={`App has been added to featured apps`}
-          dataTestId="feature-app-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        content: `App has been added to featured apps`,
+        dataTestId: 'feature-app-toaster',
+      });
     },
-    onError: (_error: any) => {
-      toast(
-        <FailureToast
-          content={`Error while adding app to featured apps`}
-          dataTestId="feature-app-error-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-    },
+    onError: (_error: any) =>
+      failureToastConfig({
+        content: `Error while adding app to featured apps`,
+        dataTestId: 'feature-app-error-toaster',
+      }),
   });
 
   const removeFeaturedAppMutation = useMutation({
@@ -102,53 +59,16 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
       queryClient.invalidateQueries(['featured-apps']);
       queryClient.invalidateQueries(['my-apps']);
       queryClient.invalidateQueries(['my-featured-apps']);
-      toast(
-        <SuccessToast
-          content={`App has been removed from featured apps`}
-          dataTestId="unfeature-app-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        content: `App has been removed from featured apps`,
+        dataTestId: 'unfeature-app-toaster',
+      });
     },
-    onError: (_error: any) => {
-      toast(
-        <FailureToast
-          content={`Error while removing app from featured apps`}
-          dataTestId="unfeature-app-error-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-    },
+    onError: () =>
+      failureToastConfig({
+        content: `Error while removing app from featured apps`,
+        dataTestId: 'unfeature-app-error-toaster',
+      }),
   });
 
   const toggleAppFeature = (featured: boolean) => {
@@ -230,22 +150,27 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
     }
     closeDeleteAppModal();
   };
+
   const leftChipStyle = clsx({
     'absolute top-0 left-0  rounded-tl-[12px] rounded-br-[12px] px-2  text-xxs font-medium':
       true,
   });
+  const handleAppLaunch = () => {
+    window.open(`${window.location.origin}/apps/${app.id}/launch`, '_target');
+  };
+
   return (
-    <div {...appCardEventHandlers} data-testid="app-card" className="w-full">
-      {/* <Link to={app.url} target="_blank"> */}
-      <Card className="relative border-1 py-4 px-3  " shadowOnHover>
+    <>
+      <Card
+        className="relative border-1 p-3 focus-within:shadow-xl w-full group/app-card"
+        dataTestId="app-card"
+        shadowOnHover
+      >
         <div
-          className="flex gap-2"
-          onClick={() =>
-            window.open(
-              `${window.location.origin}/apps/${app.id}/launch`,
-              '_target',
-            )
-          }
+          className="flex gap-2 outline-none"
+          onClick={handleAppLaunch}
+          onKeyUp={(e) => (e.code === 'Enter' ? handleAppLaunch() : '')}
+          tabIndex={0}
         >
           {isNewEntity(app?.createdAt) && (
             <div
@@ -261,20 +186,18 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
               src={app?.icon?.original || DefaultAppIcon}
               height={44}
               width={44}
+              alt={`${app.label} Image`}
             />
           </div>
 
           {/* App details */}
           <div className="flex flex-col gap-1">
             {/* App name */}
-            <div
-              className="text-sm font-bold text-neutral-900 line-clamp-1 truncate"
-              data-testid="app-name"
-            >
-              {app.label?.length <= 18
-                ? app.label?.substring(0, 18)
-                : app.label?.substring(0, 18) + '..'}
-            </div>
+            <Truncate
+              text={app.label}
+              className="text-sm font-bold text-neutral-900 max-w-[128px]"
+              dataTestId="app-name"
+            />
             {/* App category */}
             {app.category && !isEmpty(app.category) && (
               <div className="flex">
@@ -297,18 +220,20 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
         </div>
 
         {/* App menu popover */}
-        <div className="absolute top-0 right-3">
-          {appCardHovered && (
-            <PopupMenu
-              triggerNode={
-                <div className="cursor-pointer">
-                  <Icon name="threeDots" dataTestId="app-card-ellipsis" />
-                </div>
-              }
-              menuItems={appCardMenu.filter((item) => !item.hidden)}
-              className="-right-3 w-fit top-6"
-            />
-          )}
+        <div className="absolute top-0 right-3 hidden group-hover/app-card:block group-focus-within/app-card:block">
+          <PopupMenu
+            triggerNode={
+              <div className="cursor-pointer">
+                <Icon
+                  name="threeDots"
+                  dataTestId="app-card-ellipsis"
+                  tabIndex={0}
+                />
+              </div>
+            }
+            menuItems={appCardMenu.filter((item) => !item.hidden)}
+            className="-right-3 w-fit top-6"
+          />
         </div>
       </Card>
       {/* </Link> */}
@@ -332,7 +257,7 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
           mode={APP_MODE.Edit}
         />
       )}
-    </div>
+    </>
   );
 };
 

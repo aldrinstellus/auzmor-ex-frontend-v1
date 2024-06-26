@@ -120,6 +120,7 @@ const Sort: FC<ISortProps> = ({
               borderAround
               className="bg-white !p-[10px]"
               dataTestId={dataTestId}
+              ariaLabel="sort"
             />
             {selectedValue && (
               <div className="h-2 w-2 rounded-full bg-red-500 absolute top-[2px] right-[2px]" />

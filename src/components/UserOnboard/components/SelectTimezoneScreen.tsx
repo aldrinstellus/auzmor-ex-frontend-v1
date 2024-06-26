@@ -89,7 +89,7 @@ const SelectTimezoneScreen: FC<SelectTimezoneScreenProps> = ({
   return (
     <div className="flex flex-col min-h-full justify-between min-w-full">
       <div className="flex items-center flex-col justify-between gap-y-3 px-10 mt-6">
-        <img src={OnboardTimezone} />
+        <img src={OnboardTimezone} alt="Timezone Image" />
         <p className="font-bold text-neutral-900 text-2xl">
           Select your timezone
         </p>

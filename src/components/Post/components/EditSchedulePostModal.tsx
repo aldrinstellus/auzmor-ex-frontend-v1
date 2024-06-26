@@ -1,21 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
 import Button, { Variant as ButtonVariant, Size } from 'components/Button';
 import Layout, { FieldType } from 'components/Form';
-import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import moment from 'moment';
 import { IPost, IPostPayload, updatePost } from 'queries/post';
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
 import { useFeedStore } from 'stores/feedStore';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { twConfig } from 'utils/misc';
-import { slideInAndOutTop } from 'utils/react-toastify';
 import {
   afterXUnit,
   beforeXUnit,
@@ -66,56 +61,16 @@ const EditSchedulePostModal: FC<EditSchedulePostModalProp> = ({
       if (context?.previousData && variables?.id) {
         updateFeed(variables.id, context?.previousData);
       }
-      toast(
-        <FailureToast
-          content="Error updating post"
-          dataTestId="post-update-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-            backgroundColor: twConfig.theme.colors.neutral[900],
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      failureToastConfig({
+        content: 'Error updating post',
+        dataTestId: 'post-update-toaster',
+      });
     },
-    onSuccess: async () => {
-      toast(
-        <SuccessToast
-          content="Post updated successfully"
-          dataTestId="post-update-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-            // backgroundColor: twConfig.theme.colors.neutral[900],
-            color: 'white',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-    },
+    onSuccess: async () =>
+      successToastConfig({
+        content: 'Post updated successfully',
+        dataTestId: 'post-update-toaster',
+      }),
   });
   const userTimezone = getTimezoneNameFromIANA(schedule.timeZone);
   const { currentTimezone } = useCurrentTimezone();

@@ -114,9 +114,9 @@ const Teams: FC<ITeamsProps> = ({ control, watch, setValue }) => {
       <Layout fields={searchField} />
       <div className="max-h-[330px] min-h-[330px] overflow-y-auto">
         {!!teamCheckbox?.length && (
-          <div className="flex mt-2 mb-3 flex-wrap">
+          <ul className="flex mt-2 mb-3 flex-wrap">
             {teamCheckbox.map((team: ICheckboxListOption) => (
-              <div
+              <li
                 key={team.data.id}
                 data-testid="filter-options"
                 className="flex items-center px-3 py-2 bg-neutral-100 rounded-17xl border border-neutral-200 mr-2 my-1"
@@ -140,9 +140,9 @@ const Teams: FC<ITeamsProps> = ({ control, watch, setValue }) => {
                     }
                   />
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
         {(() => {
           if (isLoading) {

@@ -9,13 +9,8 @@ import Button, {
 import Modal from 'components/Modal';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { toast } from 'react-toastify';
-import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { removeTeamMember } from 'queries/teams';
 import { FC } from 'react';
 export interface IRemoveTeamMemberProps {
@@ -42,43 +37,14 @@ const RemoveTeamMember: FC<IRemoveTeamMemberProps> = ({
       queryClient.invalidateQueries(['teams'], { exact: false });
       queryClient.invalidateQueries(['feed'], { exact: false });
       closeModal();
-      toast(<SuccessToast content={`Successfully removed one member`} />, {
-        closeButton: (
-          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
-        ),
-        style: {
-          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
-        },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
-      });
+      successToastConfig({ content: `Successfully removed one member` });
     },
     onError: () => {
       closeModal();
-      toast(
-        <FailureToast
-          content="Error removing the member"
-          dataTestId="comment-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      failureToastConfig({
+        content: 'Error removing the member',
+        dataTestId: 'comment-toaster',
+      });
     },
   });
 

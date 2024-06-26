@@ -2,21 +2,20 @@ import { IMenuItem } from '.';
 import Icon from 'components/Icon';
 import useHover from 'hooks/useHover';
 import clsx from 'clsx';
-import { FC, RefObject } from 'react';
+import { FC } from 'react';
 
 type PopupMenuItemProps = {
   menuItem: IMenuItem;
-  menuButtonRef: RefObject<HTMLButtonElement>;
   border?: boolean;
+  isActive?: boolean;
 };
 
 const PopupMenuItem: FC<PopupMenuItemProps> = ({
   menuItem,
-  menuButtonRef,
   border = false,
+  isActive = false,
 }) => {
   const [hovered, eventHandlers] = useHover();
-  // const itemRef = useRef<HTMLButtonElement>(null);
   return (
     <div
       className={clsx(
@@ -26,14 +25,12 @@ const PopupMenuItem: FC<PopupMenuItemProps> = ({
         },
         { 'border-b-1 border-b-neutral-200': border },
         { '!cursor-default': menuItem.disabled },
-        { 'bg-primary-50': menuItem.isActive },
+        { 'bg-primary-50': isActive },
       )}
-      onClick={() => {
-        menuButtonRef.current?.click();
-        menuItem?.onClick && menuItem.onClick();
-      }}
       {...eventHandlers}
       data-testid={menuItem.dataTestId}
+      role="button"
+      tabIndex={0}
     >
       {menuItem.icon && (
         <div className={menuItem.iconWrapperClassName}>
@@ -41,7 +38,7 @@ const PopupMenuItem: FC<PopupMenuItemProps> = ({
             name={menuItem.icon}
             size={16}
             color={
-              menuItem.isActive
+              isActive
                 ? 'text-primary-500'
                 : (menuItem.disabled && 'text-neutral-200') || menuItem.stroke
             }
@@ -55,8 +52,7 @@ const PopupMenuItem: FC<PopupMenuItemProps> = ({
         className={clsx(
           { 'text-sm text-neutral-900 font-medium whitespace-nowrap': true },
           {
-            'text-primary-500':
-              !menuItem.disabled && (hovered || menuItem.isActive),
+            'text-primary-500': !menuItem.disabled && (hovered || isActive),
           },
           { '!text-neutral-400': menuItem.disabled },
           { [`${menuItem.labelClassName}`]: true },

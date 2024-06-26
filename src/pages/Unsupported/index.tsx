@@ -10,7 +10,7 @@ const Unsupported: FC = (): ReactElement => {
         <div className="mb-14">
           <Logo />
         </div>
-        <img src={NotSupported} width={300} height={300} />
+        <img src={NotSupported} width={300} height={300} alt="Not Supported" />
         <p className="text-sm font-semibold">
           Sorry we do not support mobile devices yet!
         </p>

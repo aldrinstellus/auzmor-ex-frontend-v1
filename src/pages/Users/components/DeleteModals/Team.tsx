@@ -10,13 +10,8 @@ import Modal from 'components/Modal';
 import { deleteTeam } from 'queries/teams';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { toast } from 'react-toastify';
-import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { useNavigate } from 'react-router-dom';
 import { FC } from 'react';
 export interface IDeleteTeamProps {
@@ -36,52 +31,14 @@ const DeleteTeam: FC<IDeleteTeamProps> = ({
   const deleteTeamMutation = useMutation({
     mutationKey: ['delete-team', teamId],
     mutationFn: deleteTeam,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onError: (error) => {
-      toast(<FailureToast content="Error deleting teams" dataTestId="" />, {
-        closeButton: (
-          <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-        ),
-        style: {
-          border: `1px solid ${twConfig.theme.colors.red['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
-        },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
-      });
-    },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onSuccess: (data, variables, context) => {
+    onError: () => failureToastConfig({ content: 'Error deleting teams' }),
+    onSuccess: () => {
       closeModal();
       queryClient.invalidateQueries({ queryKey: ['teams'] });
-      toast(
-        <SuccessToast
-          content="Team has been deleted successfully"
-          dataTestId="team-toaster-message"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-              dataTestId="team-toaster-close"
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        content: 'Team has been deleted successfully',
+        dataTestId: 'team-toaster-message',
+      });
       if (isDetailPage) navigate('/teams');
     },
   });

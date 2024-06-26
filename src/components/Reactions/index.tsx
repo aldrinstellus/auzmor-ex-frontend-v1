@@ -299,35 +299,63 @@ const Likes: FC<LikesProps> = ({
     setShowTooltip,
     dataTestId,
   }: IReaction) => {
+    const handleClick = () => {
+      handleReaction(type);
+      setShowTooltip(false);
+    };
     return (
-      <div className="space-x-0 relative [&_span]:hover:visible">
+      <div
+        className="space-x-0 relative [&_span]:hover:visible outline-none"
+        onKeyUp={(e) => {
+          e.stopPropagation();
+          if (e.code === 'Enter') {
+            handleClick();
+          }
+        }}
+        onClick={handleClick}
+      >
         <span className="invisible absolute rounded-7xl bg-black text-white text-xs py-1 px-2 -mt-10">
           {name}
         </span>
         <Icon
           name={icon}
-          className="hover:scale-150 transition-all"
-          onClick={() => {
-            handleReaction(type);
-            setShowTooltip(false);
-          }}
+          className="focus/reaction:scale-150 hover:scale-150 transition-all"
           size={24}
           dataTestId={dataTestId}
+          tabIndex={0}
         />
       </div>
     );
   };
 
+  const handleLike = () => {
+    switch (true) {
+      case !getPost(entityId)?.myReaction && queryKey === 'feed':
+        handleReaction('like');
+        break;
+      case !comment[entityId]?.myReaction && queryKey === 'comments':
+        handleReaction('like');
+        break;
+      default:
+        handleDeleteReaction();
+        break;
+    }
+  };
+
   return (
     <div
+      tabIndex={0}
+      role="button"
+      onFocus={handleMouseEnter}
       onMouseEnter={handleMouseEnter}
+      onKeyUp={(e) => (e.code === 'Enter' ? handleLike() : '')}
       ref={container}
-      className="group relative z-20 inline-block p-0 cursor-pointer"
+      className="group relative z-20 inline-block p-0 cursor-pointer outline-none"
     >
       {showTooltip ? (
         <span
           ref={tooltipRef}
-          className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition text-white p-1 rounded absolute bottom-full whitespace-nowrap"
+          className="invisible group-focus-within:visible group-focus-within:opacity-100 group-hover:visible opacity-0 group-hover:opacity-100 transition text-white p-1 rounded absolute bottom-full whitespace-nowrap"
         >
           <div
             className={`h-[42px] flex items-center bg-white rounded-7xl shadow-lg py-2 px-3 gap-4 mb-4`}
@@ -381,25 +409,15 @@ const Likes: FC<LikesProps> = ({
 
       <div
         className="flex items-center space-x-1"
-        onClick={() => {
-          switch (true) {
-            case !getPost(entityId)?.myReaction && queryKey === 'feed':
-              handleReaction('like');
-              break;
-            case !comment[entityId]?.myReaction && queryKey === 'comments':
-              handleReaction('like');
-              break;
-            default:
-              handleDeleteReaction();
-              break;
-          }
-        }}
+        onClick={handleLike}
         data-testid={'liketo-commentcta'}
       >
         <Icon name={nameIcon ? nameIcon : 'likeIcon'} size={16} />
         <div
           className={`text-xs font-normal ${
-            name ? nameStyle : 'text-neutral-500 group-hover:text-primary-500'
+            name
+              ? nameStyle
+              : 'text-neutral-500 group-focus:text-primary-500 group-hover:text-primary-500'
           } `}
         >
           {name ? name : 'Like'}

@@ -38,10 +38,7 @@ import {
 import UserProfileDropdown from 'components/UserProfileDropdown';
 import useHover from 'hooks/useHover';
 import useRole from 'hooks/useRole';
-import { toast } from 'react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import DeletePeople from 'pages/Users/components/DeleteModals/People';
 import ReactivatePeople from 'pages/Users/components/ReactivateModal/Reactivate';
 import DeactivatePeople from 'pages/Users/components/DeactivateModal/Deactivate';
@@ -166,20 +163,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
     mutationKey: ['update-user-role'],
     onSuccess: () => {
       queryClient.invalidateQueries(['user', userDetails?.id]);
-      toast(<SuccessToast content={`User role has been updated to admin`} />, {
-        closeButton: (
-          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
-        ),
-        style: {
-          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
-        },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
-      });
+      successToastConfig({ content: `User role has been updated to admin` });
     },
   });
 
@@ -320,24 +304,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                   openEditProfileModal();
                 }}
                 onResendInviteClick={() => () => {
-                  toast(<SuccessToast content="Invitation has been sent" />, {
-                    closeButton: (
-                      <Icon
-                        name="closeCircleOutline"
-                        color="text-primary-500"
-                        size={20}
-                      />
-                    ),
-                    style: {
-                      border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-                      borderRadius: '6px',
-                      display: 'flex',
-                      alignItems: 'center',
-                    },
-                    autoClose: TOAST_AUTOCLOSE_TIME,
-                    transition: slideInAndOutTop,
-                    theme: 'dark',
-                  });
+                  successToastConfig({ content: 'Invitation has been sent' });
                   resendInviteMutation.mutate(userDetails?.id);
                 }}
               />
@@ -480,7 +447,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
       {canEdit && (
         <div>
           <input
-            id="file-input"
+            id="file-input-user-profile"
             type="file"
             ref={userProfileImageRef}
             data-testid="edit-profile-profilepic"
@@ -498,9 +465,10 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                 openEditImageModal();
               }
             }}
+            aria-label="upload profile picture"
           />
           <input
-            id="file-input"
+            id="file-input-cover-image"
             type="file"
             ref={userCoverImageRef}
             className="hidden"
@@ -518,6 +486,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                 openEditImageModal();
               }
             }}
+            aria-label="upload cover picture"
           />
         </div>
       )}

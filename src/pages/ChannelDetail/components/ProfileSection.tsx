@@ -164,6 +164,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
           data-testid="channel-uploadedcoverphoto"
           src={channelData?.banner || require('images/channelDefaultHero.png')}
           className="rounded-9xl w-full h-full object-cover"
+          alt="Channel Cover Picture"
         />
         <div className="w-full h-full bg-gradient-to-b from-transparent to-black top-0 left-0 absolute rounded-t-9xl"></div>
       </div>

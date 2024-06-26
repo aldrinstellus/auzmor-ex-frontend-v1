@@ -10,13 +10,8 @@ import Modal from 'components/Modal';
 import { deleteUser } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { toast } from 'react-toastify';
-import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { FC } from 'react';
 export interface IDeletePeopleProps {
   open: boolean;
@@ -34,29 +29,11 @@ const DeletePeople: FC<IDeletePeopleProps> = ({
   const deleteUserMutation = useMutation({
     mutationKey: ['delete-user', userId],
     mutationFn: deleteUser,
-    onError: (error) => {
-      console.log(error);
-      toast(
-        <FailureToast
-          content="Error deleting member"
-          dataTestId="people-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-    },
+    onError: () =>
+      failureToastConfig({
+        content: 'Error deleting member',
+        dataTestId: 'people-toaster',
+      }),
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: (data, variables, context) => {
       closeModal();
@@ -72,30 +49,10 @@ const DeletePeople: FC<IDeletePeopleProps> = ({
       queryClient.invalidateQueries(['team-members']);
       queryClient.invalidateQueries(['organization-chart'], { exact: false });
       queryClient.invalidateQueries(['celebrations'], { exact: false });
-      toast(
-        <SuccessToast
-          content="Member has been deleted"
-          dataTestId="people-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        content: 'Member has been deleted',
+        dataTestId: 'people-toaster',
+      });
     },
   });
 

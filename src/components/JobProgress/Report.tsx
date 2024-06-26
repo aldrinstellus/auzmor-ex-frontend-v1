@@ -197,7 +197,7 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
                 />
               ) : (
                 <div className="flex flex-col justify-center items-center p-4">
-                  <img src={require('./nodata.png')} />
+                  <img src={require('./nodata.png')} alt="No Data Picture" />
                   <div className="pt-4 text-2xl font-bold">
                     No data to display
                   </div>

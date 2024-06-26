@@ -15,6 +15,7 @@ import { useBrandingStore } from 'stores/branding';
 import { getSubDomain, isDark } from 'utils/misc';
 import { useGetSSOFromDomain } from 'queries/organization';
 import clsx from 'clsx';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 interface IForgotPasswordProps {}
 
@@ -27,6 +28,7 @@ const schema = yup.object({
 });
 
 const ForgotPassword: FC<IForgotPasswordProps> = () => {
+  usePageTitle('forgotPassword');
   const navigate = useNavigate();
 
   const forgotPasswordMutation = useMutation((formData: any) =>

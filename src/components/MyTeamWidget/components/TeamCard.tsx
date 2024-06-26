@@ -21,36 +21,38 @@ const TeamCard: React.FC<ITeamCard> = ({
 }) => {
   const navigate = useNavigate();
   return (
-    <div className="flex items-center gap-2">
-      <div onClick={() => navigate(`/teams/${id}`)}>
-        <AvatarList
-          size={32}
-          users={recentMembers}
-          moreCount={totalMembers}
-          avatarClassName="!b-[1px] cursor-pointer"
-          className="-space-x-[16px]"
-          dataTestId="teams-icon"
-        />
-      </div>
+    <div
+      className="flex items-center gap-2"
+      tabIndex={0}
+      title={name}
+      onClick={() => navigate(`/teams/${id}`)}
+      onKeyUp={(e) => (e.code === 'Enter' ? navigate(`/teams/${id}`) : '')}
+      role="link"
+    >
+      <AvatarList
+        size={32}
+        users={recentMembers}
+        moreCount={totalMembers}
+        avatarClassName="!b-[1px] cursor-pointer"
+        className="-space-x-[16px]"
+        dataTestId="teams-icon"
+      />
       <div className="flex flex-col gap-1">
-        <div
-          className="text-sm font-bold truncate cursor-pointer"
-          onClick={() => navigate(`/teams/${id}`)}
-        >
+        <p className="text-sm font-bold truncate cursor-pointer">
           {truncate(name, {
             length: 26,
             separator: ' ',
           })}
-        </div>
+        </p>
         <div className="flex items-center gap-3">
           {category?.name && (
             <>
-              <div className="text-xs text-neutral-500 truncate">
+              <p className="text-xs text-neutral-500 truncate">
                 {truncate(category?.name, {
                   length: 12,
                   separator: ' ',
                 })}
-              </div>
+              </p>
               <div className="w-1 h-1 rounded-full bg-neutral-900" />
             </>
           )}

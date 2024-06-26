@@ -19,7 +19,7 @@ const EmptyState: FC<EmptyStateProps> = ({ openModal }) => {
       )}
       <p className="text-xs text-neutral-500">{t('description')} </p>
       <div className="h-[107px]">
-        <img src={NoAnnouncement} height={107} />
+        <img src={NoAnnouncement} height={107} alt="No Announcement" />
       </div>
       {showCreateAnnouncement && (
         <>

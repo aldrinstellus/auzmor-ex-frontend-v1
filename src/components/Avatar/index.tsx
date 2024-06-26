@@ -25,6 +25,7 @@ export type AvatarProps = {
   isCounter?: boolean;
   fontSize?: number;
   outOfOffice?: boolean;
+  ariaLabel?: string;
 };
 
 const Avatar: FC<AvatarProps> = ({
@@ -44,6 +45,7 @@ const Avatar: FC<AvatarProps> = ({
   blurhash = '',
   isCounter = false,
   outOfOffice = false,
+  ariaLabel = 'Avatar',
 }) => {
   const containerStyles = useMemo(
     () =>
@@ -94,18 +96,6 @@ const Avatar: FC<AvatarProps> = ({
     [size, bgColor],
   );
 
-  const activeIndicator = useMemo(() => {
-    return null;
-    return (
-      active && (
-        <div
-          style={{ height: `${size / 5}px`, width: `${size / 5}px` }}
-          className={indicatorStyles}
-          data-testid="people-card-status-active"
-        />
-      )
-    );
-  }, []);
   const isBgDark = isDarkColor(bgColor);
 
   const textStyles = clsx(
@@ -132,6 +122,7 @@ const Avatar: FC<AvatarProps> = ({
       style={{ ...divStyle, pointerEvents: disable ? 'none' : 'auto' }}
       onClick={onClick}
       data-testid={dataTestId}
+      title={ariaLabel}
     >
       {!!image && !loading ? (
         <BlurImg {...blurImageProps} />

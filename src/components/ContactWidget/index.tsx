@@ -10,12 +10,8 @@ import Layout, { FieldType } from 'components/Form';
 import { useMutation } from '@tanstack/react-query';
 import { updateCurrentUser } from 'queries/users';
 import queryClient from 'utils/queryClient';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import { twConfig } from 'utils/misc';
-import { toast } from 'react-toastify';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import CopyButton from './components/CopyButton';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
 import { useTranslation } from 'react-i18next';
 
 export interface IContactInfoForm {
@@ -79,20 +75,7 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
     mutationKey: ['update-user-contact-detail-mutation'],
     onError: (_error: any) => {},
     onSuccess: (_response: any) => {
-      toast(<SuccessToast content={t('contactWidget.successToast')} />, {
-        closeButton: (
-          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
-        ),
-        style: {
-          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
-        },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
-      });
+      successToastConfig({ content: t('contactWidget.successToast') });
       setIsEditable(false);
     },
   });

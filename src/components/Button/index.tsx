@@ -76,19 +76,19 @@ const Button = ({
     () =>
       clsx(
         {
-          'flex justify-center items-center space-x-1 bg-primary-500 text-white rounded-16xl hover:bg-primary-600 active:bg-primary-700 disabled:text-neutral-400 disabled:border-none disabled:bg-neutral-200':
+          'flex justify-center items-center space-x-1 bg-primary-500 text-white rounded-16xl hover:bg-primary-600 focus:bg-primary-600 active:bg-primary-700 disabled:text-neutral-400 disabled:border-none disabled:bg-neutral-200':
             variant === Variant.Primary,
         },
         {
-          'flex justify-center items-center space-x-1 text-neutral-900 bg-white border-solid border border-neutral-200 rounded-16xl hover:text-primary-600 active:text-primary-700 disabled:text-neutral-400 disabled:border-none disabled:bg-neutral-200':
+          'flex justify-center items-center space-x-1 text-neutral-900 bg-white border-solid border border-neutral-200 rounded-16xl hover:text-primary-600 focus:text-primary-600 active:text-primary-700 disabled:text-neutral-400 disabled:border-none disabled:bg-neutral-200':
             variant === Variant.Secondary,
         },
         {
-          'flex justify-center items-center space-x-1 text-neutral-900 bg-white rounded-16xl hover:text-primary-600 active:text-primary-700 disabled:text-neutral-400':
+          'flex justify-center items-center space-x-1 text-neutral-900 bg-white rounded-16xl hover:text-primary-600 focus:text-primary-600 active:text-primary-700 disabled:text-neutral-400':
             variant === Variant.Tertiary,
         },
         {
-          'flex justify-center items-center space-x-1 bg-red-500 text-white rounded-16xl hover:bg-red-600 active:bg-red-700 disabled:text-neutral-400 disabled:border-none disabled:bg-neutral-200':
+          'flex justify-center items-center space-x-1 bg-red-500 text-white rounded-16xl hover:bg-red-600 focus:text-primary-600 active:bg-red-700 disabled:text-neutral-400 disabled:border-none disabled:bg-neutral-200':
             variant === Variant.Danger,
         },
         {
@@ -104,7 +104,7 @@ const Button = ({
           'py-1.5 px-3 text-xs': size === Size.ExtraSmall,
         },
         {
-          'font-manrope font-bold transition-colors ease-out duration-default group':
+          'font-manrope font-bold transition-colors ease-out duration-default group outline-none':
             true,
         },
         {

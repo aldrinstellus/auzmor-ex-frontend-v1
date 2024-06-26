@@ -1,4 +1,4 @@
-import { MouseEventHandler, ReactNode } from 'react';
+import { Fragment, MouseEventHandler, ReactNode, useState } from 'react';
 import { PlacesType, Tooltip as ReactTooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 
@@ -27,8 +27,9 @@ const Tooltip = ({
   showTooltip = true,
 }: TooltipProps) => {
   const id = Math.random().toString(16).slice(2);
+  const [open, setOpen] = useState(false);
   return (
-    <span onClick={onClick}>
+    <Fragment>
       {showTooltip && (
         <ReactTooltip
           className={className}
@@ -36,6 +37,7 @@ const Tooltip = ({
           react-tooltip-arrow
           anchorSelect={`#anchor-${id}`}
           clickable
+          isOpen={open}
         >
           {tooltipContent}
         </ReactTooltip>
@@ -49,10 +51,15 @@ const Tooltip = ({
         data-tooltip-variant={variant}
         data-tooltip-place={`${tooltipPosition}`}
         className="inline"
+        onClick={onClick}
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setOpen(false)}
       >
         {children}
       </span>
-    </span>
+    </Fragment>
   );
 };
 

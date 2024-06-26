@@ -147,7 +147,7 @@ const UploadFileStep: React.FC<AppProps> = ({
             {...getRootProps()}
             className="border border-dashed border-primary-600 rounded-9xl p-6"
           >
-            <input {...getInputProps()} />
+            <input {...getInputProps()} aria-label="drop files here" />
             {(() => {
               if (uploadStatus === UploadStatus.Uploading) {
                 return (

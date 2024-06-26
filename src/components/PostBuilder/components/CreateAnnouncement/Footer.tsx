@@ -7,12 +7,7 @@ import { CreateAnnouncementMode } from '.';
 import { useMutation } from '@tanstack/react-query';
 import { IPost, PostType, updatePost } from 'queries/post';
 import queryClient from 'utils/queryClient';
-import { toast } from 'react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useFeedStore } from 'stores/feedStore';
 import { produce } from 'immer';
 import useAuth from 'hooks/useAuth';
@@ -108,34 +103,14 @@ const Footer: FC<IFooterProps> = ({
         );
       }
 
-      toast(
-        <SuccessToast
-          content={
-            preIsAnnouncement
-              ? 'Your announcement was updated successfully'
-              : "You've shared the post as an announcement"
-          }
-          dataTestId={
-            isEmpty(data.announcement)
-              ? 'convert-to-announcement-toast'
-              : 'announcement-updated-toast'
-          }
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-white" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        content: preIsAnnouncement
+          ? 'Your announcement was updated successfully'
+          : "You've shared the post as an announcement",
+        dataTestId: isEmpty(data.announcement)
+          ? 'convert-to-announcement-toast'
+          : 'announcement-updated-toast',
+      });
       closeModal();
       await queryClient.invalidateQueries([
         'feed-announcements-widget',

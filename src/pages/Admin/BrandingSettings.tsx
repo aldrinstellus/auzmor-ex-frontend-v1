@@ -17,7 +17,7 @@ import {
   titleCase,
   twConfig,
 } from 'utils/misc';
-import { MB, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { MB } from 'utils/constants';
 import { IRadioListOption } from 'components/RadioGroup';
 import { useUpdateBrandingMutation } from 'queries/organization';
 import { useBrandingStore } from 'stores/branding';
@@ -26,16 +26,14 @@ import ImageReposition from 'components/DynamicImagePreview/components/ImageRepo
 import clsx from 'clsx';
 import { useUpload } from 'hooks/useUpload';
 import { EntityType } from 'queries/files';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import { toast } from 'react-toastify';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import Tooltip from 'components/Tooltip';
 import { Logo } from 'components/Logo';
 import welcomeToOffice from 'images/welcomeToOffice.png';
 import welcomeToOfficeLarge from 'images/welcomeToOfficeLarge.png';
 import { getTintVariantColor } from 'utils/branding';
 import queryClient from 'utils/queryClient';
-import FailureToast from 'components/Toast/variants/FailureToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Shape } from 'components/ImageCropper';
@@ -96,6 +94,7 @@ const Preview: FC<{
           src={getMediaObj([file])[0].original}
           className={imageStyle}
           data-testid={`branding-uploaded-${dataTestId}`}
+          alt="Preview Image"
         />
       )}
 
@@ -126,6 +125,7 @@ const Preview: FC<{
           src={url}
           className={imageStyle}
           data-testid={`branding-uploaded-${dataTestId}`}
+          alt="Image preview"
         />
       )}
 
@@ -546,30 +546,10 @@ const BrandingSettings: FC = () => {
     updateBranding.mutate(newBranding, {
       onSuccess: async (data, _variables, _context) => {
         const newBranding = data?.result?.data?.branding;
-        toast(
-          <SuccessToast
-            content={t('toast-success')}
-            dataTestId="branding-changes-saved-toaster"
-          />,
-          {
-            closeButton: (
-              <Icon
-                name="closeCircleOutline"
-                color="text-primary-500"
-                size={20}
-              />
-            ),
-            style: {
-              border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-            },
-            autoClose: TOAST_AUTOCLOSE_TIME,
-            transition: slideInAndOutTop,
-            theme: 'dark',
-          },
-        );
+        successToastConfig({
+          content: t('toast-success'),
+          dataTestId: 'branding-changes-saved-toaster',
+        });
         await queryClient.refetchQueries(['organization']);
         handleCancel(
           {
@@ -585,27 +565,10 @@ const BrandingSettings: FC = () => {
         setBranding(newBranding);
       },
       onError: () => {
-        toast(
-          <FailureToast
-            content={t('toast-fail')}
-            dataTestId="branding-changes-not-saved-toaster"
-          />,
-          {
-            closeButton: (
-              <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-            ),
-            style: {
-              border: `1px solid ${twConfig.theme.colors.red['300']}`,
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              backgroundColor: twConfig.theme.colors.neutral[900],
-            },
-            autoClose: TOAST_AUTOCLOSE_TIME,
-            transition: slideInAndOutTop,
-            theme: 'dark',
-          },
-        );
+        failureToastConfig({
+          content: t('toast-fail'),
+          dataTestId: 'branding-changes-not-saved-toaster',
+        });
         handleCancel();
       },
       onSettled: () => {
@@ -682,6 +645,7 @@ const BrandingSettings: FC = () => {
           <img
             className="absolute top-0 left-0 object-cover h-full w-full"
             src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOfficeLarge}
+            alt="Background image preview"
           />
         );
       } else {
@@ -694,6 +658,7 @@ const BrandingSettings: FC = () => {
                   ? getBlobUrl(selectedBG)
                   : branding?.loginConfig?.image?.original
               }
+              alt="Background image preview"
             />
           );
         } else {
@@ -701,6 +666,7 @@ const BrandingSettings: FC = () => {
             <img
               className="absolute top-0 left-0 object-cover h-full w-full"
               src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOfficeLarge}
+              alt="Background image preview"
             />
           );
         }
@@ -713,6 +679,7 @@ const BrandingSettings: FC = () => {
               <img
                 className="object-cover h-full"
                 src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
+                alt="Background image preview"
               />
             </div>
           );
@@ -729,6 +696,7 @@ const BrandingSettings: FC = () => {
                       ? getBlobUrl(selectedBG)
                       : branding?.loginConfig?.image?.original
                   }
+                  alt="Background image preview"
                 />
               </div>
             );
@@ -740,6 +708,7 @@ const BrandingSettings: FC = () => {
                 <img
                   className="object-cover h-full"
                   src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
+                  alt="Background image preview"
                 />
               </div>
             );
@@ -752,6 +721,7 @@ const BrandingSettings: FC = () => {
               <img
                 className="object-cover h-full"
                 src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
+                alt="Background image preview"
               />
             </div>
           );
@@ -766,6 +736,7 @@ const BrandingSettings: FC = () => {
                       ? getBlobUrl(selectedBG)
                       : branding?.loginConfig?.image?.original
                   }
+                  alt="Background image preview"
                 />
               </div>
             );
@@ -777,6 +748,7 @@ const BrandingSettings: FC = () => {
                 <img
                   className="object-cover h-full"
                   src={selectedBG ? getBlobUrl(selectedBG) : welcomeToOffice}
+                  alt="Background image preview"
                 />
               </div>
             );
@@ -900,7 +872,9 @@ const BrandingSettings: FC = () => {
           />
           <div className="flex gap-[100px]">
             <div className="flex flex-col w-1/2 gap-1">
-              <div className="font-bold">{t('logo')}</div>
+              <label className="font-bold" htmlFor={getInputPropsLogo().id}>
+                {t('logo')}
+              </label>
               <div
                 {...getRootPropsLogo()}
                 className="border border-dashed border-neutral-200 rounded-9xl p-6 w-full h-[186px] flex justify-center items-center cursor-pointer"
@@ -943,7 +917,9 @@ const BrandingSettings: FC = () => {
               <p className="text-xxs text-neutral-500">{t('fileSize-5mb')}</p>
             </div>
             <div className="flex flex-col w-1/2 gap-1">
-              <div className="font-bold">{t('favicon')}</div>
+              <label className="font-bold" htmlFor={getInputPropsFavicon().id}>
+                {t('favicon')}
+              </label>
               <div
                 {...getRootPropsFavicon()}
                 className="border border-dashed border-neutral-200 rounded-9xl p-6 w-full h-[186px] flex justify-center items-center cursor-pointer"
@@ -1115,7 +1091,11 @@ const BrandingSettings: FC = () => {
               <p className="font-normal text-[8px] text-neutral-500 text-center px-2.5">
                 {t('help-card-text-2')}
               </p>
-              <img src={NoAnnouncement} className="h-[70px]" />
+              <img
+                src={NoAnnouncement}
+                className="h-[70px]"
+                alt="No announcement"
+              />
 
               <div
                 className="flex items-center justify-center text-white rounded-19xl px-2.5 py-2 mx-2.5 text-sm font-bold"
@@ -1248,9 +1228,12 @@ const BrandingSettings: FC = () => {
               </div>
               {backgroundType === 'Image' && (
                 <div className="flex flex-col gap-3">
-                  <p className="text-sm font-bold text-neutral-900">
+                  <label
+                    className="text-sm font-bold text-neutral-900"
+                    htmlFor={getInputPropsBG().id}
+                  >
                     {t('upload-img')}
-                  </p>
+                  </label>
                   <div
                     {...getRootPropsBG()}
                     className="border border-dashed border-neutral-200 rounded-9xl px-5 py-2.5 w-[420px] h-[186px] flex justify-center items-center cursor-pointer"
@@ -1294,9 +1277,12 @@ const BrandingSettings: FC = () => {
               )}
               {backgroundType === 'Video' && (
                 <div className="flex flex-col gap-3">
-                  <p className="text-sm font-bold text-neutral-900">
+                  <label
+                    className="text-sm font-bold text-neutral-900"
+                    htmlFor={getInputPropsBGVideo().id}
+                  >
                     {t('upload-video')}
-                  </p>
+                  </label>
                   <div
                     {...getRootPropsBGVideo()}
                     className="border border-dashed border-neutral-200 rounded-9xl px-5 py-2.5 w-[420px] h-[186px] flex justify-center items-center cursor-pointer"
@@ -1428,6 +1414,7 @@ const BrandingSettings: FC = () => {
                       <img
                         src={getBlobUrl(selectedLogo)}
                         className="h-full object-cover"
+                        alt="Logo preview"
                       />
                     ) : (
                       <Logo className="!h-[12px]" />
