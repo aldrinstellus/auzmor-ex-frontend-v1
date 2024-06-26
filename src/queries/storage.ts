@@ -31,6 +31,7 @@ export const patchConfig = async (
     id?: string;
     publicToken?: string;
     allowedFolders?: Record<string, string>[];
+    isAuthorized?: boolean;
     allowedDrives?: Record<string, string>[];
   },
   onSuccess?: () => void,
@@ -40,6 +41,7 @@ export const patchConfig = async (
     isFiltersEmpty({
       publicToken: patchData?.publicToken,
       allowedFolders: patchData?.allowedFolders,
+      isAuthorized: patchData?.isAuthorized,
       allowedDrives: patchData?.allowedDrives,
     }),
   );
@@ -48,11 +50,17 @@ export const patchConfig = async (
 };
 
 export const getFiles = async (params: Record<string, string | null>) => {
-  return await apiService.get('/storage/files', { ...params });
+  return await apiService.get(
+    '/storage/files',
+    params?.folderId ? { ...params } : {},
+  );
 };
 
 export const getFolders = async (params: Record<string, string | null>) => {
-  return await apiService.get('/storage/folder', { ...params });
+  return await apiService.get(
+    '/storage/folder',
+    params?.parentFolderId ? { ...params } : {},
+  );
 };
 export const getDocument = async (params: Record<string, string | null>) => {
   return await apiService.get('/storage/search', { ...params });
@@ -60,6 +68,10 @@ export const getDocument = async (params: Record<string, string | null>) => {
 
 export const getSyncStatus = async () => {
   return await apiService.get('/storage/sync');
+};
+
+export const getConnectedStatus = async (email: string) => {
+  return await apiService.get(`/storage/user`, { email });
 };
 
 export const getStorageUser = async (params: Record<any, any | null>) => {
@@ -93,12 +105,16 @@ export const useFolders = (q: Record<string, string | null>) => {
     queryFn: () => getFolders(q),
   });
 };
-export const useDocument = (params: Record<any, any | null>) => {
+export const useDocument = (
+  params: Record<any, any | null>,
+  enabled?: boolean,
+) => {
   return useQuery({
     queryKey: ['get-storage-document', params],
     queryFn: () => getDocument(params),
     cacheTime: 0,
     staleTime: 0,
+    enabled: !!enabled,
   });
 };
 export const useGetStorageUser = (q: Record<any, any | null>) => {
@@ -110,4 +126,11 @@ export const useGetStorageUser = (q: Record<any, any | null>) => {
 
 export const useSyncStatus = () => {
   return useQuery({ queryKey: ['get-sync-status'], queryFn: getSyncStatus });
+};
+
+export const useConnectedStatus = (email: string) => {
+  return useQuery({
+    queryKey: ['get-connected-status'],
+    queryFn: () => getConnectedStatus(email),
+  });
 };

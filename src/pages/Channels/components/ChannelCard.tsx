@@ -47,6 +47,7 @@ const ChannelCard: FC<IChannelCardProps> = ({
             <img
               className="object-cover h-full w-full rounded-t-9xl"
               src={DefaultCoverImage}
+              alt="Channel Cover Image"
             />
           )}
         </div>

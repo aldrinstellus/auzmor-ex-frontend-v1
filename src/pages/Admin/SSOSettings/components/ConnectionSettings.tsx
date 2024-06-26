@@ -140,22 +140,25 @@ const ConnectionSettings: FC<ConnectionSettingsProps> = ({
         <Layout fields={authenticationSettingFields} />
       </div>
       <div className="bg-blue-50 mt-4 p-0 absolute bottom-0 left-0 right-0 rounded-b-9xl">
-        <div className="p-3 flex items-center justify-end gap-x-3">
-          <Button
-            className="font-bold"
-            label="Cancel"
-            onClick={closeModal}
-            variant={ButtonVariant.Secondary}
-            dataTestId="sso-config-ad-cta-cancel"
-          />
-          <Button
-            className="font-bold"
-            label="Continue"
-            variant={ButtonVariant.Primary}
-            type={ButtonType.Submit}
-            disabled={isError}
-            dataTestId="sso-config-ad-cta-continue"
-          />
+        <div className="p-3 flex items-center justify-between gap-x-3">
+          <p className="py-4 text-xs text-neutral-900">* Required field</p>
+          <div className="flex gap-3">
+            <Button
+              className="font-bold"
+              label="Cancel"
+              onClick={closeModal}
+              variant={ButtonVariant.Secondary}
+              dataTestId="sso-config-ad-cta-cancel"
+            />
+            <Button
+              className="font-bold"
+              label="Continue"
+              variant={ButtonVariant.Primary}
+              type={ButtonType.Submit}
+              disabled={isError}
+              dataTestId="sso-config-ad-cta-continue"
+            />
+          </div>
         </div>
       </div>
     </form>

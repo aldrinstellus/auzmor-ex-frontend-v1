@@ -8,8 +8,10 @@ import BrandingSettings from './BrandingSettings';
 import useURLParams from 'hooks/useURLParams';
 import useRole from 'hooks/useRole';
 import { useTranslation } from 'react-i18next';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 const Admin: FC = () => {
+  usePageTitle('admin');
   const { t } = useTranslation('adminSetting');
   const { updateParam, searchParams } = useURLParams();
   const { isAdmin, isSuperAdmin } = useRole({ exact: true });

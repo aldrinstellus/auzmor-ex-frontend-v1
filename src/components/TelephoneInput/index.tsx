@@ -98,6 +98,7 @@ const TelephoneInput: FC<TelephoneInputProps> = ({
                 onChange={(e) => setSearchValue(e.target.value)}
                 className="w-full rounded-19xl border border-neutral-200 focus:outline-none h-12 pl-11"
                 data-testid="countrycode-search"
+                aria-label="country code"
               />
             </div>
             <div className="max-h-72 overflow-y-auto">
@@ -141,6 +142,7 @@ const TelephoneInput: FC<TelephoneInputProps> = ({
           }
           data-testid={`${dataTestId}-number`}
           className="ml-2 w-full rounded-full text-sm font-medium border border-neutral-200 focus:outline-none px-5 py-[9px]"
+          aria-label="contact number"
         />
       </div>
     </div>

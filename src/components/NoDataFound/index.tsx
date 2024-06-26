@@ -36,7 +36,7 @@ const NoDataFound: FC<INoDataFoundProps> = ({
   return (
     <div className={style}>
       <div className="flex w-full justify-center">
-        <img src={illustrationMap[illustration]} />
+        <img src={illustrationMap[illustration]} alt="No Data Found" />
       </div>
       <div className="text-center">
         <div

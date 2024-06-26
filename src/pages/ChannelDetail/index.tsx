@@ -13,12 +13,14 @@ import DocumentPathProvider from 'contexts/DocumentPathContext';
 import Setting from './components/Settings';
 import ManageAccess from './components/ManageChannel';
 import useAuth from 'hooks/useAuth';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 type AppProps = {
   activeTabIndex?: number;
 };
 
 const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
+  usePageTitle('channelDetails');
   const { channelId } = useParams();
   const { user } = useAuth();
   const { getChannel } = useChannelStore();

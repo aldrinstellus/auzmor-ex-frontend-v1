@@ -54,7 +54,7 @@ const FilePreview: FC<IFilePreviewProps> = ({ file, open, closeModal }) => {
         </div>
       ) : null}
       <div className="!w-full p-6 overflow-y-auto">
-        <img src={thumbnailUrl.toString()} />
+        <img src={thumbnailUrl.toString()} alt="Thumbnail" />
       </div>
     </Modal>
   );

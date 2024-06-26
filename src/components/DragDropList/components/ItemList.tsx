@@ -52,6 +52,8 @@ const ItemList: FC<IItemListProps> = ({
                 setNewEnteredValue(event?.target?.value);
                 updateInitialSkillsets(item.id, event?.target?.value);
               }}
+              aria-label="draggable item"
+              aria-valuetext={item.value}
             />
           ) : (
             <div>{item.value}</div>

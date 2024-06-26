@@ -51,6 +51,7 @@ export type InputProps = {
   required?: boolean;
   showCounter?: boolean;
   maxLength?: number;
+  autofocus?: boolean;
 };
 
 const Input: FC<InputProps> = ({
@@ -83,6 +84,7 @@ const Input: FC<InputProps> = ({
   showCounter,
   maxLength,
   required = false,
+  autofocus = false,
 }) => {
   const { field } = useController({
     name,
@@ -208,6 +210,7 @@ const Input: FC<InputProps> = ({
             onChange={field.onChange}
             onKeyDown={onEnter}
             onBlur={field.onBlur}
+            autoFocus={autofocus}
           />
           {isClearable && !!field.value && (
             <div className="absolute right-2 p-2">

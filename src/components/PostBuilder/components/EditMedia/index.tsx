@@ -133,6 +133,8 @@ const EditMedia: FC<IEditMediaProps> = ({ closeModal }) => {
             );
           }
         }}
+        aria-multiselectable={false}
+        aria-label="replace photo"
       />
       <input
         type="file"
@@ -147,6 +149,8 @@ const EditMedia: FC<IEditMediaProps> = ({ closeModal }) => {
             );
           }
         }}
+        aria-multiselectable={false}
+        aria-label="replace video"
       />
       <input
         type="file"
@@ -174,6 +178,7 @@ const EditMedia: FC<IEditMediaProps> = ({ closeModal }) => {
             });
           }
         }}
+        aria-label="upload photo"
       />
     </>
   );

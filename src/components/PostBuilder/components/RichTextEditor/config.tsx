@@ -133,6 +133,7 @@ export const mention = {
                               ? `<img 
                                   src=${item?.profileImage?.original} 
                                   style="width:32px;height:32px;border-radius: 100px;
+                                  alt="Profile Picture"
                             "/>`
                               : `<div class="user-avatar-name"> 
                                     ${

@@ -1,10 +1,6 @@
 import Icon from 'components/Icon';
 import { FC, ReactElement } from 'react';
-import { toast } from 'react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import { twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 
 type SAMLDetailProps = {
   prop: string;
@@ -24,29 +20,9 @@ const SAMLDetail: FC<SAMLDetailProps> = ({ prop, value }): ReactElement => {
             size={16}
             onClick={() => {
               navigator.clipboard.writeText(value);
-              toast(
-                <SuccessToast
-                  content={`${prop} has been copied to your clipboard!`}
-                />,
-                {
-                  closeButton: (
-                    <Icon
-                      name="closeCircleOutline"
-                      color="text-primary-500"
-                      size={20}
-                    />
-                  ),
-                  style: {
-                    border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-                    borderRadius: '6px',
-                    display: 'fixed',
-                    alignItems: 'center',
-                  },
-                  autoClose: TOAST_AUTOCLOSE_TIME,
-                  transition: slideInAndOutTop,
-                  theme: 'dark',
-                },
-              );
+              successToastConfig({
+                content: `${prop} has been copied to your clipboard!`,
+              });
             }}
           />
         )}

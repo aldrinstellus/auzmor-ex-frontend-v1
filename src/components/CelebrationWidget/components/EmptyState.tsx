@@ -19,7 +19,7 @@ const EmptyState: FC<EmptyStateProps> = ({ type }) => {
       : `${t('work-Anniversaries')}`;
   return (
     <div className="flex flex-col items-center gap-2">
-      <img src={image} height={150} />
+      <img src={image} height={150} alt="Celebration Picture" />
       <p className="text-xs leading-normal font-semibold text-neutral-500 text-center">
         {label}
       </p>

@@ -209,7 +209,6 @@ const Comments: FC<CommentsProps> = ({ entityId }) => {
         ref={inputRef}
         accept={validImageTypesForComments.join(',')}
         onChange={(e) => {
-          console.log(e);
           const mediaErrors: IMediaValidationError[] = [];
           if (e.target.files?.length) {
             setUploads(
@@ -253,6 +252,7 @@ const Comments: FC<CommentsProps> = ({ entityId }) => {
           }
         }}
         data-testid="comment-uploadphoto"
+        aria-label="upload file"
       />
     </div>
   );

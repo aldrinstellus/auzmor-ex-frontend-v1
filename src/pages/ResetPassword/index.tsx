@@ -16,6 +16,7 @@ import { getSubDomain, isDark } from 'utils/misc';
 import { useGetSSOFromDomain } from 'queries/organization';
 import { useBrandingStore } from 'stores/branding';
 import OfficeLogoSvg from 'components/Logo/images/OfficeLogo.svg';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 interface IForm {
   newPassword: string;
@@ -33,6 +34,7 @@ const schema = yup.object({
 });
 
 const ResetPassword = () => {
+  usePageTitle('resetPassword');
   const navigate = useNavigate();
   const [searchParams, _] = useSearchParams();
   const token = searchParams.get('token');

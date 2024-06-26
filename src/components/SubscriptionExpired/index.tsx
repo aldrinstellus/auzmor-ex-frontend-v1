@@ -45,6 +45,7 @@ const SubscriptionExpired = () => {
           <img
             src={require('./trial.png')}
             className="w-[320px] object-contain"
+            alt="Trial Banner"
           />
           <div className="mt-8 text-center">
             <div className="text-3xl">Your 7 day free trial has ended!</div>

@@ -26,6 +26,7 @@ export type IconButtonProps = {
   borderAroundClassName?: string;
   color?: string;
   dataTestId?: string;
+  ariaLabel?: string;
 };
 
 const IconButton = ({
@@ -40,6 +41,7 @@ const IconButton = ({
   onClick = () => {},
   color,
   dataTestId,
+  ariaLabel = 'icon button',
 }: IconButtonProps) => {
   const styles = useMemo(
     () =>
@@ -101,6 +103,7 @@ const IconButton = ({
         disabled={disabled || loading}
         onClick={onClick}
         data-testid={dataTestId}
+        aria-label={ariaLabel}
       >
         <Icon
           name={icon}

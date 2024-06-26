@@ -44,9 +44,12 @@ const Checkbox: FC<CheckboxProps> = ({
     { [className]: true },
   );
 
+  const id = `checkbox-id-${Math.random().toString(16).slice(2)}`;
+
   return (
     <div className="flex items-center">
       <input
+        id={id}
         type="checkbox"
         className={`h-5 w-5 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 ${inputClassName}`}
         name={field.name}
@@ -63,7 +66,7 @@ const Checkbox: FC<CheckboxProps> = ({
         }
         {...rest}
       />
-      <label className={styles}>
+      <label className={styles} htmlFor={id}>
         {label && (
           <div className="pl-2">
             <div className="font-semibold text-sm cursor-pointer">{label}</div>

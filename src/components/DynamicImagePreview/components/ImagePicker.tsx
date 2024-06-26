@@ -42,7 +42,7 @@ const ImagePicker: FC<IImagePickerProps> = ({ selectedTemplate, onSelect }) => {
                 hover
               />
             )}
-            <img src={item.image} />
+            <img src={item.image} alt={`${item.label} Image`} />
             <div className="py-3 px-2 text-sm font-semibold text-center">
               {item.label}
             </div>

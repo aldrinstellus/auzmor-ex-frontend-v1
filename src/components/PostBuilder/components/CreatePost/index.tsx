@@ -36,6 +36,13 @@ const CreatePost: FC<ICreatePostProps> = ({
 }) => {
   const quillRef = useRef<ReactQuill>(null);
   const { t } = useTranslation('postBuilder');
+
+  useEffect(() => {
+    if (quillRef.current) {
+      quillRef.current.focus();
+    }
+  }, []);
+
   const {
     inputImgRef,
     inputVideoRef,
@@ -164,6 +171,8 @@ const CreatePost: FC<ICreatePostProps> = ({
         }}
         multiple
         data-testid="feed-createpost-uploadphoto"
+        aria-multiselectable
+        aria-label="upload photo"
       />
       <input
         type="file"
@@ -245,6 +254,8 @@ const CreatePost: FC<ICreatePostProps> = ({
         }}
         multiple
         data-testid="feed-createpost-uploadvideo"
+        aria-multiselectable
+        aria-label="upload video"
       />
     </div>
   );

@@ -32,7 +32,7 @@ const EmployeeIdRow: FC<AppProps> = ({ data }) => {
     mutationKey: ['update-user-employeeId-mutation'],
     onError: (_error: any) => {},
     onSuccess: async (_response: any) => {
-      successToastConfig();
+      successToastConfig({});
       ref?.current?.setEditMode(false);
       if (userId) {
         await queryClient.invalidateQueries(['user', userId]);
