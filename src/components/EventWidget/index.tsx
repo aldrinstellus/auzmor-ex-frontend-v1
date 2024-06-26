@@ -83,7 +83,7 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
               }`,
             );
           }}
-          className="bg-transparent !text-primary-500 hover:!text-primary-600 hover:!bg-transparent active:!bg-transparent active:!text-primary-700"
+          className="bg-transparent !text-primary-500 hover:!text-primary-600 hover:!bg-transparent focus:!bg-transparent active:!bg-transparent active:!text-primary-700 outline outline-1 focus:outline-primary-500"
         />
       </div>
       <Card className="mt-2 w-full relative overflow-hidden ">
@@ -102,6 +102,7 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
                     transition: 'all 0.25s ease-in 0s',
                     animation: '0.15s ease-in 0s 1 normal both running fadeIn',
                   }}
+                  alt={`${event?.name} Image`}
                 />
                 {!isLive && event?.conference_url && (
                   <>

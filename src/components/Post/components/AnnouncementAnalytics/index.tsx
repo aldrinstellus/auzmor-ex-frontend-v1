@@ -6,11 +6,7 @@ import Acknowledged from './Acknowledged';
 import Pending from './Pending';
 import { useMutation } from '@tanstack/react-query';
 import { downloadAcknowledgementReport } from 'queries/post';
-import { toast } from 'react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import { twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import Spinner from 'components/Spinner';
 import { FC } from 'react';
 
@@ -48,30 +44,10 @@ const AnnouncementAnalytics: FC<AppProps> = ({ post, open, closeModal }) => {
         a.setAttribute('download', 'download.csv');
         document.body.appendChild(a);
         a.click();
-        toast(
-          <SuccessToast
-            content={'Report exported successfully'}
-            dataTestId="acknowledgement-report-export-toast-message"
-          />,
-          {
-            closeButton: (
-              <Icon
-                name="closeCircleOutline"
-                color="text-primary-500"
-                size={20}
-              />
-            ),
-            style: {
-              border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-            },
-            autoClose: TOAST_AUTOCLOSE_TIME,
-            transition: slideInAndOutTop,
-            theme: 'dark',
-          },
-        );
+        successToastConfig({
+          content: 'Report exported successfully',
+          dataTestId: 'acknowledgement-report-export-toast-message',
+        });
       },
     },
   );

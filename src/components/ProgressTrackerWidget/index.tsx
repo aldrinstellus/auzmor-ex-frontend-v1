@@ -35,7 +35,7 @@ const ProgressTrackerWidget: FC<IProgressTrackerWidgetProps> = ({
         <div className="text-base font-bold">Progress Tracker</div>
         <Button
           label={'View all'}
-          className="bg-transparent !text-primary-500 hover:!text-primary-600 hover:!bg-transparent active:!bg-transparent active:!text-primary-700"
+          className="bg-transparent !text-primary-500 hover:!text-primary-600 hover:!bg-transparent focus:bg-transparent active:!bg-transparent active:!text-primary-700 outline outline-1 focus:outline-primary-500"
           onClick={() =>
             window.location.assign(
               `${getLearnUrl()}/user/trainings?type=elearning&tab=IN_PROGRESS`,

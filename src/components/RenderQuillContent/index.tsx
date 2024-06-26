@@ -139,6 +139,8 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
           className="line-clamp-3 paragraph pt-px break-normal [overflow-wrap:anywhere]"
           id={`${data?.id}-content`}
           data-testid={isComment ? 'comment-content' : 'feed-post-content'}
+          tabIndex={0}
+          title="post content"
         >
           <span>{postContent}</span>
         </span>
@@ -176,7 +178,9 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
           options={poll.options}
           myVote={myVote}
           postId={data.id}
-          mode={!!(data as IPost)?.ctaButton?.text ? PollMode.LEARN :PollMode.VIEW}
+          mode={
+            !!(data as IPost)?.ctaButton?.text ? PollMode.LEARN : PollMode.VIEW
+          }
           isAnnouncementWidgetPreview={isAnnouncementWidgetPreview}
           ctaButton={(data as IPost)?.ctaButton}
         />

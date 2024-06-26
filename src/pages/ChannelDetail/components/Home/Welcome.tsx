@@ -16,6 +16,7 @@ const Welcome = () => {
           <img
             src={require('images/channelOnboard.png')}
             className="h-[210px]"
+            alt="Channel Onboard Picture"
           />
         </div>
         <div className="flex flex-col items-center flex-1 py-4">

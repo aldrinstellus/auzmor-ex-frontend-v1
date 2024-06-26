@@ -31,10 +31,10 @@ const Recommendation: FC<IRecommendationProps> = ({
           label="Show more"
           rightIcon={'arrowRight'}
           rightIconSize={12}
-          rightIconClassName="text-primary-500"
+          rightIconClassName="hover:text-primary-500"
           size={Size.ExtraSmall}
           onClick={onCLick}
-          className="!bg-transparent !text-primary-500 hover:text-primary-600 active:text-primary-700 text-xs font-normal"
+          className="!bg-transparent !text-primary-500 hover:text-primary-600 active:text-primary-700 text-xs font-normal outline-1 outline focus:outline-primary-500"
         />
       </div>
       <div className="flex top-8 gap-4 w-full overflow-hidden hover:overflow-x-scroll pb-4">

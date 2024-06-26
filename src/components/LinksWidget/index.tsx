@@ -114,6 +114,7 @@ const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
                         src={link.image || link.favicon}
                         height={16}
                         width={16}
+                        alt={`${link.title} Image`}
                       />
                     ) : (
                       <Icon name="link" size={16} />

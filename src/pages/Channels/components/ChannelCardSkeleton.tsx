@@ -12,6 +12,7 @@ const ChannelCardSkeleton: FC<IChannelCardSkeletonProps> = ({}) => {
         <img
           className="object-cover h-full w-full rounded-t-9xl"
           src={DefaultCoverImage}
+          alt="Channel Cover Image"
         />
       </div>
       <div className="p-3 flex flex-col gap-1">

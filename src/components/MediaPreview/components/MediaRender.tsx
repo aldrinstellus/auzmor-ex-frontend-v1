@@ -16,7 +16,7 @@ export interface IMediaRenderProps {
   localClassName?: string;
   mode?: Mode;
   preferredSize?: PreferredSize;
-  onClick?: MouseEventHandler<HTMLDivElement>;
+  onClick?: (e: any) => void;
   coverImageUrl?: string;
   isAnnouncementWidgetPreview?: boolean;
 }
@@ -45,7 +45,9 @@ const MediaRender: FC<IMediaRenderProps> = ({
       className={`rounded-9xl border-1 border-neutral-200 overflow-hidden w-full h-full bg-no-repeat bg-cover relative ${localClassName} ${
         mode === Mode.View ? 'cursor-pointer ' : ''
       }`}
-      onClick={onClick}
+      tabIndex={0}
+      onKeyUp={(e) => (e.code === 'Enter' ? onClick && onClick(e) : '')}
+      onClick={onClick as MouseEventHandler<HTMLDivElement>}
     >
       {data.type === 'IMAGE' ? (
         <BlurImg {...blurImgProps} />

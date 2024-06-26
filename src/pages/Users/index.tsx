@@ -13,6 +13,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import PopupMenu from 'components/PopupMenu';
 import { useTranslation } from 'react-i18next';
 import useProduct from 'hooks/useProduct';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 interface IUsersProps {}
 
@@ -22,6 +23,12 @@ const Users: FC<IUsersProps> = () => {
   const currentPathname = location.pathname;
   const isUserTab = currentPathname.includes('users');
   const { t } = useTranslation('peoplehub');
+
+  if (isUserTab) {
+    usePageTitle('users');
+  } else {
+    usePageTitle('teams');
+  }
 
   const [showOrgChart, setShowOrgChart] = useState<boolean>(false);
   const [showAddUserModal, openAddUserModal, closeAddUserModal] = useModal(

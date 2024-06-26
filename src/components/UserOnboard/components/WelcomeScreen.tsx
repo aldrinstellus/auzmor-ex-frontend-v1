@@ -14,7 +14,7 @@ const WelcomeScreen: FC<WelcomeScreenProps> = ({
   return (
     <div className="flex flex-col min-h-full justify-between min-w-full">
       <div className="flex items-center flex-col justify-between gap-y-10 px-10 mt-6">
-        <img src={OnboardWelcome} />
+        <img src={OnboardWelcome} alt="Welcome Picture" />
         <p className="font-bold text-neutral-900 text-2xl">
           Welcome to Auzmor Office
         </p>

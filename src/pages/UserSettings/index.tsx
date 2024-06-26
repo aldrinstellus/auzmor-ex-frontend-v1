@@ -8,6 +8,7 @@ import BasicSettings from './components/BasicSettings';
 import NotificationSettings from './components/NotificationSettings';
 import useURLParams from 'hooks/useURLParams';
 import { useTranslation } from 'react-i18next';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 interface ISetting {
   label: string;
@@ -20,6 +21,7 @@ interface ISetting {
 }
 
 const UserSettings = () => {
+  usePageTitle('settings');
   const { t } = useTranslation('userSetting');
   const settings = [
     {

@@ -108,6 +108,8 @@ const MediaPreview: FC<IMediaPreviewProps> = ({
           className={`grid auto-cols-max grid-flow-row grid-cols-2 ${mediaHeight} ${
             isAnnouncementWidgetPreview ? 'gap-2' : 'gap-4'
           }`}
+          tabIndex={0}
+          title={`${media.length} media attached to this post`}
         >
           <MediaRender
             data={media[0]}
@@ -147,6 +149,8 @@ const MediaPreview: FC<IMediaPreviewProps> = ({
           className={`grid auto-cols-max grid-flow-row grid-cols-2 grid-rows-2 ${mediaHeight} ${
             isAnnouncementWidgetPreview ? 'gap-2' : 'gap-4'
           }`}
+          tabIndex={0}
+          title={`${media.length} media attached to this post`}
         >
           <MediaRender
             data={media[0]}
@@ -201,6 +205,8 @@ const MediaPreview: FC<IMediaPreviewProps> = ({
           className={`grid grid-rows-2 grid-cols-2 grid-flow-row auto-cols-auto w-full ${mediaHeight} ${
             isAnnouncementWidgetPreview ? 'gap-2' : 'gap-4'
           }`}
+          tabIndex={0}
+          title={`${media.length} media attached to this post`}
         >
           <MediaRender
             data={media[0]}
@@ -266,6 +272,8 @@ const MediaPreview: FC<IMediaPreviewProps> = ({
           className={`grid auto-cols-max grid-flow-row grid-cols-6 grid-rows-2 w-full ${mediaHeight} ${
             isAnnouncementWidgetPreview ? 'gap-2' : 'gap-4'
           }`}
+          tabIndex={0}
+          title={`${media.length} media attached to this post`}
         >
           <MediaRender
             data={media[0]}
@@ -350,6 +358,8 @@ const MediaPreview: FC<IMediaPreviewProps> = ({
           className={`grid auto-cols-max grid-flow-row grid-cols-6 grid-rows-2 w-full ${mediaHeight} ${
             isAnnouncementWidgetPreview ? 'gap-2' : 'gap-4'
           }`}
+          tabIndex={0}
+          title={`${media.length} media attached to this post`}
         >
           <MediaRender
             data={media[0]}

@@ -92,6 +92,7 @@ const ImagePreview: FC<IImagePreviewProps> = ({
         <img
           src={getBlobUrl(imageFile)}
           className="object-contain w-full h-full min-h-[209px]"
+          alt="Image"
         />
       )}
       {selectedTemplate && (
@@ -114,6 +115,7 @@ const ImagePreview: FC<IImagePreviewProps> = ({
               <img
                 src={selectedTemplate.image}
                 className="object-contain w-full h-full max-h-[130px]"
+                alt="selected-image"
               />
             </div>
           </div>

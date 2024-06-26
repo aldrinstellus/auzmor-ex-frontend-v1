@@ -72,7 +72,12 @@ export const ShowingCount: FC<{
   className?: string;
 }> = ({ isLoading, count, className = '' }) => {
   return (
-    <div className={className}>
+    <div
+      className={className}
+      tabIndex={0}
+      role="contentinfo"
+      title={`Showing ${count} results`}
+    >
       {!isLoading ? (
         <div className="text-neutral-500">Showing {count} results</div>
       ) : (
@@ -285,6 +290,7 @@ const Team: FC<ITeamProps> = ({
               borderAround
               className="bg-white !p-[10px]"
               dataTestId="teams-filter"
+              ariaLabel="teams-filter"
             />
           ) : null}
           <Sort
@@ -369,7 +375,11 @@ const Team: FC<ITeamProps> = ({
 
       <div>
         {showGrid ? (
-          <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 xl:grid-cols-4 1.5xl:grid-cols-5">
+          <div
+            className="grid grid-cols-6 gap-6 justify-items-center lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6"
+            title="teams-container"
+            tabIndex={0}
+          >
             {isLoading
               ? [...Array(30)].map((element) => (
                   <div key={element}>

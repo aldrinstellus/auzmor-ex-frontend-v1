@@ -242,6 +242,7 @@ const User: FC<UserProps> = ({
             }
           }}
           data-testid="comment-uploadphoto"
+          aria-label="file input"
         />
       </div>
     </div>

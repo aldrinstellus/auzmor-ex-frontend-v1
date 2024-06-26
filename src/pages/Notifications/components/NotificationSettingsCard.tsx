@@ -12,7 +12,12 @@ const NotificationSettingsCard: FC = (): ReactElement => {
       <p className="text-neutral-900 font-bold text-base">
         Manage your notifications
       </p>
-      <img src={NotificationBell} height={150} width={150} />
+      <img
+        src={NotificationBell}
+        height={150}
+        width={150}
+        alt="Notification Bell"
+      />
       <Button
         variant={Variant.Secondary}
         label="View notification settings"

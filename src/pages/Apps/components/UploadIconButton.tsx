@@ -1,12 +1,10 @@
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
 import { FC, MouseEvent, useCallback, useEffect, useState } from 'react';
-import { BlobToFile, getBlobUrl, getMimeType, twConfig } from 'utils/misc';
+import { BlobToFile, getBlobUrl, getMimeType } from 'utils/misc';
 import { useDropzone } from 'react-dropzone';
-import { toast } from 'react-toastify';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { MB, TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import { MB } from 'utils/constants';
 import { UseFormSetValue } from 'react-hook-form';
 import { IAddAppForm } from './AddApp';
 import useModal from 'hooks/useModal';
@@ -106,22 +104,8 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
     };
   }, []);
 
-  const showErrorToast = (message: string) => {
-    toast(<FailureToast content={message} dataTestId="comment-toaster" />, {
-      closeButton: (
-        <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-      ),
-      style: {
-        border: `1px solid ${twConfig.theme.colors.red['300']}`,
-        borderRadius: '6px',
-        display: 'flex',
-        alignItems: 'center',
-      },
-      autoClose: TOAST_AUTOCLOSE_TIME,
-      transition: slideInAndOutTop,
-      theme: 'dark',
-    });
-  };
+  const showErrorToast = (message: string) =>
+    failureToastConfig({ content: message, dataTestId: 'comment-toaster' });
 
   const hasIcon = !!icon?.original || icon?.file;
 
@@ -240,6 +224,7 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
               <img
                 id="add-app-icon"
                 className="h-[52px] w-auto group-hover:opacity-50 transition-opacity duration-100"
+                alt="App Icon"
               />
             </div>
           </div>

@@ -39,7 +39,7 @@ const Folder: FC<IFolderProps> = ({ onClick, folder }) => {
     <Card className={style} onClick={onClick}>
       <div className="flex items-center gap-4">
         <div className="w-12 h-12">
-          <img src={FolderSvg} />
+          <img src={FolderSvg} alt="Folder" />
         </div>
         <div className="flex flex-col justify-between w-48">
           <p className="max-w-[150px] font-medium line-clamp-2">

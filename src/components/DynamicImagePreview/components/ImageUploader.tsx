@@ -1,12 +1,9 @@
 import { FC, RefObject, useState } from 'react';
 import Icon from 'components/Icon';
-import { clearInputValue, getBlobUrl, twConfig } from 'utils/misc';
+import { clearInputValue, getBlobUrl } from 'utils/misc';
 import useModal from 'hooks/useModal';
 import ImageReposition from './ImageReposition';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
-import { toast } from 'react-toastify';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { validImageTypes } from 'queries/files';
 import { IMG_FILE_SIZE_LIMIT } from 'contexts/CreatePostContext';
 
@@ -29,20 +26,7 @@ const ImageUploader: FC<IImageUploaderProps> = ({
   );
 
   const showErrorToast = (message: string) => {
-    toast(<FailureToast content={message} dataTestId="comment-toaster" />, {
-      closeButton: (
-        <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-      ),
-      style: {
-        border: `1px solid ${twConfig.theme.colors.red['300']}`,
-        borderRadius: '6px',
-        display: 'flex',
-        alignItems: 'center',
-      },
-      autoClose: TOAST_AUTOCLOSE_TIME,
-      transition: slideInAndOutTop,
-      theme: 'dark',
-    });
+    failureToastConfig({ content: message, dataTestId: 'comment-toaster' });
   };
 
   const handleImageUpload = (file: File) => {
@@ -108,6 +92,7 @@ const ImageUploader: FC<IImageUploaderProps> = ({
             handleImageUpload(file);
           }
         }}
+        aria-label="image upload"
       />
     </>
   );

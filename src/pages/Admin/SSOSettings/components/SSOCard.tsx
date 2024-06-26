@@ -41,7 +41,7 @@ const SSOCard: FC<SSOCardProps> = ({
       <div className="flex flex-col h-full items-start justify-between ml-6">
         <div className="mt-7">
           <div className="flex items-center justify-between">
-            <img src={logo} className="h-6" />
+            <img src={logo} className="h-6" alt="Logo" />
             <div
               className={`flex items-center gap-x-3 flex-end ${
                 active ? 'visible' : 'invisible'
