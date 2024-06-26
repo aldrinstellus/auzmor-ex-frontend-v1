@@ -22,6 +22,7 @@ type RadioButtonProps = {
     input: (value: any) => boolean;
     output: (e: ChangeEvent<HTMLInputElement>) => any;
   };
+  disabled?: boolean;
 };
 
 const RadioGroup: FC<RadioButtonProps> = ({
@@ -32,11 +33,13 @@ const RadioGroup: FC<RadioButtonProps> = ({
   className = '',
   rowClassName = '',
   transform,
+  disabled = false,
 }) => {
   const { field } = useController({
     name,
     control,
   });
+
   const style = useMemo(
     () => clsx({ 'flex flex-col': true, [className]: true }),
     [],
@@ -59,14 +62,21 @@ const RadioGroup: FC<RadioButtonProps> = ({
             {...field}
             id={option.data.value}
             value={option.data?.value}
-            onChange={(e) =>
-              field.onChange(transform?.output ? transform?.output(e) : e)
-            }
+            onChange={(e) => {
+              // field.onChange(transform?.output ? transform?.output(e) : e)
+              const value = transform?.output
+                ? transform?.output(e)
+                : e.target.value;
+              console.log('value :', value);
+              field.onChange(value);
+              option.data.onChange && option.data.onChange(value);
+            }}
             checked={
               transform?.input
                 ? transform?.input(field.value)
                 : field.value === option.data.value
             }
+            disabled={disabled}
             type="radio"
           />
           <label htmlFor={option.data.value}>{labelRenderer(option)}</label>

@@ -134,7 +134,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     } else if (index === 3) {
       navigate(`/channels/${channelData?.id}/settings`);
     } else if (index === 4) {
-      navigate(`/channels/${channelData?.id}/members/manage`);
+      navigate(`/channels/${channelData?.id}/manage-access`);
     }
   };
   const editMenuOptions = [

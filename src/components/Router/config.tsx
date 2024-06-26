@@ -134,7 +134,7 @@ const routers = createBrowserRouter(
             element={<ChannelDetail activeTabIndex={3} />}
           />
           <Route
-            path="/channels/:channelId/members/manage"
+            path="/channels/:channelId/manage-access"
             element={<ChannelDetail activeTabIndex={4} />}
           />
           <Route

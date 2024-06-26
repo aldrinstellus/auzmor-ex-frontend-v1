@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import BasicSetting from './components/BasicSetting';
 import { IChannel } from 'stores/channelStore';
-// import PrivacySetting from './components/PrivacySetting';
-import BasicSettingSkeleton from 'components/ProfileInfo/components/Skeletons/BasicSettingSkeleton';
+import PrivacySetting from './components/PrivacySetting';
+import BasicSettingSkeleton from './components/Skeletons/BasicSettingSkeleton';
 
 type AppProps = {
   channelData?: IChannel;
@@ -17,7 +17,7 @@ const Setting: FC<AppProps> = ({ channelData, isLoading }) => {
       ) : (
         <BasicSetting channelData={channelData} />
       )}
-      {/* <PrivacySetting channelData={channelData} /> */}
+      <PrivacySetting channelData={channelData} />
     </>
   );
 };

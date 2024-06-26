@@ -27,7 +27,16 @@ export interface IChannelPayload {
   settings?: { visibility?: ChannelVisibilityEnum };
   status?: CHANNEL_STATUS;
 }
-
+export interface IChannelSettings {
+  settings?: {
+    visibility: ChannelVisibilityEnum;
+    restriction: {
+      canPost: boolean;
+      canComment: boolean;
+      canMakeAnnouncements: boolean;
+    };
+  };
+}
 export const getAllChannels = async (
   context: QueryFunctionContext<
     (Record<string, any> | undefined | string)[],

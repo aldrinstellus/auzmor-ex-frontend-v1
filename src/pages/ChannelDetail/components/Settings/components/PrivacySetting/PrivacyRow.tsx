@@ -1,0 +1,124 @@
+import { FC } from 'react';
+import { useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
+
+import { useParams } from 'react-router-dom';
+import useAuth from 'hooks/useAuth';
+import InfoRow from 'components/ProfileInfo/components/InfoRow';
+import Layout, { FieldType } from 'components/Form';
+import { IRadioListOption } from 'components/RadioGroup';
+import { ChannelVisibilityEnum } from 'stores/channelStore';
+import { updateChannel } from 'queries/channel';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+
+type AppProps = {
+  data: any;
+};
+
+const PrivacyRow: FC<AppProps> = ({ data }) => {
+  const { channelId = '' } = useParams();
+  const { user } = useAuth();
+  const isOwnerOrAdmin = data?.createdBy?.userId == user?.id;
+
+  const upadteChannelMutation = useMutation({
+    mutationKey: ['update-channel-mutation'],
+    mutationFn: (data: any) => updateChannel(channelId, data),
+    onError: (_error: any) => {},
+    onSuccess: async (_response: any) => {
+      successToastConfig({});
+    },
+  });
+
+  const { handleSubmit, control, reset, watch } = useForm<any>({
+    mode: 'onSubmit',
+    defaultValues: {
+      privacySetting: data?.settings?.visibility,
+    },
+  });
+  const [privacySetting] = watch(['privacySetting']);
+
+  const onSubmit = () => {
+    const newObj = {
+      privacySetting,
+    };
+    upadteChannelMutation.mutate(newObj);
+  };
+
+  const handleChange = (visibility: ChannelVisibilityEnum) => {
+    upadteChannelMutation.mutate({
+      channelId,
+      settings: {
+        visibility,
+        restriction: data?.settings?.restriction,
+      },
+    });
+  };
+  const privacySettingOptions: IRadioListOption[] = [
+    {
+      data: {
+        value: ChannelVisibilityEnum.Private,
+        label:
+          'Anyone can join automatically, and content is visible to all without joining',
+
+        onChange: handleChange,
+      },
+      dataTestId: '',
+    },
+    {
+      data: {
+        value: ChannelVisibilityEnum.Public,
+        label: `Anyone in the organization can request to join the channel, and it's visible in the channel discovery.`,
+        onChange: handleChange,
+      },
+      dataTestId: 'branding-background-as-video',
+    },
+  ];
+
+  const fields = [
+    {
+      type: FieldType.Radio,
+      name: 'privacySetting',
+      rowClassName: 'space-y-4  ',
+      control,
+      disabled: !isOwnerOrAdmin,
+      radioList: privacySettingOptions,
+      labelRenderer: (option: IRadioListOption) => {
+        return (
+          <>
+            <div className=" text-sm ml-4 font normal  ">
+              {option.data.value}
+              <li>{option.data.label} </li>
+            </div>
+          </>
+        );
+      },
+    },
+  ];
+  return (
+    <InfoRow
+      icon={{
+        name: 'global-edit',
+        color: '!text-orange-500',
+        bgColor: '!bg-orange-50',
+      }}
+      isEditButton={false}
+      label="Privacy"
+      isEditMode={true}
+      value={data?.settings.visibility}
+      canEdit={isOwnerOrAdmin}
+      dataTestId=""
+      border={false}
+      editNode={
+        <div>
+          <form>
+            <Layout fields={fields} />
+          </form>
+        </div>
+      }
+      onCancel={reset}
+      onSave={handleSubmit(onSubmit)}
+    />
+  );
+};
+
+export default PrivacyRow;

@@ -10,7 +10,7 @@ import { CropperRef } from 'react-advanced-cropper';
 import 'react-advanced-cropper/dist/style.css';
 import { IUpdateProfileImage } from 'pages/UserDetail';
 import Header from 'components/ModalHeader';
-import { BlobToFile, twConfig } from 'utils/misc';
+import { BlobToFile } from 'utils/misc';
 import Modal from 'components/Modal';
 import { EntityType } from 'queries/files';
 import { UploadStatus, useUpload } from 'hooks/useUpload';
