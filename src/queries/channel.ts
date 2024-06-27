@@ -164,7 +164,7 @@ export const updateChannelLinks = async (
   });
 };
 
-export const joinPublicChannelRequest = async (channeId: string) => {
+export const joinChannelRequest = async (channeId: string) => {
   return await apiService.post(`channels/${channeId}/join-requests`);
 };
 
@@ -189,10 +189,6 @@ export const getJoinChannelRequests = async (
   status: CHANNEL_MEMBER_STATUS,
 ) => {
   return await apiService.get(`channels/${channeId}/join-requests`, { status });
-};
-
-export const joinPrivateChannelRequest = async (channeId: string) => {
-  return await apiService.post(`channels/${channeId}/join`);
 };
 
 // ------------------ React Query -----------------------

@@ -18,11 +18,7 @@ import DefaultCoverImage from 'images/png/CoverImage.png';
 import { useNavigate } from 'react-router-dom';
 import { Variant } from 'components/IconButton';
 import { useMutation } from '@tanstack/react-query';
-import {
-  deleteJoinChannelRequest,
-  joinPrivateChannelRequest,
-  joinPublicChannelRequest,
-} from 'queries/channel';
+import { deleteJoinChannelRequest, joinChannelRequest } from 'queries/channel';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useTranslation } from 'react-i18next';
@@ -45,34 +41,21 @@ const ChannelCard: FC<IChannelCardProps> = ({
   const updateChannel = useChannelStore((state) => state.updateChannel);
   const navigate = useNavigate();
 
-  // Join public channel mutation
-  const joinPublicChannelMutation = useMutation({
+  // Join public/private channel request mutation
+  const joinChannelMutation = useMutation({
     mutationKey: ['join-public-channel-request'],
-    mutationFn: (channelId: string) => joinPublicChannelRequest(channelId),
+    mutationFn: (channelId: string) => joinChannelRequest(channelId),
     onError: () =>
       failureToastConfig({
         content: t('joinRequestError'),
       }),
     onSuccess: async (data) => {
-      successToastConfig({ content: t('joinPublicChannelRequestSuccess') });
-      await queryClient.invalidateQueries(['channel'], { exact: false });
-      updateChannel(channel.id, {
-        ...channel,
-        joinRequest: { ...channel.joinRequest, id: data.id },
+      successToastConfig({
+        content:
+          channel.settings?.visibility === ChannelVisibilityEnum.Private
+            ? t('joinPrivateChannelRequestSuccess')
+            : t('joinPublicChannelRequestSuccess'),
       });
-    },
-  });
-
-  // Join private channel mutation
-  const joinPrivateChannelMutation = useMutation({
-    mutationKey: ['join-private-channel-request'],
-    mutationFn: (channelId: string) => joinPrivateChannelRequest(channelId),
-    onError: () =>
-      failureToastConfig({
-        content: t('joinRequestError'),
-      }),
-    onSuccess: async (data) => {
-      successToastConfig({ content: t('joinPrivateChannelRequestSuccess') });
       await queryClient.invalidateQueries(['channel'], { exact: false });
       updateChannel(channel.id, {
         ...channel,
@@ -101,10 +84,15 @@ const ChannelCard: FC<IChannelCardProps> = ({
   });
   return (
     <div
-      className="w-full cursor-pointer"
+      className="w-full cursor-pointer outline-none group/channel-card"
+      tabIndex={0}
+      title={channel.name}
+      onKeyUp={(e) =>
+        e.code === 'Enter' ? navigate(`/channels/${channel.id}`) : ''
+      }
       onClick={() => navigate(`/channels/${channel.id}`)}
     >
-      <Card className="flex flex-col gap-2 relative">
+      <Card className="flex flex-col gap-2 relative group-focus-within/channel-card:shadow-xl">
         <div className="w-full h-[80px] bg-slate-500 rounded-t-9xl">
           {channel.banner ? (
             <div className="w-full h-full relative">
@@ -157,7 +145,7 @@ const ChannelCard: FC<IChannelCardProps> = ({
               leftIconHover={false}
               onClick={(e) => {
                 e.stopPropagation();
-                joinPrivateChannelMutation.mutate(channel.id);
+                joinChannelMutation.mutate(channel.id);
               }}
             />
           )}
@@ -180,10 +168,10 @@ const ChannelCard: FC<IChannelCardProps> = ({
                 size={ButtonSize.ExtraSmall}
                 variant={Variant.Secondary}
                 className="w-full"
-                loading={joinPublicChannelMutation.isLoading}
+                loading={joinChannelMutation.isLoading}
                 onClick={(e) => {
                   e.stopPropagation();
-                  joinPublicChannelMutation.mutate(channel.id);
+                  joinChannelMutation.mutate(channel.id);
                 }}
               />
             </div>

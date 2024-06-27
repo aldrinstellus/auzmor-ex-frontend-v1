@@ -19,6 +19,7 @@ import ChannelCardSkeleton from './components/ChannelCardSkeleton';
 import NoDataFound from 'components/NoDataFound';
 import { ShowingCount } from 'pages/Users/components/Teams';
 import { usePageTitle } from 'hooks/usePageTitle';
+import clsx from 'clsx';
 
 interface IChannelsProps {}
 
@@ -83,78 +84,84 @@ export const Channels: FC<IChannelsProps> = () => {
     };
   };
 
-  const filterButtons: IFilterButton[] = useMemo(
-    () => [
+  const filterButtons: IFilterButton[] = useMemo(() => {
+    const getLableClassName = (flag: boolean) => {
+      return clsx({
+        'font-bold text-primary-500': flag,
+        'font-normal text-neutral-500 group-hover:text-primary-600 group-focus:text-primary-600':
+          !flag,
+      });
+    };
+    const getClassName = (flag: boolean) => {
+      return clsx({
+        'focus:border-primary-600 focus:text-primary-600 hover:border-primary-600 focus:text-primary-600 group':
+          true,
+        'border-0': flag,
+      });
+    };
+    return [
       {
         label: t('filterCTA.myChannels'),
         isActive: filters?.channelType === ChannelTypeEnum.MyChannels,
         onClick: onFilterButtonClick(ChannelTypeEnum.MyChannels),
-        labelClassName: `text-sm ${
-          filters?.channelType === ChannelTypeEnum.MyChannels
-            ? 'font-bold text-primary-500'
-            : 'font-normal text-neutral-500'
-        }`,
-        className:
-          filters?.channelType === ChannelTypeEnum.MyChannels ? 'border-0' : '',
+        labelClassName: `text-sm ${getLableClassName(
+          filters?.channelType === ChannelTypeEnum.MyChannels,
+        )}`,
+        className: `${getClassName(
+          filters?.channelType === ChannelTypeEnum.MyChannels,
+        )}`,
         dataTestId: 'my-channels-filter',
       },
       {
         label: t('filterCTA.managed'),
         isActive: filters?.channelType === ChannelTypeEnum.Managed,
         onClick: onFilterButtonClick(ChannelTypeEnum.Managed),
-        labelClassName: `text-sm ${
-          filters?.channelType === ChannelTypeEnum.Managed
-            ? 'font-bold text-primary-500'
-            : 'font-normal text-neutral-500'
-        }`,
-        className:
-          filters?.channelType === ChannelTypeEnum.Managed ? 'border-0' : '',
+        labelClassName: `text-sm ${getLableClassName(
+          filters?.channelType === ChannelTypeEnum.Managed,
+        )}`,
+        className: `${getClassName(
+          filters?.channelType === ChannelTypeEnum.Managed,
+        )}`,
         dataTestId: 'managed',
       },
       {
         label: t('filterCTA.discoverNewChannels'),
         isActive: filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
         onClick: onFilterButtonClick(ChannelTypeEnum.DiscoverNewChannels),
-        labelClassName: `text-sm ${
-          filters?.channelType === ChannelTypeEnum.DiscoverNewChannels
-            ? 'font-bold text-primary-500'
-            : 'font-normal text-neutral-500'
-        }`,
-        className:
-          filters?.channelType === ChannelTypeEnum.DiscoverNewChannels
-            ? 'border-0'
-            : '',
+        labelClassName: `text-sm ${getLableClassName(
+          filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
+        )}`,
+        className: `${getClassName(
+          filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
+        )}`,
         dataTestId: 'discover-new-channels-filter',
       },
       {
         label: t('filterCTA.starred'),
         isActive: filters?.channelType === ChannelTypeEnum.Starred,
         onClick: onFilterButtonClick(ChannelTypeEnum.Starred),
-        labelClassName: `text-sm ${
-          filters?.channelType === ChannelTypeEnum.Starred
-            ? 'font-bold text-primary-500'
-            : 'font-normal text-neutral-500'
-        }`,
-        className:
-          filters?.channelType === ChannelTypeEnum.Starred ? 'border-0' : '',
+        labelClassName: `text-sm ${getLableClassName(
+          filters?.channelType === ChannelTypeEnum.Starred,
+        )}`,
+        className: `${getClassName(
+          filters?.channelType === ChannelTypeEnum.Starred,
+        )}`,
         dataTestId: 'starred-filter',
       },
       {
         label: t('filterCTA.requested'),
         isActive: filters?.channelType === ChannelTypeEnum.Requested,
         onClick: onFilterButtonClick(ChannelTypeEnum.Requested),
-        labelClassName: `text-sm ${
-          filters?.channelType === ChannelTypeEnum.Requested
-            ? 'font-bold text-primary-500'
-            : 'font-normal text-neutral-500'
-        }`,
-        className:
-          filters?.channelType === ChannelTypeEnum.Requested ? 'border-0' : '',
+        labelClassName: `text-sm ${getLableClassName(
+          filters?.channelType === ChannelTypeEnum.Requested,
+        )}`,
+        className: `${getClassName(
+          filters?.channelType === ChannelTypeEnum.Requested,
+        )}`,
         dataTestId: 'requested-filter',
       },
-    ],
-    [filters],
-  );
+    ];
+  }, [filters]);
 
   return (
     <>

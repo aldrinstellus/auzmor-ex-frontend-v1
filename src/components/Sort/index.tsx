@@ -112,7 +112,7 @@ const Sort: FC<ISortProps> = ({
       <PopupMenu
         controlled={controlled}
         triggerNode={
-          <div className="relative" onClick={open ? closeMenu : openMenu}>
+          <div className="relative group" onClick={open ? closeMenu : openMenu}>
             <IconButton
               icon="arrowSwap"
               variant={Variant.Secondary}

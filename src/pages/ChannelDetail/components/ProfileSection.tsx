@@ -20,7 +20,7 @@ import ChannelArchiveModal from 'pages/Channels/components/ChannelArchiveModal';
 import Tabs, { ITab } from 'components/Tabs';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import { joinPublicChannelRequest } from 'queries/channel';
+import { joinChannelRequest } from 'queries/channel';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import queryClient from 'utils/queryClient';
@@ -52,7 +52,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   // Public channel join request
   const joinPublicChannelMutation = useMutation({
     mutationKey: ['join-request-channel'],
-    mutationFn: (channelId: string) => joinPublicChannelRequest(channelId),
+    mutationFn: (channelId: string) => joinChannelRequest(channelId),
     onError: () =>
       failureToastConfig({
         content: tc('joinRequestError'),
