@@ -148,7 +148,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       label: 'Manage Access',
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
-        navigate(`/channels/${channelData?.id}/members/manage`);
+        navigate(`/channels/${channelData?.id}/manage-access`);
       },
       dataTestId: '',
     },
