@@ -1,7 +1,6 @@
 import AvatarList from 'components/AvatarList';
 import Card from 'components/Card';
 import useHover from 'hooks/useHover';
-import truncate from 'lodash/truncate';
 import Icon from 'components/Icon';
 import TeamWork from 'images/teamwork.svg';
 import { TeamFlow } from '.';
@@ -11,6 +10,7 @@ import { isNewEntity } from 'utils/misc';
 import TeamOptions from 'components/TeamOptions';
 import useRole from 'hooks/useRole';
 import useProduct from 'hooks/useProduct';
+import Truncate from 'components/Truncate';
 
 export interface ITeamsCardProps {
   id: string;
@@ -113,15 +113,11 @@ const TeamsCard: FC<ITeamsCardProps> = ({
             )}
             <div className="flex-1 flex flex-col gap-2">
               <div className="flex flex-col items-center gap-1">
-                <div
-                  className="truncate text-neutral-900 text-base font-bold text-center"
-                  data-testid={`team-name-${name}`}
-                >
-                  {truncate(name, {
-                    length: 18,
-                    separator: ' ',
-                  })}
-                </div>
+                <Truncate
+                  text={name}
+                  className="text-neutral-900 text-base font-bold text-center max-w-[128px]"
+                  dataTestId={`team-name-${name}`}
+                />
 
                 {!isLxp ? (
                   <div
