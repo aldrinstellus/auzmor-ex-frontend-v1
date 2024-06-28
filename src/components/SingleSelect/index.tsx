@@ -124,12 +124,11 @@ const SingleSelect = forwardRef(
           },
         }}
       >
-        <label
+        <div
           className={clsx(
             { [`relative ${className}`]: true },
             { 'cursor-not-allowed': disabled },
           )}
-          htmlFor={id}
         >
           <div className={labelStyle}>{label}</div>
           <div
@@ -172,6 +171,7 @@ const SingleSelect = forwardRef(
                   clearIcon={clearIcon}
                   ref={ref}
                   allowClear={isClearable}
+                  aria-label="select"
                 >
                   {(options || []).map((option) => (
                     <Option key={option.value} value={option.value}>
@@ -188,7 +188,7 @@ const SingleSelect = forwardRef(
           >
             {error || ' '}
           </div>
-        </label>
+        </div>
       </ConfigProvider>
     );
   },
