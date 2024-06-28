@@ -5,6 +5,7 @@ import {
 } from '@tanstack/react-query';
 import { chain } from 'lodash';
 import {
+  CHANNEL_MEMBER_STATUS,
   CHANNEL_ROLE,
   CHANNEL_STATUS,
   ChannelVisibilityEnum,
@@ -170,6 +171,33 @@ export const updateChannelLinks = async (
   return new Promise((res) => {
     res(data?.data?.result?.data);
   });
+};
+
+export const joinChannelRequest = async (channeId: string) => {
+  return await apiService.post(`channels/${channeId}/join-requests`);
+};
+
+export const getJoinChannelRequest = async (
+  channeId: string,
+  joinId: string,
+) => {
+  return await apiService.get(`channels/${channeId}/join-requests/${joinId}`);
+};
+
+export const deleteJoinChannelRequest = async (
+  channeId: string,
+  joinId: string,
+) => {
+  return await apiService.delete(
+    `channels/${channeId}/join-requests/${joinId}/withdraw`,
+  );
+};
+
+export const getJoinChannelRequests = async (
+  channeId: string,
+  status: CHANNEL_MEMBER_STATUS,
+) => {
+  return await apiService.get(`channels/${channeId}/join-requests`, { status });
 };
 
 // ------------------ React Query -----------------------

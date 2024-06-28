@@ -1,7 +1,11 @@
 import Icon from 'components/Icon';
 import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChannelVisibilityEnum, IChannel } from '../../../stores/channelStore';
+import {
+  ChannelVisibilityEnum,
+  IChannel,
+  useChannelStore,
+} from '../../../stores/channelStore';
 import PopupMenu from 'components/PopupMenu';
 import IconButton, {
   Size,
@@ -21,8 +25,11 @@ import ChannelArchiveModal from 'pages/Channels/components/ChannelArchiveModal';
 import Tabs, { ITab } from 'components/Tabs';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
+import { joinChannelRequest, updateChannel } from 'queries/channel';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import queryClient from 'utils/queryClient';
 import { IUpdateProfileImage } from 'pages/UserDetail';
-import { updateChannel } from 'queries/channel';
 import EditImageModal from 'components/EditImageModal';
 import { EntityType } from 'queries/files';
 
@@ -44,6 +51,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
 }) => {
   const { channelId = '' } = useParams();
   const { t } = useTranslation('channelDetail');
+  const { t: tc } = useTranslation('channels');
   const { user } = useAuth();
   const [isEditModalOpen, openEditModal, closeEditModal] = useModal();
   const [isArchiveModalOpen, openArchiveModal, closeArchiveModal] = useModal();
@@ -55,6 +63,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   const [channelLogoName, setchannelLogoName] = useState<string>('');
   const [coverImageName, setCoverImageName] = useState<string>('');
   const channelLogoImageRef = useRef<HTMLInputElement>(null);
+  const updateChannelStore = useChannelStore((state) => state.updateChannel);
 
   const [openEditImage, openEditImageModal, closeEditImageModal] = useModal(
     undefined,
@@ -75,7 +84,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     onError: (error: any) => {
       console.log('API call resulted in error: ', error);
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       console.log('Successfully deleted user cover image', data);
     },
   });
@@ -121,6 +130,24 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       dataTestId: 'edit-coverpic-deletepost',
     },
   ];
+
+  // Public channel join request
+  const joinPublicChannelMutation = useMutation({
+    mutationKey: ['join-request-channel'],
+    mutationFn: (channelId: string) => joinChannelRequest(channelId),
+    onError: () =>
+      failureToastConfig({
+        content: tc('joinRequestError'),
+      }),
+    onSuccess: async (data) => {
+      successToastConfig({ content: tc('joinPublicChannelRequestSuccess') });
+      await queryClient.invalidateQueries(['channel'], { exact: false });
+      updateChannelStore(channelData.id, {
+        ...channelData,
+        joinRequest: { ...channelData.joinRequest, id: data.id },
+      });
+    },
+  });
 
   const handleTabChange = (index: any) => {
     if (index === 0) {
@@ -287,6 +314,8 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
             size={ButtonSize.Small}
             dataTestId="join-channel-cta"
             className="min-w-max"
+            loading={joinPublicChannelMutation.isLoading}
+            onClick={() => joinPublicChannelMutation.mutate(channelData.id)}
           />
         </div>
         <div className="relative mt-3">

@@ -59,7 +59,7 @@ export const dummyChannels: IChannel[] = [
     },
     totalMembers: 24,
 
-    member: { role: CHANNEL_ROLE.Admin },
+    member: { role: CHANNEL_ROLE.Admin, bookmarked: true },
     joinRequest: { status: CHANNEL_MEMBER_STATUS.APPROVED },
     createdAt: new Date('2024-05-01').toISOString(),
     updatedAt: new Date('2024-05-01').toISOString(),
@@ -90,7 +90,7 @@ export const dummyChannels: IChannel[] = [
     },
     totalMembers: 68,
 
-    member: { role: CHANNEL_ROLE.Admin },
+    member: { role: CHANNEL_ROLE.Admin, bookmarked: true },
     joinRequest: { status: CHANNEL_MEMBER_STATUS.APPROVED },
     createdAt: new Date('2024-05-02').toISOString(),
     updatedAt: new Date('2024-05-02').toISOString(),
@@ -121,7 +121,7 @@ export const dummyChannels: IChannel[] = [
     },
     totalMembers: 49,
 
-    member: { role: CHANNEL_ROLE.Admin },
+    member: { role: CHANNEL_ROLE.Admin, bookmarked: false },
     joinRequest: { status: CHANNEL_MEMBER_STATUS.APPROVED },
     createdAt: new Date('2024-05-03').toISOString(),
     updatedAt: new Date('2024-05-03').toISOString(),
@@ -151,8 +151,12 @@ export const dummyChannels: IChannel[] = [
         canMakeAnnouncements: true,
       },
     },
-    isRequested: true,
-    member: { role: CHANNEL_ROLE.Admin },
+    displayImage: '',
+    banner: {
+      original:
+        'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    },
+    member: { role: CHANNEL_ROLE.Admin, bookmarked: false },
     joinRequest: { status: CHANNEL_MEMBER_STATUS.APPROVED },
     totalMembers: 24,
     createdAt: new Date('2024-05-04').toISOString(),
@@ -182,11 +186,9 @@ export const dummyChannels: IChannel[] = [
         canMakeAnnouncements: true,
       },
     },
-    isRequested: false,
     totalMembers: 25,
 
-    isStarred: true,
-    member: { role: CHANNEL_ROLE.Admin },
+    member: { role: CHANNEL_ROLE.Admin, bookmarked: true },
     joinRequest: { status: CHANNEL_MEMBER_STATUS.APPROVED },
     createdAt: new Date('2024-05-05').toISOString(),
     updatedAt: new Date('2024-05-05').toISOString(),
@@ -215,11 +217,13 @@ export const dummyChannels: IChannel[] = [
         canMakeAnnouncements: true,
       },
     },
-    isRequested: false,
     totalMembers: 24,
-
-    isStarred: true,
-    member: { role: CHANNEL_ROLE.Admin },
+    displayImage: '',
+    banner: {
+      original:
+        'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    },
+    member: { role: CHANNEL_ROLE.Admin, bookmarked: false },
     joinRequest: { status: CHANNEL_MEMBER_STATUS.APPROVED },
     createdAt: new Date('2024-05-06').toISOString(),
     updatedAt: new Date('2024-05-06').toISOString(),
@@ -249,11 +253,13 @@ export const dummyChannels: IChannel[] = [
         canMakeAnnouncements: true,
       },
     },
-    isRequested: false,
     totalMembers: 68,
-
-    isStarred: true,
-    member: { role: CHANNEL_ROLE.Admin },
+    displayImage: '',
+    banner: {
+      original:
+        'https://images.unsplash.com/photo-1491245338813-c6832976196e?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    },
+    member: { role: CHANNEL_ROLE.Admin, bookmarked: false },
     joinRequest: { status: CHANNEL_MEMBER_STATUS.APPROVED },
     createdAt: new Date('2024-05-07').toISOString(),
     updatedAt: new Date('2024-05-07').toISOString(),
@@ -283,11 +289,13 @@ export const dummyChannels: IChannel[] = [
         canMakeAnnouncements: true,
       },
     },
-    isRequested: false,
     totalMembers: 35,
-
-    isStarred: true,
-    member: { role: CHANNEL_ROLE.Admin },
+    displayImage: '',
+    banner: {
+      original:
+        'https://images.unsplash.com/photo-1625123627242-97ef1000c6d1?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    },
+    member: { role: CHANNEL_ROLE.Admin, bookmarked: false },
     joinRequest: { status: CHANNEL_MEMBER_STATUS.APPROVED },
     createdAt: new Date('2024-05-08').toISOString(),
     updatedAt: new Date('2024-05-08').toISOString(),

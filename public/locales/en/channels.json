@@ -41,6 +41,9 @@
     "joinRequestCTA": "Request to Join",
     "withdrawRequestCTA": "Withdraw request"
   },
+  "publicChannel": {
+    "joinRequestCTA": "Join channel"
+  },
   "createChannelCTA": "Create channel",
   "searchChannels": "Search channels",
   "channelModal": {
@@ -62,5 +65,8 @@
   "member": "member",
   "unarchive": "Unarchive",
   "permanentlyDelete": "Permanently delete",
-  "explore-channels": "Explore channels"
+  "explore-channels": "Explore channels",
+  "joinRequestError": "Something went wrong. Please try again!",
+  "joinPublicChannelRequestSuccess": "Channel joined successfully",
+  "joinPrivateChannelRequestSuccess": "Request to join channel sent successfully"
 }

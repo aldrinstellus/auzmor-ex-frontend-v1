@@ -9,31 +9,95 @@ import Button, {
   Variant as ButtonVariant,
 } from 'components/Button';
 import Card from 'components/Card';
-import { ChannelVisibilityEnum, IChannel } from 'stores/channelStore';
+import {
+  ChannelVisibilityEnum,
+  IChannel,
+  useChannelStore,
+} from 'stores/channelStore';
 import DefaultCoverImage from 'images/png/CoverImage.png';
 import { useNavigate } from 'react-router-dom';
 import { Variant } from 'components/IconButton';
+import { useMutation } from '@tanstack/react-query';
+import { deleteJoinChannelRequest, joinChannelRequest } from 'queries/channel';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { useTranslation } from 'react-i18next';
+import queryClient from 'utils/queryClient';
 
 interface IChannelCardProps {
   channel: IChannel;
-  showRequestBtn?: boolean;
-  showWithdrawBtn?: boolean;
-  showJoinChannelBtn?: boolean;
 }
 
-const ChannelCard: FC<IChannelCardProps> = ({
-  channel,
-  showRequestBtn = false,
-  showJoinChannelBtn = false,
-  showWithdrawBtn = false,
-}) => {
+const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
+  const { t } = useTranslation('channels');
+  const updateChannel = useChannelStore((state) => state.updateChannel);
   const navigate = useNavigate();
+
+  const showRequestBtn =
+    channel.settings?.visibility === ChannelVisibilityEnum.Public &&
+    !!!channel.member &&
+    !!!channel.joinRequest;
+  const showJoinChannelBtn =
+    channel.settings?.visibility === ChannelVisibilityEnum.Private &&
+    !!!channel.member &&
+    !!!channel.joinRequest;
+  const showWithdrawBtn =
+    channel.settings?.visibility === ChannelVisibilityEnum.Private &&
+    !!!channel.member &&
+    !!channel.joinRequest;
+
+  // Join public/private channel request mutation
+  const joinChannelMutation = useMutation({
+    mutationKey: ['join-public-channel-request'],
+    mutationFn: (channelId: string) => joinChannelRequest(channelId),
+    onError: () =>
+      failureToastConfig({
+        content: t('joinRequestError'),
+      }),
+    onSuccess: async (data) => {
+      successToastConfig({
+        content:
+          channel.settings?.visibility === ChannelVisibilityEnum.Private
+            ? t('joinPrivateChannelRequestSuccess')
+            : t('joinPublicChannelRequestSuccess'),
+      });
+      await queryClient.invalidateQueries(['channel'], { exact: false });
+      updateChannel(channel.id, {
+        ...channel,
+        joinRequest: { ...channel.joinRequest, id: data.id },
+      });
+    },
+  });
+
+  // Withdraw join request
+  const withdrawJoinChannelRequest = useMutation({
+    mutationKey: ['withdraw-join-request'],
+    mutationFn: (joinId: string) =>
+      deleteJoinChannelRequest(channel.id, joinId),
+    onError: () =>
+      failureToastConfig({
+        content: t('withdrawRequestError'),
+      }),
+    onSuccess: async () => {
+      successToastConfig({ content: t('withdrawRequestSuccess') });
+      await queryClient.invalidateQueries(['channel'], { exact: false });
+      updateChannel(channel.id, {
+        ...channel,
+        joinRequest: { ...channel.joinRequest, id: undefined },
+      });
+    },
+  });
   return (
     <div
-      className="w-full cursor-pointer"
+      className="w-full cursor-pointer outline-none group/channel-card"
+      tabIndex={0}
+      title={channel.name}
+      onKeyUp={(e) =>
+        e.code === 'Enter' ? navigate(`/channels/${channel.id}`) : ''
+      }
       onClick={() => navigate(`/channels/${channel.id}`)}
     >
-      <Card className="flex flex-col gap-2 relative">
+      <Card className="flex flex-col gap-2 relative group-focus-within/channel-card:shadow-xl">
         <div className="w-full h-[80px] bg-slate-500 rounded-t-9xl">
           {channel.banner ? (
             <div className="w-full h-full relative">
@@ -75,7 +139,7 @@ const ChannelCard: FC<IChannelCardProps> = ({
           </p>
           {showRequestBtn && (
             <Button
-              label={'Request to join'}
+              label={t('privateChannel.joinRequestCTA')}
               size={ButtonSize.ExtraSmall}
               variant={ButtonVariant.Secondary}
               className="mt-2"
@@ -85,29 +149,33 @@ const ChannelCard: FC<IChannelCardProps> = ({
               leftIconHover={false}
               onClick={(e) => {
                 e.stopPropagation();
+                joinChannelMutation.mutate(channel.id);
               }}
             />
           )}
           {showWithdrawBtn && (
             <Button
-              label={'Withdraw request'}
+              label={t('privateChannel.withdrawRequestCTA')}
               size={ButtonSize.ExtraSmall}
               variant={ButtonVariant.Secondary}
               className="mt-2"
               onClick={(e) => {
                 e.stopPropagation();
+                withdrawJoinChannelRequest.mutate(channel.joinRequest.id!);
               }}
             />
           )}
           {showJoinChannelBtn && (
             <div className="flex  w-full mt-2">
               <Button
-                label="Join channel"
+                label={t('publicChannel.joinRequestCTA')}
                 size={ButtonSize.ExtraSmall}
                 variant={Variant.Secondary}
-                className="w-full  "
+                className="w-full"
+                loading={joinChannelMutation.isLoading}
                 onClick={(e) => {
                   e.stopPropagation();
+                  joinChannelMutation.mutate(channel.id);
                 }}
               />
             </div>
@@ -116,7 +184,7 @@ const ChannelCard: FC<IChannelCardProps> = ({
         <div className="w-10 h-10 rounded-full absolute left-4 top-[52px] bg-blue-300 border border-white z-0 flex justify-center items-center">
           <Icon name={'chart'} size={16} color="text-white" hover={false} />
         </div>
-        {channel.isStarred && (
+        {channel?.member?.bookmarked && (
           <IconWrapper
             type={IconWrapperType.Square}
             className="cursor-pointer h-[24px] w-[24px] absolute top-2 right-2"
