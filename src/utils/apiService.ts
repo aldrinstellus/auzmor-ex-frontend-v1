@@ -21,7 +21,7 @@ const productBaseUrlMap: { [key in ProductEnum]: string } = {
 
 export const getProduct: () => ProductEnum = () => {
   if (process.env.NODE_ENV === 'development') {
-    return ProductEnum.Office;
+    return ProductEnum.Lxp;
   }
   const host = window.location.host;
   if (
