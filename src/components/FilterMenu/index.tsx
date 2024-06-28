@@ -87,8 +87,8 @@ const FilterMenu: FC<IFilterMenu> = ({
       locations: parseParams('locations') || [],
       status: parseParams('status') || [],
       teams: parseParams('teams') || [],
-      visibility: parseParams('visibility') || ChannelVisibilityEnum.All,
-      channelType: parseParams('channelType') || ChannelTypeEnum.MyChannels,
+      visibility: parseParams('visibility') || [],
+      channelType: parseParams('channelType') || [],
       roles: parseParams('roles') || [],
     });
   }, []);
@@ -328,8 +328,8 @@ const FilterMenu: FC<IFilterMenu> = ({
             status: filters?.status || [],
             teams: filters?.teams || [],
             roles: filters?.roles || [],
-            visibility: filters?.visibility || ChannelVisibilityEnum.All,
-            channelType: filters?.channelType || ChannelTypeEnum.MyChannels,
+            visibility: filters?.visibility || [],
+            channelType: filters?.channelType || [],
           }}
           onApply={(appliedFilters) => {
             setFilters(appliedFilters);
@@ -343,8 +343,8 @@ const FilterMenu: FC<IFilterMenu> = ({
               status: [],
               teams: [],
               roles: [],
-              visibility: ChannelVisibilityEnum.All,
-              channelType: ChannelTypeEnum.MyChannels,
+              visibility: [],
+              channelType: [],
             });
             closeFilterModal();
           }}

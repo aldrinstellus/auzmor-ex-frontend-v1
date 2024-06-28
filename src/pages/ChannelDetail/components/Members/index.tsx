@@ -51,6 +51,9 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
       status: filters?.status?.length
         ? filters?.status?.map((eachStatus: any) => eachStatus.id).join(',')
         : undefined,
+      role: filters?.roles?.length
+        ? filters?.roles?.map((role: any) => role.id).join(',')
+        : undefined,
     }),
   });
 
