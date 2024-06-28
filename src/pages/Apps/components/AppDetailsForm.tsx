@@ -138,12 +138,7 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
     <div className="py-3">
       <Layout fields={urlField} />
       <div className="flex justify-between gap-x-6 pt-6">
-        <div className="flex flex-col w-full">
-          <Layout fields={appFields} className="w-full flex flex-col gap-y-6" />
-          <p className="pt-4 text-xs text-neutral-900">
-            <span className="text-red-500">*</span> Required field
-          </p>
-        </div>
+        <Layout fields={appFields} className="w-full flex flex-col gap-y-6" />
         <div className="w-full flex flex-col">
           <UploadIconButton setValue={setValue} icon={icon} />
           <div className="pt-4">

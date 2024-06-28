@@ -71,6 +71,7 @@ const Footer: FC<IFooterProps> = ({
               }}
               ref={sliderInputRef}
               aria-label="zoom"
+              autoComplete="off"
             />
             <Icon
               name="plus"

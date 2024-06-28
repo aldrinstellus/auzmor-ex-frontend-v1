@@ -67,16 +67,11 @@ const EditImageModal: FC<AppProps> = ({
 
   const [blob, setBlob] = useState<Blob | null>(null);
 
-  // const [height, setHeight] = useState<number>(1000);
-  // const [width, setWidth] = useState<number>(1000);
-  // const [top, setTop] = useState<number>(0);
-  // const [left, setLeft] = useState<number>(0);
   const [isImageLoading, setIsImageLoading] = useState<boolean>(true);
 
   // To determine the custom visible area in the image cropper
   useEffect(() => {
     const img = new Image();
-
     img.onload = () => {
       const _getWidthFactor = (width: number): number => {
         // Need better algorithm here
@@ -84,11 +79,6 @@ const EditImageModal: FC<AppProps> = ({
         if (width > 3000) factor = 0.7;
         return factor;
       };
-
-      // setHeight(img.height * 0.8);
-      // setWidth(img.width * getWidthFactor(img.width));
-      // setTop(img.height / 4);
-      // setLeft(img.width / 4);
       setIsImageLoading(false);
     };
 

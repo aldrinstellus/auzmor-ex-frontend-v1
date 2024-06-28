@@ -169,7 +169,6 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                   data-testid="team-details-name"
                   tabIndex={0}
                   role="contentinfo"
-                  aria-details={data.name}
                 >
                   {data.name}
                 </h1>
@@ -178,7 +177,6 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                     className="text-xs font-normal"
                     data-testid="team-details-description"
                     tabIndex={0}
-                    aria-details={data.description}
                   >
                     {data.description}
                   </div>
@@ -209,7 +207,6 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                     className="flex flex-col space-y-2"
                     tabIndex={0}
                     role="contentinfo"
-                    aria-details={`${data.totalMembers || 0} members`}
                   >
                     <div className="flex items-center text-sm font-semibold text-purple-700">
                       <span
@@ -226,7 +223,6 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                     className="flex flex-col space-y-2"
                     tabIndex={0}
                     role="contentinfo"
-                    aria-details={`No. of people ${data.totalMembers || 0}`}
                   >
                     <div className="text-sm font-semibold text-purple-700">
                       No. of people

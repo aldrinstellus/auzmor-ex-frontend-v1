@@ -393,8 +393,20 @@ const Apps: FC<IAppsProps> = () => {
                 {categoryFilterPills.map((category: any) => (
                   <div
                     key={category.id}
-                    className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1"
+                    className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:shadow-lg focus:shadow-lg group cursor-pointer outline-none"
                     data-testid={`apps-filterby-category`}
+                    onClick={() =>
+                      handleRemoveFilters(AppFilterKey.categories, category.id)
+                    }
+                    onKeyUp={(e) =>
+                      e.code === 'Enter'
+                        ? handleRemoveFilters(
+                            AppFilterKey.categories,
+                            category.id,
+                          )
+                        : ''
+                    }
+                    tabIndex={0}
                   >
                     <div className="mr-1 text-neutral-500 whitespace-nowrap">
                       Category{' '}
@@ -405,12 +417,6 @@ const Apps: FC<IAppsProps> = () => {
                       size={16}
                       color="text-neutral-900"
                       className="cursor-pointer"
-                      onClick={() =>
-                        handleRemoveFilters(
-                          AppFilterKey.categories,
-                          category.id,
-                        )
-                      }
                       dataTestId={`applied-filter-close`}
                     />
                   </div>
@@ -418,8 +424,17 @@ const Apps: FC<IAppsProps> = () => {
                 {appFilters.teams.map((team: any) => (
                   <div
                     key={team.id}
-                    className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1"
+                    className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1  hover:shadow-lg focus:shadow-lg group cursor-pointer outline-none"
                     data-testid={`apps-filterby-team`}
+                    onClick={() =>
+                      handleRemoveFilters(AppFilterKey.teams, team.id)
+                    }
+                    onKeyUp={(e) =>
+                      e.code === 'Enter'
+                        ? handleRemoveFilters(AppFilterKey.teams, team.id)
+                        : ''
+                    }
+                    tabIndex={0}
                   >
                     <div className="mr-1 text-neutral-500">
                       Team <span className="text-primary-500">{team.name}</span>
@@ -429,18 +444,17 @@ const Apps: FC<IAppsProps> = () => {
                       size={16}
                       color="text-neutral-900"
                       className="cursor-pointer"
-                      onClick={() =>
-                        handleRemoveFilters(AppFilterKey.teams, team.id)
-                      }
                       dataTestId={`applied-filter-close`}
                     />
                   </div>
                 ))}
               </div>
               <div
-                className="text-neutral-500 border px-3 py-[3px] whitespace-nowrap rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
-                onClick={clearFilters}
+                className="text-neutral-500 border px-3 py-[3px] whitespace-nowrap rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer focus:text-primary-600 focus:border-primary-600 outline-none"
                 data-testid="apps-clear-filters"
+                onClick={clearFilters}
+                onKeyUp={(e) => (e.code === 'Enter' ? clearFilters() : '')}
+                tabIndex={0}
               >
                 Clear Filters
               </div>

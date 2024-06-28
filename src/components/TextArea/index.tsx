@@ -22,6 +22,7 @@ export type TextAreaProps = {
   showCounter?: boolean; // show char counter
   counterPosition?: string;
   disableMaxLength?: boolean;
+  autocomplete?: string;
 };
 
 const TextArea: FC<TextAreaProps> = ({
@@ -44,6 +45,7 @@ const TextArea: FC<TextAreaProps> = ({
   showCounter,
   counterPosition = 'bottom',
   disableMaxLength = false,
+  autocomplete = 'off',
 }) => {
   const { field } = useController({
     name,
@@ -121,6 +123,7 @@ const TextArea: FC<TextAreaProps> = ({
         className={textAreaStyle}
         data-testid={dataTestId}
         defaultValue={defaultValue}
+        autoComplete={autocomplete}
       />
       {showCounter && counterPosition === 'bottom' && counterNode}
       <div
