@@ -191,7 +191,11 @@ const CreatableSearch = forwardRef(
                     return triggerNode.parentElement;
                   }}
                   searchValue={searchValue}
-                  onSearch={setSearchValue}
+                  onSearch={(value) => {
+                    if (value.length <= maxLength) {
+                      setSearchValue(value);
+                    }
+                  }}
                   filterOption={false}
                   notFoundContent={noContentFound()}
                   onInputKeyDown={() => setOpen(true)}

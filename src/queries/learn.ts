@@ -111,3 +111,8 @@ export const createCatergory = async (payload: any) => {
   const data = await learnApiService.post('categories', payload);
   return data;
 };
+
+export const contactSales = async (payload: any) => {
+  const { data } = await learnApiService.post('/support', payload);
+  return data;
+};

@@ -3,6 +3,7 @@ import ContactSales from 'components/ContactSales';
 import Icon from 'components/Icon';
 import useAuth from 'hooks/useAuth';
 import useModal from 'hooks/useModal';
+import useProduct from 'hooks/useProduct';
 import React from 'react';
 
 type AppProps = {
@@ -11,6 +12,7 @@ type AppProps = {
 
 const SubscriptionBanner: React.FC<AppProps> = ({ closeBanner }) => {
   const { user } = useAuth();
+  const { isLxp } = useProduct();
   const daysRemaining = user?.subscription?.daysRemaining || 0;
   const subscriptionType = user?.subscription?.type || 'TRIAL';
   const [sales, showSales, closeSales] = useModal();
@@ -18,6 +20,8 @@ const SubscriptionBanner: React.FC<AppProps> = ({ closeBanner }) => {
   if (subscriptionType !== 'TRIAL') {
     return null;
   }
+
+  const productName = isLxp ? 'Auzmor LXP' : 'Auzmor Office';
 
   return (
     <div className="h-9 bg-neutral-900 flex justify-center items-center text-sm text-white relative">
@@ -29,7 +33,7 @@ const SubscriptionBanner: React.FC<AppProps> = ({ closeBanner }) => {
               <span className="text-primary-500">
                 {user?.subscription?.daysRemaining} days trial
               </span>
-              &nbsp; of Auzmor Office
+              &nbsp; of {productName}
             </span>
           );
         }
@@ -40,7 +44,7 @@ const SubscriptionBanner: React.FC<AppProps> = ({ closeBanner }) => {
               <span className="text-primary-500">
                 {user?.subscription?.daysRemaining} days left
               </span>
-              &nbsp; for your free Auzmor Office trial
+              &nbsp; for your free {productName} trial
             </div>
           );
         }
@@ -49,7 +53,7 @@ const SubscriptionBanner: React.FC<AppProps> = ({ closeBanner }) => {
             <Icon name="warningCircle" className="text-white" />
             <span>
               Your subscription has expired. Please contact sales to continue
-              using Auzmor Office
+              using {productName}
             </span>
           </div>
         );
