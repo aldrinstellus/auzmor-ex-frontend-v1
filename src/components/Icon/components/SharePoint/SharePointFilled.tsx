@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgXlsFilled = (props: SVGProps<SVGSVGElement>) => (
+const SvgXlsFilled = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"
@@ -12,6 +14,7 @@ const SvgXlsFilled = (props: SVGProps<SVGSVGElement>) => (
     enableBackground="new 0 0 1992.333 1946"
     xmlSpace="preserve"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <circle fill="#036C70" cx="1019.333" cy="556" r="556" />
     <circle fill="#1A9BA1" cx="1482.667" cy="1065.667" r="509.667" />

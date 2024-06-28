@@ -72,9 +72,9 @@ const ImagePreview: FC<IImagePreviewProps> = ({
               name="edit"
               color="text-neutral-900"
               size={16}
-              onClick={() => {
-                imageUploaderRef?.current?.click();
-              }}
+              onClick={() => imageUploaderRef?.current?.click()}
+              ariaLabel="edit"
+              tabIndex={0}
             />
           </div>
         )}
@@ -85,6 +85,8 @@ const ImagePreview: FC<IImagePreviewProps> = ({
             size={16}
             onClick={onRemove}
             dataTestId="kudos-remove-banner"
+            tabIndex={0}
+            ariaLabel="close"
           />
         </div>
       </div>

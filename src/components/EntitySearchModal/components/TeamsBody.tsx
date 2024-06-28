@@ -30,7 +30,7 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { form } = useEntitySearchFormStore();
-  const { watch, setValue, control, getValues } = form!;
+  const { watch, setValue, control } = form!;
   const { user } = useAuth();
   const { isAdmin } = useRole();
   const { isLxp } = useProduct();
@@ -272,7 +272,8 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
           </div>
         </div>
         <div
-          className="flex flex-col max-h-72 overflow-scroll"
+          className="flex flex-col max-h-80 overflow-scroll"
+          tabIndex={0}
           data-testid={`${dataTestId}-list`}
         >
           {isLoading ? (
@@ -280,48 +281,46 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
               <Spinner />
             </div>
           ) : teamsData?.length ? (
-            teamsData?.map((team, index) => (
-              <div key={team.id}>
-                <div className="py-2 flex items-center">
-                  <Layout
-                    fields={[
-                      {
-                        type: FieldType.Checkbox,
-                        name: `teams.${team.id}`,
-                        control,
-                        className: 'flex item-center mr-4',
-                        transform: {
-                          input: (value: ITeam | boolean) => {
-                            updateSelectAll();
-                            return !!value;
+            <ul>
+              {teamsData?.map((team, index) => (
+                <li key={team.id}>
+                  <div className="py-2 flex items-center w-full">
+                    <Layout
+                      fields={[
+                        {
+                          type: FieldType.Checkbox,
+                          name: `teams.${team.id}`,
+                          control,
+                          className: 'flex item-center mr-4 w-full',
+                          transform: {
+                            input: (value: ITeam | boolean) => {
+                              updateSelectAll();
+                              return !!value;
+                            },
+                            output: (e: ChangeEvent<HTMLInputElement>) => {
+                              if (e.target.checked) return team;
+                              return false;
+                            },
                           },
-                          output: (e: ChangeEvent<HTMLInputElement>) => {
-                            if (e.target.checked) return team;
-                            return false;
-                          },
+                          defaultChecked: selectedTeamIds.includes(team.id),
+                          dataTestId: `${dataTestId}-select-${team.id}`,
+                          label: (
+                            <div className="w-full cursor-pointer">
+                              {(entityRenderer && entityRenderer(team)) || (
+                                <TeamRow team={team} />
+                              )}
+                            </div>
+                          ),
+                          labelContainerClassName: 'w-full',
                         },
-                        defaultChecked: selectedTeamIds.includes(team.id),
-                        dataTestId: `${dataTestId}-select-${team.id}`,
-                      },
-                    ]}
-                  />
-                  <div
-                    className="w-full cursor-pointer"
-                    onClick={() => {
-                      setValue(
-                        `teams.${team.id}`,
-                        !!getValues(`teams.${team.id}`) ? false : team,
-                      );
-                    }}
-                  >
-                    {(entityRenderer && entityRenderer(team)) || (
-                      <TeamRow team={team} />
-                    )}
+                      ]}
+                      className="w-full"
+                    />
                   </div>
-                </div>
-                {index !== teamsData.length - 1 && <Divider />}
-              </div>
-            ))
+                  {index !== teamsData.length - 1 && <Divider />}
+                </li>
+              ))}
+            </ul>
           ) : (
             <NoDataFound
               className="py-4 w-full"

@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const GalleryExportOutline = (props: SVGProps<SVGSVGElement>) => (
+const GalleryExportOutline = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width={24}
     height={24}
@@ -8,6 +10,7 @@ const GalleryExportOutline = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <path
       d="M6.49935 6.66667C7.23573 6.66667 7.83268 6.06971 7.83268 5.33333C7.83268 4.59695 7.23573 4 6.49935 4C5.76297 4 5.16602 4.59695 5.16602 5.33333C5.16602 6.06971 5.76297 6.66667 6.49935 6.66667Z"

@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const GoogleIcon = (props: SVGProps<SVGSVGElement>) => {
+const GoogleIcon = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => {
   return (
     <svg
       width="16"
@@ -9,6 +11,7 @@ const GoogleIcon = (props: SVGProps<SVGSVGElement>) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
+      aria-label={props.ariaLabel}
     >
       <g clipPath="url(#clip0_5673_7916)">
         <path

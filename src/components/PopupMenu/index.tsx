@@ -56,7 +56,7 @@ const PopupMenu: FC<IPopupMenuProps> = ({
   }, []);
   return (
     <Menu>
-      <Menu.Button as="div" disabled={disabled} className={'menu-trigger'}>
+      <Menu.Button as="menu" disabled={disabled} className={'menu-trigger'}>
         {triggerNode}
       </Menu.Button>
       {(controlled ? isOpen : true) && (
@@ -70,7 +70,7 @@ const PopupMenu: FC<IPopupMenuProps> = ({
               {!menuItem.disabled && (
                 <Menu.Item
                   key={`menu-item-${idx}`}
-                  as={'button'}
+                  as="button"
                   onClick={menuItem?.onClick}
                   className="w-full"
                 >

@@ -152,7 +152,7 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
                     className="cursor-pointer"
                     data-testid="comment-ellipsis"
                   >
-                    <Icon name="more" title="more" tabIndex={0} />
+                    <Icon name="more" ariaLabel="more" tabIndex={0} />
                   </div>
                 }
                 menuItems={[

@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgWarningCircleOutline = (props: SVGProps<SVGSVGElement>) => (
+const SvgWarningCircleOutline = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width="80"
     height="80"
@@ -8,6 +10,7 @@ const SvgWarningCircleOutline = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <g id="Group">
       <path

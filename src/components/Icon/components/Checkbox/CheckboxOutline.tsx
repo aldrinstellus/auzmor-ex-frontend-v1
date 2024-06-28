@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgCheckboxOutline = (props: SVGProps<SVGSVGElement>) => (
+const SvgCheckboxOutline = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width={16}
     height={16}
@@ -8,6 +10,7 @@ const SvgCheckboxOutline = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <path
       d="M5.9987 14.6654H9.9987C13.332 14.6654 14.6654 13.332 14.6654 9.9987V5.9987C14.6654 2.66536 13.332 1.33203 9.9987 1.33203H5.9987C2.66536 1.33203 1.33203 2.66536 1.33203 5.9987V9.9987C1.33203 13.332 2.66536 14.6654 5.9987 14.6654Z"

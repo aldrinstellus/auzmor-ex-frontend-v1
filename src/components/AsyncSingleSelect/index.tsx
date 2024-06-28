@@ -100,6 +100,15 @@ const AsyncSingleSelect = forwardRef(
       control,
     });
 
+    useEffect(() => {
+      const nodes = document.querySelectorAll('[aria-activedescendant]');
+      if (nodes.length) {
+        for (const each of nodes) {
+          each.removeAttribute('aria-activedescendant');
+        }
+      }
+    });
+
     const labelStyle = useMemo(
       () =>
         clsx(

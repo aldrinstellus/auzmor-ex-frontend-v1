@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const TwitterIcon = (props: SVGProps<SVGSVGElement>) => {
+const TwitterIcon = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => {
   return (
     <svg
       width="24"
@@ -9,6 +11,7 @@ const TwitterIcon = (props: SVGProps<SVGSVGElement>) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
+      aria-label={props.ariaLabel}
     >
       <rect width="24" height="24" rx="12" fill="#00ACEE" />
       <g clipPath="url(#clip0_4044_156611)">

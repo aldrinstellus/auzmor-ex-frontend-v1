@@ -67,9 +67,6 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
       for (const each of nodes) {
         (
           each.firstChild?.firstChild?.firstChild as HTMLInputElement
-        ).removeAttribute('aria-activedescendant');
-        (
-          each.firstChild?.firstChild?.firstChild as HTMLInputElement
         ).setAttribute('aria-label', 'search');
       }
     }

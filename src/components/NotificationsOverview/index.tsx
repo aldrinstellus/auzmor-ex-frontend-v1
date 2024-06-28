@@ -91,7 +91,7 @@ const NotificationsOverview: FC = () => {
             name="notification"
             size={25}
             dataTestId="office-notification-page"
-            title="notifications"
+            ariaLabel="notifications"
           />
         </div>
       }

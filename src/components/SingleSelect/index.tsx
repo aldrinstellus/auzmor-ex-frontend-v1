@@ -1,4 +1,4 @@
-import { ReactNode, forwardRef, useMemo, useState } from 'react';
+import { ReactNode, forwardRef, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { Control, useController, Controller } from 'react-hook-form';
 import { Select, ConfigProvider } from 'antd';
@@ -68,6 +68,16 @@ const SingleSelect = forwardRef(
       name,
       control,
     });
+
+    useEffect(() => {
+      const nodes = document.querySelectorAll('[aria-activedescendant]');
+      if (nodes.length) {
+        for (const each of nodes) {
+          each.removeAttribute('aria-activedescendant');
+        }
+      }
+    });
+
     const labelStyle = useMemo(
       () =>
         clsx(
