@@ -32,6 +32,10 @@ const ImagePicker: FC<IImagePickerProps> = ({ selectedTemplate, onSelect }) => {
               'relative cursor-pointer max-h-[182px] min-h-[183px] max-w-[270px] border-1 border-neutral-200 w-full h-full rounded-[12px] overflow-hidden',
               { 'border-primary-500': item.id === selectedTemplate?.id },
             )}
+            tabIndex={0}
+            onKeyUp={(e) =>
+              e.code === 'Enter' ? handleSelectTemplate(item) : ''
+            }
             onClick={() => handleSelectTemplate(item)}
           >
             {item.id === selectedTemplate?.id && (
@@ -42,7 +46,7 @@ const ImagePicker: FC<IImagePickerProps> = ({ selectedTemplate, onSelect }) => {
                 hover
               />
             )}
-            <img src={item.image} />
+            <img src={item.image} alt={`${item.label} Image`} />
             <div className="py-3 px-2 text-sm font-semibold text-center">
               {item.label}
             </div>

@@ -21,12 +21,8 @@ import useModal from 'hooks/useModal';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import { useDocumentPath } from 'hooks/useDocumentPath';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { toast } from 'react-toastify';
-import { twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useURLParams from 'hooks/useURLParams';
 import DocumentSearch from './DocumentSearch';
 import { useAppliedFiltersForDoc } from 'stores/appliedFiltersForDoc';
@@ -122,42 +118,10 @@ const Document: FC<IDocumentProps> = ({}) => {
         name: filterForm.getValues('folderName') || 'Undifined folder',
       },
       {
-        onError: () => {
-          toast(<FailureToast content={'Opps... Somthing went wrong.'} />, {
-            closeButton: (
-              <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-            ),
-            style: {
-              border: `1px solid ${twConfig.theme.colors.red['300']}`,
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-            },
-            autoClose: TOAST_AUTOCLOSE_TIME,
-            transition: slideInAndOutTop,
-            theme: 'dark',
-          });
-        },
-        onSuccess: () => {
-          toast(<SuccessToast content={'Folder created successfully'} />, {
-            closeButton: (
-              <Icon
-                name="closeCircleOutline"
-                color="text-primary-500"
-                size={20}
-              />
-            ),
-            style: {
-              border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-            },
-            autoClose: TOAST_AUTOCLOSE_TIME,
-            transition: slideInAndOutTop,
-            theme: 'dark',
-          });
-        },
+        onError: () =>
+          failureToastConfig({ content: 'Opps... Somthing went wrong.' }),
+        onSuccess: () =>
+          successToastConfig({ content: 'Folder created successfully' }),
         onSettled: () => {
           closeModal();
         },

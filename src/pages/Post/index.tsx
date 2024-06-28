@@ -3,6 +3,7 @@ import PageLoader from 'components/PageLoader';
 import Post from 'components/Post';
 import UserCard from 'components/UserWidget';
 import useMediaQuery from 'hooks/useMediaQuery';
+import { usePageTitle } from 'hooks/usePageTitle';
 import PageNotFound from 'pages/PageNotFound';
 import { useGetPost } from 'queries/post';
 import { FC } from 'react';
@@ -10,6 +11,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { useFeedStore } from 'stores/feedStore';
 
 const PostPage: FC = () => {
+  usePageTitle('postDetails');
   const isLargeScreen = useMediaQuery('(min-width: 1300px)');
   const { id } = useParams();
   const [searchParams] = useSearchParams();

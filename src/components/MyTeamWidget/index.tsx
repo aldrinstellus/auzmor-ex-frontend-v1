@@ -53,6 +53,13 @@ const MyTeamWidget: FC<IMyTeamWidgetProps> = ({ className = '' }) => {
       <div
         className="px-6 flex items-center justify-between cursor-pointer"
         onClick={toggleModal}
+        onKeyUp={(e) => {
+          if (e.code === 'Enter') toggleModal();
+        }}
+        tabIndex={0}
+        title="teams widget"
+        aria-expanded={open}
+        role="button"
       >
         <div className="font-bold">Teams</div>
         <Icon
@@ -82,13 +89,13 @@ const MyTeamWidget: FC<IMyTeamWidgetProps> = ({ className = '' }) => {
             if (teamsData && teamsData?.length > 0) {
               return (
                 <>
-                  <div className="divide-y divide-neutral-200">
+                  <ul className="divide-y divide-neutral-200">
                     {teamsData?.map((team: any) => (
-                      <div key={team.id} className="py-2">
+                      <li key={team.id} className="py-2">
                         <TeamCard {...team} />
-                      </div>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
 
                   {hasNextPage && (
                     <Button

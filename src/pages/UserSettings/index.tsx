@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import BasicSettings from './components/BasicSettings';
 import NotificationSettings from './components/NotificationSettings';
 import useURLParams from 'hooks/useURLParams';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 interface ISetting {
   label: string;
@@ -58,6 +59,7 @@ const settings = [
 ].filter((item) => !item.hidden);
 
 const UserSettings = () => {
+  usePageTitle('settings');
   const { updateParam, searchParams } = useURLParams();
   const [activeSettingsPage, setActiveSettingsPage] = useState<ISetting>(
     settings[0],

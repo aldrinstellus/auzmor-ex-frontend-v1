@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgMuteFilled = (props: SVGProps<SVGSVGElement>) => (
+const SvgMuteFilled = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width={24}
     height={24}
@@ -8,6 +10,7 @@ const SvgMuteFilled = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <path
       d="M17.9998 16.75C17.8398 16.75 17.6898 16.7 17.5498 16.6C17.2198 16.35 17.1498 15.88 17.3998 15.55C18.6598 13.87 18.9298 11.64 18.1198 9.71001C17.9598 9.33001 18.1398 8.89001 18.5198 8.73001C18.8998 8.57001 19.3398 8.75001 19.4998 9.13001C20.5198 11.55 20.1698 14.36 18.5998 16.46C18.4498 16.65 18.2298 16.75 17.9998 16.75Z"

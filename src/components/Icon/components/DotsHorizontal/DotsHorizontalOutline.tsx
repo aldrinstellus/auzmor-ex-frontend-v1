@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgDotsHorizontalOutline = (props: SVGProps<SVGSVGElement>) => (
+const SvgDotsHorizontalOutline = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width={20}
     height={20}
@@ -8,6 +10,7 @@ const SvgDotsHorizontalOutline = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <path
       d="M3 1C1.9 1 1 1.9 1 3C1 4.1 1.9 5 3 5C4.1 5 5 4.1 5 3C5 1.9 4.1 1 3 1Z"

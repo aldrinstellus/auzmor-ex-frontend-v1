@@ -13,13 +13,9 @@ import clsx from 'clsx';
 import Icon from 'components/Icon';
 import useCarousel from 'hooks/useCarousel';
 import { IMedia } from 'contexts/CreatePostContext';
-import { twConfig } from 'utils/misc';
-import { toast } from 'react-toastify';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import Banner, { Variant } from 'components/Banner';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 
 export type CarouselProps = {
   media: IMedia[];
@@ -40,39 +36,11 @@ export const fetchFile = (url: string) => {
       aTag.download = url.replace(/^.*[\\\/]/, '');
       document.body.appendChild(aTag);
       aTag.click();
-      toast(<SuccessToast content={'Download successful'} />, {
-        closeButton: (
-          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
-        ),
-        style: {
-          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
-        },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
-      });
+      successToastConfig({ content: 'Download successful' });
       URL.revokeObjectURL(tempUrl);
       aTag.remove();
     })
-    .catch(() => {
-      toast(<FailureToast content={'Download failed'} />, {
-        closeButton: (
-          <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-        ),
-        style: {
-          border: `1px solid ${twConfig.theme.colors.red['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
-        },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
-      });
-    });
+    .catch(() => failureToastConfig({ content: 'Download failed' }));
 };
 
 const Carousel: FC<CarouselProps> = ({

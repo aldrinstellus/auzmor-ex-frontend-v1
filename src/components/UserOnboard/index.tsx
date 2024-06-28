@@ -99,7 +99,7 @@ const UserOnboard: FC = (): ReactNode => {
         </Card>
       </Modal>
       <input
-        id="file-input"
+        id="file-input-onboarding"
         type="file"
         className="hidden"
         ref={profilePictureRef}
@@ -113,6 +113,7 @@ const UserOnboard: FC = (): ReactNode => {
             openEditImageModal();
           }
         }}
+        aria-label="profile picture"
       />
       {openEditImage && file && (
         <EditImageModal

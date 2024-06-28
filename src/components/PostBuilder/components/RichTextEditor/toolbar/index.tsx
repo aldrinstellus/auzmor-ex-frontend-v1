@@ -39,18 +39,22 @@ const Toolbar: FC<IToolbarProps> = ({ isCharLimit, dataTestId, quillRef }) => {
               <button
                 className="ql-bold ql-bold-button !h-[16px] !w-[16px] !m-0"
                 data-testid={`${dataTestId}-content-bold`}
+                aria-label="bold"
               />
               <button
                 className="ql-italic ql-italic-button !h-[16px] !w-[16px] !m-0"
                 data-testid={`${dataTestId}-content-italic`}
+                aria-label="italic"
               />
               <button
                 className="ql-underline ql-underline-button !h-[16px] !w-[16px] !m-0"
                 data-testid={`${dataTestId}-content-underline`}
+                aria-label="underline"
               />
               <button
                 className="ql-emoji mt-[2px] text-neutral-900 !h-[16px] !w-[16px] !mr-0"
                 data-testid={`${dataTestId}-content-emoji`}
+                aria-label="emoji"
               />
             </span>
           </div>

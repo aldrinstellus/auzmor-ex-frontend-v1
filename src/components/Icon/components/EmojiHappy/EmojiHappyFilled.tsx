@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgEmojiHappyFilled = (props: SVGProps<SVGSVGElement>) => (
+const SvgEmojiHappyFilled = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width={20}
     height={20}
@@ -8,6 +10,7 @@ const SvgEmojiHappyFilled = (props: SVGProps<SVGSVGElement>) => (
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <path
       d="M8.99988 21.9997H14.9998C19.9997 21.9997 21.9997 19.9997 21.9997 14.9998V8.99988C21.9997 3.99997 19.9997 2 14.9998 2H8.99988C3.99997 2 2 3.99997 2 8.99988V14.9998C2 19.9997 3.99997 21.9997 8.99988 21.9997Z"

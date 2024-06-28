@@ -106,6 +106,16 @@ const RichTextEditor = forwardRef(
       setPostType,
     } = useContext(CreatePostContext);
 
+    // Delete aria-owns attribute
+    useEffect(() => {
+      const nodes = document.getElementsByClassName('ql-editor');
+      if (nodes.length) {
+        for (const each of nodes) {
+          (each as HTMLInputElement).removeAttribute('aria-owns');
+        }
+      }
+    });
+
     const formats = [
       'bold',
       'italic',
@@ -335,6 +345,11 @@ const RichTextEditor = forwardRef(
           formats={formats}
           onChange={onChangeEditorContent}
           defaultValue={defaultValue}
+          onKeyUp={(e) =>
+            e.code === 'Tab'
+              ? console.log((ref as any)?.current.editor.blur())
+              : ''
+          }
         />
         {announcement?.label && !hasDatePassed(announcement.value) && (
           <div className="flex justify-between bg-blue-50 px-4 py-2 m-4">

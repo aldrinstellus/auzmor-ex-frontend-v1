@@ -5,12 +5,8 @@ import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import { IPost, updatePost } from 'queries/post';
 import { useFeedStore } from 'stores/feedStore';
-import { toast } from 'react-toastify';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { FC } from 'react';
 
 type AppProps = {
@@ -33,53 +29,17 @@ const ClosePollModal: FC<AppProps> = ({ open, closeModal, data }) => {
       return { previousPost };
     },
     onError: (error, variables, context) => {
-      toast(
-        <FailureToast
-          content="Error closing poll"
-          dataTestId="poll-close-toaster-failure"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      failureToastConfig({
+        content: 'Error closing poll',
+        dataTestId: 'poll-close-toaster-failure',
+      });
       updateFeed(context!.previousPost.id!, context!.previousPost!);
     },
     onSuccess: () =>
-      toast(
-        <SuccessToast
-          content="Poll closed successfully"
-          dataTestId="poll-close-toaster-success"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      ),
+      successToastConfig({
+        content: 'Poll closed successfully',
+        dataTestId: 'poll-close-toaster-success',
+      }),
   });
 
   return (

@@ -8,21 +8,16 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createComment, updateComment } from 'queries/comments';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
-import { toast } from 'react-toastify';
 import {
   isEmptyEditor,
   quillHashtagConversion,
   removeEmptyLines,
-  twConfig,
 } from 'utils/misc';
 import { produce } from 'immer';
 import { useCommentStore } from 'stores/commentStore';
 import { useFeedStore } from 'stores/feedStore';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import Icon from 'components/Icon';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import Button, { Size, Variant } from 'components/Button';
 import { IComment } from 'components/Comments';
 import MediaPreview, { Mode } from 'components/MediaPreview';
@@ -105,28 +100,10 @@ export const CommentsRTE: FC<CommentFormProps> = ({
     mutationKey: ['create-comment'],
     mutationFn: createComment,
     onError: () => {
-      toast(
-        <FailureToast
-          content={`Error adding ${
-            entityType === 'post' ? 'Comment' : 'Reply'
-          }`}
-          dataTestId="comment-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      failureToastConfig({
+        content: `Error adding ${entityType === 'post' ? 'Comment' : 'Reply'}`,
+        dataTestId: 'comment-toaster',
+      });
     },
     onSuccess: async (data: any, _variables, _context) => {
       quillRef.current?.setEditorContents(quillRef.current?.getEditor(), '');
@@ -225,57 +202,21 @@ export const CommentsRTE: FC<CommentFormProps> = ({
       if (context?.previousComment) {
         updateStoredComment(variables.entityId, context?.previousComment);
       }
-      toast(
-        <FailureToast
-          content={`Error Updating ${
-            entityType === 'post' ? 'Comment' : 'Reply'
-          }`}
-          dataTestId="comment-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      failureToastConfig({
+        content: `Error Updating ${
+          entityType === 'post' ? 'Comment' : 'Reply'
+        }`,
+        dataTestId: 'comment-toaster',
+      });
     },
     onSuccess: (data: any, variables) => {
       updateStoredComment(variables.entityId!, { ...data });
-      toast(
-        <SuccessToast
-          content={`${
-            entityType === 'post' ? 'Comment' : 'Reply'
-          } has been updated`}
-          dataTestId="comment-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        content: `${
+          entityType === 'post' ? 'Comment' : 'Reply'
+        } has been updated`,
+        dataTestId: 'comment-toaster',
+      });
     },
   });
 

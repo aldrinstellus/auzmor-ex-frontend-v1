@@ -14,6 +14,8 @@ export type IconProps = {
   dataTestId?: string;
   isActive?: boolean;
   hoverColor?: string;
+  tabIndex?: number;
+  ariaLabel?: string;
 };
 
 const Icon: FC<IconProps> = ({
@@ -28,6 +30,8 @@ const Icon: FC<IconProps> = ({
   color,
   hoverColor,
   dataTestId,
+  tabIndex,
+  ariaLabel = 'icon',
 }) => {
   const Component = iconMap[name] || null;
   if (!Component) {
@@ -35,14 +39,15 @@ const Icon: FC<IconProps> = ({
   }
 
   const colorClass = `${color}`;
-  const hoverColorClass = `hover:${hoverColor} group-hover:${hoverColor}`;
+  const hoverColorClass = `hover:${hoverColor} group-hover:${hoverColor} focus:${hoverColor} group-focus:${hoverColor}`;
   const isActiveClass = `text-primary-500 cursor-pointer`;
   const isActiveHoverColorClass = `${hoverColor}`;
   const disabledClass = `text-neutral-200 cursor-not-allowed pointer-events-none`;
 
   const styles = clsx({
+    'outline-none': true,
     [className]: true,
-    'text-neutral-500 hover:text-primary-500 group-hover:text-primary-500 cursor-pointer transition-colors ease-out duration-default':
+    'text-neutral-500 hover:text-primary-500 group-hover:text-primary-500 focus:text-primary-500 group-focus:text-primary-500 cursor-pointer transition-colors ease-out duration-default':
       !disabled,
     'cursor-pointer': !!onClick && !disabled,
     [colorClass]: color && !disabled,
@@ -63,6 +68,8 @@ const Icon: FC<IconProps> = ({
       onClick={!disabled ? onClick : undefined}
       strokeWidth={strokeWidth}
       data-testid={dataTestId}
+      tabIndex={tabIndex}
+      ariaLabel={ariaLabel}
     />
   );
 };

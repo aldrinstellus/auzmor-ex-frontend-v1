@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgCyclicArrowOutline = (props: SVGProps<SVGSVGElement>) => (
+const SvgCyclicArrowOutline = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width={24}
     height={24}
@@ -8,6 +10,7 @@ const SvgCyclicArrowOutline = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <path
       d="M6.25 6.94922H12.4167C13.1583 6.94922 13.75 7.5492 13.75 8.28253V9.75755"

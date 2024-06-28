@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgFunnyOutline = (props: SVGProps<SVGSVGElement>) => (
+const SvgFunnyOutline = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width="25"
     height="24"
@@ -8,6 +10,7 @@ const SvgFunnyOutline = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <circle cx="12.3984" cy="12" r="12" fill="#EBD187" />
     <path

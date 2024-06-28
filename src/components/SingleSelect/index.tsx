@@ -1,4 +1,4 @@
-import { ReactNode, forwardRef, useMemo, useState } from 'react';
+import { ReactNode, forwardRef, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { Control, useController, Controller } from 'react-hook-form';
 import { Select, ConfigProvider } from 'antd';
@@ -68,6 +68,20 @@ const SingleSelect = forwardRef(
       name,
       control,
     });
+
+    const id = `select-id-${Math.random().toString(16).slice(2)}`;
+
+    useEffect(() => {
+      setTimeout(() => {
+        const nodes = document.querySelectorAll('[aria-activedescendant]');
+        if (nodes.length) {
+          for (const each of nodes) {
+            each.removeAttribute('aria-activedescendant');
+          }
+        }
+      }, 0);
+    });
+
     const labelStyle = useMemo(
       () =>
         clsx(
@@ -110,11 +124,12 @@ const SingleSelect = forwardRef(
           },
         }}
       >
-        <div
+        <label
           className={clsx(
             { [`relative ${className}`]: true },
             { 'cursor-not-allowed': disabled },
           )}
+          htmlFor={id}
         >
           <div className={labelStyle}>{label}</div>
           <div
@@ -131,6 +146,7 @@ const SingleSelect = forwardRef(
               defaultValue={defaultValue}
               render={() => (
                 <Select
+                  id={id}
                   open={open}
                   showSearch={showSearch}
                   disabled={disabled}
@@ -158,11 +174,7 @@ const SingleSelect = forwardRef(
                   allowClear={isClearable}
                 >
                   {(options || []).map((option) => (
-                    <Option
-                      key={option.value}
-                      value={option.value}
-                      label={option.label}
-                    >
+                    <Option key={option.value} value={option.value}>
                       <div data-testid={option.dataTestId}>{option.label}</div>
                     </Option>
                   ))}
@@ -176,7 +188,7 @@ const SingleSelect = forwardRef(
           >
             {error || ' '}
           </div>
-        </div>
+        </label>
       </ConfigProvider>
     );
   },

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import clsx from 'clsx';
-import { ChangeEvent, FC, ReactElement } from 'react';
+import { ChangeEvent, FC, ReactElement, useMemo } from 'react';
 import { useController } from 'react-hook-form';
 
 export type CheckboxProps = {
@@ -20,6 +20,7 @@ export type CheckboxProps = {
     output: (e: ChangeEvent<HTMLInputElement>) => any;
   };
   defaultChecked?: boolean;
+  labelContainerClassName?: string;
 };
 
 const Checkbox: FC<CheckboxProps> = ({
@@ -35,37 +36,46 @@ const Checkbox: FC<CheckboxProps> = ({
   transform,
   defaultChecked,
   inputClassName,
+  labelContainerClassName = '',
   ...rest
 }) => {
   const { field } = useController({ name, control });
 
   const styles = clsx(
-    { 'flex items-start justify-between': true },
+    { 'flex items-center justify-between': true },
     { [className]: true },
   );
 
+  const lableContainerStyles = useMemo(
+    () => clsx({ 'pl-2': true }, { [labelContainerClassName]: true }),
+    [labelContainerClassName],
+  );
+
+  const id = `checkbox-id-${Math.random().toString(16).slice(2)}`;
+
   return (
     <div className="flex items-center">
-      <input
-        type="checkbox"
-        className={`h-5 w-5 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 ${inputClassName}`}
-        name={field.name}
-        ref={field.ref}
-        disabled={loading || disabled}
-        data-testid={dataTestId}
-        onChange={(e) =>
-          field.onChange(transform?.output ? transform?.output(e) : e)
-        }
-        checked={
-          transform?.input
-            ? transform?.input(field.value || defaultChecked)
-            : field.value || defaultChecked
-        }
-        {...rest}
-      />
-      <label className={styles}>
+      <label className={styles} htmlFor={id}>
+        <input
+          id={id}
+          type="checkbox"
+          className={`h-5 w-5 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 ${inputClassName}`}
+          name={field.name}
+          ref={field.ref}
+          disabled={loading || disabled}
+          data-testid={dataTestId}
+          onChange={(e) =>
+            field.onChange(transform?.output ? transform?.output(e) : e)
+          }
+          checked={
+            transform?.input
+              ? transform?.input(field.value || defaultChecked)
+              : field.value || defaultChecked
+          }
+          {...rest}
+        />
         {label && (
-          <div className="pl-2">
+          <div className={lableContainerStyles}>
             <div className="font-semibold text-sm cursor-pointer">{label}</div>
             {labelDescription && (
               <div className="font-normal text-xs text-neutral-500">

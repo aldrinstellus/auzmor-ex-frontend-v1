@@ -18,6 +18,7 @@ import OfficeLogoSvg from 'components/Logo/images/OfficeLogo.svg';
 import clsx from 'clsx';
 import useAuth from 'hooks/useAuth';
 import { useNavigateWithToken } from 'hooks/useNavigateWithToken';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 interface IForm {
   fullName: string;
@@ -74,6 +75,7 @@ export interface IValidationErrors {
 }
 
 const Signup: FC<ISignupProps> = () => {
+  usePageTitle('signup');
   const { setUser, setShowOnboard } = useAuth();
   const navigate = useNavigate();
   const navigateWithToken = useNavigateWithToken();
@@ -414,6 +416,7 @@ const Signup: FC<ISignupProps> = () => {
               data-testid="signup-form"
             >
               <Layout fields={fields} className="space-y-4" />
+              <p className="py-4 text-xs text-neutral-900">* Required field</p>
               <Button
                 dataTestId="sign-up-btn"
                 label={'Sign Up'}

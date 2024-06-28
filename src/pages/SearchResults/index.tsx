@@ -1,6 +1,7 @@
 import NoDataFound from 'components/NoDataFound';
 import PageLoader from 'components/PageLoader';
 import useAuth from 'hooks/useAuth';
+import { usePageTitle } from 'hooks/usePageTitle';
 import DocSearchRow, {
   Variant,
 } from 'pages/ChannelDetail/components/Documents/components/DocSearchRow';
@@ -19,6 +20,7 @@ enum OptionType {
 }
 
 const SearchResults: FC = () => {
+  usePageTitle('searchResults');
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('q') || undefined;
 

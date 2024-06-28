@@ -31,6 +31,7 @@ import { ICategory } from 'queries/category';
 import { ITeam } from 'queries/teams';
 import useProduct from 'hooks/useProduct';
 import { useInfiniteLearnCategory } from 'queries/learn';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -61,6 +62,7 @@ const defaultAppFilters: IAppFilters = {
 };
 
 const Apps: FC<IAppsProps> = () => {
+  usePageTitle('apps');
   const {
     searchParams,
     updateParam,
@@ -102,7 +104,8 @@ const Apps: FC<IAppsProps> = () => {
   const [startFetching, setStartFetching] = useState(false);
 
   const selectedButtonClassName = '!bg-primary-50 text-primary-500 text-sm';
-  const regularButtonClassName = '!text-neutral-500 text-sm';
+  const regularButtonClassName =
+    '!text-neutral-500 text-sm hover:border hover:border-primary-500 focus:border focus:border-primary-500';
 
   const searchValue = watch('search');
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
@@ -260,7 +263,9 @@ const Apps: FC<IAppsProps> = () => {
     <div>
       <Card className="p-8">
         <div className="flex justify-between">
-          <p className="font-bold text-2xl text-black">App Launcher</p>
+          <h1 className="font-bold text-2xl text-black" tabIndex={0}>
+            App Launcher
+          </h1>
           {isAdmin && (
             <Button
               onClick={openModal}
@@ -273,15 +278,6 @@ const Apps: FC<IAppsProps> = () => {
             />
           )}
         </div>
-        {/* Banner */}
-        {/* <img
-          src={AppsBanner}
-          alt="Apps Banner"
-          className={`w-full py-4 ${imageLoading ? 'hidden' : ''}`}
-          onLoad={() => setImageLoading(false)}
-        /> */}
-        {/* {imageLoading && <AppBannerSkeleton />} */}
-        {/* App groups and sort/filter/search */}
         <div className="flex justify-between py-4">
           <div className="flex items-center gap-x-4">
             {isAdmin && (
@@ -397,8 +393,20 @@ const Apps: FC<IAppsProps> = () => {
                 {categoryFilterPills.map((category: any) => (
                   <div
                     key={category.id}
-                    className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1"
+                    className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:shadow-lg focus:shadow-lg group cursor-pointer outline-none"
                     data-testid={`apps-filterby-category`}
+                    onClick={() =>
+                      handleRemoveFilters(AppFilterKey.categories, category.id)
+                    }
+                    onKeyUp={(e) =>
+                      e.code === 'Enter'
+                        ? handleRemoveFilters(
+                            AppFilterKey.categories,
+                            category.id,
+                          )
+                        : ''
+                    }
+                    tabIndex={0}
                   >
                     <div className="mr-1 text-neutral-500 whitespace-nowrap">
                       Category{' '}
@@ -409,12 +417,6 @@ const Apps: FC<IAppsProps> = () => {
                       size={16}
                       color="text-neutral-900"
                       className="cursor-pointer"
-                      onClick={() =>
-                        handleRemoveFilters(
-                          AppFilterKey.categories,
-                          category.id,
-                        )
-                      }
                       dataTestId={`applied-filter-close`}
                     />
                   </div>
@@ -422,8 +424,17 @@ const Apps: FC<IAppsProps> = () => {
                 {appFilters.teams.map((team: any) => (
                   <div
                     key={team.id}
-                    className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1"
+                    className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1  hover:shadow-lg focus:shadow-lg group cursor-pointer outline-none"
                     data-testid={`apps-filterby-team`}
+                    onClick={() =>
+                      handleRemoveFilters(AppFilterKey.teams, team.id)
+                    }
+                    onKeyUp={(e) =>
+                      e.code === 'Enter'
+                        ? handleRemoveFilters(AppFilterKey.teams, team.id)
+                        : ''
+                    }
+                    tabIndex={0}
                   >
                     <div className="mr-1 text-neutral-500">
                       Team <span className="text-primary-500">{team.name}</span>
@@ -433,18 +444,17 @@ const Apps: FC<IAppsProps> = () => {
                       size={16}
                       color="text-neutral-900"
                       className="cursor-pointer"
-                      onClick={() =>
-                        handleRemoveFilters(AppFilterKey.teams, team.id)
-                      }
                       dataTestId={`applied-filter-close`}
                     />
                   </div>
                 ))}
               </div>
               <div
-                className="text-neutral-500 border px-3 py-[3px] whitespace-nowrap rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
-                onClick={clearFilters}
+                className="text-neutral-500 border px-3 py-[3px] whitespace-nowrap rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer focus:text-primary-600 focus:border-primary-600 outline-none"
                 data-testid="apps-clear-filters"
+                onClick={clearFilters}
+                onKeyUp={(e) => (e.code === 'Enter' ? clearFilters() : '')}
+                tabIndex={0}
               >
                 Clear Filters
               </div>
@@ -459,6 +469,14 @@ const Apps: FC<IAppsProps> = () => {
                   <div
                     className="text-base font-semibold text-primary-500 cursor-pointer"
                     onClick={() => handleTabChange(AppGroup.FEATURED)}
+                    onKeyUp={(e) =>
+                      e.code === 'Enter'
+                        ? handleTabChange(AppGroup.FEATURED)
+                        : ''
+                    }
+                    role="button"
+                    aria-label="view all featured"
+                    tabIndex={0}
                   >
                     View all featured
                   </div>
@@ -489,6 +507,7 @@ const Apps: FC<IAppsProps> = () => {
                 setAppsLoading={setIsFeaturedAppLoading}
                 startFetching={startFetching}
                 myApp={appFilters.myApp || !isAdmin}
+                appGridTitle="Featured apps"
               />
               {featuredAppsCount > 0 && !isFeauturedAppLoading && (
                 <div className="text-xl font-bold mt-4">All Apps</div>
@@ -519,6 +538,7 @@ const Apps: FC<IAppsProps> = () => {
             resetField={resetField}
             startFetching={startFetching}
             myApp={appFilters.myApp || !isAdmin}
+            appGridTitle="All apps"
           />
         </div>
       </Card>

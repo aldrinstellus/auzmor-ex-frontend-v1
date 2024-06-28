@@ -87,19 +87,22 @@ const SelectAppModal: FC<ISelectAppModalProps> = ({
           }
           if (appIds.length > 0) {
             return (
-              <div className="flex flex-wrap gap-6">
+              <ul className="flex flex-wrap gap-6">
                 {appIds
                   ?.filter(({ id }: any) => !!apps[id])
                   ?.map(({ id }: any) => (
-                    <AppCard
-                      data={apps[id]}
-                      key={id}
-                      isSelected={!!find(selectedApps, apps[id])}
-                      onSelect={onSelect}
-                      disabled={!find(selectedApps, apps[id]) && maxAppSelected}
-                    />
+                    <li key={id}>
+                      <AppCard
+                        data={apps[id]}
+                        isSelected={!!find(selectedApps, apps[id])}
+                        onSelect={onSelect}
+                        disabled={
+                          !find(selectedApps, apps[id]) && maxAppSelected
+                        }
+                      />
+                    </li>
                   ))}
-              </div>
+              </ul>
             );
           }
           return (

@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgPdfFilled = (props: SVGProps<SVGSVGElement>) => (
+const SvgPdfFilled = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="25"
@@ -8,6 +10,7 @@ const SvgPdfFilled = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     viewBox="0 0 25 32"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <g fillRule="evenodd" clipRule="evenodd">
       <path

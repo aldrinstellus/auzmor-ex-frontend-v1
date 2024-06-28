@@ -55,21 +55,14 @@ const AppLauncher = () => {
         className="px-6 flex items-center justify-between cursor-pointer"
         data-testid="app-launcher"
         onClick={toggleModal}
+        onKeyUp={(e) => (e.code === 'Enter' ? toggleModal() : '')}
+        tabIndex={0}
+        title="app launcher"
+        aria-expanded={open}
+        role="button"
       >
-        <div className="font-bold">App Launcher</div>
+        <p className="font-bold">App Launcher</p>
         <div className="flex items-center gap-2">
-          {/* {(appIds || []).length > 0 && isAdmin && (
-            <Icon
-              name="edit"
-              size={20}
-              color="text-neutral-900"
-              dataTestId="app-launcher-collapse"
-              onClick={(e) => {
-                e.stopPropagation();
-                openAddAppModal();
-              }}
-            />
-          )} */}
           <Icon
             name={open ? 'arrowUp' : 'arrowDown'}
             size={20}
@@ -104,11 +97,13 @@ const AppLauncher = () => {
           if (appIds.length > 0) {
             return (
               <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-8 w-full">
+                <ul className="flex items-center gap-8 w-full">
                   {appIds?.map(({ id }: any) => (
-                    <AppWidgetCard data={widgetApps[id]} key={id} />
+                    <li key={id}>
+                      <AppWidgetCard data={widgetApps[id]} />
+                    </li>
                   ))}
-                </div>
+                </ul>
                 <Button
                   variant={Variant.Secondary}
                   size={Size.Small}

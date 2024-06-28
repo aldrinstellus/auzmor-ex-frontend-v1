@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgDotsVerticalOutline = (props: SVGProps<SVGSVGElement>) => (
+const SvgDotsVerticalOutline = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width={20}
     height={20}
@@ -8,6 +10,7 @@ const SvgDotsVerticalOutline = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <g clipPath="url(#clip0_1112_264719)">
       <g filter="url(#filter0_d_1112_264719)">

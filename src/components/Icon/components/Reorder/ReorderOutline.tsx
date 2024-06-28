@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgReorderOutline = (props: SVGProps<SVGSVGElement>) => (
+const SvgReorderOutline = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width={20}
     height={20}
@@ -8,6 +10,7 @@ const SvgReorderOutline = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <circle cx="2" cy="2" r="2" fill="currentColor" />
     <circle cx="2" cy="8" r="2" fill="currentColor" />

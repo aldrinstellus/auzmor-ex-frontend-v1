@@ -12,14 +12,11 @@ import {
   useInfiniteMembers,
   useSingleTeam,
 } from 'queries/teams';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { toast } from 'react-toastify';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { useMutation } from '@tanstack/react-query';
-import { getFullName, getProfileImage, twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { getFullName, getProfileImage } from 'utils/misc';
 import queryClient from 'utils/queryClient';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useModal from 'hooks/useModal';
 import People from 'pages/Users/components/People';
 import {
@@ -36,10 +33,12 @@ import { FC, useEffect } from 'react';
 import useRole from 'hooks/useRole';
 import TeamOptions from 'components/TeamOptions';
 import useProduct from 'hooks/useProduct';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 export interface ITeamMemberProps {}
 
 const TeamDetail: FC<ITeamMemberProps> = () => {
+  usePageTitle('teamProfile');
   const params = useParams();
   const [searchParams] = useSearchParams();
   const { state } = useLocation();
@@ -65,28 +64,11 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
     mutationFn: (payload: any) => {
       return addTeamMember(id || '', payload);
     },
-    onError: (_error: any) => {
-      toast(
-        <FailureToast
-          content={`Error Adding Team Members`}
-          dataTestId="team-create-error-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
-    },
+    onError: () =>
+      failureToastConfig({
+        content: `Error Adding Team Members`,
+        dataTestId: 'team-create-error-toaster',
+      }),
     onSuccess: (data: any) => {
       const membersAddedCount =
         data?.result?.data?.length - (data.teamMembers || 0);
@@ -96,28 +78,10 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
           : membersAddedCount === 1
           ? `${membersAddedCount} member has been added to the team`
           : 'Members already exist in the team';
-      toast(
-        <SuccessToast content={message} dataTestId="team-detail-toaster" />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-white"
-              size={20}
-              dataTestId="team-detail-toaster-close"
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        content: message,
+        dataTestId: 'team-detail-toaster',
+      });
       queryClient.invalidateQueries(['search-team-members'], { exact: false });
       queryClient.invalidateQueries(['team-members']);
       queryClient.invalidateQueries(['team', id]);
@@ -154,6 +118,12 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
               <div
                 className="flex space-x-2"
                 onClick={handleGoBack}
+                onKeyUp={(e) => (e.code === 'Enter' ? handleGoBack() : '')}
+                role="button"
+                title={`go back to ${
+                  prevRoute === TeamTab.MyTeams ? 'My Teams' : 'All Teams'
+                }`}
+                tabIndex={0}
                 data-testid="my-team-back"
               >
                 <Icon name="linearLeftArrowOutline" size={20} />
@@ -194,16 +164,19 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
             </div>
             <div className="w-full bg-purple-50 border-1 border-purple-200 py-4 pl-8 pr-16 flex justify-between">
               <div className="flex flex-col text-neutral-900 space-y-4">
-                <div
+                <h1
                   className="text-2xl font-bold"
                   data-testid="team-details-name"
+                  tabIndex={0}
+                  role="contentinfo"
                 >
                   {data.name}
-                </div>
+                </h1>
                 {!!data?.description && (
                   <div
                     className="text-xs font-normal"
                     data-testid="team-details-description"
+                    tabIndex={0}
                   >
                     {data.description}
                   </div>
@@ -212,7 +185,12 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
 
               <div className="flex items-center space-x-20 ">
                 {!isLxp ? (
-                  <div className="flex flex-col space-y-2">
+                  <div
+                    className="flex flex-col space-y-2"
+                    role="contentinfo"
+                    title={`team type is ${data.category?.name || 'category'}`}
+                    tabIndex={0}
+                  >
                     <div className="text-sm font-semibold text-purple-700">
                       Team type
                     </div>
@@ -225,7 +203,11 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                   </div>
                 ) : null}
                 {isLxp ? (
-                  <div className="flex flex-col space-y-2">
+                  <div
+                    className="flex flex-col space-y-2"
+                    tabIndex={0}
+                    role="contentinfo"
+                  >
                     <div className="flex items-center text-sm font-semibold text-purple-700">
                       <span
                         className="text-xl font-semibold text-neutral-900"
@@ -237,7 +219,11 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex flex-col space-y-2">
+                  <div
+                    className="flex flex-col space-y-2"
+                    tabIndex={0}
+                    role="contentinfo"
+                  >
                     <div className="text-sm font-semibold text-purple-700">
                       No. of people
                     </div>

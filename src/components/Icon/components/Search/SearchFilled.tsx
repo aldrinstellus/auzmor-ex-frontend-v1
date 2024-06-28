@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgSearchFilled = (props: SVGProps<SVGSVGElement>) => (
+const SvgSearchFilled = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <>
     <svg
       width={24}
@@ -8,6 +10,7 @@ const SvgSearchFilled = (props: SVGProps<SVGSVGElement>) => (
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
+      aria-label={props.ariaLabel}
       fill="none"
     >
       <path

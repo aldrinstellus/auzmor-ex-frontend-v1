@@ -10,8 +10,16 @@ import {
   PostFilterPreference,
   PostType,
 } from 'queries/post';
-import { FC, ReactElement, memo, useEffect, useState } from 'react';
+import {
+  FC,
+  ReactElement,
+  memo,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { xor } from 'lodash';
+import { clsx } from 'clsx';
 
 export enum FeedFilterContentType {
   Filter = 'FILTER',
@@ -255,23 +263,61 @@ const FeedFilter: FC<FeedFilterProps> = ({
     },
   ];
 
+  const getFilterRowStyle = (option: FeedFilterOption) =>
+    clsx({
+      'bg-blue-50 font-medium text-xs pl-6 py-1 min-w-full text-neutral-500 cursor-default':
+        option?.type === FeedFilterContentType.Section,
+      'bg-white font-medium text-xs px-6 py-2 min-w-full text-neutral-900 overflow hover:bg-primary-50 focus:bg-primary-50 focus-within:bg-primary-50 flex items-center gap-[10px] border-b cursor-pointer':
+        option?.type !== FeedFilterContentType.Section,
+      'bg-green-50':
+        option?.type !== FeedFilterContentType.Section &&
+        isOptionSelected(option),
+    });
+
+  const getCheckboxStyle = (option: FeedFilterOption) =>
+    clsx({
+      hidden: option?.type === FeedFilterContentType.Section,
+      'block accent-primary-600':
+        option?.type !== FeedFilterContentType.Section,
+      'outline-none': true,
+    });
+
+  const clearFilterButtonStyle = useCallback(
+    () =>
+      clsx({
+        'text-sm font-bold': true,
+        'text-gray-400': isFeelFiltersEmpty(),
+        'text-gray-900': !isFeelFiltersEmpty(),
+      }),
+    [feedFilters],
+  );
+
+  // Events
+  const handleFilterButtonClick = () => {
+    setShowFeedFilter(!showFeedFilter);
+    setHaveFiltersBeenModified(false);
+  };
+  const handleFilterByClick = () => {
+    setShowFeedFilter(false);
+    setHaveFiltersBeenModified(true);
+  };
+
   return (
     <Popover className="z-40">
       <Tooltip tooltipContent="Filters" tooltipPosition="top">
         <Popover.Button
-          className="box-border font-bold flex flex-row justify-center items-center border-none relative"
-          onClick={() => {
-            setShowFeedFilter(!showFeedFilter);
-            setHaveFiltersBeenModified(false);
-          }}
+          className="box-border font-bold flex flex-row justify-center items-center border-none relative outline-none"
+          onClick={handleFilterButtonClick}
+          onKeyUp={(e) => (e.code === 'Enter' ? handleFilterButtonClick() : '')}
           data-testid={dataTestId}
+          aria-label="filters"
         >
           {getFeedFilterCount() > 0 && (
             <div className="absolute rounded-full bg-red-600 text-white text-xxs -top-1 -right-1.5 flex w-4 h-4 items-center justify-center">
               {getFeedFilterCount()}
             </div>
           )}
-          <Icon name="filter" size={24} className="" />
+          <Icon name="filter" size={24} />
         </Popover.Button>
       </Tooltip>
       <Transition
@@ -287,17 +333,16 @@ const FeedFilter: FC<FeedFilterProps> = ({
           <Card className="bg-white rounded-3xl top-full min-w-[250px] shadow-md z-10 mt-1 absolute right-0">
             <div
               className="flex justify-between items-center py-3 px-6"
-              onClick={() => {
-                setShowFeedFilter(false);
-                setHaveFiltersBeenModified(true);
-              }}
+              onClick={handleFilterByClick}
+              onKeyUp={(e) => (e.code === 'Enter' ? handleFilterByClick() : '')}
             >
               <p className="text-base font-bold">Filter by</p>
               <Icon
                 name="close"
                 size={16}
-                className="cursor-pointer"
+                className="cursor-pointer outline-none"
                 dataTestId="filter-closeicon"
+                tabIndex={0}
               />
             </div>
             <div>
@@ -305,44 +350,30 @@ const FeedFilter: FC<FeedFilterProps> = ({
                 {feedFilterOptions
                   .filter((option) => !option.hidden)
                   .map((option) => (
-                    <div
-                      key={option.dataTestId}
+                    <li
+                      className={getFilterRowStyle(option)}
+                      value={option?.value}
+                      data-testid={option.dataTestId}
                       onClick={() =>
                         !option.isDisabled && updateFeedFilters(option)
                       }
-                      data-testid={option.dataTestId}
+                      key={option.dataTestId}
                     >
-                      <li
-                        className={
-                          option?.type === FeedFilterContentType.Section
-                            ? 'bg-blue-50 font-medium text-xs pl-6 py-1 min-w-full text-neutral-500 cursor-default'
-                            : `bg-white font-medium text-xs px-6 py-2 min-w-full text-neutral-900 overflow ${
-                                isOptionSelected(option) && 'bg-green-50'
-                              } hover:bg-primary-50 flex items-center gap-[10px] border-b cursor-pointer`
-                        }
-                        value={option?.value}
-                      >
-                        <input
-                          type="checkbox"
-                          className={
-                            option?.type === FeedFilterContentType.Section
-                              ? 'hidden'
-                              : 'block accent-primary-600 '
-                          }
-                          disabled={option.isDisabled}
-                          checked={isOptionSelected(option)}
-                        ></input>
-                        {option?.label}
-                      </li>
-                    </div>
+                      <input
+                        type="checkbox"
+                        className={getCheckboxStyle(option)}
+                        disabled={option.isDisabled}
+                        checked={isOptionSelected(option)}
+                        aria-label={option?.label}
+                      ></input>
+                      {option?.label}
+                    </li>
                   ))}
               </ul>
             </div>
             <div className="flex items-center justify-between py-2 px-6">
               <button
-                className={`text-sm font-bold ${
-                  isFeelFiltersEmpty() ? 'text-gray-400' : 'text-gray-900'
-                }`}
+                className={clearFilterButtonStyle()}
                 onClick={clearFeedFilters}
                 disabled={isFeelFiltersEmpty()}
                 data-testid="filters-clearfiltercta"

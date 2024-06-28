@@ -41,10 +41,10 @@ const ChangeToRegularPostModal: FC<AppProps> = ({ open, closeModal, data }) => {
     onSuccess: async () => {
       await queryClient.invalidateQueries(['feed-announcements-widget']);
       await queryClient.invalidateQueries(['post-announcements-widget']);
-      successToastConfig(
-        'Announcement changed to a regular post',
-        'convert-to-post-toast',
-      );
+      successToastConfig({
+        content: 'Announcement changed to a regular post',
+        dataTestId: 'convert-to-post-toast',
+      });
     },
   });
 
@@ -64,7 +64,7 @@ const ChangeToRegularPostModal: FC<AppProps> = ({ open, closeModal, data }) => {
       <Divider />
       <div className="flex flex-col gap-y-4 items-center justify-center text-neutral-900 text-base p-6">
         <div className="flex justify-center">
-          <img src={ErrorWarningPng} width={80} height={80} />
+          <img src={ErrorWarningPng} width={80} height={80} alt="Warning" />
         </div>
         <p className="font-semibold">
           Are you sure you want to change this announcement to a regular post?

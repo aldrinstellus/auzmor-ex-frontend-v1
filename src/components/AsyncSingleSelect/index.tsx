@@ -100,6 +100,17 @@ const AsyncSingleSelect = forwardRef(
       control,
     });
 
+    useEffect(() => {
+      setTimeout(() => {
+        const nodes = document.querySelectorAll('[aria-activedescendant]');
+        if (nodes.length) {
+          for (const each of nodes) {
+            each.removeAttribute('aria-activedescendant');
+          }
+        }
+      }, 0);
+    });
+
     const labelStyle = useMemo(
       () =>
         clsx(
@@ -163,6 +174,8 @@ const AsyncSingleSelect = forwardRef(
     const filterOption = (input: any, option: any) =>
       (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
 
+    const id = `select-id-${Math.random().toString(16).slice(2)}`;
+
     return (
       <ConfigProvider
         theme={{
@@ -173,11 +186,12 @@ const AsyncSingleSelect = forwardRef(
           },
         }}
       >
-        <div
+        <label
           className={clsx(
             { [`relative ${className}`]: true },
             { 'pointer-events-none': disabled },
           )}
+          htmlFor={id}
         >
           <div className={labelStyle}>{label}</div>
           <div
@@ -194,6 +208,7 @@ const AsyncSingleSelect = forwardRef(
               defaultValue={defaultValue}
               render={() => (
                 <Select
+                  id={id}
                   open={open}
                   showSearch={showSearch}
                   disabled={disabled}
@@ -243,7 +258,6 @@ const AsyncSingleSelect = forwardRef(
                       <Option
                         key={`${option.value}-${Math.random()}`}
                         value={option.value}
-                        label={option.label}
                       >
                         {optionRenderer ? (
                           optionRenderer(option)
@@ -273,7 +287,7 @@ const AsyncSingleSelect = forwardRef(
           >
             {error || ' '}
           </div>
-        </div>
+        </label>
       </ConfigProvider>
     );
   },

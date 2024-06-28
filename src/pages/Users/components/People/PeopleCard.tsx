@@ -12,8 +12,7 @@ import {
   // updateStatus,
   useResendInvitation,
 } from 'queries/users';
-import { toast } from 'react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import {
   getEditSection,
   getProfileImage,
@@ -21,8 +20,6 @@ import {
   titleCase,
   twConfig,
 } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
 import useModal from 'hooks/useModal';
 import DeletePeople from '../DeleteModals/People';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -33,6 +30,7 @@ import clsx from 'clsx';
 import RemoveTeamMember from '../DeleteModals/TeamMember';
 import { FC } from 'react';
 import useProduct from 'hooks/useProduct';
+import Truncate from 'components/Truncate';
 
 export interface IPeopleCardProps {
   userData: IGetUser;
@@ -92,60 +90,13 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     useModal();
 
   const resendInviteMutation = useResendInvitation();
-  // const updateUserStatusMutation = useMutation({
-  //   mutationFn: updateStatus,
-  //   mutationKey: ['update-user-status'],
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ['users'] });
-  //     toast(
-  //       <SuccessToast
-  //         content={`User has been ${
-  //           (status as any) === UserStatus.Inactive
-  //             ? 'reactivated'
-  //             : 'deactivated'
-  //         }`}
-  //       />,
-  //       {
-  //         closeButton: (
-  //           <Icon
-  //             name="closeCircleOutline"
-  //             color="text-primary-500"
-  //             size={20}
-  //           />
-  //         ),
-  //         style: {
-  //           border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-  //           borderRadius: '6px',
-  //           display: 'flex',
-  //           alignItems: 'center',
-  //         },
-  //         autoClose: TOAST_AUTOCLOSE_TIME,
-  //         transition: slideInAndOutTop,
-  //         theme: 'dark',
-  //       },
-  //     );
-  //   },
-  // });
 
   const updateUserRoleMutation = useMutation({
     mutationFn: updateRoleToAdmin,
     mutationKey: ['update-user-role'],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      toast(<SuccessToast content={`User role has been updated to admin`} />, {
-        closeButton: (
-          <Icon name="closeCircleOutline" color="text-primary-500" size={20} />
-        ),
-        style: {
-          border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
-        },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
-      });
+      successToastConfig({ content: `User role has been updated to admin` });
     },
   });
 
@@ -204,6 +155,16 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     return null;
   };
 
+  const handleProfileClick = () => {
+    if (isLxp) {
+      return null;
+    }
+    if (id === user?.id) {
+      return navigate('/profile');
+    }
+    return navigate(`/users/${id}`);
+  };
+
   return (
     <div
       className="cursor-pointer w-fit"
@@ -214,7 +175,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
         shadowOnHover
         className={`relative w-[190px] ${
           isLxp ? 'h-[190px]' : 'h-[244px]'
-        } border-solid border rounded-9xl border-neutral-200 bg-white`}
+        } border-solid border rounded-9xl border-neutral-200 bg-white focus-within:shadow-xl`}
       >
         {!isLxp ? (
           <UserProfileDropdown
@@ -234,24 +195,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
             onPromoteClick={() => updateUserRoleMutation.mutate({ id })}
             onDeactivateClick={openDeactivateModal}
             onResendInviteClick={() => {
-              toast(<SuccessToast content="Invitation has been sent" />, {
-                closeButton: (
-                  <Icon
-                    name="closeCircleOutline"
-                    color="text-primary-500"
-                    size={20}
-                  />
-                ),
-                style: {
-                  border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-                  borderRadius: '6px',
-                  display: 'flex',
-                  alignItems: 'center',
-                },
-                autoClose: TOAST_AUTOCLOSE_TIME,
-                transition: slideInAndOutTop,
-                theme: 'dark',
-              });
+              successToastConfig({ content: 'Invitation has been sent' });
               resendInviteMutation.mutate(id);
             }}
             onRemoveTeamMember={openRemoveTeamMemberModal}
@@ -275,6 +219,8 @@ const PeopleCard: FC<IPeopleCardProps> = ({
           <div
             className="absolute top-0 text-xxs text-[#737373] font-medium py-1 bg-[#F5F5F5] w-full justify-center align-center rounded-t-9xl flex"
             data-testid="usercard-deactivate-banner"
+            tabIndex={0}
+            title="Deactivated Account"
           >
             <Icon
               name="forbidden"
@@ -298,16 +244,11 @@ const PeopleCard: FC<IPeopleCardProps> = ({
         )}
 
         <div
-          className="flex flex-col gap-4 items-center z-10 py-6 px-4 justify-between h-full"
-          onClick={() => {
-            if (isLxp) {
-              return null;
-            }
-            if (id === user?.id) {
-              return navigate('/profile');
-            }
-            return navigate(`/users/${id}`);
-          }}
+          className="flex flex-col gap-4 items-center z-10 py-6 px-4 justify-between h-full outline-none"
+          onClick={handleProfileClick}
+          onKeyUp={(e) => (e.code === 'Enter' ? handleProfileClick() : '')}
+          tabIndex={0}
+          title={fullName || workEmail}
         >
           <Avatar
             size={80}
@@ -349,11 +290,10 @@ const PeopleCard: FC<IPeopleCardProps> = ({
                   hover={false}
                   color="text-neutral-900"
                 />
-                <div className="text-neutral-900 text-xs font-normal line-clamp-1 truncate">
-                  {designation?.name.length <= 22
-                    ? designation?.name.substring(0, 22)
-                    : designation?.name.substring(0, 22) + '..'}
-                </div>
+                <Truncate
+                  text={designation?.name}
+                  className="text-neutral-900 text-xs font-normal max-w-[128px]"
+                />
               </div>
             )}
             {department?.name && (
@@ -367,11 +307,10 @@ const PeopleCard: FC<IPeopleCardProps> = ({
                   hover={false}
                   color="text-neutral-900"
                 />
-                <div className="text-neutral-900 text-xxs font-semibold truncate">
-                  {department?.name.length <= 22
-                    ? department?.name.substring(0, 22)
-                    : department?.name.substring(0, 22) + '..'}
-                </div>
+                <Truncate
+                  text={department?.name}
+                  className="text-neutral-900 text-xs font-normal max-w-[128px]"
+                />
               </div>
             )}
             {workLocation?.name && (

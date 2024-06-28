@@ -141,6 +141,7 @@ const TelephoneInput: FC<TelephoneInputProps> = ({
           }
           data-testid={`${dataTestId}-number`}
           className="ml-2 w-full rounded-full text-sm font-medium border border-neutral-200 focus:outline-none px-5 py-[9px]"
+          aria-label="contact number"
         />
       </div>
     </div>

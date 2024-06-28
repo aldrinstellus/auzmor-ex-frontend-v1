@@ -4,7 +4,7 @@ import NoDataFound from 'components/NoDataFound';
 import { useDebounce } from 'hooks/useDebounce';
 import DocSearchRow from 'pages/ChannelDetail/components/Documents/components/DocSearchRow';
 import { useConnectedStatus, useDocument } from 'queries/storage';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { DocType } from 'queries/files';
@@ -60,6 +60,17 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
   );
 
   const options = [...documents];
+
+  useEffect(() => {
+    const nodes = document.getElementsByClassName('global-select');
+    if (nodes.length) {
+      for (const each of nodes) {
+        (
+          each.firstChild?.firstChild?.firstChild as HTMLInputElement
+        ).setAttribute('aria-label', 'search');
+      }
+    }
+  });
 
   const fields = [
     {

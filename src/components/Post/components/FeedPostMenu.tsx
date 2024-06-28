@@ -8,15 +8,12 @@ import PostBuilder, { PostBuilderMode } from 'components/PostBuilder';
 import useModal from 'hooks/useModal';
 import useAuth from 'hooks/useAuth';
 import useRole from 'hooks/useRole';
-import { canPerform, isRegularPost, twConfig } from 'utils/misc';
+import { canPerform, isRegularPost } from 'utils/misc';
 import { useFeedStore } from 'stores/feedStore';
 import omit from 'lodash/omit';
 import { CreatePostFlow } from 'contexts/CreatePostContext';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
-import { toast } from 'react-toastify';
-import FailureToast from 'components/Toast/variants/FailureToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import ClosePollModal from './ClosePollModal';
 import PollVotesModal from './PollVotesModal';
 import ChangeToRegularPostModal from './ChangeToRegularPostModal';
@@ -61,55 +58,19 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
       return { previousFeed };
     },
     onError: (_error, _variables, context) => {
-      toast(
-        <FailureToast
-          content="Error deleting post"
-          dataTestId="post-delete-toaster-failure"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      failureToastConfig({
+        content: 'Error deleting post',
+        dataTestId: 'post-delete-toaster-failure',
+      });
       if (context?.previousFeed) {
         setFeed(context?.previousFeed);
       }
     },
     onSuccess: async (_data, variables, _context) => {
-      toast(
-        <SuccessToast
-          content="Post deleted successfully"
-          dataTestId="post-delete-toaster-success"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        content: 'Post deleted successfully',
+        dataTestId: 'post-delete-toaster-success',
+      });
       if (isPostPage) navigate('/feed');
       await queryClient.invalidateQueries(['feed']);
       await queryClient.invalidateQueries(['feed-announcements-widget']);
@@ -236,7 +197,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
         <PopupMenu
           triggerNode={
             <div className="cursor-pointer" data-testid="feed-post-ellipsis">
-              <Icon name="more" />
+              <Icon name="more" tabIndex={0} />
             </div>
           }
           menuItems={postOptions}

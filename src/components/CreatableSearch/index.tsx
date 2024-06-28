@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, useState } from 'react';
+import { forwardRef, useEffect, useMemo, useState } from 'react';
 import { Control, Controller, useController } from 'react-hook-form';
 import clsx from 'clsx';
 import { Select, ConfigProvider } from 'antd';
@@ -131,6 +131,19 @@ const CreatableSearch = forwardRef(
       </div>
     );
 
+    const id = `select-id-${Math.random().toString(16).slice(2)}`;
+
+    useEffect(() => {
+      setTimeout(() => {
+        const nodes = document.querySelectorAll('[aria-activedescendant]');
+        if (nodes.length) {
+          for (const each of nodes) {
+            each.removeAttribute('aria-activedescendant');
+          }
+        }
+      }, 0);
+    });
+
     return (
       <ConfigProvider
         theme={{
@@ -141,11 +154,12 @@ const CreatableSearch = forwardRef(
           },
         }}
       >
-        <div
+        <label
           className={clsx(
             { [`relative ${className}`]: true },
             { 'pointer-events-none': disabled },
           )}
+          htmlFor={id}
         >
           <div className={labelStyle}>
             {label} <span className="text-red-500">{required && '*'}</span>
@@ -163,6 +177,7 @@ const CreatableSearch = forwardRef(
               control={control}
               render={() => (
                 <Select
+                  id={id}
                   open={open}
                   showSearch
                   mode={multi ? 'multiple' : undefined}
@@ -247,7 +262,7 @@ const CreatableSearch = forwardRef(
           >
             {error || ' '}
           </div>
-        </div>
+        </label>
       </ConfigProvider>
     );
   },
