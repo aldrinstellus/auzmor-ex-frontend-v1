@@ -159,8 +159,6 @@ const Toolbar: FC<IToolbarProps> = ({
     [fetchedMembers],
   );
 
-  console.log(userData);
-
   const memberSearchfields = [
     {
       type: FieldType.AsyncSingleSelect,
