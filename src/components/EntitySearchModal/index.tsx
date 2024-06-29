@@ -6,6 +6,8 @@ import EntitySearchModalBody from './components/EntitySearchModalBody';
 import { useForm } from 'react-hook-form';
 import { IGetUser } from 'queries/users';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
+import { CHANNEL_ROLE } from 'stores/channelStore';
+import { ITeam } from 'queries/teams';
 
 export enum EntitySearchModalType {
   User = 'USER',
@@ -53,6 +55,14 @@ export interface IAudienceForm {
   teams: any;
   channels: any;
   users: Record<string, IGetUser | false>;
+  channelMembers: {
+    users: {
+      [key: string]: { user?: IGetUser; role?: CHANNEL_ROLE } | undefined;
+    };
+    teams: {
+      [key: string]: { team?: ITeam; role?: CHANNEL_ROLE } | undefined;
+    };
+  };
 }
 
 const EntitySearchModal: FC<IEntitySearchModalProps> = ({
