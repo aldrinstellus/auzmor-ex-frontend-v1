@@ -20,11 +20,6 @@ import {
 } from 'mocks/Channels';
 import apiService from 'utils/apiService';
 
-export enum CHANNEL_MEMBER_STATUS {
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED',
-}
 export interface IChannelPayload {
   name?: string;
   categoryIds?: string[];
