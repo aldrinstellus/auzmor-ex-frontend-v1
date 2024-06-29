@@ -16,6 +16,7 @@ import ChannelRow from './components/ChannelRow';
 import Divider from 'components/Divider';
 import ChannelRowSkeleton from './components/ChannelRowSkeleton';
 import ChannelCardSkeleton from './components/ChannelCardSkeleton';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 interface IChannelsProps {}
 
@@ -29,6 +30,7 @@ interface IFilterButton {
 }
 
 export const Channels: FC<IChannelsProps> = () => {
+  usePageTitle('channels');
   const { t } = useTranslation('channels');
   const { filters, clearFilters, updateFilter } = useAppliedFiltersStore();
   const [isModalOpen, openModal, closeModal] = useModal();
@@ -150,7 +152,9 @@ export const Channels: FC<IChannelsProps> = () => {
     <>
       <Card className="p-8 flex flex-col gap-6">
         <div className="flex justify-between items-center">
-          <p className="text-2xl font-bold text-neutral-900">{t('channels')}</p>
+          <h1 className="text-2xl font-bold text-neutral-900">
+            {t('channels')}
+          </h1>
           <Button
             label={t('createChannelCTA')}
             leftIcon="add"

@@ -54,6 +54,7 @@ export interface IAsyncSingleSelectProps {
   disableFilterOption?: boolean;
   onClear?: () => void;
   onEnter?: () => void;
+  onSelect?: () => void;
 }
 
 const AsyncSingleSelect = forwardRef(
@@ -88,6 +89,7 @@ const AsyncSingleSelect = forwardRef(
       onClear = () => {},
       disableFilterOption = false,
       onEnter,
+      onSelect,
     }: IAsyncSingleSelectProps,
     ref?: any,
   ) => {
@@ -96,6 +98,17 @@ const AsyncSingleSelect = forwardRef(
     const { field } = useController({
       name,
       control,
+    });
+
+    useEffect(() => {
+      setTimeout(() => {
+        const nodes = document.querySelectorAll('[aria-activedescendant]');
+        if (nodes.length) {
+          for (const each of nodes) {
+            each.removeAttribute('aria-activedescendant');
+          }
+        }
+      }, 0);
     });
 
     const labelStyle = useMemo(
@@ -161,6 +174,8 @@ const AsyncSingleSelect = forwardRef(
     const filterOption = (input: any, option: any) =>
       (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
 
+    const id = `select-id-${Math.random().toString(16).slice(2)}`;
+
     return (
       <ConfigProvider
         theme={{
@@ -171,11 +186,12 @@ const AsyncSingleSelect = forwardRef(
           },
         }}
       >
-        <div
+        <label
           className={clsx(
             { [`relative ${className}`]: true },
             { 'pointer-events-none': disabled },
           )}
+          htmlFor={id}
         >
           <div className={labelStyle}>{label}</div>
           <div
@@ -192,6 +208,7 @@ const AsyncSingleSelect = forwardRef(
               defaultValue={defaultValue}
               render={() => (
                 <Select
+                  id={id}
                   open={open}
                   showSearch={showSearch}
                   disabled={disabled}
@@ -199,6 +216,7 @@ const AsyncSingleSelect = forwardRef(
                   placement={menuPlacement ? menuPlacement : undefined}
                   popupMatchSelectWidth={false}
                   onPopupScroll={onPopupScroll}
+                  defaultActiveFirstOption={false}
                   getPopupContainer={(triggerNode) => {
                     if (getPopupContainer) {
                       return getPopupContainer;
@@ -222,6 +240,7 @@ const AsyncSingleSelect = forwardRef(
                   onChange={(_, option) => {
                     field.onChange(option);
                   }}
+                  onSelect={onSelect}
                   optionLabelProp="label"
                   className={`async-single-select ${selectClassName}`}
                   clearIcon={clearIcon}
@@ -269,7 +288,7 @@ const AsyncSingleSelect = forwardRef(
           >
             {error || ' '}
           </div>
-        </div>
+        </label>
       </ConfigProvider>
     );
   },

@@ -9,13 +9,8 @@ import Button, {
 import Modal from 'components/Modal';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { toast } from 'react-toastify';
-import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { deleteApp } from 'queries/apps';
 import { FC } from 'react';
 
@@ -31,55 +26,19 @@ const DeleteApp: FC<IDeleteAppProps> = ({ open, closeModal, appId }) => {
     mutationFn: deleteApp,
     onError: (_error) => {
       closeModal(true);
-      toast(
-        <FailureToast
-          content="Error deleting the app"
-          dataTestId="delete-app-error-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      failureToastConfig({
+        content: 'Error deleting the app',
+        dataTestId: 'delete-app-error-toaster',
+      });
     },
     onSuccess: (_data, _variables, _context) => {
       closeModal(true);
       queryClient.invalidateQueries({ queryKey: ['apps'] });
       queryClient.invalidateQueries({ queryKey: ['my-apps'] });
-      toast(
-        <SuccessToast
-          content="App has been deleted successfully"
-          dataTestId="delete-app-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        content: 'App has been deleted successfully',
+        dataTestId: 'delete-app-toaster',
+      });
     },
   });
 

@@ -43,6 +43,7 @@ const NotificationCard: FC<NotificationCardProps> = ({
             <img
               src={image}
               className="min-w-[140px] max-w-[140px] min-h-[72px]"
+              alt="Image"
             />
           </div>
         )}

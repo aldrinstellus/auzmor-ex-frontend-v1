@@ -72,7 +72,12 @@ const ShowingCount: FC<{
   className?: string;
 }> = ({ isLoading, count, className = '' }) => {
   return (
-    <div className={className}>
+    <div
+      className={className}
+      tabIndex={0}
+      role="contentinfo"
+      title={`Showing ${count} results`}
+    >
       {!isLoading ? (
         <div className="text-neutral-500">Showing {count} results</div>
       ) : (
@@ -285,6 +290,7 @@ const Team: FC<ITeamProps> = ({
               borderAround
               className="bg-white !p-[10px]"
               dataTestId="teams-filter"
+              ariaLabel="teams-filter"
             />
           ) : null}
           <Sort

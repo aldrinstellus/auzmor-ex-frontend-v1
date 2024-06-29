@@ -16,7 +16,7 @@ const AppShell: FC<IAppShellProps> = ({ children }) => {
   const { isOrgChartMounted } = useOrgChartStore();
   const { pathname } = useLocation();
   const wraperStyle = clsx({
-    'flex w-full justify-center min-h-[calc(100%-64px)]': true,
+    'flex w-full justify-center h-[calc(100%-64px)]': true,
     'px-14 pt-6': !isOrgChartMounted,
   });
   const containerStyle = clsx({
@@ -35,11 +35,12 @@ const AppShell: FC<IAppShellProps> = ({ children }) => {
       id="app-shell-container"
     >
       {showNavbar && <Navbar />}
-      <div className={wraperStyle}>
-        <div className={containerStyle}>{children}</div>
-      </div>
-      {showJobProgress && <JobProgress />}
-      {/* <div className="pt-8 px-14 flex w-full justify-center">{children}</div> */}
+      <main id="main-content" aria-label="Main Content" role="main">
+        <div className={wraperStyle}>
+          <div className={containerStyle}>{children}</div>
+        </div>
+        {showJobProgress && <JobProgress />}
+      </main>
     </div>
   );
 };

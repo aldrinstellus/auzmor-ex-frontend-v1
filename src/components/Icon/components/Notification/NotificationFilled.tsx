@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgNotificationFilled = (props: SVGProps<SVGSVGElement>) => (
+const SvgNotificationFilled = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={24}
@@ -8,6 +10,7 @@ const SvgNotificationFilled = (props: SVGProps<SVGSVGElement>) => (
     viewBox="0 0 24 24"
     fill="none"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <path
       fill="currentColor"

@@ -169,6 +169,7 @@ const Comments: FC<CommentsProps> = ({ entityId, className }) => {
           }
         }}
         data-testid="reply-uploadphoto"
+        aria-label="upload image"
       />
     </div>
   );

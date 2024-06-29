@@ -64,21 +64,27 @@ const CreatePostCard: FC<ICreatePostCardProps> = ({ openModal }) => {
         </Link>
         <input
           type="input"
-          className="w-full h-11 border border-neutral-200 rounded-19xl text-sm font-medium outline-none text-neutral-500 flex-1 px-5 py-3 cursor-pointer hover:bg-neutral-100 transition-colors"
+          className="w-full h-11 border border-neutral-200 rounded-19xl text-sm font-medium outline-none text-neutral-500 flex-1 px-5 py-3 cursor-pointer hover:bg-neutral-100 focus:bg-neutral-100 transition-colors"
           readOnly
+          onKeyUp={(e) => (e.code === 'Enter' ? openModal() : '')}
           onClick={openModal}
           placeholder="What's on your mind?"
           data-testid="activityfeed-whatsonurmind"
+          autoComplete="off"
         />
       </div>
       <div className="flex border-t border-neutral-100 w-full">
         {postTypeMapIcons.map((type, idx) => (
           <div
             key={type.id}
-            className={`flex gap-3 items-center py-3 grow justify-center cursor-pointer group ${
+            className={`flex gap-3 items-center py-3 grow justify-center cursor-pointer group outline-none ${
               idx !== postTypeMapIcons.length - 1 && 'border-r'
             }`}
+            tabIndex={0}
+            role="button"
+            title={`create post with ${type.label}`}
             onClick={type.onClick}
+            onKeyUp={(e) => (e.code === 'Enter' ? type.onClick() : '')}
           >
             <div className="flex justify-center items-center rounded-7xl border-1 border-neutral-200 bg-neutral-100 p-2">
               {type.icon}

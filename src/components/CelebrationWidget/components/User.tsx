@@ -61,8 +61,10 @@ const User: FC<UserProps> = ({
   const isBirthday = type === CELEBRATION_TYPE.Birthday;
   const anniversaryYears = data.diffInYears || 0;
   const celebrationDate = isBirthday
-    ? moment(data.nextOcassionDateTime).format("D MMM")
-    : `${anniversaryYears} ${getNouns('yr', anniversaryYears)} (${moment(data.nextOcassionDateTime).format("D MMM")})`;
+    ? moment(data.nextOcassionDateTime).format('D MMM')
+    : `${anniversaryYears} ${getNouns('yr', anniversaryYears)} (${moment(
+        data.nextOcassionDateTime,
+      ).format('D MMM')})`;
 
   const userIsMe = user?.id === featuredUser.userId;
 
@@ -238,6 +240,7 @@ const User: FC<UserProps> = ({
             }
           }}
           data-testid="comment-uploadphoto"
+          aria-label="file input"
         />
       </div>
     </div>

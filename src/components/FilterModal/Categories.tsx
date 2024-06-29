@@ -93,9 +93,9 @@ const Categories: FC<ICategoriesProps> = ({
       <Layout fields={searchField} />
       <div className="max-h-[330px] min-h-[330px] overflow-y-auto">
         {!!categoryCheckbox?.length && (
-          <div className="flex mt-2 mb-3 flex-wrap">
+          <ul className="flex mt-2 mb-3 flex-wrap">
             {categoryCheckbox.map((category: ICheckboxListOption) => (
-              <div
+              <li
                 key={category.data.id}
                 data-testid="filter-options"
                 className="flex items-center px-3 py-2 bg-neutral-100 rounded-17xl border border-neutral-200 mr-2 my-1"
@@ -119,9 +119,9 @@ const Categories: FC<ICategoriesProps> = ({
                     }
                   />
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
         {(() => {
           if (isLoading) {

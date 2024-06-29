@@ -121,6 +121,7 @@ const Actor: FC<ActorProps> = ({
                 size={32}
                 image={getProfileImage(createdBy)}
                 bgColor={getAvatarColor(createdBy)}
+                ariaLabel={`${getFullName(createdBy)}`}
               />
             </Link>
           ) : (
@@ -129,11 +130,12 @@ const Actor: FC<ActorProps> = ({
                 src={isLxp ? LxpLogoPng : OfficeLogoSvg}
                 alt="Office Logo"
                 className="w-4 h-4"
+                aria-label="avatar"
               />
             </div>
           )}
         </div>
-        <div className="flex flex-col flex-1">
+        <div className="flex flex-col flex-1" tabIndex={0}>
           {title ? (
             <ReactMarkdown
               components={components}

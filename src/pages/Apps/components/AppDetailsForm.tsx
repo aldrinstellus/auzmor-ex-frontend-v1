@@ -55,6 +55,7 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
       errorDataTestId: 'add-app-url-invalid-error',
       inputClassName:
         errors.url || !defaultValues()?.url ? '' : 'text-blue-500 underline',
+      autofocus: true,
     },
   ];
 
@@ -113,6 +114,7 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
       className: 'resize-none rounded-19xl',
       rows: 3,
       showCounter: true,
+      counterPosition: 'top',
     },
     {
       type: FieldType.CreatableSearch,
@@ -134,15 +136,13 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
 
   return (
     <div className="py-3">
-      <div className="">
-        <Layout fields={urlField} />
-      </div>
+      <Layout fields={urlField} />
       <div className="flex justify-between gap-x-6 pt-6">
         <Layout fields={appFields} className="w-full flex flex-col gap-y-6" />
-        <div className="w-full">
+        <div className="w-full flex flex-col">
           <UploadIconButton setValue={setValue} icon={icon} />
-          <div className="pt-8">
-            <p className="text-neutral-900 font-bold pb-2 text-sm">Audience</p>
+          <div className="pt-4">
+            <p className="text-neutral-900 font-bold pb-1 text-sm">Audience</p>
             {audience.length > 0 ? (
               <div className="flex gap-2">
                 <Button

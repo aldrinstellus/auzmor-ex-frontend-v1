@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgSpeakerOutline = (props: SVGProps<SVGSVGElement>) => (
+const SvgSpeakerOutline = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width={24}
     height={24}
@@ -8,6 +10,7 @@ const SvgSpeakerOutline = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <path
       d="M2 9.99997V14C2 16 3 17 5 17H6.43C6.8 17 7.17 17.11 7.49 17.3L10.41 19.13C12.93 20.71 15 19.56 15 16.59V7.40997C15 4.42997 12.93 3.28997 10.41 4.86997L7.49 6.69997C7.17 6.88997 6.8 6.99997 6.43 6.99997H5C3 6.99997 2 7.99997 2 9.99997Z"

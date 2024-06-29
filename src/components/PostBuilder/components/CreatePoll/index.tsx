@@ -1,5 +1,5 @@
 import Header from 'components/ModalHeader';
-import { FC, useContext } from 'react';
+import { FC, useContext, useEffect } from 'react';
 import {
   CreatePostContext,
   CreatePostFlow,
@@ -46,6 +46,15 @@ const schema = yup.object({
 const CreatePoll: FC<CreatePollProps> = ({ closeModal }) => {
   const { poll, setActiveFlow, setPoll, setPostType } =
     useContext(CreatePostContext);
+
+  useEffect(() => {
+    const nodes = document.querySelectorAll('[aria-activedescendant]');
+    if (nodes.length) {
+      for (const each of nodes) {
+        each.removeAttribute('aria-activedescendant');
+      }
+    }
+  });
 
   // Form
   const {
@@ -204,21 +213,24 @@ const CreatePoll: FC<CreatePollProps> = ({ closeModal }) => {
         append={append}
         remove={remove}
       />
-      <div className="bg-blue-50 flex items-center justify-end px-6 py-4 gap-x-3 rounded-b-9xl w-full border-t-1 border-neutral-200">
-        <Button
-          onClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
-          label="Back"
-          size={ButtonSize.Small}
-          variant={ButtonVariant.Secondary}
-          dataTestId="createpoll-back"
-        />
-        <Button
-          label="Next"
-          variant={ButtonVariant.Primary}
-          size={ButtonSize.Small}
-          type={Type.Submit}
-          dataTestId="createpoll-next"
-        />
+      <div className="bg-blue-50 flex items-center justify-between px-6 py-4 gap-x-3 rounded-b-9xl w-full border-t-1 border-neutral-200">
+        <p className="text-xs text-neutral-900">* Required field</p>
+        <div className="flex items-center gap-x-3">
+          <Button
+            onClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
+            label="Back"
+            size={ButtonSize.Small}
+            variant={ButtonVariant.Secondary}
+            dataTestId="createpoll-back"
+          />
+          <Button
+            label="Next"
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Small}
+            type={Type.Submit}
+            dataTestId="createpoll-next"
+          />
+        </div>
       </div>
     </form>
   );

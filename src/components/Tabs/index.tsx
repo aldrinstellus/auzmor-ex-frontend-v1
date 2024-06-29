@@ -57,44 +57,53 @@ const Tabs: FC<ITabsProps> = ({
   }, [activeTab, previousTab]);
 
   const isActive = (index: number) => activeTab === index;
+
+  const handleTabSelect = (tab: ITab, index: number) => {
+    setPreviousTab(activeTab);
+    !tab?.disabled && setActiveTab(index);
+    !tab?.disabled && onTabChange?.(index);
+  };
   return (
     <div>
       <div className="flex">
         <div className="w-full flex items-center justify-between">
           {title && (
-            <div
+            <h1
               className="text-2xl font-bold"
               data-testid="people-hub-page-title"
+              tabIndex={0}
+              title={title}
             >
               {title}
-            </div>
+            </h1>
           )}
-          <div className={className}>
+          <ul className={className}>
             {tabs.map((tab, index) => (
-              <div
-                className={`flex py-4 relative ${tabSwitcherClassName} ${
+              <li
+                className={`flex py-4 relative outline-none ${tabSwitcherClassName} ${
                   !tab.disabled
                     ? isActive(index)
                       ? 'cursor-default'
-                      : 'cursor-pointer hover:!text-neutral-900'
+                      : 'cursor-pointer hover:!text-neutral-900 group'
                     : 'cursor-not-allowed'
                 } ${index !== tabs.length - 1 && `mr-${itemSpacing}`}
             `}
-                onClick={() => {
-                  setPreviousTab(activeTab);
-                  !tab?.disabled && setActiveTab(index);
-                  !tab?.disabled && onTabChange?.(index);
-                }}
+                onClick={() => handleTabSelect(tab, index)}
+                onKeyUp={(e) =>
+                  e.code === 'Enter' ? handleTabSelect(tab, index) : ''
+                }
                 key={index}
                 data-testid={tab.dataTestId}
+                tabIndex={isActive(index) ? -1 : 0}
+                aria-hidden={isActive(index)}
               >
                 {tab.tabLabel(activeTab === index)}
                 {isActive(index) && showUnderline && (
                   <div className="absolute bottom-0 bg-primary-500 w-full rounded-7xl h-1"></div>
                 )}
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
         {tabs[activeTab].tabAction && (
           <div className="w-full flex justify-end items-center">

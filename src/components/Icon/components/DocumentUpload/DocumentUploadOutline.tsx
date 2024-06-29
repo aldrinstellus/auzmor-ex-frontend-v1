@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgDocumentUploadOutline = (props: SVGProps<SVGSVGElement>) => (
+const SvgDocumentUploadOutline = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width={20}
     height={20}
@@ -8,6 +10,7 @@ const SvgDocumentUploadOutline = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <path
       d="M7.4987 14.166V9.16602L5.83203 10.8327"

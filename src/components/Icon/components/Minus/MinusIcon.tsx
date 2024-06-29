@@ -1,6 +1,6 @@
 import { SVGProps } from 'react';
 
-const MinusIcon = (props: SVGProps<SVGSVGElement>) => (
+const MinusIcon = (props: SVGProps<SVGSVGElement> & { ariaLabel?: string }) => (
   <svg
     width={16}
     height={16}
@@ -8,6 +8,7 @@ const MinusIcon = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <rect width="16" height="16" rx="8" fill="currentColor" />
     <path

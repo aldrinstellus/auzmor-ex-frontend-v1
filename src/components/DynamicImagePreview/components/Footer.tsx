@@ -70,6 +70,8 @@ const Footer: FC<IFooterProps> = ({
                 sliderValueRef.current = parseInt(e.target.value);
               }}
               ref={sliderInputRef}
+              aria-label="zoom"
+              autoComplete="off"
             />
             <Icon
               name="plus"

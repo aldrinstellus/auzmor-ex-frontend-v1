@@ -1,12 +1,15 @@
 import { SVGProps } from 'react';
 
-const SvgUsersOutline = (props: SVGProps<SVGSVGElement>) => (
+const SvgUsersOutline = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={22}
     height={22}
     fill="none"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <path
       stroke="currentColor"

@@ -39,7 +39,12 @@ const UserCard: FC<IUserCardProps> = ({ className = '' }) => {
   };
 
   return (
-    <div className={style} onClick={handleRedirect}>
+    <div
+      className={style}
+      onClick={handleRedirect}
+      tabIndex={0}
+      title="user card"
+    >
       <Card className="pb-3 pt-0 rounded-9xl min-h-[216px]" shadowOnHover>
         <div className="flex flex-col items-center gap-2 relative px-12">
           <div className="bg-secondary-500 w-full h-[89px] absolute top-0 rounded-t-9xl"></div>
@@ -54,6 +59,7 @@ const UserCard: FC<IUserCardProps> = ({ className = '' }) => {
             <div
               className="text-lg font-bold truncate w-full text-center"
               data-testid="profilecard-username"
+              tabIndex={0}
             >
               {userDetails?.fullName}
             </div>
@@ -62,6 +68,7 @@ const UserCard: FC<IUserCardProps> = ({ className = '' }) => {
               <div
                 className="text-sm font-normal truncate w-full text-center text-neutral-500"
                 data-testid="profilecard-designation"
+                tabIndex={0}
               >
                 {userDetails?.designation?.name}
               </div>
@@ -71,6 +78,7 @@ const UserCard: FC<IUserCardProps> = ({ className = '' }) => {
               <div
                 className="text-sm font-normal truncate w-full text-center text-neutral-500 leading-[16px] flex gap-1 justify-center items-center"
                 data-testid="profilecard-designation"
+                tabIndex={0}
               >
                 <Icon
                   name="briefcase"

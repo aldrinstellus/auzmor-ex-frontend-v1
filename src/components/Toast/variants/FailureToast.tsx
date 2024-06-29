@@ -1,6 +1,10 @@
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import Icon from 'components/Icon';
 import { FC, ReactNode } from 'react';
+import { toast } from 'react-toastify';
+import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
+import { twConfig } from 'utils/misc';
+import { slideInAndOutTop } from 'utils/react-toastify';
 export interface IFailureToastProps {
   content?: string | ReactNode;
   action?: () => void;
@@ -42,3 +46,27 @@ const FailureToast: FC<IFailureToastProps> = ({
 };
 
 export default FailureToast;
+
+interface IFailureToastConfig {
+  content?: string | ReactNode;
+  dataTestId?: string;
+}
+
+export const failureToastConfig = ({
+  content = 'Opps... Something went wrong...!',
+  dataTestId,
+}: IFailureToastConfig) =>
+  toast(<FailureToast content={content} dataTestId={dataTestId} />, {
+    closeButton: (
+      <Icon name="closeCircleOutline" color="text-red-500" size={20} />
+    ),
+    style: {
+      border: `1px solid ${twConfig.theme.colors.red['300']}`,
+      borderRadius: '6px',
+      display: 'flex',
+      alignItems: 'center',
+    },
+    autoClose: TOAST_AUTOCLOSE_TIME,
+    transition: slideInAndOutTop,
+    theme: 'dark',
+  });

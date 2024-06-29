@@ -14,10 +14,8 @@ import { useState } from 'react';
 import SubscriptionBanner from './SubscriptionBanner';
 import useProduct from 'hooks/useProduct';
 import { getLearnUrl } from 'utils/misc';
-import Icon from 'components/Icon';
 import GlobalSearch from './GlobalSearch';
-// import PopupMenu from 'components/PopupMenu';
-// import NavbarMenuButton from './NavbarMenuButton';
+import IconButton, { Size } from 'components/IconButton';
 
 const learnNavigations = [
   {
@@ -26,6 +24,7 @@ const learnNavigations = [
     linkTo: `${getLearnUrl()}?openHelpSupport=true`,
     dataTestId: 'learn-help-support-page',
     iconSize: 24,
+    ariaLabel: 'help and support',
   },
 ];
 
@@ -37,7 +36,6 @@ const Navbar = () => {
     user?.subscription?.type === 'TRIAL' &&
       user?.subscription?.daysRemaining > -1,
   );
-  // const navigate = useNavigate();
 
   const adminNavigations = [
     {
@@ -49,19 +47,6 @@ const Navbar = () => {
       iconSize: 24,
     },
   ];
-
-  // const discoverOptions = [
-  //   {
-  //     icon: 'news',
-  //     label: 'Channels',
-  //     labelClassName: 'text-xs font-medium',
-  //     stroke: 'text-neutral-900',
-  //     dataTestId: 'channel-page',
-  //     onClick: () => {
-  //       navigate('/channels');
-  //     },
-  //   },
-  // ];
 
   const navigations = [
     {
@@ -121,62 +106,66 @@ const Navbar = () => {
       iconSize: 24,
       isActive: location.pathname.includes('/channels'),
       hidden: process.env.REACT_APP_ENV === 'PRODUCTION',
-      // render: function () {
-      //   return (
-      //     <PopupMenu
-      //       triggerNode={<NavbarMenuButton nav={this} />}
-      //       menuItems={discoverOptions}
-      //       className="mt-16 w-[202px] "
-      //     />
-      //   );
-      // },
     },
   ].filter((each) => !!!each?.hidden);
 
   return (
-    <div className="w-full sticky top-0 z-50">
+    <nav className="w-full sticky top-0 z-50">
       <div className="bg-white shadow h-16 w-full py-[2px] px-8">
         <div className="bg-white h-full w-full max-w-[1440px] flex items-center py-0.5 mx-auto justify-between">
-          <Link to="/feed" data-testid="office-logo">
+          <Link
+            to="/feed"
+            data-testid="office-logo"
+            aria-label={`${
+              user?.organization.name || user?.organization.domain
+            } logo`}
+          >
             <Logo />
           </Link>
 
           {process.env.REACT_APP_ENV != 'PRODUCTION' && (
-            <div className="flex-1">
+            <div className="flex-1" title="global search">
               <GlobalSearch />
             </div>
           )}
           <div className="flex items-center gap-8 h-full">
-            <div className="flex items-center gap-6">
+            <ul className="flex items-center gap-6">
               {navigations.map((nav) => (
-                <NavbarMenuItem nav={nav} key={nav.dataTestId} />
+                <li key={nav.dataTestId} className="flex">
+                  <NavbarMenuItem nav={nav} />
+                </li>
               ))}
-            </div>
+            </ul>
             <Divider className="h-full" variant={Variant.Vertical} />
-            <div className="flex items-center gap-6">
+            <ul className="flex items-center gap-6">
               {!isLxp &&
                 isAdmin &&
                 adminNavigations.map((nav) => (
-                  <NavbarMenuItem nav={nav} key={nav.dataTestId} />
+                  <li key={nav.dataTestId} className="flex">
+                    <NavbarMenuItem nav={nav} />
+                  </li>
                 ))}
-              <div className=" flex gap-6 items-center">
-                {isLxp &&
-                  learnNavigations.map((nav) => (
-                    <Icon
-                      name={nav.icon}
-                      size={nav.iconSize}
-                      key={nav.dataTestId}
+              {isLxp &&
+                learnNavigations.map((nav) => (
+                  <li key={nav.dataTestId}>
+                    <IconButton
+                      icon={nav.icon}
+                      size={Size.Large}
                       onClick={() => {
                         window.open(nav.linkTo);
                       }}
+                      ariaLabel="help and support"
+                      className="bg-white hover:bg-white active:bg-white"
                     />
-                  ))}
+                  </li>
+                ))}
+              <li>
                 <NotificationsOverview />
-              </div>
-              <div className="p-2">
+              </li>
+              <li>
                 <AccountCard />
-              </div>
-            </div>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -185,7 +174,7 @@ const Navbar = () => {
           closeBanner={() => setShowSubscriptionBanner(false)}
         />
       )}
-    </div>
+    </nav>
   );
 };
 

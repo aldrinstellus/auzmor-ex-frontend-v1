@@ -26,7 +26,9 @@ function App() {
       <ProductProvider>
         <AuthProvider>
           {process.env.NODE_ENV === 'development' ? (
-            <ReactQueryDevtools initialIsOpen={false} />
+            <section tabIndex={-1}>
+              <ReactQueryDevtools initialIsOpen={false} />
+            </section>
           ) : null}
           <UserOnboard />
           <Router />

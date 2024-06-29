@@ -55,7 +55,7 @@ const AudienceRow: FC<IAudienceRowProps> = ({ audience }) => {
             />
           ) : (
             <div className="p-[8px] bg-neutral-200 rounded-full">
-              <img src={TeamWork} height={24} width={24} />
+              <img src={TeamWork} height={24} width={24} alt="Team Icon" />
             </div>
           )}
         </div>

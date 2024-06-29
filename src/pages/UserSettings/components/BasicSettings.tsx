@@ -76,7 +76,7 @@ const BasicSettings = () => {
     onSuccess: async (res: any) => {
       // @ts-ignore
       updateUser({ outOfOffice: res?.result?.data?.outOfOffice });
-      successToastConfig();
+      successToastConfig({ content: 'Settings updated successfully' });
       await queryClient.invalidateQueries(['current-user-me']);
       reset({}, { keepValues: true });
     },

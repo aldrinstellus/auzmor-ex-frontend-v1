@@ -7,7 +7,7 @@ interface IEmptyStateProps {}
 const EmptyState: FC<IEmptyStateProps> = ({}) => {
   return (
     <Card className="flex flex-col w-full py-9 items-center gap-4">
-      <img src={Tracker} className="opacity-75" />
+      <img src={Tracker} className="opacity-75" alt="Tracker Picture" />
       <p className="text-base font-bold text-neutral-900 text-center">
         You’re all caught up
       </p>

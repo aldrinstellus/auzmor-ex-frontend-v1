@@ -72,9 +72,9 @@ const ImagePreview: FC<IImagePreviewProps> = ({
               name="edit"
               color="text-neutral-900"
               size={16}
-              onClick={() => {
-                imageUploaderRef?.current?.click();
-              }}
+              onClick={() => imageUploaderRef?.current?.click()}
+              ariaLabel="edit"
+              tabIndex={0}
             />
           </div>
         )}
@@ -85,6 +85,8 @@ const ImagePreview: FC<IImagePreviewProps> = ({
             size={16}
             onClick={onRemove}
             dataTestId="kudos-remove-banner"
+            tabIndex={0}
+            ariaLabel="close"
           />
         </div>
       </div>
@@ -92,6 +94,7 @@ const ImagePreview: FC<IImagePreviewProps> = ({
         <img
           src={getBlobUrl(imageFile)}
           className="object-contain w-full h-full min-h-[209px]"
+          alt="Image"
         />
       )}
       {selectedTemplate && (
@@ -114,6 +117,7 @@ const ImagePreview: FC<IImagePreviewProps> = ({
               <img
                 src={selectedTemplate.image}
                 className="object-contain w-full h-full max-h-[130px]"
+                alt="selected-image"
               />
             </div>
           </div>

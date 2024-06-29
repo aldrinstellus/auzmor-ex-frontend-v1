@@ -91,6 +91,7 @@ const InviteFormRow: FC<IInviteFormRowProps> = ({
               defautValue: field.role,
               dataTestId: 'invite-people-role',
               getPopupContainer: document.body,
+              showSearch: false,
             },
           ]}
         />

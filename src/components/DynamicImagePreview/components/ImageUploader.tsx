@@ -1,14 +1,12 @@
 import { FC, RefObject, useState } from 'react';
 import Icon from 'components/Icon';
-import { clearInputValue, getBlobUrl, twConfig } from 'utils/misc';
+import { clearInputValue, getBlobUrl } from 'utils/misc';
 import useModal from 'hooks/useModal';
 import ImageReposition from './ImageReposition';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
-import { toast } from 'react-toastify';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { validImageTypes } from 'queries/files';
 import { IMG_FILE_SIZE_LIMIT } from 'contexts/CreatePostContext';
+import Button, { Variant } from 'components/Button';
 
 export interface IImageUploaderProps {
   setImageFile: (file: any) => void;
@@ -29,20 +27,7 @@ const ImageUploader: FC<IImageUploaderProps> = ({
   );
 
   const showErrorToast = (message: string) => {
-    toast(<FailureToast content={message} dataTestId="comment-toaster" />, {
-      closeButton: (
-        <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-      ),
-      style: {
-        border: `1px solid ${twConfig.theme.colors.red['300']}`,
-        borderRadius: '6px',
-        display: 'flex',
-        alignItems: 'center',
-      },
-      autoClose: TOAST_AUTOCLOSE_TIME,
-      transition: slideInAndOutTop,
-      theme: 'dark',
-    });
+    failureToastConfig({ content: message, dataTestId: 'comment-toaster' });
   };
 
   const handleImageUpload = (file: File) => {
@@ -70,16 +55,18 @@ const ImageUploader: FC<IImageUploaderProps> = ({
         } py-10 flex flex-col justify-center items-center gap-2`}
       >
         <Icon name="folderOpen" size={40} color="text-primary-500" />
-        <div
+        <Button
+          leftIcon="galleryExport"
+          label="Upload an image"
+          leftIconClassName="text-neutral-900"
+          onClick={() => imageUploaderRef?.current?.click()}
           className="bg-white rounded-[24px] border-1
             border-neutral-200 px-4 py-2 text-sm font-bold
             flex items-center gap-1 cursor-pointer"
           data-testid="kudos-uploadimg-button"
-          onClick={() => imageUploaderRef?.current?.click()}
-        >
-          <Icon name="galleryExport" size={16} />
-          <span data-testid="kudos-uploadimg">Upload an image</span>
-        </div>
+          variant={Variant.Secondary}
+        />
+
         <div className="text-sm">Add your document from the options below</div>
         {openEditImage && (
           <ImageReposition
@@ -108,6 +95,7 @@ const ImageUploader: FC<IImageUploaderProps> = ({
             handleImageUpload(file);
           }
         }}
+        aria-label="image upload"
       />
     </>
   );

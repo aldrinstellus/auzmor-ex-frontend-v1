@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const EmployeeTagIcon = (props: SVGProps<SVGSVGElement>) => {
+const EmployeeTagIcon = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => {
   return (
     <svg
       width="16"
@@ -9,6 +11,7 @@ const EmployeeTagIcon = (props: SVGProps<SVGSVGElement>) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
+      aria-label={props.ariaLabel}
     >
       <path
         d="M12 12.5732H11.4933C10.96 12.5732 10.4533 12.7798 10.08 13.1532L8.93998 14.2798C8.41998 14.7932 7.57334 14.7932 7.05334 14.2798L5.91333 13.1532C5.54 12.7798 5.02667 12.5732 4.5 12.5732H4C2.89333 12.5732 2 11.6865 2 10.5932V3.31982C2 2.22649 2.89333 1.33984 4 1.33984H12C13.1067 1.33984 14 2.22649 14 3.31982V10.5932C14 11.6798 13.1067 12.5732 12 12.5732Z"

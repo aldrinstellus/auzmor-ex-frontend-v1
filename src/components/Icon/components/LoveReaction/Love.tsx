@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgLoveReaction = (props: SVGProps<SVGSVGElement>) => (
+const SvgLoveReaction = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width={24}
     height={24}
@@ -8,6 +10,7 @@ const SvgLoveReaction = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <rect x="1" y="1" width="26" height="26" rx="13" fill="#F98080" />
     <path

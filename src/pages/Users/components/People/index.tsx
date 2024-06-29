@@ -342,7 +342,7 @@ const People: FC<IPeopleProps> = ({
 
   const ShowResultCount = () => {
     return (
-      <div className="text-neutral-500">
+      <div className="text-neutral-500" role="contentinfo" tabIndex={0}>
         Showing {!isLoading && data?.pages[0]?.data?.result?.totalCount} results
       </div>
     );
@@ -354,25 +354,15 @@ const People: FC<IPeopleProps> = ({
         <div className="flex justify-between items-center">
           <div className="flex space-x-4">
             {!isTeamPeople && (
-              <>
-                {/* <Button
-                  label="My Teams"
-                  size={Size.Small}
-                  disabled
-                  variant={Variant.Secondary}
-                  className="cursor-not-allowed h-9 grow-0"
-                  dataTestId="people-view-my-teams"
-                /> */}
-                <Button
-                  label="All Members"
-                  size={Size.Small}
-                  variant={Variant.Secondary}
-                  className="h-9 grow-0"
-                  dataTestId="people-view-all-members"
-                  onClick={() => customReset()}
-                  active={!searchValue && !role}
-                />
-              </>
+              <Button
+                label="All Members"
+                size={Size.Small}
+                variant={Variant.Secondary}
+                className="h-9 grow-0"
+                dataTestId="people-view-all-members"
+                onClick={() => customReset()}
+                active={!searchValue && !role}
+              />
             )}
             {!isLxp ? <Layout fields={roleFields} /> : <ShowResultCount />}
           </div>

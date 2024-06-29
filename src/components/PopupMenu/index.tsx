@@ -4,7 +4,7 @@ import {
   ReactElement,
   ReactNode,
   cloneElement,
-  useRef,
+  useEffect,
 } from 'react';
 import { Menu } from '@headlessui/react';
 import PopupMenuItem from './PopupMenuItem';
@@ -13,7 +13,6 @@ export interface IMenuItem {
   renderNode?: ReactElement;
   disabled?: boolean;
   as?: ElementType;
-  isActive?: boolean;
   dataTestId?: string;
   icon?: string;
   label?: ReactNode;
@@ -47,10 +46,17 @@ const PopupMenu: FC<IPopupMenuProps> = ({
   controlled,
   isOpen,
 }) => {
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const triggers = document.getElementsByClassName('menu-trigger');
+    if (triggers.length) {
+      for (const node of triggers) {
+        node.removeAttribute('aria-expanded');
+      }
+    }
+  }, []);
   return (
     <Menu>
-      <Menu.Button as="div" ref={menuButtonRef} disabled={disabled}>
+      <Menu.Button as="menu" disabled={disabled} className={'menu-trigger'}>
         {triggerNode}
       </Menu.Button>
       {(controlled ? isOpen : true) && (
@@ -62,8 +68,13 @@ const PopupMenu: FC<IPopupMenuProps> = ({
           {menuItems.map((menuItem: IMenuItem, idx: number) => (
             <>
               {!menuItem.disabled && (
-                <Menu.Item key={`menu-item-${idx}`} as={menuItem.as}>
-                  {(() => {
+                <Menu.Item
+                  key={`menu-item-${idx}`}
+                  as="button"
+                  onClick={menuItem?.onClick}
+                  className="w-full"
+                >
+                  {({ active }) => {
                     if (menuItem.renderNode) {
                       const menuItemWithDataTestId = cloneElement(
                         menuItem.renderNode,
@@ -74,11 +85,11 @@ const PopupMenu: FC<IPopupMenuProps> = ({
                     return (
                       <PopupMenuItem
                         menuItem={menuItem}
-                        menuButtonRef={menuButtonRef}
                         border={idx !== menuItems?.length - 1}
+                        isActive={active}
                       />
                     );
-                  })()}
+                  }}
                 </Menu.Item>
               )}
             </>

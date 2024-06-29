@@ -27,7 +27,7 @@ const TeamRow: FC<ITeamRowProps> = ({ team, onClick }) => {
           />
         ) : (
           <div className="w-8 h-8 bg-neutral-200 rounded-full flex justify-center items-center">
-            <img src={TeamWork} height={20} width={20} />
+            <img src={TeamWork} height={20} width={20} alt="Team Icon" />
           </div>
         )}
         <div className="flex flex-col justify-between ml-4 truncate">

@@ -107,7 +107,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
       control,
       name: 'documentSearch',
       dataTestId: 'docs-search',
-      className: `mr-2 min-w-[245px] `,
+      className: `mr-2 min-w-[245px] block`,
       selectClassName: 'docs-select',
       placeholder: 'Search documents',
       placement: 'bottomRight',

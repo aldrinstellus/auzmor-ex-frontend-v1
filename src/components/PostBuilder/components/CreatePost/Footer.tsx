@@ -87,6 +87,7 @@ const Footer: FC<IFooterProps> = ({
             size={14}
             disabled={isMediaDisabled}
             dataTestId="feed-createpost-media"
+            tabIndex={isMediaDisabled ? -1 : 0}
           />
         ),
         disabled: isMediaDisabled,
@@ -131,6 +132,7 @@ const Footer: FC<IFooterProps> = ({
             color={isShoutoutDisabled ? 'text-neutral-200' : 'text-neutral-900'}
             disabled={isShoutoutDisabled}
             dataTestId="feed-createpost-shoutout"
+            tabIndex={isShoutoutDisabled ? -1 : 0}
           />
         ),
         menuItems: [],
@@ -142,24 +144,8 @@ const Footer: FC<IFooterProps> = ({
           setActiveFlow(CreatePostFlow.CreateShoutout);
         },
       },
-      // {
-      //   id: 3,
-      //   label: 'Events',
-      //   icon: (
-      //     <Icon
-      //       name="calendarFilledTwo"
-      //       size={16}
-      //       color={'text-neutral-900'}
-      //       disabled
-      //       dataTestId="feed-createpost-events"
-      //     />
-      //   ),
-      //   menuItems: [],
-      //   divider: <Divider variant={DividerVariant.Vertical} />,
-      //   disabled: true,
-      // },
       {
-        id: 4,
+        id: 3,
         label: 'Polls',
         menuItems: [],
         dataTestId: 'createpost-poll',
@@ -170,6 +156,7 @@ const Footer: FC<IFooterProps> = ({
             disabled={isPollDisabled}
             dataTestId="feed-createpost-polls"
             color={'text-neutral-900'}
+            tabIndex={isPollDisabled ? -1 : 0}
           />
         ),
         disabled: isPollDisabled,
@@ -180,13 +167,14 @@ const Footer: FC<IFooterProps> = ({
         },
       },
       {
-        id: 5,
+        id: 4,
         label: 'More',
         icon: (
           <Icon
             name="moreOutline"
             color="stroke-[#292D32]"
             dataTestId="feed-createpost-ellipsis-icon"
+            tabIndex={isMember ? -1 : 0}
           />
         ),
         hidden: isMember,
@@ -292,6 +280,7 @@ const Footer: FC<IFooterProps> = ({
                   setActiveFlow(CreatePostFlow.SchedulePost);
                 }}
                 dataTestId="createpost-clock-icon"
+                tabIndex={0}
               />
             </Tooltip>
           </div>

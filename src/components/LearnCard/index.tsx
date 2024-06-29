@@ -136,11 +136,15 @@ const LearnCard: FC<ILearnCardProps> = ({
     <Card className={style} onClick={handleCardClick}>
       <img
         src={data?.image_url}
-        className="w-full h-full object-cover group-hover/card:scale-[1.10]"
+        className="w-full h-full object-cover group-hover/card:scale-[1.10] focus:scale-[1.10]"
         style={{
           transition: 'all 0.25s ease-in 0s',
           animation: '0.15s ease-in 0s 1 normal both running fadeIn',
         }}
+        alt={`${data.title} Image`}
+        aria-label={data?.title}
+        tabIndex={0}
+        onKeyUp={(e) => (e.code === 'Enter' ? handleCardClick() : '')}
       />
       <div
         className="cursor-pointer rounded-lg absolute"

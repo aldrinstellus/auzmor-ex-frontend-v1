@@ -37,7 +37,7 @@ const NotificationsOverview: FC = () => {
           className={`font-bold text-sm pb-2 w-[53px] text-center ${
             isActive
               ? 'text-neutral-900'
-              : 'text-neutral-500 hover:text-neutral-900'
+              : 'text-neutral-500 group-hover:text-neutral-900 group-focus:text-neutral-900'
           }`}
         >
           All
@@ -54,7 +54,7 @@ const NotificationsOverview: FC = () => {
           className={`font-bold text-sm pb-2 ${
             isActive
               ? 'text-neutral-900'
-              : 'text-neutral-500 hover:text-neutral-900'
+              : 'text-neutral-500 group-hover:text-neutral-900 group-focus:text-neutral-900'
           }`}
         >
           Mentions
@@ -91,6 +91,7 @@ const NotificationsOverview: FC = () => {
             name="notification"
             size={25}
             dataTestId="office-notification-page"
+            ariaLabel="notifications"
           />
         </div>
       }
@@ -106,7 +107,13 @@ const NotificationsOverview: FC = () => {
           {!!data?.data.result.unread && (
             <div
               className="flex items-center gap-x-1 cursor-pointer"
+              role="button"
+              title="mark all as read"
+              tabIndex={0}
               onClick={() => markReadMutation.mutate()}
+              onKeyUp={(e) =>
+                e.code === 'Enter' ? markReadMutation.mutate() : ''
+              }
             >
               <Icon
                 name="checkboxOutline"
