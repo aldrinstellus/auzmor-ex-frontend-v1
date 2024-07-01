@@ -55,6 +55,7 @@ import Recommendation from 'components/Recommendation';
 import useAuth from 'hooks/useAuth';
 import ChannelsWidget from 'components/ChannelsWidget';
 import { usePageTitle } from 'hooks/usePageTitle';
+import ChannelRequestWidget from 'components/ChannelRequestWidget';
 
 interface IFeedProps {}
 
@@ -490,6 +491,7 @@ const Feed: FC<IFeedProps> = () => {
       <EventWidget className="sticky top-24" />
       <CelebrationWidget type={CELEBRATION_TYPE.Birthday} />
       <CelebrationWidget type={CELEBRATION_TYPE.WorkAnniversary} />
+      {isAdmin && <ChannelRequestWidget />}
       <AnnouncementCard openModal={openModal} className="sticky top-24" />
     </>
   );

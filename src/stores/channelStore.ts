@@ -60,11 +60,12 @@ export interface IChannelLink {
 }
 export interface IChannelRequest {
   id: string;
-  user?: IUserDetails;
-  createdBy?: IUser;
+  createdBy: IUserDetails;
   status: CHANNEL_MEMBER_STATUS;
+  channelId?: string;
   createdAt?: '';
   updatedAt?: '';
+  rejectionReason: Record<string, any> | null;
 }
 
 type State = {

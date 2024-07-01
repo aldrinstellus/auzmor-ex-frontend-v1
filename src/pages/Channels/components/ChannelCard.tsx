@@ -34,11 +34,11 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
   const navigate = useNavigate();
 
   const showRequestBtn =
-    channel.settings?.visibility === ChannelVisibilityEnum.Public &&
+    channel.settings?.visibility === ChannelVisibilityEnum.Private &&
     !!!channel.member &&
     !!!channel.joinRequest;
   const showJoinChannelBtn =
-    channel.settings?.visibility === ChannelVisibilityEnum.Private &&
+    channel.settings?.visibility === ChannelVisibilityEnum.Public &&
     !!!channel.member &&
     !!!channel.joinRequest;
   const showWithdrawBtn =

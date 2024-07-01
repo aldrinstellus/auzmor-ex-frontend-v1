@@ -698,7 +698,7 @@ export const userData: IGetUser[] = [
 export const ChannelUserRequests: IChannelRequest[] = [
   {
     id: '64de11da64ff441b033c3b0d',
-    user: {
+    createdBy: {
       userId: '6516afa8dc958600e4619cdf',
       email: 'Sim_Kris@hotmail.com',
       fullName: 'Sofia Rodriguez',
@@ -712,23 +712,13 @@ export const ChannelUserRequests: IChannelRequest[] = [
         blurHash: '',
       },
     },
-    createdBy: {
-      id: '6465d142c62ae5de85d33b83',
-      name: 'Dhruvin Modi',
-      email: 'dhruvinmodi2015@gmail.com',
-      role: Role.SuperAdmin,
-      organization: {
-        domain: 'incendia',
-        id: '6465d142c62ae5de85d33b81',
-        name: 'incendia',
-      },
-    },
     status: CHANNEL_MEMBER_STATUS.PENDING,
     updatedAt: '',
+    rejectionReason: null,
   },
   {
     id: '64de11da64ff441b033c3b0d',
-    user: {
+    createdBy: {
       userId: '6516afa8dc958600e4619cdf',
       email: 'Sim_Kris@hotmail.com',
       fullName: 'Elena Ivanova',
@@ -743,24 +733,14 @@ export const ChannelUserRequests: IChannelRequest[] = [
         blurHash: '',
       },
     },
-    createdBy: {
-      id: '6465d142c62ae5de85d33b83',
-      name: 'Dhruvin Modi',
-      email: 'dhruvinmodi2015@gmail.com',
-      role: Role.SuperAdmin,
-      organization: {
-        domain: 'incendia',
-        id: '6465d142c62ae5de85d33b81',
-        name: 'incendia',
-      },
-    },
     status: CHANNEL_MEMBER_STATUS.PENDING,
     updatedAt: '',
+    rejectionReason: null,
   },
 
   {
     id: '64de11da64ff441b033c3b0d',
-    user: {
+    createdBy: {
       userId: '6516afa8dc958600e4619cdf',
       email: 'Sim_Kris@hotmail.com',
       fullName: 'Hiroshi Yamamoto',
@@ -775,19 +755,9 @@ export const ChannelUserRequests: IChannelRequest[] = [
         blurHash: '',
       },
     },
-    createdBy: {
-      id: '6465d142c62ae5de85d33b83',
-      name: 'Dhruvin Modi',
-      email: 'dhruvinmodi2015@gmail.com',
-      role: Role.SuperAdmin,
-      organization: {
-        domain: 'incendia',
-        id: '6465d142c62ae5de85d33b81',
-        name: 'incendia',
-      },
-    },
     status: CHANNEL_MEMBER_STATUS.PENDING,
     updatedAt: '',
+    rejectionReason: null,
   },
 ];
 export const channelAdmins = [

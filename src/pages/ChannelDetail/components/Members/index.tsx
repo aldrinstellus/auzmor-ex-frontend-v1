@@ -14,7 +14,7 @@ import { useInfiniteChannelMembers } from 'queries/channel';
 import useURLParams from 'hooks/useURLParams';
 import PopupMenu from 'components/PopupMenu';
 import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
-import MemberTable from './MemberTable';
+import ChannelJoinRequest from './ChannelJoinRequest';
 import useRole from 'hooks/useRole';
 import { FilterModalVariant } from 'components/FilterModal';
 import { IChannel } from '../../../../stores/channelStore';
@@ -57,7 +57,6 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
         : undefined,
     }),
   });
-
   const users = data?.pages.flatMap((page) => {
     return page?.data?.result?.data.map((user: any) => {
       try {
@@ -90,16 +89,6 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
       },
     },
   ].filter(Boolean); // request options only for admin
-
-  const selectAllEntity = () => {
-    // channelMembers?.forEach((user: any) => setValue(`users.${user.id}`, user));
-  };
-
-  const deselectAll = () => {
-    // Object.keys(users || {}).forEach((key) => {
-    //   setValue(`users.${key}`, false);
-    // });
-  };
 
   useEffect(() => {
     if (parsedTab !== 'All_Members') {
@@ -192,10 +181,9 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
             ))}
           </div>
         ) : (
-          <MemberTable
-            data={users}
-            selectAllEntity={selectAllEntity}
-            deselectAll={deselectAll}
+          <ChannelJoinRequest
+            channelId={channelData!.id}
+            dataTestId="join-requests"
           />
         )}
       </Card>

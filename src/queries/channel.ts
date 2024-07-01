@@ -5,20 +5,14 @@ import {
 } from '@tanstack/react-query';
 import { chain } from 'lodash';
 import {
-  CHANNEL_MEMBER_STATUS,
   CHANNEL_ROLE,
   CHANNEL_STATUS,
   ChannelVisibilityEnum,
   IChannel,
   IChannelLink,
-  IChannelRequest,
   useChannelStore,
 } from 'stores/channelStore';
-import {
-  ChannelUserRequests,
-  channelAdmins,
-  // channelLinks,
-} from 'mocks/Channels';
+import { channelAdmins } from 'mocks/Channels';
 import apiService from 'utils/apiService';
 
 export interface IChannelPayload {
@@ -131,18 +125,6 @@ export const getChannelMembers = async (
   } catch (e) {}
   return response;
 };
-// get channel request by channel id -> /channels/:channelId/members/?memberStatus=pending
-
-export const getChannelRequests = async (
-  channelId: string,
-): Promise<IChannelRequest[]> => {
-  console.log(channelId);
-  return new Promise((res) => res(ChannelUserRequests));
-  // const data = await apiService.get(`/channels/:channelId/members/?memberStatus=pending`);
-  // return new Promise((res) => {
-  //   res(data?.data?.result?.data);
-  // });
-};
 
 export const addChannelMembers = async (
   channelId: string,
@@ -247,10 +229,43 @@ export const deleteJoinChannelRequest = async (
 };
 
 export const getJoinChannelRequests = async (
-  channeId: string,
-  status: CHANNEL_MEMBER_STATUS,
+  context: QueryFunctionContext<
+    (Record<string, any> | undefined | string)[],
+    any
+  >,
+  channelId?: string,
 ) => {
-  return await apiService.get(`channels/${channeId}/join-requests`, { status });
+  let response = null;
+  const reqPath = channelId
+    ? `channels/${channelId}/join-requests`
+    : `channels/join-requests`;
+  try {
+    if (!!!context.pageParam) {
+      response = await apiService.get(reqPath, context.queryKey[1]);
+    } else {
+      response = await apiService.get(context.pageParam, context.queryKey[1]);
+    }
+  } catch (e) {}
+
+  return response;
+};
+
+export const approveChannelJoinRequest = async (
+  channeId: string,
+  joinId: string,
+) => {
+  return await apiService.post(
+    `channels/${channeId}/join-requests/${joinId}/approve`,
+  );
+};
+
+export const rejectChannelJoinRequest = async (
+  channeId: string,
+  joinId: string,
+) => {
+  return await apiService.post(
+    `channels/${channeId}/join-requests/${joinId}/reject`,
+  );
 };
 
 // ------------------ React Query -----------------------
@@ -345,15 +360,6 @@ export const useChannelAdmins = (
     queryFn: () => getChannelAdmins(channelId),
     staleTime: 15 * 60 * 1000,
   });
-export const useChannelRequests = (
-  channelId: string,
-  queryKey = 'channel-requests-widget',
-) =>
-  useQuery({
-    queryKey: [queryKey],
-    queryFn: () => getChannelRequests(channelId),
-    staleTime: 15 * 60 * 1000,
-  });
 
 export const useChannelDetails = (channelId: string) => {
   return useQuery({
@@ -361,4 +367,28 @@ export const useChannelDetails = (channelId: string) => {
     queryFn: () => getChannelDetails(channelId),
     staleTime: 15 * 60 * 1000,
   });
+};
+
+export const useInfiniteChannelsRequest = (
+  channelId?: string,
+  q?: Record<string, any>,
+) => {
+  return {
+    ...useInfiniteQuery({
+      queryKey: ['channel-requests', q, channelId],
+      queryFn: (context) => getJoinChannelRequests(context, channelId),
+      getNextPageParam: (lastPage: any) => {
+        const pageDataLen = lastPage?.data?.result?.data?.length;
+        const pageLimit = lastPage?.data?.result?.paging?.limit;
+        if (pageDataLen < pageLimit) {
+          return null;
+        }
+        return lastPage?.data?.result?.paging?.next;
+      },
+      getPreviousPageParam: (currentPage: any) => {
+        return currentPage?.data?.result?.paging?.prev;
+      },
+      staleTime: 5 * 60 * 1000,
+    }),
+  };
 };

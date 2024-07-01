@@ -5,6 +5,7 @@ import LinksWidget from 'components/LinksWidget';
 import Feed from './Feed';
 import ChannelRequestWidget from 'components/ChannelRequestWidget';
 import useRole from 'hooks/useRole';
+import { ChannelRequestWidgetModeEnum } from 'components/ChannelRequestWidget/components/ChannelWidgetUser';
 
 const Home = () => {
   const { isAdmin } = useRole();
@@ -20,7 +21,9 @@ const Home = () => {
       </div>
       <div className="w-1/4 pl-10 space-y-6">
         <MembersWidget />
-        {isAdmin && <ChannelRequestWidget />}
+        {isAdmin && (
+          <ChannelRequestWidget mode={ChannelRequestWidgetModeEnum.Channel} />
+        )}
         <AdminsWidget />
       </div>
     </div>
