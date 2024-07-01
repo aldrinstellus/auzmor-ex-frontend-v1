@@ -64,7 +64,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
       await queryClient.invalidateQueries(['channel'], { exact: false });
       updateChannel(channel.id, {
         ...channel,
-        joinRequest: { ...channel.joinRequest, id: data.id },
+        joinRequest: { ...data.result.data.joinRequest },
       });
     },
   });
@@ -83,7 +83,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
       await queryClient.invalidateQueries(['channel'], { exact: false });
       updateChannel(channel.id, {
         ...channel,
-        joinRequest: { ...channel.joinRequest, id: undefined },
+        joinRequest: null,
       });
     },
   });
@@ -161,7 +161,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
               className="mt-2"
               onClick={(e) => {
                 e.stopPropagation();
-                withdrawJoinChannelRequest.mutate(channel.joinRequest.id!);
+                withdrawJoinChannelRequest.mutate(channel.joinRequest!.id!);
               }}
             />
           )}

@@ -46,7 +46,7 @@ export interface IChannel {
   createdBy?: IUser;
   updatedBy?: IUser;
   member: { role: CHANNEL_ROLE; bookmarked: boolean };
-  joinRequest: { status: CHANNEL_MEMBER_STATUS; id?: string };
+  joinRequest: { status: CHANNEL_MEMBER_STATUS; id?: string } | null;
 }
 
 export interface IChannelLink {

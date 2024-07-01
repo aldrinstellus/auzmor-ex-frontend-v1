@@ -144,7 +144,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       await queryClient.invalidateQueries(['channel'], { exact: false });
       updateChannelStore(channelData.id, {
         ...channelData,
-        joinRequest: { ...channelData.joinRequest, id: data.id },
+        joinRequest: { ...data.result.data.joinRequest },
       });
     },
   });
