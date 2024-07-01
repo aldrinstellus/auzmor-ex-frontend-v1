@@ -32,7 +32,7 @@ const AdminsWidget = () => {
     <Card className="py-6 rounded-9xl" shadowOnHover>
       <div className="px-6">
         <div
-          className="flex items-center justify-between cursor-pointer mb-3"
+          className="flex items-center justify-between cursor-pointer"
           onClick={() => setShow((t) => !t)}
         >
           <div className="font-bold">{t('adminsWidget.title')}</div>
@@ -47,28 +47,24 @@ const AdminsWidget = () => {
             show ? 'max-h-[1000px]' : 'max-h-[0]'
           }`}
         >
-          <div className="space-y-3">
-            {admins?.slice(0, 3).map((admin) => (
-              <div key={admin.id} className="flex justify-between items-start">
-                <div className="flex items-center space-x-2">
-                  <Avatar name={admin.fullName} size={32} image={admin.image} />
-                  <div>
-                    <div className="text-neutral-900 font-bold text-sm">
-                      {admin.fullName}
-                    </div>
-                    <div className="text-neutral-500 text-xs">
-                      {admin.designation}
-                    </div>
-                  </div>
+          {admins?.slice(0, 3).map((admin) => (
+            <div key={admin.id} className="flex items-center gap-2 py-2">
+              <Avatar name={admin.fullName} size={32} image={admin.image} />
+              <div>
+                <div className="text-neutral-900 font-bold text-sm">
+                  {admin.fullName}
                 </div>
-                {admin?.isOwner && (
-                  <div className="bg-black px-2 py-[2px] rounded-xl text-white font-medium text-xxs">
-                    {t('adminsWidget.owner')}
-                  </div>
-                )}
+                <div className="text-neutral-500 text-xs">
+                  {admin.designation}
+                </div>
               </div>
-            ))}
-          </div>
+              {admin?.isOwner && (
+                <div className="bg-black px-2 py-[2px] rounded-xl text-white font-medium text-xxs">
+                  {t('adminsWidget.owner')}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </Card>

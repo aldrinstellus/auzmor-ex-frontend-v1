@@ -10,14 +10,9 @@ import {
   ChannelVisibilityEnum,
   IChannel,
   IChannelLink,
-  IChannelRequest,
   useChannelStore,
 } from 'stores/channelStore';
-import {
-  ChannelUserRequests,
-  channelAdmins,
-  channelLinks,
-} from 'mocks/Channels';
+import { channelAdmins, channelLinks } from 'mocks/Channels';
 import apiService from 'utils/apiService';
 
 export interface IChannelPayload {
@@ -113,18 +108,6 @@ export const getChannelMembers = async (
   } catch (e) {}
   return response;
 };
-// get channel request by channel id -> /channels/:channelId/members/?memberStatus=pending
-
-export const getChannelRequests = async (
-  channelId: string,
-): Promise<IChannelRequest[]> => {
-  console.log(channelId);
-  return new Promise((res) => res(ChannelUserRequests));
-  // const data = await apiService.get(`/channels/:channelId/members/?memberStatus=pending`);
-  // return new Promise((res) => {
-  //   res(data?.data?.result?.data);
-  // });
-};
 
 export const addChannelMember = async (
   teamId: string,
@@ -197,21 +180,39 @@ export const getJoinChannelRequests = async (
     (Record<string, any> | undefined | string)[],
     any
   >,
-  channelId: string,
+  channelId?: string,
 ) => {
   let response = null;
+  const reqPath = channelId
+    ? `channels/${channelId}/join-requests`
+    : `channels/join-requests`;
   try {
     if (!!!context.pageParam) {
-      response = await apiService.get(
-        `channels/${channelId}/join-requests`,
-        context.queryKey[1],
-      );
+      response = await apiService.get(reqPath, context.queryKey[1]);
     } else {
       response = await apiService.get(context.pageParam, context.queryKey[1]);
     }
   } catch (e) {}
 
   return response;
+};
+
+export const approveChannelJoinRequest = async (
+  channeId: string,
+  joinId: string,
+) => {
+  return await apiService.post(
+    `channels/${channeId}/join-requests/${joinId}/approve`,
+  );
+};
+
+export const rejectChannelJoinRequest = async (
+  channeId: string,
+  joinId: string,
+) => {
+  return await apiService.post(
+    `channels/${channeId}/join-requests/${joinId}/reject`,
+  );
 };
 
 // ------------------ React Query -----------------------
@@ -283,15 +284,6 @@ export const useChannelAdmins = (
     queryFn: () => getChannelAdmins(channelId),
     staleTime: 15 * 60 * 1000,
   });
-export const useChannelRequests = (
-  channelId: string,
-  queryKey = 'channel-requests-widget',
-) =>
-  useQuery({
-    queryKey: [queryKey],
-    queryFn: () => getChannelRequests(channelId),
-    staleTime: 15 * 60 * 1000,
-  });
 
 export const useChannelDetails = (channelId: string) => {
   return useQuery({
@@ -302,7 +294,7 @@ export const useChannelDetails = (channelId: string) => {
 };
 
 export const useInfiniteChannelsRequest = (
-  channelId: string,
+  channelId?: string,
   q?: Record<string, any>,
 ) => {
   return {

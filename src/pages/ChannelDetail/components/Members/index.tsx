@@ -9,15 +9,12 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { isFiltersEmpty } from 'utils/misc';
 import { useEffect, useState } from 'react';
-import {
-  useInfiniteChannelMembers,
-  useInfiniteChannelsRequest,
-} from 'queries/channel';
+import { useInfiniteChannelMembers } from 'queries/channel';
 
 import useURLParams from 'hooks/useURLParams';
 import PopupMenu from 'components/PopupMenu';
 import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
-import MemberTable from './MemberTable';
+import ChannelJoinRequest from './ChannelJoinRequest';
 import useRole from 'hooks/useRole';
 import { FilterModalVariant } from 'components/FilterModal';
 import { IChannel } from '../../../../stores/channelStore';
@@ -66,18 +63,6 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
     });
   });
 
-  const {
-    data: requests,
-    isLoading: _requestLoading,
-    hasNextPage: _requestNextPage,
-    isFetchingNextPage: _isRequestsFetching,
-    fetchNextPage: _requestsFetchNextPage,
-  } = useInfiniteChannelsRequest(channelData!.id, {
-    limit: 30,
-  });
-
-  console.log(requests);
-
   // quick Filters options
   const { isAdmin } = useRole();
   const requestOptions = [
@@ -100,16 +85,6 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
       },
     },
   ].filter(Boolean); // request options only for admin
-
-  const selectAllEntity = () => {
-    // channelMembers?.forEach((user: any) => setValue(`users.${user.id}`, user));
-  };
-
-  const deselectAll = () => {
-    // Object.keys(users || {}).forEach((key) => {
-    //   setValue(`users.${key}`, false);
-    // });
-  };
 
   useEffect(() => {
     if (parsedTab !== 'All_Members') {
@@ -189,10 +164,9 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
             ))}
           </div>
         ) : (
-          <MemberTable
-            data={users}
-            selectAllEntity={selectAllEntity}
-            deselectAll={deselectAll}
+          <ChannelJoinRequest
+            channelId={channelData!.id}
+            dataTestId="join-requests"
           />
         )}
       </Card>

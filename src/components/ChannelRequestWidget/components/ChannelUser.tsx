@@ -1,24 +1,57 @@
+import { useMutation } from '@tanstack/react-query';
 import clsx from 'clsx';
 import Avatar from 'components/Avatar';
 import Button, { Size, Variant } from 'components/Button';
 import Icon from 'components/Icon';
-import { IUserDetails } from 'queries/users';
-// import { IGetUser } from 'queries/users';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import {
+  approveChannelJoinRequest,
+  rejectChannelJoinRequest,
+} from 'queries/channel';
 import { FC, useMemo } from 'react';
+import { IChannelRequest } from 'stores/channelStore';
 import { getProfileImage } from 'utils/misc';
 
 interface IUserRowProps {
-  user: IUserDetails; // change type to IGetUser
+  request: IChannelRequest;
+  channelId: string;
   onClick?: () => void;
   className?: string;
   channelName?: '';
 }
 
 const ChannelUserRow: FC<IUserRowProps> = ({
-  user,
+  request,
   className = '',
   channelName = '',
+  channelId,
 }) => {
+  const { createdBy, id } = request;
+  const approveMutation = useMutation({
+    mutationKey: ['approve-channel-join-request'],
+    mutationFn: () => approveChannelJoinRequest(channelId, id),
+    onError: () =>
+      failureToastConfig({
+        content: 'Something went wrong...! Please try again',
+      }),
+    onSuccess: () =>
+      successToastConfig({
+        content: 'Successfully added a new member to channel',
+      }),
+  });
+  const rejectMutation = useMutation({
+    mutationKey: ['reject-channel-join-request'],
+    mutationFn: () => rejectChannelJoinRequest(channelId, id),
+    onError: () =>
+      failureToastConfig({
+        content: 'Something went wrong...! Please try again',
+      }),
+    onSuccess: () =>
+      successToastConfig({
+        content: 'Request to join channel rejected successfully',
+      }),
+  });
   const styles = useMemo(
     () =>
       clsx(
@@ -35,9 +68,9 @@ const ChannelUserRow: FC<IUserRowProps> = ({
     <div className={styles}>
       <div className="flex items-center gap-2 flex-1">
         <Avatar
-          name={user?.fullName || ''}
+          name={createdBy?.fullName || ''}
           size={32}
-          image={getProfileImage(user)}
+          image={getProfileImage(createdBy)}
           dataTestId="user-profile-pic"
         />
         <div className="flex flex-col  truncate">
@@ -45,43 +78,40 @@ const ChannelUserRow: FC<IUserRowProps> = ({
             data-testid="user-name"
             className="text-sm font-normal break-all"
           >
-            <b>{user?.fullName || ''}</b> <span>requested to join </span>
+            <b>{createdBy?.fullName || ''}</b> <span>requested to join </span>
             <b>{'Dummy Channel'}</b>
           </div>
           <div
             data-testid="user-email"
             className="text-neutral-500 space-x-1 pt-1 text-xs font-medium flex items-center"
           >
-            {user.designation || 'Not specified'}
+            {createdBy.designation || 'Not specified'}
             <div className="w-1 h-1 ml-1 bg-neutral-500 rounded-full" />
             <Icon name="location" size={16} />
             <div
               data-testid="user-location"
               className="text-neutral-500 text-xs"
             >
-              {user.workLocation || 'Not specified'}
+              {createdBy.workLocation || 'Not specified'}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="flex  ml-auto space-x-1">
+      <div className="flex justify-end gap-2 items-center">
         <Button
-          label="Decline"
-          variant={Variant.Tertiary}
+          label={'Decline'}
+          variant={Variant.Secondary}
           size={Size.Small}
-          onClick={() => {
-            // TODO mutatable api call
-          }}
-          dataTestId={`requestwidget-viewall-${channelName}-decline`}
+          loading={rejectMutation.isLoading}
+          onClick={() => rejectMutation.mutate()}
+          dataTestId={`requestwidget-${channelName}-decline`}
         />
         <Button
-          label="Accept"
-          variant={Variant.Primary}
+          label={'Accept'}
           size={Size.Small}
-          onClick={() => {
-            // TODO mutatable api call
-          }}
+          loading={approveMutation.isLoading}
+          onClick={() => approveMutation.mutate()}
           dataTestId={`requestwidget-viewall-${channelName}-decline`}
         />
       </div>

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import clsx from 'clsx';
-import { ChangeEvent, FC, ReactElement } from 'react';
+import { ChangeEvent, FC, ReactElement, useMemo } from 'react';
 import { useController } from 'react-hook-form';
 
 export type CheckboxProps = {
@@ -20,6 +20,7 @@ export type CheckboxProps = {
     output: (e: ChangeEvent<HTMLInputElement>) => any;
   };
   defaultChecked?: boolean;
+  labelClassName?: string;
 };
 
 const Checkbox: FC<CheckboxProps> = ({
@@ -35,6 +36,7 @@ const Checkbox: FC<CheckboxProps> = ({
   transform,
   defaultChecked,
   inputClassName,
+  labelClassName = '',
   ...rest
 }) => {
   const { field } = useController({ name, control });
@@ -45,6 +47,15 @@ const Checkbox: FC<CheckboxProps> = ({
   );
 
   const id = `checkbox-id-${Math.random().toString(16).slice(2)}`;
+
+  const lableStyle = useMemo(
+    () =>
+      clsx({
+        'font-semibold text-sm cursor-pointer': true,
+        [labelClassName]: true,
+      }),
+    [labelClassName],
+  );
 
   return (
     <div className="flex items-center">
@@ -69,7 +80,7 @@ const Checkbox: FC<CheckboxProps> = ({
       <label className={styles} htmlFor={id}>
         {label && (
           <div className="pl-2">
-            <div className="font-semibold text-sm cursor-pointer">{label}</div>
+            <div className={lableStyle}>{label}</div>
             {labelDescription && (
               <div className="font-normal text-xs text-neutral-500">
                 {labelDescription}
