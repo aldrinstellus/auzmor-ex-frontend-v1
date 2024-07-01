@@ -18,6 +18,7 @@ import { ShowingCount } from 'pages/Users/components/Teams';
 import AddChannelMembersModal from '../AddChannelMembersModal';
 import { IChannel } from 'stores/channelStore';
 import useURLParams from 'hooks/useURLParams';
+import NoDataFound from 'components/NoDataFound';
 
 type AppProps = {
   channelData?: IChannel;
@@ -145,6 +146,14 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
           <div className="flex justify-center items-center">
             <Spinner />
           </div>
+        ) : channelMembers?.length === 0 ? (
+          <NoDataFound
+            illustration="noChannelFound"
+            className="py-4 w-full"
+            onClearSearch={() => {}}
+            hideClearBtn
+            dataTestId={`$channel-noresult`}
+          />
         ) : (
           <ManageAccessTable data={channelMembers} />
         )}

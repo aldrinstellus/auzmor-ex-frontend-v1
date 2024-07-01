@@ -51,7 +51,7 @@ const Status: FC<IStatusProps> = ({ control, watch, setValue }) => {
     },
     {
       id: CHANNEL_MEMBER_STATUS.PENDING,
-      name: titleCase(CHANNEL_MEMBER_STATUS.APPROVED),
+      name: titleCase(CHANNEL_MEMBER_STATUS.PENDING),
     },
     {
       id: CHANNEL_MEMBER_STATUS.REJECTED,

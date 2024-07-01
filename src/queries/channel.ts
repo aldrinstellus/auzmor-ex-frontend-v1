@@ -70,12 +70,12 @@ export const getAllChannels = async (
 export const updateMemberRole = async (payload: {
   id: string;
   channelId?: string;
-  userRole: CHANNEL_ROLE;
+  role: CHANNEL_ROLE;
 }) => {
   const { data } = await apiService.patch(
     `channels/${payload?.channelId}/members/${payload?.id}`,
     {
-      userRole: payload?.userRole,
+      role: payload?.role,
     },
   );
   return data;

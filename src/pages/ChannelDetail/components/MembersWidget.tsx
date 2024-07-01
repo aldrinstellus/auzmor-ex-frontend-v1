@@ -7,7 +7,7 @@ import { useInfiniteChannelMembers } from 'queries/channel';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { Role } from 'utils/enum';
+// import { Role } from 'utils/enum';
 
 const MembersWidget = () => {
   const { isAdmin } = useRole();
@@ -16,9 +16,6 @@ const MembersWidget = () => {
   const { channelId } = useParams();
   const { data } = useInfiniteChannelMembers({
     channelId: channelId,
-    q: {
-      userRole: Role.Member,
-    },
   });
   const users = data?.pages.flatMap((page) => {
     return page?.data?.result?.data.map((user: any) => {
