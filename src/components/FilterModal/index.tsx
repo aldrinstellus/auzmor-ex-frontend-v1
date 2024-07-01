@@ -269,7 +269,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       FilterModalVariant.People,
       FilterModalVariant.Document,
       FilterModalVariant.ChannelsListing,
-      FilterModalVariant.ChannelMember,
+      FilterModalVariant.ChannelsMangeAcess,
     ],
     'locations-filters': [
       FilterModalVariant.Team,
@@ -308,7 +308,6 @@ const FilterModal: FC<IFilterModalProps> = ({
       FilterModalVariant.App,
       FilterModalVariant.ChannelsListing,
       FilterModalVariant.Document,
-      FilterModalVariant.ChannelsMangeAcess,
     ],
   };
 

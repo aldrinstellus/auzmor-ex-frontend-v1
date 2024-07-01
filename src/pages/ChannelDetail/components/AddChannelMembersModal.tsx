@@ -1,56 +1,42 @@
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
-import { FC, ReactNode, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import EntitySearchModalBody from 'components/EntitySearchModal/components/EntitySearchModalBody';
 import { useForm } from 'react-hook-form';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
-import { EntitySearchModalType } from 'components/EntitySearchModal';
-import Avatar from 'components/Avatar';
-import { getFullName, getProfileImage } from 'utils/misc';
-import Icon from 'components/Icon';
+import {
+  EntitySearchModalType,
+  IAudienceForm,
+  IChannelMembersField,
+} from 'components/EntitySearchModal';
 import Button, { Variant as ButtonVariant } from 'components/Button';
+import { CHANNEL_ROLE, IChannel } from 'stores/channelStore';
+import {
+  IChannelMembersPayload,
+  addChannelMembers,
+  useChannelMembersStatus,
+} from 'queries/channel';
+import { useMutation } from '@tanstack/react-query';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import queryClient from 'utils/queryClient';
+import { useTranslation } from 'react-i18next';
 
 interface IAddChannelMembersModalProps {
   open: boolean;
-  openModal: () => void;
   closeModal: () => void;
-  onBackPress?: () => void;
-  title?: string | ReactNode;
-  dataTestId: string;
-  submitButtonText?: string;
-  cancelButtonText?: string;
-  selectedMemberIds?: string[];
-  onSubmit?: (data: IAudienceForm) => void;
-  onCancel?: () => void;
-}
-
-export interface IAudienceForm {
-  memberSearch: string;
-  teamSearch: string;
-  departmentSearch: string;
-  departments: Record<string, boolean | undefined>;
-  locationSearch: string;
-  locations: Record<string, boolean | undefined>;
-  designationSearch: string;
-  designations: Record<string, boolean | undefined>;
-  selectAll: boolean;
-  showSelectedMembers: boolean;
-  categorySearch: string;
-  categories: Record<string, boolean | undefined>;
-  teams: any;
-  users: any;
+  channelData: IChannel;
 }
 
 const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
   open,
-  title,
   closeModal,
-  dataTestId,
-  onSubmit = () => {},
-  onCancel = () => {},
-  selectedMemberIds = [],
+  channelData,
 }) => {
-  const audienceForm = useForm<any>({
+  const { t } = useTranslation('channelDetail');
+  const [jobId, setJobId] = useState('');
+
+  const audienceForm = useForm<IAudienceForm>({
     defaultValues: {
       showSelectedMembers: false,
       selectAll: false,
@@ -64,71 +50,96 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
     return () => setForm(null);
   }, []);
 
+  const addChannelMembersMutation = useMutation({
+    mutationKey: ['add-channel-members', channelData.id],
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: IChannelMembersPayload;
+    }) => addChannelMembers(id, payload),
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onError: (error) => {
+      failureToastConfig({
+        content: t('addChannelMembers.failure'),
+      });
+    },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onSuccess: (data) => {
+      console.log('Successfully started bulk job ', data);
+      const jobId = data?.result?.data?.id || '';
+      if (jobId) setJobId(jobId);
+    },
+  });
+
+  const { isLoading: isStatusLoading } = useChannelMembersStatus({
+    channelId: channelData.id,
+    jobId,
+    onSuccess: (data: any) => {
+      console.log('Successfully fetched bulk job status', data);
+      const status = data?.data?.result?.data?.status;
+      if (status === 'COMPLETED') {
+        setJobId('');
+        queryClient.invalidateQueries({ queryKey: ['channel-member'] });
+        successToastConfig({
+          content: t('addChannelMembers.success'),
+        });
+        closeModal();
+      }
+    },
+    onError: () => {
+      console.log('Failed to fetch status for jobId: ', jobId);
+      failureToastConfig({
+        content: t('addChannelMembersStatus.failure'),
+      });
+      setJobId('');
+    },
+  });
+
+  function handleSubmit(data: IChannelMembersField): void {
+    const selectedUsers = Object.keys(data?.users || {})
+      .map((key) => data.users?.[key])
+      .filter((item) => item && item.user)
+      .map((item) => ({
+        id: item?.user?.id || '',
+        role: item?.role || CHANNEL_ROLE.Member,
+      }));
+    const selectedTeams = Object.keys(data?.teams || {})
+      .map((key) => data.teams?.[key])
+      .filter((item) => item && item.team)
+      .map((item) => ({
+        id: item?.team?.id || '',
+        role: item?.role || CHANNEL_ROLE.Member,
+      }));
+
+    const payload: IChannelMembersPayload = {};
+    if (selectedUsers && selectedUsers.length) payload.userIds = selectedUsers;
+    if (selectedTeams && selectedTeams.length) payload.teamIds = selectedTeams;
+    addChannelMembersMutation.mutate({ id: channelData.id, payload });
+  }
+
+  const dataTestId = 'add-members';
+  const isLoading =
+    addChannelMembersMutation.isLoading || isStatusLoading || !!jobId;
+
   return form ? (
     <Modal open={open} className="max-w-[638px]">
       <form onSubmit={(e) => e.preventDefault()}>
         <Header
-          title={title || 'Add Channel members'}
+          title={
+            <span>
+              Add members{' '}
+              <span className="text-primary-500">@${channelData?.name}</span>
+            </span>
+          }
           onBackIconClick={() => {}}
           closeBtnDataTestId={`${dataTestId}-close`}
           onClose={closeModal}
         />
         <EntitySearchModalBody
           entityType={EntitySearchModalType.ChannelMembers}
-          selectedMemberIds={selectedMemberIds}
-          entityRenderer={(data: any) => {
-            return (
-              <div className="flex items-center space-x-4 w-full">
-                <Avatar
-                  name={getFullName(data) || 'U'}
-                  size={32}
-                  image={getProfileImage(data)}
-                  dataTestId="member-profile-pic"
-                />
-                <div className="flex space-x-6 w-full">
-                  <div className="flex flex-col w-full">
-                    <div className="flex justify-between items-center">
-                      <div
-                        className="text-sm font-bold text-neutral-900 whitespace-nowrap line-clamp-1"
-                        data-testid="member-name"
-                      >
-                        {getFullName(data)}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="text-xs font-normal text-neutral-500"
-                        data-testid="member-email"
-                      >
-                        {data?.primaryEmail}
-                      </div>
-                      {data?.department && data?.workLocation?.name && (
-                        <div className="w-1 h-1 bg-neutral-500 rounded-full" />
-                      )}
-                      {data?.department?.name && (
-                        <div className="flex space-x-1 items-start">
-                          <Icon name="briefcase" size={16} />
-                          <div
-                            className="text-xs  font-normal text-neutral-500"
-                            data-testid="member-department"
-                          >
-                            {data?.department.name?.substring(0, 22)}
-                          </div>
-                        </div>
-                      )}
-
-                      {data?.isPresent && (
-                        <div className="text-xs font-semibold text-neutral-500">
-                          Already a member
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <></>
-                </div>
-              </div>
-            );
-          }}
+          selectedMemberIds={[]}
           dataTestId={dataTestId}
         />
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-19xl">
@@ -136,15 +147,17 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
             <Button
               variant={ButtonVariant.Secondary}
               label="Cancel"
+              disabled={isLoading}
               className="mr-3"
-              onClick={onCancel}
+              onClick={closeModal}
               dataTestId={`${dataTestId}-cancel}`}
             />
             <Button
               label="Enroll Members"
+              loading={isLoading}
               dataTestId={`${dataTestId}-cta`}
               onClick={form.handleSubmit((formData) => {
-                onSubmit(formData);
+                handleSubmit(formData.channelMembers);
               })}
             />
           </div>

@@ -15,7 +15,7 @@ const AdminsWidget = () => {
     channelId: channelId,
     q: {
       limit: 3,
-      role: Role.Admin,
+      userRole: Role.Admin,
     },
   });
   const admins = data?.pages.flatMap((page) => {

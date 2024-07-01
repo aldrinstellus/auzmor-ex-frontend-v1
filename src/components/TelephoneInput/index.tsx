@@ -98,7 +98,6 @@ const TelephoneInput: FC<TelephoneInputProps> = ({
                 onChange={(e) => setSearchValue(e.target.value)}
                 className="w-full rounded-19xl border border-neutral-200 focus:outline-none h-12 pl-11"
                 data-testid="countrycode-search"
-                aria-label="country code"
               />
             </div>
             <div className="max-h-72 overflow-y-auto">

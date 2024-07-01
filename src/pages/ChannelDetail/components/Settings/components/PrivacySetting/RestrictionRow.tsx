@@ -148,7 +148,7 @@ const RestrictionRow: FC<AppProps> = ({ data }) => {
                 labelRenderer: (option: IRadioListOption) => {
                   return (
                     <>
-                      <p className=" text-sm ml-4 font normal  ">
+                      <p className=" text-sm ml-2 text-black font normal  ">
                         {option.data.label}
                       </p>
                     </>

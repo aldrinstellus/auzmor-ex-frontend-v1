@@ -127,6 +127,15 @@ const RichTextEditor = forwardRef(
     const [previewUrl, setPreviewUrl] = useState<string>('');
     const [isPreviewRemoved, setIsPreviewRemoved] = useState<boolean>(false);
 
+    useEffect(() => {
+      const nodes = document.getElementsByClassName('ql-editor');
+      if (nodes.length) {
+        for (const each of nodes) {
+          (each as HTMLInputElement).removeAttribute('aria-owns');
+        }
+      }
+    });
+
     const formats = ['bold', 'italic', 'underline', 'mention', 'link', 'emoji'];
 
     const modules = {

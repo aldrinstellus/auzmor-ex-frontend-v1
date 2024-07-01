@@ -84,8 +84,12 @@ const ChannelModal: FC<IChannelModalProps> = ({
   const schema = yup.object({
     channelName: yup
       .string()
-      .min(2, 'Channels name should have at least 2 characters')
-      .required(),
+      .min(2, 'Channel name should have at least 2 characters')
+      .matches(
+        /^[a-zA-Z0-9 ]*$/,
+        'Channel name should not contain special characters',
+      )
+      .required('Channel name is required'),
     channelCategory: yup.object().required(),
     channelPrivacy: yup.object().required(),
     channelDescription: yup.string(),
@@ -291,6 +295,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
                   label: t('channelModal.channelCategoryLabel'),
                   required: true,
                   control,
+                  maxLength: 60,
                   fetchQuery: isLxp
                     ? useInfiniteLearnCategory
                     : useInfiniteCategories,

@@ -21,6 +21,7 @@ export type CheckboxProps = {
   };
   defaultChecked?: boolean;
   labelClassName?: string;
+  labelContainerClassName?: string;
 };
 
 const Checkbox: FC<CheckboxProps> = ({
@@ -37,13 +38,19 @@ const Checkbox: FC<CheckboxProps> = ({
   defaultChecked,
   inputClassName,
   labelClassName = '',
+  labelContainerClassName = '',
   ...rest
 }) => {
   const { field } = useController({ name, control });
 
   const styles = clsx(
-    { 'flex items-start justify-between': true },
+    { 'flex items-center justify-between': true },
     { [className]: true },
+  );
+
+  const lableContainerStyles = useMemo(
+    () => clsx({ 'pl-2': true }, { [labelContainerClassName]: true }),
+    [labelContainerClassName],
   );
 
   const id = `checkbox-id-${Math.random().toString(16).slice(2)}`;
@@ -59,27 +66,27 @@ const Checkbox: FC<CheckboxProps> = ({
 
   return (
     <div className="flex items-center">
-      <input
-        id={id}
-        type="checkbox"
-        className={`h-5 w-5 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 ${inputClassName}`}
-        name={field.name}
-        ref={field.ref}
-        disabled={loading || disabled}
-        data-testid={dataTestId}
-        onChange={(e) =>
-          field.onChange(transform?.output ? transform?.output(e) : e)
-        }
-        checked={
-          transform?.input
-            ? transform?.input(field.value || defaultChecked)
-            : field.value || defaultChecked
-        }
-        {...rest}
-      />
       <label className={styles} htmlFor={id}>
+        <input
+          id={id}
+          type="checkbox"
+          className={`h-5 w-5 rounded-xl flex-shrink-0 cursor-pointer accent-primary-600 ${inputClassName}`}
+          name={field.name}
+          ref={field.ref}
+          disabled={loading || disabled}
+          data-testid={dataTestId}
+          onChange={(e) =>
+            field.onChange(transform?.output ? transform?.output(e) : e)
+          }
+          checked={
+            transform?.input
+              ? transform?.input(field.value || defaultChecked)
+              : field.value || defaultChecked
+          }
+          {...rest}
+        />
         {label && (
-          <div className="pl-2">
+          <div className={lableContainerStyles}>
             <div className={lableStyle}>{label}</div>
             {labelDescription && (
               <div className="font-normal text-xs text-neutral-500">

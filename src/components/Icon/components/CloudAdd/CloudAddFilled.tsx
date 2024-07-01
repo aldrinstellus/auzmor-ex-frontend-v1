@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgCloudAddFilled = (props: SVGProps<SVGSVGElement>) => (
+const SvgCloudAddFilled = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width={24}
     height={24}
@@ -8,6 +10,7 @@ const SvgCloudAddFilled = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <path
       d="M12 11.53C9.24 11.53 7 13.77 7 16.53C7 17.27 7.16 17.97 7.46 18.59C7.54 18.77 7.63 18.94 7.73 19.1C8.59 20.55 10.18 21.53 12 21.53C13.82 21.53 15.41 20.55 16.27 19.1C16.37 18.94 16.46 18.77 16.54 18.59C16.84 17.97 17 17.27 17 16.53C17 13.77 14.76 11.53 12 11.53ZM14.07 16.1L11.94 18.07C11.8 18.2 11.61 18.27 11.43 18.27C11.24 18.27 11.05 18.2 10.9 18.05L9.91 17.06C9.62 16.77 9.62 16.29 9.91 16C10.2 15.71 10.68 15.71 10.97 16L11.45 16.48L13.05 15C13.36 14.72 13.83 14.74 14.11 15.04C14.39 15.34 14.37 15.81 14.07 16.1Z"

@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgLogoutFilled = (props: SVGProps<SVGSVGElement>) => (
+const SvgLogoutFilled = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width={24}
     height={24}
@@ -8,6 +10,7 @@ const SvgLogoutFilled = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <path
       d="M7.88023 12.07C7.88023 11.66 8.22023 11.32 8.63023 11.32H14.1102V2.86C14.1002 2.38 13.7202 2 13.2402 2C7.35023 2 3.24023 6.11 3.24023 12C3.24023 17.89 7.35023 22 13.2402 22C13.7102 22 14.1002 21.62 14.1002 21.14V12.81H8.63023C8.21023 12.82 7.88023 12.48 7.88023 12.07Z"

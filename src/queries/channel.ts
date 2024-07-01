@@ -12,7 +12,7 @@ import {
   IChannelLink,
   useChannelStore,
 } from 'stores/channelStore';
-import { channelAdmins, channelLinks } from 'mocks/Channels';
+import { channelAdmins } from 'mocks/Channels';
 import apiService from 'utils/apiService';
 
 export interface IChannelPayload {
@@ -22,6 +22,12 @@ export interface IChannelPayload {
   settings?: { visibility?: ChannelVisibilityEnum };
   status?: CHANNEL_STATUS;
 }
+
+export interface IChannelMembersPayload {
+  userIds?: { id: string; role: CHANNEL_ROLE }[];
+  teamIds?: { id: string; role: CHANNEL_ROLE }[];
+}
+
 export interface IChannelSettings {
   settings?: {
     visibility: ChannelVisibilityEnum;
@@ -91,6 +97,17 @@ export const deleteChannel = async (id: string) => {
     res(data);
   });
 };
+export const deleteChannelLinks = async (payload: {
+  id: string;
+  linkId: string;
+}) => {
+  const data = await apiService.delete(
+    `/channels/${payload.id}/link/${payload.linkId}`,
+  );
+  return new Promise((res) => {
+    res(data);
+  });
+};
 
 // get team members by team id -> /channel/:id/members
 export const getChannelMembers = async (
@@ -109,14 +126,25 @@ export const getChannelMembers = async (
   return response;
 };
 
-export const addChannelMember = async (
-  teamId: string,
-  payload: { userIds: string[] },
+export const addChannelMembers = async (
+  channelId: string,
+  payload: IChannelMembersPayload,
 ) => {
-  const data = await apiService.post(`/channels/members/${teamId}`, payload);
-  return new Promise((res) => {
-    res(data);
-  });
+  const data = await apiService.post(
+    `/channels/${channelId}/members/bulk`,
+    payload,
+  );
+  return data;
+};
+
+export const getAddChannelMembersStatus = async (
+  channelId: string,
+  jobId: string,
+) => {
+  const data = await apiService.get(
+    `/channels/${channelId}/members/bulk/status/${jobId}`,
+  );
+  return data;
 };
 
 export const removeChannelMember = async (teamId: string) => {
@@ -129,27 +157,52 @@ export const removeChannelMember = async (teamId: string) => {
 export const getChannelLinks = async (
   channelId: string,
 ): Promise<IChannelLink[]> => {
-  console.log(channelId);
-  return new Promise((res) => res(channelLinks));
-  // const data = await apiService.get(`/channels/${channelId}/links`);
-  // return new Promise((res) => {
-  //   res(data?.data?.result?.data);
-  // });
+  const data = await apiService.get(`/channels/${channelId}/links`);
+  return new Promise((res) => {
+    res(data?.data?.result?.data);
+  });
 };
 export const getChannelAdmins = async (channelId: string): Promise<any> => {
   console.log(channelId);
   return new Promise((res) => res(channelAdmins));
-  // const data = await apiService.get(`/channels/${channelId}/admins`);
-  // return new Promise((res) => {
-  //   res(data?.data?.result?.data);
-  // });
 };
 
-export const updateChannelLinks = async (
+export const createLinks = async (
+  channelId: string,
+  payload: { links: IChannelLink[] },
+) => {
+  console.log('payload :', payload);
+  const response = await apiService.post(
+    `/channels/${channelId}/links`,
+    payload,
+  );
+  return response;
+};
+
+export const updateChannelLink = async (payload: {
+  channelId: string;
+  linkId: string;
+  title?: string;
+  url?: string;
+}) => {
+  console.log('payload :', payload);
+  const data = await apiService.patch(
+    `/channels/${payload.channelId}/links/${payload.linkId}`,
+    {
+      title: payload?.title,
+      url: payload?.url,
+    },
+  );
+  return new Promise((res) => {
+    res(data);
+  });
+};
+
+export const updateChannelLinksIndex = async (
   channelId: string,
   payload: { links: IChannelLink[] },
 ): Promise<IChannelLink[]> => {
-  const data = await apiService.put(`/channels/${channelId}/links`, payload);
+  const data = await apiService.patch(`/channels/${channelId}/links`, payload);
   return new Promise((res) => {
     res(data?.data?.result?.data);
   });
@@ -262,6 +315,28 @@ export const useInfiniteChannelMembers = ({
       return currentPage?.data?.result?.paging?.prev;
     },
     staleTime: 5 * 60 * 1000,
+    enabled: !!channelId,
+  });
+};
+
+export const useChannelMembersStatus = ({
+  channelId,
+  jobId,
+  onSuccess,
+  onError,
+}: {
+  channelId: string;
+  jobId: string;
+  onSuccess?: (data: any) => void;
+  onError?: () => void;
+}) => {
+  return useQuery({
+    queryKey: ['add-channel-members-status', channelId, jobId],
+    queryFn: () => getAddChannelMembersStatus(channelId, jobId),
+    refetchInterval: () => (!!jobId ? 5000 : false),
+    enabled: !!jobId && !!channelId,
+    onSuccess,
+    onError,
   });
 };
 
@@ -272,7 +347,8 @@ export const useChannelLinksWidget = (
   useQuery({
     queryKey: [queryKey],
     queryFn: () => getChannelLinks(channelId),
-    staleTime: 15 * 60 * 1000,
+    // staleTime: 15 * 60 * 1000,
+    cacheTime: 0,
   });
 
 export const useChannelAdmins = (

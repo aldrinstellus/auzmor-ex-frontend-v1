@@ -106,6 +106,16 @@ const RichTextEditor = forwardRef(
       setPostType,
     } = useContext(CreatePostContext);
 
+    // Delete aria-owns attribute
+    useEffect(() => {
+      const nodes = document.getElementsByClassName('ql-editor');
+      if (nodes.length) {
+        for (const each of nodes) {
+          (each as HTMLInputElement).removeAttribute('aria-owns');
+        }
+      }
+    });
+
     const formats = [
       'bold',
       'italic',

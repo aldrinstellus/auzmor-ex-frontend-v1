@@ -89,7 +89,7 @@ const Footer: FC<IFooterProps> = ({
             size={14}
             disabled={isMediaDisabled}
             dataTestId="feed-createpost-media"
-            tabIndex={0}
+            tabIndex={isMediaDisabled ? -1 : 0}
           />
         ),
         disabled: isMediaDisabled,
@@ -134,7 +134,7 @@ const Footer: FC<IFooterProps> = ({
             color={isShoutoutDisabled ? 'text-neutral-200' : 'text-neutral-900'}
             disabled={isShoutoutDisabled}
             dataTestId="feed-createpost-shoutout"
-            tabIndex={0}
+            tabIndex={isShoutoutDisabled ? -1 : 0}
           />
         ),
         menuItems: [],
@@ -158,7 +158,7 @@ const Footer: FC<IFooterProps> = ({
             disabled={isPollDisabled}
             dataTestId="feed-createpost-polls"
             color={'text-neutral-900'}
-            tabIndex={0}
+            tabIndex={isPollDisabled ? -1 : 0}
           />
         ),
         disabled: isPollDisabled,
@@ -176,7 +176,7 @@ const Footer: FC<IFooterProps> = ({
             name="moreOutline"
             color="stroke-[#292D32]"
             dataTestId="feed-createpost-ellipsis-icon"
-            tabIndex={0}
+            tabIndex={isMember ? -1 : 0}
           />
         ),
         hidden: isMember,

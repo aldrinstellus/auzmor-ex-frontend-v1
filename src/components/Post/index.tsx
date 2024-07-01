@@ -352,7 +352,7 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
                 dataTestId="feed-post-bookmark"
                 onClick={() => handleBookmarkClick(post)}
                 isActive={post.bookmarked}
-                title="bookmark this post"
+                ariaLabel="bookmark this post"
                 tabIndex={0}
               />
             </Tooltip>

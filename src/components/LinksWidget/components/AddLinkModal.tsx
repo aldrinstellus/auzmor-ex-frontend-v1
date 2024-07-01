@@ -10,13 +10,16 @@ import * as yup from 'yup';
 import Layout, { FieldType } from 'components/Form';
 import { URL_REGEX } from 'utils/constants';
 import { useTranslation } from 'react-i18next';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createLinks, updateChannelLink } from 'queries/channel';
 
 interface IAddLinksModalProps {
   open: boolean;
   closeModal: () => void;
   isCreateMode?: boolean;
   linkDetails?: IChannelLink;
-  setLinkDetails: (link: IChannelLink) => void;
+  channelId?: string;
+  isEditMode?: boolean;
 }
 
 const AddLinkModal: FC<IAddLinksModalProps> = ({
@@ -24,8 +27,11 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
   closeModal,
   isCreateMode,
   linkDetails,
-  setLinkDetails,
+  channelId = '',
+  isEditMode = false,
 }) => {
+  const queryClient = useQueryClient();
+
   const { t } = useTranslation('channelLinksWidget', {
     keyPrefix: 'addLinkModal',
   });
@@ -36,6 +42,23 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
       .required(t('urlField.requiredError'))
       .matches(URL_REGEX, t('urlField.invalidUrlError')),
   });
+
+  const updateLinksMutation = useMutation(
+    async (payload: any) => {
+      if (isCreateMode) {
+        return createLinks(channelId, { links: [payload] });
+      } else {
+        return updateChannelLink(payload);
+      }
+    },
+    {
+      onError: (error: any) => console.log(error),
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(['channel-links-widget']);
+        closeModal();
+      },
+    },
+  );
 
   const {
     handleSubmit,
@@ -57,7 +80,18 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
 
   const onSubmit = () => {
     const { title, url } = getValues();
-    setLinkDetails({ title, url });
+    if (isCreateMode) {
+      updateLinksMutation.mutate({ title, url });
+      return;
+    }
+    if (isEditMode) {
+      updateLinksMutation.mutate({
+        channelId: channelId,
+        linkId: linkDetails?.id,
+        title,
+        url,
+      });
+    }
     closeModal();
   };
 
@@ -117,6 +151,7 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
           size={Size.Small}
           variant={Variant.Primary}
           onClick={handleSubmit(onSubmit)}
+          loading={updateLinksMutation.isLoading}
           dataTestId="add-link-cta"
         />
       </div>

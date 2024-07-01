@@ -47,7 +47,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
     [],
   );
   const { form } = useEntitySearchFormStore();
-  const { watch, setValue, control, unregister, getValues } = form!;
+  const { watch, setValue, control, unregister } = form!;
   const [
     memberSearch,
     showSelectedMembers,
@@ -471,65 +471,59 @@ const MembersBody: FC<IMembersBodyProps> = ({
           </div>
         </div>
         <div
-          className="flex flex-col max-h-72 overflow-scroll"
+          className="flex flex-col max-h-80 overflow-scroll"
           id="entity-search-members-body"
           data-testid={`${dataTestId}-list`}
+          tabIndex={0}
         >
           {isLoading ? (
             <div className="flex items-center w-full justify-center p-12">
               <Spinner />
             </div>
           ) : usersData?.length ? (
-            usersData?.map((user: any, index: any) => (
-              <div
-                key={user.id}
-                className={
-                  user[disableKey || '']
-                    ? 'opacity-50 pointer-events-none'
-                    : undefined
-                }
-              >
-                <div className="py-2 flex items-center">
-                  <Layout
-                    fields={[
-                      {
-                        type: FieldType.Checkbox,
-                        name: `users.${user.id}`,
-                        control,
-                        className: 'flex item-center mr-4',
-                        transform: {
-                          input: (value: IGetUser | boolean) => {
-                            updateSelectAll();
-                            return !!value;
+            <ul>
+              {usersData?.map((user: any, index: any) => (
+                <li
+                  key={user.id}
+                  className={
+                    user[disableKey || '']
+                      ? 'opacity-50 pointer-events-none'
+                      : undefined
+                  }
+                >
+                  <div className="py-2 flex items-center w-full">
+                    <Layout
+                      fields={[
+                        {
+                          type: FieldType.Checkbox,
+                          name: `users.${user.id}`,
+                          control,
+                          className: 'flex item-center mr-4 w-full',
+                          transform: {
+                            input: (value: IGetUser | boolean) => {
+                              updateSelectAll();
+                              return !!value;
+                            },
+                            output: (e: ChangeEvent<HTMLInputElement>) => {
+                              if (e.target.checked) return user;
+                              return false;
+                            },
                           },
-                          output: (e: ChangeEvent<HTMLInputElement>) => {
-                            if (e.target.checked) return user;
-                            return false;
-                          },
+                          defaultChecked: selectedMemberIds.includes(user.id),
+                          dataTestId: `${dataTestId}-select-${user.id}`,
+                          label: (entityRenderer && entityRenderer(user)) || (
+                            <UserRow user={user} />
+                          ),
+                          labelContainerClassName: 'w-full',
                         },
-                        defaultChecked: selectedMemberIds.includes(user.id),
-                        dataTestId: `${dataTestId}-select-${user.id}`,
-                      },
-                    ]}
-                  />
-
-                  <div
-                    className="w-full cursor-pointer"
-                    onClick={() => {
-                      setValue(
-                        `users.${user.id}`,
-                        !!getValues(`users.${user.id}`) ? false : user,
-                      );
-                    }}
-                  >
-                    {(entityRenderer && entityRenderer(user)) || (
-                      <UserRow user={user} />
-                    )}
+                      ]}
+                      className="w-full"
+                    />
                   </div>
-                </div>
-                {index !== usersData.length - 1 && <Divider />}
-              </div>
-            ))
+                  {index !== usersData.length - 1 && <Divider />}
+                </li>
+              ))}
+            </ul>
           ) : (
             <NoDataFound
               className="py-4 w-full"

@@ -13,10 +13,12 @@ import { UserRole } from 'queries/users';
 import Layout, { FieldType } from 'components/Form';
 import { Size as InputSize } from 'components/Input';
 import { FilterModalVariant } from 'components/FilterModal';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { ShowingCount } from 'pages/Users/components/Teams';
 import AddChannelMembersModal from '../AddChannelMembersModal';
 import { IChannel } from 'stores/channelStore';
+import useURLParams from 'hooks/useURLParams';
+import NoDataFound from 'components/NoDataFound';
 
 type AppProps = {
   channelData?: IChannel;
@@ -24,13 +26,34 @@ type AppProps = {
 
 const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
   const { t } = useTranslation('channels');
+  const { updateParam, deleteParam, serializeFilter, parseParams } =
+    useURLParams();
+  const parsedRole = parseParams('roles');
+  console.log('parsedRole :', parsedRole);
+
   const { filters, clearFilters } = useAppliedFiltersStore();
   const filterForm = useForm<{
     search: string;
+    roles?: any;
   }>({
     mode: 'onChange',
-    defaultValues: { search: '' },
+    defaultValues: { search: '', roles: parsedRole },
   });
+  const { watch, control } = filterForm;
+
+  const roles = watch('roles');
+
+  const roleSelectRef = useRef<any>();
+
+  useEffect(() => {
+    if (roles) {
+      const serializedRole = serializeFilter({
+        label: roles.label,
+        value: roles.value,
+      });
+      updateParam('roles', serializedRole);
+    } else deleteParam('roles');
+  }, [roles]);
 
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
@@ -38,26 +61,28 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
     clearFilters();
   }, []);
 
-  const { watch, control } = filterForm;
   const searchValue = watch('search');
   const { data, isLoading } = useInfiniteChannelMembers({
     channelId: channelData?.id,
     q: isFiltersEmpty({
       q: searchValue,
       sort: filters?.sort,
-      role: filters?.roles?.length
-        ? filters?.roles?.map((role: any) => role.id).join(',')
+      userRole: roles?.value,
+      status: filters?.status?.length
+        ? filters?.status?.map((eachStatus: any) => eachStatus.id).join(',')
         : undefined,
     }),
   });
   const channelMembers = data?.pages.flatMap((page) => {
-    return page?.data?.result?.data.map((user: any) => {
-      try {
-        return { id: user.id, role: user.role, ...user.user };
-      } catch (e) {
-        console.log('Error', { user });
-      }
-    });
+    return page?.data?.result?.data
+      .map((user: any) => {
+        try {
+          return { id: user.id, role: user.role, ...user.user };
+        } catch (e) {
+          console.log('Error', { user });
+        }
+      })
+      .filter(Boolean);
   });
 
   const roleFields = [
@@ -65,12 +90,12 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
       type: FieldType.SingleSelect,
       control,
       height: 36,
-      name: 'role',
+      name: 'roles',
       placeholder: 'Role',
       size: InputSize.Small,
       dataTestId: 'filterby-role',
       selectClassName: 'single-select-bold',
-      // ref: roleSelectRef,
+      ref: roleSelectRef,
       showSearch: false,
       options: [
         {
@@ -114,7 +139,6 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
               isLoading={isLoading}
               count={data?.pages[0]?.data?.result?.totalCount}
             />
-
             <Layout fields={roleFields} />
           </div>
         </FilterMenu>
@@ -122,19 +146,23 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
           <div className="flex justify-center items-center">
             <Spinner />
           </div>
+        ) : channelMembers?.length === 0 ? (
+          <NoDataFound
+            illustration="noChannelFound"
+            className="py-4 w-full"
+            onClearSearch={() => {}}
+            hideClearBtn
+            dataTestId={`$channel-noresult`}
+          />
         ) : (
           <ManageAccessTable data={channelMembers} />
         )}
       </Card>
-      {showAddMemberModal && (
+      {showAddMemberModal && channelData && (
         <AddChannelMembersModal
           open={showAddMemberModal}
-          openModal={openAddMemberModal}
           closeModal={closeAddMemberModal}
-          dataTestId="add-members"
-          onSubmit={() => {}}
-          title={`Add members @${channelData?.name}`}
-          onCancel={closeAddMemberModal}
+          channelData={channelData}
         />
       )}
     </div>

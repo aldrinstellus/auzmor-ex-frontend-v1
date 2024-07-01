@@ -279,24 +279,29 @@ const AddApp: FC<AddAppProps> = ({
                 audience={audience}
               />
             </div>
-            <div className="bg-blue-50 flex items-center justify-end gap-x-3 px-6 py-4 mt-auto rounded-9xl">
-              <Button
-                label="Cancel"
-                variant={ButtonVariant.Secondary}
-                onClick={closeModal}
-                dataTestId="add-app-cancel"
-              />
-              <Button
-                label="Save"
-                type={Type.Submit}
-                dataTestId="add-app-save"
-                loading={
-                  isUploading ||
-                  addAppMutation?.isLoading ||
-                  updateAppMutation.isLoading ||
-                  uploadStatus === UploadStatus.Uploading
-                }
-              />
+            <div className="bg-blue-50 flex items-center justify-between gap-x-3 px-6 py-4 mt-auto rounded-9xl">
+              <p className="text-xs text-neutral-900">
+                <span className="text-red-500">*</span> Required field
+              </p>
+              <div className="flex items-center gap-x-3">
+                <Button
+                  label="Cancel"
+                  variant={ButtonVariant.Secondary}
+                  onClick={closeModal}
+                  dataTestId="add-app-cancel"
+                />
+                <Button
+                  label="Save"
+                  type={Type.Submit}
+                  dataTestId="add-app-save"
+                  loading={
+                    isUploading ||
+                    addAppMutation?.isLoading ||
+                    updateAppMutation.isLoading ||
+                    uploadStatus === UploadStatus.Uploading
+                  }
+                />
+              </div>
             </div>
           </form>
         </div>

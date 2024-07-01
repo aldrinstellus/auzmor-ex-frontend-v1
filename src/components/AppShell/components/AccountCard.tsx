@@ -60,7 +60,11 @@ const AccountCard = () => {
             image={user?.profileImage}
             ariaLabel="profile image"
           />
-          <Icon name="arrowDownOutline" size={16} title="Account dropdown" />
+          <Icon
+            name="arrowDownOutline"
+            size={16}
+            ariaLabel="Account dropdown"
+          />
         </div>
       }
       className="-right-2 top-[52px] rounded-9xl"

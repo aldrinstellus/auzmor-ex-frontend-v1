@@ -1,4 +1,4 @@
-import { ReactNode, forwardRef, useMemo, useState } from 'react';
+import { ReactNode, forwardRef, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { Control, useController, Controller } from 'react-hook-form';
 import { Select, ConfigProvider } from 'antd';
@@ -71,6 +71,20 @@ const SingleSelect = forwardRef(
       name,
       control,
     });
+
+    const id = `select-id-${Math.random().toString(16).slice(2)}`;
+
+    useEffect(() => {
+      setTimeout(() => {
+        const nodes = document.querySelectorAll('[aria-activedescendant]');
+        if (nodes.length) {
+          for (const each of nodes) {
+            each.removeAttribute('aria-activedescendant');
+          }
+        }
+      }, 0);
+    });
+
     const labelStyle = useMemo(
       () =>
         clsx(
@@ -137,6 +151,7 @@ const SingleSelect = forwardRef(
               defaultValue={defaultValue}
               render={() => (
                 <Select
+                  id={id}
                   open={open}
                   showSearch={showSearch}
                   disabled={disabled}
@@ -162,6 +177,7 @@ const SingleSelect = forwardRef(
                   clearIcon={clearIcon}
                   ref={ref}
                   allowClear={isClearable}
+                  aria-label="select"
                 >
                   {(options || []).map((option) => (
                     <Option

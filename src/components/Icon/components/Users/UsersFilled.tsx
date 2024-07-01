@@ -1,12 +1,15 @@
 import { SVGProps } from 'react';
 
-const SvgUsersFilled = (props: SVGProps<SVGSVGElement>) => (
+const SvgUsersFilled = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={20}
     height={20}
     fill="none"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <path
       fill="currentColor"

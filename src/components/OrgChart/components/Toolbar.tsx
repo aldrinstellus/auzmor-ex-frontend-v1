@@ -360,7 +360,7 @@ const Toolbar: FC<IToolbarProps> = ({
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <div className="text-2xl font-bold mr-4">{t('title')}</div>
-            <Layout fields={memberSearchfields} />
+            <Layout fields={memberSearchfields} className="flex items-center" />
             <div
               className={`flex items-center justify-center w-9 h-9 ${
                 isSafari && 'pointer-events-none opacity-50'

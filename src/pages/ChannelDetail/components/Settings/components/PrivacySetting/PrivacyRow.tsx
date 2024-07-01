@@ -52,7 +52,7 @@ const PrivacyRow: FC<AppProps> = ({ data }) => {
       data: {
         value: ChannelVisibilityEnum.Private,
         label:
-          'Anyone can join automatically, and content is visible to all without joining',
+          'Anyone can join automatically, and content is visible to all without joining.',
 
         onChange: handleChange,
       },
@@ -79,9 +79,9 @@ const PrivacyRow: FC<AppProps> = ({ data }) => {
       labelRenderer: (option: IRadioListOption) => {
         return (
           <>
-            <div className=" text-sm ml-4 font normal  ">
+            <div className=" text-sm ml-2 text-black font normal  ">
               {option.data.value}
-              <li>{option.data.label} </li>
+              <li className="text-gray-500 ">{option.data.label} </li>
             </div>
           </>
         );

@@ -3,47 +3,28 @@ import Layout, { FieldType } from 'components/Form';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
 import { IGetUser, useInfiniteUsers } from 'queries/users';
-import { ChangeEvent, FC, ReactNode, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import UserRow from './UserRow';
 import InfiniteSearch from 'components/InfiniteSearch';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
-import useAuth from 'hooks/useAuth';
 import { IDesignationAPI, useInfiniteDesignations } from 'queries/designation';
 import NoDataFound from 'components/NoDataFound';
 import { ICategory, useInfiniteCategories } from 'queries/category';
 import { ITeam, useInfiniteTeams } from 'queries/teams';
-import { isFiltersEmpty } from 'utils/misc';
+import { getFullName, getProfileImage, isFiltersEmpty } from 'utils/misc';
 import { CategoryType } from 'queries/apps';
 import TeamRow from './TeamRow';
-
-type ApiCallFunction = (queryParams: any) => any;
+import Avatar from 'components/Avatar';
+import Icon from 'components/Icon';
+import PopupMenu from 'components/PopupMenu';
+import Button from 'components/Button';
+import { CHANNEL_ROLE } from 'stores/channelStore';
+import { TeamRowVariant } from './TeamRow';
 interface IMembersBodyProps {
-  entityRenderer?: (data: IGetUser) => ReactNode;
-  selectedMemberIds?: string[];
-  selectedTeamIds?: string[];
   dataTestId?: string;
-  entitySearchLabel?: string;
-  hideCurrentUser?: boolean;
-  showJobTitleFilter?: boolean;
-  disableKey?: string;
-  fetchUsers?: ApiCallFunction;
-  usersQueryParams?: Record<string, any>;
 }
 
-const ChannelMembersBody: FC<IMembersBodyProps> = ({
-  entityRenderer,
-  selectedMemberIds = [],
-  selectedTeamIds = [],
-  dataTestId,
-  entitySearchLabel,
-  hideCurrentUser,
-  showJobTitleFilter,
-  disableKey,
-  fetchUsers = useInfiniteUsers,
-  usersQueryParams = {},
-}) => {
-  const { user: currentUser } = useAuth();
+const ChannelMembersBody: FC<IMembersBodyProps> = ({ dataTestId }) => {
   const [selectedDesignations, setSelectedDesignations] = useState<string[]>(
     [],
   );
@@ -52,69 +33,60 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
   const { watch, setValue, control, unregister, getValues } = form!;
   const [
     memberSearch,
-    teamSearch,
     showSelectedMembers,
-    users,
-    teams,
+    channelMembers,
     categorySearch,
     categories,
     designationSearch,
     designations,
   ] = watch([
     'memberSearch',
-    'teamSearch',
     'showSelectedMembers',
-    'users',
-    'teams',
+    'channelMembers',
     'categorySearch',
     'categories',
     'designationSearch',
     'designations',
   ]);
 
-  console.log({ selectedTeamIds });
-
   // fetch users from search input
-  const debouncedUserSearchValue = useDebounce(memberSearch || '', 500);
+  const debouncedSearchValue = useDebounce(memberSearch || '', 500);
   const {
     data: fetchedUsers,
     isLoading: userLoading,
     isFetchingNextPage: isFetchingNextUserPage,
     fetchNextPage: fetchNextUserPage,
     hasNextPage: hasNextUserPage,
-  } = fetchUsers({
+  } = useInfiniteUsers({
     q: {
-      q: debouncedUserSearchValue,
+      q: debouncedSearchValue,
       designations:
         selectedDesignations.length > 0
           ? selectedDesignations.join(',')
           : undefined,
-      ...usersQueryParams,
     },
   });
 
-  let usersData = fetchedUsers?.pages
-    .flatMap((page: any) => {
-      return page?.data?.result?.data.map((user: IGetUser) => {
-        try {
-          return user;
-        } catch (e) {
-          console.log('Error', { user });
+  let usersData: IGetUser[] =
+    fetchedUsers?.pages
+      .flatMap((page: any) => {
+        return page?.data?.result?.data.map((user: IGetUser) => {
+          try {
+            return user;
+          } catch (e) {
+            console.log('Error', { user });
+          }
+        });
+      })
+      .filter(Boolean)
+      .filter((user: IGetUser) => {
+        if (showSelectedMembers) {
+          return !!channelMembers?.users?.[user.id];
         }
-      });
-    })
-    .filter((user: IGetUser) => {
-      if (hideCurrentUser && user.id === currentUser!.id) {
-        return false;
-      }
-      if (showSelectedMembers) {
-        return !!users?.[user.id];
-      }
-      return true;
-    });
+        return true;
+      }) || [];
 
   // fetch teams data
-  const debouncedTeamSearchValue = useDebounce(teamSearch || '', 500);
   const {
     data: fetchedTeams,
     isLoading: teamLoading,
@@ -123,29 +95,31 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
     hasNextPage: hasNextTeamPage,
   } = useInfiniteTeams({
     q: isFiltersEmpty({
-      q: debouncedTeamSearchValue,
+      q: debouncedSearchValue,
       categoryIds:
         selectedCategories && selectedCategories.length
           ? selectedCategories.join(',')
           : undefined,
     }),
   });
-  const teamsData = fetchedTeams?.pages
-    .flatMap((page) => {
-      return page?.data?.result?.data.map((team: ITeam) => {
-        try {
-          return team;
-        } catch (e) {
-          console.log('Error', { team });
+  let teamsData: ITeam[] =
+    fetchedTeams?.pages
+      .flatMap((page) => {
+        return page?.data?.result?.data.map((team: ITeam) => {
+          try {
+            return team;
+          } catch (e) {
+            console.log('Error', { team });
+          }
+        });
+      })
+      .filter(Boolean)
+      .filter((team) => {
+        if (showSelectedMembers) {
+          return !!channelMembers?.teams[team.id];
         }
-      });
-    })
-    .filter((team) => {
-      if (showSelectedMembers) {
-        return !!teams[team.id];
-      }
-      return true;
-    });
+        return true;
+      }) || [];
 
   // fetch category data
   const debouncedCategorySearchValue = useDebounce(categorySearch || '', 500);
@@ -184,7 +158,7 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
     q: {
       q: debouncedDesignationSearchValue,
     },
-    startFetching: !!showJobTitleFilter,
+    startFetching: true,
   });
   const designationData = fetchedDesignations?.pages.flatMap((page) => {
     return page.data.result.data.map((designation: IDesignationAPI) => {
@@ -209,38 +183,75 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
   }, [inView]);
 
   const selectAllEntity = () => {
-    usersData?.forEach((user: IGetUser) => setValue(`users.${user.id}`, user));
+    console.log('selecting all');
+    usersData?.forEach((user: IGetUser) =>
+      setValue(`channelMembers.users.id-${user.id}.user`, user),
+    );
+    teamsData?.forEach((team: ITeam) =>
+      setValue(`channelMembers.teams.id-${team.id}.team`, team),
+    );
+    console.log('done selecting all');
   };
 
   const deselectAll = () => {
-    Object.keys(users || {}).forEach((key) => {
-      setValue(`users.${key}`, false);
+    Object.keys(channelMembers?.users || {}).forEach((key) => {
+      setValue(`channelMembers.users.${key}`, { user: undefined });
+    });
+    Object.keys(channelMembers?.teams || {}).forEach((key) => {
+      setValue(`channelMembers.teams.${key}`, { team: undefined });
     });
   };
 
-  const userKeys = Object.keys(users || {});
+  const userKeys = Object.keys(channelMembers?.users || {});
+  const teamKeys = Object.keys(channelMembers?.teams || {});
 
   useEffect(() => {
     if (!showSelectedMembers) {
-      unregisterUsers();
+      unregisterMembers();
     }
     updateSelectAll();
-  }, [userKeys, usersData, showSelectedMembers]);
+  }, [userKeys, teamKeys, usersData, teamsData, showSelectedMembers]);
 
-  const unregisterUsers = () => {
+  const unregisterMembers = () => {
     userKeys.forEach((key) => {
-      if (!usersData?.find((user: IGetUser) => user.id === key) && !users[key])
-        unregister(`users.${key}`);
+      if (
+        !usersData?.find(
+          (user: IGetUser) => user.id === key.replace('id-', ''),
+        ) &&
+        !channelMembers?.users[key]
+      )
+        unregister(`channelMembers.users.${key}`);
+    });
+    teamKeys.forEach((key) => {
+      if (
+        !teamsData?.find((team: ITeam) => team.id === key.replace('id-', '')) &&
+        !channelMembers?.teams[key]
+      )
+        unregister(`channelMembers.teams.${key}`);
     });
   };
 
-  const selectedMembers = userKeys.map((key) => users[key]).filter(Boolean);
-  const selectedCount = selectedMembers.length;
+  const selectedMembers = {
+    users: userKeys
+      .map((key) => channelMembers?.users[key]?.user)
+      .filter(Boolean),
+    teams: teamKeys
+      .map((key) => channelMembers?.teams[key]?.team)
+      .filter(Boolean),
+  };
+  const selectedCount =
+    selectedMembers.users.length + selectedMembers.teams.length;
 
   const updateSelectAll = () => {
     if (
       usersData?.length === 0 ||
-      usersData?.some((user: IGetUser) => !users?.[user.id]) ||
+      usersData?.some(
+        (user: IGetUser) => !channelMembers?.users?.[`id-${user.id}`]?.user,
+      ) ||
+      (usersData?.length === 0 && teamsData?.length === 0) ||
+      teamsData?.some(
+        (team: ITeam) => !channelMembers?.teams?.[`id-${team.id}`]?.team,
+      ) ||
       showSelectedMembers
     ) {
       setValue('selectAll', false);
@@ -249,7 +260,10 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
     }
   };
 
-  if (showSelectedMembers) usersData = selectedMembers as IGetUser[];
+  if (showSelectedMembers) {
+    usersData = selectedMembers.users as IGetUser[];
+    teamsData = selectedMembers.teams as ITeam[];
+  }
 
   usersData?.sort((a: IGetUser, b: IGetUser) => {
     if (a.fullName! > b.fullName!) return 1;
@@ -257,10 +271,16 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
     else return 0;
   });
 
-  const isControlsDisabled =
-    !!!usersData?.length && debouncedUserSearchValue !== '';
+  teamsData?.sort((a: ITeam, b: ITeam) => {
+    if (a.name > b.name) return 1;
+    else if (a.name < b.name) return -1;
+    else return 0;
+  });
 
-  console.log({ usersData });
+  const isControlsDisabled =
+    !!!usersData?.length && !!!teamsData?.length && debouncedSearchValue !== '';
+
+  console.log({ channelMembers });
 
   return (
     <div className="flex flex-col min-h-[489px]">
@@ -271,7 +291,7 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
               type: FieldType.Input,
               control,
               name: 'memberSearch',
-              label: entitySearchLabel || 'Select member',
+              label: 'Select member',
               placeholder: 'Add via name or email address',
               isClearable: true,
               dataTestId: `${dataTestId}-search`,
@@ -288,44 +308,42 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
             }`}
           >
             Quick filters:
-            {showJobTitleFilter && (
-              <div className="relative">
-                <InfiniteSearch
-                  title="Job Title"
-                  control={control}
-                  options={
-                    designationData?.map((designation: IDesignationAPI) => ({
-                      label: designation.name,
-                      value: designation,
-                      id: designation.id,
-                    })) || []
+            <div className="relative">
+              <InfiniteSearch
+                title="Job Title"
+                control={control}
+                options={
+                  designationData?.map((designation: IDesignationAPI) => ({
+                    label: designation.name,
+                    value: designation,
+                    id: designation.id,
+                  })) || []
+                }
+                searchName={'designationSearch'}
+                optionsName={'designations'}
+                isLoading={designationLoading}
+                isFetchingNextPage={isFetchingNextDesignationPage}
+                fetchNextPage={fetchNextDesignationPage}
+                hasNextPage={hasNextDesignationPage}
+                onApply={() =>
+                  setSelectedDesignations([
+                    ...Object.keys(designations).filter(
+                      (key: string) => !!designations[key],
+                    ),
+                  ])
+                }
+                onReset={() => {
+                  setSelectedDesignations([]);
+                  if (designations) {
+                    Object.keys(designations).forEach((key: string) =>
+                      setValue(`designations.${key}`, false),
+                    );
                   }
-                  searchName={'designationSearch'}
-                  optionsName={'designations'}
-                  isLoading={designationLoading}
-                  isFetchingNextPage={isFetchingNextDesignationPage}
-                  fetchNextPage={fetchNextDesignationPage}
-                  hasNextPage={hasNextDesignationPage}
-                  onApply={() =>
-                    setSelectedDesignations([
-                      ...Object.keys(designations).filter(
-                        (key: string) => !!designations[key],
-                      ),
-                    ])
-                  }
-                  onReset={() => {
-                    setSelectedDesignations([]);
-                    if (designations) {
-                      Object.keys(designations).forEach((key: string) =>
-                        setValue(`designations.${key}`, false),
-                      );
-                    }
-                  }}
-                  selectionCount={selectedDesignations.length}
-                  dataTestId={`${dataTestId}-filter-jobtitle`}
-                />
-              </div>
-            )}
+                }}
+                selectionCount={selectedDesignations.length}
+                dataTestId={`${dataTestId}-filter-jobtitle`}
+              />
+            </div>
             <div className="relative">
               <InfiniteSearch
                 title="Category"
@@ -458,17 +476,15 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
               <div
                 key={`user-${user.id}`}
                 className={
-                  user[disableKey || '']
-                    ? 'opacity-50 pointer-events-none'
-                    : undefined
+                  user.isPresent ? 'opacity-50 pointer-events-none' : undefined
                 }
               >
-                <div className="py-2 flex items-center">
+                <div className="py-3 flex items-center">
                   <Layout
                     fields={[
                       {
                         type: FieldType.Checkbox,
-                        name: `users.${user.id}`,
+                        name: `channelMembers.users.id-${user.id}.user`,
                         control,
                         className: 'flex item-center mr-4',
                         transform: {
@@ -478,34 +494,126 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
                           },
                           output: (e: ChangeEvent<HTMLInputElement>) => {
                             if (e.target.checked) return user;
-                            return false;
+                            return undefined;
                           },
                         },
-                        defaultChecked: selectedMemberIds.includes(user.id),
+                        defaultChecked: false,
                         dataTestId: `${dataTestId}-select-${user.id}`,
                       },
                     ]}
                   />
 
-                  <div
-                    className="w-full cursor-pointer"
-                    onClick={() => {
-                      setValue(
-                        `users.${user.id}`,
-                        !!getValues(`users.${user.id}`) ? false : user,
-                      );
-                    }}
-                  >
-                    {(entityRenderer && entityRenderer(user)) || (
-                      <UserRow user={user} />
-                    )}
+                  <div className="w-full flex items-center cursor-pointer">
+                    <div
+                      className="flex items-center space-x-4 w-full"
+                      onClick={() => {
+                        setValue(
+                          `channelMembers.users.id-${user.id}.user`,
+                          !!getValues(`channelMembers.users.id-${user.id}.user`)
+                            ? undefined
+                            : user,
+                        );
+                      }}
+                    >
+                      <Avatar
+                        name={getFullName(user) || 'U'}
+                        size={32}
+                        image={getProfileImage(user)}
+                        dataTestId="member-profile-pic"
+                      />
+                      <div className="flex space-x-6 w-full">
+                        <div className="flex flex-col w-full">
+                          <div className="flex justify-between items-center">
+                            <div
+                              className="text-sm font-bold text-neutral-900 whitespace-nowrap line-clamp-1"
+                              data-testid="member-name"
+                            >
+                              {getFullName(user)}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div
+                              className="text-xs font-normal text-neutral-500"
+                              data-testid="member-email"
+                            >
+                              {user?.primaryEmail}
+                            </div>
+                            {user?.designation && (
+                              <div className="w-1 h-1 bg-neutral-500 rounded-full" />
+                            )}
+                            {user.designation && (
+                              <div className="flex space-x-1 items-start">
+                                <Icon name="briefcase" size={16} />
+                                <div
+                                  className="text-xs  font-normal text-neutral-500"
+                                  data-testid="member-designation"
+                                >
+                                  {user?.designation?.substring(0, 22)}
+                                </div>
+                              </div>
+                            )}
+
+                            {user?.isPresent && (
+                              <div className="text-xs font-semibold text-neutral-500">
+                                Already a member
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="relative pr-2">
+                      <PopupMenu
+                        triggerNode={
+                          <Button
+                            className="!text-sm !font-medium !bg-primary-50 !border-primary-200 border-1 !text-primary-500 capitalize"
+                            label={
+                              getValues(
+                                `channelMembers.users.id-${user.id}.role`,
+                              )?.toLowerCase() || 'Member'
+                            }
+                            rightIcon={'arrowDown'}
+                            rightIconSize={20}
+                            rightIconClassName="!text-primary-500"
+                          />
+                        }
+                        menuItems={
+                          [
+                            {
+                              value: CHANNEL_ROLE.Admin,
+                              label: 'Admin',
+                              onClick: () => {
+                                setValue(
+                                  `channelMembers.users.id-${user.id}.role`,
+                                  CHANNEL_ROLE.Admin,
+                                );
+                              },
+                            },
+
+                            {
+                              value: CHANNEL_ROLE.Member,
+                              label: 'Member',
+                              onClick: () => {
+                                setValue(
+                                  `channelMembers.users.id-${user.id}.role`,
+                                  CHANNEL_ROLE.Member,
+                                );
+                              },
+                            },
+                          ] as any
+                        }
+                        className=" w-fit "
+                      />
+                    </div>
                   </div>
                 </div>
-                {index !== usersData.length - 1 && <Divider />}
+                {(index !== usersData?.length - 1 || teamsData.length > 0) && (
+                  <Divider />
+                )}
               </div>
             ))
           ) : null}
-          {!userLoading && !usersData.length && teamLoading ? (
+          {!userLoading && !usersData?.length && teamLoading ? (
             <div className="flex items-center w-full justify-center p-12">
               <Spinner />
             </div>
@@ -515,17 +623,17 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
                 <div
                   key={`team-${team.id}`}
                   className={
-                    team[disableKey || '']
+                    team.isPresent
                       ? 'opacity-50 pointer-events-none'
                       : undefined
                   }
                 >
-                  <div className="py-2 flex items-center">
+                  <div className="py-3 flex items-center">
                     <Layout
                       fields={[
                         {
                           type: FieldType.Checkbox,
-                          name: `teams.${team.id}`,
+                          name: `channelMembers.teams.id-${team.id}.team`,
                           control,
                           className: 'flex item-center mr-4',
                           transform: {
@@ -535,25 +643,74 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
                             },
                             output: (e: ChangeEvent<HTMLInputElement>) => {
                               if (e.target.checked) return team;
-                              return false;
+                              return undefined;
                             },
                           },
-                          defaultChecked: selectedTeamIds.includes(team.id),
+                          defaultChecked: false,
                           dataTestId: `${dataTestId}-select-${team.id}`,
                         },
                       ]}
                     />
 
-                    <div
-                      className="w-full cursor-pointer"
-                      onClick={() => {
-                        setValue(
-                          `teams.${team.id}`,
-                          !!getValues(`teams.${team.id}`) ? false : team,
-                        );
-                      }}
-                    >
-                      <TeamRow team={team} />
+                    <div className="w-full flex items-center cursor-pointer">
+                      <TeamRow
+                        team={team}
+                        variant={TeamRowVariant.Small}
+                        onClick={() => {
+                          setValue(
+                            `channelMembers.teams.id-${team.id}.team`,
+                            !!getValues(
+                              `channelMembers.teams.id-${team.id}.team`,
+                            )
+                              ? undefined
+                              : team,
+                          );
+                        }}
+                      />
+
+                      <div className="relative pr-2">
+                        <PopupMenu
+                          triggerNode={
+                            <Button
+                              className="!text-sm !font-medium !bg-primary-50 !border-primary-200 border-1 !text-primary-500 capitalize"
+                              label={
+                                getValues(
+                                  `channelMembers.teams.id-${team.id}.role`,
+                                )?.toLowerCase() || 'Member'
+                              }
+                              rightIcon={'arrowDown'}
+                              rightIconSize={20}
+                              rightIconClassName="!text-primary-500"
+                            />
+                          }
+                          menuItems={
+                            [
+                              {
+                                value: CHANNEL_ROLE.Admin,
+                                label: 'Admin',
+                                onClick: () => {
+                                  setValue(
+                                    `channelMembers.teams.id-${team.id}.role`,
+                                    CHANNEL_ROLE.Admin,
+                                  );
+                                },
+                              },
+
+                              {
+                                value: CHANNEL_ROLE.Member,
+                                label: 'Member',
+                                onClick: () => {
+                                  setValue(
+                                    `channelMembers.teams.id-${team.id}.role`,
+                                    CHANNEL_ROLE.Member,
+                                  );
+                                },
+                              },
+                            ] as any
+                          }
+                          className=" w-fit "
+                        />
+                      </div>
                     </div>
                   </div>
                   {index !== teamsData.length - 1 && <Divider />}

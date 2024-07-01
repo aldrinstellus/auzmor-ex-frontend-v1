@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const FolderOpenFilled = (props: SVGProps<SVGSVGElement>) => (
+const FolderOpenFilled = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width={48}
     height={48}
@@ -8,6 +10,7 @@ const FolderOpenFilled = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <path
       opacity="0.4"

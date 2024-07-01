@@ -1,26 +1,21 @@
 import Card from 'components/Card';
-import { updateChannelLinks, useChannelLinksWidget } from 'queries/channel';
+import { useChannelLinksWidget } from 'queries/channel';
 import Button, { Size, Variant } from 'components/Button';
 import Icon from 'components/Icon';
 import SkeletonLoader from './components/SkeletonLoader';
 
 import EmptyState from './components/EmptyState';
-import { FC, memo, useState } from 'react';
+import { memo, useState } from 'react';
 import useModal from 'hooks/useModal';
 import EditLinksModal from './components/EditLinksModal';
 import { useTranslation } from 'react-i18next';
 import AddLinkModal from './components/AddLinkModal';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { IChannelLink } from 'stores/channelStore';
+
 import useRole from 'hooks/useRole';
+import { useParams } from 'react-router-dom';
 
-export interface ILinkWidgetProps {
-  channelId?: string;
-  className?: string;
-}
-
-const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
-  const queryClient = useQueryClient();
+const LinksWidget = () => {
+  const { channelId = '' } = useParams();
   const { isAdmin } = useRole();
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const [openEditLinks, openEditLinksModal, closeEditLinksModal] = useModal(
@@ -36,18 +31,6 @@ const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
   const { t } = useTranslation('channelLinksWidget');
 
   const { data: links, isLoading } = useChannelLinksWidget(channelId);
-
-  const updateLinksMutation = useMutation({
-    mutationKey: ['update-channel-links'],
-    mutationFn: (payload: IChannelLink[]) => {
-      return updateChannelLinks(channelId, { links: payload });
-    },
-    onError: (error: any) => console.log(error),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['channel-links-widget']);
-      closeAddLinkModal();
-    },
-  });
 
   const toggleModal = () => {
     if (open) closeCollapse();
@@ -173,9 +156,11 @@ const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
           open={openAddLink}
           closeModal={closeAddLinkModal}
           isCreateMode={true}
-          setLinkDetails={(link) => {
-            updateLinksMutation.mutate([link]);
-          }}
+          isEditMode={isEditMode}
+          channelId={channelId}
+          // setLinkDetails={(link) => {
+          //   updateLinksMutation.mutate([link]);
+          // }}
         />
       )}
     </Card>

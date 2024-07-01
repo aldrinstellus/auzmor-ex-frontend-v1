@@ -37,6 +37,7 @@ const Body: FC<ShoutoutBodyProps> = ({
       className={clsx({
         'max-h-[510px] overflow-y-auto': step === SHOUTOUT_STEPS.ImageSelect,
       })}
+      tabIndex={0}
     >
       {step === SHOUTOUT_STEPS.UserSelect && (
         <EntitySearchModalBody

@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgLifeBuoyOutline = (props: SVGProps<SVGSVGElement>) => {
+const SvgLifeBuoyOutline = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -9,6 +11,7 @@ const SvgLifeBuoyOutline = (props: SVGProps<SVGSVGElement>) => {
       fill="none"
       viewBox="0 0 18 18"
       {...props}
+      aria-label={props.ariaLabel}
     >
       <g>
         <path

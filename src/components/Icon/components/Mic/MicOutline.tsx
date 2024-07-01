@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgMicOutline = (props: SVGProps<SVGSVGElement>) => (
+const SvgMicOutline = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width={24}
     height={24}
@@ -8,6 +10,7 @@ const SvgMicOutline = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <g clipPath="url(#clip0_911_83252)">
       <path

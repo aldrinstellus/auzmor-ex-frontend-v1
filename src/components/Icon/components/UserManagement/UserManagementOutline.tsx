@@ -1,6 +1,8 @@
 import { SVGProps } from 'react';
 
-const SvgUserManagementOutline = (props: SVGProps<SVGSVGElement>) => (
+const SvgUserManagementOutline = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width={20}
     height={20}
@@ -8,6 +10,7 @@ const SvgUserManagementOutline = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <path
       d="M10.099 10.6497C10.0406 10.6414 9.96563 10.6414 9.89896 10.6497C8.43229 10.5997 7.26562 9.39974 7.26562 7.92474C7.26562 6.41641 8.48229 5.19141 9.99896 5.19141C11.5073 5.19141 12.7323 6.41641 12.7323 7.92474C12.724 9.39974 11.5656 10.5997 10.099 10.6497Z"

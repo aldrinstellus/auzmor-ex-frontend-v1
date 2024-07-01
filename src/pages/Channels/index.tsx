@@ -35,9 +35,8 @@ interface IFilterButton {
 export const Channels: FC<IChannelsProps> = () => {
   usePageTitle('channels');
   const { t } = useTranslation('channels');
-  const { filters, clearFilters, updateFilter } = useAppliedFiltersStore();
+  const { filters, setFilters, updateFilter } = useAppliedFiltersStore();
   const [isModalOpen, openModal, closeModal] = useModal();
-
   const filterForm = useForm<{
     search: string;
   }>({
@@ -45,7 +44,13 @@ export const Channels: FC<IChannelsProps> = () => {
     defaultValues: { search: '' },
   });
 
-  useEffect(() => () => clearFilters(), []);
+  useEffect(() => {
+    setFilters({
+      visibility: ChannelVisibilityEnum.All,
+      channelType: ChannelTypeEnum.MyChannels,
+    });
+  }, []);
+  // useEffect(() => () => clearFilters(), []);
 
   const { watch } = filterForm;
   const searchValue = watch('search');

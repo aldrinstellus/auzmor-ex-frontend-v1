@@ -30,5 +30,12 @@
   },
   "membersWidget": {
     "title": "Members"
+  },
+  "addChannelMembers": {
+    "success": "Channel members are successfully added",
+    "failure": "Failed to add channel members"
+  },
+  "addChannelMembersStatus": {
+    "failure": "Failed to check progress"
   }
 }

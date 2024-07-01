@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
@@ -8,8 +8,10 @@ import Button, { Size, Variant } from 'components/Button';
 import useModal from 'hooks/useModal';
 import AddLinkModal from './AddLinkModal';
 import { IChannelLink } from 'stores/channelStore';
-import { updateChannelLinks } from 'queries/channel';
+import { deleteChannelLinks, updateChannelLinksIndex } from 'queries/channel';
 import { useTranslation } from 'react-i18next';
+import { Reorder, useDragControls } from 'framer-motion';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 
 interface IEditLinksModalProps {
   open: boolean;
@@ -36,17 +38,21 @@ const EditLinksModal: FC<IEditLinksModalProps> = ({
     false,
     false,
   );
+  const controls = useDragControls();
   const [draftLinks, setDraftLinks] = useState<IChannelLink[]>(links);
+
+  useEffect(() => {
+    setDraftLinks(links);
+  }, [links]);
   const [linkDetails, setLinkDetails] = useState<IChannelLinkDetails>();
 
   const { t } = useTranslation('channelLinksWidget', {
     keyPrefix: 'editLinksModal',
   });
-
   const updateLinksMutation = useMutation({
-    mutationKey: ['update-channel-links'],
+    mutationKey: ['update-channel-links-index'],
     mutationFn: (payload: IChannelLink[]) => {
-      return updateChannelLinks(channelId, { links: payload });
+      return updateChannelLinksIndex(channelId, { links: payload });
     },
     onError: (error: any) => console.log(error),
     onSuccess: async () => {
@@ -54,6 +60,37 @@ const EditLinksModal: FC<IEditLinksModalProps> = ({
       closeModal();
     },
   });
+  const deleteChannelMutation = useMutation({
+    mutationKey: ['delete-channel-link'],
+    mutationFn: deleteChannelLinks,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onError: () => {},
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onSuccess: () => {
+      successToastConfig({});
+      queryClient.invalidateQueries(['channel-links-widget']);
+    },
+  });
+
+  function findChangedIndexes(original: any[], reordered: any[]) {
+    const idToIndexMap = new Map(
+      reordered.map((link, index) => [link.id, index + 1]),
+    ); // index + 1 to match the index starting from 1
+
+    const changedLinks: any[] = original
+      .filter((link) => {
+        const newIndex = idToIndexMap.get(link.id);
+        return newIndex !== undefined && newIndex !== link.sequence;
+      })
+      .map((link) => ({
+        id: link.id,
+        index: idToIndexMap.get(link.id) as number,
+        url: link?.url || '',
+        title: link.title || '',
+      }));
+
+    return changedLinks;
+  }
 
   return (
     <Modal open={open} closeModal={closeModal} className="max-w-[638px]">
@@ -62,16 +99,21 @@ const EditLinksModal: FC<IEditLinksModalProps> = ({
         onClose={() => closeModal()}
         closeBtnDataTestId="edit-links-close"
       />
-
       <div className="flex flex-col w-full max-h-[420px] min-h-[210px] p-4 gap-6 overflow-y-auto">
         {draftLinks.length > 0 && !openAddLink ? (
-          <div className="flex justify-start flex-col gap-2">
+          <Reorder.Group
+            axis="y"
+            values={draftLinks}
+            onReorder={setDraftLinks}
+            className="flex justify-start flex-col gap-2"
+          >
             {draftLinks?.map((link, index) => (
-              <div
+              <Reorder.Item
+                value={link}
+                key={link.id}
                 className={`flex justify-between items-center gap-x-3 py-2 px-4 border-1 rounded-22xl border-neutral-200 group hover:shadow-xl ${
                   !isEditMode && 'cursor-pointer'
                 }`}
-                key={index}
                 onClick={() => {
                   if (isEditMode) return;
                   const linkUrl = link.url.startsWith('http')
@@ -79,6 +121,7 @@ const EditLinksModal: FC<IEditLinksModalProps> = ({
                     : `https://${link.url}`;
                   window.open(linkUrl, '_blank');
                 }}
+                dragControls={controls}
               >
                 <div className="flex justify-start items-center gap-x-3">
                   <Icon
@@ -118,6 +161,10 @@ const EditLinksModal: FC<IEditLinksModalProps> = ({
                             (_, draftIndex) => draftIndex !== index,
                           ),
                         );
+                        deleteChannelMutation.mutate({
+                          id: channelId,
+                          linkId: link.id || '',
+                        });
                       }}
                     />
                   </div>
@@ -128,9 +175,9 @@ const EditLinksModal: FC<IEditLinksModalProps> = ({
                     size={20}
                   />
                 )}
-              </div>
+              </Reorder.Item>
             ))}
-          </div>
+          </Reorder.Group>
         ) : (
           <div className="flex items-center justify-center flex-auto">
             {t('noLinksMessage')}
@@ -160,7 +207,6 @@ const EditLinksModal: FC<IEditLinksModalProps> = ({
             leftIconSize={20}
             dataTestId=""
           />
-
           <div className="flex">
             <Button
               label={t('cancelCTA')}
@@ -175,32 +221,26 @@ const EditLinksModal: FC<IEditLinksModalProps> = ({
               size={Size.Small}
               variant={Variant.Primary}
               loading={updateLinksMutation.isLoading}
-              onClick={() => updateLinksMutation.mutate(draftLinks)}
+              onClick={() => {
+                const payload = findChangedIndexes(links, draftLinks);
+                updateLinksMutation.mutate(payload);
+              }}
               dataTestId="edit-link-cta"
             />
           </div>
         </div>
       )}
-
       {openAddLink && (
         <AddLinkModal
           open={openAddLink}
+          channelId={channelId}
           closeModal={() => {
             closeAddLinkModal();
             setLinkDetails(undefined);
           }}
+          isEditMode={isEditMode}
           isCreateMode={linkDetails?.isCreateMode}
           linkDetails={linkDetails}
-          setLinkDetails={(link) => {
-            setDraftLinks(
-              linkDetails?.isCreateMode
-                ? [...draftLinks, link]
-                : draftLinks.map((item, index) =>
-                    index === linkDetails?.index ? link : item,
-                  ),
-            );
-            setLinkDetails(undefined);
-          }}
         />
       )}
     </Modal>

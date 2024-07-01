@@ -18,7 +18,6 @@ import {
 } from 'components/Table';
 import PopupMenu from 'components/PopupMenu';
 import Button, { Variant } from 'components/Button';
-import { UserRole } from 'queries/users';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from '@tanstack/react-query';
 import { updateMemberRole } from 'queries/channel';
@@ -93,7 +92,7 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
             {data?.map((user: any) => (
               <TableRow
                 className=" hover:bg-primary-50 font-normal text-base "
-                key={user.id}
+                key={user?.id}
               >
                 <TableCell>
                   <div className=" flex items-center  space-x-4">
@@ -134,7 +133,7 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
                       menuItems={
                         [
                           {
-                            value: UserRole.Admin,
+                            value: CHANNEL_ROLE.Admin,
                             label: 'Admin',
                             onClick: () => {
                               updateMemberRoleMutation.mutate({
@@ -146,7 +145,7 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
                           },
 
                           {
-                            value: UserRole.Member,
+                            value: CHANNEL_ROLE.Member,
                             label: 'Member',
                             onClick: () => {
                               updateMemberRoleMutation.mutate({

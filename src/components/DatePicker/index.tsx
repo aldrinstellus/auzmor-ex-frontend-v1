@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { Control, useController } from 'react-hook-form';
 import { DatePicker } from 'antd';
 import './index.css';
@@ -34,6 +34,38 @@ const DatePickerInput: FC<IDatePickerInputProps> = ({
   const { field } = useController({
     name,
     control,
+  });
+
+  useEffect(() => {
+    let nodes = document.getElementsByClassName(
+      'ant-picker-header-super-prev-btn',
+    );
+    if (nodes.length) {
+      for (const each of nodes) {
+        (each as HTMLButtonElement).setAttribute(
+          'aria-label',
+          'super-preveous',
+        );
+      }
+    }
+    nodes = document.getElementsByClassName('ant-picker-header-prev-btn');
+    if (nodes.length) {
+      for (const each of nodes) {
+        (each as HTMLButtonElement).setAttribute('aria-label', 'preveous');
+      }
+    }
+    nodes = document.getElementsByClassName('ant-picker-header-next-btn');
+    if (nodes.length) {
+      for (const each of nodes) {
+        (each as HTMLButtonElement).setAttribute('aria-label', 'next');
+      }
+    }
+    nodes = document.getElementsByClassName('ant-picker-header-super-next-btn');
+    if (nodes.length) {
+      for (const each of nodes) {
+        (each as HTMLButtonElement).setAttribute('aria-label', 'super-next');
+      }
+    }
   });
 
   const labelStyle = useMemo(

@@ -1,7 +1,9 @@
 /* eslint-disable react/no-unknown-property */
 import { SVGProps } from 'react';
 
-const SvgPhoneOutline = (props: SVGProps<SVGSVGElement>) => (
+const SvgPhoneOutline = (
+  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
+) => (
   <svg
     width={24}
     height={24}
@@ -9,6 +11,7 @@ const SvgPhoneOutline = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    aria-label={props.ariaLabel}
   >
     <rect x="0.5" y="1.0625" width="23" height="23" rx="3.5" fill="#FAFAFA" />
     <path

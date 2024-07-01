@@ -201,6 +201,13 @@ const TimePicker: FC<TimePickerProps> = ({
     clearErrors(field.name);
   };
 
+  const handleOnSelect = (option: string) => {
+    setValue(field.name, option);
+    setTimeout(() => {
+      setShowDropdown(false);
+    });
+  };
+
   return (
     <div className={`relative ${className}`}>
       <div className="flex items-center justify-between">
@@ -228,6 +235,7 @@ const TimePicker: FC<TimePickerProps> = ({
             defaultValue={defaultValue}
             value={field.value}
             ref={field.ref}
+            autoComplete="off"
             onChange={(e) => {
               field.onChange(e);
               validateTime(e.target.value);
@@ -261,13 +269,12 @@ const TimePicker: FC<TimePickerProps> = ({
             {options.map((option: string, index: number) => (
               <div
                 key={index}
-                className="px-6 py-2 hover:bg-primary-50 cursor-pointer"
-                onClick={() => {
-                  setValue(field.name, option);
-                  setTimeout(() => {
-                    setShowDropdown(false);
-                  });
-                }}
+                className="px-6 py-2 hover:bg-primary-50 focus:bg-primary-50 cursor-pointer"
+                tabIndex={0}
+                onKeyUp={(e) =>
+                  e.code === 'Enter' ? handleOnSelect(option) : ''
+                }
+                onClick={() => handleOnSelect(option)}
               >
                 {option}
               </div>
