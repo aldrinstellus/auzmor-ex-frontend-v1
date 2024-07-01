@@ -24,8 +24,8 @@ export interface IChannelPayload {
 }
 
 export interface IChannelMembersPayload {
-  userIds?: { id: string; role: CHANNEL_ROLE }[];
-  teamIds?: { id: string; role: CHANNEL_ROLE }[];
+  users?: { id: string; role: CHANNEL_ROLE }[];
+  teams?: { id: string; role: CHANNEL_ROLE }[];
 }
 
 export interface IChannelSettings {

@@ -280,8 +280,6 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({ dataTestId }) => {
   const isControlsDisabled =
     !!!usersData?.length && !!!teamsData?.length && debouncedSearchValue !== '';
 
-  console.log({ channelMembers });
-
   return (
     <div className="flex flex-col min-h-[489px]">
       <div className="flex flex-col py-4 px-6">

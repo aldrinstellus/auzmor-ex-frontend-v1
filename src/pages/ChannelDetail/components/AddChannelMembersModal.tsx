@@ -73,7 +73,7 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
     },
   });
 
-  const { isLoading: isStatusLoading } = useChannelMembersStatus({
+  useChannelMembersStatus({
     channelId: channelData.id,
     jobId,
     onSuccess: (data: any) => {
@@ -81,7 +81,7 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
       const status = data?.data?.result?.data?.status;
       if (status === 'COMPLETED') {
         setJobId('');
-        queryClient.invalidateQueries({ queryKey: ['channel-member'] });
+        queryClient.invalidateQueries({ queryKey: ['channel-members'] });
         successToastConfig({
           content: t('addChannelMembers.success'),
         });
@@ -114,14 +114,13 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
       }));
 
     const payload: IChannelMembersPayload = {};
-    if (selectedUsers && selectedUsers.length) payload.userIds = selectedUsers;
-    if (selectedTeams && selectedTeams.length) payload.teamIds = selectedTeams;
+    if (selectedUsers && selectedUsers.length) payload.users = selectedUsers;
+    if (selectedTeams && selectedTeams.length) payload.teams = selectedTeams;
     addChannelMembersMutation.mutate({ id: channelData.id, payload });
   }
 
   const dataTestId = 'add-members';
-  const isLoading =
-    addChannelMembersMutation.isLoading || isStatusLoading || !!jobId;
+  const isLoading = addChannelMembersMutation.isLoading || !!jobId;
 
   return form ? (
     <Modal open={open} className="max-w-[638px]">

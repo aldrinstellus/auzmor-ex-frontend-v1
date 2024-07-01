@@ -79,7 +79,11 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
       ),
       hidden: false,
       dataTestId: 'channel-home-tab',
-      tabContent: <Home />,
+      tabContent: (
+        <>
+          <Home channelData={channelData} />
+        </>
+      ),
     },
     {
       id: 2,
