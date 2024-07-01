@@ -21,8 +21,6 @@ const TeamRow: FC<ITeamRowProps> = ({
   variant = TeamRowVariant.Large,
   onClick,
 }) => {
-  console.log({ variant });
-
   if (variant === TeamRowVariant.Small)
     return (
       <div
