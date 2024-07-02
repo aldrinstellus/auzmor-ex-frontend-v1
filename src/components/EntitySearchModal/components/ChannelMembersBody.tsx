@@ -20,6 +20,8 @@ import PopupMenu from 'components/PopupMenu';
 import Button from 'components/Button';
 import { CHANNEL_ROLE } from 'stores/channelStore';
 import { TeamRowVariant } from './TeamRow';
+import useProduct from 'hooks/useProduct';
+import { useInfiniteLearnCategory } from 'queries/learn';
 interface IMembersBodyProps {
   dataTestId?: string;
 }
@@ -121,6 +123,8 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({ dataTestId }) => {
         return true;
       }) || [];
 
+  const isLxp = useProduct();
+
   // fetch category data
   const debouncedCategorySearchValue = useDebounce(categorySearch || '', 500);
   const {
@@ -129,10 +133,12 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({ dataTestId }) => {
     isFetchingNextPage: isFetchingNextCategoryPage,
     fetchNextPage: fetchNextCategoryPage,
     hasNextPage: hasNextCategoryPage,
-  } = useInfiniteCategories({
-    q: debouncedCategorySearchValue,
-    type: CategoryType.TEAM,
-  });
+  } = isLxp
+    ? useInfiniteLearnCategory({ q: debouncedCategorySearchValue })
+    : useInfiniteCategories({
+        q: debouncedCategorySearchValue,
+        type: CategoryType.TEAM,
+      });
   const categoryData = fetchedCategories?.pages.flatMap((page) => {
     return page?.data?.result?.data.map((category: ICategory) => {
       try {
