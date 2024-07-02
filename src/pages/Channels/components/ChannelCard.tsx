@@ -142,7 +142,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
               label={t('privateChannel.joinRequestCTA')}
               size={ButtonSize.ExtraSmall}
               variant={ButtonVariant.Secondary}
-              className="mt-2"
+              className="mt-2 font-semibold"
               leftIcon={'lock'}
               iconColor={'text-neutal-900'}
               leftIconSize={16}
@@ -158,7 +158,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
               label={t('privateChannel.withdrawRequestCTA')}
               size={ButtonSize.ExtraSmall}
               variant={ButtonVariant.Secondary}
-              className="mt-2"
+              className="mt-2 font-semibold text-red-500"
               onClick={(e) => {
                 e.stopPropagation();
                 withdrawJoinChannelRequest.mutate(channel.joinRequest!.id!);
@@ -171,7 +171,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
                 label={t('publicChannel.joinRequestCTA')}
                 size={ButtonSize.ExtraSmall}
                 variant={Variant.Secondary}
-                className="w-full"
+                className="w-full font-semibold hover:border-red-600"
                 loading={joinChannelMutation.isLoading}
                 onClick={(e) => {
                   e.stopPropagation();

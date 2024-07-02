@@ -1,6 +1,5 @@
 import Card from 'components/Card';
 import { FC } from 'react';
-import { IChannel } from 'stores/channelStore';
 import PrivateChannelImage from 'images/png/PrivateChannelBanner.png';
 import Button, { Variant } from 'components/Button';
 import AvatarChips from 'components/AvatarChips';
@@ -18,7 +17,7 @@ const PrivateChannelBanner: FC<IChannelBannerProps> = ({
   isChannelRequest = true,
 }) => {
   const { t } = useTranslation('channels');
-  const { data: admins, isLoading } = useChannelAdmins(channelId);
+  const { data: admins } = useChannelAdmins(channelId);
   const navigate = useNavigate();
   return (
     <Card>

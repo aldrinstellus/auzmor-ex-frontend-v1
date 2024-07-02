@@ -15,22 +15,15 @@ import { getProfileImage } from 'utils/misc';
 
 interface IUserRowProps {
   request: IChannelRequest;
-  channelId: string;
   onClick?: () => void;
   className?: string;
-  channelName?: '';
 }
 
-const ChannelUserRow: FC<IUserRowProps> = ({
-  request,
-  className = '',
-  channelName = '',
-  channelId,
-}) => {
+const ChannelUserRow: FC<IUserRowProps> = ({ request, className = '' }) => {
   const { createdBy, id } = request;
   const approveMutation = useMutation({
     mutationKey: ['approve-channel-join-request'],
-    mutationFn: () => approveChannelJoinRequest(channelId, id),
+    mutationFn: () => approveChannelJoinRequest(request.channel.id, id),
     onError: () =>
       failureToastConfig({
         content: 'Something went wrong...! Please try again',
@@ -42,7 +35,7 @@ const ChannelUserRow: FC<IUserRowProps> = ({
   });
   const rejectMutation = useMutation({
     mutationKey: ['reject-channel-join-request'],
-    mutationFn: () => rejectChannelJoinRequest(channelId, id),
+    mutationFn: () => rejectChannelJoinRequest(request.channel.id, id),
     onError: () =>
       failureToastConfig({
         content: 'Something went wrong...! Please try again',
@@ -56,7 +49,7 @@ const ChannelUserRow: FC<IUserRowProps> = ({
     () =>
       clsx(
         {
-          'flex items-center px-6 py-3 w-full  ': true,
+          'flex items-center w-full': true,
         },
         {
           [className]: true,
@@ -79,7 +72,7 @@ const ChannelUserRow: FC<IUserRowProps> = ({
             className="text-sm font-normal break-all"
           >
             <b>{createdBy?.fullName || ''}</b> <span>requested to join </span>
-            <b>{'Dummy Channel'}</b>
+            <b>{request?.channel?.name}</b>
           </div>
           <div
             data-testid="user-email"
@@ -105,14 +98,14 @@ const ChannelUserRow: FC<IUserRowProps> = ({
           size={Size.Small}
           loading={rejectMutation.isLoading}
           onClick={() => rejectMutation.mutate()}
-          dataTestId={`requestwidget-${channelName}-decline`}
+          dataTestId={`requestwidget-${request.channel.name}-decline`}
         />
         <Button
           label={'Accept'}
           size={Size.Small}
           loading={approveMutation.isLoading}
           onClick={() => approveMutation.mutate()}
-          dataTestId={`requestwidget-viewall-${channelName}-decline`}
+          dataTestId={`requestwidget-viewall-${request.channel.name}-decline`}
         />
       </div>
     </div>

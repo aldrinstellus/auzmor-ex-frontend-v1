@@ -10,7 +10,8 @@ import ChannelWidgetUserRow, {
 } from './components/ChannelWidgetUser';
 import { useInfiniteChannelsRequest } from 'queries/channel';
 import { IChannelRequest } from 'stores/channelStore';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import Skeleton from 'react-loading-skeleton';
 
 type ChannelWidgetProps = {
   className?: string;
@@ -21,12 +22,13 @@ const ChannelRequestWidget: FC<ChannelWidgetProps> = ({
   className = '',
   mode = ChannelRequestWidgetModeEnum.Feed,
 }) => {
+  const navigate = useNavigate();
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const [openAllRequest, openAllRequestModal, closeAllRequestModal] =
     useModal();
   const { channelId } = useParams();
 
-  const { data } = useInfiniteChannelsRequest(channelId, {
+  const { data, isLoading } = useInfiniteChannelsRequest(channelId, {
     limit: 3,
   });
 
@@ -40,7 +42,17 @@ const ChannelRequestWidget: FC<ChannelWidgetProps> = ({
     );
   }) as IChannelRequest[];
 
-  const widgetTitle = `Channel requests (${requests?.length})`;
+  const widgetTitle = (
+    <p className="flex">
+      Channel requests &#40;&nbsp;
+      {isLoading ? (
+        <Skeleton count={1} className="!w-8 h-5" />
+      ) : (
+        data?.pages[0]?.data?.result?.totalCount
+      )}
+      &nbsp;&#41;
+    </p>
+  );
 
   const toggleModal = () => {
     if (open) closeCollapse();
@@ -102,7 +114,11 @@ const ChannelRequestWidget: FC<ChannelWidgetProps> = ({
             size={Size.Small}
             label={'View all requests'}
             dataTestId={`requestwidget-viewall-request`}
-            onClick={openAllRequestModal}
+            onClick={() =>
+              mode === ChannelRequestWidgetModeEnum.Channel
+                ? navigate(`/channels/${channelId}/members?type=requests`)
+                : openAllRequestModal
+            }
           />
         </div>
       </div>

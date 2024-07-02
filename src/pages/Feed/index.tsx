@@ -488,10 +488,10 @@ const Feed: FC<IFeedProps> = () => {
   const getRightWidgets = () => (
     <>
       <ProgressTrackerWidget />
-      <EventWidget className="sticky top-24" />
       <CelebrationWidget type={CELEBRATION_TYPE.Birthday} />
       <CelebrationWidget type={CELEBRATION_TYPE.WorkAnniversary} />
       {isAdmin && <ChannelRequestWidget />}
+      <EventWidget className="sticky top-24" />
       <AnnouncementCard openModal={openModal} className="sticky top-24" />
     </>
   );

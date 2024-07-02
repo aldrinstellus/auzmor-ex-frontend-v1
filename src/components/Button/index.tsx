@@ -108,7 +108,7 @@ const Button = ({
             true,
         },
         {
-          '!text-primary-500 !bg-primary-50 !border-primary-600': active,
+          '!text-primary-500 !bg-primary-50': active,
         },
         {
           [className]: true,

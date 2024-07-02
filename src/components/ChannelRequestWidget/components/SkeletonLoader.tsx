@@ -4,14 +4,18 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 const SkeletonLoader: FC = (): ReactElement => {
   return (
-    <div className="w-full">
-      <div className="flex gap-x-2">
-        <Skeleton circle className="h-8 !w-8" />
-        <div className="flex-1">
-          <Skeleton count={2} borderRadius={100} />
+    <>
+      {[...Array(6)].map((index) => (
+        <div className="w-full py-2 flex items-center px-6" key={index}>
+          <div className="flex gap-x-2 w-full items-center">
+            <Skeleton circle className="h-8 !w-8" />
+            <div className="flex-1">
+              <Skeleton count={2} borderRadius={100} />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      ))}
+    </>
   );
 };
 
