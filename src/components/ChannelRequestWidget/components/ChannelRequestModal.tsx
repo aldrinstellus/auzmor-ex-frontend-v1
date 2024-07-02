@@ -1,12 +1,16 @@
 import Button, { Size, Variant } from 'components/Button';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import ChannelUserRow from './ChannelUser';
 import { useInfiniteChannelsRequest } from 'queries/channel';
 import { IChannelRequest } from 'stores/channelStore';
 import { useInView } from 'react-intersection-observer';
 import Spinner from 'components/Spinner';
+import SkeletonLoader from './SkeletonLoader';
+import Divider from 'components/Divider';
+import { groupByDate } from 'utils/time';
+import Skeleton from 'react-loading-skeleton';
 
 type ChannelRequestModalProps = {
   open: boolean;
@@ -18,20 +22,26 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
   open,
   closeModal,
 }) => {
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isLoading } =
     useInfiniteChannelsRequest(channelId, {
       limit: 30,
     });
 
-  const requests = data?.pages.flatMap((page) => {
-    return (
-      page?.data?.result?.data.map((request: IChannelRequest) => {
-        try {
-          return request;
-        } catch (e) {}
-      }) || []
-    );
-  }) as IChannelRequest[];
+  const requests = useMemo(
+    () =>
+      groupByDate(
+        (data?.pages.flatMap((page) => {
+          return (
+            page?.data?.result?.data.map((request: IChannelRequest) => {
+              try {
+                return request;
+              } catch (e) {}
+            }) || []
+          );
+        }) || []) as IChannelRequest[],
+      ),
+    [data],
+  );
 
   const { ref, inView } = useInView({
     root: document.getElementById('entity-search-request-body'),
@@ -44,9 +54,16 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
     }
   }, [inView]);
 
-  console.log(requests);
-
-  const modalTitle = `Channel request (${requests?.length})`;
+  const modalTitle = (
+    <p className="flex">
+      Channel request &nbsp;&nbsp;
+      {isLoading ? (
+        <Skeleton count={1} className="!w-8 h-5" />
+      ) : (
+        requests?.length
+      )}
+    </p>
+  );
   return (
     <Modal
       open={open}
@@ -55,32 +72,81 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
       className="max-w-[648px] "
     >
       <Header title={modalTitle} onClose={closeModal} />
-      <div className="max-h-[390px]  overflow-y-auto w-full">
-        <div className="divide-y divide-neutral-200">
-          {requests?.map((request: IChannelRequest) => {
-            return (
-              <div className="py-2" key={request?.id}>
-                <ChannelUserRow request={request} channelId={channelId} />
-              </div>
-            );
-          })}
-          {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
-          {isFetchingNextPage && (
-            <div className="flex items-center w-full justify-center p-12">
-              <Spinner />
-            </div>
-          )}
-        </div>
-        <div className="flex justify-end items-center h-16 px-6 py-4 bg-blue-50 rounded-b-9xl">
-          <Button
-            label="Close"
-            variant={Variant.Secondary}
-            size={Size.Small}
-            className="py-[7px]"
-            onClick={closeModal}
-            dataTestId={'requestwidget-viewall-closemodal'}
-          />
-        </div>
+      <ul className="h-[390px] flex flex-col overflow-y-auto w-full px-6 pt-4">
+        {isLoading ? (
+          <SkeletonLoader />
+        ) : (
+          <>
+            {requests.today.length && (
+              <>
+                <p className="mb-3 text-sm font-semibold">Today</p>
+                {requests.today?.map(
+                  (request: IChannelRequest, index: number) => {
+                    return (
+                      <li key={request?.id}>
+                        <ChannelUserRow request={request} />
+                        {index !== requests.length - 1 && (
+                          <Divider className="my-3 px-6" />
+                        )}
+                      </li>
+                    );
+                  },
+                )}
+              </>
+            )}
+            {requests.yesterday.length && (
+              <>
+                <p className="mb-3 mt-4 text-sm font-semibold">Yesterday</p>
+                {requests.yesterday?.map(
+                  (request: IChannelRequest, index: number) => {
+                    return (
+                      <li key={request?.id}>
+                        <ChannelUserRow request={request} />
+                        {index !== requests.length - 1 && (
+                          <Divider className="my-3 px-6" />
+                        )}
+                      </li>
+                    );
+                  },
+                )}
+              </>
+            )}
+            {requests.older.length && (
+              <>
+                <p className="mb-3 mt-4 text-sm font-semibold">Older</p>
+                {requests.older?.map(
+                  (request: IChannelRequest, index: number) => {
+                    return (
+                      <li key={request?.id}>
+                        <ChannelUserRow request={request} />
+                        {index !== requests.length - 1 && (
+                          <Divider className="my-3 px-6" />
+                        )}
+                      </li>
+                    );
+                  },
+                )}
+              </>
+            )}
+          </>
+        )}
+        {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+        {isFetchingNextPage && (
+          <div className="flex items-center w-full justify-center p-12">
+            <Spinner />
+          </div>
+        )}
+      </ul>
+      {/* Footer */}
+      <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
+        <Button
+          label="Close"
+          variant={Variant.Secondary}
+          size={Size.Small}
+          className="py-[7px]"
+          onClick={closeModal}
+          dataTestId={'requestwidget-viewall-closemodal'}
+        />
       </div>
     </Modal>
   );

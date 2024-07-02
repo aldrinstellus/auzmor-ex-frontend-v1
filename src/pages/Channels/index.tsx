@@ -99,8 +99,7 @@ export const Channels: FC<IChannelsProps> = () => {
     };
     const getClassName = (flag: boolean) => {
       return clsx({
-        'focus:border-primary-600 focus:text-primary-600 hover:border-primary-600 focus:text-primary-600 group':
-          true,
+        'focus:text-primary-600 focus:text-primary-600 group': true,
         'border-0': flag,
       });
     };

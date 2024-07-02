@@ -10,7 +10,7 @@ import {
   rejectChannelJoinRequest,
 } from 'queries/channel';
 import { FC, memo, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { IChannelRequest } from 'stores/channelStore';
 import { getProfileImage } from 'utils/misc';
 
@@ -30,10 +30,12 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
   className = '',
   mode = ChannelRequestWidgetModeEnum.Channel,
 }) => {
+  const { channelId } = useParams();
   const { id, createdBy } = request;
   const approveMutation = useMutation({
     mutationKey: ['approve-channel-join-request'],
-    mutationFn: () => approveChannelJoinRequest(request.channel?.id, id),
+    mutationFn: () =>
+      approveChannelJoinRequest(request.channel?.id || channelId!, id),
     onError: () =>
       failureToastConfig({
         content: 'Something went wrong...! Please try again',
@@ -45,7 +47,8 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
   });
   const rejectMutation = useMutation({
     mutationKey: ['reject-channel-join-request'],
-    mutationFn: () => rejectChannelJoinRequest(request?.channel?.id, id),
+    mutationFn: () =>
+      rejectChannelJoinRequest(request?.channel?.id || channelId!, id),
     onError: () =>
       failureToastConfig({
         content: 'Something went wrong...! Please try again',
