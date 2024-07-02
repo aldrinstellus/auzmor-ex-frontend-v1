@@ -67,7 +67,8 @@ export const getCoverImage = (user: any) => {
 };
 export const getChannelCoverImage = (channelData: any) => {
   return (
-    channelData?.banner?.original || require('images/channelDefaultHero.png')
+    channelData?.banner?.original ||
+    require('images/ChannelCover/defaultBanner.png')
   );
 };
 export const getChannelLogoImage = (channelData: any) => {
