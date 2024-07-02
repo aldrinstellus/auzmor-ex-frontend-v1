@@ -62,7 +62,7 @@ export interface IChannelRequest {
   id: string;
   createdBy: IUserDetails;
   status: CHANNEL_MEMBER_STATUS;
-  channelId?: string;
+  channel: IChannel;
   createdAt?: '';
   updatedAt?: '';
   rejectionReason: Record<string, any> | null;

@@ -17,21 +17,39 @@ const ChannelJoinRequest: FC<ChannelJoinRequestProps> = ({
   channelId,
   dataTestId,
 }) => {
-  const { setValue, control, getValues } = useForm();
+  const { setValue, control, watch, unregister } = useForm<any>({
+    defaultValues: {
+      showSelectedRequests: false,
+      selectAll: false,
+      requests: {},
+    },
+  });
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useInfiniteChannelsRequest(channelId, {
       limit: 30,
     });
 
-  const requests = data?.pages.flatMap((page) => {
-    return (
-      page?.data?.result?.data.map((request: IChannelRequest) => {
-        try {
-          return request;
-        } catch (e) {}
-      }) || []
-    );
-  }) as IChannelRequest[];
+  const [showSelectedRequests, requests] = watch([
+    'showSelectedRequests',
+    'requests',
+  ]);
+
+  const channelRequests = data?.pages
+    .flatMap((page) => {
+      return (
+        page?.data?.result?.data.map((request: IChannelRequest) => {
+          try {
+            return request;
+          } catch (e) {}
+        }) || []
+      );
+    })
+    .filter((request: IChannelRequest) => {
+      if (showSelectedRequests) {
+        return !!requests?.[request.id];
+      }
+      return true;
+    }) as IChannelRequest[];
 
   const { ref, inView } = useInView({
     root: document.getElementById('entity-search-request-body'),
@@ -45,7 +63,9 @@ const ChannelJoinRequest: FC<ChannelJoinRequestProps> = ({
   }, [inView]);
 
   const selectAllEntity = () => {
-    requests?.forEach((request) => setValue(`request.${request.id}`, request));
+    channelRequests?.forEach((request) =>
+      setValue(`request.${request.id}`, request),
+    );
   };
 
   const deselectAll = () => {
@@ -54,7 +74,40 @@ const ChannelJoinRequest: FC<ChannelJoinRequestProps> = ({
     });
   };
 
-  const updateSelectAll = () => {};
+  const updateSelectAll = () => {
+    if (
+      channelRequests?.length === 0 ||
+      channelRequests?.some(
+        (request: IChannelRequest) => !requests?.[request.id],
+      ) ||
+      showSelectedRequests
+    ) {
+      setValue('selectAll', false);
+    } else {
+      setValue('selectAll', true);
+    }
+  };
+
+  const requestKeys = Object.keys(requests || {});
+
+  useEffect(() => {
+    if (!showSelectedRequests) {
+      unregisterRequest();
+    }
+    updateSelectAll();
+  }, [requestKeys, channelRequests, showSelectedRequests]);
+
+  const unregisterRequest = () => {
+    requestKeys.forEach((key) => {
+      if (
+        !channelRequests?.find(
+          (request: IChannelRequest) => request.id === key,
+        ) &&
+        !requests[key]
+      )
+        unregister(`request.${key}`);
+    });
+  };
   return (
     <div className="pl-6 flex flex-col">
       <div className={`flex justify-between py-4 pr-6`}>
@@ -88,9 +141,9 @@ const ChannelJoinRequest: FC<ChannelJoinRequestProps> = ({
             fields={[
               {
                 type: FieldType.Checkbox,
-                name: 'showSelectedMembers',
+                name: 'showSelectedRequests',
                 control,
-                label: `Show selected members`,
+                label: `Show selected requests`,
                 className: 'flex item-center',
                 dataTestId: `${dataTestId}-showselected`,
               },
@@ -103,7 +156,7 @@ const ChannelJoinRequest: FC<ChannelJoinRequestProps> = ({
           onClick={() => {
             deselectAll();
             setValue('selectAll', false);
-            setValue('showSelectedMembers', false);
+            setValue('showSelectedRequests', false);
           }}
           data-testid={`${dataTestId}-clearall`}
         >
@@ -119,17 +172,17 @@ const ChannelJoinRequest: FC<ChannelJoinRequestProps> = ({
           <div className="flex items-center w-full justify-center p-12">
             <Spinner />
           </div>
-        ) : requests?.length ? (
-          requests?.map((request: IChannelRequest, index: number) => (
+        ) : channelRequests?.length ? (
+          channelRequests?.map((request: IChannelRequest, index: number) => (
             <li key={request.id}>
               <div className="py-2 flex items-center">
                 <Layout
                   fields={[
                     {
                       type: FieldType.Checkbox,
-                      name: `request.${request.id}`,
+                      name: `requests.${request.id}`,
                       control,
-                      className: 'flex item-center mr-4',
+                      className: 'item-center mr-4 !justify-start w-full',
                       transform: {
                         input: (value: any) => {
                           updateSelectAll();
@@ -141,23 +194,18 @@ const ChannelJoinRequest: FC<ChannelJoinRequestProps> = ({
                         },
                       },
                       dataTestId: `${dataTestId}-select-${request.id}`,
+                      label: (
+                        <div className="w-full cursor-pointer">
+                          <RequestRow request={request} channelId={channelId} />
+                        </div>
+                      ),
+                      labelContainerClassName: 'w-full',
                     },
                   ]}
+                  className="w-full"
                 />
-
-                <div
-                  className="w-full cursor-pointer"
-                  onClick={() => {
-                    setValue(
-                      `request.${request.id}`,
-                      !!getValues(`request.${request.id}`) ? false : request,
-                    );
-                  }}
-                >
-                  <RequestRow request={request} channelId={channelId} />
-                </div>
               </div>
-              {index !== requests.length - 1 && <Divider />}
+              {index !== channelRequests.length - 1 && <Divider />}
             </li>
           ))
         ) : (

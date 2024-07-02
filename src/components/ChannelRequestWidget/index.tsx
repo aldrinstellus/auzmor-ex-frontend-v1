@@ -91,11 +91,7 @@ const ChannelRequestWidget: FC<ChannelWidgetProps> = ({
               {requests?.map((request: IChannelRequest) => {
                 return (
                   <div className="py-2 " key={request?.id}>
-                    <ChannelWidgetUserRow
-                      request={request}
-                      channelId={channelId}
-                      mode={mode}
-                    />
+                    <ChannelWidgetUserRow request={request} mode={mode} />
                   </div>
                 );
               })}
