@@ -2,34 +2,49 @@ import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
-import { useInfiniteDepartments } from 'queries/department';
-import { IGetUser } from 'queries/users';
-import { FC, ReactNode, useEffect } from 'react';
+import { ChangeEvent, FC, ReactNode, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useInfiniteChannels } from 'queries/channel';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
+import { ChannelVisibilityEnum, IChannel } from 'stores/channelStore';
+import ChannelLogo from 'pages/Channels/components/ChannelLogo';
+import { isFiltersEmpty } from 'utils/misc';
+import InfiniteSearch from 'components/InfiniteSearch';
+import { ICategory, useInfiniteCategories } from 'queries/category';
 
 interface IChannelsBodyProps {
-  entityRenderer?: (data: IGetUser) => ReactNode;
+  entityRenderer?: (data: IChannel) => ReactNode;
   selectedChannelIds?: string[];
   dataTestId?: string;
 }
 
 const ChannelsBody: FC<IChannelsBodyProps> = ({
   entityRenderer,
-  selectedChannelIds = [],
+  selectedChannelIds,
+  dataTestId,
 }) => {
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { form } = useEntitySearchFormStore();
-  const { watch, setValue, control } = form!;
-  const formData = watch();
-  const debouncedSearchValue = useDebounce(formData.channelSearch || '', 500);
+  const { watch, setValue, control, resetField, unregister } = form!;
+  const [channelSearch, privacy, categories, channels, showSelectedMembers] =
+    watch([
+      'channelSearch',
+      'privacy',
+      'categories',
+      'channels',
+      'showSelectedMembers',
+    ]);
+
+  const debouncedSearchValue = useDebounce(channelSearch || '', 500);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteChannels({
-      q: debouncedSearchValue,
-      privacy: [formData.privacy?.value || ''],
-      // category: [formData.categories?.value || ''],
-    });
-  const usersData = data?.pages
+    useInfiniteChannels(
+      isFiltersEmpty({
+        q: debouncedSearchValue,
+        visibility: privacy?.value,
+        categoryIds: categories?.id,
+      }),
+    );
+  let channelsData = data?.pages
     .flatMap((page) => {
       return page?.data?.result?.data.map((channel: any) => {
         try {
@@ -40,116 +55,166 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
       });
     })
     .filter((channel) => {
-      if (formData.showSelectedMembers) {
-        return !!formData.channels[channel.id];
+      if (showSelectedMembers) {
+        return !!channels[channel.id];
       }
       return true;
-    });
-  // const { data: privacy, isLoading: privacyLoading } = useGetLocations('');
-  const { data: _category, isLoading: categoryLoading } =
-    useInfiniteDepartments();
+    }) as IChannel[];
 
-  useEffect(() => {
-    if (formData.selectAll) {
-      selectAll();
-    } else {
-      deselectAll();
-    }
-  }, [formData.selectAll]);
+  const {
+    data: fetchedCategoried,
+    isLoading: categoryLoading,
+    isFetchingNextPage: isFetchingNextCategoryPage,
+    fetchNextPage: fetchNextCategoryPage,
+    hasNextPage: hasNextCategoryPage,
+  } = useInfiniteCategories();
+
+  const categoryData = fetchedCategoried?.pages?.flatMap((page) => {
+    page.data.result.data.map((category: ICategory) => {
+      try {
+        return category;
+      } catch (e) {
+        console.log('Error', { category });
+      }
+    });
+  });
 
   const { ref, inView } = useInView();
+
   useEffect(() => {
     if (inView) {
       fetchNextPage();
     }
   }, [inView]);
 
-  useEffect(() => {
-    if (selectedChannelIds.length) {
-      selectedChannelIds.forEach((id: string) => {
-        setValue(`channels.${id}`, true);
-      });
-    }
-  }, []);
-
-  const selectAll = () => {
-    Object.keys(formData.channels).forEach((key) => {
-      setValue(`channels.${key}`, true);
-    });
+  const selectAllEntity = () => {
+    channelsData?.forEach((channel: IChannel) =>
+      setValue(`channels.${channel.id}`, channel),
+    );
   };
 
   const deselectAll = () => {
-    Object.keys(formData).forEach((key) => {
+    Object.keys(channels || {}).forEach((key) => {
       setValue(`channels.${key}`, false);
     });
   };
 
-  // const getLocationOptions = (locations: ILocation[]) => {
-  //   return locations.map((location: ILocation) => ({
-  //     label: location.country,
-  //     value: location.uuid,
-  //   }));
-  // };
+  const channelKeys = Object.keys(channels || {});
 
-  // const getDepartmentOptions = (departments: IDepartment[]) => {
-  //   return departments.map((department: IDepartment) => ({
-  //     label: department.name,
-  //     value: department.id,
-  //   }));
-  // };
+  useEffect(() => {
+    if (!showSelectedMembers) {
+      unregisterChannels();
+    }
+    updateSelectAll();
+  }, [channelKeys, channelsData, showSelectedMembers]);
+
+  const unregisterChannels = () => {
+    channelKeys.forEach((key) => {
+      if (
+        !channelsData?.find((channel: IChannel) => channel.id === key) &&
+        !channels[key]
+      )
+        unregister(`channels.${key}`);
+    });
+  };
+
+  const selectedMembers = channelKeys
+    .map((key) => channels[key])
+    .filter(Boolean);
+  const selectedCount = selectedMembers.length;
+
+  const updateSelectAll = () => {
+    if (
+      channelsData?.length === 0 ||
+      channelsData?.some((channel: IChannel) => !channels?.[channel.id]) ||
+      showSelectedMembers
+    ) {
+      setValue('selectAll', false);
+    } else {
+      setValue('selectAll', true);
+    }
+  };
+
+  if (showSelectedMembers) channelsData = selectedMembers as IChannel[];
+
   return (
     <div className="flex flex-col">
-      <div className="flex flex-col py-4 px-6">
+      <div className="flex flex-col py-4 px-6 gap-4">
         <Layout
           fields={[
             {
               type: FieldType.Input,
               control,
-              name: 'memberSearch',
-              label: 'Select member',
-              placeholder: 'Add via name or email address',
+              name: 'channelSearch',
+              label: 'Search channels',
+              placeholder: 'Search channels by name',
               isClearable: true,
+              dataTestId: `${dataTestId}-search`,
+              inputClassName: 'text-sm py-[9px]',
             },
           ]}
-          className="pb-4"
         />
-        <div className="flex items-center justify-between">
+        <div className="items-center justify-between hidden">
           <div className="flex items-center">
             Quick filters:
-            {/* <Layout
-              fields={[
-                {
-                  type: FieldType.AsyncSingleSelect,
-                  control,
-                  name: 'privacy',
-                  option: [],
-                  // loadOptions: () => {},
-                  placeholder: 'Privacy',
-                  isLoading: privacyLoading,
-                },
-              ]}
-              className="ml-2"
-            /> */}
             <Layout
               fields={[
                 {
-                  type: FieldType.AsyncSingleSelect,
+                  type: FieldType.SingleSelect,
                   control,
-                  name: 'category',
-                  placeholder: 'Category',
-                  option: () => {},
-                  // loadOptions: () => {},
-                  isLoading: categoryLoading,
+                  name: 'privacy',
+                  options: [
+                    { value: ChannelVisibilityEnum.Public, label: 'Public' },
+                    { value: ChannelVisibilityEnum.Private, label: 'Private' },
+                  ],
+                  placeholder: 'Privacy',
+                  showSearch: false,
                 },
               ]}
               className="ml-2"
             />
+            <div className="relative">
+              <InfiniteSearch
+                title="Categories"
+                control={control}
+                options={
+                  (categoryData as any)?.map((category: ICategory) => ({
+                    label: category.name,
+                    value: category,
+                    id: category.id,
+                  })) || []
+                }
+                searchName={'locationSearch'}
+                optionsName={'categories'}
+                isLoading={categoryLoading}
+                isFetchingNextPage={isFetchingNextCategoryPage}
+                fetchNextPage={fetchNextCategoryPage}
+                hasNextPage={hasNextCategoryPage}
+                onApply={() =>
+                  setSelectedCategories([
+                    ...Object.keys(categories).filter(
+                      (key: string) => !!categories[key],
+                    ),
+                  ])
+                }
+                onReset={() => {
+                  setSelectedCategories([]);
+                  if (categories) {
+                    Object.keys(categories).forEach((key: string) =>
+                      setValue(`locations.${key}`, false),
+                    );
+                  }
+                }}
+                selectionCount={selectedCategories.length}
+                dataTestId={`${dataTestId}-filter-location`}
+              />
+            </div>
           </div>
           <div
             className="cursor-pointer"
             onClick={() => {
-              // resetField('department');
-              // resetField('location');
+              resetField('privacy');
+              resetField('categories');
             }}
           >
             Clear filters
@@ -168,6 +233,21 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
                   control,
                   label: 'Select all',
                   className: 'flex item-center',
+                  transform: {
+                    input: (value: boolean) => {
+                      return value;
+                    },
+                    output: (e: ChangeEvent<HTMLInputElement>) => {
+                      if (e.target.checked) {
+                        selectAllEntity();
+                      } else {
+                        deselectAll();
+                      }
+                      return e.target.checked;
+                    },
+                  },
+                  disabled: showSelectedMembers,
+                  dataTestId: `${dataTestId}-selectall`,
                 },
               ]}
             />
@@ -177,8 +257,10 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
                   type: FieldType.Checkbox,
                   name: 'showSelectedMembers',
                   control,
-                  label: 'Show selected members',
+                  label: `Show selected (${selectedCount})`,
                   className: 'flex item-center',
+                  disabled: selectedCount === 0 && !showSelectedMembers,
+                  dataTestId: `${dataTestId}-showselected`,
                 },
               ]}
               className="ml-4"
@@ -187,6 +269,7 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
           <div
             className="cursor-pointer"
             onClick={() => {
+              deselectAll();
               setValue('selectAll', false);
               setValue('showSelectedMembers', false);
             }}
@@ -200,24 +283,57 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
               <Spinner />
             </div>
           ) : (
-            usersData?.map((user, index) => (
-              <>
-                <div className="py-2 flex items-center" key={user.id}>
-                  <Layout
-                    fields={[
-                      {
-                        type: FieldType.Checkbox,
-                        name: `channels.${user.id}`,
-                        control,
-                        className: 'flex item-center mr-4',
-                      },
-                    ]}
-                  />
-                  {(entityRenderer && entityRenderer(user)) || user.fullName}
-                </div>
-                {index !== usersData.length - 1 && <Divider />}
-              </>
-            ))
+            <ul>
+              {channelsData?.map((channel, index) => (
+                <li key={`channel-${channel.id}-${index}`}>
+                  <div className="py-2 flex items-center w-full">
+                    <Layout
+                      fields={[
+                        {
+                          type: FieldType.Checkbox,
+                          name: `channels.${channel.id}`,
+                          control,
+                          className: 'item-center mr-4 w-full',
+                          transform: {
+                            input: (value: IChannel | boolean) => {
+                              updateSelectAll();
+                              return !!value;
+                            },
+                            output: (e: ChangeEvent<HTMLInputElement>) => {
+                              if (e.target.checked) return channel;
+                              return false;
+                            },
+                          },
+                          defaultChecked: selectedChannelIds?.includes(
+                            channel.id,
+                          ),
+                          label: (entityRenderer &&
+                            entityRenderer(channel)) || (
+                            <div className="flex gap-2 items-center pl-1 w-full">
+                              <ChannelLogo
+                                channel={channel}
+                                className="w-10 h-10 rounded-full"
+                              />
+                              <div className="flex flex-col">
+                                <p className="text-neutral-900 font-bold text-sm">
+                                  {channel.name}
+                                </p>
+                                <p className="text-xs text-neutral-500">
+                                  {channel?.totalMembers} members
+                                </p>
+                              </div>
+                            </div>
+                          ),
+                          labelContainerClassName: 'w-full',
+                        },
+                      ]}
+                      className="w-full"
+                    />
+                  </div>
+                  {index !== channelsData.length - 1 && <Divider />}
+                </li>
+              ))}
+            </ul>
           )}
           {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
         </div>

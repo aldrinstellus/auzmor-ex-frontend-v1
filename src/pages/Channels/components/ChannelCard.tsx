@@ -14,7 +14,6 @@ import {
   IChannel,
   useChannelStore,
 } from 'stores/channelStore';
-import DefaultCoverImage from 'images/png/CoverImage.png';
 import { useNavigate } from 'react-router-dom';
 import { Variant } from 'components/IconButton';
 import { useMutation } from '@tanstack/react-query';
@@ -23,7 +22,8 @@ import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useTranslation } from 'react-i18next';
 import queryClient from 'utils/queryClient';
-import { getChannelLogoImage } from 'utils/misc';
+import ChannelBanner from './ChannelBanner';
+import ChannelLogo from './ChannelLogo';
 
 interface IChannelCardProps {
   channel: IChannel;
@@ -100,21 +100,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
     >
       <Card className="flex flex-col gap-2 relative group-focus-within/channel-card:shadow-xl">
         <div className="w-full h-[80px] bg-slate-500 rounded-t-9xl">
-          {channel.banner ? (
-            <div className="w-full h-full relative">
-              <img
-                className="object-cover h-full w-full rounded-t-9xl"
-                src={channel.banner?.original}
-              />
-              <div className="w-full h-full bg-black top-0 left-0 absolute rounded-t-9xl opacity-30"></div>
-            </div>
-          ) : (
-            <img
-              className="object-cover h-full w-full rounded-t-9xl"
-              src={DefaultCoverImage}
-              alt="Channel Cover Image"
-            />
-          )}
+          <ChannelBanner channel={channel} />
         </div>
         <div className="p-3 flex flex-col gap-1">
           <div className="flex w-full items-center">
@@ -182,13 +168,10 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
             </div>
           )}
         </div>
-        <div className="w-10 h-10 rounded-full absolute left-4 top-[52px] bg-blue-300 border border-white z-0 flex justify-center items-center">
-          <img
-            className="object-cover  object-center w-full rounded-t-9xl "
-            src={getChannelLogoImage(channel)}
-            data-testid="channel-cover-pic"
-          />
-        </div>
+        <ChannelLogo
+          channel={channel}
+          className="w-10 h-10 rounded-full absolute left-4 top-[52px] bg-blue-300 border border-white z-0 flex justify-center items-center"
+        />
         {channel?.member?.bookmarked && (
           <IconWrapper
             type={IconWrapperType.Square}

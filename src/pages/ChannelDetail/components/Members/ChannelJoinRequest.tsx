@@ -6,7 +6,7 @@ import { useInfiniteChannelsRequest } from 'queries/channel';
 import { useForm } from 'react-hook-form';
 import Divider from 'components/Divider';
 import NoDataFound from 'components/NoDataFound';
-import { IChannelRequest } from 'stores/channelStore';
+import { CHANNEL_MEMBER_STATUS, IChannelRequest } from 'stores/channelStore';
 import RequestRow from './RequestRow';
 
 type ChannelJoinRequestProps = {
@@ -27,6 +27,7 @@ const ChannelJoinRequest: FC<ChannelJoinRequestProps> = ({
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useInfiniteChannelsRequest(channelId, {
       limit: 30,
+      status: CHANNEL_MEMBER_STATUS.PENDING,
     });
 
   const [showSelectedRequests, requests] = watch([

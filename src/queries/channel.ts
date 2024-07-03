@@ -51,7 +51,7 @@ export const getAllChannels = async (
     if (!!!context.pageParam) {
       response = await apiService.get('/channels', context.queryKey[1]);
     } else {
-      response = await apiService.get(context.pageParam, context.queryKey[1]);
+      response = await apiService.get(context.pageParam);
     }
   } catch (e) {}
   setChannels({
