@@ -220,6 +220,43 @@ export const useInfiniteUsers = ({
   });
 };
 
+// get all users by along with a boolean which identify if the user is already of the team/channel
+export const getMembers = async ({
+  pageParam = null,
+  queryKey,
+}: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
+  if (pageParam === null) {
+    console.log({ 'queryKey[1]': queryKey[1] });
+    return apiService.get(`/users/searchIn`, queryKey[1]);
+  } else return apiService.get(pageParam);
+};
+
+export const useInfiniteMembers = ({
+  q,
+}: {
+  entityId: string;
+  entityType: string;
+  q?: Record<string, any>;
+  startFetching?: boolean;
+}) => {
+  return useInfiniteQuery({
+    queryKey: ['search-team-members', q],
+    queryFn: (context) => getMembers(context),
+    getNextPageParam: (lastPage: any) => {
+      const pageDataLen = lastPage?.data?.result?.data?.length;
+      const pageLimit = lastPage?.data?.result?.paging?.limit;
+      if (pageDataLen < pageLimit) {
+        return null;
+      }
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
 export const isUserExistOpen = async (q: { email: string }) => {
   if (!!q.email) {
     const { data } = await apiService.get('/users/email/exists', q);

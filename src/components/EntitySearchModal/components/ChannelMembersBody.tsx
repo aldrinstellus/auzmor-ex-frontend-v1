@@ -24,9 +24,15 @@ import useProduct from 'hooks/useProduct';
 import { useInfiniteLearnCategory } from 'queries/learn';
 interface IMembersBodyProps {
   dataTestId?: string;
+  fetchUsers?: (queryParams: any) => any;
+  usersQueryParams?: Record<string, any>;
 }
 
-const ChannelMembersBody: FC<IMembersBodyProps> = ({ dataTestId }) => {
+const ChannelMembersBody: FC<IMembersBodyProps> = ({
+  dataTestId,
+  fetchUsers = useInfiniteUsers,
+  usersQueryParams = {},
+}) => {
   const [selectedDesignations, setSelectedDesignations] = useState<string[]>(
     [],
   );
@@ -59,13 +65,14 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({ dataTestId }) => {
     isFetchingNextPage: isFetchingNextUserPage,
     fetchNextPage: fetchNextUserPage,
     hasNextPage: hasNextUserPage,
-  } = useInfiniteUsers({
+  } = fetchUsers({
     q: {
       q: debouncedSearchValue,
       designations:
         selectedDesignations.length > 0
           ? selectedDesignations.join(',')
           : undefined,
+      ...usersQueryParams,
     },
   });
 
@@ -540,7 +547,7 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({ dataTestId }) => {
                               className="text-xs font-normal text-neutral-500"
                               data-testid="member-email"
                             >
-                              {user?.primaryEmail}
+                              {user?.email}
                             </div>
                             {user?.designation && (
                               <div className="w-1 h-1 bg-neutral-500 rounded-full" />
@@ -557,28 +564,31 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({ dataTestId }) => {
                               </div>
                             )}
 
-                            {user?.isPresent && (
-                              <div className="text-xs font-semibold text-neutral-500">
-                                Already a member
-                              </div>
-                            )}
+                            {}
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div className="relative pr-2">
+                    <div className="relative pr-2 shrink-0">
                       <PopupMenu
                         triggerNode={
                           <Button
-                            className="!text-sm !font-medium !bg-primary-50 !border-primary-200 border-1 !text-primary-500 capitalize"
+                            className={`!text-sm !font-bold ${
+                              user?.isPresent
+                                ? ''
+                                : '!bg-primary-50 !border-primary-200 border-1 !text-primary-500 capitalize'
+                            }`}
                             label={
-                              getValues(
-                                `channelMembers.users.id-${user.id}.role`,
-                              )?.toLowerCase() || 'Member'
+                              user?.isPresent
+                                ? 'Already a member'
+                                : getValues(
+                                    `channelMembers.users.id-${user.id}.role`,
+                                  )?.toLowerCase() || 'Member'
                             }
-                            rightIcon={'arrowDown'}
+                            rightIcon={user?.isPresent ? '' : 'arrowDown'}
                             rightIconSize={20}
                             rightIconClassName="!text-primary-500"
+                            disabled={user?.isPresent}
                           />
                         }
                         menuItems={

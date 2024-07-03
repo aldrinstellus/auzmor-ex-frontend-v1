@@ -21,6 +21,7 @@ import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import queryClient from 'utils/queryClient';
 import { useTranslation } from 'react-i18next';
+import { useInfiniteMembers } from 'queries/users';
 
 interface IAddChannelMembersModalProps {
   open: boolean;
@@ -138,7 +139,8 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
         />
         <EntitySearchModalBody
           entityType={EntitySearchModalType.ChannelMembers}
-          selectedMemberIds={[]}
+          fetchUsers={useInfiniteMembers}
+          usersQueryParams={{ entityType: 'CHANNEL', entityId: channelData.id }}
           dataTestId={dataTestId}
         />
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-19xl">

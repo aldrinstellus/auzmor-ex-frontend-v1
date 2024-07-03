@@ -67,7 +67,13 @@ const EntitySearchModalBody: FC<IEntitySearchModalBodyProps> = ({
         />
       );
     case EntitySearchModalType.ChannelMembers:
-      return <ChannelMembersBody dataTestId={dataTestId || 'channel-member'} />;
+      return (
+        <ChannelMembersBody
+          dataTestId={dataTestId || 'channel-member'}
+          fetchUsers={fetchUsers}
+          usersQueryParams={usersQueryParams}
+        />
+      );
     default:
       return <></>;
   }
