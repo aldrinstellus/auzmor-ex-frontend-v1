@@ -73,23 +73,21 @@ const EditLinksModal: FC<IEditLinksModalProps> = ({
   });
 
   function findChangedIndexes(original: any[], reordered: any[]) {
+    // Create a map to store the new index for each id
     const idToIndexMap = new Map(
-      reordered.map((link, index) => [link.id, index + 1]),
-    ); // index + 1 to match the index starting from 1
-
-    const changedLinks: any[] = original
-      .filter((link) => {
-        const newIndex = idToIndexMap.get(link.id);
-        return newIndex !== undefined && newIndex !== link.sequence;
-      })
-      .map((link) => ({
-        id: link.id,
-        index: idToIndexMap.get(link.id) as number,
-        url: link?.url || '',
-        title: link.title || '',
-      }));
-
-    return changedLinks;
+      reordered.map((link, index) => [link.id, index + 1]), // index + 1 to match the index starting from 1
+    );
+    // Loop through the original array to find changed and unchanged elements
+    const result: any[] = original.map((link) => {
+      const newIndex = idToIndexMap.get(link.id);
+      return {
+        ...link,
+        index: newIndex, // new index in the reordered array
+        sequence: link.sequence, // original sequence
+        changed: newIndex !== link.sequence, // flag to indicate if the sequence has changed
+      };
+    });
+    return result;
   }
 
   return (
