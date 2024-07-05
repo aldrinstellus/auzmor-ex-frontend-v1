@@ -67,13 +67,13 @@ export const getCoverImage = (user: any) => {
 };
 export const getChannelCoverImage = (channelData: any) => {
   return (
-    channelData?.banner?.original.trim() ||
+    channelData?.banner?.original ||
     require('images/ChannelCover/defaultBanner.png')
   );
 };
 export const getChannelLogoImage = (channelData: any) => {
   return (
-    channelData?.displayImage?.original.trim() ||
+    channelData?.displayImage?.original ||
     require('images/ChannelCover/Logo2.png')
   );
 };
