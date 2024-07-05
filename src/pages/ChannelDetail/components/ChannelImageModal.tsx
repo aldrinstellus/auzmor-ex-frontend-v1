@@ -131,7 +131,7 @@ const ChannelImageModal: FC<AppProps> = ({
   }, [open]);
 
   return (
-    <Modal open={open} className="max-w-[638px]">
+    <Modal open={open} className="max-w-[638px] ">
       <Header
         title={
           <span className="text-primary-500">
@@ -141,7 +141,7 @@ const ChannelImageModal: FC<AppProps> = ({
         closeBtnDataTestId={`-close`}
         onClose={closeModal}
       />
-      <div className="flex justify-center mb-2">
+      <div className="  flex justify-center  mb-2">
         <div
           className={`inline-grid ${
             isCoverImg ? 'grid-cols-2' : 'grid-cols-3'
@@ -151,9 +151,9 @@ const ChannelImageModal: FC<AppProps> = ({
             <div
               key={item.id}
               className={clsx(
-                `relative cursor-pointer  border-1 border-neutral-200 ${
+                `relative  cursor-pointer  border-1 border-neutral-200 ${
                   isCoverImg ? 'rounded-[12px]' : 'rounded-full'
-                }  w-full h-full  overflow-hidden`,
+                }  w-full h-full  `,
 
                 { 'border-primary-500': item.id === selectedImageId },
               )}
@@ -164,7 +164,7 @@ const ChannelImageModal: FC<AppProps> = ({
                 <Icon
                   name="tickCircle"
                   className={`absolute ${
-                    isCoverImg ? 'right-2 top-2' : ' top-3  right-8'
+                    isCoverImg ? 'right-2 top-2' : '   right-6 '
                   }`}
                   color="text-primary-500"
                   hover

@@ -33,6 +33,7 @@ import useProduct from 'hooks/useProduct';
 import { useInfiniteLearnCategory } from 'queries/learn';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { isTrim } from 'pages/ChannelDetail/components/utils';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -323,7 +324,7 @@ const Apps: FC<IAppsProps> = () => {
                 <div key={category.id}>
                   <Button
                     variant={ButtonVariant.Secondary}
-                    label={category.name}
+                    label={isTrim(category.name)}
                     className={`capitalize ${
                       selectedTab === category.id
                         ? selectedButtonClassName

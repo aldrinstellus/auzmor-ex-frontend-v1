@@ -12,6 +12,7 @@ import InfoRow from 'components/ProfileInfo/components/InfoRow';
 import { updateChannel } from 'queries/channel';
 import { IChannel } from 'stores/channelStore';
 import useAuth from 'hooks/useAuth';
+import { isTrim } from 'pages/ChannelDetail/components/utils';
 
 type AppProps = {
   channelData: IChannel;
@@ -73,10 +74,7 @@ const DescriptionRow: FC<AppProps> = ({ channelData }) => {
       counterPosition: 'top',
     },
   ];
-  const isTrim = (str: any) => {
-    if (!str) return null;
-    return str.trim().length > 26 ? str.substring(0, 26) + '...' : str.trim();
-  };
+
   return (
     <InfoRow
       ref={ref}

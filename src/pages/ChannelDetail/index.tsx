@@ -110,7 +110,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
     {
       id: 4,
       tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>Setting</div>
+        <div className={tabStyles(isActive)}>Settings</div>
       ),
       hidden: false,
       dataTestId: 'channel-member-tab',
