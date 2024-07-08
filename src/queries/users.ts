@@ -225,9 +225,19 @@ export const getMembers = async ({
   pageParam = null,
   queryKey,
 }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
+  let transformedData;
+
   if (pageParam === null) {
     console.log({ 'queryKey[1]': queryKey[1] });
-    return apiService.get(`/users/searchIn`, queryKey[1]);
+    const response = await apiService.get(`/users/searchIn`, queryKey[1]);
+    const { data } = response;
+    transformedData = data?.result?.data?.map((item: any) => {
+      return {
+        id: item.userId,
+        ...item,
+      };
+    });
+    return { data: { result: { data: transformedData } } };
   } else return apiService.get(pageParam);
 };
 
