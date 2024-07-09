@@ -5,19 +5,27 @@ import Welcome from './Welcome';
 import useModal from 'hooks/useModal';
 import { IChannel } from 'stores/channelStore';
 import { FC } from 'react';
+import PostBuilder from 'components/PostBuilder';
 
 type AppProps = {
-  channelData?: IChannel;
+  channelData: IChannel;
 };
 const Feed: FC<AppProps> = ({ channelData }) => {
-  const [open, showOpen, closeOpen] = useModal();
+  const [open, openModal, closeModal] = useModal(undefined, false);
   return (
     <div>
       <div>
-        <CreatePostCard openModal={showOpen} />
+        <CreatePostCard openModal={openModal} />
       </div>
       <Welcome />
       <FinishSetup channelData={channelData} />
+      {open && (
+        <PostBuilder
+          open={open}
+          openModal={openModal}
+          closeModal={closeModal}
+        />
+      )}
     </div>
   );
 };

@@ -20,8 +20,12 @@ import NoDataFound from 'components/NoDataFound';
 import { ShowingCount } from 'pages/Users/components/Teams';
 import { usePageTitle } from 'hooks/usePageTitle';
 import clsx from 'clsx';
+import { useInView } from 'react-intersection-observer';
+import PageLoader from 'components/PageLoader';
 
-interface IChannelsProps {}
+interface IChannelsProps {
+  isInfinite?: boolean;
+}
 
 interface IFilterButton {
   label: string;
@@ -32,7 +36,7 @@ interface IFilterButton {
   dataTestId: string;
 }
 
-export const Channels: FC<IChannelsProps> = () => {
+export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
   usePageTitle('channels');
   const { t } = useTranslation('channels');
   const { filters, setFilters, updateFilter } = useAppliedFiltersStore();
@@ -44,6 +48,13 @@ export const Channels: FC<IChannelsProps> = () => {
     defaultValues: { search: '' },
   });
 
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    if (inView && isInfinite) {
+      fetchNextPage();
+    }
+  }, [inView]);
   useEffect(() => {
     setFilters({
       visibility: ChannelVisibilityEnum.All,
@@ -55,8 +66,16 @@ export const Channels: FC<IChannelsProps> = () => {
   const { watch } = filterForm;
   const searchValue = watch('search');
 
-  const { data, channels, isLoading } = useInfiniteChannels(
+  const {
+    data,
+    channels,
+    isLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteChannels(
     isFiltersEmpty({
+      limit: 30,
       q: searchValue,
       visiblity:
         filters?.visibility == ChannelVisibilityEnum.All
@@ -103,6 +122,7 @@ export const Channels: FC<IChannelsProps> = () => {
         'border-0': flag,
       });
     };
+
     return [
       {
         label: t('filterCTA.myChannels'),
@@ -249,6 +269,12 @@ export const Channels: FC<IChannelsProps> = () => {
                 ))}
               </>
             )}
+          </div>
+        )}
+        {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+        {isFetchingNextPage && (
+          <div className="h-12 w-12 flex items-center justify-center">
+            <PageLoader />
           </div>
         )}
       </Card>

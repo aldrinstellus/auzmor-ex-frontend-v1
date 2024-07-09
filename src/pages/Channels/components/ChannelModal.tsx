@@ -159,7 +159,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
       });
       queryClient.invalidateQueries(['channel']);
 
-      navigate(`/channels/${response?.result?.data?.id}`);
+      navigate(`/channels/${response?.result?.data?.id}?showWelcome=true`);
 
       closeModal();
     },

@@ -83,6 +83,7 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
       if (status === 'COMPLETED') {
         setJobId('');
         queryClient.invalidateQueries({ queryKey: ['channel-members'] });
+        queryClient.invalidateQueries({ queryKey: ['channel'] });
         successToastConfig({
           content: t('addChannelMembers.success'),
         });

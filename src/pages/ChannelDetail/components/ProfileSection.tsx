@@ -35,6 +35,8 @@ import EditImageModal from 'components/EditImageModal';
 import { EntityType } from 'queries/files';
 import Avatar from 'components/Avatar';
 import ChannelImageModal from './ChannelImageModal';
+import { isTrim } from './utils';
+import AddChannelMembersModal from './AddChannelMembersModal';
 
 type ProfileSectionProps = {
   channelData: IChannel;
@@ -68,15 +70,15 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   const showEditProfile = useRef<boolean>(true);
   // const [channelLogoName, setchannelLogoName] = useState<string>('');
   const [coverImageName, setCoverImageName] = useState<string>('');
-  const channelLogoImageRef = useRef<HTMLInputElement>(null);
   const updateChannelStore = useChannelStore((state) => state.updateChannel);
 
   const [openEditImage, openEditImageModal, closeEditImageModal] = useModal(
     undefined,
     false,
   );
+  const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
+    useModal(false);
 
-  const [isCoverImageRemoved, setIsCoverImageRemoved] = useState(false);
   const [file, setFile] = useState<IUpdateProfileImage | Record<string, any>>(
     {},
   );
@@ -92,6 +94,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       console.log('API call resulted in error: ', error);
     },
     onSuccess: (data: any) => {
+      queryClient.invalidateQueries(['channel']);
       console.log('Successfully deleted user cover image', data);
     },
   });
@@ -139,7 +142,6 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
             setFile({});
           }
         }
-        setIsCoverImageRemoved(true);
         deleteCoverImageMutation.mutate({
           bannerUrl: '',
         });
@@ -214,7 +216,9 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       icon: 'profileAdd',
       label: 'Add Members',
       stroke: twConfig.theme.colors.neutral['900'],
-      onClick: () => {},
+      onClick: () => {
+        openAddMemberModal();
+      },
       dataTestId: '',
     },
     {
@@ -298,14 +302,14 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       </div>
 
       <div className="w-full h-full relative">
-        {!isCoverImageRemoved && (
+        {
           <img
             className="object-cover  object-center w-full rounded-t-9xl "
             src={getChannelCoverImage(channelData)}
             alt={'Channel Cover Picture Profile'}
             data-testid="channel-cover-pic"
           />
-        )}
+        }
         <div className="w-full h-full bg-gradient-to-b from-transparent to-black top-0 left-0 absolute rounded-t-9xl"></div>
       </div>
       <div className="absolute left-0 right-0 bottom-4 text-white ">
@@ -401,7 +405,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 data-testid="channel-category"
               >
                 {channelData?.categories
-                  ?.map((category: any) => category.name)
+                  ?.map((category: any) => isTrim(category.name))
                   ?.join(', ') || ''}
               </div>
             </div>
@@ -425,8 +429,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               ? EntityType?.UserProfileImage
               : EntityType?.UserCoverImage
           }
-          userProfileImageRef={channelLogoImageRef}
-          aspectRatio={8.3}
+          aspectRatio={4.024}
         />
       )}
 
@@ -474,6 +477,13 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
           channelId={channelId}
           open={isChannelImageOpen}
           closeModal={closeChannelImageModal}
+          channelData={channelData}
+        />
+      )}
+      {showAddMemberModal && channelData && (
+        <AddChannelMembersModal
+          open={showAddMemberModal}
+          closeModal={closeAddMemberModal}
           channelData={channelData}
         />
       )}

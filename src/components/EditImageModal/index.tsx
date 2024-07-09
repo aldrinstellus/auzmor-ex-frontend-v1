@@ -30,7 +30,7 @@ export interface AppProps {
   openEditImage: boolean;
   openEditProfileModal?: () => void;
   closeEditImageModal?: () => void;
-  userProfileImageRef: RefObject<HTMLInputElement>;
+  userProfileImageRef?: RefObject<HTMLInputElement>;
   userCoverImageRef?: RefObject<HTMLInputElement> | null;
   image: string;
   imageName: string;

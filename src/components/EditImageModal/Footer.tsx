@@ -7,7 +7,7 @@ import { FC, RefObject, useRef } from 'react';
 import { CropperRef } from 'react-advanced-cropper';
 
 export interface IFooterProps {
-  userProfileImageRef: RefObject<HTMLInputElement> | null;
+  userProfileImageRef?: RefObject<HTMLInputElement> | null;
   userCoverImageRef?: RefObject<HTMLInputElement> | null;
   imageFile?: IUpdateProfileImage | Record<string, any>;
   uploadStatus: UploadStatus;

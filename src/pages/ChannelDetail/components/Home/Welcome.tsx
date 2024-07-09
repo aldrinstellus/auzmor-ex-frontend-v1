@@ -1,15 +1,37 @@
 import Icon from 'components/Icon';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 
 const Welcome = () => {
   const { t } = useTranslation('channelDetail');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [showWelcome, setShowWelcome] = useState<boolean>(
+    searchParams.get('showWelcome') === 'true',
+  );
+
+  useEffect(() => {
+    if (showWelcome) {
+      searchParams.delete('showWelcome');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [showWelcome, searchParams, setSearchParams]);
+
+  const handleClose = () => {
+    setShowWelcome(false);
+  };
+
+  if (!showWelcome) {
+    return null;
+  }
+
   return (
     <div
       className="bg-white rounded-9xl py-4 mt-6"
       data-testid="channel-welcome-abord-post"
     >
       <div className="flex justify-end px-4">
-        <Icon name="close" size={20} />
+        <Icon onClick={handleClose} name="close" size={20} />
       </div>
       <div className="flex justify-between p-4">
         <div>
