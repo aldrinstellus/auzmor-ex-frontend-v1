@@ -1,11 +1,6 @@
 import Avatar from 'components/Avatar';
 
-import {
-  getFullName,
-  getProfileImage,
-  isNewEntity,
-  twConfig,
-} from 'utils/misc';
+import { getFullName, getProfileImage, isNewEntity } from 'utils/misc';
 import { FC } from 'react';
 import Spinner from 'components/Spinner';
 import {
@@ -21,51 +16,33 @@ import Button, { Variant } from 'components/Button';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from '@tanstack/react-query';
 import { updateMemberRole } from 'queries/channel';
-import { toast } from 'react-toastify';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import Icon from 'components/Icon';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+
 import { useParams } from 'react-router-dom';
-import { CHANNEL_ROLE } from 'stores/channelStore';
+import { CHANNEL_ROLE, IChannel } from 'stores/channelStore';
 import queryClient from 'utils/queryClient';
+import useAuth from 'hooks/useAuth';
 
 type AppProps = {
   isLoading?: boolean;
-  data?: any;
+  data: any;
   selectAllEntity?: () => void;
   deselectAll?: () => void;
+  channelData: IChannel;
 };
 const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
   const { t } = useTranslation('channels');
   const { channelId } = useParams();
 
+  const { user: currentUser } = useAuth();
   const updateMemberRoleMutation = useMutation({
     mutationFn: updateMemberRole,
     mutationKey: ['update-channel-member-role'],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['channel-members'] });
-      toast(
-        <SuccessToast content={`Member role has been updated successfully`} />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        content: `Member role has been updated successfully`,
+      });
     },
   });
 
@@ -122,13 +99,22 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
                 <TableCell>
                   <div className="relative">
                     <PopupMenu
+                      disabled={user?.userId === currentUser?.id} // disable popup menu for current user
                       triggerNode={
-                        <Button
-                          variant={Variant.Tertiary}
-                          className="!text-sm !font-medium capitalize"
-                          label={user?.role?.toLowerCase() || 'Admin'}
-                          rightIcon={'arrowDown'}
-                        />
+                        <>
+                          {user?.userId === currentUser?.id ? (
+                            <div className=" pl-4 !text-sm !font-medium capitalize">
+                              {user?.role?.toLowerCase()}
+                            </div>
+                          ) : (
+                            <Button
+                              variant={Variant.Tertiary}
+                              className="!text-sm !font-medium capitalize"
+                              label={user?.role?.toLowerCase() || 'Admin'}
+                              rightIcon={'arrowDown'}
+                            />
+                          )}
+                        </>
                       }
                       menuItems={
                         [

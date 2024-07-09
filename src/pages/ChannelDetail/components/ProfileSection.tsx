@@ -19,7 +19,6 @@ import {
   getChannelLogoImage,
   twConfig,
 } from 'utils/misc';
-import useAuth from 'hooks/useAuth';
 import ChannelModal from 'pages/Channels/components/ChannelModal';
 import useModal from 'hooks/useModal';
 import ChannelArchiveModal from 'pages/Channels/components/ChannelArchiveModal';
@@ -37,6 +36,7 @@ import Avatar from 'components/Avatar';
 import ChannelImageModal from './ChannelImageModal';
 import { isTrim } from './utils';
 import AddChannelMembersModal from './AddChannelMembersModal';
+import { useChannelRole } from 'hooks/useChannelRole';
 
 type ProfileSectionProps = {
   channelData: IChannel;
@@ -57,15 +57,17 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   const { channelId = '' } = useParams();
   const { t } = useTranslation('channelDetail');
   const { t: tc } = useTranslation('channels');
-  const { user } = useAuth();
   const [isEditModalOpen, openEditModal, closeEditModal] = useModal();
   const [isChannelImageOpen, openChannelImageModal, closeChannelImageModal] =
     useModal();
   const [isCoverImg, setIsCoverImage] = useState(true);
   const [isArchiveModalOpen, openArchiveModal, closeArchiveModal] = useModal();
   const navigate = useNavigate();
-  const isOwnerOrAdmin = channelData?.createdBy?.userId === user?.id; //channel Admin
-  const canEdit = isOwnerOrAdmin;
+
+  const { isUserAdminOrChannelAdmin, isChannelOwner } =
+    useChannelRole(channelData);
+  const canEdit = isUserAdminOrChannelAdmin;
+
   const channelCoverImageRef = useRef<HTMLInputElement>(null);
   const showEditProfile = useRef<boolean>(true);
   // const [channelLogoName, setchannelLogoName] = useState<string>('');
@@ -234,7 +236,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   return (
     <div className="  rounded-9xl relative mb-4">
       <div className="relative z-30">
-        {channelData?.createdBy?.id === user?.id ? (
+        {isChannelOwner ? (
           <div className="absolute top-4 left-4">
             <div className="bg-white rounded-7xl px-3 py-1.5 text-xxs text-primary-500 font-medium">
               {t('cover.you_own_this_space')}
@@ -259,25 +261,27 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
             />
           </div>
           <div className="   cursor-pointer">
-            <PopupMenu
-              triggerNode={
-                <div className="bg-white rounded-full  text-black">
-                  <IconButton
-                    icon="more"
-                    variant={IconVariant.Secondary}
-                    size={Size.Medium}
-                    dataTestId="edit-cover-pic"
-                  />
-                </div>
-              }
-              className="absolute top-12 right-4 w-48"
-              menuItems={editMenuOptions}
-              title={
-                <div className="text-xs  bg-blue-50 py-2 px-6 font-Medium flex items-center justify-center ">
-                  CHANNEL MANAGEMENT
-                </div>
-              }
-            />
+            {isUserAdminOrChannelAdmin && (
+              <PopupMenu
+                triggerNode={
+                  <div className="bg-white rounded-full  text-black">
+                    <IconButton
+                      icon="more"
+                      variant={IconVariant.Secondary}
+                      size={Size.Medium}
+                      dataTestId="edit-cover-pic"
+                    />
+                  </div>
+                }
+                className="absolute top-12 right-4 w-48"
+                menuItems={editMenuOptions}
+                title={
+                  <div className="text-xs  bg-blue-50 py-2 px-6 font-Medium flex items-center justify-center ">
+                    CHANNEL MANAGEMENT
+                  </div>
+                }
+              />
+            )}
           </div>
           <div className="   cursor-pointer">
             {canEdit && (
@@ -320,7 +324,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               size={48}
               dataTestId={'edit-profile-pic'}
             />
-            {isOwnerOrAdmin && (
+            {isUserAdminOrChannelAdmin && (
               <div className="absolute bg-white rounded-full p-[5px] cursor-pointer -top-2 -right-1">
                 <Icon
                   name="edit"

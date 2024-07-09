@@ -65,6 +65,7 @@ export enum UserStatus {
   Inactive = 'INACTIVE',
   Deleted = 'DELETED',
   Failed = 'FAILED',
+  Pending = 'PENDING',
 }
 
 export enum UserRole {
@@ -119,6 +120,7 @@ export interface IUserSettings {
 }
 
 export interface IGetUser {
+  userId?: string;
   id: string;
   fullName?: string;
   firstName?: string;

@@ -9,16 +9,20 @@ import RestrictionRow from './RestrictionRow';
 
 type AppProps = {
   channelData: IChannel;
+  canEdit: boolean;
 };
 
-const PrivacySetting: FC<AppProps> = ({ channelData }) => {
+const PrivacySetting: FC<AppProps> = ({ channelData, canEdit }) => {
   return (
     <div>
       <Header title="Personal Details" dataTestId="personal-details" />
-      <Card shadowOnHover={true} className=" px-4">
+      <Card shadowOnHover={canEdit} className=" px-4">
         <div className="px-4">
-          <PrivacyRow data={channelData} />
-          <RestrictionRow data={channelData} />
+          <PrivacyRow isUserAdminOrChannelAdmin={canEdit} data={channelData} />
+          <RestrictionRow
+            isUserAdminOrChannelAdmin={canEdit}
+            data={channelData}
+          />
         </div>
       </Card>
     </div>

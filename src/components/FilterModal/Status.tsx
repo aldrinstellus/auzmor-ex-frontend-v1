@@ -7,7 +7,6 @@ import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { IFilterForm, IStatus } from '.';
 import { UserStatus } from 'queries/users';
 import { titleCase } from 'utils/misc';
-import { CHANNEL_MEMBER_STATUS } from 'stores/channelStore';
 import useProduct from 'hooks/useProduct';
 
 interface IStatusProps {
@@ -29,39 +28,22 @@ const Status: FC<IStatusProps> = ({ control, watch, setValue }) => {
     },
   ];
 
-  const { isLxp } = useProduct();
   const [statusSearch, statusCheckbox] = watch([
     'statusSearch',
     'statusCheckbox',
   ]);
 
   const debouncedStatusSearchValue = useDebounce(statusSearch || '', 300);
-  const officeStatusData: IStatus[] = [
+  const { isLxp } = useProduct();
+  const statusData: IStatus[] = [
     { id: UserStatus.Active, name: titleCase(UserStatus.Active) },
     { id: UserStatus.Inactive, name: titleCase(UserStatus.Inactive) },
-    { id: UserStatus.Invited, name: titleCase(UserStatus.Invited) },
+    isLxp
+      ? { id: UserStatus.Pending, name: titleCase(UserStatus.Pending) }
+      : { id: UserStatus.Invited, name: titleCase(UserStatus.Invited) },
   ].filter((value) =>
     value.name.toLowerCase().includes(debouncedStatusSearchValue.toLowerCase()),
   );
-
-  const channelUserStatusData = [
-    {
-      id: CHANNEL_MEMBER_STATUS.APPROVED,
-      name: titleCase(CHANNEL_MEMBER_STATUS.APPROVED),
-    },
-    {
-      id: CHANNEL_MEMBER_STATUS.PENDING,
-      name: titleCase(CHANNEL_MEMBER_STATUS.PENDING),
-    },
-    {
-      id: CHANNEL_MEMBER_STATUS.REJECTED,
-      name: titleCase(CHANNEL_MEMBER_STATUS.REJECTED),
-    },
-  ].filter((value) =>
-    value.name.toLowerCase().includes(debouncedStatusSearchValue.toLowerCase()),
-  );
-
-  const statusData = isLxp ? channelUserStatusData : officeStatusData;
 
   const statusFields = [
     {

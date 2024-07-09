@@ -11,20 +11,20 @@ import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import InfoRow from 'components/ProfileInfo/components/InfoRow';
 import { updateChannel } from 'queries/channel';
 import { IChannel } from 'stores/channelStore';
-import useAuth from 'hooks/useAuth';
 import { isTrim } from 'pages/ChannelDetail/components/utils';
 
 type AppProps = {
   channelData: IChannel;
+  isUserAdminOrChannelAdmin: boolean;
 };
 
-const DescriptionRow: FC<AppProps> = ({ channelData }) => {
+const DescriptionRow: FC<AppProps> = ({
+  channelData,
+  isUserAdminOrChannelAdmin,
+}) => {
   const { channelId = '' } = useParams();
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);
-
-  const { user } = useAuth();
-  const isOwnerOrAdmin = channelData?.createdBy?.userId == user?.id;
 
   //channel Name
   const schema = yup.object({
@@ -85,7 +85,7 @@ const DescriptionRow: FC<AppProps> = ({ channelData }) => {
       }}
       label="Description"
       value={isTrim(channelData?.description)}
-      canEdit={isOwnerOrAdmin}
+      canEdit={isUserAdminOrChannelAdmin}
       dataTestId="professional-details-employee-id"
       editNode={
         <div>

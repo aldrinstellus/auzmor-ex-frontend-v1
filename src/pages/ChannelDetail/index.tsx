@@ -12,8 +12,8 @@ import clsx from 'clsx';
 import DocumentPathProvider from 'contexts/DocumentPathContext';
 import Setting from './components/Settings';
 import ManageAccess from './components/ManageChannel';
-import useAuth from 'hooks/useAuth';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { useChannelRole } from 'hooks/useChannelRole';
 
 type AppProps = {
   activeTabIndex?: number;
@@ -22,7 +22,6 @@ type AppProps = {
 const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
   usePageTitle('channelDetails');
   const { channelId } = useParams();
-  const { user } = useAuth();
   const { getChannel } = useChannelStore();
 
   const { getScrollTop, resumeRecordingScrollTop } = useScrollTop(
@@ -53,7 +52,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
   if (isLoading && !channelData) {
     return <PageLoader />;
   }
-  const isAdmin = channelData?.createdBy?.userId === user?.id;
+  const { isUserAdminOrChannelAdmin } = useChannelRole(channelData);
 
   const tabStyles = (active: boolean, disabled = false) =>
     clsx(
@@ -121,7 +120,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>Manage access</div>
       ),
-      hidden: !isAdmin, //false
+      hidden: !isUserAdminOrChannelAdmin, //false
       dataTestId: 'channel-member-tab',
       tabContent: <ManageAccess channelData={channelData} />,
     },

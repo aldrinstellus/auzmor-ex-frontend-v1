@@ -21,7 +21,7 @@ import useURLParams from 'hooks/useURLParams';
 import NoDataFound from 'components/NoDataFound';
 
 type AppProps = {
-  channelData?: IChannel;
+  channelData: IChannel;
 };
 
 const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
@@ -29,7 +29,6 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
   const { updateParam, deleteParam, serializeFilter, parseParams } =
     useURLParams();
   const parsedRole = parseParams('roles');
-  console.log('parsedRole :', parsedRole);
 
   const { filters, clearFilters } = useAppliedFiltersStore();
   const filterForm = useForm<{
@@ -68,7 +67,7 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
       q: searchValue,
       sort: filters?.sort,
       userRole: roles?.value,
-      status: filters?.status?.length
+      userStatus: filters?.status?.length
         ? filters?.status?.map((eachStatus: any) => eachStatus.id).join(',')
         : undefined,
     }),
@@ -155,7 +154,7 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
             dataTestId={`$channel-noresult`}
           />
         ) : (
-          <ManageAccessTable data={channelMembers} />
+          <ManageAccessTable channelData={channelData} data={channelMembers} />
         )}
       </Card>
       {showAddMemberModal && channelData && (
