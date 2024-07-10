@@ -5,18 +5,22 @@ import Icon from 'components/Icon';
 import SkeletonLoader from './components/SkeletonLoader';
 
 import EmptyState from './components/EmptyState';
-import { memo, useState } from 'react';
+import { FC, memo, useState } from 'react';
 import useModal from 'hooks/useModal';
 import EditLinksModal from './components/EditLinksModal';
 import { useTranslation } from 'react-i18next';
 import AddLinkModal from './components/AddLinkModal';
 
-import useRole from 'hooks/useRole';
 import { useParams } from 'react-router-dom';
+import { useChannelRole } from 'hooks/useChannelRole';
+import { IChannel } from 'stores/channelStore';
 
-const LinksWidget = () => {
+type AppProps = {
+  channelData: IChannel;
+};
+const LinksWidget: FC<AppProps> = ({ channelData }) => {
   const { channelId = '' } = useParams();
-  const { isAdmin } = useRole();
+  const { isUserAdminOrChannelAdmin } = useChannelRole(channelData);
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const [openEditLinks, openEditLinksModal, closeEditLinksModal] = useModal(
     false,
@@ -49,7 +53,7 @@ const LinksWidget = () => {
           {t('title')}
         </div>
         <div className="flex items-center gap-1">
-          {isAdmin && links && links.length > 0 && (
+          {isUserAdminOrChannelAdmin && links && links.length > 0 && (
             <Icon
               name={'edit'}
               size={20}
@@ -121,7 +125,7 @@ const LinksWidget = () => {
                     />
                   </div>
                 )}
-                {links.length <= maxListSize && isAdmin && (
+                {links.length <= maxListSize && isUserAdminOrChannelAdmin && (
                   <div className="w-full flex justify-center">
                     <Button
                       label={t('addLinksCTA')}
@@ -137,7 +141,10 @@ const LinksWidget = () => {
                 )}
               </div>
             ) : (
-              <EmptyState openModal={openAddLinkModal} isAdmin={isAdmin} />
+              <EmptyState
+                openModal={openAddLinkModal}
+                isAdmin={isUserAdminOrChannelAdmin}
+              />
             )}
           </div>
         )}
@@ -151,16 +158,13 @@ const LinksWidget = () => {
           links={links}
         />
       )}
-      {isAdmin && openAddLink && (
+      {isUserAdminOrChannelAdmin && openAddLink && (
         <AddLinkModal
           open={openAddLink}
           closeModal={closeAddLinkModal}
           isCreateMode={true}
           isEditMode={isEditMode}
           channelId={channelId}
-          // setLinkDetails={(link) => {
-          //   updateLinksMutation.mutate([link]);
-          // }}
         />
       )}
     </Card>

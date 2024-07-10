@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useParams } from 'react-router-dom';
-import useAuth from 'hooks/useAuth';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import InfoRow from 'components/ProfileInfo/components/InfoRow';
 import Layout, { FieldType } from 'components/Form';
@@ -13,6 +12,7 @@ import { IChannel } from 'stores/channelStore';
 
 type AppProps = {
   data: IChannel;
+  isUserAdminOrChannelAdmin: boolean;
 };
 enum ChannelRestriction {
   canPost = 'canPost',
@@ -20,11 +20,9 @@ enum ChannelRestriction {
   canAnnouncement = 'canAnnouncement',
 }
 
-const RestrictionRow: FC<AppProps> = ({ data }) => {
+const RestrictionRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
   const { channelId = '' } = useParams();
   const queryClient = useQueryClient();
-  const { user } = useAuth();
-  const isOwnerOrAdmin = data?.createdBy?.userId == user?.id;
 
   const upadteChannelMutation = useMutation({
     mutationKey: ['update-channel-mutation'],
@@ -141,7 +139,7 @@ const RestrictionRow: FC<AppProps> = ({ data }) => {
                 type: FieldType.Radio,
                 name: 'restrictionSetting',
                 rowClassName: 'mb-4  ',
-                disabled: !isOwnerOrAdmin,
+                disabled: !isUserAdminOrChannelAdmin,
                 control,
                 defaultValue: getValues()?.privacySetting,
                 radioList: restrictionSettingOption,

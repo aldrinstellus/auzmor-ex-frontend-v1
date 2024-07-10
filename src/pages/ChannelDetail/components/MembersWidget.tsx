@@ -3,20 +3,19 @@ import Button, { Size, Variant } from 'components/Button';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
 import useModal from 'hooks/useModal';
-import useRole from 'hooks/useRole';
 import { useInfiniteChannelMembers } from 'queries/channel';
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import AddChannelMembersModal from './AddChannelMembersModal';
 import { IChannel } from 'stores/channelStore';
-// import { Role } from 'utils/enum';
+import { useChannelRole } from 'hooks/useChannelRole';
 
 type AppProps = {
   channelData: IChannel;
 };
 const MembersWidget: FC<AppProps> = ({ channelData }) => {
-  const { isAdmin } = useRole();
+  const { isUserAdminOrChannelAdmin } = useChannelRole(channelData);
   const [show, setShow] = useState(true);
   const { t } = useTranslation('channelDetail');
   const { channelId } = useParams();
@@ -66,7 +65,7 @@ const MembersWidget: FC<AppProps> = ({ channelData }) => {
               />
             </div>
             <div className="mt-3">
-              {isAdmin ? (
+              {isUserAdminOrChannelAdmin ? (
                 <Button
                   size={Size.Small}
                   className="w-full"

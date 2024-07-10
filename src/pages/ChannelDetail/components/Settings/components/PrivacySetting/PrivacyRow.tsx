@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useParams } from 'react-router-dom';
-import useAuth from 'hooks/useAuth';
 import InfoRow from 'components/ProfileInfo/components/InfoRow';
 import Layout, { FieldType } from 'components/Form';
 import { IRadioListOption } from 'components/RadioGroup';
@@ -13,12 +12,12 @@ import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 
 type AppProps = {
   data: IChannel;
+  isUserAdminOrChannelAdmin: boolean;
 };
 
-const PrivacyRow: FC<AppProps> = ({ data }) => {
+const PrivacyRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
   const { channelId = '' } = useParams();
-  const { user } = useAuth();
-  const isOwnerOrAdmin = data?.createdBy?.userId == user?.id;
+
   const queryClient = useQueryClient();
 
   const upadteChannelMutation = useMutation({
@@ -74,7 +73,7 @@ const PrivacyRow: FC<AppProps> = ({ data }) => {
       name: 'privacySetting',
       rowClassName: 'space-y-4  ',
       control,
-      disabled: !isOwnerOrAdmin,
+      disabled: !isUserAdminOrChannelAdmin,
       radioList: privacySettingOptions,
       labelRenderer: (option: IRadioListOption) => {
         return (

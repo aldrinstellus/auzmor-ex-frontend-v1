@@ -3,6 +3,7 @@ import BasicSetting from './components/BasicSetting';
 import { IChannel } from 'stores/channelStore';
 import PrivacySetting from './components/PrivacySetting';
 import BasicSettingSkeleton from './components/Skeletons/BasicSettingSkeleton';
+import { useChannelRole } from 'hooks/useChannelRole';
 
 type AppProps = {
   channelData: IChannel;
@@ -10,14 +11,21 @@ type AppProps = {
 };
 
 const Setting: FC<AppProps> = ({ channelData, isLoading }) => {
+  const { isUserAdminOrChannelAdmin } = useChannelRole(channelData);
   return (
     <>
       {isLoading ? (
         <BasicSettingSkeleton />
       ) : (
-        <BasicSetting channelData={channelData} />
+        <BasicSetting
+          canEdit={isUserAdminOrChannelAdmin}
+          channelData={channelData}
+        />
       )}
-      <PrivacySetting channelData={channelData} />
+      <PrivacySetting
+        canEdit={isUserAdminOrChannelAdmin}
+        channelData={channelData}
+      />
     </>
   );
 };

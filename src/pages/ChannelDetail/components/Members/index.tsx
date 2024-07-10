@@ -18,7 +18,6 @@ import {
 import useURLParams from 'hooks/useURLParams';
 import PopupMenu from 'components/PopupMenu';
 import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
-import useRole from 'hooks/useRole';
 import { FilterModalVariant } from 'components/FilterModal';
 import {
   CHANNEL_MEMBER_STATUS,
@@ -30,13 +29,15 @@ import EntitySelector from 'components/EntitySelector';
 import RequestRow from './RequestRow';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
+import { useChannelRole } from 'hooks/useChannelRole';
 
 type AppProps = {
-  channelData?: IChannel;
+  channelData: IChannel;
 };
 
 const Members: React.FC<AppProps> = ({ channelData }) => {
   const { t } = useTranslation('channels');
+  const { isUserAdminOrChannelAdmin } = useChannelRole(channelData);
   const { filters, clearFilters, updateFilter } = useAppliedFiltersStore();
   useEffect(() => {
     clearFilters();
@@ -60,7 +61,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
     channelId: channelData?.id,
     q: isFiltersEmpty({
       q: searchValue,
-      status: filters?.status?.length
+      userStatus: filters?.status?.length
         ? filters?.status?.map((eachStatus: any) => eachStatus.id).join(',')
         : undefined,
       userRole: filters?.roles?.length
@@ -111,7 +112,6 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
   });
 
   // quick Filters options
-  const { isAdmin } = useRole();
   const requestOptions = [
     {
       label: 'All members ',
@@ -122,7 +122,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
         setGrid(true);
       },
     },
-    isAdmin && {
+    isUserAdminOrChannelAdmin && {
       label: 'Requests',
       labelClassName: 'text-xs font-medium',
       stroke: 'text-neutral-900',
@@ -149,12 +149,14 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
           <p className="text-2xl font-bold text-neutral-900">
             {t('members.title')}
           </p>
-          <Button
-            label={t('members.addMemberCTA')}
-            leftIcon="add"
-            leftIconClassName="text-white pointer-events-none group-hover:text-white"
-            onClick={() => openAddMemberModal()}
-          />
+          {isUserAdminOrChannelAdmin && (
+            <Button
+              label={t('members.addMemberCTA')}
+              leftIcon="add"
+              leftIconClassName="text-white pointer-events-none group-hover:text-white"
+              onClick={() => openAddMemberModal()}
+            />
+          )}
         </div>
         <FilterMenu
           filterForm={filterForm}
@@ -169,7 +171,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
               Showing {users?.length} results
             </div>
             <div className="relative">
-              {isAdmin ? (
+              {isUserAdminOrChannelAdmin ? (
                 <PopupMenu
                   triggerNode={
                     <Button
@@ -181,7 +183,9 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
                           ? 'All members'
                           : 'Requests'
                       }
-                      rightIcon={`${isAdmin ? 'arrowDown' : ''}`}
+                      rightIcon={`${
+                        isUserAdminOrChannelAdmin ? 'arrowDown' : ''
+                      }`}
                     />
                   }
                   menuItems={requestOptions as any}
@@ -220,7 +224,13 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
               : null}
 
             {users?.map((user) => (
-              <PeopleCard key={user.id} userData={user} />
+              <PeopleCard
+                isUserAdminOrChannelAdmin={isUserAdminOrChannelAdmin}
+                isChannelPeople={true}
+                key={user.id}
+                userData={user}
+                channelId={channelData?.id}
+              />
             ))}
           </div>
         ) : (
@@ -313,7 +323,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
           />
         )}
       </Card>
-      {showAddMemberModal && channelData && (
+      {isUserAdminOrChannelAdmin && showAddMemberModal && channelData && (
         <AddChannelMembersModal
           open={showAddMemberModal}
           closeModal={closeAddMemberModal}

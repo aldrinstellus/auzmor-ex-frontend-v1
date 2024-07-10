@@ -9,19 +9,17 @@ import { useParams } from 'react-router-dom';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import InfoRow from 'components/ProfileInfo/components/InfoRow';
 import { updateChannel } from 'queries/channel';
-import useAuth from 'hooks/useAuth';
+import { IChannel } from 'stores/channelStore';
 
 type AppProps = {
-  data: any;
+  data: IChannel;
+  isUserAdminOrChannelAdmin: boolean;
 };
 
-const NameRow: FC<AppProps> = ({ data }) => {
+const NameRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
   const { channelId = '' } = useParams();
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);
-
-  const { user } = useAuth();
-  const isOwnerOrAdmin = data?.createdBy?.userId == user?.id;
 
   //channel Name
   const schema = yup.object({
@@ -74,7 +72,7 @@ const NameRow: FC<AppProps> = ({ data }) => {
       }}
       label="Name"
       value={data?.name}
-      canEdit={isOwnerOrAdmin}
+      canEdit={isUserAdminOrChannelAdmin}
       dataTestId="professional-details-employee-id"
       editNode={
         <div>
