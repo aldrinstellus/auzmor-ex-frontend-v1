@@ -2,17 +2,20 @@ import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
-import { IGetUser, useInfiniteUsers } from 'queries/users';
+import { IGetUser, useInfiniteUsers, UserStatus } from 'queries/users';
 import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import InfiniteSearch from 'components/InfiniteSearch';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
-import { IDesignationAPI, useInfiniteDesignations } from 'queries/designation';
 import NoDataFound from 'components/NoDataFound';
-import { ICategory, useInfiniteCategories } from 'queries/category';
 import { ITeam, useInfiniteTeams } from 'queries/teams';
-import { getFullName, getProfileImage, isFiltersEmpty } from 'utils/misc';
-import { CategoryType } from 'queries/apps';
+import {
+  enumToTitleCase,
+  getFullName,
+  getProfileImage,
+  isFiltersEmpty,
+  titleCase,
+} from 'utils/misc';
 import TeamRow from './TeamRow';
 import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
@@ -20,8 +23,8 @@ import PopupMenu from 'components/PopupMenu';
 import Button from 'components/Button';
 import { CHANNEL_ROLE } from 'stores/channelStore';
 import { TeamRowVariant } from './TeamRow';
-import useProduct from 'hooks/useProduct';
-import { useInfiniteLearnCategory } from 'queries/learn';
+import { IBypeople, IStatus } from 'components/FilterModal';
+import { ByPeopleEnum } from 'components/FilterModal/ByPeople';
 interface IMembersBodyProps {
   dataTestId?: string;
   fetchUsers?: (queryParams: any) => any;
@@ -33,30 +36,58 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
   fetchUsers = useInfiniteUsers,
   usersQueryParams = {},
 }) => {
-  const [selectedDesignations, setSelectedDesignations] = useState<string[]>(
-    [],
-  );
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
+  const [selectedUserStatus, setUserSelectedStatus] = useState<string[]>([]);
+  const [selectedByPeople, setSelectedByPeople] = useState<string[]>([]);
   const { form } = useEntitySearchFormStore();
   const { watch, setValue, control, unregister, getValues } = form!;
   const [
     memberSearch,
     showSelectedMembers,
     channelMembers,
-    categorySearch,
-    categories,
-    designationSearch,
-    designations,
+    teamSearch,
+    teams,
+    userStatus,
+    userStausSearch,
+    byPeople,
+    byPeopleSearch,
   ] = watch([
     'memberSearch',
     'showSelectedMembers',
     'channelMembers',
-    'categorySearch',
-    'categories',
-    'designationSearch',
-    'designations',
+    'teamSearch',
+    'teams',
+    'userStatus',
+    'userStausSearch',
+    'byPeople',
+    'byPeopleSearch',
   ]);
 
+  const debouncedByPeopleSearchValue = useDebounce(byPeopleSearch || '', 300);
+  const byPeopleData: IBypeople[] = [
+    { id: ByPeopleEnum.OTHERS, name: enumToTitleCase(ByPeopleEnum.OTHERS) },
+    {
+      id: ByPeopleEnum.DIRECT_REPORTEES,
+      name: enumToTitleCase(ByPeopleEnum.DIRECT_REPORTEES),
+    },
+  ].filter((value) =>
+    value.name
+      .toLowerCase()
+      .includes(debouncedByPeopleSearchValue.toLowerCase()),
+  );
+  const debouncedUserStatusSearchValue = useDebounce(
+    userStausSearch || '',
+    300,
+  );
+  const statusData: IStatus[] = [
+    { id: UserStatus.Active, name: titleCase(UserStatus.Active) },
+    { id: UserStatus.Inactive, name: titleCase(UserStatus.Inactive) },
+    { id: UserStatus.Pending, name: titleCase(UserStatus.Pending) },
+  ].filter((value) =>
+    value.name
+      .toLowerCase()
+      .includes(debouncedUserStatusSearchValue.toLowerCase()),
+  );
   // fetch users from search input
   const debouncedSearchValue = useDebounce(memberSearch || '', 500);
   const {
@@ -68,9 +99,13 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
   } = fetchUsers({
     q: {
       q: debouncedSearchValue,
-      designations:
-        selectedDesignations.length > 0
-          ? selectedDesignations.join(',')
+      userTeam: selectedTeams.length > 0 ? selectedTeams.join(',') : undefined,
+      byPeople:
+        selectedByPeople.length > 0 ? selectedByPeople.join(',') : undefined,
+      ...usersQueryParams,
+      userStatus:
+        selectedUserStatus.length > 0
+          ? selectedUserStatus.join(',')
           : undefined,
       ...usersQueryParams,
     },
@@ -96,6 +131,8 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
       }) || [];
 
   // fetch teams data
+  const debouncedTeamSearchValue = useDebounce(teamSearch || '', 500);
+
   const {
     data: fetchedTeams,
     isLoading: teamLoading,
@@ -104,11 +141,7 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
     hasNextPage: hasNextTeamPage,
   } = useInfiniteTeams({
     q: isFiltersEmpty({
-      q: debouncedSearchValue,
-      categoryIds:
-        selectedCategories && selectedCategories.length
-          ? selectedCategories.join(',')
-          : undefined,
+      q: debouncedSearchValue || debouncedTeamSearchValue,
     }),
   });
   let teamsData: ITeam[] =
@@ -129,59 +162,6 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
         }
         return true;
       }) || [];
-
-  const isLxp = useProduct();
-
-  // fetch category data
-  const debouncedCategorySearchValue = useDebounce(categorySearch || '', 500);
-  const {
-    data: fetchedCategories,
-    isLoading: categoryLoading,
-    isFetchingNextPage: isFetchingNextCategoryPage,
-    fetchNextPage: fetchNextCategoryPage,
-    hasNextPage: hasNextCategoryPage,
-  } = isLxp
-    ? useInfiniteLearnCategory({ q: debouncedCategorySearchValue })
-    : useInfiniteCategories({
-        q: debouncedCategorySearchValue,
-        type: CategoryType.TEAM,
-      });
-  const categoryData = fetchedCategories?.pages.flatMap((page) => {
-    return page?.data?.result?.data.map((category: ICategory) => {
-      try {
-        return category;
-      } catch (e) {
-        console.log('Error', { category });
-      }
-    });
-  });
-
-  // fetch designation from search input
-  const debouncedDesignationSearchValue = useDebounce(
-    designationSearch || '',
-    500,
-  );
-  const {
-    data: fetchedDesignations,
-    isLoading: designationLoading,
-    isFetchingNextPage: isFetchingNextDesignationPage,
-    fetchNextPage: fetchNextDesignationPage,
-    hasNextPage: hasNextDesignationPage,
-  } = useInfiniteDesignations({
-    q: {
-      q: debouncedDesignationSearchValue,
-    },
-    startFetching: true,
-  });
-  const designationData = fetchedDesignations?.pages.flatMap((page) => {
-    return page.data.result.data.map((designation: IDesignationAPI) => {
-      try {
-        return designation;
-      } catch (e) {
-        console.log('Error', { designation });
-      }
-    });
-  });
 
   const { ref, inView } = useInView({
     root: document.getElementById('entity-search-members-body'),
@@ -303,7 +283,7 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
               control,
               name: 'memberSearch',
               label: 'Select member',
-              placeholder: 'Add via name or email address',
+              placeholder: 'Add via name or email address or Team name',
               isClearable: true,
               dataTestId: `${dataTestId}-search`,
               inputClassName: 'text-sm py-[9px]',
@@ -321,74 +301,100 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
             Quick filters:
             <div className="relative">
               <InfiniteSearch
-                title="Job Title"
+                title="Teams"
                 control={control}
                 options={
-                  designationData?.map((designation: IDesignationAPI) => ({
-                    label: designation.name,
-                    value: designation,
-                    id: designation.id,
+                  teamsData?.map((team: ITeam) => ({
+                    label: team.name,
+                    value: team,
+                    id: team.id,
                   })) || []
                 }
-                searchName={'designationSearch'}
-                optionsName={'designations'}
-                isLoading={designationLoading}
-                isFetchingNextPage={isFetchingNextDesignationPage}
-                fetchNextPage={fetchNextDesignationPage}
-                hasNextPage={hasNextDesignationPage}
+                searchName={'teamSearch'}
+                optionsName={'teams'}
+                isLoading={teamLoading}
+                isFetchingNextPage={isFetchingNextTeamPage}
+                fetchNextPage={fetchNextTeamPage}
+                hasNextPage={hasNextTeamPage}
                 onApply={() =>
-                  setSelectedDesignations([
-                    ...Object.keys(designations).filter(
-                      (key: string) => !!designations[key],
-                    ),
+                  setSelectedTeams([
+                    ...Object.keys(teams).filter((key: string) => !!teams[key]),
                   ])
                 }
                 onReset={() => {
-                  setSelectedDesignations([]);
-                  if (designations) {
-                    Object.keys(designations).forEach((key: string) =>
-                      setValue(`designations.${key}`, false),
+                  setSelectedTeams([]);
+                  if (teams) {
+                    Object.keys(teams).forEach((key: string) =>
+                      setValue(`teams.${key}`, false),
                     );
                   }
                 }}
-                selectionCount={selectedDesignations.length}
+                selectionCount={selectedTeams.length}
                 dataTestId={`${dataTestId}-filter-jobtitle`}
               />
             </div>
             <div className="relative">
               <InfiniteSearch
-                title="Category"
+                title="User status"
                 control={control}
                 options={
-                  categoryData?.map((category) => ({
-                    label: category.name,
-                    value: category,
-                    id: category.id,
+                  statusData?.map((user) => ({
+                    label: user.name,
+                    value: user,
+                    id: user.id,
                   })) || []
                 }
-                searchName={'categorySearch'}
-                optionsName={'categories'}
-                isLoading={categoryLoading}
-                isFetchingNextPage={isFetchingNextCategoryPage}
-                fetchNextPage={fetchNextCategoryPage}
-                hasNextPage={hasNextCategoryPage}
+                searchName={'userStausSearch'}
+                optionsName={'userStatus'}
                 onApply={() =>
-                  setSelectedCategories([
-                    ...Object.keys(categories).filter(
-                      (key: string) => !!categories[key],
+                  setUserSelectedStatus([
+                    ...Object.keys(userStatus).filter(
+                      (key: string) => !!userStatus[key],
                     ),
                   ])
                 }
                 onReset={() => {
-                  setSelectedCategories([]);
-                  if (categories) {
-                    Object.keys(categories).forEach((key: string) =>
-                      setValue(`categories.${key}`, false),
+                  setUserSelectedStatus([]);
+                  if (userStatus) {
+                    Object.keys(userStatus).forEach((key: string) =>
+                      setValue(`userStatus.${key}`, false),
                     );
                   }
                 }}
-                selectionCount={selectedCategories.length}
-                dataTestId={`${dataTestId}-filter-category`}
+                selectionCount={selectedUserStatus.length}
+                dataTestId={`${dataTestId}-filter-userStatus`}
+              />
+            </div>
+            <div className="relative">
+              <InfiniteSearch
+                title="By people"
+                control={control}
+                options={
+                  byPeopleData?.map((user) => ({
+                    label: user.name,
+                    value: user,
+                    id: user.id,
+                  })) || []
+                }
+                searchName={'byPeopleSearch'}
+                optionsName={'byPeople'}
+                onApply={() =>
+                  setSelectedByPeople([
+                    ...Object.keys(byPeople).filter(
+                      (key: string) => !!byPeople[key],
+                    ),
+                  ])
+                }
+                onReset={() => {
+                  setSelectedByPeople([]);
+                  if (byPeople) {
+                    Object.keys(byPeople).forEach((key: string) =>
+                      setValue(`byPeople.${key}`, false),
+                    );
+                  }
+                }}
+                selectionCount={selectedByPeople.length}
+                dataTestId={`${dataTestId}-filter-byPeople`}
               />
             </div>
           </div>
@@ -397,13 +403,17 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
               isControlsDisabled && 'opacity-50 pointer-events-none'
             }`}
             onClick={() => {
-              setSelectedDesignations([]);
-              setSelectedCategories([]);
-              Object.keys(designations || {}).forEach((key: string) =>
-                setValue(`designations.${key}`, false),
+              setUserSelectedStatus([]);
+              setSelectedByPeople([]);
+              setSelectedTeams([]);
+              Object.keys(teams || {}).forEach((key: string) =>
+                setValue(`teams.${key}`, false),
               );
-              Object.keys(categories || {}).forEach((key: string) =>
-                setValue(`categories.${key}`, false),
+              Object.keys(byPeople || {}).forEach((key: string) =>
+                setValue(`byPeople.${key}`, false),
+              );
+              Object.keys(userStatus || {}).forEach((key: string) =>
+                setValue(`userStatus.${key}`, false),
               );
             }}
             data-testid={`${dataTestId}-clearfilter`}

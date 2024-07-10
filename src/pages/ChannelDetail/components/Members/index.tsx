@@ -56,7 +56,6 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
   const parsedTab = searchParams.get('type');
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
-
   const { data, isLoading } = useInfiniteChannelMembers({
     channelId: channelData?.id,
     q: isFiltersEmpty({
@@ -66,6 +65,12 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
         : undefined,
       userRole: filters?.roles?.length
         ? filters?.roles?.map((role: any) => role.id).join(',')
+        : undefined,
+      userTeam: filters?.teams?.length
+        ? filters?.teams?.map((eachStatus: any) => eachStatus.id).join(',')
+        : undefined,
+      byPeople: filters?.byPeople?.length
+        ? filters?.byPeople?.map((eachStatus: any) => eachStatus.id).join(',')
         : undefined,
     }),
   });

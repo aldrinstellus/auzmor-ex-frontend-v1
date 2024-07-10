@@ -70,6 +70,12 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
       userStatus: filters?.status?.length
         ? filters?.status?.map((eachStatus: any) => eachStatus.id).join(',')
         : undefined,
+      userTeam: filters?.teams?.length
+        ? filters?.teams?.map((eachStatus: any) => eachStatus.id).join(',')
+        : undefined,
+      byPeople: filters?.byPeople?.length
+        ? filters?.byPeople?.map((eachStatus: any) => eachStatus.id).join(',')
+        : undefined,
     }),
   });
   const channelMembers = data?.pages.flatMap((page) => {
