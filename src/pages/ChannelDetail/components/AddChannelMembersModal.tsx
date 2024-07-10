@@ -131,7 +131,7 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
           title={
             <span>
               Add members{' '}
-              <span className="text-primary-500">@${channelData?.name}</span>
+              <span className="text-primary-500">@{channelData?.name}</span>
             </span>
           }
           onBackIconClick={() => {}}
