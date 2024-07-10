@@ -3,8 +3,12 @@ import Documents from './components/Documents';
 import Home from './components/Home';
 import ProfileSection from './components/ProfileSection';
 import Members from './components/Members';
-import { IChannel, useChannelStore } from 'stores/channelStore';
-import { useParams } from 'react-router-dom';
+import {
+  ChannelVisibilityEnum,
+  IChannel,
+  useChannelStore,
+} from 'stores/channelStore';
+import { useNavigate, useParams } from 'react-router-dom';
 import useScrollTop from 'hooks/useScrollTop';
 import { useChannelDetails } from 'queries/channel';
 import PageLoader from 'components/PageLoader';
@@ -14,6 +18,7 @@ import Setting from './components/Settings';
 import ManageAccess from './components/ManageChannel';
 import useAuth from 'hooks/useAuth';
 import { usePageTitle } from 'hooks/usePageTitle';
+import PrivateChannelBanner from 'components/PrivateChannel';
 
 type AppProps = {
   activeTabIndex?: number;
@@ -24,10 +29,29 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
   const { channelId } = useParams();
   const { user } = useAuth();
   const { getChannel } = useChannelStore();
-
   const { getScrollTop, resumeRecordingScrollTop } = useScrollTop(
     'app-shell-container',
   );
+  const navigate = useNavigate();
+  if (!channelId) {
+    navigate('/404');
+  }
+
+  const listChannelData: IChannel = getChannel(channelId!);
+  const { data, isLoading } = useChannelDetails(channelId || '');
+  const channelData: IChannel =
+    data?.data?.result?.data || listChannelData || null;
+  const isAdmin = channelData?.createdBy?.userId === user?.id;
+
+  const showRequestBtn =
+    channelData?.settings?.visibility === ChannelVisibilityEnum.Private &&
+    !!!channelData?.member &&
+    !!!channelData?.joinRequest;
+  const showWithdrawBtn =
+    channelData?.settings?.visibility === ChannelVisibilityEnum.Private &&
+    !!!channelData?.member &&
+    !!channelData?.joinRequest;
+
   useEffect(() => {
     resumeRecordingScrollTop();
     const ele = document.getElementById('app-shell-container');
@@ -40,20 +64,9 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
     }
   }, [channelId]);
 
-  if (!channelId) {
-    return <div>Error</div>;
-  }
-
-  const { data, isLoading } = useChannelDetails(channelId || '');
-
-  const listChannelData: IChannel = getChannel(channelId);
-  const channelData: IChannel =
-    data?.data?.result?.data || listChannelData || null;
-
   if (isLoading && !channelData) {
     return <PageLoader />;
   }
-  const isAdmin = channelData?.createdBy?.userId === user?.id;
 
   const tabStyles = (active: boolean, disabled = false) =>
     clsx(
@@ -71,61 +84,73 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
         'bg-opacity-50 text-gray-400': disabled,
       },
     );
-  const tabs = [
-    {
-      id: 1,
-      tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>Home</div>
-      ),
-      hidden: false,
-      dataTestId: 'channel-home-tab',
-      tabContent: (
-        <>
-          <Home channelData={channelData} />
-        </>
-      ),
-    },
-    {
-      id: 2,
-      tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>Documents</div>
-      ),
-      hidden: false,
-      dataTestId: 'channel-document-tab',
-      tabContent: (
-        <DocumentPathProvider>
-          <Documents />
-        </DocumentPathProvider>
-      ),
-    },
-    {
-      id: 3,
-      tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>Members</div>
-      ),
-      hidden: false,
-      dataTestId: 'channel-member-tab',
-      tabContent: <Members channelData={channelData} />,
-    },
-    {
-      id: 4,
-      tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>Settings</div>
-      ),
-      hidden: false,
-      dataTestId: 'channel-member-tab',
-      tabContent: <Setting isLoading={isLoading} channelData={channelData} />,
-    },
-    {
-      id: 5,
-      tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>Manage access</div>
-      ),
-      hidden: !isAdmin, //false
-      dataTestId: 'channel-member-tab',
-      tabContent: <ManageAccess channelData={channelData} />,
-    },
-  ].filter((item) => !item.hidden);
+
+  const showBanner = () => {
+    if (showRequestBtn) {
+      return <PrivateChannelBanner channel={channelData} />;
+    } else if (showWithdrawBtn) {
+      return <PrivateChannelBanner channel={channelData} isRequested />;
+    }
+    return false;
+  };
+  const tabs =
+    [
+      {
+        id: 1,
+        tabLabel: (isActive: boolean) => (
+          <div className={tabStyles(isActive)}>Home</div>
+        ),
+        hidden: false,
+        dataTestId: 'channel-home-tab',
+        tabContent: showBanner() || (
+          <>
+            <Home channelData={channelData} />
+          </>
+        ),
+      },
+      {
+        id: 2,
+        tabLabel: (isActive: boolean) => (
+          <div className={tabStyles(isActive)}>Documents</div>
+        ),
+        hidden: false,
+        dataTestId: 'channel-document-tab',
+        tabContent: showBanner() || (
+          <DocumentPathProvider>
+            <Documents />
+          </DocumentPathProvider>
+        ),
+      },
+      {
+        id: 3,
+        tabLabel: (isActive: boolean) => (
+          <div className={tabStyles(isActive)}>Members</div>
+        ),
+        hidden: false,
+        dataTestId: 'channel-member-tab',
+        tabContent: showBanner() || <Members channelData={channelData} />,
+      },
+      {
+        id: 4,
+        tabLabel: (isActive: boolean) => (
+          <div className={tabStyles(isActive)}>Settings</div>
+        ),
+        hidden: false,
+        dataTestId: 'channel-member-tab',
+        tabContent: showBanner() || (
+          <Setting isLoading={isLoading} channelData={channelData} />
+        ),
+      },
+      {
+        id: 5,
+        tabLabel: (isActive: boolean) => (
+          <div className={tabStyles(isActive)}>Manage access</div>
+        ),
+        hidden: !isAdmin,
+        dataTestId: 'channel-member-tab',
+        tabContent: showBanner() || <ManageAccess channelData={channelData} />,
+      },
+    ].filter((item) => !item.hidden) || [];
 
   return (
     <div className="flex flex-col  w-full ">

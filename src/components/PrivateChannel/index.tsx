@@ -4,29 +4,98 @@ import PrivateChannelImage from 'images/png/PrivateChannelBanner.png';
 import Button, { Variant } from 'components/Button';
 import AvatarChips from 'components/AvatarChips';
 import { useTranslation } from 'react-i18next';
-import { useChannelAdmins } from 'queries/channel';
-import { useNavigate } from 'react-router-dom';
+import {
+  deleteJoinChannelRequest,
+  joinChannelRequest,
+  useInfiniteChannelMembers,
+} from 'queries/channel';
+import { Role } from 'utils/enum';
+import { IAvatarUser } from 'components/AvatarChip';
+import { useMutation } from '@tanstack/react-query';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import {
+  ChannelVisibilityEnum,
+  IChannel,
+  useChannelStore,
+} from 'stores/channelStore';
+import queryClient from 'utils/queryClient';
+
+const CHIPS_COUNT = 7;
 
 interface IChannelBannerProps {
-  isChannelRequest?: boolean;
-  channelId?: string;
+  isRequested?: boolean;
+  channel: IChannel;
 }
 
 const PrivateChannelBanner: FC<IChannelBannerProps> = ({
-  channelId = '',
-  isChannelRequest = true,
+  channel,
+  isRequested = false,
 }) => {
+  const updateChannel = useChannelStore((action) => action.updateChannel);
   const { t } = useTranslation('channels');
-  const { data: admins } = useChannelAdmins(channelId);
-  const navigate = useNavigate();
+  const { data } = useInfiniteChannelMembers({
+    channelId: channel.id,
+    q: {
+      limit: CHIPS_COUNT,
+      userRole: Role.Admin,
+    },
+  });
+  const admins = (data?.pages.flatMap((page) => {
+    return page?.data?.result?.data.map((admin: any) => {
+      try {
+        return { id: admin.id, role: admin.role, ...admin.user };
+      } catch (e) {
+        console.log('Error', { admin });
+      }
+    });
+  }) || []) as IAvatarUser[];
+
+  // Join public/private channel request mutation
+  const joinChannelMutation = useMutation({
+    mutationKey: ['join-public-channel-request'],
+    mutationFn: (channelId: string) => joinChannelRequest(channelId),
+    onError: () =>
+      failureToastConfig({
+        content: t('joinRequestError'),
+      }),
+    onSuccess: async (data) => {
+      successToastConfig({
+        content:
+          channel.settings?.visibility === ChannelVisibilityEnum.Private
+            ? t('joinPrivateChannelRequestSuccess')
+            : t('joinPublicChannelRequestSuccess'),
+      });
+      await queryClient.invalidateQueries(['channel'], { exact: false });
+      updateChannel(channel.id, {
+        ...channel,
+        joinRequest: { ...data.result.data.joinRequest },
+      });
+    },
+  });
+
+  // Withdraw join request
+  const withdrawJoinChannelRequest = useMutation({
+    mutationKey: ['withdraw-join-request'],
+    mutationFn: (joinId: string) =>
+      deleteJoinChannelRequest(channel.id, joinId),
+    onError: () =>
+      failureToastConfig({
+        content: t('withdrawRequestError'),
+      }),
+    onSuccess: async () => {
+      successToastConfig({ content: t('withdrawRequestSuccess') });
+      await queryClient.invalidateQueries(['channel'], { exact: false });
+      updateChannel(channel.id, {
+        ...channel,
+        joinRequest: null,
+      });
+    },
+  });
+
   return (
     <Card>
-      <div
-        onClick={() => {
-          navigate(`channels/${channelId}`);
-        }}
-        className="flex flex-col items-center justify-center p-8 "
-      >
+      <div className="flex flex-col items-center justify-center p-8 ">
         <img src={PrivateChannelImage} alt="private channel banner" />
         <div
           className="text-2xl font-bold mt-8 mb-4"
@@ -36,16 +105,23 @@ const PrivateChannelBanner: FC<IChannelBannerProps> = ({
         </div>
         <Button
           label={
-            isChannelRequest
-              ? t('privateChannel.joinRequestCTA')
-              : t('privateChannel.withdrawRequestCTA')
+            isRequested
+              ? t('privateChannel.withdrawRequestCTA')
+              : t('privateChannel.joinRequestCTA')
           }
-          variant={isChannelRequest ? Variant.Primary : Variant.Danger}
-          onClick={() => {}} // channel send or withdraw  function to call
+          variant={isRequested ? Variant.Danger : Variant.Primary}
+          onClick={
+            isRequested
+              ? () =>
+                  withdrawJoinChannelRequest.mutate(channel.joinRequest!.id!)
+              : () => joinChannelMutation.mutate(channel.id)
+          }
+          loading={
+            joinChannelMutation.isLoading ||
+            withdrawJoinChannelRequest.isLoading
+          }
           data-testid={
-            isChannelRequest
-              ? 'channel-request-to-join'
-              : 'channel--withdraw-request'
+            isRequested ? 'channel-withdraw-request' : 'channel-request-to-join'
           }
         />
         <div
@@ -56,7 +132,7 @@ const PrivateChannelBanner: FC<IChannelBannerProps> = ({
         </div>
         <AvatarChips
           users={admins}
-          showCount={7}
+          showCount={CHIPS_COUNT}
           dataTestId={'channel-admin-list-'}
         />
       </div>
