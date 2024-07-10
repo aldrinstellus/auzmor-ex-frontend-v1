@@ -1,16 +1,24 @@
 import { ChangeEvent, FC, ReactNode, useCallback, useEffect } from 'react';
 import Spinner from 'components/Spinner';
 import Layout, { FieldType } from 'components/Form';
-import { useForm } from 'react-hook-form';
+import { useForm, UseFormReset } from 'react-hook-form';
 import NoDataFound from 'components/NoDataFound';
 import { useInView } from 'react-intersection-observer';
 import clsx from 'clsx';
 import Divider from 'components/Divider';
 import Button, { Variant } from 'components/Button';
+interface IUseForm {
+  selectAll: boolean;
+  showSelected: boolean;
+  entity: Record<string, any>;
+}
 
 interface IMenuItem {
   key: string;
-  component: (selectedEntities: any) => ReactNode;
+  component: (
+    selectedEntities: any,
+    reset: UseFormReset<IUseForm>,
+  ) => ReactNode;
 }
 
 interface IEntitySelectorProps {
@@ -37,11 +45,7 @@ const EntitySelector: FC<IEntitySelectorProps> = ({
   fetchNextPage = () => {},
   menuItems = [],
 }) => {
-  const { control, watch, setValue } = useForm<{
-    selectAll: boolean;
-    showSelected: boolean;
-    entity: Record<string, any>;
-  }>({
+  const { control, watch, setValue, reset } = useForm<IUseForm>({
     defaultValues: {
       selectAll: false,
       showSelected: false,
@@ -49,10 +53,11 @@ const EntitySelector: FC<IEntitySelectorProps> = ({
     },
   });
 
-  const entitties = watch('entity');
-  const selectedEntities = Object.keys(entitties).reduce((filtered, key) => {
-    if (entitties[key]) {
-      (filtered as Record<string, any>[]).push(entitties[key]);
+  const entities = watch('entity');
+
+  const selectedEntities = Object.keys(entities).reduce((filtered, key) => {
+    if (entities[key]) {
+      (filtered as Record<string, any>[]).push(entities[key]);
     }
     return filtered;
   }, []);
@@ -88,7 +93,7 @@ const EntitySelector: FC<IEntitySelectorProps> = ({
   const updateSelectAll = () => {
     if (
       entityData?.length === 0 ||
-      entityData?.some((entity) => !entitties?.[entity.id])
+      entityData?.some((entity) => !entities?.[entity.id])
     ) {
       setValue('selectAll', false);
     } else {
@@ -112,43 +117,46 @@ const EntitySelector: FC<IEntitySelectorProps> = ({
                 setValue('selectAll', false);
                 deselectAll();
               }}
+              className="pl-1"
             />
           </li>
           {menuItems.map((item) => (
-            <li key={item.key}>{item.component(selectedEntities)}</li>
+            <li key={item.key}>{item.component(selectedEntities, reset)}</li>
           ))}
         </ul>
       )}
       {/* Header */}
-      <div className={getRowStyle()}>
-        <Layout
-          fields={[
-            {
-              type: FieldType.Checkbox,
-              name: `selectAll`,
-              control,
-              className: 'item-center gap-2 !justify-start w-full',
-              dataTestId: `${dataTestId}-select-all`,
-              label: entityHeaderRenderer(),
-              labelContainerClassName: 'w-full',
-              transform: {
-                input: (value: any) => {
-                  return !!value;
-                },
-                output: (e: ChangeEvent<HTMLInputElement>) => {
-                  if (e.target.checked) {
-                    selectAll();
-                  } else {
-                    deselectAll();
-                  }
-                  return e.target.checked;
+      {!!entityData?.length && (
+        <div className={getRowStyle()}>
+          <Layout
+            fields={[
+              {
+                type: FieldType.Checkbox,
+                name: `selectAll`,
+                control,
+                className: 'item-center gap-2 !justify-start w-full',
+                dataTestId: `${dataTestId}-select-all`,
+                label: entityHeaderRenderer(),
+                labelContainerClassName: 'w-full',
+                transform: {
+                  input: (value: any) => {
+                    return !!value;
+                  },
+                  output: (e: ChangeEvent<HTMLInputElement>) => {
+                    if (e.target.checked) {
+                      selectAll();
+                    } else {
+                      deselectAll();
+                    }
+                    return e.target.checked;
+                  },
                 },
               },
-            },
-          ]}
-          className="w-full"
-        />
-      </div>
+            ]}
+            className="w-full"
+          />
+        </div>
+      )}
       {/* Body */}
       <ul
         className="flex flex-col max-h-72 overflow-scroll"
@@ -162,7 +170,7 @@ const EntitySelector: FC<IEntitySelectorProps> = ({
         ) : entityData?.length ? (
           entityData?.map((entity: Record<string, any>, index: number) => (
             <>
-              <li key={entity.id} className={getRowStyle(entitties[entity.id])}>
+              <li key={entity.id} className={getRowStyle(entities[entity.id])}>
                 <Layout
                   fields={[
                     {
@@ -170,6 +178,9 @@ const EntitySelector: FC<IEntitySelectorProps> = ({
                       name: `entity.${entity.id}`,
                       control,
                       className: 'item-center gap-2 !justify-start w-full',
+                      inputClassName: `invisible hover:visible w-4 h-4 ${
+                        entities[entity.id] ? '!visible' : ''
+                      }`,
                       transform: {
                         input: (value: any) => {
                           updateSelectAll();

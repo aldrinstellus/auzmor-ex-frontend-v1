@@ -11,7 +11,7 @@ import IconButton, {
   Size,
   Variant as IconVariant,
 } from 'components/IconButton';
-import Button, { Size as ButtonSize } from 'components/Button';
+import Button, { Variant } from 'components/Button';
 import {
   clearInputValue,
   getBlobUrl,
@@ -25,7 +25,11 @@ import ChannelArchiveModal from 'pages/Channels/components/ChannelArchiveModal';
 import Tabs, { ITab } from 'components/Tabs';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import { joinChannelRequest, updateChannel } from 'queries/channel';
+import {
+  deleteJoinChannelRequest,
+  joinChannelRequest,
+  updateChannel,
+} from 'queries/channel';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import queryClient from 'utils/queryClient';
@@ -70,7 +74,6 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
 
   const channelCoverImageRef = useRef<HTMLInputElement>(null);
   const showEditProfile = useRef<boolean>(true);
-  // const [channelLogoName, setchannelLogoName] = useState<string>('');
   const [coverImageName, setCoverImageName] = useState<string>('');
   const updateChannelStore = useChannelStore((state) => state.updateChannel);
 
@@ -89,15 +92,70 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     ? getBlobUrl(file?.profileImage)
     : file?.coverImage && getBlobUrl(file?.coverImage);
 
+  const showRequestBtn =
+    channelData?.settings?.visibility === ChannelVisibilityEnum.Private &&
+    !!!channelData?.member &&
+    !!!channelData?.joinRequest;
+  const showJoinChannelBtn =
+    channelData.settings?.visibility === ChannelVisibilityEnum.Public &&
+    !!!channelData.member &&
+    !!!channelData.joinRequest;
+  const showWithdrawBtn =
+    channelData?.settings?.visibility === ChannelVisibilityEnum.Private &&
+    !!!channelData?.member &&
+    !!channelData?.joinRequest;
+
   const deleteCoverImageMutation = useMutation({
+    mutationKey: ['update-users-cover-image'],
     mutationFn: (data: any) => updateChannel(channelId, data),
-    mutationKey: ['update-users-mutation'],
     onError: (error: any) => {
       console.log('API call resulted in error: ', error);
     },
     onSuccess: (data: any) => {
       queryClient.invalidateQueries(['channel']);
       console.log('Successfully deleted user cover image', data);
+    },
+  });
+
+  // Join public/private channel request mutation
+  const joinChannelMutation = useMutation({
+    mutationKey: ['join-public-channel-request'],
+    mutationFn: (channelId: string) => joinChannelRequest(channelId),
+    onError: () =>
+      failureToastConfig({
+        content: t('joinRequestError'),
+      }),
+    onSuccess: async (data) => {
+      successToastConfig({
+        content:
+          channelData.settings?.visibility === ChannelVisibilityEnum.Private
+            ? t('joinPrivateChannelRequestSuccess')
+            : t('joinPublicChannelRequestSuccess'),
+      });
+      await queryClient.invalidateQueries(['channel'], { exact: false });
+      updateChannelStore(channelData.id, {
+        ...channelData,
+        joinRequest: { ...data.result.data.joinRequest },
+      });
+    },
+  });
+
+  // Withdraw join request
+  const withdrawJoinChannelRequest = useMutation({
+    mutationKey: ['withdraw-join-request'],
+    mutationFn: (joinId: string) =>
+      deleteJoinChannelRequest(channelData.id, joinId),
+    onError: () =>
+      failureToastConfig({
+        content: t('withdrawRequestError'),
+      }),
+    onSuccess: async () => {
+      successToastConfig({ content: t('withdrawRequestSuccess') });
+      await queryClient.invalidateQueries(['channel'], { exact: false });
+      updateChannelStore(channelData.id, {
+        ...channelData,
+        joinRequest: null,
+      });
     },
   });
 
@@ -151,24 +209,6 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       dataTestId: 'edit-coverpic-deletepost',
     },
   ];
-
-  // Public channel join request
-  const joinPublicChannelMutation = useMutation({
-    mutationKey: ['join-request-channel'],
-    mutationFn: (channelId: string) => joinChannelRequest(channelId),
-    onError: () =>
-      failureToastConfig({
-        content: tc('joinRequestError'),
-      }),
-    onSuccess: async (data) => {
-      successToastConfig({ content: tc('joinPublicChannelRequestSuccess') });
-      await queryClient.invalidateQueries(['channel'], { exact: false });
-      updateChannelStore(channelData.id, {
-        ...channelData,
-        joinRequest: { ...data.result.data.joinRequest },
-      });
-    },
-  });
 
   const handleTabChange = (index: any) => {
     if (index === 0) {
@@ -353,14 +393,35 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               </div>
             </div>
           </div>
-          <Button
-            label={t('join')}
-            size={ButtonSize.Small}
-            dataTestId="join-channel-cta"
-            className="min-w-max"
-            loading={joinPublicChannelMutation.isLoading}
-            onClick={() => joinPublicChannelMutation.mutate(channelData.id)}
-          />
+          {showJoinChannelBtn && (
+            <Button
+              label={t('join')}
+              dataTestId="join-channel-cta"
+              className="min-w-max"
+              loading={joinChannelMutation.isLoading}
+              onClick={() => joinChannelMutation.mutate(channelData.id)}
+            />
+          )}
+          {showRequestBtn && (
+            <Button
+              label={tc('privateChannel.joinRequestCTA')}
+              variant={Variant.Primary}
+              onClick={() => joinChannelMutation.mutate(channelData.id)}
+              loading={joinChannelMutation.isLoading}
+              data-testid={'channel-request-to-join'}
+            />
+          )}
+          {showWithdrawBtn && (
+            <Button
+              label={tc('privateChannel.withdrawRequestCTA')}
+              variant={Variant.Danger}
+              onClick={() =>
+                withdrawJoinChannelRequest.mutate(channelData.joinRequest!.id!)
+              }
+              loading={withdrawJoinChannelRequest.isLoading}
+              data-testid={'channel-withdraw-request'}
+            />
+          )}
         </div>
         <div className="relative mt-3">
           <div className="absolute  text-neutral-900 w-full top-0">

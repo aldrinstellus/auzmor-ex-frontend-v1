@@ -28,6 +28,7 @@ import NoDataFound from 'components/NoDataFound';
 import EntitySelector from 'components/EntitySelector';
 import RequestRow from './RequestRow';
 import { useMutation } from '@tanstack/react-query';
+import queryClient from 'utils/queryClient';
 import { useChannelRole } from 'hooks/useChannelRole';
 
 type AppProps = {
@@ -35,9 +36,8 @@ type AppProps = {
 };
 
 const Members: React.FC<AppProps> = ({ channelData }) => {
-  const { isUserAdminOrChannelAdmin } = useChannelRole(channelData);
-
   const { t } = useTranslation('channels');
+  const { isUserAdminOrChannelAdmin } = useChannelRole(channelData);
   const { filters, clearFilters, updateFilter } = useAppliedFiltersStore();
   useEffect(() => {
     clearFilters();
@@ -96,6 +96,9 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
     mutationKey: ['bulk-channel-request-accept'],
     mutationFn: (payload: { approve?: string[] }) =>
       bulkChannelRequestUpdate(channelData!.id, payload),
+    onSettled: () => {
+      queryClient.invalidateQueries(['channel-requests'], { exact: false });
+    },
   });
 
   // Bulk reject channel request
@@ -103,6 +106,9 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
     mutationKey: ['bulk-channel-request-reject'],
     mutationFn: (payload: { reject?: Record<string, any>[] }) =>
       bulkChannelRequestUpdate(channelData!.id, payload),
+    onSettled: () => {
+      queryClient.invalidateQueries(['channel-requests'], { exact: false });
+    },
   });
 
   // quick Filters options
@@ -265,7 +271,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
             menuItems={[
               {
                 key: 'accept',
-                component: (selectedEntities: IChannelRequest[]) =>
+                component: (selectedEntities: IChannelRequest[], reset) =>
                   (
                     <Button
                       label="Accept"
@@ -274,11 +280,15 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
                       leftIconClassName="!text-neutral-500 group-hover:!text-primary-600"
                       labelClassName="!font-semibold !text-neutral-700 group-hover:!text-primary-600 group-active:text-primary-700"
                       variant={Variant.Tertiary}
-                      onClick={() =>
-                        bulkRequestAcceptMutation.mutate({
-                          approve: selectedEntities.map((entity) => entity.id),
-                        })
-                      }
+                      onClick={() => {
+                        bulkRequestAcceptMutation
+                          .mutateAsync({
+                            approve: selectedEntities.map(
+                              (entity) => entity.id,
+                            ),
+                          })
+                          .then(() => reset());
+                      }}
                       loading={bulkRequestAcceptMutation.isLoading}
                     />
                   ) as ReactNode,

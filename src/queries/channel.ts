@@ -12,7 +12,6 @@ import {
   IChannelLink,
   useChannelStore,
 } from 'stores/channelStore';
-import { channelAdmins } from 'mocks/Channels';
 import apiService from 'utils/apiService';
 
 export interface IChannelPayload {
@@ -163,10 +162,6 @@ export const getChannelLinks = async (
   return new Promise((res) => {
     res(data?.data?.result?.data);
   });
-};
-export const getChannelAdmins = async (channelId: string): Promise<any> => {
-  console.log(channelId);
-  return new Promise((res) => res(channelAdmins));
 };
 
 export const createLinks = async (
@@ -380,16 +375,6 @@ export const useChannelLinksWidget = (
     queryFn: () => getChannelLinks(channelId),
     // staleTime: 15 * 60 * 1000,
     cacheTime: 0,
-  });
-
-export const useChannelAdmins = (
-  channelId: string,
-  queryKey = 'channel-admins',
-) =>
-  useQuery({
-    queryKey: [queryKey],
-    queryFn: () => getChannelAdmins(channelId),
-    staleTime: 15 * 60 * 1000,
   });
 
 export const useChannelDetails = (channelId: string) => {
