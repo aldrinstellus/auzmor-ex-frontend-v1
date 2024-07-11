@@ -18,7 +18,7 @@ const Registration = lazy(() => import('pages/Registration'));
 const ForgotPassword = lazy(() => import('pages/ForgotPassword'));
 const UserSettings = lazy(() => import('pages/UserSettings'));
 const ResetPassword = lazy(() => import('pages/ResetPassword'));
-const Feed = lazy(() => import('pages/Feed'));
+const HomeFeed = lazy(() => import('pages/Feed'));
 const Users = lazy(() => import('pages/Users'));
 const UserDetail = lazy(() => import('pages/UserDetail'));
 const TeamDetail = lazy(() => import('pages/TeamDetail'));
@@ -45,38 +45,15 @@ const routers = createBrowserRouter(
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/accept-invite" element={<AcceptInvite />} />
       <Route element={<RequireAuth />}>
-        <Route
-          path="/"
-          element={<Navigate to="/feed" replace={true} />}
-          // loader={() => {
-          //   // ⬇️ loader fetch data as earlier as possible
-          //   return '';
-          // }}
-        />
-        <Route
-          path="/home"
-          element={<Feed />}
-          // ⬇️ loader fetch data as earlier as possible
-          // loader={homeLoader(queryClient)}
-        />
+        <Route path="/" element={<Navigate to="/feed" replace={true} />} />
+        <Route path="/home" element={<HomeFeed />} />
         <Route element={<RequireOfficeAuth />}>
           <Route // users route  is not required in lxp
             path="/users"
             element={<Users />}
-            loader={async () => {
-              // ⬇️ loader fetch data as earlier as possible
-              return '';
-            }}
           />
         </Route>
-        <Route
-          path="/teams"
-          element={<Users />}
-          loader={async () => {
-            // ⬇️ loader fetch data as earlier as possible
-            return '';
-          }}
-        />
+        <Route path="/teams" element={<Users />} />
         <Route element={<RequireOfficeAuth />}>
           <Route // users details route  is not required in lxp
             path="/users/:userId"
@@ -106,10 +83,9 @@ const routers = createBrowserRouter(
         </Route>
         <Route path="/apps" element={<Apps />} />
         <Route path="/apps/:id/launch" element={<AppLaunchPage />} />
-
-        <Route path="/scheduledPosts" element={<Feed />} />
-        <Route path="/bookmarks" element={<Feed />} />
-        <Route path="/feed" element={<Feed />} />
+        <Route path="/scheduledPosts" element={<HomeFeed />} />
+        <Route path="/bookmarks" element={<HomeFeed />} />
+        <Route path="/feed" element={<HomeFeed />} />
         <Route element={<RequireOfficeAuth />}>
           <Route path="/settings" element={<UserSettings />} />
         </Route>
@@ -140,9 +116,14 @@ const routers = createBrowserRouter(
           <Route
             path="/channels/:channelId"
             element={<ChannelDetail activeTabIndex={0} />}
-            loader={() => {
-              return '';
-            }}
+          />
+          <Route
+            path="/channels/:channelId/scheduledPosts"
+            element={<ChannelDetail activeTabIndex={0} />}
+          />
+          <Route
+            path="/channels/:channelId/bookmarks"
+            element={<ChannelDetail activeTabIndex={0} />}
           />
           <Route path="/search" element={<SearchResults />} />
         </Route>

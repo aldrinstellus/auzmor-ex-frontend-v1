@@ -6,11 +6,11 @@ import {
 import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
 import NoDataCard from './NoDataCard';
 import PostBuilder from 'components/PostBuilder';
-import SkeletonLoader from 'pages/Feed/components/SkeletonLoader';
 import { useFeedStore } from 'stores/feedStore';
 import { FC } from 'react';
 import useRole from 'hooks/useRole';
 import { isRegularPost } from 'utils/misc';
+import SkeletonLoader from 'components/Feed/components/SkeletonLoader';
 
 export interface IProfileActivityFeedProps {
   data: any;
