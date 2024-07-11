@@ -27,7 +27,7 @@ const AdminsWidget = () => {
       }
     });
   });
-  if (!admins) return null;
+  if (admins?.length == 0) return null;
   return (
     <Card className="py-6 rounded-9xl" shadowOnHover>
       <div className="px-6">

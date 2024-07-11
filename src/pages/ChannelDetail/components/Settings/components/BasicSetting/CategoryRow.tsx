@@ -31,6 +31,7 @@ const CategoryRow: FC<AppProps> = ({
       updateChannel(id, payload),
     onSuccess: async () => {
       successToastConfig({});
+      ref?.current?.setEditMode(false);
       queryClient.invalidateQueries(['channel']);
     },
     onError: async () => {

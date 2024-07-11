@@ -40,6 +40,7 @@ const RemoveChannelMember: FC<IDeletePeopleProps> = ({
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['channel-members']);
+      queryClient.invalidateQueries(['channel']);
       closeModal();
       successToastConfig({
         content: 'Member has been deleted',

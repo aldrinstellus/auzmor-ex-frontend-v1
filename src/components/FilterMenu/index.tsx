@@ -24,7 +24,6 @@ import { ChannelVisibilityEnum } from 'stores/channelStore';
 import { ChannelTypeEnum } from 'components/FilterModal/ChannelType';
 import { ICategory } from 'queries/category';
 import { ITeam } from 'queries/teams';
-import { ByPeopleEnum } from 'components/FilterModal/ByPeople';
 
 export enum FilterKey {
   departments = 'departments',
@@ -111,7 +110,7 @@ const FilterMenu: FC<IFilterMenu> = ({
       setFilters({ ...filters, [key]: updatedFilter });
     }
   };
-
+  console.log('filters :', filters);
   const clearFilters = () => {
     deleteParam('status');
     deleteParam('roles');
@@ -129,7 +128,7 @@ const FilterMenu: FC<IFilterMenu> = ({
       departments: [],
       locations: [],
       teams: [],
-      byPeople: ByPeopleEnum.OTHERS,
+      byPeople: [],
       visibility: ChannelVisibilityEnum.All,
       channeType: ChannelTypeEnum.MyChannels,
     });

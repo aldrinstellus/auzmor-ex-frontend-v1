@@ -12,7 +12,6 @@ import {
   useChannelStore,
 } from 'stores/channelStore';
 import Button, { Variant } from 'components/Button';
-import { IOption } from 'components/AsyncSingleSelect';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Icon from 'components/Icon';
@@ -38,12 +37,12 @@ enum ChannelFlow {
   CreateChannel = 'CREATE_CHANNEL',
   EditChannel = 'EDIT_CHANNEL',
 }
-interface IChannelForm {
-  channelName: string;
-  channelCategory: ICategoryDetail;
-  channelPrivacy: IOption;
-  channelDescription: string;
-}
+// interface IChannelForm {
+//   channelName: string;
+//   channelCategory: ICategoryDetail;
+//   channelPrivacy: IOption;
+//   channelDescription: string;
+// }
 
 const getChannelPrivacyOption = (
   visibility: ChannelVisibilityEnum,
@@ -85,6 +84,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
     channelName: yup
       .string()
       .min(2, 'Channel name should have at least 2 characters')
+      .max(100, 'Channel name should not exceed 100 characters')
       .matches(
         /^[a-zA-Z0-9 ]*$/,
         'Channel name should not contain special characters',
@@ -92,37 +92,43 @@ const ChannelModal: FC<IChannelModalProps> = ({
       .required('Channel name is required'),
     channelCategory: yup.object().required(),
     channelPrivacy: yup.object().required(),
-    channelDescription: yup.string(),
+    channelDescription: yup
+      .string()
+      .max(200, 'description should not exceed 200 characters'),
   });
   const channelFlow = channelData?.id
     ? ChannelFlow.EditChannel
     : ChannelFlow.CreateChannel;
   const navigate = useNavigate();
   const { setChannels } = useChannelStore();
-  const { handleSubmit, control, formState, getValues } = useForm<IChannelForm>(
-    {
-      defaultValues: {
-        channelName: channelData?.name || '',
-        channelPrivacy: getChannelPrivacyOption(
-          channelData?.settings?.visibility || ChannelVisibilityEnum.Public,
-          t,
-        ),
-        channelCategory:
-          channelData?.categories && channelData?.categories?.length > 0
-            ? channelData.categories
-                .map((category) => ({
-                  value: category?.id,
-                  label: category?.name,
-                  id: category?.id,
-                }))
-                .pop()
-            : undefined,
-        channelDescription: channelData?.description || undefined,
-      },
-      resolver: yupResolver(schema),
-      mode: 'onChange',
+  const {
+    handleSubmit,
+    control,
+    formState: { errors, isValid },
+    getValues,
+    clearErrors,
+  } = useForm<any>({
+    defaultValues: {
+      channelName: channelData?.name || '',
+      channelPrivacy: getChannelPrivacyOption(
+        channelData?.settings?.visibility || ChannelVisibilityEnum.Public,
+        t,
+      ),
+      channelCategory:
+        channelData?.categories && channelData?.categories?.length > 0
+          ? channelData.categories
+              .map((category) => ({
+                value: category?.id,
+                label: category?.name,
+                id: category?.id,
+              }))
+              .pop()
+          : undefined,
+      channelDescription: channelData?.description || undefined,
     },
-  );
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+  });
 
   const formatCategory = (data: any) => {
     const categoriesData = data?.pages.flatMap((page: any) => {
@@ -280,6 +286,8 @@ const ChannelModal: FC<IChannelModalProps> = ({
                 showCounter: true,
                 maxLength: 100,
                 required: true,
+                clearErrors,
+                error: errors.channelName?.message,
               },
             ]}
           />
@@ -302,6 +310,8 @@ const ChannelModal: FC<IChannelModalProps> = ({
                   getFormattedData: formatCategory,
                   dataTestId: `${dataTestId}-category-dropdown`,
                   getPopupContainer: document.body,
+                  error: errors.channelCategory?.message,
+                  clearErrors,
                 },
               ]}
             />
@@ -387,6 +397,8 @@ const ChannelModal: FC<IChannelModalProps> = ({
                 rows: 5,
                 maxLength: 200,
                 showCounter: true,
+                clearErrors,
+                errors: errors?.channelDescription?.message,
                 counterPosition: 'top',
               },
             ]}
@@ -410,7 +422,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
           variant={Variant.Primary}
           onClick={handleSubmit(onSubmit)}
           dataTestId={`${dataTestId}-cta`}
-          disabled={!formState.isValid}
+          disabled={!(isValid && !!!errors.time)}
         />
       </div>
     </Modal>

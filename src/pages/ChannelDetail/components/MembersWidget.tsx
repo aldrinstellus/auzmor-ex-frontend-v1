@@ -15,6 +15,7 @@ export type MembersWidgetProps = {
   channelData: IChannel;
 };
 const MembersWidget: FC<MembersWidgetProps> = ({ channelData }) => {
+  console.log('channelData :', channelData);
   const { isUserAdminOrChannelAdmin } = useChannelRole(channelData);
   const [show, setShow] = useState(true);
   const { t } = useTranslation('channelDetail');
@@ -82,7 +83,9 @@ const MembersWidget: FC<MembersWidgetProps> = ({ channelData }) => {
                   className="w-full"
                   label="View all members"
                   dataTestId="my-teams-cta"
-                  onClick={() => navigate(`/channels/${channelId}/members`)}
+                  onClick={() =>
+                    navigate(`/channels/${channelId}/members?type=All_Members`)
+                  }
                 />
               )}
             </div>

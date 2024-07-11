@@ -84,6 +84,7 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
         setJobId('');
         queryClient.invalidateQueries({ queryKey: ['channel-members'] });
         queryClient.invalidateQueries({ queryKey: ['channel'] });
+        queryClient.invalidateQueries({ queryKey: ['search-team-members'] });
         successToastConfig({
           content: t('addChannelMembers.success'),
         });
@@ -134,7 +135,6 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
               <span className="text-primary-500">@{channelData?.name}</span>
             </span>
           }
-          onBackIconClick={() => {}}
           closeBtnDataTestId={`${dataTestId}-close`}
           onClose={closeModal}
         />
