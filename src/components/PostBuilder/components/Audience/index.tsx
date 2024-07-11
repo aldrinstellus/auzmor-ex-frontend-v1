@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { IAudienceForm } from 'components/EntitySearchModal';
 import { AudienceEntityType, IAudience } from 'queries/post';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
+import { IGetUser } from 'queries/users';
 
 interface IAudienceProps {
   closeModal: () => void;
@@ -113,7 +114,7 @@ const Audience: FC<IAudienceProps> = ({ closeModal, dataTestId }) => {
         localAudience.push({
           entityId: id,
           entityType: AudienceEntityType.Channel,
-          entity: formData.channels[id],
+          name: formData.channels[id].name,
         });
       }
     });
@@ -122,7 +123,7 @@ const Audience: FC<IAudienceProps> = ({ closeModal, dataTestId }) => {
         localAudience.push({
           entityId: id,
           entityType: AudienceEntityType.Team,
-          entity: formData.teams[id],
+          name: formData.teams[id].name,
         });
       }
     });
@@ -131,7 +132,7 @@ const Audience: FC<IAudienceProps> = ({ closeModal, dataTestId }) => {
         localAudience.push({
           entityId: id,
           entityType: AudienceEntityType.User,
-          entity: formData.users[id],
+          name: (formData.users[id] as IGetUser)?.fullName,
         });
       }
     });
