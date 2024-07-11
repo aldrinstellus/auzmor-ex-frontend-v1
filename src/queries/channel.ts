@@ -88,7 +88,9 @@ export const createChannel = async (payload: IChannelPayload) => {
 export const updateChannel = async (id: string, payload: IChannelPayload) => {
   await apiService.patch(`/channels/${id}`, payload);
 };
-
+export const leaveChannel = async (channelId: string) => {
+  await apiService.delete(`/channels/${channelId}/leave`);
+};
 // delete team by id -> channel/:id
 export const deleteChannel = async (id: string) => {
   const data = await apiService.delete(`/channels/${id}`);
