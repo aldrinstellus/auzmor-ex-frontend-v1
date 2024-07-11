@@ -23,12 +23,12 @@ export enum CELEBRATION_TYPE {
   WorkAnniversary = 'WORK_ANNIVERSARY',
 }
 
-interface CelebrationWidgetProps {
+export interface ICelebrationWidgetProps {
   type: CELEBRATION_TYPE;
   className?: string;
 }
 
-const CelebrationWidget: FC<CelebrationWidgetProps> = ({
+const CelebrationWidget: FC<ICelebrationWidgetProps> = ({
   type,
   className = '',
 }) => {

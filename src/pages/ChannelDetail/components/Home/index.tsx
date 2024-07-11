@@ -29,6 +29,7 @@ const Home: FC<HomeProps> = ({ channelData }) => {
             entityId: channelData.id,
             entityType: 'CHANNEL',
           },
+          channel: channelData,
         },
       }}
     />

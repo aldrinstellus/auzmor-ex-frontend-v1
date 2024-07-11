@@ -700,7 +700,7 @@ export const fetchScheduledPosts = async (
 
   // Fetching data
   if (!!!context.pageParam) {
-    response = await apiService.get('/posts/scheduled');
+    response = await apiService.get('/posts/scheduled', context.queryKey[1]);
   } else {
     response = await apiService.get(context.pageParam);
   }
@@ -741,7 +741,7 @@ export const fetchBookmarks = async (
 
   // Fetching data
   if (!!!context.pageParam) {
-    response = await apiService.get('/posts/my-bookmarks');
+    response = await apiService.get('/posts/my-bookmarks', context.queryKey[1]);
   } else {
     response = await apiService.get(context.pageParam);
   }

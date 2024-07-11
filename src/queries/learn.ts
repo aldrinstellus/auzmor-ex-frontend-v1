@@ -63,13 +63,13 @@ export const useEventAttendee = (eventId: string) => {
     enabled: !!eventId,
   });
 };
-export const useGetRecommendation = () => {
+export const useGetRecommendation = (enabled: boolean) => {
   const { isLxp } = useProduct();
   return useQuery({
     queryKey: ['recommendation-content'],
     queryFn: async () =>
       await learnApiService.get('learner/trainings/recommendations?limit=3'),
-    enabled: !!isLxp,
+    enabled: !!isLxp && enabled,
   });
 };
 

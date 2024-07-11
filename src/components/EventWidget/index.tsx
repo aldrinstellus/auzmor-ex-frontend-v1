@@ -15,7 +15,7 @@ import Skeleton from 'react-loading-skeleton';
 import EmptyState from './Component/EmptyState';
 import TimeChip from './Component/TimeChip';
 
-interface IEventWidgetProps {
+export interface IEventWidgetProps {
   className?: string;
 }
 const ID = 'EventWidget';

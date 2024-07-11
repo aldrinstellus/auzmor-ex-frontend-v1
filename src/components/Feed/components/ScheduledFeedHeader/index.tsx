@@ -1,21 +1,30 @@
+import { FeedModeEnum } from 'components/Feed';
 import Icon from 'components/Icon';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 interface IScheduledFeedHeaderProps {
-  setAppliedFeedFilters: (appliedFeedFilters: Record<string, any>) => void;
+  mode?: FeedModeEnum;
 }
 
-const ScheduledFeedHeader: FC<IScheduledFeedHeaderProps> = (
-  {
-    // setAppliedFeedFilters,
-  },
-) => {
+const ScheduledFeedHeader: FC<IScheduledFeedHeaderProps> = ({
+  mode = FeedModeEnum.Default,
+}) => {
   const { t } = useTranslation('feed');
-  // const [searchParams, setSearchParams] = useSearchParams();
+  const { channelId } = useParams();
+  let backTo = '';
 
-  // const btnStyle = 'min-w-[106px] inline-flex py-2 px-4 justify-center align-center rounded-full text-sm font-bold';
+  switch (mode) {
+    case FeedModeEnum.Default:
+      backTo = '/feed';
+      break;
+    case FeedModeEnum.Channel:
+      backTo = `/channels/${channelId}`;
+      break;
+    default:
+      backTo = '/feed';
+  }
 
   return (
     <div
@@ -25,7 +34,7 @@ const ScheduledFeedHeader: FC<IScheduledFeedHeaderProps> = (
       <div className="flex justify-between items-center">
         <div className="gap-y-1">
           <div className="flex gap-x-3 items-center">
-            <Link to="/feed">
+            <Link to={backTo}>
               <Icon name="arrowLeft" color="text-neutral-900" />
             </Link>
             <div className="text-2xl font-bold text-neutral-900">
@@ -34,32 +43,6 @@ const ScheduledFeedHeader: FC<IScheduledFeedHeaderProps> = (
               </span>
             </div>
           </div>
-          {/* <div className="flex gap-4 mt-6">
-            <div
-              className={`${btnStyle} border-1 border-neutral-200 bg-white`}
-              data-testid="scheduledpost-tab-all"
-            >
-              All posts
-            </div>
-            <div
-              className={`${btnStyle} bg-neutral-200 text-neutral-400`}
-              data-testid="scheduledpost-tab-announcement"
-            >
-              Announcements
-            </div>
-            <div
-              className={`${btnStyle} bg-neutral-200 text-neutral-400`}
-              data-testid="scheduledpost-tab-polls"
-            >
-              Polls
-            </div>
-            <div
-              className={`${btnStyle} bg-neutral-200 text-neutral-400`}
-              data-testid="scheduledpost-tab-shoutouts"
-            >
-              Shoutouts
-            </div>
-          </div> */}
         </div>
       </div>
     </div>

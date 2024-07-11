@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { useInView } from 'react-intersection-observer';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useFeedStore } from 'stores/feedStore';
-import { isFiltersEmpty, isRegularPost } from 'utils/misc';
+import { getLearnUrl, isFiltersEmpty, isRegularPost } from 'utils/misc';
 import NoPosts from 'images/NoPostsFound.png';
 import SkeletonLoader from './components/SkeletonLoader';
 import VirtualisedPost from 'components/VirtualisedPost';
@@ -40,6 +40,21 @@ import MembersWidget, {
   MembersWidgetProps,
 } from 'pages/ChannelDetail/components/MembersWidget';
 import AdminsWidget from 'pages/ChannelDetail/components/AdminsWidget';
+import { IChannel } from 'stores/channelStore';
+import { useGetRecommendation } from 'queries/learn';
+import useAuth from 'hooks/useAuth';
+import Recommendation from 'components/Recommendation';
+import ChannelsWidget from 'components/ChannelsWidget';
+import MyTeamWidget, { IMyTeamWidgetProps } from 'components/MyTeamWidget';
+import ProgressTrackerWidget from 'components/ProgressTrackerWidget';
+import CelebrationWidget, {
+  ICelebrationWidgetProps,
+} from 'components/CelebrationWidget';
+import EventWidget, { IEventWidgetProps } from 'components/EventWidget';
+import AnnouncementCard, {
+  IAnnouncementCardProps,
+} from 'components/AnnouncementWidget';
+import UserCard from 'components/UserWidget';
 
 export enum WidgetEnum {
   AppLauncher = 'APP_LAUNCHER',
@@ -47,6 +62,14 @@ export enum WidgetEnum {
   ChannelRequest = 'CHANNEL_REQUEST',
   ChannelMember = 'CHANNEL_MEMBER',
   ChannelAdmin = 'CHANNEL_ADMIN',
+  UserCard = 'USER_CARD',
+  Channels = 'CHANNELS',
+  MyTeam = 'MY_TEAM',
+  ProgressTracker = 'PROGRESS_TRACKER',
+  CelebrationBirthday = 'CELEBRATION_BIRTHDAY',
+  CelebrationAnniversary = 'CELEBRATION_ANNIVERSARY',
+  Event = 'EVENT',
+  AnnouncementCard = 'ANNOUNCEMENT_CARD',
 }
 
 export const widgetMapping = {
@@ -55,6 +78,14 @@ export const widgetMapping = {
   [WidgetEnum.ChannelRequest]: ChannelRequestWidget,
   [WidgetEnum.ChannelMember]: MembersWidget,
   [WidgetEnum.ChannelAdmin]: AdminsWidget,
+  [WidgetEnum.UserCard]: UserCard,
+  [WidgetEnum.Channels]: ChannelsWidget,
+  [WidgetEnum.MyTeam]: MyTeamWidget,
+  [WidgetEnum.ProgressTracker]: ProgressTrackerWidget,
+  [WidgetEnum.CelebrationBirthday]: CelebrationWidget,
+  [WidgetEnum.CelebrationAnniversary]: CelebrationWidget,
+  [WidgetEnum.Event]: EventWidget,
+  [WidgetEnum.AnnouncementCard]: AnnouncementCard,
 };
 
 export enum FeedModeEnum {
@@ -73,22 +104,31 @@ interface IFeedProps {
     [WidgetEnum.ChannelRequest]?: ChannelRequestWidgetProps;
     [WidgetEnum.ChannelMember]?: MembersWidgetProps;
     [WidgetEnum.ChannelAdmin]?: null;
+    [WidgetEnum.UserCard]?: null;
+    [WidgetEnum.Channels]?: null;
+    [WidgetEnum.MyTeam]?: IMyTeamWidgetProps;
+    [WidgetEnum.ProgressTracker]?: null;
+    [WidgetEnum.CelebrationBirthday]?: ICelebrationWidgetProps;
+    [WidgetEnum.CelebrationAnniversary]?: ICelebrationWidgetProps;
+    [WidgetEnum.Event]?: IEventWidgetProps;
+    [WidgetEnum.AnnouncementCard]?: IAnnouncementCardProps;
   };
   modeProps?: {
     [FeedModeEnum.Default]?: {
-      params: {
+      params?: {
         entityType: string;
         entityId: string;
       };
     };
     [FeedModeEnum.Channel]?: {
-      params: {
+      params?: {
         entityType: string;
         entityId: string;
       };
+      channel: IChannel;
     };
     [FeedModeEnum.Personal]?: {
-      params: {
+      params?: {
         entityType: string;
         entityId: string;
       };
@@ -99,15 +139,17 @@ interface IFeedProps {
 const Feed: FC<IFeedProps> = ({
   leftWidgets,
   rightWidgets,
-  mode,
+  mode = FeedModeEnum.Default,
   widgetProps,
   modeProps,
 }) => {
   const { t } = useTranslation('feed');
   const isLargeScreen = useMediaQuery('(min-width: 1300px)');
   const [open, openModal, closeModal] = useModal(undefined, false);
+  const { user } = useAuth();
   const { isAdmin } = useRole();
   const { feed } = useFeedStore();
+  const { pathname } = useLocation();
   const { ref, inView } = useInView();
   const [searchParams] = useSearchParams();
   const currentDate = new Date().toISOString();
@@ -117,10 +159,33 @@ const Feed: FC<IFeedProps> = ({
   });
   const { getScrollTop, pauseRecordingScrollTop, resumeRecordingScrollTop } =
     useScrollTop('app-shell-container');
-  const { pathname } = useLocation();
+
   const hashtag = searchParams.get('hashtag') || '';
-  const bookmarks = pathname === '/bookmarks';
-  const scheduled = pathname === '/scheduledPosts';
+  let bookmarks = false;
+  let scheduled = false;
+  let apiEndpoint = '/feed';
+
+  switch (mode) {
+    case FeedModeEnum.Default:
+      bookmarks = pathname === '/bookmarks';
+      scheduled = pathname === '/scheduledPosts';
+      break;
+    case FeedModeEnum.Channel:
+      bookmarks =
+        pathname ===
+        `/channels/${modeProps?.[FeedModeEnum.Channel]?.channel.id}/bookmarks`;
+      scheduled =
+        pathname ===
+        `/channels/${
+          modeProps?.[FeedModeEnum.Channel]?.channel.id
+        }/scheduledPosts`;
+      break;
+  }
+
+  if (bookmarks) {
+    apiEndpoint = '/bookmarks';
+  }
+  if (scheduled) apiEndpoint = '/scheduledPosts';
 
   //handle scroll
   useEffect(() => {
@@ -153,9 +218,26 @@ const Feed: FC<IFeedProps> = ({
     }
   }, [inView]);
 
+  useEffect(() => {
+    if (!searchParams.has('hashtag')) {
+      setAppliedFeedFilters({ hashtags: [] });
+    }
+    if (hashtag) {
+      setAppliedFeedFilters({ hashtags: [hashtag] });
+    }
+  }, [hashtag]);
+
+  // Learn data
+  const { data: recommendationData, isLoading: recommendationLoading } =
+    useGetRecommendation(mode === FeedModeEnum.Default);
+  const trendingCards =
+    recommendationData?.data?.result?.data?.trending?.trainings || [];
+  const recentlyPublishedCards =
+    recommendationData?.data?.result?.data?.recently_published?.trainings || [];
+
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteFeed(
-      'feed',
+      apiEndpoint,
       isFiltersEmpty({
         [PostFilterKeys.PostType]: appliedFeedFilters[PostFilterKeys.PostType]
           ?.map((postType) => (PostTypeMapping as any)[postType] || postType)
@@ -170,7 +252,7 @@ const Feed: FC<IFeedProps> = ({
           PostFilterPreference.MyPosts,
         ) && { [PostFilterPreference.MyPosts]: true }),
         [PostFilterKeys.Hashtags]: appliedFeedFilters[PostFilterKeys.Hashtags],
-        ...(modeProps as any)[mode as any].params,
+        ...((modeProps as any)[mode as any]?.params || {}),
       }),
     );
 
@@ -367,6 +449,30 @@ const Feed: FC<IFeedProps> = ({
   );
 
   const FeedHeader = useMemo(() => {
+    const getScheduleLinkTo = () => {
+      switch (mode) {
+        case FeedModeEnum.Default:
+          return '/scheduledPosts';
+        case FeedModeEnum.Channel:
+          return `/channels/${
+            modeProps?.[FeedModeEnum.Channel]?.channel.id
+          }/scheduledPosts`;
+        default:
+          return '/scheduledPosts';
+      }
+    };
+    const getBookmarkLinkTo = () => {
+      switch (mode) {
+        case FeedModeEnum.Default:
+          return '/bookmarks';
+        case FeedModeEnum.Channel:
+          return `/channels/${
+            modeProps?.[FeedModeEnum.Channel]?.channel.id
+          }/bookmarks`;
+        default:
+          return '/bookmarks';
+      }
+    };
     if (hashtag) {
       return (
         <HashtagFeedHeader
@@ -376,13 +482,9 @@ const Feed: FC<IFeedProps> = ({
         />
       );
     } else if (bookmarks) {
-      return (
-        <BookmarkFeedHeader setAppliedFeedFilters={setAppliedFeedFilters} />
-      );
+      return <BookmarkFeedHeader mode={mode} />;
     } else if (scheduled) {
-      return (
-        <ScheduledFeedHeader setAppliedFeedFilters={setAppliedFeedFilters} />
-      );
+      return <ScheduledFeedHeader mode={mode} />;
     } else {
       return (
         <div className="flex flex-col gap-6">
@@ -395,7 +497,7 @@ const Feed: FC<IFeedProps> = ({
                   tooltipPosition="top"
                 >
                   <Link
-                    to="/scheduledPosts"
+                    to={getScheduleLinkTo()}
                     aria-label="scheduled posts"
                     tabIndex={0}
                     className="outline-none"
@@ -408,7 +510,7 @@ const Feed: FC<IFeedProps> = ({
                   tooltipPosition="top"
                 >
                   <Link
-                    to="/bookmarks"
+                    to={getBookmarkLinkTo()}
                     data-testid="feed-page-mybookmarks"
                     aria-label="bookmarked posts"
                     className="outline-none"
@@ -481,32 +583,97 @@ const Feed: FC<IFeedProps> = ({
     }
   }, [hashtag, feedIds, bookmarks, scheduled]);
 
-  const getLeftWidgets = () => {
+  const getWidgets = (widgetList: WidgetEnum[]) => {
     let Widget: any = null;
-    return leftWidgets.map((widgetenum) => {
+
+    if (!isLargeScreen) {
+      widgetList = [...widgetList, ...rightWidgets];
+    }
+    return widgetList.map((widgetenum) => {
       Widget = widgetMapping[widgetenum];
       if (widgetProps && widgetProps[widgetenum]) {
+        if (widgetenum === WidgetEnum.AnnouncementCard) {
+          return (
+            <Widget
+              {...widgetProps[widgetenum]}
+              key={widgetenum}
+              openModal={openModal}
+            />
+          );
+        }
         return <Widget {...widgetProps[widgetenum]} key={widgetenum} />;
       }
       return <Widget key={widgetenum} />;
     });
   };
 
-  const getRightWidgets = () => {
-    let Widget: any = null;
-    return rightWidgets.map((widgetenum) => {
-      Widget = widgetMapping[widgetenum];
-      if (widgetProps && widgetProps[widgetenum]) {
-        return <Widget {...widgetProps[widgetenum]} key={widgetenum} />;
+  const recommendationIndex = useMemo(() => {
+    const totalPosts = announcementFeedIds.length + regularFeedIds.length;
+    if (totalPosts > 10) {
+      if (trendingCards.length > 1) {
+        if (recentlyPublishedCards.length > 1) {
+          return { tIndex: 4, rIndex: 9 };
+        } else {
+          return { tIndex: 4, rIndex: -1 };
+        }
+      } else {
+        if (recentlyPublishedCards.length > 1) {
+          return { tIndex: -1, rIndex: 4 };
+        } else {
+          return { tIndex: -1, rIndex: -1 };
+        }
       }
-      return <Widget key={widgetenum} />;
-    });
+    } else if (totalPosts <= 10 && totalPosts > 3) {
+      if (trendingCards.length > 1) {
+        if (recentlyPublishedCards.length > 1) {
+          return { tIndex: 2, rIndex: 5 };
+        } else {
+          return { tIndex: 2, rIndex: -1 };
+        }
+      } else {
+        if (recentlyPublishedCards.length > 1) {
+          return { tIndex: -1, rIndex: 2 };
+        } else {
+          return { tIndex: -1, rIndex: -1 };
+        }
+      }
+    } else if (totalPosts >= 3 && totalPosts < 5) {
+      if (trendingCards.length > 1) {
+        return { tIndex: 2, rIndex: -1 };
+      } else {
+        if (recentlyPublishedCards.length > 1) {
+          return { tIndex: -1, rIndex: 2 };
+        } else {
+          return { tIndex: -1, rIndex: -1 };
+        }
+      }
+    } else return { tIndex: -1, rIndex: -1 };
+  }, [announcementFeedIds, regularFeedIds]);
+
+  const handleTrendingContent = () => {
+    if (user?.preferences?.learnerViewType === 'MODERN') {
+      window.location.assign(`${getLearnUrl()}/user/trainings`);
+    } else {
+      window.location.assign(`${getLearnUrl()}/user/courses`);
+    }
+  };
+
+  const handleRecentlyPublishContent = () => {
+    if (user?.preferences?.learnerViewType === 'MODERN') {
+      window.location.assign(
+        `${getLearnUrl()}/user/trainings?type=elearning&tab=PUBLIC&sort=created_at`,
+      );
+    } else {
+      window.location.assign(
+        `${getLearnUrl()}/user/courses/shared?sort=created_at&viewAs=Grid`,
+      );
+    }
   };
 
   return (
     <section className="pb-6 flex justify-between">
       <section className="z-10 w-[293px] flex flex-col gap-6">
-        {getLeftWidgets()}
+        {getWidgets(leftWidgets)}
       </section>
       <section className="flex-grow w-0 flex flex-col gap-6 px-12">
         {FeedHeader}
@@ -518,18 +685,52 @@ const Feed: FC<IFeedProps> = ({
           <ul className="flex flex-col gap-6">
             {[...announcementFeedIds, ...regularFeedIds]?.map(
               ({ id }, index) => (
-                <li
-                  data-testid={`feed-post-${index}`}
-                  className="flex flex-col gap-6"
-                  key={id}
-                  tabIndex={0}
-                  title={`post ${index + 1}`}
-                >
-                  <VirtualisedPost
-                    postId={id!}
-                    commentIds={feed[id]?.relevantComments || []}
-                  />
-                </li>
+                <>
+                  <li
+                    data-testid={`feed-post-${index}`}
+                    className="flex flex-col gap-6"
+                    key={id}
+                    tabIndex={0}
+                    title={`post ${index + 1}`}
+                  >
+                    <VirtualisedPost
+                      postId={id!}
+                      commentIds={feed[id]?.relevantComments || []}
+                    />
+                  </li>
+                  {mode === FeedModeEnum.Default && (
+                    <>
+                      {index === recommendationIndex.tIndex && (
+                        <li
+                          data-testid={`trending-content-post`}
+                          tabIndex={0}
+                          title="trending content"
+                        >
+                          <Recommendation
+                            cards={trendingCards}
+                            title="Trending Content"
+                            isLoading={recommendationLoading}
+                            onCLick={handleTrendingContent}
+                          />
+                        </li>
+                      )}
+                      {index === recommendationIndex.rIndex && (
+                        <li
+                          data-testid={`recently-published-content-post`}
+                          tabIndex={0}
+                          title="recently published"
+                        >
+                          <Recommendation
+                            cards={recentlyPublishedCards}
+                            title="Recently Published"
+                            isLoading={recommendationLoading}
+                            onCLick={handleRecentlyPublishContent}
+                          />
+                        </li>
+                      )}
+                    </>
+                  )}
+                </>
               ),
             )}
           </ul>
@@ -545,7 +746,7 @@ const Feed: FC<IFeedProps> = ({
       </section>
       {isLargeScreen && (
         <section className="w-[293px] flex flex-col gap-6">
-          {getRightWidgets()}
+          {getWidgets(rightWidgets)}
         </section>
       )}
       {open && (
