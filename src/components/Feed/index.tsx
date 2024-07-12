@@ -55,6 +55,8 @@ import AnnouncementCard, {
   IAnnouncementCardProps,
 } from 'components/AnnouncementWidget';
 import UserCard from 'components/UserWidget';
+import Welcome from 'pages/ChannelDetail/components/Home/Welcome';
+import FinishSetup from 'pages/ChannelDetail/components/Home/FinishSetup';
 
 export enum WidgetEnum {
   AppLauncher = 'APP_LAUNCHER',
@@ -670,72 +672,91 @@ const Feed: FC<IFeedProps> = ({
     }
   };
 
+  const getListItem = (id: string, index: number) => {
+    return (
+      <>
+        <li
+          data-testid={`feed-post-${index}`}
+          className="flex flex-col gap-6"
+          key={id}
+          tabIndex={0}
+          title={`post ${index + 1}`}
+        >
+          <VirtualisedPost
+            postId={id!}
+            commentIds={feed[id]?.relevantComments || []}
+          />
+        </li>
+        {mode === FeedModeEnum.Default && (
+          <>
+            {index === recommendationIndex.tIndex && (
+              <li
+                data-testid={`trending-content-post`}
+                tabIndex={0}
+                title="trending content"
+              >
+                <Recommendation
+                  cards={trendingCards}
+                  title="Trending Content"
+                  isLoading={recommendationLoading}
+                  onCLick={handleTrendingContent}
+                />
+              </li>
+            )}
+            {index === recommendationIndex.rIndex && (
+              <li
+                data-testid={`recently-published-content-post`}
+                tabIndex={0}
+                title="recently published"
+              >
+                <Recommendation
+                  cards={recentlyPublishedCards}
+                  title="Recently Published"
+                  isLoading={recommendationLoading}
+                  onCLick={handleRecentlyPublishContent}
+                />
+              </li>
+            )}
+          </>
+        )}
+      </>
+    );
+  };
+
   return (
     <section className="pb-6 flex justify-between">
+      {/* Left section */}
       <section className="z-10 w-[293px] flex flex-col gap-6">
         {getWidgets(leftWidgets)}
       </section>
+
+      {/* Feed section */}
       <section className="flex-grow w-0 flex flex-col gap-6 px-12">
+        {/* Various feed headers */}
         {FeedHeader}
+
+        {/* Feed */}
+        {mode === FeedModeEnum.Channel && (
+          <>
+            <Welcome />
+            <FinishSetup
+              channelData={modeProps![FeedModeEnum.Channel]!.channel}
+            />
+          </>
+        )}
         {isLoading ? (
           <SkeletonLoader />
         ) : feedIds?.length === 0 ? (
           getEmptyFeedComponent()
         ) : (
           <ul className="flex flex-col gap-6">
-            {[...announcementFeedIds, ...regularFeedIds]?.map(
-              ({ id }, index) => (
-                <>
-                  <li
-                    data-testid={`feed-post-${index}`}
-                    className="flex flex-col gap-6"
-                    key={id}
-                    tabIndex={0}
-                    title={`post ${index + 1}`}
-                  >
-                    <VirtualisedPost
-                      postId={id!}
-                      commentIds={feed[id]?.relevantComments || []}
-                    />
-                  </li>
-                  {mode === FeedModeEnum.Default && (
-                    <>
-                      {index === recommendationIndex.tIndex && (
-                        <li
-                          data-testid={`trending-content-post`}
-                          tabIndex={0}
-                          title="trending content"
-                        >
-                          <Recommendation
-                            cards={trendingCards}
-                            title="Trending Content"
-                            isLoading={recommendationLoading}
-                            onCLick={handleTrendingContent}
-                          />
-                        </li>
-                      )}
-                      {index === recommendationIndex.rIndex && (
-                        <li
-                          data-testid={`recently-published-content-post`}
-                          tabIndex={0}
-                          title="recently published"
-                        >
-                          <Recommendation
-                            cards={recentlyPublishedCards}
-                            title="Recently Published"
-                            isLoading={recommendationLoading}
-                            onCLick={handleRecentlyPublishContent}
-                          />
-                        </li>
-                      )}
-                    </>
-                  )}
-                </>
-              ),
+            {[...announcementFeedIds, ...regularFeedIds]?.map(({ id }, index) =>
+              getListItem(id, index),
             )}
           </ul>
         )}
 
+        {/* Load more components */}
         {isFetchingNextPage ? (
           <div className="h-2">
             <PageLoader />
@@ -744,6 +765,8 @@ const Feed: FC<IFeedProps> = ({
           <div className="h-12 w-12">{hasNextPage && <div ref={ref} />}</div>
         )}
       </section>
+
+      {/* Right section */}
       {isLargeScreen && (
         <section className="w-[293px] flex flex-col gap-6">
           {getWidgets(rightWidgets)}
