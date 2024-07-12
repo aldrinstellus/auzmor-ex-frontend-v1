@@ -75,8 +75,12 @@ export const updateMemberRole = async (payload: {
 };
 
 // get channel by id -> channels/:id
-export const getChannelDetails = async (id: string) => {
+export const getChannelDetails = async (
+  id: string,
+  setChannel: (channel: IChannel) => void,
+) => {
   const data = await apiService.get(`/channels/${id}`);
+  if (data?.data?.result?.data) setChannel(data?.data?.result?.data);
   return data;
 };
 
@@ -380,9 +384,10 @@ export const useChannelLinksWidget = (
   });
 
 export const useChannelDetails = (channelId: string) => {
+  const setChannel = useChannelStore((action) => action.setChannel);
   return useQuery({
     queryKey: ['channel', channelId],
-    queryFn: () => getChannelDetails(channelId),
+    queryFn: () => getChannelDetails(channelId, setChannel),
     staleTime: 15 * 60 * 1000,
   });
 };
