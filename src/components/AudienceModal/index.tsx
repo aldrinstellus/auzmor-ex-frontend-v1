@@ -70,13 +70,7 @@ const AudienceModal: FC<IAudienceModalProps> = ({
                 className={getClassName(isActive)}
               >{`All (${audienceCounts.all})`}</div>
             ),
-            tabContent: (
-              <AudienceTab
-                entity={entity}
-                entityId={entityId}
-                entityType={AudienceEntityType.All}
-              />
-            ),
+            tabContent: <AudienceTab entity={entity} entityId={entityId} />,
           },
           {
             tabLabel: (isActive: boolean) => (

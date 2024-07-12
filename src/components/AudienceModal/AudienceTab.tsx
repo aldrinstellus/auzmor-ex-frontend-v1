@@ -6,10 +6,11 @@ import AudienceSkeleton from './AudienceSkeleton';
 import AudienceRowSkeleton from './AudienceRowSkeleton';
 import { AudienceEntityType } from 'queries/post';
 import { useInfiniteAudience } from 'queries/audience';
+import { isFiltersEmpty } from 'utils/misc';
 export interface IAudienceTabProps {
   entity: 'apps' | 'posts';
   entityId: string;
-  entityType: AudienceEntityType;
+  entityType?: AudienceEntityType;
 }
 
 const AudienceTab: FC<IAudienceTabProps> = ({
@@ -24,7 +25,7 @@ const AudienceTab: FC<IAudienceTabProps> = ({
   });
 
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    useInfiniteAudience(entity, entityId, { entityType });
+    useInfiniteAudience(entity, entityId, isFiltersEmpty({ entityType }));
 
   useEffect(() => {
     if (inView) {
