@@ -472,14 +472,14 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               showUnderline={false}
               itemSpacing={1}
               tabContentClassName="mt-8 mb-32"
-              className="w-full flex px-6   "
+              className="w-full flex px-6"
               onTabChange={handleTabChange}
               activeTabIndex={activeTabIndex}
             />
           </div>
-          <div className=" justify-end pr-8 flex items-center">
+          <div className="justify-end pr-8 flex items-center">
             <div className="flex items-center space-x-1 border-r pr-4 border-neutral-500">
-              <div className="border border-neutral-600 rounded-7xl p-1">
+              <div className="flex items-center border border-neutral-600 rounded-7xl w-6 h-6 justify-center">
                 <Icon name="lock" size={16} className="text-white" />
               </div>
               <div className="text-white text-sm" data-testid="channel-privacy">
@@ -490,7 +490,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               </div>
             </div>
             <div className="flex items-center space-x-1 border-r px-4 border-neutral-500">
-              <div className="border border-neutral-600 rounded-7xl p-1">
+              <div className="flex items-center border border-neutral-600 rounded-7xl w-6 h-6 justify-center">
                 <Icon name="users" size={16} className="text-white" />
               </div>
               <div
@@ -503,7 +503,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               </div>
             </div>
             <div className="flex items-center space-x-1 pl-4">
-              <div className="border border-neutral-600 rounded-7xl p-1">
+              <div className="flex items-center border border-neutral-600 rounded-7xl w-6 h-6 justify-center">
                 <Icon name="chart" size={16} className="text-white" />
               </div>
               <div

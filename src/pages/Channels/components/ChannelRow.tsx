@@ -44,8 +44,7 @@ const ChannelRow: FC<IChannelRowProps> = ({ channel }) => {
     mutationKey: ['unarchive-channel', channel.id],
     mutationFn: (id: string) =>
       updateChannel(id, { status: CHANNEL_STATUS.ACTIVE }),
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onError: (error) => {
+    onError: () => {
       toast(<FailureToast content="Error archiing channel" dataTestId="" />, {
         closeButton: (
           <Icon name="closeCircleOutline" color="text-red-500" size={20} />
@@ -61,8 +60,7 @@ const ChannelRow: FC<IChannelRowProps> = ({ channel }) => {
         theme: 'dark',
       });
     },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onSuccess: (data, variables, context) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['channel'] });
       toast(
         <SuccessToast

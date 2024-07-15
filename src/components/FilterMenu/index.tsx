@@ -110,7 +110,6 @@ const FilterMenu: FC<IFilterMenu> = ({
       setFilters({ ...filters, [key]: updatedFilter });
     }
   };
-  console.log('filters :', filters);
   const clearFilters = () => {
     deleteParam('status');
     deleteParam('roles');
