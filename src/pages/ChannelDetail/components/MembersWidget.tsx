@@ -15,7 +15,7 @@ export type MembersWidgetProps = {
   channelData: IChannel;
 };
 const MembersWidget: FC<MembersWidgetProps> = ({ channelData }) => {
-  const { isUserAdminOrChannelAdmin } = useChannelRole(channelData);
+  const { isUserAdminOrChannelAdmin } = useChannelRole(channelData.id);
   const [show, setShow] = useState(true);
   const { t } = useTranslation('channelDetail');
   const { channelId } = useParams();

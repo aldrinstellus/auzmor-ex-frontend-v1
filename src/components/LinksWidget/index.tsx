@@ -20,7 +20,7 @@ export type LinksWidgetProps = {
 };
 const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
   const { channelId = '' } = useParams();
-  const { isUserAdminOrChannelAdmin } = useChannelRole(channelData);
+  const { isUserAdminOrChannelAdmin } = useChannelRole(channelData.id);
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const [openEditLinks, openEditLinksModal, closeEditLinksModal] = useModal(
     false,

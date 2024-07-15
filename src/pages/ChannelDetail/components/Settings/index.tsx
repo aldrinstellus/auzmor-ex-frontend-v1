@@ -11,7 +11,7 @@ type AppProps = {
 };
 
 const Setting: FC<AppProps> = ({ channelData, isLoading }) => {
-  const { isUserAdminOrChannelAdmin } = useChannelRole(channelData);
+  const { isUserAdminOrChannelAdmin } = useChannelRole(channelData.id);
   return (
     <>
       {isLoading ? (
