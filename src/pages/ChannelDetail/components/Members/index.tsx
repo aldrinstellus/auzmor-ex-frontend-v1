@@ -30,6 +30,7 @@ import RequestRow from './RequestRow';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
 import { useChannelRole } from 'hooks/useChannelRole';
+import { ShowingCount } from 'pages/Users/components/Teams';
 
 type AppProps = {
   channelData: IChannel;
@@ -106,6 +107,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
         }
       });
     }) || [];
+
   // Bulk accept channel request
   const bulkRequestAcceptMutation = useMutation({
     mutationKey: ['bulk-channel-request-accept'],
@@ -183,7 +185,14 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
         >
           <div className="flex items-center gap-2">
             <div className="text-neutral-500">
-              Showing {users?.length} results
+              <ShowingCount
+                isLoading={isLoading}
+                count={
+                  isGrid
+                    ? users?.length
+                    : channelRequestData?.pages[0]?.data?.result?.totalCount
+                }
+              />
             </div>
             <div className="relative">
               {isUserAdminOrChannelAdmin ? (
