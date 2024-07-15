@@ -69,5 +69,6 @@
   "explore-channels": "Explore channels",
   "joinRequestError": "Something went wrong. Please try again!",
   "joinPublicChannelRequestSuccess": "Channel joined successfully",
-  "joinPrivateChannelRequestSuccess": "Request to join channel sent successfully"
+  "joinPrivateChannelRequestSuccess": "Request to join channel sent successfully",
+  "withdrawRequestSuccess": "Request has been withdrawn successfully"
 }
