@@ -1,4 +1,6 @@
-export const isTrim = (str: any) => {
+export const isTrim = (str: any, maxLength = 26) => {
   if (!str) return null;
-  return str.trim().length > 26 ? str.substring(0, 26) + '...' : str.trim();
+  return str.trim().length > maxLength
+    ? str.substring(0, maxLength) + '...'
+    : str.trim();
 };

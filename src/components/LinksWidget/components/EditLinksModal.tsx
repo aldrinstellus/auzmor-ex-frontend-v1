@@ -12,6 +12,7 @@ import { deleteChannelLinks, updateChannelLinksIndex } from 'queries/channel';
 import { useTranslation } from 'react-i18next';
 import { Reorder, useDragControls } from 'framer-motion';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { isTrim } from 'pages/ChannelDetail/components/utils';
 
 interface IEditLinksModalProps {
   open: boolean;
@@ -121,20 +122,20 @@ const EditLinksModal: FC<IEditLinksModalProps> = ({
                 }}
                 dragControls={controls}
               >
-                <div className="flex justify-start items-center gap-x-3">
+                <div className="flex w-fit justify-start items-center gap-x-3">
                   <Icon
                     name={isEditMode ? 'reorder' : 'link'}
                     size={16}
-                    className="m-1"
+                    className="m-1 cursor-grab"
                   />
                   <div className="flex flex-col">
                     <span className="text-sm text-neutral-900 font-bold">
                       {link.title}
                     </span>
                     {isEditMode && (
-                      <span className="text-sm text-neutral-500 font-medium text-ellipsis underline">
+                      <span className="text-sm text-neutral-500 font-medium underline">
                         <a href={link.url} target="#">
-                          {link.url}
+                          {isTrim(link.url, 60)}
                         </a>
                       </span>
                     )}
