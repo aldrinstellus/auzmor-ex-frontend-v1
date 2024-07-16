@@ -29,7 +29,11 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
   const { data, isLoading } = useOrganization();
   const { form } = useEntitySearchFormStore();
 
-  const [teams, channels, users] = form!.watch(['teams', 'channels', 'users']);
+  const [teams, channels = {}, users] = form!.watch([
+    'teams',
+    'channels',
+    'users',
+  ]);
 
   useEffect(() => {
     if (
@@ -74,7 +78,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
       subTitle: 'Select a channel you are part of',
       onClick: () => setAudienceFlow(AudienceFlow.ChannelSelect),
       isHidden: false,
-      isSelected: Object.keys(channels || {}).some(
+      isSelected: Object.keys(channels).some(
         (id: string) => !!channels[id] && !isEveryoneSelected,
       ),
       selectedCount: Object.keys(channels).filter(
