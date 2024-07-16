@@ -55,7 +55,7 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
       }),
     onSuccess: () =>
       successToastConfig({
-        content: 'Request to join channel rejected successfully',
+        content: 'Request to join channel declined successfully',
       }),
   });
 

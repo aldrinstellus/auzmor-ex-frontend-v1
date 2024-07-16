@@ -31,6 +31,8 @@ import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
 import { useChannelRole } from 'hooks/useChannelRole';
 import { ShowingCount } from 'pages/Users/components/Teams';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 
 type AppProps = {
   channelData: IChannel;
@@ -113,8 +115,19 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
     mutationKey: ['bulk-channel-request-accept'],
     mutationFn: (payload: { approve?: string[] }) =>
       bulkChannelRequestUpdate(channelData!.id, payload),
+    onSuccess: () =>
+      successToastConfig({
+        content: 'Successfully accepted all requests',
+      }),
+    onError: () =>
+      failureToastConfig({
+        content: 'Something went wrong...! Please try again',
+      }),
     onSettled: async () => {
       await queryClient.invalidateQueries(['channel-requests'], {
+        exact: false,
+      });
+      await queryClient.invalidateQueries(['channel-members'], {
         exact: false,
       });
     },
@@ -125,8 +138,19 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
     mutationKey: ['bulk-channel-request-reject'],
     mutationFn: (payload: { reject?: Record<string, any>[] }) =>
       bulkChannelRequestUpdate(channelData!.id, payload),
+    onSuccess: () =>
+      successToastConfig({
+        content: 'Successfully declined all requests',
+      }),
+    onError: () =>
+      failureToastConfig({
+        content: 'Something went wrong...! Please try again',
+      }),
     onSettled: async () => {
       await queryClient.invalidateQueries(['channel-requests'], {
+        exact: false,
+      });
+      await queryClient.invalidateQueries(['channel-members'], {
         exact: false,
       });
     },
