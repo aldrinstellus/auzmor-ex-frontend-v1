@@ -95,10 +95,15 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
     hasNextPage: hasChannelRequestNextPage,
     isFetchingNextPage: isChannelRequestFetchingNextPage,
     fetchNextPage: fetchChannelRequestNextPage,
-  } = useInfiniteChannelsRequest(channelData?.id, {
-    limit: 30,
-    status: CHANNEL_MEMBER_STATUS.PENDING,
-  });
+  } = useInfiniteChannelsRequest(
+    channelData?.id,
+    isFiltersEmpty({
+      limit: 30,
+      status: CHANNEL_MEMBER_STATUS.PENDING,
+      sort: filters?.sort,
+    }),
+  );
+
   const channelRequests =
     channelRequestData?.pages?.flatMap((page) => {
       return page?.data?.result?.data.map((request: IChannelRequest) => {
