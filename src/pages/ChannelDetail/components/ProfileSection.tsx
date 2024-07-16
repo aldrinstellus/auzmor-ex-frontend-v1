@@ -140,14 +140,14 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     mutationFn: (channelId: string) => joinChannelRequest(channelId),
     onError: () =>
       failureToastConfig({
-        content: t('joinRequestError'),
+        content: tc('joinRequestError'),
       }),
     onSuccess: async (data) => {
       successToastConfig({
         content:
           channelData.settings?.visibility === ChannelVisibilityEnum.Private
-            ? t('joinPrivateChannelRequestSuccess')
-            : t('joinPublicChannelRequestSuccess'),
+            ? tc('joinPrivateChannelRequestSuccess')
+            : tc('joinPublicChannelRequestSuccess'),
       });
       await queryClient.invalidateQueries(['channel'], { exact: false });
       updateChannelStore(channelData.id, {
@@ -164,10 +164,10 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       deleteJoinChannelRequest(channelData.id, joinId),
     onError: () =>
       failureToastConfig({
-        content: t('withdrawRequestError'),
+        content: tc('withdrawRequestError'),
       }),
     onSuccess: async () => {
-      successToastConfig({ content: t('withdrawRequestSuccess') });
+      successToastConfig({ content: tc('withdrawRequestSuccess') });
       await queryClient.invalidateQueries(['channel'], { exact: false });
       updateChannelStore(channelData.id, {
         ...channelData,
