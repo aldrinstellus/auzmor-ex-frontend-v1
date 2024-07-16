@@ -39,6 +39,7 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteChannels(
       isFiltersEmpty({
+        limit: 30,
         q: debouncedSearchValue,
         visibility: privacy?.value,
         categoryIds: categories?.id,
