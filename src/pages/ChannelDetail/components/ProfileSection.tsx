@@ -320,23 +320,25 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
           </div>
         ) : null}
         <div className="absolute top-4 right-4 flex items-center space-x-2">
-          <div className="bg-white rounded-full p-2 cursor-pointer">
+          {/* <div className="bg-white rounded-full p-2 cursor-pointer">
             <Icon
               name="notification"
               size={16}
               className="text-neutral-400"
               dataTestId="edit-profilepic"
             />
-          </div>
-          <div className="bg-white rounded-full p-2 cursor-pointer">
-            <Icon
-              name="star"
-              size={16}
-              className="text-neutral-400"
-              dataTestId="edit-profilepic"
-            />
-          </div>
-          <div className="   cursor-pointer">
+          </div> */}
+          {channelData?.member?.bookmarked && (
+            <div className="bg-white rounded-full p-2 cursor-pointer">
+              <Icon
+                name="star"
+                size={16}
+                className="text-neutral-400"
+                dataTestId="edit-profilepic"
+              />
+            </div>
+          )}
+          <div className="cursor-pointer">
             {(isChannelMember || isUserAdminOrChannelAdmin) && (
               <PopupMenu
                 triggerNode={

@@ -45,6 +45,7 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
   });
 
   const { form, setForm } = useEntitySearchFormStore();
+  const channelMembers = form?.watch('channelMembers');
 
   useEffect(() => {
     setForm(audienceForm);
@@ -60,15 +61,12 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
       id: string;
       payload: IChannelMembersPayload;
     }) => addChannelMembers(id, payload),
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onError: (error) => {
+    onError: () => {
       failureToastConfig({
         content: t('addChannelMembers.failure'),
       });
     },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: (data) => {
-      console.log('Successfully started bulk job ', data);
       const jobId = data?.result?.data?.id || '';
       if (jobId) setJobId(jobId);
     },
@@ -125,6 +123,13 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
   const dataTestId = 'add-members';
   const isLoading = addChannelMembersMutation.isLoading || !!jobId;
 
+  const selectedUsers = Object.keys(channelMembers?.users || {})
+    .map((key) => channelMembers?.users?.[key])
+    .filter((item) => item && item.user);
+  const selectedTeams = Object.keys(channelMembers?.teams || {})
+    .map((key) => channelMembers?.teams?.[key])
+    .filter((item) => item && item.team);
+
   return form ? (
     <Modal open={open} className="max-w-[638px]">
       <form onSubmit={(e) => e.preventDefault()}>
@@ -158,6 +163,7 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
               label="Enroll Members"
               loading={isLoading}
               dataTestId={`${dataTestId}-cta`}
+              disabled={!!!(selectedUsers.length + selectedTeams.length)}
               onClick={form.handleSubmit((formData) => {
                 handleSubmit(formData.channelMembers);
               })}
