@@ -9,7 +9,7 @@ import ChannelWidgetUserRow, {
   ChannelRequestWidgetModeEnum,
 } from './components/ChannelWidgetUser';
 import { useInfiniteChannelsRequest } from 'queries/channel';
-import { IChannelRequest } from 'stores/channelStore';
+import { CHANNEL_MEMBER_STATUS, IChannelRequest } from 'stores/channelStore';
 import { useNavigate, useParams } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 import { useChannelRole } from 'hooks/useChannelRole';
@@ -35,6 +35,7 @@ const ChannelRequestWidget: FC<ChannelRequestWidgetProps> = ({
 
   const { data, isLoading } = useInfiniteChannelsRequest(channelId, {
     limit: 3,
+    status: CHANNEL_MEMBER_STATUS.PENDING,
   });
 
   const requests = data?.pages.flatMap((page: any) => {

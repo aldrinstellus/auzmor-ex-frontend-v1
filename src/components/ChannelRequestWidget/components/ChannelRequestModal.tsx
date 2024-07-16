@@ -4,7 +4,7 @@ import Header from 'components/ModalHeader';
 import { FC, useEffect, useMemo } from 'react';
 import ChannelUserRow from './ChannelUser';
 import { useInfiniteChannelsRequest } from 'queries/channel';
-import { IChannelRequest } from 'stores/channelStore';
+import { CHANNEL_MEMBER_STATUS, IChannelRequest } from 'stores/channelStore';
 import { useInView } from 'react-intersection-observer';
 import Spinner from 'components/Spinner';
 import SkeletonLoader from './SkeletonLoader';
@@ -25,6 +25,7 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isLoading } =
     useInfiniteChannelsRequest(channelId, {
       limit: 30,
+      status: CHANNEL_MEMBER_STATUS.PENDING,
     });
 
   const requests = useMemo(
