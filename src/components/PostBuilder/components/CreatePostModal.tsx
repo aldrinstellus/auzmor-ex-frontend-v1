@@ -46,7 +46,8 @@ import useRole from 'hooks/useRole';
 import { useCreatePostUtilityStore } from 'stores/createPostUtilityStore';
 import useModal from 'hooks/useModal';
 import ConfirmationBox from 'components/ConfirmationBox';
-
+import WelcomePost from 'images/ChannelCover/WelcomePost.png';
+import * as _ from 'lodash';
 export interface IPostMenu {
   id: number;
   label: string;
@@ -62,6 +63,7 @@ interface ICreatePostModal {
   data?: IPost;
   mode: PostBuilderMode;
   customActiveFlow?: CreatePostFlow;
+  channelName?: string;
 }
 
 const CreatePostModal: FC<ICreatePostModal> = ({
@@ -69,6 +71,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
   closeModal,
   data,
   mode,
+  channelName,
   customActiveFlow = CreatePostFlow.CreatePost,
 }) => {
   const {
@@ -93,6 +96,8 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     postType,
     inputImgRef,
     isEmpty,
+    setEditorValue,
+    setUploads,
   } = useContext(CreatePostContext);
 
   const [confirm, showConfirm, closeConfirm] = useModal();
@@ -125,7 +130,62 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     }
     reset();
   }, []);
+  const welcomeContent = useMemo(
+    () => ({
+      text: ' ',
+      html: ' ',
+      editor: {
+        ops: [
+          {
+            attributes: { color: '#171717' },
+            insert: `Hello everyone! Welcome to the ${channelName} channel 🎉 !`,
+          },
+          {
+            insert: ' \n',
+          },
+        ],
+      },
+    }),
+    [channelName],
+  );
+  useEffect(() => {
+    if (customActiveFlow !== CreatePostFlow.WelcomePost) return;
+    let img: any = null;
+    const loadImage = () => {
+      setEditorValue(welcomeContent);
+      const selectedImage = WelcomePost;
+      img = new Image();
+      img.src = selectedImage;
+      img.crossOrigin = 'anonymous';
+      img.onload = handleImageLoad;
+    };
 
+    const handleImageLoad = async () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 590;
+      canvas.height = 260;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(async (blob) => {
+          if (blob) {
+            const file = new File([blob], 'welcomePost.png', {
+              type: blob.type,
+            });
+            setUploads([file]);
+          }
+        }, 'image/png');
+      }
+    };
+
+    loadImage();
+    setActiveFlow(CreatePostFlow.CreatePost);
+    return () => {
+      if (img) {
+        img.onload = null;
+      }
+    };
+  }, [customActiveFlow]);
   // When we need to show create announcement modal directly
   useMemo(() => {
     if (customActiveFlow === CreatePostFlow.CreateAnnouncement) {
@@ -136,11 +196,12 @@ const CreatePostModal: FC<ICreatePostModal> = ({
           label: '1 week',
           value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
         });
-      } else
+      } else {
         setAnnouncement({
           label: 'Custom Date',
           value: data?.announcement?.end || '',
         });
+      }
       setActiveFlow(CreatePostFlow.CreateAnnouncement);
     }
   }, [customActiveFlow]);
@@ -372,6 +433,10 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         await queryClient.invalidateQueries(['scheduledPosts'], {
           exact: false,
         });
+      }
+      // for empty feed need to invalidate feed query for first
+      if (_.isEmpty(feed)) {
+        await queryClient.invalidateQueries(['feed']);
       }
       await queryClient.invalidateQueries(['feed-announcements-widget']);
       await queryClient.invalidateQueries(['post-announcements-widget']);

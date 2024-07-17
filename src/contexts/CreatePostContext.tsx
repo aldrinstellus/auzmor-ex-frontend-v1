@@ -27,6 +27,7 @@ export enum CreatePostFlow {
   SchedulePost = 'SCHEDULE_POST',
   Audience = 'AUDIENCE',
   CreateShoutout = 'CREATE_SHOUTOUT',
+  WelcomePost = 'WELCOME_POST',
 }
 
 export interface IAnnouncement {
@@ -290,7 +291,9 @@ const CreatePostProvider: FC<ICreatePostProviderProps> = ({
   );
 
   const setUploads = (uploads: File[], isCoverImage?: boolean) => {
+    console.log('isCoverImage :', isCoverImage);
     if (!isCoverImage) {
+      console.log('isCover');
       setMedia((prevMedia) => [...prevMedia, ...getMediaObj(uploads)]);
     }
     setFiles((prevFiles) => [...prevFiles, ...uploads]);

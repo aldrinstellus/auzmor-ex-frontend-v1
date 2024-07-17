@@ -57,6 +57,7 @@ import AnnouncementCard, {
 import UserCard from 'components/UserWidget';
 import Welcome from 'pages/ChannelDetail/components/Home/Welcome';
 import FinishSetup from 'pages/ChannelDetail/components/Home/FinishSetup';
+import Congrats from 'pages/ChannelDetail/components/Home/Congrats';
 
 export enum WidgetEnum {
   AppLauncher = 'APP_LAUNCHER',
@@ -738,6 +739,7 @@ const Feed: FC<IFeedProps> = ({
         {/* Feed */}
         {mode === FeedModeEnum.Channel && (
           <>
+            <Congrats channelData={modeProps![FeedModeEnum.Channel]!.channel} />
             <Welcome />
             <FinishSetup
               channelData={modeProps![FeedModeEnum.Channel]!.channel}
