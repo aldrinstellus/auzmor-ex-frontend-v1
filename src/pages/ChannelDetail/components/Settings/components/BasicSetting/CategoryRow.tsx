@@ -33,6 +33,7 @@ const CategoryRow: FC<AppProps> = ({
       successToastConfig({});
       ref?.current?.setEditMode(false);
       queryClient.invalidateQueries(['channel']);
+      queryClient.invalidateQueries([isLxp ? 'learnCategory' : 'categories']);
     },
     onError: async () => {
       failureToastConfig({});

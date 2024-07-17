@@ -164,7 +164,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
         [response?.result?.data?.id]: response?.result?.data,
       });
       queryClient.invalidateQueries(['channel']);
-
+      queryClient.invalidateQueries([isLxp ? 'learnCategory' : 'categories']);
       navigate(`/channels/${response?.result?.data?.id}?showWelcome=true`);
 
       closeModal();
@@ -201,6 +201,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
         [response?.result?.data?.id]: response?.result?.data,
       });
       queryClient.invalidateQueries(['channel']);
+      queryClient.invalidateQueries([isLxp ? 'learnCategory' : 'categories']);
       closeModal();
     },
     onError: async () => {
