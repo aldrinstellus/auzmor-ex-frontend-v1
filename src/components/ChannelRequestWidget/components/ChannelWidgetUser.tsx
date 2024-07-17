@@ -11,8 +11,9 @@ import {
 } from 'queries/channel';
 import { FC, memo, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { IChannelRequest } from 'stores/channelStore';
+import { IChannelRequest, useChannelStore } from 'stores/channelStore';
 import { getProfileImage } from 'utils/misc';
+import queryClient from 'utils/queryClient';
 
 export enum ChannelRequestWidgetModeEnum {
   'Feed' = 'FEED',
@@ -32,6 +33,11 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
 }) => {
   const { channelId } = useParams();
   const { id, createdBy } = request;
+  const [updateChannel, getChannel] = useChannelStore((action) => [
+    action.updateChannel,
+    action.getChannel,
+  ]);
+
   const approveMutation = useMutation({
     mutationKey: ['approve-channel-join-request'],
     mutationFn: () =>
@@ -40,10 +46,20 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
       failureToastConfig({
         content: 'Something went wrong...! Please try again',
       }),
-    onSuccess: () =>
+    onSuccess: () => {
       successToastConfig({
         content: 'Successfully added a new member to channel',
-      }),
+      });
+      if (channelId) {
+        const channel = getChannel(channelId);
+        updateChannel(channelId, {
+          ...channel,
+          totalMembers: channel.totalMembers + 1,
+        });
+      }
+      queryClient.invalidateQueries(['channel-requests'], { exact: false });
+      queryClient.invalidateQueries(['channel-members'], { exact: false });
+    },
   });
   const rejectMutation = useMutation({
     mutationKey: ['reject-channel-join-request'],
@@ -53,10 +69,13 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
       failureToastConfig({
         content: 'Something went wrong...! Please try again',
       }),
-    onSuccess: () =>
+    onSuccess: () => {
       successToastConfig({
         content: 'Request to join channel declined successfully',
-      }),
+      });
+      queryClient.invalidateQueries(['channel-requests'], { exact: false });
+      queryClient.invalidateQueries(['channel-members'], { exact: false });
+    },
   });
 
   const styles = useMemo(
