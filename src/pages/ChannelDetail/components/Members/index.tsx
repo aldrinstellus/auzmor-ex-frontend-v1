@@ -122,7 +122,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
       bulkChannelRequestUpdate(channelData!.id, payload),
     onSuccess: () =>
       successToastConfig({
-        content: 'Successfully accepted all requests',
+        content: 'Successfully accepted all selected requests',
       }),
     onError: () =>
       failureToastConfig({
@@ -145,7 +145,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
       bulkChannelRequestUpdate(channelData!.id, payload),
     onSuccess: () =>
       successToastConfig({
-        content: 'Successfully declined all requests',
+        content: 'Successfully declined all selected requests',
       }),
     onError: () =>
       failureToastConfig({
