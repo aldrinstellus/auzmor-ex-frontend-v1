@@ -120,10 +120,12 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
     mutationKey: ['bulk-channel-request-accept'],
     mutationFn: (payload: { approve?: string[] }) =>
       bulkChannelRequestUpdate(channelData!.id, payload),
-    onSuccess: () =>
+    onSuccess: () => {
       successToastConfig({
         content: 'Successfully accepted all selected requests',
-      }),
+      });
+      queryClient.invalidateQueries(['channel-members']);
+    },
     onError: () =>
       failureToastConfig({
         content: 'Something went wrong...! Please try again',
