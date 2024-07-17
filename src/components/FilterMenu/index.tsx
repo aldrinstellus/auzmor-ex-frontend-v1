@@ -61,7 +61,11 @@ const FilterMenu: FC<IFilterMenu> = ({
   variant,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
-  const { filters, setFilters } = useAppliedFiltersStore();
+  const {
+    filters,
+    setFilters,
+    clearFilters: clearAppliedFilters,
+  } = useAppliedFiltersStore();
   const { control, getValues, formState } = filterForm;
   const { parseParams, updateParam, serializeFilter, deleteParam } =
     useURLParams();
@@ -96,6 +100,7 @@ const FilterMenu: FC<IFilterMenu> = ({
       byPeople: parseParams('byPeople') || [],
       roles: parseParams('roles') || [],
     });
+    return () => clearAppliedFilters();
   }, []);
 
   const handleRemoveFilters = (key: FilterKey, id: any) => {
