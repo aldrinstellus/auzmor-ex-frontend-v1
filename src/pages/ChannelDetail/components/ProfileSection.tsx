@@ -136,9 +136,8 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     onError: (error: any) => {
       console.log('API call resulted in error: ', error);
     },
-    onSuccess: (data: any) => {
+    onSuccess: () => {
       queryClient.invalidateQueries(['channel']);
-      console.log('Successfully deleted user cover image', data);
     },
   });
 
@@ -162,7 +161,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       failureToastConfig({
         content: tc('joinRequestError'),
       }),
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       successToastConfig({
         content:
           channelData.settings?.visibility === ChannelVisibilityEnum.Private
@@ -170,10 +169,6 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
             : tc('joinPublicChannelRequestSuccess'),
       });
       await queryClient.invalidateQueries(['channel'], { exact: false });
-      updateChannelStore(channelData.id, {
-        ...channelData,
-        joinRequest: { ...data.result.data.joinRequest },
-      });
     },
   });
 
@@ -339,8 +334,9 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
             </div>
           </div>
         ) : null}
-        <div className="absolute top-4 right-4 flex items-center space-x-2">
-          {/* <div className="bg-white rounded-full p-2 cursor-pointer">
+        {channelData?.member && (
+          <div className="absolute top-4 right-4 flex items-center space-x-2">
+            {/* <div className="bg-white rounded-full p-2 cursor-pointer">
             <Icon
               name="notification"
               size={16}
@@ -348,7 +344,6 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               dataTestId="edit-profilepic"
             />
           </div> */}
-          {channelData?.member && (
             <IconButton
               icon={channelData?.member?.bookmarked ? 'star' : 'starOutline'}
               variant={IconVariant.Secondary}
@@ -361,54 +356,54 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 })
               }
             />
-          )}
-          <div className="cursor-pointer">
-            {(isChannelMember || isUserAdminOrChannelAdmin) && (
-              <PopupMenu
-                triggerNode={
-                  <div className="bg-white rounded-full  text-black">
-                    <IconButton
-                      icon="more"
-                      variant={IconVariant.Secondary}
-                      size={Size.Medium}
-                      dataTestId="edit-cover-pic"
-                    />
-                  </div>
-                }
-                className="absolute top-12 right-4 w-48"
-                menuItems={editMenuOptions}
-                title={
-                  <>
-                    {isUserAdminOrChannelAdmin && (
-                      <div className="text-xs  bg-blue-50 py-2 px-6 font-Medium flex items-center justify-center ">
-                        CHANNEL MANAGEMENT
-                      </div>
-                    )}
-                  </>
-                }
-              />
-            )}
+            <div className="cursor-pointer">
+              {(isChannelMember || isUserAdminOrChannelAdmin) && (
+                <PopupMenu
+                  triggerNode={
+                    <div className="bg-white rounded-full  text-black">
+                      <IconButton
+                        icon="more"
+                        variant={IconVariant.Secondary}
+                        size={Size.Medium}
+                        dataTestId="edit-cover-pic"
+                      />
+                    </div>
+                  }
+                  className="absolute top-12 right-4 w-48"
+                  menuItems={editMenuOptions}
+                  title={
+                    <>
+                      {isUserAdminOrChannelAdmin && (
+                        <div className="text-xs  bg-blue-50 py-2 px-6 font-Medium flex items-center justify-center ">
+                          CHANNEL MANAGEMENT
+                        </div>
+                      )}
+                    </>
+                  }
+                />
+              )}
+            </div>
+            <div className="   cursor-pointer">
+              {canEdit && (
+                <PopupMenu
+                  triggerNode={
+                    <div className="bg-white  rounded-full  text-black">
+                      <IconButton
+                        icon="edit"
+                        variant={IconVariant.Secondary}
+                        size={Size.Medium}
+                        dataTestId="edit-cover-pic"
+                        onClick={() => (showEditProfile.current = false)}
+                      />
+                    </div>
+                  }
+                  className="absolute top-12 right-4"
+                  menuItems={coverImageOption}
+                />
+              )}
+            </div>
           </div>
-          <div className="   cursor-pointer">
-            {canEdit && (
-              <PopupMenu
-                triggerNode={
-                  <div className="bg-white  rounded-full  text-black">
-                    <IconButton
-                      icon="edit"
-                      variant={IconVariant.Secondary}
-                      size={Size.Medium}
-                      dataTestId="edit-cover-pic"
-                      onClick={() => (showEditProfile.current = false)}
-                    />
-                  </div>
-                }
-                className="absolute top-12 right-4"
-                menuItems={coverImageOption}
-              />
-            )}
-          </div>
-        </div>
+        )}
       </div>
 
       <div className="w-full h-full relative">
@@ -423,31 +418,34 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         <div className="w-full h-full bg-gradient-to-b from-transparent to-black top-0 left-0 absolute rounded-t-9xl"></div>
       </div>
       <div className="absolute left-0 right-0 bottom-4 text-white ">
-        <div className="px-6 flex justify-between items-center">
-          <div className="absolute">
-            <Avatar
-              image={getChannelLogoImage(channelData)}
-              size={48}
-              dataTestId={'edit-profile-pic'}
-            />
-            {isUserAdminOrChannelAdmin && (
-              <div className="absolute bg-white rounded-full p-[5px] cursor-pointer -top-2 -right-1">
+        <div className="flex items-center justify-between mx-8">
+          <div className="flex items-center gap-6">
+            <div className="relative">
+              <Avatar
+                image={getChannelLogoImage(channelData)}
+                size={56}
+                dataTestId={'edit-profile-pic'}
+              />
+              {isUserAdminOrChannelAdmin && !!channelData?.member && (
                 <Icon
                   name="edit"
-                  size={15}
+                  size={24}
                   color="text-black"
                   onClick={() => {
                     setIsCoverImage(false);
                     openChannelImageModal();
                   }}
+                  className="absolute bg-white rounded-full p-[5px] cursor-pointer -top-2 -right-1"
                   dataTestId="edit-profilepic"
                 />
-              </div>
-            )}
-          </div>
+              )}
+            </div>
 
-          <div className="mb-2 ml-16 flex items-start space-x-6">
-            <div className="space-y-2  text-white">
+            <div
+              className={`flex flex-col justify-between ${
+                channelData?.description && 'h-14'
+              }`}
+            >
               <div className="text-2xl font-bold" data-testid="channel-name">
                 {channelData?.name}
               </div>
@@ -497,7 +495,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               showUnderline={false}
               itemSpacing={1}
               tabContentClassName="mt-8 mb-32"
-              className="w-full flex px-6"
+              className="w-full flex mx-8"
               onTabChange={handleTabChange}
               activeTabIndex={activeTabIndex}
             />
