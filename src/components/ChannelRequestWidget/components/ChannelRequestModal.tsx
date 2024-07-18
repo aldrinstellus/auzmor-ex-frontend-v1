@@ -78,7 +78,7 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
           <SkeletonLoader />
         ) : (
           <>
-            {requests.today.length && (
+            {!!requests.today.length && (
               <>
                 <p className="mb-3 text-sm font-semibold">Today</p>
                 {requests.today?.map(
@@ -86,7 +86,7 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
                     return (
                       <li key={request?.id}>
                         <ChannelUserRow request={request} />
-                        {index !== requests.length - 1 && (
+                        {index !== requests.today.length - 1 && (
                           <Divider className="my-3 px-6" />
                         )}
                       </li>
@@ -95,7 +95,7 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
                 )}
               </>
             )}
-            {requests.yesterday.length && (
+            {!!requests.yesterday.length && (
               <>
                 <p className="mb-3 mt-4 text-sm font-semibold">Yesterday</p>
                 {requests.yesterday?.map(
@@ -103,7 +103,7 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
                     return (
                       <li key={request?.id}>
                         <ChannelUserRow request={request} />
-                        {index !== requests.length - 1 && (
+                        {index !== requests.yesterday.length - 1 && (
                           <Divider className="my-3 px-6" />
                         )}
                       </li>
@@ -112,7 +112,7 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
                 )}
               </>
             )}
-            {requests.older.length && (
+            {!!requests.older.length && (
               <>
                 <p className="mb-3 mt-4 text-sm font-semibold">Older</p>
                 {requests.older?.map(
@@ -120,7 +120,7 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
                     return (
                       <li key={request?.id}>
                         <ChannelUserRow request={request} />
-                        {index !== requests.length - 1 && (
+                        {index !== requests.older.length - 1 && (
                           <Divider className="my-3 px-6" />
                         )}
                       </li>

@@ -12,6 +12,7 @@ import {
 import { FC, useMemo } from 'react';
 import { IChannelRequest } from 'stores/channelStore';
 import { getProfileImage } from 'utils/misc';
+import queryClient from 'utils/queryClient';
 
 interface IUserRowProps {
   request: IChannelRequest;
@@ -28,10 +29,12 @@ const ChannelUserRow: FC<IUserRowProps> = ({ request, className = '' }) => {
       failureToastConfig({
         content: 'Something went wrong...! Please try again',
       }),
-    onSuccess: () =>
+    onSuccess: () => {
       successToastConfig({
         content: 'Successfully added a new member to channel',
-      }),
+      });
+      queryClient.invalidateQueries(['channel-requests'], { exact: false });
+    },
   });
   const rejectMutation = useMutation({
     mutationKey: ['reject-channel-join-request'],
@@ -40,10 +43,12 @@ const ChannelUserRow: FC<IUserRowProps> = ({ request, className = '' }) => {
       failureToastConfig({
         content: 'Something went wrong...! Please try again',
       }),
-    onSuccess: () =>
+    onSuccess: () => {
       successToastConfig({
         content: 'Request to join channel rejected successfully',
-      }),
+      });
+      queryClient.invalidateQueries(['channel-requests'], { exact: false });
+    },
   });
   const styles = useMemo(
     () =>

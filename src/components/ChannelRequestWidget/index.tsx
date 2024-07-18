@@ -123,7 +123,7 @@ const ChannelRequestWidget: FC<ChannelRequestWidgetProps> = ({
             onClick={() =>
               mode === ChannelRequestWidgetModeEnum.Channel
                 ? navigate(`/channels/${channelId}/members?type=requests`)
-                : openAllRequestModal
+                : openAllRequestModal()
             }
           />
         </div>
