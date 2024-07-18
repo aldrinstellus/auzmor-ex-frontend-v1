@@ -20,6 +20,8 @@ import { slideInAndOutTop } from 'utils/react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { FC } from 'react';
 import { CHANNEL_STATUS } from 'stores/channelStore';
+import { useTranslation } from 'react-i18next';
+
 export interface IArchiveChannelModalProps {
   isOpen: boolean;
   closeModal: () => void;
@@ -31,6 +33,9 @@ const ArchiveChannelModal: FC<IArchiveChannelModalProps> = ({
   closeModal,
   channelId,
 }) => {
+  const { t } = useTranslation('channels', {
+    keyPrefix: 'archiveChannelModal',
+  });
   const navigate = useNavigate();
   const archiveChannelMutation = useMutation({
     mutationKey: ['archive-channel', channelId],
@@ -38,7 +43,7 @@ const ArchiveChannelModal: FC<IArchiveChannelModalProps> = ({
       updateChannel(id, { status: CHANNEL_STATUS.ARCHIVED }),
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onError: (error) => {
-      toast(<FailureToast content="Error archiving channel" dataTestId="" />, {
+      toast(<FailureToast content={t('errorToast')} dataTestId="" />, {
         closeButton: (
           <Icon name="closeCircleOutline" color="text-red-500" size={20} />
         ),
@@ -59,7 +64,7 @@ const ArchiveChannelModal: FC<IArchiveChannelModalProps> = ({
       queryClient.invalidateQueries({ queryKey: ['channel'] });
       toast(
         <SuccessToast
-          content="Channel has been archived successfully"
+          content={t('successToast')}
           dataTestId="channel-toaster-message"
         />,
         {
@@ -89,7 +94,7 @@ const ArchiveChannelModal: FC<IArchiveChannelModalProps> = ({
   const Header: FC = () => (
     <div className="flex flex-wrap border-b-1 border-neutral-200 items-center">
       <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
-        Archive Channel
+        {t('title')}
       </div>
       <IconButton
         onClick={closeModal}
@@ -106,12 +111,12 @@ const ArchiveChannelModal: FC<IArchiveChannelModalProps> = ({
       <Button
         variant={ButtonVariant.Secondary}
         size={Size.Small}
-        label={'Cancel'}
+        label={t('cancelButton')}
         dataTestId="archive-channel-cancel"
         onClick={closeModal}
       />
       <Button
-        label={'Archive'}
+        label={t('archiveButton')}
         className="!bg-red-500 !text-white flex"
         loading={archiveChannelMutation.isLoading}
         size={Size.Small}
@@ -121,12 +126,14 @@ const ArchiveChannelModal: FC<IArchiveChannelModalProps> = ({
       />
     </div>
   );
+
   return (
     <Modal open={isOpen} className="max-w-sm">
       <Header />
       <div className="text-sm font-medium text-neutral-500 mx-6 mt-6 mb-8">
-        Are you sure you want to archive this channel?
-        <br /> You can undo this later.
+        {t('confirmationMessage')}
+        <br />
+        {t('undoMessage')}
       </div>
       <Footer />
     </Modal>

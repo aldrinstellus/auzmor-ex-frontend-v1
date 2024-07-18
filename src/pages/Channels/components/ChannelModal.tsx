@@ -16,11 +16,8 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Icon from 'components/Icon';
 import { IChannelPayload, createChannel, updateChannel } from 'queries/channel';
-import { toast } from 'react-toastify';
-import { twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
-import FailureToast from 'components/Toast/variants/FailureToast';
+
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createCatergory, useInfiniteLearnCategory } from 'queries/learn';
@@ -78,18 +75,15 @@ const ChannelModal: FC<IChannelModalProps> = ({
   channelData,
 }) => {
   const { t } = useTranslation('channels');
+  // const { t:tm } = useTranslation('channels',{keyPrefix:"channelModal"});
   const { t: tc } = useTranslation('common');
   const { isLxp } = useProduct();
   const schema = yup.object({
     channelName: yup
       .string()
-      .min(2, 'Channel name should have at least 2 characters')
-      .max(100, 'Channel name should not exceed 100 characters')
-      .matches(
-        /^[a-zA-Z0-9 ]*$/,
-        'Channel name should not contain special characters',
-      )
-      .required('Channel name is required'),
+      .min(2, t('channelModal.channelNameMinChars'))
+      .matches(/^[a-zA-Z0-9 ]*$/, t('channelModal.channelNameNoSpecialChars'))
+      .required(t('channelModal.channelNameRequired')),
     channelCategory: yup.object().required(),
     channelPrivacy: yup.object().required(),
     channelDescription: yup
@@ -170,26 +164,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
       closeModal();
     },
     onError: async () => {
-      toast(
-        <FailureToast
-          content={`Error creating channel`}
-          dataTestId="channel-create-error-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      failureToastConfig({ content: t('channelModal.createChannelError') });
     },
   });
   const updateChannelMutation = useMutation({
@@ -205,26 +180,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
       closeModal();
     },
     onError: async () => {
-      toast(
-        <FailureToast
-          content={`Error updating channel`}
-          dataTestId="channel-update-error-toaster"
-        />,
-        {
-          closeButton: (
-            <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.red['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      failureToastConfig({ content: t('channelModal.editChannelError') });
     },
   });
   const onSubmit = async () => {

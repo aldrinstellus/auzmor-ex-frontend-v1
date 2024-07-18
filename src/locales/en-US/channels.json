@@ -7,7 +7,27 @@
     "starred": "Starred",
     "requested": "Requested"
   },
-
+  "archiveChannelModal": {
+    "title": "Archive Channel",
+    "closeButton": "Close",
+    "cancelButton": "Cancel",
+    "archiveButton": "Archive",
+    "confirmationMessage": "Are you sure you want to archive this channel? ",
+    "undoMessage": "You can undo this later.",
+    "successToast": "Channel has been archived successfully",
+    "errorToast": "Error archiving channel"
+  },
+  "deleteChannelModal": {
+    "delete": "Delete",
+    "title": " @{{name}}",
+    "closeButton": "Close",
+    "cancelButton": "Cancel",
+    "deleteButton": "Delete",
+    "confirmationMessage": "Are you sure you want to delete the {{name}} channel?",
+    "undoMessage": "This cannot be undone.",
+    "successToast": "Channel has been deleted successfully",
+    "errorToast": "Error deleting channel"
+  },
   "manageAccess": {
     "title": "Manage Channel access",
     "table": {
@@ -52,11 +72,20 @@
     "editChannel": "Edit Channel",
     "channelNameLabel": "Channel Name",
     "channelNamePlaceholder": "ex. Product and design team",
+    "channelNameMinChars": "Channel name must be at least 2 characters long",
+    "channelNameNoSpecialChars": "Channel name cannot contain special characters",
+    "channelNameRequired": "Channel name is required",
     "channelCategoryLabel": "Channel Category",
     "channelCategoryPlaceholder": "Search a category",
     "channelPrivacyLabel": "Channel Privacy",
     "channelDescriptionLabel": "Channel Description",
-    "channelDescriptionPlaceholder": "What is the purpose of this channel"
+    "channelDescriptionPlaceholder": "What is the purpose of this channel",
+    "cancelButton": "Cancel",
+    "saveButton": "Save",
+    "createChannelSuccess": "Channel created successfully",
+    "createChannelError": "Error creating channel",
+    "editChannelSuccess": "Channel updated successfully",
+    "editChannelError": "Error updating channel"
   },
   "public": "Public",
   "private": "Private",
@@ -70,5 +99,15 @@
   "joinRequestError": "Something went wrong. Please try again!",
   "joinPublicChannelRequestSuccess": "Channel joined successfully",
   "joinPrivateChannelRequestSuccess": "Request to join channel sent successfully",
+  "noChannelsYet": {
+    "header": "No channels yet",
+    "message": "Channels created will be visible here"
+  },
+  "channelRow": {
+    "errorUnarchivingChannel": "Error archiving channel",
+    "successUnarchivingChannel": "Channel has been unarchived successfully",
+    "archivedOn": "Archived on",
+    "by": "by"
+  },
   "withdrawRequestSuccess": "Request has been withdrawn successfully"
 }

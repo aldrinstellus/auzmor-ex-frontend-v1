@@ -10,16 +10,14 @@ import Modal from 'components/Modal';
 import { deleteChannel } from 'queries/channel';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { toast } from 'react-toastify';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import Icon from 'components/Icon';
-import { twConfig } from 'utils/misc';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
+
 import { useNavigate } from 'react-router-dom';
 import { FC } from 'react';
 import { IChannel } from 'stores/channelStore';
+import { useTranslation } from 'react-i18next';
 export interface IDeleteChannelModalProps {
   isOpen: boolean;
   closeModal: () => void;
@@ -32,55 +30,26 @@ const DeleteChannelModal: FC<IDeleteChannelModalProps> = ({
   channelData,
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation('channels', { keyPrefix: 'deleteChannelModal' });
   const deleteChannelMutation = useMutation({
     mutationKey: ['delete-channel', channelData.id],
     mutationFn: (id: string) => deleteChannel(id),
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onError: (error) => {
-      toast(<FailureToast content="Error deleting channel" dataTestId="" />, {
-        closeButton: (
-          <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-        ),
-        style: {
-          border: `1px solid ${twConfig.theme.colors.red['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
-        },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
+      failureToastConfig({
+        content: t('failureToast'),
+        dataTestId: 'channel-toaster-message',
       });
     },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: (data, variables, context) => {
       closeModal();
       queryClient.invalidateQueries({ queryKey: ['channel'] });
-      toast(
-        <SuccessToast
-          content="Channel has been deleted successfully"
-          dataTestId="channel-toaster-message"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-              dataTestId="channel-toaster-close"
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        content: t('successToast'),
+        dataTestId: 'channel-toaster-message',
+      });
+
       navigate('/channels');
     },
   });
@@ -88,7 +57,11 @@ const DeleteChannelModal: FC<IDeleteChannelModalProps> = ({
   const Header: FC = () => (
     <div className="flex flex-wrap border-b-1 border-neutral-200 items-center">
       <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
-        Delete <span className="text-primary-500">@{channelData.name}</span>?
+        {t('delete')}{' '}
+        <span className="text-primary-500">
+          {t('title', { name: channelData.name })}
+        </span>
+        ?
       </div>
       <IconButton
         onClick={closeModal}
@@ -105,12 +78,12 @@ const DeleteChannelModal: FC<IDeleteChannelModalProps> = ({
       <Button
         variant={ButtonVariant.Secondary}
         size={Size.Small}
-        label={'Cancel'}
+        label={t('closeButton')}
         dataTestId="delete-channel-cancel"
         onClick={closeModal}
       />
       <Button
-        label={'Delete'}
+        label={t('deleteButton')}
         className="!bg-red-500 !text-white flex"
         loading={deleteChannelMutation.isLoading}
         size={Size.Small}
@@ -130,8 +103,8 @@ const DeleteChannelModal: FC<IDeleteChannelModalProps> = ({
           color="text-red-500"
           className="mb-4"
         />
-        <p>Are you sure you want to delete the {channelData.name} channel?</p>
-        <p>This cannot be undone.</p>
+        <p>{t('confirmationMessage', { name: channelData.name })}</p>
+        <p>{t('undoMessage')}</p>
       </div>
       <Footer />
     </Modal>

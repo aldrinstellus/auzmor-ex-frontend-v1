@@ -11,12 +11,9 @@ import IconWrapper, {
 } from 'components/Icon/components/IconWrapper';
 import Button, { Variant, Size } from 'components/Button';
 import { updateChannel } from 'queries/channel';
-import FailureToast from 'components/Toast/variants/FailureToast';
-import { toast } from 'react-toastify';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
-import { twConfig } from 'utils/misc';
-import SuccessToast from 'components/Toast/variants/SuccessToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
 import useModal from 'hooks/useModal';
@@ -44,49 +41,15 @@ const ChannelRow: FC<IChannelRowProps> = ({ channel }) => {
     mutationKey: ['unarchive-channel', channel.id],
     mutationFn: (id: string) =>
       updateChannel(id, { status: CHANNEL_STATUS.ACTIVE }),
-    onError: () => {
-      toast(<FailureToast content="Error archiing channel" dataTestId="" />, {
-        closeButton: (
-          <Icon name="closeCircleOutline" color="text-red-500" size={20} />
-        ),
-        style: {
-          border: `1px solid ${twConfig.theme.colors.red['300']}`,
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
-        },
-        autoClose: TOAST_AUTOCLOSE_TIME,
-        transition: slideInAndOutTop,
-        theme: 'dark',
-      });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onError: (error) => {
+      failureToastConfig({ content: t('channelRow.errorUnarchivingChannel') });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['channel'] });
-      toast(
-        <SuccessToast
-          content="Channel has been unarchived successfully"
-          dataTestId="channel-toaster-message"
-        />,
-        {
-          closeButton: (
-            <Icon
-              name="closeCircleOutline"
-              color="text-primary-500"
-              size={20}
-              dataTestId="channel-toaster-close"
-            />
-          ),
-          style: {
-            border: `1px solid ${twConfig.theme.colors.primary['300']}`,
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          autoClose: TOAST_AUTOCLOSE_TIME,
-          transition: slideInAndOutTop,
-          theme: 'dark',
-        },
-      );
+      successToastConfig({
+        content: t('channelRow.successUnarchivingChannel'),
+      });
     },
   });
 
@@ -177,13 +140,13 @@ const ChannelRow: FC<IChannelRowProps> = ({ channel }) => {
         </div>
         <div className="flex items-end flex-col gap-3">
           <p className="text-xs text-neutral-500">
-            Archived{' '}
+            {t('channelRow.archivedOn')}
             {channel.updatedAt
-              ? `on ${formatDate(channel.updatedAt, currentTimezone)}`
+              ? ` ${formatDate(channel.updatedAt, currentTimezone)}`
               : ''}
             {channel.updatedBy ? (
               <span className="text-primary-500 font-bold">
-                {`by ${getFullName(channel.updatedBy)}`}
+                {` ${t('channelRow.by')} ${getFullName(channel.updatedBy)}`}
               </span>
             ) : null}
           </p>
