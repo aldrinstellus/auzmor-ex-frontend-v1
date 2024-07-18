@@ -23,8 +23,39 @@ export const useAppliedFiltersStore = create<State & Actions>()(
       return undefined;
     },
     setFilters: (filters: { [key: string]: any } | null) =>
-      set({ filters: { ...get().filters, ...filters } }),
-    updateFilter: (key, value) => set({ filters: { [key]: value } }),
-    clearFilters: () => set({ filters: null }),
+      set((state) => {
+        state.filters = { ...state.filters, ...filters };
+      }),
+    updateFilter: (key, value) =>
+      set((state) => {
+        if (state.filters) {
+          state.filters[key] = value;
+        } else {
+          state.filters = { [key]: value };
+        }
+      }),
+    clearFilters: () =>
+      set((state) => {
+        state.filters = null;
+        clearURLParams();
+      }),
   })),
 );
+
+const clearURLParams = () => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const paramsToDelete = [
+    'status',
+    'roles',
+    'departments',
+    'locations',
+    'teams',
+    'categories',
+    'channelType',
+    'byPeople',
+  ];
+
+  paramsToDelete.forEach((param) => searchParams.delete(param));
+  const newUrl = `${window.location.pathname}${searchParams.toString()}`;
+  window.history.replaceState({}, '', newUrl);
+};

@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import Icon from 'components/Icon';
+import EditIconGreenOutline from 'components/Icon/components/EditGreenOutline';
 import {
   FacebookIcon,
   InstagramIcon,
@@ -7,13 +7,13 @@ import {
   TwitterIcon,
   WebIcon,
 } from 'components/Icon/socialIcons';
-import useHover from 'hooks/useHover';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
 type AppProps = {
   userDetails: Record<string, any>;
   socialLink: string;
+  openModal?: () => any;
 };
 
 const socialIconMap: Record<string, any> = {
@@ -22,14 +22,17 @@ const socialIconMap: Record<string, any> = {
   instagram: InstagramIcon,
   facebook: FacebookIcon,
   website: WebIcon,
+  edit: EditIconGreenOutline,
 };
 
-const SocialIcon: React.FC<AppProps> = ({ userDetails, socialLink }) => {
+const SocialIcon: React.FC<AppProps> = ({
+  userDetails,
+  socialLink,
+  openModal,
+}) => {
   const iconValue = userDetails?.personal?.socialAccounts?.[socialLink];
   const Component = socialIconMap[socialLink];
-  const [isHovered, hoverEvents] = useHover();
   const { userId } = useParams();
-
   const isSelf = !userId;
 
   return (
@@ -40,25 +43,14 @@ const SocialIcon: React.FC<AppProps> = ({ userDetails, socialLink }) => {
         }
       }}
       data-testid={`edit-${socialLink.toLowerCase()}`}
-      {...hoverEvents}
     >
-      {isSelf && isHovered ? (
-        <div className="p-[3px] bg-primary-500 grayscale rounded-full">
-          <Icon
-            name="edit"
-            className="text-white !hover:text-white !group-hover:text-white"
-            hoverColor="text-white"
-            hover={false}
-            size={18}
-          />
-        </div>
-      ) : (
-        <Component
-          className={clsx({
-            grayscale: !iconValue,
-          })}
-        />
-      )}
+      <Component
+        onClick={() => isSelf && socialLink == 'edit' && openModal?.()}
+        size={18}
+        className={clsx({
+          grayscale: !iconValue && socialLink !== 'edit',
+        })}
+      />
     </div>
   );
 };

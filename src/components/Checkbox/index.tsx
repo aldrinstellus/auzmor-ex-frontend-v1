@@ -20,6 +20,7 @@ export type CheckboxProps = {
     output: (e: ChangeEvent<HTMLInputElement>) => any;
   };
   defaultChecked?: boolean;
+  labelClassName?: string;
   labelContainerClassName?: string;
 };
 
@@ -36,6 +37,7 @@ const Checkbox: FC<CheckboxProps> = ({
   transform,
   defaultChecked,
   inputClassName,
+  labelClassName = '',
   labelContainerClassName = '',
   ...rest
 }) => {
@@ -52,6 +54,15 @@ const Checkbox: FC<CheckboxProps> = ({
   );
 
   const id = `checkbox-id-${Math.random().toString(16).slice(2)}`;
+
+  const lableStyle = useMemo(
+    () =>
+      clsx({
+        'font-semibold text-sm cursor-pointer': true,
+        [labelClassName]: true,
+      }),
+    [labelClassName],
+  );
 
   return (
     <div className="flex items-center">
@@ -76,7 +87,7 @@ const Checkbox: FC<CheckboxProps> = ({
         />
         {label && (
           <div className={lableContainerStyles}>
-            <div className="font-semibold text-sm cursor-pointer">{label}</div>
+            <div className={lableStyle}>{label}</div>
             {labelDescription && (
               <div className="font-normal text-xs text-neutral-500">
                 {labelDescription}

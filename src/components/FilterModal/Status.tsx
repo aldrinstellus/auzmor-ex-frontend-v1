@@ -7,6 +7,7 @@ import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { IFilterForm, IStatus } from '.';
 import { UserStatus } from 'queries/users';
 import { titleCase } from 'utils/misc';
+import useProduct from 'hooks/useProduct';
 
 interface IStatusProps {
   control: Control<IFilterForm, any>;
@@ -33,10 +34,13 @@ const Status: FC<IStatusProps> = ({ control, watch, setValue }) => {
   ]);
 
   const debouncedStatusSearchValue = useDebounce(statusSearch || '', 300);
+  const { isLxp } = useProduct();
   const statusData: IStatus[] = [
     { id: UserStatus.Active, name: titleCase(UserStatus.Active) },
     { id: UserStatus.Inactive, name: titleCase(UserStatus.Inactive) },
-    { id: UserStatus.Invited, name: titleCase(UserStatus.Invited) },
+    isLxp
+      ? { id: UserStatus.Pending, name: titleCase(UserStatus.Pending) }
+      : { id: UserStatus.Invited, name: titleCase(UserStatus.Invited) },
   ].filter((value) =>
     value.name.toLowerCase().includes(debouncedStatusSearchValue.toLowerCase()),
   );
@@ -46,7 +50,7 @@ const Status: FC<IStatusProps> = ({ control, watch, setValue }) => {
       type: FieldType.CheckboxList,
       name: 'statusCheckbox',
       control,
-      options: statusData?.map((status: IStatus) => ({
+      options: statusData?.map((status: any) => ({
         data: status,
         datatestId: `status-${status.name.toLowerCase()}`,
       })),

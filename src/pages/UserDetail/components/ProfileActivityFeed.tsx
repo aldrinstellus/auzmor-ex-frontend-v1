@@ -6,11 +6,11 @@ import {
 import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
 import NoDataCard from './NoDataCard';
 import PostBuilder from 'components/PostBuilder';
-import SkeletonLoader from 'pages/Feed/components/SkeletonLoader';
 import { useFeedStore } from 'stores/feedStore';
 import { FC } from 'react';
 import useRole from 'hooks/useRole';
 import { isRegularPost } from 'utils/misc';
+import SkeletonLoader from 'components/Feed/components/SkeletonLoader';
 
 export interface IProfileActivityFeedProps {
   data: any;
@@ -64,11 +64,13 @@ const ProfileActivityFeed: FC<IProfileActivityFeedProps> = ({
     return (
       <div className="pt-2">
         <CreatePostCard openModal={openModal} />
-        <PostBuilder
-          open={open}
-          openModal={openModal}
-          closeModal={closeModal}
-        />
+        {open && (
+          <PostBuilder
+            open={open}
+            openModal={openModal}
+            closeModal={closeModal}
+          />
+        )}
         <div className="pt-6">
           {myProfileFeedLoading ? (
             <SkeletonLoader />

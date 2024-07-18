@@ -31,7 +31,9 @@ import { ICategory } from 'queries/category';
 import { ITeam } from 'queries/teams';
 import useProduct from 'hooks/useProduct';
 import { useInfiniteLearnCategory } from 'queries/learn';
+import { useTranslation } from 'react-i18next';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { isTrim } from 'pages/ChannelDetail/components/utils';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -63,6 +65,7 @@ const defaultAppFilters: IAppFilters = {
 
 const Apps: FC<IAppsProps> = () => {
   usePageTitle('apps');
+  const { t } = useTranslation('appLauncher');
   const {
     searchParams,
     updateParam,
@@ -264,12 +267,12 @@ const Apps: FC<IAppsProps> = () => {
       <Card className="p-8">
         <div className="flex justify-between">
           <h1 className="font-bold text-2xl text-black" tabIndex={0}>
-            App Launcher
+            {t('title')}
           </h1>
           {isAdmin && (
             <Button
               onClick={openModal}
-              label="Add apps"
+              label={t('add-app-CTA')}
               leftIcon="add"
               leftIconClassName="!text-white"
               className="flex space-x-1"
@@ -283,7 +286,7 @@ const Apps: FC<IAppsProps> = () => {
             {isAdmin && (
               <Button
                 variant={ButtonVariant.Secondary}
-                label="My apps"
+                label={t('my-apps')}
                 dataTestId="my-apps"
                 className={`${
                   selectedTab === AppGroup.MY_APPS
@@ -295,7 +298,7 @@ const Apps: FC<IAppsProps> = () => {
             )}
             <Button
               variant={ButtonVariant.Secondary}
-              label="All apps"
+              label={t('all-apps')}
               className={
                 selectedTab === AppGroup.ALL_APPS
                   ? selectedButtonClassName
@@ -306,7 +309,7 @@ const Apps: FC<IAppsProps> = () => {
             />
             <Button
               variant={ButtonVariant.Secondary}
-              label="Featured"
+              label={t('featured')}
               dataTestId="featured-apps"
               className={
                 selectedTab === AppGroup.FEATURED
@@ -321,7 +324,7 @@ const Apps: FC<IAppsProps> = () => {
                 <div key={category.id}>
                   <Button
                     variant={ButtonVariant.Secondary}
-                    label={category.name}
+                    label={isTrim(category.name)}
                     className={`capitalize ${
                       selectedTab === category.id
                         ? selectedButtonClassName
@@ -373,8 +376,8 @@ const Apps: FC<IAppsProps> = () => {
         <div className="flex flex-col gap-4">
           {!isLoading ? (
             <div className="text-neutral-500">
-              Showing {!isLoading && appsCount} results
-            </div>
+              {t('show-results', { count: !isLoading && appsCount })}
+            </div> // used for dynamic copy
           ) : (
             <Skeleton
               className="!w-32"
@@ -388,7 +391,7 @@ const Apps: FC<IAppsProps> = () => {
             <div className="flex justify-between items-start">
               <div className="flex items-center space-x-2 flex-wrap gap-y-2">
                 <div className="text-base text-neutral-500 whitespace-nowrap">
-                  Filter By
+                  {t('filter-by')}
                 </div>
                 {categoryFilterPills.map((category: any) => (
                   <div
@@ -409,7 +412,7 @@ const Apps: FC<IAppsProps> = () => {
                     tabIndex={0}
                   >
                     <div className="mr-1 text-neutral-500 whitespace-nowrap">
-                      Category{' '}
+                      {t('category')}{' '}
                       <span className="text-primary-500">{category.name}</span>
                     </div>
                     <Icon
@@ -437,7 +440,8 @@ const Apps: FC<IAppsProps> = () => {
                     tabIndex={0}
                   >
                     <div className="mr-1 text-neutral-500">
-                      Team <span className="text-primary-500">{team.name}</span>
+                      {t('team')}{' '}
+                      <span className="text-primary-500">{team.name}</span>
                     </div>
                     <Icon
                       name="close"
@@ -456,7 +460,7 @@ const Apps: FC<IAppsProps> = () => {
                 onKeyUp={(e) => (e.code === 'Enter' ? clearFilters() : '')}
                 tabIndex={0}
               >
-                Clear Filters
+                {t('clear-filters')}
               </div>
             </div>
           )}
@@ -478,7 +482,7 @@ const Apps: FC<IAppsProps> = () => {
                     aria-label="view all featured"
                     tabIndex={0}
                   >
-                    View all featured
+                    {t('view-all')}
                   </div>
                 </div>
               )}

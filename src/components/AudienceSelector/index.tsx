@@ -29,7 +29,11 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
   const { data, isLoading } = useOrganization();
   const { form } = useEntitySearchFormStore();
 
-  const [teams, channels, users] = form!.watch(['teams', 'channels', 'users']);
+  const [teams, channels = {}, users] = form!.watch([
+    'teams',
+    'channels',
+    'users',
+  ]);
 
   useEffect(() => {
     if (
@@ -53,21 +57,6 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
       selectedCount: 0,
       dataTestId: 'audience-selection-everyone',
     },
-    // {
-    //   key: 'channels',
-    //   icon: 'noteFavouriteOutline',
-    //   title: 'Channels',
-    //   subTitle: 'Select a channel you are part of',
-    //   onClick: () => {},
-    //   isHidden: false,
-    //   isSelected: Object.keys(channels).some(
-    //     (id: string) => !!channels[id] && !isEveryoneSelected,
-    //   ),
-    //   selectedCount: Object.keys(channels).filter(
-    //     (id: string) => !!channels[id],
-    //   ).length,
-    //   dataTestId: 'audience-selection-channel'
-    // },
     {
       key: 'teams',
       icon: 'profileUser',
@@ -81,6 +70,21 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
       selectedCount: Object.keys(teams).filter((id: string) => !!teams[id])
         .length,
       dataTestId: 'audience-selection-teams',
+    },
+    {
+      key: 'channels',
+      icon: 'noteFavouriteOutline',
+      title: 'Channels',
+      subTitle: 'Select a channel you are part of',
+      onClick: () => setAudienceFlow(AudienceFlow.ChannelSelect),
+      isHidden: false,
+      isSelected: Object.keys(channels).some(
+        (id: string) => !!channels[id] && !isEveryoneSelected,
+      ),
+      selectedCount: Object.keys(channels).filter(
+        (id: string) => !!channels[id],
+      ).length,
+      dataTestId: 'audience-selection-channel',
     },
   ].filter((entity) => !entity.isHidden);
 

@@ -107,7 +107,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
       control,
       name: 'documentSearch',
       dataTestId: 'docs-search',
-      className: `mr-2 min-w-[245px] `,
+      className: `mr-2 min-w-[245px] block`,
       selectClassName: 'docs-select',
       placeholder: 'Search documents',
       placement: 'bottomRight',
@@ -201,7 +201,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
           appliedFilters={{
             docTypeCheckbox: filters?.docTypeCheckbox || [],
             docPeopleCheckbox: filters?.docPeopleCheckbox || [],
-            docModifiedRadio: filters?.docModifiedRadio || '',
+            docModifiedRadio: filters?.docModifiedRadio || [],
           }}
           onApply={(appliedFilters) => {
             setFilters(appliedFilters);
@@ -211,7 +211,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
             setFilters({
               docPeopleCheckbox: [],
               docTypeCheckbox: [],
-              docModifiedRadio: '',
+              docModifiedRadio: [],
             });
             closeFilterModal();
           }}

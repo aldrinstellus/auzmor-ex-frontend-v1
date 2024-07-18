@@ -13,6 +13,7 @@ interface IOptions {
   label: string;
   disabled: boolean;
   dataTestId?: string;
+  render?: () => ReactNode;
 }
 
 export interface ISingleSelectProps {
@@ -36,6 +37,7 @@ export interface ISingleSelectProps {
   clearIcon?: ReactNode | null;
   isClearable?: boolean;
   showSearch?: boolean;
+  required?: boolean;
 }
 
 const SingleSelect = forwardRef(
@@ -61,6 +63,7 @@ const SingleSelect = forwardRef(
       clearIcon = null,
       isClearable = false,
       showSearch = true,
+      required = false,
     }: ISingleSelectProps,
     ref?: any,
   ) => {
@@ -124,14 +127,16 @@ const SingleSelect = forwardRef(
           },
         }}
       >
-        <label
+        <div
           className={clsx(
             { [`relative ${className}`]: true },
             { 'cursor-not-allowed': disabled },
           )}
-          htmlFor={id}
         >
-          <div className={labelStyle}>{label}</div>
+          <div className={labelStyle}>
+            {label}
+            <span className="text-red-500">{required && '*'}</span>
+          </div>
           <div
             data-testid={dataTestId}
             onClick={() => {
@@ -172,10 +177,21 @@ const SingleSelect = forwardRef(
                   clearIcon={clearIcon}
                   ref={ref}
                   allowClear={isClearable}
+                  aria-label="select"
                 >
                   {(options || []).map((option) => (
-                    <Option key={option.value} value={option.value}>
-                      <div data-testid={option.dataTestId}>{option.label}</div>
+                    <Option
+                      key={option.value}
+                      value={option.value}
+                      label={option.label}
+                    >
+                      {option?.render ? (
+                        option.render()
+                      ) : (
+                        <div data-testid={option.dataTestId}>
+                          {option.label}
+                        </div>
+                      )}
                     </Option>
                   ))}
                 </Select>
@@ -188,7 +204,7 @@ const SingleSelect = forwardRef(
           >
             {error || ' '}
           </div>
-        </label>
+        </div>
       </ConfigProvider>
     );
   },

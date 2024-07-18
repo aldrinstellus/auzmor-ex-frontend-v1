@@ -7,7 +7,7 @@ import Icon from 'components/Icon';
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useHover from 'hooks/useHover';
-import { isEmpty } from 'lodash';
+import { isEmpty, omitBy } from 'lodash';
 import {
   updateCurrentUser,
   updateUserById,
@@ -23,6 +23,7 @@ import {
 } from 'utils/misc';
 import Tooltip, { Variant as TooltipVariant } from 'components/Tooltip';
 import UserCard from 'components/UserCard';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   data: Record<string, any>;
@@ -40,6 +41,7 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
   const queryClient = useQueryClient();
   const { userId = '' } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation('profile');
   const {
     data: users,
     isFetchingNextPage,
@@ -58,7 +60,7 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
     mutationKey: ['update-user-employeeId-mutation'],
     onError: (_error: any) => {},
     onSuccess: async (_response: any) => {
-      successToastConfig({ content: 'Manager updated' });
+      successToastConfig({ content: t('managerWidget.successToast') });
       if (userId) {
         await queryClient.invalidateQueries(['user', userId]);
       } else {
@@ -103,9 +105,9 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
       type: FieldType.AsyncSingleSelect,
       control,
       name: 'manager',
-      label: 'Select Manager',
+      label: t('managerWidget.selectManager'),
       className: '',
-      placeholder: 'Select Manager',
+      placeholder: t('managerWidget.selectManager'),
       suffixIcon: <></>,
       clearIcon: (
         <Icon name="closeCircle" size={16} className="-mt-0.5 !mr-4" />
@@ -142,7 +144,7 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
                 className="text-neutral-900 font-bold text-base"
                 data-testid="manager-details"
               >
-                Manager
+                {t('managerWidget.title')}
               </p>
               {canEdit && isHovered && !isEditable ? (
                 <IconWrapper
@@ -161,7 +163,7 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
                   <div className="flex space-x-1">
                     <Button
                       variant={Variant.Secondary}
-                      label={'Cancel'}
+                      label={t('managerWidget.cancelCTA')}
                       size={Size.Small}
                       onClick={() => {
                         setIsEditable(false);
@@ -170,7 +172,7 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
                       dataTestId={`contact-info-cancel`}
                     />
                     <Button
-                      label={'Save'}
+                      label={t('managerWidget.saveCTA')}
                       size={Size.Small}
                       type={ButtonType.Submit}
                       dataTestId={`contact-info-save`}
@@ -185,9 +187,9 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
                 <div>
                   <Layout fields={fields} />
                 </div>
-              ) : isEmpty(data?.manager) ? (
+              ) : isEmpty(omitBy(data?.manager, isEmpty)) ? (
                 <div className="text-sm text-neutral-500">
-                  No manager assigned
+                  {t('managerWidget.emptyMessage')}
                 </div>
               ) : (
                 <Tooltip
@@ -213,7 +215,7 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
                       </div>
                       <div className="text-neutral-500 text-xs">
                         {managerDetails.designation?.name ||
-                          'field not specified'}
+                          t('fieldNotSpecified')}
                       </div>
                     </div>
                   </div>

@@ -251,6 +251,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
         userCoverImageRef?.current?.click();
       },
       dataTestId: 'edit-coverpic-upload',
+      hidden: false,
     },
     {
       icon: 'maximizeOutline',
@@ -262,6 +263,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
         closeEditProfileModal();
       },
       dataTestId: 'edit-coverpic-reposition',
+      hidden: userDetails?.coverImage?.original == null,
     },
     {
       icon: 'trashOutline',
@@ -281,8 +283,9 @@ const EditProfileModal: FC<IEditProfileModal> = ({
         setIsCoverImageRemoved(true);
       },
       dataTestId: 'edit-coverpic-deletepost',
+      hidden: userDetails?.coverImage?.original == null,
     },
-  ];
+  ].filter((option) => option.hidden !== true);
   const { updateUser } = useAuth();
 
   useEffect(

@@ -63,6 +63,7 @@ const Categories: FC<ICategoriesProps> = ({
   } = isLxp
     ? useInfiniteLearnCategory({
         q: debouncedCategorySearchValue,
+        limit: 30,
       })
     : useInfiniteCategories({
         q: debouncedCategorySearchValue,

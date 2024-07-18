@@ -2,6 +2,7 @@ import { FC } from 'react';
 import clsx from 'clsx';
 import SwitchToggle from 'components/SwitchToggle';
 import { INotificationSettings } from 'queries/users';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   settingsKey: 'post' | 'mentions';
@@ -10,52 +11,53 @@ type AppProps = {
   onChange: (updatedData: INotificationSettings, reset: () => void) => void;
 };
 
-const settings = {
-  post: [
-    {
-      label: 'Someone comments on my posts',
-      key: 'myPostComment',
-      dataTestId: 'comments-mypost',
-    },
-    {
-      label: 'Someone reacts on my posts',
-      key: 'myPostReact',
-      dataTestId: 'reacts-mypost',
-    },
-    {
-      label: 'Someone gives me a kudos',
-      key: 'myPostKudos',
-      dataTestId: 'kudos',
-    },
-  ],
-
-  mentions: [
-    {
-      label: 'Someone mentions me in a post',
-      key: 'mentionPost',
-      dataTestId: 'post-mentions',
-    },
-    {
-      label: 'Someone mentions me in a comment',
-      key: 'mentionComment',
-      dataTestId: 'comment-mentions',
-    },
-  ],
-};
-
 const NotificationSettingsList: FC<AppProps> = ({
   settingsKey,
   isLoading,
   data,
   onChange,
 }) => {
+  const { t } = useTranslation('userSetting', { keyPrefix: 'notifications' });
+
+  const settings = {
+    post: [
+      {
+        label: t('comment-on-my-post'),
+        key: 'myPostComment',
+        dataTestId: 'comments-mypost',
+      },
+      {
+        label: t('react-on-my-post'),
+        key: 'myPostReact',
+        dataTestId: 'reacts-mypost',
+      },
+      {
+        label: t('kudos-on-my-post'),
+        key: 'myPostKudos',
+        dataTestId: 'kudos',
+      },
+    ],
+
+    mentions: [
+      {
+        label: t('mention-me-on-post'),
+        key: 'mentionPost',
+        dataTestId: 'post-mentions',
+      },
+      {
+        label: t('mention-me-on-comment'),
+        key: 'mentionComment',
+        dataTestId: 'comment-mentions',
+      },
+    ],
+  };
   return (
     <div className="px-6 py-4">
       <div className="flex text-sm font-bold text-neutral-700 mb-4">
         <div className="flex-1"></div>
         <div className="w-[144px] flex justify-between">
-          <div className="">In app</div>
-          <div>Email</div>
+          <div className="">{t('in-app')}</div>
+          <div>{t('email')}</div>
         </div>
       </div>
       {settings[settingsKey].map((setting, idx: number) => (

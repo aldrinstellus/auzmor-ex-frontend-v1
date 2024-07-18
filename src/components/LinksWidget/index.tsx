@@ -1,5 +1,5 @@
 import Card from 'components/Card';
-import { updateChannelLinks, useChannelLinksWidget } from 'queries/channel';
+import { useChannelLinksWidget } from 'queries/channel';
 import Button, { Size, Variant } from 'components/Button';
 import Icon from 'components/Icon';
 import SkeletonLoader from './components/SkeletonLoader';
@@ -10,18 +10,17 @@ import useModal from 'hooks/useModal';
 import EditLinksModal from './components/EditLinksModal';
 import { useTranslation } from 'react-i18next';
 import AddLinkModal from './components/AddLinkModal';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { IChannelLink } from 'stores/channelStore';
-import useRole from 'hooks/useRole';
 
-export interface ILinkWidgetProps {
-  channelId?: string;
-  className?: string;
-}
+import { useParams } from 'react-router-dom';
+import { useChannelRole } from 'hooks/useChannelRole';
+import { IChannel } from 'stores/channelStore';
 
-const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
-  const queryClient = useQueryClient();
-  const { isAdmin } = useRole();
+export type LinksWidgetProps = {
+  channelData: IChannel;
+};
+const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
+  const { channelId = '' } = useParams();
+  const { isUserAdminOrChannelAdmin } = useChannelRole(channelData.id);
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const [openEditLinks, openEditLinksModal, closeEditLinksModal] = useModal(
     false,
@@ -36,18 +35,6 @@ const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
   const { t } = useTranslation('channelLinksWidget');
 
   const { data: links, isLoading } = useChannelLinksWidget(channelId);
-
-  const updateLinksMutation = useMutation({
-    mutationKey: ['update-channel-links'],
-    mutationFn: (payload: IChannelLink[]) => {
-      return updateChannelLinks(channelId, { links: payload });
-    },
-    onError: (error: any) => console.log(error),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['channel-links-widget']);
-      closeAddLinkModal();
-    },
-  });
 
   const toggleModal = () => {
     if (open) closeCollapse();
@@ -66,7 +53,7 @@ const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
           {t('title')}
         </div>
         <div className="flex items-center gap-1">
-          {isAdmin && links && links.length > 0 && (
+          {isUserAdminOrChannelAdmin && links && links.length > 0 && (
             <Icon
               name={'edit'}
               size={20}
@@ -109,9 +96,9 @@ const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
                       window.open(linkUrl, '_blank');
                     }}
                   >
-                    {link.image || link.favicon ? (
+                    {link.url || link.favicon ? (
                       <img
-                        src={link.image || link.favicon}
+                        src={`https://www.google.com/s2/favicons?domain=${link.url}`}
                         height={16}
                         width={16}
                         alt={`${link.title} Image`}
@@ -138,7 +125,7 @@ const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
                     />
                   </div>
                 )}
-                {links.length <= maxListSize && isAdmin && (
+                {links.length <= maxListSize && isUserAdminOrChannelAdmin && (
                   <div className="w-full flex justify-center">
                     <Button
                       label={t('addLinksCTA')}
@@ -154,7 +141,10 @@ const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
                 )}
               </div>
             ) : (
-              <EmptyState openModal={openAddLinkModal} isAdmin={isAdmin} />
+              <EmptyState
+                openModal={openAddLinkModal}
+                isAdmin={isUserAdminOrChannelAdmin}
+              />
             )}
           </div>
         )}
@@ -168,14 +158,13 @@ const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
           links={links}
         />
       )}
-      {isAdmin && openAddLink && (
+      {isUserAdminOrChannelAdmin && openAddLink && (
         <AddLinkModal
           open={openAddLink}
           closeModal={closeAddLinkModal}
           isCreateMode={true}
-          setLinkDetails={(link) => {
-            updateLinksMutation.mutate([link]);
-          }}
+          isEditMode={isEditMode}
+          channelId={channelId}
         />
       )}
     </Card>

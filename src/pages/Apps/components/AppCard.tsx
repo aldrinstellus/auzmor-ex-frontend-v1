@@ -7,6 +7,7 @@ import useModal from 'hooks/useModal';
 import AppDetailModal from './AppCardDetail';
 import AddApp, { APP_MODE } from './AddApp';
 import DeleteApp from './DeleteApp';
+import { isNewEntity } from 'utils/misc';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -14,6 +15,7 @@ import useRole from 'hooks/useRole';
 import { FC } from 'react';
 import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 import { isEmpty } from 'lodash';
+import clsx from 'clsx';
 import Truncate from 'components/Truncate';
 
 type AppCardProps = {
@@ -149,6 +151,10 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
     closeDeleteAppModal();
   };
 
+  const leftChipStyle = clsx({
+    'absolute top-0 left-0  rounded-tl-[12px] rounded-br-[12px] px-2  text-xxs font-medium':
+      true,
+  });
   const handleAppLaunch = () => {
     window.open(`${window.location.origin}/apps/${app.id}/launch`, '_target');
   };
@@ -166,6 +172,14 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
           onKeyUp={(e) => (e.code === 'Enter' ? handleAppLaunch() : '')}
           tabIndex={0}
         >
+          {isNewEntity(app?.createdAt) && (
+            <div
+              className={`${leftChipStyle} bg-primary-600 text-primary-100`}
+              data-testid={`member-badge`}
+            >
+              New
+            </div>
+          )}
           {/* App logo */}
           <div className="p-2 bg-neutral-100 rounded-xl min-w-[60px] min-h-[60px]">
             <img

@@ -74,7 +74,7 @@ const UploadFileStep: React.FC<AppProps> = ({
 
         if (reason.includes('is larger')) {
           setFileError(
-            'File size cannot exceed 5mb. Please try uploading a smaller file size.',
+            'File size cannot exceed 5MB. Please try uploading a smaller file size.',
           );
         } else if (reason.includes('file type')) {
           setFileError('File type not supported. Upload a supported file type');
@@ -124,7 +124,7 @@ const UploadFileStep: React.FC<AppProps> = ({
             To invite a list of people, add your file in the given format
           </div>
           <div className="text-xs text-neutral-500">
-            File must be in csv, xls or xlsx format and must not exceed 5mb
+            File must be in csv, xls or xlsx format and must not exceed 5MB
           </div>
           <div
             className="text-primary-600 font-bold text-sm cursor-pointer"

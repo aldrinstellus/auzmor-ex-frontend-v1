@@ -6,10 +6,12 @@ import Avatar from 'components/Avatar';
 import { IGetUser, UserStatus } from 'queries/users';
 import DynamicImagePreview from 'components/DynamicImagePreview';
 import { SHOUTOUT_STEPS } from '.';
-import { getProfileImage } from 'utils/misc';
+import { getProfileImage, isFiltersEmpty } from 'utils/misc';
 import { FC } from 'react';
 import { truncate } from 'lodash';
 import Tooltip from 'components/Tooltip';
+import { FeedModeEnum, useFeedStore } from 'stores/feedStore';
+import { useParams } from 'react-router-dom';
 
 interface ShoutoutBodyProps {
   step: SHOUTOUT_STEPS;
@@ -32,6 +34,18 @@ const Body: FC<ShoutoutBodyProps> = ({
   shoutoutTemplate,
   setShoutoutTemplate,
 }) => {
+  const feedMode = useFeedStore((state) => state.mode);
+  const { channelId } = useParams();
+  let usersQueryParams = isFiltersEmpty({ status: [UserStatus.Active] });
+
+  if (feedMode === FeedModeEnum.Channel && channelId) {
+    usersQueryParams = isFiltersEmpty({
+      status: [UserStatus.Active],
+      entityId: channelId,
+      entityType: 'CHANNEL',
+    });
+  }
+
   return (
     <div
       className={clsx({
@@ -105,7 +119,7 @@ const Body: FC<ShoutoutBodyProps> = ({
               </div>
             );
           }}
-          usersQueryParams={{ status: [UserStatus.Active] }}
+          usersQueryParams={usersQueryParams}
         />
       )}
       {step === SHOUTOUT_STEPS.ImageSelect && (

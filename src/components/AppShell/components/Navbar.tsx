@@ -12,6 +12,7 @@ import useRole from 'hooks/useRole';
 import useAuth from 'hooks/useAuth';
 import { useState } from 'react';
 import SubscriptionBanner from './SubscriptionBanner';
+import { useTranslation } from 'react-i18next';
 import useProduct from 'hooks/useProduct';
 import { getLearnUrl } from 'utils/misc';
 import GlobalSearch from './GlobalSearch';
@@ -37,9 +38,11 @@ const Navbar = () => {
       user?.subscription?.daysRemaining > -1,
   );
 
+  const { t } = useTranslation('navbar');
+
   const adminNavigations = [
     {
-      label: 'Admin',
+      label: t('admin'),
       icon: 'adminOutline',
       hoverIcon: 'adminFilled',
       linkTo: '/admin',
@@ -50,7 +53,7 @@ const Navbar = () => {
 
   const navigations = [
     {
-      label: 'Feed',
+      label: t('feed'),
       icon: 'feedOutline',
       hoverIcon: 'feedFilled',
       linkTo: '/feed',
@@ -58,7 +61,7 @@ const Navbar = () => {
       iconSize: 24,
     },
     {
-      label: 'Teams',
+      label: t('teams'),
       icon: 'usersOutline',
       hoverIcon: 'usersFilled',
       linkTo: '/teams',
@@ -68,7 +71,7 @@ const Navbar = () => {
       hidden: !isLxp,
     },
     {
-      label: 'People',
+      label: t('people'),
       icon: 'peopleOutline',
       hoverIcon: 'peopleFilled',
       linkTo: '/users',
@@ -80,7 +83,7 @@ const Navbar = () => {
       hidden: isLxp,
     },
     {
-      label: 'Learning Hub',
+      label: t('learningHub'),
       icon: 'lifeBuoyOutline',
       hoverIcon: 'lifeBuoyFilled',
       linkTo: `${getLearnUrl()}/user`,
@@ -90,7 +93,7 @@ const Navbar = () => {
       hidden: !isLxp,
     },
     {
-      label: 'Apps',
+      label: t('apps'),
       icon: 'launcherOutline',
       hoverIcon: 'launcherFilled',
       linkTo: '/apps',
@@ -102,7 +105,7 @@ const Navbar = () => {
       icon: 'exploreOutline',
       hoverIcon: 'exploreFilled',
       linkTo: '/channels',
-      dataTestId: 'discover-page',
+      dataTestId: 'channels-page',
       iconSize: 24,
       isActive: location.pathname.includes('/channels'),
       hidden: process.env.REACT_APP_ENV === 'PRODUCTION',
@@ -112,7 +115,7 @@ const Navbar = () => {
   return (
     <nav className="w-full sticky top-0 z-50">
       <div className="bg-white shadow h-16 w-full py-[2px] px-8">
-        <div className="bg-white h-full w-full max-w-[1440px] flex items-center py-0.5 mx-auto justify-between">
+        <div className="bg-white h-full w-full max-w-[1440px] flex items-center py-0.5 gap-8 mx-auto justify-between">
           <Link
             to="/feed"
             data-testid="office-logo"

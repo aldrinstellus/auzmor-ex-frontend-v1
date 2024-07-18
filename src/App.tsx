@@ -14,6 +14,8 @@ import { getLearnUrl } from 'utils/misc';
 import UserOnboard from 'components/UserOnboard';
 import './i18n/config';
 
+import './i18n/config';
+
 function App() {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 

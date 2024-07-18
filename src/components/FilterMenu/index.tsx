@@ -1,5 +1,7 @@
 import FilterModal, {
   FilterModalVariant,
+  IBypeople,
+  IRole,
   IStatus,
 } from 'components/FilterModal';
 import Layout, { FieldType } from 'components/Form';
@@ -18,13 +20,19 @@ import Icon from 'components/Icon';
 import { IDepartmentAPI } from 'queries/department';
 import { ILocationAPI } from 'queries/location';
 import { useTranslation } from 'react-i18next';
-import { ChannelVisibilityEnum } from 'stores/channelStore';
-import { ChannelTypeEnum } from 'components/FilterModal/ChannelType';
+// import { ChannelVisibilityEnum } from 'stores/channelStore';
+// import { ChannelTypeEnum } from 'components/FilterModal/ChannelType';
+import { ICategory } from 'queries/category';
+import { ITeam } from 'queries/teams';
 
 export enum FilterKey {
   departments = 'departments',
   locations = 'locations',
   status = 'status',
+  roles = 'roles',
+  categories = 'categories',
+  teams = 'teams',
+  byPeople = 'byPeople',
 }
 
 interface IFilterMenu {
@@ -40,6 +48,7 @@ interface IFilterMenu {
   dataTestIdSort?: string;
   dataTestIdFilter?: string;
   dataTestIdSearch?: string;
+  variant?: FilterModalVariant;
 }
 
 const FilterMenu: FC<IFilterMenu> = ({
@@ -49,13 +58,35 @@ const FilterMenu: FC<IFilterMenu> = ({
   dataTestIdSort,
   dataTestIdFilter,
   dataTestIdSearch,
+  variant,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
-  const { filters, setFilters } = useAppliedFiltersStore();
+  const {
+    filters,
+    setFilters,
+    clearFilters: clearAppliedFilters,
+  } = useAppliedFiltersStore();
   const { control, getValues, formState } = filterForm;
   const { parseParams, updateParam, serializeFilter, deleteParam } =
     useURLParams();
   const { t } = useTranslation('common');
+  useEffect(() => {
+    setFilters({
+      categories: parseParams('categories') || [],
+      departments: parseParams('departments') || [],
+      locations: parseParams('locations') || [],
+      status: parseParams('status') || [],
+      teams: parseParams('teams') || [],
+      visibility: parseParams('visibility') || [],
+      channelType: parseParams('channelType') || [],
+      byPeople: parseParams('byPeople') || [],
+      roles: parseParams('roles') || [],
+    });
+    return () => {
+      // Clear URL parameters on unmount
+      clearAppliedFilters();
+    };
+  }, []);
 
   useEffect(() => {
     if (filters) {
@@ -74,18 +105,6 @@ const FilterMenu: FC<IFilterMenu> = ({
     }
   }, [filters]);
 
-  useEffect(() => {
-    setFilters({
-      categories: parseParams('categories') || [],
-      departments: parseParams('departments') || [],
-      locations: parseParams('locations') || [],
-      status: parseParams('status') || [],
-      teams: parseParams('teams') || [],
-      visibility: parseParams('visibility') || ChannelVisibilityEnum.All,
-      channelType: parseParams('channelType') || ChannelTypeEnum.MyChannels,
-    });
-  }, []);
-
   const handleRemoveFilters = (key: FilterKey, id: any) => {
     if (filters) {
       const updatedFilter = filters[key]!.filter((item: any) => item.id !== id);
@@ -98,23 +117,26 @@ const FilterMenu: FC<IFilterMenu> = ({
       setFilters({ ...filters, [key]: updatedFilter });
     }
   };
-
   const clearFilters = () => {
     deleteParam('status');
+    deleteParam('roles');
     deleteParam('departments');
     deleteParam('locations');
     deleteParam('teams');
     deleteParam('categories');
     deleteParam('channelType');
+    deleteParam('byPeople');
     setFilters({
       ...filters,
       categories: [],
       status: [],
+      roles: [],
       departments: [],
       locations: [],
       teams: [],
-      visibility: ChannelVisibilityEnum.All,
-      channeType: ChannelTypeEnum.MyChannels,
+      byPeople: [],
+      visibility: [],
+      channeType: [],
     });
   };
 
@@ -134,6 +156,7 @@ const FilterMenu: FC<IFilterMenu> = ({
               dataTestId={dataTestIdFilter}
             />
             <Sort
+              controlled
               setFilter={(sortValue) => {
                 setFilters({ sort: sortValue });
               }}
@@ -166,8 +189,12 @@ const FilterMenu: FC<IFilterMenu> = ({
           </div>
         </div>
         {filters?.status?.length ||
+        filters?.roles?.length ||
         filters?.departments?.length ||
-        filters?.locations?.length ? (
+        filters?.categories?.length ||
+        filters?.locations?.length ||
+        filters?.byPeople?.length ||
+        filters?.teams?.length ? (
           <div className="flex justify-between items-start">
             <div className="flex items-center space-x-2 flex-wrap gap-y-2">
               <div className="text-base text-neutral-500 whitespace-nowrap">
@@ -198,6 +225,76 @@ const FilterMenu: FC<IFilterMenu> = ({
                   />
                 </div>
               ))}
+              {filters?.byPeople?.map((people: IBypeople) => (
+                <div
+                  key={people.id}
+                  className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
+                  data-testid={`status-filterby-${people.name}`}
+                  onClick={() =>
+                    handleRemoveFilters(FilterKey.byPeople, people.id)
+                  }
+                >
+                  <div className="mr-1 text-neutral-500 whitespace-nowrap">
+                    By people{' '}
+                    <span className="text-primary-500">{people.name}</span>
+                  </div>
+                  <Icon
+                    name="close"
+                    size={16}
+                    color="text-neutral-900"
+                    className="cursor-pointer"
+                    onClick={() =>
+                      handleRemoveFilters(FilterKey.byPeople, people.id)
+                    }
+                    dataTestId={`applied-filter-close`}
+                  />
+                </div>
+              ))}
+
+              {filters?.teams?.map((team: ITeam) => (
+                <div
+                  key={team.id}
+                  className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
+                  data-testid={`status-filterby-${team.name}`}
+                  onClick={() => handleRemoveFilters(FilterKey.teams, team.id)}
+                >
+                  <div className="mr-1 text-neutral-500 whitespace-nowrap">
+                    Teams <span className="text-primary-500">{team.name}</span>
+                  </div>
+                  <Icon
+                    name="close"
+                    size={16}
+                    color="text-neutral-900"
+                    className="cursor-pointer"
+                    onClick={() =>
+                      handleRemoveFilters(FilterKey.teams, team.id)
+                    }
+                    dataTestId={`applied-filter-close`}
+                  />
+                </div>
+              ))}
+              {filters?.roles?.map((role: IRole) => (
+                <div
+                  key={role.id}
+                  className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
+                  data-testid={`role-filterby-${role.name}`}
+                  onClick={() => handleRemoveFilters(FilterKey.roles, role.id)}
+                >
+                  <div className="mr-1 text-neutral-500 whitespace-nowrap">
+                    Role <span className="text-primary-500">{role.name}</span>
+                  </div>
+                  <Icon
+                    name="close"
+                    size={16}
+                    color="text-neutral-900"
+                    className="cursor-pointer"
+                    onClick={() =>
+                      handleRemoveFilters(FilterKey.roles, role.id)
+                    }
+                    dataTestId={`applied-filter-close`}
+                  />
+                </div>
+              ))}
               {filters?.departments?.map((department: IDepartmentAPI) => (
                 <div
                   key={department.id}
@@ -218,6 +315,31 @@ const FilterMenu: FC<IFilterMenu> = ({
                     className="cursor-pointer"
                     onClick={() =>
                       handleRemoveFilters(FilterKey.departments, department.id)
+                    }
+                    dataTestId={`applied-filter-close`}
+                  />
+                </div>
+              ))}
+              {filters?.categories?.map((categories: ICategory) => (
+                <div
+                  key={categories.id}
+                  className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
+                  data-testid={`department-filterby-${categories.name}`}
+                  onClick={() =>
+                    handleRemoveFilters(FilterKey.categories, categories.id)
+                  }
+                >
+                  <div className="mr-1 text-neutral-500 whitespace-nowrap">
+                    Category{' '}
+                    <span className="text-primary-500">{categories.name}</span>
+                  </div>
+                  <Icon
+                    name="close"
+                    size={16}
+                    color="text-neutral-900"
+                    className="cursor-pointer"
+                    onClick={() =>
+                      handleRemoveFilters(FilterKey.categories, categories.id)
                     }
                     dataTestId={`applied-filter-close`}
                   />
@@ -269,8 +391,10 @@ const FilterMenu: FC<IFilterMenu> = ({
             locations: filters?.locations || [],
             status: filters?.status || [],
             teams: filters?.teams || [],
-            visibility: filters?.visibility || ChannelVisibilityEnum.All,
-            channelType: filters?.channelType || ChannelTypeEnum.MyChannels,
+            roles: filters?.roles || [],
+            visibility: filters?.visibility || [],
+            channelType: filters?.channelType || [],
+            byPeople: filters?.byPeople || [],
           }}
           onApply={(appliedFilters) => {
             setFilters(appliedFilters);
@@ -283,12 +407,14 @@ const FilterMenu: FC<IFilterMenu> = ({
               locations: [],
               status: [],
               teams: [],
-              visibility: ChannelVisibilityEnum.All,
-              channelType: ChannelTypeEnum.MyChannels,
+              roles: [],
+              visibility: [],
+              channelType: [],
+              byPeople: [],
             });
             closeFilterModal();
           }}
-          variant={FilterModalVariant.ChannelsListing}
+          variant={variant || FilterModalVariant.ChannelsListing}
         />
       )}
     </>

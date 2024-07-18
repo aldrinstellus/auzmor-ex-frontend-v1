@@ -37,6 +37,7 @@ import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Shape } from 'components/ImageCropper';
+import { useTranslation } from 'react-i18next';
 
 const PRIMARY_COLOR = '#10B981';
 const SECONDARY_COLOR = '#1D4ED8FF';
@@ -159,18 +160,19 @@ const Preview: FC<{
 };
 
 const BrandingSettings: FC = () => {
+  const { t } = useTranslation('adminSetting', { keyPrefix: 'branding' });
   const { branding, setBranding } = useBrandingStore();
   const backgroundOption: IRadioListOption[] = [
     {
-      data: { value: 'Color' },
+      data: { value: t('color') },
       dataTestId: 'branding-background-as-color',
     },
     {
-      data: { value: 'Video' },
+      data: { value: t('video') },
       dataTestId: 'branding-background-as-video',
     },
     {
-      data: { value: 'Image' },
+      data: { value: t('image') },
       dataTestId: 'branding-background-as-image',
     },
   ];
@@ -179,13 +181,13 @@ const BrandingSettings: FC = () => {
     text: yup
       .string()
       .trim()
-      .min(3, 'Atleast 3 characters required')
-      .max(50, 'Character limit exceeded'),
+      .min(3, t('min-validation'))
+      .max(50, t('max-validation')),
     pageTitle: yup
       .string()
       .trim()
-      .min(3, 'Atleast 3 characters required')
-      .max(50, 'Character limit exceeded'),
+      .min(3, t('min-validation'))
+      .max(50, t('max-validation')),
   });
   const { control, setValue, watch, reset, formState } = useForm({
     mode: 'onChange',
@@ -197,7 +199,7 @@ const BrandingSettings: FC = () => {
         titleCase(branding?.loginConfig?.backgroundType || '') ||
         titleCase(backgroundOption[2].data.value),
       color: branding?.loginConfig?.color || '#777777',
-      pageTitle: branding?.pageTitle || 'Auzmor Office',
+      pageTitle: branding?.pageTitle || t('page-title-default'),
       text: branding?.loginConfig?.text,
     },
   });
@@ -356,7 +358,7 @@ const BrandingSettings: FC = () => {
       if (file.size > 5 * MB) {
         return {
           code: 'file-size-exceed',
-          message: 'The file size exceeds the limit',
+          message: t('fileSize-error'),
         };
       }
       return null;
@@ -404,7 +406,7 @@ const BrandingSettings: FC = () => {
       if (file.size > 50 * MB) {
         return {
           code: 'file-size-exceed',
-          message: 'The file size exceeds the limit',
+          message: t('fileSize-error'),
         };
       }
       return null;
@@ -449,7 +451,7 @@ const BrandingSettings: FC = () => {
       if (file.size > 500 * MB) {
         return {
           code: 'file-size-exceed',
-          message: 'The file size exceeds the limit',
+          message: t('fileSize-error'),
         };
       }
       return null;
@@ -545,7 +547,7 @@ const BrandingSettings: FC = () => {
       onSuccess: async (data, _variables, _context) => {
         const newBranding = data?.result?.data?.branding;
         successToastConfig({
-          content: 'Changes you made have been saved',
+          content: t('toast-success'),
           dataTestId: 'branding-changes-saved-toaster',
         });
         await queryClient.refetchQueries(['organization']);
@@ -564,7 +566,7 @@ const BrandingSettings: FC = () => {
       },
       onError: () => {
         failureToastConfig({
-          content: 'Changes you made may have not been saved',
+          content: t('toast-fail'),
           dataTestId: 'branding-changes-not-saved-toaster',
         });
         handleCancel();
@@ -590,7 +592,7 @@ const BrandingSettings: FC = () => {
               titleCase(branding?.loginConfig?.backgroundType || '') ||
               titleCase(backgroundOption[2].data.value),
             color: branding?.loginConfig?.color || '#777777',
-            pageTitle: branding?.pageTitle || 'Auzmor Office',
+            pageTitle: branding?.pageTitle || t('page-title-default'),
             text: branding?.loginConfig?.text,
           },
     );
@@ -621,7 +623,7 @@ const BrandingSettings: FC = () => {
           className="text-red-500 font-medium text-sm mt-2"
           data-testid={`branding-${dataTestId}-failed`}
         >
-          Oops! Upload failed
+          {t('upload-fail')}
         </p>
         <p className="text-neutral-500 text-xs font-medium mt-3">
           {message}{' '}
@@ -629,7 +631,7 @@ const BrandingSettings: FC = () => {
             className="text-primary-500 font-bold"
             data-testid="upload-again"
           >
-            Try again
+            {t('try-again')}
           </span>
         </p>
       </div>
@@ -797,14 +799,14 @@ const BrandingSettings: FC = () => {
     () => (
       <div className="flex gap-2">
         <Button
-          label="Cancel"
+          label={t('cancelCTA')}
           variant={Variant.Secondary}
           onClick={(_e) => handleCancel()}
           disabled={isSaving || !formState.isValid}
           dataTestId="branding-cancelcta"
         />
         <Button
-          label="Save changes"
+          label={t('saveCTA')}
           loading={isSaving}
           onClick={handleSaveChanges}
           dataTestId="branding-savechangescta"
@@ -820,7 +822,7 @@ const BrandingSettings: FC = () => {
       <Card className="p-6">
         <div className="flex justify-between w-full">
           <div className="flex flex-col gap-4">
-            <p className="text-neutral-900 text-base font-bold">Branding</p>
+            <p className="text-neutral-900 text-base font-bold">{t('title')}</p>
             {/* <p className="text-neutral-500 text-sm" data-testid="branding-note">
               Branding Options for a Personalized Experience
             </p> */}
@@ -833,7 +835,7 @@ const BrandingSettings: FC = () => {
       </Card>
       <Collapse
         defaultOpen
-        label="Page Settings"
+        label={t('page-settings')}
         headerTextClassName="text-base font-bold text-neutral-900"
         dataTestId="brandingsetting-pagesettings"
         height={413}
@@ -844,7 +846,7 @@ const BrandingSettings: FC = () => {
             fields={[
               {
                 name: 'pageTitle',
-                label: 'Page Title',
+                label: t('page-title'),
                 type: FieldType.Input,
                 control,
                 className: '',
@@ -852,7 +854,7 @@ const BrandingSettings: FC = () => {
                 error: formState?.errors?.pageTitle?.message,
                 helpText:
                   branding?.pageTitle === 'Auzmor office'
-                    ? `Replace 'Auzmor office' name from UI with your own name`
+                    ? `${t('help-text')}`
                     : '',
                 customLabelRightElement: (
                   <span
@@ -871,7 +873,7 @@ const BrandingSettings: FC = () => {
           <div className="flex gap-[100px]">
             <div className="flex flex-col w-1/2 gap-1">
               <label className="font-bold" htmlFor={getInputPropsLogo().id}>
-                Logo
+                {t('logo')}
               </label>
               <div
                 {...getRootPropsLogo()}
@@ -890,14 +892,15 @@ const BrandingSettings: FC = () => {
                   <Preview
                     file={selectedLogo}
                     url={branding?.logo?.original}
-                    title="Upload a logo"
+                    title={t('upload-logo')}
                     description={
                       <span>
-                        Drag and drop or{' '}
+                        {t('drag-drop')}{' '}
                         <span className="text-primary-500 font-bold">
-                          click here
+                          {t('click-here')}
                         </span>{' '}
-                        to upload a file. <br /> Recommended Size: 225 x 100 px
+                        {t('to-upload')} <br /> {t('recommend-size')} 225 x 100
+                        px
                       </span>
                     }
                     onCustomRemove={() => {
@@ -911,11 +914,11 @@ const BrandingSettings: FC = () => {
                   />
                 )}
               </div>
-              <p className="text-xxs text-neutral-500">Max file size 5mb</p>
+              <p className="text-xxs text-neutral-500">{t('fileSize-5mb')}</p>
             </div>
             <div className="flex flex-col w-1/2 gap-1">
               <label className="font-bold" htmlFor={getInputPropsFavicon().id}>
-                Favicon
+                {t('favicon')}
               </label>
               <div
                 {...getRootPropsFavicon()}
@@ -940,14 +943,14 @@ const BrandingSettings: FC = () => {
                   <Preview
                     file={selectedFavicon}
                     url={branding?.favicon?.original}
-                    title="Upload a favicon"
+                    title={t('upload-favicon')}
                     description={
                       <span>
-                        Drag and drop or{' '}
+                        {t('drag-drop')}{' '}
                         <span className="text-primary-500 font-bold">
-                          click here
+                          {t('click-here')}
                         </span>{' '}
-                        to upload a file. <br /> Recommended Size: 32 x 32 px
+                        {t('to-upload')} <br /> {t('recommend-size')} 32 x 32 px
                       </span>
                     }
                     onCustomRemove={() => {
@@ -961,7 +964,7 @@ const BrandingSettings: FC = () => {
                   />
                 )}
               </div>
-              <p className="text-xxs text-neutral-500">Max file size 5mb</p>
+              <p className="text-xxs text-neutral-500">{t('fileSize-5mb')}</p>
             </div>
           </div>
         </div>
@@ -981,7 +984,7 @@ const BrandingSettings: FC = () => {
                 fields={[
                   {
                     name: 'primaryColor',
-                    label: 'Primary Brand Color',
+                    label: t('primary-color'),
                     type: FieldType.ColorPicker,
                     control,
                     className: '',
@@ -991,8 +994,8 @@ const BrandingSettings: FC = () => {
                       <Tooltip
                         tooltipContent={
                           <p className="text-center text-sm font-medium">
-                            It is used in CTA&apos;s, Links,
-                            <br /> Icons, etc.
+                            {t('tool-tip-primary-color')}
+                            <br /> {t('tool-tip-primary-color-2')}
                           </p>
                         }
                       >
@@ -1007,8 +1010,8 @@ const BrandingSettings: FC = () => {
                   className="text-xs text-yellow-400 -mt-4"
                   data-testid="readability-warning"
                 >
-                  <span className="font-semibold">Readability Alert:</span> We
-                  suggest using high-contrast colors for better readability.
+                  <span className="font-semibold">{t('read-alert')}</span>{' '}
+                  {t('read-alert-des')}
                 </p>
               )}
               {branding?.secondaryColor || showSecondaryColor ? (
@@ -1017,7 +1020,7 @@ const BrandingSettings: FC = () => {
                     fields={[
                       {
                         name: 'secondaryColor',
-                        label: 'Secondary Brand Color',
+                        label: t('secondary-color'),
                         type: FieldType.ColorPicker,
                         control,
                         className: '',
@@ -1027,8 +1030,9 @@ const BrandingSettings: FC = () => {
                           <Tooltip
                             tooltipContent={
                               <p className="text-center text-sm font-medium">
-                                It is used in secondary <br />
-                                buttons, highlights, etc.
+                                {t('tool-tip-secondary-color')}
+                                <br />
+                                {t('tool-tip-secondary-color-2')}
                               </p>
                             }
                           >
@@ -1043,8 +1047,8 @@ const BrandingSettings: FC = () => {
                       className="text-xs text-yellow-400 -mt-4"
                       data-testid="readability-warning"
                     >
-                      <span className="font-semibold">Readability Alert:</span>{' '}
-                      It is advised not to use same primary and secondary color
+                      <span className="font-semibold">{t('read-alert')}</span>{' '}
+                      {t('read-alert-des')}
                     </p>
                   )}
                   {secondaryColor?.toUpperCase() === '#FFFFFF' && (
@@ -1052,9 +1056,8 @@ const BrandingSettings: FC = () => {
                       className="text-xs text-yellow-400 -mt-4"
                       data-testid="readability-warning"
                     >
-                      <span className="font-semibold">Readability Alert:</span>{' '}
-                      We suggest using high-contrast colors for better
-                      readability.
+                      <span className="font-semibold">{t('read-alert')}</span>{' '}
+                      {t('read-alert-des')}
                     </p>
                   )}
                 </>
@@ -1065,7 +1068,7 @@ const BrandingSettings: FC = () => {
                   data-testid="branding-add-secondary-color"
                 >
                   <Icon name="add" color="text-primary-500" />
-                  <p>Add secondary color</p>
+                  <p>{t('add-secondary-color')}</p>
                 </div>
               )}
             </div>
@@ -1080,13 +1083,13 @@ const BrandingSettings: FC = () => {
                   hover={false}
                   size={16}
                 />
-                <p className="text-white font-bold text-xs">Secondary</p>
+                <p className="text-white font-bold text-xs">{t('secondary')}</p>
               </div>
               <p className="text-neutral-900 font-bold text-base text-center px-2.5">
-                Lorem ipsum dolor
+                {t('help-card-text')}
               </p>
               <p className="font-normal text-[8px] text-neutral-500 text-center px-2.5">
-                Lorem ipsum dolor si amet. Lorem ipsum dolor si amet
+                {t('help-card-text-2')}
               </p>
               <img
                 src={NoAnnouncement}
@@ -1108,10 +1111,10 @@ const BrandingSettings: FC = () => {
                 }
                 style={{ backgroundColor: primaryColor }}
               >
-                Primary
+                {t('primary')}
               </div>
               <p className="font-normal text-[8px] text-neutral-500 text-center px-2.5 mb-4">
-                Only admins can see this.
+                {t('admin-text')}
               </p>
             </div>
           </div>
@@ -1130,7 +1133,9 @@ const BrandingSettings: FC = () => {
           <div className="flex w-full gap-[120px]">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-3">
-                <p className="text-sm font-bold text-neutral-900">Layout</p>
+                <p className="text-sm font-bold text-neutral-900">
+                  {t('layout')}
+                </p>
                 <div className="flex gap-[60px]">
                   <div
                     className="flex flex-col items-center gap-2 cursor-pointer"
@@ -1150,7 +1155,9 @@ const BrandingSettings: FC = () => {
                     >
                       <div className="absolute top-0 left-0 h-full w-[40px] rounded-7xl bg-neutral-400"></div>
                     </div>
-                    <p className="text-neutral-900 font-medium text-sm">Left</p>
+                    <p className="text-neutral-900 font-medium text-sm">
+                      {t('left')}
+                    </p>
                   </div>
                   <div
                     className="flex flex-col items-center gap-2 cursor-pointer"
@@ -1171,7 +1178,7 @@ const BrandingSettings: FC = () => {
                       <div className="h-full w-[40px] rounded-7xl bg-neutral-400"></div>
                     </div>
                     <p className="text-neutral-900 font-medium text-sm">
-                      Center
+                      {t('center')}
                     </p>
                   </div>
                   <div
@@ -1193,14 +1200,14 @@ const BrandingSettings: FC = () => {
                       <div className="absolute top-0 right-0 h-full w-[40px] rounded-7xl bg-neutral-400"></div>
                     </div>
                     <p className="text-neutral-900 font-medium text-sm">
-                      Right
+                      {t('right')}
                     </p>
                   </div>
                 </div>
               </div>
               <div className="flex flex-col gap-3">
                 <p className="text-sm font-bold text-neutral-900">
-                  Background Type
+                  {t('left')}
                 </p>
                 <Layout
                   fields={[
@@ -1225,7 +1232,7 @@ const BrandingSettings: FC = () => {
                     className="text-sm font-bold text-neutral-900"
                     htmlFor={getInputPropsBG().id}
                   >
-                    Upload Image
+                    {t('upload-img')}
                   </label>
                   <div
                     {...getRootPropsBG()}
@@ -1243,14 +1250,14 @@ const BrandingSettings: FC = () => {
                       <Preview
                         file={selectedBG}
                         url={branding?.loginConfig?.image?.original}
-                        title="Upload Image"
+                        title={t('upload-img')}
                         description={
                           <span>
-                            Drag and drop or{' '}
+                            {t('drag-drop')}{' '}
                             <span className="text-primary-500 font-bold">
-                              click here
+                              {t('click-here')}
                             </span>{' '}
-                            to upload a file. <br /> Recommended Size:{' '}
+                            {t('to-upload')} <br /> {t('recommend-size')}{' '}
                             {layoutAlignment === 'CENTER' ? 1440 : 720} x 820 px
                           </span>
                         }
@@ -1264,7 +1271,7 @@ const BrandingSettings: FC = () => {
                     )}
                   </div>
                   <p className="text-xxs text-neutral-500">
-                    Max file size 50mb
+                    {t('fileSize-50mb')}
                   </p>
                 </div>
               )}
@@ -1274,7 +1281,7 @@ const BrandingSettings: FC = () => {
                     className="text-sm font-bold text-neutral-900"
                     htmlFor={getInputPropsBGVideo().id}
                   >
-                    Upload Video
+                    {t('upload-video')}
                   </label>
                   <div
                     {...getRootPropsBGVideo()}
@@ -1295,15 +1302,15 @@ const BrandingSettings: FC = () => {
                       <Preview
                         file={selectedBGVideo}
                         url={branding?.loginConfig?.video?.original}
-                        title="Upload Video"
+                        title={t('upload-video')}
                         description={
                           <span>
-                            Drag and drop or{' '}
+                            {t('drag-drop')}{' '}
                             <span className="text-primary-500 font-bold">
-                              click here
+                              {t('click-here')}
                             </span>{' '}
-                            to upload a file. <br /> Recommended Size: 1440 x
-                            820 px
+                            {t('click-here')} <br /> {t('recommend-size')} 1440
+                            x 820 px
                           </span>
                         }
                         onCustomRemove={() => setSelectedBGVideo(null)}
@@ -1317,7 +1324,7 @@ const BrandingSettings: FC = () => {
                     )}
                   </div>
                   <p className="text-xxs text-neutral-500">
-                    Max file size 500mb
+                    {t('fileSize-500mb')}
                   </p>
                 </div>
               )}
@@ -1327,7 +1334,7 @@ const BrandingSettings: FC = () => {
                     fields={[
                       {
                         name: 'color',
-                        label: 'primary/action color',
+                        label: t('color-label'),
                         type: FieldType.ColorPicker,
                         control,
                         className: '',
@@ -1341,7 +1348,7 @@ const BrandingSettings: FC = () => {
                       fields={[
                         {
                           name: 'text',
-                          label: 'Add text',
+                          label: t('text-label'),
                           type: FieldType.Input,
                           control,
                           className: '',
@@ -1416,29 +1423,29 @@ const BrandingSettings: FC = () => {
                   <div className="w-[110px] p-[5px] flex flex-col gap-1">
                     <div className="flex flex-col gap-[1px]">
                       <p className="text-[6px] text-neutral-900 font-bold">
-                        Signin
+                        {t('sign-in')}
                       </p>
                       <p className="text-[3px] font-medium text-neutral-500">
-                        Hi, enter your details to get signed in to your account
+                        {t('sign-in-text')}
                       </p>
                     </div>
                     <div className="flex flex-col gap-[1px]">
                       <p className="text-[4px] text-neutral-900 font-bold">
-                        Work Email / Username
+                        {t('work-title')}
                       </p>
                       <div className="w-full rounded-7xl border-[0.25px] border-neutral-200 text-neutral-500 px-[5px] py-[3px] text-[4px]">
-                        Enter your email address / username
+                        {t('email-field')}
                       </div>
                     </div>
                     <div className="flex flex-col gap-[1px]">
                       <p className="text-[4px] text-neutral-900 font-bold">
-                        Password
+                        {t('password')}
                       </p>
                       <div className="w-full rounded-7xl border-[0.25px] border-neutral-200 text-neutral-500 px-[5px] py-[3px] text-[4px]">
-                        Enter password
+                        {t('enter-password')}
                       </div>
                       <p className="text-[4px] text-neutral-900 font-bold text-right">
-                        Forgot Password?
+                        {t('forgot-password')}
                       </p>
                     </div>
                     <div

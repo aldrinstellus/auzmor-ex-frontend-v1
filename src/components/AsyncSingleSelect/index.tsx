@@ -258,6 +258,7 @@ const AsyncSingleSelect = forwardRef(
                       <Option
                         key={`${option.value}-${Math.random()}`}
                         value={option.value}
+                        label={option.label}
                       >
                         {optionRenderer ? (
                           optionRenderer(option)

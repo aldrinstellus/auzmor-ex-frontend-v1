@@ -65,6 +65,7 @@ export enum UserStatus {
   Inactive = 'INACTIVE',
   Deleted = 'DELETED',
   Failed = 'FAILED',
+  Pending = 'PENDING',
 }
 
 export enum UserRole {
@@ -119,6 +120,7 @@ export interface IUserSettings {
 }
 
 export interface IGetUser {
+  userId?: string;
   id: string;
   fullName?: string;
   firstName?: string;
@@ -217,6 +219,53 @@ export const useInfiniteUsers = ({
     },
     staleTime: 5 * 60 * 1000,
     enabled: startFetching,
+  });
+};
+
+// get all users by along with a boolean which identify if the user is already of the team/channel
+export const getMembers = async ({
+  pageParam = null,
+  queryKey,
+}: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
+  let transformedData;
+
+  if (pageParam === null) {
+    console.log({ 'queryKey[1]': queryKey[1] });
+    const response = await apiService.get(`/users/searchIn`, queryKey[1]);
+    const { data } = response;
+    transformedData = data?.result?.data?.map((item: any) => {
+      return {
+        id: item.userId,
+        ...item,
+      };
+    });
+    return { data: { result: { data: transformedData } } };
+  } else return apiService.get(pageParam);
+};
+
+export const useInfiniteMembers = ({
+  q,
+}: {
+  entityId: string;
+  entityType: string;
+  q?: Record<string, any>;
+  startFetching?: boolean;
+}) => {
+  return useInfiniteQuery({
+    queryKey: ['search-team-members', q],
+    queryFn: (context) => getMembers(context),
+    getNextPageParam: (lastPage: any) => {
+      const pageDataLen = lastPage?.data?.result?.data?.length;
+      const pageLimit = lastPage?.data?.result?.paging?.limit;
+      if (pageDataLen < pageLimit) {
+        return null;
+      }
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
+    staleTime: 5 * 60 * 1000,
   });
 };
 

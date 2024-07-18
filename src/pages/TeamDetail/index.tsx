@@ -7,11 +7,8 @@ import EntitySearchModal, {
 import Tooltip from 'components/Tooltip';
 import { IGetUser } from 'queries/users';
 import Avatar from 'components/Avatar';
-import {
-  addTeamMember,
-  useInfiniteMembers,
-  useSingleTeam,
-} from 'queries/teams';
+import { addTeamMember, useSingleTeam } from 'queries/teams';
+import { useInfiniteMembers } from 'queries/users';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { useMutation } from '@tanstack/react-query';
 import { getFullName, getProfileImage } from 'utils/misc';

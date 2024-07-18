@@ -63,13 +63,13 @@ export const useEventAttendee = (eventId: string) => {
     enabled: !!eventId,
   });
 };
-export const useGetRecommendation = () => {
+export const useGetRecommendation = (enabled: boolean) => {
   const { isLxp } = useProduct();
   return useQuery({
     queryKey: ['recommendation-content'],
     queryFn: async () =>
       await learnApiService.get('learner/trainings/recommendations?limit=3'),
-    enabled: !!isLxp,
+    enabled: !!isLxp && enabled,
   });
 };
 
@@ -80,33 +80,45 @@ export const uploadImage = async (payload: any) => {
 };
 
 export const getAllCategory = async ({
-  pageParam = null,
+  pageParam = 1,
   queryKey,
 }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
-  let transformedData;
-  if (pageParam === null) {
-    const response = await learnApiService.get('/categories', queryKey[1]);
-    const { data } = response;
+  const query: any = queryKey[1];
+  const response = await learnApiService.get('/categories', {
+    ...query,
+    page: pageParam,
+  });
+  const { data } = response;
 
-    transformedData = data?.result?.data?.map((item: any) => {
-      return {
-        name: item.title,
-        type: 'APP',
-        id: item.id,
-      };
-    });
+  const transformedData = data?.result?.data?.map((item: any) => ({
+    name: item.title,
+    type: 'APP',
+    id: item.id,
+  }));
 
-    return { data: { result: { data: transformedData } } };
-  } else return await learnApiService.get(pageParam);
+  return {
+    data: {
+      result: {
+        data: transformedData,
+      },
+      nextPage: pageParam + 1,
+    },
+  };
 };
-export const useInfiniteLearnCategory = (q?: Record<string, any>) => {
+export const useInfiniteLearnCategory = (query?: Record<string, any>) => {
   return useInfiniteQuery({
-    queryKey: ['learnCategory', q],
+    queryKey: ['learnCategory', query],
     queryFn: getAllCategory,
+    getNextPageParam: (lastPage, pages) => {
+      if (lastPage?.data?.result?.data?.length === 0) {
+        return undefined; // No more data to fetch
+      }
+      const currentPage = pages.length;
+      return currentPage + 1; // Next page number
+    },
     staleTime: 5 * 60 * 1000,
   });
 };
-
 export const createCatergory = async (payload: any) => {
   const data = await learnApiService.post('categories', payload);
   return data;

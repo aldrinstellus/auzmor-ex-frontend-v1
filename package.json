@@ -30,6 +30,7 @@
     "clsx": "^1.2.1",
     "country-list-with-dial-code-and-flag": "^5.0.2",
     "d3-org-chart": "^2.7.0",
+    "framer-motion": "^11.2.12",
     "fuse.js": "^6.6.2",
     "html-to-image": "^1.11.11",
     "html-to-text": "^9.0.5",

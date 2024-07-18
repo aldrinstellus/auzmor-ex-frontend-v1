@@ -1,34 +1,48 @@
-import Avatar from 'components/Avatar';
 import Button, { Variant } from 'components/Button';
 import Card from 'components/Card';
-import EntitySearchModal, {
-  EntitySearchModalType,
-} from 'components/EntitySearchModal';
+import AddChannelMembersModal from '../AddChannelMembersModal';
 import FilterMenu from 'components/FilterMenu';
-import Icon from 'components/Icon';
-import InfiniteSearch from 'components/InfiniteSearch';
 import useModal from 'hooks/useModal';
-import { userData } from 'mocks/Channels';
 import PeopleCard from 'pages/Users/components/People/PeopleCard';
 import UsersSkeleton from 'pages/Users/components/Skeletons/UsersSkeleton';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { getFullName, getProfileImage, isFiltersEmpty } from 'utils/misc';
-import { useEffect, useState } from 'react';
-import { useInfiniteChannelMembers } from 'queries/channel';
-import { IDepartmentAPI, useInfiniteDepartments } from 'queries/department';
-import { useDebounce } from 'hooks/useDebounce';
-import { ILocationAPI, useInfiniteLocations } from 'queries/location';
+import { isFiltersEmpty } from 'utils/misc';
+import { ReactNode, useEffect, useState } from 'react';
+import {
+  bulkChannelRequestUpdate,
+  useInfiniteChannelMembers,
+  useInfiniteChannelsRequest,
+} from 'queries/channel';
+
 import useURLParams from 'hooks/useURLParams';
 import PopupMenu from 'components/PopupMenu';
 import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
-import MemberTable from './MemberTable';
-import useRole from 'hooks/useRole';
+import { FilterModalVariant } from 'components/FilterModal';
+import {
+  CHANNEL_MEMBER_STATUS,
+  IChannel,
+  IChannelRequest,
+} from '../../../../stores/channelStore';
+import NoDataFound from 'components/NoDataFound';
+import EntitySelector from 'components/EntitySelector';
+import RequestRow from './RequestRow';
+import { useMutation } from '@tanstack/react-query';
+import queryClient from 'utils/queryClient';
+import { useChannelRole } from 'hooks/useChannelRole';
+import { ShowingCount } from 'pages/Users/components/Teams';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 
-const Members = () => {
+type AppProps = {
+  channelData: IChannel;
+};
+
+const Members: React.FC<AppProps> = ({ channelData }) => {
   const { t } = useTranslation('channels');
-  const { filters, setFilters, clearFilters, updateFilter } =
-    useAppliedFiltersStore();
+  const { isUserAdminOrChannelAdmin } = useChannelRole(channelData.id);
+  const { filters, clearFilters, updateFilter } = useAppliedFiltersStore();
+
   const [isGrid, setGrid] = useState(true);
   const filterForm = useForm<{
     search: string;
@@ -36,72 +50,115 @@ const Members = () => {
     mode: 'onChange',
     defaultValues: { search: '' },
   });
-  const { control } = filterForm;
+  const { watch, resetField } = filterForm;
+  const searchValue = watch('search');
+
   const { searchParams } = useURLParams();
   const parsedTab = searchParams.get('type');
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
-
-  const { data, isLoading } = useInfiniteChannelMembers(
-    isFiltersEmpty({
-      role: filters?.type,
-      departments: 'departmentDebounced',
-      locations: 'locationDebounced',
-      // rest payload
+  const { data, isLoading } = useInfiniteChannelMembers({
+    channelId: channelData?.id,
+    q: isFiltersEmpty({
+      q: searchValue,
+      sort: filters?.sort,
+      userStatus: filters?.status?.length
+        ? filters?.status?.map((eachStatus: any) => eachStatus.id).join(',')
+        : undefined,
+      userRole: filters?.roles?.length
+        ? filters?.roles?.map((role: any) => role.id).join(',')
+        : undefined,
+      userTeam: filters?.teams?.length
+        ? filters?.teams?.map((eachStatus: any) => eachStatus.id).join(',')
+        : undefined,
+      byPeople: filters?.byPeople?.length
+        ? filters?.byPeople?.map((eachStatus: any) => eachStatus.id).join(',')
+        : undefined,
     }),
-    'teamId_424242424242424242424242424242424',
-  );
-
-  const channelMembers = data?.pages; // need to fix data
-
-  const departmentSearch = ''; // add the same debounced value of filters .
-  const debouncedDepartmentSearchValue = useDebounce(
-    departmentSearch || '',
-    500,
-  );
-  // quick filters api call ..
-  const {
-    data: fetchedDepartments,
-    isLoading: departmentLoading,
-    isFetchingNextPage: isFetchingNextDepartmentPage,
-    fetchNextPage: fetchNextDepartmentPage,
-    hasNextPage: hasNextDepartmentPage,
-  } = useInfiniteDepartments({
-    q: debouncedDepartmentSearchValue,
   });
-  const departmentData = fetchedDepartments?.pages.flatMap((page) => {
-    return page?.data?.result?.data.map((department: IDepartmentAPI) => {
+  const users = data?.pages.flatMap((page) => {
+    return page?.data?.result?.data.map((user: any) => {
       try {
-        return department;
+        return { id: user.id, role: user.role, ...user.user };
       } catch (e) {
-        console.log('Error', { department });
+        console.log('Error', { user });
       }
     });
   });
 
-  const locationSearch = ''; // add the same debounced value  of filters .
-  const debouncedLocationSearchValue = useDebounce(locationSearch || '', 500);
+  // Fetch channel requests
   const {
-    data: fetchedLocations,
-    isLoading: locationLoading,
-    isFetchingNextPage: isFetchingNextLocationPage,
-    fetchNextPage: fetchNextLocationPage,
-    hasNextPage: hasNextLocationPage,
-  } = useInfiniteLocations({
-    q: debouncedLocationSearchValue,
+    data: channelRequestData,
+    isLoading: isChannelRequestLoading,
+    hasNextPage: hasChannelRequestNextPage,
+    isFetchingNextPage: isChannelRequestFetchingNextPage,
+    fetchNextPage: fetchChannelRequestNextPage,
+  } = useInfiniteChannelsRequest(
+    channelData?.id,
+    isFiltersEmpty({
+      limit: 30,
+      status: CHANNEL_MEMBER_STATUS.PENDING,
+      sort: filters?.sort,
+    }),
+  );
+
+  const channelRequests =
+    channelRequestData?.pages?.flatMap((page) => {
+      return page?.data?.result?.data.map((request: IChannelRequest) => {
+        try {
+          return request;
+        } catch (e) {
+          console.log('Error', { request });
+        }
+      });
+    }) || [];
+
+  // Bulk accept channel request
+  const bulkRequestAcceptMutation = useMutation({
+    mutationKey: ['bulk-channel-request-accept'],
+    mutationFn: (payload: { approve?: string[] }) =>
+      bulkChannelRequestUpdate(channelData!.id, payload),
+    onSuccess: () => {
+      successToastConfig({
+        content: 'Successfully accepted all selected requests',
+      });
+    },
+    onError: () =>
+      failureToastConfig({
+        content: 'Something went wrong...! Please try again',
+      }),
+    onSettled: async () => {
+      await queryClient.invalidateQueries(['channel-requests'], {
+        exact: false,
+      });
+      queryClient.invalidateQueries({ queryKey: ['channel-members'] });
+      queryClient.invalidateQueries({ queryKey: ['channel'] });
+    },
   });
-  const locationData = fetchedLocations?.pages.flatMap((page) => {
-    return page.data.result.data.map((location: ILocationAPI) => {
-      try {
-        return location;
-      } catch (e) {
-        console.log('Error', { location });
-      }
-    });
+
+  // Bulk reject channel request
+  const bulkRequestRejectMutation = useMutation({
+    mutationKey: ['bulk-channel-request-reject'],
+    mutationFn: (payload: { reject?: Record<string, any>[] }) =>
+      bulkChannelRequestUpdate(channelData!.id, payload),
+    onSuccess: () =>
+      successToastConfig({
+        content: 'Successfully declined all selected requests',
+      }),
+    onError: () =>
+      failureToastConfig({
+        content: 'Something went wrong...! Please try again',
+      }),
+    onSettled: async () => {
+      await queryClient.invalidateQueries(['channel-requests'], {
+        exact: false,
+      });
+      queryClient.invalidateQueries({ queryKey: ['channel-members'] });
+      queryClient.invalidateQueries({ queryKey: ['channel'] });
+    },
   });
 
   // quick Filters options
-  const { isAdmin } = useRole();
   const requestOptions = [
     {
       label: 'All members ',
@@ -112,7 +169,7 @@ const Members = () => {
         setGrid(true);
       },
     },
-    isAdmin && {
+    isUserAdminOrChannelAdmin && {
       label: 'Requests',
       labelClassName: 'text-xs font-medium',
       stroke: 'text-neutral-900',
@@ -123,20 +180,7 @@ const Members = () => {
     },
   ].filter(Boolean); // request options only for admin
 
-  const selectAllEntity = () => {
-    // channelMembers?.forEach((user: any) => setValue(`users.${user.id}`, user));
-  };
-
-  const deselectAll = () => {
-    // Object.keys(users || {}).forEach((key) => {
-    //   setValue(`users.${key}`, false);
-    // });
-  };
-
   useEffect(() => {
-    setFilters({
-      type: searchParams.get('type') || 'All_Members',
-    });
     if (parsedTab !== 'All_Members') {
       setGrid(false);
     } else {
@@ -144,6 +188,7 @@ const Members = () => {
     }
     return () => clearFilters();
   }, [parsedTab]);
+
   return (
     <>
       <Card className="p-8 flex flex-col gap-6">
@@ -151,38 +196,50 @@ const Members = () => {
           <p className="text-2xl font-bold text-neutral-900">
             {t('members.title')}
           </p>
-          <Button
-            label={t('members.addMemberCTA')}
-            leftIcon="add"
-            leftIconClassName="text-white pointer-events-none group-hover:text-white"
-            onClick={() => openAddMemberModal()}
-          />
+          {isUserAdminOrChannelAdmin && (
+            <Button
+              label={t('members.addMemberCTA')}
+              leftIcon="add"
+              leftIconClassName="text-white pointer-events-none group-hover:text-white"
+              onClick={() => openAddMemberModal()}
+            />
+          )}
         </div>
         <FilterMenu
           filterForm={filterForm}
-          searchPlaceholder={t('searchChannels')}
+          searchPlaceholder={t('members.searchMembers')}
           dataTestIdFilter="channel-filter-icon"
           dataTestIdSort="channel-sort-icon"
           dataTestIdSearch="channel-search"
+          variant={FilterModalVariant.ChannelMember}
         >
           <div className="flex items-center gap-2">
             <div className="text-neutral-500">
-              Showing {channelMembers?.length} results
-              {/*  {!isLoading && data?.pages[0]?.data?.result?.totalCount}{' '} */}
+              <ShowingCount
+                isLoading={isLoading}
+                count={
+                  isGrid
+                    ? users?.length
+                    : channelRequestData?.pages[0]?.data?.result?.totalCount
+                }
+              />
             </div>
             <div className="relative">
-              {isAdmin ? (
+              {isUserAdminOrChannelAdmin ? (
                 <PopupMenu
                   triggerNode={
                     <Button
-                      active={filters?.type}
+                      active={parsedTab == 'All_Members' || filters?.type}
                       variant={Variant.Secondary}
                       label={
+                        parsedTab == 'All_Members' ||
                         filters?.type == 'All_Members'
                           ? 'All members'
                           : 'Requests'
                       }
-                      rightIcon={'arrowDown'}
+                      rightIcon={`${
+                        isUserAdminOrChannelAdmin ? 'arrowDown' : ''
+                      }`}
                     />
                   }
                   menuItems={requestOptions as any}
@@ -196,67 +253,32 @@ const Members = () => {
                 /> // for end user its a button
               )}
             </div>
-            <div className="relative">
-              <InfiniteSearch
-                triggerNodeClassName={'!py-2 !px-4'}
-                title="Departments"
-                control={control}
-                options={
-                  departmentData?.map((department: IDepartmentAPI) => ({
-                    label: department.name,
-                    value: department,
-                    id: department.id,
-                  })) || []
-                }
-                searchName={'departmentSearch'}
-                optionsName={'departments'}
-                isLoading={departmentLoading}
-                isFetchingNextPage={isFetchingNextDepartmentPage}
-                fetchNextPage={fetchNextDepartmentPage}
-                hasNextPage={hasNextDepartmentPage}
-                onApply={() => {}}
-                onReset={() => {}}
-                // selectionCount={selectedDepartments.length}
-              />
-            </div>
-            <div className="relative">
-              <InfiniteSearch
-                triggerNodeClassName={'!py-2 !px-4'}
-                title="Location"
-                control={control}
-                options={
-                  locationData?.map((location: ILocationAPI) => ({
-                    label: location.name,
-                    value: location,
-                    id: location.id,
-                  })) || []
-                }
-                searchName={'locationSearch'}
-                optionsName={'locations'}
-                isLoading={locationLoading}
-                isFetchingNextPage={isFetchingNextLocationPage}
-                fetchNextPage={fetchNextLocationPage}
-                hasNextPage={hasNextLocationPage}
-                onApply={() =>
-                  // ...Object.keys(locations).filter(
-                  //   (key: string) => !!locations[key],
-                  // ),
-                  {}
-                }
-                onReset={() => {
-                  // if (locations) {
-                  //   Object.keys(locations).forEach((key: string) =>
-                  //     setValue(`locations.${key}`, false),
-                  //   );
-                  // }
-                }}
-                // selectionCount={selectedLocations.length} // will use the filter location global location state
-              />
-            </div>
           </div>
         </FilterMenu>
+        <div className="flex items-center gap-2">
+          {isGrid && users?.length == 0 && (
+            <NoDataFound
+              className="py-4 w-full"
+              searchString={searchValue}
+              illustration="noResult"
+              message={
+                <p>
+                  Sorry we can&apos;t find the Member you are looking for.
+                  <br /> Please check the spelling or try again.
+                </p>
+              }
+              clearBtnLabel={searchValue ? 'Clear Search' : 'Clear Filters'}
+              onClearSearch={() => {
+                searchValue && resetField
+                  ? resetField('search', { defaultValue: '' })
+                  : clearFilters();
+              }}
+              dataTestId="people"
+            />
+          )}
+        </div>
         {isGrid ? (
-          <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
+          <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 xl:grid-cols-4 1.5xl:grid-cols-5">
             {isLoading
               ? [...Array(10)].map((element) => (
                   <div key={element}>
@@ -264,83 +286,108 @@ const Members = () => {
                   </div>
                 ))
               : null}
-            {userData.map((user) => (
-              <PeopleCard key={user.id} userData={user} />
+
+            {users?.map((user) => (
+              <PeopleCard
+                isUserAdminOrChannelAdmin={isUserAdminOrChannelAdmin}
+                isChannelPeople={true}
+                key={user.id}
+                userData={user}
+                channelId={channelData?.id}
+              />
             ))}
           </div>
         ) : (
-          <MemberTable
-            data={userData}
-            selectAllEntity={selectAllEntity}
-            deselectAll={deselectAll}
+          <EntitySelector
+            isLoading={isChannelRequestLoading}
+            entityHeaderRenderer={() =>
+              (
+                <div className="flex items-center gap-4 py-3">
+                  <p className="text-base font-bold text-neutral-500 flex w-[43%] mr-[48px]">
+                    Member requests
+                  </p>
+
+                  <p className="text-base font-bold text-neutral-500 flex w-[30%]">
+                    Role
+                  </p>
+                  <p className="text-base font-bold text-neutral-500 w-[20%]">
+                    Location
+                  </p>
+                </div>
+              ) as ReactNode
+            }
+            entityRenderer={(entity) =>
+              (<RequestRow request={entity as IChannelRequest} />) as ReactNode
+            }
+            entityData={channelRequests}
+            menuItems={[
+              {
+                key: 'accept',
+                component: (selectedEntities: IChannelRequest[], reset) =>
+                  (
+                    <Button
+                      label="Accept"
+                      leftIcon="tickCircle"
+                      leftIconSize={16}
+                      leftIconClassName="!text-neutral-500 group-hover:!text-primary-600"
+                      labelClassName="!font-semibold !text-neutral-700 group-hover:!text-primary-600 group-active:text-primary-700"
+                      variant={Variant.Tertiary}
+                      onClick={() => {
+                        bulkRequestAcceptMutation.mutate(
+                          {
+                            approve: selectedEntities.map(
+                              (entity) => entity.id,
+                            ),
+                          },
+                          {
+                            onSettled: () => reset(),
+                          },
+                        );
+                      }}
+                      loading={bulkRequestAcceptMutation.isLoading}
+                    />
+                  ) as ReactNode,
+              },
+              {
+                key: 'decline',
+                component: (selectedEntities: IChannelRequest[], reset) => (
+                  <Button
+                    label="Decline"
+                    leftIcon="delete"
+                    leftIconSize={16}
+                    leftIconClassName="!text-neutral-500 group-hover:!text-primary-600"
+                    labelClassName="!font-semibold !text-neutral-700 group-hover:!text-primary-600 group-active:text-primary-700"
+                    variant={Variant.Tertiary}
+                    onClick={() =>
+                      bulkRequestRejectMutation.mutate(
+                        {
+                          reject: selectedEntities.map((entity) => ({
+                            id: entity.id,
+                            reason: 'Not eligible',
+                          })),
+                        },
+                        {
+                          onSettled: () => reset(),
+                        },
+                      )
+                    }
+                    loading={bulkRequestRejectMutation.isLoading}
+                  />
+                ),
+              },
+            ]}
+            hasNextPage={hasChannelRequestNextPage}
+            isFetchingNextPage={isChannelRequestFetchingNextPage}
+            fetchNextPage={fetchChannelRequestNextPage}
+            dataTestId="join-requests"
           />
         )}
       </Card>
-      {showAddMemberModal && (
-        <EntitySearchModal
+      {isUserAdminOrChannelAdmin && showAddMemberModal && channelData && (
+        <AddChannelMembersModal
           open={showAddMemberModal}
-          openModal={openAddMemberModal}
           closeModal={closeAddMemberModal}
-          entityType={EntitySearchModalType.Channel}
-          dataTestId="add-members"
-          entityRenderer={(data: any) => {
-            return (
-              <div className="flex items-center space-x-4 w-full">
-                <Avatar
-                  name={getFullName(data) || 'U'}
-                  size={32}
-                  image={getProfileImage(data)}
-                  dataTestId="member-profile-pic"
-                />
-                <div className="flex space-x-6 w-full">
-                  <div className="flex flex-col w-full">
-                    <div className="flex justify-between items-center">
-                      <div
-                        className="text-sm font-bold text-neutral-900 whitespace-nowrap line-clamp-1"
-                        data-testid="member-name"
-                      >
-                        {getFullName(data)}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="text-xs font-normal text-neutral-500"
-                        data-testid="member-email"
-                      >
-                        {data?.primaryEmail}
-                      </div>
-                      {data?.department && data?.workLocation?.name && (
-                        <div className="w-1 h-1 bg-neutral-500 rounded-full" />
-                      )}
-                      {data?.department?.name && (
-                        <div className="flex space-x-1 items-start">
-                          <Icon name="briefcase" size={16} />
-                          <div
-                            className="text-xs  font-normal text-neutral-500"
-                            data-testid="member-department"
-                          >
-                            {data?.department.name?.substring(0, 22)}
-                          </div>
-                        </div>
-                      )}
-
-                      {data?.isPresent && (
-                        <div className="text-xs font-semibold text-neutral-500">
-                          Already a member
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          }}
-          onSubmit={() => {}}
-          disableKey="isPresent"
-          title="Add  members @DummyChannel"
-          submitButtonText="Enroll members"
-          onCancel={closeAddMemberModal}
-          cancelButtonText="Cancel"
+          channelData={channelData}
         />
       )}
     </>

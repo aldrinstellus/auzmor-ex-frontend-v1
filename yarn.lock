@@ -112,7 +112,7 @@
 
 "@apideck/vault-react@^1.0.6", "@apideck/vault-react@^1.3.1":
   version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@apideck/vault-react/-/vault-react-1.3.1.tgz#f177006f24f564c314dc19b57ebca9627c78371a"
+  resolved "https://registry.npmjs.org/@apideck/vault-react/-/vault-react-1.3.1.tgz"
   integrity sha512-mzzhIQlo1FuLhqe6mbBo+EgQ2MCLfImookcXP57XkOyXg7le0rWAlbf+Ib2vrb+FpHeV/AgGFe7vc4Gk2M9FYQ==
   dependencies:
     "@apideck/vault-js" "^1.6.0"
@@ -2366,18 +2366,10 @@
   dependencies:
     "@types/unist" "*"
 
-"@types/hoist-non-react-statics@^3.3.0":
+"@types/hoist-non-react-statics@^3.3.0", "@types/hoist-non-react-statics@^3.3.1":
   version "3.3.1"
   resolved "https://registry.npmjs.org/@types/hoist-non-react-statics/-/hoist-non-react-statics-3.3.1.tgz"
   integrity sha512-iMIqiko6ooLrTh1joXodJK5X9xeEALT1kM5G3ZLhD3hszxBdIEd5C75U834D9mLcINgD4OyZf5uQXjkuYydWvA==
-  dependencies:
-    "@types/react" "*"
-    hoist-non-react-statics "^3.3.0"
-
-"@types/hoist-non-react-statics@^3.3.1":
-  version "3.3.5"
-  resolved "https://registry.yarnpkg.com/@types/hoist-non-react-statics/-/hoist-non-react-statics-3.3.5.tgz#dab7867ef789d87e2b4b0003c9d65c49cc44a494"
-  integrity sha512-SbcrWzkKBw2cdwRTwQAswfpB9g9LJWfjtUeW/jvNwbhC8cpmmNYVePa+ncbUe0rGTQ7G3Ff6mYUN2VMfLVr+Sg==
   dependencies:
     "@types/react" "*"
     hoist-non-react-statics "^3.3.0"
@@ -5555,6 +5547,13 @@ fraction.js@^4.2.0:
   version "4.2.0"
   resolved "https://registry.npmjs.org/fraction.js/-/fraction.js-4.2.0.tgz"
   integrity sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==
+
+framer-motion@^11.2.12:
+  version "11.2.12"
+  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-11.2.12.tgz#ca5c49f8a1c70163cbadabcbd318acdcfea569fb"
+  integrity sha512-lCjkV4nA9rWOy2bhR4RZzkp2xpB++kFmUZ6D44V9VQaxk+JDmbDd5lq+u58DjJIIllE8AZEXp9OG/TyDN4FB/w==
+  dependencies:
+    tslib "^2.4.0"
 
 fresh@0.5.2:
   version "0.5.2"
@@ -9874,7 +9873,7 @@ react-loading-skeleton@^3.3.1:
 
 react-markdown@^9.0.1:
   version "9.0.1"
-  resolved "https://registry.yarnpkg.com/react-markdown/-/react-markdown-9.0.1.tgz#c05ddbff67fd3b3f839f8c648e6fb35d022397d1"
+  resolved "https://registry.npmjs.org/react-markdown/-/react-markdown-9.0.1.tgz"
   integrity sha512-186Gw/vF1uRkydbsOIkcGXw7aHq0sZOCRFFjGrr7b9+nVZg4UfA4enXCaxm4fUzecU38sWfrNDitGhshuU7rdg==
   dependencies:
     "@types/hast" "^3.0.0"
@@ -10177,7 +10176,7 @@ relateurl@^0.2.7:
 
 remark-directive-rehype@^0.4.2:
   version "0.4.2"
-  resolved "https://registry.yarnpkg.com/remark-directive-rehype/-/remark-directive-rehype-0.4.2.tgz#044040455523a3281a7be7fdde304714d29021b5"
+  resolved "https://registry.npmjs.org/remark-directive-rehype/-/remark-directive-rehype-0.4.2.tgz"
   integrity sha512-T6e+IG+BwqU4++MK54vFb+KDFjs3a+tHeK6E0T0ctR1FSyngolfDtAEzqxHWlRzQZqGi2sB4DFXry6oqH87D/g==
   dependencies:
     hastscript "^7.0.2"
@@ -10185,7 +10184,7 @@ remark-directive-rehype@^0.4.2:
 
 remark-directive@^3.0.0:
   version "3.0.0"
-  resolved "https://registry.yarnpkg.com/remark-directive/-/remark-directive-3.0.0.tgz#34452d951b37e6207d2e2a4f830dc33442923268"
+  resolved "https://registry.npmjs.org/remark-directive/-/remark-directive-3.0.0.tgz"
   integrity sha512-l1UyWJ6Eg1VPU7Hm/9tt0zKtReJQNOA4+iDMAxTyZNWnJnFlbS/7zhiel/rogTLQ2vMYwDzSJa4BiVNqGlqIMA==
   dependencies:
     "@types/mdast" "^4.0.0"
@@ -10195,7 +10194,7 @@ remark-directive@^3.0.0:
 
 remark-gfm@^4.0.0:
   version "4.0.0"
-  resolved "https://registry.yarnpkg.com/remark-gfm/-/remark-gfm-4.0.0.tgz#aea777f0744701aa288b67d28c43565c7e8c35de"
+  resolved "https://registry.npmjs.org/remark-gfm/-/remark-gfm-4.0.0.tgz"
   integrity sha512-U92vJgBPkbw4Zfu/IiW2oTZLSL3Zpv+uI7My2eq8JxKgqraFdU8YUGicEJCEgSbeaG+QDFqIcwwfMTOEelPxuA==
   dependencies:
     "@types/mdast" "^4.0.0"

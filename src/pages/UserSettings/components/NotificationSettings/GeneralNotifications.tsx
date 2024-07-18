@@ -8,8 +8,10 @@ import {
 } from 'queries/users';
 import useAuth from 'hooks/useAuth';
 import { useMutation } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 
 const GeneralNotifications = () => {
+  const { t } = useTranslation('userSetting', { keyPrefix: 'notifications' });
   const { user, updateUser } = useAuth();
 
   const updateMutation = useMutation({
@@ -23,7 +25,6 @@ const GeneralNotifications = () => {
     updatedNotificationSettings: INotificationSettings,
     reset: () => void,
   ) => {
-    console.log({ updatedNotificationSettings });
     updateMutation.mutate(
       { notificationSettings: updatedNotificationSettings },
       {
@@ -42,7 +43,7 @@ const GeneralNotifications = () => {
   return (
     <div className="space-y-4">
       <Accordion
-        title="Posts"
+        title={t('posts')}
         dataTestId="posts-notifications"
         content={
           <NotificationSettingsList

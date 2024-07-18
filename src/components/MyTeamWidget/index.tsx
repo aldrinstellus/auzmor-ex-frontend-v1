@@ -12,7 +12,7 @@ import TeamNotFound from 'images/TeamNotFound.svg';
 import { memo, FC, useMemo } from 'react';
 import clsx from 'clsx';
 
-interface IMyTeamWidgetProps {
+export interface IMyTeamWidgetProps {
   className?: string;
 }
 

@@ -58,6 +58,15 @@ export const getBrwoserTimezone = () => {
   const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   return browserTimezone === 'Asia/Calcutta' ? 'Asia/Kolkata' : browserTimezone;
 };
+export const isOutOfOffice = (startDate: string, endDate: string) => {
+  const start = moment(startDate);
+  const end = moment(endDate);
+  if (!start || !endDate) {
+    return false;
+  }
+  const currentDate = moment();
+  return currentDate.isBetween(start, end, null, '[]'); // '[]' includes both start and end dates
+};
 
 export const getTimezoneNameFromIANA = (
   iana: string,
@@ -191,3 +200,37 @@ export const getTimeFromNow = (dateStr: string, timezone: string) => {
 export const getNow = () => moment().toDate();
 
 export const nDaysFromNow = (n = 1) => moment().add(n, 'days').toDate();
+
+export const groupByDate: <T>(
+  items: T[],
+  prefferedKey?: string,
+) => {
+  today: T[];
+  yesterday: T[];
+  older: T[];
+  length: number;
+} = (items, prefferedKey = 'updatedAt') => {
+  console.log(items);
+  const today = moment().startOf('day');
+  const yesterday = moment().subtract(1, 'days').startOf('day');
+
+  const groupedItems: any = {
+    today: [],
+    yesterday: [],
+    older: [],
+    length: items.length,
+  };
+
+  items.forEach((item) => {
+    const updatedAt = moment((item as any)[prefferedKey]);
+    if (updatedAt.isSame(today, 'd')) {
+      groupedItems.today.push(item);
+    } else if (updatedAt.isSame(yesterday, 'd')) {
+      groupedItems.yesterday.push(item);
+    } else {
+      groupedItems.older.push(item);
+    }
+  });
+
+  return groupedItems;
+};

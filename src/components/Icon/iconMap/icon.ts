@@ -118,6 +118,7 @@ import ProfileUser from '../components/ProfileUser';
 import ShareForward from '../components/ShareForward';
 import Cancel from '../components/Cancel';
 import LinearLeftArrow from '../components/LinearLeftArrow';
+import LinearRightArrow from '../components/LinearRightArrow/index';
 import PostBookmarkIcon from '../components/PostBookmark';
 import Repost from '../components/Repost';
 import Calendar from '../components/Calendar';
@@ -143,8 +144,13 @@ import VideoSlash from '../components/VideoSlash';
 import SvgInfoIcon from '../components/Info';
 import CloudAddIcon from '../components/CloudAdd';
 import BoldTick from '../components/BoldTick';
-import MenuBoardIcon from '../components/MenuBoard';
+import EditIconGreenOutline from '../components/EditGreenOutline';
+import LockIcon from '../components/Lock';
 import StarIcon from '../components/Star';
+import NewsIcon from '../components/News';
+import WebsiteIcon from '../components/Website';
+import GalleryIcon from '../components/Gallery';
+import MenuBoardIcon from '../components/MenuBoard';
 import StarHalfIcon from '../components/StarHalf';
 import LifeBuoyIcon from '../components/LifeBuoy';
 import ShopingCartIcon from '../components/ShoppingCart';
@@ -166,12 +172,19 @@ import VideoFileIcon from '../components/VideoFile';
 import FolderIcon from '../components/Folder';
 import FormIcon from '../components/form';
 import SharePoint from '../components/SharePoint';
+import ProfileAddIcon from '../components/ProfileAdd';
+import ArchiveIcon from '../components/Archive';
+import UserTagIcon from '../components/User-tag';
+import MessageTagIcon from '../components/message-tag';
+import LockOpenIcon from '../components/LockOpen';
+import GlobalEditIcon from '../components/GlobalEdit';
 
 export const icon = {
   add: Add,
   addCircle: AddCircle,
   admin: AdminIcon,
   announcementChart: AnnouncementChartIcon,
+  archive: ArchiveIcon,
   arrowDown: ArrowDown,
   arrowLeft: ArrowLeftIcon,
   arrowRight: ArrowRightIcon,
@@ -210,15 +223,16 @@ export const icon = {
   deactivateUser: DeactivateUser,
   delete: DeleteIcon,
   deleteCross: DeleteCrossIcon,
+  doc: DocIcon,
   document: DocumentIcon,
   documentUpload: DocumentUpload,
+  docx: DocIcon,
   dotsHorizontal: dotsHorizontalIcon,
   dotsVertical: DotsVerticalIcon,
   download: DownloadIcon,
   draft: DraftIcon,
-  doc: DocIcon,
-  docx: DocIcon,
   edit: EditIcon,
+  editGreenOutline: EditIconGreenOutline,
   editReceipt: EditReceipt,
   email: EmailIcon,
   emojiHappy: EmojiHappy,
@@ -239,12 +253,16 @@ export const icon = {
   folderConnection: FolderConnectionIcon,
   folderOpen: FolderOpen,
   forbidden: Forbidden,
+  form: FormIcon,
   fullScreen: FullScreenIcon,
   funny: Funny,
   funnyReaction: FunnyReaction,
+  gallery: GalleryIcon,
   galleryExport: GalleryExport,
   gear: Gear,
   global: Global,
+  'global-edit': GlobalEditIcon,
+  google: GoogleIcon,
   group: GroupIcon,
   home: HomeIcon,
   iconLinear: IconLinear,
@@ -257,12 +275,16 @@ export const icon = {
   insightfulReaction: InsightfulReaction,
   integration: Integration,
   launcher: LauncherIcon,
+  lifeBuoy: LifeBuoyIcon,
   like: Like,
   likeIcon: LikeIcon,
   likeReaction: LikeReaction,
   linearLeftArrow: LinearLeftArrow,
+  linearRightArrow: LinearRightArrow,
   link: Link,
   location: LocationIcon,
+  lock: LockIcon,
+  'lock-open': LockOpenIcon,
   logout: LogoutIcon,
   love: Love,
   loveReaction: LoveReaction,
@@ -272,27 +294,34 @@ export const icon = {
   marketplace: Marketplace,
   marriedIcon: MarriedIcon,
   maximize: MaximizeIcon,
+  medalStar: MedalStarIcon,
   menuBoard: MenuBoardIcon,
+  'message-tag': MessageTagIcon,
+  messageQuestion: MessageQuestionIcon,
   mic: MicIcon,
   minus: Minus,
   more: MoreIcon,
   mute: MuteIcon,
+  news: NewsIcon,
   noteFavourite: NoteFavouriteIcon,
   notification: NotificationIcon,
   orangeHashtag: OrangeHashtagIcon,
   outOfOffice: OutOfOfficeIcon,
   pause: PauseIcon,
+  pdf: PdfIcon,
   people: PeopleIcon,
   play: PlayIcon,
   plus: Plus,
   postBookmark: PostBookmarkIcon,
   ppt: PptIcon,
   profile: ProfileIcon,
+  profileAdd: ProfileAddIcon,
   profileUser: ProfileUser,
   promoteUser: PromoteUserIcon,
-  pdf: PdfIcon,
+  radar: RadarIcon,
   reactivateUser: ReactivateUser,
   redo: Redo,
+  refresh: RefreshIcon,
   reorder: Reorder,
   reply: Reply,
   repost: Repost,
@@ -305,6 +334,7 @@ export const icon = {
   settingThree: SettingThreeIcon,
   shareForward: ShareForward,
   sharePoint: SharePoint,
+  shoppingCart: ShopingCartIcon,
   slack: SlackIcon,
   speaker: SpeakerIcon,
   star: StarIcon,
@@ -312,30 +342,24 @@ export const icon = {
   support: Support,
   supportReaction: SupportReaction,
   tag: Tag,
+  teacher: TeacherIcon,
   threeDots: ThreeDots,
   tickCircle: TickCircleIcon,
   trash: Trash,
+  'user-tag': UserTagIcon,
+  userAdmin: UserAdminIcon,
   userManagement: UserManagement,
   userRemove: UserRemove,
   users: UsersIcon,
-  userAdmin: UserAdminIcon,
   video: VideoIcon,
-  radar: RadarIcon,
-  videoSlash: VideoSlash,
-  warningCircle: WarningCircleIcon,
-  zoomIn: ZoomInIcon,
-  zoomOut: ZoomOutIcon,
-  lifeBuoy: LifeBuoyIcon,
-  shoppingCart: ShopingCartIcon,
-  videoPlay: VideoPlayIcon,
   videoFile: VideoFileIcon,
-  messageQuestion: MessageQuestionIcon,
-  teacher: TeacherIcon,
-  medalStar: MedalStarIcon,
+  videoPlay: VideoPlayIcon,
+  videoSlash: VideoSlash,
   videoSquare: VideoSquareIcon,
+  warningCircle: WarningCircleIcon,
+  website: WebsiteIcon,
   xls: XlsIcon,
   xlsx: XlsIcon,
-  google: GoogleIcon,
-  refresh: RefreshIcon,
-  form: FormIcon,
+  zoomIn: ZoomInIcon,
+  zoomOut: ZoomOutIcon,
 };

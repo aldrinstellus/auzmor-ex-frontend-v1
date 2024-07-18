@@ -24,6 +24,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateUserById } from 'queries/users';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useAuth from 'hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 
 interface IForm {
   timezone: { value: string; label: string };
@@ -44,6 +45,7 @@ const schema = yup.object({
 });
 
 const BasicSettings = () => {
+  const { t } = useTranslation('userSetting');
   const { user, updateUser } = useAuth();
   const [ooo, setOOO] = useState(user?.outOfOffice?.outOfOffice);
   const userTimezone = getTimezoneNameFromIANA(user?.timezone || '');
@@ -87,7 +89,7 @@ const BasicSettings = () => {
   const timezoneField: any = [
     {
       type: FieldType.SingleSelect,
-      label: 'Timezone',
+      label: t('timezone'),
       name: 'timezone',
       control: control,
       options: timezones.map((timeZone) => ({
@@ -108,7 +110,7 @@ const BasicSettings = () => {
     {
       type: FieldType.DatePicker,
       name: 'ooo.start',
-      label: 'Start date',
+      label: t('start-date'),
       className: '',
       minDate: beforeXUnit(1, 'days').toDate(),
       control,
@@ -118,7 +120,7 @@ const BasicSettings = () => {
     {
       type: FieldType.DatePicker,
       name: 'ooo.end',
-      label: 'End date',
+      label: t('end-date'),
       className: '',
       minDate: new Date(),
       control,
@@ -130,11 +132,11 @@ const BasicSettings = () => {
   const oooMessageField = [
     {
       type: FieldType.SingleSelect,
-      label: 'Out of office reason',
+      label: t('o-o-o-reason'),
       name: 'ooo.reason',
       control: control,
       options: oooReasons,
-      placeholder: 'Select a reason',
+      placeholder: t('select-reason'),
       dataTestId: 'ooo-reason',
       disabled: !ooo,
     },
@@ -143,10 +145,10 @@ const BasicSettings = () => {
   const oooCustomMessageField = [
     {
       type: FieldType.Input,
-      label: 'Message',
+      label: t('message'),
       name: 'ooo.message',
       control: control,
-      placeholder: 'ex. family function. will be available through text',
+      placeholder: t('message-placeholder'),
       dataTestId: 'ooo-others-message',
       error: errors?.['ooo.message']?.message,
       errorDataTestId: 'ooo-reason-error-message',
@@ -158,13 +160,14 @@ const BasicSettings = () => {
     let payload: Record<string, any> = {
       timeZone: data.timezone?.value,
     };
+
     if (ooo) {
       payload = {
         ...payload,
         outOfOffice: {
           outOfOffice: true,
-          start: formatDate(data?.ooo?.start),
-          end: formatDate(data?.ooo?.end),
+          start: formatDate(data?.ooo?.start?.$d),
+          end: formatDate(data?.ooo?.end?.$d),
           otherReason: data?.ooo?.reason?.key,
         },
       };
@@ -178,19 +181,19 @@ const BasicSettings = () => {
         <Card className="!px-6 !py-4">
           <div className="flex justify-between items-center">
             <div className="text-neutral-900 text-base font-bold">
-              User Settings
+              {t('title')}
             </div>
             {isDirty && (
               <div className="flex items-center space-x-2">
                 <Button
-                  label="Cancel"
+                  label={t('cancelCTA')}
                   size={Size.Small}
                   variant={Variant.Secondary}
                   dataTestId="basic-settings-cancel"
                   disabled={updateMutation.isLoading}
                 />
                 <Button
-                  label="Save changes"
+                  label={t('saveCTA')}
                   size={Size.Small}
                   onClick={handleSubmit(onSubmit)}
                   dataTestId="basic-settings-save-changes"
@@ -200,20 +203,20 @@ const BasicSettings = () => {
             )}
           </div>
           <div className="mt-4 text-sm text-neutral-500">
-            To change your personal settings{' '}
+            {t('description')}
             <Link to="/profile">
               <span
                 className="text-primary-500 font-bold"
                 data-testid="goto-myprofile"
               >
-                go to my profile
+                {t('descriptionLink')}
               </span>
             </Link>
           </div>
         </Card>
         <Card className="!px-6 !pt-0 !pb-6">
           <div className="text-neutral-900 text-base font-bold py-4">
-            General Settings
+            {t('general-settings')}
           </div>
           <Divider />
           <div className="pt-4">
@@ -226,7 +229,7 @@ const BasicSettings = () => {
               className="text-neutral-900 text-base font-bold py-4"
               data-testid="outofoffice-title"
             >
-              Out of Office
+              {t('o-o-o')}
             </div>
             <div>
               <SwitchToggle

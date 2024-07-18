@@ -24,6 +24,7 @@ import useRole from 'hooks/useRole';
 import { FC } from 'react';
 import ManagerWidget from 'components/ManagerWidget';
 import Recognitions from './components/Recognitions';
+import { useTranslation } from 'react-i18next';
 import { usePageTitle } from 'hooks/usePageTitle';
 
 export interface IUpdateProfileImage {
@@ -40,6 +41,7 @@ const UserDetail: FC<IUserDetailProps> = () => {
   const params = useParams();
   const { pathname } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { t } = useTranslation('profile');
   let editType = UserEditType.NONE;
 
   let userDetail;
@@ -82,7 +84,7 @@ const UserDetail: FC<IUserDetailProps> = () => {
     {
       id: 1,
       tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>Profile</div>
+        <div className={tabStyles(isActive)}>{t('tabs.profile')}</div>
       ),
       dataTestId: 'user-profile-tab',
       tabContent: (
@@ -99,7 +101,7 @@ const UserDetail: FC<IUserDetailProps> = () => {
     {
       id: 2,
       tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>Activity</div>
+        <div className={tabStyles(isActive)}>{t('tabs.activity')}</div>
       ),
       dataTestId: 'user-activity-tab',
       tabContent: (
@@ -116,9 +118,9 @@ const UserDetail: FC<IUserDetailProps> = () => {
     {
       id: 3,
       tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>Recognitions</div>
+        <div className={tabStyles(isActive)}>{t('tabs.recognitions')}</div>
       ),
-      title: 'Recognitions',
+      title: t('tabs.recognitions'),
       dataTestId: 'user-recognitions-tab',
       tabContent: (
         <Recognitions

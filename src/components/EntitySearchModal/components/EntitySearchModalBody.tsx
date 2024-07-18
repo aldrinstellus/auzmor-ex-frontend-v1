@@ -3,6 +3,7 @@ import { EntitySearchModalType } from '..';
 import MembersBody from './MembersBody';
 import TeamsBody from './TeamsBody';
 import ChannelsBody from './ChannelsBody';
+import ChannelMembersBody from './ChannelMembersBody';
 
 type ApiCallFunction = (queryParams: any) => any;
 interface IEntitySearchModalBodyProps {
@@ -63,6 +64,14 @@ const EntitySearchModalBody: FC<IEntitySearchModalBodyProps> = ({
           entityRenderer={entityRenderer}
           selectedChannelIds={selectedChannelIds}
           dataTestId={dataTestId || 'channel'}
+        />
+      );
+    case EntitySearchModalType.ChannelMembers:
+      return (
+        <ChannelMembersBody
+          dataTestId={dataTestId || 'channel-member'}
+          fetchUsers={fetchUsers}
+          usersQueryParams={usersQueryParams}
         />
       );
     default:

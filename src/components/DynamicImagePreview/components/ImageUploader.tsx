@@ -39,7 +39,7 @@ const ImageUploader: FC<IImageUploaderProps> = ({
     }
     if (file.size > IMG_FILE_SIZE_LIMIT * 1024 * 1024) {
       showErrorToast(
-        'The file you are trying to upload exceeds the 5MB attachment limit. Try uploading a smaller file',
+        'The file you are trying to upload exceeds the 50MB attachment limit. Try uploading a smaller file',
       );
       return;
     }

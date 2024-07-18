@@ -6,11 +6,14 @@ import EntitySearchModalBody from './components/EntitySearchModalBody';
 import { useForm } from 'react-hook-form';
 import { IGetUser } from 'queries/users';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
+import { CHANNEL_ROLE } from 'stores/channelStore';
+import { ITeam } from 'queries/teams';
 
 export enum EntitySearchModalType {
   User = 'USER',
   Team = 'TEAM',
   Channel = 'CHANNEL',
+  ChannelMembers = 'CHANNEL_MEMBERS',
 }
 
 type ApiCallFunction = (queryParams: any) => any;
@@ -34,6 +37,15 @@ interface IEntitySearchModalProps {
   usersQueryParams?: Record<string, any>;
 }
 
+export interface IChannelMembersField {
+  users: {
+    [key: string]: { user?: IGetUser; role?: CHANNEL_ROLE } | undefined;
+  };
+  teams: {
+    [key: string]: { team?: ITeam; role?: CHANNEL_ROLE } | undefined;
+  };
+}
+
 export interface IAudienceForm {
   memberSearch: string;
   teamSearch: string;
@@ -52,6 +64,11 @@ export interface IAudienceForm {
   teams: any;
   channels: any;
   users: Record<string, IGetUser | false>;
+  channelMembers: IChannelMembersField;
+  userStatus: any;
+  userStatusSearch: string;
+  byPeople: any;
+  byPeopleSearch: string;
 }
 
 const EntitySearchModal: FC<IEntitySearchModalProps> = ({

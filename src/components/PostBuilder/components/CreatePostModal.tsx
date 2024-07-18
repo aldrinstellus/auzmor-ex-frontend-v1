@@ -101,7 +101,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
 
   const mediaRef = useRef<IMedia[]>([]);
 
-  const { feed, updateFeed, setFeed } = useFeedStore();
+  const { feed, activeFeedPostCount, updateFeed, setFeed } = useFeedStore();
 
   const queryClient = useQueryClient();
 
@@ -373,6 +373,8 @@ const CreatePostModal: FC<ICreatePostModal> = ({
           exact: false,
         });
       }
+      if (activeFeedPostCount === 0)
+        await queryClient.invalidateQueries(['feed']);
       await queryClient.invalidateQueries(['feed-announcements-widget']);
       await queryClient.invalidateQueries(['post-announcements-widget']);
     },

@@ -250,7 +250,7 @@ const RichTextEditor = forwardRef(
         errors.push({
           errorType: MediaValidationError.ImageSizeExceed,
           errorMsg:
-            'Some images are droped. An Image can not exceeded 5MB limit size. Please try again later',
+            'Some images are dropped. An Image can not exceeded 50MB limit size. Please try again later',
         });
       }
 

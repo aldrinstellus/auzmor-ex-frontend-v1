@@ -8,8 +8,10 @@ import {
 } from 'queries/organization';
 import queryClient from 'utils/queryClient';
 import Divider from 'components/Divider';
+import { useTranslation } from 'react-i18next';
 
 const GeneralSettings: FC = () => {
+  const { t } = useTranslation('adminSetting');
   const updateLimitPostingControlsMutation =
     useUpdateLimitGlobalPostingMutation();
   const { data, isLoading } = useOrganization();
@@ -26,14 +28,13 @@ const GeneralSettings: FC = () => {
         <div className="py-4 flex justify-between">
           <div className="flex flex-col">
             <div className="text-neutral-900 font-semibold text-sm">
-              Limit global posting
+              {t('limit-posting')}
             </div>
             <div
               className="text-xs text-neutral-900"
               data-testid="globalposting-helpnote"
             >
-              When Global Posting is ON, end users can&apos;t post to everyone,
-              only to their Team(s) or permitted Channels.
+              {t('description')}
             </div>
           </div>
           {isLoading ? (

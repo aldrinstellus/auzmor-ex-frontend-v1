@@ -11,6 +11,7 @@ import { IdentityProvider, useGetSSO } from 'queries/organization';
 import ConfigureLDAP from './components/ConfigureLDAP';
 import Banner, { Variant } from 'components/Banner';
 import SkeletonLoader from './components/SkeletonLoader';
+import { useTranslation } from 'react-i18next';
 
 enum ConfigureScreen {
   GENERIC = 'GENERIC',
@@ -44,7 +45,7 @@ const SSOSettings: FC = (): ReactElement => {
   // 3. If the user tries to activate any other SSO while one of them is active, show the error message.
   // 4. If the user successfully integrates SSO, refetch list of SSOs
   // 5. If the user successfully deletes SSO, refetch list of SSOs.
-
+  const { t } = useTranslation('adminSetting', { keyPrefix: 'sso' });
   const { data, isLoading, isError } = useGetSSO();
   const [open, openModal, closeModal] = useModal(undefined, false);
   const [ssoSetting, setSsoSetting] = useState<ISSOSetting>();
@@ -76,8 +77,7 @@ const SSOSettings: FC = (): ReactElement => {
   const ssoIntegrations = [
     {
       logo: ActiveDirectory,
-      description:
-        'LDAP (Lightweight Directory Access Protocol) an internet protocol, which is used to look up user data from a server.',
+      description: t('active-dir-des'),
       key: 'Active Directory',
       idp: IdentityProvider.CUSTOM_LDAP,
       configureScreen: ConfigureScreen.LDAP,
@@ -86,8 +86,7 @@ const SSOSettings: FC = (): ReactElement => {
     },
     {
       logo: MicrosoftAD,
-      description:
-        "Azure Active Directory (Azure AD) is Microsoft's cloud-based identity and access management service.",
+      description: t('azure-des'),
       key: 'ADFS (SSO)',
       idp: IdentityProvider.MS_AZURE_AD,
       configureScreen: ConfigureScreen.GENERIC,
@@ -96,8 +95,7 @@ const SSOSettings: FC = (): ReactElement => {
     },
     {
       logo: Okta,
-      description:
-        'The Okta Identity Cloud is an independent and neutral platform that securely connects the right people to the right technologies at right time.',
+      description: t('okta-des'),
       key: 'Okta (SSO)',
       idp: IdentityProvider.OKTA,
       configureScreen: ConfigureScreen.GENERIC,
@@ -106,8 +104,7 @@ const SSOSettings: FC = (): ReactElement => {
     },
     {
       logo: GSuite,
-      description:
-        'Use Google Cloud Identity to manage your users, apps, and devices from a central location—the Google Admin console.',
+      description: t('gsuite-des'),
       key: 'Google (SSO)',
       idp: IdentityProvider.GSUITE,
       configureScreen: ConfigureScreen.GENERIC,
@@ -116,8 +113,7 @@ const SSOSettings: FC = (): ReactElement => {
     },
     {
       logo: SAML,
-      description:
-        'Seamlessly enable secure access to Auzmor Learn through your own SAML-enabled identity provider.',
+      description: t('saml-des'),
       key: 'SAML (SSO)',
       idp: IdentityProvider.CUSTOM_SAML,
       configureScreen: ConfigureScreen.GENERIC,
@@ -132,7 +128,7 @@ const SSOSettings: FC = (): ReactElement => {
   );
 
   if (isError) {
-    return <div>Error fetching SSO List</div>;
+    return <div>{t('error-text')}</div>;
   }
 
   const onClick = (key: string) => {
