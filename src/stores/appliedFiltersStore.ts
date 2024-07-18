@@ -57,6 +57,6 @@ const clearURLParams = () => {
   ];
 
   paramsToDelete.forEach((param) => searchParams.delete(param));
-  const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
+  const newUrl = `${window.location.pathname}${searchParams.toString()}`;
   window.history.replaceState({}, '', newUrl);
 };

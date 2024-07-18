@@ -42,9 +42,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
   const { t } = useTranslation('channels');
   const { isUserAdminOrChannelAdmin } = useChannelRole(channelData.id);
   const { filters, clearFilters, updateFilter } = useAppliedFiltersStore();
-  useEffect(() => {
-    clearFilters();
-  }, []);
+
   const [isGrid, setGrid] = useState(true);
   const filterForm = useForm<{
     search: string;

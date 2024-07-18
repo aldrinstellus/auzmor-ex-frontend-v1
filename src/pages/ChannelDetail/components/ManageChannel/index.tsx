@@ -56,9 +56,6 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
 
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
-  useEffect(() => {
-    clearFilters();
-  }, []);
 
   const searchValue = watch('search');
   const { data, isLoading } = useInfiniteChannelMembers({
