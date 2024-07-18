@@ -132,6 +132,8 @@ const ArchiveChannelModal: FC<IArchiveChannelModalProps> = ({
       <Header />
       <div className="text-sm font-medium text-neutral-500 mx-6 mt-6 mb-8">
         {t('confirmationMessage')}
+        <br />
+        {t('undoMessage')}
       </div>
       <Footer />
     </Modal>

@@ -12,7 +12,8 @@
     "closeButton": "Close",
     "cancelButton": "Cancel",
     "archiveButton": "Archive",
-    "confirmationMessage": "Are you sure you want to archive this channel? You can undo this later.",
+    "confirmationMessage": "Are you sure you want to archive this channel? ",
+    "undoMessage": "You can undo this later.",
     "successToast": "Channel has been archived successfully",
     "errorToast": "Error archiving channel"
   },

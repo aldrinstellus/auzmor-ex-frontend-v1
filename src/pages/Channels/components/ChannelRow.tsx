@@ -11,16 +11,9 @@ import IconWrapper, {
 } from 'components/Icon/components/IconWrapper';
 import Button, { Variant, Size } from 'components/Button';
 import { updateChannel } from 'queries/channel';
-import FailureToast, {
-  failureToastConfig,
-} from 'components/Toast/variants/FailureToast';
-import { toast } from 'react-toastify';
-import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
-import { slideInAndOutTop } from 'utils/react-toastify';
-import { twConfig } from 'utils/misc';
-import SuccessToast, {
-  successToastConfig,
-} from 'components/Toast/variants/SuccessToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
 import useModal from 'hooks/useModal';
