@@ -70,6 +70,23 @@ const FilterMenu: FC<IFilterMenu> = ({
   const { parseParams, updateParam, serializeFilter, deleteParam } =
     useURLParams();
   const { t } = useTranslation('common');
+  useEffect(() => {
+    setFilters({
+      categories: parseParams('categories') || [],
+      departments: parseParams('departments') || [],
+      locations: parseParams('locations') || [],
+      status: parseParams('status') || [],
+      teams: parseParams('teams') || [],
+      visibility: parseParams('visibility') || [],
+      channelType: parseParams('channelType') || [],
+      byPeople: parseParams('byPeople') || [],
+      roles: parseParams('roles') || [],
+    });
+    return () => {
+      // Clear URL parameters on unmount
+      clearAppliedFilters();
+    };
+  }, []);
 
   useEffect(() => {
     if (filters) {
@@ -87,21 +104,6 @@ const FilterMenu: FC<IFilterMenu> = ({
       });
     }
   }, [filters]);
-
-  useEffect(() => {
-    setFilters({
-      categories: parseParams('categories') || [],
-      departments: parseParams('departments') || [],
-      locations: parseParams('locations') || [],
-      status: parseParams('status') || [],
-      teams: parseParams('teams') || [],
-      visibility: parseParams('visibility') || [],
-      channelType: parseParams('channelType') || [],
-      byPeople: parseParams('byPeople') || [],
-      roles: parseParams('roles') || [],
-    });
-    return () => clearAppliedFilters();
-  }, []);
 
   const handleRemoveFilters = (key: FilterKey, id: any) => {
     if (filters) {

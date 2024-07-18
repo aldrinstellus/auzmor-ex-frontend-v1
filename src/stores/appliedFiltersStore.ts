@@ -44,7 +44,6 @@ export const useAppliedFiltersStore = create<State & Actions>()(
 
 const clearURLParams = () => {
   const searchParams = new URLSearchParams(window.location.search);
-
   const paramsToDelete = [
     'status',
     'roles',
