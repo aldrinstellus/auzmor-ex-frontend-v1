@@ -124,7 +124,6 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
       successToastConfig({
         content: 'Successfully accepted all selected requests',
       });
-      queryClient.invalidateQueries(['channel-members']);
     },
     onError: () =>
       failureToastConfig({
@@ -134,9 +133,8 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
       await queryClient.invalidateQueries(['channel-requests'], {
         exact: false,
       });
-      await queryClient.invalidateQueries(['channel-members'], {
-        exact: false,
-      });
+      queryClient.invalidateQueries({ queryKey: ['channel-members'] });
+      queryClient.invalidateQueries({ queryKey: ['channel'] });
     },
   });
 
@@ -157,9 +155,8 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
       await queryClient.invalidateQueries(['channel-requests'], {
         exact: false,
       });
-      await queryClient.invalidateQueries(['channel-members'], {
-        exact: false,
-      });
+      queryClient.invalidateQueries({ queryKey: ['channel-members'] });
+      queryClient.invalidateQueries({ queryKey: ['channel'] });
     },
   });
 
