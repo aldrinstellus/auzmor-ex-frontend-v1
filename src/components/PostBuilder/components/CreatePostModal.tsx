@@ -46,7 +46,9 @@ import useRole from 'hooks/useRole';
 import { useCreatePostUtilityStore } from 'stores/createPostUtilityStore';
 import useModal from 'hooks/useModal';
 import ConfirmationBox from 'components/ConfirmationBox';
-
+import WelcomePost from 'images/ChannelCover/WelcomePost.png';
+import { useChannelStore } from 'stores/channelStore';
+import { useParams } from 'react-router-dom';
 export interface IPostMenu {
   id: number;
   label: string;
@@ -93,7 +95,12 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     postType,
     inputImgRef,
     isEmpty,
+    setEditorValue,
+    setUploads,
   } = useContext(CreatePostContext);
+
+  const { channelId = '' } = useParams();
+  const channelData = useChannelStore((state) => state.channels)[channelId];
 
   const [confirm, showConfirm, closeConfirm] = useModal();
 
@@ -125,7 +132,64 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     }
     reset();
   }, []);
+  const welcomeContent = useMemo(
+    () => ({
+      text: ' ',
+      html: ' ',
+      editor: {
+        ops: [
+          {
+            attributes: {
+              color: '#171717',
+            },
+            insert: `Hello everyone! Welcome to the ${channelData?.name} channel 🎉`,
+          },
+          {
+            insert: '\n',
+          },
+        ],
+      },
+    }),
+    [channelData],
+  );
+  useEffect(() => {
+    if (customActiveFlow !== CreatePostFlow.WelcomePost) return;
+    let img: any = null;
+    const loadImage = () => {
+      setEditorValue(welcomeContent);
+      const selectedImage = WelcomePost;
+      img = new Image();
+      img.src = selectedImage;
+      img.crossOrigin = 'anonymous';
+      img.onload = handleImageLoad;
+    };
 
+    const handleImageLoad = async () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 590;
+      canvas.height = 260;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(async (blob) => {
+          if (blob) {
+            const file = new File([blob], 'welcomePost.png', {
+              type: blob.type,
+            });
+            setUploads([file]);
+          }
+        }, 'image/png');
+      }
+    };
+
+    loadImage();
+    setActiveFlow(CreatePostFlow.CreatePost);
+    return () => {
+      if (img) {
+        img.onload = null;
+      }
+    };
+  }, [customActiveFlow]);
   // When we need to show create announcement modal directly
   useMemo(() => {
     if (customActiveFlow === CreatePostFlow.CreateAnnouncement) {
@@ -136,11 +200,12 @@ const CreatePostModal: FC<ICreatePostModal> = ({
           label: '1 week',
           value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
         });
-      } else
+      } else {
         setAnnouncement({
           label: 'Custom Date',
           value: data?.announcement?.end || '',
         });
+      }
       setActiveFlow(CreatePostFlow.CreateAnnouncement);
     }
   }, [customActiveFlow]);

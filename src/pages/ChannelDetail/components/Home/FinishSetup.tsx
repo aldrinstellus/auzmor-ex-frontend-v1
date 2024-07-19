@@ -13,7 +13,10 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { IUpdateProfileImage } from 'pages/UserDetail';
 import EditImageModal from 'components/EditImageModal';
 import { EntityType } from 'queries/files';
-
+import PostBuilder from 'components/PostBuilder';
+import { CreatePostFlow } from 'contexts/CreatePostContext';
+import { useFeedStore } from 'stores/feedStore';
+import * as _ from 'lodash';
 type AppProps = {
   channelData: IChannel;
 };
@@ -34,6 +37,7 @@ const FinishSetup: FC<AppProps> = ({ channelData }) => {
       setSearchParams(searchParams, { replace: true });
     }
   }, [showSettingUp, searchParams, setSearchParams]);
+  const [open, openModal, closeModal] = useModal(undefined, false);
 
   const { t } = useTranslation('channelDetail');
   const { channelId = '' } = useParams();
@@ -55,6 +59,11 @@ const FinishSetup: FC<AppProps> = ({ channelData }) => {
     undefined,
     false,
   );
+
+  const { activeFeedPostCount } = useFeedStore();
+  const handlePost = () => {
+    openModal();
+  };
   const getBlobFile = file?.profileImage
     ? getBlobUrl(file?.profileImage)
     : file?.coverImage && getBlobUrl(file?.coverImage);
@@ -84,8 +93,16 @@ const FinishSetup: FC<AppProps> = ({ channelData }) => {
         dataTestId: 'invite-member',
         onClick: openAddMemberModal,
       },
+      {
+        key: 'post',
+        label: t('setup.post'),
+        completed: activeFeedPostCount > 0,
+        icon: 'image',
+        dataTestId: 'post',
+        onClick: handlePost,
+      },
     ],
-    [channelData, openEditModal, openAddMemberModal],
+    [channelData, openEditModal, openAddMemberModal, activeFeedPostCount],
   );
 
   const coverImageOption = [
@@ -107,17 +124,14 @@ const FinishSetup: FC<AppProps> = ({ channelData }) => {
       dataTestId: 'edit-coverpic-reposition',
     },
   ];
-
   useEffect(() => {
     if (steps.every((step) => step.completed)) {
       setShowSettingUp(false);
     }
   }, [steps]);
-
   if (!showSettingUp) {
     return null;
   }
-
   return (
     <>
       <div
@@ -267,6 +281,14 @@ const FinishSetup: FC<AppProps> = ({ channelData }) => {
           open={showAddMemberModal}
           closeModal={closeAddMemberModal}
           channelData={channelData}
+        />
+      )}
+      {open && (
+        <PostBuilder
+          open={open}
+          openModal={openModal}
+          closeModal={closeModal}
+          customActiveFlow={CreatePostFlow.WelcomePost}
         />
       )}
       {isChannelImageOpen && (

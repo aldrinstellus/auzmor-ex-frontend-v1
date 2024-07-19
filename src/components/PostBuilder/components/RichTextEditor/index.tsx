@@ -105,7 +105,6 @@ const RichTextEditor = forwardRef(
       postType,
       setPostType,
     } = useContext(CreatePostContext);
-
     // Delete aria-owns attribute
     useEffect(() => {
       const nodes = document.getElementsByClassName('ql-editor');
@@ -316,20 +315,39 @@ const RichTextEditor = forwardRef(
     };
 
     const [confirm, showConfirm, closeConfirm] = useModal();
-
     useEffect(() => {
       if (ref && ((ref as any).current as ReactQuill)) {
-        const editor = ((ref as any).current as ReactQuill).getEditor();
+        const editor = (ref as any).current.getEditor();
+        if (defaultValue) {
+          editor.setContents(defaultValue);
+        }
         const refinedContent = removeEmptyLines({
           editor: editor.getContents(),
           text: editor.getText(),
           html: editor.getText(),
         });
+
         setIsEmpty(
           isEmptyEditor(refinedContent.text, refinedContent.editor.ops || []),
         );
       }
-    }, []);
+    }, [defaultValue, ref]);
+    // useEffect(() => {
+    //   if (ref && ((ref as any).current as ReactQuill)) {
+    //     const editor = ((ref as any).current as ReactQuill).getEditor();
+    //     console.log('editor :', editor);
+    //     const refinedContent = removeEmptyLines({
+    //       editor: editor.getContents(),
+    //       text: editor.getText(),
+    //       html: editor.getText(),
+    //     });
+    //     console.log('refinedContent :', refinedContent);
+
+    //     setIsEmpty(
+    //       isEmptyEditor(refinedContent.text, refinedContent.editor.ops || []),
+    //     );
+    //   }
+    // }, []);
 
     useEffect(() => () => hideMentionHashtagPalette(), []);
 

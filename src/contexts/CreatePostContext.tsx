@@ -27,6 +27,7 @@ export enum CreatePostFlow {
   SchedulePost = 'SCHEDULE_POST',
   Audience = 'AUDIENCE',
   CreateShoutout = 'CREATE_SHOUTOUT',
+  WelcomePost = 'WELCOME_POST',
 }
 
 export interface IAnnouncement {
