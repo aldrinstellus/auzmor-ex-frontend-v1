@@ -251,17 +251,7 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
             ))}
           </div>
         </FilterMenu>
-        {channelIds?.length == 0 && !isLoading && (
-          <NoDataFound
-            illustration="noChannelFound"
-            className="py-4 w-full"
-            onClearSearch={() => {}}
-            labelHeader={t('noChannelsYet.header')}
-            message={<p>{t('noChannelsYet.message')}</p>}
-            hideClearBtn
-            dataTestId={`$channel-noresult`}
-          />
-        )}
+
         {filters?.channelType === ChannelTypeEnum.Archived ? (
           isLoading ? (
             [...Array(5)].map((_each, index) => (
