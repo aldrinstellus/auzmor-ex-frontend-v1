@@ -31,11 +31,13 @@ import useRole from 'hooks/useRole';
 import TeamOptions from 'components/TeamOptions';
 import useProduct from 'hooks/useProduct';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { useTranslation } from 'react-i18next';
 
 export interface ITeamMemberProps {}
 
 const TeamDetail: FC<ITeamMemberProps> = () => {
-  usePageTitle('teamProfile');
+  const { t } = useTranslation('team');
+  usePageTitle(t('title'));
   const params = useParams();
   const [searchParams] = useSearchParams();
   const { state } = useLocation();
@@ -63,7 +65,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
     },
     onError: () =>
       failureToastConfig({
-        content: `Error Adding Team Members`,
+        content: t('errorAddingMembers'),
         dataTestId: 'team-create-error-toaster',
       }),
     onSuccess: (data: any) => {
@@ -71,10 +73,10 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
         data?.result?.data?.length - (data.teamMembers || 0);
       const message =
         membersAddedCount > 1
-          ? `${membersAddedCount} members have been added to the team`
+          ? t('multipleMembersAdded', { count: membersAddedCount })
           : membersAddedCount === 1
-          ? `${membersAddedCount} member has been added to the team`
-          : 'Members already exist in the team';
+          ? t('singleMemberAdded')
+          : t('membersExist');
       successToastConfig({
         content: message,
         dataTestId: 'team-detail-toaster',
@@ -117,15 +119,19 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                 onClick={handleGoBack}
                 onKeyUp={(e) => (e.code === 'Enter' ? handleGoBack() : '')}
                 role="button"
-                title={`go back to ${
-                  prevRoute === TeamTab.MyTeams ? 'My Teams' : 'All Teams'
-                }`}
+                title={t('goBack', {
+                  context:
+                    prevRoute === TeamTab.MyTeams ? 'myTeams' : 'allTeams',
+                })}
                 tabIndex={0}
                 data-testid="my-team-back"
               >
                 <Icon name="linearLeftArrowOutline" size={20} />
                 <div className="text-base font-bold text-neutral-900">
-                  {prevRoute === TeamTab.MyTeams ? 'My Teams' : 'All Teams'}
+                  {t('goBackText', {
+                    context:
+                      prevRoute === TeamTab.MyTeams ? 'myTeams' : 'allTeams',
+                  })}
                 </div>
               </div>
               {isAdmin && !isLxp ? (
@@ -136,12 +142,10 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                       data-testid="team-tooltip"
                     >
                       <div className="text-sm font-medium text-white">
-                        Invite members
+                        {t('inviteMembers')}
                       </div>
                       <div className="text-sm font-normal text-neutral-400">
-                        {
-                          "Don't forget to add members to the team. Click on the 'Add Members' button to get started."
-                        }
+                        {t('inviteMembersTooltip')}
                       </div>
                     </div>
                   }
@@ -149,7 +153,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                 >
                   <Button
                     className="flex space-x-1 px-6 py-[10px] rounded-[24px]"
-                    label="Add Members"
+                    label={t('addMembersButton')}
                     leftIcon="add"
                     leftIconClassName="!text-white"
                     leftIconSize={20}
@@ -185,17 +189,19 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                   <div
                     className="flex flex-col space-y-2"
                     role="contentinfo"
-                    title={`team type is ${data.category?.name || 'category'}`}
+                    title={t('teamType', {
+                      type: data.category?.name || t('category'),
+                    })}
                     tabIndex={0}
                   >
                     <div className="text-sm font-semibold text-purple-700">
-                      Team type
+                      {t('teamTypeLabel')}
                     </div>
                     <div
                       className="text-xl font-semibold"
                       data-testid="team-details-category"
                     >
-                      {data.category?.name || 'category'}
+                      {data.category?.name || t('category')}
                     </div>
                   </div>
                 ) : null}
@@ -210,9 +216,8 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                         className="text-xl font-semibold text-neutral-900"
                         data-testid="team-details-people-count"
                       >
-                        {data.totalMembers || 0}
+                        {t('membersCount', { count: data.totalMembers || 0 })}
                       </span>
-                      &nbsp; Members
                     </div>
                   </div>
                 ) : (
@@ -222,7 +227,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                     role="contentinfo"
                   >
                     <div className="text-sm font-semibold text-purple-700">
-                      No. of people
+                      {t('peopleCountLabel')}
                     </div>
                     <div
                       className="text-xl font-semibold"
@@ -335,7 +340,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                       </div>
                       {data?.isPresent && (
                         <div className="text-xs font-semibold text-neutral-500">
-                          Already a member
+                          {t('alreadyMember')}
                         </div>
                       )}
                     </div>
@@ -349,10 +354,10 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
             closeAddMemberModal();
           }}
           disableKey="isPresent"
-          title="Add team members"
-          submitButtonText="Add Members"
+          title={t('addTeamMembersTitle')}
+          submitButtonText={t('addMembersButton')}
           onCancel={closeAddMemberModal}
-          cancelButtonText="Cancel"
+          cancelButtonText={t('cancelButton')}
         />
       )}
     </>

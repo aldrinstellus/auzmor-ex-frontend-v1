@@ -20,6 +20,11 @@ const resources = {
     postBuilder: require('locales/en-US/postBuilder.json'),
     profile: require('locales/en-US/profile.json'),
     userSetting: require('locales/en-US/userSetting.json'),
+    team: require('locales/en-US/team.json'),
+    button: require('locales/en-US/button.json'),
+    acceptInvite: require('locales/en-US/acceptInvite.json'),
+    auth: require('locales/en-US/auth.json'),
+    document: require('locales/en-US/document.json'),
   },
 };
 

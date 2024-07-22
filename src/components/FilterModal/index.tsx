@@ -358,7 +358,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     {
       label: () => (
         <div className="flex items-center">
-          <div>Type</div>
+          <div>{t('type')}</div>
           {!!documentTypeCheckbox.length && (
             <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
               {documentTypeCheckbox.length}
@@ -376,7 +376,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     {
       label: () => (
         <div className="flex items-center">
-          <div>Modified on</div>
+          <div>{t('modified')}</div>
         </div>
       ),
       key: 'doc-modified-filters',
@@ -515,7 +515,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     {
       label: () => (
         <div className="flex items-center">
-          <div>Roles </div>
+          <div>{t('role')} </div>
           {!!roleCheckbox.length && (
             <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
               {roleCheckbox.length}
@@ -533,7 +533,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     {
       label: () => (
         <div className="flex items-center">
-          <div>By people </div>
+          <div>{t('byPeople')}</div>
           {!!byPeopleCheckbox.length && (
             <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
               {byPeopleCheckbox.length}

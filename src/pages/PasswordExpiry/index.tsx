@@ -1,10 +1,13 @@
-import { Info } from 'components/Logo';
-import { FC } from 'react';
+import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { Info } from 'components/Logo';
 
 export interface IPasswordExpiryProps {}
 
 const PasswordExpiry: FC<IPasswordExpiryProps> = () => {
+  const { t } = useTranslation('auth', { keyPrefix: 'passwordExpiry' });
+
   return (
     <div className="h-full flex justify-center relative">
       <div className="flex relative h-[362px]">
@@ -13,20 +16,19 @@ const PasswordExpiry: FC<IPasswordExpiryProps> = () => {
             <div className="text-center flex justify-center items-center flex-col">
               <Info />
               <div className="text-neutral-900 text-2xl font-extrabold mt-2">
-                RESET PASSWORD LINK HAS EXPIRED
+                {t('title')}
               </div>
             </div>
             <div className="text-neutral-900 text-center text-sm font-normal mt-2">
-              To protect your account, password reset link expires after 10
-              mins.
+              {t('description')}
             </div>
             <div className="mt-12 text-neutral-500 text-sm font-normal text-center">
-              Need a new account activation link?{' '}
+              {t('resendText')}{' '}
               <Link
                 to="/forgot-password"
                 className="text-primary-500 text-sm font-bold"
               >
-                Resend
+                {t('resendLink')}
               </Link>
             </div>
           </>
@@ -34,9 +36,9 @@ const PasswordExpiry: FC<IPasswordExpiryProps> = () => {
       </div>
       <div className="absolute bottom-0 flex w-full justify-center">
         <div className="text-neutral-900 text-sm font-normal text-center">
-          Remember Password?{' '}
+          {t('rememberPasswordText')}{' '}
           <Link to="/login" className="text-primary-500 font-bold">
-            Sign In
+            {t('signInLink')}
           </Link>
         </div>
       </div>

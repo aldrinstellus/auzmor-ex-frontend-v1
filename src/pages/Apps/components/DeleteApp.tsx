@@ -13,6 +13,7 @@ import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { deleteApp } from 'queries/apps';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface IDeleteAppProps {
   open: boolean;
@@ -21,13 +22,17 @@ export interface IDeleteAppProps {
 }
 
 const DeleteApp: FC<IDeleteAppProps> = ({ open, closeModal, appId }) => {
+  const { t } = useTranslation('appLauncher', {
+    keyPrefix: 'deleteAppModal',
+  });
+
   const deleteAppMutation = useMutation({
     mutationKey: ['delete-app', appId],
     mutationFn: deleteApp,
     onError: (_error) => {
       closeModal(true);
       failureToastConfig({
-        content: 'Error deleting the app',
+        content: t('errorDeletingApp'),
         dataTestId: 'delete-app-error-toaster',
       });
     },
@@ -36,7 +41,7 @@ const DeleteApp: FC<IDeleteAppProps> = ({ open, closeModal, appId }) => {
       queryClient.invalidateQueries({ queryKey: ['apps'] });
       queryClient.invalidateQueries({ queryKey: ['my-apps'] });
       successToastConfig({
-        content: 'App has been deleted successfully',
+        content: t('appDeletedSuccess'),
         dataTestId: 'delete-app-toaster',
       });
     },
@@ -45,7 +50,7 @@ const DeleteApp: FC<IDeleteAppProps> = ({ open, closeModal, appId }) => {
   const Header: FC = () => (
     <div className="flex flex-wrap border-b-1 border-neutral-200 items-center">
       <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
-        Delete App?
+        {t('header')}
       </div>
       <IconButton
         onClick={() => closeModal()}
@@ -62,12 +67,12 @@ const DeleteApp: FC<IDeleteAppProps> = ({ open, closeModal, appId }) => {
       <Button
         variant={ButtonVariant.Secondary}
         size={Size.Small}
-        label={'Cancel'}
+        label={t('cancel')}
         dataTestId="delete-app-cancel"
         onClick={() => closeModal()}
       />
       <Button
-        label={'Delete'}
+        label={t('delete')}
         className="!bg-red-500 !text-white flex"
         loading={deleteAppMutation.isLoading}
         size={Size.Small}
@@ -77,12 +82,13 @@ const DeleteApp: FC<IDeleteAppProps> = ({ open, closeModal, appId }) => {
       />
     </div>
   );
+
   return (
     <Modal open={open} className="max-w-sm">
       <Header />
       <div className="text-sm font-medium text-neutral-500 mx-6 mt-6 mb-8">
-        Are you sure you want to delete this app?
-        <br /> This cannot be undone.
+        {t('confirmationMessage')} <br />
+        {t('confirmationMessage2')}
       </div>
       <Footer />
     </Modal>

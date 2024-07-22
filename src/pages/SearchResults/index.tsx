@@ -8,6 +8,7 @@ import DocSearchRow, {
 import { DocType } from 'queries/files';
 import { useConnectedStatus, useDocument } from 'queries/storage';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 
 enum OptionType {
@@ -21,6 +22,7 @@ enum OptionType {
 
 const SearchResults: FC = () => {
   usePageTitle('searchResults');
+  const { t } = useTranslation('document', { keyPrefix: 'searchResults' });
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('q') || undefined;
 
@@ -51,7 +53,9 @@ const SearchResults: FC = () => {
   return (
     <>
       <div className="mb-12 flex flex-col gap-6 w-full h-full">
-        <div className="bg-white rounded-[12px] px-6 py-4 text-2xl font-medium">{`Search Results for '${searchQuery}'`}</div>
+        <div className="bg-white rounded-[12px] px-6 py-4 text-2xl font-medium">{`${t(
+          'searchPrefix',
+        )} '${searchQuery}'`}</div>
         <div className="bg-white rounded-[12px] px-6 py-6 flex flex-col gap-6 flex-auto">
           {isLoading ? <PageLoader /> : null}
           {!isLoading && documents?.length === 0 ? (
@@ -60,8 +64,7 @@ const SearchResults: FC = () => {
               searchString={searchQuery}
               message={
                 <p>
-                  Sorry we can&apos;t find the data you are looking for.
-                  <br /> Please check the spelling or try again.
+                  {t('noDataMessage')} <br /> {t('noDataMessage2')}{' '}
                 </p>
               }
               hideClearBtn

@@ -3,6 +3,7 @@ import Icon from 'components/Icon';
 import React from 'react';
 import { truncate } from 'lodash';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface ITeamCard {
   id: string;
@@ -20,6 +21,7 @@ const TeamCard: React.FC<ITeamCard> = ({
   recentMembers,
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation('team');
   return (
     <div
       className="flex items-center gap-2"
@@ -69,7 +71,7 @@ const TeamCard: React.FC<ITeamCard> = ({
               className="text-xs text-neutral-500"
               data-testid={`team-no-of-members-${totalMembers}`}
             >
-              {totalMembers} members
+              {t('members', { totalMembers: totalMembers })}
             </div>
           </div>
         </div>
