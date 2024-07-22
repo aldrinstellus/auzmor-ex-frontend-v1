@@ -12,6 +12,7 @@ import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 import useModal from 'hooks/useModal';
 import AudienceModal, { getAudienceCount } from 'components/AudienceModal';
 import { isEmpty } from 'lodash';
+import { useTranslation } from 'react-i18next';
 
 type AppDetailModalProps = {
   app: App;
@@ -29,6 +30,9 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
   openDeleteAppModal,
 }) => {
   const { isAdmin } = useRole();
+  const { t } = useTranslation('appLauncher', {
+    keyPrefix: 'appCardDetail',
+  });
   const [isAudienceModalOpen, openAudienceModal, closeAudienceModal] =
     useModal(false);
   const audienceChipStyle =
@@ -47,7 +51,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                 src={app?.icon?.original || DefaultAppIcon}
                 height={20}
                 width={20}
-                alt={`${app.label} Image`}
+                alt={`${app.label} ${t('imageAlt')}`}
               />
             </div>
             <p className="text-neutral-900 text-lg font-extrabold line-clamp-1">
@@ -66,7 +70,11 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
         {/* Body */}
         <div className="px-6 py-3">
           <div className="border-orange-300 border-1 rounded-9xl relative">
-            <img src={AppDetailSVG} className="absolute" alt="App details" />
+            <img
+              src={AppDetailSVG}
+              className="absolute"
+              alt={t('detailsAlt')}
+            />
             <div className="z-10 relative">
               <div className="w-full pt-4 px-5 flex justify-between">
                 <div className="flex gap-2">
@@ -80,7 +88,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                   )}
                   {app.featured && (
                     <Badge
-                      text="Featured"
+                      text={t('featured')}
                       textClassName="text-white text-base leading-6 font-semibold"
                       bgClassName="bg-blue-500"
                       dataTestId="app-details-category"
@@ -96,7 +104,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                     )
                   }
                 >
-                  <span>Visit app</span>
+                  <span>{t('visitApp')}</span>
                   <Icon name="arrowRightUp" className="text-primary-500" />
                 </div>
               </div>
@@ -109,7 +117,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                       className="p-1 rounded-xl"
                       height={100}
                       width={100}
-                      alt="app icon"
+                      alt={t('iconAlt')}
                     />
                   </div>
                   <div>
@@ -130,7 +138,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                 {/* The audience */}
                 <div className="flex px-6 pt-4 items-center gap-2">
                   <p className="text-neutral-900 text-sm font-medium">
-                    Audience:
+                    {t('audience')}:
                   </p>
                   {app.audience && app.audience.length > 0 ? (
                     <div className="flex gap-2">
@@ -140,7 +148,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                       >
                         <Icon name="noteFavourite" size={16} />
                         <span className={audienceLabelStyle}>
-                          {app.audience[0].name || 'Team Name'}
+                          {app.audience[0].name || t('teamName')}
                         </span>
                       </div>
                       {app.audience.length > 1 && (
@@ -149,14 +157,16 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                           onClick={openAudienceModal}
                         >
                           <span className={audienceLabelStyle}>
-                            {`+ ${app.audience.length - 1} more`}
+                            {t('more', { count: app.audience.length - 1 })}
                           </span>
                         </div>
                       )}
                     </div>
                   ) : (
                     <div className={audienceChipStyle}>
-                      <span className={audienceLabelStyle}>Everyone</span>
+                      <span className={audienceLabelStyle}>
+                        {t('everyone')}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -168,13 +178,13 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
         {isAdmin && (
           <div className="bg-blue-50 flex items-center justify-end px-6 py-4 gap-x-3 rounded-9xl">
             <Button
-              label="Delete app"
+              label={t('deleteApp')}
               variant={Variant.Secondary}
               onClick={openDeleteAppModal}
               dataTestId="app-details-delete-app"
             />
             <Button
-              label="Edit app"
+              label={t('editApp')}
               onClick={openEditAppModal}
               dataTestId="app-details-edit-app"
             />

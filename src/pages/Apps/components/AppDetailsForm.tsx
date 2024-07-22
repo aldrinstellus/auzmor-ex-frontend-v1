@@ -9,16 +9,12 @@ import {
 import { ADD_APP_FLOW, IAddAppForm } from './AddApp';
 import UploadIconButton from './UploadIconButton';
 import Button, { Size, Variant } from 'components/Button';
-import {
-  // App,
-  CategoryType,
-  IAudience,
-  useInfiniteCategories,
-} from 'queries/apps';
+import { CategoryType, IAudience, useInfiniteCategories } from 'queries/apps';
 import { ICategoryDetail } from 'queries/category';
 import { FC } from 'react';
 import useProduct from 'hooks/useProduct';
 import { useInfiniteLearnCategory } from 'queries/learn';
+import { useTranslation } from 'react-i18next';
 
 type AppDetailsFormProps = {
   control: Control<IAddAppForm, any>;
@@ -40,13 +36,16 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
   audience,
 }) => {
   const { isLxp } = useProduct();
+  const { t } = useTranslation('appLauncher', {
+    keyPrefix: 'addDetailsForm',
+  });
   const urlField = [
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      placeholder: 'Enter URL',
+      placeholder: t('urlPlaceholder'),
       name: 'url',
-      label: 'URL',
+      label: t('urlLabel'),
       required: true,
       control: control,
       error: errors.url?.message,
@@ -88,9 +87,9 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      placeholder: 'Enter label',
+      placeholder: t('labelPlaceholder'),
       name: 'label',
-      label: 'Label',
+      label: t('labelLabel'),
       control: control,
       required: true,
       error: errors.label?.message,
@@ -100,8 +99,9 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
     {
       type: FieldType.TextArea,
       name: 'description',
-      label: 'Short description',
-      placeholder: 'Enter description',
+      label: t('descriptionLabel'),
+      placeholder: t('descriptionPlaceholder'),
+      defaultValue: defaultValues()?.description,
       error: errors.description?.message,
       maxLength: 300,
       disableMaxLength: true,
@@ -116,9 +116,9 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
     {
       type: FieldType.CreatableSearch,
       variant: InputVariant.Text,
-      placeholder: 'Select category',
+      placeholder: t('categoryPlaceholder'),
       name: 'category',
-      label: 'Category',
+      label: t('categoryLabel'),
       control: control,
       maxLength: 60,
       menuPlacement: 'topLeft',
@@ -138,7 +138,9 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
         <div className="w-full flex flex-col">
           <UploadIconButton setValue={setValue} icon={icon} />
           <div className="pt-4">
-            <p className="text-neutral-900 font-bold pb-1 text-sm">Audience</p>
+            <p className="text-neutral-900 font-bold pb-1 text-sm">
+              {t('audienceLabel')}
+            </p>
             {audience.length > 0 ? (
               <div className="flex gap-2">
                 <Button
@@ -148,7 +150,7 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
                   leftIconClassName="mr-1"
                   size={Size.Small}
                   variant={Variant.Secondary}
-                  label={audience[0].name || 'Team Name'}
+                  label={audience[0].name || t('defaultAudienceName')}
                   onClick={() => setActiveFlow(ADD_APP_FLOW.AudienceSelector)}
                   dataTestId="app-audience-name"
                 />
@@ -157,7 +159,9 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
                     key={audience[0].entityId}
                     variant={Variant.Secondary}
                     size={Size.Small}
-                    label={`+ ${audience.length - 1} more`}
+                    label={t('moreAudienceLabel', {
+                      count: audience.length - 1,
+                    })}
                     onClick={() => setActiveFlow(ADD_APP_FLOW.AudienceSelector)}
                     dataTestId="app-audience-more"
                   />
@@ -166,7 +170,7 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
             ) : (
               <Button
                 variant={Variant.Secondary}
-                label="Everyone"
+                label={t('everyoneLabel')}
                 size={Size.Small}
                 dataTestId="add-app-audience"
                 onClick={() => setActiveFlow(ADD_APP_FLOW.AudienceSelector)}

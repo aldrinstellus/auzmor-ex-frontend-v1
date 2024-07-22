@@ -1,6 +1,5 @@
 import { ChangeEvent, FC, useEffect } from 'react';
 import OfficeLogoSvg from 'components/Logo/images/OfficeLogo.svg';
-import { Success } from 'components/Logo';
 import Layout, { FieldType } from 'components/Form';
 import Button, { Size, Type } from 'components/Button';
 import { Variant as InputVariant } from 'components/Input';
@@ -16,6 +15,8 @@ import { getSubDomain, isDark } from 'utils/misc';
 import { useGetSSOFromDomain } from 'queries/organization';
 import clsx from 'clsx';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { useTranslation } from 'react-i18next';
+import { Success } from 'components/Logo';
 
 interface IForgotPasswordProps {}
 
@@ -30,7 +31,7 @@ const schema = yup.object({
 const ForgotPassword: FC<IForgotPasswordProps> = () => {
   usePageTitle('forgotPassword');
   const navigate = useNavigate();
-
+  const { t } = useTranslation('auth', { keyPrefix: 'forgotPassword' });
   const forgotPasswordMutation = useMutation((formData: any) =>
     forgotPassword(formData),
   );
@@ -55,9 +56,9 @@ const ForgotPassword: FC<IForgotPasswordProps> = () => {
       type: FieldType.Input,
       variant: InputVariant.Text,
       className: 'w-full',
-      placeholder: 'Enter your email address / username',
+      placeholder: t('placeholder'),
       name: 'email',
-      label: 'Work Email / Username',
+      label: t('label'),
       error: errors.email?.message,
       control,
       getValues,
@@ -203,12 +204,12 @@ const ForgotPassword: FC<IForgotPasswordProps> = () => {
                 >
                   <Success />
                   <div>
-                    Email has been sent to <b>{getValues().email}</b> with
-                    instructions on resetting your password.
+                    {t('successMessage')} <b>{getValues().email}</b>{' '}
+                    {t('successMessage2')}
                   </div>
                 </div>
                 <Button
-                  label={'Back to Sign In'}
+                  label={t('backToSignInLabel')}
                   className="w-full mt-5 rounded-7xl"
                   onClick={() => navigate('/login')}
                   size={Size.Large}
@@ -217,7 +218,7 @@ const ForgotPassword: FC<IForgotPasswordProps> = () => {
             ) : (
               <>
                 <div className="font-bold text-neutral-900 text-2xl">
-                  Forgot Password
+                  {t('title')}
                 </div>
                 <form
                   className="mt-5"
@@ -227,7 +228,7 @@ const ForgotPassword: FC<IForgotPasswordProps> = () => {
                   <Layout fields={fields} className="space-y-5" />
                   <Button
                     type={Type.Submit}
-                    label={'Reset Via Email'}
+                    label={t('submitLabel')}
                     loading={forgotPasswordMutation.isLoading}
                     className="w-full mt-5 rounded-7xl"
                     size={Size.Large}

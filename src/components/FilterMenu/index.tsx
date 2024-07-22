@@ -70,6 +70,7 @@ const FilterMenu: FC<IFilterMenu> = ({
   const { parseParams, updateParam, serializeFilter, deleteParam } =
     useURLParams();
   const { t } = useTranslation('common');
+  const { t: tf } = useTranslation('filterModal');
   useEffect(() => {
     setFilters({
       categories: parseParams('categories') || [],
@@ -198,7 +199,7 @@ const FilterMenu: FC<IFilterMenu> = ({
           <div className="flex justify-between items-start">
             <div className="flex items-center space-x-2 flex-wrap gap-y-2">
               <div className="text-base text-neutral-500 whitespace-nowrap">
-                Filter By
+                {tf('title')}
               </div>
               {filters?.status?.map((status: IStatus) => (
                 <div
@@ -210,7 +211,7 @@ const FilterMenu: FC<IFilterMenu> = ({
                   }
                 >
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
-                    Status{' '}
+                    {tf('status')}
                     <span className="text-primary-500">{status.name}</span>
                   </div>
                   <Icon
@@ -235,7 +236,8 @@ const FilterMenu: FC<IFilterMenu> = ({
                   }
                 >
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
-                    By people{' '}
+                    {tf('byPeople')}
+
                     <span className="text-primary-500">{people.name}</span>
                   </div>
                   <Icon
@@ -259,7 +261,9 @@ const FilterMenu: FC<IFilterMenu> = ({
                   onClick={() => handleRemoveFilters(FilterKey.teams, team.id)}
                 >
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
-                    Teams <span className="text-primary-500">{team.name}</span>
+                    {tf('team')}
+
+                    <span className="text-primary-500">{team.name}</span>
                   </div>
                   <Icon
                     name="close"
@@ -281,7 +285,8 @@ const FilterMenu: FC<IFilterMenu> = ({
                   onClick={() => handleRemoveFilters(FilterKey.roles, role.id)}
                 >
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
-                    Role <span className="text-primary-500">{role.name}</span>
+                    {tf('role')}
+                    <span className="text-primary-500">{role.name}</span>
                   </div>
                   <Icon
                     name="close"
@@ -305,7 +310,8 @@ const FilterMenu: FC<IFilterMenu> = ({
                   }
                 >
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
-                    Department{' '}
+                    {tf('department')}
+
                     <span className="text-primary-500">{department.name}</span>
                   </div>
                   <Icon
@@ -330,7 +336,8 @@ const FilterMenu: FC<IFilterMenu> = ({
                   }
                 >
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
-                    Category{' '}
+                    {tf('category')}
+
                     <span className="text-primary-500">{categories.name}</span>
                   </div>
                   <Icon
@@ -355,7 +362,7 @@ const FilterMenu: FC<IFilterMenu> = ({
                   }
                 >
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
-                    Location{' '}
+                    {tf('location')}
                     <span className="text-primary-500">{location.name}</span>
                   </div>
                   <Icon
@@ -376,7 +383,7 @@ const FilterMenu: FC<IFilterMenu> = ({
               onClick={clearFilters}
               data-testid={`people-clear-filters`}
             >
-              Clear Filters
+              {tf('clearFilters')}
             </div>
           </div>
         ) : null}

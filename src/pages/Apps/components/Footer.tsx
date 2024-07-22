@@ -1,6 +1,7 @@
 import Button, { Variant as ButtonVariant, Type } from 'components/Button';
 import { AudienceFlow } from './Audience';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface IFooterProps {
   isValid: boolean;
@@ -13,18 +14,20 @@ const Footer: FC<IFooterProps> = ({
   handleBackButtonClick,
   audienceFlow,
 }) => {
+  const { t } = useTranslation('appLauncher');
+
   return (
     <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-19xl">
       <div className="flex">
         <Button
           variant={ButtonVariant.Secondary}
-          label="Back"
+          label={t('backLabel')}
           onClick={handleBackButtonClick}
           dataTestId="add-audience-back"
         />
         {audienceFlow === AudienceFlow.EntitySelect && (
           <Button
-            label={'Save changes'}
+            label={t('saveChangesLabel')}
             type={Type.Submit}
             dataTestId="add-audience-save"
             disabled={!isValid}
@@ -33,7 +36,7 @@ const Footer: FC<IFooterProps> = ({
         )}
         {audienceFlow !== AudienceFlow.EntitySelect && (
           <Button
-            label={'Next'}
+            label={t('nextLabel')}
             type={Type.Submit}
             dataTestId="add-audience-next"
             disabled={!isValid}

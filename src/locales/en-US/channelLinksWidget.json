@@ -21,12 +21,15 @@
       "label": "URL",
       "placeholder": "ex: www.abc.com",
       "invalidUrlError": "Invalid link",
-      "requiredError": "Link is required"
+      "requiredError": "URL is required",
+      "protocolError": "The URL must start with http:// or https://",
+      "maxLengthError": "The URL cannot contain more than 256 characters"
     },
     "labelField": {
       "label": "Label",
       "placeholder": "ex: New hire checklist",
       "maxLengthError": "Label cannot contain more than 20 characters",
+      "minLengthError": "Label must be at least 2 characters long",
       "requiredError": "Label is required"
     },
     "cancelCTA": "Cancel",

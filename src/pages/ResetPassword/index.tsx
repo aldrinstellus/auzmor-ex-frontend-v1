@@ -17,6 +17,7 @@ import { useGetSSOFromDomain } from 'queries/organization';
 import { useBrandingStore } from 'stores/branding';
 import OfficeLogoSvg from 'components/Logo/images/OfficeLogo.svg';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { useTranslation } from 'react-i18next';
 
 interface IForm {
   newPassword: string;
@@ -25,16 +26,20 @@ interface IForm {
 }
 
 const schema = yup.object({
-  newPassword: yup.string().required(),
+  newPassword: yup.string().required('validation.newPasswordRequired'),
   password: yup
     .string()
-    .required()
-    .oneOf([yup.ref('newPassword')], 'Passwords do not match'),
+    .required('validation.confirmPasswordRequired')
+    .oneOf([yup.ref('newPassword')], 'validation.passwordsDoNotMatch'),
   token: yup.string(),
 });
 
 const ResetPassword = () => {
   usePageTitle('resetPassword');
+
+  const { t } = useTranslation('auth', {
+    keyPrefix: 'resetPassword',
+  });
   const navigate = useNavigate();
   const [searchParams, _] = useSearchParams();
   const token = searchParams.get('token');
@@ -77,27 +82,23 @@ const ResetPassword = () => {
       type: FieldType.Password,
       InputVariant: InputVariant.Password,
       className: 'w-full',
-      placeholder: 'Enter password',
+      placeholder: t('form.newPasswordPlaceholder'),
       name: 'newPassword',
-      label: 'New Password',
+      label: t('form.newPasswordLabel'),
       rightIcon: 'people',
       error: errors.newPassword?.message,
       setError,
       control,
-      onChange: (_e: any) => {
-        // const value = e.target.value;
-      },
       dataTestId: 'new-password',
       inputClassName: 'h-[44px]',
     },
-
     {
       type: FieldType.Password,
       InputVariant: InputVariant.Password,
       className: 'w-full',
-      placeholder: 'Re-enter Password',
+      placeholder: t('form.confirmPasswordPlaceholder'),
       name: 'password',
-      label: 'Confirm Password',
+      label: t('form.confirmPasswordLabel'),
       rightIcon: 'people',
       error: errors.password?.message,
       control,
@@ -115,9 +116,9 @@ const ResetPassword = () => {
   };
 
   const resetPasswordContainerStyles = clsx(
-    { 'w-full': true },
+    'w-full',
     { 'max-w-[440px]': !!data },
-    { 'h-full': true },
+    'h-full',
   );
 
   if (isLoading || isDomainInfoLoading) {
@@ -233,7 +234,7 @@ const ResetPassword = () => {
           >
             <img
               src={branding?.logo?.original || OfficeLogoSvg}
-              alt="Office Logo"
+              alt={t('alt.logo')}
               className="h-full"
             />
           </div>
@@ -248,10 +249,10 @@ const ResetPassword = () => {
                       <div className="text-center flex flex-col space-y-5 h-full justify-center items-center">
                         <Success />
                         <div className="text-neutral-900 font-bold">
-                          Password has been successfully reset
+                          {t('passwordResetSuccess')}
                         </div>
                         <Button
-                          label={'Sign In Now'}
+                          label={t('signInNow')}
                           className="w-full mt-5 rounded-7xl"
                           size={Size.Large}
                           onClick={() => navigate('/login')}
@@ -260,7 +261,7 @@ const ResetPassword = () => {
                     ) : (
                       <>
                         <div className="font-bold text-neutral-900 text-2xl">
-                          Reset Password
+                          {t('resetPasswordTitle')}
                         </div>
                         <form
                           className="mt-5"
@@ -272,7 +273,7 @@ const ResetPassword = () => {
                           />
                           <Button
                             type={Type.Submit}
-                            label={'Reset Password'}
+                            label={t('resetPasswordButton')}
                             className="w-full mt-5 rounded-7xl"
                             loading={resetPasswordMutation.isLoading}
                             disabled={!isValid || !!errors?.password?.type}
