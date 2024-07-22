@@ -90,8 +90,11 @@ const AppLauncher = () => {
             return (
               <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between gap-8 w-full">
-                  {[...Array(3)].map((element) => (
-                    <div className="flex flex-col gap-2" key={element}>
+                  {[...Array(3)].map((_value, index) => (
+                    <div
+                      className="flex flex-col gap-2"
+                      key={`${index}-app-widget-skeleton`}
+                    >
                       <Skeleton
                         className="!h-[60px] !w-[60px]"
                         borderRadius={12}

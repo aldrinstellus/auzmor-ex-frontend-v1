@@ -310,6 +310,7 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
               isClearable: true,
               dataTestId: `${dataTestId}-search`,
               inputClassName: 'text-sm py-[9px]',
+              autofocus: true,
             },
           ]}
           className="pb-4"

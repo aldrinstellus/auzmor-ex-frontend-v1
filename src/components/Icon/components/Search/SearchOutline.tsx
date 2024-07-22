@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgSearchOutline = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgSearchOutline = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={24}
     height={24}
@@ -10,7 +8,6 @@ const SvgSearchOutline = (
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <path
       d="M11.5 21C16.7467 21 21 16.7467 21 11.5C21 6.25329 16.7467 2 11.5 2C6.25329 2 2 6.25329 2 11.5C2 16.7467 6.25329 21 11.5 21Z"

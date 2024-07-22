@@ -47,8 +47,6 @@ const TeamModal: FC<IAddTeamModalProps> = ({
     control,
     handleSubmit,
     formState: { errors },
-    // reset,
-    // resetField,
     getValues,
     setError,
   } = useForm<ITeamForm>({

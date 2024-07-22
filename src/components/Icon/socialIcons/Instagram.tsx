@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const InstagramIcon = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => {
+const InstagramIcon = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg
       width="24"
@@ -11,7 +9,6 @@ const InstagramIcon = (
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
-      aria-label={props.ariaLabel}
     >
       <rect
         width="24"

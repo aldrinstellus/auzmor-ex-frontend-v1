@@ -159,6 +159,7 @@ const CreatePoll: FC<CreatePollProps> = ({ closeModal }) => {
       ],
       placeholder: 'Select Poll Duration',
       dataTestId: 'createpoll-duration-dropdown',
+      showSearch: false,
     },
   ];
 

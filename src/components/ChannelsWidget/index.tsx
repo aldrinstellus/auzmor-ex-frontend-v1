@@ -43,8 +43,11 @@ const ChannelsWidget: FC<IChannelsProps> = ({}) => {
   if (isLoading) {
     return (
       <>
-        {[...Array(2)].map((element) => (
-          <div key={element} className="py-2">
+        {[...Array(2)].map((_value, index) => (
+          <div
+            key={`${index}-channels-widget-skeleton`}
+            className="flex flex-col gap-2"
+          >
             <ChannelSkeleton />
           </div>
         ))}
@@ -73,9 +76,7 @@ const ChannelsWidget: FC<IChannelsProps> = ({}) => {
         }`}
       >
         {channelIds.slice(0, 2).map(({ id }) => (
-          <>
-            <ChannelRow key={id} channel={channels[id]} />
-          </>
+          <ChannelRow key={id} channel={channels[id]} />
         ))}
         <div className="flex flex-col gap-4">
           <Button

@@ -13,7 +13,7 @@ type VisibilityProps = {
 };
 
 const VirtualisedPost: FC<PostProps> = ({ postId, commentIds = [] }) => {
-  const cardRef = useRef<HTMLInputElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const [hasChanges, setHasChanges] = useState(false);
 
   return (

@@ -57,7 +57,7 @@ const NameRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
   } = useForm<any>({
     mode: 'onSubmit',
     resolver: yupResolver(schema),
-    defaultValues: data?.name,
+    defaultValues: { name: data?.name },
   });
 
   const onSubmit = () => {

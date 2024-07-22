@@ -32,12 +32,19 @@ const AdminsWidget = () => {
     }) || [];
 
   if (admins?.length == 0) return null;
+  const toggleModal = () => setShow((t) => !t);
+
   return (
     <Card className="py-6 rounded-9xl" shadowOnHover>
       <div className="px-6">
         <div
           className="flex items-center justify-between cursor-pointer"
-          onClick={() => setShow((t) => !t)}
+          onClick={toggleModal}
+          onKeyUp={(e) => (e.code === 'Enter' ? toggleModal() : '')}
+          tabIndex={0}
+          title={t('adminsWidget.title')}
+          aria-expanded={show}
+          role="button"
         >
           <div className="font-bold">{t('adminsWidget.title')}</div>
           <Icon

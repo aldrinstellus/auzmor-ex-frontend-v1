@@ -13,7 +13,7 @@ import AddLinkModal from './components/AddLinkModal';
 
 import { useParams } from 'react-router-dom';
 import { useChannelRole } from 'hooks/useChannelRole';
-import { IChannel } from 'stores/channelStore';
+import { IChannel, IChannelLink } from 'stores/channelStore';
 
 export type LinksWidgetProps = {
   channelData: IChannel;
@@ -41,6 +41,13 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
     else openCollpase();
   };
 
+  const handleLinkClick = (link: IChannelLink) => {
+    const linkUrl = link.url.startsWith('http')
+      ? link.url
+      : `https://${link.url}`;
+    window.open(linkUrl, '_blank');
+  };
+
   const maxListSize = 4;
 
   return (
@@ -48,10 +55,14 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
       <div
         className="px-4 flex items-center justify-between cursor-pointer"
         data-testid="links-widget"
+        onClick={toggleModal}
+        onKeyUp={(e) => (e.code === 'Enter' ? toggleModal() : '')}
+        tabIndex={0}
+        title={t('title')}
+        aria-expanded={open}
+        role="button"
       >
-        <div className="font-bold flex-auto" onClick={toggleModal}>
-          {t('title')}
-        </div>
+        <div className="font-bold flex-auto">{t('title')}</div>
         <div className="flex items-center gap-1">
           {isUserAdminOrChannelAdmin && links && links.length > 0 && (
             <Icon
@@ -69,7 +80,6 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
             name={open ? 'arrowUp' : 'arrowDown'}
             size={20}
             color="text-neutral-900"
-            onClick={toggleModal}
             dataTestId="links-widget-collapse"
           />
         </div>
@@ -89,12 +99,12 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
                   <div
                     key={index}
                     className="w-full flex justify-start items-center gap-x-2 px-1 py-2 cursor-pointer group"
-                    onClick={() => {
-                      const linkUrl = link.url.startsWith('http')
-                        ? link.url
-                        : `https://${link.url}`;
-                      window.open(linkUrl, '_blank');
-                    }}
+                    onClick={() => handleLinkClick(link)}
+                    onKeyUp={(e) =>
+                      e.code === 'Enter' ? handleLinkClick(link) : ''
+                    }
+                    role="link"
+                    tabIndex={0}
                   >
                     {link.url || link.favicon ? (
                       <img

@@ -78,8 +78,11 @@ const MyTeamWidget: FC<IMyTeamWidgetProps> = ({ className = '' }) => {
             if (isLoading) {
               return (
                 <>
-                  {[...Array(3)].map((element) => (
-                    <div key={element} className="py-2">
+                  {[...Array(3)].map((_value, index) => (
+                    <div
+                      key={`${index}-my-team-widget-skeleton`}
+                      className="py-2"
+                    >
                       <SkeletonLoader />
                     </div>
                   ))}

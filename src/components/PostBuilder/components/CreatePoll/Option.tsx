@@ -35,7 +35,6 @@ const OptionRow: FC<OptionRowProps> = ({
             InputVariant: Variant.Text,
             placeholder: 'Option',
             name: `options.${index}.text`,
-            defaultValue: field.text,
             control,
             dataTestId: `createpoll-option${index + 1}`,
             errorDataTestId: `createpoll-option${index + 1}-error`,

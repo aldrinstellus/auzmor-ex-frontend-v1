@@ -34,13 +34,21 @@ const MembersWidget: FC<MembersWidgetProps> = ({ channelData }) => {
     });
   });
   const navigate = useNavigate();
+
+  const toggleWidget = () => setShow((t) => !t);
   return (
     <>
       <Card className="py-6 rounded-9xl" shadowOnHover>
         <div className="px-6">
           <div
             className="flex items-center justify-between cursor-pointer"
-            onClick={() => setShow((t) => !t)}
+            data-testid="app-launcher"
+            onClick={toggleWidget}
+            onKeyUp={(e) => (e.code === 'Enter' ? toggleWidget() : '')}
+            tabIndex={0}
+            title="channel members"
+            aria-expanded={show}
+            role="button"
           >
             <div className="font-bold">
               {users?.length} {t('membersWidget.title')}
@@ -72,6 +80,7 @@ const MembersWidget: FC<MembersWidgetProps> = ({ channelData }) => {
                   dataTestId="my-teams-cta"
                   leftIcon="addCircle"
                   leftIconClassName="text-white"
+                  iconColor="!text-white"
                   onClick={() => openAddMemberModal()}
                 />
               ) : (

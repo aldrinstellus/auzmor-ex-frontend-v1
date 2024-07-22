@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgInsightfulOutline = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgInsightfulOutline = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={16}
     height={16}
@@ -10,7 +8,6 @@ const SvgInsightfulOutline = (
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <path
       fillRule="evenodd"

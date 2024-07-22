@@ -1,6 +1,7 @@
 import {
   ElementType,
   FC,
+  Fragment,
   ReactElement,
   ReactNode,
   cloneElement,
@@ -66,7 +67,7 @@ const PopupMenu: FC<IPopupMenuProps> = ({
         >
           {title && title}
           {menuItems.map((menuItem: IMenuItem, idx: number) => (
-            <>
+            <Fragment key={`menu-item-${idx}-fragment`}>
               {!menuItem.disabled && (
                 <Menu.Item
                   key={`menu-item-${idx}`}
@@ -92,7 +93,7 @@ const PopupMenu: FC<IPopupMenuProps> = ({
                   }}
                 </Menu.Item>
               )}
-            </>
+            </Fragment>
           ))}
           {footer && footer}
         </Menu.Items>

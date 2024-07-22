@@ -78,6 +78,7 @@ const GenderRow: FC<AppProps> = ({ data }) => {
         },
       ],
       control,
+      showSearch: false,
     },
   ];
 

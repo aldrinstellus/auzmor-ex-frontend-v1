@@ -353,7 +353,6 @@ const ConfigureLDAP: FC<ConfigureLDAPProps> = ({
       id: 'connection-settings',
       form: (
         <ConnectionSettings
-          connectionSettingsData={connectionSettingsData}
           connectionSettingsControl={connectionSettingsControl}
           connectionSettingsFormState={connectionSettingsFormState}
           closeModal={closeModal}
@@ -369,7 +368,6 @@ const ConfigureLDAP: FC<ConfigureLDAPProps> = ({
       id: 'user-fields-mapping',
       form: (
         <UserFieldsMapping
-          userFieldsMappingData={userFieldsMappingData}
           userFieldMappingControl={userFieldMappingControl}
           userFieldMappingFormState={userFieldMappingFormState}
           closeModal={closeModal}
@@ -385,7 +383,6 @@ const ConfigureLDAP: FC<ConfigureLDAPProps> = ({
       id: 'group-fields-mapping',
       form: (
         <GroupFieldsMapping
-          groupFieldsMappingData={groupFieldsMappingData}
           groupFieldMappingControl={groupFieldMappingControl}
           closeModal={closeModal}
           handleSubmit={groupFieldMappingHandleSubmit}

@@ -28,6 +28,12 @@
   border-color: theme('colors.primary.500') !important;
 }
 
+.ant-select-focused > .ant-select-selector {
+  border-color: theme('colors.primary.500') !important;
+  box-shadow: none !important;
+  outline: 1px !important;
+}
+
 .single-select .ant-select-selection-item {
   line-height: theme('lineHeight.normal') !important;
   color: theme('colors.neutral.900') !important;

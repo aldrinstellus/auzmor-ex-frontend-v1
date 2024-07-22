@@ -149,7 +149,6 @@ const EditProfileModal: FC<IEditProfileModal> = ({
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      defaultValue: getValues().fullName,
       error: errors.fullName?.message,
       name: 'fullName',
       label: 'Name',
@@ -165,7 +164,6 @@ const EditProfileModal: FC<IEditProfileModal> = ({
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      defaultValue: getValues().preferredName,
       name: 'preferredName',
       label: 'Preferred Name',
       dataTestId: `${dataTestId}-perferred-name`,

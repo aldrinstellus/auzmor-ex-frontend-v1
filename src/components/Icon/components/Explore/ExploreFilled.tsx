@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgExploreFilled = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgExploreFilled = (props: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={24}
@@ -10,7 +8,6 @@ const SvgExploreFilled = (
     viewBox="0 0 24 24"
     fill="none"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <path fill="currentColor" d="M12 19a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z" />
     <path
