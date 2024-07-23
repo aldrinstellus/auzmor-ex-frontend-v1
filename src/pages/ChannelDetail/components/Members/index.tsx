@@ -21,6 +21,7 @@ import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
 import { FilterModalVariant } from 'components/FilterModal';
 import {
   CHANNEL_MEMBER_STATUS,
+  ChannelVisibilityEnum,
   IChannel,
   IChannelRequest,
 } from '../../../../stores/channelStore';
@@ -169,15 +170,16 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
         setGrid(true);
       },
     },
-    isUserAdminOrChannelAdmin && {
-      label: t('requests'),
-      labelClassName: 'text-xs font-medium',
-      stroke: 'text-neutral-900',
-      onClick: () => {
-        updateFilter('type', 'requests');
-        setGrid(false);
+    channelData?.settings?.visibility == ChannelVisibilityEnum.Private &&
+      isUserAdminOrChannelAdmin && {
+        label: t('requests'),
+        labelClassName: 'text-xs font-medium',
+        stroke: 'text-neutral-900',
+        onClick: () => {
+          updateFilter('type', 'requests');
+          setGrid(false);
+        },
       },
-    },
   ].filter(Boolean); // request options only for admin
 
   useEffect(() => {
@@ -223,7 +225,8 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
               />
             </div>
             <div className="relative">
-              {isUserAdminOrChannelAdmin ? (
+              {channelData?.settings?.visibility ==
+                ChannelVisibilityEnum.Private && isUserAdminOrChannelAdmin ? (
                 <PopupMenu
                   triggerNode={
                     <Button
@@ -245,7 +248,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
                 />
               ) : (
                 <Button
-                  active={filters?.type}
+                  active={true}
                   variant={Variant.Secondary}
                   label={t('allMembers')}
                 /> // for end user its a button
