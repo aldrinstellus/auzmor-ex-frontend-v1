@@ -34,13 +34,21 @@ const MembersWidget: FC<MembersWidgetProps> = ({ channelData }) => {
     });
   });
   const navigate = useNavigate();
+
+  const toggleWidget = () => setShow((t) => !t);
   return (
     <>
       <Card className="py-6 rounded-9xl" shadowOnHover>
         <div className="px-6">
           <div
             className="flex items-center justify-between cursor-pointer"
-            onClick={() => setShow((t) => !t)}
+            data-testid="app-launcher"
+            onClick={toggleWidget}
+            onKeyUp={(e) => (e.code === 'Enter' ? toggleWidget() : '')}
+            tabIndex={0}
+            title="channel members"
+            aria-expanded={show}
+            role="button"
           >
             <div className="font-bold">
               {users?.length} {t('membersWidget.title')}
@@ -68,10 +76,11 @@ const MembersWidget: FC<MembersWidgetProps> = ({ channelData }) => {
                 <Button
                   size={Size.Small}
                   className="w-full"
-                  label="Add members"
+                  label={t('membersWidget.addMemberCta')}
                   dataTestId="my-teams-cta"
                   leftIcon="addCircle"
                   leftIconClassName="text-white"
+                  iconColor="!text-white"
                   onClick={() => openAddMemberModal()}
                 />
               ) : (
@@ -79,7 +88,7 @@ const MembersWidget: FC<MembersWidgetProps> = ({ channelData }) => {
                   variant={Variant.Secondary}
                   size={Size.Small}
                   className="w-full"
-                  label="View all members"
+                  label={t('membersWidget.viewCta')}
                   dataTestId="my-teams-cta"
                   onClick={() =>
                     navigate(`/channels/${channelId}/members?type=All_Members`)

@@ -6,6 +6,7 @@ import { IChannel } from 'stores/channelStore';
 
 import PrivacyRow from './PrivacyRow';
 import RestrictionRow from './RestrictionRow';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   channelData: IChannel;
@@ -13,9 +14,11 @@ type AppProps = {
 };
 
 const PrivacySetting: FC<AppProps> = ({ channelData, canEdit }) => {
+  const { t } = useTranslation('channelDetail', { keyPrefix: 'setting' });
+
   return (
     <div>
-      <Header title="Personal Details" dataTestId="personal-details" />
+      <Header title={t('persnolDetails')} dataTestId="personal-details" />
       <Card shadowOnHover={canEdit} className=" px-4">
         <div className="px-4">
           <PrivacyRow isUserAdminOrChannelAdmin={canEdit} data={channelData} />

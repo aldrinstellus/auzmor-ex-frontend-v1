@@ -238,13 +238,14 @@ const ChannelModal: FC<IChannelModalProps> = ({
                 control,
                 name: 'channelName',
                 label: t('channelModal.channelNameLabel'),
-                placeholder: 'ex. Product and design team',
+                placeholder: t('channelModal.channelNamePlaceholder'),
                 dataTestId: `${dataTestId}-name`,
                 showCounter: true,
                 maxLength: 100,
                 required: true,
                 clearErrors,
                 error: errors.channelName?.message,
+                autofocus: true,
               },
             ]}
           />
@@ -283,6 +284,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
                   placeholder: 'ex. Product and design team',
                   dataTestId: 'channel-name-input',
                   required: true,
+                  showSearch: false,
                   options: [
                     {
                       ...getChannelPrivacyOption(

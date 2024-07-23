@@ -39,7 +39,7 @@ type AppProps = {
 };
 
 const Members: React.FC<AppProps> = ({ channelData }) => {
-  const { t } = useTranslation('channels');
+  const { t } = useTranslation('channelDetail', { keyPrefix: 'memberTab' });
   const { isUserAdminOrChannelAdmin } = useChannelRole(channelData.id);
   const { filters, clearFilters, updateFilter } = useAppliedFiltersStore();
 
@@ -161,7 +161,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
   // quick Filters options
   const requestOptions = [
     {
-      label: 'All members ',
+      label: t('allMembers'),
       labelClassName: 'text-xs font-medium',
       stroke: 'text-neutral-900',
       onClick: () => {
@@ -170,7 +170,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
       },
     },
     isUserAdminOrChannelAdmin && {
-      label: 'Requests',
+      label: t('requests'),
       labelClassName: 'text-xs font-medium',
       stroke: 'text-neutral-900',
       onClick: () => {
@@ -193,12 +193,10 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
     <>
       <Card className="p-8 flex flex-col gap-6">
         <div className="flex justify-between items-center">
-          <p className="text-2xl font-bold text-neutral-900">
-            {t('members.title')}
-          </p>
+          <p className="text-2xl font-bold text-neutral-900">{t('title')}</p>
           {isUserAdminOrChannelAdmin && (
             <Button
-              label={t('members.addMemberCTA')}
+              label={t('addMemberCTA')}
               leftIcon="add"
               leftIconClassName="text-white pointer-events-none group-hover:text-white"
               onClick={() => openAddMemberModal()}
@@ -207,7 +205,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
         </div>
         <FilterMenu
           filterForm={filterForm}
-          searchPlaceholder={t('members.searchMembers')}
+          searchPlaceholder={t('searchMembers')}
           dataTestIdFilter="channel-filter-icon"
           dataTestIdSort="channel-sort-icon"
           dataTestIdSearch="channel-search"
@@ -234,8 +232,8 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
                       label={
                         parsedTab == 'All_Members' ||
                         filters?.type == 'All_Members'
-                          ? 'All members'
-                          : 'Requests'
+                          ? t('allMembers')
+                          : t('requests')
                       }
                       rightIcon={`${
                         isUserAdminOrChannelAdmin ? 'arrowDown' : ''
@@ -249,7 +247,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
                 <Button
                   active={filters?.type}
                   variant={Variant.Secondary}
-                  label={'All members'}
+                  label={t('allMembers')}
                 /> // for end user its a button
               )}
             </div>
@@ -263,11 +261,11 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
               illustration="noResult"
               message={
                 <p>
-                  Sorry we can&apos;t find the Member you are looking for.
-                  <br /> Please check the spelling or try again.
+                  {t('noDataFound')}
+                  <br /> {t('noDataFoundLine2')}
                 </p>
               }
-              clearBtnLabel={searchValue ? 'Clear Search' : 'Clear Filters'}
+              clearBtnLabel={searchValue ? t('clearSearch') : t('clearFilters')}
               onClearSearch={() => {
                 searchValue && resetField
                   ? resetField('search', { defaultValue: '' })
@@ -304,14 +302,14 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
               (
                 <div className="flex items-center gap-4 py-3">
                   <p className="text-base font-bold text-neutral-500 flex w-[43%] mr-[48px]">
-                    Member requests
+                    {t('memberRequests')}
                   </p>
 
                   <p className="text-base font-bold text-neutral-500 flex w-[30%]">
-                    Role
+                    {t('role')}
                   </p>
                   <p className="text-base font-bold text-neutral-500 w-[20%]">
-                    Location
+                    {t('location')}
                   </p>
                 </div>
               ) as ReactNode
@@ -326,7 +324,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
                 component: (selectedEntities: IChannelRequest[], reset) =>
                   (
                     <Button
-                      label="Accept"
+                      label={t('accept')}
                       leftIcon="tickCircle"
                       leftIconSize={16}
                       leftIconClassName="!text-neutral-500 group-hover:!text-primary-600"
@@ -352,7 +350,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
                 key: 'decline',
                 component: (selectedEntities: IChannelRequest[], reset) => (
                   <Button
-                    label="Decline"
+                    label={t('decline')}
                     leftIcon="delete"
                     leftIconSize={16}
                     leftIconClassName="!text-neutral-500 group-hover:!text-primary-600"

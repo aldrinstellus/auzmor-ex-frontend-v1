@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgUserAdminOutline = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgUserAdminOutline = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width="16"
     height="16"
@@ -10,7 +8,6 @@ const SvgUserAdminOutline = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <g id="vuesax/linear/user-admin">
       <g id="user-search">

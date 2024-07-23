@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const FacebookIcon = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => {
+const FacebookIcon = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg
       width="24"
@@ -11,7 +9,6 @@ const FacebookIcon = (
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
-      aria-label={props.ariaLabel}
     >
       <rect width="24" height="24" rx="12" fill="#3B5998" />
       <g clipPath="url(#clip0_4044_156621)">

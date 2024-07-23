@@ -114,9 +114,9 @@ const Departments: FC<IDepartmentsProps> = ({ control, watch, setValue }) => {
           if (isLoading) {
             return (
               <>
-                {[...Array(10)].map((element) => (
+                {[...Array(10)].map((_value, i) => (
                   <div
-                    key={element}
+                    key={`${i}-department-item-skeleton`}
                     className={`px-6 py-3 border-b-1 border-b-bg-neutral-200 flex items-center`}
                   >
                     <ItemSkeleton />

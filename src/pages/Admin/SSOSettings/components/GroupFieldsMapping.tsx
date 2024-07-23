@@ -6,10 +6,8 @@ import Layout, { FieldType } from 'components/Form';
 import { FC, ReactElement } from 'react';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { Variant } from 'components/Input';
-import { IGroupFieldsMappingForm } from './ConfigureLDAP';
 
 type GroupFieldsMappingProps = {
-  groupFieldsMappingData: IGroupFieldsMappingForm;
   groupFieldMappingControl: any;
   handleSubmit: any;
   onSubmit: any;
@@ -19,7 +17,6 @@ type GroupFieldsMappingProps = {
 };
 
 const GroupFieldsMapping: FC<GroupFieldsMappingProps> = ({
-  groupFieldsMappingData,
   groupFieldMappingControl,
   handleSubmit,
   closeModal,
@@ -35,7 +32,6 @@ const GroupFieldsMapping: FC<GroupFieldsMappingProps> = ({
       name: 'groupName',
       label: 'Group Name',
       control: groupFieldMappingControl,
-      defaultValue: groupFieldsMappingData?.groupName,
       dataTestId: 'sso-config-ad-groupname',
     },
     {
@@ -45,7 +41,6 @@ const GroupFieldsMapping: FC<GroupFieldsMappingProps> = ({
       name: 'groupMemberUID',
       label: 'Group Member UID',
       control: groupFieldMappingControl,
-      defaultValue: groupFieldsMappingData?.groupMemberUID,
       dataTestId: 'sso-config-ad-groupmemberuid',
     },
     {
@@ -55,7 +50,6 @@ const GroupFieldsMapping: FC<GroupFieldsMappingProps> = ({
       name: 'groupObjectFilter',
       label: 'Group Object Filter',
       control: groupFieldMappingControl,
-      defaultValue: groupFieldsMappingData?.groupObjectFilter,
       dataTestId: 'sso-config-ad-groupobjectfilter',
     },
   ];

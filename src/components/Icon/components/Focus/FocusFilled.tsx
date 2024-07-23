@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgFocusFilled = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgFocusFilled = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width="25"
     height="24"
@@ -10,7 +8,6 @@ const SvgFocusFilled = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <g clipPath="url(#clip0_2423_98418)">
       <path

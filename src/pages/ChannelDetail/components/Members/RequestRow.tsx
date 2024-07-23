@@ -1,6 +1,7 @@
 import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IChannelRequest } from 'stores/channelStore';
 import { getFullName, getProfileImage } from 'utils/misc';
 
@@ -9,6 +10,7 @@ interface IRequestRowProps {
 }
 
 const RequestRow: FC<IRequestRowProps> = ({ request }) => {
+  const { t } = useTranslation('common');
   const { createdBy } = request;
   return (
     <div className="flex items-center gap-4">
@@ -21,24 +23,24 @@ const RequestRow: FC<IRequestRowProps> = ({ request }) => {
         {getFullName(createdBy) || 'User'}
         {createdBy?.department && (
           <span className="text-sm font-medium text-neutral-900 flex">
-            {createdBy?.department || 'Not specified'}
+            {createdBy?.department || t('notSpecified')}
           </span>
         )}
       </p>
 
       <p className="text-sm font-medium text-neutral-900 flex w-[30%]">
-        {createdBy?.designation || 'Not specified'}
+        {createdBy?.designation || t('notSpecified')}
       </p>
       {!createdBy?.workLocation ? (
         <div className="flex gap-2 items-center w-[20%]">
           <Icon name="location" hover={false} hoverColor="text-neutral-500" />
           <p className="text-sm font-medium text-neutral-500">
-            {createdBy?.workLocation || 'New york, USA'}
+            {createdBy?.workLocation || t('notSpecified')}
           </p>
         </div>
       ) : (
         <p className="text-sm font-medium text-neutral-500 w-[10%]">
-          Not specified
+          {t('notSpecified')}
         </p>
       )}
     </div>

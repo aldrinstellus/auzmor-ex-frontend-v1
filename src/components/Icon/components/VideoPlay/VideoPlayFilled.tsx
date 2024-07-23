@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgVideoFilled = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => {
+const SvgVideoFilled = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -11,7 +9,6 @@ const SvgVideoFilled = (
       fill="none"
       viewBox="0 0 18 18"
       {...props}
-      aria-label={props.ariaLabel}
     >
       <path d="M11.047 1.5H6.953v3.27h4.094V1.5z" fill="currentColor"></path>
       <path

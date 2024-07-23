@@ -46,7 +46,6 @@ const AddTeams: FC<IAddTeamsProps> = ({ control, errors, defaultValues }) => {
       inputClassName: 'py-[11px] text-sm',
       placeholder: 'ex. Product and design team',
       name: `name`,
-      defaultValue: defaultValues()?.name || '',
       label: 'Team Name',
       required: true,
       control,

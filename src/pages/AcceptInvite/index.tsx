@@ -15,6 +15,7 @@ import InviteLinkExpired from './components/InviteLinkExpired';
 import useAuth from 'hooks/useAuth';
 import { useNavigateWithToken } from 'hooks/useNavigateWithToken';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { useTranslation } from 'react-i18next';
 
 interface IForm {
   workEmail: string;
@@ -40,6 +41,7 @@ export interface IAcceptInviteProps {}
 
 const AcceptInvite: FC<IAcceptInviteProps> = () => {
   usePageTitle('acceptInvite');
+  const { t } = useTranslation('acceptInvite');
   const [searchParams, _] = useSearchParams();
   const token = searchParams.get('token');
   const orgId = searchParams.get('orgId');
@@ -75,6 +77,9 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
   } = useForm<IForm>({
     resolver: yupResolver(schema),
     mode: 'onChange',
+    defaultValues: {
+      workEmail: data?.result?.data?.email,
+    },
   });
 
   useEffect(() => {
@@ -85,23 +90,22 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      placeholder: 'Enter your email address',
+      placeholder: t('emailPlaceholder'),
       name: 'workEmail',
-      label: 'Work Email*',
+      label: t('emailLabel'),
       error: errors.workEmail?.message,
       dataTestId: 'signup-work-email',
       control,
       disabled: true,
       className:
         'text-neutral-400 disabled:border-none disabled:bg-neutral-200',
-      defaultValue: data?.result?.data?.email,
       inputClassName: 'h-[44px]',
     },
     {
       type: FieldType.Password,
-      placeholder: 'Enter password',
+      placeholder: t('passwordPlaceholder'),
       name: 'password',
-      label: 'Password*',
+      label: t('passwordLabel'),
       rightIcon: 'people',
       error: errors.password?.message,
       dataTestId: 'signup-work-password',
@@ -110,9 +114,9 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
     },
     {
       type: FieldType.Password,
-      placeholder: 'Re-Enter password',
+      placeholder: t('confirmPasswordPlaceholder'),
       name: 'confirmPassword',
-      label: 'Confirm Password*',
+      label: t('confirmPasswordLabel'),
       rightIcon: 'people',
       error: errors.confirmPassword?.message,
       dataTestId: 'signup-work-re-password',
@@ -124,13 +128,13 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
       type: FieldType.Checkbox,
       label: (
         <div data-testId="sign-up-checkbox">
-          By Signing up you are agreeing to Auzmor Office’s{' '}
+          {t('agreementText')}{' '}
           <span className="text-primary-500">
-            <a href="https://www.auzmor.com/tc">Terms of Use</a>
+            <a href={t('termsOfUseLink')}>{t('termsOfUse')}</a>
           </span>{' '}
-          and{' '}
+          {t('and')}{' '}
           <span className="text-primary-500">
-            <a href="https://www.auzmor.com/privacy-policy">Privacy Policy</a>
+            <a href={t('privacyPolicyLink')}>{t('privacyPolicy')}</a>
           </span>
         </div>
       ),
@@ -178,7 +182,7 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
         </div>
         <div className="pt-[86px] 3xl:pt-[154px] mr-[60px] w-full max-w-[414px] h-full">
           <div className="font-extrabold text-neutral-900 text-4xl">
-            Sign Up
+            {t('signUp')}
           </div>
           <form className="mt-14" onSubmit={handleSubmit(onSubmit)}>
             {!!acceptInviteMutation.isError && (
@@ -186,16 +190,18 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
                 <Banner
                   title={
                     acceptInviteMutation.error?.toString() ||
-                    'Something went wrong'
+                    t('somethingWentWrong')
                   }
                   variant={BannerVariant.Error}
                 />
               </div>
             )}
             <Layout fields={fields} />
-            <p className="py-4 text-xs text-neutral-900">* Required field</p>
+            <p className="py-4 text-xs text-neutral-900">
+              {t('requiredField')}
+            </p>
             <Button
-              label={'Sign Up'}
+              label={t('signUp')}
               disabled={!isValid}
               className="w-full mt-8"
               type={ButtonType.Submit}

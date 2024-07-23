@@ -31,7 +31,7 @@ type AppProps = {
   channelData: IChannel;
 };
 const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
-  const { t } = useTranslation('channels');
+  const { t } = useTranslation('channelDetail', { keyPrefix: 'manageAccess' });
   const { channelId } = useParams();
 
   const { user: currentUser } = useAuth();
@@ -53,14 +53,12 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
           <TableRow>
             <TableHead className=" pl-[44px] ">
               <div className="flex ">
-                <div>{t('manageAccess.table.fullName')}</div>
+                <div>{t('table.fullName')}</div>
               </div>
             </TableHead>
-            <TableHead className="">Designation</TableHead>
-            <TableHead>{t('manageAccess.table.email')}</TableHead>
-            <TableHead className="pl-8">
-              {t('manageAccess.table.role')}
-            </TableHead>
+            <TableHead className="">{t('table.designation')}</TableHead>
+            <TableHead>{t('table.email')}</TableHead>
+            <TableHead className="pl-8">{t('table.role')}</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -89,7 +87,7 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
                       <div
                         className={`rounded-lg  px-3 py-1 text-xxs font-medium bg-primary-100 text-primary-600`}
                       >
-                        New joinee
+                        {t('table.newJoinee')}
                       </div>
                     )}
                   </div>
@@ -120,7 +118,7 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
                         [
                           {
                             value: CHANNEL_ROLE.Admin,
-                            label: 'Admin',
+                            label: t('table.admin'),
                             onClick: () => {
                               updateMemberRoleMutation.mutate({
                                 id: user?.id,
@@ -132,7 +130,7 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
 
                           {
                             value: CHANNEL_ROLE.Member,
-                            label: 'Member',
+                            label: t('table.member'),
                             onClick: () => {
                               updateMemberRoleMutation.mutate({
                                 id: user?.id,

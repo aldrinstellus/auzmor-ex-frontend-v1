@@ -14,6 +14,7 @@ import ManageAccess from './components/ManageChannel';
 import { usePageTitle } from 'hooks/usePageTitle';
 import PrivateChannelBanner from 'components/PrivateChannel';
 import { useChannelRole } from 'hooks/useChannelRole';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   activeTabIndex?: number;
@@ -23,7 +24,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
   usePageTitle('channelDetails');
   const { channelId } = useParams();
   const navigate = useNavigate();
-
+  const { t } = useTranslation('channelDetail', { keyPrefix: 'tabs' });
   // Navigate to 404 if channel id is missing
   if (!channelId) {
     navigate('/404');
@@ -50,7 +51,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
   const tabStyles = (active: boolean, disabled = false) =>
     clsx(
       {
-        'text-sm px-1 cursor-pointer': true,
+        'text-sm px-1 cursor-pointer group-focus:!text-white': true,
       },
       {
         '  font-bold text-white border-b-2 border-primary-400 pb-2 bottom-2 relative mt-1':
@@ -77,7 +78,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
     {
       id: 1,
       tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>Home</div>
+        <div className={tabStyles(isActive)}>{t('home')}</div>
       ),
       hidden: false,
       dataTestId: 'channel-home-tab',
@@ -86,7 +87,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
     {
       id: 2,
       tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>Documents</div>
+        <div className={tabStyles(isActive)}>{t('documents')}</div>
       ),
       hidden: false,
       dataTestId: 'channel-document-tab',
@@ -99,7 +100,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
     {
       id: 3,
       tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>Members</div>
+        <div className={tabStyles(isActive)}>{t('members')}</div>
       ),
       hidden: false,
       dataTestId: 'channel-member-tab',
@@ -108,7 +109,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
     {
       id: 4,
       tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>Settings</div>
+        <div className={tabStyles(isActive)}> {t('settings')}</div>
       ),
       hidden: false,
       dataTestId: 'channel-member-tab',
@@ -119,7 +120,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
     {
       id: 5,
       tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>Manage access</div>
+        <div className={tabStyles(isActive)}> {t('manageAccess')}</div>
       ),
       hidden: !isUserAdminOrChannelAdmin,
       dataTestId: 'channel-member-tab',

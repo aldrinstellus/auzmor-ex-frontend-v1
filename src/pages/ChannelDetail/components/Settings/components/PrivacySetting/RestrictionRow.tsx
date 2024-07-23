@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-
 import { useParams } from 'react-router-dom';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import InfoRow from 'components/ProfileInfo/components/InfoRow';
@@ -9,11 +8,13 @@ import Layout, { FieldType } from 'components/Form';
 import { IRadioListOption } from 'components/RadioGroup';
 import { updateChannel } from 'queries/channel';
 import { IChannel } from 'stores/channelStore';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   data: IChannel;
   isUserAdminOrChannelAdmin: boolean;
 };
+
 enum ChannelRestriction {
   canPost = 'canPost',
   canComment = 'canComment',
@@ -23,8 +24,11 @@ enum ChannelRestriction {
 const RestrictionRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
   const { channelId = '' } = useParams();
   const queryClient = useQueryClient();
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'setting.restrictionRow',
+  });
 
-  const upadteChannelMutation = useMutation({
+  const updateChannelMutation = useMutation({
     mutationKey: ['update-channel-mutation'],
     mutationFn: (data: any) => updateChannel(channelId, data),
     onError: (_error: any) => {},
@@ -33,6 +37,7 @@ const RestrictionRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
       await queryClient.invalidateQueries(['channel']);
     },
   });
+
   const handleRestrictionValue = () => {
     const restrictionSettings = data?.settings?.restriction;
     let value = '';
@@ -50,7 +55,7 @@ const RestrictionRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
     return value;
   };
 
-  const { control, getValues } = useForm<any>({
+  const { control } = useForm<any>({
     mode: 'onSubmit',
     defaultValues: {
       restrictionSetting: handleRestrictionValue(),
@@ -84,7 +89,7 @@ const RestrictionRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
       default:
         restrictionPayload = data?.settings?.restriction;
     }
-    upadteChannelMutation.mutate({
+    updateChannelMutation.mutate({
       channelId,
       settings: {
         restriction: restrictionPayload,
@@ -92,11 +97,11 @@ const RestrictionRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
     });
   };
 
-  const restrictionSettingOption: IRadioListOption[] = [
+  const restrictionSettingOptions: IRadioListOption[] = [
     {
       data: {
         value: ChannelRestriction.canPost,
-        label: 'Anyone can post and comment',
+        label: t('canPostDescription'),
         onChange: handleChange,
       },
       dataTestId: '',
@@ -104,7 +109,7 @@ const RestrictionRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
     {
       data: {
         value: ChannelRestriction.canComment,
-        label: `Anyone can post and comment, but announcements are restricted to owners and admins`,
+        label: t('canCommentDescription'),
         onChange: handleChange,
       },
       dataTestId: '',
@@ -112,12 +117,29 @@ const RestrictionRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
     {
       data: {
         value: ChannelRestriction.canAnnouncement,
-        label: `Anyone can comment, but announcements are restricted to owners and admins`,
+        label: t('canAnnouncementDescription'),
         onChange: handleChange,
       },
       dataTestId: '',
     },
   ];
+
+  const fields = [
+    {
+      type: FieldType.Radio,
+      name: 'restrictionSetting',
+      rowClassName: 'mb-4',
+      control,
+      disabled: !isUserAdminOrChannelAdmin,
+      radioList: restrictionSettingOptions,
+      labelRenderer: (option: IRadioListOption) => (
+        <div className="text-sm ml-2 text-black font-normal">
+          {option.data.label}
+        </div>
+      ),
+    },
+  ];
+
   return (
     <InfoRow
       icon={{
@@ -126,35 +148,14 @@ const RestrictionRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
         bgColor: '!bg-teal-50',
       }}
       isEditButton={false}
-      label="Restriction"
+      label={t('label')}
       isEditMode={true}
       value={data?.settings?.visibility}
       dataTestId="channel-restriction-row"
       border={true}
       editNode={
         <div>
-          <Layout
-            fields={[
-              {
-                type: FieldType.Radio,
-                name: 'restrictionSetting',
-                rowClassName: 'mb-4  ',
-                disabled: !isUserAdminOrChannelAdmin,
-                control,
-                defaultValue: getValues()?.privacySetting,
-                radioList: restrictionSettingOption,
-                labelRenderer: (option: IRadioListOption) => {
-                  return (
-                    <>
-                      <p className=" text-sm ml-2 text-black font normal  ">
-                        {option.data.label}
-                      </p>
-                    </>
-                  );
-                },
-              },
-            ]}
-          />
+          <Layout fields={fields} />
         </div>
       }
     />

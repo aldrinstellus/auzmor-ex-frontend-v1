@@ -25,7 +25,7 @@ type AppProps = {
 };
 
 const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
-  const { t } = useTranslation('channels');
+  const { t } = useTranslation('channelDetail', { keyPrefix: 'manageAccess' });
   const { updateParam, deleteParam, serializeFilter, parseParams } =
     useURLParams();
   const parsedRole = parseParams('roles');
@@ -93,7 +93,7 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
       control,
       height: 36,
       name: 'roles',
-      placeholder: 'Role',
+      placeholder: t('role'),
       size: InputSize.Small,
       dataTestId: 'filterby-role',
       selectClassName: 'single-select-bold',
@@ -102,12 +102,12 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
       options: [
         {
           value: UserRole.Admin,
-          label: 'Admin',
+          label: t('admin'),
           dataTestId: 'filterby-role-admin',
         },
         {
           value: UserRole.Member,
-          label: 'Member',
+          label: t('member'),
           dataTestId: 'filterby-role-member',
         },
       ],
@@ -118,13 +118,11 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
     <div>
       <Card className="p-8 flex flex-col gap-6 pb-40  ">
         <div className="flex justify-between items-center">
-          <p className="text-2xl font-bold text-neutral-900">
-            {t('manageAccess.title')}
-          </p>
+          <p className="text-2xl font-bold text-neutral-900">{t('title')}</p>
           <Button
             label={t('members.addMemberCTA')}
             leftIcon="add"
-            leftIconClassName="text-white pointer-events-none group-hover:text-white"
+            leftIconClassName="!text-white pointer-events-none group-hover:text-white"
             onClick={() => openAddMemberModal()}
           />
         </div>
@@ -155,11 +153,16 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
             illustration="noResult"
             message={
               <p>
-                Sorry we can&apos;t find the profile you are looking for.
-                <br /> Please check the spelling or try again.
+                {t('noDataFound.message')}
+                <br />
+                {t('noDataFound.message2')}
               </p>
             }
-            clearBtnLabel={searchValue ? 'Clear Search' : 'Clear Filters'}
+            clearBtnLabel={
+              searchValue
+                ? t('noDataFound.clearSearch')
+                : t('noDataFound.clearFilters')
+            }
             onClearSearch={() => {
               searchValue && resetField
                 ? resetField('search', { defaultValue: '' })

@@ -12,6 +12,7 @@ import InfoRow from 'components/ProfileInfo/components/InfoRow';
 import { updateChannel } from 'queries/channel';
 import { IChannel } from 'stores/channelStore';
 import { isTrim } from 'pages/ChannelDetail/components/utils';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   channelData: IChannel;
@@ -22,15 +23,17 @@ const DescriptionRow: FC<AppProps> = ({
   channelData,
   isUserAdminOrChannelAdmin,
 }) => {
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'setting.descriptionRow',
+  });
   const { channelId = '' } = useParams();
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);
 
-  //channel Name
+  //channel description
   const schema = yup.object({
     name: yup.string(),
   });
-
   // channel update api call
   const updateChannelMutation = useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: any }) =>
@@ -65,7 +68,7 @@ const DescriptionRow: FC<AppProps> = ({
       type: FieldType.TextArea,
       control,
       name: 'channelDescription',
-      label: 'Channel Description',
+      label: t('label'),
       defaultValue: getValues()?.channelDescription || '',
       dataTestId: `channel-description`,
       rows: 5,
@@ -83,7 +86,7 @@ const DescriptionRow: FC<AppProps> = ({
         color: 'text-orange-500',
         bgColor: 'bg-orange-50',
       }}
-      label="Description"
+      label={t('label')}
       value={isTrim(channelData?.description)}
       canEdit={isUserAdminOrChannelAdmin}
       dataTestId="professional-details-employee-id"

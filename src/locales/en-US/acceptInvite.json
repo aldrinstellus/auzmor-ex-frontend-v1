@@ -1,0 +1,22 @@
+{
+  "acceptInvite": {
+    "emailPlaceholder": "Enter your email address",
+    "emailLabel": "Work Email*",
+    "passwordPlaceholder": "Enter password",
+    "passwordLabel": "Password*",
+    "confirmPasswordPlaceholder": "Re-Enter password",
+    "confirmPasswordLabel": "Confirm Password*",
+    "agreementText": "By Signing up you are agreeing to Auzmor Office’s",
+    "termsOfUse": "Terms of Use",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfUseLink": "https://www.auzmor.com/tc",
+    "privacyPolicyLink": "https://www.auzmor.com/privacy-policy",
+    "signUp": "Sign Up",
+    "somethingWentWrong": "Something went wrong",
+    "requiredField": "* Required field"
+  },
+  "inviteLinkExpired": {
+    "expiredTitle": "INVITE LINK HAS EXPIRED",
+    "expiredMessage": "Please ask the admin to invite you again."
+  }
+}

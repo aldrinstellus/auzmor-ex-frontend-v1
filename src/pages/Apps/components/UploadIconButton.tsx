@@ -11,6 +11,7 @@ import useModal from 'hooks/useModal';
 import ImageReposition from 'components/DynamicImagePreview/components/ImageReposition';
 import { Shape } from 'components/ImageCropper';
 import useProduct from 'hooks/useProduct';
+import { useTranslation } from 'react-i18next';
 
 type UploadIconButtonProps = {
   setValue: UseFormSetValue<IAddAppForm>;
@@ -18,17 +19,22 @@ type UploadIconButtonProps = {
 };
 
 const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
+  const { t } = useTranslation('appLauncher', {
+    keyPrefix: 'uploadIconButton',
+  });
+
   const { isLxp } = useProduct();
   const [isEditIconModalOpen, openEditIconModal, closeEditIconModal] =
     useModal();
-  const [tempFile, setTempFile] = useState<any>(null);
-  const [error, setError] = useState('');
+  const [tempFile, setTempFile] = useState<File | null>(null);
+  const [error, setError] = useState<string>('');
+
   // Callback function to handle file upload
   const handleIconUpload = (file: File) => {
     const iconElement = document.getElementById(
       'add-app-icon',
     ) as HTMLImageElement;
-    const blobFile = BlobToFile(file, tempFile?.name, file.type);
+    const blobFile = BlobToFile(file, tempFile?.name || '', file.type);
     iconElement.src = getBlobUrl(blobFile);
     setValue('icon', {
       id: '',
@@ -37,45 +43,43 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
     });
   };
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    // Do something with the files
-    if (acceptedFiles.length) {
-      openEditIconModal();
-      setTempFile(acceptedFiles[0]);
-    }
-  }, []);
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      if (acceptedFiles.length) {
+        openEditIconModal();
+        setTempFile(acceptedFiles[0]);
+      }
+    },
+    [openEditIconModal],
+  );
 
   const { getRootProps, getInputProps, isDragActive, isDragAccept, inputRef } =
     useDropzone({
       onDrop,
       maxFiles: 1,
       onDropRejected: (rejection) => {
-        // extension validation
         const error = rejection[0].errors[0];
         if (error.code === 'file-invalid-type') {
-          showErrorToast(
-            `Only JPEG/PNG${isLxp ? '' : '/SVG'} filetypes are supported!`,
-          );
-          setError('Unsupported filetypes.');
+          showErrorToast(t('fileTypeError'));
+          setError(t('unsupportedFileTypes'));
           return;
         }
         if (error.code === 'file-size-exceed') {
-          showErrorToast('Uploaded image must be less than 8MB in size!');
-          setError('The file size exceed the limit.');
+          showErrorToast(t('fileSizeError'));
+          setError(t('fileSizeExceedsLimit'));
           return;
         }
       },
       accept: {
         'image/jpeg': ['.jpg', '.jpeg'],
         'image/png': ['.png'],
-        ...(isLxp ? {} : { 'image/svg': ['.svg'] }),
+        ...(isLxp ? {} : { 'image/svg+xml': ['.svg'] }),
       },
       validator: (file) => {
-        // size validation
         if (file.size > 8 * MB) {
           return {
             code: 'file-size-exceed',
-            message: 'The file size exceeds the limit',
+            message: t('fileSizeExceedsLimit'),
           };
         }
         return null;
@@ -112,17 +116,17 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
   return (
     <div>
       <div className="flex justify-between pb-1">
-        <p className="text-neutral-900 font-bold text-sm">Upload Icon</p>
+        <p className="text-neutral-900 font-bold text-sm">{t('uploadIcon')}</p>
         <Tooltip
           tooltipContent={
             <div>
               <p className="font-bold text-white align-middle flex justify-center">
-                Logo Acceptance:
+                {t('logoAcceptanceTitle')}
               </p>
-              <p className="text-white">{`File types: JPG, PNG ${
+              <p className="text-white">{`${t('fileTypes')} JPG, PNG ${
                 isLxp ? '' : ',SVG'
               }`}</p>
-              <p className="text-white">Max size: 8MB</p>
+              <p className="text-white">{t('maxSize')}</p>
             </div>
           }
           tooltipPosition="left"
@@ -166,7 +170,7 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
                     className="text-red-500 font-medium text-sm"
                     data-testid="add-app-icon-failed"
                   >
-                    Oops! Upload failed
+                    {t('uploadFailed')}
                   </p>
                   <p className="text-neutral-500 font-medium text-xs">
                     {error}
@@ -175,7 +179,7 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
                       data-testid="add-app-icon-try-again"
                     >
                       {' '}
-                      Try again
+                      {t('tryAgain')}
                     </span>
                   </p>
                 </>
@@ -187,17 +191,18 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
                     color="text-neutral-900"
                   />
                   <p className="text-neutral-900 font-medium text-sm">
-                    Upload App Icon
+                    {t('uploadIcon')}
                   </p>
                   <p className="text-neutral-500 font-medium text-xs">
-                    Drag and drop or{' '}
+                    {t('dragDropOrClick')}
                     <span
                       className="text-primary-500 font-bold cursor-pointer"
                       data-testid="add-app-icon"
                     >
-                      click here
+                      {' '}
+                      {t('clickHere')}
                     </span>{' '}
-                    to upload file
+                    {t('toUpload')}
                   </p>
                 </>
               )}
@@ -224,7 +229,7 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
               <img
                 id="add-app-icon"
                 className="h-[52px] w-auto group-hover:opacity-50 transition-opacity duration-100"
-                alt="App Icon"
+                alt={t('appIconAlt')}
               />
             </div>
           </div>
@@ -232,7 +237,7 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
       </div>
       {isEditIconModalOpen && (
         <ImageReposition
-          title="Reposition"
+          title={t('repositionTitle')}
           openEditImage={isEditIconModalOpen}
           closeEditImageModal={closeEditIconModal}
           image={getBlobUrl(tempFile!)}

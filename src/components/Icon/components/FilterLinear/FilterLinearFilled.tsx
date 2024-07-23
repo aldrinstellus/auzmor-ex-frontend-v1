@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgFilterLinearFilled = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgFilterLinearFilled = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={16}
     height={16}
@@ -10,7 +8,6 @@ const SvgFilterLinearFilled = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <path
       d="M20.5999 4.09998V6.29998C20.5999 7.09998 20.0999 8.09998 19.5999 8.59998L15.2999 12.4C14.6999 12.9 14.2999 13.9 14.2999 14.7V19C14.2999 19.6 13.8999 20.4 13.3999 20.7L11.9999 21.6C10.6999 22.4 8.89988 21.5 8.89988 19.9V14.6C8.89988 13.9 8.49989 13 8.09989 12.5L7.62989 12.01C7.31989 11.68 7.25989 11.18 7.50989 10.79L12.6299 2.56998C12.8099 2.27998 13.1299 2.09998 13.4799 2.09998H18.5999C19.6999 2.09998 20.5999 2.99998 20.5999 4.09998Z"

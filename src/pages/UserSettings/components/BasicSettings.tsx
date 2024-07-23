@@ -139,6 +139,7 @@ const BasicSettings = () => {
       placeholder: t('select-reason'),
       dataTestId: 'ooo-reason',
       disabled: !ooo,
+      showSearch: false,
     },
   ];
 

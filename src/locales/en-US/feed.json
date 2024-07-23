@@ -18,6 +18,7 @@
   "bookmark": {
     "title": "My Bookmarks",
     "tooltip": "My Bookmarks",
-    "emptyMessage": "Your bookmarked posts will show here"
+    "emptyMessage": "Your bookmarked posts will show here",
+    "noPostFound": "No posts found"
   }
 }

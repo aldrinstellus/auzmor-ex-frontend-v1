@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-
 import { useParams } from 'react-router-dom';
 import InfoRow from 'components/ProfileInfo/components/InfoRow';
 import Layout, { FieldType } from 'components/Form';
@@ -9,6 +8,7 @@ import { IRadioListOption } from 'components/RadioGroup';
 import { ChannelVisibilityEnum, IChannel } from 'stores/channelStore';
 import { updateChannel } from 'queries/channel';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   data: IChannel;
@@ -17,10 +17,12 @@ type AppProps = {
 
 const PrivacyRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
   const { channelId = '' } = useParams();
-
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'setting.privacyRow',
+  });
   const queryClient = useQueryClient();
 
-  const upadteChannelMutation = useMutation({
+  const updateChannelMutation = useMutation({
     mutationKey: ['update-channel-mutation'],
     mutationFn: (data: any) => updateChannel(channelId, data),
     onError: (_error: any) => {},
@@ -38,7 +40,7 @@ const PrivacyRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
   });
 
   const handleChange = (visibility: ChannelVisibilityEnum) => {
-    upadteChannelMutation.mutate({
+    updateChannelMutation.mutate({
       channelId,
       settings: {
         visibility,
@@ -46,13 +48,12 @@ const PrivacyRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
       },
     });
   };
+
   const privacySettingOptions: IRadioListOption[] = [
     {
       data: {
         value: ChannelVisibilityEnum.Private,
-        label:
-          'Anyone can join automatically, and content is visible to all without joining.',
-
+        label: t('privateDescription'),
         onChange: handleChange,
       },
       dataTestId: '',
@@ -60,7 +61,7 @@ const PrivacyRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
     {
       data: {
         value: ChannelVisibilityEnum.Public,
-        label: `Anyone in the organization can request to join the channel, and it's visible in the channel discovery.`,
+        label: t('publicDescription'),
         onChange: handleChange,
       },
       dataTestId: '',
@@ -71,22 +72,23 @@ const PrivacyRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
     {
       type: FieldType.Radio,
       name: 'privacySetting',
-      rowClassName: 'space-y-4  ',
+      rowClassName: 'space-y-4',
       control,
       disabled: !isUserAdminOrChannelAdmin,
       radioList: privacySettingOptions,
       labelRenderer: (option: IRadioListOption) => {
         return (
           <>
-            <div className=" text-sm ml-2 text-black font normal  ">
+            <div className="text-sm ml-2 text-black font-normal">
               {option.data.value}
-              <li className="text-gray-500 ">{option.data.label} </li>
+              <li className="text-gray-500">{option.data.label}</li>
             </div>
           </>
         );
       },
     },
   ];
+
   return (
     <InfoRow
       icon={{
@@ -95,7 +97,7 @@ const PrivacyRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
         bgColor: '!bg-orange-50',
       }}
       isEditButton={false}
-      label="Privacy"
+      label={t('label')}
       isEditMode={true}
       value={data?.settings?.visibility}
       dataTestId=""

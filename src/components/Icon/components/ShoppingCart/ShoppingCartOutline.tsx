@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgShoppingCartOutline = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => {
+const SvgShoppingCartOutline = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -11,7 +9,6 @@ const SvgShoppingCartOutline = (
       fill="none"
       viewBox="0 0 20 20"
       {...props}
-      aria-label={props.ariaLabel}
     >
       <g>
         <g

@@ -6,6 +6,7 @@ import NameRow from './NameRow';
 import DescriptionRow from './DescriptionRow';
 import Header from 'components/ProfileInfo/components/Header';
 import CategoryRow from './CategoryRow';
+import { useTranslation } from 'react-i18next';
 
 export interface IBasicSettingProps {
   channelData?: any;
@@ -17,10 +18,10 @@ export interface IBasicSettingProps {
 
 const BasicSetting: FC<IBasicSettingProps> = ({ channelData, canEdit }) => {
   const onHoverStyles = clsx({ 'mb-8': true });
-
+  const { t } = useTranslation('channelDetail', { keyPrefix: 'setting' });
   return (
     <div>
-      <Header title="Basic Settings" dataTestId="channel-setting-details" />
+      <Header title={t('basicSetting')} dataTestId="channel-setting-details" />
       <Card className={onHoverStyles} shadowOnHover={canEdit}>
         <div className="px-4">
           <NameRow isUserAdminOrChannelAdmin={canEdit} data={channelData} />

@@ -19,6 +19,7 @@ import clsx from 'clsx';
 import useAuth from 'hooks/useAuth';
 import { useNavigateWithToken } from 'hooks/useNavigateWithToken';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { useTranslation } from 'react-i18next';
 
 interface IForm {
   fullName: string;
@@ -31,45 +32,6 @@ interface IForm {
   customError?: string;
 }
 
-const schema = yup.object({
-  fullName: yup
-    .string()
-    .required('Required Field')
-    .min(3, 'The minimum length required is 3 characters for full name'),
-  workEmail: yup
-    .string()
-    .required('Required field')
-    .validateEmail('The email address you entered is invalid'),
-  orgName: yup
-    .string()
-    .required('Required field')
-    .min(3, 'The minimum length required is 3 characters for company name')
-    .max(63, 'The maximum length allowed is 100 characters for company name'),
-  domain: yup
-    .string()
-    .min(3, 'The minimum length required is 3 characters for domain name')
-    .max(63, 'The maximum length allowed is 63 characters for domain name')
-    .matches(
-      /^(?!-)(?!.*-$)/,
-      'Hyphens cannot be used at the beginning and the end of a domain name',
-    )
-    .matches(
-      /^(?!.*--).*$/,
-      'Two hyphens cannot appear together in the domain name',
-    )
-    .matches(
-      /^[a-zA-Z0-9-]+$/,
-      'Spaces and special characters (such as ! $,&,_ and so on) cannot appear in the domain name',
-    )
-    .required('Required field'),
-  password: yup.string().required('Required field'),
-  confirmPassword: yup
-    .string()
-    .oneOf([yup.ref('password')], 'Passwords do not match')
-    .required('Required field'),
-  privacyPolicy: yup.boolean().required('Required field').oneOf([true]),
-});
-
 export interface ISignupProps {}
 
 export interface IValidationErrors {
@@ -79,9 +41,42 @@ export interface IValidationErrors {
 
 const Signup: FC<ISignupProps> = () => {
   usePageTitle('signup');
+  const { t } = useTranslation('signUp');
   const { setUser, setShowOnboard } = useAuth();
   const navigate = useNavigate();
   const navigateWithToken = useNavigateWithToken();
+  const schema = yup.object({
+    fullName: yup
+      .string()
+      .required(t('fullNameError.required'))
+      .min(3, t('fullNameError.minLength')),
+    workEmail: yup
+      .string()
+      .required(t('workEmailError.required'))
+      .validateEmail(t('workEmailError.invalid')),
+    orgName: yup
+      .string()
+      .required(t('orgNameError.required'))
+      .min(3, t('orgNameError.minLength'))
+      .max(63, t('orgNameError.maxLength')),
+    domain: yup
+      .string()
+      .min(3, t('domainError.minLength'))
+      .max(63, t('domainError.maxLength'))
+      .matches(/^(?!-)(?!.*-$)/, t('domainError.hyphenStartEnd'))
+      .matches(/^(?!.*--).*$/, t('domainError.doubleHyphen'))
+      .matches(/^[a-zA-Z0-9-]+$/, t('domainError.invalid'))
+      .required(t('domainError.required')),
+    password: yup.string().required(t('passwordError.required')),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref('password')], t('confirmPasswordError.mismatch'))
+      .required(t('confirmPasswordError.required')),
+    privacyPolicy: yup
+      .boolean()
+      .required(t('privacyPolicyError'))
+      .oneOf([true]),
+  });
   const signupMutation = useMutation(
     (formData: IForm) =>
       signup({ ...formData, domain: formData.domain.toLowerCase() }),
@@ -136,70 +131,70 @@ const Signup: FC<ISignupProps> = () => {
     domain !== '' ? true : false,
   );
   const branding = useBrandingStore((state) => state.branding);
-
   const fields = [
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      placeholder: 'Enter your name',
-      name: 'fullName',
-      label: 'Full Name*',
       error: errors.fullName?.message,
       dataTestId: 'sign-up-fullname',
       errorDataTestId: 'signup-error-msg',
       control,
       inputClassName: 'h-[44px]',
+      label: t('fullName'),
+      name: 'fullName',
+      placeholder: t('fullNamePlaceholder'),
+      autoComplete: 'name',
     },
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      placeholder: 'Enter your email address',
       name: 'workEmail',
-      label: 'Work Email*',
       error: errors.workEmail?.message || errors.workEmail?.types?.exists,
       dataTestId: 'sign-up-email',
       errorDataTestId: 'signup-error-msg',
       control,
+      label: t('workEmail'),
+      placeholder: t('workEmailPlaceholder'),
+      autoComplete: 'email',
       inputClassName: 'h-[44px]',
     },
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      placeholder: 'Enter your Company name',
       name: 'orgName',
-      label: 'Company Name*',
-      error: errors.orgName?.message,
       dataTestId: 'sign-up-orgname',
       errorDataTestId: 'signup-error-msg',
       control,
       inputClassName: 'h-[44px]',
+      label: t('orgName'),
+      placeholder: t('orgNamePlaceholder'),
+      autoComplete: 'organization',
+      error: errors?.orgName?.message,
     },
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      placeholder: 'Enter domain',
       rightElement: (
         <div
           className="text-sm font-medium text-neutral-500"
           data-testId="sign-up-domain"
         >
-          .office.auzmor.com
+          {t('domainSuffix')}
         </div>
       ),
       name: 'domain',
-      label: 'Domain*',
       error: errors.domain?.message || errors.domain?.types?.domainExists,
       dataTestId: 'sign-up-domain',
       errorDataTestId: 'signup-error-msg',
       control,
       inputClassName: 'h-[44px]',
+      label: t('domain'),
+      placeholder: t('domainPlaceholder'),
     },
     {
       type: FieldType.Password,
       InputVariant: InputVariant.Password,
-      placeholder: 'Enter password',
       name: 'password',
-      label: 'Password*',
       rightIcon: 'people',
       error: errors.password?.message,
       setError,
@@ -209,12 +204,13 @@ const Signup: FC<ISignupProps> = () => {
       getValues,
       onChange: () => {},
       inputClassName: 'h-[44px]',
+      label: t('password'),
+      placeholder: t('passwordPlaceholder'),
+      autoComplete: 'new-password',
     },
     {
       type: FieldType.Password,
-      placeholder: 'Re-Enter password',
       name: 'confirmPassword',
-      label: 'Confirm Password*',
       rightIcon: 'people',
       error: errors.confirmPassword?.message,
       dataTestId: 'sign-up-confirm-password',
@@ -222,18 +218,23 @@ const Signup: FC<ISignupProps> = () => {
       showChecks: false,
       errorDataTestId: 'signup-error-msg',
       inputClassName: 'h-[44px]',
+      label: t('confirmPassword'),
+      placeholder: t('confirmPasswordPlaceholder'),
+      autoComplete: 'new-password',
     },
     {
       type: FieldType.Checkbox,
       label: (
         <div data-testId="sign-up-checkbox">
-          By Signing up you are agreeing to Auzmor Office’s{' '}
+          {t('privacyPolicy')}{' '}
           <span className="text-primary-500">
-            <a href="https://www.auzmor.com/tc">Terms of Use</a>
+            <a href="https://www.auzmor.com/tc">{t('termsOfUse')}</a>
           </span>{' '}
-          and{' '}
+          {t('and')}{' '}
           <span className="text-primary-500">
-            <a href="https://www.auzmor.com/privacy-policy">Privacy Policy</a>
+            <a href="https://www.auzmor.com/privacy-policy">
+              {t('privacyPolicyHeader')}
+            </a>
           </span>
         </div>
       ),
@@ -412,17 +413,21 @@ const Signup: FC<ISignupProps> = () => {
             />
           </div>
           <div className="max-w-[440px]">
-            <div className="font-bold text-neutral-900 text-2xl">Sign Up</div>
+            <div className="font-bold text-neutral-900 text-2xl">
+              {t('title')}
+            </div>
             <form
               className="mt-4"
               onSubmit={handleSubmit(onSubmit)}
               data-testid="signup-form"
             >
               <Layout fields={fields} className="space-y-4" />
-              <p className="py-4 text-xs text-neutral-900">* Required field</p>
+              <p className="py-4 text-xs text-neutral-900">
+                {t('requiredFieldNote')}
+              </p>
               <Button
                 dataTestId="sign-up-btn"
-                label={'Sign Up'}
+                label={t('submitButtonLabel')}
                 disabled={
                   !isValid ||
                   !!errors?.password?.type ||

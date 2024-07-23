@@ -13,6 +13,7 @@ import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { EntityType } from 'queries/files';
 import queryClient from 'utils/queryClient';
 import { toBlob } from 'html-to-image';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   open: boolean;
@@ -35,7 +36,9 @@ const ChannelImageModal: FC<AppProps> = ({
   const handleImageClick = (id: number) => {
     setSelectedImageId(id);
   };
-
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'channelImageModal',
+  });
   const updateChannelMutation = useMutation({
     mutationFn: (data: any) => updateChannel(channelId, data),
     mutationKey: ['update-channel-name-mutation'],
@@ -44,9 +47,9 @@ const ChannelImageModal: FC<AppProps> = ({
     },
     onSuccess: async (_response: any) => {
       successToastConfig({
-        content: `${
-          isCoverImg ? 'Cover' : 'Profile'
-        } Picture Updated Successfully`,
+        content: `${isCoverImg ? t('toast.cover') : t('toast.profile')} ${t(
+          'toast.successmsg',
+        )} `,
       });
       setIsFile(false);
       closeModal();
@@ -135,7 +138,7 @@ const ChannelImageModal: FC<AppProps> = ({
       <Header
         title={
           <span className="text-primary-500">
-            Choose channel {isCoverImg ? 'cover' : 'profile'} photo
+            {t('title', { type: isCoverImg ? t('cover') : t('profile') })}
           </span>
         }
         closeBtnDataTestId={`-close`}
@@ -184,13 +187,13 @@ const ChannelImageModal: FC<AppProps> = ({
         <div className="flex">
           <Button
             variant={ButtonVariant.Secondary}
-            label="Cancel"
+            label={t('cancel')}
             className="mr-3"
             onClick={closeModal}
             dataTestId={`-cancel`}
           />
           <Button
-            label="Select photo"
+            label={t('selectPhoto')}
             loading={loading}
             onClick={uploadMediaFn}
           />

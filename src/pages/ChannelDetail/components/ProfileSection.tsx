@@ -42,6 +42,7 @@ import ChannelImageModal from './ChannelImageModal';
 import { isTrim } from './utils';
 import AddChannelMembersModal from './AddChannelMembersModal';
 import { useChannelRole } from 'hooks/useChannelRole';
+import Truncate from 'components/Truncate';
 
 type ProfileSectionProps = {
   tabs?: ITab[];
@@ -194,7 +195,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   const coverImageOption = [
     {
       icon: 'exportOutline',
-      label: 'Upload a photo',
+      label: t('uploadPhoto'),
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         channelCoverImageRef?.current?.click();
@@ -204,7 +205,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     },
     {
       icon: 'maximizeOutline',
-      label: 'Reposition',
+      label: t('reposition'),
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         openEditImageModal();
@@ -214,7 +215,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     },
     {
       icon: 'gallery',
-      label: 'Choose from illustration',
+      label: t('chooseFromIllustration'),
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         setIsCoverImage(true);
@@ -225,7 +226,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     },
     {
       icon: 'trashOutline',
-      label: 'Delete photo',
+      label: t('deletePhoto'),
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         if (file?.coverImage) {
@@ -262,7 +263,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   const editMenuOptions = [
     {
       icon: 'edit',
-      label: 'Edit',
+      label: t('edit'),
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: openEditModal,
       dataTestId: '',
@@ -270,7 +271,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     },
     {
       icon: 'adminOutline',
-      label: 'Manage Access',
+      label: t('tabs.manageAccess'),
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         navigate(`/channels/${channelData?.id}/manage-access`);
@@ -280,7 +281,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     },
     {
       icon: 'archive',
-      label: 'Archive',
+      label: t('tabs.archive'),
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: openArchiveModal,
       dataTestId: '',
@@ -289,13 +290,13 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     {
       renderNode: (
         <div className="text-xs  bg-blue-50 py-2 px-6 font-Medium flex items-center justify-center ">
-          SECURITY & ANALYTICS
+          {t('securityAndAnalytics')}
         </div>
       ),
     },
     {
       icon: 'profileAdd',
-      label: 'Add Members',
+      label: t('addMembers'),
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         openAddMemberModal();
@@ -305,17 +306,17 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     },
     {
       icon: 'setting',
-      label: 'Settings',
+      label: t('settings'),
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         navigate(`/channels/${channelData?.id}/settings`);
       },
       dataTestId: '',
-      hidden: !isUserAdminOrChannelAdmin,
+      hidden: false,
     },
     {
       icon: 'logout',
-      label: 'Leave channel',
+      label: t('leaveChannel'),
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         leaveChannelMutation.mutate(channelId);
@@ -375,7 +376,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                     <>
                       {isUserAdminOrChannelAdmin && (
                         <div className="text-xs  bg-blue-50 py-2 px-6 font-Medium flex items-center justify-center ">
-                          CHANNEL MANAGEMENT
+                          {t('channelManageMent')}
                         </div>
                       )}
                     </>
@@ -427,15 +428,14 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 dataTestId={'edit-profile-pic'}
               />
               {isUserAdminOrChannelAdmin && !!channelData?.member && (
-                <Icon
-                  name="edit"
-                  size={24}
+                <IconButton
+                  icon="edit"
                   color="text-black"
                   onClick={() => {
                     setIsCoverImage(false);
                     openChannelImageModal();
                   }}
-                  className="absolute bg-white rounded-full p-[5px] cursor-pointer -top-2 -right-1"
+                  className="absolute !bg-white rounded-full p-[5px] cursor-pointer -top-2 -right-1 hover:!bg-white"
                   dataTestId="edit-profilepic"
                 />
               )}
@@ -449,12 +449,11 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               <div className="text-2xl font-bold" data-testid="channel-name">
                 {channelData?.name}
               </div>
-              <div
-                className="text-xs line-clamp-2 "
+              <Truncate
+                text={channelData?.description || ''}
+                className="text-xs max-w-[80%]"
                 data-testid="channel-description"
-              >
-                {channelData?.description}
-              </div>
+              />
             </div>
           </div>
           {showJoinChannelBtn && (

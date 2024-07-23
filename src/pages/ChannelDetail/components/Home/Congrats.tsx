@@ -4,6 +4,7 @@ import { IChannel } from 'stores/channelStore';
 import { useFeedStore } from 'stores/feedStore';
 import * as _ from 'lodash';
 import { useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   channelData: IChannel;
@@ -14,7 +15,7 @@ const Congrats: FC<AppProps> = ({ channelData }) => {
   const [showSettingUp, setShowSettingUp] = useState<boolean>(
     searchParams.get('showWelcome') === 'true',
   );
-
+  const { t } = useTranslation('channelDetail', { keyPrefix: 'congrats' });
   const { feed } = useFeedStore();
   const isRender = useMemo(() => {
     return (
@@ -57,15 +58,10 @@ const Congrats: FC<AppProps> = ({ channelData }) => {
           />
         </div>
         <div className="flex flex-col items-center flex-1 py-4">
-          <div className="text-2xl font-semibold">Congratulations!</div>
+          <div className="text-2xl font-semibold">{t('congratulations')}!</div>
           <div className="mt-4 font-medium">
-            <div className="text-center text-xs">
-              You have finished setting up your profile
-            </div>
-            <div className="text-center text-xs mt-6">
-              Now you can invite more people to your channel so that your
-              channel reaches to a bigger audience.
-            </div>
+            <div className="text-center text-xs">{t('finishedSettingUp')}</div>
+            <div className="text-center text-xs mt-6">{t('inviteMore')}</div>
           </div>
         </div>
       </div>

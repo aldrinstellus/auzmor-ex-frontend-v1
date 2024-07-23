@@ -11,6 +11,7 @@ import useProduct from 'hooks/useProduct';
 import { createCatergory, useInfiniteLearnCategory } from 'queries/learn';
 import { updateChannel } from 'queries/channel';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   channelData: any;
@@ -23,6 +24,7 @@ const CategoryRow: FC<AppProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);
+  const { t } = useTranslation('channelDetail', { keyPrefix: 'setting' });
 
   const { isLxp } = useProduct();
   const updateChannelMutation = useMutation({
@@ -107,7 +109,7 @@ const CategoryRow: FC<AppProps> = ({
     {
       type: FieldType.CreatableSearch,
       variant: InputVariant.Text,
-      placeholder: 'Start typing for suggestions',
+      placeholder: t('category.startTypingForSuggestions'),
       name: 'channelCategory',
       control,
       fetchQuery: isLxp ? useInfiniteLearnCategory : useInfiniteCategories,
@@ -126,7 +128,7 @@ const CategoryRow: FC<AppProps> = ({
         bgColor: 'text-red-50',
       }}
       canEdit={isUserAdminOrChannelAdmin}
-      label="Category"
+      label={t('category.label')}
       value={channelData?.categories[0]?.name}
       dataTestId="user-marital-status"
       editNode={

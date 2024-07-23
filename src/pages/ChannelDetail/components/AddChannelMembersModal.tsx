@@ -34,7 +34,9 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
   closeModal,
   channelData,
 }) => {
-  const { t } = useTranslation('channelDetail');
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'addChannelMemberModal',
+  });
   const [jobId, setJobId] = useState('');
 
   const audienceForm = useForm<IAudienceForm>({
@@ -136,8 +138,11 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
         <Header
           title={
             <span>
-              Add members{' '}
-              <span className="text-primary-500">@{channelData?.name}</span>
+              {t('addMember')}
+              <span className="text-primary-500">
+                {' '}
+                {t('title', { channelName: channelData?.name })}
+              </span>
             </span>
           }
           closeBtnDataTestId={`${dataTestId}-close`}
@@ -153,17 +158,17 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
           <div className="flex">
             <Button
               variant={ButtonVariant.Secondary}
-              label="Cancel"
+              label={t('cancel')}
               disabled={isLoading}
               className="mr-3"
               onClick={closeModal}
-              dataTestId={`${dataTestId}-cancel}`}
+              dataTestId={`${dataTestId}-cancel`}
             />
             <Button
-              label="Enroll Members"
+              label={t('enrollMembers')}
               loading={isLoading}
               dataTestId={`${dataTestId}-cta`}
-              disabled={!!!(selectedUsers.length + selectedTeams.length)}
+              disabled={!(selectedUsers.length + selectedTeams.length)}
               onClick={form.handleSubmit((formData) => {
                 handleSubmit(formData.channelMembers);
               })}

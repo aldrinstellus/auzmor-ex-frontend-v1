@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgArrowUpOutline = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgArrowUpOutline = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={24}
     height={24}
@@ -10,7 +8,6 @@ const SvgArrowUpOutline = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <path
       d="M19.9181 15.0506L13.3981 8.53062C12.6281 7.76063 11.3681 7.76063 10.5981 8.53062L4.07812 15.0506"

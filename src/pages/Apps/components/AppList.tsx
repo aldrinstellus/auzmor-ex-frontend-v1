@@ -87,8 +87,8 @@ const AppList: FC<IAppListProps> = ({
         if (isLoading && showSkeleton) {
           return (
             <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
-              {[...Array(30)].map((element) => (
-                <div key={element} className="w-full">
+              {[...Array(30)].map((_value, i) => (
+                <div key={`${i}-app-card-skeleton`} className="w-full">
                   <AppCardSkeleton />
                 </div>
               ))}

@@ -1,0 +1,10 @@
+{
+  "title": "Documents",
+  "searchResults": {
+    "title": "Search Results",
+    "loading": "Loading...",
+    "noDataMessage": "Sorry we can’t find the data you are looking for",
+    "noDataMessage2": " Please check the spelling or try again.",
+    "searchPrefix": "Search Results for"
+  }
+}

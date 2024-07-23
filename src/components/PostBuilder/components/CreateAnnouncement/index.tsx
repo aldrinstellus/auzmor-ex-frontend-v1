@@ -94,6 +94,7 @@ const CreateAnnouncement: FC<ICreateAnnouncementProps> = ({
       ],
       placeholder: 'Select Announcement Expiry',
       dataTestId: 'announcement-expiry-dropdown',
+      showSearch: false,
     },
   ];
 

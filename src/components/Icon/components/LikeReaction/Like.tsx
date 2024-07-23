@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgImageFilled = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgImageFilled = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={24}
     height={24}
@@ -10,7 +8,6 @@ const SvgImageFilled = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <rect x="1" y="1" width="26" height="26" rx="13" fill="#76A9FA" />
     <path

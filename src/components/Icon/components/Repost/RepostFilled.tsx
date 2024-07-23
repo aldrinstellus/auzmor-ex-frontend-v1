@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgRepostFilled = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgRepostFilled = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={24}
     height={24}
@@ -10,7 +8,6 @@ const SvgRepostFilled = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <path
       d="M20.36 12.73C19.99 12.73 19.68 12.45 19.64 12.08C19.4 9.88 18.22 7.9 16.4 6.64C16.07 6.41 15.99 5.96 16.22 5.63C16.45 5.3 16.9 5.22 17.23 5.45C19.4 6.96 20.8 9.32 21.09 11.93C21.13 12.33 20.84 12.69 20.44 12.73C20.41 12.73 20.39 12.73 20.36 12.73Z"

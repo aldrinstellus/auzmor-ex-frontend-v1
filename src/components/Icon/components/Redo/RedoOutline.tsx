@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgRedoOutline = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgRedoOutline = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={20}
     height={20}
@@ -10,7 +8,6 @@ const SvgRedoOutline = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <path
       d="M16.8701 19.0601H8.87012C5.70012 19.0601 3.12012 16.4801 3.12012 13.3101C3.12012 10.1401 5.70012 7.56006 8.87012 7.56006H19.8701C20.2801 7.56006 20.6201 7.90006 20.6201 8.31006C20.6201 8.72006 20.2801 9.06006 19.8701 9.06006H8.87012C6.53012 9.06006 4.62012 10.9701 4.62012 13.3101C4.62012 15.6501 6.53012 17.5601 8.87012 17.5601H16.8701C17.2801 17.5601 17.6201 17.9001 17.6201 18.3101C17.6201 18.7201 17.2901 19.0601 16.8701 19.0601Z"

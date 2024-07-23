@@ -6,5 +6,6 @@
   "cancel": "Cancel",
   "create": "Create",
   "save": "Save",
-  "show-results": "Showing {{count}} results"
+  "show-results": "Showing {{count}} results",
+  "notSpecified": "Not specified"
 }

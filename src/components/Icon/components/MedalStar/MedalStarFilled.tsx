@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgMedalStarFilled = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgMedalStarFilled = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={16}
     height={16}
@@ -10,7 +8,6 @@ const SvgMedalStarFilled = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <path
       d="M12.8296 10.7737L11.8671 11.0012C11.6512 11.0537 11.4821 11.217 11.4354 11.4328L11.2312 12.2903C11.1204 12.757 10.5254 12.9028 10.2162 12.5353L8.47207 10.5287C8.33207 10.3653 8.4079 10.1087 8.6179 10.0562C9.6504 9.80533 10.5779 9.22783 11.2604 8.40533C11.3712 8.27116 11.5696 8.25366 11.6921 8.37616L12.9871 9.67116C13.4304 10.1145 13.2729 10.6687 12.8296 10.7737Z"

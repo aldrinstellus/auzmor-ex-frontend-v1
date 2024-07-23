@@ -28,34 +28,6 @@
     "successToast": "Channel has been deleted successfully",
     "errorToast": "Error deleting channel"
   },
-  "manageAccess": {
-    "title": "Manage Channel access",
-    "table": {
-      "fullName": "Full Name",
-      "location": "Location",
-      "email": "Email address",
-      "department": "Department",
-      "role": "Role"
-    }
-  },
-  "members": {
-    "table": {
-      "fullName": "Full Name",
-      "location": "Location",
-      "title": "Title",
-      "department": "Department",
-      "email": "Email address"
-    },
-    "quickFilters": {
-      "allMembers": "All Members",
-      "requests": "Requests",
-      "department": "Department",
-      "location": "Location"
-    },
-    "title": "Members",
-    "addMemberCTA": "Add members",
-    "searchMembers": "Search members"
-  },
   "privateChannel": {
     "bannerHeader": "This is a private channel. You must be a member to view the channel content",
     "bannerFotter": "Space Admins",

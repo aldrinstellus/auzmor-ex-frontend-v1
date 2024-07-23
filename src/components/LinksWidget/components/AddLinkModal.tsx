@@ -38,19 +38,19 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
     title: yup
       .string()
       .required(t('labelField.requiredError'))
-      .min(2, 'Label must be at least 2 characters')
+      .min(2, t('labelField.minLengthError'))
       .max(20, t('labelField.maxLengthError')),
     url: yup
       .string()
       .required(t('urlField.requiredError'))
-      .test('is-valid-url', 'The URL must start with http or https', (value) =>
+      .test('is-valid-url', t('urlField.protocolError'), (value) =>
         /^(http|https):\/\//.test(value || ''),
       )
       .matches(URL_REGEX, {
         message: t('urlField.invalidUrlError'),
         excludeEmptyString: true,
       })
-      .max(256, 'max length 256 characters '),
+      .max(256, t('urlField.maxLengthError')),
   });
   const updateLinksMutation = useMutation(
     async (payload: any) => {
