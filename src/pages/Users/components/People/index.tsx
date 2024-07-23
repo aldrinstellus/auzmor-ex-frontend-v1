@@ -99,7 +99,7 @@ const People: FC<IPeopleProps> = ({
     mode: 'onChange',
     defaultValues: {
       role: parsedRole,
-      search: searchParams.get('peopleSearch'),
+      search: searchParams.get('peopleSearch') || '',
     },
   });
 
@@ -506,8 +506,8 @@ const People: FC<IPeopleProps> = ({
           {showGrid ? (
             <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 xl:grid-cols-4 1.5xl:grid-cols-5  ">
               {isLoading
-                ? [...Array(30)].map((element) => (
-                    <div key={element}>
+                ? [...Array(30)].map((_value, i) => (
+                    <div key={`${i}-user-card-skeleton`}>
                       <UsersSkeleton />
                     </div>
                   ))

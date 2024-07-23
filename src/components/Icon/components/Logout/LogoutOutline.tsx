@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgLogoutOutline = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgLogoutOutline = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={24}
     height={24}
@@ -10,7 +8,6 @@ const SvgLogoutOutline = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <path
       d="M17.4404 14.62L20.0004 12.06L17.4404 9.5"

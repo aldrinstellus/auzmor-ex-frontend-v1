@@ -69,7 +69,7 @@ const Icon: FC<IconProps> = ({
       strokeWidth={strokeWidth}
       data-testid={dataTestId}
       tabIndex={tabIndex}
-      ariaLabel={ariaLabel}
+      aria-label={ariaLabel}
     />
   );
 };

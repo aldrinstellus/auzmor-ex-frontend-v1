@@ -1,9 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import { SVGProps } from 'react';
 
-const SvgBookmarkOutline = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgBookmarkOutline = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={24}
     height={24}
@@ -11,7 +9,6 @@ const SvgBookmarkOutline = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <path
       d="M12.89 5.87988H5.10999C3.39999 5.87988 2 7.27987 2 8.98987V20.3499C2 21.7999 3.04 22.4199 4.31 21.7099L8.23999 19.5199C8.65999 19.2899 9.34 19.2899 9.75 19.5199L13.68 21.7099C14.95 22.4199 15.99 21.7999 15.99 20.3499V8.98987C16 7.27987 14.6 5.87988 12.89 5.87988Z"

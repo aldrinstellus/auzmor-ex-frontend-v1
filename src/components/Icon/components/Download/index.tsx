@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const DownloadIcon = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const DownloadIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width="20"
     height="20"
@@ -10,7 +8,6 @@ const DownloadIcon = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <path
       fillRule="evenodd"

@@ -114,6 +114,7 @@ const ArchiveChannelModal: FC<IArchiveChannelModalProps> = ({
         label={t('cancelButton')}
         dataTestId="archive-channel-cancel"
         onClick={closeModal}
+        autofocus
       />
       <Button
         label={t('archiveButton')}

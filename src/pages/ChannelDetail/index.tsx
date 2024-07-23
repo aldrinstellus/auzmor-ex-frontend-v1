@@ -51,7 +51,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
   const tabStyles = (active: boolean, disabled = false) =>
     clsx(
       {
-        'text-sm px-1 cursor-pointer': true,
+        'text-sm px-1 cursor-pointer group-focus:!text-white': true,
       },
       {
         '  font-bold text-white border-b-2 border-primary-400 pb-2 bottom-2 relative mt-1':

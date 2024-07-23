@@ -1,9 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import { SVGProps } from 'react';
 
-const SvgFolderConnectionOutline = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgFolderConnectionOutline = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={24}
     height={24}
@@ -11,7 +9,6 @@ const SvgFolderConnectionOutline = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <path
       d="M8 11.2285V13.2285"

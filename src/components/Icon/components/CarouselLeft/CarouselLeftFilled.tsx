@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgCarouselLeftFilled = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgCarouselLeftFilled = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={60}
     height={60}
@@ -10,7 +8,6 @@ const SvgCarouselLeftFilled = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <rect x="0.5" y="0.5" width="31" height="31" rx="7.5" fill="white" />
     <path

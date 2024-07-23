@@ -245,6 +245,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
                 required: true,
                 clearErrors,
                 error: errors.channelName?.message,
+                autofocus: true,
               },
             ]}
           />
@@ -283,6 +284,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
                   placeholder: 'ex. Product and design team',
                   dataTestId: 'channel-name-input',
                   required: true,
+                  showSearch: false,
                   options: [
                     {
                       ...getChannelPrivacyOption(

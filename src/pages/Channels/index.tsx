@@ -231,12 +231,10 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
           dataTestIdSearch="channel-search"
         >
           <div className="flex gap-2 items-center">
-            <p className="text-neutral-500 text-base">
-              <ShowingCount
-                isLoading={isLoading}
-                count={data?.pages[0]?.data?.result?.totalCount}
-              />
-            </p>
+            <ShowingCount
+              isLoading={isLoading}
+              count={data?.pages[0]?.data?.result?.totalCount}
+            />
             {filterButtons.map((filterButton) => (
               <Button
                 key={filterButton.label}

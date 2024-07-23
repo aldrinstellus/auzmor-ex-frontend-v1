@@ -1,9 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import { SVGProps } from 'react';
 
-const SvgOutOfOfficeOutline = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgOutOfOfficeOutline = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width="21"
     height="20"
@@ -11,7 +9,6 @@ const SvgOutOfOfficeOutline = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <rect
       x="-1"

@@ -6,10 +6,8 @@ import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import { Variant } from 'components/Input';
 import { FC, ReactElement } from 'react';
-import { IConnectionSettingsForm } from './ConfigureLDAP';
 
 type ConnectionSettingsProps = {
-  connectionSettingsData: IConnectionSettingsForm;
   connectionSettingsControl: any;
   connectionSettingsFormState: any;
   handleSubmit: any;
@@ -19,7 +17,6 @@ type ConnectionSettingsProps = {
 };
 
 const ConnectionSettings: FC<ConnectionSettingsProps> = ({
-  connectionSettingsData,
   connectionSettingsControl,
   connectionSettingsFormState,
   handleSubmit,
@@ -35,7 +32,6 @@ const ConnectionSettings: FC<ConnectionSettingsProps> = ({
       name: 'hostName',
       label: 'Hostname*',
       control: connectionSettingsControl,
-      defaultValue: connectionSettingsData?.hostName,
       error: connectionSettingsFormState.errors.hostName?.message,
       dataTestId: 'sso-config-ad-hostname',
     },
@@ -46,7 +42,6 @@ const ConnectionSettings: FC<ConnectionSettingsProps> = ({
       name: 'port',
       label: 'Port*',
       control: connectionSettingsControl,
-      defaultValue: connectionSettingsData?.port,
       error: connectionSettingsFormState.errors.port?.message,
       dataTestId: 'sso-config-ad-port',
     },
@@ -57,7 +52,6 @@ const ConnectionSettings: FC<ConnectionSettingsProps> = ({
       name: 'baseDN',
       label: 'Base DN*',
       control: connectionSettingsControl,
-      defaultValue: connectionSettingsData?.baseDN,
       error: connectionSettingsFormState.errors.baseDN?.message,
       dataTestId: 'sso-config-ad-basedn',
     },
@@ -68,7 +62,6 @@ const ConnectionSettings: FC<ConnectionSettingsProps> = ({
       name: 'groupBaseDN',
       label: 'Group Base DN',
       control: connectionSettingsControl,
-      defaultValue: connectionSettingsData?.groupBaseDN,
       dataTestId: 'sso-config-ad-groupbasedn',
     },
   ];
@@ -81,7 +74,6 @@ const ConnectionSettings: FC<ConnectionSettingsProps> = ({
       name: 'upnSuffix',
       label: 'UPN Suffix*',
       control: connectionSettingsControl,
-      defaultValue: connectionSettingsData?.upnSuffix,
       error: connectionSettingsFormState.errors.upnSuffix?.message,
       dataTestId: 'sso-config-ad-upnsuffix',
     },
@@ -95,7 +87,6 @@ const ConnectionSettings: FC<ConnectionSettingsProps> = ({
       name: 'administratorDN',
       label: 'Administrator DN*',
       control: connectionSettingsControl,
-      defaultValue: connectionSettingsData?.administratorDN,
       error: connectionSettingsFormState.errors.administratorDN?.message,
       dataTestId: 'sso-config-ad-administratordn',
     },
@@ -106,7 +97,6 @@ const ConnectionSettings: FC<ConnectionSettingsProps> = ({
       name: 'password',
       label: 'Password*',
       control: connectionSettingsControl,
-      defaultValue: connectionSettingsData?.password,
       error: connectionSettingsFormState.errors.password?.message,
       dataTestId: 'sso-config-ad-password',
     },
@@ -117,7 +107,6 @@ const ConnectionSettings: FC<ConnectionSettingsProps> = ({
         'When the LDAP is down, Auzmor Office can authenticate the user. Organization Primary Admin can control this behavior by enabling/disabling the flag.',
       name: 'allowFallback',
       control: connectionSettingsControl,
-      defaultValue: connectionSettingsData?.allowFallback,
       error: connectionSettingsFormState.errors.allowFallback?.message,
       dataTestId: 'sso-config-ad-allowfallback',
     },

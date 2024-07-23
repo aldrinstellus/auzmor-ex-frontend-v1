@@ -1,9 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import { SVGProps } from 'react';
 
-const SvgBriefcaseOutline = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgBriefcaseOutline = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={24}
     height={24}
@@ -11,7 +9,6 @@ const SvgBriefcaseOutline = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <path
       d="M5.33387 14.7311H10.6672C13.3472 14.7311 13.8272 13.6578 13.9672 12.3511L14.4672 7.01779C14.6472 5.39112 14.1805 4.06445 11.3339 4.06445H4.6672C1.82054 4.06445 1.35387 5.39112 1.53387 7.01779L2.03387 12.3511C2.17387 13.6578 2.65387 14.7311 5.33387 14.7311Z"

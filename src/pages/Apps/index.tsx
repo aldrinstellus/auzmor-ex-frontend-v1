@@ -83,7 +83,7 @@ const Apps: FC<IAppsProps> = () => {
   } = useForm<IAppSearchForm>({
     mode: 'onChange',
     defaultValues: {
-      search: searchParams.get('search'),
+      search: searchParams.get('search') || '',
     },
   });
   const { isLxp } = useProduct();

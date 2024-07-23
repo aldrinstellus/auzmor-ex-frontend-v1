@@ -56,7 +56,6 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
       className: '',
       disabled: true,
       dataTestId: 'contact-info-email',
-      defaultValue: contactCardData?.primaryEmail,
     },
     {
       name: 'workPhone',
@@ -66,7 +65,6 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
       inputClassName: 'bg-red-500',
       disabled: false,
       dataTestId: 'contact-info',
-      defaultValue: contactCardData?.workPhone,
     },
   ];
 

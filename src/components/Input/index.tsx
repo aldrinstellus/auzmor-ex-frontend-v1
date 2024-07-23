@@ -205,7 +205,6 @@ const Input: FC<InputProps> = ({
             disabled={loading || disabled}
             placeholder={placeholder}
             data-testid={dataTestId}
-            defaultValue={defaultValue}
             value={field.value}
             ref={inputRef}
             maxLength={maxLength}

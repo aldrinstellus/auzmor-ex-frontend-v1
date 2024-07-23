@@ -78,7 +78,7 @@ const ChannelRequestWidget: FC<ChannelRequestWidgetProps> = ({
     return <></>;
   }
   return (
-    <Card className={style} dataTestId="requestwidget">
+    <Card className={style} dataTestId="requestwidget" shadowOnHover>
       <div
         className=" px-6 flex items-center justify-between cursor-pointer"
         data-testid={`collapse-'channel-request`}

@@ -42,6 +42,7 @@ import ChannelImageModal from './ChannelImageModal';
 import { isTrim } from './utils';
 import AddChannelMembersModal from './AddChannelMembersModal';
 import { useChannelRole } from 'hooks/useChannelRole';
+import Truncate from 'components/Truncate';
 
 type ProfileSectionProps = {
   tabs?: ITab[];
@@ -311,7 +312,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         navigate(`/channels/${channelData?.id}/settings`);
       },
       dataTestId: '',
-      hidden: !isUserAdminOrChannelAdmin,
+      hidden: false,
     },
     {
       icon: 'logout',
@@ -427,15 +428,14 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 dataTestId={'edit-profile-pic'}
               />
               {isUserAdminOrChannelAdmin && !!channelData?.member && (
-                <Icon
-                  name="edit"
-                  size={24}
+                <IconButton
+                  icon="edit"
                   color="text-black"
                   onClick={() => {
                     setIsCoverImage(false);
                     openChannelImageModal();
                   }}
-                  className="absolute bg-white rounded-full p-[5px] cursor-pointer -top-2 -right-1"
+                  className="absolute !bg-white rounded-full p-[5px] cursor-pointer -top-2 -right-1 hover:!bg-white"
                   dataTestId="edit-profilepic"
                 />
               )}
@@ -449,12 +449,11 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               <div className="text-2xl font-bold" data-testid="channel-name">
                 {channelData?.name}
               </div>
-              <div
-                className="text-xs line-clamp-2 "
+              <Truncate
+                text={channelData?.description || ''}
+                className="text-xs max-w-[80%]"
                 data-testid="channel-description"
-              >
-                {channelData?.description}
-              </div>
+              />
             </div>
           </div>
           {showJoinChannelBtn && (

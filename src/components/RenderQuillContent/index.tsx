@@ -90,31 +90,45 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
 
   const updatedContent = quillHashtagConversion(content);
 
-  const postContent = updatedContent?.ops?.map((op: DeltaOperation) => {
-    switch (true) {
-      case op.insert.hasOwnProperty('mention'):
-        return (
-          <Mention
-            value={op.insert.mention?.value}
-            {...getMentionProps(mentions, intendedUsers, op.insert.mention)}
-            userId={op.insert.mention.id}
-          />
-        );
-      case op.insert.hasOwnProperty('hashtag'):
-        return <Hashtag value={op.insert.hashtag?.value} />;
-      case op.insert.hasOwnProperty('emoji'):
-        return <Emoji value={op.insert.emoji} />;
-      default:
-        return (
-          <Text
-            value={op.insert}
-            attributes={op?.attributes}
-            isLink={op?.attributes?.link ? true : false}
-            link={op?.attributes?.link}
-          />
-        );
-    }
-  });
+  const postContent = updatedContent?.ops?.map(
+    (op: DeltaOperation, i: number) => {
+      switch (true) {
+        case op.insert.hasOwnProperty('mention'):
+          return (
+            <Mention
+              value={op.insert.mention?.value}
+              {...getMentionProps(mentions, intendedUsers, op.insert.mention)}
+              userId={op.insert.mention.id}
+              key={`quill-content-${i}-mention-${data.id}`}
+            />
+          );
+        case op.insert.hasOwnProperty('hashtag'):
+          return (
+            <Hashtag
+              value={op.insert.hashtag?.value}
+              key={`quill-content-${i}-hashtag-${data.id}`}
+            />
+          );
+        case op.insert.hasOwnProperty('emoji'):
+          return (
+            <Emoji
+              value={op.insert.emoji}
+              key={`quill-content-${i}-emoji-${data.id}`}
+            />
+          );
+        default:
+          return (
+            <Text
+              value={op.insert}
+              attributes={op?.attributes}
+              isLink={op?.attributes?.link ? true : false}
+              link={op?.attributes?.link}
+              key={`quill-content-${i}-text-${data.id}`}
+            />
+          );
+      }
+    },
+  );
 
   const containerStyle = useMemo(
     () =>

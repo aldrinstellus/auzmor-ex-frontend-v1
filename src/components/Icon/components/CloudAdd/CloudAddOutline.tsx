@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgCloudAddOutline = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgCloudAddOutline = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={120}
     height={120}
@@ -10,7 +8,6 @@ const SvgCloudAddOutline = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <path
       d="M27.6994 55.5996C4.29941 57.2496 4.29941 91.2996 27.6994 92.9496H37.2996"

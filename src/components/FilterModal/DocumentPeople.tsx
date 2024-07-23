@@ -61,9 +61,9 @@ const DocumentPeople: FC<IVisibilityProps> = ({ control, watch }) => {
       <Layout fields={searchField} />
       {isLoading ? (
         <>
-          {[...Array(6)].map((element) => (
+          {[...Array(6)].map((_value, i) => (
             <div
-              key={element}
+              key={`${i}-document-item-skeleton`}
               className={`px-6 py-3 border-b-1 border-b-bg-neutral-200 flex items-center`}
             >
               <ItemSkeleton />

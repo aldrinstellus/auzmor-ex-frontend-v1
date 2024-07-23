@@ -77,6 +77,9 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
   } = useForm<IForm>({
     resolver: yupResolver(schema),
     mode: 'onChange',
+    defaultValues: {
+      workEmail: data?.result?.data?.email,
+    },
   });
 
   useEffect(() => {
@@ -96,7 +99,6 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
       disabled: true,
       className:
         'text-neutral-400 disabled:border-none disabled:bg-neutral-200',
-      defaultValue: data?.result?.data?.email,
       inputClassName: 'h-[44px]',
     },
     {

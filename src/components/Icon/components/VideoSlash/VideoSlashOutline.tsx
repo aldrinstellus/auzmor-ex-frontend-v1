@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgVideoSlashOutline = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgVideoSlashOutline = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width="56"
     height="56"
@@ -10,7 +8,6 @@ const SvgVideoSlashOutline = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <path
       d="M38.8034 17.6868C38.8034 17.6868 38.8734 15.4702 38.8034 14.7468C38.4067 9.98685 35.3034 8.35352 29.2134 8.35352H14.4901C7.11675 8.35352 4.66675 10.8035 4.66675 18.1768V37.8235C4.66675 40.7635 5.55341 43.7268 7.86341 45.6168L9.33341 46.6669"
