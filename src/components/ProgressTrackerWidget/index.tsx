@@ -1,4 +1,4 @@
-import { clsx } from 'clsx';
+import clsx from 'clsx';
 import Button from 'components/Button';
 import LearnCard from 'components/LearnCard';
 import { useShouldRender } from 'hooks/useShouldRender';
@@ -6,6 +6,7 @@ import { useProgressTracker } from 'queries/learn';
 import React, { FC, useMemo } from 'react';
 import { getLearnUrl } from 'utils/misc';
 import EmptyState from './EmptyState';
+import { useTranslation } from 'react-i18next';
 
 interface IProgressTrackerWidgetProps {
   className?: string;
@@ -16,7 +17,9 @@ const ID = 'ProgressTrackerWidget';
 const ProgressTrackerWidget: FC<IProgressTrackerWidgetProps> = ({
   className = '',
 }) => {
+  const { t } = useTranslation('learnWidget', { keyPrefix: 'progressTracker' });
   const shouldRender = useShouldRender(ID);
+
   if (!shouldRender) {
     return <></>;
   }
@@ -32,9 +35,9 @@ const ProgressTrackerWidget: FC<IProgressTrackerWidgetProps> = ({
   return (
     <div className={style}>
       <div className="flex justify-between items-center ">
-        <div className="text-base font-bold">Progress Tracker</div>
+        <div className="text-base font-bold">{t('progressTracker')}</div>
         <Button
-          label={'View all'}
+          label={t('viewAll')}
           className="bg-transparent !text-primary-500 hover:!text-primary-600 hover:!bg-transparent focus:bg-transparent active:!bg-transparent active:!text-primary-700 outline outline-1 focus:outline-primary-500"
           onClick={() =>
             window.location.assign(
@@ -44,7 +47,7 @@ const ProgressTrackerWidget: FC<IProgressTrackerWidgetProps> = ({
         />
       </div>
       <div className="mt-2">
-        {!isLoading && !!!trackerData.length ? (
+        {!isLoading && trackerData.length === 0 ? (
           <EmptyState />
         ) : (
           <LearnCard

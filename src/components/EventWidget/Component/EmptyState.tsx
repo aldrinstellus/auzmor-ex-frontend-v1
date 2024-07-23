@@ -1,7 +1,9 @@
 import EventCalendar from 'images/eventCalendar.svg';
+import { useTranslation } from 'react-i18next';
 
 const EmptyState = () => {
-  const header = 'No upcoming events';
+  const { t } = useTranslation('learnWidget', { keyPrefix: 'eventWidget' });
+  const header = t('notFoundHeader');
   return (
     <div className="py-6 px-4 flex flex-col items-center gap-2">
       <img

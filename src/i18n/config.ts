@@ -25,6 +25,7 @@ const resources = {
     acceptInvite: require('locales/en-US/acceptInvite.json'),
     auth: require('locales/en-US/auth.json'),
     document: require('locales/en-US/document.json'),
+    learnWidget: require('locales/en-US/learnWidget.json'),
   },
 };
 
