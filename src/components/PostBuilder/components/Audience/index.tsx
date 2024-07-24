@@ -42,7 +42,7 @@ const Audience: FC<IAudienceProps> = ({ closeModal, dataTestId }) => {
           .reduce(
             (obj, value) =>
               Object.assign(obj, {
-                [value.entityId]: value?.entity || true,
+                [value.entityId]: value || true,
               }),
             {},
           ),
@@ -56,7 +56,7 @@ const Audience: FC<IAudienceProps> = ({ closeModal, dataTestId }) => {
           .reduce(
             (obj, value) =>
               Object.assign(obj, {
-                [value.entityId]: value?.entity || true,
+                [value.entityId]: value || true,
               }),
             {},
           ),
@@ -69,7 +69,7 @@ const Audience: FC<IAudienceProps> = ({ closeModal, dataTestId }) => {
           .reduce(
             (obj, value) =>
               Object.assign(obj, {
-                [value.entityId]: value?.entity || true,
+                [value.entityId]: value || true,
               }),
             {},
           ),
