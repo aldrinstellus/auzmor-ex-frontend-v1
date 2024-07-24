@@ -30,6 +30,7 @@ import useRole from 'hooks/useRole';
 import ChannelNotFound from 'images/notFound.png';
 import { useDebounce } from 'hooks/useDebounce';
 import _ from 'lodash';
+import useProduct from 'hooks/useProduct';
 
 interface IChannelsProps {
   isInfinite?: boolean;
@@ -57,7 +58,7 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
     mode: 'onChange',
     defaultValues: { search: '' },
   });
-
+  const { isLxp } = useProduct();
   const { ref, inView } = useInView();
 
   useEffect(() => {
@@ -213,7 +214,7 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
           <h1 className="text-2xl font-bold text-neutral-900">
             {t('channels')}
           </h1>
-          {isAdmin && (
+          {isLxp && isAdmin && (
             <Button
               label={t('createChannelCTA')}
               leftIcon="add"
