@@ -86,7 +86,7 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
         queryClient.invalidateQueries({ queryKey: ['search-team-members'] });
         successToastConfig({
           content: t('addChannelMembers.success', {
-            count: res.additional_info.stats.TOTAL,
+            count: res.additional_info.stats.SUCCEEDED,
           }),
         });
         closeModal();

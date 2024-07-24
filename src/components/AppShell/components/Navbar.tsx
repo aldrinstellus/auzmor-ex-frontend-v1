@@ -30,7 +30,7 @@ const learnNavigations = [
 ];
 
 const Navbar = () => {
-  const { isLxp } = useProduct();
+  const { isLxp, isOffice } = useProduct();
   const { isAdmin } = useRole();
   const { user } = useAuth();
   const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(
@@ -108,7 +108,7 @@ const Navbar = () => {
       dataTestId: 'channels-page',
       iconSize: 24,
       isActive: location.pathname.includes('/channels'),
-      hidden: process.env.REACT_APP_ENV === 'PRODUCTION',
+      hidden: process.env.REACT_APP_ENV === 'PRODUCTION' && isOffice, // hide for office prod
     },
   ].filter((each) => !!!each?.hidden);
 

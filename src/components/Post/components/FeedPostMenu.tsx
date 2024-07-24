@@ -3,7 +3,13 @@ import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import ConfirmationBox from 'components/ConfirmationBox';
-import { IPost, PostType, deletePost, updatePost } from 'queries/post';
+import {
+  AudienceEntityType,
+  IPost,
+  PostType,
+  deletePost,
+  updatePost,
+} from 'queries/post';
 import PostBuilder, { PostBuilderMode } from 'components/PostBuilder';
 import useModal from 'hooks/useModal';
 import useAuth from 'hooks/useAuth';
@@ -210,21 +216,21 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
   ];
 
   const handleDelete = () => {
-    const Feed: any = feedRef.current;
-    const currentFeed = Feed[data?.id];
     if (!isChannelPage) {
       deletePostMutation.mutate(data?.id || '');
       return;
     }
-    if (currentFeed?.audience?.length <= 1 && isChannelPage) {
+    if (data?.audience?.length <= 1 && isChannelPage) {
       deletePostMutation.mutate(data?.id || '');
       return;
     } else {
-      const audience = currentFeed?.audience?.filter(
-        (audience: any) => audience?.entityId !== channelId,
+      const audience = data?.audience?.filter(
+        (audience: any) =>
+          audience?.entityId !== channelId &&
+          audience?.entityType === AudienceEntityType.Channel,
       );
       updatePostMutation.mutate({
-        ...currentFeed,
+        ...data,
         audience,
       });
     }
