@@ -3,6 +3,7 @@ import EntitySearchModalBody from 'components/EntitySearchModal/components/Entit
 import Icon from 'components/Icon';
 import { AudienceFlow } from 'components/PostBuilder/components/Audience';
 import Spinner from 'components/Spinner';
+import useProduct from 'hooks/useProduct';
 import useRole from 'hooks/useRole';
 import { useOrganization } from 'queries/organization';
 import { FC, useEffect } from 'react';
@@ -29,11 +30,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
   const { data, isLoading } = useOrganization();
   const { form } = useEntitySearchFormStore();
 
-  const [teams, channels = {}, users] = form!.watch([
-    'teams',
-    'channels',
-    'users',
-  ]);
+  const [teams, channels, users] = form!.watch(['teams', 'channels', 'users']);
 
   useEffect(() => {
     if (
@@ -43,7 +40,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
       setIsEveryoneSelected(false);
     }
   }, [data]);
-
+  const { isOffice } = useProduct();
   const audienceEntity = [
     {
       key: 'everyone',
@@ -77,7 +74,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
       title: 'Channels',
       subTitle: 'Select a channel you are part of',
       onClick: () => setAudienceFlow(AudienceFlow.ChannelSelect),
-      isHidden: false,
+      isHidden: isOffice,
       isSelected: Object.keys(channels).some(
         (id: string) => !!channels[id] && !isEveryoneSelected,
       ),

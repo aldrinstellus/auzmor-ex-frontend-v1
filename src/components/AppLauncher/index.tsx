@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { memo } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
@@ -33,10 +33,15 @@ const AppLauncher = () => {
   const widgetApps = useAppStore((state) => state.widgetApps);
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const [openAddApp, openAddAppModal, closeAddAppModal] = useModal();
+  const { channelId } = useParams();
   const { data, isLoading } = useInfiniteWidgetApps(
-    isFiltersEmpty({
-      limit: 3,
-    }),
+    isFiltersEmpty(
+      !channelId
+        ? {
+            limit: 3,
+          }
+        : { limit: 3, entityType: 'CHANNEL', entityId: channelId },
+    ),
   );
 
   const appIds = data?.pages.flatMap((page: any) => {

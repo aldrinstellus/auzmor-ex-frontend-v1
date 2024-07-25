@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 // import { ChannelTypeEnum } from 'components/FilterModal/ChannelType';
 import { ICategory } from 'queries/category';
 import { ITeam } from 'queries/teams';
+import { channelRequestStatusData } from 'components/FilterModal/ChannelRequestStatus';
 
 export enum FilterKey {
   departments = 'departments',
@@ -71,6 +72,10 @@ const FilterMenu: FC<IFilterMenu> = ({
     useURLParams();
   const { t } = useTranslation('common');
   const { t: tf } = useTranslation('filterModal');
+  const defaultChannelRequestStatus =
+    variant === FilterModalVariant.ChannelRequest
+      ? [channelRequestStatusData[1]]
+      : [];
   useEffect(() => {
     setFilters({
       categories: parseParams('categories') || [],
@@ -82,6 +87,8 @@ const FilterMenu: FC<IFilterMenu> = ({
       channelType: parseParams('channelType') || [],
       byPeople: parseParams('byPeople') || [],
       roles: parseParams('roles') || [],
+      channelRequestStatus:
+        parseParams('channelRequestStatus') || defaultChannelRequestStatus,
     });
     return () => {
       // Clear URL parameters on unmount
@@ -119,6 +126,7 @@ const FilterMenu: FC<IFilterMenu> = ({
     }
   };
   const clearFilters = () => {
+    deleteParam('channelRequestStatus');
     deleteParam('status');
     deleteParam('roles');
     deleteParam('departments');
@@ -130,6 +138,7 @@ const FilterMenu: FC<IFilterMenu> = ({
     setFilters({
       ...filters,
       categories: [],
+      channelRequestStatus: defaultChannelRequestStatus,
       status: [],
       roles: [],
       departments: [],
@@ -402,6 +411,8 @@ const FilterMenu: FC<IFilterMenu> = ({
             visibility: filters?.visibility || [],
             channelType: filters?.channelType || [],
             byPeople: filters?.byPeople || [],
+            channelRequestStatus:
+              filters?.channelRequestStatus || defaultChannelRequestStatus,
           }}
           onApply={(appliedFilters) => {
             setFilters(appliedFilters);
@@ -418,6 +429,7 @@ const FilterMenu: FC<IFilterMenu> = ({
               visibility: [],
               channelType: [],
               byPeople: [],
+              channelRequestStatus: defaultChannelRequestStatus,
             });
             closeFilterModal();
           }}

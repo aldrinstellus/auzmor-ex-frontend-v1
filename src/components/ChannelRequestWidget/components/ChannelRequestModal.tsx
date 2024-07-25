@@ -23,10 +23,14 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
   closeModal,
 }) => {
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isLoading } =
-    useInfiniteChannelsRequest(channelId, {
-      limit: 30,
-      status: CHANNEL_MEMBER_STATUS.PENDING,
-    });
+    useInfiniteChannelsRequest(
+      channelId,
+      {
+        limit: 30,
+        status: CHANNEL_MEMBER_STATUS.PENDING,
+      },
+      true,
+    );
 
   const requests = useMemo(
     () =>

@@ -78,21 +78,21 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
     channelId: channelData.id,
     jobId,
     onSuccess: (data: any) => {
-      console.log('Successfully fetched bulk job status', data);
-      const status = data?.data?.result?.data?.status;
-      if (status === 'COMPLETED') {
+      const res = data?.data?.result?.data;
+      if (res?.status === 'COMPLETED') {
         setJobId('');
         queryClient.invalidateQueries({ queryKey: ['channel-members'] });
         queryClient.invalidateQueries({ queryKey: ['channel'] });
         queryClient.invalidateQueries({ queryKey: ['search-team-members'] });
         successToastConfig({
-          content: t('addChannelMembers.success'),
+          content: t('addChannelMembers.success', {
+            count: res.additional_info.stats.SUCCEEDED,
+          }),
         });
         closeModal();
       }
     },
     onError: () => {
-      console.log('Failed to fetch status for jobId: ', jobId);
       failureToastConfig({
         content: t('addChannelMembersStatus.failure'),
       });

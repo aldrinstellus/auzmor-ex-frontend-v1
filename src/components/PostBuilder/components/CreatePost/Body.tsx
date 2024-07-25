@@ -93,7 +93,7 @@ const Body = forwardRef(
                     leftIconClassName="mr-1"
                     size={Size.Small}
                     variant={Variant.Secondary}
-                    label={(audience[0]?.entity as any)?.name || 'Team Name'}
+                    label={audience[0]?.name || 'Audience'}
                     onClick={() => {
                       updateContext();
                       setActiveFlow(CreatePostFlow.Audience);

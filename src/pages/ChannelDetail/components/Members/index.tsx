@@ -21,6 +21,7 @@ import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
 import { FilterModalVariant } from 'components/FilterModal';
 import {
   CHANNEL_MEMBER_STATUS,
+  ChannelVisibilityEnum,
   IChannel,
   IChannelRequest,
 } from '../../../../stores/channelStore';
@@ -101,10 +102,22 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
   } = useInfiniteChannelsRequest(
     channelData?.id,
     isFiltersEmpty({
+      q: searchValue,
       limit: 30,
-      status: CHANNEL_MEMBER_STATUS.PENDING,
+      status: filters?.channelRequestStatus?.length
+        ? filters?.channelRequestStatus
+            ?.map((eachStatus: any) => eachStatus.id)
+            .join(',')
+        : CHANNEL_MEMBER_STATUS.PENDING,
       sort: filters?.sort,
+      userTeam: filters?.teams?.length
+        ? filters?.teams?.map((eachStatus: any) => eachStatus.id).join(',')
+        : undefined,
+      byPeople: filters?.byPeople?.length
+        ? filters?.byPeople?.map((eachStatus: any) => eachStatus.id).join(',')
+        : undefined,
     }),
+    filters?.type === 'Requests' || parsedTab === 'requests',
   );
 
   const channelRequests =
@@ -174,15 +187,16 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
         setGrid(true);
       },
     },
-    isUserAdminOrChannelAdmin && {
-      label: t('requests'),
-      labelClassName: 'text-xs font-medium',
-      stroke: 'text-neutral-900',
-      onClick: () => {
-        updateFilter('type', 'requests');
-        setGrid(false);
+    channelData?.settings?.visibility == ChannelVisibilityEnum.Private &&
+      isUserAdminOrChannelAdmin && {
+        label: t('requests'),
+        labelClassName: 'text-xs font-medium',
+        stroke: 'text-neutral-900',
+        onClick: () => {
+          updateFilter('type', 'requests');
+          setGrid(false);
+        },
       },
-    },
   ].filter(Boolean); // request options only for admin
 
   useEffect(() => {
@@ -214,7 +228,11 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
           dataTestIdFilter="channel-filter-icon"
           dataTestIdSort="channel-sort-icon"
           dataTestIdSearch="channel-search"
-          variant={FilterModalVariant.ChannelMember}
+          variant={
+            filters?.type === 'Requests' || parsedTab === 'requests'
+              ? FilterModalVariant.ChannelRequest
+              : FilterModalVariant.ChannelMember
+          }
         >
           <div className="flex items-center gap-2">
             <div className="text-neutral-500">
@@ -228,7 +246,8 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
               />
             </div>
             <div className="relative">
-              {isUserAdminOrChannelAdmin ? (
+              {channelData?.settings?.visibility ==
+                ChannelVisibilityEnum.Private && isUserAdminOrChannelAdmin ? (
                 <PopupMenu
                   triggerNode={
                     <Button
@@ -250,7 +269,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
                 />
               ) : (
                 <Button
-                  active={filters?.type}
+                  active={true}
                   variant={Variant.Secondary}
                   label={t('allMembers')}
                 /> // for end user its a button

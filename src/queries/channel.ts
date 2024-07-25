@@ -410,6 +410,7 @@ export const useChannelDetails = (channelId: string) => {
 export const useInfiniteChannelsRequest = (
   channelId?: string,
   q?: Record<string, any>,
+  enabled?: boolean,
 ) => {
   return {
     ...useInfiniteQuery({
@@ -427,6 +428,7 @@ export const useInfiniteChannelsRequest = (
         return currentPage?.data?.result?.paging?.prev;
       },
       staleTime: 5 * 60 * 1000,
+      enabled: enabled,
     }),
   };
 };

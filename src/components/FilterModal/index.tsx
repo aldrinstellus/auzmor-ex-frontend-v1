@@ -16,7 +16,10 @@ import { ITeam } from 'queries/teams';
 import Teams from './Teams';
 import { CategoryType } from 'queries/apps';
 import { UserStatus } from 'queries/users';
-import { ChannelVisibilityEnum } from 'stores/channelStore';
+import {
+  CHANNEL_MEMBER_STATUS,
+  ChannelVisibilityEnum,
+} from 'stores/channelStore';
 import Visibility from './Visibility';
 import ChannelType, { ChannelTypeEnum } from './ChannelType';
 import { useTranslation } from 'react-i18next';
@@ -27,11 +30,14 @@ import DocumentModified from './DocumentModifed';
 import Roles from './Roles';
 import { Role } from 'utils/enum';
 import ByPeople, { ByPeopleEnum } from './ByPeople';
+import ChannelRequestStatus from './ChannelRequestStatus';
+import { titleCase } from 'utils/misc';
 
 export interface IFilterForm {
   visibilityRadio: ChannelVisibilityEnum;
   channelTypeRadio: ChannelTypeEnum;
   statusCheckbox: ICheckboxListOption[];
+  channelRequestStatusCheckbox: ICheckboxListOption[];
   locationCheckbox: ICheckboxListOption[];
   departmentCheckbox: ICheckboxListOption[];
   categoryCheckbox: ICheckboxListOption[];
@@ -51,10 +57,16 @@ export interface IFilterForm {
   docUserSearch: string;
   visibilitySearch: string;
   channelTypeSearch: string;
+  channelRequestStatusSearch: string;
 }
 
 export interface IStatus {
   id: UserStatus;
+  name: string;
+}
+
+export interface IChannelRequestStatus {
+  id: CHANNEL_MEMBER_STATUS;
   name: string;
 }
 export interface IRole {
@@ -75,12 +87,14 @@ export enum FilterModalVariant {
   Document = 'DOCUMENT',
   ChannelsMangeAcess = 'CHANNELS_MANAGE_ACCESS',
   ChannelMember = 'CHANNEL_MEMBER',
+  ChannelRequest = 'CHANNEL_REQUEST',
 }
 
 export interface IAppliedFilters {
   locations?: ILocationAPI[];
   departments?: IDepartmentAPI[];
   status?: IStatus[];
+  channelRequestStatus?: IChannelRequestStatus[];
   roles?: IRole[];
   categories?: ICategory[];
   teams?: ITeam[];
@@ -124,12 +138,33 @@ const FilterModal: FC<IFilterModalProps> = ({
     docModifiedRadio: [],
     roles: [],
     byPeople: [],
+    channelRequestStatus: [],
   },
   onApply,
   onClear,
   variant = FilterModalVariant.People,
 }) => {
   const { t } = useTranslation('filterModal');
+
+  const defaultChannelRequestStatus = !!(
+    appliedFilters?.channelRequestStatus || []
+  ).length
+    ? (appliedFilters.channelRequestStatus || [])?.map(
+        (channelRequestStatus: any) => ({
+          data: channelRequestStatus,
+          dataTestId: `channel-request-status-${channelRequestStatus.name}`,
+        }),
+      )
+    : [
+        {
+          data: {
+            id: CHANNEL_MEMBER_STATUS.PENDING,
+            name: titleCase(CHANNEL_MEMBER_STATUS.PENDING),
+          },
+          dataTestId: `channel-request-status-${CHANNEL_MEMBER_STATUS.PENDING}`,
+        },
+      ];
+
   const { control, handleSubmit, watch, setValue } = useForm<IFilterForm>({
     mode: 'onChange',
     defaultValues: {
@@ -179,6 +214,7 @@ const FilterModal: FC<IFilterModalProps> = ({
         }),
       ),
       documentModifiedRadio: appliedFilters.docModifiedRadio || [],
+      channelRequestStatusCheckbox: defaultChannelRequestStatus,
     },
   });
 
@@ -192,6 +228,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     documentTypeCheckbox,
     documentPeopleCheckbox,
     byPeopleCheckbox,
+    channelRequestStatusCheckbox,
   ] = watch([
     'locationCheckbox',
     'departmentCheckbox',
@@ -202,6 +239,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     'documentTypeCheckbox',
     'documentPeopleCheckbox',
     'byPeopleCheckbox',
+    'channelRequestStatusCheckbox',
   ]);
 
   const onSubmit = (formData: IFilterForm) => {
@@ -232,6 +270,9 @@ const FilterModal: FC<IFilterModalProps> = ({
       byPeople: formData.byPeopleCheckbox.map(
         (people) => people.data,
       ) as IBypeople[],
+      channelRequestStatus: formData.channelRequestStatusCheckbox.map(
+        (status) => status.data,
+      ) as IChannelRequestStatus[],
     } as unknown as IAppliedFilters);
   };
 
@@ -244,6 +285,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       FilterModalVariant.ChannelsListing,
       FilterModalVariant.ChannelsMangeAcess,
       FilterModalVariant.ChannelMember,
+      FilterModalVariant.ChannelRequest,
     ],
     'doc-type-filters': [
       FilterModalVariant.Team,
@@ -253,6 +295,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       FilterModalVariant.ChannelsListing,
       FilterModalVariant.ChannelMember,
       FilterModalVariant.ChannelsMangeAcess,
+      FilterModalVariant.ChannelRequest,
     ],
     'doc-modified-filters': [
       FilterModalVariant.Team,
@@ -262,6 +305,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       FilterModalVariant.ChannelsListing,
       FilterModalVariant.ChannelsMangeAcess,
       FilterModalVariant.ChannelMember,
+      FilterModalVariant.ChannelRequest,
     ],
     'visibility-filters': [
       FilterModalVariant.Team,
@@ -271,6 +315,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       FilterModalVariant.Document,
       FilterModalVariant.ChannelsMangeAcess,
       FilterModalVariant.ChannelMember,
+      FilterModalVariant.ChannelRequest,
     ],
     'channel-type-filters': [
       FilterModalVariant.Team,
@@ -280,6 +325,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       FilterModalVariant.Document,
       FilterModalVariant.ChannelsMangeAcess,
       FilterModalVariant.ChannelMember,
+      FilterModalVariant.ChannelRequest,
     ],
     'channel-roles-filters': [
       FilterModalVariant.Team,
@@ -289,6 +335,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       FilterModalVariant.Document,
       FilterModalVariant.ChannelsListing,
       FilterModalVariant.ChannelsMangeAcess,
+      FilterModalVariant.ChannelRequest,
     ],
     'locations-filters': [
       FilterModalVariant.Team,
@@ -297,6 +344,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       FilterModalVariant.Document,
       FilterModalVariant.ChannelsMangeAcess,
       FilterModalVariant.ChannelMember,
+      FilterModalVariant.ChannelRequest,
     ],
     'departments-filters': [
       FilterModalVariant.Team,
@@ -305,6 +353,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       FilterModalVariant.ChannelMember,
       FilterModalVariant.Document,
       FilterModalVariant.ChannelsMangeAcess,
+      FilterModalVariant.ChannelRequest,
     ],
     'categories-filters': [
       FilterModalVariant.Orgchart,
@@ -312,6 +361,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       FilterModalVariant.People,
       FilterModalVariant.Document,
       FilterModalVariant.ChannelsMangeAcess,
+      FilterModalVariant.ChannelRequest,
     ],
     'team-filters': [
       FilterModalVariant.People,
@@ -325,6 +375,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       FilterModalVariant.App,
       FilterModalVariant.ChannelsListing,
       FilterModalVariant.Document,
+      FilterModalVariant.ChannelRequest,
     ],
     'by-people-filter': [
       FilterModalVariant.Team,
@@ -334,7 +385,18 @@ const FilterModal: FC<IFilterModalProps> = ({
       FilterModalVariant.Orgchart,
       FilterModalVariant.People,
     ],
+    'channel-request-status': [
+      FilterModalVariant.Team,
+      FilterModalVariant.App,
+      FilterModalVariant.Orgchart,
+      FilterModalVariant.People,
+      FilterModalVariant.ChannelsListing,
+      FilterModalVariant.ChannelMember,
+      FilterModalVariant.ChannelsMangeAcess,
+    ],
   };
+
+  console.log(variant);
 
   const filterNavigation = [
     {
@@ -511,6 +573,29 @@ const FilterModal: FC<IFilterModalProps> = ({
       ),
       isHidden: filterOptionMappings['status-filters'].includes(variant),
       dataTestId: 'filterby-status',
+    },
+    {
+      label: () => (
+        <div className="flex items-center">
+          <div>{t('status')}</div>
+          {!!channelRequestStatusCheckbox.length && (
+            <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
+              {channelRequestStatusCheckbox.length}
+            </div>
+          )}
+        </div>
+      ),
+      key: 'channel-request-status-filters',
+      component: () => (
+        <ChannelRequestStatus
+          control={control}
+          watch={watch}
+          setValue={setValue}
+        />
+      ),
+      isHidden:
+        filterOptionMappings['channel-request-status'].includes(variant),
+      dataTestId: 'filterby-channel-request-status',
     },
     {
       label: () => (

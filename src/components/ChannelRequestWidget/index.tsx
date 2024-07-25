@@ -33,10 +33,14 @@ const ChannelRequestWidget: FC<ChannelRequestWidgetProps> = ({
 
   if (!isUserAdminOrChannelAdmin) return <></>;
 
-  const { data, isLoading } = useInfiniteChannelsRequest(channelId, {
-    limit: 3,
-    status: CHANNEL_MEMBER_STATUS.PENDING,
-  });
+  const { data, isLoading } = useInfiniteChannelsRequest(
+    channelId,
+    {
+      limit: 3,
+      status: CHANNEL_MEMBER_STATUS.PENDING,
+    },
+    true,
+  );
 
   const requests = data?.pages.flatMap((page: any) => {
     return (
