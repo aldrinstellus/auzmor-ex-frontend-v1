@@ -4,7 +4,7 @@ import Button, {
   Variant,
 } from 'components/Button';
 import Card from 'components/Card';
-import { FC, useEffect, useMemo } from 'react';
+import { FC, Fragment, useEffect, useMemo } from 'react';
 import ChannelCard from './components/ChannelCard';
 import FilterMenu from 'components/FilterMenu';
 import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
@@ -259,10 +259,10 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
           ) : (
             <>
               {channelIds.map(({ id }, index) => (
-                <div key={id}>
+                <Fragment key={id}>
                   <ChannelRow channel={channels[id]} />
                   {index !== channelIds.length - 1 && <Divider />}
-                </div>
+                </Fragment>
               ))}
             </>
           )

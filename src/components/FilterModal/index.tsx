@@ -155,7 +155,8 @@ const FilterModal: FC<IFilterModalProps> = ({
           dataTestId: `channel-request-status-${channelRequestStatus.name}`,
         }),
       )
-    : [
+    : variant === FilterModalVariant.ChannelRequest
+    ? [
         {
           data: {
             id: CHANNEL_MEMBER_STATUS.PENDING,
@@ -163,7 +164,8 @@ const FilterModal: FC<IFilterModalProps> = ({
           },
           dataTestId: `channel-request-status-${CHANNEL_MEMBER_STATUS.PENDING}`,
         },
-      ];
+      ]
+    : [];
 
   const { control, handleSubmit, watch, setValue } = useForm<IFilterForm>({
     mode: 'onChange',
@@ -395,8 +397,6 @@ const FilterModal: FC<IFilterModalProps> = ({
       FilterModalVariant.ChannelsMangeAcess,
     ],
   };
-
-  console.log(variant);
 
   const filterNavigation = [
     {

@@ -20,7 +20,9 @@ import useModal from 'hooks/useModal';
 import ChannelDeleteModal from './ChannelDeleteModal';
 import { useCurrentTimezone } from '../../../hooks/useCurrentTimezone';
 import moment from 'moment';
-import { getFullName } from '../../../utils/misc';
+import { getChannelLogoImage, getFullName } from '../../../utils/misc';
+import Truncate from 'components/Truncate';
+import Avatar from 'components/Avatar';
 
 export const formatDate = (date: string, timezone: string) => {
   const momentDate = moment.tz(date, timezone);
@@ -55,18 +57,28 @@ const ChannelRow: FC<IChannelRowProps> = ({ channel }) => {
 
   return (
     <div className="flex items-center w-full px-6 gap-4 py-8">
-      <div className="w-20 h-20 rounded-full bg-neutral-300 border flex justify-center items-center">
-        <Icon name="gallery" size={30} color="text-white" hover={false} />
-      </div>
-      <div className="flex justify-between items-center grow">
-        <div className="flex flex-col gap-0.5">
+      {channel?.displayImage ? (
+        <Avatar
+          image={getChannelLogoImage(channel)}
+          size={80}
+          dataTestId={'edit-profile-pic'}
+        />
+      ) : (
+        <div className="p-[25px] rounded-full bg-neutral-300 border flex justify-center items-center">
+          <Icon name="gallery" size={30} color="text-white" hover={false} />
+        </div>
+      )}
+
+      <div className="flex justify-between w-[calc(100%-80px)] items-center">
+        <div className="flex flex-col gap-0.5 max-w-[70%]">
           <p className="font-bold text-xl leading-normal text-neutral-900">
             {channel.name}
           </p>
           {channel.description && (
-            <p className="text-xs  leading-normal text-neutral-500">
-              {channel.description}
-            </p>
+            <Truncate
+              text={channel.description}
+              className="text-xs leading-normal text-neutral-500"
+            />
           )}
           <p className="text-xs  leading-normal text-neutral-500">
             {t('ownedBy')}

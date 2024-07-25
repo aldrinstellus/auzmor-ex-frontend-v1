@@ -297,7 +297,7 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
     !!!usersData?.length && !!!teamsData?.length && debouncedSearchValue !== '';
 
   return (
-    <div className="flex flex-col min-h-[489px]">
+    <div className="flex flex-col">
       <div className="flex flex-col py-4 px-6">
         <Layout
           fields={[
@@ -508,7 +508,7 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
           </div>
         </div>
         <div
-          className="flex flex-col max-h-72 overflow-scroll"
+          className="flex flex-col h-72 overflow-y-scroll"
           id="entity-search-members-body"
           data-testid={`${dataTestId}-list`}
         >
@@ -756,7 +756,7 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
                               },
                             ] as any
                           }
-                          className=" w-fit "
+                          className="w-fit"
                         />
                       </div>
                     </div>

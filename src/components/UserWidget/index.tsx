@@ -2,6 +2,7 @@ import { clsx } from 'clsx';
 import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
+import Truncate from 'components/Truncate';
 import useAuth from 'hooks/useAuth';
 import useProduct from 'hooks/useProduct';
 import { useCurrentUser } from 'queries/users';
@@ -56,22 +57,18 @@ const UserCard: FC<IUserCardProps> = ({ className = '' }) => {
             dataTestId="profilecard-profilepic"
           />
           <div className="flex flex-col gap-2">
-            <div
-              className="text-lg font-bold truncate w-full text-center"
+            <Truncate
+              text={`${userDetails?.fullName}-${userDetails?.fullName}-${userDetails?.fullName}-${userDetails?.fullName}`}
+              className="text-lg font-bold max-w-[240px] text-center"
               data-testid="profilecard-username"
-              tabIndex={0}
-            >
-              {userDetails?.fullName}
-            </div>
+            />
 
             {!isLxp && userDetails?.designation?.name && (
-              <div
-                className="text-sm font-normal truncate w-full text-center text-neutral-500"
+              <Truncate
+                text={`${userDetails?.designation?.name}-${userDetails?.designation?.name}-${userDetails?.designation?.name}-${userDetails?.designation?.name}`}
+                className="text-sm font-normal max-w-[240px] text-center text-neutral-500"
                 data-testid="profilecard-designation"
-                tabIndex={0}
-              >
-                {userDetails?.designation?.name}
-              </div>
+              />
             )}
 
             {isLxp && userDetails?.designation?.name && (
