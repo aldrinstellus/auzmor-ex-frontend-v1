@@ -56,6 +56,12 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
 
   const { searchParams } = useURLParams();
   const parsedTab = searchParams.get('type');
+  const channelRequestStatus = filters?.channelRequestStatus?.length
+    ? filters?.channelRequestStatus
+        ?.map((eachStatus: any) => eachStatus.id)
+        .join(',')
+    : CHANNEL_MEMBER_STATUS.PENDING;
+
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
   const { data, isLoading } = useInfiniteChannelMembers({
@@ -104,11 +110,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
     isFiltersEmpty({
       q: searchValue,
       limit: 30,
-      status: filters?.channelRequestStatus?.length
-        ? filters?.channelRequestStatus
-            ?.map((eachStatus: any) => eachStatus.id)
-            .join(',')
-        : CHANNEL_MEMBER_STATUS.PENDING,
+      status: channelRequestStatus,
       sort: filters?.sort,
       userTeam: filters?.teams?.length
         ? filters?.teams?.map((eachStatus: any) => eachStatus.id).join(',')
@@ -402,6 +404,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
             isFetchingNextPage={isChannelRequestFetchingNextPage}
             fetchNextPage={fetchChannelRequestNextPage}
             dataTestId="join-requests"
+            readonly={channelRequestStatus !== CHANNEL_MEMBER_STATUS.PENDING}
           />
         )}
       </Card>

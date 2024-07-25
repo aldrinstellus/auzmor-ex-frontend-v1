@@ -32,6 +32,7 @@ interface IEntitySelectorProps {
   rowClassName?: string;
   fetchNextPage?: () => any;
   menuItems?: IMenuItem[];
+  readonly?: boolean;
 }
 const EntitySelector: FC<IEntitySelectorProps> = ({
   entityData = [],
@@ -44,6 +45,7 @@ const EntitySelector: FC<IEntitySelectorProps> = ({
   entityHeaderRenderer,
   fetchNextPage = () => {},
   menuItems = [],
+  readonly = false,
 }) => {
   const { control, watch, setValue, reset } = useForm<IUseForm>({
     defaultValues: {
@@ -151,6 +153,7 @@ const EntitySelector: FC<IEntitySelectorProps> = ({
                     return e.target.checked;
                   },
                 },
+                disabled: readonly,
               },
             ]}
             className="w-full"
@@ -194,6 +197,7 @@ const EntitySelector: FC<IEntitySelectorProps> = ({
                       dataTestId: `${dataTestId}-select-${entity.id}`,
                       label: entityRenderer(entity),
                       labelContainerClassName: 'w-full',
+                      disabled: readonly,
                     },
                   ]}
                   className="w-full"
