@@ -1,7 +1,7 @@
 import Icon from 'components/Icon';
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IChannel } from 'stores/channelStore';
+import { ChannelVisibilityEnum, IChannel } from 'stores/channelStore';
 
 type ChannelRow = {
   channel: IChannel;
@@ -19,10 +19,14 @@ const ChannelRow: FC<ChannelRow> = ({ channel }) => {
       </div>
       <div>
         <Icon
-          name={channel?.settings?.visibility ? 'website' : 'lock'}
+          name={
+            channel?.settings?.visibility === ChannelVisibilityEnum.Private
+              ? 'lock'
+              : 'website'
+          }
           className="grayscale"
           size={20}
-          color="text-neutral-900"
+          color="text-neutral-500"
         />
       </div>
     </div>
