@@ -25,13 +25,13 @@ import PollVotesModal from './PollVotesModal';
 import ChangeToRegularPostModal from './ChangeToRegularPostModal';
 import AnnouncementAnalytics from './AnnouncementAnalytics';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useChannelRole } from 'hooks/useChannelRole';
 
 export interface IFeedPostMenuProps {
   data: IPost;
+  isReadOnly?: boolean;
 }
 
-const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
+const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, isReadOnly = true }) => {
   const { user } = useAuth();
   const { isMember } = useRole();
   const location = useLocation();
@@ -56,11 +56,6 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
   const isPostPage = location.pathname.startsWith('/posts/');
   const isChannelPage = location.pathname.startsWith('/channels/');
   const { channelId = '' } = useParams();
-  const { currentChannelMember } = useChannelRole(channelId);
-  const { pathname } = useLocation();
-
-  const isFeedOrUserDetailPage =
-    pathname.includes('feed') || pathname.includes('profile');
 
   const deletePostMutation = useMutation({
     mutationKey: ['deletePostMutation', data.id],
@@ -261,7 +256,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
     [],
   );
 
-  if (postOptions.length && (currentChannelMember || isFeedOrUserDetailPage)) {
+  if (postOptions.length && isReadOnly) {
     return (
       <>
         <PopupMenu

@@ -318,7 +318,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         navigate(`/channels/${channelData?.id}/settings`);
       },
       dataTestId: '',
-      hidden: !(isUserAdminOrChannelAdmin && channelData?.member),
+      hidden: !channelData?.member,
     },
     {
       icon: 'logout',

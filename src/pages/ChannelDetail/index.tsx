@@ -111,7 +111,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}> {t('settings')}</div>
       ),
-      hidden: !(isUserAdminOrChannelAdmin && channelData?.member),
+      hidden: !channelData?.member,
       dataTestId: 'channel-member-tab',
       tabContent: showBanner() || (
         <Setting isLoading={isLoading} channelData={channelData} />

@@ -49,10 +49,7 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
   };
 
   const maxListSize = 4;
-  if (!channelData?.member) {
-    // not a member of channel
-    return <></>;
-  }
+
   return (
     <Card className="py-6 flex flex-col rounded-9xl" shadowOnHover>
       <div
@@ -67,18 +64,21 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
       >
         <div className="font-bold flex-auto">{t('title')}</div>
         <div className="flex items-center gap-1">
-          {isUserAdminOrChannelAdmin && links && links.length > 0 && (
-            <Icon
-              name={'edit'}
-              size={20}
-              color="text-neutral-900"
-              onClick={() => {
-                setIsEditMode(true);
-                openEditLinksModal();
-              }}
-              dataTestId="links-widget-edit"
-            />
-          )}
+          {isUserAdminOrChannelAdmin &&
+            !!channelData?.member &&
+            links &&
+            links.length > 0 && (
+              <Icon
+                name={'edit'}
+                size={20}
+                color="text-neutral-900"
+                onClick={() => {
+                  setIsEditMode(true);
+                  openEditLinksModal();
+                }}
+                dataTestId="links-widget-edit"
+              />
+            )}
           <Icon
             name={open ? 'arrowUp' : 'arrowDown'}
             size={20}
@@ -138,25 +138,27 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
                     />
                   </div>
                 )}
-                {links.length <= maxListSize && isUserAdminOrChannelAdmin && (
-                  <div className="w-full flex justify-center">
-                    <Button
-                      label={t('addLinksCTA')}
-                      variant={Variant.Primary}
-                      leftIcon="addCircle"
-                      iconColor="text-white"
-                      leftIconClassName="hover:text-white group-hover:text-white"
-                      size={Size.Small}
-                      className="w-full"
-                      onClick={openAddLinkModal}
-                    />
-                  </div>
-                )}
+                {links.length <= maxListSize &&
+                  isUserAdminOrChannelAdmin &&
+                  !!channelData?.member && (
+                    <div className="w-full flex justify-center">
+                      <Button
+                        label={t('addLinksCTA')}
+                        variant={Variant.Primary}
+                        leftIcon="addCircle"
+                        iconColor="text-white"
+                        leftIconClassName="hover:text-white group-hover:text-white"
+                        size={Size.Small}
+                        className="w-full"
+                        onClick={openAddLinkModal}
+                      />
+                    </div>
+                  )}
               </div>
             ) : (
               <EmptyState
                 openModal={openAddLinkModal}
-                isAdmin={isUserAdminOrChannelAdmin}
+                isAdmin={isUserAdminOrChannelAdmin && !!channelData?.member}
               />
             )}
           </div>

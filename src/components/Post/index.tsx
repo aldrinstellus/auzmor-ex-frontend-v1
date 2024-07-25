@@ -21,7 +21,6 @@ import ReactionModal from './components/ReactionModal';
 import PublishPostModal from './components/PublishPostModal';
 import EditSchedulePostModal from './components/EditSchedulePostModal';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
-import { useLocation } from 'react-router-dom';
 
 // queries
 import { IPost, createBookmark, deleteBookmark } from 'queries/post';
@@ -33,7 +32,6 @@ import { getNouns } from 'utils/misc';
 // hooks
 import useModal from 'hooks/useModal';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
-import { useParams } from 'react-router-dom';
 
 import { useFeedStore } from 'stores/feedStore';
 import Avatar from 'components/Avatar';
@@ -42,7 +40,6 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkDirective from 'remark-directive';
 import remarkDirectiveRehype from 'remark-directive-rehype';
-import { useChannelRole } from 'hooks/useChannelRole';
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
     {
@@ -69,12 +66,18 @@ export const iconsStyle = (key: string) => {
 };
 
 type PostProps = {
+  isReadOnly?: boolean;
   postId: string;
   commentIds?: string[];
   setHasChanges?: (flag: boolean) => any;
 };
 
-const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
+const Post: FC<PostProps> = ({
+  postId,
+  commentIds = [],
+  setHasChanges,
+  isReadOnly = true,
+}) => {
   const [feed, getPost, updateFeed] = useFeedStore((state) => [
     state.feed,
     state.getPost,
@@ -100,11 +103,6 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
     (total, count) => total + count,
     0,
   );
-  const { channelId = '' } = useParams();
-  const { currentChannelMember } = useChannelRole(channelId);
-  const { pathname } = useLocation();
-  const isFeedOrUserDetailPage =
-    pathname.includes('feed') || pathname.includes('profile');
 
   // Effects
   useEffect(() => {
@@ -335,7 +333,7 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
   return (
     <>
       <Card className="flex flex-col">
-        <AcknowledgementBanner data={post} />
+        <AcknowledgementBanner isReadOnly={isReadOnly} data={post} />
         <div className="post-content px-4 py-3 flex flex-col gap-3">
           <div className="flex gap-3 justify-between items-start p-1">
             <Actor
@@ -348,7 +346,7 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
               postType={post?.occasionContext?.type}
               title={post?.title}
             />
-            {(currentChannelMember || isFeedOrUserDetailPage) && (
+            {isReadOnly && (
               <Tooltip
                 tooltipContent={
                   post.bookmarked ? 'Remove from bookmark' : 'Bookmark post'
@@ -367,7 +365,10 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
               </Tooltip>
             )}
             <div className="relative">
-              <FeedPostMenu data={post as unknown as IPost} />
+              <FeedPostMenu
+                isReadOnly={isReadOnly}
+                data={post as unknown as IPost}
+              />
             </div>
           </div>
           {post?.schedule && (
@@ -468,7 +469,7 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
             <div className="flex justify-between">
               <div className="flex space-x-6">
                 {/* this is for post */}
-                {(currentChannelMember || isFeedOrUserDetailPage) && (
+                {isReadOnly && (
                   <>
                     <Likes
                       reaction={reaction || ''}

@@ -8,7 +8,6 @@ export const useChannelRole = (channelId: any) => {
   const channel = useChannelStore((action) => action.getChannel)(channelId);
 
   return {
-    currentChannelMember: !!channel?.member, // if its public and not a member in channel .
     isUserAdminOrChannelAdmin:
       channel?.member?.role == CHANNEL_ROLE.Admin || isAdmin,
     isChannelAdmin: channel?.member?.role == CHANNEL_ROLE.Admin,

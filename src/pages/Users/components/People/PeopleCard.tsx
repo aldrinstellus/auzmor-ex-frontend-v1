@@ -34,7 +34,6 @@ import Truncate from 'components/Truncate';
 import { updateMemberRole } from 'queries/channel';
 import { CHANNEL_ROLE, IChannel } from 'stores/channelStore';
 import RemoveChannelMember from '../DeleteModals/ChannelMember';
-import { useChannelRole } from 'hooks/useChannelRole';
 
 export interface IPeopleCardProps {
   userData: IGetUser;
@@ -46,6 +45,7 @@ export interface IPeopleCardProps {
   channelData?: IChannel;
   isMember?: boolean;
   isUserAdminOrChannelAdmin?: boolean;
+  isReadOnly?: boolean;
 }
 
 export enum Status {
@@ -72,6 +72,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
   isChannelPeople,
   channelId,
   isUserAdminOrChannelAdmin,
+  isReadOnly = true,
 }) => {
   const {
     id,
@@ -204,7 +205,6 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     }
     return navigate(`/users/${id}`);
   };
-  const { currentChannelMember } = useChannelRole(channelId);
   return (
     <div
       className="cursor-pointer w-fit"
@@ -217,7 +217,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
           isLxp ? 'h-[190px] w-[190px] ' : 'h-[244px] w-[233px]'
         } border-solid border rounded-9xl border-neutral-200 bg-white focus-within:shadow-xl`}
       >
-        {(!isLxp || (isChannelPeople && currentChannelMember)) && (
+        {(!isLxp || (isChannelPeople && isReadOnly)) && (
           <UserProfileDropdown
             isUserAdminOrChannelAdmin={isUserAdminOrChannelAdmin}
             id={id}

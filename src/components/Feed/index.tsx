@@ -65,7 +65,6 @@ import UserCard from 'components/UserWidget';
 import Welcome from 'pages/ChannelDetail/components/Home/Welcome';
 import FinishSetup from 'pages/ChannelDetail/components/Home/FinishSetup';
 import Congrats from 'pages/ChannelDetail/components/Home/Congrats';
-import { useChannelRole } from 'hooks/useChannelRole';
 
 export enum WidgetEnum {
   AppLauncher = 'APP_LAUNCHER',
@@ -100,6 +99,7 @@ export const widgetMapping = {
 };
 
 interface IFeedProps {
+  isReadOnly?: boolean;
   leftWidgets: WidgetEnum[];
   rightWidgets: WidgetEnum[];
   mode?: FeedModeEnum;
@@ -147,6 +147,7 @@ const Feed: FC<IFeedProps> = ({
   mode = FeedModeEnum.Default,
   widgetProps,
   modeProps,
+  isReadOnly = true,
 }) => {
   const { t } = useTranslation('feed');
   const isLargeScreen = useMediaQuery('(min-width: 1300px)');
@@ -169,11 +170,6 @@ const Feed: FC<IFeedProps> = ({
   let bookmarks = false;
   let scheduled = false;
   let apiEndpoint = '/feed';
-  const { currentChannelMember } = useChannelRole(
-    modeProps?.[FeedModeEnum.Channel]?.channel.id,
-  );
-  const isFeedOrUserDetailPage =
-    pathname.includes('feed') || pathname.includes('profile');
 
   switch (mode) {
     case FeedModeEnum.Default:
@@ -424,7 +420,7 @@ const Feed: FC<IFeedProps> = ({
               alt="No Posts"
             />
           </div>
-          {currentChannelMember || isFeedOrUserDetailPage ? (
+          {isReadOnly ? (
             <div data-testid="scheduledpost-tab-nodata">
               <div className="text-neutral-900 font-semibold text-lg mt-6 text-center">
                 Publish your first post!
@@ -508,10 +504,8 @@ const Feed: FC<IFeedProps> = ({
     } else {
       return (
         <div className="flex flex-col gap-6">
-          {(currentChannelMember || isFeedOrUserDetailPage) && (
-            <CreatePostCard openModal={openModal} />
-          )}
-          {(currentChannelMember || isFeedOrUserDetailPage) && (
+          {isReadOnly && <CreatePostCard openModal={openModal} />}
+          {isReadOnly && (
             <div className=" flex flex-col gap-6">
               <div className="flex flex-row items-center gap-6">
                 <div className="flex items-center gap-4 z-20">
@@ -705,6 +699,7 @@ const Feed: FC<IFeedProps> = ({
           title={`post ${index + 1}`}
         >
           <VirtualisedPost
+            isReadOnly={isReadOnly}
             postId={id!}
             commentIds={feed[id]?.relevantComments || []}
           />

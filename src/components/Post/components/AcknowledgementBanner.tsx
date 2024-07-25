@@ -9,14 +9,16 @@ import ProgressBar from 'components/ProgressBar';
 import { FC } from 'react';
 import { isRegularPost } from 'utils/misc';
 import useRole from 'hooks/useRole';
-import { useChannelRole } from 'hooks/useChannelRole';
-import { useLocation, useParams } from 'react-router-dom';
 
 export interface IAcknowledgementBannerProps {
   data: any;
+  isReadOnly?: boolean;
 }
 
-const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({ data }) => {
+const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({
+  data,
+  isReadOnly = true,
+}) => {
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
   const queryClient = useQueryClient();
@@ -53,11 +55,6 @@ const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({ data }) => {
       ]);
     },
   });
-  const { channelId } = useParams();
-  const { currentChannelMember } = useChannelRole(channelId);
-  const location = useLocation();
-  const isFeedOrUserDetailPage =
-    location.pathname.includes('feed') || location.pathname.includes('profile');
 
   return !isRegularPost(data, currentDate, isAdmin) ? (
     <div
@@ -77,7 +74,7 @@ const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({ data }) => {
       ) : (
         <Button
           className={`${
-            currentChannelMember || isFeedOrUserDetailPage ? '' : 'hidden'
+            isReadOnly ? '' : 'hidden'
           } text-sm font-bold !py-[3px]`}
           label="Mark as read"
           size={Size.Small}

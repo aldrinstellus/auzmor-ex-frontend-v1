@@ -8,8 +8,10 @@ type HomeProps = {
   channelData: IChannel;
 };
 const Home: FC<HomeProps> = ({ channelData }) => {
+  const isReadOnly = !!channelData?.member;
   return (
     <Feed
+      isReadOnly={isReadOnly}
       mode={FeedModeEnum.Channel}
       leftWidgets={[WidgetEnum.AppLauncher, WidgetEnum.Links]}
       rightWidgets={[
