@@ -325,6 +325,42 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       hidden: !isChannelAdmin && !isChannelMember,
     },
   ].filter((item) => !item.hidden);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+
+    if (files?.length) {
+      const selectedFile = files[0];
+      const validImageTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/bmp',
+        'image/webp',
+      ];
+
+      if (!validImageTypes.includes(selectedFile.type)) {
+        failureToastConfig({
+          content: `File type not supported. Upload a supported file content`,
+        });
+        return;
+      }
+
+      if (selectedFile.size > 50 * 1024 * 1024) {
+        failureToastConfig({
+          content: 'The file size should not exceed 50MB.',
+        });
+        return;
+      }
+
+      setFile({
+        ...file,
+        coverImage: selectedFile,
+      });
+      setCoverImageName(selectedFile.name);
+      openEditImageModal();
+    }
+  };
   return (
     <div className="  rounded-9xl relative mb-4">
       <div className="relative z-30">
@@ -572,16 +608,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
             multiple={false}
             data-testid="edit-profile-coverpic"
             onClick={clearInputValue}
-            onChange={(e) => {
-              if (e.target.files?.length) {
-                setFile({
-                  ...file,
-                  coverImage: Array.prototype.slice.call(e.target.files)[0],
-                });
-                setCoverImageName(e?.target?.files[0]?.name);
-                openEditImageModal();
-              }
-            }}
+            onChange={handleFileChange}
           />
         </div>
       )}

@@ -3,7 +3,13 @@ import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import ConfirmationBox from 'components/ConfirmationBox';
-import { IPost, PostType, deletePost } from 'queries/post';
+import {
+  AudienceEntityType,
+  IPost,
+  PostType,
+  deletePost,
+  updatePost,
+} from 'queries/post';
 import PostBuilder, { PostBuilderMode } from 'components/PostBuilder';
 import useModal from 'hooks/useModal';
 import useAuth from 'hooks/useAuth';
@@ -18,7 +24,7 @@ import ClosePollModal from './ClosePollModal';
 import PollVotesModal from './PollVotesModal';
 import ChangeToRegularPostModal from './ChangeToRegularPostModal';
 import AnnouncementAnalytics from './AnnouncementAnalytics';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 export interface IFeedPostMenuProps {
   data: IPost;
@@ -47,10 +53,46 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
   const currentDate = new Date().toISOString();
 
   const isPostPage = location.pathname.startsWith('/posts/');
-
+  const isChannelPage = location.pathname.startsWith('/channels/');
+  const { channelId = '' } = useParams();
   const deletePostMutation = useMutation({
     mutationKey: ['deletePostMutation', data.id],
     mutationFn: deletePost,
+    onMutate: (variables) => {
+      const previousFeed = feedRef.current;
+      if (!isPostPage) setFeed({ ...omit(feedRef.current, [variables]) });
+      closeConfirm();
+      return { previousFeed };
+    },
+    onError: (_error, _variables, context) => {
+      failureToastConfig({
+        content: 'Error deleting post',
+        dataTestId: 'post-delete-toaster-failure',
+      });
+      if (context?.previousFeed) {
+        setFeed(context?.previousFeed);
+      }
+    },
+    onSuccess: async (_data, variables, _context) => {
+      successToastConfig({
+        content: 'Post deleted successfully',
+        dataTestId: 'post-delete-toaster-success',
+      });
+      if (isPostPage) navigate('/feed');
+      await queryClient.invalidateQueries(['feed']);
+      await queryClient.invalidateQueries(['feed-announcements-widget']);
+      await queryClient.invalidateQueries(['post-announcements-widget']);
+      await queryClient.invalidateQueries(['bookmarks']);
+      await queryClient.invalidateQueries(['scheduledPosts']);
+      await queryClient.invalidateQueries(['posts', variables], {
+        exact: false,
+      });
+    },
+  });
+  const updatePostMutation = useMutation({
+    mutationKey: ['updatePostMutation'],
+    mutationFn: (payload: any) => updatePost(payload.id || '', payload as any),
+
     onMutate: (variables) => {
       const previousFeed = feedRef.current;
       if (!isPostPage) setFeed({ ...omit(feedRef.current, [variables]) });
@@ -173,6 +215,27 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
     },
   ];
 
+  const handleDelete = () => {
+    if (!isChannelPage) {
+      deletePostMutation.mutate(data?.id || '');
+      return;
+    }
+    if (data?.audience?.length <= 1 && isChannelPage) {
+      deletePostMutation.mutate(data?.id || '');
+      return;
+    } else {
+      const audience = data?.audience?.filter(
+        (audience: any) =>
+          audience?.entityId !== channelId &&
+          audience?.entityType === AudienceEntityType.Channel,
+      );
+      updatePostMutation.mutate({
+        ...data,
+        audience,
+      });
+    }
+  };
+
   const postOptions = allOptions
     .filter((option) => option.enabled)
     .filter((menuItem) => {
@@ -225,7 +288,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
           success={{
             label: 'Delete',
             className: 'bg-red-500 text-white ',
-            onSubmit: () => deletePostMutation.mutate(data?.id || ''),
+            onSubmit: () => handleDelete(),
           }}
           discard={{
             label: 'Cancel',

@@ -49,6 +49,7 @@ import clsx from 'clsx';
 import SocialIcon from './SocialIcon';
 import { isOutOfOffice } from 'utils/time';
 import Chip from 'components/Chip';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 
 export interface IProfileCoverProps {
   userDetails: Record<string, any>;
@@ -186,6 +187,51 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
   const socialLinks = isSelf
     ? [...commonSocialLinks, 'edit']
     : commonSocialLinks;
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    fileType: string,
+  ) => {
+    const files = e.target.files;
+
+    if (files?.length) {
+      const selectedFile = files[0];
+      const validImageTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/bmp',
+        'image/webp',
+      ];
+
+      if (!validImageTypes.includes(selectedFile.type)) {
+        failureToastConfig({
+          content: `File type not supported. Upload a supported file content`,
+        });
+        return;
+      }
+
+      if (selectedFile.size > 50 * 1024 * 1024) {
+        failureToastConfig({
+          content: 'The file size should not exceed 50MB.',
+        });
+        return;
+      }
+      if (fileType === 'profileImage') {
+        setFile({
+          ...file,
+          profileImage: selectedFile,
+        });
+        setProfileImageName(selectedFile.name);
+      } else {
+        setFile({
+          ...file,
+          coverImage: selectedFile,
+        });
+        setCoverImageName(selectedFile.name);
+      }
+      openEditImageModal();
+    }
+  };
   return (
     <div>
       <Card
@@ -464,16 +510,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
             accept="image/*"
             multiple={false}
             onClick={clearInputValue}
-            onChange={(e) => {
-              if (e.target.files?.length) {
-                setFile({
-                  ...file,
-                  profileImage: Array.prototype.slice.call(e.target.files)[0],
-                });
-                setProfileImageName(e?.target?.files[0]?.name);
-                openEditImageModal();
-              }
-            }}
+            onChange={(e) => handleFileChange(e, 'profileImage')}
             aria-label="upload profile picture"
           />
           <input
@@ -485,16 +522,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
             multiple={false}
             data-testid="edit-profile-coverpic"
             onClick={clearInputValue}
-            onChange={(e) => {
-              if (e.target.files?.length) {
-                setFile({
-                  ...file,
-                  coverImage: Array.prototype.slice.call(e.target.files)[0],
-                });
-                setCoverImageName(e?.target?.files[0]?.name);
-                openEditImageModal();
-              }
-            }}
+            onChange={(e) => handleFileChange(e, 'coverImage')}
             aria-label="upload cover picture"
           />
         </div>

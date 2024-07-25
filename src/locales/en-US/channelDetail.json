@@ -124,7 +124,7 @@
     "enrollMembers": "Enroll Members",
     "addChannelMembers": {
       "failure": "Failed to add members to the channel.",
-      "success": "Members added successfully."
+      "success": "{{count}} Members added successfully."
     },
     "addChannelMembersStatus": {
       "failure": "Failed to fetch status for jobId."
