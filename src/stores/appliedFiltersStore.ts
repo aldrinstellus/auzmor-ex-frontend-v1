@@ -55,6 +55,9 @@ const clearURLParams = () => {
     'categories',
     'channelType',
     'byPeople',
+    'channelRequestStatus',
+    'sort',
+    'channels',
   ];
 
   paramsToDelete.forEach((param) => url.searchParams.delete(param));
