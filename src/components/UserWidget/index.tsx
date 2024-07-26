@@ -58,14 +58,14 @@ const UserCard: FC<IUserCardProps> = ({ className = '' }) => {
           />
           <div className="flex flex-col gap-2">
             <Truncate
-              text={`${userDetails?.fullName}-${userDetails?.fullName}-${userDetails?.fullName}-${userDetails?.fullName}`}
+              text={`${userDetails?.fullName || ''}`}
               className="text-lg font-bold max-w-[240px] text-center"
               data-testid="profilecard-username"
             />
 
             {!isLxp && userDetails?.designation?.name && (
               <Truncate
-                text={`${userDetails?.designation?.name}-${userDetails?.designation?.name}-${userDetails?.designation?.name}-${userDetails?.designation?.name}`}
+                text={`${userDetails?.designation?.name || ''}`}
                 className="text-sm font-normal max-w-[240px] text-center text-neutral-500"
                 data-testid="profilecard-designation"
               />
