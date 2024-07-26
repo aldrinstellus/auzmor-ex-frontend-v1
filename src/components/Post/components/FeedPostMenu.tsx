@@ -189,7 +189,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
       onClick: () => showPollVotes(),
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-see-poll-votes',
-      permissions: [],
+      permissions: ['UPDATE_MY_POSTS'],
       enabled:
         data.type === PostType.Poll &&
         (isAdmin || data.createdBy?.userId === user?.id),
