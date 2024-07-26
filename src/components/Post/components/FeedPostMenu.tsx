@@ -28,10 +28,10 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 export interface IFeedPostMenuProps {
   data: IPost;
-  isReadOnly?: boolean;
+  readOnly?: boolean;
 }
 
-const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, isReadOnly = true }) => {
+const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
   const { user } = useAuth();
   const { isMember } = useRole();
   const location = useLocation();
@@ -256,7 +256,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, isReadOnly = true }) => {
     [],
   );
 
-  if (postOptions.length && isReadOnly) {
+  if (postOptions.length && !readOnly) {
     return (
       <>
         <PopupMenu

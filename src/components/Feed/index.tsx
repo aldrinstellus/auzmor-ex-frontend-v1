@@ -1,6 +1,7 @@
 import React, {
   FC,
   Fragment,
+  ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -99,7 +100,10 @@ export const widgetMapping = {
 };
 
 interface IFeedProps {
-  isReadOnly?: boolean;
+  showCreatePostCard?: boolean;
+  showFeedFilterBar?: boolean;
+  emptyFeedComponent?: ReactNode | null;
+  isReadOnlyPost?: boolean;
   leftWidgets: WidgetEnum[];
   rightWidgets: WidgetEnum[];
   mode?: FeedModeEnum;
@@ -147,7 +151,10 @@ const Feed: FC<IFeedProps> = ({
   mode = FeedModeEnum.Default,
   widgetProps,
   modeProps,
-  isReadOnly = true,
+  showCreatePostCard = true,
+  showFeedFilterBar = true,
+  emptyFeedComponent = null,
+  isReadOnlyPost = false,
 }) => {
   const { t } = useTranslation('feed');
   const isLargeScreen = useMediaQuery('(min-width: 1300px)');
@@ -420,7 +427,7 @@ const Feed: FC<IFeedProps> = ({
               alt="No Posts"
             />
           </div>
-          {isReadOnly ? (
+          {emptyFeedComponent || (
             <div data-testid="scheduledpost-tab-nodata">
               <div className="text-neutral-900 font-semibold text-lg mt-6 text-center">
                 Publish your first post!
@@ -430,8 +437,6 @@ const Feed: FC<IFeedProps> = ({
                 <br /> or just make a little introduction to the teams.
               </div>
             </div>
-          ) : (
-            <div className="text-center pt-4"> No post is available</div>
           )}
         </div>
       );
@@ -504,8 +509,8 @@ const Feed: FC<IFeedProps> = ({
     } else {
       return (
         <div className="flex flex-col gap-6">
-          {isReadOnly && <CreatePostCard openModal={openModal} />}
-          {isReadOnly && (
+          {showCreatePostCard && <CreatePostCard openModal={openModal} />}
+          {showFeedFilterBar && (
             <div className=" flex flex-col gap-6">
               <div className="flex flex-row items-center gap-6">
                 <div className="flex items-center gap-4 z-20">
@@ -699,7 +704,7 @@ const Feed: FC<IFeedProps> = ({
           title={`post ${index + 1}`}
         >
           <VirtualisedPost
-            isReadOnly={isReadOnly}
+            readOnly={isReadOnlyPost}
             postId={id!}
             commentIds={feed[id]?.relevantComments || []}
           />

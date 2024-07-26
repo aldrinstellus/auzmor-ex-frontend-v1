@@ -66,7 +66,7 @@ export const iconsStyle = (key: string) => {
 };
 
 type PostProps = {
-  isReadOnly?: boolean;
+  readOnly?: boolean;
   postId: string;
   commentIds?: string[];
   setHasChanges?: (flag: boolean) => any;
@@ -76,7 +76,7 @@ const Post: FC<PostProps> = ({
   postId,
   commentIds = [],
   setHasChanges,
-  isReadOnly = true,
+  readOnly = false,
 }) => {
   const [feed, getPost, updateFeed] = useFeedStore((state) => [
     state.feed,
@@ -333,7 +333,7 @@ const Post: FC<PostProps> = ({
   return (
     <>
       <Card className="flex flex-col">
-        <AcknowledgementBanner isReadOnly={isReadOnly} data={post} />
+        <AcknowledgementBanner readOnly={readOnly} data={post} />
         <div className="post-content px-4 py-3 flex flex-col gap-3">
           <div className="flex gap-3 justify-between items-start p-1">
             <Actor
@@ -346,7 +346,7 @@ const Post: FC<PostProps> = ({
               postType={post?.occasionContext?.type}
               title={post?.title}
             />
-            {isReadOnly && (
+            {!readOnly && (
               <Tooltip
                 tooltipContent={
                   post.bookmarked ? 'Remove from bookmark' : 'Bookmark post'
@@ -366,7 +366,7 @@ const Post: FC<PostProps> = ({
             )}
             <div className="relative">
               <FeedPostMenu
-                isReadOnly={isReadOnly}
+                readOnly={readOnly}
                 data={post as unknown as IPost}
               />
             </div>
@@ -469,7 +469,7 @@ const Post: FC<PostProps> = ({
             <div className="flex justify-between">
               <div className="flex space-x-6">
                 {/* this is for post */}
-                {isReadOnly && (
+                {!readOnly && (
                   <>
                     <Likes
                       reaction={reaction || ''}
