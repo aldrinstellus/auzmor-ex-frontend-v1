@@ -79,6 +79,7 @@ const FilterMenu: FC<IFilterMenu> = ({
   useEffect(() => {
     setFilters({
       categories: parseParams('categories') || [],
+      channels: parseParams('channels') || [],
       departments: parseParams('departments') || [],
       locations: parseParams('locations') || [],
       status: parseParams('status') || [],
@@ -96,6 +97,7 @@ const FilterMenu: FC<IFilterMenu> = ({
     };
   }, []);
 
+  console.log('filters :', filters);
   useEffect(() => {
     if (filters) {
       Object.keys(filters).forEach((key: string) => {
@@ -135,6 +137,7 @@ const FilterMenu: FC<IFilterMenu> = ({
     deleteParam('categories');
     deleteParam('channelType');
     deleteParam('byPeople');
+    deleteParam('channels');
     setFilters({
       ...filters,
       categories: [],
@@ -147,6 +150,7 @@ const FilterMenu: FC<IFilterMenu> = ({
       byPeople: [],
       visibility: [],
       channeType: [],
+      channels: [],
     });
   };
 
@@ -411,6 +415,7 @@ const FilterMenu: FC<IFilterMenu> = ({
             visibility: filters?.visibility || [],
             channelType: filters?.channelType || [],
             byPeople: filters?.byPeople || [],
+            channels: filters?.channels || [],
             channelRequestStatus:
               filters?.channelRequestStatus || defaultChannelRequestStatus,
           }}
@@ -429,6 +434,7 @@ const FilterMenu: FC<IFilterMenu> = ({
               visibility: [],
               channelType: [],
               byPeople: [],
+              channels: [],
               channelRequestStatus: defaultChannelRequestStatus,
             });
             closeFilterModal();
