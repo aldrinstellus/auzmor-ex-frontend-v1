@@ -72,7 +72,7 @@ const MembersWidget: FC<MembersWidgetProps> = ({ channelData }) => {
               />
             </div>
             <div className="mt-3">
-              {isUserAdminOrChannelAdmin ? (
+              {isUserAdminOrChannelAdmin && !!channelData?.member ? (
                 <Button
                   size={Size.Small}
                   className="w-full"

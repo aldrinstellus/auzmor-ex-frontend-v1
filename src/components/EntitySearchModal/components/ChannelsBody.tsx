@@ -139,7 +139,7 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
   if (showSelectedMembers) channelsData = selectedMembers as IChannel[];
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col min-h-[489px] ">
       <div className="flex flex-col py-4 px-6 gap-4">
         <Layout
           fields={[

@@ -111,7 +111,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}> {t('settings')}</div>
       ),
-      hidden: false,
+      hidden: !channelData?.member,
       dataTestId: 'channel-member-tab',
       tabContent: showBanner() || (
         <Setting isLoading={isLoading} channelData={channelData} />
@@ -122,7 +122,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}> {t('manageAccess')}</div>
       ),
-      hidden: !isUserAdminOrChannelAdmin,
+      hidden: !(isUserAdminOrChannelAdmin && channelData?.member),
       dataTestId: 'channel-member-tab',
       tabContent: showBanner() || <ManageAccess channelData={channelData} />,
     },

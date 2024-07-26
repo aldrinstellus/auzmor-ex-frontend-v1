@@ -277,7 +277,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         navigate(`/channels/${channelData?.id}/manage-access`);
       },
       dataTestId: '',
-      hidden: !isUserAdminOrChannelAdmin,
+      hidden: !(isUserAdminOrChannelAdmin && channelData?.member),
     },
     {
       icon: 'archive',
@@ -289,7 +289,13 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     },
     {
       renderNode: (
-        <div className="text-xs  bg-blue-50 py-2 px-6 font-Medium flex items-center justify-center ">
+        <div
+          className={`text-xs ${
+            !(isUserAdminOrChannelAdmin && channelData?.member)
+              ? 'hidden'
+              : ' py-2 px-6'
+          } bg-blue-50 font-Medium flex items-center justify-center `}
+        >
           {t('securityAndAnalytics')}
         </div>
       ),
@@ -302,7 +308,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         openAddMemberModal();
       },
       dataTestId: '',
-      hidden: !isUserAdminOrChannelAdmin,
+      hidden: !(isUserAdminOrChannelAdmin && channelData?.member),
     },
     {
       icon: 'setting',
@@ -312,7 +318,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         navigate(`/channels/${channelData?.id}/settings`);
       },
       dataTestId: '',
-      hidden: false,
+      hidden: !channelData?.member,
     },
     {
       icon: 'logout',
@@ -371,9 +377,9 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
             </div>
           </div>
         ) : null}
-        {channelData?.member && (
-          <div className="absolute top-4 right-4 flex items-center space-x-2">
-            {/* <div className="bg-white rounded-full p-2 cursor-pointer">
+
+        <div className="absolute top-4 right-4 flex items-center space-x-2">
+          {/* <div className="bg-white rounded-full p-2 cursor-pointer">
             <Icon
               name="notification"
               size={16}
@@ -381,6 +387,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               dataTestId="edit-profilepic"
             />
           </div> */}
+          {channelData?.member && (
             <IconButton
               icon={channelData?.member?.bookmarked ? 'star' : 'starOutline'}
               variant={IconVariant.Secondary}
@@ -393,54 +400,54 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 })
               }
             />
-            <div className="cursor-pointer">
-              {(isChannelMember || isUserAdminOrChannelAdmin) && (
-                <PopupMenu
-                  triggerNode={
-                    <div className="bg-white rounded-full  text-black">
-                      <IconButton
-                        icon="more"
-                        variant={IconVariant.Secondary}
-                        size={Size.Medium}
-                        dataTestId="edit-cover-pic"
-                      />
-                    </div>
-                  }
-                  className="absolute top-12 right-4 w-48"
-                  menuItems={editMenuOptions}
-                  title={
-                    <>
-                      {isUserAdminOrChannelAdmin && (
-                        <div className="text-xs  bg-blue-50 py-2 px-6 font-Medium flex items-center justify-center ">
-                          {t('channelManageMent')}
-                        </div>
-                      )}
-                    </>
-                  }
-                />
-              )}
-            </div>
-            <div className="   cursor-pointer">
-              {canEdit && (
-                <PopupMenu
-                  triggerNode={
-                    <div className="bg-white  rounded-full  text-black">
-                      <IconButton
-                        icon="edit"
-                        variant={IconVariant.Secondary}
-                        size={Size.Medium}
-                        dataTestId="edit-cover-pic"
-                        onClick={() => (showEditProfile.current = false)}
-                      />
-                    </div>
-                  }
-                  className="absolute top-12 right-4"
-                  menuItems={coverImageOption}
-                />
-              )}
-            </div>
+          )}
+          <div className="cursor-pointer">
+            {(isChannelMember || isUserAdminOrChannelAdmin) && (
+              <PopupMenu
+                triggerNode={
+                  <div className="bg-white rounded-full  text-black">
+                    <IconButton
+                      icon="more"
+                      variant={IconVariant.Secondary}
+                      size={Size.Medium}
+                      dataTestId="edit-cover-pic"
+                    />
+                  </div>
+                }
+                className="absolute top-12 right-4 w-48"
+                menuItems={editMenuOptions}
+                title={
+                  <>
+                    {isUserAdminOrChannelAdmin && (
+                      <div className="text-xs  bg-blue-50 py-2 px-6 font-Medium flex items-center justify-center ">
+                        {t('channelManageMent')}
+                      </div>
+                    )}
+                  </>
+                }
+              />
+            )}
           </div>
-        )}
+          <div className="   cursor-pointer">
+            {canEdit && (
+              <PopupMenu
+                triggerNode={
+                  <div className="bg-white  rounded-full  text-black">
+                    <IconButton
+                      icon="edit"
+                      variant={IconVariant.Secondary}
+                      size={Size.Medium}
+                      dataTestId="edit-cover-pic"
+                      onClick={() => (showEditProfile.current = false)}
+                    />
+                  </div>
+                }
+                className="absolute top-12 right-4"
+                menuItems={coverImageOption}
+              />
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="w-full h-full relative">

@@ -8,8 +8,17 @@ type HomeProps = {
   channelData: IChannel;
 };
 const Home: FC<HomeProps> = ({ channelData }) => {
+  const isMember = !!channelData?.member;
   return (
     <Feed
+      showCreatePostCard={isMember}
+      showFeedFilterBar={isMember}
+      emptyFeedComponent={
+        !isMember ? (
+          <div className="text-center pt-4"> No post is available</div>
+        ) : null
+      }
+      isReadOnlyPost={!isMember}
       mode={FeedModeEnum.Channel}
       leftWidgets={[WidgetEnum.AppLauncher, WidgetEnum.Links]}
       rightWidgets={[
