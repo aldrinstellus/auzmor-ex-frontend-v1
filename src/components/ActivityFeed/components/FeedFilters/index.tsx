@@ -139,7 +139,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
   const getFeedFilterCount = () => {
     return feedFilters[PostFilterKeys.PostType]?.length || 0;
   };
-
+  const isChannelPage = location.pathname.includes('/channels/');
   const feedFilterOptions: FeedFilterOption[] = [
     {
       label: 'Content (type)',
@@ -162,7 +162,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
       dataTestId: 'filterby-training',
-      hidden: !isLxp,
+      hidden: !(isLxp && !isChannelPage), // hide for channel page but not for feed in lxp
     },
     {
       label: 'Event',
@@ -170,7 +170,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
       dataTestId: 'filterby-event',
-      hidden: !isLxp,
+      hidden: !(isLxp && !isChannelPage),
     },
     {
       label: 'Forum',
@@ -178,7 +178,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
       dataTestId: 'filterby-forum',
-      hidden: !isLxp,
+      hidden: !(isLxp && !isChannelPage),
     },
     {
       label: 'Document',

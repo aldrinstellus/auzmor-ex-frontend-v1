@@ -12,9 +12,13 @@ import useRole from 'hooks/useRole';
 
 export interface IAcknowledgementBannerProps {
   data: any;
+  readOnly?: boolean;
 }
 
-const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({ data }) => {
+const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({
+  data,
+  readOnly = false,
+}) => {
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
   const queryClient = useQueryClient();
@@ -69,7 +73,7 @@ const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({ data }) => {
         />
       ) : (
         <Button
-          className="text-sm font-bold !py-[3px]"
+          className={`${!readOnly ? '' : 'hidden'} text-sm font-bold !py-[3px]`}
           label="Mark as read"
           size={Size.Small}
           variant={Variant.Tertiary}

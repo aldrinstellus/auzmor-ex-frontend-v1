@@ -40,7 +40,7 @@ const AppLauncher = () => {
         ? {
             limit: 3,
           }
-        : { limit: 3, entityType: 'CHANNEL', entityId: channelId },
+        : { limit: 3, channelIds: channelId },
     ),
   );
 

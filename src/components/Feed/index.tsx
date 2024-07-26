@@ -1,6 +1,7 @@
 import React, {
   FC,
   Fragment,
+  ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -99,6 +100,10 @@ export const widgetMapping = {
 };
 
 interface IFeedProps {
+  showCreatePostCard?: boolean;
+  showFeedFilterBar?: boolean;
+  emptyFeedComponent?: ReactNode | null;
+  isReadOnlyPost?: boolean;
   leftWidgets: WidgetEnum[];
   rightWidgets: WidgetEnum[];
   mode?: FeedModeEnum;
@@ -146,6 +151,10 @@ const Feed: FC<IFeedProps> = ({
   mode = FeedModeEnum.Default,
   widgetProps,
   modeProps,
+  showCreatePostCard = true,
+  showFeedFilterBar = true,
+  emptyFeedComponent = null,
+  isReadOnlyPost = false,
 }) => {
   const { t } = useTranslation('feed');
   const isLargeScreen = useMediaQuery('(min-width: 1300px)');
@@ -418,15 +427,17 @@ const Feed: FC<IFeedProps> = ({
               alt="No Posts"
             />
           </div>
-          <div data-testid="scheduledpost-tab-nodata">
-            <div className="text-neutral-900 font-semibold text-lg mt-6 text-center">
-              Publish your first post!
+          {emptyFeedComponent || (
+            <div data-testid="scheduledpost-tab-nodata">
+              <div className="text-neutral-900 font-semibold text-lg mt-6 text-center">
+                Publish your first post!
+              </div>
+              <div className="text-neutral-500 text-sm font-medium text-center mt-2">
+                Post something interesting for your audience, share an update,
+                <br /> or just make a little introduction to the teams.
+              </div>
             </div>
-            <div className="text-neutral-500 text-sm font-medium text-center mt-2">
-              Post something interesting for your audience, share an update,
-              <br /> or just make a little introduction to the teams.
-            </div>
-          </div>
+          )}
         </div>
       );
     }
@@ -498,96 +509,98 @@ const Feed: FC<IFeedProps> = ({
     } else {
       return (
         <div className="flex flex-col gap-6">
-          <CreatePostCard openModal={openModal} />
-          <div className=" flex flex-col gap-6">
-            <div className="flex flex-row items-center gap-6">
-              <div className="flex items-center gap-4 z-20">
-                <Tooltip
-                  tooltipContent={t('scheduledPosts.tooltip')}
-                  tooltipPosition="top"
-                >
-                  <Link
-                    to={getScheduleLinkTo()}
-                    aria-label="scheduled posts"
-                    tabIndex={0}
-                    className="outline-none"
+          {showCreatePostCard && <CreatePostCard openModal={openModal} />}
+          {showFeedFilterBar && (
+            <div className=" flex flex-col gap-6">
+              <div className="flex flex-row items-center gap-6">
+                <div className="flex items-center gap-4 z-20">
+                  <Tooltip
+                    tooltipContent={t('scheduledPosts.tooltip')}
+                    tooltipPosition="top"
                   >
-                    <Icon name="clock" size={24} />
-                  </Link>
-                </Tooltip>
-                <Tooltip
-                  tooltipContent={t('bookmark.tooltip')}
-                  tooltipPosition="top"
-                >
-                  <Link
-                    to={getBookmarkLinkTo()}
-                    data-testid="feed-page-mybookmarks"
-                    aria-label="bookmarked posts"
-                    className="outline-none"
+                    <Link
+                      to={getScheduleLinkTo()}
+                      aria-label="scheduled posts"
+                      tabIndex={0}
+                      className="outline-none"
+                    >
+                      <Icon name="clock" size={24} />
+                    </Link>
+                  </Tooltip>
+                  <Tooltip
+                    tooltipContent={t('bookmark.tooltip')}
+                    tooltipPosition="top"
                   >
-                    <Icon name="postBookmark" size={24} />
-                  </Link>
-                </Tooltip>
+                    <Link
+                      to={getBookmarkLinkTo()}
+                      data-testid="feed-page-mybookmarks"
+                      aria-label="bookmarked posts"
+                      className="outline-none"
+                    >
+                      <Icon name="postBookmark" size={24} />
+                    </Link>
+                  </Tooltip>
+                </div>
+                <Divider className="bg-neutral-200 flex-1" />
+                <div className="flex items-center gap-3">
+                  {getAppliedFiltersCount() > 0 && (
+                    <div
+                      className="flex items-center gap-1 cursor-pointer text-sm font-bold text-primary-600 bg-transparent"
+                      onClick={clearAppliedFilters}
+                      onKeyUp={(e) =>
+                        e.code === 'Enter' ? clearAppliedFilters() : ''
+                      }
+                      tabIndex={0}
+                      role="button"
+                    >
+                      <Icon
+                        name="deleteOutline"
+                        color="text-primary-600"
+                        className="cursor-pointer"
+                        size={16}
+                      />
+                      Clear All Filters
+                    </div>
+                  )}
+                  <FeedFilter
+                    appliedFeedFilters={appliedFeedFilters}
+                    onApplyFilters={handleApplyFilter}
+                    dataTestId="filters-dropdown"
+                  />
+                </div>
               </div>
-              <Divider className="bg-neutral-200 flex-1" />
-              <div className="flex items-center gap-3">
-                {getAppliedFiltersCount() > 0 && (
-                  <div
-                    className="flex items-center gap-1 cursor-pointer text-sm font-bold text-primary-600 bg-transparent"
-                    onClick={clearAppliedFilters}
-                    onKeyUp={(e) =>
-                      e.code === 'Enter' ? clearAppliedFilters() : ''
-                    }
-                    tabIndex={0}
-                    role="button"
-                  >
-                    <Icon
-                      name="deleteOutline"
-                      color="text-primary-600"
-                      className="cursor-pointer"
-                      size={16}
-                    />
-                    Clear All Filters
-                  </div>
-                )}
-                <FeedFilter
-                  appliedFeedFilters={appliedFeedFilters}
-                  onApplyFilters={handleApplyFilter}
-                  dataTestId="filters-dropdown"
-                />
-              </div>
-            </div>
 
-            {getAppliedFiltersCount() > 0 && (
-              <div className="flex w-full flex-wrap items-center gap-1">
-                {appliedFeedFilters[PostFilterKeys.PostType]?.map(
-                  (filter: PostType) => (
-                    <FilterPill
-                      key={filter}
-                      name={filterKeyMap[filter]}
-                      onClick={() =>
-                        removePostTypeFilter(filter, PostFilterKeys.PostType)
-                      }
-                    />
-                  ),
-                )}
-                {appliedFeedFilters[PostFilterKeys.PostPreference]?.map(
-                  (filter: PostFilterPreference) => (
-                    <FilterPill
-                      key={filter}
-                      name={filterKeyMap[filter]}
-                      onClick={() =>
-                        removePostTypeFilter(
-                          filter,
-                          PostFilterKeys.PostPreference,
-                        )
-                      }
-                    />
-                  ),
-                )}
-              </div>
-            )}
-          </div>
+              {getAppliedFiltersCount() > 0 && (
+                <div className="flex w-full flex-wrap items-center gap-1">
+                  {appliedFeedFilters[PostFilterKeys.PostType]?.map(
+                    (filter: PostType) => (
+                      <FilterPill
+                        key={filter}
+                        name={filterKeyMap[filter]}
+                        onClick={() =>
+                          removePostTypeFilter(filter, PostFilterKeys.PostType)
+                        }
+                      />
+                    ),
+                  )}
+                  {appliedFeedFilters[PostFilterKeys.PostPreference]?.map(
+                    (filter: PostFilterPreference) => (
+                      <FilterPill
+                        key={filter}
+                        name={filterKeyMap[filter]}
+                        onClick={() =>
+                          removePostTypeFilter(
+                            filter,
+                            PostFilterKeys.PostPreference,
+                          )
+                        }
+                      />
+                    ),
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       );
     }
@@ -691,6 +704,7 @@ const Feed: FC<IFeedProps> = ({
           title={`post ${index + 1}`}
         >
           <VirtualisedPost
+            readOnly={isReadOnlyPost}
             postId={id!}
             commentIds={feed[id]?.relevantComments || []}
           />

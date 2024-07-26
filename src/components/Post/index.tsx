@@ -66,12 +66,18 @@ export const iconsStyle = (key: string) => {
 };
 
 type PostProps = {
+  readOnly?: boolean;
   postId: string;
   commentIds?: string[];
   setHasChanges?: (flag: boolean) => any;
 };
 
-const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
+const Post: FC<PostProps> = ({
+  postId,
+  commentIds = [],
+  setHasChanges,
+  readOnly = false,
+}) => {
   const [feed, getPost, updateFeed] = useFeedStore((state) => [
     state.feed,
     state.getPost,
@@ -327,7 +333,7 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
   return (
     <>
       <Card className="flex flex-col">
-        <AcknowledgementBanner data={post} />
+        <AcknowledgementBanner readOnly={readOnly} data={post} />
         <div className="post-content px-4 py-3 flex flex-col gap-3">
           <div className="flex gap-3 justify-between items-start p-1">
             <Actor
@@ -340,24 +346,29 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
               postType={post?.occasionContext?.type}
               title={post?.title}
             />
-            <Tooltip
-              tooltipContent={
-                post.bookmarked ? 'Remove from bookmark' : 'Bookmark post'
-              }
-              tooltipPosition="top"
-            >
-              <Icon
-                name={post.bookmarked ? 'postBookmarkFilled' : 'postBookmark'}
-                size={24}
-                dataTestId="feed-post-bookmark"
-                onClick={() => handleBookmarkClick(post)}
-                isActive={post.bookmarked}
-                ariaLabel="bookmark this post"
-                tabIndex={0}
-              />
-            </Tooltip>
+            {!readOnly && (
+              <Tooltip
+                tooltipContent={
+                  post.bookmarked ? 'Remove from bookmark' : 'Bookmark post'
+                }
+                tooltipPosition="top"
+              >
+                <Icon
+                  name={post.bookmarked ? 'postBookmarkFilled' : 'postBookmark'}
+                  size={24}
+                  dataTestId="feed-post-bookmark"
+                  onClick={() => handleBookmarkClick(post)}
+                  isActive={post.bookmarked}
+                  ariaLabel="bookmark this post"
+                  tabIndex={0}
+                />
+              </Tooltip>
+            )}
             <div className="relative">
-              <FeedPostMenu data={post as unknown as IPost} />
+              <FeedPostMenu
+                readOnly={readOnly}
+                data={post as unknown as IPost}
+              />
             </div>
           </div>
           {post?.schedule && (
@@ -458,25 +469,29 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
             <div className="flex justify-between">
               <div className="flex space-x-6">
                 {/* this is for post */}
-                <Likes
-                  reaction={reaction || ''}
-                  entityId={post?.id || ''}
-                  entityType="post"
-                  reactionId={post?.myReaction?.id || ''}
-                  queryKey="feed"
-                  dataTestIdPrefix="post-reaction"
-                />
-                <Button
-                  label="Comment"
-                  variant={Variant.Tertiary}
-                  size={Size.Small}
-                  labelClassName="text-xs font-normal text-neutral-500 hover:text-primary-500 group-hover:text-primary-500 group-focus:text-primary-500"
-                  leftIcon="comment"
-                  leftIconHover={false}
-                  className="space-x-1 !p-0 group"
-                  onClick={handleCommentCta}
-                  data-testid="feed-post-comment"
-                />
+                {!readOnly && (
+                  <>
+                    <Likes
+                      reaction={reaction || ''}
+                      entityId={post?.id || ''}
+                      entityType="post"
+                      reactionId={post?.myReaction?.id || ''}
+                      queryKey="feed"
+                      dataTestIdPrefix="post-reaction"
+                    />
+                    <Button
+                      label="Comment"
+                      variant={Variant.Tertiary}
+                      size={Size.Small}
+                      labelClassName="text-xs font-normal text-neutral-500 hover:text-primary-500 group-hover:text-primary-500 group-focus:text-primary-500"
+                      leftIcon="comment"
+                      leftIconHover={false}
+                      className="space-x-1 !p-0 group"
+                      onClick={handleCommentCta}
+                      data-testid="feed-post-comment"
+                    />
+                  </>
+                )}
               </div>
             </div>
           )}

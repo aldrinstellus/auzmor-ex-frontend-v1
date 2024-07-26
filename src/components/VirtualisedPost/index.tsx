@@ -6,13 +6,18 @@ import Post from 'components/Post';
 type PostProps = {
   postId: string;
   commentIds?: string[];
+  readOnly?: boolean;
 };
 
 type VisibilityProps = {
   isVisible: boolean;
 };
 
-const VirtualisedPost: FC<PostProps> = ({ postId, commentIds = [] }) => {
+const VirtualisedPost: FC<PostProps> = ({
+  postId,
+  commentIds = [],
+  readOnly,
+}) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [hasChanges, setHasChanges] = useState(false);
 
@@ -27,6 +32,7 @@ const VirtualisedPost: FC<PostProps> = ({ postId, commentIds = [] }) => {
         {({ isVisible }: VisibilityProps) =>
           isVisible || hasChanges ? (
             <Post
+              readOnly={readOnly}
               postId={postId}
               commentIds={commentIds}
               setHasChanges={setHasChanges}

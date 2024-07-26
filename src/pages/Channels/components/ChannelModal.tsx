@@ -176,6 +176,8 @@ const ChannelModal: FC<IChannelModalProps> = ({
         [response?.result?.data?.id]: response?.result?.data,
       });
       queryClient.invalidateQueries(['channel']);
+      queryClient.invalidateQueries(['channel-requests']);
+
       queryClient.invalidateQueries([isLxp ? 'learnCategory' : 'categories']);
       closeModal();
     },

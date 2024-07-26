@@ -28,9 +28,10 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 export interface IFeedPostMenuProps {
   data: IPost;
+  readOnly?: boolean;
 }
 
-const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
+const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
   const { user } = useAuth();
   const { isMember } = useRole();
   const location = useLocation();
@@ -55,6 +56,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
   const isPostPage = location.pathname.startsWith('/posts/');
   const isChannelPage = location.pathname.startsWith('/channels/');
   const { channelId = '' } = useParams();
+
   const deletePostMutation = useMutation({
     mutationKey: ['deletePostMutation', data.id],
     mutationFn: deletePost,
@@ -254,7 +256,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
     [],
   );
 
-  if (postOptions.length) {
+  if (postOptions.length && !readOnly) {
     return (
       <>
         <PopupMenu
