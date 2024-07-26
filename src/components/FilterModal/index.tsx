@@ -435,6 +435,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       FilterModalVariant.ChannelsListing,
       FilterModalVariant.ChannelMember,
       FilterModalVariant.ChannelsMangeAcess,
+      FilterModalVariant.ChannelRequest,
     ],
   };
 
