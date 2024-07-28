@@ -85,7 +85,6 @@ const CategoryRow: FC<AppProps> = ({
 
   const onSubmit = async () => {
     const formData = getValues();
-    console.log('formData :', formData);
     let lxpCategoryId;
     if (
       formData?.channelCategory?.isNew &&
@@ -115,6 +114,7 @@ const CategoryRow: FC<AppProps> = ({
       fetchQuery: isLxp ? useInfiniteLearnCategory : useInfiniteCategories,
       getFormattedData: formatCategory,
       dataTestId: `channel-category-dropdown`,
+      maxLength: 60,
       getPopupContainer: document.body,
     },
   ];
