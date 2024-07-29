@@ -123,6 +123,7 @@ const Pending: FC<AppProps> = ({ post, closeModal }) => {
             dataTestId="acknowledgement-send-reminder"
             loading={reminderMutation.isLoading}
             onClick={() => reminderMutation.mutate()}
+            disabled={pendingPercent === 0}
           />
         </div>
       </div>
