@@ -44,6 +44,8 @@ import { PostBuilderMode } from 'components/PostBuilder';
 import useModal from 'hooks/useModal';
 import ConfirmationBox from 'components/ConfirmationBox';
 import { PostType } from 'queries/post';
+import { useParams } from 'react-router-dom';
+import { useChannelRole } from 'hooks/useChannelRole';
 
 export interface IEditorContentChanged {
   text: string;
@@ -105,7 +107,9 @@ const RichTextEditor = forwardRef(
       postType,
       setPostType,
     } = useContext(CreatePostContext);
-    // Delete aria-owns attribute
+
+    const { channelId } = useParams();
+    const { isUserAdminOrChannelAdmin } = useChannelRole(channelId); // Delete aria-owns attribute
     useEffect(() => {
       const nodes = document.getElementsByClassName('ql-editor');
       if (nodes.length) {
@@ -369,46 +373,48 @@ const RichTextEditor = forwardRef(
               : ''
           }
         />
-        {announcement?.label && !hasDatePassed(announcement.value) && (
-          <div className="flex justify-between bg-blue-50 px-4 py-2 m-4">
-            <div className="flex items-center">
-              <Icon
-                name="micOutline"
-                hover={false}
-                size={16}
-                color="text-neutral-900"
-              />
-              <div
-                className="ml-2.5"
-                data-testid="announcement-scheduled-toaster"
-              >
-                Announcement will expire on{' '}
-                {moment(new Date(announcement.value)).format(
-                  'ddd, MMM DD [at] h:mm a',
-                )}
+        {isUserAdminOrChannelAdmin &&
+          announcement?.label &&
+          !hasDatePassed(announcement.value) && (
+            <div className="flex justify-between bg-blue-50 px-4 py-2 m-4">
+              <div className="flex items-center">
+                <Icon
+                  name="micOutline"
+                  hover={false}
+                  size={16}
+                  color="text-neutral-900"
+                />
+                <div
+                  className="ml-2.5"
+                  data-testid="announcement-scheduled-toaster"
+                >
+                  Announcement will expire on{' '}
+                  {moment(new Date(announcement.value)).format(
+                    'ddd, MMM DD [at] h:mm a',
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div
+                  className="cursor-pointer"
+                  onClick={() => {
+                    updateContext();
+                    setActiveFlow(CreatePostFlow.CreateAnnouncement);
+                  }}
+                  data-testid="announcement-toaster-editicon"
+                >
+                  <Icon name="editOutline" size={12} color="text-neutral-900" />
+                </div>
+                <div
+                  className="cursor-pointer"
+                  onClick={() => setAnnouncement(null)}
+                  data-testid="announcement-toaster-closeicon"
+                >
+                  <Icon name="close" size={12} color="text-neutral-900" />
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <div
-                className="cursor-pointer"
-                onClick={() => {
-                  updateContext();
-                  setActiveFlow(CreatePostFlow.CreateAnnouncement);
-                }}
-                data-testid="announcement-toaster-editicon"
-              >
-                <Icon name="editOutline" size={12} color="text-neutral-900" />
-              </div>
-              <div
-                className="cursor-pointer"
-                onClick={() => setAnnouncement(null)}
-                data-testid="announcement-toaster-closeicon"
-              >
-                <Icon name="close" size={12} color="text-neutral-900" />
-              </div>
-            </div>
-          </div>
-        )}
+          )}
         {media.length > 0 && (
           <MediaPreview
             media={media}

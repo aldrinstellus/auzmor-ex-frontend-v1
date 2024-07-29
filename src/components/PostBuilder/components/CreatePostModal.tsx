@@ -479,6 +479,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     onSuccess: async (data, variables) => {
       updateFeed(variables.id!, {
         ...data.result.data,
+        ...(!isAdmin && { acknowledged: true }),
         id: variables.id!,
       } as IPost);
       successToastConfig({
