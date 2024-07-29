@@ -28,8 +28,9 @@ const PrivacyRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
     onError: (_error: any) => {},
     onSuccess: async (_response: any) => {
       successToastConfig({});
-      await queryClient.invalidateQueries(['channel']);
-      await queryClient.invalidateQueries(['channel-requests']);
+      queryClient.invalidateQueries(['channel']);
+      queryClient.invalidateQueries(['channel-requests']);
+      queryClient.invalidateQueries(['channel-members']);
     },
   });
 
