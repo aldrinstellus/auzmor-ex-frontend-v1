@@ -1,5 +1,5 @@
 import Icon from 'components/Icon';
-import { isTrim } from 'pages/ChannelDetail/components/utils';
+import Truncate from 'components/Truncate';
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChannelVisibilityEnum, IChannel } from 'stores/channelStore';
@@ -15,9 +15,11 @@ const ChannelRow: FC<ChannelRow> = ({ channel }) => {
       onClick={() => navigate(`/channels/${channel?.id}`)}
       className="bg-neutral-100 cursor-pointer flex gap-2 items-center justify-between w-full rounded-[32px] border-solid border-neutral-200 border pt-3 pr-5 pb-3 pl-5 my-4  "
     >
-      <div className="text-neutral-900  truncate  text-sm font-medium  ">
-        {isTrim(channel?.name, 20)}
-      </div>
+      <Truncate
+        toolTipTextClassName="w-36"
+        text={channel?.name || ''}
+        className="text-neutral-900  text-sm font-medium  "
+      />
       <div>
         <Icon
           name={

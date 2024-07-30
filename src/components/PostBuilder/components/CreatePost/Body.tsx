@@ -15,7 +15,7 @@ import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import Button, { Size, Variant } from 'components/Button';
 import { operatorXOR } from 'utils/misc';
 import { useTranslation } from 'react-i18next';
-import { truncate } from 'lodash';
+import Truncate from 'components/Truncate';
 
 export interface IBodyProps {
   data?: IPost;
@@ -94,18 +94,13 @@ const Body = forwardRef(
                     leftIconClassName="mr-1"
                     size={Size.Small}
                     variant={Variant.Secondary}
-                    label={
-                      truncate(audience[0]?.name || '', {
-                        length: 20,
-                        separator: ' ',
-                      }) || 'Audience'
-                    }
+                    label={<Truncate text={audience[0]?.name || ''} />}
                     onClick={() => {
                       updateContext();
                       setActiveFlow(CreatePostFlow.Audience);
                     }}
                     className="group"
-                    labelClassName="text-xss text-neutral-900 font-medium group-hover:text-primary-500"
+                    labelClassName="text-xss text-neutral-900 w-24 font-medium group-hover:text-primary-500"
                     dataTestId="createpost-selected-audience-list"
                   />
                   {audience && audience.length > 1 && (

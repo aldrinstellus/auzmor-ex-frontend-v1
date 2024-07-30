@@ -15,6 +15,7 @@ export type TooltipProps = {
   onClick?: MouseEventHandler<Element>;
   tooltipPosition?: PlacesType;
   showTooltip?: boolean;
+  textClassName?: string;
 };
 
 const Tooltip = ({
@@ -25,6 +26,7 @@ const Tooltip = ({
   onClick = () => {},
   tooltipPosition = 'top',
   showTooltip = true,
+  textClassName = '',
 }: TooltipProps) => {
   const id = Math.random().toString(16).slice(2);
   const [open, setOpen] = useState(false);
@@ -50,7 +52,7 @@ const Tooltip = ({
         }`}
         data-tooltip-variant={variant}
         data-tooltip-place={`${tooltipPosition}`}
-        className="inline"
+        className={`${textClassName} inline`}
         onClick={onClick}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
