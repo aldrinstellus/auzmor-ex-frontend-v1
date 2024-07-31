@@ -36,6 +36,8 @@ import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 
 import { hasDatePassed } from 'utils/time';
 import { hideMentionHashtagPalette } from 'utils/misc';
+import { useChannelRole } from 'hooks/useChannelRole';
+import { useParams } from 'react-router-dom';
 
 export interface IEditorContentChanged {
   text: string;
@@ -122,7 +124,8 @@ const RichTextEditor = forwardRef(
       inputImgRef,
       removeAllMedia,
     } = useContext(CreatePostContext);
-
+    const { channelId } = useParams();
+    const { isUserAdminOrChannelAdmin } = useChannelRole(channelId);
     const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
     const [previewUrl, setPreviewUrl] = useState<string>('');
     const [isPreviewRemoved, setIsPreviewRemoved] = useState<boolean>(false);
@@ -236,35 +239,37 @@ const RichTextEditor = forwardRef(
             }}
           />
         )}
-        {announcement?.label && !hasDatePassed(announcement.value) && (
-          <div className="flex justify-between bg-primary-100 px-4 py-2 m-4">
-            <div className="flex items-center">
-              <Icon
-                name="calendarOutlineTwo"
-                size={16}
-                color="text-neutral-900"
-              />
-              <div className="ml-2.5">
-                Announcement will expire on{' '}
-                {moment(new Date(announcement.value)).format(
-                  'ddd, MMM DD [at] h:mm a',
-                )}
+        {isUserAdminOrChannelAdmin &&
+          announcement?.label &&
+          !hasDatePassed(announcement.value) && (
+            <div className="flex justify-between bg-primary-100 px-4 py-2 m-4">
+              <div className="flex items-center">
+                <Icon
+                  name="calendarOutlineTwo"
+                  size={16}
+                  color="text-neutral-900"
+                />
+                <div className="ml-2.5">
+                  Announcement will expire on{' '}
+                  {moment(new Date(announcement.value)).format(
+                    'ddd, MMM DD [at] h:mm a',
+                  )}
+                </div>
+              </div>
+              <div
+                className="flex items-center cursor-pointer"
+                onClick={() => {
+                  updateContext();
+                  setActiveFlow(CreatePostFlow.CreateAnnouncement);
+                }}
+              >
+                <Icon name="editOutline" size={12} color="text-neutral-900" />
+                <div className="ml-1 text-xs font-bold text-neutral-900">
+                  Edit
+                </div>
               </div>
             </div>
-            <div
-              className="flex items-center cursor-pointer"
-              onClick={() => {
-                updateContext();
-                setActiveFlow(CreatePostFlow.CreateAnnouncement);
-              }}
-            >
-              <Icon name="editOutline" size={12} color="text-neutral-900" />
-              <div className="ml-1 text-xs font-bold text-neutral-900">
-                Edit
-              </div>
-            </div>
-          </div>
-        )}
+          )}
         {!isPreviewRemoved &&
           renderPreviewLink &&
           renderPreviewLink(previewUrl, setPreviewUrl, setIsPreviewRemoved)}

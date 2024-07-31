@@ -10,7 +10,7 @@ import {
   rejectChannelJoinRequest,
 } from 'queries/channel';
 import { FC, memo, useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { IChannelRequest, useChannelStore } from 'stores/channelStore';
 import { getProfileImage } from 'utils/misc';
 import queryClient from 'utils/queryClient';
@@ -90,8 +90,6 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
       ),
     [className],
   );
-  const navigate = useNavigate();
-
   return (
     <div className={styles}>
       {mode === ChannelRequestWidgetModeEnum.Feed && (
@@ -101,17 +99,24 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
             size={32}
             image={getProfileImage(createdBy)}
             dataTestId="user-profile-pic"
-            onClick={() => navigate(`/users/${createdBy?.userId}`)}
+            // onClick={() => {
+            //   navigate(`/users/${createdBy?.userId}`);
+            // }} // not supporting profile view on lxp
           />
           <p
             data-testid="user-name"
             className="text-xs font-normal text-nowrap"
           >
-            <b onClick={() => navigate(`/users/${createdBy?.userId}`)}>
+            <b
+            //  onClick={() => navigate(`/users/${createdBy?.userId}`)}
+            >
               {createdBy?.fullName || ''}
             </b>{' '}
             <span>requested to join </span>
-            <b>{request.channel?.name}</b>
+            <Truncate
+              text={request.channel?.name || ''}
+              className="w-24 font-bold"
+            />
           </p>
         </div>
       )}
@@ -122,7 +127,7 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
             size={32}
             image={getProfileImage(createdBy)}
             dataTestId="user-profile-pic"
-            onClick={() => navigate(`/users/${createdBy?.userId}`)}
+            // onClick={() => navigate(`/users/${createdBy?.userId}`)}
             ariaLabel={createdBy?.fullName}
           />
           <div className="flex flex-col">

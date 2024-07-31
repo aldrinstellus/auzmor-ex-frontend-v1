@@ -20,7 +20,7 @@ const Home: FC<HomeProps> = ({ channelData }) => {
       }
       isReadOnlyPost={!isMember}
       mode={FeedModeEnum.Channel}
-      leftWidgets={[WidgetEnum.AppLauncher, WidgetEnum.Links]}
+      leftWidgets={[WidgetEnum.Links]}
       rightWidgets={[
         WidgetEnum.ChannelMember,
         WidgetEnum.ChannelRequest,

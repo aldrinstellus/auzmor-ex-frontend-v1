@@ -5,6 +5,7 @@ import Button, { Size, Variant } from 'components/Button';
 import Icon from 'components/Icon';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import Truncate from 'components/Truncate';
 import {
   approveChannelJoinRequest,
   rejectChannelJoinRequest,
@@ -71,13 +72,16 @@ const ChannelUserRow: FC<IUserRowProps> = ({ request, className = '' }) => {
           image={getProfileImage(createdBy)}
           dataTestId="user-profile-pic"
         />
-        <div className="flex flex-col  truncate">
+        <div className="flex flex-col  ">
           <div
             data-testid="user-name"
-            className="text-sm font-normal break-all"
+            className="text-sm flex space-x-1 font-normal break-all"
           >
             <b>{createdBy?.fullName || ''}</b> <span>requested to join </span>
-            <b>{request?.channel?.name}</b>
+            <Truncate
+              text={request.channel?.name || ''}
+              className="  w-24 font-bold"
+            />
           </div>
           <div
             data-testid="user-email"
