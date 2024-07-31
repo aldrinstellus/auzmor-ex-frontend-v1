@@ -130,6 +130,9 @@ const Post: FC<PostProps> = ({
         actionLabel: 'View Bookmarks',
         action: () => navigate('/bookmarks'),
       });
+      await queryClient.invalidateQueries(['bookmark'], {
+        exact: false,
+      });
       await queryClient.invalidateQueries(['feed', { bookmarkedbyme: true }], {
         exact: false,
       });
@@ -148,6 +151,9 @@ const Post: FC<PostProps> = ({
       successToastConfig({
         content: 'Post removed from your bookmarks',
         dataTestId: 'removed-bookmark-toast',
+      });
+      await queryClient.invalidateQueries(['bookmark'], {
+        exact: false,
       });
       await queryClient.invalidateQueries(['feed', { bookmarkedbyme: true }], {
         exact: false,
