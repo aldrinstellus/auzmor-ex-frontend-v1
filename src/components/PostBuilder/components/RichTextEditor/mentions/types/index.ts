@@ -10,7 +10,8 @@ export interface IInsertOp {
 }
 
 export interface ITransformedOp {
-  insert: string | { hashtag: IMention };
+  insert: string | { hashtag: IMention } | Array<any>;
+  attributes: Record<string, any>;
 }
 
 export interface IQuillDelta {

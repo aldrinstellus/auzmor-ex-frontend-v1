@@ -19,8 +19,9 @@ import { IPost } from 'queries/post';
 
 // utils
 import { getMentionProps } from './utils';
-import { quillHashtagConversion, removeElementsByClass } from 'utils/misc';
+import { removeElementsByClass, transformContent } from 'utils/misc';
 import Poll, { PollMode } from 'components/Poll';
+import List from './components/List';
 
 type RenderQuillContent = {
   data: IPost | IComment;
@@ -88,7 +89,7 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
     }
   }, []);
 
-  const updatedContent = quillHashtagConversion(content);
+  const updatedContent = transformContent(content);
 
   const postContent = updatedContent?.ops?.map(
     (op: DeltaOperation, i: number) => {
@@ -116,6 +117,8 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
               key={`quill-content-${i}-emoji-${data.id}`}
             />
           );
+        case !!op.attributes?.listType:
+          return <List op={op} />;
         default:
           return (
             <Text
@@ -123,6 +126,7 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
               attributes={op?.attributes}
               isLink={op?.attributes?.link ? true : false}
               link={op?.attributes?.link}
+              isHeading={updatedContent?.ops[i + 1]?.attributes?.header}
               key={`quill-content-${i}-text-${data.id}`}
             />
           );
