@@ -71,8 +71,6 @@ const MembersBody: FC<IMembersBodyProps> = ({
     'designations',
   ]);
 
-  console.log(usersQueryParams);
-
   // fetch users from search input
   const debouncedSearchValue = useDebounce(memberSearch || '', 500);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
