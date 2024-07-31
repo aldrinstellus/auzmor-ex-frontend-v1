@@ -195,18 +195,6 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
         )}`,
         dataTestId: 'requested-filter',
       },
-      {
-        label: t('filterCTA.archived'),
-        isActive: filters?.channelType === ChannelTypeEnum.Archived,
-        onClick: onFilterButtonClick(ChannelTypeEnum.Archived),
-        labelClassName: `text-sm ${getLableClassName(
-          filters?.channelType === ChannelTypeEnum.Archived,
-        )}`,
-        className: `${getClassName(
-          filters?.channelType === ChannelTypeEnum.Archived,
-        )}`,
-        dataTestId: 'archived-filter',
-      },
     ];
   }, [filters]);
 

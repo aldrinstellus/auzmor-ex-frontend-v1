@@ -22,6 +22,7 @@ import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import queryClient from 'utils/queryClient';
 import { useTranslation } from 'react-i18next';
 import { useInfiniteMembers } from 'queries/users';
+import Truncate from 'components/Truncate';
 
 interface IAddChannelMembersModalProps {
   open: boolean;
@@ -137,13 +138,15 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
       <form onSubmit={(e) => e.preventDefault()}>
         <Header
           title={
-            <span>
-              {t('addMember')}
-              <span className="text-primary-500">
-                {' '}
-                {t('title', { channelName: channelData?.name })}
-              </span>
-            </span>
+            <>
+              <div className=" flex">
+                {t('addMember')}
+                <Truncate
+                  text={`@${channelData?.name}` || ''}
+                  className="ml-2 text-red-500 w-48"
+                />
+              </div>
+            </>
           }
           closeBtnDataTestId={`${dataTestId}-close`}
           onClose={closeModal}
