@@ -407,7 +407,7 @@ const Post: FC<PostProps> = ({
               </div>
             </div>
           )}
-          <RenderQuillContent data={post} />
+          <RenderQuillContent readOnly={readOnly} data={post} />
           {post?.cardContext && <CustomCard />}
           {post?.linkAttachments && (
             <LinkAttachments attachments={post?.linkAttachments} />

@@ -27,12 +27,14 @@ type RenderQuillContent = {
   data: IPost | IComment;
   isComment?: boolean;
   isAnnouncementWidgetPreview?: boolean;
+  readOnly?: boolean;
 };
 
 const RenderQuillContent: FC<RenderQuillContent> = ({
   data,
   isComment = false,
   isAnnouncementWidgetPreview = false,
+  readOnly,
 }): ReactElement => {
   const content = data?.content?.editor;
   const mentions = data?.mentions ? data.mentions : [];
@@ -191,6 +193,7 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
       )}
       {poll && postType === 'POLL' && (
         <Poll
+          readOnly={readOnly}
           question={poll.question}
           closedAt={poll.closedAt}
           options={poll.options}

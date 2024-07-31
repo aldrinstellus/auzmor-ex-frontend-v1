@@ -36,6 +36,7 @@ type PollProps = {
   myVote?: { optionId: string }[];
   isAnnouncementWidgetPreview?: boolean;
   ctaButton?: { text: string; url: string };
+  readOnly?: boolean;
 };
 
 function animateOption(
@@ -81,6 +82,7 @@ const Poll: FC<IPoll & PollProps> = ({
   isDeletable = false,
   isAnnouncementWidgetPreview,
   ctaButton,
+  readOnly = false,
 }) => {
   const { currentTimezone } = useCurrentTimezone();
   const userTimezone = currentTimezone || 'Asia/Kolkata';
@@ -274,7 +276,7 @@ const Poll: FC<IPoll & PollProps> = ({
               !timeLeft ||
               !postId ||
               !option._id;
-            const cursorPointer = !cursorDefault;
+            const cursorPointer = !cursorDefault && !readOnly;
             const cursorClass = clsx({
               'cursor-default': cursorDefault,
               'cursor-pointer': cursorPointer,
@@ -285,6 +287,9 @@ const Poll: FC<IPoll & PollProps> = ({
                 key={option._id}
                 data-testid={`feed-post-poll-ans${index + 1}`}
                 onClick={() => {
+                  if (readOnly) {
+                    return;
+                  }
                   if (cursorPointer && !isLoading && postId && option._id) {
                     if (votedThisOption) {
                       deleteVoteMutation.mutate({
