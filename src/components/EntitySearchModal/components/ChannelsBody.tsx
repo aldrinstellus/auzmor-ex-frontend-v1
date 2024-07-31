@@ -12,6 +12,8 @@ import { isFiltersEmpty } from 'utils/misc';
 import InfiniteSearch from 'components/InfiniteSearch';
 import { ICategory, useInfiniteCategories } from 'queries/category';
 
+import Truncate from 'components/Truncate';
+
 interface IChannelsBodyProps {
   entityRenderer?: (data: IChannel) => ReactNode;
   selectedChannelIds?: string[];
@@ -316,9 +318,11 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
                                 className="w-10 h-10 rounded-full"
                               />
                               <div className="flex flex-col">
-                                <p className="text-neutral-900 font-bold text-sm">
-                                  {channel.name}
-                                </p>
+                                <Truncate
+                                  toolTipTextClassName="w-48"
+                                  text={channel?.name || ''}
+                                  className="text-neutral-900  font-bold text-sm "
+                                />
                                 <p className="text-xs text-neutral-500">
                                   {channel?.totalMembers} members
                                 </p>

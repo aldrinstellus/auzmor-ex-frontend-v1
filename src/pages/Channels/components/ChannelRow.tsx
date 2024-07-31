@@ -71,13 +71,16 @@ const ChannelRow: FC<IChannelRowProps> = ({ channel }) => {
 
       <div className="flex justify-between w-[calc(100%-80px)] items-center">
         <div className="flex flex-col gap-0.5 max-w-[70%]">
-          <p className="font-bold text-xl leading-normal text-neutral-900">
-            {channel.name}
-          </p>
+          {channel.name && (
+            <Truncate
+              text={channel.name || ''}
+              className="font-bold text-xl leading-normal text-neutral-900"
+            />
+          )}
           {channel.description && (
             <Truncate
-              text={channel.description}
-              className="text-xs leading-normal text-neutral-500"
+              text={channel.description || ''}
+              className="text-xs leading-normal  text-neutral-500"
             />
           )}
           <p className="text-xs  leading-normal text-neutral-500">

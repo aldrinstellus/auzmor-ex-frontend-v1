@@ -110,6 +110,11 @@ const Actor: FC<ActorProps> = ({
     a: CustomLink,
     team: CustomTeam,
   };
+
+  if (title?.content) {
+    title = { content: title.content.replaceAll("'", '&#8217;') };
+  }
+
   return (
     <Fragment>
       <div className="flex items-center gap-4 flex-1">

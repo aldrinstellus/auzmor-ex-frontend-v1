@@ -5,7 +5,8 @@
     "managed": "Managed",
     "discoverNewChannels": "Discover new channels",
     "starred": "Starred",
-    "requested": "Requested"
+    "requested": "Requested",
+    "archived": "Archived"
   },
   "archiveChannelModal": {
     "title": "Archive Channel",

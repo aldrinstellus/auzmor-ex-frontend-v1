@@ -39,7 +39,6 @@ import EditImageModal from 'components/EditImageModal';
 import { EntityType } from 'queries/files';
 import Avatar from 'components/Avatar';
 import ChannelImageModal from './ChannelImageModal';
-import { isTrim } from './utils';
 import AddChannelMembersModal from './AddChannelMembersModal';
 import { useChannelRole } from 'hooks/useChannelRole';
 import Truncate from 'components/Truncate';
@@ -485,16 +484,18 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
             </div>
 
             <div
-              className={`flex flex-col justify-between ${
-                channelData?.description && 'h-14'
-              }`}
+              className={`flex flex-col  ${channelData?.description && 'h-14'}`}
             >
-              <div className="text-2xl font-bold" data-testid="channel-name">
-                {channelData?.name}
-              </div>
               <Truncate
+                toolTipTextClassName="w-64"
+                text={channelData?.name || ''}
+                className="text-2xl font-bold "
+                data-testid="channel-name"
+              />
+              <Truncate
+                toolTipTextClassName="w-64"
                 text={channelData?.description || ''}
-                className="text-xs max-w-[80%]"
+                className="text-xs  "
                 data-testid="channel-description"
               />
             </div>
@@ -503,7 +504,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
             <Button
               label={t('join')}
               dataTestId="join-channel-cta"
-              className="min-w-max"
+              className="min-w-max "
               loading={joinChannelMutation.isLoading}
               onClick={() => joinChannelMutation.mutate(channelData.id)}
             />
@@ -576,7 +577,10 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 data-testid="channel-category"
               >
                 {channelData?.categories
-                  ?.map((category: any) => isTrim(category.name))
+                  ?.map((category: any) => (
+                    <Truncate key={category?.id} text={category.name || ''} />
+                  ))
+                  ?.map((truncateComponent) => truncateComponent.props.text)
                   ?.join(', ') || ''}
               </div>
             </div>

@@ -7,6 +7,8 @@ interface ITruncateProps {
   className?: string;
   dataTestId?: string;
   onClick?: () => void;
+  toolTipClassName?: string;
+  toolTipTextClassName?: string;
 }
 
 const Truncate: FC<ITruncateProps> = ({
@@ -14,6 +16,8 @@ const Truncate: FC<ITruncateProps> = ({
   className = '',
   dataTestId,
   onClick,
+  toolTipClassName = '',
+  toolTipTextClassName = '',
 }) => {
   const textElementRef = useRef<HTMLParagraphElement>(null);
   const [isOverflow, setIsOverflow] = useState(false);
@@ -46,7 +50,12 @@ const Truncate: FC<ITruncateProps> = ({
   );
 
   return (
-    <Tooltip tooltipContent={text} showTooltip={isOverflow} className="z-10">
+    <Tooltip
+      tooltipContent={text}
+      showTooltip={isOverflow}
+      textClassName={toolTipTextClassName}
+      className={`z-10 ${toolTipClassName}`}
+    >
       <p
         className={style}
         data-testid={dataTestId}

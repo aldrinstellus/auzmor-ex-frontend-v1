@@ -225,7 +225,9 @@ const FilterMenu: FC<IFilterMenu> = ({
                 >
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
                     {tf('status')}
-                    <span className="text-primary-500">{status.name}</span>
+                    <span className=" ml-1 text-primary-500">
+                      {status.name}
+                    </span>
                   </div>
                   <Icon
                     name="close"
@@ -251,7 +253,9 @@ const FilterMenu: FC<IFilterMenu> = ({
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
                     {tf('byPeople')}
 
-                    <span className="text-primary-500">{people.name}</span>
+                    <span className="  ml-1 text-primary-500">
+                      {people.name}
+                    </span>
                   </div>
                   <Icon
                     name="close"
@@ -276,7 +280,7 @@ const FilterMenu: FC<IFilterMenu> = ({
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
                     {tf('team')}
 
-                    <span className="text-primary-500">{team.name}</span>
+                    <span className=" ml-1 text-primary-500">{team.name}</span>
                   </div>
                   <Icon
                     name="close"
@@ -299,7 +303,7 @@ const FilterMenu: FC<IFilterMenu> = ({
                 >
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
                     {tf('role')}
-                    <span className="text-primary-500">{role.name}</span>
+                    <span className=" ml-1 text-primary-500">{role.name}</span>
                   </div>
                   <Icon
                     name="close"
@@ -325,7 +329,9 @@ const FilterMenu: FC<IFilterMenu> = ({
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
                     {tf('department')}
 
-                    <span className="text-primary-500">{department.name}</span>
+                    <span className="ml-1 text-primary-500">
+                      {department.name}
+                    </span>
                   </div>
                   <Icon
                     name="close"
@@ -351,7 +357,9 @@ const FilterMenu: FC<IFilterMenu> = ({
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
                     {tf('category')}
 
-                    <span className="text-primary-500">{categories.name}</span>
+                    <span className="ml-1 text-primary-500">
+                      {categories.name}
+                    </span>
                   </div>
                   <Icon
                     name="close"
@@ -376,7 +384,9 @@ const FilterMenu: FC<IFilterMenu> = ({
                 >
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
                     {tf('location')}
-                    <span className="text-primary-500">{location.name}</span>
+                    <span className="ml-1 text-primary-500">
+                      {location.name}
+                    </span>
                   </div>
                   <Icon
                     name="close"
