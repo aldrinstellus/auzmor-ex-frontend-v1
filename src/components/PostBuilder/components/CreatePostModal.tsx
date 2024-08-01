@@ -652,7 +652,12 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         mentions: mentionList || [],
         hashtags: hashtagList || [],
         audience: finalAudience,
-        shoutoutRecipients: shoutoutUserIds || [],
+        shoutoutRecipients: Array.from(
+          new Set([
+            ...(shoutoutUserIds || []),
+            ...(data?.shoutoutRecipients?.map((user) => user?.userId) || []),
+          ]),
+        ),
         isAnnouncement: !!announcement,
         announcement: {
           end: announcement?.value || '',
