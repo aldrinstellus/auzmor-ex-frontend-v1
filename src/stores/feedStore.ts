@@ -15,6 +15,7 @@ export interface IFeedStore {
   setFeedMode: (mode: FeedModeEnum) => void;
   setActiveFeedPostCount: (count: number) => void;
   getPost: (id: string) => IPost;
+  getFeed: () => { [key: string]: IPost };
   setFeed: (feed: { [key: string]: IPost }) => void;
   updateFeed: (id: string, post: IPost) => void;
 }
@@ -33,6 +34,7 @@ export const useFeedStore = create(
         state.activeFeedPostCount = count;
       }),
     getPost: (id) => get().feed[id],
+    getFeed: () => get().feed,
     setFeed: (feed) =>
       set((state) => {
         state.feed = feed;
