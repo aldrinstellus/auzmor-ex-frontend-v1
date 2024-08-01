@@ -97,12 +97,12 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     shoutoutUserIds,
     setShoutoutUserIds,
     postType,
+    setShoutoutUsers,
     inputImgRef,
     isEmpty,
     setEditorValue,
     setUploads,
   } = useContext(CreatePostContext);
-
   const { channelId = '' } = useParams();
   const channelData = useChannelStore((state) => state.channels)[channelId];
 
@@ -234,6 +234,20 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         });
       }
       if (data?.shoutoutRecipients?.length) {
+        const transformedObject: any = {};
+        data?.shoutoutRecipients.forEach((item: any) => {
+          transformedObject[item.userId] = {
+            userId: item.userId,
+            email: item.email,
+            fullName: item.fullName,
+            status: item.status,
+            workLocation: item.workLocation,
+            designation: item.designation,
+            department: item.department,
+            profileImage: item.profileImage,
+          };
+        });
+        setShoutoutUsers(transformedObject);
         const recipientIds = data.shoutoutRecipients.map(
           (recipient) => recipient.userId,
         );
@@ -596,27 +610,15 @@ const CreatePostModal: FC<ICreatePostModal> = ({
           : null,
       });
     } else if (PostBuilderMode.Edit) {
-      const existShoutoutAudience = data?.shoutoutRecipients
-        ? mapUsersToAudience(data.shoutoutRecipients)
-        : [];
-
       const _shoutoutUsers = Object.values(shoutoutUsers).filter(Boolean);
+      const shoutoutAudience =
+        _shoutoutUsers?.length > 0 ? mapUsersToAudience(_shoutoutUsers) : [];
 
-      const editShoutoutAudience = _shoutoutUsers.length
-        ? mapUsersToAudience(_shoutoutUsers)
-        : [];
-      const combinedAudience = audience?.length
-        ? [...audience, ...existShoutoutAudience, ...editShoutoutAudience]
-        : [];
+      const finalAudience =
+        audience && audience.length > 0
+          ? [...audience, ...shoutoutAudience]
+          : [];
 
-      const finalAudience = Array.from(
-        new Map(
-          combinedAudience.map((item) => [
-            `${item.entityId}-${item.entityType}`,
-            item,
-          ]),
-        ).values(),
-      );
       mediaRef.current = [...media, ...uploadedMedia];
       const sortedIds = [
         ...fileIds,
@@ -652,12 +654,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         mentions: mentionList || [],
         hashtags: hashtagList || [],
         audience: finalAudience,
-        shoutoutRecipients: Array.from(
-          new Set([
-            ...(shoutoutUserIds || []),
-            ...(data?.shoutoutRecipients?.map((user) => user?.userId) || []),
-          ]),
-        ),
+        shoutoutRecipients: shoutoutUserIds || [],
         isAnnouncement: !!announcement,
         announcement: {
           end: announcement?.value || '',
