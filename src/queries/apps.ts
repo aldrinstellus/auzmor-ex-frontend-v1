@@ -275,14 +275,14 @@ export const useInfiniteFeaturedApps = ({
   startFetching?: boolean;
   myApp?: boolean;
 }) => {
-  const { featuredApps, getFeaturedApp, setFeaturedApp } = useAppStore();
+  const { featuredApps, getFeaturedApps, setFeaturedApp } = useAppStore();
   return {
     ...useInfiniteQuery({
       queryKey: [myApp ? 'my-featured-apps' : 'featured-apps', q],
       queryFn: (context) =>
         myApp
-          ? fetchMyFeaturedApps(context, getFeaturedApp, setFeaturedApp)
-          : fetchFeaturedApps(context, getFeaturedApp, setFeaturedApp),
+          ? fetchMyFeaturedApps(context, getFeaturedApps, setFeaturedApp)
+          : fetchFeaturedApps(context, getFeaturedApps, setFeaturedApp),
       getNextPageParam: (lastPage: any) => {
         const pageDataLen = lastPage?.data?.result?.data?.length;
         const pageLimit = lastPage?.data?.result?.paging?.limit;
@@ -310,14 +310,14 @@ export const useInfiniteApps = ({
   startFetching?: boolean;
   myApp?: boolean;
 }) => {
-  const { apps, getApp, setApp } = useAppStore();
+  const { apps, getApps, setApp } = useAppStore();
   return {
     ...useInfiniteQuery({
       queryKey: [myApp ? 'my-apps' : 'apps', q],
       queryFn: (context) =>
         myApp
-          ? fetchMyApps(context, getApp, setApp)
-          : fetchApps(context, getApp, setApp),
+          ? fetchMyApps(context, getApps, setApp)
+          : fetchApps(context, getApps, setApp),
       getNextPageParam: (lastPage: any) => {
         const pageDataLen = lastPage?.data?.result?.data?.length;
         const pageLimit = lastPage?.data?.result?.paging?.limit;
