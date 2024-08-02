@@ -119,19 +119,19 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
                 onClick={handleGoBack}
                 onKeyUp={(e) => (e.code === 'Enter' ? handleGoBack() : '')}
                 role="button"
-                title={t('goBack', {
-                  context:
-                    prevRoute === TeamTab.MyTeams ? 'myTeams' : 'allTeams',
-                })}
+                title={
+                  prevRoute === TeamTab.MyTeams
+                    ? t('goBack.myTeams')
+                    : t('goBack.allTeams')
+                }
                 tabIndex={0}
                 data-testid="my-team-back"
               >
                 <Icon name="linearLeftArrowOutline" size={20} />
                 <div className="text-base font-bold text-neutral-900">
-                  {t('goBackText', {
-                    context:
-                      prevRoute === TeamTab.MyTeams ? 'myTeams' : 'allTeams',
-                  })}
+                  {prevRoute === TeamTab.MyTeams
+                    ? t('goBackText.myTeams')
+                    : t('goBackText.allTeams')}
                 </div>
               </div>
               {isAdmin && !isLxp ? (

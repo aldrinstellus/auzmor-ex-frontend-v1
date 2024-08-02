@@ -13,6 +13,7 @@ import InfiniteSearch from 'components/InfiniteSearch';
 import { ICategory, useInfiniteCategories } from 'queries/category';
 
 import Truncate from 'components/Truncate';
+import NoDataFound from 'components/NoDataFound';
 
 interface IChannelsBodyProps {
   entityRenderer?: (data: IChannel) => ReactNode;
@@ -285,7 +286,7 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
             <div className="flex items-center w-full justify-center p-12">
               <Spinner />
             </div>
-          ) : (
+          ) : channelsData?.length ? (
             <ul>
               {channelsData?.map((channel, index) => (
                 <li key={`channel-${channel.id}-${index}`}>
@@ -339,6 +340,20 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
                 </li>
               ))}
             </ul>
+          ) : (
+            <NoDataFound
+              className="py-4 w-full"
+              searchString={channelSearch}
+              onClearSearch={() => {}}
+              message={
+                <p>
+                  Sorry we can&apos;t find the channel you are looking for.
+                  <br /> Please check the spelling or try again.
+                </p>
+              }
+              hideClearBtn
+              dataTestId={`${dataTestId}-noresult`}
+            />
           )}
           {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
         </div>
