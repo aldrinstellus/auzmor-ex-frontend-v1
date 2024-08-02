@@ -261,7 +261,11 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
       <>
         <PopupMenu
           triggerNode={
-            <div className="cursor-pointer" data-testid="feed-post-ellipsis">
+            <div
+              className="cursor-pointer"
+              data-testid="feed-post-ellipsis"
+              title="more"
+            >
               <Icon name="more" tabIndex={0} />
             </div>
           }

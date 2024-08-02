@@ -700,8 +700,6 @@ const Feed: FC<IFeedProps> = ({
           data-testid={`feed-post-${index}`}
           className="flex flex-col gap-6"
           key={`${id}-post-index-${index}`}
-          tabIndex={0}
-          title={`post ${index + 1}`}
         >
           <VirtualisedPost
             readOnly={isReadOnlyPost}
@@ -712,11 +710,7 @@ const Feed: FC<IFeedProps> = ({
         {mode === FeedModeEnum.Default && (
           <>
             {index === recommendationIndex.tIndex && (
-              <li
-                data-testid={`trending-content-post`}
-                tabIndex={0}
-                title="trending content"
-              >
+              <li data-testid={`trending-content-post`}>
                 <Recommendation
                   cards={trendingCards}
                   title="Trending Content"
@@ -726,11 +720,7 @@ const Feed: FC<IFeedProps> = ({
               </li>
             )}
             {index === recommendationIndex.rIndex && (
-              <li
-                data-testid={`recently-published-content-post`}
-                tabIndex={0}
-                title="recently published"
-              >
+              <li data-testid={`recently-published-content-post`}>
                 <Recommendation
                   cards={recentlyPublishedCards}
                   title="Recently Published"
