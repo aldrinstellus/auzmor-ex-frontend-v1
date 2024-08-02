@@ -113,12 +113,12 @@ export const fetchApps = async (
     (string | Record<string, any> | undefined)[],
     any
   >,
-  getApp: () => {
+  getApps: () => {
     [key: string]: App;
   },
   setApp: (apps: { [key: string]: App }) => void,
 ) => {
-  const apps = getApp();
+  const apps = getApps();
   let response = null;
   if (!!!context.pageParam) {
     response = await apiService.get('/apps', context.queryKey[1]);
@@ -153,12 +153,12 @@ export const fetchMyApps = async (
     (string | Record<string, any> | undefined)[],
     any
   >,
-  getApp: () => {
+  getApps: () => {
     [key: string]: App;
   },
   setApp: (apps: { [key: string]: App }) => void,
 ) => {
-  const apps = getApp();
+  const apps = getApps();
   let response = null;
   if (!!!context.pageParam) {
     response = await apiService.get('/apps/me', context.queryKey[1]);
@@ -194,12 +194,12 @@ export const fetchFeaturedApps = async (
     any
   >,
 
-  getFeaturedApp: () => {
+  getFeaturedApps: () => {
     [key: string]: App;
   },
   setFeaturedApp: (apps: { [key: string]: App }) => void,
 ) => {
-  const featuredApps = getFeaturedApp();
+  const featuredApps = getFeaturedApps();
   let response = null;
   if (!!!context.pageParam) {
     response = await apiService.get('/apps', context.queryKey[1]);
@@ -232,12 +232,12 @@ export const fetchMyFeaturedApps = async (
     (string | Record<string, any> | undefined)[],
     any
   >,
-  getFeaturedApp: () => {
+  getFeaturedApps: () => {
     [key: string]: App;
   },
   setFeaturedApp: (apps: { [key: string]: App }) => void,
 ) => {
-  const featuredApps = getFeaturedApp();
+  const featuredApps = getFeaturedApps();
   let response = null;
   if (!!!context.pageParam) {
     response = await apiService.get('/apps/me', context.queryKey[1]);
