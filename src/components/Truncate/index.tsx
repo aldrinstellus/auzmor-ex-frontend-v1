@@ -30,6 +30,14 @@ const Truncate: FC<ITruncateProps> = ({
       }),
     [className, text],
   );
+  const toolTipStyle = useMemo(
+    () =>
+      clsx({
+        'z-10 whitespace-nowrap overflow-hidden text-ellipsis max-w-3xl': true,
+        [className]: true,
+      }),
+    [toolTipClassName],
+  );
 
   const compareSize = () => {
     if (textElementRef.current) {
@@ -54,7 +62,7 @@ const Truncate: FC<ITruncateProps> = ({
       tooltipContent={text}
       showTooltip={isOverflow}
       textClassName={toolTipTextClassName}
-      className={`z-10 ${toolTipClassName}`}
+      className={toolTipStyle}
     >
       <p
         className={style}

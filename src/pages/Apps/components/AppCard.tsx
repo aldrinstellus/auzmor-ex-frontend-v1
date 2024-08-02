@@ -214,12 +214,11 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
               </div>
             )}
             {/* App description */}
-            <p
-              className="text-neutral-500 line-clamp-1 text-xxs"
-              data-testid="app-description"
-            >
-              {app.description}
-            </p>
+            <Truncate
+              text={app.description}
+              className=" text-xxs  text-neutral-900 max-w-[128px]"
+              dataTestId="app-name"
+            />
           </div>
         </div>
 

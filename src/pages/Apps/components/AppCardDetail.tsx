@@ -13,6 +13,7 @@ import useModal from 'hooks/useModal';
 import AudienceModal, { getAudienceCount } from 'components/AudienceModal';
 import { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
+import Truncate from 'components/Truncate';
 
 type AppDetailModalProps = {
   app: App;
@@ -81,7 +82,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                   {app.category && !isEmpty(app.category) && (
                     <Badge
                       text={app.category.name}
-                      textClassName="text-blue-500 text-base leading-6 font-semibold"
+                      textClassName="text-blue-500 text-base leading-6 font-semibold max-w-[128px]"
                       bgClassName="bg-blue-100 border-1 border-blue-300"
                       dataTestId="app-details-category"
                     />
@@ -89,7 +90,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                   {app.featured && (
                     <Badge
                       text={t('featured')}
-                      textClassName="text-white text-base leading-6 font-semibold"
+                      textClassName="text-white text-base leading-6 font-semibold max-w-[128px]"
                       bgClassName="bg-blue-500"
                       dataTestId="app-details-category"
                     />
@@ -121,18 +122,17 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                     />
                   </div>
                   <div>
-                    <p
-                      className="text-3xl text-neutral-900 font-semibold"
-                      data-testid="app-details-name"
-                    >
-                      {app.label}
-                    </p>
-                    <p
-                      className="pt-1 text-neutral-900 font-normal"
-                      data-testid="app-details-description"
-                    >
-                      {app.description}
-                    </p>
+                    <Truncate
+                      text={app.label}
+                      className="text-3xl text-neutral-900 font-semibold max-w-[250px]"
+                      dataTestId="app-name"
+                    />
+
+                    <Truncate
+                      text={app.description}
+                      className="pt-1 text-neutral-900 font-normal max-w-[128px]"
+                      dataTestId="app-name"
+                    />
                   </div>
                 </div>
                 {/* The audience */}
