@@ -45,9 +45,7 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
         limit: 30,
         q: debouncedSearchValue,
         visibility: privacy?.value,
-        categoryIds: selectedCategories.length
-          ? selectedCategories.join(',')
-          : undefined,
+        categoryIds: selectedCategories.length ? selectedCategories : undefined,
       }),
     );
 
