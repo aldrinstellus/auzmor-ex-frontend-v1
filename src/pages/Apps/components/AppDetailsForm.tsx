@@ -158,7 +158,7 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
                   }
                   onClick={() => setActiveFlow(ADD_APP_FLOW.AudienceSelector)}
                   className="group"
-                  labelClassName="text-xss text-neutral-900 max-w-32 font-medium group-hover:text-primary-500"
+                  labelClassName="text-xss text-neutral-900 max-w-[128px] font-medium group-hover:text-primary-500"
                   dataTestId="app-audience-name"
                 />
                 {audience.length > 1 && (
