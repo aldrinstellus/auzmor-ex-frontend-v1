@@ -54,7 +54,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
 
             <Truncate
               text={app.label}
-              className="text-neutral-900 text-lg font-extrabold  max-w-60"
+              className="text-neutral-900 text-lg font-extrabold  max-w-[250px]"
             />
           </div>
           <Icon
@@ -80,7 +80,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                   {app.category && !isEmpty(app.category) && (
                     <Badge
                       text={app.category.name}
-                      textClassName="text-blue-500 text-base leading-6 font-semibold  max-w-32"
+                      textClassName="text-blue-500 text-base leading-6 font-semibold max-w-[128px]"
                       bgClassName="bg-blue-100 border-1 border-blue-300"
                       dataTestId="app-details-category"
                     />
@@ -88,7 +88,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                   {app.featured && (
                     <Badge
                       text={t('featured')}
-                      textClassName="text-white text-base leading-6 font-semibold  max-w-32"
+                      textClassName="text-white text-base leading-6 font-semibold max-w-[128px]"
                       bgClassName="bg-blue-500"
                       dataTestId="app-details-category"
                     />
@@ -122,13 +122,13 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                   <div>
                     <Truncate
                       text={app.label}
-                      className="text-3xl text-neutral-900 font-semibold  max-w-60"
+                      className="text-3xl text-neutral-900 font-semibold max-w-[250px]"
                       dataTestId="app-details-name"
                     />
 
                     <Truncate
                       text={app.description}
-                      className="pt-1 text-neutral-900 font-normal  max-w-32"
+                      className="pt-1 text-neutral-900 font-normal max-w-[128px]"
                       dataTestId="app-details-description"
                     />
                   </div>
@@ -155,7 +155,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                           }
                           onClick={openAudienceModal}
                           className="group"
-                          labelClassName="text-xss text-neutral-900  max-w-32 font-medium group-hover:text-primary-500"
+                          labelClassName="text-xss text-neutral-900 max-w-[128px] font-medium group-hover:text-primary-500"
                         />
                         {app.audience && app.audience.length > 1 && (
                           <Button

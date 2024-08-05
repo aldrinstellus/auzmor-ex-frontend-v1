@@ -100,7 +100,7 @@ const Body = forwardRef(
                       setActiveFlow(CreatePostFlow.Audience);
                     }}
                     className="group"
-                    labelClassName="text-xss text-neutral-900  max-w-32 font-medium group-hover:text-primary-500"
+                    labelClassName="text-xss text-neutral-900 max-w-[128px] font-medium group-hover:text-primary-500"
                     dataTestId="createpost-selected-audience-list"
                   />
                   {audience && audience.length > 1 && (
