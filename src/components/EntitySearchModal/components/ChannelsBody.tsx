@@ -10,9 +10,10 @@ import { ChannelVisibilityEnum, IChannel } from 'stores/channelStore';
 import ChannelLogo from 'pages/Channels/components/ChannelLogo';
 import { isFiltersEmpty } from 'utils/misc';
 import InfiniteSearch from 'components/InfiniteSearch';
-import { ICategory, useInfiniteCategories } from 'queries/category';
+import { ICategory } from 'queries/category';
 import Truncate from 'components/Truncate';
 import NoDataFound from 'components/NoDataFound';
+import { useInfiniteLearnCategory } from 'queries/learn';
 
 interface IChannelsBodyProps {
   entityRenderer?: (data: IChannel) => ReactNode;
@@ -65,7 +66,7 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
     isFetchingNextPage: isFetchingNextCategoryPage,
     fetchNextPage: fetchNextCategoryPage,
     hasNextPage: hasNextCategoryPage,
-  } = useInfiniteCategories();
+  } = useInfiniteLearnCategory(); // use learn category .
 
   const categoryData = fetchedCategories?.pages?.flatMap((page) =>
     page.data.result.data.map((category: ICategory) => category),
@@ -148,11 +149,11 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
                   showSearch: false,
                 },
               ]}
-              className="ml-2"
+              className="ml-2  "
             />
             <div className="relative">
               <InfiniteSearch
-                title="Categories"
+                title="Category"
                 control={control}
                 options={
                   categoryData?.map((category: ICategory) => ({
@@ -267,7 +268,6 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
         </div>
         <div
           className="flex flex-col max-h-80 overflow-scroll"
-          tabIndex={0}
           data-testid={`${dataTestId}-list`}
         >
           {isLoading ? (
