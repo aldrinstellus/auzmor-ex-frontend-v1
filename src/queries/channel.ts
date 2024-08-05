@@ -157,6 +157,38 @@ export const addChannelMembers = async (
   return data;
 };
 
+export const inviteYourSelf = async (
+  channelId: string,
+  payload: IChannelMembersPayload,
+) => {
+  const data = await apiService.post(
+    `/channels/${channelId}/members/bulk`,
+    payload,
+  );
+  const jobId = data?.result?.data?.id || '';
+  if (jobId) {
+    let interval: any = null;
+    await new Promise(async (resolve) => {
+      let statusResponse = await await getAddChannelMembersStatus(
+        channelId,
+        jobId,
+      );
+
+      const status = statusResponse?.data?.result?.data?.status;
+      interval = setInterval(async () => {
+        if (status !== 'COMPLETED' && status !== 'FAILED') {
+          statusResponse = await apiService.get(
+            `/channels/${channelId}/join-requests/bulk/status/${jobId}`,
+          );
+        } else {
+          clearInterval(interval);
+          resolve(statusResponse);
+        }
+      }, 500);
+    });
+  }
+};
+
 export const getAddChannelMembersStatus = async (
   channelId: string,
   jobId: string,

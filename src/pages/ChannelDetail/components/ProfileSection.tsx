@@ -2,6 +2,7 @@ import Icon from 'components/Icon';
 import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  CHANNEL_ROLE,
   ChannelVisibilityEnum,
   useChannelStore,
 } from '../../../stores/channelStore';
@@ -26,6 +27,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import {
   deleteJoinChannelRequest,
+  inviteYourSelf,
   joinChannelRequest,
   leaveChannel,
   updateBookmarkChannel,
@@ -42,6 +44,7 @@ import ChannelImageModal from './ChannelImageModal';
 import AddChannelMembersModal from './AddChannelMembersModal';
 import { useChannelRole } from 'hooks/useChannelRole';
 import Truncate from 'components/Truncate';
+import useAuth from 'hooks/useAuth';
 
 type ProfileSectionProps = {
   tabs?: ITab[];
@@ -58,6 +61,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   activeTabIndex,
 }) => {
   const { channelId = '' } = useParams();
+  const { user } = useAuth();
   const { t } = useTranslation('channelDetail');
   const { t: tc } = useTranslation('channels');
   const [isEditModalOpen, openEditModal, closeEditModal] = useModal();
@@ -67,13 +71,8 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   const [isArchiveModalOpen, openArchiveModal, closeArchiveModal] = useModal();
   const navigate = useNavigate();
 
-  const {
-    isUserAdminOrChannelAdmin,
-    isChannelOwner,
-    isChannelMember,
-    isChannelAdmin,
-  } = useChannelRole(channelId);
-  const canEdit = isUserAdminOrChannelAdmin;
+  const { isChannelOwner, isJoinedChannel, isChannelAdmin, isAdmin } =
+    useChannelRole(channelId);
 
   const channelCoverImageRef = useRef<HTMLInputElement>(null);
   const showEditProfile = useRef<boolean>(true);
@@ -98,16 +97,40 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
 
   const showRequestBtn =
     channelData?.settings?.visibility === ChannelVisibilityEnum.Private &&
-    !!!channelData?.member &&
+    !isJoinedChannel &&
     !!!channelData?.joinRequest;
   const showJoinChannelBtn =
     channelData.settings?.visibility === ChannelVisibilityEnum.Public &&
-    !!!channelData.member &&
+    !isJoinedChannel &&
     !!!channelData.joinRequest;
   const showWithdrawBtn =
     channelData?.settings?.visibility === ChannelVisibilityEnum.Private &&
-    !!!channelData?.member &&
+    !isJoinedChannel &&
     !!channelData?.joinRequest;
+
+  const showInviteYourSelf =
+    channelData.settings?.visibility === ChannelVisibilityEnum.Private &&
+    !isJoinedChannel &&
+    isAdmin;
+
+  const addChannelMembersMutation = useMutation({
+    mutationKey: ['add-channel-members', channelData.id],
+    mutationFn: () =>
+      inviteYourSelf(channelData.id, {
+        users: [{ id: user!.id, role: CHANNEL_ROLE.Admin }],
+      }),
+    onError: () => {
+      failureToastConfig({
+        content: t('addChannelMembers.failure'),
+      });
+    },
+    onSuccess: () => {
+      successToastConfig({
+        content: t('addChannelMembers.success'),
+      });
+      queryClient.invalidateQueries(['channel']);
+    },
+  });
 
   const updateBookmarkMutation = useMutation({
     mutationKey: ['update-channel-bookmark'],
@@ -266,7 +289,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: openEditModal,
       dataTestId: '',
-      hidden: !isUserAdminOrChannelAdmin,
+      hidden: !isChannelAdmin,
     },
     {
       icon: 'adminOutline',
@@ -276,7 +299,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         navigate(`/channels/${channelData?.id}/manage-access`);
       },
       dataTestId: '',
-      hidden: !(isUserAdminOrChannelAdmin && channelData?.member),
+      hidden: !isChannelAdmin,
     },
     {
       icon: 'archive',
@@ -284,16 +307,14 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: openArchiveModal,
       dataTestId: '',
-      hidden: !isUserAdminOrChannelAdmin,
+      hidden: !isChannelAdmin,
     },
     {
       renderNode: (
         <div
           className={`text-xs ${
-            !(isUserAdminOrChannelAdmin && channelData?.member)
-              ? 'hidden'
-              : ' py-2 px-6'
-          } bg-blue-50 font-Medium flex items-center justify-center `}
+            !isJoinedChannel ? 'hidden' : ' py-2 px-6'
+          } bg-blue-50 font-Medium flex items-center justify-center cursor-default`}
         >
           {t('securityAndAnalytics')}
         </div>
@@ -307,7 +328,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         openAddMemberModal();
       },
       dataTestId: '',
-      hidden: !(isUserAdminOrChannelAdmin && channelData?.member),
+      hidden: !isChannelAdmin,
     },
     {
       icon: 'setting',
@@ -317,7 +338,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         navigate(`/channels/${channelData?.id}/settings`);
       },
       dataTestId: '',
-      hidden: !channelData?.member,
+      hidden: !isJoinedChannel,
     },
     {
       icon: 'logout',
@@ -327,7 +348,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         leaveChannelMutation.mutate(channelId);
       },
       dataTestId: '',
-      hidden: !isChannelAdmin && !isChannelMember,
+      hidden: !isJoinedChannel,
     },
   ].filter((item) => !item.hidden);
 
@@ -378,14 +399,6 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         ) : null}
 
         <div className="absolute top-4 right-4 flex items-center space-x-2">
-          {/* <div className="bg-white rounded-full p-2 cursor-pointer">
-            <Icon
-              name="notification"
-              size={16}
-              className="text-neutral-400"
-              dataTestId="edit-profilepic"
-            />
-          </div> */}
           {channelData?.member && (
             <IconButton
               icon={channelData?.member?.bookmarked ? 'star' : 'starOutline'}
@@ -401,7 +414,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
             />
           )}
           <div className="cursor-pointer">
-            {(isChannelMember || isUserAdminOrChannelAdmin) && (
+            {isJoinedChannel && (
               <PopupMenu
                 triggerNode={
                   <div className="bg-white rounded-full  text-black">
@@ -417,8 +430,8 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 menuItems={editMenuOptions}
                 title={
                   <>
-                    {isUserAdminOrChannelAdmin && (
-                      <div className="text-xs  bg-blue-50 py-2 px-6 font-Medium flex items-center justify-center ">
+                    {isChannelAdmin && (
+                      <div className="text-xs bg-blue-50 py-2 px-6 font-Medium flex items-center justify-center ">
                         {t('channelManageMent')}
                       </div>
                     )}
@@ -427,11 +440,11 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               />
             )}
           </div>
-          <div className="   cursor-pointer">
-            {canEdit && (
+          <div className="cursor-pointer">
+            {isChannelAdmin && (
               <PopupMenu
                 triggerNode={
-                  <div className="bg-white  rounded-full  text-black">
+                  <div className="bg-white rounded-full text-black">
                     <IconButton
                       icon="edit"
                       variant={IconVariant.Secondary}
@@ -469,7 +482,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 size={56}
                 dataTestId={'edit-profile-pic'}
               />
-              {isUserAdminOrChannelAdmin && !!channelData?.member && (
+              {isChannelAdmin && (
                 <IconButton
                   icon="edit"
                   color="text-black"
@@ -500,35 +513,48 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               />
             </div>
           </div>
-          {showJoinChannelBtn && (
-            <Button
-              label={t('join')}
-              dataTestId="join-channel-cta"
-              className="min-w-max "
-              loading={joinChannelMutation.isLoading}
-              onClick={() => joinChannelMutation.mutate(channelData.id)}
-            />
-          )}
-          {showRequestBtn && (
-            <Button
-              label={tc('privateChannel.joinRequestCTA')}
-              variant={Variant.Primary}
-              onClick={() => joinChannelMutation.mutate(channelData.id)}
-              loading={joinChannelMutation.isLoading}
-              data-testid={'channel-request-to-join'}
-            />
-          )}
-          {showWithdrawBtn && (
-            <Button
-              label={tc('privateChannel.withdrawRequestCTA')}
-              variant={Variant.Danger}
-              onClick={() =>
-                withdrawJoinChannelRequest.mutate(channelData.joinRequest!.id!)
-              }
-              loading={withdrawJoinChannelRequest.isLoading}
-              data-testid={'channel-withdraw-request'}
-            />
-          )}
+          <div className="flex gap-4">
+            {showInviteYourSelf && (
+              <Button
+                label={t('inviteYourSelf')}
+                dataTestId="invite-your-self-channel-cta"
+                className="min-w-max "
+                loading={addChannelMembersMutation.isLoading}
+                onClick={() => addChannelMembersMutation.mutate()}
+              />
+            )}
+            {showJoinChannelBtn && (
+              <Button
+                label={t('join')}
+                dataTestId="join-channel-cta"
+                className="min-w-max "
+                loading={joinChannelMutation.isLoading}
+                onClick={() => joinChannelMutation.mutate(channelData.id)}
+              />
+            )}
+            {showRequestBtn && (
+              <Button
+                label={tc('privateChannel.joinRequestCTA')}
+                variant={Variant.Primary}
+                onClick={() => joinChannelMutation.mutate(channelData.id)}
+                loading={joinChannelMutation.isLoading}
+                data-testid={'channel-request-to-join'}
+              />
+            )}
+            {showWithdrawBtn && (
+              <Button
+                label={tc('privateChannel.withdrawRequestCTA')}
+                variant={Variant.Danger}
+                onClick={() =>
+                  withdrawJoinChannelRequest.mutate(
+                    channelData.joinRequest!.id!,
+                  )
+                }
+                loading={withdrawJoinChannelRequest.isLoading}
+                data-testid={'channel-withdraw-request'}
+              />
+            )}
+          </div>
         </div>
         <div className="relative mt-3">
           <div className="absolute  text-neutral-900 w-full top-0">
@@ -608,7 +634,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         />
       )}
 
-      {canEdit && (
+      {isChannelAdmin && (
         <div>
           <input
             id="file-input"

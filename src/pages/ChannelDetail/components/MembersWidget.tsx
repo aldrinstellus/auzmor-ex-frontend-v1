@@ -15,7 +15,7 @@ export type MembersWidgetProps = {
   channelData: IChannel;
 };
 const MembersWidget: FC<MembersWidgetProps> = ({ channelData }) => {
-  const { isUserAdminOrChannelAdmin } = useChannelRole(channelData.id);
+  const { isChannelAdmin } = useChannelRole(channelData.id);
   const [show, setShow] = useState(true);
   const { t } = useTranslation('channelDetail');
   const { channelId } = useParams();
@@ -72,7 +72,7 @@ const MembersWidget: FC<MembersWidgetProps> = ({ channelData }) => {
               />
             </div>
             <div className="mt-3">
-              {isUserAdminOrChannelAdmin && !!channelData?.member ? (
+              {isChannelAdmin ? (
                 <Button
                   size={Size.Small}
                   className="w-full"

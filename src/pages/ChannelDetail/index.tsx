@@ -33,7 +33,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
   // fetch channel data
   const { data, isLoading } = useChannelDetails(channelId!);
   const channelData: IChannel = data?.data?.result?.data || null;
-  const { isUserAdminOrChannelAdmin } = useChannelRole(channelId!);
+  const { isJoinedChannel, isChannelAdmin } = useChannelRole(channelId!);
 
   const showRequestBtn =
     channelData?.settings?.visibility === ChannelVisibilityEnum.Private &&
@@ -89,7 +89,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>{t('documents')}</div>
       ),
-      hidden: false,
+      hidden: !isJoinedChannel,
       dataTestId: 'channel-document-tab',
       tabContent: showBanner() || (
         <DocumentPathProvider>
@@ -102,7 +102,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>{t('members')}</div>
       ),
-      hidden: false,
+      hidden: !isJoinedChannel,
       dataTestId: 'channel-member-tab',
       tabContent: showBanner() || <Members channelData={channelData} />,
     },
@@ -111,7 +111,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}> {t('settings')}</div>
       ),
-      hidden: !channelData?.member,
+      hidden: !isJoinedChannel,
       dataTestId: 'channel-member-tab',
       tabContent: showBanner() || (
         <Setting isLoading={isLoading} channelData={channelData} />
@@ -122,7 +122,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}> {t('manageAccess')}</div>
       ),
-      hidden: !(isUserAdminOrChannelAdmin && channelData?.member),
+      hidden: !isChannelAdmin,
       dataTestId: 'channel-member-tab',
       tabContent: showBanner() || <ManageAccess channelData={channelData} />,
     },
