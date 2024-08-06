@@ -10,9 +10,9 @@ import { updateChannel } from 'queries/channel';
 import { IChannel } from 'stores/channelStore';
 import { useTranslation } from 'react-i18next';
 
-type AppProps = {
+type RestrictionRowProps = {
   data: IChannel;
-  isUserAdminOrChannelAdmin: boolean;
+  canEdit: boolean;
 };
 
 enum ChannelRestriction {
@@ -21,7 +21,7 @@ enum ChannelRestriction {
   canAnnouncement = 'canAnnouncement',
 }
 
-const RestrictionRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
+const RestrictionRow: FC<RestrictionRowProps> = ({ data, canEdit }) => {
   const { channelId = '' } = useParams();
   const queryClient = useQueryClient();
   const { t } = useTranslation('channelDetail', {
@@ -130,7 +130,7 @@ const RestrictionRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
       name: 'restrictionSetting',
       rowClassName: 'mb-4',
       control,
-      disabled: !isUserAdminOrChannelAdmin,
+      disabled: !canEdit,
       radioList: restrictionSettingOptions,
       labelRenderer: (option: IRadioListOption) => (
         <div className="text-sm ml-2 text-black font-normal">

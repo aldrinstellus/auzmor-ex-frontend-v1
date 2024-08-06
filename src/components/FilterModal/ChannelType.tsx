@@ -64,7 +64,7 @@ export const channelTypeOptions: IRadioListOption[] = [
 
 const ChannelType: FC<IChannelTypeProps> = ({ control, watch }) => {
   const { channelId = '' } = useParams();
-  const { isUserAdminOrChannelAdmin } = useChannelRole(channelId);
+  const { isChannelAdmin } = useChannelRole(channelId);
 
   const searchField = [
     {
@@ -84,10 +84,7 @@ const ChannelType: FC<IChannelTypeProps> = ({ control, watch }) => {
   );
 
   const filteredChannelTypeOptions = channelTypeOptions.filter((option) => {
-    if (
-      option.data.value === ChannelTypeEnum.Archived &&
-      !isUserAdminOrChannelAdmin
-    ) {
+    if (option.data.value === ChannelTypeEnum.Archived && !isChannelAdmin) {
       return false;
     }
     return enumToTitleCase(option.data.value)

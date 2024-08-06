@@ -71,7 +71,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   const [isArchiveModalOpen, openArchiveModal, closeArchiveModal] = useModal();
   const navigate = useNavigate();
 
-  const { isChannelOwner, isJoinedChannel, isChannelAdmin, isAdmin } =
+  const { isChannelOwner, isChannelJoined, isChannelAdmin, isAdmin } =
     useChannelRole(channelId);
 
   const channelCoverImageRef = useRef<HTMLInputElement>(null);
@@ -97,20 +97,20 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
 
   const showRequestBtn =
     channelData?.settings?.visibility === ChannelVisibilityEnum.Private &&
-    !isJoinedChannel &&
+    !isChannelJoined &&
     !!!channelData?.joinRequest;
   const showJoinChannelBtn =
     channelData.settings?.visibility === ChannelVisibilityEnum.Public &&
-    !isJoinedChannel &&
+    !isChannelJoined &&
     !!!channelData.joinRequest;
   const showWithdrawBtn =
     channelData?.settings?.visibility === ChannelVisibilityEnum.Private &&
-    !isJoinedChannel &&
+    !isChannelJoined &&
     !!channelData?.joinRequest;
 
   const showInviteYourSelf =
     channelData.settings?.visibility === ChannelVisibilityEnum.Private &&
-    !isJoinedChannel &&
+    !isChannelJoined &&
     isAdmin;
 
   const addChannelMembersMutation = useMutation({
@@ -313,7 +313,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       renderNode: (
         <div
           className={`text-xs ${
-            !isJoinedChannel ? 'hidden' : ' py-2 px-6'
+            !isChannelJoined ? 'hidden' : ' py-2 px-6'
           } bg-blue-50 font-Medium flex items-center justify-center cursor-default`}
         >
           {t('securityAndAnalytics')}
@@ -338,7 +338,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         navigate(`/channels/${channelData?.id}/settings`);
       },
       dataTestId: '',
-      hidden: !isJoinedChannel,
+      hidden: !isChannelJoined,
     },
     {
       icon: 'logout',
@@ -348,7 +348,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         leaveChannelMutation.mutate(channelId);
       },
       dataTestId: '',
-      hidden: !isJoinedChannel,
+      hidden: !isChannelJoined,
     },
   ].filter((item) => !item.hidden);
 
@@ -414,7 +414,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
             />
           )}
           <div className="cursor-pointer">
-            {isJoinedChannel && (
+            {isChannelJoined && (
               <PopupMenu
                 triggerNode={
                   <div className="bg-white rounded-full  text-black">

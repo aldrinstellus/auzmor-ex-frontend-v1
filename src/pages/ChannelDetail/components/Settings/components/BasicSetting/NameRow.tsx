@@ -14,10 +14,10 @@ import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   data: IChannel;
-  isUserAdminOrChannelAdmin: boolean;
+  canEdit: boolean;
 };
 
-const NameRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
+const NameRow: FC<AppProps> = ({ data, canEdit }) => {
   const { channelId = '' } = useParams();
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);
@@ -87,7 +87,7 @@ const NameRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
       }}
       label={tc('label')}
       value={data?.name}
-      canEdit={isUserAdminOrChannelAdmin}
+      canEdit={canEdit}
       dataTestId="professional-details-employee-id"
       editNode={
         <div>

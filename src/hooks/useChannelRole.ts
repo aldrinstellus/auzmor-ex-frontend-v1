@@ -12,7 +12,7 @@ export const useChannelRole = (channelId: any) => {
       channel?.member?.role == CHANNEL_ROLE.Admin || isAdmin,
     isChannelAdmin: channel?.member?.role == CHANNEL_ROLE.Admin,
     isChannelMember: channel?.member?.role == CHANNEL_ROLE.Member,
-    isJoinedChannel:
+    isChannelJoined:
       channel?.member?.role == CHANNEL_ROLE.Admin ||
       channel?.member?.role == CHANNEL_ROLE.Member,
     isChannelOwner: user?.id === channel?.createdBy?.userId,

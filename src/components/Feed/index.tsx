@@ -508,7 +508,11 @@ const Feed: FC<IFeedProps> = ({
       return <ScheduledFeedHeader mode={mode} />;
     } else {
       return (
-        <div className="flex flex-col gap-6">
+        <div
+          className={`flex flex-col gap-6 ${
+            showCreatePostCard || showCreatePostCard ? '' : 'hidden'
+          }`}
+        >
           {showCreatePostCard && <CreatePostCard openModal={openModal} />}
           {showFeedFilterBar && (
             <div className=" flex flex-col gap-6">

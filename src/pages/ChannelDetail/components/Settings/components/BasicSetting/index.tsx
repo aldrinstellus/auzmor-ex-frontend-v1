@@ -24,15 +24,9 @@ const BasicSetting: FC<IBasicSettingProps> = ({ channelData, canEdit }) => {
       <Header title={t('basicSetting')} dataTestId="channel-setting-details" />
       <Card className={onHoverStyles} shadowOnHover={canEdit}>
         <div className="px-4">
-          <NameRow isUserAdminOrChannelAdmin={canEdit} data={channelData} />
-          <DescriptionRow
-            isUserAdminOrChannelAdmin={canEdit}
-            channelData={channelData}
-          />
-          <CategoryRow
-            isUserAdminOrChannelAdmin={canEdit}
-            channelData={channelData}
-          />
+          <NameRow canEdit={canEdit} data={channelData} />
+          <DescriptionRow canEdit={canEdit} channelData={channelData} />
+          <CategoryRow canEdit={canEdit} channelData={channelData} />
         </div>
       </Card>
     </div>

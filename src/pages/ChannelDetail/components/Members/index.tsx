@@ -311,7 +311,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
 
             {users?.map((user) => (
               <PeopleCard
-                isUserAdminOrChannelAdmin={isChannelAdmin}
+                isChannelAdmin={isChannelAdmin}
                 isChannelPeople
                 isReadOnly={!!channelData?.member}
                 key={user.id}

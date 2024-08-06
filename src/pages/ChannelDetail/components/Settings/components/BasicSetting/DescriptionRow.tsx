@@ -16,13 +16,10 @@ import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   channelData: IChannel;
-  isUserAdminOrChannelAdmin: boolean;
+  canEdit: boolean;
 };
 
-const DescriptionRow: FC<AppProps> = ({
-  channelData,
-  isUserAdminOrChannelAdmin,
-}) => {
+const DescriptionRow: FC<AppProps> = ({ channelData, canEdit }) => {
   const { t } = useTranslation('channelDetail', {
     keyPrefix: 'setting.descriptionRow',
   });
@@ -88,7 +85,7 @@ const DescriptionRow: FC<AppProps> = ({
       }}
       label={t('label')}
       value={isTrim(channelData?.description)}
-      canEdit={isUserAdminOrChannelAdmin}
+      canEdit={canEdit}
       dataTestId="professional-details-employee-id"
       editNode={
         <div>

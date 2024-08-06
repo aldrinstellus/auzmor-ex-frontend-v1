@@ -12,10 +12,10 @@ import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   data: IChannel;
-  isUserAdminOrChannelAdmin: boolean;
+  canEdit: boolean;
 };
 
-const PrivacyRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
+const PrivacyRow: FC<AppProps> = ({ data, canEdit }) => {
   const { channelId = '' } = useParams();
   const { t } = useTranslation('channelDetail', {
     keyPrefix: 'setting.privacyRow',
@@ -76,7 +76,7 @@ const PrivacyRow: FC<AppProps> = ({ data, isUserAdminOrChannelAdmin }) => {
       name: 'privacySetting',
       rowClassName: 'space-y-4',
       control,
-      disabled: !isUserAdminOrChannelAdmin,
+      disabled: !canEdit,
       radioList: privacySettingOptions,
       labelRenderer: (option: IRadioListOption) => {
         return (

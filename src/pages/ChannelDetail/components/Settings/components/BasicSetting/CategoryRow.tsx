@@ -15,13 +15,10 @@ import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   channelData: any;
-  isUserAdminOrChannelAdmin: boolean;
+  canEdit: boolean;
 };
 
-const CategoryRow: FC<AppProps> = ({
-  channelData,
-  isUserAdminOrChannelAdmin,
-}) => {
+const CategoryRow: FC<AppProps> = ({ channelData, canEdit }) => {
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);
   const { t } = useTranslation('channelDetail', { keyPrefix: 'setting' });
@@ -127,7 +124,7 @@ const CategoryRow: FC<AppProps> = ({
         color: 'text-red-500',
         bgColor: 'text-red-50',
       }}
-      canEdit={isUserAdminOrChannelAdmin}
+      canEdit={canEdit}
       label={t('category.label')}
       value={channelData?.categories[0]?.name}
       dataTestId="user-marital-status"

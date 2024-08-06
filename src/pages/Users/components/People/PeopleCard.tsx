@@ -44,7 +44,7 @@ export interface IPeopleCardProps {
   channelId?: string;
   channelData?: IChannel;
   isMember?: boolean;
-  isUserAdminOrChannelAdmin?: boolean;
+  isChannelAdmin?: boolean;
   isReadOnly?: boolean;
 }
 
@@ -71,7 +71,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
   isTeamPeople,
   isChannelPeople,
   channelId,
-  isUserAdminOrChannelAdmin,
+  isChannelAdmin,
   isReadOnly = true,
 }) => {
   const {
@@ -219,7 +219,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
       >
         {(!isLxp || (isChannelPeople && isReadOnly)) && (
           <UserProfileDropdown
-            isUserAdminOrChannelAdmin={isUserAdminOrChannelAdmin}
+            isChannelAdmin={isChannelAdmin}
             id={id}
             userId={userId}
             loggedInUserId={user?.id}

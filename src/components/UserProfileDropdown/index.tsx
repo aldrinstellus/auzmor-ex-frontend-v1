@@ -27,7 +27,7 @@ export interface IUserDropdownProps {
   showDirectOption?: boolean;
   isChannelPeople?: boolean;
   userId?: string;
-  isUserAdminOrChannelAdmin?: boolean;
+  isChannelAdmin?: boolean;
   onRemoveChannelMember?: any;
 }
 
@@ -50,7 +50,7 @@ const UserProfileDropdown: FC<IUserDropdownProps> = ({
   isChannelPeople,
   showDirectOption = false,
   userId,
-  isUserAdminOrChannelAdmin,
+  isChannelAdmin,
   onRemoveChannelMember,
 }) => {
   const { user } = useAuth();
@@ -59,7 +59,7 @@ const UserProfileDropdown: FC<IUserDropdownProps> = ({
   const { isLxp } = useProduct();
   if (
     isChannelPeople &&
-    isUserAdminOrChannelAdmin &&
+    isChannelAdmin &&
     role == UserRole.Member &&
     user?.id != userId
   ) {
@@ -70,7 +70,7 @@ const UserProfileDropdown: FC<IUserDropdownProps> = ({
       onClick: onPromoteClick,
     });
   }
-  if (isChannelPeople && isUserAdminOrChannelAdmin && user?.id != userId) {
+  if (isChannelPeople && isChannelAdmin && user?.id != userId) {
     _options.push({
       icon: 'deactivateUser',
       label: <div className="text-red-500">Remove from channel</div>,

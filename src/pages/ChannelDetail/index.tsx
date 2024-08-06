@@ -33,7 +33,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
   // fetch channel data
   const { data, isLoading } = useChannelDetails(channelId!);
   const channelData: IChannel = data?.data?.result?.data || null;
-  const { isJoinedChannel, isChannelAdmin } = useChannelRole(channelId!);
+  const { isChannelJoined, isChannelAdmin } = useChannelRole(channelId!);
 
   const showRequestBtn =
     channelData?.settings?.visibility === ChannelVisibilityEnum.Private &&
@@ -89,7 +89,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>{t('documents')}</div>
       ),
-      hidden: !isJoinedChannel,
+      hidden: !isChannelJoined,
       dataTestId: 'channel-document-tab',
       tabContent: showBanner() || (
         <DocumentPathProvider>
@@ -102,7 +102,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>{t('members')}</div>
       ),
-      hidden: !isJoinedChannel,
+      hidden: !isChannelJoined,
       dataTestId: 'channel-member-tab',
       tabContent: showBanner() || <Members channelData={channelData} />,
     },
@@ -111,7 +111,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}> {t('settings')}</div>
       ),
-      hidden: !isJoinedChannel,
+      hidden: !isChannelJoined,
       dataTestId: 'channel-member-tab',
       tabContent: showBanner() || (
         <Setting isLoading={isLoading} channelData={channelData} />

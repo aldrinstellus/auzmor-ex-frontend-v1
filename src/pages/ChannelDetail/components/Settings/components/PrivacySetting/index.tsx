@@ -21,11 +21,7 @@ const PrivacySetting: FC<AppProps> = ({ channelData, canEdit }) => {
       <Header title={t('persnolDetails')} dataTestId="personal-details" />
       <Card shadowOnHover={canEdit} className=" px-4">
         <div className="px-4">
-          <PrivacyRow isUserAdminOrChannelAdmin={canEdit} data={channelData} />
-          {/* <RestrictionRow
-            isUserAdminOrChannelAdmin={canEdit}
-            data={channelData}
-          /> */}
+          <PrivacyRow canEdit={canEdit} data={channelData} />
         </div>
       </Card>
     </div>

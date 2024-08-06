@@ -50,8 +50,7 @@ import ConfirmationBox from 'components/ConfirmationBox';
 import WelcomePost from 'images/ChannelCover/WelcomePost.png';
 import { useChannelStore } from 'stores/channelStore';
 import { useParams } from 'react-router-dom';
-import { useChannelRole } from 'hooks/useChannelRole';
-// import { AudienceEntityType } from 'queries/apps';
+
 export interface IPostMenu {
   id: number;
   label: string;
@@ -119,7 +118,6 @@ const CreatePostModal: FC<ICreatePostModal> = ({
   const { uploadMedia, uploadStatus, useUploadCoverImage } = useUpload();
 
   const { isAdmin } = useRole();
-  const { isUserAdminOrChannelAdmin } = useChannelRole(channelId);
   const openCreatePostWithMedia = useCreatePostUtilityStore(
     (state) => state.openCreatePostWithMedia,
   );
@@ -498,7 +496,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
       updateFeed(variables.id!, {
         ...data.result.data,
         ...(data?.result?.data?.isAnnouncement &&
-          !isUserAdminOrChannelAdmin && { acknowledged: true }),
+          !isAdmin && { acknowledged: true }),
         id: variables.id!,
       } as IPost);
       successToastConfig({
