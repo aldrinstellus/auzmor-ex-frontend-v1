@@ -16,11 +16,21 @@ import PrivateChannelBanner from 'components/PrivateChannel';
 import { useChannelRole } from 'hooks/useChannelRole';
 import { useTranslation } from 'react-i18next';
 
+export enum ChannelDetailTabsEnum {
+  Home = 'HOME',
+  Documents = 'DOCUMENTS',
+  Members = 'MEMBERS',
+  Setting = 'SETTING',
+  ManageAccess = 'MANAGE_ACCESS',
+}
+
 type AppProps = {
-  activeTabIndex?: number;
+  activeTab?: ChannelDetailTabsEnum;
 };
 
-const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
+const ChannelDetail: FC<AppProps> = ({
+  activeTab = ChannelDetailTabsEnum.Home,
+}) => {
   usePageTitle('channelDetails');
   const { channelId } = useParams();
   const navigate = useNavigate();
@@ -34,15 +44,13 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
   const { data, isLoading } = useChannelDetails(channelId!);
   const channelData: IChannel = data?.data?.result?.data || null;
   const { isChannelJoined, isChannelAdmin } = useChannelRole(channelId!);
+  const isChannelPrivate =
+    channelData?.settings?.visibility === ChannelVisibilityEnum.Private;
 
   const showRequestBtn =
-    channelData?.settings?.visibility === ChannelVisibilityEnum.Private &&
-    !!!channelData?.member &&
-    !!!channelData?.joinRequest;
+    isChannelPrivate && !!!channelData?.member && !!!channelData?.joinRequest;
   const showWithdrawBtn =
-    channelData?.settings?.visibility === ChannelVisibilityEnum.Private &&
-    !!!channelData?.member &&
-    !!channelData?.joinRequest;
+    isChannelPrivate && !!!channelData?.member && !!channelData?.joinRequest;
 
   if (isLoading && !channelData) {
     return <PageLoader />;
@@ -76,7 +84,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
 
   const tabs = [
     {
-      id: 1,
+      id: ChannelDetailTabsEnum.Home,
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>{t('home')}</div>
       ),
@@ -85,7 +93,7 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
       tabContent: showBanner() || <Home channelData={channelData} />,
     },
     {
-      id: 2,
+      id: ChannelDetailTabsEnum.Documents,
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>{t('documents')}</div>
       ),
@@ -98,39 +106,39 @@ const ChannelDetail: FC<AppProps> = ({ activeTabIndex = 0 }) => {
       ),
     },
     {
-      id: 3,
+      id: ChannelDetailTabsEnum.Members,
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>{t('members')}</div>
       ),
-      hidden: !isChannelJoined,
+      hidden: !isChannelJoined && isChannelPrivate,
       dataTestId: 'channel-member-tab',
       tabContent: showBanner() || <Members channelData={channelData} />,
     },
     {
-      id: 4,
+      id: ChannelDetailTabsEnum.Setting,
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}> {t('settings')}</div>
       ),
       hidden: !isChannelJoined,
-      dataTestId: 'channel-member-tab',
+      dataTestId: 'channel-setting-tab',
       tabContent: showBanner() || (
         <Setting isLoading={isLoading} channelData={channelData} />
       ),
     },
     {
-      id: 5,
+      id: ChannelDetailTabsEnum.ManageAccess,
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}> {t('manageAccess')}</div>
       ),
       hidden: !isChannelAdmin,
-      dataTestId: 'channel-member-tab',
+      dataTestId: 'channel-access-tab',
       tabContent: showBanner() || <ManageAccess channelData={channelData} />,
     },
   ].filter((item) => !item.hidden);
 
   return (
     <div className="flex flex-col  w-full ">
-      <ProfileSection activeTabIndex={activeTabIndex} tabs={tabs} />
+      <ProfileSection activeTab={activeTab} tabs={tabs} />
     </div>
   );
 };

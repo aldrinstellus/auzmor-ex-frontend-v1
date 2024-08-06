@@ -37,9 +37,7 @@ const Tabs: FC<ITabsProps> = ({
   const [activeTab, setActiveTab] = useState(activeTabIndex);
   const [previousTab, setPreviousTab] = useState(activeTab);
 
-  useEffect(() => {
-    setActiveTab(activeTabIndex);
-  }, [activeTabIndex]);
+  useEffect(() => setActiveTab(activeTabIndex), [activeTabIndex]);
 
   useEffect(() => {
     if (!disableAnimation) {

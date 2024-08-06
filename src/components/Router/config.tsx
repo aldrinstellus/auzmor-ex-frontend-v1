@@ -10,6 +10,7 @@ import { lazy } from 'react';
 import RequireAdminAuth from 'components/RequireAdminAuth';
 import RequireOfficeAuth from 'components/RequireOfficeAuth';
 import RequireNonProdAuth from 'components/RequireNonProdAuth';
+import { ChannelDetailTabsEnum } from 'pages/ChannelDetail';
 
 const ErrorBoundary = lazy(() => import('components/ErrorBoundary'));
 const Login = lazy(() => import('pages/Login'));
@@ -99,31 +100,39 @@ const routers = createBrowserRouter(
           <Route path="/channels" element={<Channels />} />
           <Route
             path="/channels/:channelId/documents"
-            element={<ChannelDetail activeTabIndex={1} />}
+            element={
+              <ChannelDetail activeTab={ChannelDetailTabsEnum.Documents} />
+            }
           />
           <Route
             path="/channels/:channelId/members"
-            element={<ChannelDetail activeTabIndex={2} />}
+            element={
+              <ChannelDetail activeTab={ChannelDetailTabsEnum.Members} />
+            }
           />
           <Route
             path="/channels/:channelId/settings"
-            element={<ChannelDetail activeTabIndex={3} />}
+            element={
+              <ChannelDetail activeTab={ChannelDetailTabsEnum.Setting} />
+            }
           />
           <Route
             path="/channels/:channelId/manage-access"
-            element={<ChannelDetail activeTabIndex={4} />}
+            element={
+              <ChannelDetail activeTab={ChannelDetailTabsEnum.ManageAccess} />
+            }
           />
           <Route
             path="/channels/:channelId"
-            element={<ChannelDetail activeTabIndex={0} />}
+            element={<ChannelDetail activeTab={ChannelDetailTabsEnum.Home} />}
           />
           <Route
             path="/channels/:channelId/scheduledPosts"
-            element={<ChannelDetail activeTabIndex={0} />}
+            element={<ChannelDetail activeTab={ChannelDetailTabsEnum.Home} />}
           />
           <Route
             path="/channels/:channelId/bookmarks"
-            element={<ChannelDetail activeTabIndex={0} />}
+            element={<ChannelDetail activeTab={ChannelDetailTabsEnum.Home} />}
           />
           <Route path="/search" element={<SearchResults />} />
         </Route>

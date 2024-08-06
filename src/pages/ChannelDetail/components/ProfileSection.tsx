@@ -45,10 +45,11 @@ import AddChannelMembersModal from './AddChannelMembersModal';
 import { useChannelRole } from 'hooks/useChannelRole';
 import Truncate from 'components/Truncate';
 import useAuth from 'hooks/useAuth';
+import { ChannelDetailTabsEnum } from '..';
 
 type ProfileSectionProps = {
   tabs?: ITab[];
-  activeTabIndex?: number;
+  activeTab?: ChannelDetailTabsEnum;
 };
 
 export enum TabStatus {
@@ -58,7 +59,7 @@ export enum TabStatus {
 
 const ProfileSection: React.FC<ProfileSectionProps> = ({
   tabs = [],
-  activeTabIndex,
+  activeTab,
 }) => {
   const { channelId = '' } = useParams();
   const { user } = useAuth();
@@ -80,6 +81,12 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   const updateChannelStore = useChannelStore((state) => state.updateChannel);
   const channelData = useChannelStore((state) => state.channels)[channelId];
 
+  // visibility flags
+  const isChannelPrivate =
+    channelData?.settings?.visibility === ChannelVisibilityEnum.Private;
+  const isChannelPublic =
+    channelData?.settings?.visibility === ChannelVisibilityEnum.Public;
+
   const [openEditImage, openEditImageModal, closeEditImageModal] = useModal(
     undefined,
     false,
@@ -96,24 +103,15 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     : file?.coverImage && getBlobUrl(file?.coverImage);
 
   const showRequestBtn =
-    channelData?.settings?.visibility === ChannelVisibilityEnum.Private &&
-    !isChannelJoined &&
-    !!!channelData?.joinRequest;
+    isChannelPrivate && !isChannelJoined && !!!channelData?.joinRequest;
   const showJoinChannelBtn =
-    channelData.settings?.visibility === ChannelVisibilityEnum.Public &&
-    !isChannelJoined &&
-    !!!channelData.joinRequest;
+    isChannelPublic && !isChannelJoined && !!!channelData.joinRequest;
   const showWithdrawBtn =
-    channelData?.settings?.visibility === ChannelVisibilityEnum.Private &&
-    !isChannelJoined &&
-    !!channelData?.joinRequest;
+    isChannelPrivate && !isChannelJoined && !!channelData?.joinRequest;
 
-  const showInviteYourSelf =
-    channelData.settings?.visibility === ChannelVisibilityEnum.Private &&
-    !isChannelJoined &&
-    isAdmin;
+  const showInviteYourSelf = isChannelPrivate && !isChannelJoined && isAdmin;
 
-  const addChannelMembersMutation = useMutation({
+  const inviteYourselfMutation = useMutation({
     mutationKey: ['add-channel-members', channelData.id],
     mutationFn: () =>
       inviteYourSelf(channelData.id, {
@@ -273,7 +271,11 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     if (index === 0) {
       navigate(`/channels/${channelData?.id}`);
     } else if (index === 1) {
-      navigate(`/channels/${channelData?.id}/documents`);
+      if (!isChannelJoined && isChannelPublic) {
+        navigate(`/channels/${channelData?.id}/members?type=${'All_Members'}`);
+      } else {
+        navigate(`/channels/${channelData?.id}/documents`);
+      }
     } else if (index === 2) {
       navigate(`/channels/${channelData?.id}/members?type=${'All_Members'}`);
     } else if (index === 3) {
@@ -386,6 +388,16 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       setCoverImageName(selectedFile.name);
       openEditImageModal();
     }
+  };
+
+  const getActiveTabIndex = () => {
+    const index = tabs.findIndex(
+      (tab: Record<string, any>) => tab.id === activeTab,
+    );
+    if (index < 0) {
+      return 0;
+    }
+    return index;
   };
   return (
     <div className="  rounded-9xl relative mb-4">
@@ -516,11 +528,12 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
           <div className="flex gap-4">
             {showInviteYourSelf && (
               <Button
-                label={t('inviteYourSelf')}
+                label={t('joinDirectly')}
                 dataTestId="invite-your-self-channel-cta"
-                className="min-w-max "
-                loading={addChannelMembersMutation.isLoading}
-                onClick={() => addChannelMembersMutation.mutate()}
+                className="min-w-max !bg-transparent text-white"
+                variant={Variant.Secondary}
+                loading={inviteYourselfMutation.isLoading}
+                onClick={() => inviteYourselfMutation.mutate()}
               />
             )}
             {showJoinChannelBtn && (
@@ -566,7 +579,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               tabContentClassName="mt-8 mb-32"
               className="w-full flex mx-8"
               onTabChange={handleTabChange}
-              activeTabIndex={activeTabIndex}
+              activeTabIndex={getActiveTabIndex()}
             />
           </div>
           <div className="justify-end pr-8 flex items-center">

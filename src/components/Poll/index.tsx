@@ -150,7 +150,8 @@ const Poll: FC<IPoll & PollProps> = ({
   const showTotal = mode === PollMode.VIEW;
   const voted = !!myVote?.length;
   const isLoading = voteMutation.isLoading || deleteVoteMutation.isLoading;
-  const showViewResults = mode === PollMode.VIEW && isAdmin && !voted;
+  const showViewResults =
+    mode === PollMode.VIEW && isAdmin && !voted && !readOnly;
 
   useEffect(() => {
     if (mode === PollMode.EDIT) return;
