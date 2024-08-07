@@ -109,7 +109,8 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
                               rightIcon={'arrowDown'}
                               disabled={
                                 user.role === CHANNEL_ROLE.Admin &&
-                                user?.globalRole === 'PRIMARY_ADMIN'
+                                (user?.globalRole === 'PRIMARY_ADMIN' ||
+                                  user?.globalRole === 'ADMIN')
                               }
                             />
                           )}
