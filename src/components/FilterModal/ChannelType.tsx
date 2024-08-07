@@ -5,8 +5,7 @@ import { IFilterForm } from '.';
 import { enumToTitleCase } from 'utils/misc';
 import { IRadioListOption } from 'components/RadioGroup';
 import { useDebounce } from 'hooks/useDebounce';
-import { useParams } from 'react-router-dom';
-import { useChannelRole } from 'hooks/useChannelRole';
+import useRole from 'hooks/useRole';
 
 export enum ChannelTypeEnum {
   MyChannels = 'MY_CHANNELS',
@@ -63,8 +62,7 @@ export const channelTypeOptions: IRadioListOption[] = [
 ];
 
 const ChannelType: FC<IChannelTypeProps> = ({ control, watch }) => {
-  const { channelId = '' } = useParams();
-  const { isChannelAdmin } = useChannelRole(channelId);
+  const { isAdmin } = useRole();
 
   const searchField = [
     {
@@ -84,7 +82,7 @@ const ChannelType: FC<IChannelTypeProps> = ({ control, watch }) => {
   );
 
   const filteredChannelTypeOptions = channelTypeOptions.filter((option) => {
-    if (option.data.value === ChannelTypeEnum.Archived && !isChannelAdmin) {
+    if (option.data.value === ChannelTypeEnum.Archived && !isAdmin) {
       return false;
     }
     return enumToTitleCase(option.data.value)
