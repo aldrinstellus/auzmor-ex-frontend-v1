@@ -190,6 +190,11 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
             : tc('joinPublicChannelRequestSuccess'),
       });
       await queryClient.invalidateQueries(['channel'], { exact: false });
+      if (channelData.settings?.visibility === ChannelVisibilityEnum.Public) {
+        await queryClient.invalidateQueries(['channel-members'], {
+          exact: false,
+        });
+      }
     },
   });
 
