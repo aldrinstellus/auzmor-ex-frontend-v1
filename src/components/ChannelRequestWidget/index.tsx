@@ -31,7 +31,7 @@ const ChannelRequestWidget: FC<ChannelRequestWidgetProps> = ({
 
   const { isChannelAdmin } = useChannelRole(channelId!);
 
-  if (!isChannelAdmin) return <></>;
+  if (channelId && !isChannelAdmin) return <></>;
 
   const { data, isLoading } = useInfiniteChannelsRequest(
     channelId,
