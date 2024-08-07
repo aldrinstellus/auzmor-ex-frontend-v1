@@ -19,16 +19,13 @@ import { updateMemberRole } from 'queries/channel';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 
 import { useParams } from 'react-router-dom';
-import { CHANNEL_ROLE, IChannel } from 'stores/channelStore';
+import { CHANNEL_ROLE } from 'stores/channelStore';
 import queryClient from 'utils/queryClient';
 import useAuth from 'hooks/useAuth';
 
 type AppProps = {
   isLoading?: boolean;
   data: any;
-  selectAllEntity?: () => void;
-  deselectAll?: () => void;
-  channelData: IChannel;
 };
 const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
   const { t } = useTranslation('channelDetail', { keyPrefix: 'manageAccess' });
@@ -110,6 +107,10 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
                               className="!text-sm !font-medium capitalize"
                               label={user?.role?.toLowerCase() || 'Admin'}
                               rightIcon={'arrowDown'}
+                              disabled={
+                                user.role === CHANNEL_ROLE.Admin &&
+                                user?.globalRole === 'PRIMARY_ADMIN'
+                              }
                             />
                           )}
                         </>

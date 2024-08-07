@@ -171,7 +171,7 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
             dataTestId="people"
           />
         ) : (
-          <ManageAccessTable channelData={channelData} data={channelMembers} />
+          <ManageAccessTable data={channelMembers} />
         )}
       </Card>
       {showAddMemberModal && channelData && (
