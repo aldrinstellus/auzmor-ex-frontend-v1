@@ -31,6 +31,7 @@ import useURLParams from 'hooks/useURLParams';
 import useRole from 'hooks/useRole';
 import NoDataFound from 'components/NoDataFound';
 import useProduct from 'hooks/useProduct';
+import { useTranslation } from 'react-i18next';
 interface IForm {
   search?: string;
 }
@@ -71,15 +72,17 @@ export const ShowingCount: FC<{
   count: number;
   className?: string;
 }> = ({ isLoading, count, className = '' }) => {
+  const { t } = useTranslation('profile', { keyPrefix: 'teams.showingCount' });
+
   return (
     <div
       className={className}
       tabIndex={0}
       role="contentinfo"
-      title={`Showing ${count} results`}
+      title={t('title', { count })}
     >
       {!isLoading ? (
-        <p className="text-neutral-500">Showing {count} results</p>
+        <p className="text-neutral-500">{t('text', { count })}</p>
       ) : (
         <Skeleton
           className="!w-32"
@@ -103,6 +106,7 @@ const Team: FC<ITeamProps> = ({
     serializeFilter,
     parseParams,
   } = useURLParams();
+  const { t } = useTranslation('profile', { keyPrefix: 'teams' });
 
   const { user } = useAuth();
   const { isAdmin } = useRole();
@@ -253,7 +257,7 @@ const Team: FC<ITeamProps> = ({
         {!isLxp && (
           <div className="flex space-x-4">
             <Button
-              label="My Teams"
+              label={t('myTeams')}
               size={Size.Small}
               variant={Variant.Secondary}
               className={`h-9 grow-0 ${!isAdmin && 'pointer-events-none'}`}
@@ -266,7 +270,7 @@ const Team: FC<ITeamProps> = ({
             />
             {isAdmin && (
               <Button
-                label="All Teams"
+                label={t('allTeams')}
                 size={Size.Small}
                 variant={Variant.Secondary}
                 className="h-9 grow-0"
@@ -290,7 +294,7 @@ const Team: FC<ITeamProps> = ({
               borderAround
               className="bg-white !p-[10px]"
               dataTestId="teams-filter"
-              ariaLabel="teams-filter"
+              ariaLabel={t('teamsFilter')}
             />
           ) : null}
           <Sort
@@ -313,7 +317,7 @@ const Team: FC<ITeamProps> = ({
                   control,
                   getValues,
                   name: 'search',
-                  placeholder: 'Search teams',
+                  placeholder: t('searchTeams'),
                   error: errors.search?.message,
                   dataTestId: 'teams-search',
                   inputClassName: 'py-[7px] !text-sm !h-9',
@@ -339,7 +343,7 @@ const Team: FC<ITeamProps> = ({
         <div className="flex items-start justify-between mb-6">
           <div className="flex flex-wrap items-center space-x-2 gap-y-2">
             <div className="text-base text-neutral-500 whitespace-nowrap">
-              Filter By
+              {t('filterBy')}
             </div>
             {appliedFilters?.categories?.map((category: ICategory) => (
               <div
@@ -349,7 +353,7 @@ const Team: FC<ITeamProps> = ({
                 onClick={() => handleRemoveFilters('categories', category.id)}
               >
                 <div className="mr-1 text-neutral-500 whitespace-nowrap">
-                  Category{' '}
+                  {t('category')}{' '}
                   <span className="text-primary-500">{category.name}</span>
                 </div>
                 <Icon
@@ -368,7 +372,7 @@ const Team: FC<ITeamProps> = ({
             onClick={clearFilters}
             data-testid={`teams-clear-filters`}
           >
-            Clear Filters
+            {t('clearFilters')}
           </div>
         </div>
       ) : null}
@@ -405,30 +409,27 @@ const Team: FC<ITeamProps> = ({
         {showNoTeams ? (
           <div className="flex flex-col items-center w-full space-y-3">
             <div className="flex flex-col items-center space-y-6">
-              <img src={TeamNotFound} alt="Team Not Found" width={148} />
+              <img src={TeamNotFound} alt={t('teamNotFoundAlt')} width={148} />
               <div className="text-lg font-bold" data-testid="no-teams-found">
-                No teams found
+                {t('noTeamsFound')}
               </div>
             </div>
             <div className="flex space-x-1 text-xs font-normal">
               {isAdmin && tab === TeamTab.AllTeams ? (
                 <>
                   <div className="text-neutral-500">
-                    There are no teams found in your organization right now. Be
-                    the first to
+                    {t('noTeamsFoundAdmin')}
                   </div>
                   <div
                     className="font-bold text-blue-500 cursor-pointer"
                     onClick={() => openTeamModal()}
                     data-testid="create-one-team"
                   >
-                    create one
+                    {t('createOne')}
                   </div>
                 </>
               ) : (
-                <div className="text-neutral-500">
-                  You&apos;re not part of any team yet
-                </div>
+                <div className="text-neutral-500">{t('noTeamsFoundUser')}</div>
               )}
             </div>
           </div>
@@ -440,8 +441,9 @@ const Team: FC<ITeamProps> = ({
             searchString={searchValue}
             message={
               <p>
-                Sorry we can&apos;t find the team you are looking for.
-                <br /> Please try using different filters.
+                {t('noDataFoundMessage')}
+                <br />
+                {t('noDataFoundMessage2')}{' '}
               </p>
             }
             onClearSearch={() => {

@@ -17,6 +17,7 @@ import ConfirmationBox from 'components/ConfirmationBox';
 import InvitedUsersList from './InvitedUsersList';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import 'utils/custom-yup-validators/email/validateEmail';
+import { useTranslation } from 'react-i18next';
 
 export interface IInviteUserModalProps {
   open: boolean;
@@ -49,6 +50,9 @@ const InviteUserModal: FC<IInviteUserModalProps> = ({
   openModal,
   closeModal,
 }) => {
+  const { t } = useTranslation('profile', {
+    keyPrefix: 'inviteUserModal',
+  });
   const queryClient = useQueryClient();
   const [showInvitedMembers, setShowInvitedMembers] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -79,16 +83,16 @@ const InviteUserModal: FC<IInviteUserModalProps> = ({
     if (users.length === 1) {
       return (
         <span data-testId="added-people-toaster">
-          <span className="font-bold">{users[0].fullName}</span> added to your
-          organization successfully
+          <span className="font-bold">{users[0].fullName}</span>
+          {t('toastMessages.successMsg')}
         </span>
       );
     } else if (users.length === 2) {
       return (
         <span data-testId="added-people-toaster">
           <span className="font-bold">{users[0].fullName}, </span>
-          <span className="font-bold">{users[1].fullName}</span> added to your
-          organization successfully
+          <span className="font-bold">{users[1].fullName}</span>
+          {t('toastMessages.successMsg')}
         </span>
       );
     } else if (users.length > 2) {
@@ -96,8 +100,10 @@ const InviteUserModal: FC<IInviteUserModalProps> = ({
         <span data-testId="added-people-toaster">
           <span className="font-bold">{users[0].fullName}, </span>
           <span className="font-bold">{users[1].fullName}, </span>{' '}
-          <span className="font-bold">+{users.length - 2} others</span> added to
-          your organization successfully
+          <span className="font-bold">
+            +{users.length - 2} {t('others')}{' '}
+          </span>
+          {t('toastMessages.successMsg')}
         </span>
       );
     }
@@ -191,8 +197,8 @@ const InviteUserModal: FC<IInviteUserModalProps> = ({
         <Header
           title={
             showInvitedMembers
-              ? 'Invited Users - Details'
-              : 'Invite new people to your organization'
+              ? t('invitedUsersDetailsTitle')
+              : t('inviteNewPeopleTitle')
           }
           onClose={close}
           closeBtnDataTestId="invite-people-close"
@@ -217,7 +223,7 @@ const InviteUserModal: FC<IInviteUserModalProps> = ({
         {/*---------- {<>Footer</>} ---------*/}
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
-            label="Cancel"
+            label={t('cancel')}
             variant={ButtonVariant.Secondary}
             disabled={inviteUsersMutation.isLoading}
             className="mr-4"
@@ -226,7 +232,7 @@ const InviteUserModal: FC<IInviteUserModalProps> = ({
           />
           {showInvitedMembers ? (
             <Button
-              label="Retry"
+              label={t('retry')}
               onClick={() => {
                 setShowInvitedMembers(false);
                 remove();
@@ -249,7 +255,7 @@ const InviteUserModal: FC<IInviteUserModalProps> = ({
             />
           ) : (
             <Button
-              label="Send Invite"
+              label={t('sendInvite')}
               onClick={handleSubmit(onSubmit)}
               disabled={
                 inviteUsersMutation.isLoading || !isValid || !isEmailValid()
@@ -263,15 +269,15 @@ const InviteUserModal: FC<IInviteUserModalProps> = ({
       <ConfirmationBox
         open={showConfirmationModal}
         onClose={() => setShowConfirmationModal(false)}
-        title="Error!"
+        title={t('errorTitle')}
         description={
           <span>
-            Failed to add participant. Email not recognised.
-            <br /> Please enter valid details.
+            {t('errorDescription')}
+            <br /> {t('errorDescription2')}
           </span>
         }
         success={{
-          label: 'Try Again',
+          label: t('tryAgain'),
           className: 'bg-primary-500 text-white ',
           onSubmit: () => {
             setShowConfirmationModal(false);
@@ -279,7 +285,7 @@ const InviteUserModal: FC<IInviteUserModalProps> = ({
           },
         }}
         discard={{
-          label: 'cancel',
+          label: t('cancel'),
           className: 'text-neutral-900 bg-white ',
           onCancel: () => {
             setShowConfirmationModal(false);

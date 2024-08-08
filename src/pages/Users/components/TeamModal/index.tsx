@@ -12,6 +12,7 @@ import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { TeamFlow } from '../Teams';
 import { FC } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export interface ITeamForm {
   name: string;
@@ -34,13 +35,15 @@ const TeamModal: FC<IAddTeamModalProps> = ({
   setTeamFlow,
   team,
 }) => {
+  const { t } = useTranslation('profile', { keyPrefix: 'teamModal' });
+
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const schema = yup.object({
-    name: yup.string().required('Please enter team name'),
-    category: yup.object().required('Please select team category'),
+    name: yup.string().required(t('validation.nameRequired')),
+    category: yup.object().required(t('validation.categoryRequired')),
   });
 
   const {
@@ -75,13 +78,13 @@ const TeamModal: FC<IAddTeamModalProps> = ({
         });
       }
       failureToastConfig({
-        content: `Error Creating Team`,
+        content: t('toast.createError'),
         dataTestId: 'team-create-error-toaster',
       });
     },
     onSuccess: (data: any) => {
       queryClient.invalidateQueries(['teams']);
-      successToastConfig({ content: 'Team Created Successfully' });
+      successToastConfig({ content: t('toast.createSuccess') });
       closeModal();
       navigate(`/teams/${data.result.id}?addMembers=true`, {
         state: { prevRoute: searchParams.get('tab') },
@@ -103,7 +106,7 @@ const TeamModal: FC<IAddTeamModalProps> = ({
         });
       }
       failureToastConfig({
-        content: `Error Updating Team`,
+        content: t('toast.updateError'),
         dataTestId: 'team-update-error-toaster',
       });
     },
@@ -111,7 +114,7 @@ const TeamModal: FC<IAddTeamModalProps> = ({
       queryClient.invalidateQueries(['teams']);
       queryClient.invalidateQueries(['team', team?.id]);
       successToastConfig({
-        content: `Team has been updated`,
+        content: t('toast.updateSuccess'),
         dataTestId: 'team-updated-success-toaster',
       });
       closeModal();
@@ -141,16 +144,18 @@ const TeamModal: FC<IAddTeamModalProps> = ({
     <>
       <Modal open={open} className="max-w-[638px]">
         <Header
-          title={`${
-            teamFlowMode === TeamFlow.CreateTeam ? 'Add New' : 'Edit'
-          } Team`}
+          title={t(
+            teamFlowMode === TeamFlow.CreateTeam
+              ? 'title.create'
+              : 'title.edit',
+          )}
           onClose={onCloseReset}
           closeBtnDataTestId="add-team-close"
         />
         <AddTeams control={control} errors={errors} defaultValues={getValues} />
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
-            label="Back"
+            label={t('button.back')}
             variant={ButtonVariant.Secondary}
             disabled={false}
             className="mr-4"
@@ -158,9 +163,11 @@ const TeamModal: FC<IAddTeamModalProps> = ({
             dataTestId="add-team-back"
           />
           <Button
-            label={`${
-              teamFlowMode === TeamFlow.CreateTeam ? 'Create' : 'Update'
-            }`}
+            label={t(
+              teamFlowMode === TeamFlow.CreateTeam
+                ? 'button.create'
+                : 'button.update',
+            )}
             onClick={handleSubmit(onSubmit)}
             loading={createTeamMutation?.isLoading}
             dataTestId="create-team-cta"

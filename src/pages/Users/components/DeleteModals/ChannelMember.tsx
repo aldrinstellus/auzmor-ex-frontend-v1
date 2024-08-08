@@ -13,6 +13,8 @@ import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { FC } from 'react';
 import { removeChannelMember } from 'queries/channel';
 import queryClient from 'utils/queryClient';
+import { useTranslation } from 'react-i18next';
+
 export interface IDeletePeopleProps {
   open: boolean;
   openModal: () => void;
@@ -23,18 +25,19 @@ export interface IDeletePeopleProps {
 
 const RemoveChannelMember: FC<IDeletePeopleProps> = ({
   open,
-  // openModal,
   channelId,
   closeModal,
   userId,
 }) => {
+  const { t } = useTranslation('profile', { keyPrefix: 'removeChannelMember' });
+
   const deleteChannelMemberMutation = useMutation({
     mutationKey: ['delete-channel-member'],
     mutationFn: (payload: any) =>
       removeChannelMember(payload?.channelId, payload?.userId),
     onError: () => {
       failureToastConfig({
-        content: 'Error deleting member',
+        content: t('errorToast'),
         dataTestId: 'people-toaster',
       });
     },
@@ -43,7 +46,7 @@ const RemoveChannelMember: FC<IDeletePeopleProps> = ({
       queryClient.invalidateQueries(['channel']);
       closeModal();
       successToastConfig({
-        content: 'Member has been deleted',
+        content: t('successToast'),
         dataTestId: 'people-toaster',
       });
     },
@@ -52,7 +55,7 @@ const RemoveChannelMember: FC<IDeletePeopleProps> = ({
   const Header: FC = () => (
     <div className="flex flex-wrap border-b-1 border-neutral-200 items-center">
       <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
-        Delete User?
+        {t('title')}
       </div>
       <IconButton
         onClick={closeModal}
@@ -69,12 +72,12 @@ const RemoveChannelMember: FC<IDeletePeopleProps> = ({
       <Button
         variant={ButtonVariant.Secondary}
         size={Size.Small}
-        label={'Cancel'}
+        label={t('cancelButton')}
         dataTestId="delete-user-cancel"
         onClick={closeModal}
       />
       <Button
-        label={'Delete'}
+        label={t('deleteButton')}
         className="!bg-red-500 !text-white flex"
         loading={deleteChannelMemberMutation.isLoading}
         size={Size.Small}
@@ -86,12 +89,14 @@ const RemoveChannelMember: FC<IDeletePeopleProps> = ({
       />
     </div>
   );
+
   return (
     <Modal open={open} className="max-w-sm">
       <Header />
       <div className="text-sm font-medium text-neutral-500 mx-6 mt-6 mb-8">
-        Are you sure you want to delete this member?
-        <br /> This cannot be undone.
+        {t('confirmMessage')}
+        <br />
+        {t('undoMessage')}
       </div>
       <Footer />
     </Modal>

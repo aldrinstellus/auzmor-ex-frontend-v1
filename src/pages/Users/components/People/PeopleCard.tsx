@@ -9,7 +9,6 @@ import {
   IGetUser,
   UserStatus,
   updateRoleToAdmin,
-  // updateStatus,
   useResendInvitation,
 } from 'queries/users';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
@@ -34,6 +33,7 @@ import Truncate from 'components/Truncate';
 import { updateMemberRole } from 'queries/channel';
 import { CHANNEL_ROLE, IChannel } from 'stores/channelStore';
 import RemoveChannelMember from '../DeleteModals/ChannelMember';
+import { useTranslation } from 'react-i18next';
 
 export interface IPeopleCardProps {
   userData: IGetUser;
@@ -74,6 +74,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
   isChannelAdmin,
   isReadOnly = true,
 }) => {
+  const { t } = useTranslation('profile', { keyPrefix: 'peopleCard' });
   const {
     id,
     role,
@@ -117,7 +118,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     mutationKey: ['update-user-role'],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      successToastConfig({ content: `User role has been updated to admin` });
+      successToastConfig({ content: t('roleUpdated') });
     },
   });
   const updateMemberRoleMutation = useMutation({
@@ -125,7 +126,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     mutationKey: ['update-channel-member-role'],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['channel-members'] });
-      successToastConfig({ content: `User role has been updated to admin` });
+      successToastConfig({ content: t('roleUpdated') });
     },
   });
 
@@ -149,7 +150,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
           className={`${rightChipStyle} bg-amber-100 text-orange-600`}
           data-testid={`people-card-role-${role}`}
         >
-          Pending
+          {t('status.pending')}
         </div>
       );
     }
@@ -159,7 +160,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
           className={`${rightChipStyle} bg-primary-100 text-primary-600`}
           data-testid={`member-badge`}
         >
-          New joinee
+          {t('status.newJoinee')}
         </div>
       );
     }
@@ -176,7 +177,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
           className={leftChipStyle}
           data-testid={`people-card-role-${role}`}
         >
-          {titleCase(role || '')}
+          {titleCase(t(`roles.${role?.toLowerCase()}`) || '')}
         </div>
       );
     }
@@ -190,8 +191,8 @@ const PeopleCard: FC<IPeopleCardProps> = ({
   const departmentColor = department?.name
     ? 'text-neutral-900'
     : 'text-neutral-300';
-  const departmentText = department?.name ? departmentName : 'Not specified';
-  const workLocationText = workLocation?.name || 'Not specified';
+  const departmentText = department?.name ? departmentName : t('notSpecified');
+  const workLocationText = workLocation?.name || t('notSpecified');
   const workLocationColor = workLocation?.name
     ? 'text-neutral-900'
     : 'text-neutral-300';
@@ -246,7 +247,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
             }}
             onDeactivateClick={openDeactivateModal}
             onResendInviteClick={() => {
-              successToastConfig({ content: 'Invitation has been sent' });
+              successToastConfig({ content: t('invitationSent') });
               resendInviteMutation.mutate(id);
             }}
             onRemoveChannelMember={openRemoveChannelMemberModal}
@@ -272,7 +273,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
             className="absolute top-0 text-xxs text-[#737373] font-medium py-1 bg-[#F5F5F5] w-full justify-center align-center rounded-t-9xl flex"
             data-testid="usercard-deactivate-banner"
             tabIndex={0}
-            title="Deactivated Account"
+            title={t('deactivatedAccount')}
           >
             <Icon
               name="forbidden"
@@ -280,7 +281,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
               size={16}
               className="mr-1"
             ></Icon>
-            Deactivated Account
+            {t('deactivatedAccount')}
           </div>
         ) : (
           <div

@@ -50,6 +50,7 @@ import SocialIcon from './SocialIcon';
 import { isOutOfOffice } from 'utils/time';
 import Chip from 'components/Chip';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import { useTranslation } from 'react-i18next';
 
 export interface IProfileCoverProps {
   userDetails: Record<string, any>;
@@ -60,6 +61,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
   userDetails,
   editSection,
 }) => {
+  const { t } = useTranslation('profile', { keyPrefix: 'profileCoverSection' });
   const [file, setFile] = useState<IUpdateProfileImage | Record<string, any>>(
     {},
   );
@@ -101,21 +103,19 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
     onError: (error: any) => {
       console.log('API call resulted in error: ', error);
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       if (userId) {
         queryClient.invalidateQueries(['user', userId]); // single user by id
       } else {
         queryClient.invalidateQueries({ queryKey: ['current-user-me'] });
       }
-
-      console.log('Successfully deleted user cover image', data);
     },
   });
 
   const coverImageOption = [
     {
       icon: 'exportOutline',
-      label: 'Upload a photo',
+      label: t('uploadPhoto'),
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         userCoverImageRef?.current?.click();
@@ -125,7 +125,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
     },
     {
       icon: 'maximizeOutline',
-      label: 'Reposition',
+      label: t('reposition'),
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         openEditImageModal();
@@ -136,7 +136,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
     },
     {
       icon: 'trashOutline',
-      label: 'Delete photo',
+      label: t('deletePhoto'),
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         if (file?.coverImage) {
@@ -173,7 +173,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
     mutationKey: ['update-user-role'],
     onSuccess: () => {
       queryClient.invalidateQueries(['user', userDetails?.id]);
-      successToastConfig({ content: `User role has been updated to admin` });
+      successToastConfig({ content: t('toastMessages.updateRoleSuccess') });
     },
   });
 
@@ -205,14 +205,14 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
 
       if (!validImageTypes.includes(selectedFile.type)) {
         failureToastConfig({
-          content: `File type not supported. Upload a supported file content`,
+          content: t('toastMessages.fileNotSupported'),
         });
         return;
       }
 
       if (selectedFile.size > 50 * 1024 * 1024) {
         failureToastConfig({
-          content: 'The file size should not exceed 50MB.',
+          content: t('toastMessages.fileMaxSizeError'),
         });
         return;
       }
@@ -340,7 +340,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                     className="rounded-[24px] font-bold border py-[7.5px] px-[16px] text-sm border-[#e5e5e5] cursor-pointer"
                     data-testid="profile-more-cta"
                   >
-                    More
+                    {t('more')}
                   </div>
                 }
                 id={userDetails.id}
@@ -359,7 +359,9 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                   openEditProfileModal();
                 }}
                 onResendInviteClick={() => () => {
-                  successToastConfig({ content: 'Invitation has been sent' });
+                  successToastConfig({
+                    content: t('toastMessages.inviteSuccess'),
+                  });
                   resendInviteMutation.mutate(userDetails?.id);
                 }}
               />
@@ -483,7 +485,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
       {openEditImage && (
         <EditImageModal
           userId={userId}
-          title={getBlobFile ? 'Apply Changes' : 'Reposition'}
+          title={getBlobFile ? t('applyChanges') : t('reposition')}
           openEditImage={openEditImage}
           closeEditImageModal={closeEditImageModal}
           image={getBlobFile || userDetails?.coverImage?.original}

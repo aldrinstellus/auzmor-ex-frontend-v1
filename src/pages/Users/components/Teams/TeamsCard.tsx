@@ -11,6 +11,7 @@ import TeamOptions from 'components/TeamOptions';
 import useRole from 'hooks/useRole';
 import useProduct from 'hooks/useProduct';
 import Truncate from 'components/Truncate';
+import { useTranslation } from 'react-i18next';
 
 export interface ITeamsCardProps {
   id: string;
@@ -37,6 +38,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
   openModal,
   setTeamDetails,
 }) => {
+  const { t } = useTranslation('profile', { keyPrefix: 'teamCard' });
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [isHovered, eventHandlers] = useHover();
@@ -59,7 +61,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
               });
             }
           }}
-          title={`${name} with ${totalMembers} members`}
+          title={`${name} with ${totalMembers} ${t('members')}`}
         >
           {!isMember && !isLxp && isHovered && (
             <TeamOptions
@@ -88,7 +90,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
               className="absolute top-0 left-0 bg-primary-100 text-primary-500 rounded-tl-[12px] rounded-br-[12px] px-3 py-1 text-xxs font-medium"
               data-testid="team-badge-recentlyadded"
             >
-              Recently added
+              {t('recentlyAdded')}
             </div>
           )}
           <div
@@ -108,7 +110,12 @@ const TeamsCard: FC<ITeamsCardProps> = ({
               />
             ) : (
               <div className="p-[18px] bg-neutral-200 rounded-full">
-                <img src={TeamWork} height={44} width={44} alt="Team Icon" />
+                <img
+                  src={TeamWork}
+                  height={44}
+                  width={44}
+                  alt={t('teamIconAlt')}
+                />
               </div>
             )}
             <div className="flex-1 flex flex-col gap-2">
@@ -121,7 +128,6 @@ const TeamsCard: FC<ITeamsCardProps> = ({
 
                 {!isLxp ? (
                   <div
-                    // different colors for category
                     className="text-xxs font-semibold py-[2px] px-2 line-clamp-1 capitalize rounded bg-indigo-100 text-indigo-500"
                     data-testid={`team-category-${category?.name?.toLowerCase()}`}
                   >
@@ -142,7 +148,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
                   className="text-xs font-normal text-neutral-500"
                   data-testid={`team-no-of-members-${totalMembers}`}
                 >
-                  {totalMembers} members
+                  {totalMembers} {t('members')}
                 </div>
               </div>
             </div>

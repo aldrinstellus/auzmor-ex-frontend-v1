@@ -155,7 +155,7 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
               <p>
                 {t('noDataFound.message')}
                 <br />
-                {t('noDataFound.message2')}
+                {t('noDataFound.messageLine2')}
               </p>
             }
             clearBtnLabel={
