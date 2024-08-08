@@ -66,7 +66,7 @@
   },
   "deactivateModal": {
     "title": "Deactivate User?",
-    "confirmMessage": "Are you sure you want to deactivate this account ?",
+    "confirmMessage": "Are you sure you want to deactivate this account?",
     "confirmMessage2": "All the data associated with this account will be removed.",
     "cancelButton": "Cancel",
     "deactivateButton": "Deactivate",
@@ -119,7 +119,7 @@
     "notSpecified": "Not specified"
   },
   "removeChannelMember": {
-    "title": "Delete User ?",
+    "title": "Delete User?",
     "confirmMessage": "Are you sure you want to delete this member?",
     "undoMessage": "This cannot be undone.",
     "cancelButton": "Cancel",
