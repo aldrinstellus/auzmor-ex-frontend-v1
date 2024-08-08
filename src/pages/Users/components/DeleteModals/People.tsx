@@ -33,7 +33,7 @@ const DeletePeople: FC<IDeletePeopleProps> = ({ open, closeModal, userId }) => {
         content: t('errorToast'),
         dataTestId: 'people-toaster',
       }),
-    onSuccess: (data, variables, context) => {
+    onSuccess: () => {
       closeModal();
       queryClient.invalidateQueries(['user', userId]);
       queryClient.invalidateQueries({ queryKey: ['users'] });
