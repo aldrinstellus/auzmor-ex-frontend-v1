@@ -1,5 +1,6 @@
 {
   "channels": "Channels",
+  "channel": "channel",
   "filterCTA": {
     "myChannels": "My channels",
     "managed": "Managed",
@@ -24,7 +25,7 @@
     "closeButton": "Close",
     "cancelButton": "Cancel",
     "deleteButton": "Delete",
-    "confirmationMessage": "Are you sure you want to delete the {{name}} channel?",
+    "confirmationMessage": "Are you sure you want to delete the",
     "undoMessage": "This cannot be undone.",
     "successToast": "Channel has been deleted successfully",
     "errorToast": "Error deleting channel"
