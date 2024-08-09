@@ -7,8 +7,6 @@ import AudienceRowSkeleton from './AudienceRowSkeleton';
 import { AudienceEntityType } from 'queries/post';
 import { useInfiniteAudience } from 'queries/audience';
 import { isFiltersEmpty } from 'utils/misc';
-import PageLoader from 'components/PageLoader';
-
 export interface IAudienceTabProps {
   entity: 'apps' | 'posts';
   entityId: string;
@@ -20,10 +18,11 @@ const AudienceTab: FC<IAudienceTabProps> = ({
   entityId,
   entityType,
 }) => {
+  const rootId = `${entityId}-${entityType}-${entity}`;
   const { ref, inView } = useInView({
+    root: document.getElementById(rootId),
     rootMargin: '20%',
   });
-
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useInfiniteAudience(entity, entityId, isFiltersEmpty({ entityType }));
 
@@ -31,7 +30,7 @@ const AudienceTab: FC<IAudienceTabProps> = ({
     if (inView) {
       fetchNextPage();
     }
-  }, [inView, fetchNextPage]);
+  }, [inView]);
 
   const audience = data?.pages.flatMap((page: any) => {
     try {
@@ -48,24 +47,21 @@ const AudienceTab: FC<IAudienceTabProps> = ({
   }) as IAudience[];
 
   return (
-    <div className="px-6 h-[482px] overflow-y-auto">
+    <div id={rootId} className="px-6 h-[482px] overflow-y-auto">
       {isLoading ? (
         <AudienceSkeleton />
       ) : (
+        audience &&
         audience?.filter(Boolean).map((eachAudience: IAudience) => (
           <div key={eachAudience?.id} className="">
             <AudienceRow audience={eachAudience} />
           </div>
         ))
       )}
-      <div ref={ref}>
-        {hasNextPage && !isFetchingNextPage && <AudienceRowSkeleton />}
+      <div>
+        {hasNextPage && isFetchingNextPage && <AudienceRowSkeleton />}
+        {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
       </div>
-      {isFetchingNextPage && (
-        <div className="h-12 w-full flex items-center justify-center">
-          <PageLoader />
-        </div>
-      )}
     </div>
   );
 };
