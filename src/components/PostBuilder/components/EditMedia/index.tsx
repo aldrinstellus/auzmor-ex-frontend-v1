@@ -10,6 +10,7 @@ import Header from 'components/ModalHeader';
 import Body from './Body';
 import Footer from './Footer';
 import Icon from 'components/Icon';
+import { useTranslation } from 'react-i18next';
 
 export interface IEditMediaProps {
   closeModal: () => void;
@@ -33,13 +34,15 @@ const EditMedia: FC<IEditMediaProps> = ({ closeModal }) => {
     mediaOpenIndex > -1 ? mediaOpenIndex : 0,
     media.length,
   );
-
+  const { t } = useTranslation('postBuilder');
   return (
     <>
       {/* <>------ Header -------</> */}
       <Header
         title={
-          isVideo(media[currentIndex].contentType) ? 'Edit video' : 'Edit Photo'
+          isVideo(media[currentIndex].contentType)
+            ? t('editVideo')
+            : t('editPhoto')
         }
         onBackIconClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
         onClose={closeModal}
@@ -62,9 +65,9 @@ const EditMedia: FC<IEditMediaProps> = ({ closeModal }) => {
       {media[currentIndex].type === 'VIDEO' && (
         <div className="flex justify-between w-full items-center px-6 py-2">
           <div className="flex items-center">
-            <div className="text-xs font-bold mr-3">Cover image:</div>
+            <div className="text-xs font-bold mr-3">{t('coverImage')}:</div>
             <Button
-              label="Upload image"
+              label={t('uploadImage')}
               leftIcon="exportOutline"
               leftIconClassName="mr-1"
               iconColor="text-neutral-900"
@@ -78,14 +81,7 @@ const EditMedia: FC<IEditMediaProps> = ({ closeModal }) => {
             ) ||
               media[currentIndex]?.coverImage?.original) && (
               <div className="flex items-center ml-2 font-bold text-sm text-primary-500 px-4 py-2 border border-neutral-200 rounded-19xl">
-                <div>
-                  {/* {
-                    coverImageMap.find(
-                      (map) => map.videoName === media[currentIndex].name,
-                    )?.coverImageName
-                  } */}
-                  cover-image.png
-                </div>
+                <div>{t('coverImageFile')} </div>
                 <div
                   className="flex items-center ml-2 cursor-pointer"
                   onClick={() => {
@@ -105,10 +101,6 @@ const EditMedia: FC<IEditMediaProps> = ({ closeModal }) => {
               </div>
             )}
           </div>
-          {/* <div className="flex items-center">
-            <div className="text-xs font-bold mr-3">Sound:</div>
-            <SwitchToggle color="bg-primary-500" />
-          </div> */}
         </div>
       )}
       <Footer
@@ -134,7 +126,7 @@ const EditMedia: FC<IEditMediaProps> = ({ closeModal }) => {
           }
         }}
         aria-multiselectable={false}
-        aria-label="replace photo"
+        aria-label={t('replacePhoto')}
       />
       <input
         type="file"
@@ -150,7 +142,7 @@ const EditMedia: FC<IEditMediaProps> = ({ closeModal }) => {
           }
         }}
         aria-multiselectable={false}
-        aria-label="replace video"
+        aria-label={t('replaceVideo')}
       />
       <input
         type="file"
@@ -178,7 +170,7 @@ const EditMedia: FC<IEditMediaProps> = ({ closeModal }) => {
             });
           }
         }}
-        aria-label="upload photo"
+        aria-label={t('uploadPhoto')}
       />
     </>
   );

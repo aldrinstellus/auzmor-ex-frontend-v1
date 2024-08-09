@@ -50,6 +50,7 @@ import ConfirmationBox from 'components/ConfirmationBox';
 import WelcomePost from 'images/ChannelCover/WelcomePost.png';
 import { useChannelStore } from 'stores/channelStore';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export interface IPostMenu {
   id: number;
@@ -122,7 +123,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     (state) => state.openCreatePostWithMedia,
   );
   const reset = useCreatePostUtilityStore((state) => state.reset);
-
+  const { t } = useTranslation('postBuilder');
   useEffect(() => {
     if (
       openCreatePostWithMedia &&
@@ -800,11 +801,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         open={confirm}
         onClose={closeConfirm}
         title="Discard"
-        description={
-          <span>
-            Are you sure you want to discard this post? This cannot be undone
-          </span>
-        }
+        description={<span>{t('confirmation')}</span>}
         success={{
           label: 'Discard',
           className: 'bg-red-500 text-white ',

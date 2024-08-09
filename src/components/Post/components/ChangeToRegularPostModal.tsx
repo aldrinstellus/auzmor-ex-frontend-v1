@@ -1,4 +1,6 @@
+import { FC } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import Button, { Variant } from 'components/Button';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
@@ -7,7 +9,6 @@ import { updatePost } from 'queries/post';
 import ErrorWarningPng from 'images/error-warning-line.png';
 import { useFeedStore } from 'stores/feedStore';
 import { produce } from 'immer';
-import { FC } from 'react';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 
 type AppProps = {
@@ -17,6 +18,9 @@ type AppProps = {
 };
 
 const ChangeToRegularPostModal: FC<AppProps> = ({ open, closeModal, data }) => {
+  const { t } = useTranslation('post', {
+    keyPrefix: 'changeToRegularPostModal',
+  });
   const queryClient = useQueryClient();
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
@@ -42,7 +46,7 @@ const ChangeToRegularPostModal: FC<AppProps> = ({ open, closeModal, data }) => {
       await queryClient.invalidateQueries(['feed-announcements-widget']);
       await queryClient.invalidateQueries(['post-announcements-widget']);
       successToastConfig({
-        content: 'Announcement changed to a regular post',
+        content: t('successToast'),
         dataTestId: 'convert-to-post-toast',
       });
     },
@@ -51,9 +55,7 @@ const ChangeToRegularPostModal: FC<AppProps> = ({ open, closeModal, data }) => {
   return (
     <Modal open={open} className="w-max overflow-hidden">
       <div className="flex items-center justify-between p-4">
-        <p className="font-bold text-lg text-gray-900">
-          Change to regular post?
-        </p>
+        <p className="font-bold text-lg text-gray-900">{t('modalTitle')}</p>
         <Icon
           name="close"
           onClick={closeModal}
@@ -64,26 +66,26 @@ const ChangeToRegularPostModal: FC<AppProps> = ({ open, closeModal, data }) => {
       <Divider />
       <div className="flex flex-col gap-y-4 items-center justify-center text-neutral-900 text-base p-6">
         <div className="flex justify-center">
-          <img src={ErrorWarningPng} width={80} height={80} alt="Warning" />
+          <img
+            src={ErrorWarningPng}
+            width={80}
+            height={80}
+            alt={t('warningImageAlt')}
+          />
         </div>
-        <p className="font-semibold">
-          Are you sure you want to change this announcement to a regular post?
-        </p>
-        <p>
-          You can change it back to announcements by clicking on promote to
-          announcements
-        </p>
+        <p className="font-semibold">{t('confirmationMessage')}</p>
+        <p>{t('changeBackInfo')}</p>
       </div>
       <div className="flex min-w-full items-center justify-end gap-x-3 p-4 bg-blue-50 rounded-b-9xl">
         <Button
           variant={Variant.Secondary}
-          label="Cancel"
+          label={t('cancelButton')}
           onClick={closeModal}
           dataTestId="changeto-regularpost-cancel"
         />
         <Button
           variant={Variant.Primary}
-          label="Yes"
+          label={t('confirmButton')}
           onClick={() => {
             const payload = {
               ...data,

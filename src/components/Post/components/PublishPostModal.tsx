@@ -1,3 +1,5 @@
+import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import ErrorWarningPng from 'images/error-warning-line.png';
@@ -7,7 +9,6 @@ import { IPost, IPostPayload, updatePost } from 'queries/post';
 import { useFeedStore } from 'stores/feedStore';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
-import { FC } from 'react';
 
 interface PublishPostModalProps {
   post: IPost;
@@ -15,8 +16,10 @@ interface PublishPostModalProps {
 }
 
 const PublishPostModal: FC<PublishPostModalProps> = ({ closeModal, post }) => {
+  const { t } = useTranslation('post', { keyPrefix: 'publishPostModal' });
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
+
   const updatePostMutation = useMutation({
     mutationKey: ['updatePostMutation'],
     mutationFn: (payload: IPostPayload) => updatePost(post.id || '', payload),
@@ -36,42 +39,43 @@ const PublishPostModal: FC<PublishPostModalProps> = ({ closeModal, post }) => {
         updateFeed(variables.id, context?.previousData);
       }
       failureToastConfig({
-        content: 'Error updating post',
+        content: t('errorUpdatingPost'),
         dataTestId: 'post-update-toaster',
       });
     },
     onSuccess: async () =>
       successToastConfig({
-        content: 'Post updated successfully',
+        content: t('postUpdatedSuccessfully'),
         dataTestId: 'post-update-toaster',
       }),
   });
+
   return (
     <Modal open={true} closeModal={closeModal} className="max-w-sm">
       <Header
-        title="Publish right now?"
+        title={t('title')}
         onClose={closeModal}
         closeBtnDataTestId="publishnow-closemodal"
       />
       <div className="px-6 py-4">
         <div className="flex justify-center mb-4">
-          <img src={ErrorWarningPng} alt="Warning" />
+          <img src={ErrorWarningPng} alt={t('warningImageAlt')} />
         </div>
         <div className="justify-center w-full flex text-sm">
-          Are you sure you want to publish post now?
+          {t('confirmationMessage')}
         </div>
       </div>
       <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-19xl">
         <div className="flex">
           <Button
             variant={ButtonVariant.Secondary}
-            label="Cancel"
+            label={t('cancelButton')}
             className="mr-3"
             dataTestId="publishnow-cancelcta"
             onClick={closeModal}
           />
           <Button
-            label={'Post now'}
+            label={t('postNowButton')}
             dataTestId="publishnow-postnowcta"
             onClick={() => {
               updatePostMutation.mutate({

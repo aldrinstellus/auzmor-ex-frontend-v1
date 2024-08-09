@@ -12,6 +12,7 @@ import { useFeedStore } from 'stores/feedStore';
 import { produce } from 'immer';
 import useAuth from 'hooks/useAuth';
 import { isEmpty } from 'lodash';
+import { useTranslation } from 'react-i18next';
 
 export interface IFooterProps {
   handleSubmit: UseFormHandleSubmit<FieldValues>;
@@ -35,7 +36,9 @@ const Footer: FC<IFooterProps> = ({
   const { setAnnouncement, setActiveFlow, announcement } =
     useContext(CreatePostContext);
   const { user } = useAuth();
-
+  const { t } = useTranslation('postBuilder', {
+    keyPrefix: 'createAnnouncement',
+  });
   const getSelectedAnnouncement = (data: any) => {
     return {
       label: data?.expiryOption?.label || announcement?.label || '1 Week',
@@ -105,8 +108,8 @@ const Footer: FC<IFooterProps> = ({
 
       successToastConfig({
         content: preIsAnnouncement
-          ? 'Your announcement was updated successfully'
-          : "You've shared the post as an announcement",
+          ? t('announcementUpdatedSuccess')
+          : t('announcementSharedSuccess'),
         dataTestId: isEmpty(data.announcement)
           ? 'convert-to-announcement-toast'
           : 'announcement-updated-toast',
@@ -124,7 +127,7 @@ const Footer: FC<IFooterProps> = ({
         <div className="flex justify-between items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
             variant={ButtonVariant.Secondary}
-            label="Clear"
+            label={t('clear')}
             onClick={() => {
               setAnnouncement(null);
               setActiveFlow(CreatePostFlow.CreatePost);
@@ -134,13 +137,13 @@ const Footer: FC<IFooterProps> = ({
           <div className="flex">
             <Button
               variant={ButtonVariant.Secondary}
-              label="Back"
+              label={t('back')}
               className="mr-3"
               onClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
               dataTestId="announcement-expiry-backcta"
             />
             <Button
-              label={'Next'}
+              label={t('next')}
               onClick={handleSubmit(onSubmit)}
               dataTestId="announcement-expiry-nextcta"
               disabled={!isValid}
@@ -152,13 +155,13 @@ const Footer: FC<IFooterProps> = ({
         <div className="flex justify-between items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
             variant={ButtonVariant.Secondary}
-            label="Cancel"
+            label={t('cancel')}
             className="mr-3"
             onClick={closeModal}
             dataTestId="promote-to-announcement-cancel"
           />
           <Button
-            label={'Done'}
+            label={t('done')}
             loading={makePostAnnouncementMutation.isLoading}
             onClick={handleSubmit(onDirectSubmit)}
             dataTestId="promote-to-announcement-done"

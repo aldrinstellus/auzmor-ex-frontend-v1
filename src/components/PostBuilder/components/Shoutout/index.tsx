@@ -9,6 +9,7 @@ import { IAudienceForm } from 'components/EntitySearchModal';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 import { PostType } from 'queries/post';
 import { updateEditorValue } from 'components/DynamicImagePreview/utils';
+import { useTranslation } from 'react-i18next';
 
 interface ICreateShoutoutProps {
   closeModal: () => void;
@@ -34,6 +35,8 @@ const CreateShoutout: FC<ICreateShoutoutProps> = ({ closeModal }) => {
     setEditorValue,
     shoutoutTemplate,
   } = useContext(CreatePostContext);
+  const { t } = useTranslation('postBuilder', { keyPrefix: 'createShoutout' });
+
   const { form, setForm } = useEntitySearchFormStore();
   const users = form ? form!.watch('users') : {};
   const audienceForm = useForm<IAudienceForm>({
@@ -133,7 +136,7 @@ const CreateShoutout: FC<ICreateShoutoutProps> = ({ closeModal }) => {
   return form ? (
     <div>
       <Header
-        title="Give Kudos"
+        title={t('giveKudos')}
         onBackIconClick={handleBack}
         onClose={closeModal}
         titleDataTestId={
@@ -162,7 +165,7 @@ const CreateShoutout: FC<ICreateShoutoutProps> = ({ closeModal }) => {
       <div className="bg-blue-50 flex items-center justify-end p-3 gap-x-3 rounded-9xl w-full">
         <Button
           onClick={handleBack}
-          label="Back"
+          label={t('back')}
           variant={ButtonVariant.Secondary}
           dataTestId={
             step === SHOUTOUT_STEPS.UserSelect
@@ -171,7 +174,7 @@ const CreateShoutout: FC<ICreateShoutoutProps> = ({ closeModal }) => {
           }
         />
         <Button
-          label="Next"
+          label={t('next')}
           loading={isLoading}
           variant={ButtonVariant.Primary}
           onClick={handleNext}

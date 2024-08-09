@@ -1,4 +1,6 @@
+import { FC } from 'react';
 import { useMutation } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import Button, { Variant } from 'components/Button';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
@@ -7,7 +9,6 @@ import { IPost, updatePost } from 'queries/post';
 import { useFeedStore } from 'stores/feedStore';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
-import { FC } from 'react';
 
 type AppProps = {
   open: boolean;
@@ -16,6 +17,7 @@ type AppProps = {
 };
 
 const ClosePollModal: FC<AppProps> = ({ open, closeModal, data }) => {
+  const { t } = useTranslation('post', { keyPrefix: 'closePollModal' });
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
 
@@ -30,14 +32,14 @@ const ClosePollModal: FC<AppProps> = ({ open, closeModal, data }) => {
     },
     onError: (error, variables, context) => {
       failureToastConfig({
-        content: 'Error closing poll',
+        content: t('errorClosingPoll'),
         dataTestId: 'poll-close-toaster-failure',
       });
       updateFeed(context!.previousPost.id!, context!.previousPost!);
     },
     onSuccess: () =>
       successToastConfig({
-        content: 'Poll closed successfully',
+        content: t('pollClosedSuccessfully'),
         dataTestId: 'poll-close-toaster-success',
       }),
   });
@@ -45,7 +47,9 @@ const ClosePollModal: FC<AppProps> = ({ open, closeModal, data }) => {
   return (
     <Modal open={open} className="w-max overflow-hidden">
       <div className="flex items-center justify-between p-4">
-        <p className="font-extrabold text-lg text-gray-900">Close Poll?</p>
+        <p className="font-extrabold text-lg text-gray-900">
+          {t('modalTitle')}
+        </p>
         <Icon
           name="close"
           onClick={closeModal}
@@ -63,20 +67,20 @@ const ClosePollModal: FC<AppProps> = ({ open, closeModal, data }) => {
           hover={false}
         />
         <p className="text-center">
-          Are you sure you want to close this poll right now? <br />
-          This cannot be undone
+          {t('confirmationMessage')} <br />
+          {t('cannotBeUndone')}
         </p>
       </div>
       <div className="flex min-w-full items-center justify-end gap-x-3 p-4 bg-blue-50 rounded-b-9xl">
         <Button
           variant={Variant.Secondary}
-          label="Cancel"
+          label={t('cancelButton')}
           onClick={closeModal}
           dataTestId="close-poll-cancel"
         />
         <Button
           variant={Variant.Primary}
-          label="Close Poll"
+          label={t('closePollButton')}
           onClick={() => {
             const payload = {
               ...data,

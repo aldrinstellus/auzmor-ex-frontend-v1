@@ -1,4 +1,6 @@
+import { FC } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import Button, { Size, Variant } from 'components/Button';
 import Icon from 'components/Icon';
 import { announcementRead } from 'queries/post';
@@ -6,7 +8,6 @@ import { useFeedStore } from 'stores/feedStore';
 import { produce } from 'immer';
 import useAuth from 'hooks/useAuth';
 import ProgressBar from 'components/ProgressBar';
-import { FC } from 'react';
 import { isRegularPost } from 'utils/misc';
 import useRole from 'hooks/useRole';
 
@@ -19,6 +20,7 @@ const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({
   data,
   readOnly = false,
 }) => {
+  const { t } = useTranslation('post', { keyPrefix: 'acknowledgementBanner' });
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
   const queryClient = useQueryClient();
@@ -63,18 +65,18 @@ const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({
     >
       <div className="flex justify-center items-center text-white text-xs font-bold space-x-3">
         <Icon name="flashIcon" size={16} className="text-white" hover={false} />
-        <div className="text-xs font-bold">Announcement</div>
+        <div className="text-xs font-bold">{t('announcement')}</div>
       </div>
       {postCreatedByMe || announcementCreatedByMe || data?.acknowledged ? (
         <ProgressBar
           total={data?.acknowledgementStats?.audience}
           completed={data?.acknowledgementStats?.acknowledged}
-          suffix="people acknowledged"
+          suffix={t('peopleAcknowledged')}
         />
       ) : (
         <Button
           className={`${!readOnly ? '' : 'hidden'} text-sm font-bold !py-[3px]`}
-          label="Mark as read"
+          label={t('markAsRead')}
           size={Size.Small}
           variant={Variant.Tertiary}
           loading={acknowledgeMutation.isLoading}
@@ -89,4 +91,5 @@ const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({
     <></>
   );
 };
+
 export default AcknowledgementBanner;
