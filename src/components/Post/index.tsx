@@ -358,7 +358,7 @@ const Post: FC<PostProps> = ({
             {!readOnly && (
               <Tooltip
                 tooltipContent={
-                  post.bookmarked ? 'Remove from bookmark' : 'Bookmark post'
+                  post.bookmarked ? t('removeBookMark') : t('bookMarkPost')
                 }
                 tooltipPosition="top"
               >

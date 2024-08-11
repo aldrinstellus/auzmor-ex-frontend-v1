@@ -3,6 +3,8 @@
   "reactionCount": "{{count}} reacted",
   "publishNow": "Publish now",
   "comment": "Comment",
+  "removeBookMark": "Remove from bookmark",
+  "bookMarkPost": "Bookmark post",
   "bookmarkSuccess": "Successfully bookmarked",
   "viewBookmarks": "View Bookmarks",
   "removeBookmark": "Bookmark removed",
