@@ -51,6 +51,7 @@ import WelcomePost from 'images/ChannelCover/WelcomePost.png';
 import { useChannelStore } from 'stores/channelStore';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { readAxiosErr } from 'utils/apiService';
 
 export interface IPostMenu {
   id: number;
@@ -258,11 +259,9 @@ const CreatePostModal: FC<ICreatePostModal> = ({
   const createPostMutation = useMutation({
     mutationKey: ['createPostMutation'],
     mutationFn: createPost,
-    onError: () => {
-      clearPostContext();
-      closeModal();
+    onError: (result: any) => {
       failureToastConfig({
-        content: `Error while trying to create post`,
+        content: readAxiosErr(result, `Error while trying to create post`),
         dataTestId: 'comment-toaster',
       });
     },
