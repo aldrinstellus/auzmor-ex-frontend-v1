@@ -149,6 +149,9 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         dataTestId: 'channel-bookmark-toaster',
       });
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['channel']);
+    },
   });
 
   const deleteCoverImageMutation = useMutation({
