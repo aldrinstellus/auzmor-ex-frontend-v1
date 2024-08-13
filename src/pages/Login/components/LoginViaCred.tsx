@@ -31,17 +31,6 @@ interface IForm {
   domain?: string;
 }
 
-const schema = yup.object({
-  email: yup
-    .string()
-    .required('Required field')
-    .validateEmail(
-      'Invalid email address. Please enter a valid email address.',
-    ),
-  password: yup.string().required('Required field'),
-  domain: yup.string(),
-});
-
 const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
   const { setUser } = useAuth();
   const navigate = useNavigate();
@@ -57,6 +46,14 @@ const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
       ),
   });
 
+  const schema = yup.object({
+    email: yup
+      .string()
+      .required(t('requiredField'))
+      .validateEmail(t('validEmailError')),
+    password: yup.string().required(t('requiredField')),
+    domain: yup.string(),
+  });
   const domain = getSubDomain(window.location.host);
   const { data } = useGetSSOFromDomain(domain, domain !== '' ? true : false);
 
