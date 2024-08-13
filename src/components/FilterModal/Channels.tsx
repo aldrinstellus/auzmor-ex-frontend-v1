@@ -12,6 +12,7 @@ import ItemSkeleton from './ItemSkeleton';
 import NoDataFound from 'components/NoDataFound';
 import { useInfiniteChannels } from 'queries/channel';
 import { isFiltersEmpty } from 'utils/misc';
+import Truncate from 'components/Truncate';
 
 interface IChannelsProps {
   control: Control<IFilterForm, any>;
@@ -45,7 +46,9 @@ const Channels: FC<IChannelsProps> = ({ control, watch, setValue }) => {
 
   const debouncedChannelSearchValue = useDebounce(channelSearch || '', 300);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteChannels(isFiltersEmpty({ q: debouncedChannelSearchValue }));
+    useInfiniteChannels(
+      isFiltersEmpty({ q: debouncedChannelSearchValue, limit: 30 }),
+    );
   const channelsData = data?.pages.flatMap((page) => {
     return page?.data?.result?.data.map((channel: any) => {
       try {
@@ -66,7 +69,12 @@ const Channels: FC<IChannelsProps> = ({ control, watch, setValue }) => {
         datatestId: `location-${location.name}`,
       })),
       labelRenderer: (option: ICheckboxListOption) => (
-        <div className="ml-2.5 cursor-pointer text-xs">{option.data.name}</div>
+        <>
+          <Truncate
+            text={option.data.name}
+            className="ml-2.5 cursor-pointer text-xs max-w-[200px]"
+          />
+        </>
       ),
       rowClassName: 'px-6 py-3 border-b border-neutral-200',
     },
@@ -84,9 +92,10 @@ const Channels: FC<IChannelsProps> = ({ control, watch, setValue }) => {
                 data-testid="filter-options"
                 className="flex items-center px-3 py-2 bg-neutral-100 rounded-17xl border border-neutral-200 mr-2 my-1"
               >
-                <div className="text-primary-500 text-sm font-medium whitespace-nowrap">
-                  {channel.data.name}
-                </div>
+                <Truncate
+                  text={channel.data.name}
+                  className="text-primary-500 text-sm font-medium whitespace-nowrap max-w-[128px]"
+                />
                 <div className="ml-1">
                   <Icon
                     name="closeCircle"

@@ -7,6 +7,7 @@ import { enumToTitleCase } from 'utils/misc';
 import { useDebounce } from 'hooks/useDebounce';
 import { ICheckboxListOption } from 'components/CheckboxList';
 import Icon from 'components/Icon';
+import Truncate from 'components/Truncate';
 
 export enum ByPeopleEnum {
   OTHERS = 'OTHERS',
@@ -58,7 +59,12 @@ const ByPeople: FC<IByPeopleProps> = ({ control, watch, setValue }) => {
         datatestId: `by-people-${people.name.toLowerCase()}`,
       })),
       labelRenderer: (option: ICheckboxListOption) => (
-        <div className="ml-2.5 cursor-pointer text-xs">{option.data.name}</div>
+        <>
+          <Truncate
+            text={option.data.name}
+            className="ml-2.5 cursor-pointer text-xs max-w-[200px]"
+          />
+        </>
       ),
       rowClassName: 'px-6 py-3 border-b border-neutral-200',
     },
@@ -76,9 +82,10 @@ const ByPeople: FC<IByPeopleProps> = ({ control, watch, setValue }) => {
                 data-testid="filter-options"
                 className="flex items-center px-3 py-2 bg-neutral-100 rounded-17xl border border-neutral-200 mr-2 my-1"
               >
-                <div className="text-primary-500 text-sm font-medium whitespace-nowrap">
-                  {people.data.name}
-                </div>
+                <Truncate
+                  text={people.data.name}
+                  className="text-primary-500 text-sm font-medium whitespace-nowrap max-w-[128px]"
+                />
                 <div className="ml-1">
                   <Icon
                     name="closeCircle"

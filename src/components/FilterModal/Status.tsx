@@ -8,6 +8,7 @@ import { IFilterForm, IStatus } from '.';
 import { UserStatus } from 'queries/users';
 import { titleCase } from 'utils/misc';
 import useProduct from 'hooks/useProduct';
+import Truncate from 'components/Truncate';
 
 interface IStatusProps {
   control: Control<IFilterForm, any>;
@@ -55,7 +56,12 @@ const Status: FC<IStatusProps> = ({ control, watch, setValue }) => {
         datatestId: `status-${status.name.toLowerCase()}`,
       })),
       labelRenderer: (option: ICheckboxListOption) => (
-        <div className="ml-2.5 cursor-pointer text-xs">{option.data.name}</div>
+        <>
+          <Truncate
+            text={option.data.name}
+            className="ml-2.5 cursor-pointer text-xs max-w-[200px]"
+          />
+        </>
       ),
       rowClassName: 'px-6 py-3 border-b border-neutral-200',
     },
@@ -73,9 +79,10 @@ const Status: FC<IStatusProps> = ({ control, watch, setValue }) => {
                 data-testid="filter-options"
                 className="flex items-center px-3 py-2 bg-neutral-100 rounded-17xl border border-neutral-200 mr-2 my-1"
               >
-                <div className="text-primary-500 text-sm font-medium whitespace-nowrap">
-                  {status.data.name}
-                </div>
+                <Truncate
+                  text={status.data.name}
+                  className="text-primary-500 text-sm font-medium whitespace-nowrap max-w-[128px]"
+                />
                 <div className="ml-1">
                   <Icon
                     name="closeCircle"
