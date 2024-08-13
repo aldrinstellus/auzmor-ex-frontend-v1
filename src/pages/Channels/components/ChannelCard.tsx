@@ -98,7 +98,10 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
       }
       onClick={() => navigate(`/channels/${channel.id}`)}
     >
-      <Card className="flex flex-col gap-2 relative group-focus-within/channel-card:shadow-xl">
+      <Card
+        shadowOnHover
+        className="flex flex-col gap-2 relative group-focus-within/channel-card:shadow-xl"
+      >
         <div className="w-full h-[80px] bg-slate-500 rounded-t-9xl">
           <ChannelBanner channel={channel} />
         </div>
