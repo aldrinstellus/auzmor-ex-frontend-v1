@@ -41,7 +41,7 @@ export interface IValidationErrors {
 
 const Signup: FC<ISignupProps> = () => {
   usePageTitle('signup');
-  const { t } = useTranslation('signUp');
+  const { t } = useTranslation('auth', { keyPrefix: 'signUp' });
   const { setUser, setShowOnboard } = useAuth();
   const navigate = useNavigate();
   const navigateWithToken = useNavigateWithToken();
