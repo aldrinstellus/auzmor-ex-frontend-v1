@@ -12,6 +12,7 @@ import { startImportUser } from 'queries/importUsers';
 import Spinner from 'components/Spinner';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useJobStore } from 'stores/jobStore';
+import { useTranslation } from 'react-i18next';
 
 const IMPORT_FORMAT =
   'Name,Email,Manager Email,Designation,Department,Location,Employee Id,Phone Number,Date of Birth,Date of Joining,Marital Status,Role';
@@ -31,6 +32,9 @@ const UploadFileStep: React.FC<AppProps> = ({
   setMeta,
   importId,
 }) => {
+  const { t } = useTranslation('profile', {
+    keyPrefix: 'importUser.uploadFileStep',
+  });
   const { error: uploadError, uploadMedia, uploadStatus } = useUpload();
   const [fileObj, setFileObj] = useState<any>({});
   const [fileError, setFileError] = useState('');
@@ -63,21 +67,17 @@ const UploadFileStep: React.FC<AppProps> = ({
   const onDrop = useCallback(
     async (acceptedFiles: any, fileRejections: any[]) => {
       if (acceptedFiles?.[0]?.size === 0) {
-        setFileError(
-          'Cannot import an empty file. Please ensure the file contains valid content before importing.',
-        );
+        setFileError(t('emptyFileError'));
         return;
       }
       if (fileRejections?.length) {
         const reason =
-          fileRejections[0]?.errors?.[0].message || 'Something went wrong';
+          fileRejections[0]?.errors?.[0].message || t('genericError');
 
         if (reason.includes('is larger')) {
-          setFileError(
-            'File size cannot exceed 5MB. Please try uploading a smaller file size.',
-          );
+          setFileError(t('fileSizeError'));
         } else if (reason.includes('file type')) {
-          setFileError('File type not supported. Upload a supported file type');
+          setFileError(t('fileTypeError'));
         } else {
           setFileError(reason);
         }
@@ -90,7 +90,7 @@ const UploadFileStep: React.FC<AppProps> = ({
         setFileObj(uploadedMedia[0]);
       }
     },
-    [],
+    [uploadMedia, t],
   );
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -113,7 +113,7 @@ const UploadFileStep: React.FC<AppProps> = ({
   return (
     <Modal open={open} className="max-w-2xl">
       <Header
-        title="Import Candidates"
+        title={t('importCandidates')}
         onClose={closeModal}
         closeBtnDataTestId="close-import-modal"
       />
@@ -121,17 +121,17 @@ const UploadFileStep: React.FC<AppProps> = ({
         <div className="flex flex-col justify-center items-center space-y-2">
           <Icon name="folderOpen" className="text-primary-600" size={48} />
           <div className="text-sm text-neutral-900">
-            To invite a list of people, add your file in the given format
+            {t('addFileInstruction')}
           </div>
           <div className="text-xs text-neutral-500">
-            File must be in csv, xls or xlsx format and must not exceed 5MB
+            {t('fileRequirements')}
           </div>
           <div
             className="text-primary-600 font-bold text-sm cursor-pointer"
             data-testid="download-format-cta"
             onClick={downloadFormat}
           >
-            Download format
+            {t('downloadFormat')}
           </div>
         </div>
         {(!!uploadError || !!fileError) && (
@@ -153,7 +153,7 @@ const UploadFileStep: React.FC<AppProps> = ({
                 return (
                   <div className="flex flex-col justify-center items-center py-6">
                     <Spinner />
-                    <div className="text-sm mt-2">Uploading file</div>
+                    <div className="text-sm mt-2">{t('uploadingFile')}</div>
                   </div>
                 );
               }
@@ -167,9 +167,9 @@ const UploadFileStep: React.FC<AppProps> = ({
               }
               return (
                 <div className="text-neutral-900 flex flex-col items-center space-y-4">
-                  <div>Drop Files Here</div>
+                  <div>{t('dropFilesHere')}</div>
                   <div className="bg-neutral-100 rounded-full text-xs font-bold">
-                    OR
+                    {t('or')}
                   </div>
                   <div
                     className="flex items-center space-x-1 border rounded-full px-4 py-1"
@@ -177,7 +177,7 @@ const UploadFileStep: React.FC<AppProps> = ({
                   >
                     <Icon name="documentUpload" size={18} />
                     <span className="text-sm font-bold">
-                      Upload from existing documents
+                      {t('uploadFromDocuments')}
                     </span>
                   </div>
                 </div>
@@ -188,7 +188,7 @@ const UploadFileStep: React.FC<AppProps> = ({
       </div>
       <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
         <Button
-          label="Cancel"
+          label={t('cancel')}
           variant={Variant.Secondary}
           size={Size.Small}
           className="mr-4"
@@ -200,7 +200,7 @@ const UploadFileStep: React.FC<AppProps> = ({
           }
         />
         <Button
-          label="Next"
+          label={t('next')}
           size={Size.Small}
           dataTestId="import-next-cta"
           onClick={() => triggerUserImportMutation.mutate()}

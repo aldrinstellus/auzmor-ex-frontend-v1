@@ -8,6 +8,7 @@ import { useMutation } from '@tanstack/react-query';
 import { startCreatingUsers } from 'queries/importUsers';
 import { useJobStore } from 'stores/jobStore';
 import apiService from 'utils/apiService';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   closeModal: () => any;
@@ -22,6 +23,9 @@ const ConfirmationStep: React.FC<AppProps> = ({
 }) => {
   const { setShowJobProgress, setImportId, setTotal, setStep } = useJobStore();
 
+  const { t } = useTranslation('profile', {
+    keyPrefix: 'importUser.confirmationStep',
+  });
   const startCreatingUserMutation = useMutation(
     () => startCreatingUsers(importId),
     {
@@ -41,16 +45,16 @@ const ConfirmationStep: React.FC<AppProps> = ({
   return (
     <Modal open={open} className="max-w-md">
       <Header
-        title="Confirmation"
+        title={t('confirmation')}
         onClose={() => setStep(StepEnum.Review)}
         closeBtnDataTestId="import-people-close"
       />
       <div className="p-6 flex justify-center items-center text-sm text-neutral-900">
-        Are you sure you want to proceed?
+        {t('proceedConfirmation')}
       </div>
       <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
         <Button
-          label="Review module"
+          label={t('reviewModule')}
           variant={Variant.Secondary}
           size={Size.Small}
           className="mr-4"
@@ -59,7 +63,7 @@ const ConfirmationStep: React.FC<AppProps> = ({
           disabled={startCreatingUserMutation.isLoading}
         />
         <Button
-          label="Confirm"
+          label={t('confirm')}
           size={Size.Small}
           dataTestId="complete-cta"
           loading={startCreatingUserMutation.isLoading}

@@ -20,9 +20,10 @@ const ChannelLogo: FC<IChannelLogoProps> = ({ channel, className = '' }) => {
   return (
     <div className={style}>
       <img
-        className="object-cover  object-center w-full rounded-t-9xl "
+        className="object-cover  object-center w-full rounded-t-9xl"
         src={getChannelLogoImage(channel)}
         data-testid="channel-logo-pic"
+        alt={`channel-logo-${channel.name}`}
       />
     </div>
   );

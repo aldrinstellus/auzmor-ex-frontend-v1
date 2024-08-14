@@ -13,6 +13,8 @@ import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { removeTeamMember } from 'queries/teams';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+
 export interface IRemoveTeamMemberProps {
   open: boolean;
   closeModal: () => void;
@@ -26,6 +28,8 @@ const RemoveTeamMember: FC<IRemoveTeamMemberProps> = ({
   teamId,
   userId,
 }) => {
+  const { t } = useTranslation('profile', { keyPrefix: 'removeTeamMember' });
+
   const onRemoveTeamMember = useMutation({
     mutationFn: removeTeamMember,
     mutationKey: ['remove-team-member'],
@@ -37,12 +41,12 @@ const RemoveTeamMember: FC<IRemoveTeamMemberProps> = ({
       queryClient.invalidateQueries(['teams'], { exact: false });
       queryClient.invalidateQueries(['feed'], { exact: false });
       closeModal();
-      successToastConfig({ content: `Successfully removed one member` });
+      successToastConfig({ content: t('successToast') });
     },
     onError: () => {
       closeModal();
       failureToastConfig({
-        content: 'Error removing the member',
+        content: t('errorToast'),
         dataTestId: 'comment-toaster',
       });
     },
@@ -51,7 +55,7 @@ const RemoveTeamMember: FC<IRemoveTeamMemberProps> = ({
   const Header: FC = () => (
     <div className="flex flex-wrap border-b-1 border-neutral-200 items-center">
       <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
-        Remove user?
+        {t('title')}
       </div>
       <IconButton
         onClick={closeModal}
@@ -68,12 +72,12 @@ const RemoveTeamMember: FC<IRemoveTeamMemberProps> = ({
       <Button
         variant={ButtonVariant.Secondary}
         size={Size.Small}
-        label={'Cancel'}
+        label={t('cancelButton')}
         dataTestId="delete-user-cancel"
         onClick={closeModal}
       />
       <Button
-        label={'Delete'}
+        label={t('deleteButton')}
         className="!bg-red-500 !text-white flex"
         loading={onRemoveTeamMember.isLoading}
         size={Size.Small}
@@ -88,11 +92,12 @@ const RemoveTeamMember: FC<IRemoveTeamMemberProps> = ({
       />
     </div>
   );
+
   return (
     <Modal open={open} className="max-w-sm">
       <Header />
       <div className="text-sm font-medium text-neutral-500 mx-6 mt-6 mb-8">
-        Are you sure you want to remove this member from the team?
+        {t('confirmMessage')}
       </div>
       <Footer />
     </Modal>

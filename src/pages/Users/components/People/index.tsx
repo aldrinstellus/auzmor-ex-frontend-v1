@@ -33,6 +33,7 @@ import { ILocationAPI } from 'queries/location';
 import ImportUsers from '../ImportUsers';
 import { FilterKey } from 'components/FilterMenu';
 import useProduct from 'hooks/useProduct';
+import { useTranslation } from 'react-i18next';
 
 export interface IPeopleProps {
   showModal: boolean;
@@ -69,6 +70,7 @@ const People: FC<IPeopleProps> = ({
   isTeamPeople,
   teamId,
 }) => {
+  const { t } = useTranslation('profile', { keyPrefix: 'people' });
   const {
     searchParams,
     updateParam,
@@ -178,7 +180,7 @@ const People: FC<IPeopleProps> = ({
       control,
       height: 36,
       name: 'role',
-      placeholder: 'Role',
+      placeholder: t('rolePlaceholder'),
       size: InputSize.Small,
       dataTestId: 'filterby-role',
       selectClassName: 'single-select-bold',
@@ -187,17 +189,17 @@ const People: FC<IPeopleProps> = ({
       options: [
         {
           value: UserRole.Admin,
-          label: 'Admin',
+          label: t('roleAdmin'),
           dataTestId: 'filterby-role-admin',
         },
         {
           value: UserRole.Superadmin,
-          label: 'Super Admin',
+          label: t('roleSuperAdmin'),
           dataTestId: 'filterby-role-superadmin',
         },
         {
           value: UserRole.Member,
-          label: 'Member',
+          label: t('roleMember'),
           dataTestId: 'filterby-role-member',
         },
       ],
@@ -332,7 +334,9 @@ const People: FC<IPeopleProps> = ({
   const ShowResultCount = () => {
     return (
       <div className="text-neutral-500" role="contentinfo" tabIndex={0}>
-        Showing {!isLoading && data?.pages[0]?.data?.result?.totalCount} results
+        {t('showingResults', {
+          count: !isLoading && data?.pages[0]?.data?.result?.totalCount,
+        })}
       </div>
     );
   };
@@ -344,7 +348,7 @@ const People: FC<IPeopleProps> = ({
           <div className="flex space-x-4">
             {!isTeamPeople && (
               <Button
-                label="All Members"
+                label={t('allMembers')}
                 size={Size.Small}
                 variant={Variant.Secondary}
                 className="h-9 grow-0"
@@ -387,7 +391,7 @@ const People: FC<IPeopleProps> = ({
                     control,
                     getValues,
                     name: 'search',
-                    placeholder: 'Search members',
+                    placeholder: t('searchMembersPlaceholder'),
                     error: errors.search?.message,
                     dataTestId: 'people-search-members',
                     inputClassName: 'py-[7px] !text-sm !h-9',
@@ -400,14 +404,13 @@ const People: FC<IPeopleProps> = ({
         </div>
 
         {!isLxp && <ShowResultCount />}
-
         {appliedFilters?.status?.length ||
         appliedFilters?.departments?.length ||
         appliedFilters?.locations?.length ? (
           <div className="flex justify-between items-start mb-6">
             <div className="flex items-center space-x-2 flex-wrap gap-y-2">
               <div className="text-base text-neutral-500 whitespace-nowrap">
-                Filter By
+                {t('filterBy')}
               </div>
               {appliedFilters?.status?.map((status: IStatus) => (
                 <div
@@ -419,7 +422,7 @@ const People: FC<IPeopleProps> = ({
                   }
                 >
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
-                    Status{' '}
+                    {t('status')}{' '}
                     <span className="text-primary-500">{status.name}</span>
                   </div>
                   <Icon
@@ -445,7 +448,7 @@ const People: FC<IPeopleProps> = ({
                     }
                   >
                     <div className="mr-1 text-neutral-500 whitespace-nowrap">
-                      Department{' '}
+                      {t('department')}{' '}
                       <span className="text-primary-500">
                         {department.name}
                       </span>
@@ -476,7 +479,7 @@ const People: FC<IPeopleProps> = ({
                   }
                 >
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
-                    Location{' '}
+                    {t('location')}{' '}
                     <span className="text-primary-500">{location.name}</span>
                   </div>
                   <Icon
@@ -497,7 +500,7 @@ const People: FC<IPeopleProps> = ({
               onClick={clearFilters}
               data-testid={`people-clear-filters`}
             >
-              Clear Filters
+              {t('clearFilters')}
             </div>
           </div>
         ) : null}
@@ -548,7 +551,7 @@ const People: FC<IPeopleProps> = ({
                 src={MemberNotFound}
                 width={220}
                 height={144}
-                alt="No Member Found"
+                alt={t('noMemberFoundAlt')}
               />
               <div className="w-full flex flex-col items-center">
                 <div className="flex items-center flex-col space-y-1">
@@ -556,18 +559,18 @@ const People: FC<IPeopleProps> = ({
                     className="text-lg font-bold text-neutral-900"
                     data-testid="teams-no-members-yet"
                   >
-                    No members yet
+                    {t('noMembersYet')}
                   </div>
                   {isAdmin && !isLxp ? (
                     <div className="text-base font-medium text-neutral-500">
-                      {"Let's get started by adding some members!"}
+                      {t('letsGetStarted')}
                     </div>
                   ) : null}
                 </div>
               </div>
               {isAdmin && !isLxp ? (
                 <Button
-                  label={'Add members'}
+                  label={t('addMembers')}
                   variant={Variant.Secondary}
                   className="space-x-1 rounded-[24px]"
                   size={Size.Large}
@@ -588,11 +591,11 @@ const People: FC<IPeopleProps> = ({
               illustration="noResultAlt"
               message={
                 <p>
-                  Sorry we can&apos;t find the profile you are looking for.
-                  <br /> Please check the spelling or try again.
+                  {t('noResultsMessage')}
+                  <br /> {t('noResultsMessage2')}{' '}
                 </p>
               }
-              clearBtnLabel={searchValue ? 'Clear Search' : 'Clear Filters'}
+              clearBtnLabel={searchValue ? t('clearSearch') : t('clearFilters')}
               onClearSearch={() => {
                 searchValue && resetField
                   ? resetField('search', { defaultValue: '' })

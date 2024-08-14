@@ -14,6 +14,8 @@ import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { useNavigate } from 'react-router-dom';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+
 export interface IDeleteTeamProps {
   open: boolean;
   closeModal: () => void;
@@ -27,16 +29,18 @@ const DeleteTeam: FC<IDeleteTeamProps> = ({
   teamId,
   isDetailPage,
 }) => {
+  const { t } = useTranslation('profile', { keyPrefix: 'deleteTeam' });
   const navigate = useNavigate();
+
   const deleteTeamMutation = useMutation({
     mutationKey: ['delete-team', teamId],
     mutationFn: deleteTeam,
-    onError: () => failureToastConfig({ content: 'Error deleting teams' }),
+    onError: () => failureToastConfig({ content: t('errorToast') }),
     onSuccess: () => {
       closeModal();
       queryClient.invalidateQueries({ queryKey: ['teams'] });
       successToastConfig({
-        content: 'Team has been deleted successfully',
+        content: t('successToast'),
         dataTestId: 'team-toaster-message',
       });
       if (isDetailPage) navigate('/teams');
@@ -46,7 +50,7 @@ const DeleteTeam: FC<IDeleteTeamProps> = ({
   const Header: FC = () => (
     <div className="flex flex-wrap border-b-1 border-neutral-200 items-center">
       <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
-        Delete Team?
+        {t('title')}
       </div>
       <IconButton
         onClick={closeModal}
@@ -63,12 +67,12 @@ const DeleteTeam: FC<IDeleteTeamProps> = ({
       <Button
         variant={ButtonVariant.Secondary}
         size={Size.Small}
-        label={'Cancel'}
+        label={t('cancelButton')}
         dataTestId="delete-team-cancel"
         onClick={closeModal}
       />
       <Button
-        label={'Delete'}
+        label={t('deleteButton')}
         className="!bg-red-500 !text-white flex"
         loading={deleteTeamMutation.isLoading}
         size={Size.Small}
@@ -78,12 +82,14 @@ const DeleteTeam: FC<IDeleteTeamProps> = ({
       />
     </div>
   );
+
   return (
     <Modal open={open} className="max-w-sm">
       <Header />
       <div className="text-sm font-medium text-neutral-500 mx-6 mt-6 mb-8">
-        Are you sure you want to delete this team?
-        <br /> This cannot be undone.
+        {t('confirmMessage')}
+        <br />
+        {t('undoMessage')}
       </div>
       <Footer />
     </Modal>

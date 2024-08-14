@@ -17,6 +17,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import WaitForParse from './WaitForParse';
 import WaitForValidate from './WaitForValidate';
 import { useJobStore } from 'stores/jobStore';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   open: boolean;
@@ -32,6 +33,9 @@ enum LoaderStep {
 }
 
 const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
+  const { t } = useTranslation('profile', {
+    keyPrefix: 'importUser.reviewStep',
+  });
   const queryClient = useQueryClient();
   const [loaderStep, setLoaderStep] = useState(LoaderStep.Parse);
   const [showOnlyError, setShowOnlyError] = useState(false);
@@ -60,7 +64,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
     { key: 'idx', name: '', width: 40 },
     {
       key: 'name',
-      name: 'Name',
+      name: t('columns.name'),
       resizable: true,
       width: 200,
       renderCell: ({ row }: any) => {
@@ -80,7 +84,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
     },
     {
       key: 'email',
-      name: 'Email',
+      name: t('columns.email'),
       resizable: true,
       width: 220,
       renderCell: ({ row }: any) => {
@@ -100,7 +104,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
     },
     {
       key: 'managerEmail',
-      name: 'Manager Email',
+      name: t('columns.managerEmail'),
       resizable: true,
       width: 220,
       renderCell: ({ row }: any) => {
@@ -120,7 +124,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
     },
     {
       key: 'designation',
-      name: 'Designation',
+      name: t('columns.designation'),
       resizable: true,
       width: 180,
       renderCell: ({ row }: any) => {
@@ -140,7 +144,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
     },
     {
       key: 'department',
-      name: 'Department',
+      name: t('columns.department'),
       resizable: true,
       width: 220,
       renderCell: ({ row }: any) => {
@@ -160,7 +164,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
     },
     {
       key: 'workLocation',
-      name: 'Location',
+      name: t('columns.location'),
       resizable: true,
       width: 220,
       renderCell: ({ row }: any) => {
@@ -180,7 +184,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
     },
     {
       key: 'employeeId',
-      name: 'Employee ID',
+      name: t('columns.employeeId'),
       resizable: true,
       width: 120,
       renderCell: ({ row }: any) => {
@@ -200,7 +204,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
     },
     {
       key: 'workPhone',
-      name: 'Phone',
+      name: t('columns.phone'),
       resizable: true,
       width: 120,
       renderCell: ({ row }: any) => {
@@ -220,7 +224,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
     },
     {
       key: 'birthDate',
-      name: 'Date of Birth',
+      name: t('columns.dateOfBirth'),
       resizable: true,
       width: 140,
       renderCell: ({ row }: any) => {
@@ -244,9 +248,9 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
         ) {
           return (
             <div className="w-full flex justify-between items-center text-red-500">
-              <p>Date of Birth</p>
+              <p> {t('columns.dateOfBirth')}</p>
               <Tooltip
-                tooltipContent="Date format should be dd/mm/yyyy"
+                tooltipContent={t('tooltips.dateOfBirth')}
                 tooltipPosition="bottom"
               >
                 <Icon name="infoCircle" size={16} color="text-red-500" />
@@ -259,7 +263,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
     },
     {
       key: 'joinDate',
-      name: 'Date of Joining',
+      name: t('columns.dateOfJoining'),
       resizable: true,
       width: 140,
       renderCell: ({ row }: any) => {
@@ -283,9 +287,9 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
         ) {
           return (
             <div className="w-full flex justify-between items-center text-red-500">
-              <p>Date of Joining</p>
+              <p> {t('columns.dateOfJoining')}</p>
               <Tooltip
-                tooltipContent="Date format should be dd/mm/yyyy"
+                tooltipContent={t('tooltips.dateFormat')}
                 tooltipPosition="bottom"
               >
                 <Icon name="infoCircle" size={16} color="text-red-500" />
@@ -298,7 +302,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
     },
     {
       key: 'maritalStatus',
-      name: 'Marital Status',
+      name: t('columns.maritalStatus'),
       resizable: true,
       width: 120,
       renderCell: ({ row }: any) => {
@@ -319,7 +323,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
     },
     {
       key: 'role',
-      name: 'Role',
+      name: t('columns.role'),
       resizable: true,
       width: 120,
       renderCell: ({ row }: any) => {
@@ -377,7 +381,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
             setLoaderStep(LoaderStep.Parse);
             queryClient.removeQueries(['csv-import']);
           }}
-          title="Bulk Add User info"
+          title={t('title')}
           onClose={() => {
             closeModal();
             setLoaderStep(LoaderStep.Parse);
@@ -388,10 +392,12 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
         />
         <div className="bg-purple-50 pt-4">
           <div className="bg-white rounded-7xl mb-4 mx-4 px-4 py-3 shadow-sm">
-            <span className="text-primary-700 font-bold">Importing File </span>{' '}
+            <span className="text-primary-700 font-bold">
+              {t('importingFile')}{' '}
+            </span>{' '}
             <span className="text-primary-700 font-bold text-lg">&gt;</span>{' '}
             <span className="text-primary-500 font-medium text-base">
-              Review
+              {t('review')}
             </span>
           </div>
           {(() => {
@@ -430,7 +436,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
                       }}
                       dataTestId="show-problem-rows"
                     />
-                    <span className="text-sm">Only show rows with problem</span>
+                    <span className="text-sm">{t('showProblemRows')}</span>
                   </div>
 
                   {flatData?.length ? (
@@ -452,13 +458,13 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
                         className="pt-4 text-2xl font-bold"
                         data-testid="no-data-msg"
                       >
-                        {showOnlyError ? 'No error detected' : 'No data'}
+                        {showOnlyError ? t('noDataDetected') : t('noData')}
                       </div>
                     </div>
                   )}
                   {isFetchingNextPage && (
                     <div className="text-xs font-bold text-neutral-500 text-center">
-                      Loading...
+                      {t('loading')}
                     </div>
                   )}
                 </div>
@@ -468,7 +474,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
         </div>
         <div className="flex justify-between items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
-            label="Go Back"
+            label={t('goBack')}
             variant={Variant.Secondary}
             size={Size.Small}
             className="mr-4"
@@ -477,7 +483,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
           />
           <div className="v-center">
             <Button
-              label="Cancel"
+              label={t('cancel')}
               variant={Variant.Secondary}
               size={Size.Small}
               className="mr-4"
@@ -488,7 +494,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
               dataTestId="cancel-review-cta"
             />
             <Button
-              label="Review"
+              label={t('reviewButton')}
               size={Size.Small}
               dataTestId="review-cta"
               onClick={handleClick}
@@ -504,7 +510,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
         {errorConfirm && (
           <Modal open={errorConfirm}>
             <Header
-              title="Unresolved errors"
+              title={t('unresolvedErrors')}
               onClose={closeConfirm}
               closeBtnDataTestId="import-people-close"
             />
@@ -514,17 +520,17 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
                 className="text-lg font-bold text-neutral-700 pt-4"
                 data-testid="issue-count"
               >
-                You have {errorCount} rows with unresolved issue
+                {t('rowsWithIssue', { count: errorCount })}
               </div>
               <div className="text-center mt-4 px-6 pb-4">
-                <div>We will ignore the entire row if you wish to proceed</div>
-                <div>or</div>
-                <div> you can modify your file</div>
+                <div> {t('ignoreRowsMessage')}</div>
+                <div>{t('or')}or</div>
+                <div> {t('modifyFileMessage')} </div>
               </div>
             </div>
             <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
               <Button
-                label="Go back"
+                label={t('goBackButton')}
                 variant={Variant.Secondary}
                 size={Size.Small}
                 className="mr-4"
@@ -532,7 +538,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
                 dataTestId="goback-cta"
               />
               <Button
-                label="Proceed"
+                label={t('proceedButton')}
                 size={Size.Small}
                 dataTestId="proceed-cta"
                 onClick={() => setStep(StepEnum.Confirmation)}
@@ -549,12 +555,10 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
             queryClient.removeQueries(['csv-import']);
             closeConfirm();
           }}
-          title="Confirmation"
-          description={
-            <span>Are you sure you want to clear all changes ?</span>
-          }
+          title={t('confirmation')}
+          description={<span> {t('clearChangesConfirmation')} </span>}
           success={{
-            label: 'Yes',
+            label: t('yesButton'),
             className: '',
             onSubmit: () => {
               setStep(StepEnum.Importing);
@@ -562,7 +566,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
             },
           }}
           discard={{
-            label: 'Cancel',
+            label: t('cancelButton'),
             className: '',
             onCancel: closeBackConfirm,
           }}

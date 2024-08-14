@@ -14,6 +14,7 @@ import {
 import moment from 'moment';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import Button, { Variant as ButtonVariant, Size } from 'components/Button';
+import { useTranslation } from 'react-i18next';
 
 interface ISchedulePost {
   closeModal: () => void;
@@ -26,6 +27,7 @@ export interface IForm {
 }
 
 const SchedulePost: FC<ISchedulePost> = ({ closeModal }) => {
+  const { t } = useTranslation('postBuilder', { keyPrefix: 'schedulePost' });
   const [timezoneFieldVisible, setTimezoneFieldVisible] = useState(false);
   const { setActiveFlow, clearPostContext, setSchedule, schedule } =
     useContext(CreatePostContext);
@@ -75,7 +77,7 @@ const SchedulePost: FC<ISchedulePost> = ({ closeModal }) => {
   let fields = [
     {
       type: FieldType.SingleSelect,
-      label: 'Timezone',
+      label: t('timezone'),
       name: 'timezone',
       control,
       options: timezones.map((timeZone) => ({
@@ -88,12 +90,12 @@ const SchedulePost: FC<ISchedulePost> = ({ closeModal }) => {
           value: currentTimezone,
           label: userTimezone,
         } || '',
-      placeholder: 'Select your timezone',
+      placeholder: t('selectTimezone'),
       dataTestId: 'scheduledpost-timezone',
     },
     {
       type: FieldType.DatePicker,
-      label: 'Date',
+      label: t('date'),
       name: 'date',
       control,
       minDate: new Date(beforeXUnit(1, 'day').toISOString()),
@@ -102,22 +104,21 @@ const SchedulePost: FC<ISchedulePost> = ({ closeModal }) => {
     },
     {
       type: FieldType.TimePicker,
-      setValue, //required
-      setError, //required
-      clearErrors, //required
-      getValues, //required
-      minTime: 'now', // required  "now" | Date
-      control, //required
-      dateFieldName: 'date', //require string | Date
+      setValue,
+      setError,
+      clearErrors,
+      getValues,
+      minTime: 'now',
+      control,
+      dateFieldName: 'date',
       name: 'time',
-      label: 'Time',
-      placeholder: 'Select time',
+      label: t('time'),
+      placeholder: t('selectTime'),
       dataTestId: 'scheduledpost-time',
       rightIcon: 'clock',
       error: errors.time?.message,
     },
   ];
-
   if (!timezoneFieldVisible) {
     fields = fields.filter((field) => field.name != 'timezone');
   }
@@ -125,7 +126,7 @@ const SchedulePost: FC<ISchedulePost> = ({ closeModal }) => {
   return (
     <>
       <Header
-        title={'Schedule a post'}
+        title={t('schedulePost')}
         onBackIconClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
         onClose={() => {
           clearPostContext();
@@ -136,19 +137,20 @@ const SchedulePost: FC<ISchedulePost> = ({ closeModal }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-6 flex flex-col">
           <div className="px-3 py-2 bg-primary-50 mb-4">
-            {getTimeInScheduleFormat(
-              formData.date,
-              formData.time,
-              formData.timezone.value,
-              currentTimezone,
-            )}{' '}
-            based on your profile timezone.
+            {t('scheduleInfo', {
+              time: getTimeInScheduleFormat(
+                formData.date,
+                formData.time,
+                formData.timezone.value,
+                currentTimezone,
+              ),
+            })}
           </div>
           {!timezoneFieldVisible ? (
             <div className="flex flex-row space-x-2 text-sm items-end leading-5 pb-4">
               <div>{userTimezone}</div>
               <Button
-                label="Edit"
+                label={t('edit')}
                 variant={ButtonVariant.Tertiary}
                 size={Size.Small}
                 rightIcon="edit"

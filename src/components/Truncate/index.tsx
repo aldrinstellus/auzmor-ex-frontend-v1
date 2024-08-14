@@ -33,7 +33,7 @@ const Truncate: FC<ITruncateProps> = ({
   const toolTipStyle = useMemo(
     () =>
       clsx({
-        'z-10 whitespace-nowrap overflow-hidden text-ellipsis max-w-3xl': true,
+        'z-10 text-wrap': true,
         [toolTipClassName]: true,
       }),
     [toolTipClassName],

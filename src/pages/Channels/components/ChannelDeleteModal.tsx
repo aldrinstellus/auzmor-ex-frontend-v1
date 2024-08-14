@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { FC } from 'react';
 import { IChannel } from 'stores/channelStore';
 import { useTranslation } from 'react-i18next';
+import Truncate from 'components/Truncate';
 export interface IDeleteChannelModalProps {
   isOpen: boolean;
   closeModal: () => void;
@@ -30,14 +31,14 @@ const DeleteChannelModal: FC<IDeleteChannelModalProps> = ({
   channelData,
 }) => {
   const navigate = useNavigate();
-  const { t } = useTranslation('channels', { keyPrefix: 'deleteChannelModal' });
+  const { t } = useTranslation('channels');
   const deleteChannelMutation = useMutation({
     mutationKey: ['delete-channel', channelData.id],
     mutationFn: (id: string) => deleteChannel(id),
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onError: (error) => {
       failureToastConfig({
-        content: t('failureToast'),
+        content: t('deleteChannelModal.failureToast'),
         dataTestId: 'channel-toaster-message',
       });
     },
@@ -46,7 +47,7 @@ const DeleteChannelModal: FC<IDeleteChannelModalProps> = ({
       closeModal();
       queryClient.invalidateQueries({ queryKey: ['channel'] });
       successToastConfig({
-        content: t('successToast'),
+        content: t('deleteChannelModal.successToast'),
         dataTestId: 'channel-toaster-message',
       });
 
@@ -55,12 +56,13 @@ const DeleteChannelModal: FC<IDeleteChannelModalProps> = ({
   });
 
   const Header: FC = () => (
-    <div className="flex flex-wrap border-b-1 border-neutral-200 items-center">
-      <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
-        {t('delete')}{' '}
-        <span className="text-primary-500">
-          {t('title', { name: channelData.name })}
-        </span>
+    <div className="flex flex-wrap border-b-1 border-neutral-200 items-center justify-between">
+      <div className="text-lg text-black p-4 font-extrabold flex">
+        {t('deleteChannelModal.delete')}{' '}
+        <Truncate
+          text={t('deleteChannelModal.title', { name: channelData.name })}
+          className="text-primary-500 w-56"
+        />
         ?
       </div>
       <IconButton
@@ -78,12 +80,12 @@ const DeleteChannelModal: FC<IDeleteChannelModalProps> = ({
       <Button
         variant={ButtonVariant.Secondary}
         size={Size.Small}
-        label={t('closeButton')}
+        label={t('deleteChannelModal.closeButton')}
         dataTestId="delete-channel-cancel"
         onClick={closeModal}
       />
       <Button
-        label={t('deleteButton')}
+        label={t('deleteChannelModal.deleteButton')}
         className="!bg-red-500 !text-white flex"
         loading={deleteChannelMutation.isLoading}
         size={Size.Small}
@@ -103,8 +105,12 @@ const DeleteChannelModal: FC<IDeleteChannelModalProps> = ({
           color="text-red-500"
           className="mb-4"
         />
-        <p>{t('confirmationMessage', { name: channelData.name })}</p>
-        <p>{t('undoMessage')}</p>
+        <p className="flex">
+          {t('deleteChannelModal.confirmationMessage')} &nbsp;
+          <Truncate text={channelData.name} className="w-24" />
+          {t('channel')}?
+        </p>
+        <p>{t('deleteChannelModal.undoMessage')}</p>
       </div>
       <Footer />
     </Modal>

@@ -74,6 +74,9 @@ const NameRow: FC<AppProps> = ({ data, canEdit }) => {
       error: errors?.name?.message,
       defaultValue: data?.name,
       dataTestId: 'employee-id',
+      showCounter: true,
+      maxLength: 100,
+      autofocus: true,
     },
   ];
 

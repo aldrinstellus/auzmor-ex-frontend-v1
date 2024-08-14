@@ -24,5 +24,300 @@
   "aboutMe": {
     "titleForSelf": "About Me",
     "titleForOther": "About"
+  },
+  "profileCoverSection": {
+    "uploadPhoto": "Upload a photo",
+    "reposition": "Reposition",
+    "deletePhoto": "Delete photo",
+    "outOfOffice": "out of office",
+    "follow": "Follow",
+    "more": "More",
+    "invitationSent": "Invitation has been sent",
+    "addDesignation": "Add designation",
+    "addDepartment": "Add department",
+    "addLocation": "Add location",
+    "applyChanges": "Apply Changes",
+    "toastMessages": {
+      "inviteSuccess": "Invitation has been sent",
+      "updateRoleSuccess": "User role has been updated to admin",
+      "fileNotSupported": "File type not supported. Upload a supported file content",
+      "fileMaxSizeError": "The file size should not exceed 50MB."
+    }
+  },
+  "EditProfileModal": {
+    "fullNameRequired": "This field cannot be empty",
+    "nameLabel": "Name",
+    "preferredNameLabel": "Preferred Name",
+    "positionTitlePlaceholder": "ex. software engineer",
+    "positionTitleLabel": "Position title",
+    "noDesignationsFound": "No Designations found",
+    "departmentPlaceholder": "ex. engineering",
+    "departmentLabel": "Department",
+    "noDepartmentsFound": "No Departments found",
+    "locationPlaceholder": "Select a location",
+    "locationLabel": "Location",
+    "noLocationsFound": "No locations",
+    "uploadPhoto": "Upload a photo",
+    "reposition": "Reposition",
+    "deletePhoto": "Delete photo",
+    "editProfile": "Edit Profile",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes"
+  },
+  "deactivateModal": {
+    "title": "Deactivate User?",
+    "confirmMessage": "Are you sure you want to deactivate this account?",
+    "confirmMessage2": "All the data associated with this account will be removed.",
+    "cancelButton": "Cancel",
+    "deactivateButton": "Deactivate",
+    "successToast": "User has been deactivated"
+  },
+  "reactivateModal": {
+    "title": "Reactivate User?",
+    "successToast": "User has been reactivated",
+    "cancelButton": "Cancel",
+    "reactivateButton": "Reactivate",
+    "confirmationText": "Are you sure you want to reactivate this account?",
+    "confirmationText2": "All the data associated with this account will be restored."
+  },
+  "people": {
+    "rolePlaceholder": "Role",
+    "roleAdmin": "Admin",
+    "roleSuperAdmin": "Super Admin",
+    "roleMember": "Member",
+    "showingResults": "Showing {{count}} results",
+    "allMembers": "All Members",
+    "searchMembersPlaceholder": "Search members",
+    "filterBy": "Filter By",
+    "status": "Status",
+    "location": "Location",
+    "department": "Department",
+    "noMemberFoundAlt": "No Member Found",
+    "noMembersYet": "No members yet",
+    "letsGetStarted": "Let's get started by adding some members!",
+    "addMembers": "Add members",
+    "noResultsMessage": "Sorry we can't find the profile you are looking for.",
+    "norResultMessage2": " Please check the spelling or try again.",
+    "clearSearch": "Clear Search",
+    "clearFilters": "Clear Filters"
+  },
+  "peopleCard": {
+    "roleUpdated": "User role has been updated to admin",
+    "invitationSent": "Invitation has been sent",
+    "status": {
+      "pending": "Pending",
+      "newJoinee": "New joinee"
+    },
+    "roles": {
+      "admin": "Admin",
+      "pending": "Pending",
+      "owner": "Owner",
+      "member": "Member",
+      "superadmin": "Superadmin"
+    },
+    "deactivatedAccount": "Deactivated Account",
+    "notSpecified": "Not specified"
+  },
+  "removeChannelMember": {
+    "title": "Delete User?",
+    "confirmMessage": "Are you sure you want to delete this member?",
+    "undoMessage": "This cannot be undone.",
+    "cancelButton": "Cancel",
+    "deleteButton": "Delete",
+    "errorToast": "Error deleting member",
+    "successToast": "Member has been deleted"
+  },
+  "deletePeople": {
+    "title": "Delete User?",
+    "confirmMessage": "Are you sure you want to delete this member?",
+    "undoMessage": "This cannot be undone.",
+    "cancelButton": "Cancel",
+    "deleteButton": "Delete",
+    "errorToast": "Error deleting member",
+    "successToast": "Member has been deleted"
+  },
+  "deleteTeam": {
+    "title": "Delete Team?",
+    "confirmMessage": "Are you sure you want to delete this team?",
+    "undoMessage": "This cannot be undone.",
+    "cancelButton": "Cancel",
+    "deleteButton": "Delete",
+    "errorToast": "Error deleting teams",
+    "successToast": "Team has been deleted successfully"
+  },
+  "removeTeamMember": {
+    "title": "Remove user?",
+    "confirmMessage": "Are you sure you want to remove this member from the team?",
+    "cancelButton": "Cancel",
+    "deleteButton": "Delete",
+    "successToast": "Successfully removed one member",
+    "errorToast": "Error removing the member"
+  },
+  "teams": {
+    "showingCount": {
+      "title": "Showing {{count}} results",
+      "text": "Showing {{count}} results"
+    },
+    "myTeams": "My Teams",
+    "allTeams": "All Teams",
+    "teamsFilter": "teams-filter",
+    "searchTeams": "Search teams",
+    "filterBy": "Filter By",
+    "category": "Category",
+    "clearFilters": "Clear Filters",
+    "teamNotFoundAlt": "Team Not Found",
+    "noTeamsFound": "No teams found",
+    "noTeamsFoundAdmin": "There are no teams found in your organization right now. Be the first to",
+    "createOne": "create one",
+    "noTeamsFoundUser": "You're not part of any team yet",
+    "noDataFoundMessage": "Sorry we can't find the team you are looking for.",
+    "noDataFoundMessage2": "Please try using different filters."
+  },
+  "teamCard": {
+    "recentlyAdded": "Recently added",
+    "members": "members",
+    "teamIconAlt": "Team Icon"
+  },
+  "teamModal": {
+    "validation": {
+      "nameRequired": "Please enter team name",
+      "categoryRequired": "Please select team category"
+    },
+    "toast": {
+      "createError": "Error Creating Team",
+      "createSuccess": "Team Created Successfully",
+      "updateError": "Error Updating Team",
+      "updateSuccess": "Team has been updated"
+    },
+    "title": {
+      "create": "Add New Team",
+      "edit": "Edit Team"
+    },
+    "button": {
+      "back": "Back",
+      "create": "Create",
+      "update": "Update"
+    },
+    "addTeams": {
+      "teamNamePlaceholder": "ex. Product and design team",
+      "teamNameLabel": "Team Name",
+      "teamCategoryPlaceholder": "Select a category",
+      "teamCategoryLabel": "Team Category",
+      "teamDescriptionLabel": "Team description",
+      "teamDescriptionPlaceholder": "What is the purpose of this team"
+    }
+  },
+  "inviteUserModal": {
+    "invitedUsersDetailsTitle": "Invited Users - Details",
+    "inviteNewPeopleTitle": "Invite new people to your organization",
+    "cancel": "Cancel",
+    "retry": "Retry",
+    "sendInvite": "Send Invite",
+    "errorTitle": "Error!",
+    "errorDescription": "Failed to add participant. Email not recognised.",
+    "errorDescription2": "Please enter valid details.",
+    "tryAgain": "Try Again",
+    "other": "Others",
+    "toastMessages": {
+      "successMsg": " added to your organization successfully"
+    },
+    "invitedUsersList": {
+      "fullName": "Full name",
+      "emailAddress": "Email address",
+      "role": "Role"
+    },
+    "addUsers": {
+      "maxUsersLimitMessage": "You can not add more than 20 people at a time",
+      "addAnother": "Add another"
+    },
+    "inviteFormRow": {
+      "fullNamePlaceholder": "Enter name",
+      "fullNameLabel": "Full Name",
+      "emailPlaceholder": "Add via email",
+      "emailLabel": "Email Address",
+      "roleLabel": "Role",
+      "requiredField": "Required field",
+      "userAlreadyExists": "User already belongs to the organization"
+    }
+  },
+  "importUser": {
+    "validateHeader": {
+      "checkingHeaders": "Checking for headers",
+      "mappingColumns": "Mapping Columns",
+      "errorMappingHeader": "Error mapping header",
+      "viewLess": "view less",
+      "viewDetails": "view details",
+      "pressConfirm": "Press confirm to ignore these columns.",
+      "columns": "Columns",
+      "columnsMappedIncorrectly": "Columns mapped incorrectly",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
+    "uploadFileStep": {
+      "importCandidates": "Import Candidates",
+      "addFileInstruction": "To invite a list of people, add your file in the given format",
+      "fileRequirements": "File must be in csv, xls or xlsx format and must not exceed 5MB",
+      "downloadFormat": "Download format",
+      "emptyFileError": "Cannot import an empty file. Please ensure the file contains valid content before importing.",
+      "genericError": "Something went wrong",
+      "fileSizeError": "File size cannot exceed 5MB. Please try uploading a smaller file size.",
+      "fileTypeError": "File type not supported. Upload a supported file type",
+      "uploadingFile": "Uploading file",
+      "dropFilesHere": "Drop Files Here",
+      "or": "OR",
+      "uploadFromDocuments": "Upload from existing documents",
+      "cancel": "Cancel",
+      "next": "Next"
+    },
+    "confirmationStep": {
+      "confirmation": "Confirmation",
+      "proceedConfirmation": "Are you sure you want to proceed?",
+      "reviewModule": "Review module",
+      "confirm": "Confirm"
+    },
+    "selectSheetStep": {
+      "selectSheet": "Select Sheet",
+      "fileSuccessfullyImported": "file successfully imported"
+    },
+    "reviewStep": {
+      "title": "Bulk Add User info",
+      "importingFile": "Importing File",
+      "review": "Review",
+      "showProblemRows": "Only show rows with problem",
+      "noDataDetected": "No error detected",
+      "noData": "No data",
+      "loading": "Loading...",
+      "goBack": "Go Back",
+      "cancel": "Cancel",
+      "reviewButton": "Review",
+      "unresolvedErrors": "Unresolved errors",
+      "rowsWithIssue": "You have {{count}} rows with unresolved issue",
+      "ignoreRowsMessage": "We will ignore the entire row if you wish to proceed",
+      "or": "or",
+      "modifyFileMessage": "you can modify your file",
+      "goBackButton": "Go back",
+      "proceedButton": "Proceed",
+      "confirmation": "Confirmation",
+      "clearChangesConfirmation": "Are you sure you want to clear all changes ?",
+      "yesButton": "Yes",
+      "cancelButton": "Cancel",
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "managerEmail": "Manager Email",
+        "designation": "Designation",
+        "department": "Department",
+        "location": "Location",
+        "employeeId": "Employee ID",
+        "phone": "Phone",
+        "dateOfBirth": "Date of Birth",
+        "dateOfJoining": "Date of Joining",
+        "maritalStatus": "Marital Status",
+        "role": "Role"
+      },
+      "tooltips": {
+        "dateFormat": "Date format should be dd/mm/yyyy"
+      }
+    }
   }
 }

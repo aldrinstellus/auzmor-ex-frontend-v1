@@ -79,13 +79,16 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
     page.data.result.data.map((category: ICategory) => category),
   );
 
-  const { ref, inView } = useInView();
+  const { ref, inView } = useInView({
+    root: document.getElementById(`channel-${dataTestId}-list`), // root-id
+    rootMargin: '20%',
+  });
 
   useEffect(() => {
     if (inView) {
       fetchNextPage();
     }
-  }, [inView]);
+  }, [inView, fetchNextPage]);
 
   const selectAllEntity = () => {
     channelsData?.forEach((channel: IChannel) =>
@@ -275,6 +278,7 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
         </div>
         <div
           className="flex flex-col max-h-80 overflow-scroll"
+          id={`channel-${dataTestId}-list`}
           data-testid={`${dataTestId}-list`}
         >
           {isLoading ? (

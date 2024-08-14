@@ -40,6 +40,7 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkDirective from 'remark-directive';
 import remarkDirectiveRehype from 'remark-directive-rehype';
+import { useTranslation } from 'react-i18next';
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
     {
@@ -78,6 +79,7 @@ const Post: FC<PostProps> = ({
   setHasChanges,
   readOnly = false,
 }) => {
+  const { t } = useTranslation('post');
   const [feed, getPost, updateFeed] = useFeedStore((state) => [
     state.feed,
     state.getPost,
@@ -125,9 +127,9 @@ const Post: FC<PostProps> = ({
     },
     onSuccess: async (_data, _variables) => {
       successToastConfig({
-        content: 'Post has been bookmarked successfully!',
+        content: t('bookmarkSuccess'),
         dataTestId: 'successfully-bookmarked-toast',
-        actionLabel: 'View Bookmarks',
+        actionLabel: t('viewBookmarks'),
         action: () => navigate('/bookmarks'),
       });
       await queryClient.invalidateQueries(['bookmarks'], { exact: false });
@@ -147,7 +149,7 @@ const Post: FC<PostProps> = ({
     },
     onSuccess: async (_data, _variables) => {
       successToastConfig({
-        content: 'Post removed from your bookmarks',
+        content: t('removeBookmark'),
         dataTestId: 'removed-bookmark-toast',
       });
       await queryClient.invalidateQueries(['bookmarks'], { exact: false });
@@ -356,7 +358,7 @@ const Post: FC<PostProps> = ({
             {!readOnly && (
               <Tooltip
                 tooltipContent={
-                  post.bookmarked ? 'Remove from bookmark' : 'Bookmark post'
+                  post.bookmarked ? t('removeBookMark') : t('bookMarkPost')
                 }
                 tooltipPosition="top"
               >
@@ -382,13 +384,14 @@ const Post: FC<PostProps> = ({
             <div className="flex items-center gap-2 bg-primary-50 justify-between px-3 py-2">
               <Icon name="calendarOutline" size={16} color="text-neutral-900" />
               <div className="text-xs font-medium text-neutral-600 flex-1">
-                Post scheduled for{' '}
-                {getTimeInScheduleFormat(
-                  new Date(post?.schedule.dateTime),
-                  moment(post?.schedule.dateTime).format('h:mm a'),
-                  post?.schedule.timeZone,
-                  currentTimezone,
-                )}
+                {t('scheduledPostText', {
+                  time: getTimeInScheduleFormat(
+                    new Date(post?.schedule.dateTime),
+                    moment(post?.schedule.dateTime).format('h:mm a'),
+                    post?.schedule.timeZone,
+                    currentTimezone,
+                  ),
+                })}
               </div>
               <div className="flex items-center gap-3">
                 <Icon
@@ -402,7 +405,7 @@ const Post: FC<PostProps> = ({
                   onClick={openPublishModal}
                   data-testid="scheduledpost-tab-publishnow"
                 >
-                  Publish now
+                  {t('publishNow')}
                 </div>
               </div>
             </div>
@@ -448,7 +451,7 @@ const Post: FC<PostProps> = ({
                   <div
                     className={`flex text-xs font-normal text-neutral-500 cursor-pointer group-hover:text-primary-500 group-focus:text-primary-500`}
                   >
-                    {totalCount} reacted
+                    {t('reactionCount', { count: totalCount })}
                   </div>
                 )}
               </div>
@@ -487,7 +490,7 @@ const Post: FC<PostProps> = ({
                       dataTestIdPrefix="post-reaction"
                     />
                     <Button
-                      label="Comment"
+                      label={t('comment')}
                       variant={Variant.Tertiary}
                       size={Size.Small}
                       labelClassName="text-xs font-normal text-neutral-500 hover:text-primary-500 group-hover:text-primary-500 group-focus:text-primary-500"

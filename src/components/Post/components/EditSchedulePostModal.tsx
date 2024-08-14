@@ -1,4 +1,8 @@
+import { FC, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
+import { useForm } from 'react-hook-form';
+import moment from 'moment';
 import Button, { Variant as ButtonVariant, Size } from 'components/Button';
 import Layout, { FieldType } from 'components/Form';
 import Modal from 'components/Modal';
@@ -6,10 +10,7 @@ import Header from 'components/ModalHeader';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
-import moment from 'moment';
 import { IPost, IPostPayload, updatePost } from 'queries/post';
-import { FC, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { useFeedStore } from 'stores/feedStore';
 import {
   afterXUnit,
@@ -39,9 +40,12 @@ const EditSchedulePostModal: FC<EditSchedulePostModalProp> = ({
   schedule,
   post,
 }) => {
+  const { t } = useTranslation('post', { keyPrefix: 'editSchedulePostModal' });
   const [timezoneFieldVisible, setTimezoneFieldVisible] = useState(false);
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
+  const { currentTimezone } = useCurrentTimezone();
+
   const updatePostMutation = useMutation({
     mutationKey: ['updatePostMutation'],
     mutationFn: (payload: IPostPayload) =>
@@ -62,21 +66,22 @@ const EditSchedulePostModal: FC<EditSchedulePostModalProp> = ({
         updateFeed(variables.id, context?.previousData);
       }
       failureToastConfig({
-        content: 'Error updating post',
+        content: t('errorUpdatingPost'),
         dataTestId: 'post-update-toaster',
       });
     },
     onSuccess: async () =>
       successToastConfig({
-        content: 'Post updated successfully',
+        content: t('postUpdatedSuccessfully'),
         dataTestId: 'post-update-toaster',
       }),
   });
+
   const userTimezone = getTimezoneNameFromIANA(schedule.timeZone);
-  const { currentTimezone } = useCurrentTimezone();
   const onSubmit = (_data: IForm) => {
     // console.log(data);
   };
+
   const {
     handleSubmit,
     control,
@@ -101,7 +106,7 @@ const EditSchedulePostModal: FC<EditSchedulePostModalProp> = ({
   let fields = [
     {
       type: FieldType.SingleSelect,
-      label: 'Timezone',
+      label: t('timezoneField.label'),
       name: 'timezone',
       control,
       options: timezones.map((timeZone) => ({
@@ -113,12 +118,12 @@ const EditSchedulePostModal: FC<EditSchedulePostModalProp> = ({
         value: schedule.timeZone,
         label: userTimezone,
       },
-      placeholder: 'Select your timezone',
+      placeholder: t('timezoneField.placeholder'),
       dataTestId: 'schedule-post-timezone',
     },
     {
       type: FieldType.DatePicker,
-      label: 'Date',
+      label: t('dateField.label'),
       name: 'date',
       control,
       minDate: new Date(beforeXUnit(1, 'day').toISOString()),
@@ -127,16 +132,16 @@ const EditSchedulePostModal: FC<EditSchedulePostModalProp> = ({
     },
     {
       type: FieldType.TimePicker,
-      setValue, //required
-      setError, //required
-      clearErrors, //required
-      getValues, //required
-      minTime: 'now', // required  "now" | Date
-      control, //required
-      dateFieldName: 'date', //require string | Date
+      setValue,
+      setError,
+      clearErrors,
+      getValues,
+      minTime: 'now',
+      control,
+      dateFieldName: 'date',
       name: 'time',
-      label: 'Time',
-      placeholder: 'Select time',
+      label: t('timeField.label'),
+      placeholder: t('timeField.placeholder'),
       dataTestId: 'schedule-post-time',
       rightIcon: 'clock',
       error: errors.time?.message,
@@ -149,23 +154,24 @@ const EditSchedulePostModal: FC<EditSchedulePostModalProp> = ({
 
   return (
     <Modal open={true} className="max-w-2xl">
-      <Header title="Schedule a post" onClose={closeModal} />
+      <Header title={t('modalTitle')} onClose={closeModal} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-6 flex flex-col">
           <div className="px-3 py-2 bg-primary-50 mb-4">
-            {getTimeInScheduleFormat(
-              date,
-              time,
-              timezone.value,
-              currentTimezone,
-            )}{' '}
-            based on your profile timezone.
+            {t('scheduledTime', {
+              time: getTimeInScheduleFormat(
+                date,
+                time,
+                timezone.value,
+                currentTimezone,
+              ),
+            })}
           </div>
           {!timezoneFieldVisible ? (
             <div className="flex flex-row space-x-2 text-sm items-end leading-5 pb-4">
               <div>{userTimezone}</div>
               <Button
-                label="Edit"
+                label={t('editButton')}
                 variant={ButtonVariant.Tertiary}
                 size={Size.Small}
                 rightIcon="edit"
@@ -182,13 +188,13 @@ const EditSchedulePostModal: FC<EditSchedulePostModalProp> = ({
           <div className="flex">
             <Button
               variant={ButtonVariant.Secondary}
-              label="Cancel"
+              label={t('cancelButton')}
               className="mr-3"
               dataTestId="schedule-post-backcta"
               onClick={closeModal}
             />
             <Button
-              label={'Save'}
+              label={t('saveButton')}
               dataTestId="schedule-post-next-cta"
               onClick={() => {
                 const hours = parseInt(time.split(' ')[0].split(':')[0]);

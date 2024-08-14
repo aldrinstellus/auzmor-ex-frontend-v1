@@ -13,6 +13,8 @@ import { truncate } from 'lodash';
 import Spinner from 'components/Spinner';
 import ValidateHeaders from '../ValidateHeaders';
 import { useJobStore } from 'stores/jobStore';
+import { useTranslation } from 'react-i18next';
+import Truncate from 'components/Truncate';
 
 type AppProps = {
   open: boolean;
@@ -37,7 +39,9 @@ const SelectSheetStep: React.FC<AppProps> = ({
   const parseMutation = useMutation((formData: any) =>
     updateParseImport(importId, formData),
   );
-
+  const { t } = useTranslation('profile', {
+    keyPrefix: 'importUser.selectSheetStep',
+  });
   const { control, getValues, setValue, watch } = useForm<IForm>({
     mode: 'onSubmit',
   });
@@ -63,8 +67,8 @@ const SelectSheetStep: React.FC<AppProps> = ({
       type: FieldType.SingleSelect,
       control,
       name: 'sheet',
-      label: 'Select Sheet',
-      placeholder: 'Select Sheet',
+      label: t('selectSheet'),
+      placeholder: t('selectSheet'),
       showSearch: false,
       options: meta.sheetOptions,
       dataTestId: 'select-sheet',
@@ -77,10 +81,8 @@ const SelectSheetStep: React.FC<AppProps> = ({
         title={
           <div className="v-center">
             <Icon name="boldTick" className="text-primary-500" />
-            <span>
-              {truncate(meta?.file?.name, { length: 40 })} file successfully
-              imported
-            </span>
+            <Truncate text={meta?.file?.name} className="max-w-[280px] " />
+            <span className="ml-1">{t('fileSuccessfullyImported')}</span>
           </div>
         }
         onClose={closeModal}

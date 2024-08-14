@@ -67,6 +67,7 @@ const SingleSelect = forwardRef(
     }: ISingleSelectProps,
     ref?: any,
   ) => {
+    const [open, setOpen] = useState<boolean>(false);
     const { field } = useController({
       name,
       control,
@@ -115,7 +116,14 @@ const SingleSelect = forwardRef(
       </div>
     );
 
-    const [open, setOpen] = useState<boolean>(false);
+    useEffect(() => {
+      const elem = document.querySelectorAll(`div[name="${name}"]`);
+      if (elem) {
+        for (const each of elem) {
+          each.removeAttribute('aria-label');
+        }
+      }
+    }, []);
 
     return (
       <ConfigProvider
