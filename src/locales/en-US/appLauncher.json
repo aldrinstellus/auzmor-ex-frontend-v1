@@ -106,7 +106,11 @@
     "updateFailureToastContent": "Error updating the app",
     "requiredField": "Required field",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "requiredError": "This field cannot be empty",
+    "protocolError": "The URL must start with http:// or https://",
+    "descriptionError": "Description cannot exceed 300 characters",
+    "labelMaxError": "Label cannot exceed 60 characters"
   },
   "select-app-modal": {
     "title": "Select apps",

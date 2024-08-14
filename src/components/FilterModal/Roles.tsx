@@ -7,6 +7,7 @@ import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { IFilterForm, IRole } from '.';
 import { titleCase } from 'utils/misc';
 import { Role } from 'utils/enum';
+import Truncate from 'components/Truncate';
 
 interface IStatusProps {
   control: Control<IFilterForm, any>;
@@ -47,7 +48,12 @@ const Roles: FC<IStatusProps> = ({ control, watch, setValue }) => {
         datatestId: `role-${role.name.toLowerCase()}`,
       })),
       labelRenderer: (option: ICheckboxListOption) => (
-        <div className="ml-2.5 cursor-pointer text-xs">{option.data.name}</div>
+        <>
+          <Truncate
+            text={option.data.name}
+            className="ml-2.5 cursor-pointer text-xs max-w-[200px]"
+          />
+        </>
       ),
       rowClassName: 'px-6 py-3 border-b border-neutral-200',
     },
@@ -68,6 +74,10 @@ const Roles: FC<IStatusProps> = ({ control, watch, setValue }) => {
                 <div className="text-primary-500 text-sm font-medium whitespace-nowrap">
                   {role.data.name}
                 </div>
+                <Truncate
+                  text={role.data.name}
+                  className="text-primary-500 text-sm font-medium whitespace-nowrap max-w-[128px]"
+                />
                 <div className="ml-1">
                   <Icon
                     name="closeCircle"
