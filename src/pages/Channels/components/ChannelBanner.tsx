@@ -13,6 +13,7 @@ const ChannelBanner: FC<IChannelBannerProps> = ({ channel }) => {
         <img
           className="object-cover h-full w-full rounded-t-9xl"
           src={channel.banner?.original}
+          alt="Channel Cover Banner"
         />
         <div className="w-full h-full bg-black top-0 left-0 absolute rounded-t-9xl opacity-30"></div>
       </div>

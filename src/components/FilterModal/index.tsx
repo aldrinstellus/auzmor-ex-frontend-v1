@@ -33,6 +33,7 @@ import ByPeople, { ByPeopleEnum } from './ByPeople';
 import ChannelRequestStatus from './ChannelRequestStatus';
 import { titleCase } from 'utils/misc';
 import Channels from './Channels';
+import { IS_PROD } from 'utils/constants';
 
 export interface IFilterForm {
   visibilityRadio: ChannelVisibilityEnum;
@@ -298,145 +299,58 @@ const FilterModal: FC<IFilterModalProps> = ({
   };
 
   const filterOptionMappings = {
-    'doc-people-filters': [
-      FilterModalVariant.Team,
-      FilterModalVariant.App,
-      FilterModalVariant.Orgchart,
-      FilterModalVariant.People,
-      FilterModalVariant.ChannelsListing,
-      FilterModalVariant.ChannelsMangeAcess,
-      FilterModalVariant.ChannelMember,
-      FilterModalVariant.ChannelRequest,
-      FilterModalVariant.LxpApp,
-    ],
-    'doc-type-filters': [
-      FilterModalVariant.Team,
-      FilterModalVariant.App,
-      FilterModalVariant.Orgchart,
-      FilterModalVariant.People,
-      FilterModalVariant.ChannelsListing,
-      FilterModalVariant.ChannelMember,
-      FilterModalVariant.ChannelsMangeAcess,
-      FilterModalVariant.ChannelRequest,
-      FilterModalVariant.LxpApp,
-    ],
-    'doc-modified-filters': [
-      FilterModalVariant.Team,
-      FilterModalVariant.App,
-      FilterModalVariant.Orgchart,
-      FilterModalVariant.People,
-      FilterModalVariant.ChannelsListing,
-      FilterModalVariant.ChannelsMangeAcess,
-      FilterModalVariant.ChannelMember,
-      FilterModalVariant.ChannelRequest,
-      FilterModalVariant.LxpApp,
-    ],
-    'visibility-filters': [
-      FilterModalVariant.Team,
-      FilterModalVariant.App,
-      FilterModalVariant.Orgchart,
-      FilterModalVariant.People,
-      FilterModalVariant.Document,
-      FilterModalVariant.ChannelsMangeAcess,
-      FilterModalVariant.ChannelMember,
-      FilterModalVariant.ChannelRequest,
-      FilterModalVariant.LxpApp,
-    ],
-    'channel-type-filters': [
-      FilterModalVariant.Team,
-      FilterModalVariant.App,
-      FilterModalVariant.Orgchart,
-      FilterModalVariant.People,
-      FilterModalVariant.Document,
-      FilterModalVariant.ChannelsMangeAcess,
-      FilterModalVariant.ChannelMember,
-      FilterModalVariant.ChannelRequest,
-      FilterModalVariant.LxpApp,
-    ],
-    'channel-roles-filters': [
-      FilterModalVariant.Team,
-      FilterModalVariant.App,
-      FilterModalVariant.Orgchart,
-      FilterModalVariant.People,
-      FilterModalVariant.Document,
-      FilterModalVariant.ChannelsListing,
-      FilterModalVariant.ChannelsMangeAcess,
-      FilterModalVariant.ChannelRequest,
-      FilterModalVariant.LxpApp,
-    ],
+    'doc-people-filters': [FilterModalVariant.Document],
+    'doc-type-filters': [FilterModalVariant.Document],
+    'doc-modified-filters': [FilterModalVariant.Document],
+    'visibility-filters': IS_PROD ? [] : [FilterModalVariant.ChannelsListing],
+    'channel-type-filters': IS_PROD ? [] : [FilterModalVariant.ChannelsListing],
+    'channel-roles-filters': IS_PROD ? [] : [FilterModalVariant.ChannelMember],
     'locations-filters': [
-      FilterModalVariant.Team,
-      FilterModalVariant.App,
-      FilterModalVariant.ChannelsListing,
-      FilterModalVariant.Document,
-      FilterModalVariant.ChannelsMangeAcess,
-      FilterModalVariant.ChannelMember,
-      FilterModalVariant.ChannelRequest,
-      FilterModalVariant.LxpApp,
+      FilterModalVariant.Orgchart,
+      FilterModalVariant.People,
     ],
     'departments-filters': [
-      FilterModalVariant.Team,
-      FilterModalVariant.App,
-      FilterModalVariant.ChannelsListing,
-      FilterModalVariant.ChannelMember,
-      FilterModalVariant.Document,
-      FilterModalVariant.ChannelsMangeAcess,
-      FilterModalVariant.ChannelRequest,
-      FilterModalVariant.LxpApp,
+      FilterModalVariant.Orgchart,
+      FilterModalVariant.People,
     ],
     'categories-filters': [
-      FilterModalVariant.Orgchart,
-      FilterModalVariant.ChannelMember,
-      FilterModalVariant.People,
-      FilterModalVariant.Document,
-      FilterModalVariant.ChannelsMangeAcess,
-      FilterModalVariant.ChannelRequest,
-    ],
-    'channel-filters': [
       FilterModalVariant.Team,
       FilterModalVariant.App,
-      FilterModalVariant.ChannelsListing,
-      FilterModalVariant.Document,
-      FilterModalVariant.ChannelsMangeAcess,
-      FilterModalVariant.ChannelMember,
-      FilterModalVariant.ChannelRequest,
-      FilterModalVariant.Orgchart,
+      FilterModalVariant.LxpApp,
+      ...(IS_PROD ? [] : [FilterModalVariant.ChannelsListing]),
     ],
+    'channel-filters': IS_PROD
+      ? []
+      : [FilterModalVariant.People, FilterModalVariant.LxpApp],
     'team-filters': [
-      FilterModalVariant.People,
-      FilterModalVariant.Orgchart,
-      FilterModalVariant.Team,
-      FilterModalVariant.ChannelsListing,
-      FilterModalVariant.Document,
+      FilterModalVariant.App,
+      FilterModalVariant.LxpApp,
+      ...(IS_PROD
+        ? []
+        : [
+            FilterModalVariant.ChannelMember,
+            FilterModalVariant.ChannelRequest,
+            FilterModalVariant.ChannelsMangeAcess,
+          ]),
     ],
     'status-filters': [
-      FilterModalVariant.Team,
-      FilterModalVariant.App,
-      FilterModalVariant.ChannelsListing,
-      FilterModalVariant.Document,
-      FilterModalVariant.ChannelRequest,
-      FilterModalVariant.LxpApp,
-    ],
-    'by-people-filter': [
-      FilterModalVariant.Team,
-      FilterModalVariant.App,
-      FilterModalVariant.ChannelsListing,
-      FilterModalVariant.Document,
-      FilterModalVariant.Orgchart,
       FilterModalVariant.People,
-      FilterModalVariant.LxpApp,
-    ],
-    'channel-request-status': [
-      FilterModalVariant.Team,
-      FilterModalVariant.App,
-      FilterModalVariant.LxpApp,
       FilterModalVariant.Orgchart,
-      FilterModalVariant.People,
-      FilterModalVariant.ChannelsListing,
-      FilterModalVariant.ChannelMember,
-      FilterModalVariant.ChannelsMangeAcess,
-      FilterModalVariant.ChannelRequest,
+      ...(IS_PROD
+        ? []
+        : [
+            FilterModalVariant.ChannelMember,
+            FilterModalVariant.ChannelsMangeAcess,
+          ]),
     ],
+    'by-people-filter': IS_PROD
+      ? []
+      : [
+          FilterModalVariant.ChannelMember,
+          FilterModalVariant.ChannelRequest,
+          FilterModalVariant.ChannelsMangeAcess,
+        ],
+    'channel-request-status': [],
   };
 
   const filterNavigation = [
@@ -455,7 +369,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <DocumentPeople control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: filterOptionMappings['doc-people-filters'].includes(variant),
+      isHidden: !filterOptionMappings['doc-people-filters'].includes(variant),
       dataTestId: 'filterby-doc-people',
     },
     {
@@ -473,7 +387,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <DocumentType control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: filterOptionMappings['doc-type-filters'].includes(variant),
+      isHidden: !filterOptionMappings['doc-type-filters'].includes(variant),
       dataTestId: 'filterby-doc-type',
     },
     {
@@ -486,7 +400,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <DocumentModified control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: filterOptionMappings['doc-modified-filters'].includes(variant),
+      isHidden: !filterOptionMappings['doc-modified-filters'].includes(variant),
       dataTestId: 'filterby-doc-people',
     },
     {
@@ -499,7 +413,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <Visibility control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: filterOptionMappings['visibility-filters'].includes(variant),
+      isHidden: !filterOptionMappings['visibility-filters'].includes(variant),
       dataTestId: 'filterby-visibility',
     },
     {
@@ -512,7 +426,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <ChannelType control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: filterOptionMappings['channel-type-filters'].includes(variant),
+      isHidden: !filterOptionMappings['channel-type-filters'].includes(variant),
       dataTestId: 'filterby-channel-type',
     },
 
@@ -531,7 +445,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <Locations control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: filterOptionMappings['locations-filters'].includes(variant),
+      isHidden: !filterOptionMappings['locations-filters'].includes(variant),
       dataTestId: 'filterby-location',
     },
     {
@@ -549,7 +463,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <Departments control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: filterOptionMappings['departments-filters'].includes(variant),
+      isHidden: !filterOptionMappings['departments-filters'].includes(variant),
       dataTestId: 'filterby-department',
     },
     {
@@ -576,7 +490,7 @@ const FilterModal: FC<IFilterModalProps> = ({
           }
         />
       ),
-      isHidden: filterOptionMappings['categories-filters'].includes(variant),
+      isHidden: !filterOptionMappings['categories-filters'].includes(variant),
       dataTestId: 'filterby-categories',
     },
     {
@@ -594,7 +508,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <Channels control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: filterOptionMappings['channel-filters'].includes(variant),
+      isHidden: !filterOptionMappings['channel-filters'].includes(variant),
       dataTestId: 'filterby-channel-filters',
     },
     {
@@ -612,7 +526,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <Teams control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: filterOptionMappings['team-filters'].includes(variant),
+      isHidden: !filterOptionMappings['team-filters'].includes(variant),
       dataTestId: 'filterby-teams',
     },
     {
@@ -630,7 +544,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <Status control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: filterOptionMappings['status-filters'].includes(variant),
+      isHidden: !filterOptionMappings['status-filters'].includes(variant),
       dataTestId: 'filterby-status',
     },
     {
@@ -652,8 +566,7 @@ const FilterModal: FC<IFilterModalProps> = ({
           setValue={setValue}
         />
       ),
-      isHidden:
-        filterOptionMappings['channel-request-status'].includes(variant),
+      isHidden: true,
       dataTestId: 'filterby-channel-request-status',
     },
     {
@@ -671,7 +584,8 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <Roles control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: filterOptionMappings['channel-roles-filters'].includes(variant),
+      isHidden:
+        !filterOptionMappings['channel-roles-filters'].includes(variant),
       dataTestId: 'filterby-roles',
     },
     {
@@ -689,7 +603,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <ByPeople control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: filterOptionMappings['by-people-filter'].includes(variant),
+      isHidden: !filterOptionMappings['by-people-filter'].includes(variant),
       dataTestId: 'filterby-Bypeople',
     },
   ].filter((filter) => !filter.isHidden);

@@ -17,3 +17,5 @@ export const KB = 1 * 1024; // 1 KB
 export const HEX_REGEX = /^#([0-9a-f]{6})$/i;
 
 export const SESSION_ID = 'auz-session-id';
+
+export const IS_PROD = process.env.REACT_APP_ENV === 'PRODUCTION';
