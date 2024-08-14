@@ -58,23 +58,24 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
     useModal(false);
 
   const searchValue = watch('search');
-  const { data, isLoading } = useInfiniteChannelMembers({
-    channelId: channelData?.id,
-    q: isFiltersEmpty({
-      q: searchValue,
-      sort: filters?.sort,
-      userRole: roles?.value,
-      userStatus: filters?.status?.length
-        ? filters?.status?.map((eachStatus: any) => eachStatus.id).join(',')
-        : undefined,
-      userTeam: filters?.teams?.length
-        ? filters?.teams?.map((eachStatus: any) => eachStatus.id).join(',')
-        : undefined,
-      byPeople: filters?.byPeople?.length
-        ? filters?.byPeople?.map((eachStatus: any) => eachStatus.id).join(',')
-        : undefined,
-    }),
-  });
+  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
+    useInfiniteChannelMembers({
+      channelId: channelData?.id,
+      q: isFiltersEmpty({
+        q: searchValue,
+        sort: filters?.sort,
+        userRole: roles?.value,
+        userStatus: filters?.status?.length
+          ? filters?.status?.map((eachStatus: any) => eachStatus.id).join(',')
+          : undefined,
+        userTeam: filters?.teams?.length
+          ? filters?.teams?.map((eachStatus: any) => eachStatus.id).join(',')
+          : undefined,
+        byPeople: filters?.byPeople?.length
+          ? filters?.byPeople?.map((eachStatus: any) => eachStatus.id).join(',')
+          : undefined,
+      }),
+    });
   const channelMembers = data?.pages.flatMap((page) => {
     return page?.data?.result?.data
       .map((user: any) => {
@@ -171,7 +172,12 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
             dataTestId="people"
           />
         ) : (
-          <ManageAccessTable data={channelMembers} />
+          <ManageAccessTable
+            hasNextPage={hasNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+            fetchNextPage={fetchNextPage}
+            data={channelMembers}
+          />
         )}
       </Card>
       {showAddMemberModal && channelData && (

@@ -1,7 +1,7 @@
 import Avatar from 'components/Avatar';
 
 import { getFullName, getProfileImage, isNewEntity } from 'utils/misc';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import Spinner from 'components/Spinner';
 import {
   Table,
@@ -22,15 +22,31 @@ import { useParams } from 'react-router-dom';
 import { CHANNEL_ROLE } from 'stores/channelStore';
 import queryClient from 'utils/queryClient';
 import useAuth from 'hooks/useAuth';
+import { useInView } from 'react-intersection-observer';
 
 type AppProps = {
   isLoading?: boolean;
   data: any;
+  fetchNextPage?: () => any;
+  hasNextPage?: boolean;
+  isFetchingNextPage?: boolean;
 };
-const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
+const ManageAccessTable: FC<AppProps> = ({
+  isLoading = false,
+  hasNextPage = false,
+  isFetchingNextPage = false,
+  fetchNextPage = () => {},
+  data,
+}) => {
   const { t } = useTranslation('channelDetail', { keyPrefix: 'manageAccess' });
   const { channelId } = useParams();
 
+  const { ref, inView } = useInView();
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
   const { user: currentUser } = useAuth();
   const updateMemberRoleMutation = useMutation({
     mutationFn: updateMemberRole,
@@ -149,11 +165,14 @@ const ManageAccessTable: FC<AppProps> = ({ isLoading = false, data }) => {
                 </TableCell>
               </TableRow>
             ))}
+            {hasNextPage && !isFetchingNextPage && (
+              <TableRow ref={ref}></TableRow>
+            )}
           </TableBody>
         )}
       </Table>
-      {isLoading && (
-        <div className="flex  items-center p-4 justify-center    ">
+      {isFetchingNextPage && (
+        <div className="flex items-center w-full justify-center ">
           <Spinner />
         </div>
       )}

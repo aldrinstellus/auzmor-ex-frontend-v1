@@ -48,30 +48,6 @@ export interface IAddAppForm {
   isNewCategory?: boolean;
 }
 
-const AddAppFormSchema = yup.object({
-  url: yup
-    .string()
-    .required('This field cannot be empty')
-    .matches(URL_REGEX, 'Enter a valid URL'),
-
-  label: yup
-    .string()
-    .required('This field cannot be empty')
-    .max(60, 'Label cannot exceed 60 characters'),
-  description: yup
-    .string()
-    .test(
-      'len',
-      'Description cannot exceed 300 characters',
-      (val) => (val || '').toString().length <= 300,
-    ),
-  audience: yup.array(),
-  icon: yup.object().nullable(),
-  acsUrl: yup.string(),
-  entityId: yup.string(),
-  relayState: yup.string(),
-});
-
 const AddApp: FC<AddAppProps> = ({
   open,
   closeModal,
@@ -80,6 +56,32 @@ const AddApp: FC<AddAppProps> = ({
 }) => {
   const { t } = useTranslation('appLauncher', {
     keyPrefix: 'addApp',
+  });
+
+  const AddAppFormSchema = yup.object({
+    url: yup
+      .string()
+      .required(t('requiredError'))
+      .test('is-valid-url', t('protocolError'), (value) =>
+        /^(http|https):\/\//.test(value || ''),
+      )
+      .matches(URL_REGEX, 'Enter a valid URL'),
+    label: yup
+      .string()
+      .required(t('requiredError'))
+      .max(60, t('labelMaxError')),
+    description: yup
+      .string()
+      .test(
+        'len',
+        t('descriptionError'),
+        (val) => (val || '').toString().length <= 300,
+      ),
+    audience: yup.array(),
+    icon: yup.object().nullable(),
+    acsUrl: yup.string(),
+    entityId: yup.string(),
+    relayState: yup.string(),
   });
   const {
     control,
@@ -112,6 +114,17 @@ const AddApp: FC<AddAppProps> = ({
   const { isLxp } = useProduct();
   const [activeFlow, setActiveFlow] = useState(ADD_APP_FLOW.AddApp);
   const [audience, setAudience] = useState<any>(data?.audience || []);
+
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      if (name === 'url' && value.url) {
+        const titleMatch = value.url.match(/https?:\/\/(?:www\.)?([^.]+)\./);
+        const title = titleMatch ? titleMatch[1] : '';
+        setValue('label', title);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, setValue]); // auto fill the label on the basis of url same as Channel links
 
   const queryClient = useQueryClient();
 

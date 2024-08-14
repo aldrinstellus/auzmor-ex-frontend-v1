@@ -34,6 +34,8 @@ import { useChannelRole } from 'hooks/useChannelRole';
 import { ShowingCount } from 'pages/Users/components/Teams';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import { useInView } from 'react-intersection-observer';
+import PageLoader from 'components/PageLoader';
 
 type AppProps = {
   channelData: IChannel;
@@ -53,6 +55,13 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
   const { watch, resetField } = filterForm;
   const searchValue = watch('search');
 
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
   const { searchParams } = useURLParams();
   const parsedTab = searchParams.get('type');
   const channelRequestStatus = filters?.channelRequestStatus?.length
@@ -63,25 +72,27 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
 
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
-  const { data, isLoading } = useInfiniteChannelMembers({
-    channelId: channelData?.id,
-    q: isFiltersEmpty({
-      q: searchValue,
-      sort: filters?.sort,
-      userStatus: filters?.status?.length
-        ? filters?.status?.map((eachStatus: any) => eachStatus.id).join(',')
-        : undefined,
-      userRole: filters?.roles?.length
-        ? filters?.roles?.map((role: any) => role.id).join(',')
-        : undefined,
-      userTeam: filters?.teams?.length
-        ? filters?.teams?.map((eachStatus: any) => eachStatus.id).join(',')
-        : undefined,
-      byPeople: filters?.byPeople?.length
-        ? filters?.byPeople?.map((eachStatus: any) => eachStatus.id).join(',')
-        : undefined,
-    }),
-  });
+  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
+    useInfiniteChannelMembers({
+      channelId: channelData?.id,
+      q: isFiltersEmpty({
+        limit: 30,
+        q: searchValue,
+        sort: filters?.sort,
+        userStatus: filters?.status?.length
+          ? filters?.status?.map((eachStatus: any) => eachStatus.id).join(',')
+          : undefined,
+        userRole: filters?.roles?.length
+          ? filters?.roles?.map((role: any) => role.id).join(',')
+          : undefined,
+        userTeam: filters?.teams?.length
+          ? filters?.teams?.map((eachStatus: any) => eachStatus.id).join(',')
+          : undefined,
+        byPeople: filters?.byPeople?.length
+          ? filters?.byPeople?.map((eachStatus: any) => eachStatus.id).join(',')
+          : undefined,
+      }),
+    });
   const users = data?.pages.flatMap((page) => {
     return page?.data?.result?.data.map((user: any) => {
       try {
@@ -241,7 +252,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
                 isLoading={isLoading}
                 count={
                   isGrid
-                    ? users?.length
+                    ? data?.pages[0]?.data?.result?.totalCount
                     : channelRequestData?.pages[0]?.data?.result?.totalCount
                 }
               />
@@ -405,6 +416,12 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
             dataTestId="join-requests"
             readonly={channelRequestStatus !== CHANNEL_MEMBER_STATUS.PENDING}
           />
+        )}
+        {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+        {isFetchingNextPage && (
+          <div className="h-12 w-full flex items-center justify-center">
+            <PageLoader />
+          </div>
         )}
       </Card>
       {isChannelAdmin && showAddMemberModal && channelData && (
