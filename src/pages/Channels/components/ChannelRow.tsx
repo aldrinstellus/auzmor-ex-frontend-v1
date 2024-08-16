@@ -57,18 +57,12 @@ const ChannelRow: FC<IChannelRowProps> = ({ channel }) => {
 
   return (
     <div className="flex items-center w-full px-6 gap-4 py-8">
-      {channel?.displayImage ? (
-        <Avatar
-          image={getChannelLogoImage(channel)}
-          size={80}
-          dataTestId={'edit-profile-pic'}
-        />
-      ) : (
-        <div className="p-[25px] rounded-full bg-neutral-300 border flex justify-center items-center">
-          <Icon name="gallery" size={30} color="text-white" hover={false} />
-        </div>
-      )}
-
+      <Avatar
+        ariaLabel={''}
+        image={getChannelLogoImage(channel)}
+        size={80}
+        dataTestId={'edit-profile-pic'}
+      />
       <div className="flex justify-between w-[calc(100%-80px)] items-center">
         <div className="flex flex-col gap-0.5 max-w-[70%]">
           {channel.name && (

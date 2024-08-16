@@ -82,7 +82,7 @@
     "viewCta": "View all admins"
   },
   "membersWidget": {
-    "title": "Members",
+    "title": "{{count}} Members",
     "addMemberCta": "Add Member",
     "viewCta": "View all members"
   },

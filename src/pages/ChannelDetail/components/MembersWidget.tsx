@@ -51,7 +51,9 @@ const MembersWidget: FC<MembersWidgetProps> = ({ channelData }) => {
             role="button"
           >
             <div className="font-bold">
-              {users?.length} {t('membersWidget.title')}
+              {t('membersWidget.title', {
+                count: data?.pages[0]?.data?.result?.totalCount,
+              })}
             </div>
             <Icon
               name={show ? 'arrowUp' : 'arrowDown'}
@@ -68,7 +70,7 @@ const MembersWidget: FC<MembersWidgetProps> = ({ channelData }) => {
               <AvatarList
                 className="!-space-x-5"
                 users={users || []}
-                moreCount={users?.length}
+                moreCount={data?.pages[0]?.data?.result?.totalCount}
               />
             </div>
             <div className="mt-3">
