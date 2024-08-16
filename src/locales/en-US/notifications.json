@@ -1,0 +1,26 @@
+{
+  "shoutOutRecived": {
+    "header": "Congratulations! You have received a shoutout",
+    "from": "from",
+    "body": "Your hard work and contributions are being recognized by your colleagues. Keep up the great work!"
+  },
+  "newTeamMemberAdd": {
+    "header": "You've been added to the",
+    "body": "team. Welcome aboard! Get ready to collaborate and achieve great things together."
+  },
+  "exploreTeam": "Explore team",
+  "othersInteracted": "and {{count}} others",
+  "commentedOnPost": "commented on your post",
+  "mentionedInPost": "mentioned you in a post",
+  "reactedToPost": "reacted to your post",
+  "receivedShoutout": "You received a shoutout",
+  "sharedAnnouncement": "shared an announcement",
+  "postScheduled": "Your post is scheduled",
+  "scheduledPostLive": "Your scheduled post is live",
+  "postGoingLive": "Your post is about to go live",
+  "welcomeToTeam": "Welcome to the team! 🎉🥳",
+  "repliedToComment": "replied to your comment",
+  "mentionedInComment": "mentioned you in a comment",
+  "reactedToComment": "reacted to your comment",
+  "announcement": "Announcement"
+}

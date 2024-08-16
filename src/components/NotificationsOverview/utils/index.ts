@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   NOTIFICATION_CARD_TYPE,
   NotificationCardProps,
@@ -21,6 +22,7 @@ export const getNotificationElementContent = (
   target: Target[],
   actor: Actor,
 ): NotificationElementProps => {
+  const { t } = useTranslation('notifications');
   const cardContent: NotificationCardProps = {
     BottomCardContent: undefined,
     TopCardContent: undefined,
@@ -70,23 +72,27 @@ export const getNotificationElementContent = (
 
   // If the action performed is a SHOUTOUT
   else if (action.type === ActionType.SHOUTOUT) {
-    cardContent.TopCardContent = `Congratulations! You have received a shoutout${
+    const shoutOutHeader = t('shoutOutRecived.header');
+    cardContent.TopCardContent = `${shoutOutHeader} ${
       actor?.fullName
-        ? ` from <span class="font-bold text-primary-500">${actor.fullName}</span>`
+        ? ` ${t(
+            'shoutOutRecived.from',
+          )} <span class="font-bold text-primary-500">${actor.fullName}</span>`
         : ''
-    }. Your hard work and contributions are being recognized by your colleagues. Keep up the great work!`;
+    }. ${t('shoutOutRecived.body')}`;
     cardContent.type = NOTIFICATION_CARD_TYPE.Content;
 
     redirect = `/posts/${target[0].entityId}`;
   }
-
   // If the action performed is a ADD NEW TEAM Member
   else if (action.type === ActionType.NEW_MEMBERS_TO_TEAM) {
-    cardContent.TopCardContent = `You've been added to the <span class="font-bold">${
+    const newTeamMemberAddHeader = t('newTeamMemberAdd.header');
+
+    cardContent.TopCardContent = `${newTeamMemberAddHeader} ${
       target[0].entityName || ''
-    }</span> team. Welcome aboard! Get ready to collaborate and achieve great things together. 
-    <button class=" flex items-center mt-3 px-2 py-1 bg-white rounded-9xl border border-neutral-200 font-bold text-xs hover:text-primary-500 active:text-primary-600">
-      Explore team 
+    }</span> ${t('newTeamMemberAdd.body')} 
+      <button class="flex items-center mt-3 px-2 py-1 bg-white rounded-9xl border border-neutral-200 font-bold text-xs hover:text-primary-500 active:text-primary-600">
+      ${t('exploreTeam')}
       <svg
         width={16}
         height={16}
@@ -160,13 +166,12 @@ export const getNotificationElementContent = (
       redirect = `/posts/${post.entityId}`;
     }
   }
-
   // if the action performed is ACKNOWLEDGEMENT_REMINDER
   else if (action.type === ActionType.ACKNOWLEDGEMENT_REMINDER) {
     // If target length is 1
     if (target.length === 1) {
       const post = target[0];
-      cardContent.TopCardContent = `Announcement`;
+      cardContent.TopCardContent = t('announcement');
       cardContent.BottomCardContent = post.content;
       cardContent.image = post?.image?.thumbnailUrl || undefined;
 
@@ -186,40 +191,42 @@ export const getNotificationMessage = (
   targetType: string,
   interactionCount?: number,
 ) => {
+  const { t } = useTranslation('notifications');
+
   let message =
     interactionCount && interactionCount > 1
-      ? `and ${interactionCount - 1} others `
+      ? t('othersInteracted', { count: interactionCount - 1 })
       : '';
 
   if (targetType === TargetType[TargetType.POST]) {
     if (actionType === ActionType[ActionType.COMMENT]) {
-      message += 'commented on your post';
+      message += t('commentedOnPost');
     } else if (actionType === ActionType[ActionType.MENTION]) {
-      message += 'mentioned you in a post';
+      message += t('mentionedInPost');
     } else if (actionType === ActionType[ActionType.REACTION]) {
-      message += 'reacted to your post';
+      message += t('reactedToPost');
     } else if (actionType === ActionType.SHOUTOUT) {
-      message = 'You received a shoutout';
+      message = t('receivedShoutout');
     } else if (actionType === ActionType.ACKNOWLEDGEMENT_REMINDER) {
-      message = 'shared an announcement';
+      message = t('sharedAnnouncement');
     } else if (actionType === ActionType.SCHEDULE_POST) {
-      message = 'Your post is scheduled';
+      message = t('postScheduled');
     } else if (actionType === ActionType.SCHEDULE_POST_PUBLISH) {
-      message = 'Your scheduled post is live';
+      message = t('scheduledPostLive');
     } else if (actionType === ActionType.POST_PRE_PUBLISH) {
-      message = 'Your post is about to go live';
+      message = t('postGoingLive');
     }
   } else if (targetType === TargetType[TargetType.TEAM]) {
     if (actionType === ActionType[ActionType.NEW_MEMBERS_TO_TEAM]) {
-      message = 'Welcome to the team! 🎉🥳';
+      message = t('welcomeToTeam');
     }
   } else if (targetType === TargetType[TargetType.COMMENT]) {
     if (actionType === ActionType[ActionType.COMMENT]) {
-      message += 'replied to your comment';
+      message += t('repliedToComment');
     } else if (actionType === ActionType[ActionType.MENTION]) {
-      message += 'mentioned you in a comment';
+      message += t('mentionedInComment');
     } else if (actionType === ActionType[ActionType.REACTION]) {
-      message += 'reacted to your comment';
+      message += t('reactedToComment');
     }
   }
   return message;
