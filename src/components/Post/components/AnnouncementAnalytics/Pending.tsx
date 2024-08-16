@@ -12,14 +12,17 @@ import { useInfiniteAcknowledgements } from 'queries/post';
 import { useMutation } from '@tanstack/react-query';
 import { createNewJob } from 'queries/job';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { useFeedStore } from 'stores/feedStore';
 
 type AppProps = {
-  post: Record<string, any>;
+  postId: string;
   closeModal: () => any;
 };
 
-const Pending: FC<AppProps> = ({ post, closeModal }) => {
+const Pending: FC<AppProps> = ({ postId, closeModal }) => {
   const { ref, inView } = useInView();
+  const updatePost = useFeedStore((state) => state.updateFeed);
+  const post = useFeedStore((state) => state.getPost)(postId);
 
   const reminderMutation = useMutation(
     () =>
@@ -40,7 +43,17 @@ const Pending: FC<AppProps> = ({ post, closeModal }) => {
   );
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteAcknowledgements(post.id, { acknowledged: false });
+    useInfiniteAcknowledgements(post.id, { acknowledged: false }, (data) =>
+      updatePost(post.id, {
+        ...post,
+        acknowledgementStats: {
+          ...post.acknowledgementStats,
+          pending: data?.pages.flatMap((page: any) =>
+            page?.data?.result?.data.map((user: any) => user),
+          ).length,
+        },
+      }),
+    );
 
   const usersData = data?.pages.flatMap((page) =>
     page?.data?.result?.data.map((user: any) => user),
