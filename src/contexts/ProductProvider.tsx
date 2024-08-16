@@ -23,7 +23,7 @@ const ProductProvider: FC<IProductProviderProps> = ({ children }) => {
 
   // Redirect to learn if user lands on lxp generic page.
   if (
-    getProduct() === ProductEnum.Lxp &&
+    getProduct() === ProductEnum.Office &&
     !!!getSubDomain(window.location.host)
   ) {
     if (process.env.NODE_ENV !== 'development') {

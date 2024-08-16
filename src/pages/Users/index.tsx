@@ -13,6 +13,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import PopupMenu from 'components/PopupMenu';
 import useProduct from 'hooks/useProduct';
 import { usePageTitle } from 'hooks/usePageTitle';
+// import { Button as bttn } from '@apideck/components';
+import { useVault } from '@apideck/vault-react';
+import axios from 'axios';
 
 interface IUsersProps {}
 
@@ -40,9 +43,37 @@ const Users: FC<IUsersProps> = () => {
     undefined,
     false,
   ); // to context
-
+  const [isCreatingSession, setIsCreatingSession] = useState(false);
+  const [token, setToken] = useState();
+  const { open } = useVault();
+  const openVault = () => {
+    // console.log("hello")
+    if (token) open({ token });
+    else createSession();
+  };
+  const createSession = async () => {
+    //  console.log("print", isCreatingSession)
+    setIsCreatingSession(true);
+    try {
+      const response = await axios.post(
+        'http://localhost:5000/api/connection/',
+        {
+          email: 'hasrhit457@yopmail.com',
+          domain: 'harshityhhttt3',
+        },
+      );
+      const sessionToken = response?.data?.session?.session_token;
+      if (sessionToken) {
+        open({ token: sessionToken,unifiedApi: 'hris',
+          serviceId: 'deel'});
+        setToken(sessionToken)
+      }
+      //console.log(response);
+    } finally {
+      setIsCreatingSession(false);
+    }
+  };
   const { user } = useAuth();
-
   const tabStyles = (active: boolean, disabled = false) =>
     clsx(
       {
@@ -115,6 +146,12 @@ const Users: FC<IUsersProps> = () => {
                   label: 'Import',
                   onClick: openImportUserModal,
                   dataTestId: 'people-bulk-import',
+                },
+                {
+                  icon: 'import',
+                  label: 'Import from Deel',
+                  onClick: openVault,
+                  dataTestId: 'people-bulk-import-deel',
                 },
               ]}
             />
