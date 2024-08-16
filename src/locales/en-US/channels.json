@@ -1,10 +1,11 @@
 {
   "channels": "Channels",
-  "channel": "channel",
+  "channel": "Channel",
+  "defaultDescription": "This is a {{visibilty}} channel for {{channelName}}",
   "filterCTA": {
-    "myChannels": "My channels",
+    "myChannels": "My Channels",
     "managed": "Managed",
-    "discoverNewChannels": "Discover new channels",
+    "discoverNewChannels": "Discover New Channels",
     "starred": "Starred",
     "requested": "Requested",
     "archived": "Archived"
@@ -14,74 +15,74 @@
     "closeButton": "Close",
     "cancelButton": "Cancel",
     "archiveButton": "Archive",
-    "confirmationMessage": "Are you sure you want to archive this channel? ",
+    "confirmationMessage": "Are you sure you want to archive this channel?",
     "undoMessage": "You can undo this later.",
-    "successToast": "Channel has been archived successfully",
-    "errorToast": "Error archiving channel"
+    "successToast": "Channel has been archived successfully.",
+    "errorToast": "Error archiving channel."
   },
   "deleteChannelModal": {
     "delete": "Delete",
-    "title": " @{{name}}",
+    "title": "@{{name}}",
     "closeButton": "Close",
     "cancelButton": "Cancel",
     "deleteButton": "Delete",
     "confirmationMessage": "Are you sure you want to delete the",
-    "undoMessage": "This cannot be undone.",
-    "successToast": "Channel has been deleted successfully",
-    "errorToast": "Error deleting channel"
+    "undoMessage": "This action cannot be undone.",
+    "successToast": "Channel has been deleted successfully.",
+    "errorToast": "Error deleting channel."
   },
   "privateChannel": {
-    "bannerHeader": "This is a private channel. You must be a member to view the channel content",
+    "bannerHeader": "This is a private channel. You must be a member to view the channel content.",
     "bannerFotter": "Space Admins",
     "joinRequestCTA": "Request to Join",
-    "withdrawRequestCTA": "Withdraw request"
+    "withdrawRequestCTA": "Withdraw Request"
   },
   "publicChannel": {
-    "joinRequestCTA": "Join channel"
+    "joinRequestCTA": "Join Channel"
   },
-  "createChannelCTA": "Create channel",
-  "searchChannels": "Search channels",
+  "createChannelCTA": "Create Channel",
+  "searchChannels": "Search Channels",
   "channelModal": {
-    "createChannel": "Create channel",
+    "createChannel": "Create Channel",
     "editChannel": "Edit Channel",
     "channelNameLabel": "Channel Name",
-    "channelNamePlaceholder": "ex. Product and design team",
-    "channelNameMinChars": "Channel name must be at least 2 characters long",
-    "channelNameNoSpecialChars": "Channel name cannot contain special characters",
-    "channelNameRequired": "Channel name is required",
+    "channelNamePlaceholder": "e.g., Product and Design Team",
+    "channelNameMinChars": "Channel name must be at least 2 characters long.",
+    "channelNameNoSpecialChars": "Channel name cannot contain special characters.",
+    "channelNameRequired": "Channel name is required.",
     "channelCategoryLabel": "Channel Category",
-    "channelCategoryPlaceholder": "Search a category",
+    "channelCategoryPlaceholder": "Search a Category",
     "channelPrivacyLabel": "Channel Privacy",
     "channelDescriptionLabel": "Channel Description",
-    "channelDescriptionPlaceholder": "What is the purpose of this channel",
+    "channelDescriptionPlaceholder": "What is the purpose of this channel?",
     "cancelButton": "Cancel",
     "saveButton": "Save",
-    "createChannelSuccess": "Channel created successfully",
-    "createChannelError": "Error creating channel",
-    "editChannelSuccess": "Channel updated successfully",
-    "editChannelError": "Error updating channel"
+    "createChannelSuccess": "Channel created successfully.",
+    "createChannelError": "Error creating channel.",
+    "editChannelSuccess": "Channel updated successfully.",
+    "editChannelError": "Error updating channel."
   },
   "public": "Public",
   "private": "Private",
-  "publicDescription": "Anyone can see who’s in the channel and what they post. Anyone can join this channel",
-  "privateDescription": "Only members can see who’s in the channel and what they post. Anyone can ask to join from the Channel discovery.",
+  "publicDescription": "Anyone can see who\u2019s in the channel and what they post. Anyone can join this channel.",
+  "privateDescription": "Only members can see who\u2019s in the channel and what they post. Anyone can ask to join from the Channel discovery.",
   "ownedBy": "Owned by",
-  "member": "member",
+  "member": "Member",
   "unarchive": "Unarchive",
-  "permanentlyDelete": "Permanently delete",
-  "explore-channels": "Explore channels",
-  "joinRequestError": "Something went wrong. Please try again!",
-  "joinPublicChannelRequestSuccess": "Channel joined successfully",
-  "joinPrivateChannelRequestSuccess": "Request to join channel sent successfully",
+  "permanentlyDelete": "Permanently Delete",
+  "explore-channels": "Explore Channels",
+  "joinRequestError": "Something went wrong. Please try again.",
+  "joinPublicChannelRequestSuccess": "Channel joined successfully.",
+  "joinPrivateChannelRequestSuccess": "Request to join channel sent successfully.",
   "noChannelsYet": {
-    "header": "No channels yet",
-    "message": "Channels created will be visible here"
+    "header": "No Channels Yet",
+    "message": "Channels created will be visible here."
   },
   "channelRow": {
-    "errorUnarchivingChannel": "Error archiving channel",
-    "successUnarchivingChannel": "Channel has been unarchived successfully",
+    "errorUnarchivingChannel": "Error unarchiving channel.",
+    "successUnarchivingChannel": "Channel has been unarchived successfully.",
     "archivedOn": "Archived on",
     "by": "by"
   },
-  "withdrawRequestSuccess": "Request has been withdrawn successfully"
+  "withdrawRequestSuccess": "Request has been withdrawn successfully."
 }

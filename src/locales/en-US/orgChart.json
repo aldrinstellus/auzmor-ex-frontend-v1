@@ -2,11 +2,11 @@
   "title": "Organization Chart",
   "myTeam": "My Team",
   "overall": "Overall",
-  "input-search-members": "Search members",
-  "input-search-member": "Search members",
+  "input-search-members": "Search Members",
+  "input-search-member": "Search Members",
   "view-people-hubCTA": "View People Hub",
   "tool-tip": {
-    "start-with-specific-person": "Start with a specific person",
+    "start-with-specific-person": "Start with a Specific Person",
     "expand-all": "Expand All",
     "collapse-all": "Collapse All",
     "spotlight-me": "Spotlight Me",
@@ -15,16 +15,16 @@
     "zoom-out": "Zoom Out"
   },
   "filter-by": {
-    "title": "Filter by",
+    "title": "Filter By",
     "location": "Location",
     "department": "Department",
     "status": "Status",
-    "clear-filters": "Clear filters",
+    "clear-filters": "Clear Filters",
     "apply": "Apply"
   },
   "no-data-found": {
-    "message": "Sorry we can&apos;t find the member you are looking for.",
+    "message": "Sorry, we can\u2019t find the member you are looking for.",
     "message-2": "Please check the spelling or try again.",
-    "title": "No member found"
+    "title": "No Member Found"
   }
 }

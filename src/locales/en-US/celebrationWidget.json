@@ -1,22 +1,22 @@
 {
   "birthday": "Birthday",
-  "work-Anniversaries": "Work anniversaries",
-  "visit-post": "Visit post",
+  "work-Anniversaries": "Work Anniversaries",
+  "visit-post": "Visit Post",
   "celebration-date": "{{date}}",
-  "wishes-sent": "Wishes sent",
-  "wish-text-bth": "It is your birthday today. Happy birthday! 🎂",
-  "wish-text-ann": "It is your Work Anniversary today! Congrats! 🎉",
-  "send-wishes-cta": "send-wishes-cta",
-  "modal-title-bth": "Upcoming birthdays 🎂",
-  "modal-title-ann": "Upcoming work anniversaries 🎉",
+  "wishes-sent": "Wishes Sent",
+  "wish-text-bth": "It is your birthday today. Happy birthday! \ud83c\udf82",
+  "wish-text-ann": "It is your Work Anniversary today! Congrats! \ud83c\udf89",
+  "send-wishes-cta": "Send Wishes",
+  "modal-title-bth": "Upcoming Birthdays \ud83c\udf82",
+  "modal-title-ann": "Upcoming Work Anniversaries \ud83c\udf89",
   "today": "Today",
   "this-month": "This Month",
   "next-month": "Next Month",
   "closeCTA": "Close",
   "upcoming-bth": "Upcoming Birthdays",
-  "upcoming-ann": "Upcoming anniversaries",
+  "upcoming-ann": "Upcoming Anniversaries",
   "error-state": {
-    "birthday": "Upcoming birthdays will show here",
-    "work-Anniversaries": "Upcoming work anniversaries will show here"
+    "birthday": "Upcoming birthdays will show here.",
+    "work-Anniversaries": "Upcoming work anniversaries will show here."
   }
 }

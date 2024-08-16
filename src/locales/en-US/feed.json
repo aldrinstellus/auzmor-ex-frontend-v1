@@ -13,12 +13,12 @@
     "title": "My Scheduled Posts",
     "tooltip": "My Scheduled Posts",
     "emptyMessage1": "Not ready to share your post right now?",
-    "emptyMessage2": "Try scheduling for later."
+    "emptyMessage2": "Try scheduling it for later."
   },
   "bookmark": {
     "title": "My Bookmarks",
     "tooltip": "My Bookmarks",
-    "emptyMessage": "Your bookmarked posts will show here",
-    "noPostFound": "No posts found"
+    "emptyMessage": "Your bookmarked posts will show here.",
+    "noPostFound": "No posts found."
   }
 }

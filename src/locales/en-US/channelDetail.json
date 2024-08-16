@@ -4,41 +4,40 @@
   "member": "Member",
   "members": "Members",
   "join": "Join Channel",
-  "joinDirectly": "Join directly",
-  "channelManageMent": " CHANNEL MANAGEMENT",
+  "joinDirectly": "Join as Admin",
+  "channelManageMent": "Channel Management",
   "edit": "Edit",
   "archive": "Archive",
   "addMembers": "Add Members",
   "settings": "Settings",
-  "leaveChannel": "Leave channel",
-  "securityAndAnalytics": "SECURITY & ANALYTICS",
-  "uploadPhoto": "Upload a photo",
+  "leaveChannel": "Leave Channel",
+  "securityAndAnalytics": "Security & Analytics",
+  "uploadPhoto": "Upload a Photo",
   "reposition": "Reposition",
-  "chooseFromIllustration": "Choose from illustration",
-  "deletePhoto": "Delete photo",
+  "chooseFromIllustration": "Choose from Illustration",
+  "deletePhoto": "Delete Photo",
   "tabs": {
     "home": "Home",
     "documents": "Documents",
     "members": "Members",
     "settings": "Settings",
-    "manageAccess": "Manage access",
+    "manageAccess": "Manage Access",
     "archive": "Archive"
   },
   "cover": {
     "tab_home": "Home",
     "tab_document": "Documents",
     "tab_members": "Members",
-    "tab_settings": "Setting",
-    "tab_manage_access": "Manage access",
-    "you_own_this_space": "You own this space"
+    "tab_settings": "Settings",
+    "tab_manage_access": "Manage Access",
+    "you_own_this_space": "You Own This Space"
   },
   "welcome": {
-    "title": "Welcome aboard!!",
-    "line1": "Join us for an exciting journey of knowledge and inspiration",
-    "line2": "Connect, engage, and explore with us. Let's make this space extraordinary together! 🎉🌟"
+    "title": "Welcome Aboard!",
+    "line1": "Connect, engage, and explore. Let's make this channel extraordinary together!"
   },
   "manageAccess": {
-    "title": "Manage Channel access",
+    "title": "Manage Channel Access",
     "role": "Role",
     "admin": "Admin",
     "member": "Member",
@@ -47,15 +46,15 @@
       "searchMembers": "Search Members"
     },
     "noDataFound": {
-      "message": "Sorry we can’t find the profile you are looking for. ",
-      "messageLine2": "Please check the spelling or try again.",
+      "message": "Sorry, we can\u2019t find the profile you are looking for.",
+      "messageLine2": "Please check the name or try again.",
       "clearSearch": "Clear Search",
       "clearFilters": "Clear Filters"
     },
     "table": {
       "fullName": "Full Name",
       "location": "Location",
-      "email": "Email address",
+      "email": "Email Address",
       "designation": "Designation",
       "role": "Role",
       "newJoinee": "New Joinee",
@@ -64,63 +63,63 @@
     }
   },
   "setup": {
-    "title": "Finish setting up",
+    "title": "Finish Setting Up",
     "of": "of",
-    "stepsCompleted": "Steps completed",
-    "coverPhoto": "Add a cover photo",
-    "coverPhoto.uploadPhoto": "Upload a photo",
-    "coverPhoto.chooseFromIllustration": "Choose from illustration",
+    "stepsCompleted": "Steps Completed",
+    "coverPhoto": "Add a Cover Photo",
+    "coverPhoto.uploadPhoto": "Upload a Photo",
+    "coverPhoto.chooseFromIllustration": "Choose from Illustration",
     "coverPhoto.applyChanges": "Apply Changes",
     "coverPhoto.reposition": "Reposition",
-    "description": "Add description",
-    "invite": "Invite members",
-    "post": "Create post"
+    "description": "Add Description",
+    "invite": "Invite Members",
+    "post": "Create Post"
   },
   "adminsWidget": {
     "title": "Channel Admins",
     "owner": "Owner",
-    "viewCta": "View all admins"
+    "viewCta": "View All Admins"
   },
   "membersWidget": {
     "title": "{{count}} Members",
     "addMemberCta": "Add Member",
-    "viewCta": "View all members"
+    "viewCta": "View All Members"
   },
   "addChannelMembers": {
-    "success": "Channel members are successfully added",
-    "failure": "Failed to add channel members"
+    "success": "Channel members were successfully added.",
+    "failure": "Failed to add channel members."
   },
   "addChannelMembersStatus": {
-    "failure": "Failed to check progress"
+    "failure": "Failed to check progress."
   },
   "congrats": {
     "congratulations": "Congratulations!",
-    "finishedSettingUp": "You have finished setting up your profile",
+    "finishedSettingUp": "You have finished setting up your profile.",
     "inviteMore": "Now you can invite more people to your channel so that your channel reaches a bigger audience."
   },
   "memberTab": {
     "title": "Members",
     "addMemberCTA": "Add Member",
     "searchMembers": "Search Members",
-    "allMembers": "All members",
+    "allMembers": "All Members",
     "requests": "Requests",
-    "acceptSuccess": "Successfully accepted all selected requests",
-    "declineSuccess": "Successfully declined all selected requests",
-    "acceptFailure": "Something went wrong...! Please try again",
-    "declineFailure": "Something went wrong...! Please try again",
-    "noDataFound": "Sorry we can’t find the Member you are looking for.",
+    "acceptSuccess": "Successfully accepted all selected requests.",
+    "declineSuccess": "Successfully declined all selected requests.",
+    "acceptFailure": "Something went wrong. Please try again.",
+    "declineFailure": "Something went wrong. Please try again.",
+    "noDataFound": "Sorry, we can\u2019t find the member you are looking for.",
     "noDataFoundLine2": "Please check the spelling or try again.",
     "clearSearch": "Clear Search",
     "clearFilters": "Clear Filters",
-    "memberRequests": "Member requests",
+    "memberRequests": "Member Requests",
     "role": "Role",
     "location": "Location",
     "accept": "Accept",
     "decline": "Decline"
   },
   "addChannelMemberModal": {
-    "addMember": "Add members",
-    "title": " @ {{channelName}}",
+    "addMember": "Add Members",
+    "title": "@ {{channelName}}",
     "cancel": "Cancel",
     "enrollMembers": "Enroll Members",
     "addChannelMembers": {
@@ -131,30 +130,29 @@
       "failure": "Failed to fetch status for jobId."
     }
   },
-
   "channelImageModal": {
-    "title": "Choose channel {{type}} photo",
+    "title": "Choose Channel {{type}} Photo",
     "cancel": "Cancel",
-    "cover": "cover",
+    "cover": "Cover",
     "toast": {
       "cover": "Cover",
-      "profile": "profile",
-      "successmsg": "Picture Updated Successfully"
+      "profile": "Profile",
+      "successmsg": "Picture Updated Successfully."
     },
-    "profile": "profile",
-    "selectPhoto": "Select photo",
-    "imageError": "Image load error: {{error}}"
+    "profile": "Profile",
+    "selectPhoto": "Select Photo",
+    "imageError": "Image load error: {{error}}."
   },
   "setting": {
     "basicSetting": "Basic Settings",
     "persnolDetails": "Personal Details",
     "category": {
       "label": "Category",
-      "startTypingForSuggestions": "Start typing for suggestions"
+      "startTypingForSuggestions": "Start typing for suggestions."
     },
     "nameRow": {
       "label": "Name",
-      "channelNamePlaceholder": "ex. Product and design team"
+      "channelNamePlaceholder": "e.g., Product and Design Team"
     },
     "descriptionRow": {
       "label": "Description"
@@ -166,9 +164,9 @@
     },
     "restrictionRow": {
       "label": "Restriction",
-      "canPostDescription": "Anyone can post and comment",
-      "canCommentDescription": "Anyone can post and comment, but announcements are restricted to owners and admins",
-      "canAnnouncementDescription": "Anyone can comment, but announcements are restricted to owners and admins"
+      "canPostDescription": "Anyone can post and comment.",
+      "canCommentDescription": "Anyone can post and comment, but announcements are restricted to admins.",
+      "canAnnouncementDescription": "Anyone can comment, but announcements are restricted to admins."
     }
   }
 }

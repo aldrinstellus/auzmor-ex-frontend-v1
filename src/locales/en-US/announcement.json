@@ -4,7 +4,7 @@
   "description": "When announcements are created, they appear on this card.",
   "create-header": "Create Announcement",
   "create-CTA": "Create an announcement",
-  "admin-header": "Only admin can see this",
-  "share-post": "shared a post",
+  "admin-header": "Only admin can see this.",
+  "share-post": "Shared a post",
   "read-CTA": "Mark as read"
 }

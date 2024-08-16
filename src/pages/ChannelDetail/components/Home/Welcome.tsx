@@ -45,7 +45,6 @@ const Welcome = () => {
           <div className="text-2xl font-semibold">{t('welcome.title')}</div>
           <div className="mt-4 font-medium">
             <div className="text-center text-xs">{t('welcome.line1')}</div>
-            <div className="text-center text-xs mt-6">{t('welcome.line2')}</div>
           </div>
         </div>
       </div>

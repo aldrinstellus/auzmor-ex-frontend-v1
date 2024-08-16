@@ -4,19 +4,19 @@
     "emailLabel": "Work Email*",
     "passwordPlaceholder": "Enter password",
     "passwordLabel": "Password*",
-    "confirmPasswordPlaceholder": "Re-Enter password",
+    "confirmPasswordPlaceholder": "Re-enter password",
     "confirmPasswordLabel": "Confirm Password*",
-    "agreementText": "By Signing up you are agreeing to Auzmor Office’s",
+    "agreementText": "By signing up you are agreeing to Auzmor Office\u2019s",
     "termsOfUse": "Terms of Use",
     "privacyPolicy": "Privacy Policy",
     "termsOfUseLink": "https://www.auzmor.com/tc",
     "privacyPolicyLink": "https://www.auzmor.com/privacy-policy",
     "signUp": "Sign Up",
-    "somethingWentWrong": "Something went wrong",
+    "somethingWentWrong": "Something went wrong.",
     "requiredField": "* Required field"
   },
   "inviteLinkExpired": {
-    "expiredTitle": "INVITE LINK HAS EXPIRED",
+    "expiredTitle": "Invite Link Has Expired",
     "expiredMessage": "Please ask the admin to invite you again."
   }
 }

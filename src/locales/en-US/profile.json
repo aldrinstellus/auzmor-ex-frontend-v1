@@ -1,5 +1,5 @@
 {
-  "fieldNotSpecified": "field not specified",
+  "fieldNotSpecified": "Field Not Specified",
   "tabs": {
     "profile": "Profile",
     "activity": "Activity",
@@ -8,40 +8,40 @@
   "contactWidget": {
     "title": "Contact Info",
     "primaryEmail": "Primary Email",
-    "workPhone": "Contact No.",
-    "successToast": "User Profile Updated Successfully",
+    "workPhone": "Contact Number",
+    "successToast": "Profile Updated Successfully",
     "cancelCTA": "Cancel",
     "saveCTA": "Save"
   },
   "managerWidget": {
     "title": "Manager",
     "selectManager": "Select Manager",
-    "successToast": "Manager updated",
+    "successToast": "Manager Updated Successfully",
     "cancelCTA": "Cancel",
     "saveCTA": "Save",
-    "emptyMessage": "No manager assigned"
+    "emptyMessage": "No Manager Assigned"
   },
   "aboutMe": {
     "titleForSelf": "About Me",
     "titleForOther": "About"
   },
   "profileCoverSection": {
-    "uploadPhoto": "Upload a photo",
+    "uploadPhoto": "Upload Photo",
     "reposition": "Reposition",
-    "deletePhoto": "Delete photo",
-    "outOfOffice": "out of office",
+    "deletePhoto": "Delete Photo",
+    "outOfOffice": "Out of Office",
     "follow": "Follow",
     "more": "More",
-    "invitationSent": "Invitation has been sent",
-    "addDesignation": "Add designation",
-    "addDepartment": "Add department",
-    "addLocation": "Add location",
+    "invitationSent": "Invitation Sent",
+    "addDesignation": "Add Designation",
+    "addDepartment": "Add Department",
+    "addLocation": "Add Location",
     "applyChanges": "Apply Changes",
     "toastMessages": {
-      "inviteSuccess": "Invitation has been sent",
-      "updateRoleSuccess": "User role has been updated to admin",
-      "fileNotSupported": "File type not supported. Upload a supported file content",
-      "fileMaxSizeError": "The file size should not exceed 50MB."
+      "inviteSuccess": "Invitation Sent Successfully",
+      "updateRoleSuccess": "Role Updated Successfully",
+      "fileNotSupported": "Unsupported File Type",
+      "fileMaxSizeError": "File Size Exceeds 50MB Limit"
     }
   },
   "EditProfileModal": {
