@@ -24,7 +24,6 @@
   },
   "no-data-found": {
     "message": "Sorry, we can\u2019t find the member you are looking for.",
-    "message-2": "Please check the spelling or try again.",
-    "title": "No Member Found"
+    "message-2": "Please check the spelling or try again."
   }
 }
