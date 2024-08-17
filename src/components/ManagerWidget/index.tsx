@@ -132,7 +132,10 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
     },
   ];
 
-  const managerDetails = getUserCardTooltipProps(data?.manager || {});
+  const managerDetails = getUserCardTooltipProps(
+    data?.manager || {},
+    t('fieldNotSpecified'),
+  );
 
   return (
     <div>
@@ -194,7 +197,12 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
               ) : (
                 <Tooltip
                   tooltipContent={
-                    <UserCard user={getUserCardTooltipProps(data?.manager)} />
+                    <UserCard
+                      user={getUserCardTooltipProps(
+                        data?.manager,
+                        t('fieldNotSpecified'),
+                      )}
+                    />
                   }
                   variant={TooltipVariant.Light}
                   className="!p-4 !shadow-md !rounded-9xl !z-[999]"

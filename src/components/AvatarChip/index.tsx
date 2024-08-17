@@ -12,6 +12,7 @@ import UserCard from 'components/UserCard';
 import { ILocation } from 'queries/location';
 import { IProfileImage } from 'queries/post';
 import useProduct from 'hooks/useProduct';
+import { useTranslation } from 'react-i18next';
 
 export interface IAvatarUser {
   fullName: string;
@@ -36,12 +37,17 @@ const AvatarChip: FC<IAvatarChipProps> = ({
   size = 16,
   dataTestId,
 }) => {
+  const { t } = useTranslation('profile');
   const { user: currentUser } = useAuth();
   const { isLxp } = useProduct();
 
   return (
     <Tooltip
-      tooltipContent={<UserCard user={getUserCardTooltipProps(user)} />}
+      tooltipContent={
+        <UserCard
+          user={getUserCardTooltipProps(user, t('fieldNotSpecified'))}
+        />
+      }
       variant={Variant.Light}
       className="!p-4 !shadow-md !rounded-9xl !z-[999]"
     >

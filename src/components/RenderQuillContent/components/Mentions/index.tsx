@@ -9,6 +9,7 @@ import { UserStatus } from 'queries/users';
 import { getUserCardTooltipProps } from 'utils/misc';
 import useProduct from 'hooks/useProduct';
 import { IDesignation } from 'queries/designation';
+import { useTranslation } from 'react-i18next';
 
 type MentionProps = {
   value: string;
@@ -32,6 +33,7 @@ const Mention: FC<MentionProps> = ({
   designation,
   status,
 }): ReactElement => {
+  const { t } = useTranslation('profile');
   const { user } = useAuth();
   const { isLxp } = useProduct();
   const profileUrl = isLxp
@@ -41,15 +43,18 @@ const Mention: FC<MentionProps> = ({
     <Tooltip
       tooltipContent={
         <UserCard
-          user={getUserCardTooltipProps({
-            userId,
-            fullName,
-            email,
-            workLocation,
-            designation,
-            profileImage,
-            status,
-          })}
+          user={getUserCardTooltipProps(
+            {
+              userId,
+              fullName,
+              email,
+              workLocation,
+              designation,
+              profileImage,
+              status,
+            },
+            t('fieldNotSpecified'),
+          )}
         />
       }
       variant={Variant.Light}

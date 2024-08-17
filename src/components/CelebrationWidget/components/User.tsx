@@ -160,7 +160,7 @@ const User: FC<UserProps> = ({
               navigate(`/posts/${post.id}`);
             }}
           >
-            ${t('visit-post')}
+            {t('visit-post')}
             <Icon name="arrowRightUp" size={12} color="text-primary-500" />
           </div>
         </div>

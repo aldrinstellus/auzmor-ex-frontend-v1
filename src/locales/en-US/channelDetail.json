@@ -4,7 +4,6 @@
   "member": "Member",
   "members": "Members",
   "join": "Join Channel",
-  "joinDirectly": "Join as Admin",
   "channelManageMent": "Channel Management",
   "edit": "Edit",
   "archive": "Archive",
@@ -85,12 +84,10 @@
     "addMemberCta": "Add Member",
     "viewCta": "View All Members"
   },
-  "addChannelMembers": {
-    "success": "Channel members were successfully added.",
-    "failure": "Failed to add channel members."
-  },
-  "addChannelMembersStatus": {
-    "failure": "Failed to check progress."
+  "joinAsAdmin": {
+    "label": "Join as Admin",
+    "success": "Successfully joined the channel.",
+    "failure": "Failed to join the channel."
   },
   "congrats": {
     "congratulations": "Congratulations!",
@@ -148,7 +145,7 @@
     "persnolDetails": "Personal Details",
     "category": {
       "label": "Category",
-      "startTypingForSuggestions": "Start typing for suggestions."
+      "channelCategoryPlaceholder": "Start typing for suggestions."
     },
     "nameRow": {
       "label": "Name",
