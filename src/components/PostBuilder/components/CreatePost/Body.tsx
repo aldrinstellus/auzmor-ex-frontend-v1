@@ -14,6 +14,8 @@ import { getTimeInScheduleFormat } from 'utils/time';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import Button, { Size, Variant } from 'components/Button';
 import { operatorXOR } from 'utils/misc';
+import { useTranslation } from 'react-i18next';
+import Truncate from 'components/Truncate';
 
 export interface IBodyProps {
   data?: IPost;
@@ -40,6 +42,7 @@ const Body = forwardRef(
       poll,
     } = useContext(CreatePostContext);
     const { user } = useAuth();
+    const { t } = useTranslation('postBuilder');
     const { currentTimezone } = useCurrentTimezone();
     const updateContext = () => {
       setEditorValue({
@@ -91,13 +94,13 @@ const Body = forwardRef(
                     leftIconClassName="mr-1"
                     size={Size.Small}
                     variant={Variant.Secondary}
-                    label={(audience[0]?.entity as any)?.name || 'Team Name'}
+                    label={<Truncate text={audience[0]?.name || ''} />}
                     onClick={() => {
                       updateContext();
                       setActiveFlow(CreatePostFlow.Audience);
                     }}
                     className="group"
-                    labelClassName="text-xss text-neutral-900 font-medium group-hover:text-primary-500"
+                    labelClassName="text-xss text-neutral-900 max-w-[128px] font-medium group-hover:text-primary-500"
                     dataTestId="createpost-selected-audience-list"
                   />
                   {audience && audience.length > 1 && (
@@ -188,7 +191,7 @@ const Body = forwardRef(
             </div>
           )}
           <RichTextEditor
-            placeholder="What’s on your mind?"
+            placeholder={t('placeholder')}
             className={`max-h-64 overflow-y-auto ${
               !media.length &&
               !operatorXOR(isPreviewRemoved, !!previewUrl) &&

@@ -1,0 +1,88 @@
+{
+  "channels": "Channels",
+  "channel": "Channel",
+  "defaultDescription": "This is a {{visibilty}} channel for {{channelName}}",
+  "filterCTA": {
+    "myChannels": "My Channels",
+    "managed": "Managed",
+    "discoverNewChannels": "Discover New Channels",
+    "starred": "Starred",
+    "requested": "Requested",
+    "archived": "Archived"
+  },
+  "archiveChannelModal": {
+    "title": "Archive Channel",
+    "closeButton": "Close",
+    "cancelButton": "Cancel",
+    "archiveButton": "Archive",
+    "confirmationMessage": "Are you sure you want to archive this channel?",
+    "undoMessage": "You can undo this later.",
+    "successToast": "Channel has been archived successfully.",
+    "errorToast": "Error archiving channel."
+  },
+  "deleteChannelModal": {
+    "delete": "Delete",
+    "title": "@{{name}}",
+    "closeButton": "Close",
+    "cancelButton": "Cancel",
+    "deleteButton": "Delete",
+    "confirmationMessage": "Are you sure you want to delete the",
+    "undoMessage": "This action cannot be undone.",
+    "successToast": "Channel has been deleted successfully.",
+    "errorToast": "Error deleting channel."
+  },
+  "privateChannel": {
+    "bannerHeader": "This is a private channel. You must be a member to view the channel content.",
+    "bannerFotter": "Space Admins",
+    "joinRequestCTA": "Request to Join",
+    "withdrawRequestCTA": "Withdraw Request"
+  },
+  "publicChannel": {
+    "joinRequestCTA": "Join Channel"
+  },
+  "createChannelCTA": "Create Channel",
+  "searchChannels": "Search Channels",
+  "channelModal": {
+    "createChannel": "Create Channel",
+    "editChannel": "Edit Channel",
+    "channelNameLabel": "Channel Name",
+    "channelNamePlaceholder": "e.g., Product and Design Team",
+    "channelNameMinChars": "Channel name must be at least 2 characters long.",
+    "channelNameNoSpecialChars": "Channel name cannot contain special characters.",
+    "channelNameRequired": "Channel name is required.",
+    "channelCategoryLabel": "Channel Category",
+    "channelCategoryPlaceholder": "Search a Category",
+    "channelPrivacyLabel": "Channel Privacy",
+    "channelDescriptionLabel": "Channel Description",
+    "channelDescriptionPlaceholder": "What is the purpose of this channel?",
+    "cancelButton": "Cancel",
+    "saveButton": "Save",
+    "createChannelSuccess": "Channel created successfully.",
+    "createChannelError": "Error creating channel.",
+    "editChannelSuccess": "Channel updated successfully.",
+    "editChannelError": "Error updating channel."
+  },
+  "public": "Public",
+  "private": "Private",
+  "publicDescription": "Anyone can see who\u2019s in the channel and what they post. Anyone can join this channel.",
+  "privateDescription": "Only members can see who\u2019s in the channel and what they post. Anyone can ask to join from the Channel discovery.",
+  "ownedBy": "Owned by",
+  "member": "Member",
+  "unarchive": "Unarchive",
+  "permanentlyDelete": "Permanently Delete",
+  "explore-channels": "Explore Channels",
+  "joinRequestError": "Something went wrong. Please try again.",
+  "joinPublicChannelRequestSuccess": "Channel joined successfully.",
+  "joinPrivateChannelRequestSuccess": "Request to join channel sent successfully.",
+  "noChannelsYet": {
+    "header": "No Channels Yet",
+    "message": "Channels created will be visible here."
+  },
+  "channelRow": {
+    "errorUnarchivingChannel": "Error unarchiving channel.",
+    "successUnarchivingChannel": "Channel has been unarchived successfully.",
+    "archivedOn": "Archived on",
+    "by": "by"
+  },
+  "withdrawRequestSuccess": "Request has been withdrawn successfully."
+}

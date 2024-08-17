@@ -5,26 +5,38 @@ import {
 } from '@tanstack/react-query';
 import { chain } from 'lodash';
 import {
+  CHANNEL_ROLE,
+  CHANNEL_STATUS,
+  ChannelVisibilityEnum,
   IChannel,
   IChannelLink,
-  IChannelRequest,
-  dummyChannels,
   useChannelStore,
 } from 'stores/channelStore';
-import {
-  ChannelUserRequests,
-  channelAdmins,
-  channelLinks,
-} from 'mocks/Channels';
 import apiService from 'utils/apiService';
-import { channelMemberData } from 'mocks/channelMember';
 
 export interface IChannelPayload {
-  name: string;
-  category: string;
+  name?: string;
+  categoryIds?: string[];
   description?: string;
+  settings?: { visibility?: ChannelVisibilityEnum };
+  status?: CHANNEL_STATUS;
 }
 
+export interface IChannelMembersPayload {
+  users?: { id: string; role: CHANNEL_ROLE }[];
+  teams?: { id: string; role: CHANNEL_ROLE }[];
+}
+
+export interface IChannelSettings {
+  settings?: {
+    visibility: ChannelVisibilityEnum;
+    restriction: {
+      canPost: boolean;
+      canComment: boolean;
+      canMakeAnnouncements: boolean;
+    };
+  };
+}
 export const getAllChannels = async (
   context: QueryFunctionContext<
     (Record<string, any> | undefined | string)[],
@@ -33,59 +45,71 @@ export const getAllChannels = async (
   setChannels: (channels: { [key: string]: IChannel }) => void,
 ) => {
   let response = null;
-  // response = await new Promise((resolve, _reject) => {
-  //   setTimeout(() => {
-  //     resolve({
-  //       data: {
-  //         result: {
-  //           data: dummyChannels,
-  //         },
-  //       },
-  //     });
-  //   }, 2000);
-  // });
-  // setChannels(chain(dummyChannels).keyBy('id').value());
-  // return response;
+
   try {
     if (!!!context.pageParam) {
-      if ((context.queryKey[2] as { myChannels: boolean })?.myChannels) {
-        response = await apiService.get('/channels/me', context.queryKey[1]);
-      } else {
-        response = await apiService.get('/channels', context.queryKey[1]);
-      }
+      response = await apiService.get('/channels', context.queryKey[1]);
     } else {
-      response = await apiService.get(context.pageParam, context.queryKey[1]);
+      response = await apiService.get(context.pageParam);
     }
-  } catch (e) {
-    response = {
-      data: {
-        result: {
-          data: dummyChannels,
-        },
-      },
-    };
-  }
+  } catch (e) {}
   setChannels({
-    ...chain(response.data.result.data).keyBy('id').value(),
+    ...chain(response?.data.result.data).keyBy('id').value(),
   });
-  response.data.result.data = response.data.result.data.map(
-    (eachChannel: IChannel) => ({ id: eachChannel.id }),
-  );
-  console.log('response :', response);
   return response;
 };
 
+// patch req. to update the channel members roles.
+export const updateMemberRole = async (payload: {
+  id: string;
+  channelId?: string;
+  role: CHANNEL_ROLE;
+}) => {
+  const { data } = await apiService.patch(
+    `channels/${payload?.channelId}/members/${payload?.id}`,
+    {
+      role: payload?.role,
+    },
+  );
+  return data;
+};
+
+// patch req. to update the channel members roles.
+export const updateBookmarkChannel = async (payload: {
+  memberId: string;
+  channelId?: string;
+  bookmark: boolean;
+}) => {
+  const { data } = await apiService.patch(
+    `channels/${payload?.channelId}/members/${payload?.memberId}`,
+    {
+      bookmark: payload?.bookmark,
+    },
+  );
+  return data;
+};
+
+// get channel by id -> channels/:id
+export const getChannelDetails = async (
+  id: string,
+  setChannel: (channel: IChannel) => void,
+) => {
+  const data = await apiService.get(`/channels/${id}`);
+  if (data?.data?.result?.data) setChannel(data?.data?.result?.data);
+  return data;
+};
+
 export const createChannel = async (payload: IChannelPayload) => {
-  const data = await apiService.post('/channels', payload);
-  return new Promise((res) => {
-    res(data);
-  });
+  const response = await apiService.post('/channels', payload);
+  return response;
 };
 
 export const updateChannel = async (id: string, payload: IChannelPayload) => {
-  await apiService.put(`/channel/${id}`, payload);
+  await apiService.patch(`/channels/${id}`, payload);
 };
-
+export const leaveChannel = async (channelId: string) => {
+  await apiService.delete(`/channels/${channelId}/leave`);
+};
 // delete team by id -> channel/:id
 export const deleteChannel = async (id: string) => {
   const data = await apiService.delete(`/channels/${id}`);
@@ -93,44 +117,92 @@ export const deleteChannel = async (id: string) => {
     res(data);
   });
 };
-
-// get team members by team id -> /channel/:id/members
-export const getChannelMembers = async (
-  context: QueryFunctionContext<
-    (Record<string, any> | undefined | string)[],
-    any
-  >,
-  channelId: string,
-) => {
-  console.log(context, channelId);
-
-  return new Promise((res) => res(channelMemberData));
-};
-// get channel request by channel id -> /channels/:channelId/members/?memberStatus=pending
-
-export const getChannelRequests = async (
-  channelId: string,
-): Promise<IChannelRequest[]> => {
-  console.log(channelId);
-  return new Promise((res) => res(ChannelUserRequests));
-  // const data = await apiService.get(`/channels/:channelId/members/?memberStatus=pending`);
-  // return new Promise((res) => {
-  //   res(data?.data?.result?.data);
-  // });
-};
-
-export const addChannelMember = async (
-  teamId: string,
-  payload: { userIds: string[] },
-) => {
-  const data = await apiService.post(`/channels/members/${teamId}`, payload);
+export const deleteChannelLinks = async (payload: {
+  id: string;
+  linkId: string;
+}) => {
+  const data = await apiService.delete(
+    `/channels/${payload.id}/link/${payload.linkId}`,
+  );
   return new Promise((res) => {
     res(data);
   });
 };
 
-export const removeChannelMember = async (teamId: string) => {
-  const data = await apiService.delete(`/channels/members/${teamId}`);
+// get team members by team id -> /channel/:id/members
+export const getChannelMembers = async (
+  {
+    pageParam = null,
+    queryKey,
+  }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>,
+  id: string,
+) => {
+  let response = null;
+  try {
+    if (pageParam == null)
+      response = await apiService.get(`/channels/${id}/members`, queryKey[1]);
+    else response = await apiService.get(pageParam);
+  } catch (e) {}
+  return response;
+};
+
+export const addChannelMembers = async (
+  channelId: string,
+  payload: IChannelMembersPayload,
+) => {
+  const data = await apiService.post(
+    `/channels/${channelId}/members/bulk`,
+    payload,
+  );
+  return data;
+};
+
+export const inviteYourSelf = async (
+  channelId: string,
+  payload: IChannelMembersPayload,
+) => {
+  const data = await apiService.post(
+    `/channels/${channelId}/members/bulk`,
+    payload,
+  );
+  const jobId = data?.result?.data?.id || '';
+  if (jobId) {
+    let interval: any = null;
+    await new Promise(async (resolve) => {
+      let statusResponse = await await getAddChannelMembersStatus(
+        channelId,
+        jobId,
+      );
+
+      const status = statusResponse?.data?.result?.data?.status;
+      interval = setInterval(async () => {
+        if (status !== 'COMPLETED' && status !== 'FAILED') {
+          statusResponse = await apiService.get(
+            `/channels/${channelId}/join-requests/bulk/status/${jobId}`,
+          );
+        } else {
+          clearInterval(interval);
+          resolve(statusResponse);
+        }
+      }, 500);
+    });
+  }
+};
+
+export const getAddChannelMembersStatus = async (
+  channelId: string,
+  jobId: string,
+) => {
+  const data = await apiService.get(
+    `/channels/${channelId}/members/bulk/status/${jobId}`,
+  );
+  return data;
+};
+
+export const removeChannelMember = async (channelId: any, memberId: any) => {
+  const data = await apiService.delete(
+    `/channels/${channelId}/members/${memberId}`,
+  );
   return new Promise((res) => {
     res(data);
   });
@@ -139,42 +211,149 @@ export const removeChannelMember = async (teamId: string) => {
 export const getChannelLinks = async (
   channelId: string,
 ): Promise<IChannelLink[]> => {
-  console.log(channelId);
-  return new Promise((res) => res(channelLinks));
-  // const data = await apiService.get(`/channels/${channelId}/links`);
-  // return new Promise((res) => {
-  //   res(data?.data?.result?.data);
-  // });
-};
-export const getChannelAdmins = async (channelId: string): Promise<any> => {
-  console.log(channelId);
-  return new Promise((res) => res(channelAdmins));
-  // const data = await apiService.get(`/channels/${channelId}/admins`);
-  // return new Promise((res) => {
-  //   res(data?.data?.result?.data);
-  // });
-};
-
-export const updateChannelLinks = async (
-  channelId: string,
-  payload: { links: IChannelLink[] },
-): Promise<IChannelLink[]> => {
-  const data = await apiService.put(`/channels/${channelId}/links`, payload);
+  const data = await apiService.get(`/channels/${channelId}/links`);
   return new Promise((res) => {
     res(data?.data?.result?.data);
   });
 };
 
+export const createLinks = async (
+  channelId: string,
+  payload: { links: IChannelLink[] },
+) => {
+  const response = await apiService.post(
+    `/channels/${channelId}/links`,
+    payload,
+  );
+  return response;
+};
+
+export const updateChannelLink = async (payload: {
+  channelId: string;
+  linkId: string;
+  title?: string;
+  url?: string;
+}) => {
+  const data = await apiService.patch(
+    `/channels/${payload.channelId}/links/${payload.linkId}`,
+    {
+      title: payload?.title,
+      url: payload?.url,
+    },
+  );
+  return new Promise((res) => {
+    res(data);
+  });
+};
+
+export const updateChannelLinksIndex = async (
+  channelId: string,
+  payload: { links: IChannelLink[] },
+): Promise<IChannelLink[]> => {
+  const data = await apiService.patch(`/channels/${channelId}/links`, payload);
+  return new Promise((res) => {
+    res(data?.data?.result?.data);
+  });
+};
+
+export const joinChannelRequest = async (channeId: string) => {
+  return await apiService.post(`channels/${channeId}/join-requests`);
+};
+
+export const getJoinChannelRequest = async (
+  channeId: string,
+  joinId: string,
+) => {
+  return await apiService.get(`channels/${channeId}/join-requests/${joinId}`);
+};
+
+export const deleteJoinChannelRequest = async (
+  channeId: string,
+  joinId: string,
+) => {
+  return await apiService.delete(
+    `channels/${channeId}/join-requests/${joinId}/withdraw`,
+  );
+};
+
+export const getJoinChannelRequests = async (
+  context: QueryFunctionContext<
+    (Record<string, any> | undefined | string)[],
+    any
+  >,
+  channelId?: string,
+) => {
+  let response = null;
+  const reqPath = channelId
+    ? `channels/${channelId}/join-requests`
+    : `channels/join-requests`;
+  try {
+    if (!!!context.pageParam) {
+      response = await apiService.get(reqPath, context.queryKey[1]);
+    } else {
+      response = await apiService.get(context.pageParam, context.queryKey[1]);
+    }
+  } catch (e) {}
+
+  return response;
+};
+
+export const approveChannelJoinRequest = async (
+  channeId: string,
+  joinId: string,
+) => {
+  return await apiService.post(
+    `channels/${channeId}/join-requests/${joinId}/approve`,
+  );
+};
+
+export const rejectChannelJoinRequest = async (
+  channeId: string,
+  joinId: string,
+) => {
+  return await apiService.post(
+    `channels/${channeId}/join-requests/${joinId}/reject`,
+  );
+};
+
+export const bulkChannelRequestUpdate = async (
+  channelId: string,
+  payload: { approve?: string[]; reject?: Record<string, any>[] },
+) => {
+  const response = await apiService.post(
+    `/channels/${channelId}/join-requests/bulk`,
+    payload,
+  );
+  const id = response?.result?.data?.id;
+
+  let interval: any = null;
+
+  await new Promise(async (resolve) => {
+    let statusResponse = await apiService.get(
+      `/channels/${channelId}/join-requests/bulk/status/${id}`,
+    );
+
+    const status = statusResponse?.data?.result?.data?.status;
+    interval = setInterval(async () => {
+      if (status !== 'COMPLETED' && status !== 'FAILED') {
+        statusResponse = await apiService.get(
+          `/channels/${channelId}/join-requests/bulk/status/${id}`,
+        );
+      } else {
+        clearInterval(interval);
+        resolve(statusResponse);
+      }
+    }, 500);
+  });
+};
+
 // ------------------ React Query -----------------------
 
-export const useInfiniteChannels = (
-  q?: Record<string, any>,
-  myChannels?: boolean,
-) => {
+export const useInfiniteChannels = (q?: Record<string, any>) => {
   const { channels, setChannels } = useChannelStore();
   return {
     ...useInfiniteQuery({
-      queryKey: ['channel', q, { myChannels: !!myChannels }],
+      queryKey: ['channel', q],
       queryFn: (context) => getAllChannels(context, setChannels),
       getNextPageParam: (lastPage: any) => {
         const pageDataLen = lastPage?.data?.result?.data?.length;
@@ -193,10 +372,13 @@ export const useInfiniteChannels = (
   };
 };
 
-export const useInfiniteChannelMembers = (
-  q?: Record<string, any>,
-  channelId?: any,
-) => {
+export const useInfiniteChannelMembers = ({
+  q,
+  channelId,
+}: {
+  q?: Record<any, any>;
+  channelId: any;
+}) => {
   return useInfiniteQuery({
     queryKey: ['channel-members', q, channelId],
     queryFn: (context) => getChannelMembers(context, channelId), // need fix
@@ -212,6 +394,28 @@ export const useInfiniteChannelMembers = (
       return currentPage?.data?.result?.paging?.prev;
     },
     staleTime: 5 * 60 * 1000,
+    enabled: !!channelId,
+  });
+};
+
+export const useChannelMembersStatus = ({
+  channelId,
+  jobId,
+  onSuccess,
+  onError,
+}: {
+  channelId: string;
+  jobId: string;
+  onSuccess?: (data: any) => void;
+  onError?: () => void;
+}) => {
+  return useQuery({
+    queryKey: ['add-channel-members-status', channelId, jobId],
+    queryFn: () => getAddChannelMembersStatus(channelId, jobId),
+    refetchInterval: () => (!!jobId ? 5000 : false),
+    enabled: !!jobId && !!channelId,
+    onSuccess,
+    onError,
   });
 };
 
@@ -222,24 +426,41 @@ export const useChannelLinksWidget = (
   useQuery({
     queryKey: [queryKey],
     queryFn: () => getChannelLinks(channelId),
-    staleTime: 15 * 60 * 1000,
+    // staleTime: 15 * 60 * 1000,
+    cacheTime: 0,
   });
 
-export const useChannelAdmins = (
-  channelId: string,
-  queryKey = 'channel-admins',
-) =>
-  useQuery({
-    queryKey: [queryKey],
-    queryFn: () => getChannelAdmins(channelId),
+export const useChannelDetails = (channelId: string) => {
+  const setChannel = useChannelStore((action) => action.setChannel);
+  return useQuery({
+    queryKey: ['channel', channelId],
+    queryFn: () => getChannelDetails(channelId, setChannel),
     staleTime: 15 * 60 * 1000,
   });
-export const useChannelRequests = (
-  channelId: string,
-  queryKey = 'channel-requests-widget',
-) =>
-  useQuery({
-    queryKey: [queryKey],
-    queryFn: () => getChannelRequests(channelId),
-    staleTime: 15 * 60 * 1000,
-  });
+};
+
+export const useInfiniteChannelsRequest = (
+  channelId?: string,
+  q?: Record<string, any>,
+  enabled?: boolean,
+) => {
+  return {
+    ...useInfiniteQuery({
+      queryKey: ['channel-requests', q, channelId],
+      queryFn: (context) => getJoinChannelRequests(context, channelId),
+      getNextPageParam: (lastPage: any) => {
+        const pageDataLen = lastPage?.data?.result?.data?.length;
+        const pageLimit = lastPage?.data?.result?.paging?.limit;
+        if (pageDataLen < pageLimit) {
+          return null;
+        }
+        return lastPage?.data?.result?.paging?.next;
+      },
+      getPreviousPageParam: (currentPage: any) => {
+        return currentPage?.data?.result?.paging?.prev;
+      },
+      staleTime: 5 * 60 * 1000,
+      enabled: enabled,
+    }),
+  };
+};

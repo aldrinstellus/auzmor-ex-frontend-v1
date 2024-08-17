@@ -7,6 +7,7 @@ import { Variant as InputVariant } from 'components/Input';
 import Button, { Type as ButtonType, Size } from 'components/Button';
 import 'utils/custom-yup-validators/email/validateEmail';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface ILoginViaSSOProps {
   setViaSSO: (flag: boolean) => void;
@@ -31,9 +32,8 @@ const LoginViaSSO: FC<ILoginViaSSOProps> = ({ setViaSSO }) => {
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
-
   const email = watch('email');
-
+  const { t } = useTranslation('auth', { keyPrefix: 'loginSso' });
   const { refetch, isFetching, error } = useLoginViaSSO(
     { email },
     {
@@ -62,7 +62,7 @@ const LoginViaSSO: FC<ILoginViaSSOProps> = ({ setViaSSO }) => {
     if (!error || !!!(error as any)?.response) {
       return '';
     }
-    const errorCode = (error as any).response.data.errors[0].code; //error.response.data.errors[0].message;
+    const errorCode = (error as any).response.data.errors[0].code;
     if (errorCode === 'USER_IS_DEACTIVATED') {
       return 'sso-deleted-email-msg';
     } else if (errorCode === 'USER_EMAIL_NOT_FOUND') {
@@ -78,22 +78,23 @@ const LoginViaSSO: FC<ILoginViaSSOProps> = ({ setViaSSO }) => {
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      placeholder: 'Enter your email address',
+      placeholder: t('emailPlaceholder'),
       name: 'email',
-      label: 'Work Email / Username',
+      label: t('emailLabel'),
       error: errors.email?.message,
       dataTestId: 'sso-email',
       errorDataTestId: getDataTestIdForValidationErrors(),
       control,
     },
   ];
+
   return (
     <div className="w-full max-w-[440px] relative h-full">
       <div className="font-extrabold text-neutral-900 text-2xl leading-[40px]">
-        Sign In via SSO
+        {t('title')}
       </div>
       <p className="text-neutral-500 font-medium text-xs mt-1">
-        Hi, enter your details to get signed in to your account
+        {t('subtitle')}
       </p>
       <form
         className="mt-5"
@@ -104,7 +105,7 @@ const LoginViaSSO: FC<ILoginViaSSOProps> = ({ setViaSSO }) => {
 
         <Button
           dataTestId="sso-signin-btn"
-          label={'Sign In'}
+          label={t('signInButton')}
           className="w-full mt-5 rounded-7xl"
           disabled={!isValid || isFetching}
           size={Size.Large}
@@ -113,14 +114,14 @@ const LoginViaSSO: FC<ILoginViaSSOProps> = ({ setViaSSO }) => {
       </form>
       <div className="absolute bottom-0 flex justify-center w-full">
         <div className="text-sm font-normal">
-          Remember Password?&nbsp;
+          {t('rememberPassword')}
           <span
             className="text-primary-500 font-bold cursor-pointer"
             onClick={() => setViaSSO(false)}
             data-testid="sso-signin-cta"
           >
-            Sign In
-          </span>{' '}
+            {t('signInLink')}
+          </span>
         </div>
       </div>
     </div>

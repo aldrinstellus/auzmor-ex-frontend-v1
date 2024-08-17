@@ -11,8 +11,9 @@ import SkeletonLoader from './components/SkeletonLoader';
 import TeamNotFound from 'images/TeamNotFound.svg';
 import { memo, FC, useMemo } from 'react';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 
-interface IMyTeamWidgetProps {
+export interface IMyTeamWidgetProps {
   className?: string;
 }
 
@@ -20,6 +21,8 @@ const MyTeamWidget: FC<IMyTeamWidgetProps> = ({ className = '' }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [open, openCollpase, closeCollapse] = useModal(true, false);
+  const { t } = useTranslation('team');
+  const { t: tb } = useTranslation('button');
 
   const { data, isLoading, hasNextPage } = useInfiniteTeams({
     q: isFiltersEmpty({
@@ -61,7 +64,7 @@ const MyTeamWidget: FC<IMyTeamWidgetProps> = ({ className = '' }) => {
         aria-expanded={open}
         role="button"
       >
-        <div className="font-bold">Teams</div>
+        <div className="font-bold">{t('title')}</div>
         <Icon
           name={open ? 'arrowUp' : 'arrowDown'}
           size={20}
@@ -78,8 +81,11 @@ const MyTeamWidget: FC<IMyTeamWidgetProps> = ({ className = '' }) => {
             if (isLoading) {
               return (
                 <>
-                  {[...Array(3)].map((element) => (
-                    <div key={element} className="py-2">
+                  {[...Array(3)].map((_value, index) => (
+                    <div
+                      key={`${index}-my-team-widget-skeleton`}
+                      className="py-2"
+                    >
                       <SkeletonLoader />
                     </div>
                   ))}
@@ -102,7 +108,7 @@ const MyTeamWidget: FC<IMyTeamWidgetProps> = ({ className = '' }) => {
                       variant={Variant.Secondary}
                       size={Size.Small}
                       className="py-[7px]"
-                      label="My Teams"
+                      label={tb('myTeams')}
                       dataTestId="my-teams-cta"
                       onClick={() => navigate('/teams?tab=myTeams')}
                     />
@@ -114,7 +120,7 @@ const MyTeamWidget: FC<IMyTeamWidgetProps> = ({ className = '' }) => {
               <div className="flex justify-center flex-col items-center gap-4">
                 <img src={TeamNotFound} alt="Team Not Found" width={148} />
                 <p className="text-sm font-semibold text-neutral-500 text-center px-2">
-                  You’re not part of any team yet
+                  {t('notFound')}
                 </p>
               </div>
             );

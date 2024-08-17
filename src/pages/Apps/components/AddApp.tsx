@@ -3,7 +3,6 @@ import { FC, FormEvent, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import AppDetailsForm from './AppDetailsForm';
 import clsx from 'clsx';
-// import AppCredentialsForm from './AppCredentialsForm';
 import Button, { Variant as ButtonVariant, Type } from 'components/Button';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -18,6 +17,8 @@ import Audience from './Audience';
 import Header from 'components/ModalHeader';
 import { createCatergory, uploadImage } from 'queries/learn';
 import useProduct from 'hooks/useProduct';
+import { useTranslation } from 'react-i18next';
+
 export enum APP_MODE {
   Create = 'CREATE',
   Edit = 'EDIT',
@@ -47,36 +48,41 @@ export interface IAddAppForm {
   isNewCategory?: boolean;
 }
 
-const AddAppFormSchema = yup.object({
-  url: yup
-    .string()
-    .required('This field cannot be empty')
-    .matches(URL_REGEX, 'Enter a valid URL'),
-
-  label: yup
-    .string()
-    .required('This field cannot be empty')
-    .max(60, 'Label cannot exceed 60 characters'),
-  description: yup
-    .string()
-    .test(
-      'len',
-      'Description cannot exceed 300 characters',
-      (val) => (val || '').toString().length <= 300,
-    ),
-  audience: yup.array(),
-  icon: yup.object().nullable(),
-  acsUrl: yup.string(),
-  entityId: yup.string(),
-  relayState: yup.string(),
-});
-
 const AddApp: FC<AddAppProps> = ({
   open,
   closeModal,
   data,
   mode = APP_MODE.Create,
 }) => {
+  const { t } = useTranslation('appLauncher', {
+    keyPrefix: 'addApp',
+  });
+
+  const AddAppFormSchema = yup.object({
+    url: yup
+      .string()
+      .required(t('requiredError'))
+      .test('is-valid-url', t('protocolError'), (value) =>
+        /^(http|https):\/\//.test(value || ''),
+      )
+      .matches(URL_REGEX, 'Enter a valid URL'),
+    label: yup
+      .string()
+      .required(t('requiredError'))
+      .max(60, t('labelMaxError')),
+    description: yup
+      .string()
+      .test(
+        'len',
+        t('descriptionError'),
+        (val) => (val || '').toString().length <= 300,
+      ),
+    audience: yup.array(),
+    icon: yup.object().nullable(),
+    acsUrl: yup.string(),
+    entityId: yup.string(),
+    relayState: yup.string(),
+  });
   const {
     control,
     formState: { errors },
@@ -108,7 +114,17 @@ const AddApp: FC<AddAppProps> = ({
   const { isLxp } = useProduct();
   const [activeFlow, setActiveFlow] = useState(ADD_APP_FLOW.AddApp);
   const [audience, setAudience] = useState<any>(data?.audience || []);
-  // const [activeTab, setActiveTab] = useState(0);
+
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      if (name === 'url' && value.url) {
+        const titleMatch = value.url.match(/https?:\/\/(?:www\.)?([^.]+)\./);
+        const title = titleMatch ? titleMatch[1] : '';
+        setValue('label', title);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, setValue]); // auto fill the label on the basis of url same as Channel links
 
   const queryClient = useQueryClient();
 
@@ -118,7 +134,7 @@ const AddApp: FC<AddAppProps> = ({
     onSuccess: async () => {
       await queryClient.invalidateQueries(['apps']);
       await queryClient.invalidateQueries(['my-apps']);
-      successToastConfig({ content: 'App added successfully' });
+      successToastConfig({ content: t('successToastContent') });
       closeModal();
       isLxp
         ? queryClient.invalidateQueries(['learnCategory'])
@@ -126,7 +142,7 @@ const AddApp: FC<AddAppProps> = ({
     },
     onError: async () =>
       failureToastConfig({
-        content: `Error Creating App`,
+        content: t('failureToastContent'),
         dataTestId: 'app-create-error-toaster',
       }),
   });
@@ -140,7 +156,7 @@ const AddApp: FC<AddAppProps> = ({
       queryClient.invalidateQueries(['featured-apps']);
       queryClient.invalidateQueries(['my-featured-apps']);
       successToastConfig({
-        content: `App has been updated`,
+        content: t('updateSuccessToastContent'),
         dataTestId: 'app-updated-success-toaster',
       });
       closeModal();
@@ -150,7 +166,7 @@ const AddApp: FC<AddAppProps> = ({
     },
     onError: (_error: any) =>
       failureToastConfig({
-        content: `Error updating the app`,
+        content: t('updateFailureToastContent'),
         dataTestId: 'app-create-error-toaster',
       }),
   });
@@ -260,7 +276,7 @@ const AddApp: FC<AddAppProps> = ({
       {activeFlow === ADD_APP_FLOW.AddApp && (
         <div className="flex flex-col h-full">
           <Header
-            title={mode === APP_MODE.Create ? 'Add app' : 'Edit App'}
+            title={mode === APP_MODE.Create ? t('addApp') : t('editApp')}
             onClose={closeModal}
             closeBtnDataTestId="add-app-close"
           />
@@ -281,17 +297,17 @@ const AddApp: FC<AddAppProps> = ({
             </div>
             <div className="bg-blue-50 flex items-center justify-between gap-x-3 px-6 py-4 mt-auto rounded-9xl">
               <p className="text-xs text-neutral-900">
-                <span className="text-red-500">*</span> Required field
+                <span className="text-red-500">*</span> {t('requiredField')}
               </p>
               <div className="flex items-center gap-x-3">
                 <Button
-                  label="Cancel"
+                  label={t('cancel')}
                   variant={ButtonVariant.Secondary}
                   onClick={closeModal}
                   dataTestId="add-app-cancel"
                 />
                 <Button
-                  label="Save"
+                  label={t('save')}
                   type={Type.Submit}
                   dataTestId="add-app-save"
                   loading={

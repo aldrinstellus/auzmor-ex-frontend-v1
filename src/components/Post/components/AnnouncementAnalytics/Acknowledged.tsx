@@ -8,23 +8,38 @@ import AvatarRowSkeleton from './AvatarRowSkeleton';
 import AvatarRow from './AvatarRow';
 import PageLoader from 'components/PageLoader';
 import Button, { Variant } from 'components/Button';
-import { useInfiniteAcknowledgements } from 'queries/post';
+import { IPost, useInfiniteAcknowledgements } from 'queries/post';
 import { twConfig } from 'utils/misc';
+import { useTranslation } from 'react-i18next';
+import { useFeedStore } from 'stores/feedStore';
 
 type AppProps = {
-  post: Record<string, any>;
+  postId: string;
   closeModal: () => any;
 };
 
-const Acknowledged: FC<AppProps> = ({ post, closeModal }) => {
+const Acknowledged: FC<AppProps> = ({ postId, closeModal }) => {
   const { ref, inView } = useInView();
+  const updatePost = useFeedStore((state) => state.updateFeed);
+  const post = useFeedStore((state) => state.getPost)(postId);
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteAcknowledgements(post.id, { acknowledged: true });
+    useInfiniteAcknowledgements(post.id, { acknowledged: true }, (data) =>
+      updatePost(post.id, {
+        ...(post as IPost),
+        acknowledgementStats: {
+          ...post.acknowledgementStats,
+          acknowledged: data?.pages.flatMap((page: any) =>
+            page?.data?.result?.data.map((user: any) => user),
+          ).length,
+        },
+      }),
+    );
 
   const usersData = data?.pages.flatMap((page) =>
     page?.data?.result?.data.map((user: any) => user),
   );
+  const { t } = useTranslation('post', { keyPrefix: 'announcementAnalytics' });
 
   useEffect(() => {
     if (inView) {
@@ -47,9 +62,7 @@ const Acknowledged: FC<AppProps> = ({ post, closeModal }) => {
               className="center"
               strokeWidth={12}
               styles={buildStyles({
-                // Text size
                 textSize: '32px',
-                // Colors
                 pathColor: twConfig.theme.colors.primary[500],
                 textColor: '#000000',
                 trailColor: '#A3A3A3',
@@ -65,12 +78,12 @@ const Acknowledged: FC<AppProps> = ({ post, closeModal }) => {
               className="text-2xl text-primary-500 font-semibold"
               data-testid="acknowledged-count"
             >
-              {post?.acknowledgementStats?.acknowledged} out of{' '}
-              {post?.acknowledgementStats?.audience} people
+              {t('acknowledgedCount', {
+                acknowledged: (usersData || []).length,
+                audience: post?.acknowledgementStats?.audience,
+              })}
             </div>
-            <div className="text-sm text-neutral-900">
-              marked this post as &apos;read&apos;
-            </div>
+            <div className="text-sm text-neutral-900">{t('markedAsRead')}</div>
           </div>
         </div>
         <div>
@@ -92,7 +105,7 @@ const Acknowledged: FC<AppProps> = ({ post, closeModal }) => {
       <div className="px-6 py-4 bg-blue-50">
         <div className="flex justify-end">
           <Button
-            label="Close"
+            label={t('close')}
             onClick={closeModal}
             variant={Variant.Secondary}
             dataTestId="acknowledgement-report-close"

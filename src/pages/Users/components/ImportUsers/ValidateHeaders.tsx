@@ -4,6 +4,7 @@ import Icon from 'components/Icon';
 import Spinner from 'components/Spinner';
 import { find } from 'lodash';
 import React, { FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   isLoading: boolean;
@@ -25,18 +26,24 @@ const ValidateHeaders: React.FC<AppProps> = ({
   isCsv = true,
   onConfirm,
 }) => {
+  const { t } = useTranslation('profile', {
+    keyPrefix: 'importUser.validateHeader',
+  });
+
   if (isLoading) {
     return (
       <div className="px-6 pt-2 pb-4 space-y-4">
         <div className="v-center">
           <Spinner className="!h-5 !w-5" />
           <div className="pl-1 text-sm text-neutral-900">
-            Checking for headers
+            {t('checkingHeaders')}
           </div>
         </div>
         <div className="v-center">
           <Spinner className="!h-5 !w-5" />
-          <div className="pl-1 text-sm text-neutral-900">Mapping Columns</div>
+          <div className="pl-1 text-sm text-neutral-900">
+            {t('mappingColumns')}
+          </div>
         </div>
       </div>
     );
@@ -65,20 +72,20 @@ const ValidateHeaders: React.FC<AppProps> = ({
             className="font-bold underline cursor-pointer"
             onClick={() => setShowMore(false)}
           >
-            view less
+            {t('viewLess')}
           </span>
         ) : (
           <span
             className="font-bold underline cursor-pointer"
             onClick={() => setShowMore(true)}
           >
-            view details
+            {t('viewDetails')}
           </span>
         )}
-        {!error?.length && <div>Press confirm to ignore these columns.</div>}
+        {!error?.length && <div>{t('pressConfirm')}</div>}
         {showMore && (
           <p>
-            <span className="font-bold underline">Columns:</span>
+            <span className="font-bold underline">{t('columns')}:</span>
             <br />
             {warning[1].split(',').map((column: string) => (
               <>
@@ -98,7 +105,7 @@ const ValidateHeaders: React.FC<AppProps> = ({
         <>
           <div className="px-6 pt-2 pb-4 space-y-4">
             {!isHeaderRowPresent && (
-              <Banner variant={Variant.Error} title="Error mapping header" />
+              <Banner variant={Variant.Error} title={t('errorMappingHeader')} />
             )}
             {isHeaderRowPresent && !!error?.length && (
               <Banner variant={Variant.Error} title={error.join(': ')} />
@@ -122,7 +129,7 @@ const ValidateHeaders: React.FC<AppProps> = ({
                 }
               />
               <div className="text-sm text-neutral-900">
-                Checking for headers
+                {t('checkingHeaders')}
               </div>
             </div>
             <div className="v-center">
@@ -140,10 +147,12 @@ const ValidateHeaders: React.FC<AppProps> = ({
               />
               {!!warning?.length ? (
                 <div className="text-sm text-neutral-900">
-                  Columns mapped incorrectly
+                  {t('columnsMappedIncorrectly')}
                 </div>
               ) : (
-                <div className="text-sm text-neutral-900">Mapping Columns</div>
+                <div className="text-sm text-neutral-900">
+                  {t('mappingColumns')}
+                </div>
               )}
             </div>
           </div>
@@ -152,7 +161,7 @@ const ValidateHeaders: React.FC<AppProps> = ({
       {((isCsv && !isLoading) || !isCsv) && (
         <div className="flex items-center justify-end h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
-            label="Cancel"
+            label={t('cancel')}
             variant={BtnVariant.Secondary}
             size={Size.Small}
             className="mr-4"
@@ -160,7 +169,7 @@ const ValidateHeaders: React.FC<AppProps> = ({
             dataTestId="import-people-cancel"
           />
           <Button
-            label="Confirm"
+            label={t('confirm')}
             size={Size.Small}
             dataTestId="import-people-next"
             onClick={onConfirm}

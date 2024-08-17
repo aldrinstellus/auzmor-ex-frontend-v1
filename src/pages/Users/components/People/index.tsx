@@ -23,7 +23,7 @@ import InviteUserModal from '../InviteUserModal';
 import { useInfiniteTeamMembers } from 'queries/teams';
 import { EntitySearchModalType } from 'components/EntitySearchModal';
 import Sort from 'components/Sort';
-import FilterModal, { IStatus } from 'components/FilterModal';
+import FilterModal, { IAppliedFilters, IStatus } from 'components/FilterModal';
 import useURLParams from 'hooks/useURLParams';
 import NoDataFound from 'components/NoDataFound';
 import useRole from 'hooks/useRole';
@@ -31,7 +31,9 @@ import Icon from 'components/Icon';
 import { IDepartmentAPI } from 'queries/department';
 import { ILocationAPI } from 'queries/location';
 import ImportUsers from '../ImportUsers';
+import { FilterKey } from 'components/FilterMenu';
 import useProduct from 'hooks/useProduct';
+import { useTranslation } from 'react-i18next';
 
 export interface IPeopleProps {
   showModal: boolean;
@@ -48,24 +50,12 @@ interface IRole {
   label: string;
 }
 
-interface IPeopleFilters {
-  departments?: IDepartmentAPI[];
-  locations?: ILocationAPI[];
-  status?: IStatus[];
-}
-
-enum PeopleFilterKey {
-  departments = 'departments',
-  locations = 'locations',
-  status = 'status',
-}
-
 interface IForm {
   search?: string;
   role?: IRole | null;
 }
 
-const defaultFilters: IPeopleFilters = {
+const defaultFilters: IAppliedFilters = {
   status: [],
   departments: [],
   locations: [],
@@ -80,6 +70,7 @@ const People: FC<IPeopleProps> = ({
   isTeamPeople,
   teamId,
 }) => {
+  const { t } = useTranslation('profile', { keyPrefix: 'people' });
   const {
     searchParams,
     updateParam,
@@ -89,7 +80,7 @@ const People: FC<IPeopleProps> = ({
   } = useURLParams();
   const [startFetching, setStartFetching] = useState(false);
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
-  const [appliedFilters, setAppliedFilters] = useState<IPeopleFilters>({
+  const [appliedFilters, setAppliedFilters] = useState<IAppliedFilters>({
     ...defaultFilters,
   });
   const [filterSortBy, setFilterSortBy] = useState<string>('');
@@ -110,7 +101,7 @@ const People: FC<IPeopleProps> = ({
     mode: 'onChange',
     defaultValues: {
       role: parsedRole,
-      search: searchParams.get('peopleSearch'),
+      search: searchParams.get('peopleSearch') || '',
     },
   });
 
@@ -189,7 +180,7 @@ const People: FC<IPeopleProps> = ({
       control,
       height: 36,
       name: 'role',
-      placeholder: 'Role',
+      placeholder: t('rolePlaceholder'),
       size: InputSize.Small,
       dataTestId: 'filterby-role',
       selectClassName: 'single-select-bold',
@@ -198,17 +189,17 @@ const People: FC<IPeopleProps> = ({
       options: [
         {
           value: UserRole.Admin,
-          label: 'Admin',
+          label: t('roleAdmin'),
           dataTestId: 'filterby-role-admin',
         },
         {
           value: UserRole.Superadmin,
-          label: 'Super Admin',
+          label: t('roleSuperAdmin'),
           dataTestId: 'filterby-role-superadmin',
         },
         {
           value: UserRole.Member,
-          label: 'Member',
+          label: t('roleMember'),
           dataTestId: 'filterby-role-member',
         },
       ],
@@ -237,7 +228,7 @@ const People: FC<IPeopleProps> = ({
     });
   };
 
-  const handleRemoveFilters = (key: PeopleFilterKey, id: any) => {
+  const handleRemoveFilters = (key: FilterKey, id: any) => {
     const updatedFilter = appliedFilters[key]!.filter(
       (item: any) => item.id !== id,
     );
@@ -250,7 +241,7 @@ const People: FC<IPeopleProps> = ({
     setAppliedFilters({ ...appliedFilters, [key]: updatedFilter });
   };
 
-  const onApplyFilter = (appliedFilters: IPeopleFilters) => {
+  const onApplyFilter = (appliedFilters: IAppliedFilters) => {
     setAppliedFilters(appliedFilters);
     if (appliedFilters.status?.length) {
       const serializedStatus = serializeFilter(appliedFilters.status);
@@ -343,7 +334,9 @@ const People: FC<IPeopleProps> = ({
   const ShowResultCount = () => {
     return (
       <div className="text-neutral-500" role="contentinfo" tabIndex={0}>
-        Showing {!isLoading && data?.pages[0]?.data?.result?.totalCount} results
+        {t('showingResults', {
+          count: !isLoading && data?.pages[0]?.data?.result?.totalCount,
+        })}
       </div>
     );
   };
@@ -355,7 +348,7 @@ const People: FC<IPeopleProps> = ({
           <div className="flex space-x-4">
             {!isTeamPeople && (
               <Button
-                label="All Members"
+                label={t('allMembers')}
                 size={Size.Small}
                 variant={Variant.Secondary}
                 className="h-9 grow-0"
@@ -398,7 +391,7 @@ const People: FC<IPeopleProps> = ({
                     control,
                     getValues,
                     name: 'search',
-                    placeholder: 'Search members',
+                    placeholder: t('searchMembersPlaceholder'),
                     error: errors.search?.message,
                     dataTestId: 'people-search-members',
                     inputClassName: 'py-[7px] !text-sm !h-9',
@@ -411,14 +404,13 @@ const People: FC<IPeopleProps> = ({
         </div>
 
         {!isLxp && <ShowResultCount />}
-
         {appliedFilters?.status?.length ||
         appliedFilters?.departments?.length ||
         appliedFilters?.locations?.length ? (
           <div className="flex justify-between items-start mb-6">
             <div className="flex items-center space-x-2 flex-wrap gap-y-2">
               <div className="text-base text-neutral-500 whitespace-nowrap">
-                Filter By
+                {t('filterBy')}
               </div>
               {appliedFilters?.status?.map((status: IStatus) => (
                 <div
@@ -426,11 +418,11 @@ const People: FC<IPeopleProps> = ({
                   className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
                   data-testid={`teams-filterby`}
                   onClick={() =>
-                    handleRemoveFilters(PeopleFilterKey.status, status.id)
+                    handleRemoveFilters(FilterKey.status, status.id)
                   }
                 >
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
-                    Status{' '}
+                    {t('status')}{' '}
                     <span className="text-primary-500">{status.name}</span>
                   </div>
                   <Icon
@@ -439,7 +431,7 @@ const People: FC<IPeopleProps> = ({
                     color="text-neutral-900"
                     className="cursor-pointer"
                     onClick={() =>
-                      handleRemoveFilters(PeopleFilterKey.status, status.id)
+                      handleRemoveFilters(FilterKey.status, status.id)
                     }
                     dataTestId={`applied-filter-close`}
                   />
@@ -452,14 +444,11 @@ const People: FC<IPeopleProps> = ({
                     className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
                     data-testid={`teams-filterby`}
                     onClick={() =>
-                      handleRemoveFilters(
-                        PeopleFilterKey.departments,
-                        department.id,
-                      )
+                      handleRemoveFilters(FilterKey.departments, department.id)
                     }
                   >
                     <div className="mr-1 text-neutral-500 whitespace-nowrap">
-                      Department{' '}
+                      {t('department')}{' '}
                       <span className="text-primary-500">
                         {department.name}
                       </span>
@@ -471,7 +460,7 @@ const People: FC<IPeopleProps> = ({
                       className="cursor-pointer"
                       onClick={() =>
                         handleRemoveFilters(
-                          PeopleFilterKey.departments,
+                          FilterKey.departments,
                           department.id,
                         )
                       }
@@ -486,11 +475,11 @@ const People: FC<IPeopleProps> = ({
                   className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
                   data-testid={`teams-filterby`}
                   onClick={() =>
-                    handleRemoveFilters(PeopleFilterKey.locations, location.id)
+                    handleRemoveFilters(FilterKey.locations, location.id)
                   }
                 >
                   <div className="mr-1 text-neutral-500 whitespace-nowrap">
-                    Location{' '}
+                    {t('location')}{' '}
                     <span className="text-primary-500">{location.name}</span>
                   </div>
                   <Icon
@@ -499,10 +488,7 @@ const People: FC<IPeopleProps> = ({
                     color="text-neutral-900"
                     className="cursor-pointer"
                     onClick={() =>
-                      handleRemoveFilters(
-                        PeopleFilterKey.locations,
-                        location.id,
-                      )
+                      handleRemoveFilters(FilterKey.locations, location.id)
                     }
                     dataTestId={`applied-filter-close`}
                   />
@@ -514,17 +500,17 @@ const People: FC<IPeopleProps> = ({
               onClick={clearFilters}
               data-testid={`people-clear-filters`}
             >
-              Clear Filters
+              {t('clearFilters')}
             </div>
           </div>
         ) : null}
 
         <div>
           {showGrid ? (
-            <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-4 xl:grid-cols-5 1.5xl:grid-cols-6 2xl:grid-cols-6">
+            <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 xl:grid-cols-4 1.5xl:grid-cols-5  ">
               {isLoading
-                ? [...Array(30)].map((element) => (
-                    <div key={element}>
+                ? [...Array(30)].map((_value, i) => (
+                    <div key={`${i}-user-card-skeleton`}>
                       <UsersSkeleton />
                     </div>
                   ))
@@ -565,7 +551,7 @@ const People: FC<IPeopleProps> = ({
                 src={MemberNotFound}
                 width={220}
                 height={144}
-                alt="No Member Found"
+                alt={t('noMemberFoundAlt')}
               />
               <div className="w-full flex flex-col items-center">
                 <div className="flex items-center flex-col space-y-1">
@@ -573,18 +559,18 @@ const People: FC<IPeopleProps> = ({
                     className="text-lg font-bold text-neutral-900"
                     data-testid="teams-no-members-yet"
                   >
-                    No members yet
+                    {t('noMembersYet')}
                   </div>
                   {isAdmin && !isLxp ? (
                     <div className="text-base font-medium text-neutral-500">
-                      {"Let's get started by adding some members!"}
+                      {t('letsGetStarted')}
                     </div>
                   ) : null}
                 </div>
               </div>
               {isAdmin && !isLxp ? (
                 <Button
-                  label={'Add members'}
+                  label={t('addMembers')}
                   variant={Variant.Secondary}
                   className="space-x-1 rounded-[24px]"
                   size={Size.Large}
@@ -605,11 +591,11 @@ const People: FC<IPeopleProps> = ({
               illustration="noResultAlt"
               message={
                 <p>
-                  Sorry we can&apos;t find the profile you are looking for.
-                  <br /> Please check the spelling or try again.
+                  {t('noResultsMessage')}
+                  <br /> {t('noResultsMessage2')}{' '}
                 </p>
               }
-              clearBtnLabel={searchValue ? 'Clear Search' : 'Clear Filters'}
+              clearBtnLabel={searchValue ? t('clearSearch') : t('clearFilters')}
               onClearSearch={() => {
                 searchValue && resetField
                   ? resetField('search', { defaultValue: '' })

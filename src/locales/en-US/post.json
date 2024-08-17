@@ -1,0 +1,89 @@
+{
+  "scheduledPostText": "Post Scheduled for {{time}}",
+  "reactionCount": "{{count}} Reacted",
+  "publishNow": "Publish Now",
+  "comment": "Comment",
+  "removeBookMark": "Remove from Bookmarks",
+  "bookMarkPost": "Bookmark Post",
+  "bookmarkSuccess": "Successfully Bookmarked",
+  "viewBookmarks": "View Bookmarks",
+  "removeBookmark": "Bookmark Removed",
+  "announcementAnalytics": {
+    "title": "Acknowledgement Report",
+    "acknowledged": "Acknowledged",
+    "pending": "Pending",
+    "exportSuccess": "Report Exported Successfully",
+    "exportReport": "Export Report",
+    "acknowledgedCount": "{{acknowledged}} out of {{audience}} People",
+    "markedAsRead": "Marked this post as 'Read'",
+    "close": "Close"
+  },
+  "feedPostMenu": {
+    "promoteToAnnouncement": "Promote to Announcement",
+    "editAnnouncement": "Edit Announcement",
+    "changeToRegularPost": "Change to Regular Post",
+    "editPost": "Edit Post",
+    "closePoll": "Close Poll",
+    "seeWhoVoted": "See Who Voted",
+    "viewAcknowledgementReport": "View Acknowledgement Report",
+    "deletePost": "Delete Post",
+    "deleteConfirmTitle": "Delete",
+    "deleteConfirmDescription": "Are you sure you want to delete this post? This action cannot be undone.",
+    "deleteConfirmButton": "Delete",
+    "cancelButton": "Cancel",
+    "errorDeletingPost": "Error Deleting Post",
+    "postDeletedSuccessfully": "Post Deleted Successfully"
+  },
+  "publishPostModal": {
+    "title": "Publish Now?",
+    "warningImageAlt": "Warning",
+    "confirmationMessage": "Are you sure you want to publish this post now?",
+    "cancelButton": "Cancel",
+    "postNowButton": "Post Now",
+    "errorUpdatingPost": "Error Updating Post",
+    "postUpdatedSuccessfully": "Post Updated Successfully"
+  },
+  "acknowledgementBanner": {
+    "announcement": "Announcement",
+    "peopleAcknowledged": "People Acknowledged",
+    "markAsRead": "Mark as Read"
+  },
+  "changeToRegularPostModal": {
+    "modalTitle": "Change to Regular Post?",
+    "warningImageAlt": "Warning",
+    "confirmationMessage": "Are you sure you want to change this announcement to a regular post?",
+    "changeBackInfo": "You can change it back to an announcement by clicking on 'Promote to Announcement'.",
+    "cancelButton": "Cancel",
+    "confirmButton": "Yes",
+    "successToast": "Announcement Changed to Regular Post"
+  },
+  "closePollModal": {
+    "modalTitle": "Close Poll?",
+    "confirmationMessage": "Are you sure you want to close this poll now?",
+    "cannotBeUndone": "This action cannot be undone.",
+    "cancelButton": "Cancel",
+    "closePollButton": "Close Poll",
+    "errorClosingPoll": "Error Closing Poll",
+    "pollClosedSuccessfully": "Poll Closed Successfully"
+  },
+  "editSchedulePostModal": {
+    "modalTitle": "Schedule a Post",
+    "scheduledTime": "{{time}} based on your profile timezone.",
+    "editButton": "Edit",
+    "cancelButton": "Cancel",
+    "saveButton": "Save",
+    "errorUpdatingPost": "Error Updating Post",
+    "postUpdatedSuccessfully": "Post Updated Successfully",
+    "timezoneField": {
+      "label": "Timezone",
+      "placeholder": "Select Your Timezone"
+    },
+    "dateField": {
+      "label": "Date"
+    },
+    "timeField": {
+      "label": "Time",
+      "placeholder": "Select Time"
+    }
+  }
+}

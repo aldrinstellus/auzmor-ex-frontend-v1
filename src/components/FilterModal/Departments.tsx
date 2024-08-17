@@ -10,6 +10,7 @@ import { useInView } from 'react-intersection-observer';
 import { IFilterForm } from '.';
 import ItemSkeleton from './ItemSkeleton';
 import NoDataFound from 'components/NoDataFound';
+import Truncate from 'components/Truncate';
 
 interface IDepartmentsProps {
   control: Control<IFilterForm, any>;
@@ -69,7 +70,12 @@ const Departments: FC<IDepartmentsProps> = ({ control, watch, setValue }) => {
         datatestId: `department-${department.name}`,
       })),
       labelRenderer: (option: ICheckboxListOption) => (
-        <div className="ml-2.5 cursor-pointer text-xs">{option.data.name}</div>
+        <>
+          <Truncate
+            text={option.data.name}
+            className="ml-2.5 cursor-pointer text-xs max-w-[200px]"
+          />
+        </>
       ),
       rowClassName: 'px-6 py-3 border-b border-neutral-200',
     },
@@ -87,9 +93,10 @@ const Departments: FC<IDepartmentsProps> = ({ control, watch, setValue }) => {
                 data-testid="filter-options"
                 className="flex items-center px-3 py-2 bg-neutral-100 rounded-17xl border border-neutral-200 mr-2 my-1"
               >
-                <div className="text-primary-500 text-sm font-medium whitespace-nowrap">
-                  {department.data.name}
-                </div>
+                <Truncate
+                  text={department.data.name}
+                  className="text-primary-500 text-sm font-medium whitespace-nowrap max-w-[128px]"
+                />
                 <div className="ml-1">
                   <Icon
                     name="closeCircle"
@@ -114,9 +121,9 @@ const Departments: FC<IDepartmentsProps> = ({ control, watch, setValue }) => {
           if (isLoading) {
             return (
               <>
-                {[...Array(10)].map((element) => (
+                {[...Array(10)].map((_value, i) => (
                   <div
-                    key={element}
+                    key={`${i}-department-item-skeleton`}
                     className={`px-6 py-3 border-b-1 border-b-bg-neutral-200 flex items-center`}
                   >
                     <ItemSkeleton />

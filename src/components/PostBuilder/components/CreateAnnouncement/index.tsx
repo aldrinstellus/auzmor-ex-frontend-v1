@@ -11,6 +11,7 @@ import Header from 'components/ModalHeader';
 import Footer from './Footer';
 import Body from './Body';
 import { IPost } from 'queries/post';
+import { useTranslation } from 'react-i18next';
 
 interface IAnnouncementForm {
   date?: Date;
@@ -41,7 +42,9 @@ const CreateAnnouncement: FC<ICreateAnnouncementProps> = ({
 }) => {
   const { setActiveFlow, announcement, clearPostContext } =
     useContext(CreatePostContext);
-
+  const { t } = useTranslation('postBuilder', {
+    keyPrefix: 'createAnnouncement',
+  });
   const { control, handleSubmit, watch, getValues } =
     useForm<IAnnouncementForm>({
       mode: 'onChange',
@@ -62,38 +65,39 @@ const CreateAnnouncement: FC<ICreateAnnouncementProps> = ({
   const expiryFields = [
     {
       type: FieldType.SingleSelect,
-      label: 'Announcement Expiry',
+      label: t('announcementExpiry'),
       name: 'expiryOption',
       control,
       options: [
         {
-          label: '1 Day',
+          label: t('1Day'),
           value: afterXUnit(1, 'days').toISOString().substring(0, 19) + 'Z',
           dataTestId: 'announcement-expiry-1day',
         },
         {
-          label: '1 Week',
+          label: t('1Week'),
           value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
           dataTestId: 'announcement-expiry-1week',
         },
         {
-          label: '2 Weeks',
+          label: t('2Weeks'),
           value: afterXUnit(2, 'weeks').toISOString().substring(0, 19) + 'Z',
           dataTestId: 'announcement-expiry-2weeks',
         },
         {
-          label: '1 Month',
+          label: t('1Month'),
           value: afterXUnit(1, 'months').toISOString().substring(0, 19) + 'Z',
           dataTestId: 'announcement-expiry-1month',
         },
         {
-          label: 'Custom Date',
+          label: t('customDate'),
           value: '',
           dataTestId: 'announcement-expiry-customdate',
         },
       ],
-      placeholder: 'Select Announcement Expiry',
+      placeholder: t('selectAnnouncementExpiry'),
       dataTestId: 'announcement-expiry-dropdown',
+      showSearch: false,
     },
   ];
 
@@ -112,8 +116,8 @@ const CreateAnnouncement: FC<ICreateAnnouncementProps> = ({
       <Header
         title={
           mode === CreateAnnouncementMode.DIRECT
-            ? 'Edit announcement expiry'
-            : 'Create an announcement'
+            ? t('editAnnouncementExpiry')
+            : t('createAnnouncement')
         }
         onBackIconClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
         onClose={() => {

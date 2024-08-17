@@ -9,7 +9,6 @@ import {
   IGetUser,
   UserStatus,
   updateRoleToAdmin,
-  // updateStatus,
   useResendInvitation,
 } from 'queries/users';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
@@ -31,12 +30,22 @@ import RemoveTeamMember from '../DeleteModals/TeamMember';
 import { FC } from 'react';
 import useProduct from 'hooks/useProduct';
 import Truncate from 'components/Truncate';
+import { updateMemberRole } from 'queries/channel';
+import { CHANNEL_ROLE, IChannel } from 'stores/channelStore';
+import RemoveChannelMember from '../DeleteModals/ChannelMember';
+import { useTranslation } from 'react-i18next';
 
 export interface IPeopleCardProps {
   userData: IGetUser;
   teamId?: string;
   teamMemberId?: string;
   isTeamPeople?: boolean;
+  isChannelPeople?: boolean;
+  channelId?: string;
+  channelData?: IChannel;
+  isMember?: boolean;
+  isChannelAdmin?: boolean;
+  isReadOnly?: boolean;
 }
 
 export enum Status {
@@ -60,7 +69,12 @@ const PeopleCard: FC<IPeopleCardProps> = ({
   teamId,
   teamMemberId,
   isTeamPeople,
+  isChannelPeople,
+  channelId,
+  isChannelAdmin,
+  isReadOnly = true,
 }) => {
+  const { t } = useTranslation('profile', { keyPrefix: 'peopleCard' });
   const {
     id,
     role,
@@ -71,7 +85,9 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     workLocation,
     workEmail,
     createdAt,
+    userId,
   } = userData;
+
   const { isLxp } = useProduct();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -83,6 +99,12 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     openRemoveTeamMember,
     openRemoveTeamMemberModal,
     closeRemoveTeamMemberModal,
+  ] = useModal();
+
+  const [
+    openRemoveChannelMember,
+    openRemoveChannelMemberModal,
+    closeRemoveChannelMemberModal,
   ] = useModal();
   const [openReactivate, openReactivateModal, closeReactivateModal] =
     useModal();
@@ -96,7 +118,15 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     mutationKey: ['update-user-role'],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      successToastConfig({ content: `User role has been updated to admin` });
+      successToastConfig({ content: t('roleUpdated') });
+    },
+  });
+  const updateMemberRoleMutation = useMutation({
+    mutationFn: updateMemberRole,
+    mutationKey: ['update-channel-member-role'],
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['channel-members'] });
+      successToastConfig({ content: t('roleUpdated') });
     },
   });
 
@@ -120,7 +150,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
           className={`${rightChipStyle} bg-amber-100 text-orange-600`}
           data-testid={`people-card-role-${role}`}
         >
-          Pending
+          {t('status.pending')}
         </div>
       );
     }
@@ -130,7 +160,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
           className={`${rightChipStyle} bg-primary-100 text-primary-600`}
           data-testid={`member-badge`}
         >
-          New joinee
+          {t('status.newJoinee')}
         </div>
       );
     }
@@ -147,13 +177,25 @@ const PeopleCard: FC<IPeopleCardProps> = ({
           className={leftChipStyle}
           data-testid={`people-card-role-${role}`}
         >
-          {titleCase(role || '')}
+          {titleCase(t(`roles.${role?.toLowerCase()}`) || '')}
         </div>
       );
     }
 
     return null;
   };
+  const departmentName =
+    department?.name && department?.name.length <= 22
+      ? department?.name
+      : department?.name?.substring(0, 22) + '..';
+  const departmentColor = department?.name
+    ? 'text-neutral-900'
+    : 'text-neutral-300';
+  const departmentText = department?.name ? departmentName : t('notSpecified');
+  const workLocationText = workLocation?.name || t('notSpecified');
+  const workLocationColor = workLocation?.name
+    ? 'text-neutral-900'
+    : 'text-neutral-300';
 
   const handleProfileClick = () => {
     if (isLxp) {
@@ -164,7 +206,6 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     }
     return navigate(`/users/${id}`);
   };
-
   return (
     <div
       className="cursor-pointer w-fit"
@@ -174,30 +215,42 @@ const PeopleCard: FC<IPeopleCardProps> = ({
       <Card
         shadowOnHover
         className={`relative w-[190px] ${
-          isLxp ? 'h-[190px]' : 'h-[244px]'
+          isLxp ? 'h-[190px] w-[190px] ' : 'h-[244px] w-[233px]'
         } border-solid border rounded-9xl border-neutral-200 bg-white focus-within:shadow-xl`}
       >
-        {!isLxp ? (
+        {(!isLxp || (isChannelPeople && isReadOnly)) && (
           <UserProfileDropdown
+            isChannelAdmin={isChannelAdmin}
             id={id}
+            userId={userId}
             loggedInUserId={user?.id}
             role={role || ''}
             status={status}
             isHovered={isHovered}
             onDeleteClick={openDeleteModal}
             isTeamPeople={isTeamPeople}
+            isChannelPeople={isChannelPeople}
             onEditClick={() =>
               navigate(
                 `/users/${id}?edit=${getEditSection(id, user?.id, isAdmin)}`,
               )
             }
             onReactivateClick={openReactivateModal}
-            onPromoteClick={() => updateUserRoleMutation.mutate({ id })}
+            onPromoteClick={() => {
+              isChannelPeople
+                ? updateMemberRoleMutation.mutate({
+                    id: id,
+                    channelId: channelId,
+                    role: CHANNEL_ROLE.Admin,
+                  })
+                : updateUserRoleMutation.mutate({ id });
+            }}
             onDeactivateClick={openDeactivateModal}
             onResendInviteClick={() => {
-              successToastConfig({ content: 'Invitation has been sent' });
+              successToastConfig({ content: t('invitationSent') });
               resendInviteMutation.mutate(id);
             }}
+            onRemoveChannelMember={openRemoveChannelMemberModal}
             onRemoveTeamMember={openRemoveTeamMemberModal}
             triggerNode={
               <div className="cursor-pointer">
@@ -213,14 +266,14 @@ const PeopleCard: FC<IPeopleCardProps> = ({
             showOnHover={true}
             className="right-0 top-8 border border-[#e5e5e5]"
           />
-        ) : null}
+        )}
 
         {status === UserStatus.Inactive ? (
           <div
             className="absolute top-0 text-xxs text-[#737373] font-medium py-1 bg-[#F5F5F5] w-full justify-center align-center rounded-t-9xl flex"
             data-testid="usercard-deactivate-banner"
             tabIndex={0}
-            title="Deactivated Account"
+            title={t('deactivatedAccount')}
           >
             <Icon
               name="forbidden"
@@ -228,7 +281,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
               size={16}
               className="mr-1"
             ></Icon>
-            Deactivated Account
+            {t('deactivatedAccount')}
           </div>
         ) : (
           <div
@@ -296,36 +349,37 @@ const PeopleCard: FC<IPeopleCardProps> = ({
                 />
               </div>
             )}
-            {department?.name && (
+            {!isLxp && (
               <div
-                className="flex justify-center items-center px-3 py-[2px] rounded-[4px] gap-1 bg-orange-100"
+                className={`flex justify-center items-center px-3 py-[4px] gap-1`}
                 data-testid={`people-card-department-${department?.name}`}
               >
                 <Icon
                   name="briefcase"
                   size={16}
                   hover={false}
-                  color="text-neutral-900"
+                  color={departmentColor}
                 />
                 <Truncate
-                  text={department?.name}
+                  text={departmentText}
                   className="text-neutral-900 text-xs font-normal max-w-[128px]"
                 />
               </div>
             )}
-            {workLocation?.name && (
+
+            {!isLxp && (
               <div className="flex gap-1">
                 <Icon
                   name="location"
                   size={16}
-                  color="text-neutral-900"
+                  color={workLocationColor}
                   hover={false}
                 />
                 <div
-                  className="text-neutral-500 text-xs font-normal line-clamp-1"
+                  className={`text-xs font-normal line-clamp-1 ${workLocationColor}`}
                   data-testid={`people-card-location-${workLocation?.name}`}
                 >
-                  {workLocation?.name}
+                  {workLocationText}
                 </div>
               </div>
             )}
@@ -336,6 +390,13 @@ const PeopleCard: FC<IPeopleCardProps> = ({
         open={openDelete}
         openModal={openDeleteModal}
         closeModal={closeDeleteModal}
+        userId={id}
+      />
+      <RemoveChannelMember
+        channelId={channelId}
+        open={openRemoveChannelMember}
+        openModal={openRemoveChannelMemberModal}
+        closeModal={closeRemoveChannelMemberModal}
         userId={id}
       />
       <RemoveTeamMember

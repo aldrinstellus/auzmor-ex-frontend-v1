@@ -640,7 +640,7 @@ export const fetchFeed = async (
     (string | Record<string, any> | undefined)[],
     any
   >,
-  feed: {
+  getFeed: () => {
     [key: string]: IPost;
   },
   setFeed: (feed: { [key: string]: IPost }) => void,
@@ -648,6 +648,7 @@ export const fetchFeed = async (
 ) => {
   let response: any = null;
   const comments: IComment[] = [];
+  const feed = getFeed();
 
   // Fetching data
   if (!!!context.pageParam) {
@@ -691,16 +692,17 @@ export const fetchScheduledPosts = async (
     (string | Record<string, any> | undefined)[],
     any
   >,
-  feed: {
+  getFeed: () => {
     [key: string]: IPost;
   },
   setFeed: (feed: { [key: string]: IPost }) => void,
 ) => {
   let response = null;
+  const feed = getFeed();
 
   // Fetching data
   if (!!!context.pageParam) {
-    response = await apiService.get('/posts/scheduled');
+    response = await apiService.get('/posts/scheduled', context.queryKey[1]);
   } else {
     response = await apiService.get(context.pageParam);
   }
@@ -730,7 +732,7 @@ export const fetchBookmarks = async (
     (string | Record<string, any> | undefined)[],
     any
   >,
-  feed: {
+  getFeed: () => {
     [key: string]: IPost;
   },
   setFeed: (feed: { [key: string]: IPost }) => void,
@@ -738,10 +740,11 @@ export const fetchBookmarks = async (
 ) => {
   let response: any = null;
   const comments: IComment[] = [];
+  const feed = getFeed();
 
   // Fetching data
   if (!!!context.pageParam) {
-    response = await apiService.get('/posts/my-bookmarks');
+    response = await apiService.get('/posts/my-bookmarks', context.queryKey[1]);
   } else {
     response = await apiService.get(context.pageParam);
   }
@@ -779,7 +782,7 @@ const feedFunction: Record<string, any> = {
 };
 
 export const useInfiniteFeed = (pathname: string, q?: Record<string, any>) => {
-  const { feed, setFeed } = useFeedStore();
+  const { feed, getFeed, setFeed } = useFeedStore();
   const { appendComments } = useCommentStore();
   const queryKey = pathname.replaceAll('/', '') || 'feed';
   const queryFunction = queryKey === '' ? fetchFeed : feedFunction[queryKey];
@@ -787,7 +790,7 @@ export const useInfiniteFeed = (pathname: string, q?: Record<string, any>) => {
     ...useInfiniteQuery({
       queryKey: [queryKey, q],
       queryFn: (context) =>
-        queryFunction(context, feed, setFeed, appendComments),
+        queryFunction(context, getFeed, setFeed, appendComments),
       getNextPageParam: (lastPage: any) => {
         const pageDataLen = lastPage?.data?.result?.data?.length;
         const pageLimit = lastPage?.data?.result?.paging?.limit;
@@ -898,6 +901,7 @@ export const getAcknowledgements = async (
 export const useInfiniteAcknowledgements = (
   id: string,
   q?: Record<string, any>,
+  onSuccess?: (data: any) => void,
 ) => {
   return useInfiniteQuery({
     queryKey: ['acknowledgements', id, q],
@@ -913,6 +917,7 @@ export const useInfiniteAcknowledgements = (
     getPreviousPageParam: (currentPage: any) => {
       return currentPage?.data?.result?.paging?.prev;
     },
+    onSuccess: onSuccess,
     cacheTime: 0,
   });
 };

@@ -1,5 +1,5 @@
 import Card from 'components/Card';
-import { updateChannelLinks, useChannelLinksWidget } from 'queries/channel';
+import { useChannelLinksWidget } from 'queries/channel';
 import Button, { Size, Variant } from 'components/Button';
 import Icon from 'components/Icon';
 import SkeletonLoader from './components/SkeletonLoader';
@@ -10,18 +10,17 @@ import useModal from 'hooks/useModal';
 import EditLinksModal from './components/EditLinksModal';
 import { useTranslation } from 'react-i18next';
 import AddLinkModal from './components/AddLinkModal';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { IChannelLink } from 'stores/channelStore';
-import useRole from 'hooks/useRole';
 
-export interface ILinkWidgetProps {
-  channelId?: string;
-  className?: string;
-}
+import { useParams } from 'react-router-dom';
+import { useChannelRole } from 'hooks/useChannelRole';
+import { IChannel, IChannelLink } from 'stores/channelStore';
 
-const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
-  const queryClient = useQueryClient();
-  const { isAdmin } = useRole();
+export type LinksWidgetProps = {
+  channelData: IChannel;
+};
+const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
+  const { channelId = '' } = useParams();
+  const { isChannelAdmin } = useChannelRole(channelData.id);
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const [openEditLinks, openEditLinksModal, closeEditLinksModal] = useModal(
     false,
@@ -37,21 +36,16 @@ const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
 
   const { data: links, isLoading } = useChannelLinksWidget(channelId);
 
-  const updateLinksMutation = useMutation({
-    mutationKey: ['update-channel-links'],
-    mutationFn: (payload: IChannelLink[]) => {
-      return updateChannelLinks(channelId, { links: payload });
-    },
-    onError: (error: any) => console.log(error),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['channel-links-widget']);
-      closeAddLinkModal();
-    },
-  });
-
   const toggleModal = () => {
     if (open) closeCollapse();
     else openCollpase();
+  };
+
+  const handleLinkClick = (link: IChannelLink) => {
+    const linkUrl = link.url.startsWith('http')
+      ? link.url
+      : `https://${link.url}`;
+    window.open(linkUrl, '_blank');
   };
 
   const maxListSize = 4;
@@ -61,12 +55,16 @@ const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
       <div
         className="px-4 flex items-center justify-between cursor-pointer"
         data-testid="links-widget"
+        onClick={toggleModal}
+        onKeyUp={(e) => (e.code === 'Enter' ? toggleModal() : '')}
+        tabIndex={0}
+        title={t('title')}
+        aria-expanded={open}
+        role="button"
       >
-        <div className="font-bold flex-auto" onClick={toggleModal}>
-          {t('title')}
-        </div>
+        <div className="font-bold flex-auto">{t('title')}</div>
         <div className="flex items-center gap-1">
-          {isAdmin && links && links.length > 0 && (
+          {isChannelAdmin && links && links.length > 0 && (
             <Icon
               name={'edit'}
               size={20}
@@ -82,7 +80,6 @@ const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
             name={open ? 'arrowUp' : 'arrowDown'}
             size={20}
             color="text-neutral-900"
-            onClick={toggleModal}
             dataTestId="links-widget-collapse"
           />
         </div>
@@ -102,16 +99,16 @@ const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
                   <div
                     key={index}
                     className="w-full flex justify-start items-center gap-x-2 px-1 py-2 cursor-pointer group"
-                    onClick={() => {
-                      const linkUrl = link.url.startsWith('http')
-                        ? link.url
-                        : `https://${link.url}`;
-                      window.open(linkUrl, '_blank');
-                    }}
+                    onClick={() => handleLinkClick(link)}
+                    onKeyUp={(e) =>
+                      e.code === 'Enter' ? handleLinkClick(link) : ''
+                    }
+                    role="link"
+                    tabIndex={0}
                   >
-                    {link.image || link.favicon ? (
+                    {link.url || link.favicon ? (
                       <img
-                        src={link.image || link.favicon}
+                        src={`https://www.google.com/s2/favicons?domain=${link.url}`}
                         height={16}
                         width={16}
                         alt={`${link.title} Image`}
@@ -138,7 +135,7 @@ const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
                     />
                   </div>
                 )}
-                {links.length <= maxListSize && isAdmin && (
+                {links.length <= maxListSize && isChannelAdmin && (
                   <div className="w-full flex justify-center">
                     <Button
                       label={t('addLinksCTA')}
@@ -154,7 +151,10 @@ const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
                 )}
               </div>
             ) : (
-              <EmptyState openModal={openAddLinkModal} isAdmin={isAdmin} />
+              <EmptyState
+                openModal={openAddLinkModal}
+                isAdmin={isChannelAdmin}
+              />
             )}
           </div>
         )}
@@ -168,14 +168,13 @@ const LinksWidget: FC<ILinkWidgetProps> = ({ channelId = '' }) => {
           links={links}
         />
       )}
-      {isAdmin && openAddLink && (
+      {isChannelAdmin && openAddLink && (
         <AddLinkModal
           open={openAddLink}
           closeModal={closeAddLinkModal}
           isCreateMode={true}
-          setLinkDetails={(link) => {
-            updateLinksMutation.mutate([link]);
-          }}
+          isEditMode={isEditMode}
+          channelId={channelId}
         />
       )}
     </Card>

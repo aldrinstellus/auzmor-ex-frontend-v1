@@ -3,6 +3,7 @@ import Modal from 'components/Modal';
 import CreatePost from 'components/PostBuilder/components/CreatePost';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
+  AudienceEntityType,
   IMention,
   IPost,
   IPostPayload,
@@ -46,6 +47,11 @@ import useRole from 'hooks/useRole';
 import { useCreatePostUtilityStore } from 'stores/createPostUtilityStore';
 import useModal from 'hooks/useModal';
 import ConfirmationBox from 'components/ConfirmationBox';
+import WelcomePost from 'images/ChannelCover/WelcomePost.png';
+import { useChannelStore } from 'stores/channelStore';
+import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { readAxiosErr } from 'utils/apiService';
 
 export interface IPostMenu {
   id: number;
@@ -88,12 +94,18 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     poll,
     setPoll,
     audience,
+    shoutoutUsers,
     shoutoutUserIds,
     setShoutoutUserIds,
     postType,
+    setShoutoutUsers,
     inputImgRef,
     isEmpty,
+    setEditorValue,
+    setUploads,
   } = useContext(CreatePostContext);
+  const { channelId = '' } = useParams();
+  const channelData = useChannelStore((state) => state.channels)[channelId];
 
   const [confirm, showConfirm, closeConfirm] = useModal();
 
@@ -101,19 +113,18 @@ const CreatePostModal: FC<ICreatePostModal> = ({
 
   const mediaRef = useRef<IMedia[]>([]);
 
-  const { feed, updateFeed, setFeed } = useFeedStore();
+  const { feed, activeFeedPostCount, updateFeed, setFeed } = useFeedStore();
 
   const queryClient = useQueryClient();
 
   const { uploadMedia, uploadStatus, useUploadCoverImage } = useUpload();
 
   const { isAdmin } = useRole();
-
   const openCreatePostWithMedia = useCreatePostUtilityStore(
     (state) => state.openCreatePostWithMedia,
   );
   const reset = useCreatePostUtilityStore((state) => state.reset);
-
+  const { t } = useTranslation('postBuilder');
   useEffect(() => {
     if (
       openCreatePostWithMedia &&
@@ -125,7 +136,64 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     }
     reset();
   }, []);
+  const welcomeContent = useMemo(
+    () => ({
+      text: ' ',
+      html: ' ',
+      editor: {
+        ops: [
+          {
+            attributes: {
+              color: '#171717',
+            },
+            insert: `Hello everyone! Welcome to the ${channelData?.name} channel 🎉`,
+          },
+          {
+            insert: '\n',
+          },
+        ],
+      },
+    }),
+    [channelData],
+  );
+  useEffect(() => {
+    if (customActiveFlow !== CreatePostFlow.WelcomePost) return;
+    let img: any = null;
+    const loadImage = () => {
+      setEditorValue(welcomeContent);
+      const selectedImage = WelcomePost;
+      img = new Image();
+      img.src = selectedImage;
+      img.crossOrigin = 'anonymous';
+      img.onload = handleImageLoad;
+    };
 
+    const handleImageLoad = async () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 590;
+      canvas.height = 260;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(async (blob) => {
+          if (blob) {
+            const file = new File([blob], 'welcomePost.png', {
+              type: blob.type,
+            });
+            setUploads([file]);
+          }
+        }, 'image/png');
+      }
+    };
+
+    loadImage();
+    setActiveFlow(CreatePostFlow.CreatePost);
+    return () => {
+      if (img) {
+        img.onload = null;
+      }
+    };
+  }, [customActiveFlow]);
   // When we need to show create announcement modal directly
   useMemo(() => {
     if (customActiveFlow === CreatePostFlow.CreateAnnouncement) {
@@ -136,11 +204,12 @@ const CreatePostModal: FC<ICreatePostModal> = ({
           label: '1 week',
           value: afterXUnit(1, 'weeks').toISOString().substring(0, 19) + 'Z',
         });
-      } else
+      } else {
         setAnnouncement({
           label: 'Custom Date',
           value: data?.announcement?.end || '',
         });
+      }
       setActiveFlow(CreatePostFlow.CreateAnnouncement);
     }
   }, [customActiveFlow]);
@@ -165,6 +234,20 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         });
       }
       if (data?.shoutoutRecipients?.length) {
+        const transformedObject: any = {};
+        data?.shoutoutRecipients.forEach((item: any) => {
+          transformedObject[item.userId] = {
+            userId: item.userId,
+            email: item.email,
+            fullName: item.fullName,
+            status: item.status,
+            workLocation: item.workLocation,
+            designation: item.designation,
+            department: item.department,
+            profileImage: item.profileImage,
+          };
+        });
+        setShoutoutUsers(transformedObject);
         const recipientIds = data.shoutoutRecipients.map(
           (recipient) => recipient.userId,
         );
@@ -176,11 +259,9 @@ const CreatePostModal: FC<ICreatePostModal> = ({
   const createPostMutation = useMutation({
     mutationKey: ['createPostMutation'],
     mutationFn: createPost,
-    onError: () => {
-      clearPostContext();
-      closeModal();
+    onError: (result: any) => {
       failureToastConfig({
-        content: `Error while trying to create post`,
+        content: readAxiosErr(result, `Error while trying to create post`),
         dataTestId: 'comment-toaster',
       });
     },
@@ -373,6 +454,8 @@ const CreatePostModal: FC<ICreatePostModal> = ({
           exact: false,
         });
       }
+      if (activeFeedPostCount === 0)
+        await queryClient.invalidateQueries(['feed']);
       await queryClient.invalidateQueries(['feed-announcements-widget']);
       await queryClient.invalidateQueries(['post-announcements-widget']);
     },
@@ -412,6 +495,8 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     onSuccess: async (data, variables) => {
       updateFeed(variables.id!, {
         ...data.result.data,
+        ...(data?.result?.data?.isAnnouncement &&
+          !isAdmin && { acknowledged: true }),
         id: variables.id!,
       } as IPost);
       successToastConfig({
@@ -428,7 +513,12 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     let uploadedMedia: IMedia[] = [];
     const mentionList: IMention[] = [];
     const hashtagList: string[] = [];
-
+    const mapUsersToAudience = (users: any[]) =>
+      users?.map((user) => ({
+        entityId: user.userId ?? user.id,
+        entityType: AudienceEntityType.User,
+        name: user.fullName,
+      }));
     if (files?.length) {
       uploadedMedia = await uploadMedia(files, EntityType.Post);
       await useUploadCoverImage(
@@ -477,6 +567,15 @@ const CreatePostModal: FC<ICreatePostModal> = ({
       : (content?.text.match(previewLinkRegex) as string[]);
 
     if (mode === PostBuilderMode.Create) {
+      const _shoutoutUsers = Object.values(shoutoutUsers).filter(Boolean);
+
+      const shoutoutAudience =
+        _shoutoutUsers?.length > 0 ? mapUsersToAudience(_shoutoutUsers) : [];
+
+      const finalAudience =
+        audience && audience.length > 0
+          ? [...audience, ...shoutoutAudience]
+          : [];
       createPostMutation.mutate({
         content: removeEmptyLines({
           text: content?.text || editorValue.text,
@@ -487,7 +586,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         files: fileIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],
-        audience: audience || [],
+        audience: finalAudience,
         shoutoutRecipients: shoutoutUserIds || [],
         isAnnouncement: !!announcement,
         announcement: {
@@ -509,6 +608,15 @@ const CreatePostModal: FC<ICreatePostModal> = ({
           : null,
       });
     } else if (PostBuilderMode.Edit) {
+      const _shoutoutUsers = Object.values(shoutoutUsers).filter(Boolean);
+      const shoutoutAudience =
+        _shoutoutUsers?.length > 0 ? mapUsersToAudience(_shoutoutUsers) : [];
+
+      const finalAudience =
+        audience && audience.length > 0
+          ? [...audience, ...shoutoutAudience]
+          : [];
+
       mediaRef.current = [...media, ...uploadedMedia];
       const sortedIds = [
         ...fileIds,
@@ -543,7 +651,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         files: sortedIds,
         mentions: mentionList || [],
         hashtags: hashtagList || [],
-        audience: audience || [],
+        audience: finalAudience,
         shoutoutRecipients: shoutoutUserIds || [],
         isAnnouncement: !!announcement,
         announcement: {
@@ -692,11 +800,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         open={confirm}
         onClose={closeConfirm}
         title="Discard"
-        description={
-          <span>
-            Are you sure you want to discard this post? This cannot be undone
-          </span>
-        }
+        description={<span>{t('confirmation')}</span>}
         success={{
           label: 'Discard',
           className: 'bg-red-500 text-white ',

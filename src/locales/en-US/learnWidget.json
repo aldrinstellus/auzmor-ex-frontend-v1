@@ -1,0 +1,28 @@
+{
+  "eventWidget": {
+    "events": "Events",
+    "viewAll": "View all",
+    "joinEvent": "Join event",
+    "live": "Live",
+    "moreAttendees": "More attendees",
+    "virtual": "Virtual",
+    "notFoundHeader": "No upcoming events."
+  },
+  "progressTracker": {
+    "progressTracker": "Progress Tracker",
+    "viewAll": "View all",
+    "notFoundHeader": "You\u2019re all caught up.",
+    "notFoundLabel": "No training in progress."
+  },
+  "learnCard": {
+    "dueIn": "Due in",
+    "days": "Days",
+    "lesson": "Lesson",
+    "lessons": "Lessons",
+    "course": "Course",
+    "courses": "Courses",
+    "selfEnrolled": "Self Enrolled",
+    "assignedBy": "Assigned by",
+    "includesCertificate": "Includes Certificate"
+  }
+}

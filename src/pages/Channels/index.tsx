@@ -1,6 +1,10 @@
-import Button, { Variant as ButtonVariant } from 'components/Button';
+import Button, {
+  Variant as ButtonVariant,
+  Size,
+  Variant,
+} from 'components/Button';
 import Card from 'components/Card';
-import { FC, useEffect, useMemo } from 'react';
+import { FC, Fragment, useEffect, useMemo } from 'react';
 import ChannelCard from './components/ChannelCard';
 import FilterMenu from 'components/FilterMenu';
 import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
@@ -16,9 +20,21 @@ import ChannelRow from './components/ChannelRow';
 import Divider from 'components/Divider';
 import ChannelRowSkeleton from './components/ChannelRowSkeleton';
 import ChannelCardSkeleton from './components/ChannelCardSkeleton';
+import NoDataFound from 'components/NoDataFound';
+import { ShowingCount } from 'pages/Users/components/Teams';
 import { usePageTitle } from 'hooks/usePageTitle';
+import clsx from 'clsx';
+import { useInView } from 'react-intersection-observer';
+import PageLoader from 'components/PageLoader';
+import useRole from 'hooks/useRole';
+import ChannelNotFound from 'images/notFound.png';
+import { useDebounce } from 'hooks/useDebounce';
+import _ from 'lodash';
+import useProduct from 'hooks/useProduct';
 
-interface IChannelsProps {}
+interface IChannelsProps {
+  isInfinite?: boolean;
+}
 
 interface IFilterButton {
   label: string;
@@ -29,23 +45,59 @@ interface IFilterButton {
   dataTestId: string;
 }
 
-export const Channels: FC<IChannelsProps> = () => {
+export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
   usePageTitle('channels');
+  const { isAdmin } = useRole();
   const { t } = useTranslation('channels');
-  const { filters, clearFilters, updateFilter } = useAppliedFiltersStore();
+  const { filters, setFilters, updateFilter, clearFilters } =
+    useAppliedFiltersStore();
   const [isModalOpen, openModal, closeModal] = useModal();
-
   const filterForm = useForm<{
     search: string;
   }>({
     mode: 'onChange',
     defaultValues: { search: '' },
   });
-  useEffect(() => () => clearFilters(), []);
-  const { data, channels, isLoading } = useInfiniteChannels(
+  const { isLxp } = useProduct();
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    if (inView && isInfinite) {
+      fetchNextPage();
+    }
+  }, [inView]);
+
+  useEffect(() => {
+    setFilters({
+      visibility: ChannelVisibilityEnum.All,
+      channelType: ChannelTypeEnum.MyChannels,
+    });
+  }, []);
+
+  const { watch, resetField } = filterForm;
+
+  const searchValue = watch('search');
+  const debouncedSearchValue = useDebounce(searchValue || '', 500);
+
+  const {
+    data,
+    channels,
+    isLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteChannels(
     isFiltersEmpty({
-      categoryIds: [],
-      visibility: filters?.visibility,
+      limit: 30,
+      q: debouncedSearchValue,
+      visibility:
+        filters?.visibility == ChannelVisibilityEnum.All
+          ? undefined
+          : filters?.visibility,
+      sort: filters?.sort,
+      categoryIds: filters?.categories
+        ?.map((category: any) => category.id)
+        .join(','),
       isStarred: !!(filters?.channelType === ChannelTypeEnum.Starred),
       isManaged: !!(filters?.channelType === ChannelTypeEnum.Managed),
       isRequested: !!(filters?.channelType === ChannelTypeEnum.Requested),
@@ -54,100 +106,107 @@ export const Channels: FC<IChannelsProps> = () => {
         filters?.channelType === ChannelTypeEnum.DiscoverNewChannels
       ),
     }),
-    !!(filters && !!(filters.channelType === ChannelTypeEnum.MyChannels)),
   );
 
-  const channelIds = (
-    (data?.pages.flatMap((page) =>
-      page.data?.result?.data.map((channel: { id: string }) => channel),
-    ) as { id: string }[]) || []
-  )
-    ?.filter(({ id }) => !!channels[id])
-    .sort(
-      (a, b) =>
-        new Date(channels[b.id].createdAt).getTime() -
-        new Date(channels[a.id].createdAt).getTime(),
-    );
-
+  const channelIds =
+    (data?.pages.flatMap(
+      (page) =>
+        page?.data?.result?.data.map((channel: { id: string }) => channel) ||
+        [],
+    ) as { id: string }[]) || [];
   const onFilterButtonClick = (type: ChannelTypeEnum) => {
     return () => {
       updateFilter('channelType', type);
     };
   };
+  const filterButtons: IFilterButton[] = useMemo(() => {
+    const getLableClassName = (flag: boolean) => {
+      return clsx({
+        'font-bold text-primary-500': flag,
+        'font-normal text-neutral-500 group-hover:text-primary-600 group-focus:text-primary-600':
+          !flag,
+      });
+    };
+    const getClassName = (flag: boolean) => {
+      return clsx({
+        'focus:text-primary-600 focus:text-primary-600 group': true,
+        'border-0': flag,
+      });
+    };
 
-  const filterButtons: IFilterButton[] = useMemo(
-    () => [
+    return [
       {
         label: t('filterCTA.myChannels'),
         isActive: filters?.channelType === ChannelTypeEnum.MyChannels,
         onClick: onFilterButtonClick(ChannelTypeEnum.MyChannels),
-        labelClassName: `text-sm ${
-          filters?.channelType === ChannelTypeEnum.MyChannels
-            ? 'font-bold text-primary-500'
-            : 'font-normal text-neutral-500'
-        }`,
-        className:
-          filters?.channelType === ChannelTypeEnum.MyChannels ? 'border-0' : '',
+        labelClassName: `text-sm ${getLableClassName(
+          filters?.channelType === ChannelTypeEnum.MyChannels,
+        )}`,
+        className: `${getClassName(
+          filters?.channelType === ChannelTypeEnum.MyChannels,
+        )}`,
         dataTestId: 'my-channels-filter',
       },
       {
         label: t('filterCTA.managed'),
         isActive: filters?.channelType === ChannelTypeEnum.Managed,
         onClick: onFilterButtonClick(ChannelTypeEnum.Managed),
-        labelClassName: `text-sm ${
-          filters?.channelType === ChannelTypeEnum.Managed
-            ? 'font-bold text-primary-500'
-            : 'font-normal text-neutral-500'
-        }`,
-        className:
-          filters?.channelType === ChannelTypeEnum.Managed ? 'border-0' : '',
+        labelClassName: `text-sm ${getLableClassName(
+          filters?.channelType === ChannelTypeEnum.Managed,
+        )}`,
+        className: `${getClassName(
+          filters?.channelType === ChannelTypeEnum.Managed,
+        )}`,
         dataTestId: 'managed',
       },
       {
         label: t('filterCTA.discoverNewChannels'),
         isActive: filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
         onClick: onFilterButtonClick(ChannelTypeEnum.DiscoverNewChannels),
-        labelClassName: `text-sm ${
-          filters?.channelType === ChannelTypeEnum.DiscoverNewChannels
-            ? 'font-bold text-primary-500'
-            : 'font-normal text-neutral-500'
-        }`,
-        className:
-          filters?.channelType === ChannelTypeEnum.DiscoverNewChannels
-            ? 'border-0'
-            : '',
+        labelClassName: `text-sm ${getLableClassName(
+          filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
+        )}`,
+        className: `${getClassName(
+          filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
+        )}`,
         dataTestId: 'discover-new-channels-filter',
       },
       {
         label: t('filterCTA.starred'),
         isActive: filters?.channelType === ChannelTypeEnum.Starred,
         onClick: onFilterButtonClick(ChannelTypeEnum.Starred),
-        labelClassName: `text-sm ${
-          filters?.channelType === ChannelTypeEnum.Starred
-            ? 'font-bold text-primary-500'
-            : 'font-normal text-neutral-500'
-        }`,
-        className:
-          filters?.channelType === ChannelTypeEnum.Starred ? 'border-0' : '',
+        labelClassName: `text-sm ${getLableClassName(
+          filters?.channelType === ChannelTypeEnum.Starred,
+        )}`,
+        className: `${getClassName(
+          filters?.channelType === ChannelTypeEnum.Starred,
+        )}`,
         dataTestId: 'starred-filter',
       },
       {
         label: t('filterCTA.requested'),
         isActive: filters?.channelType === ChannelTypeEnum.Requested,
         onClick: onFilterButtonClick(ChannelTypeEnum.Requested),
-        labelClassName: `text-sm ${
-          filters?.channelType === ChannelTypeEnum.Requested
-            ? 'font-bold text-primary-500'
-            : 'font-normal text-neutral-500'
-        }`,
-        className:
-          filters?.channelType === ChannelTypeEnum.Requested ? 'border-0' : '',
+        labelClassName: `text-sm ${getLableClassName(
+          filters?.channelType === ChannelTypeEnum.Requested,
+        )}`,
+        className: `${getClassName(
+          filters?.channelType === ChannelTypeEnum.Requested,
+        )}`,
         dataTestId: 'requested-filter',
       },
-    ],
-    [filters],
-  );
+    ];
+  }, [filters]);
 
+  const emptyFilters = _.every(
+    _.omit(filters, ['visibility', 'channelType']),
+    _.isEmpty,
+  ); // remove visibility and channelType from filters and check for empty filters
+  const isDataFiltered =
+    (debouncedSearchValue == undefined || debouncedSearchValue == '') &&
+    emptyFilters;
+  const showNoChannels = channelIds?.length == 0 && isDataFiltered;
+  const showNoDataFound = channelIds?.length == 0 && !showNoChannels;
   return (
     <>
       <Card className="p-8 flex flex-col gap-6">
@@ -155,14 +214,15 @@ export const Channels: FC<IChannelsProps> = () => {
           <h1 className="text-2xl font-bold text-neutral-900">
             {t('channels')}
           </h1>
-          <Button
-            label={t('createChannelCTA')}
-            leftIcon="add"
-            leftIconClassName="text-white pointer-events-none group-hover:text-white"
-            onClick={openModal}
-            dataTestId="createchannel-cta"
-            className="hidden"
-          />
+          {isLxp && isAdmin && (
+            <Button
+              label={t('createChannelCTA')}
+              leftIcon="add"
+              leftIconClassName="text-white pointer-events-none group-hover:text-white"
+              onClick={openModal}
+              dataTestId="createchannel-cta"
+            />
+          )}
         </div>
         <FilterMenu
           filterForm={filterForm}
@@ -172,11 +232,10 @@ export const Channels: FC<IChannelsProps> = () => {
           dataTestIdSearch="channel-search"
         >
           <div className="flex gap-2 items-center">
-            <p className="text-neutral-500 text-base">
-              {`Showing ${channelIds.length} ${
-                channelIds.length === 1 ? 'result' : 'results'
-              }`}
-            </p>
+            <ShowingCount
+              isLoading={isLoading}
+              count={data?.pages[0]?.data?.result?.totalCount}
+            />
             {filterButtons.map((filterButton) => (
               <Button
                 key={filterButton.label}
@@ -191,51 +250,103 @@ export const Channels: FC<IChannelsProps> = () => {
             ))}
           </div>
         </FilterMenu>
+
         {filters?.channelType === ChannelTypeEnum.Archived ? (
           isLoading ? (
-            [...Array(8)].map((_each, index) => (
+            [...Array(5)].map((_each, index) => (
               <ChannelRowSkeleton key={index} />
             ))
           ) : (
-            channelIds.map(({ id }) => (
-              <>
-                <ChannelRow key={id} channel={channels[id]} />
-                <Divider />
-              </>
-            ))
+            <>
+              {channelIds.map(({ id }, index) => (
+                <Fragment key={id}>
+                  <ChannelRow channel={channels[id]} />
+                  {index !== channelIds.length - 1 && <Divider />}
+                </Fragment>
+              ))}
+            </>
           )
         ) : (
           <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
-            {isLoading
-              ? [...Array(8)].map((_each, index) => (
-                  <ChannelCardSkeleton key={index} />
-                ))
-              : channelIds.map(({ id }) => (
-                  <ChannelCard
-                    key={id}
-                    channel={channels[id]}
-                    showJoinChannelBtn={
-                      filters?.channelType ===
-                        ChannelTypeEnum.DiscoverNewChannels &&
-                      channels[id].channelSettings?.visibility ===
-                        ChannelVisibilityEnum.Public
-                    }
-                    showRequestBtn={
-                      filters?.channelType ===
-                        ChannelTypeEnum.DiscoverNewChannels &&
-                      channels[id].channelSettings?.visibility ===
-                        ChannelVisibilityEnum.Private &&
-                      !!!channels[id].isRequested
-                    }
-                    showWithdrawBtn={
-                      filters?.channelType ===
-                        ChannelTypeEnum.DiscoverNewChannels &&
-                      channels[id].channelSettings?.visibility ===
-                        ChannelVisibilityEnum.Private &&
-                      !!channels[id].isRequested
-                    }
-                  />
+            {isLoading ? (
+              [...Array(5)].map((_each, index) => (
+                <ChannelCardSkeleton key={index} />
+              ))
+            ) : (
+              <>
+                {channelIds.map(({ id }) => (
+                  <ChannelCard key={id} channel={channels[id]} />
                 ))}
+              </>
+            )}
+          </div>
+        )}
+        {showNoChannels && !isLoading ? (
+          <div className="flex flex-col w-full items-center space-y-4">
+            <img
+              src={ChannelNotFound}
+              width={220}
+              height={144}
+              alt="No Channel Found"
+            />
+            <div className="w-full flex flex-col items-center">
+              <div className="flex items-center flex-col space-y-1">
+                <div
+                  className="text-lg font-bold text-neutral-900"
+                  data-testid="teams-no-members-yet"
+                >
+                  No channels yet
+                </div>
+                {isAdmin ? (
+                  <div className="text-base font-medium text-neutral-500">
+                    {"Let's get started by adding some channels!"}
+                  </div>
+                ) : (
+                  <div className="text-base font-medium text-neutral-500">
+                    {' Channels created will be visible here'}
+                  </div>
+                )}
+              </div>
+            </div>
+            {isAdmin ? (
+              <Button
+                label={'Add channels'}
+                variant={Variant.Secondary}
+                className="space-x-1 rounded-[24px]"
+                size={Size.Large}
+                dataTestId="team-add-members-cta"
+                leftIcon={'addCircle'}
+                leftIconClassName="text-neutral-900"
+                leftIconSize={20}
+                onClick={openModal}
+              />
+            ) : null}
+          </div>
+        ) : null}
+        {showNoDataFound && !isLoading && (
+          <NoDataFound
+            className="py-4 w-full"
+            searchString={searchValue}
+            illustration="noResult"
+            message={
+              <p>
+                Sorry we can&apos;t find the channel you are looking for.
+                <br /> Please check the spelling or try again.
+              </p>
+            }
+            clearBtnLabel={searchValue ? 'Clear Search' : 'Clear Filters'}
+            onClearSearch={() => {
+              searchValue && resetField
+                ? resetField('search', { defaultValue: '' })
+                : clearFilters();
+            }}
+            dataTestId="people"
+          />
+        )}
+        {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+        {isFetchingNextPage && (
+          <div className="h-12 w-full flex items-center justify-center">
+            <PageLoader />
           </div>
         )}
       </Card>
@@ -245,3 +356,5 @@ export const Channels: FC<IChannelsProps> = () => {
     </>
   );
 };
+
+export default Channels;

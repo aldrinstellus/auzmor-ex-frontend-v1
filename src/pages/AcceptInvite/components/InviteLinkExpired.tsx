@@ -1,6 +1,7 @@
 import Icon from 'components/Icon';
 import { Logo } from 'components/Logo';
 import { FC, ReactElement } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface IInviteLinkExpiredProps {
   message?: string;
@@ -9,6 +10,10 @@ interface IInviteLinkExpiredProps {
 const InviteLinkExpired: FC<IInviteLinkExpiredProps> = ({
   message,
 }: IInviteLinkExpiredProps): ReactElement => {
+  const { t } = useTranslation('acceptInvite', {
+    keyPrefix: 'inviteLinkExpired',
+  });
+
   return (
     <div className="relative">
       <div className="mt-4 right-2 absolute">
@@ -21,10 +26,10 @@ const InviteLinkExpired: FC<IInviteLinkExpiredProps> = ({
         ) : (
           <>
             <p className="font-extrabold text-neutral-900 text-2xl">
-              INVITE LINK HAS EXPIRED
+              {t('expiredTitle')}
             </p>
             <p className="font-normal text-neutral-900 text-sm">
-              Please ask the admin to invite you again.
+              {t('expiredMessage')}
             </p>
           </>
         )}

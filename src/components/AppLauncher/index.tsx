@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { memo } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
@@ -17,17 +17,31 @@ import { useInfiniteWidgetApps } from 'queries/apps';
 import { useAppStore } from 'stores/appStore';
 
 import { isFiltersEmpty } from 'utils/misc';
+import { useTranslation } from 'react-i18next';
+import { useShouldRender } from 'hooks/useShouldRender';
+
+const ID = 'AppLauncher';
 
 const AppLauncher = () => {
+  const { t } = useTranslation('appLauncher');
+  const shouldRender = useShouldRender(ID);
+  if (!shouldRender) {
+    return <></>;
+  }
   const navigate = useNavigate();
   const { isAdmin } = useRole();
   const widgetApps = useAppStore((state) => state.widgetApps);
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const [openAddApp, openAddAppModal, closeAddAppModal] = useModal();
+  const { channelId } = useParams();
   const { data, isLoading } = useInfiniteWidgetApps(
-    isFiltersEmpty({
-      limit: 3,
-    }),
+    isFiltersEmpty(
+      !channelId
+        ? {
+            limit: 3,
+          }
+        : { limit: 3, channelIds: channelId },
+    ),
   );
 
   const appIds = data?.pages.flatMap((page: any) => {
@@ -61,7 +75,7 @@ const AppLauncher = () => {
         aria-expanded={open}
         role="button"
       >
-        <p className="font-bold">App Launcher</p>
+        <p className="font-bold">{t('title')}</p>
         <div className="flex items-center gap-2">
           <Icon
             name={open ? 'arrowUp' : 'arrowDown'}
@@ -81,8 +95,11 @@ const AppLauncher = () => {
             return (
               <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between gap-8 w-full">
-                  {[...Array(3)].map((element) => (
-                    <div className="flex flex-col gap-2" key={element}>
+                  {[...Array(3)].map((_value, index) => (
+                    <div
+                      className="flex flex-col gap-2"
+                      key={`${index}-app-widget-skeleton`}
+                    >
                       <Skeleton
                         className="!h-[60px] !w-[60px]"
                         borderRadius={12}
@@ -108,7 +125,7 @@ const AppLauncher = () => {
                   variant={Variant.Secondary}
                   size={Size.Small}
                   className="py-[7px]"
-                  label="View all"
+                  label={t('view-All-CTA')}
                   dataTestId="app-launcher-view-all"
                   onClick={() =>
                     navigate(isAdmin ? '/apps?myApp=true' : '/apps')

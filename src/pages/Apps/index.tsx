@@ -26,12 +26,17 @@ import useRole from 'hooks/useRole';
 import Skeleton from 'react-loading-skeleton';
 import Sort from 'components/Sort';
 import useURLParams from 'hooks/useURLParams';
-import FilterModal, { FilterModalVariant } from 'components/FilterModal';
+import FilterModal, {
+  FilterModalVariant,
+  IChannelFilter,
+} from 'components/FilterModal';
 import { ICategory } from 'queries/category';
 import { ITeam } from 'queries/teams';
 import useProduct from 'hooks/useProduct';
 import { useInfiniteLearnCategory } from 'queries/learn';
+import { useTranslation } from 'react-i18next';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { isTrim } from 'pages/ChannelDetail/components/utils';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -43,11 +48,13 @@ interface IAppFilters {
   teams: ITeam[];
   featured?: boolean;
   myApp?: boolean;
+  channels: IChannelFilter[];
 }
 
 enum AppFilterKey {
   categories = 'categories',
   teams = 'teams',
+  channels = 'channels',
 }
 
 enum AppGroup {
@@ -59,10 +66,12 @@ enum AppGroup {
 const defaultAppFilters: IAppFilters = {
   categories: [],
   teams: [],
+  channels: [],
 };
 
 const Apps: FC<IAppsProps> = () => {
   usePageTitle('apps');
+  const { t } = useTranslation('appLauncher');
   const {
     searchParams,
     updateParam,
@@ -80,7 +89,7 @@ const Apps: FC<IAppsProps> = () => {
   } = useForm<IAppSearchForm>({
     mode: 'onChange',
     defaultValues: {
-      search: searchParams.get('search'),
+      search: searchParams.get('search') || '',
     },
   });
   const { isLxp } = useProduct();
@@ -153,9 +162,11 @@ const Apps: FC<IAppsProps> = () => {
       ...appFilters,
       categories: [],
       teams: [],
+      channels: [],
     });
     deleteParam('categories');
     deleteParam('teams');
+    deleteParam('channels');
   };
 
   const onChangeFilters = (filters: IAppFilters) => {
@@ -178,6 +189,15 @@ const Apps: FC<IAppsProps> = () => {
       );
       updateParam('teams', serializedTeams);
     } else deleteParam('teams');
+    if (filters.channels.length > 0) {
+      const serializedTeams = serializeFilter(
+        filters.channels.map((channel: any) => ({
+          id: channel.id,
+          name: channel.name,
+        })),
+      );
+      updateParam('channels', serializedTeams);
+    } else deleteParam('channels');
     if (filters.myApp) updateParam('myApp', 'true');
     else deleteParam('myApp');
     if (filters.featured) updateParam('featured', 'true');
@@ -192,6 +212,7 @@ const Apps: FC<IAppsProps> = () => {
     const filters = {
       categories: appFilters.categories,
       teams: appFilters.teams,
+      channels: appFilters.channels,
     };
     if (selectedQuickCategory) {
       setSelectedQuickCategory('');
@@ -219,6 +240,7 @@ const Apps: FC<IAppsProps> = () => {
     const parsedFeatured = parseParams('featured');
     const parsedMyApp = parseParams('myApp');
     const parsedCategories = parseParams('categories');
+    const parsedChannels = parseParams('channels');
     const parsedTeams = parseParams('teams');
     const parsedSort = parseParams('sort');
     setAppFilters((prevFilters: IAppFilters) => ({
@@ -227,6 +249,7 @@ const Apps: FC<IAppsProps> = () => {
       ...(parsedMyApp && { myApp: !!parsedMyApp }),
       ...(parsedCategories && { categories: parsedCategories }),
       ...(parsedTeams && { teams: parsedTeams }),
+      ...(parsedChannels && { channels: parsedChannels }),
     }));
     if (parsedSort) {
       setSortByFilter(parsedSort);
@@ -264,12 +287,12 @@ const Apps: FC<IAppsProps> = () => {
       <Card className="p-8">
         <div className="flex justify-between">
           <h1 className="font-bold text-2xl text-black" tabIndex={0}>
-            App Launcher
+            {t('title')}
           </h1>
           {isAdmin && (
             <Button
               onClick={openModal}
-              label="Add apps"
+              label={t('add-app-CTA')}
               leftIcon="add"
               leftIconClassName="!text-white"
               className="flex space-x-1"
@@ -283,7 +306,7 @@ const Apps: FC<IAppsProps> = () => {
             {isAdmin && (
               <Button
                 variant={ButtonVariant.Secondary}
-                label="My apps"
+                label={t('my-apps')}
                 dataTestId="my-apps"
                 className={`${
                   selectedTab === AppGroup.MY_APPS
@@ -295,7 +318,7 @@ const Apps: FC<IAppsProps> = () => {
             )}
             <Button
               variant={ButtonVariant.Secondary}
-              label="All apps"
+              label={t('all-apps')}
               className={
                 selectedTab === AppGroup.ALL_APPS
                   ? selectedButtonClassName
@@ -306,7 +329,7 @@ const Apps: FC<IAppsProps> = () => {
             />
             <Button
               variant={ButtonVariant.Secondary}
-              label="Featured"
+              label={t('featured')}
               dataTestId="featured-apps"
               className={
                 selectedTab === AppGroup.FEATURED
@@ -321,7 +344,7 @@ const Apps: FC<IAppsProps> = () => {
                 <div key={category.id}>
                   <Button
                     variant={ButtonVariant.Secondary}
-                    label={category.name}
+                    label={isTrim(category.name)}
                     className={`capitalize ${
                       selectedTab === category.id
                         ? selectedButtonClassName
@@ -373,8 +396,8 @@ const Apps: FC<IAppsProps> = () => {
         <div className="flex flex-col gap-4">
           {!isLoading ? (
             <div className="text-neutral-500">
-              Showing {!isLoading && appsCount} results
-            </div>
+              {t('show-results', { count: !isLoading && appsCount })}
+            </div> // used for dynamic copy
           ) : (
             <Skeleton
               className="!w-32"
@@ -384,11 +407,13 @@ const Apps: FC<IAppsProps> = () => {
           )}
 
           {/* Filters pills */}
-          {(categoryFilterPills.length > 0 || appFilters.teams.length > 0) && (
+          {(categoryFilterPills.length > 0 ||
+            appFilters.teams.length > 0 ||
+            appFilters.channels.length > 0) && (
             <div className="flex justify-between items-start">
               <div className="flex items-center space-x-2 flex-wrap gap-y-2">
                 <div className="text-base text-neutral-500 whitespace-nowrap">
-                  Filter By
+                  {t('filter-by')}
                 </div>
                 {categoryFilterPills.map((category: any) => (
                   <div
@@ -409,7 +434,7 @@ const Apps: FC<IAppsProps> = () => {
                     tabIndex={0}
                   >
                     <div className="mr-1 text-neutral-500 whitespace-nowrap">
-                      Category{' '}
+                      {t('category')}{' '}
                       <span className="text-primary-500">{category.name}</span>
                     </div>
                     <Icon
@@ -437,7 +462,36 @@ const Apps: FC<IAppsProps> = () => {
                     tabIndex={0}
                   >
                     <div className="mr-1 text-neutral-500">
-                      Team <span className="text-primary-500">{team.name}</span>
+                      {t('team')}{' '}
+                      <span className="text-primary-500">{team.name}</span>
+                    </div>
+                    <Icon
+                      name="close"
+                      size={16}
+                      color="text-neutral-900"
+                      className="cursor-pointer"
+                      dataTestId={`applied-filter-close`}
+                    />
+                  </div>
+                ))}
+                {appFilters.channels.map((channel: any) => (
+                  <div
+                    key={channel.id}
+                    className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1  hover:shadow-lg focus:shadow-lg group cursor-pointer outline-none"
+                    data-testid={`apps-filterby-team`}
+                    onClick={() =>
+                      handleRemoveFilters(AppFilterKey.channels, channel.id)
+                    }
+                    onKeyUp={(e) =>
+                      e.code === 'Enter'
+                        ? handleRemoveFilters(AppFilterKey.channels, channel.id)
+                        : ''
+                    }
+                    tabIndex={0}
+                  >
+                    <div className="mr-1 text-neutral-500">
+                      {t('channel')}
+                      <span className="text-primary-500"> {channel.name}</span>
                     </div>
                     <Icon
                       name="close"
@@ -456,7 +510,7 @@ const Apps: FC<IAppsProps> = () => {
                 onKeyUp={(e) => (e.code === 'Enter' ? clearFilters() : '')}
                 tabIndex={0}
               >
-                Clear Filters
+                {t('clear-filters')}
               </div>
             </div>
           )}
@@ -478,7 +532,7 @@ const Apps: FC<IAppsProps> = () => {
                     aria-label="view all featured"
                     tabIndex={0}
                   >
-                    View all featured
+                    {t('view-all')}
                   </div>
                 </div>
               )}
@@ -498,6 +552,12 @@ const Apps: FC<IAppsProps> = () => {
                     appFilters.categories.length > 0
                       ? appFilters.categories
                           .map((category: any) => category.id)
+                          .join(',')
+                      : undefined,
+                  channelIds:
+                    appFilters.channels.length > 0
+                      ? appFilters.channels
+                          .map((channels: any) => channels.id)
                           .join(',')
                       : undefined,
                 }}
@@ -531,6 +591,12 @@ const Apps: FC<IAppsProps> = () => {
                       .map((category: any) => category.id)
                       .join(',')
                   : undefined,
+              channelIds:
+                appFilters.channels.length > 0
+                  ? appFilters.channels
+                      .map((channels: any) => channels.id)
+                      .join(',')
+                  : undefined,
             }}
             setTotalAppsCount={setAppsCount}
             setAppsLoading={setIsLoading}
@@ -548,7 +614,7 @@ const Apps: FC<IAppsProps> = () => {
           open={showFilterModal}
           closeModal={closeFilterModal}
           appliedFilters={appFilters}
-          variant={FilterModalVariant.App}
+          variant={isLxp ? FilterModalVariant.LxpApp : FilterModalVariant.App}
           onApply={(filters) => {
             onChangeFilters({ ...appFilters, ...filters });
             closeFilterModal();

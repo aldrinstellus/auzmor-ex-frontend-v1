@@ -16,6 +16,7 @@ export type IconProps = {
   hoverColor?: string;
   tabIndex?: number;
   ariaLabel?: string;
+  title?: string;
 };
 
 const Icon: FC<IconProps> = ({
@@ -32,6 +33,7 @@ const Icon: FC<IconProps> = ({
   dataTestId,
   tabIndex,
   ariaLabel = 'icon',
+  title = '',
 }) => {
   const Component = iconMap[name] || null;
   if (!Component) {
@@ -69,7 +71,8 @@ const Icon: FC<IconProps> = ({
       strokeWidth={strokeWidth}
       data-testid={dataTestId}
       tabIndex={tabIndex}
-      ariaLabel={ariaLabel}
+      aria-label={ariaLabel}
+      title={title}
     />
   );
 };

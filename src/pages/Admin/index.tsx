@@ -7,17 +7,19 @@ import GeneralSettings from './GeneralSettings';
 import BrandingSettings from './BrandingSettings';
 import useURLParams from 'hooks/useURLParams';
 import useRole from 'hooks/useRole';
+import { useTranslation } from 'react-i18next';
 import { usePageTitle } from 'hooks/usePageTitle';
 
 const Admin: FC = () => {
   usePageTitle('admin');
+  const { t } = useTranslation('adminSetting');
   const { updateParam, searchParams } = useURLParams();
   const { isAdmin, isSuperAdmin } = useRole({ exact: true });
   const [activeSettingsIndex, setActiveSettingsIndex] = useState<number>(0);
   const parsedTab = searchParams.get('tab');
   const settings = [
     {
-      label: 'General settings',
+      label: t('general-setting'),
       icon: 'gearOutline',
       key: 'general-settings',
       component: <GeneralSettings />,
@@ -39,7 +41,7 @@ const Admin: FC = () => {
       allowOnlySuperAdmin: false,
     },
     {
-      label: 'Branding',
+      label: t('Branding'),
       icon: 'branding',
       key: 'branding-settings',
       component: <BrandingSettings />,
@@ -50,7 +52,7 @@ const Admin: FC = () => {
       allowOnlySuperAdmin: true,
     },
     {
-      label: 'Single Sign-on',
+      label: t('sso.title'),
       icon: 'link',
       key: 'single-sign-on-settings',
       component: <SSOSettings />,
@@ -105,9 +107,7 @@ const Admin: FC = () => {
         className="min-w-[300px] h-full"
         dataTestId="admin-settings-controls"
       >
-        <p className="text-neutral-900 text-base font-bold p-4">
-          Admin Settings
-        </p>
+        <p className="text-neutral-900 text-base font-bold p-4">{t('title')}</p>
         <Divider className="border-neutral-500" />
         <div className="flex flex-col">
           {settings.map((item, index) => (

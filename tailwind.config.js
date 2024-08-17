@@ -11,6 +11,11 @@ module.exports = {
         'welcome-to-office-large': "url('images/welcomeToOfficeLarge.png')",
       },
       screens: {
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
+        '2xl': '1536px',
         '3xl': '1840px',
         '1.5xl': '1440px',
         '1.5lg': '1200px',

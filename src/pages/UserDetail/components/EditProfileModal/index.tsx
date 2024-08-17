@@ -28,6 +28,7 @@ import useRole from 'hooks/useRole';
 import { useInfiniteDesignations } from 'queries/designation';
 import { useDebounce } from 'hooks/useDebounce';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface IOptions {
   value: string;
@@ -73,6 +74,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
   isCoverImageRemoved = false,
   setIsCoverImageRemoved = () => {},
 }) => {
+  const { t } = useTranslation('profile', { keyPrefix: 'EditProfileModal' });
   const { isAdmin } = useRole();
   const { userId = '' } = useParams();
   const {
@@ -149,10 +151,9 @@ const EditProfileModal: FC<IEditProfileModal> = ({
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      defaultValue: getValues().fullName,
       error: errors.fullName?.message,
       name: 'fullName',
-      label: 'Name',
+      label: t('nameLabel'),
       required: true,
       dataTestId: `${dataTestId}-name`,
       disabled: fieldDisabledMap.fullName,
@@ -160,14 +161,12 @@ const EditProfileModal: FC<IEditProfileModal> = ({
       inputClassName: 'h-[40px] !text-sm',
     },
   ];
-
   const preferredNameField = [
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      defaultValue: getValues().preferredName,
       name: 'preferredName',
-      label: 'Preferred Name',
+      label: t('preferredNameLabel'),
       dataTestId: `${dataTestId}-perferred-name`,
       control,
       inputClassName: 'h-[40px] !text-sm',
@@ -180,9 +179,9 @@ const EditProfileModal: FC<IEditProfileModal> = ({
       variant: InputVariant.Text,
       name: 'designation',
       defaultValue: getValues().designation,
-      placeholder: 'ex. software engineer',
+      placeholder: t('positionTitlePlaceholder'),
       dataTestId: `${dataTestId}-title`,
-      label: 'Position title',
+      label: t('positionTitleLabel'),
       disabled: fieldDisabledMap.designation,
       control,
       fetchQuery: (q: any) =>
@@ -192,7 +191,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
       queryParams: {},
       disableCreate: !isAdmin,
       getPopupContainer: document.body,
-      noOptionsMessage: 'No Designations found',
+      noOptionsMessage: t('noDesignationsFound'),
       height: 40,
     },
   ];
@@ -202,8 +201,8 @@ const EditProfileModal: FC<IEditProfileModal> = ({
       type: FieldType.CreatableSearch,
       name: 'department',
       defaultValue: getValues().department,
-      placeholder: 'ex. engineering',
-      label: 'Department',
+      placeholder: t('departmentPlaceholder'),
+      label: t('departmentLabel'),
       dataTestId: `${dataTestId}-department`,
       fetchQuery: useInfiniteDepartments,
       getFormattedData: (data: any) =>
@@ -212,7 +211,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
       disabled: fieldDisabledMap.department,
       disableCreate: !isAdmin,
       getPopupContainer: document.body,
-      noOptionsMessage: 'No Departments found',
+      noOptionsMessage: t('noDepartmentsFound'),
       height: 40,
       control,
     },
@@ -225,8 +224,8 @@ const EditProfileModal: FC<IEditProfileModal> = ({
       name: 'workLocation',
       defaultValue: getValues().workLocation,
       dataTestId: `${dataTestId}-location`,
-      placeholder: 'Select a location',
-      label: 'Location',
+      placeholder: t('locationPlaceholder'),
+      label: t('locationLabel'),
       options:
         fetchedLocations?.map((location: any) => ({
           value: location.name.description,
@@ -234,7 +233,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
           dataTestId: `${dataTestId}-location-${location.name.description}`,
         })) || [],
       onSearch: (searchString: string) => setLocationSearchString(searchString),
-      noOptionsMessage: 'No locations',
+      noOptionsMessage: t('noLocationsFound'),
       height: 40,
       isLoading: isLocationsLoading,
       getPopupContainer: document.body,
@@ -245,16 +244,17 @@ const EditProfileModal: FC<IEditProfileModal> = ({
   const coverImageOption = [
     {
       icon: 'exportOutline',
-      label: 'Upload a photo',
+      label: t('uploadPhoto'),
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         userCoverImageRef?.current?.click();
       },
       dataTestId: 'edit-coverpic-upload',
+      hidden: false,
     },
     {
       icon: 'maximizeOutline',
-      label: 'Reposition',
+      label: t('reposition'),
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         reset();
@@ -262,10 +262,11 @@ const EditProfileModal: FC<IEditProfileModal> = ({
         closeEditProfileModal();
       },
       dataTestId: 'edit-coverpic-reposition',
+      hidden: userDetails?.coverImage?.original == null,
     },
     {
       icon: 'trashOutline',
-      label: 'Delete photo',
+      label: t('deletePhoto'),
       stroke: twConfig.theme.colors.neutral['900'],
       onClick: () => {
         if (imageFile?.coverImage) {
@@ -281,8 +282,10 @@ const EditProfileModal: FC<IEditProfileModal> = ({
         setIsCoverImageRemoved(true);
       },
       dataTestId: 'edit-coverpic-deletepost',
+      hidden: userDetails?.coverImage?.original == null,
     },
-  ];
+  ].filter((option) => option.hidden !== true);
+
   const { updateUser } = useAuth();
 
   useEffect(
@@ -376,7 +379,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
   return (
     <Modal open={openEditProfile} className="max-w-[638px] max-h-[605px]">
       <form>
-        <Header title="Edit Profile" onClose={disableClosed} />
+        <Header title={t('editProfile')} onClose={disableClosed} />
         <div className="relative">
           <div className="w-full h-[108px] overflow-hidden">
             {userDetails?.coverImage?.original && !isCoverImageRemoved ? (
@@ -451,7 +454,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
           <Button
             variant={ButtonVariant.Secondary}
             size={Size.Small}
-            label={'Cancel'}
+            label={t('cancel')}
             className="mr-3"
             onClick={() => {
               reset();
@@ -460,7 +463,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
             dataTestId={`${dataTestId}-cancel`}
           />
           <Button
-            label={'Save Changes'}
+            label={t('saveChanges')}
             size={Size.Small}
             disabled={!isValid}
             onClick={handleSubmit(onSubmit)}

@@ -14,6 +14,7 @@ import useAuth from 'hooks/useAuth';
 import { IDesignationAPI, useInfiniteDesignations } from 'queries/designation';
 import NoDataFound from 'components/NoDataFound';
 import useProduct from 'hooks/useProduct';
+import { isFiltersEmpty } from 'utils/misc';
 
 type ApiCallFunction = (queryParams: any) => any;
 interface IMembersBodyProps {
@@ -74,7 +75,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
   const debouncedSearchValue = useDebounce(memberSearch || '', 500);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     fetchUsers({
-      q: {
+      q: isFiltersEmpty({
         q: debouncedSearchValue,
         departments:
           selectedDepartments.length > 0
@@ -89,7 +90,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
             ? selectedDesignations.join(',')
             : undefined,
         ...usersQueryParams,
-      },
+      }),
     });
 
   let usersData = data?.pages
@@ -261,6 +262,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
               isClearable: true,
               dataTestId: `${dataTestId}-search`,
               inputClassName: 'text-sm py-[9px]',
+              autofocus: true,
             },
           ]}
           className={`${isOffice ? 'pb-4' : ''}`}

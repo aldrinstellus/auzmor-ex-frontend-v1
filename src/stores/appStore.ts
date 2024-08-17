@@ -5,16 +5,20 @@ export interface IAppsStore {
   apps: { [key: string]: App };
   featuredApps: { [key: string]: App };
   widgetApps: { [key: string]: App };
+  getApps: () => { [key: string]: App };
+  getFeaturedApps: () => { [key: string]: App };
   setApp: (app: { [key: string]: App }) => void;
   setFeaturedApp: (app: { [key: string]: App }) => void;
   setWidgetApp: (app: { [key: string]: App }) => void;
   updateApp: (id: string, app: App) => void;
 }
 
-export const useAppStore = create<IAppsStore>((set) => ({
+export const useAppStore = create<IAppsStore>((set, get) => ({
   apps: {},
   featuredApps: {},
   widgetApps: {},
+  getApps: () => get().apps,
+  getFeaturedApps: () => get().featuredApps,
   setApp: (apps) =>
     set((state) => ({
       apps: { ...state.apps, ...apps },

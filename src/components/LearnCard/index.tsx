@@ -10,6 +10,7 @@ import moment from 'moment';
 import useAuth from 'hooks/useAuth';
 import { clsx } from 'clsx';
 import Tooltip, { Variant } from 'components/Tooltip';
+import { useTranslation } from 'react-i18next';
 
 export enum LearnCardEnum {
   Course = 'COURSE',
@@ -32,6 +33,8 @@ const LearnCard: FC<ILearnCardProps> = ({
   isLoading,
   medalPosition = 'top',
 }) => {
+  const { t } = useTranslation('learnWidget', { keyPrefix: 'learnCard' });
+
   const { user } = useAuth();
   const style = useMemo(
     () =>
@@ -55,7 +58,7 @@ const LearnCard: FC<ILearnCardProps> = ({
   }, [data]);
 
   const Categories: FC = () => {
-    if (!!!data?.categories?.length) {
+    if (!data?.categories?.length) {
       return <></>;
     }
     return (
@@ -166,9 +169,9 @@ const LearnCard: FC<ILearnCardProps> = ({
         <div className="flex absolute top-4 right-4 px-2.5 py-1 bg-white rounded gap-1 items-center">
           <Icon name="menuBoard" size={18} color="text-neutral-900" />
           <p className="text-xs bg-white text-neutral-900 font-medium">
-            Due in &nbsp;
+            {t('dueIn')}&nbsp;
             <span className="text-primary-500 font-semibold">
-              {data?.my_enrollment?.due_in_x_days} days
+              {data?.my_enrollment?.due_in_x_days} {t('days')}
             </span>
           </p>
         </div>
@@ -207,7 +210,7 @@ const LearnCard: FC<ILearnCardProps> = ({
               />
               <p className="text-xs text-white">
                 {`${chaptersCount} ${
-                  chaptersCount === 1 ? 'Lesson' : 'Lessons'
+                  chaptersCount === 1 ? t('lesson') : t('lessons')
                 }`}
               </p>
             </div>
@@ -220,12 +223,12 @@ const LearnCard: FC<ILearnCardProps> = ({
           </div>
         )}
 
-        {type === LearnCardEnum.Path && (
+        {type === LearnCardEnum.Path && coursesCount > 0 && (
           <div className="flex gap-2">
             <div className="flex gap-1 items-center">
               <Icon name="teacher" size={16} color="text-white" hover={false} />
               <p className="text-xs text-white">{`${coursesCount} ${
-                coursesCount === 1 ? 'Course' : 'Courses'
+                coursesCount === 1 ? t('course') : t('courses')
               }`}</p>
             </div>
             <div className="flex gap-1 items-center">
@@ -271,14 +274,16 @@ const LearnCard: FC<ILearnCardProps> = ({
             <div className="flex-col gap-0.2">
               <div className="text-white text-sm font-medium">
                 {data?.my_enrollment?.assigned_by?.display_name == user?.name
-                  ? 'Self Enrolled'
+                  ? t('selfEnrolled')
                   : data?.my_enrollment?.assigned_by?.full_name ||
                     data?.my_enrollment?.assigned_by?.first_name ||
                     'User'}
               </div>
               {data?.my_enrollment?.assigned_by?.display_name ==
               user?.name ? null : (
-                <div className="text-xs text-white font-light">Assigned by</div>
+                <div className="text-xs text-white font-light">
+                  {t('assignedBy')}
+                </div>
               )}
             </div>
           </div>
@@ -291,7 +296,9 @@ const LearnCard: FC<ILearnCardProps> = ({
           } ${medalPosition === 'bottom' && 'bottom-4'}`}
         >
           <Tooltip
-            tooltipContent={<div className="text-sm">Includes Certificate</div>}
+            tooltipContent={
+              <div className="text-sm">{t('includesCertificate')}</div>
+            }
             variant={Variant.Light}
             className="!shadow-md !rounded !z-[999] !p-1 border"
           >

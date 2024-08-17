@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import Truncate from 'components/Truncate';
 import { FC, useMemo } from 'react';
 
 type BadgeProps = {
@@ -42,9 +43,11 @@ const Badge: FC<BadgeProps> = ({
 
   return (
     <div className={bgStyles}>
-      <p className={textStyles} data-testid={dataTestId}>
-        {text}
-      </p>
+      <Truncate
+        text={text || ' '}
+        className={textStyles}
+        dataTestId={dataTestId}
+      />
     </div>
   );
 };

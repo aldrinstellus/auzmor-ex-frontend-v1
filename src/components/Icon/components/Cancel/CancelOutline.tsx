@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgCancelOutline = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgCancelOutline = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={24}
     height={24}
@@ -10,7 +8,6 @@ const SvgCancelOutline = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <g id="cs/linear/cancel">
       <g id="vuesax/linear/cancel">

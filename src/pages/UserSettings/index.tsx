@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import BasicSettings from './components/BasicSettings';
 import NotificationSettings from './components/NotificationSettings';
 import useURLParams from 'hooks/useURLParams';
+import { useTranslation } from 'react-i18next';
 import { usePageTitle } from 'hooks/usePageTitle';
 
 interface ISetting {
@@ -19,47 +20,47 @@ interface ISetting {
   dataTestId?: string;
 }
 
-const settings = [
-  {
-    label: 'Basic Settings',
-    icon: 'gear',
-    key: 'basic',
-    component: <BasicSettings />,
-    disabled: false,
-    hidden: false,
-    dataTestId: 'settings-basic-settings',
-  },
-  {
-    label: 'Notifications',
-    icon: 'notification',
-    key: 'notifications',
-    component: <NotificationSettings />,
-    disabled: false,
-    hidden: false,
-    dataTestId: 'settings-notifications',
-  },
-  {
-    label: 'Integration',
-    icon: 'integration',
-    key: 'integration',
-    component: <div>Integration</div>,
-    disabled: true,
-    hidden: true,
-    dataTestId: 'settings-profile',
-  },
-  {
-    label: 'Sign in & Security',
-    icon: 'security',
-    key: 'security',
-    component: <AccountSecurity />,
-    disabled: false,
-    hidden: false,
-    dataTestId: 'settings-account-security',
-  },
-].filter((item) => !item.hidden);
-
 const UserSettings = () => {
   usePageTitle('settings');
+  const { t } = useTranslation('userSetting');
+  const settings = [
+    {
+      label: t('basic-setting'),
+      icon: 'gear',
+      key: 'basic',
+      component: <BasicSettings />,
+      disabled: false,
+      hidden: false,
+      dataTestId: 'settings-basic-settings',
+    },
+    {
+      label: t('notifications.title'),
+      icon: 'notification',
+      key: 'notifications',
+      component: <NotificationSettings />,
+      disabled: false,
+      hidden: false,
+      dataTestId: 'settings-notifications',
+    },
+    {
+      label: t('integration'),
+      icon: 'integration',
+      key: 'integration',
+      component: <div>{t('integration')}</div>,
+      disabled: true,
+      hidden: true,
+      dataTestId: 'settings-profile',
+    },
+    {
+      label: t('sign-in-security.title'),
+      icon: 'security',
+      key: 'security',
+      component: <AccountSecurity />,
+      disabled: false,
+      hidden: false,
+      dataTestId: 'settings-account-security',
+    },
+  ].filter((item) => !item.hidden);
   const { updateParam, searchParams } = useURLParams();
   const [activeSettingsPage, setActiveSettingsPage] = useState<ISetting>(
     settings[0],
@@ -78,9 +79,7 @@ const UserSettings = () => {
       data-testid="admin-settings"
     >
       <Card className="w-[25%] h-full" dataTestId="admin-settings-controls">
-        <p className="text-neutral-900 text-base font-bold p-4">
-          User Settings
-        </p>
+        <p className="text-neutral-900 text-base font-bold p-4">{t('title')}</p>
         <Divider className="border-neutral-500" />
         <div className="flex flex-col">
           {settings.map((item, index) => (

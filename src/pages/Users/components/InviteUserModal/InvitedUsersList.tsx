@@ -1,5 +1,6 @@
 import { IPostUsersResponse } from 'queries/users';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface IInvitedUsersListProps {
   invitedUsersResponse: IPostUsersResponse[];
@@ -8,14 +9,20 @@ export interface IInvitedUsersListProps {
 const InvitedUsersList: FC<IInvitedUsersListProps> = ({
   invitedUsersResponse,
 }) => {
+  const { t } = useTranslation('profile', {
+    keyPrefix: 'inviteUserModal.invitedUsersList',
+  });
+
   return (
     <div className="p-6">
       <div className="flex w-full mb-4">
-        <div className="w-1/4 truncate text-sm font-bold mr-2">Full name</div>
         <div className="w-1/4 truncate text-sm font-bold mr-2">
-          Email address
+          {t('fullName')}
         </div>
-        <div className="w-1/4 truncate text-sm font-bold mr-2">Role</div>
+        <div className="w-1/4 truncate text-sm font-bold mr-2">
+          {t('emailAddress')}
+        </div>
+        <div className="w-1/4 truncate text-sm font-bold mr-2">{t('role')}</div>
         <div className="w-1/4 truncate"></div>
       </div>
       {invitedUsersResponse.map((user, index) => (

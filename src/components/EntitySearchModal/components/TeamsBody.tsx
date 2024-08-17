@@ -44,6 +44,15 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
       'categories',
     ]);
 
+  // Reset state on unmount
+  useEffect(
+    () => () => {
+      setValue('selectAll', false);
+      setValue('showSelectedMembers', false);
+    },
+    [],
+  );
+
   // fetch teams datar
   const debouncedSearchValue = useDebounce(teamSearch || '', 500);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
@@ -108,24 +117,32 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
   }, [inView]);
 
   const selectAllEntity = () => {
-    teamsData?.forEach((team: ITeam) => {
-      setValue(`teams.${team.id}`, team);
-    });
+    teamsData?.forEach((team: ITeam) => setValue(`teams.${team.id}`, team));
   };
 
   const deselectAll = () => {
-    Object.keys(teams).forEach((key) => {
+    Object.keys(teams || {}).forEach((key) => {
       setValue(`teams.${key}`, false);
     });
   };
 
   const updateSelectAll = () => {
-    if (Object.keys(teams).some((key: string) => !!!teams[key])) {
+    if (!teamsData || teamsData.length === 0 || showSelectedMembers) {
       setValue('selectAll', false);
-    } else {
-      setValue('selectAll', true);
+      return;
     }
+    const allSelected = teamsData.every((team: ITeam) => !!teams[team.id]);
+    setValue('selectAll', allSelected && teamsData.length > 1);
   };
+
+  useEffect(() => {
+    if (showSelectedMembers) {
+      setValue('selectAll', false);
+    }
+    updateSelectAll();
+  }, [showSelectedMembers]);
+
+  const selectedCount = Object.values(teams || {}).filter(Boolean).length;
 
   const isControlsDisabled =
     !!!teamsData?.length && debouncedSearchValue !== '';
@@ -226,9 +243,7 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
                   label: 'Select all',
                   className: 'flex item-center',
                   transform: {
-                    input: (value: boolean) => {
-                      return value;
-                    },
+                    input: (value: boolean) => value && !showSelectedMembers,
                     output: (e: ChangeEvent<HTMLInputElement>) => {
                       if (e.target.checked) {
                         selectAllEntity();
@@ -238,6 +253,11 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
                       return e.target.checked;
                     },
                   },
+                  disabled:
+                    showSelectedMembers ||
+                    isControlsDisabled ||
+                    !teamsData?.length ||
+                    teamsData.length === 1,
                   dataTestId: `${dataTestId}-selectall`,
                 },
               ]}
@@ -248,11 +268,9 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
                   type: FieldType.Checkbox,
                   name: 'showSelectedMembers',
                   control,
-                  label: `Show selected members (${
-                    Object.keys(teams).filter((key: string) => !!teams[key])
-                      .length
-                  })`,
+                  label: `Show selected (${selectedCount})`,
                   className: 'flex item-center',
+                  disabled: selectedCount === 0 && !showSelectedMembers,
                   dataTestId: `${dataTestId}-showselected`,
                 },
               ]}
@@ -282,8 +300,8 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
             </div>
           ) : teamsData?.length ? (
             <ul>
-              {teamsData?.map((team, index) => (
-                <li key={team.id}>
+              {teamsData?.map((team: ITeam, index: number) => (
+                <li key={`team-${team.id}-${index}`}>
                   <div className="py-2 flex items-center w-full">
                     <Layout
                       fields={[
@@ -293,13 +311,10 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
                           control,
                           className: 'flex item-center mr-4 w-full',
                           transform: {
-                            input: (value: ITeam | boolean) => {
-                              updateSelectAll();
-                              return !!value;
-                            },
+                            input: (value: ITeam | boolean) => !!value,
                             output: (e: ChangeEvent<HTMLInputElement>) => {
-                              if (e.target.checked) return team;
-                              return false;
+                              const result = e.target.checked ? team : false;
+                              return result;
                             },
                           },
                           defaultChecked: selectedTeamIds.includes(team.id),

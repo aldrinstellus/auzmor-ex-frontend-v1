@@ -9,8 +9,8 @@ import Notifications from 'pages/Notifications';
 import { lazy } from 'react';
 import RequireAdminAuth from 'components/RequireAdminAuth';
 import RequireOfficeAuth from 'components/RequireOfficeAuth';
-import { Channels } from 'pages/Channels';
 import RequireNonProdAuth from 'components/RequireNonProdAuth';
+import { ChannelDetailTabsEnum } from 'pages/ChannelDetail';
 
 const ErrorBoundary = lazy(() => import('components/ErrorBoundary'));
 const Login = lazy(() => import('pages/Login'));
@@ -19,7 +19,7 @@ const Registration = lazy(() => import('pages/Registration'));
 const ForgotPassword = lazy(() => import('pages/ForgotPassword'));
 const UserSettings = lazy(() => import('pages/UserSettings'));
 const ResetPassword = lazy(() => import('pages/ResetPassword'));
-const Feed = lazy(() => import('pages/Feed'));
+const HomeFeed = lazy(() => import('pages/Feed'));
 const Users = lazy(() => import('pages/Users'));
 const UserDetail = lazy(() => import('pages/UserDetail'));
 const TeamDetail = lazy(() => import('pages/TeamDetail'));
@@ -32,6 +32,7 @@ const PageNotFound = lazy(() => import('pages/PageNotFound'));
 const ServerErrorPage = lazy(() => import('pages/ServerErrorPage'));
 const PostPage = lazy(() => import('pages/Post'));
 const Logout = lazy(() => import('pages/Logout'));
+const Channels = lazy(() => import('pages/Channels'));
 const SearchResults = lazy(() => import('pages/SearchResults'));
 
 const routers = createBrowserRouter(
@@ -45,38 +46,15 @@ const routers = createBrowserRouter(
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/accept-invite" element={<AcceptInvite />} />
       <Route element={<RequireAuth />}>
-        <Route
-          path="/"
-          element={<Navigate to="/feed" replace={true} />}
-          // loader={() => {
-          //   // ⬇️ loader fetch data as earlier as possible
-          //   return '';
-          // }}
-        />
-        <Route
-          path="/home"
-          element={<Feed />}
-          // ⬇️ loader fetch data as earlier as possible
-          // loader={homeLoader(queryClient)}
-        />
+        <Route path="/" element={<Navigate to="/feed" replace={true} />} />
+        <Route path="/home" element={<HomeFeed />} />
         <Route element={<RequireOfficeAuth />}>
           <Route // users route  is not required in lxp
             path="/users"
             element={<Users />}
-            loader={async () => {
-              // ⬇️ loader fetch data as earlier as possible
-              return '';
-            }}
           />
         </Route>
-        <Route
-          path="/teams"
-          element={<Users />}
-          loader={async () => {
-            // ⬇️ loader fetch data as earlier as possible
-            return '';
-          }}
-        />
+        <Route path="/teams" element={<Users />} />
         <Route element={<RequireOfficeAuth />}>
           <Route // users details route  is not required in lxp
             path="/users/:userId"
@@ -106,10 +84,9 @@ const routers = createBrowserRouter(
         </Route>
         <Route path="/apps" element={<Apps />} />
         <Route path="/apps/:id/launch" element={<AppLaunchPage />} />
-
-        <Route path="/scheduledPosts" element={<Feed />} />
-        <Route path="/bookmarks" element={<Feed />} />
-        <Route path="/feed" element={<Feed />} />
+        <Route path="/scheduledPosts" element={<HomeFeed />} />
+        <Route path="/bookmarks" element={<HomeFeed />} />
+        <Route path="/feed" element={<HomeFeed />} />
         <Route element={<RequireOfficeAuth />}>
           <Route path="/settings" element={<UserSettings />} />
         </Route>
@@ -122,11 +99,40 @@ const routers = createBrowserRouter(
         <Route element={<RequireNonProdAuth />}>
           <Route path="/channels" element={<Channels />} />
           <Route
+            path="/channels/:channelId/documents"
+            element={
+              <ChannelDetail activeTab={ChannelDetailTabsEnum.Documents} />
+            }
+          />
+          <Route
+            path="/channels/:channelId/members"
+            element={
+              <ChannelDetail activeTab={ChannelDetailTabsEnum.Members} />
+            }
+          />
+          <Route
+            path="/channels/:channelId/settings"
+            element={
+              <ChannelDetail activeTab={ChannelDetailTabsEnum.Setting} />
+            }
+          />
+          <Route
+            path="/channels/:channelId/manage-access"
+            element={
+              <ChannelDetail activeTab={ChannelDetailTabsEnum.ManageAccess} />
+            }
+          />
+          <Route
             path="/channels/:channelId"
-            element={<ChannelDetail />}
-            loader={() => {
-              return '';
-            }}
+            element={<ChannelDetail activeTab={ChannelDetailTabsEnum.Home} />}
+          />
+          <Route
+            path="/channels/:channelId/scheduledPosts"
+            element={<ChannelDetail activeTab={ChannelDetailTabsEnum.Home} />}
+          />
+          <Route
+            path="/channels/:channelId/bookmarks"
+            element={<ChannelDetail activeTab={ChannelDetailTabsEnum.Home} />}
           />
           <Route path="/search" element={<SearchResults />} />
         </Route>

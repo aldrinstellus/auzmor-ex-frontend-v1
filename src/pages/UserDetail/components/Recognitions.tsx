@@ -4,9 +4,9 @@ import {
   useInfinitePeopleProfileRecognitionFeed,
 } from 'queries/post';
 import NoDataCard from './NoDataCard';
-import SkeletonLoader from 'pages/Feed/components/SkeletonLoader';
 import { useFeedStore } from 'stores/feedStore';
 import { FC } from 'react';
+import SkeletonLoader from 'components/Feed/components/SkeletonLoader';
 
 export type AppProps = {
   data: any;

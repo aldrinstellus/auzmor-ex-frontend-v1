@@ -1,0 +1,83 @@
+{
+  "title": {
+    "create": "Create a Post",
+    "edit": "Edit a Post"
+  },
+  "placeholder": "What\u2019s on your mind?",
+  "confirmation": "Are you sure you want to discard this post? This action cannot be undone.",
+  "createAnnouncement": {
+    "announcementExpiry": "Announcement Expiry",
+    "1Day": "1 Day",
+    "1Week": "1 Week",
+    "2Weeks": "2 Weeks",
+    "1Month": "1 Month",
+    "customDate": "Custom Date",
+    "selectAnnouncementExpiry": "Select Announcement Expiry",
+    "editAnnouncementExpiry": "Edit Announcement Expiry",
+    "createAnnouncement": "Create an Announcement",
+    "clear": "Clear",
+    "back": "Back",
+    "next": "Next",
+    "cancel": "Cancel",
+    "done": "Done",
+    "announcementUpdatedSuccess": "Your announcement was updated successfully.",
+    "announcementSharedSuccess": "You've shared the post as an announcement."
+  },
+  "createShoutout": {
+    "giveKudos": "Give Kudos",
+    "back": "Back",
+    "next": "Next"
+  },
+  "createPoll": {
+    "questionRequired": "This field cannot be empty.",
+    "questionMinLength": "Question must have a minimum of 3 characters.",
+    "questionMaxLength": "Question cannot exceed 140 characters.",
+    "optionRequired": "Option cannot be empty.",
+    "optionMaxLength": "Option cannot exceed 30 characters.",
+    "questionPlaceholder": "e.g., What is your favorite kind of cookie?",
+    "questionLabel": "Ask a Question*",
+    "durationLabel": "Poll Duration*",
+    "1Day": "1 Day",
+    "3Days": "3 Days",
+    "1Week": "1 Week",
+    "2Weeks": "2 Weeks",
+    "customDate": "Custom Date",
+    "durationPlaceholder": "Select Poll Duration",
+    "customDateLabel": "Select Custom Date",
+    "headerTitle": "Create a Poll",
+    "requiredFieldNote": "* Required Field",
+    "backButton": "Back",
+    "nextButton": "Next"
+  },
+  "schedulePost": {
+    "timezone": "Timezone",
+    "selectTimezone": "Select Your Timezone",
+    "date": "Date",
+    "time": "Time",
+    "selectTime": "Select Time",
+    "schedulePost": "Schedule a Post",
+    "scheduleInfo": "{{time}} based on your profile timezone.",
+    "edit": "Edit"
+  },
+  "editMedia": {
+    "editVideo": "Edit Video",
+    "editPhoto": "Edit Photo",
+    "coverImage": "Cover Image",
+    "uploadImage": "Upload Image",
+    "replacePhoto": "Replace Photo",
+    "replaceVideo": "Replace Video",
+    "uploadPhoto": "Upload Photo",
+    "coverImageFile": "cover-image.png"
+  },
+  "postMenuItems": {
+    "media": "Media",
+    "uploadPhoto": "Upload a Photo",
+    "uploadVideo": "Upload a Video",
+    "shareDocument": "Share a Document",
+    "giveKudos": "Give Kudos",
+    "polls": "Polls",
+    "more": "More",
+    "shareAsAnnouncement": "Share as an Announcement",
+    "saveAsDraft": "Save as Drafts"
+  }
+}

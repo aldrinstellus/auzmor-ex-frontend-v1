@@ -100,16 +100,6 @@ export const getTeam = async (id: string) => {
   return data;
 };
 
-// get all users by along with a boolean which identify if the user is already of the team
-export const getMembers = async ({
-  pageParam = null,
-  queryKey,
-}: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
-  if (pageParam === null) {
-    return apiService.get(`/users/searchIn`, queryKey[1]);
-  } else return apiService.get(pageParam);
-};
-
 // ------------------ React Query -----------------------
 
 export const useInfiniteTeams = ({
@@ -163,30 +153,6 @@ export const useInfiniteTeamMembers = ({
     },
     staleTime: 5 * 60 * 1000,
     enabled: startFetching,
-  });
-};
-export const useInfiniteMembers = ({
-  q,
-}: {
-  teamId: string;
-  q?: Record<string, any>;
-  startFetching?: boolean;
-}) => {
-  return useInfiniteQuery({
-    queryKey: ['search-team-members', q],
-    queryFn: (context) => getMembers(context),
-    getNextPageParam: (lastPage: any) => {
-      const pageDataLen = lastPage?.data?.result?.data?.length;
-      const pageLimit = lastPage?.data?.result?.paging?.limit;
-      if (pageDataLen < pageLimit) {
-        return null;
-      }
-      return lastPage?.data?.result?.paging?.next;
-    },
-    getPreviousPageParam: (currentPage: any) => {
-      return currentPage?.data?.result?.paging?.prev;
-    },
-    staleTime: 5 * 60 * 1000,
   });
 };
 

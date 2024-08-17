@@ -5,10 +5,8 @@ import Button, {
 import Layout, { FieldType } from 'components/Form';
 import { Variant } from 'components/Input';
 import { FC, ReactElement } from 'react';
-import { IUserFieldsMappingForm } from './ConfigureLDAP';
 
 type UserFieldsMappingProps = {
-  userFieldsMappingData: IUserFieldsMappingForm;
   userFieldMappingControl: any;
   userFieldMappingFormState: any;
   handleSubmit: any;
@@ -18,7 +16,6 @@ type UserFieldsMappingProps = {
 };
 
 const UserFieldsMapping: FC<UserFieldsMappingProps> = ({
-  userFieldsMappingData,
   userFieldMappingControl,
   userFieldMappingFormState,
   handleSubmit,
@@ -34,7 +31,6 @@ const UserFieldsMapping: FC<UserFieldsMappingProps> = ({
       name: 'userName',
       label: 'User Name*',
       control: userFieldMappingControl,
-      defaultValue: userFieldsMappingData?.userName,
       error: userFieldMappingFormState.errors.userName?.message,
       dataTestId: 'sso-config-ad-username',
     },
@@ -45,7 +41,6 @@ const UserFieldsMapping: FC<UserFieldsMappingProps> = ({
       name: 'fullName',
       label: 'Full Name*',
       control: userFieldMappingControl,
-      defaultValue: userFieldsMappingData?.fullName,
       error: userFieldMappingFormState.errors.fullName?.message,
       dataTestId: 'sso-config-ad-fullname',
     },
@@ -56,7 +51,6 @@ const UserFieldsMapping: FC<UserFieldsMappingProps> = ({
       name: 'email',
       label: 'Email*',
       control: userFieldMappingControl,
-      defaultValue: userFieldsMappingData?.email,
       error: userFieldMappingFormState.errors.email?.message,
       dataTestId: 'sso-config-ad-email',
     },
@@ -67,7 +61,6 @@ const UserFieldsMapping: FC<UserFieldsMappingProps> = ({
       name: 'title',
       label: 'Title*',
       control: userFieldMappingControl,
-      defaultValue: userFieldsMappingData?.title,
       error: userFieldMappingFormState.errors.title?.message,
       dataTestId: 'sso-config-ad-title',
     },
@@ -78,7 +71,6 @@ const UserFieldsMapping: FC<UserFieldsMappingProps> = ({
       name: 'workMobile',
       label: 'Work Mobile',
       control: userFieldMappingControl,
-      defaultValue: userFieldsMappingData?.workMobile,
       dataTestId: 'sso-config-ad-workmobile',
     },
     {
@@ -88,7 +80,6 @@ const UserFieldsMapping: FC<UserFieldsMappingProps> = ({
       name: 'userObjectFilter',
       label: 'User Object Filter',
       control: userFieldMappingControl,
-      defaultValue: userFieldsMappingData?.userObjectFilter,
       dataTestId: 'sso-config-ad-userobjectfilter',
     },
   ];

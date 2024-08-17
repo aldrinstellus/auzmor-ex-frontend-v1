@@ -8,9 +8,11 @@ import {
 } from 'react';
 import { DeltaStatic } from 'quill';
 import { getBlobUrl, getMediaObj } from 'utils/misc';
-import { IAudience, IPost, PostType } from 'queries/post';
+import { AudienceEntityType, IAudience, IPost, PostType } from 'queries/post';
 import { IGetUser } from 'queries/users';
 import { useCreatePostUtilityStore } from 'stores/createPostUtilityStore';
+import { useChannelStore } from 'stores/channelStore';
+import { useParams } from 'react-router-dom';
 
 export interface ICreatePostProviderProps {
   data?: IPost;
@@ -25,6 +27,7 @@ export enum CreatePostFlow {
   SchedulePost = 'SCHEDULE_POST',
   Audience = 'AUDIENCE',
   CreateShoutout = 'CREATE_SHOUTOUT',
+  WelcomePost = 'WELCOME_POST',
 }
 
 export interface IAnnouncement {
@@ -32,7 +35,7 @@ export interface IAnnouncement {
   value: string;
 }
 
-export const IMG_FILE_SIZE_LIMIT = 5; //MB
+export const IMG_FILE_SIZE_LIMIT = 50; //MB
 export const VIDEO_FILE_SIZE_LIMIT = 2; //GB
 export const MEDIA_LIMIT = 10; // number of media can be uploaded
 
@@ -220,6 +223,21 @@ const CreatePostProvider: FC<ICreatePostProviderProps> = ({
   children,
   data,
 }) => {
+  // Set active channel as audience if channel is exist in url
+  const getChannel = useChannelStore((action) => action.getChannel);
+  const { channelId } = useParams();
+  let channelAudience: IAudience[] | null = null;
+  if (channelId) {
+    channelAudience = [
+      {
+        entityId: channelId,
+        entityType: AudienceEntityType.Channel,
+        entity: getChannel(channelId),
+        name: getChannel(channelId).name,
+      },
+    ];
+  }
+
   const openCreatePostWithPolls = useCreatePostUtilityStore(
     (state) => state.openCreatePostWithPolls,
   );
@@ -263,7 +281,11 @@ const CreatePostProvider: FC<ICreatePostProviderProps> = ({
   const [poll, setPoll] = useState<IPoll | null>(null);
   const [schedule, setSchedule] = useState<ISchedule | null>(null);
   const [audience, setAudience] = useState<IAudience[] | null>(
-    data?.audience || null,
+    data?.audience.filter(
+      (audience: any) => audience?.entityType !== AudienceEntityType.User,
+    ) ||
+      channelAudience ||
+      null,
   );
   const [shoutoutUserIds, setShoutoutUserIds] = useState<string[]>([]);
   const [shoutoutUsers, setShoutoutUsers] = useState<any>({});

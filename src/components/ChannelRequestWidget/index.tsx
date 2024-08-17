@@ -5,26 +5,64 @@ import useModal from 'hooks/useModal';
 import clsx from 'clsx';
 import ChannelRequestModal from './components/ChannelRequestModal';
 import Button, { Size, Variant } from 'components/Button';
-import ChannelWidgetUserRow from './components/ChannelWidgetUser';
-import { useChannelRequests } from 'queries/channel';
+import ChannelWidgetUserRow, {
+  ChannelRequestWidgetModeEnum,
+} from './components/ChannelWidgetUser';
+import { useInfiniteChannelsRequest } from 'queries/channel';
+import { CHANNEL_MEMBER_STATUS, IChannelRequest } from 'stores/channelStore';
+import { useNavigate, useParams } from 'react-router-dom';
+import Skeleton from 'react-loading-skeleton';
+import { useChannelRole } from 'hooks/useChannelRole';
 
-type ChannelWidgetProps = {
+export type ChannelRequestWidgetProps = {
   className?: string;
-  channelId?: string;
+  mode?: ChannelRequestWidgetModeEnum;
 };
 
-const ChannelRequestWidget: FC<ChannelWidgetProps> = ({
+const ChannelRequestWidget: FC<ChannelRequestWidgetProps> = ({
   className = '',
-  channelId = '',
+  mode = ChannelRequestWidgetModeEnum.Feed,
 }) => {
+  const navigate = useNavigate();
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const [openAllRequest, openAllRequestModal, closeAllRequestModal] =
     useModal();
+  const { channelId } = useParams();
 
-  const channelRequestCount = 0;
-  const widgetTitle = `Channel requests (${channelRequestCount})`;
-  // const buttonLabel = 'View all requests';
-  const { data: channelRequests } = useChannelRequests(channelId);
+  const { isChannelAdmin } = useChannelRole(channelId!);
+
+  if (channelId && !isChannelAdmin) return <></>;
+
+  const { data, isLoading } = useInfiniteChannelsRequest(
+    channelId,
+    {
+      limit: 3,
+      status: CHANNEL_MEMBER_STATUS.PENDING,
+    },
+    true,
+  );
+
+  const requests = data?.pages.flatMap((page: any) => {
+    return (
+      page?.data?.result?.data.map((request: IChannelRequest) => {
+        try {
+          return request;
+        } catch (e) {}
+      }) || []
+    );
+  }) as IChannelRequest[];
+
+  const widgetTitle = (
+    <p className="flex">
+      Channel requests &#40;&nbsp;
+      {isLoading ? (
+        <Skeleton count={1} className="!w-8 h-5" />
+      ) : (
+        data?.pages[0]?.data?.result?.totalCount
+      )}
+      &nbsp;&#41;
+    </p>
+  );
 
   const toggleModal = () => {
     if (open) closeCollapse();
@@ -40,9 +78,11 @@ const ChannelRequestWidget: FC<ChannelWidgetProps> = ({
     [className],
   );
 
-  const isAllRequestDisplyed = true; // isAllRequestDisplyed;
+  if (requests?.length === 0) {
+    return <></>;
+  }
   return (
-    <Card className={style} dataTestId="requestwidget">
+    <Card className={style} dataTestId="requestwidget" shadowOnHover>
       <div
         className=" px-6 flex items-center justify-between cursor-pointer"
         data-testid={`collapse-'channel-request`}
@@ -70,30 +110,32 @@ const ChannelRequestWidget: FC<ChannelWidgetProps> = ({
 
           <div className=" divide-y  divide-neutral-200  ">
             <>
-              {channelRequests?.map((user: any) => {
+              {requests?.map((request: IChannelRequest) => {
                 return (
-                  <div className="py-2 " key={user?.id}>
-                    <ChannelWidgetUserRow user={user?.user} />
+                  <div className="py-2 " key={request?.id}>
+                    <ChannelWidgetUserRow request={request} mode={mode} />
                   </div>
                 );
               })}
             </>
           </div>
-
-          {isAllRequestDisplyed && (
-            <Button
-              variant={Variant.Secondary}
-              size={Size.Small}
-              label={'View all requests'}
-              dataTestId={`requestwidget-viewall-request`}
-              onClick={openAllRequestModal}
-            />
-          )}
+          <Button
+            variant={Variant.Secondary}
+            size={Size.Small}
+            label={'View all requests'}
+            dataTestId={`requestwidget-viewall-request`}
+            onClick={() =>
+              mode === ChannelRequestWidgetModeEnum.Channel
+                ? navigate(`/channels/${channelId}/members?type=requests`)
+                : openAllRequestModal()
+            }
+          />
         </div>
       </div>
       {openAllRequest && (
         <ChannelRequestModal
           open={openAllRequest}
+          channelId={channelId}
           closeModal={closeAllRequestModal}
         />
       )}

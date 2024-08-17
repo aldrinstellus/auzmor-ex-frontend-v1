@@ -263,8 +263,9 @@ class Mention {
     if (hasLinkValue) {
       this.mentionList.childNodes[
         this.itemIndex
-      ].dataset.value = `<a href="${link}" target=${itemTarget || this.options.linkTarget
-        }>${this.mentionList.childNodes[this.itemIndex].dataset.value}`;
+      ].dataset.value = `<a href="${link}" target=${
+        itemTarget || this.options.linkTarget
+      }>${this.mentionList.childNodes[this.itemIndex].dataset.value}`;
     }
     return this.mentionList.childNodes[this.itemIndex].dataset;
   }

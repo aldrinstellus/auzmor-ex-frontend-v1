@@ -3,7 +3,13 @@ import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import ConfirmationBox from 'components/ConfirmationBox';
-import { IPost, PostType, deletePost } from 'queries/post';
+import {
+  AudienceEntityType,
+  IPost,
+  PostType,
+  deletePost,
+  updatePost,
+} from 'queries/post';
 import PostBuilder, { PostBuilderMode } from 'components/PostBuilder';
 import useModal from 'hooks/useModal';
 import useAuth from 'hooks/useAuth';
@@ -18,13 +24,15 @@ import ClosePollModal from './ClosePollModal';
 import PollVotesModal from './PollVotesModal';
 import ChangeToRegularPostModal from './ChangeToRegularPostModal';
 import AnnouncementAnalytics from './AnnouncementAnalytics';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export interface IFeedPostMenuProps {
   data: IPost;
+  readOnly?: boolean;
 }
 
-const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
+const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
   const { user } = useAuth();
   const { isMember } = useRole();
   const location = useLocation();
@@ -47,6 +55,9 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
   const currentDate = new Date().toISOString();
 
   const isPostPage = location.pathname.startsWith('/posts/');
+  const isChannelPage = location.pathname.startsWith('/channels/');
+  const { channelId = '' } = useParams();
+  const { t } = useTranslation('post', { keyPrefix: 'feedPostMenu' });
 
   const deletePostMutation = useMutation({
     mutationKey: ['deletePostMutation', data.id],
@@ -59,7 +70,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
     },
     onError: (_error, _variables, context) => {
       failureToastConfig({
-        content: 'Error deleting post',
+        content: t('errorDeletingPost'),
         dataTestId: 'post-delete-toaster-failure',
       });
       if (context?.previousFeed) {
@@ -68,7 +79,42 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
     },
     onSuccess: async (_data, variables, _context) => {
       successToastConfig({
-        content: 'Post deleted successfully',
+        content: t('postDeletedSuccessfully'),
+        dataTestId: 'post-delete-toaster-success',
+      });
+      if (isPostPage) navigate('/feed');
+      await queryClient.invalidateQueries(['feed']);
+      await queryClient.invalidateQueries(['feed-announcements-widget']);
+      await queryClient.invalidateQueries(['post-announcements-widget']);
+      await queryClient.invalidateQueries(['bookmarks']);
+      await queryClient.invalidateQueries(['scheduledPosts']);
+      await queryClient.invalidateQueries(['posts', variables], {
+        exact: false,
+      });
+    },
+  });
+
+  const updatePostMutation = useMutation({
+    mutationKey: ['updatePostMutation'],
+    mutationFn: (payload: any) => updatePost(payload.id || '', payload as any),
+    onMutate: (variables) => {
+      const previousFeed = feedRef.current;
+      if (!isPostPage) setFeed({ ...omit(feedRef.current, [variables]) });
+      closeConfirm();
+      return { previousFeed };
+    },
+    onError: (_error, _variables, context) => {
+      failureToastConfig({
+        content: t('errorDeletingPost'),
+        dataTestId: 'post-delete-toaster-failure',
+      });
+      if (context?.previousFeed) {
+        setFeed(context?.previousFeed);
+      }
+    },
+    onSuccess: async (_data, variables, _context) => {
+      successToastConfig({
+        content: t('postDeletedSuccessfully'),
         dataTestId: 'post-delete-toaster-success',
       });
       if (isPostPage) navigate('/feed');
@@ -86,7 +132,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
   const allOptions = [
     {
       icon: 'cyclicArrow',
-      label: 'Promote to announcement',
+      label: t('promoteToAnnouncement'),
       onClick: () => {
         setCustomActiveFlow(CreatePostFlow.CreateAnnouncement);
         openModal();
@@ -98,7 +144,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
     },
     {
       icon: 'editReceipt',
-      label: 'Edit announcement',
+      label: t('editAnnouncement'),
       onClick: () => {
         setCustomActiveFlow(CreatePostFlow.CreateAnnouncement);
         openModal();
@@ -110,7 +156,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
     },
     {
       icon: 'cyclicArrow',
-      label: 'Change to regular post',
+      label: t('changeToRegularPost'),
       onClick: () => showRemoveAnnouncement(),
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-changeto-regularpost',
@@ -119,7 +165,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
     },
     {
       icon: 'edit',
-      label: 'Edit post',
+      label: t('editPost'),
       onClick: () => {
         setCustomActiveFlow(CreatePostFlow.CreatePost);
         openModal();
@@ -127,11 +173,11 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-edit-post',
       permissions: ['UPDATE_MY_POSTS'],
-      enabled: !data?.isAutomatedPost && data.createdBy?.userId === user?.id, // editing of automated post is not allow.
+      enabled: !data?.isAutomatedPost && data.createdBy?.userId === user?.id,
     },
     {
       icon: 'closeCircle',
-      label: 'Close Poll',
+      label: t('closePoll'),
       onClick: () => showClosePoll(),
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-close-poll',
@@ -143,18 +189,18 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
     },
     {
       icon: 'chartOutline',
-      label: 'See who voted',
+      label: t('seeWhoVoted'),
       onClick: () => showPollVotes(),
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-see-poll-votes',
-      permissions: [],
+      permissions: ['UPDATE_MY_POSTS'],
       enabled:
         data.type === PostType.Poll &&
         (isAdmin || data.createdBy?.userId === user?.id),
     },
     {
       icon: 'announcementChart',
-      label: 'View acknowledgement report',
+      label: t('viewAcknowledgementReport'),
       onClick: () => showAnalytics(),
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-view-acknowledgement-report',
@@ -163,7 +209,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
     },
     {
       icon: 'delete',
-      label: 'Delete post',
+      label: t('deletePost'),
       onClick: () => showConfirm(),
       iconClassName: '!text-red-500',
       labelClassName: '!text-red-500',
@@ -172,6 +218,26 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
       enabled: isAdmin || data.createdBy?.userId === user?.id,
     },
   ];
+  const handleDelete = () => {
+    if (!isChannelPage) {
+      deletePostMutation.mutate(data?.id || '');
+      return;
+    }
+    if (data?.audience?.length <= 1 && isChannelPage) {
+      deletePostMutation.mutate(data?.id || '');
+      return;
+    } else {
+      const audience = data?.audience?.filter(
+        (audience: any) =>
+          audience?.entityId !== channelId &&
+          audience?.entityType === AudienceEntityType.Channel,
+      );
+      updatePostMutation.mutate({
+        ...data,
+        audience,
+      });
+    }
+  };
 
   const postOptions = allOptions
     .filter((option) => option.enabled)
@@ -191,12 +257,16 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
     [],
   );
 
-  if (postOptions.length) {
+  if (postOptions.length && !readOnly) {
     return (
       <>
         <PopupMenu
           triggerNode={
-            <div className="cursor-pointer" data-testid="feed-post-ellipsis">
+            <div
+              className="cursor-pointer"
+              data-testid="feed-post-ellipsis"
+              title="more"
+            >
               <Icon name="more" tabIndex={0} />
             </div>
           }
@@ -216,19 +286,15 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data }) => {
         <ConfirmationBox
           open={confirm}
           onClose={closeConfirm}
-          title="Delete"
-          description={
-            <span>
-              Are you sure you want to delete this post? This cannot be undone
-            </span>
-          }
+          title={t('deleteConfirmTitle')}
+          description={<span>{t('deleteConfirmDescription')}</span>}
           success={{
-            label: 'Delete',
+            label: t('deleteConfirmButton'),
             className: 'bg-red-500 text-white ',
-            onSubmit: () => deletePostMutation.mutate(data?.id || ''),
+            onSubmit: () => handleDelete(),
           }}
           discard={{
-            label: 'Cancel',
+            label: t('cancelButton'),
             className: 'text-neutral-900 bg-white ',
             onCancel: closeConfirm,
           }}

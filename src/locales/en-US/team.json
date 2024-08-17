@@ -1,0 +1,28 @@
+{
+  "title": "Teams",
+  "notFound": "You\u2019re not part of any team yet.",
+  "members": "{{totalMembers}} members",
+  "errorAddingMembers": "Error adding team members.",
+  "multipleMembersAdded": "{{count}} members have been added to the team.",
+  "singleMemberAdded": "1 member has been added to the team.",
+  "membersExist": "Members already exist in the team.",
+  "goBack": {
+    "myTeams": "Go back to My Teams",
+    "allTeams": "Go back to All Teams"
+  },
+  "goBackText": {
+    "myTeams": "My Teams",
+    "allTeams": "All Teams"
+  },
+  "inviteMembers": "Invite members",
+  "inviteMembersTooltip": "Don't forget to add members to the team. Click on the 'Add Members' button to get started.",
+  "addMembersButton": "Add Members",
+  "teamType": "Team type is {{type}}.",
+  "teamTypeLabel": "Team type",
+  "category": "Category",
+  "peopleCountLabel": "No. of people",
+  "membersCount": "{{count}} Members",
+  "alreadyMember": "Already a member.",
+  "addTeamMembersTitle": "Add team members",
+  "cancelButton": "Cancel"
+}

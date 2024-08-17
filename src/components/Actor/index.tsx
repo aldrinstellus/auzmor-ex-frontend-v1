@@ -110,6 +110,11 @@ const Actor: FC<ActorProps> = ({
     a: CustomLink,
     team: CustomTeam,
   };
+
+  if (title?.content) {
+    title = { content: title.content.replaceAll("'", '&#8217;') };
+  }
+
   return (
     <Fragment>
       <div className="flex items-center gap-4 flex-1">
@@ -186,13 +191,19 @@ const Actor: FC<ActorProps> = ({
                 {createdTime}
               </div>
               <div className="bg-neutral-500 rounded-full w-1 h-1" />
-              <Icon
-                name={audience && audience.length ? 'noteFavourite' : 'global'}
-                size={16}
-                onClick={
-                  audience && audience.length ? openAudienceModal : () => {}
-                }
-              />
+              <div title="Audience">
+                <Icon
+                  name={
+                    audience && audience.length ? 'noteFavourite' : 'global'
+                  }
+                  size={16}
+                  tabIndex={0}
+                  title={'Audience'}
+                  onClick={
+                    audience && audience.length ? openAudienceModal : () => {}
+                  }
+                />
+              </div>
             </div>
           ) : null}
         </div>

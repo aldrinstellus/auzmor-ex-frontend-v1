@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
+import { IS_PROD } from 'utils/constants';
 
 const RequireNonProdAuth: FC = () => {
-  const isProd = process.env.REACT_APP_ENV === 'PRODUCTION';
-  if (!isProd) {
+  if (!IS_PROD) {
     return <Outlet />;
   }
   return <Navigate to={'/404'} />;

@@ -19,6 +19,7 @@ import 'utils/custom-yup-validators/email/validateEmail';
 import { FC } from 'react';
 import useAuth from 'hooks/useAuth';
 import { useNavigateWithToken } from 'hooks/useNavigateWithToken';
+import { useTranslation } from 'react-i18next';
 
 export interface ILoginViaCredProps {
   setViaSSO: (flag: boolean) => void;
@@ -30,20 +31,10 @@ interface IForm {
   domain?: string;
 }
 
-const schema = yup.object({
-  email: yup
-    .string()
-    .required('Required field')
-    .validateEmail(
-      'Invalid email address. Please enter a valid email address.',
-    ),
-  password: yup.string().required('Required field'),
-  domain: yup.string(),
-});
-
 const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
   const { setUser } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation('auth', { keyPrefix: 'login' });
   const navigateWithToken = useNavigateWithToken();
   const loginMutation = useMutation((formData: IForm) => login(formData), {
     onSuccess: (data) =>
@@ -55,6 +46,14 @@ const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
       ),
   });
 
+  const schema = yup.object({
+    email: yup
+      .string()
+      .required(t('requiredField'))
+      .validateEmail(t('validEmailError')),
+    password: yup.string().required(t('requiredField')),
+    domain: yup.string(),
+  });
   const domain = getSubDomain(window.location.host);
   const { data } = useGetSSOFromDomain(domain, domain !== '' ? true : false);
 
@@ -88,9 +87,9 @@ const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      placeholder: 'Enter your email address / username',
+      placeholder: t('emailPlaceholder'),
       name: 'email',
-      label: 'Work Email / Username',
+      label: t('emailLabel'),
       error: errors.email?.message || loginMutation.isError,
       dataTestId: 'signin-email',
       errorDataTestId: 'signin-invalid-email-format-msg',
@@ -99,9 +98,9 @@ const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
     },
     {
       type: FieldType.Password,
-      placeholder: 'Enter password',
+      placeholder: t('passwordPlaceholder'),
       name: 'password',
-      label: 'Password',
+      label: t('passwordLabel'),
       rightIcon: 'people',
       error: errors.password?.message || loginMutation.isError,
       dataTestId: 'signin-password',
@@ -113,9 +112,11 @@ const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
 
   return (
     <div className="w-full max-w-[440px]">
-      <div className="font-extrabold text-neutral-900 text-2xl">Signin</div>
+      <div className="font-extrabold text-neutral-900 text-2xl">
+        {t('title')}
+      </div>
       <div className="text-neutral-500 text-xs font-medium mt-1">
-        Hi, enter your details to get signed in to your account
+        {t('subtitle')}
       </div>
       <form
         className="mt-5"
@@ -126,10 +127,7 @@ const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
           <div className="mb-5">
             <Banner
               dataTestId="signin-error-message"
-              title={
-                readFirstAxiosError(loginMutation.error) ||
-                'Email address or password is incorrect'
-              }
+              title={readFirstAxiosError(loginMutation.error) || t('error')}
               variant={BannerVariant.Error}
             />
           </div>
@@ -142,13 +140,13 @@ const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
         >
           <Link to="/forgot-password">
             <div className="font-bold text-xs leading-[18px]">
-              Forgot Password?
+              {t('forgotPassword')}
             </div>
           </Link>
         </div>
         <Button
           dataTestId="signin-btn"
-          label={'Sign In'}
+          label={t('signInButton')}
           className="w-full mt-5 !rounded-7xl"
           disabled={!isValid}
           size={Size.Large}
@@ -161,7 +159,7 @@ const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
         !!!domain) && (
         <Button
           dataTestId="signin-sso-cta"
-          label={'Sign In via SSO'}
+          label={t('ssoButton')}
           variant={ButtonVariant.Secondary}
           size={Size.Large}
           className="w-full mt-5 h-[44px] !rounded-7xl"

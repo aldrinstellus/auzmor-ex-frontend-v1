@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgSupportReaction = (
-  props: SVGProps<SVGSVGElement> & { ariaLabel?: string },
-) => (
+const SvgSupportReaction = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={24}
     height={24}
@@ -10,7 +8,6 @@ const SvgSupportReaction = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    aria-label={props.ariaLabel}
   >
     <rect x="1" y="1" width="26" height="25.9993" rx="12.9996" fill="#FB923C" />
     <path

@@ -11,6 +11,8 @@ import { UserStatus, updateStatus } from 'queries/users';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+
 export interface IReactivatePeopleProps {
   open: boolean;
   openModal: () => void;
@@ -20,11 +22,12 @@ export interface IReactivatePeopleProps {
 
 const DeactivatePeople: FC<IReactivatePeopleProps> = ({
   open,
-  // openModal,
   closeModal,
   userId,
 }) => {
+  const { t } = useTranslation('profile', { keyPrefix: 'deactivateModal' });
   const queryClient = useQueryClient();
+
   const updateUserStatusMutation = useMutation({
     mutationFn: updateStatus,
     mutationKey: ['update-user-status'],
@@ -41,14 +44,14 @@ const DeactivatePeople: FC<IReactivatePeopleProps> = ({
       queryClient.invalidateQueries(['team-members']);
       queryClient.invalidateQueries(['organization-chart'], { exact: false });
       queryClient.invalidateQueries(['celebrations'], { exact: false });
-      successToastConfig({ content: `User has been deactivated` });
+      successToastConfig({ content: t('successToast') });
     },
   });
 
   const Header: FC = () => (
     <div className="flex flex-wrap items-center">
       <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
-        Deactivate User?
+        {t('title')}
       </div>
       <IconButton
         onClick={closeModal}
@@ -65,12 +68,12 @@ const DeactivatePeople: FC<IReactivatePeopleProps> = ({
       <Button
         variant={ButtonVariant.Secondary}
         size={Size.Small}
-        label={'Cancel'}
+        label={t('cancelButton')}
         dataTestId="cancel-cta"
         onClick={closeModal}
       />
       <Button
-        label={'Deactivate'}
+        label={t('deactivateButton')}
         className="bg-primary-500 !text-white flex"
         loading={updateUserStatusMutation.isLoading}
         size={Size.Small}
@@ -94,8 +97,9 @@ const DeactivatePeople: FC<IReactivatePeopleProps> = ({
     >
       <Header />
       <div className="text-sm font-medium text-[#171717] mx-4 mt-3 mb-4">
-        Are you sure you want to deactivate this account?
-        <br /> All the data associated with this account will be removed.
+        {t('confirmMessage')}
+        <br />
+        {t('confirmMessage2')}
       </div>
       <Footer />
     </Modal>

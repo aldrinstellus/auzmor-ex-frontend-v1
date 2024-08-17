@@ -5,8 +5,12 @@ import { Logo } from 'components/Logo';
 import { useCheckLogin } from 'queries/account';
 import PageLoader from 'components/PageLoader';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { useTranslation } from 'react-i18next';
 
 const Logout = () => {
+  const { t } = useTranslation('auth', {
+    keyPrefix: 'logout',
+  });
   usePageTitle('logout');
   const { data, isLoading, isError } = useCheckLogin();
   const navigate = useNavigate();
@@ -22,9 +26,9 @@ const Logout = () => {
 
   // If they stumble upon this page while they're logged in, just redirect them to redirectUrl.
   if (data && !isError) {
-    if (data?.data?.result?.data?.redirectUrl)
+    if (data?.data?.result?.data?.redirectUrl) {
       navigate(data.data.result.data.redirectUrl);
-    else {
+    } else {
       console.log('No redirectUrl found');
       navigate('/home');
     }
@@ -40,12 +44,12 @@ const Logout = () => {
       </div>
       <div className="flex flex-col justify-center items-center bg-white m-14 space-y-8 py-20">
         <div className="text-2xl font-bold" data-testId="logout-confirm-msg">
-          You are now logged out.
+          {t('logoutMessage')}
         </div>
-        <img src={LogoutScreen} alt="Logout Screen" />
+        <img src={LogoutScreen} alt={t('logoutScreenAlt')} />
         <Link to="/login">
           <Button
-            label="Go back to Login"
+            label={t('goBackToLogin')}
             className="mb-20"
             dataTestId="logout-login-redirect-btn"
           />

@@ -16,6 +16,7 @@ import { convert } from 'html-to-text';
 import { operatorXOR } from 'utils/misc';
 import { PostBuilderMode } from 'components/PostBuilder';
 import { PostType } from 'queries/post';
+import { useTranslation } from 'react-i18next';
 
 export interface IFooterProps {
   isLoading: boolean;
@@ -46,6 +47,7 @@ const Footer: FC<IFooterProps> = ({
     media,
     shoutoutUserIds,
   } = useContext(CreatePostContext);
+  const { t } = useTranslation('postBuilder');
 
   const { isMember } = useRole();
 
@@ -79,7 +81,7 @@ const Footer: FC<IFooterProps> = ({
     () => [
       {
         id: 1,
-        label: 'Media',
+        label: t('postMenuItems.media'),
         icon: (
           <Icon
             name="imageFilled"
@@ -93,7 +95,7 @@ const Footer: FC<IFooterProps> = ({
         disabled: isMediaDisabled,
         menuItems: [
           {
-            label: 'Upload a photo',
+            label: t('postMenuItems.uploadPhoto'),
             icon: 'image',
             onClick: () => {
               updateContext();
@@ -104,7 +106,7 @@ const Footer: FC<IFooterProps> = ({
             dataTestId: 'feed-createpost-uploadphoto-menuitem',
           },
           {
-            label: 'Upload a video',
+            label: t('postMenuItems.uploadVideo'),
             icon: 'video',
             onClick: () => {
               updateContext();
@@ -115,7 +117,7 @@ const Footer: FC<IFooterProps> = ({
             dataTestId: 'feed-createpost-uploadvideo-menuitem',
           },
           {
-            label: 'Share a document',
+            label: t('postMenuItems.shareDocument'),
             icon: 'document',
             disabled: true,
           },
@@ -124,7 +126,7 @@ const Footer: FC<IFooterProps> = ({
       },
       {
         id: 2,
-        label: 'Give kudos',
+        label: t('postMenuItems.giveKudos'),
         icon: (
           <Icon
             name="magicStarFilled"
@@ -146,7 +148,7 @@ const Footer: FC<IFooterProps> = ({
       },
       {
         id: 3,
-        label: 'Polls',
+        label: t('postMenuItems.polls'),
         menuItems: [],
         dataTestId: 'createpost-poll',
         icon: (
@@ -168,7 +170,7 @@ const Footer: FC<IFooterProps> = ({
       },
       {
         id: 4,
-        label: 'More',
+        label: t('postMenuItems.more'),
         icon: (
           <Icon
             name="moreOutline"
@@ -180,7 +182,7 @@ const Footer: FC<IFooterProps> = ({
         hidden: isMember,
         menuItems: [
           {
-            label: 'Share as an announcement',
+            label: t('postMenuItems.shareAsAnnouncement'),
             icon: 'speaker',
             onClick: () => {
               updateContext();
@@ -191,7 +193,7 @@ const Footer: FC<IFooterProps> = ({
             dataTestId: 'feed-createpost-shareasannouncement',
           },
           {
-            label: 'Save as drafts',
+            label: t('postMenuItems.saveAsDraft'),
             icon: 'draft',
             disabled: true,
             dataTestId: 'feed-createpost-saveasdraft',

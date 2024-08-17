@@ -23,8 +23,43 @@ export const useAppliedFiltersStore = create<State & Actions>()(
       return undefined;
     },
     setFilters: (filters: { [key: string]: any } | null) =>
-      set({ filters: { ...get().filters, ...filters } }),
-    updateFilter: (key, value) => set({ filters: { [key]: value } }),
-    clearFilters: () => set({ filters: null }),
+      set((state) => {
+        state.filters = { ...state.filters, ...filters };
+      }),
+    updateFilter: (key, value) =>
+      set((state) => {
+        if (state.filters) {
+          state.filters[key] = value;
+        } else {
+          state.filters = { [key]: value };
+        }
+      }),
+    clearFilters: () => {
+      clearURLParams();
+      set((state) => {
+        state.filters = null;
+      });
+    },
   })),
 );
+
+const clearURLParams = () => {
+  const url = new URL(window.location.href);
+
+  const paramsToDelete = [
+    'status',
+    'roles',
+    'departments',
+    'locations',
+    'teams',
+    'categories',
+    'channelType',
+    'byPeople',
+    'channelRequestStatus',
+    'sort',
+    'channels',
+  ];
+
+  paramsToDelete.forEach((param) => url.searchParams.delete(param));
+  window.history.replaceState({}, '', url);
+};

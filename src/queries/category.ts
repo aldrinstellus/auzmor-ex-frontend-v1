@@ -8,8 +8,11 @@ export interface ICategory {
 
 export interface ICategoryDetail {
   name: string;
-  type: string;
+  type?: string;
   id: string;
+  value?: string;
+  label?: string;
+  isNew?: boolean;
 }
 
 const getAllCategories = async ({
@@ -36,6 +39,6 @@ export const useInfiniteCategories = (q?: Record<string, any>) => {
     getPreviousPageParam: (currentPage: any) => {
       return currentPage?.data?.result?.paging?.prev;
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
   });
 };

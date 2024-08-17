@@ -1,7 +1,7 @@
 import { FC, ReactNode, useEffect, useState } from 'react';
 import './styles.css';
 
-interface ITab {
+export interface ITab {
   tabLabel: (isActive: boolean) => string | ReactNode;
   tabContent: ReactNode;
   tabAction?: ReactNode;
@@ -25,7 +25,6 @@ export interface ITabsProps {
 const Tabs: FC<ITabsProps> = ({
   tabs,
   title,
-  activeTabIndex = 0,
   tabContentClassName = 'px-6',
   className = 'w-full flex justify-start border-b-1 border border-neutral-200 px-8',
   itemSpacing = 4,
@@ -33,9 +32,12 @@ const Tabs: FC<ITabsProps> = ({
   tabSwitcherClassName = '',
   disableAnimation = false,
   onTabChange,
+  activeTabIndex = 0,
 }) => {
   const [activeTab, setActiveTab] = useState(activeTabIndex);
   const [previousTab, setPreviousTab] = useState(activeTab);
+
+  useEffect(() => setActiveTab(activeTabIndex), [activeTabIndex]);
 
   useEffect(() => {
     if (!disableAnimation) {

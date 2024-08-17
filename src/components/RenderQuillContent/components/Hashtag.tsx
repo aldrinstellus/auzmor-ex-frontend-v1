@@ -1,5 +1,5 @@
 import { FC, ReactElement, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 type HashtagProps = {
   value: string;
@@ -8,13 +8,19 @@ type HashtagProps = {
 const Hashtag: FC<HashtagProps> = ({ value }): ReactElement => {
   const hashtagRef = useRef<HTMLElement>(null);
   const navigate = useNavigate();
+  const { channelId } = useParams();
+  let navigateTo = '/feed';
+
+  if (channelId) {
+    navigateTo = `/channels/${channelId}`;
+  }
 
   return (
     <span
       onClick={() => {
         if (hashtagRef?.current) {
           navigate({
-            pathname: '/feed',
+            pathname: navigateTo,
             search: hashtagRef?.current?.innerHTML
               ? `?hashtag=${hashtagRef?.current?.innerHTML}`
               : '',

@@ -13,6 +13,8 @@ import queryClient from 'utils/queryClient';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+
 export interface IDeletePeopleProps {
   open: boolean;
   openModal: () => void;
@@ -20,22 +22,18 @@ export interface IDeletePeopleProps {
   userId: string;
 }
 
-const DeletePeople: FC<IDeletePeopleProps> = ({
-  open,
-  // openModal,
-  closeModal,
-  userId,
-}) => {
+const DeletePeople: FC<IDeletePeopleProps> = ({ open, closeModal, userId }) => {
+  const { t } = useTranslation('profile', { keyPrefix: 'deletePeople' });
+
   const deleteUserMutation = useMutation({
     mutationKey: ['delete-user', userId],
     mutationFn: deleteUser,
     onError: () =>
       failureToastConfig({
-        content: 'Error deleting member',
+        content: t('errorToast'),
         dataTestId: 'people-toaster',
       }),
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onSuccess: (data, variables, context) => {
+    onSuccess: () => {
       closeModal();
       queryClient.invalidateQueries(['user', userId]);
       queryClient.invalidateQueries({ queryKey: ['users'] });
@@ -50,7 +48,7 @@ const DeletePeople: FC<IDeletePeopleProps> = ({
       queryClient.invalidateQueries(['organization-chart'], { exact: false });
       queryClient.invalidateQueries(['celebrations'], { exact: false });
       successToastConfig({
-        content: 'Member has been deleted',
+        content: t('successToast'),
         dataTestId: 'people-toaster',
       });
     },
@@ -59,7 +57,7 @@ const DeletePeople: FC<IDeletePeopleProps> = ({
   const Header: FC = () => (
     <div className="flex flex-wrap border-b-1 border-neutral-200 items-center">
       <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
-        Delete User?
+        {t('title')}
       </div>
       <IconButton
         onClick={closeModal}
@@ -76,12 +74,12 @@ const DeletePeople: FC<IDeletePeopleProps> = ({
       <Button
         variant={ButtonVariant.Secondary}
         size={Size.Small}
-        label={'Cancel'}
+        label={t('cancelButton')}
         dataTestId="delete-user-cancel"
         onClick={closeModal}
       />
       <Button
-        label={'Delete'}
+        label={t('deleteButton')}
         className="!bg-red-500 !text-white flex"
         loading={deleteUserMutation.isLoading}
         size={Size.Small}
@@ -91,12 +89,14 @@ const DeletePeople: FC<IDeletePeopleProps> = ({
       />
     </div>
   );
+
   return (
     <Modal open={open} className="max-w-sm">
       <Header />
       <div className="text-sm font-medium text-neutral-500 mx-6 mt-6 mb-8">
-        Are you sure you want to delete this member?
-        <br /> This cannot be undone.
+        {t('confirmMessage')}
+        <br />
+        {t('undoMessage')}
       </div>
       <Footer />
     </Modal>

@@ -28,6 +28,8 @@ type AppProps = {
   fallBackValue?: string;
   onCancel?: () => any;
   onSave?: (...args: any) => any;
+  isEditButton?: boolean;
+  isEditMode?: boolean;
 };
 
 const InfoRow = forwardRef(
@@ -43,11 +45,13 @@ const InfoRow = forwardRef(
       fallBackValue = 'Field not specified',
       onCancel = () => null,
       onSave = () => null,
+      isEditButton = true,
+      isEditMode = false,
     }: AppProps,
     ref: ForwardedRef<any>,
   ) => {
     const [isHovered, eventHandlers] = useHover();
-    const [editMode, setEditMode] = useState(false);
+    const [editMode, setEditMode] = useState(isEditMode);
 
     useImperativeHandle(ref, () => ({
       editMode,
@@ -76,30 +80,32 @@ const InfoRow = forwardRef(
           {editMode ? (
             <div className="flex items-center space-x-2 w-full">
               <div className="w-full">{editNode}</div>
-              <div className="flex items-center">
-                <IconWrapper
-                  type={Type.Circle}
-                  className="mr-2 w-8 h-8 rounded-full"
-                  onClick={() => {
-                    setEditMode(false);
-                    onCancel?.();
-                  }}
-                  dataTestId={`cancel-${dataTestId}`}
-                >
-                  <Icon name="close" size={12} color="text-neutral-900" />
-                </IconWrapper>
-                <IconWrapper
-                  type={Type.Circle}
-                  className="w-8 h-8 rounded-full bg-primary-500"
-                  onClick={onSave}
-                  dataTestId={`save-${dataTestId}`}
-                >
-                  <Icon name="check" size={16} color="text-white" />
-                </IconWrapper>
-              </div>
+              {isEditButton && (
+                <div className="flex items-center">
+                  <IconWrapper
+                    type={Type.Circle}
+                    className="mr-2 w-8 h-8 rounded-full"
+                    onClick={() => {
+                      setEditMode(false);
+                      onCancel?.();
+                    }}
+                    dataTestId={`cancel-${dataTestId}`}
+                  >
+                    <Icon name="close" size={12} color="text-neutral-900" />
+                  </IconWrapper>
+                  <IconWrapper
+                    type={Type.Circle}
+                    className="w-8 h-8 rounded-full bg-primary-500"
+                    onClick={onSave}
+                    dataTestId={`save-${dataTestId}`}
+                  >
+                    <Icon name="check" size={16} color="text-white" />
+                  </IconWrapper>
+                </div>
+              )}
             </div>
           ) : (
-            <div className="text-neutral-900 font-medium">
+            <div className="text-neutral-900 font-medium line-clamp-2">
               {value || fallBackValue}
             </div>
           )}

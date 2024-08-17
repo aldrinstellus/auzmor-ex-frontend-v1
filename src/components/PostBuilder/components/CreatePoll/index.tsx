@@ -19,31 +19,33 @@ import {
 } from 'components/Button';
 import Button from 'components/Button';
 import { PostType } from 'queries/post';
+import { useTranslation } from 'react-i18next';
 
 type CreatePollProps = {
   closeModal: () => void;
 };
 
-const schema = yup.object({
-  question: yup
-    .string()
-    .trim()
-    .required('This field cannot be empty')
-    .min(3, 'Question must have minimum 3 characters')
-    .max(140, 'Question cannot exceed 140 characters'),
-
-  options: yup.array().of(
-    yup.object().shape({
-      text: yup
-        .string()
-        .trim()
-        .required('Option cannot be empty')
-        .max(30, 'Option cannot exceed 30 characters'),
-    }),
-  ),
-});
-
 const CreatePoll: FC<CreatePollProps> = ({ closeModal }) => {
+  const { t } = useTranslation('postBuilder', { keyPrefix: 'createPoll' });
+  const schema = yup.object({
+    question: yup
+      .string()
+      .trim()
+      .required(t('questionRequired'))
+      .min(3, t('questionMinLength'))
+      .max(140, t('questionMaxLength')),
+
+    options: yup.array().of(
+      yup.object().shape({
+        text: yup
+          .string()
+          .trim()
+          .required(t('optionRequired'))
+          .max(30, t('optionMaxLength')),
+      }),
+    ),
+  });
+
   const { poll, setActiveFlow, setPoll, setPostType } =
     useContext(CreatePostContext);
 
@@ -106,9 +108,9 @@ const CreatePoll: FC<CreatePollProps> = ({ closeModal }) => {
     {
       type: FieldType.Input,
       variant: Variant.Text,
-      placeholder: 'ex. What is your favourite kind of cookie?',
+      placeholder: t('questionPlaceholder'),
       name: 'question',
-      label: 'Ask a Question*',
+      label: t('questionLabel'),
       error: errors.question?.message,
       dataTestId: 'createpoll-que',
       errorDataTestId: 'createpoll-que-error',
@@ -119,53 +121,54 @@ const CreatePoll: FC<CreatePollProps> = ({ closeModal }) => {
   const durationFields = [
     {
       type: FieldType.SingleSelect,
-      label: 'Poll duration*',
+      label: t('durationLabel'),
       name: 'closedAt',
       control,
       options: [
         {
-          label: '1 Day',
+          label: t('1Day'),
           value:
             afterXUnit(1, 'days').endOf('day').toISOString().substring(0, 19) +
             'Z',
           dataTestId: 'createpoll-duration-{1day}',
         },
         {
-          label: '3 Days',
+          label: t('3Days'),
           value:
             afterXUnit(3, 'days').endOf('day').toISOString().substring(0, 19) +
             'Z',
           dataTestId: 'createpoll-duration-{3day}',
         },
         {
-          label: '1 Week',
+          label: t('1Week'),
           value:
             afterXUnit(1, 'weeks').endOf('day').toISOString().substring(0, 19) +
             'Z',
           dataTestId: 'createpoll-duration-{1week}',
         },
         {
-          label: '2 Weeks',
+          label: t('2Weeks'),
           value:
             afterXUnit(2, 'weeks').endOf('day').toISOString().substring(0, 19) +
             'Z',
           dataTestId: 'createpoll-duration-{2week}',
         },
         {
-          label: 'Custom Date',
+          label: t('customDate'),
           value: '',
           dataTestId: 'createpoll-duration-{customdate}',
         },
       ],
-      placeholder: 'Select Poll Duration',
+      placeholder: t('durationPlaceholder'),
       dataTestId: 'createpoll-duration-dropdown',
+      showSearch: false,
     },
   ];
 
   const datePickerField = [
     {
       type: FieldType.DatePicker,
-      label: 'Select custom date',
+      label: t('customDateLabel'),
       name: 'datepickerValue',
       control,
       minDate: new Date(afterXUnit(0, 'day').endOf('day').toISOString()),
@@ -198,7 +201,7 @@ const CreatePoll: FC<CreatePollProps> = ({ closeModal }) => {
   return (
     <form onSubmit={handleSubmit(successfulSubmit)}>
       <Header
-        title="Create a poll"
+        title={t('headerTitle')}
         onBackIconClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
         onClose={closeModal}
       />
@@ -214,17 +217,17 @@ const CreatePoll: FC<CreatePollProps> = ({ closeModal }) => {
         remove={remove}
       />
       <div className="bg-blue-50 flex items-center justify-between px-6 py-4 gap-x-3 rounded-b-9xl w-full border-t-1 border-neutral-200">
-        <p className="text-xs text-neutral-900">* Required field</p>
+        <p className="text-xs text-neutral-900">{t('requiredFieldNote')}</p>
         <div className="flex items-center gap-x-3">
           <Button
             onClick={() => setActiveFlow(CreatePostFlow.CreatePost)}
-            label="Back"
+            label={t('backButton')}
             size={ButtonSize.Small}
             variant={ButtonVariant.Secondary}
             dataTestId="createpoll-back"
           />
           <Button
-            label="Next"
+            label={t('nextButton')}
             variant={ButtonVariant.Primary}
             size={ButtonSize.Small}
             type={Type.Submit}

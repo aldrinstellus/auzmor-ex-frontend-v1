@@ -12,6 +12,7 @@ import { Variant as InputVariant } from 'components/Input';
 import Icon from 'components/Icon';
 import { useIsUserExistAuthenticated } from 'queries/users';
 import { useDebounce } from 'hooks/useDebounce';
+import { useTranslation } from 'react-i18next';
 
 export interface IInviteFormRowProps {
   field: FieldArrayWithId<IUserForm, 'members', 'id'>;
@@ -38,7 +39,9 @@ const InviteFormRow: FC<IInviteFormRowProps> = ({
 }) => {
   const debouncedValue = useDebounce(member.workEmail, 500);
   const { isLoading, data } = useIsUserExistAuthenticated(debouncedValue);
-
+  const { t } = useTranslation('profile', {
+    keyPrefix: 'inviteUserModal.inviteFormRow',
+  });
   useEffect(() => {
     setErrorValidationErrors({
       ...emailValidationErrors,
@@ -61,10 +64,9 @@ const InviteFormRow: FC<IInviteFormRowProps> = ({
               InputVariant: InputVariant.Text,
               className: 'w-[37.5%] mr-1.5',
               inputClassName: 'text-sm !py-[9px]',
-              placeholder: 'Enter name',
+              placeholder: t('fullNamePlaceholder'),
               name: `members.${index}.fullName`,
-              label: 'Full Name',
-              defaultValue: field.fullName,
+              label: t('fullNameLabel'),
               control,
               dataTestId: 'invite-people-name',
             },
@@ -73,10 +75,9 @@ const InviteFormRow: FC<IInviteFormRowProps> = ({
               variant: InputVariant.Text,
               className: 'w-[37.5%] mx-1.5',
               inputClassName: 'text-sm !py-[9px]',
-              placeholder: 'Add via email',
+              placeholder: t('emailPlaceholder'),
               name: `members.${index}.workEmail`,
-              label: 'Email Address',
-              defaultValue: field.workEmail,
+              label: t('emailLabel'),
               control,
               dataTestId: 'invite-people-email',
             },
@@ -84,11 +85,10 @@ const InviteFormRow: FC<IInviteFormRowProps> = ({
               type: FieldType.SingleSelect,
               name: `members.${index}.role`,
               control,
-              label: 'Role',
+              label: t('roleLabel'),
               className: 'w-[25%] ml-1.5',
               height: 40,
               options: roleOptions,
-              defautValue: field.role,
               dataTestId: 'invite-people-role',
               getPopupContainer: document.body,
               showSearch: false,
@@ -103,7 +103,7 @@ const InviteFormRow: FC<IInviteFormRowProps> = ({
       </div>
       {errors.members && errors.members[index]?.fullName?.message && (
         <Banner
-          title={errors.members[index]?.fullName?.message || 'Require field'}
+          title={errors.members[index]?.fullName?.message || t('requiredField')}
           variant={BannerVariant.Error}
           className="mb-3"
           dataTestId="invite-people-error-message"
@@ -111,7 +111,9 @@ const InviteFormRow: FC<IInviteFormRowProps> = ({
       )}
       {errors.members && errors.members[index]?.workEmail?.message && (
         <Banner
-          title={errors.members[index]?.workEmail?.message || 'Require field'}
+          title={
+            errors.members[index]?.workEmail?.message || t('requiredField')
+          }
           variant={BannerVariant.Error}
           className="mb-3"
           dataTestId="invite-people-error-message"
@@ -121,7 +123,7 @@ const InviteFormRow: FC<IInviteFormRowProps> = ({
         emailValidationErrors[index] &&
         emailValidationErrors[index].isError && (
           <Banner
-            title="User already belongs to the organization"
+            title={t('userAlreadyExists')}
             variant={BannerVariant.Error}
             className="mb-3"
             dataTestId="invite-people-error-message"
@@ -129,7 +131,7 @@ const InviteFormRow: FC<IInviteFormRowProps> = ({
         )}
       {errors.members && errors.members[index]?.role?.message && (
         <Banner
-          title={errors.members[index]?.role?.message || 'Require field'}
+          title={errors.members[index]?.role?.message || t('requiredField')}
           variant={BannerVariant.Error}
           className="mb-3"
           dataTestId="invite-people-error-message"

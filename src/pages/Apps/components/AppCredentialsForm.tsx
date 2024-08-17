@@ -3,6 +3,7 @@ import { Variant as InputVariant } from 'components/Input';
 import { Control, FieldErrors } from 'react-hook-form';
 import { IAddAppForm } from './AddApp';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type AppCredentialsFormProps = {
   control: Control<IAddAppForm, any>;
@@ -15,39 +16,39 @@ const AppCredentialsForm: FC<AppCredentialsFormProps> = ({
   errors,
   defaultValues,
 }) => {
+  const { t } = useTranslation('appLauncher', {
+    keyPrefix: 'appCredentialsForm',
+  });
   const appCredentialFields = [
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      placeholder: 'Enter ACS URL',
+      placeholder: t('acsUrlPlaceholder'),
       name: 'acsUrl',
-      label: 'ACS URL',
+      label: t('acsUrlLabel'),
       control: control,
-      defaultValue: defaultValues?.acsUrl,
       error: errors.acsUrl?.message,
-      dataTestId: 'sso-config-ad-hostname',
+      dataTestId: 'app-credentials-acs-url',
     },
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      placeholder: 'Enter Entity ID',
+      placeholder: t('entityIdPlaceholder'),
       name: 'entityId',
-      label: 'Entity ID',
+      label: t('entityIdLabel'),
       control: control,
-      defaultValue: defaultValues?.entityId,
       error: errors.entityId?.message,
-      dataTestId: 'sso-config-ad-hostname',
+      dataTestId: 'app-credentials-entity-id',
     },
     {
       type: FieldType.Input,
       variant: InputVariant.Text,
-      placeholder: 'Enter Relay State',
+      placeholder: t('relayStatePlaceholder'),
       name: 'relayState',
-      label: 'Relay State/Start URL',
+      label: t('relayStateLabel'),
       control: control,
-      defaultValue: defaultValues?.relayState,
       error: errors.relayState?.message,
-      dataTestId: 'sso-config-ad-hostname',
+      dataTestId: 'app-credentials-relay-state',
     },
   ];
 
@@ -55,12 +56,10 @@ const AppCredentialsForm: FC<AppCredentialsFormProps> = ({
     <div>
       {defaultValues?.label && (
         <div className="text-neutral-900 font-bold bg-orange-50 py-3 px-4">
-          {defaultValues.label} app credentials
+          {t('credentialsHeader', { appName: defaultValues.label })}
         </div>
       )}
-      <p className="text-neutral-500 py-6">
-        Below are credentials that allows you to access Auzmor Office APIs
-      </p>
+      <p className="text-neutral-500 py-6">{t('credentialsDescription')}</p>
       <Layout fields={appCredentialFields} />
     </div>
   );

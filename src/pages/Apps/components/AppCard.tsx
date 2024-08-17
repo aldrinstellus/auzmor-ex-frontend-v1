@@ -7,6 +7,7 @@ import useModal from 'hooks/useModal';
 import AppDetailModal from './AppCardDetail';
 import AddApp, { APP_MODE } from './AddApp';
 import DeleteApp from './DeleteApp';
+import { isNewEntity } from 'utils/misc';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -14,7 +15,9 @@ import useRole from 'hooks/useRole';
 import { FC } from 'react';
 import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 import { isEmpty } from 'lodash';
+import clsx from 'clsx';
 import Truncate from 'components/Truncate';
+import { useTranslation } from 'react-i18next';
 
 type AppCardProps = {
   app: App;
@@ -22,7 +25,9 @@ type AppCardProps = {
 
 const AppCard: FC<AppCardProps> = ({ app }) => {
   const { isAdmin } = useRole();
-
+  const { t } = useTranslation('appLauncher', {
+    keyPrefix: 'appCard',
+  });
   const [appDetailModal, openAppDetailModal, closeAppDetailModal] = useModal();
   const [editAppModal, openEditAppModal, closeEditAppModal] = useModal();
   const [deleteAppModal, openDeleteAppModal, closeDeleteAppModal] = useModal();
@@ -38,13 +43,13 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
       queryClient.invalidateQueries(['my-apps']);
       queryClient.invalidateQueries(['my-featured-apps']);
       successToastConfig({
-        content: `App has been added to featured apps`,
+        content: t('featureSuccess'),
         dataTestId: 'feature-app-toaster',
       });
     },
     onError: (_error: any) =>
       failureToastConfig({
-        content: `Error while adding app to featured apps`,
+        content: t('featureError'),
         dataTestId: 'feature-app-error-toaster',
       }),
   });
@@ -58,13 +63,13 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
       queryClient.invalidateQueries(['my-apps']);
       queryClient.invalidateQueries(['my-featured-apps']);
       successToastConfig({
-        content: `App has been removed from featured apps`,
+        content: t('unfeatureSuccess'),
         dataTestId: 'unfeature-app-toaster',
       });
     },
     onError: () =>
       failureToastConfig({
-        content: `Error while removing app from featured apps`,
+        content: t('unfeatureError'),
         dataTestId: 'unfeature-app-error-toaster',
       }),
   });
@@ -100,7 +105,7 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
   const appCardMenu = [
     {
       id: 0,
-      label: 'Show details',
+      label: t('showDetails'),
       icon: 'editReceipt',
       dataTestId: 'app-card-show-app-details',
       onClick: openAppDetailModal,
@@ -108,7 +113,7 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
     },
     {
       id: 1,
-      label: 'Feature',
+      label: t('feature'),
       icon: 'filterLinear',
       dataTestId: 'app-card-feature',
       onClick: () => toggleAppFeature(true),
@@ -116,7 +121,7 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
     },
     {
       id: 2,
-      label: 'Remove from Feature',
+      label: t('removeFeature'),
       icon: 'tag',
       dataTestId: 'app-card-remove-feature',
       onClick: () => toggleAppFeature(false),
@@ -124,7 +129,7 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
     },
     {
       id: 3,
-      label: 'Edit',
+      label: t('edit'),
       icon: 'edit',
       dataTestId: 'app-card-edit',
       onClick: openEditAppModal,
@@ -132,7 +137,7 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
     },
     {
       id: 4,
-      label: 'Delete',
+      label: t('delete'),
       icon: 'delete',
       iconClassName: '!text-red-500',
       labelClassName: '!text-red-500',
@@ -148,6 +153,11 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
     }
     closeDeleteAppModal();
   };
+
+  const leftChipStyle = clsx({
+    'absolute top-0 left-0 rounded-tl-[12px] rounded-br-[12px] px-2 text-xxs font-medium':
+      true,
+  });
 
   const handleAppLaunch = () => {
     window.open(`${window.location.origin}/apps/${app.id}/launch`, '_target');
@@ -166,13 +176,21 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
           onKeyUp={(e) => (e.code === 'Enter' ? handleAppLaunch() : '')}
           tabIndex={0}
         >
+          {isNewEntity(app?.createdAt) && (
+            <div
+              className={`${leftChipStyle} bg-primary-600 text-primary-100`}
+              data-testid={`member-badge`}
+            >
+              {t('new')}
+            </div>
+          )}
           {/* App logo */}
           <div className="p-2 bg-neutral-100 rounded-xl min-w-[60px] min-h-[60px]">
             <img
               src={app?.icon?.original || DefaultAppIcon}
               height={44}
               width={44}
-              alt={`${app.label} Image`}
+              alt={`${app.label} ${t('imageAlt')}`}
             />
           </div>
 
@@ -189,19 +207,18 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
               <div className="flex">
                 <Badge
                   text={app.category.name?.substring(0, 24)}
-                  textClassName="text-blue-500 text-xxs py-0 leading-2  line-clamp-1 truncate"
+                  textClassName="text-blue-500 text-xxs py-0 leading-2 line-clamp-1 truncate"
                   bgClassName="bg-blue-100 border-1 border-blue-300"
                   dataTestId="app-category"
                 />
               </div>
             )}
             {/* App description */}
-            <p
-              className="text-neutral-500 line-clamp-1 text-xxs"
-              data-testid="app-description"
-            >
-              {app.description}
-            </p>
+            <Truncate
+              text={app.description}
+              className=" text-xxs  text-neutral-500 max-w-[128px]"
+              dataTestId="app-description"
+            />
           </div>
         </div>
 

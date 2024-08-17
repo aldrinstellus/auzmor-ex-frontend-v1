@@ -11,7 +11,7 @@ export type ChipsProps = {
 };
 
 const Chip: FC<ChipsProps> = ({
-  icon = '>',
+  icon = 'people',
   label,
   className = '',
   onClick = () => {},
@@ -21,8 +21,7 @@ const Chip: FC<ChipsProps> = ({
     () =>
       clsx(
         {
-          'border-solid border-primary-600 bg-primary-200 rounded-full w-[10rem] p-[0.5rem] justify-around flex':
-            true,
+          'border-solid border-primary-600 bg-primary-200 rounded-full  ': true,
         },
         {
           [className]: true,
@@ -32,10 +31,8 @@ const Chip: FC<ChipsProps> = ({
   );
   return (
     <div onClick={onClick} className={styles}>
-      <Icon name="people" />
-      {/* <div>{icon}</div> */}
+      <Icon name={icon} />
       <div>{label}</div>
-      <div>{icon}</div>
     </div>
   );
 };

@@ -65,6 +65,17 @@ export const getCoverImage = (user: any) => {
   }
   return user?.coverImage?.original || DefaultCoverImage;
 };
+export const getChannelCoverImage = (channelData: any) => {
+  return (
+    channelData?.banner?.original || require('images/channelDefaultHero.png')
+  );
+};
+export const getChannelLogoImage = (channelData: any) => {
+  return (
+    channelData?.displayImage?.original ||
+    require('images/ChannelCover/Logo1.png')
+  );
+};
 
 export const getFullName = (user: any) => {
   if (user?.status === UserStatus.Inactive) {
@@ -291,6 +302,42 @@ export const operatorXOR = (...args: boolean[]): boolean => {
     (accumulator, currentValue) => accumulator !== currentValue,
   );
   return value;
+};
+
+export const transformContent = (quillDelta?: DeltaStatic) => {
+  const transformedQuillDelta: TransformedQuillDelta = { ops: [] };
+  for (let i = 0; i < (quillDelta?.ops?.length || 0); i += 1) {
+    const op = quillDelta?.ops ? quillDelta?.ops[i] : {};
+    const transformedOp: any = { ...op };
+    if (
+      typeof op.insert === 'object' &&
+      op.insert.mention &&
+      op.insert.mention.denotationChar === '#'
+    ) {
+      transformedOp.insert = { hashtag: { ...op.insert.mention } };
+    } else if (quillDelta?.ops && quillDelta?.ops[i + 1]?.attributes?.list) {
+      const type = quillDelta?.ops && quillDelta?.ops[i + 1]?.attributes?.list;
+      let skipIndex = 1;
+      const listGroup = {
+        attributes: { listType: type },
+        insert: [quillDelta?.ops[i]],
+      };
+      while (
+        quillDelta?.ops &&
+        quillDelta?.ops[i + 1 + 2 * skipIndex]?.attributes?.list === type
+      ) {
+        listGroup.insert.push(quillDelta?.ops[i + 2 * skipIndex]);
+        skipIndex += 1;
+      }
+      transformedQuillDelta.ops.push(listGroup);
+      i += skipIndex * 2 - 1;
+      continue;
+    } else {
+      transformedOp.insert = op.insert;
+    }
+    transformedQuillDelta.ops.push(transformedOp);
+  }
+  return transformedQuillDelta;
 };
 
 // Converting mention key to hashtag (if denotation is #)

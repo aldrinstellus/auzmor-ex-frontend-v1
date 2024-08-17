@@ -19,19 +19,22 @@ import { IPost } from 'queries/post';
 
 // utils
 import { getMentionProps } from './utils';
-import { quillHashtagConversion, removeElementsByClass } from 'utils/misc';
+import { removeElementsByClass, transformContent } from 'utils/misc';
 import Poll, { PollMode } from 'components/Poll';
+import List from './components/List';
 
 type RenderQuillContent = {
   data: IPost | IComment;
   isComment?: boolean;
   isAnnouncementWidgetPreview?: boolean;
+  readOnly?: boolean;
 };
 
 const RenderQuillContent: FC<RenderQuillContent> = ({
   data,
   isComment = false,
   isAnnouncementWidgetPreview = false,
+  readOnly,
 }): ReactElement => {
   const content = data?.content?.editor;
   const mentions = data?.mentions ? data.mentions : [];
@@ -88,33 +91,50 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
     }
   }, []);
 
-  const updatedContent = quillHashtagConversion(content);
+  const updatedContent = transformContent(content);
 
-  const postContent = updatedContent?.ops?.map((op: DeltaOperation) => {
-    switch (true) {
-      case op.insert.hasOwnProperty('mention'):
-        return (
-          <Mention
-            value={op.insert.mention?.value}
-            {...getMentionProps(mentions, intendedUsers, op.insert.mention)}
-            userId={op.insert.mention.id}
-          />
-        );
-      case op.insert.hasOwnProperty('hashtag'):
-        return <Hashtag value={op.insert.hashtag?.value} />;
-      case op.insert.hasOwnProperty('emoji'):
-        return <Emoji value={op.insert.emoji} />;
-      default:
-        return (
-          <Text
-            value={op.insert}
-            attributes={op?.attributes}
-            isLink={op?.attributes?.link ? true : false}
-            link={op?.attributes?.link}
-          />
-        );
-    }
-  });
+  const postContent = updatedContent?.ops?.map(
+    (op: DeltaOperation, i: number) => {
+      switch (true) {
+        case op.insert.hasOwnProperty('mention'):
+          return (
+            <Mention
+              value={op.insert.mention?.value}
+              {...getMentionProps(mentions, intendedUsers, op.insert.mention)}
+              userId={op.insert.mention.id}
+              key={`quill-content-${i}-mention-${data.id}`}
+            />
+          );
+        case op.insert.hasOwnProperty('hashtag'):
+          return (
+            <Hashtag
+              value={op.insert.hashtag?.value}
+              key={`quill-content-${i}-hashtag-${data.id}`}
+            />
+          );
+        case op.insert.hasOwnProperty('emoji'):
+          return (
+            <Emoji
+              value={op.insert.emoji}
+              key={`quill-content-${i}-emoji-${data.id}`}
+            />
+          );
+        case !!op.attributes?.listType:
+          return <List op={op} />;
+        default:
+          return (
+            <Text
+              value={op.insert}
+              attributes={op?.attributes}
+              isLink={op?.attributes?.link ? true : false}
+              link={op?.attributes?.link}
+              isHeading={updatedContent?.ops[i + 1]?.attributes?.header}
+              key={`quill-content-${i}-text-${data.id}`}
+            />
+          );
+      }
+    },
+  );
 
   const containerStyle = useMemo(
     () =>
@@ -173,6 +193,7 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
       )}
       {poll && postType === 'POLL' && (
         <Poll
+          readOnly={readOnly}
           question={poll.question}
           closedAt={poll.closedAt}
           options={poll.options}

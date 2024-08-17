@@ -9,6 +9,7 @@ import { downloadAcknowledgementReport } from 'queries/post';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import Spinner from 'components/Spinner';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   open: boolean;
@@ -17,6 +18,8 @@ type AppProps = {
 };
 
 const AnnouncementAnalytics: FC<AppProps> = ({ post, open, closeModal }) => {
+  const { t } = useTranslation('post', { keyPrefix: 'announcementAnalytics' });
+
   const tabLabel = (label: string, isActive: boolean) => {
     return (
       <span
@@ -45,7 +48,7 @@ const AnnouncementAnalytics: FC<AppProps> = ({ post, open, closeModal }) => {
         document.body.appendChild(a);
         a.click();
         successToastConfig({
-          content: 'Report exported successfully',
+          content: t('exportSuccess'),
           dataTestId: 'acknowledgement-report-export-toast-message',
         });
       },
@@ -56,9 +59,7 @@ const AnnouncementAnalytics: FC<AppProps> = ({ post, open, closeModal }) => {
     <Modal open={open} className="max-w-2xl overflow-hidden">
       <div>
         <div className="flex items-center justify-between p-4 border-b border-neutral-200">
-          <div className="font-bold text-lg text-gray-900">
-            Acknowledgement report
-          </div>
+          <div className="font-bold text-lg text-gray-900">{t('title')}</div>
           <div>
             <Icon
               name="close"
@@ -73,15 +74,17 @@ const AnnouncementAnalytics: FC<AppProps> = ({ post, open, closeModal }) => {
             tabContentClassName="w-full"
             tabs={[
               {
-                tabLabel: (isActive) => tabLabel('Acknowledged', isActive),
+                tabLabel: (isActive) => tabLabel(t('acknowledged'), isActive),
                 tabContent: (
-                  <Acknowledged post={post} closeModal={closeModal} />
+                  <Acknowledged postId={post.id} closeModal={closeModal} />
                 ),
                 dataTestId: 'acknowledgement-report-acknowledged',
               },
               {
-                tabLabel: (isActive) => tabLabel('Pending', isActive),
-                tabContent: <Pending post={post} closeModal={closeModal} />,
+                tabLabel: (isActive) => tabLabel(t('pending'), isActive),
+                tabContent: (
+                  <Pending postId={post.id} closeModal={closeModal} />
+                ),
                 dataTestId: 'acknowledgement-report-pending',
               },
             ]}
@@ -101,7 +104,7 @@ const AnnouncementAnalytics: FC<AppProps> = ({ post, open, closeModal }) => {
               <Icon name="download" size={20} color="text-primary-500" />
             )}
             <div className="text-xs font-bold text-primary-500">
-              export report
+              {t('exportReport')}
             </div>
           </div>
         </div>

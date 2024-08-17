@@ -15,6 +15,7 @@ import Footer from './Footer';
 import { validImageTypes, validVideoTypes } from 'queries/files';
 import { hideEmojiPalette } from 'utils/misc';
 import { PostBuilderMode } from 'components/PostBuilder';
+import { useTranslation } from 'react-i18next';
 
 interface ICreatePostProps {
   closeModal: () => void;
@@ -34,6 +35,7 @@ const CreatePost: FC<ICreatePostProps> = ({
   mode,
 }) => {
   const quillRef = useRef<ReactQuill>(null);
+  const { t } = useTranslation('postBuilder');
 
   useEffect(() => {
     if (quillRef.current) {
@@ -70,7 +72,7 @@ const CreatePost: FC<ICreatePostProps> = ({
     >
       <Header
         title={
-          mode === PostBuilderMode.Create ? 'Create a post' : 'Edit a post'
+          mode === PostBuilderMode.Create ? t('title.create') : t('title.edit')
         }
         onClose={() => {
           closeModal && closeModal();
@@ -132,7 +134,7 @@ const CreatePost: FC<ICreatePostProps> = ({
                     if (eachFile.size > IMG_FILE_SIZE_LIMIT * 1024 * 1024) {
                       mediaErrors.push({
                         errorType: MediaValidationError.ImageSizeExceed,
-                        errorMsg: `The file “${eachFile.name}” you are trying to upload exceeds the 5MB attachment limit. Try uploading a smaller file`,
+                        errorMsg: `The file “${eachFile.name}” you are trying to upload exceeds the 50MB attachment limit. Try uploading a smaller file`,
                         fileName: eachFile.name,
                       });
                       return false;
@@ -215,7 +217,7 @@ const CreatePost: FC<ICreatePostProps> = ({
                     if (eachFile.size > IMG_FILE_SIZE_LIMIT * 1024 * 1024) {
                       mediaErrors.push({
                         errorType: MediaValidationError.ImageSizeExceed,
-                        errorMsg: `The file “${eachFile.name}” you are trying to upload exceeds the 5MB attachment limit. Try uploading a smaller file`,
+                        errorMsg: `The file “${eachFile.name}” you are trying to upload exceeds the 50MB attachment limit. Try uploading a smaller file`,
                         fileName: eachFile.name,
                       });
                       return false;

@@ -122,7 +122,6 @@ const RichTextEditor = forwardRef(
       inputImgRef,
       removeAllMedia,
     } = useContext(CreatePostContext);
-
     const [isCharLimit, setIsCharLimit] = useState<boolean>(false);
     const [previewUrl, setPreviewUrl] = useState<string>('');
     const [isPreviewRemoved, setIsPreviewRemoved] = useState<boolean>(false);

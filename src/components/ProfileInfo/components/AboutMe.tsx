@@ -10,6 +10,7 @@ import { useMutation } from '@tanstack/react-query';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import Icon from 'components/Icon';
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
+import { useTranslation } from 'react-i18next';
 
 interface IAboutMe {
   about: string;
@@ -34,6 +35,7 @@ const AboutMe: FC<IAboutMeProps> = ({
 }) => {
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [isHovered, eventHandlers] = useHover();
+  const { t } = useTranslation('profile');
 
   const { control, handleSubmit, getValues, reset } = useForm<IUpdateAboutMe>({
     mode: 'onSubmit',
@@ -134,7 +136,7 @@ const AboutMe: FC<IAboutMeProps> = ({
   return (
     <>
       <Header
-        title={canEdit ? 'About Me' : 'About'}
+        title={canEdit ? t('aboutMe.titleForSelf') : t('aboutMe.titleForOther')}
         dataTestId="bio"
         isHovered={isHovered && canEdit}
         // isEditable={isEditable}
@@ -164,7 +166,7 @@ const AboutMe: FC<IAboutMeProps> = ({
                   </div>
                 )}
                 {renderContentWithLinks(aboutMeData?.personal?.about) ||
-                  'Field not specified'}
+                  t('fieldNotSpecified')}
               </div>
             ) : (
               <div className="relative pt-2" key={aboutMeData?.id}>

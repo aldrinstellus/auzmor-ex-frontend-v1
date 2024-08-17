@@ -1,4 +1,3 @@
-import truncate from 'lodash/truncate';
 import { ICheckboxListOption } from 'components/CheckboxList';
 import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
@@ -11,6 +10,7 @@ import { IFilterForm } from '.';
 import { ITeam, useInfiniteTeams } from 'queries/teams';
 import AvatarList from 'components/AvatarList';
 import ItemSkeleton from './ItemSkeleton';
+import Truncate from 'components/Truncate';
 
 interface ITeamsProps {
   control: Control<IFilterForm, any>;
@@ -81,17 +81,18 @@ const Teams: FC<ITeamsProps> = ({ control, watch, setValue }) => {
                 dataTestId="teams-people-icon"
               />
             )}
-            <span className="font-bold text-sm truncate">
-              {truncate(option.data?.name, { length: 16, separator: '' })}
-            </span>
+
+            <Truncate
+              text={option.data.name}
+              className="font-bold text-sm  max-w-[120px]"
+            />
           </div>
           <div className="flex items-center gap-2 text-neutral-500">
-            <div className="truncate">
-              {truncate(option.data.category?.name, {
-                length: 10,
-                separator: ' ',
-              })}
-            </div>
+            <Truncate
+              text={option.data.category?.name}
+              className="  max-w-[52px]"
+            />
+
             <div className="bg-neutral-500 rounded-full w-1 h-1" />
             <div className="flex items-center justify-center space-x-1">
               <Icon name="profileUserOutline" hover={false} size={16} />
@@ -121,9 +122,10 @@ const Teams: FC<ITeamsProps> = ({ control, watch, setValue }) => {
                 data-testid="filter-options"
                 className="flex items-center px-3 py-2 bg-neutral-100 rounded-17xl border border-neutral-200 mr-2 my-1"
               >
-                <div className="text-primary-500 text-sm font-medium whitespace-nowrap">
-                  {team.data.name}
-                </div>
+                <Truncate
+                  text={team.data.name}
+                  className="text-primary-500 text-sm font-medium whitespace-nowrap max-w-[128px]"
+                />
                 <div className="ml-1">
                   <Icon
                     name="closeCircle"
@@ -148,9 +150,9 @@ const Teams: FC<ITeamsProps> = ({ control, watch, setValue }) => {
           if (isLoading) {
             return (
               <>
-                {[...Array(10)].map((element) => (
+                {[...Array(10)].map((_value, i) => (
                   <div
-                    key={element}
+                    key={`${i}-teams-items-skeleton`}
                     className={`px-6 py-3 border-b-1 border-b-bg-neutral-200 flex items-center`}
                   >
                     <ItemSkeleton />

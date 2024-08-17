@@ -1,30 +1,50 @@
-import AdminsWidget from '../AdminsWidget';
-import AppLauncher from '../AppLauncher';
-import MembersWidget from '../MembersWidget';
-import LinksWidget from 'components/LinksWidget';
-import Feed from './Feed';
-import ChannelsWidget from 'components/ChannelsWidget';
-import ChannelRequestWidget from 'components/ChannelRequestWidget';
-import useRole from 'hooks/useRole';
+import { IChannel } from 'stores/channelStore';
+import { FC } from 'react';
+import Feed, { WidgetEnum } from 'components/Feed';
+import { ChannelRequestWidgetModeEnum } from 'components/ChannelRequestWidget/components/ChannelWidgetUser';
+import { FeedModeEnum } from 'stores/feedStore';
+import { useChannelRole } from 'hooks/useChannelRole';
 
-const Home = () => {
-  const { isAdmin } = useRole();
+type HomeProps = {
+  channelData: IChannel;
+};
+const Home: FC<HomeProps> = ({ channelData }) => {
+  const { isChannelJoined } = useChannelRole(channelData.id);
+
   return (
-    <div className="mb-32 flex w-full">
-      <div className="w-1/4 pr-10 space-y-6">
-        <AppLauncher />
-        <LinksWidget />
-        <ChannelsWidget />
-      </div>
-      <div className="w-1/2 px-3">
-        <Feed />
-      </div>
-      <div className="w-1/4 pl-10 space-y-6">
-        <MembersWidget />
-        {isAdmin && <ChannelRequestWidget />}
-        <AdminsWidget />
-      </div>
-    </div>
+    <Feed
+      showCreatePostCard={isChannelJoined}
+      showFeedFilterBar={isChannelJoined}
+      emptyFeedComponent={
+        !isChannelJoined ? (
+          <div className="text-center pt-4"> No post is available</div>
+        ) : null
+      }
+      isReadOnlyPost={!isChannelJoined}
+      mode={FeedModeEnum.Channel}
+      leftWidgets={[WidgetEnum.Links]}
+      rightWidgets={[
+        WidgetEnum.ChannelMember,
+        WidgetEnum.ChannelRequest,
+        WidgetEnum.ChannelAdmin,
+      ]}
+      widgetProps={{
+        [WidgetEnum.Links]: { channelData },
+        [WidgetEnum.ChannelMember]: { channelData },
+        [WidgetEnum.ChannelRequest]: {
+          mode: ChannelRequestWidgetModeEnum.Channel,
+        },
+      }}
+      modeProps={{
+        [FeedModeEnum.Channel]: {
+          params: {
+            entityId: channelData.id,
+            entityType: 'CHANNEL',
+          },
+          channel: channelData,
+        },
+      }}
+    />
   );
 };
 

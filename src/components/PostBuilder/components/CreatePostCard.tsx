@@ -9,6 +9,7 @@ import Icon from 'components/Icon';
 import useAuth from 'hooks/useAuth';
 import { FC, memo } from 'react';
 import { useCreatePostUtilityStore } from 'stores/createPostUtilityStore';
+import { useTranslation } from 'react-i18next';
 import useProduct from 'hooks/useProduct';
 
 export interface ICreatePostCardProps {
@@ -16,6 +17,7 @@ export interface ICreatePostCardProps {
 }
 
 const CreatePostCard: FC<ICreatePostCardProps> = ({ openModal }) => {
+  const { t } = useTranslation('feed');
   const { user } = useAuth();
   const { isLxp } = useProduct();
   const {
@@ -32,21 +34,21 @@ const CreatePostCard: FC<ICreatePostCardProps> = ({ openModal }) => {
   const postTypeMapIcons = [
     {
       id: 1,
-      label: 'Media',
+      label: t('whatsInYourMind.shortcuts.media'),
       icon: <Icon name="imageFilled" color="text-neutral-500" size={14} />,
       divider: true,
       onClick: handleOnClick(setOpenCreatePostWithMedia),
     },
     {
       id: 2,
-      label: 'Shoutout',
+      label: t('whatsInYourMind.shortcuts.shoutout'),
       icon: <Icon name="magicStarFilled" color="text-neutral-500" size={14} />,
       divider: true,
       onClick: handleOnClick(setOpenCreatePostWithShoutout),
     },
     {
       id: 3,
-      label: 'Polls',
+      label: t('whatsInYourMind.shortcuts.polls'),
       icon: <Icon name="chartFilled" color="text-neutral-500" size={14} />,
       onClick: handleOnClick(setOpenCreatePostWithPolls),
     },
@@ -68,7 +70,7 @@ const CreatePostCard: FC<ICreatePostCardProps> = ({ openModal }) => {
           readOnly
           onKeyUp={(e) => (e.code === 'Enter' ? openModal() : '')}
           onClick={openModal}
-          placeholder="What's on your mind?"
+          placeholder={t('whatsInYourMind.createPost.placeholder')}
           data-testid="activityfeed-whatsonurmind"
           autoComplete="off"
         />

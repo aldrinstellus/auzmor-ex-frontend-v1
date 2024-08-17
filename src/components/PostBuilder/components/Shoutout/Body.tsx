@@ -6,7 +6,7 @@ import Avatar from 'components/Avatar';
 import { IGetUser, UserStatus } from 'queries/users';
 import DynamicImagePreview from 'components/DynamicImagePreview';
 import { SHOUTOUT_STEPS } from '.';
-import { getProfileImage } from 'utils/misc';
+import { getProfileImage, isFiltersEmpty } from 'utils/misc';
 import { FC } from 'react';
 import { truncate } from 'lodash';
 import Tooltip from 'components/Tooltip';
@@ -32,6 +32,11 @@ const Body: FC<ShoutoutBodyProps> = ({
   shoutoutTemplate,
   setShoutoutTemplate,
 }) => {
+  const usersQueryParams = isFiltersEmpty({
+    status: [UserStatus.Active],
+  });
+
+  // console.log('selectedUserIds :', selectedUserIds);
   return (
     <div
       className={clsx({
@@ -105,7 +110,7 @@ const Body: FC<ShoutoutBodyProps> = ({
               </div>
             );
           }}
-          usersQueryParams={{ status: [UserStatus.Active] }}
+          usersQueryParams={usersQueryParams}
         />
       )}
       {step === SHOUTOUT_STEPS.ImageSelect && (

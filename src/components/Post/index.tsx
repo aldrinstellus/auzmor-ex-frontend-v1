@@ -40,6 +40,7 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkDirective from 'remark-directive';
 import remarkDirectiveRehype from 'remark-directive-rehype';
+import { useTranslation } from 'react-i18next';
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
     {
@@ -66,12 +67,19 @@ export const iconsStyle = (key: string) => {
 };
 
 type PostProps = {
+  readOnly?: boolean;
   postId: string;
   commentIds?: string[];
   setHasChanges?: (flag: boolean) => any;
 };
 
-const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
+const Post: FC<PostProps> = ({
+  postId,
+  commentIds = [],
+  setHasChanges,
+  readOnly = false,
+}) => {
+  const { t } = useTranslation('post');
   const [feed, getPost, updateFeed] = useFeedStore((state) => [
     state.feed,
     state.getPost,
@@ -119,12 +127,15 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
     },
     onSuccess: async (_data, _variables) => {
       successToastConfig({
-        content: 'Post has been bookmarked successfully!',
+        content: t('bookmarkSuccess'),
         dataTestId: 'successfully-bookmarked-toast',
-        actionLabel: 'View Bookmarks',
+        actionLabel: t('viewBookmarks'),
         action: () => navigate('/bookmarks'),
       });
       await queryClient.invalidateQueries(['bookmarks'], { exact: false });
+      await queryClient.invalidateQueries(['feed', { bookmarkedbyme: true }], {
+        exact: false,
+      });
     },
   });
   const deleteBookmarkMutation = useMutation({
@@ -138,8 +149,12 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
     },
     onSuccess: async (_data, _variables) => {
       successToastConfig({
-        content: 'Post removed from your bookmarks',
+        content: t('removeBookmark'),
         dataTestId: 'removed-bookmark-toast',
+      });
+      await queryClient.invalidateQueries(['bookmarks'], { exact: false });
+      await queryClient.invalidateQueries(['feed', { bookmarkedbyme: true }], {
+        exact: false,
       });
     },
   });
@@ -327,7 +342,7 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
   return (
     <>
       <Card className="flex flex-col">
-        <AcknowledgementBanner data={post} />
+        <AcknowledgementBanner readOnly={readOnly} data={post} />
         <div className="post-content px-4 py-3 flex flex-col gap-3">
           <div className="flex gap-3 justify-between items-start p-1">
             <Actor
@@ -340,37 +355,43 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
               postType={post?.occasionContext?.type}
               title={post?.title}
             />
-            <Tooltip
-              tooltipContent={
-                post.bookmarked ? 'Remove from bookmark' : 'Bookmark post'
-              }
-              tooltipPosition="top"
-            >
-              <Icon
-                name={post.bookmarked ? 'postBookmarkFilled' : 'postBookmark'}
-                size={24}
-                dataTestId="feed-post-bookmark"
-                onClick={() => handleBookmarkClick(post)}
-                isActive={post.bookmarked}
-                ariaLabel="bookmark this post"
-                tabIndex={0}
-              />
-            </Tooltip>
+            {!readOnly && (
+              <Tooltip
+                tooltipContent={
+                  post.bookmarked ? t('removeBookMark') : t('bookMarkPost')
+                }
+                tooltipPosition="top"
+              >
+                <Icon
+                  name={post.bookmarked ? 'postBookmarkFilled' : 'postBookmark'}
+                  size={24}
+                  dataTestId="feed-post-bookmark"
+                  onClick={() => handleBookmarkClick(post)}
+                  isActive={post.bookmarked}
+                  ariaLabel="bookmark this post"
+                  tabIndex={0}
+                />
+              </Tooltip>
+            )}
             <div className="relative">
-              <FeedPostMenu data={post as unknown as IPost} />
+              <FeedPostMenu
+                readOnly={readOnly}
+                data={post as unknown as IPost}
+              />
             </div>
           </div>
           {post?.schedule && (
             <div className="flex items-center gap-2 bg-primary-50 justify-between px-3 py-2">
               <Icon name="calendarOutline" size={16} color="text-neutral-900" />
               <div className="text-xs font-medium text-neutral-600 flex-1">
-                Post scheduled for{' '}
-                {getTimeInScheduleFormat(
-                  new Date(post?.schedule.dateTime),
-                  moment(post?.schedule.dateTime).format('h:mm a'),
-                  post?.schedule.timeZone,
-                  currentTimezone,
-                )}
+                {t('scheduledPostText', {
+                  time: getTimeInScheduleFormat(
+                    new Date(post?.schedule.dateTime),
+                    moment(post?.schedule.dateTime).format('h:mm a'),
+                    post?.schedule.timeZone,
+                    currentTimezone,
+                  ),
+                })}
               </div>
               <div className="flex items-center gap-3">
                 <Icon
@@ -384,12 +405,12 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
                   onClick={openPublishModal}
                   data-testid="scheduledpost-tab-publishnow"
                 >
-                  Publish now
+                  {t('publishNow')}
                 </div>
               </div>
             </div>
           )}
-          <RenderQuillContent data={post} />
+          <RenderQuillContent readOnly={readOnly} data={post} />
           {post?.cardContext && <CustomCard />}
           {post?.linkAttachments && (
             <LinkAttachments attachments={post?.linkAttachments} />
@@ -430,7 +451,7 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
                   <div
                     className={`flex text-xs font-normal text-neutral-500 cursor-pointer group-hover:text-primary-500 group-focus:text-primary-500`}
                   >
-                    {totalCount} reacted
+                    {t('reactionCount', { count: totalCount })}
                   </div>
                 )}
               </div>
@@ -458,25 +479,29 @@ const Post: FC<PostProps> = ({ postId, commentIds = [], setHasChanges }) => {
             <div className="flex justify-between">
               <div className="flex space-x-6">
                 {/* this is for post */}
-                <Likes
-                  reaction={reaction || ''}
-                  entityId={post?.id || ''}
-                  entityType="post"
-                  reactionId={post?.myReaction?.id || ''}
-                  queryKey="feed"
-                  dataTestIdPrefix="post-reaction"
-                />
-                <Button
-                  label="Comment"
-                  variant={Variant.Tertiary}
-                  size={Size.Small}
-                  labelClassName="text-xs font-normal text-neutral-500 hover:text-primary-500 group-hover:text-primary-500 group-focus:text-primary-500"
-                  leftIcon="comment"
-                  leftIconHover={false}
-                  className="space-x-1 !p-0 group"
-                  onClick={handleCommentCta}
-                  data-testid="feed-post-comment"
-                />
+                {!readOnly && (
+                  <>
+                    <Likes
+                      reaction={reaction || ''}
+                      entityId={post?.id || ''}
+                      entityType="post"
+                      reactionId={post?.myReaction?.id || ''}
+                      queryKey="feed"
+                      dataTestIdPrefix="post-reaction"
+                    />
+                    <Button
+                      label={t('comment')}
+                      variant={Variant.Tertiary}
+                      size={Size.Small}
+                      labelClassName="text-xs font-normal text-neutral-500 hover:text-primary-500 group-hover:text-primary-500 group-focus:text-primary-500"
+                      leftIcon="comment"
+                      leftIconHover={false}
+                      className="space-x-1 !p-0 group"
+                      onClick={handleCommentCta}
+                      data-testid="feed-post-comment"
+                    />
+                  </>
+                )}
               </div>
             </div>
           )}

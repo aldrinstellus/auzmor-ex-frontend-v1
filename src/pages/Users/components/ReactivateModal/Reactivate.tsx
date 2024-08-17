@@ -11,6 +11,8 @@ import { UserStatus, updateStatus } from 'queries/users';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+
 export interface IReactivatePeopleProps {
   open: boolean;
   openModal: () => void;
@@ -24,7 +26,9 @@ const ReactivatePeople: FC<IReactivatePeopleProps> = ({
   closeModal,
   userId,
 }) => {
+  const { t } = useTranslation('profile', { keyPrefix: 'reactivateModal' });
   const queryClient = useQueryClient();
+
   const updateUserStatusMutation = useMutation({
     mutationFn: updateStatus,
     mutationKey: ['update-user-status'],
@@ -41,14 +45,14 @@ const ReactivatePeople: FC<IReactivatePeopleProps> = ({
       queryClient.invalidateQueries(['team-members']);
       queryClient.invalidateQueries(['organization-chart'], { exact: false });
       queryClient.invalidateQueries(['celebrations'], { exact: false });
-      successToastConfig({ content: `User has been reactivated` });
+      successToastConfig({ content: t('successToast') });
     },
   });
 
   const Header: FC = () => (
     <div className="flex flex-wrap items-center">
       <div className="text-lg text-black p-4 font-extrabold flex-[50%]">
-        Reactivate User?
+        {t('title')}
       </div>
       <IconButton
         onClick={closeModal}
@@ -65,12 +69,12 @@ const ReactivatePeople: FC<IReactivatePeopleProps> = ({
       <Button
         variant={ButtonVariant.Secondary}
         size={Size.Small}
-        label={'Cancel'}
+        label={t('cancelButton')}
         dataTestId="cancel-cta"
         onClick={closeModal}
       />
       <Button
-        label={'Reactivate'}
+        label={t('reactivateButton')}
         className="bg-primary-500 !text-white flex"
         loading={updateUserStatusMutation.isLoading}
         size={Size.Small}
@@ -86,6 +90,7 @@ const ReactivatePeople: FC<IReactivatePeopleProps> = ({
       />
     </div>
   );
+
   return (
     <Modal
       open={open}
@@ -94,8 +99,8 @@ const ReactivatePeople: FC<IReactivatePeopleProps> = ({
     >
       <Header />
       <div className="text-sm font-medium text-[#171717] mx-4 mt-3 mb-4">
-        Are you sure you want to reactivate this account?
-        <br /> All the data associated with this account will be restored.
+        {t('confirmationText')} <br />
+        {t('confirmationText2')}
       </div>
       <Footer />
     </Modal>

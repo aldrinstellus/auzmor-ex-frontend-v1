@@ -13,6 +13,7 @@ import { CategoryType } from 'queries/apps';
 import NoDataFound from 'components/NoDataFound';
 import { useInfiniteLearnCategory } from 'queries/learn';
 import useProduct from 'hooks/useProduct';
+import Truncate from 'components/Truncate';
 
 interface ICategoriesProps {
   control: Control<IFilterForm, any>;
@@ -63,6 +64,7 @@ const Categories: FC<ICategoriesProps> = ({
   } = isLxp
     ? useInfiniteLearnCategory({
         q: debouncedCategorySearchValue,
+        limit: 30,
       })
     : useInfiniteCategories({
         q: debouncedCategorySearchValue,
@@ -82,7 +84,12 @@ const Categories: FC<ICategoriesProps> = ({
         datatestId: `category-${category.name}`,
       })),
       labelRenderer: (option: ICheckboxListOption) => (
-        <div className="ml-2.5 cursor-pointer text-xs">{option.data.name}</div>
+        <>
+          <Truncate
+            text={option.data.name}
+            className="ml-2.5 cursor-pointer text-xs max-w-[200px]"
+          />
+        </>
       ),
       rowClassName: 'px-6 py-3 border-b border-neutral-200',
     },
@@ -100,9 +107,10 @@ const Categories: FC<ICategoriesProps> = ({
                 data-testid="filter-options"
                 className="flex items-center px-3 py-2 bg-neutral-100 rounded-17xl border border-neutral-200 mr-2 my-1"
               >
-                <div className="text-primary-500 text-sm font-medium whitespace-nowrap">
-                  {category.data.name}
-                </div>
+                <Truncate
+                  text={category.data.name}
+                  className="text-primary-500 text-sm font-medium whitespace-nowrap max-w-[128px]"
+                />
                 <div className="ml-1">
                   <Icon
                     name="closeCircle"
@@ -127,9 +135,9 @@ const Categories: FC<ICategoriesProps> = ({
           if (isLoading) {
             return (
               <>
-                {[...Array(10)].map((element) => (
+                {[...Array(10)].map((_value, i) => (
                   <div
-                    key={element}
+                    key={`${i}-category-item-skeleton`}
                     className={`px-6 py-3 border-b-1 border-b-bg-neutral-200 flex items-center`}
                   >
                     <ItemSkeleton />

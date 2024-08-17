@@ -13,6 +13,7 @@ import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { getSubDomain } from 'utils/misc';
 import { useGetSSOFromDomain } from 'queries/organization';
 import Card from 'components/Card';
+import { useTranslation } from 'react-i18next';
 
 interface IForm {
   currentPassword: string;
@@ -36,6 +37,9 @@ const schema = yup.object({
 });
 
 const AccountSecurity = () => {
+  const { t } = useTranslation('userSetting', {
+    keyPrefix: 'sign-in-security',
+  });
   const [err, setErr] = useState(false);
 
   const domain = getSubDomain(window.location.host);
@@ -92,9 +96,9 @@ const AccountSecurity = () => {
       type: FieldType.Password,
       InputVariant: InputVariant.Password,
       className: 'w-1/3',
-      placeholder: 'Current password',
+      placeholder: t('currentPassword'),
       name: 'currentPassword',
-      label: 'Current Password',
+      label: t('currentPassword'),
       rightIcon: 'eye',
       error: err && errors.currentPassword?.message,
       control,
@@ -110,9 +114,9 @@ const AccountSecurity = () => {
       type: FieldType.Password,
       InputVariant: InputVariant.Password,
       className: 'w-1/3 mt-6',
-      placeholder: 'New password',
+      placeholder: t('newPassword'),
       name: 'newPassword',
-      label: 'New Password',
+      label: t('newPassword'),
       rightIcon: 'eye',
       error: errors.newPassword?.message,
       control,
@@ -130,9 +134,9 @@ const AccountSecurity = () => {
       type: FieldType.Password,
       InputVariant: InputVariant.Password,
       className: 'w-1/3 mt-6',
-      placeholder: 'Re-enter Password',
+      placeholder: t('re-enter-password'),
       name: 'confirmPassword',
-      label: 'Confirm Password',
+      label: t('confirmPassword'),
       rightIcon: 'eye',
       error: errors.confirmPassword?.message,
       control,
@@ -157,16 +161,14 @@ const AccountSecurity = () => {
 
   return (
     <Card className="py-4 px-6 space-y-4">
-      <div className="text-neutral-900 text-base font-bold">
-        Sign in & Security
-      </div>
+      <div className="text-neutral-900 text-base font-bold">{t('title')}</div>
       <Divider />
       <div className="w-full">
         {!isSettings ? (
           <div className="flex justify-between items-center">
-            <div>Password</div>
+            <div>{t('password')}</div>
             <Button
-              label="Change Password"
+              label={t('passwordCTA')}
               onClick={() => setIsSettings(true)}
               dataTestId="change-password-btn"
             />
@@ -179,7 +181,7 @@ const AccountSecurity = () => {
                 onClick={() => setIsSettings(false)}
               >
                 <Icon className="rotate-90" name={'arrowDown'} />
-                <div className="text-base font-bold">Change Password</div>
+                <div className="text-base font-bold">{t('changePassword')}</div>
               </div>
               <Divider className="mb-10" />
               <form className="" onSubmit={handleSubmit(onSubmit)}>
@@ -191,13 +193,13 @@ const AccountSecurity = () => {
                     data-testId="forgot-password-cta"
                   >
                     <a href={`/forgot-password`} className="text-primary-500">
-                      Forgot Password
+                      {t('forgotPassword')}
                     </a>
                   </div>
                   <div className="">
                     <Button
                       type={Type.Submit}
-                      label={'Change Password'}
+                      label={t('passwordCTA')}
                       className="w-full"
                       loading={changePasswordMutation.isLoading}
                       disabled={!isValid}

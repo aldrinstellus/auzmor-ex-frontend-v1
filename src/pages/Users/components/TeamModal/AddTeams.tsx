@@ -5,6 +5,7 @@ import { ITeamForm } from '.';
 import { CategoryType, useInfiniteCategories } from 'queries/apps';
 import { ICategoryDetail } from 'queries/category';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface IAddTeamsProps {
   control: Control<ITeamForm, any>;
@@ -13,6 +14,8 @@ export interface IAddTeamsProps {
 }
 
 const AddTeams: FC<IAddTeamsProps> = ({ control, errors, defaultValues }) => {
+  const { t } = useTranslation('profile', { keyPrefix: 'teamModal.addTeams' });
+
   const formatCategories = (data: any) => {
     const categoriesData = data?.pages.flatMap((page: any) => {
       return page?.data?.result?.data.map((category: any) => {
@@ -44,10 +47,9 @@ const AddTeams: FC<IAddTeamsProps> = ({ control, errors, defaultValues }) => {
       InputVariant: InputVariant.Text,
       className: '',
       inputClassName: 'py-[11px] text-sm',
-      placeholder: 'ex. Product and design team',
+      placeholder: t('teamNamePlaceholder'),
       name: `name`,
-      defaultValue: defaultValues()?.name || '',
-      label: 'Team Name',
+      label: t('teamNameLabel'),
       required: true,
       control,
       error: errors?.name?.message,
@@ -57,13 +59,14 @@ const AddTeams: FC<IAddTeamsProps> = ({ control, errors, defaultValues }) => {
       errorDataTestId: 'team-name-error-message',
     },
   ];
+
   const teamCategory = [
     {
       type: FieldType.CreatableSearch,
       variant: InputVariant.Text,
-      placeholder: 'Select a category',
+      placeholder: t('teamCategoryPlaceholder'),
       name: 'category',
-      label: 'Team Category',
+      label: t('teamCategoryLabel'),
       required: true,
       control,
       defaultValue: defaultValues()?.category,
@@ -75,12 +78,13 @@ const AddTeams: FC<IAddTeamsProps> = ({ control, errors, defaultValues }) => {
       addItemDataTestId: 'add-new-category',
     },
   ];
+
   const teamDescription = [
     {
       type: FieldType.TextArea,
       name: 'description',
-      label: 'Team description',
-      placeholder: 'What is the purpose of this team',
+      label: t('teamDescriptionLabel'),
+      placeholder: t('teamDescriptionPlaceholder'),
       dataTestId: 'add-team-description',
       control,
       defaultValue: defaultValues()?.description || '',
@@ -91,6 +95,7 @@ const AddTeams: FC<IAddTeamsProps> = ({ control, errors, defaultValues }) => {
       errorDataTestId: 'team-description-error-message',
     },
   ];
+
   return (
     <form>
       <div className="p-6 space-y-6">

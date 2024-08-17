@@ -1,5 +1,5 @@
 import Badge from 'components/Badge';
-import Button, { Variant } from 'components/Button';
+import Button, { Size, Variant } from 'components/Button';
 import Card from 'components/Card';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
@@ -12,6 +12,8 @@ import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 import useModal from 'hooks/useModal';
 import AudienceModal, { getAudienceCount } from 'components/AudienceModal';
 import { isEmpty } from 'lodash';
+import { useTranslation } from 'react-i18next';
+import Truncate from 'components/Truncate';
 
 type AppDetailModalProps = {
   app: App;
@@ -29,12 +31,11 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
   openDeleteAppModal,
 }) => {
   const { isAdmin } = useRole();
+  const { t } = useTranslation('appLauncher', {
+    keyPrefix: 'appCardDetail',
+  });
   const [isAudienceModalOpen, openAudienceModal, closeAudienceModal] =
     useModal(false);
-  const audienceChipStyle =
-    'py-2 px-3 flex items-center gap-1 border-1 rounded-[24px] border-neutral-200 group cursor-pointer';
-  const audienceLabelStyle =
-    'text-sm font-semibold group-hover:text-primary-500';
 
   return (
     <Modal open={open} className="max-w-[638px]">
@@ -47,12 +48,14 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                 src={app?.icon?.original || DefaultAppIcon}
                 height={20}
                 width={20}
-                alt={`${app.label} Image`}
+                alt={`${app.label} ${t('imageAlt')}`}
               />
             </div>
-            <p className="text-neutral-900 text-lg font-extrabold line-clamp-1">
-              {app.label}
-            </p>
+
+            <Truncate
+              text={app.label}
+              className="text-neutral-900 text-lg font-extrabold  max-w-[250px]"
+            />
           </div>
           <Icon
             name="close"
@@ -66,22 +69,26 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
         {/* Body */}
         <div className="px-6 py-3">
           <div className="border-orange-300 border-1 rounded-9xl relative">
-            <img src={AppDetailSVG} className="absolute" alt="App details" />
+            <img
+              src={AppDetailSVG}
+              className="absolute"
+              alt={t('detailsAlt')}
+            />
             <div className="z-10 relative">
               <div className="w-full pt-4 px-5 flex justify-between">
                 <div className="flex gap-2">
                   {app.category && !isEmpty(app.category) && (
                     <Badge
                       text={app.category.name}
-                      textClassName="text-blue-500 text-base leading-6 font-semibold"
+                      textClassName="text-blue-500 text-base leading-6 font-semibold max-w-[128px]"
                       bgClassName="bg-blue-100 border-1 border-blue-300"
                       dataTestId="app-details-category"
                     />
                   )}
                   {app.featured && (
                     <Badge
-                      text="Featured"
-                      textClassName="text-white text-base leading-6 font-semibold"
+                      text={t('featured')}
+                      textClassName="text-white text-base leading-6 font-semibold max-w-[128px]"
                       bgClassName="bg-blue-500"
                       dataTestId="app-details-category"
                     />
@@ -96,7 +103,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                     )
                   }
                 >
-                  <span>Visit app</span>
+                  <span>{t('visitApp')}</span>
                   <Icon name="arrowRightUp" className="text-primary-500" />
                 </div>
               </div>
@@ -109,56 +116,75 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                       className="p-1 rounded-xl"
                       height={100}
                       width={100}
-                      alt="app icon"
+                      alt={t('iconAlt')}
                     />
                   </div>
                   <div>
-                    <p
-                      className="text-3xl text-neutral-900 font-semibold"
-                      data-testid="app-details-name"
-                    >
-                      {app.label}
-                    </p>
-                    <p
-                      className="pt-1 text-neutral-900 font-normal"
-                      data-testid="app-details-description"
-                    >
-                      {app.description}
-                    </p>
+                    <Truncate
+                      text={app.label}
+                      className="text-3xl text-neutral-900 font-semibold max-w-[250px]"
+                      dataTestId="app-details-name"
+                    />
+
+                    <Truncate
+                      text={app.description}
+                      className="pt-1 text-neutral-900 font-normal max-w-[128px]"
+                      dataTestId="app-details-description"
+                    />
                   </div>
                 </div>
                 {/* The audience */}
                 <div className="flex px-6 pt-4 items-center gap-2">
                   <p className="text-neutral-900 text-sm font-medium">
-                    Audience:
+                    {t('audience')}:
                   </p>
-                  {app.audience && app.audience.length > 0 ? (
-                    <div className="flex gap-2">
-                      <div
-                        className={audienceChipStyle}
-                        onClick={openAudienceModal}
-                      >
-                        <Icon name="noteFavourite" size={16} />
-                        <span className={audienceLabelStyle}>
-                          {app.audience[0].name || 'Team Name'}
-                        </span>
-                      </div>
-                      {app.audience.length > 1 && (
-                        <div
-                          className={`${audienceChipStyle} cursor-pointer`}
+                  <div className="flex items-center cursor-pointer">
+                    {app.audience && app.audience.length > 0 ? (
+                      <div className="flex gap-2">
+                        <Button
+                          key={app.audience[0].entityId}
+                          leftIcon="noteFavourite"
+                          leftIconSize={16}
+                          leftIconClassName="mr-1"
+                          size={Size.Small}
+                          variant={Variant.Secondary}
+                          label={
+                            <Truncate
+                              text={app?.audience[0]?.name || t('teamName')}
+                            />
+                          }
                           onClick={openAudienceModal}
-                        >
-                          <span className={audienceLabelStyle}>
-                            {`+ ${app.audience.length - 1} more`}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className={audienceChipStyle}>
-                      <span className={audienceLabelStyle}>Everyone</span>
-                    </div>
-                  )}
+                          className="group"
+                          labelClassName="text-xss text-neutral-900 max-w-[128px] font-medium group-hover:text-primary-500"
+                        />
+                        {app.audience && app.audience.length > 1 && (
+                          <Button
+                            key={app.audience[0].entityId}
+                            variant={Variant.Secondary}
+                            size={Size.Small}
+                            label={t('more', {
+                              count: app.audience.length - 1,
+                            })}
+                            onClick={openAudienceModal}
+                            className="group"
+                            labelClassName="text-xss text-neutral-900 font-medium group-hover:text-primary-500"
+                          />
+                        )}
+                      </div>
+                    ) : (
+                      app.audience &&
+                      app.audience.length === 0 && (
+                        <Button
+                          variant={Variant.Secondary}
+                          leftIcon={'profileUser'}
+                          label="Everyone"
+                          size={Size.Small}
+                          className="group"
+                          labelClassName="text-xss text-neutral-900 font-medium group-hover:text-primary-500"
+                        />
+                      )
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -168,13 +194,13 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
         {isAdmin && (
           <div className="bg-blue-50 flex items-center justify-end px-6 py-4 gap-x-3 rounded-9xl">
             <Button
-              label="Delete app"
+              label={t('deleteApp')}
               variant={Variant.Secondary}
               onClick={openDeleteAppModal}
               dataTestId="app-details-delete-app"
             />
             <Button
-              label="Edit app"
+              label={t('editApp')}
               onClick={openEditAppModal}
               dataTestId="app-details-edit-app"
             />

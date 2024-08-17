@@ -201,7 +201,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
           appliedFilters={{
             docTypeCheckbox: filters?.docTypeCheckbox || [],
             docPeopleCheckbox: filters?.docPeopleCheckbox || [],
-            docModifiedRadio: filters?.docModifiedRadio || '',
+            docModifiedRadio: filters?.docModifiedRadio || [],
           }}
           onApply={(appliedFilters) => {
             setFilters(appliedFilters);
@@ -211,7 +211,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
             setFilters({
               docPeopleCheckbox: [],
               docTypeCheckbox: [],
-              docModifiedRadio: '',
+              docModifiedRadio: [],
             });
             closeFilterModal();
           }}

@@ -4,6 +4,7 @@ import PopupMenu from 'components/PopupMenu';
 import { UserRole, UserStatus } from 'queries/users';
 import useRole from 'hooks/useRole';
 import Button, { Variant, Size } from 'components/Button';
+import useProduct from 'hooks/useProduct';
 
 export interface IUserDropdownProps {
   id: string;
@@ -24,6 +25,10 @@ export interface IUserDropdownProps {
   loggedInUserId?: string;
   isTeamPeople?: boolean;
   showDirectOption?: boolean;
+  isChannelPeople?: boolean;
+  userId?: string;
+  isChannelAdmin?: boolean;
+  onRemoveChannelMember?: any;
 }
 
 const UserProfileDropdown: FC<IUserDropdownProps> = ({
@@ -42,14 +47,41 @@ const UserProfileDropdown: FC<IUserDropdownProps> = ({
   showOnHover,
   isTeamPeople,
   className,
+  isChannelPeople,
   showDirectOption = false,
+  userId,
+  isChannelAdmin,
+  onRemoveChannelMember,
 }) => {
   const { user } = useAuth();
   const { isAdmin } = useRole();
   const _options = [];
+  const { isLxp } = useProduct();
+  if (
+    isChannelPeople &&
+    isChannelAdmin &&
+    role == UserRole.Member &&
+    user?.id != userId
+  ) {
+    _options.push({
+      icon: 'promoteUser',
+      label: `Promote to admin`,
+      dataTestId: 'user-promoteToAdmin',
+      onClick: onPromoteClick,
+    });
+  }
+  if (isChannelPeople && isChannelAdmin && user?.id != userId) {
+    _options.push({
+      icon: 'deactivateUser',
+      label: <div className="text-red-500">Remove from channel</div>,
+      dataTestId: 'people-card-ellipsis-remove-member',
+      onClick: onRemoveChannelMember,
+      iconClassName: '!text-red-500',
+    });
+  }
 
   if (isTeamPeople) {
-    if (isAdmin) {
+    if (isAdmin && !isLxp) {
       _options.push({
         icon: 'forbidden',
         label: <div className="text-red-500">Remove</div>,
@@ -59,7 +91,7 @@ const UserProfileDropdown: FC<IUserDropdownProps> = ({
       });
     }
   } else {
-    if (id === user?.id || isAdmin) {
+    if ((id === user?.id || isAdmin) && !isLxp) {
       _options.push({
         icon: 'edit',
         label: `Edit`,
@@ -114,7 +146,7 @@ const UserProfileDropdown: FC<IUserDropdownProps> = ({
       });
     }
 
-    if (isAdmin && id !== user?.id) {
+    if (isAdmin && id !== user?.id && !isLxp) {
       _options.push({
         icon: 'forbidden',
         label: <div className="text-red-500">Remove account</div>,

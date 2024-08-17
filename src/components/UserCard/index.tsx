@@ -22,7 +22,7 @@ export enum UsercardVariant {
   Large = 'LARGE',
 }
 
-interface IUserCardProp {
+export interface IUserCardProp {
   user?: IGetUser;
   variant?: UsercardVariant;
   className?: string;

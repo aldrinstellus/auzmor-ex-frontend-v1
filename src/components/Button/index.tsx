@@ -46,6 +46,7 @@ export type ButtonProps = {
   rightIconHover?: boolean;
   leftIconHoverColor?: string;
   rightIconHoverColor?: string;
+  autofocus?: boolean;
 };
 
 const Button = ({
@@ -71,6 +72,7 @@ const Button = ({
   rightIconHover = true,
   leftIconHoverColor = '',
   rightIconHoverColor = '',
+  autofocus = false,
 }: ButtonProps) => {
   const styles = useMemo(
     () =>
@@ -108,7 +110,7 @@ const Button = ({
             true,
         },
         {
-          '!text-primary-500 !bg-primary-50 !border-primary-600': active,
+          '!text-primary-500 !bg-primary-50': active,
         },
         {
           [className]: true,
@@ -128,6 +130,7 @@ const Button = ({
       disabled={disabled || loading}
       onClick={onClick}
       data-testid={dataTestId}
+      autoFocus={autofocus}
     >
       {leftIcon && (
         <div className={iconWrapperClassName}>

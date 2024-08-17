@@ -147,5 +147,30 @@ export class ApiService {
     return res;
   }
 }
+export const readAxiosErr = (err: any, defaultMsg?: string): string => {
+  if (err.response) {
+    const data = err.response.data;
+    if (Array.isArray(data?.errors) && data.errors.length > 0) {
+      return data.errors[0]?.message || defaultMsg || 'An error occurred';
+    }
+
+    if (typeof data?.message === 'string') {
+      return data.message;
+    }
+
+    if (err.response.status === 403) {
+      return 'Access denied';
+    }
+
+    if (err.response.status === 404) {
+      return 'Resource not found';
+    }
+
+    if (err.response.status === 500) {
+      return 'Internal server error';
+    }
+  }
+  return defaultMsg || 'Unable to perform this action';
+};
 
 export default new ApiService();

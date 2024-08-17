@@ -1,5 +1,4 @@
 import { FC, useEffect } from 'react';
-
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import Button, { Size, Variant } from 'components/Button';
@@ -10,13 +9,16 @@ import * as yup from 'yup';
 import Layout, { FieldType } from 'components/Form';
 import { URL_REGEX } from 'utils/constants';
 import { useTranslation } from 'react-i18next';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createLinks, updateChannelLink } from 'queries/channel';
 
 interface IAddLinksModalProps {
   open: boolean;
   closeModal: () => void;
   isCreateMode?: boolean;
   linkDetails?: IChannelLink;
-  setLinkDetails: (link: IChannelLink) => void;
+  channelId?: string;
+  isEditMode?: boolean;
 }
 
 const AddLinkModal: FC<IAddLinksModalProps> = ({
@@ -24,24 +26,56 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
   closeModal,
   isCreateMode,
   linkDetails,
-  setLinkDetails,
+  channelId = '',
+  isEditMode = false,
 }) => {
+  const queryClient = useQueryClient();
   const { t } = useTranslation('channelLinksWidget', {
     keyPrefix: 'addLinkModal',
   });
+
   const schema = yup.object({
-    title: yup.string().optional().max(20, t('labelField.maxLengthError')),
+    title: yup
+      .string()
+      .required(t('labelField.requiredError'))
+      .min(2, t('labelField.minLengthError'))
+      .max(20, t('labelField.maxLengthError')),
     url: yup
       .string()
       .required(t('urlField.requiredError'))
-      .matches(URL_REGEX, t('urlField.invalidUrlError')),
+      .test('is-valid-url', t('urlField.protocolError'), (value) =>
+        /^(http|https):\/\//.test(value || ''),
+      )
+      .matches(URL_REGEX, {
+        message: t('urlField.invalidUrlError'),
+        excludeEmptyString: true,
+      })
+      .max(256, t('urlField.maxLengthError')),
   });
+  const updateLinksMutation = useMutation(
+    async (payload: any) => {
+      if (isCreateMode) {
+        return createLinks(channelId, { links: [payload] });
+      } else {
+        return updateChannelLink(payload);
+      }
+    },
+    {
+      onError: (error: any) => console.log(error),
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(['channel-links-widget']);
+        closeModal();
+      },
+    },
+  );
 
   const {
     handleSubmit,
     control,
     getValues,
+    setValue,
     reset,
+    watch,
     formState: { errors },
   } = useForm<any>({
     resolver: yupResolver(schema),
@@ -55,10 +89,36 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
     });
   }, [linkDetails]);
 
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      if (name === 'url' && value.url) {
+        const titleMatch = value.url.match(/https?:\/\/(?:www\.)?([^.]+)\./);
+        const title = titleMatch ? titleMatch[1] : '';
+        setValue('title', title);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, setValue]);
+
   const onSubmit = () => {
-    const { title, url } = getValues();
-    setLinkDetails({ title, url });
-    closeModal();
+    try {
+      const { title, url } = getValues();
+      if (isCreateMode) {
+        updateLinksMutation.mutate({ title, url });
+        return;
+      }
+      if (isEditMode) {
+        updateLinksMutation.mutate({
+          channelId: channelId,
+          linkId: linkDetails?.id,
+          title,
+          url,
+        });
+      }
+      closeModal();
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
   };
 
   const fields = [
@@ -71,8 +131,8 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
       error: errors.url?.message,
       className: '',
       dataTestId: 'add-link-url',
-      maxLength: 256,
       required: true,
+      autofocus: true,
     },
     {
       name: 'title',
@@ -117,6 +177,7 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
           size={Size.Small}
           variant={Variant.Primary}
           onClick={handleSubmit(onSubmit)}
+          loading={updateLinksMutation.isLoading}
           dataTestId="add-link-cta"
         />
       </div>

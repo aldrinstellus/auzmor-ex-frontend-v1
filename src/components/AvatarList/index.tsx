@@ -17,6 +17,7 @@ export type AvatarListProps = {
 interface IUser {
   id: string;
   name: string;
+  fullName?: string;
   image: string;
 }
 
@@ -38,7 +39,7 @@ const AvatarList: FC<AvatarListProps> = ({
           <Avatar
             size={size}
             key={`${user.id}`}
-            name={user?.name}
+            name={user?.name || user?.fullName}
             image={user?.image || getProfileImage(user)}
             active={false}
             className={`border-[2px] border-white ${avatarClassName}`}
