@@ -330,7 +330,7 @@ const User: FC<UserProps> = ({
           <Button
             size={Size.Small}
             className="!bg-blue-50 !text-blue-500 px-4 py-2 rounded-[8px]"
-            label="send-wishes-cta"
+            label={t('send-wishes-cta')}
             dataTestId={`${
               isBirthday ? 'birthday' : 'anniversaries'
             }-send-wishes-cta`}

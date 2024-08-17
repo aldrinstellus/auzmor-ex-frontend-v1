@@ -41,7 +41,9 @@ export interface IAcceptInviteProps {}
 
 const AcceptInvite: FC<IAcceptInviteProps> = () => {
   usePageTitle('acceptInvite');
-  const { t } = useTranslation('acceptInvite');
+  const { t } = useTranslation('acceptInvite', {
+    keyPrefix: 'acceptInvite',
+  });
   const [searchParams, _] = useSearchParams();
   const token = searchParams.get('token');
   const orgId = searchParams.get('orgId');
