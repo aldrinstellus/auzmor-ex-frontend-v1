@@ -58,10 +58,10 @@ const DeleteChannelModal: FC<IDeleteChannelModalProps> = ({
   const Header: FC = () => (
     <div className="flex flex-wrap border-b-1 border-neutral-200 items-center justify-between">
       <div className="text-lg text-black p-4 font-extrabold flex">
-        {t('deleteChannelModal.delete')}{' '}
+        {t('deleteChannelModal.delete')}&nbsp;
         <Truncate
           text={t('deleteChannelModal.title', { name: channelData.name })}
-          className="text-primary-500 w-56"
+          className="text-primary-500 max-w-56"
         />
         ?
       </div>
@@ -106,8 +106,8 @@ const DeleteChannelModal: FC<IDeleteChannelModalProps> = ({
           className="mb-4"
         />
         <p className="flex">
-          {t('deleteChannelModal.confirmationMessage')} &nbsp;
-          <Truncate text={channelData.name} className="w-24" />
+          {t('deleteChannelModal.confirmationMessage')}&nbsp;
+          <Truncate text={channelData.name} className="max-w-24" /> &nbsp;
           {t('channel')}?
         </p>
         <p>{t('deleteChannelModal.undoMessage')}</p>

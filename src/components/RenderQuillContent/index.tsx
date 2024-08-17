@@ -22,6 +22,7 @@ import { getMentionProps } from './utils';
 import { removeElementsByClass, transformContent } from 'utils/misc';
 import Poll, { PollMode } from 'components/Poll';
 import List from './components/List';
+import { useTranslation } from 'react-i18next';
 
 type RenderQuillContent = {
   data: IPost | IComment;
@@ -36,6 +37,7 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
   isAnnouncementWidgetPreview = false,
   readOnly,
 }): ReactElement => {
+  const { t } = useTranslation('profile');
   const content = data?.content?.editor;
   const mentions = data?.mentions ? data.mentions : [];
   const intendedUsers = (data as IPost)?.intendedUsers || [];
@@ -100,7 +102,12 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
           return (
             <Mention
               value={op.insert.mention?.value}
-              {...getMentionProps(mentions, intendedUsers, op.insert.mention)}
+              {...getMentionProps(
+                mentions,
+                intendedUsers,
+                op.insert.mention,
+                t('fieldNotSpecified'),
+              )}
               userId={op.insert.mention.id}
               key={`quill-content-${i}-mention-${data.id}`}
             />

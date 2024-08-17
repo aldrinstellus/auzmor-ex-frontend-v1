@@ -34,7 +34,7 @@ const EditMedia: FC<IEditMediaProps> = ({ closeModal }) => {
     mediaOpenIndex > -1 ? mediaOpenIndex : 0,
     media.length,
   );
-  const { t } = useTranslation('postBuilder');
+  const { t } = useTranslation('postBuilder', { keyPrefix: 'editMedia' });
   return (
     <>
       {/* <>------ Header -------</> */}

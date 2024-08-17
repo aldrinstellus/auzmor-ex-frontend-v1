@@ -459,9 +459,18 @@ const Toolbar: FC<IToolbarProps> = ({
                         ))
                       ) : personData?.length === 0 &&
                         debouncedPersonSearchValue !== '' ? (
-                        <div className="w-full flex items-center justify-center pt-6 text-neutral-500">
-                          {t('no-data-found.title')}
-                        </div>
+                        <NoDataFound
+                          className="py-4 w-full"
+                          searchString={debouncedPersonSearchValue}
+                          message={
+                            <p>
+                              {t('no-data-found.message')}
+                              <br /> {t('no-data-found.message-2')}
+                            </p>
+                          }
+                          hideClearBtn
+                          dataTestId="membersearch"
+                        />
                       ) : (
                         <></>
                       )}

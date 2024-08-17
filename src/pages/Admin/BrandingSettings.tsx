@@ -1309,8 +1309,8 @@ const BrandingSettings: FC = () => {
                             <span className="text-primary-500 font-bold">
                               {t('click-here')}
                             </span>{' '}
-                            {t('click-here')} <br /> {t('recommend-size')} 1440
-                            x 820 px
+                            {t('to-upload')} <br /> {t('recommend-size')} 1440 x
+                            820 px
                           </span>
                         }
                         onCustomRemove={() => setSelectedBGVideo(null)}

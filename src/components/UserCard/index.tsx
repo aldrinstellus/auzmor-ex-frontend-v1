@@ -8,6 +8,7 @@ import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useProduct from 'hooks/useProduct';
 import { IGetUser, getUser } from 'queries/users';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import Skeleton from 'react-loading-skeleton';
 import {
   getAvatarColor,
@@ -38,6 +39,7 @@ const UserCard: FC<IUserCardProp> = ({
   variant = UsercardVariant.Small,
   className = '',
 }) => {
+  const { t } = useTranslation('profile');
   const { isLxp } = useProduct();
   switch (variant) {
     case UsercardVariant.Small: {
@@ -61,13 +63,13 @@ const UserCard: FC<IUserCardProp> = ({
               className="text-base font-bold text-neutral-900 truncate"
               data-testid="usercard-name"
             >
-              {getFullName(user) || 'Field not specified'}
+              {getFullName(user) || t('fieldNotSpecified')}
             </div>
             <div
               className="text-sm font-normal text-neutral-500 truncate"
               data-testid="usercard-email"
             >
-              {user?.workEmail || 'Field not specified'}
+              {user?.workEmail || t('fieldNotSpecified')}
             </div>
             {isLxp ? (
               <div className="flex items-center">
@@ -82,7 +84,7 @@ const UserCard: FC<IUserCardProp> = ({
                   className="text-sm font-normal text-neutral-500 truncate"
                   data-testid="usercard-designation"
                 >
-                  {user?.designation?.name || 'No Designation'}
+                  {user?.designation?.name || t('noDesignation')}
                 </div>
               </div>
             ) : (
@@ -99,7 +101,7 @@ const UserCard: FC<IUserCardProp> = ({
                     className="text-xs font-normal text-neutral-500 truncate"
                     data-testid="usercard-location"
                   >
-                    {user?.workLocation?.name || 'Field not specified'}
+                    {user?.workLocation?.name || t('fieldNotSpecified')}
                   </div>
                 </div>
               </div>
@@ -145,20 +147,20 @@ const UserCard: FC<IUserCardProp> = ({
             ele = document.getElementById(`user-card-${user?.id}-email`);
             if (ele) {
               ele.innerHTML =
-                response?.data?.result.data.workEmail || 'Field not specified';
+                response?.data?.result.data.workEmail || t('fieldNotSpecified');
               emailRef = response?.data?.result.data.workEmail;
             }
             ele = document.getElementById(`user-card-${user?.id}-workPhone`);
             if (ele) {
               ele.innerHTML =
-                response?.data?.result.data.workPhone || 'Field not specified';
+                response?.data?.result.data.workPhone || t('fieldNotSpecified');
               contactRef = response?.data?.result.data.workPhone;
             }
             ele = document.getElementById(`user-card-${user?.id}-manager-name`);
             if (ele) {
               ele.innerHTML =
                 response?.data?.result.data.manager.fullName ||
-                'Field not specified';
+                t('fieldNotSpecified');
             }
             ele = document.getElementById(
               `user-card-${user?.id}-manager-designation`,
@@ -166,7 +168,7 @@ const UserCard: FC<IUserCardProp> = ({
             if (ele) {
               ele.innerHTML =
                 response?.data?.result.data.manager.designation ||
-                'Field not specified';
+                t('fieldNotSpecified');
             }
             ele = document.getElementById(
               `user-card-${user?.id}-manager-avatar`,
@@ -245,13 +247,13 @@ const UserCard: FC<IUserCardProp> = ({
               className="text-lg font-bold text-neutral-900 truncate mt-4"
               data-testid={`usercard-${user?.id}-name`}
             >
-              {getFullName(user) || 'Field not specified'}
+              {getFullName(user) || t('fieldNotSpecified')}
             </div>
             <div
               className="text-sm font-normal text-neutral-500 truncate mb-2"
               data-testid={`usercard-${user?.id}-position`}
             >
-              {user?.designation?.name || 'Field not specified'}
+              {user?.designation?.name || t('fieldNotSpecified')}
               {user?.department?.name ? `, ${user?.department?.name}` : ''}
             </div>
             <Divider className="mt-1 mb-2" />

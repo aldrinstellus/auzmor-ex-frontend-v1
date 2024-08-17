@@ -266,8 +266,7 @@ const Signup: FC<ISignupProps> = () => {
     ) {
       setError('workEmail', {
         types: {
-          exists:
-            'The login email already exists. Please try a different email address.',
+          exists: t('workEmailError.exists'),
         },
       });
     }
@@ -281,7 +280,7 @@ const Signup: FC<ISignupProps> = () => {
     ) {
       setError('domain', {
         types: {
-          domainExists: 'Domain name is already taken',
+          domainExists: t('domainError.domainExists'),
         },
       });
     }

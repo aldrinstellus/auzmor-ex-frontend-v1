@@ -31,12 +31,14 @@ import Tooltip, { Variant as TooltipVariant } from 'components/Tooltip';
 import UserCard from 'components/UserCard';
 import useProduct from 'hooks/useProduct';
 import PopupMenu from 'components/PopupMenu';
+import { useTranslation } from 'react-i18next';
 
 interface CommentProps {
   commentId: string;
 }
 
 export const Comment: FC<CommentProps> = ({ commentId }) => {
+  const { t } = useTranslation('profile');
   const getPost = useFeedStore((state) => state.getPost);
   const [getComments, storedcomments, setComment] = useCommentStore(
     ({ getComments, comment, setComment }) => [
@@ -126,7 +128,12 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
           <div className="flex flex-col items-start p-0 flex-grow w-0">
             <Tooltip
               tooltipContent={
-                <UserCard user={getUserCardTooltipProps(comment?.createdBy)} />
+                <UserCard
+                  user={getUserCardTooltipProps(
+                    comment?.createdBy,
+                    t('fieldNotSpecified'),
+                  )}
+                />
               }
               variant={TooltipVariant.Light}
               className="!p-4 !shadow-md !rounded-9xl !z-[999]"

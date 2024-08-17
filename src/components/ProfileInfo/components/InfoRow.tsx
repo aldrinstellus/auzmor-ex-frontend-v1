@@ -9,6 +9,7 @@ import {
   useImperativeHandle,
   useState,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface IIcon {
   name: string;
@@ -25,7 +26,6 @@ type AppProps = {
   dataTestId?: string;
   bgColor?: string;
   border?: boolean;
-  fallBackValue?: string;
   onCancel?: () => any;
   onSave?: (...args: any) => any;
   isEditButton?: boolean;
@@ -42,7 +42,6 @@ const InfoRow = forwardRef(
       editNode,
       dataTestId,
       border = true,
-      fallBackValue = 'Field not specified',
       onCancel = () => null,
       onSave = () => null,
       isEditButton = true,
@@ -50,6 +49,7 @@ const InfoRow = forwardRef(
     }: AppProps,
     ref: ForwardedRef<any>,
   ) => {
+    const { t } = useTranslation('profile');
     const [isHovered, eventHandlers] = useHover();
     const [editMode, setEditMode] = useState(isEditMode);
 
@@ -106,7 +106,7 @@ const InfoRow = forwardRef(
             </div>
           ) : (
             <div className="text-neutral-900 font-medium line-clamp-2">
-              {value || fallBackValue}
+              {value || t('fieldNotSpecified')}
             </div>
           )}
         </div>

@@ -1,5 +1,6 @@
 {
   "fieldNotSpecified": "Field Not Specified",
+  "noDesignation": "No Designation",
   "tabs": {
     "profile": "Profile",
     "activity": "Activity",
@@ -32,7 +33,6 @@
     "outOfOffice": "Out of Office",
     "follow": "Follow",
     "more": "More",
-    "invitationSent": "Invitation Sent",
     "addDesignation": "Add Designation",
     "addDepartment": "Add Department",
     "addLocation": "Add Location",
@@ -97,7 +97,7 @@
     "letsGetStarted": "Let's get started by adding some members!",
     "addMembers": "Add members",
     "noResultsMessage": "Sorry we can't find the profile you are looking for.",
-    "norResultMessage2": " Please check the spelling or try again.",
+    "noResultsMessage2": " Please check the spelling or try again.",
     "clearSearch": "Clear Search",
     "clearFilters": "Clear Filters"
   },

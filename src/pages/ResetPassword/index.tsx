@@ -25,15 +25,6 @@ interface IForm {
   token: any;
 }
 
-const schema = yup.object({
-  newPassword: yup.string().required('validation.newPasswordRequired'),
-  password: yup
-    .string()
-    .required('validation.confirmPasswordRequired')
-    .oneOf([yup.ref('newPassword')], 'validation.passwordsDoNotMatch'),
-  token: yup.string(),
-});
-
 const ResetPassword = () => {
   usePageTitle('resetPassword');
 
@@ -43,6 +34,15 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const [searchParams, _] = useSearchParams();
   const token = searchParams.get('token');
+
+  const schema = yup.object({
+    newPassword: yup.string().required(t('validation.newPasswordRequired')),
+    password: yup
+      .string()
+      .required(t('validation.confirmPasswordRequired'))
+      .oneOf([yup.ref('newPassword')], t('validation.passwordsDoNotMatch')),
+    token: yup.string(),
+  });
 
   const { data, isLoading } = useTokenValidation(token || '');
 

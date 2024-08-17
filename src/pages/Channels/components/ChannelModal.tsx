@@ -259,7 +259,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
                 {
                   type: FieldType.CreatableSearch,
                   variant: InputVariant.Text,
-                  placeholder: 'Start typing for suggestions',
+                  placeholder: t('channelModal.channelCategoryPlaceholder'),
                   name: 'channelCategory',
                   label: t('channelModal.channelCategoryLabel'),
                   required: true,

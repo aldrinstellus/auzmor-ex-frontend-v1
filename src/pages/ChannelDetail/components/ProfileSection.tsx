@@ -119,12 +119,12 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       }),
     onError: () => {
       failureToastConfig({
-        content: t('addChannelMembers.failure'),
+        content: t('joinAsAdmin.failure'),
       });
     },
     onSuccess: () => {
       successToastConfig({
-        content: t('addChannelMembers.success'),
+        content: t('joinAsAdmin.success'),
       });
       queryClient.invalidateQueries(['channel']);
     },
@@ -536,7 +536,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
           <div className="flex gap-4">
             {showInviteYourSelf && (
               <Button
-                label={t('joinDirectly')}
+                label={t('joinAsAdmin.label')}
                 dataTestId="invite-your-self-channel-cta"
                 className="min-w-max !bg-transparent text-white"
                 variant={Variant.Secondary}

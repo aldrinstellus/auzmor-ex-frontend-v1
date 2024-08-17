@@ -5,9 +5,11 @@ import Icon from 'components/Icon';
 import { getInitials } from 'utils/misc';
 import { getUser } from 'queries/users';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 
 const LxpUserCard = ({ userId, className }: any) => {
   const style = clsx('flex items-start h-20', className);
+  const { t } = useTranslation('profile');
 
   const { data, isLoading } = useQuery(
     ['user', userId],
@@ -68,7 +70,7 @@ const LxpUserCard = ({ userId, className }: any) => {
           {isLoading ? (
             <Skeleton />
           ) : (
-            userData?.fullName || 'Field not specified'
+            userData?.fullName || t('fieldNotSpecified')
           )}
         </div>
         <div
@@ -79,7 +81,7 @@ const LxpUserCard = ({ userId, className }: any) => {
           {isLoading ? (
             <Skeleton />
           ) : (
-            userData?.primaryEmail || 'Field not specified'
+            userData?.primaryEmail || t('fieldNotSpecified')
           )}
         </div>
         <div className="flex items-center">
@@ -98,7 +100,7 @@ const LxpUserCard = ({ userId, className }: any) => {
             {isLoading ? (
               <Skeleton />
             ) : (
-              userData?.designation?.name || 'Field not specified'
+              userData?.designation?.name || t('fieldNotSpecified')
             )}
           </div>
         </div>

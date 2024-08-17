@@ -27,6 +27,7 @@ export const getMentionProps = (
   mentions: IMention[],
   intendedUsers: ICreatedBy[],
   mention: any,
+  fallbackValue: string,
 ) => {
   let result: IMention | ICreatedBy | undefined;
   result = mentions.find(
@@ -34,5 +35,5 @@ export const getMentionProps = (
   );
   if (!result)
     result = intendedUsers.find((item) => item?.userId === mention.id);
-  return getUserCardTooltipProps(result);
+  return getUserCardTooltipProps(result, fallbackValue);
 };
