@@ -24,14 +24,11 @@ const Acknowledged: FC<AppProps> = ({ postId, closeModal }) => {
   const post = useFeedStore((state) => state.getPost)(postId);
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteAcknowledgements(post.id, { acknowledged: true }, (data) =>
+    useInfiniteAcknowledgements(post.id, { acknowledged: true }, () =>
       updatePost(post.id, {
         ...(post as IPost),
         acknowledgementStats: {
           ...post.acknowledgementStats,
-          acknowledged: data?.pages.flatMap((page: any) =>
-            page?.data?.result?.data.map((user: any) => user),
-          ).length,
         },
       }),
     );
@@ -79,7 +76,7 @@ const Acknowledged: FC<AppProps> = ({ postId, closeModal }) => {
               data-testid="acknowledged-count"
             >
               {t('acknowledgedCount', {
-                acknowledged: (usersData || []).length,
+                acknowledged: post?.acknowledgementStats?.acknowledged,
                 audience: post?.acknowledgementStats?.audience,
               })}
             </div>

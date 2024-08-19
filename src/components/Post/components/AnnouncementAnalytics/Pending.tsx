@@ -43,14 +43,11 @@ const Pending: FC<AppProps> = ({ postId, closeModal }) => {
   );
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteAcknowledgements(post.id, { acknowledged: false }, (data) =>
+    useInfiniteAcknowledgements(post.id, { acknowledged: false }, () =>
       updatePost(post.id, {
         ...post,
         acknowledgementStats: {
           ...post.acknowledgementStats,
-          pending: data?.pages.flatMap((page: any) =>
-            page?.data?.result?.data.map((user: any) => user),
-          ).length,
         },
       }),
     );

@@ -8,8 +8,9 @@ import { useMutation } from '@tanstack/react-query';
 import { downloadAcknowledgementReport } from 'queries/post';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import Spinner from 'components/Spinner';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import queryClient from 'utils/queryClient';
 
 type AppProps = {
   open: boolean;
@@ -19,6 +20,11 @@ type AppProps = {
 
 const AnnouncementAnalytics: FC<AppProps> = ({ post, open, closeModal }) => {
   const { t } = useTranslation('post', { keyPrefix: 'announcementAnalytics' });
+
+  useEffect(() => {
+    queryClient.invalidateQueries(['posts'], { exact: false });
+    queryClient.invalidateQueries(['feed']);
+  }, []);
 
   const tabLabel = (label: string, isActive: boolean) => {
     return (
