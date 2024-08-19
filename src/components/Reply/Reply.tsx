@@ -33,6 +33,7 @@ import Tooltip, { Variant as TooltipVariant } from 'components/Tooltip';
 import UserCard from 'components/UserCard';
 import { Link } from 'react-router-dom';
 import useProduct from 'hooks/useProduct';
+import { useTranslation } from 'react-i18next';
 
 interface ReplyProps {
   comment: IComment;
@@ -40,6 +41,7 @@ interface ReplyProps {
 }
 
 export const Reply: FC<ReplyProps> = ({ comment }) => {
+  const { t } = useTranslation('profile');
   const { user } = useAuth();
   const { isLxp } = useProduct();
   const [confirm, showConfirm, closeConfirm] = useModal();
@@ -105,7 +107,10 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
                 <Tooltip
                   tooltipContent={
                     <UserCard
-                      user={getUserCardTooltipProps(comment?.createdBy)}
+                      user={getUserCardTooltipProps(
+                        comment?.createdBy,
+                        t('fieldNotSpecified'),
+                      )}
                     />
                   }
                   variant={TooltipVariant.Light}

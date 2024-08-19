@@ -105,7 +105,7 @@ const CategoryRow: FC<AppProps> = ({ channelData, canEdit }) => {
     {
       type: FieldType.CreatableSearch,
       variant: InputVariant.Text,
-      placeholder: t('category.startTypingForSuggestions'),
+      placeholder: t('category.channelCategoryPlaceholder'),
       name: 'channelCategory',
       control,
       fetchQuery: isLxp ? useInfiniteLearnCategory : useInfiniteCategories,

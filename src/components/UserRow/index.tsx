@@ -8,6 +8,7 @@ import {
   getUserCardTooltipProps,
 } from 'utils/misc';
 import { clsx } from 'clsx';
+import { useTranslation } from 'react-i18next';
 
 interface IUserRowProps {
   user: IGetUser;
@@ -22,6 +23,7 @@ const UserRow: FC<IUserRowProps> = ({
   dataTestId = '',
   onClick = () => {},
 }) => {
+  const { t } = useTranslation('profile');
   const styles = useMemo(
     () =>
       clsx({
@@ -31,8 +33,10 @@ const UserRow: FC<IUserRowProps> = ({
       }),
     [],
   );
-  const { workLocation, designation, department } =
-    getUserCardTooltipProps(user);
+  const { workLocation, designation, department } = getUserCardTooltipProps(
+    user,
+    t('fieldNotSpecified'),
+  );
   return (
     <div
       className={styles}
@@ -51,23 +55,23 @@ const UserRow: FC<IUserRowProps> = ({
         </div>
         <div className="flex flex-col truncate w-full">
           <div className="text-neutral-900 font-bold text-sm truncate">
-            {getFullName(user) || 'Field not specified'}
+            {getFullName(user) || t('fieldNotSpecified')}
           </div>
           <div className="text-neutral-500 text-xs truncate">
-            {user.workEmail || department.name || 'Field not specified'}
+            {user.workEmail || department.name || t('fieldNotSpecified')}
           </div>
         </div>
       </div>
       <div className="flex flex-col w-1/2">
         <div className="flex flex-row w-full justify-end">
           <div className={`text-neutral-500 text-xs truncate mr-6`}>
-            {designation?.name || 'Field not specified'}
+            {designation?.name || t('fieldNotSpecified')}
           </div>
           <div className={`mr-6 flex items-center`}>
             <div className="w-1 h-1 bg-neutral-500 rounded-full"></div>
           </div>
           <div className={`text-neutral-500 text-xs truncate`}>
-            {workLocation?.name || 'Field not specified'}
+            {workLocation?.name || t('fieldNotSpecified')}
           </div>
         </div>
         <div></div>

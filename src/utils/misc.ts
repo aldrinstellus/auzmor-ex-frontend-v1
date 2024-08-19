@@ -444,8 +444,8 @@ export const removeEmptyLines = (content: {
   return content;
 };
 
-export const getWorkLocation = (user: any) => {
-  let workLocation: ILocation = { locationId: '', name: 'Field not specified' };
+export const getWorkLocation = (user: any, fallbackValue: string) => {
+  let workLocation: ILocation = { locationId: '', name: fallbackValue };
   if (typeof user?.workLocation === 'string') {
     workLocation.name = user?.workLocation;
   } else if (typeof user?.workLocation === 'object') {
@@ -458,10 +458,10 @@ export const getWorkLocation = (user: any) => {
   return workLocation;
 };
 
-export const getDesignation = (user: any) => {
+export const getDesignation = (user: any, fallbackValue: string) => {
   let designation: IDesignation = {
     designationId: '',
-    name: 'Field not specified',
+    name: fallbackValue,
   };
   if (typeof user?.designation === 'string') {
     designation.name = user?.designation;
@@ -473,10 +473,10 @@ export const getDesignation = (user: any) => {
   return designation;
 };
 
-export const getDepartment = (user: any) => {
+export const getDepartment = (user: any, fallbackValue: string) => {
   let department: IDepartment = {
     departmentId: '',
-    name: 'Field not specified',
+    name: fallbackValue,
   };
   if (typeof user?.department === 'string') {
     department.name = user?.department;
@@ -486,17 +486,16 @@ export const getDepartment = (user: any) => {
   return department;
 };
 
-export const getUserCardTooltipProps = (user: any) => {
-  const workLocation = getWorkLocation(user);
-  const designation = getDesignation(user);
-  const department = getDepartment(user);
+export const getUserCardTooltipProps = (user: any, fallbackValue: string) => {
+  const workLocation = getWorkLocation(user, fallbackValue);
+  const designation = getDesignation(user, fallbackValue);
+  const department = getDepartment(user, fallbackValue);
 
   return {
     id: user?.id || user?.userId || '',
-    fullName:
-      user?.fullName || user?.userName || user?.name || 'Field not specified',
-    workEmail: user?.email || user?.workEmail || 'Field not specified',
-    email: user?.email || user?.workEmail || 'Field not specified',
+    fullName: user?.fullName || user?.userName || user?.name || fallbackValue,
+    workEmail: user?.email || user?.workEmail || fallbackValue,
+    email: user?.email || user?.workEmail || fallbackValue,
     workLocation: workLocation,
     designation: designation,
     department: department,

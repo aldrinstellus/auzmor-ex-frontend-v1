@@ -6,6 +6,7 @@ import { FC } from 'react';
 import { UserStatus } from 'queries/users';
 import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
 import UserCard, { UsercardVariant } from 'components/UserCard';
+import { useTranslation } from 'react-i18next';
 
 interface IUserNode {
   node: { data: INode };
@@ -14,6 +15,7 @@ interface IUserNode {
 }
 
 const UserNode: FC<IUserNode> = ({ node, isFilterApplied, orgName }) => {
+  const { t } = useTranslation('profile');
   const departmentStyle = clsx({
     'bg-orange-100': true,
     'absolute bottom-2 flex px-2 py-1 text-xxs font-semibold rounded': true,
@@ -64,10 +66,10 @@ const UserNode: FC<IUserNode> = ({ node, isFilterApplied, orgName }) => {
           />
           <div className="flex flex-col ml-4">
             <div className="text-sm font-bold">
-              {node.data.userName || 'Field not specified'}
+              {node.data.userName || t('fieldNotSpecified')}
             </div>
             <div className="text-xs my-1">
-              {node.data.jobTitle?.name || 'Field not specified'}
+              {node.data.jobTitle?.name || t('fieldNotSpecified')}
             </div>
             <div className="flex items-center">
               <div className="mr-1">
@@ -79,7 +81,7 @@ const UserNode: FC<IUserNode> = ({ node, isFilterApplied, orgName }) => {
                 />
               </div>
               <div className="text-xs text-neutral-500 truncate">
-                {node?.data?.location || 'Field not specified'}
+                {node?.data?.location || t('fieldNotSpecified')}
               </div>
             </div>
           </div>

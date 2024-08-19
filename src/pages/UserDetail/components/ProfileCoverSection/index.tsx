@@ -390,7 +390,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                 className="text-sm font-normal text-neutral-400"
                 data-testid="user-designation"
               >
-                {userDetails?.designation?.name || 'Add designation'}
+                {userDetails?.designation?.name || t('addDesignation')}
               </div>
             </div>
             <Divider variant={DividerVariant.Vertical} className="!h-6" />
@@ -416,7 +416,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                 className="text-sm font-normal text-neutral-400"
                 data-testid="user-department"
               >
-                {userDetails?.department?.name || 'Add department'}
+                {userDetails?.department?.name || t('addDepartment')}
               </div>
             </div>
             <Divider variant={DividerVariant.Vertical} className="!h-6" />
@@ -442,7 +442,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                 className="text-sm font-normal text-neutral-400"
                 data-testid="user-location"
               >
-                {userDetails?.workLocation?.name || 'Add location'}
+                {userDetails?.workLocation?.name || t('addLocation')}
               </div>
             </div>
           </div>

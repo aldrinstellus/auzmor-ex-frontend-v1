@@ -24,6 +24,8 @@ import remarkDirectiveRehype from 'remark-directive-rehype';
 import LxpUserCard from 'components/UserCard/lxpUserCard';
 import { CustomLink, CustomStrong } from './utils';
 import remarkGfm from 'remark-gfm';
+import { useTranslation } from 'react-i18next';
+
 type ActorProps = {
   contentMode?: string;
   createdTime?: string;
@@ -61,6 +63,7 @@ const Actor: FC<ActorProps> = ({
   audience,
   title,
 }) => {
+  const { t } = useTranslation('profile');
   const { user } = useAuth();
   const { isLxp } = useProduct();
   const navigate = useNavigate();
@@ -112,7 +115,7 @@ const Actor: FC<ActorProps> = ({
   };
 
   if (title?.content) {
-    title = { content: title.content.replaceAll("'", '&#8217;') };
+    title = { content: `${title.content.replaceAll("'", '')}` };
   }
 
   return (
@@ -159,7 +162,12 @@ const Actor: FC<ActorProps> = ({
             >
               <Tooltip
                 tooltipContent={
-                  <UserCard user={getUserCardTooltipProps(createdBy)} />
+                  <UserCard
+                    user={getUserCardTooltipProps(
+                      createdBy,
+                      t('fieldNotSpecified'),
+                    )}
+                  />
                 }
                 variant={Variant.Light}
                 className="!p-4 !shadow-md !rounded-9xl !z-[999]"
