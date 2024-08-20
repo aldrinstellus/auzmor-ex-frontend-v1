@@ -152,7 +152,8 @@
       "channelNamePlaceholder": "e.g., Product and Design Team"
     },
     "descriptionRow": {
-      "label": "Description"
+      "label": "Description",
+      "fieldNotSpecified": "Field Not Specified"
     },
     "privacyRow": {
       "label": "Privacy",

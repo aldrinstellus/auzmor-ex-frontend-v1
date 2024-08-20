@@ -46,6 +46,7 @@ export interface IPeopleCardProps {
   isMember?: boolean;
   isChannelAdmin?: boolean;
   isReadOnly?: boolean;
+  showNewJoineeBadge?: boolean;
 }
 
 export enum Status {
@@ -73,6 +74,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
   channelId,
   isChannelAdmin,
   isReadOnly = true,
+  showNewJoineeBadge = true,
 }) => {
   const { t } = useTranslation('profile', { keyPrefix: 'peopleCard' });
   const {
@@ -154,7 +156,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
         </div>
       );
     }
-    if (isNewEntity(createdAt)) {
+    if (isNewEntity(createdAt) && showNewJoineeBadge) {
       return (
         <div
           className={`${rightChipStyle} bg-primary-100 text-primary-600`}

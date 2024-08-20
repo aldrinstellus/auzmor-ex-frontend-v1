@@ -19,7 +19,7 @@ import { updateMemberRole } from 'queries/channel';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 
 import { useParams } from 'react-router-dom';
-import { CHANNEL_ROLE } from 'stores/channelStore';
+import { CHANNEL_ROLE, useChannelStore } from 'stores/channelStore';
 import queryClient from 'utils/queryClient';
 import useAuth from 'hooks/useAuth';
 import { useInView } from 'react-intersection-observer';
@@ -39,7 +39,8 @@ const ManageAccessTable: FC<AppProps> = ({
   data,
 }) => {
   const { t } = useTranslation('channelDetail', { keyPrefix: 'manageAccess' });
-  const { channelId } = useParams();
+  const { channelId = '' } = useParams();
+  const channel = useChannelStore((state) => state.channels)[channelId];
 
   const { ref, inView } = useInView();
   useEffect(() => {
@@ -83,7 +84,7 @@ const ManageAccessTable: FC<AppProps> = ({
                 key={user?.id}
               >
                 <TableCell>
-                  <div className=" flex items-center  space-x-4">
+                  <div className="flex items-center space-x-4">
                     <Avatar
                       name={getFullName(user) || 'U'}
                       size={32}
@@ -96,13 +97,14 @@ const ManageAccessTable: FC<AppProps> = ({
                     >
                       {user?.fullName}
                     </div>
-                    {isNewEntity(user?.createdAt) && (
-                      <div
-                        className={`rounded-lg  px-3 py-1 text-xxs font-medium bg-primary-100 text-primary-600`}
-                      >
-                        {t('table.newJoinee')}
-                      </div>
-                    )}
+                    {!isNewEntity(channel?.createdAt) &&
+                      isNewEntity(user.createdAt) && (
+                        <span
+                          className={`rounded-lg  px-2 py-0.5 text-xs font-bold bg-primary-50 text-primary-600`}
+                        >
+                          {t('table.newJoinee')}
+                        </span>
+                      )}
                   </div>
                 </TableCell>
                 <TableCell>{user?.designation || 'Not specified'}</TableCell>

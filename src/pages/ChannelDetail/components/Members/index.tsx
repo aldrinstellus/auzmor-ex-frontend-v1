@@ -7,7 +7,7 @@ import PeopleCard from 'pages/Users/components/People/PeopleCard';
 import UsersSkeleton from 'pages/Users/components/Skeletons/UsersSkeleton';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { isFiltersEmpty } from 'utils/misc';
+import { isFiltersEmpty, isNewEntity } from 'utils/misc';
 import { ReactNode, useEffect, useState } from 'react';
 import {
   bulkChannelRequestUpdate,
@@ -328,6 +328,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
                 key={user.id}
                 userData={user}
                 channelId={channelData?.id}
+                showNewJoineeBadge={!isNewEntity(channelData.createdAt)}
               />
             ))}
           </div>
