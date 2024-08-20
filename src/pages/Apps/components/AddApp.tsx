@@ -62,9 +62,6 @@ const AddApp: FC<AddAppProps> = ({
     url: yup
       .string()
       .required(t('requiredError'))
-      .test('is-valid-url', t('protocolError'), (value) =>
-        /^(http|https):\/\//.test(value || ''),
-      )
       .matches(URL_REGEX, 'Enter a valid URL'),
     label: yup
       .string()
@@ -118,7 +115,9 @@ const AddApp: FC<AddAppProps> = ({
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name === 'url' && value.url) {
-        const titleMatch = value.url.match(/https?:\/\/(?:www\.)?([^.]+)\./);
+        const titleMatch = value.url.match(
+          /^(?:https?:\/\/)?(?:www\.)?([^.]+)\./,
+        );
         const title = titleMatch ? titleMatch[1] : '';
         setValue('label', title);
       }

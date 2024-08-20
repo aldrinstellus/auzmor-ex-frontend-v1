@@ -43,9 +43,6 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
     url: yup
       .string()
       .required(t('urlField.requiredError'))
-      .test('is-valid-url', t('urlField.protocolError'), (value) =>
-        /^(http|https):\/\//.test(value || ''),
-      )
       .matches(URL_REGEX, {
         message: t('urlField.invalidUrlError'),
         excludeEmptyString: true,
@@ -92,8 +89,10 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name === 'url' && value.url) {
-        const titleMatch = value.url.match(/https?:\/\/(?:www\.)?([^.]+)\./);
-        const title = titleMatch ? titleMatch[1] : '';
+        const urlMatch = value.url.match(
+          /^(?:https?:\/\/)?(?:www\.)?([^.]+)\./,
+        );
+        const title = urlMatch ? urlMatch[1] : '';
         setValue('title', title);
       }
     });
@@ -103,8 +102,9 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
   const onSubmit = () => {
     try {
       const { title, url } = getValues();
+      const prefixProtocolUrl = `https://${url}`;
       if (isCreateMode) {
-        updateLinksMutation.mutate({ title, url });
+        updateLinksMutation.mutate({ title, url: prefixProtocolUrl });
         return;
       }
       if (isEditMode) {

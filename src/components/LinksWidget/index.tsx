@@ -59,7 +59,7 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
         onKeyUp={(e) => (e.code === 'Enter' ? toggleModal() : '')}
         tabIndex={0}
         title={t('title')}
-        aria-expanded={open}
+        // aria-expanded={open}
         role="button"
       >
         <div className="font-bold flex-auto">{t('title')}</div>
@@ -69,7 +69,8 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
               name={'edit'}
               size={20}
               color="text-neutral-900"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setIsEditMode(true);
                 openEditLinksModal();
               }}
