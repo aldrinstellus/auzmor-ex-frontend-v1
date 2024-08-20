@@ -76,13 +76,15 @@ const AnnouncementAnalytics: FC<AppProps> = ({ post, open, closeModal }) => {
               {
                 tabLabel: (isActive) => tabLabel(t('acknowledged'), isActive),
                 tabContent: (
-                  <Acknowledged post={post} closeModal={closeModal} />
+                  <Acknowledged postId={post.id} closeModal={closeModal} />
                 ),
                 dataTestId: 'acknowledgement-report-acknowledged',
               },
               {
                 tabLabel: (isActive) => tabLabel(t('pending'), isActive),
-                tabContent: <Pending post={post} closeModal={closeModal} />,
+                tabContent: (
+                  <Pending postId={post.id} closeModal={closeModal} />
+                ),
                 dataTestId: 'acknowledgement-report-pending',
               },
             ]}

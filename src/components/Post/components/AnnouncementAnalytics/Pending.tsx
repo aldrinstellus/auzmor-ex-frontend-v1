@@ -12,17 +12,19 @@ import { useInfiniteAcknowledgements } from 'queries/post';
 import { useMutation } from '@tanstack/react-query';
 import { createNewJob } from 'queries/job';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
-import Skeleton from 'react-loading-skeleton';
+import { useFeedStore } from 'stores/feedStore';
 import { useTranslation } from 'react-i18next';
 
 type AppProps = {
-  post: Record<string, any>;
+  postId: string;
   closeModal: () => any;
 };
 
-const Pending: FC<AppProps> = ({ post, closeModal }) => {
+const Pending: FC<AppProps> = ({ postId, closeModal }) => {
   const { ref, inView } = useInView();
   const { t } = useTranslation('post', { keyPrefix: 'announcementAnalytics' });
+  const updatePost = useFeedStore((state) => state.updateFeed);
+  const post = useFeedStore((state) => state.getPost)(postId);
 
   const reminderMutation = useMutation(
     () =>
@@ -43,7 +45,15 @@ const Pending: FC<AppProps> = ({ post, closeModal }) => {
   );
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteAcknowledgements(post.id, { acknowledged: false });
+    useInfiniteAcknowledgements(post.id, { acknowledged: false }, (data) =>
+      updatePost(post.id, {
+        ...post,
+        acknowledgementStats: {
+          ...post.acknowledgementStats,
+          pending: data?.pages[0]?.data?.result?.totalCount,
+        },
+      }),
+    );
 
   const usersData = data?.pages.flatMap((page) =>
     page?.data?.result?.data.map((user: any) => user),
@@ -55,10 +65,9 @@ const Pending: FC<AppProps> = ({ post, closeModal }) => {
     }
   }, [inView]);
 
-  const totalPendingAcknowledged = data?.pages[0]?.data?.result?.totalCount;
-
   const pendingPercent = Math.round(
-    (totalPendingAcknowledged * 100) / post?.acknowledgementStats?.audience,
+    (post?.acknowledgementStats?.pending * 100) /
+      post?.acknowledgementStats?.audience,
   );
 
   return (
@@ -89,18 +98,10 @@ const Pending: FC<AppProps> = ({ post, closeModal }) => {
               className="text-2xl text-yellow-300 font-semibold"
               data-testid="acknowledge-pending-count"
             >
-              {!isLoading ? (
-                t('acknowledgedCount', {
-                  acknowledged: totalPendingAcknowledged,
-                  audience: post?.acknowledgementStats?.audience,
-                })
-              ) : (
-                <Skeleton
-                  className="!w-32"
-                  containerClassName="flex-1"
-                  borderRadius={100}
-                />
-              )}
+              {t('acknowledgedCount', {
+                acknowledged: post?.acknowledgementStats?.pending,
+                audience: post?.acknowledgementStats?.audience,
+              })}
             </div>
             <div className="text-sm text-neutral-900">
               {t('notAcknowledgeText')}
