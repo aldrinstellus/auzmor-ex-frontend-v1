@@ -29,9 +29,7 @@ const Acknowledged: FC<AppProps> = ({ postId, closeModal }) => {
         ...(post as IPost),
         acknowledgementStats: {
           ...post.acknowledgementStats,
-          acknowledged: data?.pages.flatMap((page: any) =>
-            page?.data?.result?.data.map((user: any) => user),
-          ).length,
+          acknowledged: data?.pages[0]?.data?.result?.totalCount,
         },
       }),
     );
@@ -79,7 +77,7 @@ const Acknowledged: FC<AppProps> = ({ postId, closeModal }) => {
               data-testid="acknowledged-count"
             >
               {t('acknowledgedCount', {
-                acknowledged: (usersData || []).length,
+                acknowledged: post?.acknowledgementStats?.acknowledged,
                 audience: post?.acknowledgementStats?.audience,
               })}
             </div>

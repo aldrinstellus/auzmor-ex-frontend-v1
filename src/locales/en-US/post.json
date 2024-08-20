@@ -16,7 +16,10 @@
     "exportReport": "Export Report",
     "acknowledgedCount": "{{acknowledged}} out of {{audience}} People",
     "markedAsRead": "Marked this post as 'Read'",
-    "close": "Close"
+    "close": "Close",
+    "pendingAcknowledgeSuccessToast": "Reminder has been sent to all unreads",
+    "notAcknowledgeText": "did not acknowledge this post",
+    "sendRemainderCTA": "Send reminder to all unread"
   },
   "feedPostMenu": {
     "promoteToAnnouncement": "Promote to Announcement",
