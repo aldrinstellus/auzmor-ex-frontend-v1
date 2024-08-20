@@ -69,6 +69,7 @@ const FinishSetup: FC<AppProps> = ({ channelData }) => {
   const getBlobFile = file?.profileImage
     ? getBlobUrl(file?.profileImage)
     : file?.coverImage && getBlobUrl(file?.coverImage);
+  const [focusDescription, setFocusDescription] = useState(false);
 
   const steps = useMemo(
     () => [
@@ -85,7 +86,10 @@ const FinishSetup: FC<AppProps> = ({ channelData }) => {
         label: t('description'),
         completed: !!channelData?.description,
         icon: 'image',
-        onClick: openEditModal,
+        onClick: () => {
+          setFocusDescription(true);
+          openEditModal();
+        },
         dataTestId: 'add-description',
       },
       {
@@ -281,8 +285,12 @@ const FinishSetup: FC<AppProps> = ({ channelData }) => {
       {isEditModalOpen && (
         <ChannelModal
           isOpen={isEditModalOpen}
-          closeModal={closeEditModal}
           channelData={channelData}
+          closeModal={() => {
+            closeEditModal();
+            setFocusDescription(false);
+          }}
+          focusDescription={focusDescription}
         />
       )}
       {showAddMemberModal && channelData && (

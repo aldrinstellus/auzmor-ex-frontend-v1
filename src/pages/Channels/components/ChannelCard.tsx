@@ -46,7 +46,10 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
     channel.settings?.visibility === ChannelVisibilityEnum.Private &&
     !!!channel.member &&
     !!channel.joinRequest;
-
+  const defaulChannelDescription = t('defaultDescription', {
+    visibilty: channel?.settings?.visibility,
+    channelName: channel?.name,
+  });
   // Join public/private channel request mutation
   const joinChannelMutation = useMutation({
     mutationKey: ['join-public-channel-request'],
@@ -124,9 +127,11 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
           <p className="text-xs font-semibold text-neutral-500">
             {channel?.totalMembers} members
           </p>
-          <p className="text-xxs text-neutral-500 line-clamp-2 h-7">
-            {channel?.description}
-          </p>
+
+          <Truncate
+            text={channel?.description || defaulChannelDescription}
+            className="text-xxs text-neutral-500 h-7 max-w-[208px]"
+          />
           {showRequestBtn && (
             <Button
               label={t('privateChannel.joinRequestCTA')}

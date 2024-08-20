@@ -28,18 +28,13 @@ interface IChannelModalProps {
   isOpen: boolean;
   closeModal: () => void;
   channelData?: IChannel;
+  focusDescription?: boolean;
 }
 
 enum ChannelFlow {
   CreateChannel = 'CREATE_CHANNEL',
   EditChannel = 'EDIT_CHANNEL',
 }
-// interface IChannelForm {
-//   channelName: string;
-//   channelCategory: ICategoryDetail;
-//   channelPrivacy: IOption;
-//   channelDescription: string;
-// }
 
 const getChannelPrivacyOption = (
   visibility: ChannelVisibilityEnum,
@@ -73,9 +68,9 @@ const ChannelModal: FC<IChannelModalProps> = ({
   isOpen,
   closeModal,
   channelData,
+  focusDescription = false,
 }) => {
   const { t } = useTranslation('channels');
-  // const { t:tm } = useTranslation('channels',{keyPrefix:"channelModal"});
   const { t: tc } = useTranslation('common');
   const { isLxp } = useProduct();
   const schema = yup.object({
@@ -95,6 +90,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
     : ChannelFlow.CreateChannel;
   const navigate = useNavigate();
   const { setChannels } = useChannelStore();
+
   const {
     handleSubmit,
     control,
@@ -118,7 +114,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
               }))
               .pop()
           : undefined,
-      channelDescription: channelData?.description || undefined,
+      channelDescription: channelData?.description,
     },
     resolver: yupResolver(schema),
     mode: 'onChange',
@@ -248,7 +244,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
                 required: true,
                 clearErrors,
                 error: errors.channelName?.message,
-                autofocus: true,
+                autofocus: !focusDescription,
               },
             ]}
           />
@@ -362,6 +358,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
                 clearErrors,
                 errors: errors?.channelDescription?.message,
                 counterPosition: 'top',
+                autoFocus: focusDescription,
               },
             ]}
           />
