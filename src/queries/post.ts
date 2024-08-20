@@ -901,7 +901,6 @@ export const getAcknowledgements = async (
 export const useInfiniteAcknowledgements = (
   id: string,
   q?: Record<string, any>,
-  onSuccess?: (data: any) => void,
 ) => {
   return useInfiniteQuery({
     queryKey: ['acknowledgements', id, q],
@@ -917,7 +916,6 @@ export const useInfiniteAcknowledgements = (
     getPreviousPageParam: (currentPage: any) => {
       return currentPage?.data?.result?.paging?.prev;
     },
-    onSuccess: onSuccess,
     cacheTime: 0,
   });
 };

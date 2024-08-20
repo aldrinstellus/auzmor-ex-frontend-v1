@@ -8,30 +8,20 @@ import AvatarRowSkeleton from './AvatarRowSkeleton';
 import AvatarRow from './AvatarRow';
 import PageLoader from 'components/PageLoader';
 import Button, { Variant } from 'components/Button';
-import { IPost, useInfiniteAcknowledgements } from 'queries/post';
+import { useInfiniteAcknowledgements } from 'queries/post';
 import { twConfig } from 'utils/misc';
 import { useTranslation } from 'react-i18next';
-import { useFeedStore } from 'stores/feedStore';
 
 type AppProps = {
-  postId: string;
+  post: Record<string, any>;
   closeModal: () => any;
 };
 
-const Acknowledged: FC<AppProps> = ({ postId, closeModal }) => {
+const Acknowledged: FC<AppProps> = ({ post, closeModal }) => {
   const { ref, inView } = useInView();
-  const updatePost = useFeedStore((state) => state.updateFeed);
-  const post = useFeedStore((state) => state.getPost)(postId);
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteAcknowledgements(post.id, { acknowledged: true }, () =>
-      updatePost(post.id, {
-        ...(post as IPost),
-        acknowledgementStats: {
-          ...post.acknowledgementStats,
-        },
-      }),
-    );
+    useInfiniteAcknowledgements(post.id, { acknowledged: true });
 
   const usersData = data?.pages.flatMap((page) =>
     page?.data?.result?.data.map((user: any) => user),
@@ -44,9 +34,10 @@ const Acknowledged: FC<AppProps> = ({ postId, closeModal }) => {
     }
   }, [inView]);
 
+  const totalAcknowledged = data?.pages[0]?.data?.result?.totalCount;
+
   const completePercent = Math.round(
-    (post?.acknowledgementStats?.acknowledged * 100) /
-      post?.acknowledgementStats?.audience,
+    (totalAcknowledged * 100) / post?.acknowledgementStats?.audience,
   );
 
   return (
@@ -76,7 +67,7 @@ const Acknowledged: FC<AppProps> = ({ postId, closeModal }) => {
               data-testid="acknowledged-count"
             >
               {t('acknowledgedCount', {
-                acknowledged: post?.acknowledgementStats?.acknowledged,
+                acknowledged: totalAcknowledged,
                 audience: post?.acknowledgementStats?.audience,
               })}
             </div>

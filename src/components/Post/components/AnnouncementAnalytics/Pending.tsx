@@ -12,17 +12,14 @@ import { useInfiniteAcknowledgements } from 'queries/post';
 import { useMutation } from '@tanstack/react-query';
 import { createNewJob } from 'queries/job';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
-import { useFeedStore } from 'stores/feedStore';
 
 type AppProps = {
-  postId: string;
+  post: Record<string, any>;
   closeModal: () => any;
 };
 
-const Pending: FC<AppProps> = ({ postId, closeModal }) => {
+const Pending: FC<AppProps> = ({ post, closeModal }) => {
   const { ref, inView } = useInView();
-  const updatePost = useFeedStore((state) => state.updateFeed);
-  const post = useFeedStore((state) => state.getPost)(postId);
 
   const reminderMutation = useMutation(
     () =>
@@ -43,14 +40,7 @@ const Pending: FC<AppProps> = ({ postId, closeModal }) => {
   );
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteAcknowledgements(post.id, { acknowledged: false }, () =>
-      updatePost(post.id, {
-        ...post,
-        acknowledgementStats: {
-          ...post.acknowledgementStats,
-        },
-      }),
-    );
+    useInfiniteAcknowledgements(post.id, { acknowledged: false });
 
   const usersData = data?.pages.flatMap((page) =>
     page?.data?.result?.data.map((user: any) => user),
@@ -62,9 +52,10 @@ const Pending: FC<AppProps> = ({ postId, closeModal }) => {
     }
   }, [inView]);
 
+  const totalPendingAcknowledged = data?.pages[0]?.data?.result?.totalCount;
+
   const pendingPercent = Math.round(
-    (post?.acknowledgementStats?.pending * 100) /
-      post?.acknowledgementStats?.audience,
+    (totalPendingAcknowledged * 100) / post?.acknowledgementStats?.audience,
   );
 
   return (
@@ -95,7 +86,7 @@ const Pending: FC<AppProps> = ({ postId, closeModal }) => {
               className="text-2xl text-yellow-300 font-semibold"
               data-testid="acknowledge-pending-count"
             >
-              {post?.acknowledgementStats?.pending} out of{' '}
+              {totalPendingAcknowledged} out of{' '}
               {post?.acknowledgementStats?.audience} people
             </div>
             <div className="text-sm text-neutral-900">

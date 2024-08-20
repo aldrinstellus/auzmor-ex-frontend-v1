@@ -8,9 +8,8 @@ import { useMutation } from '@tanstack/react-query';
 import { downloadAcknowledgementReport } from 'queries/post';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import Spinner from 'components/Spinner';
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import queryClient from 'utils/queryClient';
 
 type AppProps = {
   open: boolean;
@@ -20,11 +19,6 @@ type AppProps = {
 
 const AnnouncementAnalytics: FC<AppProps> = ({ post, open, closeModal }) => {
   const { t } = useTranslation('post', { keyPrefix: 'announcementAnalytics' });
-
-  useEffect(() => {
-    queryClient.invalidateQueries(['posts'], { exact: false });
-    queryClient.invalidateQueries(['feed']);
-  }, []);
 
   const tabLabel = (label: string, isActive: boolean) => {
     return (
@@ -82,15 +76,13 @@ const AnnouncementAnalytics: FC<AppProps> = ({ post, open, closeModal }) => {
               {
                 tabLabel: (isActive) => tabLabel(t('acknowledged'), isActive),
                 tabContent: (
-                  <Acknowledged postId={post.id} closeModal={closeModal} />
+                  <Acknowledged post={post} closeModal={closeModal} />
                 ),
                 dataTestId: 'acknowledgement-report-acknowledged',
               },
               {
                 tabLabel: (isActive) => tabLabel(t('pending'), isActive),
-                tabContent: (
-                  <Pending postId={post.id} closeModal={closeModal} />
-                ),
+                tabContent: <Pending post={post} closeModal={closeModal} />,
                 dataTestId: 'acknowledgement-report-pending',
               },
             ]}
