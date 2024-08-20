@@ -135,7 +135,7 @@ const CreateShoutout: FC<ICreateShoutoutProps> = ({ closeModal }) => {
   return form ? (
     <div>
       <Header
-        title={'asdsad'}
+        title={t('giveKudos')}
         onBackIconClick={handleBack}
         onClose={closeModal}
         titleDataTestId={
