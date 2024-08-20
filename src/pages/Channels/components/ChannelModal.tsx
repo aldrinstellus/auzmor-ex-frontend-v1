@@ -91,10 +91,6 @@ const ChannelModal: FC<IChannelModalProps> = ({
   const navigate = useNavigate();
   const { setChannels } = useChannelStore();
 
-  const defaulChannelDescription = t('defaultDescription', {
-    visibilty: channelData?.settings?.visibility,
-    channelName: channelData?.name,
-  });
   const {
     handleSubmit,
     control,
@@ -118,8 +114,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
               }))
               .pop()
           : undefined,
-      channelDescription:
-        channelData?.description || (channelData && defaulChannelDescription),
+      channelDescription: channelData?.description,
     },
     resolver: yupResolver(schema),
     mode: 'onChange',

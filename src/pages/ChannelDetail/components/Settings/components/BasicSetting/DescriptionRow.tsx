@@ -11,8 +11,8 @@ import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import InfoRow from 'components/ProfileInfo/components/InfoRow';
 import { updateChannel } from 'queries/channel';
 import { IChannel } from 'stores/channelStore';
-import { isTrim } from 'pages/ChannelDetail/components/utils';
 import { useTranslation } from 'react-i18next';
+import Truncate from 'components/Truncate';
 
 type AppProps = {
   channelData: IChannel;
@@ -84,7 +84,12 @@ const DescriptionRow: FC<AppProps> = ({ channelData, canEdit }) => {
         bgColor: 'bg-orange-50',
       }}
       label={t('label')}
-      value={isTrim(channelData?.description)}
+      value={
+        <Truncate
+          text={channelData?.description || t('fieldNotSpecified')}
+          className=" max-w-4xl"
+        />
+      }
       canEdit={canEdit}
       dataTestId="professional-details-employee-id"
       editNode={
