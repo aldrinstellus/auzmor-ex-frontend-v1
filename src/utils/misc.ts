@@ -19,7 +19,13 @@ import { IDepartment } from 'queries/department';
 import { IDesignation } from 'queries/designation';
 import { IPost } from 'queries/post';
 import moment from 'moment';
-import { EMPTY_REGEX, HEX_REGEX, SESSION_ID } from './constants';
+import {
+  EMPTY_REGEX,
+  HEX_REGEX,
+  patternHTTP,
+  patternWithoutHTTP,
+  SESSION_ID,
+} from './constants';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 
@@ -33,6 +39,15 @@ export const humanFileSize = (size: number) => {
     ' ' +
     ['B', 'kB', 'MB', 'GB', 'TB'][i]
   );
+};
+export const getValidURL = (str: any) => {
+  if (patternHTTP.test(str)) {
+    return str;
+  }
+  if (patternWithoutHTTP.test(str)) {
+    return `https://${str}`;
+  }
+  return null;
 };
 
 export const getInitials = (name: string) => {

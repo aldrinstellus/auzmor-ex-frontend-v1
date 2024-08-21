@@ -7,10 +7,10 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Layout, { FieldType } from 'components/Form';
-import { URL_REGEX } from 'utils/constants';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createLinks, updateChannelLink } from 'queries/channel';
+import { getValidURL } from 'utils/misc';
 
 interface IAddLinksModalProps {
   open: boolean;
@@ -43,10 +43,11 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
     url: yup
       .string()
       .required(t('urlField.requiredError'))
-      .matches(URL_REGEX, {
-        message: t('urlField.invalidUrlError'),
-        excludeEmptyString: true,
-      })
+      .test(
+        'is-valid-url',
+        t('urlField.invalidUrlError'),
+        (value) => !!getValidURL(value || ''),
+      )
       .max(256, t('urlField.maxLengthError')),
   });
   const updateLinksMutation = useMutation(
@@ -102,9 +103,9 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
   const onSubmit = () => {
     try {
       const { title, url } = getValues();
-      const prefixProtocolUrl = `https://${url}`;
+
       if (isCreateMode) {
-        updateLinksMutation.mutate({ title, url: prefixProtocolUrl });
+        updateLinksMutation.mutate({ title, url: getValidURL(url) });
         return;
       }
       if (isEditMode) {
