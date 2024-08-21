@@ -217,7 +217,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
       <Card
         shadowOnHover
         className={`relative w-[190px] ${
-          isLxp ? 'h-[190px] w-[190px] ' : 'h-[244px] w-[233px]'
+          isLxp ? 'h-[190px] w-[189px] ' : 'h-[244px] w-[233px]'
         } border-solid border rounded-9xl border-neutral-200 bg-white focus-within:shadow-xl`}
       >
         {(!isLxp || (isChannelPeople && isReadOnly)) && (
@@ -347,6 +347,17 @@ const PeopleCard: FC<IPeopleCardProps> = ({
                 />
                 <Truncate
                   text={designation?.name}
+                  className="text-neutral-900 text-xs font-normal max-w-[128px]"
+                />
+              </div>
+            )}
+            {isLxp && (userData as any)?.email && (
+              <div
+                className="flex justify-center items-center gap-1"
+                data-testid={`people-card-email-id-${(userData as any)?.email}`}
+              >
+                <Truncate
+                  text={(userData as any)?.email}
                   className="text-neutral-900 text-xs font-normal max-w-[128px]"
                 />
               </div>

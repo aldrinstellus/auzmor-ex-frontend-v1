@@ -139,7 +139,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
               variant={ButtonVariant.Secondary}
               className="mt-2 font-semibold"
               leftIcon={'lock'}
-              iconColor={'text-neutal-900'}
+              leftIconClassName={'text-neutral-900'}
               leftIconSize={16}
               leftIconHover={false}
               onClick={(e) => {
