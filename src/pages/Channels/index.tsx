@@ -67,13 +67,6 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
     }
   }, [inView]);
 
-  useEffect(() => {
-    setFilters({
-      visibility: ChannelVisibilityEnum.All,
-      channelType: ChannelTypeEnum.MyChannels,
-    });
-  }, []);
-
   const { watch, resetField } = filterForm;
 
   const searchValue = watch('search');
@@ -106,6 +99,17 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
         filters?.channelType === ChannelTypeEnum.DiscoverNewChannels
       ),
     }),
+    {
+      onSuccess: (data: any) => {
+        if (
+          data.pages.flatMap((page: any) => page.data.result.data).length ===
+            0 &&
+          filters?.channelType === ChannelTypeEnum.MyChannels
+        ) {
+          setFilters({ channelType: ChannelTypeEnum.DiscoverNewChannels });
+        }
+      },
+    },
   );
 
   const channelIds =
@@ -114,6 +118,23 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
         page?.data?.result?.data.map((channel: { id: string }) => channel) ||
         [],
     ) as { id: string }[]) || [];
+
+  useEffect(() => {
+    if (
+      channelIds.length === 0 &&
+      filters?.channelType === ChannelTypeEnum.MyChannels
+    ) {
+      setFilters({
+        visibility: ChannelVisibilityEnum.All,
+        channelType: ChannelTypeEnum.DiscoverNewChannels,
+      });
+    } else {
+      setFilters({
+        visibility: ChannelVisibilityEnum.All,
+        channelType: ChannelTypeEnum.MyChannels,
+      });
+    }
+  }, []);
   const onFilterButtonClick = (type: ChannelTypeEnum) => {
     return () => {
       updateFilter('channelType', type);

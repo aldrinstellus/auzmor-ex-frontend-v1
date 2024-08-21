@@ -349,7 +349,10 @@ export const bulkChannelRequestUpdate = async (
 
 // ------------------ React Query -----------------------
 
-export const useInfiniteChannels = (q?: Record<string, any>) => {
+export const useInfiniteChannels = (
+  q?: Record<string, any>,
+  options?: Record<string, any>,
+) => {
   const { channels, setChannels } = useChannelStore();
   return {
     ...useInfiniteQuery({
@@ -367,6 +370,7 @@ export const useInfiniteChannels = (q?: Record<string, any>) => {
         return currentPage?.data?.result?.paging?.prev;
       },
       staleTime: 5 * 60 * 1000,
+      ...options,
     }),
     channels,
   };
